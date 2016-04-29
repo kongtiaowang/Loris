@@ -72,71 +72,6 @@ class NDB_BVL_Instrument_adi_r extends NDB_BVL_Instrument
         
         $this->_getAge();
         
-        //populate default answers for questions outside of age range.
-        //4-5
-        $underFourDefaults = array("q_29_compreh_simple_most_abnormal"=>"8_NA",
-                            "q_32_artic_pronun_current_code"=>"8_NA",
-                            "q_42_point_express_inter_most_abnormal_code"=>"8_NA",
-                            "q_43_nodding_most_abnormal_code"=>"8_NA",
-                            "q_44_head_shaking_most_abnormal_code"=>"8_NA",
-                            "q_45_conventional_instr_gests_most_abnormal_code"=>"8_NA",
-                            "q_46_attent_voice_most_abnormal_code"=>"8_NA",
-                            "q_47_spont_imit_most_abnormal_code"=>"8_NA",
-                            "q_48_imag_play_most_abnormal_code"=>"8_NA",
-                            "q_49_imag_play_peers_current_code"=>"8_NA",
-                            "q_49_imag_play_peers"=>"8_NA",
-                            "q_50_direct_gaze_most_abnormal_code"=>"8_NA",
-                            "q_51_social_smiling_most_abnormal_code"=>"8_NA",
-                            "q_52_show_direct_atten_most_abnormal_code"=>"8_NA",
-                            "q_53_offer_share_most_abnormal_code"=>"8_NA",
-                            "q_54_seek_share_enjoy_most_abnormal_code"=>"8_NA",
-                            "q_55_offer_comf_most_abnormal_code"=>"8_NA",
-                            "q_56_qual_social_overts_most_abnormal_code"=>"8_NA",
-                            "q_57_range_facial_expr_most_abnormal_code"=>"8_NA",
-                            "q_59_appropriat_resp_most_abnormal_code"=>"8_NA",
-                            "q_60_init_activities_most_abnormal_code"=>"8_NA",
-                            "q_61_imit_soc_play_most_abnormal_code"=>"8_NA",
-                            "q_62_inter_children_most_abnormal_code"=>"8_NA",
-                            "q_63_resp_approaches_most_abnormal_code"=>"8_NA",
-                            "q_64_group_play_peers_most_abnormal_code"=>"8_NA",
-                            "q_65_friendships_most_abnormal_code"=>"8_NA",
-                            "q_66_soc_disinhibit_current_code"=>"8_NA",
-                            "q_66_soc_disinhibit_most_abnormal_code"=>"8_NA",
-                            "q_80_gait_most_abnormal_code"=>"8_NA");
-
-
-        $atOlderThanFiveDefaults = array(
-                            "q_32_artic_pronun_5years_code"=>"8_NA",
-                            "q_41_cur_comm_speech_at5_code"=>"8_NA",
-                            "q_65_friendships_current_code"=>"8_NA",
-                            );
-        
-        $db =& Database::singleton();
-
-        // Get the item scores
-        $query = "SELECT * FROM $this->table WHERE CommentID='".$this->getCommentID()."'";
-        $record=array();
-        $db->selectRow($query, $record);
-        
-        //Fill in `Most abnormal 4.0-5.0` defaults for respondents under 4
-        if($this->respondentAgeYears < 4) {
-            foreach($underFourDefaults as $field=>$value) {
-                //Defaults apply only to empty database fields
-                if(isset($record[$field]) && $record[$field] == null) {
-                    $this->localDefaults[$field] = $value;
-                }
-            }
-        }
-        //Fill in values for repondents under 5
-        if($this->respondentAgeYears < 5) {
-            foreach($atOlderThanFiveDefaults as $field=>$value) {
-                //Defaults apply only to empty database fields
-                if(!isset($record[$field]) || $record[$field] == null) {
-                    $this->localDefaults[$field] = $value;
-                }
-            }
-        }
-        
         if(preg_match("/(_page[0-9]+)/",$this->page,$matches)){
             call_user_method($matches[1], $this);
         } else {
@@ -305,7 +240,7 @@ class NDB_BVL_Instrument_adi_r extends NDB_BVL_Instrument
 			    $scoreCols["BNV_Total"] = $scoreCols["Total_B1"] + $scoreCols["Total_B4"];
 			}
 				
-			//Restrcited, Repetitive and Stereotyped Patterns of Behaviour
+			//Restricted, Repetitive and Stereotyped Patterns of Behaviour
 			$scoreCols["Total_C1"] = $this->scores["q_67_unusual_preoccupations_ever_code"] + $this->scores["q_68_circumscr_ints_ever_code"];
 			$scoreCols["Total_C2"] = ($this->scores["q_30_overall_level_of_language"] == 0 ? $this->scores["q_39_verbal_rituals_ever_code"] : 0) 
 			                         + $this->scores["q_70_compulsions_rituals_ever_code"];
@@ -378,7 +313,7 @@ class NDB_BVL_Instrument_adi_r extends NDB_BVL_Instrument
     			$scoreCols["BV_Total"] = "Nonverbal";
     			$scoreCols["BNV_Total"] = $scoreCols["Total_B1"] + $scoreCols["Total_B4"];
 			}					
-			//Restrcited, Repetitive and Stereotyped Patterns of Behaviour
+			//Restricted, Repetitive and Stereotyped Patterns of Behaviour
 			$scoreCols["Total_C1"] = $this->scores["q_67_unusual_preoccupations_ever_code"] + $this->scores["q_68_circumscr_ints_ever_code"];
 			$scoreCols["Total_C2"] = ($this->scores["q_30_overall_level_of_language"] == 0 ? $this->scores["q_39_verbal_rituals_ever_code"] : 0) 
 			                         + $this->scores["q_70_compulsions_rituals_ever_code"];
@@ -411,7 +346,7 @@ class NDB_BVL_Instrument_adi_r extends NDB_BVL_Instrument
 			if(in_array($this->scores["q_86_age_when_abnormality_first_evident"], array(3, 4))) {
 			     $scoreCols["D_Total"] += 1;
 			}
-			//Interviewers's Judgement
+			//Interviewers' Judgement
 			if (($this->scores["q_87_interviewers_judgment"]) < 36 && !is_null($this->scores["q_87_interviewers_judgment"])) {
 			     $scoreCols["D_Total"] += 1;
 			}
