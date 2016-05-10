@@ -73,6 +73,8 @@ class NDB_BVL_Instrument_vineland extends NDB_BVL_Instrument
      
     function _main(){
 
+         $factory  = NDB_Factory::singleton();
+         $baseURL = $factory->settings()->getBaseURL();
          // display test name
          $this->form->addElement('header', 'instrument_title', $this->getFullName());
          $testName = isset($_REQUEST['test_name']) ? $_REQUEST['test_name'] : '';
@@ -80,7 +82,7 @@ class NDB_BVL_Instrument_vineland extends NDB_BVL_Instrument
          $sessionID = isset($_REQUEST['sessionID']) ? $_REQUEST['sessionID'] : '';
          $this->form->updateAttributes(
              array(
-                 'action' =>"main.php?test_name=$testName&candID=$candID&sessionID=$sessionID&commentID=".$this->getCommentID()
+                 'action' =>"$baseURL/$testName/?candID=$candID&sessionID=$sessionID&commentID=".$this->getCommentID()
              )
          );
 

@@ -1262,7 +1262,7 @@ class NDB_BVL_Instrument_EARLI_interview_PART_1 extends NDB_BVL_Instrument_EARLI
         //		$this->form->addElement('header', null, $this->indent . "<b>If more than one pregnancy, continue with pregnancy insert form(s) as needed for next pregnancy(s) ending with the pregnancy that gave rise to the baby sib.</b>");
         $sessionid = $this->getSession();
         $commentid = $this->getComment($sessionid);
-        $url = "main.php?test_name=EARLI_interview_S3_inserts&candID=".$_REQUEST['candID']."&sessionID=".$sessionid."&commentID=".$commentid;                
+        $url = "?test_name=EARLI_interview_S3_inserts&candID=".$_REQUEST['candID']."&sessionID=".$sessionid."&commentID=".$commentid;
         $this->form->addElement("link", null, "<b>If more than one pregnancy (your answer was 2 or more for question 3-4):</b>", $url, 'Click here to enter data from the pregnancy insert forms');
         $this->form->addElement('static', null, "<br/>");
         $this->form->addElement('static', null, "<br/>");

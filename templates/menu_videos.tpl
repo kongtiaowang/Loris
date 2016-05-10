@@ -7,7 +7,7 @@
             <span class="glyphicon glyphicon-chevron-up pull-right" id="up"></span>
         </div>
         <div class="panel-body" id="panel-body">
-            <form method="post" action="main.php?test_name=videos">
+            <form method="post" action="{$baseURL}/videos/">
                 <div class="row">
                     <div class="form-group col-sm-6">
                         <label class="col-md-4">{$form.PSCID.label}</label>
@@ -38,7 +38,7 @@
                         <div class="visible-xs col-xs-12"> </div>
                         <div class="visible-xs col-xs-12"> </div>
                         <div class="col-sm-6 col-md-3">
-                            <input type="button" name="reset" value="Clear Form" onclick="location.href='main.php?test_name=videos&reset=true'" class="btn btn-sm btn-primary col-xs-12" />
+                            <input type="button" name="reset" value="Clear Form" onclick="location.href='{$baseURL}/videos/?reset=true'" class="btn btn-sm btn-primary col-xs-12" />
                         </div>
                     </div>
                 </div>
@@ -55,13 +55,13 @@
 <tr>
     <td class="controlPanelSection">
       {if $Normal_Perm}
-        <a href="main.php?test_name=videos&showEARLI=">IBIS Videos</a> 
+        <a href="{$baseURL}/videos/?showEARLI=">IBIS Videos</a>
       {/if}
       {if $Normal_Perm && $EARLI_Perm}
       |
       {/if}
       {if $EARLI_Perm}
-        <a href="main.php?test_name=videos&showEARLI=1">EARLI Videos</a>
+        <a href="{$baseURL}/videos/?showEARLI=1">EARLI Videos</a>
       {/if}
     </td>
 </tr>
@@ -69,7 +69,7 @@
     <!-- title -->
   
     <td class="controlPanelSection">
-      <a href="main.php?test_name=video_upload">
+      <a href="{$baseURL}/video_upload/">
         Upload a New Video
       </a>
 
@@ -97,7 +97,7 @@
                 <!-- print out column headings - quick & dirty hack -->
                 {section name=header loop=$headers}
                     <th>
-                      <a href="main.php?test_name=videos&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">
+                      <a href="{$baseURL}/videos/?filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">
                         {$headers[header].displayName}
                       </a>
                     </th>
@@ -117,7 +117,7 @@
                   </td>
                {elseif $items[item][piece].name == "record_id"}
                   <td>
-                      <a href="main.php?test_name=video_upload&identifier={$items[item][piece].value}" target="_blank">Edit</a> 
+                      <a href="{$baseURL}/video_upload/?identifier={$items[item][piece].value}" target="_blank">Edit</a>
                     </td>
                  {else}
                      <td>{$items[item][piece].value}</td>

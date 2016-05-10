@@ -1,6 +1,6 @@
 {if $success}
 <p>Update Successful<br /></p>
-<a href='main.php?test_name=videos'> Back to Video Page</a>
+<a href='{$baseURL}/videos/'> Back to Video Page</a>
 <br>
 {/if}
 

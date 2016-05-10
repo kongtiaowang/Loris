@@ -19,7 +19,7 @@
             <span class="glyphicon glyphicon-chevron-up pull-right" id="up"></span>
         </div>
         <div class="panel-body" id="panel-body">
-            <form method="post" action="main.php?test_name=reliability">
+            <form method="post" action="{$baseURL}/reliability/">
                 {if $form.error}
                     <div class="error">{$form.error.label}</div>
                 {/if}
@@ -123,7 +123,7 @@
                     <div class="visible-xs col-xs-12"> </div>
                     <div class="visible-xs col-xs-12"> </div>
                     <div class="col-sm-3">
-                        <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='main.php?test_name=reliability&reset=true'" />
+                        <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseURL}/reliability/?reset=true'" />
                     </div>
                 </div>
             </form>
@@ -140,7 +140,7 @@
                 <span class="glyphicon glyphicon-chevron-up pull-right" style="display:none" id="up-swap"></span>
             </div>
             <div class="panel-body" style="display:none" id="panel-body-swap">
-                <form method="post" action="main.php?test_name=reliability">
+                <form method="post" action="{$baseURL}/reliability/">
                     <input type="hidden" name="swap" value="swap"/>
                     <h5>Original Candidate</h5>
                     <div class="row">
@@ -191,7 +191,7 @@
                 <span class="glyphicon glyphicon-chevron-up pull-right" style="display:none" id="up-earli"></span>
             </div>
             <div class="panel-body" style="display:none" id="panel-body-earli">
-                <form method="post" action="main.php?test_name=reliability">
+                <form method="post" action="{$baseURL}/reliability/">
                     <div class="row">
                         <label class="col-sm-12 col-md-4">{$form.AddPSCID.label}</label>
                         <div class="col-sm-12 col-md-8">{$form.AddPSCID.html}</div>
@@ -229,13 +229,13 @@
 </div>
 
 {if $IBIS_Access}
-<a href='main.php?test_name=reliability_phase_one'>Phase 1 Reliability</a> |
-<a href='main.php?test_name=reliability_diagnostic_calls'>Diagnostic Behavioural Call Cases</a> | 
-<a href="main.php?test_name=reliability&EARLI=0">IBIS Reliability Candidates</a>
+<a href='{$baseURL}/reliability_phase_one/'>Phase 1 Reliability</a> |
+<a href='{$baseURL}/reliability_diagnostic_calls/'>Diagnostic Behavioural Call Cases</a> |
+<a href="\{$baseURL}/reliability/?EARLI=0">IBIS Reliability Candidates</a>
 {/if}
 {if $IBIS_Access and $EARLI_Reliability} | {/if}
 {if $EARLI_Reliability}
-<a href="main.php?test_name=reliability&EARLI=1">EARLI Reliability Candidates</a>
+<a href="{$baseURL}/reliability/?EARLI=1">EARLI Reliability Candidates</a>
 {/if}
 <br>
 <br>
@@ -261,7 +261,7 @@
                 {section name=header loop=$headers}
                     <th nowrap="nowrap">
                       {if $headers[header].displayName != "Reliable"}
-                        <a href="main.php?test_name=reliability&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">
+                        <a href="{$baseURL}/reliability/?filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">
                           {if $headers[header].displayName == "Reliability Center Id"}
                             Site of Reliability Test
                           {else}
@@ -289,7 +289,7 @@
                  {elseif $items[item][piece].invalid == "yes"}
                     {$items[item][piece].value} <font color="red">(Invalid)</font>
                  {else}     
-                      <a href="main.php?test_name={$items[item][piece].Instrument}_reliability&subtest={$items[item][piece].Instrument}_reliability&identifier={$items[item][piece].CommentID}&reliability_center_id={$items[item][piece].SiteID}">{$items[item][piece].value}</a> 
+                      <a href="{$baseURL}/{$items[item][piece].Instrument}_reliability/{$items[item][piece].Instrument}_reliability/?identifier={$items[item][piece].CommentID}&reliability_center_id={$items[item][piece].SiteID}">{$items[item][piece].value}</a>
                    {/if}
                     {if $items[item][piece].manual == "yes"}
                         <font color="red">(Manual)</font>
