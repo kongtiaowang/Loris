@@ -10,9 +10,7 @@ class NDB_Form_statistics_enroll extends NDB_Form
 {
     function _hasAccess() {
         $user =& User::singleton();
-        if(Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
-        }
+
         return $user->hasPermission('data_entry');
     }
 
@@ -29,9 +27,7 @@ class NDB_Form_statistics_enroll extends NDB_Form
     function statistics()
     {
         $DB =& Database::singleton();
-        if (Utility::isErrorX($DB)) {
-            return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
-        }
+
 
         $this->tpl_data['StatsTabs'] = $DB->pselect(
             "SELECT ModuleName, SubModuleName, Description
@@ -45,13 +41,9 @@ class NDB_Form_statistics_enroll extends NDB_Form
     function stats_enrollment()
     {
         $DB =& Database::singleton();
-        if (Utility::isErrorX($DB)) {
-            return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
-        }
+
         $DB->select("SELECT CONCAT('C', CenterID) as ID, CenterID as NumericID, PSCArea as LongName, Name as ShortName FROM psc WHERE CenterID <> '1' AND Study_site = 'Y'", $centers);
-        if(Utility::isErrorX($centers)) {
-            return PEAR::raiseError("DB Error: ".$centers->getMessage());
-        }
+
         $this->tpl_data['Centers'] = $centers;
         $this->tpl_data['Sites'] = array('' => 'All Sites');
         $projects[null] = 'All Projects';
