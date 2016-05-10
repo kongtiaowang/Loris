@@ -1,4 +1,4 @@
-<script type="text/javascript" src="js/filterControl.js"></script>
+<script type="text/javascript" src="{$baseurl}/js/filterControl.js"></script>
 
 <div class="col-md-8 col-sm-10">
     <form method="post" action="{$baseURL}/certification/">

@@ -37,7 +37,7 @@ function togglePanel(panel) {
 }
 </script>
 {/literal}
-<script type="text/javascript" src="js/filterControl.js"></script>
+<script type="text/javascript" src="{$baseurl}/js/filterControl.js"></script>
 <div class="col-sm-12">
     <div class="panel panel-primary">
         <div class="panel-heading" onclick="hideFilter();">
