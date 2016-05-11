@@ -49,9 +49,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
 
     function _hasAccess() {
         $user =& User::singleton();
-        if(Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
-        }
+
         if($user->hasPermission('access_all_profiles') || $user->hasPermission('reliability_edit_all')) {
             return true;
         }
@@ -60,9 +58,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
     function _setupVariables()
     {
         $user =& User::singleton();
-        if(Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
-        }
+
 
         // create the centerID map
         $db =& Database::singleton();
@@ -119,17 +115,12 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
     {
     	// create user object
         $user =& User::singleton();
-        if(Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
-        }
 
            // allow to view all sites data through filter
         if ($user->hasPermission('access_all_profiles') || $user->hasPermission('reliability_edit_all')) {
             // get the list of study sites - to be replaced by the Site object
             $list_of_sites = Utility::getSiteList(false);
-            if(Utility::isErrorX($list_of_sites)) {
-                return PEAR::raiseError("DB Error: ".$list_of_sites->getMessage());
-            }
+
             if(is_array($list_of_sites)) 
             {
                 // This doesn't work, it causes all the indexes to change
@@ -148,9 +139,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
         else {
             // allow only to view own site data
             $site =& Site::singleton($user->getData('CenterID'));
-            if (Utility::isErrorX($site)) {
-                return PEAR::raiseError("DB Error: ".$site->getMessage());
-            }
+
             //if ($site->isStudySite()) {
                 $list_of_sites = array($user->getData('CenterID') => $user->getData('Site'));
             //}
@@ -622,9 +611,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
 
     function _swap_candidates() {
         $user =& User::singleton();
-        if(Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
-        }
+
         if (!($user->hasPermission('reliability_swap_candidates'))) {
             return array("error" => "You do not have permission to swap candidates");
         }
@@ -676,9 +663,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
     function _addCandidate() {
         $user =& User::singleton();
         $DB =& Database::singleton();
-        if(Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
-        }
+
         if (!($user->hasPermission('EARLI_Reliability'))) {
             return array("error" => "You do not have permission to add EARLI candidates");
         }
