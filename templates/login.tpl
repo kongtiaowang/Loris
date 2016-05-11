@@ -163,7 +163,7 @@ For details on the teleconference minutes and agendas, upcoming conferences, or 
 		  <div class="panel-body">
 		  		<div class="col-xs-12">
 		  			<center>
-		  				<img src="images/LORIS_logo_141007.svg" class="img-responsive" alt="Responsive image" onerror="this.src='images/LORIS_Logo_141007.png'" align="middle" width="85%"> 
+		  				<img src="{$baseurl}/images/LORIS_logo_141007.svg" class="img-responsive" alt="Responsive image" onerror="this.src='images/LORIS_Logo_141007.png'" align="middle" width="85%">
 		  			</center>
 					<br>
 		  		</div>
@@ -253,7 +253,7 @@ For details on the teleconference minutes and agendas, upcoming conferences, or 
 
 </table>
 -->
-<!--img src="images/mni_logo.png" class="watermark" alt="Montreal Neurological Institute" border="0" width="100" height="83"-->
+<!--img src="{$baseurl}/images/mni_logo.png" class="watermark" alt="Montreal Neurological Institute" border="0" width="100" height="83"-->
 
 
 {literal}
