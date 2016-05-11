@@ -1,4 +1,4 @@
-<script src="js/filterControl.js" type="text/javascript"></script>
+<script src="{$baseurl}/js/filterControl.js" type="text/javascript"></script>
 
 <div class="col-md-12 col-sm-10">
 	<form method="post" name="edit_user" id="edit_user">

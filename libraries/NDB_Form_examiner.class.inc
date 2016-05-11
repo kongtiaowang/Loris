@@ -106,7 +106,8 @@ class NDB_Form_Examiner extends NDB_Form
     function _process($values)
     {
         $DB = Database::singleton();
-
+        $factory  = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
         foreach ($values['certStatus'] as $testID => $certStatus) {
 
             $date_cert = $values['date_cert'][$testID];
@@ -252,7 +253,7 @@ class NDB_Form_Examiner extends NDB_Form
                 }
             }
         }
-        $url = "main.php?test_name=examiner&subtest=editExaminer&identifier="
+        $url = "$baseURL/examiner/editExaminer/?identifier="
                . $examinerID;
         header("Location: " . $url, true, 303);
     }
