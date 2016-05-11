@@ -1,7 +1,7 @@
 <script type="text/javascript" src="{$baseurl}/js/filterControl.js"></script>
 
 <div class="col-md-8 col-sm-10">
-    <form method="post" action="{$baseURL}/certification/">
+    <form method="post" action="{$baseurl}/certification/">
         <div class="panel panel-primary">
             <div class="panel-heading" onclick="hideFilter();">
                 Selection Filter
@@ -25,7 +25,7 @@
                 </div>
                 <div class="row">
                     <div class="col-sm-4 col-xs-12">
-                        <input type="button" name="button" value="Add Certification" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseURL}/certification/edit_event/'" />
+                        <input type="button" name="button" value="Add Certification" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/certification/edit_event/'" />
                     </div>
                     <div class="visible-xs col-xs-12"> </div>
                     <div class="visible-xs col-xs-12"> </div>
@@ -39,7 +39,7 @@
                     <div class="visible-xs col-xs-12"> </div>
                     <div class="visible-xs col-xs-12"> </div>
                     <div class="col-sm-3 col-xs-12">
-                        <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseURL}/certification/?reset=true'" />
+                        <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/certification/?reset=true'" />
                     </div>
                 </div>
             </div>
@@ -64,7 +64,7 @@
                 <!-- print out column headings - quick & dirty hack -->
                 {section name=header loop=$headers}
                 {if $headers[header].name != subject && $headers[header].name != date}
-                    <th><a href="{$baseURL}/certification/?filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
+                    <th><a href="{$baseurl}/certification/?filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
                 {/if}
                 {/section}
             </tr>
@@ -77,7 +77,7 @@
                 {if $items[item][piece].name != "ID"} 
                 <td>
                     {if $items[item][piece].name == "full_name"}
-                    <a href="{$baseURL}/certification/edit_event/?identifier={$items[item][piece].ID}">{$items[item][piece].value}</a>
+                    <a href="{$baseurl}/certification/edit_event/?identifier={$items[item][piece].ID}">{$items[item][piece].value}</a>
                     {elseif $items[item][piece].name != "date"}
                     {$items[item][piece].value}
                     {/if}

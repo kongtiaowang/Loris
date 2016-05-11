@@ -1,6 +1,6 @@
 {if $success}
 <p>Update Successful<br /></p>
-<a href='{$baseURL}/videos/'> Back to Video Page</a>
+<a href='{$baseurl}/videos/'> Back to Video Page</a>
 <br>
 {/if}
 

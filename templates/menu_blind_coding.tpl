@@ -46,7 +46,7 @@ function togglePanel(panel) {
             <span class="glyphicon glyphicon-chevron-up pull-right" id="up"></span>
         </div>
         <div class="panel-body" id="panel-body">
-            <form method="post" action="{$baseURL}/blind_coding/">
+            <form method="post" action="{$baseurl}/blind_coding/">
                 {if $form.error}
                     <div class="error">{$form.error.label}</div>
                 {/if}
@@ -140,7 +140,7 @@ function togglePanel(panel) {
                         <div class="visible-xs col-xs-12"> </div>
                         <div class="visible-xs col-xs-12"> </div>
                         <div class="col-sm-3">
-                            <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseURL}/blind_coding/?reset=true'" />
+                            <input type="button" name="reset" value="Clear Form" class="btn btn-sm btn-primary col-xs-12" onclick="location.href='{$baseurl}/blind_coding/?reset=true'" />
                         </div>
                     </div>    
                 </div>
@@ -159,7 +159,7 @@ function togglePanel(panel) {
             <span class="glyphicon glyphicon-chevron-up pull-right" style="display:none" id="up-swap"></span>
         </div>
         <div class="panel-body" id="panel-body-swap" style="display:none">
-            <form method="post" action="{$baseURL}/blind_coding/">
+            <form method="post" action="{$baseurl}/blind_coding/">
                 <h5>Original Candidate</h5>
                 <div class="row">
                     <div class="form-group col-sm-6">
@@ -211,7 +211,7 @@ function togglePanel(panel) {
             <span class="glyphicon glyphicon-chevron-up pull-right" style="display:none" id="up-add"></span>
         </div>
         <div class="panel-body" id="panel-body-add" style="display:none">
-            <form method="post" action="{$baseURL}/blind_coding/">
+            <form method="post" action="{$baseurl}/blind_coding/">
                 <div class="row">
                     <div class="form-group col-sm-6">
                         <label class="col-md-6">{$form.AddPSCID.label}</label>
@@ -268,7 +268,7 @@ function togglePanel(panel) {
                     {section name=header loop=$headers}
                         <th>
                           {if $headers[header].displayName != "Reliable"}
-                            <a href="{$baseURL}/blind_coding/?filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">
+                            <a href="{$baseurl}/blind_coding/?filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">
                               {if $headers[header].displayName == "CodingCenterID"}
                                 Site of Blind Coding Test
                               {else}
@@ -296,7 +296,7 @@ function togglePanel(panel) {
                  {elseif $items[item][piece].invalid == "yes"}
                     {$items[item][piece].value} <font color="red">(Invalid)</font>
                  {else}     
-                      <a href="{$baseURL}/{$items[item][piece].Instrument}_reliability/{$items[item][piece].Instrument}_reliability/?identifier={$items[item][piece].CommentID}&reliability_center_id={$items[item][piece].SiteID}&blind=1">{$items[item][piece].value}</a>
+                      <a href="{$baseurl}/{$items[item][piece].Instrument}_reliability/{$items[item][piece].Instrument}_reliability/?identifier={$items[item][piece].CommentID}&reliability_center_id={$items[item][piece].SiteID}&blind=1">{$items[item][piece].value}</a>
                    {/if}
                     {if $items[item][piece].manual == "yes"}
                         <font color="red">(Manual)</font>
