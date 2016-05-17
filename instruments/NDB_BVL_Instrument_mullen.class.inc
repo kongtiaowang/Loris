@@ -1,4 +1,8 @@
 <?php
+
+require_once 'HTML/QuickForm.php';
+require_once 'HTML/QuickForm/Renderer/Array.php';
+
 class NDB_BVL_Instrument_mullen extends NDB_BVL_Instrument
 {
 
@@ -508,7 +512,15 @@ class NDB_BVL_Instrument_mullen extends NDB_BVL_Instrument
         // required fields for data entry completion status
         $this->_requiredElements = array('Examiner', "Date_taken");
 
-        $this->_doubleDataEntryDiffIgnoreColumns = array_merge(array('CommentID', 'UserID', 'Testdate', 'Window_Difference', 'Candidate_Age'), $this->scoreLabels);
+        $this->_doubleDataEntryDiffIgnoreColumns = array_merge(array('CommentID', 'UserID', 'Testdate',
+            'Window_Difference', 'Candidate_Age',
+            'other_comments',
+            'cognitive_t_score_sum',
+            'composite_standard_score',
+            'composite_percentile',
+            'composite_description'),
+            $this->scoreLabels
+        );
 
         // setup the form
         $this->_setupForm();
@@ -1526,8 +1538,12 @@ class NDB_BVL_Instrument_mullen extends NDB_BVL_Instrument
                  $visit_label = '3-9';
              } elseif ($visit_label == 'v12' || $visit_label == 'v15') {
                  $visit_label = '12-15';
+             } elseif ($visit_label == 'v18') {
+                 $visit_label = '18';
              } elseif( $visit_label == 'v24' || $visit_label == 'v36') {
                  $visit_label = '24-36';
+             } elseif ($visit_label == 'v37plus') {
+                 $visit_label = '37';
              }
 
              $results = $db->pselect($query, array(

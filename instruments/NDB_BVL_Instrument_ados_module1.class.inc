@@ -1,4 +1,8 @@
 <?php
+
+require_once 'HTML/QuickForm.php';
+require_once 'HTML/QuickForm/Renderer/Array.php';
+
 class NDB_BVL_Instrument_ados_module1 extends NDB_BVL_Instrument
 {
 /*
@@ -77,36 +81,36 @@ class NDB_BVL_Instrument_ados_module1 extends NDB_BVL_Instrument
         $this->_requiredElements = array('Examiner', "a1", "c1");
 
 	    $this->_doubleDataEntryDiffIgnoreColumns = array('CommentID', 'UserID', 'Testdate', 'Window_Difference', 'Candidate_Age',
-                             // Text entry columns
-							 'd1_specify',
-							 'd2_specify',
-							 'd4_specify',
-                             // Scored columns
-                             "ADOS_classification",
-                             "social_affect_total", 
-                             "restricted_repetitive_behavior_total", 
-                             "social_affect_restricted_repetitive_behavior_total", 
-                             'a2_weighted',
-                             'a3_weighted',
-                             'a8_weighted',
-                             'b1_weighted',
-                             'b3_weighted',
-                             'b4_weighted',
-                             'b5_weighted',
-                             'b9_weighted',
-                             'b10_weighted',
-                             'b11_weighted',
-                             'b12_weighted',
-                             'd1_weighted',
-                             'd2_weighted',
-                             'd4_weighted',
-                             'social_affect_gotham_weighted',
-                             'restricted_repetitive_gotham_weighted',
-                             'gotham_weighted_score',
-                             'severity_score_lookup',
-                             'Data_entry_completion_status');
-
-
+			// Text entry columns
+			'd1_specify',
+			'd2_specify',
+			'd4_specify',
+			'other_comments',
+			// Scored columns
+            "ADOS_classification",
+            "social_affect_total",
+            "restricted_repetitive_behavior_total",
+            "social_affect_restricted_repetitive_behavior_total",
+            'a2_weighted',
+            'a3_weighted',
+            'a8_weighted',
+            'b1_weighted',
+            'b3_weighted',
+            'b4_weighted',
+            'b5_weighted',
+            'b9_weighted',
+            'b10_weighted',
+            'b11_weighted',
+            'b12_weighted',
+            'd1_weighted',
+            'd2_weighted',
+            'd4_weighted',
+            'social_affect_gotham_weighted',
+            'restricted_repetitive_gotham_weighted',
+            'gotham_weighted_score',
+            'severity_score_lookup',
+            'Data_entry_completion_status'
+        );
 
        // setup the form
        $this->_setupForm();
@@ -381,16 +385,10 @@ class NDB_BVL_Instrument_ados_module1 extends NDB_BVL_Instrument
 
         //get the saved scores
     	$db =& Database::singleton();
-    	if (PEAR::isError($db)) {
-			return PEAR::raiseError ("Could not connect to database".$db->getMessage());
-    	}
   	
     	$query = "SELECT * FROM $this->table WHERE CommentID = '$this->commentID'";
     	$record = array();
     	$db->selectRow($query, $record);
-    	if (PEAR::isError($record)) {
-    		return PEAR::raiseError("Could not retrieve scores: " . $record->getMessage());
-    	}
  	
         //Convert the entered scores to countable scores:
         //"Convert scores of 3 on the protocol to 2, and treat all other scores other than 0-3 as 0."
@@ -483,7 +481,7 @@ class NDB_BVL_Instrument_ados_module1 extends NDB_BVL_Instrument
 
         if(!empty($dob) && !empty($Answers['Date_taken'])) {
             $age = Utility::calculateAge($dob, $Answers["Date_taken"]);
-            if(!$this->isError($age)) {
+            if(is_array($age)) {
                 $age_months = $age['year'] * 12 + $age['mon'];
 	        }
         }
@@ -497,9 +495,6 @@ class NDB_BVL_Instrument_ados_module1 extends NDB_BVL_Instrument
                 'agemonths' => $age_months,
                 'rawscore' => $scoreCols['social_affect_restricted_repetitive_behavior_total']
             ));
-        	if (PEAR::isError($record_lookup)) {
-                	return PEAR::raiseError("Could not retrieve scores: " . $record_lookup->getMessage());
- 	     	}
             if(empty($sevscore)) {
                 $scoreCols['severity_score_lookup']= "N/A";
             } else {
@@ -510,9 +505,6 @@ class NDB_BVL_Instrument_ados_module1 extends NDB_BVL_Instrument
 
         // save scores to database
  	    $result = $db->update($this->table, $scoreCols, array("CommentID"=>$this->getCommentID()));
-    	if($db->isError($result)) {
-    	    return PEAR::raiseError("Could not save total score: ". $result->getMessage());
-    	}
     }    // end score function
 }
 ?>

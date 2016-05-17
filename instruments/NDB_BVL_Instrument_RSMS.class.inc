@@ -4,6 +4,7 @@
 require_once('RequiredIfGroup.inc');
 require_once('RequiredIf.inc');
 require_once 'HTML/QuickForm.php';
+require_once 'HTML/QuickForm/Renderer/Array.php';
 
 class NDB_BVL_Instrument_RSMS extends NDB_BVL_Instrument{
     var $ValidityEnabled = false;
@@ -402,21 +403,12 @@ class NDB_BVL_Instrument_RSMS extends NDB_BVL_Instrument{
             $array_of_conversion=array();
 
             $db =& Database::singleton();
-            if(PEAR::isError($db)) {
-                return PEAR::raiseError ("Could not connect to database: ".$db->getMessage());
-            }
-
 
             $query = "SELECT * FROM ".$this->table." WHERE CommentID='".$this->getCommentID()."'";
 
             //select the row with the commentID of the row where the information is being taken
             $db->selectRow($query, $result);
 
-            //if you cannot get the score
-            if (PEAR::isError($result)) {
-              return PEAR::raiseError("Could not get scores: ".$result->getMessage());
-            }
-               
                         
             $score1 =0;
             $score1_weighted = 0;
@@ -521,9 +513,6 @@ class NDB_BVL_Instrument_RSMS extends NDB_BVL_Instrument{
             $newValues["q3_4_score"] = $newValues["q3_score_weighted"] + $score4a + $score4b;     
         
              $result = $db->update($this->table, $newValues, array('CommentID' => $this->getCommentID()));
-             if($db->isError($result)) {
-                 return PEAR::raiseError("Could not save total score: ".$result->getMessage());
-             }
                 
         }
 

@@ -3,6 +3,7 @@
 require_once('RequiredIfGroup.inc');
 require_once('RequiredIf.inc');
 require_once 'HTML/QuickForm.php';
+require_once 'HTML/QuickForm/Renderer/Array.php';
 
 class NDB_BVL_Instrument_DSMV_checklist extends NDB_BVL_Instrument
 {
@@ -50,10 +51,18 @@ class NDB_BVL_Instrument_DSMV_checklist extends NDB_BVL_Instrument
         'addEmptyOption' => true,
         'emptyOptionValue' => null
 		);
-	/**
-	 * Array of column names to be ignored by the double data entry conflict detector.
-	 */
-	$this->_doubleDataEntryDiffIgnoreColumns = array('CommentID', 'UserID', 'Testdate', 'Window_Difference', 'Candidate_Age');
+        
+        /**
+         * Array of column names to be ignored by the double data entry conflict detector.
+         */
+        $this->_doubleDataEntryDiffIgnoreColumns = array('CommentID', 'UserID', 'Testdate', 'Window_Difference',
+            'Candidate_Age',
+            'dsm_asd_comments',
+            'dsm_asd_comments_status',
+            'dsm_scd_comments',
+            'dsm_scd_comments_status',
+            'Data_entry_completion_status'
+        );
 
         $this->_setupForm();
 
@@ -83,14 +92,12 @@ class NDB_BVL_Instrument_DSMV_checklist extends NDB_BVL_Instrument
     function getDataEntryCompletionStatus()
     {
         $db =& Database::singleton();
-        if(Utility::isErrorX($db)) return PEAR::raiseError("Could not connect to database: ".$db->getMessage()."<br>\n");
         $query_asd ="SELECT meet_dsm_asd FROM DSMV_checklist WHERE CommentID=:cid";
         $where = array('cid'=>$this->getCommentID());
         $result = $db->pselectOne($query_asd, $where);
         if($result == 'no') {
             $query = "SELECT qa1_deficit_communication_social FROM $this->table WHERE CommentID=:CID";
             $val   = $db->pselectOne($query,array('CID' => $this->getCommentID()));
-            if(Utility::isErrorX($val)) return PEAR::raiseError("Could not select required elements from database: ".$val->getMessage()."<br>\n");
             if(is_null($val) || $val === ""){ 
                 return 'Incomplete';
              } else { 

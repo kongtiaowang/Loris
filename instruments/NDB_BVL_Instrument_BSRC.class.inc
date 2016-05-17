@@ -1,7 +1,17 @@
 <?php
 
+require_once 'HTML/QuickForm.php';
+require_once 'HTML/QuickForm/Renderer/Array.php';
+
 class NDB_BVL_Instrument_BSRC extends NDB_BVL_Instrument
 {
+
+
+/*
+INSERT INTO test_names (Test_name, Full_name, Sub_group) VALUES ('BSRC', 'BSRC', '1');
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('BSRC', '1', '99999', 'Y', 'Visit', '1', '2', NULL);
+*/
+
    var $yesNo = array(""=>null, "no"=>"No", "yes"=>"Yes", "not_answered"=>"Not Answered");
    var $indgrp = array(""=>null,"individual"=>"Individual","group"=>"Group",
                        "not_answered"=>"Not Answered");
@@ -35,8 +45,13 @@ class NDB_BVL_Instrument_BSRC extends NDB_BVL_Instrument
        // required fields for data entry completion status
        $this->_requiredElements = array('Examiner', "Date_taken");
 
-       $this->_doubleDataEntryDiffIgnoreColumns = array('CommentID', 'UserID', 'Testdate', 
-                                                        'Window_Difference', 'Candidate_Age');
+       $this->_doubleDataEntryDiffIgnoreColumns = array('CommentID', 'UserID', 'Testdate', 'Window_Difference', 'Candidate_Age',
+            'general comments',
+		    'general_comments_status',
+		    'other_comments',
+		    'other_comments_status',
+		    'Data_entry_completion_status'
+        );
 
        // setup the form
        $this->_setupForm();
