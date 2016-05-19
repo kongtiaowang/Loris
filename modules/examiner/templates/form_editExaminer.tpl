@@ -7,9 +7,9 @@
                 </div>
                 <div class="panel-body" id="panel-body">
                     {foreach from=$form.errors item=error}
-                    <div class="col-xs-12">
-                        <div class="alert alert-danger" role="alert">{$error}</div>
-                    </div>
+                        <div class="col-xs-12">
+                            <div class="alert alert-danger" role="alert">{$error}</div>
+                        </div>
                     {/foreach}
                     <div class="row hidden-xs hidden-sm">
                         <div class="col-md-1">
@@ -27,23 +27,23 @@
                     </div>
                     <hr class="row hidden-xs hidden-sm">
                     {foreach from=$instruments key=ID item=name}
-                    <div class="row">
-                        <div class="col-md-1">
-                            <label>{$form.$name.label}</label>
+                        <div class="row">
+                            <div class="col-md-1">
+                                <label>{$form.$name.label}</label>
+                            </div>
+                            {$form.$name.html}
                         </div>
-                        {$form.$name.html}
-                    </div>
                     {/foreach}
                     <div class="row">
                         {if not $success}
-                        <div class="col-xs-12">
-                            <div class="col-sm-6 col-md-2 col-xs-12 col-md-offset-8">
-                                <input class="btn btn-sm btn-primary col-xs-12" name="fire_away" value="Save" type="submit">
+                            <div class="col-xs-12">
+                                <div class="col-sm-6 col-md-2 col-xs-12 col-md-offset-8">
+                                    <input class="btn btn-sm btn-primary col-xs-12" name="fire_away" value="Save" type="submit">
+                                </div>
+                                <div class="col-sm-6 col-md-2 col-xs-12">
+                                    <input class="btn btn-sm btn-primary col-xs-12" value="Reset" type="reset" onclick="location.href='{$baseurl}/examiner/editExaminer/?reset=true&identifier={$identifier}'">
+                                </div>
                             </div>
-                            <div class="col-sm-6 col-md-2 col-xs-12">
-                                <input class="btn btn-sm btn-primary col-xs-12" value="Reset" type="reset" onclick="location.href='main.php?test_name=examiner&subtest=editExaminer&reset=true&identifier={$identifier}'">
-                            </div>
-                        </div>
                         {/if}
                     </div>
                 </div>
@@ -68,20 +68,20 @@
         <th>New Date</th>
     </tr>
     {section name=history_row loop=$certification_history}
-    <tr>
-        <td>{$certification_history[history_row]['changeDate']}</td>
-        <td>{$certification_history[history_row]['userID']}</td>
-        <td>{$certification_history[history_row]['Measure']}</td>
-        <td>{$certification_history[history_row]['old']}</td>
-        <td>{$certification_history[history_row]['old_date']}</td>
-        <td>{$certification_history[history_row]['new']}</td>
-        <td>{$certification_history[history_row]['new_date']}</td>
-    </tr>
-    {sectionelse}
-    <tr>
-        <td colspan="7">
-            No changes have been made
-        </td>
-    </tr>
+        <tr>
+            <td>{$certification_history[history_row]['changeDate']}</td>
+            <td>{$certification_history[history_row]['userID']}</td>
+            <td>{$certification_history[history_row]['Measure']}</td>
+            <td>{$certification_history[history_row]['old']}</td>
+            <td>{$certification_history[history_row]['old_date']}</td>
+            <td>{$certification_history[history_row]['new']}</td>
+            <td>{$certification_history[history_row]['new_date']}</td>
+        </tr>
+        {sectionelse}
+        <tr>
+            <td colspan="7">
+                No changes have been made
+            </td>
+        </tr>
     {/section}
 </table>
