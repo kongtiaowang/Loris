@@ -11,9 +11,6 @@
  * @link     https://www.github.com/aces/Loris
  */
 
-require_once 'NDB_Menu_Filter.class.inc';
-require_once 'NDB_Form.class.inc';
-
 /**
  * Examiner module menu filter form
  *
@@ -76,28 +73,28 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
 
         // set the class variables
         $this->columns      = array(
-                               'e.full_name as Examiner',
-                               'psc.Name as Site',
-                               'e.radiologist as Radiologist',
-                              );
+            'e.full_name as Examiner',
+            'psc.Name as Site',
+            'e.radiologist as Radiologist',
+        );
         $this->query        = $query;
         $this->order_by     = 'e.full_name';
         $this->headers      = array(
-                               'Examiner',
-                               'Site',
-                               'Radiologist',
-                              );
+            'Examiner',
+            'Site',
+            'Radiologist',
+        );
         $this->validFilters = array(
-                               'e.full_name',
-                               'e.centerID',
-                               'COALESCE(e.radiologist, 0)',
-                              );
+            'e.full_name',
+            'e.centerID',
+            'COALESCE(e.radiologist, 0)',
+        );
 
         $this->formToFilter = array(
-                               'examiner'    => 'e.full_name',
-                               'site'        => 'e.centerID',
-                               'radiologist' => 'COALESCE(e.radiologist, 0)',
-                              );
+            'examiner'    => 'e.full_name',
+            'site'        => 'e.centerID',
+            'radiologist' => 'COALESCE(e.radiologist, 0)',
+        );
 
         // If certification is turned on, update the class variables to include
         // certification information
@@ -141,10 +138,10 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
 
         // Radiologist options
         $radiologist = array(
-                        null => 'All',
-                        '1'  => 'Yes',
-                        '0'  => 'No',
-                       );
+            null => 'All',
+            '1'  => 'Yes',
+            '0'  => 'No',
+        );
 
         // menu filter form elements
         $this->addBasicText('examiner', 'Examiner:');
@@ -296,12 +293,12 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
         $DB->insert(
             'examiners',
             array(
-             'full_name'   => $fullName,
-             'centerID'    => $siteID,
-             'radiologist' => $radiologist,
+                'full_name'   => $fullName,
+                'centerID'    => $siteID,
+                'radiologist' => $radiologist,
             )
         );
-        header("Location: main.php?test_name=examiner", true, 303);
+        header("Location: {$baseurl}/examiner/", true, 303);
     }
 
     /**
@@ -320,8 +317,8 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
              FROM examiners
              WHERE full_name=:fullName AND centerID=:siteID",
             array(
-             'fullName' => $fullName,
-             'siteID'   => $siteID,
+                'fullName' => $fullName,
+                'siteID'   => $siteID,
             )
         );
 
