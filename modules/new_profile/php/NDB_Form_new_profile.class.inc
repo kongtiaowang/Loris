@@ -17,7 +17,7 @@ class NDB_Form_new_profile extends NDB_Form
         $user =& User::singleton();
 
         $site =& Site::singleton($user->getData('CenterID'));
-        if ($site->isStudySite()) {
+        if ($site->isStudySite() or ($site->getCenterName() == "DCC")) {
             return $user->hasPermission('data_entry');
         }
 
@@ -30,7 +30,7 @@ class NDB_Form_new_profile extends NDB_Form
         $user =& User::singleton();
         $config =& NDB_Config::singleton();
         $dob = sprintf("%04d-%02d-%02d", $values['dob1']['Y'], $values['dob1']['M'], $values['dob1']['d']);
-        
+
         if($config->getSetting('useEDC') == "true"){
             $edc = sprintf("%04d-%02d-%02d", $values['edc1']['Y'], $values['edc1']['M'], $values['edc1']['d']);
             if($edc == '0000-00-00') {
@@ -53,17 +53,17 @@ class NDB_Form_new_profile extends NDB_Form
 
         }
 
-        $db = Database::singleton(); 
-	if( $values['ProjectID'] == '2'){
-		$PTID = $db->pselectOne("SELECT ParameterTypeID FROM parameter_type WHERE Name='candidate_plan'", array());
-		if(!is_numeric($PTID)) {
-			throw new LorisException("Missing ParameterTypeID for candidate_plan");
-		}
-		$db->insert("parameter_candidate", array('ParameterTypeID' => $PTID,
-					'CandID' => $candID,
-					'Value' => $values['candidate_plan']
-					));
-	}
+        $db = Database::singleton();
+        if( $values['ProjectID'] == '2'){
+            $PTID = $db->pselectOne("SELECT ParameterTypeID FROM parameter_type WHERE Name='candidate_plan'", array());
+            if(!is_numeric($PTID)) {
+                throw new LorisException("Missing ParameterTypeID for candidate_plan");
+            }
+            $db->insert("parameter_candidate", array('ParameterTypeID' => $PTID,
+                'CandID' => $candID,
+                'Value' => $values['candidate_plan']
+            ));
+        }
         //------------------------------------------------------------
 
         $this->tpl_data['success'] = true;
@@ -79,17 +79,17 @@ class NDB_Form_new_profile extends NDB_Form
         $config =& NDB_Config::singleton();
         $study = $config->getSetting('study');
         $dateOptions = array(
-                             'language'        => 'en',
-                             'format'          => 'YMd',
-                             'addEmptyOption'  => true,
-                             'minYear'         => $study['startYear'] - $study['ageMax'],
-                             'maxYear'         => $study['endYear'] - $study['ageMin']
-                             );
+            'language'        => 'en',
+            'format'          => 'YMd',
+            'addEmptyOption'  => true,
+            'minYear'         => $study['startYear'] - $study['ageMax'],
+            'maxYear'         => $study['endYear'] - $study['ageMin']
+        );
 
         // add date of birth
         $this->addBasicDate('dob1', 'Date of Birth', $dateOptions);
         $this->addBasicDate('dob2', 'Confirm Date of Birth', $dateOptions);
-    
+
         // date of birth rules
         $this->form->addGroupRule('dob1', 'Date of Birth is required', 'required');
         $this->form->addGroupRule('dob2', 'Date of Birth confirmation is required', 'required');
@@ -115,10 +115,10 @@ class NDB_Form_new_profile extends NDB_Form
         // add gender
         $genderOptions = array('' => '', 'Male' => 'Male', 'Female' => 'Female');
         $this->addSelect('gender', 'Gender', $genderOptions);
-    
+
         // gender rules
         $this->form->addRule('gender', 'Gender is required', 'required');
-        $this->addSelect("candidate_plan", 'Candidate Plan', 
+        $this->addSelect("candidate_plan", 'Candidate Plan',
             array(
                 ''         => '',
                 '3m_plan1' => '3m_plan1',
@@ -136,6 +136,7 @@ class NDB_Form_new_profile extends NDB_Form
         }
         $this->form->addFormRule(array(&$this, '_validate'));
     }
+
     function _validate($values)
     {
         $errors = array();
@@ -143,8 +144,8 @@ class NDB_Form_new_profile extends NDB_Form
         $config =& NDB_Config::singleton();
 
         if($values['dob1']['M'] != $values['dob2']['M'] ||
-                $values['dob1']['d'] != $values['dob2']['d'] ||
-                $values['dob1']['Y'] != $values['dob2']['Y'])
+            $values['dob1']['d'] != $values['dob2']['d'] ||
+            $values['dob1']['Y'] != $values['dob2']['Y'])
         {
             $errors['dob1'] = 'Date of Birth fields must match.';
         }
@@ -153,18 +154,17 @@ class NDB_Form_new_profile extends NDB_Form
                 $errors['edc1'] = 'EDC is not a valid date';
             }
             if($values['edc1']['M'] != $values['edc2']['M'] ||
-                    $values['edc1']['d'] != $values['edc2']['d'] ||
-                    $values['edc1']['Y'] != $values['edc2']['Y'])
+                $values['edc1']['d'] != $values['edc2']['d'] ||
+                $values['edc1']['Y'] != $values['edc2']['Y'])
             {
                 $errors['edc1'] = 'Estimated Due date fields must match.';
             }
-
         }
 
         if (empty($values['gender'])) {
             $errors['gender'] = 'Gender is required.';
-        } 
-    
+        }
+
         $PSCIDsettings = $config->getSetting('PSCID');
         if($PSCIDsettings['generation'] == 'user') {
             $db =& Database::singleton();
@@ -187,7 +187,6 @@ class NDB_Form_new_profile extends NDB_Form
         elseif(!empty($values['candidate_plan']) && $values['ProjectID'] != '2') {
             $errors['candidate_plan'] = 'Candidate Plan is not required for non-IBIS2 candidates';
         }
-        //$this->form->addRule('candidate_plan', 'Plan is required', 'required');
         return $errors;
     }
 
