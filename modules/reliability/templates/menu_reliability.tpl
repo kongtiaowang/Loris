@@ -220,7 +220,7 @@
          {elseif $items[item][piece].invalid == "yes"}
             {$items[item][piece].value} <font color="red">(Invalid)</font>
          {else}     
-              <a href="{$baseurl}/main.php?test_name={$items[item][piece].Instrument}_reliability&subtest={$items[item][piece].Instrument}_reliability&identifier={$items[item][piece].CommentID}&reliability_center_id={$items[item][piece].SiteID}">{$items[item][piece].value}</a> 
+              <a href="{$baseurl}/{$items[item][piece].Instrument}_reliability/{$items[item][piece].Instrument}_reliability/?identifier={$items[item][piece].CommentID}&reliability_center_id={$items[item][piece].SiteID}">{$items[item][piece].value}</a>
            {/if}
             {if $items[item][piece].manual == "yes"}
                 <font color="red">(Manual)</font>
