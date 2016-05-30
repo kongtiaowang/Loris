@@ -37,37 +37,38 @@
 18. Try entering only one DoB and make sure an error appears if that is done.
 19. Try changing the DoB. Ensure that the age difference in the Proband Information Panel gets recalculated
 20. Check that the return candidate info button is working and that any changes you have made are now showing up.
+21. Ensure that Proband GUID is displayed (IBIS OVERRIDE)
 
 ### Family Information Panel
-21. Check that the family panel only shows up if "Use family ID" is set to true in the configuration module.
-22. Check that these family members match what can be found in the family table.
-23. Click on the add family button and ensure that it takes you to the appropriate form.
-24. Click on the DCCID and check that it takes you to the family members candidate profile.
+22. Check that the family panel only shows up if "Use family ID" is set to true in the configuration module.
+23. Check that these family members match what can be found in the family table.
+24. Click on the add family button and ensure that it takes you to the appropriate form.
+25. Click on the DCCID and check that it takes you to the family members candidate profile.
 
 ### Add Family Info
-25. Try changing the family member ID to an ID that does not exist and make sure that an error appears.
-26. Try changing the family member ID to an ID that does exist. Save without specifying the relationship type. An error should appear.
-27. Enter the candidate's DCCID as the family member ID. Enter a relationship type. Make sure that an error appears. 
-28. Enter a valid DCCID as the family member ID and a relationship type. Check that these values are saved when the save button is clicked.
-29. Check that the return candidate info button is working.
+26. Try changing the family member ID to an ID that does not exist and make sure that an error appears.
+27. Try changing the family member ID to an ID that does exist. Save without specifying the relationship type. An error should appear.
+28. Enter the candidate's DCCID as the family member ID. Enter a relationship type. Make sure that an error appears. 
+29. Enter a valid DCCID as the family member ID and a relationship type. Check that these values are saved when the save button is clicked.
+30. Check that the return candidate info button is working.
 Note: Is there no way to edit/remove a family member from the front-end?
 
 ### Participant Status Panel
-30. Ensure that this panel shows all status changes for the participant
-31. Click on the update participant status button and ensure that it takes you to the appropriate form. 
+31. Ensure that this panel shows all status changes for the participant
+32. Click on the update participant status button and ensure that it takes you to the appropriate form. 
 
 ### Update Participant Status
-32. Change the participant status and try to save it. See if it is successful.
-33. Change the participant status to inactivate or incomplete and do not edit the specify reason input. Try saving the form and ensure that an error appears
-34. Try editing the Comments field and saving
+33. Change the participant status and try to save it. See if it is successful.
+34. Change the participant status to inactivate or incomplete and do not edit the specify reason input. Try saving the form and ensure that an error appears
+35. Try editing the Comments field and saving
 
 ### Participation Consent Status Panel
-35. Add a new consent type following [the guide](https://github.com/aces/Loris/wiki/Candidate-Information-Page) on the LORIS Wiki. Does it show up in this panel when you refresh the page?
-36. Does the consent info shown in this table match what is stored in the participant_status table?
+36. Add a new consent type following [the guide](https://github.com/aces/Loris/wiki/Candidate-Information-Page) on the LORIS Wiki. Does it show up in this panel when you refresh the page?
+37. Does the consent info shown in this table match what is stored in the participant_status table?
 
 ### Update Consent Info
-37. Check that there is a set of form inputs for each type of consent. Does your new type of consent you just added appear here, with form inputs?
-38. Try updating the consent information. Do not fill out all required fields. Ensure that an error appears when you try to save.
-39. Try entering two different dates for the date of consent. Make sure that an error appears when you try to save.
-40. Try entering two different dates for the date of withdrawal of consent. Make sure that an error appears when you try to save.
-41. For each of the date fields, try entering only one part of the date (eg. the year). Make sure there is an error when you try to save.
+38. Check that there is a set of form inputs for each type of consent. Does your new type of consent you just added appear here, with form inputs?
+39. Try updating the consent information. Do not fill out all required fields. Ensure that an error appears when you try to save.
+40. Try entering two different dates for the date of consent. Make sure that an error appears when you try to save.
+41. Try entering two different dates for the date of withdrawal of consent. Make sure that an error appears when you try to save.
+42. For each of the date fields, try entering only one part of the date (eg. the year). Make sure there is an error when you try to save.
