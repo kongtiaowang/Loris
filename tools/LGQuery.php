@@ -383,34 +383,28 @@ function bySite()
     $column = 'A';
     $excluded = array(0, 1, 3, 5);
     $row = $row1;
-//    for ($j = 0; $j < 2; $j++) {
-//        if ($j = 1) {
-//            $excluded = array(0, 1, 3, 5, 8);
-//            $row = $row2;
-//        }
+    for ($j = 0; $j < 2; $j++) {
+        if ($j > 0) {
+            $excluded = array(0, 1, 3, 5, 8);
+        }
         for ($i = 0; $i < count($visitLabels); $i++) {
             if (!in_array($i, $excluded)) {
                 $ExcelWorkSheet->setCellValue($column . ++$row, $visitLabels[$i]);
             }
-            $i++;
         }
-//    }
-//    $excluded = array(8);
+    }
+    $excluded = array(8);
     $row = $row3;
-//    for ($j = 0; $j < 2; $j++) {
-//        $i = 0;
-//
-//        if ($j = 1) {
-//            $excluded = array(7, 8);
-//            $row = $row4;
-//        }
-//        foreach ($visitLabels as $visitLabel) {
-//            if (!in_array($i, $excluded)) {
-//                $ExcelWorkSheet->setCellValue($column . ++$row3, $visitLabel);
-//            }
-//            $i++;
-//        }
-//    }
+    for ($j = 0; $j < 2; $j++) {
+        if ($j > 0) {
+            $excluded = array(7, 8);
+        }
+        for ($i = 0; $i < count($visitLabels); $i++) {
+            if (!in_array($i, $excluded)) {
+                $ExcelWorkSheet->setCellValue($column . ++$row, $visitLabels[$i]);
+            }
+        }
+    }
 
 
     /*
@@ -486,9 +480,6 @@ print "...";
 
 
  //IBIS2
-
-
-
 
 //MRI parameter Form T1=Complete- across visits and SubprojectIDs by Site
 $IBIS2Q3a = $db->pselect("select count(distinct (s.CandID)),s.SubprojectID, s.Visit_label, s.CenterID
@@ -688,78 +679,6 @@ print "...\n";
             }
         }
     }
-
-//
-//// IBIS2 overall
-//// HR MRI
-//    for ($row = 19; $row <= 21; $row++) {
-//        foreach ($IBIS2Q2b as $data) {
-//            if ($ExcelWorkSheet->getCell('A' . $row)->getValue() == $data['Visit_label'] && $data['SubprojectID'] == '9') {
-//                $ExcelWorkSheet->setCellValue(($columnMRI . $row), $data['count(distinct(s.CandID))']);
-//            }
-//        }
-//    }
-//// HR MRI
-//    for ($row = 22; $row <= 26; $row++) {
-//        foreach ($IBIS2Q2a as $data) {
-//            if ($ExcelWorkSheet->getCell('A' . $row)->getValue() == $data['Visit_label'] && $data['SubprojectID'] == '9') {
-//                $ExcelWorkSheet->setCellValue(($columnMRI . $row), $data['count(distinct(s.CandID))']);
-//            }
-//        }
-//    }
-//    print "...";
-//// LR MRI --> B16 to 22
-//    for ($row = 28; $row <= 30; $row++) {
-//        foreach ($IBIS2Q2b as $data) {
-//            if ($ExcelWorkSheet->getCell('A' . $row)->getValue() == $data['Visit_label'] && $data['SubprojectID'] == '10') {
-//                $ExcelWorkSheet->setCellValue(($columnMRI . $row), $data['count(distinct(s.CandID))']);
-//            }
-//        }
-//    }
-//// LR MRI --> B16 to 22
-//    for ($row = 31; $row <= 34; $row++) {
-//        foreach ($IBIS2Q2a as $data) {
-//            if ($ExcelWorkSheet->getCell('A' . $row)->getValue() == $data['Visit_label'] && $data['SubprojectID'] == '10') {
-//                $ExcelWorkSheet->setCellValue(($columnMRI . $row), $data['count(distinct(s.CandID))']);
-//            }
-//        }
-//    }
-//    print "...";
-//// HR Bx
-//    for ($row = 19; $row <= 21; $row++) {
-//        foreach ($IBIS2Q1b as $data) {
-//            if ($ExcelWorkSheet->getCell('A' . $row)->getValue() == $data['Visit_label'] && $data['SubprojectID'] == '9') {
-//                $ExcelWorkSheet->setCellValue(($columnBx . $row), $data['count(distinct(s.CandID))']);
-//            }
-//        }
-//    }
-//// HR Bx
-//    for ($row = 22; $row <= 26; $row++) {
-//        foreach ($IBIS2Q1a as $data) {
-//            if ($ExcelWorkSheet->getCell('A' . $row)->getValue() == $data['Visit_label'] && $data['SubprojectID'] == '9') {
-//                $ExcelWorkSheet->setCellValue(($columnBx . $row), $data['count(distinct(s.CandID))']);
-//            }
-//        }
-//    }
-//// LR Bx
-//    for ($row = 28; $row <= 30; $row++) {
-//        foreach ($IBIS2Q1b as $data) {
-//            if ($ExcelWorkSheet->getCell('A' . $row)->getValue() == $data['Visit_label'] && $data['SubprojectID'] == '10') {
-//                $ExcelWorkSheet->setCellValue(($columnBx . $row), $data['count(distinct(s.CandID))']);
-//            }
-//        }
-//    }
-//// LR Bx
-//    for ($row = 31; $row <= 34; $row++) {
-//        foreach ($IBIS2Q1a as $data) {
-//            if ($ExcelWorkSheet->getCell('A' . $row)->getValue() == $data['Visit_label'] && $data['SubprojectID'] == '10') {
-//                $ExcelWorkSheet->setCellValue(($columnBx . $row), $data['count(distinct(s.CandID))']);
-//            }
-//        }
-//    }
-//    print "...";*/
-
-
     print "\nDone IBIS1 IBIS2 By Site.\n\n";
 }
 
