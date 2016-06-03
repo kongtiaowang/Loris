@@ -67,6 +67,31 @@ function insertIntoSheet($ExcelWorkSheet, $query, $fromRow, $toRow, $subprojectI
     }
 }
 
+function insertIntoSheetMultiple($ExcelWorkSheet, $query, $fromRow, $toRow, $subprojectID=array(), $visitLabelString, $column) {
+    $temp = array();
+
+    for ($row = $fromRow; $row <= $toRow; $row++) {
+        foreach ($query as $data) {
+            if (($ExcelWorkSheet->getCell('A' . $row)->getValue() == $data[$visitLabelString]) && ($data['SubprojectID'] == $subprojectID[0] || $data['SubprojectID'] == $subprojectID[1])) {
+                if ($data['SubprojectID'] == $subprojectID[0]) {
+                    $temp[1] = $data['count(distinct (s.CandID))'];
+                    $ExcelWorkSheet->setCellValue(($column . $row), $temp[1]);
+                } else if ($data['SubprojectID'] == $subprojectID[1]) {
+                    $temp[2] = $data['count(distinct (s.CandID))'];
+                    $ExcelWorkSheet->setCellValue(($column . $row), $temp[2]);
+                }
+                if (count($temp) == 2) {
+                    $temp[0] = $temp[1] + $temp[2];
+                    $temp = $temp[0] . "(" . $temp[1] . "+" . $temp[2] . ")";
+                    $ExcelWorkSheet->setCellValue(($column . $row), $temp);
+                    $temp = array();
+                }
+
+            }
+        }
+    }
+}
+
 /*
  *
  * IBIS 2 OVERALL
@@ -522,56 +547,11 @@ ORDER BY s.SubprojectID",
     $temp = array();
 
 // IBIS1 Bx & MRI
-    for ($row = 4; $row <= 8; $row++) {
-        foreach ($IBIS1Q1 as $data) { // Bx
-            if ($ExcelWorkSheet->getCell($column . $row)->getValue() == $data['Visit_label'] && ($data['SubprojectID'] == '1' || $data['SubprojectID'] == '2')) {
-
-                if ($data['SubprojectID'] == '1') {
-                    $temp[1] = $data['count(distinct (s.CandID))'];
-                    $ExcelWorkSheet->setCellValue(($columnBx . $row), $temp[1]);
-                } else {
-                    $temp[2] = $data['count(distinct (s.CandID))'];
-                    $ExcelWorkSheet->setCellValue(($columnBx . $row), $temp[2]);
-                }
-                if (count($temp) == 2) {
-                    $temp[0] = $temp[1] + $temp[2];
-                    $temp = $temp[0] . "(" . $temp[1] . "+" . $temp[2] . ")";
-                    $ExcelWorkSheet->setCellValue(($columnBx . $row), $temp);
-                    $temp = array();
-                }
-            }
-        }
-        foreach ($IBIS1Q2 as $data) { // MRI
-            if ($ExcelWorkSheet->getCell($column . $row)->getValue() == $data['Visit_label'] && ($data['SubprojectID'] == '1' || $data['SubprojectID'] == '2')) {
-                if ($data['SubprojectID'] == '1') {
-                    $temp[1] = $data['count(distinct (s.CandID))'];
-                    $ExcelWorkSheet->setCellValue(($columnMRI . $row), $temp[1]);
-                } else {
-                    $temp[2] = $data['count(distinct (s.CandID))'];
-                    $ExcelWorkSheet->setCellValue(($columnMRI . $row), $temp[2]);
-                }
-                if (count($temp) == 2) {
-                    $temp[0] = $temp[1] + $temp[2];
-                    $temp = $temp[0] . "(" . $temp[1] . "+" . $temp[2] . ")";
-                    $ExcelWorkSheet->setCellValue(($columnMRI . $row), $temp);
-                    $temp = array();
-                }
-
-            }
-        }
-    }
-    for ($row = 10; $row <= 14; $row++) {
-        foreach ($IBIS1Q1 as $data) { // Bx
-            if ($ExcelWorkSheet->getCell($column . $row)->getValue() == $data['Visit_label'] && $data['SubprojectID'] == '3') {
-                $ExcelWorkSheet->setCellValue(($columnBx . $row), $data['count(distinct (s.CandID))']);
-            }
-        }
-        foreach ($IBIS1Q2 as $data) { // MRI
-            if ($ExcelWorkSheet->getCell($column . $row)->getValue() == $data['Visit_label'] && $data['SubprojectID'] == '3') {
-                $ExcelWorkSheet->setCellValue(($columnMRI . $row), $data['count(distinct (s.CandID))']);
-            }
-        }
-    }
+    insertIntoSheetMultiple($ExcelWorkSheet, $IBIS1Q1, 4, 8, array(1, 2), 'Visit_label', $columnBx);
+    insertIntoSheetMultiple($ExcelWorkSheet, $IBIS1Q2, 4, 8, array(1, 2), 'Visit_label', $columnMRI);
+    
+    insertIntoSheet($ExcelWorkSheet, $IBIS1Q1, 10, 14, 3, 'Visit_label', $columnBx);
+    insertIntoSheet($ExcelWorkSheet, $IBIS1Q2 , 10, 14, 3, 'Visit_label', $columnMRI);
 
 
 // IBIS1 By Site
@@ -688,8 +668,6 @@ ORDER BY s.SubprojectID",
     }
 
     // IBIS2 Overall
-
-
     for ($row = 19; $row < 27; $row++) {
         $total = 0;
         // Bx
