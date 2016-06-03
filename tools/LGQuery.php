@@ -2,12 +2,12 @@
 /**
  * Returns the queries for IBIS LG Calls
  *
- *  @category Main
- *  @package  LGQuery
- *  @author   Stella Lee
- *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- *  @version  GIT: <git_id>
- *  @link     https://www.github.com/aces/IBIS/
+ * @category Main
+ * @package  LGQuery
+ * @author   Stella Lee
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @version  GIT: <git_id>
+ * @link     https://www.github.com/aces/IBIS/
  */
 
 set_include_path(get_include_path() . ":../libraries:../../php/libraries:../../php/libraries/Classes:");
@@ -56,6 +56,17 @@ $writer->save($outputFileName);
 print "Done writing file $outputFileName\n\n";
 
 
+
+function insertIntoSheet($ExcelWorkSheet, $query, $fromRow, $toRow, $subprojectID, $visitLabelString, $column) {
+    for ($row = $fromRow; $row <= $toRow; $row++) {
+        foreach ($query as $data) {
+            if (($ExcelWorkSheet->getCell('A' . $row)->getValue() == $data[$visitLabelString]) && $data['SubprojectID'] == $subprojectID) {
+                $ExcelWorkSheet->setCellValue(($column . $row), $data['count(distinct (s.CandID))']);
+            }
+        }
+    }
+}
+
 /*
  *
  * IBIS 2 OVERALL
@@ -101,7 +112,6 @@ function IBIS2($previousDate, $previousHR, $previousLR)
     $ExcelWorkSheet->setCellValue($columnMRI . $row2, 'LR MRI');
     $ExcelWorkSheet->setCellValue($columnBx . $row1, 'HR Bx');
     $ExcelWorkSheet->setCellValue($columnBx . $row2, 'LR Bx');
-
 
 
     //Mullen - across visits and SubprojectIDs
@@ -185,74 +195,20 @@ GROUP BY s.SubprojectID, Visit_labelString",
      * ENTER NEW TABLE VALUES
      */
 // HR MRI
-    for ($row = 7; $row <= 9; $row++) {
-        foreach ($IBIS2Q2b as $data) {
-            if (($ExcelWorkSheet->getCell('A' . $row)->getValue() == $data['Visit_labelString']) && $data['SubprojectID'] == '9') {
-                $ExcelWorkSheet->setCellValue(($columnMRI . $row), $data['count(distinct (s.CandID))']);
-            }
-        }
-    }
-// HR MRI
-    for ($row = 7; $row <= 14; $row++) {
-        foreach ($IBIS2Q2a as $data) {
-            if ($ExcelWorkSheet->getCell('A' . $row)->getValue() == $data['Visit_label'] && $data['SubprojectID'] == '9') {
-                $ExcelWorkSheet->setCellValue(($columnMRI . $row), $data['count(distinct (s.CandID))']);
-            }
-        }
-    }
+    insertIntoSheet($ExcelWorkSheet, $IBIS2Q2b, 7, 9, 9, 'Visit_labelString', $columnMRI);
+    insertIntoSheet($ExcelWorkSheet, $IBIS2Q2a, 7, 14, 9, 'Visit_label', $columnMRI);
     print "...";
 // LR MRI --> B16 to 22
-    for ($row = 16; $row <= 18; $row++) {
-        foreach ($IBIS2Q2b as $data) {
-            if ($ExcelWorkSheet->getCell('A' . $row)->getValue() == $data['Visit_labelString'] && $data['SubprojectID'] == '10') {
-                $ExcelWorkSheet->setCellValue(($columnMRI . $row), $data['count(distinct (s.CandID))']);
-            }
-        }
-    }
-// LR MRI --> B16 to 22
-    for ($row = 16; $row <= 22; $row++) {
-        foreach ($IBIS2Q2a as $data) {
-            if ($ExcelWorkSheet->getCell('A' . $row)->getValue() == $data['Visit_label'] && $data['SubprojectID'] == '10') {
-                $ExcelWorkSheet->setCellValue(($columnMRI . $row), $data['count(distinct (s.CandID))']);
-            }
-        }
-    }
+    insertIntoSheet($ExcelWorkSheet, $IBIS2Q2b, 16, 18, 10, 'Visit_labelString', $columnMRI);
+    insertIntoSheet($ExcelWorkSheet, $IBIS2Q2a, 16, 22, 10, 'Visit_label', $columnMRI);
     print "...";
 // HR Bx
-    for ($row = 7; $row <= 9; $row++) {
-        foreach ($IBIS2Q1b as $data) {
-            if ($ExcelWorkSheet->getCell('A' . $row)->getValue() == $data['Visit_labelString'] && $data['SubprojectID'] == '9') {
-                $ExcelWorkSheet->setCellValue(($columnBx . $row), $data['count(distinct (s.CandID))']);
-            }
-        }
-    }
-// HR Bx
-    for ($row = 7; $row <= 14; $row++) {
-        foreach ($IBIS2Q1a as $data) {
-            if ($ExcelWorkSheet->getCell('A' . $row)->getValue() == $data['Visit_label'] && $data['SubprojectID'] == '9') {
-                $ExcelWorkSheet->setCellValue(($columnBx . $row), $data['count(distinct (s.CandID))']);
-            }
-        }
-    }
+    insertIntoSheet($ExcelWorkSheet, $IBIS2Q1b, 7, 9, 9, 'Visit_labelString', $columnBx);
+    insertIntoSheet($ExcelWorkSheet, $IBIS2Q1a, 7, 14, 9, 'Visit_label', $columnBx);
 // LR Bx
-    for ($row = 16; $row <= 18; $row++) {
-        foreach ($IBIS2Q1b as $data) {
-            if ($ExcelWorkSheet->getCell('A' . $row)->getValue() == $data['Visit_labelString'] && $data['SubprojectID'] == '10') {
-                $ExcelWorkSheet->setCellValue(($columnBx . $row), $data['count(distinct (s.CandID))']);
-            }
-        }
-    }
-// LR Bx
-    for ($row = 16; $row <= 22; $row++) {
-        foreach ($IBIS2Q1a as $data) {
-            if ($ExcelWorkSheet->getCell('A' . $row)->getValue() == $data['Visit_label'] && $data['SubprojectID'] == '10') {
-                $ExcelWorkSheet->setCellValue(($columnBx . $row), $data['count(distinct (s.CandID))']);
-            }
-        }
-    }
+    insertIntoSheet($ExcelWorkSheet, $IBIS2Q1b, 16, 18, 10, 'Visit_labelString', $columnBx);
+    insertIntoSheet($ExcelWorkSheet, $IBIS2Q1a, 16, 22, 10, 'Visit_label', $columnBx);
     print "...";
-// END ENTER NEW TABLES VALUES
-
 
     /*
      * SUMMARY
@@ -316,8 +272,8 @@ function bySite()
     $ExcelApplication->addSheet($ExcelWorkSheet, -1);
 
     $visitLabels = array("V03", "V06 new", "V06", "V09", "V12", "V15", "V24", "V36", "V37Plus", "");
-    $sites = array(2 => "SEA", 3=> "PHI", 4 => "STL", 5=> "UNC");
-    
+    $sites = array(2 => "SEA", 3 => "PHI", 4 => "STL", 5 => "UNC");
+
     $column = 'A';
     $row = 1;
     $row1 = 3;
@@ -409,7 +365,7 @@ function bySite()
      */
 
 //Mullen - across visits and SubprojectIDs
-$IBIS1Q1 = $db->pselect("
+    $IBIS1Q1 = $db->pselect("
 SELECT count(distinct (s.CandID)),s.SubprojectID, s.Visit_label from flag as f, session as s
 WHERE f.Test_name='mullen'
 AND (f.Administration='All' OR f.Administration='Partial')
@@ -422,13 +378,13 @@ AND s.ID=f.SessionID
 AND s.CenterID!=1
 GROUP BY s.SubprojectID, s.Visit_label
 ORDER BY s.SubprojectID",
-    array()
-);
-print "...";
+        array()
+    );
+    print "...";
 
 
 //MRI parameter Form T1=Complete- across visits and SubprojectIDs
-$IBIS1Q2 = $db->pselect("
+    $IBIS1Q2 = $db->pselect("
 select count(distinct (s.CandID)),s.SubprojectID, s.Visit_label from flag as f, session as s, mri_parameter_form as m
 WHERE f.Test_name='mri_parameter_form'
 AND (f.Administration='All' OR f.Administration='Partial')
@@ -439,12 +395,12 @@ AND s.ID=f.SessionID AND s.CenterID!=1 AND m.CommentID=f.CommentID
 AND m.T1_Scan_done='Complete'
 GROUP BY s.SubprojectID, s.Visit_label
 ORDER BY s.SubprojectID",
-    array()
-);
-print "...";
+        array()
+    );
+    print "...";
 
 //MRI parameter Form T1=Complete- across visits and SubprojectIDs by Site
-$IBIS1Q3 = $db->pselect("
+    $IBIS1Q3 = $db->pselect("
 select count(distinct (s.CandID)), s.CenterID, s.SubprojectID,s.Visit_label from flag as f, session as s, mri_parameter_form as m
 WHERE f.Test_name='mri_parameter_form'
 AND (f.Administration='All' OR f.Administration='Partial')
@@ -456,12 +412,12 @@ AND m.CommentID=f.CommentID
 AND m.T1_Scan_done='Complete'
 GROUP BY s.CenterID, s.SubprojectID, s.Visit_label
 ORDER BY s.CenterID, s.Visit_label",
-    array()
-);
-print "...";
+        array()
+    );
+    print "...";
 
 //Mullen- across visits and Subprojects IDs by Site
-$IBIS1Q4 = $db->pselect("select count(distinct (s.CandID)),s.SubprojectID, s.Visit_label, s.CenterID from flag as f, session as s
+    $IBIS1Q4 = $db->pselect("select count(distinct (s.CandID)),s.SubprojectID, s.Visit_label, s.CenterID from flag as f, session as s
 WHERE f.Test_name='mullen'
 AND (f.Administration='All' OR f.Administration='Partial')
 AND (s.SubprojectID=1 OR s.SubprojectID=2 OR s.SubprojectID=3)
@@ -471,15 +427,15 @@ AND (COALESCE(s.Screening, '')!='Failure' AND COALESCE(s.Visit, '') !='Failure')
 AND s.ID=f.SessionID AND s.CenterID!=1
 GROUP BY s.SubprojectID, s.Visit_label, s.CenterID
 ORDER BY s.SubprojectID",
-    array()
-);
-print "...";
+        array()
+    );
+    print "...";
 
 
- //IBIS2
+    //IBIS2
 
 //MRI parameter Form T1=Complete- across visits and SubprojectIDs by Site
-$IBIS2Q3a = $db->pselect("select count(distinct (s.CandID)),s.SubprojectID, s.Visit_label, s.CenterID
+    $IBIS2Q3a = $db->pselect("select count(distinct (s.CandID)),s.SubprojectID, s.Visit_label, s.CenterID
 from flag as f, session as s, mri_parameter_form as m
 WHERE f.Test_name='mri_parameter_form'
 AND (f.Administration='All' OR f.Administration='Partial')
@@ -492,11 +448,11 @@ AND m.T1_Scan_done='Complete'
 AND s.Visit_label <> 'V06'
 GROUP BY s.Visit_label, s.SubprojectID, s.CenterID
 ORDER BY s.SubprojectID, s.Visit_label",
-    array()
-);
-print "...";
+        array()
+    );
+    print "...";
 
-$IBIS2Q3b = $db->pselect("select count(distinct (s.CandID)),s.SubprojectID,
+    $IBIS2Q3b = $db->pselect("select count(distinct (s.CandID)),s.SubprojectID,
 CASE WHEN p.Value LIKE '3m%' THEN 'V06'
 WHEN p.Value LIKE '6m%' THEN 'V06 new' END
 as Visit_labelString, s.CenterID from flag as f,
@@ -515,12 +471,12 @@ AND s.Visit_label = 'V06'
 AND p.ParameterTypeID=73754
 GROUP BY Visit_labelString, s.SubprojectID, s.CenterID
 ORDER BY s.SubprojectID, s.Visit_label",
-    array()
-);
-print "...";
+        array()
+    );
+    print "...";
 
 //Mullen- across visits and Subprojects IDs by Site
-$IBIS2Q4a = $db->pselect("select count(distinct (s.CandID)),s.SubprojectID, s.Visit_label, s.CenterID from flag as f, session as s
+    $IBIS2Q4a = $db->pselect("select count(distinct (s.CandID)),s.SubprojectID, s.Visit_label, s.CenterID from flag as f, session as s
 WHERE f.Test_name='mullen'
 AND (f.Administration='All' OR f.Administration='Partial')
 AND (s.SubprojectID=9 OR s.SubprojectID=10)
@@ -532,11 +488,11 @@ AND s.ID=f.SessionID AND s.CenterID!=1
 AND s.Visit_label <> 'V06'
 GROUP BY s.SubprojectID, s.Visit_label, s.CenterID
 ORDER BY s.SubprojectID",
-    array()
-);
-print "...";
+        array()
+    );
+    print "...";
 
-$IBIS2Q4b = $db->pselect("select count(distinct (s.CandID)),s.SubprojectID,
+    $IBIS2Q4b = $db->pselect("select count(distinct (s.CandID)),s.SubprojectID,
 CASE WHEN p.Value LIKE '3m%' THEN 'V06' WHEN p.Value LIKE '6m%' THEN 'V06 new' END
 as Visit_labelString, s.CenterID from flag as f,
 session as s join candidate c on c.CandID=s.CandID join parameter_candidate p on p.CandID=c.CandID
@@ -553,9 +509,9 @@ AND s.Visit_label = 'V06'
 AND p.ParameterTypeID=73754
 GROUP BY s.SubprojectID, Visit_labelString, s.CenterID
 ORDER BY s.SubprojectID",
-    array()
-);
-print "...\n";
+        array()
+    );
+    print "...\n";
 
     $column = 'A';
     $columnBx = 'C';
@@ -564,11 +520,6 @@ print "...\n";
     $columnsMRI = array('SEA' => 'D', 'PHI' => 'E', 'STL' => 'F', 'UNC' => 'G');
 
     $temp = array();
-    $count = 0;
-
-// note V06nr shows up as V06 new in back end
-
-//    print_r($IBIS1Q1);
 
 // IBIS1 Bx & MRI
     for ($row = 4; $row <= 8; $row++) {
@@ -578,8 +529,7 @@ print "...\n";
                 if ($data['SubprojectID'] == '1') {
                     $temp[1] = $data['count(distinct (s.CandID))'];
                     $ExcelWorkSheet->setCellValue(($columnBx . $row), $temp[1]);
-                }
-                else {
+                } else {
                     $temp[2] = $data['count(distinct (s.CandID))'];
                     $ExcelWorkSheet->setCellValue(($columnBx . $row), $temp[2]);
                 }
@@ -596,8 +546,7 @@ print "...\n";
                 if ($data['SubprojectID'] == '1') {
                     $temp[1] = $data['count(distinct (s.CandID))'];
                     $ExcelWorkSheet->setCellValue(($columnMRI . $row), $temp[1]);
-                }
-                else {
+                } else {
                     $temp[2] = $data['count(distinct (s.CandID))'];
                     $ExcelWorkSheet->setCellValue(($columnMRI . $row), $temp[2]);
                 }
@@ -625,7 +574,6 @@ print "...\n";
     }
 
 
-
 // IBIS1 By Site
     foreach ($sites as $centerID => $site) {
         for ($row = 4; $row <= 14; $row++) {
@@ -636,8 +584,7 @@ print "...\n";
                         if ($data['SubprojectID'] == '1') {
                             $temp[1] = $data['count(distinct (s.CandID))'];
                             $ExcelWorkSheet->setCellValue(($columnsBx[$site] . $row), $temp[1]);
-                        }
-                        else {
+                        } else {
                             $temp[2] = $data['count(distinct (s.CandID))'];
                             $ExcelWorkSheet->setCellValue(($columnsBx[$site] . $row), $temp[2]);
                         }
@@ -655,8 +602,7 @@ print "...\n";
                         if ($data['SubprojectID'] == '1') {
                             $temp[1] = $data['count(distinct (s.CandID))'];
                             $ExcelWorkSheet->setCellValue(($columnsMRI[$site] . $row), $temp[1]);
-                        }
-                        else {
+                        } else {
                             $temp[2] = $data['count(distinct (s.CandID))'];
                             $ExcelWorkSheet->setCellValue(($columnsMRI[$site] . $row), $temp[2]);
                         }
@@ -700,8 +646,7 @@ print "...\n";
                         }
                     }
 
-                }
-                else {
+                } else {
                     foreach ($IBIS2Q4a as $data) { // Bx
                         if ($ExcelWorkSheet->getCell($column . $row)->getValue() == $data['Visit_label'] && $data['SubprojectID'] == '9' && $data['CenterID'] == $centerID) {
                             $ExcelWorkSheet->setCellValue(($columnsBx[$site] . $row), $data['count(distinct (s.CandID))']);
@@ -714,8 +659,7 @@ print "...\n";
                     }
 
                 }
-            }
-            else if ($row > 27) {
+            } else if ($row > 27) {
                 if ($row < 31 && $row != 28) {
                     foreach ($IBIS2Q4b as $data) { // Bx
                         if ($ExcelWorkSheet->getCell($column . $row)->getValue() == $data['Visit_labelString'] && $data['SubprojectID'] == '10' && $data['CenterID'] == $centerID) {
@@ -727,8 +671,7 @@ print "...\n";
                             $ExcelWorkSheet->setCellValue(($columnsMRI[$site] . $row), $data['count(distinct (s.CandID))']);
                         }
                     }
-                }
-                else {
+                } else {
                     foreach ($IBIS2Q4a as $data) { // MRI
                         if ($ExcelWorkSheet->getCell($column . $row)->getValue() == $data['Visit_label'] && $data['SubprojectID'] == '10' && $data['CenterID'] == $centerID) {
                             $ExcelWorkSheet->setCellValue(($columnsBx[$site] . $row), $data['count(distinct (s.CandID))']);
@@ -751,13 +694,13 @@ print "...\n";
         $total = 0;
         // Bx
         foreach ($columnsBx as $site => $column) {
-            $total +=  $ExcelWorkSheet->getCell($column . $row)->getValue();
+            $total += $ExcelWorkSheet->getCell($column . $row)->getValue();
         }
         $ExcelWorkSheet->setCellValue($columnBx . $row, $total);
         $total = 0;
         // MRI
         foreach ($columnsMRI as $site => $column) {
-            $total +=  $ExcelWorkSheet->getCell($column . $row)->getValue();
+            $total += $ExcelWorkSheet->getCell($column . $row)->getValue();
         }
         $ExcelWorkSheet->setCellValue($columnMRI . $row, $total);
     }
@@ -765,25 +708,19 @@ print "...\n";
         $total = 0;
         // Bx
         foreach ($columnsBx as $site => $column) {
-            $total +=  $ExcelWorkSheet->getCell($column . $row)->getValue();
+            $total += $ExcelWorkSheet->getCell($column . $row)->getValue();
         }
         $ExcelWorkSheet->setCellValue($columnBx . $row, $total);
         $total = 0;
         // MRI
         foreach ($columnsMRI as $site => $column) {
-            $total +=  $ExcelWorkSheet->getCell($column . $row)->getValue();
+            $total += $ExcelWorkSheet->getCell($column . $row)->getValue();
         }
         $ExcelWorkSheet->setCellValue($columnMRI . $row, $total);
     }
 
-
-
-
-
     print "\nDone IBIS1 IBIS2 By Site.\n\n";
 }
-
-
 
 
 ?>
