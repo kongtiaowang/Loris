@@ -10,13 +10,11 @@
  * @link     https://www.github.com/aces/IBIS/
  */
 
-set_include_path(get_include_path() . ":../libraries:../../php/libraries:../../php/libraries/Classes:");
+set_include_path(get_include_path() . ":../libraries:../../php/libraries:");
 require_once __DIR__ . "/../../vendor/autoload.php";
 require_once "NDB_Client.class.inc";
 require_once "Utility.class.inc";
 require_once "Database.class.inc";
-
-include 'PHPExcel/IOFactory.php';
 
 $client = new NDB_Client();
 $client->makeCommandLine();
