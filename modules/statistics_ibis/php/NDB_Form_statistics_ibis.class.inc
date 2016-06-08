@@ -6,7 +6,7 @@ require_once 'NDB_Form.class.inc';
  * The welcome menu
  * @package main
  */
-class NDB_Form_statistics_enroll extends NDB_Form
+class NDB_Form_statistics_ibis extends NDB_Form
 {
     function _hasAccess() {
         $user =& User::singleton();
@@ -24,7 +24,7 @@ class NDB_Form_statistics_enroll extends NDB_Form
     }
 
 
-    function statistics()
+    function statistics_ibis()
     {
         $DB =& Database::singleton();
 
@@ -231,6 +231,25 @@ class NDB_Form_statistics_enroll extends NDB_Form
 
         return $enroll_results;
 
+    }
+
+    /**
+     * Include the column formatter required to display the feedback link colours
+     * in the statistics menu
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+                $baseURL . "/statistics_ibis/js/form_stats_enrollment.js",
+            )
+        );
     }
 
 } // End class
