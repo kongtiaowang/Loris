@@ -124,26 +124,36 @@ class NDB_BVL_Instrument_air_pollution extends NDB_BVL_Instrument
 //        $this->XINRegisterRule('additional_comments', array("additional_comments{@}=={@}NEVER_REQUIRED"));
     }
 
-    function getReview() {
+    /**
+     * Return the HTML for the review section of the survey module
+     * By default, this will show every question from the parameter_type
+     * table for this instrument, but it can be overridden/customized by
+     * a instrument if that isn't the desired behaviour.
+     *
+     * @return string The HTML to be inserted into the review section of
+     *                the final page of the survey module for this instrument.
+     */
+    function getReview()
+    {
         $DB = Database::singleton();
-        $smarty = new Smarty_neurodb();
+
+        $smarty   = new Smarty_neurodb();
         $tpl_data = array();
 
         $tpl_data['questions'] = $DB->pselect(
             "SELECT Description as question,
-            SourceField FROM parameter_type 
-            WHERE SourceFrom=:TN AND 
+            SourceField FROM parameter_type
+            WHERE SourceFrom=:TN AND
             SourceField NOT IN ('Validity', 'Administration')",
-            array(
-                'TN' => $this->testName
-            )
+            array('TN' => $this->testName)
         );
 
         $Responses = $DB->pselectRow(
             "SELECT * FROM " . $this->testName . " WHERE CommentID=:CID",
             array('CID' => $this->getCommentID())
         );
-        foreach ($tpl_data['questions'] as $key=>&$row) {
+
+        foreach ($tpl_data['questions'] as &$row) {
             if (isset($Responses[$row['SourceField']])) {
                 $row['response'] = $Responses[$row['SourceField']];
             }
@@ -153,6 +163,4 @@ class NDB_BVL_Instrument_air_pollution extends NDB_BVL_Instrument
         $html = $smarty->fetch("directentry_review.tpl");
         return $html;
     }
-
-
 }
