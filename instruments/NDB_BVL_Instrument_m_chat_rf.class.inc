@@ -17,8 +17,8 @@ require_once 'NDB_BVL_Instrument_Additional_Options.class.inc';
  */
 class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument_Additional_Options
 {
-    var $ValidityEnabled = false;
-    var $ValidityRequired = false;
+//    var $ValidityEnabled = false;
+//    var $ValidityRequired = false;
 
     var $questions = array(
         'q1_point_across_room' => '1. If you point at something across the room, does your child look at it? (FOR EXAMPLE, if you point at a toy or an animal, does your child look at the toy or animal?)',
@@ -115,7 +115,7 @@ class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument_Additional_Options
     function _main()
     {
 
-        // automatically adds examiner & date of administration
+// automatically adds examiner & date of administration
 //        $this->_addMetadataFields();
 
 //        $this->addLabel('<h3>Instrument Score</h3>');
@@ -128,16 +128,25 @@ class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument_Additional_Options
         // Header
         $this->addHeader("Modified Checklist for Autism in Toddlers, Revised with Follow-Up");
 
-        $data = array('childs_name' => 'Child\'s name', 'age' => 'Age', 'date' => 'Date', 'relationship_to_child' => 'Relationship to child');
         $yesNo = array(
             null           => '',
             'yes'          => 'Yes',
             'no'           => 'No'
         );
 
-        foreach ($data as $field => $label) {
-            $this->createText($field, $label);
-        }
+        $group[]=&$this->form->createElement("text", 'childs_name', "");
+        $this->form->addGroup($group, "childs_name_group", 'Child\'s name', null, false);
+        unset($group);
+
+        $group[]=&$this->form->createElement("text", 'age', "");
+        $this->form->addGroup($group, "age_group", 'Age', array(array(array("Value must be numeric.", 'numeric'))));
+        unset($group);
+
+        $this->addBasicDate('Date_taken', 'Date');
+
+        $group[]=&$this->form->createElement("text", 'relationship_to_child', "");
+        $this->form->addGroup($group, "relationship_to_child_group", 'Relationship to child', null, false);
+        unset($group);
 
         $this->addLabel('<strong>Instructions:</strong><BR>Please answer these questions about your child. 
             Keep in mind how your child <strong>usually</strong> behaves. 
@@ -154,39 +163,39 @@ class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument_Additional_Options
     }
 
     // score function
-    function score()
-    {
-        if ($this->_determineDataEntryCompletionStatus() == "Incomplete") {
-            return;
-        }
-        //holds raw question values
-        $score = array();
-        $score['score_raw'] = null;
-
-        //holds calculated
-        $db =& Database::singleton();
-        //Get raw questions point values
-        $query = "SELECT * FROM " . $this->table . " WHERE CommentID='" . $this->getCommentID() . "'";
-        $db->selectRow($query, $record);
-
-
-        $sum = 0;
-        $i = 1;
-        foreach ($this->questions as $field => $label) {
-            $sum += scoringAlgorithm($i, $record[$field]);
-            $i++;
-        }
-
-        $score['score_raw'] = $sum;
-
-        // save the scores
-        $db->update(
-            $this->table,
-            $score,
-            array('CommentID' => $this->getCommentID())
-        );
-
-    }
+//    function score()
+//    {
+//        if ($this->_determineDataEntryCompletionStatus() == "Incomplete") {
+//            return;
+//        }
+//        //holds raw question values
+//        $score = array();
+//        $score['score_raw'] = null;
+//
+//        //holds calculated
+//        $db =& Database::singleton();
+//        //Get raw questions point values
+//        $query = "SELECT * FROM " . $this->table . " WHERE CommentID='" . $this->getCommentID() . "'";
+//        $db->selectRow($query, $record);
+//
+//
+//        $sum = 0;
+//        $i = 1;
+//        foreach ($this->questions as $field => $label) {
+//            $sum += scoringAlgorithm($i, $record[$field]);
+//            $i++;
+//        }
+//
+//        $score['score_raw'] = $sum;
+//
+//        // save the scores
+//        $db->update(
+//            $this->table,
+//            $score,
+//            array('CommentID' => $this->getCommentID())
+//        );
+//
+//    }
 
     /**
      * Look up score values
@@ -194,26 +203,26 @@ class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument_Additional_Options
      * @return int
      * @access public
      */
-    function scoringAlgorithm($question, $answer)
-    {
-        if ($question == 2 || $question == 5 || $question == 12) {
-            if ($answer == "yes") return 1;
-            else return 0;
-        } else {
-            if ($answer == "no") return 1;
-            else return 0;
-        }
-    }
-
-    function calculateRisk($score)
-    {
-        if ($score < 3) {
-            return "LOW-RISK";
-        } else if ($score > 7) {
-            return "HIGH-RISK";
-        } else {
-            return "MEDIUM-RISK";
-        }
-    }
+//    function scoringAlgorithm($question, $answer)
+//    {
+//        if ($question == 2 || $question == 5 || $question == 12) {
+//            if ($answer == "yes") return 1;
+//            else return 0;
+//        } else {
+//            if ($answer == "no") return 1;
+//            else return 0;
+//        }
+//    }
+//
+//    function calculateRisk($score)
+//    {
+//        if ($score < 3) {
+//            return "LOW-RISK";
+//        } else if ($score > 7) {
+//            return "HIGH-RISK";
+//        } else {
+//            return "MEDIUM-RISK";
+//        }
+//    }
 
 }

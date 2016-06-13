@@ -8,7 +8,10 @@ CREATE TABLE `m_chat_rf` (
                           `Testdate` timestamp NOT NULL,
 
                           `Data_entry_completion_status` enum('Incomplete','Complete') NOT NULL default 'Incomplete',
-`score_raw` varchar(255) default NULL,
+`childs_name` varchar(255) default NULL,
+`age` varchar(255) default NULL,
+`Date_taken` date default NULL,
+`relationship_to_child` varchar(255) default NULL,
 `q1_point_across_room` enum('yes','no') default NULL,
 `q2_deaf` enum('yes','no') default NULL,
 `q3_play_pretend` enum('yes','no') default NULL,
