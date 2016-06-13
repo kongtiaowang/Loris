@@ -6,7 +6,9 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/IBIS/
  */
-require_once 'NDB_BVL_Instrument_Additional_Options.class.inc';
+
+require_once 'HTML/QuickForm.php';
+require_once 'HTML/QuickForm/Renderer/Array.php';
 /**
  * Creates the form elements for the ABC instrument
  *
@@ -15,11 +17,8 @@ require_once 'NDB_BVL_Instrument_Additional_Options.class.inc';
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/IBIS/
  */
-class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument_Additional_Options
+class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument
 {
-//    var $ValidityEnabled = false;
-//    var $ValidityRequired = false;
-
     var $questions = array(
         'q1_point_across_room' => '1. If you point at something across the room, does your child look at it? (FOR EXAMPLE, if you point at a toy or an animal, does your child look at the toy or animal?)',
         'q2_deaf' => '2. Have you ever wondered if your child might be deaf?',
@@ -139,18 +138,19 @@ class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument_Additional_Options
         unset($group);
 
         $group[]=&$this->form->createElement("text", 'age', "");
-        $this->form->addGroup($group, "age_group", 'Age', array(array(array("Value must be numeric.", 'numeric'))));
+        $this->form->addGroup($group, "age_group", 'Age', null, false);
         unset($group);
+        //  array(array(array("Value must be numeric.", 'numeric')))
 
-        $this->addBasicDate('Date_taken', 'Date');
+        $this->addBasicDate('Date_taken', 'Date', null, false);
 
         $group[]=&$this->form->createElement("text", 'relationship_to_child', "");
         $this->form->addGroup($group, "relationship_to_child_group", 'Relationship to child', null, false);
         unset($group);
 
-        $this->addLabel('<strong>Instructions:</strong><BR>Please answer these questions about your child. 
-            Keep in mind how your child <strong>usually</strong> behaves. 
-            If you have seen your child do the behavior a few times, but he or she does not usually do it, then please answer <strong>no</strong>. 
+        $this->addLabel('<strong>Instructions:</strong><BR>Please answer these questions about your child.
+            Keep in mind how your child <strong>usually</strong> behaves.
+            If you have seen your child do the behavior a few times, but he or she does not usually do it, then please answer <strong>no</strong>.
             Please choose <strong>yes or no</strong> for every question. Thank you very much.');
 
         foreach ($this->questions as $field => $label) {
@@ -161,6 +161,7 @@ class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument_Additional_Options
 
 
     }
+
 
     // score function
 //    function score()
@@ -226,3 +227,39 @@ class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument_Additional_Options
 //    }
 
 }
+function getReview() {
+    $DB = Database::singleton();
+    $smarty = new Smarty_neurodb();
+    $tpl_data = array();
+
+    $tpl_data['questions'] = $DB->pselect(
+        "SELECT Description as question,
+            SourceField FROM parameter_type 
+            WHERE SourceFrom=:TN AND 
+            SourceField NOT IN ('Validity', 'Administration')",
+        array(
+            'TN' => $this->testName
+        )
+    );
+
+    $Responses = $DB->pselectRow(
+        "SELECT * FROM " . $this->testName . " WHERE CommentID=:CID",
+        array('CID' => $this->getCommentID())
+    );
+    foreach ($tpl_data['questions'] as $key=>&$row) {
+        if (isset($Responses[$row['SourceField']])) {
+//            if($row['SourceField'] == 'informant_other' && $Responses['informant'] != 'other') {
+//                unset($tpl_data['questions'][$key]);
+//            }
+//            else {
+                $row['response'] = $Responses[$row['SourceField']];
+//            }
+
+        }
+    }
+
+    $smarty->assign($tpl_data);
+    $html = $smarty->fetch("directentry_review.tpl");
+    return $html;
+}
+
