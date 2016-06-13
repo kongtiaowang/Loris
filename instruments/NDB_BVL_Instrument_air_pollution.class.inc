@@ -37,18 +37,7 @@ class NDB_BVL_Instrument_air_pollution extends NDB_BVL_Instrument
         $this->testName = 'air_pollution'; // test_names.Test_name
         $this->table = 'air_pollution'; // name of database table corresponding to instrument
         $this->commentID = $commentID; // data keyed by commentID
-
-        //The array of dates/timestamps to convert to database dates/timestamps
-        //Any HTML_Quickform date elements must be listed here
-        $this->dateTimeFields = array("Date_taken");
-
-        //The array of selects with multiple answers allowed
-        //Any HTML_Quickform multiple selects must be listed here
-        //$this->_selectMultipleElements = array();
-
-        // required fields for data entry completion status
-//        $this->_requiredElements = array('Examiner');
-
+        
         $config = NDB_Config::singleton();
         $this->dateOptions = array(
             'language' => 'en',
