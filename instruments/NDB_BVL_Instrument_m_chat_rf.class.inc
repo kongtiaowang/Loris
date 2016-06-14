@@ -123,17 +123,22 @@ class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument
         );
 
         $group[]=&$this->form->createElement("text", 'childs_name', "");
+        $this->XINRegisterRule("childs_name", array("childs_name{@}=={@}"), "Required.", "childs_name_group");
         $this->form->addGroup($group, "childs_name_group", 'Child\'s name', null, false);
         unset($group);
 
-        $group[]=&$this->form->createElement("text", 'age', "");
-        $this->form->addGroup($group, "age_group", 'Age', null, false);
-        unset($group);
-        //  array(array(array("Value must be numeric.", 'numeric')))
+        $this->addNumericElement('age', 'Age');
+//        $group[]=&$this->form->createElement("text", 'age', "");
+//        $this->XINRegisterRule("age", array("age{@}=={@}"), "Required.", "age_group");
+//        $this->form->addGroup($group, "age_group", 'Age', null, false);
+//        unset($group);
 
-        $this->addBasicDate('Date_taken', 'Date', null, false);
+//        $this->addBasicDate('Date_taken', 'Date', null, false);
+        $this->addDateElement('Date_taken', 'Date');
+
 
         $group[]=&$this->form->createElement("text", 'relationship_to_child', "");
+        $this->XINRegisterRule("relationship_to_child", array("relationship_to_child{@}=={@}"), "Required.", "relationship_to_child_group");
         $this->form->addGroup($group, "relationship_to_child_group", 'Relationship to child', null, false);
         unset($group);
 
