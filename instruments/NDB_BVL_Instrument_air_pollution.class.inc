@@ -30,7 +30,7 @@ class NDB_BVL_Instrument_air_pollution extends NDB_BVL_Instrument
     function setup($commentID, $page)
     {
         $this->formType = 'XIN';
-        $this->form = new HTML_Quickform('air_pollution');
+        $this->form = new HTML_Quickform('test_form');
         $this->page = $page; // page label (number or string - used by user-defined child classes)
 
         // set the object properties
