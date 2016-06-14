@@ -89,7 +89,13 @@ class NDB_BVL_Instrument_air_pollution extends NDB_BVL_Instrument
         $this->form->addGroup($group, "name_group", 'Name', null, false);
         unset($group);
 
-        $this->addBasicDate('Date_taken', 'Date', null, false);
+        $dateOptions = array(
+            'language'       => 'en',
+            'format'         => 'YMd',
+            'addEmptyOption' => true
+        );
+
+        $this->addBasicDate('Date_taken', 'Date', $dateOptions);
 
     }
 
