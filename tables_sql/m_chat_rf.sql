@@ -11,6 +11,8 @@ CREATE TABLE `m_chat_rf` (
 `childs_name` varchar(255) default NULL,
 `age` varchar(255) default NULL,
 `Date_taken` date default NULL,
+`Candidate_Age` varchar(255) DEFAULT NULL,
+`Window_Difference` int(11) DEFAULT NULL,
 `relationship_to_child` enum('mother','father','other_relative','other') default NULL,
 `relationship_to_child_other` varchar(255) default NULL,
 `q1_point_across_room` enum('yes','no') default NULL,
