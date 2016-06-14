@@ -36,7 +36,7 @@ class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument
         'q14_look_in_eye' => '14. Does your child look you in the eye when you are talking to him or her, playing with him or her, or dressing him or her?',
         'q15_copy_you' => '15. Does your child try to copy what you do? (FOR EXAMPLE, wave bye-bye, clap, or make a funny noise when you do)',
         'q16_look_around' => '16. If you turn your head to look at something, does your child look around to see what you are looking at?',
-        'q17_try_watch' => '17. Does your child try to get you to watch him or her?(FOR EXAMPLE, does your child look at you for praise, or say “look” or “watch me”?)',
+        'q17_try_watch' => '17. Does your child try to get you to watch him or her? (FOR EXAMPLE, does your child look at you for praise, or say “look” or “watch me”?)',
         'q18_understand_tell_something' => '18. Does your child understand when you tell him or her to do something? (FOR EXAMPLE, if you don’t point, can your child understand “put the book on the chair” or “bring me the blanket”?)',
         'q19_look_at_face' => '19. If something new happens, does your child look at your face to see how you feel about it? (FOR EXAMPLE, if he or she hears a strange or funny noise, or sees a new toy, will he or she look at your face?)',
         'q20_movement_activities' => '20. Does your child like movement activities? (FOR EXAMPLE, being swung or bounced on your knee)'
@@ -53,7 +53,7 @@ class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument
     function setup($commentID, $page)
     {
         $this->formType = 'XIN';
-        $this->form = new HTML_Quickform('m_chat_rf');
+        $this->form = new HTML_Quickform('test_form');
         $this->page = $page; // page label (number or string - used by user-defined child classes)
 
         // set the object properties
@@ -102,17 +102,6 @@ class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument
      */
     function _main()
     {
-
-// automatically adds examiner & date of administration
-//        $this->_addMetadataFields();
-
-//        $this->addLabel('<h3>Instrument Score</h3>');
-//
-//        $this->addScoreColumn(
-//            'score_raw',
-//            'Raw Score/20'
-//        );
-
         // Header
         $this->addHeader("Modified Checklist for Autism in Toddlers, Revised with Follow-Up");
 
@@ -145,11 +134,14 @@ class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument
 
         $this->addBasicDate('Date_taken', 'Date', $dateOptions);
 
+        $informant = array(''=>NULL,'mother'=>'Mother','father'=>'Father','other_relative'=>'Other Relative', 'other'=>'Other');
 
-        $group[]=&$this->form->createElement("text", 'relationship_to_child', "");
-        $this->XINRegisterRule("relationship_to_child", array("relationship_to_child{@}=={@}"), "Required.", "relationship_to_child_group");
-        $this->form->addGroup($group, "relationship_to_child_group", 'Relationship to child', null, false);
+        $this->addSelect('relationship_to_child',"Relationship to child", $informant);
+        $group [] = $this->createText('relationship_to_child_other',$this->indent."If Other please specify");
+        $this->addGroup($group,"relationship_to_child_other_group",$this->indent."If Other please specify",null,false);
         unset($group);
+        $rules_array = array("relationship_to_child{@}=={@}other");
+        $this->XINRegisterRule('relationship_to_child_other', $rules_array, "Please specify relationship", 'relationship_to_child_other_group');
 
         $this->addLabel('<strong>Instructions:</strong><BR>Please answer these questions about your child.
             Keep in mind how your child <strong>usually</strong> behaves.
@@ -161,7 +153,6 @@ class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument
         }
 
         $this->addLabel('2009 Diana Robins, Deborah Fein, & Marianne Barton');
-
 
     }
 
