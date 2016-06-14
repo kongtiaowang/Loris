@@ -97,18 +97,13 @@ class NDB_BVL_Instrument_air_pollution extends NDB_BVL_Instrument
 
         $this->addBasicDate('Date_taken', 'Date', $dateOptions);
 
-    }
-
-    function _page2()
-    {
-
         $group[]=&$this->form->createElement("text", 'address_line1', "");
         $this->XINRegisterRule("address_line1", array("address_line1{@}=={@}"), "Required.", "address_line1_group");
         $this->form->addGroup($group, "address_line1_group", 'Address (Line 1)', null, false);
         unset($group);
 
         $group[]=&$this->form->createElement("text", 'address_line2', "");
-        $this->XINRegisterRule("address_line2", array("address_line2{@}=={@}"), "Required.", "address_line2_group");
+        $this->XINRegisterRule("address_line2", array("address_line2{@}=={@}NEVER_REQUIRED"), "address_line2_group");
         $this->form->addGroup($group, "address_line2_group", 'Address (Line 2)', null, false);
         unset($group);
 
@@ -128,7 +123,6 @@ class NDB_BVL_Instrument_air_pollution extends NDB_BVL_Instrument
         unset($group);
 
         $this->addTextAreaElement('additional_comments', 'Additional Comments');
-//        $this->XINRegisterRule('additional_comments', array("additional_comments{@}=={@}NEVER_REQUIRED"));
     }
 
     /**

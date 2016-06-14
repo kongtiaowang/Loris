@@ -11,6 +11,8 @@ CREATE TABLE `air_pollution` (
 `code` varchar(255) default NULL,
 `name` varchar(255) default NULL,
 `Date_taken` date default NULL,
+`Candidate_Age` varchar(255) DEFAULT NULL,
+`Window_Difference` int(11) DEFAULT NULL,
 `address_line1` varchar(255) default NULL,
 `address_line2` varchar(255) default NULL,
 `city` varchar(255) default NULL,
