@@ -127,14 +127,23 @@ class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument
         $this->form->addGroup($group, "childs_name_group", 'Child\'s name', null, false);
         unset($group);
 
-        $this->addNumericElement('age', 'Age');
-//        $group[]=&$this->form->createElement("text", 'age', "");
-//        $this->XINRegisterRule("age", array("age{@}=={@}"), "Required.", "age_group");
-//        $this->form->addGroup($group, "age_group", 'Age', null, false);
-//        unset($group);
+//        $this->addNumericElement('age', 'Age');
+        $group[]=&$this->form->createElement("text", 'age', "");
+        $this->XINRegisterRule("age", array("age{@}=={@}"), "Required.", "age_group");
+        $this->form->addGroup($group, "age_group", 'Age', null, false);
+        unset($group);
+        $this->addGroupRule(
+            "age_group",
+            array(array(array("Value must be numeric.", 'numeric')))
+        );
 
-//        $this->addBasicDate('Date_taken', 'Date', null, false);
-        $this->addDateElement('Date_taken', 'Date');
+        $dateOptions = array(
+            'language'       => 'en',
+            'format'         => 'YMd',
+            'addEmptyOption' => true
+        );
+
+        $this->addBasicDate('Date_taken', 'Date', $dateOptions);
 
 
         $group[]=&$this->form->createElement("text", 'relationship_to_child', "");
