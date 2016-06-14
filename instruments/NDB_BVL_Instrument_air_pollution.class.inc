@@ -37,7 +37,7 @@ class NDB_BVL_Instrument_air_pollution extends NDB_BVL_Instrument
         $this->testName = 'air_pollution'; // test_names.Test_name
         $this->table = 'air_pollution'; // name of database table corresponding to instrument
         $this->commentID = $commentID; // data keyed by commentID
-        
+
         $config = NDB_Config::singleton();
         $this->dateOptions = array(
             'language' => 'en',
@@ -79,33 +79,45 @@ class NDB_BVL_Instrument_air_pollution extends NDB_BVL_Instrument
      */
     function _main()
     {
-        $group[]=&$this->form->createElement("text", 'code', "");
+        $group[] =& $this->form->createElement("text", 'code', "");
+        $this->XINRegisterRule("code", array("code{@}=={@}"), "Required.", "code_group");
         $this->form->addGroup($group, "code_group", 'Code (see email)', null, false);
         unset($group);
 
-        $group[]=&$this->form->createElement("text", 'name', "");
+        $group[] =& $this->form->createElement("text", 'name', "");
+        $this->XINRegisterRule("name", array("name{@}=={@}"), "Required.", "name_group");
         $this->form->addGroup($group, "name_group", 'Name', null, false);
         unset($group);
 
         $this->addBasicDate('Date_taken', 'Date', null, false);
 
+    }
+
+    function _page2()
+    {
+
         $group[]=&$this->form->createElement("text", 'address_line1', "");
+        $this->XINRegisterRule("address_line1", array("address_line1{@}=={@}"), "Required.", "address_line1_group");
         $this->form->addGroup($group, "address_line1_group", 'Address (Line 1)', null, false);
         unset($group);
 
         $group[]=&$this->form->createElement("text", 'address_line2', "");
+        $this->XINRegisterRule("address_line2", array("address_line2{@}=={@}"), "Required.", "address_line2_group");
         $this->form->addGroup($group, "address_line2_group", 'Address (Line 2)', null, false);
         unset($group);
 
         $group[]=&$this->form->createElement("text", 'city', "");
+        $this->XINRegisterRule("city", array("city{@}=={@}"), "Required.", "city_group");
         $this->form->addGroup($group, "city_group", 'City', null, false);
         unset($group);
 
         $group[]=&$this->form->createElement("text", 'state', "");
+        $this->XINRegisterRule("state", array("state{@}=={@}"), "Required.", "state_group");
         $this->form->addGroup($group, "state_group", 'State', null, false);
         unset($group);
 
         $group[]=&$this->form->createElement("text", 'zip_code', "");
+        $this->XINRegisterRule("zip_code", array("zip_code{@}=={@}"), "Required.", "zip_code_group");
         $this->form->addGroup($group, "zip_code_group", 'Zip Code', null, false);
         unset($group);
 
