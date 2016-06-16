@@ -312,7 +312,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
     function _populate_reliability_table()
     {
         $db =& Database::singleton();
-        $db->select("SELECT CommentID, reliability_center_id FROM reliability", $this->reliability_table);
+        $this->reliability_table = $db->pselect("SELECT CommentID, reliability_center_id FROM reliability");
 
 
         $this->reliability_table = map_cIDs($this->reliability_table);
@@ -406,12 +406,34 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
             $phi_site_clause = " AND Date_taken >= '2010-02-15' ";
         }
 
-        $db->select("SELECT i.CommentID FROM {$instrument} as i, flag as f, session as s, candidate as c WHERE i.CommentID=f.CommentID AND f.sessionID=s.ID AND s.CandID = c.CandID AND s.Current_stage<>'Recycling Bin' AND f.Data_entry='Complete' AND i.CommentID LIKE '%{$current_site}%' AND s.visit_label<>'v18' AND i.CommentID NOT LIKE 'DDE%' {$phi_site_clause} AND f.Administration <> 'None' AND c.ProjectID = $projectID ORDER BY RIGHT(i.CommentID, 6)", $instrument_records);
-        $total_records_count = $db->selectOne("SELECT COUNT(i.CommentID) FROM {$instrument} as i, flag as f, session as s, candidate as c WHERE i.CommentID=f.CommentID AND f.sessionID=s.ID AND s.CandID = c.CandID AND s.Current_stage<>'Recycling Bin' AND f.Data_entry='Complete' AND i.CommentID LIKE '%{$current_site}%' AND s.visit_label<>'v18' AND i.CommentID NOT LIKE 'DDE%' AND f.Administration <> 'None' AND c.ProjectID = $projectID ORDER BY RIGHT(i.CommentID, 6)");
+        $instrument_records = $db->pselect(
+            "SELECT i.CommentID FROM {$instrument} as i, flag as f, session as s, candidate as c 
+            WHERE i.CommentID=f.CommentID AND f.sessionID=s.ID AND s.CandID = c.CandID 
+            AND s.Current_stage<>'Recycling Bin' AND f.Data_entry='Complete' 
+            AND i.CommentID LIKE '%:site%' AND s.visit_label<>'v18' 
+            AND i.CommentID NOT LIKE 'DDE%' :cID AND f.Administration <> 'None' 
+            AND c.ProjectID =:pid ORDER BY RIGHT(i.CommentID, 6)",
+            array('site' => $current_site, 'cID' => $phi_site_clause, 'pid' => $projectID)
+        );
+        $total_records_count = $db->pselectOne(
+            "SELECT COUNT(i.CommentID) FROM {$instrument} as i, flag as f, session as s, candidate as c 
+            WHERE i.CommentID=f.CommentID AND f.sessionID=s.ID AND s.CandID = c.CandID 
+            AND s.Current_stage<>'Recycling Bin' AND f.Data_entry='Complete' AND i.CommentID LIKE '%:site%' 
+            AND s.visit_label<>'v18' AND i.CommentID NOT LIKE 'DDE%' 
+            AND f.Administration <> 'None' AND c.ProjectID =:pid
+            ORDER BY RIGHT(i.CommentID, 6)".
+            array('site' => $current_site, 'pid' => $projectID)
+        );
 
 
         //$current_count = $db->selectOne("SELECT count(*) FROM reliability WHERE CommentID LIKE '%{$current_site}%' AND Instrument='{$instrument}' AND reliability_center_id={$this->site_id[$current_site]}");
-        $current_count = $db->selectOne("SELECT count(*) FROM (SELECT DISTINCT r.CommentID FROM reliability as r, flag as f, session as s  WHERE r.CommentID LIKE '%{$current_site}%' AND r.Instrument='{$instrument}' AND r.reliability_center_id={$this->site_id[$current_site]} AND r.invalid = 'no' AND r.CommentID=f.CommentID AND f.sessionID=s.ID AND s.Current_stage<>'Recycling Bin') as t");
+        $current_count = $db->pselectOne(
+            "SELECT count(*) FROM (SELECT DISTINCT r.CommentID FROM reliability as r, flag as f, session as s  
+            WHERE r.CommentID LIKE '%:site%' AND r.Instrument=:instrum 
+            AND r.reliability_center_id=:rcenter AND r.invalid = 'no' 
+            AND r.CommentID=f.CommentID AND f.sessionID=s.ID AND s.Current_stage<>'Recycling Bin') as t",
+            array('site' => $current_site, 'rcenter' => $this->site_id[$current_site], 'instrum' => $instrument)
+        );
         $total_count = count($instrument_records);
         if($ratio*$total_records_count >= $total_count) {
             $max = $total_count;
@@ -456,10 +478,32 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
             $phi_site_clause = " AND Date_taken >= '2010-02-15' ";
         }
 
-        $db->select("SELECT i.CommentID FROM {$instrument} as i, flag as f, session as s, candidate as c WHERE i.CommentID=f.CommentID AND f.sessionID=s.ID AND s.CandID = c.CandID AND s.Current_stage<>'Recycling Bin' AND f.Data_entry='Complete' AND i.CommentID LIKE '%{$current_site}%' AND s.visit_label<>'v18'{$query_extra} AND i.CommentID NOT LIKE 'DDE%' {$phi_site_clause} AND f.Administration <> 'None' AND c.ProjectID = $projectID ORDER BY RIGHT(i.CommentID, 6)", $instrument_records);
-        $total_records_count = $db->selectOne("SELECT COUNT(i.CommentID) FROM {$instrument} as i, flag as f, session as s, candidate c WHERE i.CommentID=f.CommentID AND f.sessionID=s.ID AND s.CandID=c.CandID AND s.Current_stage<>'Recycling Bin' AND f.Data_entry='Complete' AND i.CommentID LIKE '%{$current_site}%' AND s.visit_label<>'v18'{$query_extra} AND i.CommentID NOT LIKE 'DDE%' AND f.Administration <> 'None' AND c.ProjectID = $projectID ORDER BY RIGHT(i.CommentID, 6)");
+        $instrument_records = $db->pselect(
+            "SELECT i.CommentID FROM {$instrument} as i, flag as f, session as s, candidate as c 
+            WHERE i.CommentID=f.CommentID AND f.sessionID=s.ID AND s.CandID = c.CandID 
+            AND s.Current_stage<>'Recycling Bin' AND f.Data_entry='Complete' 
+            AND i.CommentID LIKE '%:cid%' AND s.visit_label<>'v18':vlabel
+            AND i.CommentID NOT LIKE 'DDE%' :cid2 AND f.Administration <> 'None' 
+            AND c.ProjectID =:pid ORDER BY RIGHT(i.CommentID, 6)",
+            array('cid' => $current_site, 'vlabel' => $query_extra, 'cid2' => $phi_site_clause, 'pid' => $projectID)
+        );
+        $total_records_count = $db->pselectOne(
+            "SELECT COUNT(i.CommentID) FROM {$instrument} as i, flag as f, session as s, candidate c 
+            WHERE i.CommentID=f.CommentID AND f.sessionID=s.ID AND s.CandID=c.CandID 
+            AND s.Current_stage<>'Recycling Bin' AND f.Data_entry='Complete' 
+            AND i.CommentID LIKE '%:cid%' AND s.visit_label<>'v18':vlabel 
+            AND i.CommentID NOT LIKE 'DDE%' AND f.Administration <> 'None' 
+            AND c.ProjectID =:pid ORDER BY RIGHT(i.CommentID, 6)",
+            array('cid' => $current_site, 'vlabel' => $query_extra, 'pid' => $projectID)
+        );
 
-        $current_count = $db->selectOne("SELECT count(*) FROM (SELECT DISTINCT r.CommentID FROM reliability as r, flag as f, session as s  WHERE r.CommentID LIKE '%{$current_site}%' AND r.Instrument='{$instrument}' AND r.reliability_center_id<>{$this->site_id[$current_site]} AND r.invalid = 'no' AND r.CommentID=f.CommentID AND f.sessionID=s.ID AND s.Current_stage<>'Recycling Bin') as t");
+        $current_count = $db->pselectOne(
+            "SELECT count(*) FROM (SELECT DISTINCT r.CommentID FROM reliability as r, flag as f, session as s  
+            WHERE r.CommentID LIKE '%:cid%' AND r.Instrument=:instrum 
+            AND r.reliability_center_id<>:rcenter AND r.invalid = 'no' 
+            AND r.CommentID=f.CommentID AND f.sessionID=s.ID AND s.Current_stage<>'Recycling Bin') as t",
+            array('cid' => $current_site, 'instrum' => $instrument, 'rcenter' => $this->site_id[$current_site])
+        );
         $total_count = count($instrument_records);
         if($ratio*$total_records_count >= $total_count) {
             $max = $total_count;
@@ -485,12 +529,34 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
         }
     }
     function within_site_flagging_visitlevel($instrument, $ratio, $current_site, $db,$visit_label, $projectID){
-        $db->select("SELECT i.CommentID FROM {$instrument} as i, flag as f, session as s, candidate as c WHERE i.CommentID=f.CommentID AND f.sessionID=s.ID AND s.CandID = c.CandID AND s.Current_stage<>'Recycling Bin' AND f.Data_entry='Complete' AND i.CommentID LIKE '%{$current_site}%' AND s.visit_label = '{$visit_label}' AND i.CommentID NOT LIKE 'DDE%' AND f.Administration <> 'None' AND c.ProjectID = $projectID ORDER BY RIGHT(i.CommentID, 6)", $instrument_records);
-        $total_records_count = $db->selectOne("SELECT COUNT(i.CommentID) FROM {$instrument} as i, flag as f, session as s, candidate as c WHERE i.CommentID=f.CommentID AND f.sessionID=s.ID AND s.CandID = c.CandID AND s.Current_stage<>'Recycling Bin' AND f.Data_entry='Complete' AND i.CommentID LIKE '%{$current_site}%' AND s.visit_label = '{$visit_label}' AND i.CommentID NOT LIKE 'DDE%' AND f.Administration <> 'None' AND c.ProjectID = $projectID ORDER BY RIGHT(i.CommentID, 6)");
+        $instrument_records = $db->pselect(
+            "SELECT i.CommentID FROM {$instrument} as i, flag as f, session as s, candidate as c 
+            WHERE i.CommentID=f.CommentID AND f.sessionID=s.ID AND s.CandID = c.CandID 
+            AND s.Current_stage<>'Recycling Bin' AND f.Data_entry='Complete' 
+            AND i.CommentID LIKE '%:currentsite%' AND s.visit_label =:vlabel 
+            AND i.CommentID NOT LIKE 'DDE%' AND f.Administration <> 'None' AND c.ProjectID =:pid
+            ORDER BY RIGHT(i.CommentID, 6)",
+            array('cid' => $current_site, 'vlabel' => $visit_label, 'pid' => $projectID)
+        );
+        $total_records_count = $db->pselectOne(
+            "SELECT COUNT(i.CommentID) FROM {$instrument} as i, flag as f, session as s, candidate as c 
+            WHERE i.CommentID=f.CommentID AND f.sessionID=s.ID AND s.CandID = c.CandID 
+            AND s.Current_stage<>'Recycling Bin' AND f.Data_entry='Complete' 
+            AND i.CommentID LIKE '%:currentsite%' AND s.visit_label =:vlabel 
+            AND i.CommentID NOT LIKE 'DDE%' AND f.Administration <> 'None' AND c.ProjectID =:pid
+            ORDER BY RIGHT(i.CommentID, 6)",
+            array('cid' => $current_site, 'vlabel' => $visit_label, 'pid' => $projectID)
+        );
 
 
         #$current_count = $db->selectOne("SELECT count(*) FROM reliability WHERE CommentID LIKE '%{$current_site}%' AND Instrument='{$instrument}' AND reliability_center_id={$this->site_id[$current_site]}");
-        $current_count = $db->selectOne("SELECT count(*) FROM (SELECT DISTINCT r.CommentID FROM reliability as r, flag as f, session as s  WHERE r.CommentID LIKE '%{$current_site}%' AND r.Instrument='{$instrument}' AND r.reliability_center_id={$this->site_id[$current_site]} AND r.invalid = 'no' AND r.CommentID=f.CommentID AND f.sessionID=s.ID AND s.Current_stage<>'Recycling Bin') as t");
+        $current_count = $db->pselectOne(
+            "SELECT count(*) FROM (SELECT DISTINCT r.CommentID FROM reliability as r, flag as f, session as s  
+            WHERE r.CommentID LIKE '%:cid%' AND r.Instrument=:instrum 
+            AND r.reliability_center_id=:rcenter AND r.invalid = 'no' 
+            AND r.CommentID=f.CommentID AND f.sessionID=s.ID AND s.Current_stage<>'Recycling Bin') as t",
+            array('cid' => $current_site, 'instrum' => $instrument, 'rcenter' => $this->site_id[$current_site])
+        );
         $total_count = count($instrument_records);
         if($ratio*$total_records_count >= $total_count) {
             $max = $total_count;
@@ -535,10 +601,32 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
             $phi_site_clause = " AND Date_taken >= '2010-02-15' ";
         }
 
-        $db->select("SELECT i.CommentID FROM {$instrument} as i, flag as f, session as s, candidate as c WHERE i.CommentID=f.CommentID AND f.sessionID=s.ID AND s.CandID = c.CandID AND s.Current_stage<>'Recycling Bin' AND f.Data_entry='Complete' AND i.CommentID LIKE '%{$current_site}%' AND s.visit_label='{$visit_label}'{$query_extra} AND i.CommentID NOT LIKE 'DDE%' {$phi_site_clause} AND f.Administration <> 'None' AND c.ProjectID = $projectID ORDER BY RIGHT(i.CommentID, 6)", $instrument_records);
-        $total_records_count = $db->selectOne("SELECT COUNT(i.CommentID) FROM {$instrument} as i, flag as f, session as s, candidate c WHERE i.CommentID=f.CommentID AND f.sessionID=s.ID AND s.CandID=c.CandID AND s.Current_stage<>'Recycling Bin' AND f.Data_entry='Complete' AND i.CommentID LIKE '%{$current_site}%' AND s.visit_label='{$visit_label}'{$query_extra} AND i.CommentID NOT LIKE 'DDE%' AND f.Administration <> 'None' AND c.ProjectID = $projectID ORDER BY RIGHT(i.CommentID, 6)");
+        $instrument_records = $db->pselect(
+            "SELECT i.CommentID FROM {$instrument} as i, flag as f, session as s, candidate as c 
+            WHERE i.CommentID=f.CommentID AND f.sessionID=s.ID AND s.CandID = c.CandID 
+            AND s.Current_stage<>'Recycling Bin' AND f.Data_entry='Complete' 
+            AND i.CommentID LIKE '%:cid%' AND s.visit_label=:vlabel
+            AND i.CommentID NOT LIKE 'DDE%' :cid2 AND f.Administration <> 'None' 
+            AND c.ProjectID =:pid ORDER BY RIGHT(i.CommentID, 6)",
+            array('cid' => $current_site, 'vlabel' => $visit_label . $query_extra, 'cid2' => $phi_site_clause, 'pid' => $projectID)
+        );
+        $total_records_count = $db->pselectOne(
+            "SELECT COUNT(i.CommentID) FROM {$instrument} as i, flag as f, session as s, candidate c 
+            WHERE i.CommentID=f.CommentID AND f.sessionID=s.ID AND s.CandID=c.CandID 
+            AND s.Current_stage<>'Recycling Bin' AND f.Data_entry='Complete' 
+            AND i.CommentID LIKE '%:cid%' AND s.visit_label=:vlabel
+            AND i.CommentID NOT LIKE 'DDE%' AND f.Administration <> 'None' 
+            AND c.ProjectID =:pid ORDER BY RIGHT(i.CommentID, 6)",
+            array('cid' => $current_site, 'vlabel' => $visit_label . $query_extra, 'pid' => $projectID)
+        );
 
-        $current_count = $db->selectOne("SELECT count(*) FROM (SELECT DISTINCT r.CommentID FROM reliability as r, flag as f, session as s  WHERE r.CommentID LIKE '%{$current_site}%' AND r.Instrument='{$instrument}' AND r.reliability_center_id<>{$this->site_id[$current_site]} AND r.invalid = 'no' AND r.CommentID=f.CommentID AND f.sessionID=s.ID AND s.Current_stage<>'Recycling Bin') as t");
+        $current_count = $db->pselectOne(
+            "SELECT count(*) FROM (SELECT DISTINCT r.CommentID FROM reliability as r, flag as f, session as s 
+            WHERE r.CommentID LIKE '%:cid%' AND r.Instrument=:instrum 
+            AND r.reliability_center_id<>:rcenter AND r.invalid = 'no' 
+            AND r.CommentID=f.CommentID AND f.sessionID=s.ID AND s.Current_stage<>'Recycling Bin') as t",
+            array('cid' => $current_site, 'instrum' => $instrument, 'rcenter' => $this->site_id[$current_site])
+        );
         $total_count = count($instrument_records);
         if($ratio*$total_records_count >= $total_count) {
             $max = $total_count;
@@ -600,7 +688,12 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
  */
     function get_current_index($instrument, $current_site, $reliability_sites, $db){
         $site_name = array_flip($this->site_id);
-        $last_site = $db->selectOne("SELECT reliability_center_id FROM reliability where ID=(select max(ID) FROM reliability WHERE CommentID LIKE '%{$current_site}%' AND Instrument='{$instrument}' AND reliability_center_id<>{$this->site_id[$current_site]})");
+        $last_site = $db->pselectOne(
+            "SELECT reliability_center_id FROM reliability where ID=(select max(ID) FROM reliability 
+            WHERE CommentID LIKE '%:cid%' AND Instrument=:instrum 
+            AND reliability_center_id<>:rcenter)",
+            array('cid' => $current_site, 'instrum' => $instrument, 'rcenter' => $this->site_id[$current_site])
+        );
         if(empty($last_site)){
             return 0;
         }
@@ -622,15 +715,23 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
         $PSCID_Replace_V = $_POST['Cand2Visit_label'];
         $Instrument = $_POST['SwapInstrument'];
 
-        $query="SELECT reliability.CommentID as OldID, reliability.reliability_center_id as CenterID, reliability.Reliability_score as Score, candidate.CenterID as OldCenterID, reliability.EARLI_Candidate AS EARLI_Candidate,candidate.ProjectID  FROM candidate, session, flag, reliability WHERE reliability.CommentID=flag.CommentID AND candidate.CandID=session.CandID AND session.ID=flag.SessionID AND candidate.PSCID='$PSCID' AND reliability.Instrument='$Instrument' and session.Visit_label='$PSCID_V' and flag.Data_entry IS NOT NULL and flag.Data_entry <> 'None' ";
+        $query="SELECT reliability.CommentID as OldID, reliability.reliability_center_id as CenterID, 
+          reliability.Reliability_score as Score, candidate.CenterID as OldCenterID, reliability.EARLI_Candidate 
+          AS EARLI_Candidate,candidate.ProjectID  FROM candidate, session, flag, reliability 
+          WHERE reliability.CommentID=flag.CommentID AND candidate.CandID=session.CandID 
+          AND session.ID=flag.SessionID AND candidate.PSCID=:pid AND reliability.Instrument=:test 
+          and session.Visit_label=:vlabel and flag.Data_entry IS NOT NULL and flag.Data_entry <> 'None' ";
 
-        $DB->selectRow($query, $CommentID);
+        $CommentID = $DB->pselectRow($query, array('test' => $Instrument, 'pid' => $PSCID, 'vlabel' => $PSCID_V));
         if(!$CommentID) {
             return array("error" => "$PSCID/$PSCID_V is not in reliability coding for $Instrument. Cannot swap candidates.");
         }
 
-        $query="SELECT f.CommentID as NewID, c.CenterID as NewCenterID FROM session s join flag f ON (f.SessionID=s.ID) JOIN candidate c ON (c.CandID=s.CandID)  WHERE f.Test_name='$Instrument' and c.PSCID='$PSCID_Replace' AND s.Visit_label='$PSCID_Replace_V' AND f.Data_entry IS NOT NULL and f.Data_entry <> 'None'";
-        $DB->selectRow($query, $newCommentID);
+        $query="SELECT f.CommentID as NewID, c.CenterID as NewCenterID FROM session s join flag f ON (f.SessionID=s.ID) 
+          JOIN candidate c ON (c.CandID=s.CandID)  WHERE f.Test_name=:test 
+          and c.PSCID=:pid AND s.Visit_label=:vlabel 
+          AND f.Data_entry IS NOT NULL and f.Data_entry <> 'None'";
+        $newCommentID = $DB->pselectRow($query, array('test' => $Instrument, 'pid' => $PSCID_Replace, 'vlabel' => $PSCID_Replace_V));
         if(!$newCommentID) {
             return array('error' => "$PSCID_Replace/$PSCID_Replace_V did not complete $Instrument or data not entered. Cannot swap candidates.");
         }
@@ -644,7 +745,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
             return array('error' => "$PSCID/$PSCID_V is from a different site than you. Can only swap candidates from the same site.");
         }
         $NewID = $newCommentID['NewID'];
-        $DB->selectRow("SELECT CommentID FROM reliability WHERE CommentID='$NewID'", $replacementCheck);
+        $replacementCheck = $DB->pselectRow("SELECT CommentID FROM reliability WHERE CommentID=:cid", array('cid' => $NewID));
         if(!empty($replacementCheck)) {
             return array("error" => "$PSCID_Replace/$PSCID_Replace_V already in reliability. Cannot swap $PSCID/$PSCID_V for it.");
         }
@@ -682,7 +783,12 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
         }
 
         $PSCID = $_POST['AddPSCID'];
-        $CommentID = $DB->selectOne("SELECT CommentID FROM flag f JOIN session s ON (s.ID=f.SessionID) JOIN candidate c USING (CandID) WHERE f.Test_name='$Instrument' AND c.PSCID='$PSCID' AND s.Visit_label='$Visit_label'");
+        $CommentID = $DB->pselectOne(
+            "SELECT CommentID FROM flag f JOIN session s ON (s.ID=f.SessionID) 
+            JOIN candidate c USING (CandID) 
+            WHERE f.Test_name=:test AND c.PSCID=:pid AND s.Visit_label=:vlabel",
+            array('test' => $Instrument, 'pid' => $PSCID, 'vlabel' => $Visit_label)
+        );
         if(!$CommentID) {
             return array("error" => "$PSCID/$Visit_label does not have data entered for $Instrument");
 
