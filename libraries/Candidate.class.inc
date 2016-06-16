@@ -40,7 +40,7 @@ class Candidate
         return $candidateList[$candID];
     }
     
-    function select($candID)
+    functionpselect($candID)
     {
         // right off, set the candID
         $candID = trim($candID);
@@ -51,7 +51,7 @@ class Candidate
         // get candidate data from database
         $query = "SELECT c.CenterID, c.CandID, c.PSCID, c.DoB, c.EDC, c.Gender, p.Name AS PSC, c.Ethnicity, c.Active, u1.Real_name as RegisteredBy, c.UserID, c.Entity_type, c.ProjectID FROM candidate as c left join psc as p using (CenterID) left join users as u1 on (u1.UserID = c.RegisteredBy) WHERE c.CandID='$candID' AND c.Active = 'Y'";
         $row = array();
-        $db->selectRow($query, $row);
+        $db-pselectRow($query, $row);
         
 
         if (!is_array($row) || sizeof($row) == 0) {
@@ -117,7 +117,7 @@ class Candidate
         // get Time Point SessionIDs for the $candID
         // select ALL of them - later you can filter out cancelled and inactive ones
         $query = "SELECT s.ID FROM session as s WHERE s.CandID='$candID' AND s.Active='Y' ORDER BY ID";
-        $db->select($query, $row);
+        $db-pselect($query, $row);
 
 
         // store user data in object property
@@ -170,7 +170,7 @@ class Candidate
            }
 
            // check pscid uniqueness
-           if($db->selectOne("SELECT count(PSCID) FROM candidate WHERE PSCID='$PSCID'") > 0) {
+           if($db-pselectOne("SELECT count(PSCID) FROM candidate WHERE PSCID='$PSCID'") > 0) {
                throw new LorisException("PSCID not unique", PSCID_NOT_UNIQUE);
            }
        } else {           
@@ -335,7 +335,7 @@ class Candidate
         $db =& Database::singleton();
 
         $query  = "SELECT ID, Visit_label FROM session WHERE CandID='$candID' AND Active='Y' ORDER BY ID";
-        $db->select($query, $result);
+        $db-pselect($query, $result);
 
         // map the array [VisitNo]=>Visit_label
         foreach ($result as $row) {
@@ -370,7 +370,7 @@ class Candidate
         $db =& Database::singleton();
 
         $query  = "SELECT IFNULL(max(VisitNo)+1, 1) AS nextVisitNo FROM session WHERE CandID='$candID' AND (Active='Y' OR Active is null) GROUP BY CandID";
-        $db->selectRow($query, $result);
+        $db-pselectRow($query, $result);
         
         //return the next visit No
         return $result["nextVisitNo"];
@@ -394,7 +394,7 @@ class Candidate
         if($visitLabelSettings['generation'] == 'user' && !empty($visitLabelSettings['suggest'])) {
             $existingVisitLabels = $this->getListOfVisitLabels();
             $query  = "SELECT IFNULL(max(VisitNo)+1, 1) AS nextVisitLabel FROM session WHERE CandID='$candID' AND (Active='Y' OR Active is null) GROUP BY CandID";
-            $db->selectRow($query, $result);
+            $db-pselectRow($query, $result);
     
             $nextVisitLabel = $result['nextVisitLabel'];
             if(!empty($existingVisitLabels)){
@@ -438,7 +438,7 @@ class Candidate
         $candID = rand(CANDIDATE_MIN_CANDID, CANDIDATE_MAX_CANDID);
         
         // make sure the cand id is not used
-        while($db->selectOne("SELECT count(CandID) FROM candidate WHERE CandID='$candID'") > 0) {
+        while($db-pselectOne("SELECT count(CandID) FROM candidate WHERE CandID='$candID'") > 0) {
             // pick a new candidate id
             $candID = rand(CANDIDATE_MIN_CANDID, CANDIDATE_MAX_CANDID);
         }
@@ -486,7 +486,7 @@ class Candidate
             }
             
             // check if the pscid is used
-        } while($db->selectOne("SELECT count(PSCID) FROM candidate WHERE PSCID='$pscid'") > 0);
+        } while($db-pselectOne("SELECT count(PSCID) FROM candidate WHERE PSCID='$pscid'") > 0);
         
         return $pscid;
     }
@@ -498,7 +498,7 @@ class Candidate
             $randid = $ID . rand(1000, 9999);
             $randidq = $db->quote($randid);
             $nid = $ID . "ID";
-        } while($db->selectOne("SELECT count($nid) FROM candidate WHERE `$nid`=$randidq") > 0);
+        } while($db-pselectOne("SELECT count($nid) FROM candidate WHERE `$nid`=$randidq") > 0);
         return $randid;
     }
     
