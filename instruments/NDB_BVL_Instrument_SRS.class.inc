@@ -292,7 +292,7 @@ SUMIF ( Q4=>0 and Q8=>0 and Q14=>0 and Q20=>0 and Q24=>0 and Q28=>0 and Q29=>0 a
         if ($this->_determineDataEntryCompletionStatus() == "Incomplete") {
             return;
         }
-//        $this->_nullScores($this->scoreCols);
+        $this->_nullScores($this->scoreCols);
         $db =& Database::singleton();
         $db->selectRow("SELECT * FROM $this->table WHERE CommentID='" . $this->getCommentID() . "'", $Answers);
 
