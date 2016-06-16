@@ -21,7 +21,7 @@ class NDB_Menu_reliability_phase_one extends NDB_Menu
         
         $instrument = "adi_r";
          $data = array();
-        $DB->select("SELECT * FROM {$instrument}_initial_reliability", $result);
+        $result = $DB->pselect("SELECT * FROM {$instrument}_initial_reliability", array());
             foreach($result as $row){          
                if(empty($row['with_umacc_reliable_clinician']))
                   $row['with_umacc_reliable_clinician'] = 'No';
@@ -35,7 +35,7 @@ class NDB_Menu_reliability_phase_one extends NDB_Menu
       
              $instrument = "figs";
                $data = array();
-              $DB->select("SELECT * FROM {$instrument}_initial_reliability", $result);
+                $result = $DB->pselect("SELECT * FROM {$instrument}_initial_reliability", array());
                   foreach($result as $row){
                      $data[] = array('site' => $row['site'], 'rater' => $row['rater'], 'reliable' => $row['reliable'],
                                     'case_ID_1' => $row['case_ID_1'], 'case_ID_2' => $row['case_ID_2'], 'case_ID_3' => $row['case_ID_3'],
@@ -56,7 +56,7 @@ class NDB_Menu_reliability_phase_one extends NDB_Menu
                   
                     $instrument = "aosi";
                         $data = array();
-                       $DB->select("SELECT * FROM {$instrument}_initial_reliability WHERE case_age_mo < 12 ORDER BY case_age_mo", $result);
+        $result = $DB->pselect("SELECT * FROM {$instrument}_initial_reliability WHERE case_age_mo < 12 ORDER BY case_age_mo", array());
                            foreach($result as $row){
 
                               $data[] = array('site' => $row['site'], 'rater' => $row['rater'], 'reliable' => $row['reliable'],
@@ -75,7 +75,7 @@ class NDB_Menu_reliability_phase_one extends NDB_Menu
                            
             $instrument = "aosi";
              $data = array();
-             $DB->select("SELECT * FROM {$instrument}_initial_reliability WHERE case_age_mo >= 12 ORDER BY case_age_mo", $result);
+        $result = $DB->pselect("SELECT * FROM {$instrument}_initial_reliability WHERE case_age_mo >= 12 ORDER BY case_age_mo", array());
                 foreach($result as $row){
              
                    $data[] = array('site' => $row['site'], 'rater' => $row['rater'], 'reliable' => $row['reliable'],
@@ -94,7 +94,7 @@ class NDB_Menu_reliability_phase_one extends NDB_Menu
                            
                            $instrument = "csbs";
                           $data = array();
-                         $DB->select("SELECT * FROM {$instrument}_initial_reliability WHERE type = 'training kit'", $result);
+        $result = $DB->pselect("SELECT * FROM {$instrument}_initial_reliability WHERE type = 'training kit'", array());
                              foreach($result as $row){
                          
                                 $data[] = array('site' => $row['site'], 'rater' => $row['rater'], 'reliable' => $row['reliable'],
@@ -106,7 +106,7 @@ class NDB_Menu_reliability_phase_one extends NDB_Menu
                              
                                $instrument = "csbs";
                                $data = array();
-                              $DB->select("SELECT * FROM {$instrument}_initial_reliability WHERE type = 'UW Gold Standard'", $result);
+        $result = $DB->pselect("SELECT * FROM {$instrument}_initial_reliability WHERE type = 'UW Gold Standard'", array());
                                   foreach($result as $row){
 
                                      $data[] = array('site' => $row['site'], 'rater' => $row['rater'], 'reliable' => $row['reliable'],
@@ -118,7 +118,7 @@ class NDB_Menu_reliability_phase_one extends NDB_Menu
                   
                             $instrument = "ados";
                               $data = array();
-                             $DB->select("SELECT * FROM {$instrument}_initial_reliability", $result);
+        $result = $DB->pselect("SELECT * FROM {$instrument}_initial_reliability", array());
                                  foreach($result as $row){
 
                                     if(empty($row['with_umacc_reliable_clinician']))
@@ -133,7 +133,7 @@ class NDB_Menu_reliability_phase_one extends NDB_Menu
                            
                                   $instrument = "mullen";
                                     $data = array();
-                                   $DB->select("SELECT * FROM {$instrument}_initial_reliability", $result);
+        $result = $DB->pselect("SELECT * FROM {$instrument}_initial_reliability", array());
                                        foreach($result as $row){
                                           if(empty($row['with_umacc_reliable_clinician']))
                                              $row['with_umacc_reliable_clinician'] = 'No';
