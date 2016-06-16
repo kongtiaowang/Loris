@@ -310,7 +310,7 @@ class NDB_Menu_Filter_blind_coding extends NDB_Menu_Filter
         }
 
         $PSCID = $_POST['AddPSCID'];
-        $CommentID = $DB->pselectOne("SELECT CommentID FROM flag f JOIN session s ON (s.ID=f.SessionID) JOIN candidate c USING (CandID) WHERE f.Test_name=:instrum AND c.PSCID=:pid AND s.Visit_label=:vlabel", array('instrum' => $Instrument, 'pid' => $PSCID, 'vlabel' => $Visit_label)););
+        $CommentID = $DB->pselectOne("SELECT CommentID FROM flag f JOIN session s ON (s.ID=f.SessionID) JOIN candidate c USING (CandID) WHERE f.Test_name=:instrum AND c.PSCID=:pid AND s.Visit_label=:vlabel", array('instrum' => $Instrument, 'pid' => $PSCID, 'vlabel' => $Visit_label));
         if(!$CommentID) {
             return array("error" => "$PSCID/$Visit_label does not have data entered for $Instrument");
 
