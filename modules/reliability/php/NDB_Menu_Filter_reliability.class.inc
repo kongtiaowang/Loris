@@ -10,41 +10,41 @@ require_once 'Utility.class.inc';
 function map_cIDs($array){
     $new_array;
     for($i = 0; $i < count($array); $i++){
-      $element = $array[$i];
-      $new_array[$element['CommentID']] = $element['reliability_center_id'];
+        $element = $array[$i];
+        $new_array[$element['CommentID']] = $element['reliability_center_id'];
     }
     return $new_array;
 }
 
 function find_cID($cID, $array){
-  if(empty($array)){
-    return false;
-  }
-  foreach($array as $key=>$value){
-    if($key == $cID){
-      return true;
+    if(empty($array)){
+        return false;
     }
-  }
-  return false;
+    foreach($array as $key=>$value){
+        if($key == $cID){
+            return true;
+        }
+    }
+    return false;
 }
 
 function array_remove($item, $array){
-  $index = array_search($item, $array);
-  if($index === false){
-    return $array;
-  }else{
-    unset($array[$index]);
-    return array_values($array); 
-  }
+    $index = array_search($item, $array);
+    if($index === false){
+        return $array;
+    }else{
+        unset($array[$index]);
+        return array_values($array);
+    }
 }
- 
+
 class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
 {
 
     var $centerIDMap;
-    
+
     var $site_id = array('SEA' => 2, 'PHI' => 3, 'STL' => 4, 'UNC' => 5, 'UofA' => 6);
-    
+
     var $reliability_table;
 
     function _hasAccess() {
@@ -67,7 +67,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
         foreach($pscRows AS $row) {
             $this->centerIDMap[$row['CenterID']] = $row['Name'];
         }
-        
+
         $this->_populate_reliability_table();
 
         // the base query
@@ -80,7 +80,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
 
         // only view their own profiles, unless they have permission to see all
         if (!($user->hasPermission('reliability_edit_all') || $user->hasPermission('access_all_profiles'))) {
-            $query .= " AND candidate.centerID = '" . $user->getData('CenterID') . "' "; 
+            $query .= " AND candidate.centerID = '" . $user->getData('CenterID') . "' ";
         }
 
         // set the class variables
@@ -93,35 +93,35 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
         $this->validFilters = array('reliability.reliability_center_id', 'session.SubprojectID', 'candidate.CenterID', 'session.CandID', 'candidate.PSCID', 'candidate.Gender', 'session.Visit_label', 'reliability.Instrument', 'reliability.Reliability_score', 'session.Current_stage', 'reliability.invalid','candidate.ProjectID');
 
         $this->formToFilter = array(
-                                    'SubprojectID' => 'session.SubprojectID',
-                                    'CenterID' => 'candidate.CenterID',
-                                    'reliability_center_id'=> 'reliability.reliability_center_id',
-                                    'DCCID' => 'candidate.CandID',
-                                    'PSCID' => 'candidate.PSCID',
-                                    'Gender' => 'candidate.Gender',
-                                    'Visit_label' => 'session.Visit_label',
-                                    'Instrument' => 'reliability.Instrument',
-                                    'reliability_score'=>'reliability.Reliability_score',
-                                    'Current_stage'=>'session.Current_stage',
-                                    'Invalid' => 'reliability.invalid',
-                                    'ProjectID'=>'candidate.ProjectID'
-                                    // 'Lock_record' => 'session.Lock_record'
-                                    );
+            'SubprojectID' => 'session.SubprojectID',
+            'CenterID' => 'candidate.CenterID',
+            'reliability_center_id'=> 'reliability.reliability_center_id',
+            'DCCID' => 'candidate.CandID',
+            'PSCID' => 'candidate.PSCID',
+            'Gender' => 'candidate.Gender',
+            'Visit_label' => 'session.Visit_label',
+            'Instrument' => 'reliability.Instrument',
+            'reliability_score'=>'reliability.Reliability_score',
+            'Current_stage'=>'session.Current_stage',
+            'Invalid' => 'reliability.invalid',
+            'ProjectID'=>'candidate.ProjectID'
+            // 'Lock_record' => 'session.Lock_record'
+        );
         return true;
     }
 
 
     function _setFilterForm()
     {
-    	// create user object
+        // create user object
         $user =& User::singleton();
 
-           // allow to view all sites data through filter
+        // allow to view all sites data through filter
         if ($user->hasPermission('access_all_profiles') || $user->hasPermission('reliability_edit_all')) {
             // get the list of study sites - to be replaced by the Site object
             $list_of_sites = Utility::getSiteList(false);
 
-            if(is_array($list_of_sites)) 
+            if(is_array($list_of_sites))
             {
                 // This doesn't work, it causes all the indexes to change
                 // and the index is supposed to be the CenterID number
@@ -141,10 +141,10 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
             $site =& Site::singleton($user->getData('CenterID'));
 
             //if ($site->isStudySite()) {
-                $list_of_sites = array($user->getData('CenterID') => $user->getData('Site'));
+            $list_of_sites = array($user->getData('CenterID') => $user->getData('Site'));
             //}
         }
-        
+
         /// hack for Visit Labels... maybe get all the real visit labels from DB?
         $list_of_visit_labels = array(null=>'Any','V06'=>'V06','V12'=>'V12','V24'=>'V24','V36'=>'V36');
         $list_of_visit_labels_only = array('V06'=>'V06','V12'=>'V12','V24'=>'V24','V36'=>'V36');
@@ -152,7 +152,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
         $subproject_options = array(null=>'Any') + $subproject_options;
         $gender_options = array(null=>'Any', 'Male'=>'Male', 'Female'=>'Female');
         $list_of_instruments = array(null=>'Any', 'csbs'=>'CSBS', 'adi_r'=>'ADI-R', 'ados'=>'ADOS', 'aosi' => 'AOSI',
-                                     'aims'=>'AIMS','ados2_module1'=>'ADOS2 Module1','ados2_module2'=>'ADOS2 Module2');
+            'aims'=>'AIMS','ados2_module1'=>'ADOS2 Module1','ados2_module2'=>'ADOS2 Module2');
         $list_of_instruments_only = array('csbs'=>'CSBS', 'adi_r_proband'=>'ADI-R (Proband)', 'adi_r_subject' => 'ADI-R (Subject)', 'ados_module1'=>'ADOS (Module 1)', 'ados_module2' => 'ADOS (Module 2)', 'aosi' => 'AOSI', 'ados2_module1'=>'ADOS2 (Module 1)','ados2_module2'=>'ADOS2 (Module2)');
         $lock_options = array(null=>'','Locked'=>'Locked','Unlocked'=>'Unlocked');
         $list_of_projects =& Utility::getProjectList();
@@ -169,12 +169,12 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
         $this->addSelect('Invalid', 'Invalid Candidate:', array('' => '', 'yes' => 'Yes', 'no' => 'No'));
         $config=&NDB_Config::singleton();
         if($config->getSetting("useProjects")=="true"){
-           $this->addSelect('ProjectID', 'Project:', array('' => 'All') + $list_of_projects);
+            $this->addSelect('ProjectID', 'Project:', array('' => 'All') + $list_of_projects);
         }
 
-	 // $this->addSelect('Lock_record', 'Lock_record:', $lock_options);
-       
-       // For swapping candidates
+        // $this->addSelect('Lock_record', 'Lock_record:', $lock_options);
+
+        // For swapping candidates
         if ($user->hasPermission('reliability_swap_candidates')) {
             $this->tpl_data['reliability_swap_candidates'] = true;
             $this->addSelect('Cand1Visit_label', 'Visit Label:', $list_of_visit_labels_only);
@@ -233,12 +233,12 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
         $config =& NDB_Config::singleton();
         $reliabilityConfig = $config->getSetting("ReliabilityInstruments");
         $threshold = array();
-           
+
         foreach(Utility::toArray($reliabilityConfig) AS $reliabilityInstrument){
-             $instrument_list = $reliabilityInstrument['Instrument'];
-             foreach($instrument_list AS $instrument){
-                 $threshold[$instrument['Testname']] = $instrument['Threshold'];
-             }
+            $instrument_list = $reliabilityInstrument['Instrument'];
+            foreach($instrument_list AS $instrument){
+                $threshold[$instrument['Testname']] = $instrument['Threshold'];
+            }
         }
         return $threshold;
         //return array("adi_r_proband" => 89.5, "adi_r_subject" => 89.5, "adi_r" => 89.5, 'aosi' => 78.0, 'csbs' => 79.5, 'ados_module1' => 79.5, 'ados_module2' => 79.5);
@@ -279,29 +279,29 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
                 $this->tpl_data['items'][$x][$i]['name'] = $key;
                 $this->tpl_data['items'][$x][$i]['value'] = $val;
                 if ($key == 'PSCID'){
-                   $this->tpl_data['items'][$x][$i]['CommentID'] = $comment_id;
-                   $this->tpl_data['items'][$x][$i]['SiteID'] = $item['Site'];
-                   $this->tpl_data['items'][$x][$i]['Instrument'] = $item['Instrument'];
-                   $this->tpl_data['items'][$x][$i]['Current_stage'] = $current_stage;
-                   $this->tpl_data['items'][$x][$i]['invalid'] = $invalid;
-                   $this->tpl_data['items'][$x][$i]['manual'] = $manual;
+                    $this->tpl_data['items'][$x][$i]['CommentID'] = $comment_id;
+                    $this->tpl_data['items'][$x][$i]['SiteID'] = $item['Site'];
+                    $this->tpl_data['items'][$x][$i]['Instrument'] = $item['Instrument'];
+                    $this->tpl_data['items'][$x][$i]['Current_stage'] = $current_stage;
+                    $this->tpl_data['items'][$x][$i]['invalid'] = $invalid;
+                    $this->tpl_data['items'][$x][$i]['manual'] = $manual;
                 }
                 if ($key == 'Site')
                 {
-                   $this->tpl_data['items'][$x][$i]['value'] = $this->centerIDMap[$item['Site']];
+                    $this->tpl_data['items'][$x][$i]['value'] = $this->centerIDMap[$item['Site']];
                 }
                 if($key == 'Reliability_score'){
-                  $this->tpl_data['items'][$x][$i+1]['name'] = 'Reliability';
-                  if(is_null($val))
-                    $reliable = null;
-                  else if($val >= $threshold[$item['Instrument']])
-                    $reliable = 'Yes';
-                  else
-                    $reliable = 'No';
-                  $this->tpl_data['items'][$x][$i+1]['value'] = $reliable;
+                    $this->tpl_data['items'][$x][$i+1]['name'] = 'Reliability';
+                    if(is_null($val))
+                        $reliable = null;
+                    else if($val >= $threshold[$item['Instrument']])
+                        $reliable = 'Yes';
+                    else
+                        $reliable = 'No';
+                    $this->tpl_data['items'][$x][$i+1]['value'] = $reliable;
                 }
-                
-               $i++;
+
+                $i++;
             }
             $x++;
         }
@@ -510,7 +510,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
         } else {
             $max = floor($ratio * $total_records_count);
         }
-        // 
+        //
         // echo("Site: {$current_site} <BR>");
         // echo($current_count . " --- " . $total_count . "<BR>");
         // echo("Max (ratio: {$ratio}/jump: {$jump_step}): {$max} <BR><BR>");
@@ -633,7 +633,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
         } else {
             $max = floor($ratio * $total_records_count);
         }
-        // 
+        //
         // echo("Site: {$current_site} <BR>");
         // echo($current_count . " --- " . $total_count . "<BR>");
         // echo("Max (ratio: {$ratio}/jump: {$jump_step}): {$max} <BR><BR>");
