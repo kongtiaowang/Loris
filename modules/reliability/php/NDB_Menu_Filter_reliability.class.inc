@@ -722,7 +722,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
           AND session.ID=flag.SessionID AND candidate.PSCID=:pid AND reliability.Instrument=:test 
           and session.Visit_label=:vlabel and flag.Data_entry IS NOT NULL and flag.Data_entry <> 'None' ";
 
-        $CommentID = $DB->pselectRow($query, array('test' => $Instrument, 'pid' => $PSCID, 'vlabel' => $PSCID_V));
+        $CommentID = $DB->pselectRow($query, array('pid' => $PSCID, 'test' => $Instrument, 'vlabel' => $PSCID_V));
         if(!$CommentID) {
             return array("error" => "$PSCID/$PSCID_V is not in reliability coding for $Instrument. Cannot swap candidates.");
         }
