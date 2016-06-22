@@ -312,7 +312,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
     function _populate_reliability_table()
     {
         $db =& Database::singleton();
-        $this->reliability_table = $db->pselect("SELECT CommentID, reliability_center_id FROM reliability");
+        $this->reliability_table = $db->pselect("SELECT CommentID, reliability_center_id FROM reliability", array());
 
 
         $this->reliability_table = map_cIDs($this->reliability_table);
@@ -432,7 +432,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
             WHERE r.CommentID LIKE '%:site%' AND r.Instrument=:instrum 
             AND r.reliability_center_id=:rcenter AND r.invalid = 'no' 
             AND r.CommentID=f.CommentID AND f.sessionID=s.ID AND s.Current_stage<>'Recycling Bin') as t",
-            array('site' => $current_site, 'rcenter' => $this->site_id[$current_site], 'instrum' => $instrument)
+            array('site' => $current_site, 'instrum' => $instrument, 'rcenter' => $this->site_id[$current_site])
         );
         $total_count = count($instrument_records);
         if($ratio*$total_records_count >= $total_count) {
