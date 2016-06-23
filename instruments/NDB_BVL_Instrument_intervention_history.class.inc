@@ -42,7 +42,7 @@ INSERT INTO test_battery VALUES ('', 'intervention_history', '1053', '1179', 'Y'
 			"q1_intensity_7"=>"",
 			"q1_intensity_8"=>"",
 			"q1_intensity_9"=>"",
-			"q1_intensity_10"=>""
+			"q1_intensity_10"=>"",
                         );
 
 
@@ -252,12 +252,10 @@ INSERT INTO test_battery VALUES ('', 'intervention_history', '1053', '1179', 'Y'
             return;
         }
 
-        $this->_nullScores($this->scoreLabels);
-        
         $db =& Database::singleton();
 
         $query = "SELECT * FROM ".$this->table." WHERE CommentID='".$this->getCommentID()."'";
-	$values = array();
+	    $values = array();
         $db->selectRow($query, $values);
 
 
