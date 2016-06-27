@@ -49,7 +49,10 @@ class Candidate
         $db = Database::singleton();
 
         // get candidate data from database
-        $query = "SELECT c.CenterID, c.CandID, c.PSCID, c.DoB, c.EDC, c.Gender, p.Name AS PSC, c.Ethnicity, c.Active, u1.Real_name as RegisteredBy, c.UserID, c.Entity_type, c.ProjectID FROM candidate as c left join psc as p using (CenterID) left join users as u1 on (u1.UserID = c.RegisteredBy) WHERE c.CandID=:candidateID AND c.Active = 'Y'";
+        $query = "SELECT c.CenterID, c.CandID, c.PSCID, c.DoB, c.EDC, c.Gender, p.Name 
+          AS PSC, c.Ethnicity, c.Active, u1.Real_name as RegisteredBy, c.UserID, c.Entity_type, c.ProjectID 
+          FROM candidate as c left join psc as p using (CenterID) left join users as u1 on (u1.UserID = c.RegisteredBy) 
+          WHERE c.CandID=:candidateID AND c.Active = 'Y'";
         $row = array();
         $row = $db->pselectRow($query, array('candidateID' => $candID));
         
@@ -116,7 +119,7 @@ class Candidate
 
         // get Time Point SessionIDs for the $candID
         // select ALL of them - later you can filter out cancelled and inactive ones
-        $query = "SELECT s.ID FROM session as s WHERE s.CandID  AND s.Active='Y' ORDER BY ID";
+        $query = "SELECT s.ID FROM session as s WHERE s.CandID:=candidateID AND s.Active='Y' ORDER BY ID";
         $row = $db->pselect($query, array('candidateID' => $candID));
 
         // store user data in object property

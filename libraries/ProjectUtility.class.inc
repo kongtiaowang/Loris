@@ -137,7 +137,7 @@ class ProjectUtility extends PEAR
         join flag f on (s.ID = f.SessionID)
         join candidate c on (c.Candid = s.Candid)
         join psc on (s.CenterID = psc.CenterID)
-        where s.Active = 'Y' and c.Active= 'Y' and f.Test_name =:test' AND psc.CenterID!= '1'";
+        where s.Active = 'Y' and c.Active= 'Y' and f.Test_name =:test AND psc.CenterID!= '1'";
 
         //$query = "select distinct Visit_label from test_battery where Test_name = '$test_name'";
         $visitlabels = $db->pselect($query, array('test' => $test_name));
@@ -205,7 +205,7 @@ class ProjectUtility extends PEAR
         }
         //get all source fields
         elseif (!is_null($name)){
-            $sourcefields = $DB->pselectRow("select * from parameter_type where Name =:n'", array('n' => $name));
+            $sourcefields = $DB->pselectRow("select * from parameter_type where Name =:n", array('n' => $name));
         }
 
         else {

@@ -66,7 +66,7 @@ class NDB_Menu_Filter_videos extends NDB_Menu_Filter
 
         // create the centerID map
         $db =& Database::singleton();
-        $pscRows = $db->pselect("SELECT CenterID, Name FROM psc");
+        $pscRows = $db->pselect("SELECT CenterID, Name FROM psc", array());
         foreach($pscRows AS $row) {
             $this->centerIDMap[$row['CenterID']] = $row['Name'];
         }

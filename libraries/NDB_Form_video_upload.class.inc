@@ -135,8 +135,8 @@ class NDB_Form_video_upload extends NDB_Form
             $instruments = array_merge($instruments, array('EARLI' => 'EARLI Questionaire'));
         }
 
-        $candidates = $db->pselect("SELECT PSCID FROM candidate WHERE PSCID LIKE ':cName%' ORDER BY PSCID", array('cName' => $site->getCenterName()));
-        $candidates2 = $db->pselect("SELECT PSCID FROM candidate WHERE PSCID NOT LIKE ':cName%' ORDER BY PSCID", array('cName' => $site->getCenterName()));
+        $candidates = $db->pselect("SELECT PSCID FROM candidate WHERE PSCID LIKE CONCAT(:cName, '%') ORDER BY PSCID", array('cName' => $site->getCenterName()));
+        $candidates2 = $db->pselect("SELECT PSCID FROM candidate WHERE PSCID NOT LIKE CONCAT(:cName, '%') ORDER BY PSCID", array('cName' => $site->getCenterName()));
 
         var_dump($candidates);
 
@@ -360,13 +360,16 @@ class NDB_Form_video_upload extends NDB_Form
         // SQL to run to check if the file's already
         $Stmt = "SELECT * FROM videos WHERE Instrument =:instrum AND PSCID =:pid AND visitLabel =:visit";
 
+        $row = array();
+
         if($_REQUEST['multipart'] == 'Yes') {
-            $Stmt .= " AND File_name=" . $db->quote($filename);
+            $Stmt .= " AND File_name=:fn";
+            $row = $db->pselectRow($Stmt, array('instrum' => $args['values']['Instrument'], 'pid' => $args['values']['PSCID'], 'visit' => $args['values']['visitLabel'], 'fn' => $filename));
+
+        } else {
+            $row = $db->pselectRow($Stmt, array('instrum' => $args['values']['Instrument'], 'pid' => $args['values']['PSCID'], 'visit' => $args['values']['visitLabel']));
         }
 
-        $row = $db->pselectRow($Stmt, array('instrum' => $args['values']['Instrument'], 'pid' => $args['values']['PSCID'], 'visit' => $args['values']['visitLabel']));
-
-        $db=& Database::singleton();
         $CountFiles = $db->pselectRow($Stmt,  array('instrum' => $args['values']['Instrument'], 'pid' => $args['values']['PSCID'], 'visit' => $args['values']['visitLabel']));
 
         if (empty($row)) {

@@ -254,7 +254,7 @@ class NDB_Menu_Filter_blind_coding extends NDB_Menu_Filter
                         AND f.Data_entry IS NOT NULL 
                         AND f.Data_entry <> 'None' ";
 
-        $CommentID = $DB->pselectRow($query, array('instrum' => $Instrument, 'pid' => $PSCID_Replace, 'vlabel' => $PSCID_Replace_V));
+        $CommentID = $DB->pselectRow($query, array('pid' => $PSCID_Replace, 'instrum' => $Instrument, 'vlabel' => $PSCID_Replace_V));
         if(!$CommentID) {
             return array("error" => "$PSCID/$PSCID_V is not in blind coding for $Instrument. Cannot swap candidates.");
         }
