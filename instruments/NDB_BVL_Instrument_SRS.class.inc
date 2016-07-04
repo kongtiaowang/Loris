@@ -354,7 +354,7 @@ SUMIF ( Q4=>0 and Q8=>0 and Q14=>0 and Q20=>0 and Q24=>0 and Q28=>0 and Q29=>0 a
                 case 'not_true':
                     $score += 0;
                     if(!in_array($QuestionNumber, $ignored)) {
-                        $scores[$currentSubscale] = 0;
+                        $totals[$currentSubscale] += 0;
                     }
                     break;
                 case 'sometimes_true':
@@ -412,7 +412,7 @@ SUMIF ( Q4=>0 and Q8=>0 and Q14=>0 and Q20=>0 and Q24=>0 and Q28=>0 and Q29=>0 a
                     break;
                 case 'always_true':
                     $score += 0;
-                    $scores[$currentSubscale] += 0;
+                    $totals[$currentSubscale] += 0;
                     break;
                 case 'not_answered':
                     $not_answered += 1;
