@@ -138,8 +138,6 @@ class NDB_Form_video_upload extends NDB_Form
         $candidates = $db->pselect("SELECT PSCID FROM candidate WHERE PSCID LIKE CONCAT(:cName, '%') ORDER BY PSCID", array('cName' => $site->getCenterName()));
         $candidates2 = $db->pselect("SELECT PSCID FROM candidate WHERE PSCID NOT LIKE CONCAT(:cName, '%') ORDER BY PSCID", array('cName' => $site->getCenterName()));
 
-        var_dump($candidates);
-
         $candidates = hash_it($candidates + $candidates2, "PSCID");
 
         $this->addSelect("Instrument", "Instrument", $instruments);

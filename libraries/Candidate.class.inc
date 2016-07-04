@@ -119,7 +119,7 @@ class Candidate
 
         // get Time Point SessionIDs for the $candID
         // select ALL of them - later you can filter out cancelled and inactive ones
-        $query = "SELECT s.ID FROM session as s WHERE s.CandID:=candidateID AND s.Active='Y' ORDER BY ID";
+        $query = "SELECT s.ID FROM session as s WHERE s.CandID=:candidateID AND s.Active='Y' ORDER BY ID";
         $row = $db->pselect($query, array('candidateID' => $candID));
 
         // store user data in object property
