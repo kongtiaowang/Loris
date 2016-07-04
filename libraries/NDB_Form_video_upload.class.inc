@@ -358,17 +358,13 @@ class NDB_Form_video_upload extends NDB_Form
         // SQL to run to check if the file's already
         $Stmt = "SELECT * FROM videos WHERE Instrument =:instrum AND PSCID =:pid AND visitLabel =:visit";
 
-        $row = array();
+        $params = array('instrum' => $args['values']['Instrument'], 'pid' => $args['values']['PSCID'], 'visit' => $args['values']['visitLabel']);
 
         if($_REQUEST['multipart'] == 'Yes') {
             $Stmt .= " AND File_name=:fn";
-            $row = $db->pselectRow($Stmt, array('instrum' => $args['values']['Instrument'], 'pid' => $args['values']['PSCID'], 'visit' => $args['values']['visitLabel'], 'fn' => $filename));
-
-        } else {
-            $row = $db->pselectRow($Stmt, array('instrum' => $args['values']['Instrument'], 'pid' => $args['values']['PSCID'], 'visit' => $args['values']['visitLabel']));
+            $params = array_merge($params, array('fn' => $filename));
         }
-
-        $CountFiles = $db->pselectRow($Stmt,  array('instrum' => $args['values']['Instrument'], 'pid' => $args['values']['PSCID'], 'visit' => $args['values']['visitLabel']));
+        $row = $db->pselectRow($Stmt, $params);
 
         if (empty($row)) {
 
