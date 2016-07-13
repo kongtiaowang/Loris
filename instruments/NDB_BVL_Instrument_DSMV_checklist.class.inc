@@ -181,6 +181,9 @@ function _page2(){
       'addEmptyOption' => true,
       'emptyOptionValue' => null
 	     );
+
+    $yesNo = array_merge($this->yesNo, array('not_answered'=>'Not Answered'));
+    $confidence = array_merge($this->confidence, array('not_answered'=>'Not Answered'));
         
             $this->form->addElement('header', null, "Social Communication Disorder");
             
@@ -188,26 +191,26 @@ function _page2(){
           
             $this->form->addElement("static", null, "<BR><strong>A. Persistent difficulties in the social use of verbal and nonverbal communication as manifested by deficits in all of the following:</strong><BR>"); //line space
 
-            $this->form->addElement("select", "qa1_deficit_communication_social", "<BR>1. Deficits in using communication for social purposes, such as greeting and sharing information, in a manner that is appropriate to the social context.", $this->yesNo);
+            $this->form->addElement("select", "qa1_deficit_communication_social", "<BR>1. Deficits in using communication for social purposes, such as greeting and sharing information, in a manner that is appropriate to the social context.", $yesNo);
           
-            $this->form->addElement("select", "qa2_change_communication", "<BR>2. Deficits in changing communication to match context or the needs of the listener, such as speaking differently in a classroom than on a playground, communicating differently to a child than an adult, and avoiding the use of overly formal language.", $this->yesNo);
+            $this->form->addElement("select", "qa2_change_communication", "<BR>2. Deficits in changing communication to match context or the needs of the listener, such as speaking differently in a classroom than on a playground, communicating differently to a child than an adult, and avoiding the use of overly formal language.", $yesNo);
 
-            $this->form->addElement("select", "qa3_deficit_followrules", "<BR>3. Deficits in the ability to follow rules for conversation and storytelling, such as taking turns in conversation, rephrasing when misunderstood, and knowing how to use verbal and nonverbal signals to regulate interaction.", $this->yesNo);
+            $this->form->addElement("select", "qa3_deficit_followrules", "<BR>3. Deficits in the ability to follow rules for conversation and storytelling, such as taking turns in conversation, rephrasing when misunderstood, and knowing how to use verbal and nonverbal signals to regulate interaction.", $yesNo);
             
-            $this->form->addElement("select", "qb_limit_communication", "<BR><strong>B. The disturbance causes limitations in effective communication, social participation, social relationships, academic achievement, or occupational performance.</strong>", $this->yesNo);
+            $this->form->addElement("select", "qb_limit_communication", "<BR><strong>B. The disturbance causes limitations in effective communication, social participation, social relationships, academic achievement, or occupational performance.</strong>", $yesNo);
             
-            $this->form->addElement("select", "qc_onset_earlychildhood", "<BR><strong>C. Onset in the early developmental period (but may not become fully manifest until social communication demands exceed limited capacities.)</strong>", $this->yesNo);
+            $this->form->addElement("select", "qc_onset_earlychildhood", "<BR><strong>C. Onset in the early developmental period (but may not become fully manifest until social communication demands exceed limited capacities.)</strong>", $yesNo);
 
            $this->form->addElement("static",null, "<BR><strong>D. The symptoms are not attributable to another medical or neurological condition and are not better explained by low abilities in the domains of word structure and grammar, intellectual disability, global developmental delay, autism spectrum disorder, or another mental disorder. </strong>");
 
-           $this->form->addElement("select", "meet_dsm_scd", "<BR><strong>Meets DSM-V Criteria for Social Communication Disorder</strong><BR>$this->indent - All symptoms in category A present<BR>$this->indent - Symptoms limit communication, social relations, or other major functioning areas <BR>$this->indent - Not attributable or better explained by another DSM-V disorder or another medical or neurological condition", $this->yesNo);
+           $this->form->addElement("select", "meet_dsm_scd", "<BR><strong>Meets DSM-V Criteria for Social Communication Disorder</strong><BR>$this->indent - All symptoms in category A present<BR>$this->indent - Symptoms limit communication, social relations, or other major functioning areas <BR>$this->indent - Not attributable or better explained by another DSM-V disorder or another medical or neurological condition", $yesNo);
             
             $this->form->addElement("static", null, "<BR>"); //line space
 
             $this->form->addElement("static", null, "<strong>Confidence Rating </strong><BR>");
             
           
-            $this->form->addElement("select", "dsm_scd_confidence", "Given all the data that you have on this child, how confident are you about the classification of this child based on the DSM-V SCD criteria?", $this->confidence);
+            $this->form->addElement("select", "dsm_scd_confidence", "Given all the data that you have on this child, how confident are you about the classification of this child based on the DSM-V SCD criteria?", $confidence);
             
                       
             $this->addTextAreaElement("dsm_scd_comments", "Comments (required for a rating of 2 or 1)", array("dsm_scd_confidence{@}=={@}2_somewhat_confident|1_not_confident"), "This field is required or specify not answered."); 
