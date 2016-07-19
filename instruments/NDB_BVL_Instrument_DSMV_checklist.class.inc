@@ -182,8 +182,8 @@ function _page2(){
       'emptyOptionValue' => null
 	     );
 
-    $yesNo = array_merge($this->yesNo, array('not_answered'=>'Not Answered'));
-    $confidence = array_merge($this->confidence, array('not_answered'=>'Not Answered'));
+    $yesNo = array_merge($this->yesNo, array('not_answered'=>'Not Applicable'));
+    $confidence = array_merge($this->confidence, array('not_answered'=>'Not Applicable'));
         
             $this->form->addElement('header', null, "Social Communication Disorder");
             
