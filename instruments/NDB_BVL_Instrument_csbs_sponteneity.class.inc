@@ -87,6 +87,7 @@ INSERT INTO instrument_subtests VALUES('', 'csbs_sponteneity', 'csbs_sponteneity
                 'Candidate_Age',
                 'relationship_to_child',
                 'comments',
+                'general_comments',
                 'q_19_sequence_action_schemes_6',
                 'free_total_NC',
                 'free_response_to_prompt',

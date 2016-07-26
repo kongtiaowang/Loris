@@ -1,4 +1,4 @@
-<script type="text/javascript" src="GetJS.php?Module=statistics&file=form_stats_enrollment.js"></script>
+<script type="text/javascript" src="{$baseurl}/GetJS.php?Module=statistics_ibis&file=form_stats_enrollment.js"></script>
 <div id="enrollment">
     <h2 class="statsH2">Enrollment Statistics{if $CurrentSite} for {$CurrentSite.Name}{/if}</h2>
     <div class="col-sm-2 col-xs-12 form-group">

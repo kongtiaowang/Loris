@@ -11,9 +11,7 @@ $client->makeCommandLine();
 $client->initialize($configFile);
 
 $db =& Database::singleton();
-if(Utility::isErrorX($DB)) {
-    return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
-}
+
 
 $file = "dti_null_list.csv";
 $fp = fopen($file, "r");

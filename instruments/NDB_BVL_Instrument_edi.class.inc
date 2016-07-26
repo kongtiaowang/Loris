@@ -253,6 +253,22 @@ INSERT INTO test_battery VALUES ('', 'edi', '1050', '1140', 'Y', 'Visit', '2');
      * Array of column names to be ignored by the double data entry conflict detector.
      */
     $this->_doubleDataEntryDiffIgnoreColumns = array('CommentID', 'UserID', 'Testdate',   'Window_Difference', 'Candidate_Age',
+        'bir',
+        'dea',
+        'div',
+        'mar',
+        'mov',
+        'tem',
+        'per',
+        'chc',
+        'chs',
+        'sei',
+        'hea',
+        'othi',
+        'hifv',
+        'hosp',
+        'mill',
+        'timeframe_visit',
 						     'EDI8ot', 
 						     'EDI19ot', 
 						     'EDI45ot', 
@@ -322,7 +338,8 @@ INSERT INTO test_battery VALUES ('', 'edi', '1050', '1140', 'Y', 'Visit', '2');
                              'score_22_24_social',
                              'score_22_24_communication',
                              'score_22_24_repetitive_behaviour',
-                             'Data_entry_completion_status');
+                             'Data_entry_completion_status'
+    );
 
 
         // setup the form

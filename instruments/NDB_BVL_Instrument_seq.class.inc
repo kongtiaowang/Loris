@@ -129,7 +129,9 @@ INSERT INTO instrument_subtests VALUES('', 'seq', 'seq_page3', 'General and Adde
 							 'q29_uneasy_dizzy_what_do',
 							 'q30_flap_arms_what_do',
 							 'q31_free_time',
-							 'q32_seem_happiest');
+							 'q32_seem_happiest',
+                            'q35_other_comments',
+                            'q35_other_comments_status');
            
 
 		// setup the form

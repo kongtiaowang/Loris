@@ -257,7 +257,8 @@ class NDB_Form_video_upload extends NDB_Form
             $file->registerForm($this->form);
 
             //Tell File_Upload what file handlers to use.
-            $file->setFileHandler("video_file", &$this);
+            // Removed &$this because Call-time pass-by-reference has been removed from PHP.
+            $file->setFileHandler("video_file", $this);
             $file->overwriteMode="overwrite";
 
             //Set the target directory that you want files moved into once they are validated and processed.

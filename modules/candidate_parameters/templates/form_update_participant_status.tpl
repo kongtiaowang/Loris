@@ -1,13 +1,13 @@
 {if $success}
 
-<p>Proband Information was updated successful<br /></p>
+<p>Participant Status was updated successfully<br /></p>
 <br />
 {/if}
-<form method="post" name="update_proband_info" id="update_proband_info" enctype="multipart/form-data">
+<form method="post" name="update_participant_status" id="update_participant_status" enctype="multipart/form-data">
 {if not $success}
 <div class="panel panel-primary">
     <div class="panel-heading">
-        Update Proband Information
+        Update Participant Status
     </div>
     <div class="panel-body">
         {foreach from=$form.errors item=error}
@@ -26,31 +26,25 @@
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-4">{$form.ProbandGUID.label}</label>
+            <label class="col-sm-4">Participant Status</label>
             <div class="col-sm-8">
-                {$form.ProbandGUID.html}
+                {html_options id="participant_status" options=$pstatus_options name="participant_status" selected=$pstat}
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-4">{$form.ProbandGender.label}</label>
+            <label class="col-sm-4">Specify Reason</br>(Required only for status Inactive/Incomplete)</label>
             <div class="col-sm-8">
-                {$form.ProbandGender.html}
+                {html_options id="participant_suboptions" options=$pstatus_suboptions name="participant_suboptions" selected=$pstat_sub}
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-4">{$form.ProbandDoB.label}</label>
+            <label class="col-sm-4">{$form.reason_specify_group.label}</label>
             <div class="col-sm-8">
-                {$form.ProbandDoB.html}
-            </div>
-        </div>
-        <div class="row">
-            <label class="col-sm-4">{$form.ProbandDoB2.label}</label>
-            <div class="col-sm-8">
-                {$form.ProbandDoB2.html}
+                {$form.reason_specify_group.html}
             </div>
         </div>
         <input class="btn btn-sm btn-primary col-sm-offset-2" name="fire_away" value="Save" type="submit" />
         {/if}
-        <input class="btn btn-sm btn-primary" onclick="location.href='main.php?test_name=candidate_parameters&candID={$candID}&identifier={$candID}'" value="Return to Candidate Info" type="button" />
+        <input class="btn btn-sm btn-primary" onclick="location.href='{$baseurl}/candidate_parameters/?candID={$candID}&identifier={$candID}'" value="Return to Candidate Info" type="button" />
     </div>
 </div>

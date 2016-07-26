@@ -6,13 +6,11 @@ require_once 'NDB_Form.class.inc';
  * The welcome menu
  * @package main
  */
-class NDB_Form_statistics_enroll extends NDB_Form
+class NDB_Form_statistics_ibis extends NDB_Form
 {
     function _hasAccess() {
         $user =& User::singleton();
-        if(Utility::isErrorX($user)) {
-            return PEAR::raiseError("User Error: ".$user->getMessage());
-        }
+
         return $user->hasPermission('data_entry');
     }
 
@@ -26,12 +24,10 @@ class NDB_Form_statistics_enroll extends NDB_Form
     }
 
 
-    function statistics()
+    function statistics_ibis()
     {
         $DB =& Database::singleton();
-        if (Utility::isErrorX($DB)) {
-            return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
-        }
+
 
         $this->tpl_data['StatsTabs'] = $DB->pselect(
             "SELECT ModuleName, SubModuleName, Description
@@ -45,13 +41,9 @@ class NDB_Form_statistics_enroll extends NDB_Form
     function stats_enrollment()
     {
         $DB =& Database::singleton();
-        if (Utility::isErrorX($DB)) {
-            return PEAR::raiseError("Could not connect to database: ".$DB->getMessage());
-        }
+
         $DB->select("SELECT CONCAT('C', CenterID) as ID, CenterID as NumericID, PSCArea as LongName, Name as ShortName FROM psc WHERE CenterID <> '1' AND Study_site = 'Y'", $centers);
-        if(Utility::isErrorX($centers)) {
-            return PEAR::raiseError("DB Error: ".$centers->getMessage());
-        }
+
         $this->tpl_data['Centers'] = $centers;
         $this->tpl_data['Sites'] = array('' => 'All Sites');
         $projects[null] = 'All Projects';
@@ -239,6 +231,25 @@ class NDB_Form_statistics_enroll extends NDB_Form
 
         return $enroll_results;
 
+    }
+
+    /**
+     * Include the column formatter required to display the feedback link colours
+     * in the statistics menu
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+                $baseURL . "/statistics_ibis/js/form_stats_enrollment.js",
+            )
+        );
     }
 
 } // End class
