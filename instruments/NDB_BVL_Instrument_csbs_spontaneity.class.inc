@@ -17,7 +17,7 @@ INSERT INTO instrument_subtests VALUES('', 'csbs_spontaneity', 'csbs_spontaneity
 
 	var $scoreLabels = array(
         "free_total_NC",
-        "free_response_to_prompt",
+//        "free_response_to_prompt",
         "free_SC_yes",
         "free_non_prompted_yes",
     	"free_average_prompt",
@@ -90,7 +90,7 @@ INSERT INTO instrument_subtests VALUES('', 'csbs_spontaneity', 'csbs_spontaneity
                 'general_comments',
                 'q_19_sequence_action_schemes_6',
                 'free_total_NC',
-                'free_response_to_prompt',
+//                'free_response_to_prompt',
                 'free_SC_yes',
                 'free_non_prompted_yes',
                 'free_average_prompt',
