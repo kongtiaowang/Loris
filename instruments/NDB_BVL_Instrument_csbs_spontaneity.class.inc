@@ -3,16 +3,16 @@
 require_once 'HTML/QuickForm.php';
 require_once 'HTML/QuickForm/Renderer/Array.php';
 
-class NDB_BVL_Instrument_csbs_sponteneity extends NDB_BVL_Instrument
+class NDB_BVL_Instrument_csbs_spontaneity extends NDB_BVL_Instrument
 {
 
 /*
-INSERT INTO test_names VALUES('', 'csbs_sponteneity', 'CSBS Sponeneity Coding Sheet', 0, 1, NULL);
+INSERT INTO test_names VALUES('', 'csbs_spontaneity', 'CSBS Sponeneity Coding Sheet', 0, 1, NULL);
 
-INSERT INTO test_battery VALUES ('', 'csbs_sponteneity', '0', '420', 'Y', 'Visit', '1', NULL);
+INSERT INTO test_battery VALUES ('', 'csbs_spontaneity', '0', '420', 'Y', 'Visit', '1', NULL);
 
-INSERT INTO instrument_subtests VALUES('', 'csbs_sponteneity', 'csbs_sponteneity_page1', 'Child Approach / Structured Communication Activities', 1);
-INSERT INTO instrument_subtests VALUES('', 'csbs_sponteneity', 'csbs_sponteneity_page2', 'Free Play', 2);
+INSERT INTO instrument_subtests VALUES('', 'csbs_spontaneity', 'csbs_spontaneity_page1', 'Child Approach / Structured Communication Activities', 1);
+INSERT INTO instrument_subtests VALUES('', 'csbs_spontaneity', 'csbs_spontaneity_page2', 'Free Play', 2);
 */
 
 	var $scoreLabels = array(
@@ -56,8 +56,8 @@ INSERT INTO instrument_subtests VALUES('', 'csbs_sponteneity', 'csbs_sponteneity
         // user-defined child classes)
         
         // set the object properties
-        $this->testName = "csbs_sponteneity";           // test_names.Test_name
-        $this->table = 'csbs_sponteneity';              // name of database table corresponding to instrument
+        $this->testName = "csbs_spontaneity";           // test_names.Test_name
+        $this->table = 'csbs_spontaneity';              // name of database table corresponding to instrument
         // data keyed by commentID
         $this->commentID = $commentID;
         
@@ -136,7 +136,7 @@ INSERT INTO instrument_subtests VALUES('', 'csbs_sponteneity', 'csbs_sponteneity
     * @access private
     */
     function _setupForm(){
-        if(preg_match("/csbs_sponteneity(_page[0-9]+)/",$this->page,$matches)){
+        if(preg_match("/csbs_spontaneity(_page[0-9]+)/",$this->page,$matches)){
             call_user_method($matches[1], $this);
         } else {
             $this->_main();
@@ -155,7 +155,7 @@ INSERT INTO instrument_subtests VALUES('', 'csbs_sponteneity', 'csbs_sponteneity
     */
     function _main(){
         //display test name
-        $this->form->addElement('header', null, "Communication and Symbolic Behaviour Scales - Sponteneity Coding Sheet");
+        $this->form->addElement('header', null, "Communication and Symbolic Behaviour Scales - Spontaneity Coding Sheet");
         $this->form->addElement('static', null, "<br />");
         $this->form->addElement('static', null, "<br />");
 
@@ -164,7 +164,7 @@ INSERT INTO instrument_subtests VALUES('', 'csbs_sponteneity', 'csbs_sponteneity
         $this->_addMetadataFields();
 	$this->form->addElement("static", null, "<br/>");		
 
-	$this->form->addElement('static', null, "The following two fields refer to Date and Coder for the CSBS Sponteneity");
+	$this->form->addElement('static', null, "The following two fields refer to Date and Coder for the CSBS Spontaneity");
 	$this->addDateElement("date_coded", "Date of Coding:");
 	$this->addTextElement("coder", "Coder:"); 
 
