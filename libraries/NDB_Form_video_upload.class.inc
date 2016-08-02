@@ -273,14 +273,14 @@ class NDB_Form_video_upload extends NDB_Form
             $file->setHandlerArgs(array("user_id" => $user->getUsername(), "values"=>$values));
 
             //If the form is validated, call File_Upload::processFiles() which loops through the files and 
-            //proccesses them (including verify, move, and import steps)
+            //processes them (including verify, move, and import steps)
             $file->processFiles();
 
             //echo error messages
             if(!empty($file->errorLog)){
                while(list($fileType,$fileErrors)=each($file->errorLog)){
                    foreach($fileErrors AS $error){
-                        echo "<span style='color:red'><b>Upload Error</b> $fileType: $error</span><br>";
+                        echo "Upload Error. $fileType: $error";
                    }
                }
                return false;
