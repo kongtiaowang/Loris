@@ -358,7 +358,7 @@ class NDB_Form_video_upload extends NDB_Form
         // SQL to run to check if the file's already
         $Stmt = "SELECT * FROM videos WHERE Instrument =:instrum AND PSCID =:pid AND visitLabel =:visit";
 
-        $params = array('instrum' => $args['values']['Instrument'], 'pid' => $args['values']['PSCID'], 'visit' => $args['values']['visitLabel']);
+        $params = array('instrum' => $values['Instrument'], 'pid' => $values['PSCID'], 'visit' => $values['visitLabel']);
 
         if($_REQUEST['multipart'] == 'Yes') {
             $Stmt .= " AND File_name=:fn";
