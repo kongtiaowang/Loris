@@ -177,7 +177,7 @@ class QC_Checks {
                 }
             }
         }
-        $tests = $DB->pselect("SELECT Test_name,Full_name FROM test_names WHERE Test_name NOT LIKE 'csbs_sponteneity' AND Test_name NOT LIKE '' AND Test_name NOT LIKE 'vineland_%'", array()) ;
+        $tests = $DB->pselect("SELECT Test_name,Full_name FROM test_names WHERE Test_name NOT LIKE 'csbs_spontaneity' AND Test_name NOT LIKE '' AND Test_name NOT LIKE 'vineland_%'", array()) ;
         /* ************************************************************************* */
         // Determine instruments where Data_entry = Complete and DDE =N
         /* ************************************************************************* */
