@@ -45,8 +45,9 @@ class NDB_BVL_Instrument_dna_tracking extends NDB_BVL_Instrument
         //The array of dates/timestamps to convert to database dates/timestamps
         //Any HTML_Quickform date elements must be listed here
         //rathi updatethis
+        $this->dateTimeFields=array("Date_taken");
 
-        $this->_requiredElements = array('Date_taken', 'Examiner','day1_child_sick'); 
+        $this->_requiredElements = array('Date_taken', 'Examiner');
 
         $config =& NDB_Config::singleton();
         $this->dateOptions = array(
@@ -99,7 +100,10 @@ class NDB_BVL_Instrument_dna_tracking extends NDB_BVL_Instrument
         $this->XINRegisterRule("subject_other_specify", array("subject_other_specify{@}=={@}NEVER_REQUIRED"));
         $this->form->addGroup($group, "headers", null, $this->_GUIDelimiter, false);
         unset($group);
+
         // automatically adds examiner & date of administration
+        $this->_addMetadataFields();
+
 	$questions = array("saliva_collected"=>"Was saliva collected?","when_saliva_collected1"=>"1. When was saliva collected?",
                            "saliva_collection_method1"=>"1. How was saliva collected?", "when_saliva_collected2"=>"2. When was saliva collected?",
                            "saliva_collection_method2"=>"2. How was saliva collected?","blood_collected"=>"Was blood collected?",
