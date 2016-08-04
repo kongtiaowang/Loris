@@ -17,6 +17,7 @@ class NDB_Form_new_profile extends NDB_Form
         $user =& User::singleton();
 
         $site =& Site::singleton($user->getData('CenterID'));
+        
         if ($site->isStudySite() or ($site->getCenterName() == "DCC")) {
             return $user->hasPermission('data_entry');
         }
@@ -30,7 +31,7 @@ class NDB_Form_new_profile extends NDB_Form
         $user =& User::singleton();
         $config =& NDB_Config::singleton();
         $dob = sprintf("%04d-%02d-%02d", $values['dob1']['Y'], $values['dob1']['M'], $values['dob1']['d']);
-
+        
         if($config->getSetting('useEDC') == "true"){
             $edc = sprintf("%04d-%02d-%02d", $values['edc1']['Y'], $values['edc1']['M'], $values['edc1']['d']);
             if($edc == '0000-00-00') {
@@ -89,6 +90,8 @@ class NDB_Form_new_profile extends NDB_Form
         // add date of birth
         $this->addBasicDate('dob1', 'Date of Birth', $dateOptions);
         $this->addBasicDate('dob2', 'Confirm Date of Birth', $dateOptions);
+        $this->addRule(array('dob1', 'dob2'), 'Date of birth fields must match', 'compare');
+
 
         // date of birth rules
         $this->form->addGroupRule('dob1', 'Date of Birth is required', 'required');
@@ -134,6 +137,7 @@ class NDB_Form_new_profile extends NDB_Form
         if($PSCIDsettings['generation'] == 'user') {
             $this->addBasicText('PSCID', 'PSCID');
         }
+
         $this->form->addFormRule(array(&$this, '_validate'));
     }
 
@@ -144,18 +148,18 @@ class NDB_Form_new_profile extends NDB_Form
         $config =& NDB_Config::singleton();
 
         if($values['dob1']['M'] != $values['dob2']['M'] ||
-            $values['dob1']['d'] != $values['dob2']['d'] ||
-            $values['dob1']['Y'] != $values['dob2']['Y'])
+                $values['dob1']['d'] != $values['dob2']['d'] ||
+                $values['dob1']['Y'] != $values['dob2']['Y'])
         {
             $errors['dob1'] = 'Date of Birth fields must match.';
         }
         if($config->getSetting('useEDC') == "true") {
-            if (strlen(implode($values['edc1'])) > 2 && !_checkDate($values['edc1'])) {
+            if (strlen(implode($values['edc1'])) > 2 && !Utility::_checkDate($values['edc1'])) {
                 $errors['edc1'] = 'EDC is not a valid date';
             }
             if($values['edc1']['M'] != $values['edc2']['M'] ||
-                $values['edc1']['d'] != $values['edc2']['d'] ||
-                $values['edc1']['Y'] != $values['edc2']['Y'])
+                    $values['edc1']['d'] != $values['edc2']['d'] ||
+                    $values['edc1']['Y'] != $values['edc2']['Y'])
             {
                 $errors['edc1'] = 'Estimated Due date fields must match.';
             }
@@ -163,8 +167,8 @@ class NDB_Form_new_profile extends NDB_Form
 
         if (empty($values['gender'])) {
             $errors['gender'] = 'Gender is required.';
-        }
-
+        } 
+    
         $PSCIDsettings = $config->getSetting('PSCID');
         if($PSCIDsettings['generation'] == 'user') {
             $db =& Database::singleton();
@@ -172,9 +176,15 @@ class NDB_Form_new_profile extends NDB_Form
             $centerID = $user->getData('CenterID');
             $site =& Site::singleton($centerID);
 
-            if(empty($values['PSCID'])) $errors['PSCID'] = 'PSCID must be specified';
-            elseif(!Candidate::validatePSCID($values['PSCID'], $site->getSiteAlias())) $errors['PSCID'] = 'PSCID does not match the required structure';
-            elseif($db->pselectOne("SELECT count(PSCID) FROM candidate WHERE PSCID=:pid", array('pid' => $values['PSCID'])) > 0) $errors['PSCID'] = 'PSCID has already been registered';
+            if(empty($values['PSCID'])) {
+                $errors['PSCID'] = 'PSCID must be specified';
+            } elseif(!Candidate::validatePSCID($values['PSCID'], $site->getSiteAlias())) {
+                $errors['PSCID'] = 'PSCID does not match the required structure';
+            } elseif($db->pselectOne("SELECT count(PSCID) FROM candidate WHERE PSCID=:V_PSCID", 
+                array('V_PSCID' => $values[PSCID])) > 0
+            ) {
+                    $errors['PSCID'] = 'PSCID has already been registered';
+            }
         }
         $useProjects = $config->getSetting('useProjects');
         if($useProjects === "true" && empty($values['ProjectID'])) {

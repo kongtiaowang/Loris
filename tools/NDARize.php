@@ -30,7 +30,7 @@ $file = $_SERVER['argv'][1];
 $fp = fopen($file, "r");
 $ofp = fopen("$file.ndar.csv", "w");
 
-$file_chunks = split("\.", $file);
+$file_chunks = explode("\.", $file);
 print_r($instrument);
 $instrument = $file_chunks[0];
 $className = null;

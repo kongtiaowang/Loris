@@ -248,13 +248,14 @@ INSERT INTO test_battery VALUES ('', 'intervention_history', '1053', '1179', 'Y'
 	function score()
 	{
 
-        $this->_nullScores($this->scoreLabels);
-
+        if ($this->_determineDataEntryCompletionStatus() == "Incomplete") {
+            return;
+        }
 
         $db =& Database::singleton();
 
         $query = "SELECT * FROM ".$this->table." WHERE CommentID='".$this->getCommentID()."'";
-	$values = array();
+	    $values = array();
         $db->selectRow($query, $values);
 
 
