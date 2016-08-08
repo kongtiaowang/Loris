@@ -456,6 +456,14 @@ class NDB_BVL_Instrument_mullen extends NDB_BVL_Instrument
               28=>2)
       );
 
+    var $warnings = array(
+        'gross_motor' => "",
+        'visual_recept' => "",
+        'fine_motor' => "",
+        'receptive_lang' => "",
+        'expressive_lang' => ""
+    );
+
     /**
     * sets up basic data, such as the HTML_Quickform object, and so on.
     *
@@ -1242,7 +1250,34 @@ class NDB_BVL_Instrument_mullen extends NDB_BVL_Instrument
            }
         }
 
-        return $raw_score;
+         $startingPoints = array(
+             'gross_motor' => array(1, 5, 8, 11, 15, 18, 22),
+             'visual_recept' => array(1, 3, 7, 9, 16, 19, 25),
+             'fine_motor' => array(1, 4, 7, 11, 13, 16, 21),
+             'receptive_lang' => array(1, 4, 8, 12, 18, 22, 25),
+             'expressive_lang' => array(1, 4, 7, 11, 15, 19, 22)
+         );
+
+
+         $firstQuestionAnswered = null;
+
+         for ($question = 1; $question <= $num_questions; $question++) {
+             if ($score_record[$scale_name . '_' . $question] != 'not_answered') {
+                 $firstQuestionAnswered = $question;
+             }
+             if ($firstQuestionAnswered != null) {
+                 break;
+             }
+         }
+
+         if (!in_array($firstQuestionAnswered, $startingPoints[$scale_name])) {
+
+             $this->warnings[$scale_name] = $eng_scale_name . " does not start at a starting point. ";
+             echo $this->warnings[$scale_name];
+         }
+
+
+         return $raw_score;
      }
 
      function getScaleCeiling($scalename, $responses, &$score) {
