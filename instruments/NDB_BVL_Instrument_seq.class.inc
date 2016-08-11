@@ -133,7 +133,10 @@ class NDB_BVL_Instrument_seq extends NDB_BVL_Instrument
 			'q29_uneasy_dizzy_what_do',
 			'q30_flap_arms_what_do',
 			'q31_free_time',
-			'q32_seem_happiest'),
+			'q32_seem_happiest',
+            'q35_other_comments',
+            'q35_other_comments_status'
+            ),
 			$this->scoreCols
 		);
 
