@@ -185,17 +185,20 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
         }
         $this->headers = array_merge($this->headers,
             array(
+                'Site',
                 'Birth_Date',
                 'Review_Done',
                 'Results',
                 'Exclusionary_Status',
                 'SAS',
                 'PVS',
+                'CommentID',
                 'Conflict',
                 'Finalized',
                 'Comments',
             )
         );
+        $this->tpl_data['hiddenHeaders'] = json_encode(['Site','CommentID']);
         $this->validFilters = array('c.CandID',
             'r.DICOM_ID',
             's.visit_label',
@@ -381,5 +384,23 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
             }
             $x++;
         }
+    }
+   /**
+     * Include the column formatter required to display the feedback link colours
+     * in the candidate_list menu
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+             $baseURL . "/final_radiological_review/js/columnFormatter.js"
+            )
+        );
     }
 }
