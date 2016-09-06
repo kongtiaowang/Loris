@@ -47,9 +47,12 @@ if (column === 'Cohort') {
    }
   }
 
+var reliableStyle = {
+  backgroundColor: '#86BC78',
+  }
 if (column === 'Reliable') {
    if(row['Reliable'] > 0){
-     return <td className="error">{cell}</td>;
+     return <td style={reliableStyle}>Yes</td>;
    }
   }
 

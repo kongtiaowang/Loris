@@ -82,12 +82,15 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     }
   }
 
+  var reliableStyle = {
+    backgroundColor: '#86BC78'
+  };
   if (column === 'Reliable') {
     if (row['Reliable'] > 0) {
       return React.createElement(
         "td",
-        { className: "error" },
-        cell
+        { style: reliableStyle },
+        "Yes"
       );
     }
   }
