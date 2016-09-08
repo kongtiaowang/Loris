@@ -248,4 +248,6 @@ ALTER TABLE vineland_subject_backup CONVERT TO CHARACTER SET utf8;
 ALTER TABLE vineland_subject_uploader CONVERT TO CHARACTER SET utf8;
 ALTER TABLE weight_for_age_chart CONVERT TO CHARACTER SET utf8;
 ALTER TABLE weight_for_age_chart_over_2 CONVERT TO CHARACTER SET utf8;
-
+-- IBIS Menu Issue
+INSERT INTO LorisMenuPermissions (MenuID, PermID) SELECT m.ID, p.PermID FROM permissions p CROSS JOIN LorisMenu m WHERE p.code='imaging_uploader' AND m.Label='Imaging Uploader';
+INSERT INTO LorisMenu (Label, Link, Parent, OrderNumber) VALUES ('Configuration', 'configuration/', (SELECT ID FROM LorisMenu as L WHERE Label='Admin'), 5)
