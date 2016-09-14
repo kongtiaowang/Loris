@@ -456,6 +456,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
     function _page3() {
         $this->form->addElement("select", "q4_pregnancy_ART", "4. Was this pregnancy the result of Assisted Reproductive Technology (ART)?", $this->yesNo);
         $this->form->addElement("select", "q4_pregnancy_ART_type", $this->indent . "If 1. YES, what type(s) of ART/ovulation induction techniques: (select all used)", array(
+        null => null,
         "a_ovulation_induction"=>"a. Ovulation induction",
         "b_in_vitro_fertilization"=>"b. In Vitro Fertilization (IVF)",
         "c_GIFT_or_ZIFT"=>"c. GIFT or ZIFT",
@@ -463,24 +464,30 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
         "e_sperm_donor"=>"e. Sperm donor",
         "f_egg_donor"=>"f. Egg donor",
         "g_eggs_or_embryos_frozen"=>"g. Eggs or embryos frozen",
-        "h_other"=>"h. Other"), "multiple");
+        "h_other"=>"h. Other",
+        "not_answered" => "Not Answered"
+        ), "multiple");
         $this->XINRegisterRule("q4_pregnancy_ART_type", array("q4_pregnancy_ART{@}=={@}1_yes"), "Please indicate which ART were used.");
         $this->addTextElement("q4_pregnancy_ART_type_specify", $this->indent . $this->indent . "If other, (please specify)", array("q4_pregnancy_ART_type{@}=={@}h_other"), "If other ART used, please specify or select Not Answered");
 
         $this->form->addElement("select", "q5_preg_health_probs", "5. At any time in this pregnancy, did you have any of the following health problems? (select all used)", array(
+        null => null,
         "a_fever_over_101_or_infection"=>"a.   Fever over 101 F or infection",
         "b_seizures"=>"b. Seizures",
         "c_viral_illness"=>"c. Viral illness",
-        ""=>"d.Question Removed", 
         "e_preterm_labor"=>"e. Preterm labor requiring treatment",
         "f_other_major_illness_or_injury"=>"f. Other major illness or injury",
         "g_vaginal_bleeding"=>"g. Vaginal Bleeding",
         "h_generalized_edema"=>"h. Generalized edema",
         "i_proteinuria"=>"i. Proteinuria",
-        "j_high_blood_pressure"=>"j. High blood pressure"), "multiple");
+        "j_high_blood_pressure"=>"j. High blood pressure",
+        "not_answered" => "Not Answered"
+        ), "multiple");
         $this->addTextElement("q5_pregnancy_health_problems_specify", $this->indent . "If other, (please specify)", array("q5_pregnancy_health_problems{@}=={@}f_other_major_illness_or_injury"), "If other health problems, please specify or select Not Answered");
 
-        $questionArray = array("a_antibio_infections"=>"a. Antibiotics for infections",
+        $questionArray = array(
+        null => null,
+        "a_antibio_infections"=>"a. Antibiotics for infections",
         "b_acne_meds"=>"b. Medications for acne",
         "c_birth_control_meds"=>"c. Medications for birth control",
         "d_antihypertensives"=>"d. Antihypertensives for high blood pressure",
@@ -498,14 +505,15 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
         "p_treatment_for_HIV"=>"p. Treatment for HIV",
         "q_thalidomide"=>"q. Thalidomide (please specify why)",
         "r_misoprostol"=>"r. Misoprostol (please specify why)",
-        "s_other"=>"s. Other (please specify medication and why)");
+        "s_other"=>"s. Other (please specify medication and why)",
+        "not_answered" => "Not Answered");
 
         $this->form->addElement("select", "q6_pregnancy_meds", "6. In this pregnancy, did you take any of the following prescription medications?",
         $questionArray, "multiple");
 
         $this->form->addElement("static", null, "Please specify when's");
         foreach($questionArray as $field=>$label) {
-            $this->form->addElement("select", "q6_{$field}_when_taken", $this->indent . "If $label were taken, when?:", array("0_before"=>"0 Before", "1_after"=>"1 After", "2_both"=>"2 Both", "3_breastfeeding"=>"3 Breastfeeding","not_answered"=>"Not Answered"), "multiple size='5'");
+            $this->form->addElement("select", "q6_{$field}_when_taken", $this->indent . "If $label were taken, when?:", array(null=>"", "0_before"=>"0 Before", "1_after"=>"1 After", "2_both"=>"2 Both", "3_breastfeeding"=>"3 Breastfeeding","not_answered"=>"Not Answered"), "multiple size='5'");
             $this->XINRegisterRule("q6_{$field}_when_taken", array("q6_pregnancy_meds{@}=={@}{$field}"), "Please specify when $label was taken");
             $this->_selectMultipleElements[]= "q6_{$field}_when_taken";
         }
@@ -519,25 +527,34 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
     function _page4() {
 
         //7.
-        $this->form->addElement("select", "q7_baby_health_problems", "7. In this pregnancy, did your doctor tell you that the baby had any of the following health problems?", array("a_positive_blood_test"=>"a. Screen positive on a blood test",
+        $this->form->addElement("select", "q7_baby_health_problems", "7. In this pregnancy, did your doctor tell you that the baby had any of the following health problems?",
+            array(
+                null => null,
+                "a_positive_blood_test"=>"a. Screen positive on a blood test",
         "b_abnormal_ultrasound_or_sonogram"=>"b. Abnormal ultrasound or sonogram",
         "c_abnormal_amniocentesis_or_CVS"=>"c. Abnormality from an amniocentesis or CVS",// (please specify)
-        "d_other"=>"d. Other (please specify)"), "multiple");
+        "d_other"=>"d. Other (please specify)",
+        "not_answered"=>"Not answered"), "multiple");
         $this->addTextElement("q7_a_positive_blood_test_specify", $this->indent . "If positive blood tests, please specify", array("q7_baby_health_problems{@}=={@}a_positive_blood_test"), "Please specify the results of the positive blood test.");
         $this->addTextElement("q7_b_abnormal_ultra_sono_specify", $this->indent . "If abnormal ultrasound or sonogram, please specify", array("q7_baby_health_problems{@}=={@}b_abnormal_ultrasound_or_sonogram"), "Please specify the results of the abnormal ultrasound or sonogram.");
         $this->addTextElement("q7_c_abnormal_amnio_CVS_specify", $this->indent . "If abnormal abnormal amniocentesis or CVS, please specify", array("q7_baby_health_problems{@}=={@}c_abnormal_amniocentesis_or_CVS"), "Please specify the results of the abnormal amniocentesis or CVS");
         $this->addTextElement("q7_d_other_specify", $this->indent . "If other, please specify", array("q7_baby_health_problems{@}=={@}d_other"), "Please specify the other results.");
 
         //8.
-        $this->form->addElement("select", "q8_pregnancy_alcohol_tobacco", "8. In this pregnancy, did you do any of the following activities?", array("a_drink_alcohol"=>"a. Drink alcohol", "b_smoke_cigarettes_or_tobacco"=>"b. Smoke cigarettes or tobacco"), "multiple");
-        $this->form->addElement("select", "q8_a_drink_alcohol_when_taken", $this->indent . "If alcohol was taken, when?:", array("0_before"=>"0 Before", "1_after"=>"1 After", "2_both"=>"2 Both","3_breastfeeding"=>"3 Breastfeeding", "not_answered"=>"Not Answered"), "multiple size='5'"  );
+        $this->form->addElement("select", "q8_pregnancy_alcohol_tobacco", "8. In this pregnancy, did you do any of the following activities?", array(
+            null=>"",
+            "a_drink_alcohol"=>"a. Drink alcohol",
+            "b_smoke_cigarettes_or_tobacco"=>"b. Smoke cigarettes or tobacco",
+            "not_answered"=>"Not Answered"
+        ), "multiple");
+        $this->form->addElement("select", "q8_a_drink_alcohol_when_taken", $this->indent . "If alcohol was taken, when?:", array(null=>"", "0_before"=>"0 Before", "1_after"=>"1 After", "2_both"=>"2 Both","3_breastfeeding"=>"3 Breastfeeding", "not_answered"=>"Not Answered"), "multiple size='5'"  );
         $this->_selectMultipleElements[] = "q8_a_drink_alcohol_when_taken";
         $this->XINRegisterRule("q8_a_drink_alcohol_when_taken", array("q8_pregnancy_alcohol_tobacco{@}=={@}a_drink_alcohol"), "Please specify when alcohol was taken");
         $this->form->addElement("select", "q8_a1_drink_quantity", $this->indent . "How many drinks did you usually have in one week?:", array(""=>NULL, "0"=>"0", "1_2"=>"1-2", "3_more"=>"3 or more","not_answered"=>"Not Answered"));
         $this->XINRegisterRule("q8_a1_drink_quantity", array("q8_pregnancy_alcohol_tobacco{@}=={@}a_drink_alcohol"), "Please specify when alcohol was taken");
         $this->addNumericElement("q8_a2_drink_max_week", $this->indent . "What is the maximum number of drinks you had in one week?");
         $this->XINRegisterRule("q8_a2_drink_max_week", array("q8_pregnancy_alcohol_tobacco{@}=={@}a_drink_alcohol"), "Please specify when alcohol was taken");
-        $this->form->addElement("select", "q8_b_tobacco_when_taken", $this->indent . "If tobacco was taken, when?:", array("0_before"=>"0 Before", "1_after"=>"1 After", "2_both"=>"2 Both","3_breastfeeding"=>"3 Breastfeeding", "not_answered"=>"Not Answered"), "multiple size='5'");
+        $this->form->addElement("select", "q8_b_tobacco_when_taken", $this->indent . "If tobacco was taken, when?:", array(null=>"", "0_before"=>"0 Before", "1_after"=>"1 After", "2_both"=>"2 Both","3_breastfeeding"=>"3 Breastfeeding", "not_answered"=>"Not Answered"), "multiple size='5'");
         $this->_selectMultipleElements[] = "q8_b_tobacco_when_taken";
         $this->XINRegisterRule("q8_b_tobacco_when_taken", array("q8_pregnancy_alcohol_tobacco{@}=={@}b_smoke_cigarettes_or_tobacco"), "Please specify when tobacco was taken");
         $this->form->addElement("select", "q8_b1_cigarette_perday", $this->indent . "How many cigarettes did you smoke per day?:", array(""=>NULL, "0"=>"0", "5_10"=>"5-10", "10_more"=>"10 or more","not_answered"=>"Not Answered"));
@@ -549,7 +566,9 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
 
 
         //9.
-        $questionArray = array("a_marijuana_hashish"=>"a. Smoke marijuana or hashish (THC)",
+        $questionArray = array(
+        null=>"",
+        "a_marijuana_hashish"=>"a. Smoke marijuana or hashish (THC)",
         "b_cocaine_crack_free_base"=>"b. Use Cocaine, Crack or Free base",
         "c_heroin"=>"c. Use Heroin (includes speed balling)",
         "d_methadone"=>"d. Take Methadone",
@@ -557,14 +576,16 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
         "f_ecstasy"=>"f. Take Ecstasy",
         "g_hallucinogens"=>"g. Take Hallucinogens",
         "h_inhalants"=>"h. Take inhalants that you sniff or breathe",
-        "i_other"=>"i. Other (please specify)");
+        "i_other"=>"i. Other (please specify)",
+        "not_answered"=>"Not Answered");
 
         $this->form->addElement("select", "q9_pregnancy_drugs", "9. In this pregnancy, did you do any of the following activities?",
         $questionArray, "multiple");
 
         $this->form->addElement("static", null, "Please specify when the drugs were taken");
         foreach($questionArray as $field=>$label) {
-            $this->form->addElement("select", "q9_{$field}_when_taken", $this->indent . "If $label were taken, when?:", array( "0_before"=>"0 Before", "1_after"=>"1 After", "2_both"=>"2 Both", "3_breastfeeding"=>"3 Breastfeeding", "not_answered"=>"Not Answered"), "multiple size='5'");
+            $this->form->addElement("select", "q9_{$field}_when_taken", $this->indent . "If $label were taken, when?:", array(
+                null=>"", "0_before"=>"0 Before", "1_after"=>"1 After", "2_both"=>"2 Both", "3_breastfeeding"=>"3 Breastfeeding", "not_answered"=>"Not Answered"), "multiple size='5'");
             $this->XINRegisterRule("q9_{$field}_when_taken", array("q9_pregnancy_drugs{@}=={@}{$field}"), "Please specify when $label was taken");
             $this->_selectMultipleElements[] = "q9_{$field}_when_taken";
         }
@@ -586,7 +607,9 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
         $this->addTextElement("q11_apgar_5_minute", $this->indent . "...at 5 minutes:");
 
         //12.
-        $this->form->addElement("select", "q12_birth_interventions", "12. Did this child need any of the following during/after labor and delivery:", array("a_resuscitation_breathe_heart"=>"a. Resuscitation, help to breathe or get heart started",
+        $this->form->addElement("select", "q12_birth_interventions", "12. Did this child need any of the following during/after labor and delivery:", array(
+            null=>"",
+            "a_resuscitation_breathe_heart"=>"a. Resuscitation, help to breathe or get heart started",
         "b_forceps_vacuum"=>"b. Forceps/vacuum extraction",
         "c_meconium_stain"=>"c. Meconium stain in the amniotic fluid",
         "d_cord_prolapse"=>"d. Cord prolapse/around neck/knot",
@@ -599,7 +622,8 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
         "k_irritable_floppy_infant_convulsions"=>"k. Irritable/floppy infant/convulsions",
         "l_clinical_dysmaturity"=>"l. Clinical dysmaturity",
         "m_difficulty_regulating_temperature"=>"m. Difficulty regulating temperature",
-        "n_oxygen_treatment"=>"n. Oxygen treatment (>30 %)"
+        "n_oxygen_treatment"=>"n. Oxygen treatment (>30 %)",
+        "not_answered"=>"Not Answered"
         ), "multiple");
 
         //13.
@@ -633,9 +657,13 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
         $this->XINRegisterRule("q15_d_seizure_medication", array("q15_seizures_convulsions{@}=={@}1_yes"), "Please indicate if medications are taken.");
 
         //16.
-        $questionArray = array("a_abnormal_brain_picture"=>"a. Had an abnormal picture of the brain",
+        $questionArray = array(
+            null=>"",
+            "a_abnormal_brain_picture"=>"a. Had an abnormal picture of the brain",
         "b_meningitis_encephalitis"=>"b. Been hospitalized for meningitis or encephalitis",
-        "c_lost_consciousness_head_injury"=>"c. Lost consciousness due to a head injury");
+        "c_lost_consciousness_head_injury"=>"c. Lost consciousness due to a head injury",
+            "not_answered"=>"Not Answered"
+        );
         $this->form->addElement("select", "q16_has_child_ever", "16. Has this child ever...", $questionArray, "multiple");
 
         $this->form->addElement("static", null, "If the child has lost consciousness...");
@@ -646,11 +674,14 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
         }
 
         //17.
-        $this->form->addElement("select", "q17_birth_defects", "17. Did this child have any of the following birth defects?", array("a_cleft_lip_palate"=>"a. Cleft lip or palate", "b_Abnormal_shape_hands_etc"=>"b. Abnormal shape of hands, feet, arms or legs",
+        $this->form->addElement("select", "q17_birth_defects", "17. Did this child have any of the following birth defects?", array(
+            null=>"",
+            "a_cleft_lip_palate"=>"a. Cleft lip or palate", "b_Abnormal_shape_hands_etc"=>"b. Abnormal shape of hands, feet, arms or legs",
         "c_open_spine"=>"c. Open spine",
         "d_heart_defect"=>"d. Heart defect (please specify",
         "e_kidney_defect"=>"e. Kidney defect(please specify)",
-        "f_other_defect"=>"f. Other defect(please specify)"), "multiple");
+        "f_other_defect"=>"f. Other defect(please specify)",
+            "not_answered"=>"Not Answered"), "multiple");
         $this->addTextElement("q17_d_heart_defect_specify", $this->indent . "If heart defect, please specify", array("q17_birth_defects{@}=={@}d_heart_defect"), "Please specify the heart defect.");
         $this->addTextElement("q17_e_kidney_defect_specify", $this->indent . "If kidney defect, please specify", array("q17_birth_defects{@}=={@}e_kidney_defect"), "Please specify the kidney defect.");
         $this->addTextElement("q17_f_other_defect_specify", $this->indent . "If other defect, please specify", array("q17_birth_defects{@}=={@}f_other_defect"), "Please specify the other defect.");
