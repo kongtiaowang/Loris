@@ -471,6 +471,7 @@ class NDB_BVL_Instrument_neuro_screen extends NDB_BVL_Instrument
                     'q1_strabismus_specify',
                     //        '1_strabismus_specify_status',
                     'q2_ptosis',
+                    'q2_ptosis_dropdown',
                     'q2_specify',
                     //        '2_specify_status',
                     'q3_epicanthus',
@@ -594,6 +595,8 @@ class NDB_BVL_Instrument_neuro_screen extends NDB_BVL_Instrument
                 //is this question used in this version number?
                 if(in_array($matches[1], $requiredQuestions)) {
                     //yes, required.  Do nothing - all questions are required by default
+                    // EDIT: now not required
+                    $this->XINRegisterRule($field, array("$field{@}=={@}NEVER_REQUIRED"));
                 } else {
                     //"un-require" other questions
                     $this->XINRegisterRule($field, array("q1_strabismus{@}=={@}Never_going_to_happen"));
@@ -929,6 +932,7 @@ class NDB_BVL_Instrument_neuro_screen extends NDB_BVL_Instrument
                     'q1_strabismus_specify',
                     //        '1_strabismus_specify_status',
                     'q2_ptosis',
+                    'q2_ptosis_dropdown',
                     'q2_specify',
                     //        '2_specify_status',
                     'q3_epicanthus',
@@ -1057,6 +1061,8 @@ class NDB_BVL_Instrument_neuro_screen extends NDB_BVL_Instrument
                 //is this question used in this version number?
                 if(in_array($matches[1], $requiredQuestions)) {
                     //yes, required.  Do nothing - all questions are required by default
+                    // EDIT: now not required
+                    $this->XINRegisterRule($field, array("$field{@}=={@}NEVER_REQUIRED"));
                 } else {
                     //"un-require" other questions
                     $this->XINRegisterRule($field, array("q1_strabismus{@}=={@}Never_going_to_happen"));
