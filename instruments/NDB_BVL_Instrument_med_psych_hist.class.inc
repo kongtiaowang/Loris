@@ -620,9 +620,11 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
 
         $this->form->addElement("static", null, "Please specify when's");
         foreach($questionArray as $field=>$label) {
-            $this->form->addElement("select", "q6_{$field}_when_taken", $this->indent . "If $label were taken, when?:", array(null => "", "0_before" => "0 Before", "1_after" => "1 After", "2_both" => "2 Both", "3_breastfeeding" => "3 Breastfeeding", "not_answered" => "Not Answered"), "multiple size='5'");
-            $this->XINRegisterRule("q6_{$field}_when_taken", array("q6_pregnancy_meds{@}=={@}{$field}"), "Please specify when $label was taken");
-            $this->_selectMultipleElements[] = "q6_{$field}_when_taken";
+            if ($field != "not_answered" && $field != null) {
+                $this->form->addElement("select", "q6_{$field}_when_taken", $this->indent . "If $label were taken, when?:", array(null => "", "0_before" => "0 Before", "1_after" => "1 After", "2_both" => "2 Both", "3_breastfeeding" => "3 Breastfeeding", "not_answered" => "Not Answered"), "multiple size='5'");
+                $this->XINRegisterRule("q6_{$field}_when_taken", array("q6_pregnancy_meds{@}=={@}{$field}"), "Please specify when $label was taken");
+                $this->_selectMultipleElements[] = "q6_{$field}_when_taken";
+            }
         }
 
         $this->form->addElement("static", null, "Please specify what's and why's");
@@ -709,22 +711,24 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
 
             $this->form->addElement("static", null, "Please specify when the drugs were taken");
             foreach($questionArray as $field=>$label) {
-                $this->form->addElement(
-                    "select",
-                    "q9_{$field}_when_taken",
-                    $this->indent . "If $label were taken, when?:",
-                    array(
-                     null              => "",
-                     "0_before"        => "0 Before",
-                     "1_after"         => "1 After",
-                     "2_both"          => "2 Both",
-                     "3_breastfeeding" => "3 Breastfeeding",
-                     "not_answered"    => "Not Answered",
-                    ),
-                    "multiple size='5'"
-                );
-                $this->XINRegisterRule("q9_{$field}_when_taken", array("q9_pregnancy_drugs{@}=={@}{$field}"), "Please specify when $label was taken");
-                $this->_selectMultipleElements[] = "q9_{$field}_when_taken";
+                if ($field != "not_answered" && $field != null) {
+                    $this->form->addElement(
+                        "select",
+                        "q9_{$field}_when_taken",
+                        $this->indent . "If $label were taken, when?:",
+                        array(
+                            null => "",
+                            "0_before" => "0 Before",
+                            "1_after" => "1 After",
+                            "2_both" => "2 Both",
+                            "3_breastfeeding" => "3 Breastfeeding",
+                            "not_answered" => "Not Answered",
+                        ),
+                        "multiple size='5'"
+                    );
+                    $this->XINRegisterRule("q9_{$field}_when_taken", array("q9_pregnancy_drugs{@}=={@}{$field}"), "Please specify when $label was taken");
+                    $this->_selectMultipleElements[] = "q9_{$field}_when_taken";
+                }
             }
             $this->addTextElement("q9_i_other_specify", $this->indent . $this->indent ."If other drugs, please specify", array("q9_pregnancy_drugs{@}=={@}i_other"), "If other drugs were taken, please specify");
 
