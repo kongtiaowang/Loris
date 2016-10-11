@@ -1,4 +1,4 @@
-<?php
+<?phpjfkdsjfkljalsd
 /**
 * The candidate list menu
 *
