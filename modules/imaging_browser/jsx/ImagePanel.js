@@ -126,11 +126,14 @@ var ImagePanelHeadersTable = React.createClass({
   }
 });
 var ImageQCDropdown = React.createClass({
+  handleClick: function() {
+    console.log("click test"); // React Component instance
+  },
 
   render: function() {
     var label = <label>{this.props.Label}</label>;
     if (this.props.url) {
-      label = <label><a href={this.props.url}>{this.props.Label}</a></label>;
+      label = <label><a href={this.props.url} onClick={this.handleClick.bind(this)}>{this.props.Label}</a></label>;
     }
     var dropdown;
     if (this.props.editable) {
