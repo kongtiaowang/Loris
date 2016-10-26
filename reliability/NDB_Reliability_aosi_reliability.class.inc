@@ -65,7 +65,7 @@ class NDB_Reliability_aosi_reliability extends NDB_Reliability
 
         }
 
-        $defaults['CommentID'] = "<a href=\"main.php?test_name=reliability_breakdown&instrument=$initial_table&CommentID=$row[CommentID]\">" . $row['CommentID'] . "</a>";
+        $defaults['CommentID'] = "<a href=\"{$baseurl}/reliability_breakdown/?instrument=$initial_table&CommentID=$row[CommentID]\">" . $row['CommentID'] . "</a>";
         return $defaults;
     }
 
