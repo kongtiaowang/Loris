@@ -1,7 +1,7 @@
 <?php
 
-require_once 'HTML/QuickForm.php';
-require_once 'HTML/QuickForm/Renderer/Array.php';
+
+
 require_once("RequiredIfGroup.inc");
 require_once('RequiredIf.inc');
 require_once('NDB_BVL_Instrument_EARLI_interview.class.inc');
@@ -18,7 +18,7 @@ class NDB_BVL_Instrument_EARLI_interview_PART_1 extends NDB_BVL_Instrument_EARLI
     {
 
         $this->formType="XIN";
-        $this->form = new HTML_Quickform('test_form');
+        $this->form = new LorisForm('test_form');
         $this->page = $page;            // page label (number or string - used by user-defined child classes)
 
         // set the object properties
@@ -86,7 +86,7 @@ class NDB_BVL_Instrument_EARLI_interview_PART_1 extends NDB_BVL_Instrument_EARLI
 
         // From Mr. David Brownlee:
         //The array of selects with multiple answers allowed
-        //Any HTML_Quickform multiple selects must be listed here
+        //Any LorisForm multiple selects must be listed here
         //Usually this appears at the beginning of the file in the setup() function
 
         $this->_selectMultipleElements = array_merge($this->_selectMultipleElements, array("q3_32_1_0","q3_32_2_0","q3_32_3_0","q3_32_4_0", "q3_32_5_0", "q4_10_p1", "q4_10_p2", "q4_10_p3", "q4_10_p4", "q4_10_p5", "q4_13_m1", "q4_13_m2", "q4_13_m3", "q4_13_m4", "q4_13_m5", "q4_20_m", "q4_22", "q4_24", "q4_28", "q4_32", "q4_35", "q4_50", "q4_52", "q4_57", "q4_60", "q4_63", "q4_66", "q4_67", "q4_68_select_1", "q4_68_select_2", "q4_68_select_3", "q4_71_select_1", "q4_71_select_2", "q4_71_select_3", "q4_76_m_1", "q4_76_m_2", "q4_76_m_3", "q4_76_m1", "q4_76_m2", "q4_76_m3", "q4_79", "q4_92", "q4_95_month_1", "q4_95_month_2", "q4_95_month_3", "q4_98_1_month", "q4_98_2_month", "q4_98_3_month", "q4_98_4_month", "q4_98_5_month", "q4_98_6_month", "q4_98_7_month", "q4_98_8_month"));
@@ -99,7 +99,7 @@ class NDB_BVL_Instrument_EARLI_interview_PART_1 extends NDB_BVL_Instrument_EARLI
     }
 
     /**
-     * method to build the HTML_Quickform object into a paged form
+     * method to build the LorisForm object into a paged form
      * @return void
      * @access private
      */

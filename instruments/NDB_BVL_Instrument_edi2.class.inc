@@ -1,7 +1,7 @@
 <?php
 
-require_once 'HTML/QuickForm.php';
-require_once 'HTML/QuickForm/Renderer/Array.php';
+
+
 require_once "Utility.class.inc";
 require_once "Candidate.class.inc";
 
@@ -197,7 +197,7 @@ INSERT INTO help(hash, topic) VALUES (md5('edi2'),'EDI_IBIS2');
     var $scores = array();
 
 	/**
-    * sets up basic data, such as the HTML_Quickform object, and so on.
+    * sets up basic data, such as the LorisForm object, and so on.
     *
     * @param string $commentID  the CommentID identifying the data to load
     * @param string $page       if a multipage form, the page to show
@@ -206,7 +206,7 @@ INSERT INTO help(hash, topic) VALUES (md5('edi2'),'EDI_IBIS2');
     */
     function setup($commentID, $page){
         $this->formType="XIN";
-        $this->form = new HTML_Quickform('test_form');
+        $this->form = new LorisForm('test_form');
         $this->page = $page;            // page label (number or
         // string - used by
         // user-defined child classes)
@@ -218,11 +218,11 @@ INSERT INTO help(hash, topic) VALUES (md5('edi2'),'EDI_IBIS2');
         $this->commentID = $commentID;
         
         //The array of dates/timestamps to convert to database dates/timestamps
-        //Any HTML_Quickform date elements must be listed here
+        //Any LorisForm date elements must be listed here
         $this->dateTimeFields=array("Date_taken");
             
         //The array of selects with multiple answers allowed
-        //Any HTML_Quickform multiple selects must be listed here
+        //Any LorisForm multiple selects must be listed here
         $this->_selectMultipleElements = array();
 
         // required fields for data entry completion status
@@ -413,7 +413,7 @@ INSERT INTO help(hash, topic) VALUES (md5('edi2'),'EDI_IBIS2');
 
     }
     /**
-    * method to build the HTML_Quickform object into a paged form
+    * method to build the LorisForm object into a paged form
     *
     * @return void
     * @access private

@@ -1,7 +1,7 @@
 <?php
 
-require_once 'HTML/QuickForm.php';
-require_once 'HTML/QuickForm/Renderer/Array.php';
+
+
 require_once("RequiredIfGroup.inc");
 require_once('RequiredIf.inc');
 require_once('NDB_BVL_Instrument_EARLI_interview.class.inc');
@@ -31,7 +31,7 @@ class NDB_BVL_Instrument_EARLI_interview_revised extends NDB_BVL_Instrument_EARL
 	{
 
 		$this->formType="XIN";
-		$this->form = new HTML_Quickform('test_form');
+		$this->form = new LorisForm('test_form');
 		$this->page = $page;            // page label (number or string - used by user-defined child classes)
 
 		// set the object properties
@@ -77,7 +77,7 @@ class NDB_BVL_Instrument_EARLI_interview_revised extends NDB_BVL_Instrument_EARL
 
 
 	/**
-    	* method to build the HTML_Quickform object into a paged form
+    	* method to build the LorisForm object into a paged form
 	* @return void
    	* @access private
     	*/
