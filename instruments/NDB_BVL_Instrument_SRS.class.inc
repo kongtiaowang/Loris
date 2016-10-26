@@ -1,7 +1,7 @@
 <?php
 
-require_once 'HTML/QuickForm.php';
-require_once 'HTML/QuickForm/Renderer/Array.php';
+
+
 
 class NDB_BVL_Instrument_SRS extends NDB_BVL_Instrument
 {
@@ -152,7 +152,7 @@ SUMIF ( Q4=>0 and Q8=>0 and Q14=>0 and Q20=>0 and Q24=>0 and Q28=>0 and Q29=>0 a
 
 
     /**
-     * sets up basic data, such as the HTML_Quickform object, and so on.
+     * sets up basic data, such as the LorisForm object, and so on.
      *
      * @param string $commentID the CommentID identifying the data to load
      * @param string $page if a multipage form, the page to show
@@ -162,7 +162,7 @@ SUMIF ( Q4=>0 and Q8=>0 and Q14=>0 and Q20=>0 and Q24=>0 and Q28=>0 and Q29=>0 a
     function setup($commentID, $page)
     {
         $this->formType = "XIN";
-        $this->form = new HTML_Quickform('test_form');
+        $this->form = new LorisForm('test_form');
         $this->page = $page;            // page label (number or
         // string - used by
         // user-defined child classes)
@@ -174,11 +174,11 @@ SUMIF ( Q4=>0 and Q8=>0 and Q14=>0 and Q20=>0 and Q24=>0 and Q28=>0 and Q29=>0 a
         $this->commentID = $commentID;
 
         //The array of dates/timestamps to convert to database dates/timestamps
-        //Any HTML_Quickform date elements must be listed here
+        //Any LorisForm date elements must be listed here
         $this->dateTimeFields = array("Date_taken");
 
         //The array of selects with multiple answers allowed
-        //Any HTML_Quickform multiple selects must be listed here
+        //Any LorisForm multiple selects must be listed here
         $this->_selectMultipleElements = array();
 
         // Get the subject age in months for scoring
@@ -212,7 +212,7 @@ SUMIF ( Q4=>0 and Q8=>0 and Q14=>0 and Q20=>0 and Q24=>0 and Q28=>0 and Q29=>0 a
     //If the instrument is not paged, remove the switch from the _setupForm method and add all the form Elements in this function.
 
     /**
-     * method to build the HTML_Quickform object into a paged form
+     * method to build the LorisForm object into a paged form
      *
      * @return void
      * @access private

@@ -1,7 +1,7 @@
 <?php
 
-require_once 'HTML/QuickForm.php';
-require_once 'HTML/QuickForm/Renderer/Array.php';
+
+
 require_once("RequiredIfGroup.inc");
 require_once('RequiredIf.inc');
 require_once('NDB_BVL_Instrument_EARLI_interview.class.inc');
@@ -46,7 +46,7 @@ class NDB_BVL_Instrument_EARLI_interview_S7_inserts extends NDB_BVL_Instrument_E
 	{
 
 		$this->formType="XIN";
-		$this->form = new HTML_Quickform('test_form');
+		$this->form = new LorisForm('test_form');
 		$this->page = $page;            // page label (number or string - used by user-defined child classes)
 
 		// set the object properties
@@ -98,7 +98,7 @@ class NDB_BVL_Instrument_EARLI_interview_S7_inserts extends NDB_BVL_Instrument_E
 
 		// From Mr. David Brownlee:
 		//The array of selects with multiple answers allowed
-		//Any HTML_Quickform multiple selects must be listed here
+		//Any LorisForm multiple selects must be listed here
 		//Usually this appears at the beginning of the file in the setup() function
 
 		$this->_selectMultipleElements = array_merge($this->_selectMultipleElements, array("q7_16_1", "q7_18_1", "q7_25_p1_1", "q7_25_p2_1", "q7_25_p3_1", "q7_29_p1_1", "q7_29_p2_1", "q7_29_p3_1", "q7_32_1", "q7_34_1", "q7_36_1", "q7_38_1_1", "q7_38_2_1", "q7_38_3_1","q7_38_4_1", "q7_38_5_1", "q7_40_1_1", "q7_40_2_1", "q7_40_3_1", "q7_40_4_1", "q7_40_5_1", "q7_40_6_1", "q7_16_2", "q7_18_2", "q7_25_p1_2", "q7_25_p2_2", "q7_25_p3_2", "q7_29_p1_2", "q7_29_p2_2", "q7_29_p3_2", "q7_32_2", "q7_34_2", "q7_36_2", "q7_38_1_2", "q7_38_2_2", "q7_38_3_2","q7_38_4_2", "q7_38_5_2", "q7_40_1_2", "q7_40_2_2", "q7_40_3_2", "q7_40_4_2", "q7_40_5_2", "q7_40_6_2", "q7_16_3", "q7_18_3", "q7_25_p1_3", "q7_25_p2_3", "q7_25_p3_3", "q7_29_p1_3", "q7_29_p2_3", "q7_29_p3_3", "q7_32_3", "q7_34_3", "q7_36_3", "q7_38_1_3", "q7_38_2_3", "q7_38_3_3","q7_38_4_3", "q7_38_5_3", "q7_40_1_3", "q7_40_2_3", "q7_40_3_3", "q7_40_4_3", "q7_40_5_3", "q7_40_6_3"));
@@ -110,7 +110,7 @@ class NDB_BVL_Instrument_EARLI_interview_S7_inserts extends NDB_BVL_Instrument_E
 	}
 
 	/**
-    	* method to build the HTML_Quickform object into a paged form
+    	* method to build the LorisForm object into a paged form
 	* @return void
    	* @access private
     	*/

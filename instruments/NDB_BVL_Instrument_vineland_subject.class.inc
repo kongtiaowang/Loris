@@ -26,7 +26,7 @@ INSERT INTO instrument_subtests VALUES('', 'vineland_subject', 'vineland_subject
 -- INSERT INTO test_battery VALUES ('', 'vineland_subject', '1050', '1140', 'Y', 'Visit', '3');
 */
     /**
-    * sets up basic data, such as the HTML_Quickform object, and so on.
+    * sets up basic data, such as the LorisForm object, and so on.
     *
     * @param string $commentID  the CommentID identifying the data to load
     * @param string $page       if a multipage form, the page to show

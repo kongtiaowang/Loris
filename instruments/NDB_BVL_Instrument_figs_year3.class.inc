@@ -1,7 +1,7 @@
 <?php
 
-require_once 'HTML/QuickForm.php';
-require_once 'HTML/QuickForm/Renderer/Array.php';
+
+
 
 class NDB_BVL_Instrument_figs_year3 extends NDB_BVL_Instrument
 {
@@ -17,7 +17,7 @@ class NDB_BVL_Instrument_figs_year3 extends NDB_BVL_Instrument
      * Array of column names to be ignored by the double data entry conflict detector.
      */
     /**
-    * sets up basic data, such as the HTML_Quickform object, and so on.
+    * sets up basic data, such as the LorisForm object, and so on.
     *
     * @param string $commentID  the CommentID identifying the data to load
     * @param string $page if a multipage form, the page to show
@@ -28,7 +28,7 @@ class NDB_BVL_Instrument_figs_year3 extends NDB_BVL_Instrument
     {
         require_once("RequiredIf.inc");
         
-        $this->form = new HTML_Quickform('test_form');
+        $this->form = new LorisForm('test_form');
         $this->form->registerRule('requiredIf', null, 'HTML_QuickForm_Rule_RequiredIf', 'RequiredIf.inc');
         
         if(!empty($_REQUEST['relativeID'])) {
@@ -131,7 +131,7 @@ class NDB_BVL_Instrument_figs_year3 extends NDB_BVL_Instrument
     }
 
     /**
-    * method to build the HTML_Quickform object into a complete FIGS Relatives form
+    * method to build the LorisForm object into a complete FIGS Relatives form
     *
     * @return void
     * @access private
@@ -266,17 +266,17 @@ class NDB_BVL_Instrument_figs_year3 extends NDB_BVL_Instrument
         // actually set the quickform object defaults
         $this->form->setDefaults($defaults);
         
-        // display the HTML_Quickform object
+        // display the LorisForm object
         return $this->form->toHTML();
     }
     
 
     /**
-    * accepts an array usable as input to HTML_Quickform::setDefaults()
+    * accepts an array usable as input to LorisForm::setDefaults()
     * and does any necessary preprocessing on that array.
     *
     * @param array $defaults    the array to be passed on to
-    * HTML_Quickform::setDefaults()
+    * LorisForm::setDefaults()
     * @return array             the processed array ready for setDefaults()
     * @access private
     */

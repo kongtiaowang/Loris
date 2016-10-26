@@ -18,7 +18,7 @@ class NDB_BVL_Instrument_m_chat extends NDB_BVL_Instrument
 	//If the instrument is not paged, remove the switch from the _setupForm method and add all the form Elements in this function.
 
 	/**
-    * method to build the HTML_Quickform object into a paged form
+    * method to build the LorisForm object into a paged form
     *
     * @return void
     * @access private

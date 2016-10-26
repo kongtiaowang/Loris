@@ -1,8 +1,8 @@
 <?php
 
 require_once('RequiredIf.inc');
-require_once 'HTML/QuickForm.php';
-require_once 'HTML/QuickForm/Renderer/Array.php';
+
+
 
 class NDB_BVL_Instrument_tsi_followup extends NDB_BVL_Instrument
 {
@@ -85,7 +85,7 @@ class NDB_BVL_Instrument_tsi_followup extends NDB_BVL_Instrument
 	 * Array of column names to be ignored by the double data entry conflict detector.
 	 */
 	/**
-	 * sets up basic data, such as the HTML_Quickform object, and so on.
+	 * sets up basic data, such as the LorisForm object, and so on.
 	 *
 	 * @param string $commentID  the CommentID identifying the data to load
 	 * @param string $page       if a multipage form, the page to show
@@ -97,7 +97,7 @@ class NDB_BVL_Instrument_tsi_followup extends NDB_BVL_Instrument
 
 	function setup($commentID, $page){
 		$this->formType="XIN";
-		$this->form = new HTML_Quickform('test_form');
+		$this->form = new LorisForm('test_form');
 		$this->page = $page;            // page label (number or
 		// string - used by
 		// user-defined child classes)
@@ -109,11 +109,11 @@ class NDB_BVL_Instrument_tsi_followup extends NDB_BVL_Instrument
 		$this->commentID = $commentID;
 
 		//The array of dates/timestamps to convert to database dates/timestamps
-		//Any HTML_Quickform date elements must be listed here
+		//Any LorisForm date elements must be listed here
 		$this->dateTimeFields=array("Date_taken");
 
 		//The array of selects with multiple answers allowed
-		//Any HTML_Quickform multiple selects must be listed here
+		//Any LorisForm multiple selects must be listed here
 		$this->_selectMultipleElements = array('candidate_race', 'mother_race', 'father_race');
 
 		// required fields for data entry completion status
@@ -141,7 +141,7 @@ class NDB_BVL_Instrument_tsi_followup extends NDB_BVL_Instrument
 	}
 
 	/**
-    * method to build the HTML_Quickform object into a paged form
+    * method to build the LorisForm object into a paged form
     *
     * @return void
     * @access private
