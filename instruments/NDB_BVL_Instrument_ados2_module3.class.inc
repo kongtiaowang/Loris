@@ -109,7 +109,7 @@ class NDB_BVL_Instrument_ados2_module3 extends NDB_BVL_Instrument
     function _setupForm(){
 
        if(preg_match("/ados2_module3(_page[0-9]+)/",$this->page,$matches)){
-            call_user_func($this, $matches[1]);
+            call_user_func(array($this, $matches[1]));
         } else {
             $this->_main();
         }

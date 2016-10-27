@@ -68,7 +68,7 @@ function _setupForm(){
         $this->form->addFormRule(array(&$this,'XINValidate'));
     	
     	if(preg_match("/(_page[0-9]+)/",$this->page,$matches)){
-            call_user_func($this, $matches[1]);
+            call_user_func(array($this, $matches[1]));
         } else {
             $this->_main();
         }

@@ -136,7 +136,7 @@ class NDB_BVL_Instrument_LENA_DataTrackingForm extends NDB_BVL_Instrument
      */
     function _setupForm(){
         if(preg_match("/LENA_DataTrackingForm(_page[0-9]+)/",$this->page,$matches)){
-            call_user_func($this, $matches[1]);
+            call_user_func(array($this, $matches[1]));
         } else {
             $this->_main();
         }

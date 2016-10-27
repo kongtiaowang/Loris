@@ -73,7 +73,7 @@ class NDB_BVL_Instrument_dna_tracking extends NDB_BVL_Instrument
     function _setupForm(){
         if(preg_match("/dna_tracking(_page[0-9]+)/",$this->page,$matches)){
             $this->_page($matches[1]);
-            //call_user_func($this, $matches[1]);
+            //call_user_func(array($this, $matches[1]));
         } else {
             $this->_main();
         }
