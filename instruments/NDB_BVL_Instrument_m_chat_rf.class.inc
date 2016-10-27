@@ -85,7 +85,7 @@ class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument
     {
         //determine page to display
         if (preg_match("/m_chat_rf(_page[0-9]+)/", $this->page, $matches)) {
-            call_user_func($this, $matches[1]);
+            call_user_func(array($this, $matches[1]));
         } else {
             $this->_main();
         }

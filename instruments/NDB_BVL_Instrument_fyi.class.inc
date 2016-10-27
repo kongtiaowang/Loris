@@ -101,7 +101,7 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
     */
     function _setupForm(){
         if(preg_match("/fyi(_page[0-9]+)/",$this->page,$matches)){
-            call_user_func($this, $matches[1]);
+            call_user_func(array($this, $matches[1]));
         } else {
             $this->_main();
         }

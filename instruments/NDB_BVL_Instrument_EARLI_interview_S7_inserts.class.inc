@@ -130,7 +130,7 @@ class NDB_BVL_Instrument_EARLI_interview_S7_inserts extends NDB_BVL_Instrument_E
 
 		if(preg_match("/EARLI_interview(_page[0-9]+)/", $this->page, $matches))
 		{
-			call_user_func($this, $matches[1]);
+			call_user_func(array($this, $matches[1]));
 		}	
 
 		else
