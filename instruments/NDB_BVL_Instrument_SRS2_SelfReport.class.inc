@@ -58,7 +58,7 @@ class NDB_BVL_Instrument_SRS2_SelfReport extends NDB_BVL_Instrument
     function _setupForm(){
 
         if(preg_match("/SRS2_SelfReport(_page[0-9]+)/",$this->page,$matches)){
-            call_user_method($matches[1], $this);
+            call_user_func($this, $matches[1]);
         } else {
             $this->_main();
         }
