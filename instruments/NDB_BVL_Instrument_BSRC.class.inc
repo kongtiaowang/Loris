@@ -65,7 +65,7 @@ INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, Subp
     */
    function _setupForm(){
        if(preg_match("/BSRC(_page[0-9]+)/",$this->page,$matches)){
-           call_user_method($matches[1], $this);
+           call_user_func($this, $matches[1]);
        } else {
            $this->_main();
        }
