@@ -117,7 +117,7 @@ class NDB_BVL_Instrument_dna_tracking extends NDB_BVL_Instrument
                            "blood_collection_method2"=>"2. How was blood collected?","blood_sent2"=>"2. Where was blood sent?");
         $subjects = array('candidate','proband','mother','father','other');
         $types = array('saliva','blood');
-                        $this->form->registerRule('checkdate', 'callback', '_checkDate');
+                        // deprecated // $this->form->registerRule('checkdate', 'callback', '_checkDate');
         $this->form->addFormRule(array(&$this, 'dna_rules'));
 	foreach($questions as $key=>$val){
 		$groupname = $key."_group";

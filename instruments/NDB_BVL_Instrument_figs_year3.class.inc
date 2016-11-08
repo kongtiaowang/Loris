@@ -29,7 +29,7 @@ class NDB_BVL_Instrument_figs_year3 extends NDB_BVL_Instrument
         require_once("RequiredIf.inc");
         
         $this->form = new LorisForm('test_form');
-        $this->form->registerRule('requiredIf', null, 'HTML_QuickForm_Rule_RequiredIf', 'RequiredIf.inc');
+        // deprecated // $this->form->registerRule('requiredIf', null, 'HTML_QuickForm_Rule_RequiredIf', 'RequiredIf.inc');
         
         if(!empty($_REQUEST['relativeID'])) {
             $this->relativeID = $_REQUEST['relativeID'];
