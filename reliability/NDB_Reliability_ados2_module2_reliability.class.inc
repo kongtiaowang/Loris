@@ -42,8 +42,13 @@ class NDB_Reliability_ados2_module2_reliability extends NDB_Reliability
     var $option012378 = array(""=>NULL, 0=>0, 1=>1, 2=>2,3=>3,7=>7, 8=>8, "not_answered"=>"Not Answered");
  
 
-    function _getAgeInMonths() {
-        throw new LorisException("Could not calculate age because don't know if subject or proband");
+    function _getAgeInMonths($instrument_record, $reliability_record) {
+        $CommentID = $instrument_record['CommentID'];
+        $CandID = substr($CommentID, 0, 6);
+        error_log("CandID: $CandID");
+        $candidate =& Candidate::singleton($CandID);
+        $age = Utility::calculateAge($candidate->getCandidateDoB(), $instrument_record['Date_taken']);
+        return $age['year'] * 12 + $age['mon'];
     }
     function _getDefaults()
     {
