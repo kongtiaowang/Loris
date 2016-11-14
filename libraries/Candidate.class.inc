@@ -140,7 +140,7 @@ class Candidate
    */
    function createNew($centerID, $dateOfBirth, $edc, $gender, $PSCID=null, $startNumber=0)
    {
-       if(!empty($this->candidateInfo['candID'])) {
+       if(isset($this) && (!empty($this->candidateInfo['candID']))) {
            throw new LorisException("createNew must be called statically");
        }
        
