@@ -3076,10 +3076,10 @@ if($score_record['q_2_age_first_noticed_code']=='8' AND $score_record3['q_2_age_
       
       //$this->form->addElement('text', 'Examiner', 'Examiner');
       
-      $this->form->addGroupRule('Date_taken', 'Date of Administration is required', 'required');
+      $this->form->addRule('Date_taken', 'Date of Administration is required', 'required');
       
-      $this->form->registerRule('checkdate', 'callback', '_checkDate');
-      $this->form->addRule('Date_taken', 'Date of Administration is invalid', 'checkdate');
+      // deprecated // $this->form->registerRule('checkdate', 'callback', '_checkDate');
+      // not needed // $this->form->addRule('Date_taken', 'Date of Administration is invalid', 'checkdate');
       
       $this->form->addRule('Examiner', 'Examiner is required', 'required');
   }
