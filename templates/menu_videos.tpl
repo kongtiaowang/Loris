@@ -84,10 +84,21 @@
     <td class="controlPanelSection">List of Log Entries</td>
 
     <!-- display pagination links -->
-    <td align="right">{$page_links}</td>
+    <td align="right" id="pageLinks"></td>
 </tr>
 </table>
-
+<script>
+var pageLinks = RPaginationLinks(
+{
+    RowsPerPage : {$rowsPerPage},
+    Total: {$numVideos},
+    onChangePage: function(pageNum) {
+        location.href="{$baseurl}/videos/?filter[order][field]={$filterfield}&filter[order][fieldOrder]={$filterfieldOrder}&pageID=" + pageNum
+    },
+    Active: {$pageID}
+});
+React.render(pageLinks, document.getElementById("pageLinks"));
+</script>
 <!-- start data table -->
 <div class="table-responsive">
     <table border="0" width="100%" class ="table table-hover table-primary table-bordered">

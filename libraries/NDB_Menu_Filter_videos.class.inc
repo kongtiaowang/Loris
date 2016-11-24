@@ -206,6 +206,8 @@ class NDB_Menu_Filter_videos extends NDB_Menu_Filter
             }
             $x++;
         }
+        $this->tpl_data['numVideos'] = $this->TotalItems;
+
         return true;
     }
     
