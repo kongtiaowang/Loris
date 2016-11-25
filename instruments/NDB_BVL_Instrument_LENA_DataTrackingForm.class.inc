@@ -49,8 +49,6 @@ class NDB_BVL_Instrument_LENA_DataTrackingForm extends NDB_BVL_Instrument
 
         //The array of dates/timestamps to convert to database dates/timestamps
         //Any HTML_Quickform date elements must be listed here
-        $this->dateTimeFields=array("datecompleted");
-
         $this->_selectMultipleElements = array("reasonsdecline");
 
         $config =& NDB_Config::singleton();
@@ -63,8 +61,7 @@ class NDB_BVL_Instrument_LENA_DataTrackingForm extends NDB_BVL_Instrument
         'emptyOptionValue' => null
         );
 
-       $this->_doubleDataEntryDiffIgnoreColumns = $this->getIgnorediffColumns(); 
-      //print_r($this->_doubleDataEntryDiffIgnoreColumns); 
+       $this->_doubleDataEntryDiffIgnoreColumns = $this->getIgnorediffColumns();
         $db =& Database::singleton();
         try {
             $record = $db->pselectRow("SELECT * FROM ".$this->table." WHERE CommentID=:cid", 
@@ -156,8 +153,7 @@ class NDB_BVL_Instrument_LENA_DataTrackingForm extends NDB_BVL_Instrument
        
         $this->addHeader("LENA Data Tracking Form");    
         $this->addLabel("<BR><strong>Section A. Data Submission</strong>");
-        $this->addBasicDate("datecompleted","Date Form Completed:", $this->dateOptions);
-        $this->addSelect("family_participate", "<BR>Did family agree to participate?",$this->participate); 
+        $this->addSelect("family_participate", "<BR>Did family agree to participate?",$this->participate);
         $this->addLabel("<BR><strong>Section B. Reason(s) for Decline</strong>");
         $this->form->addElement("select","reasonsdecline","Check All That Apply", $this->reasons_decline, "multiple");
         $this->XINRegisterRule("reasonsdecline",array("reasonsdecline{@}=={@}NEVER_REQUIRED"));
@@ -271,16 +267,6 @@ class NDB_BVL_Instrument_LENA_DataTrackingForm extends NDB_BVL_Instrument
     {
         $timepoint =& TimePoint::singleton($this->getSessionID());
         $candidate =& Candidate::singleton($timepoint->getCandID());
-
-        if(isset($values['datecompleted'])) {
-            $date = $values['datecompleted'];
-            if(!empty($date['Y']) && !empty($date['M']) && !empty($date['d'])) {
-                $values['datecompleted'] = $this->_getDatabaseDate($date); 
-             //   $this->_saveCandidateAge($values);
-            }  else {
-                unset($values['datecompleted']);
-            }
-        }
 
         if(!empty($this->_selectMultipleElements)){
             foreach($this->_selectMultipleElements AS $elname){
