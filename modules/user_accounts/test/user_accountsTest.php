@@ -274,6 +274,70 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         }
     }
     /**
+     * Test clear button, input user name, full name and email,
+     * click the clear button and check the text fields of username,
+     * full name and email. All of the text fields should be empty. 
+     *
+     */
+    function testClearButton()
+    {
+        $this->safeGet($this->url . "/user_accounts/");
+        $this->safeFindElement(
+                WebDriverBy::Name("userID")
+        )->sendKeys("user name");
+        
+        $this->safeFindElement(
+                WebDriverBy::Name("real_name")
+        )->sendKeys("full name");
+
+        $this->safeFindElement(
+                WebDriverBy::Name("email")
+        )->sendKeys("email@email.com");
+        //clear form
+        $this->safeFindElement(
+                WebDriverBy::Name("reset")
+        )->click();        
+        $userName = $this->safeFindElement(
+                WebDriverBy::Name("userID")
+             )->getText();
+        $fullName = $this->safeFindElement(
+                WebDriverBy::Name("real_name")
+             )->getText();
+        $email = $this->safeFindElement(
+                WebDriverBy::Name("email")
+             )->getText();
+        $this->assertEquals("",$userName);
+        $this->assertEquals("",$fullName);
+        $this->assertEquals("",$email);
+        
+    }
+    /**
+     * Performs a candidate search using the specified criteria and verifies
+     * the candidates obtained.
+     *
+     * @param array  $criteria        criteria for the search.
+     * @param string $expectedResults the candidates that should be returned.
+     *
+     * @return void.
+     */
+    public function addDuplicateUserName()
+    {
+        {
+            $this->safeGet($this->url . "/user_accounts/edit_user/");
+            $element = $this->safeFindElement(
+                WebDriverBy::Name("UserID")
+            );
+            $element->clear();
+            $element->sendKeys("UnitTester");
+        }
+        $this->safeClick(WebDriverBy::Name("fire_away"));
+        $body = $this->webDriver->findElements(
+            WebDriverBy::cssSelector("body")
+        );
+        $bodyText   = $body->getText();
+        $this->assertContains("The user name already exists", $bodyText);
+    }
+    /**
      * Performs a candidate search using the specified criteria and verifies
      * the candidates obtained.
      *

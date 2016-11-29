@@ -4,18 +4,24 @@
 1. Make sure you do not have access to the User Account page if you do not have at least one of these permissions:
       - There can be only one Highlander.
       - User management / Survey module.
+   [Automation Test On Travis CI]
 2. If you have access to the User Module, you should see all the users if you have permission 'Across all sites edit 
    create users'. Otherwise, only the users that belong to your site are shown.
+   [Manual Test]   
 3. Check that the Clear Form button works.
-4. Search according to all criteria: site, user name, active, full name, pending approval, email and examiner. 
+   [Automation Test On Travis CI]
+4. Search according to all criteria: site, user name, active, full name, pending approval, email and examiner.
+   [Automation Test On Travis CI] 
 5. Check that if Site is set to 'All' in the filter, users that have a different site than the user logged in are 
    returned by the search (if any).
+   [Automation Test On Travis CI]
 6. Try to add a user with a user name already taken: check that you can't.
 
 When creating or editing a user: (subtest: edit_user)
 ========================================================
-
+   [Automation Test On Travis CI]
 7. Check that password rules are enforced.
+   [Automation Test On Travis CI]
 8. Check that saving fails if you do not enter at least these informations:
       - User name.
       - Password (and confirm password).
