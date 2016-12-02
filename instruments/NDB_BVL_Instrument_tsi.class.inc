@@ -1,9 +1,5 @@
 <?php
 
-require_once('RequiredIf.inc');
-require_once 'HTML/QuickForm.php';
-require_once 'HTML/QuickForm/Renderer/Array.php';
-
 class NDB_BVL_Instrument_tsi extends NDB_BVL_Instrument
 {
     var $ValidityEnabled = false;
@@ -48,7 +44,7 @@ class NDB_BVL_Instrument_tsi extends NDB_BVL_Instrument
 	 */
 	function setup($commentID, $page){
 		$this->formType="XIN";
-		$this->form = new HTML_Quickform('test_form');
+		$this->form = new LorisForm('test_form');
 		$this->page = $page;            // page label (number or
 		// string - used by
 		// user-defined child classes)
@@ -82,7 +78,33 @@ class NDB_BVL_Instrument_tsi extends NDB_BVL_Instrument
 			'med_his_q_9_anethesia_problems',
 			'med_his_q_10_nap',
 			'med_his_q_11_nap_how_long',
-			'further_information'
+			'further_information',
+			'mother_occupation',
+			'father_occupation',
+			'contacted_by',
+			'primary_language',
+			'age_sibling1',
+			'age_sibling2',
+			'age_sibling3',
+			'age_sibling4',
+			'age_sibling5',
+			'age_sibling6',
+			'age_sibling7',
+			'age_sibling8',
+			'age_sibling9',
+			'age_sibling10',
+			'dx_sibling1',
+			'dx_sibling2',
+			'dx_sibling3',
+			'dx_sibling4',
+			'dx_sibling5',
+			'dx_sibling6',
+			'dx_sibling7',
+			'dx_sibling8',
+			'dx_sibling9',
+			'dx_sibling10',
+			'substance_subject',
+			'city_of_birth'
 		);
 		
 
