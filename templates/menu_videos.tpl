@@ -1,4 +1,4 @@
-<script type="text/javascript" src="js/filterControl.js"></script>
+<script type="text/javascript" src="{$baseurl}/js/filterControl.js"></script>
 <div class="col-sm-8">
     <div class="panel panel-primary">
         <div class="panel-heading" onclick="hideFilter();">
@@ -7,7 +7,7 @@
             <span class="glyphicon glyphicon-chevron-up pull-right" id="up"></span>
         </div>
         <div class="panel-body" id="panel-body">
-            <form method="post" action="main.php?test_name=videos">
+            <form method="post" action="{$baseurl}/videos/">
                 <div class="row">
                     <div class="form-group col-sm-6">
                         <label class="col-md-4">{$form.PSCID.label}</label>
@@ -38,7 +38,7 @@
                         <div class="visible-xs col-xs-12"> </div>
                         <div class="visible-xs col-xs-12"> </div>
                         <div class="col-sm-6 col-md-3">
-                            <input type="button" name="reset" value="Clear Form" onclick="location.href='main.php?test_name=videos&reset=true'" class="btn btn-sm btn-primary col-xs-12" />
+                            <input type="button" name="reset" value="Clear Form" onclick="location.href='{$baseurl}/videos/?reset=true'" class="btn btn-sm btn-primary col-xs-12" />
                         </div>
                     </div>
                 </div>
@@ -55,13 +55,13 @@
 <tr>
     <td class="controlPanelSection">
       {if $Normal_Perm}
-        <a href="main.php?test_name=videos&showEARLI=">IBIS Videos</a> 
+        <a href="{$baseurl}/videos/?showEARLI=">IBIS Videos</a>
       {/if}
       {if $Normal_Perm && $EARLI_Perm}
       |
       {/if}
       {if $EARLI_Perm}
-        <a href="main.php?test_name=videos&showEARLI=1">EARLI Videos</a>
+        <a href="{$baseurl}/videos/?showEARLI=1">EARLI Videos</a>
       {/if}
     </td>
 </tr>
@@ -69,7 +69,7 @@
     <!-- title -->
   
     <td class="controlPanelSection">
-      <a href="main.php?test_name=video_upload">
+      <a href="{$baseurl}/video_upload/">
         Upload a New Video
       </a>
 
@@ -84,10 +84,21 @@
     <td class="controlPanelSection">List of Log Entries</td>
 
     <!-- display pagination links -->
-    <td align="right">{$page_links}</td>
+    <td align="right" id="pageLinks"></td>
 </tr>
 </table>
-
+<script>
+var pageLinks = RPaginationLinks(
+{
+    RowsPerPage : {$rowsPerPage},
+    Total: {$numVideos},
+    onChangePage: function(pageNum) {
+        location.href="{$baseurl}/videos/?filter[order][field]={$filterfield}&filter[order][fieldOrder]={$filterfieldOrder}&pageID=" + pageNum
+    },
+    Active: {$pageID}
+});
+React.render(pageLinks, document.getElementById("pageLinks"));
+</script>
 <!-- start data table -->
 <div class="table-responsive">
     <table border="0" width="100%" class ="table table-hover table-primary table-bordered">
@@ -97,7 +108,7 @@
                 <!-- print out column headings - quick & dirty hack -->
                 {section name=header loop=$headers}
                     <th>
-                      <a href="main.php?test_name=videos&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">
+                      <a href="{$baseurl}/videos/?filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">
                         {$headers[header].displayName}
                       </a>
                     </th>
@@ -117,7 +128,7 @@
                   </td>
                {elseif $items[item][piece].name == "record_id"}
                   <td>
-                      <a href="main.php?test_name=video_upload&identifier={$items[item][piece].value}" target="_blank">Edit</a> 
+                      <a href="{$baseurl}/video_upload/?identifier={$items[item][piece].value}" target="_blank">Edit</a>
                     </td>
                  {else}
                      <td>{$items[item][piece].value}</td>

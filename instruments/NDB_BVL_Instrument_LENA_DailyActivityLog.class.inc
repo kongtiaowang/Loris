@@ -59,6 +59,49 @@ class NDB_BVL_Instrument_LENA_DailyActivityLog extends NDB_BVL_Instrument
         );
         
         $db =& Database::singleton();
+
+        $this->_doubleDataEntryDiffIgnoreColumns = array('CommentID', 'UserID', 'Testdate',  'Window_Difference', 'Candidate_Age', 
+            'day1_comments',
+            'day2_comments',
+            'Data_entry_completion_status',
+            'day1_7_9am_notes',
+            'day1_9_11am_notes',
+            'day1_11_1pm_notes',
+            'day1_1_3pm_notes',
+            'day1_3_5pm_notes',
+            'day1_5_7pm_notes',
+            'day1_7_9pm_notes',
+            'day1_9_11pm_notes',
+            'day1_11_12pm_notes',
+            'day2_7_9am_notes',
+            'day2_9_11am_notes',
+            'day2_11_1pm_notes',
+            'day2_1_3pm_notes',
+            'day2_3_5pm_notes',
+            'day2_5_7pm_notes',
+            'day2_7_9pm_notes',
+            'day2_9_11pm_notes',
+            'day2_11_12pm_notes',
+            'day3_7_9am_notes',
+            'day3_9_11am_notes',
+            'day3_11_1pm_notes',
+            'day3_1_3pm_notes',
+            'day3_3_5pm_notes',
+            'day3_5_7pm_notes',
+            'day3_7_9pm_notes',
+            'day3_9_11pm_notes',
+            'day3_11_12pm_notes',
+            'day4_7_9am_notes',
+            'day4_9_11am_notes',
+            'day4_11_1pm_notes',
+            'day4_1_3pm_notes',
+            'day4_3_5pm_notes',
+            'day4_5_7pm_notes',
+            'day4_7_9pm_notes',
+            'day4_9_11pm_notes',
+            'day4_11_12pm_notes'
+        );
+        
         // setup the form
         $this->_setupForm();
 

@@ -165,7 +165,8 @@ class NDB_Menu_Filter_videos extends NDB_Menu_Filter
             //print out data rows
             $i = 1;
             // $identifier = $item['Tracking_log_ID'];
-            $Data_dir = $item['Data_dir'];
+            // removes the . in front the url "./videos/adrosen@uw.edu/" in $Data_dir
+            $Data_dir = substr($item['Data_dir'],1);
             $record_id = $item['record_id'];
             $File_size = $item['File_size'];
             foreach ($item as $key => $val) {
@@ -205,6 +206,8 @@ class NDB_Menu_Filter_videos extends NDB_Menu_Filter
             }
             $x++;
         }
+        $this->tpl_data['numVideos'] = $this->TotalItems;
+
         return true;
     }
     

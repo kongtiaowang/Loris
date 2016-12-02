@@ -257,7 +257,8 @@ class NDB_Form_video_upload extends NDB_Form
             $file->registerForm($this->form);
 
             //Tell File_Upload what file handlers to use.
-            $file->setFileHandler("video_file", &$this);
+            // Removed &$this because Call-time pass-by-reference has been removed from PHP.
+            $file->setFileHandler("video_file", $this);
             $file->overwriteMode="overwrite";
 
             //Set the target directory that you want files moved into once they are validated and processed.
@@ -272,14 +273,14 @@ class NDB_Form_video_upload extends NDB_Form
             $file->setHandlerArgs(array("user_id" => $user->getUsername(), "values"=>$values));
 
             //If the form is validated, call File_Upload::processFiles() which loops through the files and 
-            //proccesses them (including verify, move, and import steps)
+            //processes them (including verify, move, and import steps)
             $file->processFiles();
 
             //echo error messages
             if(!empty($file->errorLog)){
                while(list($fileType,$fileErrors)=each($file->errorLog)){
                    foreach($fileErrors AS $error){
-                        echo "<span style='color:red'><b>Upload Error</b> $fileType: $error</span><br>";
+                        echo "Upload Error. $fileType: $error";
                    }
                }
                return false;

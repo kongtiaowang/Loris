@@ -16,7 +16,7 @@ class NDB_BVL_Instrument_pspq_1 extends NDB_BVL_Instrument
     var $informant_child = array(''=>NULL,'mother'=>'(Biological) Mother','father'=>'(Biological) Father','stepmother'=>'Step-Mother',
                             'stepfather'=>'Step-Father','other'=>'Other');
 
-    var $informant = array(''=>NULL,'spouse'=>'Spouse','other'=>'Other');
+    var $informant = array(''=>NULL,'spouse'=>'Spouse or partner','other'=>'Other');
     var $informant_confidence = array(''=>NULL,'extremely_confident'=>'Extremely confident','very_confident'=>'Very confident',
                                       'moderately_confident'=>'Moderately Confident','little_confident'=>'A little confident',
                                       'not_confident'=>'Not at all confident');

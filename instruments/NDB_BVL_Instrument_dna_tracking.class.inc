@@ -45,8 +45,9 @@ class NDB_BVL_Instrument_dna_tracking extends NDB_BVL_Instrument
         //The array of dates/timestamps to convert to database dates/timestamps
         //Any HTML_Quickform date elements must be listed here
         //rathi updatethis
+        $this->dateTimeFields=array("Date_taken");
 
-        $this->_requiredElements = array('Date_taken', 'Examiner','day1_child_sick'); 
+        $this->_requiredElements = array('Date_taken', 'Examiner');
 
         $config =& NDB_Config::singleton();
         $this->dateOptions = array(
@@ -99,7 +100,10 @@ class NDB_BVL_Instrument_dna_tracking extends NDB_BVL_Instrument
         $this->XINRegisterRule("subject_other_specify", array("subject_other_specify{@}=={@}NEVER_REQUIRED"));
         $this->form->addGroup($group, "headers", null, $this->_GUIDelimiter, false);
         unset($group);
+
         // automatically adds examiner & date of administration
+        $this->_addMetadataFields();
+
 	$questions = array("saliva_collected"=>"Was saliva collected?","when_saliva_collected1"=>"1. When was saliva collected?",
                            "saliva_collection_method1"=>"1. How was saliva collected?", "when_saliva_collected2"=>"2. When was saliva collected?",
                            "saliva_collection_method2"=>"2. How was saliva collected?","blood_collected"=>"Was blood collected?",
@@ -355,7 +359,7 @@ class NDB_BVL_Instrument_dna_tracking extends NDB_BVL_Instrument
                   $errors['lab_purpletop_collected1_group'] = "Specify if lab/purple top was collected for $subject";
              } 
              $blood_when = array(); $blood_when = $values["when_blood_collected1_".$subject];
-             if($values[$field] == 'yes' && _checkDate($blood_when) == false) { 
+             if($values[$field] == 'yes' && Utility::_checkDate($blood_when) == false) { 
                   $errors['when_blood_collected1_group'] = "Specify date for $subject";
              } 
              if($values[$field] == 'yes' && empty($values["num_blood1_".$subject])) {
@@ -414,27 +418,27 @@ class NDB_BVL_Instrument_dna_tracking extends NDB_BVL_Instrument
              if(!empty($saliva_when2['Y']) && empty($values["saliva_collection_method2_".$subject] ) ) { 
                 $errors["saliva_collection_method2_group"] = "Specify how saliva was collected for $subject";
              }
-             if(_checkDate($saliva_when2) == false) {
+             if(Utility::_checkDate($saliva_when2) == false) {
                   $errors['when_saliva_collected2_group'] = "Invalid date for $subject";
 
              }
-             if(_checkDate($saliva_when) == false) {
+             if(Utility::_checkDate($saliva_when) == false) {
                   $errors['when_saliva_collected1_group'] = "Invalid date for $subject";
 
              }
 /*
-             if( (_checkDate($saliva_when) == true)   && (_checkDate($saliva_when2) == true ) 
+             if( (Utility::_checkDate($saliva_when) == true)   && (Utility::_checkDate($saliva_when2) == true ) 
                &&  ($values["when_saliva_collected1_".$subject] > $values["when_saliva_collected2_".$subject])) {
                   $errors['when_saliva_collected2_group'] = "Date sample collected should be after first sample was collected for $subject";
 
             }
 */
             $blood_when2 = array(); $blood_when2 = $values["when_blood_collected2_".$subject];
-             if(_checkDate($blood_when2) == false) {
+             if(Utility::_checkDate($blood_when2) == false) {
                   $errors['when_blood_collected2_group'] = "Invalid date for $subject";
 
              }
-             if(_checkDate($blood_when1) == false) {
+             if(Utility::_checkDate($blood_when1) == false) {
                   $errors['when_blood_collected1_group'] = "Invalid date for $subject";
 
              }
