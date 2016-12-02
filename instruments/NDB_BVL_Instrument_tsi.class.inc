@@ -1,5 +1,9 @@
 <?php
 
+require_once('RequiredIf.inc');
+require_once 'HTML/QuickForm.php';
+require_once 'HTML/QuickForm/Renderer/Array.php';
+
 class NDB_BVL_Instrument_tsi extends NDB_BVL_Instrument
 {
     var $ValidityEnabled = false;
@@ -44,7 +48,7 @@ class NDB_BVL_Instrument_tsi extends NDB_BVL_Instrument
 	 */
 	function setup($commentID, $page){
 		$this->formType="XIN";
-		$this->form = new LorisForm('test_form');
+		$this->form = new HTML_Quickform('test_form');
 		$this->page = $page;            // page label (number or
 		// string - used by
 		// user-defined child classes)
