@@ -43,9 +43,8 @@ class NDB_Reliability_ados2_module2_reliability extends NDB_Reliability
  
 
     function _getAgeInMonths($instrument_record, $reliability_record) {
-        $CommentID = $instrument_record['CommentID'];
+        $CommentID = $this->identifier;
         $CandID = substr($CommentID, 0, 6);
-        error_log("CandID: $CandID");
         $candidate =& Candidate::singleton($CandID);
         $age = Utility::calculateAge($candidate->getCandidateDoB(), $instrument_record['Date_taken']);
         return $age['year'] * 12 + $age['mon'];
@@ -67,12 +66,11 @@ class NDB_Reliability_ados2_module2_reliability extends NDB_Reliability
             $sites = array(1 => 'DCC', 2 => 'SEA', 3 => 'PHI', 4 => 'STL', 5 => 'UNC');
                         
             $initial_table = preg_replace('/_reliability/', '', $this->name);
-            
+
             foreach($row as $key=>$value) {
                 $defaults[$key] = $value;    
             }
-            $defaults['CommentID'] = "<a href=\"{$baseurl}/reliability_breakdown/?instrument=$initial_table&CommentID=$row[CommentID]\">" . $row['CommentID'] . "</a>";
-
+            $defaults['CommentID'] = "<a href=\"?test_name=reliability_breakdown&instrument=$initial_table&CommentID=$row[CommentID]\">" . $row['CommentID'] . "</a>";
         } else {
             echo("Identifer empty! No ID has been chosen. Please contact Samir at the DCC.<br>");
         }
@@ -104,37 +102,36 @@ class NDB_Reliability_ados2_module2_reliability extends NDB_Reliability
 	$age = Utility::calculateAge($dob, $score_record1["Date_taken"]);
         $age_years = $age['year'] + ($age['mon']/12);
         $instrument_record = $this->_convertScore($score_record1); 
-        $reliability_record = $this->_convertScore($score_record);        
+        $reliability_record = $this->_convertScore($score_record);
+
         $mismatches  = 0;            
         $denominator = 0;
         $algorithm_mismatches  = 0;
         $algorithm_denominator = 0;
-        $age_months = $this->_getAgeInMonths($instrument_record, $reliability_record);
-        if($age_years < 5) {
-             $algorithm_questions = array ('a6','a7','b1','b2','b3','b5','b6','b8','b11','b12','a4','d1','d2','d4');
-        } else if ($age_years >= 5) {
-             $algorithm_questions = array('a6','a7','a8','b1','b2','b3','b5','b6','b8','b11','b12','a5','d1','d2','d4');
+
+        $algorithm_questions = array ('a4','a6','a7','b1','b2','b3','b5','b6','b8','b11','b12','d1','d2','d4');
+        if ($age_years >= 5) {
+             $algorithm_questions = array('a5','a6','a7','a8','b1','b2','b3','b5','b6','b8','b11','b12','d1','d2','d4');
         }
         foreach($instrument_record as $key=>$value){ 
-            $rel_key = $key;
             $algorithm_question = in_array($key, $algorithm_questions);
-            $rel_value = $reliability_record[$rel_key];
-	    if(!empty($value) && !empty($rel_value) ) {
+            $rel_value = $reliability_record[$key];
 
 		    $denominator++;
 		    if($algorithm_question){ 
 			    $algorithm_denominator++;
 		    }
 
-		    if( $value ==  $rel_value)  continue;
-		    //echo("MISMATCH<BR>");                 
-		    $mismatches++;
-		    if($algorithm_question){
-			    $algorithm_mismatches++;
-		    }
-	    }
+		    if( $value !=  $rel_value) {
+                //echo("MISMATCH<BR>");
+                $mismatches++;
+                if ($algorithm_question) {
+                    $algorithm_mismatches++;
+                }
+            }
         }
-        //print "Denominator : $denominator , MISMATCHES : $mismatches, ALG_DENOM : $algorithm_denominator, ALG_MISMATCH : $algorithm_mismatches";
+
+//        print "Denominator : $denominator , MISMATCHES : $mismatches, ALG_DENOM : $algorithm_denominator, ALG_MISMATCH : $algorithm_mismatches";
              // Score the reliability
              $reliability['Reliability_score_all_items']= (($denominator-$mismatches)/$denominator*100);
              $reliability['Reliability_score_scored_items']= (($algorithm_denominator-$algorithm_mismatches)/$algorithm_denominator*100);
@@ -149,7 +146,7 @@ class NDB_Reliability_ados2_module2_reliability extends NDB_Reliability
     } // end function score
     
     function _convertScore( $scores) {
-       foreach($record as $field=>$value) {
+       foreach($scores as $field=>$value) {
             if($value == 0) {
                 $scores[$field] = 0;
             } elseif ($value == 1) {
@@ -198,9 +195,6 @@ class NDB_Reliability_ados2_module2_reliability extends NDB_Reliability
         $this->form->addElement("static", "CommentID", "CommentID:");
 
         //display test name
-        $this->form->addElement('header', null, "CODING:");
-        $this->form->addElement("static", null, "<BR>"); //line space
-
         $this->form->addElement('header', null, "CODING:");
         $this->form->addElement("static", null, "<BR>"); //line space
 
