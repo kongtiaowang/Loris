@@ -7,81 +7,61 @@ require_once "NDB_Reliability.class.inc";
  * @package main
  * @package LORIS
  * @author Rathi Gnanasekaran sekaranrathi@gmail.com
- * 
+ *
  */
 class NDB_Reliability_ados2_module2_reliability extends NDB_Reliability
-
 {
-// function _hasAccess()
-//     {
-//         // create user object
-//         $user =& User::singleton();
 
-//         $DB =& Database::singleton();
-       
-//         if(!empty($this->identifier)) {
-//             $query = "SELECT psc.CenterID FROM tracking_logs, candidate, psc WHERE tracking_logs.CandID=candidate.CandID AND candidate.CenterID=psc.CenterID AND tracking_logs.Tracking_log_ID='$this->identifier'";
-//             $recordCenterID = $DB->selectOne($query);
-            
-//             return ($user->hasPermission('tracking_logs')
-//                     && ($user->hasPermission('tracking_logs_edit_all')
-//                         || ($user->getData('CenterID') == $recordCenterID)));
+    var $option01237 = array("" => NULL, 0 => 0, 1 => 1, 2 => 2, 3 => 3, 7 => 7, "not_answered" => "Not Answered");
+    var $option0127 = array("" => NULL, 0 => 0, 1 => 1, 2 => 2, 7 => 7, "not_answered" => "Not Answered");
+    var $option01278 = array("" => NULL, 0 => 0, 1 => 1, 2 => 2, 7 => 7, 8 => 8, "not_answered" => "Not Answered");
+    var $option0123 = array("" => NULL, 0 => 0, 1 => 1, 2 => 2, 3 => 3, "not_answered" => "Not Answered");
+    var $option01238 = array("" => NULL, 0 => 0, 1 => 1, 2 => 2, 3 => 3, 8 => 8, "not_answered" => "Not Answered");
+    var $option02 = array("" => NULL, 0 => 0, 2 => 2, "not_answered" => "Not Answered");
+    var $option012 = array("" => NULL, 0 => 0, 1 => 1, 2 => 2, "not_answered" => "Not Answered");
+    var $option0128 = array("" => NULL, 0 => 0, 1 => 1, 2 => 2, 8 => 8, "not_answered" => "Not Answered");
+    var $option012378 = array("" => NULL, 0 => 0, 1 => 1, 2 => 2, 3 => 3, 7 => 7, 8 => 8, "not_answered" => "Not Answered");
 
-//         } else {
-//             return ($user->hasPermission('tracking_logs'));
-//         }
-//     }
-    var $option01237 = array(""=>NULL, 0=>0, 1=>1, 2=>2, 3=>3, 7=>7, "not_answered"=>"Not Answered");
-    var $option0127 = array(""=>NULL, 0=>0, 1=>1, 2=>2, 7=>7, "not_answered"=>"Not Answered");
-    var $option01278 = array(""=>NULL, 0=>0, 1=>1, 2=>2, 7=>7, 8=>8, "not_answered"=>"Not Answered");
-    var $option0123 = array(""=>NULL, 0=>0, 1=>1, 2=>2, 3=>3, "not_answered"=>"Not Answered");
-    var $option01238 = array(""=>NULL, 0=>0, 1=>1, 2=>2, 3=>3, 8=>8, "not_answered"=>"Not Answered");
-    var $option02 = array(""=>NULL, 0=>0, 2=>2, "not_answered"=>"Not Answered");
-    var $option012 = array(""=>NULL, 0=>0, 1=>1, 2=>2, "not_answered"=>"Not Answered");
-    var $option0128 = array(""=>NULL, 0=>0, 1=>1, 2=>2, 8=>8, "not_answered"=>"Not Answered");
-    var $option012378 = array(""=>NULL, 0=>0, 1=>1, 2=>2,3=>3,7=>7, 8=>8, "not_answered"=>"Not Answered");
- 
-
-    function _getAgeInMonths($instrument_record, $reliability_record) {
-        $CommentID = $instrument_record['CommentID'];
+    function _getAgeInMonths($instrument_record, $reliability_record)
+    {
+        $CommentID = $this->identifier;
         $CandID = substr($CommentID, 0, 6);
-        error_log("CandID: $CandID");
         $candidate =& Candidate::singleton($CandID);
         $age = Utility::calculateAge($candidate->getCandidateDoB(), $instrument_record['Date_taken']);
         return $age['year'] * 12 + $age['mon'];
     }
+
     function _getDefaults()
     {
-          
         $DB =& Database::singleton();
         $DB->select("SELECT * FROM {$this->name}", $result);
-               
+
         //print_r($this->identifier);
-        if (!empty($this->identifier)) { 
+        if (!empty($this->identifier)) {
             // set the ados2_module2_reliability values 
             $DB->selectRow("SELECT * FROM {$this->name} WHERE CommentID = '$this->identifier' AND reliability_center_id='$this->reliability_center_id'", $row);
-     
+
             // Set the defaults
             // print_r($row['CommentID']);
-            
-            $sites = array(1 => 'DCC', 2 => 'SEA', 3 => 'PHI', 4 => 'STL', 5 => 'UNC');
-                        
-            $initial_table = preg_replace('/_reliability/', '', $this->name);
-            
-            foreach($row as $key=>$value) {
-                $defaults[$key] = $value;    
-            }
-            $defaults['CommentID'] = "<a href=\"{$baseurl}/reliability_breakdown/?instrument=$initial_table&CommentID=$row[CommentID]\">" . $row['CommentID'] . "</a>";
 
+            $sites = array(1 => 'DCC', 2 => 'SEA', 3 => 'PHI', 4 => 'STL', 5 => 'UNC');
+
+            $initial_table = preg_replace('/_reliability/', '', $this->name);
+
+            foreach ($row as $key => $value) {
+                $defaults[$key] = $value;
+            }
+            $defaults['CommentID'] = "<a href=\"?test_name=reliability_breakdown&instrument=$initial_table&CommentID=$row[CommentID]\">" . $row['CommentID'] . "</a>";
         } else {
-            echo("Identifer empty! No ID has been chosen. Please contact Samir at the DCC.<br>");
+            echo("Identifier empty! No ID has been chosen. Please contact Samir at the DCC.<br>");
         }
 
         return $defaults;
     }
 
-   
-    function score(){      
+
+    function score()
+    {
         //holds raw question values
         $score_record = array();
         //holds calculated
@@ -89,68 +69,70 @@ class NDB_Reliability_ados2_module2_reliability extends NDB_Reliability
 
         // null scores
         //$this->_nullScores();
-       $initial_table = preg_replace('/_reliability/', '', $this->name);
-       
-        //Get values from both tables of adi_r (reliability and original)
-        $query = "SELECT * FROM {$this->name} WHERE CommentID='".$this->identifier."'  AND reliability_center_id='$this->reliability_center_id'";
-        $query1 = "SELECT * FROM {$initial_table} WHERE CommentID='".$this->identifier."'";
+        $initial_table = preg_replace('/_reliability/', '', $this->name);
 
-        $db->selectRow($query, $score_record);              
+        //Get values from both tables of adi_r (reliability and original)
+        $query = "SELECT * FROM {$this->name} WHERE CommentID='" . $this->identifier . "'  AND reliability_center_id='$this->reliability_center_id'";
+        $query1 = "SELECT * FROM {$initial_table} WHERE CommentID='" . $this->identifier . "'";
+
+        $db->selectRow($query, $score_record);
         $db->selectRow($query1, $score_record1);
-        $session = $db->pselectOne("SELECT s.ID from session s JOIN flag f ON s.ID=f.SessionID WHERE f.CommentID=:cid", array('cid'=>$this->identifier));
-		// Get the subject age in months for scoring
+        $session = $db->pselectOne("SELECT s.ID from session s JOIN flag f ON s.ID=f.SessionID WHERE f.CommentID=:cid", array('cid' => $this->identifier));
+        // Get the subject age in months for scoring
         $timepoint =& TimePoint::singleton($session);
         $dob = $timepoint->getEffectiveDateOfBirth();
-	$age = Utility::calculateAge($dob, $score_record1["Date_taken"]);
-        $age_years = $age['year'] + ($age['mon']/12);
-        $instrument_record = $this->_convertScore($score_record1); 
-        $reliability_record = $this->_convertScore($score_record);        
-        $mismatches  = 0;            
+        $age = Utility::calculateAge($dob, $score_record1["Date_taken"]);
+        $age_years = $age['year'] + ($age['mon'] / 12);
+        $instrument_record = $this->_convertScore($score_record1);
+        $reliability_record = $this->_convertScore($score_record);
+
+        $mismatches = 0;
         $denominator = 0;
-        $algorithm_mismatches  = 0;
+        $algorithm_mismatches = 0;
         $algorithm_denominator = 0;
-        $age_months = $this->_getAgeInMonths($instrument_record, $reliability_record);
-        if($age_years < 5) {
-             $algorithm_questions = array ('a6','a7','b1','b2','b3','b5','b6','b8','b11','b12','a4','d1','d2','d4');
-        } else if ($age_years >= 5) {
-             $algorithm_questions = array('a6','a7','a8','b1','b2','b3','b5','b6','b8','b11','b12','a5','d1','d2','d4');
+
+        $algorithm_questions = array('a4', 'a6', 'a7', 'b1', 'b2', 'b3', 'b5', 'b6', 'b8', 'b11', 'b12', 'd1', 'd2', 'd4');
+        if ($age_years >= 5) {
+            $algorithm_questions = array('a5', 'a6', 'a7', 'a8', 'b1', 'b2', 'b3', 'b5', 'b6', 'b8', 'b11', 'b12', 'd1', 'd2', 'd4');
         }
-        foreach($instrument_record as $key=>$value){ 
-            $rel_key = $key;
-            $algorithm_question = in_array($key, $algorithm_questions);
-            $rel_value = $reliability_record[$rel_key];
-	    if(!empty($value) && !empty($rel_value) ) {
+        $excluded = array('CommentID', 'UserID', 'Examiner', 'Testdate', 'Data_entry_completion_status', 'Date_taken', 'Candidate_Age', 'Window_Difference', 'other_comments');
+        foreach ($instrument_record as $key => $value) {
+            if (!in_array($key, $excluded)) {
+                $algorithm_question = in_array($key, $algorithm_questions);
+                $rel_value = $reliability_record[$key];
 
-		    $denominator++;
-		    if($algorithm_question){ 
-			    $algorithm_denominator++;
-		    }
+                $denominator++;
+                if ($algorithm_question) {
+                    $algorithm_denominator++;
+                }
 
-		    if( $value ==  $rel_value)  continue;
-		    //echo("MISMATCH<BR>");                 
-		    $mismatches++;
-		    if($algorithm_question){
-			    $algorithm_mismatches++;
-		    }
-	    }
+                if ($value != $rel_value) {
+                    //echo("MISMATCH<BR>");
+                    $mismatches++;
+                    if ($algorithm_question) {
+                        $algorithm_mismatches++;
+                    }
+                }
+            }
         }
-        //print "Denominator : $denominator , MISMATCHES : $mismatches, ALG_DENOM : $algorithm_denominator, ALG_MISMATCH : $algorithm_mismatches";
-             // Score the reliability
-             $reliability['Reliability_score_all_items']= (($denominator-$mismatches)/$denominator*100);
-             $reliability['Reliability_score_scored_items']= (($algorithm_denominator-$algorithm_mismatches)/$algorithm_denominator*100);
 
-        
-      
+//        print "Denominator : $denominator , MISMATCHES : $mismatches, ALG_DENOM : $algorithm_denominator, ALG_MISMATCH : $algorithm_mismatches";
+        // Score the reliability
+        $reliability['Reliability_score_all_items'] = (($denominator - $mismatches) / $denominator * 100);
+        $reliability['Reliability_score_scored_items'] = (($algorithm_denominator - $algorithm_mismatches) / $algorithm_denominator * 100);
+
+
         // Do the update here for the relibaility scores - saving the scores
-		$result = $db->update("{$this->name}", $reliability, array("CommentID"=>$this->identifier, 'reliability_center_id' => $this->reliability_center_id));
-		$result = $db->update("reliability", array("Reliability_score" => round(min($reliability['Reliability_score_all_items'], $reliability['Reliability_score_scored_items']),3)), array("CommentID"=>$this->identifier, "Instrument" => preg_replace("/_reliability$/", "", $this->name), 'reliability_center_id' => $this->reliability_center_id));
-	 // Update the main relibaility table with the overall reliability score 
-                $result1 = $db->update("reliability", array('reliability_score'=> $reliability['Reliability_score_all_items']), array("CommentID"=>$this->identifier));
+        $result = $db->update("{$this->name}", $reliability, array("CommentID" => $this->identifier, 'reliability_center_id' => $this->reliability_center_id));
+        $result = $db->update("reliability", array("Reliability_score" => round(min($reliability['Reliability_score_all_items'], $reliability['Reliability_score_scored_items']), 3)), array("CommentID" => $this->identifier, "Instrument" => preg_replace("/_reliability$/", "", $this->name), 'reliability_center_id' => $this->reliability_center_id));
+        // Update the main relibaility table with the overall reliability score
+        $result1 = $db->update("reliability", array('reliability_score' => $reliability['Reliability_score_all_items']), array("CommentID" => $this->identifier));
     } // end function score
-    
-    function _convertScore( $scores) {
-       foreach($record as $field=>$value) {
-            if($value == 0) {
+
+    function _convertScore($scores)
+    {
+        foreach ($scores as $field => $value) {
+            if ($value == 0) {
                 $scores[$field] = 0;
             } elseif ($value == 1) {
                 $scores[$field] = 1;
@@ -165,31 +147,32 @@ class NDB_Reliability_ados2_module2_reliability extends NDB_Reliability
             }
         }
         return $scores;
-    } 
+    }
+
     function _nullScores()
     {
-        $db=& Database::singleton();
-        
+        $db =& Database::singleton();
+
         // set the scores to NULL
         foreach ($this->scores as $val) {
-            $scores[$val]=null;
+            $scores[$val] = null;
         }
 
         // update the scores
-        $success = $db->update("{$this->name}",$scores,array("CommentID"=>$this->identifier, 'reliability_center_id' => $this->reliability_center_id));
+        $success = $db->update("{$this->name}", $scores, array("CommentID" => $this->identifier, 'reliability_center_id' => $this->reliability_center_id));
         return;
-    }    
+    }
 
     function ados2_module2_reliability()
     {
-      $this->create_form();
+        $this->create_form();
     }
 
 
     function create_form()
-    { 
-       $this->_addMetadataFields();
-       $this->form->addElement("static", "reliability_center", "Site of Reliability Test:");
+    {
+        $this->_addMetadataFields();
+        $this->form->addElement("static", "reliability_center", "Site of Reliability Test:");
 
         //Scoring header
         $this->form->addElement('header', 'instrument_title', "Scoring:");
@@ -198,9 +181,6 @@ class NDB_Reliability_ados2_module2_reliability extends NDB_Reliability
         $this->form->addElement("static", "CommentID", "CommentID:");
 
         //display test name
-        $this->form->addElement('header', null, "CODING:");
-        $this->form->addElement("static", null, "<BR>"); //line space
-
         $this->form->addElement('header', null, "CODING:");
         $this->form->addElement("static", null, "<BR>"); //line space
 
@@ -225,7 +205,7 @@ class NDB_Reliability_ados2_module2_reliability extends NDB_Reliability
         $this->form->addElement("static", null, "<BR>"); //line space
 
 
-	   //Section B: Reciprocal Social Interaction
+        //Section B: Reciprocal Social Interaction
         $this->form->addElement('header', null, "Section B: Reciprocal Social Interaction");
         $this->form->addElement("static", null, "<BR>"); //line space
         $this->form->addElement("static", null, "<BR>"); //line space
@@ -257,10 +237,10 @@ class NDB_Reliability_ados2_module2_reliability extends NDB_Reliability
         $this->form->addElement("static", null, "<BR>"); //line space
         $this->form->addElement('select', 'b12', '12. Overall Quality of Rapport', $this->option0123);
         $this->form->addElement("static", null, "<BR>"); //line space
- 
+
         $this->form->addElement("static", null, "<BR>"); //line space
         $this->form->addElement("static", null, "<BR>"); //line space
-		 $this->form->addElement('header', null, "Section C: Play");
+        $this->form->addElement('header', null, "Section C: Play");
         $this->form->addElement("static", null, "<BR>"); //line space
         $this->form->addElement("static", null, "<BR>"); //line space
         $this->form->addElement('select', 'c1', '1. Functional Play with Objects', $this->option0123);
@@ -270,28 +250,28 @@ class NDB_Reliability_ados2_module2_reliability extends NDB_Reliability
         $this->form->addElement("static", null, "<BR>"); //line space
         $this->form->addElement("static", null, "<BR>"); //line space
 
-    	//Section D: Stereotyped Behaviors and Restricted Interests
+        //Section D: Stereotyped Behaviors and Restricted Interests
         $this->form->addElement('header', null, "Section D: Stereotyped Behaviors and Restricted Interests");
         $this->form->addElement("static", null, "<BR>"); //line space
         $this->form->addElement("static", null, "<BR>"); //line space
         $this->form->addElement('select', 'd1', '1. Unusual Sensory Interest in Play Material/Person', $this->option0123);
         $this->form->addElement("static", null, "<BR>"); //line space
-     	$this->addTextAreaElement('d1_specify', $this->indent . "Please specify:");
+        $this->addTextAreaElement('d1_specify', $this->indent . "Please specify:");
         $this->form->addElement("static", null, "<BR>"); //line space
         $this->form->addElement('select', 'd2', '2. Hand and Finger and Other Complex Mannerisms', $this->option0123);
         $this->form->addElement("static", null, "<BR>"); //line space
-    	$this->addTextAreaElement('d2_specify', $this->indent . "Please specify:");
+        $this->addTextAreaElement('d2_specify', $this->indent . "Please specify:");
         $this->form->addElement("static", null, "<BR>"); //line space
         $this->form->addElement('select', 'd3', '3. Self-Injurious Behavior', $this->option012);
         $this->form->addElement("static", null, "<BR>"); //line space
         $this->form->addElement('select', 'd4', '4. Unusually Repetitive Interests or Stereotyped Behaviors', $this->option0123);
         $this->form->addElement("static", null, "<BR>"); //line space
-    	$this->addTextAreaElement('d4_specify', $this->indent . "Please specify unusual preoccupations, rituals, repetitive behaviors:");
+        $this->addTextAreaElement('d4_specify', $this->indent . "Please specify unusual preoccupations, rituals, repetitive behaviors:");
 
         $this->form->addElement("static", null, "<BR>"); //line space
         $this->form->addElement("static", null, "<BR>"); //line space
 
-    	//Section E: Other Abnormal Behaviors
+        //Section E: Other Abnormal Behaviors
         $this->form->addElement('header', null, "Section E: Other Abnormal Behaviors");
         $this->form->addElement("static", null, "<BR>"); //line space
         $this->form->addElement("static", null, "<BR>"); //line space
@@ -303,106 +283,107 @@ class NDB_Reliability_ados2_module2_reliability extends NDB_Reliability
 
         $this->form->addElement("static", null, "<BR>"); //line space
         $this->form->addElement("static", null, "<BR>"); //line space
- 
+
     } // End function 
 
- 
-   	
-	function _cleanTo3Digits($string) {
-	   return ereg_replace("[^0-9]", "", substr($string, 0, 3));
-	}
+    function _cleanTo3Digits($string)
+    {
+        return ereg_replace("[^0-9]", "", substr($string, 0, 3));
+    }
 
- function _process($values)
- {
-       
+    function _process($values)
+    {
+
         $DB =& Database::singleton();
         $user =& User::singleton();
-          
+
         $DB->selectRow("SELECT * FROM {$this->name} WHERE CommentID = '$this->identifier' AND reliability_center_id = $this->reliability_center_id", $row);
-          
-          $invalid = $values['invalid'];
-          $DB->update("reliability", array('invalid' => $invalid), array("CommentID"=>$this->identifier, "Instrument" => preg_replace("/_reliability$/", "", $this->name), "reliability_center_id" => $this->reliability_center_id));
-          unset($values['invalid']);
-          
-          if($invalid == "yes"){
+
+        $invalid = $values['invalid'];
+        $DB->update("reliability", array('invalid' => $invalid), array("CommentID" => $this->identifier, "Instrument" => preg_replace("/_reliability$/", "", $this->name), "reliability_center_id" => $this->reliability_center_id));
+        unset($values['invalid']);
+
+        if ($invalid == "yes") {
             $this->form->freeze();
             $this->tpl_data['success'] = true;
             return;
-          }
-          foreach($values as $key=>$value) {
-             if($key == 'Date_taken' || $key == 'DoB_proband'){
-                $values[$key] = $this->_getDatabaseDate($values[$key]);    
-             }    
-          }
-          if (empty($row)) {
-            
+        }
+        foreach ($values as $key => $value) {
+            if ($key == 'Date_taken' || $key == 'DoB_proband') {
+                $values[$key] = $this->_getDatabaseDate($values[$key]);
+            }
+        }
+        if (empty($row)) {
+
             $values['CommentID'] = $this->identifier;
             $values['reliability_center_id'] = $this->reliability_center_id;
             // insert the event
             $success = $DB->insert($this->name, $values);
         } else {
             // update the event 
-            $success = $DB->update($this->name, $values,          
-                                   array('CommentID'=>$this->identifier, 'reliability_center_id' => $this->reliability_center_id)
-                                   ); 
+            $success = $DB->update($this->name, $values,
+                array('CommentID' => $this->identifier, 'reliability_center_id' => $this->reliability_center_id)
+            );
         }
-        
+
         $scoreResult = $this->score();
-        
+
         $this->form->freeze();
         $this->tpl_data['success'] = true;
     }
- 
- function _validate($values)
- {
-     $DB =& Database::singleton();
-     $query = "SELECT count(*) AS counter FROM candidate WHERE CandID='$values[CandID]' and PSCID='$values[PSCID]'";
-     $recordsFound = $DB->selectOne($query);
-     $errors = array();
-     
-     if($recordsFound < 1) {
-         $errors['CandID'] = "Specified DCCID and PSCID do not exist or do not match.";
-     }
-     
-     return $errors;
- }   
- 
- function display()
- {
-     if(!$this->form->isFrozen()) {
-         // hidden values
-         $this->form->addElement('hidden', 'test_name', $this->name);
-         $this->form->addElement('hidden', 'subtest', $this->page);
-         $this->form->addElement('hidden', 'identifier', $this->identifier);
-         $this->form->addElement('hidden', 'reliability_center_id', $this->reliability_center_id);
-         $this->form->addElement('submit', 'fire_away', 'Save Data', 'class=button');
-     }
-     
-     // get the defaults
-     $localDefaults = $this->_getDefaults();
-     if(!is_array($localDefaults)) { $localDefaults = array(); }
-     // set the quickform object defaults
-     $this->form->setDefaults(array_merge($this->defaults, $localDefaults));
-     
-     // trim all values
-     $this->form->applyFilter('__ALL__', 'trim');
-     
-     // display the HTML_Quickform object
-     $smarty = new Smarty_neurodb;
-     
-     // display the HTML_Quickform object
-     return $this->form->toHTML();
-     
-     $renderer =& new HTML_QuickForm_Renderer_Default();
-     $renderer->setFormTemplate("<form{attributes}><table class=\"instrument\">{content}</table></form>");
-     $renderer->setElementTemplate("<tr><td class=\"lab\"><!-- BEGIN required --><span style=\"color: #ff0000\">*</span><!-- END required -->{label}</td><td class=\"ele\"><!-- BEGIN error --><span style=\"color: #ff0000\">{error}</span><br /><!-- END error -->{element}</td></tr>");
-     $renderer->setElementTemplate("<tr><td class=\"lab\"><i>{label}</i></td><td class=\"ele\">\t<i>{element}</i></td></tr>", "static");
-     $renderer->setHeaderTemplate("<tr><th colspan=\"2\"><br><b>{header}</b></th></tr>");
-     $this->form->accept($renderer);
-     return $renderer->toHtml();
-     
- } // end function display
- 
- 
+
+    function _validate($values)
+    {
+        $DB =& Database::singleton();
+        $query = "SELECT count(*) AS counter FROM candidate WHERE CandID='$values[CandID]' and PSCID='$values[PSCID]'";
+        $recordsFound = $DB->selectOne($query);
+        $errors = array();
+
+        if ($recordsFound < 1) {
+            $errors['CandID'] = "Specified DCCID and PSCID do not exist or do not match.";
+        }
+
+        return $errors;
+    }
+
+    function display()
+    {
+        if (!$this->form->isFrozen()) {
+            // hidden values
+            $this->form->addElement('hidden', 'test_name', $this->name);
+            $this->form->addElement('hidden', 'subtest', $this->page);
+            $this->form->addElement('hidden', 'identifier', $this->identifier);
+            $this->form->addElement('hidden', 'reliability_center_id', $this->reliability_center_id);
+            $this->form->addElement('submit', 'fire_away', 'Save Data', 'class=button');
+        }
+
+        // get the defaults
+        $localDefaults = $this->_getDefaults();
+        if (!is_array($localDefaults)) {
+            $localDefaults = array();
+        }
+        // set the quickform object defaults
+        $this->form->setDefaults(array_merge($this->defaults, $localDefaults));
+
+        // trim all values
+        $this->form->applyFilter('__ALL__', 'trim');
+
+        // display the HTML_Quickform object
+        $smarty = new Smarty_neurodb;
+
+        // display the HTML_Quickform object
+        return $this->form->toHTML();
+
+        $renderer =& new HTML_QuickForm_Renderer_Default();
+        $renderer->setFormTemplate("<form{attributes}><table class=\"instrument\">{content}</table></form>");
+        $renderer->setElementTemplate("<tr><td class=\"lab\"><!-- BEGIN required --><span style=\"color: #ff0000\">*</span><!-- END required -->{label}</td><td class=\"ele\"><!-- BEGIN error --><span style=\"color: #ff0000\">{error}</span><br /><!-- END error -->{element}</td></tr>");
+        $renderer->setElementTemplate("<tr><td class=\"lab\"><i>{label}</i></td><td class=\"ele\">\t<i>{element}</i></td></tr>", "static");
+        $renderer->setHeaderTemplate("<tr><th colspan=\"2\"><br><b>{header}</b></th></tr>");
+        $this->form->accept($renderer);
+        return $renderer->toHtml();
+
+    } // end function display
+
 }
+
 ?>
