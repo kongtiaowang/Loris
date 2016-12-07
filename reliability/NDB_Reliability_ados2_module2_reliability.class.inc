@@ -95,20 +95,23 @@ class NDB_Reliability_ados2_module2_reliability extends NDB_Reliability
         if ($age_years >= 5) {
             $algorithm_questions = array('a5', 'a6', 'a7', 'a8', 'b1', 'b2', 'b3', 'b5', 'b6', 'b8', 'b11', 'b12', 'd1', 'd2', 'd4');
         }
+        $excluded = array('CommentID', 'UserID', 'Examiner', 'Testdate', 'Data_entry_completion_status', 'Date_taken', 'Candidate_Age', 'Window_Difference', 'other_comments');
         foreach ($instrument_record as $key => $value) {
-            $algorithm_question = in_array($key, $algorithm_questions);
-            $rel_value = $reliability_record[$key];
+            if (!in_array($key, $excluded)) {
+                $algorithm_question = in_array($key, $algorithm_questions);
+                $rel_value = $reliability_record[$key];
 
-            $denominator++;
-            if ($algorithm_question) {
-                $algorithm_denominator++;
-            }
-
-            if ($value != $rel_value) {
-                //echo("MISMATCH<BR>");
-                $mismatches++;
+                $denominator++;
                 if ($algorithm_question) {
-                    $algorithm_mismatches++;
+                    $algorithm_denominator++;
+                }
+
+                if ($value != $rel_value) {
+                    //echo("MISMATCH<BR>");
+                    $mismatches++;
+                    if ($algorithm_question) {
+                        $algorithm_mismatches++;
+                    }
                 }
             }
         }
