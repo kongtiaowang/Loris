@@ -134,7 +134,8 @@ class NDB_BVL_Instrument_neuro_screen extends NDB_BVL_Instrument
             //which time version is being filled out?
             $this->form->addElement("select", "visit", "Visit", array(null=>"","6month"=>"6 month", 
                         "12month"=>"12 month", 
-                        "12month_nr"=>"12 month (new recruit)", 
+                        "12month_nr"=>"12 month (new recruit)",
+                        "18month"=>"18 month",
                         "24month"=>"24 month"));
 
         }

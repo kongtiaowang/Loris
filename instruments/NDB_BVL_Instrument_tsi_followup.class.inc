@@ -212,7 +212,7 @@ class NDB_BVL_Instrument_tsi_followup extends NDB_BVL_Instrument
 
 //              $this->form->addElement('link', null, null, "$url", 'Enter this data in the TSI');
 
- //               $url = "main.php?test_name=tsi&candID=".$_REQUEST['candID']."&sessionID=".$sessionid."&commentID=".$commentid;
+ //               $url = "{$baseurl}/tsi/?candID=".$_REQUEST['candID']."&sessionID=".$sessionid."&commentID=".$commentid;
 
 
 		$this->form->addElement("static", null, "Mother Ethnicity:");
@@ -396,7 +396,7 @@ class NDB_BVL_Instrument_tsi_followup extends NDB_BVL_Instrument
 /*
   		$sessionid = $this->getSession();
                 $commentid = $this->getComment($sessionid);
-                $url = "main.php?test_name=tsi&candID=".$_REQUEST['candID']."&sessionID=".$sessionid."&commentID=".$commentid;
+                $url = "{$baseurl}/tsi/?candID=".$_REQUEST['candID']."&sessionID=".$sessionid."&commentID=".$commentid;
 		$this->form->addElement("static", null, "<br/><b>The following information does not change across time. Please ensure that it is entered in the TSI.</b>");
                 $this->form->addElement("link", null, "City of Birth:", $url, 'Click here to verify or enter this data in the TSI');
        */
