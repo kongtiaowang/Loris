@@ -119,6 +119,8 @@ class NDB_Reliability_ados2_module1_reliability extends NDB_Reliability
         } else if ($instrument_record['a1'] == 0 || $instrument_record['a1'] == 1 || $instrument_record['a1'] == 2) {
              $algorithm_questions = array('a2','a7','a8','b1','b3','b4','b5','b9','b10','b12','a5','d1','d2','d4');
         }
+        $excluded = array('CommentID', 'UserID', 'Examiner', 'Testdate', 'Data_entry_completion_status', 'Date_taken', 'Candidate_Age', 'Window_Difference', 'other_comments');
+
         foreach ($instrument_record as $key => $value) {
             if (!in_array($key, $excluded)) {
                 $algorithm_question = in_array($key, $algorithm_questions);
