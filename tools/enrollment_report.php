@@ -1,8 +1,7 @@
 <?php
-set_include_path(get_include_path().":../libraries:../../php/libraries:");
-require_once "NDB_Menu_statistics.class.inc";
-require_once "NDB_Client.class.inc";
-require_once "Utility.class.inc";
+set_include_path(get_include_path().":../libraries:../../php/libraries:../modules/statistics_ibis/php/:");
+require_once '../../vendor/autoload.php';
+require_once "NDB_Form_statistics_ibis.class.inc";
 
 $client = new NDB_Client();
 $client->makeCommandLine();
@@ -12,18 +11,22 @@ $date = date("Y-m-d");
 $dir = "../../htdocs/EnrollmentReport/".$date;
 mkdir($dir, 0777); //create directory where all enrollment reports will be placed
 chdir($dir);
-$DB->select("SELECT CenterID as NumericID, PSCArea as LongName, Name as ShortName FROM psc WHERE CenterID IN (2, 3, 4, 5)", $centers);
-$centers[null]= null;
-$projects[null]=null;
+$centers = $DB->pselect("SELECT CenterID as NumericID, PSCArea as LongName, Name as ShortName FROM psc WHERE CenterID IN (2, 3, 4, 5)", array());
+//$centers[null]= null;
+//$projects[null]=null;
+
 foreach(Utility::getProjectList() as $key => $value) {
     $projects[$key] = $value;
 }
+
 foreach( $centers as $site){
+
     if($site != null){
         $siteID = $site['NumericID'];
     }else{
         $siteID = null;
     }
+
     foreach( $projects as $projID => $projName){
         if($projID != null){
             $filename = "EnrollmentReport_".$site['ShortName']."_".$projName.".csv";
@@ -40,7 +43,8 @@ foreach( $centers as $site){
             }
 
         }
-        $results = NDB_Menu_statistics::getEnrollmentData($siteID, $projID);
+        $results = NDB_Form_statistics_ibis::getEnrollmentData($siteID, $projID);
+
         foreach( $results as $tablesection => $enrolldata){
             switch($tablesection){
                 case "enroll_data":
