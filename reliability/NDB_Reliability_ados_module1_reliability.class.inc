@@ -14,13 +14,18 @@ class NDB_Reliability_ados_module1_reliability extends NDB_Reliability
     {
         $DB =& Database::singleton();
 
-        $DB->select("SELECT * FROM ados_module1_reliability", $result);
+        $result = $DB->pselect("SELECT * FROM ados_module1_reliability", array());
                
         //print_r($this->identifier);
         if (!empty($this->identifier)) { 
             
-            // set the ados_module1_reliability values 
-            $DB->selectRow("SELECT * FROM ados_module1_reliability WHERE CommentID = '$this->identifier' AND reliability_center_id = '$this->reliability_center_id'", $row);
+            // set the ados_module1_reliability values
+
+            $pados = array(
+                'idt' => $this->identifier,
+                'rci' => $this->reliability_center_id
+            );
+            $row = $DB->pselectRow("SELECT * FROM ados_module1_reliability WHERE CommentID = :idt AND reliability_center_id = :rci", $pados);
      
             // Set the defaults
             // print_r($row['CommentID']);
