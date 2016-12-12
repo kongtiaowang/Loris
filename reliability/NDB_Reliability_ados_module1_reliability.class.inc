@@ -20,7 +20,7 @@ class NDB_Reliability_ados_module1_reliability extends NDB_Reliability
         if (!empty($this->identifier)) { 
             
             // set the ados_module1_reliability values 
-            $DB->selectRow("SELECT * FROM ados_module1_reliability WHERE CommentID = '$this->identifier' AND reliability_center_id = $this->reliability_center_id", $row);
+            $DB->selectRow("SELECT * FROM ados_module1_reliability WHERE CommentID = '$this->identifier' AND reliability_center_id = '$this->reliability_center_id'", $row);
      
             // Set the defaults
             // print_r($row['CommentID']);
