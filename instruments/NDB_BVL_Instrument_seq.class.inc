@@ -96,6 +96,7 @@ class NDB_BVL_Instrument_seq extends NDB_BVL_Instrument
 
 		// required fields for data entry completion status
 		$this->_requiredElements = array('Examiner', "q1_react_sensitively", "q14_dislike_cuddling", "q36_a_sounds");
+
 		/**
 		 * Array of column names to be ignored by the double data entry conflict detector.
 		 */
@@ -134,12 +135,16 @@ class NDB_BVL_Instrument_seq extends NDB_BVL_Instrument
 			'q30_flap_arms_what_do',
 			'q31_free_time',
 			'q32_seem_happiest',
-            'q35_other_comments',
-            'q35_other_comments_status'
+      'q33_enjoy_interaction',
+			'q34_works_best',
+      'q35_other_comments',
+            'q35_other_comments_status',
+							 'q37_seek_or_crave',
+							 'q39_favourite_food_qualities',
+							 'q40_why_foods'
             ),
 			$this->scoreCols
 		);
-
 
 		// setup the form
 		$this->_setupForm();

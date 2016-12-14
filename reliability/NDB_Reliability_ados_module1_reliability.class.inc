@@ -14,20 +14,25 @@ class NDB_Reliability_ados_module1_reliability extends NDB_Reliability
     {
         $DB =& Database::singleton();
 
-        $DB->select("SELECT * FROM ados_module1_reliability", $result);
+        $result = $DB->pselect("SELECT * FROM ados_module1_reliability", array());
                
         //print_r($this->identifier);
         if (!empty($this->identifier)) { 
             
-            // set the ados_module1_reliability values 
-            $DB->selectRow("SELECT * FROM ados_module1_reliability WHERE CommentID = '$this->identifier' AND reliability_center_id = $this->reliability_center_id", $row);
+            // set the ados_module1_reliability values
+
+            $pados = array(
+                'idt' => $this->identifier,
+                'rci' => $this->reliability_center_id
+            );
+            $row = $DB->pselectRow("SELECT * FROM ados_module1_reliability WHERE CommentID = :idt AND reliability_center_id = :rci", $pados);
      
             // Set the defaults
             // print_r($row['CommentID']);
             $initial_table = preg_replace('/_reliability/', '', $this->name);
             $defaults['Examiner'] = $row['Examiner'];
             $defaults['Date_taken'] = $row['Date_taken'];
-            $defaults['CommentID'] = "<a href=\"main.php?test_name=reliability_breakdown&instrument=$initial_table&CommentID=$row[CommentID]\">" . $row['CommentID'] . "</a>";
+            $defaults['CommentID'] = "<a href=\"{$baseurl}/reliability_breakdown/?instrument=$initial_table&CommentID=$row[CommentID]\">" . $row['CommentID'] . "</a>";
             $defaults['Reliability_score_all_items'] = $row['Reliability_score_all_items'];
             $defaults['Reliability_score_scored_items'] = $row['Reliability_score_scored_items'];
             $defaults['a1'] = $row['a1'];
