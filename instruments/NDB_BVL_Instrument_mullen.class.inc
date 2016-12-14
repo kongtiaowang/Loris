@@ -755,6 +755,7 @@ class NDB_BVL_Instrument_mullen extends NDB_BVL_Instrument
             } else
             $this->_addQuestion("gross_motor_" . $field, $label, 1);
         }
+        $this->form->addFormRule(array(&$this, 'mullen_Rules'));
 
         $this->form->addElement("header", null, "Gross Motor Scores");
         if (isset($_REQUEST['commentID'])) {
@@ -849,6 +850,8 @@ class NDB_BVL_Instrument_mullen extends NDB_BVL_Instrument
             $this->_addQuestion("visual_recept_" . $field, $label, $maxPoints[$field]);
         }
 
+        $this->form->addFormRule(array(&$this, 'mullen_Rules'));
+
         $this->form->addElement("header", null, "Visual Reception Scores");
         if (isset($_REQUEST['commentID'])) {
 
@@ -930,6 +933,8 @@ class NDB_BVL_Instrument_mullen extends NDB_BVL_Instrument
             $this->_addQuestion("fine_motor_" . $field, $label, $maxPoints[$field]);
 
         }
+
+        $this->form->addFormRule(array(&$this, 'mullen_Rules'));
 
         $this->form->addElement("header", null, "Fine Motor Scores");
        if (isset($_REQUEST['commentID'])) {
@@ -1016,6 +1021,8 @@ class NDB_BVL_Instrument_mullen extends NDB_BVL_Instrument
             $this->_addQuestion("receptive_lang_" . $field, $label, $maxPoints[$field]);
         }
 
+        $this->form->addFormRule(array(&$this, 'mullen_Rules'));
+
          $this->form->addElement("header", null, "Receptive Language Scores");
          if (isset($_REQUEST['commentID'])) {
 
@@ -1096,6 +1103,8 @@ class NDB_BVL_Instrument_mullen extends NDB_BVL_Instrument
             $this->_addQuestion("expressive_lang_" . $field, $label, $maxPoints[$field]);
 
         }
+
+        $this->form->addFormRule(array(&$this, 'mullen_Rules'));
 
         $this->form->addElement("header", null, "Expressive Language Scores");
         if (isset($_REQUEST['commentID'])) {
@@ -1237,12 +1246,6 @@ class NDB_BVL_Instrument_mullen extends NDB_BVL_Instrument
               $raw_score += $this->maxScores[$scale][$question];
            }
            else if($question <= $end_question){
-              if($score_record[$scale_name . '_' . $question] == 'not_answered'){
-                 echo('<center><strong><font color="Red"> "Not Answered" response appears incorrect for question ' . $question . ' on ' . $eng_scale_name . ' scale</font></strong></center>');
-              }
-              if($score_record[$scale_name . '_' . $question] == null){
-                 echo('<center><strong><font color="Red"> Missing response appears incorrect for question ' . $question . ' on ' . $eng_scale_name . ' scale</font></strong></center>');
-              }
               $raw_score += $score_record[$scale_name . '_' . $question];
            }
            else{
@@ -1546,6 +1549,25 @@ class NDB_BVL_Instrument_mullen extends NDB_BVL_Instrument
            return $y;
         }
      }
+
+    function mullen_Rules($values) {
+        $scale_names = array('gross_motor', 'visual_recept', 'fine_motor', 'receptive_lang', 'expressive_lang');
+        $errors = array();
+        foreach ($scale_names as $scale_name) {
+            $basal = $values[$scale_name . '_' . "basal"];
+            $ceiling = $values[$scale_name . '_' . "ceiling"];
+            if ($basal != null && $ceiling != null) {
+                for ($i = $basal; $i <= $ceiling; $i++) {
+                    $question = $scale_name . '_' . $i;
+                    $answer = $values[$question];
+                    if ($answer == 'not_answered') {
+                        $errors[$question] = "All items between the basal and ceiling level need to be entered";
+                    }
+                }
+            }
+        }
+        return $errors;
+    }
 
      // For certification module
      function _getExaminerNames() {

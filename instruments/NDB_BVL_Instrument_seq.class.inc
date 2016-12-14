@@ -130,6 +130,11 @@ INSERT INTO instrument_subtests VALUES('', 'seq', 'seq_page3', 'General and Adde
 							 'q30_flap_arms_what_do',
 							 'q31_free_time',
 							 'q32_seem_happiest',
+							 'q33_enjoy_interaction',
+							 'q34_works_best',
+							 'q37_seek_or_crave',
+							 'q39_favourite_food_qualities',
+							 'q40_why_foods',
                             'q35_other_comments',
                             'q35_other_comments_status');
            

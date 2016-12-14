@@ -110,12 +110,12 @@ class ProjectUtility extends PEAR
 
         $config =& NDB_Config::singleton();
         $database = $config->getSetting('database');
-        $query = "select distinct table_name from information_schema.columns where table_name = '$test_name' and COLUMN_NAME = '$column' and TABLE_SCHEMA = '$database'";
+        $query = "select distinct table_name from information_schema.columns where table_name =:test and COLUMN_NAME =:col and TABLE_SCHEMA =:db";
 
         //sprint $query . "\n";
         $DB =& Database::singleton();
 
-        $effected = $DB->selectOne($query);
+        $effected = $DB->pselectOne($query, array('test' => $test_name, 'col' => $column, 'db' => $database));
         if ($effected){
             return true;
         }
@@ -137,10 +137,10 @@ class ProjectUtility extends PEAR
         join flag f on (s.ID = f.SessionID)
         join candidate c on (c.Candid = s.Candid)
         join psc on (s.CenterID = psc.CenterID)
-        where s.Active = 'Y' and c.Active= 'Y' and f.Test_name = '$test_name' AND psc.Centerid!= '1'";
+        where s.Active = 'Y' and c.Active= 'Y' and f.Test_name =:test AND psc.CenterID!= '1'";
 
         //$query = "select distinct Visit_label from test_battery where Test_name = '$test_name'";
-        $db->select($query,$visitlabels);
+        $visitlabels = $db->pselect($query, array('test' => $test_name));
 
         return $visitlabels;
     }
@@ -172,9 +172,9 @@ class ProjectUtility extends PEAR
      */
     function getSourcefrom(){
         $DB =& Database::singleton();
-        $DB->select("select distinct t.Full_name from parameter_type pt, data_integrity_flag di,test_names t
+        $sourcefrom = $DB->pselect("select distinct t.Full_name from parameter_type pt, data_integrity_flag di,test_names t
         where pt.sourcefrom is not null and pt.Name = di.Name and t.test_name = pt.sourcefrom 
-        order by t.Full_name",$sourcefrom);
+        order by t.Full_name", array());
 
         foreach ($sourcefrom as $table){
             if (!is_null($table)){
@@ -195,17 +195,17 @@ class ProjectUtility extends PEAR
         $DB =& Database::singleton();
         //get sourcefield using instrument
         if (!is_null($instrument)){
-            $DB->select("select SourceField, Name from parameter_type where queryable = '1' and sourcefrom = '$instrument' order by Name ",$sourcefields);
+            $sourcefields = $DB->pselect("select SourceField, Name from parameter_type where queryable = '1' and sourcefrom =:instrum order by Name", array('instrum' => $instrument));
         }
 
         //get sourcefield using commentid
         elseif (!is_null($commentID)){
-            $instrument = $DB->selectOne("select Test_name from flag where CommentID = '$commentID'");
-            $DB->select("select SourceField, Name from parameter_type where queryable = '1' and sourcefrom = '$instrument' order by Name ",$sourcefields);
+            $instrument = $DB->pselectOne("select Test_name from flag where CommentID =:cID", array('cID' => $commentID));
+            $sourcefields = $DB->pselect("select SourceField, Name from parameter_type where queryable = '1' and sourcefrom =:instrum order by Name", array('instrum' => $instrument));
         }
         //get all source fields
         elseif (!is_null($name)){
-            $DB->selectRow("select * from parameter_type where Name = '$name'",$sourcefields);
+            $sourcefields = $DB->pselectRow("select * from parameter_type where Name =:n", array('n' => $name));
         }
 
         else {

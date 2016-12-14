@@ -34,13 +34,13 @@ class NDB_Form_adi_r_reliability extends NDB_Form
     {
         $DB =& Database::singleton();
 
-        $DB->select("SELECT * FROM adi_r_reliability", $result);
+        $result = $DB->pselect("SELECT * FROM adi_r_reliability", array());
                
         //print_r($this->identifier);
         if (!empty($this->identifier)) { 
             
             // set the adi_r_reliability values 
-            $DB->selectRow("SELECT * FROM adi_r_reliability WHERE CommentID = '$this->identifier'", $row);
+            $row = $DB->pselectRow("SELECT * FROM adi_r_reliability WHERE CommentID =:cID", array('cID' => $this->identifier));
      
             // Set the defaults
             // print_r($row['CommentID']);
@@ -261,19 +261,19 @@ class NDB_Form_adi_r_reliability extends NDB_Form
         //$this->_nullScores();
        
         //Get values from both tables of adi_r (reliability and original)
-        $query = "SELECT * FROM adi_r_reliability WHERE CommentID='".$this->identifier."'";
-        $query1 = "SELECT * FROM adi_r_proband WHERE CommentID='".$this->identifier."'";
-        $query2 = "SELECT * FROM adi_r_reliability_lookup WHERE CommentID='standard_adir_SEA0012'";
-        $query3 = "SELECT * FROM adi_r_reliability_lookup WHERE CommentID='standard_adir_SEA0070'";
+        $query = "SELECT * FROM adi_r_reliability WHERE CommentID=:cID";
+        $query1 = "SELECT * FROM adi_r_proband WHERE CommentID=:cID";
+        $query2 = "SELECT * FROM adi_r_reliability_lookup WHERE CommentID=:cID";
+        $query3 = "SELECT * FROM adi_r_reliability_lookup WHERE CommentID=:cID";
 
 
-        $db->selectRow($query, $score_record);
-              
-        $db->selectRow($query1, $score_record1);
-        
-        $db->selectRow($query2, $score_record2);
-        
-        $db->selectRow($query3, $score_record3);
+        $score_record = $db->pselectRow($query, array('cID' => $this->identifier));
+
+        $score_record1 = $db->pselectRow($query1,  array('cID' => $this->identifier));
+
+        $score_record2 = $db->pselectRow($query2, array('cID' => 'standard_adir_SEA0012'));
+
+        $score_record3 = $db->pselectRow($query3, array('cID' => 'standard_adir_SEA0070'));
         
      
         // If the reliability is to be compared to the gold standard
@@ -3011,8 +3011,8 @@ if($score_record['q_2_age_first_noticed_code']=='8' AND $score_record3['q_2_age_
  function _validate($values)
  {
      $DB =& Database::singleton();
-     $query = "SELECT count(*) AS counter FROM candidate WHERE CandID='$values[CandID]' and PSCID='$values[PSCID]'";
-     $recordsFound = $DB->selectOne($query);
+     $query = "SELECT count(*) AS counter FROM candidate WHERE CandID=:cID and PSCID=:pID";
+     $recordsFound = $DB->pselectOne($query, array('cID' => $values['CandID'], 'pID' => $values['PSCID']));
      $errors = array();
      
      if($recordsFound < 1) {
@@ -3087,9 +3087,9 @@ if($score_record['q_2_age_first_noticed_code']=='8' AND $score_record3['q_2_age_
   function _getExaminerNames()
    {
        $db =& Database::singleton();
-       $centerID = $db->selectOne("SELECT session.CenterID FROM session, flag WHERE session.ID=flag.SessionID and flag.CommentID='".$this->identifier."'");
+       $centerID = $db->pselectOne("SELECT session.CenterID FROM session, flag WHERE session.ID=flag.SessionID and flag.CommentID=:cID", array('cID' => $this->identifier));
 
-       $db->select("SELECT examinerID, full_name FROM examiners WHERE centerID='$centerID' ORDER BY full_name", $results);
+       $results = $db->pselect("SELECT examinerID, full_name FROM examiners WHERE centerID=:cID ORDER BY full_name", array('cID' => $centerID));
        
        $examiners = array(''=>'');
        if(is_array($results) && !empty($results)) {

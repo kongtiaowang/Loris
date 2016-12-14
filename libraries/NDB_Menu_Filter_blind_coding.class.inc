@@ -24,8 +24,7 @@ class NDB_Menu_Filter_blind_coding extends NDB_Menu_Filter
 
         // create the centerID map
         $db =& Database::singleton();
-        $pscRows = array();
-        $db->select("SELECT CenterID, Name FROM psc", $pscRows);
+        $pscRows = $db->pselect("SELECT CenterID, Name FROM psc", array());
         foreach($pscRows AS $row) {
             $this->centerIDMap[$row['CenterID']] = $row['Name'];
         }
@@ -250,18 +249,18 @@ class NDB_Menu_Filter_blind_coding extends NDB_Menu_Filter
                         FROM candidate c JOIN session s ON (c.CandID=s.CandID) 
                             JOIN flag f ON (s.ID=f.SessionID) 
                             JOIN blind_coding b ON (b.CommentID=f.CommentID) 
-                 WHERE c.PSCID='$PSCID' AND b.Instrument='$Instrument' 
-                        AND s.Visit_label='$PSCID_V' 
+                 WHERE c.PSCID=:pid AND b.Instrument=:instrum 
+                        AND s.Visit_label=:vlabel 
                         AND f.Data_entry IS NOT NULL 
                         AND f.Data_entry <> 'None' ";
 
-        $DB->selectRow($query, $CommentID);
+        $CommentID = $DB->pselectRow($query, array('pid' => $PSCID, 'instrum' => $Instrument, 'vlabel' => $PSCID_V));
         if(!$CommentID) {
             return array("error" => "$PSCID/$PSCID_V is not in blind coding for $Instrument. Cannot swap candidates.");
         }
 
-        $query="SELECT f.CommentID as NewID, c.CenterID as NewCenterID FROM session s join flag f ON (f.SessionID=s.ID) JOIN candidate c ON (c.CandID=s.CandID)  WHERE f.Test_name='$Instrument' and c.PSCID='$PSCID_Replace' AND s.Visit_label='$PSCID_Replace_V' AND f.Data_entry IS NOT NULL and f.Data_entry <> 'None'";
-        $DB->selectRow($query, $newCommentID);
+        $query="SELECT f.CommentID as NewID, c.CenterID as NewCenterID FROM session s join flag f ON (f.SessionID=s.ID) JOIN candidate c ON (c.CandID=s.CandID)  WHERE f.Test_name=:instrum and c.PSCID=:pid AND s.Visit_label=:vlabel AND f.Data_entry IS NOT NULL and f.Data_entry <> 'None'";
+        $newCommentID = $DB->pselectRow($query, array('instrum' => $Instrument, 'pid' => $PSCID_Replace, 'vlabel' => $PSCID_Replace_V));
         if(!$newCommentID) {
             return array('error' => "$PSCID_Replace/$PSCID_Replace_V did not complete $Instrument or data not entered. Cannot swap candidates.");
         }
@@ -275,7 +274,7 @@ class NDB_Menu_Filter_blind_coding extends NDB_Menu_Filter
             return array('error' => "$PSCID/$PSCID_V is from a different site than you. Can only swap candidates from the same site.");
         }
         $NewID = $newCommentID['NewID'];
-        $DB->selectRow("SELECT CommentID FROM blind_coding WHERE CommentID='$NewID'", $replacementCheck);
+        $replacementCheck = $DB->pselectRow("SELECT CommentID FROM blind_coding WHERE CommentID=:cID", array('cID' => $NewID));
         if(!empty($replacementCheck)) {
             return array("error" => "$PSCID_Replace/$PSCID_Replace_V already in blind coding. Cannot swap $PSCID/$PSCID_V for it.");
         }
@@ -311,7 +310,7 @@ class NDB_Menu_Filter_blind_coding extends NDB_Menu_Filter
         }
 
         $PSCID = $_POST['AddPSCID'];
-        $CommentID = $DB->selectOne("SELECT CommentID FROM flag f JOIN session s ON (s.ID=f.SessionID) JOIN candidate c USING (CandID) WHERE f.Test_name='$Instrument' AND c.PSCID='$PSCID' AND s.Visit_label='$Visit_label'");
+        $CommentID = $DB->pselectOne("SELECT CommentID FROM flag f JOIN session s ON (s.ID=f.SessionID) JOIN candidate c USING (CandID) WHERE f.Test_name=:instrum AND c.PSCID=:pid AND s.Visit_label=:vlabel", array('instrum' => $Instrument, 'pid' => $PSCID, 'vlabel' => $Visit_label));
         if(!$CommentID) {
             return array("error" => "$PSCID/$Visit_label does not have data entered for $Instrument");
 
