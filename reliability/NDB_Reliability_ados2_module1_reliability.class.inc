@@ -83,7 +83,6 @@ class NDB_Reliability_ados2_module1_reliability extends NDB_Reliability
                 $defaults[$key] = $value;    
             }
             $defaults['CommentID'] = "<a href=\"{$baseurl}/reliability_breakdown/?instrument=$initial_table&CommentID=$row[CommentID]\">" . $row['CommentID'] . "</a>";
-
         } else {
             echo("Identifer empty! No ID has been chosen. Please contact Samir at the DCC.<br>");
         }
@@ -115,30 +114,31 @@ class NDB_Reliability_ados2_module1_reliability extends NDB_Reliability
         $denominator = 0;
         $algorithm_mismatches  = 0;
         $algorithm_denominator = 0;
-        $age_months = $this->_getAgeInMonths($instrument_record, $reliability_record);
         if($instrument_record['a1'] == 3 || $instrument_record['a1'] == 4) {
              $algorithm_questions = array ('a2','a8','b1','b3','b4','b5','b9','b10','b11','b12','a3','d1','d2','d4');
         } else if ($instrument_record['a1'] == 0 || $instrument_record['a1'] == 1 || $instrument_record['a1'] == 2) {
              $algorithm_questions = array('a2','a7','a8','b1','b3','b4','b5','b9','b10','b12','a5','d1','d2','d4');
         }
-        foreach($instrument_record as $key=>$value){ 
-            $rel_key = $key;
-            $algorithm_question = in_array($key, $algorithm_questions);
-            $rel_value = $reliability_record[$rel_key];
-	    if(!empty($value) && !empty($rel_value) ) {
+        $excluded = array('CommentID', 'UserID', 'Examiner', 'Testdate', 'Data_entry_completion_status', 'Date_taken', 'Candidate_Age', 'Window_Difference', 'other_comments');
 
-		    $denominator++;
-		    if($algorithm_question){ 
-			    $algorithm_denominator++;
-		    }
+        foreach ($instrument_record as $key => $value) {
+            if (!in_array($key, $excluded)) {
+                $algorithm_question = in_array($key, $algorithm_questions);
+                $rel_value = $reliability_record[$key];
 
-		    if( $value ==  $rel_value)  continue;
-		    //echo("MISMATCH<BR>");                 
-		    $mismatches++;
-		    if($algorithm_question){
-			    $algorithm_mismatches++;
-		    }
-	    }
+                $denominator++;
+                if ($algorithm_question) {
+                    $algorithm_denominator++;
+                }
+
+                if ($value != $rel_value) {
+                    //echo("MISMATCH<BR>");
+                    $mismatches++;
+                    if ($algorithm_question) {
+                        $algorithm_mismatches++;
+                    }
+                }
+            }
         }
         //print "Denominator : $denominator , MISMATCHES : $mismatches, ALG_DENOM : $algorithm_denominator, ALG_MISMATCH : $algorithm_mismatches";
              // Score the reliability
