@@ -82,7 +82,7 @@ class NDB_Reliability_ados2_module1_reliability extends NDB_Reliability
             foreach($row as $key=>$value) {
                 $defaults[$key] = $value;    
             }
-            $defaults['CommentID'] = "<a href=\"?test_name=reliability_breakdown&instrument=$initial_table&CommentID=$row[CommentID]\">" . $row['CommentID'] . "</a>";
+            $defaults['CommentID'] = "<a href=\"{$baseurl}/reliability_breakdown/?instrument=$initial_table&CommentID=$row[CommentID]\">" . $row['CommentID'] . "</a>";
         } else {
             echo("Identifer empty! No ID has been chosen. Please contact Samir at the DCC.<br>");
         }
