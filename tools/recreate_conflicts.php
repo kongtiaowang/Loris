@@ -11,10 +11,11 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
-require_once __DIR__ . "/../vendor/autoload.php";
-require_once "../php/libraries/NDB_Client.class.inc";
-require_once "../php/libraries/NDB_Config.class.inc";
-require_once "../php/libraries/ConflictDetector.class.inc";
+set_include_path(get_include_path().":".__DIR__."/../libraries:".":".__DIR__."/../../php/libraries:");
+require_once __DIR__ . "/../../vendor/autoload.php";
+require_once "../../php/libraries/NDB_Client.class.inc";
+require_once "../../php/libraries/NDB_Config.class.inc";
+require_once "../../php/libraries/ConflictDetector.class.inc";
 $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize();
@@ -22,7 +23,7 @@ $client->initialize();
 $config = NDB_Config::singleton();
 $db     = Database::singleton();
 
-echo "Warning: All conflicts for instruments with Administration=None will be removed for IBIS.\n";
+echo "Warning: All conflicts for instruments with Administration=None will be removed.\n";
 
 /**
  * HELP SCREEN
@@ -51,12 +52,13 @@ if (empty($argv[1]) || $argv[1] == 'help') {
  */
 // get $action argument
 $action         = $argv[1];
-$ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
 
 if ($action=='all') {
     $allInstruments = Utility::getAllInstruments();
+    $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
 } else {
     $allInstruments = array($action => $action);
+    $ddeInstruments = array($action => $action);
 }
 // clear the unresolved conflicts for all the instruments
 foreach ($allInstruments as $instrument=>$Full_name) {
