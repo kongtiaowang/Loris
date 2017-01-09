@@ -181,6 +181,7 @@ class Candidate
        
        $ibisid = Candidate::_generateID("IBIS");
        $drexid = Candidate::_generateID("DREX");
+       $hopid  = Candidate::_generateID("HOP");
        
        // insert the new candidate into the database
        $setArray = array('CandID'       => $candID,
@@ -195,7 +196,8 @@ class Candidate
                          'RegisteredBy' => $user->getUsername(),
                          'UserID'       => $user->getUsername(),
                          'IBISID'       => $ibisid,
-                         'DREXID'       => $drexid
+                         'DREXID'       => $drexid,
+                         'HOPID'        => $hopid
                          );
        
        $db->insert('candidate', $setArray);
