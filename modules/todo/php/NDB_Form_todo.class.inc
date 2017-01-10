@@ -204,7 +204,7 @@ class NDB_Form_Todo extends NDB_Form
         return array_merge(
             $deps,
             array(
-             $baseURL . "/training/js/training_helper.js",
+             $baseURL . "/todo/js/script.js",
             )
         );
     }
