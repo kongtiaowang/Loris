@@ -475,7 +475,10 @@ class Candidate
         // If IBIS2, take "0" out of the possibilities for the first digit of the numbers.
         if($startNumber == 1000) {
             $pscidArrays[1] = array(1, 2, 3, 4, 5, 6, 7, 8, 9);
+        } elseif($startNumber == 2000) {
+            $pscidArrays[1] = array(2, 3, 4, 5, 6, 7, 8, 9);
         }
+
         // run one first time, then loop until the pscid is not used
         do {
             // pick a new pscid
@@ -500,9 +503,8 @@ class Candidate
 
         do {
             $randid = $ID . rand(1000, 9999);
-            $randidq = $db->quote($randid);
             $nid = $ID . "ID";
-        } while($db->pselectOne("SELECT count($nid) FROM candidate WHERE `$nid`=:randomIDQ", array('randomIDQ' => $randidq)) > 0);
+        } while($db->pselectOne("SELECT count($nid) FROM candidate WHERE `$nid`=:randomIDQ", array('randomIDQ' => $randid)) > 0);
         return $randid;
     }
     
