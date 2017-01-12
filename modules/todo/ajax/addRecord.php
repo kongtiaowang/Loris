@@ -1,15 +1,16 @@
 <?php
-    if(isset($_POST['first_name']) && isset($_POST['last_name']) && isset($_POST['email']))
+    if(isset($_POST['content']))
     {
         // get values 
-        $first_name = $_POST['first_name'];
-        $last_name = $_POST['last_name'];
-        $email = $_POST['email'];
+        $content = $_POST['content'];
  
-      //  $query = "INSERT INTO todo(first_name, last_name, email) VALUES('$first_name', '$last_name', '$email')";
-      //  if (!$result = mysqli_query($con, $query)) {
-      //      exit(mysqli_error($con));
-      //  }
-        echo "1 Record Added!";
+         $db   =& Database::singleton();
+         $user =& User::singleton();
+         $todoValues['content'] = $content; 
+         $todoValues['UserID'] = $user->getData('UserID');
+                   
+         $db->insert('todos', $todoValues);        
+    
+         echo $todoValues['UserID'] ;
     }
 ?>

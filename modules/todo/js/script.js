@@ -1,25 +1,18 @@
 // Add Record 
 function addRecord() {
     // get values
-    var first_name = $("#first_name").val();
-    var last_name = $("#last_name").val();
-    var email = $("#email").val();
+    var content = $("#content").val();
     // Add record
     $.post("ajax/addRecord.php", {
-        first_name: first_name,
-        last_name: last_name,
-        email: email
+        content: content
     }, function (data, status) {
-        alert(data);
         // close the popup
         $("#add_new_record_modal").modal("hide");
         // read records again
         readRecords();
  
         // clear fields from the popup
-        $("#first_name").val("");
-        $("#last_name").val("");
-        $("#email").val("");
+        $("#content").val("");
     });
 }
  
@@ -32,6 +25,6 @@ function readRecords() {
 }
 
 $(document).ready(function () {
-    // READ recods on page load
+   //  READ recods on page load
     readRecords(); // calling function
 });
