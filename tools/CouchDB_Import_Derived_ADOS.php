@@ -326,38 +326,38 @@ print "ADOSModule: $ADOSModule\n";
 
         $ADOS_SA_CSS = '';
 
-        if ( $ADOS_mod == "Module1nowords" and in_array($ADOS_social_affect_total, range(0, 3), true) ) { $ADOS_SA_CSS = 1; }
-        elseif ( $ADOS_mod == "Module1nowords" and in_array($ADOS_social_affect_total, range(4, 5), true) ) { $ADOS_SA_CSS = 2; }
-        elseif ( $ADOS_mod == "Module1nowords" and in_array($ADOS_social_affect_total, range(6, 8), true) ) { $ADOS_SA_CSS = 3; }
+        if ( $ADOS_mod == "Module1nowords" and in_array($ADOS_social_affect_total, range(0, 3)) ) { $ADOS_SA_CSS = 1; }
+        elseif ( $ADOS_mod == "Module1nowords" and in_array($ADOS_social_affect_total, range(4, 5)) ) { $ADOS_SA_CSS = 2; }
+        elseif ( $ADOS_mod == "Module1nowords" and in_array($ADOS_social_affect_total, range(6, 8)) ) { $ADOS_SA_CSS = 3; }
         elseif ( $ADOS_mod == "Module1nowords" and $ADOS_social_affect_total == 9 ) { $ADOS_SA_CSS = 4; }
-        elseif ( $ADOS_mod == "Module1nowords" and in_array($ADOS_social_affect_total, range(10, 13), true) ) { $ADOS_SA_CSS = 5; }
-        elseif ( $ADOS_mod == "Module1nowords" and in_array($ADOS_social_affect_total, range(14, 16), true) ) { $ADOS_SA_CSS = 6; }
+        elseif ( $ADOS_mod == "Module1nowords" and in_array($ADOS_social_affect_total, range(10, 13)) ) { $ADOS_SA_CSS = 5; }
+        elseif ( $ADOS_mod == "Module1nowords" and in_array($ADOS_social_affect_total, range(14, 16)) ) { $ADOS_SA_CSS = 6; }
         elseif ( $ADOS_mod == "Module1nowords" and $ADOS_social_affect_total == 17 ) { $ADOS_SA_CSS = 7; }
         elseif ( $ADOS_mod == "Module1nowords" and $ADOS_social_affect_total == 18 ) { $ADOS_SA_CSS = 8; }
         elseif ( $ADOS_mod == "Module1nowords" and $ADOS_social_affect_total == 19 ) { $ADOS_SA_CSS = 9; }
         elseif ( $ADOS_mod == "Module1nowords" and $ADOS_social_affect_total == 20 ) { $ADOS_SA_CSS = 10; }
 
-        if ( $ADOS_mod == "Module1somewords" and in_array($ADOS_social_affect_total, range(0, 1), true) ) { $ADOS_SA_CSS = 1; }
-        elseif ( $ADOS_mod == "Module1somewords" and in_array($ADOS_social_affect_total, range(2, 4), true) ) { $ADOS_SA_CSS = 2; }
+        if ( $ADOS_mod == "Module1somewords" and in_array($ADOS_social_affect_total, range(0, 1)) ) { $ADOS_SA_CSS = 1; }
+        elseif ( $ADOS_mod == "Module1somewords" and in_array($ADOS_social_affect_total, range(2, 4)) ) { $ADOS_SA_CSS = 2; }
         elseif ( $ADOS_mod == "Module1somewords" and $ADOS_social_affect_total == 5 ) { $ADOS_SA_CSS = 3; }
-        elseif ( $ADOS_mod == "Module1somewords" and in_array($ADOS_social_affect_total, range(6, 7), true) ) { $ADOS_SA_CSS = 4; }
+        elseif ( $ADOS_mod == "Module1somewords" and in_array($ADOS_social_affect_total, range(6, 7)) ) { $ADOS_SA_CSS = 4; }
         elseif ( $ADOS_mod == "Module1somewords" and $ADOS_social_affect_total == 8 ) { $ADOS_SA_CSS = 5; }
-        elseif ( $ADOS_mod == "Module1somewords" and in_array($ADOS_social_affect_total, range(9, 11), true) ) { $ADOS_SA_CSS = 6; }
-        elseif ( $ADOS_mod == "Module1somewords" and in_array($ADOS_social_affect_total, range(12, 13), true) ) { $ADOS_SA_CSS = 7; }
-        elseif ( $ADOS_mod == "Module1somewords" and in_array($ADOS_social_affect_total, range(14, 15), true) ) { $ADOS_SA_CSS = 8; }
-        elseif ( $ADOS_mod == "Module1somewords" and in_array($ADOS_social_affect_total, range(16, 17), true) ) { $ADOS_SA_CSS = 9; }
-        elseif ( $ADOS_mod == "Module1somewords" and in_array($ADOS_social_affect_total, range(18, 20), true) ) { $ADOS_SA_CSS = 10; }
+        elseif ( $ADOS_mod == "Module1somewords" and in_array($ADOS_social_affect_total, range(9, 11)) ) { $ADOS_SA_CSS = 6; }
+        elseif ( $ADOS_mod == "Module1somewords" and in_array($ADOS_social_affect_total, range(12, 13)) ) { $ADOS_SA_CSS = 7; }
+        elseif ( $ADOS_mod == "Module1somewords" and in_array($ADOS_social_affect_total, range(14, 15)) ) { $ADOS_SA_CSS = 8; }
+        elseif ( $ADOS_mod == "Module1somewords" and in_array($ADOS_social_affect_total, range(16, 17)) ) { $ADOS_SA_CSS = 9; }
+        elseif ( $ADOS_mod == "Module1somewords" and in_array($ADOS_social_affect_total, range(18, 20)) ) { $ADOS_SA_CSS = 10; }
 
-        if ( $ADOS_mod == "Module2" and in_array($ADOS_social_affect_total, range(0, 1), true) ) { $ADOS_SA_CSS = 1; }
-        elseif ( $ADOS_mod == "Module2" and in_array($ADOS_social_affect_total, range(2, 3), true) ) { $ADOS_SA_CSS = 2; }
+        if ( $ADOS_mod == "Module2" and in_array($ADOS_social_affect_total, range(0, 1)) ) { $ADOS_SA_CSS = 1; }
+        elseif ( $ADOS_mod == "Module2" and in_array($ADOS_social_affect_total, range(2, 3)) ) { $ADOS_SA_CSS = 2; }
         elseif ( $ADOS_mod == "Module2" and $ADOS_social_affect_total == 4 ) { $ADOS_SA_CSS = 3; }
         elseif ( $ADOS_mod == "Module2" and $ADOS_social_affect_total == 5 ) { $ADOS_SA_CSS = 4; }
         elseif ( $ADOS_mod == "Module2" and $ADOS_social_affect_total == 6 ) { $ADOS_SA_CSS = 5; }
-        elseif ( $ADOS_mod == "Module2" and in_array($ADOS_social_affect_total, range(7, 8), true) ) { $ADOS_SA_CSS = 6; }
-        elseif ( $ADOS_mod == "Module2" and in_array($ADOS_social_affect_total, range(9, 10), true) ) { $ADOS_SA_CSS = 7; }
+        elseif ( $ADOS_mod == "Module2" and in_array($ADOS_social_affect_total, range(7, 8)) ) { $ADOS_SA_CSS = 6; }
+        elseif ( $ADOS_mod == "Module2" and in_array($ADOS_social_affect_total, range(9, 10)) ) { $ADOS_SA_CSS = 7; }
         elseif ( $ADOS_mod == "Module2" and $ADOS_social_affect_total == 11 ) { $ADOS_SA_CSS = 8; }
-        elseif ( $ADOS_mod == "Module2" and in_array($ADOS_social_affect_total, range(12, 14), true) ) { $ADOS_SA_CSS = 9; }
-        elseif ( $ADOS_mod == "Module2" and in_array($ADOS_social_affect_total, range(15, 20), true) ) { $ADOS_SA_CSS = 10; }
+        elseif ( $ADOS_mod == "Module2" and in_array($ADOS_social_affect_total, range(12, 14)) ) { $ADOS_SA_CSS = 9; }
+        elseif ( $ADOS_mod == "Module2" and in_array($ADOS_social_affect_total, range(15, 20)) ) { $ADOS_SA_CSS = 10; }
 
         return ($ADOS_SA_CSS);
     }
@@ -387,7 +387,7 @@ print "ADOSModule: $ADOSModule\n";
         elseif ( $ADOS_mod == "Module1nowords" and $ADOS_RRB_total == 3 ) { $ADOS_RRB_CSS = 7; }
         elseif ( $ADOS_mod == "Module1nowords" and $ADOS_RRB_total == 4 ) { $ADOS_RRB_CSS = 8; }
         elseif ( $ADOS_mod == "Module1nowords" and $ADOS_RRB_total == 5 ) { $ADOS_RRB_CSS = 9; }
-        elseif ( $ADOS_mod == "Module1nowords" and in_array($ADOS_RRB_total, range(6, 8), true) ) { $ADOS_RRB_CSS = 10; }
+        elseif ( $ADOS_mod == "Module1nowords" and in_array($ADOS_RRB_total, range(6, 8)) ) { $ADOS_RRB_CSS = 10; }
 
         if ( $ADOS_mod == "Module1somewords" and $ADOS_RRB_total == 0 ) { $ADOS_RRB_CSS = 1; }
         elseif ( $ADOS_mod == "Module1somewords" and $ADOS_RRB_total == 1 ) { $ADOS_RRB_CSS = 5; }
@@ -395,15 +395,15 @@ print "ADOSModule: $ADOSModule\n";
         elseif ( $ADOS_mod == "Module1somewords" and $ADOS_RRB_total == 3 ) { $ADOS_RRB_CSS = 7; }
         elseif ( $ADOS_mod == "Module1somewords" and $ADOS_RRB_total == 4 ) { $ADOS_RRB_CSS = 8; }
         elseif ( $ADOS_mod == "Module1somewords" and $ADOS_RRB_total == 5 ) { $ADOS_RRB_CSS = 9; }
-        elseif ( $ADOS_mod == "Module1somewords" and in_array($ADOS_RRB_total, range(6, 8), true) ) { $ADOS_RRB_CSS = 10; }
+        elseif ( $ADOS_mod == "Module1somewords" and in_array($ADOS_RRB_total, range(6, 8)) ) { $ADOS_RRB_CSS = 10; }
 
         if ( $ADOS_mod == "Module2" and $ADOS_RRB_total == 0 ) { $ADOS_RRB_CSS = 1; }
         elseif ( $ADOS_mod == "Module2" and $ADOS_RRB_total == 1 ) { $ADOS_RRB_CSS = 5; }
         elseif ( $ADOS_mod == "Module2" and $ADOS_RRB_total == 2 ) { $ADOS_RRB_CSS = 6; }
         elseif ( $ADOS_mod == "Module2" and $ADOS_RRB_total == 3 ) { $ADOS_RRB_CSS = 7; }
         elseif ( $ADOS_mod == "Module2" and $ADOS_RRB_total == 4 ) { $ADOS_RRB_CSS = 8; }
-        elseif ( $ADOS_mod == "Module2" and in_array($ADOS_RRB_total, range(5, 6), true) ) { $ADOS_RRB_CSS = 9; }
-        elseif ( $ADOS_mod == "Module2" and in_array($ADOS_RRB_total, range(7, 8), true) ) { $ADOS_RRB_CSS = 10; }
+        elseif ( $ADOS_mod == "Module2" and in_array($ADOS_RRB_total, range(5, 6)) ) { $ADOS_RRB_CSS = 9; }
+        elseif ( $ADOS_mod == "Module2" and in_array($ADOS_RRB_total, range(7, 8)) ) { $ADOS_RRB_CSS = 10; }
 
         return($ADOS_RRB_CSS);
     }
