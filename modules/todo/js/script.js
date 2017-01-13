@@ -10,7 +10,7 @@ function addRecord() {
         $("#add_new_record_modal").modal("hide");
         // read records again
         readRecords();
- 
+         
         // clear fields from the popup
         $("#content").val("");
     });
@@ -18,10 +18,10 @@ function addRecord() {
  
 // READ records
 function readRecords() {
- //   $.get("ajax/readRecords.php", {}, function (data, status) {
- //       $(".records_content").html(data);
- //   });
-         alert("readRecords");
+    $.get("ajax/readRecords.php", {}, function (data, status) {
+        $(".records_content").html(data);
+       //alert(data);
+    });
 }
 
 $(document).ready(function () {
