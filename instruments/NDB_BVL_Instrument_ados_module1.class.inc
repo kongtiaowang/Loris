@@ -1,9 +1,10 @@
 <?php
 
+require_once 'NDB_BVL_Instrument_IBIS.class.inc';
 require_once 'HTML/QuickForm.php';
 require_once 'HTML/QuickForm/Renderer/Array.php';
 
-class NDB_BVL_Instrument_ados_module1 extends NDB_BVL_Instrument
+class NDB_BVL_Instrument_ados_module1 extends NDB_BVL_Instrument_IBIS
 {
 /*
     INSERT INTO test_names VALUES ('', 'ados_module1', 'ADOS Module 1', '0', '1');
@@ -160,7 +161,8 @@ class NDB_BVL_Instrument_ados_module1 extends NDB_BVL_Instrument
     	$this->form->addElement('static', "restricted_repetitive_behavior_total", "Restricted and Repetitive Behavior Total:");
     
     	$this->form->addElement('static', "social_affect_restricted_repetitive_behavior_total", "Social Affect and Restricted and Repetitive Behavior Total:");
-    
+        $this->form->addElement('static', "ADOS_SA_CSS","ADOS_SA_CSS:");
+        $this->form->addElement('static', "ADOS_RRB_CSS","ADOS_RRB_CSS:");    
     	$this->form->addElement('static', "ADOS_classification", "ADOS Classification:");
 
         $this->form->addElement('header', null, 'Severity Scores:');
@@ -389,7 +391,11 @@ class NDB_BVL_Instrument_ados_module1 extends NDB_BVL_Instrument
     	$query = "SELECT * FROM $this->table WHERE CommentID = '$this->commentID'";
     	$record = array();
     	$db->selectRow($query, $record);
- 	
+
+        // CSS Calculations
+        $scoreCols["ADOS_SA_CSS"]  = $this->ADOS_SA_CSS( $this->table, $record['a1'], $record['social_affect_total']);
+        $scoreCols["ADOS_RRB_CSS"] = $this->ADOS_RRB_CSS($this->table, $record['a1'], $record['restricted_repetitive_behavior_total']);
+
         //Convert the entered scores to countable scores:
         //"Convert scores of 3 on the protocol to 2, and treat all other scores other than 0-3 as 0."
         $scores = array(); //holds converted scores
