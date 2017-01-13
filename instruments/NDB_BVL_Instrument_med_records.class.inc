@@ -298,7 +298,7 @@ function _possibleExclusionaryCriteria() {
   			//Once "No More Growth Data" is selected once, nothing further is required.
   			$this->XINRegisterRule ( "{$field}_chart", array ("{$prevField}_chart{@}!={@}no_more_chart_data", "{$prevField}_chart{@}!={@}" ), "These fields are required unless no more growth data is selected" );
 
-  			$this->form->addRule ( "first_chart", "Must answer no more growth data, not answered, actual or chart", 'required' );
+  			$this->form->addRule ( "eighteenth_chart", "Must answer no more growth data, not answered, actual or chart", 'required' );
 
   			prev ( $administrations );
   			$prevField = key ( $administrations );
