@@ -17,7 +17,7 @@ class NDB_BVL_Instrument_med_records_recruit extends NDB_BVL_Instrument_med_reco
 	
 	
 	/**
-	 * sets up basic data, such as the HTML_Quickform object, and so on.
+	 * sets up basic data, such as the LorisForm object, and so on.
 	 *
 	 * @param string $commentID  the CommentID identifying the data to load
 	 * @param string $page       if a multipage form, the page to show

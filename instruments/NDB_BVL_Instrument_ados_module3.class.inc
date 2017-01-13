@@ -1,7 +1,7 @@
 <?php
 
-require_once 'HTML/QuickForm.php';
-require_once 'HTML/QuickForm/Renderer/Array.php';
+
+
 
 class NDB_BVL_Instrument_ados_module3 extends NDB_BVL_Instrument
 {
@@ -27,7 +27,7 @@ class NDB_BVL_Instrument_ados_module3 extends NDB_BVL_Instrument
 
     var $scoreCols = array("social_affect_total", "restricted_repetitive_behavior_total", "social_affect_restricted_repetitive_behavior_total", "ADOS_classification");
     /**
-    * sets up basic data, such as the HTML_Quickform object, and so on.
+    * sets up basic data, such as the LorisForm object, and so on.
     *
     * @param string $commentID  the CommentID identifying the data to load
     * @param string $page       if a multipage form, the page to show
@@ -36,7 +36,7 @@ class NDB_BVL_Instrument_ados_module3 extends NDB_BVL_Instrument
     */
     function setup($commentID, $page){
         $this->formType="XIN";
-        $this->form = new HTML_Quickform('test_form');
+        $this->form = new LorisForm('test_form');
         $this->page = $page;            // page label (number or
         // string - used by
         // user-defined child classes)
@@ -48,11 +48,11 @@ class NDB_BVL_Instrument_ados_module3 extends NDB_BVL_Instrument
         $this->commentID = $commentID;
 
         //The array of dates/timestamps to convert to database dates/timestamps
-        //Any HTML_Quickform date elements must be listed here
+        //Any LorisForm date elements must be listed here
         $this->dateTimeFields=array("Date_taken");
 
        //The array of selects with multiple answers allowed
-        //Any HTML_Quickform multiple selects must be listed here
+        //Any LorisForm multiple selects must be listed here
         $this->_selectMultipleElements = array();
 
         // required fields for data entry completion status
@@ -100,7 +100,7 @@ class NDB_BVL_Instrument_ados_module3 extends NDB_BVL_Instrument
 
     //If the instrument is not paged, remove the switch from the _setupForm method and add all the form Elements in this function.
     /**
-    * method to build the HTML_Quickform object into a paged form
+    * method to build the LorisForm object into a paged form
     *
     * @return void
     * @access private
@@ -108,7 +108,7 @@ class NDB_BVL_Instrument_ados_module3 extends NDB_BVL_Instrument
     function _setupForm(){
 
        if(preg_match("/ados_module3(_page[0-9]+)/",$this->page,$matches)){
-            call_user_method($matches[1], $this);
+            call_user_func(array($this, $matches[1]));
         } else {
             $this->_main();
         }

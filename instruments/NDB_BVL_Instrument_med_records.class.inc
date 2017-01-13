@@ -1,7 +1,7 @@
 <?php
 
-require_once 'HTML/QuickForm.php';
-require_once 'HTML/QuickForm/Renderer/Array.php';
+
+
 
 class NDB_BVL_Instrument_med_records extends NDB_BVL_Instrument {
     var $ValidityEnabled = false;
@@ -14,7 +14,7 @@ class NDB_BVL_Instrument_med_records extends NDB_BVL_Instrument {
 	var $chart_actual = array (null => "", "not_answered" => "Not Answered", "actual" => "Actual", "chart" => "Chart" );
         var $project;
 	/**
-	 * sets up basic data, such as the HTML_Quickform object, and so on.
+	 * sets up basic data, such as the LorisForm object, and so on.
 	 *
 	 * @param string $commentID  the CommentID identifying the data to load
 	 * @param string $page       if a multipage form, the page to show
@@ -24,7 +24,7 @@ class NDB_BVL_Instrument_med_records extends NDB_BVL_Instrument {
 	function _setup($commentID, $page) {
 		$this->formType = "XIN";
 //		$this->	
-		$this->form = new HTML_Quickform ( 'test_form' );
+		$this->form = new LorisForm ( 'test_form' );
 		$this->page = $page; // page label (number or
 		// string - used by
 		// user-defined child classes)
@@ -33,7 +33,7 @@ class NDB_BVL_Instrument_med_records extends NDB_BVL_Instrument {
 		$this->commentID = $commentID;
 		
 		//The array of dates/timestamps to convert to database dates/timestamps
-		//Any HTML_Quickform date elements must be listed here
+		//Any LorisForm date elements must be listed here
 		$this->dateTimeFields = array ("Date_taken"); //Other date fields are added automatically through $this->addDateElement();
 		
 		$this->_requiredElements = array ('Examiner', 'Date_taken', 'first_chart');
@@ -58,7 +58,7 @@ class NDB_BVL_Instrument_med_records extends NDB_BVL_Instrument {
 	}
 	
     /**
-    * method to build the HTML_Quickform object into a paged forms erase
+    * method to build the LorisForm object into a paged forms erase
     *
     * @return void
     * @access private
@@ -68,7 +68,7 @@ function _setupForm(){
         $this->form->addFormRule(array(&$this,'XINValidate'));
     	
     	if(preg_match("/(_page[0-9]+)/",$this->page,$matches)){
-            call_user_method($matches[1], $this);
+            call_user_func(array($this, $matches[1]));
         } else {
             $this->_main();
         }
@@ -298,7 +298,7 @@ function _possibleExclusionaryCriteria() {
   			//Once "No More Growth Data" is selected once, nothing further is required.
   			$this->XINRegisterRule ( "{$field}_chart", array ("{$prevField}_chart{@}!={@}no_more_chart_data", "{$prevField}_chart{@}!={@}" ), "These fields are required unless no more growth data is selected" );
 
-  			$this->form->addRule ( "first_chart", "Must answer no more growth data, not answered, actual or chart", 'required' );
+  			$this->form->addRule ( "eighteenth_chart", "Must answer no more growth data, not answered, actual or chart", 'required' );
 
   			prev ( $administrations );
   			$prevField = key ( $administrations );

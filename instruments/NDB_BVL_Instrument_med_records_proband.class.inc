@@ -19,7 +19,7 @@ class NDB_BVL_Instrument_med_records_proband extends NDB_BVL_Instrument_med_reco
 	var $diagnosticSetting = array (null => "", 'medical_center' => "Medical Center", 'multidisciplinary' => "Multidisciplinary", 'birth_to_three' => "Birth to Three", 'schools' => "Schools", 'other' => "Other", 'not_answered' => "Not Answered" );
 	
 	/**
-	 * sets up basic data, such as the HTML_Quickform object, and so on.
+	 * sets up basic data, such as the LorisForm object, and so on.
 	 *
 	 * @param string $commentID  the CommentID identifying the data to load
 	 * @param string $page       if a multipage form, the page to show
