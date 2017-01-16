@@ -1,5 +1,6 @@
 <?php
 
+require_once 'NDB_BVL_Instrument_IBIS.class.inc';
 require_once 'HTML/QuickForm.php';
 require_once 'HTML/QuickForm/Renderer/Array.php';
 

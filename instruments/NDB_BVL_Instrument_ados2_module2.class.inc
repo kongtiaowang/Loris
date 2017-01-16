@@ -1,9 +1,10 @@
 <?php
 
+require_once 'NDB_BVL_Instrument_IBIS.class.inc';
 require_once 'HTML/QuickForm.php';
 require_once 'HTML/QuickForm/Renderer/Array.php';
 
-class NDB_BVL_Instrument_ados2_module2 extends NDB_BVL_Instrument
+class NDB_BVL_Instrument_ados2_module2 extends NDB_BVL_Instrument_IBIS
 {
 /*
     INSERT INTO test_names (Test_name, Full_name, LimitAge, Sub_group) VALUES ('ados2_module2', 'ADOS2 Module 2', '0', '1');
@@ -146,7 +147,8 @@ class NDB_BVL_Instrument_ados2_module2 extends NDB_BVL_Instrument
     	$this->form->addElement('static', "social_affect_restricted_repetitive_behavior_total", "Social Affect and Restricted and Repetitive Behavior Total:");
     
     	$this->form->addElement('static', "ADOS_classification", "ADOS Classification:");
-    
+        $this->form->addElement('static', "ADOS_SA_CSS","ADOS_SA_CSS:");
+        $this->form->addElement('static', "ADOS_RRB_CSS","ADOS_RRB_CSS:");    
         $this->form->addElement('header', null, 'Severity Scores:');
         $this->form->addElement('static', 'gotham_weighted_score', 'Weighted Score:');
         $this->form->addElement('static', 'severity_score_lookup', 'Severity Score:');
@@ -367,7 +369,11 @@ class NDB_BVL_Instrument_ados2_module2 extends NDB_BVL_Instrument
     	$record = array();
     	$db->selectRow($query, $record);
 
-       // Get the subject age in months for scoring
+        // CSS Calculations
+        $scoreCols["ADOS_SA_CSS"]  = $this->ADOS_SA_CSS( $this->table, $record['a1'], $record['social_affect_total']);
+        $scoreCols["ADOS_RRB_CSS"] = $this->ADOS_RRB_CSS($this->table, $record['a1'], $record['restricted_repetitive_behavior_total']);
+
+        // Get the subject age in months for scoring
         $timepoint =& TimePoint::singleton($this->getSessionID());
         $dob = $timepoint->getEffectiveDateOfBirth();
         
