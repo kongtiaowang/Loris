@@ -206,7 +206,14 @@ class NDB_BVL_Instrument_peer_socialcontact extends NDB_BVL_Instrument
 
         if(isset($_GET["key"])) {
             $key = $_GET["key"];
+            $url='survey.php?key=' .$key. '&pageNum=7';
         }
+
+        else {
+            $url=str_replace("page2", "page8", $_SERVER['REQUEST_URI']);
+
+        }
+
         $colspan = 2;
 
         if(is_numeric($numplaymates)) {
@@ -229,7 +236,7 @@ class NDB_BVL_Instrument_peer_socialcontact extends NDB_BVL_Instrument
 	    } else if($numplaymates == 0) {
             $group[] = &$this->form->createElement("static", null, null,"");
 
-            $this->form->addGroup($group,"page2_header","<td colspan= $colspan>In the previous page you have indicated $numplaymates playmate(s). <BR> IF so, please click here go to the next section:<a href=\"survey.php?key=$key&pageNum=7\"><font color=\"#0000FF\"> <u>Section 2 </u></font></a> </td>", null,false);
+            $this->form->addGroup($group,"page2_header","<td colspan= $colspan>In the previous page you have indicated $numplaymates playmate(s). <BR> IF so, please click here go to the next section:<a href=\"$url\"><font color=\"#0000FF\"> <u>Section 2 </u></font></a> </td>", null,false);
             unset($group);
 
         }
@@ -311,6 +318,7 @@ class NDB_BVL_Instrument_peer_socialcontact extends NDB_BVL_Instrument
     function _page3(){
          $this->_generate_Questions(1); // playmate #1
          $this->form->addFormRule(array(&$this, 'Peer_Rules'));
+
     }
     function _page4() {
         $this->_generate_Questions(2); // playmate #2   
@@ -332,10 +340,16 @@ class NDB_BVL_Instrument_peer_socialcontact extends NDB_BVL_Instrument
     {
        $this->form->addElement('header', 'section2_header', "Section 2: Educational or Child Care Activities");
        if(isset($_GET["key"])) {
-            $key = $_GET["key"];
+           $key = $_GET["key"];
+           $url='survey.php?key=' .$key. '&pageNum=8';
+       }
+
+       else {
+           $url=str_replace("page8", "page9", $_SERVER['REQUEST_URI']);
+
         }
 
-       $this->form->addElement('static', 'lorisSubHeader',"Aside from individual play activities, children participate in group activities in educational and <BR>childcare placements with peers. We'd like to know a little about your child's current placements.<BR><BR>If your child is not in school or childcare, please go to next section: <a href=\"survey.php?key=$key&pageNum=8\"><font color=\"#0000FF\"> <u>Section 3 </u></font></a> <strong>");
+       $this->form->addElement('static', 'lorisSubHeader',"Aside from individual play activities, children participate in group activities in educational and <BR>childcare placements with peers. We'd like to know a little about your child's current placements.<BR><BR>If your child is not in school or childcare, please go to next section: <a href=\"$url\"><font color=\"#0000FF\"> <u>Section 3 </u></font></a> <strong>");
        $this->form->addElement('header','section2_a',"School");
         
        $this->addSelect('q23_childin_school',"23. Is your child in school or preschool?",$this->q23_options);
@@ -384,9 +398,15 @@ class NDB_BVL_Instrument_peer_socialcontact extends NDB_BVL_Instrument
         $this->form->addElement('header', 'section3_header', "Section 3: Community Group Activities");
         if(isset($_GET["key"])) {
             $key = $_GET["key"];
+            $url='survey.php?key=' .$key. '&pageNum=9';
         }
 
-        $this->form->addElement('static', 'lorisSubHeader',"In addition to school or childcare, some children regularly participate in other group<BR>activities with their peers, such as swimming lessons, soccer, or classes outside of school.<BR>If your child participates in such activities, please list up to three groups below.<BR><BR>If your child does not participate in any such groups, please go to the next section:<a href=\"survey.php?key=$key&pageNum=9\"><font color=\"#0000FF\"> <u>Section 4 </u></font></a> <strong><BR><BR>**Please note that groups designed to provide special services for children with<BR>developmental problems are to be included in the next section**");
+        else {
+            $url=str_replace("page9", "page10", $_SERVER['REQUEST_URI']);
+
+        }
+
+        $this->form->addElement('static', 'lorisSubHeader',"In addition to school or childcare, some children regularly participate in other group<BR>activities with their peers, such as swimming lessons, soccer, or classes outside of school.<BR>If your child participates in such activities, please list up to three groups below.<BR><BR>If your child does not participate in any such groups, please go to the next section:<a href=\"$url\"><font color=\"#0000FF\"> <u>Section 4 </u></font></a> <strong><BR><BR>**Please note that groups designed to provide special services for children with<BR>developmental problems are to be included in the next section**");
         for($i = 1; $i <= 3; $i++) {
             
             $this->form->addElement('header', 'group_header'.$i, " Group $i");
@@ -422,9 +442,15 @@ class NDB_BVL_Instrument_peer_socialcontact extends NDB_BVL_Instrument
         $this->form->addElement('header', 'section4_header', "Section 4: Groups for Special Services");
         if(isset($_GET["key"])) {
             $key = $_GET["key"];
+            $url='survey.php?key=' .$key. '&pageNum=10';
         }
 
-        $this->form->addElement('static', 'lorisSubHeader',"Some children who need special services outside of school, such as speech <BR>or physical therapy, receive them in a group setting. If your child regularly participates<BR> with other children in such therapeutic groups, please list up to three of them below.<BR><BR>If your child does not participate in such groups, please go to the next section:<a href=\"survey.php?key=$key&pageNum=10\"><font color=\"#0000FF\"> <u>Section 5 </u></font></a> <strong>");
+        else {
+            $url=str_replace("page10", "page11", $_SERVER['REQUEST_URI']);
+
+        }
+
+        $this->form->addElement('static', 'lorisSubHeader',"Some children who need special services outside of school, such as speech <BR>or physical therapy, receive them in a group setting. If your child regularly participates<BR> with other children in such therapeutic groups, please list up to three of them below.<BR><BR>If your child does not participate in such groups, please go to the next section:<a href=\"$url\"><font color=\"#0000FF\"> <u>Section 5 </u></font></a> <strong>");
         for($i = 1; $i <= 3; $i++) {
 
             $this->form->addElement('header', 'group_header'.$i, " Group $i");
@@ -520,9 +546,15 @@ class NDB_BVL_Instrument_peer_socialcontact extends NDB_BVL_Instrument
          $this->form->addElement('header', 'instrument_title', "Peer Social Contact Questionnaire");
 
          $this->form->addElement('static', 'lorisSubHeader',"Now, we would like to find out more about your child's relationship with each individual playmate.<BR>Answer the questions below in relationship to their contact in the last three months.");
-        if(isset($_GET["key"])) {
-            $key = $_GET["key"];
-        }
+       if(isset($_GET["key"])) {
+           $key = $_GET["key"];
+           $url='survey.php?key=' .$key. '&pageNum=7';
+       }
+
+       else {
+
+           $url=preg_replace('/page[3-7]/', "page8", $_SERVER['REQUEST_URI']);
+       }
         $db =& Database::singleton();
 
         $numplaymates = $db->pselectOne("SELECT total_playmates FROM ".$this->table." WHERE CommentID=:cid",
@@ -530,7 +562,7 @@ class NDB_BVL_Instrument_peer_socialcontact extends NDB_BVL_Instrument
 
 
          if($playmate > $numplaymates) {
-              $this->form->addElement('static', 'lorisSubHeader',"<strong>NOTE: You only need to fill this form if the playmate initals are specified below.<BR>If no initials are specified click here go to the next section:<a href=\"survey.php?key=$key&pageNum=7\"><font color=\"#0000FF\"> <u>Section 2 </u></font></a> <strong>");
+              $this->form->addElement('static', 'lorisSubHeader',"<strong>NOTE: You only need to fill this form if the playmate initals are specified below.<BR>If no initials are specified click here go to the next section:<a href=\"$url\"><font color=\"#0000FF\"> <u>Section 2 </u></font></a> <strong>");
 
          } else {
               $this->form->addElement('static', 'lorisSubHeader',"<strong>NOTE: You only need to fill this form if the playmate initals are specified below.<strong>");
