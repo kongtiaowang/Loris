@@ -2,7 +2,7 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <h1>Demo: Add a new todo item</h1>
+            <h1>Demo:</h1>
         </div>
     </div>
     <div class="row">
@@ -50,7 +50,7 @@
 <!-- // Modal -->
 
 <!-- Modal - Update User details -->
-<div class="modal fade" id="update_user_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade" id="update_todo_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -60,24 +60,14 @@
             <div class="modal-body">
 
                 <div class="form-group">
-                    <label for="update_first_name">First Name</label>
-                    <input type="text" id="update_first_name" placeholder="First Name" class="form-control"/>
-                </div>
-
-                <div class="form-group">
-                    <label for="update_last_name">Last Name</label>
-                    <input type="text" id="update_last_name" placeholder="Last Name" class="form-control"/>
-                </div>
-
-                <div class="form-group">
-                    <label for="update_email">Email Address</label>
-                    <input type="text" id="update_email" placeholder="Email Address" class="form-control"/>
+                    <label for="update_content">Todo Content</label>
+                    <input type="text" id="update_content" placeholder="Todo Content" class="form-control"/>
                 </div>
 
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" onclick="UpdateUserDetails()" >Save Changes</button>
+                <button type="button" class="btn btn-primary" onclick="UpdateTodoDetails()" >Save Changes</button>
                 <input type="hidden" id="hidden_user_id">
             </div>
         </div>

@@ -4,7 +4,7 @@
     $userID = $user->getData('UserID');
    
 
-    $todoList = $DB->pselect("SELECT * 
+    $todoList = $db->pselect("SELECT * 
                 FROM todos 
                 WHERE UserID=:UserID",
                 array('UserID' => $userID)
@@ -20,7 +20,9 @@
 		
 				<td>'.$todo['content'].'</td>
                                 <td>
-					<button onclick="DeleteUser('.$todo['todoID'].')" class="btn btn-danger">Delete</button>
+					<button onclick="DeleteTodo('.$todo['todoID'].')" class="btn btn-danger">Delete</button>
+                                        <button onclick="GetTodoDetails('.$todo['todoID'].')" class="btn btn-info">Edit</button>
+
 				</td>
     	               	</tr>';
                 }

@@ -24,10 +24,25 @@ function readRecords() {
     });
 }
 
-function DeleteUser(id) {
-    var conf = confirm("Are you sure, do you really want to delete User?");
+function GetTodoDetails(id) {
+
+    $("#hidden_user_id").val(id);
+    $.post("ajax/readTodoDetails.php", {
+            id: id
+        },
+        function (data, status) {
+          var todo = JSON.parse(data);
+            $("#update_content").val(todo.content);
+        }
+    );
+    // Open modal popup
+    $("#update_todo_modal").modal("show");
+}
+
+function DeleteTodo(id) {
+    var conf = confirm("Are you sure, do you really want to delete this todo?");
     if (conf == true) {
-        $.post("ajax/deleteUser.php", {
+        $.post("ajax/deleteTodo.php", {
                 id: id
             },
             function (data, status) {
@@ -36,10 +51,7 @@ function DeleteUser(id) {
             }
         );
     }
-}
- 
-
-
+} 
 
 $(document).ready(function () {
    //  READ recods on page load
