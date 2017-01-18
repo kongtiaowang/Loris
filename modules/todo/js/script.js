@@ -26,7 +26,7 @@ function readRecords() {
 
 function GetTodoDetails(id) {
 
-    $("#hidden_user_id").val(id);
+    $("#hidden_todo_id").val(id);
     $.post("ajax/readTodoDetails.php", {
             id: id
         },
@@ -51,6 +51,24 @@ function DeleteTodo(id) {
             }
         );
     }
+}
+
+function UpdateTodoDetails() {
+    // get values
+    var content = $("#update_content").val();
+    var id = $("#hidden_todo_id").val();
+    // Update the details by requesting to the server using ajax
+    $.post("ajax/updateTodoDetails.php", {
+            id: id,
+            content: content
+        },
+        function (data, status) {
+            // hide modal popup
+            $("#update_todo_modal").modal("hide");
+            // reload Users by using readRecords();
+            readRecords();
+        }
+    );
 }
 
 $(document).ready(function () {
