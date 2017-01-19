@@ -9,24 +9,21 @@
                 WHERE UserID=:UserID",
                 array('UserID' => $userID)
                 );
-
-        $data = '<table class="table table-bordered table-striped">
-                                                <tr>
-                                                        <th>content</th>
-                                                        <th>function</th>
-                                                </tr>';
+//button comment out
+        $data = '<ul class="todo_list">';
                foreach($todoList as $todo){
-                $data .= '<tr>
-                
-                                <td>'.$todo['content'].'</td>
-                                <td>
-                                        <button onclick="DeleteTodo('.$todo['todoID'].')" class="btn btn-danger">Delete</button>
-                                        <button onclick="GetTodoDetails('.$todo['todoID'].')" class="btn btn-info">Edit</button>
-
-                                </td>
-                        </tr>';
+                $data .= '<li class="card card-3"> 
+                              <a class="aa" href="#">
+                            
+                                     <h3>'.$todo['content'].'</h3>
+                                     <p class="pp">
+                                        <p onclick="DeleteTodo('.$todo['todoID'].')" class="btn1 btn-danger1">Delete</p>
+                                        <p onclick="GetTodoDetails('.$todo['todoID'].')" class="btn1 btn-info1">Edit</p>
+                                     </p>
+                              </a>
+                        </li>';
                 }
-    $data .= '</table>';
+    $data .= '</ul>';
 
     echo $data;
 
