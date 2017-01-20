@@ -4,6 +4,8 @@ CREATE TABLE `air_pollution` (
   `Examiner` varchar(255) default NULL,
   `Testdate` timestamp NOT NULL,
   `Data_entry_completion_status` enum('Incomplete','Complete') NOT NULL default 'Incomplete',
+  `consent` enum('yes','no','not_answered') DEFAULT NULL,
+  `consent_date` date DEFAULT NULL,
   `code` varchar(255) default NULL,
   `name` text default NULL,
   `Date_taken` date default NULL,
@@ -18,7 +20,8 @@ CREATE TABLE `air_pollution` (
   `additional_comments_status` enum('not_answered') default NULL,
   PRIMARY KEY  (`CommentID`)
 );
-INSERT INTO test_names(Test_name, Full_name, Sub_group, isDirectEntry) VALUES ('air_pollution', 'Air Pollution', 6, true);
+INSERT INTO `test_names` (Test_name, Full_name, Sub_group, isDirectEntry) VALUES ('air_pollution', 'Air Pollution', 6, true);
+INSERT INTO `instrument_subtests` (`Test_name`, `Subtest_name`, `Description`, `Order_number`) VALUES ('air_pollution', 'air_pollution_page2', 'Page2', '0');
 ALTER TABLE `participant_status` ADD COLUMN `air_consent` enum('yes','no','not_answered') DEFAULT NULL;
 ALTER TABLE `participant_status` ADD COLUMN `air_consent_date` date DEFAULT NULL;
 ALTER TABLE `participant_status` ADD COLUMN `air_consent_withdrawal` date DEFAULT NULL;

@@ -77,8 +77,20 @@ class NDB_BVL_Instrument_air_pollution extends NDB_BVL_Instrument
      * @return void
      * @access private
      */
-    function _main()
-    {
+    function _main(){
+      $this->form->addElement('header', 'instrument_title', "Air Pollution Questionnaire");
+
+      $yesNo = array(null=>"", 'yes'=>"Yes", 'no'=>"No");
+
+      $group[] =& $this->form->createElement("select","consent", "", $yesNo);
+      $this->XINRegisterRule("consent", array("code{@}=={@}"), "Required.", "consent_group");
+      $this->form->addGroup($group, "consent_group", "By selecting 'Yes' from the dropdown menu, you consent to give us the information in this questionnaire.", null, false);
+      unset($group);
+    }
+
+    function _page2(){
+        $this->form->addElement("static", null, '<script type="text/javascript" src="/js/sjcl.js"></script>');
+
         $group[] =& $this->form->createElement("text", 'code', "", array("class" => "remove"));
         $this->XINRegisterRule("code", array("code{@}=={@}"), "Required.", "code_group");
         $this->form->addGroup($group, "code_group", 'Code (see email)', null, false);
@@ -123,6 +135,8 @@ class NDB_BVL_Instrument_air_pollution extends NDB_BVL_Instrument
         unset($group);
 
         $this->addTextAreaElement('additional_comments', 'Additional Comments', array("class" => "encrypt"));
+
+        $this->form->addElement("static", null, '<script type="text/javascript" src="/js/air_pollution.js"></script>');
     }
 
     /**
