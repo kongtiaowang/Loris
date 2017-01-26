@@ -2,7 +2,7 @@
 --insert query to test_battery for subproject DS(subproject_id=11)
 
 -- IBIS2 instuments at V03--
---session 2981, candid 231267--
+-- session 2981, candid 231267--
 
 
 INSERT INTO `test_battery` (`Test_name`,`AgeMinDays`,  `AgeMaxDays`, `Active`, `Stage`, `SubprojectID`, `Visit_label`)  VALUES ('adi_r_proband',0,0,'Y','Visit',11,'V03') ;
@@ -23,8 +23,8 @@ INSERT INTO `test_battery` (`Test_name`,`AgeMinDays`,  `AgeMaxDays`, `Active`, `
 
 
 
---IBIS2 instruments at V06--
---session 4071, candid 729294--
+-- IBIS2 instruments at V06--
+-- session 4071, candid 729294--
 
 INSERT INTO `test_battery` (`Test_name`,`AgeMinDays`,  `AgeMaxDays`, `Active`, `Stage`, `SubprojectID`, `Visit_label`)  VALUES ('aosi',0,0,'Y','Visit',11,'V06') ;
 INSERT INTO `test_battery` (`Test_name`,`AgeMinDays`,  `AgeMaxDays`, `Active`, `Stage`, `SubprojectID`, `Visit_label`)  VALUES ('edi2',0,0,'Y','Visit',11,'V06') ;
@@ -46,8 +46,8 @@ INSERT INTO `test_battery` (`Test_name`,`AgeMinDays`,  `AgeMaxDays`, `Active`, `
 INSERT INTO `test_battery` (`Test_name`,`AgeMinDays`,  `AgeMaxDays`, `Active`, `Stage`, `SubprojectID`, `Visit_label`)  VALUES ('ibq_r',0,0,'Y','Visit',11,'V06') ;
 
 
---IBIS2 instruments at V12--
---session 3140 candid 737691--
+-- IBIS2 instruments at V12--
+-- session 3140 candid 737691--
 
 INSERT INTO `test_battery` (`Test_name`,`AgeMinDays`,  `AgeMaxDays`, `Active`, `Stage`, `SubprojectID`, `Visit_label`)  VALUES ('rbs_r',0,0,'Y','Visit',11,'V12') ;
 INSERT INTO `test_battery` (`Test_name`,`AgeMinDays`,  `AgeMaxDays`, `Active`, `Stage`, `SubprojectID`, `Visit_label`)  VALUES ('seq',0,0,'Y','Visit',11,'V12') ;
@@ -72,8 +72,8 @@ INSERT INTO `test_battery` (`Test_name`,`AgeMinDays`,  `AgeMaxDays`, `Active`, `
 INSERT INTO `test_battery` (`Test_name`,`AgeMinDays`,  `AgeMaxDays`, `Active`, `Stage`, `SubprojectID`, `Visit_label`)  VALUES ('ibq_r',0,0,'Y','Visit',11,'V12') ;
 
 
---IBIS2 instruments at V24--
---session 3342 candid 737691--
+-- IBIS2 instruments at V24--
+-- session 3342 candid 737691--
 
 INSERT INTO `test_battery` (`Test_name`,`AgeMinDays`,  `AgeMaxDays`, `Active`, `Stage`, `SubprojectID`, `Visit_label`)  VALUES ('rbs_r',0,0,'Y','Visit',11,'V24') ;
 INSERT INTO `test_battery` (`Test_name`,`AgeMinDays`,  `AgeMaxDays`, `Active`, `Stage`, `SubprojectID`, `Visit_label`)  VALUES ('seq',0,0,'Y','Visit',11,'V24') ;
@@ -105,5 +105,3 @@ INSERT INTO `test_battery` (`Test_name`,`AgeMinDays`,  `AgeMaxDays`, `Active`, `
 INSERT INTO `test_battery` (`Test_name`,`AgeMinDays`,  `AgeMaxDays`, `Active`, `Stage`, `SubprojectID`, `Visit_label`)  VALUES ('radiology_review',0,0,'Y','Visit',11,'V24') ;
 INSERT INTO `test_battery` (`Test_name`,`AgeMinDays`,  `AgeMaxDays`, `Active`, `Stage`, `SubprojectID`, `Visit_label`)  VALUES ('tsi_followup',0,0,'Y','Visit',11,'V24') ;
 INSERT INTO `test_battery` (`Test_name`,`AgeMinDays`,  `AgeMaxDays`, `Active`, `Stage`, `SubprojectID`, `Visit_label`)  VALUES ('ECBQ',0,0,'Y','Visit',11,'V24') ;
-
-
