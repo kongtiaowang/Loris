@@ -68,7 +68,7 @@ class NDB_BVL_Instrument_air_pollution extends NDB_BVL_Instrument
         }
 
         //Defines the call back function for HTML Quickform to use when validating the form.
-        $this->form->addFormRule(array(&$this, 'XINValidate'));
+        //$this->form->addFormRule(array(&$this, 'XINValidate'));
     }
 
     /**
@@ -83,21 +83,22 @@ class NDB_BVL_Instrument_air_pollution extends NDB_BVL_Instrument
       $yesNo = array(null=>"", 'yes'=>"Yes", 'no'=>"No");
 
       $group[] =& $this->form->createElement("select","consent", "", $yesNo);
-      $this->XINRegisterRule("consent", array("code{@}=={@}"), "Required.", "consent_group");
+      //$this->XINRegisterRule("consent", array("code{@}=={@}"), "Required.", "consent_group");
       $this->form->addGroup($group, "consent_group", "By selecting 'Yes' from the dropdown menu, you consent to give us the information in this questionnaire.", null, false);
       unset($group);
     }
 
     function _page2(){
-        $this->form->addElement("static", null, '<script type="text/javascript" src="/js/sjcl.js"></script>');
+        $this->form->addElement('header', 'instrument_title', "Air Pollution Questionnaire");
+        $this->form->addElement("static", null, '<div id="sjcl"><script type="text/javascript" src="/js/sjcl.js"></script></div>');
 
         $group[] =& $this->form->createElement("text", 'code', "", array("class" => "remove"));
         $this->XINRegisterRule("code", array("code{@}=={@}"), "Required.", "code_group");
         $this->form->addGroup($group, "code_group", 'Code (see email)', null, false);
         unset($group);
 
-        $group[] =& $this->form->createElement("text", 'name', "", array("class" => "encrypt"));
-        $this->XINRegisterRule("name", array("name{@}=={@}"), "Required.", "name_group");
+        $group[] =& $this->form->createElement("text", 'name_remove', "", array("class" => "encrypt"));
+        $this->XINRegisterRule("name_remove", array("name_remove{@}=={@}"), "Required.", "name_group");
         $this->form->addGroup($group, "name_group", 'Name', null, false);
         unset($group);
 
@@ -109,34 +110,34 @@ class NDB_BVL_Instrument_air_pollution extends NDB_BVL_Instrument
 
         $this->addBasicDate('Date_taken', 'Date', $dateOptions);
 
-        $group[]=&$this->form->createElement("text", 'address_line1', "", array("class" => "encrypt"));
-        $this->XINRegisterRule("address_line1", array("address_line1{@}=={@}"), "Required.", "address_line1_group");
+        $group[]=&$this->form->createElement("text", 'address_line1_remove', "", array("class" => "encrypt"));
+        $this->XINRegisterRule("address_line1_remove", array("address_line1_remove{@}=={@}"), "Required.", "address_line1_group");
         $this->form->addGroup($group, "address_line1_group", 'Address (Line 1)', null, false);
         unset($group);
 
-        $group[]=&$this->form->createElement("text", 'address_line2', "", array("class" => "encrypt"));
-        $this->XINRegisterRule("address_line2", array("address_line2{@}=={@}NEVER_REQUIRED"), "address_line2_group");
+        $group[]=&$this->form->createElement("text", 'address_line2_remove', "", array("class" => "encrypt"));
+        $this->XINRegisterRule("address_line2_remove", array("address_line2_remove{@}=={@}NEVER_REQUIRED"), "address_line2_group");
         $this->form->addGroup($group, "address_line2_group", 'Address (Line 2)', null, false);
         unset($group);
 
-        $group[]=&$this->form->createElement("text", 'city', "", array("class" => "encrypt"));
-        $this->XINRegisterRule("city", array("city{@}=={@}"), "Required.", "city_group");
+        $group[]=&$this->form->createElement("text", 'city_remove', "", array("class" => "encrypt"));
+        $this->XINRegisterRule("city_remove", array("city_remove{@}=={@}"), "Required.", "city_group");
         $this->form->addGroup($group, "city_group", 'City', null, false);
         unset($group);
 
-        $group[]=&$this->form->createElement("text", 'state', "", array("class" => "encrypt"));
-        $this->XINRegisterRule("state", array("state{@}=={@}"), "Required.", "state_group");
+        $group[]=&$this->form->createElement("text", 'state_remove', "", array("class" => "encrypt"));
+        $this->XINRegisterRule("state_remove", array("state_remove{@}=={@}"), "Required.", "state_group");
         $this->form->addGroup($group, "state_group", 'State', null, false);
         unset($group);
 
-        $group[]=&$this->form->createElement("text", 'zip_code', "", array("class" => "encrypt"));
-        $this->XINRegisterRule("zip_code", array("zip_code{@}=={@}"), "Required.", "zip_code_group");
+        $group[]=&$this->form->createElement("text", 'zip_code_remove', "", array("class" => "encrypt"));
+        $this->XINRegisterRule("zip_code_remove", array("zip_code_remove{@}=={@}"), "Required.", "zip_code_group");
         $this->form->addGroup($group, "zip_code_group", 'Zip Code', null, false);
         unset($group);
 
-        $this->addTextAreaElement('additional_comments', 'Additional Comments', array("class" => "encrypt"));
+        $this->addTextAreaElement('additional_comments', 'Additional Comments');
 
-        $this->form->addElement("static", null, '<script type="text/javascript" src="/js/air_pollution.js"></script>');
+        $this->form->addElement("static", null, '<div id="air_pollution"><script type="text/javascript" src="/js/air_pollution.js"></script></div>');
     }
 
     /**
@@ -149,6 +150,11 @@ class NDB_BVL_Instrument_air_pollution extends NDB_BVL_Instrument
      *                the final page of the survey module for this instrument.
      */
     function getReview()
+    {
+        return;
+    }
+
+    function getReviewz()
     {
         $DB = Database::singleton();
 
