@@ -1,9 +1,8 @@
 /* This script adds the IBIS2 instruments at different visit label to Down Syndrome project */
---insert query to test_battery for subproject DS(subproject_id=11)
+-- insert query to test_battery for subproject DS(subproject_id=11)
 
 -- IBIS2 instuments at V03--
 -- session 2981, candid 231267--
-
 
 INSERT INTO `test_battery` (`Test_name`,`AgeMinDays`,  `AgeMaxDays`, `Active`, `Stage`, `SubprojectID`, `Visit_label`)  VALUES ('adi_r_proband',0,0,'Y','Visit',11,'V03') ;
 INSERT INTO `test_battery` (`Test_name`,`AgeMinDays`,  `AgeMaxDays`, `Active`, `Stage`, `SubprojectID`, `Visit_label`)  VALUES ('edi',0,0,'Y','Visit',11,'V03') ;
@@ -19,9 +18,6 @@ INSERT INTO `test_battery` (`Test_name`,`AgeMinDays`,  `AgeMaxDays`, `Active`, `
 INSERT INTO `test_battery` (`Test_name`,`AgeMinDays`,  `AgeMaxDays`, `Active`, `Stage`, `SubprojectID`, `Visit_label`)  VALUES ('m_chat_proband',0,0,'Y','Visit',11,'V03') ;
 INSERT INTO `test_battery` (`Test_name`,`AgeMinDays`,  `AgeMaxDays`, `Active`, `Stage`, `SubprojectID`, `Visit_label`)  VALUES ('figs_year3',0,0,'Y','Visit',11,'V03') ;
 INSERT INTO `test_battery` (`Test_name`,`AgeMinDays`,  `AgeMaxDays`, `Active`, `Stage`, `SubprojectID`, `Visit_label`)  VALUES ('ibq_r',0,0,'Y','Visit',11,'V03') ;
-
-
-
 
 -- IBIS2 instruments at V06--
 -- session 4071, candid 729294--
@@ -70,7 +66,6 @@ INSERT INTO `test_battery` (`Test_name`,`AgeMinDays`,  `AgeMaxDays`, `Active`, `
 INSERT INTO `test_battery` (`Test_name`,`AgeMinDays`,  `AgeMaxDays`, `Active`, `Stage`, `SubprojectID`, `Visit_label`)  VALUES ('radiology_review',0,0,'Y','Visit',11,'V12') ;
 INSERT INTO `test_battery` (`Test_name`,`AgeMinDays`,  `AgeMaxDays`, `Active`, `Stage`, `SubprojectID`, `Visit_label`)  VALUES ('tsi_followup',0,0,'Y','Visit',11,'V12') ;
 INSERT INTO `test_battery` (`Test_name`,`AgeMinDays`,  `AgeMaxDays`, `Active`, `Stage`, `SubprojectID`, `Visit_label`)  VALUES ('ibq_r',0,0,'Y','Visit',11,'V12') ;
-
 
 -- IBIS2 instruments at V24--
 -- session 3342 candid 737691--
