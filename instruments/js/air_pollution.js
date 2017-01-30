@@ -54,8 +54,7 @@ $(document).ready(function() {
             }).appendTo(form);
 
             // not sure why pageNum is necessary
-            form.action = "survey.php?key=" + document.getElementById("key").textContent + "&pageNum=complete"; 
-            console.log(form.action);
+            form.attr("action", "survey.php?key=" + document.getElementById("key").textContent + "&pageNum=complete"); 
 
             form.submit();
         } else {
