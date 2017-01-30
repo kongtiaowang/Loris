@@ -1,38 +1,6 @@
-ajaxSubmit = function(e) {
-  var formEl = document.getElementById("test_form"),
-      nextpageNode = document.getElementById("nextpage"),
-      prevpageNode = document.getElementById("prevpage"),
-      nextPage;
-
-  if(e.currentTarget.id === 'savecontinue') {
-      nextPage = nextpageNode.textContent;
-  } else if(e.currentTarget.id === 'finalize') {
-      nextPage = 'complete';
-  } else if(e.currentTarget.id === 'complete') {
-      nextPage = 'complete';
-  } else if (e.currentTarget.id === 'goback') {
-      nextPage = prevpageNode.textContent;
-  }
-  $("<input>").attr({
-      type: 'hidden',
-      name: 'nextpage',
-      value: nextPage
-  }).appendTo("#test_form");
-
-  //formEl.action = document.documentURI;
-  formEl.action = "survey.php?key=" + document.getElementById("key").textContent + "&pageNum=complete";
-  console.log(formEl.action);
-
-  $("#test_form").submit();
-}
-
 $(document).ready(function() {
   console.log("ready");
 
-//  var formEl = document.getElementById("test_form");
-//  formEl.action = "survey.php?key=" + document.getElementById("key").textContent + "&pageNum=complete"; // + "&pageNum=finalpage";
-//  console.log(formEl.action);
-  
   $("#finalize").unbind( "click" );
   console.log("unbind click");
 
@@ -78,9 +46,20 @@ $(document).ready(function() {
             $('[name="code"]').val("*Deleted for Submission*");
             console.log("fields crypted, submitting..."); //status is TRUE
 
-            ajaxSubmit(e);
+            var form = $("#test_form");
+            $("<input>").attr({
+              type: 'hidden',
+              name: 'nextpage',
+              value: 'complete'
+            }).appendTo(form);
+
+            // not sure why pageNum is necessary
+            form.action = "survey.php?key=" + document.getElementById("key").textContent + "&pageNum=complete"; 
+            console.log(form.action);
+
+            form.submit();
         } else {
-            console.log("User chose to cancel at this point, since satus is " + status); //status is FALSE
+            console.log("User chose to cancel at this point, since status is " + status); //status is FALSE
             return false;
         }
     }

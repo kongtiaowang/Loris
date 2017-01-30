@@ -153,35 +153,4 @@ class NDB_BVL_Instrument_air_pollution extends NDB_BVL_Instrument
     {
         return;
     }
-
-    function getReviewz()
-    {
-        $DB = Database::singleton();
-
-        $smarty   = new Smarty_neurodb();
-        $tpl_data = array();
-
-        $tpl_data['questions'] = $DB->pselect(
-            "SELECT Description as question,
-            SourceField FROM parameter_type
-            WHERE SourceFrom=:TN AND
-            SourceField NOT IN ('Validity', 'Administration')",
-            array('TN' => $this->testName)
-        );
-
-        $Responses = $DB->pselectRow(
-            "SELECT * FROM " . $this->testName . " WHERE CommentID=:CID",
-            array('CID' => $this->getCommentID())
-        );
-
-        foreach ($tpl_data['questions'] as &$row) {
-            if (isset($Responses[$row['SourceField']])) {
-                $row['response'] = $Responses[$row['SourceField']];
-            }
-        }
-
-        $smarty->assign($tpl_data);
-        $html = $smarty->fetch("directentry_review.tpl");
-        return $html;
-    }
 }
