@@ -1,3 +1,4 @@
+#!/usr/bin/php
 <?php
 /**
  * User: Gregory Luneau
@@ -51,10 +52,10 @@ $air_pollution_headers = array(
 
 
 // Adds headers and project statistics into csv file
-fputcsv($fp, $air_pollution_headers);
+fputcsv($fp, $air_pollution_headers, $delimiter = ",", $enclosure = "'");
 
 foreach ($air_pollution_data as $value) {
-  fputcsv($fp, array_map('htmlspecialchars_decode', $value));
+  fputcsv($fp, array_map('htmlspecialchars_decode', $value), $delimiter = ",", $enclosure = "'");
 }
 
 echo "File writing for AIR POLLUTION SUBMISSION complete.\n\n";

@@ -83,7 +83,7 @@ class NDB_BVL_Instrument_air_pollution extends NDB_BVL_Instrument
       $yesNo = array(null=>"", 'yes'=>"Yes", 'no'=>"No");
 
       $group[] =& $this->form->createElement("select","consent", "", $yesNo);
-      //$this->XINRegisterRule("consent", array("code{@}=={@}"), "Required.", "consent_group");
+      $this->XINRegisterRule("consent", array("code{@}=={@}"), "Required.", "consent_group");
       $this->form->addGroup($group, "consent_group", "By selecting 'Yes' from the dropdown menu, you consent to give us the information in this questionnaire.", null, false);
       unset($group);
     }
