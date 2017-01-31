@@ -93,7 +93,7 @@ class NDB_BVL_Instrument_dna_tracking extends NDB_BVL_Instrument
         $this->addHeader("DNA Tracking");
 
         $group[] = &$this->form->createElement("static", null, null, "<strong>Candidate</strong>");
-        $group[] = &$this->form->createElement("Static", null, null, "<strong>Proband</strong>");
+        $group[] = &$this->form->createElement("static", null, null, "<strong>Proband</strong>");
         $group[] = &$this->form->createElement("static", null, null, "<strong>Mother</strong>");
         $group[] = &$this->form->createElement("static", null, null, "<strong>Father</strong>");
         $group[] = &$this->form->createElement("textarea","subject_other_specify", null, array('placeholder'=>'Specify other'));
@@ -173,7 +173,8 @@ class NDB_BVL_Instrument_dna_tracking extends NDB_BVL_Instrument
                         $group[] = $this->form->createElement("date", $key."_".$subject,null,$this->dateOptions);
                         $field = $key."_".$subject;
                         $this->XINRegisterRule( $field, array("$field{@}=={@}NEVER_REQUIRED"));
-                        $this->form->addRule($field, 'Date is invalid', 'checkdate');
+                        // Not needed  $this->form->addRule($field, 'Date is invalid', 'checkdate');
+
 
                        /*
                         if(strpos($key, "1")) {
