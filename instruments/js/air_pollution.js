@@ -10,14 +10,20 @@ $(document).ready(function() {
     // Check user inputs
     var errors = 0;
     
-    if ( !$('[name="code"]').val() ) { errors++; }
-    if ( !$('[name="Date_taken[Y]"]').val() ) { errors++; }
-    if ( !$('[name="Date_taken[M]"]').val() ) { errors++; }
-    if ( !$('[name="Date_taken[d]"]').val() ) { errors++; }   
-    $('.encrypt').each(function() { 
+    if ( !$('[name="proband_birthdate[Y]"]').val() ) { errors++; }
+    if ( !$('[name="proband_birthdate[M]"]').val() ) { errors++; }
+    if ( !$('[name="proband_birthdate[d]"]').val() ) { errors++; }
+    if ( !$('[name="from1b41[Y]"]').val() ) { errors++; }
+    if ( !$('[name="from1b41[M]"]').val() ) { errors++; }
+    if ( !$('[name="to1b41[Y]"]').val() ) { errors++; }
+    if ( !$('[name="to1b41[M]"]').val() ) { errors++; }
+    if ( !$('[name="fromatb1[Y]"]').val() ) { errors++; }
+    if ( !$('[name="fromatb1[M]"]').val() ) { errors++; }
+    if ( !$('[name="toatb1[Y]"]').val() ) { errors++; }
+    if ( !$('[name="toatb1[M]"]').val() ) { errors++; }
+    $('.required').each(function() { 
       if ( !$(this).val() ) { errors++; }
     });
-    if ( !$('[name="address_line2"]').val() ) { errors--; }
     
     if(errors > 0) {
       alert("Please fill in all required fields");

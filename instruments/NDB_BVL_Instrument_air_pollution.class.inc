@@ -2,7 +2,7 @@
 /**
  *
  * @category Instrument
- * @author   Stella Lee <slee.mcin@gmail.com>
+ * @author   Gregory Luneau <gluneau.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/IBIS/
  */
@@ -12,7 +12,7 @@ require_once 'HTML/QuickForm/Renderer/Array.php';
  * Creates the form elements for the ABC instrument
  *
  * @category Instrument
- * @author   Stella Lee <slee.mcin@gmail.com>
+ * @author   Gregory Luneau <gluneau.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/IBIS/
  */
@@ -78,7 +78,7 @@ class NDB_BVL_Instrument_air_pollution extends NDB_BVL_Instrument
      * @access private
      */
     function _main(){
-      $this->form->addElement('header', 'instrument_title', "Air Pollution Questionnaire");
+      $this->form->addElement('header', 'instrument_title', "IBIS Environment Residential History");
 
       $yesNo = array(null=>"", 'yes'=>"Yes", 'no'=>"No");
 
@@ -89,18 +89,15 @@ class NDB_BVL_Instrument_air_pollution extends NDB_BVL_Instrument
     }
 
     function _page2(){
-        $this->form->addElement('header', 'instrument_title', "Air Pollution Questionnaire");
+        $this->form->addElement('header', 'instrument_title', "IBIS Environment Residential History");
+        $this->form->addElement('header', 'instrument_inst1','</b><h5>We would like to know the home addresses of biological mothers starting one year before the birth of your child. Having these addresses will help us study how prenatal exposures, such as air pollution, affect children’s development. ' . 
+          '<br><br> Please start with your main residence at the time of your child’s birth and end with the residence where you lived one year before your child’s birth. On Section 2, we ask where your child lived when he or she turned 3 YEARS old back to birth.</h5><b>');
+       
         $this->form->addElement("static", null, '<div id="sjcl"><script type="text/javascript" src="/js/sjcl.js"></script></div>');
 
-        $group[] =& $this->form->createElement("text", 'code', "", array("class" => "remove"));
-        $this->XINRegisterRule("code", array("code{@}=={@}"), "Required.", "code_group");
-        $this->form->addGroup($group, "code_group", 'Code (see email)', null, false);
-        unset($group);
-
-        $group[] =& $this->form->createElement("text", 'name_remove', "", array("class" => "encrypt"));
-        $this->XINRegisterRule("name_remove", array("name_remove{@}=={@}"), "Required.", "name_group");
-        $this->form->addGroup($group, "name_group", 'Name', null, false);
-        unset($group);
+        $this->form->addElement("text", 'code', "Code (see email)", array("class" => "remove required"));
+        $this->form->addElement("text", 'proband_name_remove', "Name of younger child enrolled in IBIS", array("class" => "encrypt required"));
+ 
 
         $dateOptions = array(
             'language'       => 'en',
@@ -108,33 +105,75 @@ class NDB_BVL_Instrument_air_pollution extends NDB_BVL_Instrument
             'addEmptyOption' => true
         );
 
-        $this->addBasicDate('Date_taken', 'Date', $dateOptions);
+        $this->addBasicDate('proband_birthdate', 'Birth date of younger child enrolled in IBIS', $dateOptions);
 
-        $group[]=&$this->form->createElement("text", 'address_line1_remove', "", array("class" => "encrypt"));
-        $this->XINRegisterRule("address_line1_remove", array("address_line1_remove{@}=={@}"), "Required.", "address_line1_group");
-        $this->form->addGroup($group, "address_line1_group", 'Address (Line 1)', null, false);
-        unset($group);
+        // Address Mom 1
+        $this->form->addElement('header', 'instrument_title', "<h5>MOM’s Home at child’s birth #1</h5>");
+        $this->addCheckbox('living1yb4m1', 'Check if you were living here 1 year before child’s birth');
 
-        $group[]=&$this->form->createElement("text", 'address_line2_remove', "", array("class" => "encrypt"));
-        $this->XINRegisterRule("address_line2_remove", array("address_line2_remove{@}=={@}NEVER_REQUIRED"), "address_line2_group");
-        $this->form->addGroup($group, "address_line2_group", 'Address (Line 2)', null, false);
-        unset($group);
+        $this->form->addElement("text", 'address_line1m1_remove', "Address (Line 1)", array("class" => "encrypt required"));
+        $this->form->addElement("text", 'address_line2m1_remove', "Address (Line 2)", array("class" => "encrypt"));
+        $this->form->addElement("text", 'citym1_remove', "City", array("class" => "encrypt required"));
+        $this->form->addElement("text", 'statem1_remove', "State", array("class" => "encrypt required"));
+        $this->form->addElement("text", 'zip_codem1_remove', "Zip Code", array("class" => "encrypt required"));
 
-        $group[]=&$this->form->createElement("text", 'city_remove', "", array("class" => "encrypt"));
-        $this->XINRegisterRule("city_remove", array("city_remove{@}=={@}"), "Required.", "city_group");
-        $this->form->addGroup($group, "city_group", 'City', null, false);
-        unset($group);
+        $this->addMonthYear('from1b41', 'From');
+        $this->addMonthYear('to1b41', 'To');
+        $this->addCheckbox('livinghere3bd1', 'Check if you were living here at the time of child’s 3rd birthday');
+     
+        
+        // Address Mom 2-5
+        for ($i=2; $i<6; $i++)
+        {
+            $this->form->addElement('header', 'instrument_title', "<h5>MOM’s Home Previous #" . $i . "</h5>");
+            $this->addCheckbox('living1yb4m' . $i, 'Check if you were living here 1 year before child’s birth');
 
-        $group[]=&$this->form->createElement("text", 'state_remove', "", array("class" => "encrypt"));
-        $this->XINRegisterRule("state_remove", array("state_remove{@}=={@}"), "Required.", "state_group");
-        $this->form->addGroup($group, "state_group", 'State', null, false);
-        unset($group);
+            $this->form->addElement("text", 'address_line1m'. $i .'_remove', "Address (Line 1)", array("class" => "encrypt"));
+            $this->form->addElement("text", 'address_line2m'. $i .'_remove', "Address (Line 2)", array("class" => "encrypt"));
+            $this->form->addElement("text", 'citym'. $i .'_remove', "City", array("class" => "encrypt"));
+            $this->form->addElement("text", 'statem'. $i .'_remove', "State", array("class" => "encrypt"));
+            $this->form->addElement("text", 'zip_codem'. $i .'_remove', "Zip Code", array("class" => "encrypt"));
 
-        $group[]=&$this->form->createElement("text", 'zip_code_remove', "", array("class" => "encrypt"));
-        $this->XINRegisterRule("zip_code_remove", array("zip_code_remove{@}=={@}"), "Required.", "zip_code_group");
-        $this->form->addGroup($group, "zip_code_group", 'Zip Code', null, false);
-        unset($group);
+            $this->addMonthYear('from1b4' . $i, 'From');
+            $this->addMonthYear('to1b4' . $i, 'To');
+        }
+        
+        
+        // Section 2        
+        // BABY’s Home 0
+        $this->form->addElement('header', 'instrument_instruction', '<h5>Section 2 <br><br> We would like to know all the addresses where your child lived until turning AGE 3. Please start below with the address where your child lived on his or her 3rd BIRTHDAY.  Then, list your child’s previous addresses, back until the date of your child’s birth.   If your child was in shared custody, please list both home addresses.</h5><b>');
 
+        $this->form->addElement('header', 'instrument_title', "<h5>Child’s home address on his or her 3rd Birthday #1</h5>");
+        $this->addCheckbox('livingatb1', 'Check if this address was your child’s main home at time of birth');
+
+        $this->form->addElement("text", 'address_line1b1_remove', "Address (Line 1)", array("class" => "encrypt required"));
+        $this->form->addElement("text", 'address_line2b1_remove', "Address (Line 2)", array("class" => "encrypt"));
+        $this->form->addElement("text", 'cityb1_remove', "City", array("class" => "encrypt required"));
+        $this->form->addElement("text", 'stateb1_remove', "State", array("class" => "encrypt required"));
+        $this->form->addElement("text", 'zip_codeb1_remove', "Zip Code", array("class" => "encrypt required"));
+
+        $this->addMonthYear('fromatb1', 'From');
+        $this->addMonthYear('toatb1', 'To');      
+     
+        
+        // BABY’s Home 2-6
+        for ($i=2; $i<7; $i++)
+        {        
+            $this->form->addElement('header', 'instrument_title', "<h5>Child’s home address previous to his or her 3rd Birthday #". $i ."</h5>");
+            $this->addCheckbox('livingatb' . $i, 'Check if this address was your child’s main home at time of birth');
+
+            $this->form->addElement("text", 'address_line1b'. $i .'_remove', "Address (Line 1)", array("class" => "encrypt"));
+            $this->form->addElement("text", 'address_line2b'. $i .'_remove', "Address (Line 2)", array("class" => "encrypt"));
+            $this->form->addElement("text", 'cityb'. $i .'_remove', "City", array("class" => "encrypt"));
+            $this->form->addElement("text", 'stateb'. $i .'_remove', "State", array("class" => "encrypt"));
+            $this->form->addElement("text", 'zip_codeb'. $i .'_remove', "Zip Code", array("class" => "encrypt"));
+            $this->addMonthYear('fromatb' . $i, 'From');
+            $this->addMonthYear('toatb' . $i, 'To');    
+        }
+        
+                       
+        // Comment section
+        $this->form->addElement('header', 'instrument_title', "IBIS Environment Residential History");
         $this->addTextAreaElement('additional_comments', 'Additional Comments');
 
         $this->form->addElement("static", null, '<div id="air_pollution"><script type="text/javascript" src="/js/air_pollution.js"></script></div>');
