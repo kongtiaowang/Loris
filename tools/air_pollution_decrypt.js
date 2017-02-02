@@ -9,15 +9,15 @@ if ((process.argv[2] === undefined) || (process.argv[3] === undefined)) {
   process.exit(1)
 }
 
-// 'CenterID',  'CandID',  'Visit_label',  'Date_taken',  'name',  'address_line1',  'address_line2',  'city',  'state',  'zip_code',  'additional_comments'
+// 'CenterID',  'CandID',  'Visit_label',  'Date_taken',  'proband_name',  'address_line1m1',  'address_line2m1',  'citym1',  'statem1',  'zip_codem1',  'additional_comments'
 
 var stream = fs.createReadStream(process.argv[2]);
 
 var csvStream = csv
     .parse({quote:"'", headers: true})
     .on("data", function(data) {
-       if (data['name']) {
-         console.log(data['CandID'] + ', "' + sjcl.decrypt(process.argv[3], data['name']) + '"')
+       if (data['CandID']) {
+         console.log(data['CandID'] + ', "' + sjcl.decrypt(process.argv[3], data['proband_name']) + '"' + ', "' + sjcl.decrypt(process.argv[3], data['address_line1m1']) + '"')
       }
     })
     .on("end", function(){

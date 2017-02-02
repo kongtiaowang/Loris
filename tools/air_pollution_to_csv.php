@@ -27,8 +27,8 @@ echo "Data can be found in $output_file.\n\n";
 
 $air_pollution_data = array();
 
-$air_pollution_data = $db->pselect("select s.CenterID, s.CandID, s.Visit_label, ap.Date_taken, ap.name,
-  ap.address_line1, ap.address_line2, ap.city, ap.state, ap.zip_code, ap.additional_comments
+$air_pollution_data = $db->pselect("select s.CenterID, s.CandID, s.Visit_label, ap.Date_taken, ap.proband_name,
+  ap.address_line1m1, ap.address_line2m1, ap.citym1, ap.statem1, ap.zip_codem1, ap.additional_comments
   from air_pollution AS ap
   left join flag as f using (CommentID)
   left join session as s on s.ID=f.SessionID
@@ -41,12 +41,12 @@ $air_pollution_headers = array(
   'CandID',
   'Visit_label',
   'Date_taken',
-  'name',
-  'address_line1',
-  'address_line2',
-  'city',
-  'state',
-  'zip_code',
+  'proband_name',
+  'address_line1m1',
+  'address_line2m1',
+  'citym1',
+  'statem1',
+  'zip_codem1',
   'additional_comments'
 );
 

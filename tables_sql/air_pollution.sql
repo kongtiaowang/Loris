@@ -3,6 +3,7 @@ CREATE TABLE `air_pollution` (
   `UserID` varchar(255) default NULL,
   `Examiner` varchar(255) default NULL,
   `Testdate` timestamp NOT NULL,
+  `Date_taken` date default NULL,
   `Data_entry_completion_status` enum('Incomplete','Complete') NOT NULL default 'Incomplete',
   `consent` enum('yes','no','not_answered') DEFAULT NULL,
   `consent_date` date DEFAULT NULL,

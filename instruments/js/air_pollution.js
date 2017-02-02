@@ -1,6 +1,7 @@
 $(document).ready(function() {
   console.log("ready");
 
+  $("#goback").remove();
   $("#finalize").unbind( "click" );
   console.log("unbind click");
 
@@ -10,19 +11,25 @@ $(document).ready(function() {
     // Check user inputs
     var errors = 0;
     
-    if ( !$('[name="proband_birthdate[Y]"]').val() ) { errors++; }
-    if ( !$('[name="proband_birthdate[M]"]').val() ) { errors++; }
-    if ( !$('[name="proband_birthdate[d]"]').val() ) { errors++; }
-    if ( !$('[name="from1b41[Y]"]').val() ) { errors++; }
-    if ( !$('[name="from1b41[M]"]').val() ) { errors++; }
-    if ( !$('[name="to1b41[Y]"]').val() ) { errors++; }
-    if ( !$('[name="to1b41[M]"]').val() ) { errors++; }
-    if ( !$('[name="fromatb1[Y]"]').val() ) { errors++; }
-    if ( !$('[name="fromatb1[M]"]').val() ) { errors++; }
-    if ( !$('[name="toatb1[Y]"]').val() ) { errors++; }
-    if ( !$('[name="toatb1[M]"]').val() ) { errors++; }
+    $('[name="proband_birthdate[Y]"]').addClass('required');
+    $('[name="proband_birthdate[M]"]').addClass('required');
+    $('[name="proband_birthdate[d]"]').addClass('required');
+    $('[name="from1b41[Y]"]').addClass('required')
+    $('[name="from1b41[M]"]').addClass('required')
+    $('[name="to1b41[Y]"]').addClass('required');
+    $('[name="to1b41[M]"]').addClass('required');
+    $('[name="fromatb1[Y]"]').addClass('required');
+    $('[name="fromatb1[M]"]').addClass('required');
+    $('[name="toatb1[Y]"]').addClass('required');
+    $('[name="toatb1[M]"]').addClass('required');
+
     $('.required').each(function() { 
-      if ( !$(this).val() ) { errors++; }
+      if ( !$(this).val() ) { 
+        $(this).css({'border':'2px solid red'}); 
+        errors++; 
+      } else {
+        $(this).css({'border':'1px'});   
+      }
     });
     
     if(errors > 0) {
@@ -50,7 +57,7 @@ $(document).ready(function() {
 
             // empty code before submission
             $('[name="code"]').val("*Deleted for Submission*");
-            console.log("fields crypted, submitting..."); //status is TRUE
+            console.log("fields crypted, submitting..."); // status is TRUE
 
             var form = $("#test_form");
             $("<input>").attr({
@@ -64,11 +71,10 @@ $(document).ready(function() {
 
             form.submit();
         } else {
-            console.log("User chose to cancel at this point, since status is " + status); //status is FALSE
+            console.log("User chose to cancel at this point, since status is " + status); // status is FALSE
             return false;
         }
     }
   });
   
 });
-

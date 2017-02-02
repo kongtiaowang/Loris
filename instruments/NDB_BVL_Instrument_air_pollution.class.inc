@@ -104,6 +104,12 @@ class NDB_BVL_Instrument_air_pollution extends NDB_BVL_Instrument
             'format'         => 'YMd',
             'addEmptyOption' => true
         );
+        
+        $dateOptionsYM = array(
+            'language'       => 'en',
+            'format'         => 'YM',
+            'addEmptyOption' => true
+        );
 
         $this->addBasicDate('proband_birthdate', 'Birth date of younger child enrolled in IBIS', $dateOptions);
 
@@ -117,8 +123,8 @@ class NDB_BVL_Instrument_air_pollution extends NDB_BVL_Instrument
         $this->form->addElement("text", 'statem1_remove', "State", array("class" => "encrypt required"));
         $this->form->addElement("text", 'zip_codem1_remove', "Zip Code", array("class" => "encrypt required"));
 
-        $this->addMonthYear('from1b41', 'From');
-        $this->addMonthYear('to1b41', 'To');
+        $this->addMonthYear('from1b41', 'From', $dateOptionsYM);
+        $this->addMonthYear('to1b41', 'To', $dateOptionsYM);
         $this->addCheckbox('livinghere3bd1', 'Check if you were living here at the time of child’s 3rd birthday');
      
         
@@ -134,8 +140,8 @@ class NDB_BVL_Instrument_air_pollution extends NDB_BVL_Instrument
             $this->form->addElement("text", 'statem'. $i .'_remove', "State", array("class" => "encrypt"));
             $this->form->addElement("text", 'zip_codem'. $i .'_remove', "Zip Code", array("class" => "encrypt"));
 
-            $this->addMonthYear('from1b4' . $i, 'From');
-            $this->addMonthYear('to1b4' . $i, 'To');
+            $this->addMonthYear('from1b4' . $i, 'From', $dateOptionsYM);
+            $this->addMonthYear('to1b4' . $i, 'To', $dateOptionsYM);
         }
         
         
@@ -152,8 +158,8 @@ class NDB_BVL_Instrument_air_pollution extends NDB_BVL_Instrument
         $this->form->addElement("text", 'stateb1_remove', "State", array("class" => "encrypt required"));
         $this->form->addElement("text", 'zip_codeb1_remove', "Zip Code", array("class" => "encrypt required"));
 
-        $this->addMonthYear('fromatb1', 'From');
-        $this->addMonthYear('toatb1', 'To');      
+        $this->addMonthYear('fromatb1', 'From', $dateOptionsYM);
+        $this->addMonthYear('toatb1', 'To', $dateOptionsYM);      
      
         
         // BABY’s Home 2-6
@@ -167,8 +173,8 @@ class NDB_BVL_Instrument_air_pollution extends NDB_BVL_Instrument
             $this->form->addElement("text", 'cityb'. $i .'_remove', "City", array("class" => "encrypt"));
             $this->form->addElement("text", 'stateb'. $i .'_remove', "State", array("class" => "encrypt"));
             $this->form->addElement("text", 'zip_codeb'. $i .'_remove', "Zip Code", array("class" => "encrypt"));
-            $this->addMonthYear('fromatb' . $i, 'From');
-            $this->addMonthYear('toatb' . $i, 'To');    
+            $this->addMonthYear('fromatb' . $i, 'From', $dateOptionsYM);
+            $this->addMonthYear('toatb' . $i, 'To', $dateOptionsYM);    
         }
         
                        
