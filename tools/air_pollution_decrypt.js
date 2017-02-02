@@ -1,6 +1,6 @@
 #!/usr/bin/nodejs
 
-var sjcl = require('./../instruments/js/sjcl.js')
+var sjcl = require('./sjcl.js')
 var fs = require('fs');
 var csv = require("fast-csv")
 
