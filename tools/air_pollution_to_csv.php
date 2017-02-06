@@ -27,14 +27,15 @@ echo "Data can be found in $output_file.\n\n";
 
 $air_pollution_data = array();
 
-$air_pollution_data = $db->pselect("select s.CenterID, s.CandID, s.Visit_label, ap.Date_taken, 
+$air_pollution_data = $db->pselect("select s.CenterID, s.CandID, s.Visit_label, ap.Date_taken,
   ap.proband_name, ap.proband_birthdate, ap.living1yb4m1, ap.address_line1m1, ap.address_line2m1, ap.citym1, ap.statem1, ap.zip_codem1, ap.from1b41, ap.to1b41, ap.livinghere3bd1, ap.living1yb4m2, ap.address_line1m2, ap.address_line2m2, ap.citym2, ap.statem2, ap.zip_codem2, ap.from1b42, ap.to1b42, ap.living1yb4m3, ap.address_line1m3, ap.address_line2m3, ap.citym3, ap.statem3, ap.zip_codem3, ap.from1b43, ap.to1b43, ap.living1yb4m4, ap.address_line1m4, ap.address_line2m4, ap.citym4, ap.statem4, ap.zip_codem4, ap.from1b44, ap.to1b44, ap.living1yb4m5, ap.address_line1m5, ap.address_line2m5, ap.citym5, ap.statem5, ap.zip_codem5, ap.from1b45, ap.to1b45, ap.livingatb1, ap.address_line1b1, ap.address_line2b1, ap.cityb1, ap.stateb1, ap.zip_codeb1, ap.fromatb1, ap.toatb1, ap.livingatb2, ap.address_line1b2, ap.address_line2b2, ap.cityb2, ap.stateb2, ap.zip_codeb2, ap.fromatb2, ap.toatb2, ap.livingatb3, ap.address_line1b3, ap.address_line2b3, ap.cityb3, ap.stateb3, ap.zip_codeb3, ap.fromatb3, ap.toatb3, ap.livingatb4, ap.address_line1b4, ap.address_line2b4, ap.cityb4, ap.stateb4, ap.zip_codeb4, ap.fromatb4, ap.toatb4, ap.livingatb5, ap.address_line1b5, ap.address_line2b5, ap.cityb5, ap.stateb5, ap.zip_codeb5, ap.fromatb5, ap.toatb5, ap.livingatb6, ap.address_line1b6, ap.address_line2b6, ap.cityb6, ap.stateb6, ap.zip_codeb6, ap.fromatb6, ap.toatb6, ap.additional_comments
   from air_pollution AS ap
   left join flag as f using (CommentID)
   left join session as s on s.ID=f.SessionID
   where ap.CommentID not like 'DDE_%'
   and ap.Data_entry_completion_status = 'Complete'
-  and ap.consent = 'yes'", array());
+  and ap.consent = 'yes'
+  and ap.Date_taken <> ''", array());
 
 $air_pollution_headers = array(
   'CenterID', 'CandID', 'Visit_label', 'Date_taken',
