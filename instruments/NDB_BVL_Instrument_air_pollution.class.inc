@@ -38,6 +38,8 @@ class NDB_BVL_Instrument_air_pollution extends NDB_BVL_Instrument
         $this->table = 'air_pollution'; // name of database table corresponding to instrument
         $this->commentID = $commentID; // data keyed by commentID
 
+        $this->dateTimeFields = array('proband_birthdate', 'from1b41', 'to1b41', 'from1b42', 'to1b42', 'from1b43', 'to1b43', 'from1b44', 'to1b44', 'from1b45', 'to1b45', 'fromatb1', 'toatb1', 'fromatb2', 'toatb2', 'fromatb3', 'toatb3', 'fromatb4', 'toatb4', 'fromatb5', 'toatb5', 'fromatb6', 'toatb6');
+
         $config = NDB_Config::singleton();
         $this->dateOptions = array(
             'language' => 'en',
