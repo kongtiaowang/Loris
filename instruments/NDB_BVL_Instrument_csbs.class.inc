@@ -1,7 +1,7 @@
 <?php
 
-require_once 'HTML/QuickForm.php';
-require_once 'HTML/QuickForm/Renderer/Array.php';
+
+
 
 class NDB_BVL_Instrument_csbs extends NDB_BVL_Instrument
 {
@@ -47,7 +47,7 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
 
 
     /**
-    * sets up basic data, such as the HTML_Quickform object, and so on.
+    * sets up basic data, such as the LorisForm object, and so on.
     *
     * @param string $commentID  the CommentID identifying the data to load
     * @param string $page       if a multipage form, the page to show
@@ -56,7 +56,7 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
     */
     function setup($commentID, $page){
         $this->formType="XIN";
-        $this->form = new HTML_Quickform('test_form');
+        $this->form = new LorisForm('test_form');
         $this->page = $page;            // page label (number or
         // string - used by
         // user-defined child classes)
@@ -68,11 +68,11 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
         $this->commentID = $commentID;
         
         //The array of dates/timestamps to convert to database dates/timestamps
-        //Any HTML_Quickform date elements must be listed here
+        //Any LorisForm date elements must be listed here
         $this->dateTimeFields=array("Date_taken");
             
         //The array of selects with multiple answers allowed
-        //Any HTML_Quickform multiple selects must be listed here
+        //Any LorisForm multiple selects must be listed here
         $this->_selectMultipleElements = array();
 
         // required fields for data entry completion status
@@ -209,14 +209,14 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
     //If the instrument is not paged, remove the switch from the _setupForm method and add all the form Elements in this function.
     
     /**
-    * method to build the HTML_Quickform object into a paged form
+    * method to build the LorisForm object into a paged form
     *
     * @return void
     * @access private
     */
     function _setupForm(){
         if(preg_match("/csbs(_page[0-9]+)/",$this->page,$matches)){
-            call_user_method($matches[1], $this);
+            call_user_func(array($this, $matches[1]));
         } else {
             $this->_main();
         }
@@ -712,7 +712,7 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
         $group[] = &$this->form->createElement("advcheckbox", "q_8_conventional_gestures_gives", null, "gives", null, array("unchecked", "checked"));
         $group[] = &$this->form->createElement("advcheckbox", "q_8_conventional_gestures_shows", null, "shows", null, array("unchecked", "checked"));
         $group[] = &$this->form->createElement("advcheckbox", "q_8_conventional_gestures_pushes_pulls", null, "pushes/pulls", null, array("unchecked", "checked"));
-        $group[] = &$this->form->addElement('static', null);
+        $group[] = &$this->form->createElement('static', null, null);
         $group[] = &$this->form->createElement("advcheckbox", "q_8_conventional_gestures_reaches", null, "reaches", null, array("unchecked", "checked"));
         $group[] = &$this->form->createElement("static", null, null);
         $group[] = &$this->form->createElement("static", "q_8_conventional_gestures_raw_score");
@@ -721,7 +721,7 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
         $group[] = &$this->form->createElement("advcheckbox", "q_8_conventional_gestures_points", null, "points", null, array("unchecked", "checked"));
         $group[] = &$this->form->createElement("advcheckbox", "q_8_conventional_gestures_waves", null, "waves", null, array("unchecked", "checked"));
         $group[] = &$this->form->createElement("advcheckbox", "q_8_conventional_gestures_nods_head", null, "nods head", null, array("unchecked", "checked"));
-        $group[] = &$this->form->addElement('static', null);
+        $group[] = &$this->form->createElement('static', null, null);
         $group[] = &$this->form->createElement("advcheckbox", "q_8_conventional_gestures_shakes_head", null, "shakes head", null, array("unchecked", "checked"));
         $this->form->addGroup($group, null, null, $this->_GUIDelimiter, false);
         $this->form->addElement('static', '', '<br />');

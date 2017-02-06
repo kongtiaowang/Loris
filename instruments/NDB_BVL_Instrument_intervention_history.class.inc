@@ -1,7 +1,7 @@
 <?php
 		    
-require_once 'HTML/QuickForm.php';
-require_once 'HTML/QuickForm/Renderer/Array.php';
+
+
 
 class NDB_BVL_Instrument_intervention_history extends NDB_BVL_Instrument
 {
@@ -48,7 +48,7 @@ INSERT INTO test_battery VALUES ('', 'intervention_history', '1053', '1179', 'Y'
 
 
     /**
-    * sets up basic data, such as the HTML_Quickform object, and so on.
+    * sets up basic data, such as the LorisForm object, and so on.
     *
     * @param string $commentID  the CommentID identifying the data to load
     * @param string $page       if a multipage form, the page to show
@@ -57,7 +57,7 @@ INSERT INTO test_battery VALUES ('', 'intervention_history', '1053', '1179', 'Y'
     */
     function setup($commentID, $page){
         $this->formType="XIN";
-        $this->form = new HTML_Quickform('test_form');
+        $this->form = new LorisForm('test_form');
         $this->page = $page;            // page label (number or
         // string - used by
         // user-defined child classes)
@@ -69,11 +69,11 @@ INSERT INTO test_battery VALUES ('', 'intervention_history', '1053', '1179', 'Y'
         $this->commentID = $commentID;
         
         //The array of dates/timestamps to convert to database dates/timestamps
-        //Any HTML_Quickform date elements must be listed here
+        //Any LorisForm date elements must be listed here
         $this->dateTimeFields=array("Date_taken" , "q4_date_began_1", "q4_date_began_2", "q4_date_began_3", "q4_date_began_4", "q4_date_began_5", "q4_date_began_6", "q4_date_began_7", "q4_date_began_8", "q4_date_began_9", "q4_date_began_10", "q5_date_ended_1", "q5_date_ended_2", "q5_date_ended_3", "q5_date_ended_4", "q5_date_ended_5", "q5_date_ended_6", "q5_date_ended_7", "q5_date_ended_8", "q5_date_ended_9", "q5_date_ended_10");
             
         //The array of selects with multiple answers allowed
-        //Any HTML_Quickform multiple selects must be listed here
+        //Any LorisForm multiple selects must be listed here
         $this->_selectMultipleElements = array();
 
         // required fields for data entry completion status
@@ -95,7 +95,7 @@ INSERT INTO test_battery VALUES ('', 'intervention_history', '1053', '1179', 'Y'
     //If the instrument is not paged, remove the switch from the _setupForm method and add all the form Elements in this function.
     
     /**
-    * method to build the HTML_Quickform object into a paged form
+    * method to build the LorisForm object into a paged form
     *
     * @return void
     * @access private
@@ -104,7 +104,7 @@ INSERT INTO test_battery VALUES ('', 'intervention_history', '1053', '1179', 'Y'
 
     	if(preg_match("/intervention_history(_page[0-9]+)/", $this->page, $matches))
         {
- 	       call_user_method($matches[1], $this);
+ 	       call_user_func(array($this, $matches[1]));
         }
 	else
 	{

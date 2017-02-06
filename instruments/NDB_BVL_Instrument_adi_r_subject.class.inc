@@ -30,7 +30,7 @@ DoB subject should be somewhere in the candidate table.  For now, we'll just mak
 */
 
 	/**
-    * sets up basic data, such as the HTML_Quickform object, and so on.
+    * sets up basic data, such as the LorisForm object, and so on.
     *
     * @param string $commentID  the CommentID identifying the data to load
     * @param string $page       if a multipage form, the page to show

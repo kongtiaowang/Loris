@@ -1,7 +1,7 @@
 <?php
 
-require_once 'HTML/QuickForm.php';
-require_once 'HTML/QuickForm/Renderer/Array.php';
+
+
 
 class NDB_BVL_Instrument_dna_tracking extends NDB_BVL_Instrument
 {
@@ -11,7 +11,7 @@ class NDB_BVL_Instrument_dna_tracking extends NDB_BVL_Instrument
     INSERT INTO instrument_subtests (Test_name,Subtest_name,Description,Order_number) values ('dna_tracking','dna_tracking_page1','DailyActivityLog 1','1');
   */
     /**
-    * sets up basic data, such as the HTML_Quickform object, and so on.
+    * sets up basic data, such as the LorisForm object, and so on.
     *
     * @param string $commentID  the CommentID identifying the data to load
     * @param string $page       if a multipage form, the page to show
@@ -30,7 +30,7 @@ class NDB_BVL_Instrument_dna_tracking extends NDB_BVL_Instrument
     function setup($commentID, $page){
 
         $this->formType="XIN";
-        $this->form = new HTML_Quickform('test_form');
+        $this->form = new LorisForm('test_form');
         $this->page = $page;            // page label (number or
         // string - used by
         // user-defined child classes)
@@ -43,7 +43,7 @@ class NDB_BVL_Instrument_dna_tracking extends NDB_BVL_Instrument
         $this->commentID = $commentID;
 
         //The array of dates/timestamps to convert to database dates/timestamps
-        //Any HTML_Quickform date elements must be listed here
+        //Any LorisForm date elements must be listed here
         //rathi updatethis
         $this->dateTimeFields=array("Date_taken");
 
@@ -65,7 +65,7 @@ class NDB_BVL_Instrument_dna_tracking extends NDB_BVL_Instrument
 
     }
     /**
-     * method to build the HTML_Quickform object into a paged form
+     * method to build the LorisForm object into a paged form
      *
      * @return void
      * @access private
@@ -73,7 +73,7 @@ class NDB_BVL_Instrument_dna_tracking extends NDB_BVL_Instrument
     function _setupForm(){
         if(preg_match("/dna_tracking(_page[0-9]+)/",$this->page,$matches)){
             $this->_page($matches[1]);
-            //call_user_method($matches[1], $this);
+            //call_user_func(array($this, $matches[1]));
         } else {
             $this->_main();
         }
@@ -93,7 +93,7 @@ class NDB_BVL_Instrument_dna_tracking extends NDB_BVL_Instrument
         $this->addHeader("DNA Tracking");
 
         $group[] = &$this->form->createElement("static", null, null, "<strong>Candidate</strong>");
-        $group[] = &$this->form->createElement("Static", null, null, "<strong>Proband</strong>");
+        $group[] = &$this->form->createElement("static", null, null, "<strong>Proband</strong>");
         $group[] = &$this->form->createElement("static", null, null, "<strong>Mother</strong>");
         $group[] = &$this->form->createElement("static", null, null, "<strong>Father</strong>");
         $group[] = &$this->form->createElement("textarea","subject_other_specify", null, array('placeholder'=>'Specify other'));
@@ -117,7 +117,7 @@ class NDB_BVL_Instrument_dna_tracking extends NDB_BVL_Instrument
                            "blood_collection_method2"=>"2. How was blood collected?","blood_sent2"=>"2. Where was blood sent?");
         $subjects = array('candidate','proband','mother','father','other');
         $types = array('saliva','blood');
-                        $this->form->registerRule('checkdate', 'callback', '_checkDate');
+                        // deprecated // $this->form->registerRule('checkdate', 'callback', '_checkDate');
         $this->form->addFormRule(array(&$this, 'dna_rules'));
 	foreach($questions as $key=>$val){
 		$groupname = $key."_group";
@@ -173,7 +173,8 @@ class NDB_BVL_Instrument_dna_tracking extends NDB_BVL_Instrument
                         $group[] = $this->form->createElement("date", $key."_".$subject,null,$this->dateOptions);
                         $field = $key."_".$subject;
                         $this->XINRegisterRule( $field, array("$field{@}=={@}NEVER_REQUIRED"));
-                        $this->form->addRule($field, 'Date is invalid', 'checkdate');
+                        // Not needed  $this->form->addRule($field, 'Date is invalid', 'checkdate');
+
 
                        /*
                         if(strpos($key, "1")) {

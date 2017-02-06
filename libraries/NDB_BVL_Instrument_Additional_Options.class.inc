@@ -256,18 +256,10 @@ class NDB_BVL_Instrument_Additional_Options extends NDB_BVL_Instrument
         $examiners = $this->_getExaminerNames();
         parent::addSelect('Examiner', 'Examiner', $examiners);
 
-        $this->addGroupRule(
-            'Date_taken',
-            'Date of Administration is required',
-            'required'
-        );
+        $this->addRule('Date_taken', 'Date of Administration is required', 'required');
 
-        $this->form->registerRule('checkdate', 'callback', '_checkDateTaken');
-        $this->addRule(
-            'Date_taken',
-            'Date of Administration is invalid',
-            'checkdate'
-        );
+        // deprecated // $this->form->registerRule('checkdate', 'callback', '_checkDateTaken');
+        // not needed // $this->addRule('Date_taken','Date of Administration is invalid', 'checkdate');
 
         $this->addRule('Examiner', 'Examiner is required', 'required');
     }

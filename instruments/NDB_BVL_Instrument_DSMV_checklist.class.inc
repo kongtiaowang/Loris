@@ -2,8 +2,8 @@
 
 require_once('RequiredIfGroup.inc');
 require_once('RequiredIf.inc');
-require_once 'HTML/QuickForm.php';
-require_once 'HTML/QuickForm/Renderer/Array.php';
+
+
 
 class NDB_BVL_Instrument_DSMV_checklist extends NDB_BVL_Instrument
 {
@@ -17,7 +17,7 @@ class NDB_BVL_Instrument_DSMV_checklist extends NDB_BVL_Instrument
 
 
     /**
-    * sets up basic data, such as the HTML_Quickform object, and so on.
+    * sets up basic data, such as the LorisForm object, and so on.
     *
     * @param string $page       if a multipage form, the page to show
     * @return void
@@ -25,7 +25,7 @@ class NDB_BVL_Instrument_DSMV_checklist extends NDB_BVL_Instrument
     */
     function setup($commentID, $page){
         $this->formType="XIN";
-        $this->form = new HTML_Quickform('DSMV_checklist');
+        $this->form = new LorisForm('DSMV_checklist');
         $this->page = $page;            // page label (number or
         // string - used by
 	// user-defined child classes)
@@ -38,7 +38,7 @@ class NDB_BVL_Instrument_DSMV_checklist extends NDB_BVL_Instrument
         $this->commentID = $commentID;
 
         //The array of dates/timestamps to convert to database dates/timestamps
-        //Any HTML_Quickform date elements must be listed here
+        //Any LorisForm date elements must be listed here
         $this->dateTimeFields=array("Date_taken", "date_taken_diagnostic_assessor", "date_taken_confirming_clinician");
 
         $this->_requiredElements = array('Examiner', 'Date_taken', 'qa1_deficit_reciprocity','meet_dsm_asd','dsm5_confirmed_diagnosis');
@@ -71,7 +71,7 @@ class NDB_BVL_Instrument_DSMV_checklist extends NDB_BVL_Instrument
     //If the instrument is not paged, remove the switch from the _setupForm method and add all the form Elements in this function.
 
     /**
-    * method to build the HTML_Quickform object into a paged form
+    * method to build the LorisForm object into a paged form
     *
     * @return void
     * @access private
@@ -80,7 +80,7 @@ class NDB_BVL_Instrument_DSMV_checklist extends NDB_BVL_Instrument
 
         //determine page to display
         if(preg_match("/DSMV_checklist(_page[1-9]+)/",$this->page,$matches)){
-            call_user_method($matches[1], $this);
+            call_user_func(array($this, $matches[1]));
         } else {
             $this->_main();
         }

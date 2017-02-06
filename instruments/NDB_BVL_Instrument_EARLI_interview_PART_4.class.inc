@@ -1,7 +1,7 @@
 <?php
 
-require_once 'HTML/QuickForm.php';
-require_once 'HTML/QuickForm/Renderer/Array.php';
+
+
 require_once("RequiredIfGroup.inc");
 require_once('RequiredIf.inc');
 require_once('NDB_BVL_Instrument_EARLI_interview.class.inc');
@@ -40,7 +40,7 @@ class NDB_BVL_Instrument_EARLI_interview_PART_4 extends NDB_BVL_Instrument_EARLI
 	{
 
 		$this->formType="XIN";
-		$this->form = new HTML_Quickform('test_form');
+		$this->form = new LorisForm('test_form');
 		$this->page = $page;            // page label (number or string - used by user-defined child classes)
 
 		// set the object properties
@@ -81,7 +81,7 @@ class NDB_BVL_Instrument_EARLI_interview_PART_4 extends NDB_BVL_Instrument_EARLI
 
 		// From Mr. David Brownlee:
 		//The array of selects with multiple answers allowed
-		//Any HTML_Quickform multiple selects must be listed here
+		//Any LorisForm multiple selects must be listed here
 		//Usually this appears at the beginning of the file in the setup() function
 
 
@@ -92,7 +92,7 @@ class NDB_BVL_Instrument_EARLI_interview_PART_4 extends NDB_BVL_Instrument_EARLI
 	}
 
 	/**
-    	* method to build the HTML_Quickform object into a paged form
+    	* method to build the LorisForm object into a paged form
 	* @return void
    	* @access private
     	*/
@@ -100,8 +100,8 @@ class NDB_BVL_Instrument_EARLI_interview_PART_4 extends NDB_BVL_Instrument_EARLI
 	{
 		// Mr. Samir's Rule
 		// Register the RequiredIf quickform rule
-		$this->form->registerRule('requiredIfGroup', null, 'HTML_QuickForm_Rule_RequiredIfGroup', 'RequiredIfGroup.inc');
-		$this->form->registerRule('requiredIf', null, 'HTML_QuickForm_Rule_RequiredIf', 'RequiredIf.inc');
+		// deprecated // $this->form->registerRule('requiredIfGroup', null, 'HTML_QuickForm_Rule_RequiredIfGroup', 'RequiredIfGroup.inc');
+		// deprecated // $this->form->registerRule('requiredIf', null, 'HTML_QuickForm_Rule_RequiredIf', 'RequiredIf.inc');
 
 		//Defines the call back function for HTML Quickform to use when validating the form.
 		//XIN rule is applied to every single field in the form
@@ -109,7 +109,7 @@ class NDB_BVL_Instrument_EARLI_interview_PART_4 extends NDB_BVL_Instrument_EARLI
 
 		if(preg_match("/EARLI_interview(_page[0-9]+)/", $this->page, $matches))
 		{
-			call_user_method($matches[1], $this);
+			call_user_func(array($this, $matches[1]));
 		}	
 
 		else
@@ -152,8 +152,8 @@ class NDB_BVL_Instrument_EARLI_interview_PART_4 extends NDB_BVL_Instrument_EARLI
 
 		// Mr. Samir's Rule
 		// Register the RequiredIf quickform rule
-		$this->form->registerRule('requiredIfGroup', null, 'HTML_QuickForm_Rule_RequiredIfGroup', 'RequiredIfGroup.inc');
-		$this->form->registerRule('requiredIf', null, 'HTML_QuickForm_Rule_RequiredIf', 'RequiredIf.inc');
+		// deprecated // $this->form->registerRule('requiredIfGroup', null, 'HTML_QuickForm_Rule_RequiredIfGroup', 'RequiredIfGroup.inc');
+		// deprecated // $this->form->registerRule('requiredIf', null, 'HTML_QuickForm_Rule_RequiredIf', 'RequiredIf.inc');
 	}
 
 
