@@ -96,7 +96,7 @@ class NDB_BVL_Instrument_pspq_1 extends NDB_BVL_Instrument
         $this->addGroup($group, $field . "_group", $label, null, false);
        // $this->XINRegisterRule($field,array("$field{@}=={@}NEVER_REQUIRED"), $field . "_group");
         unset($group);
-        $this->addGroupRule($field . "_group", array(array(array("Value must be numeric.", 'numeric'))));
+       // $this->addGroupRule($field . "_group", array(array(array("Value must be numeric.", 'numeric'))));
         $this->addSelect('respondent',"Your relationship to child", $this->respondent);
         
         $group [] = $this->createText('respondent_other',$this->indent."If other please specify");
@@ -367,7 +367,7 @@ class NDB_BVL_Instrument_pspq_1 extends NDB_BVL_Instrument
            $errors['informant_age_group'] = "Specify age between 0 and 100";
        }
        if(empty($values['respondent_age']) && array_key_exists('respondent_age', $values)) {
-           $errors['respondent_age_group'] = 'Specify age';
+           $errors['respondent_age_group'] = 'Specify age or just give NA';
        }
        return $errors;
     }
