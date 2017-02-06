@@ -36,11 +36,9 @@ var csvStream = csv
              if (encrypted.indexOf(column) > -1) {
                head += '"' + column + '", ';
                line += '"' + sjcl.decrypt(process.argv[3], data[column]) + '", ';
-               // console.log(column + "'" + data[column] + "', ");
              } else {
                head += '"' + column + '", ';
                line += '"' + data[column] + '", ';
-               // console.log(column + '"' + data[column] + '", ');
              }
            }
                     
