@@ -11,17 +11,11 @@ $(document).ready(function() {
     // Check user inputs
     var errors = 0;
     
-    $('[name="proband_birthdate[Y]"]').addClass('required');
-    $('[name="proband_birthdate[M]"]').addClass('required');
-    $('[name="proband_birthdate[d]"]').addClass('required');
-    $('[name="from1b41[Y]"]').addClass('required')
-    $('[name="from1b41[M]"]').addClass('required')
-    $('[name="to1b41[Y]"]').addClass('required');
-    $('[name="to1b41[M]"]').addClass('required');
-    $('[name="fromatb1[Y]"]').addClass('required');
-    $('[name="fromatb1[M]"]').addClass('required');
-    $('[name="toatb1[Y]"]').addClass('required');
-    $('[name="toatb1[M]"]').addClass('required');
+    $('[name="proband_birthdate"]').addClass('required');
+    $('[name="from1b41"]').addClass('required')
+    $('[name="to1b41"]').addClass('required');
+    $('[name="fromatb1"]').addClass('required');
+    $('[name="toatb1"]').addClass('required');
 
     $('.required').each(function() { 
       if ( !$(this).val() ) { 
