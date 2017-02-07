@@ -690,5 +690,20 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
         $DB->run("INSERT INTO reliability (CommentID, reliability_center_id, Instrument, Manual_Swap, EARLI_Candidate) VALUES ('$CommentID', $CenterID, '$Instrument', 'no', 'yes')");
         return array("message" => "Inserted new reliability candidate $PSCID/$Visit_label for EARLI collaboration");
     }
+
+
+    function getJSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+                $baseURL . "/reliability/js/reliability.js",
+
+            )
+        );
+    }
 }
 ?>
