@@ -189,9 +189,9 @@ function getFamilyInfoFields()
     );
 
     $siblingsList = $db->pselect(
-        "SELECT CandID 
-        FROM family 
-        WHERE FamilyID=(SELECT FamilyID FROM family WHERE CandID=:candid)",
+        "SELECT f1.CandID 
+        FROM family f1 JOIN family f2
+        ON f1.FamilyID=f2.FamilyID WHERE f2.CandId=:candid GROUP BY f1.CandID",
         array('candid' => $candID)
     );
 
@@ -214,28 +214,11 @@ function getFamilyInfoFields()
         }
     }
 
-    $familyCandIDs = $db->pselect(
-        "SELECT CandID 
-        FROM family 
-        WHERE FamilyID=(
-          SELECT FamilyID 
-          FROM family 
-          WHERE CandID = :candid) AND CandID <> :candid2 
-          ORDER BY CandID",
-        array(
-         'candid'  => $candID,
-         'candid2' => $candID,
-        )
-    );
-
-    $relationships = $db->pselect(
-        "SELECT Relationship_type 
-        FROM family 
-        WHERE FamilyID=(
-          SELECT FamilyID 
-          FROM family 
-          WHERE CandID = :candid) AND CandID <> :candid2 
-          ORDER BY CandID",
+    $familyMembers = $db->pselect(
+        "SELECT f1.CandID as FamilyCandID, f1.Relationship_type 
+        FROM family f1 JOIN family f2 ON f1.FamilyID=f2.FamilyID
+        WHERE f2.CandID = :candid AND f1.CandID <> :candid2 
+          ORDER BY f1.CandID",
         array(
          'candid'  => $candID,
          'candid2' => $candID,
@@ -243,11 +226,10 @@ function getFamilyInfoFields()
     );
 
     $result = [
-               'pscid'              => $pscid,
-               'candID'             => $candID,
-               'candidates'         => $candidates,
-               'familyCandIDs'      => $familyCandIDs,
-               'Relationship_types' => $relationships,
+               'pscid'                 => $pscid,
+               'candID'                => $candID,
+               'candidates'            => $candidates,
+               'existingFamilyMembers' => $familyMembers,
               ];
 
     return $result;
@@ -394,7 +376,13 @@ function getConsentStatusFields()
     $consentStatus = [];
     $date          = [];
     $withdrawal    = [];
+
+    if (!is_null($consent['Consent']['name'])) {
+        $consent['Consent'] = array($consent['Consent']);
+    }
+
     foreach (Utility::asArray($consent['Consent']) as $consentType) {
+
         $consents[$consentType['name']]      = $consentType['label'];
         $consentStatus[$consentType['name']] = $db->pselectOne(
             'SELECT ' . $db->escape($consentType['name'])
