@@ -51,6 +51,9 @@ var config = {
     './modules/help_editor/js/columnFormatter.js': './modules/help_editor/jsx/columnFormatter.js',
     './modules/brainbrowser/js/Brainbrowser.js': './modules/brainbrowser/jsx/Brainbrowser.js',
     './modules/imaging_uploader/js/index.js': './modules/imaging_uploader/jsx/index.js'
+    './modules/todo/js/appIndex.js': './modules/todo/jsx/appIndex.js',
+    './modules/todo/js/app.js': './modules/todo/jsx/app.js',
+    './modules/todo/js/HelloWorld.js': './modules/todo/jsx/HelloWorld.js'
   },
   output: {
     path: './',
