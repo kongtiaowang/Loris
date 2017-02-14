@@ -173,7 +173,7 @@ class NDB_BVL_Instrument_sibling_socialcontact extends NDB_BVL_Instrument
             // $this->XINRegisterRule($qstn, array("$qstn{@}=={@}NEVER_REQUIRED") );
 
          }
-         $this->form->addElement('static','lorisSubHeader',"17. How much do the children need your help during play in the following areas?");
+         $this->form->addElement('static','lorisSubHeader1',"17. How much do the children need your help during play in the following areas?");
          $questions = array('q17_manage_emotions'=>'a. Managing Emotions',
                             'q17_understand_rules'=>'b. Understanding social rules (such as taking turns)',
                             'q17_understand_howtoplay'=>'c. Understanding how to play games or activities',

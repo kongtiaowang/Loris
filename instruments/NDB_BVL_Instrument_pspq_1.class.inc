@@ -88,9 +88,11 @@ class NDB_BVL_Instrument_pspq_1 extends NDB_BVL_Instrument
         $this->form->addElement('header', 'instrument_title', "PSPQ : Personality Styles and Preferences Questionnaire");
         
         $this->form->addElement('static','lorisSubHeader',"<strong>Instructions:</strong><BR>Thank you for filling out this questionnaire. The questions you will be answering are about <BR>personality, habits, and lifestyle. There are no good or bad responses, just differences in <BR>people's preferences.<BR><BR>1. Many of these questions ask about your interactions with other people. Think about the way<BR> you are with most people, rather than the way you are in special relationships you may have <BR>with your spouse, significant other, children, siblings and parents.<BR><BR>2. Everyone changes over time, which can make it hard to fill out questions about personality.<BR>Think about the way you've been most of your adult life, rather than the way you were as a <BR>teenager,or times you may have felt differently from normal.<BR><BR>3. You must answer each question and give only one answer per question. Choose the answer <BR>that best describes how often that statement applies to you. If you are confused about a <BR>question, please give it your best guess.<BR><BR>For each question, you will be given a choice of 6 answers that describe how often the statement<BR> applies to you:<BR> 1.Very Rarely<BR>2.Rarely<BR>3.Occasionally<BR>4.Somewhat Often<BR>5.Often<BR> 6.Very Often<BR><BR>Choose the number that matches the answer that comes closest to how you feel about each statement." );
-        $this->form->addElement('header', 'instrument_title', "Self Rating");
+        //$this->form->addElement('header', 'instrument_title', "Self Rating");
+        //Different header names on instrument_title overrides and only one will appear when using the lorisform, so replacing above line with below
+        $this->form->addElement('header', 'instrument_title1', "Self Rating");
 
-        //$this->addNumericElement('respondent_age','Your Age <BR>(Please indicate your age in years)');
+       //$this->addNumericElement('respondent_age','Your Age <BR>(Please indicate your age in years)');
         $field = 'respondent_age';$label = 'Your age <BR>(Please indicate your age in years)';
         $group [] = $this->createText($field, $label);
         $this->addGroup($group, $field . "_group", $label, null, false);
@@ -132,8 +134,8 @@ class NDB_BVL_Instrument_pspq_1 extends NDB_BVL_Instrument
     }
 
     function _page2(){
-         $this->form->addElement('header', 'instrument_title', "PSPQ : Personality Styles and Preferences Questionnaire Page2");
-         $this->form->addElement('header', 'instrument_title', "Self Rating");
+         $this->form->addElement('header', 'instrument_title', "PSPQ : Personality Styles and Preferences Questionnaire");
+         $this->form->addElement('header', 'instrument_title1', "Self Rating");
 
          $questions = array("q13_strongneed_sameness"=>"13. I feel a strong need for sameness from day to day",
                            "q14_others_dont_understand"=>"14. People ask me to repeat things I've said because they don't understand",
@@ -158,8 +160,8 @@ class NDB_BVL_Instrument_pspq_1 extends NDB_BVL_Instrument
     }
     
     function _page3(){
-         $this->form->addElement('header', 'instrument_title', "PSPQ : Personality Styles and Preferences Questionnaire Page3");
-         $this->form->addElement('header', 'instrument_title', "Self Rating");
+         $this->form->addElement('header', 'instrument_title', "PSPQ : Personality Styles and Preferences Questionnaire");
+         $this->form->addElement('header', 'instrument_title1', "Self Rating");
 
          $questions = array("q25_connecting_people"=>"25. I feel like I am really connecting with other people",
                            "q26_peoplefrustrated"=>"26. People get frustrated by my unwillingness to bend",
@@ -185,11 +187,11 @@ class NDB_BVL_Instrument_pspq_1 extends NDB_BVL_Instrument
     function _page4(){
         // display test name
         $this->form->addElement('header', 'instrument_title', "PSPQ : Personality Styles and Preferences Questionnaire");
-        $this->form->addElement('header', 'instrument_title', "*OBSERVER RATING SECTION IS ABOUT YOUR SPOUSE OR PARTNER*");
+        $this->form->addElement('header', 'instrument_title1', "*OBSERVER RATING SECTION IS ABOUT YOUR SPOUSE OR PARTNER*");
         $this->form->addElement('static','lorisSubHeader',"<strong>Instructions:</strong><BR>In this section you will fill out a series of statements related to the personality and <BR>lifestyle of your spouse or partner. We will refer to this person as your partner. These <BR>sorts of observer ratings help us obtain a more well-rounded measure of your <BR>partner’s personality and lifestyle, since some traits and behaviors are most easily<BR>observed by other people. <BR><BR><BR>For each question, circle the answer that best describes how often the statement <BR>applies to your partner’s behavior. So, if they watch the evening news once a week, <BR>you might circle #4: <i>Somewhat often.</i> <BR><BR><strong>3 IMPORTANT THINGS TO REMEMBER</strong><BR><BR>#1. Many of these questions ask about your partner’s interactions with other people. Please think <BR>about the way they are with most people rather than special relationships they may have with <BR>their children, siblings, and parents.<BR><BR>#2. Everyone changes over time, which can make it hard to fill out questions about personality. <BR>Think about the way your partner has been the majority of their adult life, rather than the way they were <BR>as a teenager, or times they many have felt different than normal.<BR><BR>#3. You must answer each question, and give only one answer per question. If you are confused,<BR> please just give your best guess.<BR><BR>");
         
         $this->addSelect('informant_confidence',"<BR>How confident do you feel about your ability to give an accurate report on the <BR>personality traits and behaviors of your partner?", $this->informant_confidence);
-        $this->form->addElement('header', 'instrument_title', "Observer Rating");
+        $this->form->addElement('header', 'instrument_title2', "Observer Rating");
 
 /*
         //$this->addNumericElement('informant_age','Your Age:<BR>(Please indicate your age in years)');
@@ -248,8 +250,8 @@ class NDB_BVL_Instrument_pspq_1 extends NDB_BVL_Instrument
 
     function _page5() {
        
-       $this->form->addElement('header', 'instrument_title', "PSPQ : Personality Styles and Preferences Questionnaire Page2");
-       $this->form->addElement('header', 'instrument_title', "Observer Rating");
+       $this->form->addElement('header', 'instrument_title', "PSPQ : Personality Styles and Preferences Questionnaire");
+       $this->form->addElement('header', 'instrument_title1', "Observer Rating");
 
        $questions = array("qi13_strongneed_sameness"=>"13. He/She feels a strong need for sameness from day to day",
                            "qi14_others_dont_understand"=>"14. People ask him/her to repeat things he/she has said because they don't understand",
@@ -275,8 +277,8 @@ class NDB_BVL_Instrument_pspq_1 extends NDB_BVL_Instrument
     
     function _page6() {
        
-       $this->form->addElement('header', 'instrument_title', "PSPQ : Personality Styles and Preferences Questionnaire Page2");
-       $this->form->addElement('header', 'instrument_title', "Observer Rating");
+       $this->form->addElement('header', 'instrument_title', "PSPQ : Personality Styles and Preferences Questionnaire");
+       $this->form->addElement('header', 'instrument_title1', "Observer Rating");
 
        $questions = array("qi25_connecting_people"=>"25. He/She feels like he/she is really connecting with other people",
                            "qi26_peoplefrustrated"=>"26. People get frustrated by his/her unwillingness to bend",
