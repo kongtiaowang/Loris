@@ -60,9 +60,6 @@ $(document).ready(function() {
               value: 'complete'
             }).appendTo(form);
 
-            // not sure why pageNum is necessary
-            form.attr("action", "survey.php?key=" + document.getElementById("key").textContent + "&pageNum=complete"); 
-
             form.submit();
         } else {
             console.log("User chose to cancel at this point, since status is " + status); // status is FALSE
