@@ -17,7 +17,7 @@ class NDB_Form_new_profile extends NDB_Form
         $user =& User::singleton();
 
         $site =& Site::singleton($user->getData('CenterID'));
-        
+
         if ($site->isStudySite() or ($site->getCenterName() == "DCC")) {
             return $user->hasPermission('data_entry');
         }
@@ -30,13 +30,10 @@ class NDB_Form_new_profile extends NDB_Form
         // set up the arguments to Candidate::createNew
         $user =& User::singleton();
         $config =& NDB_Config::singleton();
-        $dob = sprintf("%04d-%02d-%02d", $values['dob1']['Y'], $values['dob1']['M'], $values['dob1']['d']);
-        
+        $dob = empty($values['dob1']) ? null : $values['dob1'];
+
         if($config->getSetting('useEDC') == "true"){
-            $edc = sprintf("%04d-%02d-%02d", $values['edc1']['Y'], $values['edc1']['M'], $values['edc1']['d']);
-            if($edc == '0000-00-00') {
-                $edc = NULL;
-            }
+            $edc = empty($values['edc1']) ? null : $values['edc1'];
         }
 
         // create the candidate
@@ -46,7 +43,8 @@ class NDB_Form_new_profile extends NDB_Form
         } elseif ($values['ProjectID'] == 5) {
             $startNum = 2000;
         }
-        $candID = Candidate::createNew($user->getData('CenterID'), $dob, $edc, $values['gender'], $values['PSCID'], $startNum);
+
+        $candID = Candidate::createNew($user->getData('CenterID'), $dob, $edc, $values['gender'], $values['PSCID']);
 
         // get the candidate
         $candidate =& Candidate::singleton($candID);
@@ -81,6 +79,7 @@ class NDB_Form_new_profile extends NDB_Form
     {
         $config =& NDB_Config::singleton();
         $study = $config->getSetting('study');
+
         $dateOptions = array(
             'language'        => 'en',
             'format'          => 'YMd',
@@ -89,23 +88,25 @@ class NDB_Form_new_profile extends NDB_Form
             'maxYear'         => $study['endYear'] - $study['ageMin']
         );
 
+        $dateAttributes = ['class' => 'form-control input-sm input-date'];
+
         // add date of birth
-        $this->addBasicDate('dob1', 'Date of Birth', $dateOptions);
-        $this->addBasicDate('dob2', 'Confirm Date of Birth', $dateOptions);
+        $this->addBasicDate('dob1', 'Date of Birth', $dateOptions, $dateAttributes);
+        $this->addBasicDate('dob2', 'Confirm Date of Birth', $dateOptions, $dateAttributes);
         $this->addRule(array('dob1', 'dob2'), 'Date of birth fields must match', 'compare');
 
 
         // date of birth rules
-        $this->form->addGroupRule('dob1', 'Date of Birth is required', 'required');
-        $this->form->addGroupRule('dob2', 'Date of Birth confirmation is required', 'required');
+        $this->addRule('dob1', 'Date of Birth is required', 'required');
+        $this->addRule('dob2', 'Date of Birth confirmation is required', 'required');
 
         if($config->getSetting('useEDC') == "true"){
             // add expected date of confinement
-            $this->addBasicDate('edc1', 'Expected Date of Confinement', $dateOptions);
-            $this->addBasicDate('edc2', 'Confirm EDC', $dateOptions);
+            $this->addBasicDate('edc1', 'Expected Date of Confinement', $dateOptions, $dateAttributes);
+            $this->addBasicDate('edc2', 'Confirm EDC', $dateOptions, $dateAttributes);
 
             // expected date of confinement rules
-            $this->form->addRule(array('edc1', 'edc2'), 'EDC fields must match', 'compare');
+            $this->addRule(array('edc1', 'edc2'), 'EDC fields must match', 'compare');
         }
 
         if($config->getSetting("useProjects") == "true") {
@@ -122,7 +123,7 @@ class NDB_Form_new_profile extends NDB_Form
         $this->addSelect('gender', 'Gender', $genderOptions);
 
         // gender rules
-        $this->form->addRule('gender', 'Gender is required', 'required');
+        $this->addRule('gender', 'Gender is required', 'required');
         $this->addSelect("candidate_plan", 'Candidate Plan',
             array(
                 ''         => '',
@@ -149,9 +150,7 @@ class NDB_Form_new_profile extends NDB_Form
 
         $config =& NDB_Config::singleton();
 
-        if($values['dob1']['M'] != $values['dob2']['M'] ||
-                $values['dob1']['d'] != $values['dob2']['d'] ||
-                $values['dob1']['Y'] != $values['dob2']['Y'])
+        if($values['dob1'] != $values['dob2'])
         {
             $errors['dob1'] = 'Date of Birth fields must match.';
         }
@@ -159,9 +158,7 @@ class NDB_Form_new_profile extends NDB_Form
             if (strlen(implode($values['edc1'])) > 2 && !Utility::_checkDate($values['edc1'])) {
                 $errors['edc1'] = 'EDC is not a valid date';
             }
-            if($values['edc1']['M'] != $values['edc2']['M'] ||
-                    $values['edc1']['d'] != $values['edc2']['d'] ||
-                    $values['edc1']['Y'] != $values['edc2']['Y'])
+            if($values['edc1'] != $values['edc2'])
             {
                 $errors['edc1'] = 'Estimated Due date fields must match.';
             }
@@ -169,8 +166,8 @@ class NDB_Form_new_profile extends NDB_Form
 
         if (empty($values['gender'])) {
             $errors['gender'] = 'Gender is required.';
-        } 
-    
+        }
+
         $PSCIDsettings = $config->getSetting('PSCID');
         if($PSCIDsettings['generation'] == 'user') {
             $db =& Database::singleton();
@@ -182,7 +179,7 @@ class NDB_Form_new_profile extends NDB_Form
                 $errors['PSCID'] = 'PSCID must be specified';
             } elseif(!Candidate::validatePSCID($values['PSCID'], $site->getSiteAlias())) {
                 $errors['PSCID'] = 'PSCID does not match the required structure';
-            } elseif($db->pselectOne("SELECT count(PSCID) FROM candidate WHERE PSCID=:V_PSCID", 
+            } elseif($db->pselectOne("SELECT count(PSCID) FROM candidate WHERE PSCID=:V_PSCID",
                 array('V_PSCID' => $values[PSCID])) > 0
             ) {
                     $errors['PSCID'] = 'PSCID has already been registered';

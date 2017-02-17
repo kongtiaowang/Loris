@@ -132,6 +132,8 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
      */
     function _setupVariables()
     {
+        $DB =& Database::singleton();
+
         // set the class variables
         $config =& NDB_Config::singleton();
         $useProjects = $config->getSetting("useProjects");
@@ -142,11 +144,14 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
             $useProjects = true;
         }
 
+        $dir_path = $config->getSetting("imagePath");
+
         $this->columns = array(
             'v.PatientName',
             'v.Site',
             'v.TimeRun',
             'v.MincFile',
+            'v.MincFileViolated',
             'v.Series_Description as Series_Description_Or_Scan_Type',
             'v.Problem',
             'v.SeriesUID',
@@ -165,6 +170,7 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
                 c.ProjectID as Project,
                 s.SubprojectID as Subproject,
                 minc_location as MincFile,
+                CONCAT_WS('','" . $dir_path . "','trashbin/',SUBSTRING_INDEX(minc_location, '/', -2)) as MincFileViolated,
                 series_description as Series_Description,
                 'Could not identify scan type' as Problem, 
                 SeriesUID,
@@ -189,6 +195,7 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
                 c.ProjectID as Project,
                 s.SubprojectID as Subproject,
                 MincFile,
+                IF(INSTR(`MincFile`, 'assembly'), IF(LEFT(`MincFile`, 8) = 'assembly',CONCAT_WS(''," . $DB->quote($dir_path) . ",`MincFile`),`MincFile`), CONCAT_WS(''," . $DB->quote($dir_path) . ",'trashbin/',SUBSTRING_INDEX(MincFile, '/', -2))) as MincFileViolated,
                 mri_scan_type.Scan_type,
                 'Protocol Violation',
                 SeriesUID,
@@ -215,6 +222,7 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
                 c.ProjectID as Project,
                 s.SubprojectID as Subproject,
                 MincFile,
+                CONCAT_WS('','" . $dir_path . "','trashbin/',SUBSTRING_INDEX(MincFile, '/', -2)) as MincFileViolated,
                 null,
                 Reason, 
                 SeriesUID,
@@ -432,5 +440,22 @@ class NDB_Menu_Filter_Form_resolved_violations extends NDB_Menu_Filter_Form
         return true;
     }
 
+    /**
+     * Gathers JS dependecies and merge them with the parent
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+                $baseURL . "/mri_violations/js/mri_violations_helper.js",
+            )
+        );
+    }
 }
 ?>

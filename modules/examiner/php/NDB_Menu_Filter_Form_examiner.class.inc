@@ -55,59 +55,70 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
             $useCertification = false;
         }
 
-        // base queries
-        $query     = " FROM examiners e LEFT JOIN psc ON (e.centerID=psc.CenterID)";
-        $certQuery = " LEFT JOIN certification c ON (c.examinerID = e.examinerID) 
-            LEFT JOIN test_names tn ON (c.testID = tn.ID)";
+        $user     = User::singleton();
+        $centerID = $DB->quote($user->getData('CenterID'));
 
-        if ($this->useCertification == '1') {
-            $query .= $certQuery;
-        }
+        if ($user->hasPermission('examiner_multisite')) {
+                $query = " 
+                        FROM 
+                         examiners e LEFT JOIN psc ON 
+                        (e.centerID=psc.CenterID) 
+                        LEFT JOIN certification c ON 
+                        (c.examinerID=e.examinerID and c.pass = 'certified') 
+                        LEFT JOIN test_names tn ON (tn.ID = c.testID) WHERE 1=1 ";
+        } else {
 
-        $query .= ' WHERE 1=1';
+              $query = "
+                        FROM 
+                         examiners e LEFT JOIN psc ON 
+                        (e.centerID=psc.CenterID) 
+                        LEFT JOIN certification c ON 
+                        (c.examinerID=e.examinerID and c.pass = 'certified') 
+                        LEFT JOIN test_names tn ON (tn.ID = c.testID)
+                        WHERE e.centerID =".$centerID." ";
 
-        $user = User::singleton();
-        if (!$user->hasPermission('examiner_multisite')) {
-            $query .= " AND e.CenterID=" . $DB->quote($user->getData('CenterID'));
         }
 
         // set the class variables
         $this->columns      = array(
-            'e.full_name as Examiner',
-            'psc.Name as Site',
-            'e.radiologist as Radiologist',
-        );
+                               'e.full_name as Examiner',
+                               'e.examinerID as ID',
+                               'psc.Name as Site',
+                               'e.radiologist as Radiologist',
+                               'GROUP_CONCAT(tn.full_name) as Certification',
+                              );
+        $this->group_by     = "e.full_name,psc.Name";
         $this->query        = $query;
         $this->order_by     = 'e.full_name';
         $this->headers      = array(
-            'Examiner',
-            'Site',
-            'Radiologist',
-        );
+                               'Examiner',
+                               'ID',
+                               'Site',
+                               'Radiologist',
+                               'Certification',
+                              );
         $this->validFilters = array(
-            'e.full_name',
-            'e.centerID',
-            'COALESCE(e.radiologist, 0)',
-        );
+                               'e.full_name',
+                               'e.centerID',
+                               'COALESCE(e.radiologist, 0)',
+                              );
 
         $this->formToFilter = array(
-            'examiner'    => 'e.full_name',
-            'site'        => 'e.centerID',
-            'radiologist' => 'COALESCE(e.radiologist, 0)',
-        );
+                               'examiner'    => 'e.full_name',
+                               'site'        => 'e.centerID',
+                               'radiologist' => 'COALESCE(e.radiologist, 0)',
+                              );
 
         // If certification is turned on, update the class variables to include
         // certification information
         if ($this->useCertification == '1') {
-            array_push(
-                $this->columns,
-                'tn.Full_name as Certification',
-                'e.examinerID as ID',
-                'c.pass as Pass'
-            );
-            array_push($this->headers, 'Certification');
-            array_push($this->validFilters, 'tn.Full_name');
-            array_push($this->formToFilter, array('instrument' => 'tn.Full_name'));
+
+            $this->tpl_data['hiddenHeaders'] = json_encode(['ID']);
+
+        } else {
+
+            $this->tpl_data['hiddenHeaders'] = json_encode(['ID', 'Certification']);
+
         }
         return true;
     }
@@ -138,10 +149,10 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
 
         // Radiologist options
         $radiologist = array(
-            null => 'All',
-            '1'  => 'Yes',
-            '0'  => 'No',
-        );
+                        null => 'All',
+                        '1'  => 'Yes',
+                        '0'  => 'No',
+                       );
 
         // menu filter form elements
         $this->addBasicText('examiner', 'Examiner:');
@@ -293,9 +304,9 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
         $DB->insert(
             'examiners',
             array(
-                'full_name'   => $fullName,
-                'centerID'    => $siteID,
-                'radiologist' => $radiologist,
+             'full_name'   => $fullName,
+             'centerID'    => $siteID,
+             'radiologist' => $radiologist,
             )
         );
         header("Location: {$baseurl}/examiner/", true, 303);
@@ -317,8 +328,8 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
              FROM examiners
              WHERE full_name=:fullName AND centerID=:siteID",
             array(
-                'fullName' => $fullName,
-                'siteID'   => $siteID,
+             'fullName' => $fullName,
+             'siteID'   => $siteID,
             )
         );
 
@@ -327,6 +338,24 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
         } else {
             return true;
         }
+    }
+    /**
+     * Include the column formatter required to display the feedback link colours
+     * in the candidate_list menu
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+             $baseURL . "/examiner/js/columnFormatter.js",
+            )
+        );
     }
 }
 ?>
