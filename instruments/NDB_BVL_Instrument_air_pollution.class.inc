@@ -116,7 +116,7 @@ class NDB_BVL_Instrument_air_pollution extends NDB_BVL_Instrument
 
         // Address Mom 1
         $this->form->addElement('header', 'instrument_title', "<h5>MOM’s Home at child’s birth #1</h5>");
-        $this->addCheckbox('living1yb4m1', 'Check if you were living here 1 year before child’s birth');
+        $this->addCheckbox('living1yb4m1', 'Check if you were living here 1 year before child’s birth', array('value' => '1'));
 
         $this->form->addElement("text", 'address_line1m1_remove', "Address (Line 1)", array("class" => "encrypt required"));
         $this->form->addElement("text", 'address_line2m1_remove', "Address (Line 2)", array("class" => "encrypt"));
@@ -126,14 +126,14 @@ class NDB_BVL_Instrument_air_pollution extends NDB_BVL_Instrument
 
         $this->addMonthYear('from1b41', 'From', $dateOptionsYM);
         $this->addMonthYear('to1b41', 'To', $dateOptionsYM);
-        $this->addCheckbox('livinghere3bd1', 'Check if you were living here at the time of child’s 3rd birthday');
+        $this->addCheckbox('livinghere3bd1', 'Check if you were living here at the time of child’s 3rd birthday', array('value' => '1'));
      
         
         // Address Mom 2-5
         for ($i=2; $i<6; $i++)
         {
             $this->form->addElement('header', 'instrument_title', "<h5>MOM’s Home Previous #" . $i . "</h5>");
-            $this->addCheckbox('living1yb4m' . $i, 'Check if you were living here 1 year before child’s birth');
+            $this->addCheckbox('living1yb4m' . $i, 'Check if you were living here 1 year before child’s birth', array('value' => '1'));
 
             $this->form->addElement("text", 'address_line1m'. $i .'_remove', "Address (Line 1)", array("class" => "encrypt"));
             $this->form->addElement("text", 'address_line2m'. $i .'_remove', "Address (Line 2)", array("class" => "encrypt"));
@@ -151,7 +151,7 @@ class NDB_BVL_Instrument_air_pollution extends NDB_BVL_Instrument
         $this->form->addElement('header', 'instrument_instruction', '<h5>Section 2 <br><br> We would like to know all the addresses where your child lived until turning AGE 3. Please start below with the address where your child lived on his or her 3rd BIRTHDAY.  Then, list your child’s previous addresses, back until the date of your child’s birth.   If your child was in shared custody, please list both home addresses.</h5><b>');
 
         $this->form->addElement('header', 'instrument_title', "<h5>Child’s home address on his or her 3rd Birthday #1</h5>");
-        $this->addCheckbox('livingatb1', 'Check if this address was your child’s main home at time of birth');
+        $this->addCheckbox('livingatb1', 'Check if this address was your child’s main home at time of birth', array('value' => '1'));
 
         $this->form->addElement("text", 'address_line1b1_remove', "Address (Line 1)", array("class" => "encrypt required"));
         $this->form->addElement("text", 'address_line2b1_remove', "Address (Line 2)", array("class" => "encrypt"));
@@ -167,7 +167,7 @@ class NDB_BVL_Instrument_air_pollution extends NDB_BVL_Instrument
         for ($i=2; $i<7; $i++)
         {        
             $this->form->addElement('header', 'instrument_title', "<h5>Child’s home address previous to his or her 3rd Birthday #". $i ."</h5>");
-            $this->addCheckbox('livingatb' . $i, 'Check if this address was your child’s main home at time of birth');
+            $this->addCheckbox('livingatb' . $i, 'Check if this address was your child’s main home at time of birth', array('value' => '1'));
 
             $this->form->addElement("text", 'address_line1b'. $i .'_remove', "Address (Line 1)", array("class" => "encrypt"));
             $this->form->addElement("text", 'address_line2b'. $i .'_remove', "Address (Line 2)", array("class" => "encrypt"));
