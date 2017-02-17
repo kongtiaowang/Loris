@@ -691,7 +691,12 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
         return array("message" => "Inserted new reliability candidate $PSCID/$Visit_label for EARLI collaboration");
     }
 
-
+    /**
+     * Include the column formatter required to display the feedback link colours
+     * in the candidate_list menu
+     *
+     * @return array of javascript to be inserted
+     */
     function getJSDependencies()
     {
         $factory = NDB_Factory::singleton();
@@ -700,8 +705,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
         return array_merge(
             $deps,
             array(
-                $baseURL . "/reliability/js/reliability.js",
-
+             $baseURL . "/reliability/js/reliability_helper.js",
             )
         );
     }
