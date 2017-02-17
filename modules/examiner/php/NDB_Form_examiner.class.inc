@@ -156,6 +156,7 @@ class NDB_Form_Examiner extends NDB_Form
                      'testID'     => $testID,
                      'pass'       => $certStatus,
                      'comment'    => $comment,
+                     'visit_label'=> $visit_label,
                     )
                 );
                 $certID = $DB->pselectOne(
