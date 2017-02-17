@@ -44,7 +44,7 @@ class NDB_Form_new_profile extends NDB_Form
             $startNum = 2000;
         }
 
-        $candID = Candidate::createNew($user->getData('CenterID'), $dob, $edc, $values['gender'], $values['PSCID']);
+        $candID = Candidate::createNew($user->getData('CenterID'), $dob, $edc, $values['gender'], $values['PSCID'], $startNum);
 
         // get the candidate
         $candidate =& Candidate::singleton($candID);
