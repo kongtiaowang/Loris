@@ -583,7 +583,7 @@ if (empty($argv[1])) {
                 AND f.CommentID NOT LIKE 'DDE_%' AND s.Visit_label <='V24'
                 AND (COALESCE(ps.study_consent_withdrawal,'0000-00-00')='0000-00-00')
                 AND (s.SubprojectID=1 OR s.SubprojectID=2 OR s.SubprojectID=3);",
-           "Demographics"                => "SELECT DISTINCT c.IBISId AS id_number, 
+           "Demographics"                => "SELECT DISTINCT c.PSCID, c.IBISId AS id_number, 
                 t.Date_taken AS date_of_testing,
                 ROUND(t.Candidate_Age) AS age_at_testing,
                 c.DoB AS baby_dob,
@@ -654,16 +654,18 @@ if (empty($argv[1])) {
                 OR t.data_entry_completion_status='Complete') 
                 OR ((fp.administration <> 'None' AND fp.administration is not null) 
                 OR p.data_entry_completion_status='Complete'))
-                AND t.Candidate_Age >= 0 AND s.Visit_label <='V24';",
+                AND t.Candidate_Age >= 0 AND s.Visit_label <='V24'  order by c.PSCID;",
            "Clinical Best Estimate"      => "SELECT
-                DISTINCT c.IBISId AS id_number, 
+                DISTINCT c.IBISId AS id_number,
                 null AS date_of_testing,
                 null AS age_at_testing,
                 null AS cbe_method,
                 null AS cbe_professional,
-                null AS cbe_diagnosis
-                FROM flag f JOIN session s ON (f.SessionID=s.ID) 
-                JOIN candidate c ON (s.CandID=c.CandID) 
+                d.q4_criteria_autistic_disorder AS cbe_diagnosis,
+                d.q4_criteria_PDD as cbe_pdd
+                FROM flag f JOIN session s ON (f.SessionID=s.ID)
+                JOIN DSMIV_checklist as d ON (d.CommentID=f.CommentID and d.CommentID not like 'DDE_%')
+                JOIN candidate c ON (s.CandID=c.CandID)
                 JOIN participant_status ps ON (ps.CandID=c.CandID)
                 WHERE ps.study_consent='yes' AND s.CenterID!=1 AND c.Active='Y'
                 AND f.CommentID NOT LIKE 'DDE_%' AND s.Visit_label <='V24'
