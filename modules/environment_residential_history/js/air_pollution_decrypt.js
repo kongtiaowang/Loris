@@ -29,7 +29,12 @@ var openFile = function(event) {
       for (var key in row) {
          if (encrypted.indexOf(key) > -1) {
            head += '"' + key + '", ';
-           line += '"' + sjcl.decrypt(code, row[key]) + '", ';
+           try {
+             line += '"' + sjcl.decrypt(code, row[key]) + '", ';
+           }
+           catch(err) {
+             line += '"' + row[key] + '", ';
+           }
          } else {
            head += '"' + key + '", ';
            line += '"' + row[key] + '", ';
