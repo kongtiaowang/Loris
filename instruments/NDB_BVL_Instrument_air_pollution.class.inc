@@ -63,7 +63,7 @@ class NDB_BVL_Instrument_air_pollution extends NDB_BVL_Instrument
     {
         //determine page to display
         if (preg_match("/air_pollution(_page[0-9]+)/", $this->page, $matches)) {
-            call_user_method($matches[1], $this);
+            call_user_func(array($this, $matches[1]));
         } else {
             $this->_main();
         }
