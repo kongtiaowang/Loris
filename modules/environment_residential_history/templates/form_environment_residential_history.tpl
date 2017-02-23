@@ -16,10 +16,6 @@
                             <label class="col-sm-12 col-md-4">CSV to decrypt</label>
                             <div class="col-sm-12 col-md-8"><input type="file" accept=".csv" onchange='openFile(event)'></div>
                         </div>
-                        <div class="form-group col-sm-8">
-                            <label class="col-sm-12 col-md-2">Decrypted CSV</label>
-                            <div class="col-sm-12 col-md-4"><textarea rows="30" cols="120" id="output"></textarea></div>
-                        </div>
                     </div>
                </form>
             </div>
