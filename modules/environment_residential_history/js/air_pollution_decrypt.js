@@ -18,6 +18,12 @@ var openFile = function(event) {
   var code = document.getElementById("code").value;
   var input = event.target;
 
+  if (!code) {
+    alert("Did you forget something?");
+    alert("You forgot to enter a code to decrypt!");
+    throw new Error("Did not enter a code to decrypt!");
+  }   
+
   var reader = new FileReader();
   reader.onload = function(event){
 
