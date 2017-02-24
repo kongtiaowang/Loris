@@ -79,7 +79,7 @@ class NDB_BVL_Instrument_SRS2_1 extends NDB_BVL_Instrument
      */
      function _main(){
         // display test name
-        $this->form->addElement('header', 'instrument_title', "SRS2-1");
+        $this->form->addElement('header', 'instrument_title', "SRS2 - Self Report");
         
         $this->form->addElement('static','lorisSubHeader',"<strong>Instructions:</strong><BR>For each question, please choose an option that best describes your behaviour <strong>over the past 6 months </strong>");
         $this->form->addElement('header', 'instrument_title1', "Self Rating");
@@ -122,7 +122,7 @@ class NDB_BVL_Instrument_SRS2_1 extends NDB_BVL_Instrument
     }
 
     function _page2(){
-         $this->form->addElement('header', 'instrument_title', "SRS2-1");
+         $this->form->addElement('header', 'instrument_title', "SRS2 - Self Report");
 
          $questions = array("q16_avoideyecontact"=>"16. I avoid eye contact or am told that I have unusual eye contact",
                            "q17_recognize_unfair"=>"17. I recognize when something is unfair",
@@ -151,7 +151,7 @@ class NDB_BVL_Instrument_SRS2_1 extends NDB_BVL_Instrument
     }
 
     function _page3(){
-         $this->form->addElement('header', 'instrument_title', "SRS2-1");
+         $this->form->addElement('header', 'instrument_title', "SRS2 - Self Report");
 
          $questions = array("q33_socially_awkward"=>"33. My behavior is socially awkward, even when trying to be polite",
                            "q34_avoid_emotionallyclose"=>"34. I avoid people who want to be emotionally close to me",
@@ -183,7 +183,7 @@ class NDB_BVL_Instrument_SRS2_1 extends NDB_BVL_Instrument
 
     function _page4(){
         // display test name
-        $this->form->addElement('header', 'instrument_title', "SRS2-1");
+        $this->form->addElement('header', 'instrument_title', "SRS2 - Self Report");
 
        $this->form->addElement('static', null, "<br /><br />");
         $questions = array("q52_overly_loud" => "52. I get overly loud without realizing it",
@@ -211,7 +211,7 @@ class NDB_BVL_Instrument_SRS2_1 extends NDB_BVL_Instrument
     }
     function _page5(){
         // display test name
-        $this->form->addElement('header', 'instrument_title', "SRS2-1");
+        $this->form->addElement('header', 'instrument_title', "SRS2 - Informant Report");
         
         $this->form->addElement('static','lorisSubHeader',"<strong>Instructions:</strong><BR>For each question, please choose an option that best describes this individual's behaviour <strong>over the past 6 months </strong>");
 /*
@@ -262,7 +262,7 @@ class NDB_BVL_Instrument_SRS2_1 extends NDB_BVL_Instrument
     }
 
     function _page6(){
-         $this->form->addElement('header', 'instrument_title', "SRS2-1");
+         $this->form->addElement('header', 'instrument_title', "SRS2 - Informant Report");
 
          $questions = array("q16i_avoideyecontact"=>"16. Avoids eye contact or has unusual eye contact",
                            "q17i_recognize_unfair"=>"17. Recognizes when something is unfair",
@@ -291,7 +291,7 @@ class NDB_BVL_Instrument_SRS2_1 extends NDB_BVL_Instrument
     }
 
     function _page7(){
-         $this->form->addElement('header', 'instrument_title', "SRS2-1");
+         $this->form->addElement('header', 'instrument_title', "SRS2 - Informant Report");
 
          $questions = array("q33i_socially_awkward"=>"33. Is socially awkward, even when trying to be polite",
                            "q34i_avoid_emotionallyclose"=>"34. Avoids people who want to be emotionally close to him or her",
@@ -323,7 +323,7 @@ class NDB_BVL_Instrument_SRS2_1 extends NDB_BVL_Instrument
 
     function _page8(){
         // display test name
-        $this->form->addElement('header', 'instrument_title', "SRS2-1");
+        $this->form->addElement('header', 'instrument_title', "SRS2 - Informant Report");
 
         $questions = array("q52i_overly_loud" => "52. Knows when he or she is talking too loud or making too much noise",
                            "q53i_monotone_voice"=>"53. Talks to people with an unusual tone of voice (for example, talks like a robot or <BR> like he or she is giving a lecture)",
