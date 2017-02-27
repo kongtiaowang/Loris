@@ -1,0 +1,539 @@
+table{@}figs_year3_relatives
+title{@}FIGS RELATIVES
+header{@}instrument_title{@}FIGS (Family Inventory Genetic Screening)
+header{@}instrument_title{@}Checklists
+select{@}Checklist_Other{@}Other Disorders{@}'N'=>'N'{-}'Y'=>'Y'
+select{@}Checklist_Depression{@}Depression{@}'N'=>'N'{-}'Y'=>'Y'
+select{@}Checklist_Mania{@}Mania{@}'N'=>'N'{-}'Y'=>'Y'
+select{@}Checklist_Psychosis{@}Psychosis{@}'N'=>'N'{-}'Y'=>'Y'
+select{@}Checklist_Alcohol{@}Alcohol{@}'N'=>'N'{-}'Y'=>'Y'
+select{@}Checklist_Drugs{@}Drugs{@}'N'=>'N'{-}'Y'=>'Y'
+select{@}Checklist_Nicotine{@}Nicotine{@}'N'=>'N'{-}'Y'=>'Y'
+select{@}Checklist_Schizoid{@}Paranoid, Schizoid, Schizotypal{@}'N'=>'N'{-}'Y'=>'Y'
+select{@}Checklist_ASP{@}ASP{@}'N'=>'N'{-}'Y'=>'Y'
+select{@}Checklist_Tic{@}Tic Disorder{@}'N'=>'N'{-}'Y'=>'Y'
+select{@}Checklist_OCD{@}OCD{@}'N'=>'N'{-}'Y'=>'Y'
+select{@}Checklist_ADHD{@}ADHD{@}'N'=>'N'{-}'Y'=>'Y'
+header{@}{@}Access checklists
+header{@}{@}Scores/ Diagnostics
+static{@}Score_adhd_combined{@}ADHD Combined:
+static{@}Score_adhd_inattentive{@}ADHD Inattentive:
+static{@}Score_adhd_hyperactive{@}ADHD Hyperactive:
+static{@}Score_alcohol_abuse{@}Alcohol Abuse:
+static{@}Score_alcohol_dependence{@}Alcohol Dependence:
+static{@}Score_alcohol_nicotine{@}Nicotine:
+static{@}Score_alcohol_drug_substance{@}Drug/Substance Abuse:
+static{@}Score_asp{@}Antisocial:
+static{@}Score_depression{@}MDD:
+static{@}Score_recurrent_depression{@}RDD:
+static{@}Score_chronic_depression{@}Chronic Depression:
+static{@}Score_mania{@}Mania:
+static{@}Score_ocd{@}OCD:
+static{@}Score_paranoid_personality{@}PPD:
+static{@}Score_pervasive_development{@}PDD:
+static{@}Score_schizoid{@}Schizoid:
+static{@}Score_schizotypal{@}Schizotypal:
+static{@}Score_psychosis_schizophrenia{@}Schizophrenia:
+static{@}Score_psychosis_depression{@}Psychosis - Depression:
+static{@}Score_psychosis_mania{@}Psychosis - Mania:
+static{@}Score_tic_tourettes{@}Tic - Tourettes:
+static{@}Score_tic_motor_c{@}Tic - Motor C:
+static{@}Score_tic_motor_t{@}Tic - Motor T:
+static{@}Score_tic_vocal_c{@}Tic - Vocal C:
+static{@}Score_tic_vocal_t{@}Tic - Vocal T:
+header{@}instrument_title{@}FIGS (Family Inventory Genetic Screening)
+header{@}{@}Face Sheet
+static{@}RelativeCode{@}ii. Person being described relationship code
+date{@}Face_BirthDate{@}iii. Birth date of person described, if known:{@}1900{@}2016
+checkbox{@}Face_BirthDateEstimated{@}Birth date above is estimated
+select{@}Face_Living{@}Is person being described living?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+text{@}Face_LastSeenAge{@}Age when last seen or known about, or died: (in years - numbers only!)
+text{@}Face_LastSeenYear{@}Year when last seen or known about, or died: (numbers only!)
+checkbox{@}Face_LastSeenNA{@}NA
+text{@}Face_CauseOfDeath{@}If deceased, cause of death:
+select{@}Face_Suicide{@}Suicide?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Face_OtherProblems{@}1. Has he/she had any other psychiatric or personality problems other than/or like those we mentioned earlier? {@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Face_fragilex_syndrome{@}1.1a) Has he/she ever been tested for FRAGILE X SYNDROME?{@}NULL=>''{-}'0'=>'0.No'{-}'1'=>'1.Yes'{-}'9'=>'9.Unknown'{-}'NA'=>'N/A'
+select{@}Face_outcome_test{@}1.1b) What was the outcome of the test?{@}NULL=>''{-}'1'=>'1.Full mutation'{-}'2'=>'2.Pre-mutation'{-}'3'=>'3.Carrier'{-}'4'=>'4.Fragile X-associated Tremor/Ataxia syndrome'{-}'5'=>'5.Fragile X-associated Primary Ovarian Insufficiency'{-}'6'=>'6. Other'{-}'7'=>'7.Not Applicable'{-}'8'=>'8.Not Answered'{-}'9'=>'9.Unknown'{-}'10'=>'10.Negative'
+text{@}Face_testoutcome_other{@}Specify other outcome:
+select{@}Face_Reliability{@}1.f) Interviewer judgment on reliability of this information:{@}NULL=>''{-}'1'=>'1. Good'{-}'2'=>'2. Fair'{-}'3'=>'3. Poor'{-}'NA'=>'N/A'
+text{@}Face_Comments{@}Comments:
+header{@}instrument_title{@}FIGS (Family Inventory Genetic Screening)
+header{@}{@}Other Disorders
+textarea{@}Other_Narrative{@}Write narrative:
+header{@}{@}Disorder Number 1
+text{@}Other_Q1_Disorder{@}1. Indicate any disorder NOT in the checklists and complete questions 1.a-f for the disorder (includes neurologic disorders).
+header{@}{@}1.a) Code and describe professional treatment:
+select{@}Other_Q1a_Treatment1{@}0. {@}NULL=>''{-}'0'=>'0. None'{-}'NA'=>'N/A'
+select{@}Other_Q1a_Treatment2{@}1. {@}NULL=>''{-}'1'=>'1. Inpatient'{-}'NA'=>'N/A'
+select{@}Other_Q1a_Treatment3{@}2. {@}NULL=>''{-}'2'=>'2. Outpatient'{-}'NA'=>'N/A'
+select{@}Other_Q1a_Treatment4{@}3. {@}NULL=>''{-}'3'=>'3. ECT'{-}'NA'=>'N/A'
+select{@}Other_Q1a_Treatment5{@}4. {@}NULL=>''{-}'4'=>'4. Medication'{-}'NA'=>'N/A'
+select{@}Other_Q1a_Treatment6{@}9. {@}NULL=>''{-}'9'=>'9. Unknown'{-}'NA'=>'N/A'
+textarea{@}Other_Q1a_Description{@}Please describe treatments:
+text{@}Other_Q1b_OnsetAge{@}1.b) Age of onset (in years - numbers only!)
+checkbox{@}Other_Q1bNA{@}NA
+text{@}Other_Q1c_Episodes{@}1.c) Number of episodes (numbers only!)
+checkbox{@}Other_Q1cNA{@}NA
+text{@}Other_Q1d_Duration{@}1.d) Duration of longest episode in weeks (numbers only!)
+checkbox{@}Other_Q1dNA{@}NA
+select{@}Other_Q1e_Impairment{@}1.e) Rate and code impairment or incapacitation:{@}NULL=>''{-}'0'=>'0. None'{-}'1'=>'1. Impaired'{-}'2'=>'2. Incapacitated'{-}'3'=>'3. Clinically Significant Distress'{-}'4'=>'4. Change from previous functioning'{-}'9'=>'9. Unknown'{-}'NA'=>'N/A'
+header{@}{@}Disorder Number 2
+text{@}Other2_Q1_Disorder{@}1. Indicate any disorder NOT in the checklists and complete questions 1.a-f for the disorder (includes neurologic disorders).
+header{@}{@}1.a) Code and describe professional treatment:
+select{@}Other2_Q1a_Treatment1{@}0. {@}NULL=>''{-}'0'=>'0. None'{-}'NA'=>'N/A'
+select{@}Other2_Q1a_Treatment2{@}1. {@}NULL=>''{-}'1'=>'1. Inpatient'{-}'NA'=>'N/A'
+select{@}Other2_Q1a_Treatment3{@}2. {@}NULL=>''{-}'2'=>'2. Outpatient'{-}'NA'=>'N/A'
+select{@}Other2_Q1a_Treatment4{@}3. {@}NULL=>''{-}'3'=>'3. ECT'{-}'NA'=>'N/A'
+select{@}Other2_Q1a_Treatment5{@}4. {@}NULL=>''{-}'4'=>'4. Medication'{-}'NA'=>'N/A'
+select{@}Other2_Q1a_Treatment6{@}9. {@}NULL=>''{-}'9'=>'9. Unknown'{-}'NA'=>'N/A'
+textarea{@}Other2_Q1a_Description{@}Please describe treatments:
+text{@}Other2_Q1b_OnsetAge{@}1.b) Age of onset (in years - numbers only!)
+checkbox{@}Other2_Q1bNA{@}NA
+text{@}Other2_Q1c_Episodes{@}1.c) Number of episodes (numbers only!)
+checkbox{@}Other2_Q1cNA{@}NA
+text{@}Other2_Q1d_Duration{@}1.d) Duration of longest episode in weeks (numbers only!)
+checkbox{@}Other2_Q1dNA{@}NA
+select{@}Other2_Q1e_Impairment{@}1.e) Rate and code impairment or incapacitation:{@}NULL=>''{-}'0'=>'0. None'{-}'1'=>'1. Impaired'{-}'2'=>'2. Incapacitated'{-}'3'=>'3. Clinically Significant Distress'{-}'4'=>'4. Change from previous functioning'{-}'9'=>'9. Unknown'{-}'NA'=>'N/A'
+header{@}{@}Disorder Number 3
+text{@}Other3_Q1_Disorder{@}1. Indicate any disorder NOT in the checklists and complete questions 1.a-f for the disorder (includes neurologic disorders).
+header{@}{@}1.a) Code and describe professional treatment:
+select{@}Other3_Q1a_Treatment1{@}0. {@}NULL=>''{-}'0'=>'0. None'{-}'NA'=>'N/A'
+select{@}Other3_Q1a_Treatment2{@}1. {@}NULL=>''{-}'1'=>'1. Inpatient'{-}'NA'=>'N/A'
+select{@}Other3_Q1a_Treatment3{@}2. {@}NULL=>''{-}'2'=>'2. Outpatient'{-}'NA'=>'N/A'
+select{@}Other3_Q1a_Treatment4{@}3. {@}NULL=>''{-}'3'=>'3. ECT'{-}'NA'=>'N/A'
+select{@}Other3_Q1a_Treatment5{@}4. {@}NULL=>''{-}'4'=>'4. Medication'{-}'NA'=>'N/A'
+select{@}Other3_Q1a_Treatment6{@}9. {@}NULL=>''{-}'9'=>'9. Unknown'{-}'NA'=>'N/A'
+textarea{@}Other3_Q1a_Description{@}Please describe treatments:
+text{@}Other3_Q1b_OnsetAge{@}1.b) Age of onset (in years - numbers only!)
+checkbox{@}Other3_Q1bNA{@}NA
+text{@}Other3_Q1c_Episodes{@}1.c) Number of episodes (numbers only!)
+checkbox{@}Other3_Q1cNA{@}NA
+text{@}Other3_Q1d_Duration{@}1.d) Duration of longest episode in weeks (numbers only!)
+checkbox{@}Other3_Q1dNA{@}NA
+select{@}Other3_Q1e_Impairment{@}1.e) Rate and code impairment or incapacitation:{@}NULL=>''{-}'0'=>'0. None'{-}'1'=>'1. Impaired'{-}'2'=>'2. Incapacitated'{-}'3'=>'3. Clinically Significant Distress'{-}'4'=>'4. Change from previous functioning'{-}'9'=>'9. Unknown'{-}'NA'=>'N/A'
+header{@}{@}Disorder Number 4
+text{@}Other4_Q1_Disorder{@}1. Indicate any disorder NOT in the checklists and complete questions 1.a-f for the disorder (includes neurologic disorders).
+header{@}{@}1.a) Code and describe professional treatment:
+select{@}Other4_Q1a_Treatment1{@}0. {@}NULL=>''{-}'0'=>'0. None'{-}'NA'=>'N/A'
+select{@}Other4_Q1a_Treatment2{@}1. {@}NULL=>''{-}'1'=>'1. Inpatient'{-}'NA'=>'N/A'
+select{@}Other4_Q1a_Treatment3{@}2. {@}NULL=>''{-}'2'=>'2. Outpatient'{-}'NA'=>'N/A'
+select{@}Other4_Q1a_Treatment4{@}3. {@}NULL=>''{-}'3'=>'3. ECT'{-}'NA'=>'N/A'
+select{@}Other4_Q1a_Treatment5{@}4. {@}NULL=>''{-}'4'=>'4. Medication'{-}'NA'=>'N/A'
+select{@}Other4_Q1a_Treatment6{@}9. {@}NULL=>''{-}'9'=>'9. Unknown'{-}'NA'=>'N/A'
+textarea{@}Other4_Q1a_Description{@}Please describe treatments:
+text{@}Other4_Q1b_OnsetAge{@}1.b) Age of onset (in years - numbers only!)
+checkbox{@}Other4_Q1bNA{@}NA
+text{@}Other4_Q1c_Episodes{@}1.c) Number of episodes (numbers only!)
+checkbox{@}Other4_Q1cNA{@}NA
+text{@}Other4_Q1d_Duration{@}1.d) Duration of longest episode in weeks (numbers only!)
+checkbox{@}Other4_Q1dNA{@}NA
+select{@}Other4_Q1e_Impairment{@}1.e) Rate and code impairment or incapacitation:{@}NULL=>''{-}'0'=>'0. None'{-}'1'=>'1. Impaired'{-}'2'=>'2. Incapacitated'{-}'3'=>'3. Clinically Significant Distress'{-}'4'=>'4. Change from previous functioning'{-}'9'=>'9. Unknown'{-}'NA'=>'N/A'
+header{@}{@}Disorder Number 5
+text{@}Other5_Q1_Disorder{@}1. Indicate any disorder NOT in the checklists and complete questions 1.a-f for the disorder (includes neurologic disorders).
+header{@}{@}1.a) Code and describe professional treatment:
+select{@}Other5_Q1a_Treatment1{@}0. {@}NULL=>''{-}'0'=>'0. None'{-}'NA'=>'N/A'
+select{@}Other5_Q1a_Treatment2{@}1. {@}NULL=>''{-}'1'=>'1. Inpatient'{-}'NA'=>'N/A'
+select{@}Other5_Q1a_Treatment3{@}2. {@}NULL=>''{-}'2'=>'2. Outpatient'{-}'NA'=>'N/A'
+select{@}Other5_Q1a_Treatment4{@}3. {@}NULL=>''{-}'3'=>'3. ECT'{-}'NA'=>'N/A'
+select{@}Other5_Q1a_Treatment5{@}4. {@}NULL=>''{-}'4'=>'4. Medication'{-}'NA'=>'N/A'
+select{@}Other5_Q1a_Treatment6{@}9. {@}NULL=>''{-}'9'=>'9. Unknown'{-}'NA'=>'N/A'
+textarea{@}Other5_Q1a_Description{@}Please describe treatments:
+text{@}Other5_Q1b_OnsetAge{@}1.b) Age of onset (in years - numbers only!)
+checkbox{@}Other5_Q1bNA{@}NA
+text{@}Other5_Q1c_Episodes{@}1.c) Number of episodes (numbers only!)
+checkbox{@}Other5_Q1cNA{@}NA
+text{@}Other5_Q1d_Duration{@}1.d) Duration of longest episode in weeks (numbers only!)
+checkbox{@}Other5_Q1dNA{@}NA
+select{@}Other5_Q1e_Impairment{@}1.e) Rate and code impairment or incapacitation:{@}NULL=>''{-}'0'=>'0. None'{-}'1'=>'1. Impaired'{-}'2'=>'2. Incapacitated'{-}'3'=>'3. Clinically Significant Distress'{-}'4'=>'4. Change from previous functioning'{-}'9'=>'9. Unknown'{-}'NA'=>'N/A'
+header{@}instrument_title{@}FIGS (Family Inventory Genetic Screening)
+header{@}{@}General Screening
+header{@}{@}Step 1: Let's go over your family tree.
+header{@}{@}Step 2: Now I am asking you to keep in mind the family members we just discussed including youself as I go through the list of questions.
+select{@}GS_Q01_Adopted{@}1. Was anyone adopted?{@}NULL=>''{-}'Y'=>'Yes'{-}'N'=>'No'{-}'NA'=>'N/A'
+select{@}GS_Q02_MentallyRetarded{@}2. Was anyone mentally retarted?{@}NULL=>''{-}'Y'=>'Yes'{-}'N'=>'No'{-}'NA'=>'N/A'
+select{@}GS_Q03_Inattentive{@}3. Did anyone have trouble finishing school work or being inattentive{@}NULL=>''{-}'Y'=>'Yes'{-}'N'=>'No'{-}'NA'=>'N/A'
+select{@}GS_Q04_TroubleSitting{@}4. Did anyone have trouble sitting in their seat or taking turns in school?{@}NULL=>''{-}'Y'=>'Yes'{-}'N'=>'No'{-}'NA'=>'N/A'
+select{@}GS_Q05_DiagnosedADHD{@}5. Did anyone have a diagnosis of attention deficit disorder or attention deficit/hyperactivity disorder?{@}NULL=>''{-}'Y'=>'Yes'{-}'N'=>'No'{-}'NA'=>'N/A'
+select{@}GS_Q06_Nerves{@}6. Did anyone have problems with their nerves or emotions?  Take medicine or see a doctor for it?  Take lithium?{@}NULL=>''{-}'Y'=>'Yes'{-}'N'=>'No'{-}'NA'=>'N/A'
+select{@}GS_Q07_DiagnosedDepression{@}7. Did anyone feel very low for a couple of weeks or more, or have a diagnosis of depression?{@}NULL=>''{-}'Y'=>'Yes'{-}'N'=>'No'{-}'NA'=>'N/A'
+select{@}GS_Q08_Suicide{@}8. Did anyone attempt or complete suicide?{@}NULL=>''{-}'Y'=>'Yes'{-}'N'=>'No'{-}'NA'=>'N/A'
+select{@}GS_Q09_DiagnosedMania{@}9. Did anyone seem overexcited (or manic) day and night, or have a diagnosis of mania?{@}NULL=>''{-}'Y'=>'Yes'{-}'N'=>'No'{-}'NA'=>'N/A'
+select{@}GS_Q10_Visions{@}10. Did anyone have visions, hear voices, or have beliefs that seem strange or unreal?{@}NULL=>''{-}'Y'=>'Yes'{-}'N'=>'No'{-}'NA'=>'N/A'
+select{@}GS_Q11_DiagnosedSchizophrenia{@}11. Did anyone have unusual or bizarre behavior, or have a diagnosis of schizophrenia?{@}NULL=>''{-}'Y'=>'Yes'{-}'N'=>'No'{-}'NA'=>'N/A'
+select{@}GS_Q12_Obsessions{@}12. Did anyone have repetitive thoughts or get stuck on ideas (obsessions)? Have rituals or do the same thing over and over (compulsions)?{@}NULL=>''{-}'Y'=>'Yes'{-}'N'=>'No'{-}'NA'=>'N/A'
+select{@}GS_Q13_DiagnosedOCD{@}13. Did anyone have a diagnosis of obsessive/compulsive disorder?{@}NULL=>''{-}'Y'=>'Yes'{-}'N'=>'No'{-}'NA'=>'N/A'
+select{@}GS_Q14_Violent{@}14. Did anyone have trouble with the police, with completing school due to irresponsible behavior, or with keeping a job? Did anyone have trouble with a violent temper or abusive behavior?{@}NULL=>''{-}'Y'=>'Yes'{-}'N'=>'No'{-}'NA'=>'N/A'
+select{@}GS_Q15_AlcoholDrug{@}15. Did anyone have alcohol or drug use that caused problems (with health, family, job, or police)?  Did anyone go to AA or NA, or have treatment for this?{@}NULL=>''{-}'Y'=>'Yes'{-}'N'=>'No'{-}'NA'=>'N/A'
+select{@}GS_Q16_Nicotine{@}16. Did anyone smoke cigarettes, cigars, chew tobacco or use any other forms of nicotine?{@}NULL=>''{-}'Y'=>'Yes'{-}'N'=>'No'{-}'NA'=>'N/A'
+select{@}GS_Q17_Psychiatric{@}17. Was anyone hospitalized for psychiatric problems, or for drug or alcohol problems?{@}NULL=>''{-}'Y'=>'Yes'{-}'N'=>'No'{-}'NA'=>'N/A'
+select{@}GS_Q18_Neurologic{@}18. Did anyone have inherited medical diseases such as Huntington's disease? Did anyone have neurological illnesses such as seizure disorder or any other disorders of the brain or nervous system?{@}NULL=>''{-}'Y'=>'Yes'{-}'N'=>'No'{-}'NA'=>'N/A'
+select{@}GS_Q19_Tourrettes{@}19. Did anyone have tics or Tourrette's Syndrome?{@}NULL=>''{-}'Y'=>'Yes'{-}'N'=>'No'{-}'NA'=>'N/A'
+select{@}GS_Q20_Loner{@}20. Did anyone have few friends, or seem to be a loner?{@}NULL=>''{-}'Y'=>'Yes'{-}'N'=>'No'{-}'NA'=>'N/A'
+select{@}GS_Q21_Speech{@}21. Did anyone have odd or unusual speech or was slow to develop speech?{@}NULL=>''{-}'Y'=>'Yes'{-}'N'=>'No'{-}'NA'=>'N/A'
+select{@}GS_Q22_Eccentric{@}22. Did anyone seem odd or eccentric in behavior or appearance?{@}NULL=>''{-}'Y'=>'Yes'{-}'N'=>'No'{-}'NA'=>'N/A'
+select{@}GS_Q23_Autism{@}23. Did anyone have autism, Asperger's Syndrome or pervasive developmental disorder (PDD)?{@}NULL=>''{-}'Y'=>'Yes'{-}'N'=>'No'{-}'NA'=>'N/A'
+select{@}GS_Q24_Jealous{@}24. Was anyone extremely jealous, suspicious, believe in magic or see special meanings in things that no one else saw?{@}NULL=>''{-}'Y'=>'Yes'{-}'N'=>'No'{-}'NA'=>'N/A'
+header{@}{@}Step 3: Complete checklists as indicated by General Screening Questions.
+header{@}instrument_title{@}FIGS (Family Inventory Genetic Screening)
+header{@}{@}Depression Checklist
+header{@}{@}1. During depression...
+select{@}Depression_Q1a{@}1.a) ...was he/she depressed (sad, down, or in a bad mood) most of the day, nearly every day, for as long as a week or more?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Depression_Q1b{@}1.b) ...did he/she lose interest in things or become unable to enjoy most things, for as long as a week?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Depression_Q1c{@}1.c) ...did he/she have a change in appetite or weight without trying to?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+text{@}Depression_Q1cDescription{@}If yes, Describe:
+select{@}Depression_Q1d{@}1.d) ...did he/she have a change in sleep patterns (either too much or too little)?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+text{@}Depression_Q1dDescription{@}If yes, Describe:
+select{@}Depression_Q1e{@}1.e) ...did he/she become unable to work, go to school, or take care of household responsibilities?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+text{@}Depression_Q1eDescription{@}If yes, Describe:
+select{@}Depression_Q1f{@}1.f) During these episodes of depression/low mood (symptoms should be associated with periods of mood change) did he/she move or speak more slowly than usual?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Depression_Q1g{@}1.g) During these episodes of depression/low mood (symptoms should be associated with periods of mood change) did he/she pace or wring his/her hands?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Depression_Q1h{@}1.h) During these episodes of depression/low mood did he/she have less energy or feel tired out?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Depression_Q1i{@}1.i) During these episodes of depression/low mood did he/she feel guilty, worthless, or blame himself/herself?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Depression_Q1j{@}1.j) During these episodes of depression/low mood did he/she have trouble concentrating or making decisions?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Depression_Q1k{@}1.k) During these episodes of depression/low mood (symptoms should be associated with periods of mood change) did he/she talk of death or suicide?  Or try suicide?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Depression_Q1l{@}1.l) During these episodes of depression/low mood did he/she have visions, hear voices, or have beliefs or behavior that seemed strange or unusual, at the same time as (symptoms above)? {@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+header{@}{@}2. Did _______ receive any professional treatment for these problems?
+select{@}Depression_Q2_Treatment1{@}0. {@}NULL=>''{-}'0'=>'0. None'{-}'NA'=>'N/A'
+select{@}Depression_Q2_Treatment2{@}1. {@}NULL=>''{-}'1'=>'1. Inpatient'{-}'NA'=>'N/A'
+select{@}Depression_Q2_Treatment3{@}2. {@}NULL=>''{-}'2'=>'2. Outpatient'{-}'NA'=>'N/A'
+select{@}Depression_Q2_Treatment4{@}3. {@}NULL=>''{-}'3'=>'3. ECT'{-}'NA'=>'N/A'
+select{@}Depression_Q2_Treatment5{@}4. {@}NULL=>''{-}'4'=>'4. Medication'{-}'NA'=>'N/A'
+select{@}Depression_Q2_Treatment6{@}9. {@}NULL=>''{-}'9'=>'9. Unknown'{-}'NA'=>'N/A'
+textarea{@}Depression_Q2Description{@}Please describe treatments:
+text{@}Depression_Q3_Age{@}3. Age of onset (years - numbers only!)
+checkbox{@}Depression_Q3NA{@}NA
+text{@}Depression_Q4_Episodes{@}4. Number of episodes (numbers only!)
+checkbox{@}Depression_Q4NA{@}NA
+text{@}Depression_Q5_Duration{@}5. Duration of longest episode in weeks (numbers only!)
+checkbox{@}Depression_Q5NA{@}NA
+select{@}Depression_Q6_Current{@}6. Currently depressed?{@}NULL=>''{-}'Yes'=>'Yes'{-}'No'=>'No'{-}'Unsure'=>'Unsure'{-}'NA'=>'N/A'
+text{@}Depression_Q7_Recent{@}7. Most recent episode (Number of months prior to current date.)
+checkbox{@}Depression_Q7NA{@}NA
+select{@}Depression_Q8_Impairment{@}8.Rate and code impairment or incapacitation:{@}NULL=>''{-}'0'=>'0. None'{-}'1'=>'1. Impaired'{-}'2'=>'2. Incapacitated'{-}'3'=>'3. Clinically Significant Distress'{-}'4'=>'4. Change from previous functioning'{-}'9'=>'9. Unknown'{-}'NA'=>'N/A'
+select{@}Depression_Q9_Reliability{@}9. Interviewer judgment on reliability of this information:{@}NULL=>''{-}'1'=>'1. Good'{-}'2'=>'2. Fair'{-}'3'=>'3. Poor'{-}'NA'=>'N/A'
+header{@}instrument_title{@}FIGS (Family Inventory Genetic Screening)
+header{@}{@}Mania Checklist
+header{@}{@}For most of the time day and night over several days, did he/she (more than usual)...
+select{@}Mania_Q1a{@}1.a) ...seem too happy/high/excited?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Mania_Q1b{@}1.b) ...become so excited or agitated it was impossible to talk with him/her?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+text{@}Mania_Q1bDescription{@}If yes, Describe:
+select{@}Mania_Q1c{@}1.c) ...act very irritable or angry?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+text{@}Mania_Q1cDescription{@}If yes, Describe:
+select{@}Mania_Q1d{@}1.d) ...need less sleep without feeling tired?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+text{@}Mania_Q1dDescription{@}If yes, Describe:
+select{@}Mania_Q1e{@}1.e) ...show poor judgment (e.g., spending sprees, sexual indiscretions?){@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+text{@}Mania_Q1eDescription{@}If yes, Describe:
+select{@}Mania_Q1f{@}1.f) During these episodes of (list some positives from 1a-1e) did ______behave in such a way as to cause difficulty for those around him/her (obnoxious/manipulative)?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Mania_Q1g{@}1.g) During these episodes of (list some positives from 1a-1e) did ______ feel that he/she had special gifts or powers?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Mania_Q1h{@}1.h) During these episodes of (list some positives from 1a-1e) did ______ become more talkative than usual?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Mania_Q1i{@}1.i) During these episodes of (list some positives from 1a-1e) did ______ jump from one idea to another?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Mania_Q1j{@}1.j) During these episodes of (list some positives from 1a-1e) did ______ become easily distracted?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Mania_Q1k{@}1.k) During these episodes of (list some positives from 1a-1e) did ______ get involved in too many activities at work or school?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Mania_Q1l{@}1.l) During these episodes of (list some positives from 1a-1e) did ______ have visions?  Hear voices?  Have beliefs or behavior that seem strange or unusual, at the same time as (above symptoms)?  (If YES, complete a Psychosis Checklist after this one.){@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+header{@}{@}2.	Did ______ receive professional treatment for these issues?
+select{@}Mania_Q2_Treatment1{@}0. {@}NULL=>''{-}'0'=>'0. None'{-}'NA'=>'N/A'
+select{@}Mania_Q2_Treatment2{@}1. {@}NULL=>''{-}'1'=>'1. Inpatient'{-}'NA'=>'N/A'
+select{@}Mania_Q2_Treatment3{@}2. {@}NULL=>''{-}'2'=>'2. Outpatient'{-}'NA'=>'N/A'
+select{@}Mania_Q2_Treatment4{@}3. {@}NULL=>''{-}'3'=>'3. ECT'{-}'NA'=>'N/A'
+select{@}Mania_Q2_Treatment5{@}4. {@}NULL=>''{-}'4'=>'4. Medication'{-}'NA'=>'N/A'
+select{@}Mania_Q2_Treatment6{@}9. {@}NULL=>''{-}'9'=>'9. Unknown'{-}'NA'=>'N/A'
+textarea{@}Mania_Q2Description{@}Please describe:
+text{@}Mania_Q3_Age{@}3. Age of onset (in years - numbers only!)
+checkbox{@}Mania_Q3NA{@}NA
+text{@}Mania_Q4_Episodes{@}4. Number of episodes (numbers only!)
+checkbox{@}Mania_Q4NA{@}NA
+text{@}Mania_Q5_Duration{@}5. Duration of longest episode in weeks (numbers only!)
+checkbox{@}Mania_Q5NA{@}NA
+text{@}Mania_Q6_Recent{@}6. Most recent episode (Number of months prior to current date.)
+checkbox{@}Mania_Q6NA{@}NA
+select{@}Mania_Q7_Impairment{@}7. Rate and code impairment or incapacitation:{@}NULL=>''{-}'0'=>'0. None'{-}'1'=>'1. Impaired'{-}'2'=>'2. Incapacitation'{-}'9'=>'9. Unknown'{-}'NA'=>'N/A'
+select{@}Mania_Q8_Reliability{@}8. Reliability{@}NULL=>''{-}'1'=>'1. Good'{-}'2'=>'2. Fair'{-}'3'=>'3. Poor'{-}'NA'=>'N/A'
+header{@}instrument_title{@}FIGS (Family Inventory Genetic Screening)
+header{@}{@}Psychosis Checklist
+text{@}Psychosis_Q1_Beliefs{@}1. What were his/her unusual beliefs or experiences?
+select{@}Psychosis_Q1a{@}1.a) ...believe people were following him/her, or that someone was trying to hurt or poison him/her?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Psychosis_Q1b{@}1.b) ...believe someone was reading his/her mind?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Psychosis_Q1c{@}1.c) ...believe he/she was under the control of some outside person, power or force?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Psychosis_Q1d{@}1.d) ...believe his/her thoughts were broadcast, or that an outside force took away his/her thoughts or put thoughts into his/her head?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Psychosis_Q1e{@}1.e) ...have any other strange or unusual beliefs?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+text{@}Psychosis_Q1eDescription{@}If yes, describe:
+select{@}Psychosis_Q1f{@}1.f) ...see things that were not really there?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Psychosis_Q1g{@}1.g) ...hear voices or other sounds that were not real?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+text{@}Psychosis_Q1gDescription{@}If yes, describe:
+select{@}Psychosis_Q1h{@}1.h) ...speak in a way that was difficult to make sense of?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+text{@}Psychosis_Q1hDescription{@}If yes, describe:
+select{@}Psychosis_Q1i{@}1.i) ...seem to be physically stuck in one position, or move around excitedly without any purpose?
+ {@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Psychosis_Q1j{@}1.j)	...appear to have no emotions, or inappropriate emotions?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+text{@}Psychosis_Q2_Duration{@}2. How long did the longest of these experiences last (weeks)?
+checkbox{@}Psychosis_Q2NA{@}NA
+select{@}Psychosis_Q3_MoodDisturbance{@}3. When any (SX above) happened, did he/she also have the mood disturbance we discussed before, at the same time?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Psychosis_Q4_NoDepression{@}4 (2 on paper). Code yes if illness described above, or medication, was ever present for as long as one week without depression or mania{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+header{@}{@}5. Code and describe professional treatment (Code and describe all that apply):
+select{@}Psychosis_Q5_Treatment1{@}0. {@}NULL=>''{-}'0'=>'0. None'{-}'NA'=>'N/A'
+select{@}Psychosis_Q5_Treatment2{@}1. {@}NULL=>''{-}'1'=>'1. Inpatient'{-}'NA'=>'N/A'
+select{@}Psychosis_Q5_Treatment3{@}2. {@}NULL=>''{-}'2'=>'2. Outpatient'{-}'NA'=>'N/A'
+select{@}Psychosis_Q5_Treatment4{@}3. {@}NULL=>''{-}'3'=>'3. ECT'{-}'NA'=>'N/A'
+select{@}Psychosis_Q5_Treatment5{@}4. {@}NULL=>''{-}'4'=>'4. Medication'{-}'NA'=>'N/A'
+select{@}Psychosis_Q5_Treatment6{@}9. {@}NULL=>''{-}'9'=>'9. Unknown'{-}'NA'=>'N/A'
+textarea{@}Psychosis_Q5Description{@}Please describe treatments:
+text{@}Psychosis_Q6_Age{@}6. Age of onset (years - numbers only!)?
+checkbox{@}Psychosis_Q6NA{@}NA
+text{@}Psychosis_Q7_Episodes{@}7. Number of episodes (Code 111 if chronic symptoms and/or treatment since onset)
+checkbox{@}Psychosis_Q7NA{@}NA
+text{@}Psychosis_Q8Weeks_Duration{@}8. Total illness duration (all episodes, includes active and prodromal and/or residual symptoms and/or treatment) (Weeks - numbers only!)
+text{@}Psychosis_Q8Years_Duration{@}8. Total illness duration (all episodes, includes active and prodromal and/or residual symptoms and/or treatment) (Years - numbers only!)
+checkbox{@}Psychosis_Q8NA{@}NA
+select{@}Psychosis_Q9_Current{@}9, Are these problems still current?{@}NULL=>''{-}'Yes'=>'Yes'{-}'No'=>'No'{-}'Unsure'=>'Unsure'{-}'NA'=>'N/A'
+select{@}Psychosis_Q10_Impairment{@}10. Rate and code impairment or incapacitation:{@}NULL=>''{-}'0'=>'0. None'{-}'1'=>'1. Impaired'{-}'2'=>'2. Incapacitation'{-}'9'=>'9. Unknown'{-}'NA'=>'N/A'
+select{@}Psychosis_Q11_Substance{@}11. Was this problem/or these symptoms related to another medical illness or related to substance use?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+text{@}Psychosis_Q11Description{@}If yes, describe:
+select{@}Psychosis_Q12_Reliability{@}12. Interviewer judgment on reliability of this information:{@}NULL=>''{-}'1'=>'1. Good'{-}'2'=>'2. Fair'{-}'3'=>'3. Poor'{-}'NA'=>'N/A'
+header{@}instrument_title{@}FIGS (Family Inventory Genetic Screening)
+header{@}{@}Alcohol
+header{@}{@}Because of drinking, did he/she ever have problems such as...
+select{@}Alcohol_Q1a{@}1.a) ...being unable to stop or cut down on drinking?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Alcohol_Q1b{@}1.b) ...spending a lot of time drinking or being hung over?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Alcohol_Q1c{@}1.c) ...being unable to work, go to school, or take care of household responsibilities?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Alcohol_Q1d{@}1.d) ...being high from drinking when he/she could get hurt?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Alcohol_Q1e{@}1.e) ...accidental injuries?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Alcohol_Q1f{@}1.f) ...reducing or giving up important activities?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Alcohol_Q1g{@}1.g) ...objections from the family or friends, at work or school?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Alcohol_Q1h{@}1.h) ...legal problems more than once (DWIs, arrests)?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Alcohol_Q1i{@}1.i) ...blackouts more than once?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Alcohol_Q1j{@}1.j) ...binges or benders more than once?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Alcohol_Q1k{@}1.k) ...physical health problems (liver disease, pancreatitis)?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Alcohol_Q1l{@}1.l) ...emotional or psychological problems (uninterested, depressed, suspicious/paranoid, having strange ideas)?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Alcohol_Q1m{@}1.m) ...withdrawal symptoms (shakes, seizures/convulsions, DTs)?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+header{@}{@}2. Did he/she go to AA or have any kind of treatment? (Code and describe all that apply)
+select{@}Alcohol_Q2_Treatment1{@}0. {@}NULL=>''{-}'0'=>'0. None'{-}'NA'=>'N/A'
+select{@}Alcohol_Q2_Treatment2{@}1. {@}NULL=>''{-}'1'=>'1. Inpatient'{-}'NA'=>'N/A'
+select{@}Alcohol_Q2_Treatment3{@}2. {@}NULL=>''{-}'2'=>'2. Outpatient'{-}'NA'=>'N/A'
+select{@}Alcohol_Q2_Treatment4{@}3. {@}NULL=>''{-}'3'=>'3. AA or other self-help'{-}'NA'=>'N/A'
+select{@}Alcohol_Q2_Treatment5{@}4. {@}NULL=>''{-}'4'=>'4. Medication'{-}'NA'=>'N/A'
+select{@}Alcohol_Q2_Treatment6{@}9. {@}NULL=>''{-}'9'=>'9. Unknown'{-}'NA'=>'N/A'
+textarea{@}Alcohol_Q2Description{@}Please describe treatments:
+select{@}Alcohol_Q3_Current{@}3. Does he/she currently have a problem with alcohol?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+text{@}Alcohol_Q4_OnsetAge{@}4. Record age he/she began to have alcohol-related problems (years -- numbers only!).
+checkbox{@}Alcohol_Q4NA{@}NA
+text{@}Alcohol_Q5_RecoverAge{@}5. Record age he/she stopped drinking heavily (years -- numbers only!).
+checkbox{@}Alcohol_Q5NA{@}NA
+select{@}Alcohol_Q5a_Reliability{@}5.a) Interviewer judgment on reliability of this information:{@}NULL=>''{-}'1'=>'1. Good'{-}'2'=>'2. Fair'{-}'3'=>'3. Poor'{-}'NA'=>'N/A'
+header{@}instrument_title{@}FIGS (Family Inventory Genetic Screening)
+header{@}{@}Other Drugs Abuse
+header{@}{@}Note: List all drugs; Circle most used substance and/or substance that caused the most problems.
+text{@}Alcohol_Q6_WhichDrugs{@}6. Which drugs did he/she have trouble with? (list all drugs used)
+checkbox{@}Alcohol_Q6_NA{@}NA
+header{@}{@}Specify which drugs casued the most problems. (up to 3 drugs)
+text{@}Alcohol_Q6a_MostProblemDrug1{@}Drug 1
+text{@}Alcohol_Q6a_MostProblemDrug2{@}Drug 2
+text{@}Alcohol_Q6a_MostProblemDrug3{@}Drug 3
+header{@}{@}7. Because of his/her drug use, did he/she have...
+select{@}Alcohol_Q7a{@}7.a) ... physical health problems (hepatitis, overdose, HIV, withdrawal symptoms, accidental injuries)?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Alcohol_Q7b{@}7.b) ... emotional or psychological problems (uninterested, depressed, irritable, suspicious/paranoid, having strange ideas)?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Alcohol_Q7c{@}7.c) ... legal problems (arrests for possessing, selling, or stealing drugs)?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Alcohol_Q7d{@}7.d) ... distress or problems with family or friends?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Alcohol_Q7e{@}7.e) ... Did he/she repeatedly try to stop using ________________? (three times or more){@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Alcohol_Q7f{@}7.f) ... Did he/she have problems with withdrawal if he/she stopped using?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+header{@}{@}8. Did he/she go to support groups (such as NA) or have any kind of treatment? (Code and describe all that apply)
+select{@}Alcohol_Q8_Treatment1{@}0. {@}NULL=>''{-}'0'=>'0. None'{-}'NA'=>'N/A'
+select{@}Alcohol_Q8_Treatment2{@}1. {@}NULL=>''{-}'1'=>'1. Outpatient'{-}'NA'=>'N/A'
+select{@}Alcohol_Q8_Treatment3{@}2. {@}NULL=>''{-}'2'=>'2. AA or other self-help'{-}'NA'=>'N/A'
+select{@}Alcohol_Q8_Treatment4{@}3. {@}NULL=>''{-}'3'=>'3. Medication'{-}'NA'=>'N/A'
+select{@}Alcohol_Q8_Treatment5{@}4. {@}NULL=>''{-}'4'=>'4. Inpatient'{-}'NA'=>'N/A'
+select{@}Alcohol_Q8_Treatment6{@}9. {@}NULL=>''{-}'9'=>'9. Unknown'{-}'NA'=>'N/A'
+textarea{@}Alcohol_Q8Description{@}Please describe:
+select{@}Alcohol_Q9_Current{@}9. Does he/she currently have a problem with _________________________________?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+text{@}Alcohol_Q10_OnsetAge{@}10. Record age he/she began to have drug related problems (age in years -- numbers only!).
+checkbox{@}Alcohol_Q10NA{@}NA
+text{@}Alcohol_Q11_RecoverAge{@}11. Record age he/she stopped using drugs heavily. (age in years -- numbers only!)
+checkbox{@}Alcohol_Q11NA{@}NA
+select{@}Alcohol_Q12_Reliability{@}12. Interviewer judgment on reliability of this information:{@}NULL=>''{-}'1'=>'1. Good'{-}'2'=>'2. Fair'{-}'3'=>'3. Poor'{-}'NA'=>'N/A'
+header{@}instrument_title{@}FIGS (Family Inventory Genetic Screening)
+header{@}{@}Nicotine
+text{@}Alcohol_Q13_WhichNicotine{@}13. Which type of nicotine did he/she use?
+select{@}Alcohol_Q13a_Daily{@}13a. Was he/she a daily smoker?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+text{@}Alcohol_Q13b_Maximum{@}13b. How many cigarettes did he/she smoke?
+header{@}{@}14. Because of his/her nicotine use, did he/she have...
+select{@}Alcohol_Q14a{@}14.a) ...physical health problems (emphysema, lung cancer, withdrawal symptoms)?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+header{@}{@}14b. OMITTED
+header{@}{@}14c. OMITTED
+select{@}Alcohol_Q14d{@}14.d) ...did he/she repeatedly try to stop using_________________? (three times or more){@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+header{@}{@}15. OMITTED
+select{@}Alcohol_Q16_Current{@}16. Does he/she currently smoke/use nicotine?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+text{@}Alcohol_Q17_OnsetAge{@}17. Record age he/she began smoking or using nicotine (years -- numbers only!).
+checkbox{@}Alcohol_Q17NA{@}NA
+text{@}Alcohol_Q18_RecoverAge{@}18. Record age he/she stopped smoking or using nicotine heavily (if applicable). (years -- numbers only!)
+checkbox{@}Alcohol_Q18NA{@}NA
+select{@}Alcohol_Q19_Reliability{@}19. Interviewer judgment on reliability of this information:{@}NULL=>''{-}'1'=>'1. Good'{-}'2'=>'2. Fair'{-}'3'=>'3. Poor'{-}'NA'=>'N/A'
+header{@}instrument_title{@}FIGS (Family Inventory Genetic Screening)
+header{@}{@}Paranoid, Schizoid, Schizotypal Personality Checklist
+header{@}{@}
+header{@}{@}1. Does he/she...
+select{@}Schizoid_Q1a{@}1.a) ...often keep an eye out to stop people from taking advantage of him/her? (Expects, without sufficient basis, to be exploited/harmed by others){@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Schizoid_Q1b{@}1.b) ...get concerned that friends or co-workers are not really loyal or trustworthy? (Schizoid_Questions, without justification, loyalty of friends or associates){@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Schizoid_Q1c{@}1.c) ...often pick up hidden threats or put-downs from what people say or do? (Reads hidden demeaning or threatening meanings into benign remarks or events){@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Schizoid_Q1d{@}1.d) ...take a long time to forgive someone if they have insulted or hurt him/her? (Bears grudges or unforgiving of insults/slights){@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Schizoid_Q1e{@}1.e) ...seem to believe it is best not to let other people know much about him/her? (Reluctant to confide in others because of unwarranted fear that information will be used against him/her){@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Schizoid_Q1f{@}1.f) ...often get angry about being insulted or slighted? (Easily slighted, quick to react with anger or counterattack){@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Schizoid_Q1g{@}1.g) ...seem to be a jealous person?  Ever suspected that his/her spouse/partner was unfaithful? (Schizoid_Questions, without justification, fidelity of spouse or sexual partner){@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+header{@}{@}2. Does he/she...
+select{@}Schizoid_Q2a{@}2.a) ...seem not to want or enjoy close relationships, like with family or friends? (Neither desires nor enjoys close relationships, including family){@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Schizoid_Q2b{@}2.b) ...prefer to do things alone rather than with other people? (Almost always chooses solitary activities){@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Schizoid_Q2c{@}2.c) ...hardly ever seem to have strong feelings, like being very angry or very happy? (Rarely, if ever, claims or appears to experience strong emotions, anger/joy){@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Schizoid_Q2d{@}2.d) ...(if over 13 years of age) seem uninterested in being sexually involved with another person? (Little if any desire to have sexual experiences with another person [age taken into account]){@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Schizoid_Q2e{@}2.e) ...seem not to care if people praise or criticize him/her? (Indifferent to praise and criticism from others){@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Schizoid_Q2f{@}2.f) ...have no one to be really close to or confide in, or just one person, outside of the immediate family? (No close friends or confidants, or only one, other than first-degree relatives){@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Schizoid_Q2g{@}2.g) ...act cold or distant, hardly ever smile or nod back at people? (Constricted affect, aloof, cold, rarely reciprocates gestures or expressions){@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Schizoid_Q2h{@}2.h) ...have a delay in or total lack of development of spoken language?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Schizoid_Q2i{@}2.i) ...have idiosyncrative (odd or unusual), or repetitive use of language?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Schizoid_Q2j{@}2.j) ...have restricted or repetitive patterns of behavior, interests, or activities?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Schizoid_Q2k{@}2.k) ...have repetitive motor movements (such as hand or finger flapping)?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+header{@}{@}3. Does he/she...
+select{@}Schizoid_Q3a{@}3.a) ...wonder if people talking to each other are talking about him/her?  Say that a common event or object is a special sign for him/her? (Ideas of reference [not delusions of reference]){@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Schizoid_Q3b{@}3.b) ...often act nervous in a group of unfamiliar people (doesn't improve with exposure)? (Excessive social anxiety){@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Schizoid_Q3c{@}3.c) ...reports experiences with the supernatural?  Believe in astrology, seeing the future, UFOs, ESP, or a 'sixth sense'? (Odd beliefs or magical thinking, influencing behavior and inconsistent with subcultural norms){@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Schizoid_Q3d{@}3.d) ...mistake objects or shadows for people, or noises for voices?  Have a sense that some invisible person or force is around?  See faces change before his/her eyes? (Unusual perceptual experiences){@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Schizoid_Q3e{@}3.e) ...behave in odd or eccentric ways?  Look peculiar or untidy, have unusual mannerisms, or talk to him/herself? (Odd, eccentric, peculiar behavior or appearance){@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Schizoid_Q3f{@}3.f) ...sometimes make it hard to follow what he/she is saying? Ramble off the subject, or talk in vague or abstract terms? (Odd speech [without loosened associations or incoherence]){@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Schizoid_Q3g{@}3.g) ...sometimes act silly, not in keeping with the situation? Or tend not to show any feelings in response to people? (Inappropriate or constricted affect [e.g., silly or aloof]){@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+header{@}{@}4. Does he/she have any kind of treatment?
+header{@}{@}4.a) Code and describe professional treatment:
+select{@}Schizoid_Q4a_Treatment1{@}0. {@}NULL=>''{-}'0'=>'0. None'{-}'NA'=>'N/A'
+select{@}Schizoid_Q4a_Treatment2{@}1. {@}NULL=>''{-}'1'=>'1. Inpatient'{-}'NA'=>'N/A'
+select{@}Schizoid_Q4a_Treatment3{@}2. {@}NULL=>''{-}'2'=>'2. Outpatient'{-}'NA'=>'N/A'
+select{@}Schizoid_Q4a_Treatment4{@}3. {@}NULL=>''{-}'3'=>'3. ECT'{-}'NA'=>'N/A'
+select{@}Schizoid_Q4a_Treatment5{@}4. {@}NULL=>''{-}'4'=>'4. Medication'{-}'NA'=>'N/A'
+select{@}Schizoid_Q4a_Treatment6{@}9. {@}NULL=>''{-}'9'=>'9. Unknown'{-}'NA'=>'N/A'
+textarea{@}Schizoid_Q4aDescription{@}Please describe:
+text{@}Schizoid_Q4b_OnsetAge{@}4.b) Age of onset (years - numbers only!)
+checkbox{@}Schizoid_Q4bNA{@}NA
+select{@}Schizoid_Q4c_Impairment{@}4.c) Rate and code impairment or incapacitation:{@}NULL=>''{-}'0'=>'0. None'{-}'1'=>'1. Impaired'{-}'2'=>'2. Incapacitation'{-}'9'=>'9. Unknown'{-}'NA'=>'N/A'
+select{@}Schizoid_Q4d_SocialProbs{@}4.d) Does he/she have problems because of this behavior or thinking or feeling - either with the family or socially, or at work or school?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Schizoid_Q4e_Unhappiness{@}4.e) Does this behavior or thinking or feeling cause the person unhappiness or significant subjective distress?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Schizoid_Q4f_Before17Yrs{@}4.f) Did the behavior begin before age 17 years?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Schizoid_Q4g_Before3Yrs{@}4.g) Did the behavior begin before age 3 years?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Schizoid_Q4h_Reliability{@}4.h) Interviewer judgment on reliability of this information.{@}NULL=>''{-}'1'=>'1. Good'{-}'2'=>'2. Fair'{-}'3'=>'3. Poor'{-}'NA'=>'N/A'
+header{@}instrument_title{@}FIGS (Family Inventory Genetic Screening)
+header{@}{@}Antisocial Personality Disorder Checklist
+header{@}{@}1. Does or did he/she have frequent problems with disregarding the rights of others such as...
+select{@}ASP_Q1a{@}1.a) ...breaking laws that can lead to being arrested?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}ASP_Q1b{@}1.b) ...being deceitful (such as repeated lying, using aliases, conning others)?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}ASP_Q1c{@}1.c) ...being impulsive or failing to plan ahead?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}ASP_Q1d{@}1.d) ...being irritable and aggressive such as being involved in physical fights or assaults?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}ASP_Q1e{@}1.e) ...being reckless about their own safety or the safety of others?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}ASP_Q1f{@}1.f) ...being irresponsible about work or financial obligations?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}ASP_Q1g{@}1.g) ...show a lack of remorse about mistreating others?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}ASP_Q2_Over15Yrs{@}2. Was he/she at least age 15 years when this behavior occurred?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}ASP_Q3_Under15Yrs{@}3. Did he/she have some signs of conduct disorder or juvenile delinquency before age 15 years (aggression to animals or people, destruction of other's property, fire setting, theft, repeated lying, truancy from school, running away, conning others, repeated curfew violations)?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+header{@}instrument_title{@}FIGS (Family Inventory Genetic Screening)
+header{@}{@}Tic Disorder Checklist
+select{@}Tic_Q1{@}1. Does or did he/she have single or multiple motor tics (sudden, rapid, recurrent, nonrhythmic, stereotyped motor movements) that occurred many times a day?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+text{@}Tic_Q1Description{@}If no, skip to question 2. If yes, describe:
+select{@}Tic_Q1a{@}1.a) ...did the motor tic(s) last 4 or more weeks?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Tic_Q1b{@}1.b) ...did the motor tic(s) last a year or more?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Tic_Q1c{@}1.c) ...did the motor tic(s) start before age 18 years?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Tic_Q1d{@}1.d) ...did the motor tic(s) cause distress for _________ or impairment at school,
+work or with social relationships?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Tic_Q2{@}2. Did he/she have single or multiple vocal tics (sudden, rapid, recurrent, nonrhythmic, stereotyped vocalizations) that occurred many times a day?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+text{@}Tic_Q2Description{@}If no to question 2, but yes to question 1, skip to question 3. If no to both discontinue checklist. If yes, describe:
+select{@}Tic_Q2a{@}2.a) ...did the vocal tic(s) last 4 or more weeks?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Tic_Q2b{@}2.b) ...did the vocal tic(s) last a year or more?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Tic_Q2c{@}2.c) ...did the vocal tic(s) start before age 18 years?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Tic_Q2d{@}2.d) ...did the vocal tic(s) cause distress for __________ or impairment at school, work or with social relationships?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+header{@}{@}3.a) Code and describe professional treatment:
+select{@}Tic_Q3a_Treatment1{@}0. {@}NULL=>''{-}'0'=>'0. None'{-}'NA'=>'N/A'
+select{@}Tic_Q3a_Treatment2{@}1. {@}NULL=>''{-}'1'=>'1. Inpatient'{-}'NA'=>'N/A'
+select{@}Tic_Q3a_Treatment3{@}2. {@}NULL=>''{-}'2'=>'2. Outpatient'{-}'NA'=>'N/A'
+select{@}Tic_Q3a_Treatment4{@}3. {@}NULL=>''{-}'3'=>'3. ECT'{-}'NA'=>'N/A'
+select{@}Tic_Q3a_Treatment5{@}4. {@}NULL=>''{-}'4'=>'4. Medication'{-}'NA'=>'N/A'
+select{@}Tic_Q3a_Treatment6{@}9. {@}NULL=>''{-}'9'=>'9. Unknown'{-}'NA'=>'N/A'
+textarea{@}Tic_Q3aDescription{@}Please describe:
+text{@}Tic_Q3b_OnsetAge{@}3.b) Age of onset (years - numbers only!)
+checkbox{@}Tic_Q3bNA{@}NA
+text{@}Tic_Q3c_Episodes{@}3.c) Number of episodes (numbers only!)
+checkbox{@}Tic_Q3cNA{@}NA
+text{@}Tic_Q3d_Duration{@}3.d) Duration of longest episode in weeks (numbers only!)
+checkbox{@}Tic_Q3dNA{@}NA
+select{@}Tic_Q3e_Impairment{@} 3.e) Rate and code impairment or incapacitation:{@}NULL=>''{-}'0'=>'0. None'{-}'1'=>'1. Impaired'{-}'2'=>'2. Incapacitation'{-}'9'=>'9. Unknown'{-}'NA'=>'N/A'
+select{@}Tic_Q3f_Reliability{@}3.f) Interviewer judgment on reliability of this information:{@}NULL=>''{-}'1'=>'1. Good'{-}'2'=>'2. Fair'{-}'3'=>'3. Poor'{-}'NA'=>'N/A'
+header{@}instrument_title{@}FIGS (Family Inventory Genetic Screening)
+header{@}{@}Obsessive Compulsive Disorder Checklist
+header{@}{@}1. Obsessions...
+select{@}OCD_Q1a{@}1.a) Does/did he/she have strange thoughts or ideas that got stuck in his/her mind? (Recurrent and persistent thoughts, images or impulse that are intrusive and distressing.){@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}OCD_Q1b{@}1.b) Were the thoughts, images or impulses NOT just excessive worries about real life problems?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}OCD_Q1c{@}1.c) Does or did he/she try to ignore or suppress the obsessions?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}OCD_Q1d{@}1.d) Does or did he/she recognize that the obsessions were excessive or unreasonable?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+header{@}{@}2. Compulsions...
+select{@}OCD_Q2a{@}2.a) Does or did he/she have problems with compulsions or repetitive behaviors such as hand washing, checking or repetitive mental acts (counting, repeating words, praying)?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}OCD_Q2b{@}2.b) Does or did the compulsions help prevent or reduce distress or were the compulsions thought to prevent a dreaded event in an unrealistic way?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}OCD_Q3a{@}3.a) Did the obsessions (compulsions or both) interfere (cause marked distress or impairment) at school, work, or with social relationships?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+text{@}OCD_Q3b_Duration{@}3.b) How much time did the (obsessions, compulsions, or both) take in a day (hours)?
+checkbox{@}OCD_Q3bNA{@}NA
+header{@}{@}4.a) Code and describe professional treatment:
+select{@}OCD_Q4a_Treatment1{@}0. {@}NULL=>''{-}'0'=>'0. None'{-}'NA'=>'N/A'
+select{@}OCD_Q4a_Treatment2{@}1. {@}NULL=>''{-}'1'=>'1. Inpatient'{-}'NA'=>'N/A'
+select{@}OCD_Q4a_Treatment3{@}2. {@}NULL=>''{-}'2'=>'2. Outpatient'{-}'NA'=>'N/A'
+select{@}OCD_Q4a_Treatment4{@}3. {@}NULL=>''{-}'3'=>'3. ECT'{-}'NA'=>'N/A'
+select{@}OCD_Q4a_Treatment5{@}4. {@}NULL=>''{-}'4'=>'4. Medication'{-}'NA'=>'N/A'
+select{@}OCD_Q4a_Treatment6{@}9. {@}NULL=>''{-}'9'=>'9. Unknown'{-}'NA'=>'N/A'
+textarea{@}OCD_Q4aDescription{@}Please describe:
+text{@}OCD_Q4b_OnsetAge{@}4.b)	Age of onset (years - numbers only!)
+checkbox{@}OCD_Q4bNA{@}NA
+text{@}OCD_Q4c_Episodes{@}4.c)	Number of episodes (numbers only!)
+checkbox{@}OCD_Q4cNA{@}NA
+text{@}OCD_Q4d_Duration{@}4.d)	Duration of longest episode in weeks (numbers only!)
+checkbox{@}OCD_Q4dNA{@}NA
+select{@}OCD_Q4e_Impairment{@} 4.e) Rate and code impairment or incapacitation:{@}NULL=>''{-}'0'=>'0. None'{-}'1'=>'1. Impaired'{-}'2'=>'2. Incapacitation'{-}'3'=>'3. Clinically Significant Distress'{-}'9'=>'9. Unknown'{-}'NA'=>'N/A'
+select{@}OCD_Q4f_Reliability{@}4.f) Interviewer judgment on reliability of this information:{@}NULL=>''{-}'1'=>'1. Good'{-}'2'=>'2. Fair'{-}'3'=>'3. Poor'{-}'NA'=>'N/A'
+header{@}instrument_title{@}FIGS (Family Inventory Genetic Screening)
+header{@}{@}Attention Deficit/Hyperactivity Disorder Checklist
+header{@}{@}When in elementary school did he/she...
+header{@}{@}1. Have problems with attention such as:
+select{@}ADHD_Q1a{@}1.a) ...making careless mistakes in school?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}ADHD_Q1b{@}1.b) ...having difficulty sustaining attention?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}ADHD_Q1c{@}1.c) ...not seeming to listen?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}ADHD_Q1d{@}1.d) ...failing to finish tasks or not following through?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}ADHD_Q1e{@}1.e) ...having difficulty organizing tasks?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}ADHD_Q1f{@}1.f) ...avoiding tasks that required sustained mental effort?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}ADHD_Q1g{@}1.g) ...often losing necessary things?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}ADHD_Q1h{@}1.h) ...often being easily distracted?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}ADHD_Q1i{@}1.i) ...often being forgetful in daily activities?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}ADHD_Q1j{@}1.j) ...did these problems start before age 7 years?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}ADHD_Q1k1{@}1.k) ...did these problems start in grade school?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+text{@}ADHD_Q1k2_Grade{@}What grade did they start?
+checkbox{@}ADHD_Q1k2NA{@}NA
+select{@}ADHD_Q1l1{@}1.li) ...did these problems cause impairment at school?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}ADHD_Q1l2{@}1.lii) ...did these problems cause impairment at home?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}ADHD_Q1l3{@}1.liii) ...did these problems cause impairment with peers?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+header{@}{@}When in elementary school did he/she...
+header{@}{@}1. Have problems with hyperactivity or impulsivity such as:
+select{@}ADHD_Q2a{@}2.a) ...often fidgeting or squirming in seat?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}ADHD_Q2b{@}2.b) ...often leaving his/her seat in classroom?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}ADHD_Q2c{@}2.c) ...often running or climbing excessively?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}ADHD_Q2d{@}2.d) ...often having difficulty playing quietly?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}ADHD_Q2e{@}2.e) ...often being 'on the go' or acting as if 'driven by a motor'?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}ADHD_Q2f{@}2.f) ...often talking excessively?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}ADHD_Q2g{@}2.g) ...often blurting out answers before questions were completed?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}ADHD_Q2h{@}2.h) ...often had difficulty waiting his/her turn?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}ADHD_Q2i{@}2.i) ...often interrupting or intruding on others?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}ADHD_Q2j{@}2.j) ...did these problems start before age 7 years?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}ADHD_Q2k1{@}2.ki) ...did these problems cause impairment at school?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}ADHD_Q2k2{@}2.kii) ...did these problems cause impairment at home?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}ADHD_Q2k3{@}2.kiii) ...did these problems cause impairment with peers?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}ADHD_Q2l{@}2.l) ...did these problems begin in elementary school?{@}NULL=>''{-}'Yes'=>'Yes'{-}'No'=>'No'{-}'Unsure'=>'Unsure'{-}'NA'=>'N/A'
+header{@}{@}3.a) Code and describe professional treatment:
+select{@}ADHD_Q3a_Treatment1{@}0. {@}NULL=>''{-}'0'=>'0. None'{-}'NA'=>'N/A'
+select{@}ADHD_Q3a_Treatment2{@}1. {@}NULL=>''{-}'1'=>'1. Inpatient'{-}'NA'=>'N/A'
+select{@}ADHD_Q3a_Treatment3{@}2. {@}NULL=>''{-}'2'=>'2. Outpatient'{-}'NA'=>'N/A'
+select{@}ADHD_Q3a_Treatment4{@}4. {@}NULL=>''{-}'4'=>'4. Medication'{-}'NA'=>'N/A'
+select{@}ADHD_Q3a_Treatment5{@}9. {@}NULL=>''{-}'9'=>'9. Unknown'{-}'NA'=>'N/A'
+textarea{@}ADHD_Q3aDescription{@}Please describe:
+text{@}ADHD_Q3b_OnsetAge{@}3.b) Age of onset (years - numbers only!)
+checkbox{@}ADHD_Q3bNA{@}NA
+header{@}{@}3.c) Omitted
+header{@}{@}3.d) Omitted
+select{@}ADHD_Q3e_Current{@}3.e) Currently still a problem?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}ADHD_Q3f_Impairment{@} 3.f) Rate and code impairment or incapacitation:{@}NULL=>''{-}'0'=>'0. None'{-}'1'=>'1. Impaired'{-}'2'=>'2. Incapacitation'{-}'9'=>'9. Unknown'{-}'NA'=>'N/A'
+select{@}ADHD_Q3g_Reliability{@}3.g) Interviewer judgment on reliability of this information:{@}NULL=>''{-}'1'=>'1. Good'{-}'2'=>'2. Fair'{-}'3'=>'3. Poor'{-}'NA'=>'N/A'
