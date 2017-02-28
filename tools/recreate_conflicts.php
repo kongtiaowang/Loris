@@ -24,6 +24,7 @@ $config = NDB_Config::singleton();
 $db     = Database::singleton();
 
 echo "Warning: All conflicts for instruments with Administration=None will be removed.\n";
+echo "\nWarning: All not_answered and blanks conflicts for neuroscreen instrument will be removed.\n";
 
 /**
  * HELP SCREEN
@@ -117,6 +118,11 @@ echo "\nRemoving conflicts where Administration=None.\n";
 // Remove conflicts where the instrument's Administration is set to 'none'
 $db->run("DELETE cu FROM conflicts_unresolved cu LEFT JOIN flag f ON (cu.CommentId1=f.CommentID) WHERE f.Administration='None'");
 $db->run("DELETE cu FROM conflicts_unresolved cu LEFT JOIN flag f ON (cu.CommentId2=f.CommentID) WHERE f.Administration='None'");
+
+echo "\nRemoving Neuroscreen conflicts with blanks and not_answered.\n";
+
+$db->run("DELETE cu FROM conflicts_unresolved cu WHERE cu.TableName='neuro_screen' and (cu.Value1 IS NULL and cu.Value2='not_answered')");
+$db->run("DELETE cu FROM conflicts_unresolved cu WHERE cu.TableName='neuro_screen' and (cu.Value1='not_answered' and cu.Value2 IS NULL)");
 
 echo "\nFinished.\n";
 
