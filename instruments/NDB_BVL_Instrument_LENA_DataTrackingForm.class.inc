@@ -190,21 +190,23 @@ class NDB_BVL_Instrument_LENA_DataTrackingForm extends NDB_BVL_Instrument
        
         $this->form->addElement("static", null, "&nbsp;");
         $this->addLabel("<BR><strong> Upload LENA File </strong>");
-        $this->form->addElement('file', 'recording_file', 'Upload the export file');
+        $this->form->addFile('recording_file', 'Upload the export file', array());
         $this->form->addElement('static','Uploaded_file', "Uploaded LENA Export File");
      
 
         $this->addLabel("<BR><strong> Upload ITS File 1</strong>");
-        $this->form->addElement('file', 'recording_file_its1', 'Upload the ITS file 1');
+        $this->form->addFile('recording_file_its1', 'Upload the ITS file 1', array());
         $this->form->addElement('static','Uploaded_file_its1', "Uploaded ITS Export File 1");
         $this->addLabel("<BR><strong> Upload ITS File 2</strong>");
-        $this->form->addElement('file', 'recording_file_its2', 'Upload the ITS file 2');
+        $this->form->addFile('recording_file_its2', 'Upload the ITS file 2', array());
         $this->form->addElement('static','Uploaded_file_its2', "Uploaded ITS Export File 2");
         $this->addLabel("<BR><strong> Upload ITS File 3</strong>");
-        $this->form->addElement('file', 'recording_file_its3', 'Upload the ITS file 3');
+        $this->form->addFile('recording_file_its3', 'Upload the ITS file 3', array());
+        $this->XINRegisterRule("recording_file_its3",array("number_session{@}=={@}NEVER_REQUIRED"));
         $this->form->addElement('static','Uploaded_file_its3', "Uploaded ITS Export File 3");
         $this->addLabel("<BR><strong> Upload ITS File 4</strong>");
-        $this->form->addElement('file', 'recording_file_its4', 'Upload the ITS file 4');
+        $this->form->addFile('recording_file_its4', 'Upload the ITS file 4', array());
+        $this->XINRegisterRule("recording_file_its4",array("number_session{@}=={@}NEVER_REQUIRED"));
         $this->form->addElement('static','Uploaded_file_its4', "Uploaded ITS Export File 4");
 
         $this->form->addElement("static", null, "&nbsp;");
