@@ -37,7 +37,8 @@ if ($record['prone_first_item'] != null & $record['prone_last_item'] != null) {
     $beg_prone                            = $record['prone_first_item'];
     $end_prone                            = $record['prone_last_item'];
     if ($end_prone < $beg_prone) {
-        $scores['data_entry_error'] = 'Prone: Window is not set properly';
+        $err_val = 'Prone: Window is not set properly';
+        $db->update('aims', array('data_entry_error' => $err_val),$WhereCriteria);
         print "Error in data Entry". $scores['data_entry_error'];
         exit(4);
     }   
@@ -49,7 +50,8 @@ if ($record['supine_first_item'] != null & $record['supine_last_item'] != null) 
     $beg_supine                            = $record['supine_first_item'];
     $end_supine                            = $record['supine_last_item'];
     if ($end_supine < $beg_supine) {
-        $scores['data_entry_error'] ='Supine: Windown is not set properly';
+        $err_val = 'Supine: Window is not set properly';
+        $db->update('aims', array('data_entry_error' => $err_val),$WhereCriteria);
         print "Error in data Entry". $scores['data_entry_error'];
         exit(4);
     }
@@ -61,7 +63,8 @@ if ($record['sit_first_item'] != null & $record['sit_last_item'] != null) {
     $beg_sit                            = $record['sit_first_item'];
     $end_sit                            = $record['sit_last_item'];
     if ($end_sit < $beg_sit) {
-        $scores['data_entry_error'] = 'Sitting: Window is not set properly';
+        $err_val = 'Sitting: Window is not set properly';
+        $db->update('aims', array('data_entry_error' => $err_val),$WhereCriteria);
         print "Error in data Entry". $scores['data_entry_error'];
         exit(4);
     }
@@ -73,7 +76,8 @@ if ($record['stand_first_item'] != null & $record['stand_last_item'] != null) {
     $beg_stand                            = $record['stand_first_item'];
     $end_stand                            = $record['stand_last_item'];
     if ($end_stand < $beg_stand) {
-        $scores['data_entry_error'] = 'Standing: Window is not set properly';
+        $err_val  = 'Standing: Window is not set properly';
+        $db->update('aims', array('data_entry_error' => $err_val),$WhereCriteria);
         print "Error in data Entry". $scores['data_entry_error'];
         exit(4);
     }
