@@ -217,7 +217,7 @@ class NDB_BVL_Instrument_peer_socialcontact extends NDB_BVL_Instrument
         $colspan = 2;
 
         if(is_numeric($numplaymates)) {
-            $colspan = $numplaymates-1;
+            $colspan = $numplaymates;
         } else {
             $numplaymates = 5;
         }
@@ -225,7 +225,7 @@ class NDB_BVL_Instrument_peer_socialcontact extends NDB_BVL_Instrument
 	    if($numplaymates > 1) {
 
 		    $group[] = &$this->form->createElement("static", null, null,"");
-		    $this->form->addGroup($group,"page2_header","<td colspan= $colspan>In the table below indicate which of your children's playmates know<BR> each other. You must select 'Yes' or 'No' in all fields to save this form.</td>", null,false);
+		    $this->form->addGroup($group,"page2_header","<td colspan=$colspan>In the table below indicate which of your children's playmates know<BR> each other. You must select 'Yes' or 'No' in all fields to save this form.</td>", null,false);
  		    unset($group);
 
 	    } else if($numplaymates == 1) {
