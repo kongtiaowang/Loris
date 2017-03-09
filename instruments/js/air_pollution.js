@@ -93,7 +93,7 @@ $(document).ready(function() {
             }).appendTo(form);
 
             form.submit();
-        } else {
+         } else {
             console.log("User chose to cancel at this point, since status is " + status); // status is FALSE
             return false;
        }
