@@ -57,16 +57,17 @@ $(document).ready(function() {
           codeInputElement.siblings()[0].remove();
       }
 
-    if(errors > 0) {
+      if(errors > 0) {
       alert("Please fill in all required fields");
       return false;
-    } else {
+      } else {
     
         // are you sure?
         var question = "Are you sure all fields are filled correctly and OK to be submitted?";
         var status = confirm(question);
-        
-        if( status !== false ){
+
+         if( status !== false )
+         {
             // all class to be encrypted
             $('.encrypt').each(function() {
               var crypted = sjcl.encrypt($('[name="code"]').val(), $(this).val());
