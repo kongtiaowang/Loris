@@ -16,7 +16,7 @@ $(document).ready(function() {
     });
 
   $("#goback").remove();
-    $("#finalize").unbind( "click" );
+  $("#finalize").unbind( "click" );
   console.log("unbind click");
 
   $("#finalize").click(function(e) {
@@ -33,7 +33,8 @@ $(document).ready(function() {
     $('[name="toatb1"]').addClass('required');
 
     $('.required').each(function() { 
-      if ( !$(this).val() ) { 
+      if ( !$(this).val() )
+      {
         $(this).css({'border':'2px solid red'}); 
         errors++; 
       } else {
@@ -66,8 +67,8 @@ $(document).ready(function() {
         var question = "Are you sure all fields are filled correctly and OK to be submitted?";
         var status = confirm(question);
 
-         if( status !== false )
-         {
+            if( status !== false )
+            {
             // all class to be encrypted
             $('.encrypt').each(function() {
               var crypted = sjcl.encrypt($('[name="code"]').val(), $(this).val());
@@ -93,10 +94,10 @@ $(document).ready(function() {
             }).appendTo(form);
 
             form.submit();
-        } else {
+            } else {
             console.log("User chose to cancel at this point, since status is " + status); // status is FALSE
             return false;
-        }
-    }
+                  }
+             }
   }).bind(this);
 });
