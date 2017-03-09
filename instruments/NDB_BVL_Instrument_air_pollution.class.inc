@@ -161,12 +161,13 @@ HTML;
     }
 
     function _page2(){
+      $site=Site::singleton($this->centerID);
         $this->form->addElement('header', 'instrument_title', "IBIS Environment Residential History");
         $this->form->addElement('header', 'instrument_inst1','</b><h5>We would like to know the home addresses of biological mothers starting one year before the birth of your child. Having these addresses will help us study how prenatal exposures, such as air pollution, affect children’s development. ' . 
           '<br><br> Please start with your main residence at the time of your child’s birth and end with the residence where you lived one year before your child’s birth. On Section 2, we ask where your child lived when he or she turned 3 YEARS old back to birth.</h5><b>');
        
         $this->form->addElement("static", null, '<div id="sjcl"><script type="text/javascript" src="/js/sjcl.js"></script></div>');
-
+        $this->form->addElement("hidden",'site',null,array('value'=>$site->getCenterName()), null);
         $this->form->addElement("text", 'code', "Code (see email)", array("class" => "remove required"));
         $this->form->addElement("text", 'proband_name_remove', "Name of younger child enrolled in IBIS", array("class" => "encrypt required"));
  
@@ -255,6 +256,7 @@ HTML;
         $this->addTextAreaElement('additional_comments', 'Additional Comments');
 
         $this->form->addElement("static", null, '<div id="air_pollution"><script type="text/javascript" src="/js/air_pollution.js"></script></div>');
+        $this->form->addElement("static", null, '<div id="air_pollution_decrypt"><script type="text/javascript" src="environment_residential_history/js/air_pollution_decrypt.js"></script></div>');
     }
 
     /**

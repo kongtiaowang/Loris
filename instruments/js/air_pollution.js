@@ -1,5 +1,19 @@
 $(document).ready(function() {
-  console.log("ready");
+    console.log("ready");
+    // We will get the crc32 code for the corresponding site here
+    let participantSite=$('[name="site"]').val();
+  let crc32s = [];
+    $.ajax({
+        url: 'air_pollution_valide_codes/ajax/air_pollution_crc32s.js',
+        success: function(data) {
+            d = JSON.parse(data);
+            d.forEach(function(element) {
+                if(element.site==participantSite) {
+                    crc32s.push(element.code);
+                }
+            });
+        }
+    });
 
   $("#goback").remove();
   $("#finalize").unbind( "click" );
@@ -10,7 +24,8 @@ $(document).ready(function() {
 
     // Check user inputs
     var errors = 0;
-    
+
+
     $('[name="proband_birthdate"]').addClass('required');
     $('[name="from1b41"]').addClass('required')
     $('[name="to1b41"]').addClass('required');
@@ -22,10 +37,26 @@ $(document).ready(function() {
         $(this).css({'border':'2px solid red'}); 
         errors++; 
       } else {
-        $(this).css({'border':'1px'});   
+        $(this).css({'border':'1px'});
       }
     });
-    
+
+      // Validate the entered code against the valid CRC32 codes for that site
+      const codeInputElement = $('[name="code"]');
+      let reversed = parseInt("EDB88320", 16);
+      let cs = crc32_compute_string(reversed, $('[name="code"]').val());
+      if(crc32s.indexOf(cs)<0)
+      {
+          codeInputElement.parent().append('<span style="color:red;">Please verify the code</span>');
+          codeInputElement.css({'border':'2px solid red'});
+          errors++;
+          console.log('Bad');
+      } else {
+          console.log('Good');
+          codeInputElement.css({'border':'1px'});
+          codeInputElement.siblings()[0].remove();
+      }
+
     if(errors > 0) {
       alert("Please fill in all required fields");
       return false;
@@ -66,6 +97,5 @@ $(document).ready(function() {
             return false;
         }
     }
-  });
-  
+  }).bind(this);
 });
