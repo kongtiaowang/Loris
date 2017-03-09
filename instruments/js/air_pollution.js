@@ -2,7 +2,7 @@ $(document).ready(function() {
     console.log("ready");
     // We will get the crc32 code for the corresponding site here
     let participantSite=$('[name="site"]').val();
-  let crc32s = [];
+    let crc32s = [];
     $.ajax({
         url: 'air_pollution_valide_codes/ajax/air_pollution_crc32s.js',
         success: function(data) {
@@ -16,7 +16,7 @@ $(document).ready(function() {
     });
 
   $("#goback").remove();
-  $("#finalize").unbind( "click" );
+    $("#finalize").unbind( "click" );
   console.log("unbind click");
 
   $("#finalize").click(function(e) {
