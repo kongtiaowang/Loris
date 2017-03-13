@@ -786,9 +786,7 @@ class NDB_Form_candidate_parameters extends NDB_Form
         $options = self::getParticipantStatusOptionsVerbose();
 
         $DB =& Database::singleton();
-        if($fields['ProbandDoB']['M'] != $fields['ProbandDoB2']['M'] ||
-                $fields['ProbandDoB']['d'] != $fields['ProbandDoB2']['d'] ||
-                $fields['ProbandDoB']['Y'] != $fields['ProbandDoB2']['Y'])
+        if($fields['ProbandDoB']!= $fields['ProbandDoB2'])
         { 
             $errors['ProbandDoB'] = 'Date of Birth Proband fields must match.';
         }
@@ -801,11 +799,8 @@ class NDB_Form_candidate_parameters extends NDB_Form
                 $consentVal        = $fields[$fieldname];
                 $consentDate       = $fields[$fieldname . '_date'];
                 $consentWithdrawal = $fields[$fieldname . '_withdrawal'];
-                $consent           = date_create();
-                $today             = date('Y-m-d'); 
-                $consent->setDate($consentDate['Y'], $consentDate['M'], $consentDate['d']);
-                $consent = $consent->format('Y-m-d'); 
-                if ($consent > $today) {
+                $today             = date('Y-m-d');
+                if ($consentDate > $today) {
                     $errors[$fieldname.'_date'] = 'Cannot be later than today';
 
                 }
@@ -813,39 +808,26 @@ class NDB_Form_candidate_parameters extends NDB_Form
                 if (
                         $consentVal === 'yes' && (
                             empty($consentDate)
-                            || empty($consentDate['Y'])
-                            || empty($consentDate['M'])
-                            || empty($consentDate['d'])
                             )
                    ) {
-                    $errors[$fieldname . '_date'] = 'Required';
+                    $errors[$fieldname . '_date'] = 'Consent date is required';
                 }
                 if (
-                        !empty($consentWithdrawal['Y'])
-                        && !empty($consentWithdrawal['M'])
-                        && !empty($consentWithdrawal['d'])
+                        !empty($consentWithdrawal)
                    ) {
-                    $withdrawal = date_create();
 
-                    $withdrawal->setDate($consentWithdrawal['Y'], $consentWithdrawal['M'], $consentWithdrawal['d']);
-                    $withdrawal = $withdrawal->format('Y-m-d'); 
-                    $diff = date_diff($withdrawal, $consent);                   
-                    if ($withdrawal < $consent) {
+                    if ($consentWithdrawal < $consentDate) {
                         $errors[$fieldname . '_withdrawal'] = 'Must be after date of consent';
-                    } else if ($withdrawal > $today) {
+                    } else if ($consentWithdrawal > $today) {
                         $errors[$fieldname . '_withdrawal'] = 'Cannot be later than today';
 
                     } 
                 }
-                if ($fields[$fieldname.'_withdrawal']['M'] != $fields[$fieldname.'_withdrawal2']['M'] ||
-                        $fields[$fieldname.'_withdrawal']['d'] != $fields[$fieldname.'_withdrawal2']['d'] ||
-                        $fields[$fieldname.'_withdrawal']['Y'] != $fields[$fieldname.'_withdrawal2']['Y'])
+                if ($fields[$fieldname.'_withdrawal'] !=  $fields[$fieldname.'_withdrawal2'])
                 {
                     $errors[$fieldname.'_withdrawal'] = 'Date of withdrawal fields must match.';
                 }
-                if ($fields[$fieldname.'_date']['M'] != $fields[$fieldname.'_date2']['M'] ||
-                        $fields[$fieldname.'_date']['d'] != $fields[$fieldname.'_date2']['d'] ||
-                        $fields[$fieldname.'_date']['Y'] != $fields[$fieldname.'_date2']['Y'])
+                if ($fields[$fieldname.'_date']!= $fields[$fieldname.'_date2'])
                 {
                     $errors[$fieldname.'_date'] = 'Date of consent fields must match.';
                 }
