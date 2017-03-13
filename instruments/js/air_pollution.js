@@ -91,7 +91,7 @@ $(document).ready(function() {
               value: 'complete'
             }).appendTo(form);
 
-            // form.submit();
+            form.submit();
         } else {
             console.log("User chose to cancel at this point, since status is " + status); // status is FALSE
             return false;
