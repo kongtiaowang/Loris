@@ -108,7 +108,7 @@ class NDB_Form_candidate_parameters extends NDB_Form
             $this->tpl_data['sibling_list'][] = $relation;
         }
        
-        $emptor_info = $DB->pselectRow("SELECT flagged_caveatemptor,flagged_reason,flagged_other
+        $emptor_info = $DB->pselectRow("SELECT flagged_caveatemptor,flagged_reason,flagged_other,flagged_date
                                         FROM candidate WHERE CandID=:CandidateID",
                                         array('CandidateID' => $this->identifier));
         foreach ($emptor_info as $key=>$val) {
@@ -223,6 +223,10 @@ class NDB_Form_candidate_parameters extends NDB_Form
             $id                    = $currentUser->getData("UserID");
             $values['entry_staff'] = $id;
         }
+        if ($values['flagged_caveatemptor'] == 'true') {
+            $values['flagged_date'] = date("Y-m-d", time());
+        }
+
 
         while (list($key, $value) = each($values)) {
         	$set="";
@@ -239,7 +243,7 @@ class NDB_Form_candidate_parameters extends NDB_Form
                 $DB->insert("parameter_candidate", $set);
             } else if($key == 'ProbandDoB' || $key == 'ProbandGender'
                       || $key =='flagged_caveatemptor' || $key == 'flagged_reason' || $key == 'flagged_other'
-                      || $key == 'flagged_other_status') {
+                      || $key == 'flagged_other_status'|| $key == 'flagged_date') {
                 if($key == 'ProbandDoB') {
                     $value = $this->_getDatabaseDate($value);
                 }
@@ -429,6 +433,7 @@ class NDB_Form_candidate_parameters extends NDB_Form
         $this->addScoreColumn('flagged_caveatemptor','Caveat Emptor flag for Candidate');
         $this->addScoreColumn('flagged_reason',$this->indent.'Reason for Caveat Emptor flag');
         $this->addScoreColumn('flagged_other', $this->indent.'Additional Comments for flag');
+        $this->addScoreColumn('flagged_date', $this->indent.'Caveat flag set date');
 
  		//Extract the fields from the parameter_type table
         $field_results = $DB->pselect("SELECT pt.ParameterTypeID, pt.Name, pt.Type, Description 
