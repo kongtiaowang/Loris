@@ -1,6 +1,6 @@
 $(document).ready(function() {
   // We will get the crc32 code for the corresponding site here
-  let participantSite=$('[name="site"]').val();
+  let participantSite=$('#site').text();
   let crc32s = [];
   $.ajax({
       url: 'environment_residential_history/ajax/air_pollution_crc32s.js',
