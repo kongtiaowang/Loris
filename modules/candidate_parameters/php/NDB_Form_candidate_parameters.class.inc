@@ -590,16 +590,13 @@ class NDB_Form_candidate_parameters extends NDB_Form
         
         $DB =& Database::singleton();
         $pscid = $DB->pselectone(
-                'SELECT PSCID, CandidateGUID FROM candidate where CandID = :candid',
+                'SELECT PSCID FROM candidate where CandID = :candid',
                 array('candid'=>$this->identifier)
                 );
-
         $this->addScoreColumn('pscid', 'PSCID');
         $this->tpl_data['candID'] = $this->identifier;
 
         $this->tpl_data['pscid'] = $pscid;
-//        $this->tpl_data['CandidateGUID'] = $candidate['CandidateGUID'];
-
         $this->addBasicText('CandidateGUID', "NDAR GUID");
 
         $caveat_options = array(''=>null);
