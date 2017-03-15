@@ -237,7 +237,7 @@ class NDB_Form_candidate_parameters extends NDB_Form
                             "ParameterTypeID"=>$set['ParameterTypeID']));
                 //insert new values
                 $DB->insert("parameter_candidate", $set);
-            } else if($key == 'ProbandDoB' || $key == 'ProbandGender'
+            } else if($key == 'ProbandDoB' || $key == 'ProbandGender' || $key == 'ProbandGUID' || $key == 'CandidateGUID'
                       || $key =='flagged_caveatemptor' || $key == 'flagged_reason' || $key == 'flagged_other'
                       || $key == 'flagged_other_status') {
                 if($key == 'ProbandDoB') {
