@@ -70,7 +70,7 @@ class NDB_Form_candidate_parameters extends NDB_Form
                                          array('CandidateID' => $this->identifier));
 
         if ($config->getSetting('useProband') === 'true') {
-            $proband_info = $DB->pselectRow("SELECT ProbandDoB,ProbandGender FROM
+            $proband_info = $DB->pselectRow("SELECT ProbandDoB,ProbandGender,ProbandGUID FROM
                     candidate WHERE CandID=:CandidateID",
                     array('CandidateID' => $this->identifier));
             if ($proband_info['ProbandDoB']=== '0000-00-00') {
@@ -108,7 +108,7 @@ class NDB_Form_candidate_parameters extends NDB_Form
             $this->tpl_data['sibling_list'][] = $relation;
         }
        
-        $emptor_info = $DB->pselectRow("SELECT flagged_caveatemptor,flagged_reason,flagged_other
+        $emptor_info = $DB->pselectRow("SELECT flagged_caveatemptor,flagged_reason,flagged_other,CandidateGUID
                                         FROM candidate WHERE CandID=:CandidateID",
                                         array('CandidateID' => $this->identifier));
         foreach ($emptor_info as $key=>$val) {
@@ -446,6 +446,7 @@ class NDB_Form_candidate_parameters extends NDB_Form
             $this->addScoreColumn("PTID_".$fresult['ParameterTypeID'], $fresult['Description']);
         }
         
+        $this->addScoreColumn('ProbandGUID', 'NDAR Proband GUID:');
         $this->addScoreColumn('ProbandDoB', 'DoB Proband:');
         $this->addScoreColumn('ProbandGender', 'Proband gender:');
         $this->addScoreColumn('Age_Difference','Age Difference between candidate<BR> and proband (in months):');
@@ -458,13 +459,16 @@ class NDB_Form_candidate_parameters extends NDB_Form
         $this->addScoreColumn('entry_staff', 'Data Entry Staff');
         $this->addScoreColumn('data_entry_date', 'Date of last Data entry');
 
-        $pscid = $DB->pselectone(
-                'SELECT PSCID FROM candidate where CandID = :candid',
+        $CandidateGUID = $DB->pselectone(
+                'SELECT CandidateGUID FROM candidate where CandID = :candid',
                 array('candid'=>$this->identifier)
                 );
 
         $this->addScoreColumn('pscid', 'PSCID');
-        $this->tpl_data['pscid'] = $pscid;
+        $this->tpl_data['pscid'] = $candidate->getData('PSCID');
+
+        $this->addScoreColumn('CandidateGUID', 'NDAR GUID');
+        $this->tpl_data['CandidateGUID'] = $CandidateGUID;
 
         $options = self::getParticipantStatusOptions();
         $options = array('') + $options;
@@ -586,16 +590,20 @@ class NDB_Form_candidate_parameters extends NDB_Form
         
         $DB =& Database::singleton();
         $pscid = $DB->pselectone(
-                'SELECT PSCID FROM candidate where CandID = :candid',
+                'SELECT PSCID, CandidateGUID FROM candidate where CandID = :candid',
                 array('candid'=>$this->identifier)
                 );
+
         $this->addScoreColumn('pscid', 'PSCID');
         $this->tpl_data['candID'] = $this->identifier;
 
         $this->tpl_data['pscid'] = $pscid;
+//        $this->tpl_data['CandidateGUID'] = $candidate['CandidateGUID'];
+
+        $this->addBasicText('CandidateGUID', "NDAR GUID");
 
         $caveat_options = array(''=>null);
-        $options = $DB->pselect("SELECT ID, Description FROM caveat_options");
+        $options = $DB->pselect("SELECT ID, Description FROM caveat_options", array());
         foreach($options as $row) {
             $caveat_options[$row['ID']] = $row['Description'];
         }
@@ -659,6 +667,8 @@ class NDB_Form_candidate_parameters extends NDB_Form
 
         $this->tpl_data['pscid'] = $pscid;
         
+        $this->addBasicText('ProbandGUID', "NDAR Proband GUID:");
+
         $config             =& NDB_Config::singleton();
         $probandDateOptions = array(
             'language' => 'en',

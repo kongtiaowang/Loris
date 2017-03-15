@@ -19,6 +19,12 @@
                 {$pscid}
             </div>
         </div>
+        <div class="row">
+            <label class="col-sm-2">{$form.CandidateGUID.label}</label>
+            <div class="col-sm-10" id="CandidateGUID">
+                {$CandidateGUID}
+            </div>
+        </div>
         {foreach from=$params_list item=value key=name}
             <div class="row">
                 <label class="col-sm-2">{$form.$name.label}</label>

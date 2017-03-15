@@ -27,6 +27,12 @@
         </div>
         <br>
         <div class="row">
+            <label class="col-sm-4">{$form.CandidateGUID.label}</label>
+            <div class="col-sm-8">
+                {$form.CandidateGUID.html}
+            </div>
+        </div>
+        <div class="row">
             <label class="col-sm-4">{$form.flagged_caveatemptor.label}</label>
             <div class="col-sm-8">
                 {$form.flagged_caveatemptor.html}
