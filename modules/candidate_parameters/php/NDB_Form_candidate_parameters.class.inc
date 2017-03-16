@@ -223,12 +223,12 @@ class NDB_Form_candidate_parameters extends NDB_Form
             $id                    = $currentUser->getData("UserID");
             $values['entry_staff'] = $id;
         }
-        $flagged_date_found = $DB->pselectOne(
-            "SELECT COUNT(*) FROM candidate WHERE flagged_date IS NULL 
-             AND CandID=:candid",
+        $flag_val_old = $DB->pselectOne(
+            "SELECT flagged_caveatemptor FROM candidate WHERE CandID=:candid",
              array('candid' => $this->identifier)
         );
-        if ($values['flagged_caveatemptor'] == 'true' && $flagged_date_found == 1) {
+
+        if ($values['flagged_caveatemptor'] == 'true' && $flag_val_old == 'false') {
 
             $values['flagged_date'] = date("Y-m-d", time());
         }
