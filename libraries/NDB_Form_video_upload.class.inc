@@ -262,7 +262,7 @@ class NDB_Form_video_upload extends NDB_Form
             $file->overwriteMode="overwrite";
 
             //Set the target directory that you want files moved into once they are validated and processed.
-            $file->setBaseUploadDirectory("./videos");
+            $file->setBaseUploadDirectory("../../../../../../../var/www/loris/project/modules/temp_videos/videos");
 
             //Set the prefix to prepend to the filenames
             //$file->setFilenamePrefix($timepoint->getVisitLabel()."-".$this->testName."-");
