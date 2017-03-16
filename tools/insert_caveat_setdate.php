@@ -43,7 +43,7 @@ foreach ($date_missing as $missing) {
          AND primaryVals=:cand_vals",
         array('cand_vals' => $cand_vals)
     );
-    if ($date_found_count == 1) {
+    if ($date_found_count >= 1) {
         $count++;
         $date_found = $db->pselect(
             "SELECT changeDate as caveatdate FROM history WHERE tbl='candidate'AND col='flagged_caveatemptor'AND new ='true'
