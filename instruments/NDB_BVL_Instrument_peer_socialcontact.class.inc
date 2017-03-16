@@ -217,14 +217,15 @@ class NDB_BVL_Instrument_peer_socialcontact extends NDB_BVL_Instrument
         $colspan = 2;
 
         if(is_numeric($numplaymates)) {
-            $colspan = $numplaymates -1;
+            $colspan = $numplaymates;
         } else {
             $numplaymates = 5;
         }
 
 	    if($numplaymates > 1) {
+
 		    $group[] = &$this->form->createElement("static", null, null,"");
-		    $this->form->addGroup($group,"page2_header","<td colspan= $colspan>In the table below indicate which of your children's playmates know<BR> each other. You must select 'Yes' or 'No' in all fields to save this form.</td>", null,false);
+		    $this->form->addGroup($group,"page2_header","<td colspan=$colspan>In the table below indicate which of your children's playmates know<BR> each other. You must select 'Yes' or 'No' in all fields to save this form.</td>", null,false);
  		    unset($group);
 
 	    } else if($numplaymates == 1) {
@@ -240,6 +241,7 @@ class NDB_BVL_Instrument_peer_socialcontact extends NDB_BVL_Instrument
             unset($group);
 
         }
+
 
         $this->localDefaults['total_peer'] = $numplaymates;
         if($this->localDefaults['total_peer'] > 1) {
@@ -287,10 +289,9 @@ class NDB_BVL_Instrument_peer_socialcontact extends NDB_BVL_Instrument
         *find a better fix !!!
         */
 
-
         if ($this->localDefaults['total_peer'] == 1 || $this->localDefaults['total_peer'] == 0){
             $field = "know_1_2";
-            $group[] =& $this->form->createElement("hidden", $field, null);
+            $this->form->addElement("hidden", $field, null);
             $group[] = &$this->form->createElement("static", null, null,"");
             $group[] = &$this->form->createElement("static", null, null,"");
             $this->form->addGroup($group, $groupname, " ", $this->_GUIDelimiter, false);
@@ -300,7 +301,8 @@ class NDB_BVL_Instrument_peer_socialcontact extends NDB_BVL_Instrument
 
         if($this->localDefaults['total_peer'] > 0) {
             $group[] = &$this->form->createElement("static", null, null,"");
-            $this->form->addGroup($group,"page2_header","<td colspan= $colspan>Initials of the playmates are :<BR></td>", null,false);
+            //page2_header already used, so it overwrites each other, so replacing with a safe page6_header
+            $this->form->addGroup($group,"page6_header","<td colspan= $colspan>Initials of the playmates are :<BR></td>", null,false);
             unset($group);
         }
         for ($i = 1; $i<= $this->localDefaults['total_peer']; $i++) {
