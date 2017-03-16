@@ -18,7 +18,7 @@ $(document).ready(function() {
   $("#goback").remove();
   $("#finalize").unbind( "click" );
   console.log("unbind click");
-
+  var badcode;
 
   $('[name="code"]').blur(function(e) {
     // Validate the entered code against the valid CRC32 codes for that site
@@ -29,9 +29,11 @@ $(document).ready(function() {
     if(crc32s.indexOf(cs) < 0 && crc32s.length > 0) {
         codeInputElement.parent().append('<span style="color:red;">Please verify the code</span>');
         codeInputElement.css({'border':'2px solid red'});
+        badcode = true;
     } else {
         codeInputElement.css({'border':'1px'});
         codeInputElement.siblings()[0].remove();
+        badcode = false;
     } 
   });
   
@@ -61,7 +63,12 @@ $(document).ready(function() {
       alert("Please fill in all required fields");
       return false;
     } else {
-    
+ 
+        if(badcode) {
+          alert("You cannot submit if the code is not valid!");
+          return false;
+        }
+
         // are you sure?
         var question = "Are you sure all fields are filled correctly and OK to be submitted?";
         var status = confirm(question);
