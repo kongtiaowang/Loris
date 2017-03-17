@@ -354,7 +354,14 @@ class NDB_Reliability_ados2_module2_reliability extends NDB_Reliability
             $this->form->addElement('hidden', 'subtest', $this->page);
             $this->form->addElement('hidden', 'identifier', $this->identifier);
             $this->form->addElement('hidden', 'reliability_center_id', $this->reliability_center_id);
-            $this->form->addElement('submit', 'fire_away', 'Save Data', 'class=button');
+            $buttons[] = $this->form->createElement(
+                'submit',
+                'fire_away',
+                'Save Data',
+                array('class' => 'button')
+            );
+            //$buttons[] = $this->form->createElement('reset', null, 'Reset');
+            $this->addGroup($buttons, null, null, "&nbsp;");
         }
 
         // get the defaults
