@@ -269,11 +269,6 @@ class NDB_Reliability_aims_reliability extends NDB_Reliability
             $this->tpl_data['success'] = true;
             return;
           }
-          foreach($values as $key=>$value) {
-             if($key == 'Date_taken' || $key == 'DoB_proband'){
-                $values[$key] = $this->_getDatabaseDate($values[$key]);    
-             }    
-          }
           if (empty($row)) {
             
             $values['CommentID'] = $this->identifier;
@@ -315,7 +310,14 @@ class NDB_Reliability_aims_reliability extends NDB_Reliability
          $this->form->addElement('hidden', 'subtest', $this->page);
          $this->form->addElement('hidden', 'identifier', $this->identifier);
          $this->form->addElement('hidden', 'reliability_center_id', $this->reliability_center_id);
-         $this->form->addElement('submit', 'fire_away', 'Save Data', 'class=button');
+         $buttons[] = $this->form->createElement(
+             'submit',
+             'fire_away',
+             'Save Data',
+             array('class' => 'button')
+         );
+         //$buttons[] = $this->form->createElement('reset', null, 'Reset');
+         $this->addGroup($buttons, null, null, "&nbsp;");
      }
      
      // get the defaults

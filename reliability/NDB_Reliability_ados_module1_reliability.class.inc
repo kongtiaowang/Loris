@@ -2006,7 +2006,7 @@ class NDB_Reliability_ados_module1_reliability extends NDB_Reliability
             // insert the event
             $success = $DB->insert('ados_module1_reliability', array(
                                                                      'Examiner' => $values['Examiner'],
-                                                                      'Date_taken' => $this->_getDatabaseDate($values['Date_taken']),
+                                                                      'Date_taken' => $values['Date_taken'],
                                                                      'CommentID' => $this->identifier,
                                                                      'Gold_standard' => $values['Gold_standard'],
                                                                      'Reliability_score_all_items' => $values['Reliability_score_all_items'],
@@ -2048,7 +2048,7 @@ class NDB_Reliability_ados_module1_reliability extends NDB_Reliability
             $success = $DB->update('ados_module1_reliability', array(
                                                                      // 'CommentID' => $this->identifier,
                                                                      'Examiner' => $values['Examiner'],
-                                                                      'Date_taken' => $this->_getDatabaseDate($values['Date_taken']),
+                                                                      'Date_taken' => $values['Date_taken'],
                                                                      'Gold_standard' => $values['Gold_standard'],
                                                                      'a1' => $values['a1'],
                                                                      'a2' => $values['a2'],
@@ -2112,7 +2112,14 @@ class NDB_Reliability_ados_module1_reliability extends NDB_Reliability
             $this->form->addElement('hidden', 'subtest', $this->page);
             $this->form->addElement('hidden', 'identifier', $this->identifier);
             $this->form->addElement('hidden', 'reliability_center_id', $this->reliability_center_id);
-            $this->form->addElement('submit', 'fire_away', 'Save Data', 'class=button');
+            $buttons[] = $this->form->createElement(
+                'submit',
+                'fire_away',
+                'Save Data',
+                array('class' => 'button')
+            );
+            //$buttons[] = $this->form->createElement('reset', null, 'Reset');
+            $this->addGroup($buttons, null, null, "&nbsp;");
         }
         
         // get the defaults

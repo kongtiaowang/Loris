@@ -1013,10 +1013,10 @@ class NDB_Reliability_adi_r_reliability extends NDB_Reliability
             // insert the event
             $success = $DB->insert($this->name, array(
                                                              'Examiner' => $values['Examiner'],
-                                                             'Date_taken' => $this->_getDatabaseDate($values['Date_taken']),
+                                                             'Date_taken' => $values['Date_taken'],
                                                              'reliability_center_id' => $this->reliability_center_id, 
                                                              'CommentID' => $this->identifier,
-                                                             'DoB_proband' => $this->_getDatabaseDate($values['DoB_proband']),
+                                                             'DoB_proband' => $values['DoB_proband'],
                                                              'Gold_standard' => $values['Gold_standard'],
                                                              'q_2_age_first_noticed_code' => $values['q_2_age_first_noticed_code'],
                                                              'q_2_age_first_noticed_code_status' => $values['q_2_age_first_noticed_code_status'],
@@ -1190,9 +1190,9 @@ class NDB_Reliability_adi_r_reliability extends NDB_Reliability
             $success = $DB->update($this->name, array(
                                                               // 'CommentID' => $this->identifier,
                                                               'Examiner' => $values['Examiner'],
-                                                              'Date_taken' => $this->_getDatabaseDate($values['Date_taken']),
+                                                              'Date_taken' => $values['Date_taken'],
                                                               'Gold_standard' => $values['Gold_standard'],
-                                                              'DoB_proband' => $this->_getDatabaseDate($values['DoB_proband']),
+                                                              'DoB_proband' => $values['DoB_proband'],
                                                               'q_2_age_first_noticed_code' => $values['q_2_age_first_noticed_code'],
                                                               'q_2_age_first_noticed_code_status' => $values['q_2_age_first_noticed_code_status'],
                                                               'q_4_onset_as_perceived_code' => $values['q_4_onset_as_perceived_code'],
@@ -1392,7 +1392,14 @@ class NDB_Reliability_adi_r_reliability extends NDB_Reliability
          $this->form->addElement('hidden', 'subtest', $this->page);
          $this->form->addElement('hidden', 'identifier', $this->identifier);
          $this->form->addElement('hidden', 'reliability_center_id', $this->reliability_center_id);
-         $this->form->addElement('submit', 'fire_away', 'Save Data', 'class=button');
+         $buttons[] = $this->form->createElement(
+             'submit',
+             'fire_away',
+             'Save Data',
+             array('class' => 'button')
+         );
+         //$buttons[] = $this->form->createElement('reset', null, 'Reset');
+         $this->addGroup($buttons, null, null, "&nbsp;");
      }
      
      // get the defaults
