@@ -345,7 +345,7 @@ class NDB_Reliability_aosi_reliability extends NDB_Reliability
         //    $values['Lock_record'] = 'Locked';
         // }
         
-        $values['Date_taken'] = $this->_getDatabaseDate($values['Date_taken']);
+        $values['Date_taken'] = $values['Date_taken'];
         
         ////////////////////////////////
         //Set score values

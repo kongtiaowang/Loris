@@ -175,10 +175,6 @@ class NDB_Reliability_csbs_reliability extends NDB_Reliability
           return;
         }
 
-        if(isset($values['Date_taken'])) {
-            $values['Date_taken'] = $this->_getDatabaseDate($values['Date_taken']);
-        }
-
         if(empty($row)) {
             // insert
             $values['CommentID'] = $this->identifier;

@@ -343,11 +343,7 @@ class NDB_Reliability_ados2_module1_reliability extends NDB_Reliability
             $this->tpl_data['success'] = true;
             return;
           }
-          foreach($values as $key=>$value) {
-             if($key == 'Date_taken' || $key == 'DoB_proband'){
-                $values[$key] = $this->_getDatabaseDate($values[$key]);    
-             }    
-          }
+
           if (empty($row)) {
             
             $values['CommentID'] = $this->identifier;

@@ -2006,7 +2006,7 @@ class NDB_Reliability_ados_module1_reliability extends NDB_Reliability
             // insert the event
             $success = $DB->insert('ados_module1_reliability', array(
                                                                      'Examiner' => $values['Examiner'],
-                                                                      'Date_taken' => $this->_getDatabaseDate($values['Date_taken']),
+                                                                      'Date_taken' => $values['Date_taken'],
                                                                      'CommentID' => $this->identifier,
                                                                      'Gold_standard' => $values['Gold_standard'],
                                                                      'Reliability_score_all_items' => $values['Reliability_score_all_items'],
@@ -2048,7 +2048,7 @@ class NDB_Reliability_ados_module1_reliability extends NDB_Reliability
             $success = $DB->update('ados_module1_reliability', array(
                                                                      // 'CommentID' => $this->identifier,
                                                                      'Examiner' => $values['Examiner'],
-                                                                      'Date_taken' => $this->_getDatabaseDate($values['Date_taken']),
+                                                                      'Date_taken' => $values['Date_taken'],
                                                                      'Gold_standard' => $values['Gold_standard'],
                                                                      'a1' => $values['a1'],
                                                                      'a2' => $values['a2'],
