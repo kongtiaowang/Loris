@@ -16,6 +16,9 @@ $(document).ready(function() {
         }).appendTo(form);
 
        form.submit();
+    } else if ($('[name="consent"]').val() == 'no') {
+      alert("You have chosen not to consent to participating in the air pollution study, we thank you for your time. If you wish to consent, please choose 'Yes' to proceed."); 
+      return false;  
     } else {
       alert("You must select 'Yes' to continue"); 
       return false;
