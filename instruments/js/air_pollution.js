@@ -27,13 +27,17 @@ $(document).ready(function() {
     let cs = crc32_compute_string(reversed, $('[name="code"]').val());
 
     if(crc32s.indexOf(cs) < 0 && crc32s.length > 0) {
-        codeInputElement.parent().append('<span style="color:red;">Please verify the code</span>');
+      if($("#verify").length == 0) {
+        codeInputElement.parent().append('<span id ="verify" style="color:red;">Please verify the code</span>');
         codeInputElement.css({'border':'2px solid red'});
         badcode = true;
+      }
     } else {
+      if($("#verify").length != 0) {
         codeInputElement.css({'border':'1px'});
         codeInputElement.siblings()[0].remove();
         badcode = false;
+      }
     } 
   });
   
