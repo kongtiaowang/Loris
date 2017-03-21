@@ -165,6 +165,8 @@ HTML;
 
     function _page2(){
 
+        //Since only the consent given candidate can view this page we are updating the consent table here
+        $this->addConsentInfo();
         $this->form->addElement('header', 'instrument_title', "IBIS Environment Residential History");
         $this->form->addElement('header', 'instrument_inst1','</b><h5>We would like to know the home addresses of biological mothers starting one year before the birth of your child. Having these addresses will help us study how prenatal exposures, such as air pollution, affect children’s development. ' . 
           '<br><br> Please start with your main residence at the time of your child’s birth and end with the residence where you lived one year before your child’s birth. On Section 2, we ask where your child lived when he or she turned 3 YEARS old back to birth.</h5><b>');
@@ -271,6 +273,27 @@ HTML;
      */
     function getReview()
     {
+        return;
+    }
+
+    function addConsentInfo()
+    {
+        $DB     = & Database::singleton();
+        $commentID = $this->commentID;
+        $candidate = Candidate::singleton($commentID);
+        $candid = $candidate->getData('CandID');
+        $participant_vals = array();
+        $participant_vals['data_entry_date'] = date("Y-m-d H:i:s",time());
+        $participant_vals['air_consent'] = 'yes';
+        $participant_vals['air_consent_date'] = date("Y-m-d",time());
+        $participant_vals['CandID']      = $candid;
+        $already_consent = $DB->pselectOne(
+            "SELECT count(*) FROM consent_info_history WHERE air_consent='yes' and CandID=:candid",
+            array('candid' => $candid)
+        );
+        if($already_consent==0) {
+            $DB->insert("consent_info_history", $participant_vals);
+        }
         return;
     }
 }
