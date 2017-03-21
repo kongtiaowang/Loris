@@ -110,6 +110,7 @@
             {foreach from=$consent_list item=list}
                 {foreach from=$list item=consent key=listname}
                     {if $listname=='label'}
+                        <tr></tr>
                         {foreach from=$consent item=row}
                             <td><b>{$row}</b></td>
                         {/foreach}
