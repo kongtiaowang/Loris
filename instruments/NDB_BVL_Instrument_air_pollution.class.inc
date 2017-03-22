@@ -89,6 +89,7 @@ class NDB_BVL_Instrument_air_pollution extends NDB_BVL_Instrument
 
       $group[] =& $this->form->createElement("select","consent", "", $yesNo);
       $this->XINRegisterRule("consent", array("code{@}=={@}"), "Required.", "consent_group");
+      $this->form->addElement("hidden","commentId", $this->commentID);
 
       $content = <<< 'HTML'
         <center><textarea cols=120 rows=20>
@@ -287,13 +288,22 @@ HTML;
         $participant_vals['air_consent'] = 'yes';
         $participant_vals['air_consent_date'] = date("Y-m-d",time());
         $participant_vals['CandID']      = $candid;
-        $already_consent = $DB->pselectOne(
+        $already_consent= $DB->pselectOne(
             "SELECT count(*) FROM consent_info_history WHERE air_consent='yes' and CandID=:candid",
+             array('candid' => $candid)
+        );
+        $already_consent_no= $DB->pselectOne(
+            "SELECT count(*) FROM consent_info_history WHERE air_consent='no' and CandID=:candid",
             array('candid' => $candid)
         );
+
         if($already_consent==0) {
             $DB->insert("consent_info_history", $participant_vals);
         }
+        if($already_consent_no!=0){
+            $DB->delete("consent_info_history", array("air_consent"=>'no', "CandID"=>$candid));
+        }
+
         return;
     }
 }
