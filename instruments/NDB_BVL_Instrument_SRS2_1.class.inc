@@ -80,7 +80,7 @@ class NDB_BVL_Instrument_SRS2_1 extends NDB_BVL_Instrument
      function _main(){
         // display test name
         $this->form->addElement('header', 'instrument_title', "SRS2 - Self Report");
-        
+        $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
         $this->form->addElement('static','lorisSubHeader',"<strong>Instructions:</strong><BR>For each question, please choose an option that best describes your behaviour <strong>over the past 6 months </strong>");
         $this->form->addElement('header', 'instrument_title1', "Self Rating");
 

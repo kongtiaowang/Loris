@@ -78,7 +78,7 @@ class NDB_BVL_Instrument_SRS2_SelfReport extends NDB_BVL_Instrument
     function _main(){
         // display test name
         $this->form->addElement('header', 'instrument_title', "SRS2 - Self Report");
-        
+        $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
         $this->form->addElement('static','lorisSubHeader',"<strong>Instructions:</strong><BR>For each question, please choose an option that best describes your behaviour <strong>over the past 6 months </strong>");
         $this->form->addElement('header', 'instrument_title', "Self Rating");
 
@@ -114,7 +114,7 @@ class NDB_BVL_Instrument_SRS2_SelfReport extends NDB_BVL_Instrument
             $this->addSelect($field, $label, $this->rating);
            // $this->XINRegisterRule($field,array("$field{@}=={@}NEVER_REQUIRED"));
         }
-        $this->form->addElement('static','lorisSubHeader',"SRS-2 Self Report copyright © 2012 by Western Psychological Services. Reprint authorized by the<BR>author, J. Constantino, under WPS agreement for the sole use in registered scholarly study. Not to be reprinted in<BR> whole or in part, for any additional purpose, without the prior written authorization of WPS. All rights reserved<BR>
+        $this->form->addElement('static','lorisSubHeader1',"SRS-2 Self Report copyright © 2012 by Western Psychological Services. Reprint authorized by the<BR>author, J. Constantino, under WPS agreement for the sole use in registered scholarly study. Not to be reprinted in<BR> whole or in part, for any additional purpose, without the prior written authorization of WPS. All rights reserved<BR>
 (rights@wpspublish.com)");
         $this->form->addFormRule(array(&$this, 'SRS2_Rules'));
 
