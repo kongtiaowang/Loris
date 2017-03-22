@@ -427,8 +427,6 @@ class NDB_BVL_Instrument_vineland extends NDB_BVL_Instrument
           $candidate =& Candidate::singleton($timepoint->getCandID());
 
           if(isset($values['Date_taken'])) {
-              $Date_taken = $values['Date_taken'];
-              $values['Date_taken'] = sprintf("%04d-%02d-%02d", $Date_taken['Y'], $Date_taken['M'], $Date_taken['d']);
               $this->_saveCandidateAge($values);
           }
 
