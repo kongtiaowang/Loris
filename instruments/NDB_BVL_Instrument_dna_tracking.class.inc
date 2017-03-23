@@ -402,10 +402,10 @@ class NDB_BVL_Instrument_dna_tracking extends NDB_BVL_Instrument
 		     }
 	     }
              $saliva_when = array(); $saliva_when = $values["when_saliva_collected1_".$subject];
-             if($values[$saliva_field] == 'yes' && empty($saliva_when['Y'])) {
+             if($values[$saliva_field] == 'yes' && empty($saliva_when)) {
                   $errors['when_saliva_collected1_group'] = "Specify date for $subject";
              }
-             if($values[$saliva_field] == 'yes' && (empty($saliva_when['Y']) || empty($saliva_when['M']) || empty($saliva_when['d'])) ) {
+             if($values[$saliva_field] == 'yes' && empty($saliva_when) || empty($saliva_when) || empty($saliva_when) ) {
                   $errors['when_saliva_collected1_group'] = "Specify date for $subject";
              }
              if($values[$saliva_field] == 'no' && empty($values["saliva_notcollected_".$subject] ) ) {
