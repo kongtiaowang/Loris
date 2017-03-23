@@ -104,7 +104,7 @@ class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument
     {
         // Header
         $this->addHeader("Modified Checklist for Autism in Toddlers, Revised with Follow-Up");
-
+        $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
         $yesNo = array(
             null           => '',
             'yes'          => 'Yes',
