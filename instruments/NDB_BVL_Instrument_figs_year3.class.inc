@@ -280,35 +280,7 @@ class NDB_BVL_Instrument_figs_year3 extends NDB_BVL_Instrument
     * @return array             the processed array ready for setDefaults()
     * @access private
     */
-    function _setDefaultsArray($defaults)
-    {
-        // split mysql Date_taken field into array
-        $Date_taken = explode('-', $defaults['Date_taken']);
-        $defaults['Date_taken'] = array('Y'=>$Date_taken[0], 'M'=>$Date_taken[1], 'd'=>$Date_taken[2]);
-        
-        if(isset($defaults['Face_BirthDate'])) {
-            $date = explode('-', $defaults['Face_BirthDate']);
-            if(count($date) >= 2) {
-                $defaults['Face_BirthDate'] = array('Y'=>$date[0], 'M'=>$date[1], 'd'=>$date[2]);
-            }
 
-            if($defaults['Face_BirthDate']['Y'] == '0000') {
-                $defaults['Face_BirthDate']['Y'] = NULL; 
-            }
-        }
-        // return the defaults array ready for $form->setDefaults
-        return $defaults;
-    }
-    
-    /**
-    * preprocesses the array of values to be saved into the database
-    * (such as to rearrange date fields)
-    *
-    * @param array $values      the array of values ready to be passed to
-    * an Database::update call as the set array
-    * @return void
-    * @access private
-    */
     function _saveValues($values)
     {   
         if($values['ClearInstrument']== 1) {
@@ -316,16 +288,8 @@ class NDB_BVL_Instrument_figs_year3 extends NDB_BVL_Instrument
         }
         $this->_nullStatus($values);
         if(isset($values['Date_taken'])) {
-            $Date_taken = $values['Date_taken'];
             $this->_saveCandidateAge($values);
-
         }
-        
-        if(isset($values['Face_BirthDate'])) {
-            $date = $values['Face_BirthDate'];
-            if($values['Face_BirthDate'] == '0000-0-0') $values['Face_BirthDate'] = null;
-        }
-        
         // if we're saving the checklist page, nullify all the fields for each of the not-administered checklists
         if(!empty($this->relativeID) && $_REQUEST['checklist']=='checklists') {
             // nullify fields for the not administered checklists
