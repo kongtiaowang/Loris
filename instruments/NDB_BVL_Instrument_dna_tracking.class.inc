@@ -360,7 +360,7 @@ class NDB_BVL_Instrument_dna_tracking extends NDB_BVL_Instrument
                   $errors['lab_purpletop_collected1_group'] = "Specify if lab/purple top was collected for $subject";
              } 
              $blood_when = array(); $blood_when = $values["when_blood_collected1_".$subject];
-             if($values[$field] == 'yes' && Utility::_checkDate($blood_when) == false) { 
+             if($values[$field] == 'yes' && empty($blood_when)) {
                   $errors['when_blood_collected1_group'] = "Specify date for $subject";
              } 
              if($values[$field] == 'yes' && empty($values["num_blood1_".$subject])) {
@@ -416,16 +416,8 @@ class NDB_BVL_Instrument_dna_tracking extends NDB_BVL_Instrument
                  $errors["saliva_notcollected_other_group"] = "Specify other for $subject";
              }
              $saliva_when2 = $values["when_saliva_collected2_".$subject]; 
-             if(!empty($saliva_when2['Y']) && empty($values["saliva_collection_method2_".$subject] ) ) { 
+             if(!empty($saliva_when2) && empty($values["saliva_collection_method2_".$subject] ) ) {
                 $errors["saliva_collection_method2_group"] = "Specify how saliva was collected for $subject";
-             }
-             if(Utility::_checkDate($saliva_when2) == false) {
-                  $errors['when_saliva_collected2_group'] = "Invalid date for $subject";
-
-             }
-             if(Utility::_checkDate($saliva_when) == false) {
-                  $errors['when_saliva_collected1_group'] = "Invalid date for $subject";
-
              }
 /*
              if( (Utility::_checkDate($saliva_when) == true)   && (Utility::_checkDate($saliva_when2) == true ) 
@@ -434,15 +426,6 @@ class NDB_BVL_Instrument_dna_tracking extends NDB_BVL_Instrument
 
             }
 */
-            $blood_when2 = array(); $blood_when2 = $values["when_blood_collected2_".$subject];
-             if(Utility::_checkDate($blood_when2) == false) {
-                  $errors['when_blood_collected2_group'] = "Invalid date for $subject";
-
-             }
-             if(Utility::_checkDate($blood_when1) == false) {
-                  $errors['when_blood_collected1_group'] = "Invalid date for $subject";
-
-             }
 
   /*           if
         /*    if(!empty($blood_when2['Y']) && !empty($blood_when['Y'] ) ) { 
@@ -452,27 +435,27 @@ class NDB_BVL_Instrument_dna_tracking extends NDB_BVL_Instrument
             }
 */
             
-            if( !empty($blood_when2['Y']) && empty($values["yellowtop_collected2_".$subject])) {
+            if( !empty($blood_when2) && empty($values["yellowtop_collected2_".$subject])) {
                   $errors['yellowtop_collected2_group'] = "Specify if yellowtop was collected for $subject";
              }
-            if( !empty($blood_when2['Y']) && empty($values["lab_purpletop_collected2_".$subject])) {
+            if( !empty($blood_when2) && empty($values["lab_purpletop_collected2_".$subject])) {
                   $errors['lab_purpletop_collected2_group'] = "Specify if lab/purple top was collected for $subject";
             }
            
-             if(!empty($blood_when2['Y'])  && empty($values["num_blood2_".$subject])) {
+             if(!empty($blood_when2)  && empty($values["num_blood2_".$subject])) {
                   $errors['num_blood2_group'] = "Specify number of tubes for $subject";
              }
-            if(!empty($blood_when2['Y'])  && empty($values["num_yellowtop_collected2_".$subject])) {
+            if(!empty($blood_when2)  && empty($values["num_yellowtop_collected2_".$subject])) {
                   $errors['num_yellowtop_collected2_group'] = "Specify number of yellow tubes for $subject";
              }
 
-             if( !empty($blood_when2['Y'])  && empty($values["blood_collection_method2_".$subject])) {
+             if( !empty($blood_when2)  && empty($values["blood_collection_method2_".$subject])) {
                   $errors['blood_collection_method2_group'] = "Specify how blood was collected for $subject";
              }
-             if(!empty($blood_when2['Y']) && empty($values["blood_sent2_".$subject])) {
+             if(!empty($blood_when2) && empty($values["blood_sent2_".$subject])) {
                   $errors['blood_sent2_group'] = "Specify where blood was sent for $subject";
              }
-             if(!empty($blood_when2['Y']) && $values["blood_sent2_".$subject] == "other" 
+             if(!empty($blood_when2) && $values["blood_sent2_".$subject] == "other"
                  && empty($values["blood_sent2_".$subject."_other"] ) ) 
              { 
                 $errors["blood_sent2_other_group"] = "Specify other for $subject";

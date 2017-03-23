@@ -271,10 +271,8 @@ INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, Subp
    }
    function Range_Allowed($values) {
        $errors = array();
-       $temp = $values['Date_taken'];
-       $datetaken = mktime(0,0,0,$temp['M'],$temp['d'],$temp['Y']);
-       $temp = $values['date_lastVisit_date'];
-       $datelastvisit = mktime(0,0,0,$temp['M'],$temp['d'],$temp['Y']);
+       $datetaken = $values['Date_taken'];
+       $datelastvisit = $values['date_lastVisit_date'];
        
        $list_of_fields = array('hrs_earlyintervention_birthtothreeprg','q6_avgperweek_A',
                          'q6_avgperweek_B','avg_occupationaltherapy','avg_physicaltherapy',
@@ -369,11 +367,8 @@ INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, Subp
            }
            $start = $values['startdate_'.$list];
            $stop  = $values['stopdate_'.$list];
-           if(!empty($start['Y']) && !empty($stop['Y']) && !empty($start['M']) && !empty($stop['M']) ) {
-               if($start['Y'] > $stop['Y']){
-                   $errors['stopdate_'.$list] = "Intervention stop date should be after intervention start date";
-               } 
-               if( ($start['Y'] === $stop['Y']) && $start['M'] > $stop['M']){
+           if(!empty($start && $stop) ) {
+               if($start >= $stop){
                    $errors['stopdate_'.$list] = "Intervention stop date should be after intervention start date";
                }
            }

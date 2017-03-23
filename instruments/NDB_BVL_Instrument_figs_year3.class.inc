@@ -317,17 +317,12 @@ class NDB_BVL_Instrument_figs_year3 extends NDB_BVL_Instrument
         $this->_nullStatus($values);
         if(isset($values['Date_taken'])) {
             $Date_taken = $values['Date_taken'];
-            $values['Date_taken'] = $this->_getDatabaseDate($Date_taken);
             $this->_saveCandidateAge($values);
 
         }
         
         if(isset($values['Face_BirthDate'])) {
             $date = $values['Face_BirthDate'];
-            if(empty($date['Y'])) $date['Y']='0000';
-            if(empty($date['M'])) $date['M']=0;
-            if(empty($date['d'])) $date['d']=0;
-            $values['Face_BirthDate'] = "$date[Y]-$date[M]-$date[d]";
             if($values['Face_BirthDate'] == '0000-0-0') $values['Face_BirthDate'] = null;
         }
         
