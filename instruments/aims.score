@@ -108,7 +108,7 @@ foreach ($record as $field => $value) {
                 } else {
                     if ($error_count['prone_above'] == 0) { 
                         $scores['data_entry_error'] .= 'Prone:Error below 
-                                                        window<br/>';
+                                                        window,';
                         $error_count['prone_above']++;
                     }
                 }
@@ -120,7 +120,7 @@ foreach ($record as $field => $value) {
                     if (!in_array($value, $in_window) & 
                         $error_count['prone_within'] == 0 ) {
                         $scores['data_entry_error'] .= 'Prone:Error within 
-                                                        window<br/>';
+                                                        window,';
                         $error_count['prone_within']++;
                     }
                 } 
@@ -128,7 +128,7 @@ foreach ($record as $field => $value) {
                 if (!in_array($value, $out_window) & 
                     $error_count['prone_below'] ==0 ) {
                     $scores['data_entry_error'] .= 'Prone:Error above 
-                                                    window<br/>';
+                                                    window,';
                     $error_count['prone_below']++;
                 }
             }
@@ -149,7 +149,7 @@ foreach ($record as $field => $value) {
 
                 } else {
                     if ($error_count['supine_above']==0) { 
-                        $scores['data_entry_error'] .='Supine:Error below window<br/>';
+                        $scores['data_entry_error'] .='Supine:Error below window,';
                         $error_count['supine_above']++;
                     }
                 }
@@ -160,14 +160,14 @@ foreach ($record as $field => $value) {
                 } else {
                     if (! in_array($value, $in_window) &
                         $error_count['supine_within'] == 0) {
-                        $scores['data_entry_error'] .='Supine:Error within window<br/>';
+                        $scores['data_entry_error'] .='Supine:Error within window,';
                         $error_count['supine_within']++;
                     }
                 }
             } elseif ( isset($end_supine) & $qstn > $end_supine & $qstn <= 30) {
                 if (! in_array($value, $out_window) & 
                     $error_count['supine_below']==0) {
-                    $scores['data_entry_error'] .='Supine:Error above window<br/>';
+                    $scores['data_entry_error'] .='Supine:Error above window,';
                     $error_count['supine_below']++;
                 }
             }
@@ -186,7 +186,7 @@ foreach ($record as $field => $value) {
 
                 } else {
                     if ($error_count['sit_above'] ==0) {
-                        $scores['data_entry_error'] .='Sitting:Error below window<br/>';
+                        $scores['data_entry_error'] .='Sitting:Error below window,';
                         $error_count['sit_above']++;
                     } 
                 }
@@ -196,13 +196,13 @@ foreach ($record as $field => $value) {
                     $scores['sit_window_itemscredited']++;
                 } else {
                     if (!in_array($value, $in_window) && $error_count['sit_within'] ==0) {
-                        $scores['data_entry_error'] .='Sitting:Error within window<br/>';
+                        $scores['data_entry_error'] .='Sitting:Error within window,';
                         $error_count['sit_within']++;
                     }
                 }
             } elseif ($qstn >$end_sit & $qstn <=42) {
                 if (! in_array($value, $out_window) && $error_count['sit_below']==0) {
-                    $scores['data_entry_error'] .='Sitting:Error above window <br/>';
+                    $scores['data_entry_error'] .='Sitting:Error above window,';
                     $error_count['sit_below']++;
                 }
             }
@@ -219,7 +219,7 @@ foreach ($record as $field => $value) {
                     $scores['stand_prev_itemscredited']++;
                 } else {
                     if ($error_count['stand_above'] ==0) { 
-                        $scores['data_entry_error'] .='Standing:Error below window<br/>';
+                        $scores['data_entry_error'] .='Standing:Error below window,';
                         $error_count['stand_above']++;
                     }
                 } 
@@ -229,13 +229,13 @@ foreach ($record as $field => $value) {
                     $scores['stand_window_itemscredited']++;
                 } else {
                     if (!in_array($value, $in_window) && $error_count['stand_within'] ==0) {
-                        $scores['data_entry_error'] .='Standing:Error within window<br/>';
+                        $scores['data_entry_error'] .='Standing:Error within window,';
                         $error_count['stand_within']++;
                     }
                 } 
             } elseif ($qstn > $end_stand & $qstn <=58) {
                 if (! in_array($value, $out_window) && $error_count['stand_below']==0) { 
-                    $scores['data_entry_error'] .= 'Standing:Error above window<br/>';
+                    $scores['data_entry_error'] .= 'Standing:Error above window,';
                     $error_count['stand_below']++;
                 }
             }
