@@ -38,7 +38,6 @@ class NDB_BVL_Instrument_vineland extends NDB_BVL_Instrument
         // required fields for data entry completion status
         $this->_requiredElements = array('Date_taken', 'Examiner', 'File_name');
 
-
         // setup the form
         $this->_setupForm();
 
