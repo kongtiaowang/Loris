@@ -467,7 +467,7 @@ class NDB_BVL_Instrument_vineland extends NDB_BVL_Instrument
 
           //If the form is validated, call File_Upload::processFiles() which loops through the files and 
           //proccesses them (including verify, move, and import steps)
-          if ($values['vineland_file'] != false) {
+          if ($values['vineland_file']['name'] != false) {
             $file->processFiles();
           }
           
