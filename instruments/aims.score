@@ -120,7 +120,7 @@ foreach ($record as $field => $value) {
                     if (!in_array($value, $in_window) & 
                         $error_count['prone_within'] == 0 ) {
                         $scores['data_entry_error'] .= 'Prone:Error within 
-                                                        window';
+                                                        window,';
                         $error_count['prone_within']++;
                     }
                 } 
