@@ -938,5 +938,18 @@ class NDB_Form_candidate_parameters extends NDB_Form
         return $option_array;
     }
 
+    function getJSDependencies()
+    {
+        $factory = NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+                $baseURL . "/candidate_parameters/js/candidate_parameters.js",
+            )
+        );
+    }
+
 }
 ?>
