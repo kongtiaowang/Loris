@@ -1,0 +1,7 @@
+--Adding some missed sql patches supposed to be run  with SRS instruments --
+ALTER TABLE `SRS2_1` ADD COLUMN `Candidate_Age` VARCHAR(255) DEFAULT NULL;
+ALTER TABLE `SRS2_2` ADD COLUMN `Window_Difference` INT(11) DEFAULT NULL;
+ALTER TABLE `SRS2_1` ADD COLUMN `Date_taken` DATE DEFAULT NULL;
+ALTER TABLE `SRS2_2` ADD COLUMN `Date_taken` DATE DEFAULT NULL;
+ALTER TABLE `SRS2_InformantReport` ADD COLUMN `Date_taken` DATE DEFAULT NULL;
+ALTER TABLE `SRS2_SelfReport` ADD COLUMN `Date_taken` DATE DEFAULT NULL;
