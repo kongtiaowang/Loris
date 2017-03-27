@@ -1233,7 +1233,7 @@ class NDB_BVL_Instrument_mullen extends NDB_BVL_Instrument
         $scale_name = $scale_name_list[$scale];
         $eng_scale_name = $scale_name_english[$scale];
 
-        if(empty($score_record[$scale_name . '_' . "basal"]) || empty($score_record[$eng_scale_name . '_' . "ceiling"])){
+        if(empty($score_record[$scale_name . '_' . "basal"]) || empty($score_record[$scale_name . '_' . "ceiling"])){
            echo'Basal and Ceiling Levels for ' .$eng_scale_name . ' must be set to be scored.';
            echo "\n";
 
