@@ -1,0 +1,4 @@
+--Delete a survey intance(peer_socialcontact) filled and completed wrongly for UNC1016 under screening.
+DELETE FROM `peer_socialcontact` WHERE CommentID='588132UNC101640479721487874424';
+DELETE FROM `peer_socialcontact` WHERE CommentID='DDE_588132UNC101640479721487874424';
+DELETE FROM `participant_accounts` WHERE CommentID='588132UNC101640479721487874424';
