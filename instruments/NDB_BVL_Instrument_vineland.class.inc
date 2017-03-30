@@ -220,6 +220,8 @@ class NDB_BVL_Instrument_vineland extends NDB_BVL_Instrument
          // parent report question
          if($this->getFieldValue("File_name")===false){
              $this->form->addRule("vineland_file", "Vineland file is required.", 'required', null, 'server');
+         } else {
+             $this->XINRegisterRule("vineland_file", array("vineland_file{@}==={@}NEVER_REQUIRED"));
          }
          // handedness questions
 
@@ -427,8 +429,6 @@ class NDB_BVL_Instrument_vineland extends NDB_BVL_Instrument
           $candidate =& Candidate::singleton($timepoint->getCandID());
 
           if(isset($values['Date_taken'])) {
-              $Date_taken = $values['Date_taken'];
-              $values['Date_taken'] = sprintf("%04d-%02d-%02d", $Date_taken['Y'], $Date_taken['M'], $Date_taken['d']);
               $this->_saveCandidateAge($values);
           }
 
@@ -466,8 +466,9 @@ class NDB_BVL_Instrument_vineland extends NDB_BVL_Instrument
 
           //If the form is validated, call File_Upload::processFiles() which loops through the files and 
           //proccesses them (including verify, move, and import steps)
-          $file->processFiles();
-          
+          if ($values['vineland_file']['name'] != false) {
+            $file->processFiles();
+          }
           
           //echo error messages
           if(!empty($file->errorLog)){

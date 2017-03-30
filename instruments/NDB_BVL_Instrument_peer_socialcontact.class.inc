@@ -173,6 +173,7 @@ class NDB_BVL_Instrument_peer_socialcontact extends NDB_BVL_Instrument
         $this->form->addElement('header', 'instrument_title', "Peer Social Contact Questionnaire");
         
        // $this->addBasicDate('datecompleted', "Today's date:", $this->dateOptions);
+        $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
         $this->addSelect('respondent',"Completed by :", $this->respondent);
         
         $group [] = $this->createText('respondent_other',$this->indent."If Other please specify");
