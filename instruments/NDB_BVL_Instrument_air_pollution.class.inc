@@ -156,7 +156,7 @@ HTML;
       }
       $group[]=$this->form->createElement("select", 'mail_tooth_kit', '',$yesNo);
       $this->XINRegisterRule("mail_tooth_kit", array("mail_tooth_kit{@}=={@}"), "Required.", "mail_tooth_kit_group");
-      $this->form->addGroup($group, "mail_tooth_kit_group", "Do you wish to recieve the 'Tooth fairy Kit.'", null, false);
+      $this->form->addGroup($group, "mail_tooth_kit_group", "Do you wish to recieve the 'Tooth fairy Kit?'", null, false);
       unset($group);
       $group[] =& $this->form->createElement("select","consent", "", $yesNo);
       $this->XINRegisterRule("consent", array("code{@}=={@}"), "Required.", "consent_group");
