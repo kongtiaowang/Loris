@@ -5,33 +5,58 @@ $(document).ready(function() {
 
   $("#savecontinue").click(function(e) {
     console.log("save clicked");
-    
-    if ($('[name="consent"]').val() == 'yes') {
-        var form = $("#test_form");
-        $("<input>").attr({
-          type: 'hidden',
-          name: 'nextpage',
-          value: '1'
-        }).appendTo(form);
-
-       form.submit();
-    } else if ($('[name="consent"]').val() == 'no') {
-        var consent=$('[name="consent"]').val();
-        var comment=$('[name="commentId"]').val();
-        alert("no");
+      var mail_consent = $('[name = "mail_tooth_kit"]').val();
+      var comment = $('[name = "commentId"]').val();
+      var consent = $('[name = "consent"]').val();
+    if ($('[name="consent"]').val() == 'yes' && $('[name="mail_tooth_kit"]').val() != '') {
         $.ajax({
             type: 'POST',
-            data: { consent: consent,
+            data: { mail_consent: mail_consent,
+                    consent: consent,
                     comment: comment },
             url: 'candidate_parameters/ajax/UpdateConsent.php',
+            async: false,
             success: function(data) {
-                alert(data);
+                if (data == 1)
+                {
+                    var form = $("#test_form");
+                    $("<input>").attr({
+                        type: 'hidden',
+                        name: 'nextpage',
+                        value: '1'
+                    }).appendTo(form);
+                       form.submit();
+                }
             }
         });
-      alert("You have chosen not to consent to participating in the air pollution study, we thank you for your time. If you wish to consent, please choose 'Yes' to proceed."); 
-      return false;  
+    } else if ($('[name="consent"]').val() == 'no' && $('[name="mail_tooth_kit"]').val() != '') {
+        $.ajax({
+            type: 'POST',
+            data: { mail_consent: mail_consent,
+                    consent: consent,
+                    comment: comment },
+            url: 'candidate_parameters/ajax/UpdateConsent.php',
+            async: false,
+            success: function(data) {
+            }
+        });
+      alert("You have chosen 'No' to participate in the air pollution study, we thank you for your time. If you wish to consent, please choose 'Yes' to proceed.");
+      return false;
+    } else if ($('[name = "mail_tooth_kit"]').val() == '') {
+        alert("Do you want to get the tooth fairy kit?. Please select an option.");
+        return false;
     } else {
-      alert("You must select 'Yes' to continue"); 
+        $.ajax({
+            type: 'POST',
+            data: { mail_consent: mail_consent,
+                    comment: comment },
+            url: 'candidate_parameters/ajax/UpdateConsent.php',
+            async: false,
+            success: function(data) {
+            }
+        });
+
+      alert("You must select 'Yes' to continue to the air pollution study questionnaire.");
       return false;
     }
     

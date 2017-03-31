@@ -126,6 +126,23 @@
                     {/if}
                 {/foreach}
             {/foreach}
+            {if $display_mail_content}
+                <tr></tr>
+                <td><b>Mail Tooth fairy Kit</b></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><b>Date Updated</b></td>
+                {foreach from=$mail_toothkit_consent_details key=k item=value}
+                    <tr></tr>
+                    <td>{$value.mc}</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>{$value.dd}</td>
+                    {/foreach}
+
+            {/if}
         </table>
         </div>
         <div class="panel-body">
