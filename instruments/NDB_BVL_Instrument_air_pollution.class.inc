@@ -163,7 +163,6 @@ HTML;
       $this->form->addGroup($group, "consent_group", "By selecting 'Yes' from the dropdown menu, you consent to give us the information in this questionnaire.", null, false);
       unset($group);
 
-
       $this->form->addElement("static", null, '<div id="air_pollution"><script type="text/javascript" src="/js/air_pollution_consent.js"></script></div>');
     }
 
@@ -277,6 +276,5 @@ HTML;
     {
         return;
     }
-
 
 }
