@@ -200,7 +200,7 @@ class NDB_Form_candidate_parameters extends NDB_Form
         }
         $this->tpl_data['display_mail_content'] = false;
         $mail_toothkit_consent=$DB->pselectOne(
-		"SELECT COUNT(*) from consent_info_history 
+		"SELECT COUNT(*) FROM consent_info_history 
 	         WHERE mail_toothkit_consent IS NOT NULL
                  AND CandID=:cid", 
 		 array('cid'=>$this->identifier));
@@ -542,9 +542,11 @@ class NDB_Form_candidate_parameters extends NDB_Form
             }
 
                 $mail_toothkit_consent_details=$DB->pselect(
-			                "SELECT mail_toothkit_consent as mc, data_entry_date as dd from consent_info_history 
+			                "SELECT mail_toothkit_consent as mc, data_entry_date as dd 
+					 FROM consent_info_history 
 					 WHERE mail_toothkit_consent IS NOT NULL 
-                                         AND CandID=:cid", array('cid'=>$this->identifier));
+                                         AND CandID=:cid", 
+			                 array('cid'=>$this->identifier));
                 $this->tpl_data['mail_toothkit_consent_details'] = $mail_toothkit_consent_details;
 
         }
