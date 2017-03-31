@@ -140,9 +140,8 @@
                     <td></td>
                     <td></td>
                     <td>{$value.dd}</td>
-                    {/foreach}
-
-            {/if}
+                   {/foreach}
+              {/if}
         </table>
         </div>
         <div class="panel-body">
