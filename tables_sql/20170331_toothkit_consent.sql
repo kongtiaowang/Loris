@@ -1,0 +1,2 @@
+ALTER TABLE `consent_info_history` ADD COLUMN `mail_toothkit_consent` ENUM('yes','no','not_answered') DEFAULT NULL;
+ALTER TABLE `air_pollution` ADD COLUMN `mail_tooth_kit` ENUM('yes','no','not_answered') DEFAULT NULL;
