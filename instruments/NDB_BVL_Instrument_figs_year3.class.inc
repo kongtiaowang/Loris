@@ -26,8 +26,6 @@ class NDB_BVL_Instrument_figs_year3 extends NDB_BVL_Instrument
     */
     function setup($commentID, $page)
     {
-        require_once("RequiredIf.inc");
-        
         $this->form = new LorisForm('test_form');
         // deprecated // $this->form->registerRule('requiredIf', null, 'HTML_QuickForm_Rule_RequiredIf', 'RequiredIf.inc');
         

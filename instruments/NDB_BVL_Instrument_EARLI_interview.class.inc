@@ -1,9 +1,5 @@
 <?php
 
-
-require_once("RequiredIfGroup.inc");
-require_once('RequiredIf.inc');
-
 class NDB_BVL_Instrument_EARLI_interview extends NDB_BVL_Instrument {
 
 
