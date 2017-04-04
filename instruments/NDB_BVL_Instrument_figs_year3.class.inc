@@ -26,8 +26,6 @@ class NDB_BVL_Instrument_figs_year3 extends NDB_BVL_Instrument
     */
     function setup($commentID, $page)
     {
-        require_once("RequiredIf.inc");
-        
         $this->form = new LorisForm('test_form');
         // deprecated // $this->form->registerRule('requiredIf', null, 'HTML_QuickForm_Rule_RequiredIf', 'RequiredIf.inc');
         
@@ -429,7 +427,7 @@ class NDB_BVL_Instrument_figs_year3 extends NDB_BVL_Instrument
 
         // add relative button
         $this->localDefaults = array_merge($this->localDefaults, array('codeDescriptionNote'=> 'Note that the codes to be used below<BR> are the codes listed on page 2 of FIGS<BR>and describe relationship to the child of interest.<br>'));
-        $this->form->addElement('static', 'codeDescriptionNote');
+        $this->form->addElement('static', 'codeDescriptionNote', null, null);
         $this->form->addElement('text', 'addRelativeCode', 'Add new relative coded', array('size'=>5, 'maxlength'=>5));
         $this->form->applyFilter('addRelativeCode', 'strtoupper');
         $this->form->addRule('addRelativeCode', 'The relative code entered is not a valid FIGS relationship code', 'regex', $this->_relationshipCodeRegex);
