@@ -1689,8 +1689,8 @@ class NDAR_Release_2017
                             $row[$key] = $temp[0];
                         }
                     }
-                    $relationships = array('Mother' => 1, 'Mom' => 1, 'mother' => 1, 'Father' => 2, 'Dad' => 2, 'dad' => 2, 'Mom/Dad' => 28, 'Both Parents' => 28,
-                        'mother and father' => 28, 'father and mother' => 28, 'Fater' => 2, 'Other' => 90, 'NA' => '-999', 'not_answered' => '-999');
+                    $relationships = array('Mother' => 1, 'Mom' => 1, 'mother' => 1, '1_Mother' => 1, 'Father' => 2, '2_Father' => 2, 'Dad' => 2, 'dad' => 2, 'Mom/Dad' => 28, 'Both Parents' => 28,
+                        'mother and father' => 28, 'father and mother' => 28, 'Fater' => 2, 'Other' => 90, '3_Other' => 90, 'NA' => '-999', 'not_answered' => '-999');
                     if ($key === 'relationship_to_child') {
                         if (!empty($val)) {
                             $row[$key] = $relationships[$val];
