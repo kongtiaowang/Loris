@@ -64,11 +64,11 @@ class NDAR_Release_MRI {
         }
         return copy($origin, $dest);
     }
-    
+
     function replaceID($string, $CandID, $IBISID) {
         return preg_replace("/$CandID/", $IBISID, $string);
     }
-    
+
     function anonFile($original, $output) {
         print "Copying $original\n";
         $this->copyFile($original, $output);
@@ -89,7 +89,7 @@ class NDAR_Release_MRI {
 
     function getHeader_old($file, $header) {
         $factory = NDB_Factory::singleton();
-        $db = $factory->Database();        
+        $db = $factory->Database();
         return trim(
             $db->pselectOne("SELECT parameter_file.Value FROM files JOIN parameter_file USING (FileID) JOIN parameter_type USING (ParameterTypeID) WHERE parameter_type.Name=:header AND files.file=:filename",
             array(
@@ -98,18 +98,18 @@ class NDAR_Release_MRI {
             ))
         );
     }
-    
+
     function getHeader($file, $header) {
         $line = system("mincheader \\$file | grep $header");
         $output_array = explode("=", $line);
-        
+
         if (is_array($output_array)) {
             $value = trim(str_replace("\"", "", $output_array[1]));
         }
-        
+
         return $value;
     }
-    
+
     function anonHeader($file, $header, $value='ibis') {
         system("minc_modify_header -sinsert " . escapeshellarg($header . "=" . $value) . " \\$file" . " 2>&1");
     }
@@ -136,7 +136,7 @@ class NDAR_Release_MRI {
             $StudyDay  = substr($StudyDate, 6, 2);
             $intervage = round(date_diff(new DateTime("$StudyYear-$StudyMo-$StudyDay"), new DateTime($info['DoB']))->format('%a') / (365/12));
         }
-        
+
         $desc = '';
         $orient = '';
         if(strpos($file, "ep2d") !== FALSE) {
@@ -209,68 +209,80 @@ class NDAR_Release_MRI {
             AND COALESCE(c.CandidateGUID, '') <> '' AND s.Current_stage <> 'Recycling Bin' AND s.SubprojectID IN (9, 10)
             AND ( ps.study_consent = 'yes' AND (COALESCE(ps.study_consent_withdrawal,'0000-00-00') = '0000-00-00' )) AND (ps.ndar_consent = 'yes' AND (COALESCE(ps.ndar_consent_withdrawal,'0000-00-00') = '0000-00-00'))
             ORDER BY PSCID", array());
-        
-        
+
+
         // IBIS1 - v06 - T1 & T2's
         $files = $db->pselect("SELECT c.CandID, c.PSCID, c.IBISID, c.CandidateGUID, c.ProbandGUID, c.DoB, s.CenterID, s.Visit_label, s.Current_stage, f.File, fqc.QCStatus, c.Gender from files f left join files_qcstatus fqc USING (FileID) LEFT JOIN session s ON (s.ID=f.SessionID) LEFT JOIN candidate c on (c.CandID=s.CandID) LEFT JOIN parameter_file AS pf ON (f.FileID=pf.FileID) LEFT JOIN parameter_type AS pt ON (pt.ParameterTypeID=pf.ParameterTypeID) LEFT JOIN participant_status ps ON (c.CandID=ps.CandID) WHERE pt.Name='patient_id' AND lower(s.Visit_label)='v06' AND s.Active='Y' AND c.Active='Y' AND
             (
                 f.AcquisitionProtocolID='44' OR f.AcquisitionProtocolID='45'
             )
-            AND COALESCE(c.CandidateGUID, '') <> '' AND s.Current_stage <> 'Recycling Bin' AND s.SubprojectID IN (1, 2, 3) 
+            AND COALESCE(c.CandidateGUID, '') <> '' AND s.Current_stage <> 'Recycling Bin' AND s.SubprojectID IN (1, 2, 3)
             AND ( ps.study_consent = 'yes' AND (COALESCE(ps.study_consent_withdrawal,'0000-00-00') = '0000-00-00' )) AND (ps.ndar_consent = 'yes' AND (COALESCE(ps.ndar_consent_withdrawal,'0000-00-00') = '0000-00-00')) 
             ORDER BY PSCID", array());
-*/
-        // IBIS2 - v03 - T1 & T2's
-        $files = $db->pselect("select c.CandID, c.PSCID, c.IBISID, c.CandidateGUID, c.ProbandGUID, c.DoB, s.CenterID, s.Visit_label, s.Current_stage, f.File, fqc.QCStatus, c.Gender FROM files f left join files_qcstatus fqc USING (FileID) LEFT JOIN session s ON (s.ID=f.SessionID) LEFT JOIN candidate c on (c.CandID=s.CandID) LEFT JOIN parameter_file AS pf ON (f.FileID=pf.FileID) LEFT JOIN parameter_type AS pt ON (pt.ParameterTypeID=pf.ParameterTypeID) LEFT JOIN participant_status ps ON (c.CandID=ps.CandID) WHERE pt.Name='patient_id' AND LOWER(s.Visit_label)='v03' AND s.Active='Y' AND c.Active='Y' AND
+        */
+        // IBIS1 - 'V06', 'V12', 'V24' - T1 & T2's
+        $files = $db->pselect("select c.CandID, c.PSCID, c.IBISID, c.CandidateGUID, c.ProbandGUID, c.DoB, s.CenterID, s.Visit_label, s.Current_stage, f.File, fqc.QCStatus, c.Gender
+            FROM files f left join files_qcstatus fqc USING (FileID) LEFT JOIN session s ON (s.ID=f.SessionID) LEFT JOIN candidate c on (c.CandID=s.CandID)
+            LEFT JOIN parameter_file AS pf ON (f.FileID=pf.FileID) LEFT JOIN parameter_type AS pt ON (pt.ParameterTypeID=pf.ParameterTypeID) LEFT JOIN participant_status ps ON (c.CandID=ps.CandID)
+            WHERE pt.Name='patient_id' AND UPPER(s.Visit_label) IN ('V06', 'V12', 'V24') AND s.Active='Y' AND c.Active='Y' AND (ps.participant_status=1 OR ps.participant_status=7) AND
             (
                 f.AcquisitionProtocolID='44' OR f.AcquisitionProtocolID='45'
             )
-            AND COALESCE(c.CandidateGUID, '') <> '' AND s.Current_stage <> 'Recycling Bin' AND s.SubprojectID IN (9, 10)
-            AND ( ps.study_consent = 'yes' AND (COALESCE(ps.study_consent_withdrawal,'0000-00-00') = '0000-00-00' )) AND (ps.ndar_consent = 'yes' AND (COALESCE(ps.ndar_consent_withdrawal,'0000-00-00') = '0000-00-00'))
+            AND COALESCE(c.CandidateGUID, '') <> '' AND s.Current_stage <> 'Recycling Bin' AND s.SubprojectID IN (1, 2, 3)
+            AND ( ps.study_consent = 'yes' AND (COALESCE(ps.study_consent_withdrawal,'0000-00-00') = '0000-00-00' ))
+            AND (ps.ndar_consent = 'yes' AND (COALESCE(ps.ndar_consent_withdrawal,'0000-00-00') = '0000-00-00'))
             ORDER BY PSCID", array());
-                
+
         // $files = array_merge($filesq1, $filesq2, $filesq3);
 
         /*
         // Casey's request
-        $files = $db->pselect("select pt.Name, c.CandID, c.PSCID, c.IBISID, c.CandidateGUID, c.ProbandGUID, c.DoB, s.CenterID, s.Visit_label, s.Current_stage, f.File, fqc.QCStatus, c.Gender 
-            FROM files f 
-            LEFT JOIN files_qcstatus fqc USING (FileID) 
-            LEFT JOIN session s ON (s.ID=f.SessionID) 
-            LEFT JOIN candidate c on (c.CandID=s.CandID) 
-            LEFT JOIN parameter_file AS pf ON (f.FileID=pf.FileID) 
-            LEFT JOIN parameter_type AS pt ON (pt.ParameterTypeID=pf.ParameterTypeID) 
-            LEFT JOIN participant_status ps ON (c.CandID=ps.CandID) 
-            WHERE pf.ParameterTypeID='1' 
+        $files = $db->pselect("select pt.Name, c.CandID, c.PSCID, c.IBISID, c.CandidateGUID, c.ProbandGUID, c.DoB, s.CenterID, s.Visit_label, s.Current_stage, f.File, fqc.QCStatus, c.Gender
+            FROM files f
+            LEFT JOIN files_qcstatus fqc USING (FileID)
+            LEFT JOIN session s ON (s.ID=f.SessionID)
+            LEFT JOIN candidate c on (c.CandID=s.CandID)
+            LEFT JOIN parameter_file AS pf ON (f.FileID=pf.FileID)
+            LEFT JOIN parameter_type AS pt ON (pt.ParameterTypeID=pf.ParameterTypeID)
+            LEFT JOIN participant_status ps ON (c.CandID=ps.CandID)
+            WHERE pf.ParameterTypeID='1'
             AND ((f.acquisitionprotocolid = 44 and pf.value = 't1w') or (f.acquisitionprotocolid = 45 and pf.value = 't2w'))
             AND s.SubprojectID IN (1, 2, 3, 9, 10)
-            AND ( ps.study_consent = 'yes' AND (COALESCE(ps.study_consent_withdrawal,'0000-00-00') = '0000-00-00' )) 
+            AND ( ps.study_consent = 'yes' AND (COALESCE(ps.study_consent_withdrawal,'0000-00-00') = '0000-00-00' ))
             AND c.candID in (216477, 274101, 755073, 842426, 924951)
             ORDER BY PSCID", array());
-        */ 
-        
+        */
+
+        // NDAR
+        //$anonFilePath = "/data/ibis/data/";
+        // NDAR DEFACED T1 & T2's
+        //$anonFilePath = "/home/gluneau/";     // Prod Box
+        $anonFilePath = "/home/lorisadmin/";  // Devv Box
+        // Casey´s
+        // $anonFilePath = "/data/not_backed_up/";
+        // OutputDir
+        $outputDir = "/home/gluneau/pinch/ibis_anon_20170406/";
+
         foreach($files as $row) {
             print "Replacing file: ". $row['File'] ."\n";
             $file_anonymized = $this->replaceID($row['File'], $row['CandID'], $row['IBISID']);
             $split_file = explode("/", $file_anonymized);
             $only_anon_file = $split_file[count($split_file)-1];print $row['File']."\n";
-            // NDAR
-            //$anonFilePath = "/data/ibis/data/";
-            // NDAR DEFACED T1 & T2's
-            $anonFilePath = "/home/gluneau/";
-            // Casey´s
-            // $anonFilePath = "/data/not_backed_up/";
+
             $row['File'] = str_replace("assembly", "login", $row['File']);
             $row['File'] = str_replace("mri/native/ibis", "deface/deface", $row['File']);
             $row['File'] = preg_replace("/_00\d/", "$1", $row['File']);
             $row['File'] = str_replace("v03", "V03", $row['File']);
-                
-            $this->anonFile($anonFilePath . $row['File'], "/home/gluneau/pinch/ibis_anon_20160321/$only_anon_file");
+            $row['File'] = str_replace("v06", "V06", $row['File']);
+            $row['File'] = str_replace("v12", "V12", $row['File']);
+            $row['File'] = str_replace("v24", "V24", $row['File']);
+
+            $this->anonFile($anonFilePath . $row['File'], $outputDir . $only_anon_file);
             // cut off the directory portion of the filename for the CSV..
             $this->addToCSV($anonFilePath . $row['File'], $row);
         }
 
-        $fp = fopen("/home/gluneau/pinch/ibis_anon_20160321/NDARMRI.csv", 'w');
+        $fp = fopen($outputDir . "NDARMRI.csv", 'w');
         fputcsv($fp, array('image03'));
         fputcsv($fp, array_keys($this->CSVData[0]));
         foreach ($this->CSVData as $row) {
