@@ -70,7 +70,7 @@ class NDAR_Release_2017
             } else {
                 return $Base . " AND s.SubprojectID IN (1, 2, 3) AND UPPER(s.Visit_label) IN ('V06', 'V12', 'V24') $GUID";
             }
-        } else if ($this->instrument == 'ados_module1' || $this->instrument == 'ados_module2' || $this->instrument == 'ados_module3') {
+        } else if ($this->instrument == 'ados_module1' || $this->instrument == 'ados_module2' || $this->instrument == 'ados_module3' || $this->instrument == 'ados2_module1' || $this->instrument == 'ados2_module2' || $this->instrument == 'ados2_module3') {
             if ($this->project == 2) {
                 return $Base . " AND s.SubprojectID=10 AND UPPER(s.Visit_label) IN ('V09', 'V15') $GUID";
             } else {
@@ -2082,7 +2082,9 @@ class NDAR_Release_2017
 
     function run()
     {
-        $headers = array('adi_r_proband' => 'adi_200304', 'aosi' => 'earli_aosi01', 'csbs' => 'csbs_dp_behavior02', 'edi' => 'edi01', 'charge' => 'charge_medical_history02',
+        $headers = array('ados_module1' => 'ados_module1', 'ados_module2' => 'ados_module2', 'ados_module3' => 'ados_module3', 
+            'ados2_module1' => 'ados2_module1', 'ados2_module2' => 'ados2_module2', 'ados2_module3' => 'ados2_module3',
+            'adi_r_proband' => 'adi_200304', 'aosi' => 'earli_aosi01', 'csbs' => 'csbs_dp_behavior02', 'edi' => 'edi01', 'charge' => 'charge_medical_history02',
             'fyi' => 'fyi01', 'ibq_r' => 'ibq_r01', 'macarthur_words_gestures' => 'mci_words_gestures01', 'vineland_proband' => 'vinelandsurvey_200505',
             'm_chat_proband' => 'm_chat02', 'mullen' => 'mullen03', 'prefrontal_task' => 'prefront_task01', 'edi2' => 'edi01',
             'rbs_r' => 'rbs_r02', 'seq' => 'seq01', 'vineland_subject' => 'vinelandsurvey_200505', 'adi_r_subject' => 'adir_200304',
