@@ -649,7 +649,7 @@ class NDAR_Release_2017
         } else if ($this->instrument == 'vineland_subject' || $this->instrument == 'vineland_proband') {
             $fields = array(
                 'i.CommentID',
-                'i.RELATIONSHIP as relationship',
+               // 'i.RELATIONSHIP as relationship',
                 'i.`ABC_%ILE_RANK` as ABC_PERCENTILE_RANK',
                 'i.`ABC_95%_CI` as ABC_95PERCENT_CI',
                 'i.ABC_ADAPT_LEVEL',
@@ -1297,7 +1297,7 @@ class NDAR_Release_2017
             );
         } else if ($this->instrument == 'csbs') {
             $fields = array('i.object_use_weighted',
-                'i.relationship_to_child',
+               // 'i.relationship_to_child',
                 'i.q_1_alertness',
                 'i.q_2_emotional_reaction',
                 'i.q_3_level_of_interest',
@@ -1545,11 +1545,51 @@ class NDAR_Release_2017
         } else if ($this->instrument == 'head_measurements_subject') {
             $fields = array('i.length1', 'i.length2', 'i.head_length_unit', 'i.weight1', 'i.weight2', 'i.weight_unit');
         } else if ($this->instrument == 'prefrontal_task') {
-            $fields = array('i.training', 'i.training_finds_partially_covered', 'i.training_finds_fully_covered', 'i.training_retrieves_R_well', 'i.training_retrieves_R_well_trial', 'i.training_retrieves_R_well_trial_of', 'i.training_retrieves_L_well', 'i.training_retrieves_L_well_trial', 'i.training_retrieves_L_well_trial_of', 'i.start_side', 'i.trial_1', 'i.trial_2', 'i.trial_3', 'i.trial_4', 'i.trial_5', 'i.trial_6', 'i.trial_7', 'i.trial_8', 'i.trial_9', 'i.trial_10', 'i.trial_11', 'i.trial_12', 'i.trial_13', 'i.trial_14', 'i.trial_15', 'i.trial_16', 'i.trial_17', 'i.trial_18', 'i.trial_19', 'i.trial_20', 'i.trial_21', 'i.trial_22', 'i.trial_23', 'i.trial_24', 'i.first_reversal', 'i.second_reversal', 'i.third_reversal', 'i.fourth_reversal', 'i.validity_of_data', 'i.invalidity_reason', 'i.invalidity_comment', 'i.invalidity_comment_status', 'i.5sec_overall_correct', 'i.5sec_overall_trials', 'i.5sec_reversals_correct', 'i.5sec_reversals_trials', 'i.12sec_overall_correct', 'i.12sec_overall_trials', 'i.12sec_reversals_correct', 'i.12sec_reversals_trials');
+            $fields = array('i.training', 'i.training_finds_partially_covered', 'i.training_finds_fully_covered', 'i.training_retrieves_R_well', 'i.training_retrieves_R_well_trial', 'i.training_retrieves_R_well_trial_of', 'i.training_retrieves_L_well', 'i.training_retrieves_L_well_trial', 'i.training_retrieves_L_well_trial_of', 'i.start_side', 'i.trial_1', 'i.trial_2', 'i.trial_3', 'i.trial_4', 'i.trial_5', 'i.trial_6', 'i.trial_7', 'i.trial_8', 'i.trial_9', 'i.trial_10', 'i.trial_11', 'i.trial_12', 'i.trial_13', 'i.trial_14', 'i.trial_15', 'i.trial_16', 'i.trial_17', 'i.trial_18', 'i.trial_19', 'i.trial_20', 'i.trial_21', 'i.trial_22', 'i.trial_23', 'i.trial_24', 'i.first_reversal', 'i.second_reversal', 'i.third_reversal', 'i.fourth_reversal', 'i.validity_of_data', 'i.invalidity_reason','i.invalidity_comment_status', 'i.5sec_overall_correct', 'i.5sec_overall_trials', 'i.5sec_reversals_correct', 'i.5sec_reversals_trials', 'i.12sec_overall_correct', 'i.12sec_overall_trials', 'i.12sec_reversals_correct', 'i.12sec_reversals_trials');
         } else if ($this->instrument == 'fyi') {
-            $fields = array('i.person_filling_out', 'i.person_filling_out_specify', 'i.risk_score', 'i.percentile', 'i.soc_com_risk', 'i.sen_reg_risk', 'i.orientrec', 'i.affeng', 'i.imitate', 'i.express', 'i.senproc', 'i.regpat', 'i.react', 'i.repplay', 'i.q_1', 'i.q_2', 'i.q_3', 'i.q_4', 'i.q_5', 'i.q_6', 'i.q_7', 'i.q_8', 'i.q_9', 'i.q_10', 'i.q_11', 'i.q_12', 'i.q_13', 'i.q_14', 'i.q_15', 'i.q_16', 'i.q_17', 'i.q_18', 'i.q_19', 'i.q_20', 'i.q_21', 'i.q_22', 'i.q_23', 'i.q_24', 'i.q_25', 'i.q_26', 'i.q_27', 'i.q_28', 'i.q_29', 'i.q_30', 'i.q_31', 'i.q_32', 'i.q_33', 'i.q_34', 'i.q_35', 'i.q_36', 'i.q_37', 'i.q_38', 'i.q_39', 'i.q_40', 'i.q_41', 'i.q_42', 'i.q_43', 'i.q_44', 'i.q_45', 'i.q_46', 'i.q_47', 'i.q_48', 'i.q_49', 'i.q_50', 'i.q_51', 'i.q_52', 'i.q_53', 'i.q_54', 'i.q_55', 'i.q_56', 'i.q_57', 'i.q_58', 'i.q_59', 'i.q_60', 'i.sounds_p', 'i.sounds_b', 'i.sounds_t', 'i.sounds_d', 'i.sounds_k', 'i.sounds_g', 'i.sounds_m', 'i.sounds_n', 'i.sounds_w', 'i.sounds_y', 'i.sounds_h', 'i.sounds_s', 'i.q_62', 'i.q_63');
+            $fields = array
+            ('i.person_filling_out', 'i.person_filling_out_specify', 'i.risk_score', 'i.percentile', 'i.soc_com_risk', 'i.sen_reg_risk', 'i.orientrec', 'i.affeng', 'i.imitate', 'i.express', 'i.senproc', 'i.regpat', 'i.react', 'i.repplay', 'i.q_1', 'i.q_2', 'i.q_3', 'i.q_4', 'i.q_5', 'i.q_6', 'i.q_7', 'i.q_8', 'i.q_9', 'i.q_10', 'i.q_11', 'i.q_12', 'i.q_13', 'i.q_14', 'i.q_15', 'i.q_16', 'i.q_17', 'i.q_18', 'i.q_19', 'i.q_20', 'i.q_21', 'i.q_22', 'i.q_23', 'i.q_24', 'i.q_25', 'i.q_26', 'i.q_27', 'i.q_28', 'i.q_29', 'i.q_30', 'i.q_31', 'i.q_32', 'i.q_33', 'i.q_34', 'i.q_35', 'i.q_36', 'i.q_37', 'i.q_38', 'i.q_39', 'i.q_40', 'i.q_41', 'i.q_42', 'i.q_43', 'i.q_44', 'i.q_45', 'i.q_46', 'i.q_47', 'i.q_48', 'i.q_49', 'i.q_50', 'i.q_51', 'i.q_52', 'i.q_53', 'i.q_54', 'i.q_55', 'i.q_56', 'i.q_57', 'i.q_58', 'i.q_59', 'i.q_60', 'i.sounds_p', 'i.sounds_b', 'i.sounds_t', 'i.sounds_d', 'i.sounds_k', 'i.sounds_g', 'i.sounds_m', 'i.sounds_n', 'i.sounds_w', 'i.sounds_y', 'i.sounds_h', 'i.sounds_s', 'i.q_63');
         } else if ($this->instrument == 'edi' || $this->instrument == 'edi2') {
-            $fields = array('i.score_0_3_regulatory', 'i.score_0_3_total_symptoms', 'i.score_10_12_communication', 'i.score_10_12_regulatory', 'i.score_10_12_repetitive_behaviour', 'i.score_10_12_social', 'i.score_10_12_total_symptoms', 'i.score_13_15_communication', 'i.score_13_15_regulatory', 'i.score_13_15_repetitive_behaviour', 'i.score_13_15_social', 'i.score_13_15_total_symptoms', 'i.score_16_18_communication', 'i.score_16_18_regulatory', 'i.score_16_18_repetitive_behaviour', 'i.score_16_18_social', 'i.score_16_18_total_symptoms', 'i.score_19_21_communication', 'i.score_19_21_regulatory', 'i.score_19_21_repetitive_behaviour', 'i.score_19_21_social', 'i.score_19_21_total_symptoms', 'i.score_22_24_communication', 'i.score_22_24_regulatory', 'i.score_22_24_repetitive_behaviour', 'i.score_22_24_social', 'i.score_22_24_total_symptoms', 'i.score_4_6_regulatory', 'i.score_4_6_social', 'i.score_4_6_total_symptoms', 'i.score_7_9_communication', 'i.score_7_9_regulatory', 'i.score_7_9_social', 'i.score_7_9_total_symptoms', 'i.EDI1', 'i.EDI2', 'i.EDI3', 'i.EDI4', 'i.EDI5', 'i.EDI6', 'i.EDI7', 'i.EDI8', 'i.EDI9', 'i.EDI10', 'i.EDI11', 'i.EDI12', 'i.EDI13', 'i.EDI14', 'i.EDI15', 'i.EDI16', 'i.EDI17', 'i.EDI18', 'i.EDI19', 'i.EDI20', 'i.EDI21', 'i.EDI22', 'i.EDI23', 'i.EDI24', 'i.EDI25', 'i.EDI26', 'i.EDI27', 'i.EDI28', 'i.EDI29', 'i.EDI30', 'i.EDI31', 'i.EDI32', 'i.EDI33', 'i.EDI34', 'i.EDI35', 'i.EDI36', 'i.EDI37', 'i.EDI38', 'i.EDI39', 'i.EDI40', 'i.EDI41', 'i.EDI42', 'i.EDI43', 'i.EDI44', 'i.EDI45', 'i.EDI46', 'i.EDI47', 'i.EDI48', 'i.EDI49', 'i.EDI50', 'i.EDI51', 'i.EDI52', 'i.EDI53', 'i.EDI54', 'i.EDI55', 'i.EDI56', 'i.EDI57', 'i.EDI58', 'i.EDI59', 'i.EDI60', 'i.EDI61', 'i.EDI62', 'i.EDI63', 'i.EDI64', 'i.EDI65', 'i.EDI66', 'i.EDI67', 'i.EDI68', 'i.EDI69', 'i.EDI70', 'i.EDI71', 'i.EDI72', 'i.EDI73', 'i.EDI74', 'i.EDI75', 'i.EDI76', 'i.EDI77', 'i.EDI78', 'i.EDI79', 'i.EDI80', 'i.EDI81', 'i.EDI82', 'i.EDI83', 'i.EDI84', 'i.EDI85', 'i.EDI86', 'i.EDI87', 'i.EDI88', 'i.EDI89', 'i.EDI90', 'i.EDI91', 'i.EDI92', 'i.EDI93', 'i.EDI94', 'i.EDI95', 'i.EDI96', 'i.inj', 'i.dear', 'i.conf', 'i.legl', 'i.emp', 'i.crim', 'i.hea AS edihea', 'i.hosp as edihosp');
+            $fields = array(
+                'i.score_0_3_regulatory',
+                'i.score_0_3_total_symptoms',
+                'i.score_10_12_communication',
+                'i.score_10_12_regulatory',
+                'i.score_10_12_repetitive_behaviour',
+                'i.score_10_12_social',
+                'i.score_10_12_total_symptoms',
+                'i.score_13_15_communication',
+                'i.score_13_15_regulatory',
+                'i.score_13_15_repetitive_behaviour',
+                'i.score_13_15_social',
+                'i.score_13_15_total_symptoms',
+                'i.score_16_18_communication',
+               // 'i.score_16_18_regulatory',
+                'i.score_16_18_repetitive_behaviour',
+                'i.score_16_18_social',
+                'i.score_16_18_total_symptoms',
+                'i.score_19_21_communication',
+                //'i.score_19_21_regulatory',
+                'i.score_19_21_repetitive_behaviour',
+                'i.score_19_21_social',
+                'i.score_19_21_total_symptoms',
+                'i.score_22_24_communication',
+               // 'i.score_22_24_regulatory',
+                'i.score_22_24_repetitive_behaviour',
+                'i.score_22_24_social',
+                'i.score_22_24_total_symptoms',
+                'i.score_4_6_regulatory',
+                'i.score_4_6_social',
+                'i.score_4_6_total_symptoms',
+                'i.score_7_9_communication',
+                'i.score_7_9_regulatory',
+                'i.score_7_9_social',
+                'i.score_7_9_total_symptoms',
+                'i.EDI1',
+                'i.EDI2',
+                'i.EDI3',
+                'i.EDI4',
+                'i.EDI5', 'i.EDI6', 'i.EDI7', 'i.EDI8', 'i.EDI9', 'i.EDI10', 'i.EDI11', 'i.EDI12', 'i.EDI13', 'i.EDI14', 'i.EDI15', 'i.EDI16', 'i.EDI17', 'i.EDI18', 'i.EDI19', 'i.EDI20', 'i.EDI21', 'i.EDI22', 'i.EDI23', 'i.EDI24', 'i.EDI25', 'i.EDI26', 'i.EDI27', 'i.EDI28', 'i.EDI29', 'i.EDI30', 'i.EDI31', 'i.EDI32', 'i.EDI33', 'i.EDI34', 'i.EDI35', 'i.EDI36', 'i.EDI37', 'i.EDI38', 'i.EDI39', 'i.EDI40', 'i.EDI41', 'i.EDI42', 'i.EDI43', 'i.EDI44', 'i.EDI45', 'i.EDI46', 'i.EDI47', 'i.EDI48', 'i.EDI49', 'i.EDI50', 'i.EDI51', 'i.EDI52', 'i.EDI53', 'i.EDI54', 'i.EDI55', 'i.EDI56', 'i.EDI57', 'i.EDI58', 'i.EDI59', 'i.EDI60', 'i.EDI61', 'i.EDI62', 'i.EDI63', 'i.EDI64', 'i.EDI65', 'i.EDI66', 'i.EDI67', 'i.EDI68', 'i.EDI69', 'i.EDI70', 'i.EDI71', 'i.EDI72', 'i.EDI73', 'i.EDI74', 'i.EDI75', 'i.EDI76', 'i.EDI77', 'i.EDI78', 'i.EDI79', 'i.EDI80', 'i.EDI81', 'i.EDI82', 'i.EDI83', 'i.EDI84', 'i.EDI85', 'i.EDI86', 'i.EDI87', 'i.EDI88', 'i.EDI89', 'i.EDI90', 'i.EDI91', 'i.EDI92', 'i.EDI93', 'i.EDI94', 'i.EDI95', 'i.EDI96', 'i.inj', 'i.dear', 'i.conf', 'i.legl', 'i.emp', 'i.crim', 'i.hea AS edihea', 'i.hosp as edihosp');
         } else if ($this->instrument == 'charge') {
             $fields = array(
                 'c.CandidateGUID',
@@ -1630,9 +1670,9 @@ class NDAR_Release_2017
 
             if ($this->instrument === 'adi_r_proband') {
                 if ($row['BNV_Total'] == 'Verbal') {
-                    $row['subject_verbal'] = 'yes';
+                    $row['subject_verbal'] = 'Yes';
                 } else if ($row['BV_Total'] == 'Nonverbal') {
-                    $row['subject_verbal'] = 'no';
+                    $row['subject_verbal'] = 'No';
                 } else {
                     $row['subject_verbal'] = '';
                 }
