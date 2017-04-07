@@ -70,6 +70,12 @@ class NDAR_Release_2017
             } else {
                 return $Base . " AND s.SubprojectID IN (1, 2, 3) AND UPPER(s.Visit_label) IN ('V06', 'V12', 'V24') $GUID";
             }
+        } else if ($this->instrument == 'ados_module1' || $this->instrument == 'ados_module2' || $this->instrument == 'ados_module3') {
+            if ($this->project == 2) {
+                return $Base . " AND s.SubprojectID=10 AND UPPER(s.Visit_label) IN ('V09', 'V15') $GUID";
+            } else {
+                return $Base . " AND s.SubprojectID IN (1, 2, 3) AND UPPER(s.Visit_label) IN ('V06', 'V12', 'V24') $GUID";
+            }
         } else if ($this->instrument == 'fyi') {
             return $Base . " AND s.SubprojectID IN (1, 2, 3) AND UPPER(s.Visit_label) IN ('V06', 'V12', 'V24') $GUID";
         } else if ($this->instrument == 'edi') {
@@ -320,6 +326,126 @@ class NDAR_Release_2017
                 'i.q_93_computational_ability_current_code',
                 'i.q_93_computational_ability_ever_code'
             );
+        } else if ($this->instrument == 'ados_module1') {
+            $fields = array(
+                'i.a1 AS codinga_olang_a',
+                'i.a2 AS codinga_fvoc_a',
+                'i.a3 AS codinga_inton_a',
+                'i.a4 AS codinga_iecho_a',
+                'i.a5 AS codinga_stereo_a',
+                'i.a6 AS codinga_uothr_a',
+                'i.a7 AS codinga_point_a',
+                'i.a8 AS codinga_gest_a',
+                'i.b1 AS codingb_ueye_a',
+                'i.b2 AS codingb_ssmle_a',
+                'i.b3 AS codingb_faceo_a',
+                'i.b4 AS codingb_gzsov_a',
+                'i.b5 AS codingb_shrnj_a',
+                'i.b6 AS codingb_rname_a',
+                'i.b7 AS codingb_req_a',
+                'i.b8 AS codingb_give_a',
+                'i.b9 AS codingb_show_a',
+                'i.b10 AS codingb_sijnt_a',
+                'i.b11 AS codingb_rjnt_a',
+                'i.b12 AS codingb_qsov_a',
+                'i.c1 AS codingc_fplay_a',
+                'i.c2 AS codingc_imgcr_a',
+                'i.d1 AS codingd_usens_a',
+                'i.d2 AS codingd_oman_a',
+                'i.d3 AS codingd_selfinj_a',
+                'i.e1 AS codinge_actve_a',
+                'i.e2 AS codinge_agg_a',
+                'i.e3 AS codinge_anxty_a',
+                "'NK' AS scoresumm_atotal",
+                "'NK' AS scoresumm_btotal",
+                "'NK' AS scoresumm_abtotal",
+                "'NK' AS scoresumm_ctotal",
+                "'NK' AS scoresumm_dtotal",
+                'i.ADOS_classification AS scoresumm_adosdiag',
+                "'NK' AS scoresumm_overalldiag"
+            );
+        } else if ($this->instrument == 'ados2_module1') {
+            $fields = array(
+                'i.a1 AS codinga_olang_a',
+                'i.a2 AS codinga_fvoc_a',
+                'i.a3 AS codinga_inton_a',
+                'i.a4 AS codinga_iecho_a',
+                'i.a5 AS codinga_stereo_a',
+                // 'i.a6 AS codinga_uothr_a',
+                'i.a7 AS codinga_point_a',
+                'i.a8 AS codinga_gest_a',
+                'i.b1 AS codingb_ueye_a',
+                'i.b2 AS codingb_ssmle_a',
+                'i.b3 AS codingb_faceo_a',
+                'i.b4 AS codingb_gzsov_a',
+                'i.b5 AS codingb_shrnj_a',
+                'i.b6 AS codingb_rname_a',
+                'i.b7 AS codingb_req_a',
+                'i.b8 AS codingb_give_a',
+                'i.b9 AS codingb_show_a',
+                'i.b10 AS codingb_sijnt_a',
+                'i.b11 AS codingb_rjnt_a',
+                'i.b12 AS codingb_qsov_a',
+                'i.c1 AS codingc_fplay_a',
+                'i.c2 AS codingc_imgcr_a',
+                'i.d1 AS codingd_usens_a',
+                'i.d2 AS codingd_oman_a',
+                'i.d3 AS codingd_selfinj_a',
+                'i.e1 AS codinge_actve_a',
+                'i.e2 AS codinge_agg_a',
+                'i.e3 AS codinge_anxty_a',
+                "'NK' AS scoresumm2_abtotal",
+                "'NK' AS scoresumm_adtotal",
+                "'NK' AS scoresumm_overalltotal",
+                'i.ADOS_classification AS scoresumm_adosdiag',
+                "'NK' AS scoresumm_overalldiag",
+                "'NK' AS scoresumm_compscore"
+            ); 
+        } else if ($this->instrument == 'ados2_module2') {
+            $fields = array(
+                'i.a2 AS codinga_spabn_b',
+                'i.a4 AS codinga_stereo_b',
+                'i.a7 AS codinga_gest_b',
+                'i.c2 AS codingc_imgcr_b',
+                'i.d1 AS codingd_usens_b',
+                "'NK' AS scoresumm2_abtotal",
+                "'NK' AS scoresumm_adtotal",
+                "'NK' AS scoresumm_overalltotal",
+                'i.ADOS_classification AS scoresumm_adosdiag',
+                "'NK' AS scoresumm_overalldiag",
+                "'NK' AS scoresumm_compscore"
+            ); 
+        } else if ($this->instrument == 'ados2_module3') {
+            $fields = array(
+                'i.a2 AS codinga_spabn_c',
+                'i.a3 AS codinga_iecho_c',
+                'i.a4 AS codinga_stereo_c',
+                'i.a5 AS codinga_oinfo_c',
+                'i.a7 AS codinga_reprt_c',
+                'i.a9 AS codinga_gest_c',
+                'i.b1 AS codingb_ueye_c',
+                'i.b3 AS codingb_llnvc_c',
+                'i.b4 AS codingb_shrnj_c',
+                'i.b7 AS codingb_qsov_c',
+                'i.b9 AS codingb_qsres_c',
+                'i.b10 AS codingb_arsoc_c',
+                'i.b11 AS codingb_oqrap_c',
+                'i.c1 AS codingc_imgcr_c',               
+                'i.d1 AS codingd_usens_c',
+                'i.d2 AS codingd_oman_c',
+                'i.d3 AS codingd_selfinj_c',
+                'i.e1 AS codinge_actve_c',
+                'i.e2 AS codinge_agg_c',
+                'i.e3 AS codinge_anxty_c',
+                "'NK' AS scoresumm2_abtotal",
+                "'NK' AS scoresumm_adtotal",
+                "'NK' AS scoresumm_overalltotal",
+                'i.ADOS_classification AS scoresumm_adosdiag',
+                "'NK' AS scoresumm_overalldiag",
+                "'NK' AS scoresumm_compscore"
+            ); 
+        } else if ($this->instrument == 'ados_module2' || $this->instrument == 'ados_module3') {
+            $fields = array();
         } else if ($this->instrument === 'aosi') {
             $fields = array(
                 'i.examiner_location',
