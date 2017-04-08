@@ -256,12 +256,12 @@ class NDAR_Release_MRI {
         // NDAR
         //$anonFilePath = "/data/ibis/data/";
         // NDAR DEFACED T1 & T2's
-        //$anonFilePath = "/home/gluneau/";     // Prod Box
-        $anonFilePath = "/home/lorisadmin/";  // Devv Box
+        $anonFilePath = "/home/gluneau/";     // Prod Box
+        //$anonFilePath = "/home/lorisadmin/";  // Devv Box
         // Casey´s
         // $anonFilePath = "/data/not_backed_up/";
         // OutputDir
-        $outputDir = "/home/gluneau/pinch/ibis_anon_20170406/";
+        $outputDir = "/data/not_backed_up/ibis_anon_20170406/";
 
         foreach($files as $row) {
             print "Replacing file: ". $row['File'] ."\n";
@@ -277,7 +277,11 @@ class NDAR_Release_MRI {
             $row['File'] = str_replace("v12", "V12", $row['File']);
             $row['File'] = str_replace("v24", "V24", $row['File']);
 
-            $this->anonFile($anonFilePath . $row['File'], $outputDir . $only_anon_file);
+            if (!file_exists($outputDir . $only_anon_file)) {
+              $this->anonFile($anonFilePath . $row['File'], $outputDir . $only_anon_file);
+            } else {
+              print "File was already done: " . $outputDir . $only_anon_file . "\n";
+            }
             // cut off the directory portion of the filename for the CSV..
             $this->addToCSV($anonFilePath . $row['File'], $row);
         }
