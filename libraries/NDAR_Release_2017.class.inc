@@ -356,17 +356,18 @@ class NDAR_Release_2017
                 'i.e1 AS codinge_actve_a',
                 'i.e2 AS codinge_agg_a',
                 'i.e3 AS codinge_anxty_a',
-                "'NK' AS scoresumm_atotal",
-                "'NK' AS scoresumm_btotal",
-                "'NK' AS scoresumm_abtotal",
-                "'NK' AS scoresumm_ctotal",
-                "'NK' AS scoresumm_dtotal",
+                "'999' AS scoresumm_atotal",
+                "'999' AS scoresumm_btotal",
+                "'999' AS scoresumm_abtotal",
+                "'999' AS scoresumm_ctotal",
+                "'999' AS scoresumm_dtotal",
                 'i.ADOS_classification AS scoresumm_adosdiag',
-                "'NK' AS scoresumm_overalldiag"
+                "'999' AS scoresumm_overalldiag"
             );
         } else if ($this->instrument == 'ados2_module1') {
             $fields = array(
-                'i.a1 AS codinga_olang_a',
+                //'i.a1 AS codinga_olang_a',
+                'i.a1 AS codinga2_olang_a',
                 'i.a2 AS codinga_fvoc_a',
                 'i.a3 AS codinga_inton_a',
                 'i.a4 AS codinga_iecho_a',
@@ -394,12 +395,12 @@ class NDAR_Release_2017
                 'i.e1 AS codinge_actve_a',
                 'i.e2 AS codinge_agg_a',
                 'i.e3 AS codinge_anxty_a',
-                "'NK' AS scoresumm2_abtotal",
-                "'NK' AS scoresumm_adtotal",
-                "'NK' AS scoresumm_overalltotal",
+                "'999' AS scoresumm2_abtotal",
+                "'999' AS scoresumm_adtotal",
+                "'999' AS scoresumm_overalltotal",
                 'i.ADOS_classification AS scoresumm_adosdiag',
-                "'NK' AS scoresumm_overalldiag",
-                "'NK' AS scoresumm_compscore"
+                "'999' AS scoresumm_overalldiag",
+                "'999' AS scoresumm_compscore"
             ); 
         } else if ($this->instrument == 'ados2_module2') {
             $fields = array(
@@ -408,12 +409,12 @@ class NDAR_Release_2017
                 'i.a7 AS codinga_gest_b',
                 'i.c2 AS codingc_imgcr_b',
                 'i.d1 AS codingd_usens_b',
-                "'NK' AS scoresumm2_abtotal",
-                "'NK' AS scoresumm_adtotal",
-                "'NK' AS scoresumm_overalltotal",
+                "'999' AS scoresumm2_abtotal",
+                "'999' AS scoresumm_adtotal",
+                "'999' AS scoresumm_overalltotal",
                 'i.ADOS_classification AS scoresumm_adosdiag',
-                "'NK' AS scoresumm_overalldiag",
-                "'NK' AS scoresumm_compscore"
+                "'999' AS scoresumm_overalldiag",
+                "'999' AS scoresumm_compscore"
             ); 
         } else if ($this->instrument == 'ados2_module3') {
             $fields = array(
@@ -437,12 +438,12 @@ class NDAR_Release_2017
                 'i.e1 AS codinge_actve_c',
                 'i.e2 AS codinge_agg_c',
                 'i.e3 AS codinge_anxty_c',
-                "'NK' AS scoresumm2_abtotal",
-                "'NK' AS scoresumm_adtotal",
-                "'NK' AS scoresumm_overalltotal",
+                "'999' AS scoresumm2_abtotal",
+                "'999' AS scoresumm_adtotal",
+                "'999' AS scoresumm_overalltotal",
                 'i.ADOS_classification AS scoresumm_adosdiag',
-                "'NK' AS scoresumm_overalldiag",
-                "'NK' AS scoresumm_compscore"
+                "'999' AS scoresumm_overalldiag",
+                "'999' AS scoresumm_compscore"
             ); 
         } else if ($this->instrument == 'ados_module2' || $this->instrument == 'ados_module3') {
             $fields = array();
