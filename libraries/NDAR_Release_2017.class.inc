@@ -139,7 +139,7 @@ class NDAR_Release_2017
             return "c.IBISID, c.ProbandGUID,  CASE c.ProbandGender WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS ProbandGender, ROUND(DATEDIFF(i.Date_taken, c.ProbandDoB) / (365/12)) AS Proband_Age_in_Months, f.Validity as validity_of_data, i.Date_taken as interview_date, ";
         } else {
             $NoValidities = array('macarthur_words_gestures', 'seq', 'rbs_r', 'ibq_r', 'head_measurements_subject', 'prefrontal_task', 'fyi', 'scq_proband');
-            $ados = array('ados1_module1','ados1_module2','ados1_module3','ados2_module1','ados2_module2','ados2_module3') ;
+            $ados = array('ados_module1','ados_module2','ados_module3','ados2_module1','ados2_module2','ados2_module3') ;
             if (in_array($this->instrument, $NoValidities)) {
                 if ($this->instrument == 'head_measurements_subject') {
                     return "c.IBISID, c.CandidateGUID as subjectkey, CASE c.Gender WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS Gender, ROUND(DATEDIFF(i.Date_taken, c.DoB) / (365/12)) AS Candidate_Age_in_Months, i.Date_taken as interview_date, ";
@@ -449,8 +449,49 @@ class NDAR_Release_2017
                 "'999' AS scoresumm_overalldiag",
                 "'999' AS scoresumm_compscore"
             ); 
-        } else if ($this->instrument == 'ados_module2' || $this->instrument == 'ados_module3') {
-            $fields = array();
+        } else if ($this->instrument == 'ados_module2') {
+            $fields = array(
+                'i.a2 AS codinga_spabn_b',
+                'i.a4 AS codinga_stereo_b',
+                'i.a7 AS codinga_gest_b',
+                'i.c2 AS codingc_imgcr_b',
+                'i.d1 AS codingd_usens_b',
+                "'999' AS scoresumm2_abtotal",
+                "'999' AS scoresumm_adtotal",
+                "'999' AS scoresumm_overalltotal",
+                'i.ADOS_classification AS scoresumm_adosdiag',
+                "'999' AS scoresumm_overalldiag",
+                "'999' AS scoresumm_compscore"
+            );
+        } else if ($this->instrument == 'ados_module3') {
+            $fields = array(
+                'i.a2 AS codinga_spabn_c',
+                'i.a3 AS codinga_iecho_c',
+                'i.a4 AS codinga_stereo_c',
+                'i.a5 AS codinga_oinfo_c',
+                'i.a7 AS codinga_reprt_c',
+                'i.a9 AS codinga_gest_c',
+                'i.b1 AS codingb_ueye_c',
+                'i.b3 AS codingb_llnvc_c',
+                'i.b4 AS codingb_shrnj_c',
+                'i.b7 AS codingb_qsov_c',
+                'i.b9 AS codingb_qsres_c',
+                'i.b10 AS codingb_arsoc_c',
+                'i.b11 AS codingb_oqrap_c',
+                'i.c1 AS codingc_imgcr_c',
+                'i.d1 AS codingd_usens_c',
+                'i.d2 AS codingd_oman_c',
+                'i.d3 AS codingd_selfinj_c',
+                'i.e1 AS codinge_actve_c',
+                'i.e2 AS codinge_agg_c',
+                'i.e3 AS codinge_anxty_c',
+                "'999' AS scoresumm2_abtotal",
+                "'999' AS scoresumm_adtotal",
+                "'999' AS scoresumm_overalltotal",
+                'i.ADOS_classification AS scoresumm_adosdiag',
+                "'999' AS scoresumm_overalldiag",
+                "'999' AS scoresumm_compscore"
+            );
         } else if ($this->instrument === 'aosi') {
             $fields = array(
                 'i.examiner_location',
