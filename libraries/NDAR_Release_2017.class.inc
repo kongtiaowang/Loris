@@ -134,9 +134,9 @@ class NDAR_Release_2017
         if (strpos($this->instrument, '_proband') !== FALSE) {
             if ($this->instrument == 'm_chat_proband' || $this->instrument == 'scq_proband') {
                 // No validity
-                return "c.IBISID AS src_subject_id,  c.ProbandGUID,  CASE c.ProbandGender WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS ProbandGender, ROUND(DATEDIFF(i.Date_taken, c.ProbandDoB) / (365/12)) AS Proband_Age_in_Months, i.Date_taken as interview_date, ";
+                return "c.IBISID AS src_subject_id,  c.ProbandGUID,  CASE c.ProbandGender WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS ProbandGender, ROUND(DATEDIFF(i.Date_taken, c.ProbandDoB) / (365/12)) AS interview_age, i.Date_taken as interview_date, ";
             }
-            return "c.IBISID AS src_subject_id, c.ProbandGUID,  CASE c.ProbandGender WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS ProbandGender, ROUND(DATEDIFF(i.Date_taken, c.ProbandDoB) / (365/12)) AS Proband_Age_in_Months, f.Validity as validity_of_data, i.Date_taken as interview_date, ";
+            return "c.IBISID AS src_subject_id, c.ProbandGUID,  CASE c.ProbandGender WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS ProbandGender, ROUND(DATEDIFF(i.Date_taken, c.ProbandDoB) / (365/12)) AS interview_age, f.Validity as validity_of_data, i.Date_taken as interview_date, ";
         } else {
             $NoValidities = array('macarthur_words_gestures', 'seq', 'rbs_r', 'ibq_r', 'head_measurements_subject', 'prefrontal_task', 'fyi', 'scq_proband');
             $ados = array('ados_module1','ados_module2','ados_module3','ados2_module1','ados2_module2','ados2_module3') ;
@@ -1815,7 +1815,8 @@ class NDAR_Release_2017
         $validating = TRUE; // Do not forget to set to false if submiting to NDAR!
         
         if ($validating) {
-            $test_fields = "c.PSCID, s.Visit_label, s.SubprojectID, ";
+            //not needed/required for now
+            //$test_fields = "c.PSCID, s.Visit_label, s.SubprojectID, ";
         } else { $test_fields = ""; }
         
         if ($this->instrument == 'demographics') {
@@ -1853,12 +1854,12 @@ class NDAR_Release_2017
                 $row = array_merge($row, $add);
             }
             if (strpos($this->instrument, '_proband') !== FALSE) {
-                $row['IBISID'] = $row['IBISID'] . "pr";
+                $row['src_subject_id'] = $row['src_subject_id'] . "pr";
 
             }
             foreach ($row as $key => $val) {
 
-                if (strpos($key, 'IBISID') !== FALSE) {
+                if (strpos($key, 'src_subject_id') !== FALSE) {
                     $ibis[] = $val;
 
                 }
