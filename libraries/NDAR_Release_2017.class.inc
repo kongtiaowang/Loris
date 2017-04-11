@@ -1812,11 +1812,10 @@ class NDAR_Release_2017
 
     function getQuery()
     {
-        $validating = TRUE; // Do not forget to set to false if submiting to NDAR!
+        $validating = FALSE; // Do not forget to set to false if submiting to NDAR!
         
         if ($validating) {
-            //not needed/required for now
-            //$test_fields = "c.PSCID, s.Visit_label, s.SubprojectID, ";
+            $test_fields = "c.PSCID, s.Visit_label, s.SubprojectID, ";
         } else { $test_fields = ""; }
         
         if ($this->instrument == 'demographics') {
