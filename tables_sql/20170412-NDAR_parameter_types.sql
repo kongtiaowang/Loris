@@ -1,0 +1,5 @@
+INSERT INTO parameter_type_category (Name,`Type`) VALUES ('Candidate Parameters Proband','Metavars');
+INSERT INTO parameter_type (Name,`Type`,Description,SourceField,SourceFrom,Queryable,IsFile) VALUES ('CandidateGUID','varchar(50)','NDAR GUID','CandidateGUID','parameter_candidate',1,0);
+INSERT INTO parameter_type (Name,`Type`,Description,SourceField,SourceFrom,Queryable,IsFile) VALUES ('ProbandGUID','varchar(50)','NDAR Proband GUID','ProbandGUID','parameter_candidate',1,0);
+INSERT INTO parameter_type_category_rel (ParameterTypeID,ParameterTypeCategoryID) VALUES ((SELECT ParameterTypeID FROM parameter_type WHERE Name='CandidateGUID'),(SELECT ParameterTypeCategoryID FROM parameter_type_category WHERE Name='Candidate Parameters'));
+INSERT INTO parameter_type_category_rel (ParameterTypeID,ParameterTypeCategoryID) VALUES ((SELECT ParameterTypeID FROM parameter_type WHERE Name='ProbandGUID'), (SELECT ParameterTypeCategoryID FROM parameter_type_category WHERE Name='Candidate Parameters Proband'));
