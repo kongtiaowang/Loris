@@ -56,7 +56,7 @@ $files = $db->pselect("SELECT c.CandID, c.PSCID, c.IBISID, c.CandidateGUID,
     AND f.File not like \"%DTI65%\"
     ORDER BY c.PSCID", array());
 
-$base_dir = "/export-01/pinch/not_backed_up/";
+$base_dir = "/data/not_backed_up/";
 $target_dir = "DTI_Minc";  // WHERE f.File not like \"%DTI65%\" // (1, 2, 3, 4, 5, 7, 9, 10) <-- default
 // $target_dir = "DTI_SubP_4_5";  // WHERE s.SubprojectID IN (4, 5)
 //$target_dir = "swarfield/dti";  // (3, 10)
