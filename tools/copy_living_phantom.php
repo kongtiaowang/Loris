@@ -49,7 +49,7 @@ $files = $db->pselect("SELECT c.CandID, c.PSCID, c.IBISID, c.CandidateGUID,
     LEFT JOIN candidate c on (c.CandID=s.CandID)
     LEFT JOIN participant_status ps ON (c.CandID=ps.CandID)
     WHERE f.File like \"%living_phantom%\"
-    and from_unixtime(f.InsertTime) > '2014-01-01 01:01:01'
+    and (f.AcquisitionProtocolID=44 or f.AcquisitionProtocolID=45)
     ORDER BY c.PSCID", array());
 
 $base_dir = "/data/not_backed_up/"; // was "/home/gluneau/pinch/"
@@ -57,13 +57,15 @@ $target_dir = "Phantom_MINCS";  // WHERE f.File not like \"%DTI65%\" // (1, 2, 3
 // $target_dir = "DTI65_Minc";  // WHERE f.File like \"%DTI65%\"  //  (1, 2, 3, 4, 5, 7, 9, 10)
 // $target_dir = "DTI_SubP_4_5";  // WHERE s.SubprojectID IN (4, 5)
 //$target_dir = "swarfield/dti";  // (3, 10)
+// and from_unixtime(f.InsertTime) > '2014-01-01 01:01:01'
 
 foreach($files as $row) {
     //$file = explode("/", $row["File"]);
     //     copy("/data/ibis/data/" . $row["File"], "/home/gluneau/pinch/clement/" .  $file[5]);
 
     $file = str_replace("assembly/","", $row["File"]);
-    createPath($base_dir . $target_dir ."/" . substr($file, 0, strrpos($file, '/', -2) + 1 ));
+    $subfile = substr($file, 0, strrpos($file, '/', -2) + 1 );
+    createPath($base_dir . $target_dir . "/" . $subfile);
 
     if (file_exists($base_dir . $target_dir ."/" .  $file)) {
         print "s:";
