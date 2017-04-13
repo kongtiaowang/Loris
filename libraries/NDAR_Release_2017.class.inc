@@ -83,7 +83,7 @@ class NDAR_Release_2017
         } else if ($this->instrument == 'scq' || $this->instrument == 'rbs_r') {
             if ($this->project == 2) {
                 if ($this->instrument == 'rbs_r') {
-                    return $Base . " AND s.SubprojectID=10 AND s.Visit_label ='V12' $GUID";
+                    return $Base . " AND s.SubprojectID=10 AND s.Visit_label IN ('V12','V24') $GUID";
                 }
                 else {
                     return $Base . " AND s.SubprojectID=9 AND UPPER(s.Visit_label) IN ('V06', 'V12', 'V24') $GUID";
@@ -104,10 +104,17 @@ class NDAR_Release_2017
             // Don't use Base because there's multiple instruments
             // All the conflicts don't exist is done in the join, since they need to be part of the left join
             // criteria
-            return " COALESCE( medpsychflag.CommentID, neuroscreenflag.CommentID, tsiflag.CommentID) IS NOT NULL AND
+            if ($this->project == 2) {
+                return " COALESCE( medpsychflag.CommentID, neuroscreenflag.CommentID, tsiflag.CommentID) IS NOT NULL AND
+                    COALESCE(s.Current_stage, '') <> 'Recycling Bin' AND COALESCE(s.Visit, '') NOT IN ('Failure', 'Withdrawal')
+                    AND COALESCE(s.Screening, '') NOT IN ('Failure', 'Withdrawal')
+                    AND s.CenterID IN (2, 3, 4, 5) AND ((s.SubprojectID=9 AND UPPER(s.Visit_label) IN ('V06', 'V12' ,'v24')) OR (s.SubprojectID=10 AND UPPER(s.Visit_label) IN ('V06', 'V12', 'V24'))) AND ( ps.study_consent = 'yes' AND ps.study_consent_withdrawal IS NULL) AND (ps.ndar_consent = 'yes' AND ps.ndar_consent_withdrawal IS NULL) $GUID";
+            } else {
+                return " COALESCE( medpsychflag.CommentID, neuroscreenflag.CommentID, tsiflag.CommentID) IS NOT NULL AND
                     COALESCE(s.Current_stage, '') <> 'Recycling Bin' AND COALESCE(s.Visit, '') NOT IN ('Failure', 'Withdrawal')
                     AND COALESCE(s.Screening, '') NOT IN ('Failure', 'Withdrawal')
                     AND s.CenterID IN (2, 3, 4, 5) AND ((s.SubprojectID=1 AND UPPER(s.Visit_label) IN ('V06', 'V12' ,'v24')) OR (s.SubprojectID=2 AND UPPER(s.Visit_label) IN ('V06', 'V12' ,'v24')) OR (s.SubprojectID=3 AND UPPER(s.Visit_label) IN ('V06', 'V12', 'V24'))) AND ( ps.study_consent = 'yes' AND ps.study_consent_withdrawal IS NULL) AND (ps.ndar_consent = 'yes' AND ps.ndar_consent_withdrawal IS NULL) $GUID";
+            }
         } else if ($this->instrument == 'head_measurements_subject' && $this->project == 2) {
             return $Base . " AND ((s.SubprojectID=9 AND UPPER(s.Visit_label)='V03') OR (s.SubprojectID=10 AND UPPER(s.Visit_label) IN ('V03','V06','V09','V12','V15','V18','V24'))) $GUID";
         } else if ($this->instrument == 'macarthur_words_gestures') {
@@ -134,9 +141,9 @@ class NDAR_Release_2017
         if (strpos($this->instrument, '_proband') !== FALSE) {
             if ($this->instrument == 'm_chat_proband' || $this->instrument == 'scq_proband') {
                 // No validity
-                return "c.IBISID AS src_subject_id,  c.ProbandGUID,  CASE c.ProbandGender WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS ProbandGender, ROUND(DATEDIFF(i.Date_taken, c.ProbandDoB) / (365/12)) AS interview_age, i.Date_taken as interview_date, ";
+                return "c.IBISID AS src_subject_id,  c.ProbandGUID as subjectkey,  CASE c.ProbandGender WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS Gender, ROUND(DATEDIFF(i.Date_taken, c.ProbandDoB) / (365/12)) AS interview_age, i.Date_taken as interview_date, ";
             }
-            return "c.IBISID AS src_subject_id, c.ProbandGUID,  CASE c.ProbandGender WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS ProbandGender, ROUND(DATEDIFF(i.Date_taken, c.ProbandDoB) / (365/12)) AS interview_age, f.Validity as validity_of_data, i.Date_taken as interview_date, ";
+            return "c.IBISID AS src_subject_id, c.ProbandGUID as subjectkey,  CASE c.ProbandGender WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS Gender, ROUND(DATEDIFF(i.Date_taken, c.ProbandDoB) / (365/12)) AS interview_age, f.Validity as validity_of_data, i.Date_taken as interview_date, ";
         } else {
             $NoValidities = array('macarthur_words_gestures', 'seq', 'rbs_r', 'ibq_r', 'head_measurements_subject', 'prefrontal_task', 'fyi', 'scq_proband');
             $ados = array('ados_module1','ados_module2','ados_module3','ados2_module1','ados2_module2','ados2_module3') ;
@@ -1766,8 +1773,8 @@ class NDAR_Release_2017
             $fields = array(
                 'c.CandidateGUID as subjectkey',
                 "CASE c.Gender WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS Gender",
-                "IF(medpsych.Date_taken != '', DATE_FORMAT(medpsych.Date_taken, '%m/%d/%Y'), '01/01/1900') as Med_Psych_Hist_Date_Taken",
-                'medpsych.Candidate_Age as Med_Psych_Hist_Candidate_Age',
+                'medpsych.Date_taken as interview_date',
+                'medpsych.Candidate_Age as interview_age',
                 "CASE medpsych.q16_has_child_ever WHEN 'b_meningitis_encephalitis' THEN 'Yes' WHEN 'b_meningitis_encephalitis{@}c_lost_consciousness_head_injury' THEN 'Yes' ELSE 'NK' END as q16_has_child_ever",
                 'medpsych.q15_c_fever_seizures',
                 "CASE medpsych.q15_seizures_convulsions WHEN '0_no' THEN 'No' WHEN '1_yes' THEN 'Yes' ELSE 'NK' END AS q15_seizures_convulsions",
@@ -1819,7 +1826,7 @@ class NDAR_Release_2017
         } else { $test_fields = ""; }
         
         if ($this->instrument == 'demographics') {
-            return "SELECT DISTINCT ". $test_fields ." IBISID AS src_subject_id, CandidateGUID as subjectkey, ProbandGUID, CASE c.Gender WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS Gender, CASE c.ProbandGender WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END as ProbandGender, c.CenterID as Site, CASE s.SubprojectID WHEN 1 THEN 'High Risk' WHEN 2 THEN 'High Risk' WHEN 3 THEN 'Low Risk' END as Cohort FROM candidate c JOIN session s ON (s.CandID=c.CandID) WHERE c.Active='Y' AND s.Active='Y' AND COALESCE(s.Current_stage, '') <> 'Recycling Bin' AND COALESCE(s.Visit, '') NOT IN ('Failure', 'Withdrawal') AND COALESCE(s.Screening, '') NOT IN ('Failure', 'Withdrawal') AND c.CandidateGUID IS NOT NULL AND s.SubprojectID IN (1, 2, 3) AND c.CenterID IN (2, 3, 4, 5) ";
+            return "SELECT DISTINCT ". $test_fields ." IBISID AS src_subject_id, CandidateGUID as subjectkey, ProbandGUID as subjectkey_sibling1, CASE c.Gender WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS Gender, CASE c.ProbandGender WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END as sibling_type1, c.CenterID as Site, CASE s.SubprojectID WHEN 1 THEN 'High Risk' WHEN 2 THEN 'High Risk' WHEN 3 THEN 'Low Risk' END as Cohort FROM candidate c JOIN session s ON (s.CandID=c.CandID) WHERE c.Active='Y' AND s.Active='Y' AND COALESCE(s.Current_stage, '') <> 'Recycling Bin' AND COALESCE(s.Visit, '') NOT IN ('Failure', 'Withdrawal') AND COALESCE(s.Screening, '') NOT IN ('Failure', 'Withdrawal') AND c.CandidateGUID IS NOT NULL AND s.SubprojectID IN (1, 2, 3) AND c.CenterID IN (2, 3, 4, 5) ";
         } else if ($this->instrument == 'charge') {
             return "SELECT ". $test_fields . $this->getFields() . " FROM session s JOIN candidate c USING (CandID) JOIN participant_status ps ON (ps.CandID = c.CandID) LEFT JOIN flag medpsychflag ON (s.ID=medpsychflag.SessionID AND medpsychflag.Test_name='med_psych_hist' AND medpsychflag.Administration='All' AND medpsychflag.Data_entry='Complete' AND EXISTS (SELECT 'x' FROM flag df WHERE df.CommentID=CONCAT('DDE_', medpsychflag.CommentID) AND df.Data_entry='Complete') AND NOT EXISTS (SELECT 'x' FROM conflicts_unresolved cu WHERE cu.CommentId1=medpsychflag.CommentID OR cu.CommentId2=medpsychflag.CommentID) )
                     LEFT JOIN flag neuroscreenflag ON (s.ID=neuroscreenflag.SessionID AND neuroscreenflag.Test_name='neuro_screen' AND neuroscreenflag.Administration='All' AND neuroscreenflag.Data_entry='Complete' AND EXISTS (SELECT 'x' FROM flag df WHERE df.CommentID=CONCAT('DDE_', neuroscreenflag.CommentID) AND df.Data_entry='Complete') AND NOT EXISTS (SELECT 'x' FROM conflicts_unresolved cu WHERE cu.CommentId1=neuroscreenflag.CommentID OR cu.CommentId2=neuroscreenflag.CommentID))
@@ -1829,11 +1836,11 @@ class NDAR_Release_2017
                     LEFT JOIN tsi tsi ON (tsiflag.CommentID=tsi.CommentID)
                     WHERE " . $this->getWhere();
         } else if ($this->instrument == 'ndar_subject') {
-            return "SELECT ". $test_fields ." c.IBISID AS src_subject_id, s.CenterID as Site, CASE s.SubprojectID WHEN 1 THEN 'High Risk' WHEN 2 THEN 'High Risk' WHEN 3 THEN 'Low Risk' WHEN 9 THEN 'High Risk' WHEN 10 THEN 'Low Risk' END as Cohort, c.ProbandGUID,   CASE c.ProbandGender WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS ProbandGender, c.CandidateGUID as subjectkey, CASE c.Gender WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS Gender, i.Date_taken,ROUND(DATEDIFF(i.Date_taken, c.DoB) / (365/12)) AS interview_age, i.Date_taken as interview_date,ROUND(DATEDIFF(i.Date_taken, c.ProbandDoB) / (365/12)) AS Proband_Age_in_Months, i.Candidate_race as race, i.child_ethnicity as ethnic_group from candidate c  left join session s on s.CandID = c.CandID join flag f on f.SessionID = s.ID join tsi i on i.CommentID=f.CommentID join participant_status ps on ps.CandID = c.CandID WHERE " . $this->getWhere();
+            return "SELECT ". $test_fields ." c.IBISID AS src_subject_id, s.CenterID as Site, CASE s.SubprojectID WHEN 1 THEN 'High Risk' WHEN 2 THEN 'High Risk' WHEN 3 THEN 'Low Risk' WHEN 9 THEN 'High Risk' WHEN 10 THEN 'Low Risk' END as phenotype, c.ProbandGUID as subjectkey_sibling1,   CASE c.ProbandGender WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS sibling_type1, c.CandidateGUID as subjectkey, CASE c.Gender WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS Gender, i.Date_taken,ROUND(DATEDIFF(i.Date_taken, c.DoB) / (365/12)) AS interview_age, i.Date_taken as interview_date,ROUND(DATEDIFF(i.Date_taken, c.ProbandDoB) / (365/12)) AS Proband_Age_in_Months, i.Candidate_race as race, i.child_ethnicity as ethnic_group from candidate c  left join session s on s.CandID = c.CandID join flag f on f.SessionID = s.ID join tsi i on i.CommentID=f.CommentID join participant_status ps on ps.CandID = c.CandID WHERE " . $this->getWhere();
         }
 
-        print  "SELECT ". $test_fields . $this->getFields() . " FROM " . $this->instrument . " i JOIN flag f ON (f.CommentID=i.CommentID) JOIN session s ON (s.ID=f.SessionID) JOIN candidate c ON (c.CandID=s.CandID) JOIN participant_status ps ON (ps.CandID = c.CandID) JOIN participant_status_options pso ON (pso.ID =  ps.participant_status) WHERE " . $this->getWhere() . " AND c.ProjectID= $this->project AND pso.Description NOT IN ('Ineligible', 'Excluded')";
-        return "SELECT ". $test_fields . $this->getFields() . " FROM " . $this->instrument . " i JOIN flag f ON (f.CommentID=i.CommentID) JOIN session s ON (s.ID=f.SessionID) JOIN candidate c ON (c.CandID=s.CandID) JOIN participant_status ps ON (ps.CandID = c.CandID) JOIN participant_status_options pso ON (pso.ID = ps.participant_status) WHERE " . $this->getWhere() . " AND c.ProjectID= $this->project AND pso.Description NOT IN ('Ineligible', 'Excluded')";
+        print  "SELECT ". $test_fields . $this->getFields() . " FROM " . $this->instrument . " i JOIN flag f ON (f.CommentID=i.CommentID) JOIN session s ON (s.ID=f.SessionID) JOIN candidate c ON (c.CandID=s.CandID) JOIN participant_status ps ON (ps.CandID = c.CandID) JOIN participant_status_options pso ON (pso.ID =  ps.participant_status) WHERE " . $this->getWhere() . " AND c.ProjectID= $this->project AND pso.Description NOT IN ('Ineligible', 'Excluded','Refused/Not Enrolled')";
+        return "SELECT ". $test_fields . $this->getFields() . " FROM " . $this->instrument . " i JOIN flag f ON (f.CommentID=i.CommentID) JOIN session s ON (s.ID=f.SessionID) JOIN candidate c ON (c.CandID=s.CandID) JOIN participant_status ps ON (ps.CandID = c.CandID) JOIN participant_status_options pso ON (pso.ID = ps.participant_status) WHERE " . $this->getWhere() . " AND c.ProjectID= $this->project AND pso.Description NOT IN ('Ineligible', 'Excluded','Refused/Not Enrolled')";
     }
 
     function process($results)
@@ -1866,7 +1873,13 @@ class NDAR_Release_2017
                 if (strpos($key, 'interview_date') !== FALSE || $key == 'DoB' || strpos($key, 'interview_date') !== FALSE) {
                     //print "VAL: $val";
                     $Date = explode('-', $val);
-                    $row[$key] = $Date[1] . '/' . '01' . '/' . $Date[0];
+                    if($row[$key]== '')
+                    {
+                        $row[$key] = '01'. '/' . '01' . '/' .'1990';
+                    }
+                    else {
+                        $row[$key] = $Date[1] . '/' . '01' . '/' . $Date[0];
+                    }
                 }
                 if ($this->instrument == 'adi_r_proband') {
                     if ($key == 'Total_B2V' || $key == 'Total_B3V' || $key == 'BV_Total' || $key == 'BNV_Total') {
@@ -1891,7 +1904,7 @@ class NDAR_Release_2017
 
                     }
                 }
-                if (strpos($key, 'Candidate_Age') !== FALSE) {
+                if (strpos($key, 'interview_age') !== FALSE) {
                     $row[$key] = intval($val);
                 }
 
