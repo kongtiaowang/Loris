@@ -26,8 +26,7 @@ if ($run_ibis1)
 
 if ($run_ibis2)
 {
-  //$IBIS2 = array('edi2');
-  $IBIS2 = array('ados_module1', 'ados_module2', 'ados_module3', 'ados2_module1','ados2_module2','ados2_module3','adi_r_proband','aosi','csbs','head_measurements_subject','ibq_r','macarthur_words_gestures', 'm_chat_proband','ndar_subject', 'scq_proband','mullen','rbs_r','vineland_proband','charge','edi2');
+  $IBIS2 = array('ados_module1', 'ados_module2', 'ados_module3', 'ados2_module1','ados2_module2','ados2_module3','adi_r_proband','aosi','csbs','head_measurements_subject','ibq_r','macarthur_words_gestures', 'm_chat_proband','ndar_subject', 'scq_proband','mullen','rbs_r','vineland_proband','vineland_subject','charge','edi2');
   foreach($IBIS2 as $instrument) {
       $run = new NDAR_Release_2017 ($instrument, 2);
       $run->run();
