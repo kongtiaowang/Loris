@@ -12,23 +12,15 @@ $client->initialize('../config.xml');
 
 $CommentID = $argv[1];
 $db        =& Database::singleton();
-if (Utility::isErrorX($db)) {
-        print "Could not connect to database: " . $db->getMessage();
-            exit(1);
-}
 $project = array(1=>'IBIS1',2=>'IBIS2');
 foreach($project as $key=>$val) { 
 $id = $key;
 $name = $val;
-$query = "SELECT c.IBISID, s.CenterID as Site, CASE s.SubprojectID WHEN 1 THEN 'High Risk' WHEN 2 THEN 'High Risk' WHEN 3 THEN 'Low Risk' WHEN 9 THEN 'High Risk' WHEN 10 THEN 'Low Risk' END as Cohort, c.ProbandGUID,  CASE c.ProbandGender WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS ProbandGender, c.CandidateGUID, CASE c.Gender WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS Gender, i.Date_taken,ROUND(DATEDIFF(i.Date_taken, c.DoB) / (365/12)) AS Candidate_Age_in_Months, i.Date_taken,ROUND(DATEDIFF(i.Date_taken, c.ProbandDoB) / (365/12)) AS Proband_Age_in_Months, i.Candidate_race as race, i.child_ethnicity as ethnic_group from candidate c join session s on s.CandID = c.CandID join flag f on f.SessionID = s.ID join tsi i on i.CommentID=f.CommentID join participant_status ps on ps.CandID = c.CandID JOIN participant_status_options po on po.ID=ps.participant_status WHERE COALESCE(s.Current_stage, '') <> 'Recycling Bin' AND COALESCE(s.Visit, '') NOT IN ('Failure', 'Withdrawal') AND COALESCE(s.Screening, '') NOT IN ('Failure', 'Withdrawal') AND f.Administration='All' AND f.Data_entry='Complete' AND EXISTS (SELECT 'x' FROM flag df WHERE df.CommentID=CONCAT('DDE_', i.CommentID) AND df.Data_entry='Complete') AND NOT EXISTS (SELECT 'x' FROM conflicts_unresolved cu WHERE cu.CommentId1=i.CommentID OR cu.CommentId2=i.CommentID) AND s.CenterID IN (2, 3, 4, 5) AND ( ps.study_consent = 'yes' AND ps.study_consent_withdrawal IS NULL) AND (ps.ndar_consent = 'yes' AND ps.ndar_consent_withdrawal IS NULL) and c.ProjectID = $id AND COALESCE(c.CandidateGUID, '') <> '' AND po.Description NOT IN ('Excluded', 'Ineligible')";
+$query = "SELECT c.IBISID as src_subject_id, s.CenterID as Site, CASE s.SubprojectID WHEN 1 THEN 'High Risk' WHEN 2 THEN 'High Risk' WHEN 3 THEN 'Low Risk' WHEN 9 THEN 'High Risk' WHEN 10 THEN 'Low Risk' END as phenotype, c.ProbandGUID as subjectkey_sibling1, CASE c.ProbandGender WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS sibling_type1, c.CandidateGUID as subjectkey, CASE c.Gender WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS Gender, i.Date_taken as interview_date,ROUND(DATEDIFF(i.Date_taken, c.DoB) / (365/12)) AS interview_age, i.Date_taken,ROUND(DATEDIFF(i.Date_taken, c.ProbandDoB) / (365/12)) AS Proband_Age_in_Months, i.Candidate_race as race, i.child_ethnicity as ethnic_group from candidate c join session s on s.CandID = c.CandID join flag f on f.SessionID = s.ID join tsi i on i.CommentID=f.CommentID join participant_status ps on ps.CandID = c.CandID JOIN participant_status_options po on po.ID=ps.participant_status WHERE COALESCE(s.Current_stage, '') <> 'Recycling Bin' AND COALESCE(s.Visit, '') NOT IN ('Failure', 'Withdrawal') AND COALESCE(s.Screening, '') NOT IN ('Failure', 'Withdrawal') AND f.Administration='All' AND f.Data_entry='Complete' AND EXISTS (SELECT 'x' FROM flag df WHERE df.CommentID=CONCAT('DDE_', i.CommentID) AND df.Data_entry='Complete') AND NOT EXISTS (SELECT 'x' FROM conflicts_unresolved cu WHERE cu.CommentId1=i.CommentID OR cu.CommentId2=i.CommentID) AND s.CenterID IN (2, 3, 4, 5) AND ( ps.study_consent = 'yes' AND ps.study_consent_withdrawal IS NULL) AND (ps.ndar_consent = 'yes' AND ps.ndar_consent_withdrawal IS NULL) and c.ProjectID = $id AND COALESCE(c.CandidateGUID, '') <> '' AND po.Description NOT IN ('Excluded', 'Ineligible','Refused/Not Enrolled')";
 
 
 $record = array();
 $record = $db->pselect($query, array());
-if (Utility::isErrorX($record)) {
-        print "Query has failed to select: ".$record->getMessage();
-        //        exit(2);
-}
  $filename = "ndar_subject_".$name.".csv";
   $fd = fopen($filename, 'w+');
   if ($fd === FALSE) {
@@ -36,34 +28,34 @@ if (Utility::isErrorX($record)) {
   }
  $header1 = array('ndar_subject01');
  fputcsv($fd, $header1);
- $headers = array('IBISID','SubjectKey','Gender','Site','Cohort','Candidate_Age_in_Months','Date_taken','family_study','race','ethnic_group',
+ $headers = array('src_subject_id','subjectkey','Gender','Site','phenotype','interview_age','interview_date','family_study','race','ethnic_group',
                   'twins_study','sibling_study','sample_taken','phenotype_description','subjectkey_sibling1','src_sibling1_id','sibling_type1');
  fputcsv($fd, $headers);
  $data = array('twins_populate'=>'No','sibling_study'=>'Yes','family_study'=>'No','sample_taken'=>'No');
  foreach($record as $row) {
  $row = array_merge($row,$data);
  foreach($row as $key=>$val){
-	 if(strpos($key, 'Date_taken') !== FALSE || $key == 'DoB' || strpos($key, 'Date_Taken') !== FALSE) {
+	 if(strpos($key, 'interview_date') !== FALSE || $key == 'DoB' || strpos($key, 'interview_date') !== FALSE) {
 		 //print "VAL: $val";
 		 $Date = explode('-', $val); //print_r($Date);
 		 $row[$key] = $Date[1] . '/' . '01' . '/' . $Date[0];
 	 }
  } 
- if($row['Candidate_Age_in_Months'] < 0){
-    $row['Candidate_Age_in_Months'] =0;
+ if($row['interview_age'] < 0){
+    $row['interview_age'] =0;
  }
  $type='';
  $type_pr ='';
- if($row['ProbandGender']== 'Male') {
+ if($row['sibling_type1']== 'M') {
    $type = "Full Brother FB";
- } else if($row['ProbandGender'] == 'Female'){
+ } else if($row['sibling_type1'] == 'F'){
    $type = "Full Sister FS";
   } else {
     $type = " ";
    }
- if($row['Gender']== 'Male') {
+ if($row['Gender']== 'M') {
    $type_pr = "Full Brother FB";
- } else if($row['Gender'] == 'Female'){
+ } else if($row['Gender'] == 'F'){
    $type_pr = "Full Sister FS";
   }
  $race = $row['race'];
@@ -81,13 +73,13 @@ if (Utility::isErrorX($record)) {
  }
 }
 
- $candidate = array($row['IBISID'], $row['CandidateGUID'], $row['Gender'], $row['Site'], $row['Cohort'], $row['Candidate_Age_in_Months'], $row['Date_taken'],
-                    'No',$race_final,$row['ethnic_group'],'No','Yes','No', $row['Cohort']." Sibling",$row['ProbandGUID'],$row['IBISID']."pr", $type);
+ $candidate = array($row['src_subject_id'], $row['subjectkey'], $row['Gender'], $row['Site'], $row['phenotype'], $row['interview_age'], $row['interview_date'],
+                    'No',$race_final,$row['ethnic_group'],'No','Yes','No', $row['phenotype']." Sibling",$row['subjectkey_sibling1'],$row['src_subject_id']."pr", $type);
  
  fputcsv($fd, $candidate);
  if(!empty($row['ProbandGUID'])){
-     $proband   = array($row['IBISID']."pr", $row['ProbandGUID'], $row['ProbandGender'], $row['Site'], "Proband", $row['Proband_Age_in_Months'], $row['Date_taken'],
-                    'No',"Unknown or not reported","Unknown or not reported",'No','Yes','No', "Proband of Sibling",$row['CandidateGUID'], $row['IBISID'], $type_pr);
+     $proband   = array($row['src_subject_id']."pr", $row['subjectkey_sibling1'], $row['sibling_type1'], $row['Site'], "Proband", $row['Proband_Age_in_Months'], $row['interview_date'],
+                    'No',"Unknown or not reported","Unknown or not reported",'No','Yes','No', "Proband of Sibling",$row['subjectkey'], $row['src_subject_id'], $type_pr);
      fputcsv($fd, $proband);
   }	
  }
