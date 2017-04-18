@@ -124,7 +124,7 @@ React.render(pageLinks, document.getElementById("pageLinks"));
 
                 {if $items[item][piece].name == "File_name"}
                    <td>
-                    <a href="{$items[item][piece].Data_dir}{$items[item][piece].value}" target="_blank">{$items[item][piece].value}</a> {if !empty($items[item][piece].File_size)}({$items[item][piece].File_size}){/if}
+                    <a href="{$baseurl}/temp_videos/ajax/GetFile.php?File={$items[item][piece].Data_dir}{$items[item][piece].value}" download="{$items[item][piece].value}">{$items[item][piece].value}</a> {if !empty($items[item][piece].File_size)}({$items[item][piece].File_size}){/if}
                   </td>
                {elseif $items[item][piece].name == "record_id"}
                   <td>

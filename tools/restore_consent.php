@@ -50,7 +50,7 @@ function restore_consent($db, $col, $confirm)
 
     if (!empty($cih)) {
 
-      print "UPDATE participant_status AS ps SET ps.{$col}='{$cih[$col]}', ps.{$col}_date='{$cih[$col . '_date']}' WHERE ps.ID={$candidate['ID']};\n";
+      print "UPDATE participant_status AS ps SET ps.{$col}='{$cih[$col]}', ps.{$col}_date='{$cih[$col . '_date']}' WHERE ps.ID={$candidate['ID']}; -- {$candidate['CandID']}\n";
       if ($confirm) {
         $db->update('participant_status', array($col => $cih[$col], $col . '_date' => $cih[$col . '_date']), array('ID' => $candidate['ID']));
       }
