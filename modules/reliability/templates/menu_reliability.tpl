@@ -234,7 +234,7 @@
           					12 month
           	{elseif $items[item][piece].value== "3"}
           					Control
-                </td>{/if}
+                {/if}</td>
       	{elseif  $items[item][piece].name == "Reliability"}
       	  {if $items[item][piece].value== "Yes"}
       	  <td style="background-color:#86BC78;">{$items[item][piece].value}</td>
