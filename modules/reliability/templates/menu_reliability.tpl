@@ -243,18 +243,15 @@
       	  {else}
       	  <td></td>
       	  {/if}
-
     	  {else}
     	     <td>{$items[item][piece].value}</td>
         {/if}
        </td>
-
         {/section}
         </tr>           
     {sectionelse}
         <tr><td colspan="15">No reliability entries found</td></tr>
     {/section}
-
     <!-- end data table -->
     </table>
 
