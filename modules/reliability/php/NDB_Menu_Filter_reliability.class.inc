@@ -302,7 +302,6 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
                 $this->tpl_data['items'][$x][$i]['name'] = $key;
                 $this->tpl_data['items'][$x][$i]['value'] = $val;
                 if ($key == 'PSCID'){
-
                     $this->tpl_data['items'][$x][$i]['CommentID'] = $comment_id;
                     $this->tpl_data['items'][$x][$i]['SiteID'] = $item['Site'];
                     $this->tpl_data['items'][$x][$i]['Instrument'] = $item['Instrument'];
