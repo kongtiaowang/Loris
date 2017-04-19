@@ -86,9 +86,6 @@ class NDB_BVL_Instrument_ados_module3 extends NDB_BVL_Instrument_IBIS
                 'd1_weighted',
                 'd2_weighted',
                 'd4_weighted',
-                'social_affect_gotham_weighted',
-                'restricted_repetitive_gotham_weighted',
-                'gotham_weighted_score',
                 'severity_score_lookup',
                 'Data_entry_completion_status');
         // setup the form
@@ -145,7 +142,6 @@ class NDB_BVL_Instrument_ados_module3 extends NDB_BVL_Instrument_IBIS
         $this->form->addElement('static', "ADOS_SA_CSS","ADOS_SA_CSS:");
         $this->form->addElement('static', "ADOS_RRB_CSS","ADOS_RRB_CSS:");
         $this->form->addElement('header', null, 'Severity Scores:');
-        $this->form->addElement('static', 'gotham_weighted_score', 'Weighted Score:');
         $this->form->addElement('static', 'severity_score_lookup', 'Severity Score:');
         $this->form->addElement("textarea", "other_comments", "Comments about Validity:", array('cols'=>25, 'rows'=>4));
         $this->XINRegisterRule("other_comments", array("{other_comments}{@}=={@}NEVER_REQUIRED"));
@@ -437,7 +433,7 @@ class NDB_BVL_Instrument_ados_module3 extends NDB_BVL_Instrument_IBIS
             }
 
         }
-        // Weightings from Gotham, Risi, Pickles and Lord 2008 Table 2
+        // Weightings from Risi, Pickles and Lord 2008 Table 2
         // Put in the same order as the paper, which happens to be different than
         // how Loris orders it, which is why this looks a little weird
         // Social Affect
@@ -451,15 +447,12 @@ class NDB_BVL_Instrument_ados_module3 extends NDB_BVL_Instrument_IBIS
         $scoreCols['a9_weighted'] = $scores['a9'] * 0.66; // Gestures
         $scoreCols['b8_weighted'] = $scores['b8'] * 0.72; // Quality of social response
         $scoreCols['a7_weighted'] = $scores['a7'] * 0.37; // Reporting of events
-        $scoreCols["social_affect_gotham_weighted"] = $scoreCols["b1_weighted"] + $scoreCols["b9_weighted"] + $scoreCols["b2_weighted"] + $scoreCols["b10_weighted"] + $scoreCols["b4_weighted"] + $scoreCols["b7_weighted"] + $scoreCols["a8_weighted"] + $scoreCols["a9_weighted"] + $scoreCols["b8_weighted"] + $scoreCols["a7_weighted"];
 
         // Restricted Repetitive Behaviours 
         $scoreCols['a4_weighted'] = $scores['a4'] * 0.66; // Stereotyped language 
         $scoreCols['d1_weighted'] = $scores['d1'] * 0.43; // Unusual Sensory Interest 
         $scoreCols['d4_weighted'] = $scores['d4'] * 0.54; // Highly specific topics
         $scoreCols['d2_weighted'] = $scores['d2'] * 0.57; // Hand Mannerisms
-        $scoreCols['restricted_repetitive_gotham_weighted'] = $scoreCols['a4_weighted'] + $scoreCols['d1_weighted'] + $scoreCols['d2_weighted'] + $scoreCols['d4_weighted'];
-        $scoreCols['gotham_weighted_score'] = $scoreCols['social_affect_gotham_weighted'] + $scoreCols['restricted_repetitive_gotham_weighted'];
 
         // save scores to database
 
