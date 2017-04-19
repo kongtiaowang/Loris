@@ -234,7 +234,7 @@
           					12 month
           	{elseif $items[item][piece].value== "3"}
           					Control
-          		{/if}</td>
+                </td>{/if}
       	{elseif  $items[item][piece].name == "Reliability"}
       	  {if $items[item][piece].value== "Yes"}
       	  <td style="background-color:#86BC78;">{$items[item][piece].value}</td>
@@ -243,16 +243,18 @@
       	  {else}
       	  <td></td>
       	  {/if}
+
     	  {else}
     	     <td>{$items[item][piece].value}</td>
         {/if}
        </td>
+
         {/section}
         </tr>           
     {sectionelse}
         <tr><td colspan="15">No reliability entries found</td></tr>
     {/section}
-                        
+
     <!-- end data table -->
     </table>
 
