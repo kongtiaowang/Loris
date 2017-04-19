@@ -119,18 +119,6 @@ print "updateDataDict";
                             'Type' => "varchar(255)",
                             'Description' => 'ADOS Diagnosis'
                         ),
-                        'social_affect_gotham_weighted' => array(
-                            'Type' => "varchar(255)",
-                            'Description' => 'Weighted Social Affect score'
-                        ),
-                        'restricted_repetitive_gotham_weighted' => array(
-                            'Type' => "varchar(255)",
-                            'Description' => 'Weighted Restricted Repetitive score'
-                        ),
-                        'gotham_weighted_score' => array(
-                            'Type' => "varchar(255)",
-                            'Description' => 'Weighted ADOS Score'
-                        ),
                         'severity_score_lookup' => array(
                             'Type' => "varchar(255)",
                             'Description' => 'ADOS severity lookup'
@@ -208,9 +196,6 @@ print "ADOSModule: $ADOSModule\n";
             'i.restricted_repetitive_behavior_total',
             'i.social_affect_restricted_repetitive_behavior_total',
             'i.ADOS_classification',
-            'i.social_affect_gotham_weighted',
-            'i.restricted_repetitive_gotham_weighted',
-            'i.gotham_weighted_score',
             'i.severity_score_lookup',
             'i.a1'
         );
@@ -260,12 +245,6 @@ print "ADOSModule: $ADOSModule\n";
                        => $row['social_affect_restricted_repetitive_behavior_total'],
                     'ADOS_classification'
                        => $row['ADOS_classification'],
-                    'social_affect_gotham_weighted'
-                       => $row['social_affect_gotham_weighted'],
-                    'restricted_repetitive_gotham_weighted'
-                       => $row['restricted_repetitive_gotham_weighted'],
-                    'gotham_weighted_score'
-                       => $row['gotham_weighted_score'],
                     'severity_score_lookup'
                        => $row['severity_score_lookup'],
                     'ADOS_SA_CSS'

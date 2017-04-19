@@ -35,9 +35,6 @@ class NDB_BVL_Instrument_ados_module1 extends NDB_BVL_Instrument_IBIS
                              'd1_weighted',
                              'd2_weighted',
                              'd4_weighted',
-                             'social_affect_gotham_weighted',
-                             'restricted_repetitive_gotham_weighted',
-                             'gotham_weighted_score',
                              'severity_score_lookup');
  
 
@@ -103,9 +100,6 @@ class NDB_BVL_Instrument_ados_module1 extends NDB_BVL_Instrument_IBIS
             'd1_weighted',
             'd2_weighted',
             'd4_weighted',
-            'social_affect_gotham_weighted',
-            'restricted_repetitive_gotham_weighted',
-            'gotham_weighted_score',
             'severity_score_lookup',
             'Data_entry_completion_status'
         );
@@ -163,13 +157,8 @@ class NDB_BVL_Instrument_ados_module1 extends NDB_BVL_Instrument_IBIS
     	$this->form->addElement('static', "ADOS_classification", "ADOS Classification:");
 
         $this->form->addElement('header', null, 'Severity Scores:');
-        $this->form->addElement('static', 'gotham_weighted_score', 'Weighted Score:');
         $this->form->addElement('static', 'severity_score_lookup', 'Severity Score:');
         /*
-    	$group[]= &$this->form->createElement("static", "gotham_weighted_score", null);
-     	$this->form->addGroup($group, null, "ADOS Classification:", $this->_GUIDelimiter, false);
-        unset($group);
-
     	$group[]= &$this->form->createElement("static", "ADOS_classification", null);
      	$this->form->addGroup($group, null, "ADOS Classification:", $this->_GUIDelimiter, false);
         unset($group);
@@ -430,7 +419,7 @@ class NDB_BVL_Instrument_ados_module1 extends NDB_BVL_Instrument_IBIS
            		$scoreCols["ADOS_classification"] = "none";
     		}
 
-            // Weightings from Gotham, Risi, Pickles and Lord 2007 Table 2
+            // Weightings from Risi, Pickles and Lord 2007 Table 2
             // Put in the same order as the paper, which happens to be different than
             // how Loris orders it, which is why this looks a little weird
             // Social Affect
@@ -444,16 +433,12 @@ class NDB_BVL_Instrument_ados_module1 extends NDB_BVL_Instrument_IBIS
             $scoreCols['a8_weighted'] = $scores['a8'] * 0.73; // Gestures
             $scoreCols['b9_weighted'] = $scores['b9'] * 0.69; // Showing
             $scoreCols['b10_weighted'] = $scores['b10'] * 0.77;// Initiation of Joint Attention
-    		$scoreCols["social_affect_gotham_weighted"] = $scoreCols["a2_weighted"] + $scoreCols["a8_weighted"] + $scoreCols["b1_weighted"] + $scoreCols["b3_weighted"] + $scoreCols["b4_weighted"] + $scoreCols["b5_weighted"] + $scoreCols["b9_weighted"] + $scoreCols["b10_weighted"] + $scoreCols["b11_weighted"] + $scoreCols["b12_weighted"];
+
             // Restricted Repetitive Behaviours 
             $scoreCols['a3_weighted'] = $scores['a3'] * 0.44; // Intonation
             $scoreCols['d1_weighted'] = $scores['d1'] * 0.78; // Unusual Sensory Interest 
             $scoreCols['d4_weighted'] = $scores['d4'] * 0.44; // Repetitive Interests
             $scoreCols['d2_weighted'] = $scores['d2'] * 0.66; // Hand Mannerisms
-            $scoreCols['restricted_repetitive_gotham_weighted'] = $scoreCols['a3_weighted'] + $scoreCols['d1_weighted'] + $scoreCols['d2_weighted'] + $scoreCols['d4_weighted'];
-
-            $scoreCols['gotham_weighted_score'] = $scoreCols['social_affect_gotham_weighted'] + $scoreCols['restricted_repetitive_gotham_weighted'];
-
     	}
 
     	//SOME WORDS Scoring
