@@ -89,7 +89,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
         $this->query = $query;
         $this->group_by = '';
         $this->order_by = 'reliability.Instrument, session.CandID, session.Visit_label';
-        $this->headers = array('PSCID', 'reliability_center_id','Cohort', 'DCCID', 'Gender', 'Visit_label', 'Instrument', 'reliability_score', 'Reliable');
+        $this->headers = array('PSCID', 'reliability_center_id','Cohort', 'DCCID', 'Gender', 'Visit_label', 'Instrument', 'reliability_score', 'Reliable','File_in_DB');
         $this->validFilters = array('reliability.reliability_center_id', 'session.SubprojectID', 'candidate.CenterID', 'session.CandID', 'candidate.PSCID', 'candidate.Gender', 'session.Visit_label', 'reliability.Instrument', 'reliability.Reliability_score', 'session.Current_stage', 'reliability.invalid','candidate.ProjectID');
 
         $this->formToFilter = array(
@@ -252,7 +252,30 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
         foreach ($this->list as $item) {
             //count column
             $this->tpl_data['items'][$x][0]['value'] = $x + $count;
-
+            $db = Database::singleton();
+            $pscid=$item['PSCID'];
+            $visitlabel=$item['Visit_label'];
+            $instrument=$item['Instrument'];
+            $video_found= $db->pselectOne(
+                "SELECT COUNT(*) FROM videos WHERE PSCID='$pscid'AND visitLabel='$visitlabel'AND instrument ='$instrument'",
+                array()
+            );
+            if($video_found>0)
+            {
+                $video_array = $db->pselect(
+                    "SELECT File_name as fn, uploaded_by as up FROM videos WHERE PSCID='$pscid'AND visitLabel='$visitlabel'AND instrument ='$instrument'",
+                    array()
+                );
+                foreach ($video_array as $video) {
+                    $factory = NDB_Factory::singleton();
+                    $baseURL = $factory->settings()->getBaseURL();
+                    $rest_path="/videos/".$video['up'].'/'.$video['fn'];
+                    $this->tpl_data['items'][$x][10]['value'] = '<a href="' . $baseURL.$rest_path . '">Yes</a>';
+                }
+            }
+            else{
+                $this->tpl_data['items'][$x][10]['value'] = 'No';
+            }
             //print out data rows
             $i = 1;
             // $identifier = $item['Tracking_log_ID'];
