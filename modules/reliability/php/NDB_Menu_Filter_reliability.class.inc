@@ -269,8 +269,8 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
                 foreach ($video_array as $video) {
                     $factory = NDB_Factory::singleton();
                     $baseURL = $factory->settings()->getBaseURL();
-                    $rest_path="/videos/".$video['up'].'/'.$video['fn'];
-                    $this->tpl_data['items'][$x][10]['value'] = '<a href="' . $baseURL.$rest_path . '">Yes</a>';
+                    $rest_path="/temp_videos/ajax/GetFile.php?File=/videos/".$video['up'].'/'.$video['fn'];
+                    $this->tpl_data['items'][$x][10]['value'] = '<a href="' . $baseURL.$rest_path . '" download ="' . $video['fn'] . '">Yes</a>';
                 }
             }
             else{
