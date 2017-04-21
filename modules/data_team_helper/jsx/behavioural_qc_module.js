@@ -111,6 +111,11 @@ var IncompleteCandidatesRow = React.createClass({
                 </a>
             </td>
             <td>
+                <a href={this.props.BaseURL + "/" + row.candid + "/"}>
+                    {row.PSCID}
+                </a>
+            </td>
+            <td>
                 <a href={this.props.BaseURL + "/" + row.candid + "/" + row.SessionID + "/" + row.test_name + "/?commentID=" + row.commentid} ref="incomplete">
 		      {row.Full_name}
                 </a>
@@ -131,6 +136,11 @@ var InstrumentConflictsRow = React.createClass({
             <td>
                 <a href={this.props.BaseURL + "/" + row.CandID + "/"}>
 		      {row.CandID}
+                </a>
+            </td>
+            <td>
+                <a href={this.props.BaseURL + "/" + row.CandID + "/"}>
+                    {row.PSCID}
                 </a>
             </td>
             <td>
@@ -176,6 +186,9 @@ var BehaviouralFeedbackRow = React.createClass({
         return <tr key = {row.FeedbackID} onClick={this.handleClick}>
             <td>
                 <a href={this.props.BaseURL + "/" + row.CandID + "/"}>{row.CandID}</a>
+            </td>
+            <td>
+                <a href={this.props.BaseURL + "/" + row.CandID + "/"}>{row.PSCID}</a>
             </td>
             <td>
                 <a href={bvl_link} onClick={this.handleClick} ref="feedback">{bvl_level}</a>

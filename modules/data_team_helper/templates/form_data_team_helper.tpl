@@ -136,7 +136,7 @@ incomplete = JSON.parse(incomplete);
 
 var CandiPanel = IncompleteCandidatesPanel({
 	title: "Incomplete Forms",
-	header: ["Visit", "DCCID", "Instrument"],
+	header: ["Visit", "DCCID","PSCID", "Instrument"],
 	incomplete_candidates: incomplete,
     BaseURL : loris.BaseURL
 });
@@ -146,7 +146,7 @@ conflicts = JSON.parse(conflicts);
 
 var ConflictsPanel = InstrumentConflictsPanel({
 	title: "Data Entry Conflicts",
-	header: ["Visit", "DCCID", "Instrument", "Field Name"],
+	header: ["Visit", "DCCID","PSCID", "Instrument", "Field Name"],
 	conflicts: conflicts,
     BaseURL : loris.BaseURL
 }); 
@@ -156,7 +156,7 @@ feedback = JSON.parse(feedback);
 
 var FeedbackTab = BehaviouralFeedbackTab({
 	title: "Behvarioural Feedback",
-	header:["DCCID", "Feedback Level", "Field Name"],
+	header:["DCCID", "PSCID","Feedback Level", "Field Name"],
 	feedback: feedback,
     BaseURL : loris.BaseURL
 });

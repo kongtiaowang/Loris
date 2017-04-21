@@ -210,7 +210,7 @@ class NDB_Form_data_team_helper extends NDB_Form
 
         $select = "SELECT fb.FeedbackID, fb.CandID, fb.SessionID,
                       fb.CommentID, fb.Feedback_level, f.Test_name, fb.FieldName,
-                      tn.Full_name, s.Visit_label FROM feedback_bvl_thread AS fb
+                      tn.Full_name, s.Visit_label, s.PSCID FROM feedback_bvl_thread AS fb
                       JOIN session s ON (s.ID = fb.SessionID)
                       JOIN project_rel pr ON (s.SubprojectID = pr.SubprojectID)
                       LEFT JOIN flag f ON (fb.CommentID = f.CommentID)
@@ -665,7 +665,7 @@ class NDB_Form_data_team_helper extends NDB_Form
         return array_merge(
             $deps,
             array(
-             $baseURL . "/data_team_helper/js/data_team.js",
+                $baseURL . "/data_team_helper/js/data_team.js",
             )
         );
     }
