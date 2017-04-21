@@ -635,7 +635,7 @@ class NDB_BVL_Instrument_EARLI_interview_S3_inserts extends NDB_BVL_Instrument_E
 
                 for ($j=1; $j<6; $j++)
                 {
-                        $this->form->addElement("select", "q3_32_{$j}_{$i}",  "$this->indent BABY #{$j} (select all that apply):", $list1, "multiple size = '5'");
+                        $this->addSelect("q3_32_{$j}_{$i}",  "$this->indent BABY #{$j} (select all that apply):", $list1, array("multiple"));
                         $this->addTextAreaElementRD("q3_32_other{$j}_{$i}", $this->indent . $this->indent . "  If you selected [88 Other], please specify:");
                         $this->form->addElement('static', null, "<br/>");
                         $this->XINRegisterRule("q3_32_other{$j}_{$i}", array("q3_32_{$j}_{$i}{@}=={@}88_other"), "You must specify other", "q3_32_other{$j}_{$i}_group");

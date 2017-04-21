@@ -332,7 +332,7 @@ class NDB_BVL_Instrument_EARLI_interview_S7_inserts extends NDB_BVL_Instrument_E
 
 
 		//q7-16
-		$this->form->addElement("select", "q7_16_$i", "7-16-$i. Which trimester(s) of pregnancy with [SIBLING] did you have these dampness problems? Select all that apply:",  array(NULL=>"", "01" => "01", "02" => "02", "03" => "03", "88_refused" => "88 Refused",  "99_Do_not_know"=>"99 Do not know", "Not_Answered"=>"Not Answered"), "multiple");
+		$this->addSelect("q7_16_$i", "7-16-$i. Which trimester(s) of pregnancy with [SIBLING] did you have these dampness problems? Select all that apply:",  array(NULL=>"", "01" => "01", "02" => "02", "03" => "03", "88_refused" => "88 Refused",  "99_Do_not_know"=>"99 Do not know", "Not_Answered"=>"Not Answered"), array("multiple"));
 		$this->form->addElement('static', null, "<br/>");
 
 
@@ -342,7 +342,7 @@ class NDB_BVL_Instrument_EARLI_interview_S7_inserts extends NDB_BVL_Instrument_E
 		$this->form->addElement('static', null, "<br/>");
 
 
-		$this->form->addElement('select', "q7_18_$i", "7-18-$i Which trimester(s) of pregnancy with [SIBLING] were these chemicals used? Select all that apply:", array(NULL=>"", "01"=>"01", "02"=>"02", "03"=> "03","88 Refused", "99" => "99 Do not know", "Not_Answered" => "Not Answered"), "multiple");
+		$this->addSelect("q7_18_$i", "7-18-$i Which trimester(s) of pregnancy with [SIBLING] were these chemicals used? Select all that apply:", array(NULL=>"", "01"=>"01", "02"=>"02", "03"=> "03","88 Refused", "99" => "99 Do not know", "Not_Answered" => "Not Answered"), array("multiple"));
 		$this->form->addElement('static', null, "<br/>");
 		$this->form->addElement('static', null, "<br/>");
 
@@ -463,9 +463,9 @@ class NDB_BVL_Instrument_EARLI_interview_S7_inserts extends NDB_BVL_Instrument_E
 
 		//q7-25
 		$this->form->addElement('static', null, "7-25-$i. During which months was the product used?");
-		$this->form->addElement ("select", "q7_25_p1_$i", $this->indent . "Product #1: (Select all that apply):", $this->negThreeToNine, "multiple size = '5'" );
-		$this->form->addElement ( "select", "q7_25_p2_$i", $this->indent . "Product #2: (Select all that apply):", $this->negThreeToNine, "multiple size = '5'" );
-		$this->form->addElement ( "select", "q7_25_p3_$i", $this->indent . "Product #3: (Select all that apply):", $this->negThreeToNine, "multiple size = '5'" );
+		$this->addSelect("q7_25_p1_$i", $this->indent . "Product #1: (Select all that apply):", $this->negThreeToNine, array("multiple") );
+		$this->addSelect("q7_25_p2_$i", $this->indent . "Product #2: (Select all that apply):", $this->negThreeToNine, array("multiple") );
+		$this->addSelect("q7_25_p3_$i", $this->indent . "Product #3: (Select all that apply):", $this->negThreeToNine, array("multiple") );
 		$this->form->addElement('static', null, "<br/>");
 
 
@@ -521,9 +521,9 @@ class NDB_BVL_Instrument_EARLI_interview_S7_inserts extends NDB_BVL_Instrument_E
 
 		//q7-29
 		$this->form->addElement('static', null, "7-29-$i. During which months was the product used?");
-		$this->form->addElement ( "select", "q7_29_p1_$i", $this->indent . "Product #1: (Select all that apply):", $this->negThreeToNine, "multiple size = '5'" );
-		$this->form->addElement ( "select", "q7_29_p2_$i", $this->indent . "Product #2: (Select all that apply):", $this->negThreeToNine, "multiple size = '5'" );
-		$this->form->addElement ( "select", "q7_29_p3_$i", $this->indent . "Product #3: (Select all that apply):", $this->negThreeToNine, "multiple size = '5'" );
+		$this->addSelect("q7_29_p1_$i", $this->indent . "Product #1: (Select all that apply):", $this->negThreeToNine, array("multiple") );
+		$this->addSelect("q7_29_p2_$i", $this->indent . "Product #2: (Select all that apply):", $this->negThreeToNine, array("multiple") );
+		$this->addSelect("q7_29_p3_$i", $this->indent . "Product #3: (Select all that apply):", $this->negThreeToNine, array("multiple") );
 
 		$this->XINRegisterRule("q7_29_p1_$i", array("q7_27_$i{@}=={@}01_yes"), "Required if used any of the above products");
 		$this->XINRegisterRule("q7_29_p2_$i", array("q7_29_p2_$i{@}=={@}NEVER_REQUIRED"));
@@ -555,7 +555,7 @@ class NDB_BVL_Instrument_EARLI_interview_S7_inserts extends NDB_BVL_Instrument_E
 
 
 		//q7-32
-		$this->form->addElement ( "select", "q7_32_$i", "7-32-$i. During which months did this happen? (Select all that apply):", $this->negThreeToNine, "multiple size = '5'" );
+		$this->addSelect("q7_32_$i", "7-32-$i. During which months did this happen? (Select all that apply):", $this->negThreeToNine, array("multiple") );
 		$this->XINRegisterRule("q7_32_$i", array("q7_31_$i{@}=={@}01_yes"), "Required if exposed to mercury");
 		$this->form->addElement('static', null, "<br/>");
 
@@ -565,7 +565,7 @@ class NDB_BVL_Instrument_EARLI_interview_S7_inserts extends NDB_BVL_Instrument_E
 		$this->form->addElement('static', null, $this->indent . "If you selected [No], [Refused] or [Don't Know] skip to question 7-35");
 
 		//q7-34
-		$this->form->addElement ( "select", "q7_34_$i", "7-34-$i. During which months did this happen? (Select all that apply):", $this->negThreeToNine, "multiple size = '5'");
+		$this->addSelect("q7_34_$i", "7-34-$i. During which months did this happen? (Select all that apply):", $this->negThreeToNine, array("multiple"));
 		$this->XINRegisterRule("q7_34_$i", array("q7_33_$i{@}=={@}01_yes"), "Required if exposed to broken fluorescent bulbs");
 		$this->form->addElement('static', null, "<br/>");
 
@@ -576,7 +576,7 @@ class NDB_BVL_Instrument_EARLI_interview_S7_inserts extends NDB_BVL_Instrument_E
 
 
 		//q7-36
-		$this->form->addElement ( "select", "q7_36_$i", "7-36-$i. During which months did this happen? (Select all that apply):", $this->negThreeToNine, "multiple size = '5'");
+		$this->addSelect("q7_36_$i", "7-36-$i. During which months did this happen? (Select all that apply):", $this->negThreeToNine, array("multiple"));
 		$this->XINRegisterRule("q7_36_$i", array("q7_35_$i{@}=={@}01_yes"), "Required if exposed to broken switches, relays, gauges");
 		$this->form->addElement('static', null, "<br/>");
 		$this->form->addElement('static', null, "<br/>");
@@ -668,7 +668,7 @@ class NDB_BVL_Instrument_EARLI_interview_S7_inserts extends NDB_BVL_Instrument_E
 		$oneToFive = array("1"=>"#1", "2"=>"#2", "3"=>"#3", "4"=>"#4", "5"=>"#5");
 		foreach($oneToFive as $field=>$label){
 
-			$this->form->addElement("select", "q7_38_{$field}_$i", $this->indent . $this->indent . "Product {$label}:",  array(NULL=>"", "01" => "01 First Trimester", "02" => "02 Second Trimester", "03" => "03  Third Trimester", "88_Refused" => "88 Refused",  "99_Do_not_know"=>"99 Do not know", "Not_Answered"=>"Not Answered"), "multiple");
+			$this->addSelect("q7_38_{$field}_$i", $this->indent . $this->indent . "Product {$label}:",  array(NULL=>"", "01" => "01 First Trimester", "02" => "02 Second Trimester", "03" => "03  Third Trimester", "88_Refused" => "88 Refused",  "99_Do_not_know"=>"99 Do not know", "Not_Answered"=>"Not Answered"), array("multiple"));
 
 		}
 		$this->form->addElement('static', null, "<br/>");
@@ -701,7 +701,7 @@ class NDB_BVL_Instrument_EARLI_interview_S7_inserts extends NDB_BVL_Instrument_E
 
 		while(list($field, $label) = each($oneToSix)){
 
-			$this->form->addElement("select", "q7_40_{$field}_$i", $this->indent . "Product {$label}:",  array(NULL=>"", "01" => "01", "02" => "02", "03" => "03", "88_Refused" => "88 Refused",  "99_Do_not_know"=>"99 Do not know", "Not_Answered"=>"Not Answered"), "multiple");
+			$this->addSelect("q7_40_{$field}_$i", $this->indent . "Product {$label}:",  array(NULL=>"", "01" => "01", "02" => "02", "03" => "03", "88_Refused" => "88 Refused",  "99_Do_not_know"=>"99 Do not know", "Not_Answered"=>"Not Answered"), array("multiple"));
 
 			if ($field>1)
                                 $this->XINRegisterRule("q7_40_{$field}_$i", array("q7_40_{$field}_$i{@}=={@}NEVER_REQUIRED"));

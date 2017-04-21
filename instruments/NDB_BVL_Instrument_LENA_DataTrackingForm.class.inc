@@ -157,7 +157,7 @@ class NDB_BVL_Instrument_LENA_DataTrackingForm extends NDB_BVL_Instrument
         $this->addLabel("<BR><strong>Section A. Data Submission</strong>");
         $this->addSelect("family_participate", "<BR>Did family agree to participate?",$this->participate);
         $this->addLabel("<BR><strong>Section B. Reason(s) for Decline</strong>");
-        $this->form->addElement("select","reasonsdecline","Check All That Apply", $this->reasons_decline, "multiple");
+        $this->addSelect("reasonsdecline","Check All That Apply", $this->reasons_decline, array("multiple"));
         $this->XINRegisterRule("reasonsdecline",array("reasonsdecline{@}=={@}NEVER_REQUIRED"));
 
         $this->addLabel("<BR><strong>Section C. DLP Tracking Information</strong>");
