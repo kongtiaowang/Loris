@@ -1,10 +1,14 @@
+'use strict';
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 var PagedRowHeader = React.createClass({
     displayName: 'PagedRowHeader',
 
     propType: {
         'header_row': React.PropTypes.array.isRequired
     },
-    render: function () {
+    render: function render() {
         return React.createElement(
             'thead',
             null,
@@ -30,18 +34,18 @@ var PagedTable = React.createClass({
         'table_headers': React.PropTypes.array,
         'table_rows': React.PropTypes.array
     },
-    getInitialState: function () {
+    getInitialState: function getInitialState() {
         return {
             pageSize: 10,
             currentPage: 1
         };
     },
-    componentWillReceiveProps: function (nextProps) {
+    componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
         this.setState({
             currentPage: 1
         });
     },
-    getPage: function () {
+    getPage: function getPage() {
         var start = this.state.pageSize * (this.state.currentPage - 1);
         var end = start + this.state.pageSize;
 
@@ -56,17 +60,17 @@ var PagedTable = React.createClass({
             }.bind(this)
         };
     },
-    getNumPages: function () {
+    getNumPages: function getNumPages() {
         var numPages = Math.floor(this.props.table_rows.length / this.state.pageSize);
         if (this.props.table_rows.length % this.state.pageSize > 0) {
             numPages++;
         }
         return numPages;
     },
-    handlePageChange: function (pageNum) {
+    handlePageChange: function handlePageChange(pageNum) {
         this.setState({ currentPage: pageNum });
     },
-    render: function () {
+    render: function render() {
         var page = this.getPage();
         var rows_to_map = page.table_rows;
         var children_to_map = this.props.children;
@@ -108,7 +112,7 @@ var PagedTable = React.createClass({
 var IncompleteCandidatesRow = React.createClass({
     displayName: 'IncompleteCandidatesRow',
 
-    handleClick: function (event) {
+    handleClick: function handleClick(event) {
         event.preventDefault();
         var link = React.findDOMNode(this.refs.incomplete);
         window.open(link, "Incomplete Candidate");
@@ -118,7 +122,7 @@ var IncompleteCandidatesRow = React.createClass({
         'BaseURL': React.PropTypes.string.isRequired
 
     },
-    render: function () {
+    render: function render() {
         var row = this.props.row;
         return React.createElement(
             'tr',
@@ -148,6 +152,15 @@ var IncompleteCandidatesRow = React.createClass({
                 null,
                 React.createElement(
                     'a',
+                    { href: this.props.BaseURL + "/" + row.candid + "/" },
+                    row.PSCID
+                )
+            ),
+            React.createElement(
+                'td',
+                null,
+                React.createElement(
+                    'a',
                     { href: this.props.BaseURL + "/" + row.candid + "/" + row.SessionID + "/" + row.test_name + "/?commentID=" + row.commentid, ref: 'incomplete' },
                     row.Full_name
                 )
@@ -158,11 +171,14 @@ var IncompleteCandidatesRow = React.createClass({
 
 var InstrumentConflictsRow = React.createClass({
     displayName: 'InstrumentConflictsRow',
+
     proptypes: {
         'row': React.PropTypes.object.isRequired,
         'BaseURL': React.PropTypes.string.isRequired
     },
-    render: function () {
+    render: function render() {
+        var _React$createElement;
+
         var row = this.props.row;
         return React.createElement(
             'tr',
@@ -186,7 +202,16 @@ var InstrumentConflictsRow = React.createClass({
                 null,
                 React.createElement(
                     'a',
-                    { href: 'conflict', href: this.props.BaseURL + "/conflict_resolver/?CandID=" + row.CandID, className: 'conflict_resolver_link', 'data-pscid': row.PSCID, 'data-question': row.FieldName, 'data-instrument': row.TableName, 'data-visits': row.visit_label },
+                    { href: this.props.BaseURL + "/" + row.CandID + "/" },
+                    row.PSCID
+                )
+            ),
+            React.createElement(
+                'td',
+                null,
+                React.createElement(
+                    'a',
+                    (_React$createElement = { href: 'conflict' }, _defineProperty(_React$createElement, 'href', this.props.BaseURL + "/conflict_resolver/?CandID=" + row.CandID), _defineProperty(_React$createElement, 'className', 'conflict_resolver_link'), _defineProperty(_React$createElement, 'data-pscid', row.PSCID), _defineProperty(_React$createElement, 'data-question', row.FieldName), _defineProperty(_React$createElement, 'data-instrument', row.TableName), _defineProperty(_React$createElement, 'data-visits', row.visit_label), _React$createElement),
                     row.test_name_display
                 )
             ),
@@ -202,7 +227,7 @@ var InstrumentConflictsRow = React.createClass({
 var BehaviouralFeedbackRow = React.createClass({
     displayName: 'BehaviouralFeedbackRow',
 
-    handleClick: function (event) {
+    handleClick: function handleClick(event) {
         event.preventDefault();
         var link = React.findDOMNode(this.refs.feedback).href;
         var feedbackwindow = window.open(link, "Behavioural Feedback");
@@ -211,7 +236,7 @@ var BehaviouralFeedbackRow = React.createClass({
         'row': React.PropTypes.object.isRequired,
         'BaseURL': React.PropTypes.string.isRequired
     },
-    render: function () {
+    render: function render() {
         var row = this.props.row;
         var bvl_link;
         var bvl_level;
@@ -248,6 +273,15 @@ var BehaviouralFeedbackRow = React.createClass({
                 null,
                 React.createElement(
                     'a',
+                    { href: this.props.BaseURL + "/" + row.CandID + "/" },
+                    row.PSCID
+                )
+            ),
+            React.createElement(
+                'td',
+                null,
+                React.createElement(
+                    'a',
                     { href: bvl_link, onClick: this.handleClick, ref: 'feedback' },
                     bvl_level
                 )
@@ -265,7 +299,7 @@ var DefaultPanel = React.createClass({ displayName: 'CandidatesPanelTable',
     propTypes: {
         'title': React.PropTypes.string
     },
-    render: function () {
+    render: function render() {
         return React.createElement(
             'div',
             { className: 'panel panel-primary' },
@@ -286,7 +320,7 @@ var DefaultPanel = React.createClass({ displayName: 'CandidatesPanelTable',
 var IncompleteCandidates = React.createClass({
     displayName: 'IncompleteCandidates',
 
-    render: function () {
+    render: function render() {
         return React.createElement(
             DefaultPanel,
             { title: this.props.title },
@@ -302,7 +336,7 @@ var IncompleteCandidates = React.createClass({
 var InstrumentConflicts = React.createClass({
     displayName: 'InstrumentConflicts',
 
-    render: function () {
+    render: function render() {
         return React.createElement(
             DefaultPanel,
             { title: this.props.title },
@@ -318,7 +352,7 @@ var InstrumentConflicts = React.createClass({
 var BehaviouralFeedback = React.createClass({
     displayName: 'BehaviouralFeedback',
 
-    render: function () {
+    render: function render() {
         return React.createElement(
             DefaultPanel,
             { title: this.props.title },
@@ -334,7 +368,7 @@ var BehaviouralFeedback = React.createClass({
 var BVLPager = React.createClass({
     displayName: 'BVLPager',
 
-    render: function () {
+    render: function render() {
         var page = this.props.page;
         var pageLinks = [];
         if (page.currentPage > 1) {
@@ -344,7 +378,7 @@ var BVLPager = React.createClass({
                 React.createElement(
                     'span',
                     null,
-                    '‹'
+                    '\u2039'
                 )
             ));
             if (page.currentPage > 2) {
@@ -437,7 +471,7 @@ var BVLPager = React.createClass({
                 React.createElement(
                     'span',
                     { 'aria-hidden': 'true' },
-                    '›'
+                    '\u203A'
                 )
             ));
         }
@@ -452,7 +486,7 @@ var BVLPager = React.createClass({
 var dataTeamGraphics = React.createClass({
     displayName: 'dataTeamGraphics',
 
-    componentDidMount: function () {
+    componentDidMount: function componentDidMount() {
         var chart = c3.generate({
             bindto: '#completedChart',
             data: {
@@ -469,7 +503,7 @@ var dataTeamGraphics = React.createClass({
             }
         });
     },
-    render: function () {
+    render: function render() {
         if (this.props.pscid) {
             var pscid_status = "Candidate " + this.props.pscid;
         } else {
@@ -511,7 +545,7 @@ var dataTeamGraphics = React.createClass({
     }
 });
 
-GraphicsPanel = React.createFactory(dataTeamGraphics);
-BehaviouralFeedbackTab = React.createFactory(BehaviouralFeedback);
-IncompleteCandidatesPanel = React.createFactory(IncompleteCandidates);
-InstrumentConflictsPanel = React.createFactory(InstrumentConflicts);
+const GraphicsPanel = React.createFactory(dataTeamGraphics);
+const BehaviouralFeedbackTab = React.createFactory(BehaviouralFeedback);
+const IncompleteCandidatesPanel = React.createFactory(IncompleteCandidates);
+const InstrumentConflictsPanel = React.createFactory(InstrumentConflicts);
