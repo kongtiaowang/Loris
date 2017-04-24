@@ -30,20 +30,22 @@ if (isset($_POST['consent'])) {
 if (isset($_POST['mail_consent'])) {
     $mail_consent = $_POST['mail_consent'];
     $participant_vals['mail_toothkit_consent'] = $mail_consent;
+    $participant_vals['mail_toothkit_consent_date'] = date("Y-m-d", time());
 }
     $already_some_consent = $DB->pselectOne(
-        "SELECT count(*) FROM consent_info_history WHERE CandID=:candid",
+        "SELECT count(*) FROM participant_status WHERE CandID=:candid",
         array('candid' => $candid)
     );
 
 
     if($already_some_consent == 0) {
-        $DB->insert("consent_info_history", $participant_vals);
+        $DB->insert("participant_status", $participant_vals);
     }
     else {
         $WhereCriteria = array('candid' => $candid);
-        $DB->update("consent_info_history", $participant_vals, $WhereCriteria);
+        $DB->update("participant_status", $participant_vals, $WhereCriteria);
     }
+$DB->insert("consent_info_history", $participant_vals);
 
 echo(1);
 exit;
