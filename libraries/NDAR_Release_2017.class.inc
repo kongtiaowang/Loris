@@ -115,8 +115,10 @@ class NDAR_Release_2017
                     AND COALESCE(s.Screening, '') NOT IN ('Failure', 'Withdrawal')
                     AND s.CenterID IN (2, 3, 4, 5) AND ((s.SubprojectID=1 AND UPPER(s.Visit_label) IN ('V06', 'V12' ,'v24')) OR (s.SubprojectID=2 AND UPPER(s.Visit_label) IN ('V06', 'V12' ,'v24')) OR (s.SubprojectID=3 AND UPPER(s.Visit_label) IN ('V06', 'V12', 'V24'))) AND ( ps.study_consent = 'yes' AND ps.study_consent_withdrawal IS NULL) AND (ps.ndar_consent = 'yes' AND ps.ndar_consent_withdrawal IS NULL) $GUID";
             }
-        } else if ($this->instrument == 'head_measurements_subject' && $this->project == 2) {
+        } else if (($this->instrument == 'head_measurements_subject' || $this->instrument == 'height_weight') && $this->project == 2) {
             return $Base . " AND ((s.SubprojectID=9 AND UPPER(s.Visit_label)='V03') OR (s.SubprojectID=10 AND UPPER(s.Visit_label) IN ('V03','V06','V09','V12','V15','V18','V24'))) $GUID";
+        } else if ($this->instrument == 'phys_neuro_exam' && $this->project == 2) {
+            return $Base . " AND ((s.SubprojectID=9 AND UPPER(s.Visit_label)='V03') OR (s.SubprojectID=10 AND UPPER(s.Visit_label) IN ('V03'))) $GUID";
         } else if ($this->instrument == 'macarthur_words_gestures') {
             if ($this->project == 2) {
                 return $Base . " AND (s.SubprojectID=10 AND UPPER(s.Visit_label) IN ('V06', 'V12', 'V24')) $GUID";
@@ -145,10 +147,10 @@ class NDAR_Release_2017
             }
             return "c.IBISID AS src_subject_id, c.ProbandGUID as subjectkey,  CASE c.ProbandGender WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS Gender, ROUND(DATEDIFF(i.Date_taken, c.ProbandDoB) / (365/12)) AS interview_age, f.Validity as validity_of_data, i.Date_taken as interview_date, ";
         } else {
-            $NoValidities = array('macarthur_words_gestures', 'seq', 'rbs_r', 'ibq_r', 'head_measurements_subject', 'prefrontal_task', 'fyi', 'scq_proband');
+            $NoValidities = array('macarthur_words_gestures', 'seq', 'rbs_r', 'ibq_r', 'head_measurements_subject', 'prefrontal_task', 'fyi', 'scq_proband','height_weight','phys_neuro_exam');
             $ados = array('ados_module1','ados_module2','ados_module3','ados2_module1','ados2_module2','ados2_module3') ;
             if (in_array($this->instrument, $NoValidities)) {
-                if ($this->instrument == 'head_measurements_subject') {
+                if ($this->instrument == 'head_measurements_subject'|| $this->instrument == 'height_weight' ||$this->instrument == 'phys_neuro_exam') {
                     return "c.IBISID AS src_subject_id, c.CandidateGUID AS subjectkey, CASE c.Gender WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS Gender, ROUND(DATEDIFF(i.Date_taken, c.DoB) / (365/12)) AS interview_age, i.Date_taken AS interview_date, ";
                 }
                 return "c.IBISID AS src_subject_id, c.CandidateGUID AS subjectkey, CASE c.Gender WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS Gender , ROUND(DATEDIFF(i.Date_taken, c.DoB) / (365/12)) AS interview_age, i.Date_taken as interview_date, ";
@@ -1721,7 +1723,7 @@ class NDAR_Release_2017
             );
         } else if ($this->instrument == 'ibq_r') {
             $fields = array('i.activity_level', 'i.approach', 'i.cuddliness', 'i.distress_to_limitations', 'i.duration_of_orienting', 'i.falling_reactivity', 'i.fear', 'i.high_pleasure', 'i.low_pleasure', 'i.perceptual_sensitivity', 'i.sadness', 'i.smiling_and_laughter', 'i.soothability', 'i.vocal_reactivity', 'i.q_1', 'i.q_10', 'i.q_100', 'i.q_101', 'i.q_102', 'i.q_103', 'i.q_104', 'i.q_105', 'i.q_106', 'i.q_107', 'i.q_108', 'i.q_109', 'i.q_11', 'i.q_110', 'i.q_111', 'i.q_112', 'i.q_113', 'i.q_114', 'i.q_115', 'i.q_116', 'i.q_117', 'i.q_118', 'i.q_119', 'i.q_12', 'i.q_120', 'i.q_121', 'i.q_122', 'i.q_123', 'i.q_124', 'i.q_125', 'i.q_126', 'i.q_127', 'i.q_128', 'i.q_129', 'i.q_13', 'i.q_130', 'i.q_131', 'i.q_132', 'i.q_133', 'i.q_134', 'i.q_135', 'i.q_136', 'i.q_137', 'i.q_138', 'i.q_139', 'i.q_14', 'i.q_140', 'i.q_141', 'i.q_142', 'i.q_143', 'i.q_144', 'i.q_145', 'i.q_146', 'i.q_147', 'i.q_148', 'i.q_149', 'i.q_15', 'i.q_150', 'i.q_151', 'i.q_152', 'i.q_153', 'i.q_154', 'i.q_155', 'i.q_156', 'i.q_157', 'i.q_158', 'i.q_159', 'i.q_16', 'i.q_160', 'i.q_161', 'i.q_162', 'i.q_163', 'i.q_164', 'i.q_165', 'i.q_166', 'i.q_167', 'i.q_168', 'i.q_169', 'i.q_17', 'i.q_170', 'i.q_171', 'i.q_172', 'i.q_173', 'i.q_174', 'i.q_175', 'i.q_176', 'i.q_177', 'i.q_178', 'i.q_179', 'i.q_18', 'i.q_180', 'i.q_181', 'i.q_182', 'i.q_183', 'i.q_184', 'i.q_185', 'i.q_186', 'i.q_187', 'i.q_188', 'i.q_189', 'i.q_19', 'i.q_190', 'i.q_191', 'i.q_2', 'i.q_20', 'i.q_21', 'i.q_22', 'i.q_23', 'i.q_24', 'i.q_25', 'i.q_26', 'i.q_27', 'i.q_28', 'i.q_29', 'i.q_3', 'i.q_30', 'i.q_31', 'i.q_32', 'i.q_33', 'i.q_34', 'i.q_35', 'i.q_36', 'i.q_37', 'i.q_38', 'i.q_39', 'i.q_4', 'i.q_40', 'i.q_41', 'i.q_42', 'i.q_43', 'i.q_44', 'i.q_45', 'i.q_46', 'i.q_47', 'i.q_48', 'i.q_49', 'i.q_5', 'i.q_50', 'i.q_51', 'i.q_52', 'i.q_53', 'i.q_54', 'i.q_55', 'i.q_56', 'i.q_57', 'i.q_58', 'i.q_59', 'i.q_6', 'i.q_60', 'i.q_61', 'i.q_62', 'i.q_63', 'i.q_64', 'i.q_65', 'i.q_66', 'i.q_67', 'i.q_68', 'i.q_69', 'i.q_7', 'i.q_70', 'i.q_71', 'i.q_72', 'i.q_73', 'i.q_74', 'i.q_75', 'i.q_76', 'i.q_77', 'i.q_78', 'i.q_79', 'i.q_8', 'i.q_80', 'i.q_81', 'i.q_82', 'i.q_83', 'i.q_84', 'i.q_85', 'i.q_86', 'i.q_87', 'i.q_88', 'i.q_89', 'i.q_9', 'i.q_90', 'i.q_91', 'i.q_92', 'i.q_93', 'i.q_94', 'i.q_95', 'i.q_96', 'i.q_97', 'i.q_98', 'i.q_99');
-        } else if ($this->instrument == 'head_measurements_subject') {
+        } else if ($this->instrument == 'head_measurements_subject' || $this->instrument == 'height_weight' ||$this->instrument == 'phys_neuro_exam') {
             $fields = array('i.length1', 'i.length2', 'i.head_length_unit', 'i.weight1', 'i.weight2', 'i.weight_unit');
         } else if ($this->instrument == 'prefrontal_task') {
             $fields = array('i.training', 'i.training_finds_partially_covered', 'i.training_finds_fully_covered', 'i.training_retrieves_R_well', 'i.training_retrieves_R_well_trial', 'i.training_retrieves_R_well_trial_of', 'i.training_retrieves_L_well', 'i.training_retrieves_L_well_trial', 'i.training_retrieves_L_well_trial_of', 'i.start_side', 'i.trial_1', 'i.trial_2', 'i.trial_3', 'i.trial_4', 'i.trial_5', 'i.trial_6', 'i.trial_7', 'i.trial_8', 'i.trial_9', 'i.trial_10', 'i.trial_11', 'i.trial_12', 'i.trial_13', 'i.trial_14', 'i.trial_15', 'i.trial_16', 'i.trial_17', 'i.trial_18', 'i.trial_19', 'i.trial_20', 'i.trial_21', 'i.trial_22', 'i.trial_23', 'i.trial_24', 'i.first_reversal', 'i.second_reversal', 'i.third_reversal', 'i.fourth_reversal', 'i.validity_of_data', 'i.invalidity_reason','i.invalidity_comment_status', 'i.5sec_overall_correct', 'i.5sec_overall_trials', 'i.5sec_reversals_correct', 'i.5sec_reversals_trials', 'i.12sec_overall_correct', 'i.12sec_overall_trials', 'i.12sec_reversals_correct', 'i.12sec_reversals_trials');
@@ -1819,7 +1821,7 @@ class NDAR_Release_2017
 
     function getQuery()
     {
-        $validating = FALSE; // Do not forget to set to false if submiting to NDAR!
+        $validating = TRUE; // Do not forget to set to false if submiting to NDAR!
         
         if ($validating) {
             $test_fields = "c.PSCID, s.Visit_label, s.SubprojectID, ";
@@ -1837,6 +1839,10 @@ class NDAR_Release_2017
                     WHERE " . $this->getWhere();
         } else if ($this->instrument == 'ndar_subject') {
             return "SELECT ". $test_fields ." c.IBISID AS src_subject_id, s.CenterID as Site, CASE s.SubprojectID WHEN 1 THEN 'High Risk' WHEN 2 THEN 'High Risk' WHEN 3 THEN 'Low Risk' WHEN 9 THEN 'High Risk' WHEN 10 THEN 'Low Risk' END as phenotype, c.ProbandGUID as subjectkey_sibling1,   CASE c.ProbandGender WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS sibling_type1, c.CandidateGUID as subjectkey, CASE c.Gender WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS Gender, i.Date_taken,ROUND(DATEDIFF(i.Date_taken, c.DoB) / (365/12)) AS interview_age, i.Date_taken as interview_date,ROUND(DATEDIFF(i.Date_taken, c.ProbandDoB) / (365/12)) AS Proband_Age_in_Months, i.Candidate_race as race, i.child_ethnicity as ethnic_group from candidate c  left join session s on s.CandID = c.CandID join flag f on f.SessionID = s.ID join tsi i on i.CommentID=f.CommentID join participant_status ps on ps.CandID = c.CandID WHERE " . $this->getWhere();
+        }
+        else if($this->instrument == 'height_weight' || $this->instrument == 'phys_neuro_exam' )
+        {
+            return "SELECT ". $test_fields . $this->getFields() . " FROM head_measurements_subject i JOIN flag f ON (f.CommentID=i.CommentID) JOIN session s ON (s.ID=f.SessionID) JOIN candidate c ON (c.CandID=s.CandID) JOIN participant_status ps ON (ps.CandID = c.CandID) JOIN participant_status_options pso ON (pso.ID = ps.participant_status) WHERE " . $this->getWhere() . " AND c.ProjectID= $this->project AND pso.Description NOT IN ('Ineligible', 'Excluded','Refused/Not Enrolled')" ;
         }
 
         print  "SELECT ". $test_fields . $this->getFields() . " FROM " . $this->instrument . " i JOIN flag f ON (f.CommentID=i.CommentID) JOIN session s ON (s.ID=f.SessionID) JOIN candidate c ON (c.CandID=s.CandID) JOIN participant_status ps ON (ps.CandID = c.CandID) JOIN participant_status_options pso ON (pso.ID =  ps.participant_status) WHERE " . $this->getWhere() . " AND c.ProjectID= $this->project AND pso.Description NOT IN ('Ineligible', 'Excluded','Refused/Not Enrolled')";
@@ -2053,10 +2059,11 @@ class NDAR_Release_2017
                     $row = array_merge($row, $addfields);
                 }
                 if ($this->instrument == 'vineland_subject' || $this->instrument == 'vineland_proband') {
-                    $fieldstochange = array('ABC_STD_SCORE', 'COM_STD_SCORE', 'DLS_STD_SCORE', 'SOC_STD_SCORE', 'MS_STD_SCORE',
-                        'CRIT_ITEM_1', 'CRIT_ITEM_2', 'CRIT_ITEM_3', 'CRIT_ITEM_4', 'CRIT_ITEM_5', 'CRIT_ITEM_6',
+                    $fieldstochange = array('ABC_STD_SCORE', 'COM_STD_SCORE', 'DLS_STD_SCORE', 'SOC_STD_SCORE', 'MS_STD_SCORE');
+                    //some fields to be set to 999 for ndar_release
+                    $fieldstodefault= array('CRIT_ITEM_1', 'CRIT_ITEM_2', 'CRIT_ITEM_3', 'CRIT_ITEM_4', 'CRIT_ITEM_5', 'CRIT_ITEM_6',
                         'CRIT_ITEM_7', 'CRIT_ITEM_8', 'CRIT_ITEM_9', 'CRIT_ITEM_10', 'CRIT_ITEM_11', 'CRIT_ITEM_12',
-                        'CRIT_ITEM_13', 'CRIT_ITEM_14');
+                        'CRIT_ITEM_13', 'CRIT_ITEM_14','CRIT_SEVERITY_ITEM_10', 'CRIT_SEVERITY_ITEM_11', 'CRIT_SEVERITY_ITEM_12', 'CRIT_SEVERITY_ITEM_13', 'CRIT_SEVERITY_ITEM_14');
                     $relationships = array('Mother' => 1, 'Mom' => 1, 'mother' => 1, 'mom' => 1, 'Father' => 2, 'father' => 2, 'Dad' => 2, 'dad' => 2, 'Mom/Dad' => 28, 'Both Parents' => 28,
                         'mother and father' => 28, 'father and mother' => 28, 'Fater' => 2, 'Other' => 90);
                     if ($key === 'relationship') {
@@ -2071,6 +2078,11 @@ class NDAR_Release_2017
                         if (empty($val) || trim($val) == false) {
                             $row[$key] = 999;
                         }
+                    }
+                    if (in_array($key, $fieldstodefault)) {
+
+                            $row[$key] = 999;
+
                     }
                     if (strpos($val, 'Moderately') !== FALSE) {
                         $val = str_replace("Moderately", "Mod.", $val);
@@ -2153,6 +2165,10 @@ class NDAR_Release_2017
 
                 $row = array_merge($row, $add_columns);
             }
+            if ($this->instrument == 'phys_neuro_exam') {
+                $add_columns = array('cran_nerv' => 'NK');
+                $row = array_merge($row, $add_columns);
+            }
 
             if (array_key_exists('validity_of_data', $row) && empty($row['validity_of_data'])) {
                 $row['validity_of_data'] = 999;
@@ -2170,7 +2186,7 @@ class NDAR_Release_2017
             exit(-1);
         }
         print "#### $header";
-        $headers = array($header);
+        $headers = explode('-',$header);
         fputcsv($fd, $headers);
 
         fputcsv($fd, array_keys($results[0]));
@@ -2184,11 +2200,11 @@ class NDAR_Release_2017
     {
         $headers = array('ados_module1' => 'ados_module1', 'ados_module2' => 'ados_module2', 'ados_module3' => 'ados_module3', 
             'ados2_module1' => 'ados2_module1', 'ados2_module2' => 'ados2_module2', 'ados2_module3' => 'ados2_module3',
-            'adi_r_proband' => 'adi_200304', 'aosi' => 'earli_aosi01', 'csbs' => 'csbs_dp_behavior02', 'edi' => 'edi01', 'charge' => 'charge_medical_history02',
-            'fyi' => 'fyi01', 'ibq_r' => 'ibq_r01', 'macarthur_words_gestures' => 'mci_words_gestures01', 'vineland_proband' => 'vinelandsurvey_200505',
-            'm_chat_proband' => 'm_chat02', 'mullen' => 'mullen03', 'prefrontal_task' => 'prefront_task01', 'edi2' => 'edi01',
-            'rbs_r' => 'rbs_r02', 'seq' => 'seq01', 'vineland_subject' => 'vinelandsurvey_200505', 'adi_r_subject' => 'adir_200304',
-            'head_measurements_subject' => 'charge_physicalexam01', 'ndar_subject' => 'ndar_subject01');
+            'adi_r_proband' => 'adi_2003-04', 'aosi' => 'earli_aosi-01', 'csbs' => 'csbs_dp_behavior-02', 'edi' => 'edi-01', 'charge' => 'charge_medical_history-02',
+            'fyi' => 'fyi-01', 'ibq_r' => 'ibq_r-01', 'macarthur_words_gestures' => 'mci_words_gestures-01', 'vineland_proband' => 'vinelandsurvey_2005-05',
+            'm_chat_proband' => 'm_chat-02', 'mullen' => 'mullen-03', 'prefrontal_task' => 'prefront_task-01', 'edi2' => 'edi-01',
+            'rbs_r' => 'rbs_r-02', 'seq' => 'seq-01', 'vineland_subject' => 'vinelandsurvey_2005-05', 'adi_r_subject' => 'adir_2003-04',
+            'head_measurements_subject' => 'charge_physicalexam-01', 'ndar_subject' => 'ndar_subject-01', 'height_weight' => 'height_weight-01', 'phys_neuro_exam' => 'ace_physexam-01');
         $Query = $this->getQuery();
         // print $Query;
         $db = &Database::singleton();
@@ -2198,11 +2214,11 @@ class NDAR_Release_2017
         if ($this->instrument == 'scq_proband' || $this->instrument == 'scq_subject') {
             $results = $db->pselect($Query . " AND i.scq_version='lifetime'", array());
             $converted = $this->process($results);
-            $header = 'scq_lifetime04';
+            $header = 'scq_lifetime-04';
             $this->writeResults($converted, $header, '/var/www/loris/project/tools/NDAR_2017/' . $this->instrument . '_lifetime' . $ending);
             $results = $db->pselect($Query . " AND i.scq_version='current'", array());
             $converted = $this->process($results);
-            $header = 'scq_current04';
+            $header = 'scq_current-04';
             $this->writeResults($converted, $header, '/var/www/loris/project/tools/NDAR_2017/' . $this->instrument . '_current' . $ending);
 
         } else {
