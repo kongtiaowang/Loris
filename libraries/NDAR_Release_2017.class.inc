@@ -2167,7 +2167,21 @@ class NDAR_Release_2017
             }
             if ($this->instrument == 'phys_neuro_exam') {
                 $add_columns = array('cran_nerv' => 'NK');
+                unset($row['head_length_unit']);
+                unset($row['weight_unit']);
+                unset($row['length1']);
+                unset($row['length2']);
+                unset($row['weight1']);
+                unset($row['weight2']);
                 $row = array_merge($row, $add_columns);
+            }
+            if ($this->instrument == 'height_weight') {
+                unset($row['head_length_unit']);
+                unset($row['weight_unit']);
+                unset($row['length1']);
+                unset($row['length2']);
+                unset($row['weight1']);
+                unset($row['weight2']);
             }
 
             if (array_key_exists('validity_of_data', $row) && empty($row['validity_of_data'])) {
