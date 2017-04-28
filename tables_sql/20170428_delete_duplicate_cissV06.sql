@@ -1,5 +1,5 @@
 -- Delete duplicate entry for ciss V06 in test battery to solve the issue in future
-DELETE FROM nihaceProd.test_battery WHERE ID=1306 ;
+DELETE FROM test_battery WHERE ID=1306 ;
 
 
  /* SELECT MAX(flag.CommentID), session.Visit_label,session.ID,flag.Test_Name
