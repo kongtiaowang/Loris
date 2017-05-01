@@ -100,7 +100,7 @@ foreach ($result as $row) {
 
         if (empty($status)) {
             // You're here because there is no flag entry
-            // for this insrument and that session
+            // for this instrument and that session
             print ", ";
 
         } else {
@@ -112,9 +112,9 @@ foreach ($result as $row) {
                 // print ", {$status['Data_entry']}";
             }
         }
-    } // foreach
+    } // foreach instrument
     print "\n";
 
-}
+} // foreach candidate/visit
 
 
