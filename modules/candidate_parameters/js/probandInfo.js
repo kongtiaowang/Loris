@@ -225,6 +225,7 @@ var ProbandInfo = React.createClass({
           label: "Age Difference (months)",
           text: this.state.Data.ageDifference
         }),
+        extraParameterFields,
         updateButton
       )
     );
