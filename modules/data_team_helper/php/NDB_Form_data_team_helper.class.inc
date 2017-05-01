@@ -426,6 +426,11 @@ class NDB_Form_data_team_helper extends NDB_Form
     function getIncompleteCandidates($test_name,$visit_label=null, $candidate=null,$site=null, $project=null)
     {
         global $DB;
+        $config         =& NDB_Config::singleton();
+        $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
+        for ($i=0; $i<count($ddeInstruments); ++$i) {
+            $ddeInstruments[$i] = Database::singleton()->quote($ddeInstruments[$i]);
+        }
         $query = "SELECT DISTINCT s.ID, s.visit_label, c.PSCID,s.candid, f.SessionID, f.test_name,f.data_entry,f.commentid, t.Full_name FROM session s
             JOIN flag f ON (f.sessionid = s.id)
             JOIN candidate c ON (c.candid = s.candid)
@@ -433,6 +438,17 @@ class NDB_Form_data_team_helper extends NDB_Form
             JOIN psc ON (s.CenterID = psc.CenterID)	";
 
         $where   = " WHERE s.Active = 'Y' AND c.Active = 'Y' AND coalesce(f.data_entry,'In Progress') = 'In Progress' AND psc.Centerid!= '1' AND c.Entity_type != 'Scanner'";
+        if (count($ddeInstruments) > 0) {
+            $ddeInstruments = implode(",", $ddeInstruments);
+            $where         .= "
+                AND (f.test_name IN ($ddeInstruments) OR
+                f.commentid NOT LIKE 'DDE_%')
+            ";
+        } else {
+            $where .= "
+                AND (f.commentid NOT LIKE 'DDE_%')
+            ";
+        }
         $qparams = array();
 
         //filter for testname
