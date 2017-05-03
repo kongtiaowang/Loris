@@ -71,9 +71,7 @@ function MapSubprojectID(&$results, NDB_Config $config) {
 $query = "select * from test_names order by Test_name";
 //$query = "select * from test_names where Test_name like 'a%' order by Test_name";  //for rapid testing
 $instruments = $DB->pselect($query, array());
-if (PEAR::isError($instruments)) {
-	PEAR::raiseError("Couldn't get instruments. " . $instruments->getMessage());
-}
+
 foreach ($instruments as $instrument) {
 	//Query to pull the data from the DB
 	$Test_name = $instrument['Test_name'];
@@ -83,10 +81,12 @@ foreach ($instruments as $instrument) {
 
     } else if ($Test_name == 'radiology_review') {
         $query = "select c.PSCID, c.CandID, s.SubprojectID, s.Visit_label, s.Submitted, s.Current_stage, s.Screening, s.Visit, f.Administration, e.full_name as Examiner_name, f.Data_entry, f.Validity, 'Site review:', i.*, 'Final Review:', COALESCE(fr.Review_Done, 0) as Review_Done, fr.Final_Review_Results, fr.Final_Exclusionary, fr.SAS, fr.PVS, fr.Final_Incidental_Findings, fre.full_name as Final_Examiner_Name, fr.Final_Review_Results2, fre2.full_name as Final_Examiner2_Name, fr.Final_Exclusionary2, COALESCE(fr.Review_Done2, 0) as Review_Done2, fr.SAS2, fr.PVS2, fr.Final_Incidental_Findings2, fr.Finalized from candidate c, session s, flag f, $Test_name i left join final_radiological_review fr ON (fr.CommentID=i.CommentID) left outer join examiners e on (i.Examiner = e.examinerID) left join examiners fre ON (fr.Final_Examiner=fre.examinerID) left join examiners fre2 ON (fre2.examinerID=fr.Final_Examiner2) where c.PSCID not like 'dcc%' and c.PSCID not like '0%' and c.PSCID not like '1%' and c.PSCID not like '2%' and c.PSCID != 'scanner' and i.CommentID not like 'DDE%' and c.CandID = s.CandID and s.ID = f.sessionID and f.CommentID = i.CommentID AND c.Active='Y' AND s.Active='Y' AND c.CenterID IN (2, 3, 4, 5) order by s.Visit_label, c.PSCID";
+    } else if ($Test_name == 'air_pollution') {
+        $query = "select c.PSCID, c.CandID, s.SubprojectID, s.Visit_label, s.Submitted, s.Current_stage, s.Screening, s.Visit, f.Administration, e.full_name as Examiner_name, f.Data_entry, f.Validity, i.* from candidate c, session s, flag f, $Test_name i left outer join examiners e on (i.Examiner = e.examinerID) where c.PSCID not like 'dcc%' and c.PSCID not like '0%' and c.PSCID not like '1%' and c.PSCID not like '2%' and c.PSCID != 'scanner' and i.CommentID not like 'DDE%' and c.CandID = s.CandID and s.ID = f.sessionID and f.CommentID = i.CommentID AND c.Active='Y' AND s.Active='Y' AND c.CenterID IN (2, 3, 4, 5) order by s.Visit_label, c.PSCID";
     } else {
         if (is_file("../project/instruments/NDB_BVL_Instrument_$Test_name.class.inc")) {
-            $instrument =& NDB_BVL_Instrument::factory($Test_name, '', false);
-            if($instrument->ValidityEnabled == true) {
+            $ndb_bvl_instrument =& NDB_BVL_Instrument::factory($Test_name, '', false);
+            if($ndb_bvl_instrument->ValidityEnabled == true) {
                 $extra_fields = 'f.Validity, ';
             } 
             $NDB_Config = NDB_Config::singleton();
@@ -104,9 +104,10 @@ foreach ($instruments as $instrument) {
 	    $query = "select c.PSCID, c.CandID, s.SubprojectID, s.Visit_label, s.Submitted, s.Current_stage, s.Screening, s.Visit, f.Administration, e.full_name as Examiner_name, f.Data_entry, f.Validity, i.* from candidate c, session s, flag f, $Test_name i left outer join examiners e on i.Examiner = e.examinerID where c.PSCID not like 'dcc%' and c.PSCID not like '0%' and c.PSCID not like '1%' and c.PSCID not like '2%' and c.PSCID != 'scanner' and i.CommentID not like 'DDE%' and c.CandID = s.CandID and s.ID = f.sessionID and f.CommentID = i.CommentID AND c.Active='Y' AND s.Active='Y' AND  c.CenterID IN (2, 3, 4, 5) order by s.Visit_label, c.PSCID";
         }
     }
-	$DB->select($query, $instrument_table);
-	if(PEAR::isError($instrument_table)) {
-		print "Cannot pull instrument table data ".$instrument_table->getMessage()."<br>\n";
+	$instrument_table = $DB->pselect($query, array());
+	
+	if(empty($instrument_table)) {
+		print "Cannot pull instrument table data\n";
 		die();
 	}
     MapSubprojectID($instrument_table, $config);
@@ -119,8 +120,8 @@ foreach ($instruments as $instrument) {
 */
 $Test_name = "figs_year3_relatives";
 $query = "select c.PSCID, c.CandID, s.SubprojectID, s.Visit_label, fyr.* from candidate c, session s, flag f, figs_year3_relatives fyr where c.PSCID not like 'dcc%' and fyr.CommentID not like 'DDE%' and c.CandID = s.CandID and s.ID = f.sessionID and f.CommentID = fyr.CommentID AND c.Active='Y' AND s.Active='Y' order by s.Visit_label, c.PSCID";
-$DB->select($query, $instrument_table);
-if(PEAR::isError($instrument_table)) {
+$instrument_table = $DB->pselect($query, array());
+if(empty($instrument_table)) {
 	print "Cannot figs_year3_relatives data ".$instrument_table->getMessage()."<br>\n";
 	die();
 }
@@ -133,9 +134,10 @@ writeCSV($Test_name, $instrument_table, $dataDir);
 $Test_name = "candidate_info";
 //this query is a but clunky, but it gets rid of all the crap that would otherwise appear.
 $query = "SELECT DISTINCT c.PSCID, c.CandID, c.Gender, c.DoB, s.SubprojectID, c.ProjectID, pc.Value as Plan, c.EDC from candidate c LEFT JOIN session s ON (c.CandID = s.CandID) LEFT JOIN parameter_candidate pc ON (c.CandID = pc.CandID AND pc.ParameterTypeID=73754) WHERE c.CenterID IN (2,3,4,5) AND c.Active='Y'  AND s.Active='Y' ORDER BY c.PSCID";
-$DB->select($query, $results);
-if (PEAR::isError($results)) {
-	PEAR::raiseError("Couldn't get candidate info. " . $results->getMessage());
+$results = $DB->pselect($query, array());
+if (empty($results)) {
+	print "Couldn't get candidate info. " . $results->getMessage();
+	die();
 }
 
 MapProjectID($results);
@@ -148,9 +150,10 @@ writeCSV($Test_name, $results, $dataDir);
 */
 $Test_name = "IBISDataDictionary";
 $query = "select Name, Type, Description, SourceField, SourceFrom from parameter_type where SourceField is not null order by SourceFrom";
-$DB->select($query, $dictionary);
-if (PEAR::isError($dictionary)) {
-	PEAR::raiseError("Could not generate data dictionary. " . $dictionary->getMessage());
+$dictionary = $DB->pselect($query, array());
+if (empty($dictionary)) {
+	print "Could not generate data dictionary. " . $dictionary->getMessage();
+	die;
 }
 writeCSV($Test_name, $dictionary, $dataDir);
 

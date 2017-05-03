@@ -93,7 +93,7 @@ class NDB_BVL_Instrument_ACEFamilyMedicalHistory extends NDB_BVL_Instrument
 		    } else {     
 			    $field = $key."_".$k;
                             if($key == 'currentage') {
-			        $group[] =& $this->form->createElement("text",$field,null);
+			        $group[] =& $this->form->createElement("text",$field,null,null);
                             } else if ($key == 'relation') {
                                 if($k == 'mother' || $k == 'father') {
                                    $group[] =& $this->form->createElement("static",null,null, null);
@@ -102,7 +102,7 @@ class NDB_BVL_Instrument_ACEFamilyMedicalHistory extends NDB_BVL_Instrument
                                   }
                             } else if ($key == 'last_grade_completed') { 
                                if($k == 'mother' || $k == 'father') {
-                                    $group[] =& $this->form->createElement("text",$field,null);
+                                    $group[] =& $this->form->createElement("text",$field,null,null);
                                  } else {
                                     $group[] =& $this->form->createElement("static",null,null, null);
                                   }
