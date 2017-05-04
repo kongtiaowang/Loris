@@ -64,7 +64,7 @@ if (empty($argv[1])) {
 
 
 $instruments = $db->pselect(
-    "SELECT * FROM test_names AS t 
+    "SELECT * FROM test_names AS t
                              ORDER BY t.Test_name",
     array()
 );
@@ -77,9 +77,9 @@ foreach ($instruments as $ins) {
 print "\n";
 
 $result = $db->pselect(
-    "SELECT *, c.PSCID as CPSCID FROM candidate AS c 
+    "SELECT *, c.PSCID as CPSCID FROM candidate AS c
                         JOIN session AS s USING (CandID)
-                        WHERE c.Entity_type='Human' {$ProjectID} {$CenterID} 
+                        WHERE c.Entity_type='Human' {$ProjectID} {$CenterID}
                         ORDER BY c.PSCID, s.Visit_label",
     array()
 );
@@ -90,8 +90,8 @@ foreach ($result as $row) {
 
     foreach ($instruments as $ins) {
         $status = $db->pselectRow(
-            "SELECT * FROM flag AS f 
-                               WHERE f.SessionID=:sid AND f.Test_name=:tnm",
+            "SELECT * FROM flag AS f
+                               WHERE f.CommentID NOT LIKE 'DDE%' AND f.SessionID=:sid AND f.Test_name=:tnm",
             array(
              'sid' => $row['ID'],
              'tnm' => $ins['Test_name'],
@@ -105,13 +105,16 @@ foreach ($result as $row) {
 
         } else {
             if ($status['Data_entry'] == "") {
-                print ", NS";
+                // This is the incomplete/not started section
+                print ", {$ins['Test_name']}";
 
             } else {
                 // You could print the "In Progress" or "Complete" status here
                 // print ", {$status['Data_entry']}";
+                print ", ";
             }
         }
+
     } // foreach instrument
     print "\n";
 
