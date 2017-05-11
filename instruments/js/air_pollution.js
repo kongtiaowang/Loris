@@ -3,7 +3,7 @@ $(document).ready(function() {
   let participantSite=$('#site').text();
   let crc32s = [];
   $.ajax({
-      url: 'environment_residential_history/ajax/air_pollution_crc32s.js',
+      url: '/js/air_pollution_crc32s.js',
       success: function(data) {
           const siteCodes = JSON.parse(data);
 
@@ -18,7 +18,6 @@ $(document).ready(function() {
   $("#goback").remove();
   $("#finalize").unbind( "click" );
   console.log("unbind click");
-  var badcode;
 
   $('[name="code"]').blur(function(e) {
     // Validate the entered code against the valid CRC32 codes for that site
@@ -30,13 +29,14 @@ $(document).ready(function() {
       if($("#verify").length == 0) {
         codeInputElement.parent().append('<span id ="verify" style="color:red;">Please verify the code</span>');
         codeInputElement.css({'border':'2px solid red'});
-        badcode = true;
+        alert("You cannot submit if the code is not valid!");
+        $("#finalize").prop('disabled', true);
       }
     } else {
       if($("#verify").length != 0) {
         codeInputElement.css({'border':'1px'});
         codeInputElement.siblings()[0].remove();
-        badcode = false;
+        $("#finalize").prop('disabled', false);
       }
     } 
   });
@@ -68,11 +68,6 @@ $(document).ready(function() {
       return false;
     } else {
  
-        if(badcode) {
-          alert("You cannot submit if the code is not valid!");
-          return false;
-        }
-
         // are you sure?
         var question = "Are you sure all fields are filled correctly and OK to be submitted?";
         var status = confirm(question);

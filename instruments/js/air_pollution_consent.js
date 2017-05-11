@@ -1,9 +1,7 @@
 $(document).ready(function() {
-
-  $("#savecontinue").unbind("click");
-  console.log("unbind click");
-
+  
   $("#savecontinue").click(function(e) {
+    e.preventDefault();
     console.log("save clicked");
       var mail_consent = $('[name = "mail_tooth_kit"]').val();
       var comment = $('[name = "commentId"]').val();
@@ -15,7 +13,6 @@ $(document).ready(function() {
                     consent: consent,
                     comment: comment },
             url: 'candidate_parameters/ajax/UpdateConsent.php',
-            async: false,
             success: function(data) {
                 if (data == 1)
                 {
@@ -36,7 +33,6 @@ $(document).ready(function() {
                     consent: consent,
                     comment: comment },
             url: 'candidate_parameters/ajax/UpdateConsent.php',
-            async: false,
             success: function(data) {
             }
         });
@@ -51,7 +47,6 @@ $(document).ready(function() {
             data: { mail_consent: mail_consent,
                     comment: comment },
             url: 'candidate_parameters/ajax/UpdateConsent.php',
-            async: false,
             success: function(data) {
             }
         });

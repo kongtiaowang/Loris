@@ -260,7 +260,7 @@ HTML;
         $this->form->addElement('header', 'instrument_title', "IBIS Environment Residential History");
         $this->addTextAreaElement('additional_comments', 'Additional Comments');
 
-        $this->form->addElement("static", null, '<div id="air_pollution"><script type="text/javascript" src="/js/air_pollution.js"></script></div><div id="air_pollution_decrypt"><script type="text/javascript" src="environment_residential_history/js/air_pollution_decrypt.js"></script></div>');
+        $this->form->addElement("static", null, '<div id="air_pollution"><script type="text/javascript" src="/js/air_pollution.js"></script></div><div id="air_pollution_decrypt"><script type="text/javascript" src="/js/air_pollution_decrypt.js"></script></div>');
     }
 
     /**
