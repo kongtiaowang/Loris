@@ -1,7 +1,9 @@
 $(document).ready(function() {
   
+  $("#savecontinue").unbind( "click" );
+  
   $("#savecontinue").click(function(e) {
-    e.preventDefault();
+//    e.preventDefault();
     console.log("save clicked");
       var mail_consent = $('[name = "mail_tooth_kit"]').val();
       var comment = $('[name = "commentId"]').val();
@@ -12,27 +14,24 @@ $(document).ready(function() {
             data: { mail_consent: mail_consent,
                     consent: consent,
                     comment: comment },
-            url: 'candidate_parameters/ajax/UpdateConsent.php',
-            success: function(data) {
-                if (data == 1)
-                {
-                    var form = $("#test_form");
-                    $("<input>").attr({
+            url: '/ajax/UpdateConsent.php',
+        });
+        
+        var form = $("#test_form");
+        $("<input>").attr({
                         type: 'hidden',
                         name: 'nextpage',
                         value: '1'
                     }).appendTo(form);
-                       form.submit();
-                }
-            }
-        });
+        form.submit();
+        //ajaxSubmit(e);
     } else if ($('[name="consent"]').val() == 'no' && $('[name="mail_tooth_kit"]').val() != '') {
         $.ajax({
             type: 'POST',
             data: { mail_consent: mail_consent,
                     consent: consent,
                     comment: comment },
-            url: 'candidate_parameters/ajax/UpdateConsent.php',
+            url: '/ajax/UpdateConsent.php',
             success: function(data) {
             }
         });
@@ -46,7 +45,7 @@ $(document).ready(function() {
             type: 'POST',
             data: { mail_consent: mail_consent,
                     comment: comment },
-            url: 'candidate_parameters/ajax/UpdateConsent.php',
+            url: '/ajax/UpdateConsent.php',
             success: function(data) {
             }
         });
