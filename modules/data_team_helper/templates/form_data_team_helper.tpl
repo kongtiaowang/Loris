@@ -43,13 +43,13 @@
 						<div class ="form-group col-sm-6">
 							<label class ="col-sm-12 col-md-4">DCCID:</label>
 							<div class="col-sm-12 col-md-8">
-								<input name = "candidate" type="text" id="autocomplete-ajax" class="form-control"/>
+								<input name = "candidate" type="text" id="autocomplete-ajax" class="form-control" value="{$candID}"/>
 							</div>
 						</div>
 						<div class ="form-group col-sm-6">
 							<label class ="col-sm-12 col-md-4">PSCID:</label>
 							<div class="col-sm-12 col-md-8">
-								<input name = "PSCID" type="text" class="form-control"/>
+								<input name = "PSCID" type="text" class="form-control" value="{$PSCID}"/>
 							</div>							
 						</div>					
 					</div>
