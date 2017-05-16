@@ -2,10 +2,10 @@
 /** This is used to update the consents related with an instrument
  */
 
-set_include_path(get_include_path().":../../project/libraries:../../php/libraries:");
+set_include_path(get_include_path().":../project/libraries:../php/libraries:");
 ini_set('default_charset', 'utf-8');
 
-require_once __DIR__ . "/../../../../vendor/autoload.php";
+require_once __DIR__ . "../../../../../vendor/autoload.php";
 
 $config =& NDB_Config::singleton();
 $client = new NDB_Client();
@@ -45,5 +45,6 @@ if (isset($_POST['mail_consent'])) {
     }
 $DB->insert("consent_info_history", $participant_vals);
 
-echo(1);
+header("HTTP/1.1 200 OK");
+echo(json_encode(array(true)));
 exit;
