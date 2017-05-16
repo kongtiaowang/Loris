@@ -204,7 +204,7 @@ INSERT INTO help(hash, topic) VALUES (md5('edi2'),'EDI_IBIS2');
     * @return void
     * @access public
     */
-    function setup($commentID, $page){
+    function setup($commentID = null, $page = null){
         $this->formType="XIN";
         $this->form = new LorisForm('test_form');
         $this->page = $page;            // page label (number or
@@ -457,11 +457,11 @@ INSERT INTO help(hash, topic) VALUES (md5('edi2'),'EDI_IBIS2');
         $this->form->addElement('header', null, "Scores");
 
         //scoring column headers
-        $group[] = $this->form->createElement('static', "total_symptoms");
-        $group[] = $this->form->createElement('static', "regulatory");
-        $group[] = $this->form->createElement('static', "social");
-        $group[] = $this->form->createElement('static', "communication");
-        $group[] = $this->form->createElement('static', "repetitive_behaviour");
+        $group[] = $this->form->createElement('static', "total_symptoms", null, null);
+        $group[] = $this->form->createElement('static', "regulatory", null, null);
+        $group[] = $this->form->createElement('static', "social", null, null);
+        $group[] = $this->form->createElement('static', "communication", null, null);
+        $group[] = $this->form->createElement('static', "repetitive_behaviour", null, null);
         $this->form->addGroup($group, 'score_header_group', "Anchor Point (months)", $this->_GUIDelimiter, FALSE);
         unset($group);
         
@@ -471,7 +471,7 @@ INSERT INTO help(hash, topic) VALUES (md5('edi2'),'EDI_IBIS2');
         foreach($anchorPoints as $field=>$label) {
             foreach($this->columnHeaders as $scoreField=>$scoreLabel) {
                 if(array_key_exists("score_{$field}_{$scoreField}", $this->scores)) //not all subscales apply at all ages
-                    $group[] = $this->form->createElement('static', "score_{$field}_{$scoreField}");
+                    $group[] = $this->form->createElement('static', "score_{$field}_{$scoreField}", null, null);
             }
             $this->form->addGroup($group, "{$label}_group", $label, $this->_GUIDelimiter, FALSE);
             unset($group);
@@ -575,7 +575,7 @@ INSERT INTO help(hash, topic) VALUES (md5('edi2'),'EDI_IBIS2');
 			if(array_key_exists($qNum, $anchorPoints) == TRUE) {
 				$this->form->addElement('static', null, "<br/>");
                               if($anchorPoints[$qNum] == "0-3"){
-                                $this->form->addElement('header', null, "Please ensure that Pregrnancy Events page is also complete");
+                                $this->form->addElement('header', null, "Please ensure that Pregnancy Events page is also complete");
                                 }
 				$this->form->addElement("header", null, $anchorPoints[$qNum] . " months");
 				$this->form->addElement('static', null, "<br/>");
@@ -625,7 +625,7 @@ INSERT INTO help(hash, topic) VALUES (md5('edi2'),'EDI_IBIS2');
                                 "score_22_24_total_symptoms"=>range(83, 96));
         foreach($totalApplicableQuestions as $field=>$numbers) {
             foreach($numbers as $number) {
-                $this->scores[$field] += $score_record["EDI{$number}"];
+                $this->scores[$field] = (int)$this->scores[$field] + (int)$score_record["EDI{$number}"];
             }
             $this->scores[$field] = round($this->scores[$field] / count($numbers), $decimalPlaces);
         }
@@ -640,7 +640,7 @@ INSERT INTO help(hash, topic) VALUES (md5('edi2'),'EDI_IBIS2');
                                                 "score_22_24_regulatory"=>array(83));
         foreach($regulatoryApplicableQuestions as $field=>$numbers) {
             foreach($numbers as $number) {
-                $this->scores[$field] += $score_record["EDI{$number}"];
+                $this->scores[$field] = (int)$this->scores[$field]+ (int)$score_record["EDI{$number}"];
             }
             $this->scores[$field] = round($this->scores[$field] / count($numbers), $decimalPlaces);
         }	
@@ -654,7 +654,7 @@ INSERT INTO help(hash, topic) VALUES (md5('edi2'),'EDI_IBIS2');
                                 "score_22_24_social"=>array(85, 86, 87, 88, 89));
         foreach($socialApplicableQuestions as $field=>$numbers) {
             foreach($numbers as $number) {
-                $this->scores[$field] += $score_record["EDI{$number}"];
+                $this->scores[$field] = (int)$this->scores[$field] + (int)$score_record["EDI{$number}"];
             }
             $this->scores[$field] = round($this->scores[$field] / count($numbers), $decimalPlaces);
         }	
@@ -667,7 +667,7 @@ INSERT INTO help(hash, topic) VALUES (md5('edi2'),'EDI_IBIS2');
                                 "score_22_24_communication"=>array(90, 91, 92, 93));
         foreach($communicationApplicableQuestions as $field=>$numbers) {
             foreach($numbers as $number) {
-                $this->scores[$field] += $score_record["EDI{$number}"];
+                $this->scores[$field] = (int)$this->scores[$field] + (int)$score_record["EDI{$number}"];
             }
             $this->scores[$field] = round($this->scores[$field] / count($numbers), $decimalPlaces);
         }	
@@ -679,7 +679,7 @@ INSERT INTO help(hash, topic) VALUES (md5('edi2'),'EDI_IBIS2');
                                 "score_22_24_repetitive_behaviour"=>array(84, 94, 95));                                
         foreach($repetitive_behaviourApplicableQuestions as $field=>$numbers) {
             foreach($numbers as $number) {
-                $this->scores[$field] += $score_record["EDI{$number}"];
+                $this->scores[$field] = (int)$this->scores[$field] + (int)$score_record["EDI{$number}"];
             }
             $this->scores[$field] = round($this->scores[$field] / count($numbers), $decimalPlaces);
         }	
