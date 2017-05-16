@@ -575,7 +575,7 @@ INSERT INTO help(hash, topic) VALUES (md5('edi2'),'EDI_IBIS2');
 			if(array_key_exists($qNum, $anchorPoints) == TRUE) {
 				$this->form->addElement('static', null, "<br/>");
                               if($anchorPoints[$qNum] == "0-3"){
-                                $this->form->addElement('header', null, "Please ensure that Pregrnancy Events page is also complete");
+                                $this->form->addElement('header', null, "Please ensure that Pregnancy Events page is also complete");
                                 }
 				$this->form->addElement("header", null, $anchorPoints[$qNum] . " months");
 				$this->form->addElement('static', null, "<br/>");
