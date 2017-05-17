@@ -11,6 +11,7 @@ $(document).ready(function() {
     if ($('[name="consent"]').val() == 'yes' && $('[name="mail_tooth_kit"]').val() != '') {
         $.ajax({
             type: 'POST',
+            async: !$.browser.safari,
             data: { mail_consent: mail_consent,
                     consent: consent,
                     comment: comment },
@@ -27,6 +28,7 @@ $(document).ready(function() {
     } else if ($('[name="consent"]').val() == 'no' && $('[name="mail_tooth_kit"]').val() != '') {
         $.ajax({
             type: 'POST',
+            async: !$.browser.safari,
             data: { mail_consent: mail_consent,
                     consent: consent,
                     comment: comment },
@@ -42,6 +44,7 @@ $(document).ready(function() {
     } else {
         $.ajax({
             type: 'POST',
+            async: !$.browser.safari,
             data: { mail_consent: mail_consent,
                     comment: comment },
             url: '/UpdateConsent.php',
