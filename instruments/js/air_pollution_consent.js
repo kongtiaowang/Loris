@@ -8,10 +8,12 @@ $(document).ready(function() {
       var mail_consent = $('[name = "mail_tooth_kit"]').val();
       var comment = $('[name = "commentId"]').val();
       var consent = $('[name = "consent"]').val();
+      var isSafari = navigator.vendor.indexOf("Apple")==0 && /\sSafari\//.test(navigator.userAgent); // true or false
+      
     if ($('[name="consent"]').val() == 'yes' && $('[name="mail_tooth_kit"]').val() != '') {
         $.ajax({
             type: 'POST',
-            async: !$.browser.safari,
+            async: isSafari,
             data: { mail_consent: mail_consent,
                     consent: consent,
                     comment: comment },
@@ -28,7 +30,7 @@ $(document).ready(function() {
     } else if ($('[name="consent"]').val() == 'no' && $('[name="mail_tooth_kit"]').val() != '') {
         $.ajax({
             type: 'POST',
-            async: !$.browser.safari,
+            async: isSafari,
             data: { mail_consent: mail_consent,
                     consent: consent,
                     comment: comment },
@@ -44,7 +46,7 @@ $(document).ready(function() {
     } else {
         $.ajax({
             type: 'POST',
-            async: !$.browser.safari,
+            async: isSafari,
             data: { mail_consent: mail_consent,
                     comment: comment },
             url: '/UpdateConsent.php',
