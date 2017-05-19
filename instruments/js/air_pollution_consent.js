@@ -53,7 +53,7 @@ $(document).ready(function() {
             }
         });
 
-      alert("You must select 'Yes' to continue to the air pollution study questionnaire.");
+      alert("Please select 'Yes' to continue to the Air Pollution Study Questionnaire or 'No' then 'Save and Continue' to record your consent refusal.");
       return false;
     }
     
