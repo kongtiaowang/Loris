@@ -3,14 +3,16 @@ $(document).ready(function() {
   $("#savecontinue").unbind( "click" );
   
   $("#savecontinue").click(function(e) {
-//    e.preventDefault();
     console.log("save clicked");
       var mail_consent = $('[name = "mail_tooth_kit"]').val();
       var comment = $('[name = "commentId"]').val();
       var consent = $('[name = "consent"]').val();
       var isSafari = navigator.vendor.indexOf("Apple")==0 && /\sSafari\//.test(navigator.userAgent); // true or false
       
-    if ($('[name="consent"]').val() == 'yes' && $('[name="mail_tooth_kit"]').val() != '') {
+     if ($('[name = "mail_tooth_kit"]').val() == '') {
+        alert("Do you want to get the tooth fairy kit?. Please select an option.");
+        return false;
+     } else if ($('[name="consent"]').val() == 'yes') {
         $.ajax({
             type: 'POST',
             async: isSafari,
@@ -27,7 +29,7 @@ $(document).ready(function() {
                         value: '1'
                     }).appendTo(form);
         form.submit();
-    } else if ($('[name="consent"]').val() == 'no' && $('[name="mail_tooth_kit"]').val() != '') {
+    } else if ($('[name="consent"]').val() == 'no') {
         $.ajax({
             type: 'POST',
             async: isSafari,
@@ -40,9 +42,6 @@ $(document).ready(function() {
         });
       alert("You have chosen 'No' to participate in the air pollution study, we thank you for your time. If you wish to consent, please choose 'Yes' to proceed.");
       return false;
-    } else if ($('[name = "mail_tooth_kit"]').val() == '') {
-        alert("Do you want to get the tooth fairy kit?. Please select an option.");
-        return false;
     } else {
         $.ajax({
             type: 'POST',
