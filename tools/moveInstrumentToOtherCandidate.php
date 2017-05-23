@@ -44,8 +44,9 @@ if (empty($argv[1])) {
 
 //$instrument = "ibq_r";
 // $instrument = "aosi";
-$fromcid = $argv[1];
-$tocid = $argv[2];
+// php moveInstrumentToOtherCandidate.php UNC0236_55555_V06 UNC0235_444444_V06 aosi
+list($frpid, $frcid, $frvl) = explode("_", $argv[1]);
+list($topid, $tocid, $tovl) = explode("_", $argv[2]);
 $instrument = $argv[3];
 
 
@@ -56,8 +57,11 @@ $fresults = $db->pselect(
       join session as s on s.CandID=c.CandID
       join flag as f on f.SessionID=s.ID
       join {$instrument} as i on i.CommentID =f.CommentID 
-      where c.PSCID = :cpscid",
-    array("cpscid" => $fromcid)
+      where c.PSCID = :cpscid AND s.Visit_label = :svlbl",
+    array(
+     "cpscid" => $frpid,
+     "svlbl"  => $frvl,
+    )
 );
 
 $tresults = $db->pselect(
@@ -67,17 +71,23 @@ $tresults = $db->pselect(
       join session as s on s.CandID=c.CandID
       join flag as f on f.SessionID=s.ID
       join {$instrument} as i on i.CommentID =f.CommentID 
-      where c.PSCID = :cpscid",
-    array("cpscid" => $tocid)
+      where c.PSCID = :cpscid AND s.Visit_label = :svlbl",
+    array(
+     "cpscid" => $topid,
+     "svlbl"  => $tovl,
+    )
 );
 
-// To candidate instrument created?
+// 'To' candidate instrument created?
 if (!empty($tresults)) {
     foreach ($tresults as $row) {
         if ($row['Data_entry_completion_status'] != 'Incomplete') {
-            print "The 'To' candadate has data that in not marked Incomplete!  Exiting";
+            print "The 'To' candadate has data that in not marked Incomplete!  
+              Exiting";
             exit;
         }
+
+
     }
 } else {
     print "create new CommentID since none exist";
@@ -85,9 +95,41 @@ if (!empty($tresults)) {
 }
 
 
-foreach ($fresults as $row) {
-    print "{$instrument}-{$row['sID']}-{$row['sVisit_label']}-{$row['fCommentID']}";
 
+foreach ($fresults as $f) {
+    print "{$instrument}-{$f['sID']}-{$f['sVisit_label']}-{$f['fCommentID']}\n";
+
+    foreach ($tresults as $t) {
+        if ((substr($f['fCommentID'], 0, 3) == 'DDE'
+            and substr($t['fCommentID'], 0, 3) == 'DDE')
+            or (substr($f['fCommentID'], 0, 3) !== 'DDE'
+            and substr($t['fCommentID'], 0, 3) !== 'DDE')
+        ) {
+            print "\t{$instrument}-{$t['sID']}-
+            {$t['sVisit_label']}-{$t['fCommentID']}\n";
+
+            // delete incomplete data 'To'
+            $DB->delete($instrument, array('CommentID' => $t['fCommentID']));
+            // update instrument data from 'From' CommentID to 'To'
+            $DB->update(
+                $instrument,
+                array('CommentID' => $t['fCommentID']),
+                array('CommentID' => $f['fCommentID'])
+            );
+
+            // delete incomplete flag data 'To'
+            $DB->delete('flag', array('CommentID' => $t['fCommentID']));
+            // update flag data with the from 'From' CommentID and sID to the To
+            $DB->update(
+                'flag',
+                array(
+                 'CommentID' => $t['fCommentID'],
+                 'SessionID' => $t['SessionID'],
+                ),
+                array('CommentID' => $f['fCommentID'])
+            );
+        }
+    }
 
     print "\n";
 
