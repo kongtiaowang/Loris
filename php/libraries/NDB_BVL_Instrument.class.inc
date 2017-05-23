@@ -697,9 +697,7 @@ class NDB_BVL_Instrument extends NDB_Page
             if (strpos($key, '__') === 0) {
                 unset($values[$key]);
             }
-            if (array_key_exists($key, $this->WrapperNumericElements)) {
-                Utility::nullifyEmpty($values, $key);
-            }
+            Utility::nullifyEmpty($values, $key);
         }
         $db     =& Database::singleton();
         $result = $db->update(
@@ -707,6 +705,32 @@ class NDB_BVL_Instrument extends NDB_Page
             $values,
             array('CommentID' => $this->getCommentID())
         );
+
+        // Extract the old data and merge it with what was submitted so that we
+        // don't overwrite data from other pages.
+        $oldData = $db->pselectOne(
+            "SELECT Data FROM flag WHERE CommentID=:cid",
+            array('cid' => $this->getCommentID())
+        );
+
+        // (The PDO driver seems to return null as "null" for JSON column types)
+        if (!empty($oldData) && $oldData !== "null") {
+            $oldData = json_decode($oldData, true);
+        } else {
+            $oldData = array();
+        }
+        $newData = array_merge($oldData, $values);
+
+        // Save the JSON to the flag.Data column.
+        //
+        // json_encode ensures that this is safe. If we use the safe wrapper,
+        // HTML encoding the quotation marks will make it invalid JSON.
+        $result = $db->unsafeUpdate(
+            "flag",
+            array("Data" => json_encode($newData)),
+            array('CommentID' => $this->getCommentID())
+        );
+
     }
 
 
@@ -748,17 +772,10 @@ class NDB_BVL_Instrument extends NDB_Page
         $examiners = $this->_getExaminerNames();
         $this->addSelect('Examiner', 'Examiner', $examiners);
 
-        $this->addGroupRule(
+        $this->addRule(
             'Date_taken',
             'Date of Administration is required',
             'required'
-        );
-
-        $this->form->registerRule('checkdate', 'callback', '_checkDateTaken');
-        $this->addRule(
-            'Date_taken',
-            'Date of Administration is invalid',
-            'checkdate'
         );
 
         $this->addRule('Examiner', 'Examiner is required', 'required');
@@ -1089,7 +1106,7 @@ class NDB_BVL_Instrument extends NDB_Page
             $flag = true;
             if (is_array($elvalue)) {
                 foreach ($elvalue AS $val) {
-                    if ($val == "") {
+                    if ($val === "") {
                         $flag = false;
                     }
                 }
@@ -1097,7 +1114,7 @@ class NDB_BVL_Instrument extends NDB_Page
 
             //If the answer is empty (or its a group and one of answers in the
             //group is empty) then run the rules
-            if ($elvalue=="" || $flag==false) {
+            if ($elvalue==="" || $flag==false) {
                 if ($this->XINDebug) {
                     //debugging code
                     echo "<p><b>$elname</b><br> ";
@@ -1183,10 +1200,9 @@ class NDB_BVL_Instrument extends NDB_Page
     {
         $errors = array();
 
-        //Conditions for the rule to be true, and thus the element to be required.
-        $is_required = true;
-
         foreach ($rules['rules'] AS $rule) {
+            //Conditions for the rule to be true, thus the element to be required.
+            $rule_outcomes = array();
             //Loop through the assigned rules (which is the array of formatted
             //statements passed in XINRegisterRule)
             //If this is an OR rule using two different controllers explode it
@@ -1196,9 +1212,8 @@ class NDB_BVL_Instrument extends NDB_Page
             } else {  //Otherwise its a regular rule.  ex: q_1{@}=={@}yes
                 $rules_array[] = $rule;
             }
-
             //Loop through the rules (will only be one rule if this is not an OR)
-            $or_conditions = array();
+            $or_conditions = false;
             for ($i = 0; $i < count($rules_array); $i++) {
                 $rule = explode("{@}", $rules_array[$i]);
                 //Some rules compare against multiple values, handle this here.
@@ -1221,7 +1236,6 @@ class NDB_BVL_Instrument extends NDB_Page
                     $elements[$rule[0]] = array($elements[$rule[0]]);
                 }
                 //Foreach controller value run the rule.
-                $or_conditions = false;
                 foreach ($elements[$rule[0]] as $controller_value) {
                     $ElementResult = $this->XINRunRuleFunction(
                         $controller_value,
@@ -1234,14 +1248,15 @@ class NDB_BVL_Instrument extends NDB_Page
                     }
                 }
             }
-
             //If NONE of the or_conditions were true the field is NOT required.
             if ($or_conditions == false) {
-                $is_required = false;
+                $rule_outcomes[] = false;
+            } else {
+                $rule_outcomes[] = true;
             }
         }
         //If all of the conditions were true then print the error message
-        if ($is_required == true) {
+        if (!in_array(false, $rule_outcomes)) {
             $el          = $rules['group'] != "" ? $rules['group'] : $elname;
             $errors[$el] = $rules['message'];
         }
@@ -1602,8 +1617,8 @@ class NDB_BVL_Instrument extends NDB_Page
             "time",
             $field,
             null,
-            $dateOptions,
-            $attr
+            null,
+            null
         );
 
         $group[] =& $this->createSelect(
@@ -2018,12 +2033,16 @@ class NDB_BVL_Instrument extends NDB_Page
 
         $values = array();
         foreach ($columns as $row) {
-            if ($row['COLUMN_NAME'] == 'CommentID'
-                || $row['COLUMN_NAME'] == 'UserID'
-            ) {
+            switch ($row['COLUMN_NAME']) {
+            case 'CommentID':
+            case 'UserID':
                 continue;
+            case 'Data_entry_completion_status':
+                $values[$row['COLUMN_NAME']] = 'Incomplete';
+                break;
+            default:
+                $values[$row['COLUMN_NAME']] = null;
             }
-            $values[$row['COLUMN_NAME']] = null;
         }
         $db->update($this->table, $values, array('CommentID' => $this->commentID));
         $prepQ = $db->prepare(

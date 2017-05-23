@@ -128,9 +128,11 @@ class NDB_Caller
             }
             $this->page = $m->LoadPage($p);
             return $this->page->display();
-        } catch (Exception $e) {
+        } catch (LorisModuleMissingException $e) {
             //print_r($e);
             // There was no module, so fall back on the old way of doing things.
+        } catch (LorisNoSuchModuleException $e) {
+            // Its an instrument, not a module
         }
         if (is_dir($base . "project/modules/$test_name")
             || is_dir($base . "modules/$test_name")
@@ -493,7 +495,10 @@ class NDB_Caller
         // freeze the form to prevent data entry
         if ($status->getDataEntryStatus() != 'In Progress'
             || !$user->hasPermission('data_entry')
-            || $user->getData("CenterID") != $timepoint->getData("CenterID")
+            || !in_array(
+                $timepoint->getData("CenterID"),
+                $user->getData("CenterIDs")
+            )
         ) {
             if ($instrument->preview !== true && $this->DataEntry !== 'Direct') {
                 $instrument->freeze();

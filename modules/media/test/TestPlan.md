@@ -4,7 +4,7 @@
 
 Media module allows users to upload, browse and edit media files associated with a specific timepoint in Loris.
 
-### 🔒 Permissions
+### 🔒 Permissions 
 
 In order to use the media module the user might need one or both of the following permissions:
 
@@ -16,7 +16,7 @@ In order to use the media module the user might need one or both of the followin
 ### 💯 Features
 
 1. **Browse** a list of uploaded files and related information
-2. **Edit** meta information about media files (except timepoint related data such as PSCID, Visit Label and Instrument)
+2. **Edit** meta information about media files (except timepoint related data such as PSCID, Visit Label, Instrument and Site)
 3. **Upload** new files associated to a specific timepoint
   - PSCID, Visit Label and Instrument are required fields for all uploaded files
   - File name should always start with [PSCID]\_[Visit Label]\_[Instrument]
@@ -26,20 +26,20 @@ In order to use the media module the user might need one or both of the followin
 
 ### 💻 Testing Procedure
 
-**Install Module**
+**Install Module** 
   1. Run associated SQL patch to create a "media" table and add "Media" module under _Clinical_ section in Loris.
 
 
-**Testing with no permissions**
+**Testing with no permissions** [Automation Testing]
   1. Access the module with a regular user (without superuser permissions)
   2. By default, the access to module should be denied
 
 
-**Testing with read-only permission**
+**Testing with read-only permission** [Automation Testing]
   1. Add read permission to the aforementioned user
   2. Media module should be accessible and only present with **one** tab (Browse) with an empty datatable
 
-**Testing with write-permission**
+**Testing with write-permission** [Automation Testing]
   1. Add write permission
   2. Media module should now have **two** tabs (Browse) and (Upload)
   3. Clicking on Upload tab should hide the data table and display a form with the following fields: PSCID, Visit Label, Instrument, For Site, Data of Administration, Comments, File to Upload
@@ -73,8 +73,8 @@ In order to use the media module the user might need one or both of the followin
     - This will bring you to a new page ```$LORISURL/media/edit/?id=$fileID```
 
 **Test file edit**
-  1. Make sure that PSCID, Visit Label and Instrument display proper information and are greyed-out (unchangeable by the user)
-  2. Verify that information (if any) is displayed accordingly in _For Site_, _Date of Administration_, _Comments_ and 'Uploaded File'
+  1. Make sure that PSCID, Visit Label, Instrument and Site display proper information and are greyed-out (unchangeable by the user)
+  2. Verify that information (if any) is displayed accordingly in _Date of Administration_, _Comments_ and 'Uploaded File'
   3. Select a site from the dropdown and click 👉 **Update File**.
     - After the success message is shown, **refresh the page** and make sure the site is still selected.
     - Verify that the database field updated accordingly

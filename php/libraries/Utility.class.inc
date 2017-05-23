@@ -539,7 +539,7 @@ class Utility
      */
     static function toArray($var)
     {
-        if (!isset($var[0])) {
+        if (is_array($var) && !array_key_exists(0, $var)) {
             $var = array($var);
         }
         return $var;
@@ -959,7 +959,8 @@ class Utility
      */
     static function getTestNameUsingFullName($fullname)
     {
-        $db =& Database::singleton();
+        $test_name = '';
+        $db        =& Database::singleton();
         //print_r($instument);
         $instrument = $db->pselect(
             "SELECT Test_name FROM test_names WHERE Full_name =:fname",

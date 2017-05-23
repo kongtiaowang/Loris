@@ -47,7 +47,7 @@ foreach($instruments AS $instrument){
                 $output.="`CommentID` varchar(255) NOT NULL default '',
                           `UserID` varchar(255) default NULL,
                           `Examiner` varchar(255) default NULL,
-                          `Testdate` timestamp NOT NULL,
+                          `Testdate` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                           `Data_entry_completion_status` enum('Incomplete','Complete') NOT NULL default 'Incomplete',\n";
             break;
             case "page":
@@ -85,7 +85,7 @@ foreach($instruments AS $instrument){
         }
 
     }
-    $output.="PRIMARY KEY  (`CommentID`)\n);\n";
+    $output.="PRIMARY KEY  (`CommentID`)\n) ENGINE=InnoDB DEFAULT CHARSET=utf8;\n";
     print "Filename: $filename\n";
     $fp=fopen($filename, "w");
     fwrite($fp, $output);

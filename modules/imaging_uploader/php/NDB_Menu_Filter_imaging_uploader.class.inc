@@ -29,6 +29,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
 
     var $show_queries = true;
     var $temp_path    = null;
+    var $AjaxModule   = true;
 
     /**
      * ID of the uploaded file in mri_upload table (if upload successful).
@@ -39,6 +40,19 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
      * Path to the uploaded file (value of SourceLocation in mri_upload table).
      */
     var $uploaded_file_path;
+
+    /**
+     * Override default behaviour, since the page is loaded from index.js
+     *
+     * @return void
+     * @access public
+     */
+    function display()
+    {
+        return null;
+    }
+
+
     /**
      * The _has_access returns true
      * if the user has the specific permission
@@ -108,56 +122,18 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
      */
     function _setFilterForm()
     {
+        $phantomOtions = [
+                          'N' => 'No',
+                          'Y' => 'Yes',
+                         ];
+        $visitlabels   = Utility::getExistingVisitLabels();
 
-        ///////////////////////////////////////////////////////////////////////
-        ////////////////////////Upload related fields//////////////////////////
-        ///////////////////////////////////////////////////////////////////////
+        // Fields used for selection filter and upload form
+        $this->addSelect('IsPhantom', 'Phantom Scans', $phantomOtions);
+        $this->addBasicText('candID', 'CandID');
+        $this->addBasicText('pSCID', 'PSCID');
+        $this->addSelect('visitLabel', 'Visit Label', $visitlabels);
         $this->addFile('mri_file', 'File to Upload');
-        $this->addScoreColumn('File_name', 'File name');
-        $this->addScoreColumn('status', 'Status');
-
-        ///////////////////////////////////////////////////////////////////////
-        //////////////////CandID, PSCID and VisitLabel fields//////////////////
-        ///////////////////////////////////////////////////////////////////////
-        $this->addBasicText('CandID', 'CandID:');
-        $this->addBasicText('PSCID', 'PSCID:');
-        $visitlabels = array_merge(
-            array(null => ''),
-            Utility::getExistingVisitLabels()
-        );
-        $this->addSelect(
-            'Visit_label',
-            'VisitLabel:',
-            $visitlabels
-        );
-        $phantom_options = array(
-                            null => '',
-                            'N'  => 'No',
-                            'Y'  => 'Yes',
-                           );
-        $this->addSelect(
-            'IsPhantom',
-            'Are these Phantom Scans:',
-            $phantom_options
-        );
-
-        $this->addSelect(
-            'LogType',
-            '',
-            array(
-             'summary'  => 'Summary',
-             'detailed' => 'Detailed',
-            )
-        );
-
-        $this->form->addTextArea(
-            'UploadLogs',
-            '',
-            array(
-             'class' => 'upload-logs-table',
-             'id'    => 'mri_upload_logs',
-            )
-        );
 
         ///////////////////////////////////////////////////////////////////////
         //////////////////Upload-related Error messages ///////////////////////
@@ -171,42 +147,6 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
                 "to the Imaging Uploader module";
             $tpl_data['error_message'][] =  $error_message;
         }
-        return true;
-    }
-
-
-    /**
-     * Overrides the default setDataTableRows to assign the background colour
-     * to the progress column
-     *
-     * @param integer $count The number of rows in the table
-     *
-     * @return true on success
-     */
-    function _setDataTableRows($count)
-    {
-        $x = 0;
-        foreach ($this->list as $item) {
-            //count column
-            $this->tpl_data['items'][$x][0]['value'] = $x + $count;
-
-            //print out data rows
-            $i = 1;
-            foreach ($item as $key => $val) {
-                $itemi          =& $this->tpl_data['items'][$x][$i];
-                $itemi['name']  = $key;
-                $itemi['value'] = $val;
-                if ($key == 'Progress' && $val == 'Failure') {
-                    $itemi['bgcolor'] =  '#E4A09E';
-                } elseif ($key == 'Progress' && $val == 'In Progress...') {
-                    $itemi['bgcolor'] =  '#F3F781';
-                }
-                $i++;
-            }
-
-            $x++;
-        }
-        $this->tpl_data['numUploads'] = $this->TotalItems;
         return true;
     }
 
@@ -265,8 +205,8 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         $file   = new File_Upload;
         $config = NDB_Config::singleton();
         $paths  = $config->getSetting('paths');
-        $file->overwriteMode = "reject";
-        $file->fileMove      = false;
+        $file->setOverwriteMode("overwrite");
+        $file->fileMove = false;
 
         //pass the existing form ($form) by reference to File_Upload,
         // and register the file_upload field names being used.
@@ -328,7 +268,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         $errors    = array();
         $config    = NDB_Config::singleton();
         $dicom_archive_settings = $config->getSetting(
-            'dicom_archive'
+            'imaging_modules'
         );
         $corect_name            = $dicom_archive_settings['patientNameRegex'];
         $header_patient_name    = array();
@@ -346,46 +286,54 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
             ///////////////////////////////////////////////////////////////////////
             ////////////// make sure the advanced options are filled out///////////
             ///////////////////////////////////////////////////////////////////////
-            $candid      = trim($args['values']['CandID']);
-            $pscid       = trim($args['values']['PSCID']);
-            $visit_label = trim($args['values']['Visit_label']);
+            $candid      = trim($args['values']['candID']);
+            $pscid       = trim($args['values']['pSCID']);
+            $visit_label = trim($args['values']['visitLabel']);
             if ((empty($candid)) || (empty($pscid)) || (empty($visit_label))) {
-                $errors[] ="Make sure the CandID, PSCID and Visit_label are ".
+                $errors[] ="Make sure the Cand ID, PSCID and Visit Label are ".
                 "filled out. <br>Please refresh this page to return to the Imaging
                 Uploader module.";
             }
 
             ///////////////////////////////////////////////////////////////////////
-            ////////////// Make sure the file name matches the format   ///////////
-            /////////// $candid and $visit_label can be of variable length ////////
+            ///////////    Make sure the file name matches the format   ///////////
+            ///////////         $pscid_$candid_$visit_label             ///////////
+            ///////////              OR starts with                     ///////////
+            ///////////         $pscid_$candid_$visit_label_            ///////////
             ///////////////////////////////////////////////////////////////////////
-            $pcv = "{$pscid}_{$candid}_{$visit_label}";
-            if (!preg_match("/^{$pcv}.*(zip|tgz|tar.gz)/", $file_name)) {
-                $errors[] = "File name must begin with " .
-                "\"". $pscid ."_". $candid ."_". $visit_label . "\"" .
-                " and have the extension of .tgz, tar.gz or .zip";
+            $pcv  = $pscid . "_" . $candid . "_" . $visit_label;
+            $pcvu = $pcv . "_";
+            if ((!preg_match("/{$pcv}\.(zip|tgz|tar.gz)/", $file_name))
+                && (!preg_match("/^{$pcvu}.*(\.(zip|tgz|tar.gz))/", $file_name))
+            ) {
+                    $errors[] = "File name must match " . $pcv .
+                    " or begin with " . "\"". $pcvu . "\"" .
+                    ", and have the extension of .tgz, tar.gz or .zip";
             }
 
             ///////////////////////////////////////////////////////////////////////
             //////check to see if candid/pscid and visit-label exist///////////////
             ///////////////////////////////////////////////////////////////////////
             if ((!empty($candid)) && (!empty($pscid)) && (!empty($visit_label))) {
-                if ($db->pselectOne(
+                $result = $db->pselectOne(
                     "SELECT COUNT(*) FROM session s
                      JOIN candidate c ON (c.candid=s.candid)
                      WHERE s.Visit_label = :vlabel
                      AND c.pscid = :pid AND c.candid = :cid",
-                    array(
+                    [
                      ':cid'    => $candid,
                      ':vlabel' => $visit_label,
                      ':pid'    => $pscid,
-                    )
-                )==0) {
-                        $errors[] = "Make sure you enter the CandID: $candid ,".
-                                    " PSCID: $pscid and the corresponding".
-                                    " Visit-label: $visit_label which".
-                                    " already exist. <br>Please refresh this page".
-                                    "to return to the Imaging Uploader module";
+                    ]
+                );
+
+                if ($result == 0) {
+                    $errors[] = "Make sure you enter the CandID: $candid,".
+                                " PSCID: $pscid and the corresponding".
+                                " Visit-label: $visit_label. Candidate and".
+                                " corresponding visit label must already be" .
+                                " created in the database. <br>Please refresh this".
+                                " page to return to the Imaging Uploader module";
                 }
             }
         }
@@ -452,16 +400,16 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         /////Get the pscid, candid and visit_label/////////////////////////////
         ///////////////////////////////////////////////////////////////////////
         if ($args['values']['IsPhantom']=='N') {
-            if ((!empty($args['values']['CandID']))
-                && (!empty($args['values']['PSCID']))
-                &&(!empty($args['values']['Visit_label']))
+            if ((!empty($args['values']['candID']))
+                && (!empty($args['values']['pSCID']))
+                &&(!empty($args['values']['visitLabel']))
             ) {
                 ///////////////////////////////////////////////////////////////////
                 ////////////////////Use the arguments//////////////////////////////
                 ///////////////////////////////////////////////////////////////////
-                $visit_label = $args['values']['Visit_label'];
-                $candid      = $args['values']['CandID'];
-                $pscid       = $args['values']['PSCID'];
+                $visit_label = $args['values']['visitLabel'];
+                $candid      = $args['values']['candID'];
+                $pscid       = $args['values']['pSCID'];
                 $pname       = $pscid. "_" . $candid . "_" . $visit_label;
                 $sessionid   = $db->pselectOne(
                     "SELECT ID FROM  session WHERE CandID = :cid
@@ -634,6 +582,7 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
         return array_merge(
             $deps,
             array(
+             $baseURL . "/imaging_uploader/js/index.js",
              $baseURL . "/imaging_uploader/js/imaging_uploader_helper.js",
             )
         );
@@ -654,6 +603,20 @@ class NDB_Menu_Filter_Imaging_Uploader extends NDB_Menu_Filter_Form
             $deps,
             [$baseURL . "/imaging_uploader/css/imaging_uploader.css"]
         );
+    }
+
+    /**
+     * Converts the results of this menu filter to a JSON format to be retrieved
+     * with ?format=json
+     *
+     * @return a json encoded string of the headers and data from this table
+     */
+    function toJSON()
+    {
+        $result         = $this->toArray();
+        $result['form'] = $this->form->form;
+
+        return json_encode($result);
     }
 }
 ?>
