@@ -40,6 +40,41 @@ $(document).ready(function() {
       }
     } 
   });
+    var section1_params =["livinghere3bd1","address_line1m1_remove","address_line2m1_remove","citym1_remove","statem1_remove","zip_codem1_remove","from1b41","to1b41"]
+    var section2_params= ["livingatb1", "address_line1b1_remove","address_line2b1_remove","cityb1_remove","stateb1_remove","zip_codeb1_remove","fromatb1","toatb1"];
+    var arrayLength1 = section1_params.length;
+    var arrayLength2 = section2_params.length;
+    $('[name="livinghere3bd1"]').click(function(e) {
+
+        if($(this).prop("checked") == true){
+            $('[name="livingatb1"]').prop('checked', true);
+           $('[name="livingatb1"]').attr("disabled",'disabled');
+            $('[name="livingatb1"]').css('cursor', 'default');
+            for (var i = 1; i < arrayLength2; i++) {
+                var params2=section2_params[i];
+                var copy_params=section1_params[i];
+                $('[name='+params2+']').attr('disabled', 'disabled');
+                $('[name='+params2+']').css('cursor', 'not-allowed');
+                var copy_text=$('[name='+copy_params+']').val();
+                $('[name='+params2+']').val(copy_text);
+
+            }
+        }
+       else if($(this).prop("checked") == false){
+            $('[name="livingatb1"]').prop('checked', false);
+            $('[name="livingatb1"]').removeAttr("disabled");
+            $('[name="livingatb1"]').css('cursor', 'default');
+            for (var j = 1; j < arrayLength1; j++) {
+                var params2=section2_params[j];
+                $('[name='+params2+']').removeAttr("disabled");
+                $('[name='+params2+']').css('cursor', 'default');
+                var copy_text="";
+                $('[name='+params2+']').val(copy_text);
+            }
+
+        }
+
+    });
   
 
   $("#finalize").click(function(e) {
