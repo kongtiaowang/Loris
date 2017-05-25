@@ -42,6 +42,8 @@ class NDB_Form_new_profile extends NDB_Form
             $startNum = 1000;
         } elseif ($values['ProjectID'] == 5) {
             $startNum = 2000;
+        } elseif ($values['ProjectID'] == 6) {
+            $startNum = 3000;
         }
 
         $candID = Candidate::createNew($user->getData('CenterID'), $dob, $edc, $values['gender'], $values['PSCID'], $startNum);

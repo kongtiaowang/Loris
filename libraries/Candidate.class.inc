@@ -477,6 +477,8 @@ class Candidate
             $pscidArrays[1] = array(1, 2, 3, 4, 5, 6, 7, 8, 9);
         } elseif($startNumber == 2000) {
             $pscidArrays[1] = array(2, 3, 4, 5, 6, 7, 8, 9);
+        } elseif($startNumber == 3000) {
+            $pscidArrays[1] = array(3, 4, 5, 6, 7, 8, 9);
         }
 
         // run one first time, then loop until the pscid is not used
