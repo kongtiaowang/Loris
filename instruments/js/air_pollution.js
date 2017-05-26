@@ -47,29 +47,38 @@ $(document).ready(function() {
     $('[name="livinghere3bd1"]').click(function(e) {
 
         if($(this).prop("checked") == true){
-            $('[name="livingatb1"]').prop('checked', true);
-            $('[name="livingatb1"]').attr('disabled','disabled');
-            $('[name="livingatb1"]').css('cursor', 'not_allowed');
-            for (var i = 1; i < arrayLength2; i++) {
+            for (var i = 0; i < arrayLength2; i++) {
                 var params2=section2_params[i];
                 var copy_params=section1_params[i];
-                $('[name='+params2+']').attr('disabled', 'disabled');
-                $('[name='+params2+']').css('cursor', 'not-allowed');
-                var copy_text=$('[name='+copy_params+']').val();
-                $('[name='+params2+']').val(copy_text);
+                if(params2=='livingatb1')
+                {
+                    $('[name=' + params2 + ']').prop('checked', true);
+                    $('[name=' + params2 + ']').prop('disabled', true);
+                }
+                else {
+                    $('[name=' + params2 + ']').prop('disabled', true);
+                    $('[name=' + params2 + ']').css('cursor', 'not-allowed');
+                    var copy_text = $('[name=' + copy_params + ']').val();
+                    $('[name=' + params2 + ']').val(copy_text);
+                }
 
             }
         }
        else if($(this).prop("checked") == false){
-            $('[name="livingatb1"]').prop('checked', false);
-            $('[name="livingatb1"]').removeAttr("disabled");
-            $('[name="livingatb1"]').css('cursor', 'default');
             for (var j = 1; j < arrayLength1; j++) {
                 var params2=section2_params[j];
-                $('[name='+params2+']').removeAttr("disabled");
-                $('[name='+params2+']').css('cursor', 'auto');
-                var copy_text="";
-                $('[name='+params2+']').val(copy_text);
+                if(params2=='livingatb1')
+                {
+                    $('[name=' + params2 + ']').prop('checked', false);
+                    $('[name=' + params2 + ']').prop('disabled',false);
+                }
+                else {
+                    $('[name=' + params2 + ']').prop('disabled',false);
+                    $('[name=' + params2 + ']').css('cursor', 'auto');
+                    var copy_text="";
+                    $('[name='+params2+']').val(copy_text);
+                }
+
             }
 
         }
@@ -117,6 +126,11 @@ $(document).ready(function() {
               $(this).attr('name', $(this).attr('name').replace('_remove',''));
             });
 
+            if($( "input" ).prop( "disabled", true )) //if any input has a disabled property, then it has to be removed before form submission.
+            {
+                $( "input" ).prop( "disabled", false);
+            }
+
             // text area exception
             var crypted = sjcl.encrypt($('[name="code"]').val(), $('[name="additional_comments"]').val());
             $('[name="additional_comments"]').val(crypted);
@@ -124,6 +138,7 @@ $(document).ready(function() {
             // empty code before submission
             $('[name="code"]').val("*Deleted for Submission*");
             console.log("fields crypted, submitting..."); // status is TRUE
+
 
             var form = $("#test_form");
             $("<input>").attr({
