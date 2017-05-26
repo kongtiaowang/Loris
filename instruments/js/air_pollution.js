@@ -65,7 +65,7 @@ $(document).ready(function() {
             }
         }
        else if($(this).prop("checked") == false){
-            for (var j = 1; j < arrayLength1; j++) {
+            for (var j = 0; j < arrayLength1; j++) {
                 var params2=section2_params[j];
                 if(params2=='livingatb1')
                 {
