@@ -48,8 +48,8 @@ $(document).ready(function() {
 
         if($(this).prop("checked") == true){
             $('[name="livingatb1"]').prop('checked', true);
-           $('[name="livingatb1"]').attr("disabled",'disabled');
-            $('[name="livingatb1"]').css('cursor', 'default');
+            $('[name="livingatb1"]').attr('disabled','disabled');
+            $('[name="livingatb1"]').css('cursor', 'not_allowed');
             for (var i = 1; i < arrayLength2; i++) {
                 var params2=section2_params[i];
                 var copy_params=section1_params[i];
@@ -67,7 +67,7 @@ $(document).ready(function() {
             for (var j = 1; j < arrayLength1; j++) {
                 var params2=section2_params[j];
                 $('[name='+params2+']').removeAttr("disabled");
-                $('[name='+params2+']').css('cursor', 'default');
+                $('[name='+params2+']').css('cursor', 'auto');
                 var copy_text="";
                 $('[name='+params2+']').val(copy_text);
             }
