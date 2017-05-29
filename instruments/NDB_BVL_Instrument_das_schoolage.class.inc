@@ -193,6 +193,8 @@ class NDB_BVL_Instrument_das_schoolage extends NDB_BVL_Instrument
         } else {
             $this->_main();
         }
+        //Defines the call back function for HTML Quickform to use when validating the form.
+        $this->form->addFormRule(array(&$this,'XINValidate'));
 
     }
 
