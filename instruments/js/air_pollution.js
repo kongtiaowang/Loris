@@ -40,45 +40,31 @@ $(document).ready(function() {
       }
     } 
   });
-    var section1_params =["livinghere3bd1","address_line1m1_remove","address_line2m1_remove","citym1_remove","statem1_remove","zip_codem1_remove","from1b41","to1b41"]
-    var section2_params= ["livingatb1", "address_line1b1_remove","address_line2b1_remove","cityb1_remove","stateb1_remove","zip_codeb1_remove","fromatb1","toatb1"];
+    var section1_params =["address_line1m1_remove","address_line2m1_remove","citym1_remove","statem1_remove","zip_codem1_remove","from1b41","to1b41"]
+    var section2_params= ["address_line1b1_remove","address_line2b1_remove","cityb1_remove","stateb1_remove","zip_codeb1_remove","fromatb1","toatb1"];
     var arrayLength1 = section1_params.length;
     var arrayLength2 = section2_params.length;
     $('[name="livinghere3bd1"]').click(function(e) {
 
         if($(this).prop("checked") == true){
             for (var i = 0; i < arrayLength2; i++) {
-                var params2=section2_params[i];
-                var copy_params=section1_params[i];
-                if(params2=='livingatb1')
-                {
-                    $('[name=' + params2 + ']').prop('checked', true);
-                    $('[name=' + params2 + ']').prop('disabled', true);
-                }
-                else {
+                    var params2=section2_params[i];
+                    var copy_params=section1_params[i];
                     $('[name=' + params2 + ']').prop('disabled', true);
                     $('[name=' + params2 + ']').css('cursor', 'not-allowed');
                     var copy_text = $('[name=' + copy_params + ']').val();
                     $('[name=' + params2 + ']').val(copy_text);
-                }
+
 
             }
         }
        else if($(this).prop("checked") == false){
             for (var j = 0; j < arrayLength1; j++) {
-                var params2=section2_params[j];
-                if(params2=='livingatb1')
-                {
-                    $('[name=' + params2 + ']').prop('checked', false);
-                    $('[name=' + params2 + ']').prop('disabled',false);
-                }
-                else {
+                    var params2=section2_params[j];
                     $('[name=' + params2 + ']').prop('disabled',false);
                     $('[name=' + params2 + ']').css('cursor', 'auto');
                     var copy_text="";
                     $('[name='+params2+']').val(copy_text);
-                }
-
             }
 
         }
