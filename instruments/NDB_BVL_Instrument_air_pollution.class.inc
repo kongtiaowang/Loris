@@ -194,7 +194,6 @@ HTML;
         // Address Mom 1
         $this->form->addElement('header', 'instrument_title_mom', "<h5>MOM’s Home at child’s birth #1 (Required)</h5>");
         $this->addCheckbox('living1yb4m1', 'Check if you were living here 1 year before child’s birth', array('value' => '1'));
-        $this->addCheckbox('livinghere3bd1', 'Check if you were living here at the time of child’s 3rd birthday and you can skip to Section 2', array('value' => '1'));
 
         $this->form->addElement("text", 'address_line1m1_remove', "Address (Line 1)", array("class" => "encrypt required"));
         $this->form->addElement("text", 'address_line2m1_remove', "Address (Line 2)", array("class" => "encrypt"));
@@ -204,6 +203,7 @@ HTML;
 
         $this->addMonthYear('from1b41', 'From', $dateOptionsYM);
         $this->addMonthYear('to1b41', 'To', $dateOptionsYM);
+        $this->addCheckbox('livinghere3bd1', 'Check if you were living in the above address at the time of child’s 3rd birthday.', array('value' => '1'));
      
         
         // Address Mom 2-5
