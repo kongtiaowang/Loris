@@ -188,12 +188,11 @@ class NDB_BVL_Instrument_das_schoolage extends NDB_BVL_Instrument
         // Out of Level: 5 years 0 months to 5 years 11 months
 
 */
-        if(preg_match("/das_schoolage(_page[0-9]+)/",$this->page,$matches)){
-            call_user_func($this, $matches[1]);
+        if (preg_match("/das_schoolage(_page[0-9]+)/", $this->page, $matches)) {
+            call_user_func(array($this, $matches[1]));
         } else {
             $this->_main();
         }
-
         //Defines the call back function for HTML Quickform to use when validating the form.
         $this->form->addFormRule(array(&$this,'XINValidate'));
 

@@ -146,12 +146,11 @@ class NDB_BVL_Instrument_das_earlyyears extends NDB_BVL_Instrument
      */
     function _setupForm() {
 
-        if(preg_match("/das_earlyyears(_page[0-9]+)/",$this->page,$matches)){
-            call_user_func($this, $matches[1]);
+        if (preg_match("/das_earlyyears(_page[0-9]+)/", $this->page, $matches)) {
+            call_user_func(array($this, $matches[1]));
         } else {
             $this->_main();
         }
-
         //Defines the call back function for HTML Quickform to use when validating the form.
         $this->form->addFormRule(array(&$this,'XINValidate'));
 
