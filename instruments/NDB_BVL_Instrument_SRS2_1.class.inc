@@ -381,14 +381,12 @@ class NDB_BVL_Instrument_SRS2_1 extends NDB_BVL_Instrument
             array('CID' => $this->getCommentID())
         );
         foreach ($tpl_data['questions'] as $key=>&$row) {
-            if (isset($Responses[$row['SourceField']])) {
                 if($row['SourceField'] == 'informant_other' && $Responses['informant'] != 'other') {
                    unset($tpl_data['questions'][$key]);
                 } else {
                     $row['response'] = $Responses[$row['SourceField']];
                 }
 
-            }
         }
 
         $smarty->assign($tpl_data);
