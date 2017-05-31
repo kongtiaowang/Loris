@@ -75,10 +75,7 @@ class MediaTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . "/media/");
         sleep(2);
-        $bodyText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector("body")
-        )->getText();
-        $text = $this->webDriver->executescript(
+        $text = $this->webDriver->executeScript(
             "return window.document.querySelector('#browse > div.panel.panel-primary > div.panel-heading').textContent",
         array());
         $this->assertContains("Selection Filter", $text);
@@ -93,9 +90,6 @@ class MediaTest extends LorisIntegrationTest
     function testPageUIs()
     {
         $this->safeGet($this->url . "/media/");
-        $bodyText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector("body")
-        )->getText();
         foreach ($this->loadingUI as $key => $value) {
             $text = $this->webDriver->executescript(
             "document.querySelector('$value').textContent"
