@@ -113,7 +113,7 @@ INSERT INTO test_battery VALUES ('', 'audiology', '660', '780', 'Y', 'Visit', '2
         $this->addDateElement('hearing_screening', "Date of hearing screening:");
         $this->XINRegisterRule("hearing_screening_date", array("hearing_screening_date_status{@}=={@}", "not_completed{@}!={@}non-asd"), "Please specify date of hearing");
 
-        $this->form->addElement("static", null);
+        $this->form->addElement("static", null, null);
         $this->form->addElement("header", null, "Methods used: (check all that apply)");
         $this->form->addElement("advcheckbox", "vra", "Visual Reinforcement Audiometry", null, null, array("unused", "used"));
         $this->form->addElement("advcheckbox", "oae", "Otoacoustic Emission Testing", null, null, array("unused", "used"));
@@ -121,7 +121,7 @@ INSERT INTO test_battery VALUES ('', 'audiology', '660', '780', 'Y', 'Visit', '2
         $this->form->addElement("advcheckbox", "other_method", "Other", null, null, array("unused", "used"));
         $this->addTextElement("other_method_specify", $this->indent . "Please specify", array("other_method{@}=={@}used"), "Please specify");
         
-        $this->form->addElement("static", null);
+        $this->form->addElement("static", null, null);
         $this->form->addElement("header", null, "Test Results:");
         $this->form->addElement("select", "test_results", "Result", array(null=>"", "normal_hearing"=>"Normal hearing", "temporary_hearing_difficulty"=>"Temporary hearing difficulty", "equivocal_evaluation_results"=>"Equivocal evaluation results", "permanent_abnormal_hearing"=>"Permanent abnormal hearing", "not_answered"=>"Not Answered"));
         $this->XINRegisterRule("test_results", array("not_completed{@}!={@}non-asd"), "Required");

@@ -33,7 +33,7 @@ class NDB_BVL_Instrument_adi_r extends NDB_BVL_Instrument
     * @return void
     * @access public
     */
-    function _setup($commentID, $page){
+    function _setup($commentID = null, $page = null){
         $this->formType="XIN";
         $this->form = new LorisForm('test_form');
         $this->page = $page;            // page label (number or
