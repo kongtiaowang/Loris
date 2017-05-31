@@ -38,7 +38,7 @@ class NDB_BVL_Instrument_mri_parameter_form extends NDB_BVL_Instrument
         $this->_requiredElements = array('Date_taken', 'Examiner'); //, 'CaregiverReport');
            
         $this->_selectMultipleElements = array("gre_fieldmap");
-        $config =& NDB_Config::singleton();
+        $config = NDB_Config::singleton();
         $this->dateOptions = array(
         'language' => 'en',
         'format'   => 'YMd',
@@ -48,7 +48,7 @@ class NDB_BVL_Instrument_mri_parameter_form extends NDB_BVL_Instrument
         'emptyOptionValue' => null
         );
         
-        $db =& Database::singleton();
+        $db = Database::singleton();
         
         $query = "SELECT * FROM ".$this->table." WHERE CommentID='".$this->getCommentID()."'";
         $db->selectRow($query, $record);
@@ -249,8 +249,8 @@ class NDB_BVL_Instrument_mri_parameter_form extends NDB_BVL_Instrument
            */
           function _saveValues($values)
           {
-              $timepoint =& TimePoint::singleton($this->getSessionID());
-              $candidate =& Candidate::singleton($timepoint->getCandID());
+              $timepoint = TimePoint::singleton($this->getSessionID());
+              $candidate = Candidate::singleton($timepoint->getCandID());
               $this->_nullStatus($values);
               //Convert select multiple elements into database storable values
               if(!empty($this->_selectMultipleElements)){
@@ -419,7 +419,7 @@ class NDB_BVL_Instrument_mri_parameter_form extends NDB_BVL_Instrument
                 }
               }
                           
-              $db=& Database::singleton();
+              $db= Database::singleton();
 
     ///Setting trackchanges to false because getting error messages
     $db->_trackChanges = false;

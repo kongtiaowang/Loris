@@ -130,7 +130,7 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
         "asian"=>"Asian",
         "american_indian_alaskan_native"=>"American-Indian/Alaskan Native",
         "native_hawaiian_pacific_islander"=>"Native Hawaiian/Pacific Islander",
-        "not_answered"=>"Not Answered"), "multiple");
+        "not_answered"=>"Not Answered"), array("multiple"));
         
         $education_levels = array(null => "", "not_answered" => "Not Answered", "j_high" => "Junior High", "some_hs" => "Some Highschool", "high_school"=> "High School", "some_college" => "Some College/2yr Degree", "college_degree" => "College Degree", "some_grad_level" => "Some Graduate Level", "grad_degree" => "Graduate Degree");
         
@@ -143,7 +143,7 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
         "asian"=>"Asian",
         "american_indian_alaskan_native"=>"American-Indian/Alaskan Native",
         "native_hawaiian_pacific_islander"=>"Native Hawaiian/Pacific Islander",
-        "not_answered"=>"Not Answered"), "multiple");
+        "not_answered"=>"Not Answered"), array("multiple"));
         
         $this->form->addElement("select", "father_highest_grade", "Father's highest grade completed or degree obtained:", $education_levels);
         
@@ -873,27 +873,175 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
          
          $XY_total = $X + $Y;
          
-         $D111 = $risk_points["q_1"] + $risk_points["q_5"] + $risk_points["q_10"] + $risk_points["q_12"] + $risk_points["q_14"]
-             + $risk_points["q_31"] + $risk_points["q_35"] + $risk_points["q_50"] + $risk_points["q_52"];
-                      
-         $D112 = $risk_points["q_4"] + $risk_points["q_7"] + $risk_points["q_16"] + $risk_points["q_18"] + $risk_points["q_19"]
-              + $risk_points["q_20"] + $risk_points["q_21"] + $risk_points["q_22"];
+         $D111 = 0;
+         if (array_key_exists("q_1", $risk_points)) {
+             $D111 += $risk_points["q_1"];
+         }
+         if (array_key_exists("q_5", $risk_points)) {
+             $D111 += $risk_points["q_5"];
+         }
+         if (array_key_exists("q_10", $risk_points)) {
+             $D111 += $risk_points["q_10"];
+         }
+         if (array_key_exists("q_12", $risk_points)) {
+             $D111 += $risk_points["q_12"];
+         }
+         if (array_key_exists("q_14", $risk_points)) {
+             $D111 += $risk_points["q_14"];
+         }
+         if (array_key_exists("q_31", $risk_points)) {
+             $D111 += $risk_points["q_31"];
+         }
+         if (array_key_exists("q_35", $risk_points)) {
+             $D111 += $risk_points["q_35"];
+         }
+         if (array_key_exists("q_50", $risk_points)) {
+             $D111 += $risk_points["q_50"];
+         }
+         if (array_key_exists("q_52", $risk_points)) {
+             $D111 += $risk_points["q_52"];
+         }    
+
+         $D112 = 0;
+         if (array_key_exists("q_4", $risk_points)) {
+             $D112 += $risk_points["q_4"];
+         }
+         if (array_key_exists("q_7", $risk_points)) {
+             $D112 += $risk_points["q_7"];
+         }
+         if (array_key_exists("q_16", $risk_points)) {
+             $D112 += $risk_points["q_16"];
+         }
+         if (array_key_exists("q_18", $risk_points)) {
+             $D112 += $risk_points["q_18"];
+         }
+         if (array_key_exists("q_19", $risk_points)) {
+             $D112 += $risk_points["q_19"];
+         }
+         if (array_key_exists("q_20", $risk_points)) {
+             $D112 += $risk_points["q_20"];
+         }
+         if (array_key_exists("q_21", $risk_points)) {
+             $D112 += $risk_points["q_21"];
+         }
+         if (array_key_exists("q_22", $risk_points)) {
+             $D112 += $risk_points["q_22"];
+         }
+
+         $D113 = 0;
+         if (array_key_exists("q_24", $risk_points)) {
+             $D113 += $risk_points["q_24"];
+         }
+         if (array_key_exists("q_25", $risk_points)) {
+             $D113 += $risk_points["q_25"];
+         }
+         if (array_key_exists("q_26", $risk_points)) {
+             $D113 += $risk_points["q_26"];
+         }
+         if (array_key_exists("q_49", $risk_points)) {
+             $D113 += $risk_points["q_49"];
+         }
+         if (array_key_exists("q_53", $risk_points)) {
+             $D113 += $risk_points["q_53"];
+         }
+         if (array_key_exists("q_58", $risk_points)) {
+             $D113 += $risk_points["q_58"];
+         }
+
+         $D114 = 0;
+         if (array_key_exists("q_29", $risk_points)) {
+             $D114 += $risk_points["q_29"];
+         }
+         if (array_key_exists("q_32", $risk_points)) {
+             $D114 += $risk_points["q_32"];
+         }
+         if (array_key_exists("q_34", $risk_points)) {
+             $D114 += $risk_points["q_34"];
+         }
+         if (array_key_exists("q_38", $risk_points)) {
+             $D114 += $risk_points["q_38"];
+         }
+         $D114 += $XY_total;
+
+         $D115 = 0;
+         if (array_key_exists("q_3", $risk_points)) {
+             $D115 += $risk_points["q_3"];
+         }
+         if (array_key_exists("q_6", $risk_points)) {
+             $D115 += $risk_points["q_6"];
+         }
+         if (array_key_exists("q_9", $risk_points)) {
+             $D115 += $risk_points["q_9"];
+         }
+         if (array_key_exists("q_17", $risk_points)) {
+             $D115 += $risk_points["q_17"];
+         }
+         if (array_key_exists("q_23", $risk_points)) {
+             $D115 += $risk_points["q_23"];
+         }
+         if (array_key_exists("q_59", $risk_points)) {
+             $D115 += $risk_points["q_59"];
+         }
+
+         $D116 = 0;
+         if (array_key_exists("q_28", $risk_points)) {
+             $D116 += $risk_points["q_28"];
+         }
+         if (array_key_exists("q_41", $risk_points)) {
+             $D116 += $risk_points["q_41"];
+         }
+         if (array_key_exists("q_54", $risk_points)) {
+             $D116 += $risk_points["q_54"];
+         }
+         if (array_key_exists("q_55", $risk_points)) {
+             $D116 += $risk_points["q_55"];
+         }
          
-         $D113 = $risk_points["q_24"] + $risk_points["q_25"] + $risk_points["q_26"] + $risk_points["q_49"] + $risk_points["q_53"]
-                + $risk_points["q_58"];
-                
-         $D114 = $risk_points["q_29"] + $risk_points["q_32"] + $risk_points["q_34"] + $risk_points["q_38"] + $XY_total;
-         
-         $D115 = $risk_points["q_3"] + $risk_points["q_6"] + $risk_points["q_9"] + $risk_points["q_17"] + $risk_points["q_23"]
-                + $risk_points["q_59"];
-         
-         $D116 = $risk_points["q_28"] + $risk_points["q_41"] + $risk_points["q_54"] + $risk_points["q_55"];
-         
-         $D117 = $risk_points["q_15"] + $risk_points["q_27"] + $risk_points["q_57"];
-         
-         $D118 = $risk_points["q_11"] + $risk_points["q_13"] + $risk_points["q_30"] + $risk_points["q_33"] + $risk_points["q_37"]
-             + $risk_points["q_42"] + $risk_points["q_43"] + $risk_points["q_44"] + $risk_points["q_45"] + $risk_points["q_46"] 
-             + $risk_points["q_48"];
+         $D117 = 0;
+         if (array_key_exists("q_15", $risk_points)) {
+             $D117 += $risk_points["q_15"];
+         }
+         if (array_key_exists("q_27", $risk_points)) {
+             $D117 += $risk_points["q_27"];
+         }
+         if (array_key_exists("q_57", $risk_points)) {
+             $D117 += $risk_points["q_57"];
+         }
+
+         $D118 = 0;
+         if (array_key_exists("q_11", $risk_points)) {
+             $D118 += $risk_points["q_11"];
+         }
+         if (array_key_exists("q_13", $risk_points)) {
+             $D118 += $risk_points["q_13"];
+         }
+         if (array_key_exists("q_30", $risk_points)) {
+             $D118 += $risk_points["q_30"];
+         }
+         if (array_key_exists("q_33", $risk_points)) {
+             $D118 += $risk_points["q_33"];
+         }
+         if (array_key_exists("q_37", $risk_points)) {
+             $D118 += $risk_points["q_37"];
+         }
+         if (array_key_exists("q_42", $risk_points)) {
+             $D118 += $risk_points["q_42"];
+         }
+         if (array_key_exists("q_43", $risk_points)) {
+             $D118 += $risk_points["q_43"];
+         }
+         if (array_key_exists("q_44", $risk_points)) {
+             $D118 += $risk_points["q_44"];
+         }
+         if (array_key_exists("q_45", $risk_points)) {
+             $D118 += $risk_points["q_45"];
+         }
+         if (array_key_exists("q_46", $risk_points)) {
+             $D118 += $risk_points["q_46"];
+         }
+         if (array_key_exists("q_48", $risk_points)) {
+             $D118 += $risk_points["q_48"];
+         }
           
          if($D111 >= 12){
             $calculatedScores['orientrec'] = 50;

@@ -111,13 +111,13 @@ class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument
             'no'           => 'No'
         );
 
-        $group[]=&$this->form->createElement("text", 'childs_name', "");
+        $group[]=&$this->form->createElement("text", 'childs_name', "", null);
         $this->XINRegisterRule("childs_name", array("childs_name{@}=={@}"), "Required.", "childs_name_group");
         $this->form->addGroup($group, "childs_name_group", 'Child\'s name', null, false);
         unset($group);
 
 //        $this->addNumericElement('age', 'Age');
-        $group[]=&$this->form->createElement("text", 'age', "");
+        $group[]=&$this->form->createElement("text", 'age', "", null);
         $this->XINRegisterRule("age", array("age{@}=={@}"), "Required.", "age_group");
         $this->form->addGroup($group, "age_group", 'Age', null, false);
         unset($group);
