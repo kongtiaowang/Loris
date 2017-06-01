@@ -1,18 +1,13 @@
 <?php
 set_include_path(get_include_path().":../libraries:../../php/libraries:");
-require_once "NDB_Client.class.inc";
-require_once "Utility.class.inc";
-require_once "Database.class.inc";
-//require_once "../../tools/generic_includes.php";
+require_once '../../vendor/autoload.php';
+
 $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize('../config.xml');
 
-$db        =& Database::singleton();
-if (Utility::isErrorX($db)) {
-        print "Could not connect to database: " . $db->getMessage();
-            exit(1);
-}
+$db        = Database::singleton();
+
 $session = $db->pselect("SELECT s.ID from session s
                          JOIN flag f ON ( f.sessionID = s.ID AND f.Test_name=:tname)
                               AND f.CommentID NOT LIKE 'DDE_%'",
@@ -40,6 +35,7 @@ $mapping = array('a_aut_spect_disorder'=>'asd_', 'e_rett_syndrome'=>'rett_syndro
 $final_result = array();
 foreach($result as $row) {
     foreach($mapping as $key=>$val) {
+      if (array_key_exists($key, $row)) {
         if ($row[$key] == '1_yes') {
             if (strpos($row[$key."_who"], 'parents_mom') !== false) {
                 $final_result[$val."mother"] = 'yes';
@@ -48,7 +44,7 @@ foreach($result as $row) {
                 $final_result[$val."father"] = 'yes';
             }
         }
-
+      }
     }
 }
 $figs = $db->pselect("SELECT fyr.Face_outcome_test, fyr.RelativeCode
@@ -78,7 +74,10 @@ $WhereCriteria['CommentID'] = $db->pselectOne("SELECT i.CommentID FROM ACEFamily
                                                JOIN session s ON s.ID = f.SessionID
                                                WHERE s.ID =:sid AND f.CommentID NOT LIKE 'DDE%'",
                                                array('sid'=>$sessionID['ID']));
-$result = $db->update('ACEFamilyMedicalHistory', $final_result, $WhereCriteria);
-
+  if (!empty($final_result)) {
+    $result = $db->update('ACEFamilyMedicalHistory', $final_result, $WhereCriteria);
+    print serialize($WhereCriteria) . " ";
+    print serialize($final_result) . "\n";
+  }
 }
 ?>
