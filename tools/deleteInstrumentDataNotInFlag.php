@@ -1,12 +1,13 @@
 <?php
 /**
- *  Delete Instrument data from the instrument table where it is already deleted from flag.Unsyc data should be removed to keep in balance.
+ *  Delete Instrument data from the instrument table where it is deleted from flag.
  *
  *  PHP Version 7
  *
  *  @category Tools
  *  @package  Tools
- *  @author   Sruthy Mathew
+ *  @author   Sruthy Mathew <sruthy.mcin@gmail.com>
+ *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  *  @link     https://www.github.com/aces/IBIS/
  **/
 set_include_path(get_include_path().":../libraries:../../php/libraries:");
@@ -32,27 +33,24 @@ if (empty($argv[1]) || $argv[1] == 'help') {
 }
 $results = $db->pselect(
     "SELECT instr.CommentID as cmid
-FROM {$instrument} instr
-WHERE instr.CommentID NOT IN
+     FROM {$instrument} instr
+     WHERE instr.CommentID NOT IN
     (SELECT CommentID 
-     FROM flag where Test_name=:test_name)",
-    array(
-        "test_name" => $instrument,
-    )
+     FROM flag where Test_name=:tnm)",
+    array("tnm" => $instrument)
 );
 
 if (!empty($results)) {
     $results_count = $db->pselectOne(
         "SELECT COUNT(*)
-FROM {$instrument} instr
-WHERE CommentID NOT IN
-    (SELECT CommentID 
-     FROM flag where Test_name=:test_name)",
-        array(
-            "test_name" => $instrument,
-        )
+         FROM {$instrument} instr
+         WHERE CommentID NOT IN
+        (SELECT CommentID 
+         FROM flag where Test_name=:tnm)",
+        array("tnm" => $instrument)
     );
-    echo $results_count." Unsync CommentIds found in this instrument table which is not in flag table\n";
+    echo $results_count." Unsync CommentIds found in this instrument " .
+        "table which is not in flag table\n";
     foreach ($results as $row) {
 
             print "{$row['cmid']}\n";
@@ -64,7 +62,8 @@ WHERE CommentID NOT IN
 
     }
 } else {
-    print "No such mismatching CommentIds found. The instrument table  and flag table seems to be in sync. Exiting\n";
+    print "No such mismatching CommentIds found. The instrument table ".
+    "and flag table seems to be in sync. Exiting\n";
     exit;
 }
 
