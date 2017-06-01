@@ -71,5 +71,5 @@ if (!$confirm) {
     print "\nRun this tool again with the argument 'confirm' to " .
         "move the instrument data.\n";
 } else {
-    print "\nThe move is complete.\n";
+    print "\nThe deletion is complete.\n";
 }
