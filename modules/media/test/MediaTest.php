@@ -27,7 +27,13 @@ require_once __DIR__ .
  */
 class MediaTest extends LorisIntegrationTest
 {
-
+   /**
+     * UI elements and locations
+     */
+   private $loadingUI
+        = array(
+           'Media' => '#bc2 > a:nth-child(2) > div'
+          );
     /**
      * Tests that the page does not load if the user does not have correct
      * permissions
@@ -60,6 +66,23 @@ class MediaTest extends LorisIntegrationTest
         $this->assertContains("You do not have access to this page.", $bodyText);
         $this->resetPermissions();
     }
-
+    /**
+     * Testing UI when page loads
+     * 
+     * @return void
+     */
+    function testPageUIs()
+    {
+        $this->safeGet($this->url . "/media/");
+        $bodyText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        foreach ($this->loadingUI as $key => $value) {
+            $text = $this->webDriver->executescript(
+            "document.querySelector('$value').textContent"
+        );
+        $this->assertContains($key, $text);
+        }
+    }
 }
 ?>
