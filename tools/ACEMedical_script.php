@@ -1,18 +1,13 @@
 <?php
 set_include_path(get_include_path().":../libraries:../../php/libraries:");
-require_once "NDB_Client.class.inc";
-require_once "Utility.class.inc";
-require_once "Database.class.inc";
-//require_once "../../tools/generic_includes.php";
+require_once '../../vendor/autoload.php';
+
 $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize('../config.xml');
 
-$db        =& Database::singleton();
-if (Utility::isErrorX($db)) {
-        print "Could not connect to database: " . $db->getMessage();
-            exit(1);
-}
+$db        = Database::singleton();
+
 $mapping = array('preg_complic'=>'pregnancy_complication_subject','preg_dxdrug'=>'','birth_weight_lbs'=>'birth_weight_lbs',
                  'ldnb_lgthin'=>'ldnb_lgthin', 'full_term'=>'full_term','ldnb_hosptotalmom'=>'ldnb_hosptotalmom',
                  'rev_headfebseiz'=>'rev_headfebseiz','rev_headseizure'=>'q15_seizures_convulsions',
@@ -143,7 +138,11 @@ $WhereCriteria['CommentID'] = $db->pselectOne("SELECT i.CommentID FROM ACESubjec
                                                JOIN session s ON s.ID = f.SessionID
                                                WHERE s.ID =:sid AND f.CommentID NOT LIKE 'DDE%'",
                                                array('sid'=>$sessionID['ID']));
-$result = $db->update('ACESubjectMedicalHistory', $final_result, $WhereCriteria);
 
+  if (!empty($final_result)) {
+    $result = $db->update('ACESubjectMedicalHistory', $final_result, $WhereCriteria);
+    print serialize($WhereCriteria) . " ";
+    print serialize($final_result) . "\n";
+  }
 }
 ?>

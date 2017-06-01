@@ -1,18 +1,13 @@
 <?php
 set_include_path(get_include_path().":../libraries:../../php/libraries:");
-require_once "NDB_Client.class.inc";
-require_once "Utility.class.inc";
-require_once "Database.class.inc";
-//require_once "../../tools/generic_includes.php";
+require_once '../../vendor/autoload.php';
+
 $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize('../config.xml');
 
-$db        =& Database::singleton();
-if (Utility::isErrorX($db)) {
-        print "Could not connect to database: " . $db->getMessage();
-            exit(1);
-}
+$db        = Database::singleton();
+
 $mapping = array('height_met'=>'length1','weight_met'=>'weight1','head_circum'=>'head_circumference1','facial_dysmorp'=>'facial_dysmorp',
                  'eyes_strabismus'=>'eyes_strabismus','eyes_ptosis'=>'eyes_ptosis','medprob_ear'=>'medprob_ear','rev_mouthcleftlip'=>'rev_mouthcleftlip',
                  'limb_joint_loos'=>'limb_joint_loos','skin_hypopigmen'=>'skin_hypopigmen','skin_hyperpig'=>'skin_hyperpig',
@@ -120,7 +115,7 @@ foreach($result as $row) {
      } else if ($row['q25_shagreen_patches_describe'] == '0_absent' || $row['q23_adenoma_sebaceum'] == '0_absent'
                 || $row['q28_cutaneous_nodules'] == '0_absent') {
             $row['skin_abnorm'] = 'no';
-     } else if (in_array($row['q25_shagreen_patches'], $unable) || in_array($row['q23_adenoma_sebaceum'], $unable)
+     } else if (in_array($row['q25_shagreen_patches_describe'], $unable) || in_array($row['q23_adenoma_sebaceum'], $unable)
                 || in_array($row['q28_cutaneous_nodules'], $unable) ) {
             $row['skin_abnorm'] = 'nk';
      }
@@ -146,17 +141,22 @@ foreach($result as $row) {
 
 
 }
-$final = array();
+$final_result = array();
 foreach($mapping as $key=>$val) {
-        $final[$key] = $row[$val];
+   if (array_key_exists($key, $row)) {
+        $final_result[$key] = $row[$val];
+   }
 }
-//print_r($final);
+//print_r($final_result);
 $WhereCriteria['CommentID'] = $db->pselectOne("SELECT i.CommentID FROM ACESubjectPhysicalExam i
                                                JOIN flag f ON f.CommentID = i.CommentID
                                                JOIN session s ON s.ID = f.SessionID
                                                WHERE s.ID =:sid AND f.CommentID NOT LIKE 'DDE%'",
                                                array('sid'=>$sessionID['ID']));
-$result = $db->update('ACESubjectPhysicalExam', $final, $WhereCriteria);
-
+  if (!empty($final_result)) {
+    $result = $db->update('ACESubjectPhysicalExam', $final_result, $WhereCriteria);
+    print serialize($WhereCriteria) . " ";
+    print serialize($final_result) . "\n";
+  }
 }
 ?>
