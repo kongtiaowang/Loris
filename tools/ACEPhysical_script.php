@@ -141,11 +141,19 @@ foreach($result as $row) {
 
 
 }
+
+$numeric = array('height_met', 'weight_met', 'head_circum');
 $final_result = array();
 foreach($mapping as $key=>$val) {
-   if (array_key_exists($key, $row)) {
+    if (array_key_exists($val, $row)) {
+        // Numeric fields can't be text
+        if (in_array($key, $numeric)) {
+            if (!is_numeric($row[$val])) {
+                $row[$val] = null;
+            }
+        }
         $final_result[$key] = $row[$val];
-   }
+    }
 }
 //print_r($final_result);
 $WhereCriteria['CommentID'] = $db->pselectOne("SELECT i.CommentID FROM ACESubjectPhysicalExam i
