@@ -74,13 +74,11 @@ class MediaTest extends LorisIntegrationTest
     function testPageUIs()
     {
         $this->safeGet($this->url . "/media/");
-        $bodyText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector("body")
-        )->getText();
         foreach ($this->loadingUI as $key => $value) {
             $text = $this->webDriver->executescript(
-            "document.querySelector('$value').textContent"
+            "return document.querySelector('$value').textContent"
         );
+         
         $this->assertContains($key, $text);
         }
     }
