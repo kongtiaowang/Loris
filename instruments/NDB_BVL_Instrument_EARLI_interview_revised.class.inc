@@ -22,7 +22,7 @@ class NDB_BVL_Instrument_EARLI_interview_revised extends NDB_BVL_Instrument_EARL
 
 
 
-	function setup($commentID, $page)
+	function setup($commentID = null, $page = null)
 	{
 
 		$this->formType="XIN";
@@ -118,13 +118,13 @@ class NDB_BVL_Instrument_EARLI_interview_revised extends NDB_BVL_Instrument_EARL
 		$this->addTextAreaElement('interviewer', "<br />Interviewer:");
 	 	$this->addDateElement('interview_date', "<br />Start date:", $this->dateOptions2007);
 		
-		$group[] =&$this->form->createElement("static", "hour_header");
-                $group[] =&$this->form->createElement("static", "AMPM_header");
+		$group[] = $this->form->createElement("static", "hour_header", null, null);
+                $group[] = $this->form->createElement("static", "AMPM_header", null, null);
                 $this->form->addGroup($group, "interview_start_time_headers", "", $this->_GUIDelimiter, false);
                 unset($group);
 
-		$group[] = &$this->form->createElement('select', 'interview_time', null, array(NULL=>"") + array_combine(range(1,12), range(1,12)) + array("not_answered"=>"Not Answered"));
-		$group[] = &$this->form->createElement('select', 'AMPM_top', null, array(NULL=>"", "AM"=>"AM", "PM"=>"PM", "not_answered"=>"Not Answered"));
+		$group[] = $this->form->createElement('select', 'interview_time', null, array(NULL=>"") + array_combine(range(1,12), range(1,12)) + array("not_answered"=>"Not Answered"));
+		$group[] = $this->form->createElement('select', 'AMPM_top', null, array(NULL=>"", "AM"=>"AM", "PM"=>"PM", "not_answered"=>"Not Answered"));
 		$this->form->addGroup($group, "interview_start_time", "<br />Start time:", $this->_GUIDelimiter, false);
                 unset($group);
 		$this->XINRegisterRule("interview_time", array("interivew_date{@}!={@}NULL"), "Required", "interview_start_time");
@@ -161,13 +161,13 @@ class NDB_BVL_Instrument_EARLI_interview_revised extends NDB_BVL_Instrument_EARL
 			$this->XINRegisterRule("q8_1_{$i}_job", array("q8_1_{$i}_job{@}=={@}NEVER_REQUIRED"), "q8_1_{$i}_job_group");
 	
 			//job start date
-	                $group[] =&$this->form->createElement("static", "month_names_header");
-        	        $group[] =&$this->form->createElement("static", "year_header");
+	                $group[] = $this->form->createElement("static", "month_names_header", null, null);
+        	        $group[] = $this->form->createElement("static", "year_header", null, null);
                 	$this->form->addGroup($group, "q8_1_{$i}_job_start_headers", "", $this->_GUIDelimiter, false);
                 	unset($group);
 
-                	$group[] = &$this->form->createElement('select', "q8_1_{$i}_job_start_month", null, $this->months);
-                	$group[] = &$this->form->createElement('select', "q8_1_{$i}_job_start_year", null, $years); 
+                	$group[] = $this->form->createElement('select', "q8_1_{$i}_job_start_month", null, $this->months);
+                	$group[] = $this->form->createElement('select', "q8_1_{$i}_job_start_year", null, $years); 
                 	$this->form->addGroup($group, "q8_1_{$i}_job_start", "<br />Start date:", $this->_GUIDelimiter, false);
 			$this->XINRegisterRule("q8_1_{$i}_job_start_month", array("q8_1_{$i}_job_status{@}=={@}", "q8_1_{$i}_job{@}!={@}"), "You must specify time span", "q8_1_{$i}_job_start"); 
 			$this->XINRegisterRule("q8_1_{$i}_job_start_year", array("q8_1_{$i}_job_status{@}=={@}", "q8_1_{$i}_job{@}!={@}", "q8_1_{$i}_job_start_month{@}!={@}"), "You must specify time span", "q8_1_{$i}_job_start"); 
@@ -176,13 +176,13 @@ class NDB_BVL_Instrument_EARLI_interview_revised extends NDB_BVL_Instrument_EARL
 			
 	
 			//job end date
-                        $group[] =&$this->form->createElement("static", "month_names_header");
-                        $group[] =&$this->form->createElement("static", "year_header");
+                        $group[] = $this->form->createElement("static", "month_names_header", null, null);
+                        $group[] = $this->form->createElement("static", "year_header", null, null);
                         $this->form->addGroup($group, "q8_1_{$i}_job_end_headers", "", $this->_GUIDelimiter, false);
                         unset($group);
 
-                        $group[] = &$this->form->createElement('select', "q8_1_{$i}_job_end_month", null, $this->months); 
-                        $group[] = &$this->form->createElement('select', "q8_1_{$i}_job_end_year", null, $years); 
+                        $group[] = $this->form->createElement('select', "q8_1_{$i}_job_end_month", null, $this->months); 
+                        $group[] = $this->form->createElement('select', "q8_1_{$i}_job_end_year", null, $years); 
                         $this->form->addGroup($group, "q8_1_{$i}_job_end", "<br />End date:", $this->_GUIDelimiter, false);         
 			$this->XINRegisterRule("q8_1_{$i}_job_end_month", array("q8_1_{$i}_job_status{@}=={@}", "q8_1_{$i}_job{@}!={@}"), "You must specify time span", "q8_1_{$i}_job_end"); 
 			$this->XINRegisterRule("q8_1_{$i}_job_end_year", array("q8_1_{$i}_job_status{@}=={@}", "q8_1_{$i}_job{@}!={@}"), "You must specify time span", "q8_1_{$i}_job_end"); 
@@ -254,13 +254,13 @@ class NDB_BVL_Instrument_EARLI_interview_revised extends NDB_BVL_Instrument_EARL
 
 		foreach ($options as $field=>$label)
 		{
-                        $group[] =&$this->form->createElement("static", "month_names_header");
-                        $group[] =&$this->form->createElement("static", "year_header");
+                        $group[] = $this->form->createElement("static", "month_names_header", null, null);
+                        $group[] = $this->form->createElement("static", "year_header", null, null);
                         $this->form->addGroup($group, "q8_3_{$field}_job_gap_headers", "", $this->_GUIDelimiter, false);
                         unset($group);
 
-                        $group[] = &$this->form->createElement('select', "q8_3_{$field}_gap_month", null, $this->months);
-                        $group[] = &$this->form->createElement('select', "q8_3_{$field}_gap_year", null, $years);
+                        $group[] = $this->form->createElement('select', "q8_3_{$field}_gap_month", null, $this->months);
+                        $group[] = $this->form->createElement('select', "q8_3_{$field}_gap_year", null, $years);
                         $this->form->addGroup($group, "q8_3_{$field}_gap", "<br />{$label}. Date started (Mo/Yr)", $this->_GUIDelimiter, false); 
 			unset($group); 
 
@@ -299,13 +299,13 @@ class NDB_BVL_Instrument_EARLI_interview_revised extends NDB_BVL_Instrument_EARL
 
 
 		//interview end time
-                $group[] =&$this->form->createElement("static", "hour_header");
-                $group[] =&$this->form->createElement("static", "AMPM_header");
+                $group[] = $this->form->createElement("static", "hour_header", null, null);
+                $group[] = $this->form->createElement("static", "AMPM_header", null, null);
                 $this->form->addGroup($group, "interview_end_time_headers", "", $this->_GUIDelimiter, false);
                 unset($group);
 
-		$group[] = &$this->form->createElement('select', 'interview_end_time', "", array(NULL=>"") + ($timeOptions) + array("not_answered"=>"Not Answered"));
-		$group[] = &$this->form->createElement('select', 'AMPM_bottom', "", array(NULL=>"", "AM"=>"AM", "PM"=>"PM", "not_answered"=>"Not Answered"));
+		$group[] = $this->form->createElement('select', 'interview_end_time', "", array(NULL=>"") + ($timeOptions) + array("not_answered"=>"Not Answered"));
+		$group[] = $this->form->createElement('select', 'AMPM_bottom', "", array(NULL=>"", "AM"=>"AM", "PM"=>"PM", "not_answered"=>"Not Answered"));
 		$this->form->addGroup($group, "interview_end_time_group", "Interview end time:", $this->_GUIDelimiter, false);
                 unset($group);
 		$this->form->addElement('static', null, "<br/>");

@@ -191,7 +191,9 @@ class NDB_BVL_Instrument_adi_r extends NDB_BVL_Instrument
             	$this->scores[$field] = substr($code, 0, 1);
             	if(is_numeric($this->scores[$field])) {
             	    $intval = intval($this->scores[$field]);
-            		$this->scores[$field] = $conversion[$intval];
+            	    if (array_key_exists($intval, $conversion)) {
+            		      $this->scores[$field] = $conversion[$intval];
+            		  }
             	} else {
             		$this->scores[$field] = 0;  //for 'not_answered'
             	}

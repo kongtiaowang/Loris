@@ -123,8 +123,8 @@ class NDB_BVL_Instrument_EARLI_interview_PART_3 extends NDB_BVL_Instrument_EARLI
 		$this->addTextAreaElement('interviewer', "<br />Interviewer:");
 	 	$this->addDateElement('interview_date', "<br />Start date:");
 		
-		$group[] =&$this->form->createElement("static", "hour_header");
-                $group[] =&$this->form->createElement("static", "AMPM_header");
+		$group[] =&$this->form->createElement("static", "hour_header", null, null);
+                $group[] =&$this->form->createElement("static", "AMPM_header", null, null);
                 $this->form->addGroup($group, "interview_start_time_headers", "", $this->_GUIDelimiter, false);
                 unset($group);
 

@@ -141,13 +141,13 @@ class NDB_BVL_Instrument_EARLI_interview_PART_1 extends NDB_BVL_Instrument_EARLI
         $this->addTextAreaElement('interviewer', "<br />Interviewer:");
         $this->addDateElement('interview_date', "<br />Start date:");
 
-        $group[] =&$this->form->createElement("static", "hour_header");
-        $group[] =&$this->form->createElement("static", "AMPM_header");
+        $group[] = $this->form->createElement("static", "hour_header", null, null);
+        $group[] = $this->form->createElement("static", "AMPM_header", null, null);
         $this->form->addGroup($group, "interview_start_time_headers", "", $this->_GUIDelimiter, false);
         unset($group);
 
-        $group[] = &$this->form->createElement('select', 'interview_time', null, array(NULL=>"") + array_combine(range(1,12), range(1,12)) + array("not_answered"=>"Not Answered"));
-        $group[] = &$this->form->createElement('select', 'AMPM', null, array(NULL=>"", "AM"=>"AM", "PM"=>"PM", "not_answered"=>"Not Answered"));
+        $group[] = $this->form->createElement('select', 'interview_time', null, array(NULL=>"") + array_combine(range(1,12), range(1,12)) + array("not_answered"=>"Not Answered"));
+        $group[] = $this->form->createElement('select', 'AMPM', null, array(NULL=>"", "AM"=>"AM", "PM"=>"PM", "not_answered"=>"Not Answered"));
         $this->form->addGroup($group, "interview_start_time", "<br />Start time:", $this->_GUIDelimiter, false);
         unset($group);
         $this->XINRegisterRule("interview_time", array("interivew_date{@}!={@}NULL"), "Required", "interview_start_time");
@@ -444,15 +444,15 @@ class NDB_BVL_Instrument_EARLI_interview_PART_1 extends NDB_BVL_Instrument_EARLI
         $this->XINRegisterRule("q2_8", array("q2_6{@}=={@}01_yes"), "Required if had diabetes before pregnancy");
 
 
-        $group[] =&$this->form->createElement("static", "month_names_header");
-        $group[] =&$this->form->createElement("static", "year_header");
+        $group[] = $this->form->createElement("static", "month_names_header", null, null);
+        $group[] = $this->form->createElement("static", "year_header", null, null);
         $this->form->addElement('static', null, "<br/>");
         $this->form->addGroup($group, "q2_8_headers", "", $this->_GUIDelimiter, false);
         unset($group);
 
 
-        $group[] = &$this->form->createElement('select', "q2_8_month", null, $this->months);
-        $group[] = &$this->form->createElement('select', "q2_8_year", null, $this->years1950);
+        $group[] = $this->form->createElement('select', "q2_8_month", null, $this->months);
+        $group[] = $this->form->createElement('select', "q2_8_year", null, $this->years1950);
         $this->form->addGroup($group, "q2_8_date", "<br />" . $this->indent . "If you selected [01 Specify Date], please specify the date:", $this->_GUIDelimiter, false);
         unset($group);
         $this->form->addElement("select", "q2_8_age", $this->indent . "If you selected [02 Age], please specify the age (years):" , $this->ageOptions);
@@ -496,14 +496,14 @@ class NDB_BVL_Instrument_EARLI_interview_PART_1 extends NDB_BVL_Instrument_EARLI
         $this->form->addElement('static', null, "<br/>");
         $this->form->addElement("select", "q2_14", "2-14) When were you first told by a doctor that you had high blood pressure?", $this->dateAge);
 
-        $group[] =&$this->form->createElement("static", "month_names_header");
-        $group[] =&$this->form->createElement("static", "year_header");
+        $group[] = $this->form->createElement("static", "month_names_header", null, null);
+        $group[] = $this->form->createElement("static", "year_header", null, null);
         $this->form->addElement('static', null, "<br/>");
         $this->form->addGroup($group, "q2_14_headers", "", $this->_GUIDelimiter, false);
         unset($group);
 
-        $group[] = &$this->form->createElement('select', "q2_14_month", null, $this->months);
-        $group[] = &$this->form->createElement('select', "q2_14_year", null, $this->years1950);     
+        $group[] = $this->form->createElement('select', "q2_14_month", null, $this->months);
+        $group[] = $this->form->createElement('select', "q2_14_year", null, $this->years1950);     
         $this->form->addGroup($group, "q2_14_date", "<br />" . $this->indent . "If you selected [01 Date], please specify the date:", $this->_GUIDelimiter, false);
         unset($group);
         $this->form->addElement("select", "q2_14_age", $this->indent . "If you selected [02 Age], please specify (years):", $this->ageOptions);
@@ -529,14 +529,14 @@ class NDB_BVL_Instrument_EARLI_interview_PART_1 extends NDB_BVL_Instrument_EARLI
         //q2-17
         $this->form->addElement("select", "q2_17", "2-17) When did these seizures start?", $this->dateAge);
 
-        $group[] =&$this->form->createElement("static", "month_names_header");
-        $group[] =&$this->form->createElement("static", "year_header");
+        $group[] = $this->form->createElement("static", "month_names_header", null, null);
+        $group[] = $this->form->createElement("static", "year_header", null, null);
         $this->form->addElement('static', null, "<br/>");
         $this->form->addGroup($group, "q2_17_headers", "", $this->_GUIDelimiter, false);
         unset($group);
 
-        $group[] = &$this->form->createElement('select', "q2_17_month", null, $this->months);
-        $group[] = &$this->form->createElement('select', "q2_17_year", null, $this->years1950); 
+        $group[] = $this->form->createElement('select', "q2_17_month", null, $this->months);
+        $group[] = $this->form->createElement('select', "q2_17_year", null, $this->years1950); 
         $this->form->addGroup($group, "q2_17_date", $this->indent . "If you selected [01 Date], please specify the date:", $this->_GUIDelimiter, false);
         unset($group);
         $this->form->addElement("select", "q2_17_age", $this->indent . "If you selected [02 Age], please specify (years):", $this->ageOptions);
@@ -550,14 +550,14 @@ class NDB_BVL_Instrument_EARLI_interview_PART_1 extends NDB_BVL_Instrument_EARLI
         $this->form->addElement("select", "q2_17_a", "2-17-a) When was the most recent episode?", $this->dateAge);
         $this->XINRegisterRule('q2_17_a', array("q2_16{@}=={@}01_yes"), "Required if had seizures");
 
-        $group[] =&$this->form->createElement("static", "month_names_header");
-        $group[] =&$this->form->createElement("static", "year_header");
+        $group[] = $this->form->createElement("static", "month_names_header", null, null);
+        $group[] = $this->form->createElement("static", "year_header", null, null);
         $this->form->addElement('static', null, "<br/>");
         $this->form->addGroup($group, "q2_17a_headers", "", $this->_GUIDelimiter, false);
         unset($group);
 
-        $group[] = &$this->form->createElement('select', "q2_17a_month", null, $this->months);
-        $group[] = &$this->form->createElement('select', "q2_17a_year", null, $this->years1950); 
+        $group[] = $this->form->createElement('select', "q2_17a_month", null, $this->months);
+        $group[] = $this->form->createElement('select', "q2_17a_year", null, $this->years1950); 
         $this->form->addGroup($group, "q2_17a_date", "<br />" . $this->indent . "If you selected [01 Date], please specify the date:", $this->_GUIDelimiter, false);
         unset($group);
         $this->form->addElement("select", "q2_17a_age", $this->indent . "If you selected [02 Age], please specify (years):", $this->ageOptions);
@@ -575,14 +575,14 @@ class NDB_BVL_Instrument_EARLI_interview_PART_1 extends NDB_BVL_Instrument_EARLI
         //q2-19
         $this->form->addElement("select", "q2_19", "2-19) When were you first told by a doctor that you had epilepsy?", $this->dateAge);
 
-        $group[] =&$this->form->createElement("static", "month_names_header");
-        $group[] =&$this->form->createElement("static", "year_header");
+        $group[] = $this->form->createElement("static", "month_names_header", null, null);
+        $group[] = $this->form->createElement("static", "year_header", null, null);
         $this->form->addElement('static', null, "<br/>");
         $this->form->addGroup($group, "q2_19_headers", "", $this->_GUIDelimiter, false);
         unset($group);
 
-        $group[] = &$this->form->createElement('select', "q2_19_month", null, $this->months);
-        $group[] = &$this->form->createElement('select', "q2_19_year", null, $this->years1950);
+        $group[] = $this->form->createElement('select', "q2_19_month", null, $this->months);
+        $group[] = $this->form->createElement('select', "q2_19_year", null, $this->years1950);
         $this->form->addGroup($group, "q2_19_date", "<br />" . $this->indent . "If you selected [01 Date], please specify the date:", $this->_GUIDelimiter, false);
         unset($group);
         $this->form->addElement("select", "q2_19_age", $this->indent . "If you selected [02 Age], please specify (years):", $this->ageOptions);
@@ -624,14 +624,14 @@ class NDB_BVL_Instrument_EARLI_interview_PART_1 extends NDB_BVL_Instrument_EARLI
         //q2-22
         $this->form->addElement("select", "q2_22", "2-22) When were you first told by a doctor that you had [CONDITION]?", $this->dateAge); 
 
-        $group[] =&$this->form->createElement("static", "month_names_header");
-        $group[] =&$this->form->createElement("static", "year_header");
+        $group[] = $this->form->createElement("static", "month_names_header", null, null);
+        $group[] = $this->form->createElement("static", "year_header", null, null);
         $this->form->addElement('static', null, "<br/>");
         $this->form->addGroup($group, "interview_start_time_headers", "", $this->_GUIDelimiter, false);
         unset($group);
 
-        $group[] = &$this->form->createElement('select', "q2_22_month", null, $this->months);
-        $group[] = &$this->form->createElement('select', "q2_22_year", null, $this->years1950);   
+        $group[] = $this->form->createElement('select', "q2_22_month", null, $this->months);
+        $group[] = $this->form->createElement('select', "q2_22_year", null, $this->years1950);   
         $this->form->addGroup($group, "q2_22_date", "<br />" . $this->indent . "If you selected [01 Date], please specify the date:", $this->_GUIDelimiter, false);
         unset($group);
         $this->form->addElement("select", "q2_22_age", $this->indent . "If you selected [02 Age], please specify (years):", $this->ageOptions);
@@ -653,14 +653,14 @@ class NDB_BVL_Instrument_EARLI_interview_PART_1 extends NDB_BVL_Instrument_EARLI
         //q2-24
         $this->form->addElement("select", "q2_24", "2-24) When were you first told by a doctor that you had [CONDITION]?", $this->dateAge); 
 
-        $group[] =&$this->form->createElement("static", "month_names_header");
-        $group[] =&$this->form->createElement("static", "year_header");
+        $group[] = $this->form->createElement("static", "month_names_header", null, null);
+        $group[] = $this->form->createElement("static", "year_header", null, null);
         $this->form->addElement('static', null, "<br/>");
         $this->form->addGroup($group, "interview_start_time_headers", "", $this->_GUIDelimiter, false);
         unset($group);
 
-        $group[] = &$this->form->createElement('select', "q2_24_month", null, $this->months);
-        $group[] = &$this->form->createElement('select', "q2_24_year", null, $this->years1950);
+        $group[] = $this->form->createElement('select', "q2_24_month", null, $this->months);
+        $group[] = $this->form->createElement('select', "q2_24_year", null, $this->years1950);
         $this->form->addGroup($group, "q2_24_date", "<br />" . $this->indent . "If you selected [01 Date], please specify the date:", $this->_GUIDelimiter, false);
         unset($group);
         $this->form->addElement("select", "q2_24_age", $this->indent .  "If you selected [02 Age], please specify (years):", $this->ageOptions);
@@ -681,14 +681,14 @@ class NDB_BVL_Instrument_EARLI_interview_PART_1 extends NDB_BVL_Instrument_EARLI
         //q2-26
         $this->form->addElement("select", "q2_26", "2-26) When were you first told by a doctor that you had [CONDITION]?", $this->dateAge); 
 
-        $group[] =&$this->form->createElement("static", "month_names_header");
-        $group[] =&$this->form->createElement("static", "year_header");
+        $group[] = $this->form->createElement("static", "month_names_header", null, null);
+        $group[] = $this->form->createElement("static", "year_header", null, null);
         $this->form->addElement('static', null, "<br/>");
         $this->form->addGroup($group, "interview_start_time_headers", "", $this->_GUIDelimiter, false);
         unset($group);
 
-        $group[] = &$this->form->createElement('select', "q2_26_month", null, $this->months);
-        $group[] = &$this->form->createElement('select', "q2_26_year", null, $this->years1950);
+        $group[] = $this->form->createElement('select', "q2_26_month", null, $this->months);
+        $group[] = $this->form->createElement('select', "q2_26_year", null, $this->years1950);
         $this->form->addGroup($group, "q2_26_date", "<br />" . $this->indent . "If you selected [01 Specify Date], please specify the date:", $this->_GUIDelimiter, false);
         unset($group);
         $this->form->addElement("select", "q2_26_age", $this->indent . "If you selected [02 Age], please specify (years):", $this->ageOptions);
@@ -709,14 +709,14 @@ class NDB_BVL_Instrument_EARLI_interview_PART_1 extends NDB_BVL_Instrument_EARLI
         //q2-28
         $this->form->addElement("select", "q2_28", "2-28) When were you first told by a doctor that you had PCOS?", $this->dateAge); 
 
-        $group[] =&$this->form->createElement("static", "month_names_header");
-        $group[] =&$this->form->createElement("static", "year_header");
+        $group[] = $this->form->createElement("static", "month_names_header", null, null);
+        $group[] = $this->form->createElement("static", "year_header", null, null);
         $this->form->addElement('static', null, "<br/>");
         $this->form->addGroup($group, "interview_start_time_headers", "", $this->_GUIDelimiter, false);
         unset($group);
 
-        $group[] = &$this->form->createElement('select', "q2_28_month", null, $this->months);
-        $group[] = &$this->form->createElement('select', "q2_28_year", null, $this->years1950);   
+        $group[] = $this->form->createElement('select', "q2_28_month", null, $this->months);
+        $group[] = $this->form->createElement('select', "q2_28_year", null, $this->years1950);   
         $this->form->addGroup($group, "q2_28_date", "<br />". $this->indent . "If you selected [01 Date], please specify the date:", $this->_GUIDelimiter, false);
         unset($group);
         $this->form->addElement("select", "q2_28_age", $this->indent . "If you selected [02 Age], please specify (years):", $this->ageOptions);
@@ -2037,16 +2037,16 @@ class NDB_BVL_Instrument_EARLI_interview_PART_1 extends NDB_BVL_Instrument_EARLI
 
         //q4-33
         $this->form->addElement ( 'static', null, "4-33. How often during [SPECIFY MONTH] did you have nausea?" );
-        $group[] =&$this->form->createElement("static", "month_header");
-        $group[] =&$this->form->createElement("static", "freq_header");
+        $group[] = $this->form->createElement("static", "month_header", null, null);
+        $group[] = $this->form->createElement("static", "freq_header", null, null);
         $this->form->addGroup($group, "q4_33_headers", "Would you say it was...", $this->_GUIDelimiter, false);
         unset($group);
 
         unset($negThreeToTen[10]); //only want to go up to 9
         $aToF = array("a", "b", "c", "d", "e", "f");
         foreach($aToF as $label) {
-            $group[] = &$this->form->createElement( "select", "q4_33_m_{$label}", null, array_merge((array (NULL => "")) , $this->negThreeToTen));
-            $group[] = &$this->form->createElement ( "select", "q4_33_f_{$label}", null, array (NULL => "", "01" => "01 Less than once a week", "02" => "02 Once a week", "03" => "03  A few times a week", "04" => "04 Every day", "88 Refused", "99" => "99 Do not know", "not_answered"=>"Not Answered" ) );
+            $group[] = $this->form->createElement( "select", "q4_33_m_{$label}", null, array_merge((array (NULL => "")) , $this->negThreeToTen));
+            $group[] = $this->form->createElement ( "select", "q4_33_f_{$label}", null, array (NULL => "", "01" => "01 Less than once a week", "02" => "02 Once a week", "03" => "03  A few times a week", "04" => "04 Every day", "88 Refused", "99" => "99 Do not know", "not_answered"=>"Not Answered" ) );
             $this->form->addGroup($group, "q4_33_{$label}_group", "{$label})", $this->_GUIDelimiter, false);
             unset($group);
             //Don't require all questions, but allow them to be filled in, if desired.
@@ -2076,16 +2076,16 @@ class NDB_BVL_Instrument_EARLI_interview_PART_1 extends NDB_BVL_Instrument_EARLI
 
         //q4-36
         $this->form->addElement ( 'static', null, "4-36. How often during [SPECIFY MONTH] did you vomit?" );
-        $group[] =&$this->form->createElement("static", "month_header");
-        $group[] =&$this->form->createElement("static", "freq_header");
+        $group[] = $this->form->createElement("static", "month_header", null, null);
+        $group[] = $this->form->createElement("static", "freq_header", null, null);
         $this->form->addGroup($group, "q4_36_headers", "Would you say it was...", $this->_GUIDelimiter, false);
         unset($group);
 
         unset($negThreeToTen[10]); //only want to go up to 9
         $aToF = array("a", "b", "c", "d", "e", "f");
         foreach($aToF as $label) {
-            $group[] = &$this->form->createElement( "select", "q4_36_m_{$label}", null, $this->negThreeToTen);
-            $group[] = &$this->form->createElement ( "select", "q4_36_f_{$label}", null, array (NULL => "", "01" => "01 Less than once a week", "02" => "02 Once a week", "03" => "03  A few times a week", "04" => "04 Every day", "88 Refused", "99" => "99 Do not know", "not_answered"=>"Not Answered" ) );
+            $group[] = $this->form->createElement( "select", "q4_36_m_{$label}", null, $this->negThreeToTen);
+            $group[] = $this->form->createElement ( "select", "q4_36_f_{$label}", null, array (NULL => "", "01" => "01 Less than once a week", "02" => "02 Once a week", "03" => "03  A few times a week", "04" => "04 Every day", "88 Refused", "99" => "99 Do not know", "not_answered"=>"Not Answered" ) );
             $this->form->addGroup($group, "q4_36_{$label}_group", "{$label})", $this->_GUIDelimiter, false);
             unset($group);
             //Don't require all questions, but allow them to be filled in, if desired.
@@ -2239,16 +2239,16 @@ class NDB_BVL_Instrument_EARLI_interview_PART_1 extends NDB_BVL_Instrument_EARLI
 
         //q4-53
         $this->form->addElement ( 'static', null, "4-53. On average, how often would you say you douched during [SPECIFY MONTH]?" );
-        $group[] =&$this->form->createElement("static", "month_header");
-        $group[] =&$this->form->createElement("static", "freq_header");
+        $group[] = $this->form->createElement("static", "month_header", null, null);
+        $group[] = $this->form->createElement("static", "freq_header", null, null);
         $this->form->addGroup($group, "q4_53_headers", "Would you say it was...", $this->_GUIDelimiter, false);
         unset($group);
 
         unset($negThreeToTen[10]); //only want to go up to 9
         $aToF = array("a", "b", "c", "d", "e", "f");
         foreach($aToF as $label) {
-            $group[] = &$this->form->createElement( "select", "q4_53_m_{$label}", null, $this->negThreeToTen);
-            $group[] = &$this->form->createElement ( "select", "q4_53_f_{$label}", null, array (NULL => "", "01" => "01 Less than once a week", "02" => "02 Once a week", "03" => "03 A few times a week", "04" => "04 Every day", "88 Refused", "99" => "99 Do not know", "not_answered"=>"Not Answered" ) );
+            $group[] = $this->form->createElement( "select", "q4_53_m_{$label}", null, $this->negThreeToTen);
+            $group[] = $this->form->createElement ( "select", "q4_53_f_{$label}", null, array (NULL => "", "01" => "01 Less than once a week", "02" => "02 Once a week", "03" => "03 A few times a week", "04" => "04 Every day", "88 Refused", "99" => "99 Do not know", "not_answered"=>"Not Answered" ) );
             $this->form->addGroup($group, "q4_53_{$label}_group", "{$label})", $this->_GUIDelimiter, false);
             unset($group);
             //Don't require all questions, but allow them to be filled in, if desired.
