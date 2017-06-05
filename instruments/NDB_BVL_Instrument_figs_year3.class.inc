@@ -240,9 +240,14 @@ class NDB_BVL_Instrument_figs_year3 extends NDB_BVL_Instrument
         $this->form->updateAttributes(array('action'=>$formAttribsArray));
 
         if(!$this->form->isFrozen()) {
-            $buttons[] = $this->form->createElement('submit', 'fire_away', 'Save Data', 'class=button');
+            $buttons[] = $this->form->createElement(
+                'submit',
+                'fire_away',
+                'Save Data',
+                array('class' => 'button')
+            );
             //$buttons[] = $this->form->createElement('reset', null, 'Reset');
-            $this->form->addGroup($buttons, null, null, "&nbsp;");
+            $this->addGroup($buttons, null, null, "&nbsp;");
         }
         
         // get saved data to pre-populate form
@@ -1662,7 +1667,6 @@ work or with social relationships?", $questionOptions);
         $this->form->addRule("ADHD_Q1i","Required",'required', null);
         $this->form->addRule("ADHD_Q1j","Required",'required', null);
         $this->form->addRule("ADHD_Q1k1","Required",'required', null);
-        $this->form->addRule("ADHD_Q1k2","Required",'required', null);
         $this->form->addRule("ADHD_Q1l1","Required",'required', null);
         $this->form->addRule("ADHD_Q1l2","Required",'required', null);
         $this->form->addRule("ADHD_Q1l3","Required",'required', null);
@@ -1686,8 +1690,6 @@ work or with social relationships?", $questionOptions);
         $this->form->addRule("ADHD_Q3a_Treatment5", "Required", 'required', null);
         $this->form->addRule(array('ADHD_Q3b_OnsetAge', 'ADHD_Q3bNA'), 'Age of onset is required if available', 'requiredIf', array('operator'=>'!=', 'value'=>'1'));
         $this->setRequired('ADHD_Q3b_OnsetAge');
-        $this->form->addRule("ADHD_Q3c_Episodes","Required",'required', null);
-        $this->form->addRule("ADHD_Q3d_Duration","Required",'required', null);
         $this->form->addRule("ADHD_Q3e_Current","Required",'required', null);
         $this->form->addRule("ADHD_Q3f_Impairment","Required",'required', null);
         $this->form->addRule("ADHD_Q3g_Reliability","Required",'required', null);
