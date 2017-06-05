@@ -541,8 +541,8 @@ INSERT INTO instrument_subtests VALUES('', 'aosi', 'aosi_page2', 'General Observ
             } else {
                 $ov = $value;
             }
-            $this->scores['total_score_1_18_override'] = (int)$this->scores['total_score_1_18_override'] + (int)$ov;
-            $this->scores["total_score_1_18"] = (int)$this->scores["total_score_1_18"] + (int)$value;
+            $this->scores['total_score_1_18_override'] = (float)$this->scores['total_score_1_18_override'] + (float)$ov;
+            $this->scores["total_score_1_18"] = (float)$this->scores["total_score_1_18"] + (float)$value;
             //increment markers count if non-zero
             if($ov != 0) $this->scores["number_of_markers_override"]++;
             if($value != 0) $this->scores["number_of_markers"]++;
