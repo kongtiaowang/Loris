@@ -1,3 +1,5 @@
+"use strict";
+
 /**
  *  The following file contains the base component for the data query react app.
  *  It also contains the component for the saved queries dropdown.
@@ -15,16 +17,16 @@
 SavedQueriesList = React.createClass({
     displayName: "SavedQueriesList",
 
-    getDefaultProps: function () {
+    getDefaultProps: function getDefaultProps() {
         queriesLoaded: false;
     },
-    componentDidMount: function () {},
-    loadQuery: function (queryName) {
+    componentDidMount: function componentDidMount() {},
+    loadQuery: function loadQuery(queryName) {
         // Loads in the selected query
 
         this.props.onSelectQuery(this.props.queryDetails[queryName].Fields, this.props.queryDetails[queryName].Conditions);
     },
-    render: function () {
+    render: function render() {
         // Renders the html for the component
 
         var userSaved = [];
@@ -121,7 +123,7 @@ SavedQueriesList = React.createClass({
 DataQueryApp = React.createClass({
     displayName: "DataQueryApp",
 
-    componentDidMount: function () {
+    componentDidMount: function componentDidMount() {
         // Before the dataquery is loaded into the window, this function is called to gather
         // any data that was not passed in the initial load.
 
@@ -172,7 +174,7 @@ DataQueryApp = React.createClass({
             });
         });
     },
-    saveFilterRule: function (rule) {
+    saveFilterRule: function saveFilterRule(rule) {
         // Used to build a filter rule for saving query
 
         var savedRule = {
@@ -184,7 +186,7 @@ DataQueryApp = React.createClass({
         };
         return savedRule;
     },
-    saveFilterGroup: function (group) {
+    saveFilterGroup: function saveFilterGroup(group) {
         // Used to build a filter group for saving query
 
         var savedFilter = {
@@ -201,7 +203,7 @@ DataQueryApp = React.createClass({
         }
         return savedFilter;
     },
-    saveCurrentQuery: function (name, shared) {
+    saveCurrentQuery: function saveCurrentQuery(name, shared) {
         // Used to save the current query
 
         var that = this,
@@ -234,7 +236,7 @@ DataQueryApp = React.createClass({
             });
         });
     },
-    getInitialState: function () {
+    getInitialState: function getInitialState() {
         // Initialize the base state of the dataquery app
 
         return {
@@ -263,7 +265,7 @@ DataQueryApp = React.createClass({
             loading: false
         };
     },
-    loadFilterRule: function (rule) {
+    loadFilterRule: function loadFilterRule(rule) {
         // Used to load in a filter rule
 
         var script;
@@ -275,7 +277,7 @@ DataQueryApp = React.createClass({
         // This call is made synchronously
         $.ajax({
             url: loris.BaseURL + "/AjaxHelper.php?Module=dataquery&script=datadictionary.php",
-            success: function (data) {
+            success: function success(data) {
                 rule.fields = data;
             },
             async: false,
@@ -295,9 +297,11 @@ DataQueryApp = React.createClass({
         // TODO:    Build the sessions in the new format
         switch (rule.operator) {
             case "equal":
+            case "isNull":
                 script = "queryEqual.php";
                 break;
             case "notEqual":
+            case "isNotNull":
                 script = "queryNotEqual.php";
                 break;
             case "lessThanEqual":
@@ -317,7 +321,7 @@ DataQueryApp = React.createClass({
         }
         $.ajax({
             url: loris.BaseURL + "/AjaxHelper.php?Module=dataquery&script=" + script,
-            success: function (data) {
+            success: function success(data) {
                 var i,
                     allSessions = {},
                     allCandiates = {};
@@ -358,7 +362,7 @@ DataQueryApp = React.createClass({
 
         return rule;
     },
-    loadFilterGroup: function (group) {
+    loadFilterGroup: function loadFilterGroup(group) {
         // Used to load in a filter group
 
         // Recursively load the children on the group
@@ -375,7 +379,7 @@ DataQueryApp = React.createClass({
         group.session = getSessions(group);
         return group;
     },
-    loadSavedQuery: function (fields, criteria) {
+    loadSavedQuery: function loadSavedQuery(fields, criteria) {
         // Used to load a saved query
 
         var filterState = {},
@@ -474,7 +478,7 @@ DataQueryApp = React.createClass({
             };
         });
     },
-    fieldVisitSelect: function (action, visit, field) {
+    fieldVisitSelect: function fieldVisitSelect(action, visit, field) {
         // Used to select visits for a given field
 
         this.setState(function (state) {
@@ -503,7 +507,7 @@ DataQueryApp = React.createClass({
             return temp;
         });
     },
-    fieldChange: function (fieldName, category, downloadable) {
+    fieldChange: function fieldChange(fieldName, category, downloadable) {
         // Used to add and remove fields from the current query being built
 
         var that = this;
@@ -580,7 +584,7 @@ DataQueryApp = React.createClass({
             };
         });
     },
-    getSessions: function () {
+    getSessions: function getSessions() {
         // Get the sessions to be selected
 
         if (this.state.filter.children.length > 0) {
@@ -591,14 +595,14 @@ DataQueryApp = React.createClass({
             return this.props.AllSessions;
         }
     },
-    runQuery: function (fields, sessions) {
+    runQuery: function runQuery(fields, sessions) {
         // Run the current query
 
         var DocTypes = [],
             that = this,
             semaphore = 0,
             sectionedSessions,
-            ajaxComplete = function () {
+            ajaxComplete = function ajaxComplete() {
             // Wait until all ajax calls have completed before computing the rowdata
             if (semaphore == 0) {
                 var rowdata = that.getRowData(that.state.grouplevel);
@@ -655,7 +659,7 @@ DataQueryApp = React.createClass({
                         Sessions: sectionedSessions
                     },
                     dataType: 'text',
-                    success: function (data) {
+                    success: function success(data) {
                         if (data) {
                             var i,
                                 row,
@@ -694,7 +698,7 @@ DataQueryApp = React.createClass({
             }
         }
     },
-    getRowData: function (displayID) {
+    getRowData: function getRowData(displayID) {
         // Build the queried data to be displayed in the data table
 
         var sessiondata = this.state.sessiondata;
@@ -812,14 +816,14 @@ DataQueryApp = React.createClass({
         }
         return { 'rowdata': rowdata, 'Identifiers': Identifiers, 'RowHeaders': RowHeaders, 'fileData': fileData };
     },
-    dismissAlert: function () {
+    dismissAlert: function dismissAlert() {
         // Used to dismiss alerts
         this.setState({
             alertLoaded: false,
             alertSaved: false
         });
     },
-    resetQuery: function () {
+    resetQuery: function resetQuery() {
         // Used to reset the current query
         this.setState({
             fields: [],
@@ -827,7 +831,7 @@ DataQueryApp = React.createClass({
             selectedFields: {}
         });
     },
-    changeDataDisplay: function (displayID) {
+    changeDataDisplay: function changeDataDisplay(displayID) {
         // Change the display format of the data table
         var rowdata = this.getRowData(displayID);
         this.setState({
@@ -835,7 +839,7 @@ DataQueryApp = React.createClass({
             rowData: rowdata
         });
     },
-    updateFilter: function (filter) {
+    updateFilter: function updateFilter(filter) {
         // Update the filter
         var that = this;
         this.setState(function (state) {
@@ -845,7 +849,7 @@ DataQueryApp = React.createClass({
             return { 'filter': filter };
         });
     },
-    render: function () {
+    render: function render() {
         // Renders the html for the component
 
         var tabs = [],
