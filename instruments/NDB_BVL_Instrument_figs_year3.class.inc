@@ -623,13 +623,13 @@ class NDB_BVL_Instrument_figs_year3 extends NDB_BVL_Instrument
         $this->form->addElement('static', "Informant", "i. Informant Relationship");
         $this->form->addElement('static', "RelativeCode", "ii. Person being described relationship code");
         $this->form->addElement('date', "Face_BirthDate", "iii. Birth date of person described, if known:", $dateOptions); // Figure this out (date issue)
-        $this->form->addElement('advcheckbox', 'Face_BirthDateEstimated', 'Birth date above is estimated');
+        $this->addCheckbox('Face_BirthDateEstimated', 'Birth date above is estimated', array('value' => '1'));
         
         // Face sheet questions
         $this->form->addElement("select","Face_Living","Is person being described living?", $questionOptions);
         $this->form->addElement('text', "Face_LastSeenAge", "Age when last seen or known about, or died: (in years - numbers only!)");
         $this->form->addElement('text', "Face_LastSeenYear", "Year when last seen or known about, or died: (numbers only!)");
-        $this->form->addElement('advcheckbox', "Face_LastSeenNA", "NA");
+        $this->addCheckbox('Face_LastSeenNA', 'NA', array('value' => '1'));
         $this->form->addElement('text', "Face_CauseOfDeath", "If deceased, cause of death:");
         $this->form->addElement('select', "Face_Suicide", "Suicide?", $questionOptions);
         $this->form->addElement('select', "Face_OtherProblems", "1. Has he/she had any other psychiatric or personality problems other than/or like those we mentioned earlier? ", $questionOptions);
@@ -700,11 +700,11 @@ class NDB_BVL_Instrument_figs_year3 extends NDB_BVL_Instrument
             $this->form->addElement("textarea","Other{$DisorderNum}_Q1a_Description", "Please describe treatments:");
 
             $this->form->addElement("text","Other{$DisorderNum}_Q1b_OnsetAge","1.b) Age of onset (in years - numbers only!)");
-            $this->form->addElement("advcheckbox","Other{$DisorderNum}_Q1bNA","NA");
+            $this->addCheckbox('Other{$DisorderNum}_Q1bNA', 'NA', array('value' => '1'));
             $this->form->addElement("text","Other{$DisorderNum}_Q1c_Episodes","1.c) Number of episodes (numbers only!)");
-            $this->form->addElement("advcheckbox","Other{$DisorderNum}_Q1cNA","NA");
+            $this->addCheckbox("Other{$DisorderNum}_Q1cNA", "NA", array('value' => '1'));
             $this->form->addElement("text","Other{$DisorderNum}_Q1d_Duration","1.d) Duration of longest episode in weeks (numbers only!)");
-            $this->form->addElement("advcheckbox","Other{$DisorderNum}_Q1dNA","NA");
+            $this->addCheckbox("Other{$DisorderNum}_Q1dNA", "NA", array('value' => '1'));
             $this->form->addElement("select","Other{$DisorderNum}_Q1e_Impairment","1.e) Rate and code impairment or incapacitation:", $question1f_Options);
             
             // Rules for disorder 1.. other disorders aren't required.
@@ -863,14 +863,14 @@ class NDB_BVL_Instrument_figs_year3 extends NDB_BVL_Instrument
         $this->form->addElement("textarea", "Depression_Q2Description", "Please describe treatments:");
         
         $this->form->addElement("text", "Depression_Q3_Age", "3. Age of onset (years - numbers only!)");
-        $this->form->addElement("advcheckbox", "Depression_Q3NA", "NA");
+        $this->addCheckbox('Depression_Q3NA', 'NA', array('value' => '1'));
         $this->form->addElement("text", "Depression_Q4_Episodes", "4. Number of episodes (numbers only!)");
-        $this->form->addElement("advcheckbox", "Depression_Q4NA", "NA");
+        $this->addCheckbox('Depression_Q4NA', 'NA', array('value' => '1'));
         $this->form->addElement("text", "Depression_Q5_Duration", "5. Duration of longest episode in weeks (numbers only!)");
-        $this->form->addElement("advcheckbox", "Depression_Q5NA", "NA");
+        $this->addCheckbox('Depression_Q5NA', 'NA', array('value' => '1'));
         $this->form->addElement("select", "Depression_Q6_Current", "6. Currently depressed?", $question6_Options);
         $this->form->addElement("text", "Depression_Q7_Recent", "7. Most recent episode (Number of months prior to current date.)");
-        $this->form->addElement("advcheckbox", "Depression_Q7NA", "NA");
+        $this->addCheckbox('Depression_Q7NA', 'NA', array('value' => '1'));
         $this->form->addElement("select", "Depression_Q8_Impairment", "8.Rate and code impairment or incapacitation:", $question8_Options);
         $this->form->addElement("select", "Depression_Q9_Reliability", "9. Interviewer judgment on reliability of this information:", $question9_Options);
         
@@ -952,13 +952,13 @@ class NDB_BVL_Instrument_figs_year3 extends NDB_BVL_Instrument
         $this->form->addElement("textarea", "Mania_Q2Description", "Please describe:");
         
         $this->form->addElement("text", "Mania_Q3_Age", "3. Age of onset (in years - numbers only!)");
-        $this->form->addElement("advcheckbox", "Mania_Q3NA", "NA");
+        $this->addCheckbox('Mania_Q3NA', 'NA', array('value' => '1'));
         $this->form->addElement("text", "Mania_Q4_Episodes", "4. Number of episodes (numbers only!)");
-        $this->form->addElement("advcheckbox", "Mania_Q4NA", "NA");
+        $this->addCheckbox('Mania_Q4NA', 'NA', array('value' => '1'));
         $this->form->addElement("text", "Mania_Q5_Duration", "5. Duration of longest episode in weeks (numbers only!)");
-        $this->form->addElement("advcheckbox", "Mania_Q5NA", "NA");
+        $this->addCheckbox('Mania_Q5NA', 'NA', array('value' => '1'));
         $this->form->addElement("text", "Mania_Q6_Recent", "6. Most recent episode (Number of months prior to current date.)");
-        $this->form->addElement("advcheckbox", "Mania_Q6NA", "NA");
+        $this->addCheckbox('Mania_Q6NA', 'NA', array('value' => '1'));
         $this->form->addElement("select", "Mania_Q7_Impairment", "7. Rate and code impairment or incapacitation:", $question7_Options);
         $this->form->addElement("select", "Mania_Q8_Reliability", "8. Reliability", $question8_Options); 
         
@@ -1028,7 +1028,7 @@ class NDB_BVL_Instrument_figs_year3 extends NDB_BVL_Instrument
  ", $questionOptions);
         $this->form->addElement("select", "Psychosis_Q1j", "1.j)	...appear to have no emotions, or inappropriate emotions?", $questionOptions);
         $this->form->addElement("text", "Psychosis_Q2_Duration", "2. How long did the longest of these experiences last (weeks)?");
-        $this->form->addElement("advcheckbox", "Psychosis_Q2NA", "NA");
+        $this->addCheckbox('Psychosis_Q2NA', 'NA', array('value' => '1'));
         $this->form->addElement("select", "Psychosis_Q3_MoodDisturbance", "3. When any (SX above) happened, did he/she also have the mood disturbance we discussed before, at the same time?", $questionOptions);
         $this->form->addElement("select", "Psychosis_Q4_NoDepression", "4 (2 on paper). Code yes if illness described above, or medication, was ever present for as long as one week without depression or mania", $questionOptions);
        
@@ -1042,12 +1042,12 @@ class NDB_BVL_Instrument_figs_year3 extends NDB_BVL_Instrument
         $this->form->addElement("textarea", "Psychosis_Q5Description", "Please describe treatments:");
 
         $this->form->addElement("text", "Psychosis_Q6_Age", "6. Age of onset (years - numbers only!)?");
-        $this->form->addElement("advcheckbox", "Psychosis_Q6NA", "NA");
+        $this->addCheckbox('Psychosis_Q6NA', 'NA', array('value' => '1'));
         $this->form->addElement("text", "Psychosis_Q7_Episodes", "7. Number of episodes (Code 111 if chronic symptoms and/or treatment since onset)");
-        $this->form->addElement("advcheckbox", "Psychosis_Q7NA", "NA");
+        $this->addCheckbox('Psychosis_Q7NA', 'NA', array('value' => '1'));
         $this->form->addElement("text", "Psychosis_Q8Weeks_Duration", "8. Total illness duration (all episodes, includes active and prodromal and/or residual symptoms and/or treatment) (Weeks - numbers only!)");
         $this->form->addElement("text", "Psychosis_Q8Years_Duration", "8. Total illness duration (all episodes, includes active and prodromal and/or residual symptoms and/or treatment) (Years - numbers only!)");
-        $this->form->addElement("advcheckbox", "Psychosis_Q8NA", "NA");
+        $this->addCheckbox('Psychosis_Q8NA', 'NA', array('value' => '1'));
         $this->form->addElement("select", "Psychosis_Q9_Current", "9, Are these problems still current?", $question9_Options);
         $this->form->addElement("select", "Psychosis_Q10_Impairment", "10. Rate and code impairment or incapacitation:", $question10_Options);
         $this->form->addElement("select", "Psychosis_Q11_Substance", "11. Was this problem/or these symptoms related to another medical illness or related to substance use?", $questionOptions);
@@ -1129,9 +1129,9 @@ class NDB_BVL_Instrument_figs_year3 extends NDB_BVL_Instrument
         $this->form->addElement("textarea", "Alcohol_Q2Description", "Please describe treatments:");
         $this->form->addElement("select", "Alcohol_Q3_Current", "3. Does he/she currently have a problem with alcohol?", $questionOptions);
         $this->form->addElement("text", "Alcohol_Q4_OnsetAge", "4. Record age he/she began to have alcohol-related problems (years -- numbers only!).");
-        $this->form->addElement("advcheckbox", "Alcohol_Q4NA", "NA");
+        $this->addCheckbox('Alcohol_Q4NA', 'NA', array('value' => '1'));
         $this->form->addElement("text", "Alcohol_Q5_RecoverAge", "5. Record age he/she stopped drinking heavily (years -- numbers only!).");
-        $this->form->addElement("advcheckbox", "Alcohol_Q5NA", "NA");
+        $this->addCheckbox('Alcohol_Q5NA', 'NA', array('value' => '1'));
         $this->form->addElement("select", "Alcohol_Q5a_Reliability", "5.a) Interviewer judgment on reliability of this information:", $question5_Options);
         
         // Rules for questions
@@ -1177,7 +1177,7 @@ class NDB_BVL_Instrument_figs_year3 extends NDB_BVL_Instrument
         $this->form->addElement("header", null, "Other Drugs Abuse");
         $this->form->addElement("static", null, "Note: List all drugs; Circle most used substance and/or substance that caused the most problems.");
         $this->form->addElement("text", "Alcohol_Q6_WhichDrugs", "6. Which drugs did he/she have trouble with? (list all drugs used)");
-        $this->form->addElement("advcheckbox", "Alcohol_Q6_NA", "NA");
+        $this->addCheckbox('Alcohol_Q6_NA', 'NA', array('value' => '1'));
         $this->form->addElement("static", null, "Specify which drugs casued the most problems. (up to 3 drugs)");
         
         $this->form->addElement("text", "Alcohol_Q6a_MostProblemDrug1", "Drug 1"); // OK as 3 separated fields?
@@ -1202,9 +1202,9 @@ class NDB_BVL_Instrument_figs_year3 extends NDB_BVL_Instrument
         $this->form->addElement("textarea", "Alcohol_Q8Description", "Please describe:");
         $this->form->addElement("select", "Alcohol_Q9_Current", "9. Does he/she currently have a problem with _________________________________?", $questionOptions);
         $this->form->addElement("text", "Alcohol_Q10_OnsetAge", "10. Record age he/she began to have drug related problems (age in years -- numbers only!).");
-        $this->form->addElement("advcheckbox", "Alcohol_Q10NA", "NA");
+        $this->addCheckbox('Alcohol_Q10NA', 'NA', array('value' => '1'));
         $this->form->addElement("text", "Alcohol_Q11_RecoverAge", "11. Record age he/she stopped using drugs heavily. (age in years -- numbers only!)");
-        $this->form->addElement("advcheckbox", "Alcohol_Q11NA", "NA");
+        $this->addCheckbox('Alcohol_Q11NA', 'NA', array('value' => '1'));
         $this->form->addElement("select", "Alcohol_Q12_Reliability", "12. Interviewer judgment on reliability of this information:", $question12_Options);
         
         // Rules for questions
@@ -1252,9 +1252,9 @@ class NDB_BVL_Instrument_figs_year3 extends NDB_BVL_Instrument
         $this->form->addElement("static", null, "15. OMITTED");
         $this->form->addElement("select", "Alcohol_Q16_Current", "16. Does he/she currently smoke/use nicotine?", $questionOptions);
         $this->form->addElement("text", "Alcohol_Q17_OnsetAge", "17. Record age he/she began smoking or using nicotine (years -- numbers only!).");
-        $this->form->addElement("advcheckbox", "Alcohol_Q17NA", "NA");
+        $this->addCheckbox('Alcohol_Q17NA', 'NA', array('value' => '1'));
         $this->form->addElement("text", "Alcohol_Q18_RecoverAge", "18. Record age he/she stopped smoking or using nicotine heavily (if applicable). (years -- numbers only!)");
-        $this->form->addElement("advcheckbox", "Alcohol_Q18NA", "NA");
+        $this->addCheckbox('Alcohol_Q18NA', 'NA', array('value' => '1'));
         $this->form->addElement("select", "Alcohol_Q19_Reliability", "19. Interviewer judgment on reliability of this information:", $question19_Options);
         
         // Rules for questions
@@ -1339,7 +1339,7 @@ class NDB_BVL_Instrument_figs_year3 extends NDB_BVL_Instrument
         $this->form->addElement("textarea", "Schizoid_Q4aDescription", "Please describe:");
         
         $this->form->addElement("text", "Schizoid_Q4b_OnsetAge", "4.b) Age of onset (years - numbers only!)");
-        $this->form->addElement("advcheckbox", "Schizoid_Q4bNA", "NA");
+        $this->addCheckbox('chizoid_Q4bNA', 'NA', array('value' => '1'));
         $this->form->addElement("select", "Schizoid_Q4c_Impairment", "4.c) Rate and code impairment or incapacitation:", $question4c_Options);
         $this->form->addElement("select", "Schizoid_Q4d_SocialProbs", "4.d) Does he/she have problems because of this behavior or thinking or feeling - either with the family or socially, or at work or school?", $questionOptions);
         $this->form->addElement("select", "Schizoid_Q4e_Unhappiness", "4.e) Does this behavior or thinking or feeling cause the person unhappiness or significant subjective distress?", $questionOptions);
@@ -1469,11 +1469,11 @@ work or with social relationships?", $questionOptions);
         $this->form->addElement("textarea", "Tic_Q3aDescription", "Please describe:");
        
         $this->form->addElement("text", "Tic_Q3b_OnsetAge", "3.b) Age of onset (years - numbers only!)");
-        $this->form->addElement("advcheckbox", "Tic_Q3bNA", "NA");
+        $this->addCheckbox('Tic_Q3bNA', 'NA', array('value' => '1'));
         $this->form->addElement("text", "Tic_Q3c_Episodes", "3.c) Number of episodes (numbers only!)");
-        $this->form->addElement("advcheckbox", "Tic_Q3cNA", "NA");
+        $this->addCheckbox('Tic_Q3cNA', 'NA', array('value' => '1'));
         $this->form->addElement("text", "Tic_Q3d_Duration", "3.d) Duration of longest episode in weeks (numbers only!)");
-        $this->form->addElement("advcheckbox", "Tic_Q3dNA", "NA");
+        $this->addCheckbox('Tic_Q3dNA', 'NA', array('value' => '1'));
         $this->form->addElement("select", "Tic_Q3e_Impairment", " 3.e) Rate and code impairment or incapacitation:", $question3e_Options);
         $this->form->addElement("select", "Tic_Q3f_Reliability", "3.f) Interviewer judgment on reliability of this information:", $question3f_Options);
         
@@ -1536,7 +1536,7 @@ work or with social relationships?", $questionOptions);
         // OCD_Question 3
         $this->form->addElement("select", "OCD_Q3a", "3.a) Did the obsessions (compulsions or both) interfere (cause marked distress or impairment) at school, work, or with social relationships?", $questionOptions);
         $this->form->addElement("text", "OCD_Q3b_Duration", "3.b) How much time did the (obsessions, compulsions, or both) take in a day (hours)?");
-        $this->form->addElement("advcheckbox", "OCD_Q3bNA", "NA"); // Checkbox
+        $this->addCheckbox('OCD_Q3bNA', 'NA', array('value' => '1'));
         
         // OCD_Question 4
         $this->form->addElement("static", null, "4.a) Code and describe professional treatment:");
@@ -1549,11 +1549,11 @@ work or with social relationships?", $questionOptions);
         $this->form->addElement("textarea", "OCD_Q4aDescription", "Please describe:");
         
         $this->form->addElement("text", "OCD_Q4b_OnsetAge", "4.b)	Age of onset (years - numbers only!)");
-        $this->form->addElement("advcheckbox", "OCD_Q4bNA", "NA"); // Checkbox
+        $this->addCheckbox('OCD_Q4bNA', 'NA', array('value' => '1'));
         $this->form->addElement("text", "OCD_Q4c_Episodes", "4.c)	Number of episodes (numbers only!)");
-        $this->form->addElement("advcheckbox", "OCD_Q4cNA", "NA"); // Checkbox
+        $this->addCheckbox('OCD_Q4cNA', 'NA', array('value' => '1'));
         $this->form->addElement("text", "OCD_Q4d_Duration", "4.d)	Duration of longest episode in weeks (numbers only!)");
-        $this->form->addElement("advcheckbox", "OCD_Q4dNA", "NA"); // Checkbox
+        $this->addCheckbox('OCD_Q4dNA', 'NA', array('value' => '1'));
         $this->form->addElement("select", "OCD_Q4e_Impairment", " 4.e) Rate and code impairment or incapacitation:", $question4e_Options);
         $this->form->addElement("select", "OCD_Q4f_Reliability", "4.f) Interviewer judgment on reliability of this information:", $question4f_Options);
         
@@ -1615,7 +1615,7 @@ work or with social relationships?", $questionOptions);
         $this->form->addElement("select", "ADHD_Q1j", "1.j) ...did these problems start before age 7 years?", $questionOptions);
         $this->form->addElement("select", "ADHD_Q1k1", "1.k) ...did these problems start in grade school?", $questionOptions);
         $this->form->addElement("text", "ADHD_Q1k2_Grade", "What grade did they start?");
-        $this->form->addElement("advcheckbox", "ADHD_Q1k2NA", "NA");
+        $this->addCheckbox('ADHD_Q1k2NA', 'NA', array('value' => '1'));
         $this->form->addElement("select", "ADHD_Q1l1", "1.li) ...did these problems cause impairment at school?", $questionOptions);
         $this->form->addElement("select", "ADHD_Q1l2", "1.lii) ...did these problems cause impairment at home?", $questionOptions);
         $this->form->addElement("select", "ADHD_Q1l3", "1.liii) ...did these problems cause impairment with peers?", $questionOptions);
@@ -1648,7 +1648,7 @@ work or with social relationships?", $questionOptions);
         $this->form->addElement("textarea", "ADHD_Q3aDescription", "Please describe:");
      
         $this->form->addElement("text", "ADHD_Q3b_OnsetAge", "3.b) Age of onset (years - numbers only!)");
-        $this->form->addElement("advcheckbox", "ADHD_Q3bNA", "NA");
+        $this->addCheckbox('ADHD_Q3bNA', 'NA', array('value' => '1'));
         $this->form->addElement("static", null, "3.c) Omitted");
         $this->form->addElement("static", null, "3.d) Omitted");
         $this->form->addElement("select", "ADHD_Q3e_Current", "3.e) Currently still a problem?", $questionOptions);
