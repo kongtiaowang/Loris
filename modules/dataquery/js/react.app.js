@@ -14,7 +14,7 @@
  *  The following component is for saved queries dropdown which appears in the
  *  tab bar of the base component.
  */
-SavedQueriesList = React.createClass({
+var SavedQueriesList = React.createClass({
     displayName: "SavedQueriesList",
 
     getDefaultProps: function getDefaultProps() {
@@ -120,7 +120,7 @@ SavedQueriesList = React.createClass({
  *  The following component is the data queries base element. It controls which tab is currently
  *  shown, along with keeping the state of the current query being built and running the query.
  */
-DataQueryApp = React.createClass({
+var DataQueryApp = React.createClass({
     displayName: "DataQueryApp",
 
     componentDidMount: function componentDidMount() {
@@ -1059,4 +1059,4 @@ DataQueryApp = React.createClass({
     }
 });
 
-RDataQueryApp = React.createFactory(DataQueryApp);
+var RDataQueryApp = React.createFactory(DataQueryApp);
