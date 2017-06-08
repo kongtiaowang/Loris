@@ -33,7 +33,6 @@ var ConsentStatus = React.createClass({
         return xhr;
       },
       success: function success(data) {
-
         var formData = {};
         var consents = data.consents;
         for (var consentStatus in consents) {
@@ -113,7 +112,7 @@ var ConsentStatus = React.createClass({
         if (this.state.formData[consent] === "yes") {
           dateRequired[i] = true;
         }
-        if (this.state.formData[withdrawal]) {
+        if (this.state.formData[withdrawal] != "") {
           withdrawalRequired[i] = true;
         } else {
           withdrawalRequired[i] = false;
