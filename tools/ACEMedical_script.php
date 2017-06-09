@@ -58,20 +58,34 @@ foreach($result as $row) {
                         $row['q6_l_tranquilizers_nerve_pills_when_taken'], $row['q6_m_pain_killers_when_taken'], $row['q6_n_sedatives_sleeping_pills_when_taken'],
                         $row['q6_o_anti_inflam_immune_when_taken'],$row['q6_p_treatment_for_HIV_when_taken'], $row['q6_q_thalidomide_when_taken'],
                         $row['q6_r_misoprostol_when_taken'], $row['q6_s_other_when_taken']);
-      if (in_array("2_both", $preg_drugs) || in_array("1_after", $preg_drugs)
+
+      if (!array_filter($preg_drugs)) {
+          $final_result['preg_dxdrug'] = null;
+      } else if (in_array("2_both", $preg_drugs) || in_array("1_after", $preg_drugs)
           || in_array("0_before", $preg_drugs)) {
           $final_result['preg_dxdrug'] = "yes";
       } else {
           $final_result['preg_dxdrug'] = "no";
       }
-      $final_result['birth_weight_lbs'] = $row['q11_birth_weight_lbs'] + round($row['q11_birth_weight_ozs']*0.0625, 3);
+
+      if ($row['q11_birth_weight_lbs'] == '' && $row['q11_birth_weight_ozs'] == '') {
+          $final_result['birth_weight_lbs'] = null;
+      } else {
+          $final_result['birth_weight_lbs'] = $row['q11_birth_weight_lbs'] + round($row['q11_birth_weight_ozs']*0.0625, 3);
+      }
+
       if ($row['premature_birth'] == 'yes') {
           $final_result['full_term'] = 'no';
           $final_result['info_gest'] = $row['weeks_gestation'];
       } else if ($row['premature_birth'] == 'no') {
           $final_result['full_term'] = 'yes';
       }
-     $final_result['ldnb_hosptotalmom'] = $row['q14_child_hospitalised_days'] + round($row['q14_child_hospitalised_hours']/24, 3);
+
+     if ($row['q14_child_hospitalised_days'] == '' && $row['q14_child_hospitalised_hours'] == '') {
+         $final_result['ldnb_hosptotalmom'] = null;
+     } else {
+         $final_result['ldnb_hosptotalmom'] = $row['q14_child_hospitalised_days'] + round($row['q14_child_hospitalised_hours']/24, 3);
+     }
      $final_result['rev_headfebseiz'] = 'no';
      if ($row['q15_c_fever_seizures'] == '1_yes' && $row['q15_seizures_convulsions'] == '1_yes' ) {
          $final_result['rev_headfebseiz'] = 'yes';
