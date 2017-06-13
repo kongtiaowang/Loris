@@ -22,23 +22,33 @@ class Footer extends React.Component {
 
   }
 class Header extends React.Component {
-
+    handle(){
+       this.props.handle();
+    }
       render() {
        return (
         <div>
           <Title title={this.props.title} />
-          This is a Header!
+         <p onClick={this.handle.bind(this)}> This is a Header!</p>
         </div>
        );
       }
 
   }
   class TrainIndex extends React.Component {
-     
+   constructor(props) {
+    super(props);
+    this.state = {name: "Weleocomcomcocmo"};
+
+    // This binding is necessary to make `this` work in the callback
+  } 
+    handleClick() {
+    this.setState({name: "Welcome!"});
+  }
       render() {
        return (
         <div>
-          <Header title="nihao wow!!!"/>
+          <Header title={this.state.name} handle={this.handleClick.bind(this)} />
           <Footer />
         </div>
        );

@@ -70,13 +70,22 @@ var Header = function (_React$Component3) {
   }
 
   _createClass(Header, [{
+    key: "handle",
+    value: function handle() {
+      this.props.handle();
+    }
+  }, {
     key: "render",
     value: function render() {
       return React.createElement(
         "div",
         null,
         React.createElement(Title, { title: this.props.title }),
-        "This is a Header!"
+        React.createElement(
+          "p",
+          { onClick: this.handle.bind(this) },
+          " This is a Header!"
+        )
       );
     }
   }]);
@@ -87,19 +96,29 @@ var Header = function (_React$Component3) {
 var TrainIndex = function (_React$Component4) {
   _inherits(TrainIndex, _React$Component4);
 
-  function TrainIndex() {
+  function TrainIndex(props) {
     _classCallCheck(this, TrainIndex);
 
-    return _possibleConstructorReturn(this, (TrainIndex.__proto__ || Object.getPrototypeOf(TrainIndex)).apply(this, arguments));
+    var _this4 = _possibleConstructorReturn(this, (TrainIndex.__proto__ || Object.getPrototypeOf(TrainIndex)).call(this, props));
+
+    _this4.state = { name: "Weleocomcomcocmo" };
+
+    // This binding is necessary to make `this` work in the callback
+    return _this4;
   }
 
   _createClass(TrainIndex, [{
+    key: "handleClick",
+    value: function handleClick() {
+      this.setState({ name: "Welcome!" });
+    }
+  }, {
     key: "render",
     value: function render() {
       return React.createElement(
         "div",
         null,
-        React.createElement(Header, { title: "nihao wow!!!" }),
+        React.createElement(Header, { title: this.state.name, handle: this.handleClick.bind(this) }),
         React.createElement(Footer, null)
       );
     }
