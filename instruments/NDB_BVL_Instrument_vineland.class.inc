@@ -122,16 +122,16 @@ class NDB_BVL_Instrument_vineland extends NDB_BVL_Instrument
          
          
          //scoring column headers
-           $group[] = $this->form->createElement('static', "RAW");
-           $group[] = $this->form->createElement('static', "VSCALE");
-           $group[] = $this->form->createElement('static', "STD_SCORE");
-           $group[] = $this->form->createElement('static', $percentile . "_CI");
-           $group[] = $this->form->createElement('static', "%ILE_RANK");
-           $group[] = $this->form->createElement('static', "ADAPT_LEVEL");
-           $group[] = $this->form->createElement('static', "AGE_EQUIV");
-           $group[] = $this->form->createElement('static', "STANINE");
-           $group[] = $this->form->createElement('static', "SW");
-           $group[] = $this->form->createElement('static', "STATUS");
+           $group[] = $this->form->createElement('static', "RAW", null, null);
+           $group[] = $this->form->createElement('static', "VSCALE", null, null);
+           $group[] = $this->form->createElement('static', "STD_SCORE", null, null);
+           $group[] = $this->form->createElement('static', $percentile . "_CI", null, null);
+           $group[] = $this->form->createElement('static', "%ILE_RANK", null, null);
+           $group[] = $this->form->createElement('static', "ADAPT_LEVEL", null, null);
+           $group[] = $this->form->createElement('static', "AGE_EQUIV", null, null);
+           $group[] = $this->form->createElement('static', "STANINE", null, null);
+           $group[] = $this->form->createElement('static', "SW", null, null);
+           $group[] = $this->form->createElement('static', "STATUS", null, null);
            $this->form->addGroup($group, 'score_header_group', "<strong>Domain/Subdomain</strong>", $this->_GUIDelimiter, FALSE);
            unset($group);
 
@@ -156,7 +156,7 @@ class NDB_BVL_Instrument_vineland extends NDB_BVL_Instrument
                   
                   // Domain scores and ABC don't have AGE_EQUIV, but add a blank column to keep the table aligned
                   if(($field == "COM" || $field == "DLS" || $field == "SOC" || $field == "MS" || $field == "ABC") && $scoreField == "AGE_EQUIV"){
-                      $group[] = $this->form->createElement('static', null, "&nbsp;");
+                      $group[] = $this->form->createElement('static', null, "&nbsp;", null);
                       continue;
                   }
                   // Subdomains don't have STD_SCORE, %ILE_RANK, or STANINE, but again add a blank column to keep the table aligned
@@ -166,7 +166,7 @@ class NDB_BVL_Instrument_vineland extends NDB_BVL_Instrument
                       $field == 'GMS' || $field == 'FMS') &&                    // Motor skills subdomains
                       ($scoreField == 'STD_SCORE' || $scoreField == '%ILE_RANK' || $scoreField == 'STANINE')
                       ) {
-                      $group[] = $this->form->createElement('static', null, "&nbsp;");
+                      $group[] = $this->form->createElement('static', null, "&nbsp;", null);
                       continue;
 
                   }
@@ -177,7 +177,7 @@ class NDB_BVL_Instrument_vineland extends NDB_BVL_Instrument
                   if($field == "ABC" && $scoreField == "RAW"){
                      $scoreField = "SUM_ALL_DOM_STD_SCORES";
                   }
-                  $group[] = $this->form->createElement('static', "{$field}_{$scoreField}");
+                  $group[] = $this->form->createElement('static', "{$field}_{$scoreField}", null, null);
                }
                $this->form->addGroup($group, "{$label}_group", $label, $this->_GUIDelimiter, FALSE);
                unset($group);
@@ -187,11 +187,11 @@ class NDB_BVL_Instrument_vineland extends NDB_BVL_Instrument
                   
          $this->form->addElement('header', null, "Maladaptive Behaviour Index");
          //scoring column headers
-           $group[] = $this->form->createElement('static', "RAW");
-           $group[] = $this->form->createElement('static', "VSCALE");
-           $group[] = $this->form->createElement('static', $percentile . "_CI");
-           $group[] = $this->form->createElement('static', "MAL_TABLE_LEVEL");
-           $group[] = $this->form->createElement('static', "STATUS");
+           $group[] = $this->form->createElement('static', "RAW", null, null);
+           $group[] = $this->form->createElement('static', "VSCALE", null, null);
+           $group[] = $this->form->createElement('static', $percentile . "_CI", null, null);
+           $group[] = $this->form->createElement('static', "MAL_TABLE_LEVEL", null, null);
+           $group[] = $this->form->createElement('static', "STATUS", null, null);
            $this->form->addGroup($group, 'score_header_group', null, $this->_GUIDelimiter, FALSE);
            unset($group);
 
@@ -208,7 +208,7 @@ class NDB_BVL_Instrument_vineland extends NDB_BVL_Instrument
              
            foreach($domains as $field=>$label) {
                foreach($columnHeaders as $scoreField=>$scoreLabel) {
-                  $group[] = $this->form->createElement('static', "{$field}_{$scoreField}");
+                  $group[] = $this->form->createElement('static', "{$field}_{$scoreField}", null, null);
                }
                $this->form->addGroup($group, "{$label}_group", $label, $this->_GUIDelimiter, FALSE);
                unset($group);

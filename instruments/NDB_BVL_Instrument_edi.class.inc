@@ -456,11 +456,11 @@ INSERT INTO test_battery VALUES ('', 'edi', '1050', '1140', 'Y', 'Visit', '2');
         $this->form->addElement('header', null, "Scores");
 
         //scoring column headers
-        $group[] = $this->form->createElement('static', "total_symptoms");
-        $group[] = $this->form->createElement('static', "regulatory");
-        $group[] = $this->form->createElement('static', "social");
-        $group[] = $this->form->createElement('static', "communication");
-        $group[] = $this->form->createElement('static', "repetitive_behaviour");
+        $group[] = $this->form->createElement('static', "total_symptoms", null, null);
+        $group[] = $this->form->createElement('static', "regulatory", null, null);
+        $group[] = $this->form->createElement('static', "social", null, null);
+        $group[] = $this->form->createElement('static', "communication", null, null);
+        $group[] = $this->form->createElement('static', "repetitive_behaviour", null, null);
         $this->form->addGroup($group, 'score_header_group', "Anchor Point (months)", $this->_GUIDelimiter, FALSE);
         unset($group);
         
@@ -470,7 +470,7 @@ INSERT INTO test_battery VALUES ('', 'edi', '1050', '1140', 'Y', 'Visit', '2');
         foreach($anchorPoints as $field=>$label) {
             foreach($this->columnHeaders as $scoreField=>$scoreLabel) {
                 if(array_key_exists("score_{$field}_{$scoreField}", $this->scores)) //not all subscales apply at all ages
-                    $group[] = $this->form->createElement('static', "score_{$field}_{$scoreField}");
+                    $group[] = $this->form->createElement('static', "score_{$field}_{$scoreField}", null, null);
             }
             $this->form->addGroup($group, "{$label}_group", $label, $this->_GUIDelimiter, FALSE);
             unset($group);

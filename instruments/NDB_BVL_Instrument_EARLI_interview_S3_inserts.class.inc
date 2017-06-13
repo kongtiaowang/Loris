@@ -77,7 +77,7 @@ class NDB_BVL_Instrument_EARLI_interview_S3_inserts extends NDB_BVL_Instrument_E
     * @return void
     * @access public
     */
-        function setup($commentID, $page)
+        function setup($commentID = null, $page = null)
         {
                 $this->formType="XIN";
                 $this->form = new LorisForm('test_form');
@@ -194,13 +194,13 @@ class NDB_BVL_Instrument_EARLI_interview_S3_inserts extends NDB_BVL_Instrument_E
                 $this->addTextAreaElement('interviewer', "<br />Interviewer:");
                 $this->addDateElement('interview_date', "<br />Start date:");
 
-                $group[] =&$this->form->createElement("static", "hour_header");
-                $group[] =&$this->form->createElement("static", "AMPM_header");
+                $group[] = $this->form->createElement("static", "hour_header", null, null);
+                $group[] = $this->form->createElement("static", "AMPM_header", null, null);
                 $this->form->addGroup($group, "interview_start_time_headers", "", $this->_GUIDelimiter, false);
                 unset($group);
 
-                $group[] = &$this->form->createElement('select', 'interview_time', null, array(NULL=>"") + array_combine(range(1,12), range(1,12)) + array("not_answered"=>"Not Answered"));
-                $group[] = &$this->form->createElement('select', 'AMPM', null, array(NULL=>"", "AM"=>"AM", "PM"=>"PM", "not_answered"=>"Not Answered"));
+                $group[] = $this->form->createElement('select', 'interview_time', null, array(NULL=>"") + array_combine(range(1,12), range(1,12)) + array("not_answered"=>"Not Answered"));
+                $group[] = $this->form->createElement('select', 'AMPM', null, array(NULL=>"", "AM"=>"AM", "PM"=>"PM", "not_answered"=>"Not Answered"));
                 $this->form->addGroup($group, "interview_start_time", "<br />Start time:", $this->_GUIDelimiter, false);
                 unset($group);
                 $this->XINRegisterRule("interview_time", array("interivew_date{@}!={@}NULL"), "Required", "interview_start_time");

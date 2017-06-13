@@ -37,7 +37,7 @@ class NDB_BVL_Instrument_EARLI_interview_S7_inserts extends NDB_BVL_Instrument_E
     * @return void
     * @access public
     */
-	function setup($commentID, $page)
+	function setup($commentID = null, $page = null)
 	{
 
 		$this->formType="XIN";
@@ -49,7 +49,7 @@ class NDB_BVL_Instrument_EARLI_interview_S7_inserts extends NDB_BVL_Instrument_E
 		$this->table = 'EARLI_interview_S7_inserts';              // name of table containing data keyed by commentID
 		$this->commentID = $commentID;
 
-                $db =& Database::singleton();
+                $db = Database::singleton();
                 $this->_requiredElements = array('interview_time', 'q7_2_m_1', 'q7_19_1', 'q7_37_1_1');
 
 
@@ -61,7 +61,7 @@ class NDB_BVL_Instrument_EARLI_interview_S7_inserts extends NDB_BVL_Instrument_E
 
 		//date formats
 
-		$config =& NDB_Config::singleton();
+		$config = NDB_Config::singleton();
 		$this->dateOptions = array(
 		'language' => 'en',
 		'format'   => 'YMd',
@@ -152,13 +152,13 @@ class NDB_BVL_Instrument_EARLI_interview_S7_inserts extends NDB_BVL_Instrument_E
 		$this->addTextAreaElement('interviewer', "<br />Interviewer:");
 	 	$this->addDateElement('interview_date', "<br />Start date:");
 		
-		$group[] =&$this->form->createElement("static", "hour_header");
-                $group[] =&$this->form->createElement("static", "AMPM_header");
+		$group[] = $this->form->createElement("static", "hour_header", null, null);
+                $group[] = $this->form->createElement("static", "AMPM_header", null, null);
                 $this->form->addGroup($group, "interview_start_time_headers", "", $this->_GUIDelimiter, false);
                 unset($group);
 
-		$group[] = &$this->form->createElement('select', 'interview_time', null, array(NULL=>"") + array_combine(range(1,12), range(1,12)) + array("not_answered"=>"Not Answered"));
-		$group[] = &$this->form->createElement('select', 'AMPM', null, array(NULL=>"", "AM"=>"AM", "PM"=>"PM", "not_answered"=>"Not Answered"));
+		$group[] =  $this->form->createElement('select', 'interview_time', null, array(NULL=>"") + array_combine(range(1,12), range(1,12)) + array("not_answered"=>"Not Answered"));
+		$group[] =  $this->form->createElement('select', 'AMPM', null, array(NULL=>"", "AM"=>"AM", "PM"=>"PM", "not_answered"=>"Not Answered"));
 		$this->form->addGroup($group, "interview_start_time", "<br />Start time:", $this->_GUIDelimiter, false);
                 unset($group);
 		$this->XINRegisterRule("interview_time", array("interivew_date{@}!={@}NULL"), "Required", "interview_start_time");
@@ -239,8 +239,8 @@ class NDB_BVL_Instrument_EARLI_interview_S7_inserts extends NDB_BVL_Instrument_E
 		//q7-2
 		$this->form->addElement('static', null, "<br/>");
 
- 		$group[] =&$this->form->createElement("static", "month_header");
-                $group[] =&$this->form->createElement("static", "year_header");
+ 		$group[] =&$this->form->createElement("static", "month_header", null, null);
+                $group[] =&$this->form->createElement("static", "year_header", null, null);
                 $this->form->addGroup($group, "q7_2_headers_$i", null, $this->_GUIDelimiter, false);
                 unset($group);
 

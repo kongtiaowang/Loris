@@ -38,7 +38,7 @@ INSERT INTO instrument_subtests VALUES('', 'aosi', 'aosi_page2', 'General Observ
     * @return void
     * @access public
     */
-    function setup($commentID, $page){
+    function setup($commentID = null, $page = null){
         $this->formType="XIN";
         $this->form = new LorisForm('test_form');
         $this->page = $page;            // page label (number or
@@ -345,7 +345,7 @@ INSERT INTO instrument_subtests VALUES('', 'aosi', 'aosi_page2', 'General Observ
         $db =& Database::singleton();
 
         // null scores
-        $this->_nullScores();
+        $this->_nullScores(null);
 
         //Get raw questions point values
         $query = "SELECT * FROM ".$this->table." WHERE CommentID='".$this->getCommentID()."'";
@@ -541,8 +541,8 @@ INSERT INTO instrument_subtests VALUES('', 'aosi', 'aosi_page2', 'General Observ
             } else {
                 $ov = $value;
             }
-            $this->scores['total_score_1_18_override'] += $ov;
-            $this->scores["total_score_1_18"] += $value;
+            $this->scores['total_score_1_18_override'] = (float)$this->scores['total_score_1_18_override'] + (float)$ov;
+            $this->scores["total_score_1_18"] = (float)$this->scores["total_score_1_18"] + (float)$value;
             //increment markers count if non-zero
             if($ov != 0) $this->scores["number_of_markers_override"]++;
             if($value != 0) $this->scores["number_of_markers"]++;
@@ -562,7 +562,7 @@ INSERT INTO instrument_subtests VALUES('', 'aosi', 'aosi_page2', 'General Observ
     * @return mixed
     * @throws PEAR::error
     */
-    function _nullScores()
+    function _nullScores($scoreCols)
     {
         $db=& Database::singleton();
         

@@ -187,14 +187,14 @@ INSERT INTO instrument_subtests VALUES('', 'rbs_r', 'rbs_r_page1', 'Subscales', 
 		//Subscale scores...
 		$this->form->addElement('header', null, "Subscale scores");
 		//scoring columns
-		$group[] = $this->form->createElement('static', 'endorsed');
-		$group[] = $this->form->createElement('static', 'total_score');
+		$group[] = $this->form->createElement('static', 'endorsed', null, null);
+		$group[] = $this->form->createElement('static', 'total_score', null, null);
 		$this->form->addGroup($group, 'score_headers_group', "Subscale", $this->_GUIDelimiter, false);
 		unset($group);
 
 		foreach($this->scoreCols as $field=>$label) {
-			$group[] = $this->form->createElement('static', $field . '_endorsed');
-			$group[] = $this->form->createElement('static', $field . '_score');
+			$group[] = $this->form->createElement('static', $field . '_endorsed', null, null);
+			$group[] = $this->form->createElement('static', $field . '_score', null, null);
 			$this->form->addGroup($group, $field . '_group', $label, $this->_GUIDelimiter, false);
 			unset($group);
 		}

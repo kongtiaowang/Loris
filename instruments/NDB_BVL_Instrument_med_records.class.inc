@@ -445,6 +445,13 @@ function _possibleExclusionaryCriteria() {
 
         // Get the item scores
         $array_of_conversion=array();
+        $cm_value_length = 0;
+        $L_one = 0;
+        $M_one = 0;
+        $S_one = 0;
+        $L_two = 0;
+        $M_two = 0;
+        $S_two = 0;
 
         $db =& Database::singleton();
 
@@ -482,7 +489,7 @@ function _possibleExclusionaryCriteria() {
      		}
      		
      		if($result["{$field}_measurement_weight_units_stat"] == "grams"){
-     			$grams_value = $result["{$field}_measurement_weight_grams"];
+          $grams_value = (float)str_replace(",","",$result["{$field}_measurement_weight_grams"]); // removes thousand delimiter 
      			$newValues["{$field}_measurement_weight_ounces"] = (0.035273)*$grams_value;
  			 	}
      		else if($result["{$field}_measurement_weight_units_stat"] == "ounces"){
@@ -500,7 +507,7 @@ function _possibleExclusionaryCriteria() {
      			$newValues["{$field}_measurement_head_inches"] = (1/2.54)*$cm_head_value;
             }
      		else if($result["{$field}_measurement_head_units_stat"] == "inches"){
-     			$in_head_value = $result["{$field}_measurement_head_inches"];
+          $in_head_value = (float)$result["{$field}_measurement_head_inches"]; 
      			$newValues["{$field}_measurement_head_cm"] = (2.54)*$in_head_value;
    			  $cm_head_value = $newValues["{$field}_measurement_head_cm"];
    			}
@@ -582,16 +589,28 @@ function _possibleExclusionaryCriteria() {
       
             $db->selectRow($query_table_one, $weight_table_one);
 
-            $L_one = $weight_table_one["L"];
-            $M_one = $weight_table_one["M"];
-            $S_one = $weight_table_one["S"];
+            if (array_key_exists("L", $weight_table_one)) {
+                $L_one = $weight_table_one["L"];
+            }
+            if (array_key_exists("M", $weight_table_one)) {
+                $M_one = $weight_table_one["M"];
+            }
+            if (array_key_exists("S", $weight_table_one)) {
+                $S_one = $weight_table_one["S"];
+            }
             
             $db->selectRow($query_table_two, $weight_table_two);
 
-            $L_two = $weight_table_two["L"];
-            $M_two = $weight_table_two["M"];
-            $S_two = $weight_table_two["S"];
-          
+            if (array_key_exists("L", $weight_table_two)) {
+                $L_two = $weight_table_two["L"];
+            }
+            if (array_key_exists("M", $weight_table_two)) {
+                $M_two = $weight_table_two["M"];
+            }
+            if (array_key_exists("S", $weight_table_two)) {
+                $S_two = $weight_table_two["S"];
+            }
+
             $L = interpolate($modified_age_one, $modified_age_two, $age_in_months, $L_one, $L_two);
             $M = interpolate($modified_age_one, $modified_age_two, $age_in_months, $M_one, $M_two);
             $S = interpolate($modified_age_one, $modified_age_two, $age_in_months, $S_one, $S_two);
@@ -639,16 +658,28 @@ function _possibleExclusionaryCriteria() {
 
               $db->selectRow($query_table_one, $height_table_one);
 
-              $L_one = $height_table_one["L"];
-              $M_one = $height_table_one["M"];
-              $S_one = $height_table_one["S"];
+              if (array_key_exists("L", $height_table_one)) {
+                  $L_one = $height_table_one["L"];
+              }
+              if (array_key_exists("M", $height_table_one)) {
+                  $M_one = $height_table_one["M"];
+              }
+              if (array_key_exists("S", $height_table_one)) {
+                  $S_one = $height_table_one["S"];
+              }
             
               $db->selectRow($query_table_two, $height_table_two);
 
-              $L_two = $height_table_two["L"];
-              $M_two = $height_table_two["M"];
-              $S_two = $height_table_two["S"];
-
+              if (array_key_exists("L", $height_table_two)) {
+                  $L_two = $height_table_two["L"];
+              }
+              if (array_key_exists("M", $height_table_two)) {
+                  $M_two = $height_table_two["M"];
+              }
+              if (array_key_exists("S", $height_table_two)) {
+                  $S_two = $height_table_two["S"];
+              }
+              
             
               $L = interpolate($modified_age_one, $modified_age_two, $age_in_months, $L_one, $L_two);
               $M = interpolate($modified_age_one, $modified_age_two, $age_in_months, $M_one, $M_two);
@@ -703,16 +734,27 @@ function _possibleExclusionaryCriteria() {
 
                     $db->selectRow($query_table_one, $head_table_one);
 
-                    $L_one = $head_table_one["L"];
-                    $M_one = $head_table_one["M"];
-                    $S_one = $head_table_one["S"];
+                    if (array_key_exists("L", $head_table_one)) {
+                        $L_one = $head_table_one["L"];
+                    }
+                    if (array_key_exists("M", $head_table_one)) {
+                        $M_one = $head_table_one["M"];
+                    }
+                    if (array_key_exists("S", $head_table_one)) {
+                        $S_one = $head_table_one["S"];
+                    }
 
                     $db->selectRow($query_table_two, $head_table_two);
 
-                    $L_two = $head_table_two["L"];
-                    $M_two = $head_table_two["M"];
-                    $S_two = $head_table_two["S"];
-
+                    if (array_key_exists("L", $head_table_two)) {
+                        $L_two = $head_table_two["L"];
+                    }
+                    if (array_key_exists("M", $head_table_two)) {
+                        $M_two = $head_table_two["M"];
+                    }
+                    if (array_key_exists("S", $head_table_two)) {
+                        $S_two = $head_table_two["S"];
+                    }
 
                     $L = interpolate($modified_age_one, $modified_age_two, $age_in_months, $L_one, $L_two);
                     $M = interpolate($modified_age_one, $modified_age_two, $age_in_months, $M_one, $M_two);
@@ -757,23 +799,42 @@ function _possibleExclusionaryCriteria() {
                     
                     $query_table_one = "SELECT * from bmi_for_age_chart_over_2 where sex = $gender_number and age = $modified_age_one_bmi";
                     $query_table_two = "SELECT * from bmi_for_age_chart_over_2 where sex = $gender_number and age = $modified_age_two_bmi";
-                        
-     		        $height = $newValues["{$field}_measurement_length_cm"]; 
-     		        $weight= $newValues["{$field}_measurement_weight_grams"];
-     		             			
-    	            $bmi_value = (($kgs)/(($cm_value_length/100)*($cm_value_length/100)));
+
+                if (array_key_exists("{$field}_measurement_length_cm", $newValues)) {
+                   $height = $newValues["{$field}_measurement_length_cm"];
+                }
+                if (array_key_exists("{$field}_measurement_weight_grams", $newValues)) {
+                   $weight = $newValues["{$field}_measurement_weight_grams"];
+                }
+
+                  if ($cm_value_length > 0) {
+                      $bmi_value = (($kgs)/(($cm_value_length/100)*($cm_value_length/100)));
+                  } else {
+                      $bmi_value = 0;
+                  }
      	            $db->selectRow($query_table_one, $bmi_table_one); 
 
-                    $L_one = $bmi_table_one["L"];
-                    $M_one = $bmi_table_one["M"];
-                    $S_one = $bmi_table_one["S"];
-
+                    if (array_key_exists("L", $bmi_table_one)) {
+                        $L_one = $bmi_table_one["L"];
+                    }
+                    if (array_key_exists("M", $bmi_table_one)) {
+                        $M_one = $bmi_table_one["M"];
+                    }
+                    if (array_key_exists("S", $bmi_table_one)) {
+                        $S_one = $bmi_table_one["S"];
+                    }
+                    
                     $db->selectRow($query_table_two, $bmi_table_two);
 
-                    $L_two = $bmi_table_two["L"];
-                    $M_two = $bmi_table_two["M"];
-                    $S_two = $bmi_table_two["S"];
-
+                    if (array_key_exists("L", $bmi_table_two)) {
+                        $L_two = $bmi_table_two["L"];
+                    }
+                    if (array_key_exists("M", $bmi_table_two)) {
+                        $M_two = $bmi_table_two["M"];
+                    }
+                    if (array_key_exists("S", $bmi_table_two)) {
+                        $S_two = $bmi_table_two["S"];
+                    }
 
                     $L = interpolate($modified_age_one_bmi, $modified_age_two_bmi, $age_in_months, $L_one, $L_two);
                     $M = interpolate($modified_age_one_bmi, $modified_age_two_bmi, $age_in_months, $M_one, $M_two);

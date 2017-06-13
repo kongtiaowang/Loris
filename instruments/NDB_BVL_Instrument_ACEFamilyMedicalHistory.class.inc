@@ -27,7 +27,7 @@ class NDB_BVL_Instrument_ACEFamilyMedicalHistory extends NDB_BVL_Instrument
 
         $this->_requiredElements = array('Date_taken', 'Examiner','day1_child_sick');
 
-        $config =& NDB_Config::singleton();
+        $config = NDB_Config::singleton();
         $this->dateOptions = array(
         'language' => 'en',
         'format'   => 'YMd',
@@ -37,7 +37,7 @@ class NDB_BVL_Instrument_ACEFamilyMedicalHistory extends NDB_BVL_Instrument
         'emptyOptionValue' => null
         );
 
-        $db =& Database::singleton();
+        $db = Database::singleton();
         // setup the form
         $this->_setupForm();
 
@@ -89,29 +89,29 @@ class NDB_BVL_Instrument_ACEFamilyMedicalHistory extends NDB_BVL_Instrument
            
 	    foreach($table_heading as $k=>$v) {
 		    if($key == 'header') {
-			    $group[] =& $this->form->createElement("static",null,null,$v);             
+			    $group[] = $this->form->createElement("static",null,null,$v);             
 		    } else {     
 			    $field = $key."_".$k;
                             if($key == 'currentage') {
-			        $group[] =& $this->form->createElement("text",$field,null,null);
+			        $group[] = $this->form->createElement("text",$field,null,null);
                             } else if ($key == 'relation') {
                                 if($k == 'mother' || $k == 'father') {
-                                   $group[] =& $this->form->createElement("static",null,null, null);
+                                   $group[] = $this->form->createElement("static",null,null, null);
                                  } else {
-                                    $group[] =& $this->form->createElement("select",$field,null,$relation);
+                                    $group[] = $this->form->createElement("select",$field,null,$relation);
                                   }
                             } else if ($key == 'last_grade_completed') { 
                                if($k == 'mother' || $k == 'father') {
-                                    $group[] =& $this->form->createElement("text",$field,null,null);
+                                    $group[] = $this->form->createElement("text",$field,null,null);
                                  } else {
-                                    $group[] =& $this->form->createElement("static",null,null, null);
+                                    $group[] = $this->form->createElement("static",null,null, null);
                                   }
 
                             } else {
                                 if($key == 'gender') {
-                                     $group[] =& $this->form->createElement("select",$field,null,$gender);
+                                     $group[] = $this->form->createElement("select",$field,null,$gender);
                                 } else {
-			             $group[] =& $this->form->createElement("select",$field,null,$options);
+			             $group[] = $this->form->createElement("select",$field,null,$options);
                                 }
                            }
 		    }

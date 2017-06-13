@@ -25,7 +25,7 @@ class NDB_BVL_Instrument_bapq_respondent extends NDB_BVL_Instrument
      * @return void
      * @access public
      */
-    function setup($commentID, $page){
+    function setup($commentID = null, $page = null){
         $this->formType="XIN";
         $this->form = new LorisForm('test_form');
         $this->page = $page;            // page label (number or

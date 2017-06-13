@@ -406,9 +406,10 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
         $scores["q_2_shared_positive_affect_raw_score"] = $this->_countChecked($record, "q_2_shared_positive_affect_");
         $scores["q_3_gaze_point_following_raw_score"] = $this->_countChecked($record, "q_3_gaze_point_following_");
 
+        $score = 0;
         foreach($record as $field=>$value) {
             if(preg_match("/q_4_rate_of_communicating/", $field)) {
-                $score += $value;
+                $score += (float)$value;
             }
         }
         $scores["q_4_rate_of_communicating_raw_score"] = $score;
@@ -424,7 +425,7 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
         
         $scores["q_13_words_raw_score"] = $this->_countWords($record, "q_13_words_");
         if(empty($scores["q_13_words_raw_score"])){
-            $scores["q_13_words_raw_score"]  = 0;   
+            $scores["q_13_words_raw_score"]  = 0;
         }
         $scores["q_14_word_combos_raw_score"] = $this->_countChecked($record, "q_14_word_combos_");
         $scores["q_15_word_combos_raw_score"] = $this->_countWords($record, "q_15_word_combos_");
@@ -486,96 +487,115 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
         }
 
     	//calculate subscales
-        $scores["emotion_eye_gaze_weighted"] = $scores["q_1_gaze_shifts_raw_score"] +
-        $scores["q_2_shared_positive_affect_raw_score"] +
-        3 * $scores["q_3_gaze_point_following_raw_score"];
+        $scores["emotion_eye_gaze_weighted"] = (float)$scores["q_1_gaze_shifts_raw_score"] +
+        (float)$scores["q_2_shared_positive_affect_raw_score"] +
+        3 * (float)$scores["q_3_gaze_point_following_raw_score"];
 
         $scores["communication_weighted"] = number_format(($scores["q_4_rate_of_communicating_raw_score"]/3), 0) +
- 	$scores["q_5_behaviour_regulation_raw_score"] +
-        $scores["q_6_social_interaction_raw_score"] +
-        $scores["q_7_joint_attention_raw_score"];
+        (float)$scores["q_5_behaviour_regulation_raw_score"] +
+        (float)$scores["q_6_social_interaction_raw_score"] +
+        (float)$scores["q_7_joint_attention_raw_score"];
 
-        $scores["gestures_weighted"] = $scores["q_8_conventional_gestures_raw_score"] * 2 + 
-        $scores["q_9_distal_gestures_raw_score"];
+        $scores["gestures_weighted"] = (float)$scores["q_8_conventional_gestures_raw_score"] * 2 +
+        (float)$scores["q_9_distal_gestures_raw_score"];
 
-        $scores["sounds_weighted"] = $scores["q_10_syllables_consonants_raw_score"] +
-        2 * $scores["q_11_inventory_of_consonants_raw_score"];
+        $scores["sounds_weighted"] = (float)$scores["q_10_syllables_consonants_raw_score"] +
+        2 * (float)$scores["q_11_inventory_of_consonants_raw_score"];
         
         $scores["words_weighted"] = number_format(($scores["q_12_words_raw_score"] + 
-                                        ($scores["q_13_words_raw_score"]/2) +  
-                                        $scores["q_14_word_combos_raw_score"] +
-                                        $scores["q_15_word_combos_raw_score"]), 0);
+                                        ((float)$scores["q_13_words_raw_score"]/2) +
+                                        (float)$scores["q_14_word_combos_raw_score"] +
+                                        (float)$scores["q_15_word_combos_raw_score"]), 0);
         
-        $scores["object_use_weighted"] = $scores["q_17_action_schemes_raw_score"] +
-                                         $scores["q_18_actions_towards_other_raw_score"] +
-                                         $scores["q_19_sequence_action_schemes_raw_score"] +
-                                         $scores["q_20_stacks_tower_raw_score"];
+        $scores["object_use_weighted"] = (float)$scores["q_17_action_schemes_raw_score"] +
+                                         (float)$scores["q_18_actions_towards_other_raw_score"] +
+                                         (float)$scores["q_19_sequence_action_schemes_raw_score"] +
+                                         (float)$scores["q_20_stacks_tower_raw_score"];
         //calculate weighted raw composite scores
-	    $scores["social_composite_score"] = $scores["emotion_eye_gaze_weighted"] +
-        $scores["communication_weighted"] +
-        $scores["gestures_weighted"];
+	    $scores["social_composite_score"] = (float)$scores["emotion_eye_gaze_weighted"] +
+        (float)$scores["communication_weighted"] +
+        (float)$scores["gestures_weighted"];
 
 
-	$scores["speech_composite_score"] = $scores["sounds_weighted"] +
-        $scores["words_weighted"];
+	$scores["speech_composite_score"] = (float)$scores["sounds_weighted"] +
+        (float)$scores["words_weighted"];
 
 
-	$scores["symbolic_composite_score"] = $scores["understanding_weighted"] +
-        $scores["object_use_weighted"];
+	$scores["symbolic_composite_score"] = (float)$scores["understanding_weighted"] +
+        (float)$scores["object_use_weighted"];
 
 
 	//calculate weighted total scores
-	$scores["total_weighted_raw_score"] = $scores["social_composite_score"] +
-        $scores["speech_composite_score"] +
-        $scores["symbolic_composite_score"];
+	$scores["total_weighted_raw_score"] = (float)$scores["social_composite_score"] +
+        (float)$scores["speech_composite_score"] +
+        (float)$scores["symbolic_composite_score"];
 
 
 	//establish standard scores and percentile rank for Emotion Eye Gaze
 	$query_scores1 = "SELECT * FROM csbs_lookup WHERE age_months=".$age_months. " AND score_weighted=".$scores['emotion_eye_gaze_weighted']." AND subscale='emotion_eye_gaze_weighted'";
     	$record_1 = array();
 	$db->selectRow($query_scores1, $record_1);
-	$scores['emotion_eye_gaze_standard']=($record_1['score_standard']);
-	$scores['emotion_eye_gaze_percentile']=($record_1['score_percentile']);
-
+	if (array_key_exists('score_standard',$record_1)) {
+	    $scores['emotion_eye_gaze_standard']=($record_1['score_standard']);
+	}
+	if (array_key_exists('score_percentile',$record_1)) {
+	    $scores['emotion_eye_gaze_percentile']=($record_1['score_percentile']);
+  }
 
 	$query_scores2 = "SELECT * FROM csbs_lookup WHERE age_months=".$age_months. " AND score_weighted=".$scores['communication_weighted']." AND subscale='communication_weighted'";
     	$record_2 = array();
 	$db->selectRow($query_scores2, $record_2);
-	$scores['communication_standard']=($record_2['score_standard']);
-	$scores['communication_percentile']=($record_2['score_percentile']);
-
+	if (array_key_exists('score_standard',$record_2)) {
+	    $scores['communication_standard']=($record_2['score_standard']);
+	}
+	if (array_key_exists('score_percentile',$record_2)) {
+	    $scores['communication_percentile']=($record_2['score_percentile']);
+  }
 
 	$query_scores3 = "SELECT * FROM csbs_lookup WHERE age_months=".$age_months. " AND score_weighted=".$scores['gestures_weighted']." AND subscale='gestures_weighted'";
     	$record_3 = array();
 	$db->selectRow($query_scores3, $record_3);
-	$scores['gestures_standard']=($record_3['score_standard']);
-	$scores['gestures_percentile']=($record_3['score_percentile']);
-
+	if (array_key_exists('score_standard',$record_3)) {
+	    $scores['gestures_standard']=($record_3['score_standard']);
+	}
+	if (array_key_exists('score_percentile',$record_3)) {
+	    $scores['gestures_percentile']=($record_3['score_percentile']);
+  }
 
 	$query_scores4 = "SELECT * FROM csbs_lookup WHERE age_months=".$age_months. " AND score_weighted=".$scores['sounds_weighted']." AND subscale='sounds_weighted'";
     	$record_4 = array();
 	$db->selectRow($query_scores4, $record_4);
-	$scores['sounds_standard']=($record_4['score_standard']);
-	$scores['sounds_percentile']=($record_4['score_percentile']);
-
+	if (array_key_exists('score_standard',$record_4)) {
+	    $scores['sounds_standard']=($record_4['score_standard']);
+	}
+	if (array_key_exists('score_percentile',$record_4)) {
+	    $scores['sounds_percentile']=($record_4['score_percentile']);
+  }
 
 	$query_scores5 = "SELECT * FROM csbs_lookup WHERE age_months=".$age_months. " AND score_weighted=".$scores['words_weighted']." AND subscale='words_weighted'";
     	$record_5 = array();
 	$db->selectRow($query_scores5, $record_5);
-	$scores['words_standard']=($record_5['score_standard']);
-	$scores['words_percentile']=($record_5['score_percentile']);
-
+	if (array_key_exists('score_standard',$record_5)) {
+	    $scores['words_standard']=($record_5['score_standard']);
+	}
+	if (array_key_exists('score_percentile',$record_5)) {
+	    $scores['words_percentile']=($record_5['score_percentile']);
+  }
 
 
     if($scores['understanding_weighted'] !== "Unable to score") {
         $query_scores6 = "SELECT * FROM csbs_lookup WHERE age_months=".$age_months. " AND score_weighted=".$scores['understanding_weighted']." AND subscale='understanding_weighted'";
         $record_6 = array();
         $db->selectRow($query_scores6, $record_6);
-        $scores['understanding_standard']=($record_6['score_standard']);
-        $scores['understanding_percentile']=($record_6['score_percentile']);
+        if (array_key_exists('score_standard',$record_6)) {
+            $scores['understanding_standard']=($record_6['score_standard']);
+        }
+	      if (array_key_exists('score_percentile',$record_6)) {
+            $scores['understanding_percentile']=($record_6['score_percentile']);
+        }
     } else {
-        $scores['understanding_standard']= 'Unable to score';
-        $scores['understanding_percentile']= 'Unable to score';
+        $scores['understanding_standard']= null;   // Was "Unable to score"
+        $scores['understanding_percentile']= null; // Was "Unable to score"
     }
 
 
@@ -583,39 +603,55 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
 	$query_scores7 = "SELECT * FROM csbs_lookup WHERE age_months=".$age_months. " AND score_weighted=".$scores['object_use_weighted']." AND subscale='object_use_weighted'";
     	$record_7 = array();
 	$db->selectRow($query_scores7, $record_7);
-	$scores['object_use_standard']=($record_7['score_standard']);
-	$scores['object_use_percentile']=($record_7['score_percentile']);
-
+	if (array_key_exists('score_standard',$record_7)) {
+	    $scores['object_use_standard']=($record_7['score_standard']);
+	}
+	if (array_key_exists('score_percentile',$record_7)) {
+	    $scores['object_use_percentile']=($record_7['score_percentile']);
+  }
 
 	$query_scores8 = "SELECT * FROM csbs_lookup WHERE age_months=".$age_months. " AND score_weighted=".$scores['social_composite_score']." AND subscale='social_composite_score'";
     	$record_8 = array();
 	$db->selectRow($query_scores8, $record_8);
-	$scores['social_composite_standard']=($record_8['score_standard']);
-	$scores['social_composite_percentile']=($record_8['score_percentile']);
-
+	if (array_key_exists('score_standard',$record_8)) {
+      $scores['social_composite_standard']=($record_8['score_standard']);
+	}
+	if (array_key_exists('score_percentile',$record_8)) {
+      $scores['social_composite_percentile']=($record_8['score_percentile']);
+  }
 
 
 	$query_scores9 = "SELECT * FROM csbs_lookup WHERE age_months=".$age_months. " AND score_weighted=".$scores['speech_composite_score']." AND subscale='speech_composite_score'";
     	$record_9 = array();
 	$db->selectRow($query_scores9, $record_9);
-	$scores['speech_composite_standard']=($record_9['score_standard']);
-	$scores['speech_composite_percentile']=($record_9['score_percentile']);
-
+	if (array_key_exists('score_standard',$record_9)) {
+	    $scores['speech_composite_standard']=($record_9['score_standard']);
+	}
+	if (array_key_exists('score_percentile',$record_9)) {
+	    $scores['speech_composite_percentile']=($record_9['score_percentile']);
+  }
 
 
 	$query_scores10 = "SELECT * FROM csbs_lookup WHERE age_months=".$age_months. " AND score_weighted=".$scores['symbolic_composite_score']." AND subscale='symbolic_composite_score'";
     	$record_10 = array();
 	$db->selectRow($query_scores10, $record_10);
-	$scores['symbolic_composite_standard']=($record_10['score_standard']);
-	$scores['symbolic_composite_percentile']=($record_10['score_percentile']);
-
+	if (array_key_exists('score_standard',$record_10)) {
+	    $scores['symbolic_composite_standard']=($record_10['score_standard']);
+	}
+	if (array_key_exists('score_percentile',$record_10)) {
+	    $scores['symbolic_composite_percentile']=($record_10['score_percentile']);
+  }
 
 
 	$query_scores11 = "SELECT * FROM csbs_lookup WHERE age_months=".$age_months. " AND score_weighted=".$scores['total_weighted_raw_score']." AND subscale='total_weighted_raw_score'";
     	$record_11 = array();
 	$db->selectRow($query_scores11, $record_11);
-	$scores['total_standard']=($record_11['score_standard']);
-	$scores['total_percentile']=($record_11['score_percentile']);
+	if (array_key_exists('score_standard',$record_11)) {
+	    $scores['total_standard']=($record_11['score_standard']);
+	}
+	if (array_key_exists('score_percentile',$record_11)) {
+	    $scores['total_percentile']=($record_11['score_percentile']);
+	}
 /*
 	$query_scores_OUTOFRANGE = "SELECT * FROM csbs_lookup WHERE age_months = '24' AND score_weighted = ".$scores['total_weighted_raw_score']." AND subscale='total_weighted_raw_score'";
 	$record_OUTOFRANGE = array();
@@ -1110,6 +1146,7 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
     }
     
     function _countChecked($record, $genericLabel) {
+        $score = 0;
         foreach ($record as $field=>$value) {
             if (preg_match("/$genericLabel/", $field)) {
                 $score += ($value == "checked");
@@ -1120,6 +1157,7 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
 
     function _countCheckedNone($record, $genericLabel, $option)
     {
+        $score = 0;
 	foreach ($record as $field=>$value)
 	{
         	if (preg_match("/$genericLabel/", $field) && $field != $option)
@@ -1132,6 +1170,7 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
 
 
     function _countWords($record, $genericLabel, $excludedWords = array()) {
+        $score = 0;
         foreach($record as $field=>$value) {
             if(preg_match("/$genericLabel/", $field) && !is_null($value) && $value !== '') {
                 if(!in_array($value, $excludedWords)) {

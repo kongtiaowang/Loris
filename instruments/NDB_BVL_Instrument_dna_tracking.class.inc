@@ -92,11 +92,11 @@ class NDB_BVL_Instrument_dna_tracking extends NDB_BVL_Instrument
     function _main(){
         $this->addHeader("DNA Tracking");
 
-        $group[] = &$this->form->createElement("static", null, null, "<strong>Candidate</strong>");
-        $group[] = &$this->form->createElement("static", null, null, "<strong>Proband</strong>");
-        $group[] = &$this->form->createElement("static", null, null, "<strong>Mother</strong>");
-        $group[] = &$this->form->createElement("static", null, null, "<strong>Father</strong>");
-        $group[] = &$this->form->createElement("textarea","subject_other_specify", null, array('placeholder'=>'Specify other'));
+        $group[] = $this->form->createElement("static", null, null, "<strong>Candidate</strong>");
+        $group[] = $this->form->createElement("static", null, null, "<strong>Proband</strong>");
+        $group[] = $this->form->createElement("static", null, null, "<strong>Mother</strong>");
+        $group[] = $this->form->createElement("static", null, null, "<strong>Father</strong>");
+        $group[] = $this->form->createElement("textarea","subject_other_specify", null, array('placeholder'=>'Specify other'));
         $this->XINRegisterRule("subject_other_specify", array("subject_other_specify{@}=={@}NEVER_REQUIRED"));
         $this->form->addGroup($group, "headers", null, $this->_GUIDelimiter, false);
         unset($group);
@@ -268,7 +268,7 @@ class NDB_BVL_Instrument_dna_tracking extends NDB_BVL_Instrument
                    $groupname = $key."_other_group";
                    foreach($subjects as $subject) {
                         $field = $key."_".$subject; 
-                        $group[] = $this->form->createElement("textarea", $field."_other",null); 
+                        $group[] = $this->form->createElement("textarea", $field."_other", null, null); 
                         $this->XINRegisterRule($field."_other", array("$field{@}=={@}NEVER_REQUIRED"));
                     }
                     $this->form->addGroup($group, $groupname, $this->indent."If other specify:", $this->_GUIDelimiter, false);
@@ -297,7 +297,7 @@ class NDB_BVL_Instrument_dna_tracking extends NDB_BVL_Instrument
                     $groupname = "saliva_notcollected_other_group";
                     foreach ($subjects as $subject) {
                         $field = "saliva_notcollected_".$subject;
-		        $group[] = $this->form->createElement("textarea", $field."_other",null);
+		        $group[] = $this->form->createElement("textarea", $field."_other", null, null);
                         $this->XINRegisterRule($field."_other", array($field."_other{@}=={@}NEVER_REQUIRED"));
                     }
                     $this->form->addGroup($group, $groupname, $this->indent.$this->indent."If other, specify:", $this->_GUIDelimiter, false);
@@ -318,7 +318,7 @@ class NDB_BVL_Instrument_dna_tracking extends NDB_BVL_Instrument
                     $groupname = "blood_notcollected_other_group";
                     foreach ($subjects as $subject) {
                         $field = "blood_notcollected_".$subject;
-                        $group[] = $this->form->createElement("textarea", $field."_other",null);
+                        $group[] = $this->form->createElement("textarea", $field."_other", null, null);
                         $this->XINRegisterRule( $field."_other", array($field."_other{@}=={@}NEVER_REQUIRED"));                              
                     }
                     $this->form->addGroup($group, $groupname, $this->indent.$this->indent."If other, specify:", $this->_GUIDelimiter, false);
@@ -329,7 +329,7 @@ class NDB_BVL_Instrument_dna_tracking extends NDB_BVL_Instrument
                       $groupname = $key."_other_group"; 
 		      foreach($subjects as $subject) { 
                            $field = $key."_".$subject."_other";
-                           $group[] = $this->form->createElement("textarea",$field, null);
+                           $group[] = $this->form->createElement("textarea",$field, null, null);
                            $this->XINRegisterRule($field,  array("$field{@}=={@}NEVER_REQUIRED"));
 	        	}
                         $this->form->addGroup($group, $groupname, $this->indent.$this->indent."If other, specify:", $this->_GUIDelimiter, false);

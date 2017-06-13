@@ -149,6 +149,7 @@ class NDB_BVL_Instrument_figs_year3 extends NDB_BVL_Instrument
                 if(!empty($relativeCode)) $titleSuffix = " - $relativeCode";
             }
         }
+        $this->form->_required = array();
         $this->form->addElement('header', 'instrument_title', $this->getFullName().$titleSuffix);
         
         $candID = isset($_REQUEST['candID']) ? $_REQUEST['candID'] : '';

@@ -23,7 +23,7 @@ class NDB_BVL_Instrument_EARLI_interview_PART_2 extends NDB_BVL_Instrument_EARLI
         $this->table = 'EARLI_interview_PART_2';              // name of table containing data keyed by commentID
         $this->commentID = $commentID;
 
-        $db =& Database::singleton();
+        $db = Database::singleton();
         $fertilityTreatment = $db->selectOne("SELECT q5_16 FROM EARLI_interview_PART_2 WHERE CommentID='$commentID'");
         if ($fertilityTreatment == '01_yes')
             $this->_requiredElements = array('interview_time','q5_3', 'q5_17', 'q5_32', 'q5_58', 'q5_68', 'q5_76_a', 'q5_88', 'q5_95', 'q5_110_a', 'q6_1', 'q6_85', 'q7_2_m', 'q7_19', 'q7_37_1');
@@ -39,7 +39,7 @@ class NDB_BVL_Instrument_EARLI_interview_PART_2 extends NDB_BVL_Instrument_EARLI
 
         //date formats
 
-        $config =& NDB_Config::singleton();
+        $config = NDB_Config::singleton();
         $this->dateOptions = array(
             'language' => 'en',
             'format'   => 'YMd',
@@ -142,13 +142,13 @@ class NDB_BVL_Instrument_EARLI_interview_PART_2 extends NDB_BVL_Instrument_EARLI
         $this->addTextAreaElement('interviewer', "<br />Interviewer:");
         $this->addDateElement('interview_date', "<br />Start date:");
 
-        $group[] =&$this->form->createElement("static", "hour_header");
-        $group[] =&$this->form->createElement("static", "AMPM_header");
+        $group[] = $this->form->createElement("static", "hour_header", null, null);
+        $group[] = $this->form->createElement("static", "AMPM_header", null, null);
         $this->form->addGroup($group, "interview_start_time_headers", "", $this->_GUIDelimiter, false);
         unset($group);
 
-        $group[] = &$this->form->createElement('select', 'interview_time', null, array(NULL=>"") + array_combine(range(1,12), range(1,12)) + array("not_answered"=>"Not Answered"));
-        $group[] = &$this->form->createElement('select', 'AMPM', null, array(NULL=>"", "AM"=>"AM", "PM"=>"PM", "not_answered"=>"Not Answered"));
+        $group[] = $this->form->createElement('select', 'interview_time', null, array(NULL=>"") + array_combine(range(1,12), range(1,12)) + array("not_answered"=>"Not Answered"));
+        $group[] = $this->form->createElement('select', 'AMPM', null, array(NULL=>"", "AM"=>"AM", "PM"=>"PM", "not_answered"=>"Not Answered"));
         $this->form->addGroup($group, "interview_start_time", "<br />Start time:", $this->_GUIDelimiter, false);
         unset($group);
         $this->XINRegisterRule("interview_time", array("interivew_date{@}!={@}NULL"), "Required", "interview_start_time");
@@ -618,7 +618,7 @@ class NDB_BVL_Instrument_EARLI_interview_PART_2 extends NDB_BVL_Instrument_EARLI
 
         $errors = array();
 
-        $db =& Database::singleton();
+        $db = Database::singleton();
 
 
 
@@ -746,15 +746,15 @@ class NDB_BVL_Instrument_EARLI_interview_PART_2 extends NDB_BVL_Instrument_EARLI
 
         //q5-34
         $this->form->addElement ( 'static', null, "5-34. How often during [SPECIFY MONTH] did you have nausea?" );
-        $group[] =&$this->form->createElement("static", "month_header");
-        $group[] =&$this->form->createElement("static", "freq_header");
+        $group[] = $this->form->createElement("static", "month_header", null, null);
+        $group[] = $this->form->createElement("static", "freq_header", null, null);
         $this->form->addGroup($group, "q5_34_headers", "Would you say it was...", $this->_GUIDelimiter, false);
         unset($group);
 
         $aToF = array("a", "b", "c", "d", "e", "f");
         foreach($aToF as $label) {
-            $group[] =&$this->form->createElement ( "select", "q5_34_m_{$label}", null, array (NULL => "") + $this->negThreeToTen );
-            $group[] =&$this->form->createElement ( "select", "q5_34_f_{$label}", null, array (NULL => "", "01" => "01 Less than once a week", "02" => "02 Once a week", "03" => "03  A few times a week", "04" => "04 Every day", "88 Refused", "99" => "99 Do not know", "not_answered"=>"Not Answered") );
+            $group[] = $this->form->createElement ( "select", "q5_34_m_{$label}", null, array (NULL => "") + $this->negThreeToTen );
+            $group[] = $this->form->createElement ( "select", "q5_34_f_{$label}", null, array (NULL => "", "01" => "01 Less than once a week", "02" => "02 Once a week", "03" => "03  A few times a week", "04" => "04 Every day", "88 Refused", "99" => "99 Do not know", "not_answered"=>"Not Answered") );
             $this->form->addGroup($group, "q5_34_{$label}_group", "{$label})", $this->_GUIDelimiter, false);
             unset($group);
             //Don't require all these questions, but allow them to be filled in, if desired.
@@ -780,15 +780,15 @@ class NDB_BVL_Instrument_EARLI_interview_PART_2 extends NDB_BVL_Instrument_EARLI
 
         //q5-37
         $this->form->addElement ( 'static', null, "5-37. How often during [SPECIFY MONTH] did you vomit?" );
-        $group[] =&$this->form->createElement("static", "month_header");
-        $group[] =&$this->form->createElement("static", "freq_header");
+        $group[] = $this->form->createElement("static", "month_header", null, null);
+        $group[] = $this->form->createElement("static", "freq_header", null, null);
         $this->form->addGroup($group, "q5_37_headers", "Would you say it was...", $this->_GUIDelimiter, false);
         unset($group);
 
         unset($negThreeToTen[10]); //only want to go up to 9
         foreach($aToF as $label) {
-            $group[] = &$this->form->createElement( "select", "q5_37_m_{$label}", null, array (NULL => "") + $this->negThreeToTen);
-            $group[] = &$this->form->createElement ( "select", "q5_37_f_{$label}", null, array (NULL => "", "01" => "01 Less than once a week", "02" => "02 Once a week", "03" => "03  A few times a week", "04" => "04 Every day", "88 Refused", "99" => "99 Do not know", "not_answered"=>"Not Answered" ) );
+            $group[] = $this->form->createElement( "select", "q5_37_m_{$label}", null, array (NULL => "") + $this->negThreeToTen);
+            $group[] = $this->form->createElement ( "select", "q5_37_f_{$label}", null, array (NULL => "", "01" => "01 Less than once a week", "02" => "02 Once a week", "03" => "03  A few times a week", "04" => "04 Every day", "88 Refused", "99" => "99 Do not know", "not_answered"=>"Not Answered" ) );
             $this->form->addGroup($group, "q5_37_{$label}_group", "{$label})", $this->_GUIDelimiter, false);
             unset($group);
             //Don't require all questions, but allow them to be filled in, if desired.
@@ -959,7 +959,7 @@ class NDB_BVL_Instrument_EARLI_interview_PART_2 extends NDB_BVL_Instrument_EARLI
 
         $errors = array();
 
-        $db =& Database::singleton();
+        $db = Database::singleton();
 
 
         function multSelect($fields, $question1, $question2)
@@ -1040,16 +1040,16 @@ class NDB_BVL_Instrument_EARLI_interview_PART_2 extends NDB_BVL_Instrument_EARLI
 
         //q5-60
         $this->form->addElement('static', null, "5-60. On average, how often would you say you douched during [SPECIFY MONTH]?");
-        $group[] =&$this->form->createElement("static", "month_header");
-        $group[] =&$this->form->createElement("static", "freq_header");
+        $group[] = $this->form->createElement("static", "month_header", null, null);
+        $group[] = $this->form->createElement("static", "freq_header", null, null);
         $this->form->addGroup($group, "q5_60_headers", "Would you say it was...", $this->_GUIDelimiter, false);
         unset($group);
 
 
         $aToF = array("a", "b", "c", "d", "e", "f");
         foreach($aToF as $label) {
-            $group[] = &$this->form->createElement( "select", "q5_60_m_{$label}", null, $this->negThreeToTen);
-            $group[] = &$this->form->createElement ( "select", "q5_60_f_{$label}", null, array (NULL => "", "01" => "01 More than once a week", "02" => "02 Once a week", "03" => "03  Once every 2-3 weeks", "04" => "04 Once a month or less", "88 Refused", "99" => "99 Do not know", "not_answered"=>"Not Answered") );
+            $group[] = $this->form->createElement( "select", "q5_60_m_{$label}", null, $this->negThreeToTen);
+            $group[] = $this->form->createElement ( "select", "q5_60_f_{$label}", null, array (NULL => "", "01" => "01 More than once a week", "02" => "02 Once a week", "03" => "03  Once every 2-3 weeks", "04" => "04 Once a month or less", "88 Refused", "99" => "99 Do not know", "not_answered"=>"Not Answered") );
             $this->form->addGroup($group, "q5_60_{$label}_group", "{$label})", $this->_GUIDelimiter, false);
             unset($group);
             //Don't require all questions, but allow them to be filled in, if desired.
@@ -2591,13 +2591,13 @@ class NDB_BVL_Instrument_EARLI_interview_PART_2 extends NDB_BVL_Instrument_EARLI
         //q7-2
         $this->form->addElement('static', null, "<br/>");
 
-        $group[] =&$this->form->createElement("static", "month_header");
-        $group[] =&$this->form->createElement("static", "year_header");
+        $group[] = $this->form->createElement("static", "month_header", null, null);
+        $group[] = $this->form->createElement("static", "year_header", null, null);
         $this->form->addGroup($group, "q7_2_headers", null, $this->_GUIDelimiter, false);
         unset($group);
 
-        $group[] = &$this->form->createElement( "select", "q7_2_m", null, $this->months);
-        $group[] = &$this->form->createElement ( "select", "q7_2_y", null, $this->years1950);
+        $group[] = $this->form->createElement( "select", "q7_2_m", null, $this->months);
+        $group[] = $this->form->createElement ( "select", "q7_2_y", null, $this->years1950);
         $this->form->addGroup($group, "q7_2_group", "7-2. What was the month and year when you started living here?", $this->_GUIDelimiter, false);
         $this->XINRegisterRule("q7_2_m", array("q7_2_m{@}=={@}"),"You must specify month and year", "q7_2_group");
         $this->XINRegisterRule("q7_2_y", array("q7_2_y{@}=={@}"),"You must specify month and year", "q7_2_group");
