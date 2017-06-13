@@ -94,11 +94,12 @@ foreach($result as $row) {
      if ($row['q15_c_fever_seizures'] == '0_no' && $row['q15_seizures_convulsions'] == '1_yes' ) {
          $final_result['rev_headseizure'] = 'yes';
      }
-     $final_result['fhxcp'] = 'no';
+     $final_result['fhxcp'] = null;
      if ($row['m_cerebral_palsy'] == '1_yes' && (strpos($row['m_cerebral_palsy_who'], 'child') !== false)) {
-        $final_result['fhxcp'] = 'yes';
+         $final_result['fhxcp'] = 'yes';
+     } else if ($row['m_cerebral_palsy'] == '0_no' && (strpos($row['m_cerebral_palsy_who'], 'child') !== false)) {
+         $final_result['hist_trauma'] = 'no';
      }
-     $final_result['hist_trauma'] = 'no';
      if (strpos($row['q16_has_child_ever'] , 'c_lost_consciousness_head_injury') !== false)
      {
          $final_result['hist_trauma'] = 'yes';
