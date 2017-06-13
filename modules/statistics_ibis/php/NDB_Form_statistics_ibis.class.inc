@@ -92,7 +92,22 @@ class NDB_Form_statistics_ibis extends NDB_Form
         $cat_total = array('Female' =>0, 'Male' =>0, 'Unknown' =>0);
         foreach($ethnic_categories as $ethnic_cat){
             $gender = array('Female' => 0, 'Male' => 0, 'Unknown' => 0);
-            $results = $DB->pselect("SELECT ProjectID, COALESCE(Gender, 'Unknown') as Gender, COUNT( DISTINCT cad.CandID) as val
+            if($ethnic_cat === "not_answered") {
+                $results = $DB->pselect("SELECT ProjectID, COALESCE(Gender, 'Unknown') as Gender, COUNT( DISTINCT cad.CandID) as val
+                    FROM candidate cad 
+                    JOIN session sn on cad.CandID= sn.CandID 
+                    JOIN flag fg on sn.ID = fg.SessionID
+                    JOIN tsi ti on fg.CommentID = ti.CommentID 
+                    LEFT JOIN participant_status p ON cad.CandID = p.CandID
+                    WHERE (ti.child_ethnicity = '$ethnic_cat' OR ti.child_ethnicity IS NULL)
+                    AND fg.CommentID NOT LIKE 'DDE%' AND sn.CenterID <> '1' AND sn.Active='Y' 
+                    AND cad.Active='Y' AND fg.Data_Entry='Complete' $Extra_Where AND fg.Administration <> 'None' 
+                    AND (p.study_consent='Yes' or p.study_consent IS NULL or p.study_consent ='No')
+                    GROUP BY Gender
+                    ", $params);
+            }
+            else{
+                $results = $DB->pselect("SELECT ProjectID, COALESCE(Gender, 'Unknown') as Gender, COUNT( DISTINCT cad.CandID) as val
                     FROM candidate cad 
                     JOIN session sn on cad.CandID= sn.CandID 
                     JOIN flag fg on sn.ID = fg.SessionID
@@ -101,10 +116,10 @@ class NDB_Form_statistics_ibis extends NDB_Form
                     WHERE ti.child_ethnicity = '$ethnic_cat' 
                     AND fg.CommentID NOT LIKE 'DDE%' AND sn.CenterID <> '1' AND sn.Active='Y' 
                     AND cad.Active='Y' AND fg.Data_Entry='Complete' $Extra_Where AND fg.Administration <> 'None' 
-                    AND (p.participant_status=1 or p.participant_status=7)
-                    AND (p.study_consent='Yes' or p.study_consent IS NULL)
+                    AND (p.study_consent='Yes' or p.study_consent IS NULL or p.study_consent ='No')
                     GROUP BY Gender
                     ", $params);
+            }
             if(is_null($results)){
             }else{
                 foreach($results as $row){
@@ -148,8 +163,7 @@ class NDB_Form_statistics_ibis extends NDB_Form
                         AND fg.CommentID NOT LIKE 'DDE%' AND sn.CenterID <> '1' AND sn.Active='Y' 
                         AND cad.Active='Y' AND fg.Data_Entry='Complete' $Extra_Where 
                         AND fg.Administration <> 'None' AND fg.Test_name='tsi' 
-                        AND (p.participant_status=1 or p.participant_status=7)
-                        AND (p.study_consent='Yes' or p.study_consent IS NULL)
+                        AND (p.study_consent='Yes' or p.study_consent IS NULL or p.study_consent ='No')
                         GROUP BY Gender" , $params);
             }
             else if($race_cat === "unknown_not_reported"){
@@ -162,8 +176,7 @@ class NDB_Form_statistics_ibis extends NDB_Form
                         AND fg.CommentID NOT LIKE 'DDE%' AND sn.CenterID <> '1' AND sn.Active='Y' 
                         AND cad.Active='Y' AND fg.Data_Entry='Complete' $Extra_Where AND fg.Administration <> 'None' 
                         AND fg.Test_name='tsi' 
-                        AND (p.participant_status=1 or p.participant_status=7)
-                        AND (p.study_consent='Yes' or p.study_consent IS NULL)
+                        AND (p.study_consent='Yes' or p.study_consent IS NULL or p.study_consent ='No')
                         GROUP BY Gender" ,$params);
 
             }else{
@@ -177,8 +190,7 @@ class NDB_Form_statistics_ibis extends NDB_Form
                         WHERE ti.candidate_race LIKE  '$race_cat' AND fg.CommentID NOT LIKE 'DDE%' 
                         AND sn.CenterID <> '1' AND sn.Active='Y' AND cad.Active='Y' AND fg.Data_Entry='Complete' $Extra_Where 
                         AND fg.Administration <> 'None' AND fg.Test_name='tsi' 
-                        AND (p.participant_status=1 or p.participant_status=7)
-                        AND (p.study_consent='Yes' or p.study_consent IS NULL)
+                        AND (p.study_consent='Yes' or p.study_consent IS NULL or p.study_consent ='No')
                         GROUP BY Gender" , $params);
             }
 
@@ -225,8 +237,7 @@ class NDB_Form_statistics_ibis extends NDB_Form
                         AND ti.child_ethnicity='hispanic' AND fg.CommentID NOT LIKE 'DDE%' 
                         AND sn.CenterID <> '1' AND sn.Active='Y' AND cad.Active='Y' AND fg.Data_Entry='Complete' $Extra_Where 
                         AND fg.Administration <> 'None' AND fg.Test_name='tsi' 
-                        AND (p.participant_status=1 or p.participant_status=7)
-                        AND (p.study_consent='Yes' or p.study_consent IS NULL)
+                        AND (p.study_consent='Yes' or p.study_consent IS NULL or p.study_consent ='No')
                         GROUP BY Gender" , $params);
             }
             else if($race_cat === "unknown_not_reported"){
@@ -239,8 +250,7 @@ class NDB_Form_statistics_ibis extends NDB_Form
                         AND ti.child_ethnicity='hispanic' AND fg.CommentID NOT LIKE 'DDE%' AND sn.CenterID <> '1' AND sn.Active='Y' 
                         AND cad.Active='Y' AND fg.Data_Entry='Complete' $Extra_Where  AND fg.Administration <> 'None' 
                         AND fg.Test_name='tsi' 
-                        AND (p.participant_status=1 or p.participant_status=7)
-                        AND (p.study_consent='Yes' or p.study_consent IS NULL)
+                        AND (p.study_consent='Yes' or p.study_consent IS NULL or p.study_consent ='No')
                         GROUP BY Gender" , $params);
             }else{
                 $results = $DB->pselect("SELECT COALESCE(Gender, 'Unknown') as Gender,COUNT( DISTINCT cad.CandID) as val FROM candidate cad
@@ -252,8 +262,7 @@ class NDB_Form_statistics_ibis extends NDB_Form
                         AND fg.CommentID NOT LIKE 'DDE%' AND sn.CenterID <> '1' AND sn.Active='Y' 
                         AND cad.Active='Y' AND fg.Data_Entry='Complete'  $Extra_Where  AND fg.Administration <> 'None' 
                         AND fg.Test_name='tsi' 
-                        AND (p.participant_status=1 or p.participant_status=7)
-                        AND (p.study_consent='Yes' or p.study_consent IS NULL)
+                        AND (p.study_consent='Yes' or p.study_consent IS NULL or p.study_consent ='No')
                         GROUP BY Gender" , $params);
             }
 
@@ -284,8 +293,7 @@ class NDB_Form_statistics_ibis extends NDB_Form
                 WHERE fg.CommentID NOT LIKE 'DDE%' AND sn.CenterID <> '1' 
                 AND sn.Active='Y' AND cad.Active='Y' AND fg.Data_Entry='Complete'  $Extra_Where  
                 AND fg.Administration <> 'None' AND (sn.Screening IN ('Failure','Withdrawal') OR sn.Visit IN ('Withdrawal','Failure') ) 
-                AND (p.participant_status=1 or p.participant_status=7)
-                AND (p.study_consent='Yes' or p.study_consent IS NULL)" , $params);
+                AND (p.study_consent='Yes' or p.study_consent IS NULL or p.study_consent ='No')" , $params);
 
 
         $enroll_results = array('enroll_data'=> $enroll_data,'enroll_data_total'=> $enroll_data_total,'enroll_data_race'=> $enroll_data_race,'enroll_data_racetotal'=>$enroll_data_racetotal,'enroll_data_hispanic'=>$enroll_data_hispanic,'enroll_data_hispanictotal'=> $enroll_data_hispanictotal , 'withdraw' => $withdraw);
