@@ -86,22 +86,26 @@ foreach($result as $row) {
      } else {
          $final_result['ldnb_hosptotalmom'] = $row['q14_child_hospitalised_days'] + round($row['q14_child_hospitalised_hours']/24, 3);
      }
-     $final_result['rev_headfebseiz'] = 'no';
+     $final_result['rev_headfebseiz'] = null;
      if ($row['q15_c_fever_seizures'] == '1_yes' && $row['q15_seizures_convulsions'] == '1_yes' ) {
          $final_result['rev_headfebseiz'] = 'yes';
+     } else if ($row['q15_seizures_convulsions'] == '0_no' ) {
+         $final_result['rev_headfebseiz'] = 'no';
      }
-     $final_result['rev_headseizure'] = 'no';
+     $final_result['rev_headseizure'] = null;
      if ($row['q15_c_fever_seizures'] == '0_no' && $row['q15_seizures_convulsions'] == '1_yes' ) {
          $final_result['rev_headseizure'] = 'yes';
+     } else if ($row['q15_seizures_convulsions'] == '0_no' ) {
+         $final_result['rev_headseizure'] = 'no';
      }
      $final_result['fhxcp'] = null;
      if ($row['m_cerebral_palsy'] == '1_yes' && (strpos($row['m_cerebral_palsy_who'], 'child') !== false)) {
          $final_result['fhxcp'] = 'yes';
      } else if ($row['m_cerebral_palsy'] == '0_no' && (strpos($row['m_cerebral_palsy_who'], 'child') !== false)) {
-         $final_result['hist_trauma'] = 'no';
+         $final_result['fhxcp'] = 'yes';
      }
-     if (strpos($row['q16_has_child_ever'] , 'c_lost_consciousness_head_injury') !== false)
-     {
+     $final_result['hist_trauma'] = null;
+     if (strpos($row['q16_has_child_ever'] , 'c_lost_consciousness_head_injury') !== false) {
          $final_result['hist_trauma'] = 'yes';
      }
 
@@ -111,17 +115,19 @@ foreach($result as $row) {
         $final_result['rev_eartest'] = 'no';
     }
     $final_result['rev_eartestresult'] = $row['test_results'];
-    $final_result['rev_neckspinalab'] = 'no';
+    $final_result['rev_neckspinalab'] = null;
     if ($row['q17_birth_defects'] == 'c_open_spine') {
         $final_result['rev_neckspinalab'] = 'yes';
     }
    $birth_marks = array($row['q27_cafe_au_lait_spots'], $row['q24_ash_leaf_macules'], $row['q23_adenoma_sebaceum']);
-   $final_result['rev_skinbirthmark'] = 'no';
+   $final_result['rev_skinbirthmark'] = null;
    if (in_array('1_uncertain', $birth_marks) || in_array('2_present', $birth_marks) || in_array('3_six_or_more_spots', $birth_marks)
        || in_array('1_one_three_spots', $birth_marks) || in_array('2_four_or_five_spots', $birth_marks)) {
        $final_result['rev_skinbirthmark'] = 'yes';
+   } else if ($row['q27_cafe_au_lait_spots'] == '0_absent' && $row['q24_ash_leaf_macules'] == '0_absent' && $row['q23_adenoma_sebaceum'] == '0_absent') {
+       $final_result['rev_skinbirthmark'] = 'no';
    }
-  $final_result['rev_cardiomalfunc'] = 'no';
+  $final_result['rev_cardiomalfunc'] = null;
   if ( strpos($row['q17_birth_defects'] , 'd_heart_defect') !== false) {
       $final_result['rev_cardiomalfunc'] = 'yes';
   }
