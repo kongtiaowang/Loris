@@ -43,6 +43,9 @@ foreach($result as $row) {
             if (strpos($row[$key."_who"], 'parents_dad') !== false) {
                 $final_result[$val."father"] = 'yes';
             }
+            if (strpos($row[$key."_who"], 'siblings') !== false) {
+                $final_result[$val."sibling1"] = 'yes';
+            }
         }
       }
     }
