@@ -11,10 +11,14 @@ class Title extends React.Component {
   }
 
 class Footer extends React.Component {
+    
+    handleFooter(){
+       this.props.handleFooter();
+    }
 
       render() {
        return (
-        <div>
+        <div onClick={this.handleFooter.bind(this)}>
           This is a footer!
         </div>
        );
@@ -45,11 +49,14 @@ class Header extends React.Component {
     handleClick() {
     this.setState({name: "Welcome!"});
   }
+    handleFooterClick() {
+    this.setState({name: "Welecomfdjsfljdsklfjdklsajfdklsjfkldsa!"});
+  }
       render() {
        return (
         <div>
           <Header title={this.state.name} handle={this.handleClick.bind(this)} />
-          <Footer />
+          <Footer handleFooter={this.handleFooterClick.bind(this)} />
         </div>
        );
       }
