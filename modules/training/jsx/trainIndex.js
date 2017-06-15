@@ -1,3 +1,27 @@
+import ContactList from './ContactList';
+
+let contacts = [{
+    name: 'Trainer 1',
+    phone: '555 555 1111'
+    },
+    {
+    name: 'Trainer 2',
+    phone: '555 555 2222'
+    },
+    {
+    name: 'Trainer 3',
+    phone: '555 555 3333'
+    },
+    {
+    name: 'Trainer 4',
+    phone: '555 555 4444'
+    },
+    {
+    name: 'Trainer 5',
+    phone: '555 555 5555'
+    }
+]
+
 class Title extends React.Component {
 
       render() {
@@ -53,10 +77,12 @@ class Header extends React.Component {
     this.setState({name: "Welecomfdjsfljdsklfjdklsajfdklsjfkldsa!"});
   }
       render() {
+       console.log(this.props.contacts);
        return (
         <div>
           <Header title={this.state.name} handle={this.handleClick.bind(this)} />
           <Footer handleFooter={this.handleFooterClick.bind(this)} />
+          <ContactList contacts={this.props.contacts} />
         </div>
        );
       }
@@ -65,5 +91,5 @@ class Header extends React.Component {
 
 
 $(function() {
-  ReactDOM.render(<TrainIndex />, document.getElementById("app"));
+  ReactDOM.render(<TrainIndex contacts={contacts} />, document.getElementById("app"));
 });
