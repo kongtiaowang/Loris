@@ -10,7 +10,7 @@ $db        = Database::singleton();
 
 $session = $db->pselect("SELECT s.ID from session s
                          JOIN flag f ON ( f.sessionID = s.ID AND f.Test_name=:tname)
-                              AND f.CommentID NOT LIKE 'DDE_%'",
+                              AND f.CommentID NOT LIKE 'DDE_%' ORDER BY s.ID",
                          array('tname'=>'ACEFamilyMedicalHistory'));
 foreach ($session as $sessionID ) {
 $result = $db->pselect("SELECT m.a_aut_spect_disorder, m.a_aut_spect_disorder_who,
@@ -21,11 +21,12 @@ $result = $db->pselect("SELECT m.a_aut_spect_disorder, m.a_aut_spect_disorder_wh
                                m.d_neurofibromatosis, m.d_neurofibromatosis_who,
                                m.s_depression, m.s_depression_who,
                                m.r_panic_anxiety_dis, m.r_panic_anxiety_dis_who
-                        FROM session s LEFT JOIN flag tflag ON (s.ID = tflag.SessionID AND tflag.Test_name='tsi')
-                        LEFT JOIN flag mflag ON (s.ID = mflag.SessionID AND mflag.Test_name='med_psych_hist')
+                        FROM session s 
+                        LEFT JOIN flag tflag ON (s.ID = tflag.SessionID AND tflag.Test_name='tsi' AND tflag.CommentID NOT LIKE 'DDE%')
+                        LEFT JOIN flag mflag ON (s.ID = mflag.SessionID AND mflag.Test_name='med_psych_hist' AND mflag.CommentID NOT LIKE 'DDE%')
                         LEFT JOIN tsi t ON (tflag.CommentID = t.CommentID)
                         LEFT JOIN med_psych_hist m ON (mflag.CommentID = m.CommentID)
-                        WHERE s.ID =:sid AND tflag.CommentID NOT LIKE 'DDE%' AND mflag.CommentID NOT LIKE 'DDE%'",
+                        WHERE s.ID =:sid",
                         array('sid'=>$sessionID['ID'])) ;
 
 $mapping = array('a_aut_spect_disorder'=>'asd_', 'e_rett_syndrome'=>'rett_syndrome_',
@@ -42,6 +43,9 @@ foreach($result as $row) {
             }
             if (strpos($row[$key."_who"], 'parents_dad') !== false) {
                 $final_result[$val."father"] = 'yes';
+            }
+            if (strpos($row[$key."_who"], 'siblings') !== false) {
+                $final_result[$val."sibling1"] = 'yes';
             }
         }
       }

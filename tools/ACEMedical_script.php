@@ -37,15 +37,14 @@ $result = $db->pselect("SELECT t.pregnancy_complication_subject, t.premature_bir
                         m.d_neurofibromatosis_who, m.t_manic_depres_bi, m.t_manic_depres_bi_who, m.s_depression,m.s_depression_who,
                         m.r_panic_anxiety_dis, m.r_panic_anxiety_dis_who, m.u_schizophrenia, m.u_schizophrenia_who, m.q_add,m.q_add_who,
                         n.q23_adenoma_sebaceum,n.q25_shagreen_patches_describe,n.q24_ash_leaf_macules, n.q27_cafe_au_lait_spots
-                        FROM session s LEFT JOIN flag tflag ON (s.ID = tflag.SessionID AND tflag.Test_name='tsi')
-                        LEFT JOIN flag mflag ON (s.ID = mflag.SessionID AND mflag.Test_name='med_psych_hist')
-                        LEFT JOIN flag nflag ON (s.ID = nflag.SessionID AND nflag.Test_name='neuro_screen')
-                        LEFT JOIN flag mrflag ON (s.ID = mrflag.SessionID AND mrflag.Test_name='med_records_24')
+                        FROM session s LEFT JOIN flag tflag ON (s.ID = tflag.SessionID AND tflag.Test_name='tsi' AND tflag.CommentID NOT LIKE 'DDE%')
+                        LEFT JOIN flag mflag ON (s.ID = mflag.SessionID AND mflag.Test_name='med_psych_hist' AND mflag.CommentID NOT LIKE 'DDE%')
+                        LEFT JOIN flag nflag ON (s.ID = nflag.SessionID AND nflag.Test_name='neuro_screen' AND nflag.CommentID NOT LIKE 'DDE%')
+                        LEFT JOIN flag mrflag ON (s.ID = mrflag.SessionID AND mrflag.Test_name='med_records_24' AND mrflag.CommentID NOT LIKE 'DDE%')
                         LEFT JOIN tsi t ON (tflag.CommentID = t.CommentID)
                         LEFT JOIN med_psych_hist m ON (mflag.CommentID = m.CommentID)
                         LEFT JOIN neuro_screen n ON (nflag.CommentID = n.CommentID)
-                        LEFT JOIN med_records_24 mr ON (mrflag.CommentID = mr.CommentID) WHERE s.ID =:sid AND tflag.CommentID NOT LIKE 'DDE%'
-                        AND mflag.CommentID NOT LIKE 'DDE%' AND mrflag.CommentID NOT LIKE 'DDE%' AND nflag.CommentID NOT LIKE 'DDE%'",
+                        LEFT JOIN med_records_24 mr ON (mrflag.CommentID = mr.CommentID) WHERE s.ID =:sid",
                         array('sid'=>$sessionID['ID']));
 
 foreach($result as $row) {
@@ -58,35 +57,54 @@ foreach($result as $row) {
                         $row['q6_l_tranquilizers_nerve_pills_when_taken'], $row['q6_m_pain_killers_when_taken'], $row['q6_n_sedatives_sleeping_pills_when_taken'],
                         $row['q6_o_anti_inflam_immune_when_taken'],$row['q6_p_treatment_for_HIV_when_taken'], $row['q6_q_thalidomide_when_taken'],
                         $row['q6_r_misoprostol_when_taken'], $row['q6_s_other_when_taken']);
-      if (in_array("2_both", $preg_drugs) || in_array("1_after", $preg_drugs)
+
+      if (!array_filter($preg_drugs)) {
+          $final_result['preg_dxdrug'] = null;
+      } else if (in_array("2_both", $preg_drugs) || in_array("1_after", $preg_drugs)
           || in_array("0_before", $preg_drugs)) {
           $final_result['preg_dxdrug'] = "yes";
       } else {
           $final_result['preg_dxdrug'] = "no";
       }
-      $final_result['birth_weight_lbs'] = $row['q11_birth_weight_lbs'] + round($row['q11_birth_weight_ozs']*0.0625, 3);
+
+      if ($row['q11_birth_weight_lbs'] == '' && $row['q11_birth_weight_ozs'] == '') {
+          $final_result['birth_weight_lbs'] = null;
+      } else {
+          $final_result['birth_weight_lbs'] = (float)$row['q11_birth_weight_lbs'] + round((float)$row['q11_birth_weight_ozs']*0.0625, 3);
+      }
+
       if ($row['premature_birth'] == 'yes') {
           $final_result['full_term'] = 'no';
-          $final_result['info_gest'] = $row['weeks_gestation'];
+          $final_result['info_gest'] = (float)$row['weeks_gestation'];
       } else if ($row['premature_birth'] == 'no') {
           $final_result['full_term'] = 'yes';
       }
-     $final_result['ldnb_hosptotalmom'] = $row['q14_child_hospitalised_days'] + round($row['q14_child_hospitalised_hours']/24, 3);
-     $final_result['rev_headfebseiz'] = 'no';
+
+     if ($row['q14_child_hospitalised_days'] == '' && $row['q14_child_hospitalised_hours'] == '') {
+         $final_result['ldnb_hosptotalmom'] = null;
+     } else {
+         $final_result['ldnb_hosptotalmom'] = (float)$row['q14_child_hospitalised_days'] + round((float)$row['q14_child_hospitalised_hours']/24, 3);
+     }
+     $final_result['rev_headfebseiz'] = null;
      if ($row['q15_c_fever_seizures'] == '1_yes' && $row['q15_seizures_convulsions'] == '1_yes' ) {
          $final_result['rev_headfebseiz'] = 'yes';
+     } else if ($row['q15_seizures_convulsions'] == '0_no' ) {
+         $final_result['rev_headfebseiz'] = 'no';
      }
-     $final_result['rev_headseizure'] = 'no';
+     $final_result['rev_headseizure'] = null;
      if ($row['q15_c_fever_seizures'] == '0_no' && $row['q15_seizures_convulsions'] == '1_yes' ) {
          $final_result['rev_headseizure'] = 'yes';
+     } else if ($row['q15_seizures_convulsions'] == '0_no' ) {
+         $final_result['rev_headseizure'] = 'no';
      }
-     $final_result['fhxcp'] = 'no';
+     $final_result['fhxcp'] = null;
      if ($row['m_cerebral_palsy'] == '1_yes' && (strpos($row['m_cerebral_palsy_who'], 'child') !== false)) {
-        $final_result['fhxcp'] = 'yes';
+         $final_result['fhxcp'] = 'yes';
+     } else if ($row['m_cerebral_palsy'] == '0_no' && (strpos($row['m_cerebral_palsy_who'], 'child') !== false)) {
+         $final_result['fhxcp'] = 'yes';
      }
-     $final_result['hist_trauma'] = 'no';
-     if (strpos($row['q16_has_child_ever'] , 'c_lost_consciousness_head_injury') !== false)
-     {
+     $final_result['hist_trauma'] = null;
+     if (strpos($row['q16_has_child_ever'] , 'c_lost_consciousness_head_injury') !== false) {
          $final_result['hist_trauma'] = 'yes';
      }
 
@@ -95,18 +113,28 @@ foreach($result as $row) {
     } else if ($row['not_completed'] == 'not_complete' ) {
         $final_result['rev_eartest'] = 'no';
     }
-    $final_result['rev_eartestresult'] = $row['test_results'];
-    $final_result['rev_neckspinalab'] = 'no';
+    if (empty($row['test_results'])) {
+        $final_result['rev_eartestresult'] = null;
+    } else if ($row['test_results']  == 'normal_hearing') {
+        $final_result['rev_eartestresult'] = 'normal';
+    } else if ($row['test_results']  == 'temporary_hearing_difficulty' || $row['test_results']  == 'permanent_abnormal_hearing') {
+        $final_result['rev_eartestresult'] = 'abnormal';
+    } else if ($row['test_results']  == 'not_answered' || $row['test_results']  == 'equivocal_evaluation_results') {
+        $final_result['rev_eartestresult'] = 'not_answered';
+    }
+    $final_result['rev_neckspinalab'] = null;
     if ($row['q17_birth_defects'] == 'c_open_spine') {
         $final_result['rev_neckspinalab'] = 'yes';
     }
    $birth_marks = array($row['q27_cafe_au_lait_spots'], $row['q24_ash_leaf_macules'], $row['q23_adenoma_sebaceum']);
-   $final_result['rev_skinbirthmark'] = 'no';
+   $final_result['rev_skinbirthmark'] = null;
    if (in_array('1_uncertain', $birth_marks) || in_array('2_present', $birth_marks) || in_array('3_six_or_more_spots', $birth_marks)
        || in_array('1_one_three_spots', $birth_marks) || in_array('2_four_or_five_spots', $birth_marks)) {
        $final_result['rev_skinbirthmark'] = 'yes';
+   } else if ($row['q27_cafe_au_lait_spots'] == '0_absent' && $row['q24_ash_leaf_macules'] == '0_absent' && $row['q23_adenoma_sebaceum'] == '0_absent') {
+       $final_result['rev_skinbirthmark'] = 'no';
    }
-  $final_result['rev_cardiomalfunc'] = 'no';
+  $final_result['rev_cardiomalfunc'] = null;
   if ( strpos($row['q17_birth_defects'] , 'd_heart_defect') !== false) {
       $final_result['rev_cardiomalfunc'] = 'yes';
   }
@@ -134,9 +162,9 @@ foreach($result as $row) {
 //print_r($final_result);
 }
 $WhereCriteria['CommentID'] = $db->pselectOne("SELECT i.CommentID FROM ACESubjectMedicalHistory i
-                                               JOIN flag f ON f.CommentID = i.CommentID
+                                               JOIN flag f ON f.CommentID = i.CommentID AND f.CommentID NOT LIKE 'DDE%'
                                                JOIN session s ON s.ID = f.SessionID
-                                               WHERE s.ID =:sid AND f.CommentID NOT LIKE 'DDE%'",
+                                               WHERE s.ID =:sid",
                                                array('sid'=>$sessionID['ID']));
 
   if (!empty($final_result)) {
