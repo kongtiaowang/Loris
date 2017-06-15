@@ -27,12 +27,11 @@ $result       = $db->pselect("SELECT h.length1, h.weight1, h.head_circumference1
                               n.q24_ash_leaf_macules, n.q27_cafe_au_lait_spots, n.q23_adenoma_sebaceum, n.q25_shagreen_patches_describe,
                               n.q28_cutaneous_nodules,n.q13_tone_symmetrical_abnormality,n.q14_tone_asymmetrical_abnormality,
                               n.q17_power_lower_limb, n.q16_power_upper_limb FROM
-                              session s LEFT JOIN flag nflag ON (s.ID = nflag.SessionID AND nflag.Test_name='neuro_screen')
-                              LEFT JOIN flag hflag ON (s.ID = hflag.SessionID AND hflag.Test_name='head_measurements_subject')
+                              session s LEFT JOIN flag nflag ON (s.ID = nflag.SessionID AND nflag.Test_name='neuro_screen' AND nflag.CommentID NOT LIKE 'DDE%')
+                              LEFT JOIN flag hflag ON (s.ID = hflag.SessionID AND hflag.Test_name='head_measurements_subject' AND hflag.CommentID NOT LIKE 'DDE%')
                               LEFT JOIN neuro_screen n ON (nflag.CommentID = n.CommentID)
                               LEFT JOIN head_measurements_subject h ON (hflag.CommentID = h.CommentID)
-                              WHERE s.ID =:sid AND nflag.CommentID NOT LIKE 'DDE%'
-                                    AND hflag.CommentID NOT LIKE 'DDE%'", array('sid'=>$sessionID['ID']));
+                              WHERE s.ID =:sid", array('sid'=>$sessionID['ID']));
 $value_mapping = array('1_covert'=>'yes','2_overt'=>'yes','0_absent'=>'no','9_not_tested'=>'nk','7_can_t_tell'=>'nk',
                        '9_failure_to_test'=>'nk','2_definite'=>'yes','0_absent'=>'no','1_doubtful'=>'nk',
                        '8_suject_unable'=>'nk');
@@ -157,9 +156,9 @@ foreach($mapping as $key=>$val) {
 }
 //print_r($final_result);
 $WhereCriteria['CommentID'] = $db->pselectOne("SELECT i.CommentID FROM ACESubjectPhysicalExam i
-                                               JOIN flag f ON f.CommentID = i.CommentID
+                                               JOIN flag f ON f.CommentID = i.CommentID AND f.CommentID NOT LIKE 'DDE%'
                                                JOIN session s ON s.ID = f.SessionID
-                                               WHERE s.ID =:sid AND f.CommentID NOT LIKE 'DDE%'",
+                                               WHERE s.ID =:sid",
                                                array('sid'=>$sessionID['ID']));
   if (!empty($final_result)) {
     $result = $db->update('ACESubjectPhysicalExam', $final_result, $WhereCriteria);
