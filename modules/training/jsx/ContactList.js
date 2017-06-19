@@ -5,8 +5,7 @@ class ContactList extends React.Component {
     this.state = {search: '',
                   searchphone:''};
 
-    this.handleChange = this.handleChange.bind(this);
-  }
+    this.handleChange = this.handleChange.bind(this);  
     this.handleChangephone = this.handleChangephone.bind(this);
   }
 
