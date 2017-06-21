@@ -2,7 +2,9 @@ class Demo extends React.Component {
 
   render() {
       return (
-        <div>hello world</div>
+        <div>
+          <h1>hello world</h1>
+        </div>
       );
     }
 
@@ -10,6 +12,6 @@ class Demo extends React.Component {
 
 $(function() {
 
-  ReactDOM.render("hello", document.getElementById("lorisworkspace"));
+  ReactDOM.render(<Demo />, document.getElementById("lorisworkspace"));
 
 });
