@@ -1,9 +1,13 @@
+import Title from "./Title";
+import ModuleList from "./ModuleList";
+
 class Demo extends React.Component {
 
   render() {
       return (
         <div>
-          <h1>hello world</h1>
+          <Title />
+          <ModuleList />
         </div>
       );
     }
