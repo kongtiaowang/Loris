@@ -265,18 +265,7 @@ class NDB_BVL_Instrument_mri_parameter_form extends NDB_BVL_Instrument
                       $this->_saveCandidateAge($values);
 
              }
-              
-              if(isset($values['wait_time'])) {
-                  $time = $values['wait_time'];
-                  $values['wait_time'] = sprintf("%02d:%02d:00", $time['H'], $time['i']);
-              }
-              
-              if(isset($values['total_duration'])) {
-                  $time = $values['total_duration'];
-                  $values['total_duration'] = sprintf("%02d:%02d:00", $time['H'], $time['i']);
-              }
-              
-              //print_r($values['wait_time']);
+
               if(isset($values['directions_file']) && !empty($values['directions_file']['name'])) {
                 require_once "File_Upload.class.inc";
                 $file=new File_Upload;
