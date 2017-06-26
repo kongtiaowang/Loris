@@ -24,7 +24,6 @@ $config = NDB_Config::singleton();
 $db     = Database::singleton();
 
 echo "Warning: All conflicts for instruments with Administration=None will be removed.\n";
-echo "\nWarning: All not_answered and blanks conflicts for neuroscreen instrument will be removed.\n";
 
 /**
  * HELP SCREEN
@@ -64,15 +63,15 @@ if ($action=='all') {
 // clear the unresolved conflicts for all the instruments
 foreach ($allInstruments as $instrument=>$Full_name) {
     $clear_conflicts = $db->pselect(
-        "SELECT CommentID, Test_name,
-                                            CONCAT('DDE_', CommentID)
-                                            AS DDECommentID
+                                   "SELECT CommentID, Test_name,
+                                    CONCAT('DDE_', CommentID)
+                                     AS DDECommentID
                                      FROM flag
                                      JOIN session s ON (s.ID=flag.SessionID)
                                      JOIN candidate c ON (c.CandID=s.CandID)
                                      WHERE Test_name=:testname AND CommentID
-                                           NOT LIKE 'DDE%' AND s.Active='Y'
-                                           AND c.Active='Y'",
+                                     NOT LIKE 'DDE%' AND s.Active='Y'
+                                     AND c.Active='Y'",
         array('testname' => $instrument)
     );
     echo "\nClearing conflicts for $Full_name.\n";
@@ -89,12 +88,14 @@ foreach ($ddeInstruments as $test) {
                                  FROM flag sde
                                  JOIN session s ON (s.ID=sde.SessionID)
                                  JOIN candidate c ON (c.CandID=s.CandID)
+                                 JOIN participant_status ps ON (ps.CandID=c.CandID) 
                                  WHERE sde.Test_name=:testname AND sde.CommentID
-                                       NOT LIKE 'DDE%' AND sde.Data_entry='Complete'
-                                       AND s.Active='Y' AND c.Active='Y'
-                                       AND EXISTS (SELECT 'x' FROM flag dde WHERE
-                                           dde.CommentID=CONCAT('DDE_',sde.CommentID)
-                                       AND Data_entry='Complete')",
+                                 NOT LIKE 'DDE%' AND sde.Data_entry='Complete'
+                                 AND s.Active='Y' AND c.Active='Y'
+                                 AND ps.participant_status NOT IN(2,3,4)
+                                 AND EXISTS (SELECT 'x' FROM flag dde 
+                                 WHERE dde.CommentID=CONCAT('DDE_',sde.CommentID)
+                                 AND Data_entry='Complete')",
         array('testname' => $test)
     );
 
@@ -119,10 +120,6 @@ echo "\nRemoving conflicts where Administration=None.\n";
 $db->run("DELETE cu FROM conflicts_unresolved cu LEFT JOIN flag f ON (cu.CommentId1=f.CommentID) WHERE f.Administration='None'");
 $db->run("DELETE cu FROM conflicts_unresolved cu LEFT JOIN flag f ON (cu.CommentId2=f.CommentID) WHERE f.Administration='None'");
 
-echo "\nRemoving Neuroscreen conflicts with blanks and not_answered.\n";
-
-$db->run("DELETE cu FROM conflicts_unresolved cu WHERE cu.TableName='neuro_screen' and (cu.Value1 IS NULL and cu.Value2='not_answered')");
-$db->run("DELETE cu FROM conflicts_unresolved cu WHERE cu.TableName='neuro_screen' and (cu.Value1='not_answered' and cu.Value2 IS NULL)");
 
 echo "\nFinished.\n";
 
