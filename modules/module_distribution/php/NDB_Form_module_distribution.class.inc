@@ -79,9 +79,7 @@ class NDB_Form_Module_Distribution extends NDB_Form
         return array_merge(
             $baseDeps,
             array(
-             $baseurl . '/js/d3.min.js',
-             $baseurl . '/js/c3.min.js',
-             $baseurl . '/dashboard/js/dashboard-helper.js',
+             $baseurl . '/module_distribution/js/index.js',
             )
         );
 
