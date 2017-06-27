@@ -24,10 +24,15 @@ class ModuleList extends React.Component {
   
       
   render() {
+      const Item = ModuleItems.map((module,index) =>
+            {
+               return <ModuleItem ModuleItem = {module} key={index} />
+            }
+      );
       return (
         <div> 
              <div className="row">
-                 <ModuleItem ModuleItems = {ModuleItems} />           
+                 {Item}           
              </div>          
         </div>
       );
