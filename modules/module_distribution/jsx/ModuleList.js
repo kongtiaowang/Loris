@@ -1,37 +1,39 @@
 import ModuleItem from "./ModuleItem";
 
- const ModuleItems = [
-         {ModuleName:'Instrument Manager',
-          Author:'Superman',
-          Description:'The Instrument Builder module is designed to create new behavioural forms on the database. Existing instruments that were created using the instrument builder can be added under the "Load Instrument (optional)" heading.',
-          Version:'1.0',
-          InstallState:'1'
-         },
-         {ModuleName:'Dicom Archive',
-          Author:'Batman',
-          Description:'The Dicom Archive module displays all scans that have been uploaded to LORIS, whether or not they have been inserted or not',
-          Version:'1.0',
-          InstallState:'0'
-         },
-         {ModuleName:'Help Editor',
-          Author:'Wonder Woman',
-          Description:'The content for any module can be edited by clicking on the Topic or Parent topic of choice.',
-          Version:'1.0',
-          InstallState:'0'
-         }];
 
 class ModuleList extends React.Component {
   
-      
+  constructor(props) {
+  super(props);
+
+  this.state = {
+      search: ""
+    };
+
+
+  }
+     
+  handleSearch(event) {
+     console.log(event.target.value);
+     this.setState({search:event.target.value});
+  }
+
+ 
   render() {
-      const Item = ModuleItems.map((module,index) =>
+      let FilterdModuleItems = this.props.ModuleItems.filter(
+          (module) => {
+             return module.ModuleName.toLowerCase().indexOf(this.state.search.toLowerCase()) !== -1;
+          }     
+          );
+      const Item = FilterdModuleItems.map((module,index) =>
             {
                return <ModuleItem ModuleItem = {module} key={index} />
             }
       );
       return (
         <div> 
-             <div className="row">
+             <div className="row container">
+                 <input type="text" className="left" name="search" placeholder="Search.." value={this.state.search} onChange={this.handleSearch.bind(this)} />
                  {Item}           
              </div>          
         </div>

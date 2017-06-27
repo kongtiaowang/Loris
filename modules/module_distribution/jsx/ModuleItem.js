@@ -11,7 +11,7 @@ class ModuleItem extends React.Component {
   }
   render() {
       const module = this.props.ModuleItem;    
-      return (<div className="col-lg-4">
+      return (<div className="col-lg-12">
               <h3>{module.ModuleName}</h3>
              {
                module.InstallState == '1'?
