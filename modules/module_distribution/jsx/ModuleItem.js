@@ -3,7 +3,12 @@ class ModuleItem extends React.Component {
   constructor(props) {
     super(props);
   }
-
+  handleClick(){
+   alert("Install Button is clicked");
+  }
+  handleClickRM(){
+   alert("Remove Button is clicked");
+  }
   render() {
       const module = this.props.ModuleItem;    
       return (<div className="col-lg-4">
@@ -11,7 +16,7 @@ class ModuleItem extends React.Component {
              {
                module.InstallState == '1'?
                  <div className="checkbox pull-right"> 
-                           <label><input type="checkbox" value="" />enable</label>
+                    <label><input type="checkbox" value="" />enable</label>
                  </div>
                   : null
              }
@@ -19,9 +24,9 @@ class ModuleItem extends React.Component {
               <p>{module.Description}</p>
              {
                 module.InstallState == '0' ? 
-                <p><a className="btn btn-success" href="#" type="button">Install</a></p>
+                <p><a className="btn btn-success" href="#" type="button" onClick={this.handleClick.bind(this)}>Install</a></p>
                 :
-                <p><a className="btn btn-danger" href="#" type="button">Remove</a></p>
+                <p><a className="btn btn-danger" href="#" type="button" onClick={this.handleClickRM.bind(this)}>Remove</a></p>
               }
             </div>);
     }
