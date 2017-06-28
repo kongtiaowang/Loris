@@ -69,7 +69,7 @@ if ($userSingleton->hasPermission('document_repository_view')
         // when this script is executing. Go up a level to the
         // document_repository module directory, and use a
         // user_uploads directory as a base for user uploads
-        $base_path = __DIR__ . "/../user_uploads/";
+        $base_path = __DIR__ . '/../user_uploads/';
         $fileBase  = $puser . "/" . $fileName;
 
         if (!file_exists($base_path . $puser)) {
