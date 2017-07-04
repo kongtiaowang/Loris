@@ -18,8 +18,16 @@
 <script id="dir" type="x-tmpl-mustache">
     <tr id="{{ id }}a" {{ #parentID }}class="{{ parentID }}a directoryRow" style="display:none"{{ /parentID }}>
         <td class="fileColumn" colspan="10">
+            {{ #depth }}
+                {{ #first }}
+                    <div class="spacer" style="border-left: none;"> </div>
+                {{ /first }}
+                {{ ^first }}
+                    <div class="spacer"> </div>
+                {{ /first }}
+            {{ /depth }}
             {{ #indent }}
-                <div class="fileDDD" style="{{ margin }}">
+                <div class="fileDDD">
                     <span style="padding: 8px" class='directory glyphicon glyphicon-chevron-right' data-container="body" data-toggle="popover" data-placement="right" data-content="{{ Comment }}">
                         {{ name }}
                     </span>
@@ -36,7 +44,15 @@
 <script id="file" type="x-tmpl-mustache">
     <tr class="{{ parentID }}a fileRow" {{ ^filtered }}style="display:none" {{ /filtered }}>
         <td class="blah fileColumn">
-            <div {{ ^filtered }}class="fileDDD" style="{{ margin }}"{{ /filtered }}><div style="padding-top: 8px">
+            {{ #depth }}
+                {{ #first }}
+                    <div class="spacer" style="border-left: none;"> </div>
+                {{ /first }}
+                {{ ^first }}
+                    <div class="spacer"> </div>
+                {{ /first }}
+            {{ /depth }}
+            <div {{ ^filtered }}class="fileDDD"{{ /filtered }}><div style="padding-top: 8px">
                 <a href="{/literal}{$baseurl}{literal}/document_repository/ajax/GetFile.php?File={{ Data_dir }}" target="_blank" download="{{ File_name }}">
                         {{ File_name }}
                 </a>({{ File_size }})
@@ -249,7 +265,7 @@
                             </label>
                             <div class="col-xs-8">
                                 <select name="parent_id" id="parent_id" class="form-control input-sm">
-                                    <option value="0"></option>
+                                    <option value="0"> </option>
                                     {foreach from = $File_categories item=val key=k}
                                         {if $val != "Any"}
                                                 <option value={$k}>{$val.CategoryName}</option>
@@ -318,11 +334,7 @@
                                 <select name="site" id = "site" class = "form-fields form-control input-sm">
                                 <option value=" "> </option>
                                     {foreach from = $Sites item=val key=k}
-                                        {if $val == "Any"}
-                                            <option value="0">Any</option>
-                                            {else}
-                                            <option value={$k}>{$val}</option>
-                                        {/if}
+                                        <option value={$k}>{$val}</option>
                                     {/foreach}
                                 </select>
                             </div>
@@ -333,7 +345,11 @@
                                 <select name="instrument" id = "instrument" class = "form-fields form-control input-sm">
                                 <option value="0"> </option>
                                     {foreach from = $Instruments item=val key=k}
-                                        <option value={$k}>{$val}</option>
+                                         {if $val == "Any"}
+                                             <option value="0">Any</option>
+                                             {else}
+                                             <option value={$k}>{$val}</option>
+                                         {/if}
                                     {/foreach}
                                 </select>
                             </div>
