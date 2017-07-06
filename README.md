@@ -6,5 +6,5 @@ This study is a collaborative effort by investigators at four clinical sites: Un
 Pull requests should be based on and sent to the VERSIONNUMBER branch of the version that you are targeting.
 
 > The master branch is currently not in use.
-> 16.0 is the version currently on production
-> 17.0 is in development
+> 17.0 is the version currently on production
+> 17.1 is in development
