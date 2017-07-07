@@ -1,7 +1,5 @@
 'use strict';
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 var PagedRowHeader = React.createClass({
     displayName: 'PagedRowHeader',
 
@@ -172,13 +170,37 @@ var IncompleteCandidatesRow = React.createClass({
 var InstrumentConflictsRow = React.createClass({
     displayName: 'InstrumentConflictsRow',
 
+    handleClick: function handleClick(event) {
+        event.preventDefault();
+        var row = this.props.row;
+        var candID = row.CandID;
+        var instrument = row.TableName;
+        var question = row.FieldName;
+        var form = $('<form />', {
+            "action": loris.BaseURL + "/conflict_resolver/",
+            "method": "post"
+        });
+        var values = {
+            "reset": "true",
+            "CandID": candID,
+            "Instrument": instrument,
+            "Question": question,
+            "filter": "Show Data"
+        };
+        $.each(values, function (name, value) {
+            $("<input />", {
+                type: 'hidden',
+                name: name,
+                value: value
+            }).appendTo(form);
+        });
+        form.appendTo('body').submit();
+    },
     proptypes: {
         'row': React.PropTypes.object.isRequired,
         'BaseURL': React.PropTypes.string.isRequired
     },
     render: function render() {
-        var _React$createElement;
-
         var row = this.props.row;
         return React.createElement(
             'tr',
@@ -211,7 +233,7 @@ var InstrumentConflictsRow = React.createClass({
                 null,
                 React.createElement(
                     'a',
-                    (_React$createElement = { href: 'conflict' }, _defineProperty(_React$createElement, 'href', this.props.BaseURL + "/conflict_resolver/?CandID=" + row.CandID), _defineProperty(_React$createElement, 'className', 'conflict_resolver_link'), _defineProperty(_React$createElement, 'data-pscid', row.PSCID), _defineProperty(_React$createElement, 'data-question', row.FieldName), _defineProperty(_React$createElement, 'data-instrument', row.TableName), _defineProperty(_React$createElement, 'data-visits', row.visit_label), _React$createElement),
+                    { href: '#', onClick: this.handleClick },
                     row.test_name_display
                 )
             ),
@@ -545,7 +567,7 @@ var dataTeamGraphics = React.createClass({
     }
 });
 
-const GraphicsPanel = React.createFactory(dataTeamGraphics);
-const BehaviouralFeedbackTab = React.createFactory(BehaviouralFeedback);
-const IncompleteCandidatesPanel = React.createFactory(IncompleteCandidates);
-const InstrumentConflictsPanel = React.createFactory(InstrumentConflicts);
+var GraphicsPanel = React.createFactory(dataTeamGraphics);
+var BehaviouralFeedbackTab = React.createFactory(BehaviouralFeedback);
+var IncompleteCandidatesPanel = React.createFactory(IncompleteCandidates);
+var InstrumentConflictsPanel = React.createFactory(InstrumentConflicts);
