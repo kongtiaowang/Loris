@@ -82,7 +82,7 @@ class CouchDBDemographicsImporter {
             'Description' => 'NDAR Consent',
             'Type' => "enum('yes','no','not_answered')",
         ),
-        'NDAR_consent_withdrawal'  => array(
+        'NDAR_consent_withdrawal' => array(
             'Description' => 'NDAR Consent Withdrawal Date',
             'Type' => "varchar(255)",
         ),
