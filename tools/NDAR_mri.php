@@ -257,8 +257,15 @@ class NDAR_Release_MRI {
         if ($t1t2) {
           if ($ibis == 1) {
             $files = $db->pselect("select c.CandID, c.PSCID, c.IBISID, c.CandidateGUID, c.ProbandGUID, c.DoB, s.CenterID, s.Visit_label, s.Current_stage, f.File, fqc.QCStatus, c.Gender
-            FROM files f left join files_qcstatus fqc USING (FileID) LEFT JOIN session s ON (s.ID=f.SessionID) LEFT JOIN candidate c on (c.CandID=s.CandID)
-            LEFT JOIN parameter_file AS pf ON (f.FileID=pf.FileID) LEFT JOIN parameter_type AS pt ON (pt.ParameterTypeID=pf.ParameterTypeID) LEFT JOIN participant_status ps ON (c.CandID=ps.CandID)
+            FROM files f 
+            LEFT JOIN files_qcstatus fqc USING (FileID) 
+            LEFT JOIN session s ON (s.ID=f.SessionID) 
+            LEFT JOIN candidate c ON (c.CandID=s.CandID)
+            LEFT JOIN parameter_file AS pf ON (f.FileID=pf.FileID) 
+            LEFT JOIN parameter_type AS pt ON (pt.ParameterTypeID=pf.ParameterTypeID) 
+            LEFT JOIN participant_status ps ON (c.CandID=ps.CandID)
+            LEFT JOIN parameter_candidate AS pcc ON (pcc.ParameterTypeID=(SELECT ParameterTypeID FROM parameter_type WHERE name='CandidateGUID') AND pcc.CandID=c.CandID)
+            LEFT JOIN parameter_candidate AS pcp ON (pcp.ParameterTypeID=(SELECT ParameterTypeID FROM parameter_type WHERE name='ProbandGUID') AND pcp.CandID=c.CandID)
             WHERE pt.Name='patient_id' AND UPPER(s.Visit_label) IN ({$v[$ibis]}) AND s.Active='Y' AND c.Active='Y' AND (ps.participant_status=1 OR ps.participant_status=7) AND
             (
                 f.AcquisitionProtocolID='44' OR f.AcquisitionProtocolID='45'
@@ -269,8 +276,15 @@ class NDAR_Release_MRI {
             ORDER BY PSCID", array());
           } else if ($ibis == 2) {
             $files = $db->pselect("select c.CandID, c.PSCID, c.IBISID, c.CandidateGUID, c.ProbandGUID, c.DoB, s.CenterID, s.Visit_label, s.Current_stage, f.File, fqc.QCStatus, c.Gender
-            FROM files f left join files_qcstatus fqc USING (FileID) LEFT JOIN session s ON (s.ID=f.SessionID) LEFT JOIN candidate c on (c.CandID=s.CandID)
-            LEFT JOIN parameter_file AS pf ON (f.FileID=pf.FileID) LEFT JOIN parameter_type AS pt ON (pt.ParameterTypeID=pf.ParameterTypeID) LEFT JOIN participant_status ps ON (c.CandID=ps.CandID)
+            FROM files f 
+            LEFT JOIN files_qcstatus fqc USING (FileID) 
+            LEFT JOIN session s ON (s.ID=f.SessionID) 
+            LEFT JOIN candidate c ON (c.CandID=s.CandID)
+            LEFT JOIN parameter_file AS pf ON (f.FileID=pf.FileID) 
+            LEFT JOIN parameter_type AS pt ON (pt.ParameterTypeID=pf.ParameterTypeID) 
+            LEFT JOIN participant_status ps ON (c.CandID=ps.CandID)
+            LEFT JOIN parameter_candidate AS pcc ON (pcc.ParameterTypeID=(SELECT ParameterTypeID FROM parameter_type WHERE name='CandidateGUID') AND pcc.CandID=c.CandID)
+            LEFT JOIN parameter_candidate AS pcp ON (pcp.ParameterTypeID=(SELECT ParameterTypeID FROM parameter_type WHERE name='ProbandGUID') AND pcp.CandID=c.CandID)
             WHERE pt.Name='patient_id' AND UPPER(s.Visit_label) IN ({$v[$ibis]}) AND s.Active='Y' AND c.Active='Y' AND (ps.participant_status=1 OR ps.participant_status=7) AND
             (
                 f.AcquisitionProtocolID='44' OR f.AcquisitionProtocolID='45'
