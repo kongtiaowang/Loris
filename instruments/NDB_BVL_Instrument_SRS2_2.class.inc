@@ -387,6 +387,8 @@ class NDB_BVL_Instrument_SRS2_2 extends NDB_BVL_Instrument
             array('CID' => $this->getCommentID())
         );
         foreach ($tpl_data['questions'] as $key=>&$row) {
+            //questions stored in the database with htmlentities should get decoded for the proper display.
+            $row['question']=html_entity_decode($row['question']);
                 if($row['SourceField'] == 'informant_other' && $Responses['informant'] != 'other') {
                    unset($tpl_data['questions'][$key]);
                 } else {
