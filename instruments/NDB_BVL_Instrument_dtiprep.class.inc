@@ -37,20 +37,6 @@ class NDB_BVL_Instrument_DTIprep extends NDB_BVL_Instrument
         $this->table     = 'dtiprep'; // name of database table corresponding to instrument
         $this->commentID = $commentID; // data keyed by commentID
 
-        $config            = NDB_Config::singleton();
-        $this->dateOptions = array(
-                              'language'         => 'en',
-                              'format'           => 'YMd',
-                              'minYear'          => $config->getSetting('startYear'),
-                              'maxYear'          => $config->getSetting('endYear'),
-                              'addEmptyOption'   => true,
-                              'emptyOptionValue' => null,
-                             );
-
-        // $candidate = Candidate::singleton($commentID);
-        // $this->centerID = $candidate->getData('CenterID');
-        // $this->siteName = Site::singleton($this->centerID)->getCenterName();
-
         $this->fullaverage = array(
                               "ALIC_L",
                               "ALIC_R",
@@ -100,14 +86,11 @@ class NDB_BVL_Instrument_DTIprep extends NDB_BVL_Instrument
     function _setupForm()
     {
         //determine page to display
-        if (preg_match("/dtiprep(_page[0-9]+)/", $this->page, $matches)) {
+        if (preg_match("/". $this->testName ."(_page[0-9]+)/", $this->page, $matches)) {
             call_user_func(array($this, $matches[1]));
         } else {
             $this->_main();
         }
-
-        //Defines the call back function for LorisForm to use when validating the form.
-        //$this->form->addFormRule(array(&$this, 'XINValidate'));
     }
 
     /**
@@ -118,6 +101,12 @@ class NDB_BVL_Instrument_DTIprep extends NDB_BVL_Instrument
      */
     function _main()
     {
+        // Permissions?
+        $record =array();
+        $db     =& Database::singleton();
+        $query  = "SELECT * FROM ".$this->table." WHERE CommentID='".$this->getCommentID()."'";
+        $record = $db->pselectRow($query, array());
+
         $this->form->addElement('header', 'instrument_title_main', "DTIPrep and DTI Processing Output");
 
         $filetype = array(
@@ -126,14 +115,10 @@ class NDB_BVL_Instrument_DTIprep extends NDB_BVL_Instrument
                      'md' => "Full Average MD",
                      'rd' => "Full Average RD",
                     );
-        $group[]  = $this->form->createElement("select", "filetype", "", $filetype);
-        $this->XINRegisterRule("filetype", array("code{@}=={@}"), "Required.", "filetype_group");
-        $this->form->addGroup($group, "filetype_group", "Select the right file type you are loading", null, false);
-        unset($group);
 
+        $this->form->addElement('select', 'filetype', 'Select the right file type you are loading', $filetype);
         $this->form->addElement('file', 'dtiprep_file', 'Upload the dtiprep file');
-        $this->form->addElement('static', "File_name", "Last Uploaded File");
-
+        $this->form->addElement('static', 'File_name', 'Last Uploaded File');
     }
 
     function _page1()
@@ -240,6 +225,7 @@ class NDB_BVL_Instrument_DTIprep extends NDB_BVL_Instrument
                 }
             }
         }
+
         unset(
             $values['candID'],
             $values['sessionID'],
@@ -251,6 +237,7 @@ class NDB_BVL_Instrument_DTIprep extends NDB_BVL_Instrument
             $values['MAX_FILE_SIZE'],
             $values['dtiprep_file']
         );
+
         $this->_save($values);
     }
 
@@ -271,11 +258,12 @@ class NDB_BVL_Instrument_DTIprep extends NDB_BVL_Instrument
             true,
             true
         );
-        $SheetCount  = $objPHPExcel->getSheetCount();
-        $sheet       = $objPHPExcel->getSheet(0);
-        $highestRow  = $sheet->getHighestRow();
-        $highestCol  = $sheet->getHighestColumn();
-        $headings    = $sheet->rangeToArray(
+
+        $SheetCount = $objPHPExcel->getSheetCount();
+        $sheet      = $objPHPExcel->getSheet(0);
+        $highestRow = $sheet->getHighestRow();
+        $highestCol = $sheet->getHighestColumn();
+        $headings   = $sheet->rangeToArray(
             'A1:' . $highestCol . 1,
             null,
             true,
@@ -312,18 +300,9 @@ class NDB_BVL_Instrument_DTIprep extends NDB_BVL_Instrument
                    );
 
         if ($headings !== $org_hdr) {
-            $errors[] = "Incorrect columns in file, we expect this: " .
-            implode(
-                ", ",
-                (array_merge(
-                    array(
-                     "subjectID",
-                     "CandID",
-                     "Visit_label",
-                    ),
-                    $this->fullaverage
-                ))
-            );
+            $errors[] = "Incorrect columns in file, we expect this: \n" .
+            serialize($org_hdr) . "\n and got this: \n" .
+            serialize($headings);
             return $errors;
         }
 
@@ -364,7 +343,7 @@ class NDB_BVL_Instrument_DTIprep extends NDB_BVL_Instrument
 
         $firstrow = true;
         foreach ($sheetData as $row) {
-            // var_dump($row);
+            // Handling case where the first row are the headers
             if ($firstrow) {
                 $firstrow = false;
             } else {
@@ -385,7 +364,6 @@ class NDB_BVL_Instrument_DTIprep extends NDB_BVL_Instrument
                     $row
                 );
 
-                //var_dump($values);
                 $commentid = $db->pselectOne(
                     "select f.CommentID from flag as f
                   left join `session` as s on f.SessionID=s.ID
@@ -398,8 +376,24 @@ class NDB_BVL_Instrument_DTIprep extends NDB_BVL_Instrument
                     )
                 );
 
+                // Update all of the data found
                 if (!empty($commentid)) {
                     unset($values['CandID'], $values['Visit_label']);
+
+                    // Check if the File_name has changed if it is not null
+                    $File_name = $db->pselectOne(
+                        "select i.File_name from ". $this->testName ." as i
+                      WHERE i.CommentID = :comid",
+                        array('comid' => $commentid)
+                    );
+
+                    // Handling of conflicts of different DTI file result
+                    if ($File_name != null && $File_name != $values['File_name']) {
+                        $errors[] = "Conflict: A different DTI file result! \n" .
+                        "In   db: {$File_name}\n" .
+                        "In file: {$values['File_name']}\n";
+                        return $errors;
+                    }
 
                     $result = $db->update(
                         $this->testName,
@@ -407,65 +401,15 @@ class NDB_BVL_Instrument_DTIprep extends NDB_BVL_Instrument
                         array('CommentID' => $commentid)
                     );
                 } else {
-                    $errors[] = "No CommentID for {$values['Visit_label']} " .
-                      "{$values['CandID']}";
+                    // Handling case of the last line "Atlas"
+                    if ($values['File_name'] != "Atlas") {
+                        $errors[] = "No CommentID for {$values['Visit_label']} " .
+                        "{$values['CandID']}\n";
+                    }
                 }
 
             }
         }
-
-        /*
-        $fp=fopen($file->fileInfo['tmp_name'], "r");
-        $contents=fread($fp,filesize($file->fileInfo['tmp_name']));
-        fclose($fp);
-
-        $values=array(
-            'UserID'    =>$args['username'],
-            'Status'    =>'assembly',
-            'File_type' =>'dtiprep',
-            'File_name' =>$file->getDestinationFilename(),
-            'Data_dir'  =>$file->getDestinationDirectory()
-        );
-
-
-        //Cycle through the lines and extract the data
-        $lines=explode("\n",$contents);
-        $keys = explode("\t", $lines[0]);
-        $vals = explode("\t", $lines[1]);
-        for($i = 0; $i < count($keys); $i++){
-           if (!empty($keys[$i]) && !preg_match("/^\s+$/", $keys[$i])){
-             $values[$keys[$i]] = $vals[$i];
-           }
-        }
-
-        if (empty($values['ABC_95%_CI'])){
-           $values['ABC_95%_CI'] = '';
-        }
-
-        if (empty($values['ABC_90%_CI'])){
-            $values['ABC_90%_CI'] = '';
-         }
-
-         if (empty($values['ABC_85%_CI'])){
-              $values['ABC_85%_CI'] = '';
-          }
-
-        $values['TEST_DATE'] = $this->formatDate($values['TEST_DATE']);
-        $values['BIRTH_DATE'] = $this->formatDate($values['BIRTH_DATE']);
-        $values['INTEL_TEST_DATE'] = $this->formatDate($values['INTEL_TEST_DATE']);
-
-        unset($values['EXAMINER']);
-        unset($values['TEST_DATE']);
-
-        $db=& Database::singleton();
-
-        ///Setting trackchanges to false because getting error messages
-        $db->_trackChanges = false;
-        ////////////////////////////////////////////////////////////////
-
-        $result = $db->update($this->testName, $values,
-        array('CommentID'=>$args['CommentID']));
-        */
 
         if (!empty($errors)) {
             return $errors;
