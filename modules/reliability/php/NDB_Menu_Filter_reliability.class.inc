@@ -262,30 +262,6 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
         foreach ($this->list as $item) {
             //count column
             $this->tpl_data['items'][$x][0]['value'] = $x + $count;
-            $db = Database::singleton();
-            $pscid=$item['PSCID'];
-            $visitlabel=$item['Visit_label'];
-            $instrument=$item['Instrument'];
-            $video_found= $db->pselectOne(
-                "SELECT COUNT(*) FROM videos WHERE PSCID='$pscid'AND visitLabel='$visitlabel'AND instrument ='$instrument'",
-                array()
-            );
-            if($video_found>0)
-            {
-                $video_array = $db->pselect(
-                    "SELECT File_name as fn, uploaded_by as up FROM videos WHERE PSCID='$pscid'AND visitLabel='$visitlabel'AND instrument ='$instrument'",
-                    array()
-                );
-                foreach ($video_array as $video) {
-                    $factory = NDB_Factory::singleton();
-                    $baseURL = $factory->settings()->getBaseURL();
-                    $rest_path="/temp_videos/ajax/GetFile.php?File=/videos/".$video['up'].'/'.$video['fn'];
-                    $this->tpl_data['items'][$x][10]['value'] = '<a href="' . $baseURL.$rest_path . '" download ="' . $video['fn'] . '">Yes</a>';
-                }
-            }
-            else{
-                $this->tpl_data['items'][$x][10]['value'] = 'No';
-            }
             //print out data rows
             $i = 1;
             // $identifier = $item['Tracking_log_ID'];
