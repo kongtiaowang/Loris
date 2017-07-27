@@ -76,7 +76,17 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
         } else {
             $extra_where = " AND EARLI_Candidate='no'";
         }
-        $query = " FROM candidate, session, flag, reliability WHERE reliability.CommentID=flag.CommentID AND candidate.CandID=session.CandID AND session.ID=flag.SessionID $extra_where";
+
+        $video_query = "CASE 
+                        WHEN videos.record_id IS NULL THEN 'No' 
+                        ELSE videos.record_id
+                        END";
+        $query       = " FROM candidate 
+                JOIN session ON (candidate.CandID=session.CandID)
+                JOIN flag ON (session.ID=flag.SessionID)
+                JOIN reliability ON (reliability.CommentID=flag.CommentID )
+                LEFT JOIN videos ON (videos.PSCID=candidate.PSCID AND videos.visitLabel=session.Visit_label AND videos.instrument =reliability.Instrument)
+                    $extra_where";
 
         // only view their own profiles, unless they have permission to see all
         if (!($user->hasPermission('reliability_edit_all') || $user->hasPermission('access_all_profiles'))) {
@@ -84,12 +94,12 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
         }
 
         // set the class variables
-        $this->columns = array('reliability.CommentID', 'candidate.PSCID', 'reliability.reliability_center_id AS Site', 'session.SubprojectID as Cohort', 'session.CandID AS DCCID', 'candidate.Gender', 'session.Visit_label', 'reliability.Instrument', 'reliability.Reliability_score', 'session.Current_stage', 'reliability.invalid', 'reliability.Manual_Swap');
+        $this->columns = array('reliability.CommentID', 'candidate.PSCID', 'reliability.reliability_center_id AS Site', 'session.SubprojectID as Cohort', 'session.CandID AS DCCID', 'candidate.Gender', 'session.Visit_label','reliability.Instrument', "$video_query as File_in_DB", 'reliability.Reliability_score', 'session.Current_stage', 'reliability.invalid', 'reliability.Manual_Swap');
 
         $this->query = $query;
         $this->group_by = '';
         $this->order_by = 'reliability.Instrument, session.CandID, session.Visit_label';
-        $this->headers = array('PSCID', 'reliability_center_id','Cohort', 'DCCID', 'Gender', 'Visit_label', 'Instrument', 'reliability_score', 'Reliable');
+        $this->headers = array('PSCID', 'reliability_center_id','Cohort', 'DCCID', 'Gender', 'Visit_label', 'Instrument','File_in_DB', 'reliability_score', 'Reliable');
         $this->validFilters = array('reliability.reliability_center_id', 'session.SubprojectID', 'candidate.CenterID', 'session.CandID', 'candidate.PSCID', 'candidate.Gender', 'session.Visit_label', 'reliability.Instrument', 'reliability.Reliability_score', 'session.Current_stage', 'reliability.invalid','candidate.ProjectID');
 
         $this->formToFilter = array(
@@ -323,6 +333,23 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
                         $reliable = 'No';
                     $this->tpl_data['items'][$x][$i+1]['value'] = $reliable;
                 }
+                if ($key == 'File_in_DB') {
+                    if($val!="No") {
+                        $db           = Database::singleton();
+                        $video_params = $db->pselectRow(
+                            "SELECT File_name as fn, uploaded_by as up FROM videos WHERE record_id= :rid",
+                            array('rid' => $val)
+                        );
+                        $factory      = NDB_Factory::singleton();
+                        $baseURL = $factory->settings()->getBaseURL();
+                        $rest_path ="/temp_videos/ajax/GetFile.php?File=/videos/".$video_params['up'].'/'.$video_params['fn'];
+                        $this->tpl_data['items'][$x][$i]['value'] = '<a href="' . $baseURL.$rest_path . '" download ="' . $video_params['fn'] . '">Yes</a>';
+                    }
+                    else{
+                        $this->tpl_data['items'][$x][$i]['value'] = "No";
+                    }
+                }
+
 
                 $i++;
             }
