@@ -542,16 +542,12 @@ class NDB_BVL_Instrument_vineland extends NDB_BVL_Instrument
              $visit = "v36";
          }else if($visit == "v37plus"){
               $visit = "v37";
-         } else if($visit == "v03" || $visit=="03m"){
+         } else if($visit == "v03"){
           $visit = "v03";
          }
 
-         if($visit=='screening') {
-             $correct_id = $args['candID'] . '-' . substr($args['PSCID'], -4, 4) . '-' . $visit;
-         }
-         else{
-              $correct_id = $args['candID'] . '-' . substr($args['PSCID'], -4, 4) . '-' . substr($visit, -2, 2);
-          }
+          $correct_id = $args['candID'] . '-' . substr($args['PSCID'], -4, 4) . '-' . substr($visit, -2, 2);
+
          if($values['INDIVIDUAL_ID'] != $correct_id){
             $errors[]="Id must be set to '" . $correct_id . "', was set to '" . $values['INDIVIDUAL_ID'] . "'";
              return $errors;
