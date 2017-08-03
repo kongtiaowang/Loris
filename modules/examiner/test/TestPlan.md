@@ -7,5 +7,8 @@
    [Automation Testing]
 4. Check "Clear Form" button works well.
    [Automation Testing]
-5. Test Add a new examiner.
+5. Testing Add a new examiner.
    [Automation Testing]
+6. Testing filter after insert a new examnier.
+   [Automation Testing]
+

@@ -37,9 +37,6 @@ class ExaminerTest extends LorisIntegrationTest
     public function setUp()
     {
         parent::setUp();
-         $window = new WebDriverWindow($this->webDriver);
-         $size   = new WebDriverDimension(1024, 1768);
-         $window->setSize($size);
         $this->DB->insert(
             "psc",
             array(
@@ -49,6 +46,13 @@ class ExaminerTest extends LorisIntegrationTest
              'StateID'    => '0',
              'Alias'      => 'DDD',
              'MRI_alias'  => 'TEST',
+            )
+        );
+        $this->DB->insert(
+            "user_psc_rel",
+            array(
+                'UserID'    => '999990',
+                'CenterID'  => '99',
             )
         );
     }
@@ -191,48 +195,6 @@ class ExaminerTest extends LorisIntegrationTest
         $this->resetPermissions();
     }
     /**
-     * Tests that the certification column loads if EnableCertification is set in
-     * the config
-     *
-     * @return void
-     */
-    function testExaminerLoadsCertificationElements()
-    {
-        $this->markTestIncomplete("Test not implemented!");
-        /*$this->setupConfigSetting('EnableCertification', '1');
-        $this->safeGet($this->url . "/examiner/");
-
-        // Check that the certification column appears
-        $tableText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector(".table-responsive")
-        )->getText();
-        $this->assertContains("Certification", $tableText);
-
-        $this->restoreConfigSetting("EnableCertification");*/
-    }
-
-    /**
-     * Tests that the certification column does not load if EnableCertification
-     * is not set in the config
-     *
-     * @return void
-     */
-    function testExaminerDoesNotLoadCertificationElements()
-    {
-        $this->markTestIncomplete("Test not implemented!");
-        /*$this->setupConfigSetting('EnableCertification', '0');
-        $this->safeGet($this->url . "/examiner/");
-
-        // Check that the certification column does not appear
-        $tableText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector(".table-responsive")
-        )->getText();
-        $this->assertNotContains("Certification", $bodyText);
-
-        $this->restoreConfigSetting("EnableCertification");*/
-    }
-
-    /**
      * Tests that examiner page does not load if the user does not have correct
      * permissions
      *
@@ -273,10 +235,11 @@ class ExaminerTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testExaminerAddExaminer()
+    function testExaminerAddExaminerAndFilter()
     {
         //insert a new exmainer with name "Test_Examiner" and radiologist
         //in the TEST_Site.
+
         $this->safeGet($this->url . "/examiner/");
         $this->safeFindElement(
             WebDriverBy::Name("addName")
@@ -290,7 +253,6 @@ class ExaminerTest extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(
             WebDriverBy::Name("fire_away")
         )->click();
-        sleep(5);
         //search the examiner which inserted
         $this->webDriver->findElement(
             WebDriverBy::Name("examiner")
@@ -298,14 +260,15 @@ class ExaminerTest extends LorisIntegrationTest
         $this->webDriver->findElement(
             WebDriverBy::Name("filter")
         )->click();
-
-        $this->safeGet($this->url . "/examiner/?format=json");
-
-        $bodyText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector("body")
-        )->getText();
-        $this->assertContains("Test_Examiner", $bodyText);
-
+        $text = $this->webDriver->executescript(
+           "return document.querySelector(
+            '#dynamictable > tbody > tr:nth-child(1) > td:nth-child(2) > a'
+            ).textContent"
+        );
+        sleep(20);
+        $this->assertContains("Test_Examiner", $text);
+        //edit examiner
+        
     }
 
 }
