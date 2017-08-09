@@ -170,15 +170,24 @@ class NDB_Menu_Filter_final_radiological_review extends NDB_Menu_Filter
             END
             ";
 
+
+        //mullen custom query count to set yes to the candidate across all other visits if V24 mullen admin is found yes for that candidate.
+        $mullen_custom_query_count="(
+                                     SELECT COUNT(*) from session
+                                     JOIN flag ON(session.ID=flag.SessionID)
+                                     WHERE session.CandID=s.CandID and flag.Test_name='mullen' 
+                                     AND flag.Administration!='None' and session.Visit_label='V24'
+                                    )";
+
         //mullen administration code incorporation
-        $mullen_query = "CASE 
-           COALESCE((
+        $mullen_query = "CASE   
+              COALESCE((
               SELECT fg.CommentID
               FROM flag fg
               WHERE fg.SessionID=s.ID AND fg.Test_name='mullen' AND fg.Administration!='None' 
               GROUP BY fg.SessionID,fg.CommentID  LIMIT 1),'') 
-         WHEN  '' THEN  IF(s.Visit_label!='V24', 'NA', 'No') 
-         ELSE IF(s.Visit_label!='V24', 'NA', 'Yes' )
+         WHEN  '' THEN   IF(s.Visit_label!='V24', 'NA', 'No') 
+         ELSE IF($mullen_custom_query_count>0, 'Yes', 'NA')    
          END
          ";
 
