@@ -46,11 +46,13 @@ class NDB_Form_statistics_ibis extends NDB_Form
 
         $this->tpl_data['Centers'] = $centers;
         $this->tpl_data['Sites'] = array('' => 'All Sites');
+        $this->tpl_data['SubProjects'] = array('' => 'All SubProjects');
         $projects[null] = 'All Projects';
         foreach(Utility::getProjectList() as $key => $value) {
             $projects[$key] = $value;
         }
         $this->tpl_data['Projects'] = $projects;
+
         foreach ($centers as $row) {
             $this->tpl_data['Sites'][$row['NumericID']] = $row['LongName'];
             if($_REQUEST['EnrollmentSite'] == $row['NumericID']) {
@@ -61,6 +63,12 @@ class NDB_Form_statistics_ibis extends NDB_Form
             $ExtraProject_Criteria = ' AND (c.ProjectID IS NULL OR c.ProjectID=' . $_REQUEST['EnrollmentProject'] . ')';
             $currentProject = $_REQUEST['EnrollmentProject'];
             $this->tpl_data['CurrentProject'] = array('ID' => $currentProject, 'Name' => $projects[$currentProject]);
+            $SubProjects= Utility::getSubprojectsForProject($_REQUEST['EnrollmentProject']);
+            if (is_array($SubProjects)) {
+                $this->tpl_data['SubProjects'] = array('' => 'All SubProjects') + $SubProjects;
+                $currentSubProject = $_REQUEST['EnrollmentSubProject'];
+                $this->tpl_data['CurrentSubProject'] = array('ID' => $currentSubProject, 'Name' => $SubProjects[$currentSubProject]);
+            }
         } else {
             $ExtraProject_Criteria = '';
         }
@@ -68,11 +76,11 @@ class NDB_Form_statistics_ibis extends NDB_Form
         if($_REQUEST['EnrollmentProject'] == $row['NumericID']) {
             $this->tpl_data['CurrentProject'] = array('ID' => $row['NumericID'], 'Name' => $row['LongName']);
         }
-        $this->tpl_data['enrollment_completion'] = $this->getEnrollmentData($_REQUEST['EnrollmentSite'],$_REQUEST['EnrollmentProject']);
+        $this->tpl_data['enrollment_completion'] = $this->getEnrollmentData($_REQUEST['EnrollmentSite'],$_REQUEST['EnrollmentProject'],$_REQUEST['EnrollmentSubProject']);
     }
 
 
-    function getEnrollmentData($siteID= null, $projID= null){
+    function getEnrollmentData($siteID= null, $projID= null, $subpjID=null){
         $DB =& Database::singleton();
         $enroll_data = array();
         $params = array();
@@ -84,6 +92,10 @@ class NDB_Form_statistics_ibis extends NDB_Form
         if(!empty($projID)) {
             $Extra_Where .= " AND  cad.ProjectID = :project"; //$_REQUEST['site'];
             $params['project'] = $projID;
+        }
+        if(!empty($subpjID)) {
+            $Extra_Where .= " AND  sn.SubprojectID = :subproject";
+            $params['subproject'] = $subpjID;
         }
         $ethnic_categories = array("hispanic","non_hispanic","not_answered");
         $ethnic_name = array("Hispanic or Latino", "Not Hispanic or Latino",
