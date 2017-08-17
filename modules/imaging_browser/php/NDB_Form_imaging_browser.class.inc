@@ -59,8 +59,9 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                 ))
                      && $user->hasPermission('imaging_browser_view_site')
                    )
+                || $user->hasPermission('imaging_browser_phantom_allsites')
+                || $user->hasPermission('imaging_browser_phantom_ownsite')
         );
-
     }
 
     /**
@@ -141,6 +142,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
         if (!empty($_REQUEST['selectedOnly'])) {
             $extra_where_string .= " AND COALESCE(sel.Selected,'') <> ''";
         }
+        $args = array('SID' => $this->sessionID);
         // To better support QC for CIVET output a couple of
         // additional conditions have been put in...
         if (!empty($_REQUEST['outputType'])) {
@@ -148,13 +150,15 @@ class NDB_Form_Imaging_Browser extends NDB_Form
             if ($outputType=="processed") {
                 $extra_where_string .= " AND OutputType != 'native' ";
             } elseif ($outputType=="native") {
-                $extra_where_string .= " AND OutputType='$outputType'";
+                $extra_where_string .= " AND OutputType='native'";
             } elseif ($outputType=="skull_mask") {
-                $extra_where_string .= " AND (OutputType='$outputType' 
+                $extra_where_string .= " AND (OutputType='skull_mask' 
                     OR  (OutputType='native' AND AcquisitionProtocolID='44') )";
             } else {
-                $extra_where_string .= " AND (OutputType='$outputType' 
+                $extra_where_string .= " AND (OutputType=:outputType 
                     OR OutputType='linreg')";
+
+                $args["outputType"] = $outputType;
             }
         }
         $files = $this->DB->pselect(
@@ -167,9 +171,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
             ORDER BY files.OutputType, 
                      files.AcquisitionProtocolID, 
                      files.File",
-            array(
-             'SID' => $this->sessionID,
-            )
+            $args
         );
         $this->tpl_data['files'] = array();
         foreach ($files as $fileRow) {
@@ -217,6 +219,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
             $FileInsertDate      = $FileObj->getParameter('InsertTime');
             $SeriesDescription   = $FileObj->getParameter('series_description');
             $SeriesNumber        = $FileObj->getParameter('series_number');
+            $SeriesUID           = $FileObj->getParameter('series_instance_uid');
             $EchoTime            = number_format(
                 $FileObj->getParameter('echo_time')*1000,
                 2
@@ -288,6 +291,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                      'FileInsertDate'        => $FileInsertDate,
                      'SeriesDescription'     => $SeriesDescription,
                      'SeriesNumber'          => $SeriesNumber,
+                     'SeriesUID'             => $SeriesUID,
                      'EchoTime'              => $EchoTime,
                      'RepetitionTime'        => $RepetitionTime,
                      'SliceThickness'        => $SliceThickness,
@@ -395,12 +399,13 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                     $updateSet['QCFirstChangeTime'] = time();
                 }
 
-                $QCExists = $this->DB->pselectOne(
+                $QCExists  = $this->DB->pselectOne(
                     "SELECT 'x' 
                     FROM files_qcstatus 
                     WHERE FileID=:FID",
                     $params
                 );
+                $updateSet = Utility::nullifyEmpty($updateSet, 'QCStatus');
                 if (!empty($QCExists)) {
                     $updateWhere['FileID'] = $curFileID;
                     $success = $this->DB->update(
@@ -490,6 +495,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                                       'Selected'         => $curSelected,
                                       'QCLastChangeTime' => time(),
                                      );
+                        $updateSet = Utility::nullifyEmpty($updateSet, 'Selected');
                         $success   = $this->DB->update(
                             'files_qcstatus',
                             $updateSet,
@@ -501,6 +507,7 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                                       'Selected'          => $curSelected,
                                       'QCFirstChangeTime' => time(),
                                      );
+                        $insertSet = Utility::nullifyEmpty($insertSet, 'Selected');
                         $success   = $this->DB->insert('files_qcstatus', $insertSet);
                     }
                 }
@@ -515,10 +522,8 @@ class NDB_Form_Imaging_Browser extends NDB_Form
     function _updateVisitStatus()
     {
         if (!empty($_POST['visit_status'])) {
-            $save_visit_status
-                = $_POST['visit_status'] == 'Unrated' ? '' : $_POST['visit_status'];
-            $params            = array('SID' => $this->sessionID);
-            $old_visit_status  = $this->DB->pselectOne(
+            $params           = array('SID' => $this->sessionID);
+            $old_visit_status = $this->DB->pselectOne(
                 "SELECT MRIQCStatus 
                 FROM session 
                 WHERE ID=:SID",
@@ -553,13 +558,14 @@ class NDB_Form_Imaging_Browser extends NDB_Form
                 $updateSet['MRIQCFirstChangeTime']
                     = $updateSet['MRIQCLastChangeTime'];
             }
-            $success = $this->DB->update(
+            $updateSet = Utility::nullifyEmpty($updateSet, 'MRIQCStatus');
+            $success   = $this->DB->update(
                 'session',
                 $updateSet,
                 array('ID' => $this->sessionID)
             );
             // spool a message to the mri qc status rss channel
-            if (($save_visit_status != $old_visit_status)
+            if (($_POST['visit_status'] != $old_visit_status)
                 || ($old_pending_status != $_POST['visit_pending'])
                 || ($old_caveat_status != $_POST['visit_caveat'])
             ) {
