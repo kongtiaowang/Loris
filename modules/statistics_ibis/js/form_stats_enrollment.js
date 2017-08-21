@@ -21,19 +21,26 @@ function getSubProjects()
         dataType: "json",
         data: {"project_id" : en_pr_id},
         success: function(data) {
-            var result=JSON.stringify(data)
             $("#EnrollmentSubProject > option").remove();
-            var $enrollsubp_dropdown = $('#EnrollmentSubProject');
-            var obj = $.parseJSON(result);
-            $enrollsubp_dropdown.append(new Option("All SubProjects", ''));
-            for (var prop in obj) {
+            if (data == 0) {
+
+                var $enrollsubp_dropdown = $('#EnrollmentSubProject');
+                $enrollsubp_dropdown.append(new Option("All SubProjects", ''));
+
+            }
+            else {
+                var result = JSON.stringify(data)
+                var $enrollsubp_dropdown = $('#EnrollmentSubProject');
+                var obj = $.parseJSON(result);
+                $enrollsubp_dropdown.append(new Option("All SubProjects", ''));
+                for (var prop in obj) {
 
                     $enrollsubp_dropdown.append(new Option(obj[prop], prop));
                 }
-            $("#EnrollmentSubProject").find("option").addClass("form-control option");
-
 
             }
+            $("#EnrollmentSubProject").find("option").addClass("form-control option");
+        }
 
 
     });

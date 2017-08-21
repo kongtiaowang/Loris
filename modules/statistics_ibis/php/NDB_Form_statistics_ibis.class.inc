@@ -114,7 +114,7 @@ class NDB_Form_statistics_ibis extends NDB_Form
                     WHERE (ti.child_ethnicity = '$ethnic_cat' OR ti.child_ethnicity IS NULL)
                     AND fg.CommentID NOT LIKE 'DDE%' AND sn.CenterID <> '1' AND sn.Active='Y' 
                     AND cad.Active='Y' $Extra_Where AND fg.Administration <> 'None' 
-                    GROUP BY Gender
+                    GROUP BY Gender,ProjectID
                     ", $params);
             }
             else{
@@ -127,7 +127,7 @@ class NDB_Form_statistics_ibis extends NDB_Form
                     WHERE ti.child_ethnicity = '$ethnic_cat' 
                     AND fg.CommentID NOT LIKE 'DDE%' AND sn.CenterID <> '1' AND sn.Active='Y' 
                     AND cad.Active='Y' $Extra_Where AND fg.Administration <> 'None' 
-                    GROUP BY Gender
+                    GROUP BY Gender,ProjectID
                     ", $params);
             }
             if(is_null($results)){
