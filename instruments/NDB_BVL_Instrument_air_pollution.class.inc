@@ -151,7 +151,7 @@ HTML;
           $this->form->addElement('static', 'lorisSubHeader', $content);
           break;   
         case 5: // UNC
-          $this->form->addElement('static', 'lorisSubHeader', $content);
+          $this->form->addElement('static', 'lorisSubHeader', "<center><embed src='../images/UNC_toothfairy_consent_form.pdf' width=\"800px\" height=\"400px\" /></center>");
           break;                 
       }
       $group[]=$this->form->createElement("select", 'mail_tooth_kit', '',$yesNo);

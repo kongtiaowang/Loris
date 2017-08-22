@@ -27,7 +27,8 @@ if ($run_ibis1)
 if ($run_ibis2)
 {    //remove charge, head, and ados modules and add other two new
     //run ndar_subject script to get data/files for ndar_subject. Removing from here as it may leads to confusion
-  $IBIS2 = array('adi_r_proband','aosi','csbs','ibq_r','macarthur_words_gestures', 'm_chat_proband', 'scq_proband','mullen','rbs_r','vineland_proband','vineland_subject','edi2','height_weight','phys_neuro_exam');
+    $IBIS2 = array('charge');
+//  $IBIS2 = array('adi_r_proband','aosi','csbs','ibq_r','macarthur_words_gestures', 'm_chat_proband', 'scq_proband','mullen','rbs_r','vineland_proband','vineland_subject','edi2','height_weight','phys_neuro_exam', 'charge');
   foreach($IBIS2 as $instrument) {
       $run = new NDAR_Release_2017 ($instrument, 2);
       $run->run();

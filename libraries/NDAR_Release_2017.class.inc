@@ -18,7 +18,7 @@ class NDAR_Release_2017
         } else {
             $GUID = "AND COALESCE(c.CandidateGUID, '') <> ''";
         }
-        $Base = "COALESCE(s.Current_stage, '') <> 'Recycling Bin' AND COALESCE(s.Visit, '') NOT IN ('Failure', 'Withdrawal') AND COALESCE(s.Screening, '') NOT IN ('Failure', 'Withdrawal') AND f.Administration='All' AND f.Data_entry='Complete' AND EXISTS (SELECT 'x' FROM flag df WHERE df.CommentID=CONCAT('DDE_', i.CommentID) AND df.Data_entry='Complete') AND NOT EXISTS (SELECT 'x' FROM conflicts_unresolved cu WHERE cu.CommentId1=i.CommentID OR cu.CommentId2=i.CommentID) AND s.CenterID IN (2, 3, 4, 5) AND ( ps.study_consent = 'yes' AND ps.study_consent_withdrawal IS NULL) AND (ps.ndar_consent = 'yes' AND ps.ndar_consent_withdrawal IS NULL) AND c.Active='Y' AND s.Active ='Y'";
+        $Base = "COALESCE(s.Current_stage, '') <> 'Recycling Bin' AND COALESCE(s.Visit, '') NOT IN ('Failure', 'Withdrawal') AND COALESCE(s.Screening, '') NOT IN ('Failure', 'Withdrawal') AND f.Administration='All' AND f.Data_entry='Complete' AND EXISTS (SELECT 'x' FROM flag df WHERE df.CommentID=CONCAT('DDE_', i.CommentID) AND df.Data_entry='Complete') AND NOT EXISTS (SELECT 'x' FROM conflicts_unresolved cu WHERE cu.CommentId1=i.CommentID OR cu.CommentId2=i.CommentID) AND s.CenterID IN (2, 3, 4, 5) AND ( (ps.study_consent = 'yes' OR ps.study_consent IS NULL) AND ps.study_consent_withdrawal IS NULL) AND ((ps.ndar_consent = 'yes' OR ps.ndar_consent IS NULL) AND ps.ndar_consent_withdrawal IS NULL) AND c.Active='Y' AND s.Active ='Y'";
         if ($this->instrument == 'adi_r_proband') {
             if ($this->project == 2) {
                 return $Base . " AND i.Summary_diagnosis='ASD+' AND s.SubprojectID IN (9,10) AND s.Visit_label ='Screening' $GUID";
@@ -47,22 +47,22 @@ class NDAR_Release_2017
                 return $Base . " AND (s.SubprojectID=10 AND UPPER(s.Visit_label) IN ('V03','V06','V09','V12') OR s.SubprojectID=9 AND UPPER(s.Visit_label) IN ('V03')) $GUID";
 
             } else {
-                return $Base . " AND ((s.SubprojectID=1 AND UPPER(s.Visit_label) IN ('V06', 'V12' ,'v24')) OR (s.SubprojectID=2 AND UPPER(s.Visit_label) IN ('V06', 'V12' ,'v24')) OR (s.SubprojectID=3 AND UPPER(s.Visit_label) IN ('V06', 'V12', 'V24'))) $GUID";
+                return $Base . " AND ((s.SubprojectID=1 AND UPPER(s.Visit_label) IN ('V06', 'V12' ,'V24')) OR (s.SubprojectID=2 AND UPPER(s.Visit_label) IN ('V06', 'V12' ,'V24')) OR (s.SubprojectID=3 AND UPPER(s.Visit_label) IN ('V06', 'V12', 'V24'))) $GUID";
             }
         } else if ($this->instrument == 'vineland_proband') {
             if ($this->project == 1) {
-                return "COALESCE(s.Current_stage, '') <> 'Recycling Bin' AND COALESCE(s.Visit, '') NOT IN ('Failure', 'Withdrawal') AND COALESCE(s.Screening, '') NOT IN ('Failure', 'Withdrawal') AND f.Administration='All' AND f.Data_entry='Complete' AND s.CenterID IN (2, 3, 4, 5) AND s.SubprojectID IN (1, 2, 3) AND ( ps.study_consent = 'yes' AND ps.study_consent_withdrawal IS NULL) AND (ps.ndar_consent = 'yes' AND ps.ndar_consent_withdrawal IS NULL) $GUID";
+                return "COALESCE(s.Current_stage, '') <> 'Recycling Bin' AND COALESCE(s.Visit, '') NOT IN ('Failure', 'Withdrawal') AND COALESCE(s.Screening, '') NOT IN ('Failure', 'Withdrawal') AND f.Administration='All' AND f.Data_entry='Complete' AND s.CenterID IN (2, 3, 4, 5) AND s.SubprojectID IN (1, 2, 3) AND ( (ps.study_consent = 'yes' OR ps.study_consent IS NULL) AND ps.study_consent_withdrawal IS NULL) AND ((ps.ndar_consent = 'yes' OR ps.ndar_consent IS NULL) AND ps.ndar_consent_withdrawal IS NULL) $GUID";
             } else {
                 // No DDE
                 return "COALESCE(s.Current_stage, '') <> 'Recycling Bin' AND COALESCE(s.Visit, '') NOT IN ('Failure', 'Withdrawal') AND COALESCE(s.Screening, '') NOT IN ('Failure', 'Withdrawal') AND
-             f.Administration='All' AND f.Data_entry='Complete' AND s.CenterID IN (2, 3, 4, 5) AND s.SubprojectID=9 AND s.Visit_label='Screening' AND ( ps.study_consent = 'yes' AND ps.study_consent_withdrawal IS NULL) AND (ps.ndar_consent = 'yes' AND ps.ndar_consent_withdrawal IS NULL) $GUID ";
+             f.Administration='All' AND f.Data_entry='Complete' AND s.CenterID IN (2, 3, 4, 5) AND s.SubprojectID=9 AND s.Visit_label='Screening' AND ( (ps.study_consent = 'yes' OR ps.study_consent IS NULL) AND ps.study_consent_withdrawal IS NULL) AND ((ps.ndar_consent = 'yes' OR ps.ndar_consent IS NULL) AND ps.ndar_consent_withdrawal IS NULL) $GUID ";
             }
         } else if ($this->instrument == 'vineland_subject') {
             // No DDE
             if ($this->project == 2) {
-                return "COALESCE(s.Current_stage, '') <> 'Recycling Bin' AND COALESCE(s.Visit, '') NOT IN ('Failure', 'Withdrawal') AND COALESCE(s.Screening, '') NOT IN ('Failure', 'Withdrawal') AND f.Administration='All' AND f.Data_entry='Complete' AND s.CenterID IN (2, 3, 4, 5) AND ((s.SubprojectID=9 AND UPPER(s.Visit_label)='V03') OR (s.SubprojectID=10 AND UPPER(s.Visit_label) IN ('V03','V06','V09', 'V12','V15','V18', 'V24'))) AND ( ps.study_consent = 'yes' AND ps.study_consent_withdrawal IS NULL) AND (ps.ndar_consent = 'yes' AND ps.ndar_consent_withdrawal IS NULL) $GUID ";
+                return "COALESCE(s.Current_stage, '') <> 'Recycling Bin' AND COALESCE(s.Visit, '') NOT IN ('Failure', 'Withdrawal') AND COALESCE(s.Screening, '') NOT IN ('Failure', 'Withdrawal') AND f.Administration='All' AND f.Data_entry='Complete' AND s.CenterID IN (2, 3, 4, 5) AND ((s.SubprojectID=9 AND UPPER(s.Visit_label)='V03') OR (s.SubprojectID=10 AND UPPER(s.Visit_label) IN ('V03','V06','V09', 'V12','V15','V18', 'V24'))) AND ( (ps.study_consent = 'yes' OR ps.study_consent IS NULL) AND ps.study_consent_withdrawal IS NULL) AND ((ps.ndar_consent = 'yes' OR ps.ndar_consent IS NULL) AND ps.ndar_consent_withdrawal IS NULL) $GUID ";
             } else {
-                return "COALESCE(s.Current_stage, '') <> 'Recycling Bin' AND COALESCE(s.Visit, '') NOT IN ('Failure', 'Withdrawal') AND COALESCE(s.Screening, '') NOT IN ('Failure', 'Withdrawal') AND f.Administration='All' AND f.Data_entry='Complete' AND s.CenterID IN (2, 3, 4, 5) AND ((s.SubprojectID=1 AND UPPER(s.Visit_label) IN ('V06', 'V12' ,'v24')) OR (s.SubprojectID=2 AND UPPER(s.Visit_label) IN ('V06', 'V12' ,'v24')) OR (s.SubprojectID=3 AND UPPER(s.Visit_label) IN ('V06', 'V12', 'V24'))) AND ( ps.study_consent = 'yes' AND ps.study_consent_withdrawal IS NULL) AND (ps.ndar_consent = 'yes' AND ps.ndar_consent_withdrawal IS NULL) $GUID ";
+                return "COALESCE(s.Current_stage, '') <> 'Recycling Bin' AND COALESCE(s.Visit, '') NOT IN ('Failure', 'Withdrawal') AND COALESCE(s.Screening, '') NOT IN ('Failure', 'Withdrawal') AND f.Administration='All' AND f.Data_entry='Complete' AND s.CenterID IN (2, 3, 4, 5) AND ((s.SubprojectID=1 AND UPPER(s.Visit_label) IN ('V06', 'V12' ,'V24')) OR (s.SubprojectID=2 AND UPPER(s.Visit_label) IN ('V06', 'V12' ,'V24')) OR (s.SubprojectID=3 AND UPPER(s.Visit_label) IN ('V06', 'V12', 'V24'))) AND ( (ps.study_consent = 'yes' OR ps.study_consent IS NULL) AND ps.study_consent_withdrawal IS NULL) AND ((ps.ndar_consent = 'yes' OR ps.ndar_consent IS NULL) AND ps.ndar_consent_withdrawal IS NULL) $GUID ";
             }
         } else if ($this->instrument == 'prefrontal_task' || $this->instrument == 'csbs') {
             if ($this->project == 2 && $this->instrument == 'csbs') {
@@ -79,14 +79,14 @@ class NDAR_Release_2017
         } else if ($this->instrument == 'fyi') {
             return $Base . " AND s.SubprojectID IN (1, 2, 3) AND UPPER(s.Visit_label) IN ('V06', 'V12', 'V24') $GUID";
         } else if ($this->instrument == 'edi') {
-            return $Base . " AND ((s.SubprojectID=1 AND UPPER(s.Visit_label) IN ('V06', 'V12' ,'v24')) OR (s.SubprojectID=2 AND UPPER(s.Visit_label) IN ('V06', 'V12' ,'v24')) OR  (s.SubprojectID=3 AND UPPER(s.Visit_label) IN ('V06', 'V12', 'V24' ))) $GUID";
+            return $Base . " AND ((s.SubprojectID=1 AND UPPER(s.Visit_label) IN ('V06', 'V12' ,'V24')) OR (s.SubprojectID=2 AND UPPER(s.Visit_label) IN ('V06', 'V12' ,'V24')) OR  (s.SubprojectID=3 AND UPPER(s.Visit_label) IN ('V06', 'V12', 'V24' ))) $GUID";
         } else if ($this->instrument == 'scq' || $this->instrument == 'rbs_r') {
             if ($this->project == 2) {
                 if ($this->instrument == 'rbs_r') {
-                    return $Base . " AND s.SubprojectID=10 AND s.Visit_label IN ('V12','V24') $GUID";
+                    return $Base . " AND s.SubprojectID=10 AND UPPER(s.Visit_label) IN ('V12','V24') $GUID";
                 }
                 else {
-                    return $Base . " AND s.SubprojectID=9 AND UPPER(s.Visit_label) IN ('V06', 'V12', 'V24') $GUID";
+                    return $Base . " AND s.SubprojectID= 9 AND UPPER(s.Visit_label) IN ('V06', 'V12', 'V24') $GUID";
                 }
             } else {
                 return $Base . " AND UPPER(s.Visit_label) IN ('V06', 'V12', 'V24') $GUID";
@@ -108,12 +108,12 @@ class NDAR_Release_2017
                 return " COALESCE( medpsychflag.CommentID, neuroscreenflag.CommentID, tsiflag.CommentID) IS NOT NULL AND
                     COALESCE(s.Current_stage, '') <> 'Recycling Bin' AND COALESCE(s.Visit, '') NOT IN ('Failure', 'Withdrawal')
                     AND COALESCE(s.Screening, '') NOT IN ('Failure', 'Withdrawal')
-                    AND s.CenterID IN (2, 3, 4, 5) AND ((s.SubprojectID=9 AND UPPER(s.Visit_label) IN ('V06', 'V12' ,'v24')) OR (s.SubprojectID=10 AND UPPER(s.Visit_label) IN ('V06', 'V12', 'V24'))) AND ( ps.study_consent = 'yes' AND ps.study_consent_withdrawal IS NULL) AND (ps.ndar_consent = 'yes' AND ps.ndar_consent_withdrawal IS NULL) $GUID";
+                    AND s.CenterID IN (2, 3, 4, 5) AND ((s.SubprojectID=9 AND UPPER(s.Visit_label) IN ('Screening','V03')) OR (s.SubprojectID=10 AND UPPER(s.Visit_label) IN ('V03','V06','V09', 'V12','V15','V18', 'V24'))) AND ( (ps.study_consent = 'yes' OR ps.study_consent IS NULL) AND ps.study_consent_withdrawal IS NULL) AND ((ps.ndar_consent = 'yes' OR ps.ndar_consent IS NULL) AND ps.ndar_consent_withdrawal IS NULL) $GUID";
             } else {
                 return " COALESCE( medpsychflag.CommentID, neuroscreenflag.CommentID, tsiflag.CommentID) IS NOT NULL AND
                     COALESCE(s.Current_stage, '') <> 'Recycling Bin' AND COALESCE(s.Visit, '') NOT IN ('Failure', 'Withdrawal')
                     AND COALESCE(s.Screening, '') NOT IN ('Failure', 'Withdrawal')
-                    AND s.CenterID IN (2, 3, 4, 5) AND ((s.SubprojectID=1 AND UPPER(s.Visit_label) IN ('V06', 'V12' ,'v24')) OR (s.SubprojectID=2 AND UPPER(s.Visit_label) IN ('V06', 'V12' ,'v24')) OR (s.SubprojectID=3 AND UPPER(s.Visit_label) IN ('V06', 'V12', 'V24'))) AND ( ps.study_consent = 'yes' AND ps.study_consent_withdrawal IS NULL) AND (ps.ndar_consent = 'yes' AND ps.ndar_consent_withdrawal IS NULL) $GUID";
+                    AND s.CenterID IN (2, 3, 4, 5) AND ((s.SubprojectID=1 AND UPPER(s.Visit_label) IN ('V06', 'V12' ,'V24')) OR (s.SubprojectID=2 AND UPPER(s.Visit_label) IN ('V06', 'V12' ,'V24')) OR (s.SubprojectID=3 AND UPPER(s.Visit_label) IN ('V06', 'V12', 'V24'))) AND ( (ps.study_consent = 'yes' OR ps.study_consent IS NULL) AND ps.study_consent_withdrawal IS NULL) AND ((ps.ndar_consent = 'yes' OR ps.ndar_consent IS NULL) AND ps.ndar_consent_withdrawal IS NULL) $GUID";
             }
         } else if (($this->instrument == 'head_measurements_subject' || $this->instrument == 'height_weight') && $this->project == 2) {
             return $Base . " AND ((s.SubprojectID=9 AND UPPER(s.Visit_label)='V03') OR (s.SubprojectID=10 AND UPPER(s.Visit_label) IN ('V03','V06','V09','V12','V15','V18','V24'))) $GUID";
@@ -131,7 +131,7 @@ class NDAR_Release_2017
             }
             return $Base . " AND c.ProjectID = $this->project $GUID";
         }
-        return $Base . " AND ((s.SubprojectID=1 AND UPPER(s.Visit_label) IN ('V06', 'V12' ,'v24')) OR (s.SubprojectID=2 AND UPPER(s.Visit_label) IN ('V06', 'V12' ,'v24')) OR (s.SubprojectID=3 AND UPPER(s.Visit_label) IN ('V06', 'V12', 'V24'))) $GUID";
+        return $Base . " AND ((s.SubprojectID=1 AND UPPER(s.Visit_label) IN ('V06', 'V12' ,'V24')) OR (s.SubprojectID=2 AND UPPER(s.Visit_label) IN ('V06', 'V12' ,'V24')) OR (s.SubprojectID=3 AND UPPER(s.Visit_label) IN ('V06', 'V12', 'V24'))) $GUID";
     }
 
     function getCommonFields()

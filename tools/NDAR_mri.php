@@ -192,19 +192,25 @@ class NDAR_Release_MRI {
         $db = $factory->Database();
 
         /* NDAR DEFACED T1 & T2's */
-        $ibis = 2;
-        $t1t2 = true;
-        $dti  = false;
+        $ibis     = 2;
+        $t1t2     = true;
+        $dti      = false;
+        $location = "defaced";  // prod or defaced
+        $v[$ibis] = "'V06'"; // "'V06', 'V12'";
+        // $anonFilePath = "/data/ibis/data/assembly/";  // Non defaced
         $anonFilePath = "/home/gluneau/";     // Prod Box
         // $anonFilePath = "/home/lorisadmin/";  // Devv Box
-        $outputDir = "/data/not_backed_up/ibis_anon_20170411/";
+        $outputDir = "/data/not_backed_up/ibis_anon_" . $ibis . "_20170611/";
+        // $outputDir = "/data/not_backed_up/ibis_anon_jrichards/";
 
         /* DTI25 Prod location */
         //$ibis = 2;
         //$dti  = true;
         //$t1t2 = false;
+        //$location = "prod";
+        //$v[$ibis] = "'V06'";
         //$anonFilePath = "/data/ibis/data/assembly/";
-        //$outputDir = "/data/not_backed_up/ibis_dti_20170411/";
+        //$outputDir = "/data/not_backed_up/ibis_dti_" . $ibis . "_20170611/";
 
 
         /*
@@ -215,7 +221,7 @@ class NDAR_Release_MRI {
         LEFT JOIN parameter_type AS pt ON (pt.ParameterTypeID=pf.ParameterTypeID) LEFT JOIN participant_status ps ON (c.CandID=ps.CandID)
         WHERE pt.Name='time' AND pf.Value=26 AND lower(s.Visit_label)='v06' AND s.Active='Y' AND c.Active='Y'
         AND File like '%dti%' AND COALESCE(c.CandidateGUID, '') <> '' AND s.Current_stage <> 'Recycling Bin' AND s.SubprojectID IN (1, 2, 3)
-        AND ( ps.study_consent = 'yes' AND (COALESCE(ps.study_consent_withdrawal,'0000-00-00') = '0000-00-00' )) AND (ps.ndar_consent = 'yes' AND (COALESCE(ps.ndar_consent_withdrawal,'0000-00-00') = '0000-00-00')) ORDER BY PSCID", array());
+        AND ( (ps.study_consent = 'yes' OR ps.study_consent IS NULL) AND (COALESCE(ps.study_consent_withdrawal,'0000-00-00') = '0000-00-00' )) AND ((ps.ndar_consent = 'yes' OR ps.ndar_consent IS NULL) AND (COALESCE(ps.ndar_consent_withdrawal,'0000-00-00') = '0000-00-00')) ORDER BY PSCID", array());
 
         // IBIS2 - v03 - 25 direction DTI, 65 direction, and fMRI
         $files = $db->pselect("select c.CandID, c.PSCID, c.IBISID, c.CandidateGUID, c.ProbandGUID, c.DoB, s.CenterID, s.Visit_label, s.Current_stage, f.File, fqc.QCStatus, c.Gender FROM files f left join files_qcstatus fqc USING (FileID) LEFT JOIN session s ON (s.ID=f.SessionID) LEFT JOIN candidate c on (c.CandID=s.CandID) LEFT JOIN parameter_file AS pf ON (f.FileID=pf.FileID) LEFT JOIN parameter_type AS pt ON (pt.ParameterTypeID=pf.ParameterTypeID) LEFT JOIN participant_status ps ON (c.CandID=ps.CandID) WHERE pt.Name='time' AND LOWER(s.Visit_label)='v03' AND s.Active='Y' AND c.Active='Y' AND 
@@ -224,7 +230,7 @@ class NDAR_Release_MRI {
                 (lower(File) LIKE '%ep2d%')
             )
             AND COALESCE(c.CandidateGUID, '') <> '' AND s.Current_stage <> 'Recycling Bin' AND s.SubprojectID IN (9, 10)
-            AND ( ps.study_consent = 'yes' AND (COALESCE(ps.study_consent_withdrawal,'0000-00-00') = '0000-00-00' )) AND (ps.ndar_consent = 'yes' AND (COALESCE(ps.ndar_consent_withdrawal,'0000-00-00') = '0000-00-00'))
+            AND ( (ps.study_consent = 'yes' OR ps.study_consent IS NULL) AND (COALESCE(ps.study_consent_withdrawal,'0000-00-00') = '0000-00-00' )) AND ((ps.ndar_consent = 'yes' OR ps.ndar_consent IS NULL) AND (COALESCE(ps.ndar_consent_withdrawal,'0000-00-00') = '0000-00-00'))
             ORDER BY PSCID", array());
 
         // IBIS2 - v03 - 25 direction DTI, 65 direction 2016
@@ -233,7 +239,7 @@ class NDAR_Release_MRI {
                 (lower(File) like '%dti%' AND pf.Value IN (26, 66))
             )
             AND COALESCE(c.CandidateGUID, '') <> '' AND s.Current_stage <> 'Recycling Bin' AND s.SubprojectID IN (9, 10)
-            AND ( ps.study_consent = 'yes' AND (COALESCE(ps.study_consent_withdrawal,'0000-00-00') = '0000-00-00' )) AND (ps.ndar_consent = 'yes' AND (COALESCE(ps.ndar_consent_withdrawal,'0000-00-00') = '0000-00-00'))
+            AND ( (ps.study_consent = 'yes' OR ps.study_consent IS NULL) AND (COALESCE(ps.study_consent_withdrawal,'0000-00-00') = '0000-00-00' )) AND ((ps.ndar_consent = 'yes' OR ps.ndar_consent IS NULL) AND (COALESCE(ps.ndar_consent_withdrawal,'0000-00-00') = '0000-00-00'))
             ORDER BY PSCID", array());
 
 
@@ -243,7 +249,7 @@ class NDAR_Release_MRI {
                 f.AcquisitionProtocolID='44' OR f.AcquisitionProtocolID='45'
             )
             AND COALESCE(c.CandidateGUID, '') <> '' AND s.Current_stage <> 'Recycling Bin' AND s.SubprojectID IN (1, 2, 3)
-            AND ( ps.study_consent = 'yes' AND (COALESCE(ps.study_consent_withdrawal,'0000-00-00') = '0000-00-00' )) AND (ps.ndar_consent = 'yes' AND (COALESCE(ps.ndar_consent_withdrawal,'0000-00-00') = '0000-00-00')) 
+            AND ( (ps.study_consent = 'yes' OR ps.study_consent IS NULL) AND (COALESCE(ps.study_consent_withdrawal,'0000-00-00') = '0000-00-00' )) AND ((ps.ndar_consent = 'yes' OR ps.ndar_consent IS NULL) AND (COALESCE(ps.ndar_consent_withdrawal,'0000-00-00') = '0000-00-00')) 
             ORDER BY PSCID", array());
 
         */
@@ -253,25 +259,25 @@ class NDAR_Release_MRI {
             $files = $db->pselect("select c.CandID, c.PSCID, c.IBISID, c.CandidateGUID, c.ProbandGUID, c.DoB, s.CenterID, s.Visit_label, s.Current_stage, f.File, fqc.QCStatus, c.Gender
             FROM files f left join files_qcstatus fqc USING (FileID) LEFT JOIN session s ON (s.ID=f.SessionID) LEFT JOIN candidate c on (c.CandID=s.CandID)
             LEFT JOIN parameter_file AS pf ON (f.FileID=pf.FileID) LEFT JOIN parameter_type AS pt ON (pt.ParameterTypeID=pf.ParameterTypeID) LEFT JOIN participant_status ps ON (c.CandID=ps.CandID)
-            WHERE pt.Name='patient_id' AND UPPER(s.Visit_label) IN ('V06', 'V12', 'V24') AND s.Active='Y' AND c.Active='Y' AND (ps.participant_status=1 OR ps.participant_status=7) AND
+            WHERE pt.Name='patient_id' AND UPPER(s.Visit_label) IN ({$v[$ibis]}) AND s.Active='Y' AND c.Active='Y' AND (ps.participant_status=1 OR ps.participant_status=7) AND
             (
                 f.AcquisitionProtocolID='44' OR f.AcquisitionProtocolID='45'
             )
             AND COALESCE(c.CandidateGUID, '') <> '' AND s.Current_stage <> 'Recycling Bin' AND s.SubprojectID IN (1, 2, 3)
-            AND ( ps.study_consent = 'yes' AND (COALESCE(ps.study_consent_withdrawal,'0000-00-00') = '0000-00-00' ))
-            AND (ps.ndar_consent = 'yes' AND (COALESCE(ps.ndar_consent_withdrawal,'0000-00-00') = '0000-00-00'))
+            AND ((ps.study_consent = 'yes' OR ps.study_consent IS NULL) AND (COALESCE(ps.study_consent_withdrawal,'0000-00-00') = '0000-00-00' ))
+            AND ((ps.ndar_consent  = 'yes' OR ps.ndar_consent  IS NULL) AND (COALESCE(ps.ndar_consent_withdrawal, '0000-00-00') = '0000-00-00'))
             ORDER BY PSCID", array());
           } else if ($ibis == 2) {
             $files = $db->pselect("select c.CandID, c.PSCID, c.IBISID, c.CandidateGUID, c.ProbandGUID, c.DoB, s.CenterID, s.Visit_label, s.Current_stage, f.File, fqc.QCStatus, c.Gender
             FROM files f left join files_qcstatus fqc USING (FileID) LEFT JOIN session s ON (s.ID=f.SessionID) LEFT JOIN candidate c on (c.CandID=s.CandID)
             LEFT JOIN parameter_file AS pf ON (f.FileID=pf.FileID) LEFT JOIN parameter_type AS pt ON (pt.ParameterTypeID=pf.ParameterTypeID) LEFT JOIN participant_status ps ON (c.CandID=ps.CandID)
-            WHERE pt.Name='patient_id' AND UPPER(s.Visit_label) IN ('V06') AND s.Active='Y' AND c.Active='Y' AND (ps.participant_status=1 OR ps.participant_status=7) AND
+            WHERE pt.Name='patient_id' AND UPPER(s.Visit_label) IN ({$v[$ibis]}) AND s.Active='Y' AND c.Active='Y' AND (ps.participant_status=1 OR ps.participant_status=7) AND
             (
                 f.AcquisitionProtocolID='44' OR f.AcquisitionProtocolID='45'
             )
             AND COALESCE(c.CandidateGUID, '') <> '' AND s.Current_stage <> 'Recycling Bin' AND s.SubprojectID IN (9, 10)
-            AND ( ps.study_consent = 'yes' AND (COALESCE(ps.study_consent_withdrawal,'0000-00-00') = '0000-00-00' ))
-            AND (ps.ndar_consent = 'yes' AND (COALESCE(ps.ndar_consent_withdrawal,'0000-00-00') = '0000-00-00'))
+            AND ((ps.study_consent = 'yes' OR ps.study_consent IS NULL) AND (COALESCE(ps.study_consent_withdrawal,'0000-00-00') = '0000-00-00' ))
+            AND ((ps.ndar_consent  = 'yes' OR ps.ndar_consent  IS NULL) AND (COALESCE(ps.ndar_consent_withdrawal, '0000-00-00') = '0000-00-00'))
             ORDER BY PSCID", array());
           }
         }
@@ -282,21 +288,21 @@ class NDAR_Release_MRI {
             $files = $db->pselect("select c.CandID, c.PSCID, c.IBISID, c.CandidateGUID, c.ProbandGUID, c.DoB, s.CenterID, s.Visit_label, s.Current_stage, f.File, fqc.QCStatus, c.Gender
             FROM files f left join files_qcstatus fqc USING (FileID) LEFT JOIN session s ON (s.ID=f.SessionID) LEFT JOIN candidate c on (c.CandID=s.CandID)
             LEFT JOIN parameter_file AS pf ON (f.FileID=pf.FileID) LEFT JOIN parameter_type AS pt ON (pt.ParameterTypeID=pf.ParameterTypeID) LEFT JOIN participant_status ps ON (c.CandID=ps.CandID)
-            WHERE UPPER(s.Visit_label) IN ('V06', 'V12', 'V24') AND s.Active='Y' AND c.Active='Y' AND (ps.participant_status=1 OR ps.participant_status=7) AND
+            WHERE UPPER(s.Visit_label) IN ({$v[$ibis]}) AND s.Active='Y' AND c.Active='Y' AND (ps.participant_status=1 OR ps.participant_status=7) AND
             pt.Name='time' AND pf.Value=26 AND f.AcquisitionProtocolID='48' AND f.File like '%dti%'
             AND COALESCE(c.CandidateGUID, '') <> '' AND s.Current_stage <> 'Recycling Bin' AND s.SubprojectID IN (1, 2, 3)
-            AND ( ps.study_consent = 'yes' AND (COALESCE(ps.study_consent_withdrawal,'0000-00-00') = '0000-00-00' ))
-            AND (ps.ndar_consent = 'yes' AND (COALESCE(ps.ndar_consent_withdrawal,'0000-00-00') = '0000-00-00'))
+            AND ((ps.study_consent = 'yes' OR ps.study_consent IS NULL) AND (COALESCE(ps.study_consent_withdrawal,'0000-00-00') = '0000-00-00' ))
+            AND ((ps.ndar_consent  = 'yes' OR ps.ndar_consent  IS NULL) AND (COALESCE(ps.ndar_consent_withdrawal, '0000-00-00') = '0000-00-00'))
             ORDER BY PSCID", array());
           } else if ($ibis == 2) {
             $files = $db->pselect("select c.CandID, c.PSCID, c.IBISID, c.CandidateGUID, c.ProbandGUID, c.DoB, s.CenterID, s.Visit_label, s.Current_stage, f.File, fqc.QCStatus, c.Gender
             FROM files f left join files_qcstatus fqc USING (FileID) LEFT JOIN session s ON (s.ID=f.SessionID) LEFT JOIN candidate c on (c.CandID=s.CandID)
             LEFT JOIN parameter_file AS pf ON (f.FileID=pf.FileID) LEFT JOIN parameter_type AS pt ON (pt.ParameterTypeID=pf.ParameterTypeID) LEFT JOIN participant_status ps ON (c.CandID=ps.CandID)
-            WHERE UPPER(s.Visit_label) IN ('V06') AND s.Active='Y' AND c.Active='Y' AND (ps.participant_status=1 OR ps.participant_status=7) AND
+            WHERE UPPER(s.Visit_label) IN ({$v[$ibis]}) AND s.Active='Y' AND c.Active='Y' AND (ps.participant_status=1 OR ps.participant_status=7) AND
             pt.Name='time' AND pf.Value=26 AND f.AcquisitionProtocolID='48' AND f.File like '%dti%'
             AND COALESCE(c.CandidateGUID, '') <> '' AND s.Current_stage <> 'Recycling Bin' AND s.SubprojectID IN (9, 10)
-            AND ( ps.study_consent = 'yes' AND (COALESCE(ps.study_consent_withdrawal,'0000-00-00') = '0000-00-00' ))
-            AND (ps.ndar_consent = 'yes' AND (COALESCE(ps.ndar_consent_withdrawal,'0000-00-00') = '0000-00-00'))
+            AND ((ps.study_consent = 'yes' OR ps.study_consent IS NULL) AND (COALESCE(ps.study_consent_withdrawal,'0000-00-00') = '0000-00-00' ))
+            AND ((ps.ndar_consent  = 'yes' OR ps.ndar_consent  IS NULL) AND (COALESCE(ps.ndar_consent_withdrawal, '0000-00-00') = '0000-00-00'))
             ORDER BY PSCID", array());
           }
         }
@@ -317,7 +323,7 @@ class NDAR_Release_MRI {
             WHERE pf.ParameterTypeID='1'
             AND ((f.acquisitionprotocolid = 44 and pf.value = 't1w') or (f.acquisitionprotocolid = 45 and pf.value = 't2w'))
             AND s.SubprojectID IN (1, 2, 3, 9, 10)
-            AND ( ps.study_consent = 'yes' AND (COALESCE(ps.study_consent_withdrawal,'0000-00-00') = '0000-00-00' ))
+            AND ((ps.study_consent = 'yes' OR ps.study_consent IS NULL) AND (COALESCE(ps.study_consent_withdrawal,'0000-00-00') = '0000-00-00' ))
             AND c.candID in (216477, 274101, 755073, 842426, 924951)
             ORDER BY PSCID", array());
         */
@@ -335,11 +341,11 @@ class NDAR_Release_MRI {
             $split_file = explode("/", $file_anonymized);
             $only_anon_file = $split_file[count($split_file)-1];print $row['File']."\n";
 
-            if ($dti) {
+            if ($location == "prod") {
               $row['File'] = str_replace("assembly/","", $row["File"]);
             }
 
-            if ($t1t2) {
+            if ($location == "defaced") {
               $row['File'] = str_replace("assembly", "login", $row['File']);
               $row['File'] = str_replace("mri/native/ibis", "deface/deface", $row['File']);
               $row['File'] = preg_replace("/_00\d/", "$1", $row['File']);
