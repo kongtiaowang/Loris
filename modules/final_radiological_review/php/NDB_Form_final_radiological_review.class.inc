@@ -305,8 +305,7 @@ class NDB_Form_Final_Radiological_Review extends NDB_Form
             }
             $defaults   = array_merge(
                 $final_review,
-                $original_review,
-                array( 'history' => $history_display)
+                $original_review
             );
             $condition1 = $defaults['Final_Review_Results']
                               !=  $defaults['Final_Review_Results2'];
@@ -329,6 +328,7 @@ class NDB_Form_Final_Radiological_Review extends NDB_Form
                     = "Conflict between original and final review";
             }
 
+            $this->tpl_data['history'] = $history_display;
             return $defaults;
         }
         return array();
