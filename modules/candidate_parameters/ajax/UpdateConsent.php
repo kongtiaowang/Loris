@@ -12,6 +12,7 @@ $client = new NDB_Client();
 $client->initialize();
 
 require_once "Utility.class.inc";
+require_once "Email.class.inc";
 $DB =& Database::singleton();
 
 $commentID=$_POST['comment'];
@@ -29,6 +30,19 @@ if (isset($_POST['mail_consent'])) {
     $mail_consent = $_POST['mail_consent'];
     $participant_vals['mail_toothkit_consent'] = $mail_consent;
     $participant_vals['mail_toothkit_consent_date'] = date("Y-m-d", time());
+    if($mail_consent=='yes')
+    {
+        $msg_data['candid'] = $candid;
+
+        $Toothkit_Consent_Notification_Emails = $DB->pselect(
+            "SELECT entry_staff from participant_status WHERE CandID=:candid",
+        array('candid' => $candid)
+    );
+
+        foreach ($Toothkit_Consent_Notification_Emails as $email) {
+            Email::send($email['Email'], 'toothkit_consent.tpl', $msg_data);
+        }
+    }
 }
     $already_some_consent = $DB->pselectOne(
         "SELECT count(*) FROM participant_status WHERE CandID=:candid",
