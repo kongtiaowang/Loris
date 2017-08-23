@@ -123,7 +123,7 @@
             </tr>
         </thead>
         <tbody>
-            {$form.history.html}
+            {$history}
         </tbody>
     </table>
 </form>
