@@ -34,14 +34,14 @@ if (isset($_POST['mail_consent'])) {
     {
         $msg_data['candid'] = $candid;
 
-        $Toothkit_Consent_Notification_Emails = $DB->pselect(
-            "SELECT entry_staff from participant_status WHERE CandID=:candid",
+        $Toothkit_Consent_Notification_Email = $DB->pselectOne(
+            "SELECT us.Email FROM users us
+             JOIN candidate ca ON (ca.UserID=us.UserID)
+             WHERE ca.CandID=:candid",
         array('candid' => $candid)
     );
 
-        foreach ($Toothkit_Consent_Notification_Emails as $email) {
-            Email::send($email['Email'], 'toothkit_consent.tpl', $msg_data);
-        }
+            Email::send($Toothkit_Consent_Notification_Email, 'toothkit_consent.tpl', $msg_data);
     }
 }
     $already_some_consent = $DB->pselectOne(
