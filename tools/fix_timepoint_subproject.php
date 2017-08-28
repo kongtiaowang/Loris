@@ -67,9 +67,3 @@ if (!$confirm) {
 } else {
     print "\nThe SubprojectID is updated\n";
 }
-
-
-
-
-
-
