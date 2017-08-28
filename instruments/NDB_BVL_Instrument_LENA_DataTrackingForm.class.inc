@@ -196,9 +196,11 @@ class NDB_BVL_Instrument_LENA_DataTrackingForm extends NDB_BVL_Instrument
 
         $this->addLabel("<BR><strong> Upload ITS File 1</strong>");
         $this->form->addFile('recording_file_its1', 'Upload the ITS file 1', array());
+        $this->XINRegisterRule("recording_file_its1",array("number_session{@}=={@}NEVER_REQUIRED"));
         $this->form->addElement('static','Uploaded_file_its1', "Uploaded ITS Export File 1");
         $this->addLabel("<BR><strong> Upload ITS File 2</strong>");
         $this->form->addFile('recording_file_its2', 'Upload the ITS file 2', array());
+        $this->XINRegisterRule("recording_file_its2",array("number_session{@}=={@}NEVER_REQUIRED"));
         $this->form->addElement('static','Uploaded_file_its2', "Uploaded ITS Export File 2");
         $this->addLabel("<BR><strong> Upload ITS File 3</strong>");
         $this->form->addFile('recording_file_its3', 'Upload the ITS file 3', array());
