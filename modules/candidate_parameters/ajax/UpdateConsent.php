@@ -30,18 +30,38 @@ if (isset($_POST['mail_consent'])) {
     $mail_consent = $_POST['mail_consent'];
     $participant_vals['mail_toothkit_consent'] = $mail_consent;
     $participant_vals['mail_toothkit_consent_date'] = date("Y-m-d", time());
-    if($mail_consent=='yes')
-    {
-        $msg_data['candid'] = $candid;
+    if($mail_consent=='yes') {
 
-        $Toothkit_Consent_Notification_Email = $DB->pselectOne(
-            "SELECT us.Email FROM users us
-             JOIN candidate ca ON (ca.UserID=us.UserID)
+        $cand_info_details = $DB->pselect(
+            "SELECT ps.Name as center_name,ca.PSCID as PSCID from psc ps  
+             JOIN  candidate ca ON (ca.CenterID=ps.CenterID)
              WHERE ca.CandID=:candid",
-        array('candid' => $candid)
-    );
+            array('candid' => $candid)
+        );
+        foreach ($cand_info_details as $cand_info) {
+            switch ($cand_info['center_name']) {
 
+                case "STL":
+                    $Toothkit_Consent_Notification_Email = "flakel@psychiatry.wustl.edu";
+                    break;
+                case "SEA":
+                    $Toothkit_Consent_Notification_Email = "tstjohn@u.washington.edu";
+                    break;
+                case "UNC":
+                    $Toothkit_Consent_Notification_Email = "cchappel@med.unc.edu";
+                    break;
+                case "PHI":
+                    $Toothkit_Consent_Notification_Email = "FAGGENA1@email.chop.edu";
+                    break;
+                default:
+                    $Toothkit_Consent_Notification_Email = "leigh.ibis@gmail.com";
+            }
+            $msg_data['candid']    = $candid;
+            $msg_data['PSCID']     = $cand_info['PSCID'];
+
+            //This email notification will be better repalced with LORIS notification later.
             Email::send($Toothkit_Consent_Notification_Email, 'toothkit_consent.tpl', $msg_data);
+        }
     }
 }
     $already_some_consent = $DB->pselectOne(
