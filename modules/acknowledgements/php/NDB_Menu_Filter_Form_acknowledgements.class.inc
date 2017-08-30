@@ -16,7 +16,7 @@
  * This class provides the code to create the menu filter form that allows
  * for data entry of entities that should be acknowledged in publications
  *
- * PHP Version 5 7
+ * PHP Version 5 77777
  *
  * @category Behavioural
  * @package  Main
