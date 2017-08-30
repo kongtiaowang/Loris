@@ -151,10 +151,10 @@ class CouchDBDemographicsImporter {
     function _generateQuery() {
         $config = NDB_Config::singleton();
         $fieldsInQuery = "SELECT c.dob, 
-                                 c.candid, 
-                                 c.pscid, 
-                                 s.visit_label, 
-                                 s.subprojectid, 
+                                 c.candid                                                    AS CandID,
+                                 c.pscid                                                     AS PSCID,
+                                 s.visit_label                                               AS Visit_label,
+                                 s.subprojectid                                              AS SubprojectID,
                                  CASE 
                                    WHEN s.subprojectid = 1 THEN 'HR' 
                                    WHEN s.subprojectid = 2 THEN 'HR' 
