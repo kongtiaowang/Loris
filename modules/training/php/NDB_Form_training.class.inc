@@ -204,6 +204,7 @@ class NDB_Form_Training extends NDB_Form
             $deps,
             array(
              $baseURL . "/training/js/training_helper.js",
+             $baseURL . "/training/js/trainIndex.js",
             )
         );
     }
