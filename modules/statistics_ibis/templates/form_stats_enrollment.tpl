@@ -4,8 +4,11 @@
     <div class="col-sm-2 col-xs-12 form-group">
         {html_options id="EnrollmentSite" options=$Sites name="EnrollmentSite" selected=$CurrentSite.ID class="form-control"}
     </div>
-    <div class="col-sm-2 col-xs-12 form-group">
+    <div class="col-sm-2 col-xs-12 form-group" onchange="getSubProjects()">
         {html_options id="EnrollmentProject" options=$Projects name="EnrollmentProject" selected=$CurrentProject.ID class="form-control"}
+    </div>
+    <div class="col-sm-2 col-xs-12 form-group">
+        {html_options id="EnrollmentSubProject" options=$SubProjects name="EnrollmentSubProject" selected=$CurrentSubProject.ID class="form-control"}
     </div>
     <div class="col-sm-3 col-xs-12 form-group">
         <button onClick="updateEnrollmentTab()" class="btn btn-primary btn-small col-xs-12">Submit Query</button>
