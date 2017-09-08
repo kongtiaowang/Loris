@@ -192,25 +192,28 @@ class NDAR_Release_MRI {
         $db = $factory->Database();
 
         /* NDAR DEFACED T1 & T2's */
-        $ibis     = 2;
-        $t1t2     = true;
-        $dti      = false;
-        $location = "defaced";  // prod or defaced
-        $v[$ibis] = "'V06'"; // "'V06', 'V12'";
+//        $ibis     = 2;
+//        $t1t2     = true;
+//        $dti      = false;
+//        $location = "defaced";  // prod or defaced
+//        $v[$ibis] = "'V06'"; // "'V06', 'V12'";
         // $anonFilePath = "/data/ibis/data/assembly/";  // Non defaced
-        $anonFilePath = "/home/gluneau/";     // Prod Box
+//        $anonFilePath = "/home/gluneau/";     // Prod Box
         // $anonFilePath = "/home/lorisadmin/";  // Devv Box
-        $outputDir = "/data/not_backed_up/ibis_anon_" . $ibis . "_20170611/";
+//        $outputDir = "/data/not_backed_up/ibis_anon_" . $ibis . "_20170611/";
         // $outputDir = "/data/not_backed_up/ibis_anon_jrichards/";
 
         /* DTI25 Prod location */
-        //$ibis = 2;
-        //$dti  = true;
-        //$t1t2 = false;
-        //$location = "prod";
-        //$v[$ibis] = "'V06'";
-        //$anonFilePath = "/data/ibis/data/assembly/";
-        //$outputDir = "/data/not_backed_up/ibis_dti_" . $ibis . "_20170611/";
+        // IBIS1 subproject IDs: 1, 2, 3
+        // IBIS2 subproject IDs: 9, 10
+        $ibis = 2;
+        $dti  = false;
+        $t1t2 = true;
+        $location = "prod";
+        $v[$ibis] = "'V24'";
+        $anonFilePath = "/data/ibis/data/assembly/";
+        $outputDir = "/data/not_backed_up/v24lr/";
+        // $outputDir = "/data/not_backed_up/ibis_dti_" . $ibis . "_20170611/";
 
 
         /*
@@ -275,7 +278,7 @@ class NDAR_Release_MRI {
             (
                 f.AcquisitionProtocolID='44' OR f.AcquisitionProtocolID='45'
             )
-            AND COALESCE(c.CandidateGUID, '') <> '' AND s.Current_stage <> 'Recycling Bin' AND s.SubprojectID IN (9, 10)
+            AND COALESCE(c.CandidateGUID, '') <> '' AND s.Current_stage <> 'Recycling Bin' AND s.SubprojectID IN (10)
             AND ((ps.study_consent = 'yes' OR ps.study_consent IS NULL) AND (COALESCE(ps.study_consent_withdrawal,'0000-00-00') = '0000-00-00' ))
             AND ((ps.ndar_consent  = 'yes' OR ps.ndar_consent  IS NULL) AND (COALESCE(ps.ndar_consent_withdrawal, '0000-00-00') = '0000-00-00'))
             ORDER BY PSCID", array());
