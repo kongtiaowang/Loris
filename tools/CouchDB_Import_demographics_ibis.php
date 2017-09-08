@@ -150,7 +150,7 @@ class CouchDBDemographicsImporter {
 
     function _generateQuery() {
         $config = NDB_Config::singleton();
-        $fieldsInQuery = "SELECT c.dob, 
+        $fieldsInQuery = "SELECT c.DoB, 
                                  c.candid                                                    AS CandID,
                                  c.pscid                                                     AS PSCID,
                                  s.visit_label                                               AS Visit_label,
@@ -163,8 +163,8 @@ class CouchDBDemographicsImporter {
                                    WHEN s.subprojectid = 10 THEN 'LR' 
                                  END                                                         AS Risk, 
                                  p.alias                                                     AS Site, 
-                                 c.gender, 
-                                 s.current_stage, 
+                                 c.Gender, 
+                                 s.Current_stage, 
                                  CASE 
                                    WHEN s.visit = 'Failure' THEN 'Failure' 
                                    WHEN s.screening = 'Failure' THEN 'Failure' 
@@ -172,7 +172,7 @@ class CouchDBDemographicsImporter {
                                    WHEN s.screening = 'Withdrawal' THEN 'Withdrawal' 
                                    ELSE 'Neither' 
                                  END                                                         AS Failure, 
-                                 c.projectid, 
+                                 c.ProjectID, 
                                  c.flagged_caveatemptor                                      AS CEF, 
                                  c.flagged_caveatemptor                                      AS CEF, 
                                  c_o.description                                             AS CEF_reason, 
