@@ -643,7 +643,7 @@ class NDB_BVL_Instrument_adi_r extends NDB_BVL_Instrument
 		$this->addNumericElement("q_19_duration_of_loss_code", "19. Duration of loss of language skills", array("q_11_loss_of_language{@}=={@}1_yes"), "This is required if language was lost (answered 'yes' to question 11)");
 		$this->addLargeTextAreaElement("q_19_duration_of_loss_text", $this->indent . "Describe:", array("q_11_loss_of_language{@}=={@}1_yes"), "This is required if language was lost (answered 'yes' to question 11)");
 		
-                $this->form->addElement('static', null, "<br />"); 
+                $this->form->addElement('static', null, "<br />");
 
 	}
 	
@@ -698,7 +698,7 @@ class NDB_BVL_Instrument_adi_r extends NDB_BVL_Instrument
 		//$this->addLargeTextAreaElement("q_29_compreh_simple_text");
 		
 		$this->form->addElement('static', null, "<br />");
-		$answerArray = array(""=>NULL, "0_fuctional"=>"0. Functional", "1_no_functional"=>"1. No functional use", "2_fewer_than_5"=>"2. Fewer than five", "not_answered"=>"Not Answered");
+		$answerArray = array(""=>NULL, "0_fuctional"=>"0. Functional", "1_no_functional"=>"1. No functional use", "2_fewer_than_5"=>"2. Fewer than five");
 		$this->form->addElement("select", "q_30_overall_level_of_language", "30. Overall level of language", $answerArray);
 		$this->form->addElement('static', null, "<br />");
 		

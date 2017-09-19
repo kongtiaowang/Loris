@@ -204,7 +204,6 @@
                       {/if}
                     </th>
                 {/section}
-                <th>File in DB</th>
             </tr>
         </thead>
 
