@@ -54,16 +54,23 @@ class NDB_Form_Examiner extends NDB_Form
         }
 
         if ($useCertification) {
-            $centerID = $DB->pselectOne(
-                "SELECT centerID 
-                 FROM examiners
-                 WHERE examinerID=:EID",
+            $cids      = $DB->pselect(
+                "SELECT epr.centerID
+                 FROM examiners e
+                  LEFT JOIN examiners_psc_rel epr ON (e.examinerID=epr.examinerID)
+                 WHERE e.examinerID=:EID",
                 array('EID' => $this->identifier)
             );
+            $centerIDs =array();
+            foreach ($cids as $k=>$row) {
+                $centerIDs[] = $row['centerID'];
+            }
 
+            // Access is only granted if user sites are a superset of examiner sites
+            // considering that certification changes affect all sites
             return $user->hasPermission('examiner_view')
                 && (($user->hasPermission('examiner_multisite')
-                || in_array($centerID, $user->getData('CenterIDs'))));
+                || empty(array_diff($centerIDs, $user->getData('CenterIDs')))));
         }
         return false;
     }

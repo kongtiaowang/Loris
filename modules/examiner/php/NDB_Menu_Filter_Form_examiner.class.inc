@@ -56,27 +56,29 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
         }
 
         $user     = User::singleton();
-        $centerID = $DB->quote($user->getData('CenterID'));
+        $centerIDs = implode(',', $user->getCenterIDs());
 
         if ($user->hasPermission('examiner_multisite')) {
-                $query = " 
-                        FROM 
-                         examiners e LEFT JOIN psc ON 
-                        (e.centerID=psc.CenterID) 
-                        LEFT JOIN certification c ON 
-                        (c.examinerID=e.examinerID and c.pass = 'certified') 
-                        LEFT JOIN test_names tn ON (tn.ID = c.testID) WHERE 1=1 ";
+                $query = "
+                        FROM examiners e
+                            LEFT JOIN examiners_psc_rel epr ON
+                                (epr.examinerID=e.examinerID)
+                            LEFT JOIN psc ON (epr.centerID=psc.CenterID)
+                            LEFT JOIN certification c ON
+                                (c.examinerID=e.examinerID and c.pass = 'certified')
+                            LEFT JOIN test_names tn ON (tn.ID = c.testID)
+                        WHERE 1=1 ";
         } else {
 
               $query = "
-                        FROM 
-                         examiners e LEFT JOIN psc ON 
-                        (e.centerID=psc.CenterID) 
-                        LEFT JOIN certification c ON 
-                        (c.examinerID=e.examinerID and c.pass = 'certified') 
-                        LEFT JOIN test_names tn ON (tn.ID = c.testID)
-                        WHERE e.centerID =".$centerID." ";
-
+                        FROM examiners e
+                            LEFT JOIN examiners_psc_rel epr ON
+                                (epr.examinerID=e.examinerID)
+                            LEFT JOIN psc ON (epr.centerID=psc.CenterID)
+                            LEFT JOIN certification c ON
+                                (c.examinerID=e.examinerID and c.pass = 'certified')
+                            LEFT JOIN test_names tn ON (tn.ID = c.testID)
+                        WHERE FIND_IN_SET(epr.centerID, '$centerIDs')";
         }
 
         // set the class variables
@@ -99,13 +101,13 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
                               );
         $this->validFilters = array(
                                'e.full_name',
-                               'e.centerID',
+                               'epr.centerID',
                                'COALESCE(e.radiologist, 0)',
                               );
 
         $this->formToFilter = array(
                                'examiner'    => 'e.full_name',
-                               'site'        => 'e.centerID',
+                               'site'        => 'epr.centerID',
                                'radiologist' => 'COALESCE(e.radiologist, 0)',
                               );
 
@@ -141,6 +143,7 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
             }
         } else {
             // allow only to view own site data
+            $sites    = array();
             $site_arr = $user->getData('CenterIDs');
             foreach ($site_arr as $key => $val) {
                 $site[$key] = &Site::singleton($val);

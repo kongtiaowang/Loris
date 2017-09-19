@@ -16,9 +16,15 @@ class NDB_Form_new_profile extends NDB_Form
         // create user object
         $user =& User::singleton();
 
-        $site =& Site::singleton($user->getData('CenterID'));
-
-        if ($site->isStudySite() or ($site->getCenterName() == "DCC")) {
+        $site_arr = $user->getData('CenterIDs');
+        foreach ($site_arr as $key=>$val) {
+            $site[$key]        = & Site::singleton($val);
+            $isStudySite[$key] = $site[$key]->isStudySite();
+            $isDCCSite[$key]   = $site[$key]->getCenterName();
+        }
+        $oneIsStudySite = in_array("1", $isStudySite);
+        $oneIsDCCSite   = in_array("DCC", $isDCCSite);
+        if ($oneIsStudySite or $oneIsDCCSite) {
             return $user->hasPermission('data_entry');
         }
 
@@ -45,8 +51,32 @@ class NDB_Form_new_profile extends NDB_Form
         } elseif ($values['ProjectID'] == 6) {
             $startNum = 3000;
         }
+        $DB        = \Database::singleton();
+        $site_arr  = $user->getData('CenterIDs');
+        $num_sites = count($site_arr);
 
-        $candID = Candidate::createNew($user->getData('CenterID'), $dob, $edc, $values['gender'], $values['PSCID'], $startNum);
+        if ($num_sites >1) {
+            $candID = Candidate::createNew(
+                $values['psc'],
+                $dob,
+                $edc,
+                $values['gender'],
+                $values['PSCID'] ?? null,
+                $startNum
+            );
+        } else {
+            $centerIDs = $user->getData('CenterIDs');
+            $centerID  = $centerIDs[0];
+            $candID    = Candidate::createNew(
+                $centerID,
+                $dob,
+                $edc,
+                $values['gender'],
+                $values['PSCID'] ?? null,
+                $startNum
+            );
+        }
+
 
         // get the candidate
         $candidate =& Candidate::singleton($candID);
@@ -138,6 +168,28 @@ class NDB_Form_new_profile extends NDB_Form
                 '6m_plan3' => '6m_plan3'
             )
         );
+
+        // add sites for users with more than one site affiliation
+        $user =& User::singleton();
+        $DB   = \Database::singleton();
+        $user_list_of_sites = $user->getData('CenterIDs');
+        $num_sites          = count($user_list_of_sites);
+
+        if ($num_sites >1) {
+            $psc_labelOptions = array(null => '');
+            foreach ($user_list_of_sites as $key => $siteID) {
+                $center = $DB->pselectRow(
+                    "SELECT CenterID as ID, Name FROM psc WHERE CenterID =:cid",
+                    array('cid' => $siteID)
+                );
+                $psc_labelOptions[$siteID] = $center['Name'];
+            }
+            $this->addSelect('psc', 'Site', $psc_labelOptions);
+
+            // site rules
+            $this->addRule('psc', 'Site is required', 'required');
+        }
+
         $PSCIDsettings = $config->getSetting('PSCID');
         if($PSCIDsettings['generation'] == 'user') {
             $this->addBasicText('PSCID', 'PSCID');
@@ -173,9 +225,16 @@ class NDB_Form_new_profile extends NDB_Form
         $PSCIDsettings = $config->getSetting('PSCID');
         if($PSCIDsettings['generation'] == 'user') {
             $db =& Database::singleton();
-            $user =& User::singleton();
-            $centerID = $user->getData('CenterID');
-            $site =& Site::singleton($centerID);
+            if (empty($values['psc'])) { // user is in only one site
+                $user      =& User::singleton();
+                $centerIDs = $user->getData('CenterIDs');
+                $centerID  = $centerIDs[0];
+                $site      =& Site::singleton($centerID);
+            } else {
+                // user has multiple sites,
+                // so validate PSCID against the Site selected
+                $site =& Site::singleton($values['psc']);
+            }
 
             if(empty($values['PSCID'])) {
                 $errors['PSCID'] = 'PSCID must be specified';

@@ -267,10 +267,10 @@ class NDB_Menu_Filter_blind_coding extends NDB_Menu_Filter
         if($newCommentID['NewCenterID'] !== $CommentID['OldCenterID']) {
             return array('error' => "Candidates are not from the same site. Cannot swap candidates across sites.");
         }
-        elseif($user->getCenterID() != $newCommentID['NewCenterID']) {
+        elseif(!in_array($newCommentID['NewCenterID'], $user->getData('CenterIDs'))) {
             return array('error' => "$PSCID_Replace/$PSCID_Replace_V is from a different site than you. Can only swap candidates from the same site.");
         }
-        elseif($user->getCenterID() != $CommentID['OldCenterID']) {
+        elseif(!in_array($CommentID['OldCenterID'], $user->getData('CenterIDs'))) {
             return array('error' => "$PSCID/$PSCID_V is from a different site than you. Can only swap candidates from the same site.");
         }
         $NewID = $newCommentID['NewID'];
