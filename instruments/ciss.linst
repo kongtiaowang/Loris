@@ -4,6 +4,9 @@ date{@}Date_taken{@}Date of Administration{@}2006{@}2012
 static{@}Candidate_Age{@}Candidate Age (Months)
 static{@}Window_Difference{@}Window Difference (+/- Days)
 select{@}Examiner{@}Examiner{@}NULL=>'Choose an option'
+select{@}filled_by{@}Who is filling out this form?{@}NULL=>'Choose an option'{-}'father'=>'Father'{-}'mother'=>'Mother'{-}'other'=>'Other'
+text{@}filled_by_other{@}If Other, please specify
+select{@}filled_by_other_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
 numeric{@}respondent_age{@}Age{@}0{@}100
 select{@}respondent_age_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
 select{@}respondent_gender{@}Sex{@}NULL=>'Choose an option'{-}'male'=>'male'{-}'female'=>'female'{-}'not_answered'=>'Not Answered'
