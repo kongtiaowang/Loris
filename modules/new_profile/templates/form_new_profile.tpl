@@ -44,6 +44,14 @@
 		<div class="col-sm-10">{$form.gender.html}</div>
 	</div>
 	<br><br>
+    {if $form.psc.html != ""}
+	<div class="form-group col-sm-12">
+		<label class="col-sm-2">{$form.psc.label}</label>
+		<div class="col-sm-10">{$form.psc.html}</div>
+	</div>
+	<br><br>
+    {/if}
+
     {if $form.PSCID.html != ""}
 	<div class="form-group col-sm-12">
 		<label class="col-sm-2">{$form.PSCID.label}</label>
@@ -60,13 +68,13 @@
     <br><br>
     {/if}
 
-		{if $form.ProjectID.html != ""}
-		<div class="form-group col-sm-12">
-			<label class="col-sm-2">Candidate Plan (ONLY for IBIS2 candidates)</label>
-			<div class="col-sm-10">{$form.candidate_plan.html}</div>
-		</div>
-		<br><br>
-		{/if}
+    {if $form.ProjectID.html != ""}
+        <div class="form-group col-sm-12">
+            <label class="col-sm-2">Candidate Plan (ONLY for IBIS2 candidates)</label>
+            <div class="col-sm-10">{$form.candidate_plan.html}</div>
+        </div>
+    <br><br>
+    {/if}
 
 	<div class="form-group col-sm-12">
 		<div class="col-sm-12"><input class="btn btn-primary col-sm-offset-2 col-sm-2" name="fire_away" value="Create" type="submit" /></div>

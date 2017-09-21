@@ -52,7 +52,7 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
         if (isset($certification['EnableCertification'])) {
             $this->useCertification = $certification['EnableCertification'];
         } else {
-            $useCertification = false;
+            $this->useCertification = false;
         }
 
         $user     = User::singleton();
@@ -282,6 +282,9 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
             $errors['addName'] = 'Please include both a name and site';
         } else if ($this->examinerExists($name, $site)) {
             $errors['addName'] = 'This examiner already exists';
+        } else if (trim($name) !== $name || preg_match('/\s[\s]+/', $name) === 1) {
+            $errors['addName'] = 'Please remove all trailing '.
+            'spaces and double spaces in name';
         }
 
         return $errors;
@@ -303,17 +306,53 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
         $fullName    = $values['addName'];
         $siteID      = $values['addSite'];
         $radiologist = $values['addRadiologist'];
+        $radiologist = (empty($radiologist)) ? 0:$radiologist;
         //$values['addRadiologist'] should be used once addCheckbox is
         // supported by LorisForm and once addRadiologist checkbox is added
         // to the form using the addCheckbox method
         //$radiologist = $values['addRadiologist'];
 
+        //Check if examiner is already in the database 'examiners', if not add them
+        $examinerID = $DB->pselectOne(
+            "SELECT examinerID
+             FROM examiners
+             WHERE full_name=:fullName",
+            array('fullName' => $fullName)
+        );
+
+        //Check if examiner is already a loris user, if so add foreign key
+        $isUser = $DB->pselectOne(
+            "SELECT ID FROM users WHERE Real_name=:fullName",
+            array('fullName' => $fullName)
+        );
+
+        $user_id = null;
+        if (!empty($isUser)) {
+            $user_id = $isUser;
+        }
+        if (empty($examinerID)) {
+            $DB->insert(
+                'examiners',
+                array(
+                 'full_name'   => $fullName,
+                 'radiologist' => $radiologist,
+                 'userID'      => $user_id,
+                )
+            );
+        } else {
+            $DB->update(
+                'examiners',
+                array('radiologist' => $radiologist),
+                array('examinerID' => $examinerID)
+            );
+        }
+
+
         $DB->insert(
-            'examiners',
+            'examiners_psc_rel',
             array(
-             'full_name'   => $fullName,
-             'centerID'    => $siteID,
-             'radiologist' => $radiologist,
+             'examinerID' => $this->getExaminerID($fullName),
+             'centerID'   => $siteID,
             )
         );
         header("Location: {$baseurl}/examiner/", true, 303);
@@ -331,9 +370,10 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
     {
         $DB         = Database::singleton();
         $examinerID = $DB->pselectOne(
-            "SELECT examinerID
-             FROM examiners
-             WHERE full_name=:fullName AND centerID=:siteID",
+            "SELECT e.examinerID
+             FROM examiners e
+                  LEFT JOIN examiners_psc_rel epr ON (e.examinerID=epr.examinerID)
+             WHERE e.full_name=:fullName AND epr.centerID=:siteID",
             array(
              'fullName' => $fullName,
              'siteID'   => $siteID,
@@ -346,6 +386,29 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
             return true;
         }
     }
+
+    /**
+     * Getter for the examinerID value from the database
+     *
+     * @param string $fullName name associated to examiner in the DB table
+     *
+     * @return string   ID of the examiner
+     */
+    function getExaminerID($fullName)
+    {
+        $DB         = Database::singleton();
+        $examinerID = $DB->pselectOne(
+            "SELECT examinerID
+             FROM examiners
+             WHERE full_name=:fullName",
+            array('fullName' => $fullName)
+        );
+
+        //returned as a string
+        return $examinerID;
+    }
+
+
     /**
      * Include the column formatter required to display the feedback link colours
      * in the candidate_list menu

@@ -341,17 +341,15 @@ class NDB_Form_Examiner extends NDB_Form
 
         // Get the examiner name and site name, to be added the form panel header
         $row = $DB->pselectRow(
-            "SELECT full_name, psc.Name as site_name
-              FROM examiners
-               JOIN psc ON psc.CenterID = examiners.centerID
-              WHERE examinerID=:EID",
+            "SELECT e.full_name
+              FROM examiners e
+              WHERE e.examinerID=:EID",
             array('EID' => $this->identifier)
         );
         // Get identifier, to be added to the Reset button href
         $this->tpl_data['identifier'] = $this->identifier;
 
         $this->tpl_data['examiner_name'] = $row['full_name'];
-        $this->tpl_data['site_name']     = $row['site_name'];
 
         $this->form->addFormRule(array(&$this, '_validateEditExaminer'));
     }
