@@ -107,28 +107,18 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT extends NDB_BVL_Instrument
         // display test name
         $this->addHeader("Adult Self-Report For Ages 18-59");
 
-        $this->_addMetadataFields();
-    }
-
-    /**
-     * Page 1
-     *
-     * @return void
-     */
-    function _page1()
-    {
-        // Header
-        $this->addHeader("Adult Self-Report For Ages 18-59");
-
+        //survey instrument don't need this
+        // $this->_addMetadataFields();
+        $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
         $this->addLabel("<h3>Your full name:</h3>");
         $this->addTextElement("user_first_name", "$this->indent First: ");
         $this->addTextElement("user_last_name", "$this->indent Last: ");
 
         $opts = array(
-                 null   => "",
-                 "male"   => "Male",
-                 "female" => "Female",
-                );
+            null   => "",
+            "male"   => "Male",
+            "female" => "Female",
+        );
         $this->addSelect("user_gender", "Your gender: ", $opts);
 
         $this->addNumericElement("user_age", "Your age: ");
@@ -146,21 +136,21 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT extends NDB_BVL_Instrument
         $this->addTextElement("user_work", "Your work: ");
         $this->addTextElement("spouse_work", "Spouse or partner's work: ");
         $this->XINRegisterRule("spouse_work",
-          array("spouse_work{@}=={@}NEVER_REQUIRED")
-          );
+            array("spouse_work{@}=={@}NEVER_REQUIRED")
+        );
         $opts = array(
-                 null  => "",
-                 "1"     => "1. No high school diploma and no GED",
-                 "2"     => "2. General Equivalency Diploma (GED)",
-                 "3"     => "3. High school graduate",
-                 "4"     => "4. Some college but no college degree",
-                 "5"     => "5. Associate's Degree",
-                 "6"     => "6. Bachelor's or RN Degree",
-                 "7"     => "7. Some graduate school but no graudate degree",
-                 "8"     => "8. Master's Degree",
-                 "9"     => "9. Doctoral or Law Degree",
-                 "other" => "Other Education (specify)",
-                );
+            null  => "",
+            "1"     => "1. No high school diploma and no GED",
+            "2"     => "2. General Equivalency Diploma (GED)",
+            "3"     => "3. High school graduate",
+            "4"     => "4. Some college but no college degree",
+            "5"     => "5. Associate's Degree",
+            "6"     => "6. Bachelor's or RN Degree",
+            "7"     => "7. Some graduate school but no graudate degree",
+            "8"     => "8. Master's Degree",
+            "9"     => "9. Doctoral or Law Degree",
+            "other" => "Other Education (specify)",
+        );
 
         $this->addSelect("user_education", "<b>PLEASE SELECT YOUR HIGHEST EDUCATION</b>", $opts);
 
@@ -172,6 +162,19 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT extends NDB_BVL_Instrument
             "Required",
             "if_other_group"
         );
+    }
+
+    /**
+     * Page 1
+     *
+     * @return void
+     */
+    function _page1()
+    {
+        // Header
+        $this->addHeader("Adult Self-Report For Ages 18-59");
+
+
 
         $this->addLabel("<h1><b>I. FRIENDS </b></h1>");
         $opts = array(
@@ -547,7 +550,7 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT extends NDB_BVL_Instrument
               array("V_comments{@}=={@}NEVER_REQUIRED")
           );
   }
-function _page3(){
+        function _page3(){
 
         $this->addSelect("illness", "<b>VI. Do you have any illness, disability or handicap? </b>", array(null=> "", "no" => "No", "yes"=> "Yes"));
         $this->addTextAreaElement("illness_description","If yes, please describe");
@@ -570,13 +573,16 @@ function _page3(){
               "if_other_group"
         );
         $this->addTextAreaElement("self_description", "<b>VII.Please describe the best things about yourself");
-        $this->XINRegisterRule("self_description",
-            array("self_description{@}==NEVER_REQUIRED"));
+        $this->XINRegisterRule(
+        "self_description",
+        array("self_description{@}=={@}NEVER_REQUIRED")
+    );
         $this->addTextAreaElement("VI_VIII_comments", "Additional Comments (optional): ");
         $this->XINRegisterRule(
               "VI_VIII_comments",
               array("VI_VIII_comments{@}=={@}NEVER_REQUIRED")
           );
+
 
       }
       function _page4(){
