@@ -1,0 +1,638 @@
+<?php
+/**
+ * This file contains the NDB_BVL_Instrument_SEQ3 class
+ *
+ * PHP Version 5
+ *
+ * @category Instrument
+ * @package  Neuropsych
+ * @author   Suzanne Lee <suzannelee.mcin@gmail.com>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/IBIS/
+ */
+
+/**
+ * Creates the form elements for the SEQ3 instrument
+ *
+ * @category Instrument
+ * @package  Neuropsych
+ * @author   Suzanne Lee <suzannelee.mcin@gmail.com>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/IBIS/
+ */
+class NDB_BVL_Instrument_SEQ3 extends NDB_BVL_Instrument
+{
+    /**
+     * Sample SQL statement for test_names table and instrument subtests table
+     *
+     * INSERT INTO test_names(Test_name, Full_name,Sub_group,isDirectEntry) VALUES ('<TEST_NAME>','<INSTRUMENT_TITLE>',1, false);
+     * INSERT INTO instrument_subtests(Test_name, Subtest_name, Description, Order_number) VALUES('<TEST_NAME>', '<TEST_NAME>_page1', 'Page1', 1);
+     */
+
+    /**
+    * Sets up basic data, such as the HTML_Quickform object, and so on.
+    *
+    * @param string $commentID the CommentID identifying the data to load
+    * @param string $page      if a multipage form, the page to show
+    *
+    * @return void
+    * @access public
+    */
+    function setup($commentID, $page)
+    {
+        $this->formType ="XIN";
+        $this->form     = new LorisForm('test_form');
+        $this->page     = $page;            // page label (number or
+        // string - used by
+        // user-defined child classes)
+
+        // set the object properties
+        $this->testName = "SEQ3";           // test_names.Test_name
+        $this->table    = 'SEQ3';              // name of database table corresponding to instrument
+        // data keyed by commentID
+        $this->commentID = $commentID;
+
+        //The array of dates/timestamps to convert to database dates/timestamps
+        //Any HTML_Quickform date elements must be listed here
+        $this->dateTimeFields =array(
+                                "Date_taken",
+                                "date_today",
+                                "child_birth_date",
+                               );
+
+        //The array of selects with multiple answers allowed
+        //Any HTML_Quickform multiple selects must be listed here
+        $this->_selectMultipleElements = array();
+
+        // required fields for data entry completion status
+        $this->_requiredElements = array(
+                                    'Examiner',
+                                    'date_today',
+                                    '1_react_sensitively_to_sounds',
+                                    '15_disturbed_by_bright_lights',
+                                    '36_dislike_cuddling_or_being_held',
+                                    '59_refuse_new_foods_or_avoids_certain_foods',
+                                    '75_enjoy_long_car_rides',
+                                    '87_trouble_looking_and_listening_same_time',
+                                    '98_how_often_experienced_sensations_differently',
+                                   );
+
+        // setup the form
+        $this->_setupForm();
+
+    }
+
+    //If the instrument is not paged, remove the switch from the _setupForm method and add all the form Elements in this function.
+
+    /**
+    * Method to build the HTML_Quickform object into a paged form
+    *
+    * @return void
+    * @access private
+    */
+    function _setupForm()
+    {
+        if (preg_match("/SEQ3(_page[0-9]+)/", $this->page, $matches)) {
+            call_user_func(array($this, $matches[1]));
+        } else {
+            $this->_main();
+        }
+        //Defines the call back function for HTML Quickform to use when validating the form.
+        $this->form->addFormRule(array(&$this, 'XINValidate'));
+    }
+
+    /**
+    * Generates the main page of the form.
+    *
+    * @return void
+    * @access private
+    */
+    function _main()
+    {
+        // display test name
+        $this->addHeader("Sensory Experiences Questionnaire Version 3.0");
+
+        // automatically adds examiner & date of administration
+        $this->_addMetadataFields();
+    }
+
+    /**
+    * Generates the first page of the form.
+    *
+    *@return void
+    */
+    function _page1()
+    {
+        $this->addHeader("SEQ-3.0 (Sensory Experiences Questionnaire Version 3.0)");
+
+        /* $this->form->addElement("static", null, "<br/>");*/
+
+        $this->addBasicDate('date_today', 'Today\'s Date:');
+
+        $this->addBasicText('child_initials', 'Child\'s Initials:');
+
+        $this->addBasicText('child_id', 'Child\'s ID:');
+
+        $this->addBasicDate('child_birth_date', 'Child\'s Date of Birth:');
+
+        $options = array(
+                    null      => "",
+                    "mother"  => "Mother",
+                    "father"  => "Father",
+                    "both"    => "Both Parents",
+                    "teacher" => "Teacher",
+                    "other"   => "Other (describe:)",
+                   );
+
+        $this->addSelect("person_completing_form", "Person completing form:", $options);
+
+        $this->addBasicText("if_other_person", "$this->indent If other, please specify:");
+
+        $this->XINRegisterRule(
+            "if_other_person",
+            array("person_completing_form{@}=={@}other"),
+            "Required."
+        );
+    }
+
+    /**
+    * Generates the second page of the form.
+    *
+    *@return void
+    */
+    function _page2()
+    {
+        $this->addHeader("SEQ-3.0 (Sensory Experiences Questionnaire Version 3.0)");
+
+        $this->addLabel("The following are questions about how your child uses his/her senses (such as hearing, vision, touch, etc.) to experience the world. Using the following response options (<i>never/almostnever, once in a while, sometimes, frequently, almost always/always</i>), select the option that best fits the frequency of your child's experiences. Please answer all questions.");
+
+        $this->addLabel("<h4>I. The following questions relate to your child's experiences with sound.</h4>");
+
+        $this->addLabel("<h3>How often does your child...</h3>");
+
+        $this->form->addElement("static", null, "<br/>");
+
+        $options = array(
+                    null              => "",
+                    "never"           => "Never/Almost Never",
+                    "once_in_a_while" => "Once in a while",
+                    "sometimes"       => "Sometimes",
+                    "frequently"      => "Frequently",
+                    "always"          => "Almost Always/Always",
+                   );
+
+        $this->addSelect("1_react_sensitively_to_sounds", "1. ... react sensitively (startle easily or cover ears) to unexpected or loud sounds (such as a vacuum cleaner, door closing, or siren)?", $options);
+
+        $this->addSelect("2_make_nosie_to_avoid_other_sounds", "2. ... hum or make noises to tune out or avoid other sounds?", $options);
+
+        $this->addSelect("3_notice_sounds_in_environment_before_others", "3. ... notice sounds in the environment (such as planes, trains, or thunder in the distance) before other people do?", $options);
+
+        $this->addSelect("4_ignore_loud_noises", "4. ... ignore or tune-out loud noises? (For example: Doesn't react when alarms go off or objects fall to the floor.)", $options);
+
+        $this->addSelect("5_make_accurate_impersonations", "5. ... make accurate impersonations of voices? (For example: Copies foreign accents, mimics sports entertainment announcer.)", $options);
+
+        $this->addSelect("6_demonstrates_perfect_pitch", "6. ... demonstrate perfect musical pitch? (For example: Plays or hums tunes by ear without making mistakes.)", $options);
+
+        $this->addSelect("7_fascinated_with_sounds", "7. ... seem fascinated with sounds?", $options);
+
+        $this->addSelect("8_ignore_you_when_you_call_name", "8. ... ignore you when you call his/her name?", $options);
+
+        $this->addSelect("9_bothered_by_everyday_sounds", "9. ... seem bothered by everyday sounds (such as a dishwasher, car radio, mixer/blender) that are not bothersome to others?", $options);
+
+        $this->addSelect("10_show_distress", "10. ... show distress (startle easily or cover ears) during loud conversations or singing?", $options);
+
+        $this->addSelect("11_fascinated_excited_by_others_singing", "11. ... seem fascinated with or excited by the sound of other people singing?", $options);
+
+        $this->addSelect("12_ability_to_copy_environmental_sounds", "12. ... have the exceptional ability to copy environmental sounds? (For example: Mimics sound of musical toys, fax machine, chimes on clock, mechanical sounds)", $options);
+
+        $this->addSelect("13_enjoy_listening_to_music", "13. ... enjoy listening to music?", $options);
+
+        $this->addSelect("14_trouble_distinguishing_between_sounds", "14. ... have trouble distinguishing between different types of sounds?", $options);
+
+    }
+
+    /**
+    * Generates the third page of the form.
+    *
+    *@return void
+    */
+    function _page3()
+    {
+        $this->addHeader("SEQ-3.0 (Sensory Experiences Questionnaire Version 3.0)");
+
+        $this->addLabel("<h4>II. The following questions relate to your child's experiences with vision.</h4>");
+
+        $this->addLabel("<h3>How often does your child...</h3>");
+
+        $this->form->addElement("static", null, "<br/>");
+
+        $options = array(
+                    null              => "",
+                    "never"           => "Never/Almost Never",
+                    "once_in_a_while" => "Once in a while",
+                    "sometimes"       => "Sometimes",
+                    "frequently"      => "Frequently",
+                    "always"          => "Almost Always/Always",
+                   );
+
+        $this->addSelect("15_disturbed_by_bright_lights", "15. ... appear to be disturbed by bright lights or sunlight?", $options);
+
+        $this->addSelect("16_fascinated_by_own_reflection_in_persons_eyes", "16. ... seem fascinated by his/her own reflection in another person's eyes?", $options);
+
+        $this->addSelect("17_stare_at_lights_or_moving_objects", "17. ... stare at lights or objects that spin or move?", $options);
+
+        $this->addSelect("18_avoid_face_or_gaze_during_social_games", "18. ... avoid looking at your face or avert his/her gaze during social games/play?", $options);
+
+        $this->addSelect("19_fascinated_by_visual_effect_of_water", "19. ... seem fascinated with or excited by the visual effect of water falling, swirling, or pouring?", $options);
+
+        $this->addSelect("20_notice_minor_changes_in_physical_environment", "20. ... notice minor changes in the way the physical environment looks (such as rearranged furniture or objects displaced)?", $options);
+
+        $this->addSelect("21_fascinated_with_lights", "21. ... seem fascinated with lights?", $options);
+
+        $this->addSelect("22_slow_to_notice_new_objects_or_toys", "22. ... seem slow to notice new objects or toys in the room?", $options);
+
+        $this->addSelect("23_slow_to_look_at_objects_near_them", "23. ... seem slow to look at objects that are placed or held near him/her", $options);
+
+        $this->addSelect("24_notice_changes_in_visual_appearance_of_others", "24. ... notice minor changes in the visual appearances of other people (such as glasses/no glasses, hat/no hat, haircut)?", $options);
+
+        $this->addSelect("25_look_at_objects_using_side_vision", "25. ... look at objects using side vision, out of the corner of his/her eyes?", $options);
+
+        $this->addSelect("26_enjoy_children_videos_or_tv_programs", "26. ... enjoy watching children's videos or TV programs?", $options);
+
+        $this->addSelect("27_watch_objects_they_move_rapidly", "27. ... watch objects that he/she moves rapidly in front of his/her eyes?", $options);
+
+        $this->addSelect("28_fascinated_by_reflection_in_shiny_surfaces", "28. ... seem fascinated with or excited by his/her reflection in shiny surfaces (such as mirrors or sunglasses)?", $options);
+
+        $this->addSelect("29_look_at_angles_or_corners_of_objects", "29. ... look at angles or corners of objects (such as a table leg)?", $options);
+
+        $this->addSelect("30_fascinated_by_flickering_or_scrolling_motions", "30. ... seem fascinated with or excited by flickering or scrolling motions on a computer screen or TV?", $options);
+
+        $this->addSelect("31_ignore_not_notice_someone_new_or_different", "31. ... seem to ignore or not notice someone new or different entering the room?", $options);
+
+        $this->addSelect("32_watch_hands_or_fingers_move_or_flicker", "32. ... watch his/her hands or fingers move or flicker in front of the eyes?", $options);
+
+        $this->addSelect("33_visually_distracted_by_little_things_moving", "33. ... seem visually distracted by every little thing moving around him/her?", $options);
+
+        $this->addSelect("34_trouble_distinguishing_visual_sensations", "34. ... have trouble distinguishing between different types of visual sensations?", $options);
+
+        $this->addSelect("35_enjoy_looking_at_picture_books", "35. ... enjoy looking at picture books?", $options);
+    }
+
+    /**
+    * Generates the fourth page of the form.
+    *
+    *@return void
+    */
+    function _page4()
+    {
+
+        $this->addHeader("SEQ-3.0 (Sensory Experiences Questionnaire Version 3.0)");
+
+        $this->addLabel("<h4>III. The following questions relate to your child's experiences with touch.</h4>");
+
+        $this->addLabel("<h3>How often does your child...</h3>");
+
+        $this->form->addElement("static", null, "<br/>");
+
+        $options = array(
+                    null              => "",
+                    "never"           => "Never/Almost Never",
+                    "once_in_a_while" => "Once in a while",
+                    "sometimes"       => "Sometimes",
+                    "frequently"      => "Frequently",
+                    "always"          => "Almost Always/Always",
+                   );
+
+        $this->addSelect("36_dislike_cuddling_or_being_held", "36. ... dislike cuddling or being held?", $options);
+
+        $this->addSelect("37_crave_intense_firm_touch", "37. ... crave intense or firm touch? (For example: Can't get enough of back scratches, firm hugs, or squeezes.)", $options);
+
+        $this->addSelect("38_avoid_touching_certain_textures", "38. ... avoid touching certain textures (such as fuzzy or squishy toys) or playing with messy materials (such as sand or lotion)?", $options);
+
+        $this->addSelect("39_like_feeling_of_air_blowing", "39. ... like the feeling of air blowing from fans or wind on his/her face?", $options);
+
+        $this->addSelect("40_trouble_adjusting_to_water_temperature", "40. ... have trouble adjusting to the water temperature during bath time?", $options);
+
+        $this->addSelect("41_crave_being_tickled", "41. ... crave being tickled?", $options);
+
+        $this->addSelect("42_dislike_being_in_water", "42. ... dislike being in water?", $options);
+
+        $this->addSelect("43_ignore_or_not_notice_when_tap_shoulder", "43. ... ignore you or not notice when you tap him/her on the shoulder for attention?", $options);
+
+        $this->addSelect("44_sensitive_to_bothered_by_sticky_material", "44. ... seem sensitive to or bothered by sticky materials (such as tape, stickers, or band-aids)?", $options);
+
+        $this->addSelect("45_fascinated_with_touch", "45. ... seem fascinated with touch?", $options);
+
+        $this->addSelect("46_bothered_by_tags_or_seams", "46. ... seem bothered by tags or seams on clothing?", $options);
+
+        $this->addSelect("47_bothered_by_tight_clothing", "47. ... seem bothered by tight clothing (such as turtlenecks, elastic, sleeves, or stocking caps)?", $options);
+
+        $this->addSelect("48_easily_find_objects_by_feel", "48. ... easily find objects (such as coins or candy) in a bag by feel (without looking)?", $options);
+
+        $this->addSelect("49_show_distress_during_grooming", "49. ... show distress during grooming? (For example: Cries or fusses during face washing, hair combing, fingernail cutting, teeth brushing.)", $options);
+
+        $this->addSelect("50_touch_or_rub_certain_surfaces_or_materials", "50. ... touch or rub certain surfaces or materials (such as grooves, ridges, or very smooth surfaces)?", $options);
+
+        $this->addSelect("51_react_negatively_pull_away_when_touched", "51. ... react negatively or pull away when touched by a person? (For example: Pulls away when head is patted.)", $options);
+
+        $this->addSelect("52_dislike_being_tickled", "52. ... dislike being tickled?", $options);
+
+        $this->addSelect("53_slow_to_react_to_pain", "53. ... seem slow to react to pain? (For example: Isn't bothered by bumps, scrapes, cuts, or falls.)", $options);
+
+        $this->addSelect("54_react_negatively_to_haircuts", "54. ... react negatively to haircuts?", $options);
+
+        $this->addSelect("55_fascinated_with_textures_or_surfaces", "55. ... seem fascinated with textures or surfaces, objects or clothing fabric?", $options);
+
+        $this->addSelect("56_unaware_of_extreme_temperatures", "56. ... seem unaware of extreme temperatures? (For example: Doesn't react to hot water or tolerates very cold weather without a coat.)", $options);
+
+        $this->addSelect("57_rub_wet_substances_on_smooth_surface", "57. ... rub wet substances (such as water, lotion, liquid soap, or pudding) on a table top or other smooth surface?", $options);
+
+        $this->addSelect("58_trouble_distinguishing_between_different_touch_sensations", "58. ... have trouble distinguishing between different types of touch sensations", $options);
+    }
+
+    /**
+    * Generates the fifth page of the form.
+    *
+    *@return void
+    */
+    function _page5()
+    {
+        $this->addHeader("SEQ-3.0 (Sensory Experiences Questionnaire Version 3.0)");
+
+        $this->addLabel("<h4>IV. The following questions relate to your child's experiences with taste/smell.</h4>");
+
+        $this->addLabel("<h3>How often does your child...</h3>");
+
+	$this->form->addElement("static", null, "<br/>");
+
+        $options = array(
+                    null              => "",
+                    "never"           => "Never/Almost Never",
+                    "once_in_a_while" => "Once in a while",
+                    "sometimes"       => "Sometimes",
+                    "frequently"      => "Frequently",
+                    "always"          => "Almost Always/Always",
+                   );
+
+        $this->addSelect("59_refuse_new_foods_or_avoids_certain_foods", "59. ... refuse to try new foods or avoid certain tastes, smells, or textures of food?", $options);
+
+        $this->addSelect("60_smell_objects_or_toys_during_play", "60. ... smell objects or toys during play or other activities?", $options);
+
+        $this->addSelect("61_sensitive_to_or_bothered_by_people_smell", "61. ... seem sensitive to or bothered by the way people smell?", $options);
+
+        $this->addSelect("62_put_objects_toys_non_food_items_in_mouth", "62. ... put objects, toys, or other non-food items in his/her mouth to suck or chew?", $options);
+
+        $this->addSelect("63_picky_eater", "63. ... seem to be a \"picky\" eater?", $options);
+
+        $this->addSelect("64_crave_foods_with_strong_taste", "64. ... crave foods with a strong taste or flavor (such as spicy, sour, or bitter foods)?", $options);
+
+        $this->addSelect("65_fascinated_with_particular_taste", "65. ... seem fascinated with particular tastes?", $options);
+
+        $this->addSelect("66_notice_smells_before_other_people", "66. ... notice smells before other people do (such as perfume, smoke, or food)?", $options);
+
+        $this->addSelect("67_fascinated_with_particular_smells", "67. ... seem fascinated with particular smells?", $options);
+
+        $this->addSelect("68_mouth_suck_chew_hands_or_fingers", "68. ... mouth, suck, or chew his/her hands or fingers?", $options);
+
+        $this->addSelect("69_unaware_of_strong_unpleasant_smells_others_notice", "69. ... seem to be unaware of strong or unpleasant smells that most other people notice (such as rotting food, ammonia, or perfume)?", $options);
+
+        $this->addSelect("70_taste_difference_between_different_brands_same_food", "70. ... taste the difference between different brands of the same food or subtle recipe changes?", $options);
+
+        $this->addSelect("71_lick_non_food_objects", "71. ... lick non-food objects?", $options);
+
+        $this->addSelect("72_refuse_food_they_like_if_mixed_with_another", "72. ... refuse to eat food that he/she usually likes if it is mixed with another food?", $options);
+
+        $this->addSelect("73_gag_in_response_to_certain_smells", "73. ... gag in response to certain smells?", $options);
+
+        $this->addSelect("74_trouble_distinguishing_different_tastes_or_flavors", "74. ... have trouble distinguishing between different types of tastes or flavors?", $options);
+    }
+
+    /**
+    * Generates the sixth page of the form.
+    *
+    *@return void
+    */
+    function _page6()
+    {
+        $this->addHeader("SEQ-3.0 (Sensory Experiences Questionnaire Version 3.0)");
+	
+	$this->addLabel("<h4>V. The following questions relate to your child's experiences with movement.</h4>");
+
+        $this->addLabel("<h3>How often does your child...</h3>");
+
+        $this->form->addElement("static", null, "<br/>");
+
+        $options = array(
+                    null              => "",
+                    "never"           => "Never/Almost Never",
+                    "once_in_a_while" => "Once in a while",
+                    "sometimes"       => "Sometimes",
+                    "frequently"      => "Frequently",
+                    "always"          => "Almost Always/Always",
+                   );
+
+        $this->addSelect("75_enjoy_long_car_rides", "75. ... enjoy long car rides?", $options);
+
+        $this->addSelect("76_jump_rock_spin", "76. ... jump up/down, rock back/forth, or spin in circles?", $options);
+
+        $this->addSelect("77_uneasy_or_dizzy_from_swing_merry_go_round_rocker", "77. ... seem uneasy or become dizzy from the movement of a swing, merry-go-round, or rocker?", $options);
+
+        $this->addSelect("78_seek_physical_rough_housing_play", "78. ... seek out physical rough-housing play? (For example: Craves wrestling, being tossed in the air, or spun around.)", $options);
+
+        $this->addSelect("79_enjoy_being_upside_down", "79. ... enjoy being upside-down?", $options);
+
+        $this->addSelect("80_flaps_arms_or_hands_when_excited", "80. ... flap his/her arms or hands, particularly when excited?", $options);
+
+        $this->addSelect("81_avoid_escalators_elevators_or_other", "81. ... avoid riding on escalators, elevators, or other moving surfaces?", $options);
+
+        $this->addSelect("82_unaware_of_moving_unstable_surfaces", "82. ... seems unaware of moving or unstable surfaces?", $options);
+
+        $this->addSelect("83_react_negatively_moved_quickly_tipped_backwards_spun_around", "83. ... react negatively to being moved quickly, tipped backwards, or spun around by a familiar adult?", $options);
+
+        $this->addSelect("84_spin_self_around_without_becoming_dizzy", "84. ... spin self around without becoming dizzy?", $options);
+
+        $this->addSelect("85_unusual_postures_with_hands_fingers_arms", "85. ... assume unusual postures with his/her hands, fingers, or arms?", $options);
+
+        $this->addSelect("86_trouble_distinguishing_movement_sensations", "86. ... have trouble distinguishing between different types of movement sensations?", $options);
+    }
+
+    /**
+    * Generates the seventh page of the form.
+    *
+    *@return void
+    */
+    function _page7()
+    {
+        $this->addHeader("SEQ-3.0 (Sensory Experiences Questionnaire Version 3.0)");
+
+        $this->addLabel("<h4>VI. Up to this point in the questionnaire, you've been answering questions about one sense ot a time (sight, touch, etc.). The questions in the following section deal with situations that involve more than one sensory experience at the same time.</h4>");
+
+        $this->addLabel("<h3>How often does your child...</h3>");
+
+        $options = array(
+                    null              => "",
+                    "never"           => "Never/Almost Never",
+                    "once_in_a_while" => "Once in a while",
+                    "sometimes"       => "Sometimes",
+                    "frequently"      => "Frequently",
+                    "always"          => "Almost Always/Always",
+                   );
+
+        $this->form->addElement("static", null, "<br/>");
+
+        $this->addSelect("87_trouble_looking_and_listening_same_time", "87. ... seem to have trouble looking and listening at the same time? (For example: Shuts eyes to listen more closely or blocks out sound to focus on visual task.)", $options);
+
+        $this->addSelect("88_report_certain_letters_or_numbers_particular_color", "88. ... report that certain letters or numbers are always seen in a particular color?", $options);
+
+        $this->addSelect("89_overwhelmed_in_places_a_lot_of_activity", "89. ... get overwhelmed in places where there is a lot of activity going on (such as a sports stadium, shopping mall, fast food restaurant, or amusement park)?", $options);
+
+        $this->addSelect("90_event_in_sense_causes_feeling_in_different_sense", "90. ... report that an event in one sense causes a feeling in a different sense? (For example: Musical notes have colors, or flavors have shapes.)", $options);
+
+        $this->addSelect("91_confuse_which_sense_something_is_from", "91. ... seem to confuse which sense something is coming from? (For example: Turns up the volume if something is blocking the view of the TV.)", $options);
+
+        $this->addSelect("92_more_sensitive_to_social_touch", "92. ... seem more sensitive to social touch (such as a pat on the back, touch on the arm, or hug) in a noisy environment than in a quiet one?", $options);
+
+        $this->addSelect("93_like_to_dance_to_particular_music", "93. ... like to dance to particular music? (For exampl: Asks for song or music, then dances with it.)", $options);
+
+        $this->addSelect("94_increase_background_noise_to_improve_attention_to_activity", "94. ... try to increase background noise to improve his/her attention to another activity? (For example: Turns up volume on radio while doing homework or puzzles.)", $options);
+
+        $this->addSelect("95_avoid_toys_make_noise_and_light_up_same_time", "95. ... avoid playing with toys or novel objects that make a lot of noise and light up at the same time?", $options);
+
+        $this->addSelect("96_trouble_focusing_other_sounds_happening", "96. ... have trouble focusing on a conversation or social activity when other sounds are happening in the room at the same time?", $options);
+
+        $this->addSelect("97_shut_down_when_too_much_stimulation", "97. ... seem to \"shut-down\" when there is too much stimulation?", $options);
+
+    }
+
+    /**
+    * Generates the eighth page of the form.
+    *
+    *@return void
+    */
+    function _page8()
+    {
+        $this->addHeader("SEQ-3.0 (Sensory Experiences Questionnaire Version 3.0)");
+
+        $this->addLabel("<h3>VII. Additional questions. Please check one and comment below where applicable. </h3>");
+
+	$this->form->addElement("static", null, "<br/>");
+
+        $options = array(
+                    null              => "",
+                    "never"           => "Never/Almost Never",
+                    "once_in_a_while" => "Once in a while",
+                    "sometimes"       => "Sometimes",
+                    "frequently"      => "Frequently",
+                    "always"          => "Almost Always/Always",
+                   );
+
+        $this->addSelect("98_how_often_experienced_sensations_differently", "98. Thinking about your child's behaviors since birth, how often has your child experienced sensations (sound, sight, touch, taste, smell, or movement) differently from other children?", $options);
+
+        $this->addTextAreaElement("98_describe_if_applicable", "$this->indent DESCRIBE (if applicable):");
+
+        $this->XINRegisterRule(
+            "98_describe_if_applicable",
+            array("98_describe_if_applicable{@}=={@}NEVER_REQUIRED"),
+            "Never required."
+        );
+
+	$this->form->addElement("static", null, "<br/>");
+
+        $applicable_opts = array(
+                            null             => "",
+                            "applicable"     => "Applicable",
+                            "not_applicable" => "Not Applicable",
+                           );
+
+        $this->addSelect("99_first_noticed_differences_in_sensory_exp", "99. How old was your child when you first noticed any differences in your child's sensory experiences?", $applicable_opts);
+
+        $this->addBasicText("99_years", "Years:");
+
+        $this->addBasicText("99_months", "Months:");
+
+        $this->XINRegisterRule(
+            "99_years",
+            array("99_first_noticed_differences_in_sensory_exp{@}=={@}applicable"),
+            "Required."
+        );
+
+        $this->XINRegisterRule(
+            "99_months",
+            array("99_first_noticed_differences_in_sensory_exp{@}=={@}applicable"),
+            "Required."
+        );
+
+	$this->form->addElement("static", null, "<br/>");
+
+        $this->addLabel("<h4>Avoidances/Sensitivities</h4>");
+
+        $this->addSelect("100_how_childs_sensory_avoidances_changed", "100. How have your child's sensory <b>avoidances or sensitivities</b> changed over time?", $options);
+
+        $this->addTextAreaElement("100_describe_if_changed", "$this->indent DESCRIBE (if changed):");
+
+        $this->XINRegisterRule(
+            "100_describe_if_changed",
+            array("100_describe_if_changed{@}=={@}NEVER_REQUIRED"),
+            "Never required."
+        );
+
+	$this->form->addElement("static", null, "<br/>");
+
+        $this->addSelect("101_how_often_childs_sensory_avoidances_interfere_daily", "101. How often do your child's sensory <b>avoidances or sensitivities</b> interfere with daily activities?", $options);
+
+        $this->addTextAreaElement("101_describe_if_applicable", "$this->indent DESCRIBE (if applicable):");
+
+        $this->XINRegisterRule(
+            "101_describe_if_applicable",
+            array("101_describe_if_applicable{@}=={@}NEVER_REQUIRED"),
+            "Never required."
+        );
+
+	$this->form->addElement("static", null, "<br/>");
+
+        $this->addTextAreaElement("102_list_comments_avoidances_to_senses", "102. List additional comments about your child's <b>avoidances or sensitivities</b> to sound, sight, touch, smell, taste, or movement (if applicable).");
+
+        $this->XINRegisterRule(
+            "102_list_comments_avoidances_to_senses",
+            array("102_list_comments_avoidances_to_senses{@}=={@}NEVER_REQUIRED"),
+            "Never required."
+        );
+
+	$this->form->addElement("static", null, "<br/>");
+
+        $this->addLabel("<h4>Fascinations/Cravings</h4>");
+
+        $this->addSelect("103_how_have_sensory_fascinations_changed", "103. How have your child's sensory <b> fascinations or cravings </b> changed over time?", $options);
+
+        $this->addTextAreaElement("103_describe_if_changed", "$this->indent DESCRIBE (if changed):");
+
+        $this->XINRegisterRule(
+            "103_describe_if_changed",
+            array("103_describe_if_changed{@}=={@}NEVER_REQUIRED"),
+            "Never required."
+        );
+
+	$this->form->addElement("static", null, "<br/>");
+
+        $this->addSelect("104_how_often_sensory_fascinations_interfere_daily", "104. How often do your child's sensory <b>fascinations or cravings</b> interfere with daily activities?</b>", $options);
+
+        $this->addTextAreaElement("104_describe_if_applicable", "$this->indent DESCRIBE (if applicable):");
+
+        $this->XINRegisterRule(
+            "104_describe_if_applicable",
+            array("104_describe_if_applicable{@}=={@}NEVER_REQUIRED"),
+            "Never required."
+        );
+
+	$this->form->addElement("static", null, "<br/>");
+
+        $this->addTextAreaElement("105_list_comments_fascinations_cravings_to_senses", "105. List additional comments about your child's <b>fascinations or cravings</b> to sound, sight, touch, smell, taste, or movement (if applicable).");
+
+        $this->XINRegisterRule(
+            "105_list_comments_fascinations_cravings_to_senses",
+            array("105_list_comments_fascinations_cravings_to_senses{@}=={@}NEVER_REQUIRED"),
+            "Never required."
+        );
+    }
+}
+?>
