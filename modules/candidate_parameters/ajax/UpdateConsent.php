@@ -42,7 +42,7 @@ if (isset($_POST['mail_consent'])) {
             switch ($cand_info['center_name']) {
 
                 case "STL":
-                    $Toothkit_Consent_Notification_Email = "flakel@psychiatry.wustl.edu";
+                    $Toothkit_Consent_Notification_Email = "flakel@wustl.edu";
                     break;
                 case "SEA":
                     $Toothkit_Consent_Notification_Email = "tstjohn@u.washington.edu";
