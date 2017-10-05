@@ -1011,26 +1011,23 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
 
         $this->form->addGroup($group, "q_17_action_schemes_group_1", "17. Inventory of action schemes", $this->_GUIDelimiter, false);
         unset($group);
-        $group[] = &$this->form->createElement("advcheckbox", "q_17_action_schemes_kisses", null, "kisses(6)", null, array("unchecked", "checked"));
-        $group[] = &$this->form->createElement("advcheckbox", "q_17_action_schemes_feeds_with_utensil", null, "feeds with utensil(7)", null, array("unchecked", "checked"));
-        $group[] = &$this->form->createElement("advcheckbox", "q_17_action_schemes_feeds_with_bowl", null, "feeds with bowl(8)", null, array("unchecked", "checked"));
-        $group[] = &$this->form->createElement("advcheckbox", "q_17_action_schemes_stirs", null, "stirs(9)", null, array("unchecked", "checked"));
-        $group[] = &$this->form->createElement("advcheckbox", "q_17_action_schemes_scoops", null, "scoops(10)", null, array("unchecked", "checked"));
-
-        $this->form->addGroup($group, "q_17_action_schemes_group_2", null, $this->_GUIDelimiter, false);
-        unset($group);
-        //$group[] = &$this->form->createElement("static", null, null);
-        $group[] = &$this->form->createElement("advcheckbox", "q_17_action_schemes_pours", null, "pours(11)", null, array("unchecked", "checked"));
-        $group[] = &$this->form->createElement("advcheckbox", "q_17_action_schemes_other", null, "other(12)", null, array("unchecked", "checked"));
+        $this->form->addElement("header", null, "");
+        $group[] = &$this->form->createElement("advcheckbox", "q_17_action_schemes_kisses", null, "<b>kisses(6)</b>", null, array("unchecked", "checked"));
+        $group[] = &$this->form->createElement("advcheckbox", "q_17_action_schemes_feeds_with_utensil", null, "<b>feeds with utensil(7)</b>", null, array("unchecked", "checked"));
+        $group[] = &$this->form->createElement("advcheckbox", "q_17_action_schemes_feeds_with_bowl", null, "<b>feeds with bowl(8)</b>", null, array("unchecked", "checked"));
+        $group[] = &$this->form->createElement("advcheckbox", "q_17_action_schemes_stirs", null, "<b>stirs(9)</b>", null, array("unchecked", "checked"));
+        $group[] = &$this->form->createElement("advcheckbox", "q_17_action_schemes_scoops", null, "<b>scoops(10)</b>", null, array("unchecked", "checked"));
+        $group[] = &$this->form->createElement("advcheckbox", "q_17_action_schemes_pours", null, "<b>pours(11)</b>", null, array("unchecked", "checked"));
+        $group[] = &$this->form->createElement("advcheckbox", "q_17_action_schemes_other", null, "<b>other(12)</b>", null, array("unchecked", "checked"));
         $group[] = &$this->form->createElement("text", "q_17_action_schemes_other_specify");
-        $group[] =& $this->form->createElement("advcheckbox", "q_17_action_schemes_none", null, "none", null, array("unchecked", "checked"));
+        $group[] =& $this->form->createElement("advcheckbox", "q_17_action_schemes_none", null, "<b>none</b>", null, array("unchecked", "checked"));
         $group[] =& $this->form->createElement("static", null, null, null);
         $group[] =& $this->form->createElement("static", null, null, null);
-        $this->form->addGroup($group, null, null, $this->_GUIDelimiter, false);
+
+        $this->form->addGroup($group, "q_17_action_schemes_group_2", "", $this->_GUIDelimiter, false);
         unset($group);
 
         $this->XINRegisterRule("q_17_action_schemes_other_specify", array("q_17_action_schemes_other{@}=={@}checked"), "Must specify other", "q_17_action_schemes_group_2");
-        $this->form->addGroup($group, "q_17_action_schemes_group_2", null, $this->_GUIDelimiter, false);
         $this->form->addElement('static', '', '<br />');
         $this->form->addElement("static","q_17_action_schemes_raw_score","Object Use Raw Score:" );
         unset($group);
