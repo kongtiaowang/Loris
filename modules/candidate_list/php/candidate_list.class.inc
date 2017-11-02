@@ -260,7 +260,7 @@ class Candidate_List extends \NDB_Menu_Filter
                                        );
 
         $participant_status_options = array(null => 'All')
-            +  \NDB_Form_candidate_parameters::getParticipantStatusOptions();
+            +  \Candidate::getParticipantStatusOptions();
         $scan_options = array(
                          null => 'All',
                          'Y'  => 'Yes',
@@ -362,7 +362,7 @@ class Candidate_List extends \NDB_Menu_Filter
         $subprojectlist = Utility::getSubprojectList();
         $projectlist    = Utility::getProjectList();
 
-        $pOptions = \NDB_Form_candidate_parameters::getParticipantStatusOptions();
+        $pOptions = Candidate::getParticipantStatusOptions();
         // print out
         $x = 0;
         foreach ($this->list as $item) {
