@@ -46,7 +46,7 @@ class NDB_BVL_Instrument_parental_stress_scale extends NDB_BVL_Instrument
         $this->_selectMultipleElements = array();
 
         // required fields for data entry completion status
-        $this->_requiredElements = array('Examiner', 'q1_happy_parent');
+        $this->_requiredElements = array('interviewed_by', 'q1_happy_parent');
 
         // setup the form
         $this->_setupForm();
@@ -139,6 +139,9 @@ class NDB_BVL_Instrument_parental_stress_scale extends NDB_BVL_Instrument
 
     function score() {
         //get the saved scores
+        if ($this->_determineDataEntryCompletionStatus() == "Incomplete") {
+            return;
+        }
         $db = Database::singleton();
 
         $query  = "SELECT * FROM $this->table WHERE CommentID =:cid";
