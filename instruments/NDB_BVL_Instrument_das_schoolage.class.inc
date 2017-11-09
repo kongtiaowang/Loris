@@ -441,8 +441,8 @@ class NDB_BVL_Instrument_das_schoolage extends NDB_BVL_Instrument
         for ($i = 1; $i <= $numItems; $i++) {
             $group[]=&$this->form->createElement("select", "q_{$this->j}_item{$i}", null, $pfArray);
             $group[]=&$this->form->createElement("select", "q_{$this->j}_item{$i}_score", null, $scoreArray);
-            $this->XINRegisterRule("q_{$this->j}_item{$i}", array("q_{$this->j}_item{$i}{@}=={@}"), "Required.", "q_{$this->j}_{$i}_answer");
-            $this->XINRegisterRule("q_{$this->j}_item{$i}_score", array("q_{$this->j}_item{$i}_score{@}=={@}"), "Required.", "q_{$this->j}_{$i}_answer");
+            $this->XINRegisterRule("q_{$this->j}_item{$i}", array("q_{$this->j}_item{$i}{@}=={@}NEVER_REQUIRED"), "Not Required", "q_{$this->j}_{$i}_answer");
+            $this->XINRegisterRule("q_{$this->j}_item{$i}_score", array("q_{$this->j}_item{$i}_score{@}=={@}NEVER_REQUIRED"), "Not Required", "q_{$this->j}_{$i}_answer");
 
             $this->form->addGroup($group, "q_{$this->j}_{$i}_answer", "Item $i", $this->_GUIDelimiter, false);
             unset($group);
@@ -468,8 +468,8 @@ class NDB_BVL_Instrument_das_schoolage extends NDB_BVL_Instrument
         $itemSetArray = array_merge(array("" => null), range(0, $numItems));
         $group[]=&$this->form->createElement("select", "page_{$page}_item_set_from", null, $itemSetArray);
         $group[]=&$this->form->createElement("select", "page_{$page}_item_set_to", null, $itemSetArray);
-        $this->XINRegisterRule("page_{$page}_item_set_from", array("page_{$page}_item_set_from{@}=={@}"), "Required.", "page_{$page}_item_set");
-        $this->XINRegisterRule("page_{$page}_item_set_to", array("page_{$page}_item_set_to{@}=={@}"), "Required.", "page_{$page}_item_set");
+        $this->XINRegisterRule("page_{$page}_item_set_from", array("page_{$page}_item_set_from{@}=={@}NEVER_REQUIRED"), "Not Required", "page_{$page}_item_set");
+        $this->XINRegisterRule("page_{$page}_item_set_to", array("page_{$page}_item_set_to{@}=={@}NEVER_REQUIRED"), "Not Required", "page_{$page}_item_set");
 
         $this->form->addGroup($group, "page_{$page}_item_set", "Item Set Administered", $this->_GUIDelimiter, false);
         unset($group);
@@ -563,7 +563,7 @@ class NDB_BVL_Instrument_das_schoolage extends NDB_BVL_Instrument
 
             $this->XINRegisterRule(
                 "q_{$this->j}_item{$i}_score",
-                array("q_{$this->j}_item{$i}_score{@}=={@}"),
+                array("q_{$this->j}_item{$i}_score{@}=={@}NEVER_REQUIRED"),
                 $rule_message,
                 "q_{$this->j}_item{$i}"
             );
@@ -580,8 +580,8 @@ class NDB_BVL_Instrument_das_schoolage extends NDB_BVL_Instrument
         $itemSetArray = array_merge(array("" => null), range(0, $numItems));
         $group[]=&$this->form->createElement("select", "page_{$page}_item_set_from", null, $itemSetArray);
         $group[]=&$this->form->createElement("select", "page_{$page}_item_set_to", null, $itemSetArray);
-        $this->XINRegisterRule("page_{$page}_item_set_from", array("page_{$page}_item_set_from{@}=={@}"), "Required.", "page_{$page}_item_set");
-        $this->XINRegisterRule("page_{$page}_item_set_to", array("page_{$page}_item_set_to{@}=={@}"), "Required.", "page_{$page}_item_set");
+        $this->XINRegisterRule("page_{$page}_item_set_from", array("page_{$page}_item_set_from{@}=={@}NEVER_REQUIRED"), "Not Required", "page_{$page}_item_set");
+        $this->XINRegisterRule("page_{$page}_item_set_to", array("page_{$page}_item_set_to{@}=={@}NEVER_REQUIRED"), "Not Required", "page_{$page}_item_set");
 
         $this->form->addGroup($group, "page_{$page}_item_set", "Item Set Administered", $this->_GUIDelimiter, false);
         unset($group);
@@ -635,7 +635,7 @@ class NDB_BVL_Instrument_das_schoolage extends NDB_BVL_Instrument
 
                     $group[] =& $this->form->createElement("static", null, null, "Trial $k");
                     $group[] =& $this->form->createElement("select", "q_{$this->j}_item{$i}_trial{$k}", null, $scoreArray);
-                    $this->XINRegisterRule("q_{$this->j}_item{$i}_trial{$k}", array("q_{$this->j}_item{$i}_trial{$k}{@}=={@}"), "Required.", "q_{$this->j}_{$i}_answer_trial{$k}");
+                    $this->XINRegisterRule("q_{$this->j}_item{$i}_trial{$k}", array("q_{$this->j}_item{$i}_trial{$k}{@}=={@}NEVER_REQUIRED"), "Not Required", "q_{$this->j}_{$i}_answer_trial{$k}");
 
                     if ($k == 1) {
                         $this->form->addGroup($group, "q_{$this->j}_{$i}_answer_trial{$k}", "Item $i", $this->_GUIDelimiter,
@@ -655,7 +655,7 @@ class NDB_BVL_Instrument_das_schoolage extends NDB_BVL_Instrument
                 else {
                     $group[] =& $this->form->createElement("select", "q_{$this->j}_item{$i}", null, $scoreArray);
                 }
-                $this->XINRegisterRule("q_{$this->j}_item{$i}", array("q_{$this->j}_item{$i}{@}=={@}"), "Required.", "q_{$this->j}_{$i}_answer");
+                $this->XINRegisterRule("q_{$this->j}_item{$i}", array("q_{$this->j}_item{$i}{@}=={@}NEVER_REQUIRED"), "Not Required", "q_{$this->j}_{$i}_answer");
 
                 $this->form->addGroup($group, "q_{$this->j}_{$i}_answer", "Item $i", $this->_GUIDelimiter,
                     false);
@@ -713,8 +713,8 @@ class NDB_BVL_Instrument_das_schoolage extends NDB_BVL_Instrument
                     $group[] =& $this->form->createElement("select", "q_{$this->j}_item{$i}_trial{$k}", null, $options);
                     $group[] =& $this->form->createElement("select", "q_{$this->j}_item{$i}_response_time2_trial{$k}", null,
                         $pfArray);
-                    $this->XINRegisterRule("q_{$this->j}_item{$i}_trial{$k}", array("q_{$this->j}_item{$i}_trial{$k}{@}=={@}"), "Required.", "{$i}_answer_trial{$k}");
-                    $this->XINRegisterRule("q_{$this->j}_item{$i}_response_time2_trial{$k}", array("q_{$this->j}_item{$i}_response_time2_trial{$k}{@}=={@}"), "Required.", "{$i}_answer_trial{$k}");
+                    $this->XINRegisterRule("q_{$this->j}_item{$i}_trial{$k}", array("q_{$this->j}_item{$i}_trial{$k}{@}=={@}NEVER_REQUIRED"), "Not Required", "{$i}_answer_trial{$k}");
+                    $this->XINRegisterRule("q_{$this->j}_item{$i}_response_time2_trial{$k}", array("q_{$this->j}_item{$i}_response_time2_trial{$k}{@}=={@}NEVER_REQUIRED"), "Not Required", "{$i}_answer_trial{$k}");
 
                     if ($k == 1) {
                         $this->form->addGroup($group, "{$i}_answer_trial{$k}", "Item $i", $this->_GUIDelimiter,
@@ -730,8 +730,8 @@ class NDB_BVL_Instrument_das_schoolage extends NDB_BVL_Instrument
                 $group[] = $this->form->createElement("static", null, $this->indent);
                 $group[] =& $this->form->createElement("select", "q_{$this->j}_item{$i}", null, $options);
                 $group[] =& $this->form->createElement("select", "q_{$this->j}_item{$i}_pf", null, $pfArray);
-                $this->XINRegisterRule("q_{$this->j}_item{$i}", array("q_{$this->j}_item{$i}{@}=={@}"), "Required.", "q_{$this->j}_{$i}_answer");
-                $this->XINRegisterRule("q_{$this->j}_item{$i}_pf", array("q_{$this->j}_item{$i}_pf{@}=={@}"), "Required.", "q_{$this->j}_{$i}_answer");
+                $this->XINRegisterRule("q_{$this->j}_item{$i}", array("q_{$this->j}_item{$i}{@}=={@}NEVER_REQUIRED"), "Not Required", "q_{$this->j}_{$i}_answer");
+                $this->XINRegisterRule("q_{$this->j}_item{$i}_pf", array("q_{$this->j}_item{$i}_pf{@}=={@}NEVER_REQUIRED"), "Not Required", "q_{$this->j}_{$i}_answer");
                 $this->form->addGroup($group, "q_{$this->j}_{$i}_answer", "Item $i", $this->_GUIDelimiter,
                     false);
                 unset($group);
@@ -757,8 +757,8 @@ class NDB_BVL_Instrument_das_schoolage extends NDB_BVL_Instrument
                     $group[] =& $this->form->createElement("static", null, null, "Trial $k");
                     $group[] =& $this->form->createElement("select", "q_{$this->j}_item{$i}_trial{$k}", null, $options);
                     $group[] =& $this->form->createElement("select", "q_{$this->j}_item{$i}_response_time2_trial{$k}", null, $pfArray);
-                    $this->XINRegisterRule("q_{$this->j}_item{$i}_trial{$k}", array("q_{$this->j}_item{$i}_trial{$k}{@}=={@}"), "Required.", "{$i}_answer_trial{$k}");
-                    $this->XINRegisterRule("q_{$this->j}_item{$i}_response_time2_trial{$k}", array("q_{$this->j}_item{$i}_response_time2_trial{$k}{@}=={@}"), "Required.", "{$i}_answer_trial{$k}");
+                    $this->XINRegisterRule("q_{$this->j}_item{$i}_trial{$k}", array("q_{$this->j}_item{$i}_trial{$k}{@}=={@}NEVER_REQUIRED"), "Not Required", "{$i}_answer_trial{$k}");
+                    $this->XINRegisterRule("q_{$this->j}_item{$i}_response_time2_trial{$k}", array("q_{$this->j}_item{$i}_response_time2_trial{$k}{@}=={@}NEVER_REQUIRED"), "Not Required", "{$i}_answer_trial{$k}");
 
                     if ($k == 1) {
                         $this->form->addGroup($group, "{$i}_answer_trial{$k}", "Item $i", $this->_GUIDelimiter,
@@ -774,8 +774,8 @@ class NDB_BVL_Instrument_das_schoolage extends NDB_BVL_Instrument
                 $group[] = $this->form->createElement("static", null, $this->indent);
                 $group[] =& $this->form->createElement("select", "q_{$this->j}_item{$i}", null, $options);
                 $group[] =& $this->form->createElement("select", "q_{$this->j}_item{$i}_pf", null, $pfArray);
-                $this->XINRegisterRule("q_{$this->j}_item{$i}", array("q_{$this->j}_item{$i}{@}=={@}"), "Required.", "q_{$this->j}_{$i}_answer");
-                $this->XINRegisterRule("q_{$this->j}_item{$i}_pf", array("q_{$this->j}_item{$i}_pf{@}=={@}"), "Required.", "q_{$this->j}_{$i}_answer");
+                $this->XINRegisterRule("q_{$this->j}_item{$i}", array("q_{$this->j}_item{$i}{@}=={@}NEVER_REQUIRED"), "Not Required", "q_{$this->j}_{$i}_answer");
+                $this->XINRegisterRule("q_{$this->j}_item{$i}_pf", array("q_{$this->j}_item{$i}_pf{@}=={@}NEVER_REQUIRED"), "Not Required", "q_{$this->j}_{$i}_answer");
 
                 $this->form->addGroup($group, "q_{$this->j}_{$i}_answer", "Item $i", $this->_GUIDelimiter,
                     false);
@@ -796,8 +796,8 @@ class NDB_BVL_Instrument_das_schoolage extends NDB_BVL_Instrument
         $itemSetArray = array_merge(array("" => null), range(0, $numItems));
         $group[]=&$this->form->createElement("select", "page_{$page}_item_set_from", null, $itemSetArray);
         $group[]=&$this->form->createElement("select", "page_{$page}_item_set_to", null, $itemSetArray);
-        $this->XINRegisterRule("page_{$page}_item_set_from", array("page_{$page}_item_set_from{@}=={@}"), "Required.", "page_{$page}_item_set");
-        $this->XINRegisterRule("page_{$page}_item_set_to", array("page_{$page}_item_set_to{@}=={@}"), "Required.", "page_{$page}_item_set");
+        $this->XINRegisterRule("page_{$page}_item_set_from", array("page_{$page}_item_set_from{@}=={@}NEVER_REQUIRED"), "Not Required", "page_{$page}_item_set");
+        $this->XINRegisterRule("page_{$page}_item_set_to", array("page_{$page}_item_set_to{@}=={@}NEVER_REQUIRED"), "Not Required", "page_{$page}_item_set");
 
         $this->form->addGroup($group, "page_{$page}_item_set", "Item Set Administered", $this->_GUIDelimiter, false);
         unset($group);
@@ -843,8 +843,8 @@ class NDB_BVL_Instrument_das_schoolage extends NDB_BVL_Instrument
                $setAResponseArray);
             $group[] =&$this->form->createElement("select", "q_{$this->j}_item{$i}_score", "",
                $this->answerArray);
-            $this->XINRegisterRule("q_{$this->j}_item{$i}_response", array("q_{$this->j}_item{$i}_response{@}=={@}"), "Required.", "q_{$this->j}_{$i}_answer");
-            $this->XINRegisterRule("q_{$this->j}_item{$i}_score", array("q_{$this->j}_item{$i}_score{@}=={@}"), "Required.", "q_{$this->j}_{$i}_answer");
+            $this->XINRegisterRule("q_{$this->j}_item{$i}_response", array("q_{$this->j}_item{$i}_response{@}=={@}NEVER_REQUIRED"), "Not Required", "q_{$this->j}_{$i}_answer");
+            $this->XINRegisterRule("q_{$this->j}_item{$i}_score", array("q_{$this->j}_item{$i}_score{@}=={@}NEVER_REQUIRED"), "Not Required", "q_{$this->j}_{$i}_answer");
 
             $this->form->addGroup($group, "q_{$this->j}_{$i}_answer", "Item $i", $this->_GUIDelimiter, false);
             unset($group);
@@ -865,8 +865,8 @@ class NDB_BVL_Instrument_das_schoolage extends NDB_BVL_Instrument
                 $setBResponseArray);
             $group[] =&$this->form->createElement("select", "q_{$this->j}_item{$i}_score", "",
                 $this->answerArray);
-            $this->XINRegisterRule("q_{$this->j}_item{$i}_response", array("q_{$this->j}_item{$i}_response{@}=={@}"), "Required.", "q_{$this->j}_{$i}_answer");
-            $this->XINRegisterRule("q_{$this->j}_item{$i}_score", array("q_{$this->j}_item{$i}_score{@}=={@}"), "Required.", "q_{$this->j}_{$i}_answer");
+            $this->XINRegisterRule("q_{$this->j}_item{$i}_response", array("q_{$this->j}_item{$i}_response{@}=={@}NEVER_REQUIRED"), "Not Required", "q_{$this->j}_{$i}_answer");
+            $this->XINRegisterRule("q_{$this->j}_item{$i}_score", array("q_{$this->j}_item{$i}_score{@}=={@}NEVER_REQUIRED"), "Not Required", "q_{$this->j}_{$i}_answer");
 
             $this->form->addGroup($group, "q_{$this->j}_{$i}_answer", "Item $i", $this->_GUIDelimiter, false);
             unset($group);
@@ -884,8 +884,8 @@ class NDB_BVL_Instrument_das_schoolage extends NDB_BVL_Instrument
         $itemSetArray = array_merge(array("" => null), range(0, $numItems));
         $group[]=&$this->form->createElement("select", "page_{$page}_item_set_from", null, $itemSetArray);
         $group[]=&$this->form->createElement("select", "page_{$page}_item_set_to", null, $itemSetArray);
-        $this->XINRegisterRule("page_{$page}_item_set_from", array("page_{$page}_item_set_from{@}=={@}"), "Required.", "page_{$page}_item_set");
-        $this->XINRegisterRule("page_{$page}_item_set_to", array("page_{$page}_item_set_to{@}=={@}"), "Required.", "page_{$page}_item_set");
+        $this->XINRegisterRule("page_{$page}_item_set_from", array("page_{$page}_item_set_from{@}=={@}NEVER_REQUIRED"), "Not Required", "page_{$page}_item_set");
+        $this->XINRegisterRule("page_{$page}_item_set_to", array("page_{$page}_item_set_to{@}=={@}NEVER_REQUIRED"), "Not Required", "page_{$page}_item_set");
 
         $this->form->addGroup($group, "page_{$page}_item_set", "Item Set Administered", $this->_GUIDelimiter, false);
         unset($group);
@@ -960,7 +960,7 @@ class NDB_BVL_Instrument_das_schoolage extends NDB_BVL_Instrument
 
             $this->XINRegisterRule(
                 "q_{$this->j}_item{$i}_score",
-                array("q_{$this->j}_item{$i}_score{@}=={@}"),
+                array("q_{$this->j}_item{$i}_score{@}=={@}NEVER_REQUIRED"),
                 $rule_message,
                 "q_{$this->j}_item{$i}"
             );
@@ -977,8 +977,8 @@ class NDB_BVL_Instrument_das_schoolage extends NDB_BVL_Instrument
         $itemSetArray = array_merge(array("" => null), range(0, $numItems));
         $group[]=&$this->form->createElement("select", "page_{$page}_item_set_from", null, $itemSetArray);
         $group[]=&$this->form->createElement("select", "page_{$page}_item_set_to", null, $itemSetArray);
-        $this->XINRegisterRule("page_{$page}_item_set_from", array("page_{$page}_item_set_from{@}=={@}"), "Required.", "page_{$page}_item_set");
-        $this->XINRegisterRule("page_{$page}_item_set_to", array("page_{$page}_item_set_to{@}=={@}"), "Required.", "page_{$page}_item_set");
+        $this->XINRegisterRule("page_{$page}_item_set_from", array("page_{$page}_item_set_from{@}=={@}NEVER_REQUIRED"), "Not Required", "page_{$page}_item_set");
+        $this->XINRegisterRule("page_{$page}_item_set_to", array("page_{$page}_item_set_to{@}=={@}NEVER_REQUIRED"), "Not Required", "page_{$page}_item_set");
 
         $this->form->addGroup($group, "page_{$page}_item_set", "Item Set Administered", $this->_GUIDelimiter, false);
         unset($group);
@@ -1025,8 +1025,8 @@ class NDB_BVL_Instrument_das_schoolage extends NDB_BVL_Instrument
                 $this->responseArray);
             $group[]=&$this->form->createElement("select", "q_{$this->j}_item{$i}_score", null,
                 $this->answerArray);
-            $this->XINRegisterRule("q_{$this->j}_item{$i}_response", array("q_{$this->j}_item{$i}_response{@}=={@}"), "Required.", "q_{$this->j}_{$i}_answer");
-            $this->XINRegisterRule("q_{$this->j}_item{$i}_score", array("q_{$this->j}_item{$i}_score{@}=={@}"), "Required.", "q_{$this->j}_{$i}_answer");
+            $this->XINRegisterRule("q_{$this->j}_item{$i}_response", array("q_{$this->j}_item{$i}_response{@}=={@}NEVER_REQUIRED"), "Not Required", "q_{$this->j}_{$i}_answer");
+            $this->XINRegisterRule("q_{$this->j}_item{$i}_score", array("q_{$this->j}_item{$i}_score{@}=={@}NEVER_REQUIRED"), "Not Required", "q_{$this->j}_{$i}_answer");
 
             $this->form->addGroup($group, "q_{$this->j}_{$i}_answer", "Item $i", $this->_GUIDelimiter, false);
             unset($group);
@@ -1049,8 +1049,8 @@ class NDB_BVL_Instrument_das_schoolage extends NDB_BVL_Instrument
                 $this->responseArray);
             $group[]=&$this->form->createElement("select", "q_{$this->j}_item{$i}_score", null,
                 $this->answerArray);
-            $this->XINRegisterRule("q_{$this->j}_item{$i}_response", array("q_{$this->j}_item{$i}_response{@}=={@}"), "Required.", "q_{$this->j}_{$i}_answer");
-            $this->XINRegisterRule("q_{$this->j}_item{$i}_score", array("q_{$this->j}_item{$i}_score{@}=={@}"), "Required.", "q_{$this->j}_{$i}_answer");
+            $this->XINRegisterRule("q_{$this->j}_item{$i}_response", array("q_{$this->j}_item{$i}_response{@}=={@}NEVER_REQUIRED"), "Not Required", "q_{$this->j}_{$i}_answer");
+            $this->XINRegisterRule("q_{$this->j}_item{$i}_score", array("q_{$this->j}_item{$i}_score{@}=={@}NEVER_REQUIRED"), "Not Required", "q_{$this->j}_{$i}_answer");
 
             $this->form->addGroup($group, "q_{$this->j}_{$i}_answer", "Item $i", $this->_GUIDelimiter, false);
             unset($group);
@@ -1069,8 +1069,8 @@ class NDB_BVL_Instrument_das_schoolage extends NDB_BVL_Instrument
         $itemSetArray = array_merge(array("" => null), range(0, $numItems));
         $group[]=&$this->form->createElement("select", "page_{$page}_item_set_from", null, $itemSetArray);
         $group[]=&$this->form->createElement("select", "page_{$page}_item_set_to", null, $itemSetArray);
-        $this->XINRegisterRule("page_{$page}_item_set_from", array("page_{$page}_item_set_from{@}=={@}"), "Required.", "page_{$page}_item_set");
-        $this->XINRegisterRule("page_{$page}_item_set_to", array("page_{$page}_item_set_to{@}=={@}"), "Required.", "page_{$page}_item_set");
+        $this->XINRegisterRule("page_{$page}_item_set_from", array("page_{$page}_item_set_from{@}=={@}NEVER_REQUIRED"), "Not Required", "page_{$page}_item_set");
+        $this->XINRegisterRule("page_{$page}_item_set_to", array("page_{$page}_item_set_to{@}=={@}NEVER_REQUIRED"), "Not Required", "page_{$page}_item_set");
 
         $this->form->addGroup($group, "page_{$page}_item_set", "Item Set Administered", $this->_GUIDelimiter, false);
         unset($group);
