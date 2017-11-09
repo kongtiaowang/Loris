@@ -160,7 +160,7 @@ HTML;
       unset($group);
       $group[] =& $this->form->createElement("select","consent", "", $yesNo);
       $this->XINRegisterRule("consent", array("code{@}=={@}"), "Required.", "consent_group");
-      $this->form->addGroup($group, "consent_group", "By selecting 'Yes' from the dropdown menu, you consent to give us the information in this questionnaire.", null, false);
+      $this->form->addGroup($group, "consent_group", "By selecting 'Yes' you agree to the above information and give your consent for us to use the information in this survey.", null, false);
       unset($group);
 
       $this->form->addElement("static", null, '<div id="air_pollution"><script type="text/javascript" src="/js/air_pollution_consent.js"></script></div>');
