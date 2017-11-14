@@ -39,5 +39,14 @@ class BrainBrowserTestIntegrationTest extends LorisIntegrationTest
         )->getText();
         $this->assertContains("Brainbrowser", $bodyText);
     }
+    /**
+     * Print the end mark on travis
+     *
+     * @return void
+     */
+    function printMark()
+    {
+      print_r("BrainBrowser is done.");
+    }
 }
 ?>

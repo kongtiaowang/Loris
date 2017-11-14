@@ -180,5 +180,14 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
         //test filter
         $this->_testFilter("full_name", self::$newData['full_name']);
     }
+    /**
+     * Print the end mark on travis
+     *
+     * @return void
+     */
+    function printMark()
+    { 
+      print_r("Acknowledgements is done.");
+    }
 }
 ?>
