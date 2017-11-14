@@ -46,7 +46,7 @@ class BrainBrowserTestIntegrationTest extends LorisIntegrationTest
      */
     function printMark()
     {
-      print_r("BrainBrowser is done.");
+        print_r("BrainBrowser is done.");
     }
 }
 ?>

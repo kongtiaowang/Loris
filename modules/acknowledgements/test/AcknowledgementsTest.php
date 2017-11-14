@@ -186,8 +186,8 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
      * @return void
      */
     function printMark()
-    { 
-      print_r("Acknowledgements is done.");
+    {
+        print_r("Acknowledgements is done.");
     }
 }
 ?>
