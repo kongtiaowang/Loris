@@ -89,7 +89,7 @@ class NDB_Client
         if (!$this->_isWebClient) {
             // Set user as unix username.
             // Requires Loris to have user with this username
-            $user =& User::singleton(get_current_user());
+            $user =& User::singleton(getenv('USER'));
             return true;
         }
 
@@ -144,7 +144,7 @@ class NDB_Client
         if (!$login->isLoggedIn()) {
             $auth = $login->authenticate();
             if ($auth === true) {
-                $error = $login->setState();
+                $login->setState();
             } elseif ($auth === false) {
                 // only send a 403 error if they were attempting to log in,
                 // otherwise the login page returns a 403 when first accessing

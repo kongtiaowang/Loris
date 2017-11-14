@@ -64,10 +64,8 @@ class NDB_Form extends NDB_Page
         }
 
         // create a form instance
-        $obj = new $class;
+        $obj = new $class($name, $page, $identifier, null, 'test_form');
 
-        // set the local variables
-        $obj->_setupPage($name, $page, $identifier, null, 'test_form');
         $obj->registerDefaultFilter();
 
         $access = $obj->_hasAccess();
@@ -119,7 +117,7 @@ class NDB_Form extends NDB_Page
     function save()
     {
         if ($this->form->validate()) {
-            $success = $this->form->process(array(&$this, "_save"), false);
+            $this->form->process(array(&$this, "_save"), false);
         }
     }
 
@@ -148,7 +146,7 @@ class NDB_Form extends NDB_Page
             }
         }
 
-        $success = $this->_process($values);
+        $this->_process($values);
     }
 
 
@@ -163,21 +161,6 @@ class NDB_Form extends NDB_Page
     function _process($values)
     {
         return true;
-    }
-
-    /**
-     * Resets the form
-     *
-     * Usage: Call this function if you do not want to display the frozen form
-     * after saving but just want to dump a message and maybe some links
-     *
-     * @return void
-     * @access private
-     */
-    function _resetForm()
-    {
-        $this->_setupPage($name, $page, $identifier, null, 'test_form');
-        // $this->form = new HTML_QuickForm('test_form');
     }
 }
 ?>
