@@ -100,6 +100,7 @@ class NDB_Page
         $this->defaults   = array();
 
         $this->template = $page;
+        return $module;
     }
     /**
      * Safely sets a smarty template variable.
