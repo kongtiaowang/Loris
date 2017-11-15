@@ -691,9 +691,6 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $newWindow->executescript(
             "document.querySelector('$value1').value='Good'"
         );
-        $newWindow->findElement(
-            WebDriverBy::Name("savecomments[text][1]")
-        )->sendKeys("Good Good");
         //click save button
         $newWindow->findElement(
             WebDriverBy::Name("fire_away")
@@ -721,7 +718,6 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         )->getAttribute("selected");
 
         $this->assertEquals("selected", $select);
-
     }
 
 }
