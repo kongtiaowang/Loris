@@ -535,6 +535,8 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             "document.querySelector('$value').click()"
         );
         sleep(1);
+        $body  = $this->webDriver->getPageSource();
+        var_dump($body);
         $value           = "#lorisworkspace > div.row > div >".
                            " div > div.panel-heading";
         $SelectionFilter = $this->webDriver->executescript(
@@ -612,9 +614,8 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             "document.querySelector('$value').click()"
         );
         sleep(1);
-        $this->_testQCpanelWithValues($SNR, "1");
         $bodyText = $this->webDriver->getPageSource();
-        var_dump($body);
+        var_dump($bodyText);
         print_r("===================================");
         // test Caveat link
         $link = "#image-2 > div > div > div.panel-body > div:nth-child(1)>".
@@ -624,7 +625,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         );
         sleep(1);
         $bodyText = $this->webDriver->getPageSource();
-        var_dump($body);
+        var_dump($bodyText);
         $ui   = "#bc2 > a:nth-child(2) > div";
         $text = $this->webDriver->executescript(
             "return document.querySelector('$ui').textContent"
