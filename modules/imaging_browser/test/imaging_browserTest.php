@@ -695,9 +695,12 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         var_dump($body);
         //click save button
         $save = "body > div:nth-child(2) > form:nth-child(2) > input:nth-child(25)";
-        $newWindow->executescript(
-            "document.querySelector('$save').click()"
-        );
+        $newWindow->findElement(
+            WebDriverBy::Name("fire_away")
+        )->click();
+//        $newWindow->executescript(
+//            "document.querySelector('$save').click()"
+//        );
         // click close this window button
         $value = "body > p > a";
         $newWindow->executescript(
