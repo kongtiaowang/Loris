@@ -588,6 +588,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->_testQCpanelWithValues($visit_caveat, "true");
         $this->_testQCpanelWithValues($SNR, "0");
         $this->_testQCpanelWithValues($SNR, "1");
+        sleep(1);
         $this->_testQCpanelWithValues($QC_Status_panel, "Fail");
         $this->_testQCpanelWithValues($QC_Status_panel, "Pass");
         $this->_testQCpanelWithValues($Selected, "true");
@@ -650,6 +651,8 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
              " div.div-controlpanel-bottom > div > input').click()"
         );
         sleep(1);
+        $body = $this->webDriver->getPageSource();
+        var_dump($body);
         $text = $this->webDriver->executescript(
             "return document.querySelector('$ui').value"
         );
