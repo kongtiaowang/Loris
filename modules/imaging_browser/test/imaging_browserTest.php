@@ -691,7 +691,8 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $newWindow->executescript(
             "document.querySelector('$value1').value='Good'"
         );
-
+        $body = $this->webDriver->getPageSource();
+        var_dump($body);
         //click save button
         $save = "body > div:nth-child(2) > form:nth-child(2) > input:nth-child(25)";
         $newWindow->executescript(
