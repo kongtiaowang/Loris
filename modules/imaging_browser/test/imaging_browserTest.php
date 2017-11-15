@@ -444,6 +444,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
          $this->safeFindElement(
              WebDriverBy::ID("bbonly")
          )->click();
+         sleep(1);
          $window    = $this->webDriver->getWindowHandles();
          $newWindow = $this->webDriver->switchTo()->window($window[1]);
          //breadcrumbs contains "Brainbrowser"
@@ -500,12 +501,10 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->webDriver->executescript(
             "document.querySelector('$value').click()"
         );
-        $oldWindows = $this->webDriver->getWindowHandle();
-        $newWindow  = $this->webDriver->switchTo()->window(
-            end($this->webDriver->getWindowHandles())
-        );
-        $value      = "body > div > form > textarea";
-        $text       = $newWindow->executescript(
+        $window    = $this->webDriver->getWindowHandles();
+        $newWindow = $this->webDriver->switchTo()->window($window[1]);
+        $value     = "body > div > form > textarea";
+        $text      = $newWindow->executescript(
             "return document.querySelector('$value').value"
         );
         $this->assertContains("test feedback", $text);
