@@ -687,7 +687,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         var_dump($body);
         $newWindow = $this->webDriver->switchTo()->window(
             end($this->webDriver->getWindowHandles())
-        );        
+        );
         //Inputing test data into QC comment panel "Geometric distortion" with 'Good'
         $value1 = "body > div > form > h3:nth-child(1) > select";
         $newWindow->executescript(
