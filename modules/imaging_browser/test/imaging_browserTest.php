@@ -691,8 +691,10 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $newWindow->executescript(
             "document.querySelector('$value1').value='Good'"
         );
+        $newWindow->findElement(
+            WebDriverBy::Name("savecomments[text][1]")
+        )->sendKeys("Good Good");
         //click save button
-        $save = "body > div:nth-child(2) > form:nth-child(2) > input:nth-child(25)";
         $newWindow->findElement(
             WebDriverBy::Name("fire_away")
         )->click();
@@ -718,7 +720,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::Xpath("/html/body/div/form/h3[1]/select/option[2]")
         )->getAttribute("selected");
 
-        $this->assertEquals("selected", $text);
+        $this->assertEquals("selected", $select);
 
     }
 
