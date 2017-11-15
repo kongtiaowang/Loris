@@ -685,20 +685,11 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         );
         sleep(1);
         $window = $this->webDriver->getWindowHandles();
-        var_dump($window);
         $newWindow = $this->webDriver->switchTo()->window($window[1]);
-        print_r("=========");
         //Inputing test data into QC comment panel "Geometric distortion" with 'Good'
         $value1 = "body > div > form > h3:nth-child(1) > select";
         $newWindow->executescript(
             "document.querySelector('$value1').value='Good'"
-        );
-        sleep(1);
-        $window = $this->webDriver->getPageSource();
-        var_dump($window);
-        $value2 = "body>div:nth-child(2)>form:nth-child(2)>textarea:nth-child(2)";
-        $newWindow->executescript(
-            "document.querySelector('$value2').value='Good'"
         );
 
         //click save button
@@ -728,12 +719,6 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             "return document.querySelector('$value1').value"
         );
         $this->assertEquals("Good", $text);
-        $value2 = "body > div:nth-child(2) > form:nth-child(2)".
-                  " > textarea:nth-child(2)";
-        $text   = $newWindow->executescript(
-            "return document.querySelector('$value2').value"
-        );
-        $this->assertContains("Good", $text);
 
     }
 
