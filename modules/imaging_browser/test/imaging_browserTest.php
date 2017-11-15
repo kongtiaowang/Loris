@@ -613,15 +613,15 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             "document.querySelector('$value').click()"
         );
         sleep(1);
-        $body = $this->webDriver->getPageSource();
-        var_dump($body);
         // test Caveat link
         $link = "#image-2 > div > div > div.panel-body > div:nth-child(1)>".
                 " div.col-xs-3.mri-right-panel > div > div:nth-child(3) > label > a";
         $this->webDriver->executescript(
             "document.querySelector('$link').click()"
         );
+        sleep(1);
         $bodyText = $this->webDriver->getPageSource();
+        var_dump($body);
         //$newWindow = $this->webDriver->switchTo()->window(
         //       end($this->webDriver->getWindowHandles())
         //);
@@ -652,7 +652,6 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         );
         sleep(1);
         $body = $this->webDriver->getPageSource();
-        var_dump($body);
         $text = $this->webDriver->executescript(
             "return document.querySelector('$ui').value"
         );
