@@ -535,7 +535,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             "document.querySelector('$value').click()"
         );
         sleep(1);
-        $body  = $this->webDriver->getPageSource();
+        $body = $this->webDriver->getPageSource();
         var_dump($body);
         $value           = "#lorisworkspace > div.row > div >".
                            " div > div.panel-heading";
