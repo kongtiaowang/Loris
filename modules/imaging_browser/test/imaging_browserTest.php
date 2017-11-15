@@ -448,6 +448,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
          $newWindow = $this->webDriver->switchTo()->window(
              end($this->webDriver->getWindowHandles())
          );
+         sleep(1);
          //breadcrumbs contains "Brainbrowser"
          $value = "#bc2 > a:nth-child(2) > div";
          $text  = $newWindow->executescript(
@@ -683,12 +684,10 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             "document.querySelector('$value').click()"
         );
         sleep(1);
+        $window = $this->webDriver->getWindowHandles();
         $newWindow = $this->webDriver->switchTo()->window(
-            end($this->webDriver->getWindowHandles())
+             $window(1)
         );
-        sleep(1);
-        $body = $this->webDriver->getPageSource();
-        var_dump($body);
         //Inputing test data into QC comment panel "Geometric distortion" with 'Good'
         $value1 = "body > div > form > h3:nth-child(1) > select";
         $newWindow->executescript(
