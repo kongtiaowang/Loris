@@ -683,7 +683,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             "document.querySelector('$value').click()"
         );
         sleep(1);
-        $body = $this->webDriver->getPageResource();
+        $body = $this->webDriver->getPageSource();
         var_dump($body);
         $newWindow = $this->webDriver->switchTo()->window(
             end($this->webDriver->getWindowHandles())
