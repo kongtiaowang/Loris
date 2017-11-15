@@ -693,6 +693,9 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $newWindow->executescript(
             "document.querySelector('$value1').value='Good'"
         );
+        sleep(1);
+        $window = $this->webDriver->getPageSource();
+        var_dump($window);
         $value2 = "body>div:nth-child(2)>form:nth-child(2)>textarea:nth-child(2)";
         $newWindow->executescript(
             "document.querySelector('$value2').value='Good'"
