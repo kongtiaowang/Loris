@@ -691,8 +691,6 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $newWindow->executescript(
             "document.querySelector('$value1').value='Good'"
         );
-        $body = $this->webDriver->getPageSource();
-        var_dump($body);
         //click save button
         $save = "body > div:nth-child(2) > form:nth-child(2) > input:nth-child(25)";
         $newWindow->findElement(
@@ -714,9 +712,8 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         );
 
         // check the result
-        $newWindow = $this->webDriver->switchTo()->window(
-            end($this->webDriver->getWindowHandles())
-        );
+        $window    = $this->webDriver->getWindowHandles();
+        $newWindow = $this->webDriver->switchTo()->window($window[1]);
         $value1    = "body > div:nth-child(2) > form:nth-child(2) > h3:nth-child(1)".
                   " > select:nth-child(1)";
         $text      = $newWindow->executescript(
