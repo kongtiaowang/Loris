@@ -529,8 +529,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             "document.querySelector('$value').click()"
         );
         sleep(1);
-        $body = $this->webDriver->getPageSource();
-        var_dump($body);
+        $body  = $this->webDriver->getPageSource();
         $value = "#bc2 > a:nth-child(2) > div";
         $this->webDriver->executescript(
             "document.querySelector('$value').click()"
@@ -613,6 +612,10 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             "document.querySelector('$value').click()"
         );
         sleep(1);
+        $this->_testQCpanelWithValues($SNR, "1");
+        $bodyText = $this->webDriver->getPageSource();
+        var_dump($body);
+        print_r("===================================");
         // test Caveat link
         $link = "#image-2 > div > div > div.panel-body > div:nth-child(1)>".
                 " div.col-xs-3.mri-right-panel > div > div:nth-child(3) > label > a";
@@ -622,9 +625,6 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         sleep(1);
         $bodyText = $this->webDriver->getPageSource();
         var_dump($body);
-        //$newWindow = $this->webDriver->switchTo()->window(
-        //       end($this->webDriver->getWindowHandles())
-        //);
         $ui   = "#bc2 > a:nth-child(2) > div";
         $text = $this->webDriver->executescript(
             "return document.querySelector('$ui').textContent"
