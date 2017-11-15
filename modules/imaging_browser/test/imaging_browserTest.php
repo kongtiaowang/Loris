@@ -591,9 +591,9 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->_testQCpanelWithValues($SNR, "0");
         $this->_testQCpanelWithValues($SNR, "");
         $this->_testQCpanelWithValues($SNR, "1");
+        $this->_testQCpanelWithValues($QC_Status_panel, "Fail");
         $this->_testQCpanelWithValues($QC_Status_panel, "");
         $this->_testQCpanelWithValues($QC_Status_panel, "Pass");
-        $this->_testQCpanelWithValues($QC_Status_panel, "Fail");
         $this->_testQCpanelWithValues($Selected, "true");
         $this->_testQCpanelWithValues($Selected, "false");
         $this->_testQCpanelWithValues($Selected, "");
@@ -621,7 +621,8 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->webDriver->executescript(
             "document.querySelector('$link').click()"
         );
-        sleep(2);
+        sleep(1);
+        $bodyText = $this->webDriver->getPageSource();
         //$newWindow = $this->webDriver->switchTo()->window(
         //       end($this->webDriver->getWindowHandles())
         //);
