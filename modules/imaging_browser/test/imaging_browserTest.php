@@ -698,9 +698,9 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $newWindow->findElement(
             WebDriverBy::Name("fire_away")
         )->click();
-//        $newWindow->executescript(
-//            "document.querySelector('$save').click()"
-//        );
+        //        $newWindow->executescript(
+        //            "document.querySelector('$save').click()"
+        //        );
         // click close this window button
         $value = "body > p > a";
         $newWindow->executescript(
