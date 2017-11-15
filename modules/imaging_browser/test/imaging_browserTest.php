@@ -536,7 +536,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         );
         sleep(1);
         $body = $this->webDriver->getPageSource();
-        var_dump($body);
+        //var_dump($body);
         $value           = "#lorisworkspace > div.row > div >".
                            " div > div.panel-heading";
         $SelectionFilter = $this->webDriver->executescript(
@@ -625,12 +625,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         );
         sleep(1);
         $bodyText = $this->webDriver->getPageSource();
-        var_dump($bodyText);
-        $ui   = "#bc2 > a:nth-child(2) > div";
-        $text = $this->webDriver->executescript(
-            "return document.querySelector('$ui').textContent"
-        );
-        $this->assertEquals(" Mri  Violations", $text);
+        $this->assertEquals(" Mri  Violations", $bodyText);
 
     }
     /**
