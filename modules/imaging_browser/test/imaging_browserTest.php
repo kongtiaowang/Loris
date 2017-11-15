@@ -444,11 +444,8 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
          $this->safeFindElement(
              WebDriverBy::ID("bbonly")
          )->click();
-         sleep(1);
-         $newWindow = $this->webDriver->switchTo()->window(
-             end($this->webDriver->getWindowHandles())
-         );
-         sleep(1);
+         $window    = $this->webDriver->getWindowHandles();
+         $newWindow = $this->webDriver->switchTo()->window($window[1]);
          //breadcrumbs contains "Brainbrowser"
          $value = "#bc2 > a:nth-child(2) > div";
          $text  = $newWindow->executescript(
@@ -480,10 +477,8 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->webDriver->executescript(
             "document.querySelector('$value').click()"
         );
-        sleep(1);
-        $newWindow = $this->webDriver->switchTo()->window(
-            end($this->webDriver->getWindowHandles())
-        );
+        $window    = $this->webDriver->getWindowHandles();
+        $newWindow = $this->webDriver->switchTo()->window($window[1]);
         $value     = "body > div > form > textarea";
         $newWindow->executescript(
             "document.querySelector('$value').value='test feedback'"
@@ -592,7 +587,6 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->_testQCpanelWithValues($SNR, "0");
         $this->_testQCpanelWithValues($SNR, "");
         $this->_testQCpanelWithValues($SNR, "1");
-        $this->_testQCpanelWithValues($QC_Status_panel, "");
         $this->_testQCpanelWithValues($QC_Status_panel, "Fail");
         $this->_testQCpanelWithValues($QC_Status_panel, "Pass");
         $this->_testQCpanelWithValues($Selected, "true");
@@ -616,13 +610,13 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->webDriver->executescript(
             "document.querySelector('$value').click()"
         );
+        sleep(1);
         // test Caveat link
         $link = "#image-2 > div > div > div.panel-body > div:nth-child(1)>".
                 " div.col-xs-3.mri-right-panel > div > div:nth-child(3) > label > a";
         $this->webDriver->executescript(
             "document.querySelector('$link').click()"
         );
-        sleep(1);
         $bodyText = $this->webDriver->getPageSource();
         //$newWindow = $this->webDriver->switchTo()->window(
         //       end($this->webDriver->getWindowHandles())
@@ -683,7 +677,6 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->webDriver->executescript(
             "document.querySelector('$value').click()"
         );
-        sleep(1);
         $window    = $this->webDriver->getWindowHandles();
         $newWindow = $this->webDriver->switchTo()->window($window[1]);
         //Inputing test data into QC comment panel "Geometric distortion" with 'Good'
@@ -717,7 +710,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::Xpath("/html/body/div/form/h3[1]/select/option[2]")
         )->getAttribute("selected");
 
-        $this->assertEquals("selected", $select);
+        $this->assertEquals("true", $select);
     }
 
 }
