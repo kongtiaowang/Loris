@@ -716,9 +716,9 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $newWindow = $this->webDriver->switchTo()->window($window[1]);
         $value1    = "body > div:nth-child(2) > form:nth-child(2) > h3:nth-child(1)".
                   " > select:nth-child(1)";
-        $text      = $newWindow->executescript(
-            "return document.querySelector('$value1').value"
-        );
+        $text      = $newWindow->findElement(
+            WebDriverBy::Name("saveCommentStatusField[Intensity_artifact]")
+        )->getText();
         $this->assertEquals("Good", $text);
 
     }
