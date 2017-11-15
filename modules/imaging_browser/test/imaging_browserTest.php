@@ -684,7 +684,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
             "document.querySelector('$value').click()"
         );
         sleep(1);
-        $window = $this->webDriver->getWindowHandles();
+        $window    = $this->webDriver->getWindowHandles();
         $newWindow = $this->webDriver->switchTo()->window($window[1]);
         //Inputing test data into QC comment panel "Geometric distortion" with 'Good'
         $value1 = "body > div > form > h3:nth-child(1) > select";
