@@ -591,8 +591,8 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         $this->_testQCpanelWithValues($SNR, "0");
         $this->_testQCpanelWithValues($SNR, "");
         $this->_testQCpanelWithValues($SNR, "1");
-        $this->_testQCpanelWithValues($QC_Status_panel, "Fail");
         $this->_testQCpanelWithValues($QC_Status_panel, "");
+        $this->_testQCpanelWithValues($QC_Status_panel, "Fail");
         $this->_testQCpanelWithValues($QC_Status_panel, "Pass");
         $this->_testQCpanelWithValues($Selected, "true");
         $this->_testQCpanelWithValues($Selected, "false");
@@ -687,7 +687,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         var_dump($body);
         $newWindow = $this->webDriver->switchTo()->window(
             end($this->webDriver->getWindowHandles())
-        );
+        );        
         //Inputing test data into QC comment panel "Geometric distortion" with 'Good'
         $value1 = "body > div > form > h3:nth-child(1) > select";
         $newWindow->executescript(
