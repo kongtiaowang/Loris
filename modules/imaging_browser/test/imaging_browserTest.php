@@ -625,7 +625,7 @@ class ImagingBrowserTestIntegrationTest extends LorisIntegrationTest
         );
         sleep(1);
         $bodyText = $this->webDriver->getPageSource();
-        $this->assertEquals(" Mri  Violations", $bodyText);
+        $this->assertContains(" Mri  Violations", $bodyText);
 
     }
     /**
