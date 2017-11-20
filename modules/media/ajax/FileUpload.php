@@ -33,8 +33,8 @@ if (isset($_GET['action'])) {
  */
 function editFile()
 {
-    $db   =& /Database::singleton();
-    $user =& /User::singleton();
+    $db   =& \Database::singleton();
+    $user =& \User::singleton();
     if (!$user->hasPermission('media_write')) {
         header("HTTP/1.1 403 Forbidden");
         exit;
@@ -73,14 +73,14 @@ function editFile()
  */
 function uploadFile()
 {
-    $uploadNotifier = new /NDB_Notifier(
+    $uploadNotifier = new \NDB_Notifier(
         "media",
         "upload"
     );
 
-    $db     =& /Database::singleton();
-    $config = /NDB_Config::singleton();
-    $user   =& /User::singleton();
+    $db     =& \Database::singleton();
+    $config = \NDB_Config::singleton();
+    $user   =& \User::singleton();
     if (!$user->hasPermission('media_write')) {
         header("HTTP/1.1 403 Forbidden");
         exit;
@@ -185,7 +185,7 @@ function uploadFile()
 function getUploadFields()
 {
 
-    $db =& /Database::singleton();
+    $db =& \Database::singleton();
 
     $instruments = $db->pselect(
         "SELECT Test_name FROM test_names ORDER BY Test_name",
@@ -199,8 +199,8 @@ function getUploadFields()
     $instrumentsList = toSelect($instruments, "Test_name", null);
     $candidatesList  = toSelect($candidates, "PSCID", null);
     $candIdList      = toSelect($candidates, "CandID", "PSCID");
-    $visitList       = /Utility::getVisitList();
-    $siteList        = /Utility::getSiteList(false);
+    $visitList       = \Utility::getVisitList();
+    $siteList        = \Utility::getSiteList(false);
 
     // Build array of session data to be used in upload media dropdowns
     $sessionData    = [];
@@ -362,7 +362,7 @@ function toSelect($options, $item, $item2)
  */
 function getFilesList()
 {
-    $db       =& /Database::singleton();
+    $db       =& \Database::singleton();
     $fileList = $db->pselect("SELECT id, file_name FROM media", []);
 
     $mediaFiles = [];
