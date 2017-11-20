@@ -17,5 +17,4 @@ vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php htdocs
 
 # Run PHPCS on specific modules
 
-vendor/bin/phpcs --standard=docs/LorisCS.xml --extensions=php/php,inc/php modules/
 
