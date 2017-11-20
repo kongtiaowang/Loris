@@ -115,7 +115,7 @@ class MediaTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . "/media/#upload");
         $page = $this->webDriver->getPageSource();
-        $var_dump($page);
+        var_dump($page);
         sleep(1);
         foreach ($this->_loadingUploadUI as $key => $value) {
             $text = $this->webDriver->executescript(
