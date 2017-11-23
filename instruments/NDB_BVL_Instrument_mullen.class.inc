@@ -1602,6 +1602,7 @@ Anything below the ceiling level will be considered/scored as 0<br><br>
          }
             $basal_found=0;
             $ceiling_found=0;
+            //Basal is the first of the first series of 3 consecutive scores of 1.
             for($j=1;$j<=$count;$j++) {
                 $basal_array=array();
                 array_push($basal_array, $values[$scale_name . '_' . $j], $values[$scale_name . '_' . ($j + 1)], $values[$scale_name . '_' . ($j + 2)]);
@@ -1615,13 +1616,14 @@ Anything below the ceiling level will be considered/scored as 0<br><br>
                     $basal_found=1;
                 }
             }
-            for($k=$basal_found;$k<=$count;$k++) {
+            //Ceiling is the last of the last series of 3 consecutive scores of 0
+            for($k=$count;$k>=$basal_found;$k--) {
                 $ceiling_array=array();
-                array_push($ceiling_array, $values[$scale_name . '_' . $k], $values[$scale_name . '_' . ($k + 1)], $values[$scale_name . '_' . ($k + 2)]);
+                array_push($ceiling_array, $values[$scale_name . '_' . $k], $values[$scale_name . '_' . ($k - 1)], $values[$scale_name . '_' . ($k - 2)]);
                 $ceiling_counts = array_count_values($ceiling_array);
                 if($ceiling_counts[0]==3)
                 {
-                    $ceiling_found=$k+2;
+                    $ceiling_found=$k;
                     break;
                 }
                 else{
