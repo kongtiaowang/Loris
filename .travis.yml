@@ -92,6 +92,7 @@ before_script:
 #env:
  # - "LORIS_DB_CONFIG=test/config.xml"
 script:
+    - docker version
     - docker-compose version
     - docker-compose build
     - npm run tests:integration
