@@ -4,6 +4,9 @@ cache:
     directories:
         - vendor
 
+services:
+  - docker
+
 php:
     - "7.1"
 
@@ -47,6 +50,9 @@ install:
     # screen in the middle of our other tests
     - DISPLAY=:99.0 java -jar selenium-server-standalone-2.52.0.jar  2>1 > /dev/null &
     - sleep 10
+    - curl -L https://github.com/docker/compose/releases/download/1.8.1/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
+    - chmod +x ~/docker-compose
+    - sudo mv ~/docker-compose /usr/local/bin/docker-compose
 before_script:
     # Set up the Loris environment
     - mkdir -p project smarty/templates_c project/instruments project/tables_sql
@@ -93,6 +99,7 @@ before_script:
     - sleep 10
 script:
 
-    - vendor/bin/phpunit --configuration test/phpunit.xml
+    - docker-compose build
+    - npm run tests:integration
 
 dist: precise
