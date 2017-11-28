@@ -4,8 +4,10 @@ cache:
     directories:
         - vendor
 
+services:
+  - docker
+
 php:
-    - "7"
     - "7.1"
 
 sudo: false
@@ -34,9 +36,6 @@ install:
     - npm install
 
     # Download a Selenium Web Driver release
-    - wget "http://selenium-release.storage.googleapis.com/2.52/selenium-server-standalone-2.52.0.jar"
-
-    - php -S localhost:8000 -t htdocs htdocs/router.php 2>1 > /dev/null &
 
     # Extracting firefox and setting PATH variable...
     - tar -xjf /tmp/firefox-44.0.tar.bz2 --directory /tmp
@@ -46,8 +45,9 @@ install:
     # Start Selenium and redirect Selenium WebDriver
     # output to /dev/null so that it doesn't flood the
     # screen in the middle of our other tests
-    - DISPLAY=:99.0 java -jar selenium-server-standalone-2.52.0.jar  2>1 > /dev/null &
-
+    - curl -L https://github.com/docker/compose/releases/download/1.8.1/docker-compose-`uname -s`-`uname -m` > ~/docker-compose
+    - chmod +x ~/docker-compose
+    - sudo mv ~/docker-compose /usr/local/bin/docker-compose
 before_script:
     # Set up the Loris environment
     - mkdir -p project smarty/templates_c project/instruments project/tables_sql
@@ -91,9 +91,10 @@ before_script:
     - mysql LorisTest < project/tables_sql/testtest.sql
 #env:
  # - "LORIS_DB_CONFIG=test/config.xml"
-
 script:
-
-    - npm run lint:php && npm run lint:javascript && vendor/bin/phpunit --configuration test/phpunit.xml
+    - docker version
+    - docker-compose version
+    - docker-compose build
+    - npm run tests:integration
 
 dist: precise
