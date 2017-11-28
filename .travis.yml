@@ -5,7 +5,6 @@ cache:
         - vendor
 
 php:
-    - "7"
     - "7.1"
 
 sudo: false
@@ -91,9 +90,9 @@ before_script:
     - mysql LorisTest < project/tables_sql/testtest.sql
 #env:
  # - "LORIS_DB_CONFIG=test/config.xml"
-
+    - sleep 10
 script:
 
-    - npm run lint:php && npm run lint:javascript && vendor/bin/phpunit --configuration test/phpunit.xml
+    - vendor/bin/phpunit --configuration test/phpunit.xml
 
 dist: precise
