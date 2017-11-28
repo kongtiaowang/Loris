@@ -2,24 +2,40 @@
     "name": "aces/loris",
     "license" : "GPL-3.0+",
     "description" : "LORIS (Longitudinal Online Research and Imaging System) is a web-accessible database solution for neuroimaging.",
+    "minimum-stability": "beta",
     "require" : {
         "smarty/smarty" : "~3.1",
         "PHPOffice/PHPExcel": "1.8.*",
         "firebase/php-jwt" : "~3.0",
         "pear-pear.php.net/HTML_QuickForm" : "~3.2",
         "google/recaptcha": "~1.1",
-        "slim/slim": "^3.0"
+        "slim/slim": "^3.0",
+        "ext-curl": "*",
+        "ext-zip": "*"
     },
     "require-dev" : {
         "squizlabs/php_codesniffer" : "2.5.*",
-        "phpunit/phpunit" : "4.3.*",
-        "phpunit/dbunit": ">=1.2",
-        "facebook/webdriver" : "dev-master"
+        "phpunit/phpunit" : "^5.7",
+        "sebastian/environment": "^1.3.4 || ^2.0 || ^3.0",
+        "friendsofphp/php-cs-fixer": "^2.0",
+        "squizlabs/php_codesniffer": "^2.6",
+        "php-mock/php-mock-phpunit": "^1.1",
+        "php-coveralls/php-coveralls": "^1.0.2",
+        "guzzle/guzzle": "^3.4.1",
+        "symfony/var-dumper": "^3.3 || ^4.0"
     },
     "scripts": {
       "pre-install-cmd": "mkdir -p project/libraries"
     },
     "autoload" : {
-        "classmap": ["project/libraries", "php/libraries", "php/exceptions", "php/interfaces"]
+        "classmap": ["project/libraries", "php/libraries", "php/exceptions", "php/interfaces"],
+        "psr-4": {
+      "Facebook\\WebDriver\\": "lib/"
     }
+    },
+  "autoload-dev": {
+    "psr-4": {
+      "Facebook\\WebDriver\\": ["tests/unit", "tests/functional"]
+    }
+  }
 }
