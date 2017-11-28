@@ -1,8 +1,5 @@
 language: php
 
-cache:
-    directories:
-        - vendor
 
 php:
     - "7"
