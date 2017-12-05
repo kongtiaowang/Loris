@@ -502,8 +502,6 @@ var ImagePanelBody = React.createClass({
                             NrrdFile={this.props.NrrdFile}
                             OtherTimepoints={this.props.OtherTimepoints}
                         />
-                    {this.props.HeadersExpanded ? <ImagePanelHeadersTable
-                                    HeaderInfo={this.props.HeaderInfo} /> : ''}
                 </div>
         );
   }
@@ -513,7 +511,7 @@ var ImagePanel = React.createClass({
   getInitialState: function() {
     return {
       BodyCollapsed: false,
-      HeadersCollapsed: true
+      HeadersCollapsed: false
     };
   },
   toggleBody: function(e) {
@@ -528,6 +526,7 @@ var ImagePanel = React.createClass({
   },
   render: function() {
     return (
+      <div className="col-xs-12">
             <div className="col-xs-12 col-md-6">
                 <div className="panel panel-default">
                 <ImagePanelHeader
@@ -566,6 +565,12 @@ var ImagePanel = React.createClass({
                     /> }
                 </div>
             </div>
+       <div className="col-xs-12 col-md-6">
+                {!this.state.HeadersCollapsed && !this.state.BodyCollapsed ? <ImagePanelHeadersTable
+                    HeaderInfo={this.props.HeaderInfo}
+                /> : ''}
+            </div>
+        </div>
         );
   }
 });

@@ -297,7 +297,7 @@ var ImagePanelHeadersTable = React.createClass({
                 React.createElement(
                     'td',
                     { className: 'col-xs-4', colSpan: '4' },
-                    ' '
+                    '\xA0'
                 )
             )
         );
@@ -305,6 +305,7 @@ var ImagePanelHeadersTable = React.createClass({
 });
 var ImageQCDropdown = React.createClass({
     displayName: 'ImageQCDropdown',
+
 
     render: function render() {
         var label = React.createElement(
@@ -666,9 +667,7 @@ var ImagePanelBody = React.createClass({
                 XMLReport: this.props.XMLReport,
                 NrrdFile: this.props.NrrdFile,
                 OtherTimepoints: this.props.OtherTimepoints
-            }),
-            this.props.HeadersExpanded ? React.createElement(ImagePanelHeadersTable, {
-                HeaderInfo: this.props.HeaderInfo }) : ''
+            })
         );
     }
 });
@@ -679,7 +678,7 @@ var ImagePanel = React.createClass({
     getInitialState: function getInitialState() {
         return {
             BodyCollapsed: false,
-            HeadersCollapsed: true
+            HeadersCollapsed: false
         };
     },
     toggleBody: function toggleBody(e) {
@@ -695,43 +694,54 @@ var ImagePanel = React.createClass({
     render: function render() {
         return React.createElement(
             'div',
-            { className: 'col-xs-12 col-md-6' },
+            { className: 'col-xs-12' },
             React.createElement(
                 'div',
-                { className: 'panel panel-default' },
-                React.createElement(ImagePanelHeader, {
-                    FileID: this.props.FileID,
-                    Filename: this.props.Filename,
-                    QCStatus: this.props.QCStatus,
-                    onToggleBody: this.toggleBody,
-                    onToggleHeaders: this.toggleHeaders,
-                    Expanded: !this.state.BodyCollapsed,
-                    HeadersExpanded: !this.state.HeadersCollapsed
-                }),
-                this.state.BodyCollapsed ? '' : React.createElement(ImagePanelBody, {
-                    BaseURL: this.props.BaseURL,
+                { className: 'col-xs-12 col-md-6' },
+                React.createElement(
+                    'div',
+                    { className: 'panel panel-default' },
+                    React.createElement(ImagePanelHeader, {
+                        FileID: this.props.FileID,
+                        Filename: this.props.Filename,
+                        QCStatus: this.props.QCStatus,
+                        onToggleBody: this.toggleBody,
+                        onToggleHeaders: this.toggleHeaders,
+                        Expanded: !this.state.BodyCollapsed,
+                        HeadersExpanded: !this.state.HeadersCollapsed
+                    }),
+                    this.state.BodyCollapsed ? '' : React.createElement(ImagePanelBody, {
+                        BaseURL: this.props.BaseURL,
 
-                    FileID: this.props.FileID,
-                    Filename: this.props.Filename,
-                    Checkpic: this.props.Checkpic,
-                    HeadersExpanded: !this.state.HeadersCollapsed,
+                        FileID: this.props.FileID,
+                        Filename: this.props.Filename,
+                        Checkpic: this.props.Checkpic,
+                        HeadersExpanded: !this.state.HeadersCollapsed,
 
-                    HeaderInfo: this.props.HeaderInfo,
+                        HeaderInfo: this.props.HeaderInfo,
 
-                    FileNew: this.props.FileNew,
-                    HasQCPerm: this.props.HasQCPerm,
-                    QCStatus: this.props.QCStatus,
-                    Caveat: this.props.Caveat,
-                    Selected: this.props.Selected,
-                    SNR: this.props.SNR,
+                        FileNew: this.props.FileNew,
+                        HasQCPerm: this.props.HasQCPerm,
+                        QCStatus: this.props.QCStatus,
+                        Caveat: this.props.Caveat,
+                        Selected: this.props.Selected,
+                        SNR: this.props.SNR,
 
-                    Fullname: this.props.Fullname,
-                    XMLProtocol: this.props.XMLProtocol,
-                    XMLReport: this.props.XMLReport,
-                    NrrdFile: this.props.NrrdFile,
-                    OtherTimepoints: this.props.OtherTimepoints,
-                    SeriesUID: this.props.SeriesUID
-                })
+                        Fullname: this.props.Fullname,
+                        XMLProtocol: this.props.XMLProtocol,
+                        XMLReport: this.props.XMLReport,
+                        NrrdFile: this.props.NrrdFile,
+                        OtherTimepoints: this.props.OtherTimepoints,
+                        SeriesUID: this.props.SeriesUID
+                    })
+                )
+            ),
+            React.createElement(
+                'div',
+                { className: 'col-xs-12 col-md-6' },
+                !this.state.HeadersCollapsed && !this.state.BodyCollapsed ? React.createElement(ImagePanelHeadersTable, {
+                    HeaderInfo: this.props.HeaderInfo
+                }) : ''
             )
         );
     }
