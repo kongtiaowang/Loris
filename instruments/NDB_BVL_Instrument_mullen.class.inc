@@ -731,10 +731,10 @@ class NDB_BVL_Instrument_mullen extends NDB_BVL_Instrument
         18=>"21-26 mo.",
         22=>"27+ mo.");
         $this->form->addElement('static','lorisSubHeader',"<b>*Notes:</b><br>
-Basal level refers to the FIRST of the three consecutive questions scored 1<br>
+Basal level refers to the FIRST of the three consecutive questions scored 1 or more.<br>
 Ceiling level refers to the LAST of the three consecutive questions scored 0<br>
-Anything above the basal level will be considered/scored  as 1<br>
-Anything below the ceiling level will be considered/scored as 0<br><br>
+Anything below the basal level will be considered/scored with the maximum points for that question<br>
+Anything above the ceiling level will be considered/scored as 0<br><br>
 ");
         $this->form->addElement("select", "gross_motor_basal", $this->indent . "Select basal level:", array(null => null) +  array_combine(range(1,35), range(1,35)));
         $this->form->addElement("select", "gross_motor_ceiling", $this->indent . "Select ceiling level:", array(null => null) + array_combine(range(35,1), range(35,1)));
@@ -837,10 +837,10 @@ Anything below the ceiling level will be considered/scored as 0<br><br>
 
 
         $this->form->addElement('static','lorisSubHeader',"<b>*Notes:</b><br>
-Basal level refers to the FIRST of the three consecutive questions scored 1<br>
+Basal level refers to the FIRST of the three consecutive questions scored 1 or more.<br>
 Ceiling level refers to the LAST of the three consecutive questions scored 0<br>
-Anything above the basal level will be considered/scored  as 1<br>
-Anything below the ceiling level will be considered/scored as 0<br><br>
+Anything below the basal level will be considered/scored with the maximum points for that question<br>
+Anything above the ceiling level will be considered/scored as 0<br><br>
 ");
         $this->form->addElement("select", "visual_recept_basal", $this->indent . "Select basal level:", array(null => null) + array_combine(range(1,33), range(1,33)));
         $this->form->addElement("select", "visual_recept_ceiling", $this->indent . "Select ceiling level:", array(null => null) + array_combine(range(33,1), range(33,1)));
@@ -924,10 +924,10 @@ Anything below the ceiling level will be considered/scored as 0<br><br>
         21=>"45+ mo.");
 
         $this->form->addElement('static','lorisSubHeader',"<b>*Notes:</b><br>
-Basal level refers to the FIRST of the three consecutive questions scored 1<br>
+Basal level refers to the FIRST of the three consecutive questions scored 1 or more.<br>
 Ceiling level refers to the LAST of the three consecutive questions scored 0<br>
-Anything above the basal level will be considered/scored  as 1<br>
-Anything below the ceiling level will be considered/scored as 0<br><br>
+Anything below the basal level will be considered/scored with the maximum points for that question<br>
+Anything above the ceiling level will be considered/scored as 0<br><br>
 ");
         $this->form->addElement("select", "fine_motor_basal", $this->indent . "Select basal level:", array(null => null) + array_combine(range(1,30), range(1,30)));
         $this->form->addElement("select", "fine_motor_ceiling", $this->indent . "Select ceiling level:", array(null => null) + array_combine(range(30,1), range(30,1)));
@@ -1015,10 +1015,10 @@ Anything below the ceiling level will be considered/scored as 0<br><br>
         22=>"33-44 mo.",
         25=>"45+ mo.");
         $this->form->addElement('static','lorisSubHeader',"<b>*Notes:</b><br>
-Basal level refers to the FIRST of the three consecutive questions scored 1<br>
+Basal level refers to the FIRST of the three consecutive questions scored 1 or more.<br>
 Ceiling level refers to the LAST of the three consecutive questions scored 0<br>
-Anything above the basal level will be considered/scored  as 1<br>
-Anything below the ceiling level will be considered/scored as 0<br><br>
+Anything below the basal level will be considered/scored with the maximum points for that question<br>
+Anything above the ceiling level will be considered/scored as 0<br><br>
 ");
         $this->form->addElement("select", "receptive_lang_basal", $this->indent . "Select basal level:", array(null => null) + array_combine(range(1,33), range(1,33)));
         $this->form->addElement("select", "receptive_lang_ceiling", $this->indent . "Select ceiling level:", array(null => null) + array_combine(range(33,1), range(33,1)));
@@ -1101,10 +1101,10 @@ Anything below the ceiling level will be considered/scored as 0<br><br>
         22=>"45+ mo.");
 
         $this->form->addElement('static','lorisSubHeader',"<b>*Notes:</b><br>
-Basal level refers to the FIRST of the three consecutive questions scored 1<br>
+Basal level refers to the FIRST of the three consecutive questions scored 1 or more.<br>
 Ceiling level refers to the LAST of the three consecutive questions scored 0<br>
-Anything above the basal level will be considered/scored  as 1<br>
-Anything below the ceiling level will be considered/scored as 0<br><br>
+Anything below the basal level will be considered/scored with the maximum points for that question<br>
+Anything above the ceiling level will be considered/scored as 0<br><br>
 ");
         $this->form->addElement("select", "expressive_lang_basal", $this->indent . "Select basal level:", array(null => null) + array_combine(range(1,28), range(1,28)));
         $this->form->addElement("select", "expressive_lang_ceiling", $this->indent . "Select ceiling level:", array(null => null) + array_combine(range(28,1), range(28,1)));
@@ -1602,12 +1602,13 @@ Anything below the ceiling level will be considered/scored as 0<br><br>
          }
             $basal_found=0;
             $ceiling_found=0;
-            //Basal is the first of the first series of 3 consecutive scores of 1.
+            //Basal is the first of the first series of 3 consecutive scores of 1 or more(ie,consecutive things without any 0,null or not_answered).
             for($j=1;$j<=$count;$j++) {
                 $basal_array=array();
                 array_push($basal_array, $values[$scale_name . '_' . $j], $values[$scale_name . '_' . ($j + 1)], $values[$scale_name . '_' . ($j + 2)]);
-                $basal_counts = array_count_values($basal_array);
-                if($basal_counts[1]==3)
+                //if array doesn't contain any 0, null or not_answered, then we can obtain basal level.
+                //the below logic performs that.
+                if(!array_intersect($basal_array, array('', 'not_answered', 0)))
                 {
                     $basal_found=$j;
                     break;
