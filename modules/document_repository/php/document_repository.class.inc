@@ -363,7 +363,19 @@ var_dump($fileCategories);
 
         // overriding pagination
         $DB = \Database::singleton();
-
+        $this->headers      = array(
+                               'File_name',
+                               'version',
+                               'File_type',
+                               'Instrument',
+                               'uploaded_by',
+                               'For_site',
+                               'comments',
+                               'Date_uploaded',
+                               'Edit',
+                               'Delete',
+                              );
+var_dump();
         // print out column headings
         $i = 0;
         foreach ($this->headers as $header) {
