@@ -356,9 +356,8 @@ class Document_Repository extends \NDB_Menu_Filter
                 }
             }
         }
-
+var_dump($fileCategories);
         $this->tpl_data['File_categories'] = $fileCategories;
-
         // create instance of config object
         $config =& \NDB_Config::singleton();
 
@@ -416,7 +415,7 @@ class Document_Repository extends \NDB_Menu_Filter
             }
 
         }
-
+var_dump($FileCategory);
         return true;
     }
 
