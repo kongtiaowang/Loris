@@ -481,10 +481,15 @@ class NDB_BVL_Instrument_LENA_DataTrackingForm extends NDB_BVL_Instrument
             }
         }
         $result = $db->update($this->testName, $upload_values, array('CommentID'=>$args['CommentID']));
-        
+
         if(!empty($upload_values2)){
-            $upload_values2['CommentID'] = $args['CommentID'];
-            $ok = $db->insert("LENA_DataTrackingForm2", $upload_values2);
+            $check = $db->pselectOne("SELECT 1 FROM LENA_DataTrackingForm2 WHERE CommentID=:cid", array('cid'=>$args['CommentID']));
+            if ($check != 1) {
+                $upload_values2['CommentID'] = $args['CommentID'];
+                $ok = $db->insert("LENA_DataTrackingForm2", $upload_values2);
+            } else {
+                $ok = $db->update("LENA_DataTrackingForm2", $upload_values2, array('CommentID'=>$args['CommentID']));
+            }
         }
         echo "<span style='color:red'><b>Upload Successful : </b>".$upload_values['Uploaded_file']."</span><br>";
         return true;
