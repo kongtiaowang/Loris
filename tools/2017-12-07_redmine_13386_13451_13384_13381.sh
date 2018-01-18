@@ -1,0 +1,34 @@
+#!/bin/sh
+
+cd /var/www/loris/tools
+
+php fix_timepoint_date_problems.php add_instrument 113320 3556 scq_subject
+php fix_timepoint_date_problems.php add_instrument 239960 3625 scq_subject
+php fix_timepoint_date_problems.php add_instrument 497532 3746 scq_subject
+php fix_timepoint_date_problems.php add_instrument 813346 4486 scq_subject
+php fix_timepoint_date_problems.php add_instrument 229758 3814 scq_subject
+php fix_timepoint_date_problems.php add_instrument 867237 3370 scq_subject
+php fix_timepoint_date_problems.php add_instrument 692884 3510 scq_subject
+php fix_timepoint_date_problems.php add_instrument 229758 3814 scq_subject
+php fix_timepoint_date_problems.php add_instrument 490181 5304 FamilyEnvironmentScales
+php fix_timepoint_date_problems.php add_instrument 811160 1585 head_measurements_subject
+php fix_timepoint_date_problems.php add_instrument 630096 1545 head_measurements_subject
+php fix_timepoint_date_problems.php add_instrument 376852 2109 head_measurements_subject
+php fix_timepoint_date_problems.php add_instrument 751872 2752 head_measurements_subject
+php fix_timepoint_date_problems.php add_instrument 382140 1284 head_measurements_subject
+php fix_timepoint_date_problems.php add_instrument 138494 1758 head_measurements_subject
+php fix_timepoint_date_problems.php add_instrument 565029 2775 head_measurements_subject
+php fix_timepoint_date_problems.php add_instrument 230955 2063 head_measurements_subject
+php fix_timepoint_date_problems.php add_instrument 214027 2835 m_chat_subject
+php fix_timepoint_date_problems.php add_instrument 830443 5575 m_chat_subject
+php fix_timepoint_date_problems.php add_instrument 657703 2080 m_chat_subject
+php fix_timepoint_date_problems.php add_instrument 300333 5563 m_chat_subject
+php fix_timepoint_date_problems.php add_instrument 947923 3416 m_chat_subject
+php fix_timepoint_date_problems.php add_instrument 765425 3856 m_chat_subject
+php fix_timepoint_date_problems.php add_instrument 813346 3671 m_chat_subject
+php fix_timepoint_date_problems.php add_instrument 830543 4926 m_chat_subject
+php fix_timepoint_date_problems.php add_instrument 986661 5121 m_chat_subject
+php fix_timepoint_date_problems.php add_instrument 806356 4751 m_chat_subject
+php fix_timepoint_date_problems.php add_instrument 176766 5570 m_chat_subject
+
+php assign_missing_instruments.php confirm
