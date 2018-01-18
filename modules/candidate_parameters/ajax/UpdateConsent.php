@@ -45,7 +45,7 @@ if (isset($_POST['mail_consent'])) {
                     $Toothkit_Consent_Notification_Email = "flakel@wustl.edu, klohrc@wustl.edu, c.pritchard@wustl.edu";
                     break;
                 case "SEA":
-                    $Toothkit_Consent_Notification_Email = "tstjohn@u.washington.edu, cnm7@uw.edu";
+                    $Toothkit_Consent_Notification_Email = "tstjohn@u.washington.edu, cnm7@uw.edu, kammsyd@uw.edu";
                     break;
                 case "UNC":
                     $Toothkit_Consent_Notification_Email = "cchappel@med.unc.edu";
@@ -60,7 +60,7 @@ if (isset($_POST['mail_consent'])) {
             $msg_data['PSCID']     = $cand_info['PSCID'];
 
             //This email notification will be better repalced with LORIS notification later.
-            Email::send($Toothkit_Consent_Notification_Email, 'toothkit_consent.tpl', $msg_data);
+            Email::send($Toothkit_Consent_Notification_Email, 'toothkit_consent.tpl', $msg_data, "", "IBIS Team <noreply@ibis.loris.ca>");
         }
     }
 }
