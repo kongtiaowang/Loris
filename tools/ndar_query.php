@@ -10,11 +10,18 @@ $client->makeCommandLine();
 $client->initialize('../config.xml');
 
 $db        =& Database::singleton();
+if (empty($argv[1]) || $argv[1] == 'help') {
+    fwrite(STDERR, "Usage: \n\n");
+    fwrite(STDERR, "ndar_query.php help - displays this msg\n");
+    fwrite(STDERR, "ndar_query.php ibis1 - ndar query run for ibis1\n");
+    fwrite(STDERR, "ndar_query.php ibis2 - ndar query run for ibis2\n");
+    return;
+}
 
-$run_ibis1 = false;
-$run_ibis2 = true;
+//$run_ibis1 = false;
+//$run_ibis2 = true;
 
-if ($run_ibis1)
+if ($argv[1]=="ibis1")
 {
   //$IBIS = array('vineland_subject');
   $IBIS = array ('ados_module1', 'ados_module2', 'ados_module3', 'ados2_module1','ados2_module2','ados2_module3','adi_r_proband','aosi','csbs','edi','fyi','ibq_r','m_chat_proband','macarthur_words_gestures','mullen','prefrontal_task','rbs_r','scq_proband','scq_subject','seq','vineland_proband','vineland_subject','charge');
@@ -24,7 +31,7 @@ if ($run_ibis1)
   }
 }
 
-if ($run_ibis2)
+if ($argv[1]=="ibis2")
 {    //remove charge, head, and ados modules and add other two new
     //run ndar_subject script to get data/files for ndar_subject. Removing from here as it may leads to confusion
     //$IBIS2 = array('scq_proband');
