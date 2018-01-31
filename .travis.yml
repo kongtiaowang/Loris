@@ -29,6 +29,7 @@ install:
     # Install composer modules
     - composer install
     - composer require --dev
+    - composer require --dev phpunit/dbunit
     - vendor/bin/phpunit --version
     - phpenv rehash
 
