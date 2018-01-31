@@ -1,6 +1,5 @@
 <?php
-use PHPUnit\Framework\TestCase;
-use PHPUnit\DbUnit\TestCaseTrait;
+require 'vendor/autoload.php';
 /**
  * This contains an abstract class for Loris unit tests which
  * will not mock the Database class and therefore will use
@@ -24,7 +23,8 @@ use PHPUnit\DbUnit\TestCaseTrait;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-abstract class Loris_PHPUnit_Database_TestCase extends TestCase
+abstract class Loris_PHPUnit_Database_TestCase extends
+  PHPUnit_Extensions_Database_TestCase
 {
 
     /**
