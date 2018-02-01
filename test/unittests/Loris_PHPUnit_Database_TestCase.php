@@ -13,7 +13,8 @@ require_once 'PHPUnit/Autoload.php';
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-
+use PHPUnit\Framework\TestCase;
+use PHPUnit\DbUnit\TestCaseTrait;
 /**
  * Class Loris_PHPUnit_Databse_TestCase
  *
@@ -23,9 +24,9 @@ require_once 'PHPUnit/Autoload.php';
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-abstract class Loris_PHPUnit_Database_TestCase extends
-    PHPUnit_Extensions_Database_TestCase
+abstract class Loris_PHPUnit_Database_TestCase extends TestCase
 {
+    use TestCaseTrait;
 
     /**
      * PDO connection
