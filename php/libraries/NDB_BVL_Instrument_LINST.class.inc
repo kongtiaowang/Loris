@@ -341,7 +341,6 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                 return true;
             }
             switch ($operator) {
-                 return false;
              case '==':
                  if ($comparevalue != $userval) {
                      return false;
