@@ -1,5 +1,4 @@
 <?php
-require_once 'PHPUnit/Autoload.php';
 /**
  * This contains an abstract class for Loris unit tests which
  * will not mock the Database class and therefore will use
