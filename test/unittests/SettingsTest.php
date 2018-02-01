@@ -12,7 +12,7 @@
  */
 
 
-
+use PHPUnit\Framework\TestCase;
 /**
  * Unit test for Setting class
  *
@@ -22,7 +22,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class SettingsTest extends PHPUnit_Framework_TestCase
+class SettingsTest extends TestCase
 {
     /**
      * Test double for NDB_Config object

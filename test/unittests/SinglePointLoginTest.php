@@ -12,7 +12,7 @@
  */
 
 require_once __DIR__ . '/../../vendor/autoload.php';
-
+use PHPUnit\Framework\TestCase;
 
 /**
  * Unit test for SinglePointLogin class
@@ -23,7 +23,7 @@ require_once __DIR__ . '/../../vendor/autoload.php';
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class SinglePointLoginTest extends PHPUnit_Framework_TestCase
+class SinglePointLoginTest extends TestCase
 {
     private $login;
 
