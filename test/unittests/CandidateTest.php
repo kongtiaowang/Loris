@@ -181,8 +181,9 @@ class CandidateTest extends TestCase
         $this->_dbMock->expects($this->once())
             ->method('pselectRow')
             ->willReturn(false);
-
-        $this->setExpectedException('LorisException');
+        
+        $this->expectExceptionMessage('LorisException');
+        //$this->setExpectedException('LorisException');
         $this->_candidate->select('invalid value');
 
     }
