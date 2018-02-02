@@ -809,6 +809,7 @@ class Database
     {
         $result = $this->pselectRow($query, $params);
 var_dump($result);
+print_r("=======");
         if (is_array($result) && count($result)) {
 
             list(,$result) = each($result);
