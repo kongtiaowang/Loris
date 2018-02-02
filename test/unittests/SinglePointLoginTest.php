@@ -47,19 +47,12 @@ class SinglePointLoginTest extends TestCase
         $Factory->setDatabase($mockdb);
 
         $method = array('JWTAuthenticate', 'PasswordAuthenticate', 'authenticate');
-        $this->login = $this->getMock('SinglePointLogin', $this->_getAllMethodsExcept($method));
+        $AllMethods = get_class_methods('SinglePointLogin');
+        $exceptMethod = array_diff($AllMethods, $methods);
+        $this->login = $this->getMockBuilder('SinglePointLogin')->setMethods($exceptMethod)->getMock();
 
     }
 
-    /** 
-     * Helper function to use for creating stubs that stub out everything except
-     * the method being tested
-     */
-    function _getAllMethodsExcept($methods) {
-        $AllMethods = get_class_methods('SinglePointLogin');
-
-        return array_diff($AllMethods, $methods);
-    }   
     function testJWTAuthenticateReturnsTrueForValidToken() {
         // Encoded token for
         // {
