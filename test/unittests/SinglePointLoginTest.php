@@ -48,7 +48,7 @@ class SinglePointLoginTest extends TestCase
 
         $method = array('JWTAuthenticate', 'PasswordAuthenticate', 'authenticate');
         $AllMethods = get_class_methods('SinglePointLogin');
-        $exceptMethod = array_diff($AllMethods, $methods);
+        $exceptMethod = array_diff($AllMethods, $method);
         $this->login = $this->getMockBuilder('SinglePointLogin')->setMethods($exceptMethod)->getMock();
 
     }
