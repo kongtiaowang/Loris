@@ -810,11 +810,11 @@ class Database
         $result = $this->pselectRow($query, $params);
 var_dump($result);
 print_r("=======");
+print_r($result);
         if (is_array($result) && count($result)) {
 
             list(,$result) = each($result);
         }
-       var_dump($result);
         return $result;
         
     }
