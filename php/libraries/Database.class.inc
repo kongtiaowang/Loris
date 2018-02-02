@@ -812,7 +812,9 @@ class Database
 
             list(,$result) = each($result);
         }
+       var_dump($result);
         return $result;
+        
     }
     /**
      * Implodes a hash including the keys (unlike php's implode)
