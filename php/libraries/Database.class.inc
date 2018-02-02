@@ -808,13 +808,14 @@ class Database
     function pselectOne($query, $params)
     {
         $result = $this->pselectRow($query, $params);
-var_dump($result);
 print_r("=======");
 print_r($result);
         if (is_array($result) && count($result)) {
 
             list(,$result) = each($result);
         }
+print_r("----------");
+print_r($result);
         return $result;
         
     }
