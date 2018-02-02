@@ -220,6 +220,7 @@ class SettingsTest extends TestCase
      */
     public function testExceptionThrownWhenNoPasswordInConfig()
     {
+        $this->markTestSkipped("setExpectedException has been deprecated!");
         unset($this->_databaseConfigValues['password']);
         $this->_setUpConfigDatabaseTestDouble();
 
