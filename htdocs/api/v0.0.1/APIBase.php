@@ -128,7 +128,6 @@ abstract class APIBase
      */
     function handleETag()
     {
-        session_cache_limiter('private');
         $ETag = $this->calculateETag();
 
         $this->header("ETag: $ETag");
