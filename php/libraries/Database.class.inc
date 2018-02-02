@@ -808,6 +808,7 @@ class Database
     function pselectOne($query, $params)
     {
         $result = $this->pselectRow($query, $params);
+var_dump($result);
         if (is_array($result) && count($result)) {
 
             list(,$result) = each($result);
