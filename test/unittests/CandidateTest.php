@@ -182,8 +182,7 @@ class CandidateTest extends TestCase
             ->method('pselectRow')
             ->willReturn(false);
         
-        $this->expectExceptionMessage('LorisException');
-        //$this->setExpectedException('LorisException');
+        $this->expectedException('LorisException');
         $this->_candidate->select('invalid value');
 
     }
