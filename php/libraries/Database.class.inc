@@ -812,7 +812,7 @@ print_r("=======");
 print_r($result);
         if (is_array($result) && count($result)) {
 
-            list(,$result) = each($result);
+           $result = $result[0]; 
         }
 print_r("----------");
 print_r($result);
