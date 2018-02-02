@@ -10,7 +10,7 @@ class NDB_Menu_Filter_Test extends TestCase
      */
     function setUp() {
         global $_SESSION;
-        $this->Session = $this->getMock('stdClass', array('getProperty', 'setProperty'));
+        $this->Session = $this->getMockBuilder(stdClass::class)->setMethods(array('getProperty', 'setProperty'))->getMock(); 
 
         $_SESSION = array(
             'State' => $this->Session
