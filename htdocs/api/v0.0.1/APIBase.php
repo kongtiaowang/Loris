@@ -44,12 +44,12 @@ abstract class APIBase
      */
     function __construct($method)
     {  
-        session_start();
         if (empty($this->AllowedMethods)) {
             $this->AllowedMethods = ['GET'];
         }
         // Verify that method is allowed for this type of request.
         if (!in_array($method, $this->AllowedMethods)) {
+            session_start();
             $this->header("HTTP/1.1 405 Method Not Allowed");
             $this->header("Allow: " . join(", ", $this->AllowedMethods));
             $this->safeExit(0);
