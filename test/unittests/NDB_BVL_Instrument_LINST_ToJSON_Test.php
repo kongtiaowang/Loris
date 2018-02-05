@@ -20,7 +20,7 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
         }
         date_default_timezone_set("UTC");
         $this->Session = $this->getMockBuilder(stdClass::class)->setMethods(array('getProperty', 'setProperty', 'getUsername', 'isLoggedIn'))->getMock();
-        $this->MockSinglePointLogin = $this->getMockBuilder('SinglePointLogin');
+        $this->MockSinglePointLogin = $this->getMockBuilder('SinglePointLogin')->getMock();
         $this->Session->method("getProperty")->willReturn($this->MockSinglePointLogin);
 
         $_SESSION = array(
