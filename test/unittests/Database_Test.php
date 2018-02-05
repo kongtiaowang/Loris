@@ -12,7 +12,7 @@
  * @link     https://www.github.com/aces/Loris/
  */
 require_once __DIR__ . '/../../vendor/autoload.php';
-
+use PHPUnit\Framework\TestCase;
 class FakePDO extends PDO
 {
     public function __construct () {}
@@ -33,7 +33,7 @@ class FakeDatabase extends Database {
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class Database_Test extends PHPUnit_Framework_TestCase
+class Database_Test extends TestCase
 {
     function _getAllMethodsExcept($methods) {
         $AllMethods = get_class_methods('Database');

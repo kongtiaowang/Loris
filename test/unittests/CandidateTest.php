@@ -10,7 +10,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-
+use PHPUnit\Framework\TestCase;
 /**
  * Unit test for Candidate class
  *
@@ -20,7 +20,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class CandidateTest extends PHPUnit_Framework_TestCase
+class CandidateTest extends TestCase
 {
     /**
      * Candidate Information as available in the Candidate object
