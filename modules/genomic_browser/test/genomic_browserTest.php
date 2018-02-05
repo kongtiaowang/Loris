@@ -115,6 +115,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
              'Active'      => 'Y',
              'UserID'      => 1,
              'Entity_type' => 'Human',
+             'flagged_reason' => '92',
             )
         );
 
@@ -128,6 +129,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
              'Active'      => 'Y',
              'UserID'      => 1,
              'Entity_type' => 'Human',
+             'flagged_reason' => '92',
             )
         );
 
