@@ -1,8 +1,8 @@
 <?php
 require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../../php/libraries/NDB_Menu_Filter.class.inc';
-
-class NDB_Menu_Filter_Test extends PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+class NDB_Menu_Filter_Test extends TestCase
 {
     /**
      * Set up sets a fake $_SESSION object that we can use for
