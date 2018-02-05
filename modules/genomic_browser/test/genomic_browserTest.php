@@ -102,6 +102,10 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
      */
     public function insertData()
     {
+        $this->DB->insert("psc", array("CenterID" => 92));
+
+        $this->DB->insert("caveat_options", array("CenterID" => 92));
+
         $this->DB->insert(
             "candidate",
             array(
@@ -114,7 +118,6 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
             )
         );
 
-        $this->DB->insert("psc", array("CenterID" => 92));
 
         $this->DB->insert(
             "candidate",
