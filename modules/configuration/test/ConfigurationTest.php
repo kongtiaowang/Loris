@@ -188,6 +188,8 @@ class ConfigurationTest extends LorisIntegrationTest
             $this->_testSubprojectBreadcrumbs();
             $this->_testUseProjects();
 
+        } else {
+            $this->assertEquals(TRUE, 1);
         }
     }
     /**
