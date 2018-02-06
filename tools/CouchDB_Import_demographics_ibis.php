@@ -186,7 +186,7 @@ class CouchDBDemographicsImporter {
                                  COALESCE(ps.ndar_consent_withdrawal, '0000-00-00')          AS NDAR_consent_withdrawal, 
                                  COALESCE(ps.study_consent, 'yes')                           AS Study_consent, 
                                  COALESCE(ps.study_consent_withdrawal, '0000-00-00')         AS Study_consent_withdrawal, 
-                                 COALESCE(ps.air_consent, 'yes')                             AS Air_pollution_consent, 
+                                 ps.air_consent                                              AS Air_pollution_consent, 
                                  COALESCE(ps.air_consent_withdrawal, '0000-00-00')           AS Air_pollution_consent_withdrawal, 
                                  ps.mail_toothkit_consent                                    AS Mail_tooth_kit_consent, 
                                  COALESCE(ps.mail_toothkit_consent_withdrawal, '0000-00-00') AS Mail_tooth_kit_consent_withdrawal";
