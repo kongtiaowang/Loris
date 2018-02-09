@@ -6,8 +6,8 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__ . '/../../php/libraries/NDB_BVL_Instrument.class.inc';
 require_once 'Smarty_hook.class.inc';
 require_once 'NDB_Config.class.inc';
-
-class NDB_BVL_Instrument_ToJSON_Test extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+class NDB_BVL_Instrument_ToJSON_Test extends TestCase
 {
     /**
      * Set up sets a fake $_SESSION object that we can use for

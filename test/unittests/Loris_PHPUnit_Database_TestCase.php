@@ -22,8 +22,9 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
+use PHPUnit\Framework\TestCase;
 abstract class Loris_PHPUnit_Database_TestCase extends
-    PHPUnit_Extensions_Database_TestCase
+    TestCase
 {
 
     /**
