@@ -98,7 +98,7 @@ class NDB_BVL_FeedbackTest extends Loris_PHPUnit_Database_TestCase
         $this->assertEquals(
             6,
             $this->_feedbackObj->createFeedbackType(
-                'New Test Type',
+                'Name',
                 'Created from PHPUnit tests'
             )
         );
