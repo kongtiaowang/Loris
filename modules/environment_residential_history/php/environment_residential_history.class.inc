@@ -27,17 +27,7 @@ class environment_residential_history extends \NDB_Page
 {
     // Container variable for smarty
     var $tpl_data;
-
-    /**
-     * Create a new Module instance
-     */
-    public function __construct()
-    {
-        $factory  = \NDB_Factory::singleton();
-        $settings = $factory->settings();
-
-        $this->tpl_data['baseurl'] = $settings->getBaseURL();
-    }
+    
 
     /**
      * Determine whether the user has permission to view this page
