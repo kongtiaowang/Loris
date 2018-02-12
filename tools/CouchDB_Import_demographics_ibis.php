@@ -30,6 +30,10 @@ class CouchDBDemographicsImporter {
             'Description' => 'Cohort of this session',
             'Type' => 'varchar(255)'
         ),
+        'Risk' => array(
+            'Description' => 'Risk group of candidate',
+            'Type' => 'varchar(255)'
+        ),        
         'Gender' => array(
             'Description' => 'Candidate\'s gender',
             'Type' => "enum('Male', 'Female')"
@@ -146,8 +150,62 @@ class CouchDBDemographicsImporter {
 
     function _generateQuery() {
         $config = NDB_Config::singleton();
-        $fieldsInQuery = "SELECT c.DoB, c.CandID, c.PSCID, s.Visit_label, s.SubprojectID, p.Alias as Site, c.Gender, s.Current_stage, CASE WHEN s.Visit='Failure' THEN 'Failure' WHEN s.Screening='Failure' THEN 'Failure' WHEN s.Visit='Withdrawal' THEN 'Withdrawal' WHEN s.Screening='Withdrawal' THEN 'Withdrawal' ELSE 'Neither' END as Failure, c.ProjectID, c.flagged_caveatemptor as CEF, c.flagged_caveatemptor as CEF, c_o.Description as CEF_reason, c.flagged_other as CEF_comment, c.flagged_date as CEF_date, pc_comment.Value as Comment, COALESCE(pso.Description,'Active') as Status, ps.participant_suboptions as Status_reason, ps.reason_specify as Status_comments, COALESCE(ps.ndar_consent, 'yes') as NDAR_consent, COALESCE(ps.ndar_consent_withdrawal,'0000-00-00') AS NDAR_consent_withdrawal, COALESCE(ps.study_consent, 'yes') as Study_consent, COALESCE(ps.study_consent_withdrawal,'0000-00-00') AS Study_consent_withdrawal,COALESCE(ps.air_consent, 'yes') as Air_pollution_consent, COALESCE(ps.air_consent_withdrawal,'0000-00-00') AS Air_pollution_consent_withdrawal,ps.mail_toothkit_consent as Mail_tooth_kit_consent, COALESCE(ps.mail_toothkit_consent_withdrawal,'0000-00-00') AS Mail_tooth_kit_consent_withdrawal";
-        $tablesToJoin = " FROM session s JOIN candidate c USING (CandID) LEFT JOIN psc p ON (p.CenterID=s.CenterID) LEFT JOIN caveat_options c_o ON (c_o.ID=c.flagged_reason) LEFT JOIN parameter_candidate AS pc_comment ON (pc_comment.CandID=c.CandID) AND pc_comment.ParameterTypeID=(SELECT ParameterTypeID FROM parameter_type WHERE Name='candidate_comment') LEFT JOIN participant_status ps ON (ps.CandID=c.CandID) LEFT JOIN participant_status_options pso ON (pso.ID=ps.participant_status)";
+        $fieldsInQuery = "SELECT c.DoB, 
+                                 c.candid                                                    AS CandID,
+                                 c.pscid                                                     AS PSCID,
+                                 s.visit_label                                               AS Visit_label,
+                                 s.subprojectid                                              AS SubprojectID,
+                                 CASE 
+                                   WHEN s.subprojectid = 1 THEN 'HR' 
+                                   WHEN s.subprojectid = 2 THEN 'HR' 
+                                   WHEN s.subprojectid = 3 THEN 'LR' 
+                                   WHEN s.subprojectid = 9 THEN 'HR' 
+                                   WHEN s.subprojectid = 10 THEN 'LR' 
+                                 END                                                         AS Risk, 
+                                 p.alias                                                     AS Site, 
+                                 c.Gender, 
+                                 s.Current_stage, 
+                                 CASE 
+                                   WHEN s.visit = 'Failure' THEN 'Failure' 
+                                   WHEN s.screening = 'Failure' THEN 'Failure' 
+                                   WHEN s.visit = 'Withdrawal' THEN 'Withdrawal' 
+                                   WHEN s.screening = 'Withdrawal' THEN 'Withdrawal' 
+                                   ELSE 'Neither' 
+                                 END                                                         AS Failure, 
+                                 c.ProjectID, 
+                                 c.flagged_caveatemptor                                      AS CEF, 
+                                 c.flagged_caveatemptor                                      AS CEF, 
+                                 c_o.description                                             AS CEF_reason, 
+                                 c.flagged_other                                             AS CEF_comment, 
+                                 c.flagged_date                                              AS CEF_date, 
+                                 pc_comment.value                                            AS Comment, 
+                                 COALESCE(pso.description, 'Active')                         AS Status, 
+                                 ps.participant_suboptions                                   AS Status_reason, 
+                                 ps.reason_specify                                           AS Status_comments, 
+                                 COALESCE(ps.ndar_consent, 'yes')                            AS NDAR_consent, 
+                                 COALESCE(ps.ndar_consent_withdrawal, '0000-00-00')          AS NDAR_consent_withdrawal, 
+                                 COALESCE(ps.study_consent, 'yes')                           AS Study_consent, 
+                                 COALESCE(ps.study_consent_withdrawal, '0000-00-00')         AS Study_consent_withdrawal, 
+                                 ps.air_consent                                              AS Air_pollution_consent, 
+                                 COALESCE(ps.air_consent_withdrawal, '0000-00-00')           AS Air_pollution_consent_withdrawal, 
+                                 ps.mail_toothkit_consent                                    AS Mail_tooth_kit_consent, 
+                                 COALESCE(ps.mail_toothkit_consent_withdrawal, '0000-00-00') AS Mail_tooth_kit_consent_withdrawal";
+        $tablesToJoin = " FROM   session s 
+                                 JOIN candidate c using (candid) 
+                                 LEFT JOIN psc p 
+                                        ON ( p.centerid = s.centerid ) 
+                                 LEFT JOIN caveat_options c_o 
+                                        ON ( c_o.id = c.flagged_reason ) 
+                                 LEFT JOIN parameter_candidate AS pc_comment 
+                                        ON ( pc_comment.candid = c.candid ) 
+                                           AND pc_comment.parametertypeid = (SELECT parametertypeid 
+                                                                             FROM   parameter_type 
+                                                                             WHERE  NAME = 'candidate_comment') 
+                                 LEFT JOIN participant_status ps 
+                                        ON ( ps.candid = c.candid ) 
+                                 LEFT JOIN participant_status_options pso 
+              ON ( pso.id = ps.participant_status )";
+
         // If proband fields are being used, add proband information into the query
         if ($config->getSetting("useProband") === "true") {
             $probandFields = ", c.ProbandGender as Gender_proband, ROUND(DATEDIFF(c.DoB, c.ProbandDoB) / (365/12)) AS Age_difference";

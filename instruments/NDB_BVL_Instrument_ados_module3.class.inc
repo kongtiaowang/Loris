@@ -358,10 +358,6 @@ class NDB_BVL_Instrument_ados_module3 extends NDB_BVL_Instrument_IBIS
     	$record = array();
     	$db->selectRow($query, $record);
 
-        // CSS Calculations
-        $scoreCols["ADOS_SA_CSS"]  = $this->ADOS_SA_CSS( $this->table, $record['a1'], $record['social_affect_total']);
-        $scoreCols["ADOS_RRB_CSS"] = $this->ADOS_RRB_CSS($this->table, $record['a1'], $record['restricted_repetitive_behavior_total']); 
-
         // Get the subject age in months for scoring
         $timepoint =& TimePoint::singleton($this->getSessionID());
         $dob = $timepoint->getEffectiveDateOfBirth();
@@ -453,6 +449,10 @@ class NDB_BVL_Instrument_ados_module3 extends NDB_BVL_Instrument_IBIS
         $scoreCols['d1_weighted'] = $scores['d1'] * 0.43; // Unusual Sensory Interest 
         $scoreCols['d4_weighted'] = $scores['d4'] * 0.54; // Highly specific topics
         $scoreCols['d2_weighted'] = $scores['d2'] * 0.57; // Hand Mannerisms
+
+        // CSS Calculations
+        $scoreCols["ADOS_SA_CSS"]  = $this->ADOS_SA_CSS( $this->table, $record['a1'], $scoreCols['social_affect_total']);
+        $scoreCols["ADOS_RRB_CSS"] = $this->ADOS_RRB_CSS($this->table, $record['a1'], $scoreCols['restricted_repetitive_behavior_total']);
 
         // save scores to database
 

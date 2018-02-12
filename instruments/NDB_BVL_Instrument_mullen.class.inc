@@ -730,10 +730,12 @@ class NDB_BVL_Instrument_mullen extends NDB_BVL_Instrument
         15=>"18-20 mo.",
         18=>"21-26 mo.",
         22=>"27+ mo.");
-
-        $this->form->addElement("header", null, "Note: Basal level refers to the FIRST of the three questions used to determine the basal level.<br>" .
-                                                "Note: Ceiling level refers to the LAST of the three questions used to determine the ceiling level.");
-
+        $this->form->addElement('static','lorisSubHeader',"<b>*Notes:</b><br>
+Basal level refers to the FIRST of the three consecutive questions scored 1 or more.<br>
+Ceiling level refers to the LAST of the three consecutive questions scored 0<br>
+Anything below the basal level will be considered/scored with the maximum points for that question<br>
+Anything above the ceiling level will be considered/scored as 0<br><br>
+");
         $this->form->addElement("select", "gross_motor_basal", $this->indent . "Select basal level:", array(null => null) +  array_combine(range(1,35), range(1,35)));
         $this->form->addElement("select", "gross_motor_ceiling", $this->indent . "Select ceiling level:", array(null => null) + array_combine(range(35,1), range(35,1)));
         if($this->localDefaults['age_months'] <= 33){
@@ -834,8 +836,12 @@ class NDB_BVL_Instrument_mullen extends NDB_BVL_Instrument
         25=>"45+ mo.");
 
 
-      $this->form->addElement("header", null, "Note: Basal level refers to the FIRST of the three questions used to determine the basal level.<br>" .
-                                              "Note: Ceiling level refers to the LAST of the three questions used to determine the ceiling level.");
+        $this->form->addElement('static','lorisSubHeader',"<b>*Notes:</b><br>
+Basal level refers to the FIRST of the three consecutive questions scored 1 or more.<br>
+Ceiling level refers to the LAST of the three consecutive questions scored 0<br>
+Anything below the basal level will be considered/scored with the maximum points for that question<br>
+Anything above the ceiling level will be considered/scored as 0<br><br>
+");
         $this->form->addElement("select", "visual_recept_basal", $this->indent . "Select basal level:", array(null => null) + array_combine(range(1,33), range(1,33)));
         $this->form->addElement("select", "visual_recept_ceiling", $this->indent . "Select ceiling level:", array(null => null) + array_combine(range(33,1), range(33,1)));
        $this->form->addRule("visual_recept_basal", 'Basal level must be set', 'required');
@@ -917,8 +923,12 @@ class NDB_BVL_Instrument_mullen extends NDB_BVL_Instrument
         16=>"30-44 mo.",
         21=>"45+ mo.");
 
-      $this->form->addElement("header", null, "Note: Basal level refers to the FIRST of the three questions used to determine the basal level.<br>" .
-                                              "Note: Ceiling level refers to the LAST of the three questions used to determine the ceiling level.");
+        $this->form->addElement('static','lorisSubHeader',"<b>*Notes:</b><br>
+Basal level refers to the FIRST of the three consecutive questions scored 1 or more.<br>
+Ceiling level refers to the LAST of the three consecutive questions scored 0<br>
+Anything below the basal level will be considered/scored with the maximum points for that question<br>
+Anything above the ceiling level will be considered/scored as 0<br><br>
+");
         $this->form->addElement("select", "fine_motor_basal", $this->indent . "Select basal level:", array(null => null) + array_combine(range(1,30), range(1,30)));
         $this->form->addElement("select", "fine_motor_ceiling", $this->indent . "Select ceiling level:", array(null => null) + array_combine(range(30,1), range(30,1)));
         $this->form->addRule("fine_motor_basal", 'Basal level must be set', 'required');
@@ -1004,9 +1014,12 @@ class NDB_BVL_Instrument_mullen extends NDB_BVL_Instrument
         18=>"23-32 mo.",
         22=>"33-44 mo.",
         25=>"45+ mo.");
-
-      $this->form->addElement("header", null, "Note: Basal level refers to the FIRST of the three questions used to determine the basal level.<br>" .
-                                              "Note: Ceiling level refers to the LAST of the three questions used to determine the ceiling level.");
+        $this->form->addElement('static','lorisSubHeader',"<b>*Notes:</b><br>
+Basal level refers to the FIRST of the three consecutive questions scored 1 or more.<br>
+Ceiling level refers to the LAST of the three consecutive questions scored 0<br>
+Anything below the basal level will be considered/scored with the maximum points for that question<br>
+Anything above the ceiling level will be considered/scored as 0<br><br>
+");
         $this->form->addElement("select", "receptive_lang_basal", $this->indent . "Select basal level:", array(null => null) + array_combine(range(1,33), range(1,33)));
         $this->form->addElement("select", "receptive_lang_ceiling", $this->indent . "Select ceiling level:", array(null => null) + array_combine(range(33,1), range(33,1)));
         $this->form->addRule("receptive_lang_basal", 'Basal level must be set', 'required');
@@ -1087,8 +1100,12 @@ class NDB_BVL_Instrument_mullen extends NDB_BVL_Instrument
         19=>"33-44 mo.",
         22=>"45+ mo.");
 
-        $this->form->addElement("header", null, "Note: Basal level refers to the FIRST of the three questions used to determine the basal level.<br>" .
-                                                "Note: Ceiling level refers to the LAST of the three questions used to determine the ceiling level.");
+        $this->form->addElement('static','lorisSubHeader',"<b>*Notes:</b><br>
+Basal level refers to the FIRST of the three consecutive questions scored 1 or more.<br>
+Ceiling level refers to the LAST of the three consecutive questions scored 0<br>
+Anything below the basal level will be considered/scored with the maximum points for that question<br>
+Anything above the ceiling level will be considered/scored as 0<br><br>
+");
         $this->form->addElement("select", "expressive_lang_basal", $this->indent . "Select basal level:", array(null => null) + array_combine(range(1,28), range(1,28)));
         $this->form->addElement("select", "expressive_lang_ceiling", $this->indent . "Select ceiling level:", array(null => null) + array_combine(range(28,1), range(28,1)));
         $this->form->addRule("expressive_lang_basal", 'Basal level must be set', 'required');
@@ -1234,8 +1251,6 @@ class NDB_BVL_Instrument_mullen extends NDB_BVL_Instrument
         $eng_scale_name = $scale_name_english[$scale];
 
         if(empty($score_record[$scale_name . '_' . "basal"]) || empty($score_record[$scale_name . '_' . "ceiling"])){
-           echo'Basal and Ceiling Levels for ' .$eng_scale_name . ' must be set to be scored.';
-           echo "\n";
            return null;
         }
 
@@ -1553,21 +1568,97 @@ class NDB_BVL_Instrument_mullen extends NDB_BVL_Instrument
      }
 
     function mullen_Rules($values) {
-        $scale_names = array('gross_motor', 'visual_recept', 'fine_motor', 'receptive_lang', 'expressive_lang');
-        $errors = array();
-        foreach ($scale_names as $scale_name) {
-            $basal = $values[$scale_name . '_' . "basal"];
-            $ceiling = $values[$scale_name . '_' . "ceiling"];
-            if ($basal != null && $ceiling != null) {
-                for ($i = $basal; $i <= $ceiling; $i++) {
-                    $question = $scale_name . '_' . $i;
-                    $answer = $values[$question];
-                    if ($answer == 'not_answered') {
-                        $errors[$question] = "All items between the basal and ceiling level need to be entered";
-                    }
+         $subtest=$values['subtest'];
+         switch($subtest){
+             case "mullen_page1":
+             {
+                 $scale_name='gross_motor';
+                 $count=35;
+                  break;
+             }
+             case "mullen_page2":
+             {
+                 $scale_name='visual_recept';
+                 $count=33;
+                 break;
+             }
+             case "mullen_page3":
+             {
+                 $scale_name='fine_motor';
+                 $count=30;
+                 break;
+             }
+             case "mullen_page4":
+             {
+                 $scale_name='receptive_lang';
+                 $count=33;
+                 break;
+             }
+             default:
+             {
+                 $scale_name='expressive_lang';
+                 $count=28;
+             }
+         }
+            $basal_found=0;
+            $ceiling_found=0;
+            //Basal is the first of the first series of 3 consecutive scores of 1 or more(ie,consecutive things without any 0,null or not_answered).
+            for($j=1;$j<=$count;$j++) {
+                $basal_array=array();
+                array_push($basal_array, $values[$scale_name . '_' . $j], $values[$scale_name . '_' . ($j + 1)], $values[$scale_name . '_' . ($j + 2)]);
+                //if array doesn't contain any 0, null or not_answered, then we can obtain basal level.
+                //the below logic performs that.
+                if(!array_intersect($basal_array, array('', 'not_answered', 0)))
+                {
+                    $basal_found=$j;
+                    break;
+                }
+                else{
+                    $basal_found=1;
                 }
             }
-        }
+            //Ceiling is the last of the last series of 3 consecutive scores of 0
+            for($k=$count;$k>=$basal_found;$k--) {
+                $ceiling_array=array();
+                array_push($ceiling_array, $values[$scale_name . '_' . $k], $values[$scale_name . '_' . ($k - 1)], $values[$scale_name . '_' . ($k - 2)]);
+                $ceiling_counts = array_count_values($ceiling_array);
+                if($ceiling_counts[0]==3)
+                {
+                    $ceiling_found=$k;
+                    break;
+                }
+                else{
+                    $ceiling_found=$count;
+                }
+            }
+            $basal = $values[$scale_name . '_basal'];
+            $ceiling = $values[$scale_name . '_ceiling'];
+
+
+            if ($basal != null && $ceiling != null)
+            {
+                    for ($i = $basal; $i <= $ceiling; $i++) {
+                        $question = $scale_name . '_' . $i;
+                        $answer = $values[$question];
+                        if ($answer == null || $answer == "") {
+                            $errors[$question] = "All items between the basal and ceiling level need to be entered";
+                        }
+                        else{
+
+                            if($basal_found!=$basal)
+                            {
+                                $errors[$scale_name . '_basal'] = "Basal level mismatch! Data entry suggested basal level is $basal_found. Please verify and try again.";
+                            }
+
+                            if($ceiling_found!=$ceiling)
+                            {
+                                $errors[$scale_name . '_ceiling'] = "Ceiling level mismatch! Data entry suggested ceiling level is $ceiling_found. Please verify and try again.";
+                            }
+
+                        }
+                    }
+
+            }
         return $errors;
     }
 

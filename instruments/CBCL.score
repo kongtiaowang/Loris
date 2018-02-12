@@ -143,13 +143,15 @@ $lookup_fields = array('internal'=>'Internal','external'=>'External',
 $non_percent = array( 'internal','external','total');
 foreach ($lookup_fields as $key=>$value) {
     $score_field_query = $key."_raw";
-    $query_score       = "SELECT T, Percentile from CBCL_lookup WHERE Raw = :raw_score 
+    $query_score       = "SELECT T, Percentile, Score_Interpretation from CBCL_lookup WHERE Raw = :raw_score 
                              AND Type = :criteria";
     $where             = array ('raw_score'=>$scores[$score_field_query],
                                    'criteria'=>$value);
     $score_field       = $key."_t";
+    $score_field       = $key."_si";
     $tscore            = $db->pselectRow($query_score, $where);
     $scores[$score_field] = $tscore['T'];
+    $scores[$score_field] = $tscore['Score_Interpretation'];
     if (! in_array($key, $non_percent)){
         $score_field = $key."_percentile";
         $scores[$score_field] = $tscore['Percentile'];

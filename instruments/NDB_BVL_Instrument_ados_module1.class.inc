@@ -378,10 +378,6 @@ class NDB_BVL_Instrument_ados_module1 extends NDB_BVL_Instrument_IBIS
     	$record = array();
     	$db->selectRow($query, $record);
 
-        // CSS Calculations
-        $scoreCols["ADOS_SA_CSS"]  = $this->ADOS_SA_CSS( $this->table, $record['a1'], $record['social_affect_total']);
-        $scoreCols["ADOS_RRB_CSS"] = $this->ADOS_RRB_CSS($this->table, $record['a1'], $record['restricted_repetitive_behavior_total']);
-
         //Convert the entered scores to countable scores:
         //"Convert scores of 3 on the protocol to 2, and treat all other scores other than 0-3 as 0."
         $scores = array(); //holds converted scores
@@ -490,6 +486,9 @@ class NDB_BVL_Instrument_ados_module1 extends NDB_BVL_Instrument_IBIS
             }
 
 	    }
+        // CSS Calculations
+        $scoreCols["ADOS_SA_CSS"]  = $this->ADOS_SA_CSS( $this->table, $record['a1'], $scoreCols['social_affect_total']);
+        $scoreCols["ADOS_RRB_CSS"] = $this->ADOS_RRB_CSS($this->table, $record['a1'], $scoreCols['restricted_repetitive_behavior_total']);
 
         // save scores to database
  	    $result = $db->update($this->table, $scoreCols, array("CommentID"=>$this->getCommentID()));

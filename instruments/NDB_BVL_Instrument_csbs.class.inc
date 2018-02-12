@@ -375,31 +375,41 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
 		
         //get the saved scores
     	$db =& Database::singleton();
-  	
-	
-    	$query = "SELECT * FROM $this->table WHERE CommentID = '$this->commentID'";
-    	$record = array();
-    	$db->selectRow($query, $record);
-       $scores['score_validity'] = "";	
+        $query = "SELECT * FROM $this->table WHERE CommentID = '$this->commentID'";
+        $record = $db->pselectRow($query, array());
+       $scores['score_validity'] = null;
        // Get the subject age in months for scoring
         $timepoint =& TimePoint::singleton($this->getSessionID());
         $dob = $timepoint->getEffectiveDateOfBirth();
         
 		$age = Utility::calculateAge($dob, $record["Date_taken"]);
-       		$age_months = $age['year'] * 12 + $age['mon'] + ($age['day']/30);
+        $age_months = $age['year'] * 12 + $age['mon'] + ($age['day']/30);
+     //between 11.75 and 12
+	if ($age_months >= 11.75 && $age_months <= 12)
+    {
+        $age_months = 12;
+    }
+    //between 12 and 24.75
+    elseif ($age_months >12 && $age_months <= 24.75)
+    {
+        $age_months = 24;
+    }
+    //between 24.75 and 36
+    elseif ($age_months > 24.75 && $age_months <= 36)
+    {
+        $age_months = 36;
+    }
 
-	if ($age_months >= 11.75 && $age_months < 12)
-		$age_months = 12;
-		
-	elseif ($age_months <= 24.75 && $age_months > 24)
-		$age_months = 24;
-
-	elseif ($age_months > 24.75) {
-		$age_months = 24;
-        $scores['score_validity'] = "<span class=\"error\">CANDIDATE'S AGE IS OUT OF RANGE. STANDARD SCORES ARE INVALID.</span>";
+    else if($age_months>36)
+    {
+        $scores['score_validity'] ="Age not valid for scoring";
     }
     $age_months = round($age_months);
-
+        if($scores['score_validity']!=null) {
+            echo "Age not valid for the scoring. Please correct the age and try again. Don't worry, your data will be saved";
+            echo "\n";
+            return;
+        }
 
   	//calculate raw scores
         $scores["q_1_gaze_shifts_raw_score"] = $this->_countChecked($record, "q_1_gaze_shifts_");
@@ -449,7 +459,7 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
         // Otherwise, score is: best 3 objects*3 + best 2 persons * 3 + best 3 body * 3
         $q_16_BestObject = null;
         $q_16_BestPerson = null;
-        $q_16_BestBody = null;
+        $q_16_BestBody = null; 
 
         if( ($record["q_16_language_comp_objects_1"] === "0" || $record["q_16_language_comp_objects_1"] === 0) &&
             ($record["q_16_language_comp_objects_2"] === "0" || $record["q_16_language_comp_objects_2"] === 0) ) {
@@ -533,8 +543,7 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
 
 	//establish standard scores and percentile rank for Emotion Eye Gaze
 	$query_scores1 = "SELECT * FROM csbs_lookup WHERE age_months=".$age_months. " AND score_weighted=".$scores['emotion_eye_gaze_weighted']." AND subscale='emotion_eye_gaze_weighted'";
-    	$record_1 = array();
-	$db->selectRow($query_scores1, $record_1);
+	$record_1 = $db->pselectRow($query_scores1, array());
 	if (array_key_exists('score_standard',$record_1)) {
 	    $scores['emotion_eye_gaze_standard']=($record_1['score_standard']);
 	}
@@ -543,8 +552,7 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
   }
 
 	$query_scores2 = "SELECT * FROM csbs_lookup WHERE age_months=".$age_months. " AND score_weighted=".$scores['communication_weighted']." AND subscale='communication_weighted'";
-    	$record_2 = array();
-	$db->selectRow($query_scores2, $record_2);
+	$record_2 = $db->pselectRow($query_scores2, array());
 	if (array_key_exists('score_standard',$record_2)) {
 	    $scores['communication_standard']=($record_2['score_standard']);
 	}
@@ -553,8 +561,7 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
   }
 
 	$query_scores3 = "SELECT * FROM csbs_lookup WHERE age_months=".$age_months. " AND score_weighted=".$scores['gestures_weighted']." AND subscale='gestures_weighted'";
-    	$record_3 = array();
-	$db->selectRow($query_scores3, $record_3);
+	$record_3= $db->pselectRow($query_scores3, array());
 	if (array_key_exists('score_standard',$record_3)) {
 	    $scores['gestures_standard']=($record_3['score_standard']);
 	}
@@ -563,8 +570,7 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
   }
 
 	$query_scores4 = "SELECT * FROM csbs_lookup WHERE age_months=".$age_months. " AND score_weighted=".$scores['sounds_weighted']." AND subscale='sounds_weighted'";
-    	$record_4 = array();
-	$db->selectRow($query_scores4, $record_4);
+	$record_4 = $db->pselectRow($query_scores4, array());
 	if (array_key_exists('score_standard',$record_4)) {
 	    $scores['sounds_standard']=($record_4['score_standard']);
 	}
@@ -573,8 +579,7 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
   }
 
 	$query_scores5 = "SELECT * FROM csbs_lookup WHERE age_months=".$age_months. " AND score_weighted=".$scores['words_weighted']." AND subscale='words_weighted'";
-    	$record_5 = array();
-	$db->selectRow($query_scores5, $record_5);
+	$record_5 = $db->pselectRow($query_scores5, array());
 	if (array_key_exists('score_standard',$record_5)) {
 	    $scores['words_standard']=($record_5['score_standard']);
 	}
@@ -585,8 +590,7 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
 
     if($scores['understanding_weighted'] !== "Unable to score") {
         $query_scores6 = "SELECT * FROM csbs_lookup WHERE age_months=".$age_months. " AND score_weighted=".$scores['understanding_weighted']." AND subscale='understanding_weighted'";
-        $record_6 = array();
-        $db->selectRow($query_scores6, $record_6);
+        $record_6 = $db->pselectRow($query_scores6, array());
         if (array_key_exists('score_standard',$record_6)) {
             $scores['understanding_standard']=($record_6['score_standard']);
         }
@@ -601,8 +605,7 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
 
 
 	$query_scores7 = "SELECT * FROM csbs_lookup WHERE age_months=".$age_months. " AND score_weighted=".$scores['object_use_weighted']." AND subscale='object_use_weighted'";
-    	$record_7 = array();
-	$db->selectRow($query_scores7, $record_7);
+	$record_7 = $db->pselectRow($query_scores7, array());
 	if (array_key_exists('score_standard',$record_7)) {
 	    $scores['object_use_standard']=($record_7['score_standard']);
 	}
@@ -611,8 +614,7 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
   }
 
 	$query_scores8 = "SELECT * FROM csbs_lookup WHERE age_months=".$age_months. " AND score_weighted=".$scores['social_composite_score']." AND subscale='social_composite_score'";
-    	$record_8 = array();
-	$db->selectRow($query_scores8, $record_8);
+	$record_8 = $db->pselectRow($query_scores8, array());
 	if (array_key_exists('score_standard',$record_8)) {
       $scores['social_composite_standard']=($record_8['score_standard']);
 	}
@@ -622,8 +624,7 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
 
 
 	$query_scores9 = "SELECT * FROM csbs_lookup WHERE age_months=".$age_months. " AND score_weighted=".$scores['speech_composite_score']." AND subscale='speech_composite_score'";
-    	$record_9 = array();
-	$db->selectRow($query_scores9, $record_9);
+	$record_9 = $db->pselectRow($query_scores9, array());
 	if (array_key_exists('score_standard',$record_9)) {
 	    $scores['speech_composite_standard']=($record_9['score_standard']);
 	}
@@ -633,8 +634,7 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
 
 
 	$query_scores10 = "SELECT * FROM csbs_lookup WHERE age_months=".$age_months. " AND score_weighted=".$scores['symbolic_composite_score']." AND subscale='symbolic_composite_score'";
-    	$record_10 = array();
-	$db->selectRow($query_scores10, $record_10);
+	$record_10= $db->pselectRow($query_scores10, array());
 	if (array_key_exists('score_standard',$record_10)) {
 	    $scores['symbolic_composite_standard']=($record_10['score_standard']);
 	}
@@ -644,8 +644,7 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
 
 
 	$query_scores11 = "SELECT * FROM csbs_lookup WHERE age_months=".$age_months. " AND score_weighted=".$scores['total_weighted_raw_score']." AND subscale='total_weighted_raw_score'";
-    	$record_11 = array();
-	$db->selectRow($query_scores11, $record_11);
+	$record_11 = $db->pselectRow($query_scores11, array());
 	if (array_key_exists('score_standard',$record_11)) {
 	    $scores['total_standard']=($record_11['score_standard']);
 	}
@@ -1011,26 +1010,23 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
 
         $this->form->addGroup($group, "q_17_action_schemes_group_1", "17. Inventory of action schemes", $this->_GUIDelimiter, false);
         unset($group);
-        $group[] = &$this->form->createElement("advcheckbox", "q_17_action_schemes_kisses", null, "kisses(6)", null, array("unchecked", "checked"));
-        $group[] = &$this->form->createElement("advcheckbox", "q_17_action_schemes_feeds_with_utensil", null, "feeds with utensil(7)", null, array("unchecked", "checked"));
-        $group[] = &$this->form->createElement("advcheckbox", "q_17_action_schemes_feeds_with_bowl", null, "feeds with bowl(8)", null, array("unchecked", "checked"));
-        $group[] = &$this->form->createElement("advcheckbox", "q_17_action_schemes_stirs", null, "stirs(9)", null, array("unchecked", "checked"));
-        $group[] = &$this->form->createElement("advcheckbox", "q_17_action_schemes_scoops", null, "scoops(10)", null, array("unchecked", "checked"));
-
-        $this->form->addGroup($group, "q_17_action_schemes_group_2", null, $this->_GUIDelimiter, false);
-        unset($group);
-        //$group[] = &$this->form->createElement("static", null, null);
-        $group[] = &$this->form->createElement("advcheckbox", "q_17_action_schemes_pours", null, "pours(11)", null, array("unchecked", "checked"));
-        $group[] = &$this->form->createElement("advcheckbox", "q_17_action_schemes_other", null, "other(12)", null, array("unchecked", "checked"));
+        $this->form->addElement("header", null, "");
+        $group[] = &$this->form->createElement("advcheckbox", "q_17_action_schemes_kisses", null, "<b>kisses(6)</b>", null, array("unchecked", "checked"));
+        $group[] = &$this->form->createElement("advcheckbox", "q_17_action_schemes_feeds_with_utensil", null, "<b>feeds with utensil(7)</b>", null, array("unchecked", "checked"));
+        $group[] = &$this->form->createElement("advcheckbox", "q_17_action_schemes_feeds_with_bowl", null, "<b>feeds with bowl(8)</b>", null, array("unchecked", "checked"));
+        $group[] = &$this->form->createElement("advcheckbox", "q_17_action_schemes_stirs", null, "<b>stirs(9)</b>", null, array("unchecked", "checked"));
+        $group[] = &$this->form->createElement("advcheckbox", "q_17_action_schemes_scoops", null, "<b>scoops(10)</b>", null, array("unchecked", "checked"));
+        $group[] = &$this->form->createElement("advcheckbox", "q_17_action_schemes_pours", null, "<b>pours(11)</b>", null, array("unchecked", "checked"));
+        $group[] = &$this->form->createElement("advcheckbox", "q_17_action_schemes_other", null, "<b>other(12)</b>", null, array("unchecked", "checked"));
         $group[] = &$this->form->createElement("text", "q_17_action_schemes_other_specify");
-        $group[] =& $this->form->createElement("advcheckbox", "q_17_action_schemes_none", null, "none", null, array("unchecked", "checked"));
+        $group[] =& $this->form->createElement("advcheckbox", "q_17_action_schemes_none", null, "<b>none</b>", null, array("unchecked", "checked"));
         $group[] =& $this->form->createElement("static", null, null, null);
         $group[] =& $this->form->createElement("static", null, null, null);
-        $this->form->addGroup($group, null, null, $this->_GUIDelimiter, false);
+
+        $this->form->addGroup($group, "q_17_action_schemes_group_2", "", $this->_GUIDelimiter, false);
         unset($group);
 
         $this->XINRegisterRule("q_17_action_schemes_other_specify", array("q_17_action_schemes_other{@}=={@}checked"), "Must specify other", "q_17_action_schemes_group_2");
-        $this->form->addGroup($group, "q_17_action_schemes_group_2", null, $this->_GUIDelimiter, false);
         $this->form->addElement('static', '', '<br />');
         $this->form->addElement("static","q_17_action_schemes_raw_score","Object Use Raw Score:" );
         unset($group);

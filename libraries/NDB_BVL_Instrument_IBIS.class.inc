@@ -29,8 +29,8 @@ class NDB_BVL_Instrument_IBIS extends NDB_BVL_Instrument
             elseif ( $ados_a1 == 1 ) { $ADOS_mod = "Module1somewords"; }
             elseif ( $ados_a1 == 2 ) { $ADOS_mod = "Module1somewords"; }
             elseif ( $ados_a1 == 3 ) { $ADOS_mod = "Module1nowords"; }
-            elseif ( $ados_a1 == 4 and $ADOS_Version == "ados_module1" ) { $ADOS_mod = "Module1nowords"; }
-            elseif ( $ados_a1 == 8 and $ADOS_Version == "ados2_module1" ) { $ADOS_mod = "Module1nowords"; }
+            elseif ( $ados_a1 == 8 and $ADOS_Version == "ados_module1" ) { $ADOS_mod = "Module1nowords"; }
+            elseif ( $ados_a1 == 4 and $ADOS_Version == "ados2_module1" ) { $ADOS_mod = "Module1nowords"; }
         }
 
         if ( $ADOS_Version == "ados_module2" ) { $ADOS_mod = "Module2"; }
@@ -84,8 +84,8 @@ class NDB_BVL_Instrument_IBIS extends NDB_BVL_Instrument
             elseif ( $ados_a1 == 1 ) { $ADOS_mod = "Module1somewords"; }
             elseif ( $ados_a1 == 2 ) { $ADOS_mod = "Module1somewords"; }
             elseif ( $ados_a1 == 3 ) { $ADOS_mod = "Module1nowords"; }
-            elseif ( $ados_a1 == 4 and $ADOS_Version == "ados_module1" ) { $ADOS_mod = "Module1nowords"; }
-            elseif ( $ados_a1 == 8 and $ADOS_Version == "ados2_module1" ) { $ADOS_mod = "Module1nowords"; }
+            elseif ( $ados_a1 == 8 and $ADOS_Version == "ados_module1" ) { $ADOS_mod = "Module1nowords"; }
+            elseif ( $ados_a1 == 4 and $ADOS_Version == "ados2_module1" ) { $ADOS_mod = "Module1nowords"; }
         }
 
         if ( $ADOS_Version == "ados_module2" ) { $ADOS_mod = "Module2"; }

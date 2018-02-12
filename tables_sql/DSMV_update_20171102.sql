@@ -1,0 +1,2 @@
+ALTER TABLE DSMV_checklist ADD COLUMN `e_not_intellectual_disability_global_development` enum('yes','no','not_applicable') default NULL;
+ALTER TABLE DSMV_checklist ADD COLUMN  `qa4_difficulties_not_explicitly_stated` enum('yes','no','not_applicable') default NULL;
