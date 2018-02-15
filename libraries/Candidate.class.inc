@@ -640,7 +640,22 @@ class Candidate
 
         return false;
 
-    }   
+    }
+    static function getParticipantStatusOptions()
+    {
+        $DB           =& Database::singleton();
+        $options      = $DB->pselect(
+            "SELECT ID,Description
+            FROM participant_status_options
+            WHERE parentID IS NULL",
+            array()
+        );
+        $option_array = array();
+        foreach ($options as $option) {
+            $option_array[$option['ID']] = $option['Description'];
+        }
+        return $option_array;
+    }
 
 }
 ?>
