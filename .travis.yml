@@ -6,8 +6,12 @@ cache:
 
 php:
     - "7.0"
+      - FOO=foo BAR=bar
     - "7.1"
-
+      - FOO=foo BAR=bar
+rvm:
+  - 1.9.3
+  - rbx-3
 
 sudo: false
 
@@ -25,7 +29,7 @@ before_install:
     - nvm install node
     - mkdir -p project project/libraries
     - phpenv config-rm xdebug.ini
-
+    - FOO
 install:
     # Install composer modules
     - composer install
