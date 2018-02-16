@@ -90,7 +90,7 @@ before_script:
  # - "LORIS_DB_CONFIG=test/config.xml"
 
 script:
-    - if [ ${TRAVIS_PHP_VERSION:0:3} == "7.0" ]; then php -S localhost:8000 -t htdocs router.php 2>1 > /dev/null ;npm run lint:php && npm run lint:javascript && vendor/bin/phpunit --configuration test/phpunit.xml;  fi
-    - if [ ${TRAVIS_PHP_VERSION:0:3} == "7.1" ]; then php -S localhost:8000 -t htdocs/router.php 2>1 > /dev/null ;npm run lint:php && npm run lint:javascript && vendor/bin/phpunit --configuration test/phpunit.xml; fi
+    - php -S localhost:8000 -t htdocs/router.php 2>1 > /dev/null 
+    - npm run lint:php && npm run lint:javascript && vendor/bin/phpunit --configuration test/phpunit.xml
 
 dist: precise
