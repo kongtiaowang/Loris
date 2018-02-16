@@ -35,8 +35,6 @@ install:
 
     # Download a Selenium Web Driver release
     - wget "http://selenium-release.storage.googleapis.com/2.52/selenium-server-standalone-2.52.0.jar"
-    - if [ ${TRAVIS_PHP_VERSION:0:3} == "7.0" ]; then php -S localhost:8000 -t htdocs router.php 2>1 > /dev/null ; fi    
-    - if [ ${TRAVIS_PHP_VERSION:0:3} == "7.1" ]; then php -S localhost:8000 -t htdocs/router.php 2>1 > /dev/null ; fi
     # Extracting firefox and setting PATH variable...
     - tar -xjf /tmp/firefox-44.0.tar.bz2 --directory /tmp
     - export PATH="/tmp/firefox:$PATH"
@@ -92,7 +90,7 @@ before_script:
  # - "LORIS_DB_CONFIG=test/config.xml"
 
 script:
-
-    - npm run lint:php && npm run lint:javascript && vendor/bin/phpunit --configuration test/phpunit.xml
+    - if [ ${TRAVIS_PHP_VERSION:0:3} == "7.0" ]; then php -S localhost:8000 -t htdocs router.php 2>1 > /dev/null ;npm run lint:php && npm run lint:javascript && vendor/bin/phpunit --configuration test/phpunit.xml;  fi
+    - if [ ${TRAVIS_PHP_VERSION:0:3} == "7.1" ]; then php -S localhost:8000 -t htdocs/router.php 2>1 > /dev/null ;npm run lint:php && npm run lint:javascript && vendor/bin/phpunit --configuration test/phpunit.xml; fi
 
 dist: precise
