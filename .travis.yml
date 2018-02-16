@@ -7,8 +7,8 @@ cache:
 
 php:
     - "7.0"
-      env:
-      - Route=htdocs
+     env: 
+      - nihao=htdocs
     - "7.1"
 
 sudo: false
@@ -27,7 +27,6 @@ before_install:
     - nvm install node
     - mkdir -p project project/libraries
     - phpenv config-rm xdebug.ini
-    - FOO
 install:
     # Install composer modules
     - composer install
@@ -38,7 +37,7 @@ install:
 
     # Download a Selenium Web Driver release
     - wget "http://selenium-release.storage.googleapis.com/2.52/selenium-server-standalone-2.52.0.jar"
-    - php -S localhost:8000 -t Route R 2>1 > /dev/null & 
+    - php -S localhost:8000 -t $nihao 2>1 > /dev/null & 
     # Extracting firefox and setting PATH variable...
     - tar -xjf /tmp/firefox-44.0.tar.bz2 --directory /tmp
     - export PATH="/tmp/firefox:$PATH"
