@@ -90,7 +90,7 @@ before_script:
  # - "LORIS_DB_CONFIG=test/config.xml"
 
 script:
-    - php -S localhost:8000 -t htdocs/router.php 2>1 > /dev/null 
+    - php -S localhost:8000 -t htdocs router.php 2>1 > /dev/null 
     - npm run lint:php && npm run lint:javascript && vendor/bin/phpunit --configuration test/phpunit.xml
 
 dist: precise
