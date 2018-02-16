@@ -1382,9 +1382,7 @@ class LorisForm
         }
 
         // create the comparison function, based on the defined operator
-        $compareFunction = create_function(
-            '$a,$b',
-            "return (\$a $format[operator] \$b);"
+        $compareFunction = function('$a,$b'){return (\$a $format[operator] \$b);}
         );
 
         // check the case where the controller operator value is true
