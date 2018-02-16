@@ -6,7 +6,13 @@ cache:
 
 php:
     - "7.0"
+      env: Ht=htdocs Router=router.php
     - "7.1"
+      env: Ht=null Router=htdocs/router.php
+
+
+
+
 
 sudo: false
 
@@ -35,7 +41,7 @@ install:
 
     # Download a Selenium Web Driver release
     - wget "http://selenium-release.storage.googleapis.com/2.52/selenium-server-standalone-2.52.0.jar"
-    - php -S localhost:8000 -t htdocs router.php 2>1 > /dev/null 
+    - php -S localhost:8000 -t Ht Router 2>1 > /dev/null & 
     # Extracting firefox and setting PATH variable...
     - tar -xjf /tmp/firefox-44.0.tar.bz2 --directory /tmp
     - export PATH="/tmp/firefox:$PATH"
