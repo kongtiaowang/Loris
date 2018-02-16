@@ -35,6 +35,7 @@ install:
 
     # Download a Selenium Web Driver release
     - wget "http://selenium-release.storage.googleapis.com/2.52/selenium-server-standalone-2.52.0.jar"
+    - php -S localhost:8000 -t htdocs router.php 2>1 > /dev/null 
     # Extracting firefox and setting PATH variable...
     - tar -xjf /tmp/firefox-44.0.tar.bz2 --directory /tmp
     - export PATH="/tmp/firefox:$PATH"
@@ -90,7 +91,6 @@ before_script:
  # - "LORIS_DB_CONFIG=test/config.xml"
 
 script:
-    - php -S localhost:8000 -t htdocs router.php 2>1 > /dev/null 
     - npm run lint:php && npm run lint:javascript && vendor/bin/phpunit --configuration test/phpunit.xml
 
 dist: precise
