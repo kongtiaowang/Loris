@@ -1292,11 +1292,7 @@ class LorisForm
 
                 // Check if date fields have errors and add them to error list
                 if ($el['type'] === 'date') {
-                    $date = (
-                        $values[$elName] ?
-                            $values[$elName] :
-                        $this->getValue($el['name'])
-                    );
+                    $date = $values[$elName] ?? $this->getValue($el['name']);
                     if (empty($date)) {
                         continue;
                     }
@@ -1384,15 +1380,12 @@ class LorisForm
                 . join(', ', $this->validOperators)
             );
         }
-
+        $formatOperator = $format['operator'];
         // create the comparison function, based on the defined operator
-        $compareFunction = create_function(
-            '$a,$b',
-            "return (\$a $format[operator] \$b);"
-        );
-
+        $compareFunction = function($a,$b,$formatOperator){return ("\$a $formatOperator \$b");}
         // check the case where the controller operator value is true
-        if ($compareFunction($this->getValue($elements[1]), $format['value'])) {
+        $f = $format['value'];
+        if ($compareFunction($this->getValue($elements[0]),$this->getValue($elements[1]),$f)) {
             return $this->getValue($elements[0]) != '';
         }
 
