@@ -1382,7 +1382,7 @@ class LorisForm
         }
         $formatOperator = $format['operator'];
         // create the comparison function, based on the defined operator
-        $compareFunction = function($a,$b,$formatOperator]){return ("\$a $formatOperator \$b");}
+        $compareFunction = function($a,$b,$formatOperator){return ("\$a $formatOperator \$b");}
         // check the case where the controller operator value is true
         $f = $format['value'];
         if ($compareFunction($this->getValue($elements[0]),$this->getValue($elements[1]),$f)) {
