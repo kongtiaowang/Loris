@@ -1383,7 +1383,6 @@ class LorisForm
 
         // create the comparison function, based on the defined operator
         $compareFunction = function($a,$b){return ("\$a $format[operator] \$b");}
-        );
 
         // check the case where the controller operator value is true
         if ($compareFunction($this->getValue($elements[1]), $format['value'])) {
