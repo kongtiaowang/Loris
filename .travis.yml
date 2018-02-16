@@ -1,8 +1,8 @@
 language: php
 
 env:
-    - Route: htdocs router.php
-      
+    - Route: htdocs
+    - R: router.php       
 
 cache:
     directories:
