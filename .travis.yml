@@ -1,7 +1,5 @@
 language: php
 
-env:
-    - Route=htdocs R=router.php       
 
 cache:
     directories:
@@ -9,6 +7,8 @@ cache:
 
 php:
     - "7.0"
+      env:
+      - Route=htdocs
     - "7.1"
 
 sudo: false
