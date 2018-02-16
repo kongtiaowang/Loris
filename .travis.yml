@@ -6,13 +6,15 @@ cache:
 
 php:
     - "7.0"
-      env: Ht=htdocs Router=router.php
     - "7.1"
-      env: Ht='' Router=htdocs/router.php
 
 
-
-
+env:
+   php:
+       - "7.0"
+       Ht='' Router=htdocs/router.php
+       - "7.1"
+       Ht='' Router=htdocs/router.php
 sudo: false
 
 addons:
