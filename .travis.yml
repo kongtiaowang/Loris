@@ -27,9 +27,9 @@ before_install:
 install:
     # Install composer modules
     - composer install
-    - sudo apt-add-repository ppa:ondrej/php
+    - sudo apt-add-repository ppa:ondrej/php -y
     - sudo apt-get update
-    - sudo apt-get install php$php
+    - sudo apt-get install php$php -y
     - phpenv rehash
 
     # Install node modules specified in package.json
