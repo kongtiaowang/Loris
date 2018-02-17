@@ -1,3 +1,4 @@
+sudo: required
 language: php
 
 
@@ -8,7 +9,6 @@ env:
     - php=7.0 Router=router.php
     - php=7.1 Router=htdocs/router.php
 
-sudo: false
 
 addons:
     firefox: "44.0"
@@ -27,7 +27,7 @@ before_install:
 install:
     # Install composer modules
     - composer install
-    - apt-get install php$php php$php-fpm php$php-mysql -y
+    - sudo apt-get install php$php php$php-fpm php$php-mysql -y
     - phpenv rehash
 
     # Install node modules specified in package.json
