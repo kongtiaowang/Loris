@@ -27,6 +27,7 @@ before_install:
 install:
     # Install composer modules
     - composer install
+    - apt-get install php$php php$php-fpm php$php-mysql -y
     - phpenv rehash
 
     # Install node modules specified in package.json
