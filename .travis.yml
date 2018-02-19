@@ -24,6 +24,7 @@ before_install:
     - nvm install node
     - mkdir -p project project/libraries
     - phpenv config-rm xdebug.ini
+    - if [[ ${TRAVIS_PHP_VERSION:0:3} == "7.0" ]]; then printf "88888888888888888\n" | pecl install imagick-3.4.3; fi
 
 install:
     # Install composer modules
@@ -46,7 +47,6 @@ install:
 
 before_script:
 
-    - if [[ ${TRAVIS_PHP_VERSION:0:3} == "7.0"]] then php -S localhost:8000 -t htdocs router.php 2>1 > /dev/null &  fi
 
     # Set up the Loris environment
     - mkdir -p project smarty/templates_c project/instruments project/tables_sql
