@@ -46,13 +46,10 @@ install:
 
 before_script:
 
-    - if [[ ${TRAVIS_PHP_VERSION:0:3} == "7.0"]]; then
-      php -S localhost:8000 -t htdocs router.php 2>1 > /dev/null & ;
-      exit 1;
-      fi
-    - if [[ ${TRAVIS_PHP_VERSION:0:3} == "7.1"]]; then 
-      php -S localhost:8000 -t htdocs htdocs/router.php 2>1 > /dev/null & ;
-      exit 1;
+    - |
+      if [[ ${TRAVIS_PHP_VERSION:0:3} == "7.0"]]; then
+      php -S localhost:8000 -t htdocs router.php 2>1 > /dev/null & 
+      else php -S localhost:8000 -t htdocs htdocs/router.php 2>1 > /dev/null &
       fi
     # Set up the Loris environment
     - mkdir -p project smarty/templates_c project/instruments project/tables_sql
