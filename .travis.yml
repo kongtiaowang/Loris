@@ -5,9 +5,9 @@ language: php
 cache:
     directories:
         - vendor
-env:
-    - php=7.0 Router=router.php
-    - php=7.1 Router=htdocs/router.php
+php:
+    - "7.0"
+    - "7.1" 
 
 
 addons:
@@ -24,6 +24,11 @@ before_install:
     - nvm install node
     - mkdir -p project project/libraries
     - phpenv config-rm xdebug.ini
+    - 'if [ ${TRAVIS_PHP_VERSION:0:3} == "7.0"]; then
+           Router=router.php;
+       else
+           Router=htdocs/router.php;
+      fi'
 install:
     # Install composer modules
     - composer install
