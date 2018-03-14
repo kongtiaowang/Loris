@@ -5,10 +5,12 @@ require_once "Database.class.inc";
 class NDAR_Release_2018
 {
 
-    function __construct($instrument, $project)
+    function __construct($instrument, $project, $validating)
     {
         $this->instrument = $instrument;
         $this->project = $project;
+        //$validating should be false for NDAR submission/NDAR validation tool
+        $this->validating =$validating;
     }
 
     function getWhere()
@@ -1901,9 +1903,8 @@ class NDAR_Release_2018
 
     function getQuery()
     {
-        $validating = FALSE; // Do not forget to set to false if submiting to NDAR!
 
-        if ($validating) {
+        if ($this->validating) {
             $test_fields = "c.PSCID, s.Visit_label, s.SubprojectID, ";
         } else { $test_fields = ""; }
 

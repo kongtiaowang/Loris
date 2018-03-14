@@ -13,20 +13,28 @@ $db        =& Database::singleton();
 if (empty($argv[1]) || $argv[1] == 'help') {
     fwrite(STDERR, "Usage: \n\n");
     fwrite(STDERR, "ndar_query.php help - displays this msg\n");
-    fwrite(STDERR, "ndar_query.php ibis1 - ndar query run for ibis1\n");
-    fwrite(STDERR, "ndar_query.php ibis2 - ndar query run for ibis2\n");
+    fwrite(STDERR, "ndar_query.php ibis1 validate - ndar query run for ibis1 with a validate option if needed\n");
+    fwrite(STDERR, "ndar_query.php ibis2 validate - ndar query run for ibis2 with a validate option if needed\n");
     return;
 }
 
 //$run_ibis1 = false;
 //$run_ibis2 = true;
+if(!empty($argv[2]) || $argv[2]=="validate")
+{
+    $validating=TRUE;
+}
+else{
+
+    $validating=FALSE;
+}
 
 if ($argv[1]=="ibis1")
 {
   //$IBIS = array('vineland_subject');
   $IBIS = array ('ados_module1', 'ados_module2', 'ados_module3', 'ados2_module1','ados2_module2','ados2_module3','adi_r_proband','aosi','csbs','edi','fyi','ibq_r','m_chat_proband','macarthur_words_gestures','mullen','prefrontal_task','rbs_r','scq_proband','scq_subject','seq','vineland_proband','vineland_subject','charge');
   foreach($IBIS as $instrument) {
-      $run = new NDAR_Release_2018 ($instrument, 1);
+      $run = new NDAR_Release_2018 ($instrument, 1, $validating);
       $run->run();
   }
 }
@@ -37,7 +45,7 @@ if ($argv[1]=="ibis2")
     //$IBIS2 = array('scq_proband');
      $IBIS2 = array('adi_r_proband','aosi','csbs','ibq_r','macarthur_words_gestures', 'm_chat_proband', 'scq_proband','mullen','rbs_r','vineland_proband','vineland_subject','edi2','height_weight','phys_neuro_exam', 'charge');
   foreach($IBIS2 as $instrument) {
-      $run = new NDAR_Release_2018 ($instrument, 2);
+      $run = new NDAR_Release_2018 ($instrument, 2, $validating);
       $run->run();
 
   }

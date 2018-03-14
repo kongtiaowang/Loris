@@ -10,6 +10,8 @@
     <link type="text/css" href="{$baseurl}/css/jquery-ui-1.10.4.custom.css" rel="Stylesheet" />
     <script src="{$baseurl}/js/jquery/jquery-1.11.0.min.js" type="text/javascript"></script>
     <script type="text/javascript" src="{$baseurl}/js/jquery/jquery-ui-1.10.4.custom.min.js"></script>
+    <script src="{$baseurl}/js/modernizr/modernizr.min.js" type="text/javascript"></script>
+    <script src="{$baseurl}/js/polyfills.js" type="text/javascript"></script>
     <script type="text/javascript" src="{$baseurl}/js/modules/direct_entry.js"></script>
 
     {if $test_name_js}
