@@ -69,7 +69,7 @@
     <!-- title -->
   
     <td class="controlPanelSection">
-      <a href="{$baseurl}/video_upload/">
+      <a href="{$baseurl}/videos/video_upload">
         Upload a New Video
       </a>
 
@@ -128,7 +128,7 @@ React.render(pageLinks, document.getElementById("pageLinks"));
                   </td>
                {elseif $items[item][piece].name == "record_id"}
                   <td>
-                      <a href="{$baseurl}/video_upload/?identifier={$items[item][piece].value}" target="_blank">Edit</a>
+                      <a href="{$baseurl}/videos/video_upload/?identifier={$items[item][piece].value}" target="_blank">Edit</a>
                     </td>
                  {else}
                      <td>{$items[item][piece].value}</td>

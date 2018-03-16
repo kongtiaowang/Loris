@@ -3,6 +3,11 @@
 <a href='{$baseurl}/videos/'> Back to Video Page</a>
 <br>
 {/if}
+{if $message}
+    <p>Video successfully deleted<br /></p>
+    <a href='{$baseurl}/videos/'> Back to Video Page</a>
+    <br>
+{/if}
 
 <br />
 <form method="post" name="video_upload" id="video_upload" enctype="multipart/form-data">

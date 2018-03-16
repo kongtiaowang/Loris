@@ -1,5 +1,5 @@
 <?php
-require_once 'NDB_Menu_Filter.class.inc';
+namespace LORIS\videos;
 
 /**
  * The menu for the reliability checking
@@ -18,7 +18,7 @@ function array_remove($item, $array){
   }
 }
  
-class NDB_Menu_Filter_videos extends NDB_Menu_Filter
+class Videos extends \NDB_Menu_Filter
 {
 
     var $centerIDMap;
@@ -31,7 +31,7 @@ class NDB_Menu_Filter_videos extends NDB_Menu_Filter
     {
         
     	//create user object
-    	$user =& User::singleton();
+    	$user =& \User::singleton();
         if($user->hasPermission('earli_videos')) {
             return true;
         }
@@ -40,7 +40,7 @@ class NDB_Menu_Filter_videos extends NDB_Menu_Filter
     }
 
     function _isEARLIUser() {
-        $user =& User::singleton();
+        $user =& \User::singleton();
         return $user->hasPermission('earli_videos') && !$user->hasPermission('data_entry');
     }
 
@@ -62,10 +62,10 @@ class NDB_Menu_Filter_videos extends NDB_Menu_Filter
 
     function _setupVariables()
     {
-        $user =& User::singleton();
+        $user =& \User::singleton();
 
         // create the centerID map
-        $db =& Database::singleton();
+        $db =& \Database::singleton();
         $pscRows = $db->pselect("SELECT CenterID, Name FROM psc", array());
         foreach($pscRows AS $row) {
             $this->centerIDMap[$row['CenterID']] = $row['Name'];
@@ -105,12 +105,13 @@ class NDB_Menu_Filter_videos extends NDB_Menu_Filter
     }
 
 
-    function _setFilterForm()
+    function setup()
     {
+        parent::setup();
     	// create user object
-        $user =& User::singleton();
+        $user =& \User::singleton();
 
-        $list_of_sites = Utility::getSiteList(false);
+        $list_of_sites = \Utility::getSiteList(false);
            // allow to view all sites data through filter
         if ($user->hasPermission('access_all_profiles') || $user->hasPermission('reliability_edit_all')) {
             // get the list of study sites - to be replaced by the Site object
@@ -118,17 +119,16 @@ class NDB_Menu_Filter_videos extends NDB_Menu_Filter
         }
         else {
             // allow only to view own site data
-            $site =& Site::singleton($user->getData('CenterID'));
-            if ($site->isStudySite()) {
-                $list_of_sites = array($user->getData('CenterID') => $user->getData('Site'));
-            }
+            $list_of_sites      = $user->getStudySites();
+            $default_site_array =array('All User Sites' => 'All User Sites');
+            $list_of_sites      = $default_site_array + $list_of_sites;
         }
         
         /// hack for Visit Labels... maybe get all the real visit labels from DB?
         $list_of_visit_labels = array(null=>'Any','V06'=>'V06','V12'=>'V12','V24'=>'V24','V36'=>'V36');
-        $subproject_options = Utility::getSubprojectList();
+        $subproject_options = \Utility::getSubprojectList();
         $subproject_options = array(null=>'Any') + $subproject_options;
-        $DB = Database::singleton();
+        $DB = \Database::singleton();
         $list_of_instruments_q = $DB->pselect("SELECT DISTINCT Instrument FROM videos", array());
         $list_of_instruments = array(null => 'Any');
         foreach ($list_of_instruments_q as $instrument) {
@@ -149,12 +149,12 @@ class NDB_Menu_Filter_videos extends NDB_Menu_Filter
     function _setDataTableRows($count)
     {
         // This is a hack. It shouldn't be required, and it certainly shouldn't be here.
-    	$user =& User::singleton();
+    	$user =& \User::singleton();
         $this->tpl_data['Normal_Perm'] = ($user->hasPermission('video_upload') || $user->hasPermission('data_entry'));
         $this->tpl_data['EARLI_Perm'] = $user->hasPermission('earli_videos');
         // end hack
 
-        $site_names = Utility::getSiteList(false); //array(null, "DCC", "SEA", "PHI", "STL", "UNC", "UofA");
+        $site_names = \Utility::getSiteList(false); //array(null, "DCC", "SEA", "PHI", "STL", "UNC", "UofA");
         // print out
         $x = 0;
         foreach ($this->list as $item) {

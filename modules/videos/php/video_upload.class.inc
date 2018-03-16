@@ -1,8 +1,5 @@
 <?php
-require_once "NDB_Form.class.inc";
-require_once "Utility.class.inc";
-require_once "HTML/QuickForm.php";
-require_once 'HTML/QuickForm/Renderer/Default.php';
+namespace LORIS\videos;
 /**
  * The forms for the new profile menu
  * @package main
@@ -17,62 +14,21 @@ function hash_it($array, $item){
 }
 
 
-class NDB_Form_video_upload extends NDB_Form
+class video_upload extends \NDB_Form
 {
 
-    function _setupPage($name, $page, $identifier, $commentID, $formname)
-    {
-        $this->form       = new HTML_QuickForm($formname);
-        $this->name       = $name;
-        $this->page       = $page;
-        $this->identifier = $identifier;
-        $this->commentID  = $commentID;
-        $this->defaults   = array();
-    }
 
-    function display()
-    {
-        if (!$this->form->isFrozen()) {
-            // hidden values
-            $this->addHidden('test_name', $this->name);
-            $this->addHidden('subtest', $this->page);
-            $this->addHidden('identifier', $this->identifier);
-            // $this->form->addElement('hidden', 'test_name', $this->name);
-            // $this->form->addElement('hidden', 'subtest', $this->page);
-            // $this->form->addElement('hidden', 'identifier', $this->identifier);
-        }
-        // get the defaults
-        $localDefaults = $this->_getDefaults();
-        if (!is_array($localDefaults)) {
-            $localDefaults = array();
-        }
-        // set the quickform object defaults
-        $this->_setDefaults(array_merge($this->defaults, $localDefaults));
-        // trim all values
-        $this->form->applyFilter('__ALL__', 'trim');
-        // display the HTML_Quickform object
-        $smarty   = new Smarty_neurodb($this->name);
-        $renderer = new HTML_QuickForm_Renderer_ArraySmarty($smarty);
-        $this->form->accept($renderer);
-        $smarty->ModuleName = $this->name;
-        $smarty->assign('form', $renderer->toArray());
-        $smarty->assign($this->tpl_data);
-        $html = $smarty->fetch("form_$this->template.tpl");
-        return $html;
-        //return $this->form->toHTML();
-    }
 
     function _hasAccess()
     {
         error_log("_hasAccess");
         // create user object
-        $user =& User::singleton();
+        $user =& \User::singleton();
 
-        $site =& Site::singleton($user->getData('CenterID'));
         if ($user->hasPermission('earli_videos')) {
             return true;
         }
-        if ($site->isStudySite()) {
+        if ($user->hasStudySite()) {
             return $user->hasPermission('data_entry');
         }
         return false;
@@ -80,7 +36,7 @@ class NDB_Form_video_upload extends NDB_Form
 
     function _isEARLIUser() {
         error_log("_isEARLIUser");
-        $user =& User::singleton();
+        $user =& \User::singleton();
         return $user->hasPermission('earli_videos') && !$user->hasPermission('data_entry');
     }
 
@@ -90,9 +46,9 @@ class NDB_Form_video_upload extends NDB_Form
         if($values['hide_video'] || $values['hide_video_confirm']) {
             // Validate should have already checked this, but double check
             if($values['hide_video'] && $values['hide_video_confirm']) {
-                $DB =& Database::singleton();
+                $DB =& \Database::singleton();
                 $DB->update("videos", array('hide_video' => true), array('record_id' => $this->identifier));
-                $this->tpl_data['message'] = "Video successfully deleted";
+                $this->tpl_data['message'] = true;
             }
         }
         // set up the arguments to Candidate::createNew
@@ -108,16 +64,25 @@ class NDB_Form_video_upload extends NDB_Form
 
     }
 
-    function video_upload()
+    function setup()
     {
+        parent::setup();
         error_log("video_upload");
         // create user object
-        $user =& User::singleton();
+        $user =& \User::singleton();
 
-        $site =& Site::singleton($user->getData('CenterID'));
-
-        $config =& NDB_Config::singleton();
-        $db =& Database::singleton();
+        $siteIDs = $user->getData('CenterIDs');
+        $site_string="";
+        foreach ($siteIDs as $val) {
+            $site =& \Site::singleton($val);
+            if ($site->isStudySite()) {
+                $siteList[$site->getCenterName()] = $site->getCenterName();
+                if ($site_string) $site_string .= '|';
+                $site_string.=$siteList[$site->getCenterName()];
+            }
+        }
+        $config =& \NDB_Config::singleton();
+        $db =& \Database::singleton();
 
         $instruments = $db->pselect("SELECT test_name FROM test_names ORDER BY test_name", array());
 
@@ -135,10 +100,14 @@ class NDB_Form_video_upload extends NDB_Form
             $instruments = array_merge($instruments, array('EARLI' => 'EARLI Questionaire'));
         }
 
-        $candidates = $db->pselect("SELECT PSCID FROM candidate WHERE PSCID LIKE CONCAT(:cName, '%') ORDER BY PSCID", array('cName' => $site->getCenterName()));
-        $candidates2 = $db->pselect("SELECT PSCID FROM candidate WHERE PSCID NOT LIKE CONCAT(:cName, '%') ORDER BY PSCID", array('cName' => $site->getCenterName()));
-
-        $candidates = hash_it($candidates + $candidates2, "PSCID");
+        $candidates = $db->pselect("SELECT PSCID FROM candidate WHERE PSCID REGEXP '$site_string' ORDER BY PSCID");
+        $candidates2 = $db->pselect("SELECT PSCID FROM candidate WHERE PSCID NOT REGEXP '$site_string' ORDER BY PSCID");
+        if ($user->hasPermission('access_all_profiles')) {
+            $candidates = hash_it($candidates + $candidates2, "PSCID");
+        }
+        else{
+            $candidates = hash_it($candidates, "PSCID");
+        }
 
         $this->addSelect("Instrument", "Instrument", $instruments);
         if($this->_isEARLIUser()) {
@@ -146,7 +115,7 @@ class NDB_Form_video_upload extends NDB_Form
         } else {
             $this->addSelect("PSCID", "PSCID", $candidates);
         }
-        $visit_list = Utility::getVisitList();
+        $visit_list = \Utility::getVisitList();
         $this->addSelect("visitLabel", "Visit Label", $visit_list);
         $dateOptions = array(
             'language' => 'en',
@@ -159,7 +128,7 @@ class NDB_Form_video_upload extends NDB_Form
 
         $this->addBasicDate('Date_taken', 'Date of Administration', $dateOptions);
         //$this->form->addElement("select", "For_site", "Site This File is Being Uploaded For", array(null, "DCC", "SEA", "PHI", "STL", "UNC", "UofA"));
-        $this->addSelect("For_site", "Site This File is Being Uploaded For", Utility::getSiteList(false));
+        $this->addSelect("For_site", "Site This File is Being Uploaded For", \Utility::getSiteList(false));
         $this->addSelect("multipart", "Is this upload split into multiple parts?", array("Yes" => "Yes", "No" => "No"));
         $this->addSelect("EARLI", "Is this an EARLI collaboration video?", array('' => '', "1" => "Yes", "0" => "No"));
         $this->addBasicTextArea("comments", "Comments (optional)", array('rows' => 5, 'cols' => 50));
@@ -174,8 +143,8 @@ class NDB_Form_video_upload extends NDB_Form
         $this->form->addRule('Instrument', 'Instrument is required.', 'required');
         $this->form->addRule('visitLabel', 'Visit Label is required.', 'required');
 
-        $this->form->addElement("checkbox", "hide_video", "Delete video");
-        $this->form->addElement("checkbox", "hide_video_confirm", "Delete video (Confirmation)");
+        $this->addCheckbox("hide_video", "Delete video",array('value' => '1'));
+        $this->addCheckbox("hide_video_confirm", "Delete video (Confirmation)",array('value' => '1'));
 
 
         $uploaded_by = $db->pselectOne("SELECT uploaded_by FROM videos WHERE record_id=:identifier", array(':identifier' => $this->identifier));
@@ -244,15 +213,14 @@ class NDB_Form_video_upload extends NDB_Form
         }
 
         if(!empty($this->identifier)){
-            $db=& Database::singleton();
+            $db=& \Database::singleton();
             $result = $db->update('videos', $values, array('record_id'=>$this->identifier));
             return true;
         }else{
             error_log("in _saveFile else");
 
-            require_once "File_Upload.class.inc";
-            $file=new File_Upload;
 
+            $file=new \File_Upload;
             //pass the existing form ($form) by reference to File_Upload, and register the file_upload field names being used.
             $file->registerForm($this->form);
 
@@ -267,7 +235,7 @@ class NDB_Form_video_upload extends NDB_Form
             //Set the prefix to prepend to the filenames
             //$file->setFilenamePrefix($timepoint->getVisitLabel()."-".$this->testName."-");
 
-            $user =& User::singleton();
+            $user =& \User::singleton();
 
             //set the the IDs to the handler functions.
             $file->setHandlerArgs(array("user_id" => $user->getUsername(), "values"=>$values));
@@ -297,7 +265,7 @@ class NDB_Form_video_upload extends NDB_Form
         $defaults = array('multipart' => 'No', 'EARLI' => 'No');
         error_log("getDefaults");
         if (!empty($this->identifier)) {
-            $db=& Database::singleton();
+            $db=& \Database::singleton();
 
             $row = $db->pselectRow("SELECT * FROM videos WHERE record_id =:rid", array('rid' => $this->identifier));
 
@@ -317,7 +285,7 @@ class NDB_Form_video_upload extends NDB_Form
 
         $Stmt = "SELECT count(*) as Total FROM videos WHERE Instrument =:instrum AND PSCID =:pid AND visitLabel =:visit";
 
-        $db=& Database::singleton();
+        $db=& \Database::singleton();
         $CountFiles = $db->pselectRow($Stmt, array('instrum' => $args['values']['Instrument'], 'pid' => $args['values']['PSCID'], 'visit' => $args['values']['visitLabel']));
         if($CountFiles['Total'] > 1 && $_REQUEST['multipart'] != 'Yes') {
             $errors[]="Incorrect value for split file selected.";
@@ -353,7 +321,7 @@ class NDB_Form_video_upload extends NDB_Form
         error_log("importFile");
         error_log(print_r($values, true));
 
-        $db=& Database::singleton();
+        $db=& \Database::singleton();
 
         // SQL to run to check if the file's already
         $Stmt = "SELECT * FROM videos WHERE Instrument =:instrum AND PSCID =:pid AND visitLabel =:visit";
