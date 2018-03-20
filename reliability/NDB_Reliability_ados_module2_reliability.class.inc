@@ -1,4 +1,5 @@
 <?php
+set_include_path(get_include_path() . ":../libraries:../../php/libraries:");
 require_once "NDB_Reliability.class.inc";
 //require_once "NDB_BVL_Instrument.class.inc";
 
@@ -27,7 +28,6 @@ class NDB_Reliability_ados_module2_reliability extends NDB_Reliability
             $initial_table = preg_replace('/_reliability/', '', $this->name);
             $defaults['Examiner'] = $row['Examiner'];
             $defaults['Date_taken'] = $row['Date_taken'];
-            $defaults['CommentID'] = "<a href=\"{$baseurl}/reliability_breakdown/?instrument=$initial_table&CommentID=$row[CommentID]\">" . $row['CommentID'] . "</a>";
             $defaults['Reliability_score_all_items'] = $row['Reliability_score_all_items'];
             $defaults['Reliability_score_scored_items'] = $row['Reliability_score_scored_items'];
             $defaults['a1'] = $row['a1'];
@@ -468,8 +468,12 @@ class NDB_Reliability_ados_module2_reliability extends NDB_Reliability
 
         $GoldStandardArray = array("Initial_entry"=>"Initial Entry", "Gold_standard_SEA0012"=>"Gold standard SEA0012");
         $this->form->addElement("select", "Gold_standard", "Compare against:", $GoldStandardArray);
-        
-        $this->form->addElement("static", "CommentID", "CommentID:");
+
+        $factory = \NDB_Factory::singleton();
+        $baseurl = $factory->settings()->getBaseURL();
+        $initial_table = preg_replace('/_reliability/', '', $this->name);
+        $url= "$baseurl/reliability/reliability_breakdown/?instrument=".$initial_table."&CommentID=".$this->identifier;
+        $this->form->addElement("link", null, "CommentID:", $url, $this->identifier);
        
         //CODING
     	//Section A: Language and Communication

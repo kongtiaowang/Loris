@@ -1,4 +1,5 @@
 <?php
+set_include_path(get_include_path() . ":../libraries:../../php/libraries:");
 require_once "NDB_Reliability.class.inc";
 //require_once "NDB_BVL_Instrument.class.inc";
 
@@ -38,14 +39,12 @@ class NDB_Reliability_csbs_reliability extends NDB_Reliability
     {
         $DB =& Database::singleton();
                
-        if (!empty($this->identifier)) { 
-            
+        if (!empty($this->identifier)) {
             // get the csbs_reliability values 
             $DB->selectRow("SELECT * FROM csbs_reliability WHERE CommentID = '$this->identifier' AND reliability_center_id = '$this->reliability_center_id'", $defaults);
-
             // Make the CommentID a link to the comparison page
             $initial_table = preg_replace('/_reliability/', '', $this->name);
-            $defaults['CommentID'] = "<a href=\"{$baseurl}/reliability_breakdown/?instrument=$initial_table&CommentID=$defaults[CommentID]\">" . $defaults['CommentID'] . "</a>";
+
         } else {
             echo("Identifer empty! No ID has been chosen. Please contact Samir at the DCC.<br>");
         }
@@ -111,6 +110,7 @@ class NDB_Reliability_csbs_reliability extends NDB_Reliability
            
     function csbs_reliability()
     {
+       $factory = \NDB_Factory::singleton();
        $this->_addMetadataFields();
        $this->form->addElement("static", "reliability_center", "Site of Reliability Test:");
        
@@ -127,7 +127,11 @@ class NDB_Reliability_csbs_reliability extends NDB_Reliability
         $GoldStandardArray = array("Initial_entry"=>"Initial Entry", "Gold_standard"=>"Gold standard" );
        
         $this->form->addElement("select", "Gold_standard", "Compare against:", $GoldStandardArray);
-        $this->form->addElement("static", "CommentID", "CommentID:");
+        $baseurl = $factory->settings()->getBaseURL();
+        $initial_table = preg_replace('/_reliability/', '', $this->name);
+        $url= "$baseurl/reliability/reliability_breakdown/?instrument=".$initial_table."&CommentID=".$this->identifier;
+
+        $this->form->addElement("link", null, "CommentID:", $url, $this->identifier);
 
         $options = array('' => NULL);
         foreach(range(0, 20) as $i) {
@@ -220,10 +224,10 @@ class NDB_Reliability_csbs_reliability extends NDB_Reliability
 
         // display the HTML_Quickform object
         $smarty = new Smarty_neurodb;
-        
+
         // display the HTML_Quickform object
          return $this->form->toHTML();
-        
+
 
         
     }

@@ -1,4 +1,5 @@
 <?php
+set_include_path(get_include_path() . ":../libraries:../../php/libraries:");
 require_once "NDB_Reliability.class.inc";
 //require_once "NDB_BVL_Instrument.class.inc";
 
@@ -51,7 +52,6 @@ class NDB_Reliability_ados2_module2_reliability extends NDB_Reliability
             foreach ($row as $key => $value) {
                 $defaults[$key] = $value;
             }
-            $defaults['CommentID'] = "<a href=\"{$baseurl}/reliability_breakdown/?instrument=$initial_table&CommentID=$row[CommentID]\">" . $row['CommentID'] . "</a>";
         } else {
             echo("Identifier empty! No ID has been chosen. Please contact Samir at the DCC.<br>");
         }
@@ -178,7 +178,11 @@ class NDB_Reliability_ados2_module2_reliability extends NDB_Reliability
         $this->form->addElement('header', 'instrument_title', "Scoring:");
         $this->form->addElement("static", "Reliability_score_scored_items", "Reliability Score Scored items(%):");
         $this->form->addElement("static", "Reliability_score_all_items", "Reliability All items(%):");
-        $this->form->addElement("static", "CommentID", "CommentID:");
+        $factory = \NDB_Factory::singleton();
+        $baseurl = $factory->settings()->getBaseURL();
+        $initial_table = preg_replace('/_reliability/', '', $this->name);
+        $url= "$baseurl/reliability/reliability_breakdown/?instrument=".$initial_table."&CommentID=".$this->identifier;
+        $this->form->addElement("link", null, "CommentID:", $url, $this->identifier);
 
         //display test name
         $this->form->addElement('header', null, "CODING:");

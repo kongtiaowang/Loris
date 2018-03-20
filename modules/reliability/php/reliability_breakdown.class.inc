@@ -1,20 +1,21 @@
 <?php
-require_once 'NDB_Menu.class.inc';
+namespace LORIS\reliability;
 
 /**
  * The welcome menu
  * @package main
  */
-class NDB_Menu_reliability_breakdown extends NDB_Menu
+class Reliability_breakdown extends \NDB_Menu
 {
     function _hasAccess() {
-        $user =& User::singleton();
+        $user =& \User::singleton();
         return $user->hasPermission('send_to_dcc');
     }
 
     function setup()
     {
-        $DB =& Database::singleton();
+        parent::setup();
+        $DB =& \Database::singleton();
 
         $CommentID = $_REQUEST['CommentID'];
         $instrument_name = $_REQUEST['instrument'];

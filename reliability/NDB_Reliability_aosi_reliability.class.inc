@@ -1,4 +1,5 @@
 <?php
+set_include_path(get_include_path() . ":../libraries:../../php/libraries:");
 require_once "NDB_Reliability.class.inc";
 //require_once "NDB_BVL_Instrument.class.inc";
 
@@ -7,7 +8,7 @@ require_once "NDB_Reliability.class.inc";
  * @package mri
  * @subpackage NIHPD
  */
-class NDB_Reliability_aosi_reliability extends NDB_Reliability
+class NDB_Reliability_aosi_reliability extends \NDB_Reliability
 
 {
     // Can be either "reliability" or "blind_coding".. this is the suffix
@@ -36,7 +37,7 @@ class NDB_Reliability_aosi_reliability extends NDB_Reliability
 
     function _getDefaults()
     {
-        $DB =& Database::singleton();
+        $DB =& \Database::singleton();
                
         $initial_table = preg_replace('/_reliability/', '', $this->name);
 
@@ -65,7 +66,6 @@ class NDB_Reliability_aosi_reliability extends NDB_Reliability
 
         }
 
-        $defaults['CommentID'] = "<a href=\"{$baseurl}/reliability_breakdown/?instrument=$initial_table&CommentID=$row[CommentID]\">" . $row['CommentID'] . "</a>";
         return $defaults;
     }
 
@@ -77,7 +77,7 @@ class NDB_Reliability_aosi_reliability extends NDB_Reliability
         $reliability_record = array();
        
         //holds calculated
-        $db =& Database::singleton();
+        $db =& \Database::singleton();
 
         // null scores
         //$this->_nullScores();
@@ -154,7 +154,11 @@ class NDB_Reliability_aosi_reliability extends NDB_Reliability
          //Scoring header
          $this->form->addElement('header', 'instrument_title', "Scoring:");
          $this->form->addElement("static", "reliability_score", "Reliability Score (%):");
-          $this->form->addElement("static", "CommentID", "CommentID:");
+        $factory = \NDB_Factory::singleton();
+        $baseurl = $factory->settings()->getBaseURL();
+        $initial_table = preg_replace('/_reliability/', '', $this->name);
+        $url= "$baseurl/reliability/reliability_breakdown/?instrument=".$initial_table."&CommentID=".$this->identifier;
+        $this->form->addElement("link", null, "CommentID:", $url, $this->identifier);
 
          $GoldStandardArray = array(""=>NULL, "Gold_standard"=>"Gold standard", "Initial_entry"=>"Initial Entry");
          //$this->form->addElement("select", "Gold_standard", "Compare against:", $GoldStandardArray);

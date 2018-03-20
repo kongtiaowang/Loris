@@ -1,15 +1,15 @@
 <?php
-require_once 'NDB_Menu.class.inc';
+namespace LORIS\reliability;
 
 /**
  * The welcome menu
  * @package main
  */
-class NDB_Menu_reliability_diagnostic_calls extends NDB_Menu
+class Reliability_diagnostic_calls extends \NDB_Menu
 {
     function setup()
     {   
-       $DB =& Database::singleton();
+       $DB =& \Database::singleton();
        
         $result = $DB->pselect("SELECT * FROM reliability_diagnostic_calls", array());
             foreach($result as $row){          
