@@ -93,6 +93,8 @@ class Reliability extends \NDB_Menu_Filter
                 JOIN session ON (candidate.CandID=session.CandID)
                 JOIN flag ON (session.ID=flag.SessionID)
                 JOIN reliability ON (reliability.CommentID=flag.CommentID )
+                JOIN psc p ON (reliability.reliability_center_id=p.CenterID)
+                JOIN Project pr ON (candidate.ProjectID=pr.ProjectID)
                 LEFT JOIN videos ON (videos.PSCID=candidate.PSCID AND videos.visitLabel=session.Visit_label AND videos.instrument =reliability.Instrument)
                     $extra_where ".
                 "WHERE ".
@@ -104,38 +106,52 @@ class Reliability extends \NDB_Menu_Filter
             $query .= " AND candidate.centerID IN (" . $site_arr . ") ";
         }
 
-        // set the class variables
+        $config      =& \NDB_Config::singleton();
+        $useProjects = $config->getSetting("useProjects");
         $this->columns = array(
-                          'reliability.CommentID',
-                          'candidate.PSCID',
-                          'reliability.reliability_center_id AS Site',
-                          'session.SubprojectID as Cohort',
-                          'session.CandID AS DCCID',
-                          'candidate.Gender',
-                          'session.Visit_label',
-                          'reliability.Instrument',
-                          "$video_query as File_in_DB",
-                          'reliability.Reliability_score',
-                          'session.Current_stage',
-                          'reliability.invalid',
-                          'reliability.Manual_Swap',
-                         );
+            'candidate.PSCID',
+            'reliability.reliability_center_id',
+            'p.name as site',
+            'session.SubprojectID as Cohort',
+            'session.CandID AS DCCID',
+            'candidate.Gender',
+            'session.Visit_label',
+        );
+        if ($useProjects === "true") {
+            $this->columns[] = 'pr.Name as Project';
+        }
+        $this->columns  =array_merge(
+            $this->columns,
+            array(
+                'reliability.CommentID',
+                'reliability.Instrument',
+                "$video_query as File_in_DB",
+                'reliability.Reliability_score',
+                'session.Current_stage',
+                'reliability.invalid',
+                'reliability.Manual_Swap',
+            )
+        );
 
         $this->query        = $query;
         $this->group_by     = '';
         $this->order_by     = 'reliability.Instrument, session.CandID, session.Visit_label';
-        $this->headers      = array(
-                               'PSCID',
-                               'reliability_center_id',
-                               'Cohort',
-                               'DCCID',
-                               'Gender',
-                               'Visit_label',
-                               'Instrument',
-                               'File_in_DB',
-                               'reliability_score',
-                               'Reliable',
-                              );
+        $this->headers  = array(
+            'PSCID',
+            'SiteID',
+            'Site of Reliability Test',
+            'Cohort',
+            'DCCID',
+            'Gender',
+            'Visit_label',
+        );
+        if ($useProjects === "true") {
+            $this->headers[] = 'Project';
+        }
+        $this->headers =array_merge($this->headers, array('CommentID', 'Instrument','File_in_DB', 'reliability_score', 'Current Stage', 'Invalid', 'Manual Swap', 'Reliable'));
+
+        // Set header as hidden from the data table
+        $this->tpl_data['hiddenHeaders'] = json_encode(['SiteID', 'CommentID', 'Current Stage', 'Invalid', 'Manual Swap']);
         $this->validFilters = array(
                                'reliability.reliability_center_id',
                                'session.SubprojectID',
@@ -335,95 +351,6 @@ class Reliability extends \NDB_Menu_Filter
         }
         return $threshold;
         //return array("adi_r_proband" => 89.5, "adi_r_subject" => 89.5, "adi_r" => 89.5, 'aosi' => 78.0, 'csbs' => 79.5, 'ados_module1' => 79.5, 'ados_module2' => 79.5);
-    }
-    function _setDataTableRows($count)
-    {
-
-        $threshold = $this->getThreshholds();
-        // print out
-        $x = 0;
-        foreach ($this->list as $item) {
-            //count column
-            $this->tpl_data['items'][$x][0]['value'] = $x + $count;
-            //print out data rows
-            $i = 1;
-            // $identifier = $item['Tracking_log_ID'];
-            $comment_id    = $item['CommentID'];
-            $site_id       = $item['Site'];
-            $current_stage = $item['Current_stage'];
-            $invalid       = $item['invalid'];
-            $manual        = $item['Manual_Swap'];
-            if ($item['Manual_Swap'] == 'yes' && $item['invalid'] == 'yes') {
-                continue;
-            }
-            foreach ($item as $key => $val) {
-
-                // Confused about this line
-                if ($key =='Tracking_log_ID') {
-                    continue;
-                }
-                if ($key == 'CommentID') {
-                    continue;
-                }
-                if ($key == 'Current_stage') {
-                    continue;
-                }
-                if ($key == 'invalid') {
-                    continue;
-                }
-                if ($key == 'Manual_Swap') {
-                    continue;
-                }
-                // {
-                //                    $this->tpl_data['items'][$x][$i]['CommentID'] = $item['CommentID'];
-                //               $this->tpl_data['items'][$x][$i]['Instrument'] = $item['Instrument'];
-                //                   }
-                $this->tpl_data['items'][$x][$i]['name']  = $key;
-                $this->tpl_data['items'][$x][$i]['value'] = $val;
-                if ($key == 'PSCID') {
-                    $this->tpl_data['items'][$x][$i]['CommentID']     = $comment_id;
-                    $this->tpl_data['items'][$x][$i]['SiteID']        = $item['Site'];
-                    $this->tpl_data['items'][$x][$i]['Instrument']    = $item['Instrument'];
-                    $this->tpl_data['items'][$x][$i]['Current_stage'] = $current_stage;
-                    $this->tpl_data['items'][$x][$i]['invalid']       = $invalid;
-                    $this->tpl_data['items'][$x][$i]['manual']        = $manual;
-                }
-                if ($key == 'Site') {
-                    $this->tpl_data['items'][$x][$i]['value'] = $this->centerIDMap[$item['Site']];
-                }
-                if ($key == 'Reliability_score') {
-                    $this->tpl_data['items'][$x][$i+1]['name'] = 'Reliability';
-                    if (is_null($val)) {
-                        $reliable = null;
-                    } else if ($val >= $threshold[$item['Instrument']]) {
-                        $reliable = 'Yes';
-                    } else {
-                        $reliable = 'No';
-                    }
-                    $this->tpl_data['items'][$x][$i+1]['value'] = $reliable;
-                }
-                if ($key == 'File_in_DB') {
-                    if ($val!="No") {
-                        $db           = \Database::singleton();
-                        $video_params = $db->pselectRow(
-                            "SELECT File_name as fn, uploaded_by as up FROM videos WHERE record_id= :rid",
-                            array('rid' => $val)
-                        );
-                        $factory      = \NDB_Factory::singleton();
-                        $baseURL      = $factory->settings()->getBaseURL();
-                        $rest_path    ="/temp_videos/ajax/GetFile.php?File=/videos/".$video_params['up'].'/'.$video_params['fn'];
-                        $this->tpl_data['items'][$x][$i]['value'] = '<a href="' . $baseURL.$rest_path . '" download ="' . $video_params['fn'] . '">Yes</a>';
-                    } else {
-                        $this->tpl_data['items'][$x][$i]['value'] = "No";
-                    }
-                }
-
-                $i++;
-            }
-            $x++;
-        }
-
-        return true;
     }
 
     function _populate_reliability_table()
@@ -898,6 +825,54 @@ class Reliability extends \NDB_Menu_Filter
         $DB->run("INSERT INTO reliability (CommentID, reliability_center_id, Instrument, Manual_Swap, EARLI_Candidate) VALUES ('$CommentID', $CenterID, '$Instrument', 'no', 'yes')");
         return array("message" => "Inserted new reliability candidate $PSCID/$Visit_label for EARLI collaboration");
     }
+    /**
+     * Override toJSON to append a calculated field to the default JSON object
+     *
+     * @return a json encoded string of the headers and data from this table
+     */
+    function toJSON()
+    {
+        $tableData = $this->toArray();
+        $threshold = $this->getThreshholds();
+        $cohort    = \Utility::getSubprojectList();
+
+        foreach ($tableData['Data'] as $key => $record) {
+
+            // Calculate and set `Reliable` column
+            $instrumentThreshold = isset($record[9], $threshold[$record[9]]) ?
+                $threshold[$record[9]] :
+                null;
+            $instrumentScore     = $record[11];
+
+            // Map cohort id to a string value
+            $record[3] = $cohort[$record[3]];
+
+            if ($instrumentScore == null) {
+                $isReliable = "";
+            } else if ($instrumentScore >= $instrumentThreshold) {
+                $isReliable = "Yes";
+            } else {
+                $isReliable = "No";
+            }
+           if($record[10]!="No")
+            {
+                $db           = \Database::singleton();
+                $video_params = $db->pselectRow(
+                    "SELECT File_name as fn, uploaded_by as up FROM videos WHERE record_id= :rid",
+                    array('rid' => $record[10])
+                );
+                $record[10] =$video_params['up'].",".$video_params['fn'] ;
+            }
+
+
+            $record[] = $isReliable;
+
+            $tableData['Data'][$key] = $record;
+        }
+
+        return json_encode($tableData);
+    }
+
 
     /**
      * Include the column formatter required to display the feedback link colours
@@ -914,6 +889,8 @@ class Reliability extends \NDB_Menu_Filter
             $deps,
             array(
              $baseURL . "/reliability/js/reliability_helper.js",
+                $baseURL . "/reliability/js/columnFormatter.js",
+
             )
         );
     }
