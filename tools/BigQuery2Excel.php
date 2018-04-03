@@ -52,7 +52,7 @@ function addSheet($query, $name)
     global $DB, $ExcelApplication;
 
     print "adding tab " . $name . "\n";
-    $DB->select($query, $result);
+    $result = $DB->pselect($query, array());
 
     $ExcelWorkSheet = new PHPExcel_Worksheet($ExcelApplication, $name);
     $ExcelApplication->addSheet($ExcelWorkSheet, -1);
