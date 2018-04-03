@@ -95,9 +95,6 @@ class NDB_BVL_Instrument_parental_stress_scale extends NDB_BVL_Instrument
 
         $this->addTextElement('person_interviewed', 'Person Interviewed :');
         $this->addTextElement('interviewed_by', 'Interviewed by :');
-
-        $recording_device = array(''=>'Choose one', 'audio'=>'Audio','video'=>'Video');
-        $this->addSelect('recording_device', 'Please choose type of recording used :', $recording_device);
         $this->addTextAreaElement('comments', 'Comments :');
 
         $this->addScoreColumn('parent_scale_score', 'Parent Stress Scale Score :');
