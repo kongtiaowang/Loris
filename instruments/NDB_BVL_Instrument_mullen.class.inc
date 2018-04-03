@@ -1704,7 +1704,15 @@ Anything above the ceiling level will be considered/scored as 0<br><br>
              ));
              
          } else {
-             $results = $db->pselect("SELECT examinerID, full_name FROM examiners WHERE centerID=:centre ORDER BY full_name", array('centre' => $centerID));
+             $results = $db->pselect(
+                 "SELECT e.examinerID, e.full_name
+                     FROM examiners e
+                         JOIN examiners_psc_rel epr
+                             ON (epr.examinerID=e.examinerID)
+                 WHERE epr.centerID=:centID
+                     ORDER BY full_name",
+                 array('centID' => $centerID)
+             );
              
          }
 

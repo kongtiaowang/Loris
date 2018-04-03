@@ -1243,7 +1243,15 @@ e skills first apparent");               // $this->form->addElement('select', 'q
             $test_id = $db->pselectOne("SELECT ID FROM test_names WHERE Test_name =:tst_name", array('tst_name'=>'adi_r_proband'));
             $results = $db->pselect("SELECT certification.examinerID, full_name FROM certification JOIN examiners ON (certification.examinerID=examiners.examinerID) WHERE testID =:tid AND pass =:cert_id AND centerID =:cid ORDER BY full_name",array('tid'=>$test_id,'cert_id'=>'certified','cid'=>$centerID));
         } else {
-            $results = $db->pselect("SELECT examinerID, full_name FROM examiners WHERE centerID=:centID ORDER BY full_name", array('centID' => $centerID));
+            $results = $db->pselect(
+                "SELECT e.examinerID, e.full_name
+                     FROM examiners e
+                         JOIN examiners_psc_rel epr
+                             ON (epr.examinerID=e.examinerID)
+                 WHERE epr.centerID=:centID
+                     ORDER BY full_name",
+                array('centID' => $centerID)
+            );
         }
         
         $examiners = array(''=>'');

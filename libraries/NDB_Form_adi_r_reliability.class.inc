@@ -3089,7 +3089,15 @@ if($score_record['q_2_age_first_noticed_code']=='8' AND $score_record3['q_2_age_
        $db =& Database::singleton();
        $centerID = $db->pselectOne("SELECT session.CenterID FROM session, flag WHERE session.ID=flag.SessionID and flag.CommentID=:cID", array('cID' => $this->identifier));
 
-       $results = $db->pselect("SELECT examinerID, full_name FROM examiners WHERE centerID=:cID ORDER BY full_name", array('cID' => $centerID));
+       $results = $db->pselect(
+           "SELECT e.examinerID, e.full_name
+                     FROM examiners e
+                         JOIN examiners_psc_rel epr
+                             ON (epr.examinerID=e.examinerID)
+                 WHERE epr.centerID=:centID
+                     ORDER BY full_name",
+           array('centID' => $centerID)
+       );
        
        $examiners = array(''=>'');
        if(is_array($results) && !empty($results)) {
