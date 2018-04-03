@@ -14,6 +14,10 @@ class CouchDBDemographicsImporter {
             'Description' => 'Date of Birth',
             'Type' => 'varchar(255)'
         ),
+        'Proband_DoB' => array(
+            'Description' => 'Proband Date of Birth',
+            'Type' => 'varchar(255)'
+        ),
         'CandID' => array(
             'Description' => 'DCC Candidate Identifier',
             'Type' => 'varchar(255)'
@@ -86,6 +90,10 @@ class CouchDBDemographicsImporter {
             'Description' => 'NDAR Consent',
             'Type' => "enum('yes','no','not_answered')",
         ),
+        'NDAR_consent_date' => array(
+            'Description' => 'NDAR Consent Date',
+            'Type' => "varchar(255)",
+        ),
         'NDAR_consent_withdrawal' => array(
             'Description' => 'NDAR Consent Withdrawal Date',
             'Type' => "varchar(255)",
@@ -93,6 +101,10 @@ class CouchDBDemographicsImporter {
         'Study_consent' => array(
             'Description' => 'Study Consent',
             'Type' => "enum('yes','no','not_answered')",
+        ),
+        'Study_consent_date' => array(
+            'Description' => 'Study Consent Date',
+            'Type' => "varchar(255)",
         ),
         'Study_consent_withdrawal' => array(
             'Description' => 'Study Consent Withdrawal Date',
@@ -102,6 +114,10 @@ class CouchDBDemographicsImporter {
             'Description' => 'Air Pollution Consent',
             'Type' => "enum('yes','no','not_answered')",
         ),
+        'Air_pollution_consent_date' => array(
+            'Description' => 'Air Pollution Consent Date',
+            'Type' => "varchar(255)",
+        ),
         'Air_pollution_consent_withdrawal' => array(
             'Description' => 'Air Pollution Consent Withdrawal Date',
             'Type' => "varchar(255)",
@@ -109,6 +125,10 @@ class CouchDBDemographicsImporter {
         'Mail_tooth_kit_consent' => array(
             'Description' => 'Mail Tooth Kit Consent',
             'Type' => "enum('yes','no','not_answered')",
+        ),
+        'Mail_tooth_kit_consent_date' => array(
+            'Description' => 'Mail Tooth Kit Consent Date',
+            'Type' => "varchar(255)",
         ),
         'Mail_tooth_kit_consent_withdrawal' => array(
             'Description' => 'Mail Tooth Kit Consent Withdrawal Date',
@@ -151,6 +171,7 @@ class CouchDBDemographicsImporter {
     function _generateQuery() {
         $config = NDB_Config::singleton();
         $fieldsInQuery = "SELECT c.DoB, 
+                                 c.ProbandDoB                                                AS Proband_DoB,
                                  c.candid                                                    AS CandID,
                                  c.pscid                                                     AS PSCID,
                                  s.visit_label                                               AS Visit_label,
@@ -182,14 +203,18 @@ class CouchDBDemographicsImporter {
                                  COALESCE(pso.description, 'Active')                         AS Status, 
                                  ps.participant_suboptions                                   AS Status_reason, 
                                  ps.reason_specify                                           AS Status_comments, 
-                                 COALESCE(ps.ndar_consent, 'yes')                            AS NDAR_consent, 
-                                 COALESCE(ps.ndar_consent_withdrawal, '0000-00-00')          AS NDAR_consent_withdrawal, 
-                                 COALESCE(ps.study_consent, 'yes')                           AS Study_consent, 
-                                 COALESCE(ps.study_consent_withdrawal, '0000-00-00')         AS Study_consent_withdrawal, 
+                                 ps.ndar_consent                                             AS NDAR_consent, 
+                                 ps.ndar_consent_date                                        AS NDAR_consent_date,
+                                 ps.ndar_consent_withdrawal                                  AS NDAR_consent_withdrawal, 
+                                 ps.study_consent                                            AS Study_consent, 
+                                 ps.study_consent_date                                       AS Study_consent_date,
+                                 ps.study_consent_withdrawal                                 AS Study_consent_withdrawal, 
                                  ps.air_consent                                              AS Air_pollution_consent, 
-                                 COALESCE(ps.air_consent_withdrawal, '0000-00-00')           AS Air_pollution_consent_withdrawal, 
-                                 ps.mail_toothkit_consent                                    AS Mail_tooth_kit_consent, 
-                                 COALESCE(ps.mail_toothkit_consent_withdrawal, '0000-00-00') AS Mail_tooth_kit_consent_withdrawal";
+                                 ps.air_consent_date                                         AS Air_pollution_consent_date,
+                                 ps.air_consent_withdrawal                                   AS Air_pollution_consent_withdrawal, 
+                                 ps.mail_toothkit_consent                                    AS Mail_tooth_kit_consent,
+                                 ps.mail_toothkit_consent_date                               AS Mail_tooth_kit_consent_date,
+                                 ps.mail_toothkit_consent_withdrawal                         AS Mail_tooth_kit_consent_withdrawal";
         $tablesToJoin = " FROM   session s 
                                  JOIN candidate c using (candid) 
                                  LEFT JOIN psc p 
