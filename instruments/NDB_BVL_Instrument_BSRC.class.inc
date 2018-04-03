@@ -259,7 +259,7 @@ INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, Subp
      $this->addTextAreaElement("q8_medical_pharma_specify","If YES, please specify", array("q8_medical_pharma{@}=={@}yes"),"If Yes, please specify:");
      $this->addSelect("q9_continue_nextyr","<BR><strong>9)</strong> If this is your child's 36-month assessment, do you plan to continue your child's enrollment in intervention during next year?",$this->yesNo2);
      
-     $this->addSelect("q10_therapyoptions", "<strong>10)</strong> If you checked yes in #9, please check all that apply", $this->intervention, "multiple size='6'");
+     $this->addSelect("q10_therapyoptions", "<strong>10)</strong> If you checked yes in #9, please check all that apply", $this->intervention, array("multiple"));
      $this->XINRegisterRule("q10_therapyoptions", array("q9_continue_nextyr{@}=={@}yes"),"Required");
      
      $this->addTextAreaElement("general_comments","Is there anything else you would like to tell us about services your child has received,please write your comments");
