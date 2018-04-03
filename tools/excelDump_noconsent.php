@@ -93,7 +93,7 @@ function MapSubprojectID(&$results) {
 //Get the names of all instrument tables
 $query = "select * from test_names order by Test_name";
 //$query = "select * from test_names where Test_name like 'a%' order by Test_name";  //for rapid testing
-$DB->select($query, $instruments);
+$instruments = $DB->pselect($query, array());
 
 print_r($instruments);
 // exit;
@@ -131,7 +131,7 @@ foreach ($instruments as $instrument) {
             $query = "select c.PSCID, c.CandID, s.SubprojectID, s.Visit_label, s.Submitted, s.Current_stage, s.Screening, s.Visit, f.Administration, e.full_name as Examiner_name, f.Data_entry, f.Validity, i.* from candidate c, session s, flag f,participant_status ps, $Test_name i left outer join examiners e on i.Examiner = e.examinerID where c.PSCID not like 'dcc%' and c.PSCID not like '0%' and c.PSCID not like '1%' and c.PSCID not like '2%' and c.PSCID != 'scanner' and i.CommentID not like 'DDE%' and c.CandID = s.CandID and s.ID = f.sessionID and f.CommentID = i.CommentID AND c.Active='Y' AND s.Active='Y' AND  c.CenterID IN (2, 3, 4, 5) AND ps.CandID=c.CandID order by s.Visit_label, c.PSCID";
         }
     }
-	$DB->select($query, $instrument_table);
+    $instrument_table = $DB->pselect($query, array());
 
     MapSubprojectID($instrument_table);
     if ($Test_name == 'tsi') {
@@ -152,11 +152,11 @@ foreach ($instruments as $instrument) {
 //check if figs table exists
 
 $query = "SHOW TABLES LIKE 'figs_year3_relatives'";
-$DB->select($query,$result);
+$result = $DB->pselect($query,array());
 if (count($result) > 0) {
 	$Test_name = "figs_year3_relatives";
 	$query = "select c.PSCID, c.CandID, s.SubprojectID, s.Visit_label, fyr.* from candidate c, session s, flag f, participant_status ps,figs_year3_relatives fyr where c.PSCID not like 'dcc%' and fyr.CommentID not like 'DDE%' and c.CandID = s.CandID and s.ID = f.sessionID and f.CommentID = fyr.CommentID AND c.Active='Y' AND s.Active='Y' AND ps.CandID=c.CandID order by s.Visit_label, c.PSCID";
-	$DB->select($query, $instrument_table);
+    $instrument_table = $DB->pselect($query, array());
 	if(PEAR::isError($instrument_table)) {
 		print "Cannot figs_year3_relatives data ".$instrument_table->getMessage()."<br>\n";
 		die();
@@ -171,7 +171,7 @@ if (count($result) > 0) {
 $Test_name = "candidate_info";
 //this query is a but clunky, but it gets rid of all the crap that would otherwise appear.
 $query = "SELECT DISTINCT c.PSCID, c.CandID, c.Gender, c.DoB, ROUND(DATEDIFF(NOW(),c.DoB)/(365/12)) as Candidate_Age, s.SubprojectID, c.ProjectID, pc.Value as Plan, c.EDC, pc1.Value as Comments, c.flagged_caveatemptor as Caveat_Emptor, c.flagged_info as Caveat_Emptor_reason, c.flagged_other as Caveat_Emptor_detail, c.ProbandGender, c.ProbandDoB,ROUND(DATEDIFF(c.DoB, c.ProbandDoB) / (365/12)) AS Age_difference,ps.ndar_consent from candidate c LEFT JOIN session s ON (c.CandID = s.CandID) LEFT JOIN parameter_candidate pc ON (c.CandID = pc.CandID AND pc.ParameterTypeID=73754) LEFT JOIN parameter_candidate pc1 ON (c.CandID = pc1.CandID AND pc1.ParameterTypeID=7296) LEFT JOIN participant_status ps ON (ps.CandID=c.CandID) WHERE c.CenterID IN (2,3,4,5) AND c.Active='Y'  AND s.Active='Y' ORDER BY c.PSCID";
-$DB->select($query, $results);
+$results = $DB->pselect($query, array());
 
 foreach($results as &$result) {
     $result['FamilyID']= '';
@@ -220,7 +220,7 @@ $fieldsInQuery = "SELECT c.CandID, c.PSCID, s.Visit_label, s.SubprojectID, p.Ali
             $fieldsInQuery .= $EDCFields;
         }
         $concatQuery = $fieldsInQuery . $tablesToJoin . " WHERE s.Active='Y' AND c.Active='Y' AND c.PSCID <> 'scanner'";
-$DB->select($concatQuery, $results);
+$results = $DB->pselect($concatQuery, array());
 
 MapProjectID($results);
 MapSubprojectID($results);
@@ -252,6 +252,7 @@ $Query = "SELECT c.PSCID, s.Visit_label, s.ID as SessionID, fmric.Comment
                     LEFT JOIN participant_status_options pso ON (pso.ID=ps.participant_status)
                     WHERE c.PSCID <> 'scanner' AND c.PSCID NOT LIKE '%9999' 
                     AND c.Active='Y' AND s.Active='Y' AND c.CenterID <> 1";
+// TODO:remove select complex case
 $DB->select($Query, $results);
 
 MapProjectID($results);
@@ -264,7 +265,7 @@ writeExcel($Test_name, $results, $dataDir);
 */
 $Test_name = "DataDictionary";
 $query = "select Name, Type, Description, SourceField, SourceFrom from parameter_type where SourceField is not null order by SourceFrom";
-$DB->select($query, $dictionary);
+$dictionary = $DB->pselect($query, array());
 
 writeExcel($Test_name, $dictionary, $dataDir);
 

@@ -246,11 +246,13 @@ class NDB_BVL_Instrument_figs_year3 extends NDB_BVL_Instrument
         }
         
         // get saved data to pre-populate form
-        $relativeWhere = '';
+        $relQuery="SELECT * FROM ".$this->table." WHERE CommentID=:cid ";
+        $relParams=array("cid"=>$this->getCommentID());
         if(!empty($this->relativeID)) {
-            $relativeWhere = "AND RelativeID='".$this->relativeID."'";
+            $relQuery .= " AND RelativeID=:rid";
+            $relParams = $relParams + array("rid"=>$this->relativeID);
         }
-        $GLOBALS['DB']->select("SELECT * FROM $this->table WHERE CommentID='".$this->getCommentID()."' $relativeWhere", $defaults);
+        $defaults = $GLOBALS['DB']->pselect($relQuery, $relParams);
         
         // set the defaults (call private method _setDefaultsArray
         // which could be overridden if necessary)
@@ -455,9 +457,9 @@ class NDB_BVL_Instrument_figs_year3 extends NDB_BVL_Instrument
         
         $db =& Database::singleton();
 
-        $query = "SELECT RelativeCode from figs_year3_relatives WHERE CommentID='".$this->getCommentID()."' AND DataEntryCompleted=0";
-
-        $db->select($query, $incompleteRelatives);
+        $query = "SELECT RelativeCode from figs_year3_relatives WHERE CommentID=:cid AND DataEntryCompleted=0";
+        $queryParams=array("cid"=>$this->getCommentID());
+        $incompleteRelatives = $db->pselect($query, $queryParams);
         foreach($incompleteRelatives AS $incompleteRelative) {
             if(!isset($this->localDefaults['incompleteRelatives'])) {
                 $this->localDefaults['incompleteRelatives'] = '';
@@ -1698,8 +1700,7 @@ work or with social relationships?", $questionOptions);
     {
         $db =& Database::singleton();
         
-        $results = array();
-        $db->select("SELECT RelativeID, RelativeCode FROM figs_year3_relatives WHERE CommentID='".$this->getCommentID()."'", $results);
+        $results = $db->pselect("SELECT RelativeID, RelativeCode FROM figs_year3_relatives WHERE CommentID=:cid", array("cid"=>$this->getCommentID()));
         
         $relatives = array();
         foreach($results AS $row) {

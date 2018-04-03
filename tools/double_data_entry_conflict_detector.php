@@ -34,8 +34,8 @@ foreach($instance_pairs AS $instance_pair) {
 function getInstancePairsForInstrument($instrument_name) {
     $db =& Database::singleton();
 
-    $query = "SELECT CommentID, CONCAT('DDE_', CommentID) AS DDECommentID FROM flag where Test_name='$instrument_name' and LEFT(CommentID, 3) != 'DDE'";
-    $db->select($query, $instances);
+    $query = "SELECT CommentID, CONCAT('DDE_', CommentID) AS DDECommentID FROM flag where Test_name=:tn and LEFT(CommentID, 3) != 'DDE'";
+    $instances = $db->pselect($query, array("tn"=>$instrument_name));
 
     $instance_pairs = array();
 

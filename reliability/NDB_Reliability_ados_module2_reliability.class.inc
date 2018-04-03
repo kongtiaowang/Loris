@@ -14,7 +14,7 @@ class NDB_Reliability_ados_module2_reliability extends NDB_Reliability
     {
         $DB =& Database::singleton();
 
-        $DB->select("SELECT * FROM ados_module2_reliability", $result);
+        $result = $DB->pselect("SELECT * FROM ados_module2_reliability", array());
                
         //print_r($this->identifier);
         if (!empty($this->identifier)) { 

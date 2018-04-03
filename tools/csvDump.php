@@ -104,7 +104,7 @@ foreach ($instruments as $instrument) {
 	    $query = "select c.PSCID, c.CandID, s.SubprojectID, s.Visit_label, s.Submitted, s.Current_stage, s.Screening, s.Visit, f.Administration, e.full_name as Examiner_name, f.Data_entry, f.Validity, i.* from candidate c, session s, flag f, $Test_name i left outer join examiners e on i.Examiner = e.examinerID where c.PSCID not like 'dcc%' and c.PSCID not like '0%' and c.PSCID not like '1%' and c.PSCID not like '2%' and c.PSCID != 'scanner' and i.CommentID not like 'DDE%' and c.CandID = s.CandID and s.ID = f.sessionID and f.CommentID = i.CommentID AND c.Active='Y' AND s.Active='Y' AND  c.CenterID IN (2, 3, 4, 5) order by s.Visit_label, c.PSCID";
         }
     }
-	$DB->select($query, $instrument_table);
+    $instrument_table = $DB->pselect($query, array());
 	if(PEAR::isError($instrument_table)) {
 		print "Cannot pull instrument table data ".$instrument_table->getMessage()."<br>\n";
 		die();
@@ -119,7 +119,7 @@ foreach ($instruments as $instrument) {
 */
 $Test_name = "figs_year3_relatives";
 $query = "select c.PSCID, c.CandID, s.SubprojectID, s.Visit_label, fyr.* from candidate c, session s, flag f, figs_year3_relatives fyr where c.PSCID not like 'dcc%' and fyr.CommentID not like 'DDE%' and c.CandID = s.CandID and s.ID = f.sessionID and f.CommentID = fyr.CommentID AND c.Active='Y' AND s.Active='Y' order by s.Visit_label, c.PSCID";
-$DB->select($query, $instrument_table);
+$instrument_table = $DB->pselect($query, array());
 if(PEAR::isError($instrument_table)) {
 	print "Cannot figs_year3_relatives data ".$instrument_table->getMessage()."<br>\n";
 	die();
@@ -133,7 +133,7 @@ writeCSV($Test_name, $instrument_table, $dataDir);
 $Test_name = "candidate_info";
 //this query is a but clunky, but it gets rid of all the crap that would otherwise appear.
 $query = "SELECT DISTINCT c.PSCID, c.CandID, c.Gender, c.DoB, s.SubprojectID, c.ProjectID, pc.Value as Plan, c.EDC from candidate c LEFT JOIN session s ON (c.CandID = s.CandID) LEFT JOIN parameter_candidate pc ON (c.CandID = pc.CandID AND pc.ParameterTypeID=73754) WHERE c.CenterID IN (2,3,4,5) AND c.Active='Y'  AND s.Active='Y' ORDER BY c.PSCID";
-$DB->select($query, $results);
+$results = $DB->pselect($query, array());
 if (PEAR::isError($results)) {
 	PEAR::raiseError("Couldn't get candidate info. " . $results->getMessage());
 }
@@ -148,7 +148,7 @@ writeCSV($Test_name, $results, $dataDir);
 */
 $Test_name = "IBISDataDictionary";
 $query = "select Name, Type, Description, SourceField, SourceFrom from parameter_type where SourceField is not null order by SourceFrom";
-$DB->select($query, $dictionary);
+$dictionary = $DB->pselect($query, array());
 if (PEAR::isError($dictionary)) {
 	PEAR::raiseError("Could not generate data dictionary. " . $dictionary->getMessage());
 }

@@ -55,7 +55,7 @@ $result = $db->connect($dbConfig['database'], $dbConfig['quatUser'], $dbConfig['
 // nuke the current data query tables
 $query = "SELECT DISTINCT CurrentGUITable FROM parameter_type";
 $dataQueryTables = array();
-$db->select($query, $dataQueryTables);
+$dataQueryTables = $db->pselect($query, array());
 
 if(is_array($dataQueryTables) && count($dataQueryTables)) {
     foreach($dataQueryTables AS $table) {
@@ -71,7 +71,7 @@ if(is_array($dataQueryTables) && count($dataQueryTables)) {
 // get a list of all parameter types
 $query = "SELECT ParameterTypeID, Name, Type, SourceField, SourceFrom, SourceCondition, CurrentGUITable FROM parameter_type WHERE Queryable=1";
 $parameterTypes = array();
-$db->select($query, $parameterTypes);
+$parameterTypes = $db->pselect($query, array());
 
 // loop over the parameter types to build the data query tables
 $createSQL = "";
@@ -111,7 +111,7 @@ if ($isNIHPD == "true") {
     $query .= " WHERE Approval='Pass'";
 }
 $sessions = array();
-$db->select($query, $sessions);
+$sessions = $db->pselect($query, array());
 
 // make the data table
 $queryableSessions = array();
@@ -125,60 +125,74 @@ foreach($sessions AS $session) {
 // loop over the parameter types to populate the data query tables
 foreach($parameterTypes AS $parameterType) {
     $query = "";
+    $params=array();
+
+    //TODO: added quotations around $parameterType elements
 
     // construct query string dependant on parameter source
     switch($parameterType['SourceFrom']) {
     case 'files':
-        $query = "SELECT SessionID, FileID AS Value FROM files WHERE OutputType='$parameterType[SourceField]'";
+        $query = "SELECT SessionID, FileID AS Value FROM files WHERE OutputType=:sf";
+        $params=array("sf"=>$parameterType['SourceField']);
         break;
 
     case 'parameter_file':
-        $query = "SELECT f.SessionID, p.Value FROM session AS s, files AS f, parameter_file AS p WHERE s.ID=f.SessionID AND f.FileID=p.FileID AND (f.QCStatus<>'Fail' OR f.QCStatus IS NULL) AND ParameterTypeID=$parameterType[ParameterTypeID]";
+        $query = "SELECT f.SessionID, p.Value FROM session AS s, files AS f, parameter_file AS p WHERE s.ID=f.SessionID AND f.FileID=p.FileID AND (f.QCStatus<>'Fail' OR f.QCStatus IS NULL) AND ParameterTypeID=:ptid";
+        $params=array("ptid"=>$parameterType['ParameterTypeID']);
         break;
 
     case 'files_where_parameter':
         // SourceCondition can refer to acquisition protocol as
         // Scan_type and limiter_type.Name=X and limiter_value.Value=Y
         $query = "SELECT files.SessionID, $parameterType[SourceField] AS Value FROM session AS s INNER JOIN files ON (s.ID=files.SessionID) INNER JOIN mri_scan_type ON (files.AcquisitionProtocolID=mri_scan_type.ID) NATURAL JOIN parameter_file AS limiter_value INNER JOIN parameter_type AS limiter_type ON (limiter_value.ParameterTypeID=limiter_type.ParameterTypeID) WHERE $parameterType[SourceCondition]";
+        $params=array();
         break;
 
     case 'parameter_file_where_parameter':
         // SourceCondition can refer to acquisition protocol as
         // Scan_type and limiter_type.Name=X and limiter_value.Value=Y
         $query = "SELECT files.SessionID, $parameterType[SourceField] FROM session AS s INNER JOIN files ON (s.ID=files.SessionID) INNER JOIN mri_scan_type ON (files.AcquisitionProtocolID=mri_scan_type.ID) INNER JOIN parameter_file AS limiter_value ON (limiter_value.FileID=files.FileID) INNER JOIN parameter_type AS limiter_type ON (limiter_value.ParameterTypeID=limiter_type.ParameterTypeID) INNER JOIN parameter_file ON (files.FileID=parameter_file.FileID) INNER JOIN parameter_type ON (parameter_file.ParameterTypeID=parameter_type.ParameterTypeID) WHERE $parameterType[SourceCondition]";
+        $params=array();
         break;
 
     case 'parameter_session':
-        $query = "SELECT SessionID, Value FROM parameter_session WHERE ParameterTypeID=$parameterType[ParameterTypeID]";
+        $query = "SELECT SessionID, Value FROM parameter_session WHERE ParameterTypeID=:ptid";
+        $params=array("ptid"=>$parameterType['ParameterTypeID']);
         break;
 
     case 'parameter_candidate':
-        $query = "SELECT session.ID AS SessionID, Value FROM session LEFT JOIN parameter_candidate USING (CandID) WHERE ParameterTypeID=$parameterType[ParameterTypeID]";
+        $query = "SELECT session.ID AS SessionID, Value FROM session LEFT JOIN parameter_candidate USING (CandID) WHERE ParameterTypeID=:ptid";
+        $params=array("ptid"=>$parameterType['ParameterTypeID']);
         break;
 
     case 'session':
     case 'candidate':
         $query = "SELECT session.ID AS SessionID, $parameterType[SourceField] AS Value FROM session LEFT JOIN candidate USING (CandID)";
+        $params=array();
         break;
 
     case 'psc':
         $query = "SELECT session.ID AS SessionID, $parameterType[SourceField] AS Value FROM session LEFT JOIN psc USING (CenterID)";
+        $params=array();
         break;
 
     case 'mri_acquisition_dates':
         $query = "SELECT session.ID AS SessionID, $parameterType[SourceField] AS Value FROM session LEFT JOIN candidate USING (CandID) LEFT JOIN mri_acquisition_dates ON (session.ID=mri_acquisition_dates.SessionID)";
-	 break;
+        $params=array();
+        break;
 
     //for behavioural instrument data
     default:
+        //TODO what is happening here -> $parameterType[SourceFrom].CommentID??
         $query = "SELECT session.ID AS SessionID, $parameterType[SourceField] AS Value FROM session, flag LEFT JOIN feedback_bvl_thread USING (CommentID), $parameterType[SourceFrom] LEFT JOIN candidate ON (session.CandID = candidate.CandID) WHERE session.ID=flag.SessionID AND flag.Administration<>'None' AND flag.CommentID=$parameterType[SourceFrom].CommentID AND LEFT(flag.CommentID, 3) != 'DDE' AND (feedback_bvl_thread.Status IS NULL OR feedback_bvl_thread.Status='closed' OR feedback_bvl_thread.Status='comment')";
+        $params=array();
         break;
     }
 
     // get column of data
     $dataColumn = array();
     try {
-        $db->select($query, $dataColumn);
+        $dataColumn = $db->pselect($query,$params);
     } catch (LorisException $ex) {
         print "Failed to retrieve $parameterType[Name]: ".$dataColumn->getMessage()."\n";
         print "$query\n";
@@ -198,7 +212,7 @@ foreach($dataTable AS $quatTableName=>$quatTable) {
 
         if(count($record) > 0) {
             // make sure we have a row for this session - if not, create one...
-            if($db->selectOne("SELECT COUNT(*) FROM $quatTableName WHERE SessionID=$record[SessionID]") == 0)
+            if($db->pselectOne("SELECT COUNT(*) FROM $quatTableName WHERE SessionID=:sid", array("sid"=>$record['SessionID'])) == 0)
                 $db->insert($quatTableName, $record);
             else
                 $db->update($quatTableName, $record, array('SessionID'=>$record['SessionID']));

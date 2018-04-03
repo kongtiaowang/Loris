@@ -312,7 +312,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
     function _populate_reliability_table()
     {
         $db =& Database::singleton();
-        $db->select("SELECT CommentID, reliability_center_id FROM reliability", $this->reliability_table);
+        $this->reliability_table = $db->pselect("SELECT CommentID, reliability_center_id FROM reliability", array());
 
 
         $this->reliability_table = map_cIDs($this->reliability_table);
@@ -397,6 +397,8 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
     }
 
     function within_site_flagging($instrument, $ratio, $current_site, $db, $projectID){
+        $db =& Database::singleton();
+
         $phi_site_clause = '';
         if($current_site == "PHI" && ($instrument == "adi_r_subject" || $instrument == "adi_r_proband")){
             $phi_site_clause = " AND Date_taken >= '2009-11-11' ";
@@ -406,7 +408,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
             $phi_site_clause = " AND Date_taken >= '2010-02-15' ";
         }
 
-        $db->select("SELECT i.CommentID FROM {$instrument} as i, flag as f, session as s, candidate as c WHERE i.CommentID=f.CommentID AND f.sessionID=s.ID AND s.CandID = c.CandID AND s.Current_stage<>'Recycling Bin' AND f.Data_entry='Complete' AND i.CommentID LIKE '%{$current_site}%' AND s.visit_label<>'v18' AND i.CommentID NOT LIKE 'DDE%' {$phi_site_clause} AND f.Administration <> 'None' AND c.ProjectID = $projectID ORDER BY RIGHT(i.CommentID, 6)", $instrument_records);
+        $instrument_records = $db->pselect("SELECT i.CommentID FROM {$instrument} as i, flag as f, session as s, candidate as c WHERE i.CommentID=f.CommentID AND f.sessionID=s.ID AND s.CandID = c.CandID AND s.Current_stage<>'Recycling Bin' AND f.Data_entry='Complete' AND i.CommentID LIKE CONCAT('%',:currpsc,'%') AND s.visit_label<>'v18' AND i.CommentID NOT LIKE 'DDE%' {$phi_site_clause} AND f.Administration <> 'None' AND c.ProjectID =:pid ORDER BY RIGHT(i.CommentID, 6)", array("currpsc"=>$current_site,"pid"=>$projectID));
         $total_records_count = $db->selectOne("SELECT COUNT(i.CommentID) FROM {$instrument} as i, flag as f, session as s, candidate as c WHERE i.CommentID=f.CommentID AND f.sessionID=s.ID AND s.CandID = c.CandID AND s.Current_stage<>'Recycling Bin' AND f.Data_entry='Complete' AND i.CommentID LIKE '%{$current_site}%' AND s.visit_label<>'v18' AND i.CommentID NOT LIKE 'DDE%' AND f.Administration <> 'None' AND c.ProjectID = $projectID ORDER BY RIGHT(i.CommentID, 6)");
 
 
@@ -437,6 +439,8 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
     }
 
     function cross_site_flagging($instrument, $current_site, $reliability_sites, $db, $projectID){
+        $db =& Database::singleton();
+
         $ratio = 0.1;
         $reliability_site_index = 0;
         // We want the site to be random, starting from 0 causes a bias towards the first entry
@@ -456,7 +460,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
             $phi_site_clause = " AND Date_taken >= '2010-02-15' ";
         }
 
-        $db->select("SELECT i.CommentID FROM {$instrument} as i, flag as f, session as s, candidate as c WHERE i.CommentID=f.CommentID AND f.sessionID=s.ID AND s.CandID = c.CandID AND s.Current_stage<>'Recycling Bin' AND f.Data_entry='Complete' AND i.CommentID LIKE '%{$current_site}%' AND s.visit_label<>'v18'{$query_extra} AND i.CommentID NOT LIKE 'DDE%' {$phi_site_clause} AND f.Administration <> 'None' AND c.ProjectID = $projectID ORDER BY RIGHT(i.CommentID, 6)", $instrument_records);
+        $instrument_records = $db->pselect("SELECT i.CommentID FROM {$instrument} as i, flag as f, session as s, candidate as c WHERE i.CommentID=f.CommentID AND f.sessionID=s.ID AND s.CandID = c.CandID AND s.Current_stage<>'Recycling Bin' AND f.Data_entry='Complete' AND i.CommentID LIKE CONCAT('%',:currpsc,'%') AND s.visit_label<>'v18' {$query_extra} AND i.CommentID NOT LIKE 'DDE%' {$phi_site_clause} AND f.Administration <> 'None' AND c.ProjectID = :pid ORDER BY RIGHT(i.CommentID, 6)", array("currpsc"=>$current_site,"pid"=>$projectID));
         $total_records_count = $db->selectOne("SELECT COUNT(i.CommentID) FROM {$instrument} as i, flag as f, session as s, candidate c WHERE i.CommentID=f.CommentID AND f.sessionID=s.ID AND s.CandID=c.CandID AND s.Current_stage<>'Recycling Bin' AND f.Data_entry='Complete' AND i.CommentID LIKE '%{$current_site}%' AND s.visit_label<>'v18'{$query_extra} AND i.CommentID NOT LIKE 'DDE%' AND f.Administration <> 'None' AND c.ProjectID = $projectID ORDER BY RIGHT(i.CommentID, 6)");
 
         $current_count = $db->selectOne("SELECT count(*) FROM (SELECT DISTINCT r.CommentID FROM reliability as r, flag as f, session as s  WHERE r.CommentID LIKE '%{$current_site}%' AND r.Instrument='{$instrument}' AND r.reliability_center_id<>{$this->site_id[$current_site]} AND r.invalid = 'no' AND r.CommentID=f.CommentID AND f.sessionID=s.ID AND s.Current_stage<>'Recycling Bin') as t");
@@ -485,7 +489,9 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
         }
     }
     function within_site_flagging_visitlevel($instrument, $ratio, $current_site, $db,$visit_label, $projectID){
-        $db->select("SELECT i.CommentID FROM {$instrument} as i, flag as f, session as s, candidate as c WHERE i.CommentID=f.CommentID AND f.sessionID=s.ID AND s.CandID = c.CandID AND s.Current_stage<>'Recycling Bin' AND f.Data_entry='Complete' AND i.CommentID LIKE '%{$current_site}%' AND s.visit_label = '{$visit_label}' AND i.CommentID NOT LIKE 'DDE%' AND f.Administration <> 'None' AND c.ProjectID = $projectID ORDER BY RIGHT(i.CommentID, 6)", $instrument_records);
+        $db =& Database::singleton();
+
+        $instrument_records = $db->pselect("SELECT i.CommentID FROM {$instrument} as i, flag as f, session as s, candidate as c WHERE i.CommentID=f.CommentID AND f.sessionID=s.ID AND s.CandID = c.CandID AND s.Current_stage<>'Recycling Bin' AND f.Data_entry='Complete' AND i.CommentID LIKE CONCAT('%',:currpsc,'%') AND s.visit_label =:vl AND i.CommentID NOT LIKE 'DDE%' AND f.Administration <> 'None' AND c.ProjectID = :pid ORDER BY RIGHT(i.CommentID, 6)", array("currpsc"=>$current_site,"vl"=>$visit_label,"pid"=>$projectID));
         $total_records_count = $db->selectOne("SELECT COUNT(i.CommentID) FROM {$instrument} as i, flag as f, session as s, candidate as c WHERE i.CommentID=f.CommentID AND f.sessionID=s.ID AND s.CandID = c.CandID AND s.Current_stage<>'Recycling Bin' AND f.Data_entry='Complete' AND i.CommentID LIKE '%{$current_site}%' AND s.visit_label = '{$visit_label}' AND i.CommentID NOT LIKE 'DDE%' AND f.Administration <> 'None' AND c.ProjectID = $projectID ORDER BY RIGHT(i.CommentID, 6)");
 
 
@@ -516,6 +522,8 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
     }
 
     function cross_site_flagging_visitlevel($instrument, $current_site, $reliability_sites, $db, $visit_label, $projectID){
+        $db =& Database::singleton();
+
         $ratio = 0.1;
         $reliability_site_index = 0;
         // We want the site to be random, starting from 0 causes a bias towards the first entry
@@ -535,7 +543,7 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
             $phi_site_clause = " AND Date_taken >= '2010-02-15' ";
         }
 
-        $db->select("SELECT i.CommentID FROM {$instrument} as i, flag as f, session as s, candidate as c WHERE i.CommentID=f.CommentID AND f.sessionID=s.ID AND s.CandID = c.CandID AND s.Current_stage<>'Recycling Bin' AND f.Data_entry='Complete' AND i.CommentID LIKE '%{$current_site}%' AND s.visit_label='{$visit_label}'{$query_extra} AND i.CommentID NOT LIKE 'DDE%' {$phi_site_clause} AND f.Administration <> 'None' AND c.ProjectID = $projectID ORDER BY RIGHT(i.CommentID, 6)", $instrument_records);
+        $instrument_records = $db->pselect("SELECT i.CommentID FROM {$instrument} as i, flag as f, session as s, candidate as c WHERE i.CommentID=f.CommentID AND f.sessionID=s.ID AND s.CandID = c.CandID AND s.Current_stage<>'Recycling Bin' AND f.Data_entry='Complete' AND i.CommentID LIKE CONCAT('%',:currpsc,'%') AND s.visit_label=:vl {$query_extra} AND i.CommentID NOT LIKE 'DDE%' {$phi_site_clause} AND f.Administration <> 'None' AND c.ProjectID =:pid ORDER BY RIGHT(i.CommentID, 6)", array("currpsc"=>$current_site,"vl"=>$visit_label,"pid"=>$projectID));
         $total_records_count = $db->selectOne("SELECT COUNT(i.CommentID) FROM {$instrument} as i, flag as f, session as s, candidate c WHERE i.CommentID=f.CommentID AND f.sessionID=s.ID AND s.CandID=c.CandID AND s.Current_stage<>'Recycling Bin' AND f.Data_entry='Complete' AND i.CommentID LIKE '%{$current_site}%' AND s.visit_label='{$visit_label}'{$query_extra} AND i.CommentID NOT LIKE 'DDE%' AND f.Administration <> 'None' AND c.ProjectID = $projectID ORDER BY RIGHT(i.CommentID, 6)");
 
         $current_count = $db->selectOne("SELECT count(*) FROM (SELECT DISTINCT r.CommentID FROM reliability as r, flag as f, session as s  WHERE r.CommentID LIKE '%{$current_site}%' AND r.Instrument='{$instrument}' AND r.reliability_center_id<>{$this->site_id[$current_site]} AND r.invalid = 'no' AND r.CommentID=f.CommentID AND f.sessionID=s.ID AND s.Current_stage<>'Recycling Bin') as t");
@@ -599,6 +607,8 @@ class NDB_Menu_Filter_reliability extends NDB_Menu_Filter
      }
  */
     function get_current_index($instrument, $current_site, $reliability_sites, $db){
+        $db =& Database::singleton();
+
         $site_name = array_flip($this->site_id);
         $last_site = $db->selectOne("SELECT reliability_center_id FROM reliability where ID=(select max(ID) FROM reliability WHERE CommentID LIKE '%{$current_site}%' AND Instrument='{$instrument}' AND reliability_center_id<>{$this->site_id[$current_site]})");
         if(empty($last_site)){

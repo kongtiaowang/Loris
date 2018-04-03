@@ -77,7 +77,9 @@ function MapSubprojectID(&$results) {
 //Get the names of all instrument tables
 $query = "select * from test_names order by Test_name";
 //$query = "select * from test_names where Test_name like 'a%' order by Test_name";  //for rapid testing
-$DB->select($query, $instruments);
+$instruments = $DB->pselect($query, array());
+
+//TODO: PEAR REMOVAL
 if (PEAR::isError($instruments)) {
 	PEAR::raiseError("Couldn't get instruments. " . $instruments->getMessage());
 }
@@ -113,7 +115,8 @@ foreach ($instruments as $instrument) {
             $query = "select c.PSCID, c.CandID, s.SubprojectID, s.Visit_label, s.Submitted, s.Current_stage, s.Screening, s.Visit, f.Administration, e.full_name as Examiner_name, f.Data_entry, f.Validity, i.* from candidate c, session s, flag f,participant_status ps, $Test_name i left outer join examiners e on i.Examiner = e.examinerID where c.PSCID not like 'dcc%' and c.PSCID not like '0%' and c.PSCID not like '1%' and c.PSCID not like '2%' and c.PSCID != 'scanner' and i.CommentID not like 'DDE%' and c.CandID = s.CandID and s.ID = f.sessionID and f.CommentID = i.CommentID AND c.Active='Y' AND s.Active='Y' AND  c.CenterID IN (2, 3, 4, 5) AND ps.CandID=c.CandID order by s.Visit_label, c.PSCID";
         }
     }
-	$DB->select($query, $instrument_table);
+    $instrument_table = $DB->pselect($query, array());
+    //TODO: PEAR REMOVAL
 	if(PEAR::isError($instrument_table)) {
 		print "Cannot pull instrument table data ".$instrument_table->getMessage()."<br>\n";
 		die();
@@ -156,7 +159,9 @@ $Query = "SELECT c.PSCID, s.Visit_label, s.ID as SessionID, fmric.Comment
                     WHERE c.PSCID <> 'scanner' AND c.PSCID NOT LIKE '%9999' 
                     AND c.Active='Y' AND s.Active='Y' AND c.CenterID <> 1 AND c.CandID=210765";
 print "\n QUERY = $Query";
+// TODO:remove select complex case
 $DB->select($Query, $results);
+//TODO: PEAR REMOVAL
 if (Utility::isErrorX($results)) {
     PEAR::raiseError("Couldn't get candidate info. " . $results->getMessage());
 }
@@ -171,7 +176,7 @@ MapSubprojectID($results);
 */
 $Test_name = "DataDictionary";
 $query = "select Name, Type, Description, SourceField, SourceFrom from parameter_type where SourceField is not null order by SourceFrom";
-$DB->select($query, $dictionary);
+$dictionary = $DB->pselect($query, array());
 if (PEAR::isError($dictionary)) {
 	PEAR::raiseError("Could not generate data dictionary. " . $dictionary->getMessage());
 }
