@@ -355,7 +355,7 @@ class Reliability extends \NDB_Menu_Filter
 
     function _populate_reliability_table()
     {
-        $db =& Database::singleton();
+        $db =& \Database::singleton();
         $this->reliability_table = $db->pselect("SELECT CommentID, reliability_center_id FROM reliability", array());
 
         $this->reliability_table = map_cIDs($this->reliability_table);
@@ -444,7 +444,7 @@ class Reliability extends \NDB_Menu_Filter
     }
 
     function within_site_flagging($instrument, $ratio, $current_site, $db, $projectID){
-        $db =& Database::singleton();
+        $db =& \Database::singleton();
 
         $phi_site_clause = '';
         if ($current_site == "PHI" && ($instrument == "adi_r_subject" || $instrument == "adi_r_proband")) {
@@ -489,7 +489,7 @@ class Reliability extends \NDB_Menu_Filter
     }
 
     function cross_site_flagging($instrument, $current_site, $reliability_sites, $db, $projectID){
-        $db =& Database::singleton();
+        $db =& \Database::singleton();
 
         $ratio = 0.1;
         $reliability_site_index = 0;
@@ -543,7 +543,7 @@ class Reliability extends \NDB_Menu_Filter
         }
     }
     function within_site_flagging_visitlevel($instrument, $ratio, $current_site, $db,$visit_label, $projectID){
-        $db =& Database::singleton();
+        $db =& \Database::singleton();
 
         $instrument_records = $db->pselect("SELECT i.CommentID FROM {$instrument} as i, flag as f, session as s, candidate as c WHERE i.CommentID=f.CommentID AND f.sessionID=s.ID AND s.CandID = c.CandID AND s.Current_stage<>'Recycling Bin' AND f.Data_entry='Complete' AND i.CommentID LIKE CONCAT('%',:currpsc,'%') AND s.visit_label =:vl AND i.CommentID NOT LIKE 'DDE%' AND f.Administration <> 'None' AND c.ProjectID = :pid ORDER BY RIGHT(i.CommentID, 6)", array("currpsc"=>$current_site,"vl"=>$visit_label,"pid"=>$projectID));
         $total_records_count = $db->selectOne("SELECT COUNT(i.CommentID) FROM {$instrument} as i, flag as f, session as s, candidate as c WHERE i.CommentID=f.CommentID AND f.sessionID=s.ID AND s.CandID = c.CandID AND s.Current_stage<>'Recycling Bin' AND f.Data_entry='Complete' AND i.CommentID LIKE '%{$current_site}%' AND s.visit_label = '{$visit_label}' AND i.CommentID NOT LIKE 'DDE%' AND f.Administration <> 'None' AND c.ProjectID = $projectID ORDER BY RIGHT(i.CommentID, 6)");
@@ -579,7 +579,7 @@ class Reliability extends \NDB_Menu_Filter
     }
 
     function cross_site_flagging_visitlevel($instrument, $current_site, $reliability_sites, $db, $visit_label, $projectID){
-        $db =& Database::singleton();
+        $db =& \Database::singleton();
 
         $ratio = 0.1;
         $reliability_site_index = 0;
@@ -668,7 +668,7 @@ class Reliability extends \NDB_Menu_Filter
      }
  */
     function get_current_index($instrument, $current_site, $reliability_sites, $db){
-        $db =& Database::singleton();
+        $db =& \Database::singleton();
 
         $site_name = array_flip($this->site_id);
         $last_site = $db->selectOne("SELECT reliability_center_id FROM reliability where ID=(select max(ID) FROM reliability WHERE CommentID LIKE '%{$current_site}%' AND Instrument='{$instrument}' AND reliability_center_id<>{$this->site_id[$current_site]})");
