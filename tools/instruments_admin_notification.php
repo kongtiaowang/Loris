@@ -42,7 +42,7 @@ $mrf_array = $db->pselect(
 //loop through specific/required instruments which share same sessions of mri parameter form
 foreach ($mrf_array as $key=>$mrf_vals) {
     // This array can be extended for more instruments as per the request
-    $instr_array = array('CBCL', 'adi_r_proband', 'adi_r_subject', 'SRS2_InformantReport','SRS2_1', 'SRS2_2');
+    $instr_array = array('CBCL_1_to_5_yrs', 'adi_r_proband', 'adi_r_subject', 'SRS2_InformantReport','SRS2_1', 'SRS2_2');
     foreach ($instr_array as $key => $instr) {
         $check_array = $db->pselect(
             "SELECT c.CandID as cid,c.PSCID,s.ID,s.CenterID,s.Date_visit,ins.Date_taken,f.Administration as adm,f.test_name,s.Visit_label,f.Data_entry,psc.Name as center
@@ -64,7 +64,7 @@ foreach ($mrf_array as $key=>$mrf_vals) {
                 // administration not started or admin not none/complete instruments
                 $condition2 = ($check_vals['adm'] == NULL || ($check_vals['adm'] != 'None' && $check_vals['Data_entry'] != 'Complete'));
                 switch ($instr) {
-                    case "CBCL":
+                    case "CBCL_1_to_5_yrs":
                         $check_date_mrf = strtotime("{$mrf_vals['Date_taken']} + 4 weeks + 1 days");
                         $check_date_visit=strtotime("{$check_vals['Date_visit']} + 4 weeks + 1 days");
                         break;

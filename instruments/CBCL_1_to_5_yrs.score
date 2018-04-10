@@ -1,7 +1,7 @@
 #!/usr/bin/php
 <?php
 /**
-* CBCL Scoring
+* CBCL (1.5-5 yrs) Scoring
 *
 * PHP version 5
 *
@@ -20,7 +20,7 @@ require_once "Database.class.inc";
 $CommentID = $argv[1];
 $db        =& Database::singleton();
 
-$query = "SELECT * from CBCL WHERE CommentID = :CommentID";
+$query = "SELECT * from CBCL_1_to_5_yrs WHERE CommentID = :CommentID";
 
 $WhereCriteria = array('CommentID'=>$CommentID);
 $result        = $db->pselectRow($query, $WhereCriteria);
@@ -143,7 +143,7 @@ $lookup_fields = array('internal'=>'Internal','external'=>'External',
 $non_percent = array( 'internal','external','total');
 foreach ($lookup_fields as $key=>$value) {
     $score_field_query = $key."_raw";
-    $query_score       = "SELECT T, Percentile, Score_Interpretation from CBCL_lookup WHERE Raw = :raw_score 
+    $query_score       = "SELECT T, Percentile, Score_Interpretation from CBCL_1_to_5_yrs_lookup WHERE Raw = :raw_score 
                              AND Type = :criteria";
     $where             = array ('raw_score'=>$scores[$score_field_query],
                                    'criteria'=>$value);
@@ -158,6 +158,6 @@ foreach ($lookup_fields as $key=>$value) {
     }
 }
 //save scores
-$result = $db->update('CBCL', $scores, $WhereCriteria);
+$result = $db->update('CBCL_1_to_5_yrs', $scores, $WhereCriteria);
 exit(0);
 ?>

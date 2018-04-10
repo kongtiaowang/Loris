@@ -1,0 +1,10 @@
+UPDATE test_names SET Test_name = 'CBCL_1_to_5_yrs', Full_name = 'CBCL (1.5-5 years)' WHERE Test_name = 'CBCL';
+UPDATE test_battery SET Test_name = 'CBCL_1_to_5_yrs' WHERE Test_name = 'CBCL';
+UPDATE instrument_subtests SET Test_name = 'CBCL_1_to_5_yrs' WHERE Test_name = 'CBCL';
+UPDATE instrument_subtests SET Subtest_name = 'CBCL_1_to_5_yrs_page1' WHERE Subtest_name = 'CBCL_page1';
+UPDATE instrument_subtests SET Subtest_name = 'CBCL_1_to_5_yrs_page2' WHERE Subtest_name = 'CBCL_page2';
+UPDATE instrument_subtests SET Subtest_name = 'CBCL_1_to_5_yrs_page3' WHERE Subtest_name = 'CBCL_page3';
+UPDATE instrument_subtests SET Subtest_name = 'CBCL_1_to_5_yrs_page4' WHERE Subtest_name = 'CBCL_page4';
+UPDATE flag SET Test_name = 'CBCL_1_to_5_yrs' WHERE Test_name = 'CBCL';
+ALTER TABLE CBCL RENAME CBCL_1_to_5_yrs;
+ALTER TABLE CBCL_lookup RENAME CBCL_1_to_5_yrs_lookup;
