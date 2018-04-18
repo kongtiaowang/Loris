@@ -102,8 +102,25 @@ class NDB_BVL_Instrument_CCC2 extends NDB_BVL_Instrument
         $this->_addMetadataFields();
         //$this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
         // Header
+        $this->addHeader("Information About The Person Completing The Caregiver Response Form");
+        $opts2 = array(
+            null => "",
+            "parent" => "Parent",
+            "caregiver" => "Caregiver",
+            "teacher" => "Teacher",
+            "other" => "Other"
+        );
+        $this->addSelect("responder_realtionship", "Relationship to child:", $opts2);
+        $this->addTextElement("responder_relationship_other", "Other: ");
+        $this->XINRegisterRule(
+            "responder_relationship_other",
+            array("responder_realtionship{@}=={@}other"),
+            "Required",
+            "responder_relationship_other_group"
+        );
+        $this->addTextElement("responder_know_period", "How long have you known this child?: ");
+        $this->addTextAreaElement("comments", "Comments: ");
         $this->addHeader("Information About The Child");
-        $this->addTextElement("child_name", "Child's Name ");
         $opts = array(
             null => "",
             "male" => "Male",
@@ -113,13 +130,6 @@ class NDB_BVL_Instrument_CCC2 extends NDB_BVL_Instrument
             null => "",
             "yes" => "Yes",
             "no" => "No",
-        );
-        $opts2 = array(
-            null => "",
-            "parent" => "Parent",
-            "caregiver" => "Caregiver",
-            "teacher" => "Teacher",
-            "other" => "Other"
         );
         $this->addSelect("child_gender", "Child's Gender: ", $opts);
         $this->addDateElement("user_birthdate", "Child's Birthdate:");
@@ -147,19 +157,7 @@ class NDB_BVL_Instrument_CCC2 extends NDB_BVL_Instrument
             "Required",
             "word_to_sent_no_group"
         );
-        $this->addHeader("Information About The Person Completing The Caregiver Response Form");
-        $this->addTextElement("responder_name", "Name: ");
-        $this->addTextAreaElement("responder_address", "Address: ");
-        $this->addSelect("responder_realtionship", "Relationship to child:", $opts2);
-        $this->addTextElement("responder_relationship_other", "Other: ");
-        $this->XINRegisterRule(
-            "responder_relationship_other",
-            array("responder_realtionship{@}=={@}other"),
-            "Required",
-            "responder_relationship_other_group"
-        );
-        $this->addTextElement("responder_know_period", "How long have you known this child?: ");
-        $this->addTextAreaElement("comments", "Comments: ");
+
     }
 
     /**

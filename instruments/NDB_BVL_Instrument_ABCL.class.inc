@@ -121,18 +121,6 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
     {
         $this->addHeader("ABCL (Adult Behavior Checklist For Ages 18-59)");
 
-        //Adult's Full Name
-        $this->addLabel("ADULT'S FULL NAME");
-
-        $this->addBasicText("first_name", "First");
-        $this->addBasicText("middle_name", "Middle");
-        $this->XINRegisterRule(
-            "middle_name",
-            array("middle_name{@}=={@}NEVER_REQUIRED"),
-            "Never required."
-        );
-        $this->addBasicText("last_name", "Last");
-
         //Adult's Gender
         $gender_options = array(
                            null     => "",
@@ -187,8 +175,6 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
         $this->addBasicText("work_adult", "Adult's work");
 
         $this->addBasicText("work_spouse", "Spouse or partner's work");
-
-        $this->addBasicText("form_filled_by", "THIS FORM FILLED OUT BY (print your full name):");
 
         //Your relationship to Adult
         $relationship_options = array(

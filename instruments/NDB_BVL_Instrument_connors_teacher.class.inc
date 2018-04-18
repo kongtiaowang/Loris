@@ -98,9 +98,6 @@ class NDB_BVL_Instrument_connors_teacher extends NDB_BVL_Instrument
     {
         $this->form->addHeader("CONNORS 3 - Teacher Short");
         $this->_addMetadataFields();
-
-        $this->addBasicText("childs_name_id", "Child's Name/ID:");
-        $this->addBasicText("teachers_name_id", "Teacher's Name/ID:");
         $this->addBasicText("grade", "Grade:");
     }
 

@@ -115,8 +115,6 @@ class NDB_BVL_Instrument_BRIEF2_Teacher extends NDB_BVL_Instrument
 
         $this->addBasicDate('date_today', 'Today\'s Date');
 
-        $this->addBasicText("student_name", "Student's name", ['disabled' => 'disabled']);
-
         $this->addBasicDate('birth_date', 'Date of Birth');
 
         $this->addBasicText("student_gender", "Gender");
@@ -124,8 +122,6 @@ class NDB_BVL_Instrument_BRIEF2_Teacher extends NDB_BVL_Instrument
         $this->addNumericElement("student_age", "Age");
 
         $this->addNumericElement("student_grade", "Grade");
-
-        $this->addBasicText("rater_name", "Rater's name", ['disabled' => 'disabled']);
 
         $relationship_options = array(
                                  null        => "",

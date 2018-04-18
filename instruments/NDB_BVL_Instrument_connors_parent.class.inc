@@ -98,9 +98,6 @@ class NDB_BVL_Instrument_connors_parent extends NDB_BVL_Instrument
     {
         $this->addHeader("CONNORS 3 - Parent Short");
         $this->_addMetadataFields();
-
-        $this->addBasicText("childs_name_id", "Child's Name/ID:");
-        $this->addBasicText("parents_name_id", "Parent's Name/ID:");
         $this->addBasicText("grade", "Grade:");
     }
 

@@ -106,7 +106,6 @@ class NDB_BVL_Instrument_Seizure_Questionnaire extends NDB_BVL_Instrument
         $this->addHeader("Seizure Questionnaire");
         // automatically adds examiner & date of administration
         $this->_addMetadataFields();
-        $this->addBasicText("person_completing_form", "Person completing form:");
         $this->addBasicText("relationship_to_child", "Relationship to child:");
     }
 

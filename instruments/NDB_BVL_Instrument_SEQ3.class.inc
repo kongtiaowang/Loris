@@ -129,10 +129,6 @@ class NDB_BVL_Instrument_SEQ3 extends NDB_BVL_Instrument
 
         $this->addBasicDate('date_today', 'Today\'s Date:');
 
-        $this->addBasicText('child_initials', 'Child\'s Initials:');
-
-        $this->addBasicText('child_id', 'Child\'s ID:');
-
         $this->addBasicDate('child_birth_date', 'Child\'s Date of Birth:');
 
         $options = array(

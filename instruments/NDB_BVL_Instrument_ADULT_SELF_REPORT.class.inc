@@ -111,8 +111,6 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT extends NDB_BVL_Instrument
         // $this->_addMetadataFields();
         $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
         $this->addLabel("<h3>Your full name:</h3>");
-        $this->addTextElement("user_first_name", "$this->indent First: ");
-        $this->addTextElement("user_last_name", "$this->indent Last: ");
 
         $opts = array(
             null   => "",
@@ -232,9 +230,9 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT extends NDB_BVL_Instrument
 
           $this->XINRegisterRule(
               "if_other_marital",
-              array("marital_status{@}=={@}other"),
+              array("marital_state{@}=={@}other"),
               "Required",
-              "if_other_group"
+              "if_other_marital_group"
           );
           $opts= array(
                     null => "",
@@ -254,62 +252,54 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT extends NDB_BVL_Instrument
           $this->addSelect("spouse_A", "A. I get along well with my spouse or partner", $opts);
           $this->XINRegisterRule(
               "spouse_A",
-              array("live_with_spouse{@}=={@}not_true"),
-              "Please skip to page 2 if you've answered \"No\" above",
-              "answer_not_allowed_group"
+              array("live_with_spouse{@}=={@}yes"),
+              "Required"
           );
 
           $this->addSelect("spouse_B", "B. My spouse or partner and I have trouble sharing responsibilites", $opts);
           $this->XINRegisterRule(
               "spouse_B",
-              array("live_with_spouse{@}=={@}not_true"),
-              "Please skip to page 2 if you've answered \"No\" above",
-              "answer_not_allowed_group"
+              array("live_with_spouse{@}=={@}yes"),
+              "Required"
           );
 
           $this->addSelect("spouse_C", "C. I feel satisfied with my spouse or partner", $opts);
           $this->XINRegisterRule(
               "spouse_C",
-              array("live_with_spouse{@}=={@}not_true"),
-              "Please skip to page 2 if you've answered \"No\" above",
-              "answer_not_allowed_group"
+              array("live_with_spouse{@}=={@}yes"),
+              "Required"
           );
 
           $this->addSelect("spouse_D", "D. My spouse or partner and I enjoy similar activities", $opts);
           $this->XINRegisterRule(
               "spouse_D",
-              array("live_with_spouse{@}=={@}not_true"),
-              "Please skip to page 2 if you've answered \"No\" above",
-              "answer_not_allowed_group"
+              array("live_with_spouse{@}=={@}yes"),
+              "Required"
           );
           $this->addSelect("spouse_E", "E. my spouse or partner and I <i>disagree</i> about living arrangements, 
             such as where we live", $opts);
           $this->XINRegisterRule(
               "spouse_E",
-              array("live_with_spouse{@}=={@}not_true"),
-              "Please skip to page 2 if you've answered \"No\" above",
-              "answer_not_allowed_group"
+              array("live_with_spouse{@}=={@}yes"),
+              "Required"
           );
           $this->addSelect("spouse_F", "F. I have trouble with my spouse or partner's family", $opts);
           $this->XINRegisterRule(
               "spouse_F",
-              array("live_with_spouse{@}=={@}not_true"),
-              "Please skip to page 2 if you've answered \"No\" above",
-              "answer_not_allowed_group"
+              array("live_with_spouse{@}=={@}yes"),
+              "Required"
           );
           $this->addSelect("spouse_G", "G. I like my spouse or partner's friends", $opts);
           $this->XINRegisterRule(
               "spouse_G",
-              array("live_with_spouse{@}=={@}not_true"),
-              "Please skip to page 2 if you've answered \"No\" above",
-              "answer_not_allowed_group"
+              array("live_with_spouse{@}=={@}yes"),
+              "Required"
           );
           $this->addSelect("spouse_H", "H. My spouse or partner's behavior annoys me", $opts);
           $this->XINRegisterRule(
               "spouse_H",
-              array("live_with_spouse{@}=={@}not_true"),
-              "Please skip to page 2 if you've answered \"No\" above",
-              "answer_not_allowed_group"
+              array("live_with_spouse{@}=={@}yes"),
+              "Required"
           );
 
           $this->addTextAreaElement("II_comments", "Additional Comments (optional): ");
@@ -411,10 +401,11 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT extends NDB_BVL_Instrument
         $this->addSelect("jobs", "<b><i> At any time in the past 6 months,</i></b> did you have any paid jobs (including self-eployment and military service)? ", $opts);
         $this->addTextAreaElement("job_desc","Description of your job(s)");
         $this->XINRegisterRule(
-              "jobs_desc", 
+              "job_desc",
               array("jobs{@}=={@}yes"),
               "Required",
-              "if_other_group");
+             "job_desc_group"
+              );
         $opts = array(
                   null => "",
                   "not_true" => "Not True",
@@ -424,42 +415,57 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT extends NDB_BVL_Instrument
         $this->addSelect("Job_A", "A. I work well with others", $opts);
         $this->XINRegisterRule(
               "Job_A",
-              array("jobs{@}=={@}no"),
-              "Please skip to section V, if you've answered \"No\" above",
-              "answer_not_allowed_group"
+              array("jobs{@}=={@}yes"),
+              "Required"
           );
         $this->addSelect("Job_B", "B. I have trouble getting along with bosses", $opts);
         $this->XINRegisterRule(
               "Job_B",
-              array("jobs{@}=={@}no"),
-              "Please skip to section V, if you've answered \"No\" above",
-              "answer_not_allowed_group"
+              array("jobs{@}=={@}yes"),
+              "Required"
           );
         $this->addSelect("Job_C", "C. I do my work well", $opts);
         $this->XINRegisterRule(
               "Job_C",
-              array("jobs{@}=={@}no"),
-              "Please skip to section V, if you've answered \"No\" above",
-              "answer_not_allowed_group"
+              array("jobs{@}=={@}yes"),
+              "Required"
           );
         $this->addSelect("Job_D", "D. I have trouble finishing my work", $opts);
         $this->XINRegisterRule(
               "Job_D",
-              array("jobs{@}=={@}no"),
-              "Please skip to section V, if you've answered \"No\" above",
-              "answer_not_allowed_group"
+              array("jobs{@}=={@}yes"),
+              "Required"
           );
         $this->addSelect("Job_E", "E. I am satisfied with my work situation", $opts);
         $this->XINRegisterRule(
               "Job_E",
-              array("jobs{@}=={@}no"),
-              "Please skip to section V, if you've answered \"No\" above",
-              "answer_not_allowed_group"
+              array("jobs{@}=={@}yes"),
+              "Required"
           );
         $this->addSelect("Job_F", "F. I do things that may cause me to lose my job", $opts);
+          $this->XINRegisterRule(
+              "Job_F",
+              array("jobs{@}=={@}yes"),
+              "Required"
+          );
         $this->addSelect("Job_G", "G. I stay away from my job even when I'm not sick or on vacation", $opts);
+          $this->XINRegisterRule(
+              "Job_G",
+              array("jobs{@}=={@}yes"),
+              "Required"
+          );
         $this->addSelect("Job_H", "H. My job is too stressful for me", $opts);
+          $this->XINRegisterRule(
+              "Job_H",
+              array("jobs{@}=={@}yes"),
+              "Required"
+          );
         $this->addSelect("Job_I", "I. I worry too much about work", $opts);
+          $this->XINRegisterRule(
+              "Job_I",
+              array("jobs{@}=={@}yes"),
+              "Required"
+          );
 
         $this->addTextAreaElement("IV_comments", "Additional Comments (optional): ");
         $this->XINRegisterRule(
@@ -475,33 +481,33 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT extends NDB_BVL_Instrument
         $this->addSelect("education", "<b><i>At any time in the past 6 months,</i><b> did you attend school, college, or any other education or training program?", $opts);
         
         $this->addTextElement("kind_of_program","What kind of school or program?");
-        $this->addTextElement("degree_seeking", "What degree or diploma are you seeking?");
-        $this->addTextElement("major", "Major?");
-        $this->addTextElement("expected_grad", "When do you expect to receive your degree or diploma?");
-
-        $this->XINRegisterRule(
+          $this->XINRegisterRule(
               "kind_of_program",
               array("education{@}=={@}yes"),
               "Required",
-              "if_other_group"
+              "kind_of_program_group"
           );
-        $this->XINRegisterRule(
+        $this->addTextElement("degree_seeking", "What degree or diploma are you seeking?");
+          $this->XINRegisterRule(
               "degree_seeking",
               array("education{@}=={@}yes"),
               "Required",
-              "if_other_group"
+              "degree_seeking_group"
+
           );
-        $this->XINRegisterRule(
+        $this->addTextElement("major", "Major?");
+          $this->XINRegisterRule(
               "major",
               array("education{@}=={@}yes"),
               "Required",
-              "if_other_group"
+              "major_group"
           );
+        $this->addTextElement("expected_grad", "When do you expect to receive your degree or diploma?");
         $this->XINRegisterRule(
               "expected_grad",
               array("education{@}=={@}yes"),
               "Required",
-              "if_other_group"
+              "expected_grad_group"
           );
 
         $opts = array(null=> "",
@@ -512,37 +518,32 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT extends NDB_BVL_Instrument
         $this->addSelect("education_A","A. I get along well with other students", $opts);
         $this->XINRegisterRule(
               "education_A",
-              array("education{@}=={@}no"),
-              "Please skip to section VI, if you've answered \"No\" above",
-              "answer_not_allowed_group"
+              array("education{@}=={@}yes"),
+              "Required"
           );
         $this->addSelect("education_B", "B. I achieve what I am capable of", $opts);
         $this->XINRegisterRule(
               "education_B",
-              array("education{@}=={@}no"),
-              "Please skip to section VI, if you've answered \"No\" above",
-              "answer_not_allowed_group"
+              array("education{@}=={@}yes"),
+             "Required"
           );
         $this->addSelect("education_C", "C. I have trouble finishing assignments", $opts);
         $this->XINRegisterRule(
               "education_C",
-              array("education{@}=={@}no"),
-              "Please skip to section VI, if you've answered \"No\" above",
-              "answer_not_allowed_group"
+              array("education{@}=={@}yes"),
+             "Required"
           );
         $this->addSelect("education_D", "D. I am satisfied with my educaitonal situation", $opts);
         $this->XINRegisterRule(
               "education_D",
-              array("education{@}=={@}no"),
-              "Please skip to section VI, if you've answered \"No\" above",
-              "answer_not_allowed_group"
+              array("education{@}=={@}yes"),
+             "Required"
           );
         $this->addSelect("education_E", "E. I do things that may cause me to fail", $opts);
         $this->XINRegisterRule(
               "education_E",
-              array("education{@}=={@}no"),
-              "Please skip to section VI, if you've answered \"No\" above",
-              "answer_not_allowed_group"
+              array("education{@}=={@}yes"),
+              "Required"
           );
         $this->addTextAreaElement("V_comments", "Additional Comments (optional): ");
         $this->XINRegisterRule(
@@ -558,7 +559,7 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT extends NDB_BVL_Instrument
               "illness_description",
               array("illness{@}=={@}yes"),
               "Required",
-              "if_other_group"
+            "illness_description_group"
         );
          
         
@@ -570,7 +571,7 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT extends NDB_BVL_Instrument
               "concern_description",
               array("concerns{@}=={@}yes"),
               "Required",
-              "if_other_group"
+             "concern_description_group"
         );
         $this->addTextAreaElement("self_description", "<b>VII.Please describe the best things about yourself");
         $this->XINRegisterRule(

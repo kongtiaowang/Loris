@@ -113,8 +113,6 @@ class NDB_BVL_Instrument_BRIEF2_Parent extends NDB_BVL_Instrument
 
         $this->form->addElement("static", null, "<br/>");
 
-        $this->addBasicText("childs_name", "Child's name", ['disabled' => 'disabled']);
-
         $this->addBasicDate('birth_date', 'Date of Birth');
 
         $this->addBasicText("childs_gender", "Gender");
@@ -122,8 +120,6 @@ class NDB_BVL_Instrument_BRIEF2_Parent extends NDB_BVL_Instrument
         $this->addNumericElement("childs_age", "Age");
 
         $this->addNumericElement("childs_grade", "Grade");
-
-        $this->addBasicText("rater_name", "Rater's name", ['disabled' => 'disabled']);
 
         $this->addBasicText("relationship_to_child", "Relationship to child");
 
