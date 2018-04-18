@@ -587,13 +587,13 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT extends NDB_BVL_Instrument
 
       }
       function _page4(){
-        $this-> addLabel("<h2>IX. Below is a list of items that describe people. For each item please select \"Not True\", \"Somewhat or Sometimes True\", or \"Very True or Often True\" to describe yourself <i>over the past 6 months.</i> Plase answer all items as well as you can, even if some do not seem to apply to you. </h2>");
+        $this-> addLabel("<h2>IX. Below is a list of items that describe people. For each item please select \"Not True\", \"Somewhat or Sometimes True\", or \"Very True or Often True\" to describe yourself <i>over the past 6 months.</i> Please answer all items as well as you can, even if some do not seem to apply to you. </h2>");
         $questions= [
         "I am too forgetful",
-        "I make good user of my opportunities",
+        "I make good use of my opportunities",
         "I argue a lot",
         "I work up to my ability",
-        "I balme others for my problems",
+        "I blame others for my problems",
         "I use drugs (other than for alcohol and nicotine) for nonmedical purposes (describe)",
         "I brag",
         "I have trouble concentrating or paying attention for long",
@@ -614,7 +614,7 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT extends NDB_BVL_Instrument
         "I break rules at work or elsewhere",
         "I don't eat as well as I should",
         "I don't get along with other people",
-        "I don't gell guilty after doing sometthing I shouldn't",
+        "I don't feel guilty after doing sometthing I shouldn't",
         "I am jealous of others"
         ];
 
@@ -643,12 +643,12 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT extends NDB_BVL_Instrument
         }
       }
 function _page5(){
-    $this->addLabel("<h2>IX. Below is a list of items that describe people. For each item please select \"Not True\", \"Somewhat or Sometimes True\", or \"Very True or Often True\" to describe yourself <i>over the past 6 months.</i> Plase answer all items as well as you can, even if some do not seem to apply to you. </h2>");
+    $this->addLabel("<h2>IX. Below is a list of items that describe people. For each item please select \"Not True\", \"Somewhat or Sometimes True\", or \"Very True or Often True\" to describe yourself <i>over the past 6 months.</i> Please answer all items as well as you can, even if some do not seem to apply to you. </h2>");
         $questions= [
         "I get along badly with my family",
         "I am afraid of certain animals, situations, or places (describe)",
         "My relations with the opposite sex are poor",
-        "I am afraid I might think or do somthing bad",
+        "I am afraid I might think or do something bad",
         "I feel that I have to be perfect",
         "I feel that no one loves me",
         "I feel that others are out to get me",
@@ -657,13 +657,13 @@ function _page5(){
         "I get in many fights",
         "My relations with neighbors are poor",
         "I hang around peoeple who get in trouble",
-        "I hear sounds or voices that other people think aren't there (describ)",
+        "I hear sounds or voices that other people think aren't there (describe)",
         "I am impulsive or act without thinking",
         "I would rather be alone than with others",
         "I lie or cheat",
         "I feel everwhelmed by my responsibilites",
         "I am nervous or tense",
-        "Parts of my body twitch or make nervous movemenets (describe)",
+        "Parts of my body twitch or make nervous movements (describe)",
         "I lack self-confidence",
         "I am not liked by others",
         "I can do certain things better than other people",
@@ -701,14 +701,14 @@ function _page5(){
       }
 
     function _page6(){
-              $this-> addLabel("<h2>IX. Below is a list of items that describe people. For each item please select \"Not True\", \"Somewhat or Sometimes True\", or \"Very True or Often True\" to describe yourself <i>over the past 6 months.</i> Plase answer all items as well as you can, even if some do not seem to apply to you. </h2>");
+              $this-> addLabel("<h2>IX. Below is a list of items that describe people. For each item please select \"Not True\", \"Somewhat or Sometimes True\", or \"Very True or Often True\" to describe yourself <i>over the past 6 months.</i> Please answer all items as well as you can, even if some do not seem to apply to you. </h2>");
 
-              $this-> addLabel("56.Physical problems <i><b>without know medical cause:</b></i>");
+              $this-> addLabel("<h3>56. Physical problems <i><b>without know medical cause:</b></i></h3>");
               $questions=[
                 "a. Aches or pains (<i><b>not</b></i> stomach or headaches)",
                 "b. Headaches",
                 "c. Nausea, feel sick",
-                "d. Problems with eyes (<i><b>not</b></i> if corrected by glasses (describe))",
+                "d. Problems with eyes (<i><b>not</b></i> if corrected by glasses) (describe)",
                 "e. Rashes or other skin problems",
                 "f. Stomachaches",
                 "g. Vomiting, throwing up",
@@ -778,13 +778,13 @@ function _page5(){
 
     }
     function _page7(){
-      $this-> addLabel("<h2>IX. Below is a list of items that describe people. For each item please select \"Not True\", \"Somewhat or Sometimes True\", or \"Very True or Often True\" to describe yourself <i>over the past 6 months.</i> Plase answer all items as well as you can, even if some do not seem to apply to you. </h2>");
+      $this-> addLabel("<h2>IX. Below is a list of items that describe people. For each item please select \"Not True\", \"Somewhat or Sometimes True\", or \"Very True or Often True\" to describe yourself <i>over the past 6 months.</i> Please answer all items as well as you can, even if some do not seem to apply to you. </h2>");
       $questions=[
                 "I am too shy or timid",
                 "My behavior is irresponsible",
                 "I sleep more than most other people during day and/or night (describe)",
                 "I have trouble making decisions",
-                "I have speeck problem (describe)",
+                "I have a speech problem (describe)",
                 "I stand up for my rights",
                 "My behavior is very changeable",
                 "I steal",
@@ -830,7 +830,7 @@ function _page5(){
     }
 
 function _page8(){
-  $this-> addLabel("<h2>IX. Below is a list of items that describe people. For each item please select \"Not True\", \"Somewhat or Sometimes True\", or \"Very True or Often True\" to describe yourself <i>over the past 6 months.</i> Plase answer all items as well as you can, even if some do not seem to apply to you. </h2>");
+  $this-> addLabel("<h2>IX. Below is a list of items that describe people. For each item please select \"Not True\", \"Somewhat or Sometimes True\", or \"Very True or Often True\" to describe yourself <i>over the past 6 months.</i> Please answer all items as well as you can, even if some do not seem to apply to you. </h2>");
       $questions=[
                 "I think about sex too much",
                 "I threaten to hurt people",
