@@ -484,6 +484,7 @@ class Document_Repository extends \NDB_Menu_Filter
             $deps,
             array(
              $baseURL . "/document_repository/js/document_repository_helper.js",
+             $baseURL . "/document_repository/js/columnFormatter.js",
             )
         );
     }

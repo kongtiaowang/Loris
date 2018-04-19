@@ -470,3 +470,11 @@
 
 </table>
 </div>
+<div id="datatable" />
+<script>
+var table = RDynamicDataTable({
+    "DataURL" : "{$baseurl}/document_repository/?format=json",
+    "getFormattedCell" : formatDocument_repositoryColumn
+});
+ReactDOM.render(table, document.getElementById("datatable"));
+</script>
