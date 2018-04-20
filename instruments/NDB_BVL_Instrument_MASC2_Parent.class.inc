@@ -131,22 +131,21 @@ class NDB_BVL_Instrument_MASC2_Parent extends NDB_BVL_Instrument
     }
 
     function _page1() {
-        $this->addLabel("<h4>Instructions: These sentences ask how your child might have been thinking, feeling, or acting recently.  
+        $this->addHeader("<h4><BR>Instructions: These sentences ask how you might have been thinking, feeling, or acting recently.  
                          For each item, please circle the number that describes how often the statement is true about 
-                         your child.</h4>");
-        $this->addLabel("$this->indent Circle 0 if a sentence is Never true about your child.");
-        $this->addLabel("$this->indent Circle 1 if a sentence is Rarely true about your child.");
-        $this->addLabel("$this->indent Circle 2 if a sentence is Sometimes true about your child.");
-        $this->addLabel("$this->indent Circle 3 if a sentence is Often true about your child.");
-        $this->addLabel("<h4>Remember, there are no right or wrong answers, just answer how your child has been feeling recently.</h4>");
+                         your child.<BR><BR>$this->indent Choose 0 if a sentence is Never true about your child.<BR>
+                         $this->indent Choose 1 if a sentence is Rarely true about your child.<BR>
+                         $this->indent Choose 2 if a sentence is Sometimes true about your child.<BR>
+                         $this->indent Choose 3 if a sentence is Often true about your child.<BR><BR>
+                         Remember, there are no right or wrong answers, just answer how your child has been feeling recently.</h4>");
 
         $options =
             array(
                 null=>"",
-                0 => 0,
-                1 => 1,
-                2 => 2,
-                3 => 3
+                0 => "0 - Never true",
+                1 => "1 - Rarely true",
+                2 => "2 - Sometimes true",
+                3 => "3 - Often true"
             );
 
         $questions =
@@ -196,11 +195,11 @@ class NDB_BVL_Instrument_MASC2_Parent extends NDB_BVL_Instrument
     function _page2() {
         $options =
             array(
-                null => "",
-                0 => 0,
-                1 => 1,
-                2 => 2,
-                3 => 3
+                null=>"",
+                0 => "0 - Never true",
+                1 => "1 - Rarely true",
+                2 => "2 - Sometimes true",
+                3 => "3 - Often true"
             );
 
         $this->displayHeaders(2);
@@ -214,7 +213,7 @@ class NDB_BVL_Instrument_MASC2_Parent extends NDB_BVL_Instrument
                 "q31" => "31. My child feels sick to his/her stomach.",
                 "q32" => "32. My child get nervous if he/she have to perform in public.",
                 "q33" => "33. Bad weather, the dark, heights, animals, or bugs scare my child.",
-                "q34" => "34. My hands shake.",
+                "q34" => "34. My child's hands shake.",
                 "q35" => "35. My child checks to make sure things are safe.",
                 "q36" => "36. My child has trouble asking other kids to play with him/her.",
                 "q37" => "37. My child's hands feel sweaty or cold.",
