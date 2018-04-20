@@ -56,7 +56,6 @@ class NDB_BVL_Instrument_SEQ3 extends NDB_BVL_Instrument
         //Any HTML_Quickform date elements must be listed here
         $this->dateTimeFields =array(
                                 "Date_taken",
-                                "date_today",
                                 "child_birth_date",
                                );
 
@@ -66,8 +65,6 @@ class NDB_BVL_Instrument_SEQ3 extends NDB_BVL_Instrument
 
         // required fields for data entry completion status
         $this->_requiredElements = array(
-                                    'Examiner',
-                                    'date_today',
                                     '1_react_sensitively_to_sounds',
                                     '15_disturbed_by_bright_lights',
                                     '36_dislike_cuddling_or_being_held',
@@ -112,8 +109,7 @@ class NDB_BVL_Instrument_SEQ3 extends NDB_BVL_Instrument
         // display test name
         $this->addHeader("Sensory Experiences Questionnaire Version 3.0");
 
-        // automatically adds examiner & date of administration
-        $this->_addMetadataFields();
+        $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
     }
 
     /**
@@ -126,8 +122,6 @@ class NDB_BVL_Instrument_SEQ3 extends NDB_BVL_Instrument
         $this->addHeader("SEQ-3.0 (Sensory Experiences Questionnaire Version 3.0)");
 
         /* $this->form->addElement("static", null, "<br/>");*/
-
-        $this->addBasicDate('date_today', 'Today\'s Date:');
 
         $this->addBasicDate('child_birth_date', 'Child\'s Date of Birth:');
 

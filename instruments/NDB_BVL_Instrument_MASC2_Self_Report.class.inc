@@ -131,22 +131,21 @@ class NDB_BVL_Instrument_MASC2_Self_Report extends NDB_BVL_Instrument
     }
 
     function _page1() {
-        $this->addLabel("<h4>Instructions: These sentences ask how you might have been thinking, feeling, or acting recently.  
+        $this->addHeader("<h4><BR>Instructions: These sentences ask how you might have been thinking, feeling, or acting recently.  
                          For each item, please circle the number that describes how often the statement is true about 
-                         your child.</h4>");
-        $this->addLabel("$this->indent Circle 0 if a sentence is Never true about you.");
-        $this->addLabel("$this->indent Circle 1 if a sentence is Rarely true about you.");
-        $this->addLabel("$this->indent Circle 2 if a sentence is Sometimes true about you.");
-        $this->addLabel("$this->indent Circle 3 if a sentence is Often true about you.");
-        $this->addLabel("<h4>Remember, there are no right or wrong answers, just answer how you might have been feeling recently.</h4>");
+                         you.<BR><BR>$this->indent Choose 0 if a sentence is Never true about you.<BR>
+                         $this->indent Choose 1 if a sentence is Rarely true about you.<BR>
+                         $this->indent Choose 2 if a sentence is Sometimes true about you.<BR>
+                         $this->indent Choose 3 if a sentence is Often true about you.<BR><BR>
+                         Remember, there are no right or wrong answers, just answer how you might have been feeling recently.</h4>");
 
         $options =
             array(
                 null=>"",
-                0 => 0,
-                1 => 1,
-                2 => 2,
-                3 => 3
+                0 => "0 - Never true",
+                1 => "1 - Rarely true",
+                2 => "2 - Sometimes true",
+                3 => "3 - Often true"
             );
 
         $questions =
@@ -156,7 +155,7 @@ class NDB_BVL_Instrument_MASC2_Self_Report extends NDB_BVL_Instrument
                 "q3" => "3. I worry about other people.",
                 "q4" => "4. I get scared when my parents go away.",
                 "q5" => "5. I keep my eyes open for danger.",
-                "q6" => "6. I have trouble getting his/her breath.",
+                "q6" => "6. I have trouble getting my breath.",
                 "q7" => "7. The idea of going away to camp scares me.",
                 "q8" => "8. I get shaky or jittery.",
                 "q9" => "9. I try to stay near my mom or dad.",
@@ -196,11 +195,11 @@ class NDB_BVL_Instrument_MASC2_Self_Report extends NDB_BVL_Instrument
     function _page2() {
         $options =
             array(
-                null => "",
-                0 => 0,
-                1 => 1,
-                2 => 2,
-                3 => 3
+                null=>"",
+                0 => "0 - Never true",
+                1 => "1 - Rarely true",
+                2 => "2 - Sometimes true",
+                3 => "3 - Often true"
             );
 
         $this->displayHeaders(2);

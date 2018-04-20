@@ -119,7 +119,7 @@ INSERT INTO instrument_subtests VALUES('', 'rbs_r', 'rbs_r_page1', 'Subscales', 
 		$this->_selectMultipleElements = array();
 
 		// required fields for data entry completion status
-		$this->_requiredElements = array('Examiner', 'q1_whole_body');
+		$this->_requiredElements = array('q1_whole_body');
 
 		// setup the form
 		$this->_setupForm();
@@ -172,8 +172,7 @@ INSERT INTO instrument_subtests VALUES('', 'rbs_r', 'rbs_r_page1', 'Subscales', 
 		// display test name
 		$this->form->addElement('header', 'instrument_title', "Repetitive Behaviour Scale - Revised (RBS-R)");
 
-		// automatically adds examiner & date of administration
-		$this->_addMetadataFields();
+        $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
         $this->form->addElement('select', 'respondent', 'Respondent',array('' => '', 'mother' => 'Mother', 'father' => 'Father', 'other' => 'Other'));
         $this->form->addElement('text', 'respondent_specify', 'If other, specify:');
         

@@ -56,7 +56,6 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT extends NDB_BVL_Instrument
 
         // required fields for data entry completion status
         $this->_requiredElements = array(
-                                    'Examiner',
                                     'CommentID',
                                    );
 
@@ -122,8 +121,6 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT extends NDB_BVL_Instrument
         $this->addNumericElement("user_age", "Your age: ");
 
         $this->addTextElement("user_ethnic_group", "Your ethnic group or race: ");
-
-        $this->addDateElement("date", "Today's Date: ");
 
         $this->addDateElement("user_birthdate", "Your birthdate:");
 

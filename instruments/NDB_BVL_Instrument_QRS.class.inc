@@ -98,7 +98,6 @@ class NDB_BVL_Instrument_QRS extends NDB_BVL_Instrument
     {
         // display test name
         $this->addHeader("QRS");
-
         $config      =& NDB_Config::singleton();
         $dateOptions = array(
             'language'         => 'en',

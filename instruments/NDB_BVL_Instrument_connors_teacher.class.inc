@@ -48,7 +48,6 @@ class NDB_BVL_Instrument_connors_teacher extends NDB_BVL_Instrument
 
         // required fields for data entry completion status
         $this->_requiredElements = array(
-            'Examiner',
             'CommentID',
         );
 
@@ -96,13 +95,14 @@ class NDB_BVL_Instrument_connors_teacher extends NDB_BVL_Instrument
      */
     function _main()
     {
-        $this->form->addHeader("CONNORS 3 - Teacher Short");
-        $this->_addMetadataFields();
+
+        $this->form->addHeader("CONNERS 3 - Teacher Short");
+        $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
         $this->addBasicText("grade", "Grade:");
     }
 
     function _page1() {
-        $this->addHeader("CONNORS 3 - Teacher Short");
+        $this->addHeader("CONNERS 3 - Teacher Short");
         $this->addLabel("<h4><b>Instructions:</b> Here are some things teachers
                          might say about their students. Please tell us about
                          <i>this</i> student and what he/she has been like
