@@ -120,26 +120,6 @@ class NDB_BVL_Instrument_QRS extends NDB_BVL_Instrument
                               disagree. If, on the other hand, the family has dinner together sometimes,
                               but less than 50% of the time, you would <b>circle 3</b>, indicating
                               that you partly disagree.</h4>");
-       /* $this->addLabel("<h4>This questionnaire deals with your thoughts and opinions about
-                         you and your family. There are many blanks on the questionnaire. We would like
-                         you to imagine your child's name on them.\n</h4>");
-        $this->addLabel("<h4>Please respond to each question by picking only one of the
-                         four ratings, using the following scheme.</h4>");
-        $this->addLabel($this->indent . "<h5><b>1 = Strong agreement with the statement.</b></h5>");
-        $this->addLabel($this->indent . "<h5><b>2 = Partial agreement with the statement.</b></h5>");
-        $this->addLabel($this->indent . "<h5><b>3 = Partial disagreement with the statement.</b></h5>");
-        $this->addLabel($this->indent . "<h5><b>4 = Strong disagreement with the statement.</b></h5>");
-        $this->addLabel("<h4>If the family always or almost always eats dinner together, the 
-                              statement made is accurate, therefore you would <b>pick 1</b> to show
-                              that you strongly agree with it. If the family has dinner together
-                              frequently, you would <b>pick 2</b>, showing that you partly agree.
-                              If the family never or rarely has dinner together, then the statement
-                              is inaccurate and you would <b>pick 4</b>, showing that you strongly 
-                              disagree. If, on the other hand, the family has dinner together sometimes,
-                              but less than 50% of the time, you would <b>circle 3</b>, indicating
-                              that you partly disagree.</h4>");
-*/
-
     }
 
     function _page1()
@@ -149,7 +129,7 @@ class NDB_BVL_Instrument_QRS extends NDB_BVL_Instrument
             <b>2 = Partial agreement with the statement.</b><br>
             <b>3 = Partial disagreement with the statement.</b><br>
             <b>4 = Strong disagreement with the statement.</b></h5>");
-        
+
         $options = 
             array(
                 null => "", 
