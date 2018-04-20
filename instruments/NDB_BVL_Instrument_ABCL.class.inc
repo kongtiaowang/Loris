@@ -278,9 +278,9 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
 
         $options = array(
                     null => "",
-                    "2"  => "2",
-                    "1"  => "1",
-                    "0"  => "0",
+                    "2"  => "Very True or Often True",
+                    "1"  => "Somewhat or Sometimes True",
+                    "0"  => "Not True (as far as you know)",
                    );
 
         $this->addSelect("a_gets_along_well_with_partner", "A. Gets along well with spouse or partner", $options);
