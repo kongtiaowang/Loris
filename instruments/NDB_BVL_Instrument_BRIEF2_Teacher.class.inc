@@ -58,7 +58,6 @@ class NDB_BVL_Instrument_BRIEF2_Teacher extends NDB_BVL_Instrument
 
         // required fields for data entry completion status
         $this->_requiredElements = array(
-                                    'Examiner',
                                     'q1_is_fidgety',
                                     'q33_has_poor_handwriting',
                                    );
@@ -98,8 +97,7 @@ class NDB_BVL_Instrument_BRIEF2_Teacher extends NDB_BVL_Instrument
         // display test name
         $this->addHeader("BRIEF-2 Teacher Form");
 
-        // automatically adds examiner & date of administration
-        $this->_addMetadataFields();
+        $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
     }
 
     /**
@@ -112,8 +110,6 @@ class NDB_BVL_Instrument_BRIEF2_Teacher extends NDB_BVL_Instrument
         $this->addHeader("BRIEF-2 Teacher Form");
 
         $this->form->addElement("static", null, "<br/>");
-
-        $this->addBasicDate('date_today', 'Today\'s Date');
 
         $this->addBasicDate('birth_date', 'Date of Birth');
 

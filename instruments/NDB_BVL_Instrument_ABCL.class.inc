@@ -64,7 +64,6 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
 
         // required fields for data entry completion status
         $this->_requiredElements = array(
-                                    'Examiner',
                                     'first_name',
                                     'user_handicap',
                                     '1_is_too_forgetful',
@@ -108,8 +107,7 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
         // display test name
         $this->addHeader("ABCL (Adult Behavior Checklist For Ages 18-59)");
 
-        // automatically adds examiner & date of administration
-        $this->_addMetadataFields();
+        $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
     }
 
     /**
@@ -135,9 +133,6 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
 
         //Ethnic Group or Race
         $this->addBasicText("ethnic_group_or_race", "ETHNIC GROUP OR RACE");
-
-        //Today's Date (month, date, year)
-        $this->addBasicDate('date_today', 'TODAY\'S DATE');
 
         //Adult's Birthdate (month, date, year)
         $this->addBasicDate('adult_birthdate', 'ADULT\'S BIRTHDATE');

@@ -60,7 +60,6 @@ class NDB_BVL_Instrument_Seizure_Questionnaire extends NDB_BVL_Instrument
 
         // required fields for data entry completion status
         $this->_requiredElements = array(
-            'Examiner',
             'CommentID',
         );
 
@@ -104,8 +103,9 @@ class NDB_BVL_Instrument_Seizure_Questionnaire extends NDB_BVL_Instrument
     {
         // display test name
         $this->addHeader("Seizure Questionnaire");
-        // automatically adds examiner & date of administration
-        $this->_addMetadataFields();
+
+        $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
+
         $this->addBasicText("relationship_to_child", "Relationship to child:");
     }
 

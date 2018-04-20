@@ -48,7 +48,6 @@ class NDB_BVL_Instrument_connors_parent extends NDB_BVL_Instrument
 
         // required fields for data entry completion status
         $this->_requiredElements = array(
-            'Examiner',
             'CommentID',
         );
 
@@ -96,8 +95,9 @@ class NDB_BVL_Instrument_connors_parent extends NDB_BVL_Instrument
      */
     function _main()
     {
+
         $this->addHeader("CONNERS 3 - Parent Short");
-        $this->_addMetadataFields();
+        $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
         $this->addBasicText("grade", "Grade:");
     }
 
