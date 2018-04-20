@@ -57,7 +57,7 @@ class NDB_BVL_Instrument_QRS extends NDB_BVL_Instrument
         $this->_selectMultipleElements = array();
 
         // required fields for data entry completion status
-        $this->_requiredElements = array('Examiner', 'CommentID');
+        $this->_requiredElements = array('CommentID');
 
         // setup the form
         $this->_setupForm();
@@ -99,8 +99,19 @@ class NDB_BVL_Instrument_QRS extends NDB_BVL_Instrument
         // display test name
         $this->addHeader("QRS");
 
-        // automatically adds examiner & date of administration
-        $this->_addMetadataFields();
+        $config      =& NDB_Config::singleton();
+        $dateOptions = array(
+            'language'         => 'en',
+            'format'           => 'YMd',
+            'minYear'          => $config->getSetting('startYear'),
+            'maxYear'          => $config->getSetting('endYear'),
+            'addEmptyOption'   => true,
+            'emptyOptionValue' => null,
+        );
+
+        $this->dateOptions = $dateOptions;
+
+        $this->addBasicDate('Date_taken', 'Date of Administration', $dateOptions);
         $this->addHeader("<h3>INSTRUCTIONS</h3><br>
                          <h4>This questionnaire deals with your thoughts and opinions about 
                          you and your family. There are many blanks on the questionnaire. We would like
