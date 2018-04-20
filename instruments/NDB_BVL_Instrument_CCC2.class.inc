@@ -52,7 +52,6 @@ class NDB_BVL_Instrument_CCC2 extends NDB_BVL_Instrument
         $this->_selectMultipleElements = array();
         // required fields for data entry completion status
         $this->_requiredElements = array(
-            'Examiner',
             'CommentID',
         );
         $config = NDB_Config::singleton();
@@ -99,8 +98,7 @@ class NDB_BVL_Instrument_CCC2 extends NDB_BVL_Instrument
     {
         // display test name
         $this->addHeader("Children's Communication Checklist 2- Caregiver Respose Form");
-        $this->_addMetadataFields();
-        //$this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
+        $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
         // Header
         $this->addHeader("Information About The Person Completing The Caregiver Response Form");
         $opts2 = array(

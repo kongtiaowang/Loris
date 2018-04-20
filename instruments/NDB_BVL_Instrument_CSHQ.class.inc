@@ -60,7 +60,6 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument
 
         // required fields for data entry completion status
         $this->_requiredElements = array(
-            'Examiner',
             'CommentID',
         );
 
@@ -109,8 +108,7 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument
     {
         // display test name
         $this->addHeader("Child's Sleep Habit  (Preschool and School Aged)");
-        // automatically adds examiner & date of administration
-        $this->_addMetadataFields();
+        $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
         $score_columns
             = array(
             'bedtime_resistance' => 'Bedtime Resistance',

@@ -48,7 +48,6 @@ class NDB_BVL_Instrument_connors_parent extends NDB_BVL_Instrument
 
         // required fields for data entry completion status
         $this->_requiredElements = array(
-            'Examiner',
             'CommentID',
         );
 
@@ -96,13 +95,14 @@ class NDB_BVL_Instrument_connors_parent extends NDB_BVL_Instrument
      */
     function _main()
     {
-        $this->addHeader("CONNORS 3 - Parent Short");
-        $this->_addMetadataFields();
+
+        $this->addHeader("CONNERS 3 - Parent Short");
+        $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
         $this->addBasicText("grade", "Grade:");
     }
 
     function _page1() {
-        $this->addHeader("CONNORS 3 - Parent Short");
+        $this->addHeader("CONNERS 3 - Parent Short");
         $this->addLabel("<h4><b>Instructions:</b> Here are some things parents
                          might say about their children. Please tell us about
                          <i>your</i> child and what he/she has been like

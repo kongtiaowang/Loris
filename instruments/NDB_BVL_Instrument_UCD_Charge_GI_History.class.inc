@@ -56,7 +56,7 @@ class NDB_BVL_Instrument_UCD_Charge_GI_History extends NDB_BVL_Instrument
         $this->_selectMultipleElements = array();
 
         // required fields for data entry completion status
-        $this->_requiredElements = array('Examiner', 'CommentID');
+        $this->_requiredElements = array('CommentID');
 
         // setup the form
         $this->_setupForm();
@@ -97,8 +97,7 @@ class NDB_BVL_Instrument_UCD_Charge_GI_History extends NDB_BVL_Instrument
         // display test name
         $this->addHeader("CHARGE GI History");
 
-        // automatically adds examiner & date of administration
-        $this->_addMetadataFields();
+        $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
     }
 
     /*
