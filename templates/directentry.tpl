@@ -18,13 +18,25 @@
         <script type="text/javascript" src="{$test_name_js}"></script>
     {/if}
     <script>
+        //This code causing the override can be removed after sometime as we upgraded to new key generation logic
+        //But needs to keep this for some more time for the old ones already generated
         $(document).ready(function(){
-            var url = new URL(window.location.href);
-            var key = url.searchParams.get("key");
-            if(key.length < 8) {
-                window.location.href = window.location.href.replace("%", "%25");
+            var key=findGetParameter('key');
+            var escaped_key =escape(key);
+            if(unescape(key).length < 8 ) {
+                window.location.href = window.location.href.replace(key, escaped_key);
             }
         });
+        function findGetParameter(parameterName) {
+            var result = null;
+            tmp = [];
+            var items = location.search.substr(1).split("&");
+            for (var index = 0; index < items.length; index++) {
+                tmp = items[index].split("=");
+                if (tmp[0] === parameterName) result = tmp[1];
+            }
+            return result;
+        }
     </script>
 </head>
 
