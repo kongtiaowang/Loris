@@ -559,6 +559,11 @@ class LorisForm
      */
     function getValue($name)
     {
+
+        if($this->directEntry) {
+            return $this->_getFilteredValue($name, $this->directValues[$name]);
+        }
+
         // Not all elements of the form go into $_REQUEST, thus the isset test
         if (isset($_REQUEST[$name])) {
             // If submitted value in $_REQUEST is an array return the array
