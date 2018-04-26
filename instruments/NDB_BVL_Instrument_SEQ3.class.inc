@@ -152,16 +152,13 @@ class NDB_BVL_Instrument_SEQ3 extends NDB_BVL_Instrument
     */
     function _page2()
     {
-        $this->addHeader("SEQ-3.0 (Sensory Experiences Questionnaire Version 3.0)");
-
-        $this->addLabel("The following are questions about how your child uses his/her senses (such as hearing, vision, touch, etc.) to experience the world. Using the following response options (<i>never/almostnever, once in a while, sometimes, frequently, almost always/always</i>), select the option that best fits the frequency of your child's experiences. Please answer all questions.");
-
-        $this->addLabel("<h4>I. The following questions relate to your child's experiences with sound.</h4>");
-
-        $this->addLabel("<h3>How often does your child...</h3>");
-
-        $this->form->addElement("static", null, "<br/>");
-
+        $this->addHeader("SEQ-3.0 (Sensory Experiences Questionnaire Version 3.0)<br>
+                         The following are questions about how your child uses his/her senses (such as hearing, vision, touch, etc.)
+                         to experience the world. Using the following response options (<i>never/almostnever, once in a while, sometimes, 
+                         frequently, almost always/always</i>), select the option that best fits the frequency of your child's experiences. Please answer all questions.<br>
+                         <h4>I. The following questions relate to your child's experiences with sound.<br><br>
+                         How often does your child...</h4>");
+	    
         $options = array(
                     null              => "",
                     "never"           => "Never/Almost Never",
@@ -208,13 +205,9 @@ class NDB_BVL_Instrument_SEQ3 extends NDB_BVL_Instrument
     */
     function _page3()
     {
-        $this->addHeader("SEQ-3.0 (Sensory Experiences Questionnaire Version 3.0)");
-
-        $this->addLabel("<h4>II. The following questions relate to your child's experiences with vision.</h4>");
-
-        $this->addLabel("<h3>How often does your child...</h3>");
-
-        $this->form->addElement("static", null, "<br/>");
+        $this->addHeader("SEQ-3.0 (Sensory Experiences Questionnaire Version 3.0)
+                         <h4>II. The following questions relate to your child's experiences with vision.<br><br>
+                              How often does your child...</h4>");
 
         $options = array(
                     null              => "",
@@ -276,14 +269,9 @@ class NDB_BVL_Instrument_SEQ3 extends NDB_BVL_Instrument
     function _page4()
     {
 
-        $this->addHeader("SEQ-3.0 (Sensory Experiences Questionnaire Version 3.0)");
-
-        $this->addLabel("<h4>III. The following questions relate to your child's experiences with touch.</h4>");
-
-        $this->addLabel("<h3>How often does your child...</h3>");
-
-        $this->form->addElement("static", null, "<br/>");
-
+        $this->addHeader("SEQ-3.0 (Sensory Experiences Questionnaire Version 3.0)<br>
+                                <h4>III. The following questions relate to your child's experiences with touch.<br><br>
+                                How often does your child...</h4>");
         $options = array(
                     null              => "",
                     "never"           => "Never/Almost Never",
@@ -347,14 +335,10 @@ class NDB_BVL_Instrument_SEQ3 extends NDB_BVL_Instrument
     */
     function _page5()
     {
-        $this->addHeader("SEQ-3.0 (Sensory Experiences Questionnaire Version 3.0)");
-
-        $this->addLabel("<h4>IV. The following questions relate to your child's experiences with taste/smell.</h4>");
-
-        $this->addLabel("<h3>How often does your child...</h3>");
-
-	$this->form->addElement("static", null, "<br/>");
-
+        $this->addHeader("SEQ-3.0 (Sensory Experiences Questionnaire Version 3.0)<br>
+                          <h4>IV. The following questions relate to your child's experiences with taste/smell.<br><br>
+                          How often does your child...</h4>");
+	    
         $options = array(
                     null              => "",
                     "never"           => "Never/Almost Never",
@@ -404,14 +388,10 @@ class NDB_BVL_Instrument_SEQ3 extends NDB_BVL_Instrument
     */
     function _page6()
     {
-        $this->addHeader("SEQ-3.0 (Sensory Experiences Questionnaire Version 3.0)");
-	
-	$this->addLabel("<h4>V. The following questions relate to your child's experiences with movement.</h4>");
-
-        $this->addLabel("<h3>How often does your child...</h3>");
-
-        $this->form->addElement("static", null, "<br/>");
-
+        $this->addHeader("SEQ-3.0 (Sensory Experiences Questionnaire Version 3.0)<br>
+                         <h4>V. The following questions relate to your child's experiences with movement.<br><br>
+                         How often does your child...</h4>");
+	    
         $options = array(
                     null              => "",
                     "never"           => "Never/Almost Never",
@@ -453,11 +433,11 @@ class NDB_BVL_Instrument_SEQ3 extends NDB_BVL_Instrument
     */
     function _page7()
     {
-        $this->addHeader("SEQ-3.0 (Sensory Experiences Questionnaire Version 3.0)");
-
-        $this->addLabel("<h4>VI. Up to this point in the questionnaire, you've been answering questions about one sense ot a time (sight, touch, etc.). The questions in the following section deal with situations that involve more than one sensory experience at the same time.</h4>");
-
-        $this->addLabel("<h3>How often does your child...</h3>");
+        $this->addHeader("SEQ-3.0 (Sensory Experiences Questionnaire Version 3.0)<br>
+                         <h4>VI. Up to this point in the questionnaire, you've been answering questions about one sense
+                         ot a time (sight, touch, etc.). The questions in the following section deal with situations that
+                         involve more than one sensory experience at the same time.<br><br>
+                         How often does your child...</h4>");
 
         $options = array(
                     null              => "",
@@ -501,11 +481,8 @@ class NDB_BVL_Instrument_SEQ3 extends NDB_BVL_Instrument
     */
     function _page8()
     {
-        $this->addHeader("SEQ-3.0 (Sensory Experiences Questionnaire Version 3.0)");
-
-        $this->addLabel("<h3>VII. Additional questions. Please check one and comment below where applicable. </h3>");
-
-	$this->form->addElement("static", null, "<br/>");
+        $this->addHeader("SEQ-3.0 (Sensory Experiences Questionnaire Version 3.0)<br>
+                         <h3>VII. Additional questions. Please check one and comment below where applicable.</h3>");
 
         $options = array(
                     null              => "",
