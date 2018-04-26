@@ -269,13 +269,13 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
 
         //if yes, answer following questions
         //if no, skip following questions
-        $this->addSelect("live_with_partner", "<i>At any time in the past 6 months</i>, did he/she live with a spouse or partner? (if no- skip to page 2; if yes, circle 0, 1, or 2 beside items A-H", $yes_no_opts);
+        $this->addSelect("live_with_partner", "At any time in the past 6 months, did he/she live with a spouse or partner? (if 'No' skip to page 2; if 'Yes' choose 0, 1, or 2 beside items A-H)", $yes_no_opts);
 
         $options = array(
                     null => "",
-                    "2"  => "Very True or Often True",
-                    "1"  => "Somewhat or Sometimes True",
-                    "0"  => "Not True (as far as you know)",
+                    "2"  => "2 Very True or Often True",
+                    "1"  => "1 Somewhat or Sometimes True",
+                    "0"  => "0 Not True (as far as you know)",
                    );
 
         $this->addSelect("a_gets_along_well_with_partner", "A. Gets along well with spouse or partner", $options);
@@ -417,7 +417,7 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
     {
         $this->addHeader("ABCL (Adult Behavior Checklist For Ages 18-59)");
 
-        $this->addLabel("<h4>VI. Below is a list of items that describe people. As you read each item, please decide whether it has been true of the adult <i>over the past 6 months</i>. Then circle <i>0, 1,</i> or <i>2</i> to describe the adult. Please answer all items as well as you can, even if some do not seem to apply to the adult.</h4>");
+        $this->addLabel("<h4>VI. Below is a list of items that describe people. As you read each item, please decide whether it has been true of the adult <i>over the past 6 months</i>. Then choose <i>0, 1,</i> or <i>2</i> to describe the adult. Please answer all items as well as you can, even if some do not seem to apply to the adult.</h4>");
 
         $this->form->addElement("static", null, "<br/>");
 
@@ -427,9 +427,9 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
 
         $options = array(
                     null => "",
-                    "2"  => "2",
-                    "1"  => "1",
-                    "0"  => "0",
+                    "2"  => "2 Very True or Often True",
+                    "1"  => "1 Somewhat or Sometimes True",
+                    "0"  => "0 Not True (as far as you know)",
                    );
 
         $this->addSelect("1_is_too_forgetful", "1. Is too forgetful", $options);
@@ -442,7 +442,7 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
 
         $this->addSelect("5_blames_others_for_own_problems", "5. Blames others for own problems", $options);
 
-        $this->addSelect("6_uses_drugs_for_nonmedical_purposes", "6. Uses drugs (other than alcohol or nicotine) for nonmedical purposes (decribe)", $options);
+        $this->addSelect("6_uses_drugs_for_nonmedical_purposes", "6. Uses drugs (other than alcohol or nicotine) for nonmedical purposes (describe)", $options);
 
         $this->addBasicText("6_continued", "$this->indent Description:");
 
@@ -528,9 +528,9 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
 
         $options = array(
                     null => "",
-                    "2"  => "2",
-                    "1"  => "1",
-                    "0"  => "0",
+                    "2"  => "2 Very True or Often True",
+                    "1"  => "1 Somewhat or Sometimes True",
+                    "0"  => "0 Not True (as far as you know)",
                    );
 
         $this->addSelect("37_gets_in_many_fights", "37. Gets in many fights", $options);
@@ -571,7 +571,7 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
 
         $this->addSelect("53_trouble_planning_for_future", "53. Has trouble planning for the future", $options);
 
-        $this->addSelect("54_trouble_planning_for_future", "54. Has trouble planning for the future", $options);
+        $this->addSelect("54_trouble_planning_for_future", "54. Feels tired without good reasons", $options);
 
         $this->addSelect("55_moods_swing_between_elation_and_depression", "55. Moods swing between elation and depression", $options);
 
@@ -625,9 +625,9 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
 
         $options = array(
                     null => "",
-                    "2"  => "2",
-                    "1"  => "1",
-                    "0"  => "0",
+                    "2"  => "2 Very True or Often True",
+                    "1"  => "1 Somewhat or Sometimes True",
+                    "0"  => "0 Not True (as far as you know)",
                    );
 
         $this->addSelect("63_would_rather_be_with_older_people", "63. Would rather be with older people than with people of own age", $options);
@@ -722,9 +722,9 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
 
         $options = array(
                     null => "",
-                    "2"  => "2",
-                    "1"  => "1",
-                    "0"  => "0",
+                    "2"  => "2 Very True or Often True",
+                    "1"  => "1 Somewhat or Sometimes True",
+                    "0"  => "0 Not True (as far as you know)",
                    );
 
         $this->addSelect("93_walks_too_much", "93. Talks too much", $options);

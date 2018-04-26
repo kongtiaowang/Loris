@@ -109,7 +109,6 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT extends NDB_BVL_Instrument
         //survey instrument don't need this
         // $this->_addMetadataFields();
         $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
-        $this->addLabel("<h3>Your full name:</h3>");
 
         $opts = array(
             null   => "",
@@ -473,7 +472,7 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT extends NDB_BVL_Instrument
         $this->addLabel("<h1>V. Education:</h1>");
         $opts = array(null=>"",
           "no" => "<b>No -- please skip to Section VI</b>",
-          "yes"=> "<b>Yes</b> -- PLease answer the following items:");
+          "yes"=> "<b>Yes</b> -- Please answer the following items:");
 
         $this->addSelect("education", "<b><i>At any time in the past 6 months,</i><b> did you attend school, college, or any other education or training program?", $opts);
         
@@ -530,7 +529,7 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT extends NDB_BVL_Instrument
               array("education{@}=={@}yes"),
              "Required"
           );
-        $this->addSelect("education_D", "D. I am satisfied with my educaitonal situation", $opts);
+        $this->addSelect("education_D", "D. I am satisfied with my educational situation", $opts);
         $this->XINRegisterRule(
               "education_D",
               array("education{@}=={@}yes"),
@@ -611,7 +610,7 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT extends NDB_BVL_Instrument
         "I break rules at work or elsewhere",
         "I don't eat as well as I should",
         "I don't get along with other people",
-        "I don't feel guilty after doing sometthing I shouldn't",
+        "I don't feel guilty after doing something I shouldn't",
         "I am jealous of others"
         ];
 
@@ -658,7 +657,7 @@ function _page5(){
         "I am impulsive or act without thinking",
         "I would rather be alone than with others",
         "I lie or cheat",
-        "I feel everwhelmed by my responsibilites",
+        "I feel overwhelmed by my responsibilities",
         "I am nervous or tense",
         "Parts of my body twitch or make nervous movements (describe)",
         "I lack self-confidence",
@@ -720,15 +719,16 @@ function _page5(){
 
                     for ($i = 0; $i<count($questions); $i++){
           //$this->addLabel("{$questions[$i]}");
-          $n = $i+1;
-          $this->addSelect("question_{$n}", "{$questions[$i]}", $opts);
+          $n = 56;
+          $q_id = "{$n}_" . chr(ord('a')+$i);
+          $this->addSelect("question_{$q_id}", "{$questions[$i]}", $opts);
           
           if ( strpos($questions[$i], "(describe)") !== false){
             //print_r("found it!");
             //die();
-            $this->addTextElement("q_{$n}_description", "$this->indent Description: ");
-            $this->XINRegisterRule("
-              q_{$n}_description", 
+            $this->addTextElement("q_{$q_id}_description", "$this->indent Description: ");
+            $this->XINRegisterRule(
+              "q_{$q_id}_description", 
               array("question_{$i}{@}=={@}sometimes", "question_{$i}{@}=={@}very_true"),
               "Required",
               "describe_group"
@@ -789,7 +789,7 @@ function _page5(){
                 "I do things that other people think are strange (describe)",
                 "I have thoughts that other people would think are strange (describe)",
                 "I am stubborn, sullen, or irritable",
-                "My moods or feelins change suddenly",
+                "My moods or feelings change suddenly",
                 "I enjoy being with people",
                 "I rush into things without considering the risks",
                 "I drink too much alcohol or get drunk",
