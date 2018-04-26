@@ -1,0 +1,76 @@
+PSCID,Visit Label,"parental_stress_scale,Administration","parental_stress_scale,Data_entry","parental_stress_scale,comments","parental_stress_scale,interviewed_by","parental_stress_scale,interviewed_by_status","parental_stress_scale,person_interviewed","parental_stress_scale,person_interviewed_status"
+PHI1004,V15,All,In Progress,,Not Answered,not_answered,Mom,
+PHI1020,V15,All,In Progress,Given as questionnaire- filled out by Mom,Self-administered (Mom),not_answered,,not_answered
+PHI1021,V12,All,In Progress,Given as a questionnaire,Not Answered,not_answered,,not_answered
+PHI1024,V12,All,In Progress,"Given as a questionnaire, filled out by Mom",Self-administered (Mom),not_answered,,not_answered
+PHI1026,V15,All,In Progress,"Given as a questionnaire, filled out by Mom",Self-administered (Mom),not_answered,,not_answered
+PHI1029,V15,All,In Progress,"Given as a questionnaire, filled out by Mom",Self-administered (Mom),not_answered,,not_answered
+PHI1047,V03,All,In Progress,,Not Answered,not_answered,,not_answered
+PHI1047,V24,None,In Progress,,Not Answered,not_answered,,not_answered
+PHI1049,V15,All,In Progress,,Not Answered,not_answered,Mom,
+PHI1050,V03,All,In Progress,,Not Answered,not_answered,MOM,
+PHI1050,V12,All,In Progress,,Not Answered,not_answered,,not_answered
+PHI1051,V03,All,In Progress,,Not Answered,not_answered,Mom,
+PHI1051,V12,All,In Progress,,Not Answered,not_answered,Mom,
+PHI1052,V06,All,In Progress,,Not Answered,not_answered,,not_answered
+PHI1052,V12,All,In Progress,,Not Answered,not_answered,,not_answered
+PHI1056,V12,All,In Progress,,Not Answered,not_answered,Mom,
+PHI1058,V06,All,In Progress,,Not Answered,not_answered,Mom,
+PHI1059,V06,All,In Progress,No audio was recorded. Given as questionnaire. ,Not Answered,not_answered,,not_answered
+PHI1060,V03,All,In Progress,,Not Answered,not_answered,,not_answered
+PHI1066,V03,All,In Progress,,Not Answered,not_answered,Mom,
+PHI1067,V03,All,In Progress,,Not Answered,not_answered,,not_answered
+PHI1068,V06,All,In Progress,,Not Answered,not_answered,Mom,
+PHI1072,V12,All,In Progress,,Not Answered,not_answered,Mom,
+PHI1072,V15,All,In Progress,,Not Answered,not_answered,Mom,
+PHI1074,V03,All,In Progress,,Not Answered,not_answered,,not_answered
+PHI1075,V06,All,In Progress,,Not Answered,not_answered,Mom,
+PHI1077,V12,All,In Progress,No audio or video recording for this measure. Given as questionnaire.,Not Answered,not_answered,,not_answered
+PHI1078,V03,All,In Progress,,Not Answered,not_answered,Mother,
+PHI1078,V12,All,In Progress,No Audio recorded,Not Answered,not_answered,,not_answered
+STL1004,V12,All,In Progress,self administered. no audio.,Self-administered (Mom),not_answered,mom,
+STL1005,V15,All,In Progress,"self administered, no audio.",Self-administered (Mom),not_answered,mom,
+STL1006,V12,All,In Progress,"self administered, no audio.",Self-administered (Dad),not_answered,dad,
+STL1007,V06,All,In Progress,self administered. no audio.,Self-administered (Mom),not_answered,mom,
+STL1008,V06,All,In Progress,"self administered, no audio.",Self-administered (Dad),not_answered,dad,
+STL1010,V06,All,In Progress,"self administered, no audio.",Self-administered (Mom),not_answered,mom,
+STL1025,V03,All,In Progress,self administered. no audio.,Self-administered (Mom),not_answered,mom,
+STL1025,V06,All,In Progress,"self administered, no audio.",Self-administered (Mom),not_answered,mom,
+STL1025,V12,All,In Progress,"self administered, no audio.",Self-administered (Dad),not_answered,dad,
+STL1027,V03,All,In Progress,"self administered, no audio.",Self-administered (Mom),not_answered,mom,
+STL1027,V06,All,In Progress,"self administered, no audio.",Self-administered (Mom),not_answered,mom,
+STL1027,V15,All,In Progress,self administered. no audio.,Self-administered (Mom),not_answered,mom,
+STL1028,V12,All,In Progress,"self administered, no audio.",Self-administered (Mom),not_answered,mom,
+STL1030,V06,All,In Progress,"self administered, no audio.",Self-administered (Mom),not_answered,mom,
+STL1033,V06,All,In Progress,"self administered, no audio.",Self-administered (Mom),not_answered,mom,
+STL1034,V06,All,In Progress,"self administered, no audio.",Self-administered (Mom),not_answered,mom,
+STL1036,V12,All,In Progress,"self administered, no audio.",Self-administered (Mom),not_answered,mom,
+STL1037,V03,All,In Progress,"self administered, no audio.",Self-administered (Mom),not_answered,mom,
+STL1037,V12,All,In Progress,"self administered, no audio.",Self-administered (Mom),not_answered,mom,
+STL1039,V03,All,In Progress,self administered. no audio.,Self-administered (Mom),not_answered,mom,
+STL1043,V12,All,In Progress,self administered. no audio.,Self-administered (Mom),not_answered,mom,
+STL1044,V03,All,In Progress,"self administered, no audio.",Self-administered (Mom),not_answered,mom,
+STL1044,V12,All,In Progress,self administered. no audio.,Self-administered (Mom),not_answered,mom,
+STL1047,V03,All,In Progress,"self administered, no audio.",Self-administered (Mom),not_answered,mom,
+STL1050,V06,All,In Progress,"self administered, no audio.",Self-administered (Mom),not_answered,mom,
+STL1050,V15,All,In Progress,"self administered, no audio.",Self-administered (Mom),not_answered,mom,
+STL1051,V03,All,In Progress,self administered. no audio.,Self-administered (Mom),not_answered,mom,
+STL1052,V12,All,In Progress,self administered. no audio.,Self-administered (Mom),not_answered,mom,
+STL1052,V15,All,In Progress,self administered. no audio.,Self-administered (Mom),not_answered,mom,
+STL1054,V03,All,In Progress,self administered. no audio.,Self-administered (Mom),not_answered,mom,
+STL1054,V12,All,In Progress,"self administered, no audio.",Self-administered (Dad),not_answered,dad,
+STL1058,V03,All,In Progress,self administered. no audio.,Self-administered (Mom),not_answered,mom,
+STL1058,V12,All,In Progress,self administered. no video,Self-administered (Mom),not_answered,mom,
+STL1062,V03,All,In Progress,"self administered, no audio.",Self-administered (Mom),not_answered,mom,
+STL1062,V06,All,In Progress,,Not Answered,not_answered,mom,
+STL1067,V06,All,In Progress,self administered. no audio.,Self-administered (Mom),not_answered,mom,
+STL1067,V24,All,In Progress,"self administered, no recording",Self-administered (Mom),not_answered,mom,
+STL1068,V03,All,In Progress,,Not Answered,not_answered,dad,
+STL1070,V03,All,In Progress,,Not Answered,not_answered,mom,
+STL1073,V03,All,In Progress,audio was not used.,Not Answered,not_answered,dad,
+STL1074,V06,All,In Progress,no audio,Not Answered,not_answered,,not_answered
+STL2003,V06,All,In Progress,Self administered,Self-administered (Mom),not_answered,mom,
+UNC1021,V06,None,Complete,"Not sure if the recording was audio or video, not marked",Not Answered,not_answered,Amy Soderstrom,
+UNC1034,V15,All,In Progress,written form ,Not Answered,not_answered,,not_answered
+UNC1048,V15,None,Complete,,Not Answered,not_answered,,not_answered
+UNC1050,V12,Partial,Complete,,Not Answered,not_answered,,not_answered
