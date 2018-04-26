@@ -1,0 +1,817 @@
+<?php
+/**
+ *This file contains the NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 class
+ *
+ * PHP Version 5
+ *
+ * @category Instrument
+ * @package  Neuropsych
+ * @author   Suzanne Lee <suzannelee.mcin@gmail.com>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/IBIS/
+ */
+
+/**
+ * Creates the form elements for the NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 instrument
+ *
+ * @category Instrument
+ * @package  Neuropsych
+ * @author   Suzanne Lee <suzannelee.mcin@gmail.com>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/IBIS/
+ */
+class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
+{
+    /**
+    * Sets up basic data, such as the HTML_Quickform object, and so on.
+    *
+    * @param string $commentID the CommentID identifying the data to load
+    * @param string $page      if a multipage form, the page to show
+    *
+    * @return void
+    * @access public
+    */
+    function setup($commentID, $page)
+    {
+        $this->formType ="XIN";
+        $this->form     = new LorisForm('test_form');
+        $this->page     = $page;            // page label (number or
+        // string - used by
+        // user-defined child classes)
+
+        // set the object properties
+        $this->testName = "Teachers_Report_Form_6_To_18";           // test_names.Test_name
+        $this->table    = 'Teachers_Report_Form_6_To_18';              // name of database table corresponding to instrument
+        // data keyed by commentID
+        $this->commentID = $commentID;
+
+        //The array of dates/timestamps to convert to database dates/timestamps
+        //Any HTML_Quickform date elements must be listed here
+        $this->dateTimeFields =array(
+                                "date_today",
+                                "pupil_birthdate",
+                               );
+
+        //The array of selects with multiple answers allowed
+        //Any HTML_Quickform multiple selects must be listed here
+        $this->_selectMultipleElements = array();
+
+        // required fields for data entry completion status
+        $this->_requiredElements = array(
+                                    'Examiner',
+                                    'first_name',
+                                    'q1_how_hard_working',
+                                    'q1_acts_too_young',
+                                    'q57_physically_attacks_people',
+                                   );
+
+        // setup the form
+        $this->_setupForm();
+
+    }
+
+    //If the instrument is not paged, remove the switch from the _setupForm method and add all the form Elements in this function.
+
+    /**
+    * Method to build the HTML_Quickform object into a paged form
+    *
+    * @return void
+    * @access private
+    */
+    function _setupForm()
+    {
+        if (preg_match("/Teachers_Report_Form_6_To_18(_page[0-9]+)/", $this->page, $matches)) {
+            call_user_func(array($this, $matches[1]));
+        } else {
+            $this->_main();
+        }
+        //Defines the call back function for HTML Quickform to use when validating the form.
+        $this->form->addFormRule(array(&$this, 'XINValidate'));
+    }
+
+    /**
+    * Generates the main page of the form.
+    *
+    * @return void
+    * @access private
+    */
+    function _main()
+    {
+        // display test name
+        $this->addHeader("Teacher's Report Form (TRF) for Ages 6-18");
+
+        // automatically adds examiner & date of administration
+        $this->_addMetadataFields();
+    }
+
+    /**
+    * Generates the first page of the form.
+    *
+    *@return void
+    */
+    function _page1()
+    {
+        $this->addHeader("Teacher's Report Form (TRF) for Ages 6-18");
+
+        $this->form->addElement("static", null, "<br/>");
+
+        $this->addLabel("<h4>PUPIL'S FULL NAME</h4>");
+
+        $this->addBasicText("first_name", "First", ['disabled' => 'disabled']);
+
+        $this->addBasicText("middle_name", "Middle", ['disabled' => 'disabled']);
+
+        $this->addBasicText("last_name", "Last", ['disabled' => 'disabled']);
+
+        $pupil_gender_options = array(
+                                 null   => "",
+                                 "boy"  => "Boy",
+                                 "girl" => "Girl",
+                                );
+
+        $this->addSelect("pupil_gender", "PUPIL'S GENDER", $pupil_gender_options);
+
+        $this->addNumericElement("pupil_age", "PUPIL'S AGE");
+
+        $this->addBasicText("pupil_ethnic_group_race", "ETHNIC GROUP OR RACE");
+
+        $this->addBasicDate('date_today', 'Today\'s Date');
+
+        $this->addBasicDate('pupil_birthdate', 'Pupil\'s Birthdate (if known)');
+
+        $this->XINRegisterRule(
+            "pupil_birthdate",
+            array("pupil_birthdate{@}=={@}NEVER_REQUIRED"),
+            "Never required."
+        );
+
+        $this->addNumericElement("grade_in_school", "GRADE IN SCHOOL");
+
+        $this->addBasicText("name_address_of_school", "NAME AND ADDRESS OF SCHOOL");
+
+        $this->form->addElement("static", null, "<br/>");
+
+        $this->addLabel("<h4>PARENTS' USUAL TYPE OF WORK, even if not working now <i>(Please be specific -- for example, auto mechanic, high school teacher, homemaker, laborer, lathe operator, shoe salesman, army sergeant.)</i></h4>");
+
+        $this->addBasicText("parent1_type_of_work", "PARENT 1 (or FATHER) TYPE OF WORK");
+
+        $this->XINRegisterRule(
+            "parent1_type_of_work",
+            array("parent2_type_of_work{@}=={@}"),
+            "Required."
+        );
+
+        $this->addBasicText("parent2_type_of_work", "PARENT 2 (or MOTHER) TYPE OF WORK");
+
+        $this->XINRegisterRule(
+            "parent2_type_of_work",
+            array("parent1_type_of_work{@}=={@}"),
+            "Required."
+        );
+
+        $this->form->addElement("static", null, "<br/>");
+
+        $this->addBasicText("form_filled_by", "THIS FORM FILLED OUT BY (print your full name):", ['disabled' => 'disabled']);
+
+        $teacher_gender_options = array(
+                                   null     => "",
+                                   "male"   => "Male",
+                                   "female" => "Female",
+                                  );
+
+        $this->addSelect("teacher_gender", "Your gender:", $teacher_gender_options);
+
+        $role_options = array(
+                         null                => "",
+                         "classroom_teacher" => "Classroom Teacher",
+                         "special_educator"  => "Special Educator",
+                         "teachers_aide"     => "Teacher's Aide",
+                         "counselor"         => "Counselor",
+                         "administrator"     => "Administrator",
+                         "other"             => "Other (specify):",
+                        );
+
+        $this->addSelect("role_at_school", "Your role at school:", $role_options);
+
+        $this->addBasicText("if_other_role", "$this->indent If other, please specify:");
+
+        $this->XINRegisterRule(
+            "if_other_role",
+            array("role_at_school{@}=={@}other"),
+            "Required."
+        );
+
+        $this->form->addElement("static", null, "<br/>");
+
+        $this->addNumericElement("I_months_known_pupil", "<h4>I. For how many months have you known this pupil?</h4>");
+
+        $II_options = array(
+                       null         => "",
+                       "not_well"   => "1. Not Well",
+                       "moderately" => "2. Moderately Well",
+                       "very_well"  => "3. Very Well",
+                      );
+
+        $this->addSelect("II_how_well_do_you_know_pupil", "<h4>II. How well do you know him/her?</h4>", $II_options);
+
+        $this->addBasicText("III_time_per_week", "<h4>III. How much time does he/she spend in your class or service per week?</h4>");
+
+        $this->addBasicText("IV_kind_of_class_or_service", "<h4>IV. What kind of class or service is it? (Please be specific, e.g., regular 5th grade, 7th grade math, learning disability, counseling, etc.)</h4>");
+
+        $V_VI_options = array(
+                         null        => "",
+                         "dont_know" => "Don't Know",
+                         "no"        => "0. No",
+                         "yes"       => "1. Yes",
+                        );
+
+        $this->addSelect("V_been_referred_for_special", "<h4>V. Has he/she ever been referred for special class placement, services, or tutoring?</h4>", $V_VI_options);
+
+        $this->addTextAreaElement("V_is_yes", "$this->indent If Yes -- what kind and when?");
+
+        $this->XINRegisterRule(
+            "V_is_yes",
+            array("V_been_referred_for_special{@}=={@}yes"),
+            "Required."
+        );
+
+        $this->addSelect("VI_repeated_any_grades", "<h4>VI. Has he/she repeated any grades?</h4>", $V_VI_options);
+
+        $this->addTextAreaElement("VI_is_yes", "$this->indent If Yes -- what kind and when?");
+
+        $this->XINRegisterRule(
+            "VI_is_yes",
+            array("VI_repeated_any_grades{@}=={@}yes"),
+            "Required."
+        );
+
+        $this->addLabel("<h4>VII. Current academic performance -- list academic subjects and check box that indicates pupil's performance for each subject:</h4>");
+
+        $VII_academic_performance_options = array(
+                                             null                   => "",
+                                             "far_below_grade"      => "1. Far below grade",
+                                             "somewhat_below_grade" => "2. Somewhat below grade",
+                                             "at_grade_level"       => "3. At grade level",
+                                             "somewhat_above_grade" => "4. Somewhat above grade",
+                                             "far_above_grade"      => "5. Far above grade",
+                                            );
+
+        $group[] =& $this->form->createElement(
+            "static",
+            null,
+            null,
+            "Academic Subject"
+        );
+        $group[] =& $this->form->createElement(
+            "static",
+            null,
+            null,
+            "Current performance"
+        );
+        $this->addGroup(
+            $group,
+            "page1_headers",
+            null,
+            $this->_GUIDelimiter,
+            false
+        );
+        unset($group);
+
+        for ($i=1; $i <= 6; $i++) {
+
+            $this->addLabel($i . ".");
+
+            $group[] =& $this->createText(
+                "academic_subject_{$i}",
+                ""
+            );
+            $group[] =& $this->createSelect(
+                "academic_subject_" . $i . "_current_performance",
+                "Current academic performance",
+                $VII_academic_performance_options
+            );
+
+            // uncomment if not all 6 subjects are required
+            /*
+            $this->XINRegisterRule(
+                "academic_subject_{$i}",
+                array("academic_subject_{$i}_current_performance{@}!={@}"),
+                "Required.",
+                "academic_subject_" . $i . "_group"
+            );
+            $this->XINRegisterRule(
+                "academic_subject_" . $i . "_current_performance",
+                array("academic_subject_{$i}{@}!={@}"),
+                "Required.",
+                "academic_subject_" . $i . "_group"
+            );
+            */
+
+            $this->addGroup(
+                $group,
+                "academic_subject_" . $i . "_group",
+                null,
+                $this->_GUIDelimiter,
+                false
+            );
+            unset($group);
+        }
+    }
+
+    /**
+    * Generates the second page of the form.
+    *
+    *@return void
+    */
+    function _page2()
+    {
+        $this->addHeader("Teacher's Report Form (TRF) for Ages 6-18");
+
+        $this->form->addElement("static", null, "<br/>");
+
+        $VIII_options = array(
+                         null            => "",
+                         "much_less"     => "1. Much less",
+                         "somewhat_less" => "2. Somewhat less",
+                         "slightly_less" => "3. Slightly less",
+                         "average"       => "4. About average",
+                         "slightly_more" => "5. Slightly more",
+                         "somewhat_more" => "6. Somewhat more",
+                         "much_more"     => "7. Much more",
+                        );
+
+        $this->addLabel("<h4>VIII. Compared to typical pupils of the same age:</h4>");
+
+        $questions = array(
+                      "q1_how_hard_working"           => "1. How hard is he/she working?",
+                      "q2_how_appropriately_behaving" => "2. How appropriately is he/she behaving?",
+                      "q3_how_much_learning"          => "3. How much is he/she learning?",
+                      "q4_how_happy"                  => "4. How happy is he/she?",
+                     );
+
+        foreach ($questions as $key => $question) {
+            $this->addSelect($key, $question, $VIII_options);
+        }
+
+        $this->form->addElement("static", null, "<br/>");
+
+        $this->addLabel("<h4>IX. Most recent achievement test scores (optional):</h4>");
+
+        $group[] =& $this->form->createElement(
+            "static",
+            null,
+            null,
+            "Name of test"
+        );
+        $group[] =& $this->form->createElement(
+            "static",
+            null,
+            null,
+            "Subject"
+        );
+        $group[] =& $this->form->createElement(
+            "static",
+            null,
+            null,
+            "Date"
+        );
+        $group[] =& $this->form->createElement(
+            "static",
+            null,
+            null,
+            "Percentile or grade level obtained"
+        );
+        $this->addGroup(
+            $group,
+            "page2_IX_headers",
+            null,
+            $this->_GUIDelimiter,
+            false
+        );
+        unset($group);
+
+        for ($i=1; $i <= 5; $i++) {
+
+            $group[] =& $this->createText(
+                "recent_test_{$i}",
+                ""
+            );
+            $group[] =& $this->createText(
+                "recent_test_{$i}_subject",
+                ""
+            );
+            $group[] =& $this->createDate(
+                "recent_test_{$i}_date",
+                ""
+            );
+            $group[] =& $this->createText(
+                "recent_test_{$i}_grade_level",
+                ""
+            );
+
+            $this->XINRegisterRule(
+                "recent_test_{$i}",
+                array("recent_test_{$i}_{@}=={@}NEVER_REQUIRED"),
+                "Not Required",
+                "recent_test_" . $i . "_group"
+            );
+            $this->XINRegisterRule(
+                "recent_test_{$i}_subject",
+                array("test_{$i}_subject{@}=={@}NEVER_REQUIRED"),
+                "Not Required",
+                "recent_test_" . $i . "_group"
+            );
+            $this->XINRegisterRule(
+                "recent_test_{$i}_date",
+                array("test_{$i}_date{@}=={@}NEVER_REQUIRED"),
+                "Not Required",
+                "recent_test_" . $i . "_group"
+            );
+            $this->XINRegisterRule(
+                "recent_test_{$i}_grade_level",
+                array("test_{$i}_grade_level{@}=={@}NEVER_REQUIRED"),
+                "Not Required",
+                "recent_test_" . $i . "_group"
+            );
+            $this->addGroup(
+                $group,
+                "test_" . $i . "_group",
+                null,
+                $this->_GUIDelimiter,
+                false
+            );
+            unset($group);
+        }
+
+        $this->addLabel("<h4>X. IQ, readiness, or aptitude tests (optional):</h4>");
+
+        $group1[] =& $this->form->createElement(
+            "static",
+            null,
+            null,
+            "Name of test"
+        );
+        $group1[] =& $this->form->createElement(
+            "static",
+            null,
+            null,
+            "Date"
+        );
+        $group1[] =& $this->form->createElement(
+            "static",
+            null,
+            null,
+            "IQ or equivalent scores"
+        );
+        $this->addGroup(
+            $group1,
+            "page2_X_headers",
+            null,
+            $this->_GUIDelimiter,
+            false
+        );
+        unset($group1);
+
+        for ($i=1; $i <= 3; $i++) {
+
+            $group1[] =& $this->createText(
+                "test_{$i}",
+                ""
+            );
+            $group1[] =& $this->createDate(
+                "test_{$i}_date",
+                ""
+            );
+            $group1[] =& $this->createText(
+                "test_{$i}_iq_or_equiv",
+                ""
+            );
+
+            $this->XINRegisterRule(
+                "test_{$i}",
+                array("test_{$i}_{@}=={@}NEVER_REQUIRED"),
+                "Not Required",
+                "test_" . $i . "_group1"
+            );
+            $this->XINRegisterRule(
+                "test_{$i}_date",
+                array("test_{$i}_date{@}=={@}NEVER_REQUIRED"),
+                "Not Required",
+                "test_" . $i . "_group1"
+            );
+            $this->XINRegisterRule(
+                "test_{$i}_iq_or_equiv",
+                array("test_{$i}_iq_or_equiv{@}=={@}NEVER_REQUIRED"),
+                "Not Required",
+                "test_" . $i . "_group1"
+            );
+            $this->addGroup(
+                $group1,
+                "test_" . $i . "_group1",
+                null,
+                $this->_GUIDelimiter,
+                false
+            );
+            unset($group1);
+        }
+
+        $this->form->addElement("static", null, "<br/>");
+
+        $yes_no_options = array(
+                           null  => "",
+                           "no"  => "No",
+                           "yes" => "Yes",
+                          );
+
+        $this->addSelect("pupil_illness_disability", "Does this pupil have any illness or disability (either physical or mental)?", $yes_no_options);
+
+        $this->addTextAreaElement("pupil_illness_yes", "$this->indent If Yes - please describe:");
+
+        $this->XINRegisterRule(
+            "pupil_illness_yes",
+            array("pupil_illness_disability{@}=={@}yes"),
+            "Required."
+        );
+
+        $this->addTextAreaElement("concerns_about_pupil", "What concerns you most about this pupil?");
+
+        $this->addTextAreaElement("best_things_about_pupil", "Please describe the best things about this pupil:");
+
+        $this->addTextAreaElement("comments_on_work_behavior_potential", "Please feel free to write any comments about this pupil's work, behavior, or potential.");
+
+        $this->XINRegisterRule(
+            "comments_on_work_behavior_potential",
+            array("comments_on_work_behavior_potential{@}=={@}NEVER_REQUIRED"),
+            "Never required."
+        );
+    }
+    /**
+    * Generates the third page of the form.
+    *
+    *@return void
+    */
+    function _page3()
+    {
+        $this->addHeader("Teacher's Report Form (TRF) for Ages 6-18");
+
+        $this->addLabel("<h4>Below is a list of items that describe pupils <b><i>now or within the past 2 months</i></b>. Please answer all items as well as you can, even if some do not seem to apply to this pupil.</h4>");
+
+        //$this->addLabel("<h4><b>$this->indent 0 = Not True (as far as you know) $this->indent 1 = Somewhat or Sometimes True $this->indent 2 = Very True or Often True</b></h4>");
+
+        $this->form->addElement("static", null, "<br/>");
+
+        $options = array(
+                    null => "",
+                    "0"  => "Not True (as far as you know)",
+                    "1"  => "Somewhat or Sometimes True",
+                    "2"  => "Very True or Often True",
+                   );
+
+        $questions = array(
+                      "q1_acts_too_young"                          => "1. Acts too young for his/her age",
+                      "q2_hums_makes_noises_in_class"              => "2. Hums or makes other odd noises in class",
+                      "q3_argues_a_lot"                            => "3. Argues a lot",
+                      "q4_fails_to_finish_things_starts"           => "4. Fails to finish things he/she starts",
+                      "q5_very_little_they_enjoy"                  => "5. There is very little that he/she enjoys",
+                      "q6_defiant_talks_back"                      => "6. Defiant, talks back to stuff",
+                      "q7_bragging_boasting"                       => "7. Bragging, boasting",
+                      "q8_cant_concentrate_for_long"               => "8. Can't concentrate, can't pay attention for long",
+                      "q9_cant_get_mind_off_certain_thoughts"      => "9. Can't get his/her mind off certain thoughts; obsessions (describe):",
+                      "q10_cant_sit_still_restless"                => "10. Can't sit still, restless, or hyperactive",
+                      "q11_clings_to_adults_dependent"             => "11. Clings to adults or too dependent",
+                      "q12_complains_of_loneliness"                => "12. Complains of loneliness",
+                      "q13_confused_in_a_fog"                      => "13. Confused or seems to be in a fog",
+                      "q14_cries_a_lot"                            => "14. Cries a lot",
+                      "q15_fidgets"                                => "15. Fidgets",
+                      "q16_cruelty_bullying_meanness"              => "16. Cruelty, bullying, or meanness to others",
+                      "q17_daydreams_gets_lost_in_thoughts"        => "17. Daydreams or gets lost in his/her thoughts",
+                      "q18_harms_self_attempts_suicide"            => "18. Deliberately harms self or attempts suicide",
+                      "q19_demands_a_lot_of_attention"             => "19. Demands a lot of attention",
+                      "q20_destroys_own_things"                    => "20. Destroys his/her own things",
+                      "q21_destroys_others_property"               => "21. Destroys property belonging to others",
+                      "q22_difficulty_following_directions"        => "22. Difficulty following directions",
+                      "q23_disobedient_at_school"                  => "23. Disobedient at school",
+                      "q24_disturbs_other_pupils"                  => "24. Disturbs other pupils",
+                      "q25_doesnt_get_along_with_other_pupils"     => "25. Doesn't get along with other pupils",
+                      "q26_doesnt_feel_guilty_misbehaving"         => "26. Doesn't seem to feel guilty after misbehaving",
+                      "q27_easily_jealous"                         => "27. Easily jealous",
+                      "q28_breaks_school_rules"                    => "28. Breaks school rules",
+                      "q29_fears_animals_situations_places"        => "29. Fears certain animals, situations, or places, other than school (describe):",
+                      "q30_fears_going_to_school"                  => "30. Fears going to school",
+                      "q31_fears_might_think_do_something_bad"     => "31. Fears he/she might think or do something bad",
+                      "q32_feels_has_to_be_perfect"                => "32. Feels he/she has to be perfect",
+                      "q33_feels_complains_no_one_loves_them"      => "33. Feels or complains that no one loves him/her",
+                      "q34_feels_others_out_to_get_them"           => "34. Feels others are out to get him/her",
+                      "q35_feels_worthless_inferior"               => "35. Feels worthless or inferior",
+                      "q36_gets_hurt_a_lot_accident_prone"         => "36. Gets hurt a lot, accident-prone",
+                      "q37_gets_in_many_fights"                    => "37. Gets in many fights",
+                      "q38_gets_teased_a_lot"                      => "38. Gets teased a lot",
+                      "q39_hangs_around_others_who_get_in_trouble" => "39. Hangs around with others who get in trouble",
+                      "q40_hears_sounds_voices_arent_there"        => "40. Hears sounds or voices that aren't there (describe):",
+                      "q41_impulsive_acts_without_thinking"        => "41. Impulsive or acts without thinking",
+                      "q42_would_rather_be_alone"                  => "42. Would rather be alone than with others",
+                      "q43_lying_or_cheating"                      => "43. Lying or cheating",
+                      "q44_bites_fingernails"                      => "44. Bites fingernails",
+                      "q45_nervous_high_strung_tense"              => "45. Nervous, high-strung, or tense",
+                      "q46_nervous_movements_twitching"            => "46. Nervous movements or twitching (describe):",
+                      "q47_overconforms_to_rules"                  => "47. Overconforms to rules",
+                      "q48_not_liked_by_other_pupils"              => "48. Not liked by other pupils",
+                      "q49_has_difficulty_learning"                => "49. Has difficulty learning",
+                      "q50_too_fearful_or_anxious"                 => "50. Too fearful or anxious",
+                      "q51_feels_dizzy_lightheaded"                => "51. Feels dizzy or lightheaded",
+                      "q52_feels_too_guilty"                       => "52. Feels too guilty",
+                      "q53_talks_out_of_turn"                      => "53. Talks out of turn",
+                      "q54_overtired_without_good_reason"          => "54. Overtired without good reason",
+                      "q55_overweight"                             => "55. Overweight",
+                      "q56a_aches_or_pains"                        => "a. Aches or pains (<i>not</i> stomach or headaches)",
+                      "q56b_headaches"                             => "b. Headaches",
+                      "q56c_nausea_feels_sick"                     => "c. Nausea, feels sick",
+                      "q56d_eye_problems"                          => "d. Eye problems (<i>not</i> if corrected by glasses)(describe):",
+                      "q56e_rashes_or_skin_problems"               => "e. Rashes or other skin problems",
+                      "q56f_stomachaches"                          => "f. Stomachaches",
+                      "q56g_vomiting_throwing_up"                  => "g. Vomiting, throwing up",
+                      "q56h_other"                                 => "h. Other (describe):",
+                     );
+
+        foreach ($questions as $key => $question) {
+            // add label for q56
+            if ($key == "q56a_aches_or_pains") {
+                $this->form->addElement("static", null, "<br/>");
+                $this->addLabel("56. Physical problems <b><i>without known medical cause:</i></b>");
+                $this->form->addElement("static", null, "<br/>");
+            }
+
+            $this->addSelect($key, $question, $options);
+
+            // if the question contains (describe), include text element
+            if (strpos($question, "(describe)") !== false) {
+                $str = substr($key, 0, strpos($key, "_")+1)."describe";
+                $this->addBasicText($str, "$this->indent Describe: ");
+
+                $this->XINRegisterRule(
+                    $str,
+                    array("{$key}{@}=={@}1|2"),
+                    "Required."
+                );
+            }
+        }
+    }
+    /**
+    * Generates the fourth page of the form.
+    *
+    *@return void
+    */
+    function _page4()
+    {
+        $this->addHeader("Teacher's Report Form (TRF) for Ages 6-18");
+
+        $this->addLabel("<h4>Below is a list of items that describe pupils <b><i>now or within the past 2 months</i></b>. Please answer all items as well as you can, even if some do not seem to apply to this pupil.</h4>");
+
+        //$this->addLabel("<h4><b>$this->indent 0 = Not True (as far as you know) $this->indent 1 = Somewhat or Sometimes True $this->indent 2 = Very True or Often True</b></h4>");
+
+        $this->form->addElement("static", null, "<br/>");
+
+        $options = array(
+                    null => "",
+                    "0"  => "Not True (as far as you know)",
+                    "1"  => "Somewhat or Sometimes True",
+                    "2"  => "Very True or Often True",
+                   );
+
+        $questions = array(
+                      "q57_physically_attacks_people"                  => "57. Physically attacks people",
+                      "q58_picks_nose_skin_other_parts_of_body"        => "58. Picks nose, skin, or other parts of body (describe):",
+                      "q59_sleeps_in_class"                            => "59. Sleeps in class",
+                      "q60_apathetic_unmotivated"                      => "60. Apathetic or unmotivated",
+                      "q61_poor_school_work"                           => "61. Poor school work",
+                      "q62_poorly_coordinated_clumsy"                  => "62. Poorly coordinated or clumsy",
+                      "q63_prefers_older_children_youths"              => "63. Prefers being with older children or youths",
+                      "q64_prefers_younger_children"                   => "64. Prefers being with younger children",
+                      "q65_refuses_to_talk"                            => "65. Refuses to talk",
+                      "q66_repeats_certain_acts_compulsions"           => "66. Repeats certain acts over and over; compulsions (describe):",
+                      "q67_disrupts_class_discipline"                  => "67. Disrupts class discipline",
+                      "q68_screams_a_lot"                              => "68. Screams a lot",
+                      "q69_secretive"                                  => "69. Secretive, keeps things to self",
+                      "q70_sees_things_that_arent_there"               => "70. Sees things that aren't there (describe):",
+                      "q71_self_conscious_easily_embarrassed"          => "71. Self-conscious or easily embarrassed",
+                      "q72_messy_work"                                 => "72. Messy work",
+                      "q73_behaves_irresponsibly"                      => "73. Behaves irresponsibly (describe):",
+                      "q74_showing_off_clowning"                       => "74. Showing off or clowning",
+                      "q75_too_shy_or_timid"                           => "75. Too shy or timid",
+                      "q76_explosive_unpredictable_behavior"           => "76. Explosive and unpredictable behavior",
+                      "q77_demands_must_be_met_immediately"            => "77. Demands must be met immediately, easily frustrated",
+                      "q78_inattentive_easily_distracted"              => "78. Inattentive or easily distracted",
+                      "q79_speech_problem"                             => "79. Speech problem (describe):",
+                      "q80_stares_blankly"                             => "80. Stares blankly",
+                      "q81_feels_hurt_when_criticized"                 => "81. Feels hurt when criticized",
+                      "q82_steals"                                     => "82. Steals",
+                      "q83_stores_up_many_things_doesnt_need"          => "83. Stores up too many things he/she doesn't need (describe)",
+                      "q84_strange_behaviour"                          => "84. Strange behaviour (describe):",
+                      "q85_strange_ideas"                              => "85. Strange ideas (describe):",
+                      "q86_stubborn_sullen_irritable"                  => "86. Stubborn, sullen, or irritable",
+                      "q87_sudden_changes_in_mood_feelings"            => "87. Sudden changes in mood or feelings",
+                      "q88_sulks_a_lot"                                => "88. Sulks a lot",
+                      "q89_suspicious"                                 => "89. Suspicious",
+                      "q90_swearing_or_obscene_language"               => "90. Swearing or obscene language",
+                      "q91_talks_about_killing_self"                   => "91. Talks about killing self",
+                      "q92_underachieving_not_working_to_potential"    => "92. Underachieving, not working up to potential",
+                      "q93_talks_too_much"                             => "93. Talks too much",
+                      "q94_teases_a_lot"                               => "94. Teases a lot",
+                      "q95_temper_tantrums_hot_temper"                 => "95. Temper tantrums or hot temper",
+                      "q96_seems_preoccupied_with_sex"                 => "96. Seems preoccupied with sex",
+                      "q97_threatens_people"                           => "97. Threatens people",
+                      "q98_tardy_to_school_class"                      => "98. Tardy to school or class",
+                      "q99_smokes_chews_sniffs_tobacco"                => "99. Smokes, chews, or sniffs tobacco",
+                      "q100_fails_to_carry_out_tasks"                  => "100. Fails to carry out assigned tasks",
+                      "q101_truancy_unexplained_absence"               => "101. Truancy or unexplained absence",
+                      "q102_underactive_slow_moving_lacks_energy"      => "102. Underactive, slow moving, or lacks energy",
+                      "q103_unhappy_sad_depressed"                     => "103. Unhappy, sad, or depressed",
+                      "q104_unusually_loud"                            => "104. Unusually loud",
+                      "q105_uses_alcohol_drugs_nonmedical"             => "105. Uses alcohol or drugs for nonmedical purposes (<i>don't</i> include tobacco)(describe):",
+                      "q106_overly_anxious_to_please"                  => "106. Overly anxious to please",
+                      "q107_dislikes_school"                           => "107. Dislikes school",
+                      "q108_is_afraid_making_mistakes"                 => "108. Is afraid of making mistakes",
+                      "q109_whining"                                   => "109. Whining",
+                      "q110_unclean_personal_appearance"               => "110. Unclean personal appearance",
+                      "q111_withdrawn_doesnt_get_involved_with_others" => "111. Withdrawn, doesn't get involved with others",
+                      "q112_worries"                                   => "112. Worries",
+                     );
+
+        foreach ($questions as $key => $question) {
+
+            $this->addSelect($key, $question, $options);
+
+            // if the question contains (describe), include text element
+            if (strpos($question, "(describe)") !== false) {
+                $str = substr($key, 0, strpos($key, "_")+1)."describe";
+                $this->addBasicText($str, "$this->indent Describe: ");
+
+                $this->XINRegisterRule(
+                    $str,
+                    array("{$key}{@}=={@}1|2"),
+                    "Required."
+                );
+            }
+        }
+
+        $this->addLabel("113. Please write any problems the pupil has that were not listed above.");
+
+        $group[] =& $this->form->createElement(
+            "static",
+            null,
+            null,
+            "Problem"
+        );
+        $group[] =& $this->form->createElement(
+            "static",
+            null,
+            null,
+            "Problem rating"
+        );
+        $this->addGroup(
+            $group,
+            "page4_headers",
+            null,
+            $this->_GUIDelimiter,
+            false
+        );
+        unset($group);
+
+        for ($i=1; $i <= 3; $i++) {
+            $this->addLabel($i . ".");
+
+            $group[] =& $this->createText(
+                "additional_problem_{$i}",
+                ""
+            );
+            $group[] =& $this->createSelect(
+                "additional_problem_" . $i . "_rating",
+                "Additional Problems",
+                $options
+            );
+
+            $this->XINRegisterRule(
+                "additional_problem_" . $i . "_rating",
+                array("additional_problem_{$i}{@}!={@}"),
+                "Required",
+                "additional_problem_" . $i . "_group"
+            );
+            // if someone adds score, the problem must be inputted
+            $this->XINRegisterRule(
+                "additional_problem_{$i}",
+                array("additional_problem_{$i}_rating{@}=={@}0|1|2"),
+                "Required.",
+                "additional_problem_" . $i . "_group"
+            );
+            $this->addGroup(
+                $group,
+                "additional_problem_" . $i . "_group",
+                null,
+                $this->_GUIDelimiter,
+                false
+            );
+            unset($group);
+        }
+    }
+}
+?>
