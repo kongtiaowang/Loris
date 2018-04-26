@@ -2275,7 +2275,7 @@ class NDB_BVL_Instrument extends NDB_Page
             }
         }
 
-        return $tpl_data;
+        return json_encode($tpl_data);
     }
 
     function getCompletionStats() {
