@@ -3,146 +3,1478 @@
 DROP TABLE IF EXISTS bot2_scale_score_lookup;
 
 CREATE TABLE `bot2_scale_score_lookup` (
-                 	`age_equivalent` varchar(10) NOT NULL,
+                 	`age_equivalent` varchar(50) NOT NULL,
                  	`sex` enum("both_sexes") NOT NULL,
-                 	`subscale` varchar(10) NOT NULL,
-			            `scale_score` varchar(10) NOT NULL,
+                 	`subscale` varchar(50) NOT NULL,
+			            `scale_score` int(3) NOT NULL,
 		  	          `total_point_score` varchar(10) NOT NULL
-		  	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+		  	)ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO bot2_scale_score_lookup VALUES
-('4.0-4:3', 'both_sexes', 'subtest_1', '35', '36-41'),
-('4.0-4:3', 'both_sexes', 'subtest_1', '34', '35'),,
-('4.0-4:3', 'both_sexes', 'subtest_1', '33', '34'),
-('4.0-4:3', 'both_sexes', 'subtest_1', '32', '33'),
-('4.0-4:3', 'both_sexes', 'subtest_1', '31', '30-32'),
-('4.0-4:3', 'both_sexes', 'subtest_1', '30', '29'),
-('4.0-4:3', 'both_sexes', 'subtest_1', '29', '28'),
-('4.0-4:3', 'both_sexes', 'subtest_1', '28', '27'),
-('4.0-4:3', 'both_sexes', 'subtest_1', '27', '27'),
-('4.0-4:3', 'both_sexes', 'subtest_1', '26', '27'),
-('4.0-4:3', 'both_sexes', 'subtest_1', '25', '26'),
-('4.0-4:3', 'both_sexes', 'subtest_1', '24', '25'),
-('4.0-4:3', 'both_sexes', 'subtest_1', '23', '23-24'),
-('4.0-4:3', 'both_sexes', 'subtest_1', '22', '21-22'),
-('4.0-4:3', 'both_sexes', 'subtest_1', '21', '20'),
-('4.0-4:3', 'both_sexes', 'subtest_1', '20', '19'),
-('4.0-4:3', 'both_sexes', 'subtest_1', '19', '18'),
-('4.0-4:3', 'both_sexes', 'subtest_1', '18', '17'),
-('4.0-4:3', 'both_sexes', 'subtest_1', '17', '15-16'),
-('4.0-4:3', 'both_sexes', 'subtest_1', '16', '13-14'),
-('4.0-4:3', 'both_sexes', 'subtest_1', '15', '12'),
-('4.0-4:3', 'both_sexes', 'subtest_1', '14', '11'),
-('4.0-4:3', 'both_sexes', 'subtest_1', '13', '10'),
-('4.0-4:3', 'both_sexes', 'subtest_1', '12', '8-9'),
-('4.0-4:3', 'both_sexes', 'subtest_1', '11', '7'),
-('4.0-4:3', 'both_sexes', 'subtest_1', '10', '5-6'),
-('4.0-4:3', 'both_sexes', 'subtest_1', '9', '5-6'),
-('4.0-4:3', 'both_sexes', 'subtest_1', '8', '4'),
-('4.0-4:3', 'both_sexes', 'subtest_1', '7', '3'),
-('4.0-4:3', 'both_sexes', 'subtest_1', '6', '2'),
-('4.0-4:3', 'both_sexes', 'subtest_1', '5', '1'),
-('4.0-4:3', 'both_sexes', 'subtest_1', '4', '1'),
-('4.0-4:3', 'both_sexes', 'subtest_1', '3', '1'),
-('4.0-4:3', 'both_sexes', 'subtest_1', '2', '0'),
-('4.0-4:3', 'both_sexes', 'subtest_1', '1', '0'),
-('4.0-4:3', 'both_sexes', 'subtest_2', '35', '37-40'),
-('4.0-4:3', 'both_sexes', 'subtest_2', '34', '35-36'),,
-('4.0-4:3', 'both_sexes', 'subtest_2', '33', '35-36'),
-('4.0-4:3', 'both_sexes', 'subtest_2', '32', '35-36'),
-('4.0-4:3', 'both_sexes', 'subtest_2', '31', '33-34'),
-('4.0-4:3', 'both_sexes', 'subtest_2', '30', '32'),
-('4.0-4:3', 'both_sexes', 'subtest_2', '29', '28-31'),
-('4.0-4:3', 'both_sexes', 'subtest_2', '28', '28-31'),
-('4.0-4:3', 'both_sexes', 'subtest_2', '27', '27'),
-('4.0-4:3', 'both_sexes', 'subtest_2', '26', '26'),
-('4.0-4:3', 'both_sexes', 'subtest_2', '25', '25'),
-('4.0-4:3', 'both_sexes', 'subtest_2', '24', '23-24'),
-('4.0-4:3', 'both_sexes', 'subtest_2', '23', '21-22'),
-('4.0-4:3', 'both_sexes', 'subtest_2', '22', '20'),
-('4.0-4:3', 'both_sexes', 'subtest_2', '21', '18-19'),
-('4.0-4:3', 'both_sexes', 'subtest_2', '20', '17'),
-('4.0-4:3', 'both_sexes', 'subtest_2', '19', '15-16'),
-('4.0-4:3', 'both_sexes', 'subtest_2', '18', '13-14'),
-('4.0-4:3', 'both_sexes', 'subtest_2', '17', '11-12'),
-('4.0-4:3', 'both_sexes', 'subtest_2', '16', '10'),
-('4.0-4:3', 'both_sexes', 'subtest_2', '15', '8-9'),
-('4.0-4:3', 'both_sexes', 'subtest_2', '14', '7'),
-('4.0-4:3', 'both_sexes', 'subtest_2', '13', '5-6'),
-('4.0-4:3', 'both_sexes', 'subtest_2', '12', '3-4'),
-('4.0-4:3', 'both_sexes', 'subtest_2', '11', '2'),
-('4.0-4:3', 'both_sexes', 'subtest_2', '10', '2'),
-('4.0-4:3', 'both_sexes', 'subtest_2', '9', '1'),
-('4.0-4:3', 'both_sexes', 'subtest_2', '8', '1'),
-('4.0-4:3', 'both_sexes', 'subtest_2', '7', '1'),
-('4.0-4:3', 'both_sexes', 'subtest_2', '6', '0'),
-('4.0-4:3', 'both_sexes', 'subtest_2', '5', '0'),
-('4.0-4:3', 'both_sexes', 'subtest_2', '4', '0'),
-('4.0-4:3', 'both_sexes', 'subtest_2', '3', '0'),
-('4.0-4:3', 'both_sexes', 'subtest_2', '2', '0'),
-('4.0-4:3', 'both_sexes', 'subtest_2', '1', '0'),
-('4.0-4:3', 'both_sexes', 'subtest_3', '35', '28-45'),
-('4.0-4:3', 'both_sexes', 'subtest_3', '34', '27'),,
-('4.0-4:3', 'both_sexes', 'subtest_3', '33', '26'),
-('4.0-4:3', 'both_sexes', 'subtest_3', '32', '24-25'),
-('4.0-4:3', 'both_sexes', 'subtest_3', '31', '21-23'),
-('4.0-4:3', 'both_sexes', 'subtest_3', '30', '21-23'),
-('4.0-4:3', 'both_sexes', 'subtest_3', '29', '21-23'),
-('4.0-4:3', 'both_sexes', 'subtest_3', '28', '20'),
-('4.0-4:3', 'both_sexes', 'subtest_3', '27', '20',
-('4.0-4:3', 'both_sexes', 'subtest_3', '26', '19'),
-('4.0-4:3', 'both_sexes', 'subtest_3', '25', '18'),
-('4.0-4:3', 'both_sexes', 'subtest_3', '24', '17'),
-('4.0-4:3', 'both_sexes', 'subtest_3', '23', '16'),
-('4.0-4:3', 'both_sexes', 'subtest_3', '22', '16'),
-('4.0-4:3', 'both_sexes', 'subtest_3', '21', '15'),
-('4.0-4:3', 'both_sexes', 'subtest_3', '20', '14'),
-('4.0-4:3', 'both_sexes', 'subtest_3', '19', '14'),
-('4.0-4:3', 'both_sexes', 'subtest_3', '18', '13'),
-('4.0-4:3', 'both_sexes', 'subtest_3', '17', '12'),
-('4.0-4:3', 'both_sexes', 'subtest_3', '16', '11'),
-('4.0-4:3', 'both_sexes', 'subtest_3', '15', '10'),
-('4.0-4:3', 'both_sexes', 'subtest_3', '14', '9'),
-('4.0-4:3', 'both_sexes', 'subtest_3', '13', '8'),
-('4.0-4:3', 'both_sexes', 'subtest_3', '12', '7'),
-('4.0-4:3', 'both_sexes', 'subtest_3', '11', '7'),
-('4.0-4:3', 'both_sexes', 'subtest_3', '10', '6'),
-('4.0-4:3', 'both_sexes', 'subtest_3', '9', '6'),
-('4.0-4:3', 'both_sexes', 'subtest_3', '8', '5'),
-('4.0-4:3', 'both_sexes', 'subtest_3', '7', '4'),
-('4.0-4:3', 'both_sexes', 'subtest_3', '6', '3'),
-('4.0-4:3', 'both_sexes', 'subtest_3', '5', '2'),
-('4.0-4:3', 'both_sexes', 'subtest_3', '4', '1'),
-('4.0-4:3', 'both_sexes', 'subtest_3', '3', '1'),
-('4.0-4:3', 'both_sexes', 'subtest_3', '2', '0'),
-('4.0-4:3', 'both_sexes', 'subtest_3', '1', '0'),
-('4.0-4:3', 'both_sexes', 'subtest_4', '30', '24'),
-('4.0-4:3', 'both_sexes', 'subtest_4', '29', '23'),
-('4.0-4:3', 'both_sexes', 'subtest_4', '28', '19-22'),
-('4.0-4:3', 'both_sexes', 'subtest_4', '27', '18',
-('4.0-4:3', 'both_sexes', 'subtest_4', '26', '17'),
-('4.0-4:3', 'both_sexes', 'subtest_4', '25', '16'),
-('4.0-4:3', 'both_sexes', 'subtest_4', '24', '15'),
-('4.0-4:3', 'both_sexes', 'subtest_4', '23', '14'),
-('4.0-4:3', 'both_sexes', 'subtest_4', '22', '13'),
-('4.0-4:3', 'both_sexes', 'subtest_4', '21', '13'),
-('4.0-4:3', 'both_sexes', 'subtest_4', '20', '13'),
-('4.0-4:3', 'both_sexes', 'subtest_4', '19', '12'),
-('4.0-4:3', 'both_sexes', 'subtest_4', '18', '11'),
-('4.0-4:3', 'both_sexes', 'subtest_4', '17', '10'),
-('4.0-4:3', 'both_sexes', 'subtest_4', '16', '8-9'),
-('4.0-4:3', 'both_sexes', 'subtest_4', '15', '7'),
-('4.0-4:3', 'both_sexes', 'subtest_4', '14', '5-6'),
-('4.0-4:3', 'both_sexes', 'subtest_4', '13', '4'),
-('4.0-4:3', 'both_sexes', 'subtest_4', '12', '3'),
-('4.0-4:3', 'both_sexes', 'subtest_4', '11', '3'),
-('4.0-4:3', 'both_sexes', 'subtest_4', '10', '2'),
-('4.0-4:3', 'both_sexes', 'subtest_4', '9', '2'),
-('4.0-4:3', 'both_sexes', 'subtest_4', '8', '1'),
-('4.0-4:3', 'both_sexes', 'subtest_4', '7', '1'),
-('4.0-4:3', 'both_sexes', 'subtest_4', '6', '1'),
-('4.0-4:3', 'both_sexes', 'subtest_4', '5', '0'),
-('4.0-4:3', 'both_sexes', 'subtest_4', '4', '0'),
-('4.0-4:3', 'both_sexes', 'subtest_4', '3', '0'),
-('4.0-4:3', 'both_sexes', 'subtest_4', '2', '0'),
-('4.0-4:3', 'both_sexes', 'subtest_4', '1', '0'),
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_1',
+		'35',
+		'36-41'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_1',
+		'34',
+		'35'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+	'4.0-4.3',
+	'both_sexes',
+	'subtest_1',
+	'33',
+	'34'
+);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_1',
+		'32',
+		'33'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_1',
+		'31',
+		'30-32'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_1',
+		'30',
+		'29'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_1',
+		'29',
+		'28'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_1',
+		'28',
+		'27'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_1',
+		'27',
+		'27'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_1',
+		'26',
+		'27'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_1',
+		'25',
+		'26'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_1',
+		'24',
+		'25'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_1',
+		'23',
+		'23-24'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_1',
+		'22',
+		'21-22'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_1',
+		'21',
+		'20'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_1',
+		'20',
+		'19'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_1',
+		'19',
+		'18'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_1',
+		'18',
+		'17'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_1',
+		'17',
+		'15-16'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_1',
+		'16',
+		'13-14'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_1',
+		'15',
+		'12'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_1',
+		'14',
+		'11'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_1',
+		'13',
+		'10'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_1',
+		'12',
+		'8-9'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_1',
+		'11',
+		'7'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_1',
+		'10',
+		'5-6'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_1',
+		'9',
+		'5-6'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_1',
+		'8',
+		'4'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_1',
+		'7',
+		'3'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_1',
+		'6',
+		'2'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_1',
+		'5',
+		'1'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_1',
+		'4',
+		'1'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_1',
+		'3',
+		'1'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_1',
+		'2',
+		'0'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_1',
+		'1',
+		'0'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_2',
+		'35',
+		'37-40'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_2',
+		'34',
+		'35-36'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_2',
+		'33',
+		'35-36'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_2',
+		'32',
+		'35-36'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_2',
+		'31',
+		'33-34'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_2',
+		'30',
+		'32'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_2',
+		'29',
+		'28-31'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_2',
+		'28',
+		'28-31'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_2',
+		'27',
+		'27'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_2',
+		'26',
+		'26'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_2',
+		'25',
+		'25'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_2',
+		'24',
+		'23-24'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_2',
+		'23',
+		'21-22'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_2',
+		'22',
+		'20'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_2',
+		'21',
+		'18-19'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_2',
+		'20',
+		'17'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_2',
+		'19',
+		'15-16'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_2',
+		'18',
+		'13-14'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_2',
+		'17',
+		'11-12'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_2',
+		'16',
+		'10'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_2',
+		'15',
+		'8-9'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_2',
+		'14',
+		'7'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_2',
+		'13',
+		'5-6'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_2',
+		'12',
+		'3-4'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_2',
+		'11',
+		'2'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_2',
+		'10',
+		'2'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_2',
+		'9',
+		'1'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_2',
+		'8',
+		'1'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_2',
+		'7',
+		'1'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_2',
+		'6',
+		'0'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_2',
+		'5',
+		'0'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_2',
+		'4',
+		'0'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_2',
+		'3',
+		'0'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_2',
+		'2',
+		'0'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_2',
+		'1',
+		'0'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_3',
+		'35',
+		'28-45'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_3',
+		'34',
+		'27'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_3',
+		'33',
+		'26'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_3',
+		'32',
+		'24-25'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_3',
+		'31',
+		'21-23'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_3',
+		'30',
+		'21-23'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_3',
+		'29',
+		'21-23'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_3',
+		'28',
+		'20'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_3',
+		'27',
+		'20'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+			'4.0-4.3',
+			'both_sexes',
+			'subtest_3',
+			'26',
+			'19'
+		);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_3',
+		'25',
+		'18'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_3',
+		'24',
+		'17'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_3',
+		'23',
+		'16'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_3',
+		'22',
+		'16'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_3',
+		'21',
+		'15'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_3',
+		'20',
+		'14'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_3',
+		'19',
+		'14'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_3',
+		'18',
+		'13'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_3',
+		'17',
+		'12'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_3',
+		'16',
+		'11'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_3',
+		'15',
+		'10'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_3',
+		'14',
+		'9'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_3',
+		'13',
+		'8'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_3',
+		'12',
+		'7'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_3',
+		'11',
+		'7'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_3',
+		'10',
+		'6'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_3',
+		'9',
+		'6'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_3',
+		'8',
+		'5'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_3',
+		'7',
+		'4'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_3',
+		'6',
+		'3'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_3',
+		'5',
+		'2'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_3',
+		'4',
+		'1'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_3',
+		'3',
+		'1'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_3',
+		'2',
+		'0'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_3',
+		'1',
+		'0'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_4',
+		'30',
+		'24'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_4',
+		'29',
+		'23'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_4',
+		'28',
+		'19-22'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_4',
+		'27',
+		'18');
+INSERT INTO `bot2_scale_score_lookup` VALUES( 
+			'4.0-4.3',
+			'both_sexes',
+			'subtest_4',
+			'26',
+			'17'
+		);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_4',
+		'25',
+		'16'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_4',
+		'24',
+		'15'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_4',
+		'23',
+		'14'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_4',
+		'22',
+		'13'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_4',
+		'21',
+		'13'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_4',
+		'20',
+		'13'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_4',
+		'19',
+		'12'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_4',
+		'18',
+		'11'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_4',
+		'17',
+		'10'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_4',
+		'16',
+		'8-9'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_4',
+		'15',
+		'7'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_4',
+		'14',
+		'5-6'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_4',
+		'12',
+		'3'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_4',
+		'11',
+		'3'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_4',
+		'10',
+		'2'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_4',
+		'9',
+		'2'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_4',
+		'8',
+		'1'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_4',
+		'7',
+		'1'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_4',
+		'6',
+		'1'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_4',
+		'5',
+		'0'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_4',
+		'4',
+		'0'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_4',
+		'3',
+		'0'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_4',
+		'2',
+		'0'
+	);
+
+INSERT
+	INTO
+		`bot2_scale_score_lookup`
+	VALUES(
+		'4.0-4.3',
+		'both_sexes',
+		'subtest_4',
+		'1',
+		'0'
+	);

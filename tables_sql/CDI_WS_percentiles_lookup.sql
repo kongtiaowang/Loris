@@ -1,12 +1,12 @@
 DROP TABLE IF EXISTS CDI_WS_percentiles_lookup;
 
 CREATE TABLE `CDI_WS_percentiles_lookup` (
-                 	`age_months` int(3) NOT NULL,
+                 	`age_months` varchar(3) NOT NULL,
                  	`sex` enum("male","female", "both_sexes") NOT NULL,
 			`subscale` varchar(255) NOT NULL,
-			`score_raw` int(3) NOT NULL,
+			`score_raw` int(4) NOT NULL,
 		  	`score_percentile` int(3) NOT NULL
-		  	) TYPE=MyISAM;
+		  	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO CDI_WS_percentiles_lookup VALUES
 ('16', 'female', 'words_produced_number', '362', '99'),
@@ -22,7 +22,7 @@ INSERT INTO CDI_WS_percentiles_lookup VALUES
 ('16', 'female', 'words_produced_number', '62', '50'),
 ('16', 'female', 'words_produced_number', '53', '45'),
 ('16', 'female', 'words_produced_number', '47', '40'),
-('16', 'female', 'words_produced_number', '41', '35')
+('16', 'female', 'words_produced_number', '41', '35'),
 ('16', 'female', 'words_produced_number', '33', '30'),
 ('16', 'female', 'words_produced_number', '28', '25'),
 ('16', 'female', 'words_produced_number', '23', '20'),
@@ -132,7 +132,7 @@ INSERT INTO CDI_WS_percentiles_lookup VALUES
 ('22', 'female', 'words_produced_number', '625', '99'),
 ('22', 'female', 'words_produced_number', '562', '95'),
 ('22', 'female', 'words_produced_number', '489', '90'),
-('22', 'female', 'words_produced_number', '448', '85')
+('22', 'female', 'words_produced_number', '448', '85'),
 ('22', 'female', 'words_produced_number', '408', '80'),
 ('22', 'female', 'words_produced_number', '380', '75'),
 ('22', 'female', 'words_produced_number', '349', '70'),
@@ -1058,7 +1058,7 @@ INSERT INTO CDI_WS_percentiles_lookup VALUES
 ('30', 'male', 'grammatical_complexity', '13', '30'),
 ('30', 'male', 'grammatical_complexity', '5', '25'),
 ('30', 'male', 'grammatical_complexity', '3', '20'),
-('30', 'male', 'grammatical_complexity', '1', '15'),
+('30', 'male', 'grammatical_complexity', '1', '15');
 
 
 
