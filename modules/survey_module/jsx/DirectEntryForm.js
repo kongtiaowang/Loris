@@ -320,6 +320,8 @@ class DateElement extends React.Component {
 				"dateFormat" : "yy-mm-dd",
 				"minDate" : this.props.element.Options.MinDate,
 				"maxDate" : this.props.element.Options.MaxDate,
+				"changeMonth" : true,
+      			"changeYear" : true
 			}).on("change", function(e) {
 			    that.updateDate(e);
 			});
@@ -329,6 +331,10 @@ class DateElement extends React.Component {
 	render() {
 
 		let classInfo = 'col-xs-12 field_question';
+		let value = '';
+		if(this.props.value) {
+			value = this.props.value;
+		}
 
 		let input = (
 			<input
@@ -338,7 +344,7 @@ class DateElement extends React.Component {
 				min = {this.props.element.Options.MinDate}
 				max = {this.props.element.Options.MaxDate}
 				onChange = {this.updateDate}
-				value = {this.props.value}
+				value = {value}
 			/>
 		);
 

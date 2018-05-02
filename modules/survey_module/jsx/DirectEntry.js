@@ -23,7 +23,12 @@ class DirectEntry extends React.Component {
 	    	"margin-top": height
 	    }
 	    let page = -1;
-		const url = new URL(window.location.href);
+		let url = window.location;
+		if (!window.location.origin) {
+  			url.origin = url.protocol
+  				+ "//" + url.hostname
+  				+ (url.port ? ':' + url.port: '');
+		}
 
 	    this.nextPage = this.nextPage.bind(this);
 	    this.prevPage = this.prevPage.bind(this);
@@ -41,7 +46,8 @@ class DirectEntry extends React.Component {
 				total: 0,
 				completed: 0
 			},
-			api_url: url.origin + "/survey_module/ajax/survey_api.php" + url.search
+			api_url: url.origin + "/survey_module/ajax/survey_api.php" + url.search,
+			submitState: 0 //0 = not submitted, 1 = successfull submit, 2 = already submitted, 3 = error in form submit
 	    };
 
 	}
@@ -86,7 +92,12 @@ class DirectEntry extends React.Component {
 	      }.bind(this)
 	    }).fail((responseData) => {
 	    	// TODO display error to user 
-			console.log(responseData);
+			console.log(responseData.status);
+			if (responseData.status == '403') {
+				this.setState({
+					submitState: 2
+				});
+			}
 		});
 
 		
@@ -239,15 +250,37 @@ class DirectEntry extends React.Component {
 	}
 
 	submit() {
+		const that = this;
 		$.ajax({
 		    url : this.state.api_url,
 		    type : 'POST',
-		    contentType : 'application/json'
+		    contentType : 'application/json',
+		    success: function(result) {
+		    	that.setState({
+		    		submitState: 1
+		    	});
+		    }
+		}).fail((responseData) => {
+			console.log("FAIL");
+			console.log(responseData);
+			this.setState({
+	    		submitState: 3
+	    	});
 		}); 
 	}
 
 	render() {
-		if(!this.state.InstrumentJSON.Elements){
+		if(this.state.submitState === 2){
+			// The form has already been submitted
+			return (
+				<div>This form has already been completed</div>
+			);
+		} else if (this.state.submitState === 1) {
+			// The form has just been successfully submitted
+			return (
+				<div>Thank you for submitting the data</div>
+			);
+		} else if (!this.state.InstrumentJSON.Elements) {
 			// Since the Instrument data is set when the component is
 			// mounted we want to display nothing until it has been set
 			return (
@@ -258,7 +291,10 @@ class DirectEntry extends React.Component {
 		let buttons;
 		if (this.state.page === this.state.InstrumentJSON.Elements.length) {
 			DirectEntryFormElements = (
-				<ReviewPage reviewData={this.state.ReviewData} />
+				<ReviewPage
+					reviewData={this.state.ReviewData}
+					submitState={this.state.submitState}
+				/>
 			);
 		} else if (this.state.page >= 0) {
 			DirectEntryFormElements = (
@@ -357,10 +393,19 @@ class ReviewPage extends React.Component {
 				</tr>
 			);
 		});
+		let error;
+		if(this.props.submitState === 3) {
+			error = (
+				<h5 className='has-error'>
+					This form has an error, please fix errors before submitting
+				</h5>
+			);
+		}
 
 		return (
 			<div className='question-container col-xs-12 col-sm-10 col-sm-offset-1'>
 				<h3>Review You Submission</h3>
+				{error}
 				<table className="table table-striped table-bordered">
 					
 					<tbody>

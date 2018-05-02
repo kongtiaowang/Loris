@@ -123,6 +123,8 @@ class GroupDateElement extends React.Component {
 				"dateFormat" : "yy-mm-dd",
 				"minDate" : this.props.element.Options.MinDate,
 				"maxDate" : this.props.element.Options.MaxDate,
+				"changeMonth" : true,
+       			"changeYear" : true
 			}).on("change", function(e) {
 			    that.updateValue(e);
 			});
@@ -130,6 +132,11 @@ class GroupDateElement extends React.Component {
 	}
 
 	render() {
+
+		let value = '';
+		if(this.props.value) {
+			value = this.props.value;
+		}
 
 		let input = (
 			<input
@@ -139,7 +146,7 @@ class GroupDateElement extends React.Component {
 				min = {this.props.element.Options.MinDate}
 				max = {this.props.element.Options.MaxDate}
 				onChange = {this.updateValue}
-				value = {this.props.value}
+				value = {value}
 			/>
 		);
 
@@ -149,7 +156,7 @@ class GroupDateElement extends React.Component {
 					name = {this.props.element.Name}
 					type="text"
 					className="form-control"
-					value = {this.props.value}
+					value = {value}
 					id = {this.props.element.Name}
 				/>
 			);
