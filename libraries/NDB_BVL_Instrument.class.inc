@@ -2253,16 +2253,19 @@ class NDB_BVL_Instrument extends NDB_Page
     {
         $DB = Database::singleton();
 
+        // reset page to top page for loading JSON
+        $this->page = '';
+        $this->form->form = array();
+        $this->_setupForm();
+
+        $inst = json_decode($this->toDirectJSON());
+
+        $temp = $this->getFlatInstrumentJSON($inst);
+
         $smarty   = new Smarty_neurodb();
         $tpl_data = array();
 
-        $tpl_data['questions'] = $DB->pselect(
-            "SELECT Description as question,
-            SourceField FROM parameter_type
-            WHERE SourceFrom=:TN AND
-            SourceField NOT IN ('Validity', 'Administration')",
-            array('TN' => $this->testName)
-        );
+        $tpl_data['questions'] = $this->getFlatInstrumentJSON($inst);
 
         $Responses = $DB->pselectRow(
             "SELECT * FROM " . $this->testName . " WHERE CommentID=:CID",
@@ -2278,8 +2281,42 @@ class NDB_BVL_Instrument extends NDB_Page
         return json_encode($tpl_data);
     }
 
-    function getCompletionStats() {
+    /**
+     * Function that takes a API formatted instrument and flattens 
+     * the object to a non nested element array
+     *
+     * @param array $json the array to be flatten
+     *
+     * @return array
+     */
+    function getFlatInstrumentJSON($json) {
+
+        $flatArray = array();
         
+        foreach ($json->Elements as $element) {
+            if ($element->Type === "ElementGroup") {
+                $flatArray = array_merge(
+                    $flatArray,
+                    $this->getFlatInstrumentJSON($element)
+                );
+            } else {
+                switch ($element->Type) {
+                    case "select":
+                    case "text":
+                    case "date":
+                    case "time":
+                        $flatArray[] = array(
+                            "question" => $element->Description,
+                            "SourceField" => $element->Name,
+                        );
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        return $flatArray;
     }
 
 

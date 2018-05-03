@@ -277,6 +277,25 @@ class DirectDataEntryMainPage
                 array('Status' => "Complete"),
                 array('OneTimePassword' => $this->key)
             );
+            $DB->update(
+                $this->SurveyInfo['Test_name'],
+                array(
+                 'Date_taken' => date('Y-m-d'),
+                ),
+                array(
+                 'CommentID' => $this->SurveyInfo['CommentID'],
+                )
+            );
+            $DB->update(
+                'flag',
+                array(
+                 'Data_entry'     => 'Complete',
+                 'Administration' => 'All',
+                ),
+                array(
+                 'CommentID' => $this->SurveyInfo['CommentID'],
+                )
+            );
         } else {
             header("HTTP/1.0 400 Bad Request");
             echo json_encode($valid);
