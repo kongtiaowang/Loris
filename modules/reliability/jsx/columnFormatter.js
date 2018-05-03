@@ -67,9 +67,9 @@ function formatColumn(column, cell, rowData, rowHeaders) {
             return <td className="bg-danger">No</td>;
         } else  {
             var file_details=file_in_DB.split(",")
-            var rest_path    ="/temp_videos/ajax/GetFile.php?File=/videos/"+file_details[0]+'/'+file_details[1];
+            var rest_path    ="/temp_videos/ajax/GetFile.php?File=/videos/"+file_details[1]+'/'+file_details[2];
             var file_url=loris.BaseURL +rest_path;
-            return <td className="bg-success"><a download ={file_details[1]} href={file_url}>Yes</a></td>;
+            return <td className="bg-success"><a download ={file_details[2]} href={file_url}>{file_details[0]}</a></td>;
         }
     }
 
