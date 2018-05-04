@@ -48,7 +48,6 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
         //The array of dates/timestamps to convert to database dates/timestamps
         //Any HTML_Quickform date elements must be listed here
         $this->dateTimeFields =array(
-                                "date_today",
                                 "pupil_birthdate",
                                );
 
@@ -58,7 +57,6 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
 
         // required fields for data entry completion status
         $this->_requiredElements = array(
-                                    'Examiner',
                                     'first_name',
                                     'q1_how_hard_working',
                                     'q1_acts_too_young',
@@ -100,8 +98,9 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
         // display test name
         $this->addHeader("Teacher's Report Form (TRF) for Ages 6-18");
 
-        // automatically adds examiner & date of administration
-        $this->_addMetadataFields();
+        $this->form->addElement("static", null, "<br/>");
+
+        $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
     }
 
     /**
@@ -115,14 +114,6 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
 
         $this->form->addElement("static", null, "<br/>");
 
-        $this->addLabel("<h4>PUPIL'S FULL NAME</h4>");
-
-        $this->addBasicText("first_name", "First", ['disabled' => 'disabled']);
-
-        $this->addBasicText("middle_name", "Middle", ['disabled' => 'disabled']);
-
-        $this->addBasicText("last_name", "Last", ['disabled' => 'disabled']);
-
         $pupil_gender_options = array(
                                  null   => "",
                                  "boy"  => "Boy",
@@ -135,8 +126,6 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
 
         $this->addBasicText("pupil_ethnic_group_race", "ETHNIC GROUP OR RACE");
 
-        $this->addBasicDate('date_today', 'Today\'s Date');
-
         $this->addBasicDate('pupil_birthdate', 'Pupil\'s Birthdate (if known)');
 
         $this->XINRegisterRule(
@@ -146,8 +135,6 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
         );
 
         $this->addNumericElement("grade_in_school", "GRADE IN SCHOOL");
-
-        $this->addBasicText("name_address_of_school", "NAME AND ADDRESS OF SCHOOL");
 
         $this->form->addElement("static", null, "<br/>");
 
@@ -170,8 +157,6 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
         );
 
         $this->form->addElement("static", null, "<br/>");
-
-        $this->addBasicText("form_filled_by", "THIS FORM FILLED OUT BY (print your full name):", ['disabled' => 'disabled']);
 
         $teacher_gender_options = array(
                                    null     => "",
@@ -291,8 +276,7 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
                 $VII_academic_performance_options
             );
 
-            // uncomment if not all 6 subjects are required
-            /*
+            // Not all 6 subjects are required
             $this->XINRegisterRule(
                 "academic_subject_{$i}",
                 array("academic_subject_{$i}_current_performance{@}!={@}"),
@@ -305,7 +289,6 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
                 "Required.",
                 "academic_subject_" . $i . "_group"
             );
-            */
 
             $this->addGroup(
                 $group,
