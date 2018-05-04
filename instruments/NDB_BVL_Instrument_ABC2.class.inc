@@ -60,13 +60,6 @@ class NDB_BVL_Instrument_ABC2 extends NDB_BVL_Instrument
         //Any HTML_Quickform multiple selects must be listed here
         $this->_selectMultipleElements = array();
 
-        // required fields for data entry completion status
-        $this->_requiredElements = array(
-                                    'Examiner',
-                                    'q1_excessively_active',
-                                    'q20_fixed_facial_expressions',
-                                   );
-
         // setup the form
         $this->_setupForm();
 
@@ -102,8 +95,7 @@ class NDB_BVL_Instrument_ABC2 extends NDB_BVL_Instrument
         // display test name
         $this->addHeader("ABC-2");
 
-        // automatically adds examiner & date of administration
-        $this->_addMetadataFields();
+        $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
     }
 
     /**
