@@ -1,4 +1,4 @@
-CREATE TABLE `connors_parent` (
+CREATE TABLE `conners_teacher` (
 `CommentID` varchar(255) NOT NULL default '',
 
                             `UserID` varchar(255) default NULL,
@@ -12,7 +12,7 @@ CREATE TABLE `connors_parent` (
 `Candidate_Age` varchar(255) default NULL,
 `Window_Difference` varchar(255) default NULL,
 `childs_name_id` varchar(255) default NULL,
-`parents_name_id` varchar(255) default NULL,
+`teachers_name_id` varchar(255) default NULL,
 `grade` varchar(255) default NULL,
 `q1` enum('0','1','2','3') default NULL,
 `q2` enum('0','1','2','3') default NULL,
@@ -53,12 +53,8 @@ CREATE TABLE `connors_parent` (
 `q37` enum('0','1','2','3') default NULL,
 `q38` enum('0','1','2','3') default NULL,
 `q39` enum('0','1','2','3') default NULL,
-`q40` enum('0','1','2','3') default NULL,
-`q41` enum('0','1','2','3') default NULL,
-`q42` enum('0','1','2','3') default NULL,
-`q43` enum('0','1','2','3') default NULL,
-`q44` varchar(255) default NULL,
-`q45` varchar(255) default NULL,
+`q40` varchar(255) default NULL,
+`q41` varchar(255) default NULL,
 PRIMARY KEY  (`CommentID`)
 
               ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

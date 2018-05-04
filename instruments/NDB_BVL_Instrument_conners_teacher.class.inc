@@ -15,7 +15,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/IBIS/
  */
-class NDB_BVL_Instrument_connors_teacher extends NDB_BVL_Instrument
+class NDB_BVL_Instrument_conners_teacher extends NDB_BVL_Instrument
 {
 
     /**
@@ -29,12 +29,12 @@ class NDB_BVL_Instrument_connors_teacher extends NDB_BVL_Instrument
     function setup($commentID, $page)
     {
         $this->formType = 'XIN';
-        $this->form     = new LorisForm('connors_teacher_form');
+        $this->form     = new LorisForm('conners_teacher_form');
         $this->page     = $page;
 
         // set the object properties
-        $this->testName = 'connors_teacher'; // test_names.Test_name
-        $this->table    = 'connors_teacher'; // name of database
+        $this->testName = 'conners_teacher'; // test_names.Test_name
+        $this->table    = 'conners_teacher'; // name of database
         // table corresponding to instrument
         $this->commentID = $commentID; // data keyed by commentID
 
@@ -75,7 +75,7 @@ class NDB_BVL_Instrument_connors_teacher extends NDB_BVL_Instrument
     {
         //determine page to display
         if (preg_match(
-            "/connors_teacher(_page[0-9]+)/",
+            "/conners_teacher(_page[0-9]+)/",
             $this->page,
             $matches
         )) {
@@ -96,45 +96,44 @@ class NDB_BVL_Instrument_connors_teacher extends NDB_BVL_Instrument
     function _main()
     {
 
-        $this->form->addHeader("CONNERS 3 - Teacher Short");
+        $this->addHeader("CONNERS 3 - Teacher Short");
         $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
+        $this->addLabel("Please specify the grade: K-12");
         $this->addBasicText("grade", "Grade:");
     }
 
     function _page1() {
         $this->addHeader("CONNERS 3 - Teacher Short");
-        $this->addLabel("<h4><b>Instructions:</b> Here are some things teachers
+        $this->addHeader("<h4><b>Instructions:</b> Here are some things teachers
                          might say about their students. Please tell us about
                          <i>this</i> student and what he/she has been like
                          in the <b><i>past month</i></b>. 
                          Read each item carefully, then mark how well
                          it describes this student or how frequently 
-                         it has happened in the <b><i>past month</i></b>.</h4>");
-
-        $this->addLabel("<h4>$this->indent <b>0</b> = In the past month, 
+                         it has happened in the <b><i>past month</i></b>.<br><br>
+                         $this->indent <b>0</b> = In the past month, 
                          this was <b><i>not true at all</i></b> about this student. It never
-                         (or seldom) happened</h4>.");
-        $this->addLabel("<h4>$this->indent <b>1</b> = In the past month, this was 
+                         (or seldom) happened<br>
+                         $this->indent <b>1</b> = In the past month, this was 
                          <b><i>just a little true</i></b> about this student. 
-                         It happened occasionally.</h4>");
-        $this->addLabel("<h4>$this->indent <b>2</b> = In the past month, 
+                         It happened occasionally.<br>
+                         $this->indent <b>2</b> = In the past month, 
                          this was <b><i>pretty much true</i></b> about
-                         this student. It happened often (or quite a bit).\r\n</h4>");
-        $this->addLabel("<h4>$this->indent <b>3</b> = In the past month, this 
+                         this student. It happened often (or quite a bit).<br>
+                         $this->indent <b>3</b> = In the past month, this 
                          was <b><i>very much true</i></b> about this student. It
-                         happened very often (very frequently).</h4>");
-
-        $this->addLabel("<h4>Please pick one answer for each item. It is important
+                         happened very often (very frequently).<br><br>
+                         Please pick one answer for each item. It is important
                          to respond to every item. For items that you find difficult
                          to answer, please give your best guess.</h4>");
 
         $options =
             array(
                 null => "",
-                0 => 0,
-                1 => 1,
-                2 => 2,
-                3 => 3
+                0 => "0 - Not true at all",
+                1 => "1 - Just a little true",
+                2 => "2 - Pretty much true",
+                3 => "3 - Very much true"
             );
 
         $questions =
