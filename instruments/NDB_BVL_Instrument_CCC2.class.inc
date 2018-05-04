@@ -198,7 +198,7 @@ class NDB_BVL_Instrument_CCC2 extends NDB_BVL_Instrument
             "10. Uses terms like he or it without making it clear what he or she is talking about (e.g., when talking about a movie, says 'he was really great' without explaining who 'he' is)",
             "11. Says things he or she does not seem to fully understand or seems to be repeating something he or she heard an adult say (e.g., a 5-year-old describing a teacher by saying, 'she's got a very good reputation')",
             "12. Mixes up words of similar meaning (e.g., says 'dog' for 'fox,' or 'screwdriver' for 'hammer')",
-            "13. Is babied, teased, or bullied by other children')",
+            "13. Is babied, teased, or bullied by other children",
             "14. Does not look at the person he or she is talking to",
             "15. Misses the point of jokes and puns (though may be amused by nonverbal humor such as slapstick)",
             "16. Is left out of joint activities by other children",

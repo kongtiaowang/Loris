@@ -161,9 +161,9 @@ class NDB_BVL_Instrument_BRIEF2_Teacher extends NDB_BVL_Instrument
 
         $options = array(
                     null => "",
-                    "N"  => "N",
-                    "S"  => "S",
-                    "O"  => "O",
+                    "N"  => "Never(N)",
+                    "S"  => "Sometimes(S)",
+                    "O"  => "Often(O)",
                    );
 
         $questions = array(
@@ -219,9 +219,9 @@ class NDB_BVL_Instrument_BRIEF2_Teacher extends NDB_BVL_Instrument
 
         $options = array(
                     null => "",
-                    "N"  => "N",
-                    "S"  => "S",
-                    "O"  => "O",
+                    "N"  => "Never(N)",
+                    "S"  => "Sometimes(S)",
+                    "O"  => "Often(O)",
                    );
 
         $questions = array(

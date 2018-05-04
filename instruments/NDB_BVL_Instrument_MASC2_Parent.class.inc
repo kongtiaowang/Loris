@@ -149,7 +149,7 @@ class NDB_BVL_Instrument_MASC2_Parent extends NDB_BVL_Instrument
         $questions =
             array(
                 "q1" => "1. My child feels tense or uptight.",
-                "q2" => "2. My child usually aks permission to do things.",
+                "q2" => "2. My child usually asks permission to do things.",
                 "q3" => "3. My child worries about other people.",
                 "q4" => "4. My child gets scared when his/her parents go away.",
                 "q5" => "5. My child keeps his/her eyes open for danger.",
@@ -209,7 +209,7 @@ class NDB_BVL_Instrument_MASC2_Parent extends NDB_BVL_Instrument
                 "q29" => "29. My child worries about doing something stupid or embarrassing.",
                 "q30" => "30. My child gets scared riding in the car or on the bus.",
                 "q31" => "31. My child feels sick to his/her stomach.",
-                "q32" => "32. My child get nervous if he/she have to perform in public.",
+                "q32" => "32. My child get nervous if he/she has to perform in public.",
                 "q33" => "33. Bad weather, the dark, heights, animals, or bugs scare my child.",
                 "q34" => "34. My child's hands shake.",
                 "q35" => "35. My child checks to make sure things are safe.",
@@ -226,7 +226,7 @@ class NDB_BVL_Instrument_MASC2_Parent extends NDB_BVL_Instrument
                 "q46" => "46. My child has to check that nothing terrible has happened.",
                 "q47" => "47. My child has to check things several times or more.",
                 "q48" => "48. My child counts things for no reason.",
-                "q49" => "49. My child get too concerned with sin or wrongdoing.",
+                "q49" => "49. My child gets too concerned with sin or wrongdoing.",
                 "q50" => "50. My child has to repeat things until it feels just right."
             );
 

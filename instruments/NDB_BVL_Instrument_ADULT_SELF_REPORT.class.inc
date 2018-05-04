@@ -140,7 +140,7 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT extends NDB_BVL_Instrument
             "4"     => "4. Some college but no college degree",
             "5"     => "5. Associate's Degree",
             "6"     => "6. Bachelor's or RN Degree",
-            "7"     => "7. Some graduate school but no graudate degree",
+            "7"     => "7. Some graduate school but no graduate degree",
             "8"     => "8. Master's Degree",
             "9"     => "9. Doctoral or Law Degree",
             "other" => "Other Education (specify)",
@@ -394,7 +394,7 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT extends NDB_BVL_Instrument
                     null => "",
                     "no" => "<b>No -- please skip to section V.</b>",
                     "yes" => "<b>Yes -- please describe your job(s)</b>");
-        $this->addSelect("jobs", "<b><i> At any time in the past 6 months,</i></b> did you have any paid jobs (including self-eployment and military service)? ", $opts);
+        $this->addSelect("jobs", "<b><i> At any time in the past 6 months,</i></b> did you have any paid jobs (including self-employment and military service)? ", $opts);
         $this->addTextAreaElement("job_desc","Description of your job(s)");
         $this->XINRegisterRule(
               "job_desc",
@@ -699,7 +699,7 @@ function _page5(){
     function _page6(){
               $this-> addLabel("<h2>IX. Below is a list of items that describe people. For each item please select \"Not True\", \"Somewhat or Sometimes True\", or \"Very True or Often True\" to describe yourself <i>over the past 6 months.</i> Please answer all items as well as you can, even if some do not seem to apply to you. </h2>");
 
-              $this-> addLabel("<h3>56. Physical problems <i><b>without know medical cause:</b></i></h3>");
+              $this-> addLabel("<h3>56. Physical problems <i><b>without known medical cause:</b></i></h3>");
               $questions=[
                 "a. Aches or pains (<i><b>not</b></i> stomach or headaches)",
                 "b. Headaches",
@@ -709,7 +709,7 @@ function _page5(){
                 "f. Stomachaches",
                 "g. Vomiting, throwing up",
                 "h. Heart pounding or racing",
-                "i Numbmess or tingling in body parts"
+                "i Numbness or tingling in body parts"
               ];
 
                $opts = array(null=> "", 
@@ -742,7 +742,7 @@ function _page5(){
                 "There is very little I enjoy",
                 "My work performance is poor",
                 "I am poorly coordinated or clumsy",
-                "I would rather be with older poeple than with people my own age",
+                "I would rather be with older poeple than with people of my own age",
                 "I have trouble setting priorities",
                 "I refuse to talk",
                 "I repeat certain acts over and over (describe)",
@@ -845,7 +845,7 @@ function _page8(){
                 "I like to try new things",
                 "I wish I were of the opposite sex",
                 "I  keep from getting involved with others",
-                "I worry alot",
+                "I worry a lot",
                 "I worry about my relations with the opposite sex",
                 "I fail to pay my debts or meet other financial responsibilities",
                 "I feel restless or fidgety",

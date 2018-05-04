@@ -143,10 +143,10 @@ class NDB_BVL_Instrument_QRS extends NDB_BVL_Instrument
         $options = 
             array(
                 null => "", 
-                1 => "1", 
-                2 => "2",  
-                3 => "3", 
-                4 => "4"
+                1 => "1 Strong agreement with the statement. ",
+                2 => "2 Partial agreement with the statement.",
+                3 => "3 Partial disagreement with the statement",
+                4 => "4 Strong disagreement with the statement"
             ); 
        
         $page1_questions =
@@ -200,10 +200,10 @@ class NDB_BVL_Instrument_QRS extends NDB_BVL_Instrument
         $options =       
             array(
                 null => "",
-                1 => "1", 
-                2 => "2",
-                3 => "3",
-                4 => "4"
+                1 => "1 Strong agreement with the statement.",
+                2 => "2 Partial agreement with the statement.",
+                3 => "3 Partial disagreement with the statement.",
+                4 => "4 Strong disagreement with the statement."
             );
 
         $page2_questions = 
@@ -257,10 +257,10 @@ class NDB_BVL_Instrument_QRS extends NDB_BVL_Instrument
         $options =
             array(
                 null => "",
-                1 => "1",
-                2 => "2",
-                3 => "3",
-                4 => "4"
+                1 => "1 Strong agreement with the statement.",
+                2 => "2 Partial agreement with the statement.",
+                3 => "3 Partial disagreement with the statement.",
+                4 => "4 Strong disagreement with the statement."
             );
 
         $page3_questions = 

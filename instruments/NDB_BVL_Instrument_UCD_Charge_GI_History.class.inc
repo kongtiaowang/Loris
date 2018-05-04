@@ -105,17 +105,17 @@ class NDB_BVL_Instrument_UCD_Charge_GI_History extends NDB_BVL_Instrument
      *
      */
 
-    function displayHeaders($message1, $message2, $message3, $headerNum) {
+    function displayHeaders($header_count) {
         $group[] =& $this->form->createElement(
             "static",
             null,
             null,
-            "Previous");
+            "<b>Previous</b>");
         $group[] =& $this->form->createElement(
             "static",
             null,
             null,
-            "Current (past 3 months)");
+            "<b>Current (past 3 months)</b>");
         $group[] =& $this->form->createElement(
             "static",
             null,
@@ -125,20 +125,15 @@ class NDB_BVL_Instrument_UCD_Charge_GI_History extends NDB_BVL_Instrument
             "static",
             null,
             null,
-            $message1);
+            "");
         $group[] =& $this->form->createElement(
             "static",
             null,
             null,
-            $message2);
-        $group[] =& $this->form->createElement(
-            "static",
-            null,
-            null,
-            $message3);
+            "");
         $this->form->addGroup(
             $group,
-            "headers_" . $headerNum,
+            "headers_$header_count",
             null,
             $this->_GUIDelimiter,
             false
@@ -148,19 +143,14 @@ class NDB_BVL_Instrument_UCD_Charge_GI_History extends NDB_BVL_Instrument
 
     function _page1(){
         $this->addHeader("CHARGE GI History");
-        $this->addLabel("<h4>$this->indent (0) = Never </h4>");
-        $this->addLabel("<h4>$this->indent (1) = Rarely </h4>");
-        $this->addLabel("<h4>$this->indent (2) = Sometimes </h4>");
-        $this->addLabel("<h4>$this->indent (3) = Frequently </h4>");
-        $this->addLabel("<h4>$this->indent (4) = Never </h4>");
-
+        $this->addLabel("<h4>$this->indent (0) = Never $this->indent (1) = Rarely $this->indent (2) = Sometimes $this->indent (3) = Frequently $this->indent (4) = Always</h4>");
         $commonOptions = array(
             null => "",
-            0 => 0,
-            1 => 1,
-            2 => 2,
-            3 => 3,
-            4 => 4
+            0 => "0 Never" ,
+            1 => "1 Rarely",
+            2 => "2 Sometimes",
+            3 => "3 Frequently",
+            4 => "4 Always"
         );
 
         $yesNoOptions = array(
@@ -177,7 +167,7 @@ class NDB_BVL_Instrument_UCD_Charge_GI_History extends NDB_BVL_Instrument
                 "q4" => "Constipation",
                 "q5" => "Pain on stooling",
                 "q6" => "Vomiting",
-                "q7" => "Sensitivity to foods",
+                "q7" => "Sensitivity to foods.",
                 "q8" => "Difficulty swallowing",
                 "q9" => "Blood in stools",
                 "q10" => "Blood in vomit"
@@ -186,62 +176,44 @@ class NDB_BVL_Instrument_UCD_Charge_GI_History extends NDB_BVL_Instrument
         $currentYesNoQuestions = array(
             "q11" => "Any allergies to foods?",
             "q12" => "Any diet restrictions",
+            "q12_additional_1" => "Reasons/Symptoms",
+            "q12_additional_2" => "Foods that cause or worsen any symptoms",
             "q13" => "Does child have any strong food dislikes?"
         );
-
-        $group[] =& $this->form->createElement(
-            "static",
-            null,
-            null,
-            "Previous");
-        $group[] =& $this->form->createElement(
-            "static",
-            null,
-            null,
-            "Current (past 3 months)");
-        $group[] =& $this->form->createElement(
-            "static",
-            null,
-            null,
-            "");
-        $group[] =& $this->form->createElement(
-            "static",
-            null,
-            null,
-            "If yes, please describe.");
-        $this->form->addGroup(
-            $group,
-            "headers_1",
-            null,
-            $this->_GUIDelimiter,
-            false
-        );
-        unset($group);
-
+        $this->displayHeaders(1);
         foreach($currentNumericQuestions as $key => $question) {
             if ($key == "q7") {
                 $group[] =& $this->createSelect($key . "_previous", "", $commonOptions);
                 $group[] =& $this->createSelect($key . "_current", "", $commonOptions);
                 $group[] =& $this->createLabel($question);
+                $group[] =& $this->createLabel("If Yes, please describe");
                 $group[] =& $this->createText($key . "_description", "If yes, please describe");
                 $key_previous = $key . "_previous";
                 $key_current = $key . "_current";
                 $this->XINRegisterRule(
                     $key . "_description",
                     array("q7_previous{@}!={@}0|q7_current{@}!={@}0"),
-                    "Required if an answer other than '0' is selected for 'current' or 'previous'.",
-                    $key . "_group"
+                    "Required if any answer other than 'Never' is selected for 'current' or 'previous'."
                 );
             } else {
                 $group[] =& $this->createSelect($key . "_previous", "", $commonOptions);
                 $group[] =& $this->createSelect($key . "_current", "", $commonOptions);
                 $group[] =& $this->createLabel($question);
-                $group[] =& $this->form->createElement(
-                    "static",
-                    null,
-                    null,
-                    "");
-            }
+                $group[] =& $this->createLabel("");
+    }
+            $key_previous = $key . "_previous";
+            $key_current = $key . "_current";
+            $this->XINRegisterRule(
+                $key_previous,
+                array("$key_previous{@}=={@}"),
+                "Required."
+
+            );
+            $this->XINRegisterRule(
+                $key_current,
+                array("$key_current{@}=={@}"),
+                "Required."
+            );
             $this->form->addGroup(
                 $group,
                 $key . "_group",
@@ -251,63 +223,74 @@ class NDB_BVL_Instrument_UCD_Charge_GI_History extends NDB_BVL_Instrument
             );
             unset($group);
         }
-
+        $this->displayHeaders(2);
         foreach ($currentYesNoQuestions as $key => $question) {
             if ($key == "q11") {
-                $this->addHeader("");
-                $this->displayHeaders("If yes, what food?", "", "", 2);
                 $group[] =& $this->createSelect($key . "_previous", "", $yesNoOptions);
                 $group[] =& $this->createSelect($key . "_current", "", $yesNoOptions);
                 $group[] =& $this->createLabel($question);
+                $group[] =& $this->createLabel("If yes, what foods?");
                 $group[] =& $this->createText($key . "_description", "If yes, what foods?");
                 $key_previous = $key . "_previous";
                 $key_current = $key . "_current";
                 $this->XINRegisterRule(
                     $key . "_description",
                     array("q11_previous{@}=={@}yes|q11_current{@}=={@}yes"),
-                    "Required if yes is selected for either 'current' or 'previous'.",
-                    $key . "_group"
+                    "Required if yes is selected for either 'current' or 'previous'."
                 );
             } elseif ($key == "q12") {
-                $this->addHeader("");
-                $this->displayHeaders("If yes, is diet restricted by:", "Reasons/Symptoms", "Foods that case or worsen any symptoms", 3);
                 $group[] =& $this->createSelect($key . "_previous", "", $yesNoOptions);
                 $group[] =& $this->createSelect($key . "_current", "", $yesNoOptions);
                 $group[] =& $this->createLabel($question);
+                $group[] =& $this->createLabel("If yes, is diet restricted by:");
                 $group[] =& $this->createSelect(
                     $key . "_diet_restricted_by",
                     "If yes, is diet restricted by:",
                     array(null => "", "child" => "Child", "parent" => "Parent", "doctor" => "Doctor"));
-                $group[] =& $this->createText($key . "_reasons", "Reasons/Symptoms");
-                $group[] =& $this->createText(
-                    $key . "_foods",
-                    "Foods that cause or worsen any symptoms");
-                $key_previous = $key . "_previous";
-                $key_current = $key . "_current";
-                $this->XINRegisterRule(
-                    $key . "_reasons",
-                    array("q12_previous{@}=={@}yes|q12_current{@}=={@}yes"),
-                    "Required if yes is selected for either 'current' or 'previous'.",
-                    $key . "_group"
-                );
-                $this->XINRegisterRule(
-                    $key . "_foods",
-                    array("q12_previous{@}=={@}yes|q12_current{@}=={@}yes"),
-                    "Required if yes is selected for either 'current' or 'previous'.",
-                    $key . "_group"
-                );
+
+
                 $this->XINRegisterRule(
                     $key . "_diet_restricted_by",
                     array("q12_previous{@}=={@}yes|q12_current{@}=={@}yes"),
-                    "Required if yes is selected for either 'current' or 'previous'.",
-                    $key . "_group"
+                    "Required if yes is selected for either 'current' or 'previous'."
                 );
-            } else {
-                $this->addHeader("");
-                $this->displayHeaders("If yes, what foods?", "", "", 4);
+
+            }
+            elseif ($key == "q12_additional_1")
+            {
+                $org_key="q12";
+                $group[] =& $this->form->createElement("static", null, null, "");
+                $group[] =& $this->form->createElement("static", null, null, "");
+                $group[] =& $this->form->createElement("static", null, null, "");
+                $group[] =& $this->createLabel($question);
+                $group[] =& $this->createText($org_key . "_reasons", "Reasons/Symptoms");
+                $this->XINRegisterRule(
+                    $org_key . "_reasons",
+                    array("q12_previous{@}=={@}yes|q12_current{@}=={@}yes"),
+                    "Required if yes is selected for either 'current' or 'previous'.");
+
+            }
+            elseif ($key == "q12_additional_2")
+            {
+                $org_key="q12";
+                $group[] =& $this->form->createElement("static", null, null, "");
+                $group[] =& $this->form->createElement("static", null, null, "");
+                $group[] =& $this->form->createElement("static", null, null, "");
+                $group[] =& $this->createLabel($question);
+                $group[] =& $this->createText($org_key . "_foods", "Foods that cause or worsen any symptoms");
+                $this->XINRegisterRule(
+                    $org_key . "_foods",
+                    array("q12_previous{@}=={@}yes|q12_current{@}=={@}yes"),
+                    "Required if yes is selected for either 'current' or 'previous'."
+                );
+
+
+            }
+            else {
                 $group[] =& $this->createSelect($key . "_previous", "", $yesNoOptions);
                 $group[] =& $this->createSelect($key . "_current", "", $yesNoOptions);
                 $group[] =& $this->createLabel($question);
+                $group[] =& $this->createLabel("If yes, what foods?");
                 $group[] =& $this->createText($key . "_description", "If yes, what foods?");
                 $key_previous = $key . "_previous";
                 $key_current = $key . "_current";
@@ -337,7 +320,7 @@ class NDB_BVL_Instrument_UCD_Charge_GI_History extends NDB_BVL_Instrument
         $this->XINRegisterRule(
             "gastrointestinal_diagnosis",
             array("gastrointestinal_diagnosis_given{@}=={@}yes"),
-            "gastrointestinal_diagnosis_group"
+            "Required"
         );
     }
 }
