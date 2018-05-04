@@ -131,7 +131,7 @@ class NDB_BVL_Instrument_SEQ3 extends NDB_BVL_Instrument
                     "father"  => "Father",
                     "both"    => "Both Parents",
                     "teacher" => "Teacher",
-                    "other"   => "Other (describe:)",
+                    "other"   => "Other (Describe:)",
                    );
 
         $this->addSelect("person_completing_form", "Person completing form:", $options);
@@ -153,11 +153,11 @@ class NDB_BVL_Instrument_SEQ3 extends NDB_BVL_Instrument
     function _page2()
     {
         $this->addHeader("SEQ-3.0 (Sensory Experiences Questionnaire Version 3.0)<br>
-                         The following are questions about how your child uses his/her senses (such as hearing, vision, touch, etc.)
+                         <h4>The following are questions about how your child uses his/her senses (such as hearing, vision, touch, etc.)
                          to experience the world. Using the following response options (<i>never/almostnever, once in a while, sometimes, 
                          frequently, almost always/always</i>), select the option that best fits the frequency of your child's experiences. Please answer all questions.<br>
-                         <h4>I. The following questions relate to your child's experiences with sound.<br><br>
-                         How often does your child...</h4>");
+                         </h4><h3>I. The following questions relate to your child's experiences with sound.<br><br>
+                         How often does your child...</h3>");
 	    
         $options = array(
                     null              => "",
@@ -206,8 +206,8 @@ class NDB_BVL_Instrument_SEQ3 extends NDB_BVL_Instrument
     function _page3()
     {
         $this->addHeader("SEQ-3.0 (Sensory Experiences Questionnaire Version 3.0)
-                         <h4>II. The following questions relate to your child's experiences with vision.<br><br>
-                              How often does your child...</h4>");
+                         <h3>II. The following questions relate to your child's experiences with vision.<br><br>
+                              How often does your child...</h3>");
 
         $options = array(
                     null              => "",
@@ -270,8 +270,8 @@ class NDB_BVL_Instrument_SEQ3 extends NDB_BVL_Instrument
     {
 
         $this->addHeader("SEQ-3.0 (Sensory Experiences Questionnaire Version 3.0)<br>
-                                <h4>III. The following questions relate to your child's experiences with touch.<br><br>
-                                How often does your child...</h4>");
+                                <h3>III. The following questions relate to your child's experiences with touch.<br><br>
+                                How often does your child...</h3>");
         $options = array(
                     null              => "",
                     "never"           => "Never/Almost Never",
@@ -336,8 +336,8 @@ class NDB_BVL_Instrument_SEQ3 extends NDB_BVL_Instrument
     function _page5()
     {
         $this->addHeader("SEQ-3.0 (Sensory Experiences Questionnaire Version 3.0)<br>
-                          <h4>IV. The following questions relate to your child's experiences with taste/smell.<br><br>
-                          How often does your child...</h4>");
+                          <h3>IV. The following questions relate to your child's experiences with taste/smell.<br><br>
+                          How often does your child...</h3>");
 	    
         $options = array(
                     null              => "",
@@ -389,8 +389,8 @@ class NDB_BVL_Instrument_SEQ3 extends NDB_BVL_Instrument
     function _page6()
     {
         $this->addHeader("SEQ-3.0 (Sensory Experiences Questionnaire Version 3.0)<br>
-                         <h4>V. The following questions relate to your child's experiences with movement.<br><br>
-                         How often does your child...</h4>");
+                         <h3>V. The following questions relate to your child's experiences with movement.<br><br>
+                         How often does your child...</h3>");
 	    
         $options = array(
                     null              => "",
@@ -434,10 +434,10 @@ class NDB_BVL_Instrument_SEQ3 extends NDB_BVL_Instrument
     function _page7()
     {
         $this->addHeader("SEQ-3.0 (Sensory Experiences Questionnaire Version 3.0)<br>
-                         <h4>VI. Up to this point in the questionnaire, you've been answering questions about one sense
-                         ot a time (sight, touch, etc.). The questions in the following section deal with situations that
+                         <h3>VI. Up to this point in the questionnaire, you've been answering questions about one sense
+                         at a time (sight, touch, etc.). The questions in the following section deal with situations that
                          involve more than one sensory experience at the same time.<br><br>
-                         How often does your child...</h4>");
+                         How often does your child...</h3>");
 
         $options = array(
                     null              => "",
@@ -462,7 +462,7 @@ class NDB_BVL_Instrument_SEQ3 extends NDB_BVL_Instrument
 
         $this->addSelect("92_more_sensitive_to_social_touch", "92. ... seem more sensitive to social touch (such as a pat on the back, touch on the arm, or hug) in a noisy environment than in a quiet one?", $options);
 
-        $this->addSelect("93_like_to_dance_to_particular_music", "93. ... like to dance to particular music? (For exampl: Asks for song or music, then dances with it.)", $options);
+        $this->addSelect("93_like_to_dance_to_particular_music", "93. ... like to dance to particular music? (For example: Asks for song or music, then dances with it.)", $options);
 
         $this->addSelect("94_increase_background_noise_to_improve_attention_to_activity", "94. ... try to increase background noise to improve his/her attention to another activity? (For example: Turns up volume on radio while doing homework or puzzles.)", $options);
 
@@ -495,7 +495,7 @@ class NDB_BVL_Instrument_SEQ3 extends NDB_BVL_Instrument
 
         $this->addSelect("98_how_often_experienced_sensations_differently", "98. Thinking about your child's behaviors since birth, how often has your child experienced sensations (sound, sight, touch, taste, smell, or movement) differently from other children?", $options);
 
-        $this->addTextAreaElement("98_describe_if_applicable", "$this->indent DESCRIBE (if applicable):");
+        $this->addTextAreaElement("98_describe_if_applicable", "$this->indent Describe(if applicable):");
 
         $this->XINRegisterRule(
             "98_describe_if_applicable",
@@ -531,11 +531,11 @@ class NDB_BVL_Instrument_SEQ3 extends NDB_BVL_Instrument
 
 	$this->form->addElement("static", null, "<br/>");
 
-        $this->addLabel("<h4>Avoidances/Sensitivities</h4>");
+        $this->addLabel("<h3><u>Avoidances/Sensitivities</u></h3>");
 
         $this->addSelect("100_how_childs_sensory_avoidances_changed", "100. How have your child's sensory <b>avoidances or sensitivities</b> changed over time?", $options);
 
-        $this->addTextAreaElement("100_describe_if_changed", "$this->indent DESCRIBE (if changed):");
+        $this->addTextAreaElement("100_describe_if_changed", "$this->indent Describe(if changed):");
 
         $this->XINRegisterRule(
             "100_describe_if_changed",
@@ -547,7 +547,7 @@ class NDB_BVL_Instrument_SEQ3 extends NDB_BVL_Instrument
 
         $this->addSelect("101_how_often_childs_sensory_avoidances_interfere_daily", "101. How often do your child's sensory <b>avoidances or sensitivities</b> interfere with daily activities?", $options);
 
-        $this->addTextAreaElement("101_describe_if_applicable", "$this->indent DESCRIBE (if applicable):");
+        $this->addTextAreaElement("101_describe_if_applicable", "$this->indent Describe(if applicable):");
 
         $this->XINRegisterRule(
             "101_describe_if_applicable",
@@ -557,7 +557,7 @@ class NDB_BVL_Instrument_SEQ3 extends NDB_BVL_Instrument
 
 	$this->form->addElement("static", null, "<br/>");
 
-        $this->addTextAreaElement("102_list_comments_avoidances_to_senses", "102. List additional comments about your child's <b>avoidances or sensitivities</b> to sound, sight, touch, smell, taste, or movement (if applicable).");
+        $this->addBasicTextArea("102_list_comments_avoidances_to_senses", "102. List additional comments about your child's <b>avoidances or sensitivities</b> to sound, sight, touch, smell, taste, or movement (if applicable).");
 
         $this->XINRegisterRule(
             "102_list_comments_avoidances_to_senses",
@@ -567,11 +567,11 @@ class NDB_BVL_Instrument_SEQ3 extends NDB_BVL_Instrument
 
 	$this->form->addElement("static", null, "<br/>");
 
-        $this->addLabel("<h4>Fascinations/Cravings</h4>");
+        $this->addLabel("<h3><u>Fascinations/Cravings</u></h3>");
 
         $this->addSelect("103_how_have_sensory_fascinations_changed", "103. How have your child's sensory <b> fascinations or cravings </b> changed over time?", $options);
 
-        $this->addTextAreaElement("103_describe_if_changed", "$this->indent DESCRIBE (if changed):");
+        $this->addTextAreaElement("103_describe_if_changed", "$this->indent Describe(if changed):");
 
         $this->XINRegisterRule(
             "103_describe_if_changed",
@@ -583,7 +583,7 @@ class NDB_BVL_Instrument_SEQ3 extends NDB_BVL_Instrument
 
         $this->addSelect("104_how_often_sensory_fascinations_interfere_daily", "104. How often do your child's sensory <b>fascinations or cravings</b> interfere with daily activities?</b>", $options);
 
-        $this->addTextAreaElement("104_describe_if_applicable", "$this->indent DESCRIBE (if applicable):");
+        $this->addTextAreaElement("104_describe_if_applicable", "$this->indent Describe(if applicable):");
 
         $this->XINRegisterRule(
             "104_describe_if_applicable",
@@ -593,7 +593,7 @@ class NDB_BVL_Instrument_SEQ3 extends NDB_BVL_Instrument
 
 	$this->form->addElement("static", null, "<br/>");
 
-        $this->addTextAreaElement("105_list_comments_fascinations_cravings_to_senses", "105. List additional comments about your child's <b>fascinations or cravings</b> to sound, sight, touch, smell, taste, or movement (if applicable).");
+        $this->addBasicTextArea("105_list_comments_fascinations_cravings_to_senses", "105. List additional comments about your child's <b>fascinations or cravings</b> to sound, sight, touch, smell, taste, or movement (if applicable).");
 
         $this->XINRegisterRule(
             "105_list_comments_fascinations_cravings_to_senses",
