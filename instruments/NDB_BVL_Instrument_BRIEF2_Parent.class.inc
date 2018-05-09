@@ -111,7 +111,7 @@ class NDB_BVL_Instrument_BRIEF2_Parent extends NDB_BVL_Instrument
 
         $this->form->addElement("static", null, "<br/>");
 
-        $this->addBasicDate('birth_date', 'Date of Birth');
+        $this->addBasicDate('birth_date', 'Child\'s Date of Birth');
 
         $this->addBasicText("childs_gender", "Gender");
 
@@ -122,8 +122,6 @@ class NDB_BVL_Instrument_BRIEF2_Parent extends NDB_BVL_Instrument
         $this->addBasicText("relationship_to_child", "Relationship to child");
 
         $this->form->addElement("static", null, "<br/>");
-
-        $this->addLabel("<h4><b>$this->indent N = Never $this->indent S = Sometimes $this->indent O = Often</b></h4>");
 
         $options = array(
                     null => "",
@@ -180,8 +178,6 @@ class NDB_BVL_Instrument_BRIEF2_Parent extends NDB_BVL_Instrument
     function _page2()
     {
         $this->addHeader("BRIEF-2 Parent Form");
-
-        $this->addLabel("<h4><b>$this->indent N = Never $this->indent S = Sometimes $this->indent O = Often</b></h4>");
 
         $options = array(
                     null => "",
