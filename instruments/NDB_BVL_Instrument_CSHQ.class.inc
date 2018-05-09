@@ -21,7 +21,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/IBIS/
  */
-class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument
+class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
 {
     var $ValidityEnabled = false;
     var $ValidityRequired = false;
@@ -137,22 +137,67 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument
             "static",
             null,
             null,
-            "Frequency"
+            "<b>Frequency</b>"
         );
         $group[] = $this->form->createElement(
             "static",
             null,
             null,
-            "Problem"
+            "<b>Problem</b>"
         );
-        if ($category == "sleep_behavior") {
-            $group[] = $this->form->createElement(
-                "static",
-                null,
-                null,
-                "Pain Location"
-            );
-        }
+        $group[] = $this->form->createElement(
+            "static",
+            null,
+            null,
+            ""
+        );
+        $group[] = $this->form->createElement(
+            "static",
+            null,
+            null,
+            ""
+        );
+        $this->form->addGroup(
+            $group,
+            $category . "_group",
+            $this->_GUIDelimiter,
+            false
+        );
+        unset($group);
+    }
+
+    function _displayHeadersSleepBehaviors($category)
+    {
+        $group[] = $this->form->createElement(
+            "static",
+            null,
+            null,
+            "<b>Frequency</b>"
+        );
+        $group[] = $this->form->createElement(
+            "static",
+            null,
+            null,
+            "<b>Problem</b>"
+        );
+        $group[] = $this->form->createElement(
+            "static",
+            null,
+            null,
+            ""
+        );
+        $group[] = $this->form->createElement(
+            "static",
+            null,
+            null,
+            ""
+        );
+        $group[] = $this->form->createElement(
+            "static",
+            null,
+            null,
+            ""
+        );
         $this->form->addGroup(
             $group,
             $category . "_group",
@@ -179,7 +224,7 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument
                 "n/a" => "N/A"
             );
         $this->addHeader("Child's Sleep Habit (Preschool and School-Aged)");
-        $this->addLabel("<h4>The following statements are about your child’s sleep
+        $this->addHeader("<h4>The following statements are about your child’s sleep
             habits and possible difficulties with sleep. Think about the
             past week in your child’s life when answering the questions.
             If last week was unusual for a specific reason (such as your
@@ -257,8 +302,8 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument
 
         $this->addHeader("<h4><b><u>Sleep Behavior</u></b></h4>");
         $this->addNumericElement("sleep_behavior_duration",
-            "Child's usual amount of sleep each day: ");
-        $this->_displayHeaders("sleep_behavior");
+            "Child's usual amount of sleep each day (hours): ");
+        $this->_displayHeadersSleepBehaviors("sleep_behavior");
         foreach ($sleep_behavior_questions as $question => $label) {
             $group[] = $this->createLabel($label);
             $group[] = $this->createSelect(
@@ -272,10 +317,14 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument
                 $problem_choices
             );
             if ($question == "reports_pain_during_sleep") {
+                $group[] = $this->createLabel("If child reports body pain during sleep, where?");
                 $group[] = $this->createText(
                     $question . "_body_pain",
-                    "If child reports body pain during sleep, where?"
+                    ""
                 );
+            } else {
+                $group[] = $this->createLabel("");
+                $group[] = $this->createLabel("");
             }
             $this->form->addGroup(
                 $group,
@@ -363,7 +412,10 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument
         $this->addNumericElement("waking_during_night_duration", "Write the number of minutes a night waking usually lasts");
 
         $this->addHeader("<h4><b><u>Morning Waking</u></b></h4>");
-        $this->addHourMinElement("morning_waking_time", "Write in the time of day child usually wakes in the morning.");
+        $this->addHourMinElement(
+            "morning_waking_time",
+            "Write in the time of day child usually wakes in the morning."
+        );
         $this->_displayHeaders("morning_waking");
         foreach ($morning_waking_questions as $question => $label) {
             $group[] = $this->createLabel($label);
@@ -411,7 +463,7 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument
             unset($group);
         }
 
-        $this->addLabel("<h4>During the past week, your child has appeared very sleepy or fallen asleep" .
+        $this->addHeader("<h4>During the past week, your child has appeared very sleepy or fallen asleep" .
             " during the following (check all that apply):</h4>");
         $sleepy_questions =
             array(
