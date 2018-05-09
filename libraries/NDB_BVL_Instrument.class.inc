@@ -2253,11 +2253,6 @@ class NDB_BVL_Instrument extends NDB_Page
     {
         $DB = Database::singleton();
 
-        // reset page to top page for loading JSON
-        $this->page = '';
-        $this->form->form = array();
-        $this->_setupForm();
-
         $inst = json_decode($this->toDirectJSON());
 
         $temp = $this->getFlatInstrumentJSON($inst);
@@ -2305,8 +2300,26 @@ class NDB_BVL_Instrument extends NDB_Page
                     case "text":
                     case "date":
                     case "time":
+                        $Description = $element->Description;
+                        if (!$Description) {
+                            // for elements nested in groups need to get description
+                            // from parameter type override table, setting to just
+                            // name if not set
+                            $db =& Database::singleton();
+
+                            $name = $this->testName . '_' . $element->Name;
+
+                            $description = $db->pselectOne(
+                                "SELECT Description
+                                    FROM parameter_type_override
+                                    WHERE Name = :name",
+                                array("name" => $name)
+                            );
+
+                            $Description = $description ? $description : $element->Name;
+                        }
                         $flatArray[] = array(
-                            "question" => $element->Description,
+                            "question" => $Description,
                             "SourceField" => $element->Name,
                         );
                         break;
@@ -2582,6 +2595,11 @@ class NDB_BVL_Instrument extends NDB_Page
             "GroupType" => "Page",
             "Type" => "ElementGroup",
         );
+
+        // reset page to top page for loading JSON
+        $this->page = '';
+        $this->form->form = array();
+        $this->_setupForm();
 
         foreach ($this->form->form as $key => $value) {
             $tempForm[] = PageElementsFormatter::formatElement($value, $key);

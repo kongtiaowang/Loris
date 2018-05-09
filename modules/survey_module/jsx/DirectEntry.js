@@ -104,6 +104,10 @@ class DirectEntry extends React.Component {
 	}
 
 	setupPageValues(page) {
+		if(page >= this.state.InstrumentJSON.Elements.length) {
+			// on review page, dont need to set up page values
+			return;
+		}
 		const pageElements = this.state.InstrumentJSON.Elements[page].Elements;
 		let pageValues = {};
 
@@ -388,7 +392,7 @@ class ReviewPage extends React.Component {
 			console.log(element);
 			return (
 				<tr className='reviewPage'>
-					<td>{element.question}</td>
+					<td><Markdown content={element.question} /></td>
 					<td>{element.response}</td>
 				</tr>
 			);
@@ -404,7 +408,7 @@ class ReviewPage extends React.Component {
 
 		return (
 			<div className='question-container col-xs-12 col-sm-10 col-sm-offset-1'>
-				<h3>Review You Submission</h3>
+				<h3>Review Your Submission</h3>
 				{error}
 				<table className="table table-striped table-bordered">
 					

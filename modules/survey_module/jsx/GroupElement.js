@@ -193,7 +193,7 @@ class GroupTimeElement extends React.Component {
 
 	updateValue(e) {
 		if(checkInput(this.props.element.Type)) {
-			const val = e.target.value != '' ? this.props.value : null;
+			const val = e.target.value != '' ? e.target.value : null;
 			this.props.updateAnswer(this.props.element.Name, val);
 		}
 	}
