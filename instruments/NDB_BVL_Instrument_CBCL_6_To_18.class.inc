@@ -1,0 +1,1124 @@
+<?php
+/**
+ *This file contains the NDB_BVL_Instrument_CBCL_6_To_18 class
+ *
+ * PHP Version 5
+ *
+ * @category Instrument
+ * @package  Neuropsych
+ * @author   Suzanne Lee <suzannelee.mcin@gmail.com>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/IBIS/
+ */
+
+/**
+ * Creates the form elements for the NDB_BVL_Instrument_CBCL_6_To_18 instrument
+ *
+ * @category Instrument
+ * @package  Neuropsych
+ * @author   Suzanne Lee <suzannelee.mcin@gmail.com>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/IBIS/
+ */
+class NDB_BVL_Instrument_CBCL_6_To_18 extends NDB_BVL_Instrument
+{
+    /**
+    * Sets up basic data, such as the HTML_Quickform object, and so on.
+    *
+    * @param string $commentID the CommentID identifying the data to load
+    * @param string $page      if a multipage form, the page to show
+    *
+    * @return void
+    * @access public
+    */
+    function setup($commentID, $page)
+    {
+        $this->formType ="XIN";
+        $this->form     = new LorisForm('test_form');
+        $this->page     = $page;            // page label (number or
+        // string - used by
+        // user-defined child classes)
+
+        // set the object properties
+        $this->testName = "CBCL_6_To_18";           // test_names.Test_name
+        $this->table    = 'CBCL_6_To_18';           // name of database table corresponding to instrument
+        // data keyed by commentID
+        $this->commentID = $commentID;
+
+        //The array of dates/timestamps to convert to database dates/timestamps
+        //Any HTML_Quickform date elements must be listed here
+        $this->dateTimeFields =array("child_birthdate");
+
+        //The array of selects with multiple answers allowed
+        //Any HTML_Quickform multiple selects must be listed here
+        $this->_selectMultipleElements = array();
+
+        // required fields for data entry completion status
+        $this->_requiredElements = array(
+                                    'child_gender',
+                                    'V_1_how_many_close_friends',
+                                    'q1_acts_too_young',
+                                    'q57_physically_attacks_people',
+                                   );
+
+        // setup the form
+        $this->_setupForm();
+    }
+
+    //If the instrument is not paged, remove the switch from the _setupForm method and add all the form Elements in this function.
+
+    /**
+    * Method to build the HTML_Quickform object into a paged form
+    *
+    * @return void
+    * @access private
+    */
+    function _setupForm()
+    {
+        if (preg_match("/CBCL_6_To_18(_page[0-9]+)/", $this->page, $matches)) {
+            call_user_func(array($this, $matches[1]));
+        } else {
+            $this->_main();
+        }
+        //Defines the call back function for HTML Quickform to use when validating the form.
+        $this->form->addFormRule(array(&$this, 'XINValidate'));
+    }
+
+    /**
+    * Generates the main page of the form.
+    *
+    * @return void
+    * @access private
+    */
+    function _main()
+    {
+        // display test name
+        $this->addHeader("Child Behavior Checklist (CBCL) For Ages 6-18");
+
+        $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
+    }
+
+    /**
+    * Generates the first page of the form.
+    *
+    *@return void
+    */
+    function _page1()
+    {
+        $this->addHeader("Child Behavior Checklist (CBCL) For Ages 6-18");
+
+        $child_gender_options = array(
+                                 null   => "",
+                                 "boy"  => "Boy",
+                                 "girl" => "Girl",
+                                );
+
+        $this->addSelect("child_gender", "CHILD'S GENDER", $child_gender_options);
+
+        $this->addNumericElement("child_age", "CHILD'S AGE");
+
+        $this->addBasicText("child_ethnic_group_race", "CHILD'S ETHNIC GROUP OR RACE");
+
+        $this->addBasicDate('child_birthdate', 'Child\'s Birthdate (if known)');
+
+        $this->XINRegisterRule(
+            "child_birthdate",
+            array("child_birthdate{@}=={@}NEVER_REQUIRED"),
+            "Never required."
+        );
+
+        $attending_school_option = array(
+                                    null                   => "",
+                                    "not_attending_school" => "NOT ATTENDING SCHOOL",
+                                   );
+
+        $this->addNumericElement("grade_in_school", "GRADE IN SCHOOL (if attending)");
+
+        $this->addSelect("in_school", " ", $attending_school_option);
+
+        $this->XINRegisterRule(
+            "in_school",
+            array("in_school{@}=={@}NEVER_REQUIRED"),
+            "Never required."
+        );
+
+        $this->XINRegisterRule(
+            "grade_in_school",
+            array("in_school{@}=={@}"),
+            "Required."
+        );
+
+        $this->addLabel("Please fill out this form to reflect <i>your</i> view of the child's behavior even if other people might not agree. Feel free to add additional comments beside each item and in the space provided 2. <b><i>Be sure to answer all items.</i></b>");
+
+        $this->addLabel("<h3>PARENTS' USUAL TYPE OF WORK, even if not working now <i>(Please be specific -- for example, auto mechanic, high school teacher, homemaker, laborer, lathe operator, shoe salesman, army sergeant.)</i></h3>");
+
+        $this->addBasicText("parent1_type_of_work", "PARENT 1 (or FATHER) TYPE OF WORK");
+
+        $this->XINRegisterRule(
+            "parent1_type_of_work",
+            array("parent2_type_of_work{@}=={@}"),
+            "Required."
+        );
+
+        $this->addBasicText("parent2_type_of_work", "PARENT 2 (or MOTHER) TYPE OF WORK");
+
+        $this->XINRegisterRule(
+            "parent2_type_of_work",
+            array("parent1_type_of_work{@}=={@}"),
+            "Required."
+        );
+
+        $parent_gender_options = array(
+                                  null     => "",
+                                  "male"   => "Male",
+                                  "female" => "Female",
+                                 );
+
+        $this->addSelect("parent_gender", "Your gender:", $parent_gender_options);
+
+        $relation_options = array(
+                             null                => "",
+                             "biological_parent" => "Biological Parent",
+                             "adoptive_parent"   => "Adoptive Parent",
+                             "step_parent"       => "Step Parent",
+                             "foster_parent"     => "Foster Parent",
+                             "grandparent"       => "Grandparent",
+                             "other"             => "Other (specify):",
+                            );
+
+        $this->addSelect("relation_to_child", "Your relation to child:", $relation_options);
+
+        $this->addBasicText("if_other_relation", "$this->indent If other, please specify:");
+
+        $this->XINRegisterRule(
+            "if_other_relation",
+            array("relation_to_child{@}=={@}other"),
+            "Required."
+        );
+
+        $how_much_options = array(
+                             null                => "",
+                             "less_than_average" => "Less Than Average",
+                             "average"           => "Average",
+                             "more_than_average" => "More Than Average",
+                             "dont_know"         => "Don't Know",
+                            );
+
+        $how_active_options = array(
+                               null          => "",
+                               "less_active" => "Less Active",
+                               "average"     => "Average",
+                               "more_active" => "More Active",
+                               "dont_know"   => "Don't Know",
+                              );
+
+        $how_well_options = array(
+                             null            => "",
+                             "below_average" => "Below Average",
+                             "average"       => "Average",
+                             "above_average" => "Above Average",
+                             "dont_know"     => "Don't Know",
+                            );
+
+        $none_option = array(
+                        null   => "",
+                        "none" => "None",
+                       );
+
+        $this->addSelect("list_sports", "<h3><b>I. Please list the sports your child most likes to take part in.</b> For example: swimming, baseball, skating, skate boarding, bike riding, fishing, etc.</h3>", $none_option);
+
+        $this->XINRegisterRule(
+            "list_sports",
+            array("list_sports{@}=={@}NEVER_REQUIRED"),
+            "Never required."
+        );
+
+        $group[] =& $this->form->createElement(
+            "static",
+            null,
+            null,
+            "<h4>Sports</h4>"
+        );
+        $group[] =& $this->form->createElement(
+            "static",
+            null,
+            null,
+            "<h4>Compared to others of the same age, about how much time does he/she spend in each?</h4>"
+        );
+        $group[] =& $this->form->createElement(
+            "static",
+            null,
+            null,
+            "<h4>Compared to others of the same age, how well does he/she do each one?</h4>"
+        );
+        $this->addGroup(
+            $group,
+            "sports_headers",
+            null,
+            $this->_GUIDelimiter,
+            false
+        );
+        unset($group);
+
+        for ($i=1; $i <= 3; $i++) {
+            $this->addLabel($i . ".");
+
+            $group[] =& $this->createText(
+                "sports_{$i}",
+                ""
+            );
+            $group[] =& $this->createSelect(
+                "sports_" . $i . "_rating",
+                "Sports",
+                $how_much_options
+            );
+            $group[] =& $this->createSelect(
+                "sports_" . $i . "_rating1",
+                "Sports",
+                $how_well_options
+            );
+
+            if ($i == 1) {
+                $this->XINRegisterRule(
+                    "sports_{$i}",
+                    array("list_sports{@}!={@}none"),
+                    "Required.",
+                    "sports_" . $i . "_group"
+                );
+                $this->XINRegisterRule(
+                    "sports_" . $i . "_rating",
+                    array("sports_{$i}{@}!={@}"),
+                    "Required",
+                    "sports_" . $i . "_group"
+                );
+                $this->XINRegisterRule(
+                    "sports_" . $i . "_rating1",
+                    array("sports_{$i}{@}!={@}"),
+                    "Required",
+                    "sports_" . $i . "_group"
+                );
+            } else {
+                $this->XINRegisterRule(
+                    "sports_" . $i . "_rating",
+                    array("sports_{$i}{@}!={@}"),
+                    "Required",
+                    "sports_" . $i . "_group"
+                );
+                $this->XINRegisterRule(
+                    "sports_" . $i . "_rating1",
+                    array("sports_{$i}{@}!={@}"),
+                    "Required",
+                    "sports_" . $i . "_group"
+                );
+                $this->XINRegisterRule(
+                    "sports_{$i}",
+                    array("sports_{$i}_rating{@}!={@}"),
+                    "Required.",
+                    "sports_" . $i . "_group"
+                );
+                $this->XINRegisterRule(
+                    "sports_{$i}",
+                    array("sports_{$i}_rating1{@}!={@}"),
+                    "Required.",
+                    "sports_" . $i . "_group"
+                );
+            }
+
+            $this->addGroup(
+                $group,
+                "sports_" . $i . "_group",
+                null,
+                $this->_GUIDelimiter,
+                false
+            );
+            unset($group);
+        }
+
+        $this->addSelect("list_hobbies_activities_games", "<h3><b>II. Please list your child's favorite hobbies, activities, and games, other than sports.</b> For example: video games, dolls, reading, piano, crafts, cars, computers, singing, etc (Do <b><i>not</i></b> include listening to radio, TV, or other media.)</h3>", $none_option);
+
+        $this->XINRegisterRule(
+            "list_hobbies_activities_games",
+            array("list_hobbies_activities_games{@}=={@}NEVER_REQUIRED"),
+            "Never required."
+        );
+
+        $group[] =& $this->form->createElement(
+            "static",
+            null,
+            null,
+            "<h4>Hobbies, Activities, Games</h4>"
+        );
+        $group[] =& $this->form->createElement(
+            "static",
+            null,
+            null,
+            "<h4>Compared to others of the same age, about how much time does he/she spend in each?</h4>"
+        );
+        $group[] =& $this->form->createElement(
+            "static",
+            null,
+            null,
+            "<h4>ompared to others of the same age, how well does he/she do each one?</h4>"
+        );
+        $this->addGroup(
+            $group,
+            "hobbies_activities_games_headers",
+            null,
+            $this->_GUIDelimiter,
+            false
+        );
+        unset($group);
+
+        for ($i=1; $i <= 3; $i++) {
+            $this->addLabel($i . ".");
+
+            $group[] =& $this->createText(
+                "hobbies_activities_games_{$i}",
+                ""
+            );
+            $group[] =& $this->createSelect(
+                "hobbies_activities_games_" . $i . "_rating",
+                "Hobbies, Activities, Games",
+                $how_much_options
+            );
+            $group[] =& $this->createSelect(
+                "hobbies_activities_games_" . $i . "_rating1",
+                "Hobbies, Activities, Games",
+                $how_well_options
+            );
+
+            if ($i == 1) {
+                $this->XINRegisterRule(
+                    "hobbies_activities_games_{$i}",
+                    array("list_hobbies_activities_games{@}!={@}none"),
+                    "Required.",
+                    "hobbies_activities_games_" . $i . "_group"
+                );
+
+                $this->XINRegisterRule(
+                    "hobbies_activities_games_" . $i . "_rating",
+                    array("hobbies_activities_games_{$i}{@}!={@}"),
+                    "Required",
+                    "hobbies_activities_games_" . $i . "_group"
+                );
+
+                $this->XINRegisterRule(
+                    "hobbies_activities_games_" . $i . "_rating1",
+                    array("hobbies_activities_games_{$i}{@}!={@}"),
+                    "Required",
+                    "hobbies_activities_games_" . $i . "_group"
+                );
+            } else {
+                $this->XINRegisterRule(
+                    "hobbies_activities_games_" . $i . "_rating",
+                    array("hobbies_activities_games_{$i}{@}!={@}"),
+                    "Required",
+                    "hobbies_activities_games_" . $i . "_group"
+                );
+
+                $this->XINRegisterRule(
+                    "hobbies_activities_games_" . $i . "_rating1",
+                    array("hobbies_activities_games_{$i}{@}!={@}"),
+                    "Required",
+                    "hobbies_activities_games_" . $i . "_group"
+                );
+
+                $this->XINRegisterRule(
+                    "hobbies_activities_games_{$i}",
+                    array("hobbies_activities_games_{$i}_rating{@}!={@}"),
+                    "Required.",
+                    "hobbies_activities_games_" . $i . "_group"
+                );
+
+                $this->XINRegisterRule(
+                    "hobbies_activities_games_{$i}",
+                    array("hobbies_activities_games_{$i}_rating1{@}!={@}"),
+                    "Required.",
+                    "hobbies_activities_games_" . $i . "_group"
+                );
+            }
+            $this->addGroup(
+                $group,
+                "hobbies_activities_games_" . $i . "_group",
+                null,
+                $this->_GUIDelimiter,
+                false
+            );
+            unset($group);
+        }
+
+        $this->addSelect("list_organizations_clubs_teams", "<h3><b>III. Please list any organizations, clubs, teams, or groups your child belongs to.</b></h3>", $none_option);
+
+        $this->XINRegisterRule(
+            "list_organizations_clubs_teams",
+            array("list_organizations_clubs_teams{@}=={@}NEVER_REQUIRED"),
+            "Never required."
+        );
+
+        $group[] =& $this->form->createElement(
+            "static",
+            null,
+            null,
+            "<h4>Organizations, Clubs, Teams, Groups</h4>"
+        );
+        $group[] =& $this->form->createElement(
+            "static",
+            null,
+            null,
+            "<h4>Compared to others of the same age, how active is he/she in each?</h4>"
+        );
+        $this->addGroup(
+            $group,
+            "organizations_clubs_headers",
+            null,
+            $this->_GUIDelimiter,
+            false
+        );
+        unset($group);
+
+        for ($i=1; $i <= 3; $i++) {
+            $this->addLabel($i . ".");
+
+            $group[] =& $this->createText(
+                "organizations_clubs_teams_{$i}",
+                ""
+            );
+            $group[] =& $this->createSelect(
+                "organizations_clubs_teams_" . $i . "_rating",
+                "Organizations, clubs, teams, groups",
+                $how_active_options
+            );
+
+            if ($i == 1) {
+                $this->XINRegisterRule(
+                    "organizations_clubs_teams_{$i}",
+                    array("list_organizations_clubs_teams{@}!={@}none"),
+                    "Required.",
+                    "organizations_clubs_teams_" . $i . "_group"
+                );
+                $this->XINRegisterRule(
+                    "organizations_clubs_teams_" . $i . "_rating",
+                    array("organizations_clubs_teams_{$i}{@}!={@}"),
+                    "Required",
+                    "organizations_clubs_teams_" . $i . "_group"
+                );
+            } else {
+                $this->XINRegisterRule(
+                    "organizations_clubs_teams_" . $i . "_rating",
+                    array("organizations_clubs_teams_{$i}{@}!={@}"),
+                    "Required",
+                    "organizations_clubs_teams_" . $i . "_group"
+                );
+                $this->XINRegisterRule(
+                    "organizations_clubs_teams_{$i}",
+                    array("organizations_clubs_teams_{$i}_rating{@}!={@}"),
+                    "Required.",
+                    "organizations_clubs_teams_" . $i . "_group"
+                );
+            }
+
+            $this->addGroup(
+                $group,
+                "organizations_clubs_teams_" . $i . "_group",
+                null,
+                $this->_GUIDelimiter,
+                false
+            );
+            unset($group);
+        }
+
+        $this->addSelect("list_any_jobs_chores", "<h3><b>IV. Please list any jobs or chores your child has.</b> For example: doing dishes, babysitting, making bed, working in store, etc. (Include both paid and unpaid jobs and chores.)</h3>", $none_option);
+
+        $this->XINRegisterRule(
+            "list_any_jobs_chores",
+            array("list_any_jobs_chores{@}=={@}NEVER_REQUIRED"),
+            "Never required."
+        );
+
+        $group[] =& $this->form->createElement(
+            "static",
+            null,
+            null,
+            "<h4>Jobs or Chores</h4>"
+        );
+        $group[] =& $this->form->createElement(
+            "static",
+            null,
+            null,
+            "<h4>Compared to others of the same age, how well does he/she carry them out?</h4>"
+        );
+        $this->addGroup(
+            $group,
+            "jobs_chores_headers",
+            null,
+            $this->_GUIDelimiter,
+            false
+        );
+        unset($group);
+
+        for ($i=1; $i <= 3; $i++) {
+            $this->addLabel($i . ".");
+
+            $group[] =& $this->createText(
+                "jobs_or_chores_{$i}",
+                ""
+            );
+            $group[] =& $this->createSelect(
+                "jobs_or_chores_" . $i . "_rating",
+                "Jobs or Chores",
+                $how_well_options
+            );
+
+            if ($i == 1) {
+                $this->XINRegisterRule(
+                    "jobs_or_chores_{$i}",
+                    array("list_any_jobs_chores{@}!={@}none"),
+                    "Required.",
+                    "jobs_or_chores_" . $i . "_group"
+                );
+                $this->XINRegisterRule(
+                    "jobs_or_chores_" . $i . "_rating",
+                    array("jobs_or_chores_{$i}{@}!={@}"),
+                    "Required",
+                    "jobs_or_chores_" . $i . "_group"
+                );
+            } else {
+                $this->XINRegisterRule(
+                    "jobs_or_chores_" . $i . "_rating",
+                    array("jobs_or_chores_{$i}{@}!={@}"),
+                    "Required",
+                    "jobs_or_chores_" . $i . "_group"
+                );
+                $this->XINRegisterRule(
+                    "jobs_or_chores_{$i}",
+                    array("jobs_or_chores_{$i}_rating{@}!={@}"),
+                    "Required.",
+                    "jobs_or_chores_" . $i . "_group"
+                );
+            }
+
+            $this->addGroup(
+                $group,
+                "jobs_or_chores_" . $i . "_group",
+                null,
+                $this->_GUIDelimiter,
+                false
+            );
+            unset($group);
+        }
+
+        $this->addLabel("Be sure you answered all items.");
+    }
+
+    /**
+    * Generates the second page of the form.
+    *
+    *@return void
+    */
+    function _page2()
+    {
+        $this->addHeader("Child Behavior Checklist (CBCL) For Ages 6-18");
+
+        $this->addLabel("Be sure to answer all items.");
+
+        $V_1_options = array(
+                        null        => "",
+                        "none"      => "None",
+                        "1"         => "1",
+                        "2_or_3"    => "2 or 3",
+                        "4_or_more" => "4 or more",
+                       );
+
+        $V_2_options = array(
+                        null          => "",
+                        "less_than_1" => "Less than 1",
+                        "1_or_2"      => "1 or 2",
+                        "3_or_more"   => "3 or more",
+                       );
+
+        $this->addSelect("V_1_how_many_close_friends", "<h3>V. 1. About how many close friends does your child have? (Do <i>not</i> include brothers & sisters)</h3>", $V_1_options);
+
+        $this->addSelect("V_2_how_many_things_with_friends_outside_school", "<h3>V. 2. About how many times a week does your child do things with any friends outside of regular school hours? (Do <i>not</i> include brothers & sisters)</h3>", $V_2_options);
+
+        $VI_options = array(
+                       null              => "",
+                       "worse"           => "Worse",
+                       "average"         => "Average",
+                       "better"          => "Better",
+                       "has_no_siblings" => "Has no brothers or sisters",
+                      );
+
+        $VI_questions = array(
+                         "VIa_get_along_with_siblings"   => "a. Get along with his/her brothers & sisters?",
+                         "VIb_get_along_with_other_kids" => "b. Get along with other kids?",
+                         "VIc_behave_with_parents"       => "c. Behave with his/her parents?",
+                         "VId_play_work_alone"           => "d. Play and work alone?",
+                        );
+
+        $this->addLabel("<h3>VI. Compared to others of his/her age, how well does your child:</h3>");
+
+        foreach ($VI_questions as $key => $VI_questions) {
+            // last option is removed after first question
+            if ($key == "VIb_get_along_with_other_kids") {
+                unset($VI_options['has_no_siblings']);
+            }
+
+            $this->addSelect($key, $VI_questions, $VI_options);
+        }
+
+        $attend_school_option = array(
+                                 null                     => "",
+                                 "does_not_attend_school" => "Does not attend school",
+                                );
+
+        $this->addSelect("attend_school", "<h3>VII. 1. Performance in academic subjects.</h3>", $attend_school_option);
+
+        $this->XINRegisterRule(
+            "attend_school",
+            array("attend_school{@}=={@}NEVER_REQUIRED"),
+            "Never required."
+        );
+
+        $this->addBasicText("does_not_attend_because", "$this->indent Does not attend school because:");
+
+        $this->XINRegisterRule(
+            "does_not_attend_because",
+            array("attend_school{@}=={@}does_not_attend_school"),
+            "Required."
+        );
+
+        $this->addLabel("Answer for each subject that child takes.");
+
+        $yes_no_options = array(
+                           null  => "",
+                           "no"  => "No",
+                           "yes" => "Yes",
+                          );
+
+        $performance_options = array(
+                                null            => "",
+                                "failing"       => "Failing",
+                                "below_average" => "Below Average",
+                                "average"       => "Average",
+                                "above_average" => "Above Average",
+                               );
+
+        $academic_subjects =array(
+                             "a_reading_english_language" => "a. Reading, English, Language Arts",
+                             "b_history_social_studies"   => "b. History or Social Studies",
+                             "c_arithmetic_math"          => "c. Arithmetic or Math",
+                             "d_science"                  => "d. Science",
+                            );
+
+        foreach ($academic_subjects as $key => $academic_subject) {
+
+            $this->addSelect($key, $academic_subject, $performance_options);
+
+            $this->XINRegisterRule(
+                "$key",
+                array("$key{@}=={@}NEVER_REQUIRED")
+            );
+        }
+
+        $this->addLabel("Other academic subjects- for example: computer courses, foreign language, business. Do <b><i>not</i></b> include gym, shop, driver's ed., or other nonacademic subjects.");
+
+        $group[] =& $this->form->createElement(
+            "static",
+            null,
+            null,
+            " "
+        );
+        $group[] =& $this->form->createElement(
+            "static",
+            null,
+            null,
+            " "
+        );
+        $this->addGroup(
+            $group,
+            "page2_headers",
+            null,
+            $this->_GUIDelimiter,
+            false
+        );
+        unset($group);
+
+        for ($i=1; $i <= 3; $i++) {
+
+            if ($i == 1) {
+                $label = "e";
+            } else if ($i == 2) {
+                $label = "f";
+            } else {
+                $label = "g";
+            }
+
+            $this->addLabel($label . ".");
+
+            $group[] =& $this->createText(
+                "performance_in_subjects_{$i}",
+                ""
+            );
+            $group[] =& $this->createSelect(
+                "performance_in_subjects_" . $i . "_rating",
+                " ",
+                $performance_options
+            );
+
+            $this->XINRegisterRule(
+                "performance_in_subjects_" . $i . "_rating",
+                array("performance_in_subjects_{$i}{@}!={@}"),
+                "Required",
+                "performance_in_subjects_" . $i . "_group"
+            );
+            $this->XINRegisterRule(
+                "performance_in_subjects_{$i}",
+                array("performance_in_subjects_{$i}_rating{@}!={@}"),
+                "Required.",
+                "performance_in_subjects_" . $i . "_group"
+            );
+            $this->addGroup(
+                $group,
+                "performance_in_subjects_" . $i . "_group",
+                null,
+                $this->_GUIDelimiter,
+                false
+            );
+            unset($group);
+        }
+
+        $this->addSelect("q2_special_education_class_school", "<h3>2. Does your child receive special education or remedial services or attend a special class or special school?</h3>", $yes_no_options);
+
+        $this->addTextAreaElement("q2_yes", "$this->indent Yes -- kind of services, class, or school:");
+
+        $this->XINRegisterRule(
+            "q2_yes",
+            array("q2_special_education_class_school{@}=={@}yes"),
+            "Required."
+        );
+
+        $this->addSelect("q3_repeated_any_grades", "<h3>3. Has your child repeated any grades?</h3>", $yes_no_options);
+
+        $this->addTextAreaElement("q3_yes", "$this->indent Yes -- grades and reasons:");
+
+        $this->XINRegisterRule(
+            "q3_yes",
+            array("q3_repeated_any_grades{@}=={@}yes"),
+            "Required."
+        );
+
+        $this->addSelect("q4_problems_in_school", "<h3>4. Has your child had any academic or other problems in school?</h3>", $yes_no_options);
+
+        $this->addTextAreaElement("q4_yes", "$this->indent Yes -- please describe:");
+
+        $this->XINRegisterRule(
+            "q4_yes",
+            array("q4_problems_in_school{@}=={@}yes"),
+            "Required."
+        );
+
+        $this->addTextAreaElement("when_did_problems_start", "When did these problems start?");
+
+        $this->XINRegisterRule(
+            "when_did_problems_start",
+            array("q4_problems_in_school{@}=={@}yes"),
+            "Required."
+        );
+
+        $this->addSelect("have_problems_ended", "Have these problems ended?", $yes_no_options);
+
+        $this->XINRegisterRule(
+            "have_problems_ended",
+            array("q4_problems_in_school{@}=={@}yes"),
+            "Required."
+        );
+
+        $this->addTextAreaElement("q4_ended_yes", "$this->indent Yes -- when?");
+
+        $this->XINRegisterRule(
+            "q4_ended_yes",
+            array("have_problems_ended{@}=={@}yes"),
+            "Required."
+        );
+
+        $this->addSelect("does_child_have_illness_disability", "<h3>Does your child have any illness or disability (either physical or mental)?</h3>", $yes_no_options);
+
+        $this->addTextAreaElement("child_illness_disability_describe", "$this->indent Describe:");
+
+        $this->XINRegisterRule(
+            "child_illness_disability_describe",
+            array("does_child_have_illness_disability{@}=={@}yes"),
+            "Required."
+        );
+
+        $this->addTextAreaElement("concerns_about_child", "<h3>What concerns you most about your child?</h3>");
+
+        $this->addTextAreaElement("best_things_about_child", "<h3>Please describe the best things about your child.</h3>");
+
+        $this->addLabel("Be sure you answered all items.");
+    }
+    /**
+    * Generates the third page of the form.
+    *
+    *@return void
+    */
+    function _page3()
+    {
+        $this->addHeader("Child Behavior Checklist (CBCL) For Ages 6-18");
+
+        $this->addLabel("<h4>Below is a list of items that describe children and youths <b><i>now or within the past 2 months</i></b>. Please answer all items as well as you can, even if some do not seem to apply to your child.</h4>");
+
+        $options = array(
+                    null => "",
+                    "0"  => "Not True (as far as you know)",
+                    "1"  => "Somewhat or Sometimes True",
+                    "2"  => "Very True or Often True",
+                   );
+
+        $questions = array(
+                      "q1_acts_too_young"                          => "1. Acts too young for his/her age",
+                      "q2_drinks_alcohol_without_approval"         => "2. Drinks alcohol without parents' approval (describe):",
+                      "q3_argues_a_lot"                            => "3. Argues a lot",
+                      "q4_fails_to_finish_things_starts"           => "4. Fails to finish things he/she starts",
+                      "q5_very_little_they_enjoy"                  => "5. There is very little that he/she enjoys",
+                      "q6_bowel_movements_outside_toilet"          => "6. Bowel movements outside toilet",
+                      "q7_bragging_boasting"                       => "7. Bragging, boasting",
+                      "q8_cant_concentrate_for_long"               => "8. Can't concentrate, can't pay attention for long",
+                      "q9_cant_get_mind_off_certain_thoughts"      => "9. Can't get his/her mind off certain thoughts; obsessions (describe):",
+                      "q10_cant_sit_still_restless"                => "10. Can't sit still, restless, or hyperactive",
+                      "q11_clings_to_adults_dependent"             => "11. Clings to adults or too dependent",
+                      "q12_complains_of_loneliness"                => "12. Complains of loneliness",
+                      "q13_confused_in_a_fog"                      => "13. Confused or seems to be in a fog",
+                      "q14_cries_a_lot"                            => "14. Cries a lot",
+                      "q15_cruel_to_animals"                       => "15. Cruel to animals",
+                      "q16_cruelty_bullying_meanness"              => "16. Cruelty, bullying, or meanness to others",
+                      "q17_daydreams_gets_lost_in_thoughts"        => "17. Daydreams or gets lost in his/her thoughts",
+                      "q18_harms_self_attempts_suicide"            => "18. Deliberately harms self or attempts suicide",
+                      "q19_demands_a_lot_of_attention"             => "19. Demands a lot of attention",
+                      "q20_destroys_own_things"                    => "20. Destroys his/her own things",
+                      "q21_destroys_things_belonging_to_others"    => "21. Destroys things belonging to his/her family or others",
+                      "q22_disobedient_at_home"                    => "22. Disobedient at home",
+                      "q23_disobedient_at_school"                  => "23. Disobedient at school",
+                      "q24_doesnt_eat_well"                        => "24. Doesn't eat well",
+                      "q25_doesnt_get_along_with_other_kids"       => "25. Doesn't get along with other kids",
+                      "q26_doesnt_feel_guilty_misbehaving"         => "26. Doesn't seem to feel guilty after misbehaving",
+                      "q27_easily_jealous"                         => "27. Easily jealous",
+                      "q28_breaks_rules_home_school_elsewhere"     => "28. Breaks rules at home, school, or elsewhere",
+                      "q29_fears_animals_situations_places"        => "29. Fears certain animals, situations, or places, other than school (describe):",
+                      "q30_fears_going_to_school"                  => "30. Fears going to school",
+                      "q31_fears_might_think_do_something_bad"     => "31. Fears he/she might think or do something bad",
+                      "q32_feels_has_to_be_perfect"                => "32. Feels he/she has to be perfect",
+                      "q33_feels_complains_no_one_loves_them"      => "33. Feels or complains that no one loves him/her",
+                      "q34_feels_others_out_to_get_them"           => "34. Feels others are out to get him/her",
+                      "q35_feels_worthless_inferior"               => "35. Feels worthless or inferior",
+                      "q36_gets_hurt_a_lot_accident_prone"         => "36. Gets hurt a lot, accident-prone",
+                      "q37_gets_in_many_fights"                    => "37. Gets in many fights",
+                      "q38_gets_teased_a_lot"                      => "38. Gets teased a lot",
+                      "q39_hangs_around_others_who_get_in_trouble" => "39. Hangs around with others who get in trouble",
+                      "q40_hears_sounds_voices_arent_there"        => "40. Hears sounds or voices that aren't there (describe):",
+                      "q41_impulsive_acts_without_thinking"        => "41. Impulsive or acts without thinking",
+                      "q42_would_rather_be_alone"                  => "42. Would rather be alone than with others",
+                      "q43_lying_or_cheating"                      => "43. Lying or cheating",
+                      "q44_bites_fingernails"                      => "44. Bites fingernails",
+                      "q45_nervous_highstrung_tense"               => "45. Nervous, highstrung, or tense",
+                      "q46_nervous_movements_twitching"            => "46. Nervous movements or twitching (describe):",
+                      "q47_nightmares"                             => "47. Nightmares",
+                      "q48_not_liked_by_other_kids"                => "48. Not liked by other kids",
+                      "q49_constipated"                            => "49. Constipated, doesn't move bowels",
+                      "q50_too_fearful_or_anxious"                 => "50. Too fearful or anxious",
+                      "q51_feels_dizzy_lightheaded"                => "51. Feels dizzy or lightheaded",
+                      "q52_feels_too_guilty"                       => "52. Feels too guilty",
+                      "q53_overeating"                             => "53. Overeating",
+                      "q54_overtired_without_good_reason"          => "54. Overtired without good reason",
+                      "q55_overweight"                             => "55. Overweight",
+                      "q56a_aches_or_pains"                        => "a. Aches or pains (<i>not</i> stomach or headaches)",
+                      "q56b_headaches"                             => "b. Headaches",
+                      "q56c_nausea_feels_sick"                     => "c. Nausea, feels sick",
+                      "q56d_problems_with_eyes"                    => "d. Problems with eyes (<i>not</i> if corrected by glasses)(describe):",
+                      "q56e_rashes_or_skin_problems"               => "e. Rashes or other skin problems",
+                      "q56f_stomachaches"                          => "f. Stomachaches",
+                      "q56g_vomiting_throwing_up"                  => "g. Vomiting, throwing up",
+                      "q56h_other"                                 => "h. Other (describe):",
+                     );
+
+        foreach ($questions as $key => $question) {
+            // add label for q56
+            if ($key == "q56a_aches_or_pains") {
+
+                $this->addLabel("56. Physical problems <b><i>without known medical cause:</i></b>");
+
+            }
+
+            $this->addSelect($key, $question, $options);
+
+            // if the question contains (describe), include text element
+            if (strpos($question, "(describe)") !== false) {
+
+                $str = substr($key, 0, strpos($key, "_")+1)."describe";
+
+                $this->addBasicText($str, "$this->indent Describe: ");
+
+                $this->XINRegisterRule(
+                    $str,
+                    array("{$key}{@}=={@}1|2"),
+                    "Required."
+                );
+            }
+        }
+    }
+    /**
+    * Generates the fourth page of the form.
+    *
+    *@return void
+    */
+    function _page4()
+    {
+        $this->addHeader("Child Behavior Checklist (CBCL) For Ages 6-18");
+
+           $this->addLabel("<h4>Below is a list of items that describe children and youths <b><i>now or within the past 2 months</i></b>. Please answer all items as well as you can, even if some do not seem to apply to your child.</h4>");
+
+        $options = array(
+                    null => "",
+                    "0"  => "Not True (as far as you know)",
+                    "1"  => "Somewhat or Sometimes True",
+                    "2"  => "Very True or Often True",
+                   );
+
+        $questions = array(
+                      "q57_physically_attacks_people"                  => "57. Physically attacks people",
+                      "q58_picks_nose_skin_other_parts_of_body"        => "58. Picks nose, skin, or other parts of body (describe):",
+                      "q59_plays_with_own_sex_parts_public"            => "59. Plays with own sex parts in public",
+                      "q60_plays_with_own_sex_parts_too_much"          => "60. Plays with own sex parts too much",
+                      "q61_poor_school_work"                           => "61. Poor school work",
+                      "q62_poorly_coordinated_clumsy"                  => "62. Poorly coordinated or clumsy",
+                      "q63_prefers_being_with_older_kids"              => "63. Prefers being with older kids",
+                      "q64_prefers_being_with_younger_kids"            => "64. Prefers being with younger kids",
+                      "q65_refuses_to_talk"                            => "65. Refuses to talk",
+                      "q66_repeats_certain_acts_compulsions"           => "66. Repeats certain acts over and over; compulsions (describe):",
+                      "q67_runs_away_from_home"                        => "67. Runs away from home",
+                      "q68_screams_a_lot"                              => "68. Screams a lot",
+                      "q69_secretive"                                  => "69. Secretive, keeps things to self",
+                      "q70_sees_things_that_arent_there"               => "70. Sees things that aren't there (describe):",
+                      "q71_self_conscious_easily_embarrassed"          => "71. Self-conscious or easily embarrassed",
+                      "q72_sets_fires"                                 => "72. Sets fires",
+                      "q73_sexual_problems"                            => "73. Sexual problems (describe):",
+                      "q74_showing_off_clowning"                       => "74. Showing off or clowning",
+                      "q75_too_shy_or_timid"                           => "75. Too shy or timid",
+                      "q76_sleeps_less_than_most_kids"                 => "76. Sleeps less than most kids",
+                      "q77_sleeps_more_than_most_kids_day_or_night"    => "77. Sleeps more than most kids during the day and/or night",
+                      "q78_inattentive_easily_distracted"              => "78. Inattentive or easily distracted",
+                      "q79_speech_problem"                             => "79. Speech problem (describe):",
+                      "q80_stares_blankly"                             => "80. Stares blankly",
+                      "q81_steals_at_home"                             => "81. Steals at home",
+                      "q82_steals_outside_home"                        => "82. Steals outside the home",
+                      "q83_stores_up_many_things_doesnt_need"          => "83. Stores up too many things he/she doesn't need (describe):",
+                      "q84_strange_behaviour"                          => "84. Strange behavior (describe):",
+                      "q85_strange_ideas"                              => "85. Strange ideas (describe):",
+                      "q86_stubborn_sullen_irritable"                  => "86. Stubborn, sullen, or irritable",
+                      "q87_sudden_changes_in_mood_feelings"            => "87. Sudden changes in mood or feelings",
+                      "q88_sulks_a_lot"                                => "88. Sulks a lot",
+                      "q89_suspicious"                                 => "89. Suspicious",
+                      "q90_swearing_or_obscene_language"               => "90. Swearing or obscene language",
+                      "q91_talks_about_killing_self"                   => "91. Talks about killing self",
+                      "q92_talks_or_walks_in_sleep"                    => "92. Talks or walks in sleep (describe):",
+                      "q93_talks_too_much"                             => "93. Talks too much",
+                      "q94_teases_a_lot"                               => "94. Teases a lot",
+                      "q95_temper_tantrums_hot_temper"                 => "95. Temper tantrums or hot temper",
+                      "q96_thinks_about_sex_too_much"                  => "96. Thinks about sex too much",
+                      "q97_threatens_people"                           => "97. Threatens people",
+                      "q98_thumb_sucking"                              => "98. Thumb-sucking",
+                      "q99_smokes_chews_sniffs_tobacco"                => "99. Smokes, chews, or sniffs tobacco",
+                      "q100_trouble_sleeping"                          => "100. Trouble sleeping (describe):",
+                      "q101_truancy_skips_school"                      => "101. Truancy, skips school",
+                      "q102_underactive_slow_moving_lacks_energy"      => "102. Underactive, slow moving, or lacks energy",
+                      "q103_unhappy_sad_depressed"                     => "103. Unhappy, sad, or depressed",
+                      "q104_unusually_loud"                            => "104. Unusually loud",
+                      "q105_uses_drugs_nonmedical_purposes"            => "105. Uses drugs for nonmedical purposes (<i>don't</i> include alcohol or tobacco)(describe):",
+                      "q106_vandalism"                                 => "106. Vandalism",
+                      "q107_wets_self_during_day"                      => "107. Wets self during the day",
+                      "q108_wets_the_bed"                              => "108. Wets the bed",
+                      "q109_whining"                                   => "109. Whining",
+                      "q110_wishes_to_be_opposite_sex"                 => "110. Wishes to be the opposite sex",
+                      "q111_withdrawn_doesnt_get_involved_with_others" => "111. Withdrawn, doesn't get involved with others",
+                      "q112_worries"                                   => "112. Worries",
+                     );
+
+        foreach ($questions as $key => $question) {
+
+            $this->addSelect($key, $question, $options);
+
+            // if the question contains (describe), include text element
+            if (strpos($question, "(describe)") !== false) {
+
+                $str = substr($key, 0, strpos($key, "_")+1)."describe";
+
+                $this->addBasicText($str, "$this->indent Describe: ");
+
+                $this->XINRegisterRule(
+                    $str,
+                    array("{$key}{@}=={@}1|2"),
+                    "Required."
+                );
+            }
+        }
+
+        $this->addLabel("113. Please write any problems your child has that were not listed above:");
+
+        $group[] =& $this->form->createElement(
+            "static",
+            null,
+            null,
+            "Problem"
+        );
+        $group[] =& $this->form->createElement(
+            "static",
+            null,
+            null,
+            "Problem rating"
+        );
+        $this->addGroup(
+            $group,
+            "page4_headers",
+            null,
+            $this->_GUIDelimiter,
+            false
+        );
+        unset($group);
+
+        for ($i=1; $i <= 3; $i++) {
+            $this->addLabel($i . ".");
+
+            $group[] =& $this->createText(
+                "additional_problem_{$i}",
+                ""
+            );
+            $group[] =& $this->createSelect(
+                "additional_problem_" . $i . "_rating",
+                "Additional Problems",
+                $options
+            );
+
+            $this->XINRegisterRule(
+                "additional_problem_" . $i . "_rating",
+                array("additional_problem_{$i}{@}!={@}"),
+                "Required",
+                "additional_problem_" . $i . "_group"
+            );
+            $this->XINRegisterRule(
+                "additional_problem_{$i}",
+                array("additional_problem_{$i}_rating{@}=={@}0|1|2"),
+                "Required.",
+                "additional_problem_" . $i . "_group"
+            );
+            $this->addGroup(
+                $group,
+                "additional_problem_" . $i . "_group",
+                null,
+                $this->_GUIDelimiter,
+                false
+            );
+            unset($group);
+        }
+    }
+}
+?>
