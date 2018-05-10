@@ -124,7 +124,8 @@ class GroupDateElement extends React.Component {
 				"minDate" : this.props.element.Options.MinDate,
 				"maxDate" : this.props.element.Options.MaxDate,
 				"changeMonth" : true,
-       			"changeYear" : true
+       			"changeYear" : true,
+       			"yearRange" : "-100:+15"
 			}).on("change", function(e) {
 			    that.updateValue(e);
 			});
