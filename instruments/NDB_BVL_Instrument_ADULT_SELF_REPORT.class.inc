@@ -345,7 +345,7 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT extends NDB_BVL_Instrument
 
         $this->XINRegisterRule(
               "Family_E",
-              array("no_children{@}=={@}NEVER_REQUIRED")
+              array("Family_E{@}=={@}NEVER_REQUIRED")
           );
 
         $opts_temp = $opts;
@@ -354,30 +354,26 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT extends NDB_BVL_Instrument
         $this->addSelect("Family_E_1","$this->indent 1. Oldest child", $opts_temp);
         $this->XINRegisterRule(
               "Family_E_1",
-              array("Family_E{@}=={@}no_children"),
-              "Please unselect \"I have no children \" above to answer this question",
-              "answer_not_allowed_group"
+              array("Family_E{@}!={@}no_children"),
+              'Required'
           );
         $this->addSelect("Family_E_2","$this->indent 2. 2nd oldest child", $opts_temp);
         $this->XINRegisterRule(
               "Family_E_2",
-              array("Family_E{@}=={@}no_children"),
-              "Please unselect \"I have no children \" above to answer this question",
-              "answer_not_allowed_group"
+              array("Family_E{@}!={@}no_children"),
+              'Required'
           );
         $this->addSelect("Family_E_3","$this->indent 3. 3rd oldest child", $opts_temp);
         $this->XINRegisterRule(
               "Family_E_3",
-              array("Family_E{@}=={@}no_children"),
-              "Please unselect \"I have no children \" above to answer this question",
-              "answer_not_allowed_group"
+              array("Family_E{@}!={@}no_children"),
+              'Required'
           );
         $this->addSelect("Family_E_4","$this->indent 4. Other children", $opts_temp);
         $this->XINRegisterRule(
               "Family_E_4",
-              array("Family_E{@}=={@}no_children"),
-              "Please unselect \"I have no children \" above to answer this question",
-              "answer_not_allowed_group"
+              array("Family_E{@}!={@}no_children"),
+              'Required'
           );
         $opts_temp = $opts;
         $opts_temp["no_stepchildren"] = "I have no step children";
@@ -629,11 +625,11 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT extends NDB_BVL_Instrument
             //print_r("found it!");
             //die();
             $this->addTextElement("q_{$n}_description", "$this->indent Description: ");
-            $this->XINRegisterRule("
-              q_{$n}_description", 
-              array("question_{$i}{@}=={@}sometimes", "question_{$i}{@}=={@}very_true"),
+            $this->XINRegisterRule(
+              "q_{$n}_description", 
+              array("question_{$n}{@}=={@}sometimes|very_true"),
               "Required",
-              "describe_group"
+              "q_{$n}_description_group"
               );
           }
         }
@@ -688,9 +684,9 @@ function _page5(){
             $this->addTextElement("q_{$n}_description", "$this->indent Description: ");
             $this->XINRegisterRule(
               "q_{$n}_description", 
-              array("question_{$i}{@}=={@}sometimes", "question_{$i}{@}=={@}very_true"),
+              array("question_{$n}{@}=={@}sometimes|very_true"),
               "Required",
-              "describe_group"
+              "q_{$n}_description_group"
               );
           }
         }
@@ -729,9 +725,9 @@ function _page5(){
             $this->addTextElement("q_{$q_id}_description", "$this->indent Description: ");
             $this->XINRegisterRule(
               "q_{$q_id}_description", 
-              array("question_{$i}{@}=={@}sometimes", "question_{$i}{@}=={@}very_true"),
+              array("question_{$q_id}{@}=={@}sometimes|very_true"),
               "Required",
-              "describe_group"
+              "q_{$q_id}_description_group"
               );
           }
         }
@@ -764,11 +760,11 @@ function _page5(){
             //print_r("found it!");
             //die();
             $this->addTextElement("q_{$n}_description", "$this->indent Description: ");
-            $this->XINRegisterRule("
-              q_{$n}_description", 
-              array("question_{$i}{@}=={@}sometimes", "question_{$i}{@}=={@}very_true"),
+            $this->XINRegisterRule(
+              "q_{$n}_description", 
+              array("question_{$n}{@}=={@}sometimes|very_true"),
               "Required",
-              "describe_group"
+              "q_{$n}_description_group"
               );
           }
         }
@@ -815,11 +811,11 @@ function _page5(){
             //print_r("found it!");
             //die();
             $this->addTextElement("q_{$n}_description", "$this->indent Description: ");
-            $this->XINRegisterRule("
-              q_{$n}_description", 
-              array("question_{$i}{@}=={@}sometimes", "question_{$i}{@}=={@}very_true"),
+            $this->XINRegisterRule(
+              "q_{$n}_description", 
+              array("question_{$n}{@}=={@}sometimes|very_true"),
               "Required",
-              "describe_group"
+              "q_{$n}_description_group"
               );
           }
         }
@@ -873,11 +869,11 @@ function _page8(){
             //print_r("found it!");
             //die();
             $this->addTextElement("q_{$n}_description", "$this->indent Description: ");
-            $this->XINRegisterRule("
-              q_{$n}_description", 
-              array("question_{$i}{@}=={@}sometimes", "question_{$i}{@}=={@}very_true"),
+            $this->XINRegisterRule(
+              "q_{$n}_description", 
+              array("question_{$n}{@}=={@}sometimes|very_true"),
               "Required",
-              "describe_group"
+              "q_{$n}_description_group"
               );
           }
         }
