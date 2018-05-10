@@ -107,15 +107,13 @@ class NDB_BVL_Instrument_ABC2 extends NDB_BVL_Instrument
     {
         $this->addHeader("ABC-2");
 
-        $this->addLabel("<h4><b>INSTRUCTIONS</b></h4>");
+        $this->addLabel("<h3><b>INSTRUCTIONS</b></h3>");
 
         $this->addLabel("The ABC-Community rating scale is designed to be used with clients living in the community. Please note that the term <i>client</i> is used throughout to refer to the person being rated. This may be a child of school age, an adolescent, or an adult.");
 
         $this->addLabel("Please rate this client's behavior for the last four weeks.");
 
-        $this->form->addElement("static", null, "<br/>");
-
-        $this->addLabel("<h4><b>When judging this client's behavior, please keep the following points in mind:</b></h4>");
+        $this->addLabel("<h3><b>When judging this client's behavior, please keep the following points in mind:</b></h3>");
 
         $this->addLabel("(a) Take <b><i>relative frequency</i></b> into account or each behavior specified. That is, <i>consider this person with respect to others of similar age and sex, in general.</i> For example, if the client averages more temper outbursts than most other people you know of similar age and sex or most others in his/her class, it is probably moderately serious (2) or severe (3) even if these occur only once or twice a week. Other behaviors, such as noncompliance, would probably have to occur more frequently to merit a high rating.");
 
@@ -123,11 +121,7 @@ class NDB_BVL_Instrument_ABC2 extends NDB_BVL_Instrument
 
         $this->addLabel("(c) Try to consider whether a given behavior interferes with his/her <i>development, functioning or relationships.</i> For example, body rocking or social withdrawal may not disrupt other children or adults, but it almost certainly hinders individual development or functioning.");
 
-        $this->form->addElement("static", null, "<br/>");
-
         $this->addLabel("<i>Do not spend too much time on each item - your first reaction is usually the right one.</i>");
-
-        $this->form->addElement("static", null, "<br/>");
 
         $options = array(
                     null => "",
@@ -163,10 +157,6 @@ class NDB_BVL_Instrument_ABC2 extends NDB_BVL_Instrument
 
             $this->addSelect($key, $question, $options);
 
-            if ($key == "q9_talks_excessively") {
-                $this->form->addElement("static", null, "<br/>");
-                $this->form->addElement("static", null, "<br/>");
-            }
         }
     }
 
@@ -178,8 +168,6 @@ class NDB_BVL_Instrument_ABC2 extends NDB_BVL_Instrument
     function _page2()
     {
         $this->addHeader("ABC-2");
-
-        $this->form->addElement("static", null, "<br/>");
 
         $options = array(
                     null => "",
@@ -235,10 +223,6 @@ class NDB_BVL_Instrument_ABC2 extends NDB_BVL_Instrument
 
             $this->addSelect($key, $question, $options);
 
-            if ($key == "q30_isolates_self_from_others" | $key == "q40_difficult_to_reach_contact") {
-                $this->form->addElement("static", null, "<br/>");
-                $this->form->addElement("static", null, "<br/>");
-            }
         }
     }
 }

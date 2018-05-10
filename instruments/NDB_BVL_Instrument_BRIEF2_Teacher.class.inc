@@ -109,8 +109,6 @@ class NDB_BVL_Instrument_BRIEF2_Teacher extends NDB_BVL_Instrument
     {
         $this->addHeader("BRIEF-2 Teacher Form");
 
-        $this->form->addElement("static", null, "<br/>");
-
         $this->addBasicDate('birth_date', 'Child\'s Date of Birth');
 
         $this->addBasicText("student_gender", "Gender");
@@ -154,8 +152,6 @@ class NDB_BVL_Instrument_BRIEF2_Teacher extends NDB_BVL_Instrument
                           );
 
         $this->addSelect("does_student_receive_special_education_services", "Does this student receive special education services?", $yes_no_options);
-
-        $this->form->addElement("static", null, "<br/>");
 
         $options = array(
                     null => "",
