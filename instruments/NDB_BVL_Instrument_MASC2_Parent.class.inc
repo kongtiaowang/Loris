@@ -110,7 +110,7 @@ class NDB_BVL_Instrument_MASC2_Parent extends NDB_BVL_Instrument
             "static",
             null,
             null,
-            "Never/Rarely/Sometimes/Often");
+            "0-Never True  1-Rarely True  2-Sometimes True  3-Often True");
         $this->form->addGroup(
             $group,
             "headers_" . $headerNum,
@@ -178,7 +178,7 @@ class NDB_BVL_Instrument_MASC2_Parent extends NDB_BVL_Instrument
         $this->displayHeaders(1);
         foreach ($questions as $qNum=>$qLabel) {
             $group[] =& $this->createLabel($qLabel);
-            $group[] =& $this->createSelect($qNum, "", $options);
+            $group[] =& $this->createSelect($qNum, $qLabel, $options);
             $this->form->addGroup(
                 $group,
                 "page1_questions_" . $qNum,
@@ -209,7 +209,7 @@ class NDB_BVL_Instrument_MASC2_Parent extends NDB_BVL_Instrument
                 "q29" => "29. My child worries about doing something stupid or embarrassing.",
                 "q30" => "30. My child gets scared riding in the car or on the bus.",
                 "q31" => "31. My child feels sick to his/her stomach.",
-                "q32" => "32. My child get nervous if he/she has to perform in public.",
+                "q32" => "32. My child gets nervous if he/she has to perform in public.",
                 "q33" => "33. Bad weather, the dark, heights, animals, or bugs scare my child.",
                 "q34" => "34. My child's hands shake.",
                 "q35" => "35. My child checks to make sure things are safe.",
@@ -232,7 +232,7 @@ class NDB_BVL_Instrument_MASC2_Parent extends NDB_BVL_Instrument
 
         foreach ($questions as $qNum=>$qLabel) {
             $group[] =& $this->createLabel($qLabel);
-            $group[] =& $this->createSelect($qNum, "", $options);
+            $group[] =& $this->createSelect($qNum, $qLabel, $options);
             $this->form->addGroup(
                 $group,
                 "page2_questions_" . $qNum,
@@ -243,5 +243,59 @@ class NDB_BVL_Instrument_MASC2_Parent extends NDB_BVL_Instrument
             unset($group);
         }
     }
+
+    function getReactReview()
+    {
+        $DB = Database::singleton();
+
+        // reset page to top page for loading JSON
+        $this->page = '';
+        $this->form->form = array();
+        $this->_setupForm();
+
+        $inst = json_decode($this->toDirectJSON());
+
+        $temp = $this->getFlatInstrumentJSON($inst);
+
+        $smarty   = new Smarty_neurodb();
+        $tpl_data = array();
+
+        $tpl_data['questions'] = $this->getFlatInstrumentJSON($inst);
+
+        $Responses = $DB->pselectRow(
+            "SELECT * FROM " . $this->testName . " WHERE CommentID=:CID",
+            array('CID' => $this->getCommentID())
+        );
+
+        foreach ($tpl_data['questions'] as &$row) {
+            if (isset($Responses[$row['SourceField']])) {
+                switch ($Responses[$row['SourceField']]) {
+                    case 0:
+                        $correct_response = "0 - Never true";
+                        $row['response'] = $correct_response;
+                        break;
+                    case 1:
+                        $correct_response = "1 - Rarely true";
+                        $row['response'] = $correct_response;
+                        break;
+                    case 2:
+                        $correct_response = "2 - Sometimes true";
+                        $row['response'] = $correct_response;
+                        break;
+                    case 3:
+                        $correct_response = "3 - Often true";
+                        $row['response'] = $correct_response;
+                        break;
+                    default:
+                        $correct_response = $Responses[$row['SourceField']];
+                        $row['response'] = $correct_response;
+                        break;
+                }
+            }
+        }
+
+        return json_encode($tpl_data);
+    }
+
 
 }

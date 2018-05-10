@@ -129,7 +129,7 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
         $this->addSelect("adults_gender", "ADULT'S GENDER", $gender_options);
 
         //Adult's Age
-        $this->addNumericElement("adult_age", "ADULT'S AGE");
+        $this->addBasicText("adult_age", "ADULT'S AGE");
 
         //Ethnic Group or Race
         $this->addBasicText("ethnic_group_or_race", "ETHNIC GROUP OR RACE");
@@ -163,8 +163,6 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
             "Required."
         );
 
-        $this->form->addElement("static", null, "<br/>");
-
         $this->addLabel("ADULT'S USUAL TYPE OF WORK, even if not working now. Please be specific- for example, auto mechanic; high school teacher; homemaker; laborer; lathe operator; shoe salesman; army sergeant; student (indicate what he/she is studying & what degree is expected).");
 
         $this->addBasicText("work_adult", "Adult's work");
@@ -191,7 +189,7 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
 
         $this->form->addElement("static", null, "<br/>");
 
-        $this->addLabel("Please fill out this form to reflect <i>your</i> views, even if other people might not agree. You need not spend a lot of time on any item. Feel free to print additional comments (optional). <i>Be sure to answer all items</i>");
+        $this->addLabel("Please fill out this form to reflect <i>your</i> views, even if other people might not agree. You need not spend a lot of time on any item. Feel free to give additional comments (optional). <i>Be sure to answer all items</i>");
 
         //I. FRIENDS
         $this->addHeader("I. FRIENDS");
@@ -206,7 +204,7 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
 
         $friends_options_2 = array(
                               null          => "",
-                              "less_than_1" => "Less than 1",
+                              "0"           => "Less than 1",
                               "1"           => "1 or 2",
                               "2"           => "3 or 4",
                               "3"           => "5 or more",
@@ -269,13 +267,13 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
 
         //if yes, answer following questions
         //if no, skip following questions
-        $this->addSelect("live_with_partner", "At any time in the past 6 months, did he/she live with a spouse or partner? (if 'No' skip to page 2; if 'Yes' choose 0, 1, or 2 beside items A-H)", $yes_no_opts);
+        $this->addSelect("live_with_partner", "At any time in the past 6 months, did he/she live with a spouse or partner? (if 'No' Click 'Next' button; if 'Yes' choose 0, 1, or 2 beside items A-H)", $yes_no_opts);
 
         $options = array(
                     null => "",
-                    "2"  => "2 Very True or Often True",
-                    "1"  => "1 Somewhat or Sometimes True",
-                    "0"  => "0 Not True (as far as you know)",
+                    "2"  => "2-Very True or Often True",
+                    "1"  => "1-Somewhat or Sometimes True",
+                    "0"  => "0-Not True (as far as you know)",
                    );
 
         $this->addSelect("a_gets_along_well_with_partner", "A. Gets along well with spouse or partner", $options);
@@ -342,7 +340,7 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
             "Required."
         );
 
-        $this->addTextAreaElement("II_spouse_partner_comments", "Additional Comments (optional):");
+        $this->addBasicTextArea("II_spouse_partner_comments", "Additional Comments (optional):");
 
         $this->XINRegisterRule(
             "II_spouse_partner_comments",
@@ -395,10 +393,7 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
         );
         //V. Please describe the best things about him/her:
         $this->addBasicText("describe_best_things_about_them", "<h4>V. Please describe the best things about him/her:</h4>");
-
-        $this->form->addElement("static", null, "<br/>");
-
-        $this->form->addElement("static", null, "<br/>");
+        
 
         $this->addBasicText("III_IV_V_comments", "Additional Comments (optional):");
 
@@ -417,19 +412,15 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
     {
         $this->addHeader("ABCL (Adult Behavior Checklist For Ages 18-59)");
 
-        $this->addLabel("<h4>VI. Below is a list of items that describe people. As you read each item, please decide whether it has been true of the adult <i>over the past 6 months</i>. Then choose <i>0, 1,</i> or <i>2</i> to describe the adult. Please answer all items as well as you can, even if some do not seem to apply to the adult.</h4>");
-
-        $this->form->addElement("static", null, "<br/>");
+        $this->addLabel("<h3>VI. Below is a list of items that describe people. As you read each item, please decide whether it has been true of the adult <i>over the past 6 months</i>. Then choose <i>0, 1,</i> or <i>2</i> to describe the adult. Please answer all items as well as you can, even if some do not seem to apply to the adult.</h3>");
 
         $this->addLabel("<h4>0 = Not True (as far as you know) &nbsp; 1 = Somewhat or Sometimes True &nbsp; 2 = Very True or Often True</h4>");
 
-        $this->form->addElement("static", null, "<br/>");
-
         $options = array(
                     null => "",
-                    "2"  => "2 Very True or Often True",
-                    "1"  => "1 Somewhat or Sometimes True",
-                    "0"  => "0 Not True (as far as you know)",
+                    "2"  => "2-Very True or Often True",
+                    "1"  => "1-Somewhat or Sometimes True",
+                    "0"  => "0-Not True (as far as you know)",
                    );
 
         $this->addSelect("1_is_too_forgetful", "1. Is too forgetful", $options);
@@ -442,17 +433,26 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
 
         $this->addSelect("5_blames_others_for_own_problems", "5. Blames others for own problems", $options);
 
-        $this->addSelect("6_uses_drugs_for_nonmedical_purposes", "6. Uses drugs (other than alcohol or nicotine) for nonmedical purposes (describe)", $options);
+        $this->addSelect("6_uses_drugs_for_nonmedical_purposes", "6.(i) Uses drugs (other than alcohol or nicotine) for nonmedical purposes", $options);
 
-        $this->addBasicText("6_continued", "$this->indent Description:");
+        $this->addBasicText("6_continued","6.(ii) Description: <i>(Required if selected 'True' for the above)</i>");
+        $this->XINRegisterRule(
+            "6_continued",
+            array("6_uses_drugs_for_nonmedical_purposes{@}=={@}1|2"),
+            "Required if selected True for the above");
+
 
         $this->addSelect("7_bragging_boasting", "7. Bragging, boasting", $options);
 
         $this->addSelect("8_cant_concentrate_or_pay_attention", "8. Can't concentrate, can't pay attention for long", $options);
 
-        $this->addSelect("9_cant_get_mind_off_certain_thoughts", "9. Can't get mind off certain thoughts; obsessions (describe)", $options);
+        $this->addSelect("9_cant_get_mind_off_certain_thoughts", "9.(i) Can't get mind off certain thoughts; obsessions", $options);
 
-        $this->addBasicText("9_continued", "$this->indent Description:");
+        $this->addBasicText("9_continued", "9.(ii) Description: <i>(Required if selected 'True' for the above)</i>");
+        $this->XINRegisterRule(
+            "9_continued",
+            array("9_cant_get_mind_off_certain_thoughts{@}=={@}1|2"),
+            "Required if selected True for the above");
 
         $this->addSelect("10_cant_sit_still", "10. Can't sit still, restless, or hyperactive", $options);
 
@@ -492,9 +492,13 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
 
         $this->addSelect("28_gets_along_badly_with_family", "28. Gets along badly with family", $options);
 
-        $this->addSelect("29_fears_certain_animals_situations_places", "29. Fears certain animals, situations, or places (describe)", $options);
+        $this->addSelect("29_fears_certain_animals_situations_places", "29.(i) Fears certain animals, situations, or places", $options);
 
-        $this->addBasicText("29_continued", "$this->indent Description:");
+        $this->addBasicText("29_continued", "29.(ii) Description: <i>(Required if selected 'True' for the above)</i>");
+        $this->XINRegisterRule(
+            "29_continued",
+            array("29_fears_certain_animals_situations_places{@}=={@}1|2"),
+            "Required if selected True for the above");
 
         $this->addSelect("30_poor_relations_with_opposite_sex", "30. Poor relations with opposite sex", $options);
 
@@ -520,17 +524,14 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
     {
         $this->addHeader("ABCL (Adult Behavior Checklist For Ages 18-59)");
 
-        $this->form->addElement("static", null, "<br/>");
-
         $this->addLabel("<h4>0 = Not True (as far as you know) &nbsp; 1 = Somewhat or Sometimes True &nbsp; 2 = Very True or Often True</h4>");
 
-        $this->form->addElement("static", null, "<br/>");
 
         $options = array(
                     null => "",
-                    "2"  => "2 Very True or Often True",
-                    "1"  => "1 Somewhat or Sometimes True",
-                    "0"  => "0 Not True (as far as you know)",
+                    "2"  => "2-Very True or Often True",
+                    "1"  => "1-Somewhat or Sometimes True",
+                    "0"  => "0-Not True (as far as you know)",
                    );
 
         $this->addSelect("37_gets_in_many_fights", "37. Gets in many fights", $options);
@@ -539,9 +540,13 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
 
         $this->addSelect("39_hangs_around_people_who_get_in_trouble", "39. Hangs around people who get in trouble", $options);
 
-        $this->addSelect("40_hears_sounds_or_voices", "40. Hears sounds or voices that aren't there (describe)", $options);
+        $this->addSelect("40_hears_sounds_or_voices", "40.(i) Hears sounds or voices that aren't there", $options);
 
-        $this->addBasicText("40_continued", "$this->indent Description:");
+        $this->addBasicText("40_continued", "40.(ii) Description: <i>(Required if selected 'True' for the above)</i>");
+        $this->XINRegisterRule(
+            "40_continued",
+            array("40_hears_sounds_or_voices{@}=={@}1|2"),
+            "Required if selected True for the above");
 
         $this->addSelect("41_acts_without_thinking", "41. Impulsive or acts without thinking", $options);
 
@@ -553,9 +558,13 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
 
         $this->addSelect("45_nervous_highstrung_tense", "45. Nervous, highstrung, or tense", $options);
 
-        $this->addSelect("46_nervous_movements", "46. Nervous movements or twitching (describe)", $options);
+        $this->addSelect("46_nervous_movements", "46.(i) Nervous movements or twitching", $options);
 
-        $this->addBasicText("46_continued", "$this->indent Description:");
+        $this->addBasicText("46_continued", "46.(ii) Description: <i>(Required if selected 'True' for the above)</i>");
+        $this->XINRegisterRule(
+            "46_continued",
+            array("46_nervous_movements{@}=={@}1|2"),
+            "Required if selected True for the above");
 
         $this->addSelect("47_lacks_self_confidence", "47. Lacks self-confidence", $options);
 
@@ -575,7 +584,7 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
 
         $this->addSelect("55_moods_swing_between_elation_and_depression", "55. Moods swing between elation and depression", $options);
 
-        $this->addLabel("56. Physical problems <i>without known medical cause:</i>");
+        $this->addLabel("56.Physical problems <i>without known medical cause:</i>");
 
         $this->addSelect("a_aches_or_pains", "a. Aches or pains (<i>not</i> stomach or headaches)", $options);
 
@@ -583,10 +592,14 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
 
         $this->addSelect("c_nausea", "c. Nausea, feels sick", $options);
 
-        $this->addSelect("d_problems_witih_eyes", "d. Problems with eyes (<i>not</i> if corrected by glasses (describe))", $options);
+        $this->addSelect("d_problems_witih_eyes", "d.(i) Problems with eyes (<i>not</i> if corrected by glasses)", $options);
 
-        $this->addBasicText("d_continued", "$this->indent Description:");
+        $this->addBasicText("d_continued", "d.(ii) Description: <i>(Required if selected 'True' for Problems with eyes)</i>");
 
+        $this->XINRegisterRule(
+            "d_continued",
+            array("d_problems_witih_eyes{@}=={@}1|2"),
+            "Required if selected True for the above");
         $this->addSelect("e_skin_problems", "e. Rashes or other skin problems", $options);
 
         $this->addSelect("f_stomachaches", "f. Stomachaches", $options);
@@ -595,9 +608,13 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
 
         $this->addSelect("57_physically_attacks_people", "57. Physically attacks people", $options);
 
-        $this->addSelect("58_picks_skin_or_other_parts_of_body", "58. Picks skin or other parts of his/her body (describe)", $options);
+        $this->addSelect("58_picks_skin_or_other_parts_of_body", "58.(i) Picks skin or other parts of his/her body", $options);
 
-        $this->addBasicText("58_continued", "$this->indent Description:");
+        $this->addBasicText("58_continued", "58.(ii) Description: <i>(Required if selected 'True' for the above)</i>");
+        $this->XINRegisterRule(
+            "58_continued",
+            array("58_picks_skin_or_other_parts_of_body{@}=={@}1|2"),
+            "Required if selected True for the above");
 
         $this->addSelect("59_fails_to_finish_things_they_should_do", "59. Fails to finish things he/she should do", $options);
 
@@ -617,17 +634,14 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
     {
         $this->addHeader("ABCL (Adult Behavior Checklist For Ages 18-59)");
 
-        $this->form->addElement("static", null, "<br/>");
-
         $this->addLabel("<h4>0 = Not True (as far as you know) &nbsp; 1 = Somewhat or Sometimes True &nbsp; 2 = Very True or Often True</h4>");
 
-        $this->form->addElement("static", null, "<br/>");
 
         $options = array(
                     null => "",
-                    "2"  => "2 Very True or Often True",
-                    "1"  => "1 Somewhat or Sometimes True",
-                    "0"  => "0 Not True (as far as you know)",
+                    "2"  => "2-Very True or Often True",
+                    "1"  => "1-Somewhat or Sometimes True",
+                    "0"  => "0-Not True (as far as you know)",
                    );
 
         $this->addSelect("63_would_rather_be_with_older_people", "63. Would rather be with older people than with people of own age", $options);
@@ -636,9 +650,13 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
 
         $this->addSelect("65_refuses_to_talk", "65. Refuses to talk", $options);
 
-        $this->addSelect("66_repeats_certain_acts", "66. Repeats certain acts over and over; compulsions (describe)", $options);
+        $this->addSelect("66_repeats_certain_acts", "66.(i) Repeats certain acts over and over; compulsions (describe)", $options);
 
-        $this->addBasicText("66_continued", "$this->indent Description:");
+        $this->addBasicText("66_continued", "66.(ii) Description: <i>(Required if selected 'True' for the above)</i>");
+        $this->XINRegisterRule(
+            "66_continued",
+            array("66_repeats_certain_acts{@}=={@}1|2"),
+            "Required if selected True for the above");
 
         $this->addSelect("67_has_trouble_making_or_keeping_friends", "67. Has trouble making or keeping friends", $options);
 
@@ -646,9 +664,14 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
 
         $this->addSelect("69_keeps_things_to_self", "69. Secretive, keeps things to self", $options);
 
-        $this->addSelect("70_sees_things_that_are_not_there", "70. Sees things that aren't there (describe)", $options);
+        $this->addSelect("70_sees_things_that_are_not_there", "70.(i) Sees things that aren't there (describe)", $options);
 
-        $this->addBasicText("70_continued", "$this->indent Description:");
+        $this->addBasicText("70_continued", "70.(ii) Description: <i>(Required if selected 'True' for the above)</i>");
+        $this->XINRegisterRule(
+        "70_continued",
+        array("70_sees_things_that_are_not_there{@}=={@}1|2"),
+        "Required if selected True for the above");
+
 
         $this->addSelect("71_self_conscious_or_easily_embarrassed", "71. Self-conscious or easily embarrassed", $options);
 
@@ -662,16 +685,22 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
 
         $this->addSelect("76_irresponsible_behavior", "76. Irresponsible behavior", $options);
 
-        $this->addSelect("77_sleeps_more_than_most_others", "77. Sleeps more than most other people during day and/or night (describe)", $options);
+        $this->addSelect("77_sleeps_more_than_most_others", "77.(i) Sleeps more than most other people during day and/or night (describe)", $options);
 
-        $this->addBasicText("77_continued", "$this->indent Description:");
-
+        $this->addBasicText("77_continued", "77.(ii) Description: <i>(Required if selected 'True' for the above)</i>");
+        $this->XINRegisterRule(
+        "77_continued",
+        array("77_sleeps_more_than_most_others{@}=={@}1|2"),
+        "Required if selected True for the above");
         $this->addSelect("78_has_trouble_making_decisions", "78. Has trouble making decisions", $options);
 
-        $this->addSelect("79_speech_problem", "79. Speech problem (describe)", $options);
+        $this->addSelect("79_speech_problem", "79.(i) Speech problem (describe)", $options);
 
-        $this->addBasicText("79_continued", "$this->indent Description:");
-
+        $this->addBasicText("79_continued", "79.(ii) Description: <i>(Required if selected 'True' for the above)</i>");
+        $this->XINRegisterRule(
+        "79_continued",
+        array("79_speech_problem{@}=={@}1|2"),
+        "Required if selected True for the above");
         $this->addSelect("80_stares_blankly", "80. Stares blankly", $options);
 
         $this->addSelect("81_very_changeable_behaavior", "81. Very changeable behavior", $options);
@@ -680,14 +709,20 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
 
         $this->addSelect("83_easily_bored", "83. Is easily bored", $options);
 
-        $this->addSelect("84_strange_behavior", "84. Strange behavior (describe)", $options);
+        $this->addSelect("84_strange_behavior", "84.(i) Strange behavior (describe)", $options);
 
-        $this->addBasicText("84_continued", "$this->indent Description:");
+        $this->addBasicText("84_continued", "84.(ii) Description: <i>(Required if selected 'True' for the above)</i>");
+          $this->XINRegisterRule(
+         "84_continued",
+         array("84_strange_behavior{@}=={@}1|2"),
+         "Required if selected True for the above");
+        $this->addSelect("85_strange_ideas", "85.(i) Strange ideas (describe)", $options);
 
-        $this->addSelect("85_strange_ideas", "85. Strange ideas (describe)", $options);
-
-        $this->addBasicText("85_continued", "$this->indent Description:");
-
+        $this->addBasicText("85_continued", "85.(ii) Description: <i>(Required if selected 'True' for the above)</i>");
+        $this->XINRegisterRule(
+        "85_continued",
+        array("85_strange_ideas{@}=={@}1|2"),
+        "Required if selected True for the above");
         $this->addSelect("86_stubborn_sullen_irritable", "86. Stubborn, sullen, or irritable", $options);
 
         $this->addSelect("87_sudden_changes_in_mood_or_feelings", "87. Sudden changes in mood or feelings", $options);
@@ -700,10 +735,15 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
 
         $this->addSelect("91_talks_about_killing_self", "91. Talks about killing self", $options);
 
-        $this->addSelect("92_does_things_that_may_cause_trouble_with_law", "92. Does things that may cause trouble with the law (describe)", $options);
+        $this->addSelect("92_does_things_that_may_cause_trouble_with_law", "92(i). Does things that may cause trouble with the law (describe)", $options);
 
-        $this->addBasicText("92_continued", "$this->indent Description:");
+        $this->addBasicText("92_continued", "92.(ii)Description: <i>(Required if selected 'True' for the above)</i>");
+        $this->XINRegisterRule(
+            "92_continued",
+            array("92_does_things_that_may_cause_trouble_with_law{@}=={@}1|2"),
+            "Required if selected True for the above");
     }
+
 
     /**
     * Generates the sixth page of the form.
@@ -714,17 +754,13 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
     {
         $this->addHeader("ABCL (Adult Behavior Checklist For Ages 18-59)");
 
-        $this->form->addElement("static", null, "<br/>");
-
         $this->addLabel("<h4>0 = Not True (as far as you know) &nbsp; 1 = Somewhat or Sometimes True &nbsp; 2 = Very True or Often True</h4>");
-
-        $this->form->addElement("static", null, "<br/>");
 
         $options = array(
                     null => "",
-                    "2"  => "2 Very True or Often True",
-                    "1"  => "1 Somewhat or Sometimes True",
-                    "0"  => "0 Not True (as far as you know)",
+                    "2"  => "2-Very True or Often True",
+                    "1"  => "1-Somewhat or Sometimes True",
+                    "0"  => "0-Not True (as far as you know)",
                    );
 
         $this->addSelect("93_walks_too_much", "93. Talks too much", $options);
@@ -795,10 +831,6 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
 
         $this->addBasicText("126_how_many_days_use_drugs_for_nonmedical_purposes", "126. <i>In the past 6 months,</i> on how many days did he/she use drugs for nonmedical purposes (including marijuana, cocaine, and other drugs, except alcohol and nicotine)?");
 
-        $this->form->addElement("static", null, "<br/>");
-
-        $this->form->addElement("static", null, "<br/>");
-
         $this->addBasicText("VI_comments", "Additional Comments (optional):");
 
         $this->XINRegisterRule(
@@ -806,6 +838,122 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
             array("VI_comments{@}=={@}NEVER_REQUIRED"),
             "Not required."
         );
+    }
+    function getReactReview()
+    {
+        $DB = Database::singleton();
+        // reset page to top page for loading JSON
+        $this->page = '';
+        $this->form->form = array();
+        $this->_setupForm();
+        $inst = json_decode($this->toDirectJSON());
+        $temp = $this->getFlatInstrumentJSON($inst);
+        $smarty   = new Smarty_neurodb();
+        $tpl_data = array();
+        $tpl_data['questions'] = $this->getFlatInstrumentJSON($inst);
+        $Responses = $DB->pselectRow(
+            "SELECT * FROM " . $this->testName . " WHERE CommentID=:CID",
+            array('CID' => $this->getCommentID())
+        );
+        foreach ($tpl_data['questions'] as &$row) {
+            if (isset($Responses[$row['SourceField']])) {
+                switch ($Responses[$row['SourceField']]) {
+                    case "0":
+                        if($row['SourceField']=='b_contact_with_close_friends'||
+                            $row['SourceField']=='d_how_many_times_do_family_or_friends_visit')
+                        {
+                            $correct_response = "Less than 1";
+                        }
+                        else{
+
+                            $correct_response = "0-Not True (as far as you know)";
+                        }
+                        $row['response'] = $correct_response;
+                        break;
+                    case "1":
+                        if($row['SourceField']=='b_contact_with_close_friends'||
+                            $row['SourceField']=='d_how_many_times_do_family_or_friends_visit')
+                        {
+                            $correct_response = "1 or 2";
+                        }
+                        else if($row['SourceField']=='a_how_many_close_friends')
+                        {
+                            $correct_response = "1";
+                        }
+                        else if($row['SourceField']=='user_education')
+                        {
+                            $correct_response = "1. No high school diploma and no GED";
+                        }
+
+                        else
+                        {
+                            $correct_response = "1-Somewhat or Sometimes True";
+
+                        }
+                        $row['response'] = $correct_response;
+                        break;
+                    case "2":
+                        if($row['SourceField']=='b_contact_with_close_friends'||
+                            $row['SourceField']=='d_how_many_times_do_family_or_friends_visit')
+                        {
+                            $correct_response = "3 or 4";
+                        }
+                        else if($row['SourceField']=='user_education')
+                        {
+                            $correct_response = "2. General Equivalency Diploma (GED)";
+                        }
+                        else{
+                            $correct_response = "2-Very True or Often True";
+                        }
+                        $row['response'] = $correct_response;
+                        break;
+                    case "3":
+                        if($row['SourceField']=='b_contact_with_close_friends'||
+                            $row['SourceField']=='d_how_many_times_do_family_or_friends_visit')
+                        {
+                            $correct_response = "5 or more";
+                        }
+                        else if($row['SourceField']=='user_education')
+                        {
+                            $correct_response = "3. High school graduate";
+                        }
+                        $row['response'] = $correct_response;
+                        break;
+                    case "4":
+                        $correct_response = "4. Some college but no college degree";
+                        $row['response'] = $correct_response;
+                        break;
+                    case "5":
+                        $correct_response = "5. Associate’s Degree";
+                        $row['response'] = $correct_response;
+                        break;
+                    case "6":
+                        $correct_response = "6. Bachelor’s or RN Degree";
+                        $row['response'] = $correct_response;
+                        break;
+                    case "7":
+                        $correct_response = "7. Some graduate school but no graduate degree";
+                        $row['response'] = $correct_response;
+                        break;
+                    case "8":
+                        $correct_response = "8. Master’s Degree";
+                        $row['response'] = $correct_response;
+                        break;
+                    case "9":
+                        $correct_response = "9. Doctoral or Law degree";
+                        $row['response'] = $correct_response;
+                        break;
+                    default:
+                        $correct_response = $Responses[$row['SourceField']];
+                        $row['response'] = $correct_response;
+                        break;
+
+
+                }
+
+            }
+        }
+        return json_encode($tpl_data);
     }
 }
 ?>

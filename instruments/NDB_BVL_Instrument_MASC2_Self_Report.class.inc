@@ -111,7 +111,7 @@ class NDB_BVL_Instrument_MASC2_Self_Report extends NDB_BVL_Instrument
             "static",
             null,
             null,
-            "Never/Rarely/Sometimes/Often");
+            "0-Never True  1-Rarely True  2-Sometimes True  3-Often True");
         $this->form->addGroup(
             $group,
             "headers_" . $headerNum,
@@ -180,7 +180,7 @@ class NDB_BVL_Instrument_MASC2_Self_Report extends NDB_BVL_Instrument
         $this->displayHeaders(1);
         foreach ($questions as $qNum=>$qLabel) {
             $group[] =& $this->createLabel($qLabel);
-            $group[] =& $this->createSelect($qNum, "", $options);
+            $group[] =& $this->createSelect($qNum, $qLabel, $options);
             $this->form->addGroup(
                 $group,
                 "page1_questions_" . $qNum,
@@ -234,7 +234,7 @@ class NDB_BVL_Instrument_MASC2_Self_Report extends NDB_BVL_Instrument
 
         foreach ($questions as $qNum=>$qLabel) {
             $group[] =& $this->createLabel($qLabel);
-            $group[] =& $this->createSelect($qNum, "", $options);
+            $group[] =& $this->createSelect($qNum, $qLabel, $options);
             $this->form->addGroup(
                 $group,
                 "page2_questions_" . $qNum,
@@ -244,6 +244,58 @@ class NDB_BVL_Instrument_MASC2_Self_Report extends NDB_BVL_Instrument
             );
             unset($group);
         }
+    }
+    function getReactReview()
+    {
+        $DB = Database::singleton();
+
+        // reset page to top page for loading JSON
+        $this->page = '';
+        $this->form->form = array();
+        $this->_setupForm();
+
+        $inst = json_decode($this->toDirectJSON());
+
+        $temp = $this->getFlatInstrumentJSON($inst);
+
+        $smarty   = new Smarty_neurodb();
+        $tpl_data = array();
+
+        $tpl_data['questions'] = $this->getFlatInstrumentJSON($inst);
+
+        $Responses = $DB->pselectRow(
+            "SELECT * FROM " . $this->testName . " WHERE CommentID=:CID",
+            array('CID' => $this->getCommentID())
+        );
+
+        foreach ($tpl_data['questions'] as &$row) {
+            if (isset($Responses[$row['SourceField']])) {
+                switch ($Responses[$row['SourceField']]) {
+                    case 0:
+                        $correct_response = "0 - Never true";
+                        $row['response'] = $correct_response;
+                        break;
+                    case 1:
+                        $correct_response = "1 - Rarely true";
+                        $row['response'] = $correct_response;
+                        break;
+                    case 2:
+                        $correct_response = "2 - Sometimes true";
+                        $row['response'] = $correct_response;
+                        break;
+                    case 3:
+                        $correct_response = "3 - Often true";
+                        $row['response'] = $correct_response;
+                        break;
+                    default:
+                        $correct_response = $Responses[$row['SourceField']];
+                        $row['response'] = $correct_response;
+                        break;
+                }
+            }
+        }
+
+        return json_encode($tpl_data);
     }
 
 }
