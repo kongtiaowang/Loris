@@ -389,7 +389,6 @@ class ReviewPage extends React.Component {
 	render() {
 
 		let questions = this.props.reviewData.questions.map((element) => {
-			console.log(element);
 			return (
 				<tr className='reviewPage'>
 					<td><Markdown content={element.question} /></td>

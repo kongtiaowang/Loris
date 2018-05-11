@@ -2649,6 +2649,10 @@ class NDB_BVL_Instrument extends NDB_Page
             $values[$value->SourceField] = $value->response;
         }
 
+        // Reset page and form
+        $this->page = '';
+        $this->form->form = array();
+
         $this->_setupForm();
         $this->form->directValues = $this->getPageValues($this->form->form, $values);
         if (!$this->form->validate()) {
@@ -2657,6 +2661,7 @@ class NDB_BVL_Instrument extends NDB_Page
 
         $this->form->form = array();
         $this->form->errors = array();
+        $this->form->formRules = array();
         $this->XINRules = array();
 
         $subtests = $this->getSubtestList();
@@ -2671,6 +2676,7 @@ class NDB_BVL_Instrument extends NDB_Page
 
             $this->form->form = array();
             $this->form->errors = array();
+            $this->form->formRules = array();
             $this->XINRules = array();
         }
 
