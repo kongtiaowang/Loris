@@ -100,8 +100,8 @@ class video_upload extends \NDB_Form
             $instruments = array_merge($instruments, array('EARLI' => 'EARLI Questionaire'));
         }
 
-        $candidates = $db->pselect("SELECT PSCID FROM candidate WHERE PSCID REGEXP '$site_string' ORDER BY PSCID");
-        $candidates2 = $db->pselect("SELECT PSCID FROM candidate WHERE PSCID NOT REGEXP '$site_string' ORDER BY PSCID");
+        $candidates = $db->pselect("SELECT PSCID FROM candidate WHERE PSCID REGEXP '$site_string' ORDER BY PSCID",array());
+        $candidates2 = $db->pselect("SELECT PSCID FROM candidate WHERE PSCID NOT REGEXP '$site_string' ORDER BY PSCID",array());
         if ($user->hasPermission('access_all_profiles')) {
             $candidates = hash_it($candidates + $candidates2, "PSCID");
         }
