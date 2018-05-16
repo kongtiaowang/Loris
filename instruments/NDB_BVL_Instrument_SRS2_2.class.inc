@@ -116,8 +116,8 @@ class NDB_BVL_Instrument_SRS2_2 extends NDB_BVL_Instrument
             $this->addSelect($field, $label, $this->rating);
            // $this->XINRegisterRule($field,array("$field{@}=={@}NEVER_REQUIRED"));
         }
-        $this->form->addElement('static','lorisSubHeader1',"SRS-2 copyright © 2012 by Western Psychological Services. Reprint authorized by the<BR>author, J. Constantino, under WPS agreement for the sole use in registered scholarly study. Not to be reprinted in<BR> whole or in part, for any additional purpose, without the prior written authorization of WPS. All rights reserved<BR>
-(rights@wpspublish.com)");
+        $this->form->addElement('static','lorisSubHeader1',"<h4>SRS-2 copyright © 2012 by Western Psychological Services. Reprint authorized by the author, J. Constantino, under WPS agreement for the sole use in registered scholarly study. Not to be reprinted in whole or in part, for any additional purpose, without the prior written authorization of WPS. All rights reserved.<BR>
+(rights@wpspublish.com)</h4>");
         $this->form->addFormRule(array(&$this, 'SRS2_Rules'));
 
     }
@@ -148,8 +148,8 @@ class NDB_BVL_Instrument_SRS2_2 extends NDB_BVL_Instrument
             //$this->XINRegisterRule($field,array("$field{@}=={@}NEVER_REQUIRED"));
 
         }
-        $this->form->addElement('static','lorisSubHeader',"SRS-2 copyright © 2012 by Western Psychological Services. Reprint authorized by the<BR>author, J. Constantino, under WPS agreement for the sole use in registered scholarly study. Not to be reprinted in<BR> whole or in part, for any additional purpose, without the prior written authorization of WPS. All rights reserved<BR>
-(rights@wpspublish.com)");
+        $this->form->addElement('static','lorisSubHeader',"<h4>SRS-2 copyright © 2012 by Western Psychological Services. Reprint authorized by the author, J. Constantino, under WPS agreement for the sole use in registered scholarly study. Not to be reprinted in whole or in part, for any additional purpose, without the prior written authorization of WPS. All rights reserved.<BR>
+(rights@wpspublish.com)</h4>");
     }
 
     function _page3(){
@@ -180,8 +180,8 @@ class NDB_BVL_Instrument_SRS2_2 extends NDB_BVL_Instrument
             $this->addSelect($field, $label, $this->rating);
             //$this->XINRegisterRule($field,array("$field{@}=={@}NEVER_REQUIRED"));
         }
-        $this->form->addElement('static','lorisSubHeader',"SRS-2 copyright © 2012 by Western Psychological Services. Reprint authorized by the<BR>author, J. Constantino, under WPS agreement for the sole use in registered scholarly study. Not to be reprinted in<BR> whole or in part, for any additional purpose, without the prior written authorization of WPS. All rights reserved<BR>
-(rights@wpspublish.com)");
+        $this->form->addElement('static','lorisSubHeader',"<h4>SRS-2 copyright © 2012 by Western Psychological Services. Reprint authorized by the author, J. Constantino, under WPS agreement for the sole use in registered scholarly study. Not to be reprinted in  whole or in part, for any additional purpose, without the prior written authorization of WPS. All rights reserved.<BR>
+(rights@wpspublish.com)</h4>");
     }
 
     function _page4(){
@@ -209,8 +209,8 @@ class NDB_BVL_Instrument_SRS2_2 extends NDB_BVL_Instrument
             $this->addSelect($field, $label, $this->rating);
             //$this->XINRegisterRule($field,array("$field{@}=={@}NEVER_REQUIRED"));
         }
-        $this->form->addElement('static','lorisSubHeader',"SRS-2 copyright © 2012 by Western Psychological Services. Reprint authorized by the<BR>author, J. Constantino, under WPS agreement for the sole use in registered scholarly study. Not to be reprinted in<BR> whole or in part, for any additional purpose, without the prior written authorization of WPS. All rights reserved<BR>
-(rights@wpspublish.com)");
+        $this->form->addElement('static','lorisSubHeader',"<h4>SRS-2 copyright © 2012 by Western Psychological Services. Reprint authorized by the author, J. Constantino, under WPS agreement for the sole use in registered scholarly study. Not to be reprinted in whole or in part, for any additional purpose, without the prior written authorization of WPS. All rights reserved.<BR>
+(rights@wpspublish.com)</h4>");
 
     }
     function _page5(){
@@ -260,7 +260,7 @@ class NDB_BVL_Instrument_SRS2_2 extends NDB_BVL_Instrument
             $this->addSelect($field, $label, $this->rating);
      //       $this->XINRegisterRule($field,array("$field{@}=={@}NEVER_REQUIRED"));
         }
-        $this->form->addElement('static','lorisSubHeader1',"SRS-2 copyright © 2012 by Western Psychological Services. Reprint authorized by the<BR>author, J. Constantino, under WPS agreement for the sole use in registered scholarly study. Not to be reprinted in<BR> whole or in part, for any additional purpose, without the prior written authorization of WPS. All rights reserved<BR>(rights@wpspublish.com)");
+        $this->form->addElement('static','lorisSubHeader1',"<h4>SRS-2 copyright © 2012 by Western Psychological Services. Reprint authorized by the author, J. Constantino, under WPS agreement for the sole use in registered scholarly study. Not to be reprinted in whole or in part, for any additional purpose, without the prior written authorization of WPS. All rights reserved.<BR>(rights@wpspublish.com)</h4>");
         $this->form->addFormRule(array(&$this, 'SRS2_Rules'));
  
     }
@@ -291,7 +291,7 @@ class NDB_BVL_Instrument_SRS2_2 extends NDB_BVL_Instrument
    //         $this->XINRegisterRule($field,array("$field{@}=={@}NEVER_REQUIRED"));
 
         }
-        $this->form->addElement('static','lorisSubHeader',"SRS-2 copyright © 2012 by Western Psychological Services. Reprint authorized by the<BR>author, J. Constantino, under WPS agreement for the sole use in registered scholarly study. Not to be reprinted in<BR> whole or in part, for any additional purpose, without the prior written authorization of WPS. All rights reserved<BR>(rights@wpspublish.com)");
+        $this->form->addElement('static','lorisSubHeader',"<h4>SRS-2 copyright © 2012 by Western Psychological Services. Reprint authorized by the author, J. Constantino, under WPS agreement for the sole use in registered scholarly study. Not to be reprinted in whole or in part, for any additional purpose, without the prior written authorization of WPS. All rights reserved.<BR>(rights@wpspublish.com)</h4>");
     }
 
     function _page7(){
@@ -322,8 +322,8 @@ class NDB_BVL_Instrument_SRS2_2 extends NDB_BVL_Instrument
             $this->addSelect($field, $label, $this->rating);
   //          $this->XINRegisterRule($field,array("$field{@}=={@}NEVER_REQUIRED"));
         }
-        $this->form->addElement('static','lorisSubHeader',"SRS-2 copyright © 2012 by Western Psychological Services. Reprint authorized by the<BR>author, J. Constantino, under WPS agreement for the sole use in registered scholarly study. Not to be reprinted in<BR> whole or in part, for any additional purpose, without the prior written authorization of WPS. All rights reserved<BR>
-(rights@wpspublish.com)");
+        $this->form->addElement('static','lorisSubHeader',"<h4>SRS-2 copyright © 2012 by Western Psychological Services. Reprint authorized by the author, J. Constantino, under WPS agreement for the sole use in registered scholarly study. Not to be reprinted in whole or in part, for any additional purpose, without the prior written authorization of WPS. All rights reserved.<BR>
+(rights@wpspublish.com)</h4>");
     }
 
     function _page8(){
@@ -350,8 +350,8 @@ class NDB_BVL_Instrument_SRS2_2 extends NDB_BVL_Instrument
             $this->addSelect($field, $label, $this->rating);
 //            $this->XINRegisterRule($field,array("$field{@}=={@}NEVER_REQUIRED"));
         }
-        $this->form->addElement('static','lorisSubHeader',"SRS-2 copyright © 2012 by Western Psychological Services. Reprint authorized by the<BR>author, J. Constantino, under WPS agreement for the sole use in registered scholarly study. Not to be reprinted in<BR> whole or in part, for any additional purpose, without the prior written authorization of WPS. All rights reserved<BR>
-(rights@wpspublish.com)");
+        $this->form->addElement('static','lorisSubHeader',"<h4>SRS-2 copyright © 2012 by Western Psychological Services. Reprint authorized by the author, J. Constantino, under WPS agreement for the sole use in registered scholarly study. Not to be reprinted in whole or in part, for any additional purpose, without the prior written authorization of WPS. All rights reserved.<BR>
+(rights@wpspublish.com)</h4>");
 
     }
     function SRS2_Rules($values) {
