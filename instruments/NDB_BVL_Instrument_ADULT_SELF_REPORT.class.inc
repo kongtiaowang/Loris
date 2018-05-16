@@ -341,7 +341,7 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT extends NDB_BVL_Instrument
                       "no_children" => "I have no children"
                       );
         
-        $this->addSelect("Family_E", "E. Get along with your biological <br> or adpoted children? ", $opts_temp);
+        $this->addSelect("Family_E", "E. Get along with your biological <br> or adopted children? ", $opts_temp);
 
         $this->XINRegisterRule(
               "Family_E",
@@ -705,7 +705,7 @@ function _page5(){
                 "f. Stomachaches",
                 "g. Vomiting, throwing up",
                 "h. Heart pounding or racing",
-                "i Numbness or tingling in body parts"
+                "i. Numbness or tingling in body parts"
               ];
 
                $opts = array(null=> "", 
@@ -738,17 +738,17 @@ function _page5(){
                 "There is very little I enjoy",
                 "My work performance is poor",
                 "I am poorly coordinated or clumsy",
-                "I would rather be with older poeple than with people of my own age",
+                "I would rather be with older people than with people of my own age",
                 "I have trouble setting priorities",
                 "I refuse to talk",
                 "I repeat certain acts over and over (describe)",
                 "I have trouble making or keeping friends",
                 "I scream or yell a lot",
-                "I am secretitve or keep things to myself",
+                "I am secretive or keep things to myself",
                 "I see things that other people think aren't there (describe)",
                 "I am self-conscious or easily embarrassed",
                 "I worry about my family",
-                "I meet my responsibilites to my family",
+                "I meet my responsibilities to my family",
                 "I show off or clown"
               ];
                     for ($i = 0; $i<count($questions); $i++){
@@ -840,7 +840,7 @@ function _page8(){
                 "I tend to lose things",
                 "I like to try new things",
                 "I wish I were of the opposite sex",
-                "I  keep from getting involved with others",
+                "I keep from getting involved with others",
                 "I worry a lot",
                 "I worry about my relations with the opposite sex",
                 "I fail to pay my debts or meet other financial responsibilities",
