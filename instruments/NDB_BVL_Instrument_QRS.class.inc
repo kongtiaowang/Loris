@@ -111,6 +111,10 @@ class NDB_BVL_Instrument_QRS extends NDB_BVL_Instrument
         $this->dateOptions = $dateOptions;
 
         $this->addBasicDate('Date_taken', 'Date of Administration', $dateOptions);
+    }
+
+    function _page1()
+    {
         $this->addHeader("<h3>INSTRUCTIONS</h3><br>
                          <h4>This questionnaire deals with your thoughts and opinions about 
                          you and your family. There are many blanks on the questionnaire. We would like
@@ -130,15 +134,6 @@ class NDB_BVL_Instrument_QRS extends NDB_BVL_Instrument
                               disagree. If, on the other hand, the family has dinner together sometimes,
                               but less than 50% of the time, you would <b>circle 3</b>, indicating
                               that you partly disagree.</h4>");
-    }
-
-    function _page1()
-    {
-        $this->addHeader("QRS<br>
-            <h5><b>1 = Strong agreement with the statement.</b><br>
-            <b>2 = Partial agreement with the statement.</b><br>
-            <b>3 = Partial disagreement with the statement.</b><br>
-            <b>4 = Strong disagreement with the statement.</b></h5>");
 
         $options = 
             array(
