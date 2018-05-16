@@ -14,6 +14,18 @@
 import Page from './DirectEntryForm';
 
 class DirectEntry extends React.Component {
+	static FindSelects (root) {
+		return [].concat(...root)
+            .filter(i=>i.Type == "select" || i.Type == "ElementGroup")
+            .reduce((memo, i) => {
+		        if (i.Type == "select") {
+                    memo[i.Name] = i.Options.Values;
+		        } else {
+		            Object.assign(memo, DirectEntry.FindSelects(i.Elements))
+		        }
+                return memo;
+            }, {});
+	}
 
 	constructor(props) {
 	    super(props);
@@ -178,7 +190,18 @@ class DirectEntry extends React.Component {
 		        } else {
 		        	InstrumentJSON = JSON.parse(result);
 		        }
-
+		        if (reviewPage != undefined) {
+		            const selects = DirectEntry.FindSelects(InstrumentJSON.Elements.map(i=>i.Elements));
+		            for (let i of reviewPage.questions) {
+		                const options = selects[i.SourceField];
+		                if (options != undefined) {
+		                    const value = options[i.response];
+		                    if (value != undefined) {
+		                        i.response = value;
+		                    }
+		                }
+		            }
+		        }
 		        that.setState({
 					page: page,
 					errors: {},

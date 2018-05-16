@@ -44,23 +44,23 @@ class ElementGroup extends React.Component {
 
 		switch(this.props.element.Elements.length) {
 			case 1:
-				labelClass = 'col-xs-12 col-sm-4';
+				labelClass = 'col-xs-12 col-sm-4 field_question';
 				elementClass = 'col-xs-12 col-sm-8';
 				break;
 			case 2:
-				labelClass = 'col-xs-12 col-sm-4';
+				labelClass = 'col-xs-12 col-sm-4 field_question';
 				elementClass = 'col-xs-12 col-sm-4';
 				break;
 			case 3:
-				labelClass = 'col-xs-12 col-sm-3';
+				labelClass = 'col-xs-12 col-sm-3 field_question';
 				elementClass = 'col-xs-12 col-sm-3';
 				break;
 			case 4:
-				labelClass = 'col-xs-12 col-sm-4';
+				labelClass = 'col-xs-12 col-sm-4 field_question';
 				elementClass = 'col-xs-12 col-sm-2';
 				break;
 			case 5:
-				labelClass = 'col-xs-12 col-sm-2';
+				labelClass = 'col-xs-12 col-sm-2 field_question';
 				elementClass = 'col-xs-12 col-sm-2';
 				break;
 		}
@@ -90,9 +90,9 @@ class ElementGroup extends React.Component {
 		let description = '';
 		if (!!this.props.element.Description) {
 			description = (
-				<div className={labelClass}>
+				<h3 className={labelClass}>
 					<Markdown content={this.props.element.Description} />
-				</div>
+				</h3>
 			);
 		}
 
