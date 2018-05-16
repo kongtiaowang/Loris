@@ -272,7 +272,7 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT extends NDB_BVL_Instrument
               array("live_with_spouse{@}=={@}yes"),
               "Required"
           );
-          $this->addSelect("spouse_E", "E. my spouse or partner and I <i>disagree</i> about living arrangements, 
+          $this->addSelect("spouse_E", "E. My spouse or partner and I <i>disagree</i> about living arrangements, 
             such as where we live", $opts);
           $this->XINRegisterRule(
               "spouse_E",
