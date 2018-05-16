@@ -154,7 +154,7 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT extends NDB_BVL_Instrument
             "if_other_education",
             array("user_education{@}=={@}other"),
             "Required",
-            "if_other_group"
+            "if_other_education_group"
         );
     }
 
