@@ -9,7 +9,7 @@
  */
 
 //require_once("Site.class.inc");
-require_once("PEAR.php");
+//require_once("PEAR.php");
 
 // error codes
 define('CANDIDATE_INVALID', 1);

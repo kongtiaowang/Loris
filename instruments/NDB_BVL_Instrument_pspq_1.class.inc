@@ -126,7 +126,6 @@ class NDB_BVL_Instrument_pspq_1 extends NDB_BVL_Instrument
 
         foreach($questions as $field=>$label) {
             $this->addSelect($field, $label, $this->rating);
-            $this->XINRegisterRule($field,array("$field{@}=={@}NEVER_REQUIRED"));
         }
    
         $this->form->addFormRule(array(&$this, 'PSPQ_Rules'));
@@ -152,7 +151,6 @@ class NDB_BVL_Instrument_pspq_1 extends NDB_BVL_Instrument
 
         foreach($questions as $field=>$label) {
             $this->addSelect($field, $label, $this->rating);
-            $this->XINRegisterRule($field,array("$field{@}=={@}NEVER_REQUIRED"));
 
         }
         $this->form->addFormRule(array(&$this, 'PSPQ_Rules'));
@@ -178,7 +176,6 @@ class NDB_BVL_Instrument_pspq_1 extends NDB_BVL_Instrument
 
         foreach($questions as $field=>$label) {
             $this->addSelect($field, $label, $this->rating);
-            $this->XINRegisterRule($field,array("$field{@}=={@}NEVER_REQUIRED"));
         }
         $this->form->addFormRule(array(&$this, 'PSPQ_Rules'));
 
@@ -241,7 +238,6 @@ class NDB_BVL_Instrument_pspq_1 extends NDB_BVL_Instrument
 
         foreach($questions as $field=>$label) {
             $this->addSelect($field, $label, $this->rating);
-            $this->XINRegisterRule($field,array("$field{@}=={@}NEVER_REQUIRED"));
         }
    
         $this->form->addFormRule(array(&$this, 'PSPQ_Rules'));
@@ -268,7 +264,6 @@ class NDB_BVL_Instrument_pspq_1 extends NDB_BVL_Instrument
 
         foreach($questions as $field=>$label) {
             $this->addSelect($field, $label, $this->rating);
-            $this->XINRegisterRule($field,array("$field{@}=={@}NEVER_REQUIRED"));
         }
    
         $this->form->addFormRule(array(&$this, 'PSPQ_Rules'));
@@ -295,11 +290,9 @@ class NDB_BVL_Instrument_pspq_1 extends NDB_BVL_Instrument
 
         foreach($questions as $field=>$label) {
             $this->addSelect($field, $label, $this->rating);
-            $this->XINRegisterRule($field,array("$field{@}=={@}NEVER_REQUIRED"));
         }
        $this->addBasicTextArea("comments", "Do you have any other comments?");
        $this->XINRegisterRule('comments', array('comments_informant{@}=={@}NEVER_REQUIRED'));
-   
        $this->form->addFormRule(array(&$this, 'PSPQ_Rules'));
  
     }
