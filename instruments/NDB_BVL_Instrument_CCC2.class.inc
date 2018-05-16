@@ -97,7 +97,7 @@ class NDB_BVL_Instrument_CCC2 extends NDB_BVL_Instrument
     function _main()
     {
         // display test name
-        $this->addHeader("Children's Communication Checklist 2- Caregiver Respose Form");
+        $this->addHeader("Children's Communication Checklist 2- Caregiver Response Form");
         $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
         // Header
         $this->addHeader("Information About The Person Completing The Caregiver Response Form");
@@ -165,15 +165,15 @@ class NDB_BVL_Instrument_CCC2 extends NDB_BVL_Instrument
      */
     function _page1()
     {
-        $this->addLabel("<h1>Directions of Statements</h1>");
-        $this->form->addElement('static', 'lorisSubHeader', "<strong>Instructions:</strong>
-<br>The Children's Communication Checklist was developed to gain a better understanding
-<br>of children's communication strengths and difficulties in everyday settings.
-<br>Statements 1-50 refer to difficulties children may have that affect their ability to communicate.
-<br>Statements 51-71 refer to strengths the child may have when communicating with others.. 
-<br>Please use the rating key provided to indicate how often you have observed the behavior and write 
-<br>the number in the Rating column to the left of the statements<br>
-        RATING KEY<br>
+        $this->addLabel("<h1>Directions of Statements</h1>
+        <br><strong>Instructions:</strong>
+The Children's Communication Checklist was developed to gain a better understanding
+of children's communication strengths and difficulties in everyday settings.
+<ul><li>Statements 1-50 refer to difficulties children may have that affect their ability to communicate.</li>
+<li>Statements 51-71 refer to strengths the child may have when communicating with others. </li>
+</ul>Please use the rating key provided to indicate how often you have observed the behavior and write 
+the number in the Rating column to the left of the statements<br>
+        <strong>RATING KEY</strong><br>
        0 = less than once a week (or never)<br>
 1= at least once a week, but not everyday (or occasionally)<br>
 2 = once or twice a day (or frequently)<br>
