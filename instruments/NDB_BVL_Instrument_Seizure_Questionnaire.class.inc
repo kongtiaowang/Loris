@@ -305,6 +305,25 @@ class NDB_BVL_Instrument_Seizure_Questionnaire extends NDB_BVL_Instrument
                 $name . "_duration",
                 ""
             );
+	    $ruleValues = array(
+    	        'less_than_once_per_year',
+    		'more_than_once_a_year',
+    		'1_or_more_each_month',
+    		'1_or_more_each_week',
+    		'daily'
+	    );
+	    $this->XINRegisterRule(
+                $name . "_period",
+                array("{$name}_frequency{@}=={@}".implode('|', $ruleValues)),
+                "Required, unless NEVER OCCURRED is selected.",
+                $name . "_group"
+            );
+            $this->XINRegisterRule(
+                $name . "_last_over_30min",
+                array("{$name}_frequency{@}=={@}".implode('|', $ruleValues)),
+                "Required, unless NEVER OCCURRED is selected.",
+                $name . "_group"
+            );
             $this->XINRegisterRule(
                 $name . "_duration",
                 array("{$name}_last_over_30min{@}=={@}yes"),
