@@ -121,7 +121,18 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT extends NDB_BVL_Instrument
 
         $this->addTextElement("user_ethnic_group", "Your ethnic group or race: ");
 
-        $this->addDateElement("user_birthdate", "Your birthdate:");
+        $this->addDateElement(
+            "user_birthdate",
+            "Your birthdate:",
+            array(
+                'language'         => 'en',
+                'format'           => 'YMd',
+                'minYear'          => date('Y')-120,
+                'maxYear'          => date('Y'),
+                'addEmptyOption'   => true,
+                'emptyOptionValue' => null,
+            )
+        );
 
         $this->addLabel("Please fill out this form to reflect <i><b>your</b></i> views, even if other people might not agree. You need not spend a lot of time on any item. Feel free to print additional comments (optional). <b><i>Be sure to answer all items</i></b>");
 
