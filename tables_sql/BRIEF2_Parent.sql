@@ -13,7 +13,7 @@ CREATE TABLE `BRIEF2_Parent` (
 `Window_Difference` varchar(255) default NULL,
 `childs_name` varchar(255) default NULL,
 `birth_date` date default NULL,
-`childs_gender` varchar(255) default NULL,
+`childs_gender` enum('male','female') default NULL,
 `childs_age` varchar(255) default NULL,
 `childs_age_status` enum('not_answered') default NULL,
 `childs_grade` varchar(255) default NULL,

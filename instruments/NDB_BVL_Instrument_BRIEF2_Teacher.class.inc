@@ -22,6 +22,7 @@
  */
 class NDB_BVL_Instrument_BRIEF2_Teacher extends NDB_BVL_Instrument
 {
+    use instrument_validator;
     /**
     * Sets up basic data, such as the HTML_Quickform object, and so on.
     *
@@ -47,10 +48,7 @@ class NDB_BVL_Instrument_BRIEF2_Teacher extends NDB_BVL_Instrument
 
         //The array of dates/timestamps to convert to database dates/timestamps
         //Any HTML_Quickform date elements must be listed here
-        $this->dateTimeFields =array(
-                                "date_today",
-                                "birth_date",
-                               );
+        $this->dateTimeFields =array("birth_date");
 
         //The array of selects with multiple answers allowed
         //Any HTML_Quickform multiple selects must be listed here
@@ -109,13 +107,19 @@ class NDB_BVL_Instrument_BRIEF2_Teacher extends NDB_BVL_Instrument
     {
         $this->addHeader("BRIEF-2 Teacher Form");
 
-        $this->addBasicDate('birth_date', 'Child\'s Date of Birth');
+        $this->addBasicDate('birth_date', "Child's Date of Birth");
 
-        $this->addBasicText("student_gender", "Gender");
+        $gender_options = array(
+                           null     => "",
+                           "male"   => "Male",
+                           "female" => "Female",
+                          );
 
-        $this->addNumericElement("student_age", "Age");
+        $this->addSelect("student_gender", "Child's Sex", $gender_options);
 
-        $this->addNumericElement("student_grade", "Grade");
+        $this->addBasicText("student_age", "Child's Age <br><h5><i>(Please enter a numeric value between 0-100. If you don't wish to answer, enter NA)</i></h5>");
+
+        $this->addBasicText("student_grade", "Grade <br><h5><i>(Please enter a numeric value between 1-12 or K.)</i></h5>");
 
         $relationship_options = array(
                                  null        => "",
@@ -198,6 +202,8 @@ class NDB_BVL_Instrument_BRIEF2_Teacher extends NDB_BVL_Instrument
         foreach ($questions as $key => $question) {
             $this->addSelect($key, $question, $options);
         }
+
+        $this->form->addFormRule(array(&$this, 'validate_page1'));
     }
 
     /**
@@ -253,6 +259,23 @@ class NDB_BVL_Instrument_BRIEF2_Teacher extends NDB_BVL_Instrument
         foreach ($questions as $key => $question) {
             $this->addSelect($key, $question, $options);
         }
+    }
+
+    function validate_page1($values)
+    {
+
+        $errors = [];
+
+        // NA option because this is a Teacher form
+        $this->validate_age($values, "student_age", $errors);
+
+        $this->validate_grade($values, "student_grade", $errors);
+
+        if ($values["relationship_to_student"] != "other") {
+            $this->validate_empty_subquestions($values, ["if_other_relationship"], $errors);
+        }
+
+        return $errors;
     }
 }
 ?>

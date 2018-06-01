@@ -19,7 +19,7 @@ CREATE TABLE `CBCL_6_To_18` (
 `in_school` enum('not_attending_school') default NULL,
 `parent1_type_of_work` varchar(255) default NULL,
 `parent2_type_of_work` varchar(255) default NULL,
-`parent_gender` enum('male','female') default NULL,
+`parent_gender` enum('male','female','other') default NULL,
 `relation_to_child` enum('biological_parent','adoptive_parent','step_parent','foster_parent','grandparent','other') default NULL,
 `if_other_relation` varchar(255) default NULL,
 `list_sports` enum('none') default NULL,

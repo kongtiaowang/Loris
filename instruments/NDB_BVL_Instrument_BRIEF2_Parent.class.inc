@@ -22,6 +22,7 @@
  */
 class NDB_BVL_Instrument_BRIEF2_Parent extends NDB_BVL_Instrument
 {
+    use instrument_validator;
     /**
     * Sets up basic data, such as the HTML_Quickform object, and so on.
     *
@@ -48,8 +49,8 @@ class NDB_BVL_Instrument_BRIEF2_Parent extends NDB_BVL_Instrument
         //The array of dates/timestamps to convert to database dates/timestamps
         //Any HTML_Quickform date elements must be listed here
         $this->dateTimeFields =array(
+                                "Date_taken",
                                 "birth_date",
-                                "date_today",
                                );
 
         //The array of selects with multiple answers allowed
@@ -109,13 +110,19 @@ class NDB_BVL_Instrument_BRIEF2_Parent extends NDB_BVL_Instrument
     {
         $this->addHeader("BRIEF-2 Parent Form");
 
-        $this->addBasicDate('birth_date', 'Child\'s Date of Birth');
+        $this->addBasicDate('birth_date', "Child's Date of Birth");
 
-        $this->addBasicText("childs_gender", "Gender");
+        $gender_options = array(
+                           null     => "",
+                           "male"   => "Male",
+                           "female" => "Female",
+                          );
 
-        $this->addNumericElement("childs_age", "Age");
+        $this->addSelect("childs_gender", "Child's Sex", $gender_options);
 
-        $this->addNumericElement("childs_grade", "Grade");
+        $this->addBasicText("childs_age", "Child's Age <br><h5><i>(Please enter a numeric value between 0-100.)</i></h5>");
+
+        $this->addBasicText("childs_grade", "Grade <br><h5><i>(Please enter a numeric value between 1-12 or K.)</i></h5>");
 
         $this->addBasicText("relationship_to_child", "Relationship to child");
 
@@ -164,6 +171,8 @@ class NDB_BVL_Instrument_BRIEF2_Parent extends NDB_BVL_Instrument
         foreach ($questions as $key => $question) {
             $this->addSelect($key, $question, $options);
         }
+
+        $this->form->addFormRule(array(&$this, 'validate_page1'));
     }
 
     /**
@@ -219,6 +228,17 @@ class NDB_BVL_Instrument_BRIEF2_Parent extends NDB_BVL_Instrument
         foreach ($questions as $key => $question) {
             $this->addSelect($key, $question, $options);
         }
+    }
+
+    function validate_page1($values)
+    {
+        $errors = [];
+
+        $this->validate_child_age($values, "childs_age", $errors);
+
+        $this->validate_grade($values, "childs_grade", $errors);
+
+        return $errors;
     }
 }
 ?>

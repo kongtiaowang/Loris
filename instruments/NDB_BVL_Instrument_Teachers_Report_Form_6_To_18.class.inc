@@ -22,6 +22,7 @@
  */
 class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
 {
+    use instrument_validator;
     /**
     * Sets up basic data, such as the HTML_Quickform object, and so on.
     *
@@ -47,9 +48,7 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
 
         //The array of dates/timestamps to convert to database dates/timestamps
         //Any HTML_Quickform date elements must be listed here
-        $this->dateTimeFields =array(
-                                "pupil_birthdate",
-                               );
+        $this->dateTimeFields =array("pupil_birthdate");
 
         //The array of selects with multiple answers allowed
         //Any HTML_Quickform multiple selects must be listed here
@@ -120,13 +119,13 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
                                  "girl" => "Girl",
                                 );
 
-        $this->addSelect("pupil_gender", "PUPIL'S GENDER", $pupil_gender_options);
+        $this->addSelect("pupil_gender", "PUPIL'S SEX", $pupil_gender_options);
 
-        $this->addNumericElement("pupil_age", "PUPIL'S AGE");
+        $this->addBasicText("pupil_age", "PUPIL'S AGE <br><h5><i>(Please enter a numeric value between 0-100. If you don't wish to answer, enter NA)</i></h5>");
 
         $this->addBasicText("pupil_ethnic_group_race", "ETHNIC GROUP OR RACE");
 
-        $this->addBasicDate('pupil_birthdate', 'Pupil\'s Birthdate (if known)');
+        $this->addBasicDate('pupil_birthdate', "Pupil's Birthdate (if known)");
 
         $this->XINRegisterRule(
             "pupil_birthdate",
@@ -134,7 +133,7 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
             "Never required."
         );
 
-        $this->addNumericElement("grade_in_school", "GRADE IN SCHOOL");
+        $this->addBasicText("grade_in_school", "GRADE IN SCHOOL <br><h5><i>(Please enter a numeric value between 1-12 or K.)</i></h5>");
 
         $this->form->addElement("static", null, "<br/>");
 
@@ -157,14 +156,6 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
         );
 
         $this->form->addElement("static", null, "<br/>");
-
-        $teacher_gender_options = array(
-                                   null     => "",
-                                   "male"   => "Male",
-                                   "female" => "Female",
-                                  );
-
-        $this->addSelect("teacher_gender", "Your gender:", $teacher_gender_options);
 
         $role_options = array(
                          null                => "",
@@ -299,6 +290,8 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
             );
             unset($group);
         }
+
+        $this->form->addFormRule(array(&$this, 'validate_page1'));
     }
 
     /**
@@ -527,6 +520,8 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
             array("comments_on_work_behavior_potential{@}=={@}NEVER_REQUIRED"),
             "Never required."
         );
+
+        $this->form->addFormRule(array(&$this, 'validate_page2'));
     }
     /**
     * Generates the third page of the form.
@@ -638,6 +633,8 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
                 );
             }
         }
+
+        $this->form->addFormRule(array(&$this, 'validate_page3'));
     }
     /**
     * Generates the fourth page of the form.
@@ -795,6 +792,90 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
             );
             unset($group);
         }
+
+        $this->form->addFormRule(array(&$this, 'validate_page4'));
+    }
+
+    function validate_page1($values)
+    {
+        $errors = [];
+
+        // NA option because this is a Teacher form
+        $this->validate_age($values, "pupil_age", $errors);
+
+        $this->validate_grade($values, "grade_in_school", $errors);
+
+        if ($values["role_at_school"] != "other") {
+            $this->validate_empty_subquestions($values, ["if_other_role"], $errors);
+        }
+
+        if ($values["V_been_referred_for_special"] != "yes") {
+            $this->validate_empty_subquestions($values, ["V_is_yes"], $errors);
+        }
+
+        if ($values["VI_repeated_any_grades"] != "yes") {
+            $this->validate_empty_subquestions($values, ["VI_is_yes"], $errors);
+        }
+
+        return $errors;
+    }
+
+    function validate_page2($values)
+    {
+        $errors = [];
+
+        if ($values["pupil_illness_disability"] != "yes") {
+            $this->validate_empty_subquestions($values, ["pupil_illness_yes"], $errors);
+        }
+
+        return $errors;
+    }
+
+    function validate_page3($values)
+    {
+        $errors = [];
+
+        $questions = array(
+                      "q9_cant_get_mind_off_certain_thoughts" => "q9_describe",
+                      "q29_fears_animals_situations_places"   => "q29_describe",
+                      "q40_hears_sounds_voices_arent_there"   => "q40_describe",
+                      "q46_nervous_movements_twitching"       => "q46_describe",
+                      "q56d_eye_problems"                     => "q56d_describe",
+                      "q56h_other"                            => "q56h_describe",
+                     );
+
+        foreach ($questions as $key => $describe) {
+            if ($values[$key] == "0") {
+                $this->validate_empty_subquestions($values, [$describe], $errors);
+            }
+        }
+
+        return $errors;
+    }
+
+    function validate_page4($values)
+    {
+        $errors = [];
+
+        $questions = array(
+                      "q58_picks_nose_skin_other_parts_of_body" => "q58_describe",
+                      "q66_repeats_certain_acts_compulsions"    => "q66_describe",
+                      "q70_sees_things_that_arent_there"        => "q70_describe",
+                      "q73_behaves_irresponsibly"               => "q73_describe",
+                      "q79_speech_problem"                      => "q79_describe",
+                      "q83_stores_up_many_things_doesnt_need"   => "q83_describe",
+                      "q84_strange_behaviour"                   => "q84_describe",
+                      "q85_strange_ideas"                       => "q85_describe",
+                      "q105_uses_alcohol_drugs_nonmedical"      => "q105_describe",
+                     );
+
+        foreach ($questions as $key => $describe) {
+            if ($values[$key] == "0") {
+                $this->validate_empty_subquestions($values, [$describe], $errors);
+            }
+        }
+
+        return $errors;
     }
 }
 ?>

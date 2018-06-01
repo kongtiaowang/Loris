@@ -22,6 +22,7 @@
  */
 class NDB_BVL_Instrument_CBCL_6_To_18 extends NDB_BVL_Instrument
 {
+    use instrument_validator;
     /**
     * Sets up basic data, such as the HTML_Quickform object, and so on.
     *
@@ -113,13 +114,13 @@ class NDB_BVL_Instrument_CBCL_6_To_18 extends NDB_BVL_Instrument
                                  "girl" => "Girl",
                                 );
 
-        $this->addSelect("child_gender", "CHILD'S GENDER", $child_gender_options);
+        $this->addSelect("child_gender", "CHILD'S SEX", $child_gender_options);
 
-        $this->addNumericElement("child_age", "CHILD'S AGE");
+        $this->addBasicText("child_age", "CHILD'S AGE <br><h5><i>(Please enter a numeric value between 0-100.)</i></h5>");
 
         $this->addBasicText("child_ethnic_group_race", "CHILD'S ETHNIC GROUP OR RACE");
 
-        $this->addBasicDate('child_birthdate', 'Child\'s Birthdate (if known)');
+        $this->addBasicDate('child_birthdate', "Child's Birthdate (if known)");
 
         $this->XINRegisterRule(
             "child_birthdate",
@@ -127,26 +128,7 @@ class NDB_BVL_Instrument_CBCL_6_To_18 extends NDB_BVL_Instrument
             "Never required."
         );
 
-        $attending_school_option = array(
-                                    null                   => "",
-                                    "not_attending_school" => "NOT ATTENDING SCHOOL",
-                                   );
-
-        $this->addNumericElement("grade_in_school", "GRADE IN SCHOOL (if attending)");
-
-        $this->addSelect("in_school", " ", $attending_school_option);
-
-        $this->XINRegisterRule(
-            "in_school",
-            array("in_school{@}=={@}NEVER_REQUIRED"),
-            "Never required."
-        );
-
-        $this->XINRegisterRule(
-            "grade_in_school",
-            array("in_school{@}=={@}"),
-            "Required."
-        );
+        $this->addBasicText("grade_in_school", "GRADE IN SCHOOL (if attending) <br><h5><i>(If child is not attending school, enter NA)</i></h5>");
 
         $this->addLabel("Please fill out this form to reflect <i>your</i> view of the child's behavior even if other people might not agree. Feel free to add additional comments beside each item and in the space provided 2. <b><i>Be sure to answer all items.</i></b>");
 
@@ -172,9 +154,10 @@ class NDB_BVL_Instrument_CBCL_6_To_18 extends NDB_BVL_Instrument
                                   null     => "",
                                   "male"   => "Male",
                                   "female" => "Female",
+                                  "other"  => "Other",
                                  );
 
-        $this->addSelect("parent_gender", "Your gender:", $parent_gender_options);
+        $this->addSelect("parent_gender", "Your sex:", $parent_gender_options);
 
         $relation_options = array(
                              null                => "",
@@ -608,6 +591,8 @@ class NDB_BVL_Instrument_CBCL_6_To_18 extends NDB_BVL_Instrument
         }
 
         $this->addLabel("Be sure you answered all items.");
+
+        $this->form->addFormRule(array(&$this, 'validate_page1'));
     }
 
     /**
@@ -856,6 +841,8 @@ class NDB_BVL_Instrument_CBCL_6_To_18 extends NDB_BVL_Instrument
         $this->addTextAreaElement("best_things_about_child", "<h3>Please describe the best things about your child.</h3>");
 
         $this->addLabel("Be sure you answered all items.");
+
+        $this->form->addFormRule(array(&$this, 'validate_page2'));
     }
     /**
     * Generates the third page of the form.
@@ -965,6 +952,8 @@ class NDB_BVL_Instrument_CBCL_6_To_18 extends NDB_BVL_Instrument
                 );
             }
         }
+
+        $this->form->addFormRule(array(&$this, 'validate_page3'));
     }
     /**
     * Generates the fourth page of the form.
@@ -1119,6 +1108,124 @@ class NDB_BVL_Instrument_CBCL_6_To_18 extends NDB_BVL_Instrument
             );
             unset($group);
         }
+
+        $this->form->addFormRule(array(&$this, 'validate_page4'));
+    }
+
+    function validate_page1($values)
+    {
+        $errors = [];
+
+        $this->validate_child_age($values, "child_age", $errors);
+
+        $this->validate_grade_NA($values, "grade_in_school", $errors);
+
+        if ($values["relation_to_child"] != "other") {
+            $this->validate_empty_subquestions($values, ["if_other_relation"], $errors);
+        }
+
+        if ($values["list_sports"] == "none") {
+            $this->validate_empty_subquestions($values, ["sports_1", "sports_2", "sports_3", "sports_1_rating", "sports_2_rating", "sports_3_rating", "sports_1_rating1", "sports_2_rating1", "sports_3_rating1"], $errors);
+        }
+
+        if ($values["list_hobbies_activities_games"] == "none") {
+            $this->validate_empty_subquestions($values, ["hobbies_activities_games_1", "hobbies_activities_games_2", "hobbies_activities_games_3", "hobbies_activities_games_1_rating", "hobbies_activities_games_2_rating", "hobbies_activities_games_3_rating", "hobbies_activities_games_1_rating1", "hobbies_activities_games_2_rating1", "hobbies_activities_games_3_rating1"], $errors);
+        }
+
+        if ($values["list_organizations_clubs_teams"] == "none") {
+            $this->validate_empty_subquestions($values, ["organizations_clubs_teams_1", "organizations_clubs_teams_2", "organizations_clubs_teams_3", "organizations_clubs_teams_1_rating", "organizations_clubs_teams_2_rating", "organizations_clubs_teams_4_rating"], $errors);
+        }
+
+        if ($values["list_any_jobs_chores"] == "none") {
+            $this->validate_empty_subquestions($values, ["jobs_or_chores_1", "jobs_or_chores_2", "jobs_or_chores_3", "jobs_or_chores_1_rating", "jobs_or_chores_2_rating", "jobs_or_chores_3_rating"], $errors);
+        }
+
+        return $errors;
+    }
+
+    function validate_page2($values)
+    {
+        $errors = [];
+
+        if ($values["attend_school"] != "does_not_attend_school") {
+            $this->validate_empty_subquestions($values, ["does_not_attend_because"], $errors);
+        }
+
+        if ($values["attend_school"] == "does_not_attend_school") {
+            $this->validate_empty_subquestions($values, ["a_reading_english_language", "b_history_social_studies", "c_arithmetic_math", "d_science", "performance_in_subjects_1", "performance_in_subjects_2", "performance_in_subjects_3", "performance_in_subjects_1_rating", "performance_in_subjects_2_rating", "performance_in_subjects_3_rating"], $errors);
+        }
+
+        if ($values["q2_special_education_class_school"] != "yes") {
+            $this->validate_empty_subquestions($values, ["q2_yes"], $errors);
+        }
+
+        if ($values["q3_repeated_any_grades"] != "yes") {
+            $this->validate_empty_subquestions($values, ["q3_yes"], $errors);
+        }
+
+        if ($values["q4_problems_in_school"] != "yes") {
+            $this->validate_empty_subquestions($values, ["q4_yes", "when_did_problems_start", "have_problems_ended"], $errors);
+        }
+
+        if ($values["have_problems_ended"] != "yes") {
+            $this->validate_empty_subquestions($values, ["q4_ended_yes"], $errors);
+        }
+
+        if ($values["does_child_have_illness_disability"] != "yes") {
+            $this->validate_empty_subquestions($values, ["child_illness_disability_describe"], $errors);
+        }
+
+        return $errors;
+    }
+
+    function validate_page3($values)
+    {
+        $errors = [];
+
+        $questions = array(
+                      "q2_drinks_alcohol_without_approval"    => "q2_describe",
+                      "q9_cant_get_mind_off_certain_thoughts" => "q9_describe",
+                      "q29_fears_animals_situations_places"   => "q29_describe",
+                      "q40_hears_sounds_voices_arent_there"   => "q40_describe",
+                      "q46_nervous_movements_twitching"       => "q46_describe",
+                      "q56d_problems_with_eyes"               => "q56d_describe",
+                      "q56h_other"                            => "q56h_describe",
+                     );
+
+        foreach ($questions as $key => $describe) {
+            if ($values[$key] == "0") {
+                $this->validate_empty_subquestions($values, [$describe], $errors);
+            }
+        }
+
+        return $errors;
+    }
+
+    function validate_page4($values)
+    {
+        $errors = [];
+
+        $questions = array(
+                      "q58_picks_nose_skin_other_parts_of_body" => "q58_describe",
+                      "q66_repeats_certain_acts_compulsions"    => "q66_describe",
+                      "q70_sees_things_that_arent_there"        => "q70_describe",
+                      "q73_sexual_problems"                     => "q73_describe",
+                      "q79_speech_problem"                      => "q79_describe",
+                      "q83_stores_up_many_things_doesnt_need"   => "q83_describe",
+                      "q84_strange_behaviour"                   => "q84_describe",
+                      "q85_strange_ideas"                       => "q85_describe",
+                      "q92_talks_or_walks_in_sleep"             => "q92_describe",
+                      "q100_trouble_sleeping"                   => "q100_describe",
+                      "q105_uses_drugs_nonmedical_purposes"     => "q105_describe",
+                     );
+
+        foreach ($questions as $key => $describe) {
+            if ($values[$key] == "0") {
+                $this->validate_empty_subquestions($values, [$describe], $errors);
+            }
+        }
+
+        return $errors;
     }
 }
 ?>
