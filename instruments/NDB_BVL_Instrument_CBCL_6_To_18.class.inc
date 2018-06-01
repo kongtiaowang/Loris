@@ -341,7 +341,7 @@ class NDB_BVL_Instrument_CBCL_6_To_18 extends NDB_BVL_Instrument
             "static",
             null,
             null,
-            "<h4>ompared to others of the same age, how well does he/she do each one?</h4>"
+            "<h4>Compared to others of the same age, how well does he/she do each one?</h4>"
         );
         $this->addGroup(
             $group,

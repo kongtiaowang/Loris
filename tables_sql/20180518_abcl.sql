@@ -1,0 +1,1 @@
+ALTER TABLE ABCL CHANGE 51_feels_dixxy_or_lightheaded 51_feels_dizzy_or_lightheaded enum('2','1','0');

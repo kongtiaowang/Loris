@@ -158,7 +158,6 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
         $this->XINRegisterRule(
             "if_other_education",
             array("user_education{@}=={@}other"),
-            // "Required."
             "Required."
         );
 
@@ -202,11 +201,11 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
                              );
 
         $friends_options_2 = array(
-                              null          => "",
-                              "0"           => "Less than 1",
-                              "1"           => "1 or 2",
-                              "2"           => "3 or 4",
-                              "3"           => "5 or more",
+                              null => "",
+                              "0"  => "Less than 1",
+                              "1"  => "1 or 2",
+                              "2"  => "3 or 4",
+                              "3"  => "5 or more",
                              );
 
         $friends_options_3 = array(
@@ -266,8 +265,12 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
 
         //if yes, answer following questions
         //if no, skip following questions
-        $this->addSelect("live_with_partner", "At any time in the past 6 months, did he/she live with a spouse or partner? 
-        <br><h4><i>*(If 'No' selected, then subset of questions below (A-H) should be left blank OR if 'Yes', choose options beside items A-H)</i></h4>", $yes_no_opts);
+        $this->addSelect(
+            "live_with_partner",
+            "At any time in the past 6 months, did he/she live with a spouse or partner? 
+        <br><h4><i>*(If 'No' selected, then subset of questions below (A-H) should be left blank OR if 'Yes', choose options beside items A-H)</i></h4>",
+            $yes_no_opts
+        );
 
         $options = array(
                     null => "",
@@ -346,6 +349,7 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
             "II_spouse_partner_comments",
             array("II_spouse_partner_comments{@}=={@}NEVER_REQUIRED")
         );
+
         $this->form->addFormRule(array(&$this, 'abcl_special_rules'));
     }
 
@@ -392,9 +396,9 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
             array("user_concerns{@}=={@}yes"),
             "Required."
         );
+
         //V. Please describe the best things about him/her:
         $this->addBasicText("describe_best_things_about_them", "<h4>V. Please describe the best things about him/her:</h4>");
-        
 
         $this->addBasicText("III_IV_V_comments", "Additional Comments (optional):");
 
@@ -416,8 +420,6 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
 
         $this->addLabel("<h3>VI. Below is a list of items that describe people. As you read each item, please decide whether it has been true of the adult <i>over the past 6 months</i>. Then choose <i>0, 1,</i> or <i>2</i> to describe the adult. Please answer all items as well as you can, even if some do not seem to apply to the adult.</h3>");
 
-        $this->addLabel("<h4>0 = Not True (as far as you know) &nbsp; 1 = Somewhat or Sometimes True &nbsp; 2 = Very True or Often True</h4>");
-
         $options = array(
                     null => "",
                     "2"  => "2-Very True or Often True",
@@ -437,12 +439,13 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
 
         $this->addSelect("6_uses_drugs_for_nonmedical_purposes", "6.(i) Uses drugs (other than alcohol or nicotine) for nonmedical purposes", $options);
 
-        $this->addBasicText("6_continued","6.(ii) Description: <h5><i>(Required if selected 'True' for the above)</i></h5>");
+        $this->addBasicText("6_continued", "6.(ii) Description: <h5><i>(Required if selected 'True' for the above)</i></h5>");
+
         $this->XINRegisterRule(
             "6_continued",
             array("6_uses_drugs_for_nonmedical_purposes{@}=={@}1|2"),
-            "Required if selected True for the above");
-
+            "Required if selected True for the above"
+        );
 
         $this->addSelect("7_bragging_boasting", "7. Bragging, boasting", $options);
 
@@ -451,10 +454,12 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
         $this->addSelect("9_cant_get_mind_off_certain_thoughts", "9.(i) Can't get mind off certain thoughts; obsessions", $options);
 
         $this->addBasicText("9_continued", "9.(ii) Description: <h5><i>(Required if selected 'True' for the above)</i></h5>");
+
         $this->XINRegisterRule(
             "9_continued",
             array("9_cant_get_mind_off_certain_thoughts{@}=={@}1|2"),
-            "Required if selected True for the above");
+            "Required if selected True for the above"
+        );
 
         $this->addSelect("10_cant_sit_still", "10. Can't sit still, restless, or hyperactive", $options);
 
@@ -497,10 +502,12 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
         $this->addSelect("29_fears_certain_animals_situations_places", "29.(i) Fears certain animals, situations, or places", $options);
 
         $this->addBasicText("29_continued", "29.(ii) Description: <h5><i>(Required if selected 'True' for the above)</i></h5>");
+
         $this->XINRegisterRule(
             "29_continued",
             array("29_fears_certain_animals_situations_places{@}=={@}1|2"),
-            "Required if selected True for the above");
+            "Required if selected True for the above"
+        );
 
         $this->addSelect("30_poor_relations_with_opposite_sex", "30. Poor relations with opposite sex", $options);
 
@@ -515,6 +522,7 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
         $this->addSelect("35_feels_worthless_or_inferior", "35. Feels worthless or inferior", $options);
 
         $this->addSelect("36_gets_hurt_a_lot", "36. Gets hurt a lot, accident-prone", $options);
+
         $this->form->addFormRule(array(&$this, 'abcl_special_rules'));
     }
 
@@ -527,9 +535,6 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
     function _page4()
     {
         $this->addHeader("ABCL (Adult Behavior Checklist For Ages 18-59)");
-
-        $this->addLabel("<h4>0 = Not True (as far as you know) &nbsp; 1 = Somewhat or Sometimes True &nbsp; 2 = Very True or Often True</h4>");
-
 
         $options = array(
                     null => "",
@@ -547,10 +552,12 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
         $this->addSelect("40_hears_sounds_or_voices", "40.(i) Hears sounds or voices that aren't there", $options);
 
         $this->addBasicText("40_continued", "40.(ii) Description: <h5><i>(Required if selected 'True' for the above)</i></h5>");
+
         $this->XINRegisterRule(
             "40_continued",
             array("40_hears_sounds_or_voices{@}=={@}1|2"),
-            "Required if selected True for the above");
+            "Required if selected True for the above"
+        );
 
         $this->addSelect("41_acts_without_thinking", "41. Impulsive or acts without thinking", $options);
 
@@ -565,10 +572,12 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
         $this->addSelect("46_nervous_movements", "46.(i) Nervous movements or twitching", $options);
 
         $this->addBasicText("46_continued", "46.(ii) Description: <h5><i>(Required if selected 'True' for the above)</i></h5>");
+
         $this->XINRegisterRule(
             "46_continued",
             array("46_nervous_movements{@}=={@}1|2"),
-            "Required if selected True for the above");
+            "Required if selected True for the above"
+        );
 
         $this->addSelect("47_lacks_self_confidence", "47. Lacks self-confidence", $options);
 
@@ -578,7 +587,7 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
 
         $this->addSelect("50_too_fearful_or_anxious", "50. Too fearful or anxious", $options);
 
-        $this->addSelect("51_feels_dixxy_or_lightheaded", "51. Feels dizzy or lightheaded", $options);
+        $this->addSelect("51_feels_dizzy_or_lightheaded", "51. Feels dizzy or lightheaded", $options);
 
         $this->addSelect("52_feels_too_guilty", "52. Feels too guilty", $options);
 
@@ -603,7 +612,9 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
         $this->XINRegisterRule(
             "d_continued",
             array("d_problems_witih_eyes{@}=={@}1|2"),
-            "Required if selected True for the above");
+            "Required if selected True for the above"
+        );
+
         $this->addSelect("e_skin_problems", "e. Rashes or other skin problems", $options);
 
         $this->addSelect("f_stomachaches", "f. Stomachaches", $options);
@@ -615,10 +626,12 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
         $this->addSelect("58_picks_skin_or_other_parts_of_body", "58.(i) Picks skin or other parts of his/her body", $options);
 
         $this->addBasicText("58_continued", "58.(ii) Description: <h5><i>(Required if selected 'True' for the above)</i></h5>");
+
         $this->XINRegisterRule(
             "58_continued",
             array("58_picks_skin_or_other_parts_of_body{@}=={@}1|2"),
-            "Required if selected True for the above");
+            "Required if selected True for the above"
+        );
 
         $this->addSelect("59_fails_to_finish_things_they_should_do", "59. Fails to finish things he/she should do", $options);
 
@@ -627,6 +640,7 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
         $this->addSelect("61_poor_work_performance", "61. Poor work performance", $options);
 
         $this->addSelect("62_poorly_coordinated", "62. Poorly coordinated or clumsy", $options);
+
         $this->form->addFormRule(array(&$this, 'abcl_special_rules'));
     }
 
@@ -638,9 +652,6 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
     function _page5()
     {
         $this->addHeader("ABCL (Adult Behavior Checklist For Ages 18-59)");
-
-        $this->addLabel("<h4>0 = Not True (as far as you know) &nbsp; 1 = Somewhat or Sometimes True &nbsp; 2 = Very True or Often True</h4>");
-
 
         $options = array(
                     null => "",
@@ -658,10 +669,12 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
         $this->addSelect("66_repeats_certain_acts", "66.(i) Repeats certain acts over and over; compulsions", $options);
 
         $this->addBasicText("66_continued", "66.(ii) Description: <h5><i>(Required if selected 'True' for the above)</i></h5>");
+
         $this->XINRegisterRule(
             "66_continued",
             array("66_repeats_certain_acts{@}=={@}1|2"),
-            "Required if selected True for the above");
+            "Required if selected True for the above"
+        );
 
         $this->addSelect("67_has_trouble_making_or_keeping_friends", "67. Has trouble making or keeping friends", $options);
 
@@ -672,11 +685,12 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
         $this->addSelect("70_sees_things_that_are_not_there", "70.(i) Sees things that aren't there (describe)", $options);
 
         $this->addBasicText("70_continued", "70.(ii) Description: <h5><i>(Required if selected 'True' for the above)</i></h5>");
-        $this->XINRegisterRule(
-        "70_continued",
-        array("70_sees_things_that_are_not_there{@}=={@}1|2"),
-        "Required if selected True for the above");
 
+        $this->XINRegisterRule(
+            "70_continued",
+            array("70_sees_things_that_are_not_there{@}=={@}1|2"),
+            "Required if selected True for the above"
+        );
 
         $this->addSelect("71_self_conscious_or_easily_embarrassed", "71. Self-conscious or easily embarrassed", $options);
 
@@ -693,19 +707,25 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
         $this->addSelect("77_sleeps_more_than_most_others", "77.(i) Sleeps more than most other people during day and/or night (describe)", $options);
 
         $this->addBasicText("77_continued", "77.(ii) Description: <h5><i>(Required if selected 'True' for the above)</i></h5>");
+
         $this->XINRegisterRule(
-        "77_continued",
-        array("77_sleeps_more_than_most_others{@}=={@}1|2"),
-        "Required if selected True for the above");
+            "77_continued",
+            array("77_sleeps_more_than_most_others{@}=={@}1|2"),
+            "Required if selected True for the above"
+        );
+
         $this->addSelect("78_has_trouble_making_decisions", "78. Has trouble making decisions", $options);
 
         $this->addSelect("79_speech_problem", "79.(i) Speech problem (describe)", $options);
 
         $this->addBasicText("79_continued", "79.(ii) Description: <h5><i>(Required if selected 'True' for the above)</i></h5>");
+
         $this->XINRegisterRule(
-        "79_continued",
-        array("79_speech_problem{@}=={@}1|2"),
-        "Required if selected True for the above");
+            "79_continued",
+            array("79_speech_problem{@}=={@}1|2"),
+            "Required if selected True for the above"
+        );
+
         $this->addSelect("80_stares_blankly", "80. Stares blankly", $options);
 
         $this->addSelect("81_very_changeable_behaavior", "81. Very changeable behavior", $options);
@@ -717,17 +737,23 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
         $this->addSelect("84_strange_behavior", "84.(i) Strange behavior (describe)", $options);
 
         $this->addBasicText("84_continued", "84.(ii) Description: <h5><i>(Required if selected 'True' for the above)</i></h5>");
-          $this->XINRegisterRule(
-         "84_continued",
-         array("84_strange_behavior{@}=={@}1|2"),
-         "Required if selected True for the above");
+
+        $this->XINRegisterRule(
+            "84_continued",
+            array("84_strange_behavior{@}=={@}1|2"),
+            "Required if selected True for the above"
+        );
+
         $this->addSelect("85_strange_ideas", "85.(i) Strange ideas (describe)", $options);
 
         $this->addBasicText("85_continued", "85.(ii) Description: <h5><i>(Required if selected 'True' for the above)</i></h5>");
+
         $this->XINRegisterRule(
-        "85_continued",
-        array("85_strange_ideas{@}=={@}1|2"),
-        "Required if selected True for the above");
+            "85_continued",
+            array("85_strange_ideas{@}=={@}1|2"),
+            "Required if selected True for the above"
+        );
+
         $this->addSelect("86_stubborn_sullen_irritable", "86. Stubborn, sullen, or irritable", $options);
 
         $this->addSelect("87_sudden_changes_in_mood_or_feelings", "87. Sudden changes in mood or feelings", $options);
@@ -743,13 +769,15 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
         $this->addSelect("92_does_things_that_may_cause_trouble_with_law", "92(i). Does things that may cause trouble with the law (describe)", $options);
 
         $this->addBasicText("92_continued", "92.(ii)Description: <h5><i>(Required if selected 'True' for the above)</i></h5>");
+
         $this->XINRegisterRule(
             "92_continued",
             array("92_does_things_that_may_cause_trouble_with_law{@}=={@}1|2"),
-            "Required if selected True for the above");
+            "Required if selected True for the above"
+        );
+
         $this->form->addFormRule(array(&$this, 'abcl_special_rules'));
     }
-
 
     /**
     * Generates the sixth page of the form.
@@ -759,8 +787,6 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
     function _page6()
     {
         $this->addHeader("ABCL (Adult Behavior Checklist For Ages 18-59)");
-
-        $this->addLabel("<h4>0 = Not True (as far as you know) &nbsp; 1 = Somewhat or Sometimes True &nbsp; 2 = Very True or Often True</h4>");
 
         $options = array(
                     null => "",
@@ -846,10 +872,11 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
         );
     }
 
-    function abcl_special_rules($values) {
+    function abcl_special_rules($values)
+    {
         $errors = array();
         //any page1 value is set
-        if(isset($values['adult_age'])) {
+        if (isset($values['adult_age'])) {
             if (is_numeric($values['adult_age'])) {
                 if (intval($values['adult_age']) > 100 || intval($values['adult_age']) < 0) {
 
@@ -861,83 +888,104 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
                 }
             }
 
-            $blank_restricted_spouse_array = array('a_gets_along_well_with_partner',
-                'b_trouble_sharing_responsibilities',
-                'c_seems_satisfied_with_spouse_or_partner',
-                'd_enjoys_similar_activities_as_partner',
-                'e_disagrees_with_partner_about_living_arrangements',
-                'g_likes_friends_of_partner',
-                'f_has_trouble_with_family_of_partner',
-                'h_annoyed_by_behavior_of_spouse'
-            );
+            $blank_restricted_spouse_array = array(
+                                              'a_gets_along_well_with_partner',
+                                              'b_trouble_sharing_responsibilities',
+                                              'c_seems_satisfied_with_spouse_or_partner',
+                                              'd_enjoys_similar_activities_as_partner',
+                                              'e_disagrees_with_partner_about_living_arrangements',
+                                              'g_likes_friends_of_partner',
+                                              'f_has_trouble_with_family_of_partner',
+                                              'h_annoyed_by_behavior_of_spouse',
+                                             );
+
             foreach ($blank_restricted_spouse_array as $value) {
                 if ($values['live_with_partner'] == 'no' && $values[$value] != "") {
                     $errors[$value] = "This field should be left blank OR change the response in the above question of the applicable subset.";
                 }
             }
+
             if ($values['marital_status_user'] != 'other' && $values['if_other_marital'] != "") {
                 $errors['if_other_marital'] = "This field should be left blank OR change the response in the above question.";
             }
+
             if ($values['user_education'] != 'other' && $values['if_other_education'] != "") {
                 $errors['if_other_education'] = "This field should be left blank OR change the response in the above question.";
             }
+
             if ($values['relationship_to_adult'] != 'other' && $values['if_other_relationship'] != "") {
                 $errors['if_other_relationship'] = "This field should be left blank OR change the response in the above question.";
             }
         }
+
         //any page2 value is set
-        if(isset($values['user_concerns'])) {
-            $yes_restricted_array = array('user_concerns', 'user_handicap');
+        if (isset($values['user_concerns'])) {
+            $yes_restricted_array = array(
+                                     'user_concerns',
+                                     'user_handicap',
+                                    );
             foreach ($yes_restricted_array as $val) {
                 if ($values[$val] == 'no' && $values[$val . '_yes'] != "") {
                     $errors[$val . '_yes'] = "This field should be left blank OR change the response in the above question.";
                 }
             }
         }
+
         //any page3 val is set
-        if(isset($values['6_uses_drugs_for_nonmedical_purposes'])) {
-            $blank_restricted_array_page3 = array('6_uses_drugs_for_nonmedical_purposes',
-                'user_handicap','9_cant_get_mind_off_certain_thoughts','29_fears_certain_animals_situations_places');
+        if (isset($values['6_uses_drugs_for_nonmedical_purposes'])) {
+            $blank_restricted_array_page3 = array(
+                                             '6_uses_drugs_for_nonmedical_purposes',
+                                             'user_handicap',
+                                             '9_cant_get_mind_off_certain_thoughts',
+                                             '29_fears_certain_animals_situations_places',
+                                            );
             foreach ($blank_restricted_array_page3 as $val) {
-                $question_description_split= explode("_", $val);
-                $question_number=$question_description_split[0];
+                $question_description_split = explode("_", $val);
+                $question_number            =$question_description_split[0];
                 if ($values[$val] == '0' && $values[$question_number . '_continued'] != "") {
                     $errors[$question_number . '_continued'] = "This field should be left blank OR change the response in the above question.";
                 }
             }
-
         }
+
         //any page4 val is set
-        if(isset($values['40_hears_sounds_or_voices'])) {
-            $blank_restricted_array_page4 = array('40_hears_sounds_or_voices',
-                '46_nervous_movements', 'd_problems_witih_eyes', '58_picks_skin_or_other_parts_of_body');
+        if (isset($values['40_hears_sounds_or_voices'])) {
+            $blank_restricted_array_page4 = array(
+                                             '40_hears_sounds_or_voices',
+                                             '46_nervous_movements',
+                                             'd_problems_witih_eyes',
+                                             '58_picks_skin_or_other_parts_of_body',
+                                            );
             foreach ($blank_restricted_array_page4 as $val) {
-                $question_description_split= explode("_", $val);
-                $question_number=$question_description_split[0];
+                $question_description_split = explode("_", $val);
+                $question_number            =$question_description_split[0];
                 if ($values[$val] == '0' && $values[$question_number . '_continued'] != "") {
                     $errors[$question_number . '_continued'] = "This field should be left blank OR change the response in the above question.";
                 }
-
             }
-
         }
+
         //any page5 val is set
-        if(isset($values['66_repeats_certain_acts'])) {
-            $blank_restricted_array_page5 = array('66_repeats_certain_acts',
-                '70_sees_things_that_are_not_there','77_sleeps_more_than_most_others',
-                '79_speech_problem','84_strange_behavior',
-                '85_strange_ideas','92_does_things_that_may_cause_trouble_with_law');
+        if (isset($values['66_repeats_certain_acts'])) {
+            $blank_restricted_array_page5 = array(
+                                             '66_repeats_certain_acts',
+                                             '70_sees_things_that_are_not_there',
+                                             '77_sleeps_more_than_most_others',
+                                             '79_speech_problem',
+                                             '84_strange_behavior',
+                                             '85_strange_ideas',
+                                             '92_does_things_that_may_cause_trouble_with_law',
+                                            );
+
             foreach ($blank_restricted_array_page5 as $val) {
-                $question_description_split= explode("_", $val);
-                $question_number=$question_description_split[0];
+                $question_description_split = explode("_", $val);
+                $question_number            =$question_description_split[0];
+
                 if ($values[$val] == '0' && $values[$question_number . '_continued'] != "") {
                     $errors[$question_number . '_continued'] = "This field should be left blank OR change the response in the above question.";
                 }
-
             }
-
         }
-
 
         return $errors;
     }
