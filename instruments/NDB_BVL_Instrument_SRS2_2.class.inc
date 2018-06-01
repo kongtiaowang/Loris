@@ -118,7 +118,6 @@ class NDB_BVL_Instrument_SRS2_2 extends NDB_BVL_Instrument
         }
         $this->form->addElement('static','lorisSubHeader1',"<h4>SRS-2 copyright © 2012 by Western Psychological Services. Reprint authorized by the author, J. Constantino, under WPS agreement for the sole use in registered scholarly study. Not to be reprinted in whole or in part, for any additional purpose, without the prior written authorization of WPS. All rights reserved.<BR>
 (rights@wpspublish.com)</h4>");
-        $this->form->addFormRule(array(&$this, 'SRS2_Rules'));
 
     }
 
@@ -228,6 +227,8 @@ class NDB_BVL_Instrument_SRS2_2 extends NDB_BVL_Instrument
         $this->addSelect('informant_gender',"Gender ", $this->gender);
         //$this->XINRegisterRule('respondent_gender',array("respondent_gender{@}=={@}NEVER_REQUIRED"));
 */
+        $this->form->addFormRule(array(&$this, 'srs2Rules'));
+        $this->form->addFormRule(array(&$this,'srs2SpecialRules'));
         $this->addSelect('informant',"Relationship to rated individual", $this->informant);
         /*$this->addTextElement('informant_other',$this->indent."If Other please specify",
                               array("informant{@}=={@}other"),"Please specify relationship");
@@ -261,7 +262,6 @@ class NDB_BVL_Instrument_SRS2_2 extends NDB_BVL_Instrument
      //       $this->XINRegisterRule($field,array("$field{@}=={@}NEVER_REQUIRED"));
         }
         $this->form->addElement('static','lorisSubHeader1',"<h4>SRS-2 copyright © 2012 by Western Psychological Services. Reprint authorized by the author, J. Constantino, under WPS agreement for the sole use in registered scholarly study. Not to be reprinted in whole or in part, for any additional purpose, without the prior written authorization of WPS. All rights reserved.<BR>(rights@wpspublish.com)</h4>");
-        $this->form->addFormRule(array(&$this, 'SRS2_Rules'));
  
     }
 
@@ -354,7 +354,7 @@ class NDB_BVL_Instrument_SRS2_2 extends NDB_BVL_Instrument
 (rights@wpspublish.com)</h4>");
 
     }
-    function SRS2_Rules($values) {
+    function srs2Rules($values) {
        $errors = array();
        if (intval($values['respondent_age']) > 100 || intval($values['respondent_age']) < 0) {
            $errors['respondent_age_group'] = "Specify age between 0 and 100";
@@ -365,6 +365,17 @@ class NDB_BVL_Instrument_SRS2_2 extends NDB_BVL_Instrument
 
 
        return $errors;
+    }
+
+    function srs2SpecialRules($values) {
+        $errors = array();
+        $error_message = "This field should be left blank OR the response in the above question should be changed.";
+        if (($values['informant_other'] ?? '') != '') {
+            if (($values['informant'] ?? '') != 'other') {
+                $errors['informant_other_group'] = $error_message;
+            }
+        }
+        return $errors;
     }
 
     function getReview() {
