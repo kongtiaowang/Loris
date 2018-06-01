@@ -91,6 +91,7 @@ CREATE TABLE `CSHQ` (
 `returns_to_sleep_without_help_problem` enum('1','0','n/a') default NULL,
 `waking_during_night_duration` varchar(255) default NULL,
 `waking_during_night_duration_status` enum('not_answered') default NULL,
+`bed_time` time default NULL,
 `morning_waking_time` time default NULL,
 `morning_waking_time_status` enum('dnk','refusal','not_answered') default NULL,
 `wakes_by_himself_item26_frequency` enum('3','2','1') default NULL,

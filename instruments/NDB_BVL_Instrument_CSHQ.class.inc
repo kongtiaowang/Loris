@@ -52,7 +52,7 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
 
         //The array of dates/timestamps to convert to database dates/timestamps
         //Any HTML_Quickform date elements must be listed here
-        $this->dateTimeFields = array("Date_taken", "bedtime", "morning_waking_time");
+        $this->dateTimeFields = array("Date_taken", "bed_time", "morning_waking_time");
 
         //The array of selects with multiple answers allowed
         //Any HTML_Quickform multiple selects must be listed here
@@ -276,7 +276,13 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
             );
 
         $this->addHeader("<h4><b><u>Bedtime</u></b></h4>");
-        $this->addHourMinElement("bedtime", "Write in child's bedtime:", array(), 'This field is required');
+        $this->addHourMinElement(
+            "bed_time",
+            "Write in the child's bedtime:",
+            array(),
+            'This field is required'
+        );
+	
         $this->_displayHeaders("bedtime");
         foreach ($bedtime_questions as $question => $label) {
             $group[] = $this->createLabel($label);
