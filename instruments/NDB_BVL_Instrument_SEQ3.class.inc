@@ -143,6 +143,7 @@ class NDB_BVL_Instrument_SEQ3 extends NDB_BVL_Instrument
             array("person_completing_form{@}=={@}other"),
             "Required."
         );
+        $this->form->addFormRule(array(&$this, 'SEQ3_special_rules'));
     }
 
     /**
@@ -495,12 +496,12 @@ class NDB_BVL_Instrument_SEQ3 extends NDB_BVL_Instrument
 
         $this->addSelect("98_how_often_experienced_sensations_differently", "98. Thinking about your child's behaviors since birth, how often has your child experienced sensations (sound, sight, touch, taste, smell, or movement) differently from other children?", $options);
 
-        $this->addTextAreaElement("98_describe_if_applicable", "$this->indent Describe(if applicable):");
+        $this->addBasicTextArea("98_describe_if_applicable", "$this->indent Describe (if applicable):");
 
         $this->XINRegisterRule(
             "98_describe_if_applicable",
-            array("98_describe_if_applicable{@}=={@}NEVER_REQUIRED"),
-            "Never required."
+            array("98_how_often_experienced_sensations_differently{@}=={@}once_in_a_while|sometimes|frequently|always"),
+            "Required."
         );
 
 	$this->form->addElement("static", null, "<br/>");
@@ -513,9 +514,9 @@ class NDB_BVL_Instrument_SEQ3 extends NDB_BVL_Instrument
 
         $this->addSelect("99_first_noticed_differences_in_sensory_exp", "99. How old was your child when you first noticed any differences in your child's sensory experiences?", $applicable_opts);
 
-        $this->addBasicText("99_years", "Years:");
+        $this->addBasicText("99_years", "Years:<br><h5><i>(Please enter a numeric value between 0-100 or if you really don't wish to answer; enter NA)</i></h5>");
 
-        $this->addBasicText("99_months", "Months:");
+        $this->addBasicText("99_months", "Months:<br><h5><i>(Please enter a numeric value between 0-100 or if you really don't wish to answer; enter NA)</i></h5>");
 
         $this->XINRegisterRule(
             "99_years",
@@ -535,24 +536,24 @@ class NDB_BVL_Instrument_SEQ3 extends NDB_BVL_Instrument
 
         $this->addSelect("100_how_childs_sensory_avoidances_changed", "100. How have your child's sensory <b>avoidances or sensitivities</b> changed over time?", $options);
 
-        $this->addTextAreaElement("100_describe_if_changed", "$this->indent Describe(if changed):");
+        $this->addBasicTextArea("100_describe_if_changed", "$this->indent Describe (if changed):");
 
         $this->XINRegisterRule(
             "100_describe_if_changed",
-            array("100_describe_if_changed{@}=={@}NEVER_REQUIRED"),
-            "Never required."
+            array("100_how_childs_sensory_avoidances_changed{@}=={@}once_in_a_while|sometimes|frequently|always"),
+            "Required."
         );
 
 	$this->form->addElement("static", null, "<br/>");
 
         $this->addSelect("101_how_often_childs_sensory_avoidances_interfere_daily", "101. How often do your child's sensory <b>avoidances or sensitivities</b> interfere with daily activities?", $options);
 
-        $this->addTextAreaElement("101_describe_if_applicable", "$this->indent Describe(if applicable):");
+        $this->addBasicTextArea("101_describe_if_applicable", "$this->indent Describe (if applicable):");
 
         $this->XINRegisterRule(
             "101_describe_if_applicable",
-            array("101_describe_if_applicable{@}=={@}NEVER_REQUIRED"),
-            "Never required."
+            array("101_how_often_childs_sensory_avoidances_interfere_daily{@}=={@}once_in_a_while|sometimes|frequently|always"),
+            "Required."
         );
 
 	$this->form->addElement("static", null, "<br/>");
@@ -562,7 +563,7 @@ class NDB_BVL_Instrument_SEQ3 extends NDB_BVL_Instrument
         $this->XINRegisterRule(
             "102_list_comments_avoidances_to_senses",
             array("102_list_comments_avoidances_to_senses{@}=={@}NEVER_REQUIRED"),
-            "Never required."
+            "Required."
         );
 
 	$this->form->addElement("static", null, "<br/>");
@@ -571,24 +572,24 @@ class NDB_BVL_Instrument_SEQ3 extends NDB_BVL_Instrument
 
         $this->addSelect("103_how_have_sensory_fascinations_changed", "103. How have your child's sensory <b> fascinations or cravings </b> changed over time?", $options);
 
-        $this->addTextAreaElement("103_describe_if_changed", "$this->indent Describe(if changed):");
+        $this->addBasicTextArea("103_describe_if_changed", "$this->indent Describe (if changed):");
 
         $this->XINRegisterRule(
             "103_describe_if_changed",
-            array("103_describe_if_changed{@}=={@}NEVER_REQUIRED"),
-            "Never required."
+            array("103_how_have_sensory_fascinations_changed{@}=={@}once_in_a_while|sometimes|frequently|always"),
+            "Required."
         );
 
 	$this->form->addElement("static", null, "<br/>");
 
         $this->addSelect("104_how_often_sensory_fascinations_interfere_daily", "104. How often do your child's sensory <b>fascinations or cravings</b> interfere with daily activities?</b>", $options);
 
-        $this->addTextAreaElement("104_describe_if_applicable", "$this->indent Describe(if applicable):");
+        $this->addBasicTextArea("104_describe_if_applicable", "$this->indent Describe (if applicable):");
 
         $this->XINRegisterRule(
             "104_describe_if_applicable",
-            array("104_describe_if_applicable{@}=={@}NEVER_REQUIRED"),
-            "Never required."
+            array("104_how_often_sensory_fascinations_interfere_daily{@}=={@}once_in_a_while|sometimes|frequently|always"),
+            "Required."
         );
 
 	$this->form->addElement("static", null, "<br/>");
@@ -600,6 +601,72 @@ class NDB_BVL_Instrument_SEQ3 extends NDB_BVL_Instrument
             array("105_list_comments_fascinations_cravings_to_senses{@}=={@}NEVER_REQUIRED"),
             "Never required."
         );
+        $this->form->addFormRule(array(&$this, 'SEQ3_special_rules'));
     }
+function SEQ3_special_rules($values)
+{
+    $errors = array();
+    $error_message =  "This field should be left blank OR the response in the above question should be changed";
+        if(($values['if_other_person']?? '') != '') {
+            if(($values['person_completing_form']?? '' )!="other") {
+                $errors['if_other_person'] = $error_message;
+            }
+        }
+$check_array = array("99_years", "99_months");
+foreach ($check_array as $val) {
+    if (($values[$val] ?? '') != '') {
+        if (($values['99_first_noticed_differences_in_sensory_exp']?? '' )!= "applicable") {
+
+                    $errors[$val] = $error_message;
+            }
+       }
+}
+$check_array2 = array('101_how_often_childs_sensory_avoidances_interfere_daily',
+                '98_how_often_experienced_sensations_differently',
+                '100_how_childs_sensory_avoidances_changed',
+                '103_how_have_sensory_fascinations_changed',
+                '104_how_often_sensory_fascinations_interfere_daily'
+                );
+foreach ($check_array2 as $val) {
+                $question_description_split= explode("_", $val);
+                $question_number=$question_description_split[0];
+                if($question_number=="103" ||$question_number=="100") {
+                    if (($values[$question_number . '_describe_if_changed'] ?? '') != '') {
+                        if (($values[$val] ?? '') == "never") {
+                            $errors[$question_number . '_describe_if_changed'] = $error_message;
+                        }
+                    }
+                }
+                else {
+                        if (($values[$question_number . '_describe_if_applicable'] ?? '') != '') {
+                            if (($values[$val] ?? '') == "never") {
+                                $errors[$question_number . '_describe_if_applicable'] = $error_message;
+                            }
+                        }
+                    }
+                }
+                $this->ageValidator($values,'99_years',$errors);
+                $this->ageValidator($values,'99_months',$errors);
+
+    return $errors;
+}
+function ageValidator($array,$string, &$errors)
+{
+    if (isset($array[$string])) {
+        if (is_numeric($array[$string])) {
+            if (intval($array[$string]) > 100 || intval($array[$string]) < 0) {
+
+                $errors[$string] = "Specify age between 0 to 100 or NA";
+            }
+        } else {
+            if(strcasecmp($array[$string],"NA"))
+            {
+                $errors[$string] = "Specify age between 0 to 100 or NA";
+            }
+        }
+
+    }
+}
+
 }
 ?>

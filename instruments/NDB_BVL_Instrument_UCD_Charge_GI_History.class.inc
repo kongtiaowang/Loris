@@ -183,8 +183,8 @@ class NDB_BVL_Instrument_UCD_Charge_GI_History extends NDB_BVL_Instrument
         $this->displayHeaders(1);
         foreach($currentNumericQuestions as $key => $question) {
             if ($key == "q7") {
-                $group[] =& $this->createSelect($key . "_previous", "", $commonOptions);
-                $group[] =& $this->createSelect($key . "_current", "", $commonOptions);
+                $group[] =& $this->createSelect($key . "_previous", $question." - Previous", $commonOptions);
+                $group[] =& $this->createSelect($key . "_current", $question." - Current (past 3 months)", $commonOptions);
                 $group[] =& $this->createLabel($question);
                 $group[] =& $this->createLabel("If Yes, please describe");
                 $group[] =& $this->createText($key . "_description", "If yes, please describe");
@@ -196,8 +196,8 @@ class NDB_BVL_Instrument_UCD_Charge_GI_History extends NDB_BVL_Instrument
                     "Required if any answer other than 'Never' is selected for 'current' or 'previous'."
                 );
             } else {
-                $group[] =& $this->createSelect($key . "_previous", "", $commonOptions);
-                $group[] =& $this->createSelect($key . "_current", "", $commonOptions);
+                $group[] =& $this->createSelect($key . "_previous", $question." - Previous", $commonOptions);
+                $group[] =& $this->createSelect($key . "_current", $question." - Current (past 3 months)", $commonOptions);
                 $group[] =& $this->createLabel($question);
                 $group[] =& $this->createLabel("");
     }
@@ -226,8 +226,8 @@ class NDB_BVL_Instrument_UCD_Charge_GI_History extends NDB_BVL_Instrument
         $this->displayHeaders(2);
         foreach ($currentYesNoQuestions as $key => $question) {
             if ($key == "q11") {
-                $group[] =& $this->createSelect($key . "_previous", "", $yesNoOptions);
-                $group[] =& $this->createSelect($key . "_current", "", $yesNoOptions);
+                $group[] =& $this->createSelect($key . "_previous", $question." - Previous", $yesNoOptions);
+                $group[] =& $this->createSelect($key . "_current", $question." - Current (past 3 months)", $yesNoOptions);
                 $group[] =& $this->createLabel($question);
                 $group[] =& $this->createLabel("If yes, what foods?");
                 $group[] =& $this->createText($key . "_description", "If yes, what foods?");
@@ -239,8 +239,8 @@ class NDB_BVL_Instrument_UCD_Charge_GI_History extends NDB_BVL_Instrument
                     "Required if yes is selected for either 'current' or 'previous'."
                 );
             } elseif ($key == "q12") {
-                $group[] =& $this->createSelect($key . "_previous", "", $yesNoOptions);
-                $group[] =& $this->createSelect($key . "_current", "", $yesNoOptions);
+                $group[] =& $this->createSelect($key . "_previous", $question." - Previous", $yesNoOptions);
+                $group[] =& $this->createSelect($key . "_current", $question." - Current (past 3 months)", $yesNoOptions);
                 $group[] =& $this->createLabel($question);
                 $group[] =& $this->createLabel("If yes, is diet restricted by:");
                 $group[] =& $this->createSelect(
@@ -287,8 +287,8 @@ class NDB_BVL_Instrument_UCD_Charge_GI_History extends NDB_BVL_Instrument
 
             }
             else {
-                $group[] =& $this->createSelect($key . "_previous", "", $yesNoOptions);
-                $group[] =& $this->createSelect($key . "_current", "", $yesNoOptions);
+                $group[] =& $this->createSelect($key . "_previous", $question." - Previous", $yesNoOptions);
+                $group[] =& $this->createSelect($key . "_current", $question." - Current (past 3 months)", $yesNoOptions);
                 $group[] =& $this->createLabel($question);
                 $group[] =& $this->createLabel("If yes, what foods?");
                 $group[] =& $this->createText($key . "_description", "If yes, what foods?");
@@ -297,8 +297,7 @@ class NDB_BVL_Instrument_UCD_Charge_GI_History extends NDB_BVL_Instrument
                 $this->XINRegisterRule(
                     $key . "_description",
                     array("q13_previous{@}=={@}yes|q13_current{@}=={@}yes"),
-                    "Required if yes is selected for either 'current' or 'previous'.",
-                    $key . "_group"
+                    "Required if yes is selected for either 'current' or 'previous'."
                 );
             }
             $this->form->addGroup(
@@ -322,6 +321,45 @@ class NDB_BVL_Instrument_UCD_Charge_GI_History extends NDB_BVL_Instrument
             array("gastrointestinal_diagnosis_given{@}=={@}yes"),
             "Required"
         );
+        $this->form->addFormRule(array(&$this, 'UCD_GI_special_rules'));
     }
+function UCD_GI_special_rules($values)
+{
+    $errors = array();
+    $error_message = "This field should be left blank OR response in the related question should be changed.";
+    $check_array = array("q12_diet_restricted_by", "q12_reasons", "q12_foods");
+foreach ($check_array as $val) {
+    if (($values[$val] ?? '') != '') {
+        if((($values['q12_previous']?? '' )!= 'yes') && ($values['q12_current']?? '' )!= 'yes') {
+               $errors[$val] = $error_message;
+        }
+    }
+}
+    if(($values['gastrointestinal_diagnosis']?? '') != '') {
+        if (($values['gastrointestinal_diagnosis_given']?? '' )!= 'yes') {
+            $errors['gastrointestinal_diagnosis'] = $error_message;
+        }
+    }
+    if(($values['q13_description'] ?? '') != '') {
+        if((($values['q13_previous']?? '' )!= 'yes') && ($values['q13_current']?? '' )!= 'yes') {
+            $errors['q13_description'] = $error_message;
+        }
+    }
+    if (($values['q11_description'] ?? '') != '') {
+        if((($values['q11_previous']?? '' )!= 'yes') && ($values['q11_current']?? '' )!= 'yes') {
+           $errors['q11_description'] = $error_message;
+        }
+    }
+
+    if (($values['q7_description'] ?? '') != ''){
+        if((($values['q7_previous']?? '')=='0') && ($values['q7_current']?? '' )=='0') {
+        $errors['q7_description'] = $error_message;
+    }
+}
+
+
+   return $errors;
+}
+
 }
 ?>

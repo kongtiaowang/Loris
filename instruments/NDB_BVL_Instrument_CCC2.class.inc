@@ -108,16 +108,16 @@ class NDB_BVL_Instrument_CCC2 extends NDB_BVL_Instrument
             "teacher" => "Teacher",
             "other" => "Other"
         );
-        $this->addSelect("responder_realtionship", "Relationship to child:", $opts2);
-        $this->addTextElement("responder_relationship_other", "Other: ");
+        $this->addSelect("responder_relationship", "Relationship to child:", $opts2);
+        $this->addBasicText("responder_relationship_other", "Other: ");
         $this->XINRegisterRule(
             "responder_relationship_other",
-            array("responder_realtionship{@}=={@}other"),
-            "Required",
-            "responder_relationship_other_group"
+            array("responder_relationship{@}=={@}other"),
+            "Required"
         );
-        $this->addTextElement("responder_know_period", "How long have you known this child?: ");
-        $this->addTextAreaElement("comments", "Comments: ");
+        $this->addBasicText("responder_know_period", "How long have you known this child?: ");
+        $this->addBasicTextArea("comments", "Comments: ");
+        $this->XINRegisterRule('comments', array('comments{@}=={@}NEVER_REQUIRED'));
         $this->addHeader("Information About The Child");
         $opts = array(
             null => "",
@@ -130,31 +130,29 @@ class NDB_BVL_Instrument_CCC2 extends NDB_BVL_Instrument
             "no" => "No",
         );
         $this->addSelect("child_gender", "Child's Gender: ", $opts);
-        $this->addDateElement("user_birthdate", "Child's Birthdate:");
+        $this->addBasicDate("user_birthdate", "Child's Birthdate:");
         $this->addSelect("hear_loss", "Does the child have a permanent hearing loss? ", $opts1);
-        $this->addTextAreaElement("hear_loss_yes", "If Yes, give further details ");
+        $this->addBasicTextArea("hear_loss_yes", "If Yes, give further details ");
         $this->XINRegisterRule(
             "hear_loss_yes",
             array("hear_loss{@}=={@}yes"),
-            "Required",
-            "hear_loss_yes_group"
+            "Required"
         );
         $this->addSelect("lang_eng", "Does the child speak English as his or her primary language? ", $opts1);
-        $this->addTextAreaElement("lang_eng_no", "If No, give further details ");
+        $this->addBasicTextArea("lang_eng_no", "If No, give further details ");
         $this->XINRegisterRule(
             "lang_eng_no",
             array("lang_eng{@}=={@}no"),
-            "Required",
-            "lang_eng_no_group"
+            "Required"
         );
         $this->addSelect("word_to_sent", "Is the child able to put words together in a sentence? ", $opts1);
-        $this->addTextAreaElement("word_to_sent_no", "If No, give further details ");
+        $this->addBasicTextArea("word_to_sent_no", "If No, give further details ");
         $this->XINRegisterRule(
             "word_to_sent_no",
             array("word_to_sent{@}=={@}no"),
-            "Required",
-            "word_to_sent_no_group"
+            "Required"
         );
+        $this->form->addFormRule(array(&$this, 'ccc2_special_rules'));
 
     }
 
@@ -341,4 +339,32 @@ as 'furniture' or to apples, bananas, and pears as 'fruit')",
             $this->addSelect("CCC2_response_{$n}", "{$questions[$i]}", $opts);
         }
     }
-}
+
+    function ccc2_special_rules($values)
+    {
+        $errors = array();
+        $error_message = "This field should be left blank OR the response in the above question should be changed.";
+        if (($values['responder_relationship_other'] ?? '') != '') {
+            if (($values['responder_relationship'] ?? '') != 'other') {
+                $errors['responder_relationship_other'] = $error_message;
+            }
+        }
+        if (($values['lang_eng_no'] ?? '') != '') {
+            if (($values['lang_eng'] ?? '' )!= 'no') {
+                $errors['lang_eng_no'] = $error_message;
+            }
+        }
+        if (($values['word_to_sent_no'] ?? '') != '') {
+            if (($values['word_to_sent'] ?? '') != 'no') {
+                $errors['word_to_sent_no'] = $error_message;
+            }
+        }
+        if (($values['hear_loss_yes'] ?? '')!= '') {
+            if (($values['hear_loss'] ?? '' )!= 'yes') {
+                $errors['hear_loss_yes'] = $error_message;
+            }
+        }
+        return $errors;
+    }
+
+    }
