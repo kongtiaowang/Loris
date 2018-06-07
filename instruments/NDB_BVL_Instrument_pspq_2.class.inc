@@ -11,7 +11,7 @@ class NDB_BVL_Instrument_pspq_2 extends NDB_BVL_Instrument
     var $rating = array(''=>NULL, '1_very_rarely'=>"1. Very Rarely", '2_rarely'=>"2. Rarely", 
                         '3_occasionally'=>"3. Occasionally",'4_somewhat_often'=>'4. Somewhat Often',
                         '5_often'=>'5. Often','6_very_often'=>'6. Very Often');
-    var $respondent = array(''=>NULL,'mother'=>'Mother','father'=>'Father','stepmother'=>'Step-Mother',
+    var $respondent = array(''=>NULL,'mother'=>'(Biological) Mother','father'=>'(Biological) Father','stepmother'=>'Step-Mother',
                             'stepfather'=>'Step-Father','other'=>'Other');
     var $informant_child = array(''=>NULL,'mother'=>'(Biological) Mother','father'=>'(Biological) Father','stepmother'=>'Step-Mother',
         'stepfather'=>'Step-Father','other'=>'Other');
@@ -21,7 +21,7 @@ class NDB_BVL_Instrument_pspq_2 extends NDB_BVL_Instrument
                                       'moderately_confident'=>'Moderately Confident','little_confident'=>'A little confident',
                                       'not_confident'=>'Not at all confident');
 
-    var $gender = array(''=>NULL,'male'=>'Male','female'=>'Female');
+    var $gender = array(''=>NULL,'male'=>'Male','female'=>'Female','other'=>'Other');
 
     //abstract function setup($commentID, $page);
     /**
@@ -87,21 +87,16 @@ class NDB_BVL_Instrument_pspq_2 extends NDB_BVL_Instrument
         // display test name
         $this->form->addElement('header', 'instrument_title', "PSPQ : Personality Styles and Preferences Questionnaire");
         $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
-        $this->form->addElement('static','lorisSubHeader',"<strong>Instructions:</strong><BR>Thank you for filling out this questionnaire. The questions you will be answering are about <BR>personality, habits, and lifestyle. There are no good or bad responses, just differences in <BR>people's preferences.<BR><BR>1. Many of these questions ask about your interactions with other people. Think about the way <BR>you are with most people, rather than the way you are in special relationships you may have <BR>with your spouse, significant other, children, siblings and parents.<BR><BR>2. Everyone changes over time, which can make it hard to fill out questions about personality. <BR>Think about the way you've been most of your adult life, rather than the way you were as a <BR>teenager,or times you may have felt differently from normal.<BR><BR>3. You must answer each question and give only one answer per question. Choose the answer <BR>that best describes how often that statement applies to you. If you are confused about a <BR>question, please give it your best guess.<BR><BR>For each question, you will be given a choice of 6 answers that describe how often the statement<BR> applies to you:<BR> 1.Very Rarely<BR>2.Rarely<BR>3.Occasionally<BR>4.Somewhat Often<BR>5.Often<BR> 6.Very Often<BR><BR>Choose the number that matches the answer that comes closest to how you feel about each statement." );
+        $this->form->addElement('static','lorisSubHeader',"<strong>Instructions:</strong><BR>Thank you for filling out this questionnaire. The questions you will be answering are about personality, habits, and lifestyle. There are no good or bad responses, just differences in people's preferences.<BR><BR>1. Many of these questions ask about your interactions with other people. Think about the way you are with most people, rather than the way you are in special relationships you may have with your spouse, significant other, children, siblings and parents.<BR><BR>2. Everyone changes over time, which can make it hard to fill out questions about personality. Think about the way you've been most of your adult life, rather than the way you were as a teenager, or times you may have felt differently from normal.<BR><BR>3. You must answer each question and give only one answer per question. Choose the answer that best describes how often that statement applies to you. If you are confused about a question, please give it your best guess.<BR><BR>For each question, you will be given a choice of 6 answers that describe how often the statement applies to you:<BR> 1.Very Rarely<BR>2.Rarely<BR>3.Occasionally<BR>4.Somewhat Often<BR>5.Often<BR> 6.Very Often<BR><BR>Choose the number that matches the answer that comes closest to how you feel about each statement." );
 
 
         $this->form->addElement('header', 'instrument_title1', "Self Rating");
 
         $this->form->addElement('static', null, "<br /><br />");
 
-       // $this->addNumericElement('respondent_age','Your Age <BR>(Please indicate your age in years)');
-        $field = 'respondent_age';$label = 'Your Age <BR>(Please indicate your age in years)';
-        $group [] = $this->createText($field, $label);
-        $this->addGroup($group, $field . "_group", $label, null, false);
-    //    $this->XINRegisterRule($field,array("$field{@}=={@}NEVER_REQUIRED"), $field . "_group");
-        unset($group);
-       // $this->addGroupRule($field . "_group", array(array(array("Value must be numeric.", 'numeric'))));
-        
+        $this->addBasicText("respondent_age", "Your age<BR><h5><i>(Please enter a numeric value between 0-100. If you don't wish to answer, enter NA)</i></h5>");
+     
+	$this->form->addFormRule(array(&$this,'pspq2_special_rules')); 
         $this->addSelect('respondent',"Your relationship to child", $this->respondent);
         $group [] = $this->createText('respondent_other',$this->indent."If other please specify");
         $this->addGroup($group,"respondent_other_group",$this->indent."If other please specify",null,false);
@@ -109,8 +104,7 @@ class NDB_BVL_Instrument_pspq_2 extends NDB_BVL_Instrument
         $rules_array = array("respondent{@}=={@}other");
         $this->XINRegisterRule('respondent_other', $rules_array, "Please specify relationship", 'respondent_other_group');
 
-        $this->addSelect('respondent_gender',"Your gender ", $this->gender);
-      //  $this->XINRegisterRule('respondent_gender',array("respondent_gender{@}=={@}NEVER_REQUIRED"));
+        $this->addSelect('respondent_gender',"Your sex ", $this->gender);
 
         $this->form->addElement('static', null, "<br /><br />");
         $questions = array("q1_like_being_otherpeople" => "1. I like being around other people",
@@ -187,7 +181,7 @@ class NDB_BVL_Instrument_pspq_2 extends NDB_BVL_Instrument
         // display test name
         $this->form->addElement('header', 'instrument_title', "PSPQ : Personality Styles and Preferences Questionnaire");
         $this->form->addElement('header', 'instrument_title1', "*OBSERVER RATING SECTION IS ABOUT YOUR SPOUSE OR PARTNER*");
-        $this->form->addElement('static','lorisSubHeader',"<strong>Instructions:</strong><BR>In this section you will fill out a series of statements related to the personality and <BR>lifestyle of your spouse or partner. We will refer to this person as your partner. These <BR>sorts of observer ratings help us obtain a more well-rounded measure of your <BR>partner’s personality and lifestyle, since some traits and behaviors are most easily<BR>observed by other people. <BR><BR><BR>For each question, circle the answer that best describes how often the statement <BR>applies to your partner’s behavior. So, if they watch the evening news once a week, <BR>you might circle #4: <i>Somewhat often.</i><BR><BR><strong>3 IMPORTANT THINGS TO REMEMBER</strong><BR><BR>#1. Many of these questions ask about your partner’s interactions with other people. Please think <BR>about the way they are with most people rather than special relationships they may have with <BR>their children, siblings, and parents.<BR><BR>#2. Everyone changes over time, which can make it hard to fill out questions about personality. <BR>Think about the way your partner has been the majority of their adult life, rather than the way they were <BR>as a teenager, or times they many have felt different than normal.<BR><BR>#3. You must answer each question, and give only one answer per question. If you are confused,<BR> please just give your best guess.<BR><BR>");
+        $this->form->addElement('static','lorisSubHeader',"<strong>Instructions:</strong><BR>In this section you will fill out a series of statements related to the personality and lifestyle of your spouse or partner. We will refer to this person as your partner. These sorts of observer ratings help us obtain a more well-rounded measure of your partner’s personality and lifestyle, since some traits and behaviors are most easily observed by other people. <BR><BR>For each question, circle the answer that best describes how often the statement applies to your partner’s behavior. So, if they watch the evening news once a week, you might circle #4: <i>Somewhat often.</i><BR><BR><BR><strong>3 IMPORTANT THINGS TO REMEMBER</strong><BR><BR>#1. Many of these questions ask about your partner’s interactions with other people. Please think about the way they are with most people rather than special relationships they may have with their children, siblings, and parents.<BR><BR>#2. Everyone changes over time, which can make it hard to fill out questions about personality. Think about the way your partner has been the majority of their adult life, rather than the way they were as a teenager, or times they many have felt different than normal.<BR><BR>#3. You must answer each question, and give only one answer per question. If you are confused, please just give your best guess.<BR><BR>");
 
         $this->addSelect('informant_confidence',"<BR>How confident do you feel about your ability to give an accurate report on the <BR>personality traits and behaviors of your partner?", $this->informant_confidence);
 
@@ -199,7 +193,8 @@ class NDB_BVL_Instrument_pspq_2 extends NDB_BVL_Instrument
         $this->XINRegisterRule($field,array("$field{@}=={@}NEVER_REQUIRED"), $field . "_group");
         unset($group);
         $this->addGroupRule($field . "_group", array(array(array("Value must be numeric.", 'numeric'))));
-  */    
+  */   
+	$this->form->addFormRule(array(&$this,'pspq2_special_rules')); 
         $this->addSelect('informant',"Your relationship to your partner", $this->informant);
         
         $group [] = $this->createText('informant_other',$this->indent."If Other please specify");
@@ -207,10 +202,10 @@ class NDB_BVL_Instrument_pspq_2 extends NDB_BVL_Instrument
         unset($group);
         $rules_array = array("informant{@}=={@}other");
         $this->XINRegisterRule('informant_other', $rules_array, "Please specify relationship", 'informant_other_group');
-        $this->addSelect('informant_gender',"Gender of your partner", $this->gender);
-        $this->XINRegisterRule('informant_gender',array("informant_gender{@}=={@}NEVER_REQUIRED"));
+        $this->addSelect('informant_gender',"Sex of your partner", $this->gender);
 
         //TOBE VERIFIED
+	$this->form->addFormRule(array(&$this,'pspq2_special_rules'));
         $this->addSelect('informant_child',"Your partner’s relationship to child", $this->informant_child);
         $group [] = $this->createText('informant_child_other',$this->indent."If Other please specify");
         $this->addGroup($group,"informant_child_other_group",$this->indent."If Other please specify",null,false);
@@ -342,7 +337,6 @@ class NDB_BVL_Instrument_pspq_2 extends NDB_BVL_Instrument
            }
           $goback_url = "survey.php?key=$url_key&pageNum=$page";
        }
-//print_r($list_questions);
 	if(!empty($list_questions)) {
                 setcookie("MissingResponses","", time()-3600);
                 $value = "<font color='Red'>Note: You have missed a few questions on the previous page :</font> <BR><BR>";
@@ -353,18 +347,43 @@ class NDB_BVL_Instrument_pspq_2 extends NDB_BVL_Instrument
           setCookie("PrevPage", $page);
           setCookie("URLKey", $url_key);
 	}
-       if(intval($values['respondent_age']) > 100) {
-           $errors['respondent_age_group'] = "Specify age between 0 and 100";    
-       }
-       if(intval($values['informant_age']) > 100) {
-           $errors['informant_age_group'] = "Specify age between 0 and 100";
-       }
-       if(empty($values['respondent_age']) && array_key_exists('respondent_age', $values)) {
-           $errors['respondent_age_group'] = 'Specify age or just give NA';
-       }
 
        return $errors;
     }
+    function pspq2_special_rules($values) {
+        $errors = array();
+        $error_message = "This field should be left blank OR please change the response in the above question.";
+        if (($values['respondent_other'] ??'') != '') {
+            if (($values['respondent'] ?? '') != 'other') {
+                $errors['respondent_other_group'] = $error_message;
+            }
+        }
+        if (($values['informant_other'] ??'') != '') {
+            if (($values['informant'] ?? '') != 'other') {
+                $errors['informant_other_group'] = $error_message;
+            }
+        }
+        if (($values['informant_child_other'] ??'') != '') {
+            if (($values['informant_child'] ?? '') != 'other') {
+                $errors['informant_child_other_group'] = $error_message;
+            }
+        }
+        $this->ageValidator($values,'respondent_age',$errors);
+        return $errors;
+   }
+   function ageValidator($array,$string, &$errors) {
+        if (isset($array[$string])) {
+            if (is_numeric($array[$string])) {
+                if (intval($array[$string]) > 100 || intval($array[$string]) < 0) {
+                    $errors[$string] = "Specify age between 0 and 100 or NA";
+                }
+            } else {
+                if(strcasecmp($array[$string],"NA")) {
+                    $errors[$string] = "Specify age between 0 and 100 or NA";
+                }
+            }
+        }
+   }
     function getReview() {
         $DB = Database::singleton();
         $smarty = new Smarty_neurodb();
