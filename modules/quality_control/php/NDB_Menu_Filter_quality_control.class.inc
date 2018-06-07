@@ -38,9 +38,9 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
     {
         //create user object
         $user =& User::singleton();
-        return $user->hasPermission('imaging_browser_qc');
+        return $user->hasPermission('data_team_helper');
     }
-
+    
     /**
     * Checks configuration module to find which scans are relevant
     * to the given project
