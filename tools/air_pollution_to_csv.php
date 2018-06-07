@@ -47,6 +47,9 @@ $air_pollution_headers = array(
 fputcsv($fp, $air_pollution_headers, $delimiter = ",", $enclosure = "'");
 
 foreach ($air_pollution_data as $value) {
+    if(($value['additional_comments']?? '') != '') {
+        $value['additional_comments'] = str_replace('&amp;', '&', $value['additional_comments']);
+    }
   fputcsv($fp, array_map('htmlspecialchars_decode', $value), $delimiter = ",", $enclosure = "'");
 }
 
