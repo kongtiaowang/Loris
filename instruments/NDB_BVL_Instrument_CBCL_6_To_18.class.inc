@@ -774,7 +774,7 @@ class NDB_BVL_Instrument_CBCL_6_To_18 extends NDB_BVL_Instrument
 
         $this->addSelect("q2_special_education_class_school", "<h3>2. Does your child receive special education or remedial services or attend a special class or special school?</h3>", $yes_no_options);
 
-        $this->addTextAreaElement("q2_yes", "$this->indent Yes -- kind of services, class, or school:");
+        $this->addBasicText("q2_yes", "$this->indent Yes -- kind of services, class, or school:");
 
         $this->XINRegisterRule(
             "q2_yes",
@@ -784,7 +784,7 @@ class NDB_BVL_Instrument_CBCL_6_To_18 extends NDB_BVL_Instrument
 
         $this->addSelect("q3_repeated_any_grades", "<h3>3. Has your child repeated any grades?</h3>", $yes_no_options);
 
-        $this->addTextAreaElement("q3_yes", "$this->indent Yes -- grades and reasons:");
+        $this->addBasicText("q3_yes", "$this->indent Yes -- grades and reasons:");
 
         $this->XINRegisterRule(
             "q3_yes",
@@ -794,7 +794,7 @@ class NDB_BVL_Instrument_CBCL_6_To_18 extends NDB_BVL_Instrument
 
         $this->addSelect("q4_problems_in_school", "<h3>4. Has your child had any academic or other problems in school?</h3>", $yes_no_options);
 
-        $this->addTextAreaElement("q4_yes", "$this->indent Yes -- please describe:");
+        $this->addBasicText("q4_yes", "$this->indent Yes -- please describe:");
 
         $this->XINRegisterRule(
             "q4_yes",
@@ -802,7 +802,7 @@ class NDB_BVL_Instrument_CBCL_6_To_18 extends NDB_BVL_Instrument
             "Required."
         );
 
-        $this->addTextAreaElement("when_did_problems_start", "When did these problems start?");
+        $this->addBasicText("when_did_problems_start", "When did these problems start?");
 
         $this->XINRegisterRule(
             "when_did_problems_start",
@@ -818,7 +818,7 @@ class NDB_BVL_Instrument_CBCL_6_To_18 extends NDB_BVL_Instrument
             "Required."
         );
 
-        $this->addTextAreaElement("q4_ended_yes", "$this->indent Yes -- when?");
+        $this->addBasicText("q4_ended_yes", "$this->indent Yes -- when?");
 
         $this->XINRegisterRule(
             "q4_ended_yes",
@@ -828,7 +828,7 @@ class NDB_BVL_Instrument_CBCL_6_To_18 extends NDB_BVL_Instrument
 
         $this->addSelect("does_child_have_illness_disability", "<h3>Does your child have any illness or disability (either physical or mental)?</h3>", $yes_no_options);
 
-        $this->addTextAreaElement("child_illness_disability_describe", "$this->indent Describe:");
+        $this->addBasicText("child_illness_disability_describe", "$this->indent Describe:");
 
         $this->XINRegisterRule(
             "child_illness_disability_describe",
@@ -836,9 +836,9 @@ class NDB_BVL_Instrument_CBCL_6_To_18 extends NDB_BVL_Instrument
             "Required."
         );
 
-        $this->addTextAreaElement("concerns_about_child", "<h3>What concerns you most about your child?</h3>");
+        $this->addBasicText("concerns_about_child", "<h3>What concerns you most about your child?</h3>");
 
-        $this->addTextAreaElement("best_things_about_child", "<h3>Please describe the best things about your child.</h3>");
+        $this->addBasicText("best_things_about_child", "<h3>Please describe the best things about your child.</h3>");
 
         $this->addLabel("Be sure you answered all items.");
 
@@ -853,7 +853,7 @@ class NDB_BVL_Instrument_CBCL_6_To_18 extends NDB_BVL_Instrument
     {
         $this->addHeader("Child Behavior Checklist (CBCL) For Ages 6-18");
 
-        $this->addLabel("<h4>Below is a list of items that describe children and youths <b><i>now or within the past 2 months</i></b>. Please answer all items as well as you can, even if some do not seem to apply to your child.</h4>");
+        $this->addLabel("<h3>Below is a list of items that describe children and youths <b><i>now or within the past 2 months</i></b>. Please answer all items as well as you can, even if some do not seem to apply to your child.</h3>");
 
         $options = array(
                     null => "",
@@ -943,7 +943,7 @@ class NDB_BVL_Instrument_CBCL_6_To_18 extends NDB_BVL_Instrument
 
                 $str = substr($key, 0, strpos($key, "_")+1)."describe";
 
-                $this->addBasicText($str, "$this->indent Describe: ");
+                $this->addBasicText($str, "$this->indent Describe: <br><h5><i>$this->indent$this->indent(Required if selected \"Somewhat or Sometimes True\" or \"Very True or Often True\".)</i></h5>");
 
                 $this->XINRegisterRule(
                     $str,
@@ -964,7 +964,7 @@ class NDB_BVL_Instrument_CBCL_6_To_18 extends NDB_BVL_Instrument
     {
         $this->addHeader("Child Behavior Checklist (CBCL) For Ages 6-18");
 
-           $this->addLabel("<h4>Below is a list of items that describe children and youths <b><i>now or within the past 2 months</i></b>. Please answer all items as well as you can, even if some do not seem to apply to your child.</h4>");
+           $this->addLabel("<h3>Below is a list of items that describe children and youths <b><i>now or within the past 2 months</i></b>. Please answer all items as well as you can, even if some do not seem to apply to your child.</h3>");
 
         $options = array(
                     null => "",
@@ -1041,7 +1041,7 @@ class NDB_BVL_Instrument_CBCL_6_To_18 extends NDB_BVL_Instrument
 
                 $str = substr($key, 0, strpos($key, "_")+1)."describe";
 
-                $this->addBasicText($str, "$this->indent Describe: ");
+                $this->addBasicText($str, "$this->indent Describe: <br><h5><i>$this->indent$this->indent(Required if selected \"Somewhat or Sometimes True\" or \"Very True or Often True\".)</i></h5>");
 
                 $this->XINRegisterRule(
                     $str,
@@ -1057,13 +1057,13 @@ class NDB_BVL_Instrument_CBCL_6_To_18 extends NDB_BVL_Instrument
             "static",
             null,
             null,
-            "Problem"
+            "<h4>Problem</h4>"
         );
         $group[] =& $this->form->createElement(
             "static",
             null,
             null,
-            "Problem rating"
+            "<h4>Problem rating</h4>"
         );
         $this->addGroup(
             $group,

@@ -97,8 +97,6 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
         // display test name
         $this->addHeader("Teacher's Report Form (TRF) for Ages 6-18");
 
-        $this->form->addElement("static", null, "<br/>");
-
         $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
     }
 
@@ -111,8 +109,6 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
     {
         $this->addHeader("Teacher's Report Form (TRF) for Ages 6-18");
 
-        $this->form->addElement("static", null, "<br/>");
-
         $pupil_gender_options = array(
                                  null   => "",
                                  "boy"  => "Boy",
@@ -123,7 +119,7 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
 
         $this->addBasicText("pupil_age", "PUPIL'S AGE <br><h5><i>(Please enter a numeric value between 0-100. If you don't wish to answer, enter NA)</i></h5>");
 
-        $this->addBasicText("pupil_ethnic_group_race", "ETHNIC GROUP OR RACE");
+        $this->addBasicText("pupil_ethnic_group_race", "PUPIL'S ETHNIC GROUP OR RACE");
 
         $this->addBasicDate('pupil_birthdate', "Pupil's Birthdate (if known)");
 
@@ -135,9 +131,7 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
 
         $this->addBasicText("grade_in_school", "GRADE IN SCHOOL <br><h5><i>(Please enter a numeric value between 1-12 or K.)</i></h5>");
 
-        $this->form->addElement("static", null, "<br/>");
-
-        $this->addLabel("<h4>PARENTS' USUAL TYPE OF WORK, even if not working now <i>(Please be specific -- for example, auto mechanic, high school teacher, homemaker, laborer, lathe operator, shoe salesman, army sergeant.)</i></h4>");
+        $this->addLabel("<h3>PARENTS' USUAL TYPE OF WORK, even if not working now <i>(Please be specific -- for example, auto mechanic, high school teacher, homemaker, laborer, lathe operator, shoe salesman, army sergeant.)</i></h3>");
 
         $this->addBasicText("parent1_type_of_work", "PARENT 1 (or FATHER) TYPE OF WORK");
 
@@ -154,8 +148,6 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
             array("parent1_type_of_work{@}=={@}"),
             "Required."
         );
-
-        $this->form->addElement("static", null, "<br/>");
 
         $role_options = array(
                          null                => "",
@@ -177,9 +169,7 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
             "Required."
         );
 
-        $this->form->addElement("static", null, "<br/>");
-
-        $this->addNumericElement("I_months_known_pupil", "<h4>I. For how many months have you known this pupil?</h4>");
+        $this->addNumericElement("I_months_known_pupil", "<h3>I. For how many months have you known this pupil?</h3>");
 
         $II_options = array(
                        null         => "",
@@ -188,11 +178,11 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
                        "very_well"  => "3. Very Well",
                       );
 
-        $this->addSelect("II_how_well_do_you_know_pupil", "<h4>II. How well do you know him/her?</h4>", $II_options);
+        $this->addSelect("II_how_well_do_you_know_pupil", "<h3>II. How well do you know him/her?</h3>", $II_options);
 
-        $this->addBasicText("III_time_per_week", "<h4>III. How much time does he/she spend in your class or service per week?</h4>");
+        $this->addBasicText("III_time_per_week", "<h3>III. How much time does he/she spend in your class or service per week?</h3>");
 
-        $this->addBasicText("IV_kind_of_class_or_service", "<h4>IV. What kind of class or service is it? (Please be specific, e.g., regular 5th grade, 7th grade math, learning disability, counseling, etc.)</h4>");
+        $this->addBasicText("IV_kind_of_class_or_service", "<h3>IV. What kind of class or service is it? (Please be specific, e.g., regular 5th grade, 7th grade math, learning disability, counseling, etc.)</h3>");
 
         $V_VI_options = array(
                          null        => "",
@@ -201,9 +191,9 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
                          "yes"       => "1. Yes",
                         );
 
-        $this->addSelect("V_been_referred_for_special", "<h4>V. Has he/she ever been referred for special class placement, services, or tutoring?</h4>", $V_VI_options);
+        $this->addSelect("V_been_referred_for_special", "<h3>V. Has he/she ever been referred for special class placement, services, or tutoring?</h3>", $V_VI_options);
 
-        $this->addTextAreaElement("V_is_yes", "$this->indent If Yes -- what kind and when?");
+        $this->addBasicText("V_is_yes", "$this->indent If Yes -- what kind and when?");
 
         $this->XINRegisterRule(
             "V_is_yes",
@@ -211,9 +201,9 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
             "Required."
         );
 
-        $this->addSelect("VI_repeated_any_grades", "<h4>VI. Has he/she repeated any grades?</h4>", $V_VI_options);
+        $this->addSelect("VI_repeated_any_grades", "<h3>VI. Has he/she repeated any grades?</h3>", $V_VI_options);
 
-        $this->addTextAreaElement("VI_is_yes", "$this->indent If Yes -- what kind and when?");
+        $this->addBasicText("VI_is_yes", "$this->indent If Yes -- what kind and when?");
 
         $this->XINRegisterRule(
             "VI_is_yes",
@@ -221,7 +211,7 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
             "Required."
         );
 
-        $this->addLabel("<h4>VII. Current academic performance -- list academic subjects and check box that indicates pupil's performance for each subject:</h4>");
+        $this->addLabel("<h3>VII. Current academic performance -- list academic subjects and check box that indicates pupil's performance for each subject:</h3>");
 
         $VII_academic_performance_options = array(
                                              null                   => "",
@@ -236,13 +226,13 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
             "static",
             null,
             null,
-            "Academic Subject"
+            "<h4>Academic Subject</h4>"
         );
         $group[] =& $this->form->createElement(
             "static",
             null,
             null,
-            "Current performance"
+            "<h4>Current performance</h4>"
         );
         $this->addGroup(
             $group,
@@ -303,8 +293,6 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
     {
         $this->addHeader("Teacher's Report Form (TRF) for Ages 6-18");
 
-        $this->form->addElement("static", null, "<br/>");
-
         $VIII_options = array(
                          null            => "",
                          "much_less"     => "1. Much less",
@@ -316,7 +304,7 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
                          "much_more"     => "7. Much more",
                         );
 
-        $this->addLabel("<h4>VIII. Compared to typical pupils of the same age:</h4>");
+        $this->addLabel("<h3>VIII. Compared to typical pupils of the same age:</h3>");
 
         $questions = array(
                       "q1_how_hard_working"           => "1. How hard is he/she working?",
@@ -329,33 +317,31 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
             $this->addSelect($key, $question, $VIII_options);
         }
 
-        $this->form->addElement("static", null, "<br/>");
-
-        $this->addLabel("<h4>IX. Most recent achievement test scores (optional):</h4>");
+        $this->addLabel("<h3>IX. Most recent achievement test scores (optional):</h3>");
 
         $group[] =& $this->form->createElement(
             "static",
             null,
             null,
-            "Name of test"
+            "<h4>Name of test</h4>"
         );
         $group[] =& $this->form->createElement(
             "static",
             null,
             null,
-            "Subject"
+            "<h4>Subject</h4>"
         );
         $group[] =& $this->form->createElement(
             "static",
             null,
             null,
-            "Date"
+            "<h4>Date</h4>"
         );
         $group[] =& $this->form->createElement(
             "static",
             null,
             null,
-            "Percentile or grade level obtained"
+            "<h4>Percentile or grade level obtained</h4>"
         );
         $this->addGroup(
             $group,
@@ -419,25 +405,25 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
             unset($group);
         }
 
-        $this->addLabel("<h4>X. IQ, readiness, or aptitude tests (optional):</h4>");
+        $this->addLabel("<h3>X. IQ, readiness, or aptitude tests (optional):</h3>");
 
         $group1[] =& $this->form->createElement(
             "static",
             null,
             null,
-            "Name of test"
+            "<h4>Name of test</h4>"
         );
         $group1[] =& $this->form->createElement(
             "static",
             null,
             null,
-            "Date"
+            "<h4>Date</h4>"
         );
         $group1[] =& $this->form->createElement(
             "static",
             null,
             null,
-            "IQ or equivalent scores"
+            "<h4>IQ or equivalent scores</h4>"
         );
         $this->addGroup(
             $group1,
@@ -491,8 +477,6 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
             unset($group1);
         }
 
-        $this->form->addElement("static", null, "<br/>");
-
         $yes_no_options = array(
                            null  => "",
                            "no"  => "No",
@@ -501,7 +485,7 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
 
         $this->addSelect("pupil_illness_disability", "Does this pupil have any illness or disability (either physical or mental)?", $yes_no_options);
 
-        $this->addTextAreaElement("pupil_illness_yes", "$this->indent If Yes - please describe:");
+        $this->addBasicText("pupil_illness_yes", "$this->indent If Yes - please describe:");
 
         $this->XINRegisterRule(
             "pupil_illness_yes",
@@ -509,11 +493,11 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
             "Required."
         );
 
-        $this->addTextAreaElement("concerns_about_pupil", "What concerns you most about this pupil?");
+        $this->addBasicText("concerns_about_pupil", "What concerns you most about this pupil?");
 
-        $this->addTextAreaElement("best_things_about_pupil", "Please describe the best things about this pupil:");
+        $this->addBasicText("best_things_about_pupil", "Please describe the best things about this pupil:");
 
-        $this->addTextAreaElement("comments_on_work_behavior_potential", "Please feel free to write any comments about this pupil's work, behavior, or potential.");
+        $this->addBasicText("comments_on_work_behavior_potential", "Please feel free to write any comments about this pupil's work, behavior, or potential.");
 
         $this->XINRegisterRule(
             "comments_on_work_behavior_potential",
@@ -532,11 +516,7 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
     {
         $this->addHeader("Teacher's Report Form (TRF) for Ages 6-18");
 
-        $this->addLabel("<h4>Below is a list of items that describe pupils <b><i>now or within the past 2 months</i></b>. Please answer all items as well as you can, even if some do not seem to apply to this pupil.</h4>");
-
-        //$this->addLabel("<h4><b>$this->indent 0 = Not True (as far as you know) $this->indent 1 = Somewhat or Sometimes True $this->indent 2 = Very True or Often True</b></h4>");
-
-        $this->form->addElement("static", null, "<br/>");
+        $this->addLabel("<h3>Below is a list of items that describe pupils <b><i>now or within the past 2 months</i></b>. Please answer all items as well as you can, even if some do not seem to apply to this pupil.</h3>");
 
         $options = array(
                     null => "",
@@ -614,17 +594,17 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
         foreach ($questions as $key => $question) {
             // add label for q56
             if ($key == "q56a_aches_or_pains") {
-                $this->form->addElement("static", null, "<br/>");
                 $this->addLabel("56. Physical problems <b><i>without known medical cause:</i></b>");
-                $this->form->addElement("static", null, "<br/>");
             }
 
             $this->addSelect($key, $question, $options);
 
             // if the question contains (describe), include text element
             if (strpos($question, "(describe)") !== false) {
+
                 $str = substr($key, 0, strpos($key, "_")+1)."describe";
-                $this->addBasicText($str, "$this->indent Describe: ");
+
+                $this->addBasicText($str, "$this->indent Describe: <br><h5><i>$this->indent$this->indent(Required if selected \"Somewhat or Sometimes True\" or \"Very True or Often True\".)</i></h5>");
 
                 $this->XINRegisterRule(
                     $str,
@@ -645,11 +625,7 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
     {
         $this->addHeader("Teacher's Report Form (TRF) for Ages 6-18");
 
-        $this->addLabel("<h4>Below is a list of items that describe pupils <b><i>now or within the past 2 months</i></b>. Please answer all items as well as you can, even if some do not seem to apply to this pupil.</h4>");
-
-        //$this->addLabel("<h4><b>$this->indent 0 = Not True (as far as you know) $this->indent 1 = Somewhat or Sometimes True $this->indent 2 = Very True or Often True</b></h4>");
-
-        $this->form->addElement("static", null, "<br/>");
+        $this->addLabel("<h3>Below is a list of items that describe pupils <b><i>now or within the past 2 months</i></b>. Please answer all items as well as you can, even if some do not seem to apply to this pupil.</h3>");
 
         $options = array(
                     null => "",
@@ -723,8 +699,10 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
 
             // if the question contains (describe), include text element
             if (strpos($question, "(describe)") !== false) {
+
                 $str = substr($key, 0, strpos($key, "_")+1)."describe";
-                $this->addBasicText($str, "$this->indent Describe: ");
+
+                $this->addBasicText($str, "$this->indent Describe: <br><h5><i>$this->indent$this->indent(Required if selected \"Somewhat or Sometimes True\" or \"Very True or Often True\".)</i></h5>");
 
                 $this->XINRegisterRule(
                     $str,
@@ -740,13 +718,13 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
             "static",
             null,
             null,
-            "Problem"
+            "<h4>Problem</h4>"
         );
         $group[] =& $this->form->createElement(
             "static",
             null,
             null,
-            "Problem rating"
+            "<h4>Problem rating</h4>"
         );
         $this->addGroup(
             $group,
