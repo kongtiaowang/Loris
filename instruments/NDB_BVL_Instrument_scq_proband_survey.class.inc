@@ -88,8 +88,6 @@ class NDB_BVL_Instrument_scq_proband_survey extends NDB_BVL_Instrument
     {
         // display test name
         $this->addHeader("Social Communication Questionnaire - Lifetime");
-        $this->addHeader("<h3>Lifetime and Current versions of this questionnaire are effectively identical.<br><br>
-                                 Please fill in one as though it were the other.</h3>");
         $config =& NDB_Config::singleton();
         $dateOptions = array(
             'language' => 'en',
