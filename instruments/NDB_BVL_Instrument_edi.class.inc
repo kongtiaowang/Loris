@@ -420,7 +420,7 @@ INSERT INTO test_battery VALUES ('', 'edi', '1050', '1140', 'Y', 'Visit', '2');
     function _setupForm(){
         //If trying to start anywhere but the _main page...
         if(!empty($this->page) && empty($this->Date_taken)){
-            $this->form->addElement("header", null, "<p><b style='color:red'>Please return to the Top page and enter the subjects age details.</b>");
+            $this->form->addElement("header", null, "<p><b style='color:red'>Please return to the Top page and enter the subject's age details.</b>");
             //$this->form->freeze();
             //return;
         }
@@ -662,7 +662,10 @@ INSERT INTO test_battery VALUES ('', 'edi', '1050', '1140', 'Y', 'Visit', '2');
 		foreach($questionArray as $label) {
 			if(array_key_exists($qNum, $anchorPoints) == TRUE) {
 				$this->form->addElement('static', null, "<br/>");
-				$this->form->addElement("header", null, $anchorPoints[$qNum] . " months");
+                              if($anchorPoints[$qNum] == "0-3"){
+                                $this->form->addElement('header', null, "Please ensure that Pregnancy Events page is also complete");
+                                }    
+                $this->form->addElement("header", null, $anchorPoints[$qNum] . " months");
 				$this->form->addElement('static', null, "<br/>");
 			}
 			$this->form->addElement("select", "EDI" . $qNum , $label, $answerArray);

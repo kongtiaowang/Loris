@@ -412,6 +412,7 @@ INSERT INTO help(hash, topic) VALUES (md5('edi2'),'EDI_IBIS2');
 		}
 
     }
+
     /**
     * method to build the LorisForm object into a paged form
     *
@@ -421,7 +422,7 @@ INSERT INTO help(hash, topic) VALUES (md5('edi2'),'EDI_IBIS2');
     function _setupForm(){
         //If trying to start anywhere but the _main page...
         if(!empty($this->page) && empty($this->Date_taken)){
-            $this->form->addElement("header", null, "<p><b style='color:red'>Please return to the Top page and enter the subjects age details.</b>");
+            $this->form->addElement("header", null, "<p><b style='color:red'>Please return to the Top page and enter the subject's age details.</b>");
             //$this->form->freeze();
             //return;
         }
