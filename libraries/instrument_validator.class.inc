@@ -94,5 +94,22 @@ trait instrument_validator {
 			}
 	    }
 	}
+
+	// Checks if input is a number between $min and $max 
+	function validate_numeric ($values, $key, &$errors, $min, $max) {
+
+		if (isset($values[$key])) {
+
+			$user_input = $values[$key];
+
+			if (!ctype_digit($user_input) && $user_input != "NA") {
+				$errors[$key] = "Specify a number between " . $min . " and " . $max . ", or NA.";
+			}
+
+			if (ctype_digit($user_input) && ($user_input > $max || $user_input < $min)) {
+				$errors[$key] = "Specify a number between " . $min . " and " . $max . ", or NA.";
+			}
+		}
+	}
 }
 ?>

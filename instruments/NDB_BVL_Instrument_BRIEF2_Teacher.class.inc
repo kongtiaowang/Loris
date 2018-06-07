@@ -107,7 +107,7 @@ class NDB_BVL_Instrument_BRIEF2_Teacher extends NDB_BVL_Instrument
     {
         $this->addHeader("BRIEF-2 Teacher Form");
 
-        $this->addBasicDate('birth_date', "Child's Date of Birth");
+        $this->addBasicDate('birth_date', "Student's Date of Birth");
 
         $gender_options = array(
                            null     => "",
@@ -115,9 +115,9 @@ class NDB_BVL_Instrument_BRIEF2_Teacher extends NDB_BVL_Instrument
                            "female" => "Female",
                           );
 
-        $this->addSelect("student_gender", "Child's Sex", $gender_options);
+        $this->addSelect("student_gender", "Student's Sex", $gender_options);
 
-        $this->addBasicText("student_age", "Child's Age <br><h5><i>(Please enter a numeric value between 0-100. If you don't wish to answer, enter NA)</i></h5>");
+        $this->addBasicText("student_age", "Student's Age <br><h5><i>(Please enter a numeric value between 0-100. If you don't wish to answer, enter NA.)</i></h5>");
 
         $this->addBasicText("student_grade", "Grade <br><h5><i>(Please enter a numeric value between 1-12 or K.)</i></h5>");
 
@@ -147,7 +147,7 @@ class NDB_BVL_Instrument_BRIEF2_Teacher extends NDB_BVL_Instrument
 
         $this->addSelect("how_well_do_you_know_student", "How well do you know this student?", $rater_options);
 
-        $this->addNumericElement("how_long_have_you_known_student", "How long have you known this student? (months)");
+        $this->addBasicText("how_long_have_you_known_student", "How long have you known this student? (months) <br><h5><i>(Please enter a numeric value between 0-120. If you don't wish to answer, enter NA.)</i></h5>");
 
         $yes_no_options = array(
                            null  => "",
@@ -274,6 +274,8 @@ class NDB_BVL_Instrument_BRIEF2_Teacher extends NDB_BVL_Instrument
         if ($values["relationship_to_student"] != "other") {
             $this->validate_empty_subquestions($values, ["if_other_relationship"], $errors);
         }
+
+        $this->validate_numeric($values, "how_long_have_you_known_student", $errors, 0, 120);
 
         return $errors;
     }

@@ -14,7 +14,7 @@ CREATE TABLE `BRIEF2_Teacher` (
 `date_today` date default NULL,
 `student_name` varchar(255) default NULL,
 `birth_date` date default NULL,
-`student_gender` varchar(255) default NULL,
+`student_gender` enum('male','female') default NULL,
 `student_age` varchar(255) default NULL,
 `student_age_status` enum('not_answered') default NULL,
 `student_grade` varchar(255) default NULL,
