@@ -52,7 +52,7 @@ $config =& NDB_Config::singleton();
  *
  * @param string $param The $_REQUEST parameter to convert to a smarty variable
  *
- * @return none, side effect of modifying $tpl_data
+ * @return void (side effect of modifying $tpl_data)
  */
 function tplFromRequest($param)
 {
@@ -185,6 +185,10 @@ try {
     if (isset($caller->page)) {
         $tpl_data['jsfiles']  = $caller->page->getJSDependencies();
         $tpl_data['cssfiles'] = $caller->page->getCSSDependencies();
+
+        if (!$anonymous) {
+            $tpl_data['breadcrumbs'] = $caller->page->getBreadcrumbs();
+        }
     }
     $tpl_data['workspace'] = $workspace;
 } catch(ConfigurationException $e) {
@@ -200,7 +204,7 @@ try {
         . htmlspecialchars($e->getTraceAsString())
         . "</pre>";
 } catch(Exception $e) {
-    switch($e->getCode()) {
+    switch($e->getMessage()) {
     case 404:
         header("HTTP/1.1 404 Not Found");
         $errorPage = new Smarty_neurodb;
@@ -213,37 +217,28 @@ try {
         $errorPage->assign($tpl_data);
         $tpl_data['workspace'] = $errorPage->fetch('403.tpl');
         break;
+    default:
+        header("HTTP/1.1 500 Internal Server Error");
+        $tpl_data['error_message'][] = htmlspecialchars($e->getMessage());
+        $errorPage = new Smarty_neurodb;
+        $errorPage->assign($tpl_data);
+        $tpl_data['workspace'] = $errorPage->fetch('500.tpl');
+        break;
     }
-    $tpl_data['error_message'][] = htmlspecialchars($e->getMessage());
 } finally {
     // Set dependencies if they are not set
     if (!isset($tpl_data['jsfiles']) || !isset($tpl_data['cssfiles'])) {
-        $page = (new NDB_Page(new Module(""), '', '', '', ''));
+        $page = (new NDB_Page(new Module('', ''), '', '', '', ''));
         $tpl_data['jsfiles']  = $page->getJSDependencies();
         $tpl_data['cssfiles'] = $page->getCSSDependencies();
     }
 }
-//--------------------------------------------------
-
-if (!$anonymous) {
-    try {
-        $breadcrumb = new NDB_Breadcrumb;
-        $crumbs     = $breadcrumb->getBreadcrumb();
-
-        $tpl_data['crumbs'] = $crumbs;
-    } catch(Exception $e) {
-        $tpl_data['error_message'][] = htmlspecialchars($e->getMessage());
-    }
-}
-
-//--------------------------------------------------
-
 
 // show the back button
 $tpl_data['lastURL'] = $_SESSION['State']->getLastURL();
 
 // bug tracking link
-$tpl_data['mantis_url'] = $config->getSetting('mantis_url');
+$tpl_data['issue_tracker_url'] = $config->getSetting('issue_tracker_url');
 
 
 //Display the links, as specified in the config file

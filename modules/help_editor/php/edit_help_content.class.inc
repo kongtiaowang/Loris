@@ -2,7 +2,7 @@
 /**
  * This file contains code for editing context help section
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Loris
@@ -42,7 +42,7 @@ class Edit_Help_Content extends \NDB_Form
      /**
       * Returns default help content of the page
       *
-      * @return default array
+      * @return array
       */
     function _getDefaults()
     {
@@ -50,11 +50,13 @@ class Edit_Help_Content extends \NDB_Form
         //Get the default values
 
         // Sanitize user input
-        $safeHelpID     = htmlspecialchars($_REQUEST['helpID']);
-        $safeSection    = htmlspecialchars($_REQUEST['section']);
-        $safeSubsection = htmlspecialchars($_REQUEST['subsection']);
+        $safeSection    = $_REQUEST['section'] ?
+            htmlspecialchars($_REQUEST['section']) : '';
+        $safeSubsection = $_REQUEST['subsection'] ?
+            htmlspecialchars($_REQUEST['subsection']) : '';
+
         if (isset($_REQUEST['helpID'])) {
-            $helpID = $safeHelpID;
+            $helpID = htmlspecialchars($_REQUEST['helpID']);
         }
         if (!empty($_REQUEST['section'])) {
             $helpID = HelpFile::hashToID(md5($_REQUEST['section']));
@@ -66,6 +68,7 @@ class Edit_Help_Content extends \NDB_Form
         }
         $this->tpl_data['section']    = $safeSection;
         $this->tpl_data['subsection'] = $safeSubsection;
+
         if (!empty($helpID)) {
             $help_file = HelpFile::factory($helpID);
             $data      = $help_file->toArray();
@@ -78,6 +81,8 @@ class Edit_Help_Content extends \NDB_Form
             }
 
         }
+        // let escaped html display as intended in form
+        $defaults['content'] = htmlspecialchars_decode($defaults['content']);
         // case where no help content exists
         if (empty($defaults['title'])) {
             if (!empty($_REQUEST['section'])) {
@@ -101,7 +106,7 @@ class Edit_Help_Content extends \NDB_Form
      /**
       * Process function
       *
-      * @param string $values the value
+      * @param array $values the values being processed
       *
       * @return void
       */
@@ -111,15 +116,13 @@ class Edit_Help_Content extends \NDB_Form
         //Get the default values
 
         // Sanitize user input
-        $safeHelpID     = htmlspecialchars($_REQUEST['helpID']);
-        $safeParentID   = htmlspecialchars($_REQUEST['parentID']);
         $safeSection    = htmlspecialchars($_REQUEST['section']);
         $safeSubsection = htmlspecialchars($_REQUEST['subsection']);
         if (isset($_REQUEST['helpID'])) {
-            $helpID = $safeHelpID;
+            $helpID = htmlspecialchars($_REQUEST['helpID']);
         }
         if (isset($_REQUEST['parentID'])) {
-            $parentID = $safeParentID;
+            $parentID = htmlspecialchars($_REQUEST['parentID']);
         }
 
         if (!empty($_REQUEST['section'])) {
@@ -131,7 +134,10 @@ class Edit_Help_Content extends \NDB_Form
             $helpID   = HelpFile::hashToID(md5($_REQUEST['subsection']));
             $parentID = HelpFile::hashToID(md5($_REQUEST['section']));
         }
-        if (!empty($helpID)) {
+        if (!empty($helpID)
+            && isset($values['title'])
+            && isset($values['content'])
+        ) {
             $help_file = HelpFile::factory($helpID);
             // update the help file
             $success = $help_file->update(
@@ -212,7 +218,7 @@ class Edit_Help_Content extends \NDB_Form
      * that are common to every type of page. May be overridden by a specific
      * page or specific page type.
      *
-     * @return none
+     * @return void
      */
     function setup()
     {

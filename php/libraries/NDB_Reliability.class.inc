@@ -56,8 +56,9 @@ class NDB_Reliability extends NDB_Form
             throw new Exception("The form class ($name) is not defined.");
         }
 
+        $m = \Module::factory("reliability");
         // create a form instance
-        $obj = new $class($name, $page, $identifier, null, 'test_form');
+        $obj = new $class($m, $page, $identifier, '', 'test_form');
 
         $obj->reliability_center_id = $reliability_center_id;
 
@@ -86,7 +87,7 @@ class NDB_Reliability extends NDB_Form
     /**
      * Displays the form
      *
-     * @return void
+     * @return string
      * @access public
      */
     function display()
@@ -128,7 +129,7 @@ class NDB_Reliability extends NDB_Form
     function save()
     {
         if ($this->form->validate()) {
-            $this->form->process(array(&$this, "_save"), false);
+            $this->form->process(array(&$this, "_save"));
         }
     }
 
@@ -168,7 +169,7 @@ class NDB_Reliability extends NDB_Form
      * @param string $name  The element name
      * @param string $label The label to attach to this element
      *
-     * @return none
+     * @return void
      */
     function addDateElement($name, $label)
     {
@@ -241,7 +242,7 @@ class NDB_Reliability extends NDB_Form
      * @param array  $refusals     List of options to include in the _status
      *                             dropdown
      *
-     * @return none
+     * @return void
      */
     function addTextElement(
         $field,
@@ -270,7 +271,7 @@ class NDB_Reliability extends NDB_Form
       * @param array  $rules        {@} delimited rules
       * @param string $rule_message rule message to display upon rule violation
       *
-      * @return none
+      * @return void
       */
     function addTextAreaElement(
         $field,
@@ -327,7 +328,7 @@ class NDB_Reliability extends NDB_Form
      * Adds standard meta data fields (ie. Examiner, Date_taken
      * to the form object.
      *
-     * @return none
+     * @return void
      */
     function _addMetadataFields()
     {

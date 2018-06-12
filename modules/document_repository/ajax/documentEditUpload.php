@@ -58,12 +58,14 @@ if ($userSingleton->hasPermission('document_repository_view')
         $instrument = $_POST['instrument'] !== '' ? $_POST['instrument'] : null;
         $pscid      = $_POST['pscid']      !== '' ? $_POST['pscid'] : null;
         $visit      = $_POST['visit']      !== '' ? $_POST['visit'] : null;
-        $comments   = $_POST['comments']   !== '' ? $_POST['commnets'] : null;
+        $comments   = $_POST['comments']   !== '' ? $_POST['comments'] : null;
         $version    = $_POST['version']    !== '' ? $_POST['version'] : null;
 
         $fileSize = $_FILES["file"]["size"];
         $fileName = $_FILES["file"]["name"];
-        $fileType = end((explode(".", $fileName)));
+
+        $ft       = explode(".", $fileName);
+        $fileType = end($ft);
 
         // __DIR__ is the document_repository ajax directory
         // when this script is executing. Go up a level to the

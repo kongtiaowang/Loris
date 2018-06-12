@@ -12,9 +12,12 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-
  require_once __DIR__
     . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
+ require_once __DIR__
+    . "/../../../modules/conflict_resolver/php/resolved_conflicts.class.inc";
+ require_once __DIR__
+    . "/../../../modules/conflict_resolver/php/module.class.inc";
  /**
  * Implements tests for conflict resolver
  *
@@ -31,7 +34,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
      * Insert testing data into the database
      * author: Wang Shen
      *
-     * @return none
+     * @return void
      */
     function setUp()
     {
@@ -76,7 +79,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
      * Delete testing data from database
      * author: Wang Shen
      *
-     * @return none
+     * @return void
      */
     function tearDown()
     {
@@ -145,14 +148,11 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
     function testConflictResolverResolvedConflictsPermission()
     {
          $this->setupPermissions(array("conflict_resolver"));
-         $this->safeGet(
-             $this->url
-             . "/conflict_resolver/?submenu=resolved_conflicts"
-         );
-         $bodyText = $this->webDriver->findElement(
-             WebDriverBy::cssSelector("body")
-         )->getText();
-         $this->assertContains("Resolved Conflicts", $bodyText);
+         $m = $this->getMockBuilder('\LORIS\conflict_resolver\Module','conflict_resolver')->disableOriginalConstructor()->getMock();
+         $con = new \LORIS\conflict_resolver\Resolved_Conflicts($m,null,null,null,null);
+         
+         
+         print_r($con->_hasAccess());
          $this->resetPermissions();
     }
 
