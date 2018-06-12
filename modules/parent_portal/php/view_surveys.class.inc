@@ -47,9 +47,9 @@ class view_surveys extends \NDB_Form
             JOIN candidate c ON (c.CandID=s.CandID)
             JOIN flag f ON (f.CommentID =p.CommentID)
             JOIN test_names tn ON (tn.Test_name=f.Test_name)
-            WHERE s.Visit_label='VSA' and c.PSCID=:pid
+            WHERE s.Visit_label='VSA' and p.Email=:surv_email
             ORDER BY p.Status",
-                array('pid' => base64_decode($this->identifier))
+                array('surv_email' => base64_decode($this->identifier))
             );
         $this->tpl_data['survey_data'] = $query;
 

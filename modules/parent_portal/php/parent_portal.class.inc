@@ -47,8 +47,8 @@ class parent_portal extends \NDB_Form
         $this->tpl_data['page_title'] = 'Parent Portal';
 
         $this->addBasicText(
-            "pscid",
-            "PSCID",
+            "email",
+            "Email",
             array("placeholder" => "")
         );
         $this->form->addFormRule(array(&$this, '_validate'));
@@ -57,21 +57,21 @@ class parent_portal extends \NDB_Form
     function _validate($values)
     {
         $errors = array();
-        if (empty($values['pscid'])) {
-            $errors['pscid'] = " PSCID is required!";
+        if (empty($values['email'])) {
+            $errors['email'] = " Email is required!";
         }
         else {
             $db = \Database::singleton();
 
-            $numCandidates = $db->pselectOne(
-                "SELECT COUNT(*) FROM candidate 
-            WHERE PSCID=:v_PSCID AND Active='Y'",
+            $numSurveys = $db->pselectOne(
+                "SELECT COUNT(*) FROM participant_accounts  
+            WHERE Email=:surv_email",
                 array(
-                    'v_PSCID' => $values['pscid'],
+                    'surv_email' => $values['email'],
                 )
             );
-            if ($numCandidates != 1) {
-                $errors['pscid'] = "Invalid PSCID";
+            if ($numSurveys <= 1) {
+                $errors['email'] = "No Surveys Added For This Email";
             }
         }
 
@@ -82,7 +82,7 @@ class parent_portal extends \NDB_Form
 
     /**
      * _process redirects to the parent portal view surveys page if
-     * valiadtion is correct for the value/pscid entered.
+     * validation is correct for the email entered.
      *
      * @param array $values The values that were submitted to the page.
      *
@@ -92,21 +92,10 @@ class parent_portal extends \NDB_Form
     {
         $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
-        $key=$values['pscid'];
+        $key=$values['email'];
         $url= $baseURL. "/parent_portal/view_surveys/?identifier=".base64_encode($key);
         header("Location:$url");
 
     }
-//TO DO
-    function encode($val)
-    {
-        $hashstring1 =base64_encode("ibis123hashing");
-        $connector = "J345916";
-        $hashstring2 =base64_encode($val);
-        $final_string=$hashstring1.$connector.$hashstring2;
-        return $final_string;
-
-    }
-
 }
 ?>
