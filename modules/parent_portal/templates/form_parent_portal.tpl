@@ -7,6 +7,17 @@
         <div class="panel-body">
                 <form method="POST">
                     <p class="text-center">
+                        Please enter your ParentID.
+                    </p>
+                    <div class="form-group">
+                        {$form.parentID.html}
+                        {if $form.parentID.error}
+                            <span id="helpBlock" class="help-block">
+                   <b class="text-danger">{$form.ParentID.error}</b>
+                 </span>
+                        {/if}
+                    </div>
+                    <p class="text-center">
                         Please enter your Email.
                     </p>
                     <div class="form-group">

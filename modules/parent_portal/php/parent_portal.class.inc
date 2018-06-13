@@ -45,6 +45,11 @@ class parent_portal extends \NDB_Form
     {
         $config = \NDB_Config::singleton();
         $this->tpl_data['page_title'] = 'Parent Portal';
+        $this->addBasicText(
+            "parentID",
+            "ParentID",
+            array("placeholder" => "")
+        );
 
         $this->addBasicText(
             "email",
@@ -60,6 +65,9 @@ class parent_portal extends \NDB_Form
         if (empty($values['email'])) {
             $errors['email'] = " Email is required!";
         }
+        if (empty($values['parentID'])) {
+            $errors['parentID'] = " ParentID is required!";
+        }
         else {
             $db = \Database::singleton();
 
@@ -71,7 +79,7 @@ class parent_portal extends \NDB_Form
                 )
             );
             if ($numSurveys <= 1) {
-                $errors['email'] = "No Surveys Added For This Email";
+                $errors['email'] = "Oops..Something Went Wrong";
             }
         }
 
