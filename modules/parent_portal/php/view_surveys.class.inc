@@ -35,21 +35,37 @@ class view_surveys extends \NDB_Form
 
     function setup()
     {
-        $this->tpl_data['page_title'] = 'Welcome To Parent Portal! (ID:'.base64_decode($this->identifier).')';
+
         $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
+        session_start();
+        $email =$_SESSION['email'];
+        $pid=$_SESSION['pid'];
+        if((!isset($email)) && (!isset($pid)))
+        {
+            header ("Location: $baseURL/parent_portal");
+            exit;
+        }
+        $this->tpl_data['page_title'] = 'Welcome To Parent Portal! (ID:'.$pid.')';
         $url= $baseURL. "/survey_module/?key=";
         $this->tpl_data['url']=$url;
         $DB =& \Database::singleton();
-        $query=$DB->pselect("select tn.Full_name,s.Visit_label, p.Status,p.OneTimePassword
+        $query=$DB->pselect("select tn.Full_name,tn.Test_name,s.Visit_label, p.Status,p.OneTimePassword,ict.completion_time
             FROM participant_accounts p 
             JOIN session s ON (p.SessionID=s.ID)
             JOIN candidate c ON (c.CandID=s.CandID)
             JOIN flag f ON (f.CommentID =p.CommentID)
             JOIN test_names tn ON (tn.Test_name=f.Test_name)
+            LEFT JOIN instrument_completion_time ict ON (tn.ID=ict.TestNameID)
             WHERE s.Visit_label='VSA' and p.Email=:surv_email
+            AND c.ParentID=:pid
             ORDER BY p.Status",
-                array('surv_email' => base64_decode($this->identifier))
+                array(
+                    'surv_email' => $email,
+                    'pid' => $pid
+
+                )
+
             );
         $this->tpl_data['survey_data'] = $query;
 

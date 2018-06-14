@@ -43,7 +43,6 @@ class parent_portal extends \NDB_Form
      */
     function setup()
     {
-        $config = \NDB_Config::singleton();
         $this->tpl_data['page_title'] = 'Parent Portal';
         $this->addBasicText(
             "parentID",
@@ -62,48 +61,45 @@ class parent_portal extends \NDB_Form
     function _validate($values)
     {
         $errors = array();
-        if (empty($values['email'])) {
-            $errors['email'] = " Email is required!";
-        }
-        if (empty($values['parentID'])) {
+
+         if (empty($values['parentID'])) {
             $errors['parentID'] = " ParentID is required!";
+        }
+        else if (empty($values['email'])  ) {
+            $errors['email'] = " Email is required!";
         }
         else {
             $db = \Database::singleton();
 
             $numSurveys = $db->pselectOne(
-                "SELECT COUNT(*) FROM participant_accounts  
-            WHERE Email=:surv_email",
+                "SELECT COUNT(*) FROM participant_accounts p
+                 JOIN session s ON (p.SessionID=s.ID)
+                 JOIN candidate c ON (c.CandID=s.CandID)
+                 WHERE s.Visit_label='VSA'
+                 AND p.Email=:surv_email AND c.ParentID=:pid",
                 array(
                     'surv_email' => $values['email'],
+                    'pid'        => $values['parentID'],
                 )
             );
-            if ($numSurveys <= 1) {
-                $errors['email'] = "Oops..Something Went Wrong";
+            if ($numSurveys == 0) {
+                $errors['email'] = "Sorry, No Surveys Found With The Above Information.";
             }
         }
 
             return $errors;
 
     }
-
-
-    /**
-     * _process redirects to the parent portal view surveys page if
-     * validation is correct for the email entered.
-     *
-     * @param array $values The values that were submitted to the page.
-     *
-     * @return none
-     */
     function _process($values)
     {
         $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
-        $key=$values['email'];
-        $url= $baseURL. "/parent_portal/view_surveys/?identifier=".base64_encode($key);
-        header("Location:$url");
-
+        $_SESSION['pid'] = $_REQUEST['parentID'];
+        $_SESSION['email'] = $_REQUEST['email'];
+        header ("Location: $baseURL/parent_portal/view_surveys");
+        exit;
     }
+
+
 }
 ?>

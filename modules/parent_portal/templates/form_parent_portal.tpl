@@ -13,7 +13,7 @@
                         {$form.parentID.html}
                         {if $form.parentID.error}
                             <span id="helpBlock" class="help-block">
-                   <b class="text-danger">{$form.ParentID.error}</b>
+                   <b class="text-danger">{$form.parentID.error}</b>
                  </span>
                         {/if}
                     </div>
