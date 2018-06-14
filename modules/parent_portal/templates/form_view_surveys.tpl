@@ -18,15 +18,15 @@
             <td><div><p>{$number++}</p></div></td>
             <td><div><p>{$survey_data[data].Full_name}</p></div></td>
             {if $survey_data[data].Status == 'Complete'}
-                <td bgcolor="#8fbc8f"><div><p>{$survey_data[data].Status}</p></div></td>
+                <td id="complete"><div><p>{$survey_data[data].Status}</p></div></td>
             {elseif $survey_data[data].Status == 'In Progress' }
-                <td bgcolor="#f2f830 "><div><p>{$survey_data[data].Status}</p></div></td>
+                <td id="progress"><div><p>{$survey_data[data].Status}</p></div></td>
             {else}
-            <td bgcolor="#eca697 "><div><p>Not Started</p></div></td>
+            <td id="not_started"><div><p>Not Started</p></div></td>
             {/if}
             <td><div><p><a href="{$url}{$survey_data[data].OneTimePassword}" target="_blank">Open Survey</a></p></div></td>
             {if $survey_data[data].completion_time === '' || $survey_data[data].completion_time === NULL}
-            <td><div><p>--</p></div></td>
+            <td><div><p>10</p></div></td>
                 {else}
                 <td><div><p>{$survey_data[data].completion_time}</p></div></td>
             {/if}

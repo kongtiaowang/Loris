@@ -70,6 +70,16 @@ class view_surveys extends \NDB_Form
         $this->tpl_data['survey_data'] = $query;
 
     }
+    function getCSSDependencies()
+    {
+        $factory = \NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getCSSDependencies();
+        return array_merge(
+            $deps,
+            array($baseURL . "/parent_portal/css/parent_portal.css")
+        );
+    }
 
 
 }
