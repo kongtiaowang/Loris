@@ -52,8 +52,9 @@ class Candidate
      *                        a candidate in the candidate table
      *
      * @return Candidate the Candidate object
+     * @static
      */
-    static function &singleton($candID)
+    static public function &singleton($candID)
     {
         $candidateList =& $GLOBALS['__candidateObjects'];
         if (!isset($candidateList[$candID])) {
@@ -642,7 +643,7 @@ class Candidate
         $db      = $factory->database();
 
         // generate a candidate id
-        $candID = rand(CANDIDATE_MIN_CANDID, CANDIDATE_MAX_CANDID);
+        $candID = random_int(CANDIDATE_MIN_CANDID, CANDIDATE_MAX_CANDID);
 
         // make sure the cand id is not used
         while ($db->pselectOne(
@@ -650,7 +651,7 @@ class Candidate
             array('CaID' => $candID)
         ) > 0) {
             // pick a new candidate id
-            $candID = rand(CANDIDATE_MIN_CANDID, CANDIDATE_MAX_CANDID);
+            $candID = random_int(CANDIDATE_MIN_CANDID, CANDIDATE_MAX_CANDID);
         }
 
         return $candID;
