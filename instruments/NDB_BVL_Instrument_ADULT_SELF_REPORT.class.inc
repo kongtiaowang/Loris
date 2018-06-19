@@ -943,7 +943,7 @@ function _page5(){
     function _isIntOrNa($values, $key, $min, $max) {
 		if(isset($values[$key])) {
 			$val = $values[$key];
-			if(preg_match('/\s*NA\s*$', $val)) {
+			if(preg_match('/\s*NA\s*$/', $val)) {
 				return true;
 			}
 			
