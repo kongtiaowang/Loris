@@ -26,6 +26,7 @@
 
 class NDB_BVL_Instrument_SRS2_SchoolAge extends NDB_BVL_Instrument
 {
+    use instrument_validator;
     //Commonly used level of indentation;
     var $indent = "&nbsp;&nbsp;&nbsp;&nbsp;";
 
@@ -136,14 +137,13 @@ class NDB_BVL_Instrument_SRS2_SchoolAge extends NDB_BVL_Instrument
         $this->form->addElement('header', 'instrument_title', "SRS-2 - School-Age");
 
         //Add field for Age
-        $field = 'child_age';$label = "Child's age in years <br><h5><i>(Please enter a numeric value between 0-100.)</i></h5>";
+        $field = 'child_age';$label = "Child's age in years <br><h5><i>(Please enter a numeric value between 0-100 or write NA.)</i></h5>";
         $group[] = $this->createText($field, $label);
         $this->addGroup($group, $field . "_group", $label, null, false);
         unset($group);
-        $this->addGroupRule($field . "_group", array(array(array("Value must be numeric.", 'numeric'))));
 
         //Add field for Grade
-        $field = 'child_grade';$label = "Child's grade in school <br><h5><i>(Please enter a numeric value between 1-12 or K.)</i></h5>";
+        $field = 'child_grade';$label = "Child's grade in school <br><h5><i>(Please enter a numeric value between 1-12, K, or write NA if you don't know.)</i></h5>";
         $group[] = $this->createText($field, $label);
         $this->addGroup($group, $field . "_group", $label, null, false);
         unset($group);
@@ -158,12 +158,6 @@ class NDB_BVL_Instrument_SRS2_SchoolAge extends NDB_BVL_Instrument
         unset($group);
         $rules_array = array("informant{@}=={@}other");
         $this->XINRegisterRule('informant_other', $rules_array, "Please specify relationship", 'informant_other_group');
-
-        //Add Rules
-        $this->form->addFormRule(array(&$this, 'srs2Rules'));
-
-        //Add Special Rules
-        $this->form->addFormRule(array(&$this, 'srs2SpecialRules'));
 
         //Add instructions
         $this->form->addElement('static', 'lorisSubHeader', "<strong>Instructions:</strong><BR>For each question, please choose an option that best describes the child's behaviour <strong>over the past 6 months.</strong>");
@@ -190,6 +184,7 @@ class NDB_BVL_Instrument_SRS2_SchoolAge extends NDB_BVL_Instrument
         foreach ($questions as $field=>$label) {
             $this->addSelect($field, $label, $this->rating);
         }
+        $this->form->addFormRule(array(&$this, 'validate_page1'));
 
         //Add copyright message
         $this->form->addElement('static', 'lorisSubHeader1', "<h4>SRS-2 School-Age Report copyright © 2012 by Western Psychological Services. Reprint authorized by the author, J. Constantino, under WPS agreement for the sole use in registered scholarly study. Not to be reprinted in whole or in part, for any additional purpose, without the prior written authorization of WPS. All rights reserved. (rights@wpspublish.com)</h4>");
@@ -213,7 +208,7 @@ class NDB_BVL_Instrument_SRS2_SchoolAge extends NDB_BVL_Instrument
                       "q17_recognize_unfair"          => "17. Recognizes when something is unfair",
                       "q18_difficulty_makingfriends"  => "18. Has difficulty making friends, even when trying his or her best",
                       "q19_frustrated_conveyingideas" => "19. Gets frustrated trying to get ideas across in conversations",
-                      "q20_unusual_interests"         => "20. Shows unusual sensory interests (for example, mouthing or spinning objects)<BR>or strange ways of playing with toys",
+                      "q20_unusual_interests"         => "20. Shows unusual sensory interests (for example, mouthing or spinning objects) or strange ways of playing with toys",
                       "q21_imitate_actions"           => "21. Is able to imitate others' actions",
                       "q22_interact_appropriately"    => "22. Plays appropriately with children his or her age",
                       "q23_joingroups_activities"     => "23. Does not join group activities unless told to do so",
@@ -255,18 +250,18 @@ class NDB_BVL_Instrument_SRS2_SchoolAge extends NDB_BVL_Instrument
                       "q35_trouble_keepingup"          => "35. Has trouble keeping up with the flow of a normal conversation",
                       "q36_difficulty_relating_adults" => "36. Has difficulty relating to adults",
                       "q37_difficulty_relating_peers"  => "37. Has difficulty relating to peers",
-                      "q38_respond_moodchange"         => "38. Responds appropriately to mood changes in others <BR>(for example when a friend's or playmate's mood changes from happy to sad)",
+                      "q38_respond_moodchange"         => "38. Responds appropriately to mood changes in others (for example when a friend's or playmate's mood changes from happy to sad)",
                       "q39_interested_toofew_topics"   => "39. Has an unusually narrow range of interests",
                       "q40_imaginative"                => "40. Is imaginative, good at pretending (without losing touch with reality)",
                       "q41_wander_aimlessly"           => "41. Wanders aimlessly from one activity to another",
                       "q42_overly_sensitive"           => "42. Seems overly sensitive to sounds, textures, or smells",
                       "q43_separates_easily"           => "43. Separates easily from caregivers",
-                      "q44_chains_causation"           => "44. Doesn't understand how events relate to one another (cause and effect)<BR> the way other children his or her age do",
+                      "q44_chains_causation"           => "44. Doesn't understand how events relate to one another (cause and effect) the way other children his or her age do",
                       "q45_pay_attention"              => "45. Focuses his or her attention to where others are looking or listening",
                       "q46_serious_facialexp"          => "46. Has overly serious facial expressions",
                       "q47_laugh_inappropriately"      => "47. Is too silly or laughs inappropriately",
                       "q48_goodsense_humor"            => "48. Has a sense of humor, understands jokes",
-                      "q49_wellat_tasks"               => "49. Does extremely well at a few tasks,<BR> but does not do as well at most other tasks",
+                      "q49_wellat_tasks"               => "49. Does extremely well at a few tasks, but does not do as well at most other tasks",
                       "q50_repetitive_behavior"        => "50. Has repetitive, odd behaviors such as hand flapping or rocking",
                       "q51_diff_directqstn"            => "51. Has difficulty answering questions directly and ends up talking around the subject",
                      );
@@ -294,17 +289,17 @@ class NDB_BVL_Instrument_SRS2_SchoolAge extends NDB_BVL_Instrument
         //Fourth block of questions
         $questions = array(
                       "q52_overly_loud"            => "52. Knows when he or she is talking too loud or making too much noise",
-                      "q53_monotone_voice"         => "53. Talks to people with an unusual tone of voice <BR>(for example, talks like a robot or like he or she is giving a lecture)",
+                      "q53_monotone_voice"         => "53. Talks to people with an unusual tone of voice (for example, talks like a robot or like he or she is giving a lecture)",
                       "q54_thinkpeople_as_objects" => "54. Seems to react to people as if they are objects",
                       "q55_invade_personalspace"   => "55. Knows when he or she is too close to someone or is invading someone's space",
                       "q56_walk_btwn_people"       => "56. Walks in between two people who are talking",
                       "q57_gets_teased"            => "57. Gets teased a lot",
-                      "q58_concentration_parts"    => "58. Concentrates too much on parts of things rather than seeing the whole picture. <BR>For example, if asked to describe what happened in a story,<BR>he or she may talk only about the kind of clothes the characters were wearing",
+                      "q58_concentration_parts"    => "58. Concentrates too much on parts of things rather than seeing the whole picture. For example, if asked to describe what happened in a story, he or she may talk only about the kind of clothes the characters were wearing",
                       "q59_suspicious_ofpeople"    => "59. Is overly suspicious",
                       "q60_emotionally_distant"    => "60. Is emotionally distant, doesn't show his or her feelings",
                       "q61_inflexible"             => "61. Is inflexible, has a hard time changing his or her mind ",
                       "q62_reason_unusual"         => "62. Gives unusual or illogical reasons for doing things",
-                      "q63_touching_unusual"       => "63. Touches or greets others in an unusual way (for example, <BR>he or she may touch someone just to make contact and then walk away without saying anything)",
+                      "q63_touching_unusual"       => "63. Touches or greets others in an unusual way (for example, he or she may touch someone just to make contact and then walk away without saying anything)",
                       "q64_tense_socialsituations" => "64. Is too tense in social settings",
                       "q65_staring_gazing"         => "65. Stares or gazes off into space",
                      );
@@ -318,88 +313,19 @@ class NDB_BVL_Instrument_SRS2_SchoolAge extends NDB_BVL_Instrument
 
     }
 
-    /**
-     * SRS2 Rules
-     *
-     * @param array $values
-     *
-     * @return array
-     */
-    function srs2Rules($values)
+    function validate_page1($values)
     {
-        $errors = array();
-        if (intval($values['child_age']) > 100 || intval($values['child_age']) < 0) {
-            $errors['child_age_group'] = "Specify age between 0 and 100";
-        }
-        if (empty($values['child_age'])) {
-            $errors['child_age_group'] = "Please specify age in years";
-        }
-        if (intval($values['child_grade']) > 12 || intval($values['child_grade']) < 1 && ($values['child_grade']) != 'K') {
-            $errors['child_grade_group'] = "Specify grade between K and 12";
-        }
-        if (empty($values['child_grade'])) {
-            $errors['child_grade_group'] = "Please specify grade in school";
+        $errors = [];
+        // NA option because this is a Teacher form
+        $this->validate_age($values, "child_age", $errors);
+
+        $this->validate_grade($values, "child_grade", $errors);
+
+        if ($values["informant"] != "other") {
+            $this->validate_empty_subquestions($values, ["informant_other"], $errors);
         }
 
         return $errors;
-    }
-
-    /**
-     * SRS2 Special Rules
-     *
-     * @param array $values
-     *
-     * @return array
-     */
-    function srs2SpecialRules($values)
-    {
-        $errors        = array();
-        $error_message = "This field should be left blank OR please change the response in the above question.";
-        if (($values['informant_other'] ?? '') != '') {
-            if (($values['informant'] ?? '') != 'other') {
-                $errors['informant_other_group'] = $error_message;
-            }
-        }
-        return $errors;
-    }
-
-    /**
-     * Get review
-     *
-     * @return void
-     */
-    function getReview()
-    {
-        $DB       = Database::singleton();
-        $smarty   = new Smarty_neurodb();
-        $tpl_data = array();
-
-        $tpl_data['questions'] = $DB->pselect(
-            "SELECT Description as question,
-            SourceField FROM parameter_type 
-            WHERE SourceFrom=:TN AND 
-            SourceField NOT IN ('Validity', 'Administration')",
-            array(
-             'TN' => $this->testName,
-            )
-        );
-        $Responses = $DB->pselectRow(
-            "SELECT * FROM " . $this->testName . " WHERE CommentID=:CID",
-            array('CID' => $this->getCommentID())
-        );
-        foreach ($tpl_data['questions'] as $key=>&$row) {
-            //questions stored in the database with htmlentities should get decoded for the proper display.
-                 $row['question'] =html_entity_decode($row['question']);
-            if ($row['SourceField'] == 'informant_other' && $Responses['informant'] != 'other') {
-                unset($tpl_data['questions'][$key]);
-            } else {
-                $row['response'] = $Responses[$row['SourceField']];
-            }
-        }
-
-        $smarty->assign($tpl_data);
-        $html = $smarty->fetch("directentry_review.tpl");
-        return $html;
     }
 
 }
