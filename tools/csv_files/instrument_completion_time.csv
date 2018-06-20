@@ -1,0 +1,32 @@
+ID,Test_name,Estimated Time,Full_name,Sub_group,TestExpert,IsDirectEntry
+19,rbs_r,15,RBS-R (Repetive Behavior Scale - Revised),1,NULL,1
+60,CBCL_1_to_5_yrs,,CBCL (1.5-5 years),2,NULL,1
+68,sibling_socialcontact,,Sibling Social Contact Questionnaire,6,NULL,1
+72,peer_socialcontact,,Peer Contact Questionnaire,6,NULL,1
+77,pspq_1,10,PSPQ-1 (Personality Styles and Preferences Questionnaire),6,NULL,1
+78,pspq_2,10,PSPQ-2 (Personality Styles and Preferences Questionnaire),6,NULL,1
+79,SRS2_InformantReport,,SRS2 Informant Report,1,NULL,1
+80,SRS2_SelfReport,,SRS2 Self Report,1,NULL,1
+84,SRS2_1,20,SRS2-1,1,NULL,1
+85,SRS2_2,20,SRS2-2,1,NULL,1
+89,m_chat_rf,,M-CHAT [Revised with Follow-Up],9,NULL,1
+92,air_pollution,,Air Pollution,6,NULL,1
+95,ADULT_SELF_REPORT,10,Adult Self Report,1,NULL,1
+97,SEQ3,,Sensory Experiences Questionnaire Version 3.0,1,NULL,1
+98,CCC2,10,Children Communication Checklist 2,1,NULL,1
+99,conners_parent,20,CONNERS 3 - Parent Short,1,NULL,1
+100,conners_teacher,10,CONNERS 3 - Teacher Short,1,NULL,1
+101,UCD_Charge_GI_History,10,CHARGE GI History,1,NULL,1
+105,MASC2_Parent,15,MASC2: PARENT,1,NULL,1
+106,MASC2_Self_Report,,MASC2: SELF-REPORT,1,NULL,1
+107,ABCL,10,Adult Behavior Checklist For Ages 18-59,1,NULL,1
+111,CSHQ,6,Children's Sleep Habits Questionnaire,1,NULL,1
+112,QRS,15,QRS,1,NULL,1
+113,BRIEF2_Parent,15,BRIEF2 Parent Form,1,NULL,1
+114,BRIEF2_Teacher,,BRIEF2 Teacher Form,1,NULL,1
+115,Seizure_Questionnaire,10,Seizure Questionnaire,9,NULL,1
+117,ABC2,20,ABC-2,1,NULL,1
+118,Teachers_Report_Form_6_To_18,,Teacher's Report Form (TRF) for Ages 6-18,1,NULL,1
+120,scq_proband_survey,,SCQ Proband -Survey,9,NULL,1
+121,CBCL_6_To_18,30,CBCL (6-18 years),1,NULL,1
+123,SRS2_SchoolAge,10,SRS2 School-Age,1,NULL,1
