@@ -80,11 +80,6 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
                               'emptyOptionValue' => null,
                              );
 
-        // $db = Database::singleton();
-
-        // $query = "SELECT * FROM ".$this->table." WHERE CommentID='".$this->getCommentID()."'";
-        //$db->selectRow($query, $record);
-
         // setup the form
         $this->_setupForm();
     }
@@ -179,6 +174,7 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
         $this->form->addElement('advcheckbox', 't2w_check', "T2w | <i>T2w_SPC_1mm_p2x2</i>", null, null, array(null, "Yes"));
 
         $this->addLabel("<h4>$this->indent <BR><b>SNR Samples</b><BR></h4>");
+
         // First group of questions
         $this->form->addElement('static', null, "<i>*When determining Pass/Fail status:</i> <i> T1w Pass = Ant/Sup < 2 </i> | <i> T2w Pass = Ant/Sup < 3 </i>");
 
@@ -443,24 +439,6 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
                 array("check{@}=={@}NEVER_REQUIRED")
             );
         }
-
-        // Attempting to require SNR Sample Anterior, Superior and Pass/Fail columns based on whether the corresponding checkbox for each row was filled... Work in Progress
-        $t1w_questions = array(
-                          't1w_run1_anterior',
-                          't1w_run1_superior',
-                          't1w_run1_passfail',
-                         );
-
-        $t1w_2_questions = array(
-                            't1w_run2_anterior',
-                            't1w_run2_superior',
-                            't1w_run2_passfail',
-                           );
-        $t2w_questions   = array(
-                            't2w_anterior',
-                            't2w_superior',
-                            't2w_passfail',
-                           );
 
     }
     // End setupForm
