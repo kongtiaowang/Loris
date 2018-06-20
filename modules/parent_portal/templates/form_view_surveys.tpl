@@ -1,4 +1,3 @@
-<!--<script type="text/javascript" src="https://msruthy-dev.loris.ca/parent_portal/js/hello.js"></script> -->
 <div class="container">
     <div align="center">
         <h2>{$page_title} </h2>
@@ -26,7 +25,7 @@
             {/if}
             <td><div><p><a href="{$url}{$survey_data[data].OneTimePassword}" target="_blank">Open Survey</a></p></div></td>
             {if $survey_data[data].completion_time === '' || $survey_data[data].completion_time === NULL}
-            <td><div><p>10</p></div></td>
+            <td><div><p>15</p></div></td>
                 {else}
                 <td><div><p>{$survey_data[data].completion_time}</p></div></td>
             {/if}
@@ -35,4 +34,3 @@
         </tbody>
         </table>
     </div>
-</div>
