@@ -155,6 +155,16 @@ class DirectEntry extends React.Component {
 		return name;
 	}
 
+	removeHeaderTags(str) {
+		if (typeof str == "string") {
+			return str
+				.replace(/<h.>/g, '')
+				.replace(/<\/h.>/g, '')
+		} else {
+			return '';
+		}
+	}
+
 	nextPage() {
 
 		let page = 0;
@@ -179,7 +189,7 @@ class DirectEntry extends React.Component {
 		    data : JSON.stringify(data),
 		    type : 'PUT',
 		    contentType : 'application/json',
-		    success : function(result){
+		    success : (result) => {
 		        const page = that.state.page + 1;
 		        let InstrumentJSON;
 		        let reviewPage;
@@ -200,6 +210,7 @@ class DirectEntry extends React.Component {
 		                        i.response = value;
 		                    }
 		                }
+				i.question = this.removeHeaderTags(i.question);
 		            }
 		        }
 		        that.setState({
@@ -228,8 +239,6 @@ class DirectEntry extends React.Component {
 				});
 			}
 		});
-
-		
 	}
 
 	prevPage() {
