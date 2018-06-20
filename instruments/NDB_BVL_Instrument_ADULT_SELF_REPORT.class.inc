@@ -832,7 +832,6 @@ function _page5(){
 
     }
 
-<<<<<<< aa1549e56626d5b30b0895cefbecb8cebb90aca0
     function _page8(){
         $this-> addLabel("<h2>IX. Below is a list of items that describe people. For each item please select \"Not True\", \"Somewhat or Sometimes True\", or \"Very True or Often True\" to describe yourself <i>over the past 6 months.</i> Please answer all items as well as you can, even if some do not seem to apply to you. </h2>");
         $questions=[
