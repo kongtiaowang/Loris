@@ -19,7 +19,8 @@ class NDB_BVL_Instrument_survey extends \NDB_BVL_Instrument
         $field,
         $label,
         $rules = array(),
-        $rule_message = null
+        $rule_message = null,
+        $with_status_field = false  //toggles an optional NA dropdown for HourMin element
     ) {
         if ($rule_message === null) {
             $rule_message = "You are required to select a status "
@@ -34,13 +35,31 @@ class NDB_BVL_Instrument_survey extends \NDB_BVL_Instrument
             null
         );
 
+        if ($with_status_field) {     //if passing parameter as true, then add NA dropdown
+            $group[] =& $this->createSelect(
+                $field . "_status",
+                "",
+                array(
+                 null           => '',
+                 'not_answered' => 'Not Answered',
+                )
+            );
+            $this->XINRegisterRule(
+                $field,
+                array_merge($rules, array($field."_status{@}=={@}")),
+                $rule_message,
+                $field.'_group'
+            );
+        } else {                       //otherwise only need to validate time field
+            $this->XINRegisterRule(
+                $field,
+                array_merge($rules, array($field."{@}=={@}")),
+                $rule_message,
+                $field.'_group'
+            );
+        }
+
         $this->addGroup($group, $field . "_group", $label, null, false);
-        $this->XINRegisterRule(
-            $field,
-            array_merge($rules, array($field . '_status{@}=={@}')),
-            $rule_message,
-            $field . '_group'
-        );
         unset($group);
     }
 
