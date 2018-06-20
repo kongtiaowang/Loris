@@ -114,8 +114,9 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT extends NDB_BVL_Instrument
             null   => "",
             "male"   => "Male",
             "female" => "Female",
+            "other"  => "Other"
         );
-        $this->addSelect("user_gender", "Your gender: ", $opts);
+        $this->addSelect("user_gender", "Your sex: ", $opts);
 
         $this->addNumericElement("user_age", "Your age: ");
 
