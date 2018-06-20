@@ -7,7 +7,7 @@
         <div class="panel-body">
                 <form method="POST">
                     <p class="text-center">
-                        Please enter your ParentID.
+                        Please enter your ParentID
                     </p>
                     <div class="form-group">
                         {$form.parentID.html}
@@ -18,7 +18,7 @@
                         {/if}
                     </div>
                     <p class="text-center">
-                        Please enter your Email.
+                        Please enter your Email
                     </p>
                     <div class="form-group">
                         {$form.email.html}
