@@ -129,7 +129,7 @@ class NDB_BVL_Instrument_CCC2 extends NDB_BVL_Instrument
             "yes" => "Yes",
             "no" => "No",
         );
-        $this->addSelect("child_gender", "Child's Gender: ", $opts);
+        $this->addSelect("child_gender", "Child's Sex: ", $opts);
         $this->addBasicDate("user_birthdate", "Child's Birthdate:");
         $this->addSelect("hear_loss", "Does the child have a permanent hearing loss? ", $opts1);
         $this->addBasicTextArea("hear_loss_yes", "If Yes, give further details ");
