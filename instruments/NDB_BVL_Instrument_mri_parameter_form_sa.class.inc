@@ -193,7 +193,7 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
                              "t2w_repeat"      => "T2w repeat",
                             );
 
-        // Display questions with three columns, one for anterior rating, one for superior rating, and one for a pass/fail rating.
+        // Display questions with three columns, one for anterior rating, one for superior rating, and one for a pass/fail rating. Required if preceding checkbox is filled.
         $this->_displayHeaders("questions");
         foreach ($questions as $question => $label) {
             $group[] = $this->createLabel($label);
@@ -201,14 +201,36 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
                 $question . "_anterior",
                 ""
             );
+            $this->XINRegisterRule(
+                $question . "_anterior",
+                array($question . "_check{@}=={@}Yes"),
+                "Required.",
+                $question . "_group"
+            );
             $group[] = $this->createText(
                 $question . "_superior",
                 ""
             );
+            $this->XINRegisterRule(
+                $question . "_superior",
+                array($question . "_check{@}=={@}Yes"),
+                "Required.",
+                $question . "_group"
+            );
             $group[] = $this->createSelect(
                 $question . "_passfail",
                 "",
-                array('' => null, 'Pass' => "Pass", 'Fail' => "Fail")
+                array(
+                 ''     => null,
+                 'Pass' => "Pass",
+                 'Fail' => "Fail",
+                )
+            );
+            $this->XINRegisterRule(
+                $question . "_passfail",
+                array($question . "_check{@}=={@}Yes"),
+                "Required.",
+                $question . "_group"
             );
             $this->form->addGroup(
                 $group,
@@ -221,21 +243,40 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
 
         }
 
-        // Display questions with three columns, one for anterior rating, one for superior rating, and one for a pass/fail rating.
+        // Display optional repeat questions with three columns, one for anterior rating, one for superior rating, and one for a pass/fail rating.
         foreach ($repeat_questions as $question => $label) {
             $group[] = $this->createLabel($label);
             $group[] = $this->createText(
                 $question . "_anterior",
                 ""
             );
+            $this->XINRegisterRule(
+                $question . "_anterior",
+                array($question . "_anterior{@}=={@}NEVER_REQUIRED"),
+                $question . "_group"
+            );
             $group[] = $this->createText(
                 $question . "_superior",
                 ""
             );
+            $this->XINRegisterRule(
+                $question . "_superior",
+                array($question . "_superior{@}=={@}NEVER_REQUIRED"),
+                $question . "_group"
+            );
             $group[] = $this->createSelect(
                 $question . "_passfail",
                 "",
-                array('' => null, 'Pass' => "Pass", 'Fail' => "Fail")
+                array(
+                 ''     => null,
+                 'Pass' => "Pass",
+                 'Fail' => "Fail",
+                )
+            );
+            $this->XINRegisterRule(
+                $question . "_passfail",
+                array($question . "_passfail{@}=={@}NEVER_REQUIRED"),
+                $question . "_group"
             );
             $this->form->addGroup(
                 $group,
@@ -420,26 +461,6 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
                             't2w_superior',
                             't2w_passfail',
                            );
-
-        $this->XINRegisterRule("t1w_run1_anterior", array("t1w_run1_check{@}=={@}Yes"), "Required if is checked off.");
-        $this->XINRegisterRule("t1w_run1_superior", array("t1w_run1_check{@}=={@}Yes"), "Required if is checked off.");
-        $this->XINRegisterRule("t1w_run1_passfail", array("t1w_run1_check{@}=={@}Yes"), "Required if is checked off.");
-        $this->XINRegisterRule("t1w_run2_anterior", array("t1w_run2_check{@}=={@}Yes"), "Required if is checked off.");
-        $this->XINRegisterRule("t2w_anterior", array("t2w_check{@}=={@}Yes"), "Required if is checked off.");
-
-        /*
-        foreach ($t1w_questions as $t1wq) {
-            $this->XINRegisterRule($t1wq, array("t1w_run1_check{@}=={@}Yes"), "Required if T1w run1 is checked off.");
-        }
-
-        foreach ($t1w_2_questions as $t1wq2) {
-            $this->XINRegisterRule($t1wq2, array("t1w_run2_check{@}=={@}Yes"), "Required if T1w run2 is checked off.");
-        }
-
-        foreach ($t2w_questions as $t2wq) {
-            $this->XINRegisterRule($t2wq, array("t2w_check{@}=={@}Yes"), "Required if T2w is checked off.");
-        }
-        */
 
     }
     // End setupForm
