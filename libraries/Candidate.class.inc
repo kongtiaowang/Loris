@@ -183,6 +183,7 @@ class Candidate
        $drexid = Candidate::_generateID("DREX");
        $hopid  = Candidate::_generateID("HOP");
        $kingid = Candidate::_generateID("KING");
+       $parentid = Candidate::_generateID("PARENT");
        
        // insert the new candidate into the database
        $setArray = array('CandID'       => $candID,
@@ -199,7 +200,8 @@ class Candidate
                          'IBISID'       => $ibisid,
                          'DREXID'       => $drexid,
                          'HOPID'        => $hopid,
-                         'KINGID'       => $kingid
+                         'KINGID'       => $kingid,
+                         'PARENTID'     => $parentid
                          );
        
        $db->insert('candidate', $setArray);
