@@ -92,6 +92,25 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
     */
     function _setupForm()
     {
+        //determine page to display
+        if (preg_match(
+            "/mri_parameter_form_sa(_page[0-9]+)/",
+            $this->page,
+            $matches
+        )) {
+            call_user_func(array($this, $matches[1]));
+        } else {
+            $this->_main();
+        }
+        $this->form->addFormRule(array(&$this, 'XINValidate'));
+    }
+
+    /*
+     * Generates main page of the form
+     *
+     */
+    function _main()
+    {
         // Display test name
         $this->form->addElement('header', 'instrument_title', "MRI Parameter Form - School Age");
         $this->form->addElement('static', null, '<BR>');
@@ -99,7 +118,13 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
         // Automatically adds examiner & date of administration
         $this->_addMetadataFields();
         $this->form->addElement('static', null, '<BR>');
+    }
 
+    /**
+     * Generates page 1 of the form
+     */
+    function _page1()
+    {
         // PRE-SESSION SECTION
         $this->form->addElement('header', null, "<b><i>Pre-Session</i></b><BR><BR>");
 
@@ -406,7 +431,7 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
         $this->form->addElement('advcheckbox', 'data_entry_done_loris', "MRI PF Data Entry done in LORIS", null, null, array(null, "Yes"));
 
         $this->form->addFormRule(array(&$this, 'validate_page1'));
-        $this->form->addFormRule(array(&$this, 'XINValidate'));
+        $this->form->addFormRule(array(&$this, 'specialRules'));
 
         // Creates array of all checkbox questions for use in following XIN rule
         $checkboxquestions = array(
@@ -442,6 +467,31 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
 
     }
     // End setupForm
+
+    /**
+     * Prevents contradictory text field entry
+     */
+    function specialRules($values)
+    {
+        $errors        = array();
+        $error_message = "This field should be left blank if the previous field answer is not 'Other'.";
+        if ($values['Scanner_type'] != 'other') {
+            if ($values['Scanner_type_other'] != '') {
+                $errors['Scanner_type_other'] = $error_message;
+            }
+        }
+        if ($values['Data_type'] != 'other') {
+            if ($values['Data_type_other'] != '') {
+                $errors['Data_type_other'] = $error_message;
+            }
+        }
+        if ($values['medication'] != 'Yes') {
+            if ($values['medication_specify'] != '') {
+                $errors['medication_specify'] = "This field should be left blank if the previous field answer is not 'Yes'.";
+            }
+        }
+        return $errors;
+    }
 
     /**
      * Numeric validations for appropriate questions
