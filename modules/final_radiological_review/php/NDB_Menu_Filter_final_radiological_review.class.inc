@@ -77,7 +77,7 @@ function _makePretty($key, $val)
         case '4':
             return 'Marked';
         default:
-            return 'Not Answered';
+            return '';
         }
     } elseif ($key == 'Project') {
         $projectlist = Utility::getProjectList();
@@ -127,6 +127,7 @@ class NDB_Menu_Filter_Final_Radiological_Review extends NDB_Menu_Filter
         }
 
         $conflict_condition1 = "(CASE
+            WHEN r.CommentID IS NULL THEN 'NA'
             WHEN orig.review_results <> r.final_review_results THEN 'true'
             WHEN orig.abnormal_atypical_exclusionary <> r.final_exclusionary
                THEN 'true'
@@ -136,6 +137,7 @@ class NDB_Menu_Filter_Final_Radiological_Review extends NDB_Menu_Filter
             WHEN r.PVS <> r.PVS2 THEN 'true'
             ELSE 'false' END)";
         $conflict_condition2 = "(CASE
+            WHEN r.CommentID IS NULL THEN 'NA'
             WHEN r.Final_Review_Results <> r.Final_Review_Results2 THEN 'prim_second'
             WHEN r.Final_Exclusionary <> r.Final_Exclusionary2 THEN 'prim_second'
             WHEN r.SAS <> r.SAS2 THEN 'prim_second'
@@ -143,6 +145,15 @@ class NDB_Menu_Filter_Final_Radiological_Review extends NDB_Menu_Filter
             ELSE 'false' END)";
 
         $DB = Database::singleton();
+        
+        if ($DB->tableExists('mri_parameter_form') === false) {
+            throw new LorisException(
+                "Table 'mri_parameter_form' does not exist."
+                . " Please have this instrument set up in"
+                . " order to use this module properly."
+            );
+        }
+
         if ($DB->tableExists('radiology_review') === false) {
             throw new LorisException(
                 "Table 'radiology_review' does not exist."
@@ -151,18 +162,41 @@ class NDB_Menu_Filter_Final_Radiological_Review extends NDB_Menu_Filter
             );
         }
 
-        $this->query = " FROM radiology_review orig
-            LEFT JOIN final_radiological_review r ON (r.CommentID=orig.CommentID)
-            JOIN flag f ON (f.CommentID=orig.CommentID)
+        # This fetches the commentID (if any) of the radiology review done at the
+        # same visit at which the MRI parameter form with commentID orig.commentID
+        # was done (see $query below)
+        $radiologyReviewSubquery= 
+            "SELECT rr2.commentid 
+             FROM radiology_review rr2
+             JOIN flag f2 USING(CommentID)
+             JOIN session s2 ON(f2.sessionID=s2.ID)
+             WHERE s2.candid=c.candid
+             AND s2.ID=s.ID
+             AND rr2.commentid NOT LIKE 'DDE_%'";
+             
+        # This fetches the commentID (if any) of the final radiological review done 
+        # at the same visit at which the radiology review found above was done.
+        $frrSubquery= 
+            "SELECT frr2.commentid 
+             FROM final_radiological_review frr2
+             JOIN flag f3 USING(CommentID)
+             JOIN session s3 ON(f3.sessionID=s3.ID)
+             WHERE s3.candid=c.candid
+             AND s3.ID=s.ID
+             AND frr2.commentid NOT LIKE 'DDE_%'";
+             
+        $this->query = " FROM mri_parameter_form mpf
+            JOIN flag f ON (f.CommentID=mpf.CommentID)
             JOIN session s ON (s.ID=f.SessionID)
             JOIN candidate c ON (c.CandID=s.CandID)
             LEFT JOIN Project pjct ON (pjct.ProjectID=c.ProjectID)
             LEFT JOIN psc ON (c.CenterID=psc.CenterID)
-            WHERE orig.commentid NOT LIKE 'DDE_%' AND orig.commentid IS NOT NULL
-            AND s.active='Y' AND NOT (f.Administration='None')
-            AND f.Data_entry='Complete'
-            AND (orig.Scan_done IS NULL OR orig.Scan_done <> 'no')";
-
+            LEFT JOIN radiology_review orig ON (orig.CommentID=($radiologyReviewSubquery))
+            LEFT JOIN final_radiological_review r ON (r.CommentID=($frrSubquery))
+            WHERE mpf.commentid NOT LIKE 'DDE_%' AND mpf.commentid IS NOT NULL
+            AND s.active='Y'
+            AND mpf.T1_Scan_Done IN ('Complete', 'Partial')";
+            
         $isT1Acq = "CASE
            COALESCE((
                 SELECT fi.FileID
@@ -353,11 +387,13 @@ class NDB_Menu_Filter_Final_Radiological_Review extends NDB_Menu_Filter
                                      );
         $conflict_options1         = array(
                                       null    => 'All',
+                                      'NA'    => 'NA',
                                       'true'  => 'Yes',
                                       'false' => 'No',
                                      );
         $conflict_options2         = array(
                                       null          => 'All',
+                                      'NA'          => 'NA',
                                       'prim_second' => 'Yes',
                                       'false'       => 'No',
                                      );

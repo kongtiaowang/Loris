@@ -124,9 +124,10 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
                            null     => "",
                            "male"   => "Male",
                            "female" => "Female",
+                           "other"  => "Other"
                           );
 
-        $this->addSelect("adults_gender", "ADULT'S GENDER", $gender_options);
+        $this->addSelect("adults_gender", "ADULT'S SEX", $gender_options);
 
         //Adult's Age
         $this->addBasicText("adult_age", "ADULT'S AGE <br><h5><i>(Please enter a numeric value between 0-100 or if you really don't wish to answer; enter NA)</i></h5>");

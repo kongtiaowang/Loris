@@ -116,7 +116,7 @@ class NDB_BVL_Instrument_mock_scanner_training_form extends NDB_BVL_Instrument
 Story Board","vt"=>"(4) Visual Timer","vc"=>"(5) Verbal Countdown","sb"=>"(6) Sensory Bin","spin_office_chair"=>"(7) Spin in Office Chair",
                 "fsv"=>"(8) First/Then Statements Or Visual","wb"=>"(9) Weighted Blanket","mod_sibling"=>"(10) Model on Sibling, Parent,Stuffed Animal",
                 "motion_sensor"=>"(11) Motion Sensor/Video Pause","pref_video"=>"(12) Preferred Video/Movie","increase_sound"=>"(13) Increase Scanner Sound Slowly",
-                "verb_reminders"=>"(14) Verbal Reminders","verbal_praise"=>"(15) Verbal Praise","edibale_treats"=>"(16) Edibale Treats");
+                "verb_reminders"=>"(14) Verbal Reminders","verbal_praise"=>"(15) Verbal Praise","edibale_treats"=>"(16) Edible Treats");
             $this->addSelect('bx_strategies_'.$i,"*Select Bx Training Strategies Used?<BR>Cmd+Click or Ctrl+Click to select multiple options", $training_options, array("multiple"));
             $this->addTextAreaElement('session_comments_' . $i, 'Comments:');
 

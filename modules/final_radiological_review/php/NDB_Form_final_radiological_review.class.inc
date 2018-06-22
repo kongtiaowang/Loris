@@ -286,21 +286,40 @@ class NDB_Form_Final_Radiological_Review extends NDB_Form
             }
 
             $history = $DB->pselect(
-                'SELECT userID, changeDate, col, old, new 
-                 FROM final_radiological_review_history
-                WHERE CommentID= :primKey ORDER BY changeDate DESC',
+                'SELECT 
+                    frrh.userID, 
+                    frrh.changeDate, 
+                    frrh.col, 
+                    frrh.old, 
+                    frrh.new, 
+                    ex_old.full_name as old_examiner, 
+                    ex_new.full_name as new_examiner
+                 FROM final_radiological_review_history frrh
+                 LEFT JOIN examiners ex_old 
+                    ON(col="Final_Examiner" AND old=ex_old.examinerID)
+                 LEFT JOIN examiners ex_new 
+                    ON(col="Final_Examiner" AND new=ex_new.examinerID)
+                WHERE CommentID= :primKey 
+                ORDER BY changeDate DESC',
                 array('primKey' => $this->identifier)
             );
 
             $history_display = '';
             foreach ($history as &$history_item) {
+				# For the Final_Examiner column, display the full name instead of the
+				# numerical ID
+				$oldValue = $history_item['col'] == 'Final_Examiner' ?
+				    $history_item['old_examiner'] : $history_item['old'];
+				$newValue = $history_item['col'] == 'Final_Examiner' ?
+				    $history_item['new_examiner'] : $history_item['new'];
+				    
                 $history_display .= '<tr><td>' .
                     $history_item['changeDate'] . '</td><td>' .
                     $history_item['userID'] . '</td><td>' .
                     $history_item['col'] . '</td><td>' .
-                    _makePretty($history_item['col'], $history_item['old']) .
+                    _makePretty($history_item['col'], $oldValue) .
                     '</td><td>' .
-                    _makePretty($history_item['col'], $history_item['new']) .
+                    _makePretty($history_item['col'], $newValue) .
                     '</td></tr>';
             }
             $defaults   = array_merge(

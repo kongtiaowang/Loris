@@ -256,7 +256,7 @@ class NDB_BVL_Instrument_Seizure_Questionnaire extends NDB_BVL_Instrument
             "static",
             null,
             null,
-            "# of minutes in duration");
+            "Number of minutes in duration");
         $this->addGroup(
             $group,
             "page2_headers",
@@ -301,7 +301,7 @@ class NDB_BVL_Instrument_Seizure_Questionnaire extends NDB_BVL_Instrument
                     "yes" => "Yes"
                 )
             );
-            $group[] =& $this->createText(
+            $group[] =& $this->createTextArea(
                 $name . "_duration",
                 ""
             );
@@ -339,6 +339,8 @@ class NDB_BVL_Instrument_Seizure_Questionnaire extends NDB_BVL_Instrument
             );
             unset($group);
         }
+        $this->form->addFormRule(array(&$this, "validateNumerics"));
+
     }
 
     function _page3() {
@@ -413,6 +415,24 @@ class NDB_BVL_Instrument_Seizure_Questionnaire extends NDB_BVL_Instrument
             );
             unset($group);
           }
+    }
 
+    /**
+     * Validates grouped numeric inputs
+     *
+     * @return array Array of errors
+     */
+    function validateNumerics($values)
+    {
+        $errors = array();
+        $questions =
+            array("p2_1_duration", "p2_2_duration", "p2_3_duration", "p2_4_duration",
+                  "p2_5_duration", "p2_6_duration", "p2_7_duration");
+        foreach ($questions as $question) {
+            if ((!is_numeric($values[$question])) && !empty($values[$question])) {
+                $errors[$question] = "Please enter a numeric value.";
+            }
+        }
+        return $errors;
     }
 }

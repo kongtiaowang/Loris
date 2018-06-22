@@ -27,7 +27,7 @@ CREATE TABLE `ADULT_SELF_REPORT` (
 `user_first_name_status` enum('not_answered') default NULL,
 `user_last_name` varchar(255) default NULL,
 `user_last_name_status` enum('not_answered') default NULL,
-`user_gender` enum('male','female') default NULL,
+`user_gender` enum('male','female','other') default NULL,
 `user_age` varchar(255) default NULL,
 `user_age_status` enum('not_answered') default NULL,
 `user_ethnic_group` varchar(255) default NULL,

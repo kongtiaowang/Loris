@@ -14,7 +14,7 @@ CREATE TABLE `ABCL` (
 `first_name` varchar(255) default NULL,
 `middle_name` varchar(255) default NULL,
 `last_name` varchar(255) default NULL,
-`adults_gender` enum('male','female') default NULL,
+`adults_gender` enum('male','female','other') default NULL,
 `adult_age` varchar(255) default NULL,
 `adult_age_status` enum('not_answered') default NULL,
 `ethnic_group_or_race` varchar(255) default NULL,

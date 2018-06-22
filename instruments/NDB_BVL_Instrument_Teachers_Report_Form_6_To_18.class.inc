@@ -169,7 +169,7 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
             "Required."
         );
 
-        $this->addNumericElement("I_months_known_pupil", "<h3>I. For how many months have you known this pupil?</h3>");
+        $this->addBasicText("I_months_known_pupil", "<h3>I. For how many months have you known this pupil?</h3><h5><i>(Please enter a numeric value between 0-120. If you don't wish to answer, enter NA.)</i></h5>");
 
         $II_options = array(
                        null         => "",
@@ -203,7 +203,7 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
 
         $this->addSelect("VI_repeated_any_grades", "<h3>VI. Has he/she repeated any grades?</h3>", $V_VI_options);
 
-        $this->addBasicText("VI_is_yes", "$this->indent If Yes -- what kind and when?");
+        $this->addBasicText("VI_is_yes", "$this->indent Yes -- grades and reasons:");
 
         $this->XINRegisterRule(
             "VI_is_yes",
@@ -786,6 +786,8 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
         if ($values["role_at_school"] != "other") {
             $this->validate_empty_subquestions($values, ["if_other_role"], $errors);
         }
+
+        $this->validate_numeric($values, "I_months_known_pupil", $errors, 0, 120);
 
         if ($values["V_been_referred_for_special"] != "yes") {
             $this->validate_empty_subquestions($values, ["V_is_yes"], $errors);

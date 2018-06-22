@@ -1,6 +1,6 @@
 <?php
-/**
- * This file contains the NDB_BVL_Instrument_TADULT_SELF_REPORT
+/*
+ * This file contains the NDB_BVL_Instrument_ADULT_SELF_REPORT
  * class
  *
  * PHP Version 5
@@ -114,8 +114,9 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT extends NDB_BVL_Instrument
             null   => "",
             "male"   => "Male",
             "female" => "Female",
+            "other"  => "Other"
         );
-        $this->addSelect("user_gender", "Your gender: ", $opts);
+        $this->addSelect("user_gender", "Your sex: ", $opts);
 
         $this->addNumericElement("user_age", "Your age: ");
 
@@ -705,7 +706,6 @@ function _page5(){
 
     function _page6(){
               $this-> addLabel("<h2>IX. Below is a list of items that describe people. For each item please select \"Not True\", \"Somewhat or Sometimes True\", or \"Very True or Often True\" to describe yourself <i>over the past 6 months.</i> Please answer all items as well as you can, even if some do not seem to apply to you. </h2>");
-
               $this-> addLabel("<h3>56. Physical problems <i><b>without known medical cause:</b></i></h3>");
               $questions=[
                 "a. Aches or pains (<i><b>not</b></i> stomach or headaches)",
@@ -718,24 +718,22 @@ function _page5(){
                 "h. Heart pounding or racing",
                 "i. Numbness or tingling in body parts"
               ];
-
-               $opts = array(null=> "", 
+               $opts = array(null=> "",
           "not_true" => "Not True",
           "sometimes" => "Somewhat or Sometimes True",
           "very_true" => "Very True or Often True");
-
                     for ($i = 0; $i<count($questions); $i++){
           //$this->addLabel("{$questions[$i]}");
           $n = 56;
           $q_id = "{$n}_" . chr(ord('a')+$i);
           $this->addSelect("question_{$q_id}", "{$questions[$i]}", $opts);
-          
+
           if ( strpos($questions[$i], "(describe)") !== false){
             //print_r("found it!");
             //die();
             $this->addTextElement("q_{$q_id}_description", "$this->indent Description: ");
             $this->XINRegisterRule(
-              "q_{$q_id}_description", 
+              "q_{$q_id}_description",
               array("question_{$q_id}{@}=={@}sometimes|very_true"),
               "Required",
               "q_{$q_id}_description_group"
@@ -766,21 +764,21 @@ function _page5(){
           //$this->addLabel("{$questions[$i]}");
           $n = $i+57;
           $this->addSelect("question_{$n}", "{$n}.  {$questions[$i]}", $opts);
-          
+
           if ( strpos($questions[$i], "(describe)") !== false){
             //print_r("found it!");
             //die();
             $this->addTextElement("q_{$n}_description", "$this->indent Description: ");
             $this->XINRegisterRule(
-              "q_{$n}_description", 
+              "q_{$n}_description",
               array("question_{$n}{@}=={@}sometimes|very_true"),
               "Required",
               "q_{$n}_description_group"
               );
           }
         }
-
     }
+
     function _page7(){
       $this-> addLabel("<h2>IX. Below is a list of items that describe people. For each item please select \"Not True\", \"Somewhat or Sometimes True\", or \"Very True or Often True\" to describe yourself <i>over the past 6 months.</i> Please answer all items as well as you can, even if some do not seem to apply to you. </h2>");
       $questions=[
@@ -833,70 +831,68 @@ function _page5(){
 
     }
 
-function _page8(){
-  $this-> addLabel("<h2>IX. Below is a list of items that describe people. For each item please select \"Not True\", \"Somewhat or Sometimes True\", or \"Very True or Often True\" to describe yourself <i>over the past 6 months.</i> Please answer all items as well as you can, even if some do not seem to apply to you. </h2>");
-      $questions=[
-                "I think about sex too much",
-                "I threaten to hurt people",
-                "I like to help others",
-                "I dislike staying in one place for very long",
-                "I have trouble sleeping (describe)",
-                "I stay away from my job even when I'm not sick or not on vacation",
-                "I don't have much energy",
-                "I am unhappy, sad or depressed",
-                "I am louder than others",
-                "People think I am disorganized",
-                "I try to be fair to others",
-                "I feel that I can't succeed",
-                "I tend to lose things",
-                "I like to try new things",
-                "I wish I were of the opposite sex",
-                "I keep from getting involved with others",
-                "I worry a lot",
-                "I worry about my relations with the opposite sex",
-                "I fail to pay my debts or meet other financial responsibilities",
-                "I feel restless or fidgety",
-                "I get upset too easily",
-                "I have trouble managing money or credit cards",
-                "I am too impatient",
-                "I am not good at details",
-                "I drive too fast",
-                "I tend to be late for appointments",
-                "I have trouble keeping a job",
-                "I am a happy person"
-              ];
+    function _page8(){
+        $this-> addLabel("<h2>IX. Below is a list of items that describe people. For each item please select \"Not True\", \"Somewhat or Sometimes True\", or \"Very True or Often True\" to describe yourself <i>over the past 6 months.</i> Please answer all items as well as you can, even if some do not seem to apply to you. </h2>");
+        $questions=[
+            "I think about sex too much",
+            "I threaten to hurt people",
+            "I like to help others",
+            "I dislike staying in one place for very long",
+            "I have trouble sleeping (describe)",
+            "I stay away from my job even when I'm not sick or not on vacation",
+            "I don't have much energy",
+            "I am unhappy, sad or depressed",
+            "I am louder than others",
+            "People think I am disorganized",
+            "I try to be fair to others",
+            "I feel that I can't succeed",
+            "I tend to lose things",
+            "I like to try new things",
+            "I wish I were of the opposite sex",
+            "I keep from getting involved with others",
+            "I worry a lot",
+            "I worry about my relations with the opposite sex",
+            "I fail to pay my debts or meet other financial responsibilities",
+            "I feel restless or fidgety",
+            "I get upset too easily",
+            "I have trouble managing money or credit cards",
+            "I am too impatient",
+            "I am not good at details",
+            "I drive too fast",
+            "I tend to be late for appointments",
+            "I have trouble keeping a job",
+            "I am a happy person"
+        ];
+        $opts = array(null=> "",
+            "not_true" => "Not True",
+            "sometimes" => "Somewhat or Sometimes True",
+            "very_true" => "Very True or Often True");
+        for ($i = 0; $i<count($questions); $i++){
+            //$this->addLabel("{$questions[$i]}");
+            $n = 96 + $i;
+            $this->addSelect("question_{$n}", "{$n}.  {$questions[$i]}", $opts);
 
-               $opts = array(null=> "", 
-          "not_true" => "Not True",
-          "sometimes" => "Somewhat or Sometimes True",
-          "very_true" => "Very True or Often True");
-
-                    for ($i = 0; $i<count($questions); $i++){
-          //$this->addLabel("{$questions[$i]}");
-          $n = 96 + $i;
-          $this->addSelect("question_{$n}", "{$n}.  {$questions[$i]}", $opts);
-          
-          if ( strpos($questions[$i], "(describe)") !== false){
-            //print_r("found it!");
-            //die();
-            $this->addTextElement("q_{$n}_description", "$this->indent Description: ");
-            $this->XINRegisterRule(
-              "q_{$n}_description", 
-              array("question_{$n}{@}=={@}sometimes|very_true"),
-              "Required",
-              "q_{$n}_description_group"
-              );
-          }
+            if ( strpos($questions[$i], "(describe)") !== false){
+                //print_r("found it!");
+                //die();
+                $this->addTextElement("q_{$n}_description", "$this->indent Description: ");
+                $this->XINRegisterRule(
+                    "q_{$n}_description",
+                    array("question_{$n}{@}=={@}sometimes|very_true"),
+                    "Required",
+                    "q_{$n}_description_group"
+                );
+            }
         }
         $this->addNumericElement("tobacco_per_day", "<b>124. <i>In the past 6 months,</i></b> how many times per day did you use tobacco (including smokeless tobacco)? ");
         $this->addNumericElement("days_drunk", "<b>125.<i> In the past 6 months,</i></b> on how many days were you drunk?");
         $this->addNumericElement("days_drugs", "<b>126. <i> In the past 6 months,</i></b> on how many days did you use drugs for nonmedical purposes (including marijuana, cocaine, and other drugs, except alcohol and nicotine)?");
-        
+
         $this->addTextAreaElement("IX_comments", "Additional Comments (optional): ");
         $this->XINRegisterRule(
-              "IX_comments",
-              array("IX_comments{@}=={@}NEVER_REQUIRED")
-          );
+            "IX_comments",
+            array("IX_comments{@}=={@}NEVER_REQUIRED")
+        );
     }
 }
 
