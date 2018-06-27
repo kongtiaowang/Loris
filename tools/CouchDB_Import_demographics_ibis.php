@@ -247,9 +247,9 @@ class CouchDBDemographicsImporter {
                                         ON ( ps.candid = c.candid )
                                  LEFT JOIN flag f 
                                         ON ( f.SessionID = s.ID)
+                                           AND f.Test_name ='DSMIV_checklist' AND f.CommentID  NOT LIKE 'DDE%'
                                  LEFT JOIN DSMIV_checklist dsm
-                                        ON ( dsm.CommentID = f.CommentID )
-                                           AND dsm.CommentID  NOT LIKE 'DDE%'
+                                       ON ( dsm.CommentID = f.CommentID )
                                  LEFT JOIN participant_status_options pso 
               ON ( pso.id = ps.participant_status )";
 
