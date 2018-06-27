@@ -136,7 +136,7 @@ class CouchDBDemographicsImporter {
         ),
         'ASD_DX' => array(
             'Description' => 'Combines questions 4a(autistic disorder) and 4b(PDD) on the DSMIV_checklist',
-            'Type' => 'varchar(255)'
+            'Type' => 'varchar(255)',
         )
     );
 
