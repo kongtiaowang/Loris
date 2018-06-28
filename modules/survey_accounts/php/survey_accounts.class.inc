@@ -58,7 +58,6 @@ class Survey_Accounts extends \NDB_Menu_Filter
         $this->columns      = array(
                                'c.PSCID AS PSCID',
                                's.Visit_label AS Visit',
-                               'p.Email as Email',
                                'p.Test_name as SurveyName',
                                'p.OneTimePassword as URL',
                                'p.Status',
