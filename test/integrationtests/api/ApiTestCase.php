@@ -3,7 +3,7 @@ namespace LORIS\integrationtests;
 
 require_once __DIR__ . '/../../../vendor/autoload.php';
 //require_once(__DIR__.'/../../../test/integrationtests/api/HttpClient.php');
-
+use \LORIS\tests\api\HttpClient;
 use \PHPUnit\Framework\TestCase;
 use \Zend\Diactoros\Uri;
 
