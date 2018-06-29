@@ -64,6 +64,12 @@ class Settings
         return $www['url'];
     }
 
+
+    public function getAPIUrl()
+    {
+       // $api = $this->_config->getSetting('api');
+        return "http://localhost:8000";
+    }
     /**
      * Check if sandbox setting is true
      *
