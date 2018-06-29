@@ -38,18 +38,11 @@ class Training extends \NDB_Form
     }
     /**
     * Loads the project page.
-    *
-    * @param string $name       The test name being accessed
-    * @param string $page       The subtest being accessed (may be null)
-    * @param string $identifier The identifier for the data to load on this page
-    * @param string $commentID  The CommentID to load the data for
-    * @param string $formname   The name to give this form
-    *
-    * @return none
+     *
+    * @return void
     */
-    function _setupPage($name, $page, $identifier, $commentID, $formname)
+    function setup()
     {
-        parent::_setupPage($name, $page, $identifier, $commentID, $formname);
         $instruments = $this->getCertificationInstruments();
 
         $certifications = array();
@@ -122,19 +115,22 @@ class Training extends \NDB_Form
         // Get the instruments requiring certification from the config
         $certificationConfig      = $config->getSetting("Certification");
         $certificationInstruments = $certificationConfig['CertificationInstruments'];
-        $certificationInstruments['test']
-            = \Utility::toArray($certificationInstruments['test']);
         $instruments = array();
 
-        foreach ($certificationInstruments['test'] as $certificationInstrument) {
-            $test_key = $certificationInstrument['@']['value'];
-            $testID   = $DB->selectOne(
-                "SELECT ID
-                 FROM test_names
-                 WHERE Test_name
-                 LIKE '%$test_key%'"
-            );
-            $instruments[$testID] = $certificationInstrument['#'];
+        if (isset($certificationInstruments['test'])) {
+            $certificationInstruments['test']
+                = \Utility::toArray($certificationInstruments['test']);
+            foreach ($certificationInstruments['test'] as $certificationInstrument) {
+                $test_key = $certificationInstrument['@']['value'];
+                $testID   = $DB->pselectOne(
+                    "SELECT ID
+                           FROM test_names
+                           WHERE Test_name
+                           LIKE CONCAT('%', :tk, '%')",
+                    array('tk' => $test_key)
+                );
+                $instruments[$testID] = $certificationInstrument['#'];
+            }
         }
 
         return $instruments;
