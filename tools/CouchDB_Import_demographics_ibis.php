@@ -197,8 +197,8 @@ class CouchDBDemographicsImporter {
                                    WHEN s.subprojectid = 10 THEN 'LR' 
                                  END                                                         AS Risk, 
                                  CASE 
-                                   WHEN (dsm.q4_criteria_autistic_disorder = 'no' && q4_criteria_PDD ='no') THEN 'No' 
-                                   WHEN (dsm.q4_criteria_autistic_disorder = 'yes' || q4_criteria_PDD ='yes') THEN 'Yes'  
+                                   WHEN (dsm.q4_criteria_autistic_disorder = 'no' && dsm.q4_criteria_PDD ='no') THEN 'No' 
+                                   WHEN (dsm.q4_criteria_autistic_disorder = 'yes' || dsm.q4_criteria_PDD ='yes') THEN 'Yes'  
                                  END                                                         AS ASD_DX, 
                                  p.alias                                                     AS Site, 
                                  c.Gender, 
