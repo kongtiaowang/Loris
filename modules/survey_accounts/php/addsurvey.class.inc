@@ -132,7 +132,9 @@ class AddSurvey extends \NDB_Form
         if (!empty($values['Email']) && empty($values['Email2'])) {
             return array('Email2' => 'Please confirm the email address.');
         }
-
+        if (empty($values['Email']) ) {
+                return array('Email' => 'Email is required.');
+        }
         if (empty($values['Test_name'])) {
             return array('Test_name' => 'Please choose an instrument.');
         }

@@ -57,6 +57,7 @@ class Survey_Accounts extends \NDB_Menu_Filter
         // set the class variables
         $this->columns      = array(
                                'c.PSCID AS PSCID',
+                               'c.ParentID AS ParentID',
                                's.Visit_label AS Visit',
                                'p.Test_name as SurveyName',
                                'p.OneTimePassword as URL',
