@@ -83,6 +83,8 @@ class parent_portal extends \NDB_Form
                 )
             );
             if ($numSurveys == 0) {
+                //As suggested by Pierre to deter malicious automated attempts to hack the portal.
+                sleep(3);
                 $errors['email'] = "Sorry, No Surveys Found With The Above Information.";
             }
         }

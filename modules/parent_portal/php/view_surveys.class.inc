@@ -47,8 +47,10 @@ class view_surveys extends \NDB_Form
             exit;
         }
         $this->tpl_data['page_title'] = 'Welcome To Parent Portal! (ID:'.$pid.')';
-        $url= $baseURL. "/survey_module/?key=";
-        $this->tpl_data['url']=$url;
+        $reg_url= $baseURL. "/survey_module/?key=";
+        $this->tpl_data['reg_url']=$reg_url;
+        $airp_url= $baseURL. "/survey.php?key=";
+        $this->tpl_data['airp_url']=$airp_url;
         $DB =& \Database::singleton();
         $query=$DB->pselect("select tn.Full_name,tn.Test_name,s.Visit_label, p.Status,p.OneTimePassword,ict.completion_time
             FROM participant_accounts p 
