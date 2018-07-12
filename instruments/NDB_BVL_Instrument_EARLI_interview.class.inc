@@ -69,7 +69,7 @@ class NDB_BVL_Instrument_EARLI_interview extends NDB_BVL_Instrument {
     {
         $db =& Database::singleton();
 
-        $sessionid = $db->selectOne("SELECT ID FROM session WHERE CandID='".$_REQUEST['candID']."' and Visit_label LIKE 'Vsupplement'");
+        $sessionid = $db->pselectOne("SELECT ID FROM session WHERE CandID='".$_REQUEST['candID']."' and Visit_label LIKE 'Vsupplement'",array());
         return $sessionid;
     }
 
@@ -77,7 +77,7 @@ class NDB_BVL_Instrument_EARLI_interview extends NDB_BVL_Instrument {
     {
         $db =& Database::singleton();
 
-        $commentid = $db->selectOne("SELECT CommentID FROM flag WHERE SessionID='$sessionid' and Test_name = 'EARLI_interview_S3_inserts' and CommentID NOT LIKE 'DDE%'");
+        $commentid = $db->pselectOne("SELECT CommentID FROM flag WHERE SessionID='$sessionid' and Test_name = 'EARLI_interview_S3_inserts' and CommentID NOT LIKE 'DDE%'",array());
 
         return $commentid;
     }

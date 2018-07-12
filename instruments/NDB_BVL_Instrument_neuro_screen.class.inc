@@ -592,7 +592,7 @@ class NDB_BVL_Instrument_neuro_screen extends NDB_BVL_Instrument
 
             //applicable visit version
             $query = "SELECT visit from neuro_screen WHERE CommentID = '".$this->getCommentID()."'";
-            $visit = $db->selectOne($query);
+            $visit = $db->pselectOne($query,array());
 
 
             $requiredQuestions = array(); //moving it outside of the scope of the switch.  Seems to help.
