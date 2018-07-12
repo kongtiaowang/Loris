@@ -93,6 +93,7 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT extends NDB_BVL_Instrument
         }
 
         $this->form->addFormRule(array(&$this, 'XINValidate'));
+        $this->form->addFormRule(array(&$this, 'asrSpecialRules'));
     }
 
     /**
@@ -118,9 +119,9 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT extends NDB_BVL_Instrument
         );
         $this->addSelect("user_gender", "Your sex: ", $opts);
 
-        $this->addNumericElement("user_age", "Your age: ");
+        $this->addBasicText("user_age", "Your age:<br><h5><i>(Please enter a numeric value between 0-100 or if you really don't wish to answer; enter NA)</i></h5>");
 
-        $this->addTextElement("user_ethnic_group", "Your ethnic group or race: ");
+        $this->addBasicText("user_ethnic_group", "Your ethnic group or race:<br><h5><i>(If you really don't wish to answer enter NA)</i></h5>");
 
         $this->addDateElement(
             "user_birthdate",
@@ -139,8 +140,8 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT extends NDB_BVL_Instrument
 
         $this->addLabel("<b>YOUR USUAL TYPE OF WORK, even if not working now.</b> Please be specific -- for example, auto mechanic; high school teacher; homemaker; laborer; lathe operator; shoe salesman; army sergeant; student(indicate what you are studying & what degree you expect)");
 
-        $this->addTextElement("user_work", "Your work: ");
-        $this->addTextElement("spouse_work", "Spouse or partner's work: ");
+        $this->addBasicText("user_work", "Your work:<br><h5><i>(If you don't wish to answer enter NA)</i></h5>");
+        $this->addBasicText("spouse_work", "Spouse or partner's work:<br><h5><i>(If you don't wish to answer enter NA)</i></h5>");
         $this->XINRegisterRule("spouse_work",
             array("spouse_work{@}=={@}NEVER_REQUIRED")
         );
@@ -160,13 +161,13 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT extends NDB_BVL_Instrument
 
         $this->addSelect("user_education", "<b>PLEASE SELECT YOUR HIGHEST EDUCATION</b>", $opts);
 
-        $this->addTextElement("if_other_education", "$this->indent If other, please specify: ");
+        $this->addBasicText("if_other_education", "$this->indent If other, please specify:<br><h5><i>$this->indent$this->indent(If you don't wish to answer enter NA)</i></h5>");
 
         $this->XINRegisterRule(
             "if_other_education",
             array("user_education{@}=={@}other"),
             "Required",
-            "if_other_education_group"
+            "if_other_education"
         );
     }
 
@@ -215,7 +216,7 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT extends NDB_BVL_Instrument
 
           $this->addSelect("1_D", "D. About how many times a month do any friends or family visit you?", $opts2);
 
-          $this->addTextAreaElement("I_comments", "Additional comments (optional): ");
+          $this->addBasicTextArea("I_comments", "Additional comments (optional): ");
           $this->XINRegisterRule(
               "I_comments",
               array("I_comments{@}=={@}NEVER_REQUIRED")
@@ -234,13 +235,13 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT extends NDB_BVL_Instrument
                   );
 
           $this->addSelect("marital_state", "What is your marital status?", $opts);
-          $this->addTextElement("if_other_marital", "$this->indent If other -- please describe: ");
+          $this->addBasicText("if_other_marital", "$this->indent If other -- please describe:<br><h5><i>$this->indent$this->indent(If you don't wish to answer enter NA)</i></h5>");
 
           $this->XINRegisterRule(
               "if_other_marital",
               array("marital_state{@}=={@}other"),
               "Required",
-              "if_other_marital_group"
+              "if_other_marital"
           );
           $opts= array(
                     null => "",
@@ -310,7 +311,7 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT extends NDB_BVL_Instrument
               "Required"
           );
 
-          $this->addTextAreaElement("II_comments", "Additional Comments (optional): ");
+          $this->addBasicTextArea("II_comments", "Additional Comments (optional): ");
           $this->XINRegisterRule(
               "II_comments",
               array("II_comments{@}=={@}NEVER_REQUIRED")
@@ -391,7 +392,7 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT extends NDB_BVL_Instrument
         $opts_temp["no_stepchildren"] = "I have no step children";
 
         $this->addSelect("Family_F", "F. Get along with your stepchildren", $opts_temp);
-        $this->addTextAreaElement("III_comments", "Additional Comments (optional): ");
+        $this->addBasicTextArea("III_comments", "Additional Comments (optional): ");
         $this->XINRegisterRule(
               "III_comments",
               array("III_comments{@}=={@}NEVER_REQUIRED")
@@ -403,12 +404,12 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT extends NDB_BVL_Instrument
                     "no" => "<b>No -- please skip to section V.</b>",
                     "yes" => "<b>Yes -- please describe your job(s)</b>");
         $this->addSelect("jobs", "<b><i> At any time in the past 6 months,</i></b> did you have any paid jobs (including self-employment and military service)? ", $opts);
-        $this->addTextAreaElement("job_desc","Description of your job(s)");
+        $this->addBasicTextArea("job_desc","Description of your job(s):<br><h5><i>(Required if you answered 'Yes' to the above. If you don't wish to answer enter NA)</i></h5>");
         $this->XINRegisterRule(
               "job_desc",
               array("jobs{@}=={@}yes"),
               "Required",
-             "job_desc_group"
+             "job_desc"
               );
         $opts = array(
                   null => "",
@@ -471,7 +472,7 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT extends NDB_BVL_Instrument
               "Required"
           );
 
-        $this->addTextAreaElement("IV_comments", "Additional Comments (optional): ");
+        $this->addBasicTextArea("IV_comments", "Additional Comments (optional):");
         $this->XINRegisterRule(
               "IV_comments",
               array("IV_comments{@}=={@}NEVER_REQUIRED")
@@ -484,34 +485,34 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT extends NDB_BVL_Instrument
 
         $this->addSelect("education", "<b><i>At any time in the past 6 months,</i><b> did you attend school, college, or any other education or training program?", $opts);
         
-        $this->addTextElement("kind_of_program","What kind of school or program?");
+        $this->addBasicText("kind_of_program","What kind of school or program?<br><h5><i>(If you don't wish to answer enter NA)</i></h5>");
           $this->XINRegisterRule(
               "kind_of_program",
               array("education{@}=={@}yes"),
               "Required",
-              "kind_of_program_group"
+              "kind_of_program"
           );
-        $this->addTextElement("degree_seeking", "What degree or diploma are you seeking?");
+        $this->addBasicText("degree_seeking", "What degree or diploma are you seeking?<br><h5><i>(if you don't wish to answer enter NA)</i></h5>");
           $this->XINRegisterRule(
               "degree_seeking",
               array("education{@}=={@}yes"),
               "Required",
-              "degree_seeking_group"
+              "degree_seeking"
 
           );
-        $this->addTextElement("major", "Major?");
+        $this->addBasicText("major", "Major?<br><h5><i>(If you don't wish to answer enter NA)</i></h5>");
           $this->XINRegisterRule(
               "major",
               array("education{@}=={@}yes"),
               "Required",
-              "major_group"
+              "major"
           );
-        $this->addTextElement("expected_grad", "When do you expect to receive your degree or diploma?");
+        $this->addBasicText("expected_grad", "When do you expect to receive your degree or diploma?<br><h5><i>(If you don't wish to answer enter NA)</i></h5>");
         $this->XINRegisterRule(
               "expected_grad",
               array("education{@}=={@}yes"),
               "Required",
-              "expected_grad_group"
+              "expected_grad"
           );
 
         $opts = array(null=> "",
@@ -549,7 +550,7 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT extends NDB_BVL_Instrument
               array("education{@}=={@}yes"),
               "Required"
           );
-        $this->addTextAreaElement("V_comments", "Additional Comments (optional): ");
+        $this->addBasicTextArea("V_comments", "Additional Comments (optional): ");
         $this->XINRegisterRule(
               "V_comments",
               array("V_comments{@}=={@}NEVER_REQUIRED")
@@ -558,31 +559,31 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT extends NDB_BVL_Instrument
         function _page3(){
 
         $this->addSelect("illness", "<b>VI. Do you have any illness, disability or handicap? </b>", array(null=> "", "no" => "No", "yes"=> "Yes"));
-        $this->addTextAreaElement("illness_description","If yes, please describe");
+        $this->addBasicTextArea("illness_description","If yes, please describe:<br><h5><i>(If you don't wish to answer enter NA)</i></h5>");
         $this->XINRegisterRule(
               "illness_description",
               array("illness{@}=={@}yes"),
               "Required",
-            "illness_description_group"
+            "illness_description"
         );
          
         
         $this->addSelect("concerns", "<b>VII. Do you have concerns or worries about family, education, or other things?</b>", array(null=> "", "no" => "No concerns", "yes"=> "Yes -- Please describe"));
 
-        $this->addTextAreaElement("concern_description","If yes, please describe");
+        $this->addBasicTextArea("concern_description","If yes, please describe:<br><h5><i>(If you don't wish to answer enter NA)</i></h5>");
         
         $this->XINRegisterRule(
               "concern_description",
               array("concerns{@}=={@}yes"),
               "Required",
-             "concern_description_group"
+             "concern_description"
         );
-        $this->addTextAreaElement("self_description", "<b>VII.Please describe the best things about yourself");
+        $this->addBasicTextArea("self_description", "<b>VII.Please describe the best things about yourself");
         $this->XINRegisterRule(
         "self_description",
         array("self_description{@}=={@}NEVER_REQUIRED")
     );
-        $this->addTextAreaElement("VI_VIII_comments", "Additional Comments (optional): ");
+        $this->addBasicTextArea("VI_VIII_comments", "Additional Comments (optional): ");
         $this->XINRegisterRule(
               "VI_VIII_comments",
               array("VI_VIII_comments{@}=={@}NEVER_REQUIRED")
@@ -636,12 +637,12 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT extends NDB_BVL_Instrument
           if ( strpos($questions[$i], "(describe)") !== false){
             //print_r("found it!");
             //die();
-            $this->addTextElement("q_{$n}_description", "$this->indent Description: ");
+            $this->addBasicText("q_{$n}_description", "$this->indent Description:<br><h5><i>$this->indent$this->indent (Required if you answered true above. If you do not wish to answer enter NA)</i></h5>");
             $this->XINRegisterRule(
               "q_{$n}_description", 
               array("question_{$n}{@}=={@}sometimes|very_true"),
               "Required",
-              "q_{$n}_description_group"
+              "q_{$n}_description"
               );
           }
         }
@@ -693,12 +694,12 @@ function _page5(){
           if ( strpos($questions[$i], "(describe)") !== false){
             //print_r("found it!");
             //die();
-            $this->addTextElement("q_{$n}_description", "$this->indent Description: ");
+            $this->addBasicText("q_{$n}_description", "$this->indent Description:<br><h5><i>$this->indent$this->indent (Required if you answered true above. If you do not wish to answer enter NA)</i></h5>");
             $this->XINRegisterRule(
               "q_{$n}_description", 
               array("question_{$n}{@}=={@}sometimes|very_true"),
               "Required",
-              "q_{$n}_description_group"
+              "q_{$n}_description"
               );
           }
         }
@@ -731,12 +732,12 @@ function _page5(){
           if ( strpos($questions[$i], "(describe)") !== false){
             //print_r("found it!");
             //die();
-            $this->addTextElement("q_{$q_id}_description", "$this->indent Description: ");
+            $this->addBasicText("q_{$q_id}_description", "$this->indent Description:<br><h5><i>$this->indent$this->indent (Required if you answered true above. If you do not wish to answer enter NA)</i></h5> ");
             $this->XINRegisterRule(
               "q_{$q_id}_description",
               array("question_{$q_id}{@}=={@}sometimes|very_true"),
               "Required",
-              "q_{$q_id}_description_group"
+              "q_{$q_id}_description"
               );
           }
         }
@@ -768,12 +769,12 @@ function _page5(){
           if ( strpos($questions[$i], "(describe)") !== false){
             //print_r("found it!");
             //die();
-            $this->addTextElement("q_{$n}_description", "$this->indent Description: ");
+            $this->addBasicText("q_{$n}_description", "$this->indent Description:<br><h5><i>$this->indent$this->indent (Required if you answered true above. If you do not wish to answer enter NA)</i></h5>");
             $this->XINRegisterRule(
               "q_{$n}_description",
               array("question_{$n}{@}=={@}sometimes|very_true"),
               "Required",
-              "q_{$n}_description_group"
+              "q_{$n}_description"
               );
           }
         }
@@ -819,12 +820,12 @@ function _page5(){
           if ( strpos($questions[$i], "(describe)") !== false){
             //print_r("found it!");
             //die();
-            $this->addTextElement("q_{$n}_description", "$this->indent Description: ");
+            $this->addBasicText("q_{$n}_description", "$this->indent Description:<br><h5><i>$this->indent$this->indent (Required if you answered true above. If you do not wish to answer enter NA)</i></h5>");
             $this->XINRegisterRule(
               "q_{$n}_description", 
               array("question_{$n}{@}=={@}sometimes|very_true"),
               "Required",
-              "q_{$n}_description_group"
+              "q_{$n}_description"
               );
           }
         }
@@ -894,6 +895,67 @@ function _page5(){
             array("IX_comments{@}=={@}NEVER_REQUIRED")
         );
     }
+    
+    /** 
+     * Special validation rules for the ASR form.
+     * 
+     * @return none.
+     */
+    function asrSpecialRules($values)
+    {
+        $errors = array();
+        
+        //------ Make sure user_age is a number in [1,100] or NA
+        if (isset($values['user_age']) && !$this->_isIntOrNa($values, 'user_age', 1, 100)) {
+            $errors['user_age'] = "Specify age between 1 and 100 or NA";
+        }
+        
+        //------ Make sure tobacco_per_day is a number in [0,100] or NA
+        if (isset($values['tobacco_per_day'])&& !$this->_isIntOrNa($values, 'tobacco_per_day', 0, 100)) {
+                $errors['tobacco_per_day'] = "Specify a number of times between 0 and 100 or NA";
+        }
+        
+        //------ Make sure days_drunk is a number in [0,200] or NA
+        if (isset($values['days_drunk']) && !$this->_isIntOrNa($values, 'days_drunk', 0, 200)) {
+                $errors['days_drunk'] = "Specify a number of days between 0 and 200 or NA";
+        }
+        
+        //------ Make sure days_drugs is a number in [0,200] or NA
+        if (isset($values['days_drugs'])&& !$this->_isIntOrNa($values, 'days_drugs', 0, 200)) {
+                $errors['days_drugs'] = "Specify a number of days between 0 and 200 or NA";
+        }
+        
+        return $errors;
+    }    
+    
+    /**
+     * Checks that $values[$key] is set and is either the string 'NA'
+     * or an integer between $min and $max.
+     * 
+     * @param array  $values array of form values.
+     * @param string $key    key for which the value should be checked.
+     * @param int    $min    minimum valid value.
+     * @param int    $max    maximum valid value.
+     * 
+     * @return boolean true if $value[$key] is valid, false otherwise.
+     */
+    function _isIntOrNa($values, $key, $min, $max) {
+		if(isset($values[$key])) {
+			$val = $values[$key];
+			if(preg_match('/\s*NA\s*$/', $val)) {
+				return true;
+			}
+			
+			if(preg_match('/\s*\d+\s*$/', $val)) {
+				return $val >= $min && $val <= $max;
+			}
+			
+			return false;
+		}
+
+		return false;
+    }
+
 }
 
 
