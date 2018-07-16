@@ -508,7 +508,9 @@ class Candidate
         $db =& Database::singleton();
 
         do {
-            $randid = $ID . rand(1000, 9999);
+            //Currently 6 digit rand is used to generate more secure ParentIDs'.
+            //Needs to revert back to 4 digit rand(default) to create new ExternalIDs' in future.
+            $randid = $ID . rand(100000, 999999);
             $nid = $ID . "ID";
         } while($db->pselectOne("SELECT count($nid) FROM candidate WHERE `$nid`=:randomIDQ", array('randomIDQ' => $randid)) > 0);
         return $randid;

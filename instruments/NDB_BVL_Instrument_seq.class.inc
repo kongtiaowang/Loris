@@ -166,7 +166,7 @@ class NDB_BVL_Instrument_seq extends NDB_BVL_Instrument
 		// Get the item scores
 		$query = "SELECT * FROM $this->table WHERE CommentID='".$this->getCommentID()."'";
 		$record=array();
-		$db->selectRow($query, $record);
+		$db->pselectRow($query, $record);
 
 
 		if(preg_match("/seq(_page[0-9]+)/",$this->page,$matches)){

@@ -95,7 +95,7 @@ class NDB_BVL_Instrument_vineland extends NDB_BVL_Instrument
          $db =& Database::singleton();
          
          $query = "SELECT * FROM ".$this->table." WHERE CommentID='".$this->getCommentID()."'";
-         $db->selectRow($query, $record);
+         $db->pselectRow($query, $record);
          
 
          $this->_addMetadataFields();

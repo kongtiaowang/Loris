@@ -225,7 +225,7 @@ INSERT INTO test_battery VALUES ('', 'edi', '1050', '1140', 'Y', 'Visit', '2');
         $db =& Database::singleton();
         
         $query = "SELECT Date_taken from " . $this->testName . " WHERE CommentID = '".$this->getCommentID()."'";
-        $result = $db->selectOne($query);
+        $result = $db->pselectOne($query,array());
         $this->Date_taken=$result;
 
         //Scoring column headers

@@ -24,7 +24,7 @@ class NDB_BVL_Instrument_EARLI_interview_PART_2 extends NDB_BVL_Instrument_EARLI
         $this->commentID = $commentID;
 
         $db = Database::singleton();
-        $fertilityTreatment = $db->selectOne("SELECT q5_16 FROM EARLI_interview_PART_2 WHERE CommentID='$commentID'");
+        $fertilityTreatment = $db->pselectOne("SELECT q5_16 FROM EARLI_interview_PART_2 WHERE CommentID='$commentID'",array());
         if ($fertilityTreatment == '01_yes')
             $this->_requiredElements = array('interview_time','q5_3', 'q5_17', 'q5_32', 'q5_58', 'q5_68', 'q5_76_a', 'q5_88', 'q5_95', 'q5_110_a', 'q6_1', 'q6_85', 'q7_2_m', 'q7_19', 'q7_37_1');
         else
