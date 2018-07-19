@@ -3,7 +3,7 @@ set_include_path(get_include_path().":../libraries:../../php/libraries:");
 require_once '../../vendor/autoload.php';
 require_once "Database.class.inc";
 require_once "Utility.class.inc";
-require_once "NDAR_Release_2018_final.class.inc";
+require_once "NDAR_Release_2018.class.inc";
 
 $client = new NDB_Client();
 $client->makeCommandLine();
