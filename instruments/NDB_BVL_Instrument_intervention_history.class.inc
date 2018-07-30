@@ -256,7 +256,7 @@ INSERT INTO test_battery VALUES ('', 'intervention_history', '1053', '1179', 'Y'
 
         $query = "SELECT * FROM ".$this->table." WHERE CommentID='".$this->getCommentID()."'";
 	    $values = array();
-        $db->selectRow($query, $values);
+        $db->pselectRow($query, $values);
 
 
 	for ($i=1; $i < 11; $i++)

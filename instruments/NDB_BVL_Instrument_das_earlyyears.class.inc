@@ -203,7 +203,7 @@ class NDB_BVL_Instrument_das_earlyyears extends NDB_BVL_Instrument
           // Get the item scores
           $query = "SELECT * FROM $this->table WHERE CommentID='".$this->getCommentID()."'";
           $record=array();
-          $db->selectRow($query, $record);
+          $db->pselectRow($query, $record);
 */
 
 

@@ -351,7 +351,7 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
          $this->_nullScores($this->scoreCols);
    		
    		$query = "SELECT * FROM ".$this->table." WHERE CommentID='".$this->getCommentID()."'";
-         $db->selectRow($query, $score_record);
+         $db->pselectRow($query, $score_record);
          
          
          //print_r($score_record);

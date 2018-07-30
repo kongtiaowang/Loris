@@ -642,12 +642,12 @@ class NDB_BVL_Instrument_BOT2 extends NDB_BVL_Instrument
 
         $query = "SELECT * FROM $this->table WHERE CommentID = '$this->commentID'";
         $record = array();
-        $db->selectRow($query, $record);
+        $db->pselectRow($query, $record);
 
         // Get gender
         $query_gender = "SELECT Gender FROM candidate as c, session as s, flag as f, $this->table as t WHERE t.CommentID = '$this->commentID' AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $record_gender = array();
-        $db->selectRow($query_gender, $record_gender);
+        $db->pselectRow($query_gender, $record_gender);
         $gender = strtolower($record_gender['Gender']);
 
         // Get the subject age in months for scoring

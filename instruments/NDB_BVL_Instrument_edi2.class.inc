@@ -359,8 +359,9 @@ INSERT INTO help(hash, topic) VALUES (md5('edi2'),'EDI_IBIS2');
         if(empty($this->_requiredElements)) return 'Complete';
 
         $db =& Database::singleton();
+        $dataFields=array();
         $query = "SELECT ".join(',', $this->_requiredElements)." FROM $this->table WHERE CommentID='".$this->getCommentID()."'";
-        $success = $db->selectRow($query, $dataFields);
+        $success = $db->pselectRow($query, $dataFields);
 
         //compare
         return parent::_determineDataEntryCompletionStatus();
@@ -605,9 +606,9 @@ INSERT INTO help(hash, topic) VALUES (md5('edi2'),'EDI_IBIS2');
         $this->_nullScores($this->socialAnchors);
         $this->_nullScores($this->communicationAnchors);
         $this->_nullScores($this->repetitive_behaviourAnchors);
-
+        $score_record=array();
         $query = "SELECT * FROM ".$this->table." WHERE CommentID='".$this->getCommentID()."'";
-        $db->selectRow($query, $score_record);
+        $db->pselectRow($query, $score_record);
         
         //convert answers to numbers only
         foreach($score_record as $field=>$score) {

@@ -107,7 +107,7 @@ class NDB_BVL_Instrument_das_schoolage extends NDB_BVL_Instrument
 
 //        $query = "SELECT * FROM $this->table WHERE CommentID='".$this->getCommentID()."'";
 //        $record=array();
-//        $db->selectRow($query, $record);
+//        $db->pselectRow($query, $record);
 /*
         $age = $this->respondentAgeMonths;
 //        $age = $this->getCandidateAge($values['Date_taken']);
@@ -265,7 +265,7 @@ class NDB_BVL_Instrument_das_schoolage extends NDB_BVL_Instrument
         // Get the item scores
         $query = "SELECT * FROM $this->table WHERE CommentID='".$this->getCommentID()."'";
         $record=array();
-        $db->selectRow($query, $record);
+        $db->pselectRow($query, $record);
 
         $conversion = array(
             'incorrect'=>0,'correct'=>1,

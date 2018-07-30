@@ -1158,7 +1158,7 @@ Anything above the ceiling level will be considered/scored as 0<br><br>
 
 
    		$query = "SELECT * FROM ".$this->table." WHERE CommentID='".$this->getCommentID()."'";
-         $db->selectRow($query, $score_record);
+         $db->pselectRow($query, $score_record);
 
 
          // Get the subject age in months for scoring
@@ -1229,7 +1229,7 @@ Anything above the ceiling level will be considered/scored as 0<br><br>
 
             $query = "SELECT * FROM mullen_composite_lookup WHERE cognitive_t_sum=".$calculatedScores['cognitive_t_score_sum'];
             $record = array();
-         	$db->selectRow($query, $record);
+         	$db->pselectRow($query, $record);
 
 
             $calculatedScores["composite_standard_score"] = $record['composite_standard_score'];

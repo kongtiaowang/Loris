@@ -280,7 +280,7 @@ class NDB_BVL_Instrument_rbs_r extends NDB_BVL_Instrument
         // Get the item scores
         $query  = "SELECT * FROM $this->table WHERE CommentID='".$this->getCommentID()."'";
         $record =array();
-        $db->selectRow($query, $record);
+        $db->pselectRow($query, $record);
 
         //convert answers to numerical scores
         foreach ($record as $field=>$value) {

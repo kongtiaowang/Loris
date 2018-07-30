@@ -167,7 +167,7 @@ class NDB_BVL_Instrument_scq extends NDB_BVL_Instrument
 		// Get the item scores
 		$query = "SELECT * FROM $this->table WHERE CommentID='".$this->getCommentID()."'";
 		$record=array();
-		$db->selectRow($query, $record);
+		$db->pselectRow($query, $record);
 
 		//take only question fields, not metadata
 		foreach ($record as $field=>$value) {

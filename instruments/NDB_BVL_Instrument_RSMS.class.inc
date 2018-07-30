@@ -401,7 +401,8 @@ class NDB_BVL_Instrument_RSMS extends NDB_BVL_Instrument{
             $query = "SELECT * FROM ".$this->table." WHERE CommentID='".$this->getCommentID()."'";
 
             //select the row with the commentID of the row where the information is being taken
-            $db->selectRow($query, $result);
+            $result=array();
+            $db->pselectRow($query, $result);
 
                         
             $score1 =0;

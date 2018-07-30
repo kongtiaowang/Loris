@@ -405,9 +405,9 @@ class NDB_BVL_Instrument_EARLI_interview_PART_4 extends NDB_BVL_Instrument_EARLI
 
                 $db =& Database::singleton();
 
-		$otherCommentID = $db->selectOne("SELECT CommentID from flag where Test_name='EARLI_interview_PART_3' and SessionID=" . $this->getSessionID()); 
-
-                $db->selectRow("SELECT q8_5, q8_6_3 FROM EARLI_interview_PART_3 WHERE CommentID='". $otherCommentID."'", $occupation);
+		$otherCommentID = $db->pselectOne("SELECT CommentID from flag where Test_name='EARLI_interview_PART_3' and SessionID=" . $this->getSessionID(),array());
+		        $occupation =array();
+                $db->pselectRow("SELECT q8_5, q8_6_3 FROM EARLI_interview_PART_3 WHERE CommentID='". $otherCommentID."'", $occupation);
 
 
 //		$occupation = getOccupation("q8_5", "q8_6_3");
@@ -1524,9 +1524,9 @@ class NDB_BVL_Instrument_EARLI_interview_PART_4 extends NDB_BVL_Instrument_EARLI
 
                 $db =& Database::singleton();
 
-                $otherCommentID = $db->selectOne("SELECT CommentID from flag where Test_name='EARLI_interview_PART_3' and SessionID=" . $this->getSessionID());
-
-                $db->selectRow("SELECT q8_5, q8_6_4 FROM EARLI_interview_PART_3 WHERE CommentID='". $otherCommentID."'", $occupation);
+                $otherCommentID = $db->pselectOne("SELECT CommentID from flag where Test_name='EARLI_interview_PART_3' and SessionID=" . $this->getSessionID(),array());
+                $occupation =array();
+                $db->pselectRow("SELECT q8_5, q8_6_4 FROM EARLI_interview_PART_3 WHERE CommentID='". $otherCommentID."'", $occupation);
 
 
 		if ($occupation["q8_5"] == "04")
@@ -2129,9 +2129,9 @@ class NDB_BVL_Instrument_EARLI_interview_PART_4 extends NDB_BVL_Instrument_EARLI
 
                 $db =& Database::singleton();
 
-                $otherCommentID = $db->selectOne("SELECT CommentID from flag where Test_name='EARLI_interview_PART_3' and SessionID=" . $this->getSessionID());
-
-                $db->selectRow("SELECT q8_5, q8_6_1, q8_6_2, q8_6_3, q8_6_4, q8_6_5, q8_6_6, q8_6_7, q8_6_8, q8_6_9 FROM EARLI_interview_PART_3 WHERE CommentID='". $otherCommentID."'", $occupation);
+                $otherCommentID = $db->pselectOne("SELECT CommentID from flag where Test_name='EARLI_interview_PART_3' and SessionID=" . $this->getSessionID(),array());
+                $occupation =array();
+                $db->pselectRow("SELECT q8_5, q8_6_1, q8_6_2, q8_6_3, q8_6_4, q8_6_5, q8_6_6, q8_6_7, q8_6_8, q8_6_9 FROM EARLI_interview_PART_3 WHERE CommentID='". $otherCommentID."'", $occupation);
 
 
 		//for childcare worker
@@ -2432,8 +2432,9 @@ class NDB_BVL_Instrument_EARLI_interview_PART_4 extends NDB_BVL_Instrument_EARLI
                 $db =& Database::singleton();
 
 
-                $otherCommentID = $db->selectOne("SELECT CommentID from flag where Test_name='EARLI_interview_PART_3' and SessionID=" . $this->getSessionID());
-                $db->selectRow("SELECT q8_5, q8_6_7 FROM EARLI_interview_PART_3 WHERE CommentID='".$otherCommentID."'", $occupation);
+                $otherCommentID = $db->pselectOne("SELECT CommentID from flag where Test_name='EARLI_interview_PART_3' and SessionID=" . $this->getSessionID(),array());
+                $occupation =array();
+                $db->pselectRow("SELECT q8_5, q8_6_7 FROM EARLI_interview_PART_3 WHERE CommentID='".$otherCommentID."'", $occupation);
 
 
 		if ($occupation["q8_5"] == "07")
@@ -2779,8 +2780,9 @@ class NDB_BVL_Instrument_EARLI_interview_PART_4 extends NDB_BVL_Instrument_EARLI
 
                 $db =& Database::singleton();
 
-                $otherCommentID = $db->selectOne("SELECT CommentID from flag where Test_name='EARLI_interview_PART_3' and SessionID=" . $this->getSessionID());
-                $db->selectRow("SELECT q8_5, q8_6_8 FROM EARLI_interview_PART_3 WHERE CommentID='".$otherCommentID."'", $occupation);
+                $otherCommentID = $db->pselectOne("SELECT CommentID from flag where Test_name='EARLI_interview_PART_3' and SessionID=" . $this->getSessionID(),array());
+		        $occupation =array();
+                $db->pselectRow("SELECT q8_5, q8_6_8 FROM EARLI_interview_PART_3 WHERE CommentID='".$otherCommentID."'", $occupation);
 
 
 		if ($occupation["q8_5"] == "08")
@@ -3276,8 +3278,9 @@ class NDB_BVL_Instrument_EARLI_interview_PART_4 extends NDB_BVL_Instrument_EARLI
 
                 $db =& Database::singleton();
 
-                $otherCommentID = $db->selectOne("SELECT CommentID from flag where Test_name='EARLI_interview_PART_3' and SessionID=" . $this->getSessionID());
-                $db->selectRow("SELECT q8_5, q8_6_8 FROM EARLI_interview_PART_3 WHERE CommentID='".$otherCommentID."'", $occupation);
+                $otherCommentID = $db->pselectOne("SELECT CommentID from flag where Test_name='EARLI_interview_PART_3' and SessionID=" . $this->getSessionID(),array());
+                $occupation =array();
+                $db->pselectRow("SELECT q8_5, q8_6_8 FROM EARLI_interview_PART_3 WHERE CommentID='".$otherCommentID."'", $occupation);
 
 
 		for ($i=0; $i<5; $i++)
@@ -3838,8 +3841,9 @@ class NDB_BVL_Instrument_EARLI_interview_PART_4 extends NDB_BVL_Instrument_EARLI
 
                 $db =& Database::singleton();
 
-                $otherCommentID = $db->selectOne("SELECT CommentID from flag where Test_name='EARLI_interview_PART_3' and SessionID=" . $this->getSessionID());
-                $db->selectRow("SELECT q8_5, q8_6_8 FROM EARLI_interview_PART_3 WHERE CommentID='".$otherCommentID."'", $occupation);
+                $otherCommentID = $db->pselectOne("SELECT CommentID from flag where Test_name='EARLI_interview_PART_3' and SessionID=" . $this->getSessionID(),array());
+                $occupation =array();
+                $db->pselectRow("SELECT q8_5, q8_6_8 FROM EARLI_interview_PART_3 WHERE CommentID='".$otherCommentID."'", $occupation);
 
                 if ($occupation["q8_5"] == "08")
                 {

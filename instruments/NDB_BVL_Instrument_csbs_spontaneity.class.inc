@@ -396,35 +396,35 @@ INSERT INTO instrument_subtests VALUES('', 'csbs_spontaneity', 'csbs_spontaneity
 
   	$query_structured_prompts = "SELECT wind_up_ph1_1, wind_up_ph2_1, wind_up_ph1_2, wind_up_ph2_2, wind_up_ph1_3, wind_up_ph2_3, wind_up_ph1_4, wind_up_ph2_4 FROM $this->table WHERE CommentID = '$this->commentID'";
         $record_structured_prompts = array();
-        $db->selectRow($query_structured_prompts, $record_structured_prompts);
+        $db->pselectRow($query_structured_prompts, $record_structured_prompts);
 
   	$query_structured_response = "SELECT wind_up_ph1_response_1, wind_up_ph2_response_1, wind_up_ph1_response_2, wind_up_ph2_response_2, wind_up_ph1_response_3, wind_up_ph2_response_3, wind_up_ph1_response_4, wind_up_ph2_response_4 FROM $this->table WHERE CommentID = '$this->commentID'";
         $record_structured_response = array();
-        $db->selectRow($query_structured_response, $record_structured_response);
+        $db->pselectRow($query_structured_response, $record_structured_response);
 
         $querySC_yes = "SELECT wind_up_spontaneous_communication_1, wind_up_spontaneous_communication_2, wind_up_spontaneous_communication_3, wind_up_spontaneous_communication_4 FROM $this->table WHERE CommentID = '$this->commentID'";
         $recordSC_yes = array();
-        $db->selectRow($querySC_yes, $recordSC_yes);
+        $db->spelectRow($querySC_yes, $recordSC_yes);
 
         $queryNP_yes = "SELECT wind_up_additional_communication_1, wind_up_additional_communication_2, wind_up_additional_communication_3, wind_up_additional_communication_4 FROM $this->table WHERE CommentID = '$this->commentID'"; 
         $recordNP_yes = array();
-        $db->selectRow($queryNP_yes, $recordNP_yes);
+        $db->pselectRow($queryNP_yes, $recordNP_yes);
 
 	$query_numPrompts = "SELECT prompt_1_a, prompt_1_b, prompt_1_c, prompt_2_a, prompt_2_b, prompt_2_c, prompt_amount_1_a, prompt_amount_1_b, prompt_amount_1_c, prompt_amount_2_a, prompt_amount_2_b, prompt_amount_2_c FROM $this->table WHERE CommentID = '$this->commentID'";
 	$record_numPrompts = array();
-	$db->selectRow($query_numPrompts, $record_numPrompts);
+	$db->pselectRow($query_numPrompts, $record_numPrompts);
 
 	$query_typePrompts = "SELECT prompt_1_a, prompt_1_b, prompt_1_c, prompt_2_a, prompt_2_b, prompt_2_c FROM $this->table WHERE CommentID = '$this->commentID'";
 	$record_typePrompts = array();
-	$db->selectRow($query_typePrompts, $record_typePrompts);
+	$db->pselectRow($query_typePrompts, $record_typePrompts);
 
         $querySC_yes2 = "SELECT free_play_spontaneous_communication_1, free_play_spontaneous_communication_2 FROM $this->table WHERE CommentID = '$this->commentID'";
         $recordSC_yes2 = array();
-        $db->selectRow($querySC_yes2, $recordSC_yes2);
+        $db->pselectRow($querySC_yes2, $recordSC_yes2);
 
   	$queryNP_yes2 = "SELECT free_play_additional_communication_1, free_play_additional_communication_2 FROM $this->table WHERE CommentID = '$this->commentID'";
         $recordNP_yes2 = array();
-        $db->selectRow($queryNP_yes2, $recordNP_yes2);
+        $db->pselectRow($queryNP_yes2, $recordNP_yes2);
 
 //  	$structured_total = $this->count_strucPlay($record_structured_prompts); 
 //  	$structured_average = number_format(($structured_total / (8 - $NC)), 2);

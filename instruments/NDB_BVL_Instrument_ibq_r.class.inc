@@ -134,7 +134,7 @@ class NDB_BVL_Instrument_ibq_r extends NDB_BVL_Instrument
     	
     	$query = "SELECT * FROM $this->table WHERE CommentID = '$this->commentID'";
     	$record = array();
-    	$db->selectRow($query, $record);
+    	$db->pselectRow($query, $record);
     	
     	//do the math...
     	$reverseItems = array(1, 14, 117,
