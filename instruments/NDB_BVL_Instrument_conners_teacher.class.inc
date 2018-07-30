@@ -85,6 +85,7 @@ class NDB_BVL_Instrument_conners_teacher extends NDB_BVL_Instrument
         }
 
         $this->form->addFormRule(array(&$this, 'XINValidate'));
+        $this->form->addFormRule(array(&$this, 'addSpecialRules'));
     }
 
     /**
@@ -98,7 +99,7 @@ class NDB_BVL_Instrument_conners_teacher extends NDB_BVL_Instrument
 
         $this->addHeader("CONNERS 3 - Teacher Short");
         $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
-        $this->addLabel("Please specify the grade: K-12");
+        $this->addLabel("Please specify the grade: K-12 (or NA if you do not wish to answer)");
         $this->addBasicText("grade", "Grade:");
     }
 
@@ -196,4 +197,18 @@ class NDB_BVL_Instrument_conners_teacher extends NDB_BVL_Instrument
             $this->addBasicText($key, $question);
         }
     }
+    
+    function addSpecialRules($values)
+    {
+		$errors = array();
+		
+		if(isset($values['grade'])) {
+			if(!preg_match('/^\s*(K|[1-9]|1[012]|NA)\s*$/', $values['grade'])) {
+				$errors['grade'] = 'Please enter a grade (K-12) or NA';
+			}
+		}
+		
+		return $errors;
+	}
+
 }

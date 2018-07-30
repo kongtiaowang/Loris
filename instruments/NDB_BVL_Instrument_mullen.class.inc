@@ -499,7 +499,7 @@ class NDB_BVL_Instrument_mullen extends NDB_BVL_Instrument
 
         $record = array();
         $query = "SELECT * FROM ".$this->table." WHERE CommentID='".$this->getCommentID()."'";
-        $db->selectRow($query, $record);
+        $db->pselectRow($query, $record);
 
 
         // Get the subject DoB for scoring

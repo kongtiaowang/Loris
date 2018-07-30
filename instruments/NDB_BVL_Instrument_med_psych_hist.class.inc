@@ -130,7 +130,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
         // This hasn't been implemented terrifically smoothly.  It may require an extra "Save Data" click.
         // During most regular workflows (data entry), the glitches should go unnoticed.  Hopefully.
         $query   = "SELECT abbrev_full_version from med_psych_hist WHERE CommentID = '".$this->getCommentID()."'";
-        $version = $db->selectOne($query);
+        $version = $db->pselectOne($query,array());
 
         if ($version == 'abbrev') {
             $this->_requiredElements = array_merge($this->_requiredElements, array("child_pregnancy_number"));

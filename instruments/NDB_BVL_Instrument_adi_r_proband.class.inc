@@ -67,11 +67,11 @@ DoB Proband should be somewhere in the candidate table.  For now, we'll just mak
 
         // Get the proband DoB from the field in the form for age-dependent scoring
         $query = "SELECT DoB_proband from $this->testName WHERE CommentID = '".$this->getCommentID()."'";
-        $DoB_proband = $db->selectOne($query);
+        $DoB_proband = $db->pselectOne($query,array());
  
         // Get the Date of administration
         $query = "SELECT Date_taken from $this->testName WHERE CommentID = '".$this->getCommentID()."'";
-        $Date_taken = $db->selectOne($query);
+        $Date_taken = $db->pselectOne($query,array());
        
         //print "DoB: $DoB_proband Taken: $Date_taken xxx";
         if(empty($DoB_proband) || empty($Date_taken)) {

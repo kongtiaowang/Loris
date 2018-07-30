@@ -14,7 +14,7 @@ CREATE TABLE `CCC2` (
 `child_name` varchar(255) default NULL,
 `child_name_status` enum('not_answered') default NULL,
 `child_gender` enum('male','female') default NULL,
-`user_birthdate_date` date default NULL,
+`user_birthdate` date default NULL,
 `user_birthdate_date_status` enum('not_answered') default NULL,
 `hear_loss` enum('yes','no') default NULL,
 `hear_loss_yes` text default NULL,

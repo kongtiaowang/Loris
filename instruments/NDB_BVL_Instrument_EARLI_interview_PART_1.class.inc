@@ -23,7 +23,7 @@ class NDB_BVL_Instrument_EARLI_interview_PART_1 extends NDB_BVL_Instrument_EARLI
 
         $db =& Database::singleton();
         $sessionid = $this->getSessionID();
-        $subprojectid = $db->selectOne("SELECT SubprojectID FROM session WHERE ID='$sessionid'");
+        $subprojectid = $db->pselectOne("SELECT SubprojectID FROM session WHERE ID='$sessionid'",array());
         if ($subprojectid == '3')
             $this->_requiredElements = array('interview_time','q1_2','q2_1','q2_21','q3_3_0');
         else
