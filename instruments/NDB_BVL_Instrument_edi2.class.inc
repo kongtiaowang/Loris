@@ -232,7 +232,7 @@ INSERT INTO help(hash, topic) VALUES (md5('edi2'),'EDI_IBIS2');
         $db =& Database::singleton();
         
         $query = "SELECT Date_taken from " . $this->testName . " WHERE CommentID = '".$this->getCommentID()."'";
-        $result = $db->selectOne($query);
+        $result = $db->pselectOne($query,array());
         $this->Date_taken=$result;
 
         //Scoring column headers

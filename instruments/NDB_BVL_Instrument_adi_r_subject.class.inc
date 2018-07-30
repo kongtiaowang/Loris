@@ -74,7 +74,7 @@ DoB subject should be somewhere in the candidate table.  For now, we'll just mak
         
         // Get the Date of administration
         $query = "SELECT Date_taken from $this->testName WHERE CommentID = '".$this->getCommentID()."'";
-        $Date_taken = $db->selectOne($query);
+        $Date_taken = $db->pselectOne($query,array());
 
         if(empty($dob) || empty($Date_taken)) {
             $age = -1;

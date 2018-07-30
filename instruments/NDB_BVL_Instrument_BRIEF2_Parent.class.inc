@@ -124,7 +124,24 @@ class NDB_BVL_Instrument_BRIEF2_Parent extends NDB_BVL_Instrument
 
         $this->addBasicText("childs_grade", "Grade <br><h5><i>(Please enter a numeric value between 1-12 or K.)</i></h5>");
 
-        $this->addBasicText("relationship_to_child", "Relationship to child");
+        $relationship_options = array(
+                                 null          => "",
+                                 "mother"      => "Mother",
+                                 "father"      => "Father",
+                                 "step_mother" => "Step-Mother",
+                                 "step_father" => "Step-Father",
+                                 "other"       => "Other",
+                                );
+
+        $this->addSelect("relationship_to_child", "Relationship to child", $relationship_options);
+
+        $this->addBasicText("relationship_to_child_other", "If other, please specify:");
+
+        $this->XINRegisterRule(
+            "relationship_to_child_other",
+            array("relationship_to_child{@}=={@}other"),
+            "Required"
+        );
 
         $options = array(
                     null => "",
@@ -237,6 +254,10 @@ class NDB_BVL_Instrument_BRIEF2_Parent extends NDB_BVL_Instrument
         $this->validate_child_age($values, "childs_age", $errors);
 
         $this->validate_grade($values, "childs_grade", $errors);
+
+        if ($values["relationship_to_child"] != "other") {
+            $this->validate_empty_subquestions($values, ["relationship_to_child_other"], $errors);
+        }
 
         return $errors;
     }
