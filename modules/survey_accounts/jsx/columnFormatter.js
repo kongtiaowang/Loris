@@ -24,6 +24,15 @@ function formatColumn(column, cell, rowData, rowHeaders) {
           return (<td><a href={url}>{cell}</a></td>);
       }
   }
+    if (column === 'ParentID') {
+        if (row.Visit === 'VSA') {
+            var url = loris.BaseURL + "/parent_portal/?id=" + row.ParentID;
+            return (<td><a href={url}>{cell}</a></td>);
+        }
+        else{
+            return <td>{cell}</td>;
+        }
+    }
   return <td>{cell}</td>;
 }
 
