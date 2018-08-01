@@ -135,7 +135,7 @@ class NDB_BVL_Instrument_CDI_Words_Sentences extends NDB_BVL_Instrument
             $query_scores1a = "SELECT * FROM CDI_WS_percentiles_lookup WHERE age_months=$age_months AND sex='$gender' AND subscale='$scale_number' AND score_raw>$score_holder ORDER BY score_raw ASC LIMIT 1";
             $record_1a = $db->pselectRow($query_scores1a, array());
             if (empty($record_1a)) {
-                $db->pselectRow("SELECT * from CDI_WS_percentiles_lookup WHERE a ge_months=$age_months AND sex='$gender'     AND subscale='$scale_number' ORDER BY score_raw ASC LIMIT 1", $record_1a);
+                $db->pselectRow("SELECT * from CDI_WS_percentiles_lookup WHERE a ge_months=$age_months AND sex='$gender'     AND subscale='$scale_number' ORDER BY score_raw ASC LIMIT 1", array());
             }
 
             $query_scores1b = "SELECT * FROM CDI_WS_percentiles_lookup WHERE age_months=" . $age_months . " AND sex='$gender' AND subscale='$scale_number' AND score_raw<$score_holder ORDER BY score_raw DESC LIMIT 1";

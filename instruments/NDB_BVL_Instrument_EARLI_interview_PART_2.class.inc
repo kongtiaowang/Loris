@@ -970,7 +970,7 @@ class NDB_BVL_Instrument_EARLI_interview_PART_2 extends NDB_BVL_Instrument_EARLI
 
         $answer= $db->pselectRow("SELECT q5_16 FROM EARLI_interview_PART_2 WHERE CommentID=:cid",array("cid" =>$this->getCommentID() ) );
 
-        $otherCommentID = $db->pselectOne("SELECT CommentID from flag where Test_name='EARLI_interview_PART_1' and SessionID=" . $this->getSessionID());
+        $otherCommentID = $db->pselectOne("SELECT CommentID from flag where Test_name='EARLI_interview_PART_1' and SessionID=" . $this->getSessionID(),array());
         $answ = $db->pselectRow("SELECT q4a_1 FROM EARLI_interview_PART_1 WHERE CommentID='". $otherCommentID."'", array());
 
 
