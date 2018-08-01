@@ -254,9 +254,7 @@ INSERT INTO test_battery VALUES ('', 'intervention_history', '1053', '1179', 'Y'
 
         $db =& Database::singleton();
 
-        $query = "SELECT * FROM ".$this->table." WHERE CommentID='".$this->getCommentID()."'";
-	    $values = array();
-        $db->pselectRow($query, $values);
+        $values = $db->pselectRow("SELECT * FROM $this->table WHERE CommentID=:cid",array("cid" =>$this->getCommentID() ));
 
 
 	for ($i=1; $i < 11; $i++)

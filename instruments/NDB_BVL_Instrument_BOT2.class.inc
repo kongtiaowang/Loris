@@ -640,14 +640,12 @@ class NDB_BVL_Instrument_BOT2 extends NDB_BVL_Instrument
         $db = Database::singleton();
 
 
-        $query = "SELECT * FROM $this->table WHERE CommentID = '$this->commentID'";
-        $record = array();
-        $db->pselectRow($query, $record);
+        $record= $db->pselectRow("SELECT * FROM $this->table WHERE CommentID=:cid",array("cid" =>$this->getCommentID() ) );
 
         // Get gender
-        $query_gender = "SELECT Gender FROM candidate as c, session as s, flag as f, $this->table as t WHERE t.CommentID = '$this->commentID' AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
-        $record_gender = array();
-        $db->pselectRow($query_gender, $record_gender);
+        $query_gender =
+        $record_gender= $db->pselectRow("SELECT Gender FROM candidate as c, session as s, flag as f, $this->table as
+ t WHERE t.CommentID = CommentID=:cid AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID",array("cid" =>$this->getCommentID()));
         $gender = strtolower($record_gender['Gender']);
 
         // Get the subject age in months for scoring

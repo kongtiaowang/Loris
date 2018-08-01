@@ -344,14 +344,12 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
          }
 
          // Get the item scores
-         $score_record=array();
 
          $db =& Database::singleton();
 
          $this->_nullScores($this->scoreCols);
-   		
-   		$query = "SELECT * FROM ".$this->table." WHERE CommentID='".$this->getCommentID()."'";
-         $db->pselectRow($query, $score_record);
+
+        $score_record = $db->pselectRow("SELECT * FROM $this->table WHERE CommentID=:cid",array("cid" =>$this->getCommentID() ));
          
          
          //print_r($score_record);

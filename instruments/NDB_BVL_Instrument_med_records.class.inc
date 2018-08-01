@@ -456,10 +456,7 @@ function _possibleExclusionaryCriteria() {
         $db =& Database::singleton();
 
 
-       $query = "SELECT * FROM ".$this->table." WHERE CommentID='".$this->getCommentID()."'";
-       $result =array();
-       //select the row with the commentID of the row where the information is being taken
-       $db->pselectRow($query, $result);
+        $result = $db->pselectRow("SELECT * FROM $this->table WHERE CommentID=:cid",array("cid" =>$this->getCommentID() ));
 
         //if you cannot get the score
 
@@ -516,20 +513,17 @@ function _possibleExclusionaryCriteria() {
      			$newValues["{$field}_measurement_head_inches"] = NULL;
      		}
      		
-        
-        $result_cand = array();
-        $info_candidate = array();
+
          
         //Find the candidate ID
         //set for med_records_recruit - so watch out needs to be fixed
-        $query = "SELECT s.CandID from session as s, flag as f where f.sessionId = s.ID and f.CommentID= '". $this->getCommentID() . "'";
-               
-       	$db->pselectRow($query, $result_cand);
+        $query = "SELECT s.CandID from session as s, flag as f where f.sessionId = s.ID and f.CommentID=:cid";
+     		$result_cand= $db->pselectRow($query, array("cid" =>$this->getCommentID()));
         $CandID = $result_cand["CandID"];
          	
-       	$candidate_query = "SELECT * from candidate where CandID=" . $CandID;
+       	$candidate_query = "SELECT * from candidate where CandID=:cnid";
 
-        $db->pselectRow($candidate_query, $info_candidate);
+        $info_candidate = $db->pselectRow($candidate_query, array("cnid" =>$CandID));
          
         //get the sex of the candidate  
         $gender = $info_candidate["Gender"];
@@ -583,11 +577,11 @@ function _possibleExclusionaryCriteria() {
               else{
                 $query_table_one = "SELECT * from weight_for_age_chart_over_2 where sex = $gender_number and age = $modified_age_one";
                 $query_table_two = "SELECT * from weight_for_age_chart_over_2 where sex = $gender_number and age = $modified_age_two";
-                }      
-      
-            $weight_table_one = array();
-      
-            $db->pselectRow($query_table_one, $weight_table_one);
+                }
+
+
+
+              $weight_table_one = $db->pselectRow($query_table_one, array());
 
             if (array_key_exists("L", $weight_table_one)) {
                 $L_one = $weight_table_one["L"];
@@ -598,8 +592,8 @@ function _possibleExclusionaryCriteria() {
             if (array_key_exists("S", $weight_table_one)) {
                 $S_one = $weight_table_one["S"];
             }
-              $weight_table_two=array();
-            $db->pselectRow($query_table_two, $weight_table_two);
+
+              $weight_table_two= $db->pselectRow($query_table_two, array());
 
             if (array_key_exists("L", $weight_table_two)) {
                 $L_two = $weight_table_two["L"];
@@ -654,9 +648,8 @@ function _possibleExclusionaryCriteria() {
               }
           
 
-              $height_table_one = array();
 
-              $db->pselectRow($query_table_one, $height_table_one);
+              $height_table_one = $db->pselectRow($query_table_one, array());
 
               if (array_key_exists("L", $height_table_one)) {
                   $L_one = $height_table_one["L"];
@@ -667,8 +660,7 @@ function _possibleExclusionaryCriteria() {
               if (array_key_exists("S", $height_table_one)) {
                   $S_one = $height_table_one["S"];
               }
-              $height_table_two = array();
-              $db->pselectRow($query_table_two, $height_table_two);
+              $height_table_two = $db->pselectRow($query_table_two, array());
 
               if (array_key_exists("L", $height_table_two)) {
                   $L_two = $height_table_two["L"];
@@ -730,9 +722,7 @@ function _possibleExclusionaryCriteria() {
                     $query_table_two = "SELECT * from headcirc_for_age_chart where sex = $gender_number and age = $modified_age_two";
               
 
-                    $head_table_one = array();
-
-                    $db->pselectRow($query_table_one, $head_table_one);
+                    $head_table_one= $db->pselectRow($query_table_one, array());
 
                     if (array_key_exists("L", $head_table_one)) {
                         $L_one = $head_table_one["L"];
@@ -744,8 +734,7 @@ function _possibleExclusionaryCriteria() {
                         $S_one = $head_table_one["S"];
                     }
 
-                    $head_table_two = array();
-                    $db->pselectRow($query_table_two, $head_table_two);
+                    $head_table_two = $db->pselectRow($query_table_two, array());
 
                     if (array_key_exists("L", $head_table_two)) {
                         $L_two = $head_table_two["L"];
@@ -813,8 +802,7 @@ function _possibleExclusionaryCriteria() {
                   } else {
                       $bmi_value = 0;
                   }
-                    $bmi_table_one =array();
-     	            $db->pselectRow($query_table_one, $bmi_table_one);
+                    $bmi_table_one= $db->pselectRow($query_table_one, array());
 
                     if (array_key_exists("L", $bmi_table_one)) {
                         $L_one = $bmi_table_one["L"];
@@ -825,8 +813,7 @@ function _possibleExclusionaryCriteria() {
                     if (array_key_exists("S", $bmi_table_one)) {
                         $S_one = $bmi_table_one["S"];
                     }
-                    $bmi_table_two =array();
-                    $db->pselectRow($query_table_two, $bmi_table_two);
+                    $bmi_table_two= $db->pselectRow($query_table_two, array());
 
                     if (array_key_exists("L", $bmi_table_two)) {
                         $L_two = $bmi_table_two["L"];

@@ -497,9 +497,7 @@ class NDB_BVL_Instrument_mullen extends NDB_BVL_Instrument
 
         $db =& Database::singleton();
 
-        $record = array();
-        $query = "SELECT * FROM ".$this->table." WHERE CommentID='".$this->getCommentID()."'";
-        $db->pselectRow($query, $record);
+        $record = $db->pselectRow("SELECT * FROM $this->table WHERE CommentID=:cid",array("cid" =>$this->getCommentID() ));
 
 
         // Get the subject DoB for scoring
@@ -1152,14 +1150,11 @@ Anything above the ceiling level will be considered/scored as 0<br><br>
          }
 
          // Get the item scores
-         $score_record=array();
 
          $db =& Database::singleton();
 
 
-   		$query = "SELECT * FROM ".$this->table." WHERE CommentID='".$this->getCommentID()."'";
-         $db->pselectRow($query, $score_record);
-
+        $score_record = $db->pselectRow("SELECT * FROM $this->table WHERE CommentID=:cid",array("cid" =>$this->getCommentID() ));
 
          // Get the subject age in months for scoring
          $timepoint =& TimePoint::singleton($this->getSessionID());
@@ -1228,8 +1223,7 @@ Anything above the ceiling level will be considered/scored as 0<br><br>
             $calculatedScores['cognitive_t_score_sum'] = $calculatedScores['visual_reception_t'] + $calculatedScores['fine_motor_t'] + $calculatedScores['receptive_language_t'] + $calculatedScores['expressive_language_t'];
 
             $query = "SELECT * FROM mullen_composite_lookup WHERE cognitive_t_sum=".$calculatedScores['cognitive_t_score_sum'];
-            $record = array();
-         	$db->pselectRow($query, $record);
+             $record =$db->pselectRow($query, array());
 
 
             $calculatedScores["composite_standard_score"] = $record['composite_standard_score'];

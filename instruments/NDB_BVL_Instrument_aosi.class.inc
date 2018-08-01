@@ -348,9 +348,7 @@ INSERT INTO instrument_subtests VALUES('', 'aosi', 'aosi_page2', 'General Observ
         $this->_nullScores(null);
 
         //Get raw questions point values
-        $score_record=array();
-        $query = "SELECT * FROM ".$this->table." WHERE CommentID='".$this->getCommentID()."'";
-        $db->pselectRow($query, $score_record);
+        $score_record = $db->pselectRow("SELECT * FROM $this->table WHERE CommentID=:cid",array("cid" =>$this->getCommentID() ));
         
         //Calculate first 6 item scores from their input grids
         

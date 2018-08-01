@@ -111,8 +111,7 @@ class NDB_BVL_Instrument_figs_year3 extends NDB_BVL_Instrument
         $this_RelatedData = $db->pselect("SELECT * FROM figs_year3_relatives WHERE CommentID=:CID", array('CID' => $this->getCommentID()));
         foreach($this_RelatedData as $relative) {
             foreach ($relative as $key=>$value) {
-                $other_RelatedData=array();
-            $db->pselectRow("SELECT * FROM figs_year3_relatives WHERE CommentID='" . $otherInstrument->getCommentID() . "' AND RelativeCode='" . $relative['RelativeCode'] . "'", $other_RelatedData);
+                $other_RelatedData= $db->pselectRow("SELECT * FROM figs_year3_relatives WHERE CommentID='" . $otherInstrument->getCommentID() . "' AND RelativeCode='" . $relative['RelativeCode'] . "'", array());
             if(!in_array($key, $this->_doubleDataEntryDiffIgnoreColumns)) {
                 if($other_RelatedData[$key] != $value) {
                     $RCode = $relative['RelativeCode'] == null ? ' ' : $relative['RelativeCode'];
@@ -532,9 +531,8 @@ class NDB_BVL_Instrument_figs_year3 extends NDB_BVL_Instrument
         $url = "$baseURL/figs_year3/?candID=".$_REQUEST['candID']."&sessionID=".$_REQUEST['sessionID']."&commentID=".$this->getCommentID();
 
         $db =& Database::singleton();
-        $states=array();
         $query = "SELECT Checklist_Other, Checklist_Depression, Checklist_Mania, Checklist_Psychosis, Checklist_Alcohol, Checklist_Drugs, Checklist_Nicotine, Checklist_Schizoid, Checklist_ASP, Checklist_Tic, Checklist_OCD, Checklist_ADHD FROM figs_year3_relatives WHERE RelativeID='$this->relativeID'";
-        $ok = $db->pselectRow($query, $states);
+        $states = $db->pselectRow($query, array());
 
         $this->form->addElement('link', null, 'Face Sheet', "$url&relativeID=$this->relativeID&checklist=face", 'open');
         $this->form->addElement('link', null, 'General Screening', "$url&relativeID=$this->relativeID&checklist=screening", 'open');
@@ -1923,8 +1921,7 @@ work or with social relationships?", $questionOptions);
         $db =& Database::singleton();
 
         $query = "SELECT Checklist_Other, Checklist_ADHD, Checklist_Depression, Checklist_Mania, Checklist_Psychosis, Checklist_Alcohol, Checklist_Drugs, Checklist_Nicotine, Checklist_OCD, Checklist_Tic, Checklist_ASP, Checklist_Schizoid FROM figs_year3_relatives WHERE RelativeID='$relativeID'";
-        $checklists=array();
-        $db->pselectRow($query, $checklists);
+        $checklists= $db->pselectRow($query, array());
         
         // return error in case 0 rows returned, i.e. no record for the RecordID in the relatives table
         if (count($checklists)==0) {
@@ -1977,8 +1974,7 @@ Depression_Q5_Duration,
 Depression_Q8_Impairment,
 Depression_Q9_Reliability
  FROM figs_year3_relatives WHERE RelativeID='$relativeID'";
-        $fields=array();
-        $db->pselectRow($query, $fields);
+        $fields =$db->pselectRow($query, array());
 
         // Item 2 = yes to any of the following: 1,2,3,4 AND 9 = 1 or 2
         if(($fields['Depression_Q2_Treatment2'] == '1'
@@ -2062,8 +2058,7 @@ Mania_Q2_Treatment5,
 Mania_Q7_Impairment,
 Mania_Q8_Reliability
 FROM figs_year3_relatives WHERE RelativeID='$relativeID'";
-        $fields=array();
-        $db->pselectRow($query, $fields);
+        $fields =$db->pselectRow($query, array());
 
         // item 2 = yes to any of (1, 2, 3, 4) AND 9 in (1,2)
         if(($fields['Mania_Q2_Treatment2'] == '1'
@@ -2157,8 +2152,7 @@ Psychosis_Q10_Impairment,
 Score_mania,
 Score_recurrent_depression
  FROM figs_year3_relatives WHERE RelativeID='$relativeID'";
-        $fields=array();
-        $db->pselectRow($query, $fields);
+        $fields =$db->pselectRow($query, array());
 
         // PSYCHOTIC SCHIZOPHRENIA
         // OPTION 1
@@ -2265,8 +2259,7 @@ Alcohol_Q2_Treatment4,
 Alcohol_Q2_Treatment5,
 Alcohol_Q5a_Reliability
 FROM figs_year3_relatives WHERE RelativeID='$relativeID'";
-        $fields=array();
-        $db->pselectRow($query, $fields);
+        $fields =$db->pselectRow($query, array());
 
         // Alcohol dependence
         // OPTION 1
@@ -2341,8 +2334,7 @@ Alcohol_Q8_Treatment3,
 Alcohol_Q8_Treatment4,
 Alcohol_Q8_Treatment5
  FROM figs_year3_relatives WHERE RelativeID='$relativeID'";
-        $fields=array();
-        $db->pselectRow($query, $fields);
+        $fields =$db->pselectRow($query, array());
         
         // Drug Abuse
         // Q6 has 3 or more characters in it
@@ -2385,8 +2377,7 @@ Alcohol_Q14a,
 Alcohol_Q14d,
 Alcohol_Q19_Reliability
 FROM figs_year3_relatives WHERE RelativeID='$relativeID'";
-        $fields=array();
-        $db->pselectRow($query, $fields);
+        $fields =$db->pselectRow($query, array());
         
         // nicotine dependence
         // 13a = 1
@@ -2451,8 +2442,7 @@ Schizoid_Q4f_Before17Yrs,
 Schizoid_Q4g_Before3Yrs,
 Schizoid_Q4h_Reliability
  FROM figs_year3_relatives WHERE RelativeID='$relativeID'";
-        $fields=array();
-        $db->pselectRow($query, $fields);
+        $fields =$db->pselectRow($query, array());
 
         // paranoid personality
         // OPTION 1
@@ -2645,10 +2635,9 @@ Schizoid_Q4h_Reliability
         $db =& Database::singleton();
         
         $scores['Score_asp'] = 'N';
-        $fields=array();
         $query = "SELECT ASP_Q1a,ASP_Q1b,ASP_Q1c,ASP_Q1d,ASP_Q1e,ASP_Q1f,ASP_Q1g,ASP_Q2_Over15Yrs,ASP_Q3_Under15Yrs
  FROM figs_year3_relatives WHERE RelativeID='$relativeID'";
-        $db->pselectRow($query, $fields);
+        $fields =$db->pselectRow($query, array());
 
         // yes to >=2 of 1a, 1b, 1c, 1d, 1e, 1f, 1g
         if((($fields['ASP_Q1a'] == '1')
@@ -2700,8 +2689,7 @@ Tic_Q3d_Duration,
 Tic_Q3e_Impairment,
 Tic_Q3f_Reliability
  FROM figs_year3_relatives WHERE RelativeID='$relativeID'";
-        $fields=array();
-        $db->pselectRow($query, $fields);
+        $fields =$db->pselectRow($query, array());
  
         // tourette's disorder
         // OPTION 1
@@ -2843,8 +2831,7 @@ OCD_Q4a_Treatment5,
 OCD_Q4e_Impairment,
 OCD_Q4f_Reliability
  FROM figs_year3_relatives WHERE RelativeID='$relativeID'";
-        $fields=array();
-        $db->pselectRow($query, $fields);
+        $fields =$db->pselectRow($query, array());
 
         // OPTION 1
         // yes to 1a
@@ -2937,8 +2924,7 @@ ADHD_Q3a_Treatment2,
 ADHD_Q3a_Treatment4,
 ADHD_Q3g_Reliability
  FROM figs_year3_relatives WHERE RelativeID='$relativeID'";
-        $fields=array();
-        $db->pselectRow($query, $fields);
+        $fields =$db->pselectRow($query, array());
  
 
         // ADHD combined
