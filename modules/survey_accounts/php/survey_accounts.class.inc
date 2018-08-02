@@ -53,15 +53,20 @@ class Survey_Accounts extends \NDB_Menu_Filter
             JOIN candidate c ON (c.CandID=s.CandID)
             WHERE c.Active = 'Y'
             AND   s.Active = 'Y'";
+        $parent_portal_query = "CASE 
+                        WHEN (s.Visit_label='VSA' AND p.Email!='') THEN c.ParentID 
+                        ELSE 'NA'
+                        END";
 
         // set the class variables
         $this->columns      = array(
                                'c.PSCID AS PSCID',
-                               'c.ParentID AS ParentID',
                                's.Visit_label AS Visit',
+                               'p.Email as Email',
                                'p.Test_name as SurveyName',
                                'p.OneTimePassword as URL',
                                'p.Status',
+                               "$parent_portal_query AS Parent_Portal",
                               );
         $this->query        = $query;
         $this->order_by     = 'PSCID';
