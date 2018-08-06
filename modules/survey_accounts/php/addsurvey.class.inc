@@ -218,14 +218,44 @@ class AddSurvey extends \NDB_Form
             $config = \NDB_Config::singleton();
             $www    = $config->getSetting("www");
 
+            if($values['Test_name'] == 'air_pollution')
+            {
+                $url=$www['url'] . '/survey.php?key=' .
+                    urlencode($key);
+            }
+            else{
+                $url=$www['url'] . '/survey_module/?key=' .
+                    urlencode($key);
+            }
+           if($values['VL']== 'VSA')
+            {
+                $parentid=$this->getParentID($values['CandID']);
+                $parent_portal_note="\nYou can also access this survey on our Parent Portal.\n".$www['url'] ."/parent_portal/
+                ParentID:  $parentid
+                Email: ".$values['Email']."\n";
+                $url=$url.$parent_portal_note;
+            }
+
             $msg_data = array(
                          'study'     => $config->getSetting("title"),
-                         'url'       => $www['url'] . '/survey.php?key=' .
-                                         urlencode($key),
+                         'url'       => $url,
                          'EmailForm' => $values['email_dialog'],
                         );
             \Email::send($values['Email'], 'new_survey.tpl', $msg_data);
         }
+    }
+
+    function getParentID($cnid)
+    {
+        $db        = \Database::singleton();
+        $parentid = $db->pselectRow(
+            "SELECT ParentID FROM candidate
+            WHERE CandID=:cid",
+            array(
+                'cid'  => $cnid
+            )
+        );
+        return $parentid['ParentID'];
     }
 
     /**
