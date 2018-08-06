@@ -363,6 +363,7 @@ class DirectDataEntryMainPage
     function updateStatus($status)
     {
         $DB = Database::singleton();
+        $this->key = $_REQUEST['key'];
 
         $currentStatus = $DB->pselectOne(
             'SELECT Status FROM participant_accounts
