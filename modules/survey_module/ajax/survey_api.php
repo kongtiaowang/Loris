@@ -173,9 +173,13 @@ class DirectDataEntryMainPage
             header("HTTP/1.0 400 Bad Request");
         }
 
+
         if ($this->Instrument->validate($data)) {
             try {
                 $this->Instrument->_save($data);
+                //On Saving Data; the status has to be updated
+                $this->updateStatus('In Progress');
+
                 
             } catch (Exception $e) {
                 header("HTTP/1.0 400 Bad Request");
@@ -355,6 +359,28 @@ class DirectDataEntryMainPage
         $smarty->assign($this->tpl_data);
         $smarty->display('directentry.tpl');
 
+    }
+    function updateStatus($status)
+    {
+        $DB = Database::singleton();
+
+        $currentStatus = $DB->pselectOne(
+            'SELECT Status FROM participant_accounts
+            WHERE OneTimePassword=:key',
+            array('key' => $this->key)
+        );
+
+        if ($currentStatus != 'Complete') {
+            // Already completed, don't want to accidentally change it back to
+            // started or some other status..
+            $DB->update(
+                "participant_accounts",
+                array('Status' => $status),
+                array('OneTimePassword' => $this->key)
+            );
+        }
+
+        return true;
     }
 }
 
