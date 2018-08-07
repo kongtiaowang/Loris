@@ -371,9 +371,10 @@ class DirectDataEntryMainPage
             array('key' => $this->key)
         );
 
-        if ($currentStatus != 'Complete') {
+        if ($currentStatus != 'Complete' || $currentStatus !='In Progress' ) {
             // Already completed, don't want to accidentally change it back to
             // started or some other status..
+            //Already In Progress, don't want to update that as well
             $DB->update(
                 "participant_accounts",
                 array('Status' => $status),
