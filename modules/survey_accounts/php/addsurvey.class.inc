@@ -243,7 +243,7 @@ class AddSurvey extends \NDB_Form
                          'url'       => $url,
                          'EmailForm' => $values['email_dialog'],
                         );
-            \Email::send($values['Email'], 'new_survey.tpl', $msg_data);
+            \Email::send($values['Email'], 'new_survey.tpl', $msg_data,"", "IBIS Team <noreply@ibis.loris.ca>");
         }
     }
 
