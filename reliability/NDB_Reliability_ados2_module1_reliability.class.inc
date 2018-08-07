@@ -71,7 +71,7 @@ class NDB_Reliability_ados2_module1_reliability extends NDB_Reliability
         //print_r($this->identifier);
         if (!empty($this->identifier)) { 
             // set the ados2_module1_reliability values 
-            $DB->selectRow("SELECT * FROM {$this->name} WHERE CommentID = '$this->identifier' AND reliability_center_id='$this->reliability_center_id'", $row);
+            $row = $DB->pselectRow("SELECT * FROM {$this->name} WHERE CommentID=:cid AND reliability_center_id=:rcid", array("cid" => $this->identifier, "rcid" => $this->reliability_center_id));
       
             // Set the defaults
             // print_r($row['CommentID']);
@@ -84,7 +84,7 @@ class NDB_Reliability_ados2_module1_reliability extends NDB_Reliability
                 $defaults[$key] = $value;    
             }
         } else {
-            echo("Identifer empty! No ID has been chosen. Please contact Samir at the DCC.<br>");
+            echo("Identifier empty! No ID has been chosen. Please contact Samir at the DCC.<br>");
         }
 
         return $defaults;
@@ -102,11 +102,11 @@ class NDB_Reliability_ados2_module1_reliability extends NDB_Reliability
        $initial_table = preg_replace('/_reliability/', '', $this->name);
        
         //Get values from both tables of adi_r (reliability and original)
-        $query = "SELECT * FROM {$this->name} WHERE CommentID='".$this->identifier."'  AND reliability_center_id='$this->reliability_center_id'";
-        $query1 = "SELECT * FROM {$initial_table} WHERE CommentID='".$this->identifier."'";
+        $query = "SELECT * FROM {$this->name} WHERE CommentID=:cid AND reliability_center_id=:rcid";
+        $query1 = "SELECT * FROM {$initial_table} WHERE CommentID=:cid";
 
-        $db->selectRow($query, $score_record);              
-        $db->selectRow($query1, $score_record1);
+        $score_record = $db->pselectRow($query, array("cid" => $this->identifier, "rcid" => $this->reliability_center_id));
+        $score_record1 = $db->pselectRow($query1, array("cid" => $this->identifier));
        
         $instrument_record = $this->_convertScore($score_record1); 
         $reliability_record = $this->_convertScore($score_record);        
@@ -336,7 +336,7 @@ class NDB_Reliability_ados2_module1_reliability extends NDB_Reliability
 
         $user =& User::singleton();
           
-        $DB->selectRow("SELECT * FROM {$this->name} WHERE CommentID = '$this->identifier' AND reliability_center_id = $this->reliability_center_id", $row);
+        $row = $DB->pselectRow("SELECT * FROM {$this->name} WHERE CommentID=:cid AND reliability_center_id=:rcid", array("cid" => $this->identifier, "rcid" => $this->reliability_center_id));
           
           $invalid = $values['invalid'];
           $DB->update("reliability", array('invalid' => $invalid), array("CommentID"=>$this->identifier, "Instrument" => preg_replace("/_reliability$/", "", $this->name), "reliability_center_id" => $this->reliability_center_id));
@@ -370,8 +370,8 @@ class NDB_Reliability_ados2_module1_reliability extends NDB_Reliability
  function _validate($values)
  {
      $DB =& Database::singleton();
-     $query = "SELECT count(*) AS counter FROM candidate WHERE CandID='$values[CandID]' and PSCID='$values[PSCID]'";
-     $recordsFound = $DB->selectOne($query);
+     $query = "SELECT count(*) AS counter FROM candidate WHERE CandID=:cid and PSCID=:pscid";
+     $recordsFound = $DB->pselectOne($query, array("cid" => $values['CandID'], "pscid" => $values['PSCID']));
      $errors = array();
      
      if($recordsFound < 1) {
