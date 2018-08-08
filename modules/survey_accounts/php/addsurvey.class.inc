@@ -132,7 +132,9 @@ class AddSurvey extends \NDB_Form
         if (!empty($values['Email']) && empty($values['Email2'])) {
             return array('Email2' => 'Please confirm the email address.');
         }
-
+        if (empty($values['Email']) ) {
+                return array('Email' => 'Email is required.');
+        }
         if (empty($values['Test_name'])) {
             return array('Test_name' => 'Please choose an instrument.');
         }
@@ -241,7 +243,7 @@ class AddSurvey extends \NDB_Form
                          'url'       => $url,
                          'EmailForm' => $values['email_dialog'],
                         );
-            \Email::send($values['Email'], 'new_survey.tpl', $msg_data);
+            \Email::send($values['Email'], 'new_survey.tpl', $msg_data,"", "IBIS Team <noreply@ibis.loris.ca>");
         }
     }
 

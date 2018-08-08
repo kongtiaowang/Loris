@@ -50,14 +50,20 @@ class parent_portal extends \NDB_Form
             array("placeholder" => "")
         );
 
+
         $this->addBasicText(
             "email",
             "Email",
             array("placeholder" => "")
         );
         $this->form->addFormRule(array(&$this, '_validate'));
+        $localDefaults = $this->_getDefaults();
+        if(!is_array($localDefaults)) { $localDefaults = array(); }
+        $this->form->setDefaults(array_merge($this->defaults, $localDefaults));
+
 
     }
+
     function _validate($values)
     {
         $errors = array();
@@ -91,6 +97,15 @@ class parent_portal extends \NDB_Form
 
             return $errors;
 
+    }
+    function _getDefaults()
+    {
+
+        $sanitize = array_map('htmlentities', $_GET);
+        $id = $sanitize['id'] ?? null;
+
+        $defaults['parentID']=$id;
+        return $defaults;
     }
     function _process($values)
     {
