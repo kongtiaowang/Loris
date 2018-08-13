@@ -10,6 +10,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris
  */
+namespace LORIS\examiner;
 
 /**
  * Examiner module menu filter form
@@ -23,7 +24,7 @@
  * @link     https://www.github.com/aces/Loris
  */
 
-class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
+class Examiner extends \NDB_Menu_Filter_Form
 {
     var $useCertification;
 
@@ -34,19 +35,19 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
      */
     function _hasAccess()
     {
-        $user = User::singleton();
-        return $user->hasPermission('examiner_view');
+        $user = \User::singleton();
+        return $user->hasPermission('examiner_view')
+            || $user->hasPermission('examiner_multisite');
     }
 
     /**
      * Sets the menu filter class variables.
      *
-     * @return boolean
+     * @return void
      */
     function _setupVariables()
     {
-        $DB            = Database::singleton();
-        $config        = NDB_Config::singleton();
+        $config        = \NDB_Config::singleton();
         $certification = $config->getSetting('Certification');
 
         if (isset($certification['EnableCertification'])) {
@@ -55,28 +56,28 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
             $this->useCertification = false;
         }
 
-        $user     = User::singleton();
+        $user      = \User::singleton();
         $centerIDs = implode(',', $user->getCenterIDs());
 
         if ($user->hasPermission('examiner_multisite')) {
-                $query = "
-                        FROM examiners e
-                            LEFT JOIN examiners_psc_rel epr ON
+                $query = " 
+                        FROM examiners e 
+                            LEFT JOIN examiners_psc_rel epr ON 
                                 (epr.examinerID=e.examinerID)
-                            LEFT JOIN psc ON (epr.centerID=psc.CenterID)
-                            LEFT JOIN certification c ON
-                                (c.examinerID=e.examinerID and c.pass = 'certified')
-                            LEFT JOIN test_names tn ON (tn.ID = c.testID)
+                            LEFT JOIN psc ON (epr.centerID=psc.CenterID) 
+                            LEFT JOIN certification c ON 
+                                (c.examinerID=e.examinerID and c.pass = 'certified') 
+                            LEFT JOIN test_names tn ON (tn.ID = c.testID) 
                         WHERE 1=1 ";
         } else {
 
               $query = "
-                        FROM examiners e
-                            LEFT JOIN examiners_psc_rel epr ON
+                        FROM examiners e 
+                            LEFT JOIN examiners_psc_rel epr ON 
                                 (epr.examinerID=e.examinerID)
-                            LEFT JOIN psc ON (epr.centerID=psc.CenterID)
-                            LEFT JOIN certification c ON
-                                (c.examinerID=e.examinerID and c.pass = 'certified')
+                            LEFT JOIN psc ON (epr.centerID=psc.CenterID) 
+                            LEFT JOIN certification c ON 
+                                (c.examinerID=e.examinerID and c.pass = 'certified') 
                             LEFT JOIN test_names tn ON (tn.ID = c.testID)
                         WHERE FIND_IN_SET(epr.centerID, '$centerIDs')";
         }
@@ -126,31 +127,27 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
     }
 
     /**
-     * Sets the menu filter class variables.
+     * Does the setup required for this page. By default, sets up elements
+     * that are common to every type of page. May be overridden by a specific
+     * page or specific page type.
      *
      * @return void
      */
-    function _setFilterForm()
+    function setup()
     {
-        $user = User::singleton();
+        parent::setup();
+        $user = \User::singleton();
 
         // Get site options
         if ($user->hasPermission('examiner_multisite')) {
             // get the list of study sites - to be replaced by the Site object
-            $sites = Utility::getSiteList();
+            $sites = \Utility::getSiteList();
             if (is_array($sites)) {
                 $sites = array('' => '') + $sites;
             }
         } else {
             // allow only to view own site data
-            $sites    = array();
-            $site_arr = $user->getData('CenterIDs');
-            foreach ($site_arr as $key => $val) {
-                $site[$key] = &Site::singleton($val);
-                if ($site[$key]->isStudySite()) {
-                    $sites[$val] = $site[$key]->getCenterName();
-                }
-            }
+            $sites = $user->getStudySites();
             $sites = array('' => 'All User Sites') + $sites;
         }
 
@@ -295,13 +292,13 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
      *
      * @param array $values add examiner form values
      *
-     * @return void
+     * @return bool
      */
     function _process($values)
     {
 
-        $DB     = Database::singleton();
-        $config = NDB_Config::singleton();
+        $DB     = \Database::singleton();
+        $config = \NDB_Config::singleton();
 
         $fullName    = $values['addName'];
         $siteID      = $values['addSite'];
@@ -347,7 +344,6 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
             );
         }
 
-
         $DB->insert(
             'examiners_psc_rel',
             array(
@@ -355,7 +351,9 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
              'centerID'   => $siteID,
             )
         );
+
         header("Location: {$baseurl}/examiner/", true, 303);
+        return true;
     }
 
     /**
@@ -368,7 +366,7 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
      */
     function examinerExists($fullName, $siteID)
     {
-        $DB         = Database::singleton();
+        $DB         = \Database::singleton();
         $examinerID = $DB->pselectOne(
             "SELECT e.examinerID
              FROM examiners e
@@ -396,7 +394,7 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
      */
     function getExaminerID($fullName)
     {
-        $DB         = Database::singleton();
+        $DB         = \Database::singleton();
         $examinerID = $DB->pselectOne(
             "SELECT examinerID
              FROM examiners
@@ -408,7 +406,6 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
         return $examinerID;
     }
 
-
     /**
      * Include the column formatter required to display the feedback link colours
      * in the candidate_list menu
@@ -417,7 +414,7 @@ class NDB_Menu_Filter_Form_Examiner extends NDB_Menu_Filter_Form
      */
     function getJSDependencies()
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getJSDependencies();
         return array_merge(
