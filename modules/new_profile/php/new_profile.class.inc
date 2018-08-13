@@ -10,6 +10,8 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
+  namespace LORIS\new_profile;
+
 /**
  * New_profile
  *
@@ -21,7 +23,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class NDB_Form_New_Profile extends NDB_Form
+class New_Profile extends \NDB_Form
 {
     /**
      * Tie the access to a data_entry permission
@@ -31,11 +33,11 @@ class NDB_Form_New_Profile extends NDB_Form
     function _hasAccess()
     {
         // create user object
-        $user =& User::singleton();
+        $user =& \User::singleton();
 
         $site_arr = $user->getData('CenterIDs');
         foreach ($site_arr as $key=>$val) {
-            $site[$key]        = & Site::singleton($val);
+            $site[$key]        = & \Site::singleton($val);
             $isStudySite[$key] = $site[$key]->isStudySite();
             $isDCCSite[$key]   = $site[$key]->getCenterName();
         }
@@ -44,7 +46,6 @@ class NDB_Form_New_Profile extends NDB_Form
         if ($oneIsStudySite or $oneIsDCCSite) {
             return $user->hasPermission('data_entry');
         }
-
         return false;
     }
     /**
@@ -56,9 +57,10 @@ class NDB_Form_New_Profile extends NDB_Form
      */
     function _process($values)
     {
+        // print_r($values);
         // set up the arguments to Candidate::createNew
-        $user   =& User::singleton();
-        $config =& NDB_Config::singleton();
+        $user   =& \User::singleton();
+        $config =& \NDB_Config::singleton();
         $dob    = empty($values['dob1']) ? null : $values['dob1'];
 
         $edc = null;
@@ -70,6 +72,7 @@ class NDB_Form_New_Profile extends NDB_Form
         $DB        = \Database::singleton();
         $site_arr  = $user->getData('CenterIDs');
         $num_sites = count($site_arr);
+
         $startNum = 0;
         if($values['ProjectID'] == 2) {
             $startNum = 1000;
@@ -80,7 +83,7 @@ class NDB_Form_New_Profile extends NDB_Form
         }
 
         if ($num_sites >1) {
-            $candID = Candidate::createNew(
+            $candID = \Candidate::createNew(
                 $values['psc'],
                 $dob,
                 $edc,
@@ -91,7 +94,7 @@ class NDB_Form_New_Profile extends NDB_Form
         } else {
             $centerIDs = $user->getData('CenterIDs');
             $centerID  = $centerIDs[0];
-            $candID    = Candidate::createNew(
+            $candID    = \Candidate::createNew(
                 $centerID,
                 $dob,
                 $edc,
@@ -102,14 +105,14 @@ class NDB_Form_New_Profile extends NDB_Form
         }
 
         // get the candidate
-        $candidate =& Candidate::singleton($candID);
+        $candidate =& \Candidate::singleton($candID);
 
         if ($config->getSetting('useProjects') == "true") {
             $candidate->setData('ProjectID', $values['ProjectID']);
 
         }
 
-        $db = Database::singleton();
+        $db = \Database::singleton();
         if( $values['ProjectID'] == '2'){
             $PTID = $db->pselectOne("SELECT ParameterTypeID FROM parameter_type WHERE Name='candidate_plan'", array());
             if(!is_numeric($PTID)) {
@@ -130,14 +133,19 @@ class NDB_Form_New_Profile extends NDB_Form
         // freeze it, just in case
         $this->form->freeze();
     }
+
     /**
-     * New profile function
+     * Does the setup required for this page. By default, sets up elements
+     * that are common to every type of page. May be overridden by a specific
+     * page or specific page type.
      *
      * @return void
      */
-    function new_profile()//@codingStandardsIgnoreLine
+    function setup()
     {
-        $config    =& NDB_Config::singleton();
+        parent::setup();
+
+        $config    =& \NDB_Config::singleton();
         $startYear = $config->getSetting('startYear');
         $endYear   = $config->getSetting('endYear');
         $ageMax    = $config->getSetting('ageMax');
@@ -211,7 +219,7 @@ class NDB_Form_New_Profile extends NDB_Form
         }
 
         if ($config->getSetting("useProjects") == "true") {
-            $projects = Utility::getProjectList();
+            $projects = \Utility::getProjectList();
             $projList = array('' => '');
             foreach ($projects as $projectID => $projectName) {
                 $projList[$projectID] = $projectName;
@@ -238,12 +246,12 @@ class NDB_Form_New_Profile extends NDB_Form
                 '3m_plan4' => '3m_plan4',
                 '6m_plan1' => '6m_plan1',
                 '6m_plan2' => '6m_plan2',
-                '6m_plan3' => '6m_plan3'
+                '6m_plan3' => '6m_plan3',
             )
         );
 
         // add sites for users with more than one site affiliation
-        $user =& User::singleton();
+        $user =& \User::singleton();
         $DB   = \Database::singleton();
         $user_list_of_sites = $user->getData('CenterIDs');
         $num_sites          = count($user_list_of_sites);
@@ -273,25 +281,32 @@ class NDB_Form_New_Profile extends NDB_Form
     /**
      * Validate function
      *
-     * @param string $values the value
+     * @param array $values the value
      *
      * @return string
      */
     function _validate($values)
     {
         $errors = array();
-
-        $config =& NDB_Config::singleton();
+        $config =& \NDB_Config::singleton();
 
         if ($values['dob1'] != $values['dob2']) {
             $errors['dob1'] = 'Date of Birth fields must match.';
         }
+
         if ($config->getSetting('useEDC') == "true") {
-            if (strlen(implode($values['edc1'])) > 2
-                && !Utility::_checkDate($values['edc1'])
+            if (empty($values['edc1'])) {
+                $errors['edc1'] = 'Expected Date of Confinement field is required';
+            } else if (strlen($values['edc1']) > 2
+                && !\Utility::_checkDate($values['edc1'])
             ) {
                 $errors['edc1'] = 'EDC is not a valid date';
             }
+
+            if (empty($values['edc2'])) {
+                $errors['edc2'] = 'Confirm EDC field is required';
+            }
+
             if ($values['edc1'] != $values['edc2']) {
                 $errors['edc1'] = 'Estimated Due date fields must match.';
             }
@@ -303,21 +318,21 @@ class NDB_Form_New_Profile extends NDB_Form
 
         $PSCIDsettings = $config->getSetting('PSCID');
         if ($PSCIDsettings['generation'] == 'user') {
-            $db =& Database::singleton();
+            $db =& \Database::singleton();
             if (empty($values['psc'])) { // user is in only one site
-                $user      =& User::singleton();
+                $user      =& \User::singleton();
                 $centerIDs = $user->getData('CenterIDs');
                 $centerID  = $centerIDs[0];
-                $site      =& Site::singleton($centerID);
+                $site      =& \Site::singleton($centerID);
             } else {
                 // user has multiple sites,
                 // so validate PSCID against the Site selected
-                $site =& Site::singleton($values['psc']);
+                $site =& \Site::singleton($values['psc']);
             }
 
             if (empty($values['PSCID'])) {
                 $errors['PSCID'] = 'PSCID must be specified';
-            } elseif (!Candidate::validatePSCID(
+            } elseif (!\Candidate::validatePSCID(
                 $values['PSCID'],
                 $site->getSiteAlias()
             )
@@ -325,7 +340,7 @@ class NDB_Form_New_Profile extends NDB_Form
                 $errors['PSCID'] = 'PSCID does not match the required structure';
             } elseif ($db->pselectOne(
                 "SELECT count(PSCID) FROM candidate WHERE PSCID=:V_PSCID",
-                array('V_PSCID' => $values[PSCID])
+                array('V_PSCID' => $values['PSCID'])
             ) > 0
             ) {
                     $errors['PSCID'] = 'PSCID has already been registered';
@@ -345,6 +360,5 @@ class NDB_Form_New_Profile extends NDB_Form
 
         return $errors;
     }
-
 }
 ?>
