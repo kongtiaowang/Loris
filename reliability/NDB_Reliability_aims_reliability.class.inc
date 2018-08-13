@@ -43,7 +43,7 @@ class NDB_Reliability_aims_reliability extends NDB_Reliability
         //print_r($this->identifier);
         if (!empty($this->identifier)) { 
             // set the aims_reliability values 
-            $DB->selectRow("SELECT * FROM {$this->name} WHERE CommentID = '$this->identifier' AND reliability_center_id='$this->reliability_center_id'", $row);
+            $row = $DB->pselectRow("SELECT * FROM {$this->name} WHERE CommentID=:cid AND reliability_center_id=:rcid", array("cid" => $this->identifier, "rcid" => $this->reliability_center_id));
      
             // Set the defaults
             // print_r($row['CommentID']);
@@ -75,11 +75,11 @@ class NDB_Reliability_aims_reliability extends NDB_Reliability
        $initial_table = preg_replace('/_reliability/', '', $this->name);
        
         //Get values from both tables of adi_r (reliability and original)
-        $query = "SELECT * FROM {$this->name} WHERE CommentID='".$this->identifier."'  AND reliability_center_id='$this->reliability_center_id'";
-        $query1 = "SELECT * FROM {$initial_table} WHERE CommentID='".$this->identifier."'";
+        $query = "SELECT * FROM {$this->name} WHERE CommentID=:cid AND reliability_center_id=:rcid";
+        $query1 = "SELECT * FROM {$initial_table} WHERE CommentID=:cid";
 
-        $db->selectRow($query, $score_record);             
-        $db->selectRow($query1, $score_record1);
+        $score_record = $db->pselectRow($query, array("cid" => $this->identifier, "rcid" => $this->reliability_center_id));
+        $score_record1 = $db->pselectRow($query1, array("cid" => $this->identifier));
        
         $instrument_record = $score_record1; 
         $reliability_record = $score_record;        
@@ -252,7 +252,7 @@ class NDB_Reliability_aims_reliability extends NDB_Reliability
  
    	
 	function _cleanTo3Digits($string) {
-	   return ereg_replace("[^0-9]", "", substr($string, 0, 3));
+	   return preg_replace("[^0-9]", "", substr($string, 0, 3));
 	}
 
  function _process($values)
@@ -262,7 +262,7 @@ class NDB_Reliability_aims_reliability extends NDB_Reliability
 
         $user =& User::singleton();
           
-        $DB->selectRow("SELECT * FROM {$this->name} WHERE CommentID = '$this->identifier' AND reliability_center_id = $this->reliability_center_id", $row);
+        $row = $DB->pselectRow("SELECT * FROM {$this->name} WHERE CommentID=:cid AND reliability_center_id=:rcid", array("cid" => $this->identifier, "rcid" => $this->reliability_center_id));
           
           $invalid = $values['invalid'];
           $DB->update("reliability", array('invalid' => $invalid), array("CommentID"=>$this->identifier, "Instrument" => preg_replace("/_reliability$/", "", $this->name), "reliability_center_id" => $this->reliability_center_id));
@@ -296,7 +296,7 @@ class NDB_Reliability_aims_reliability extends NDB_Reliability
  {
      $DB =& Database::singleton();
      $query = "SELECT count(*) AS counter FROM candidate WHERE CandID='$values[CandID]' and PSCID='$values[PSCID]'";
-     $recordsFound = $DB->selectOne($query);
+     $recordsFound = $DB->pselectOne($query);
      $errors = array();
      
      if($recordsFound < 1) {

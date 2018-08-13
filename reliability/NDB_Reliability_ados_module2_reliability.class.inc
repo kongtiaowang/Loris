@@ -21,7 +21,7 @@ class NDB_Reliability_ados_module2_reliability extends NDB_Reliability
         if (!empty($this->identifier)) { 
             
             // set the ados_module2_reliability values 
-            $DB->selectRow("SELECT * FROM ados_module2_reliability WHERE CommentID = '$this->identifier' AND reliability_center_id = '$this->reliability_center_id'", $row);
+            $row = $DB->pselectRow("SELECT * FROM ados_module2_reliability WHERE CommentID=:cid AND reliability_center_id=:rcid", array("cid" => $this->identifier, "rcid" => $this->reliability_center_id));
      
             // Set the defaults
             // print_r($row['CommentID']);
@@ -81,13 +81,13 @@ class NDB_Reliability_ados_module2_reliability extends NDB_Reliability
         //$this->_nullScores();
        
         //Get values from both tables of adi_r (reliability and original)
-        $query = "SELECT * FROM ados_module2_reliability WHERE CommentID='$this->identifier' AND reliability_center_id = '$this->reliability_center_id'";
-        $query1 = "SELECT * FROM ados_module2 WHERE CommentID='".$this->identifier."'";
-        $query2 = "SELECT * FROM ados_module2_reliability_lookup WHERE CommentID='standard_ados_module2_SEA0012'";
+        $query = "SELECT * FROM ados_module2_reliability WHERE CommentID=:cid AND reliability_center_id=:rcid";
+        $query1 = "SELECT * FROM ados_module2 WHERE CommentID=:cid";
+        $query2 = "SELECT * FROM ados_module2_reliability_lookup WHERE CommentID=:cid";
          
-        $db->selectRow($query, $score_record);
-        $db->selectRow($query1, $score_record1);
-        $db->selectRow($query2, $score_record2);
+        $score_record = $db->pselectRow($query, array("cid" => $this->identifier, "rcid" => $this->reliability_center_id));
+        $score_record1 = $db->pselectRow($query1, array("cid" => $this->identifier));
+        $score_record2 = $db->pselectRow($query2, array("cid" => 'standard_ados_module2_SEA0012'));
        
         // If the reliability is to be compared to the gold standard
         if ($score_record['Gold_standard']=='Gold_standard_SEA0012'){
@@ -617,7 +617,7 @@ class NDB_Reliability_ados_module2_reliability extends NDB_Reliability
        
         $user =& User::singleton();
         
-        $DB->selectRow("SELECT * FROM ados_module2_reliability WHERE CommentID = '$this->identifier' AND reliability_center_id = $this->reliability_center_id", $row);
+        $row = $DB->pselectRow("SELECT * FROM ados_module2_reliability WHERE CommentID=:cid AND reliability_center_id=:rcid", array("cid" => $this->identifier, "rcid" => $this->reliability_center_id));
 
           $invalid = $values['invalid'];
           $DB->update("reliability", array('invalid' => $invalid), array("CommentID"=>$this->identifier, "Instrument" => 'ados_module2', "reliability_center_id" => $this->reliability_center_id));
@@ -720,7 +720,7 @@ class NDB_Reliability_ados_module2_reliability extends NDB_Reliability
     {
         $DB =& Database::singleton();
         $query = "SELECT count(*) AS counter FROM candidate WHERE CandID='$values[CandID]' and PSCID='$values[PSCID]'";
-        $recordsFound = $DB->selectOne($query);
+        $recordsFound = $DB->pselectOne($query);
         $errors = array();
         
         if($recordsFound < 1) {

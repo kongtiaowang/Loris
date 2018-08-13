@@ -86,17 +86,17 @@ class NDB_Reliability_ados_module1_reliability extends NDB_Reliability
         //$this->_nullScores();
        
         //Get values from both tables of adi_r (reliability and original)
-        $query = "SELECT * FROM ados_module1_reliability WHERE CommentID='$this->identifier' AND reliability_center_id = $this->reliability_center_id";
-        $query1 = "SELECT * FROM ados_module1 WHERE CommentID='".$this->identifier."'";
-        $query2 = "SELECT * FROM ados_module1_reliability_lookup WHERE CommentID='standard_ados_module1_SEA0010'";
-        $query3 = "SELECT * FROM ados_module1_reliability_lookup WHERE CommentID='standard_ados_module1_SEA0015'";
-        $query4 = "SELECT * FROM ados_module1_reliability_lookup WHERE CommentID='standard_ados_module1_SEA0017'";
+        $query = "SELECT * FROM ados_module1_reliability WHERE CommentID=:cid AND reliability_center_id=:rcid";
+        $query1 = "SELECT * FROM ados_module1 WHERE CommentID=:cid";
+        $query2 = "SELECT * FROM ados_module1_reliability_lookup WHERE CommentID=:cid";
+        $query3 = "SELECT * FROM ados_module1_reliability_lookup WHERE CommentID=:cid";
+        $query4 = "SELECT * FROM ados_module1_reliability_lookup WHERE CommentID=:cid";
   
-        $db->selectRow($query, $score_record);
-        $db->selectRow($query1, $score_record1);
-        $db->selectRow($query2, $score_record2);
-        $db->selectRow($query3, $score_record3);
-         $db->selectRow($query4, $score_record4);
+        $score_record = $db->pselectRow($query, array("cid" => $this->identifier, "rcid" => $this->reliability_center_id));
+        $score_record1 = $db->pselectRow($query1, array("cid" => $this->identifier));
+        $score_record2 = $db->pselectRow($query2, array("cid" => 'standard_ados_module1_SEA0010'));
+        $score_record3 = $db->pselectRow($query3, array("cid" => 'standard_ados_module1_SEA0015'));
+        $score_record4 = $db->pselectRow($query4, array("cid" => 'standard_ados_module1_SEA0017'));
 
         // If the reliability is to be compared to the gold standard
         if ($score_record['Gold_standard']=='Gold_standard_SEA0010'){
