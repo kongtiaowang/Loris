@@ -165,8 +165,7 @@ class NDB_BVL_Instrument_seq extends NDB_BVL_Instrument
 
 		// Get the item scores
 		$query = "SELECT * FROM $this->table WHERE CommentID='".$this->getCommentID()."'";
-		$record=array();
-		$db->pselectRow($query, $record);
+		$record =$db->pselectRow($query, array());
 
 
 		if(preg_match("/seq(_page[0-9]+)/",$this->page,$matches)){
@@ -250,7 +249,7 @@ class NDB_BVL_Instrument_seq extends NDB_BVL_Instrument
 
 		// Get the item scores
 		$query = "SELECT * FROM $this->table WHERE CommentID='" . $this->getCommentID() . "'";
-		$record = $db->pselectRow($query, null);
+		$record = $db->pselectRow($query, array());
 
 		// Get the subject DoB for scoring
 		if($this->getSessionID() != NULL) { //quickform_parser doesn't use any specific session
