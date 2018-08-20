@@ -27,6 +27,7 @@ class NDAR_Release_MRI {
         'dicom_0x0040:el_0x0254',
         'dicom_0x0040:el_0x0253',
         'dicom_0x0023:el_0x0006',
+        'dicom_0x0010:el_0x1040',
         'patient:birthdate',
         'patient:sex',
         'patient:full_name',
@@ -200,7 +201,7 @@ class NDAR_Release_MRI {
         $location = "prod";  // prod or defaced
         $v[$ibis] = "'V24'"; // "'V06', 'V12'";
         $anonFilePath = "/data/ibis/data/assembly/";  // Non defaced
-        // $anonFilePath = "/home/gluneau/";     // Prod Box
+        // $anonFilePath = "/data/not_backed_up/";     // Defaced
         // $anonFilePath = "/home/lorisadmin/";  // Devv Box
         $outputDir = "/data/not_backed_up/ibis_anon_". $ibis ."_". date("Ymd") ."/";
         // $outputDir = "/data/not_backed_up/ibis_anon_jrichards/";
@@ -377,6 +378,7 @@ class NDAR_Release_MRI {
             }
 
             if ($location == "defaced") {
+                // login is the folder which contain defaced images; for eg:data/not_backed_up/login
               $row['File'] = str_replace("assembly", "login", $row['File']);
               $row['File'] = str_replace("mri/native/ibis", "deface/deface", $row['File']);
               $row['File'] = preg_replace("/_00\d/", "$1", $row['File']);
