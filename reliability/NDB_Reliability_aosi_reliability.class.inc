@@ -495,7 +495,7 @@ class NDB_Reliability_aosi_reliability extends \NDB_Reliability
  {
      $DB =& Database::singleton();
      $query = "SELECT count(*) AS counter FROM candidate WHERE CandID='$values[CandID]' and PSCID='$values[PSCID]'";
-     $recordsFound = $DB->pselectOne($query);
+     $recordsFound = $DB->pselectOne($query, array());
      $errors = array();
      
      if($recordsFound < 1) {
