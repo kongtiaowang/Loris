@@ -1,0 +1,192 @@
+<?php
+/**
+ * This file handles the Document Repository for LORIS
+ *
+ * PHP Version 5
+ *
+ * @category Documentation
+ * @package  Main
+ * @author   Mia Petkova <mia.petkova@gmail.com>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/Jkat/Loris-Trunk/
+ */
+namespace LORIS\document_repository2;
+/**
+ * Document Repository Class
+ *
+ * This class is for the Document Repository
+ *
+ * @category Documentation
+ * @package  Main
+ * @author   Justin Kat <justinkat@gmail.com>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/Jkat/Loris-Trunk/
+*/
+class Document_Repository2 extends \NDB_Menu_Filter
+{
+    var $AjaxModule      = true;
+    public $skipTemplate = true;
+
+    /**
+     * Checking user permissions
+     *
+     * @return bool
+     */
+    function _hasAccess()
+    {
+        //create user object
+        $user =& \User::singleton();
+
+        return $user->hasPermission('document_repository_view')
+               || $user->hasPermission('document_repository_delete');
+
+    }
+
+    /**
+     * Function _setupVariables
+     *
+     * @return void
+     */
+    function setup()
+    {
+        parent::setup();
+        $user =& \User::singleton();
+        $db   = \Database::singleton();
+
+        $siteList  = array();
+        $fileTypeList  = [];
+        $fileTypeQuery = $db->pselect("SELECT file_type FROM media", []);
+        foreach ($fileTypeQuery as $filetype) {
+            $fileTypeList[$filetype['file_type']] = $filetype['file_type'];
+        }
+
+        // allow to view all sites data through filter
+        if ($user->hasPermission('access_all_profiles')) {
+            $siteList = \Utility::getSiteList(false);
+            // Index sites using their names (used to filter react tables)
+            foreach ($siteList as $key => $site) {
+                unset($siteList[$key]);
+                $siteList[$site] = $site;
+            }
+        } else {
+            // allow only to view own site data
+            $siteIDs = $user->getData('CenterIDs');
+            foreach ($siteIDs as $val) {
+                $site =& \Site::singleton($val);
+                if ($site->isStudySite()) {
+                    $siteList[$site->getCenterName()] = $site->getCenterName();
+                }
+            }
+        }
+        // Form Elements
+        $this->addBasicText('fileName', 'File Name');
+        $this->addBasicText('version', 'Version');
+        $this->addSelect('fileType', 'File type', $fileTypeList);
+        $this->addSelect('site', 'For Site', $siteList);
+        $this->addBasicText('uploadedBy', 'Uploaded By');
+
+        return true;
+}
+    /**
+     * Build a list of media to display in Data Table
+     *
+     * @return void
+     * @throws \DatabaseException
+     */
+    function _setupVariables()
+    {
+        $user =& \User::singleton();
+        // the base query
+        $query  = " FROM document_repository v";
+        $query .= " WHERE COALESCE(v.hide_video, false)=false";
+        // set the class variables
+        $this->columns =[
+                          'v.record_id',
+                          'v.File_name',
+                          'v.version',
+                          'v.File_size',
+                          'v.File_category',
+                          'v.File_type',
+                          'v.Instrument',
+                          'v.uploaded_by',
+                          'v.For_site',
+                          'v.comments',
+                          'v.Data_dir',
+                          'v.Date_uploaded',
+                        ];
+        $this->query = $query;
+        if (!$user->hasPermission('access_all_profiles')) {
+            $site_arr     = implode(",", $user->getCenterIDs());
+            $this->query .= " AND v.For_site IN (" . $site_arr . ")";
+        }
+        $this->group_by = '';
+        $this->order_by = 'v.File_name';
+        $this->headers  = [
+                               'File_name',
+                               'version',
+                               'File_type',
+                               'Instrument',
+                               'uploaded_by',
+                               'For_site',
+                               'comments',
+                               'Date_uploaded',
+                               'Edit',
+                               'Delete',
+                          ];
+        return true;
+    }
+
+    /**
+     * Converts the results of this menu filter to a JSON format to be retrieved
+     * with ?format=json
+     *
+     * @return string a json encoded string of the headers and data from this table
+     */
+    function toJSON()
+    {
+        $result         = $this->toArray();
+        $result['form'] = $this->form->form;
+        return json_encode($result);
+    }
+
+    /**
+     * Include additional CSS files:
+     *  1. jQuery UI
+     *  2. document_repository.css
+     *
+     * @return array of javascript to be inserted
+     */
+    function getCSSDependencies()
+    {
+        $factory = \NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getCSSDependencies();
+        return array_merge(
+            $deps,
+            [
+             $baseURL . "/document_repository/css/document_repository.css",
+            ]
+        );
+    }
+
+    /**
+     * Include the column formatter required to display the feedback link colours
+     * in the candidate_list menu
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies()
+    {
+        $factory = \NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            array(
+             $baseURL . "/document_repository2/js/docIndex.js",
+            )
+        );
+    }
+
+}
+
