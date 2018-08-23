@@ -196,7 +196,14 @@ class NDB_BVL_Instrument_rbs_r extends NDB_BVL_Instrument
         $this->form->addElement('header', 'instrument_title', "Repetitive Behavior Scale - Revised (RBS-R)");
 
         $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
-        $this->form->addElement('select', 'respondent', 'Respondent', array('' => '', 'mother' => 'Mother', 'father' => 'Father', 'other' => 'Other'));
+        $this->form->addElement('select', 'respondent', 'What is your relationship to the child', array(
+            '' => '',
+            'mother' => 'Mother',
+            'father' => 'Father',
+            'step_mother' => 'Step Mother',
+            'step_father' => 'Step Father',
+            'other' => 'Other'
+        ));
         $this->form->addElement('text', 'respondent_specify', 'If other, specify:');
 
         $this->XINRegisterRule('respondent_specify', array('respondent{@}=={@}other'), 'Required if other');

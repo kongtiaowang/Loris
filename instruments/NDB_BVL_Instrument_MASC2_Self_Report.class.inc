@@ -61,7 +61,6 @@ class NDB_BVL_Instrument_MASC2_Self_Report extends NDB_BVL_Instrument
 
         // required fields for data entry completion status
         $this->_requiredElements = array(
-            'Examiner',
             'CommentID',
         );
 
@@ -126,8 +125,23 @@ class NDB_BVL_Instrument_MASC2_Self_Report extends NDB_BVL_Instrument
     {
         // display test name
         $this->addHeader("MASC2: SELF-REPORT");
-        // automatically adds examiner & date of administration
-        $this->_addMetadataFields();
+        $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
+        $opts = array(
+            null              => "",
+            "mother"             => "Mother",
+            "father"             => "Father",
+            "step_mother"        => "Step Mother",
+            "step_father"        => "Step Father",
+            "other"             => "Other",
+        );
+        $this->addSelect("relationship_to_child", "What is your relationship to the child?", $opts);
+        $this->addBasicText("other_relationship_to_child", $this->indent."If Other, please describe:");
+        $this->XINRegisterRule(
+            "other_relationship_to_child",
+            array("relationship_to_child{@}=={@}other"),
+            "Required",
+            "other_relationship_to_child"
+        );
     }
 
     function _page1() {
