@@ -46,7 +46,7 @@ ALTER TABLE `rbs_r` MODIFY COLUMN `respondent` enum('mother','father','step_moth
 ALTER TABLE `sibling_socialcontact` MODIFY COLUMN `respondent` enum('mother','father','step_mother','step_father','other') default NULL;
 -- 16) SRS2 Informant(not removing spouse as some entries already have spouse as value; but removing the option from frontend
 ALTER TABLE `SRS2_InformantReport` MODIFY COLUMN `informant` enum('mother','father','step_mother','step_father','spouse','other') default NULL;
--- 17) SRS2 Informant(not removing spouse as some entries already have spouse as value; but removing the option from frontend
+-- 17) m_chat_rf(not removing other_relative as some entries already have other relative as value; but removing the option from frontend
 ALTER TABLE `m_chat_rf` MODIFY COLUMN `relationship_to_child` enum('mother','father','step_mother','step_father','other_relative','other') default NULL;
 -- 18) SEQ3 Add step mother, step father options
 ALTER TABLE `SEQ3` MODIFY COLUMN `person_completing_form` enum('mother','father','step_mother','step_father','both','teacher','other') default NULL;
