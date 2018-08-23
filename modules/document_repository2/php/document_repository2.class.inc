@@ -53,13 +53,12 @@ class Document_Repository2 extends \NDB_Menu_Filter
         $user =& \User::singleton();
         $db   = \Database::singleton();
 
-        $siteList  = array();
         $fileTypeList  = [];
-        $fileTypeQuery = $db->pselect("SELECT file_type FROM media", []);
+        $fileTypeQuery = $db->pselect("SELECT File_type FROM document_repository", []);
         foreach ($fileTypeQuery as $filetype) {
-            $fileTypeList[$filetype['file_type']] = $filetype['file_type'];
+            $fileTypeList[$filetype['File_type']] = $filetype['File_type'];
         }
-
+        $siteList  = array();
         // allow to view all sites data through filter
         if ($user->hasPermission('access_all_profiles')) {
             $siteList = \Utility::getSiteList(false);
@@ -101,17 +100,13 @@ class Document_Repository2 extends \NDB_Menu_Filter
         $query .= " WHERE COALESCE(v.hide_video, false)=false";
         // set the class variables
         $this->columns =[
-                          'v.record_id',
                           'v.File_name',
                           'v.version',
-                          'v.File_size',
-                          'v.File_category',
                           'v.File_type',
                           'v.Instrument',
                           'v.uploaded_by',
-                          'v.For_site',
+                          '(SELECT name FROM psc WHERE CenterID=v.For_site) as site',
                           'v.comments',
-                          'v.Data_dir',
                           'v.Date_uploaded',
                         ];
         $this->query = $query;
@@ -127,7 +122,7 @@ class Document_Repository2 extends \NDB_Menu_Filter
                                'File_type',
                                'Instrument',
                                'uploaded_by',
-                               'For_site',
+                               'Site',
                                'comments',
                                'Date_uploaded',
                                'Edit',

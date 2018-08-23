@@ -20,15 +20,10 @@ function formatColumn(column, cell, rowData, rowHeaders) {
 
   // create array of classes to be added to td tag
   let classes = [];
-  if (row['Hide File'] === '1') {
-    classes.push('bg-danger');
-  }
   // convert array to string, with blank space separator
   classes = classes.join(' ');
-
-  const hasWritePermission = loris.userHasPermission('media_write');
-  if (column === 'File Name' && hasWritePermission === true) {
-    let downloadURL = loris.BaseURL + '/media/ajax/FileDownload.php?File=' + encodeURIComponent(row['File Name']);
+  if (column === 'File Name') {
+    let downloadURL = loris.BaseURL + '/document_repository2/ajax/GetFile.php?File=' + encodeURIComponent(row['File Name']);
     return (
       <td className= {classes}>
         <a href={downloadURL} target="_blank" download={row['File Name']}>
@@ -37,20 +32,6 @@ function formatColumn(column, cell, rowData, rowHeaders) {
       </td>
     );
   }
-
-  if (column === 'Visit Label') {
-    if (row['Cand ID'] !== null && row['Session ID']) {
-      let sessionURL = loris.BaseURL + '/instrument_list/?candID=' +
-        row['Cand ID'] + '&sessionID=' + row['Session ID'];
-      return <td className={classes}><a href={sessionURL}>{cell}</a></td>;
-    }
-  }
-
-  if (column === 'Edit Metadata') {
-    let editURL = loris.BaseURL + '/media/edit/?id=' + row['Edit Metadata'];
-    return <td className={classes}><a href={editURL}>Edit</a></td>;
-  }
-
   return <td className={classes}>{cell}</td>;
 }
 

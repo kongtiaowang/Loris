@@ -1,5 +1,5 @@
 import FilterForm from 'FilterForm';
-
+import Upload from './upload';
 import formatColumn from './columnFormatter';
 
 class DocIndex extends React.Component {
@@ -80,6 +80,7 @@ class DocIndex extends React.Component {
             <br/>
             <ButtonElement label="Clear Filters" type="reset" onUserInput={this.resetFilters}/>
           </FilterForm>
+          <Upload />
           <StaticDataTable
             Data={this.state.Data.Data}
             Headers={this.state.Data.Headers}
