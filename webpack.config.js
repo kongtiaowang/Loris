@@ -51,6 +51,9 @@ const config = [{
     './modules/data_integrity_flag/js/index.js': './modules/data_integrity_flag/jsx/index.js',
     './modules/imaging_uploader/js/index.js': './modules/imaging_uploader/jsx/index.js',
     './modules/acknowledgements/js/columnFormatter.js': './modules/acknowledgements/jsx/columnFormatter.js',
+    './modules/document_repository2/js/docIndex.js': './modules/document_repository2/jsx/docIndex.js',
+    './modules/document_repository2/js/upload.js': './modules/document_repository2/jsx/upload.js',
+    './modules/document_repository2/js/columnFormatter.js': './modules/document_repository2/jsx/columnFormatter.js',
   },
   output: {
     path: __dirname + '/',

@@ -80,7 +80,7 @@ class DocIndex extends React.Component {
             <br/>
             <ButtonElement label="Clear Filters" type="reset" onUserInput={this.resetFilters}/>
           </FilterForm>
-          <Upload />
+          <Upload DataURL={`${loris.BaseURL}/document_repository/ajax/demo.php?format=json`}/>
           <StaticDataTable
             Data={this.state.Data.Data}
             Headers={this.state.Data.Headers}
