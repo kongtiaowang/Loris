@@ -88,6 +88,19 @@ class Survey_Accounts extends \NDB_Menu_Filter
                               );
         return true;
     }
+    function getOrderedDirectInstruments()
+    {
+        $DB            =& \Database::singleton();
+        $instruments   = array();
+        $instruments_q = $DB->pselect(
+            "SELECT Test_name,Full_name FROM test_names WHERE IsDirectEntry=true ORDER BY Full_name",
+            array()
+        );
+        foreach ($instruments_q as $key) {
+            $instruments[$key['Test_name']] =$key['Full_name'];
+        }
+        return $instruments;
+    }
 
 
     /**
@@ -113,13 +126,14 @@ class Survey_Accounts extends \NDB_Menu_Filter
         $this->addSelect(
             'Instrument',
             'Instrument:',
-            array_merge(array('' => 'All'), \Utility::getDirectInstruments())
+            array_merge(array('' => 'All'), $this->getOrderedDirectInstruments())
         );
         $this->addBasicText('Email', 'Email:');
         $this->addBasicText('key', 'Key:');
 
         return true;
     }
+
 
     /**
      * Gathers JS dependecies and merge them with the parent
