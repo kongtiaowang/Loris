@@ -30,14 +30,16 @@ $result = $DB->pselect(
     array()
 );
 
-$name = array();
+$data = array();
 
 foreach ($result as $value) {
-       array_push($name,parseCategory($value));   
+       array_push($data,parseCategory($value));
 }
 
     function parseCategory($value)
     {
+print_r($value['id']."dd");
+        $id = $value['id'];
         $depth = 0;
         $DB    = \Database::singleton();
             $categoryName = $value['category_name'];
@@ -51,8 +53,10 @@ foreach ($result as $value) {
                 $categoryName = $value['category_name'] . ">" . $categoryName;
             }
         } while ($value['parent_id'] != 0);
-        return $categoryName;
+//try to return array{{name:"ddd",id:'1'}{}}
+//        return $categoryName;
+          return $id;
     }
-echo json_encode($name);
+echo json_encode($data);
 
 ?>

@@ -1,9 +1,6 @@
-import Docs from './docs';
-
-class Upload extends React.Component {
+class Docs extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
       isLoaded: false,
       Data: {},
@@ -35,22 +32,8 @@ class Upload extends React.Component {
 
 
   render() {
-   if (this.state.isLoaded) {
-return (
-    <div>
-    {
-        this.state.Data.map((item, i) => (
-          <div>
-            <p key={i}>{item}</p>
-            <Docs FileCate={item}></Docs>
-          </div>
-        ))
-    }
-    </div>
-      );
-   } return (<p>loading</p>);
+    return (<p>docs ......{this.props.FileCate}</p>);
   }
 }
 
-export default Upload;
-
+export default Docs;
