@@ -41,8 +41,8 @@ class NDB_BVL_Instrument_SRS2_InformantReport extends NDB_BVL_Instrument
                       ''               => null,
                       'mother'         => 'Mother',
                       'father'         => 'Father',
-                      'other_relative' => 'Other Relative',
-                      'spouse'         => 'Spouse',
+                      'step_mother'    => 'Step Mother',
+                      'step_father'    => 'Step Father',
                       'other'          => 'Other',
                      );
 

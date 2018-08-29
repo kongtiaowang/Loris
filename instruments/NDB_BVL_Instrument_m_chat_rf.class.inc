@@ -130,7 +130,7 @@ class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument
 
         $this->addBasicDate('Date_taken', 'Date', $dateOptions);
 
-        $informant = array(''=>NULL,'mother'=>'Mother','father'=>'Father','other_relative'=>'Other Relative', 'other'=>'Other');
+        $informant = array(''=>NULL,'mother'=>'Mother','father'=>'Father','step_mother'=>'Step Mother','step_father'=>'Step Father','other'=>'Other');
 
         $this->addSelect('relationship_to_child',"Relationship to child", $informant);
         $group [] = $this->createText('relationship_to_child_other',$this->indent."If Other please specify");
