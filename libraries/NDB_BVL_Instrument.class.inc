@@ -142,8 +142,8 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     var $displayAllFields = false;
 
-    var $WrapperTextElements           = array();
-    var $WrapperNumericElements        = array();
+    var $WrapperTextElements = array();
+    var $WrapperNumericElements = array();
     var $WrapperDateWithStatusElements = array();
 
     /**
@@ -151,10 +151,10 @@ class NDB_BVL_Instrument extends NDB_Page
      * $instrument, and runs the setup() method on that new
      * instrument.
      *
-     * @param string  $instrument       The name of the instrument to use
-     * @param string  $commentID        The CommentID identifying the data to load
+     * @param string $instrument The name of the instrument to use
+     * @param string $commentID The CommentID identifying the data to load
      *                                  load
-     * @param string  $page             If a multipage form, the page to show
+     * @param string $page If a multipage form, the page to show
      * @param boolean $guarantee_exists If true the factory will throw an
      *                                  error if the file does not exist, otherwise
      *                                  will silently return if the instrument is
@@ -172,24 +172,27 @@ class NDB_BVL_Instrument extends NDB_Page
 
         // Make sure the instrument class has been included/required!
         $factory = NDB_Factory::singleton();
-        $config  = $factory->config();
-        $base    = $config->getSetting('base');
+        $config = $factory->config();
+        $base = $config->getSetting('base');
 
         // The conflict resolver doesn't care if the instrument exists or not, it
         // just tries to load, score, and save. If it doesn't exist, for instance
         // in the case of figs_year3_relatives, we shouldn't require because it
         // isn't necessarily an error.
-        if (!file_exists($base."project/instruments/$class.class.inc")
-            && !file_exists($base."project/instruments/$instrument.linst")
-            && $guarantee_exists==false
+        if (!file_exists($base . "project/instruments/$class.class.inc")
+            && !file_exists($base . "project/instruments/$instrument.linst")
+            && $guarantee_exists == false
         ) {
             return;
         }
-        if (file_exists($base."project/instruments/$instrument.linst")
+        if (file_exists($base . "project/instruments/$instrument.linst")
         ) {
             include_once 'NDB_BVL_Instrument_LINST.class.inc';
             $obj = new \Loris\Behavioural\NDB_BVL_Instrument_LINST(
-                new Module($instrument),
+            // The module directory we use for instruments is arbitrary,
+            // since it isn't a real module, but it's required for the page
+            // constructor.
+                new Module($instrument, $base . "project/"),
                 $page,
                 $commentID,
                 $commentID,
@@ -198,16 +201,16 @@ class NDB_BVL_Instrument extends NDB_Page
         } else {
             if (!class_exists($class)
                 && ($guarantee_exists === true
-                && !file_exists($base."project/instruments/$class.class.inc"))
+                    && !file_exists($base . "project/instruments/$class.class.inc"))
             ) {
                 throw new Exception("Instrument does not exist");
             }
             if (!class_exists($class)) {
-                include_once $base."project/instruments/$class.class.inc";
+                include_once $base . "project/instruments/$class.class.inc";
             }
             // Now go ahead and instantiate it
             $obj = new $class(
-                new Module($instrument),
+                new Module($instrument, $base . "project/"),
                 $page,
                 $commentID,
                 $commentID,
@@ -229,7 +232,7 @@ class NDB_BVL_Instrument extends NDB_Page
             $base . "project/instruments/$instrument.linst"
         );
         // Add rules only if they exist.
-        if (file_exists($base."project/instruments/$instrument.rules")) {
+        if (file_exists($base . "project/instruments/$instrument.rules")) {
             $obj->loadInstrumentRules(
                 $base . "project/instruments/$instrument.rules"
             );
@@ -279,7 +282,8 @@ class NDB_BVL_Instrument extends NDB_Page
         } else if (!array_key_exists(
             'useInstrumentPermissions',
             $instrumentPermissions
-        )) {
+        )
+        ) {
             //instrument permissions not used...
             return true; //default
         } else if ($instrumentPermissions['useInstrumentPermissions'] == false) {
@@ -293,7 +297,7 @@ class NDB_BVL_Instrument extends NDB_Page
             foreach ($instrumentPermissions["instrument"] as $instrument) {
                 if ($instrument["Test_name"] == $this->testName) {
                     $instrumentListed = true;
-                    $instrumentPerms  = Utility::asArray($instrument["permission"]);
+                    $instrumentPerms = Utility::asArray($instrument["permission"]);
                 }
             }
 
@@ -318,7 +322,7 @@ class NDB_BVL_Instrument extends NDB_Page
      * Sets up basic data, such as the HTML_Quickform object, and so on.
      *
      * @param string $commentID The CommentID identifying the data to load
-     * @param string $page      If a multipage form, the page to show
+     * @param string $page If a multipage form, the page to show
      *
      * @return   void
      * @access   public
@@ -327,7 +331,7 @@ class NDB_BVL_Instrument extends NDB_Page
     function setup($commentID = null, $page = null)
     {
         $this->commentID = $commentID;
-        $this->page      = $page;
+        $this->page = $page;
     }
 
     /**
@@ -342,7 +346,7 @@ class NDB_BVL_Instrument extends NDB_Page
     function score()
     {
         $config = NDB_Config::singleton();
-        $base   = $config->getSetting('base');
+        $base = $config->getSetting('base');
         $scorer = $base . "project/instruments/" . $this->testName . ".score";
 
         if (file_exists($scorer)) {
@@ -357,7 +361,6 @@ class NDB_BVL_Instrument extends NDB_Page
             }
         }
     }
-
 
 
     /**
@@ -441,7 +444,7 @@ class NDB_BVL_Instrument extends NDB_Page
             // not the display function.
             return $this->toJSON();
         } else {
-            $smarty    = new Smarty_neurodb;
+            $smarty = new Smarty_neurodb;
             $formArray = $this->form->toElementArray();
 
             $smarty->assign('form', $formArray);
@@ -493,7 +496,7 @@ class NDB_BVL_Instrument extends NDB_Page
      * Attempts to validate the form (using the defined rules) and
      * saves the validated data into the database
      *
-     * @return false if failure to save data
+     * @return bool false if failure to save data
      * @access public
      */
     function save()
@@ -557,25 +560,25 @@ class NDB_BVL_Instrument extends NDB_Page
      *                       have Candidate_Age and Window_Difference if the
      *                       Date_taken field is included.
      *
-     * @return none, but as a side-effect modifies array that was passed.
+     * @return void (but as a side-effect modifies array that was passed.)
      */
     function _saveCandidateAge(&$values)
     {
         if (!empty($values['Date_taken'])) {
-            $DB  = Database::singleton();
+            $DB = Database::singleton();
             $age = $this->getCandidateAge($values['Date_taken']);
             if (empty($age)) {
                 throw new LorisException("Candidate age could not be found.");
             }
 
-            $agedays   = $this->calculateAgeDays($age);
+            $agedays = $this->calculateAgeDays($age);
             $agemonths = $this->calculateAgeMonths($age);
 
             if (!empty($age)) {
                 $query_params = array(
-                                 'TN'  => $this->testName,
-                                 'CID' => $this->getCommentID(),
-                                );
+                    'TN' => $this->testName,
+                    'CID' => $this->getCommentID(),
+                );
 
                 $validage = $DB->pselectOne(
                     "SELECT MAX($agedays BETWEEN AgeMinDays AND AgeMaxDays)
@@ -588,7 +591,7 @@ class NDB_BVL_Instrument extends NDB_Page
                             AND f.CommentID=:CID",
                     $query_params
                 );
-                $values['Candidate_Age']     = $agemonths;
+                $values['Candidate_Age'] = $agemonths;
                 $values['Window_Difference'] = 0;
 
                 // Age isn't valid, so find out how far out it is
@@ -610,7 +613,7 @@ class NDB_BVL_Instrument extends NDB_Page
                             if (abs($delta) < abs($values['Window_Difference'])
                                 || $values['Window_Difference'] == 0
                             ) {
-                                $values['Window_Difference'] = 0-abs($delta);
+                                $values['Window_Difference'] = 0 - abs($delta);
                             }
                         }
                         if ($agedays > $window['AgeMaxDays']) {
@@ -636,9 +639,9 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     function calculateAgeMonths($age)
     {
-        $months = $age['year']*12 + $age['mon'] + ($age['day']/30);
+        $months = $age['year'] * 12 + $age['mon'] + ($age['day'] / 30);
         // 1 Decimal.
-        $months = (round($months*10) / 10.0);
+        $months = (round($months * 10) / 10.0);
         return $months;
     }
 
@@ -651,7 +654,7 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     function calculateAgeDays($age)
     {
-        $days = $age['year']*365 + $age['mon']*30 + $age['day'];
+        $days = $age['year'] * 365 + $age['mon'] * 30 + $age['day'];
         return $days;
     }
 
@@ -662,15 +665,15 @@ class NDB_BVL_Instrument extends NDB_Page
      * @param array $values A reference to the array which will be passed
      *                       to $DB->update().
      *
-     * @return none, but as a side-effect modifies &$values array
+     * @return void (but as a side-effect modifies &$values array)
      */
     function _nullStatus(&$values)
     {
         //Remove the values of all fields who have had statuses assigned
         foreach (array_keys($values) AS $field) {
-            if (substr($field, -7)=="_status") {
+            if (substr($field, -7) == "_status") {
                 if (!empty($values[$field])) {
-                    $baseField          = substr($field, 0, (strlen($field)-7));
+                    $baseField = substr($field, 0, (strlen($field) - 7));
                     $values[$baseField] = "";
                 }
             }
@@ -707,7 +710,7 @@ class NDB_BVL_Instrument extends NDB_Page
         }
 
         //XIN specific functionality
-        if ($this->formType=="XIN") {
+        if ($this->formType == "XIN") {
             $this->_nullStatus($values);
         }
 
@@ -744,7 +747,7 @@ class NDB_BVL_Instrument extends NDB_Page
             }
             $values = Utility::nullifyEmpty($values, $key);
         }
-        $db     =& Database::singleton();
+        $db =& Database::singleton();
         $result = $db->update(
             $this->table,
             $values,
@@ -788,15 +791,15 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     function _addMetadataFields()
     {
-        $config      =& NDB_Config::singleton();
+        $config =& NDB_Config::singleton();
         $dateOptions = array(
-                        'language'         => 'en',
-                        'format'           => 'YMd',
-                        'minYear'          => $config->getSetting('startYear'),
-                        'maxYear'          => $config->getSetting('endYear'),
-                        'addEmptyOption'   => true,
-                        'emptyOptionValue' => null,
-                       );
+            'language' => 'en',
+            'format' => 'YMd',
+            'minYear' => $config->getSetting('startYear'),
+            'maxYear' => $config->getSetting('endYear'),
+            'addEmptyOption' => true,
+            'emptyOptionValue' => null,
+        );
 
         $this->dateOptions = $dateOptions;
 
@@ -837,15 +840,15 @@ class NDB_BVL_Instrument extends NDB_Page
      * override getExaminerNames() can still easily get the config
      * settings and don't need to parse the config file themselves.
      *
-     * @return three element array.
+     * @return array
      */
     function _getCertificationConfig()
     {
         $config =& NDB_Config::singleton();
 
-        $CertificationConfig      = $config->getSetting("Certification");
-        $CertificationEnabled     = $CertificationConfig['EnableCertification'];
-        $CertificationProjects    = array();
+        $CertificationConfig = $config->getSetting("Certification");
+        $CertificationEnabled = $CertificationConfig['EnableCertification'];
+        $CertificationProjects = array();
         $CertificationInstruments = array();
 
         if ($CertificationEnabled) {
@@ -870,10 +873,10 @@ class NDB_BVL_Instrument extends NDB_Page
             }
         }
         return array(
-                $CertificationEnabled,
-                $CertificationProjects,
-                $CertificationInstruments,
-               );
+            $CertificationEnabled,
+            $CertificationProjects,
+            $CertificationInstruments,
+        );
     }
 
 
@@ -896,7 +899,7 @@ class NDB_BVL_Instrument extends NDB_Page
         }
 
         //get examiner certifications for profiles part of IBIS2
-        $candID  = isset($_REQUEST['candID']) ? $_REQUEST['candID'] : '';
+        $candID = isset($_REQUEST['candID']) ? $_REQUEST['candID'] : '';
         $project = $db->pselectOne(
             "SELECT ProjectID from candidate where CandID =:cnd_id",
             array('cnd_id' => $candID)
@@ -926,9 +929,9 @@ class NDB_BVL_Instrument extends NDB_Page
                     AND epr.centerID =:cid
                  ORDER BY full_name",
                 array(
-                 'tid'     => $test_id,
-                 'cert_id' => 'certified',
-                 'cid'     => $centerID,
+                    'tid' => $test_id,
+                    'cert_id' => 'certified',
+                    'cid' => $centerID,
                 )
             );
         } else {
@@ -1006,7 +1009,7 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     function getDateOfAdministration()
     {
-        $db  =& Database::singleton();
+        $db =& Database::singleton();
         $doa = $db->pselectOne(
             "SELECT Date_taken FROM $this->table WHERE CommentID=:CID",
             array('CID' => $this->getCommentID())
@@ -1139,8 +1142,8 @@ class NDB_BVL_Instrument extends NDB_Page
      * @param array $elements The value of all the elements on the current page
      *                        to validate.
      *
-     * @return associative array of errors (fieldname => errormessage) or true
-     *         if no errors.
+     * @return array|true associative array of errors (fieldname => errormessage)
+     *         or true if no errors.
      */
     function XINValidate($elements)
     {
@@ -1163,7 +1166,7 @@ class NDB_BVL_Instrument extends NDB_Page
 
             //If the answer is empty (or its a group and one of answers in the
             //group is empty) then run the rules
-            if ($elvalue==="" || $flag==false || is_null($elvalue)) {
+            if ($elvalue === "" || $flag == false || is_null($elvalue)) {
                 if ($this->XINDebug) {
                     //debugging code
                     echo "<p><b>$elname</b><br> ";
@@ -1201,18 +1204,18 @@ class NDB_BVL_Instrument extends NDB_Page
     /**
      * Attaches a user defined rule (conditions) to a form element (grouped or not).
      *
-     * @param string $elname  Name of element registering the rule
-     * @param array  $rules   Array of rules to apply in an AND fashion.
+     * @param string $elname Name of element registering the rule
+     * @param array $rules Array of rules to apply in an AND fashion.
      *                        Rules are written in rose ({@}) format
      *                        (ie. array('q_8{@}=={@}1_yes','q_8_a_status{@}=={@}').
      *                        ORs may be written within the same array value.
      * @param string $message Message to print upon rule violation
-     * @param string $group   Empty if a non-grouped element is registering the rule.
+     * @param string $group Empty if a non-grouped element is registering the rule.
      *                        Otherwise, name of the group registering the rule.
      *
-     * @return none
+     * @return void
      */
-    function XINRegisterRule($elname, $rules, $message="", $group="")
+    function XINRegisterRule($elname, $rules, $message = "", $group = "")
     {
         if (!is_array($rules)) {
             $rules_array[] = $rules;
@@ -1220,7 +1223,7 @@ class NDB_BVL_Instrument extends NDB_Page
             $rules_array = $rules;
         }
         $this->XINRules[$elname]['message'] = $message;
-        $this->XINRules[$elname]['group']   = $group;
+        $this->XINRules[$elname]['group'] = $group;
 
         foreach ($rules_array AS $rule) {
             $this->XINRules[$elname]['rules'][] = $rule;
@@ -1239,11 +1242,11 @@ class NDB_BVL_Instrument extends NDB_Page
      *
      * **** DONT TOUCH THIS, EVER. ****
      *
-     * @param string   $elname   The name of the element being validated
+     * @param string $elname The name of the element being validated
      * @param elements $elements Array of values submitted on current page.
-     * @param array    $rules    Array of rules that have been registered.
+     * @param array $rules Array of rules that have been registered.
      *
-     * @return associative array of errors (fieldname => error message)
+     * @return array of errors (fieldname => error message)
      */
     function XINRunElementRules($elname, $elements, $rules)
     {
@@ -1258,7 +1261,7 @@ class NDB_BVL_Instrument extends NDB_Page
             //at the pipe.  ex: q_1{@}=={@}yes|q_2{@}=={@}yes
             $isInterfieldOr = false;
             if (substr_count($rule, '{@}') > 2 && strstr($rule, '|')) {
-                $rules_array    = explode("|", $rule);
+                $rules_array = explode("|", $rule);
                 $isInterfieldOr = true;
             } else {  //Otherwise its a regular rule.  ex: q_1{@}=={@}yes
                 $rules_array[] = $rule;
@@ -1310,7 +1313,7 @@ class NDB_BVL_Instrument extends NDB_Page
         }
         //If all of the conditions were true then print the error message
         if (!in_array(false, $rule_outcomes)) {
-            $el          = $rules['group'] != "" ? $rules['group'] : $elname;
+            $el = $rules['group'] != "" ? $rules['group'] : $elname;
             $errors[$el] = $rules['message'];
         }
         return $errors;
@@ -1321,8 +1324,8 @@ class NDB_BVL_Instrument extends NDB_Page
      *
      * @param string $controller The element which affects the validity of this
      *                           element
-     * @param array  $values     Array of values which will invalidate the rule.
-     * @param string $operator   The operator which is used to compare the rule.
+     * @param array $values Array of values which will invalidate the rule.
+     * @param string $operator The operator which is used to compare the rule.
      *
      * @return boolean true if element should be required, false otherwise.
      */
@@ -1364,13 +1367,13 @@ class NDB_BVL_Instrument extends NDB_Page
      *
      * @param string $field The field to get from this instrument
      *
-     * @return The value of the field, or false if it's empty.
+     * @return string|false The value of the field, or false if it's empty.
      */
     function getFieldValue($field)
     {
         $DB =& Database::singleton();
 
-        $query      = "SELECT $field FROM $this->table WHERE CommentID = :CID";
+        $query = "SELECT $field FROM $this->table WHERE CommentID = :CID";
         $fieldValue = $DB->pselectOne($query, array('CID' => $this->getCommentID()));
 
         if (!empty($fieldValue)) {
@@ -1389,7 +1392,7 @@ class NDB_BVL_Instrument extends NDB_Page
     {
         $db =& Database::singleton();
 
-        $query      = "SELECT SessionID FROM flag WHERE CommentID = :CID";
+        $query = "SELECT SessionID FROM flag WHERE CommentID = :CID";
         $fieldValue = $db->pselectOne($query, array('CID' => $this->getCommentID()));
 
         if (!empty($fieldValue)) {
@@ -1452,7 +1455,7 @@ class NDB_BVL_Instrument extends NDB_Page
      * @param string $status The status - either 'Complete'
      *                       or 'Incomplete'
      *
-     * @return none
+     * @return void
      */
     function _setDataEntryCompletionStatus($status)
     {
@@ -1477,28 +1480,29 @@ class NDB_BVL_Instrument extends NDB_Page
      * Wrapper to auto-create a simple Yes, No, Null, Not Answered type
      * of question
      *
-     * @param string $field        The database field in which the response
+     * @param string $field The database field in which the response
      *                             will be stored
-     * @param string $label        The question text to display
-     * @param array  $rules        {@} delimited rules
+     * @param string $label The question text to display
+     * @param array $rules {@} delimited rules
      * @param string $rule_message rule message to display
      *
-     * @return none
+     * @return void
      */
     function addYesNoElement(
         $field,
         $label,
-        $rules=array(),
-        $rule_message='This field is required.'
-    ) {
+        $rules = array(),
+        $rule_message = 'This field is required.'
+    )
+    {
         $this->addSelect(
             $field,
             $label,
             array(
-             null           => '',
-             'yes'          => 'Yes',
-             'no'           => 'No',
-             'not_answered' => 'Not Answered',
+                null => '',
+                'yes' => 'Yes',
+                'no' => 'No',
+                'not_answered' => 'Not Answered',
             )
         );
 
@@ -1510,149 +1514,152 @@ class NDB_BVL_Instrument extends NDB_Page
     /**
      * Wrapper to create a text field with an accompanying status field.
      *
-     * @param string $field        The database field in which the response
+     * @param string $field The database field in which the response
      *                             will be stored
-     * @param string $label        The question text to display
-     * @param array  $rules        rules with values and comparisson operators
+     * @param string $label The question text to display
+     * @param array $rules rules with values and comparisson operators
      *                             {@} seperated.
      *                             Example: array(
      *                                 'q_40{@}=={@}1_yes',
      *                                 'q_40_b{@}=={@}1_yes'
      *                                 )
      * @param string $rule_message rule message to display
-     * @param array  $refusals     options in the refusal select (ie. Refusal,
+     * @param array $refusals options in the refusal select (ie. Refusal,
      *                             Unknown, Not Answered).
      *
-     * @return none
+     * @return void
      */
     function addTextElement(
         $field,
         $label,
-        $rules=array(),
-        $rule_message='This field is required.',
+        $rules = array(),
+        $rule_message = 'This field is required.',
         $refusals = array(
-                     ''             => '',
-                     'not_answered' => 'Not Answered',
-                    )
-    ) {
+            '' => '',
+            'not_answered' => 'Not Answered',
+        )
+    )
+    {
         $group[] = $this->createText($field, $label);
         $this->WrapperTextElements[$field] = $group[0];
         $group[] = $this->createSelect(
-            $field."_status",
+            $field . "_status",
             "",
             $refusals,
             array('class' => 'form-control input-sm not-answered')
         );
 
-        $this->addGroup($group, $field.'_group', $label, null, false);
+        $this->addGroup($group, $field . '_group', $label, null, false);
         unset($group);
-        $rules_array = array_merge(array($field.'_status{@}=={@}'), $rules);
-        $this->XINRegisterRule($field, $rules_array, $rule_message, $field.'_group');
+        $rules_array = array_merge(array($field . '_status{@}=={@}'), $rules);
+        $this->XINRegisterRule($field, $rules_array, $rule_message, $field . '_group');
     }
 
     /**
      * Wrapper to create a text area field for questions that require
      * Refused and Don't know options
      *
-     * @param string $field        The database name for this field
-     * @param string $label        The question text
-     * @param array  $rules        XINRules for this question
+     * @param string $field The database name for this field
+     * @param string $label The question text
+     * @param array $rules XINRules for this question
      * @param string $rule_message The error message if rules are violated
      *
-     * @return none
+     * @return void
      * @note   This was only ever used by the EARLI instrument and should be moved
      *       out of the NDB_BVL_Instrument into an EARLI base class.
      */
     function addTextAreaElementRD($field,
-        $label,
-        $rules=array(),
-        $rule_message='You must specify or select from the drop-down'
-    ) {
+                                  $label,
+                                  $rules = array(),
+                                  $rule_message = 'You must specify or select from the drop-down'
+    )
+    {
         $group[] =& $this->form->createElement(
             "textarea",
             $field,
             null,
             array(
-             'cols' => 25,
-             'rows' => 4,
+                'cols' => 25,
+                'rows' => 4,
             )
         );
         $group[] =& $this->createSelect(
-            $field."_status",
+            $field . "_status",
             "",
             array(
-             null             => '',
-             "88_refused"     => "88 Refused",
-             "99_do_not_know" => "99 Do not know",
-             'not_answered'   => 'Not Answered',
+                null => '',
+                "88_refused" => "88 Refused",
+                "99_do_not_know" => "99 Do not know",
+                'not_answered' => 'Not Answered',
             )
         );
 
-        $this->addGroup($group, $field.'_group', $label, null, false);
+        $this->addGroup($group, $field . '_group', $label, null, false);
         unset($group);
-        $rules_array = array_merge(array($field.'_status{@}=={@}'), $rules);
-        $this->XINRegisterRule($field, $rules_array, $rule_message, $field.'_group');
+        $rules_array = array_merge(array($field . '_status{@}=={@}'), $rules);
+        $this->XINRegisterRule($field, $rules_array, $rule_message, $field . '_group');
     }
 
     /**
      * Wrapper to create a text area field, with an accompanying status field.
      *
-     * @param string $field        The database field in which the response
+     * @param string $field The database field in which the response
      *                             will be stored
-     * @param string $label        The question text to display
-     * @param array  $rules        {@} delimited rules
+     * @param string $label The question text to display
+     * @param array $rules {@} delimited rules
      * @param string $rule_message rule message to display upon rule violation
      *
-     * @return none
+     * @return void
      */
     function addTextAreaElement(
         $field,
         $label,
-        $rules=array(),
-        $rule_message='This field is required.'
-    ) {
+        $rules = array(),
+        $rule_message = 'This field is required.'
+    )
+    {
         $group[] = $this->form->createElement(
             "textarea",
             $field,
             $label,
             array(
-             'cols'  => 25,
-             'rows'  => 4,
-             'class' => 'form-control',
+                'cols' => 25,
+                'rows' => 4,
+                'class' => 'form-control',
             )
         );
         $this->WrapperTextElements[$field] = $group[0];
         $group[] = $this->createSelect(
-            $field."_status",
+            $field . "_status",
             "",
             array(
-             null           => '',
-             'not_answered' => 'Not Answered',
+                null => '',
+                'not_answered' => 'Not Answered',
             ),
             array('class' => 'form-control input-sm not-answered')
         );
-        $this->addGroup($group, $field.'_group', $label, null, false);
+        $this->addGroup($group, $field . '_group', $label, null, false);
         unset($group);
-        $rules_array = array_merge(array($field.'_status{@}=={@}'), $rules);
+        $rules_array = array_merge(array($field . '_status{@}=={@}'), $rules);
         $this->XINRegisterRule(
             $field,
             $rules_array,
             $rule_message,
-            $field.'_group'
+            $field . '_group'
         );
     }
 
     /**
      * Wrapper to create an Hour/Minute field, with an accompanying status field.
      *
-     * @param string $field        Name given to the HTML QuickForm Element
+     * @param string $field Name given to the HTML QuickForm Element
      *                             being created
-     * @param string $label        The question text to display
-     * @param array  $rules        Additional rules to apply to the element
+     * @param string $label The question text to display
+     * @param array $rules Additional rules to apply to the element
      *                             being added,{@} delimited
      * @param string $rule_message Message to display upon rule violation.
      *
-     * @return none
+     * @return void
      * @note   only used by EARLI? What is "dnk"? This should be cleaned up to use
      */
     function addHourMinElement(
@@ -1660,7 +1667,8 @@ class NDB_BVL_Instrument extends NDB_Page
         $label,
         $rules = array(),
         $rule_message = null
-    ) {
+    )
+    {
         if ($rule_message === null) {
             $rule_message = "You are required to select a status "
                 . "if you want to leave this time blank.";
@@ -1678,10 +1686,10 @@ class NDB_BVL_Instrument extends NDB_Page
             $field . "_status",
             "",
             array(
-             null           => '',
-             "dnk"          => "DNK",
-             "refusal"      => "Refusal",
-             'not_answered' => 'Not Answered',
+                null => '',
+                "dnk" => "DNK",
+                "refusal" => "Refusal",
+                'not_answered' => 'Not Answered',
             )
         );
         $this->addGroup($group, $field . "_group", $label, null, false);
@@ -1699,11 +1707,11 @@ class NDB_BVL_Instrument extends NDB_Page
      * Note: $this->dateOptions must be defined by the subclass calling this
      * wrapper function
      *
-     * @param string $name    Name prepended to the HTMLQuickform element
-     * @param string $label   Element label
-     * @param array  $options optional override of class's dateOptions
+     * @param string $name Name prepended to the HTMLQuickform element
+     * @param string $label Element label
+     * @param array $options optional override of class's dateOptions
      *
-     * @return none
+     * @return void
      */
     function addDateElement($name, $label, $options = null)
     {
@@ -1717,8 +1725,8 @@ class NDB_BVL_Instrument extends NDB_Page
             $label,
             $options,
             array(
-             'class' => 'form-control input-sm '.$name."_date",
-             'style' => 'max-width:33%; display:inline-block;',
+                'class' => 'form-control input-sm ' . $name . "_date",
+                'style' => 'max-width:33%; display:inline-block;',
             )
         );
         $this->WrapperDateWithStatusElements[$name . "_date"] = $group[0];
@@ -1730,8 +1738,8 @@ class NDB_BVL_Instrument extends NDB_Page
             $name . "_date_status",
             null,
             array(
-             null           => "",
-             'not_answered' => "Not Answered",
+                null => "",
+                'not_answered' => "Not Answered",
             ),
             array('class' => 'form-control input-sm not-answered')
         );
@@ -1760,13 +1768,13 @@ class NDB_BVL_Instrument extends NDB_Page
      * special logic is needed in the _saveValues to deal with the
      * monthYear fields.
      *
-     * @param string $field   Name of the field
-     * @param string $label   Element label
-     * @param array  $options optional override of class's dateOptions
+     * @param string $field Name of the field
+     * @param string $label Element label
+     * @param array $options optional override of class's dateOptions
      *
-     * @return none
+     * @return void
      */
-    function addMonthYear($field, $label, $options=array())
+    function addMonthYear($field, $label, $options = array())
     {
         if (is_array($options)) {
             $options['format'] = 'YM';
@@ -1779,11 +1787,11 @@ class NDB_BVL_Instrument extends NDB_Page
     /**
      * Wrapper with a user-created date group, a status box and appropriate rule
      *
-     * @param string $name      The database name to add to the form
-     * @param string $label     The question text
-     * @param array  $dateArray QuickForm date options to use
+     * @param string $name The database name to add to the form
+     * @param string $label The question text
+     * @param array $dateArray QuickForm date options to use
      *
-     * @return none
+     * @return void
      * @note   This was only ever used by the EARLI instrument and should be moved
      *       out of the NDB_BVL_Instrument into an EARLI base class.
      */
@@ -1795,10 +1803,10 @@ class NDB_BVL_Instrument extends NDB_Page
             $name . "_date_status",
             null,
             array(
-             null             => "",
-             '88_refused'     => "88 Refused",
-             '99_do_not_know' => "99 Do not know",
-             'not_answered'   => "Not Answered",
+                null => "",
+                '88_refused' => "88 Refused",
+                '99_do_not_know' => "99 Do not know",
+                'not_answered' => "Not Answered",
             )
         );
         $this->addGroup(
@@ -1825,17 +1833,16 @@ class NDB_BVL_Instrument extends NDB_Page
     }
 
 
-
     /**
      * Wrapper to create a field that only accepts a number, with an
      * accompanying status field.
      *
-     * @param string  $field   The database field in which the response
+     * @param string $field The database field in which the response
      *                         will be stored
-     * @param string  $label   The question text to display
+     * @param string $label The question text to display
      * @param unknown $options Does not appear to be used?
      *
-     * @return none
+     * @return void
      */
     function addNumericElement($field, $label, $options = null)
     {
@@ -1845,8 +1852,8 @@ class NDB_BVL_Instrument extends NDB_Page
             $field . "_status",
             null,
             array(
-             null           => "",
-             'not_answered' => "Not Answered",
+                null => "",
+                'not_answered' => "Not Answered",
             ),
             array('class' => 'form-control input-sm not-answered')
         );
@@ -1871,7 +1878,7 @@ class NDB_BVL_Instrument extends NDB_Page
      * @param string $field The database name to add
      * @param string $label The user friendly label to display
      *
-     * @return none
+     * @return void
      */
     function addNumericElementRD($field, $label)
     {
@@ -1880,10 +1887,10 @@ class NDB_BVL_Instrument extends NDB_Page
             $field . "_status",
             null,
             array(
-             null             => "",
-             "88_refused"     => "88 Refused",
-             "99_do_not_know" => "99 Do not know",
-             'not_answered'   => "Not Answered",
+                null => "",
+                "88_refused" => "88 Refused",
+                "99_do_not_know" => "99 Do not know",
+                'not_answered' => "Not Answered",
             ),
             array('class' => 'form-control input-sm not-answered')
         );
@@ -1911,7 +1918,7 @@ class NDB_BVL_Instrument extends NDB_Page
      *
      * @param array $scoreCols list of scoring fields to null
      *
-     * @return none
+     * @return void
      */
     function _nullScores($scoreCols)
     {
@@ -1963,20 +1970,20 @@ class NDB_BVL_Instrument extends NDB_Page
         $diff = array();
 
         // Loop over this instance data
-        foreach ($thisData AS $key=>$value) {
+        foreach ($thisData AS $key => $value) {
             if (!in_array($key, $this->_doubleDataEntryDiffIgnoreColumns)) {
                 if ($otherData[$key] != $value) {
                     $diff[] = array(
-                               'TableName'      => $this->table,
-                               'ExtraKeyColumn' => null,
-                               'ExtraKey1'      => ' ',
-                               'ExtraKey2'      => ' ',
-                               'FieldName'      => $key,
-                               'CommentId1'     => $this->getCommentID(),
-                               'Value1'         => $value,
-                               'CommentId2'     => $otherInstrument->getCommentID(),
-                               'Value2'         => $otherData[$key],
-                              );
+                        'TableName' => $this->table,
+                        'ExtraKeyColumn' => null,
+                        'ExtraKey1' => ' ',
+                        'ExtraKey2' => ' ',
+                        'FieldName' => $key,
+                        'CommentId1' => $this->getCommentID(),
+                        'Value1' => $value,
+                        'CommentId2' => $otherInstrument->getCommentID(),
+                        'Value2' => $otherData[$key],
+                    );
                 }
             }
         }
@@ -1996,7 +2003,7 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     static function loadInstanceData($instrumentInstance)
     {
-        $db       =& Database::singleton();
+        $db =& Database::singleton();
         $defaults = $db->pselect(
             "SELECT * FROM $instrumentInstance->table WHERE CommentID=:CID",
             array('CID' => $instrumentInstance->getCommentID())
@@ -2016,12 +2023,12 @@ class NDB_BVL_Instrument extends NDB_Page
      * @param array $Date_taken (optional) The date that the age is to
      *                          be calculated based on.
      *
-     * @return The age of the candidate in an array containing years, months
+     * @return array The age of the candidate in an array containing years, months
      *         and days.
      */
     function getCandidateAge($Date_taken = false)
     {
-        $db        =& Database::singleton();
+        $db =& Database::singleton();
         $CommentID = $this->getCommentID();
 
         $dates = $db->pselectRow(
@@ -2047,11 +2054,11 @@ class NDB_BVL_Instrument extends NDB_Page
     /**
      * Get the candidates PSCID.
      *
-     * @return The candidate's PSCID.
+     * @return string The candidate's PSCID.
      */
     function getPSCID()
     {
-        $db        =& Database::singleton();
+        $db =& Database::singleton();
         $CommentID = $this->getCommentID();
 
         $pscid = $db->pselectOne(
@@ -2068,33 +2075,33 @@ class NDB_BVL_Instrument extends NDB_Page
     /**
      * Clears all the data saved into this instrument instance
      *
-     * @return none
+     * @return void
      */
     function clearInstrument()
     {
-        $config   = NDB_Config::singleton();
-        $db       = Database::singleton();
+        $config = NDB_Config::singleton();
+        $db = Database::singleton();
         $dbconfig = $config->getSetting('database');
-        $columns  = $db->pselect(
+        $columns = $db->pselect(
             "SELECT COLUMN_NAME FROM information_schema.columns
             WHERE TABLE_NAME=:table AND TABLE_SCHEMA=:db",
             array(
-             'table' => $this->table,
-             'db'    => $dbconfig['database'],
+                'table' => $this->table,
+                'db' => $dbconfig['database'],
             )
         );
 
         $values = array();
         foreach ($columns as $row) {
             switch ($row['COLUMN_NAME']) {
-            case 'CommentID':
-            case 'UserID':
-                continue;
-            case 'Data_entry_completion_status':
-                $values[$row['COLUMN_NAME']] = 'Incomplete';
-                break;
-            default:
-                $values[$row['COLUMN_NAME']] = null;
+                case 'CommentID':
+                case 'UserID':
+                    continue;
+                case 'Data_entry_completion_status':
+                    $values[$row['COLUMN_NAME']] = 'Incomplete';
+                    break;
+                default:
+                    $values[$row['COLUMN_NAME']] = null;
             }
         }
         $db->update($this->table, $values, array('CommentID' => $this->commentID));
@@ -2112,12 +2119,12 @@ class NDB_BVL_Instrument extends NDB_Page
      * This is intended to be overridden by a subclass of NDB_BVL_Instrument
      * to add support for other file formats.
      *
-     * @param string  $filename The filename to be loaded, or a base64 encoded
+     * @param string $filename The filename to be loaded, or a base64 encoded
      *                          string.
-     * @param boolean $base64   If true, read the filename as a base64 encoded
+     * @param boolean $base64 If true, read the filename as a base64 encoded
      *                          string of the file content, used for preview.
      *
-     * @return none
+     * @return void
      */
     function loadInstrumentFile($filename, $base64 = false)
     {
@@ -2132,11 +2139,11 @@ class NDB_BVL_Instrument extends NDB_Page
      * @param string $filename Either the path to a file, or a base64 encoded
      *                         string which can be interpreted as a file by
      *                         PHP and fopen()
-     * @param bool   $base64   If true, the "filename" is really a base64 encoded
+     * @param bool $base64 If true, the "filename" is really a base64 encoded
      *                         data URL, so we shouldn't check that the file exists
      *                         on the filesystem. (Used by preview)
      *
-     * @return none
+     * @return void
      */
     function loadInstrumentRules($filename, $base64 = false)
     {
@@ -2152,18 +2159,18 @@ class NDB_BVL_Instrument extends NDB_Page
         if (!empty($_REQUEST['commentID'])) {
             // make the control panel object for the current instrument
             $controlPanel = new NDB_BVL_InstrumentStatus_ControlPanel;
-            $success      = $controlPanel->select($_REQUEST['commentID']);
+            $success = $controlPanel->select($_REQUEST['commentID']);
 
             $config = NDB_Config::singleton();
-            $paths  = $config->getSetting('paths');
+            $paths = $config->getSetting('paths');
 
             // check if the file/class exists
             $BasePath = $paths['base'] . 'project/instruments/';
             $TestName = $this->testName;
             if (file_exists(
-                $BasePath
-                . "NDB_BVL_Instrument_$TestName.class.inc"
-            )
+                    $BasePath
+                    . "NDB_BVL_Instrument_$TestName.class.inc"
+                )
                 || file_exists($BasePath . "$TestName.linst")
             ) {
                 // save possible changes from the control panel...
@@ -2179,7 +2186,7 @@ class NDB_BVL_Instrument extends NDB_Page
     /**
      * Function that displays the html the fetch feedback panel.
      *
-     * @param candidateID $candID    The candidate ID for the panel.
+     * @param candidateID $candID The candidate ID for the panel.
      * @param timepointID $sessionID The session ID for the panel.
      *
      * @return string
@@ -2213,7 +2220,7 @@ class NDB_BVL_Instrument extends NDB_Page
     {
         $DB = Database::singleton();
 
-        $smarty   = new Smarty_neurodb();
+        $smarty = new Smarty_neurodb();
         $tpl_data = array();
 
         $tpl_data['questions'] = $DB->pselect(
@@ -2257,7 +2264,7 @@ class NDB_BVL_Instrument extends NDB_Page
 
         $temp = $this->getFlatInstrumentJSON($inst);
 
-        $smarty   = new Smarty_neurodb();
+        $smarty = new Smarty_neurodb();
         $tpl_data = array();
 
         $tpl_data['questions'] = $this->getFlatInstrumentJSON($inst);
@@ -2277,17 +2284,18 @@ class NDB_BVL_Instrument extends NDB_Page
     }
 
     /**
-     * Function that takes a API formatted instrument and flattens 
+     * Function that takes a API formatted instrument and flattens
      * the object to a non nested element array
      *
      * @param array $json the array to be flatten
      *
      * @return array
      */
-    function getFlatInstrumentJSON($json) {
+    function getFlatInstrumentJSON($json)
+    {
 
         $flatArray = array();
-        
+
         foreach ($json->Elements as $element) {
             if ($element->Type === "ElementGroup") {
                 $flatArray = array_merge(
@@ -2371,10 +2379,10 @@ class NDB_BVL_Instrument extends NDB_Page
         } else if ($element['type'] === "date") {
             if (get_class($this->form) === 'LorisForm') {
                 $element['options'] = array(
-                                       'mindate'         => "1990-01-01",
-                                       'maxdate'         => "2000-12-31",
-                                       'RequireResponse' => false,
-                                      );
+                    'mindate' => "1990-01-01",
+                    'maxdate' => "2000-12-31",
+                    'RequireResponse' => false,
+                );
                 //$element['RequireResponse'] = false;
             } else {
                 $html = new DOMDocument();
@@ -2395,7 +2403,7 @@ class NDB_BVL_Instrument extends NDB_Page
                     // the year is empty, and if it's empty use the next option in
                     // the dropdown (which should be non-empty)
                     $minYear = trim($minYear);
-                    $minYear = trim($minYear, chr(0xC2).chr(0xA0));
+                    $minYear = trim($minYear, chr(0xC2) . chr(0xA0));
                     if (empty($minYear)) {
                         $minYear = $year->childNodes->item(1)->textContent;
                     }
@@ -2403,9 +2411,9 @@ class NDB_BVL_Instrument extends NDB_Page
                     $maxYear = $year->lastChild->textContent;
 
                     $element['options'] = array(
-                                           'mindate' => $minYear . "-01-01",
-                                           'maxdate' => $maxYear . "-12-31",
-                                          );
+                        'mindate' => $minYear . "-01-01",
+                        'maxdate' => $maxYear . "-12-31",
+                    );
 
                 }
             }
@@ -2423,8 +2431,8 @@ class NDB_BVL_Instrument extends NDB_Page
      * Parses and element that came from HTML_QuickForm_Renderer_Array
      * and converts it to a format useable by instrument_json.tpl
      *
-     * @param string $element   The element from the QuickForm array renderer
-     * @param array  $formArray The currently existing form that was converted
+     * @param string $element The element from the QuickForm array renderer
+     * @param array $formArray The currently existing form that was converted
      *                          to instrument_json.tpl format.
      *
      * @return none, but side-effect modified $formArray to populate the element
@@ -2441,9 +2449,9 @@ class NDB_BVL_Instrument extends NDB_Page
                 $mapFunc = function (&$el) use ($name, $elementName) {
                     if ($el['name'] === $name) {
                         $el['name'] = $elementName;
-                        $elObj      = $this->WrapperTextElements[$elementName];
+                        $elObj = $this->WrapperTextElements[$elementName];
                         if ((is_array($elObj)
-                            && $elObj['type'] === 'textarea')
+                                && $elObj['type'] === 'textarea')
                             || (!is_array($elObj) && $elObj->_type == 'textarea')
                         ) {
                             $el['type'] = 'textarea';
@@ -2510,7 +2518,7 @@ class NDB_BVL_Instrument extends NDB_Page
         if (get_class($this->form) === 'LorisForm') {
             $formArray = $this->form->toElementArray();
         } else {
-            $smarty   = new Smarty_neurodb;
+            $smarty = new Smarty_neurodb;
             $renderer = new HTML_QuickForm_Renderer_Array($smarty);
 
             $this->form->accept($renderer);
@@ -2538,6 +2546,7 @@ class NDB_BVL_Instrument extends NDB_Page
         return $formArray;
 
     }
+
     /**
      * Returns a JSON representation of the currently instantiated
      * instrument.
@@ -2583,11 +2592,11 @@ class NDB_BVL_Instrument extends NDB_Page
     function toDirectJSON()
     {
         $instrumentJSON = array(
-         "form" => array(),
-         "testname" => $this->testName,
-         "fullname" => $this->getFullName()
+            "form" => array(),
+            "testname" => $this->testName,
+            "fullname" => $this->getFullName()
         );
-        
+
         $tempForm = array();
         $tempPage = array(
             "Description" => "Top Page",
@@ -2605,7 +2614,7 @@ class NDB_BVL_Instrument extends NDB_Page
             $tempForm[] = PageElementsFormatter::formatElement($value, $key);
         }
         $tempPage["Elements"] = $tempForm;
-        
+
         $this->form->form = array();
         $tempForm = array();
         $instrumentJSON['form'][] = $tempPage;
@@ -2638,7 +2647,8 @@ class NDB_BVL_Instrument extends NDB_Page
         return json_encode($instrument);
     }
 
-    function directEntryValidation() {
+    function directEntryValidation()
+    {
         $allErrors = array();
         $this->form->directEntry = true;
         $temp = json_decode($this->getReactReview());
@@ -2680,7 +2690,7 @@ class NDB_BVL_Instrument extends NDB_Page
             $this->XINRules = array();
         }
 
-        if(empty($allErrors)) {
+        if (empty($allErrors)) {
             return true;
         }
 
@@ -2688,12 +2698,13 @@ class NDB_BVL_Instrument extends NDB_Page
 
     }
 
-    function getPageValues($form, $fullValues) {
+    function getPageValues($form, $fullValues)
+    {
         $values = array();
         foreach ($form as $key => $value) {
             if ($value['type'] === 'group') {
                 $values = array_merge($values, $this->getPageValues($value['elements'], $fullValues));
-            } else if(!in_array($value['type'], array('header', 'static'))) {
+            } else if (!in_array($value['type'], array('header', 'static'))) {
                 $values[$value['name']] = $fullValues[$value['name']];
             }
         }
@@ -2708,7 +2719,7 @@ class NDB_BVL_Instrument extends NDB_Page
      */
     function determineDataEntryAllowed()
     {
-        $DB    = Database::singleton();
+        $DB = Database::singleton();
         $entry = $DB->pselectOne(
             "SELECT Data_entry FROM flag WHERE CommentID=:CID",
             array('CID' => $this->getCommentId())
@@ -2731,37 +2742,37 @@ class NDB_BVL_Instrument extends NDB_Page
     {
         return $this->determineDataEntryAllowed();
     }
-}
 
-/**
- * Checks that the Date_taken element is a valid date
- *
- * @param array $dateElement The date element in QuickForm array format.
- *
- * @return True if the date is invalid, false if it's valid.
- */
-function _checkDateTaken($dateElement)
-{
-    // if all three elements are empty,
-    // return true b/c it'll save the NULL in date field
-    if (empty($dateElement['M'])
-        && empty($dateElement['d'])
-        && empty($dateElement['Y'])
-    ) {
-        return true;
-    } elseif (empty($dateElement['M'])
-        || empty($dateElement['d'])
-        || empty($dateElement['Y'])
-    ) {
-        // otherwise, if any of the three elements are empty,
-        // return false b/c date entry has been attempted
-        return false;
-    } else {
-        // else, check the date
-        $checked = checkdate(
-            $dateElement['M'],
-            $dateElement['d'],
-            $dateElement['Y']
+    /**
+     * Generate a breadcrumb trail for this page.
+     *
+     * @return \LORIS\BreadcrumbTrail
+     */
+    public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
+    {
+        $visitlabel = $this->getVisitLabel();
+        $sessionid = $this->getSessionID();
+        $timepoint = \TimePoint::singleton($sessionid);
+        $candid = $timepoint->getCandID();
+        $pscid = $this->getPSCID();
+
+        return new \LORIS\BreadcrumbTrail(
+            new \LORIS\Breadcrumb(
+                'Access Profile',
+                '/candidate_list'
+            ),
+            new \LORIS\Breadcrumb(
+                "Candidate Profile $candid / $pscid",
+                "/$candid"
+            ),
+            new \LORIS\Breadcrumb(
+                "TimePoint $visitlabel Details",
+                "/instrument_list/?candID=$candid&sessionID=$sessionid"
+            ),
+            new \LORIS\Breadcrumb(
+                $this->name,
+                ''
+            )
         );
         if (version_compare(phpversion(), '5.3.0', '>=')) {
             if ($checked === false) {
@@ -2774,40 +2785,41 @@ function _checkDateTaken($dateElement)
                 $dateElement['d']
             );
 
-            $now  = date_create();
+            $now = date_create();
             $diff = date_diff($formatted, $now);
             return ($diff->format("%r") === '');
         } else {
             return $checked;
         }
     }
-}
 
-/**
- * QuickForm rule to check that a date is valid.
- * This is used by create timepoint and start timepoint pages,
- * so it probably shouldn't be in the instrument class.
- *
- * @param array $dateElement The date element in QuickForm array format.
- *
- * @return True if the date is invalid, false if it's valid.
- */
-function _checkDate($dateElement)
-{
-    if (empty($dateElement['M'])
-        && empty($dateElement['d'])
-        && empty($dateElement['Y'])
-    ) {
-        // if all three elements are empty, return true b/c it'll
-        // save the NULL in date field
-        return true;
-    } elseif (empty($dateElement['M'])
-        || empty($dateElement['d'])
-        || empty($dateElement['Y'])
-    ) {
-        // otherwise, if any of the three elements are empty, return
-        // false b/c date entry has been attempted
-        return false;
+
+    /**
+     * QuickForm rule to check that a date is valid.
+     * This is used by create timepoint and start timepoint pages,
+     * so it probably shouldn't be in the instrument class.
+     *
+     * @param array $dateElement The date element in QuickForm array format.
+     *
+     * @return True if the date is invalid, false if it's valid.
+     */
+    function _checkDate($dateElement)
+    {
+        if (empty($dateElement['M'])
+            && empty($dateElement['d'])
+            && empty($dateElement['Y'])
+        ) {
+            // if all three elements are empty, return true b/c it'll
+            // save the NULL in date field
+            return true;
+        } elseif (empty($dateElement['M'])
+            || empty($dateElement['d'])
+            || empty($dateElement['Y'])
+        ) {
+            // otherwise, if any of the three elements are empty, return
+            // false b/c date entry has been attempted
+            return false;
+        }
+        return checkdate($dateElement['M'], $dateElement['d'], $dateElement['Y']);
     }
-    return checkdate($dateElement['M'], $dateElement['d'], $dateElement['Y']);
 }
