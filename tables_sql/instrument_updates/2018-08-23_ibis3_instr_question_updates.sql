@@ -15,7 +15,7 @@ ALTER TABLE SSIS_Parent ADD COLUMN other_relationship_to_child varchar (255) def
 ALTER TABLE SRS2_SchoolAge ADD COLUMN relationship_to_child enum('mother','father','step_mother','step_father','other') default NULL AFTER Date_taken;
 ALTER TABLE SRS2_SchoolAge ADD COLUMN other_relationship_to_child varchar (255) default NULL AFTER relationship_to_child;
 -- 6) Add relationship to child question to scq_proband_survey
-ALTER TABLE scq_proband_survey ADD COLUMN relationship_to_child enum('mother','father','step_mother','step_father','other') default NULL AFTER Window_Difference;
+ALTER TABLE scq_proband_survey ADD COLUMN relationship_to_child enum('mother','father','step_mother','step_father','other') default NULL AFTER Date_taken;
 ALTER TABLE scq_proband_survey ADD COLUMN other_relationship_to_child varchar (255) default NULL AFTER relationship_to_child;
 -- 7) Add relationship to child question to ABC2
 ALTER TABLE ABC2 ADD COLUMN relationship_to_child enum('mother','father','step_mother','step_father','other') default NULL AFTER Window_Difference;
