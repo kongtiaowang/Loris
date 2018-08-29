@@ -14,6 +14,7 @@ class Upload extends React.Component {
 
   componentDidMount() {
     this.fetchData();
+    alert('upload');
   }
 
 
@@ -41,8 +42,8 @@ return (
     {
         this.state.Data.map((item, i) => (
           <div>
-            <p key={i}>{item}</p>
-            <Docs FileCate={item}></Docs>
+            <p key={i}>{item['name']}</p>
+            <Docs FileCate={item['id']} DataURL={`${loris.BaseURL}/document_repository/ajax/demoGetFileForCate.php?categoryID=${item['id']}&format=json`}></Docs>
           </div>
         ))
     }

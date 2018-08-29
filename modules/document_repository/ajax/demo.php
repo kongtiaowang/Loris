@@ -22,8 +22,6 @@ set_include_path(get_include_path().":../../project/libraries:../../php/librarie
 require_once "NDB_Client.class.inc";
 $client = new NDB_Client();
 $client->initialize("../../project/config.xml");
-
-// create Database object
 $DB =& Database::singleton();
 $result = $DB->pselect(
     "SELECT * FROM document_repository_categories",
@@ -38,7 +36,6 @@ foreach ($result as $value) {
 
     function parseCategory($value)
     {
-print_r($value['id']."dd");
         $id = $value['id'];
         $depth = 0;
         $DB    = \Database::singleton();
@@ -55,7 +52,8 @@ print_r($value['id']."dd");
         } while ($value['parent_id'] != 0);
 //try to return array{{name:"ddd",id:'1'}{}}
 //        return $categoryName;
-          return $id;
+//          return $id;
+         return array("name"=>$categoryName,"id"=>$id);
     }
 echo json_encode($data);
 

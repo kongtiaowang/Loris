@@ -1,9 +1,11 @@
+import DataTable from './dataTable';
 class Docs extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isLoaded: false,
+      Loaded: false,
       Data: {},
+      filter: {},
     };
 
   this.fetchData = this.fetchData.bind(this);
@@ -21,7 +23,7 @@ class Docs extends React.Component {
       success: function(data) {
         this.setState({
           Data: data,
-          isLoaded: true,
+          Loaded: true,
         });
       }.bind(this),
       error: function(error) {
@@ -32,7 +34,16 @@ class Docs extends React.Component {
 
 
   render() {
-    return (<p>docs ......{this.props.FileCate}</p>);
+    if (this.state.Loaded) {
+    return (
+       <div>
+           <DataTable
+            Data={this.state.Data}
+           />
+       </div>
+
+    );
+    } return (<p>Loading....</p>);
   }
 }
 
