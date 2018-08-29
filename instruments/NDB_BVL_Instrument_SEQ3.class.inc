@@ -129,8 +129,10 @@ class NDB_BVL_Instrument_SEQ3 extends NDB_BVL_Instrument
                     null      => "",
                     "mother"  => "Mother",
                     "father"  => "Father",
-                    "both"    => "Both Parents",
-                    "teacher" => "Teacher",
+                     "step_mother"  => "Step Mother",
+                     "step_father"  => "Step Father",
+                     "both"    => "Both Parents",
+                     "teacher" => "Teacher",
                     "other"   => "Other (Describe:)",
                    );
 

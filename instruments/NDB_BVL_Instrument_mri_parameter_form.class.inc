@@ -49,7 +49,12 @@ class NDB_BVL_Instrument_mri_parameter_form extends NDB_BVL_Instrument
         );
         
         $db = Database::singleton();
+<<<<<<< HEAD
         $record = $db->pselectRow("SELECT * FROM $this->table WHERE CommentID=:cid",array("cid" =>$this->getCommentID() ));
+=======
+        $query = "SELECT * FROM ".$this->table." WHERE CommentID='".$this->getCommentID()."'";
+        $record = $db->pselectRow($query, array());
+>>>>>>> aces/17.1
         
         if (!is_array($record)) {
            $record = array();
