@@ -164,12 +164,9 @@ class NDB_BVL_Instrument_seq extends NDB_BVL_Instrument
 		$db =& Database::singleton();
 
 		// Get the item scores
-<<<<<<< HEAD
-        $record = $db->pselectRow("SELECT * FROM $this->table WHERE CommentID=:cid",array("cid" =>$this->getCommentID() ));
-=======
-		$query = "SELECT * FROM $this->table WHERE CommentID='".$this->getCommentID()."'";
-		$record =$db->pselectRow($query, array());
->>>>>>> aces/17.1
+
+        $query = "SELECT * FROM $this->table WHERE CommentID='" . $this->getCommentID() . "'";
+        $record = $db->pselectRow($query, array());
 
 
 		if(preg_match("/seq(_page[0-9]+)/",$this->page,$matches)){

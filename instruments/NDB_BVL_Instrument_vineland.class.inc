@@ -90,18 +90,11 @@ class NDB_BVL_Instrument_vineland extends NDB_BVL_Instrument
          //$this->form->addElement('static', 'Date_taken_display', 'Date of Administration');
          
          // Get the item scores
-<<<<<<< HEAD
-         $db =& Database::singleton();
-
-        $record = $db->pselectRow("SELECT * FROM $this->table WHERE CommentID=:cid",array("cid" =>$this->getCommentID() ));
-=======
-
 
          $db =& Database::singleton();
-         
+
          $query = "SELECT * FROM ".$this->table." WHERE CommentID='".$this->getCommentID()."'";
          $record = $db->pselectRow($query, array());
->>>>>>> aces/17.1
          
 
          $this->_addMetadataFields();
