@@ -238,8 +238,6 @@ class Document_Repository extends \NDB_Menu_Filter
     function parseCategory($value)
     {
         $depth = 0;
-        print_r($value['category_name']." ---- ");
-        print_r($value['parent_id']);
         $DB    = \Database::singleton();
             $categoryName = $value['category_name'];
         do {
