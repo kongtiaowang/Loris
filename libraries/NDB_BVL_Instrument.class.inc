@@ -189,10 +189,7 @@ class NDB_BVL_Instrument extends NDB_Page
         ) {
             include_once 'NDB_BVL_Instrument_LINST.class.inc';
             $obj = new \Loris\Behavioural\NDB_BVL_Instrument_LINST(
-            // The module directory we use for instruments is arbitrary,
-            // since it isn't a real module, but it's required for the page
-            // constructor.
-                new Module($instrument, $base ."project/"),
+                new Module($instrument),
                 $page,
                 $commentID,
                 $commentID,
@@ -210,7 +207,7 @@ class NDB_BVL_Instrument extends NDB_Page
             }
             // Now go ahead and instantiate it
             $obj = new $class(
-                new Module($instrument, $base ."project/"),
+                new Module($instrument),
                 $page,
                 $commentID,
                 $commentID,
@@ -367,7 +364,7 @@ class NDB_BVL_Instrument extends NDB_Page
      * Method to display the form - usually not overridden as it
      * includes all the base code that any instrument will require.
      *
-     * @return string
+     * @return void
      * @access public
      */
     function display()
@@ -496,7 +493,7 @@ class NDB_BVL_Instrument extends NDB_Page
      * Attempts to validate the form (using the defined rules) and
      * saves the validated data into the database
      *
-     * @return bool if failure to save data
+     * @return false if failure to save data
      * @access public
      */
     function save()
@@ -1142,7 +1139,7 @@ class NDB_BVL_Instrument extends NDB_Page
      * @param array $elements The value of all the elements on the current page
      *                        to validate.
      *
-     * @return array|true associative array of errors (fieldname => errormessage) or true
+     * @return associative array of errors (fieldname => errormessage) or true
      *         if no errors.
      */
     function XINValidate($elements)
@@ -1213,7 +1210,7 @@ class NDB_BVL_Instrument extends NDB_Page
      * @param string $group   Empty if a non-grouped element is registering the rule.
      *                        Otherwise, name of the group registering the rule.
      *
-     * @return void
+     * @return none
      */
     function XINRegisterRule($elname, $rules, $message="", $group="")
     {
