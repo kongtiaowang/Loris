@@ -3,13 +3,13 @@
 ALTER TABLE UCD_Charge_GI_History ADD COLUMN relationship_to_child enum('mother','father','step_mother','step_father','other') default NULL AFTER Window_Difference;
 ALTER TABLE UCD_Charge_GI_History ADD COLUMN other_relationship_to_child varchar (255) default NULL AFTER relationship_to_child;
 -- 2) Add relationship to child question to Conners 3 Parent
-ALTER TABLE connors_parent ADD COLUMN relationship_to_child enum('mother','father','step_mother','step_father','other') default NULL AFTER Window_Difference;
-ALTER TABLE connors_parent ADD COLUMN other_relationship_to_child varchar (255) default NULL AFTER relationship_to_child;
+ALTER TABLE conners_parent ADD COLUMN relationship_to_child enum('mother','father','step_mother','step_father','other') default NULL AFTER Window_Difference;
+ALTER TABLE conners_parent ADD COLUMN other_relationship_to_child varchar (255) default NULL AFTER relationship_to_child;
 -- 3)Add relationship to child question to CBCL_6_to_18
-ALTER TABLE CBCL_6_To_18 ADD COLUMN relationship_to_child enum('mother','father','step_mother','step_father','other') default NULL AFTER Window_Difference;
+ALTER TABLE CBCL_6_To_18 ADD COLUMN relationship_to_child enum('mother','father','step_mother','step_father','other') default NULL AFTER Date_taken;
 ALTER TABLE CBCL_6_To_18 ADD COLUMN other_relationship_to_child varchar (255) default NULL AFTER relationship_to_child;
 -- 4) Add relationship to child question to SSIS parent
-ALTER TABLE SSIS_Parent ADD COLUMN relationship_to_child enum('mother','father','step_mother','step_father','other') default NULL AFTER Window_Difference;
+ALTER TABLE SSIS_Parent ADD COLUMN relationship_to_child enum('mother','father','step_mother','step_father','other') default NULL AFTER Date_taken;
 ALTER TABLE SSIS_Parent ADD COLUMN other_relationship_to_child varchar (255) default NULL AFTER relationship_to_child;
 -- 5) Add relationship to child question to SRS2_School Age
 ALTER TABLE SRS2_SchoolAge ADD COLUMN relationship_to_child enum('mother','father','step_mother','step_father','other') default NULL AFTER Date_taken;
