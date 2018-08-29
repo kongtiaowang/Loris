@@ -353,10 +353,8 @@ class NDB_BVL_Instrument_ados_module3 extends NDB_BVL_Instrument_IBIS
 
         //get the saved scores
     	$db =& Database::singleton();
-  	
-    	$query = "SELECT * FROM $this->table WHERE CommentID = '$this->commentID'";
-    	$record = array();
-    	$db->selectRow($query, $record);
+
+        $record = $db->pselectRow("SELECT * FROM $this->table WHERE CommentID=:cid",array("cid" =>$this->getCommentID() ));
 
         // Get the subject age in months for scoring
         $timepoint =& TimePoint::singleton($this->getSessionID());
@@ -371,8 +369,7 @@ class NDB_BVL_Instrument_ados_module3 extends NDB_BVL_Instrument_IBIS
             $timepoint =& TimePoint::singleton($this->getSessionID());
             $dob = $timepoint->getEffectiveDateOfBirth();
         }
-
-        $db->selectRow("SELECT * FROM $this->table WHERE CommentID='".$this->getCommentID()."'", $Answers);
+        $Answers = $db->pselectRow("SELECT * FROM $this->table WHERE CommentID=:cid",array("cid" =>$this->getCommentID() ));
         if(!empty($dob) && !empty($Answers['Date_taken'])) {
             $age = Utility::calculateAge($dob, $Answers["Date_taken"]);
             if(is_array($age)) {

@@ -389,10 +389,8 @@ class NDB_BVL_Instrument_ados2_module1 extends NDB_BVL_Instrument_IBIS
 
         //get the saved scores
     	$db =& Database::singleton();
-  	
-    	$query = "SELECT * FROM $this->table WHERE CommentID = '$this->commentID'";
-    	$record = array();
-    	$db->selectRow($query, $record);
+
+    	$record = $db->pselectRow("SELECT * FROM $this->table WHERE CommentID=:cid",array("cid" =>$this->getCommentID() ));
  	
 
         //Convert the entered scores to countable scores:
@@ -471,8 +469,8 @@ class NDB_BVL_Instrument_ados2_module1 extends NDB_BVL_Instrument_IBIS
         }
 
         //Determine Severity score from ados_lookup table 
-	    //Requires age in months:  
-        $db->selectRow("SELECT * FROM $this->table WHERE CommentID='".$this->getCommentID()."'", $Answers);
+	    //Requires age in months:
+        $Answers = $db->pselectRow("SELECT * FROM $this->table WHERE CommentID=:cid",array("cid" =>$this->getCommentID() ));
 	    $age_months = 0;
         if($this->getSessionID() != NULL) { //quickform_parser doesn't use any specific session
             $timepoint =& TimePoint::singleton($this->getSessionID());

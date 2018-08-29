@@ -398,10 +398,7 @@ class NDB_BVL_Instrument_RSMS extends NDB_BVL_Instrument{
 
             $db =& Database::singleton();
 
-            $query = "SELECT * FROM ".$this->table." WHERE CommentID='".$this->getCommentID()."'";
-
-            //select the row with the commentID of the row where the information is being taken
-            $db->selectRow($query, $result);
+            $result= $db->pselectRow("SELECT * FROM ".$this->table." WHERE CommentID=:cid",array("cid" =>$this->getCommentID() ) );
 
                         
             $score1 =0;

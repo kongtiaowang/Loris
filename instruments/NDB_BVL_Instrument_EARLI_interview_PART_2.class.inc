@@ -24,7 +24,7 @@ class NDB_BVL_Instrument_EARLI_interview_PART_2 extends NDB_BVL_Instrument_EARLI
         $this->commentID = $commentID;
 
         $db = Database::singleton();
-        $fertilityTreatment = $db->pselectOne("SELECT q5_16 FROM EARLI_interview_PART_2 WHERE CommentID='$commentID'",array());
+        $fertilityTreatment = $db->pselectOne("SELECT q5_16 FROM EARLI_interview_PART_2 WHERE CommentID=:cid",array("cid" =>$this->getCommentID() ) );
         if ($fertilityTreatment == '01_yes')
             $this->_requiredElements = array('interview_time','q5_3', 'q5_17', 'q5_32', 'q5_58', 'q5_68', 'q5_76_a', 'q5_88', 'q5_95', 'q5_110_a', 'q6_1', 'q6_85', 'q7_2_m', 'q7_19', 'q7_37_1');
         else
@@ -622,7 +622,7 @@ class NDB_BVL_Instrument_EARLI_interview_PART_2 extends NDB_BVL_Instrument_EARLI
 
 
 
-        $db->selectRow("SELECT q5_16 FROM EARLI_interview_PART_2 WHERE CommentID='".$this->getCommentID()."'", $answer);
+        $answer= $db->pselectRow("SELECT q5_16 FROM EARLI_interview_PART_2 WHERE CommentID=:cid",array("cid" =>$this->getCommentID() ) );
 
         //print_r($fields);
 
@@ -968,11 +968,10 @@ class NDB_BVL_Instrument_EARLI_interview_PART_2 extends NDB_BVL_Instrument_EARLI
         }
 
 
-        $db->selectRow("SELECT q5_16 FROM EARLI_interview_PART_2 WHERE CommentID='".$this->getCommentID()."'", $answer);
+        $answer= $db->pselectRow("SELECT q5_16 FROM EARLI_interview_PART_2 WHERE CommentID=:cid",array("cid" =>$this->getCommentID() ) );
 
-        $otherCommentID = $db->selectOne("SELECT CommentID from flag where Test_name='EARLI_interview_PART_1' and SessionID=" . $this->getSessionID());
-
-        $db->selectRow("SELECT q4a_1 FROM EARLI_interview_PART_1 WHERE CommentID='". $otherCommentID."'", $answ);
+        $otherCommentID = $db->pselectOne("SELECT CommentID from flag where Test_name='EARLI_interview_PART_1' and SessionID=" . $this->getSessionID(),array());
+        $answ = $db->pselectRow("SELECT q4a_1 FROM EARLI_interview_PART_1 WHERE CommentID='". $otherCommentID."'", array());
 
 
         //	print_r($fields);

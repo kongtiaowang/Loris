@@ -126,23 +126,20 @@ class NDB_BVL_Instrument_CDI_Words_Sentences extends NDB_BVL_Instrument
         $scale_percentile = $scale . "_percentile";
 
         $query_scores = "SELECT * FROM CDI_WS_percentiles_lookup WHERE age_months=" . $age_months . " AND sex='$gender' AND score_raw=" . $scores[$scale_number] . " AND subscale='$scale_number'";
-        $PercentileScore = array();
-        $db->selectRow($query_scores, $PercentileScore);
+        $PercentileScore = $db->pselectRow($query_scores, array());
 
         $scores[$scale_percentile] = $PercentileScore['score_percentile'];
 
         if ($PercentileScore == NULL) {
             $score_holder = $scores[$scale_number];
             $query_scores1a = "SELECT * FROM CDI_WS_percentiles_lookup WHERE age_months=$age_months AND sex='$gender' AND subscale='$scale_number' AND score_raw>$score_holder ORDER BY score_raw ASC LIMIT 1";
-            $record_1a = array();
-            $db->selectRow($query_scores1a, $record_1a);
+            $record_1a = $db->pselectRow($query_scores1a, array());
             if (empty($record_1a)) {
-                $db->selectRow("SELECT * from CDI_WS_percentiles_lookup WHERE a ge_months=$age_months AND sex='$gender'     AND subscale='$scale_number' ORDER BY score_raw ASC LIMIT 1", $record_1a);
+                $db->pselectRow("SELECT * from CDI_WS_percentiles_lookup WHERE a ge_months=$age_months AND sex='$gender'     AND subscale='$scale_number' ORDER BY score_raw ASC LIMIT 1", array());
             }
 
             $query_scores1b = "SELECT * FROM CDI_WS_percentiles_lookup WHERE age_months=" . $age_months . " AND sex='$gender' AND subscale='$scale_number' AND score_raw<$score_holder ORDER BY score_raw DESC LIMIT 1";
-            $record_1b = array();
-            $db->selectRow($query_scores1b, $record_1b);
+            $record_1b = $db->pselectRow($query_scores1b, array());
 
             //print "scale: $scale_number score: " . $scores[$scale_number] . " x< " . $record_1b['score_raw'] . " x> " . $record_1a['score_raw'] . " Y> " . $record_1b['score_percentile'] . " Y< " . $record_1b['score_percentile'] . '<br />';
             $percentile_calculation1 = (
@@ -164,8 +161,7 @@ class NDB_BVL_Instrument_CDI_Words_Sentences extends NDB_BVL_Instrument
         $scale_percentage = $scale . "_percentage";
 
         $query_scores = "SELECT * FROM CDI_WS_percent_affirmative_lookup WHERE age_months=" . $age_months . " AND sex='$gender' AND subscale='$scale_number'";
-        $PercentageScore = array();
-        $db->selectRow($query_scores, $PercentageScore);
+        $PercentageScore  = $db->pselectRow($query_scores, array());
 
         $scores[$scale_percentage] = $PercentageScore['affirmative_percentage'];
     }
@@ -1022,15 +1018,11 @@ class NDB_BVL_Instrument_CDI_Words_Sentences extends NDB_BVL_Instrument
         //get the saved scores
         $db = Database::singleton();
 
-
-        $query = "SELECT * FROM $this->table WHERE CommentID = '$this->commentID'";
-        $record = array();
-        $db->selectRow($query, $record);
+        $record =$db->pselectRow("SELECT * FROM $this->table WHERE CommentID=:cid", array("cid" =>$this->getCommentID()));
 
         // Get gender
-        $query_gender = "SELECT Gender FROM candidate as c, session as s, flag as f, $this->table as t WHERE t.CommentID = '$this->commentID' AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
-        $record_gender = array();
-        $db->selectRow($query_gender, $record_gender);
+        $query_gender = "SELECT Gender FROM candidate as c, session as s, flag as f, $this->table as t WHERE CommentID=:cid AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
+        $record_gender = $db->pselectRow($query_gender,array("cid" =>$this->getCommentID() ));
         $gender = strtolower($record_gender['Gender']);
 
         // Get the subject age in months for scoring

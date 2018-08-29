@@ -654,7 +654,7 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
 /*
 	$query_scores_OUTOFRANGE = "SELECT * FROM csbs_lookup WHERE age_months = '24' AND score_weighted = ".$scores['total_weighted_raw_score']." AND subscale='total_weighted_raw_score'";
 	$record_OUTOFRANGE = array();
-	$db->selectRow($query_scores_OUTOFRANGE, $record_OUTOFRANGE);
+	$db->pselectRow($query_scores_OUTOFRANGE, $record_OUTOFRANGE);
 	
 */
 

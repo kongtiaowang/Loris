@@ -167,7 +167,7 @@ class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument
 //        $db =& Database::singleton();
 //        //Get raw questions point values
 //        $query = "SELECT * FROM " . $this->table . " WHERE CommentID='" . $this->getCommentID() . "'";
-//        $db->selectRow($query, $record);
+//        $db->pselectRow($query, $record);
 //
 //
 //        $sum = 0;

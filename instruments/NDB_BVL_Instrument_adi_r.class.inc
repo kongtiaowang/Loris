@@ -178,9 +178,7 @@ class NDB_BVL_Instrument_adi_r extends NDB_BVL_Instrument
         // null scores
         $this->_nullScores($this->scoreCols);
         // Get the item scores
-        $query = "SELECT * FROM $this->table WHERE CommentID='".$this->getCommentID()."'";
-        $record=array();
-        $db->pselectRow($query, $record);
+        $record = $db->pselectRow("SELECT * FROM $this->table WHERE CommentID=:cid",array("cid" =>$this->getCommentID() ));
         //convert items codes to algorithm scores
         $conversion = array(0=>0, 1=>1, 2=>2, 3=>2, 7=>0, 8=>0, 9=>0);
         foreach ($record as $field=>$code) {
