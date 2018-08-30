@@ -58,6 +58,7 @@ class Document_Repository2 extends \NDB_Menu_Filter
         foreach ($fileTypeQuery as $filetype) {
             $fileTypeList[$filetype['File_type']] = $filetype['File_type'];
         }
+//        print_r($fileTypeList);
         $siteList  = array();
         // allow to view all sites data through filter
         if ($user->hasPermission('access_all_profiles')) {
@@ -77,12 +78,14 @@ class Document_Repository2 extends \NDB_Menu_Filter
                 }
             }
         }
+        $categoryList=array('1'=>'text','2'=>'photo','3'=>'pdf','4'=>'tttt','5'=>'text>tttt','6'=>'text>tttt>tttt','7'=>'ttytyt','8'=>'text>tttt>tttt>88','9'=>'ttytyt>1111','10'=>'ttytyt>1111>2222','11'=>'ttytyt>88');
         // Form Elements
         $this->addBasicText('fileName', 'File Name');
         $this->addBasicText('version', 'Version');
         $this->addSelect('fileType', 'File type', $fileTypeList);
         $this->addSelect('site', 'For Site', $siteList);
         $this->addBasicText('uploadedBy', 'Uploaded By');
+        $this->addSelect('category','File category',$categoryList);
 
         return true;
 }
@@ -103,6 +106,7 @@ class Document_Repository2 extends \NDB_Menu_Filter
                           'v.File_name',
                           'v.version',
                           'v.File_type',
+                          'v.File_category as category',
                           'v.Instrument',
                           'v.uploaded_by',
                           '(SELECT name FROM psc WHERE CenterID=v.For_site) as site',
@@ -120,6 +124,7 @@ class Document_Repository2 extends \NDB_Menu_Filter
                                'File_name',
                                'version',
                                'File_type',
+                               'category',
                                'Instrument',
                                'uploaded_by',
                                'Site',
