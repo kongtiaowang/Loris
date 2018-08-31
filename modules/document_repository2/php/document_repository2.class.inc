@@ -22,7 +22,7 @@ namespace LORIS\document_repository2;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/Jkat/Loris-Trunk/
 */
-class Document_Repository2 extends \NDB_Menu_Filter
+class Document_Repository2 extends \NDB_Menu_Filter_Form
 {
     var $AjaxModule      = true;
     public $skipTemplate = true;
@@ -78,8 +78,22 @@ class Document_Repository2 extends \NDB_Menu_Filter
                 }
             }
         }
-        $categoryList=array('1'=>'text','2'=>'photo','3'=>'pdf','4'=>'tttt','5'=>'text>tttt','6'=>'text>tttt>tttt','7'=>'ttytyt','8'=>'text>tttt>tttt>88','9'=>'ttytyt>1111','10'=>'ttytyt>1111>2222','11'=>'ttytyt>88');
+//todo get the list
+$result = $db->pselect(
+    "SELECT * FROM document_repository_categories",
+    array()
+);
+
+$data = array();
+foreach ($result as $value) {
+       $item = $this->parseCategory($value);
+       $id   = $item['id'];
+       $name = $item['name'];
+       $data[$id]=$name;
+}
+        $categoryList = $data;
         // Form Elements
+        
         $this->addBasicText('fileName', 'File Name');
         $this->addBasicText('version', 'Version');
         $this->addSelect('fileType', 'File type', $fileTypeList);
@@ -89,6 +103,27 @@ class Document_Repository2 extends \NDB_Menu_Filter
 
         return true;
 }
+  public  function parseCategory($value)
+    {
+        $id = $value['id'];
+        $depth = 0;
+        $DB    = \Database::singleton();
+            $categoryName = $value['category_name'];
+        do {
+            if ($value['parent_id'] != 0) {
+                $depth       += 1;
+                $parent_id    = $value['parent_id'];
+                $query        = "SELECT * FROM document_repository_categories".
+                                " where id=$parent_id";
+                $value        = $DB->pselectRow($query, array());
+                $categoryName = $value['category_name'] . ">" . $categoryName;
+            }
+        } while ($value['parent_id'] != 0);
+//try to return array{{name:"ddd",id:'1'}{}}
+//        return $categoryName;
+//          return $id;
+         return array("name"=>$categoryName,"id"=>$id);
+    }
     /**
      * Build a list of media to display in Data Table
      *
@@ -106,12 +141,12 @@ class Document_Repository2 extends \NDB_Menu_Filter
                           'v.File_name',
                           'v.version',
                           'v.File_type',
-                          'v.File_category as category',
                           'v.Instrument',
                           'v.uploaded_by',
                           '(SELECT name FROM psc WHERE CenterID=v.For_site) as site',
                           'v.comments',
                           'v.Date_uploaded',
+                          'v.File_category',
                         ];
         $this->query = $query;
         if (!$user->hasPermission('access_all_profiles')) {
@@ -124,12 +159,12 @@ class Document_Repository2 extends \NDB_Menu_Filter
                                'File_name',
                                'version',
                                'File_type',
-                               'category',
                                'Instrument',
                                'uploaded_by',
                                'Site',
                                'comments',
                                'Date_uploaded',
+                               'File_category',
                                'Edit',
                                'Delete',
                           ];

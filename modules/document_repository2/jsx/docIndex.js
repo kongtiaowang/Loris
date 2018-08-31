@@ -6,8 +6,6 @@ class DocIndex extends React.Component {
   constructor(props) {
     super(props);
 
-    loris.hiddenHeaders = ['Cand ID', 'Session ID', 'Hide File', 'File Type'];
-
     this.state = {
       isLoaded: false,
       filter: {},

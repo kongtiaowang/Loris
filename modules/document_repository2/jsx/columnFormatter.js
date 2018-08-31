@@ -8,6 +8,7 @@
  */
 function formatColumn(column, cell, rowData, rowHeaders) {
   // If a column if set as hidden, don't display it
+  loris.hiddenHeaders = ['File Category'];
   if (loris.hiddenHeaders.indexOf(column) > -1) {
     return null;
   }
@@ -23,7 +24,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   // convert array to string, with blank space separator
   classes = classes.join(' ');
   if (column === 'File Name') {
-    let downloadURL = loris.BaseURL + '/document_repository2/ajax/GetFile.php?File=' + encodeURIComponent(row['File Name']);
+    let downloadURL = loris.BaseURL + '/document_repository/ajax/GetFile.php?File=' + encodeURIComponent(row['File Name']);
     return (
       <td className= {classes}>
         <a href={downloadURL} target="_blank" download={row['File Name']}>
