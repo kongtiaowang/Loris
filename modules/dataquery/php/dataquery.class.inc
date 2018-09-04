@@ -28,28 +28,36 @@ class Dataquery extends \NDB_Form
     /**
      * Check user access permission
      *
-     * @return bool|object
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        // create user object
-        $user =& \User::singleton();
-
         // check user permissions
         return $user->hasPermission('dataquery_view');
     }
+
     /**
      * Sets up the smarty template variables for the dataquery page.
      *
-     * @return unknown
+     * @return void
      */
     function setup()
     {
         parent::setup();
 
-        $user     = \User::singleton();
-        $username = $user->getUsername();
-        $couch    = \CouchDB::singleton();
+        $user        = \User::singleton();
+        $username    = $user->getUsername();
+        $config      = \NDB_Config::singleton();
+        $couchConfig = $config->getSetting('CouchDB');
+        $couch       = \NDB_Factory::singleton()->couchDB(
+            $couchConfig['dbName'],
+            $couchConfig['hostname'],
+            $couchConfig['port'],
+            $couchConfig['admin'],
+            $couchConfig['adminpass']
+        );
 
         $update = $couch->queryView(
             "DQG-2.0",

@@ -31,13 +31,12 @@ class Mri_Protocol_Violations extends \NDB_Menu_Filter
      * violated_scans_modifications permission if they're allowed to modify
      * the mri_protocol table
      *
+     * @param \User $user The user whose access is being checked
+     *
      * @return bool true if they have access to this page
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        // create user object
-        $user =& \User::singleton();
-
         $this->tpl_data['violated_scans_modifications']
             = $user->hasPermission('violated_scans_edit');
         return ($user->hasPermission('violated_scans_view_allsites'));
@@ -46,7 +45,7 @@ class Mri_Protocol_Violations extends \NDB_Menu_Filter
     /**
      * Set up the class variables and query to generate the menu filter
      *
-     * @return none but as a side-effect modify internal class variables
+     * @return void but as a side-effect modify internal class variables
      */
     function _setupVariables()
     {
@@ -127,7 +126,7 @@ class Mri_Protocol_Violations extends \NDB_Menu_Filter
      * that are common to every type of page. May be overridden by a specific
      * page or specific page type.
      *
-     * @return none
+     * @return void
      */
     function setup()
     {

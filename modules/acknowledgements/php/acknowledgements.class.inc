@@ -30,15 +30,14 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
 {
 
     /**
-     * _has_access returns true
-     * if the user has the specific permission
+     * Determine whether user should be granted access.
      *
-     * @return boolean
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        // create user object and check appropriate permission
-        $user =& \User::singleton();
         return ($user->hasPermission('acknowledgements_view'));
     }
 
@@ -101,7 +100,7 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
      * Sets up all the class variables needed for the
      * acknowledgements menu filter
      *
-     * @return true on success
+     * @return void
      */
     function _setupVariables()
     {
@@ -148,8 +147,6 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
                               );
 
         $this->tpl_data['citation_policy'] = $config->getSetting('citation_policy');
-
-        return true;
     }
 
     /**
@@ -157,7 +154,7 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
      * that are common to every type of page. May be overridden by a specific
      * page or specific page type.
      *
-     * @return none
+     * @return void
      */
     function setup()
     {
@@ -205,8 +202,6 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
         $this->addBasicDate('addstart_date', 'Start Date:', $dateOptions);
         $this->addBasicDate('addend_date', 'End Date:', $dateOptions);
         $this->addSelect('addpresent', 'Present?', $present);
-
-        return true;
     }
 
     /**
@@ -225,6 +220,7 @@ class Acknowledgements extends \NDB_Menu_Filter_Form
             $baseDeps,
             array(
              $baseurl . '/acknowledgements/js/acknowledgements_helper.js',
+             $baseurl . '/acknowledgements/js/columnFormatter.js',
             )
         );
 

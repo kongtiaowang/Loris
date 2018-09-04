@@ -33,7 +33,7 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
      * Does basic setting up of Loris variables for this test,after testing
      * a test data, remove the testing data from database.
      *
-     * @return none
+     * @return void
      */
     public function setUp()
     {
@@ -72,7 +72,7 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
     /**
      * Deleting test data
      *
-     * @return none
+     * @return void
      */
     public function tearDown()
     {
@@ -127,7 +127,7 @@ class DocumentRepositoryTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("Document Repository", $bodyText);
+        $this->assertRegexp("/Upload File/", $bodyText);
     }
     /**
      * Tests creating a category and a sub-category.

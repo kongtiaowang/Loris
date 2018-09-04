@@ -27,9 +27,9 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
 {
     /**
      * UI elements and locations
-     * breadcrumb - 'Mri  Violations'
+     * breadcrumb - 'Mri Violations'
      */
-    private $_loadingUI = array('Mri  Violations' => '#bc2 > a:nth-child(2) > div');
+    private $_loadingUI = array('Mri Violations' => '#bc2 > a:nth-child(2) > div');
     /**
      * Insert testing data
      *
@@ -70,6 +70,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             "session",
             array(
+             'ID'           => '9888',
              'CandID'       => '999888',
              'CenterID'     => '55',
              'UserID'       => '1',
@@ -80,6 +81,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             "session",
             array(
+             'ID'           => '9777',
              'CandID'       => '999777',
              'CenterID'     => '55',
              'UserID'       => '2',
@@ -87,6 +89,59 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
              'SubprojectID' => '6666',
             )
         );
+
+        // create the tarchive entries
+        $this->DB->insert(
+            'tarchive',
+            array(
+             'TarchiveID'             => '263',
+             'DicomArchiveID'         => '1.3.12.2.1107.5.2.32.35442.30000012' .
+              '100912542610900000004',
+             'PatientID'              => '8888_999888_Test1',
+             'PatientName'            => '8888_999888_Test1',
+             'CenterName'             => 'Test',
+             'AcquisitionCount'       => '10',
+             'NonDicomFileCount'      => '3',
+             'DicomFileCount'         => '1000',
+             'CreatingUser'           => 'lorisdev',
+             'sumTypeVersion'         => '1',
+             'SourceLocation'         => '/data/incoming/8888_999888_Test1',
+             'ScannerManufacturer'    => 'Siemens',
+             'ScannerModel'           => 'TrioTim',
+             'ScannerSerialNumber'    => '33333',
+             'ScannerSoftwareVersion' => 'syngo MR B17',
+             'uploadAttempt'          => '1',
+             'AcquisitionMetadata'    => 'metadata',
+             'SessionID'              => '9888',
+             'PendingTransfer'        => '1',
+            )
+        );
+        $this->DB->insert(
+            'tarchive',
+            array(
+             'TarchiveID'             => '264',
+             'DicomArchiveID'         => '1.3.12.2.1107.5.2.32.35442.30000012' .
+               '100912542610900000004',
+             'PatientID'              => '8888_999888_Test1',
+             'PatientName'            => '8888_999888_Test1',
+             'CenterName'             => 'Test',
+             'AcquisitionCount'       => '10',
+             'NonDicomFileCount'      => '3',
+             'DicomFileCount'         => '1000',
+             'CreatingUser'           => 'lorisdev',
+             'sumTypeVersion'         => '1',
+             'SourceLocation'         => '/data/incoming/8888_999888_Test1',
+             'ScannerManufacturer'    => 'Siemens',
+             'ScannerModel'           => 'TrioTim',
+             'ScannerSerialNumber'    => '33333',
+             'ScannerSoftwareVersion' => 'syngo MR B17',
+             'uploadAttempt'          => '1',
+             'AcquisitionMetadata'    => 'metadata',
+             'SessionID'              => '9777',
+             'PendingTransfer'        => '1',
+            )
+        );
+
         $this->DB->insert(
             "mri_protocol_violated_scans",
             array(
@@ -97,6 +152,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
              'minc_location'      => 'assembly/test/test/mri/test/test.mnc',
              'series_description' => 'Test Description',
              'SeriesUID'          => '5555',
+             'TarchiveID'         => '263',
             )
         );
         $this->DB->insert(
@@ -109,6 +165,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
              'minc_location'      => 'assembly/test2/test2/mri/test2/test2.mnc',
              'series_description' => 'Test Series Description',
              'SeriesUID'          => '5556',
+             'TarchiveID'         => '264',
             )
         );
         $this->DB->insert(
@@ -130,6 +187,22 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
     public function tearDown()
     {
 
+        $this->DB->delete(
+            "mri_protocol_violated_scans",
+            array('ID' => '1001')
+        );
+        $this->DB->delete(
+            "mri_protocol_violated_scans",
+            array('ID' => '1002')
+        );
+        $this->DB->delete(
+            "tarchive",
+            array('TarchiveID' => '263')
+        );
+        $this->DB->delete(
+            "tarchive",
+            array('TarchiveID' => '264')
+        );
         $this->DB->delete(
             "session",
             array(
@@ -170,14 +243,6 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
             array('ExtID' => '1002')
         );
         $this->DB->delete(
-            "mri_protocol_violated_scans",
-            array('ID' => '1001')
-        );
-        $this->DB->delete(
-            "mri_protocol_violated_scans",
-            array('ID' => '1002')
-        );
-        $this->DB->delete(
             "psc",
             array(
              'CenterID' => '55',
@@ -204,7 +269,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         $text  = $this->webDriver->executescript(
             "return document.querySelector('$value').textContent"
         );
-            $this->assertEquals(" Mri  Protocol  Violations", $text);
+            $this->assertEquals("Mri Protocol Violations", $text);
     }
 
     /**
@@ -225,7 +290,7 @@ class MriViolationsTestIntegrationTest extends LorisIntegrationTest
         $text  = $this->webDriver->executescript(
             "return document.querySelector('$value').textContent"
         );
-            $this->assertEquals(" Mri  Protocol  Check  Violations", $text);
+            $this->assertEquals("Mri Protocol Check Violations", $text);
     }
 
     /**

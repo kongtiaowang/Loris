@@ -29,19 +29,19 @@ class Subproject extends \NDB_Form
     /**
      * Determine whether the user has access to configure subprojects
      *
-     * @return boolean
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        // create user object
-        $user =& \User::singleton();
         return $user->hasPermission('config');
     }
 
     /**
      * Loads the subproject management submodule
      *
-     * @return none
+     * @return void
      */
     function setup()
     {

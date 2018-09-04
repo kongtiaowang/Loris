@@ -129,11 +129,11 @@ class Dashboard extends \NDB_Form
             if ($user->hasPermission('access_all_profiles')) {
                 $this->tpl_data['conflicts']      = $DB->pselectOne(
                     "SELECT COUNT(*) FROM conflicts_unresolved cu
-                    LEFT JOIN flag ON (cu.CommentId1=flag.CommentID) 
+                     LEFT JOIN flag ON (cu.CommentId1=flag.CommentID) 
                      LEFT JOIN session s ON (flag.SessionID=s.ID)
-			LEFT JOIN candidate c ON (s.CandID=c.CandID)
-                      WHERE s.CenterID <> 1
-			AND s.Active='Y' AND c.Active='Y'",
+			         LEFT JOIN candidate c ON (s.CandID=c.CandID)
+                     WHERE s.CenterID <> 1
+			         AND s.Active='Y' AND c.Active='Y'",
                     array()
                 );
                 $this->tpl_data['conflicts_site'] = 'Sites: all';
@@ -143,8 +143,8 @@ class Dashboard extends \NDB_Form
                      LEFT JOIN flag ON (cu.CommentId1=flag.CommentID) 
                      LEFT JOIN session s ON (flag.SessionID=s.ID)
 		             LEFT JOIN candidate c ON (c.CandID=s.CandID)
-                     LEFT JOIN psc ON (psc.CenterID=s.CenterID) 
-                     WHERE FIND_IN_SET(psc.CenterID, :siteID) 
+		             LEFT JOIN Project p ON (c.ProjectID=p.ProjectID ) 
+                     WHERE FIND_IN_SET(c.CenterID, :siteID) 
 			            AND s.Active='Y' AND c.Active='Y'",
                     array('siteID' => implode(',', $siteID))
                 );
@@ -177,28 +177,13 @@ class Dashboard extends \NDB_Form
                 $this->tpl_data['incomplete_forms_site'] = $site;
             }
         }
-        // Final radiological review
-        if ($user->hasPermission('edit_final_radiological_review')
-            && $user->hasPermission('view_final_radiological_review')
-        ) {
-            $this->tpl_data['radiology_review']      = $DB->pselectOne(
-                "SELECT COUNT(*) FROM final_radiological_review f
-			LEFT JOIN flag fg ON (fg.CommentID=f.CommentID)
-			LEFT JOIN session s ON (s.ID=fg.SessionID)
-			LEFT JOIN candidate c ON (c.CandID=s.CandID)
-                WHERE Review_Done IS NULL
-			AND c.Active='Y' AND s.Active='Y'",
-                array()
-            );
-            $this->tpl_data['radiology_review_site'] = 'Sites: all';
-        }
 
         // Accounts pending approval
         if ($user->hasPermission('user_accounts_multisite')
             && $user->hasPermission('user_accounts')
         ) {
             $this->tpl_data['pending_users']      = $DB->pselectOne(
-                "SELECT COUNT(*) FROM users 
+                "SELECT COUNT(DISTINCT users.UserID) FROM users 
                 LEFT JOIN user_psc_rel as upr ON (upr.UserID=users.ID)
 		        WHERE users.Pending_approval='Y' 
                 AND (upr.CenterID <> 1 OR upr.CenterID IS NULL)",
@@ -208,7 +193,7 @@ class Dashboard extends \NDB_Form
         } elseif ($user->hasPermission('user_accounts')) {
             $site_arr = $user->getCenterIDs();
             $this->tpl_data['pending_users'] = $DB->pselectOne(
-                "SELECT COUNT(*) FROM users 
+                "SELECT COUNT(DISTINCT users.UserID) FROM users 
                 LEFT JOIN user_psc_rel as upr ON (upr.UserID=users.ID)
 		        WHERE users.Pending_approval='Y' AND upr.CenterID IN (:CID)",
                 array('CID' => implode(",", $site_arr))
@@ -287,15 +272,20 @@ class Dashboard extends \NDB_Form
                 } else {
                     $bvl_feedback[$i]['new'] = 0;
                 }
-                if ($bvl_feedback[$i]['Feedback_level'] == 'profile') {
+                if ($bvl_feedback[$i]['Feedback_level'] === 'profile') {
                     $bvl_feedback[$i]['URL'] = '/' . $bvl_feedback[$i]['CandID'];
-                } else if ($bvl_feedback[$i]['Feedback_level'] == 'instrument') {
+                } else if ($bvl_feedback[$i]['Feedback_level'] === 'visit') {
+                    $bvl_feedback[$i]['URL'] = '/instrument_list/?candID= '
+                        . $bvl_feedback[$i]['CandID'] . '&sessionID='
+                        . $bvl_feedback[$i]['SessionID'];
+                } else if ($bvl_feedback[$i]['Feedback_level'] === 'instrument') {
                     $instrument = $DB->pselectOne(
                         "SELECT Test_name from flag WHERE CommentID=:cid",
                         array('cid' => $bvl_feedback[$i]['CommentID'])
                     );
                     if (!empty($instrument)) {
-                        $bvl_feedback[$i]['URL'] = '/' . $instrument . '/?candID='
+                        $bvl_feedback[$i]['URL'] = '/instruments/'
+                            . $instrument . '/?candID='
                             . $bvl_feedback[$i]['CandID'] . '&sessionID='
                             . $bvl_feedback[$i]['SessionID'] . '&commentID='
                             . $bvl_feedback[$i]['CommentID'];
@@ -483,5 +473,15 @@ class Dashboard extends \NDB_Form
         );
 
     }
+
+    /**
+     * Generate a breadcrumb trail for this page.
+     *
+     * @return \LORIS\BreadcrumbTrail
+     */
+    public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
+    {
+        return new \LORIS\BreadcrumbTrail();
+    }
 }
-?>
+

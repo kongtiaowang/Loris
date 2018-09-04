@@ -34,14 +34,12 @@ class Candidate_Parameters extends \NDB_Form
     /**
      * Check user permissions
      *
+     * @param \User $user The user whose access is being checked
+     *
      * @return bool
-     * @throws ConfigurationException
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        //create user object
-        $user =& \User::singleton();
-
         // Set global permission to control access
         // to different modules of candidate_parameters page
         $this->hasWritePermission = $user->hasPermission('candidate_parameter_edit');
@@ -52,12 +50,11 @@ class Candidate_Parameters extends \NDB_Form
     /**
      * Override default behaviour, since the page is loaded from index.js
      *
-     * @return void
-     * @access public
+     * @return string
      */
     function display()
     {
-        return null;
+        return "";
     }
 
     /**

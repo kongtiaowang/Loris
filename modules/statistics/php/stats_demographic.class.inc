@@ -1,8 +1,8 @@
 <?php
 /**
- * The welcome menu
+ * The module to display study statistics
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Loris
  * @package  Main
@@ -13,9 +13,9 @@
 namespace LORIS\statistics;
 
 /**
- * The welcome menu
+ * The module to display study statistics
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Loris
  * @package  Main
@@ -25,16 +25,24 @@ namespace LORIS\statistics;
  */
 class Stats_Demographic extends \NDB_Form
 {
+
+    /**
+     * The default params
+     */
+    protected $params = null;
+
     /**
      * Checking user's permission
      *
+     * @param \User $user The user whose access is being checked
+     *
      * @return bool
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        $user =& \User::singleton();
         return $user->hasPermission('data_entry');
     }
+
     /**
      * InCenter function
      *

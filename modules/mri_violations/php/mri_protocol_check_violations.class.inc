@@ -30,20 +30,21 @@ class Mri_Protocol_Check_Violations extends \NDB_Menu_Filter
 {
     /**
      * Determine who has access to this page. At the moment, tied to
-     * access to the final_radiological_review module.
+     * access to the Mri_Violation module.
      *
-     * @return boolean true if access is permitted
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool true if access is permitted
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        $user =& \User::singleton();
         return $user->hasPermission('violated_scans_view_allsites');
     }
 
     /**
      * Set up the class and smarty variables to use for the menu filter
      *
-     * @return none
+     * @return void
      */
     function _setupVariables()
     {
@@ -97,7 +98,7 @@ class Mri_Protocol_Check_Violations extends \NDB_Menu_Filter
      * that are common to every type of page. May be overridden by a specific
      * page or specific page type.
      *
-     * @return none
+     * @return void
      */
     function setup()
     {
@@ -147,7 +148,7 @@ class Mri_Protocol_Check_Violations extends \NDB_Menu_Filter
      *
      * @param integer $count The offset that this page is starting at
      *
-     * @return none but as a side-effect populates $this->tpl_data['items']
+     * @return void (but as a side-effect populates $this->tpl_data['items'])
      */
     function _setDataTableRows($count)
     {

@@ -38,13 +38,12 @@ class GWAS_Browser extends \NDB_Menu_Filter
      * Overloading this method to allow access to site users (own site only)
      * and users w/ multisite privileges
      *
-     * @note   overloaded function
+     * @param \User $user The user whose access is being checked
+     *
      * @return bool
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        // create user object
-        $user = \User::singleton();
         return ($user->hasPermission('genomic_browser_view_allsites')
                 || $user->hasPermission('genomic_browser_view_site'));
     }
@@ -52,16 +51,15 @@ class GWAS_Browser extends \NDB_Menu_Filter
     /**
      * Function _setupVariables
      *
-     * @note   overloaded function
-     * @return bool
+     * @return void
     */
     function _setupVariables()
     {
         // set the class variables
         $this->columns = array(
                           'GWAS.rsID AS SNP_ID',
-                          'genome_loc.Chromosome AS Chromosome',
-                          'genome_loc.StartLoc AS Position_BP',
+                          'SNP.Chromosome AS Chromosome',
+                          'SNP.StartLoc AS Position_BP',
                           'GWAS.MajorAllele AS Major_Allele',
                           'GWAS.MinorAllele AS Minor_Allele',
                           'GWAS.MAF AS MAF',
@@ -83,14 +81,13 @@ class GWAS_Browser extends \NDB_Menu_Filter
 
         // $this->query = " FROM GWAS ";
         $this->query = " FROM GWAS
-            JOIN SNP ON (GWAS.SNPID = SNP.SNPID)
-            JOIN genome_loc ON (genome_loc.GenomeLocID = SNP.GenomeLocID)";
+            JOIN SNP ON (GWAS.SNPID = SNP.SNPID)";
 
-        $this->order_by     = 'genome_loc.Chromosome, GWAS.Pvalue DESC';
+        $this->order_by     = 'SNP.Chromosome, GWAS.Pvalue DESC';
         $this->validFilters = array(
                                'GWAS.rsID',
-                               'genome_loc.Chromosome',
-                               'genome_loc.StartLoc',
+                               'SNP.Chromosome',
+                               'SNP.StartLoc',
                                'GWAS.MajorAllele',
                                'GWAS.MinorAllele',
                                'GWAS.MAF',
@@ -101,8 +98,8 @@ class GWAS_Browser extends \NDB_Menu_Filter
 
         $this->formToFilter = array(
                                'SNP_ID'       => 'GWAS.rsID',
-                               'Chromosome'   => 'genome_loc.Chromosome',
-                               'BP_Position'  => 'genome_loc.StartLoc',
+                               'Chromosome'   => 'SNP.Chromosome',
+                               'BP_Position'  => 'SNP.StartLoc',
                                'Major_Allele' => 'GWAS.MajorAllele',
                                'Minor_Allele' => 'GWAS.MinorAllele',
                                'MAF'          => 'GWAS.MAF',
@@ -111,7 +108,6 @@ class GWAS_Browser extends \NDB_Menu_Filter
                                'Pvalue'       => 'GWAS.Pvalue',
                               );
 
-        return true;
     }
 
     /**
@@ -119,7 +115,7 @@ class GWAS_Browser extends \NDB_Menu_Filter
      * that are common to every type of page. May be overridden by a specific
      * page or specific page type.
      *
-     * @return none
+     * @return void
      */
     function setup()
     {
@@ -167,7 +163,7 @@ class GWAS_Browser extends \NDB_Menu_Filter
      *
      * @note overloaded function
      *
-     * @return $query
+     * @return string
     */
     function _addValidFilters($prepared_key, $field, $val)
     {
@@ -219,4 +215,3 @@ class GWAS_Browser extends \NDB_Menu_Filter
     }
 
 }
-?>

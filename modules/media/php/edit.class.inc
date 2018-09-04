@@ -29,7 +29,7 @@ class Edit extends \NDB_Form
      * Entry point for /media/edit/
      * Checks if file id is provided and otherwise redirects to /media/ page
      *
-     * @return none
+     * @return void
      */
     function setup()
     {
@@ -92,14 +92,12 @@ class Edit extends \NDB_Form
     /**
      * Check user permissions
      *
+     * @param \User $user The user whose access is being checked
+     *
      * @return bool
-     * @throws ConfigurationException
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        //create user object
-        $user =& \User::singleton();
-
         return $user->hasPermission('media_write');
     }
 

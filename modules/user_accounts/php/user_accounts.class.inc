@@ -29,21 +29,20 @@ class User_Accounts extends \NDB_Menu_Filter
     /**
      * Overloading this method to allow access to users account
      *
+     * @param \User $user The user whose access is being checked
+     *
      * @return boolean
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        // create user object
-        $user =& \User::singleton();
-
         return $user->hasPermission('user_accounts');
     }
+
     /**
     * Setup Variables
     *
     * @note   Setup Variables
-    * @return bool
-    * @access private
+    * @return void
     */
     function _setupVariables()
     {
@@ -90,7 +89,6 @@ class User_Accounts extends \NDB_Menu_Filter
                                'email'     => 'users.Email',
                                'pending'   => 'users.Pending_approval',
                               );
-        return true;
     }
 
     /**
@@ -98,7 +96,7 @@ class User_Accounts extends \NDB_Menu_Filter
      * that are common to every type of page. May be overridden by a specific
      * page or specific page type.
      *
-     * @return none
+     * @return void
      */
     function setup()
     {

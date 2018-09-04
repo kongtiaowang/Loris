@@ -75,14 +75,6 @@ class CouchDBDemographicsImporter {
             'Description' => 'Participant status comments',
             'Type' => "text",
         ),
-        'Study_consent' => array(
-            'Description' => 'Study Consent',
-            'Type' => "enum('yes','no','not_answered')",
-        ),
-        'Study_consent_withdrawal' => array(
-            'Description' => 'Study Consent Withdrawal Date',
-            'Type' => "varchar(255)",
-        ),
         'session_feedback' => array(
             'Description' => 'Behavioural feedback at the session level',
             'Type' => "varchar(255)",
@@ -101,12 +93,21 @@ class CouchDBDemographicsImporter {
     );
 
     function __construct() {
-        $this->SQLDB = Database::singleton();
-        $this->CouchDB = CouchDB::singleton();
+        $factory       = \NDB_Factory::singleton();
+        $config        = \NDB_Config::singleton();
+        $couchConfig   = $config->getSetting('CouchDB');
+        $this->SQLDB   = $factory->Database();
+        $this->CouchDB = $factory->couchDB(
+            $couchConfig['dbName'],
+            $couchConfig['hostname'],
+            $couchConfig['port'],
+            $couchConfig['admin'],
+            $couchConfig['adminpass']
+        );
     }
 
     function _getSubproject($id) {
-        $config = NDB_Config::singleton();
+        $config = \NDB_Config::singleton();
         $subprojs = $config->getSubprojectSettings($id);
         if($subprojs['id'] == $id) {
             return $subprojs['title'];
@@ -114,7 +115,7 @@ class CouchDBDemographicsImporter {
     }
 
     function _getProject($id) {
-        $config = NDB_Config::singleton();
+        $config = \NDB_Config::singleton();
         $projs = $config->getProjectSettings($id);
         if($projs['id'] == $id) {
             return $projs['Name'];
@@ -122,7 +123,7 @@ class CouchDBDemographicsImporter {
     }
 
     function _generateQuery() {
-        $config = NDB_Config::singleton();
+        $config = \NDB_Config::singleton();
 
         $fieldsInQuery = "SELECT c.DoB,
                                 c.CandID, 
@@ -141,8 +142,6 @@ class CouchDBDemographicsImporter {
                                 COALESCE(pso.Description,'Active') as Status, 
                                 ps.participant_suboptions as Status_reason, 
                                 ps.reason_specify as Status_comments, 
-                                ps.study_consent as Study_consent, 
-                                COALESCE(ps.study_consent_withdrawal,'0000-00-00') AS Study_consent_withdrawal,
                                 GROUP_CONCAT(fbe.Comment) as session_feedback";
         $tablesToJoin = " FROM session s 
                                 JOIN candidate c USING (CandID) 
@@ -153,10 +152,9 @@ class CouchDBDemographicsImporter {
                                 LEFT JOIN participant_status_options pso ON (pso.ID=ps.participant_status)
                                 LEFT JOIN feedback_bvl_thread fbt ON (fbt.CandID=c.CandID) 
                                 LEFT JOIN feedback_bvl_entry fbe ON (fbe.FeedbackID=fbt.FeedbackID)";
-
         $groupBy=" GROUP BY s.ID, 
                             c.DoB,
-							c.CandID, 
+                            c.CandID,
                             c.PSCID, 
                             s.Visit_label, 
                             s.SubprojectID, 
@@ -171,10 +169,7 @@ class CouchDBDemographicsImporter {
                             pc_comment.Value, 
                             pso.Description, 
                             ps.participant_suboptions, 
-                            ps.reason_specify, 
-                            ps.study_consent, 
-                            Study_consent_withdrawal
-                            ";
+                            ps.reason_specify";
 
         // If proband fields are being used, add proband information into the query
         if ($config->getSetting("useProband") === "true") {
@@ -188,6 +183,26 @@ class CouchDBDemographicsImporter {
             $fieldsInQuery .= $EDCFields;
             $groupBy .= ", c.EDC";
         }
+        // If consent is being used, add consent information into query
+        if ($config->getSetting("useConsent") === "true") {
+          $consents = \Utility::getConsentList();
+          foreach($consents as $consentID=>$consent) {
+            $consentName    = $consent['Name'];
+            $consentFields  = ",
+                                cc" . $this->SQLDB->escape($consentID) . ".Status AS " . $consentName . ", 
+                                cc" . $this->SQLDB->escape($consentID) . ".DateGiven AS " . $consentName . "_date, 
+                                cc" . $this->SQLDB->escape($consentID) . ".DateWithdrawn AS " . $consentName . "_withdrawal";
+            $fieldsInQuery .= $consentFields;
+            $tablesToJoin  .= "
+                                LEFT JOIN candidate_consent_rel cc" . $this->SQLDB->escape($consentID) . " ON 
+                                  (cc" . $this->SQLDB->escape($consentID) . ".CandidateID=c.CandID) AND 
+                                  cc" . $this->SQLDB->escape($consentID) . ".ConsentID=(SELECT ConsentID FROM consent WHERE Name='" . $consentName . "') ";
+            $groupBy     .= ",
+                            cc" . $this->SQLDB->escape($consentID) . ".Status,
+                            cc" . $this->SQLDB->escape($consentID) . ".DateGiven,
+                            cc" . $this->SQLDB->escape($consentID) . ".DateWithdrawn";
+          }
+        }
         $whereClause=" WHERE s.Active='Y' AND c.Active='Y' AND c.Entity_type != 'Scanner'";
 
         $concatQuery = $fieldsInQuery . $tablesToJoin . $whereClause . $groupBy;
@@ -195,7 +210,7 @@ class CouchDBDemographicsImporter {
     }
 
     function _updateDataDict() {
-        $config = NDB_Config::singleton();
+        $config = \NDB_Config::singleton();
         // If proband fields are being used, update the data dictionary
         if ($config->getSetting("useProband") === "true") {
             $this->Dictionary["Gender_proband"] = array(
@@ -215,7 +230,7 @@ class CouchDBDemographicsImporter {
             );
         }
         if ($config->getSetting("useProjects") === "true") {
-            $projects = Utility::getProjectList();
+            $projects = \Utility::getProjectList();
             $projectsEnum = "enum('";
             $projectsEnum .= implode("', '", $projects);
             $projectsEnum .= "')";
@@ -223,6 +238,26 @@ class CouchDBDemographicsImporter {
                 'Description' => 'Project for which the candidate belongs',
                 'Type' => $projectsEnum
             );
+        }
+        // If consent is being used, update the data dictionary
+        if ($config->getSetting("useConsent") === "true") {
+          $consents = \Utility::getConsentList();
+          foreach($consents as $consent) {
+            $consentName  = $consent['Name'];
+            $consentLabel = $consent['Label'];
+            $this->Dictionary[$consentName] = array(
+                'Description' => $consentLabel,
+                'Type' => "enum('yes','no')"
+            );
+            $this->Dictionary[$consentName . "_date"] = array(
+                'Description' => $consentLabel . ' Date',
+                'Type' => "date"
+            );
+            $this->Dictionary[$consentName . "_withdrawal"] = array(
+                'Description' => $consentLabel . ' Withdrawal Date',
+                'Type' => "date"
+            );
+          }
         }
         /*
         // Add any candidate parameter fields to the data dictionary
@@ -248,7 +283,7 @@ class CouchDBDemographicsImporter {
         $demographics = $this->SQLDB->pselect($this->_generateQuery(), array());
 
         $this->CouchDB->beginBulkTransaction();
-        $config_setting = NDB_Config::singleton();
+        $config_setting = \NDB_Config::singleton();
         foreach($demographics as $demographics) {
             $id = 'Demographics_Session_' . $demographics['PSCID'] . '_' . $demographics['Visit_label'];
             $demographics['Cohort'] = $this->_getSubproject($demographics['SubprojectID']);

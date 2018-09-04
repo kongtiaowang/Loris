@@ -24,23 +24,9 @@ namespace LORIS\user_accounts;
 class My_Preferences extends \NDB_Form
 {
     /**
-     * Controls who's got access to this page, namely those who have the
-     * 'user_accounts' and who either have permission
-     * 'user_accounts_multisite' or whose site matches the site of the user they
-     * are trying to edit.
-     *
-     * @return true if user has access, false otherwise.
-     */
-    function _hasAccess()
-    {
-        // User can always access My Preferences page
-        return true;
-    }
-
-    /**
      * Computes the initial values this page will be filled with.
      *
-     * @return the default values for the initial state of this page.
+     * @return array the default values for the initial state of this page.
      */
     function _getDefaults()
     {
@@ -238,13 +224,11 @@ class My_Preferences extends \NDB_Form
      * that are common to every type of page. May be overridden by a specific
      * page or specific page type.
      *
-     * @return none
+     * @return void
      */
     function setup()
     {
         parent::setup();
-
-        $DB =& \Database::singleton();
 
         $this->identifier = $_SESSION['State']->getUsername();
 
@@ -317,14 +301,7 @@ class My_Preferences extends \NDB_Form
         $this->form->addElement('password', '__Confirm', 'Confirm Password');
 
         // language preference
-        $languagesDB = $DB->pselect(
-            "SELECT language_id, language_label
-             FROM language",
-            array()
-        );
-        foreach ($languagesDB as $language) {
-            $languages[$language['language_id']] = $language['language_label'];
-        }
+        $languages = \Utility::getLanguageList();
         $this->addSelect('language_preference', 'Language preference', $languages);
 
         // Notification headers
@@ -417,20 +394,9 @@ class My_Preferences extends \NDB_Form
             array('UID' => $this->identifier)
         );
 
-        // If we are using PHP5.5+ and entry Password_has in the DB is not null
-        // use method password_verify to check if the password changed
-        if (function_exists('password_verify')
-            && !is_null($passwords['Password_hash'])
-        ) {
+        if (!is_null($passwords['Password_hash'])) {
             return !password_verify($newPassword, $passwords['Password_hash']);
-        } elseif (!function_exists('password_verify')
-            && !is_null($passwords['Password_hash'])
-        ) {
-            // If PHP version < 5.5, use old MD5Unsalt method to check for
-            // password change
-            return !\User::MD5Unsalt($newPassword, $passwords['Password_hash']);
         }
-
         return true;
     }
 

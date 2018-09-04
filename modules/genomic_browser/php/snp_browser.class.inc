@@ -44,13 +44,12 @@ class SNP_Browser extends \NDB_Menu_Filter
      * Overloading this method to allow access to site users (own site only)
      * and users w/ multisite privileges
      *
-     * @note   overloaded function
+     * @param \User $user The user whose access is being checked
+     *
      * @return bool
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        // create user object
-        $user = \User::singleton();
         return ($user->hasPermission('genomic_browser_view_allsites')
                 || $user->hasPermission('genomic_browser_view_site'));
     }
@@ -59,8 +58,7 @@ class SNP_Browser extends \NDB_Menu_Filter
     /**
      * Function _setupVariables
      *
-     * @note   overloaded function
-     * @return bool
+     * @return void
     */
     function _setupVariables()
     {
@@ -73,13 +71,12 @@ class SNP_Browser extends \NDB_Menu_Filter
                           'cohort.SubprojectID as Subproject',
                           'DATE_FORMAT(candidate.DoB,\'%Y-%m-%d\') AS DoB',
                           'candidate.ExternalID as externalID',
-                          'genome_loc.Chromosome as Chromosome',
-                          'genome_loc.Strand as Strand',
-                          'genome_loc.StartLoc as StartLoc',
-                          'genome_loc.EndLoc as EndLoc',
-                          'genome_loc.Size as Size',
-                          'gene.OfficialSymbol as Gene_Symbol',
-                          'gene.OfficialName as Gene_Name',
+                          'SNP.Chromosome as Chromosome',
+                          'SNP.Strand as Strand',
+                          'SNP.StartLoc as StartLoc',
+                          'SNP.EndLoc as EndLoc',
+                          'SNP.OfficialSymbol as Gene_Symbol',
+                          'SNP.OfficialName as Gene_Name',
                           'genotyping_platform.Name as Platform',
                           'SNP.rsID as rsID',
                           'SNP.SNPExternalName as SNP_Name',
@@ -116,7 +113,6 @@ class SNP_Browser extends \NDB_Menu_Filter
                  'Strand',
                  'StartLoc',
                  'EndLoc',
-                 'Size',
                  'Gene_Symbol',
                  'Gene_Name',
                  'Platform',
@@ -132,7 +128,6 @@ class SNP_Browser extends \NDB_Menu_Filter
             )
         );
 
-        // Chromosome from genome_loc table
         // INNER JOIN on SNP_candidate_rel table. //##
         // If a candidate has no SNP records, they will not appear.
         $this->query = " FROM candidate
@@ -142,8 +137,6 @@ class SNP_Browser extends \NDB_Menu_Filter
             LEFT JOIN psc ON (psc.CenterID = candidate.CenterID)
             JOIN SNP_candidate_rel ON (candidate.CandID = SNP_candidate_rel.CandID)
             LEFT JOIN SNP ON (SNP.SNPID = SNP_candidate_rel.SNPID)
-            LEFT JOIN genome_loc ON (genome_loc.GenomeLocID = SNP.GenomeLocID)
-            LEFT JOIN gene ON (gene.GenomeLocID = SNP.GenomeLocID)
             LEFT JOIN genotyping_platform ON
               (SNP_candidate_rel.PlatformID = genotyping_platform.PlatformID)
             WHERE
@@ -186,13 +179,13 @@ class SNP_Browser extends \NDB_Menu_Filter
                                'SNP.Damaging',
                                'SNP_candidate_rel.GenotypeQuality',
                                'SNP.ExonicFunction',
-                               'genome_loc.Chromosome',
-                               'genome_loc.Strand',
-                               'genome_loc.StartLoc',
-                               'genome_loc.EndLoc',
-                               'genome_loc.Strand',
-                               'gene.OfficialSymbol',
-                               'gene.OfficialName',
+                               'SNP.Chromosome',
+                               'SNP.Strand',
+                               'SNP.StartLoc',
+                               'SNP.EndLoc',
+                               'SNP.Strand',
+                               'SNP.OfficialSymbol',
+                               'SNP.OfficialName',
                                'genotyping_platform.Name',
                                'genomic_range',
                               );
@@ -222,8 +215,8 @@ class SNP_Browser extends \NDB_Menu_Filter
                 'Damaging'            => 'SNP.Damaging',
                 'Genotype_Quality'    => 'SNP_candidate_rel.GenotypeQuality',
                 'Exonic_Function'     => 'SNP.ExonicFunction',
-                'Chromosome'          => 'genome_loc.Chromosome',
-                'Gene_Symbol'         => 'gene.OfficalSymbol',
+                'Chromosome'          => 'SNP.Chromosome',
+                'Gene_Symbol'         => 'SNP.OfficalSymbol',
                 'genomic_range'       => 'genomic_range',
                 'Platform'            => 'genotyping_platform.Name',
                );
@@ -238,7 +231,7 @@ class SNP_Browser extends \NDB_Menu_Filter
      * that are common to every type of page. May be overridden by a specific
      * page or specific page type.
      *
-     * @return none
+     * @return void
      */
     function setup()
     {
@@ -396,7 +389,7 @@ class SNP_Browser extends \NDB_Menu_Filter
      *
      * @note overloaded function
      *
-     * @return $query
+     * @return string
     */
     function _addValidFilters($prepared_key, $field, $val)
     {
@@ -424,17 +417,18 @@ class SNP_Browser extends \NDB_Menu_Filter
                 $query .= " AND $field = CONVERT( :v_$prepared_key, DECIMAL) ";
             } elseif ($field == "genomic_range") {
                 $temp_array = explode(':', $val);
-                $chr        = $GLOBALS['DB']->quote($temp_array[0]);
-                $chrchr     = $GLOBALS['DB']->quote('chr'.$temp_array[0]);
 
-                $query .= " AND (genome_loc.Chromosome = $chr";
-                $query .= " OR genome_loc.Chromosome = $chrchr) ";
+                $chr    = $GLOBALS['DB']->quote($temp_array[0]);
+                $chrchr = $GLOBALS['DB']->quote('chr'.$temp_array[0]);
+
+                $query .= " AND (SNP.Chromosome = $chr";
+                $query .= " OR SNP.Chromosome = $chrchr) ";
                 if (!empty($temp_array[1]) AND strpos($temp_array[1], '-') ) {
                     $temp_array = explode('-', $temp_array[1]);
                     $from       = $temp_array[0];
                     $to         = $temp_array[1];
-                    $query     .= " AND genome_loc.StartLoc <= $to";
-                    $query     .= " AND genome_loc.EndLoc >= $from";
+                    $query     .= " AND SNP.StartLoc <= $to";
+                    $query     .= " AND SNP.EndLoc >= $from";
                 }
                 $query .= " AND :v_$prepared_key IS NOT NULL";
 
@@ -466,4 +460,3 @@ class SNP_Browser extends \NDB_Menu_Filter
     }
 
 }
-?>

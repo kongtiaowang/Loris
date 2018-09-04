@@ -31,26 +31,24 @@ class Document_Repository extends \NDB_Menu_Filter
     /**
      * Checking user permissions
      *
+     * @param \User $user The user whose access is being checked
+     *
      * @return bool
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        //create user object
-        $user =& \User::singleton();
-
         return $user->hasPermission('document_repository_view')
                || $user->hasPermission('document_repository_delete');
 
     }
 
     /**
-     * Setup variables function
+     * Function _setupVariables
      *
-     * @return none
+     * @return void
      */
-    function setup()
+    function _setupVariables()
     {
-        parent::setup();
 
         $user =& \User::singleton();
 
@@ -126,14 +124,14 @@ class Document_Repository extends \NDB_Menu_Filter
     /**
      * Set filter form function
      *
-     * @return bool
+     * @return void
      */
     function _setFilterForm()
     {
         // create user object
         $user =& \User::singleton();
 
-        $list_of_sites = \Utility::getSiteList(true, false);
+        $list_of_sites = \Utility::getSiteList(true);
            // allow to view all sites data through filter
         if ($user->hasPermission('access_all_profiles')) {
             // get the list of study sites - to be replaced by the Site object
@@ -205,7 +203,7 @@ class Document_Repository extends \NDB_Menu_Filter
      * @param string $item the value of item
      * @param string $key  the value of key
      *
-     * @return array
+     * @return void
      */
     function walkTree($item,$key)
     {
@@ -291,11 +289,11 @@ class Document_Repository extends \NDB_Menu_Filter
      * filter table, it doesn't
      * use pagination
      *
-     * @return void
+     * @return array
      */
     function _getList()
     {
-        return;
+        return array();
     }
 
     /**
@@ -307,6 +305,7 @@ class Document_Repository extends \NDB_Menu_Filter
     function _setDataTable()
     {
         $DB       = \Database::singleton();
+        $user     = \User::singleton();
         $results  = array();
         $query    = "SELECT * FROM document_repository_categories".
                     " ORDER BY parent_id ASC";
@@ -330,7 +329,6 @@ class Document_Repository extends \NDB_Menu_Filter
                         = &$thisref;
                 }
             }
-            $tree; // contains the newly sorted tree.
         }
         $query           ="SELECT id,category_name,parent_id,comments".
                          " FROM document_repository_categories ORDER BY parent_id";
@@ -366,6 +364,9 @@ class Document_Repository extends \NDB_Menu_Filter
         $DB = \Database::singleton();
 
         // print out column headings
+        if (!$user->hasPermission('document_repository_delete')) {
+            unset($this->headers[array_search('Delete', $this->headers)]);
+        }
         $i = 0;
         foreach ($this->headers as $header) {
             $this->tpl_data['headers'][$i]['name'] = $header;
@@ -389,9 +390,9 @@ class Document_Repository extends \NDB_Menu_Filter
     /**
      * SetDataTableRows function
      *
-     * @param string $count the value of count
+     * @param int $count the number of data rows
      *
-     * @return bool
+     * @return void
      */
     function _setDataTableRows($count)
     {
@@ -408,6 +409,22 @@ class Document_Repository extends \NDB_Menu_Filter
                 =& $this->tpl_data['File_categories'][$item['File_category']];
             $DisplayItem  = $item;
             $DisplayItem['File_name'] = utf8_encode($item['File_name']);
+            /* Note: The function "rawurlencode" handles character(s)
+             * needed to be converted and the function "strtr" uses
+             * the array supplied to replace the character(s)
+             * to match the output from the javascript function
+             * encodeURIComponent.
+             */
+            $DisplayItem['Data_dir']  = strtr(
+                rawurlencode($DisplayItem['Data_dir']),
+                array(
+                 '%21' => '!',
+                 '%2A' => '*',
+                 '%27' => "'",
+                 '%28' => '(',
+                 '%29' => ')',
+                )
+            );
             $DisplayItem['File_size'] = $this->formatSize($item['File_size']);
             $DisplayItem['For_site']  = $site_names[$item['For_site']];
 

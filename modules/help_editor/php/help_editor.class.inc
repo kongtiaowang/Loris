@@ -25,22 +25,22 @@ namespace LORIS\help_editor;
  */
 class Help_Editor extends \NDB_Menu_Filter
 {
-     /**
-       *  Checking user permissions
-       *
-       * @return bool
-       */
-    function _hasAccess()
+    /**
+     *  Checking user permissions
+     *
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool
+     */
+    function _hasAccess(\User $user) : bool
     {
-        // create user object
-        $user = \User::singleton();
-
         return $user->hasPermission('context_help');
     }
+
      /**
        * Setup Variables function
        *
-       * @return bool
+       * @return void
        */
     function _setupVariables()
     {
@@ -53,8 +53,7 @@ class Help_Editor extends \NDB_Menu_Filter
                  " AND helpChild.topic IS NOT NULL";
 
         // set the class variables
-        $contentColumn  = "COALESCE(helpChild.projectContent,".
-                         " helpChild.content) as Content";
+        $contentColumn  = "helpChild.content as Content";
         $this->columns  = array(
                            'helpChild.helpID as helpID',
                            'helpChild.topic as Topic',
@@ -90,7 +89,7 @@ class Help_Editor extends \NDB_Menu_Filter
      * that are common to every type of page. May be overridden by a specific
      * page or specific page type.
      *
-     * @return none
+     * @return void
      */
     function setup()
     {
@@ -99,15 +98,14 @@ class Help_Editor extends \NDB_Menu_Filter
         // add form elements
         $this->addBasicText('topic', 'Help topic:');
         $this->addBasicText('keyword', 'Search keyword');
-
-        return true;
     }
+
      /**
        * SetDataTableRows
        *
-       * @param string $count the value of count
+       * @param int $count the value of count
        *
-       * @return bool
+       * @return void
        */
     function _setDataTableRows($count)
     {
@@ -158,7 +156,6 @@ class Help_Editor extends \NDB_Menu_Filter
             }
             $x++;
         }
-        setCookie("LastUrl", "?test_name=help_editor");
         return true;
     }
 

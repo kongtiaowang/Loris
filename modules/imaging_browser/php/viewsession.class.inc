@@ -42,12 +42,12 @@ class ViewSession extends \NDB_Form
      * Determine whether the user has permission to view the
      * imaging_browser page
      *
+     * @param \User $user The user whose access is being checked
+     *
      * @return bool whether the user has access
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        $user =& \User::singleton();
-
         // allow only to view own site data
         $timePoint =& \TimePoint::singleton($_REQUEST['sessionID']);
 
@@ -78,7 +78,7 @@ class ViewSession extends \NDB_Form
     /**
      * Sets up main parameters
      *
-     * @return NULL
+     * @return void
      */
     function setup()
     {
@@ -88,7 +88,8 @@ class ViewSession extends \NDB_Form
         $this->sessionID = $_REQUEST['sessionID'];
 
         if (!empty($this->sessionID) && is_numeric($this->sessionID)) {
-            if ($this->_hasAccess() && isset($_POST['save_changes'])) {
+            $user = \User::singleton();
+            if ($this->_hasAccess($user) && isset($_POST['save_changes'])) {
                 $this->_updateStatus($_POST);
                 $this->_updateSelected();
                 $this->_updateVisitStatus();
@@ -120,7 +121,7 @@ class ViewSession extends \NDB_Form
                                                     true  => 'True',
                                                     false => 'False',
                                                    );
-            $this->tpl_data['has_permission']    = ($this->_hasAccess()) ?
+            $this->tpl_data['has_permission']    = ($this->_hasAccess($user)) ?
                                                  true : false;
             $this->tpl_data['has_qc_permission'] = ($this->_hasQCPerm()) ?
                                                     true : false;
@@ -131,6 +132,7 @@ class ViewSession extends \NDB_Form
 
         }
     }
+
     /**
      * Sets files values
      *
@@ -167,7 +169,7 @@ class ViewSession extends \NDB_Form
              on (files.FileID=sel.FileID) 
             WHERE SessionID=:SID AND (AcquisitionProtocolID IS NULL 
             OR AcquisitionProtocolID not in (1, 2, 3, 52)) 
-            AND PendingStaging=0 $extra_where_string 
+            $extra_where_string 
             ORDER BY files.OutputType, 
                      files.AcquisitionProtocolID, 
                      files.File",
@@ -453,6 +455,9 @@ class ViewSession extends \NDB_Form
                     $insertSet['CandID']      = $candid;
                     $insertSet['Visit_label'] = $visit_label;
                     $insertSet['CheckID']     = null;
+                    $insertSet['Scan_type']   = $file->getParameter(
+                        'AcquisitionProtocolID'
+                    );
                     $insertSet['Severity']    = 'warning';
                     $insertSet['Header']      = 'Manual Caveat Set by '
                         . $user->getUsername();
@@ -649,7 +654,7 @@ class ViewSession extends \NDB_Form
     /**
      * Gets header table html
      *
-     * @return $html of the header table
+     * @return string ($html of the header table)
      */
     function getHeaderTable()
     {
@@ -673,7 +678,7 @@ class ViewSession extends \NDB_Form
     /**
      * Populates data for the template
      *
-     * @return $subjectData array with data
+     * @return array ($subjectData array with data)
      */
     function getSubjectData()
     {
@@ -729,7 +734,7 @@ class ViewSession extends \NDB_Form
     /**
      * Gets control panel
      *
-     * @return $controlPanel
+     * @return string ($controlPanel)
      */
     function getControlPanel()
     {
@@ -739,23 +744,20 @@ class ViewSession extends \NDB_Form
     /**
      * Get js Dependencies
      *
-     * @return string
+     * @return array
      */
     function getJSDependencies()
     {
         $depends = parent::getJSDependencies();
-        if ($this->page === 'viewSession') {
-            $factory = \NDB_Factory::singleton();
-            $baseurl = $factory->settings()->getBaseURL();
-            $depends = array_merge(
-                $depends,
-                array(
-                 $baseurl . "/imaging_browser/js/jiv_and_imaging_browser.js",
-                 $baseurl . "/imaging_browser/js/ImagePanel.js",
-                )
-            );
-
-        }
+        $factory = \NDB_Factory::singleton();
+        $baseurl = $factory->settings()->getBaseURL();
+        $depends = array_merge(
+            $depends,
+            array(
+             $baseurl . "/imaging_browser/js/jiv_and_imaging_browser.js",
+             $baseurl . "/imaging_browser/js/ImagePanel.js",
+            )
+        );
         return $depends;
     }
 
@@ -773,6 +775,22 @@ class ViewSession extends \NDB_Form
         return array_merge(
             $deps,
             [$baseURL . "/imaging_browser/css/imaging_browser.css"]
+        );
+    }
+
+    /**
+     * Generate a breadcrumb trail for this page.
+     *
+     * @return \LORIS\BreadcrumbTrail
+     */
+    public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
+    {
+        return new \LORIS\BreadcrumbTrail(
+            new \LORIS\Breadcrumb('Imaging Browser', '/imaging_browser'),
+            new \LORIS\Breadcrumb(
+                'View Session',
+                "/imaging_browser/viewSession/?sessionID=$this->sessionID"
+            )
         );
     }
 

@@ -226,13 +226,6 @@ class DashboardTest extends LorisIntegrationTest
              )
          );
           $this->DB->insert(
-              "final_radiological_review",
-              array(
-               'CommentID'            => 'CommentID111',
-               'Final_Review_Results' => 'not_answered',
-              )
-          );
-          $this->DB->insert(
               "issues",
               array(
                'issueID'  => '999999',
@@ -278,10 +271,6 @@ class DashboardTest extends LorisIntegrationTest
         $this->DB->delete(
             "issues",
             array('issueID' => '999999')
-        );
-        $this->DB->delete(
-            "final_radiological_review",
-            array('CommentID' => 'CommentID111')
         );
         $this->DB->delete(
             "conflicts_resolved",
@@ -452,7 +441,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->_testMytaskPanelAndLink(
             ".new-scans",
             "9",
-            "Imaging  Browser"
+            "- Imaging Browser"
         );
         $this->resetPermissions();
     }
@@ -480,7 +469,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->_testMytaskPanelAndLink(
             ".conflict_resolver",
             "585",
-            "-  Conflict  Resolver"
+            "- Conflict Resolver"
         );
         $this->resetPermissions();
     }
@@ -500,7 +489,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->_testMytaskPanelAndLink(
             ".issue_tracker",
             "1",
-            "-  Issue  Tracker"
+            "- Issue Tracker"
         );
         $this->resetPermissions();
     }
@@ -557,7 +546,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->_testMytaskPanelAndLink(
             ".pending-accounts",
             "1",
-            "-  User  Accounts"
+            "- User Accounts"
         );
         $this->resetPermissions();
     }
@@ -594,7 +583,7 @@ class DashboardTest extends LorisIntegrationTest
      * @param string $value     the total of test data
      * @param string $dataSeed  test result
      *
-     * @return void.
+     * @return void
      */
     private function _testMytaskPanelAndLink($className,$value,$dataSeed)
     {
@@ -602,10 +591,14 @@ class DashboardTest extends LorisIntegrationTest
         $link     =$this->safeFindElement(WebDriverBy::cssSelector($className));
         $bodyText = $link->findElement(WebDriverBy::cssSelector(".huge"))->getText();
         $this->assertContains($value, $bodyText);
-        $link->click();
-        sleep(1);
-        $bodyText = $this->webDriver->getPageSource();
-        $this->assertContains($dataSeed, $bodyText);
+        $this->safeClick(WebDriverBy::cssSelector($className));
+        $this->webDriver->wait(3, 500)->until(
+            WebDriverExpectedCondition::presenceOfElementLocated(
+                WebDriverBy::Id('lorisworkspace')
+            )
+        );
+        $pageSource = $this->webDriver->getPageSource();
+        $this->assertContains($dataSeed, $pageSource);
 
     }
     /**
@@ -626,6 +619,8 @@ class DashboardTest extends LorisIntegrationTest
             $this->_testPlan5And6();
             $this->_testPlan7And8();
 
+        } else {
+            $this->assertEquals(true, 1);
         }
 
     }

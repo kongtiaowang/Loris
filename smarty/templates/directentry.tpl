@@ -11,6 +11,8 @@
 <link type="text/css" href="{$baseurl}/js/jquery/datepicker/datepicker.css" rel="Stylesheet" />
 <script src="{$baseurl}/js/jquery/jquery-1.11.0.min.js" type="text/javascript"></script>
 <script type="text/javascript" src="{$baseurl}/js/jquery/jquery-ui-1.10.4.custom.min.js"></script>
+<script src="{$baseurl}/js/modernizr/modernizr.min.js" type="text/javascript"></script>
+<script src="{$baseurl}/js/polyfills.js" type="text/javascript"></script>
 <script type="text/javascript" src="{$baseurl}/js/modules/direct_entry.js"></script>
 
 {if $test_name_js}
@@ -46,7 +48,7 @@
 <!--h1 align="right"><a href="javascript:open_help_section()" ><u>Help</u></a>  </h1-->
 {/if}
 {if $error_message != ""}
-            <p>The following errors occured while attempting to display this page:
+            <p>The following errors occurred while attempting to display this page:
 
             <ul>
     {section name=error loop=$error_message}

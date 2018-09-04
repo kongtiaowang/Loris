@@ -1,8 +1,8 @@
 <?php
 /**
- * The welcome menu
+ * The module to display study statistics
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Loris
  * @package  Main
@@ -13,9 +13,9 @@
 namespace LORIS\statistics;
 
 /**
- * The welcome menu
+ * The module to display study statistics
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Loris
  * @package  Main
@@ -34,13 +34,19 @@ class Statistics_Site extends \NDB_Menu
     /**
      * Checking user's permission
      *
+     * @param \User $user The user whose access is being checked
+     *
      * @return bool
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        $user     =& \User::singleton();
         $centerID = htmlspecialchars($_REQUEST['CenterID']);
-        return $user->hasCenterPermission('data_entry', $centerID);
+        //TODO: Create a permission specific to statistics
+        $accessAllProfiles = $user->hasPermission('access_all_profiles') &&
+            $user->hasPermission('data_entry');
+        return $user->hasCenterPermission('data_entry', $centerID) ||
+            $accessAllProfiles;
+
     }
 
     /**
@@ -62,6 +68,7 @@ class Statistics_Site extends \NDB_Menu
             $this->query_vars['pid'] = $projectID;
         }
     }
+
     /**
      * SetInstrumentName function
      *
@@ -121,7 +128,7 @@ class Statistics_Site extends \NDB_Menu
      * @param string $projectID  the value of projectID
      * @param string $instrument the value of instrument
      *
-     * @return void
+     * @return array
      */
     function _getResults($centerID, $projectID, $instrument)
     {
@@ -221,7 +228,6 @@ class Statistics_Site extends \NDB_Menu
         sort($visits);
         $this->tpl_data['AllVisits']      = $visits;
         $this->tpl_data['NumVisitLabels'] = count($visits);
-
     }
 
     /**

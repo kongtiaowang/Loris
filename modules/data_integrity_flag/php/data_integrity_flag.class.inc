@@ -31,21 +31,19 @@ class Data_Integrity_Flag extends \NDB_Menu_Filter
     /**
      * Check user permissions
      *
+     * @param \User $user The user whose access is being checked
+     *
      * @return bool
-     * @throws ConfigurationException
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        //create user object
-        $user =& \User::singleton();
         return $user->hasPermission('data_integrity_flag');
     }
 
     /**
      * Displays the menu page
      *
-     * @return void
-     * @access public
+     * @return string
      */
     function display()
     {
@@ -106,8 +104,8 @@ class Data_Integrity_Flag extends \NDB_Menu_Filter
     /**
      * Build a list of media to display in Data Table
      *
-     * @return bool
-     * @throws DatabaseException
+     * @return void
+     * @throws \DatabaseException
      */
     function _setupVariables()
     {
@@ -137,14 +135,13 @@ class Data_Integrity_Flag extends \NDB_Menu_Filter
         $this->validFilters = [];
         $this->formToFilter = [];
 
-        return true;
     }
 
     /**
      * Converts the results of this menu filter to a JSON format to be retrieved
      * with ?format=json
      *
-     * @return a json encoded string of the headers and data from this table
+     * @return string a json encoded string of the headers and data from this table
      */
     function toJSON()
     {

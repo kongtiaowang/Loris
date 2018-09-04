@@ -29,20 +29,19 @@ class AddSurvey extends \NDB_Form
      * Determine whether the logged in user has access to this page.
      * Tied to data_entry
      *
-     * @return boolean true if user has access to this page
+     * @param \User $user The user whose access is being checked
+     *
+     * @return bool true if user has access to this page
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        // create user object
-        $editor =& \User::singleton();
-
-        return $editor->hasPermission('user_accounts');
+        return $user->hasPermission('user_accounts');
     }
 
     /**
      * Return default values for QuickForm elements on this page
      *
-     * @return associative array of FieldName => Default Value mapping
+     * @return array (associative) of FieldName => Default Value mapping
      */
     function _getDefaults()
     {
@@ -157,7 +156,7 @@ class AddSurvey extends \NDB_Form
      *
      * @param array $values The values submitted on the page
      *
-     * @return none, but as a side-effect inserts into database
+     * @return void (but as a side-effect inserts into database)
      */
     function _process($values)
     {
@@ -244,7 +243,7 @@ class AddSurvey extends \NDB_Form
      * that are common to every type of page. May be overridden by a specific
      * page or specific page type.
      *
-     * @return none
+     * @return void
      */
     function setup()
     {

@@ -26,44 +26,16 @@ namespace LORIS\login;
 class PasswordReset extends \NDB_Form
 {
     /**
-     * Determine whether the user has permission to view this page
-     *
-     * @return bool whether the user has access
-     */
-    function _hasAccess()
-    {
-        return true;
-    }
-
-    /**
      * CommonPageSetup sets up the common form elements which
      * are on the page, regardless of HTTP request method.
      *
-     * @return none
+     * @return void
      */
     function setup()
     {
+        $this->tpl_data['page_title'] = 'Reset Password';
         $this->addBasicText("username", "");
-    }
 
-
-    /**
-     * _validate validates the data that was submitted by the user. Validate
-     * for password-reset only checks that a username was submitted, not that
-     * it's valid, in order to prevent brute force phishing attacks.
-     *
-     * @param array $values The values that were submitted to the page.
-     *
-     * @return a (possibly empty) array of errors
-     */
-    function _validate($values)
-    {
-        // Only validate that the username was provided. Anything else gives
-        // information to phishing attacks.
-        if (empty($values['username'])) {
-            return array('username' => 'Must enter a valid username');
-        }
-        return true;
     }
 
     /**
@@ -73,7 +45,7 @@ class PasswordReset extends \NDB_Form
      *
      * @param array $values The values that were submitted to the page.
      *
-     * @return none
+     * @return void
      */
     function _process($values)
     {
@@ -86,7 +58,6 @@ class PasswordReset extends \NDB_Form
         $user     =& \User::singleton($username);
 
         $email = $user->getData('Email');
-
         // check that it is a valid user
         if (empty($email) || empty($user)) {
             return;
