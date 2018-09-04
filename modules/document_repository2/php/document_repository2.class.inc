@@ -146,7 +146,7 @@ foreach ($result as $value) {
                           '(SELECT name FROM psc WHERE CenterID=v.For_site) as site',
                           'v.comments',
                           'v.Date_uploaded',
-                          'v.File_category',
+                          'v.File_category as category',
                         ];
         $this->query = $query;
         if (!$user->hasPermission('access_all_profiles')) {
@@ -164,7 +164,7 @@ foreach ($result as $value) {
                                'Site',
                                'comments',
                                'Date_uploaded',
-                               'File_category',
+                               'category',
                                'Edit',
                                'Delete',
                           ];
