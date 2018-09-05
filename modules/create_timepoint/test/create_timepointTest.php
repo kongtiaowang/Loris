@@ -26,10 +26,10 @@ require_once __DIR__ . "/../../../test/integrationtests"
  */
 class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandidate
 {
-     /**
+    /**
      * It does the setUp before running the tests
      *
-     * @return none
+     * @return void
      */
     function setUp()
     {
@@ -40,7 +40,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
     /**
      * It does the tearDown after running the tests
      *
-     * @return none
+     * @return void
      */
     function tearDown()
     {
@@ -81,7 +81,6 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
         $this->assertContains("New time point successfully registered", $bodyText);
 
     }
-
     /**
      * Create a timepoint with three parameters.
      *
@@ -89,7 +88,7 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
      * @param string $subproject text of subproject
      * @param string $visitlabel text of visit label
      *
-     * @return void.
+     * @return void
      */
     private function _createTimepoint($canID, $subproject, $visitlabel)
     {
@@ -101,9 +100,6 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
         $element = new WebDriverSelect($select);
         $element->selectByVisibleText($subproject);
 
-        $this->webDriver->findElement(
-            WebDriverBy::Name("visitLabel")
-        )->sendKeys($visitlabel);
         $this->webDriver->findElement(
             WebDriverBy::Name("fire_away")
         )->click();
@@ -132,22 +128,22 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
 
     }
     /**
-      * Tests that timepoint loads with the permission
-      *
-      * @return void
-      */
+     * Tests that timepoint loads with the permission
+     *
+     * @return void
+     */
     public function testCreateTimepointPermission()
     {
-         $this->setupPermissions(array("data_entry"));
-         $this->safeGet(
-             $this->url . "/create_timepoint/?candID=900000&identifier=900000"
-         );
-         $bodyText = $this->webDriver->findElement(
-             WebDriverBy::cssSelector("body")
-         )->getText();
+        $this->setupPermissions(array("data_entry"));
+        $this->safeGet(
+            $this->url . "/create_timepoint/?candID=900000&identifier=900000"
+        );
+        $bodyText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
 
-         $this->assertNotContains("You do not have access to this page.", $bodyText);
-         $this->resetPermissions();
+        $this->assertNotContains("You do not have access to this page.", $bodyText);
+        $this->resetPermissions();
     }
 }
 ?>
