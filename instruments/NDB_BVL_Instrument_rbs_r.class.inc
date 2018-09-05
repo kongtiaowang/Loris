@@ -196,14 +196,7 @@ class NDB_BVL_Instrument_rbs_r extends NDB_BVL_Instrument
         $this->form->addElement('header', 'instrument_title', "Repetitive Behavior Scale - Revised (RBS-R)");
 
         $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
-        $this->form->addElement('select', 'respondent', 'What is your relationship to the child', array(
-            '' => '',
-            'mother' => 'Mother',
-            'father' => 'Father',
-            'step_mother' => 'Step Mother',
-            'step_father' => 'Step Father',
-            'other' => 'Other'
-        ));
+        $this->form->addElement('select', 'respondent', 'Respondent', array('' => '', 'mother' => 'Mother', 'father' => 'Father', 'other' => 'Other'));
         $this->form->addElement('text', 'respondent_specify', 'If other, specify:');
 
         $this->XINRegisterRule('respondent_specify', array('respondent{@}=={@}other'), 'Required if other');
@@ -234,6 +227,23 @@ class NDB_BVL_Instrument_rbs_r extends NDB_BVL_Instrument
     function _page1()
     {
 
+        $this->addHeader("<h3><b>Instructions:</b><BR>
+                         Please rate this person's behavior by reading each of the items listed and then
+                         choosing the score that best describes how much of a problem the item is for the 
+                         person. Be sure to read and score all items listed. Make your ratings based on your
+                         observations and interactions with the person over the last month. Use the definitions
+                         in the box given below to score each item.<BR>
+                         <BR>$this->indent 0 = behavior <u>does not occur</u><BR>
+                         $this->indent 1 = behavior occurs and is a <u>mild</u> problem<BR>
+                         $this->indent 2 = behavior occurs and is a <u>moderate</u> problem.<BR>
+                         $this->indent 3 = behavior occurs and is a <u>severe</u> problem.<BR>
+                         <BR> When deciding on a score for each item, consider:<BR>
+                         $this->indent (a) <u>how frequently the behavior occurs</u> 
+                         (e.g. weekly versus hourly)<BR>
+                         $this->indent (b) <u>how difficult it is to interrupt the behavior</u> (e.g. can
+                         be easily redirected versus becomes distressed if interrupted)<BR>
+                         $this->indent (c) <u>how much the behavior interferes</u> with ongoing events 
+                         (e.g. easy to ignore versus very disruptive).</h3>");
         //The only answer choices available in the entire form.
         $answerOptions = array(
                           null                 => '',
@@ -253,11 +263,25 @@ class NDB_BVL_Instrument_rbs_r extends NDB_BVL_Instrument
                           'q29_insists_things_remain'     => "V. Sameness Behavior Subscale",
                           'q40_fascination_preoccupation' => "VI. Restricted Behavior Subscale",
                          );
+        $sectionDefinitions = array(
+                                'q1_whole_body'             => "(DEFINITION: apparently purposeless movements or actions
+                                                            that are repeated in a similar manner)",
+                                'q7_hits_self_body_part'    => "(DEFINITION: movements or actions that have the potential 
+                                                            to cause redness, bruising, or other injury to the body, 
+                                                            and that are repeated in a similar manner)",
+                                'q15_arranging_ordering'    => "(DEFINITION: behavior that is repeated and is performed
+                                                            according to a rule, or involves things being done \"just so\")",
+                                'q23_eating_mealtime'       => "(DEFINITION: performing activities of a daily living in a similar manner)",
+                                'q29_insists_things_remain' => "(DEFINITION: resistance to change, insisting that things stay the same)",
+                                'q40_fascination_preoccupation' => "(DEFINITION: Limited range of focus, interest or activity)"
+                        );
 
         //The questions themselves
         foreach ($this->questionArray as $field=>$label) {
             if (array_key_exists($field, $sectionStarts)) {
-                $this->form->addElement('header', null, $sectionStarts[$field]);
+                #$this->form->addElement('header', null, $sectionStarts[$field]);
+                $this->addHeader("<h3>$sectionStarts[$field]</h3><BR>
+                                         <h4>$sectionDefinitions[$field]</h4>");
             }
 
             $this->form->addElement('select', $field, $label, $answerOptions);
