@@ -6,8 +6,7 @@
  *
  * @category Test
  * @package  Loris
- * @author   Ted Strauss <ted.strauss@mcgill.ca>
- * @author   Xavier Lecours <xavier.lecoursboucher@mcgill.ca>
+ * @author   Wang Shen <shen.wang2@mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
@@ -21,8 +20,7 @@ require_once __DIR__
  *
  * @category Test
  * @package  Loris
- * @author   Ted Strauss <ted.strauss@mcgill.ca>
- * @author   Xavier Lecours <xavier.lecoursboucher@mcgill.ca>
+ * @author   Wang Shen <shen.wang2@mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
@@ -190,745 +188,184 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
     }
 
     /**
-     * Helper function to assert data filtering.
-     *
-     * @param string $filter The name of the filter element
-     * @param string $value  The value to be inputed
-     * @param int    $count  the expected count of results in the datatable
-     *
-     * @return void
-     */
-    protected function assertFiltering($filter, $value, $count)
+      * Tests that, when loading the genomic_browser module, the
+      * breadcrumb is 'Genomic browser' or an error is given according
+      * to the user's permissions.
+      *
+      * @return void
+      */
+    function testGenomicBrowserWithoutPermission()
     {
-        $this->webDriver->findElement(
-            WebDriverBy::Name($filter)
-        )->sendKeys("$value");
-
-        $button = $this->webDriver->findElement(
-            WebDriverBy::xPath(
-                "
-                //input[@name='filter']
-            "
-            )
-        );
-        $this->clickToLoadNewPage($button);
-
-        $message = $this->webDriver->findElement(
-            WebDriverBy::id("LogEntries")
-        )->getText();
-
-        $button = $this->webDriver->findElement(
-            WebDriverBy::xPath(
-                "
-                //input[@name='reset']
-            "
-            )
-        );
-        $this->clickToLoadNewPage($button);
-
-        // Updated:
-        $this->assertEquals("Profiles found: $count total", $message);
-        // CNV tab: $this->assertEquals("Variants found: $count total", $message);
+         $this->setupPermissions(array());
+         $this->safeGet($this->url . "/genomic_browser/");
+         $bodyText = $this->webDriver->findElement(
+             WebDriverBy::cssSelector("body")
+         )->getText();
+         $this->assertContains("You do not have access to this page.", $bodyText);
+         $this->resetPermissions();
     }
-
-
     /**
-     * Tests that, when loading the genomic_browser module, the
-     * breadcrumb is 'Genomic browser'.
-     *
-     * @return void
-     */
-    function testGenomicBrowserDoespageLoad()
+      * Tests that, when loading the genomic_browser module, the
+      * breadcrumb is 'Genomic browser' or an error is given according
+      * to the user's permissions.
+      *
+      * @return void
+      */
+    function testGenomicBrowserWithPermission()
     {
-        $this->markTestIncomplete(
-            'Test should be updated for new main genomic browser tab.'
-        );
-
-        $this->safeGet($this->url . "/genomic_browser/");
-
-        $breadcrumbText = $this->webDriver->findElement(
-            WebDriverBy::xPath(
-                "
-                //div[@id='breadcrumbs']
-                /div
-                /div
-                /div
-                /a[2]
-                /div
-            "
-            )
-        )->getText();
-        $this->assertEquals("Genomic Browser", $breadcrumbText);
+         $this->setupPermissions(
+             array(
+              "genomic_browser_view_allsites",
+              "genomic_browser_view_site",
+             )
+         );
+         $this->safeGet($this->url . "/genomic_browser/");
+         $bodyText = $this->webDriver->findElement(
+             WebDriverBy::cssSelector("body")
+         )->getText();
+         $this->assertNotContains("You do not have access to this page.", $bodyText);
+         $this->resetPermissions();
     }
-
     /**
-     * Tests that, when loading the genomic_browser module, the
-     * breadcrumb is 'Genomic browser' or an error is given according
-     * to the user's permissions.
+      * Tests that, when loading the genomic_browser module, the each Tab should
+      * have their own UIs.
      *
-     * @depends testGenomicBrowserDoespageLoad
-     *
-     * @return void
-     */
-    function testGenomicBrowserDoespageLoadPermissions()
+      * @return void
+      */
+    function testGenomicBrowserEachTab()
     {
-
-        // Without permissions
-        $this->setupPermissions(array(''));
-        $this->webDriver->navigate()->refresh();
-        $this->safeGet($this->url . "/genomic_browser/");
-        $errorText = $this->webDriver->findElement(
-            WebDriverBy::xPath(
-                "
-                //div[@class='page-content inset']
-                /div
-                /ul
-                /li
-                /strong
-            "
-            )
-        )->getText();
-        $this->assertEquals(
-            "You do not have access to this page.",
-            $errorText,
-            "Error message don't fit"
-        );
-
-        // With permission genomic_browser_view_site
-        $this->setupPermissions(array('genomic_browser_view_site'));
-        $this->webDriver->navigate()->refresh();
-        $this->safeGet($this->url . "/genomic_browser/");
-        $breadcrumbText = $this->webDriver->findElement(
-            WebDriverBy::xPath(
-                "
-                //div[@id='breadcrumbs']
-                /div
-                /div
-                /div
-                /a[2]
-                /div
-            "
-            )
-        )->getText();
-        $this->assertEquals("Genomic Browser", $breadcrumbText);
-
-        // With permission genomic_browser_view_allsites
-        $this->setupPermissions(array('genomic_browser_view_allsites'));
-        $this->webDriver->navigate()->refresh();
-        $this->safeGet($this->url . "/genomic_browser/");
-        $breadcrumbText = $this->webDriver->findElement(
-            WebDriverBy::xPath(
-                "
-                //div[@id='breadcrumbs']
-                /div
-                /div
-                /div
-                /a[2]
-                /div
-            "
-            )
-        )->getText();
-        $this->assertEquals("Genomic Browser", $breadcrumbText);
-
-    }
-
-    /**
-     * Verify that Genomic module appears in Tool main menu only
-     * if the user has permission "config".
-     *
-     * @return void
-     */
-    public function testConfigurationMenuDisplayWithPermissions()
-    {
-        $this->markTestIncomplete(
-            'Test should be updated for new main genomic browser tab.'
-        );
-
-        // Without permissions
-        $this->setupPermissions(array(''));
-        $this->webDriver->navigate()->refresh();
-        $this->assertFalse(
-            $this->isMenuItemPresent('Tools', 'Genomic Browser'),
-            "Menu item shoudn't be there."
-        );
-
-        // With permission genomic_browser_view_site
-        $this->setupPermissions(array('genomic_browser_view_site'));
-        $this->webDriver->navigate()->refresh();
-        $this->assertTrue(
-            $this->isMenuItemPresent('Tools', 'Genomic Browser'),
-            "Menu item missing."
-        );
-
-        // With permission genomic_browser_view_allsites
-        $this->setupPermissions(array('genomic_browser_view_allsites'));
-        $this->webDriver->navigate()->refresh();
-        $this->assertTrue(
-            $this->isMenuItemPresent('Tools', 'Genomic Browser'),
-            "Menu item missing."
+        $this->_testPageUIs("/genomic_browser/", $this->_loadingProfilesUI);
+        $this->_testPageUIs("/genomic_browser/gwas_browser/", $this->_loadingGWASUI);
+        $this->_testPageUIs("/genomic_browser/snp_browser/", $this->_loadingSNPUI);
+        $this->_testPageUIs("/genomic_browser/cpg_browser/", $this->_MethylationUI);
+        $this->_testPageUIs(
+            "/genomic_browser/genomic_file_uploader/",
+            $this->_FilesUI
         );
     }
-
     /**
-     * Tests that, when loading the genomic_browser module
-     * default submenu, the active tab text is CNV.
-     *
-     * @depends testGenomicBrowserDoespageLoad
-     *
-     * @return void
-     */
-    function testGenomicBrowserCNVBrowserDoespageLoad()
+      * Tests that, inputing test data and searching the data,
+      * checking the results in the table.
+      *
+      * @return void
+      */
+    function testGenomicBrowserFilterEachTab()
     {
-        $this->markTestIncomplete(
-            'Test should be updated for new main genomic browser tab.'
+        $this->markTestSkipped("Skipping long test");
+        return;
+        // test filter in Profiles Tab
+        $this->_testFilter("/genomic_browser/", "PSCID", "MTL001", "1 rows");
+        $this->_testFilter("/genomic_browser/", "DCCID", "300001", "1 rows");
+        $this->_testFilter(
+            "/genomic_browser/",
+            "PSCID",
+            "999999",
+            "No result found."
         );
-
-        $this->safeGet($this->url . "/genomic_browser/cnv_browser/");
-
-        $tabText = $this->webDriver->findElement(
-            WebDriverBy::xPath(
-                "
-                //div[@id='tabs']
-                /ul
-                /li[contains(@class, 'active')]
-            "
-            )
-        )->getText();
-
-        $this->assertEquals("CNV", $tabText);
+        $this->_testFilter(
+            "/genomic_browser/",
+            "DCCID",
+            "999999",
+            "No result found."
+        );
+        // test filter in GWAS Tab
+        $this->_testFilter(
+            "/genomic_browser/gwas_browser/",
+            "Chromosome",
+            "chr14",
+            "No result found."
+        );
+        $this->_testFilter(
+            "/genomic_browser/gwas_browser/",
+            "BP_Position",
+            "19009011",
+            "No result found."
+        );
+        $this->_testFilter(
+            "/genomic_browser/gwas_browser/",
+            "Chromosome",
+            "999999",
+            "No result found."
+        );
+        $this->_testFilter(
+            "/genomic_browser/gwas_browser/",
+            "BP_Position",
+            "999999",
+            "No result found."
+        );
+        // test filter in SNP Tab
+        $this->_testFilter(
+            "/genomic_browser/snp_browser/",
+            "rsID",
+            "MTL001",
+            "No result found."
+        );
+        $this->_testFilter(
+            "/genomic_browser/snp_browser/",
+            "rsID",
+            "999999",
+            "No result found."
+        );
     }
-
     /**
-     * Tests that, a message is displayed when there is no data
-     * in the CNV table.
-     *
-     * @depends testGenomicBrowserDoespageLoad
-     *
-     * @return void
-     */
-    function testGenomicBrowserCNVEmptyDatatable()
+      * This function could test UI elemnts in each Tabs.
+      *
+      * @param string $url this is for the url which needs to be tested.
+      * @param string $ui  UI elements in each Tabs.
+      *
+      * @return void
+      */
+    function _testPageUIs($url,$ui)
     {
-        $this->deleteData();
-        $this->safeGet($this->url . "/genomic_browser/cnv_browser/");
-
-        $message = $this->webDriver->findElement(
-            WebDriverBy::id("LogEntries")
-        )->getText();
-        $this->assertEquals("No variants found.", $message);
-
-        $rows = $this->webDriver->findElements(
-            WebDriverBy::xPath(
-                "
-                //div[@id='lorisworkspace']
-                //table[contains(@class, 'dynamictable')]
-                /tbody
-                /tr
-            "
-            )
-        );
-        $this->assertCount(0, $rows, "");
-    }
-
-    /**
-     * Tests that, CNV data is presented in the dynamictable.
-     *
-     * @depends testGenomicBrowserCNVEmptyDatatable
-     *
-     * @return void
-     */
-    function testGenomicBrowserCNVDatatable()
-    {
-        $this->safeGet($this->url . "/genomic_browser/cnv_browser/");
-
-        $message = $this->webDriver->findElement(
-            WebDriverBy::id("LogEntries")
-        )->getText();
-        $this->assertEquals("Variants found: 5 total", $message);
-        $rows = $this->webDriver->findElements(
-            WebDriverBy::xPath(
-                "
-                //div[@id='lorisworkspace']
-                //table[contains(@class, 'dynamictable')]
-                /tbody
-                /tr
-            "
-            )
-        );
-
-        $this->assertCount(5, $rows, "There should be 5 records in the table.");
-    }
-
-    /**
-     * Tests that, CNV data is sortable in the Dynamictable.
-     *
-     * @depends testGenomicBrowserCNVDatatable
-     *
-     * @return void
-     */
-    function testGenomicBrowserCNVDataSortableBrief()
-    {
-        $expected_headers = array(
-                             'No.',
-                             'DCCID',
-                             'PSCID',
-                             'Subproject',
-                             'Chromosome',
-                             'StartLoc',
-                             'Size',
-                             'Gene Name',
-                             'Platform',
-                             'CNV Type',
-                             'CNV Description',
-                             'Copy Num Change',
-                             'Common CNV',
-                            );
-
-        $this->safeGet($this->url . "/genomic_browser/cnv_browser/");
-
-        $headers = $this->webDriver->findElements(
-            WebDriverBy::xPath(
-                "
-                //div[@id='lorisworkspace']
-                //table[contains(@class, 'dynamictable')]
-                /thead
-                /tr
-                /th
-            "
-            )
-        );
-
-        $this->assertCount(
-            count($expected_headers),
-            $headers,
-            "There should be " . count($expected_headers) . " columns in the table."
-        );
-
-        foreach ($expected_headers as $index => $header) {
-            switch ($header) {
-            case 'No.':
-                break;
-            case 'DCCID':
-                $this->assertColumnSorting($header, $index+1, '000771', '000772');
-                break;
-            case 'PSCID':
-                $this->assertColumnSorting($header, $index+1, 'TST9778', 'TST9779');
-                break;
-            case 'CNV Type':
-                $this->assertColumnSorting($header, $index+1, 'gain', 'loss');
-                break;
-            case 'CNV Description':
-                $this->assertColumnSorting($header, $index+1, 'CNV 1', 'CNV 5');
-                break;
-            //TODO : Add more cases...
-            }
+        $this->safeGet($this->url . $url);
+        foreach ($ui as $key => $value) {
+            $text = $this->webDriver->executescript(
+                "return document.querySelector('$value').textContent"
+            );
+            $this->assertContains($key, $text);
         }
-    }
-
-    /**
-     * Tests that, CNV data is displayed according to user's permissions
-     *
-     * @depends testGenomicBrowserCNVDatatable
-     *
-     * @return void
-     */
-    function testGenomicBrowserCNVSitePermission()
-    {
-        $this->setupPermissions(array('genomic_browser_view_site'));
-        $this->safeGet($this->url . "/genomic_browser/cnv_browser/");
-
-        $message = $this->webDriver->findElement(
-            WebDriverBy::id("LogEntries")
-        )->getText();
-
-        $this->resetPermissions();
-        $this->assertEquals("Variants found: 3 total", $message);
-    }
-
-    /**
-     * Tests that, "Show data" button apply filters.
-     *
-     * @depends testGenomicBrowserCNVDatatable
-     *
-     * @return void
-     */
-    function testGenomicBrowserCNVFilters()
-    {
-
-        $this->safeGet($this->url . "/genomic_browser/cnv_browser/");
-        $filters = $this->_getCNVFilters();
-
-        foreach ($filters as $filter) {
-            switch ($filter) {
-            case 'CNV_Type':
-                $this->assertFiltering($filter, 'loss', 1);
-                break;
-            case 'CNV_Description':
-                $this->assertFiltering($filter, 'CNV 2', 1);
-                break;
-            }
-        }
-    }
-
-    /**
-     * Tests that, CNV 'Show brief fields' filter works.
-     *
-     * Note: the brief fields option should have been tested in
-     * testGenomicBrowserCVNDataSortableBrief
-     *
-     * @-depends testGenomicBrowserCNVDatatable
-     *
-     * @return void
-     */
-    function testGenomicBrowserCNVShowBriefFields()
-    {
-        $this->markTestIncomplete(
-            'Test should be updated for new main genomic browser tab.'
-        );
-
-        $expected_headers = array(
-                             'No.',
-                             'PSC',
-                             'DCCID',
-                             'PSCID',
-                             'Gender',
-                             'Subproje',
-                             'DoB',
-                             'ExternalID',
-                             'Chromosome',
-                             'Strand',
-                             'StartLoc',
-                             'EndLoc',
-                             'Size',
-                             'Gene Symbol',
-                             'Gene Name',
-                             'Platform',
-                             'CNV Type',
-                             'CNV Description',
-                             'Copy Num Change',
-                             'Event Name',
-                             'Common CNV',
-                             'Characteristics',
-                             'Inheritance',
-                             'Array Report',
-                             'Markers',
-                             'Validation Method',
-                            );
-
-        $this->safeGet($this->url . "/genomic_browser/cnv_browser/");
-
-        // Apply filter
-        $this->webDriver->findElement(
-            WebDriverBy::Name('Show_Brief_Results')
-        )->sendKeys("All fields");
-
-        $button = $this->webDriver->findElement(
-            WebDriverBy::xPath(
-                "
-                //input[@name='filter']
-            "
-            )
-        );
-
-        $this->clickToLoadNewPage($button);
-
-        // Check column count
-        $this->safeGet($this->url . "/genomic_browser/cnv_browser/");
-        $headers = $this->webDriver->findElements(
-            WebDriverBy::xPath(
-                "
-                //div[@id='lorisworkspace']
-                //table[contains(@class, 'dynamictable')]
-                /thead
-                /tr
-                /th
-            "
-            )
-        );
-
-        $this->assertCount(
-            count($expected_headers),
-            $headers,
-            "There should be " . count($expected_headers) . " columns in the table."
-        );
 
     }
-
     /**
-     * Tests that, when loading the genomic_browser module
-     *   > snp_browser submenu, the active tab text is SNP.
-     *
-     * @depends testGenomicBrowserDoespageLoad
-     *
-     * @return void
-     */
-    function testGenomicBrowserSNPBrowserDoespageLoad()
+      * This function could test filter function in each Tabs.
+      *
+      * @param string $url            this is for the url which needs to be tested.
+      * @param string $filter         the filter which needs to be tested.
+      * @param string $testData       the test data.
+      * @param string $expectDataRows the expect rows in the table.
+      *
+      * @return void
+      */
+    function _testFilter($url,$filter,$testData,$expectDataRows)
     {
-        $this->safeGet($this->url . "/genomic_browser/snp_browser/");
-
-        $tabText = $this->webDriver->findElement(
-            WebDriverBy::xPath(
-                "
-                //div[@id='tabs']
-                /ul
-                /li[contains(@class, 'active')]
-            "
-            )
-        )->getText();
-
-        $this->assertEquals("SNP", $tabText);
+        $this->safeGet($this->url . $url);
+         $this->safeFindElement(
+             WebDriverBy::Name($filter)
+         )->sendKeys($testData);
+         //click showdata button
+                  $this->safeFindElement(
+                      WebDriverBy::Name('filter')
+                  )->click();
+                  $text = $this->webDriver->executescript(
+                      "return document.querySelector('#datatable').textContent"
+                  );
+                  $this->assertContains($expectDataRows, $text);
     }
-
     /**
-     * Tests that, a message is displayed when there is no data
-     * in the CNV table.
-     *
-     * @depends testGenomicBrowserSNPBrowserDoespageLoad
-     *
-     * @return void
-     */
-    function testGenomicBrowserSNPEmptyDatatable()
+      * Tests that, when clicking the upload button,the upload window should show up
+      *
+      * @return void
+      */
+    function testUploadFile()
     {
-        $this->deleteData();
-        $this->safeGet($this->url . "/genomic_browser/snp_browser/");
-
-        $message = $this->webDriver->findElement(
-            WebDriverBy::id("LogEntries")
-        )->getText();
-        $this->assertEquals("No variants found.", $message);
-
-        $rows = $this->webDriver->findElements(
-            WebDriverBy::xPath(
-                "
-                //div[@id='lorisworkspace']
-                //table[contains(@class, 'dynamictable')]
-                /tbody
-                /tr
-            "
-            )
-        );
-        $this->assertCount(0, $rows, "");
-    }
-
-    /**
-     * Tests that, CNV data is presented in the dynamictable.
-     *
-     * @depends testGenomicBrowserSNPEmptyDatatable
-     *
-     * @return void
-     */
-    function testGenomicBrowserSNPDatatable()
-    {
-        $this->safeGet($this->url . "/genomic_browser/snp_browser/");
-
-        $message = $this->webDriver->findElement(
-            WebDriverBy::id("LogEntries")
-        )->getText();
-        $this->assertEquals("Variants found: 5 total", $message);
-        $rows = $this->webDriver->findElements(
-            WebDriverBy::xPath(
-                "
-                //div[@id='lorisworkspace']
-                //table[contains(@class, 'dynamictable')]
-                /tbody
-                /tr
-            "
-            )
-        );
-
-        $this->assertCount(5, $rows, "There should be 5 records in the table.");
-    }
-
-    /**
-     * Tests that, SNP data is displayed according to user's permissions
-     *
-     * @depends testGenomicBrowserSNPDatatable
-     *
-     * @return void
-     */
-    function testGenomicBrowserSNPSitePermission()
-    {
-        $this->setupPermissions(array('genomic_browser_view_site'));
-        $this->safeGet($this->url . "/genomic_browser/snp_browser/");
-
-        $message = $this->webDriver->findElement(
-            WebDriverBy::id("LogEntries")
-        )->getText();
-
-        $this->resetPermissions();
-        $this->assertEquals("Variants found: 3 total", $message);
-    }
-
-    /**
-     * Tests that, SNP data is sortable in the Dynamictable.
-     *
-     * @depends testGenomicBrowserSNPDatatable
-     *
-     * @return void
-     */
-    function testGenomicBrowserSNPDataSortableBrief()
-    {
-        $expected_headers = array(
-                             'No.',
-                             'DCCID',
-                             'PSCID',
-                             'Subproject',
-                             'Chromosome',
-                             'StartLoc',
-                             'Gene Name',
-                             'Platform',
-                             'RsID',
-                             'SNP Name',
-                             'SNP Description',
-                             'Function Prediction',
-                            );
-
-        $this->safeGet($this->url . "/genomic_browser/snp_browser/");
-        $headers = $this->webDriver->findElements(
-            WebDriverBy::xPath(
-                "
-                //div[@id='lorisworkspace']
-                //table[contains(@class, 'dynamictable')]
-                /thead
-                /tr
-                /th
-            "
-            )
-        );
-
-        $this->assertCount(
-            count($expected_headers),
-            $headers,
-            "There should be " . count($expected_headers) . " columns in the table."
-        );
-
-        foreach ($expected_headers as $i => $header) {
-            switch ($header) {
-            case 'No.':
-                break;
-            case 'DCCID':
-                $this->assertColumnSorting($header, $i+1, '000771', '000772');
-                break;
-            case 'PSCID':
-                $this->assertColumnSorting($header, $i+1, 'TST9778', 'TST9779');
-                break;
-            case 'RsID':
-                $this->assertColumnSorting($header, $i+1, 'rs0000001', 'rs0000003');
-                break;
-            //TODO : Add more cases...
-            }
-        }
-    }
-
-    /**
-     * Tests that, "Show data" button apply filters.
-     *
-     * @depends testGenomicBrowserSNPDatatable
-     *
-     * @return void
-     */
-    function testGenomicBrowserSNPFilters()
-    {
-
-        $this->safeGet($this->url . "/genomic_browser/snp_browser/");
-        $filters = $this->_getSNPFilters();
-
-        foreach ($filters as $filter) {
-            switch ($filter) {
-            case 'rsID':
-                $this->assertFiltering($filter, 'rs0000002', 2);
-                break;
-            }
-        }
-    }
-
-    /**
-     * Tests that, SNP 'Show brief fields' filter works.
-     *
-     * Note: the brief fields option should have been tested in
-     * testGenomicBrowserSNPDataSortableBrief
-     *
-     * @-depends testGenomicBrowserSNPDatatable
-     *
-     * @return void
-     */
-    function testGenomicBrowserSNPShowBriefFields()
-    {
-        $this->markTestIncomplete(
-            'Test should be updated for new main genomic browser tab.'
-        );
-
-        $expected_headers = array(
-                             'No.',
-                             'PSC',
-                             'DCCID',
-                             'PSCID',
-                             'Gender',
-                             'Subproject',
-                             'DoB',
-                             'ExternalID',
-                             'Chromosome',
-                             'Strand',
-                             'StartLoc',
-                             'EndLoc',
-                             'Size',
-                             'Gene Symbol',
-                             'Gene Name',
-                             'Platform',
-                             'RsID',
-                             'SNP Name',
-                             'SNP Description',
-                             'External Source',
-                             'Minor Allele',
-                             'Reference Base',
-                             'Allele A',
-                             'Allele B',
-                             'Array Report',
-                             'Markers',
-                             'Validation Method',
-                             'Validated',
-                             'Function Prediction',
-                             'Damaging',
-                             'Genotype Quality',
-                             'Exonic Function',
-                            );
-
-        $this->safeGet($this->url . "/genomic_browser/?submendu=snp_browser");
-
-        // Apply filter
-        $this->webDriver->findElement(
-            WebDriverBy::Name('Show_Brief_Results')
-        )->sendKeys("All fields");
-
-        $button = $this->webDriver->findElement(
-            WebDriverBy::xPath(
-                "
-                //input[@name='filter']
-            "
-            )
-        );
-
-        $this->clickToLoadNewPage($button);
-
-        // Check column count
-        $this->safeGet($this->url . "/genomic_browser/snp_browser/");
-        $headers = $this->webDriver->findElements(
-            WebDriverBy::xPath(
-                "
-                //div[@id='lorisworkspace']
-                //table[contains(@class, 'dynamictable')]
-                /thead
-                /tr
-                /th
-            "
-            )
-        );
-
-        $this->assertCount(
-            count($expected_headers),
-            $headers,
-            "There should be " . count($expected_headers) . " columns in the table."
-        );
-
+        $this->safeGet($this->url . "/genomic_browser/genomic_file_uploader/");
+        $this->safeFindElement(
+            WebDriverBy::Name("upload")
+        )->click();
+        $value    = "#myModalLabel";
+            $text = $this->webDriver->executescript(
+                "return document.querySelector('$value').textContent"
+            );
+            $this->assertContains("Upload File", $text);
     }
 }
-?>
