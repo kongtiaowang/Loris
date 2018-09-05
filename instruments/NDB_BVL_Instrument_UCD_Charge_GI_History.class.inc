@@ -243,7 +243,8 @@ class NDB_BVL_Instrument_UCD_Charge_GI_History extends NDB_BVL_Instrument
             );
             unset($group);
         }
-        $this->displayHeaders(2);
+       /*  This Section is not in the newly sent form; commenting this out as I(Sruthy) am not sure if it is needed in future.
+       $this->displayHeaders(2);
         foreach ($currentYesNoQuestions as $key => $question) {
             if ($key == "q11") {
                 $group[] =& $this->createSelect($key . "_previous", $question." - Previous", $yesNoOptions);
@@ -328,7 +329,7 @@ class NDB_BVL_Instrument_UCD_Charge_GI_History extends NDB_BVL_Instrument
                 false
             );
             unset($group);
-        }
+        }*/
 
         $this->addSelect(
             "gastrointestinal_diagnosis_given",
@@ -389,20 +390,20 @@ function UCD_GI_special_rules($values)
 {
     $errors = array();
     $error_message = "This field should be left blank OR response in the related question should be changed.";
-    $check_array = array("q12_diet_restricted_by", "q12_reasons", "q12_foods");
+ /*  $check_array = array("q12_diet_restricted_by", "q12_reasons", "q12_foods");
 foreach ($check_array as $val) {
     if (($values[$val] ?? '') != '') {
         if((($values['q12_previous']?? '' )!= 'yes') && ($values['q12_current']?? '' )!= 'yes') {
                $errors[$val] = $error_message;
         }
     }
-}
+}*/
     if(($values['gastrointestinal_diagnosis']?? '') != '') {
         if (($values['gastrointestinal_diagnosis_given']?? '' )!= 'yes') {
             $errors['gastrointestinal_diagnosis'] = $error_message;
         }
     }
-    if(($values['q13_description'] ?? '') != '') {
+  /*  if(($values['q13_description'] ?? '') != '') {
         if((($values['q13_previous']?? '' )!= 'yes') && ($values['q13_current']?? '' )!= 'yes') {
             $errors['q13_description'] = $error_message;
         }
@@ -411,7 +412,7 @@ foreach ($check_array as $val) {
         if((($values['q11_previous']?? '' )!= 'yes') && ($values['q11_current']?? '' )!= 'yes') {
            $errors['q11_description'] = $error_message;
         }
-    }
+    }*/
 
     if (($values['q7_description'] ?? '') != ''){
         if((($values['q7_previous']?? '')=='0') && ($values['q7_current']?? '' )=='0') {
