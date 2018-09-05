@@ -193,13 +193,13 @@ class NDB_BVL_Instrument_UCD_Charge_GI_History extends NDB_BVL_Instrument
                 "q10" => "Blood in vomit"
             );
 
-        $currentYesNoQuestions = array(
+     /*   $currentYesNoQuestions = array(
             "q11" => "Any allergies to foods?",
             "q12" => "Any diet restrictions",
             "q12_additional_1" => "Reasons/Symptoms",
             "q12_additional_2" => "Foods that cause or worsen any symptoms",
             "q13" => "Does child have any strong food dislikes?"
-        );
+        );*/
         $this->displayHeaders(1);
         foreach($currentNumericQuestions as $key => $question) {
             if ($key == "q7") {
