@@ -26,76 +26,167 @@ require_once __DIR__
  */
 class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
 {
-    // expect UIs for Profiles Tab
-    private $_loadingProfilesUI = array(
-                                   'Profiles'          => '#onLoad > strong',
-                                   'Candidate Filters' => '#lorisworkspace>div>'.
-                                           'div:nth-child(2)>div>div>form>div:nth'.
-                                           '-child(1)>div>div>div>div.panel-heading',
-                                   'Genomic Filters'   => '#lorisworkspace>div>'.
-                                           'div:nth-child(2)>div>div>form>'.
-                                           'div:nth-child(2)>div>'.
-                                           'div.form-group.col-sm-8>'.
-                                           'div>div.panel-heading',
-          // expected_headers
-                                   'No.'               => '#dynamictable > thead',
-                                   'PSCID'             => '#dynamictable > thead',
-                                   'Gender'            => '#dynamictable > thead',
-                                   'Subproject'        => '#dynamictable > thead',
-                                   'File'              => '#dynamictable > thead',
-                                   'SNP'               => '#dynamictable > thead',
-                                   'CNV'               => '#dynamictable > thead',
-                                   'CPG'               => '#dynamictable > thead',
-                                  );
-    // expect UIs for GWAS Tab
-    private $_loadingGWASUI = array(
-                               'Gwas Browser' => '#bc2 > a:nth-child(3) > div',
-                               'GWAS Filters' => '#lorisworkspace > div > '.
-                                           'div:nth-child(2) > div >div > form >'.
-                                           'div>div>div.form-group.col-sm-8>div> '.
-                                           'div.panel-heading',
-                              );
-    // expect UIs for SNP Tab
-    private $_loadingSNPUI = array(
-                              'SNP Filters'         => '#lorisworkspace > div >'.
-                                           'div:nth-child(2) > div > div'.
-                                           '> form > div > div:nth-child(2) >'.
-                                           'div.form-group.col-sm-8 >'.
-                                           ' div > div.panel-heading',
-          // expected_headers
-                              'No.'                 => '#dynamictable > thead',
-                              'PSCID'               => '#dynamictable > thead',
-                              'Gender'              => '#dynamictable > thead',
-                              'RsID'                => '#dynamictable > thead',
-                              'Allele A'            => '#dynamictable > thead',
-                              'Allele B'            => '#dynamictable > thead',
-                              'Reference Base'      => '#dynamictable > thead',
-                              'Minor Allele'        => '#dynamictable > thead',
-                              'Function Prediction' => '#dynamictable > thead',
-                              'Damaging'            => '#dynamictable > thead',
-                              'Exonic Function'     => '#dynamictable > thead',
-                             );
-    // expect UIs for Methylation Tab
-    private $_MethylationUI = array(
-                               'Candidate Filters'     => '#lorisworkspace > div >'.
-                                           ' div:nth-child(2) > div> div > form >'.
-                                           ' div>div:nth-child(1)>div.form-group.'.
-                                           'col-sm-7 > div > div.panel-heading',
-                               'Genomic Range Filters' => '#lorisworkspace > div >'.
-                                           'div:nth-child(2)> div > div > form>div'.
-                                           '>div:nth-child(1)>div.form-group.col-sm'.
-                                           '-5 > div > div.panel-heading',
-                               'CpG Filters'           => '#lorisworkspace > div >'.
-                                           ' div:nth-child(2) > div > div'.
-                                           ' > form > div > div:nth-child(2) >'.
-                                           ' div.form-group.col-sm-8 >'.
-                                           ' div > div.panel-heading',
-                              );
-    // expect UIs for Files Tab
-    private $_FilesUI = array(
-                         'Genomic File Filters' => '#genomic_upload > div >'.
-                             ' div.col-sm-10.col-md-8 > div > div.panel-heading',
-                        );
+
+    /**
+     * Provide a list of the CNV form filters
+     *
+     * @return array The filters list
+    */
+    private function _getCNVFilters()
+    {
+        return array(
+                'centerID',
+                'SubprojectID',
+                'DCCID',
+                'gender',
+                'External_ID',
+                'PSCID',
+                'Gene_Symbol',
+                'Gene_Name',
+                'Chromosome',
+                'Platform',
+                'CNV_Type',
+                'Event_Name',
+                'Characteristics',
+                'Common_CNV',
+                'Copy_Num_Change',
+                'Inheritance',
+                'CNV_Description',
+               );
+    }
+
+    /**
+     * Provide a list of the SNP form filters
+     *
+     * @return array The filters list
+    */
+    private function _getSNPFilters()
+    {
+        return array(
+                'centerID',
+                'DCCID',
+                'PSCID',
+                'gender',
+                'SubprojectID',
+                'dob',
+                'External_ID',
+                'rsID',
+                'SNP_Name',
+                'SNP_Description',
+                'SNP_External_Source',
+                'Allele_A',
+                'Allele_B',
+                'Reference_Base',
+                'Minor_Allele',
+                'Array_Report',
+                'Markers',
+                'Validation_Method',
+                'Validated',
+                'Function_Prediction',
+                'Damaging',
+                'Genotype_Quality',
+                'Exonic_Function',
+                'Chromosome',
+                'Gene_Symbol',
+                'Platform',
+               );
+    }
+
+
+    /**
+     * An helper function to ensure the new page is load after a click.
+     *
+     * @param WebDriverElement $webDriverElement the element to click.
+     *
+     * @return void
+     */
+    public function clickToLoadNewPage($webDriverElement)
+    {
+        $webDriverElement->click();
+        try {
+            while (true) {
+                $webDriverElement->getText();
+            }
+        } catch (StaleElementReferenceException $e) {
+            return;
+        }
+    }
+
+    /**
+     * Helper function to assert the culumn content is sorted
+     * upon click on the header.
+     *
+     * @param string $header     The header label
+     * @param int    $col_number The column index (1 based)
+     * @param string $asc        The expected value on ascending sort
+     * @param string $desc       The expected value on descending sort
+     *
+     * @return void
+     */
+    public function assertColumnSorting($header, $col_number, $asc, $desc)
+    {
+
+        // ASC sorting
+        $header_link = $this->webDriver->findElement(
+            WebDriverBy::xPath(
+                "
+                //div[@id='lorisworkspace']
+                //table[contains(@class, 'dynamictable')]
+                /thead
+                /tr
+                /th
+                /a[text()='$header']
+            "
+            )
+        );
+        $this->clickToLoadNewPage($header_link);
+        $body            = $this->webDriver->findElement(
+            WebDriverBy::xPath("//body")
+        );
+        $first_row_value = $body->findElement(
+            WebDriverBy::xPath(
+                "
+                //div[@id='lorisworkspace']
+                //table[contains(@class, 'dynamictable')]
+                /tbody
+                /tr[1]
+                /td[$col_number]
+            "
+            )
+        )->getText();
+        $this->assertEquals($first_row_value, $asc);
+
+        // DESC sorting
+        $header_link = $this->webDriver->findElement(
+            WebDriverBy::xPath(
+                "
+                //div[@id='lorisworkspace']
+                //table[contains(@class, 'dynamictable')]
+                /thead
+                /tr
+                /th
+                /a[text()='$header']
+            "
+            )
+        );
+        $this->clickToLoadNewPage($header_link);
+        $body            = $this->webDriver->findElement(
+            WebDriverBy::xPath("//body")
+        );
+        $first_row_value = $body->findElement(
+            WebDriverBy::xPath(
+                "
+                //div[@id='lorisworkspace']
+                //table[contains(@class, 'dynamictable')]
+                /tbody
+                /tr[1]
+                /td[$col_number]
+            "
+            )
+        )->getText();
+        $this->assertEquals($first_row_value, $desc);
+    }
+
     /**
       * Tests that, when loading the genomic_browser module, the
       * breadcrumb is 'Genomic browser' or an error is given according

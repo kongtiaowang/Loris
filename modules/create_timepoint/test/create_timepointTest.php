@@ -35,8 +35,6 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
     {
         parent::setUp();
 
-        $this->createSubproject(1, "subprojet 1");
-        $this->createSubproject(2, "subprojet 2");
     }
 
     /**
@@ -48,8 +46,6 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
     {
         parent::tearDown();
 
-        $this->deleteSubproject("subprojet 1");
-        $this->deleteSubproject("subprojet 2");
     }
 
     /**
@@ -78,32 +74,11 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
      */
     function testCreateTimepoint()
     {
-        $this->_createTimepoint('900000', 'subprojet 1', 'V02');
+        $this->_createTimepoint('900000', 'Stale', 'V1');
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertContains("New time point successfully registered", $bodyText);
-
-    }
-
-    /**
-     * Tests that, create a timepoint and test the success link
-     *
-     * @return void
-     */
-    function testCreateTimepointSuccessLink()
-    {
-        $this->markTestSkipped(
-            'Skipping tests until create timepoint works well'
-        );
-
-        $this->_createTimepoint('900000', 'subprojet 1', 'V01');
-        $this->safeClick(WebDriverBy::LinkText("Click here to continue."));
-        $bodyText = $this->webDriver->getPageSource();
-        $this->assertContains(
-            "List of Visits (Time Points)",
-            $bodyText
-        );
 
     }
 
@@ -122,15 +97,9 @@ class CreateTimepointTestIntegrationTest extends LorisIntegrationTestWithCandida
             $this->url . "/create_timepoint/?candID=" . $canID .
             "&identifier=" .$canID
         );
-
-        $selectSid  = $this->safeFindElement(WebDriverBy::Name("subprojectID"));
-        $elementSid = new WebDriverSelect($selectSid);
-        $elementSid->selectByVisibleText($subproject);
-
-        $selectVl  = $this->safeFindElement(WebDriverBy::Name("visitLabel"));
-        $elementVl = new WebDriverSelect($selectVl);
-        $elementVl->selectByVisibleText($visitlabel);
-
+        $select  = $this->safeFindElement(WebDriverBy::Name("subprojectID"));
+        $element = new WebDriverSelect($select);
+        $element->selectByVisibleText($subproject);
         $this->webDriver->findElement(
             WebDriverBy::Name("fire_away")
         )->click();
