@@ -1,0 +1,19 @@
+DROP TABLE IF EXISTS `consent_info_history`;
+
+CREATE TABLE `consent_info_history` (
+  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `CandID` int(6) NOT NULL DEFAULT '0',
+  `entry_staff` varchar(255) DEFAULT NULL,
+  `data_entry_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `study_consent` enum('yes','no','not_answered') DEFAULT NULL,
+  `study_consent_date` date DEFAULT NULL,
+  `study_consent_withdrawal` date DEFAULT NULL,
+  `raisin_consent` enum('yes','no','not_answered') DEFAULT NULL,
+  `raisin_consent_date` date DEFAULT NULL,
+  `raisin_consent_withdrawal` date DEFAULT NULL,
+  `bread_consent` enum('yes','no','not_answered') DEFAULT NULL,
+  `bread_consent_date` date DEFAULT NULL,
+  `bread_consent_withdrawal` date DEFAULT NULL,
+  PRIMARY KEY (`ID`),
+  UNIQUE KEY `ID` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
