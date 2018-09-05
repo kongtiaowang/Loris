@@ -8,12 +8,6 @@ CREATE TABLE `consent_info_history` (
   `study_consent` enum('yes','no','not_answered') DEFAULT NULL,
   `study_consent_date` date DEFAULT NULL,
   `study_consent_withdrawal` date DEFAULT NULL,
-  `raisin_consent` enum('yes','no','not_answered') DEFAULT NULL,
-  `raisin_consent_date` date DEFAULT NULL,
-  `raisin_consent_withdrawal` date DEFAULT NULL,
-  `bread_consent` enum('yes','no','not_answered') DEFAULT NULL,
-  `bread_consent_date` date DEFAULT NULL,
-  `bread_consent_withdrawal` date DEFAULT NULL,
   PRIMARY KEY (`ID`),
   UNIQUE KEY `ID` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
