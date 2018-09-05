@@ -96,7 +96,7 @@ CREATE TABLE `consent` (
   CONSTRAINT `UK_consent_Label` UNIQUE KEY `Label` (`Label`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `consent`;
+DROP TABLE IF EXISTS `candidate_consent_rel`;
 CREATE TABLE `candidate_consent_rel` (
   `CandidateID` int(6) NOT NULL,
   `ConsentID` integer unsigned NOT NULL,
