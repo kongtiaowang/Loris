@@ -1,6 +1,8 @@
 import FilterForm from 'FilterForm';
 import Upload from './upload';
 import formatColumn from './columnFormatter';
+import {Tabs, TabPane} from 'Tabs';
+import DocUploadForm from './uploadForm';
 
 class DocIndex extends React.Component {
   constructor(props) {
@@ -62,9 +64,14 @@ class DocIndex extends React.Component {
         </button>
       );
     }
-
+    let tabList = [
+      {id: 'browse', label: 'Browse'},
+      {id: 'upload', label: 'Upload'},
+      {id: 'category', label: 'Category'},
+    ];
     return (
-        <div>
+      <Tabs tabs={tabList} defaultTab="browse" updateURL={true}>
+        <TabPane TabId={tabList[0].id}>
           <FilterForm
             Module="document_repository2"
             name="document_filter"
@@ -86,7 +93,18 @@ class DocIndex extends React.Component {
             getFormattedCell={formatColumn}
             freezeColumn="File Name"
           />
-        </div>
+        </TabPane>
+        <TabPane TabId={tabList[1].id}>
+          <DocUploadForm
+            DataURL={`${loris.BaseURL}/document_repository/ajax/FileUpload.php?action=getData`}
+            action={`${loris.BaseURL}/document_repository/ajax/FileUpload.php?action=upload`}
+            maxUploadSize={this.state.Data.maxUploadSize}
+          />
+        </TabPane>
+        <TabPane TabId={tabList[2].id}>
+          <div>Add categroy</div>
+        </TabPane>
+      </Tabs>
     );
   }
 }
