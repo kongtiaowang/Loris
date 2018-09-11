@@ -1,4 +1,3 @@
-import ProgressBar from 'ProgressBar';
 
 /**
  * Media Upload Form
@@ -93,76 +92,9 @@ class DocUploadForm extends React.Component {
               ref="category"
               hasError={false}
               required={true}
-              value={this.state.formData.pscid}
-            />
-            <SelectElement
-              name="visitLabel"
-              label="Visit Label"
-              options={this.state.Data.visits}
-              onUserInput={this.setFormData}
-              ref="visitLabel"
-              required={true}
-              value={this.state.formData.visitLabel}
-            />
-            <SearchableDropdown
-              name="forSite"
-              label="Site"
-              placeHolder="Search for site"
-              options={this.state.Data.sites}
-              strictSearch={true}
-              onUserInput={this.setFormData}
-              ref="forSite"
-              required={true}
-              value={this.state.formData.forSite}
-            />
-            <SelectElement
-              name="instrument"
-              label="Instrument"
-              options={this.state.Data.instruments}
-              onUserInput={this.setFormData}
-              ref="instrument"
-              value={this.state.formData.instrument}
-            />
-            <DateElement
-              name="dateTaken"
-              label="Date of Administration"
-              minYear="2000"
-              maxYear="2017"
-              onUserInput={this.setFormData}
-              ref="dateTaken"
-              value={this.state.formData.dateTaken}
-            />
-            <TextareaElement
-              name="comments"
-              label="Comments"
-              onUserInput={this.setFormData}
-              ref="comments"
-              value={this.state.formData.comments}
-            />
-            <SelectElement
-              name="language"
-              label="Document's Language"
-              options={this.state.Data.language}
-              onUserInput={this.setFormData}
-              ref="language"
-              required={false}
-              value={this.state.formData.language}
-            />
-            <FileElement
-              name="file"
-              id="mediaUploadEl"
-              onUserInput={this.setFormData}
-              ref="file"
-              label="File to upload"
-              required={true}
-              value={this.state.formData.file}
+              value={this.state.formData.category}
             />
             <ButtonElement label="Upload File"/>
-            <div className="row">
-              <div className="col-sm-9 col-sm-offset-3">
-                <ProgressBar value={this.state.uploadProgress}/>
-              </div>
-            </div>
           </FormElement>
         </div>
       </div>

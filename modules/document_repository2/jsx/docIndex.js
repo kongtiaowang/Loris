@@ -96,7 +96,7 @@ class DocIndex extends React.Component {
         </TabPane>
         <TabPane TabId={tabList[1].id}>
           <DocUploadForm
-            DataURL={`${loris.BaseURL}/document_repository/ajax/FileUpload.php?action=getData`}
+            DataURL={`${loris.BaseURL}/document_repository/ajax/getFilesData.php?action=getData`}
             action={`${loris.BaseURL}/document_repository/ajax/FileUpload.php?action=upload`}
             maxUploadSize={this.state.Data.maxUploadSize}
           />
