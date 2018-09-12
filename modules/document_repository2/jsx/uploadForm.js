@@ -1,4 +1,3 @@
-
 /**
  * Media Upload Form
  *
@@ -23,9 +22,7 @@ class DocUploadForm extends React.Component {
       uploadProgress: -1,
     };
 
-    this.getValidFileName = this.getValidFileName.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.isValidFileName = this.isValidFileName.bind(this);
     this.isValidForm = this.isValidForm.bind(this);
     this.setFormData = this.setFormData.bind(this);
     this.uploadFile = this.uploadFile.bind(this);
@@ -78,7 +75,7 @@ class DocUploadForm extends React.Component {
       <div className="row">
         <div className="col-md-8 col-lg-7">
           <FormElement
-            name="mediaUpload"
+            name="docUpload"
             fileUpload={true}
             onSubmit={this.handleSubmit}
             ref="form"
@@ -87,12 +84,61 @@ class DocUploadForm extends React.Component {
             <SelectElement
               name="category"
               label="Category"
-              options={this.state.Data.candidates}
+              options={this.state.Data.categories}
               onUserInput={this.setFormData}
               ref="category"
               hasError={false}
               required={true}
               value={this.state.formData.category}
+            />
+            <SearchableDropdown
+              name="forSite"
+              label="Site"
+              placeHolder="Search for site"
+              options={this.state.Data.sites}
+              strictSearch={true}
+              onUserInput={this.setFormData}
+              ref="forSite"
+              required={true}
+              value={this.state.formData.forSite}
+            />
+            <SelectElement
+              name="instrument"
+              label="Instrument"
+              options={this.state.Data.instruments}
+              onUserInput={this.setFormData}
+              ref="instrument"
+              value={this.state.formData.instrument}
+            />
+            <TextareaElement
+              name="pscid"
+              label="PSCID"
+              onUserInput={this.setFormData}
+              ref="pscid"
+              value={this.state.formData.pscid}
+            />
+            <TextareaElement
+              name="visitLabel"
+              label="Visit Label"
+              onUserInput={this.setFormData}
+              ref="visitLabel"
+              value={this.state.formData.visitLabel}
+            />
+            <TextareaElement
+              name="comments"
+              label="Comments"
+              onUserInput={this.setFormData}
+              ref="comments"
+              value={this.state.formData.comments}
+            />
+            <FileElement
+              name="file"
+              id="docUploadEl"
+              onUserInput={this.setFormData}
+              ref="file"
+              label="File to upload"
+              required={true}
+              value={this.state.formData.file}
             />
             <ButtonElement label="Upload File"/>
           </FormElement>
@@ -105,20 +151,6 @@ class DocUploadForm extends React.Component {
  *                      ******     Helper methods     *******
  *********************************************************************************/
 
-  /**
-   * Returns a valid name for the file to be uploaded
-   *
-   * @param {string} pscid - PSCID selected from the dropdown
-   * @param {string} visitLabel - Visit label selected from the dropdown
-   * @param {string} instrument - Instrument selected from the dropdown
-   * @return {string} - Generated valid filename for the current selection
-   */
-  getValidFileName(pscid, visitLabel, instrument) {
-    let fileName = pscid + '_' + visitLabel;
-    if (instrument) fileName += '_' + instrument;
-
-    return fileName;
-  }
 
   /**
    * Handle form submission
@@ -129,48 +161,13 @@ class DocUploadForm extends React.Component {
 
     let formData = this.state.formData;
     let formRefs = this.refs;
-    let mediaFiles = this.state.Data.mediaFiles ? this.state.Data.mediaFiles : [];
+    // let docFiles = this.state.Data.docFiles ? this.state.Data.docFiles : [];
 
     // Validate the form
     if (!this.isValidForm(formRefs, formData)) {
       return;
     }
-
-    // Validate uploaded file name
-    let instrument = formData.instrument ? formData.instrument : null;
-    let fileName = formData.file ? formData.file.name.replace(/\s+/g, '_') : null;
-    let requiredFileName = this.getValidFileName(
-      formData.pscid, formData.visitLabel, instrument
-    );
-    if (!this.isValidFileName(requiredFileName, fileName)) {
-      swal(
-        'Invalid file name!',
-        'File name should begin with: ' + requiredFileName,
-        'error'
-      );
-      return;
-    }
-
-    // Check for duplicate file names
-    let isDuplicate = mediaFiles.indexOf(fileName);
-    if (isDuplicate >= 0) {
-      swal({
-        title: 'Are you sure?',
-        text: 'A file with this name already exists!\n Would you like to override existing file?',
-        type: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Yes, I am sure!',
-        cancelButtonText: 'No, cancel it!',
-      }, function(isConfirm) {
-        if (isConfirm) {
-          this.uploadFile();
-        } else {
-          swal('Cancelled', 'Your imaginary file is safe :)', 'error');
-        }
-      }.bind(this));
-    } else {
       this.uploadFile();
-    }
   }
 
   /*
@@ -205,15 +202,15 @@ class DocUploadForm extends React.Component {
       }.bind(this),
       success: function() {
         // Add git pfile to the list of exiting files
-        let mediaFiles = JSON.parse(JSON.stringify(this.state.Data.mediaFiles));
-        mediaFiles.push(formData.file.name);
+        let docFiles = JSON.parse(JSON.stringify(this.state.Data.docFiles));
+        docFiles.push(formData.file.name);
 
         // Trigger an update event to update all observers (i.e DataTable)
         let event = new CustomEvent('update-datatable');
         window.dispatchEvent(event);
-
+alert('sssssss');
         this.setState({
-          mediaFiles: mediaFiles,
+          docFiles: docFiles,
           formData: {}, // reset form data after successful file upload
           uploadProgress: -1,
         });
@@ -232,22 +229,6 @@ class DocUploadForm extends React.Component {
   }
 
   /**
-   * Checks if the inputted file name is valid
-   *
-   * @param {string} requiredFileName - Required file name
-   * @param {string} fileName - Provided file name
-   * @return {boolean} - true if fileName starts with requiredFileName, false
-   *   otherwise
-   */
-  isValidFileName(requiredFileName, fileName) {
-    if (fileName === null || requiredFileName === null) {
-      return false;
-    }
-
-    return (fileName.indexOf(requiredFileName) === 0);
-  }
-
-  /**
    * Validate the form
    *
    * @param {object} formRefs - Object containing references to React form elements
@@ -258,8 +239,8 @@ class DocUploadForm extends React.Component {
     let isValidForm = true;
 
     let requiredFields = {
-      pscid: null,
-      visitLabel: null,
+      category: null,
+      site: null,
       file: null,
     };
 
@@ -283,27 +264,6 @@ class DocUploadForm extends React.Component {
    * @param {string} value - selected value for corresponding form element
    */
   setFormData(formElement, value) {
-    // Only display visits and sites available for the current pscid
-    let visitLabel = this.state.formData.visitLabel;
-    let pscid = this.state.formData.pscid;
-
-    if (formElement === 'pscid' && value !== '') {
-      this.state.Data.visits = this.state.Data.sessionData[value].visits;
-      this.state.Data.sites = this.state.Data.sessionData[value].sites;
-      if (visitLabel) {
-        this.state.Data.instruments =
-          this.state.Data.sessionData[value].instruments[visitLabel];
-      } else {
-        this.state.Data.instruments =
-          this.state.Data.sessionData[value].instruments.all;
-      }
-    }
-
-    if (formElement === 'visitLabel' && value !== '' && pscid) {
-      this.state.Data.instruments =
-        this.state.Data.sessionData[pscid].instruments[value];
-    }
-
     let formData = this.state.formData;
     formData[formElement] = value;
 

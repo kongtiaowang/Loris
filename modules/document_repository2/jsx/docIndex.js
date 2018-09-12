@@ -58,9 +58,6 @@ class DocIndex extends React.Component {
       return (
         <button className="btn-info has-spinner">
           Loading
-          <span
-            className="glyphicon glyphicon-refresh glyphicon-refresh-animate">
-          </span>
         </button>
       );
     }
@@ -85,7 +82,7 @@ class DocIndex extends React.Component {
             <br/>
             <ButtonElement label="Clear Filters" type="reset" onUserInput={this.resetFilters}/>
           </FilterForm>
-          <Upload DataURL={`${loris.BaseURL}/document_repository/ajax/demo.php?format=json`}/>
+//          <Upload DataURL={`${loris.BaseURL}/document_repository/ajax/demo.php?format=json`}/>
           <StaticDataTable
             Data={this.state.Data.Data}
             Headers={this.state.Data.Headers}
@@ -96,7 +93,7 @@ class DocIndex extends React.Component {
         </TabPane>
         <TabPane TabId={tabList[1].id}>
           <DocUploadForm
-            DataURL={`${loris.BaseURL}/document_repository/ajax/getFilesData.php?action=getData`}
+            DataURL={`${loris.BaseURL}/document_repository/ajax/FileUpload.php?action=getData`}
             action={`${loris.BaseURL}/document_repository/ajax/FileUpload.php?action=upload`}
             maxUploadSize={this.state.Data.maxUploadSize}
           />
