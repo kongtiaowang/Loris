@@ -43,20 +43,18 @@ function editFile()
     // Read JSON from STDIN
     $stdin       = file_get_contents('php://input');
     $req         = json_decode($stdin, true);
-    $idMediaFile = $req['idMediaFile'];
+    $idDocFile = $req['idDocFile'];
 
-    if (!$idMediaFile) {
-        showError("Error! Invalid media file ID!");
+    if (!$idDocFile) {
+        showError("Error! Invalid doc file ID!");
     }
 
     $updateValues = [
-                     'date_taken' => $req['dateTaken'],
                      'comments'   => $req['comments'],
-                     'hide_file'  => $req['hideFile'] ? $req['hideFile'] : 0,
                     ];
 
     try {
-        $db->update('media', $updateValues, ['id' => $idMediaFile]);
+        $db->update('document_repository', $updateValues, ['record_id' => $idDocFile]);
     } catch (DatabaseException $e) {
         showError("Could not update the file. Please try again!");
     }
@@ -209,10 +207,35 @@ $siteList        = Utility::getSiteList(false);
         []
     );
  $instrumentsList = toSelect($instruments, "Test_name", null);
+//docFile
+    $docData = null;
+    if (isset($_GET['idDocFile'])) {
+        $idDocFile = $_GET['idDocFile'];
+        $docData   = $db->pselectRow(
+            "SELECT " .
+            "record_id as id, " .
+            "PSCID as pscid, " .
+            "File_category as category," .
+            "visitLabel, " .
+            "Instrument as instrument, " .
+            "For_site as forSite, " .
+            "comments, " .
+            "File_Name as fileName " .
+            "FROM document_repository" .
+            " WHERE record_id = $idDocFile",
+            []
+        );
+    }
+
+
+
+
+
     $result = [
                'categories'  => $categoriesList,
                'sites'       => $siteList,
                'instruments' => $instrumentsList,
+               'docData'   => $docData,
               ];
 
     return $result;

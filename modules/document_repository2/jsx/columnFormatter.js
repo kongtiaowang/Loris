@@ -8,7 +8,7 @@
  */
 function formatColumn(column, cell, rowData, rowHeaders) {
   // If a column if set as hidden, don't display it
-  loris.hiddenHeaders = ['File Category'];
+  loris.hiddenHeaders = ['Category'];
   if (loris.hiddenHeaders.indexOf(column) > -1) {
     return null;
   }
@@ -32,6 +32,10 @@ function formatColumn(column, cell, rowData, rowHeaders) {
         </a>
       </td>
     );
+  }
+  if (column === 'Edit') {
+    let editURL = loris.BaseURL + '/document_repository2/edit/?id=' + row['Edit'];
+    return <td className={classes}><a href={editURL}>Edit</a></td>;
   }
   return <td className={classes}>{cell}</td>;
 }

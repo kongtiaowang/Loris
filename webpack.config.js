@@ -53,6 +53,7 @@ const config = [{
     './modules/acknowledgements/js/columnFormatter.js': './modules/acknowledgements/jsx/columnFormatter.js',
     './modules/document_repository2/js/docIndex.js': './modules/document_repository2/jsx/docIndex.js',
     './modules/document_repository2/js/upload.js': './modules/document_repository2/jsx/upload.js',
+    './modules/document_repository2/js/editFormIndex.js': './modules/document_repository2/jsx/editFormIndex.js',
     './modules/document_repository2/js/columnFormatter.js': './modules/document_repository2/jsx/columnFormatter.js',
   },
   output: {
