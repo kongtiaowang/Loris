@@ -5,15 +5,16 @@
  * @version 0.0.1
  *
  */
-
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import Panel from 'jsx/Panel';
 
-class FilePanel extends React.Component {
 
+class FilePanel extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: this.props.data
+      data: this.props.data,
     };
   }
 
@@ -29,29 +30,38 @@ class FilePanel extends React.Component {
       'download_channels_info',
       'download_events',
       'download_all_files',
-      'download_fdt_file'
+      'download_fdt_file',
     ];
     for (let i=0; i<this.state.data.downloads.length; i++) {
       console.log(this.state.data.downloads[i]);
       if (this.state.data.downloads[i].file === '') {
         document.getElementById(downloads[i]).removeAttribute('href');
-        let download_button = document.getElementById('btn_' + downloads[i]);
-        download_button.disabled = true;
-        download_button.style.border = '1px solid #b3b3b3';
-        download_button.style.color = '#b3b3b3';
-        download_button.style.cursor = 'not-allowed';
+        let downloadButton = document.getElementById('btn_' + downloads[i]);
+        downloadButton.disabled = true;
+        downloadButton.style.border = '1px solid #b3b3b3';
+        downloadButton.style.color = '#b3b3b3';
+        downloadButton.style.cursor = 'not-allowed';
+        downloadButton.innerHTML = 'Not Available';
+        if (this.state.data.downloads[i].type === 'physiological_fdt_file') {
+          downloadButton.style.display = 'none';
+          let fdtTitle = document.getElementById('fdt_title');
+          fdtTitle.style.display = 'none';
+        }
       }
     }
   }
 
   /**
    * Post-Render when we can access the DOM.
+   *
+   * @param {object} prevProps
+   * @param {object} prevState
+   *
    */
   componentDidUpdate(prevProps, prevState) {
   }
 
   render() {
-
     const stylesFile = {
       button: {
         download: {
@@ -63,24 +73,24 @@ class FilePanel extends React.Component {
           borderRadius: '40px',
           textDecoration: 'none',
           backgroundColor: '#ffffff',
-          border: '1px solid #1c4781'
-        }
+          border: '1px solid #1c4781',
+        },
       },
       div: {
         container: {
           details: {
             height: '250px',
             minWidth: '300px',
-            paddingBottom: '10px'
+            paddingBottom: '10px',
           },
           table: {
             minWidth: '300px',
-            paddingBottom: '10px'
+            paddingBottom: '10px',
           },
           download: {
             minWidth: '300px',
-            paddingBottom: '10px'
-          }
+            paddingBottom: '10px',
+          },
         },
         element: {
           download_title: {
@@ -89,85 +99,86 @@ class FilePanel extends React.Component {
             lineHeight: '40px',
             textAlign: 'center',
             verticalAlign: 'middle',
-          }
-        }
+          },
+        },
       },
       table: {
         style: {
           width: '100%',
-          minWidth: '300px'
+          minWidth: '300px',
         },
         caption: {
           fontSize: 15,
           color: 'white',
           fontWeight: 'bold',
           textAlign: 'center',
-          backgroundColor:'#074785',
+          backgroundColor: '#074785',
         },
         row: {
           height: '30px',
-          border: '1px solid gray'
+          border: '1px solid gray',
         },
         header: {
           width: '1%',
           color: '#074785',
-          paddingLeft: '5px',
-          whiteSpace: 'nowrap'
+          paddingLeft: '10px',
+          whiteSpace: 'nowrap',
         },
         data: {
           width: '1%',
-          whiteSpace: 'nowrap'
-        }
-      }
+          paddingLeft: '10px',
+          whiteSpace: 'nowrap',
+        },
+      },
     };
 
     const stylesDetails = {
       panel: {
-        padding: 0
+        padding: 0,
       },
       container: {
         task: {
-          padding: 0
+          padding: 0,
         },
         device: {
-          padding: 0
-        }
+          padding: 0,
+        },
       },
       table: {
         style: {
           width: '100%',
           height: 'auto',
-          tableLayout: 'fixed'
+          tableLayout: 'fixed',
         },
         row: {
           minHeight: '30px',
           border: '1px solid gray',
-          height: 'auto'
+          height: 'auto',
         },
         header: {
           width: '190px',
           padding: '10px',
           color: '#074785',
-          height: 'auto'
+          height: 'auto',
         },
         data: {
-          padding:'10px 50px 10px 10px',
+          padding: '10px 50px 10px 10px',
           height: 'auto',
-          wordWrap: 'break-word'
-        }
-      }
+          wordWrap: 'break-word',
+        },
+      },
     };
 
-    return(
-      <Panel id={this.props.id} title={'FILENAME ' + this.props.title}>
+    return (
+      <Panel id={this.props.id} title={this.props.title}>
         <div className={'container-fluid'}>
           <div className={'row'}>
-            {/*<div className={'col-sm-4'} style={stylesFile.div.container.details}>*/}
-              {/*..insert head image here..*/}
-            {/*</div>*/}
+            {/* <div className={'col-sm-4'} style={stylesFile.div.container.details}> */}
+              {/* ..insert head image here.. */}
+            {/* </div> */}
             <div className={'col-sm-6'} style={stylesFile.div.container.table}>
               <table style={stylesFile.table.style}>
-                <caption style={stylesFile.table.caption}>Task Name: FaceHousCheck</caption>
+                <caption style={stylesFile.table.caption}>Acquisition Summary</caption>
                 <tr style={stylesFile.table.row}>
                   <th scope='row' style={stylesFile.table.header}>Sampling Frequency</th>
                   <td style={stylesFile.table.data}>{this.state.data.task.frequency.sampling}</td>
@@ -240,7 +251,7 @@ class FilePanel extends React.Component {
                 </div>
               </div>
               <div className={'form-group row flex-v-center'}>
-                <div className={'col-xs-5'} style={stylesFile.div.element.download_title}>FDT File</div>
+                <div className={'col-xs-5'} id='fdt_title' style={stylesFile.div.element.download_title}>FDT File</div>
                 <div className={'col-xs-2'}>
                   <a id='download_fdt_file' href={'/mri/jiv/get_file.php?file=' + this.state.data.downloads[5].file}>
                     <button id='btn_download_fdt_file' style={stylesFile.button.download}>Download</button>
@@ -251,7 +262,7 @@ class FilePanel extends React.Component {
           </div>
         </div>
 
-        <Panel id={this.props.id + '_details'} title={'DETAILS ' + this.props.title} style={stylesDetails.panel}>
+        <Panel id={this.props.id + '_details'} title={'Acquisition Details for ' + this.props.title} style={stylesDetails.panel}>
           <div className={'container-fluid'}>
             <div className={'row'}>
               <div className={'col-xs-6'} style={stylesDetails.container.task}>
@@ -360,16 +371,16 @@ class FilePanel extends React.Component {
   }
 }
 FilePanel.propTypes = {
-  id: React.PropTypes.string,
-  title: React.PropTypes.string,
-  data: React.PropTypes.object
+  id: PropTypes.string,
+  title: PropTypes.string,
+  data: PropTypes.object,
 };
 FilePanel.defaultProps = {
   id: 'file_panel',
   title: 'FILENAME',
-  data: {}
+  data: {},
 };
 
 export {
-  FilePanel
-}
+  FilePanel,
+};
