@@ -50,7 +50,13 @@ function editFile()
     }
 
     $updateValues = [
-                     'comments'   => $req['comments'],
+                     'File_category' => $req['category'],
+                     'For_site'      => $req['forSite'],
+                     'Instrument'    => $req['instrument'],
+                     'comments'      => $req['comments'],
+                     'version'       => $req['version'],
+                     'visitLabel'    => $req['visitLabel'],
+                     'pscid'         => $req['pscid'],
                     ];
 
     try {
@@ -100,7 +106,6 @@ $DB = $factory->database();
 //if ($userSingleton->hasPermission('document_repository_view')
 //    || $userSingleton->hasPermission('document_repository_delete')
 //) {
-var_dump($_POST);
         $category   = $_POST['category']; // required
         $site       = $_POST['forSite']       !== '' ? $_POST['forSite'] : null;
         $instrument = $_POST['instrument'] !== '' ? $_POST['instrument'] : null;
@@ -221,7 +226,8 @@ $siteList        = Utility::getSiteList(false);
             "For_site as forSite, " .
             "comments, " .
             "File_Name as fileName " .
-            "FROM document_repository" .
+            "FROM document_repository " .
+            "version " .
             " WHERE record_id = $idDocFile",
             []
         );

@@ -38,6 +38,10 @@ class DocEditForm extends React.Component {
           category: data.docData.category,
           visitLabel: data.docData.visitLabel,
           comments: data.docData.comments,
+          version: data.docData.version,
+          instrument: data.docData.instrument,
+          category: data.docData.category,
+          forSite: data.docData.forSite,
         };
 
         self.setState({
@@ -111,6 +115,35 @@ class DocEditForm extends React.Component {
         >
           <h3>Edit Document Repository File</h3>
           <br />
+            <SelectElement
+              name="category"
+              label="Category"
+              options={this.state.Data.categories}
+              onUserInput={this.setFormData}
+              ref="category"
+              hasError={false}
+              required={true}
+              value={this.state.docData.category}
+            />
+            <SearchableDropdown
+              name="forSite"
+              label="Site"
+              placeHolder="Search for site"
+              options={this.state.Data.sites}
+              strictSearch={true}
+              onUserInput={this.setFormData}
+              ref="forSite"
+              required={true}
+              value={this.state.docData.forSite}
+            />
+            <SelectElement
+              name="instrument"
+              label="Instrument"
+              options={this.state.Data.instruments}
+              onUserInput={this.setFormData}
+              ref="instrument"
+              value={this.state.docData.instrument}
+            />
             <TextboxElement
               name="pscid"
               label="PSCID"
@@ -132,6 +165,13 @@ class DocEditForm extends React.Component {
               onUserInput={this.setFormData}
               ref="comments"
               value={this.state.docData.comments}
+            />
+            <TextboxElement
+              name="version"
+              label="Version"
+              onUserInput={this.setFormData}
+              ref="version"
+              value={this.state.docData.version}
             />
           <ButtonElement label="Update File"/>
         </FormElement>

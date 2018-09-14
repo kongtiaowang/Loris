@@ -125,6 +125,13 @@ class DocUploadForm extends React.Component {
               ref="visitLabel"
               value={this.state.formData.visitLabel}
             />
+            <TextboxElement
+              name="version"
+              label="Version"
+              onUserInput={this.setFormData}
+              ref="version"
+              value={this.state.formData.version}
+            />
             <TextareaElement
               name="comments"
               label="Comments"
@@ -170,7 +177,6 @@ class DocUploadForm extends React.Component {
     }
       this.uploadFile();
   }
-
   /*
    * Uploads the file to the server
    */
@@ -183,7 +189,6 @@ class DocUploadForm extends React.Component {
         formObj.append(key, formData[key]);
       }
     }
-
     $.ajax({
       type: 'POST',
       url: this.props.action,
@@ -212,6 +217,7 @@ class DocUploadForm extends React.Component {
         let event = new CustomEvent('update-datatable');
         window.dispatchEvent(event);
 alert('sssssss');
+        this.props.refreshPage();
         this.setState({
 //          docFiles: docFiles,
           formData: {}, // reset form data after successful file upload
