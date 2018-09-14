@@ -17,7 +17,6 @@ class DocIndex extends React.Component {
     this.fetchData = this.fetchData.bind(this);
     this.updateFilter = this.updateFilter.bind(this);
     this.resetFilters = this.resetFilters.bind(this);
-    this.refreshPage = this.refreshPage.bind(this);
   }
 
   componentDidMount() {
@@ -49,10 +48,7 @@ class DocIndex extends React.Component {
   updateFilter(filter) {
     this.setState({filter});
   }
-  refreshPage() {
-    alert('refreshpage');
-    this.setState({refresh: this.state.refresh+1});
-  }
+
   resetFilters() {
     this.refs.documentFilter.clearFilter();
   }
@@ -93,7 +89,6 @@ class DocIndex extends React.Component {
             Filter={this.state.filter}
             getFormattedCell={formatColumn}
             freezeColumn="File Name"
-            refresh={this.state.refresh}
           />
         </TabPane>
         <TabPane TabId={tabList[1].id}>
@@ -101,7 +96,7 @@ class DocIndex extends React.Component {
             DataURL={`${loris.BaseURL}/document_repository/ajax/FileUpload.php?action=getData`}
             action={`${loris.BaseURL}/document_repository/ajax/FileUpload.php?action=upload`}
             maxUploadSize={this.state.Data.maxUploadSize}
-            refreshPage={this.refreshPage}
+            refreshPage={this.fetchData}
           />
         </TabPane>
         <TabPane TabId={tabList[2].id}>
