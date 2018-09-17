@@ -225,9 +225,9 @@ $siteList        = Utility::getSiteList(false);
             "Instrument as instrument, " .
             "For_site as forSite, " .
             "comments, " .
-            "File_Name as fileName " .
-            "FROM document_repository " .
+            "File_Name as fileName, " .
             "version " .
+            "FROM document_repository " .
             " WHERE record_id = $idDocFile",
             []
         );
