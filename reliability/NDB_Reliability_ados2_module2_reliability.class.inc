@@ -76,7 +76,7 @@ class NDB_Reliability_ados2_module2_reliability extends NDB_Reliability
         $query1 = "SELECT * FROM {$initial_table} WHERE CommentID=:cid";
 
         $score_record = $db->pselectRow($query, array("cid" => $this->identifier, "rcid" => $this->reliability_center_id));
-        $score_record1 = $db->selectRow($query1, array("cid" => $this->identifier));
+        $score_record1 = $db->pselectRow($query1, array("cid" => $this->identifier));
         $session = $db->pselectOne("SELECT s.ID from session s JOIN flag f ON s.ID=f.SessionID WHERE f.CommentID=:cid", array('cid' => $this->identifier));
         // Get the subject age in months for scoring
         $timepoint =& TimePoint::singleton($session);
@@ -336,7 +336,7 @@ class NDB_Reliability_ados2_module2_reliability extends NDB_Reliability
     {
         $DB =& Database::singleton();
         $query = "SELECT count(*) AS counter FROM candidate WHERE CandID='$values[CandID]' and PSCID='$values[PSCID]'";
-        $recordsFound = $DB->pselectOne($query);
+        $recordsFound = $DB->pselectOne($query, array());
         $errors = array();
 
         if ($recordsFound < 1) {
