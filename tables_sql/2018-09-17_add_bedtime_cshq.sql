@@ -1,0 +1,1 @@
+ALTER TABLE CSHQ ADD COLUMN bed_time_status varchar(255) default NULL;
