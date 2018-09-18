@@ -21,6 +21,10 @@ if (isset($_GET['action'])) {
         uploadFile();
     } else if ($action == "edit") {
         editFile();
+    } else if ($action == "getCategory") {
+        viewCategory();
+    } else if ($action == "uploadCategory") {
+        uploadCategory();
     }
 }
 
@@ -171,6 +175,57 @@ $DB = $factory->database();
         }
 }
 
+function uploadCategory()
+{
+    $DB =& Database::singleton();
+        $category_name   = $_POST['category_name']; // required
+        $parent_id  = $_POST['parent_id']  !== '' ? $_POST['parent_id'] : null;
+        $comment    = $_POST['comments']    !== '' ? $_POST['comments'] : null;
+    $DB->insert(
+        "document_repository_categories",
+        array(
+         "category_name" => $category_name,
+         "parent_id"     => $parent_id,
+         "comments"      => $comments,
+        )
+    );
+}
+function viewCategory()
+{
+    $user =& User::singleton();
+    if (!$user->hasPermission('document_repository_view')) {
+        header("HTTP/1.1 403 Forbidden");
+        exit;
+    }
+    echo json_encode(getCategoryFields());   
+}
+/**
+ * Returns a list of fields from database
+ *
+ * @return array
+ * @throws DatabaseException
+ */
+function getCategoryFields()
+{
+    $db =& Database::singleton();
+$query = $db->pselect(
+    "SELECT * FROM document_repository_categories",
+    array()
+);
+//categories
+$categoriesList = array();
+
+foreach ($query as $value) {
+       $arr = parseCategory($value);
+       $categoriesList[$arr['id']]=$arr['name'];
+}
+
+    $result = [
+               'categories'  => $categoriesList,
+              ];
+
+    return $result;
+}
 
 function viewData()
 {

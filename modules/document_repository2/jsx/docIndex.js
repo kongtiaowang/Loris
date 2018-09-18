@@ -2,7 +2,7 @@ import FilterForm from 'FilterForm';
 import formatColumn from './columnFormatter';
 import {Tabs, TabPane} from 'Tabs';
 import DocUploadForm from './uploadForm';
-
+import DocCategoryForm from './categoryForm';
 class DocIndex extends React.Component {
   constructor(props) {
     super(props);
@@ -100,6 +100,10 @@ class DocIndex extends React.Component {
           />
         </TabPane>
         <TabPane TabId={tabList[2].id}>
+          <DocCategoryForm
+            DataURL={`${loris.BaseURL}/document_repository/ajax/FileUpload.php?action=getCategory`}
+            action={`${loris.BaseURL}/document_repository/ajax/FileUpload.php?action=uploadCategory`}
+          />
           <div>Add categroy</div>
         </TabPane>
       </Tabs>
