@@ -51,6 +51,7 @@ class Survey_Accounts extends \NDB_Menu_Filter
         $query = " FROM participant_accounts p 
             JOIN session s ON (p.SessionID=s.ID)
             JOIN candidate c ON (c.CandID=s.CandID)
+            JOIN test_names tn ON(tn.Test_name=p.Test_name)
             WHERE c.Active = 'Y'
             AND   s.Active = 'Y'";
         $parent_portal_query = "CASE 
@@ -63,7 +64,7 @@ class Survey_Accounts extends \NDB_Menu_Filter
                                'c.PSCID AS PSCID',
                                's.Visit_label AS Visit',
                                'p.Email as Email',
-                               'p.Test_name as SurveyName',
+                               'tn.Full_name as SurveyName',
                                'p.OneTimePassword as URL',
                                'p.Status',
                                "$parent_portal_query AS Parent_Portal",

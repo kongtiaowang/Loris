@@ -57,3 +57,5 @@ Email Column should be hidden from Survey accounts column as it may contain PII(
 Instrument dropdown has list of instruments which has no particular order which is very difficult; so made the list to appear in alphabetic order 
 (Ref: php/survey_accounts.class.inc :lines 91 -104 & line 129)
 
+SurveyName column is updated to show the full name intead of the database abbreviation
+
