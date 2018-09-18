@@ -37,6 +37,10 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     let editURL = loris.BaseURL + '/document_repository2/edit/?id=' + row['Edit'];
     return <td className={classes}><a href={editURL}>Edit</a></td>;
   }
+  if (column === 'Delete') {
+  //  let id = row['Edit'];
+    return <td className={classes}><a onclick="delete">Delete</a></td>;
+  }
   return <td className={classes}>{cell}</td>;
 }
 
