@@ -42,3 +42,20 @@ an error.
 
 The `add_survey` page generates a link to `$LORIS/survey.php?key=....`
 in the email that it sends after generating a new survey key.
+
+## Overridden Reasons
+
+Jordan's NEW Survey Module(the new GUI) is not yet in Loris; so we have to redirect the survey to the new link(air pollution should be in old GUI)
+(Ref: jsx/columnFormatter.js :lines 22-31)
+
+Link to Parent Portal: A column named Parent_Portal is added to redirect to the Parent Portal (Ref php/survey_accounts.class.inc:lines 56-30 & line 69)
+
+Surveys which is not created under VSA or without email id will have 'NA' under Parent portal column (Ref: jsx/columnFormatter.js :lines 32-41)
+
+Email Column should be hidden from Survey accounts column as it may contain PII(but searchable) (Ref:jsx/columnFormatter.js :line 11)
+
+Instrument dropdown has list of instruments which has no particular order which is very difficult; so made the list to appear in alphabetic order 
+(Ref: php/survey_accounts.class.inc :lines 91 -104 & line 129)
+
+SurveyName column is updated to show the full name intead of the database abbreviation
+
