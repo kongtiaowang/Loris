@@ -38,10 +38,35 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     return <td className={classes}><a href={editURL}>Edit</a></td>;
   }
   if (column === 'Delete') {
-  //  let id = row['Edit'];
-    return <td className={classes}><a onclick="delete">Delete</a></td>;
+    let id = row['Edit'];
+  //  let click = 'alert('+id+')';
+function click() {
+alert(id);
+swal({
+  title: 'Are you sure?',
+  text: 'Your will not be able to recover this file!',
+  type: 'warning',
+  showCancelButton: true,
+  confirmButtonClass: 'btn-danger',
+  confirmButtonText: 'Yes, delete it!',
+  closeOnConfirm: false,
+},
+function() {
+  swal('Deleted!', 'Your file has been deleted.', 'success');
+    $.ajax({
+    url: loris.BaseURL + '/document_repository/ajax/documentDelete.php',
+    type: 'POST',
+    data: {id: id},
+    success: function() {
+    location.reload();
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+    },
+  });
+});
+}
+    return <td className={classes}><a onClick={click}>Delete</a></td>;
   }
   return <td className={classes}>{cell}</td>;
 }
-
 export default formatColumn;

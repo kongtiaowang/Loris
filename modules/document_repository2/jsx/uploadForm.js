@@ -216,7 +216,6 @@ class DocUploadForm extends React.Component {
         // Trigger an update event to update all observers (i.e DataTable)
         let event = new CustomEvent('update-datatable');
         window.dispatchEvent(event);
-alert('sssssss');
         this.props.refreshPage();
         this.setState({
 //          docFiles: docFiles,

@@ -17,7 +17,6 @@ class DocIndex extends React.Component {
     this.fetchData = this.fetchData.bind(this);
     this.updateFilter = this.updateFilter.bind(this);
     this.resetFilters = this.resetFilters.bind(this);
-    this.deleted = this.deleted.bind(this);
   }
 
   componentDidMount() {
@@ -90,7 +89,7 @@ class DocIndex extends React.Component {
             Filter={this.state.filter}
             getFormattedCell={formatColumn}
             freezeColumn="File Name"
-            Deleted={this.deleted}
+            refreshPage={this.fetchData}
           />
         </TabPane>
         <TabPane TabId={tabList[1].id}>
