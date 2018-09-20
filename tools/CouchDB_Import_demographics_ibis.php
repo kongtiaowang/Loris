@@ -133,6 +133,10 @@ class CouchDBDemographicsImporter {
         'Mail_tooth_kit_consent_withdrawal' => array(
             'Description' => 'Mail Tooth Kit Consent Withdrawal Date',
             'Type' => "varchar(255)",
+        ),
+        'ASD_DX' => array(
+            'Description' => 'Combines questions 4a(autistic disorder) and 4b(PDD) on the DSMIV_checklist',
+            'Type' => 'varchar(255)',
         )
     );
 
@@ -192,6 +196,10 @@ class CouchDBDemographicsImporter {
                                    WHEN s.subprojectid = 9 THEN 'HR' 
                                    WHEN s.subprojectid = 10 THEN 'LR' 
                                  END                                                         AS Risk, 
+                                 CASE 
+                                   WHEN (dsm.q4_criteria_autistic_disorder = 'no' && dsm.q4_criteria_PDD ='no') THEN 'No' 
+                                   WHEN (dsm.q4_criteria_autistic_disorder = 'yes' || dsm.q4_criteria_PDD ='yes') THEN 'Yes'  
+                                 END                                                         AS ASD_DX, 
                                  p.alias                                                     AS Site, 
                                  c.Gender, 
                                  s.Current_stage, 
@@ -236,7 +244,12 @@ class CouchDBDemographicsImporter {
                                                                              FROM   parameter_type 
                                                                              WHERE  NAME = 'candidate_comment') 
                                  LEFT JOIN participant_status ps 
-                                        ON ( ps.candid = c.candid ) 
+                                        ON ( ps.candid = c.candid )
+                                 LEFT JOIN flag f 
+                                        ON ( f.SessionID = s.ID)
+                                           AND f.Test_name ='DSMIV_checklist' AND f.CommentID  NOT LIKE 'DDE%'
+                                 LEFT JOIN DSMIV_checklist dsm
+                                       ON ( dsm.CommentID = f.CommentID )
                                  LEFT JOIN participant_status_options pso 
               ON ( pso.id = ps.participant_status )";
 
