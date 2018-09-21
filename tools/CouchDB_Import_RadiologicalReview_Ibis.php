@@ -1,5 +1,4 @@
 <?php
-require_once __DIR__ . "/../vendor/autoload.php";
 require_once 'generic_includes.php';
 require_once 'CouchDB.class.inc';
 require_once 'Database.class.inc';
@@ -80,8 +79,17 @@ class CouchDBRadiologicalReviewImporter {
     );
 
     function __construct() {
-        $this->SQLDB = Database::singleton();
-        $this->CouchDB = CouchDB::singleton();
+        $factory       = \NDB_Factory::singleton();
+        $config        = \NDB_Config::singleton();
+        $couchConfig   = $config->getSetting('CouchDB');
+        $this->SQLDB   = $factory->Database();
+        $this->CouchDB = $factory->couchDB(
+            $couchConfig['dbName'],
+            $couchConfig['hostname'],
+            $couchConfig['port'],
+            $couchConfig['admin'],
+            $couchConfig['adminpass']
+        );
     }
 
     function run() {
