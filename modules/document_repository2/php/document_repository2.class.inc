@@ -147,7 +147,7 @@ foreach ($result as $value) {
                           'v.comments',
                           'v.Date_uploaded',
                           'v.File_category as category',
-                          'v.record_id',
+                          'v.Data_dir',
                         ];
         $this->query = $query;
         if (!$user->hasPermission('access_all_profiles')) {
@@ -166,6 +166,7 @@ foreach ($result as $value) {
                                'comments',
                                'Date_uploaded',
                                'category',
+                               'Data_dir',
                                'Edit',
                                'Delete',
                           ];
