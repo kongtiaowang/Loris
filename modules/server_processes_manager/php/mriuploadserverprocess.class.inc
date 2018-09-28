@@ -104,14 +104,14 @@ class MriUploadServerProcess extends AbstractServerProcess
             );
             throw $exception;
         }
-
+print_r($this->_mriCodePath);
+var_dump($this->_mriCodePath);
         // Check that paths exist before using.
         if (!is_dir($this->_mriCodePath)) {
             throw new \ConfigurationException(
                 "Value for MRI code path is not a directory!"
             );
         }
-
         $this->_mriUploadId    = $mriUploadId;
         $this->_sourceLocation = $sourceLocation;
 
