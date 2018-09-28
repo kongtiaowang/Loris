@@ -94,6 +94,17 @@ class MriUploadServerProcess extends AbstractServerProcess
                  configuration object"
             );
         }
+$dir = "/data/";
+
+// Sort in ascending order - this is default
+$a = scandir($dir);
+
+// Sort in descending order
+$b = scandir($dir,1);
+
+print_r($a);
+print_r($b);
+
  $this->_mriCodePath = $config->getSetting('MRICodePath');
 print_r("=======");
 print_r($this->_mriCodePath);
