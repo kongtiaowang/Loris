@@ -94,32 +94,59 @@ class MriUploadServerProcess extends AbstractServerProcess
                  configuration object"
             );
         }
-$dir = "/bin";
 
-// Sort in ascending order - this is default
-$a = scandir($dir);
+    	function listDir($dir)
 
-// Sort in descending order
-$b = scandir($dir,1);
+{
 
-print_r($a);
-print_r($b);
-print_r("================");
-$dir = ".";
+    if(is_dir($dir))
 
-// Sort in ascending order - this is default
-$a = scandir($dir);
+    {
 
-// Sort in descending order
-$b = scandir($dir,1);
+        if ($dh = opendir($dir))
 
-print_r($a);
-print_r($b);
+        {
 
- $this->_mriCodePath = $config->getSetting('MRICodePath');
-print_r("=======");
-print_r($this->_mriCodePath);
-var_dump(is_dir($this->_mriCodePath));
+            while (($file = readdir($dh)) !== false)
+
+            {
+
+                if((is_dir($dir."/".$file)) && $file!="." && $file!="..")
+
+               {
+
+                    echo "<b><font color='red'>文件名：</font></b>",$file,"<br><hr>";
+
+                    listDir($dir."/".$file."/");
+
+                }
+
+                else
+
+                {
+
+                    if($file!="." && $file!="..")
+
+                    {
+
+                        echo $file."<br>";
+
+                    }
+
+                }
+
+            }
+
+            closedir($dh);
+        }
+
+    }
+
+}
+
+//开始运行
+
+listDir(".");
 //var_dump($this->_mriCodePath);
         try {
             $this->_mriCodePath = $config->getSetting('MRICodePath');
