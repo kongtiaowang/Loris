@@ -94,10 +94,10 @@ class MriUploadServerProcess extends AbstractServerProcess
                  configuration object"
             );
         }
- $this->_mriCodePath = $config->getSetting('MRICodePath');
-print_r("=======");
-print_r($this->_mriCodePath);
-var_dump($this->_mriCodePath);
+// $this->_mriCodePath = $config->getSetting('MRICodePath');
+//print_r("=======");
+//print_r($this->_mriCodePath);
+//var_dump($this->_mriCodePath);
         try {
             $this->_mriCodePath = $config->getSetting('MRICodePath');
         } catch(\ConfigurationException $exception) {
@@ -110,11 +110,11 @@ var_dump($this->_mriCodePath);
 //print_r($this->_mriCodePath);
 //var_dump($this->_mriCodePath);
         // Check that paths exist before using.
-        if (!is_dir($this->_mriCodePath)) {
-            throw new \ConfigurationException(
-                "Value for MRI code path is not a directory!"
-            );
-        }
+//        if (!is_dir($this->_mriCodePath)) {
+//            throw new \ConfigurationException(
+//                "Value for MRI code path is not a directory!"
+//            );
+//        }
         $this->_mriUploadId    = $mriUploadId;
         $this->_sourceLocation = $sourceLocation;
 
