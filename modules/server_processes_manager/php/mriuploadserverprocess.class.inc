@@ -96,7 +96,8 @@ class MriUploadServerProcess extends AbstractServerProcess
         }
  $this->_mriCodePath = $config->getSetting('MRICodePath');
 print_r("=======");
-print_r(is_dir($this->_mriCodePath));
+print_r($this->_mriCodePath);
+var_dump(is_dir($this->_mriCodePath));
 //var_dump($this->_mriCodePath);
         try {
             $this->_mriCodePath = $config->getSetting('MRICodePath');
