@@ -87,7 +87,11 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
     function testPageUIs()
     {
         $this->safeGet($this->url . "/server_processes_manager/");
-        sleep(1);
+        sleep(10);
+        $bodyText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        print_r($bodyText);
         foreach ($this->_loadingUI as $key => $value) {
             $text = $this->webDriver->executescript(
                 "return document.querySelector('$value').textContent"

@@ -73,7 +73,6 @@ DROP TABLE IF EXISTS `examiners_psc_rel`;
 DROP TABLE IF EXISTS `examiners`;
 
 DROP TABLE IF EXISTS `participant_status_history`;
-DROP TABLE IF EXISTS `consent_info_history`;
 DROP TABLE IF EXISTS `family`;
 DROP TABLE IF EXISTS `participant_emails`;
 DROP TABLE IF EXISTS `participant_accounts`;
@@ -1084,9 +1083,6 @@ CREATE TABLE `participant_status` (
   `participant_suboptions` int(10) unsigned DEFAULT NULL,
   `reason_specify` text,
   `reason_specify_status` enum('dnk','not_applicable','refusal','not_answered') DEFAULT NULL,
-  `study_consent` enum('yes','no','not_answered') DEFAULT NULL,
-  `study_consent_date` date DEFAULT NULL,
-  `study_consent_withdrawal` date DEFAULT NULL,
   PRIMARY KEY (`ID`),
   UNIQUE KEY `CandID` (`CandID`),
   UNIQUE KEY `ID` (`ID`),
@@ -1126,18 +1122,6 @@ CREATE TABLE `participant_status_history` (
   `reason_specify` varchar(255) DEFAULT NULL,
   `reason_specify_status` enum('not_answered') DEFAULT NULL,
   `participant_subOptions` int(11) DEFAULT NULL,
-  PRIMARY KEY (`ID`),
-  UNIQUE KEY `ID` (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `consent_info_history` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `CandID` int(6) NOT NULL DEFAULT '0',
-  `entry_staff` varchar(255) DEFAULT NULL,
-  `data_entry_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `study_consent` enum('yes','no','not_answered') DEFAULT NULL,
-  `study_consent_date` date DEFAULT NULL,
-  `study_consent_withdrawal` date DEFAULT NULL,
   PRIMARY KEY (`ID`),
   UNIQUE KEY `ID` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1960,45 +1944,45 @@ CREATE TABLE `feedback_mri_predefined_comments` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO `feedback_mri_predefined_comments` (CommentTypeID, Comment) VALUES
-  (2,'missing slices'),
-  (2,'reduced dynamic range due to bright artifact/pixel'),
-  (2,'slice to slice intensity differences'),
-  (2,'noisy scan'),
-  (2,'susceptibilty artifact above the ear canals.'),
-  (2,'susceptibilty artifact due to dental work'),
-  (2,'sagittal ghosts'),
-  (3,'slight ringing artefacts'),
-  (3,'severe ringing artefacts'),
-  (3,'movement artefact due to eyes'),
-  (3,'movement artefact due to carotid flow'),
-  (4,'slight movement between packets'),
-  (4,'large movement between packets'),
-  (5,'Large AP wrap around, affecting brain'),
-  (5,'Medium AP wrap around, no affect on brain'),
-  (5,'Small AP wrap around, no affect on brain'),
-  (5,'Too tight LR, cutting into scalp'),
-  (5,'Too tight LR, affecting brain'),
-  (5,'Top of scalp cut off'),
-  (5,'Top of brain cut off'),
-  (5,'Base of cerebellum cut off'),
-  (5,'missing top third - minc conversion?'),
-  (6,'copy of prev data'),
-  (2,"checkerboard artifact"),
-  (2,"horizontal intensity striping (Venetian blind effect, DWI ONLY)"),
-  (2,"diagonal striping (NRRD artifact, DWI ONLY)"),
-  (2,"high intensity in direction of acquisition"),
-  (2,"signal loss (dark patches)"),
-  (8,"red artifact"),
-  (8,"green artifact"),
-  (8,"blue artifact"),
-  (6,"Too few remaining gradients (DWI ONLY)"),
-  (6,"No b0 remaining after DWIPrep (DWI ONLY)"),
-  (6,"No gradient information available from scanner (DWI ONLY)"),
-  (6,"Incorrect diffusion direction (DWI ONLY)"),
-  (6,"Duplicate series"),
-  (3,"slice wise artifact (DWI ONLY)"),
-  (3,"gradient wise artifact (DWI ONLY)"),
-  (2,"susceptibility artifact due to anatomy");
+  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Intensity artifact'),'missing slices'),
+  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Intensity artifact'),'reduced dynamic range due to bright artifact/pixel'),
+  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Intensity artifact'),'slice to slice intensity differences'),
+  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Intensity artifact'),'noisy scan'),
+  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Intensity artifact'),'susceptibilty artifact above the ear canals.'),
+  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Intensity artifact'),'susceptibilty artifact due to dental work'),
+  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Intensity artifact'),'sagittal ghosts'),
+  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Movement artifact'),'slight ringing artefacts'),
+  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Movement artifact'),'severe ringing artefacts'),
+  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Movement artifact'),'movement artefact due to eyes'),
+  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Movement artifact'),'movement artefact due to carotid flow'),
+  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Packet movement artifact'),'slight movement between packets'),
+  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Packet movement artifact'),'large movement between packets'),
+  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Coverage'),'Large AP wrap around, affecting brain'),
+  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Coverage'),'Medium AP wrap around, no affect on brain'),
+  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Coverage'),'Small AP wrap around, no affect on brain'),
+  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Coverage'),'Too tight LR, cutting into scalp'),
+  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Coverage'),'Too tight LR, affecting brain'),
+  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Coverage'),'Top of scalp cut off'),
+  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Coverage'),'Top of brain cut off'),
+  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Coverage'),'Base of cerebellum cut off'),
+  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Coverage'),'missing top third - minc conversion?'),
+  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Overall'),'copy of prev data'),
+  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Intensity artifact'),'checkerboard artifact'),
+  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Intensity artifact'),'horizontal intensity striping (Venetian blind effect, DWI ONLY)'),
+  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Intensity artifact'),'diagonal striping (NRRD artifact, DWI ONLY)'),
+  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Intensity artifact'),'high intensity in direction of acquisition'),
+  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Intensity artifact'),'signal loss (dark patches)'),
+  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Dominant Direction Artifact (DWI ONLY)'),'red artifact'),
+  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Dominant Direction Artifact (DWI ONLY)'),'green artifact'),
+  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Dominant Direction Artifact (DWI ONLY)'),'blue artifact'),
+  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Overall'),'Too few remaining gradients (DWI ONLY)'),
+  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Overall'),'No b0 remaining after DWIPrep (DWI ONLY)'),
+  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Overall'),'No gradient information available from scanner (DWI ONLY)'),
+  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Overall'),'Incorrect diffusion direction (DWI ONLY)'),
+  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Overall'),'Duplicate series'),
+  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Movement artifact'),'slice wise artifact (DWI ONLY)'),
+  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Movement artifact'),'gradient wise artifact (DWI ONLY)'),
+  ((SELECT `CommentTypeID` FROM `feedback_mri_comment_types` WHERE `CommentName`='Intensity artifact'),'susceptibility artifact due to anatomy');
 
 CREATE TABLE `feedback_mri_comments` (
   `CommentID` int(11) unsigned NOT NULL auto_increment,
