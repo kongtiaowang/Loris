@@ -94,60 +94,6 @@ class MriUploadServerProcess extends AbstractServerProcess
                  configuration object"
             );
         }
-
-    	function listDir($dir)
-
-{
-
-    if(is_dir($dir))
-
-    {
-
-        if ($dh = opendir($dir))
-
-        {
-
-            while (($file = readdir($dh)) !== false)
-
-            {
-
-                if((is_dir($dir."/".$file)) && $file!="." && $file!="..")
-
-               {
-
-                    echo "<b><font color='red'>文件名：</font></b>",$file,"<br><hr>";
-
-                    listDir($dir."/".$file."/");
-
-                }
-
-                else
-
-                {
-
-                    if($file!="." && $file!="..")
-
-                    {
-
-                        echo $file."<br>";
-
-                    }
-
-                }
-
-            }
-
-            closedir($dh);
-        }
-
-    }
-
-}
-
-//开始运行
-
-listDir(".");
-//var_dump($this->_mriCodePath);
         try {
             $this->_mriCodePath = $config->getSetting('MRICodePath');
         } catch(\ConfigurationException $exception) {
@@ -157,9 +103,6 @@ listDir(".");
             );
             throw $exception;
         }
-//print_r($this->_mriCodePath);
-//var_dump($this->_mriCodePath);
-        // Check that paths exist before using.
         if (!is_dir($this->_mriCodePath)) {
             throw new \ConfigurationException(
                 "Value for MRI code path is not a directory!"
