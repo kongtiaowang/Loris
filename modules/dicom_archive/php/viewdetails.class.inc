@@ -288,7 +288,7 @@ class ViewDetails extends \NDB_Form
     /**
      * Overrides base getJSDependencies() to add additional JS files
      *
-     * @return an array of extra JS files that this page depends on
+     * @return array of extra JS files that this page depends on
      */
     function getJSDependencies()
     {
