@@ -1,4 +1,4 @@
-import Modal from 'Modal';
+import Modal from "./Modal";
 import {Api} from "./Api";
 import {FilterForm} from "./FilterForm";
 import {EditForm} from "./EditForm";
