@@ -543,6 +543,7 @@ class Utility
             "SELECT Test_name,Full_name FROM test_names ORDER BY Full_name",
             array()
         );
+       print_r($instruments_q);
         $instruments   = array();
         foreach ($instruments_q as $row) {
             if (isset($row['Test_name']) && isset($row['Full_name'])) {
