@@ -150,9 +150,8 @@ class Project extends \Loris\API\APIBase
         }
 
         if ($this->bInstruments) {
-           print_r("hahahahahahah");
             $Instruments = \Utility::getAllInstruments();
-
+             var_dump($Instruments);
             if ($this->bInstrumentDetails) {
                 $dets   = [];
                 $config = $this->Factory->config();
