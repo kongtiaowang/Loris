@@ -539,13 +539,9 @@ class Utility
     {
         $DB            =& Database::singleton();
         $instruments_q = $DB->pselect(
-            "SELECT Test_name,Full_name FROM test_names "
-            ."ORDER BY Test_name",
-            []
+            "SELECT Test_name,Full_name FROM test_names ORDER BY Test_name",
+            array()
         );
-       print_r("========");
-      var_dump($instruments_q);
-       print_r($instruments_q);
         $instruments   = array();
         foreach ($instruments_q as $row) {
             if (isset($row['Test_name']) && isset($row['Full_name'])) {
@@ -563,8 +559,7 @@ class Utility
      */
     static function getAllDDEInstruments()
     {
-        $Factory       = NDB_Factory::singleton();
-        $DB            = $Factory->Database();
+        $DB            =& Database::singleton();
         $config        =& NDB_Config::singleton();
         $instruments_q = $DB->pselect(
             "SELECT Test_name,Full_name FROM test_names",
