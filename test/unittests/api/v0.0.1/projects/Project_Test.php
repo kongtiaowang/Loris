@@ -20,8 +20,8 @@ class Project_Test extends BaseTestCase
 
         // Make sure the references used by the test are the same ones
         // returned by the factory
-        $DB            =& Database::singleton();
-        $config        =& NDB_Config::singleton();
+        $this->Config   = $this->Factory->config();
+        $this->Database = $this->Factory->database();
 
         $this->Config->expects($this->any())->method('getSetting')->will(
             $this->returnCallback(function ($arg) {
@@ -53,7 +53,7 @@ class Project_Test extends BaseTestCase
                         return [["CandID" => "123456"], ["CandID" => "111111"]];
                     }
                 // Called Utility::getAllInstruments()
-                if($query === "SELECT Test_name,Full_name FROM test_names ORDER BY Test_name") {
+                if($query == "SELECT Test_name,Full_name FROM test_names ORDER BY Test_name") {
                         return [
                             [
                                 "Test_name" => "testInst",
