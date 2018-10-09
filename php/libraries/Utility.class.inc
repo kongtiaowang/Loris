@@ -540,7 +540,8 @@ class Utility
         $Factory       = NDB_Factory::singleton();
         $DB            = $Factory->Database();
         $instruments_q = $DB->pselect(
-            "SELECT Test_name,Full_name FROM test_names ORDER BY Test_name",
+            "SELECT Test_name,Full_name FROM test_names
+            ORDER BY Full_name",
             array()
         );
        print_r($instruments_q);
@@ -596,7 +597,7 @@ class Utility
         $DB            =& Database::singleton();
         $instruments   = array();
         $instruments_q = $DB->pselect(
-            "SELECT Test_name,Full_name FROM test_names WHERE IsDirectEntry=true 
+            "SELECT Test_name,Full_name FROM test_names WHERE IsDirectEntry=true
              ORDER BY Full_name",
             array()
         );
