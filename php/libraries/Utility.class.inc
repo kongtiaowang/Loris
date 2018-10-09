@@ -540,7 +540,7 @@ class Utility
         $Factory       = NDB_Factory::singleton();
         $DB            = $Factory->Database();
         $instruments_q = $DB->pselect(
-            "SELECT Test_name,Full_name FROM test_names",
+            "SELECT Test_name,Full_name FROM test_names ORDER BY Test_name",
             array()
         );
        print_r($instruments_q);
