@@ -20,8 +20,8 @@ class Project_Test extends BaseTestCase
 
         // Make sure the references used by the test are the same ones
         // returned by the factory
-        $this->Config   = $this->Factory->config();
-        $this->Database = $this->Factory->database();
+        $DB            =& Database::singleton();
+        $config        =& NDB_Config::singleton();
 
         $this->Config->expects($this->any())->method('getSetting')->will(
             $this->returnCallback(function ($arg) {
