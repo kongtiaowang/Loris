@@ -53,6 +53,7 @@ class Project_Test extends BaseTestCase
                         return [["CandID" => "123456"], ["CandID" => "111111"]];
                     }
                 // Called Utility::getAllInstruments()
+                var_dump($query);print_r('+++++++++');
                 if($query == "SELECT Test_name,Full_name FROM test_names ORDER BY Test_name") {
                         return [
                             [
