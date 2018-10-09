@@ -109,7 +109,7 @@ class Project_Test extends BaseTestCase
     }
 
     function testProjectInstruments() {
-        $API = new \Loris\API\Projects\Project("GET", "TestProject", false, true, false, false);
+        $API = new \Loris\API\Projects\Project("GET", "TestProject", false, true, false);
         $this->assertEquals($API->JSON,
             ['Meta' => [
                 "Project" => "TestProject"
