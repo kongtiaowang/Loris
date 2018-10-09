@@ -537,11 +537,12 @@ class Utility
      */
     static function getAllInstruments()
     {
-        $DB            =& Database::singleton();
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
         $instruments_q = $DB->pselect(
             "SELECT Test_name,Full_name FROM test_names ORDER BY Test_name",
             array()
-        );
+        );var_dump($instruments_q);
         $instruments   = array();
         foreach ($instruments_q as $row) {
             if (isset($row['Test_name']) && isset($row['Full_name'])) {
