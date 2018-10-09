@@ -544,6 +544,8 @@ class Utility
             ORDER BY Full_name",
             array()
         );
+       print_r("========");
+      var_dump($instruments_q);
        print_r($instruments_q);
         $instruments   = array();
         foreach ($instruments_q as $row) {
