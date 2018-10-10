@@ -2588,9 +2588,6 @@ class NDB_BVL_Instrument extends NDB_Page
          "fullname" => $this->getFullName()
         );
 
-        if ($this->scoreLabels != null) {
-            $instrumentJSON["scoreLabels"] = $this->scoreLabels;
-        }
         $tempForm = array();
         $tempPage = array(
             "Description" => "Top Page",
@@ -2636,8 +2633,11 @@ class NDB_BVL_Instrument extends NDB_Page
 
         $instrument = array(
             "Meta" => array(),
-            "Elements" => $instrumentJSON["form"],
+            "Elements" => $instrumentJSON["form"]
         );
+        if ($this->scoreCols!= null) {
+            $instrument["ScoreLabels"] = array_values($this->scoreCols);
+        }
         return json_encode($instrument);
     }
 
