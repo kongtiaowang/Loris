@@ -2587,7 +2587,10 @@ class NDB_BVL_Instrument extends NDB_Page
          "testname" => $this->testName,
          "fullname" => $this->getFullName()
         );
-        
+
+        if ($this->scoreLabels != null) {
+            $instrumentJSON["scoreLabels"] = $this->scoreLabels;
+        }
         $tempForm = array();
         $tempPage = array(
             "Description" => "Top Page",
