@@ -26,6 +26,7 @@ before_install:
     - php -S localhost:8000 -t htdocs htdocs/router.php 2>1 > /dev/null &
 
 install:
+    - composer update
     - npm install
     - npm run compile
     - make dev
