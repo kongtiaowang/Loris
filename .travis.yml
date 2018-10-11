@@ -87,6 +87,9 @@ before_script:
     - find ../project/instruments/NDB_BVL_Instrument_testtest.class.inc | php generate_tables_sql.php
     - cd ..
     - mysql LorisTest < project/tables_sql/testtest.sql
+    - composer update
+    - npm install
+    - npm run compile
 #env:
  # - "LORIS_DB_CONFIG=test/config.xml"
 
