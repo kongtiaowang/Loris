@@ -757,7 +757,7 @@ class Database
      * @return ?array Associative array of form ColumnName => Value for each column
      *                in the first row of the query
      */
-    function pselectRow(string $query, array $params) : ?array
+    function pselectRow(string $query, array $params) 
     {
         $rows = $this->pselect($query . " LIMIT 2", $params);
         if (count($rows) > 1) {
