@@ -90,7 +90,7 @@ class MediaTest extends LorisIntegrationTest
     function testPageBrowseUIs()
     {
         $this->safeGet($this->url . "/media/");
-        sleep(10);
+        sleep(2);
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
@@ -151,10 +151,14 @@ class MediaTest extends LorisIntegrationTest
     function testBrowseVisitLink()
     {
         $this->safeGet($this->url . "/media/");
-        sleep(10);
+        sleep(4);
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
+        $bodyText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        print_r($bodyText);
         // click the file Name link
         $this->webDriver->executescript(
             "document.querySelector('#dynamictable > tbody > tr:nth-child(1)".
