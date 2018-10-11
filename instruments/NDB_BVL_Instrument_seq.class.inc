@@ -277,12 +277,12 @@ class NDB_BVL_Instrument_seq extends NDB_BVL_Instrument
 		$questions = array();
 		$questionsArray = array_merge($this->questionArray,
 			array(
-				"a_sounds"=>"A. Sounds",
-				"b_lights"=>"B. Lights",
-				"c_smells"=>"C. Smells",
-				"d_tastes"=>"D. Tastes",
-				"e_textures"=>"E. Textures",
-				"f_touch"=>"F. Touch",
+				"q36_a_sounds"=>"A. Sounds",
+				"q36_b_lights"=>"B. Lights",
+				"q36_c_smells"=>"C. Smells",
+				"q36_d_tastes"=>"D. Tastes",
+				"q36_e_textures"=>"E. Textures",
+				"q36_f_touch"=>"F. Touch",
 				"q37_seek_or_crave" => "Does your child `seek` or `crave` particular sensory experiences?",
 				"q38_selective" => "Is your child selective in food preferences?"
 			)
@@ -291,7 +291,6 @@ class NDB_BVL_Instrument_seq extends NDB_BVL_Instrument
 
 		$i = 1;
 		$k = 0;
-
 		// Matches each question with its question number
 		// # 1 - 38
 		foreach ($questionsArray as $key => $question) {
@@ -374,7 +373,6 @@ class NDB_BVL_Instrument_seq extends NDB_BVL_Instrument
 			$query = "SELECT " . $fields . " FROM $this->table WHERE CommentID='" . $this->getCommentID() . "'";
 			$results = $db->pselectOne($query, null);
 
-
 			$completely_answered = true;
 			while ($completely_answered) {
 				foreach ($this->questionArray as $key => $question) {
@@ -389,16 +387,21 @@ class NDB_BVL_Instrument_seq extends NDB_BVL_Instrument
 			}
 			if ($completely_answered) {
 				foreach ($this->scoreCols as $key) {
+                    $zero_count=0;
 					foreach ($questions as $number => $question) {
 						if (in_array($number, $alg[$key])) {
+						    if($score[$question]==0)
+                            {
+                                $zero_count++;
+                            }
 							$totals[$key] += $score[$question];
 						}
 					}
-					$totals[$key] = ($totals[$key]) / count($alg[$key]);
+                    $final_count=count($alg[$key])-$zero_count;
+					$totals[$key] = ($totals[$key]) / $final_count;
 				}
 			}
 		}
-
 
 		// save the resultant total
 		$db->update(
