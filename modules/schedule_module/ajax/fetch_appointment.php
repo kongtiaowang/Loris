@@ -11,7 +11,7 @@
  * @link     https://www.github.com/aces/Loris
  */
 
-include 'data_entry.php';
+require_once 'data_entry.php';
 
 $DB = Database::singleton();
 

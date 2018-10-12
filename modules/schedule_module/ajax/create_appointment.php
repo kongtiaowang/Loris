@@ -11,8 +11,8 @@
  * @link     https://www.github.com/aces/Loris
  */
 
-include 'validator.php';
-include 'data_entry.php';
+require_once 'validator.php';
+require_once 'data_entry.php';
 
 $DB = Database::singleton();
 
