@@ -3,7 +3,17 @@ namespace LORIS\schedule_module;
 class schedule_module extends \NDB_Page {
     public $skipTemplate = true;
 
-    function getJSDependencies(){
+    function _hasAccess()
+    {
+        $user = \User::singleton();
+        if ($user->hasPermission('schedule_module')) {
+            return true;
+        }
+        return false;
+    }
+
+    function getJSDependencies()
+    {
         $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getJSDependencies();

@@ -9,6 +9,13 @@
  * @license  Loris license
  * @link     https://www.github.com/aces/Loris
  */
+
+$user = User::singleton();
+if (!$user->hasPermission('schedule_module')) {
+    header("HTTP/1.1 403 Forbidden");
+    exit;
+}
+
 $DB = Database::singleton();
 
 // Check if candidate is valid/exists (CandID/DCCID and PSCID must belong to same candidate)

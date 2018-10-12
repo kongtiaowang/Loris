@@ -10,6 +10,13 @@
  * @license  Loris license
  * @link     https://www.github.com/aces/Loris
  */
+
+$user = User::singleton();
+if (!$user->hasPermission('schedule_module')) {
+    header("HTTP/1.1 403 Forbidden");
+    exit;
+}
+
 $DB = Database::singleton();
 
 // If CandID/DccID is specified, select the visit labels that the candidate has

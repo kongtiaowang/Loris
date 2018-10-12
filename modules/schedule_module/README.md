@@ -2,23 +2,26 @@
 
 ## Purpose
 
-The schedule module allows users to create, edit, delete, and view appointments for preexisting sessions, as well as keep track of data entry status.
+The schedule module allows users to create, edit, delete, and view appointments for preexisting sessions, as well as keep track of data entry 
 
-## To Do List
+## Intended Users
 
-+ Filter for Data Entry Status
-+ Monthly statistics 
-+ E-mail notifications
-+ Better UI for Pagination
-+ Sort by Column 
-+ Permissions (visible to everyone, can only edit/delete appointments that belong to users affiliated site)
-+ Live Filtering
-+ Better Error Messages 
-+ Refactoring
-+ Documentation and Testing 
+The schedule module is intended for study sites to store their appointments. 
+
+## Scope
+
+Users can create, edit, delete, and view appointments. They can also check the data entry status of each appointment. 
+
+## Configurations
+
+None
+
+## Permissions
+
+Users can only access the module if they have the permission `schedule_module` 
 
 ## Interactions with LORIS
 
-The Schedule module depends on the session table; appointments can only be created for already existing sessions.
+The schedule module depends on the session table; appointments can only be created for already existing sessions.
 
 The appointment list links to the candidate's visit list and the timepoint for the appointment.

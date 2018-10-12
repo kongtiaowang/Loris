@@ -13,6 +13,12 @@
 require_once 'validator.php';
 require_once 'data_entry.php';
 
+$user = User::singleton();
+if (!$user->hasPermission('schedule_module')) {
+    header("HTTP/1.1 403 Forbidden");
+    exit;
+}
+
 $DB = Database::singleton();
 
 $conditions = array("TRUE");
