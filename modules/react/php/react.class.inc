@@ -255,7 +255,7 @@ class React extends \NDB_Menu_Filter
         return array_merge(
             $deps,
             array(
-             $baseURL . "/media/js/mediaIndex.js",
+             $baseURL . "/react/js/reactIndex.js",
             )
         );
     }
