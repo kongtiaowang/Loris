@@ -52,6 +52,7 @@ const config = [{
     './modules/data_integrity_flag/js/index.js': './modules/data_integrity_flag/jsx/index.js',
     './modules/imaging_uploader/js/index.js': './modules/imaging_uploader/jsx/index.js',
     './modules/acknowledgements/js/columnFormatter.js': './modules/acknowledgements/jsx/columnFormatter.js',
+    './modules/react/js/reactIndex.js': './modules/react/jsx/reactIndex.js',
   },
   output: {
     path: __dirname + '/',
