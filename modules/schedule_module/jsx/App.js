@@ -2,7 +2,7 @@ import Modal from "./Modal";
 import {Api} from "./Api";
 import {FilterForm} from "./FilterForm";
 import {EditForm} from "./EditForm";
-import {debounce} from "./debounce";
+import {debounce} from "lodash";
 
 const today = new Date();
 const yesterday = new Date(today.getTime() - 24*60*60*1000);
@@ -114,7 +114,7 @@ export class App extends React.Component {
             });
         };
 
-        this.fetchSessionsOfCandidate = () => {
+        this.fetchSessionsOfCandidate = debounce(() => {
             const candId = this.state.candId;
             const pscId  = this.state.pscId;
 
@@ -175,11 +175,11 @@ export class App extends React.Component {
                         fetchSessionsOfCandidateError : err.message,
                     });
                 });
-        };
+        }, 500);
 
-        this.refreshTab = () => {
+        this.refreshTab = debounce(() => {
             this.fetchTab(this.state.tabIndex);
-        };
+        }, 500);
     }
 
     openEditForm () {
@@ -343,7 +343,7 @@ export class App extends React.Component {
                             this.setState({
                                 candId : e.target.value
                             });
-                            debounce(this.fetchSessionsOfCandidate, 500);
+                            this.fetchSessionsOfCandidate();
                         }}/>
                     </div>
                     <div className="form-group">
@@ -353,7 +353,7 @@ export class App extends React.Component {
                             this.setState({
                                 pscId : e.target.value
                             });
-                            debounce(this.fetchSessionsOfCandidate, 500);
+                            this.fetchSessionsOfCandidate();
                         }}/>
                     </div>
                     {
@@ -729,7 +729,7 @@ export class App extends React.Component {
                             this.setState({
                                 desiredItemsPerPage : e.target.value
                             });
-                            debounce(this.refreshTab, 500);
+                            this.refreshTab();
                         }}/>
                     </div>
                     <div className="form-group col-md-2">
@@ -737,7 +737,7 @@ export class App extends React.Component {
                             this.setState({
                                 desiredPage : e.target.value
                             });
-                            debounce(this.refreshTab, 500);
+                            this.refreshTab();
                         }}/>
                     </div>
                     <div className="form-group col-md-6">
