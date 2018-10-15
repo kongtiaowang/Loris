@@ -131,9 +131,8 @@ class Stats_Behavioural extends \NDB_Form
 
         // PREVENT Undefined property Console Output
         if (!isset($this->params)) {
-            $this->params = null;
+            $this->params = array();
         }
-
         //---- BEHAVIORAL STATS -----
         $result = $DB->pselect(
             "SELECT s.CenterID,
