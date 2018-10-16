@@ -204,8 +204,8 @@ class NDB_BVL_Instrument_WIAT_III_SA extends NDB_BVL_Instrument
      * @access    public
      */
     function isValid(&$file, $args){
-        $correct_filename = strtolower($this->testName .'_'. $args['candID'] .'_'. $args['PSCID'] .'_'. $args['visitLabel'] . ".txt");
-        if(strtolower($file->fileInfo['name']) != $correct_filename){
+        $correct_filename = ($this->testName.'_'. $args['PSCID'].'_'.$args['visitLabel']. ".txt");
+        if($file->fileInfo['name'] != $correct_filename){
             $errors[]="Incorrect Filename: Filename should be: " . $correct_filename;
             return $errors;
         }
@@ -312,36 +312,75 @@ class NDB_BVL_Instrument_WIAT_III_SA extends NDB_BVL_Instrument
         $PD_count=$PD_array_key+8;
         $NO_count=$NO_array_key+8;
         $count=0;
-        for($i=$RC_array_key+1; $i<=$RC_count; $i++)
-        {
-            $values[$RC_DOMAIN[$count]]=$lines[$i];
-            $count++;
-        }
-        $count=0;
-        for($i=$MPS_array_key+1; $i<=$MPS_count; $i++)
-        {
+        if($RC_array_key!=NULL) {
+            for ($i = $RC_array_key + 1; $i <= $RC_count; $i++) {
+                $values[$RC_DOMAIN[$count]] = $lines[$i];
+                $count++;
+            }
 
-            $values[$MPS_DOMAIN[$count]]=$lines[$i];
-            $count++;
+
+        }
+        else{
+            foreach($RC_DOMAIN as $val)
+            {
+                $values[$val]='--';
+            }
         }
         $count=0;
-        for($i=$WR_array_key+1; $i<=$WR_count; $i++)
-        {
-            $values[$WR_DOMAIN[$count]]=$lines[$i];
-            $count++;
+        if($MPS_array_key!=NULL) {
+            for ($i = $MPS_array_key + 1; $i <= $MPS_count; $i++) {
+
+                $values[$MPS_DOMAIN[$count]] = $lines[$i];
+                $count++;
+            }
+        }
+        else{
+            foreach($MPS_DOMAIN as $val)
+            {
+                $values[$val]='--';
+            }
+        }
+
+        $count=0;
+        if($WR_array_key!=NULL) {
+            for ($i = $WR_array_key + 1; $i <= $WR_count; $i++) {
+                $values[$WR_DOMAIN[$count]] = $lines[$i];
+                $count++;
+            }
+        }
+        else{
+            foreach($WR_DOMAIN as $val)
+            {
+                $values[$val]='--';
+            }
         }
         $count=0;
-        for($i=$PD_array_key+1; $i<=$PD_count; $i++)
-        {
-            $values[$PD_DOMAIN[$count]]=$lines[$i];
-            $count++;
+        if($PD_array_key!=NULL) {
+            for ($i = $PD_array_key + 1; $i <= $PD_count; $i++) {
+                $values[$PD_DOMAIN[$count]] = $lines[$i];
+                $count++;
+            }
+        }
+        else{
+            foreach($PD_DOMAIN as $val)
+            {
+                $values[$val]='--';
+            }
         }
         $count=0;
-        for($i=$NO_array_key+1; $i<=$NO_count; $i++)
-        {
-            $values[$NO_DOMAIN[$count]]=$lines[$i];
-            $count++;
+        if($NO_array_key!=NULL) {
+            for ($i = $NO_array_key + 1; $i <= $NO_count; $i++) {
+                $values[$NO_DOMAIN[$count]] = $lines[$i];
+                $count++;
+            }
         }
+        else{
+            foreach($NO_DOMAIN as $val)
+            {
+                $values[$val]='--';
+            }
+        }
+
 
         $test_date_key = array_search('Date of Report:', $lines);
         $values['Date of Report'] =$lines[$test_date_key+1];
