@@ -1,6 +1,6 @@
 <?php
 /*
- * This file contains the NDB_BVL_Instrument_mock_scanner_training_form
+ * This file contains the NDB_BVL_Instrument_WIAT_III_SA
  * class
  *
  * PHP Version 7
@@ -161,7 +161,7 @@ class NDB_BVL_Instrument_WIAT_III_SA extends NDB_BVL_Instrument
         if(empty($dir)) {
             $dir = ".";
         };
-        $file->setBaseUploadDirectory($dir . "/wiatIII/");
+        $file->setBaseUploadDirectory($dir . "/WIAT_III_SA/");
 
         //Set the prefix to prepend to the filenames
         //$file->setFilenamePrefix($timepoint->getVisitLabel()."-".$this->testName."-");
