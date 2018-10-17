@@ -23,7 +23,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `appointment_type` (
   `AppointmentTypeID` int(10) UNSIGNED NOT NULL,
   `Name` varchar(32) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `appointment_type`
@@ -76,7 +76,7 @@ CREATE TABLE `appointment` (
   `SessionID` int(10) UNSIGNED NOT NULL,
   `AppointmentTypeID` int(10) UNSIGNED NOT NULL,
   `StartsAt` datetime NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Indexes for table `appointment`
