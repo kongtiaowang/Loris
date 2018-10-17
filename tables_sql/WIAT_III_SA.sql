@@ -73,8 +73,8 @@ VALUES ('WIAT_III_SA', '0', '0', 'Y', 'Visit', 12, 'VSA', NULL);
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
 VALUES ('WIAT_III_SA', '0', '0', 'Y', 'Visit', 13, 'VSA', NULL);
 -- Removing old wiat instruments from test battery
-UPDATE `test_battery` SET `Active`='N' WHERE Test_name='wiat_III_part_1';
-UPDATE `test_battery` SET `Active`='N' WHERE Test_name='wiat_III_part_2';
+UPDATE `test_battery` SET `Active`='N' WHERE Test_name='wiatIII_part_1';
+UPDATE `test_battery` SET `Active`='N' WHERE Test_name='wiatIII_part_2';
 UPDATE `test_battery` SET `Active`='N' WHERE Test_name='WiatIII';
 
 
