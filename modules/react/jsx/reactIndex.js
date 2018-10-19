@@ -10,6 +10,7 @@ constructor(props) {
     };
     this.removeItem = this.removeItem.bind(this);
     this.search = this.search.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
 }
 
 removeItem(id) {
@@ -17,6 +18,9 @@ const updatedList = this.state.list.filter((it) => it[14] !== id);
 this.setState({list: updatedList});
 }
 
+onSubmit() {
+   alert('99');
+}
 search(event) {
 this.setState(
    {
@@ -51,25 +55,15 @@ searching() {
   }
 
   render() {
-      if (!this.state.list) {
-return null;
-}
     return (
       <div className="app">
-      <Search content={this.state.searchValue} search={this.search}/>
+      <Search content={this.state.searchValue} onSubmit={this.onSubmit} />
       {
-       this.state.list.map(
-          (item) =>
-          <div font="red" key={item[14]}>
-            <h1><a>{item[0]}</a></h1>
-            <h4>{item[2]}</h4>
-            <BTN onClick={()=>this.removeItem(item[14])}>
-               remove me
-            </BTN>
-          </div>
-       )
+       this.state.list &&
+       <Table list={this.state.list} removeItem={this.removeItem}/>
       }
-       </div>
+
+      </div>
     );
   }
 }
@@ -77,10 +71,33 @@ return null;
 class Search extends Component {
   render() {
     return (
-       <form>
+       <form onSubmit={this.props.onSubmit}>
          <input type="text" name="first" onChange={this.props.search} />
-         <button type="button" value="last" onClick={this.props.searching}>{this.props.content}</button>
+    <button type='submit'>
+       do
+    </button>
        </form>
+   );
+  }
+}
+class Table extends Component {
+  render() {
+  const {list, removeItem} = this.props;
+    return (
+     <div>
+      {
+       list.map(
+          (item) =>
+          <div font="red" key={item[14]}>
+            <h1><a>{item[0]}</a></h1>
+            <h4>{item[2]}</h4>
+            <BTN onClick={()=>removeItem(item[14])}>
+               remove me
+            </BTN>
+          </div>
+       )
+      }
+      </div>
    );
   }
 }
