@@ -1,54 +1,71 @@
 import React, {Component} from 'react';
-import list from './list';
+
+
 class App extends Component {
 constructor(props) {
     super(props);
     this.state = {
-         list: list,
+         list: [],
          searchValue: null,
     };
-    this.remveItem = this.remveItem.bind(this);
+    this.removeItem = this.removeItem.bind(this);
     this.search = this.search.bind(this);
 }
 
-remveItem(id) {
-const updatedList = this.state.list.filter((item) => item.id !== id);
+removeItem(id) {
+const updatedList = this.state.list.filter((it) => it[14] !== id);
 this.setState({list: updatedList});
 }
+
 search(event) {
-/* eslint-disable no-console */
-// console.log(event);
 this.setState(
    {
      searchValue: event.target.value,
    }
 );
-/* eslint-disable no-console */
-console.log('YYYYYYY');
-/* eslint-enable no-console */
-/* eslint-enable no-console */
 }
 
-searching() {/* eslint-disable no-console */
-console.log('xxxxxxxxxx');
-/* eslint-enable no-console */
+searching() {
 }
+
+  componentDidMount() {
+    fetch('https://wangshen-dev.loris.ca/media/?format=json')
+      .then((res) => res.json())
+      .then(
+        (result) => {
+          this.setState({
+            isLoaded: true,
+            list: result.Data,
+          });
+        },
+        // Note: it's important to handle errors here
+        // instead of a catch() block so that we don't swallow
+        // exceptions from actual bugs in components.
+        (error) => {
+          this.setState({
+            isLoaded: true,
+            error,
+          });
+        }
+      );
+  }
 
   render() {
-/* eslint-disable no-console */
-console.log(this);
-/* eslint-enable no-console */
+      if (!this.state.list) {
+return null;
+}
     return (
       <div className="app">
       <Search content={this.state.searchValue} search={this.search}/>
       {
        this.state.list.map(
           (item) =>
-          <div key={item.id}>
-            <h1><a>{item.url}</a></h1>
-            <h4>{item.title}</h4>
-//todo add params into searchnew
-            <button type="button" onClick={()=>this.search}>remove</button>
+          <div font="red" key={item[14]}>
+            <h1><a>{item[0]}</a></h1>
+            <h4>{item[2]}</h4>
+            <BTN onClick={()=>this.removeItem(item[14])}>
+               remove me
+            </BTN>
           </div>
        )
       }
@@ -67,14 +84,18 @@ class Search extends Component {
    );
   }
 }
+function BTN({onClick, children}) {
+    return (
+    <button onClick={ onClick }>
+       { children }
+    </button>
+    );
+}
 
 $(function() {
-/* eslint-disable no-console */
-console.log(this);
-/* eslint-enable no-console */
   const reactIndex = (
     <div className='page-media'>
-      <App DataURL={`${loris.BaseURL}/media/?format=json`} />
+      <App/>
     </div>
   );
 
