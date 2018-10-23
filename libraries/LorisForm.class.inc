@@ -2096,11 +2096,6 @@ class LorisForm
                 continue;
             }
 
-            if($el['type'] === 'radio') {
-				$arr[$name] = $this->getValue($name);
-				continue;
-			}
-			
             if ($el['type'] === 'file') {
                 $file       = $this->getElement($name);
                 $arr[$name] = $file->getValue();

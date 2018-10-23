@@ -59,7 +59,7 @@ class NDB_BVL_Instrument_mock_scanner_training_form extends NDB_BVL_Instrument
     function setup($commentID = NULL, $page= NULL){
 
         $this->formType="XIN";
-        $this->form = new LorisForm('test_form');
+        $this->form = new LorisFormIBIS('test_form');
         $this->page = $page;
 
         // set the object properties
