@@ -105,8 +105,13 @@ class NDB_BVL_Instrument_WIAT_III_SA extends NDB_BVL_Instrument
 
 
         //score fields
-        $domains = array("RC" => "Reading Comprehension", "MPS" => "Math Problem Solving", "WR" => "Word Reading", "PD" => "Pseudoword Decoding",
-            "NO" => "Numerical Operations");
+        $domains = array("LC" => "Listening Comprehension","ERS" => "Early Reading Skills","RC" => "Reading Comprehension",
+            "MPS" => "Math Problem Solving", "AWF" => "Alphabetic Writing Fluency", "SC" => "Sentence Composition",
+            "WR" => "Word Reading","ES" => "Essay Composition", "PD" => "Pseudoword Decoding","OR" => "Oral Expression",
+            "NO" => "Numerical Operations","ORF" => "Oral Reading Fluency","SP" => "Spelling","MFA" => "Math Fluency-Addition",
+            "MFS" => "Math Fluency-Subtraction","MFM" => "Math Fluency-Multiplication"
+
+        );
         $columnHeaders = array("RAW" => "Raw Score", "STD_SCORE" => "Standard Score",
             "CI" => "95% Confidence Interval", "PER_RANK" => "Percentile Rank",
             "NCE" => "Normal Curve Equiv", "STANINE" => "Stanine", "GRADE_EQUIV" => "Grade Equivalent", "AGE_EQUIV" => "Age Equivalent"
@@ -214,42 +219,36 @@ class NDB_BVL_Instrument_WIAT_III_SA extends NDB_BVL_Instrument
         $contents=fread($fp,filesize($file->fileInfo['tmp_name']));
         fclose($fp);
 
-        $lines=explode("\n",$contents);
-
-
+        $lines =preg_split("/\\r\\n|\\r|\\n/", $contents);
+       /* if(count($lines<=2))
+        {
+            $errors[]= "Unable to Parse your file contents.
+            Please try duplicating your txt file by copying the txt contents manually and try uploading again with the new copy of file.
+            If error still persists; contact DCC.";
+            return $errors;
+        }*/
 
         $visit = $args['visitLabel'];
 
 
-
-        $input = 'Student Name:IBIS-SA';
-        $result = array_filter($lines, function ($item) use ($input) {
-            if (stripos($item, $input) !== false) {
-                return true;
-            }
-            return false;
-        });
-
-        if(empty($result))
+        $examinee_key = array_search('Examinee Name', $lines);
+        if($examinee_key==NULL)
         {
-            $errors[]="Unable To Read the PSCID from the txt file. Please make sure you have a Student Name:IBIS-SA PSCID entry in your file" ;
+            $errors[]="Examinee Name doesn't exist in your txt file.Please check and try again.";
             return $errors;
         }
-        else{
-            foreach ($result as $key => $value) {
-                $student_string=$value;
-            }
-        }
-        $student_string_array=explode(" ", $student_string);
-        $pscid=$student_string_array[2];
+
+        $values['Examinee Name'] =$lines[$examinee_key+1];
+        $pscid_array=explode(" ", $values['Examinee Name']);
+        $pscid=$pscid_array[1];
         $actual_pscid=$args['PSCID'];
         if($actual_pscid!=$pscid)
         {
-            $errors[]="PSCID in the file given (".$pscid.") doesn't match with the actual PSCID (".$actual_pscid.")";
+            $errors['']="PSCID in the file given (".$pscid.") doesn't match with the actual PSCID (".$actual_pscid.")";
             return $errors;
         }
 
-        $test_date_key = array_search('Date of Report:', $lines);
+        $test_date_key = array_search('Date of Report', $lines);
         $values['Date of Report'] =$lines[$test_date_key+1];
 
         $values['Date of Report'] = $this->formatDate($values['Date of Report']);
@@ -288,12 +287,7 @@ class NDB_BVL_Instrument_WIAT_III_SA extends NDB_BVL_Instrument
 
 
         //Cycle through the lines and extract the data
-        $lines=explode("\n",$contents);
-        $RC_DOMAIN=array("RC_RAW","RC_STD_SCORE","RC_CI","RC_PER_RANK","RC_NCE","RC_STANINE","RC_GRADE_EQUIV","RC_AGE_EQUIV");
-        $MPS_DOMAIN=array("MPS_RAW","MPS_STD_SCORE","MPS_CI","MPS_PER_RANK","MPS_NCE","MPS_STANINE","MPS_GRADE_EQUIV","MPS_AGE_EQUIV");
-        $WR_DOMAIN=array("WR_RAW","WR_STD_SCORE","WR_CI","WR_PER_RANK","WR_NCE","WR_STANINE","WR_GRADE_EQUIV","WR_AGE_EQUIV");
-        $PD_DOMAIN=array("PD_RAW","PD_STD_SCORE","PD_CI","PD_PER_RANK","PD_NCE","PD_STANINE","PD_GRADE_EQUIV","PD_AGE_EQUIV");
-        $NO_DOMAIN=array("NO_RAW","NO_STD_SCORE","NO_CI","NO_PER_RANK","NO_NCE","NO_STANINE","NO_GRADE_EQUIV","NO_AGE_EQUIV");
+        $lines =preg_split("/\\r\\n|\\r|\\n/", $contents);
 
             $group[] = $this->form->createElement('static', "CI", null, null);
         $group[] = $this->form->createElement('static', "PER_RANK", null, null);
@@ -301,6 +295,36 @@ class NDB_BVL_Instrument_WIAT_III_SA extends NDB_BVL_Instrument
         $group[] = $this->form->createElement('static', "STANINE", null, null);
         $group[] = $this->form->createElement('static', "GRADE_EQUIV", null, null);
         $group[] = $this->form->createElement('static', "AGE_EQUIV", null, null);
+        $domains = array("LC" => "Listening Comprehension","ERS" => "Early Reading Skills","RC" => "Reading Comprehension",
+            "MPS" => "Math Problem Solving", "AWF" => "Alphabetic Writing Fluency", "SC" => "Sentence Composition",
+            "WR" => "Word Reading","ES" => "Essay Composition", "PD" => "Pseudoword Decoding","OR" => "Oral Expression",
+            "NO" => "Numerical Operations","ORF" => "Oral Reading Fluency","SP" => "Spelling","MFA" => "Math Fluency-Addition",
+            "MFS" => "Math Fluency-Subtraction","MFM" => "Math Fluency-Multiplication"
+
+        );
+        foreach ($domains as $key => $val) {
+            $array_key=array_search($val,$lines);
+            $val_count=$array_key+8;
+            $count=0;
+            ${$key."_DOMAIN"}= array("{$key}_RAW","{$key}_STD_SCORE","{$key}_CI","{$key}_PER_RANK","{$key}_NCE","{$key}_STANINE","{$key}_GRADE_EQUIV","{$key}_AGE_EQUIV");
+            if($array_key!=NULL) {
+                for ($i = $array_key + 1; $i <= $val_count; $i++) {
+                    $values[${$key.'_DOMAIN'}[$count]] = $lines[$i];
+                    echo $values[${$key.'_DOMAIN'}[$count]];
+                    $count++;
+                }
+
+
+            }
+            else{
+                foreach(${$key.'_DOMAIN'} as $val)
+                {
+                    $values[$val]='--';
+                }
+            }
+        }
+
+      /*  $LC_array_key = array_search('Listening Comprehension', $lines);
         $RC_array_key = array_search('Reading Comprehension', $lines);
         $MPS_array_key = array_search('Math Problem Solving', $lines);
         $WR_array_key = array_search('Word Reading', $lines);
@@ -311,6 +335,22 @@ class NDB_BVL_Instrument_WIAT_III_SA extends NDB_BVL_Instrument
         $WR_count=$WR_array_key+8;
         $PD_count=$PD_array_key+8;
         $NO_count=$NO_array_key+8;
+        $LC_count=$LC_array_key+8;
+        $count=0;
+        if($LC_array_key!=NULL) {
+            for ($i = $LC_array_key + 1; $i <= $LC_count; $i++) {
+                $values[$LC_DOMAIN[$count]] = $lines[$i];
+                $count++;
+            }
+
+
+        }
+        else{
+            foreach($LC_DOMAIN as $val)
+            {
+                $values[$val]='--';
+            }
+        }
         $count=0;
         if($RC_array_key!=NULL) {
             for ($i = $RC_array_key + 1; $i <= $RC_count; $i++) {
@@ -379,7 +419,7 @@ class NDB_BVL_Instrument_WIAT_III_SA extends NDB_BVL_Instrument
             {
                 $values[$val]='--';
             }
-        }
+        }*/
 
 
         $test_date_key = array_search('Date of Report:', $lines);
