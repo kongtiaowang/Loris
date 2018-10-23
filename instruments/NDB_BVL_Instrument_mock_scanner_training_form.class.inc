@@ -27,7 +27,27 @@ class NDB_BVL_Instrument_mock_scanner_training_form extends NDB_BVL_Instrument
 {
     var $ValidityEnabled = false;
     var $ValidityRequired = false;
-
+    var $TrainingOptions= array(
+        'social_story'      => '(1) Social Story?',
+        'mri_video'         => '(2) MRI Video?',
+        'vsb'               => '(3) Visual Story Board?',
+        'vt'                => '(4) Visual Timer?',
+        'vc'                => '(5) Verbal Countdown?',
+        'sb'                => '(6) Sensory Bin?',
+        'spin_office_chair' => '(7) Spin in Office Chair?',
+        'fsv'               => '(8) First/Then Statements Or Visual?',
+        'wb'                => '(9) Weighted Blanket?',
+        'mod_sibling'       => '(10) Model on Sibling, Parent,Stuffed Animal?',
+        'motion_sensor'     => '(11) Motion Sensor/Video Pause?',
+        'pref_video'        => '(12) Preferred Video/Movie?',
+        'increase_sound'    => '(13) Increase Scanner Sound Slowly?',
+        'verb_reminders'    => '(14) Verbal Reminders?',
+        'verbal_praise'     => '(15) Verbal Praise?',
+        'edibale_treats'    => '(16) Edible Treats?',
+        'space_facade'      => '(17) Space Facade?',
+        'other_facade'      => '(18) Other Facade?'
+    );
+ 
     /**
      * sets up basic data, such as the LorisForm object, and so on.
      *
@@ -36,7 +56,7 @@ class NDB_BVL_Instrument_mock_scanner_training_form extends NDB_BVL_Instrument
      * @return void
      * @access public
      */
-    function setup($commentID, $page){
+    function setup($commentID = NULL, $page= NULL){
 
         $this->formType="XIN";
         $this->form = new LorisForm('test_form');
@@ -55,11 +75,6 @@ class NDB_BVL_Instrument_mock_scanner_training_form extends NDB_BVL_Instrument
             "session_date_7","session_date_8","total_session_duration_1","total_session_duration_2","total_session_duration_3","total_session_duration_4",
             "total_session_duration_5","total_session_duration_6","total_session_duration_7","total_session_duration_8","mock_time",
             );
-
-
-        $this->_selectMultipleElements = array("bx_strategies_1","bx_strategies_2","bx_strategies_3","bx_strategies_4","bx_strategies_5","bx_strategies_6",
-            "bx_strategies_7","bx_strategies_8");
-
 
         // setup the form
         $this->_setupForm();
@@ -89,7 +104,6 @@ class NDB_BVL_Instrument_mock_scanner_training_form extends NDB_BVL_Instrument
 
     function _main()
     {
-
         // automatically adds examiner & date of administration
         $this->_addMetadataFields();
 
@@ -112,12 +126,22 @@ class NDB_BVL_Instrument_mock_scanner_training_form extends NDB_BVL_Instrument
             $this->addTextAreaElement('training_home_yes_' . $i, 'If Yes, specify:');
             $this->form->addElement('select', 'medication_' . $i, "*Did the subject take any medications today?", array("" => NULL, "Yes" => "Yes", "No" => "No", 'not_answered' => 'Not Answered'));
             $this->addTextAreaElement('medication_yes_' . $i, 'If Yes, specify:');
-            $training_options= array(""=>null,"social_story"=>"(1) Social Story","mri_video"=>"(2) MRI Video","vsb"=>"(3) Visual
-Story Board","vt"=>"(4) Visual Timer","vc"=>"(5) Verbal Countdown","sb"=>"(6) Sensory Bin","spin_office_chair"=>"(7) Spin in Office Chair",
-                "fsv"=>"(8) First/Then Statements Or Visual","wb"=>"(9) Weighted Blanket","mod_sibling"=>"(10) Model on Sibling, Parent,Stuffed Animal",
-                "motion_sensor"=>"(11) Motion Sensor/Video Pause","pref_video"=>"(12) Preferred Video/Movie","increase_sound"=>"(13) Increase Scanner Sound Slowly",
-                "verb_reminders"=>"(14) Verbal Reminders","verbal_praise"=>"(15) Verbal Praise","edibale_treats"=>"(16) Edible Treats");
-            $this->addSelect('bx_strategies_'.$i,"*Select Bx Training Strategies Used?<BR>Cmd+Click or Ctrl+Click to select multiple options", $training_options, array("multiple"));
+            $this->form->addElement('static', null, 'Did you use:');    
+            $this->form->addElement('static', null, '<br>');    
+            foreach($this->TrainingOptions as $key => $text) {
+                  $group[] = $this->form->createElement(
+                    'radio', "bx_strategies_{$i}_{$key}", 'Yes&emsp;', array('value'=>'Yes'), null
+                  );
+                  $group[] = $this->form->createElement(
+                    'radio', "bx_strategies_{$i}_{$key}", 'No&emsp;',  array('value'=>'No'), null
+                  );
+                  $group[] = $this->form->createElement(
+                    'radio', "bx_strategies_{$i}_{$key}", 'Do not know&emsp;',  array('value'=>'dont_know'), null
+                  );
+                  $this->form->addGroup($group, "bx_strategies_{$i}_{$key}_radios", $text, null, false);
+                  unset($group);
+			}
+            $this->form->addElement('static', null, '<br>');    
             $this->addTextAreaElement('session_comments_' . $i, 'Comments:');
 
         }
@@ -161,10 +185,6 @@ Story Board","vt"=>"(4) Visual Timer","vc"=>"(5) Verbal Countdown","sb"=>"(6) Se
                {
                    $errors['medication_'.$i] = "Required";
                }
-               if(empty($values['bx_strategies_'.$i]))
-               {
-                   $errors['bx_strategies_'.$i] = "Required";
-               }
 
                if($values['training_home_'.$i]=="Yes" && empty($values['training_home_yes_'.$i]) && empty($values['training_home_yes_'.$i.'_status']))
                {
@@ -174,8 +194,20 @@ Story Board","vt"=>"(4) Visual Timer","vc"=>"(5) Verbal Countdown","sb"=>"(6) Se
                {
                    $errors['medication_yes_'.$i.'_group'] = "Required";
                }
+               
+               foreach($this->TrainingOptions as $key => $val) {
+				   if(empty($values["bx_strategies_{$i}_{$key}"])) {
+					   $errors["bx_strategies_{$i}_{$key}_radios"] = "Required";
+				   }
+			   }
+			   
+			   if(empty($values["session_comments_$i"]) && empty($values["session_comments_{$i}_status"])) {
+				   $errors["session_comments_{$i}_group"] = "Required";
+			   }
+			   
            }
        }
+        
         return $errors;
     }
 

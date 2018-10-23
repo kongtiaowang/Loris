@@ -1666,7 +1666,7 @@ class NDB_BVL_Instrument extends NDB_Page
                 . "if you want to leave this time blank.";
         }
 
-        $group[] =& $this->form->createElement(
+        $group[] = $this->form->createElement(
             "time",
             $field,
             null,
@@ -1674,7 +1674,7 @@ class NDB_BVL_Instrument extends NDB_Page
             null
         );
 
-        $group[] =& $this->createSelect(
+        $group[] = $this->createSelect(
             $field . "_status",
             "",
             array(
