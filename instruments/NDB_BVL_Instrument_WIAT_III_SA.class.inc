@@ -107,7 +107,7 @@ class NDB_BVL_Instrument_WIAT_III_SA extends NDB_BVL_Instrument
         //score fields
         $domains = array("LC" => "Listening Comprehension","ERS" => "Early Reading Skills","RC" => "Reading Comprehension",
             "MPS" => "Math Problem Solving", "AWF" => "Alphabetic Writing Fluency", "SC" => "Sentence Composition",
-            "WR" => "Word Reading","ES" => "Essay Composition", "PD" => "Pseudoword Decoding","OR" => "Oral Expression",
+            "WR" => "Word Reading","EC" => "Essay Composition", "PD" => "Pseudoword Decoding","OE" => "Oral Expression",
             "NO" => "Numerical Operations","ORF" => "Oral Reading Fluency","SP" => "Spelling","MFA" => "Math Fluency-Addition",
             "MFS" => "Math Fluency-Subtraction","MFM" => "Math Fluency-Multiplication"
 
@@ -132,6 +132,10 @@ class NDB_BVL_Instrument_WIAT_III_SA extends NDB_BVL_Instrument
 
 
         }
+
+
+
+
         if($this->getFieldValue("File_name")===false){
             $this->form->addRule("wiatIII_file", "WIAT III file is required.", 'required', null, 'server');
         } else {
@@ -220,13 +224,7 @@ class NDB_BVL_Instrument_WIAT_III_SA extends NDB_BVL_Instrument
         fclose($fp);
 
         $lines =preg_split("/\\r\\n|\\r|\\n/", $contents);
-       /* if(count($lines<=2))
-        {
-            $errors[]= "Unable to Parse your file contents.
-            Please try duplicating your txt file by copying the txt contents manually and try uploading again with the new copy of file.
-            If error still persists; contact DCC.";
-            return $errors;
-        }*/
+
 
         $visit = $args['visitLabel'];
 
@@ -297,7 +295,7 @@ class NDB_BVL_Instrument_WIAT_III_SA extends NDB_BVL_Instrument
         $group[] = $this->form->createElement('static', "AGE_EQUIV", null, null);
         $domains = array("LC" => "Listening Comprehension","ERS" => "Early Reading Skills","RC" => "Reading Comprehension",
             "MPS" => "Math Problem Solving", "AWF" => "Alphabetic Writing Fluency", "SC" => "Sentence Composition",
-            "WR" => "Word Reading","ES" => "Essay Composition", "PD" => "Pseudoword Decoding","OR" => "Oral Expression",
+            "WR" => "Word Reading","EC" => "Essay Composition", "PD" => "Pseudoword Decoding","OE" => "Oral Expression",
             "NO" => "Numerical Operations","ORF" => "Oral Reading Fluency","SP" => "Spelling","MFA" => "Math Fluency-Addition",
             "MFS" => "Math Fluency-Subtraction","MFM" => "Math Fluency-Multiplication"
 
@@ -310,7 +308,6 @@ class NDB_BVL_Instrument_WIAT_III_SA extends NDB_BVL_Instrument
             if($array_key!=NULL) {
                 for ($i = $array_key + 1; $i <= $val_count; $i++) {
                     $values[${$key.'_DOMAIN'}[$count]] = $lines[$i];
-                    echo $values[${$key.'_DOMAIN'}[$count]];
                     $count++;
                 }
 
@@ -324,102 +321,6 @@ class NDB_BVL_Instrument_WIAT_III_SA extends NDB_BVL_Instrument
             }
         }
 
-      /*  $LC_array_key = array_search('Listening Comprehension', $lines);
-        $RC_array_key = array_search('Reading Comprehension', $lines);
-        $MPS_array_key = array_search('Math Problem Solving', $lines);
-        $WR_array_key = array_search('Word Reading', $lines);
-        $PD_array_key = array_search('Pseudoword Decoding', $lines);
-        $NO_array_key = array_search('Numerical Operations', $lines);
-        $RC_count=$RC_array_key+8;
-        $MPS_count=$MPS_array_key+8;
-        $WR_count=$WR_array_key+8;
-        $PD_count=$PD_array_key+8;
-        $NO_count=$NO_array_key+8;
-        $LC_count=$LC_array_key+8;
-        $count=0;
-        if($LC_array_key!=NULL) {
-            for ($i = $LC_array_key + 1; $i <= $LC_count; $i++) {
-                $values[$LC_DOMAIN[$count]] = $lines[$i];
-                $count++;
-            }
-
-
-        }
-        else{
-            foreach($LC_DOMAIN as $val)
-            {
-                $values[$val]='--';
-            }
-        }
-        $count=0;
-        if($RC_array_key!=NULL) {
-            for ($i = $RC_array_key + 1; $i <= $RC_count; $i++) {
-                $values[$RC_DOMAIN[$count]] = $lines[$i];
-                $count++;
-            }
-
-
-        }
-        else{
-            foreach($RC_DOMAIN as $val)
-            {
-                $values[$val]='--';
-            }
-        }
-        $count=0;
-        if($MPS_array_key!=NULL) {
-            for ($i = $MPS_array_key + 1; $i <= $MPS_count; $i++) {
-
-                $values[$MPS_DOMAIN[$count]] = $lines[$i];
-                $count++;
-            }
-        }
-        else{
-            foreach($MPS_DOMAIN as $val)
-            {
-                $values[$val]='--';
-            }
-        }
-
-        $count=0;
-        if($WR_array_key!=NULL) {
-            for ($i = $WR_array_key + 1; $i <= $WR_count; $i++) {
-                $values[$WR_DOMAIN[$count]] = $lines[$i];
-                $count++;
-            }
-        }
-        else{
-            foreach($WR_DOMAIN as $val)
-            {
-                $values[$val]='--';
-            }
-        }
-        $count=0;
-        if($PD_array_key!=NULL) {
-            for ($i = $PD_array_key + 1; $i <= $PD_count; $i++) {
-                $values[$PD_DOMAIN[$count]] = $lines[$i];
-                $count++;
-            }
-        }
-        else{
-            foreach($PD_DOMAIN as $val)
-            {
-                $values[$val]='--';
-            }
-        }
-        $count=0;
-        if($NO_array_key!=NULL) {
-            for ($i = $NO_array_key + 1; $i <= $NO_count; $i++) {
-                $values[$NO_DOMAIN[$count]] = $lines[$i];
-                $count++;
-            }
-        }
-        else{
-            foreach($NO_DOMAIN as $val)
-            {
-                $values[$val]='--';
-            }
-        }*/
 
 
         $test_date_key = array_search('Date of Report:', $lines);
