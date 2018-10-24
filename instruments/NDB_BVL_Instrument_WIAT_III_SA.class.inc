@@ -144,15 +144,18 @@ class NDB_BVL_Instrument_WIAT_III_SA extends NDB_BVL_Instrument
 
 
         //score fields
-        $domains1 = array("LC_RC" => "Receptive Vocabulary","LC_ODC" => "Oral Discourse Comprehension","SC_SC" => "Sentence Combining",
-            "SC_SB" => "Sentence Building", "EC_WC" => "Word Count", "EC_TDO" => "Theme Development and Text Organization",
-            "EC_GM" => "Grammer and Mechanics","ORF_ORA" => "Oral Reading Accuracy", "ORF_ORR" => "Oral Reading Rate","OE_EV" => "Expressive Vocabulary",
-            "OE_OWF" => "Oral Word Fluency","OE_SR" => "Sentence Repetition"
+        $domains1 = array(1 => "Listening Comprehension (LC)","LC_RC" => "Receptive Vocabulary",
+            "LC_ODC" => "Oral Discourse Comprehension",2 => "Sentence Composition (SC)","SC_SC" => "Sentence Combining",
+            "SC_SB" => "Sentence Building", 3 => "Essay Composition (EC)","EC_WC" => "Word Count",
+            "EC_TDO" => "Theme Development and Text Organization",
+            "EC_GM" => "Grammer and Mechanics",  4 => "Oral Expression (OE)","OE_EV" => "Expressive Vocabulary","OE_OWF" => "Oral Word Fluency",
+            "OE_SR" => "Sentence Repetition",5 => "Oral Reading Fluency (ORF)","ORF_ORA" => "Oral Reading Accuracy",
+            "ORF_ORR" => "Oral Reading Rate"
 
         );
         $columnHeaders1 = array("RAW" => "Raw Score", "STD_SCORE" => "Standard Score",
            "PER_RANK" => "Percentile Rank",
-            "NCE" => "Normal Curve Equiv", "STANINE" => "Stanine", "QD" => "Qualitative Descriprion"
+            "NCE" => "Normal Curve Equiv", "STANINE" => "Stanine", "QD" => "Qualitative Description"
         );
 
         foreach ($columnHeaders1 as $field => $label) {
@@ -162,10 +165,20 @@ class NDB_BVL_Instrument_WIAT_III_SA extends NDB_BVL_Instrument
 
         foreach ($domains1 as $field => $label) {
             foreach ($columnHeaders1 as $scoreField => $scoreLabel) {
+                if (is_int($field)) {
+                    $group[] = $this->form->createElement('static', null, null, null);
+                }
+                else {
 
-                $group[] = $this->form->createElement('static', "{$field}_{$scoreField}", null, null);
+                    $group[] = $this->form->createElement('static', "{$field}_{$scoreField}", null, null);
+                }
             }
-            $this->form->addGroup($group, "{$label}_group", $label, $this->_GUIDelimiter, FALSE);
+            if (is_int($field)) {
+                $this->form->addGroup($group, "{$label}_group", "<strong>$label</strong>", $this->_GUIDelimiter, FALSE);
+            }
+            else {
+                $this->form->addGroup($group, "{$label}_group", $label, $this->_GUIDelimiter, FALSE);
+            }
             unset($group);
 
 
@@ -343,6 +356,32 @@ class NDB_BVL_Instrument_WIAT_III_SA extends NDB_BVL_Instrument
             $val_count=$array_key+8;
             $count=0;
             ${$key."_DOMAIN"}= array("{$key}_RAW","{$key}_STD_SCORE","{$key}_CI","{$key}_PER_RANK","{$key}_NCE","{$key}_STANINE","{$key}_GRADE_EQUIV","{$key}_AGE_EQUIV");
+            if($array_key!=NULL) {
+                for ($i = $array_key + 1; $i <= $val_count; $i++) {
+                    $values[${$key.'_DOMAIN'}[$count]] = $lines[$i];
+                    $count++;
+                }
+
+
+            }
+            else{
+                foreach(${$key.'_DOMAIN'} as $val)
+                {
+                    $values[$val]='--';
+                }
+            }
+        }
+        $domains1 = array("LC_RC" => "Receptive Vocabulary","LC_ODC" => "Oral Discourse Comprehension","SC_SC" => "Sentence Combining",
+            "SC_SB" => "Sentence Building", "EC_WC" => "Word Count", "EC_TDO" => "Theme Development and Text Organization",
+            "EC_GM" => "Grammer and Mechanics","ORF_ORA" => "Oral Reading Accuracy", "ORF_ORR" => "Oral Reading Rate","OE_EV" => "Expressive Vocabulary",
+            "OE_OWF" => "Oral Word Fluency","OE_SR" => "Sentence Repetition"
+
+        );
+        foreach ($domains1 as $key => $val) {
+            $array_key=array_search($val,$lines);
+            $val_count=$array_key+6;
+            $count=0;
+            ${$key."_DOMAIN"}= array("{$key}_RAW","{$key}_STD_SCORE","{$key}_PER_RANK","{$key}_NCE","{$key}_STANINE","{$key}_QD");
             if($array_key!=NULL) {
                 for ($i = $array_key + 1; $i <= $val_count; $i++) {
                     $values[${$key.'_DOMAIN'}[$count]] = $lines[$i];
