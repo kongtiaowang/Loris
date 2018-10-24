@@ -242,7 +242,7 @@ class NDB_BVL_Instrument_WIAT_III_SA extends NDB_BVL_Instrument
         $actual_pscid=$args['PSCID'];
         if($actual_pscid!=$pscid)
         {
-            $errors['']="PSCID in the file given (".$pscid.") doesn't match with the actual PSCID (".$actual_pscid.")";
+            $errors[]="PSCID in the file given (".$pscid.") doesn't match with the actual PSCID (".$actual_pscid.")";
             return $errors;
         }
 
