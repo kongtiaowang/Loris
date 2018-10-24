@@ -88,7 +88,7 @@ class NDB_BVL_Instrument_WIAT_III_SA extends NDB_BVL_Instrument
         $this->form->addElement('static', "File_name", "Uploaded File");
 
 
-        $this->form->addElement('header', null, "Subtest Score Summary");
+        $this->form->addElement('header', null, "Composite Score Summary");
 
 
         //scoring column headers
@@ -100,7 +100,7 @@ class NDB_BVL_Instrument_WIAT_III_SA extends NDB_BVL_Instrument
         $group[] = $this->form->createElement('static', "STANINE", null, null);
         $group[] = $this->form->createElement('static', "GRADE_EQUIV", null, null);
         $group[] = $this->form->createElement('static', "AGE_EQUIV", null, null);
-        $this->form->addGroup($group, 'score_header_group', "<strong>Domain/Subdomain</strong>", $this->_GUIDelimiter, FALSE);
+        $this->form->addGroup($group, 'score_header_group', "<strong>Domain</strong>", $this->_GUIDelimiter, FALSE);
         unset($group);
 
 
@@ -124,6 +124,44 @@ class NDB_BVL_Instrument_WIAT_III_SA extends NDB_BVL_Instrument
 
         foreach ($domains as $field => $label) {
             foreach ($columnHeaders as $scoreField => $scoreLabel) {
+
+                $group[] = $this->form->createElement('static', "{$field}_{$scoreField}", null, null);
+            }
+            $this->form->addGroup($group, "{$label}_group", $label, $this->_GUIDelimiter, FALSE);
+            unset($group);
+
+
+        }
+        $this->form->addElement('header', null, "Subtest Score Summary");
+        $group[] = $this->form->createElement('static', "RAW", null, null);
+        $group[] = $this->form->createElement('static', "STD_SCORE", null, null);
+        $group[] = $this->form->createElement('static', "PER_RANK", null, null);
+        $group[] = $this->form->createElement('static', "NCE", null, null);
+        $group[] = $this->form->createElement('static', "STANINE", null, null);
+        $group[] = $this->form->createElement('static', "QD", null, null);
+        $this->form->addGroup($group, 'score_header_group1', "<strong>Subdomain</strong>", $this->_GUIDelimiter, FALSE);
+        unset($group);
+
+
+        //score fields
+        $domains1 = array("LC_RC" => "Receptive Vocabulary","LC_ODC" => "Oral Discourse Comprehension","SC_SC" => "Sentence Combining",
+            "SC_SB" => "Sentence Building", "EC_WC" => "Word Count", "EC_TDO" => "Theme Development and Text Organization",
+            "EC_GM" => "Grammer and Mechanics","ORF_ORA" => "Oral Reading Accuracy", "ORF_ORR" => "Oral Reading Rate","OE_EV" => "Expressive Vocabulary",
+            "OE_OWF" => "Oral Word Fluency","OE_SR" => "Sentence Repetition"
+
+        );
+        $columnHeaders1 = array("RAW" => "Raw Score", "STD_SCORE" => "Standard Score",
+           "PER_RANK" => "Percentile Rank",
+            "NCE" => "Normal Curve Equiv", "STANINE" => "Stanine", "QD" => "Qualitative Descriprion"
+        );
+
+        foreach ($columnHeaders1 as $field => $label) {
+            $columnHeaders1[$field] .= "     ";
+        }
+        $this->localDefaults = array_merge($this->localDefaults, $columnHeaders1);
+
+        foreach ($domains1 as $field => $label) {
+            foreach ($columnHeaders1 as $scoreField => $scoreLabel) {
 
                 $group[] = $this->form->createElement('static', "{$field}_{$scoreField}", null, null);
             }
