@@ -28,6 +28,7 @@ class NDB_BVL_Instrument_mock_scanner_training_form extends NDB_BVL_Instrument
     var $ValidityEnabled = false;
     var $ValidityRequired = false;
     var $TrainingOptions= array(
+         1      => 'Did you use',
         'social_story'      => '(1) Social Story?',
         'mri_video'         => '(2) MRI Video?',
         'vsb'               => '(3) Visual Story Board?',
@@ -59,7 +60,7 @@ class NDB_BVL_Instrument_mock_scanner_training_form extends NDB_BVL_Instrument
     function setup($commentID = NULL, $page= NULL){
 
         $this->formType="XIN";
-        $this->form = new LorisFormIBIS('test_form');
+        $this->form = new LorisForm('test_form');
         $this->page = $page;
 
         // set the object properties
@@ -126,19 +127,30 @@ class NDB_BVL_Instrument_mock_scanner_training_form extends NDB_BVL_Instrument
             $this->addTextAreaElement('training_home_yes_' . $i, 'If Yes, specify:');
             $this->form->addElement('select', 'medication_' . $i, "*Did the subject take any medications today?", array("" => NULL, "Yes" => "Yes", "No" => "No", 'not_answered' => 'Not Answered'));
             $this->addTextAreaElement('medication_yes_' . $i, 'If Yes, specify:');
-            $this->form->addElement('static', null, 'Did you use:');    
-            $this->form->addElement('static', null, '<br>');    
+            $this->form->addElement('static', null, 'Did you use:');
+            $this->form->addElement('static', null, '<br>');
             foreach($this->TrainingOptions as $key => $text) {
-                  $group[] = $this->form->createElement(
-                    'radio', "bx_strategies_{$i}_{$key}", 'Yes&emsp;', array('value'=>'Yes'), null
-                  );
-                  $group[] = $this->form->createElement(
-                    'radio', "bx_strategies_{$i}_{$key}", 'No&emsp;',  array('value'=>'No'), null
-                  );
-                  $group[] = $this->form->createElement(
-                    'radio', "bx_strategies_{$i}_{$key}", 'Do not know&emsp;',  array('value'=>'dont_know'), null
-                  );
-                  $this->form->addGroup($group, "bx_strategies_{$i}_{$key}_radios", $text, null, false);
+                if (is_int($key)) {
+                    $group[] = $this->form->createElement('static', null, null, null);
+                }
+                else {
+                    $group[] = $this->form->createElement(
+                        'radio', "bx_strategies_{$i}_{$key}", 'Yes&emsp;', array('value' => 'Yes' ), null
+                    );
+
+                    $group[] = $this->form->createElement(
+                        'radio', "bx_strategies_{$i}_{$key}", 'No&emsp;', array('value' => 'No'), null
+                    );
+                    $group[] = $this->form->createElement(
+                        'radio', "bx_strategies_{$i}_{$key}", 'Do not know&emsp;', array('value' => 'dont_know'), null
+                    );
+                }
+                if (is_int($key)) {
+                    $this->form->addGroup($group, "bx_strategies_{$i}_{$key}_radios", "<strong>$text</strong>", null, FALSE);
+                }
+                else {
+                    $this->form->addGroup($group, "bx_strategies_{$i}_{$key}_radios", $text, null, false);
+                }
                   unset($group);
 			}
             $this->form->addElement('static', null, '<br>');    
@@ -196,9 +208,11 @@ class NDB_BVL_Instrument_mock_scanner_training_form extends NDB_BVL_Instrument
                }
                
                foreach($this->TrainingOptions as $key => $val) {
-				   if(empty($values["bx_strategies_{$i}_{$key}"])) {
-					   $errors["bx_strategies_{$i}_{$key}_radios"] = "Required";
-				   }
+                   if (!is_int($key)) {
+                       if (empty($values["bx_strategies_{$i}_{$key}"])) {
+                           $errors["bx_strategies_{$i}_{$key}_radios"] = "Required";
+                       }
+                   }
 			   }
 			   
 			   if(empty($values["session_comments_$i"]) && empty($values["session_comments_{$i}_status"])) {
