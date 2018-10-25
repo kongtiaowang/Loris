@@ -28,11 +28,6 @@ $db     = Database::singleton();
 
 echo "Warning: All conflicts from the given instrument will be removed.\n";
 
-$conflict_instruments = $db->pselect(
-    "SELECT DISTINCT cu.TableName tb FROM conflicts_unresolved cu WHERE ((cu.Value1 IS NULL and cu.Value2='not_answered') 
-     OR (cu.Value1='not_answered' and cu.Value2 IS NULL))",
-    array()
-);
 if ($confirm === false) {
 
     $conflict_instruments_count = $db->pselectOne(
