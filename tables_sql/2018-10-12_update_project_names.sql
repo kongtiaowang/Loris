@@ -1,4 +1,4 @@
----Add subproject to project IBIS EP
+-- Add subproject to project IBIS EP
 
 INSERT INTO subproject (title) VALUES ("IBIS EP High Risk");
 INSERT INTO subproject (title) VALUES ("IBIS EP Low Risk");
