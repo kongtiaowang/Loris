@@ -355,9 +355,9 @@ class NDB_BVL_Instrument_seq extends NDB_BVL_Instrument
 			// Visual - sum the raw scores for items # 8, 9, 10, 11, 12, 36b (6 items total)
 			$alg['total_visual'] = array(8, 9, 10, 11, 12, '36b');
 			// Gustatory/Olfactory - sum the raw scores for items # 22, 23, 25, 36c, 36d, 38 (7 items total)
-			$alg['total_gustatory_olfactory'] = array(22, 23, 25, '36c', '36d', 38);
-			// Vestibular/Proprioceptive - sum the raw scores for items # 14, 15, 16, 17, 18, 19, 20, 21, 36e, 36f (10 items total)
-			$alg['total_vestibular_proprioceptive'] = array(14, 15, 16, 17, 18, 19, 20, 21, '36e', '36f');
+			$alg['total_gustatory_olfactory'] = array(22, 23, 24, 25, '36c', '36d', 38);
+			// Vestibular/Proprioceptive - sum the raw scores for items # 27,28,29,30
+			$alg['total_vestibular_proprioceptive'] = array('27','28','29','30');
 
 			// Build query
 			$fields = "";
@@ -402,7 +402,6 @@ class NDB_BVL_Instrument_seq extends NDB_BVL_Instrument
 				}
 			}
 		}
-
 		// save the resultant total
 		$db->update(
 			$this->table,
