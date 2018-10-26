@@ -88,7 +88,7 @@ class NDB_BVL_Instrument_WIAT_III_SA extends NDB_BVL_Instrument
         $this->form->addElement('static', "File_name", "Uploaded File");
 
 
-        $this->form->addElement('header', null, "Subtest Score Summary");
+        $this->form->addElement('header', null, "Composite Score Summary");
 
 
         //scoring column headers
@@ -100,13 +100,18 @@ class NDB_BVL_Instrument_WIAT_III_SA extends NDB_BVL_Instrument
         $group[] = $this->form->createElement('static', "STANINE", null, null);
         $group[] = $this->form->createElement('static', "GRADE_EQUIV", null, null);
         $group[] = $this->form->createElement('static', "AGE_EQUIV", null, null);
-        $this->form->addGroup($group, 'score_header_group', "<strong>Domain/Subdomain</strong>", $this->_GUIDelimiter, FALSE);
+        $this->form->addGroup($group, 'score_header_group', "<strong>Domain</strong>", $this->_GUIDelimiter, FALSE);
         unset($group);
 
 
         //score fields
-        $domains = array("RC" => "Reading Comprehension", "MPS" => "Math Problem Solving", "WR" => "Word Reading", "PD" => "Pseudoword Decoding",
-            "NO" => "Numerical Operations");
+        $domains = array("LC" => "Listening Comprehension","ERS" => "Early Reading Skills","RC" => "Reading Comprehension",
+            "MPS" => "Math Problem Solving", "AWF" => "Alphabetic Writing Fluency", "SC" => "Sentence Composition",
+            "WR" => "Word Reading","EC" => "Essay Composition", "PD" => "Pseudoword Decoding","OE" => "Oral Expression",
+            "NO" => "Numerical Operations","ORF" => "Oral Reading Fluency","SP" => "Spelling","MFA" => "Math Fluency-Addition",
+            "MFS" => "Math Fluency-Subtraction","MFM" => "Math Fluency-Multiplication"
+
+        );
         $columnHeaders = array("RAW" => "Raw Score", "STD_SCORE" => "Standard Score",
             "CI" => "95% Confidence Interval", "PER_RANK" => "Percentile Rank",
             "NCE" => "Normal Curve Equiv", "STANINE" => "Stanine", "GRADE_EQUIV" => "Grade Equivalent", "AGE_EQUIV" => "Age Equivalent"
@@ -127,6 +132,61 @@ class NDB_BVL_Instrument_WIAT_III_SA extends NDB_BVL_Instrument
 
 
         }
+        $this->form->addElement('header', null, "Subtest Score Summary");
+        $group[] = $this->form->createElement('static', "RAW", null, null);
+        $group[] = $this->form->createElement('static', "STD_SCORE", null, null);
+        $group[] = $this->form->createElement('static', "PER_RANK", null, null);
+        $group[] = $this->form->createElement('static', "NCE", null, null);
+        $group[] = $this->form->createElement('static', "STANINE", null, null);
+        $group[] = $this->form->createElement('static', "QD", null, null);
+        $this->form->addGroup($group, 'score_header_group1', "<strong>Subdomain</strong>", $this->_GUIDelimiter, FALSE);
+        unset($group);
+
+
+        //score fields
+        $domains1 = array(1 => "Listening Comprehension (LC)","LC_RC" => "Receptive Vocabulary",
+            "LC_ODC" => "Oral Discourse Comprehension",2 => "Sentence Composition (SC)","SC_SC" => "Sentence Combining",
+            "SC_SB" => "Sentence Building", 3 => "Essay Composition (EC)","EC_WC" => "Word Count",
+            "EC_TDO" => "Theme Development and Text Organization",
+            "EC_GM" => "Grammer and Mechanics",  4 => "Oral Expression (OE)","OE_EV" => "Expressive Vocabulary","OE_OWF" => "Oral Word Fluency",
+            "OE_SR" => "Sentence Repetition",5 => "Oral Reading Fluency (ORF)","ORF_ORA" => "Oral Reading Accuracy",
+            "ORF_ORR" => "Oral Reading Rate"
+
+        );
+        $columnHeaders1 = array("RAW" => "Raw Score", "STD_SCORE" => "Standard Score",
+           "PER_RANK" => "Percentile Rank",
+            "NCE" => "Normal Curve Equiv", "STANINE" => "Stanine", "QD" => "Qualitative Description"
+        );
+
+        foreach ($columnHeaders1 as $field => $label) {
+            $columnHeaders1[$field] .= "     ";
+        }
+        $this->localDefaults = array_merge($this->localDefaults, $columnHeaders1);
+
+        foreach ($domains1 as $field => $label) {
+            foreach ($columnHeaders1 as $scoreField => $scoreLabel) {
+                if (is_int($field)) {
+                    $group[] = $this->form->createElement('static', null, null, null);
+                }
+                else {
+
+                    $group[] = $this->form->createElement('static', "{$field}_{$scoreField}", null, null);
+                }
+            }
+            if (is_int($field)) {
+                $this->form->addGroup($group, "{$label}_group", "<strong>$label</strong>", $this->_GUIDelimiter, FALSE);
+            }
+            else {
+                $this->form->addGroup($group, "{$label}_group", $label, $this->_GUIDelimiter, FALSE);
+            }
+            unset($group);
+
+
+        }
+
+
+
+
         if($this->getFieldValue("File_name")===false){
             $this->form->addRule("wiatIII_file", "WIAT III file is required.", 'required', null, 'server');
         } else {
@@ -214,34 +274,22 @@ class NDB_BVL_Instrument_WIAT_III_SA extends NDB_BVL_Instrument
         $contents=fread($fp,filesize($file->fileInfo['tmp_name']));
         fclose($fp);
 
-        $lines=explode("\n",$contents);
-
+        $lines =preg_split("/\\r\\n|\\r|\\n/", $contents);
 
 
         $visit = $args['visitLabel'];
 
 
-
-        $input = 'Student Name:IBIS-SA';
-        $result = array_filter($lines, function ($item) use ($input) {
-            if (stripos($item, $input) !== false) {
-                return true;
-            }
-            return false;
-        });
-
-        if(empty($result))
+        $examinee_key = array_search('Examinee Name', $lines);
+        if($examinee_key==NULL)
         {
-            $errors[]="Unable To Read the PSCID from the txt file. Please make sure you have a Student Name:IBIS-SA PSCID entry in your file" ;
+            $errors[]="Examinee Name doesn't exist in your txt file.Please check and try again.";
             return $errors;
         }
-        else{
-            foreach ($result as $key => $value) {
-                $student_string=$value;
-            }
-        }
-        $student_string_array=explode(" ", $student_string);
-        $pscid=$student_string_array[2];
+
+        $values['Examinee Name'] =$lines[$examinee_key+1];
+        $pscid_array=explode(" ", $values['Examinee Name']);
+        $pscid=$pscid_array[1];
         $actual_pscid=$args['PSCID'];
         if($actual_pscid!=$pscid)
         {
@@ -249,7 +297,7 @@ class NDB_BVL_Instrument_WIAT_III_SA extends NDB_BVL_Instrument
             return $errors;
         }
 
-        $test_date_key = array_search('Date of Report:', $lines);
+        $test_date_key = array_search('Date of Report', $lines);
         $values['Date of Report'] =$lines[$test_date_key+1];
 
         $values['Date of Report'] = $this->formatDate($values['Date of Report']);
@@ -288,12 +336,7 @@ class NDB_BVL_Instrument_WIAT_III_SA extends NDB_BVL_Instrument
 
 
         //Cycle through the lines and extract the data
-        $lines=explode("\n",$contents);
-        $RC_DOMAIN=array("RC_RAW","RC_STD_SCORE","RC_CI","RC_PER_RANK","RC_NCE","RC_STANINE","RC_GRADE_EQUIV","RC_AGE_EQUIV");
-        $MPS_DOMAIN=array("MPS_RAW","MPS_STD_SCORE","MPS_CI","MPS_PER_RANK","MPS_NCE","MPS_STANINE","MPS_GRADE_EQUIV","MPS_AGE_EQUIV");
-        $WR_DOMAIN=array("WR_RAW","WR_STD_SCORE","WR_CI","WR_PER_RANK","WR_NCE","WR_STANINE","WR_GRADE_EQUIV","WR_AGE_EQUIV");
-        $PD_DOMAIN=array("PD_RAW","PD_STD_SCORE","PD_CI","PD_PER_RANK","PD_NCE","PD_STANINE","PD_GRADE_EQUIV","PD_AGE_EQUIV");
-        $NO_DOMAIN=array("NO_RAW","NO_STD_SCORE","NO_CI","NO_PER_RANK","NO_NCE","NO_STANINE","NO_GRADE_EQUIV","NO_AGE_EQUIV");
+        $lines =preg_split("/\\r\\n|\\r|\\n/", $contents);
 
             $group[] = $this->form->createElement('static', "CI", null, null);
         $group[] = $this->form->createElement('static', "PER_RANK", null, null);
@@ -301,85 +344,60 @@ class NDB_BVL_Instrument_WIAT_III_SA extends NDB_BVL_Instrument
         $group[] = $this->form->createElement('static', "STANINE", null, null);
         $group[] = $this->form->createElement('static', "GRADE_EQUIV", null, null);
         $group[] = $this->form->createElement('static', "AGE_EQUIV", null, null);
-        $RC_array_key = array_search('Reading Comprehension', $lines);
-        $MPS_array_key = array_search('Math Problem Solving', $lines);
-        $WR_array_key = array_search('Word Reading', $lines);
-        $PD_array_key = array_search('Pseudoword Decoding', $lines);
-        $NO_array_key = array_search('Numerical Operations', $lines);
-        $RC_count=$RC_array_key+8;
-        $MPS_count=$MPS_array_key+8;
-        $WR_count=$WR_array_key+8;
-        $PD_count=$PD_array_key+8;
-        $NO_count=$NO_array_key+8;
-        $count=0;
-        if($RC_array_key!=NULL) {
-            for ($i = $RC_array_key + 1; $i <= $RC_count; $i++) {
-                $values[$RC_DOMAIN[$count]] = $lines[$i];
-                $count++;
-            }
+        $domains = array("LC" => "Listening Comprehension","ERS" => "Early Reading Skills","RC" => "Reading Comprehension",
+            "MPS" => "Math Problem Solving", "AWF" => "Alphabetic Writing Fluency", "SC" => "Sentence Composition",
+            "WR" => "Word Reading","EC" => "Essay Composition", "PD" => "Pseudoword Decoding","OE" => "Oral Expression",
+            "NO" => "Numerical Operations","ORF" => "Oral Reading Fluency","SP" => "Spelling","MFA" => "Math Fluency-Addition",
+            "MFS" => "Math Fluency-Subtraction","MFM" => "Math Fluency-Multiplication"
+
+        );
+        foreach ($domains as $key => $val) {
+            $array_key=array_search($val,$lines);
+            $val_count=$array_key+8;
+            $count=0;
+            ${$key."_DOMAIN"}= array("{$key}_RAW","{$key}_STD_SCORE","{$key}_CI","{$key}_PER_RANK","{$key}_NCE","{$key}_STANINE","{$key}_GRADE_EQUIV","{$key}_AGE_EQUIV");
+            if($array_key!=NULL) {
+                for ($i = $array_key + 1; $i <= $val_count; $i++) {
+                    $values[${$key.'_DOMAIN'}[$count]] = $lines[$i];
+                    $count++;
+                }
 
 
-        }
-        else{
-            foreach($RC_DOMAIN as $val)
-            {
-                $values[$val]='--';
+            }
+            else{
+                foreach(${$key.'_DOMAIN'} as $val)
+                {
+                    $values[$val]='--';
+                }
             }
         }
-        $count=0;
-        if($MPS_array_key!=NULL) {
-            for ($i = $MPS_array_key + 1; $i <= $MPS_count; $i++) {
+        $domains1 = array("LC_RC" => "Receptive Vocabulary","LC_ODC" => "Oral Discourse Comprehension","SC_SC" => "Sentence Combining",
+            "SC_SB" => "Sentence Building", "EC_WC" => "Word Count", "EC_TDO" => "Theme Development and Text Organization",
+            "EC_GM" => "Grammer and Mechanics","ORF_ORA" => "Oral Reading Accuracy", "ORF_ORR" => "Oral Reading Rate","OE_EV" => "Expressive Vocabulary",
+            "OE_OWF" => "Oral Word Fluency","OE_SR" => "Sentence Repetition"
 
-                $values[$MPS_DOMAIN[$count]] = $lines[$i];
-                $count++;
+        );
+        foreach ($domains1 as $key => $val) {
+            $array_key=array_search($val,$lines);
+            $val_count=$array_key+6;
+            $count=0;
+            ${$key."_DOMAIN"}= array("{$key}_RAW","{$key}_STD_SCORE","{$key}_PER_RANK","{$key}_NCE","{$key}_STANINE","{$key}_QD");
+            if($array_key!=NULL) {
+                for ($i = $array_key + 1; $i <= $val_count; $i++) {
+                    $values[${$key.'_DOMAIN'}[$count]] = $lines[$i];
+                    $count++;
+                }
+
+
             }
-        }
-        else{
-            foreach($MPS_DOMAIN as $val)
-            {
-                $values[$val]='--';
+            else{
+                foreach(${$key.'_DOMAIN'} as $val)
+                {
+                    $values[$val]='--';
+                }
             }
         }
 
-        $count=0;
-        if($WR_array_key!=NULL) {
-            for ($i = $WR_array_key + 1; $i <= $WR_count; $i++) {
-                $values[$WR_DOMAIN[$count]] = $lines[$i];
-                $count++;
-            }
-        }
-        else{
-            foreach($WR_DOMAIN as $val)
-            {
-                $values[$val]='--';
-            }
-        }
-        $count=0;
-        if($PD_array_key!=NULL) {
-            for ($i = $PD_array_key + 1; $i <= $PD_count; $i++) {
-                $values[$PD_DOMAIN[$count]] = $lines[$i];
-                $count++;
-            }
-        }
-        else{
-            foreach($PD_DOMAIN as $val)
-            {
-                $values[$val]='--';
-            }
-        }
-        $count=0;
-        if($NO_array_key!=NULL) {
-            for ($i = $NO_array_key + 1; $i <= $NO_count; $i++) {
-                $values[$NO_DOMAIN[$count]] = $lines[$i];
-                $count++;
-            }
-        }
-        else{
-            foreach($NO_DOMAIN as $val)
-            {
-                $values[$val]='--';
-            }
-        }
 
 
         $test_date_key = array_search('Date of Report:', $lines);
