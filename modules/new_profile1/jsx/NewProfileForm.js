@@ -11,28 +11,56 @@ class NewProfileForm extends React.Component {
   constructor(props) {
     super(props);
      this.state = {
-      Data: {
-          gender:{
-                 'male': "Male",
-                 'female': "Female"
-          }
+      data: {
       },
+      configData:{},
       formData: {},
       isLoaded: false,
      }
     this.handleSubmit = this.handleSubmit.bind(this);
     this.setFormData = this.setFormData.bind(this);
+    this.fetchData = this.fetchData.bind(this);
    }
 
+  /**
+   * Retrive data from the provided URL and save it in state
+   * Additionaly add hiddenHeaders to global loris vairable
+   * for easy access by columnFormatter.
+   */
+  fetchData() {
+    $.ajax(loris.BaseURL + '/new_profile/ajax/getConfig.php', {
+      method: "GET",
+      dataType: 'json',
+      success: data => {
+        // FIXME: Remove the following line of code as soon as hiddenHeaders is
+        // accepted as a prop by the StaticDataTable Component.
+        this.setState({
+          configData: data,
+          isLoaded: true
+        });
+      },
+      error: error => console.error(error)
+    });
+  }
 
+  componentWillMount() {
+    this.fetchData();
+  }
+ 
   validate() {
     const data = this.state.formData;
     let isError = false;
     if (data.dateTaken !== data.dateTakenConfirm)
     {
         isError = true;
-    } 
-      return isError; 
+    }
+    let decError = false;
+    if (this.state.configData['edc'] === 'true' && 
+        data.edcDateTaken !== data.edcDateTakenConfirm)
+    {
+       decError = true;
+    }     
+     return isError || decError; 
   }
 
 
@@ -45,6 +73,7 @@ class NewProfileForm extends React.Component {
     const err = this.validate();    
     if (!err){
     console.log(this.state.formData);
+    console.log("yeah!");
     }
   }
 
@@ -65,7 +94,34 @@ class NewProfileForm extends React.Component {
   }
 
      render(){
-
+     console.log(this.state);
+     var edc = null;
+     if (this.state.configData['edc'] === 'true')
+     {
+       edc =
+          <div>
+          <DateElement
+            name="edcDateTaken"
+            label="Expected Date of Confinement"
+            minYear="2000"
+            maxYear="2017"
+            onUserInput={this.setFormData}
+            ref="edcDateTaken1"
+            value={this.state.formData.edcDateTaken}
+            required={true}
+          /> 
+          <DateElement
+            name="edcDateTakenConfirm"
+            label="Confirm EDC"
+            minYear="2000"
+            maxYear="2017"
+            onUserInput={this.setFormData}
+            ref="edcDateTaken2"
+            value={this.state.formData.edcDateTakenConfirm}
+            required={true}
+          />
+          </div>;
+     }
        return (
         <FormElement
           name="newProfileForm"
@@ -80,6 +136,7 @@ class NewProfileForm extends React.Component {
             onUserInput={this.setFormData}
             ref="dateTaken1"
             value={this.state.formData.dateTaken}
+            required={true}
           />
           <DateElement
             name="dateTakenConfirm"
@@ -89,21 +146,35 @@ class NewProfileForm extends React.Component {
             onUserInput={this.setFormData}
             ref="dateTaken2"
             value={this.state.formData.dateTakenConfirm}
+            required={true}
           />
+          {edc}
           <SelectElement
             name="gender"
             label="Gender"
-            options={this.state.Data.gender}
+            options={this.state.configData.gender}
             onUserInput={this.setFormData}
             ref="gender"
             value={this.state.formData.gender}
+            required={true}
           />
-          <TextareaElement
-            name="pscid"
-            label="PSCID"
+          <SelectElement
+            name="site"
+            label="Site"
+            options={this.state.configData.gender}
             onUserInput={this.setFormData}
-            ref="pscid"
-            value={this.state.formData.pscid}
+            ref="site"
+            value={this.state.formData.site}
+            required={true}
+          />
+          <SelectElement
+            name="project"
+            label="Project"
+            options={this.state.configData.gender}
+            onUserInput={this.setFormData}
+            ref="project"
+            value={this.state.formData.project}
+            required={true}
           />
           <ButtonElement label="Create" />
         </FormElement>
