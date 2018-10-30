@@ -471,7 +471,9 @@ function notify($pubID, $type) : void
         Email::send(
             $sendTo,
             "notifier_publication_$type.tpl",
-            $emailData
+            $emailData,
+            "",
+            "IBIS Team <noreply@ibis.loris.ca>"
         );
     }
 }
@@ -845,7 +847,7 @@ function editUploads($id) : void
 {
     $db = \Database::singleton();
 
-    $pubUploads = $db->pselectWithIndexKey(
+    $pubUploads = pselectWithIndexKey(
         'SELECT * FROM publication_upload WHERE PublicationID=:pid',
         array('pid' => $id),
         'PublicationUploadID'
@@ -905,4 +907,49 @@ function showError($message, $code = 500) : void
     header("HTTP/1.1 $resp");
     header('Content-Type: application/json; charset=UTF-8');
     die(json_encode(['message' => $message]));
+}
+
+function pselectWithIndexKey($query, $params, $uniqueKey)
+{
+
+    $db = \Database::singleton();
+    if (is_null($uniqueKey) || empty($uniqueKey)) {
+        throw new LorisException(
+            "The pselectWithIndexKey() function expects the uniqueKey parameter 
+                to not be null or empty. If re-indexing on the primary key is 
+                not necessary please use the pselect() function instead."
+        );
+    }
+    $result = $db->pselect($query, $params);
+    if (empty($result)) {
+        return $result;
+    }
+    $filteredResult = array();
+    // re-order the return array
+    foreach ($result as $row) {
+        // Check first that the row contains the primary key supplied
+        if (!array_key_exists($uniqueKey, $row)) {
+            throw new DatabaseException(
+                "The query supplied to pselectWithIndexKey() does not contain 
+                    the unique key to re-index on. Make sure to supply the 
+                    appropriate key in the SELECT statement to match the supplied 
+                    parameter of this function",
+                $query
+            );
+        }
+        // Check that the primary key is indeed unique to avoid overriding data
+        // in the result array
+        if (isset($filteredResult[$row[$uniqueKey]])) {
+            throw new DatabaseException(
+                "The uniqueKey supplied to pselectWithIndexKey() does not appear
+                     to be unique or is nullable. This function expects the key to 
+                     be both UNIQUE and NOT NULL.",
+                $query
+            );
+        }
+        // If you get here, we just need to build the new array
+        $filteredResult[$row[$uniqueKey]] = $row;
+        unset($filteredResult[$row[$uniqueKey]][$uniqueKey]);
+    }
+    return $filteredResult;
 }
