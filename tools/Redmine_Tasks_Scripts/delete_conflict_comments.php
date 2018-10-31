@@ -1,7 +1,6 @@
 <?php
 /**
- * This script removes comment conflicts from conflict resolver. Redmine 15501)
- * Redmine 15516, 15500
+ * This script removes comment conflicts from conflict resolver. Redmine 15501
  *
  * PHP Version 5
  *
