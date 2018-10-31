@@ -16,6 +16,7 @@ class NewProfileForm extends React.Component {
       configData:{},
       formData: {},
       isLoaded: false,
+      isCreated: false,
      }
     this.handleSubmit = this.handleSubmit.bind(this);
     this.setFormData = this.setFormData.bind(this);
@@ -74,6 +75,9 @@ class NewProfileForm extends React.Component {
     if (!err){
     console.log(this.state.formData);
     console.log("yeah!");
+    this.setState({
+       isCreated:true
+    });
     }
   }
 
@@ -95,6 +99,7 @@ class NewProfileForm extends React.Component {
 
      render(){
      console.log(this.state);
+     var profile = null;
      var edc = null;
      if (this.state.configData['edc'] === 'true')
      {
@@ -122,7 +127,8 @@ class NewProfileForm extends React.Component {
           />
           </div>;
      }
-       return (
+     if (!this.state.isCreated) {
+        profile = 
         <FormElement
           name="newProfileForm"
           onSubmit={this.handleSubmit}
@@ -148,7 +154,7 @@ class NewProfileForm extends React.Component {
             value={this.state.formData.dateTakenConfirm}
             required={true}
           />
-          {edc}
+               {edc}
           <SelectElement
             name="gender"
             label="Gender"
@@ -161,7 +167,7 @@ class NewProfileForm extends React.Component {
           <SelectElement
             name="site"
             label="Site"
-            options={this.state.configData.gender}
+            options={this.state.configData.site}
             onUserInput={this.setFormData}
             ref="site"
             value={this.state.formData.site}
@@ -170,14 +176,26 @@ class NewProfileForm extends React.Component {
           <SelectElement
             name="project"
             label="Project"
-            options={this.state.configData.gender}
+            options={this.state.configData.project}
             onUserInput={this.setFormData}
             ref="project"
             value={this.state.formData.project}
             required={true}
           />
           <ButtonElement label="Create" />
-        </FormElement>
+        </FormElement>;
+     } else {
+       profile = 
+       <div>
+       <p>New candidate created. DCCID: 433176 PSCID: MTL627</p>
+       <p><a href="/433176/">Access this candidate</a></p>
+       <p><a href="/new_profile1/">Recruit another candidate</a></p>
+       </div>;
+     }
+       return (
+       <div>
+       {profile}
+       </div>
        );
      }
 

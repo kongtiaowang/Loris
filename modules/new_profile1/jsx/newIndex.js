@@ -2,16 +2,14 @@ import FilterForm from 'FilterForm';
 import NewProfileForm from './NewProfileForm';
 
 
-
 class NewIndex extends React.Component {
-      
-      render() {
+ render() {
          return ( 
            <div>
               <NewProfileForm />
            </div>
          );
-      }
+ }
 }
 
 $(function() {
