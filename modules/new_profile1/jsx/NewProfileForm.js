@@ -40,7 +40,7 @@ class NewProfileForm extends React.Component {
           isLoaded: true
         });
       },
-      error: error => console.error(error)
+      error: error => console.log(error)
     });
   }
 
@@ -79,6 +79,19 @@ class NewProfileForm extends React.Component {
        isCreated:true
     });
     }
+    $.ajax(loris.BaseURL + '/new_profile/ajax/addProfile.php', {
+      method: "POST",
+      data: JSON.stringify(this.state.formData), 
+      success: data => {
+        // FIXME: Remove the following line of code as soon as hiddenHeaders is
+        // accepted as a prop by the StaticDataTable Component.
+      //alert(data);
+      console.log("post data is here");
+      console.log(data);
+      alert(data);
+      },
+      error: error => console.log(error)
+    });
   }
 
   /**
@@ -101,6 +114,23 @@ class NewProfileForm extends React.Component {
      console.log(this.state);
      var profile = null;
      var edc = null;
+     var project = null;
+     var pscid = null;
+     if (this.state.configData['useProject'] === 'true')
+     {
+       project = 
+         <div>
+          <SelectElement
+            name="project"
+            label="Project"
+            options={this.state.configData.project}
+            onUserInput={this.setFormData}
+            ref="project"
+            value={this.state.formData.project}
+            required={true}
+          />     
+         </div>;
+     }
      if (this.state.configData['edc'] === 'true')
      {
        edc =
@@ -126,6 +156,19 @@ class NewProfileForm extends React.Component {
             required={true}
           />
           </div>;
+     }
+     if (this.state.configData['pscidSet'] === 'true') {
+        pscid = 
+        <div>
+           <TextboxElement
+            name="pscid"
+            label="PSCID"
+            onUserInput={this.setFormData}
+            ref="pscid"
+            value={this.state.formData.pscid}
+            required={true}
+           />
+         </div>;
      }
      if (!this.state.isCreated) {
         profile = 
@@ -154,7 +197,7 @@ class NewProfileForm extends React.Component {
             value={this.state.formData.dateTakenConfirm}
             required={true}
           />
-               {edc}
+          {edc}
           <SelectElement
             name="gender"
             label="Gender"
@@ -173,15 +216,8 @@ class NewProfileForm extends React.Component {
             value={this.state.formData.site}
             required={true}
           />
-          <SelectElement
-            name="project"
-            label="Project"
-            options={this.state.configData.project}
-            onUserInput={this.setFormData}
-            ref="project"
-            value={this.state.formData.project}
-            required={true}
-          />
+          {pscid}
+          {project}
           <ButtonElement label="Create" />
         </FormElement>;
      } else {

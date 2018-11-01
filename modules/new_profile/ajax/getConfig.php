@@ -13,7 +13,6 @@
  * @license  Loris license
  * @link     https://github.com/aces/Loris-Trunk
  */
-ini_set('default_charset', 'utf-8');
 require_once "Utility.class.inc";
         $user = \User::singleton();
 if (!$user->hasPermission('media_write')) {
@@ -21,7 +20,7 @@ if (!$user->hasPermission('media_write')) {
     exit;
 }
         $DB   = \Database::singleton();
-
+        $config =& \NDB_Config::singleton();
         $result    = array();
         $config    =& \NDB_Config::singleton();
         $result['startYear'] = $config->getSetting('startYear');
@@ -30,8 +29,9 @@ if (!$user->hasPermission('media_write')) {
         $result['ageMin']    = $config->getSetting('ageMin');
         $result['dobFormat'] = $config->getSetting('dobFormat');
         $result['edc']       = $config->getSetting('useEDC');
+        $result['useProject']= $config->getSetting('useProjects');
         $result['gender']    = ['male' =>  "Male",'female' =>  "Female"];
-
+        $result['pscidSet']  = "false";
         //get sites for the select dropdown  
         $user_list_of_sites = $user->getData('CenterIDs');
         $num_sites          = count($user_list_of_sites);
@@ -57,7 +57,11 @@ if (!$user->hasPermission('media_write')) {
         }
         $result['project']       = $list_of_projects;
 
-
+        //get setting through pscid
+        $PSCIDsettings = $config->getSetting('PSCID');
+        if ($PSCIDsettings['generation'] == 'user') {
+            $result['pscidSet']  = "true";
+        }
 
         //returned as a string
         echo json_encode($result);
