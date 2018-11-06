@@ -85,10 +85,6 @@ class CouchDBDemographicsImporter {
         'Status_comments' => array(
             'Description' => 'Participant status comments',
             'Type' => "text",
-        ),
-        'NDAR_consent' => array(
-            'Description' => 'NDAR Consent',
-            'Type' => "enum('yes','no','not_answered')",
         )
     );
 
