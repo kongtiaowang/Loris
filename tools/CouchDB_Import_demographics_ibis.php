@@ -89,50 +89,6 @@ class CouchDBDemographicsImporter {
         'NDAR_consent' => array(
             'Description' => 'NDAR Consent',
             'Type' => "enum('yes','no','not_answered')",
-        ),
-        'NDAR_consent_date' => array(
-            'Description' => 'NDAR Consent Date',
-            'Type' => "varchar(255)",
-        ),
-        'NDAR_consent_withdrawal' => array(
-            'Description' => 'NDAR Consent Withdrawal Date',
-            'Type' => "varchar(255)",
-        ),
-        'Study_consent' => array(
-            'Description' => 'Study Consent',
-            'Type' => "enum('yes','no','not_answered')",
-        ),
-        'Study_consent_date' => array(
-            'Description' => 'Study Consent Date',
-            'Type' => "varchar(255)",
-        ),
-        'Study_consent_withdrawal' => array(
-            'Description' => 'Study Consent Withdrawal Date',
-            'Type' => "varchar(255)",
-        ),
-        'Air_pollution_consent' => array(
-            'Description' => 'Air Pollution Consent',
-            'Type' => "enum('yes','no','not_answered')",
-        ),
-        'Air_pollution_consent_date' => array(
-            'Description' => 'Air Pollution Consent Date',
-            'Type' => "varchar(255)",
-        ),
-        'Air_pollution_consent_withdrawal' => array(
-            'Description' => 'Air Pollution Consent Withdrawal Date',
-            'Type' => "varchar(255)",
-        ),
-        'Mail_tooth_kit_consent' => array(
-            'Description' => 'Mail Tooth Kit Consent',
-            'Type' => "enum('yes','no','not_answered')",
-        ),
-        'Mail_tooth_kit_consent_date' => array(
-            'Description' => 'Mail Tooth Kit Consent Date',
-            'Type' => "varchar(255)",
-        ),
-        'Mail_tooth_kit_consent_withdrawal' => array(
-            'Description' => 'Mail Tooth Kit Consent Withdrawal Date',
-            'Type' => "varchar(255)",
         )
     );
 
@@ -211,19 +167,7 @@ class CouchDBDemographicsImporter {
                                  pc_comment.value                                            AS Comment, 
                                  COALESCE(pso.description, 'Active')                         AS Status, 
                                  ps.participant_suboptions                                   AS Status_reason, 
-                                 ps.reason_specify                                           AS Status_comments, 
-                                 ps.ndar_consent                                             AS NDAR_consent, 
-                                 ps.ndar_consent_date                                        AS NDAR_consent_date,
-                                 ps.ndar_consent_withdrawal                                  AS NDAR_consent_withdrawal, 
-                                 ps.study_consent                                            AS Study_consent, 
-                                 ps.study_consent_date                                       AS Study_consent_date,
-                                 ps.study_consent_withdrawal                                 AS Study_consent_withdrawal, 
-                                 ps.air_consent                                              AS Air_pollution_consent, 
-                                 ps.air_consent_date                                         AS Air_pollution_consent_date,
-                                 ps.air_consent_withdrawal                                   AS Air_pollution_consent_withdrawal, 
-                                 ps.mail_toothkit_consent                                    AS Mail_tooth_kit_consent,
-                                 ps.mail_toothkit_consent_date                               AS Mail_tooth_kit_consent_date,
-                                 ps.mail_toothkit_consent_withdrawal                         AS Mail_tooth_kit_consent_withdrawal";
+                                 ps.reason_specify                                           AS Status_comments";
         $tablesToJoin = " FROM   session s 
                                  JOIN candidate c using (candid) 
                                  LEFT JOIN psc p 
@@ -250,6 +194,23 @@ class CouchDBDemographicsImporter {
             $EDCFields = ", c.EDC as EDC";
             $fieldsInQuery .= $EDCFields;
         }
+        // If consent is being used, add consent information into query
+        if ($config->getSetting("useConsent") === "true") {
+            $consents = \Utility::getConsentList();
+            foreach ($consents as $consentID => $consent) {
+                $consentName = $consent['Name'];
+                $consentFields = ",
+                                cc" . $this->SQLDB->escape($consentID) . ".Status AS " . $consentName . ", 
+                                cc" . $this->SQLDB->escape($consentID) . ".DateGiven AS " . $consentName . "_date, 
+                                cc" . $this->SQLDB->escape($consentID) . ".DateWithdrawn AS " . $consentName . "_withdrawal";
+                $fieldsInQuery .= $consentFields;
+                $tablesToJoin .= "
+                                LEFT JOIN candidate_consent_rel cc" . $this->SQLDB->escape($consentID) . " ON 
+                                  (cc" . $this->SQLDB->escape($consentID) . ".CandidateID=c.CandID) AND 
+                                  cc" . $this->SQLDB->escape($consentID) . ".ConsentID=(SELECT ConsentID FROM consent WHERE Name='" . $consentName . "') ";
+            }
+        }
+
         $concatQuery = $fieldsInQuery . $tablesToJoin . " WHERE s.Active='Y' AND c.Active='Y' AND c.Entity_type != 'Scanner'";
         return $concatQuery;
     }
@@ -283,6 +244,26 @@ class CouchDBDemographicsImporter {
                 'Description' => 'Project for which the candidate belongs',
                 'Type' => $projectsEnum
             );
+        }
+        // If consent is being used, update the data dictionary
+        if ($config->getSetting("useConsent") === "true") {
+            $consents = \Utility::getConsentList();
+            foreach($consents as $consent) {
+                $consentName  = $consent['Name'];
+                $consentLabel = $consent['Label'];
+                $this->Dictionary[$consentName] = array(
+                    'Description' => $consentLabel,
+                    'Type' => "enum('yes','no')"
+                );
+                $this->Dictionary[$consentName . "_date"] = array(
+                    'Description' => $consentLabel . ' Date',
+                    'Type' => "date"
+                );
+                $this->Dictionary[$consentName . "_withdrawal"] = array(
+                    'Description' => $consentLabel . ' Withdrawal Date',
+                    'Type' => "date"
+                );
+            }
         }
         /*
         // Add any candidate parameter fields to the data dictionary
