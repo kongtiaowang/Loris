@@ -15,6 +15,7 @@ class NewProfileForm extends React.Component {
       },
       configData:{},
       formData: {},
+      newData: {},
       isLoaded: false,
       isCreated: false,
      }
@@ -88,7 +89,13 @@ class NewProfileForm extends React.Component {
       //alert(data);
       console.log("post data is here");
       console.log(data);
-      alert(data);
+      data = JSON.parse(data);
+     // alert(data);
+     // alert(data.candID);
+     // alert(data['pscid']);
+      this.setState({
+      newData: data
+    });
       },
       error: error => console.log(error)
     });
@@ -223,8 +230,8 @@ class NewProfileForm extends React.Component {
      } else {
        profile = 
        <div>
-       <p>New candidate created. DCCID: 433176 PSCID: MTL627</p>
-       <p><a href="/433176/">Access this candidate</a></p>
+       <p>New candidate created. DCCID: {this.state.newData.candID} PSCID: {this.state.newData.pscid}</p>
+       <p><a href={"/" + this.state.newData.candID}>Access this candidate</a></p>
        <p><a href="/new_profile1/">Recruit another candidate</a></p>
        </div>;
      }
