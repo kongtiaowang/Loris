@@ -1,0 +1,38 @@
+<?php
+namespace LORIS\schedule_module;
+class schedule_module extends \NDB_Page {
+    public $skipTemplate = true;
+
+    function _hasAccess()
+    {
+        $user = \User::singleton();
+        if ($user->hasPermission('schedule_module')) {
+            return true;
+        }
+        return false;
+    }
+
+    function getJSDependencies()
+    {
+        $factory = \NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+                $deps,
+                array(
+                    $baseURL . "/schedule_module/js/index.js",
+                     )
+                );
+    }
+    
+    function getCSSDependencies()
+    {
+        $factory = \NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getCSSDependencies();
+        return array_merge(
+            $deps,
+            array($baseURL . "/schedule_module/css/schedule_module.css")
+        );
+    }
+}

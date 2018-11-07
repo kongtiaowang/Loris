@@ -1,0 +1,2 @@
+UPDATE `test_names` SET `Full_name`='Adult Informant Report Ages 18 -59 (aka Adult Informant CBCL)' WHERE `Test_name`='ABCL';
+UPDATE `test_names` SET `Full_name`='Adult Self Report Ages 18 -59 (aka Adult Self CBCL)' WHERE `Test_name`='ADULT_SELF_REPORT';

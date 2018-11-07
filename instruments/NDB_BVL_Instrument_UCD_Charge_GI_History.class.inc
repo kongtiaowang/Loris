@@ -160,6 +160,9 @@ class NDB_BVL_Instrument_UCD_Charge_GI_History extends NDB_BVL_Instrument
 
     function _page1(){
         $this->addHeader("CHARGE GI History");
+        $this->addHeader("<h3><b>Instructions:</b><BR><p>Some of the questions below ask about your child’s bowel movements. There are many words for bowel movements, such as “poop”, “stool”, or “number 2”. Your family may use another special word when they talk about bowel movements.</p>
+ <p>1. In the list below, please select the option that best describes your child’s gastrointestinal symptom history. For this form, we define <b><i>“Rarely”</b></i>as once per month or less; <b><i>“Frequently or “Always”</b></i> as at least 3-5 days per week, and <b><i>“Sometimes” </b></i>as more than once per month, but less than 3 days per week. <b><i>“Current” </b></i>is the time period that includes the last 3 months and “Previous” is any time before the last 3 months. </p>
+");
         $this->addLabel("<h4>$this->indent (0) = Never $this->indent (1) = Rarely $this->indent (2) = Sometimes $this->indent (3) = Frequently $this->indent (4) = Always</h4>");
         $commonOptions = array(
             null => "",
@@ -190,13 +193,13 @@ class NDB_BVL_Instrument_UCD_Charge_GI_History extends NDB_BVL_Instrument
                 "q10" => "Blood in vomit"
             );
 
-        $currentYesNoQuestions = array(
+     /*   $currentYesNoQuestions = array(
             "q11" => "Any allergies to foods?",
             "q12" => "Any diet restrictions",
             "q12_additional_1" => "Reasons/Symptoms",
             "q12_additional_2" => "Foods that cause or worsen any symptoms",
             "q13" => "Does child have any strong food dislikes?"
-        );
+        );*/
         $this->displayHeaders(1);
         foreach($currentNumericQuestions as $key => $question) {
             if ($key == "q7") {
@@ -240,7 +243,8 @@ class NDB_BVL_Instrument_UCD_Charge_GI_History extends NDB_BVL_Instrument
             );
             unset($group);
         }
-        $this->displayHeaders(2);
+       /*  This Section is not in the newly sent form; commenting this out as I(Sruthy) am not sure if it is needed in future.
+       $this->displayHeaders(2);
         foreach ($currentYesNoQuestions as $key => $question) {
             if ($key == "q11") {
                 $group[] =& $this->createSelect($key . "_previous", $question." - Previous", $yesNoOptions);
@@ -325,11 +329,11 @@ class NDB_BVL_Instrument_UCD_Charge_GI_History extends NDB_BVL_Instrument
                 false
             );
             unset($group);
-        }
+        }*/
 
         $this->addSelect(
             "gastrointestinal_diagnosis_given",
-            "Has any gastrointestinal diagnosis been given?",
+            "2. Has any gastrointestinal diagnosis been given?",
             $yesNoOptions);
 
         $this->addBasicTextArea("gastrointestinal_diagnosis", "If yes, what?");
@@ -338,26 +342,68 @@ class NDB_BVL_Instrument_UCD_Charge_GI_History extends NDB_BVL_Instrument
             array("gastrointestinal_diagnosis_given{@}=={@}yes"),
             "Required"
         );
+        $poopOptions = array(
+            null => "",
+            "2_times_a_week_or_less" => "2 times a week or less often",
+            "3_to_6_times_a_week" => "3 to 6 times a week",
+            "once_a_day" => "Once a day",
+            "2_to_3_times_a_day" => "2 to 3 times a day",
+            "more_than_3_times_a_day" => "More than 3 times a day",
+            "dont_know" => "I don’t know"
+        );
+        $poopLookOptions = array(
+            null => "",
+            "very_hard" => "Very hard",
+            "hard" => "Hard",
+            "not_too_hard" => "Not too hard and not too soft",
+            "very_soft_or_mushy" => "Very soft or mushy",
+            "watery" => "Watery",
+            "it_depends" => "It depends (poops are not always the same)",
+            "dont_know" => "I don’t know",
+        );
+        $poopHardOptions = array(
+            null => "",
+            "less_than_1_month" => "Less than 1 month",
+            "1_month" => "1 month",
+            "2_months" => "2 months",
+            "3_month_or_more" => "3 months or more",
+            "dont_know" => "I don’t know"
+        );
+        $this->addSelect(
+            "how_often_have_poops",
+            "3. In the last 3 months, how often did your child usually have poops?",
+            $poopOptions);
+        $this->addSelect(
+            "poop_usually_looks_like",
+            "4. In the last 3 months, what was your child’s poop usually like?",
+            $poopLookOptions);
+        $this->addSelect("how_long_hard", "4a. If your child’s poops were usually hard, for how long have they been hard?",$poopHardOptions);
+        $this->XINRegisterRule(
+            "how_long_hard",
+            array("poop_usually_looks_like{@}=={@}hard|very_hard"),
+            "Required"
+        );
+
         $this->form->addFormRule(array(&$this, 'UCD_GI_special_rules'));
     }
 function UCD_GI_special_rules($values)
 {
     $errors = array();
     $error_message = "This field should be left blank OR response in the related question should be changed.";
-    $check_array = array("q12_diet_restricted_by", "q12_reasons", "q12_foods");
+ /*  $check_array = array("q12_diet_restricted_by", "q12_reasons", "q12_foods");
 foreach ($check_array as $val) {
     if (($values[$val] ?? '') != '') {
         if((($values['q12_previous']?? '' )!= 'yes') && ($values['q12_current']?? '' )!= 'yes') {
                $errors[$val] = $error_message;
         }
     }
-}
+}*/
     if(($values['gastrointestinal_diagnosis']?? '') != '') {
         if (($values['gastrointestinal_diagnosis_given']?? '' )!= 'yes') {
             $errors['gastrointestinal_diagnosis'] = $error_message;
         }
     }
-    if(($values['q13_description'] ?? '') != '') {
+  /*  if(($values['q13_description'] ?? '') != '') {
         if((($values['q13_previous']?? '' )!= 'yes') && ($values['q13_current']?? '' )!= 'yes') {
             $errors['q13_description'] = $error_message;
         }
@@ -366,7 +412,7 @@ foreach ($check_array as $val) {
         if((($values['q11_previous']?? '' )!= 'yes') && ($values['q11_current']?? '' )!= 'yes') {
            $errors['q11_description'] = $error_message;
         }
-    }
+    }*/
 
     if (($values['q7_description'] ?? '') != ''){
         if((($values['q7_previous']?? '')=='0') && ($values['q7_current']?? '' )=='0') {
