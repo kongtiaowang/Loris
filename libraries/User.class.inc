@@ -465,20 +465,20 @@ class User extends UserPermissions
         // compare password to values
         foreach ($values as $key => $value) {
             switch ($operators[$key]) {
-                case '==':
-                    // They must be equal, so the whole thing is false
-                    // if they're not.
-                    if ($password != $value) {
-                        return false;
-                    }
-                    break;
-                case '!=':
-                    if ($password == $value) {
-                        return false;
-                    }
-                    break;
-                default:
-                    throw new \LorisException("Invalid operator in isPasswordStrong");
+            case '==':
+                // They must be equal, so the whole thing is false
+                // if they're not.
+                if ($password != $value) {
+                    return false;
+                }
+                break;
+            case '!=':
+                if ($password == $value) {
+                    return false;
+                }
+                break;
+            default:
+                throw new \LorisException("Invalid operator in isPasswordStrong");
             }
         }
 
@@ -557,6 +557,7 @@ class User extends UserPermissions
         return $this->hasPermission($code)
             && $this->hasCenter($center_id);
     }
+
     /**
      * Determines if the user has ever logged in successfully
      *

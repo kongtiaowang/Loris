@@ -497,7 +497,9 @@ class NDB_BVL_Instrument_mullen extends NDB_BVL_Instrument
 
         $db =& Database::singleton();
 
-        $record = $db->pselectRow("SELECT * FROM $this->table WHERE CommentID=:cid",array("cid" =>$this->getCommentID() ));
+        $query = "SELECT * FROM ".$this->table." WHERE CommentID='".$this->getCommentID()."'";
+        $record =$db->pselectRow($query, array());
+
 
 
         // Get the subject DoB for scoring

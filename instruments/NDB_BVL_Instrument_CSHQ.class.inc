@@ -127,6 +127,22 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
             );
             next($score_columns);
         }
+        $opts = array(
+            null              => "",
+            "mother"             => "Mother",
+            "father"             => "Father",
+            "step_mother"        => "Step Mother",
+            "step_father"        => "Step Father",
+            "other"             => "Other",
+        );
+        $this->addSelect("relationship_to_child", "What is your relationship to the child?", $opts);
+        $this->addBasicText("other_relationship_to_child", $this->indent."If Other, please describe:");
+        $this->XINRegisterRule(
+            "other_relationship_to_child",
+            array("relationship_to_child{@}=={@}other"),
+            "Required",
+            "other_relationship_to_child"
+        );
     }
 
     function _displayHeaders($category)

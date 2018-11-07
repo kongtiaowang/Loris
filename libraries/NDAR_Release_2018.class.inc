@@ -23,7 +23,8 @@ class NDAR_Release_2018
         $Base = "COALESCE(s.Current_stage, '') <> 'Recycling Bin' AND COALESCE(s.Visit, '') NOT IN ('Failure', 'Withdrawal') AND COALESCE(s.Screening, '') NOT IN ('Failure', 'Withdrawal') AND f.Administration='All' AND f.Data_entry='Complete' AND EXISTS (SELECT 'x' FROM flag df WHERE df.CommentID=CONCAT('DDE_', i.CommentID) AND df.Data_entry='Complete') AND NOT EXISTS (SELECT 'x' FROM conflicts_unresolved cu WHERE cu.CommentId1=i.CommentID OR cu.CommentId2=i.CommentID) AND s.CenterID IN (2, 3, 4, 5) AND ( (ps.study_consent = 'yes' OR ps.study_consent IS NULL) AND ps.study_consent_withdrawal IS NULL) AND ((ps.ndar_consent = 'yes' OR ps.ndar_consent IS NULL) AND ps.ndar_consent_withdrawal IS NULL) AND c.Active='Y' AND s.Active ='Y'";
         if ($this->instrument == 'adi_r_proband') {
             if ($this->project == 2) {
-                return $Base . " AND i.Summary_diagnosis='ASD+' AND s.SubprojectID IN (9,10) AND s.Visit_label ='Screening' $GUID";
+                //for IBIS2 ndar 2018 added V03, V24 & V36
+                return $Base . " AND i.Summary_diagnosis='ASD+' AND s.SubprojectID IN (9,10) AND UPPER(s.Visit_label) IN ('Screening','V03', 'V24', 'V36') $GUID";
             } else {
                 // Check Summary_diagnosis=ASD+
                 return $Base . " AND i.Summary_diagnosis='ASD+' AND s.SubprojectID IN (1, 2, 3) $GUID";
@@ -31,22 +32,23 @@ class NDAR_Release_2018
         } else if ($this->instrument == 'm_chat_proband') {
             // Check score=Fail and not Control
             if ($this->project == 2) {
-                return $Base . " AND s.Visit_label='Screening' $GUID";
+                return $Base . " AND s.Visit_label IN ('Screening', 'V03', 'V24') $GUID";
             } else {
                 return $Base . " AND s.SubprojectID <> 3 AND i.score='Fail' $GUID";
             }
         } else if ($this->instrument == 'scq_proband') {
             // Check scq_diagnosis=ASD_Positive and 6/12mo recruit
             if ($this->project == 2) {
-                return $Base . " AND s.Visit_label='Screening' $GUID";
+                return $Base . " AND s.Visit_label IN ('Screening','V24','V36') $GUID";
             } else {
                 return $Base . " AND s.SubprojectID IN (1, 2, 3) AND i.scq_diagnosis='ASD Positive' $GUID";
             }
         } else if ($this->instrument == 'aosi' || $this->instrument == 'ibq_r') {
             if ($this->project == 2 && $this->instrument == 'aosi') {
-                return $Base . " AND s.SubprojectID = 10 AND UPPER(s.Visit_label) IN ('V06','V09', 'V12', 'V15') $GUID";
+                return $Base . " AND s.SubprojectID IN (9,10) AND UPPER(s.Visit_label) IN ('V06','V09', 'V12', 'V15') $GUID";
             } else if ($this->project == 2 && $this->instrument == 'ibq_r') {
-                return $Base . " AND (s.SubprojectID=10 AND UPPER(s.Visit_label) IN ('V03','V06','V09','V12') OR s.SubprojectID=9 AND UPPER(s.Visit_label) IN ('V03')) $GUID";
+                //ndar_2018 final changes - add more visit label requirements
+                return $Base . " AND (s.SubprojectID=10 AND UPPER(s.Visit_label) IN ('V03','V06','V09','V12') OR s.SubprojectID=9 AND UPPER(s.Visit_label) IN ('V03','V06','V09','V12')) $GUID";
 
             } else {
                 return $Base . " AND ((s.SubprojectID=1 AND UPPER(s.Visit_label) IN ('V06', 'V12' ,'V24')) OR (s.SubprojectID=2 AND UPPER(s.Visit_label) IN ('V06', 'V12' ,'V24')) OR (s.SubprojectID=3 AND UPPER(s.Visit_label) IN ('V06', 'V12', 'V24'))) $GUID";
@@ -62,19 +64,21 @@ class NDAR_Release_2018
         } else if ($this->instrument == 'vineland_subject') {
             // No DDE
             if ($this->project == 2) {
-                return "COALESCE(s.Current_stage, '') <> 'Recycling Bin' AND COALESCE(s.Visit, '') NOT IN ('Failure', 'Withdrawal') AND COALESCE(s.Screening, '') NOT IN ('Failure', 'Withdrawal') AND f.Administration='All' AND f.Data_entry='Complete' AND s.CenterID IN (2, 3, 4, 5) AND ((s.SubprojectID=9 AND UPPER(s.Visit_label)='V03') OR (s.SubprojectID=10 AND UPPER(s.Visit_label) IN ('V03','V06','V09', 'V12','V15','V18', 'V24'))) AND ( (ps.study_consent = 'yes' OR ps.study_consent IS NULL) AND ps.study_consent_withdrawal IS NULL) AND ((ps.ndar_consent = 'yes' OR ps.ndar_consent IS NULL) AND ps.ndar_consent_withdrawal IS NULL) $GUID ";
+                return "COALESCE(s.Current_stage, '') <> 'Recycling Bin' AND COALESCE(s.Visit, '') NOT IN ('Failure', 'Withdrawal') AND COALESCE(s.Screening, '') NOT IN ('Failure', 'Withdrawal') AND f.Administration='All' AND f.Data_entry='Complete' AND s.CenterID IN (2, 3, 4, 5) AND ((s.SubprojectID=9 AND UPPER(s.Visit_label) IN ('V03','V06','V09', 'V12','V15','V18', 'V24','V36')) OR (s.SubprojectID=10 AND UPPER(s.Visit_label) IN ('V03','V06','V09', 'V12','V15','V18', 'V24','V36'))) AND ( (ps.study_consent = 'yes' OR ps.study_consent IS NULL) AND ps.study_consent_withdrawal IS NULL) AND ((ps.ndar_consent = 'yes' OR ps.ndar_consent IS NULL) AND ps.ndar_consent_withdrawal IS NULL) $GUID ";
             } else {
                 return "COALESCE(s.Current_stage, '') <> 'Recycling Bin' AND COALESCE(s.Visit, '') NOT IN ('Failure', 'Withdrawal') AND COALESCE(s.Screening, '') NOT IN ('Failure', 'Withdrawal') AND f.Administration='All' AND f.Data_entry='Complete' AND s.CenterID IN (2, 3, 4, 5) AND ((s.SubprojectID=1 AND UPPER(s.Visit_label) IN ('V06', 'V12' ,'V24')) OR (s.SubprojectID=2 AND UPPER(s.Visit_label) IN ('V06', 'V12' ,'V24')) OR (s.SubprojectID=3 AND UPPER(s.Visit_label) IN ('V06', 'V12', 'V24'))) AND ( (ps.study_consent = 'yes' OR ps.study_consent IS NULL) AND ps.study_consent_withdrawal IS NULL) AND ((ps.ndar_consent = 'yes' OR ps.ndar_consent IS NULL) AND ps.ndar_consent_withdrawal IS NULL) $GUID ";
             }
         } else if ($this->instrument == 'prefrontal_task' || $this->instrument == 'csbs') {
             if ($this->project == 2 && $this->instrument == 'csbs') {
-                return $Base . " AND s.SubprojectID=10 AND UPPER(s.Visit_label) IN ('V09', 'V15') $GUID";
+                //ndar 2018 final IBIS2
+                return $Base . " AND s.SubprojectID IN (9,10) AND UPPER(s.Visit_label) IN ('V09', 'V12', 'V15') $GUID";
             } else {
                 return $Base . " AND s.SubprojectID IN (1, 2, 3) AND UPPER(s.Visit_label) IN ('V06', 'V12', 'V24') $GUID";
             }
         } else if ($this->instrument == 'ados_module1' || $this->instrument == 'ados_module2' || $this->instrument == 'ados_module3' || $this->instrument == 'ados2_module1' || $this->instrument == 'ados2_module2' || $this->instrument == 'ados2_module3') {
             if ($this->project == 2) {
-                return $Base . " AND s.SubprojectID=10 AND UPPER(s.Visit_label) IN ('V09', 'V15') $GUID";
+                //for ndar 2018 IBIS2 final submission
+                return $Base . " AND s.SubprojectID IN (9,10) AND UPPER(s.Visit_label) IN ('V09', 'V15','V24','V36') $GUID";
             } else {
                 return $Base . " AND s.SubprojectID IN (1, 2, 3) AND UPPER(s.Visit_label) IN ('V06', 'V12', 'V24') $GUID";
             }
@@ -85,10 +89,10 @@ class NDAR_Release_2018
         } else if ($this->instrument == 'scq' || $this->instrument == 'rbs_r') {
             if ($this->project == 2) {
                 if ($this->instrument == 'rbs_r') {
-                    return $Base . " AND s.SubprojectID=10 AND UPPER(s.Visit_label) IN ('V12','V24') $GUID";
+                    return $Base . " AND s.SubprojectID=10 AND UPPER(s.Visit_label) IN ('V12','V24','V36') $GUID";
                 }
                 else {
-                    return $Base . " AND s.SubprojectID= 9 AND UPPER(s.Visit_label) IN ('V06', 'V12', 'V24') $GUID";
+                    return $Base . " AND s.SubprojectID= 9 AND UPPER(s.Visit_label) IN ('V06', 'V12', 'V24','V36') $GUID";
                 }
             } else {
                 return $Base . " AND UPPER(s.Visit_label) IN ('V06', 'V12', 'V24') $GUID";
@@ -97,7 +101,8 @@ class NDAR_Release_2018
             return $Base . " AND UPPER(s.Visit_label) IN ('V06', 'V12', 'V24') $GUID";
         } else if ($this->instrument == 'mullen' || $this->instrument == 'edi2') {
             if ($this->project == 2) {
-                return $Base . " AND (s.SubprojectID=10 AND UPPER(s.Visit_label) IN ('V03','V06','V09','V12','V15','V18','V24') OR s.SubprojectID=9 AND UPPER(s.Visit_label) IN ('V03')) $GUID";
+                //add more visit labels for IBIS2 high risk gor ndar 2018 IBIS2 final
+                return $Base . " AND (s.SubprojectID=10 AND UPPER(s.Visit_label) IN ('V03','V06','V09','V12','V15','V18','V24','V36') OR s.SubprojectID=9 AND UPPER(s.Visit_label) IN ('V03','V06','V09', 'V12','V15','V18','V24','V36')) $GUID";
             }
             else {
                 return $Base . " AND s.SubprojectID<>7 AND UPPER(s.Visit_label) IN ('V06', 'V12', 'V24') $GUID";
@@ -118,18 +123,54 @@ class NDAR_Release_2018
                     AND s.CenterID IN (2, 3, 4, 5) AND ((s.SubprojectID=1 AND UPPER(s.Visit_label) IN ('V06', 'V12' ,'V24')) OR (s.SubprojectID=2 AND UPPER(s.Visit_label) IN ('V06', 'V12' ,'V24')) OR (s.SubprojectID=3 AND UPPER(s.Visit_label) IN ('V06', 'V12', 'V24'))) AND ( (ps.study_consent = 'yes' OR ps.study_consent IS NULL) AND ps.study_consent_withdrawal IS NULL) AND ((ps.ndar_consent = 'yes' OR ps.ndar_consent IS NULL) AND ps.ndar_consent_withdrawal IS NULL) $GUID";
             }
         } else if (($this->instrument == 'head_measurements_subject' || $this->instrument == 'height_weight') && $this->project == 2) {
-            return $Base . " AND ((s.SubprojectID=9 AND UPPER(s.Visit_label)='V03') OR (s.SubprojectID=10 AND UPPER(s.Visit_label) IN ('V03','V06','V09','V12','V15','V18','V24'))) $GUID";
+            return $Base . " AND ((s.SubprojectID=9 AND UPPER(s.Visit_label) IN ('V03','V06','V09','V12','V15','V18','V24','V36')) OR (s.SubprojectID=10 AND UPPER(s.Visit_label) IN ('V03','V06','V09','V12','V15','V18','V24','V36'))) $GUID";
         } else if ($this->instrument == 'phys_neuro_exam' && $this->project == 2) {
             return $Base . " AND ((s.SubprojectID=9 AND UPPER(s.Visit_label)='V03') OR (s.SubprojectID=10 AND UPPER(s.Visit_label) IN ('V03'))) $GUID";
         } else if ($this->instrument == 'macarthur_words_gestures') {
             if ($this->project == 2) {
-                return $Base . " AND (s.SubprojectID=10 AND UPPER(s.Visit_label) IN ('V06', 'V12', 'V24')) $GUID";
+                return $Base . " AND (s.SubprojectID In(9,10) AND UPPER(s.Visit_label) IN ('V06', 'V12', 'V24')) $GUID";
             } else {
                 return $Base . " AND UPPER(s.Visit_label) IN ('V06', 'V12', 'V24') $GUID";
             }
         } else if ($this->instrument == 'ndar_subject') {
             if ($this->project == 2) {
                 return $Base . " AND UPPER(s.Visit_label) IN ('V03') $GUID";
+            }
+            return $Base . " AND c.ProjectID = $this->project $GUID";
+        }
+        else if ($this->instrument == 'ECBQ') {
+            if ($this->project == 2) {
+                return $Base . " AND UPPER(s.Visit_label) IN ('V24') $GUID";
+            }
+            return $Base . " AND c.ProjectID = $this->project $GUID";
+        }
+        else if ($this->instrument == 'FamilyEnvironmentScales') {
+            if ($this->project == 2) {
+                return $Base . " AND UPPER(s.Visit_label) IN ('V03') $GUID";
+            }
+            return $Base . " AND c.ProjectID = $this->project $GUID";
+        }
+        else if ($this->instrument == 'BSRC') {
+            if ($this->project == 2) {
+                return $Base . " AND UPPER(s.Visit_label) IN ('V24','V36') $GUID";
+            }
+            return $Base . " AND c.ProjectID = $this->project $GUID";
+        }
+        else if ($this->instrument == 'JointAttentionAssessment') {
+            if ($this->project == 2) {
+                return $Base . " AND UPPER(s.Visit_label) IN ('V09','V12','V15') $GUID";
+            }
+            return $Base . " AND c.ProjectID = $this->project $GUID";
+        }
+        else if ($this->instrument == 'LENA_DataTrackingForm') {
+            if ($this->project == 2) {
+                return $Base . " AND UPPER(s.Visit_label) IN ('V09LENA','V15LENA') $GUID";
+            }
+            return $Base . " AND c.ProjectID = $this->project $GUID";
+        }
+        else if ($this->instrument == 'SRS') {
+            if ($this->project == 2) {
+                return $Base . " AND UPPER(s.Visit_label) IN ('V36') $GUID";
             }
             return $Base . " AND c.ProjectID = $this->project $GUID";
         }
@@ -149,7 +190,8 @@ class NDAR_Release_2018
             }
             return "c.IBISID AS src_subject_id, c.ProbandGUID as subjectkey,  CASE c.ProbandGender WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS Gender, ROUND(DATEDIFF(i.Date_taken, c.ProbandDoB) / (365/12)) AS interview_age, f.Validity as validity_of_data, i.Date_taken as interview_date, ";
         } else {
-            $NoValidities = array('macarthur_words_gestures', 'seq', 'rbs_r', 'ibq_r', 'head_measurements_subject', 'prefrontal_task', 'fyi', 'scq_proband','height_weight','phys_neuro_exam');
+            $NoValidities = array('macarthur_words_gestures', 'seq', 'rbs_r', 'ibq_r', 'head_measurements_subject', 'prefrontal_task', 'fyi', 'scq_proband',
+                'height_weight','phys_neuro_exam', 'ECBQ', 'FamilyEnvironmentScales','BSRC', 'JointAttentionAssessment','SRS');
             $ados = array('ados_module1','ados_module2','ados_module3','ados2_module1','ados2_module2','ados2_module3') ;
             if (in_array($this->instrument, $NoValidities)) {
                 if ($this->instrument == 'head_measurements_subject'|| $this->instrument == 'height_weight' ||$this->instrument == 'phys_neuro_exam') {
@@ -164,6 +206,11 @@ class NDAR_Release_2018
             {
                 return "c.IBISID AS src_subject_id, c.CandidateGUID AS subjectkey, CASE c.Gender WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS Gender , ROUND(DATEDIFF(i.Date_taken, c.DoB) / (365/12)) AS interview_age, f.Validity as validity_of_data, i.Date_taken as interview_date, 
                  CASE i.examiner_location WHEN 'Examiner' THEN '0' WHEN ' In-room observer' THEN '1' WHEN 'Behind mirror' THEN '2' WHEN 'Videotape' THEN '3' WHEN 'Not Answered' THEN '9' END AS aosi_assessmenttype,";
+            }
+            else if($this->instrument == 'LENA_DataTrackingForm')
+            {
+                return "c.IBISID AS src_subject_id, c.CandidateGUID AS subjectkey, CASE c.Gender WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS Gender , 
+                ROUND(DATEDIFF(DATE(i.Timestamp_1), c.DoB) / (365/12)) AS interview_age, DATE(i.Timestamp_1) as interview_date, ";
             }
             return "c.IBISID AS src_subject_id, c.CandidateGUID AS subjectkey, CASE c.Gender WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS Gender , ROUND(DATEDIFF(i.Date_taken, c.DoB) / (365/12)) AS interview_age, f.Validity as validity_of_data, i.Date_taken as interview_date, ";
         }
@@ -1892,6 +1939,98 @@ class NDAR_Release_2018
                 "'NK' as rev_skinabcesses"
             );
         }
+        else if ($this->instrument == 'ECBQ') {
+            $fields = array(
+                $this->getIntegerData('i.q_1_reactanger','bq001')
+
+            );
+        }
+        else if ($this->instrument == 'FamilyEnvironmentScales') {
+            $fields = array(
+                'i.family_member'
+            );
+        }
+        else if ($this->instrument == 'BSRC') {
+            $fields = array(
+                'i.date_lastVisit_date'
+            );
+        }
+        else if ($this->instrument == 'JointAttentionAssessment') {
+            $fields = array(
+                'i.series2'
+            );
+        }
+        else if ($this->instrument == 'LENA_DataTrackingForm') {
+            $fields = array(
+                'i.datecompleted'
+            );
+        }
+        else if ($this->instrument == 'SRS') {
+            $fields = array(
+                'CASE i.completed_by WHEN \'mother\' THEN \'Mother\' WHEN \'father\' THEN \'Father\' WHEN \'both\' THEN \'Both\' WHEN \'other\' THEN \'Other\' END as respondent',
+                $this->getOnlyIntegerSRS('i.q1_fidgety_social_situations','srsprs_q1'),
+                $this->getOnlyIntegerSRS('i.q2_expressions_dont_match','srsprs_q2'),
+                $this->getOnlyIntegerSRS('i.q3_seems_self_confident','srsprs_q3'),
+                $this->getOnlyIntegerSRS('i.q4_auto_pilot_under_stress','srsprs_q4'),
+                $this->getOnlyIntegerSRS('i.q5_no_recognize_take_advantage','srsprs_q5'),
+                $this->getOnlyIntegerSRS('i.q6_rather_be_alone','srsprs_q6'),
+                $this->getOnlyIntegerSRS('i.q7_aware_others_feeling','srsprs_q7'),
+                $this->getOnlyIntegerSRS('i.q8_behaves_strange','srsprs_q8'),
+                $this->getOnlyIntegerSRS('i.q9_clings_to_adults','srsprs_q9'),
+                $this->getOnlyIntegerSRS('i.q10_unable_pickup_meaning','srsprs_q10'),
+                $this->getOnlyIntegerSRS('i.q11_good_self_confidence','srsprs_q11'),
+                $this->getOnlyIntegerSRS('i.q12_able_communicate_feelings','srsprs_q12'),
+                $this->getOnlyIntegerSRS('i.q13_slow_turntaking_interactions','srsprs_q13'),
+                $this->getOnlyIntegerSRS('i.q14_not_well_coordinated','srsprs_q14'),
+                $this->getOnlyIntegerSRS('i.q15_able_understand_meaning','srsprs_q15'),
+                $this->getOnlyIntegerSRS('i.q16_avoids_eye_contact','srsprs_q16'),
+                $this->getOnlyIntegerSRS('i.q17_recognizes_unfair','srsprs_q17'),
+                $this->getOnlyIntegerSRS('i.q19_frustrated_conversations','srsprs_q19'),
+                $this->getOnlyIntegerSRS('i.q20_strange_playing','srsprs_q20'),
+                $this->getOnlyIntegerSRS('i.q21_able_imitate_others','srsprs_q21'),
+                $this->getOnlyIntegerSRS('i.q22_play_appropriately','srsprs_q22'),
+                $this->getOnlyIntegerSRS('i.q23_no_group_activities','srsprs_q23'),
+                $this->getOnlyIntegerSRS('i.q24_more_difficulty_routine','srsprs_q24'),
+                $this->getOnlyIntegerSRS('i.q26_offers_comfort_to_others','srsprs_q26'),
+                $this->getOnlyIntegerSRS('i.q27_avoids_social_interactions','srsprs_q27'),
+                $this->getOnlyIntegerSRS('i.q29_regarded_as_weird','srsprs_q29'),
+                $this->getOnlyIntegerSRS('i.q30_becomes_upset','srsprs_q30'),
+                $this->getOnlyIntegerSRS('i.q32_wants_to_be_changed','srsprs_q32'),
+                $this->getOnlyIntegerSRS('i.q33_socially_awkward','srsprs_q33'),
+                $this->getOnlyIntegerSRS('i.q34_avoids_emotional_close','srsprs_q34'),
+                $this->getOnlyIntegerSRS('i.q36_difficulty_relating_adults','srsprs_q36'),
+                $this->getOnlyIntegerSRS('i.q37_difficulty_relating_peers','srsprs_q37'),
+                $this->getOnlyIntegerSRS('i.q38_responds_to_mood_changes','srsprs_q38'),
+                $this->getOnlyIntegerSRS('i.q39_restricted_interests','srsprs_q39'),
+                $this->getOnlyIntegerSRS('i.q40_imaginative','srsprs_q40'),
+                $this->getOnlyIntegerSRS('i.q41_wanders_aimlessly_activities','srsprs_q41'),
+                $this->getOnlyIntegerSRS('i.q42_overly_sensitive_sounds_smells','srsprs_q42'),
+                $this->getOnlyIntegerSRS('i.q43_separates_from_caregivers','srsprs_q43'),
+                $this->getOnlyIntegerSRS('i.q44_doesnt_understand_events','srsprs_q44'),
+                $this->getOnlyIntegerSRS('i.q45_focuses_attention_others','srsprs_q45'),
+                $this->getOnlyIntegerSRS('i.q46_overly_serious_expressions','srsprs_q46'),
+                $this->getOnlyIntegerSRS('i.q47_too_silly','srsprs_q47'),
+                $this->getOnlyIntegerSRS('i.q48_sense_of_humor','srsprs_q48'),
+                $this->getOnlyIntegerSRS('i.q49_does_well_few_tasks','srsprs_q49'),
+                $this->getOnlyIntegerSRS('i.q50_repetitive_odd_behaviors','srsprs_q50'),
+                $this->getOnlyIntegerSRS('i.q51_responds_odd_ways','srsprs_q51'),
+                $this->getOnlyIntegerSRS('i.q52_knows_talking_too_loud','srsprs_q52'),
+                $this->getOnlyIntegerSRS('i.q53_talks_unusual_tone_of_voice','srsprs_q53'),
+                $this->getOnlyIntegerSRS('i.q54_reacts_people_as_objects','srsprs_q54'),
+                $this->getOnlyIntegerSRS('i.q55_knows_invading_space','srsprs_q55'),
+                $this->getOnlyIntegerSRS('i.q56_walks_between_people','srsprs_q56'),
+                $this->getOnlyIntegerSRS('i.q58_concentrates_on_parts','srsprs_q58'),
+                $this->getOnlyIntegerSRS('i.q59_overly_suspicious','srsprs_q59'),
+                $this->getOnlyIntegerSRS('i.q60_is_emotionally_distant','srsprs_q60'),
+                $this->getOnlyIntegerSRS('i.q62_unusual_reasons','srsprs_q62'),
+                $this->getOnlyIntegerSRS('i.q63_touches_others_usually','srsprs_q63'),
+                $this->getOnlyIntegerSRS('i.q64_tense_social_settings','srsprs_q64'),
+                $this->getOnlyIntegerSRS('i.q65_stares_into_space','srsprs_q65'),
+                'i.srs_score AS total_raw_score',
+                "'999' AS phenotype"
+
+            );
+        }
         return implode($fields, ", ");
     }
 
@@ -2302,7 +2441,9 @@ class NDAR_Release_2018
             'fyi' => 'fyi-01', 'ibq_r' => 'ibq_r-01', 'macarthur_words_gestures' => 'mci_words_gestures-01', 'vineland_proband' => 'vinelandsurvey_2005-05',
             'm_chat_proband' => 'm_chat-02', 'mullen' => 'mullen-03', 'prefrontal_task' => 'prefront_task-01', 'edi2' => 'edi-01',
             'rbs_r' => 'rbs_r-02', 'seq' => 'seq-01', 'vineland_subject' => 'vinelandsurvey_2005-05', 'adi_r_subject' => 'adir_2003-04',
-            'head_measurements_subject' => 'charge_physicalexam-01', 'ndar_subject' => 'ndar_subject-01', 'height_weight' => 'height_weight-01', 'phys_neuro_exam' => 'ace_physexam-01');
+            'head_measurements_subject' => 'charge_physicalexam-01', 'ndar_subject' => 'ndar_subject-01', 'height_weight' => 'height_weight-01', 'phys_neuro_exam' => 'ace_physexam-01',
+            'ECBQ' =>'ecbq-01', 'FamilyEnvironmentScales' =>'fenvs-01','BSRC' =>'intervention_hx-01','JointAttentionAssessment' =>'jntat-01',
+            'LENA_DataTrackingForm' =>'lena-01', 'SRS' =>'srs_preschool_2006-01');
         $Query = $this->getQuery();
         // print $Query;
         $db = &Database::singleton();
@@ -2405,6 +2546,15 @@ class NDAR_Release_2018
     function getOnlyInteger($value,$alias)
     {
         return "IF ($value = 'not_answered', '9', $value) as $alias";
+    }
+    function getIntegerData($value,$alias)
+    {
+
+        return "SUBSTRING_INDEX($value, '_', 1) AS $alias";
+    }
+    function getOnlyIntegerSRS($value,$alias)
+    {
+        return "CASE $value WHEN 'not_true' THEN '1' WHEN 'sometimes_true' THEN '2' WHEN 'often_true' THEN '3' WHEN 'always_true' THEN '4' END as $alias";
     }
 
 }
