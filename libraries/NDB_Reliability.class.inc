@@ -55,8 +55,12 @@ class NDB_Reliability extends NDB_Form
         } else {
             throw new Exception("The form class ($name) is not defined.");
         }
+        $factory = NDB_Factory::singleton();
+        $config  = $factory->config();
+        $base    = $config->getSetting("base");
+        $mpath = $base . "project/libraries/NDB_Reliability.class.inc";
         // create a form instance
-        $obj = new $class(new Module($name),$name, $page, $identifier,'test_form');
+        $obj = new $class(new Module($name, $mpath),$name, $page, $identifier,'test_form');
 
         $obj->reliability_center_id = $reliability_center_id;
         $obj->identifier = $identifier;

@@ -41,7 +41,7 @@ class NDB_Reliability_csbs_reliability extends NDB_Reliability
                
         if (!empty($this->identifier)) {
             // get the csbs_reliability values 
-            $DB->selectRow("SELECT * FROM csbs_reliability WHERE CommentID = '$this->identifier' AND reliability_center_id = '$this->reliability_center_id'", $defaults);
+            $defaults = $DB->pselectRow("SELECT * FROM csbs_reliability WHERE CommentID=:cid AND reliability_center_id=:rcid", array("cid" => $this->identifier, "rcid" => $this->reliability_center_id));
             // Make the CommentID a link to the comparison page
             $initial_table = preg_replace('/_reliability/', '', $this->name);
 
@@ -67,13 +67,13 @@ class NDB_Reliability_csbs_reliability extends NDB_Reliability
         //$this->_nullScores();
 
         //Get values from both tables of csbs (reliability and original)
-        $query = "SELECT * FROM csbs_reliability WHERE CommentID='$this->identifier' AND reliability_center_id = '$this->reliability_center_id'";
-        $query1 = "SELECT * FROM csbs WHERE CommentID='".$this->identifier."'";
-        $query2 = "SELECT * FROM csbs_wetherby_lookup WHERE CommentID='standard1'";
+        $query = "SELECT * FROM csbs_reliability WHERE CommentID=:cid AND reliability_center_id=:rcid";
+        $query1 = "SELECT * FROM csbs WHERE CommentID=:cid";
+        $query2 = "SELECT * FROM csbs_wetherby_lookup WHERE CommentID=:cid";
  
-        $db->selectRow($query, $score_record);
-        $db->selectRow($query1, $score_record1);
-        $db->selectRow($query2, $score_record2);
+        $score_record = $db->pselectRow($query, array("cid" => $this->identifier, "rcid" => $this->reliability_center_id));
+        $score_record1 = $db->pselectRow($query1, array("cid" => $this->identifier));
+        $score_record2 = $db->pselectRow($query2, array("cid" => 'standard1'));
      
         // Do the actual CSBS scoring (as is done for regular data entry)
         if ($score_record['Gold_standard']=='Initial_entry') {

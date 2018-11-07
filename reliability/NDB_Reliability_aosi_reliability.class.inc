@@ -45,7 +45,7 @@ class NDB_Reliability_aosi_reliability extends \NDB_Reliability
        
             
             // set the aosi_reliability values 
-            $DB->selectRow("SELECT * FROM aosi_$this->codingtype WHERE CommentID = '$this->identifier' AND reliability_center_id = '$this->reliability_center_id'", $row);
+          $row = $DB->pselectRow("SELECT * FROM aosi_$this->codingtype WHERE CommentID=:cid AND reliability_center_id=:rcid", array("cid" => $this->identifier, "rcid" => $this->reliability_center_id));
      
             // Set the defaults
             // print_r($row['CommentID']);
@@ -84,9 +84,9 @@ class NDB_Reliability_aosi_reliability extends \NDB_Reliability
        
         //Get values from both tables of aosi (reliability and original)
 
-        $db->selectRow("SELECT * FROM aosi WHERE CommentID='{$this->identifier}'", $candidate_record);
+        $candidate_record = $db->pselectRow("SELECT * FROM aosi WHERE CommentID=:cid", array("cid" => $this->identifier));
         
-        $db->selectRow("SELECT * FROM aosi_$this->codingtype WHERE CommentID='{$this->identifier}' AND reliability_center_id = '$this->reliability_center_id'", $reliability_record);
+        $reliability_record = $db->pselectRow("SELECT * FROM aosi_$this->codingtype WHERE CommentID=:cid AND reliability_center_id=:rcid", array("cid" => $this->identifier, "rcid" => $this->reliability_center_id));
                    
          $denominator = 0;
          $reliability_count_raw = 0;
@@ -461,7 +461,7 @@ class NDB_Reliability_aosi_reliability extends \NDB_Reliability
             }
         }
            
-        $DB->selectRow("SELECT * FROM aosi_$this->codingtype WHERE CommentID = '$this->identifier' AND reliability_center_id = $this->reliability_center_id", $row);
+        $row = $DB->pselectRow("SELECT * FROM aosi_$this->codingtype WHERE CommentID=:cid AND reliability_center_id=:rcid", array("cid" => $this->identifier, "rcid" => $this->reliability_center_id));
           
           $invalid = $values['invalid'];
           $DB->update("$this->codingtype", array('invalid' => $invalid), array("CommentID"=>$this->identifier, "Instrument" => 'aosi', "reliability_center_id" => $this->reliability_center_id));
@@ -495,7 +495,7 @@ class NDB_Reliability_aosi_reliability extends \NDB_Reliability
  {
      $DB =& Database::singleton();
      $query = "SELECT count(*) AS counter FROM candidate WHERE CandID='$values[CandID]' and PSCID='$values[PSCID]'";
-     $recordsFound = $DB->selectOne($query);
+     $recordsFound = $DB->pselectOne($query, array());
      $errors = array();
      
      if($recordsFound < 1) {
