@@ -39,6 +39,26 @@ class NDB_BVL_Instrument_CDI_Words_Sentences extends NDB_BVL_Instrument
 
     var $ValidityEnabled = false;
     var $ValidityRequired = false;
+    var $scoreLabels = array(
+        "part_2_e_first_choice_count",
+        "part_2_e_second_choice_count",
+        "word_endings_plural_percentage",
+        "word_endings_possessive_percentage",
+        "word_endings_past_percentage",
+        "word_endings_progressive_percentage",
+        "how_use_absent_comp_percentage",
+        "how_use_absent_owner_percentage",
+        "how_use_absent_production_percentage",
+        "how_use_future_percentage",
+        "how_use_past_percentage",
+        "words_produced_percentile",
+        "word_forms_percentile",
+        "grammatical_complexity_percentile",
+        "part1_wpNum",
+        "part_2_b_nouns",
+        "part_2_b_verbs"
+
+    );
 
     /**
      * Sets up basic data, such as the LorisForm object, and so on.
@@ -122,7 +142,12 @@ class NDB_BVL_Instrument_CDI_Words_Sentences extends NDB_BVL_Instrument
     function CalculatePercentile($scale, $age_months, $gender, &$scores)
     {
         $db = Database::singleton();
-        $scale_number = $scale . "_number";
+        if($scale=='words_produced')
+        { $scale_number = $scale . "_number";
+        }
+        else {
+            $scale_number = $scale;
+        }
         $scale_percentile = $scale . "_percentile";
 
         $query_scores = "SELECT * FROM CDI_WS_percentiles_lookup WHERE age_months=" . $age_months . " AND sex='$gender' AND score_raw=" . $scores[$scale_number] . " AND subscale='$scale_number'";
@@ -135,7 +160,9 @@ class NDB_BVL_Instrument_CDI_Words_Sentences extends NDB_BVL_Instrument
             $query_scores1a = "SELECT * FROM CDI_WS_percentiles_lookup WHERE age_months=$age_months AND sex='$gender' AND subscale='$scale_number' AND score_raw>$score_holder ORDER BY score_raw ASC LIMIT 1";
             $record_1a = $db->pselectRow($query_scores1a, array());
             if (empty($record_1a)) {
-                $db->pselectRow("SELECT * from CDI_WS_percentiles_lookup WHERE a ge_months=$age_months AND sex='$gender'     AND subscale='$scale_number' ORDER BY score_raw ASC LIMIT 1", array());
+
+                $db->pselectRow("SELECT * from CDI_WS_percentiles_lookup WHERE age_months=$age_months AND sex='$gender' AND subscale='$scale_number' ORDER BY score_raw ASC LIMIT 1", array());
+
             }
 
             $query_scores1b = "SELECT * FROM CDI_WS_percentiles_lookup WHERE age_months=" . $age_months . " AND sex='$gender' AND subscale='$scale_number' AND score_raw<$score_holder ORDER BY score_raw DESC LIMIT 1";
@@ -155,15 +182,15 @@ class NDB_BVL_Instrument_CDI_Words_Sentences extends NDB_BVL_Instrument
         }
     }
 
-    function ReturnPercentage($scale, $age_months, $gender) {
+    function ReturnPercentage($scale, $age_months, $gender,&$scores) {
         $db = Database::singleton();
         $scale_number = $scale . "_number";
         $scale_percentage = $scale . "_percentage";
 
         $query_scores = "SELECT * FROM CDI_WS_percent_affirmative_lookup WHERE age_months=" . $age_months . " AND sex='$gender' AND subscale='$scale_number'";
         $PercentageScore  = $db->pselectRow($query_scores, array());
+        $scores[$scale_percentage] = $PercentageScore['percentage_affirmative'];
 
-        $scores[$scale_percentage] = $PercentageScore['affirmative_percentage'];
     }
 
     /*
@@ -178,6 +205,7 @@ class NDB_BVL_Instrument_CDI_Words_Sentences extends NDB_BVL_Instrument
             if($record[$question_prefix . $qNum] == '1') {
                 $affirmative++;
             }
+
         }
     }
 
@@ -255,22 +283,25 @@ class NDB_BVL_Instrument_CDI_Words_Sentences extends NDB_BVL_Instrument
 
         $score_columns
             = array(
-            "part1_wpNum" => "Vocab Checklist: Words Produced (Total)",
+            "words_produced_number" => "Vocab Checklist: Words Produced (Total)",
             "words_produced_percentile" => "Words Produced Percentile",
+            "word_forms"     => "Word Forms Count",
             "word_forms_percentile"     => "Word Forms Percentile",
-            "grammatical_complexity"    => "Grammatical Complexity Percentile",
-            "how_use_past" => "How Children Use Words: Past (Percentage)",
-            "how_use_future" => "How Children Use Words: Future (Percentage)",
-            "how_use_absent_production" =>
+            "grammatical_complexity"     => "Grammatical Complexity",
+            "grammatical_complexity_percentile"    => "Grammatical Complexity Percentile",
+            "word_endings_part2" => "Word Endings/Part2",
+            "how_use_past_percentage" => "How Children Use Words: Past (Percentage)",
+            "how_use_future_percentage" => "How Children Use Words: Future (Percentage)",
+            "how_use_absent_production_percentage" =>
                 "How Children Use Words: Absent Object Production (Percentage)",
-            "how_use_absent_comp" =>
+            "how_use_absent_comp_percentage" =>
                 "How Children Use Words: Absent Object Comprehension (Percentage)",
-            "how_use_absent_owner" =>
+            "how_use_absent_owner_percentage" =>
                 "How Children Use Words: Absent Owner (Percentage)",
-            "word_endings_plural" => "Word Endings: Plural (Percentage)",
-            "word_endings_possessive" => "Word Endings: Possessive (Percentage)",
-            "word_endings_progressive" => "Word Endings: Progressive (Percentage)",
-            "word_endings_past" => "Word Endings: Past tense (Percentage)",
+            "word_endings_plural_percentage" => "Word Endings: Plural (Percentage)",
+            "word_endings_possessive_percentage" => "Word Endings: Possessive (Percentage)",
+            "word_endings_progressive_percentage" => "Word Endings: Progressive (Percentage)",
+            "word_endings_past_percentage" => "Word Endings: Past tense (Percentage)",
             "part_2_b_nouns" => "",
             "part_2_e_second_choice_count" =>
                 "Number of times the more complex sentence is selected"
@@ -784,9 +815,10 @@ class NDB_BVL_Instrument_CDI_Words_Sentences extends NDB_BVL_Instrument
             array(
                 array(
                     null => "",
-                    "two_shoe" => "Two shoe.",
-                    "two_shoes" => "Two shoes."
+                    "two_foot" => "Two foot.",
+                    "two_feet" => "Two feet."
                 ),
+
                 array(
                     null => "",
                     "two_foot" => "Two foot.",
@@ -961,46 +993,58 @@ class NDB_BVL_Instrument_CDI_Words_Sentences extends NDB_BVL_Instrument
                     null => "",
                     "baby_crying" => "Baby crying.",
                     "baby_crying_cuz_shes_sad" => "Baby crying cuz she's sad."
-                )
+                ),
+                array(
+                    null => "",
+                    "two_shoe" => "Two shoe.",
+                    "two_shoes" => "Two shoes."
+                ),
+                array(
+                    null => "",
+                    "daddy_car" => "Daddy car.",
+                    "daddys_car" => "Daddy's car."
+                ),
             );
 
-        for ($i = 1; $i < sizeof($part_2_e_pairs); $i++) {
-            if ($i == 4 || $i == 5) {
-                $this->addSelect(
-                    "part_2_e_" . $i,
-                    $i . ". (Talking about something happening right now)",
-                    $part_2_e_pairs[$i]
-                );
-                $this->XINRegisterRule(
-                    "part_2_e_" . $i,
-                    array("part_2_c_last_question{@}=={@}not_yet|sometimes"),
-                    "Required if 'Not Yet' or 'Sometimes' selected for the
+        for ($i = 0; $i < sizeof($part_2_e_pairs); $i++) {
+            if ($i != 0) {
+                if ($i == 4 || $i == 5) {
+                    $this->addSelect(
+                        "part_2_e_" . $i,
+                        $i . ". (Talking about something happening right now)",
+                        $part_2_e_pairs[$i]
+                    );
+                    $this->XINRegisterRule(
+                        "part_2_e_" . $i,
+                        array("part_2_c_last_question{@}=={@}not_yet|sometimes"),
+                        "Required if 'Not Yet' or 'Sometimes' selected for the
                      question following Part II - Section C."
-                );
-            } elseif ($i == 6 || $i == 10 || $i == 11 || $i == 12) {
-                $this->addSelect(
-                    "part_2_e_" . $i,
-                    $i . ". (Talking about something that already happened)",
-                    $part_2_e_pairs[$i]
-                );
-                $this->XINRegisterRule(
-                    "part_2_e_" . $i,
-                    array("part_2_c_last_question{@}=={@}not_yet|sometimes"),
-                    "Required if 'Not Yet' or 'Sometimes' selected for the
+                    );
+                } elseif ($i == 6 || $i == 10 || $i == 11 || $i == 12) {
+                    $this->addSelect(
+                        "part_2_e_" . $i,
+                        $i . ". (Talking about something that already happened)",
+                        $part_2_e_pairs[$i]
+                    );
+                    $this->XINRegisterRule(
+                        "part_2_e_" . $i,
+                        array("part_2_c_last_question{@}=={@}not_yet|sometimes"),
+                        "Required if 'Not Yet' or 'Sometimes' selected for the
                      question following Part II - Section C."
-                );
-            } else {
-                $this->addSelect(
-                    "part_2_e_" . $i,
-                    $i . ".",
-                    $part_2_e_pairs[$i]
-                );
-                $this->XINRegisterRule(
-                    "part_2_e_" . $i,
-                    array("part_2_c_last_question{@}=={@}not_yet|sometimes"),
-                    "Required if 'Not Yet' or 'Sometimes' selected for the
+                    );
+                } else {
+                    $this->addSelect(
+                        "part_2_e_" . $i,
+                        $i . ".",
+                        $part_2_e_pairs[$i]
+                    );
+                    $this->XINRegisterRule(
+                        "part_2_e_" . $i,
+                        array("part_2_c_last_question{@}=={@}not_yet|sometimes"),
+                        "Required if 'Not Yet' or 'Sometimes' selected for the
                      question following Part II - Section C."
-                );
+                    );
+                }
             }
         }
     }
@@ -1039,6 +1083,9 @@ class NDB_BVL_Instrument_CDI_Words_Sentences extends NDB_BVL_Instrument
         $scores['part1_wpNum'] = 0;
         $scores['part_2_b_nouns'] = 0;
         $scores['part_2_b_verbs'] = 0;
+        $scores['part_2_c_nouns'] = 0;
+        $scores['part_2_c_verbs'] = 0;
+        $scores['words_produced_number']=0;
 
         $part_1_section_length =
             array(
@@ -1048,19 +1095,80 @@ class NDB_BVL_Instrument_CDI_Words_Sentences extends NDB_BVL_Instrument
 
 
         foreach($part_1_section_length as $section => $numWords) {
-                $this->SumWords($numWords, $record, "part_" . $section . "_", $scores['part1_wpNum']);
+                $this->SumWords($numWords, $record, "part_" . $section . "_", $scores[$section]);
             }
 
         /* How Children Use Words  */
+        for($qNum = 1; $qNum <= 22; $qNum++) {
+            $scores['words_produced_number']+=$scores[$qNum];
+        }
 
         $part_2_section_length =
             array(
-                "part_2_b_nouns" => 25, "part_2_b_verbs" => 45
+                "part_2_b_nouns" => 5, "part_2_b_verbs" => 20
+            );
+        foreach ($part_2_section_length as $section => $numWords) {
+            $this->SumWords($numWords, $record, $section . "_", $scores[$section]);}
+        $scores['word_forms'] =  $scores['part_2_b_nouns'] +   $scores['part_2_b_verbs'];
+
+        $part_3_section_length =
+            array(
+                "part_2_c_nouns" => 14, "part_2_c_verbs" => 31
             );
 
-        foreach ($part_2_section_length as $section => $numWords) {
+
+        foreach ($part_3_section_length as $section => $numWords) {
             $this->SumWords($numWords, $record, $section . "_", $scores[$section]);
         }
+        $scores['word_endings_part2'] =  $scores['part_2_c_nouns'] +   $scores['part_2_c_verbs'];
+        /*
+        * E. Complexity - # of times the more complex sentence is selected
+        */
+
+        $part_2_e_first_options =
+            array(
+                "two_foot", "two_foot", "kitty_sleep", "i_make_tower",
+                "i_fall_down", "more_cookie", "these_my_tooth", "baby_blanket",
+                "doggie_kiss_me", "daddy_pick_me_up", "kitty_go_away",
+                "doggie_table", "that_my_truck", "baby_crying", "you_fix_it",
+                "read_me_story_mommy", "no_wash_dolly", "want_more_juice",
+                "there_a_kitty", "go_bye_bye", "where_mommy_go", "coffee_hot",
+                "i_no_do_it", "i_like_read_stories", "dont_read_book",
+                "turn_on_light", "i_want_that", "want_cookies",
+                "cookie_mommy", "baby_want_eat", "lookit_me", "lookit",
+                "wheres_my_dolly", "we_made_this", "i_sing_song",
+                "baby_crying","two_shoe","daddy_car"
+            );
+
+        $part_2_e_second_options =
+              array(
+                  "two_feet", "kitty_sleeping",
+                  "i_making_tower", "i_fell_down", "more_cookies",
+                  "these_my_teeth", "babys_blanket", "doggie_kissed_me",
+                  "daddy_picked_me_up", "kitty_went_away", "doggie_on_table",
+                  "thats_my_truck", "baby_is_crying", "can_you_fix_it",
+                  "read_me_a_story_mommy", "dont_wash_dolly", "want_juice_in_there",
+                  "theres_a_kitty", "wanna_go_bye_bye", "where_did_mommy_go",
+                  "that_coffee_hot", "i_cant_do_it", "i_like_to_read_stories",
+                  "dont_want_you_read_that_book", "turn_on_the_light_so_i_can_see",
+                  "i_want_that_one_you_got", "want_cookies_and_milk",
+                  "cookie_for_mommy", "baby_want_to_eat", "lookit_me_dancing",
+                  "lookit_what_i_got", "wheres_my_dolly_name_sam",
+                  "me_and_paul_made_this", "i_sing_song_for_you",
+                  "baby_crying_cuz_she's_sad","two_shoes","daddys_car"
+              );
+
+        $scores['part_2_e_first_choice_count'] = 0;
+        $scores['part_2_e_second_choice_count'] = 0;
+
+        for ($i = 1; $i <= 37; $i++) {
+            $curr_q = "part_2_e_" . $i;
+            if (in_array($record[$curr_q], $part_2_e_second_options)) {
+                $scores['part_2_e_second_choice_count']++;
+
+            }
+        }
+        $scores['grammatical_complexity']=$scores['part_2_e_second_choice_count'];
 
         /* Calculate Percentiles */
         $scales_percentile =
@@ -1107,54 +1215,10 @@ class NDB_BVL_Instrument_CDI_Words_Sentences extends NDB_BVL_Instrument
             }
         }
 
-        /*
-         * E. Complexity - # of times the more complex sentence is selected
-         */
-
-        $part_2_e_first_options =
-            array(
-                "two_shoe", "two_foot", "daddy_car", "kitty_sleep", "i_make_tower",
-                "i_fall_down", "more_cookie", "these_my_tooth", "baby_blanket",
-                "doggie_kiss_me", "daddy_pick_me_up", "kitty_go_away",
-                "doggie_table", "that_my_truck", "baby_crying", "you_fix_it",
-                "read_me_story_mommy", "no_wash_dolly", "want_more_juice",
-                "there_a_kitty", "go_bye_bye", "where_mommy_go", "coffee_hot",
-                "i_no_do_it", "i_like_read_stories", "dont_read_book",
-                "turn_on_light", "i_want_that", "want_cookies",
-                "cookie_mommy", "baby_want_eat", "lookit_me", "lookit",
-                "wheres_my_dolly", "we_made_this", "i_sing_song",
-                "baby_crying"
-            );
-
-      /*  $part_2_e_second_options =
-            array(
-                "two_shoes", "two_feet", "daddys_car", "kitty_sleeping",
-                "i_making_tower", "i_fell_down", "more_cookies",
-                "these_my_teeth", "babys_blanket", "doggie_kissed_me",
-                "daddy_picked_me_up", "kitty_went_away", "doggie_on_table",
-                "thats_my_truck", "baby_is_crying", "can_you_fix_it",
-                "read_me_a_story_mommy", "dont_wash_dolly", "want_juice_in_there",
-                "theres_a_kitty", "wanna_go_bye_bye", "where_did_mommy_go",
-                "that_coffee_hot", "i_cant_do_it", "i_like_to_read_stories",
-                "dont_want_you_read_that_book", "turn_on_the_light_so_i_can_see",
-                "i_want_that_one_you_got", "want_cookies_and_milk",
-                "cookie_for_mommy", "baby_want_to_eat", "lookit_me_dancing",
-                "lookit_what_i_got", "wheres_my_dolly_name_sam",
-                "me_and_paul_made_this", "i_sing_song_for_you",
-                "baby_crying_cuz_she's_sad"
-            ); */
-
-        $scores['part_2_e_first_choice_count'] = 0;
-        $scores['part_2_e_second_choice_count'] = 0;
-
-        for ($i = 1; $i <= 37; $i++) {
-            $curr_q = "part_2_e_" . $i;
-            if ($record[$curr_q] == $part_2_e_first_options) {
-                $scores['part_2_e_first_choice_count']++;
-            } else {
-                $scores['part_2_e_second_choice_count']++;
-            }
-        }
+     for($s=1;$s<=22; $s++)
+     {
+         unset($scores[$s]);
+     }
 
         $result = $db->update($this->table, $scores, array("CommentID"=>$this->getCommentID()));
     }

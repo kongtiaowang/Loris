@@ -232,10 +232,11 @@ class AddSurvey extends \NDB_Form
            if($values['VL']== 'VSA')
             {
                 $parentid=$this->getParentID($values['CandID']);
-                $parent_portal_note="\nYou can also access this survey on our Parent Portal.\n".$www['url'] ."/parent_portal/
+                $parent_portal_note="\nYou can access all your surveys on our Parent Portal.\nPlease note that to log into your Parent Portal, you will be asked for the Parent ID and Email, listed below. 
+\n".$www['url'] ."/parent_portal/
                 ParentID:  $parentid
-                Email: ".$values['Email']."\n";
-                $url=$url.$parent_portal_note;
+                Email: ".$values['Email']."\n\n You can also click the link below to access this survey individually.\n";
+                $url=$parent_portal_note.$url;
             }
 
             $msg_data = array(
@@ -291,13 +292,27 @@ class AddSurvey extends \NDB_Form
             "Instrument",
             array_merge(
                 array('' => ''),
-                \Utility::getDirectInstruments()
+                $this->getOrderedDirectInstruments()
             )
         );
         $this->addBasicText("Email", "Email address");
         $this->addBasicText("Email2", "Confirm Email address");
 
         $this->form->addFormRule(array(&$this, '_validateAddSurvey'));
+    }
+
+    function getOrderedDirectInstruments()
+    {
+        $DB            =& \Database::singleton();
+        $instruments   = array();
+        $instruments_q = $DB->pselect(
+            "SELECT Test_name,Full_name FROM test_names WHERE IsDirectEntry=true ORDER BY Full_name",
+            array()
+        );
+        foreach ($instruments_q as $key) {
+            $instruments[$key['Test_name']] =$key['Full_name'];
+        }
+        return $instruments;
     }
 
     /**
