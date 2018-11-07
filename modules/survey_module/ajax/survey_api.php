@@ -113,9 +113,10 @@ class DirectDataEntryMainPage
 
         // Unset score values
         $json_instrument = json_decode($this->tpl_data['InstrumentJSON']);
-        $this->unsetScores($Values, $json_instrument->Elements);
+        $this->unsetScores($Values, $json_instrument->Elements, $json_instrument->ScoreLabels);
 
         $this->tpl_data['Values'] = json_encode($Values);
+        $this->tpl_data['InstrumentJSON'] = json_encode($json_instrument);
 
         echo json_encode($this->tpl_data); 
 
@@ -127,16 +128,32 @@ class DirectDataEntryMainPage
      *
      * @return none
      */ 
-    function unsetScores(&$values, $elements) {
+    function unsetScores(&$values, &$elements, $scoreLabels) {
         foreach ($elements as $element) {
             if($element->Type === 'ElementGroup') {
-                $this->unsetScores($values, $element->Elements);
+                $this->unsetScores($values, $element->Elements, $scoreLabels);
+                if(in_array($element->Description, $scoreLabels)) {
+                    $this->deleteElement($element, $elements);
+                }
             } else if(
                 $element->Type === 'label' &&
                 array_key_exists($element->Name, $values)
             ) {
                 unset($values[$element->Name]);
             }
+        }
+    }
+
+    /**
+     * Remove an element from an array.
+     *
+     * @param string|int $element
+     * @param array $array
+     */
+    function deleteElement($element, &$array){
+        $index = array_search($element, $array);
+        if($index !== false){
+            unset($array[$index]);
         }
     }
 
@@ -173,9 +190,13 @@ class DirectDataEntryMainPage
             header("HTTP/1.0 400 Bad Request");
         }
 
+
         if ($this->Instrument->validate($data)) {
             try {
                 $this->Instrument->_save($data);
+                //On Saving Data; the status has to be updated
+                $this->updateStatus('In Progress');
+
                 
             } catch (Exception $e) {
                 header("HTTP/1.0 400 Bad Request");
@@ -355,6 +376,30 @@ class DirectDataEntryMainPage
         $smarty->assign($this->tpl_data);
         $smarty->display('directentry.tpl');
 
+    }
+    function updateStatus($status)
+    {
+        $DB = Database::singleton();
+        $this->key = $_REQUEST['key'];
+
+        $currentStatus = $DB->pselectOne(
+            'SELECT Status FROM participant_accounts
+            WHERE OneTimePassword=:key',
+            array('key' => $this->key)
+        );
+
+        if ($currentStatus != 'Complete' || $currentStatus !='In Progress' ) {
+            // Already completed, don't want to accidentally change it back to
+            // started or some other status..
+            //Already In Progress, don't want to update that as well
+            $DB->update(
+                "participant_accounts",
+                array('Status' => $status),
+                array('OneTimePassword' => $this->key)
+            );
+        }
+
+        return true;
     }
 }
 

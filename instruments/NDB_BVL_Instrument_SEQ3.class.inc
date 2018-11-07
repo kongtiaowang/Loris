@@ -129,8 +129,10 @@ class NDB_BVL_Instrument_SEQ3 extends NDB_BVL_Instrument
                     null      => "",
                     "mother"  => "Mother",
                     "father"  => "Father",
-                    "both"    => "Both Parents",
-                    "teacher" => "Teacher",
+                     "step_mother"  => "Step Mother",
+                     "step_father"  => "Step Father",
+                     "both"    => "Both Parents",
+                     "teacher" => "Teacher",
                     "other"   => "Other (Describe:)",
                    );
 
@@ -493,6 +495,22 @@ class NDB_BVL_Instrument_SEQ3 extends NDB_BVL_Instrument
                     "frequently"      => "Frequently",
                     "always"          => "Almost Always/Always",
                    );
+        $options_q100 = array(
+            null              => "",
+            "much_less_avoidant"           => "Much Less Avoidant/Sensitive",
+            "somewhat_less_avoidant" => "Somewhat Less Avoidant/Sensitive",
+            "unchanged"       => "Unchanged",
+            "somewhat_more_avoidant"      => "Somewhat More Avoidant/Sensitive",
+            "much_more_avoidant"          => "Much More Avoidant/Sensitive",
+        );
+        $options_q103 = array(
+            null              => "",
+            "much_less_intense"           => "Much Less Intense",
+            "somewhat_less_avoidant" => "Somewhat Less Intense",
+            "unchanged"       => "Unchanged",
+            "somewhat_more_intense"      => "Somewhat More Intense",
+            "much_more_intense"          => "Much More Intense",
+        );
         $sub_note="<br><h5><i>(If your response to the above question is 'Never', please enter NA)</i></h5>";
 
         $this->addSelect("98_how_often_experienced_sensations_differently", "98. Thinking about your child's behaviors since birth, how often has your child experienced sensations (sound, sight, touch, taste, smell, or movement) differently from other children?", $options);
@@ -530,7 +548,7 @@ class NDB_BVL_Instrument_SEQ3 extends NDB_BVL_Instrument
 
         $this->addLabel("<h3><u>Avoidances/Sensitivities</u></h3>");
 
-        $this->addSelect("100_how_childs_sensory_avoidances_changed", "100. How have your child's sensory <b>avoidances or sensitivities</b> changed over time?", $options);
+        $this->addSelect("100_how_childs_sensory_avoidances_changed_1", "100. How have your child's sensory <b>avoidances or sensitivities</b> changed over time?", $options_q100);
 
         $this->addBasicTextArea("100_describe_if_changed", "$this->indent Describe (if changed):$sub_note");
 
@@ -556,7 +574,7 @@ class NDB_BVL_Instrument_SEQ3 extends NDB_BVL_Instrument
 
         $this->addLabel("<h3><u>Fascinations/Cravings</u></h3>");
 
-        $this->addSelect("103_how_have_sensory_fascinations_changed", "103. How have your child's sensory <b> fascinations or cravings </b> changed over time?", $options);
+        $this->addSelect("103_how_have_sensory_fascinations_changed_1", "103. How have your child's sensory <b> fascinations or cravings </b> changed over time?", $options_q103);
 
         $this->addBasicTextArea("103_describe_if_changed", "$this->indent Describe (if changed):$sub_note");
 

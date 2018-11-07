@@ -189,9 +189,9 @@ class NDB_BVL_Instrument extends NDB_Page
         ) {
             include_once 'NDB_BVL_Instrument_LINST.class.inc';
             $obj = new \Loris\Behavioural\NDB_BVL_Instrument_LINST(
-            // The module directory we use for instruments is arbitrary,
-            // since it isn't a real module, but it's required for the page
-            // constructor.
+                // The module directory we use for instruments is arbitrary,
+                // since it isn't a real module, but it's required for the page
+                // constructor.
                 new Module($instrument, $base ."project/"),
                 $page,
                 $commentID,
@@ -496,7 +496,7 @@ class NDB_BVL_Instrument extends NDB_Page
      * Attempts to validate the form (using the defined rules) and
      * saves the validated data into the database
      *
-     * @return bool if failure to save data
+     * @return bool false if failure to save data
      * @access public
      */
     function save()
@@ -1142,8 +1142,8 @@ class NDB_BVL_Instrument extends NDB_Page
      * @param array $elements The value of all the elements on the current page
      *                        to validate.
      *
-     * @return array|true associative array of errors (fieldname => errormessage) or true
-     *         if no errors.
+     * @return array|true associative array of errors (fieldname => errormessage)
+     *         or true if no errors.
      */
     function XINValidate($elements)
     {
@@ -2606,7 +2606,7 @@ class NDB_BVL_Instrument extends NDB_Page
          "testname" => $this->testName,
          "fullname" => $this->getFullName()
         );
-        
+
         $tempForm = array();
         $tempPage = array(
             "Description" => "Top Page",
@@ -2652,8 +2652,11 @@ class NDB_BVL_Instrument extends NDB_Page
 
         $instrument = array(
             "Meta" => array(),
-            "Elements" => $instrumentJSON["form"],
+            "Elements" => $instrumentJSON["form"]
         );
+        if ($this->scoreCols!= null) {
+            $instrument["ScoreLabels"] = array_values($this->scoreCols);
+        }
         return json_encode($instrument);
     }
 

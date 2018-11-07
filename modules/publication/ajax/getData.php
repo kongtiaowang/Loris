@@ -66,7 +66,7 @@ function getData() : array
     // sets keys and values to be equal
     $allVOIs['Imaging'] = array_combine($imgVOIs, $imgVOIs);
 
-    $users = $db->pselectColWithIndexKey(
+    $users = pselectColWithIndexKey(
         "SELECT ID, Real_name FROM users ".
         "WHERE Active='Y' AND Pending_approval='N' ".
         "ORDER BY Real_name",
@@ -297,9 +297,62 @@ function getUploadTypes() : array
 {
     $db = \Database::singleton();
 
-    return $db->pselectColWithIndexKey(
+    return pselectColWithIndexKey(
         'SELECT PublicationUploadTypeID, Label FROM publication_upload_type',
         array(),
         'PublicationUploadTypeID'
     );
+}
+
+/** overriding database function  */
+function pselectColWithIndexKey($query, $params, $uniqueKey) : array
+{
+
+    $db = \Database::singleton();
+    if (is_null($uniqueKey) || empty($uniqueKey)) {
+        throw new LorisException(
+            "The pselectColWithIndexKey() function expects the uniqueKey
+                 parameter to not be null or empty. If re-indexing on the primary 
+                 key is not necessary please use the pselectCol() function instead."
+        );
+    }
+    $result = $db->pselect($query, $params);
+    if (empty($result)) {
+        return $result;
+    }
+    $filteredResult = array();
+    // re-order the return array
+    foreach ($result as $row) {
+        $colNumber = count($row);
+        // Check first that the row contains the primary key supplied
+        if (!array_key_exists($uniqueKey, $row) || $colNumber !== 2) {
+            throw new DatabaseException(
+                "The query supplied to pselectColWithIndexKey() should only 
+                    contain the unique key and one other column in the SELECT 
+                    clause. Make sure to supply the appropriate key in the SELECT 
+                    statement to match the supplied parameter of this function.",
+                $query
+            );
+        }
+        // Check that the primary key is indeed unique to avoid overriding data
+        // in the result array
+        if (isset($filteredResult[$row[$uniqueKey]])) {
+            throw new DatabaseException(
+                "The uniqueKey supplied to pselectColWithIndexKey() does not 
+                    appear to be unique or is nullable. This function expects the 
+                    key to be both UNIQUE and NOT NULL.",
+                $query
+            );
+        }
+        // Store the value of the key for this specific row then unset that
+        // value from the $row array so that the only element remaining is
+        // the column desired and its value for this row
+        $uniqueKeyValue = $row[$uniqueKey];
+        unset($row[$uniqueKey]);
+        // Note: reset() rewinds array's internal pointer to the first element
+        // and returns the value of the first array element, in this case the
+        // desired column value
+        $filteredResult[$uniqueKeyValue] = reset($row);
+    }
+    return $filteredResult;
 }

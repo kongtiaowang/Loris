@@ -14,7 +14,7 @@ class NDB_BVL_Instrument_sibling_socialcontact extends NDB_BVL_Instrument
     var $rating = array(''=>NULL, '1_very_rarely'=>"1. Very Rarely", '2_rarely'=>"2. Rarely", 
                         '3_occasionally'=>"3. Occasionally",'4_somewhat_often'=>'4. Somewhat Often',
                         '5_often'=>'5. Often','6_very_often'=>'6. Very Often','refused_dontknow'=>"Refused/I Don't Know");
-    var $respondent = array(''=>NULL,'mother'=>'Mother','father'=>'Father','other'=>'Other');
+    var $respondent = array(''=>NULL,'mother'=>'Mother','father'=>'Father','step_mother'=>'Step Mother','step_father'=>'Step Father','other'=>'Other');
     var $num_days_week = array (''=>NULL,'0'=>'0','1'=>'1','2'=>'2','3'=>'3','4'=>'4','5'=>'5',
                                 '6'=>'6','7'=>'7','refused_dontknow'=>"Refused/I Don't Know");   
     var $rating1 = array (''=>NULL,'often'=>'Often','occasionally'=>'Occasionally','never'=>'Never',
@@ -90,7 +90,7 @@ class NDB_BVL_Instrument_sibling_socialcontact extends NDB_BVL_Instrument
 
         $this->form->addElement('static','lorisSubHeader',"We would like to know about your child's relationship with his or her older sibling (please check<BR>your email to confirm which sibling you should respond for). Answer the questions in relationships <BR>to their contact in the last three months."); 
        
-        $this->addSelect('respondent',"Completed by :", $this->respondent);
+        $this->addSelect('respondent',"What is your relationship to the child :", $this->respondent);
         
         $group [] = $this->createText('respondent_other',$this->indent."If Other please specify");
         $this->addGroup($group,"respondent_other_group",$this->indent."If Other please specify",null,false);

@@ -98,6 +98,7 @@ class ProjectFormFields extends React.Component {
   }
 
   deleteUpload(uploadID) {
+    let self = this;
     swal({
       title: "Are you sure?",
       text: "Are you sure you want to delete this file?",
@@ -109,7 +110,14 @@ class ProjectFormFields extends React.Component {
       function(willDelete) {
         if (willDelete) {
           let url = loris.BaseURL + '/publication/ajax/FileDelete.php?uploadID=' + uploadID;
-          $.ajax(url, {method: 'DELETE'});
+          $.ajax(
+            url,
+            {
+              method: 'DELETE',
+              success: function() {
+                self.props.fetchData();
+              }
+            });
         }
       });
   }
@@ -124,7 +132,11 @@ class ProjectFormFields extends React.Component {
           <span>
             <a href={downloadURL}>{f.URL}</a>
             &nbsp;&nbsp;
-            <span className="glyphicon glyphicon-remove" onClick={() => this.deleteUpload(f.PublicationUploadID)} />
+            <span
+              className="glyphicon glyphicon-remove"
+              style={{cursor: 'pointer'}}
+              onClick={() => this.deleteUpload(f.PublicationUploadID)}
+            />
           </span>
         );
         let existFileFlag = 'existingUpload_';
@@ -324,7 +336,7 @@ class ProjectFormFields extends React.Component {
         <TagsElement
           name="usersWithEditPerm"
           id="usersWithEditPerm"
-          label="Users with Edit Permission"
+          label="LORIS Users with Edit Permission"
           options={this.props.users}
           useSearch={true}
           strictSearch={true}
@@ -400,5 +412,270 @@ class ProjectFormFields extends React.Component {
     );
   }
 }
+/**
+ * Tags Component
+ * Allows for multiple values to be entered for a single field
+ *
+ * Comes in 3 flavors:
+ * 1: If options are passed and useSearch = true
+ *    input field is rendered as a searchable dropdown
+ * 2: If only options are passed, input is rendered as
+ *    a normal dropdown select
+ * 3: Without options, input is a normal, free text input
+ */
+
+class TagsElement extends React.Component {
+    constructor() {
+        super();
+        this.handleChange = this.handleChange.bind(this);
+        this.handleKeyPress = this.handleKeyPress.bind(this);
+        this.handleAdd = this.handleAdd.bind(this);
+        this.handleRemove = this.handleRemove.bind(this);
+        this.getKeyFromValue = this.getKeyFromValue.bind(this);
+        this.canAddItem = this.canAddItem.bind(this);
+    }
+
+    // pendingValKey is the placeholder variable for temporarily storing
+    // typed or selected items before adding them to the Tags
+    handleChange(e) {
+        this.props.onUserInput(this.props.pendingValKey, e.target.value);
+    }
+    // also add tags if enter key is hit within input field
+    handleKeyPress(e) {
+        if (e.keyCode === 13 || e.which === 13) {
+            e.preventDefault();
+            this.handleAdd();
+        }
+    }
+
+    // send pendingValKey as an argument in order to null out entered item
+    handleAdd() {
+        let options = this.props.options;
+        let value = this.props.value;
+        // if using a datalist (search), set value to be the key in options
+        if (this.props.useSearch && Object.values(options).indexOf(value) > -1) {
+            value = this.getKeyFromValue(value);
+        }
+        if (this.canAddItem(value)) {
+            this.props.onUserAdd(this.props.name, value, this.props.pendingValKey);
+        }
+    }
+
+    handleRemove(e) {
+        let value = e.target.getAttribute('data-item');
+        this.props.onUserRemove(this.props.name, value);
+    }
+
+    getKeyFromValue(value) {
+        let options = this.props.options;
+        return Object.keys(options).find(function(o) {
+            return options[o] === value;
+        });
+    }
+
+    // helper function to detect if item should be added to Tags
+    canAddItem(value) {
+        let result = true;
+        // reject empty values
+        if (!value) {
+            result = false;
+            // reject if allowDupl is false and item is already in array
+        } else if (!this.props.allowDupl && this.props.items.indexOf(value) > -1) {
+            result = false;
+            // reject if using a strict datalist and value is not in options
+        } else if (this.props.useSearch &&
+            this.props.strictSearch &&
+            Object.keys(this.props.options).indexOf(value) === -1
+        ) {
+            result = false;
+        }
+
+        return result;
+    }
+
+    render() {
+        let disabled = this.props.disabled ? 'disabled' : null;
+        let requiredHTML = null;
+        let emptyOptionHTML = null;
+        let errorMessage = null;
+        let elementClass = "row form-group";
+        // Add required asterix
+        if (this.props.required) {
+            requiredHTML = <span className="text-danger">*</span>;
+        }
+
+        // Add empty option
+        if (this.props.emptyOption) {
+            emptyOptionHTML = <option></option>;
+        }
+
+        if (this.props.errorMessage) {
+            errorMessage = <span>{this.props.errorMessage}</span>;
+            elementClass = 'row form-group has-error';
+        }
+
+        let input;
+        let options = this.props.options;
+        // if options are given and useSearch is specified
+        if (Object.keys(options).length > 0 && this.props.useSearch) {
+            input = (
+                <div>
+                    <input
+                        type="text"
+                        name={this.props.name}
+                        id={this.props.id}
+                        list={this.props.id + '_list'}
+                        className="form-control"
+                        value={this.props.value || ""}
+                        disabled={disabled}
+                        onChange={this.handleChange}
+                        onKeyPress={this.handleKeyPress}
+                    />
+                    <datalist id={this.props.id + '_list'}>
+                        {Object.keys(options).map(function(option) {
+                            return (
+                                <option value={options[option]} key={option}>{options[option]}</option>
+                            );
+                        })}
+                    </datalist>
+                </div>
+            );
+            // if options are present but useSearch is false, use normal dropdown
+        } else if (Object.keys(options).length > 0) {
+            input = <select
+                name={this.props.name}
+                className="form-control"
+                id={this.props.id}
+                value={this.props.value}
+                disabled={disabled}
+                onChange={this.handleChange}
+                onKeyPress={this.handleKeyPress}
+            >
+                {emptyOptionHTML}
+                {Object.keys(options).map(function(option) {
+                    return (
+                        <option value={option} key={option}>{options[option]}</option>
+                    );
+                })}
+            </select>;
+            // else, use a text input by default
+        } else {
+            input = <input
+                type="text"
+                name={this.props.name}
+                id={this.props.id}
+                className="form-control"
+                value={this.props.value || ""}
+                disabled={disabled}
+                onChange={this.handleChange}
+                onKeyPress={this.handleKeyPress}
+            />;
+        }
+
+        // iterate through added Tags items and render them
+        // with deletion button
+        let items = this.props.items.map(function(item) {
+            let itmTxt;
+            // in event that the passed item is a key of options,
+            // render option value
+            if (Object.keys(options).length > 0 && options[item] !== undefined) {
+                itmTxt = options[item];
+                // otherwise just render item as is
+            } else {
+                itmTxt = item;
+            }
+            return (
+                <button
+                    className="btn btn-info btn-inline"
+                    type="button"
+                    onClick={this.handleRemove}
+                    data-item={item}
+                >
+                    {itmTxt}
+                    &nbsp;
+                    <span
+                        className="glyphicon glyphicon-remove"
+                        data-item={item}
+                    />
+                </button>
+            );
+        }, this);
+        return (
+            <div className={elementClass}>
+                <label className="col-sm-3 control-label" htmlFor={this.props.id}>
+                    {this.props.label}
+                    {requiredHTML}
+                </label>
+                <div className="col-sm-9">
+                    {items}
+                    {input}
+                    {errorMessage}
+                    <button
+                        className="btn btn-success btn-add-tag"
+                        id={this.props.id + 'Add'}
+                        type="button"
+                        onClick={this.handleAdd}
+                    >
+                        <span className="glyphicon glyphicon-plus"/>
+                        {this.props.btnLabel}
+                    </button>
+                </div>
+            </div>
+        );
+    }
+}
+
+TagsElement.propTypes = {
+    name: React.PropTypes.string.isRequired,
+    id: React.PropTypes.string.isRequired,
+    pendingValKey: React.PropTypes.string.isRequired,
+    options: React.PropTypes.object,
+    items: React.PropTypes.array,
+    label: React.PropTypes.string,
+    value: React.PropTypes.string,
+    class: React.PropTypes.string,
+    multiple: React.PropTypes.bool,
+    required: React.PropTypes.bool,
+    disabled: React.PropTypes.bool,
+    emptyOption: React.PropTypes.bool,
+    errorMessage: React.PropTypes.string,
+    btnLabel: React.PropTypes.string,
+    allowDupl: React.PropTypes.bool,
+    useSearch: React.PropTypes.bool,
+    strictSearch: React.PropTypes.bool,
+    onUserInput: React.PropTypes.func,
+    onUserAdd: React.PropTypes.func,
+    onUserRemove: React.PropTypes.func
+};
+
+TagsElement.defaultProps = {
+    name: '',
+    options: {},
+    items: [],
+    label: '',
+    value: undefined,
+    id: '',
+    class: '',
+    required: false,
+    disabled: false,
+    emptyOption: true,
+    hasError: false,
+    allowDupl: false,
+    useSearch: false,
+    strictSearch: false, // only accept items specified in options
+    errorMessage: '',
+    pendingValKey: '',
+    btnLabel: 'Add Tag',
+    onUserInput: function() {
+        console.warn('onUserInput() callback is not set');
+    },
+    onUserAdd: function() {
+        console.warn('onUserAdd() callback is not set');
+    },
+    onUserRemove: function() {
+        console.warn('onUserRemove() callback is not set');
+    }
+};
+
 
 export default ProjectFormFields;

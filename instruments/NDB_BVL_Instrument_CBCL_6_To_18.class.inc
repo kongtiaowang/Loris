@@ -97,6 +97,22 @@ class NDB_BVL_Instrument_CBCL_6_To_18 extends NDB_BVL_Instrument
         $this->addHeader("Child Behavior Checklist (CBCL) For Ages 6-18");
 
         $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
+        $opts = array(
+            null              => "",
+            "mother"             => "Mother",
+            "father"             => "Father",
+            "step_mother"        => "Step Mother",
+            "step_father"        => "Step Father",
+            "other"             => "Other",
+        );
+        $this->addSelect("relationship_to_child", "What is your relationship to the child?", $opts);
+        $this->addBasicText("other_relationship_to_child", $this->indent."If Other, please describe:");
+        $this->XINRegisterRule(
+            "other_relationship_to_child",
+            array("relationship_to_child{@}=={@}other"),
+            "Required",
+            "other_relationship_to_child"
+        );
     }
 
     /**

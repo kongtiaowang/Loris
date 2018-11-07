@@ -132,7 +132,9 @@ class AddSurvey extends \NDB_Form
         if (!empty($values['Email']) && empty($values['Email2'])) {
             return array('Email2' => 'Please confirm the email address.');
         }
-
+        if (empty($values['Email']) ) {
+                return array('Email' => 'Email is required.');
+        }
         if (empty($values['Test_name'])) {
             return array('Test_name' => 'Please choose an instrument.');
         }
@@ -218,14 +220,45 @@ class AddSurvey extends \NDB_Form
             $config = \NDB_Config::singleton();
             $www    = $config->getSetting("www");
 
+            if($values['Test_name'] == 'air_pollution')
+            {
+                $url=$www['url'] . '/survey.php?key=' .
+                    urlencode($key);
+            }
+            else{
+                $url=$www['url'] . '/survey_module/?key=' .
+                    urlencode($key);
+            }
+           if($values['VL']== 'VSA')
+            {
+                $parentid=$this->getParentID($values['CandID']);
+                $parent_portal_note="\nYou can access all your surveys on our Parent Portal.\nPlease note that to log into your Parent Portal, you will be asked for the Parent ID and Email, listed below. 
+\n".$www['url'] ."/parent_portal/
+                ParentID:  $parentid
+                Email: ".$values['Email']."\n\n You can also click the link below to access this survey individually.\n";
+                $url=$parent_portal_note.$url;
+            }
+
             $msg_data = array(
                          'study'     => $config->getSetting("title"),
-                         'url'       => $www['url'] . '/survey.php?key=' .
-                                         urlencode($key),
+                         'url'       => $url,
                          'EmailForm' => $values['email_dialog'],
                         );
-            \Email::send($values['Email'], 'new_survey.tpl', $msg_data);
+            \Email::send($values['Email'], 'new_survey.tpl', $msg_data,"", "IBIS Team <noreply@ibis.loris.ca>");
         }
+    }
+
+    function getParentID($cnid)
+    {
+        $db        = \Database::singleton();
+        $parentid = $db->pselectRow(
+            "SELECT ParentID FROM candidate
+            WHERE CandID=:cid",
+            array(
+                'cid'  => $cnid
+            )
+        );
+        return $parentid['ParentID'];
     }
 
     /**
@@ -259,13 +292,27 @@ class AddSurvey extends \NDB_Form
             "Instrument",
             array_merge(
                 array('' => ''),
-                \Utility::getDirectInstruments()
+                $this->getOrderedDirectInstruments()
             )
         );
         $this->addBasicText("Email", "Email address");
         $this->addBasicText("Email2", "Confirm Email address");
 
         $this->form->addFormRule(array(&$this, '_validateAddSurvey'));
+    }
+
+    function getOrderedDirectInstruments()
+    {
+        $DB            =& \Database::singleton();
+        $instruments   = array();
+        $instruments_q = $DB->pselect(
+            "SELECT Test_name,Full_name FROM test_names WHERE IsDirectEntry=true ORDER BY Full_name",
+            array()
+        );
+        foreach ($instruments_q as $key) {
+            $instruments[$key['Test_name']] =$key['Full_name'];
+        }
+        return $instruments;
     }
 
     /**

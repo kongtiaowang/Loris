@@ -508,9 +508,14 @@ class Candidate
         $db =& Database::singleton();
 
         do {
-            //Currently 6 digit rand is used to generate more secure ParentIDs'.
-            //Needs to revert back to 4 digit rand(default) to create new ExternalIDs' in future.
-            $randid = $ID . rand(100000, 999999);
+            //Currently 6 digit rand is used to generate more secure ParentIDs as suggested by Pierre'.
+           // 4 digit rand generation for other external ids
+            if($ID=="PARENT") {
+                $randid = $ID . rand(100000, 999999);
+            }
+            else{
+                $randid = $ID . rand(1000, 9999);
+            }
             $nid = $ID . "ID";
         } while($db->pselectOne("SELECT count($nid) FROM candidate WHERE `$nid`=:randomIDQ", array('randomIDQ' => $randid)) > 0);
         return $randid;
@@ -659,6 +664,30 @@ class Candidate
             $option_array[$option['ID']] = $option['Description'];
         }
         return $option_array;
+    }
+
+    /**
+     * Returns list of consents and their respective statuses for this candidate
+     *
+     * @return array List of consents and their associated values for this candidate
+     *               The keys of the arrays are the IDs of the consents
+     */
+    public function getConsents()
+    {
+        $factory = NDB_Factory::singleton();
+        $db      = $factory->database();
+
+        $candID = $this->getCandID();
+
+        $query = "SELECT ConsentID, Name, Status, DateGiven, DateWithdrawn
+            FROM candidate_consent_rel cc JOIN consent c USING (ConsentID)
+            WHERE CandidateID=:cid";
+        $where = array('cid' => $candID);
+        $key   = "ConsentID";
+
+        $consentList = $db->pselectWithIndexKey($query, $where, $key);
+
+        return $consentList;
     }
 
 }

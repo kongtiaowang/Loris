@@ -106,7 +106,22 @@ class NDB_BVL_Instrument_Seizure_Questionnaire extends NDB_BVL_Instrument
 
         $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
 
-        $this->addBasicText("relationship_to_child", "Relationship to child:");
+        $opts = array(
+            null              => "",
+            "mother"             => "Mother",
+            "father"             => "Father",
+            "step_mother"        => "Step Mother",
+            "step_father"        => "Step Father",
+            "other"             => "Other",
+        );
+        $this->addSelect("relationship_to_child", "What is your relationship to the child?", $opts);
+        $this->addBasicText("relationship_to_child_other", $this->indent."If Other, please describe:");
+        $this->XINRegisterRule(
+            "relationship_to_child_other",
+            array("relationship_to_child{@}=={@}other"),
+            "Required",
+            "relationship_to_child_other"
+        );
     }
 
 

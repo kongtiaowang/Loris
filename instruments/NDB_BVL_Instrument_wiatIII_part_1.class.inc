@@ -123,7 +123,7 @@ class NDB_BVL_Instrument_wiatIII_part_1 extends NDB_BVL_Instrument_wiatIII
             "5" => "5",
             "6" => "6",
             "7" => "7",
-            "8" => "2",
+            "8" => "8",
             "9" => "9",
             "10" => "10",
             "11" => "11",

@@ -104,6 +104,8 @@ class NDB_BVL_Instrument_CCC2 extends NDB_BVL_Instrument
         $opts2 = array(
             null => "",
             "parent" => "Parent",
+            "step_father" => "Step Father",
+            "step_mother" => "Step Mother",
             "caregiver" => "Caregiver",
             "teacher" => "Teacher",
             "other" => "Other"

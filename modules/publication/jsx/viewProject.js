@@ -20,6 +20,7 @@ class ViewProject extends React.Component {
     this.addListItem = this.addListItem.bind(this);
     this.removeListItem = this.removeListItem.bind(this);
     this.validateEmail = this.validateEmail.bind(this);
+    this.fetchData = this.fetchData.bind(this);
   }
 
   validateEmail(field, email) {
@@ -85,7 +86,7 @@ class ViewProject extends React.Component {
     });
   }
 
-  componentDidMount() {
+  fetchData() {
     let self = this;
     $.ajax(this.props.DataURL, {
       dataType: 'json',
@@ -136,6 +137,10 @@ class ViewProject extends React.Component {
         });
       }
     });
+  }
+
+  componentDidMount() {
+    this.fetchData();
   }
 
   createFileDownloadLinks() {
@@ -285,6 +290,7 @@ class ViewProject extends React.Component {
           allKWs={this.state.allKWs}
           allCollabs={this.state.allCollabs}
           editMode={true}
+          fetchData={this.fetchData}
         />
       </div>
     );
@@ -347,12 +353,11 @@ class ViewProject extends React.Component {
     let statusElement;
     let rejectReason;
     let reviewBtn;
+    let statusID = this.state.formData.status;
+    let status = this.state.statusOpts[statusID];
     if (loris.userHasPermission('publication_approve')) {
       // if user has publication_approve permission, this means that status
       // in formData reflects the ID, not the description
-      let statusID = this.state.formData.status;
-      let status = this.state.statusOpts[statusID];
-
       statusElement = <SelectElement
         name="status"
         label="Status"
@@ -373,13 +378,10 @@ class ViewProject extends React.Component {
           required={true}
         />;
       }
-
       // Set review button only if user does not have edit permission
       // to avoid having 2 submit buttons
       reviewBtn = this.state.userCanEdit ? undefined : <ButtonElement label="Submit" />;
     } else {
-      let statusID = this.state.formData.status;
-      let status = this.state.statusOpts[statusID];
       const statClassMap = {
         Pending: 'text-warning',
         Approved: 'text-success',
@@ -409,6 +411,30 @@ class ViewProject extends React.Component {
       formElements = this.createStaticComponents();
     }
 
+    // only allow the title to be editable if user has editing access
+    // and proposal is still unreviewed
+    let title;
+    if (this.state.userCanEdit && status === 'Pending') {
+      title = (
+        <TextboxElement
+          name="title"
+          label="Title"
+          onUserInput={this.setFormData}
+          required={true}
+          value={this.state.formData.title}
+        />
+      );
+    } else {
+      title = (
+        <div className="row">
+          <div className="col-md-3"/>
+          <h3 className="col-md-9">
+            {this.state.formData.title}
+          </h3>
+        </div>
+      );
+    }
+
     return (
       <div className="row">
         <div className="col-md-12 col-lg-12">
@@ -417,12 +443,7 @@ class ViewProject extends React.Component {
             onSubmit={this.handleSubmit}
             ref="form"
           >
-            <div className="row">
-              <div className="col-md-3"/>
-              <h3 className="col-md-9">
-                {this.state.formData.title}
-              </h3>
-            </div>
+            {title}
             {statusElement}
             {rejectReason}
             {formElements}

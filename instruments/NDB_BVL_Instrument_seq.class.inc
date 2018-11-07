@@ -164,7 +164,9 @@ class NDB_BVL_Instrument_seq extends NDB_BVL_Instrument
 		$db =& Database::singleton();
 
 		// Get the item scores
-        $record = $db->pselectRow("SELECT * FROM $this->table WHERE CommentID=:cid",array("cid" =>$this->getCommentID() ));
+
+        $query = "SELECT * FROM $this->table WHERE CommentID='" . $this->getCommentID() . "'";
+        $record = $db->pselectRow($query, array());
 
 
 		if(preg_match("/seq(_page[0-9]+)/",$this->page,$matches)){
@@ -248,7 +250,7 @@ class NDB_BVL_Instrument_seq extends NDB_BVL_Instrument
 
 		// Get the item scores
 		$query = "SELECT * FROM $this->table WHERE CommentID='" . $this->getCommentID() . "'";
-		$record = $db->pselectRow($query, null);
+		$record = $db->pselectRow($query, array());
 
 		// Get the subject DoB for scoring
 		if($this->getSessionID() != NULL) { //quickform_parser doesn't use any specific session
@@ -258,7 +260,7 @@ class NDB_BVL_Instrument_seq extends NDB_BVL_Instrument
 
 		// Get the Date of administration
 		$query = "SELECT Date_taken from $this->testName WHERE CommentID = '".$this->getCommentID()."'";
-		$Date_taken = $db->selectOne($query);
+		$Date_taken = $db->pselectOne($query,array());
 
 		if(empty($dob) || empty($Date_taken)) {
 			$age = -1;
@@ -276,12 +278,12 @@ class NDB_BVL_Instrument_seq extends NDB_BVL_Instrument
 		$questions = array();
 		$questionsArray = array_merge($this->questionArray,
 			array(
-				"a_sounds"=>"A. Sounds",
-				"b_lights"=>"B. Lights",
-				"c_smells"=>"C. Smells",
-				"d_tastes"=>"D. Tastes",
-				"e_textures"=>"E. Textures",
-				"f_touch"=>"F. Touch",
+				"q36_a_sounds"=>"A. Sounds",
+				"q36_b_lights"=>"B. Lights",
+				"q36_c_smells"=>"C. Smells",
+				"q36_d_tastes"=>"D. Tastes",
+				"q36_e_textures"=>"E. Textures",
+				"q36_f_touch"=>"F. Touch",
 				"q37_seek_or_crave" => "Does your child `seek` or `crave` particular sensory experiences?",
 				"q38_selective" => "Is your child selective in food preferences?"
 			)
@@ -290,7 +292,6 @@ class NDB_BVL_Instrument_seq extends NDB_BVL_Instrument
 
 		$i = 1;
 		$k = 0;
-
 		// Matches each question with its question number
 		// # 1 - 38
 		foreach ($questionsArray as $key => $question) {
@@ -355,9 +356,9 @@ class NDB_BVL_Instrument_seq extends NDB_BVL_Instrument
 			// Visual - sum the raw scores for items # 8, 9, 10, 11, 12, 36b (6 items total)
 			$alg['total_visual'] = array(8, 9, 10, 11, 12, '36b');
 			// Gustatory/Olfactory - sum the raw scores for items # 22, 23, 25, 36c, 36d, 38 (7 items total)
-			$alg['total_gustatory_olfactory'] = array(22, 23, 25, '36c', '36d', 38);
-			// Vestibular/Proprioceptive - sum the raw scores for items # 14, 15, 16, 17, 18, 19, 20, 21, 36e, 36f (10 items total)
-			$alg['total_vestibular_proprioceptive'] = array(14, 15, 16, 17, 18, 19, 20, 21, '36e', '36f');
+			$alg['total_gustatory_olfactory'] = array(22, 23, 24, 25, '36c', '36d', 38);
+			// Vestibular/Proprioceptive - sum the raw scores for items # 27,28,29,30
+			$alg['total_vestibular_proprioceptive'] = array('27','28','29','30');
 
 			// Build query
 			$fields = "";
@@ -371,8 +372,7 @@ class NDB_BVL_Instrument_seq extends NDB_BVL_Instrument
 			}
 
 			$query = "SELECT " . $fields . " FROM $this->table WHERE CommentID='" . $this->getCommentID() . "'";
-			$results = $db->pselectOne($query, null);
-
+			$results = $db->pselectOne($query, array());
 
 			$completely_answered = true;
 			while ($completely_answered) {
@@ -388,17 +388,21 @@ class NDB_BVL_Instrument_seq extends NDB_BVL_Instrument
 			}
 			if ($completely_answered) {
 				foreach ($this->scoreCols as $key) {
+                    $zero_count=0;
 					foreach ($questions as $number => $question) {
 						if (in_array($number, $alg[$key])) {
+						    if($score[$question]==0)
+                            {
+                                $zero_count++;
+                            }
 							$totals[$key] += $score[$question];
 						}
 					}
-					$totals[$key] = ($totals[$key]) / count($alg[$key]);
+                    $final_count=count($alg[$key])-$zero_count;
+					$totals[$key] = ($totals[$key]) / $final_count;
 				}
 			}
 		}
-
-
 		// save the resultant total
 		$db->update(
 			$this->table,
