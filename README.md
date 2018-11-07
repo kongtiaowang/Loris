@@ -3,7 +3,7 @@
 LORIS (Longitudinal Online Research and Imaging System) is a web-based data and project management software for neuroimaging research. LORIS makes it easy to manage large datasets including behavioural, clinical, neuroimaging and genetic data acquired over time or at different sites.
 
 <hr>
-NEW <b>⇾  Try LORIS on Heroku</b> before installing it on your system<br>
+<b>⇾  Try LORIS on Heroku</b> before installing it on your system<br>
 Test out the project management and clinical data management side of LORIS (complete Imaging features not yet available)<br>
 Deploy and log in with username <i>admin</i> and the password that's set up during deployment via ClearDB.
 
@@ -17,22 +17,19 @@ Deploy and log in with username <i>admin</i> and the password that's set up duri
 | minor  | [![Build Status](https://travis-ci.org/aces/Loris.svg?branch=minor)](https://travis-ci.org/aces/Loris)
 | bugfix | [![Build Status](https://travis-ci.org/aces/Loris.svg?branch=bugfix)](https://travis-ci.org/aces/Loris)
 
-This Readme covers installation of the LORIS <b>v19.*</b> release on <b>Ubuntu</b>.
+This Readme covers installation of the LORIS <b>v20.*</b> release on <b>Ubuntu</b>.
 ([CentOS Readme also available](https://github.com/aces/Loris/blob/master/README.CentOS6.md)).
 
 Please consult the [LORIS Wiki Setup Guide](https://github.com/aces/Loris/wiki/Setup) notes on this [Install process](https://github.com/aces/Loris/wiki/Installing-Loris) for more information not included in this Readme. The [LORIS Developers mailing list](http://www.bic.mni.mcgill.ca/mailman/listinfo/loris-dev) may also provide installation guidance not covered in the Wiki. 
 
 # Prerequisites for Installation
 
- * LINUX (supported on Ubuntu 14+ and [CentOS 6.5](https://github.com/aces/Loris/blob/master/README.CentOS6.md))
- * Apache2
- * MySQL 5.7 
- * PHP <b>7</b>  
- * Package manager (for LINUX distributions)
- * Composer : should be run with --no-dev option
+ * Apache **2.4** or higher
+ * MySQL >= 5.7 (or MariaDB >= 10.3) 
+ * PHP <b>7.2</b> or higher
+ * [Composer](https://getcomposer.org/)
 
-<b>Important:</b>
- * If you are upgrading your LORIS, you'll also want to upgrade to both PHP 7 and MySQL 5.7, since these dependency versions were not supported in the last release. 
+<b>Note:</b>
  * Composer should be run with --no-dev option unless you are an active LORIS developer. 
 
 Consult the [LORIS Wiki](https://github.com/aces/Loris/wiki/Setup) page on this [Install process](https://github.com/aces/Loris/wiki/Installing-Loris) for more information.
@@ -91,3 +88,4 @@ LORIS requires Apache's mod_rewrite module to rewrite its URLs. Enable this modu
 
 # Community
 Please feel free to subscribe to the [LORIS Developers mailing list](http://www.bic.mni.mcgill.ca/mailman/listinfo/loris-dev) to ask any LORIS-related questions.
+

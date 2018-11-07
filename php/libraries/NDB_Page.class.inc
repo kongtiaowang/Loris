@@ -270,6 +270,9 @@ class NDB_Page implements RequestHandlerInterface
                'style' => 'max-width:33%; display:inline-block;',
               )
     ) {
+        if ($options === array() && !empty($this->dateOptions)) {
+            $options = $this->dateOptions;
+        }
         $this->form->addElement('date', $field, $label, $options, $attr);
     }
 
@@ -447,7 +450,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param array  $options Extra options to pass to QuickForm
      * @param array  $attr    Extra HTML attributes to add to the element
      *
-     * @return HTML_QuickForm select element
+     * @return array representing select element
      */
     function createSelect(
         $field,
@@ -463,7 +466,7 @@ class NDB_Page implements RequestHandlerInterface
      *
      * @param string $labelString The label to attach to the element
      *
-     * @return HTML_QuickForm Label element
+     * @return array representing label element
      */
     function createLabel(
         $labelString
@@ -482,7 +485,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param string $label   The label to attach to the element
      * @param array  $attribs Extra HTML attributes to add to the element
      *
-     * @return HTML_QuickForm Text element
+     * @return array representing text element
      */
     function createText(
         $field,
@@ -499,7 +502,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param string $field The field name for the TextArea
      * @param string $label The label to attach to this TextArea
      *
-     * @return HTML_QuickForm textarea element
+     * @return array representing textarea element
      */
     function createTextArea($field, $label=null)
     {
@@ -520,7 +523,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param array  $attr        List of HTML attributes to add to the date
      *                            group.
      *
-     * @return HTML_QuickForm date element
+     * @return array representing date element
      */
     function createDate(
         $field,
@@ -548,7 +551,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param string $options Options to pass to HTML_QuickForm
      * @param string $closer  ?????
      *
-     * @return QuickForm_Element representing checkbox
+     * @return array representing checkbox
      */
     function createCheckbox($field, $label, $options=null, $closer='</label>')
     {
@@ -568,7 +571,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param string $label   The label to attach to this radio button
      * @param string $options Options to pass to LorisForm
      *
-     * @return QuickForm_Element representing radio button
+     * @return array representing radio button
      */
     function createRadio($field, $label, $options=null)
     {
@@ -588,7 +591,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param string $label The label to attach to the form element
      * @param array  $attr  List of HTML attributes to add to the element
      *
-     * @return QuickForm_Element Form element
+     * @return array representing form element
      */
     function createPassword(
         $field,
@@ -620,7 +623,11 @@ class NDB_Page implements RequestHandlerInterface
     ) : ResponseInterface {
         $user = $request->getAttribute("user");
         if ($this->_hasAccess() !== true) {
-            throw new PermissionDenied();
+            return (new \LORIS\Middleware\PageDecorationMiddleware($user))
+                ->process(
+                    $request,
+                    new \LORIS\Http\StringStream("Permission Denied")
+                )->withStatus(403);
         }
 
         // The NDB_Page object itself is sometimes required by middleware,
