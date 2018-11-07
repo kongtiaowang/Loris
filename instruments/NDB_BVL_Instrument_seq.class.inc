@@ -260,7 +260,7 @@ class NDB_BVL_Instrument_seq extends NDB_BVL_Instrument
 
 		// Get the Date of administration
 		$query = "SELECT Date_taken from $this->testName WHERE CommentID = '".$this->getCommentID()."'";
-		$Date_taken = $db->selectOne($query);
+		$Date_taken = $db->pselectOne($query,array());
 
 		if(empty($dob) || empty($Date_taken)) {
 			$age = -1;
@@ -373,7 +373,7 @@ class NDB_BVL_Instrument_seq extends NDB_BVL_Instrument
 			}
 
 			$query = "SELECT " . $fields . " FROM $this->table WHERE CommentID='" . $this->getCommentID() . "'";
-			$results = $db->pselectOne($query, null);
+			$results = $db->pselectOne($query, array());
 
 
 			$completely_answered = true;
