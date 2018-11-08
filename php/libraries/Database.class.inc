@@ -297,21 +297,33 @@ class Database
     }
 
     /**
-     * Escapes the HTML from an array that is about to be inserted into the database
+     * Escape the HTML from an array that is about to be inserted into the
+     * database.
+     * NOTE this only provide safety when elements are inserted into the
+     * "innerHTML" of an element; if a value is instead injected
+     * into attribute such as 'name', 'value', 'class', etc.
+     * then Javascript injection is still possible.
+     *
+     * This function alone does not guarantee safety.
      *
      * @param array $set The array to be inserted as a new row
      *
-     * @return A copy of $set with the HTML characters escaped
+     * @return array A copy of $set with the HTML characters escaped
      */
     private function _HTMLEscapeArray($set)
     {
         $retVal = array();
         foreach ($set as $key => $val) {
+            /* FIXME this check is only here because of a quirk of the
+             * imaging browser. The module should be refactored and this check
+             * removed.
+             */
             if ($val === 'Unrated') {
                 $retVal[$key] = '';
-            } else {
-                $retVal[$key] = is_null($val) ? null : htmlspecialchars($val);
+                continue;
             }
+            // Only call htmlspecialchars on strings, or else an error occurs.
+            $retVal[$key] = is_string($val) ? htmlspecialchars($val) : $val;
         }
         return $retVal;
     }
@@ -742,16 +754,18 @@ class Database
      * @param string $query  The SQL SELECT query to be run
      * @param array  $params Values to use for binding to prepared statement
      *
-     * @return array Associative array of form ColumnName => Value for each column
-     *               in the first row of the query
+     * @return ?array Associative array of form ColumnName => Value for each column
+     *                in the first row of the query
      */
-    function pselectRow($query, $params)
+    function pselectRow(string $query, array $params) : ?array
     {
-        $rows = $this->pselect($query . " LIMIT 1", $params);
-        if (isset($rows[0])) {
-            return $rows[0];
+        $rows = $this->pselect($query . " LIMIT 2", $params);
+        if (count($rows) > 1) {
+            throw new \DomainException(
+                "Attempt to use pselectRow on a query that returns multiple rows"
+            );
         }
-        return $rows;
+        return $rows[0] ?? null;
     }
 
     /**
