@@ -227,10 +227,6 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
     function _testPageUIs($url,$ui)
     {
         $this->safeGet($this->url . $url);
-        $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("body")
-        )->getText();
-        print_r($bodyText);
         foreach ($ui as $key => $value) {
             $text = $this->webDriver->executescript(
                 "return document.querySelector('$value').textContent"
