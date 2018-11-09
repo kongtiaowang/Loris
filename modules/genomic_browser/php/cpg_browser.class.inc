@@ -34,7 +34,7 @@ class CpG_Browser extends \NDB_Menu_Filter
      * Show brief results or show full results (all available fields)
      */
     var $_displayBrief = true;  // default: display only Brief results
-
+public $fieldOptions;
     /**
      * Tell the Caller that data will be queried using ajax and after
      * the HTML page rendering.

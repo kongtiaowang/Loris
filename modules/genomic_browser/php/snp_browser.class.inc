@@ -39,7 +39,7 @@ class SNP_Browser extends \NDB_Menu_Filter
      * the HTML page rendering.
      */
     var $AjaxModule = true;
-
+public $fieldOptions;
     /**
      * Overloading this method to allow access to site users (own site only)
      * and users w/ multisite privileges
