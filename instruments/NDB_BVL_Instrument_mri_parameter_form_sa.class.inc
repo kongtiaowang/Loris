@@ -128,15 +128,12 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
         // PRE-SESSION SECTION
         $this->form->addElement('header', null, "<b><i>Pre-Session</i></b><BR><BR>");
 
-        $this->form->addElement('text', 'scan_protocol', 'Scan Protocol:');
-
-        $this->form->addElement('select', 'sex', 'Sex:', array("" => null, "male" => "Male", "female" => "Female"));
-
         $this->form->addElement('select', 'sedation', "Sedation?", array("" => null, "Yes" => "Yes", "No" => "No"));
 
-        $this->form->addElement('text', 'weight', 'Weight (lbs):');
-        $this->form->addElement('text', 'height', 'Height (inches):');
-        $this->form->addElement('text', 'head_circumference', 'Head Circumference (inches):');
+        $this->form->addElement('select', 'weight', 'Weight (lbs):', range(0, 200));
+        $this->form->addElement('select', 'height', 'Height (inches):', range(0, 70));
+        $this->form->addElement('select', 'head_circumference', 'Head Circumference (inches):', range(0, 25));
+        //$this->form->addElement('text', 'head_circumference', 'Head Circumference (inches):');
 
         $this->form->addElement('select', "Scanner_type", "Type of Scanner:", array("" => null, "hospital" => "Hospital", "research" => "Research", "other" => "Other"));
         $this->form->addElement("text", "Scanner_type_other", "<i>If other, specify:</i>");
@@ -164,15 +161,68 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
         // SCAN SESSION SECTION
         $this->form->addElement('header', null, "<b><i>Scan Session Information</i></b><BR><BR>");
         $this->form->addElement("text", "MR_technologist", "MR Technologist:");
-        $this->form->addElement("text", "Bx_specialist", "Bx Specialist:");
+        $examiners = $this->_getExaminerNames();
+        $this->form->addElement("select", "Bx_specialist", "Bx Specialist:", $examiners);
 
-        $this->form->addElement("text", "session_attempts", "Session #");
+        //$this->form->addElement("text", "session_attempts", "Session #");
+        $this->_displayHeadersScanSession();
+        for ($i=1; $i < 6; $i++) {
+            $group[] = $this->createLabel($i . ".");
+            $group[] = $this->createSelect(
+                "scan_done_$i",
+                "",
+                array(
+                    null => "",
+                    "yes" => "Yes",
+                    "no" => "No"
+                )
+            );
+            $this->XINRegisterRule(
+                "scan_done_" . $i, 
+                array("scan_done_$i{@}=={@}NEVER_REQUIRED")
+            );
+            $group[] = $this->createText(
+                "time_enter_mri_room_" . $i,
+                ""
+            );
+            $this->XINRegisterRule(
+                "time_enter_mri_room_" . $i,
+                array("scan_done_$i{@}=={@}yes"),
+                "Required if session is marked as done."
+            );
+           $group[] = $this->createText(
+                "scan_start_time_" . $i,
+                ""
+            );
+            $this->XINRegisterRule(
+                "time_enter_mri_room_" . $i,
+                array("scan_start_time_$i{@}=={@}yes"),
+                "Required if session is marked as done."
+            );
+            $group[] = $this->createText(
+                "scan_end_time_" . $i,
+                ""
+            );
+            $this->XINRegisterRule(
+                "time_enter_mri_room_" . $i,
+                array("scan_end_time_$i{@}=={@}yes"),
+                "Required if session is marked as done."
+            );
+            $this->form->addGroup(
+                $group,
+                "scan_" . $i . "_group",
+                null,
+                $this->_GUIDelimiter,
+                false
+            );
+            unset($group);
+        }
 
-        $this->addHourMinElement("time_enter_mri_rm", "Time Enter MRI Rm");
-        $this->addHourMinElement("start_time", "Scan Start Time");
-        $this->addHourMinElement("end_time", "Scan End Time");
+        //$this->addHourMinElement("time_enter_mri_rm", "Time Enter MRI Rm");
+        //$this->addHourMinElement("start_time", "Scan Start Time");
+        //$this->addHourMinElement("end_time", "Scan End Time");
 
-        $this->form->addElement('select', 'vit_e_right', "Vit E (Sbj Right)", array("" => null, "Yes" => "Yes", "No" => "No"));
+        //$this->form->addElement('select', 'vit_e_right', "Vit E (Sbj Right)", array("" => null, "Yes" => "Yes", "No" => "No"));
         $this->form->addElement('select', 'additional_sessions', "Additional sessions", array("" => null, "Yes" => "Yes", "No" => "No"));
 
         $this->form->addElement("textarea", "overall_session_comments", "<i>Overall Session Comments:</i>");
@@ -186,17 +236,6 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
         $this->form->addElement('header', null, "<b>Structural</b><BR><BR>");
         $this->form->addElement('select', 't1w_acquired', "<b>T1w acquired?</b>", array("" => null, "Yes_2" => "Yes (2)", "Yes_1" => "Yes (1)", 'none' => 'None'));
         $this->form->addElement('select', 't2w_acquired', "<b>T2w acquired?</b>", array("" => null, "Yes" => "Yes", "No" => "No"));
-
-        $this->form->addElement('static', null, '*Repeat until pass SNR; order doesn\'t matter<BR><BR>');
-
-        $this->form->addElement('advcheckbox', 'aahscout', "<i>AAHScout</i>", null, null, array(null, "Yes"));
-        $this->form->addElement('advcheckbox', 'fieldmap_apinv_structural', "<i>FieldMap_APinv</i>", null, null, array(null, "Yes"));
-        $this->form->addElement('advcheckbox', 'localizers', "<i>Localizers</i>", null, null, array(null, "Yes"));
-        $this->form->addElement('advcheckbox', 'fieldmap_ap_structural', "<i>FieldMap_AP</i>", null, null, array(null, "Yes"));
-
-        $this->form->addElement('advcheckbox', 't1w_run1_check', "T1w run1 | <i>T1w_MPR_1mm_p4</i>", null, null, array(null, "Yes"));
-        $this->form->addElement('advcheckbox', 't1w_run2_check', "T1w run2 | <i>T1w_MPR_1mm_p4</i>", null, null, array(null, "Yes"));
-        $this->form->addElement('advcheckbox', 't2w_check', "T2w | <i>T2w_SPC_1mm_p2x2</i>", null, null, array(null, "Yes"));
 
         $this->addLabel("<h4>$this->indent <BR><b>SNR Samples</b><BR></h4>");
 
@@ -228,31 +267,6 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
                 "Required.",
                 $question . "_group"
             );
-            $group[] = $this->createText(
-                $question . "_superior",
-                ""
-            );
-            $this->XINRegisterRule(
-                $question . "_superior",
-                array($question . "_check{@}=={@}Yes"),
-                "Required.",
-                $question . "_group"
-            );
-            $group[] = $this->createSelect(
-                $question . "_passfail",
-                "",
-                array(
-                 ''     => null,
-                 'Pass' => "Pass",
-                 'Fail' => "Fail",
-                )
-            );
-            $this->XINRegisterRule(
-                $question . "_passfail",
-                array($question . "_check{@}=={@}Yes"),
-                "Required.",
-                $question . "_group"
-            );
             $this->form->addGroup(
                 $group,
                 $question . "_group",
@@ -276,15 +290,7 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
                 array($question . "_anterior{@}=={@}NEVER_REQUIRED"),
                 $question . "_group"
             );
-            $group[] = $this->createText(
-                $question . "_superior",
-                ""
-            );
-            $this->XINRegisterRule(
-                $question . "_superior",
-                array($question . "_superior{@}=={@}NEVER_REQUIRED"),
-                $question . "_group"
-            );
+
             $group[] = $this->createSelect(
                 $question . "_passfail",
                 "",
@@ -319,7 +325,7 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
         $this->form->addElement('static', null, '<BR><BR><BR>');
 
         // Auto align success
-        $this->form->addElement('select', 'auto_align_successful', "<b><u>Was AutoAlign Successful?<b><u>", array('' => null, 'Yes' => "Yes", 'No' => "No"));
+        $this->form->addElement('select', 'auto_align_successful', "<h3><b><u>Was AutoAlign Successful?<b><u></h3>", array('' => null, 'Yes' => "Yes", 'No' => "No"));
         $this->form->addElement('static', null, '<i>(If failed, verify encoding direction for each run of DTI and BOLD)</i>');
         $this->form->addElement('static', null, '<BR>');
 
@@ -331,8 +337,10 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
         $this->form->addElement('static', null, '<BR>');
 
         $this->form->addElement('advcheckbox', 'dti3_shell', "DTI 3 Shell | <i>ep2d_diff_sms2_3shell_PA_1p7</i>", null, null, array(null, "Yes"));
-        $this->form->addElement('text', 'dti3_shell_attempts', "<b>Record Attempts & Pass/Fail</b><BR><BR>");
+        $this->form->addElement('select', 'dti3_shell_attempts', "<b>Record Attempts & Pass/Fail</b><BR><BR>", array(null => "", "console_pass" => "Console Pass", "console_fail" => "Console Fail"));
         $this->XINRegisterRule("dti3_shell_attempts", array("dti3_shell{@}=={@}Yes"), "Required.");
+        $this->form->addElement('select', 'dti3_shell_num_attempts', range(0, 10));
+        $this->XINRegisterRule("dti3_shell_num_attempts", array("dti3_shell{@}=={@}Yes"), "Required.");
 
         $this->form->addElement('advcheckbox', '3b0', "3B0 | <i>ep2d_diff_sms2_3B0_AP_1p7</i>", null, null, array(null, "Yes"));
         $this->form->addElement('text', '3b0_attempts', "<b>Record Attempts & Pass/Fail</b><BR><BR>");
@@ -341,6 +349,9 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
         $this->form->addElement('advcheckbox', 'dti2_shell', "DTI 2 Shell | <i>ep2d_diff_sms2_2shell_PA_1p7</i>", null, null, array(null, "Yes"));
         $this->form->addElement('text', 'dti2_shell_attempts', "<b>Record Attempts & Pass/Fail</b><BR><BR>");
         $this->XINRegisterRule("dti2_shell_attempts", array("dti2_shell{@}=={@}Yes"), "Required.");
+        $this->form->addElement('select', 'dti2_shell_num_attempts', range(0, 10));
+        $this->XINRegisterRule("dti2_shell_num_attempts", array("dti2_shell{@}=={@}Yes"), "Required.");
+
 
         $this->form->addElement('advcheckbox', '3b0_2', "3B0 | <i>ep2d_diff_sms2_3B0_AP_1p7</i>", null, null, array(null, "Yes"));
         $this->form->addElement('text', '3b0_2_attempts', "<b>Record Attempts & Pass/Fail</b><BR><BR>");
@@ -530,15 +541,9 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
             );
             $group[] = $this->form->createElement(
                 "static",
-                null,
-                null,
-                "<b>Superior</b>"
-            );
-            $group[] = $this->form->createElement(
-                "static",
-                null,
-                null,
-                "<b>Pass/Fail</b>"
+                 null,
+                 null,
+                 "<b>Console Pass/Fail"
             );
             $this->form->addGroup(
                 $group,
@@ -548,6 +553,53 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
                 false
             );
             unset($group);
+    }
+
+    function _displayHeadersScanSession() {
+        $group[] = $this->form->createElement(
+            "static",
+            null,
+            null,
+            ""
+        );
+        $group[] = $this->form->createElement(
+            "static",
+            null,
+            null,
+            "<b>Session Done<b>"
+        );
+        $group[] = $this->form->createElement(
+            "static",
+            null,
+            null,
+            "<b>Time Enter MRI Room<b>"
+        );
+        $group[] = $this->form->createElement(
+            "static",
+            null,
+            null,
+            "<b>Scan Start Time</b>"
+        );
+        $group[] = $this->form->createElement(
+            "static",
+            null,
+            null,
+            "<b>Scan End Time</b>"
+        );
+        $group[] = $this->form->createElement(
+            "static",
+            null,
+            null,
+            "<b>Vit E (Sbj Right)<b>"
+        );
+        $this->form->addGroup(
+            $group,
+            "scan_session_headers",
+            null,
+            $this->_GUIDelimiter,
+            false
+        );
+        unset($group);
     }
 }
 ?>
