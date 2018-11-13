@@ -90,8 +90,6 @@ class NDB_BVL_Instrument_DSMIV_SA extends NDB_BVL_Instrument
 
     function _page1()
     {
-
-        // (1) Qualitative impairment in social interaction
         $this->addHeader("DSM-IV Autistic Disorder Checklist (School Age)");
         $section_headers = array(
             "(1) Qualitative impairment in social interaction",
@@ -168,7 +166,6 @@ class NDB_BVL_Instrument_DSMIV_SA extends NDB_BVL_Instrument
         );
 
         $this->addHeader("<h4>IF child does NOT meet criteria for an ASD - <b><u>check NON ASD below and specify other dx/comment</u></b></h4>");
-        //$this->form->addElement('advcheckbox', 'nonasd', "NON ASD", null, null, array(null, "Yes"));
         $this->addCheckbox('nonasd', 'NA', array('value' => '1'));
         $this->XINRegisterRule('nonasd', array('nonasd{@}=={@}NEVER_REQUIRED'));
         $this->addBasicText('nonasd_comments', "Other dx/comment:");
