@@ -24,7 +24,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   var pvs;
   if (column === 'PSCID') {
     url = loris.BaseURL +
-      "/final_radiological_review/final_radiological_review/?identifier=" +
+      "/final_radiological_review/compare_reviews/?identifier=" +
       row.CommentID;
     return (
              <td>

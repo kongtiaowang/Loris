@@ -1,10 +1,11 @@
 <?php
 /**
- * Code for the form for the final radiological review module.
- * See NDB_Menu_Filter_final_radiological_review for description
- * of how module works.
+ * Code for the form used to compare all the reviews done in the
+ * final radiological review module.
+ * See final_radiological_review for a description of how the module 
+ * works.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Final_Radiological_Review
  * @package  Main
@@ -12,11 +13,14 @@
  * @license  Loris license
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-require_once "NDB_Form.class.inc";
-require_once "NDB_Menu_Filter_final_radiological_review.class.inc";
+ 
+namespace LORIS\final_radiological_review; 
+
+require_once __DIR__ . "/final_radiological_review.class.inc";
+
 /**
- * Generates the form for user input in the final_radiological_review
- * module.
+ * Generates the form to compare all the reviews (final, site and extra)
+ * in the final_radiological_review module.
  *
  * @category Final_Radiological_Review
  * @package  Main
@@ -24,7 +28,7 @@ require_once "NDB_Menu_Filter_final_radiological_review.class.inc";
  * @license  Loris license
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-class NDB_Form_Final_Radiological_Review extends NDB_Form
+class Compare_Reviews extends \NDB_Form
 {
     /**
      * Table that the review is saved to
@@ -39,12 +43,13 @@ class NDB_Form_Final_Radiological_Review extends NDB_Form
      */
     function _hasAccess()
     {
-        $user =& User::singleton();
+        $user =& \User::singleton();
         return (
             $user->hasPermission('view_final_radiological_review') ||
             $user->hasPermission('edit_final_radiological_review')
         );
     }
+    
     /**
      * Wrapper to get the user object and check the permission.
      * Used both in hasAccess and the setup when determining
@@ -57,16 +62,16 @@ class NDB_Form_Final_Radiological_Review extends NDB_Form
      */
     function _hasPerm($perm)
     {
-        $user =& User::singleton();
+        $user =& \User::singleton();
         return $user->hasPermission($perm);
     }
 
     /**
      * Constructor which sets up this->tpl_data for the form
      *
-     * @return null
+     * @return void
      */
-    function final_radiological_review()// @codingStandardsIgnoreLine
+    function setup()// @codingStandardsIgnoreLine
     {
         $yes_no       = array(
                          ''    => '',
@@ -93,7 +98,7 @@ class NDB_Form_Final_Radiological_Review extends NDB_Form
                          '4'  => 'Marked',
                         );
 
-        $DB =& Database::singleton();
+        $DB =& \Database::singleton();
         $radiologists_q = $DB->pselect(
             "SELECT * FROM examiners WHERE radiologist=True",
             array()
@@ -206,13 +211,13 @@ class NDB_Form_Final_Radiological_Review extends NDB_Form
      * information from the final_radiological_review table for
      * smarty
      *
-     * @throws LorisException
+     * @throws \LorisException
      * @return array defaults for smarty to use
      */
     function _getDefaults()
     {
         if (isset($this->identifier)) {
-            $DB =& Database::singleton();
+            $DB =& \Database::singleton();
             // Get the basics for the final radiological review
             $final_review = $DB->pselectRow(
                 "SELECT * FROM $this->__table WHERE CommentID=:CID",
@@ -240,7 +245,7 @@ class NDB_Form_Final_Radiological_Review extends NDB_Form
             }
 
             if ($DB->tableExists('radiology_review') === false) {
-                throw new LorisException(
+                throw new \LorisException(
                     "Table 'radiology_review' does not exist."
                     . " Please have this instrument set up in order"
                     . " to use this module properly."
@@ -317,9 +322,9 @@ class NDB_Form_Final_Radiological_Review extends NDB_Form
                     $history_item['changeDate'] . '</td><td>' .
                     $history_item['userID'] . '</td><td>' .
                     $history_item['col'] . '</td><td>' .
-                    _makePretty($history_item['col'], $oldValue) .
+                    \LORIS\final_radiological_review\Final_Radiological_Review::_makePretty($history_item['col'], $oldValue) .
                     '</td><td>' .
-                    _makePretty($history_item['col'], $newValue) .
+                    \LORIS\final_radiological_review\Final_Radiological_Review::_makePretty($history_item['col'], $newValue) .
                     '</td></tr>';
             }
             $defaults   = array_merge(
@@ -398,11 +403,11 @@ class NDB_Form_Final_Radiological_Review extends NDB_Form
         $this->stripEmpty($values, 'Finalized');
 
         if (!(is_null($_SESSION['State']))) {
-            $currentUser = User::singleton($_SESSION['State']->getUsername());
+            $currentUser = \User::singleton($_SESSION['State']->getUsername());
             $userID      = $currentUser->getData("UserID");
         }
 
-        $DB =& Database::singleton();
+        $DB =& \Database::singleton();
         if (isset($this->identifier)) {
             $exists = $DB->pselectRow(
                 "SELECT * FROM " . $this->__table . " WHERE CommentID=:CID",
