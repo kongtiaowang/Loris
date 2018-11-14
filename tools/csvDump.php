@@ -108,7 +108,7 @@ foreach ($instruments as $instrument) {
         $instrument_table = $DB->pselect($query, array());
 
         if (empty($instrument_table)) {
-            print "Cannot pull instrument table data\n";
+            print "Cannot pull instrument table data as it is empty.\n";
         }
         MapSubprojectID($instrument_table, $config);
         writeCSV($Test_name, $instrument_table, $dataDir);
