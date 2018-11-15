@@ -69,7 +69,7 @@ ALTER TABLE mri_parameter_form_sa CHANGE COLUMN 3b0_shell_attempts
 6b0_shell_attempts enum('console_pass','console_fail') default NULL;
 ALTER TABLE mri_parameter_form_sa ADD COLUMN 6b0_shell_num_attempts` enum('0','1','2','3','4','5','6','7','8','9','10') default NULL; 
 ALTER TABLE mri_parameter_form_sa CHANGE COLUMN dti2_shell_attempts
-dti3_shell_attempts enum('console_pass','console_fail') default NULL;
+dti2_shell_attempts enum('console_pass','console_fail') default NULL;
 ALTER TABLE mri_parameter_form_sa ADD COLUMN `dti2_shell_num_attempts` enum('0','1','2','3','4','5','6','7','8','9','10') default NULL;
 ALTER TABLE mri_parameter_form_sa CHANGE COLUMN 3b0_2
 6b0_2 varchar(255) default NULL;
@@ -77,17 +77,17 @@ ALTER TABLE mri_parameter_form_sa CHANGE COLUMN 6b0_2_shell_attempts
 6b0_2_shell_attempts enum('console_pass','console_fail') default NULL;
 ALTER TABLE mri_parameter_form_sa ADD COLUMN 6b0_2_shell_num_attempts` enum('0','1','2','3','4','5','6','7','8','9','10') default NULL;
 ALTER TABLE mri_parameter_form_sa CHANGE COLUMN dti1_shell_attempts
-dti3_shell_attempts enum('console_pass','console_fail') default NULL;
+dti1_shell_attempts enum('console_pass','console_fail') default NULL;
 ALTER TABLE mri_parameter_form_sa ADD COLUMN `dti1_shell_num_attempts` enum('0','1','2','3','4','5','6','7','8','9','10') default NULL;
 ALTER TABLE mri_parameter_form_sa CHANGE COLUMN bold_run1_attempts
-dti3_shell_attempts enum('console_pass','console_fail') default NULL;
+bold_run1_attempts enum('console_pass','console_fail') default NULL;
 ALTER TABLE mri_parameter_form_sa ADD COLUMN `bold_run1_num_attempts` enum('0','1','2','3','4','5','6','7','8','9','10') default NULL;
 ALTER TABLE mri_parameter_form_sa CHANGE COLUMN bold_run2_attempts
-dti3_shell_attempts enum('console_pass','console_fail') default NULL;
+bold_run2_attempts enum('console_pass','console_fail') default NULL;
 ALTER TABLE mri_parameter_form_sa ADD COLUMN `bold_run2_num_attempts` enum('0','1','2','3','4','5','6','7','8','9','10') default NULL;
 ALTER TABLE mri_parameter_form_sa CHANGE COLUMN bold_run3_attempts
-dti3_shell_attempts enum('console_pass','console_fail') default NULL;
+bold_run3_attempts enum('console_pass','console_fail') default NULL;
 ALTER TABLE mri_parameter_form_sa ADD COLUMN `bold_run3_num_attempts` enum('0','1','2','3','4','5','6','7','8','9','10') default NULL;
 ALTER TABLE mri_parameter_form_sa CHANGE COLUMN bold_run4_attempts
-dti3_shell_attempts enum('console_pass','console_fail') default NULL;
+bold_run4_attempts enum('console_pass','console_fail') default NULL;
 ALTER TABLE mri_parameter_form_sa ADD COLUMN `bold_run4_num_attempts` enum('0','1','2','3','4','5','6','7','8','9','10') default NULL;
