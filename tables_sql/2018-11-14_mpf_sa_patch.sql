@@ -16,10 +16,78 @@ ALTER TABLE mri_parameter_form_sa
 CHANGE COLUMN Bx_specialist
 Bx_specialist enum() default NULL;
 
-ALTER TABLE mri_parameter_form_sa DROP COLUMN scan_protocol;
-ALTER TABLE mri_parameter_form_sa DROP COLUMN sex;
+ALTER TABLE mri_parameter_form_sa DROP COLUMN session_attempts;
+ALTER TABLE mri_parameter_form_sa DROP COLUMN time_enter_mri_rm; 
+ALTER TABLE mri_parameter_form_sa DROP COLUMN time_enter_mri_rm_status; 
+ALTER TABLE mri_parameter_form_sa DROP COLUMN start_time; 
+ALTER TABLE mri_parameter_form_sa DROP COLUMN start_time_status;
+ALTER TABLE mri_parameter_form_sa DROP COLUMN end_time;
+ALTER TABLE mri_parameter_form_sa DROP COLUMN end_time_status;
 
+ALTER TABLE mri_parameter_form_sa ADD COLUMN `scan_done_1` enum('yes','no') default NULL;
+ALTER TABLE mri_parameter_form_sa ADD COLUMN `time_enter_mri_room_1` varchar(255) default NULL;
+ALTER TABLE mri_parameter_form_sa ADD COLUMN `scan_start_time_1` varchar(255) default NULL;
+ALTER TABLE mri_parameter_form_sa ADD COLUMN `scan_end_time_1` varchar(255) default NULL;
+ALTER TABLE mri_parameter_form_sa ADD COLUMN `scan_done_2` enum('yes','no') default NULL;
+ALTER TABLE mri_parameter_form_sa ADD COLUMN `time_enter_mri_room_2` varchar(255) default NULL;
+ALTER TABLE mri_parameter_form_sa ADD COLUMN `scan_start_time_2` varchar(255) default NULL;
+ALTER TABLE mri_parameter_form_sa ADD COLUMN `scan_end_time_2` varchar(255) default NULL;
+ALTER TABLE mri_parameter_form_sa ADD COLUMN `scan_done_3` enum('yes','no') default NULL;
+ALTER TABLE mri_parameter_form_sa ADD COLUMN `time_enter_mri_room_3` varchar(255) default NULL;
+ALTER TABLE mri_parameter_form_sa ADD COLUMN `scan_start_time_3` varchar(255) default NULL;
+ALTER TABLE mri_parameter_form_sa ADD COLUMN `scan_end_time_3` varchar(255) default NULL;
+ALTER TABLE mri_parameter_form_sa ADD COLUMN `scan_done_4` enum('yes','no') default NULL;
+ALTER TABLE mri_parameter_form_sa ADD COLUMN `time_enter_mri_room_4` varchar(255) default NULL;
+ALTER TABLE mri_parameter_form_sa ADD COLUMN `scan_start_time_4` varchar(255) default NULL;
+ALTER TABLE mri_parameter_form_sa ADD COLUMN `scan_end_time_4` varchar(255) default NULL;
+ALTER TABLE mri_parameter_form_sa ADD COLUMN `scan_done_5` enum('yes','no') default NULL;
+ALTER TABLE mri_parameter_form_sa ADD COLUMN `time_enter_mri_room_5` varchar(255) default NULL;
+ALTER TABLE mri_parameter_form_sa ADD COLUMN `scan_start_time_5` varchar(255) default NULL;
+ALTER TABLE mri_parameter_form_sa ADD COLUMN `scan_end_time_5` varchar(255) default NULL;
 
+ALTER TABLE mri_parameter_form_sa DROP COLUMN aahcscout; 
+ALTER TABLE mri_parameter_form_sa DROP COLUMN fieldmap_apinv_structural;
+ALTER TABLE mri_parameter_form_sa DROP COLUMN localizers; 
+ALTER TABLE mri_parameter_form_sa DROP COLUMN fieldmap_ap_structural; 
+ALTER TABLE mri_parameter_form_sa DROP COLUMN t1w_run1_check; 
+ALTER TABLE mri_parameter_form_sa DROP COLUMN t1w_run2_check;
+ALTER TABLE mri_parameter_form_sa DROP COLUMN t2w_check;
 
+ALTER TABLE mri_parameter_form_sa DROP COLUMN t1w_run1_superior; 
+ALTER TABLE mri_parameter_form_sa DROP COLUMN t1w_run2_superior; 
+ALTER TABLE mri_parameter_form_sa DROP COLUMN t2w_superior;
+ALTER TABLE mri_parameter_form_sa DROP COLUMN t1w_run1_repeat_superior; 
+ALTER TABLE mri_parameter_form_sa DROP COLUMN t1w_run2_repeat_superior; 
+ALTER TABLE mri_parameter_form_sa DROP COLUMN t2w_repeat_superior; 
 
-
+ALTER TABLE mri_parameter_form_sa CHANGE COLUMN dti3_shell_attempts 
+dti3_shell_attempts enum('console_pass','console_fail') default NULL; 
+ALTER TABLE mri_parameter_form_sa ADD COLUMN `dti3_shell_num_attempts` enum('0','1','2','3','4','5','6','7','8','9','10') default NULL; 
+ALTER TABLE mri_parameter_form_sa CHANGE COLUMN 3b0 
+6b0 varchar(255) default NULL; 
+ALTER TABLE mri_parameter_form_sa CHANGE COLUMN 3b0_shell_attempts 
+6b0_shell_attempts enum('console_pass','console_fail') default NULL;
+ALTER TABLE mri_parameter_form_sa ADD COLUMN 6b0_shell_num_attempts` enum('0','1','2','3','4','5','6','7','8','9','10') default NULL; 
+ALTER TABLE mri_parameter_form_sa CHANGE COLUMN dti2_shell_attempts
+dti3_shell_attempts enum('console_pass','console_fail') default NULL;
+ALTER TABLE mri_parameter_form_sa ADD COLUMN `dti2_shell_num_attempts` enum('0','1','2','3','4','5','6','7','8','9','10') default NULL;
+ALTER TABLE mri_parameter_form_sa CHANGE COLUMN 3b0_2
+6b0_2 varchar(255) default NULL;
+ALTER TABLE mri_parameter_form_sa CHANGE COLUMN 6b0_2_shell_attempts
+6b0_2_shell_attempts enum('console_pass','console_fail') default NULL;
+ALTER TABLE mri_parameter_form_sa ADD COLUMN 6b0_2_shell_num_attempts` enum('0','1','2','3','4','5','6','7','8','9','10') default NULL;
+ALTER TABLE mri_parameter_form_sa CHANGE COLUMN dti1_shell_attempts
+dti3_shell_attempts enum('console_pass','console_fail') default NULL;
+ALTER TABLE mri_parameter_form_sa ADD COLUMN `dti1_shell_num_attempts` enum('0','1','2','3','4','5','6','7','8','9','10') default NULL;
+ALTER TABLE mri_parameter_form_sa CHANGE COLUMN bold_run1_attempts
+dti3_shell_attempts enum('console_pass','console_fail') default NULL;
+ALTER TABLE mri_parameter_form_sa ADD COLUMN `bold_run1_num_attempts` enum('0','1','2','3','4','5','6','7','8','9','10') default NULL;
+ALTER TABLE mri_parameter_form_sa CHANGE COLUMN bold_run2_attempts
+dti3_shell_attempts enum('console_pass','console_fail') default NULL;
+ALTER TABLE mri_parameter_form_sa ADD COLUMN `bold_run2_num_attempts` enum('0','1','2','3','4','5','6','7','8','9','10') default NULL;
+ALTER TABLE mri_parameter_form_sa CHANGE COLUMN bold_run3_attempts
+dti3_shell_attempts enum('console_pass','console_fail') default NULL;
+ALTER TABLE mri_parameter_form_sa ADD COLUMN `bold_run3_num_attempts` enum('0','1','2','3','4','5','6','7','8','9','10') default NULL;
+ALTER TABLE mri_parameter_form_sa CHANGE COLUMN bold_run4_attempts
+dti3_shell_attempts enum('console_pass','console_fail') default NULL;
+ALTER TABLE mri_parameter_form_sa ADD COLUMN `bold_run4_num_attempts` enum('0','1','2','3','4','5','6','7','8','9','10') default NULL;

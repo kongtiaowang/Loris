@@ -415,8 +415,8 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
 
         $this->form->addElement('advcheckbox', 'bold_run1', "BOLD run 1 | <i>ep2d_bold_sms6_PA</i>", null, null, array(null, "Yes"));
         $this->form->addElement('select', 'bold_run1_attempts', "<b>Console Pass/Fail</b>", array(null => "", "console_pass" => "Console Pass", "console_fail" => "Console Fail"));
-        $this->form->addElement('select', 'bold_run1_shell_num_attempts', "<b>Number of Attempts</b>", range(0, 10));
-        $this->XINRegisterRule("bold_run1_shell_num_attempts", array("bold_run1_shell{@}=={@}Yes"), "Required.");
+        $this->form->addElement('select', 'bold_run1_num_attempts', "<b>Number of Attempts</b>", range(0, 10));
+        $this->XINRegisterRule("bold_run1_num_attempts", array("bold_run1{@}=={@}Yes"), "Required.");
         $this->XINRegisterRule("bold_run1_attempts", array("bold_run1{@}=={@}Yes"), "Required.");
         $this->form->addElement('select', 'bold_run1_firmm', "<b>FIRMM used?<b>", array('' => null, 'Yes' => "Yes", 'No' => "No"));
         $this->XINRegisterRule("bold_run1_firmm", array("bold_run1{@}=={@}Yes"), "Required.");
@@ -424,8 +424,8 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
 
         $this->form->addElement('advcheckbox', 'bold_run2', "BOLD run 2 | <i>ep2d_bold_sms6_PA</i>", null, null, array(null, "Yes"));
         $this->form->addElement('select', 'bold_run2_attempts', "<b>Console Pass/Fail</b>", array(null => "", "console_pass" => "Console Pass", "console_fail" => "Console Fail"));
-        $this->form->addElement('select', 'bold_run2_shell_num_attempts', "<b>Number of Attempts</b>", range(0, 10));
-        $this->XINRegisterRule("bold_run2_shell_num_attempts", array("bold_run2_shell{@}=={@}Yes"), "Required.");
+        $this->form->addElement('select', 'bold_run2_num_attempts', "<b>Number of Attempts</b>", range(0, 10));
+        $this->XINRegisterRule("bold_run2_num_attempts", array("bold_run2{@}=={@}Yes"), "Required.");
         $this->XINRegisterRule("bold_run2_attempts", array("bold_run2{@}=={@}Yes"), "Required.");
         $this->form->addElement('select', 'bold_run2_firmm', "<b>FIRMM used?<b>", array('' => null, 'Yes' => "Yes", 'No' => "No"));
         $this->XINRegisterRule("bold_run2_firmm", array("bold_run2{@}=={@}Yes"), "Required.");
@@ -433,8 +433,8 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
 
         $this->form->addElement('advcheckbox', 'bold_run3', "BOLD run 3 | <i>ep2d_bold_sms6_PA</i>", null, null, array(null, "Yes"));
         $this->form->addElement('select', 'bold_run3_attempts', "<b>Console Pass/Fail</b>", array(null => "", "console_pass" => "Console Pass", "console_fail" => "Console Fail"));
-        $this->form->addElement('select', 'bold_run3_shell_num_attempts', "<b>Number of Attempts</b>", range(0, 10));
-        $this->XINRegisterRule("bold_run3_shell_num_attempts", array("bold_run3_shell{@}=={@}Yes"), "Required.");
+        $this->form->addElement('select', 'bold_run3_num_attempts', "<b>Number of Attempts</b>", range(0, 10));
+        $this->XINRegisterRule("bold_run3_num_attempts", array("bold_run3{@}=={@}Yes"), "Required.");
         $this->XINRegisterRule("bold_run3_attempts", array("bold_run3{@}=={@}Yes"), "Required.");
         $this->form->addElement('select', 'bold_run3_firmm', "<b>FIRMM used?<b>", array('' => null, 'Yes' => "Yes", 'No' => "No"));
         $this->XINRegisterRule("bold_run3_firmm", array("bold_run3{@}=={@}Yes"), "Required.");
@@ -442,8 +442,8 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
 
         $this->form->addElement('advcheckbox', 'bold_run4', "BOLD run 4 <i>(if needed/possible)</i>", null, null, array(null, "Yes"));
         $this->form->addElement('select', 'bold_run4_attempts', "<b>Console Pass/Fail</b>", array(null => "", "console_pass" => "Console Pass", "console_fail" => "Console Fail"));
-        $this->form->addElement('select', 'bold_run4_shell_num_attempts', "<b>Number of Attempts</b>", range(0, 10));
-        $this->XINRegisterRule("bold_run4_shell_num_attempts", array("bold_run4_shell{@}=={@}Yes"), "Required.");
+        $this->form->addElement('select', 'bold_run4_num_attempts', "<b>Number of Attempts</b>", range(0, 10));
+        $this->XINRegisterRule("bold_run4_num_attempts", array("bold_run4{@}=={@}Yes"), "Required.");
         $this->XINRegisterRule("bold_run4_attempts", array("bold_run4{@}=={@}Yes"), "Required.");
         $this->form->addElement('select', 'bold_run4_firmm', "<b>FIRMM used?<b>", array('' => null, 'Yes' => "Yes", 'No' => "No"));
         $this->XINRegisterRule("bold_run4_firmm", array("bold_run4{@}=={@}Yes"), "Required.");
