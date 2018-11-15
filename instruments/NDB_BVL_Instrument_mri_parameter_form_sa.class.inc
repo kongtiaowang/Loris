@@ -267,6 +267,20 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
                 "Required.",
                 $question . "_group"
             );
+            $group[] = $this->createSelect(
+                $question . "_passfail",
+                "",
+                array(  
+                 ''     => null,
+                 'Pass' => "Pass",
+                 'Fail' => "Fail",
+                )
+            );
+            $this->XINRegisterRule(
+                $question . "_passfail",
+                array($question . "_passfail{@}=={@}NEVER_REQUIRED"),
+                $question . "_group"
+            );
             $this->form->addGroup(
                 $group,
                 $question . "_group",
