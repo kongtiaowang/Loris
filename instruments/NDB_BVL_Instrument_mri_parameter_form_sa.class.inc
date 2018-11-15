@@ -337,29 +337,39 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
         $this->form->addElement('static', null, '<BR>');
 
         $this->form->addElement('advcheckbox', 'dti3_shell', "DTI 3 Shell | <i>ep2d_diff_sms2_3shell_PA_1p7</i>", null, null, array(null, "Yes"));
-        $this->form->addElement('select', 'dti3_shell_attempts', "<b>Record Attempts & Pass/Fail</b><BR><BR>", array(null => "", "console_pass" => "Console Pass", "console_fail" => "Console Fail"));
+        $this->form->addElement('select', 'dti3_shell_attempts', "<b>Console Pass/Fail</b><BR><BR>", array(null => "", "console_pass" => "Console Pass", "console_fail" => "Console Fail"));
         $this->XINRegisterRule("dti3_shell_attempts", array("dti3_shell{@}=={@}Yes"), "Required.");
-        $this->form->addElement('select', 'dti3_shell_num_attempts', range(0, 10));
+        $this->form->addElement('select', 'dti3_shell_num_attempts', "<b>Number of Attempts</b>", range(0, 10));
         $this->XINRegisterRule("dti3_shell_num_attempts", array("dti3_shell{@}=={@}Yes"), "Required.");
+        $this->form->addElement('static', null, '<BR><BR>');
 
-        $this->form->addElement('advcheckbox', '3b0', "3B0 | <i>ep2d_diff_sms2_3B0_AP_1p7</i>", null, null, array(null, "Yes"));
-        $this->form->addElement('text', '3b0_attempts', "<b>Record Attempts & Pass/Fail</b><BR><BR>");
-        $this->XINRegisterRule("3b0_attempts", array("3b0{@}=={@}Yes"), "Required.");
+        $this->form->addElement('advcheckbox', '6b0', "6B0 | <i>ep2d_diff_sms2_6B0_AP_1p7</i>", null, null, array(null, "Yes"));
+        $this->form->addElement('select', '6b0_shell_attempts', "<b>Console Pass/Fail</b><BR><BR>", array(null => "", "console_pass" => "Console Pass", "console_fail" => "Console Fail"));
+        $this->XINRegisterRule("6b0_shell_attempts", array("6b0_shell{@}=={@}Yes"), "Required.");
+        $this->form->addElement('select', '6b0_shell_num_attempts', "<b>Number of Attempts</b>", range(0, 10));
+        $this->XINRegisterRule("6b0_shell_num_attempts", array("6b0_shell{@}=={@}Yes"), "Required.");
+        $this->form->addElement('static', null, '<BR><BR>');
 
         $this->form->addElement('advcheckbox', 'dti2_shell', "DTI 2 Shell | <i>ep2d_diff_sms2_2shell_PA_1p7</i>", null, null, array(null, "Yes"));
-        $this->form->addElement('text', 'dti2_shell_attempts', "<b>Record Attempts & Pass/Fail</b><BR><BR>");
+        $this->form->addElement('select', 'dti2_shell_attempts', "<b>Console Pass/Fail</b><BR><BR>", array(null => "", "console_pass" => "Console Pass", "console_fail" => "Console Fail"));
         $this->XINRegisterRule("dti2_shell_attempts", array("dti2_shell{@}=={@}Yes"), "Required.");
-        $this->form->addElement('select', 'dti2_shell_num_attempts', range(0, 10));
+        $this->form->addElement('select', 'dti2_shell_num_attempts', "<b>Number of Attempts</b>", range(0, 10));
         $this->XINRegisterRule("dti2_shell_num_attempts", array("dti2_shell{@}=={@}Yes"), "Required.");
+        $this->form->addElement('static', null, '<BR><BR>');
 
-
-        $this->form->addElement('advcheckbox', '3b0_2', "3B0 | <i>ep2d_diff_sms2_3B0_AP_1p7</i>", null, null, array(null, "Yes"));
-        $this->form->addElement('text', '3b0_2_attempts', "<b>Record Attempts & Pass/Fail</b><BR><BR>");
-        $this->XINRegisterRule("3b0_2_attempts", array("3b0_2{@}=={@}Yes"), "Required.");
+        $this->form->addElement('advcheckbox', '6b0_2', "6B0 | <i>ep2d_diff_sms2_6B0_AP_1p7</i>", null, null, array(null, "Yes"));
+        $this->form->addElement('select', '6b0_2_shell_attempts', "<b>Console Pass/Fail</b><BR><BR>", array(null => "", "console_pass" => "Console Pass", "console_fail" => "Console Fail"));
+        $this->XINRegisterRule("6b0_2_shell_attempts", array("6b0_2_shell{@}=={@}Yes"), "Required.");
+        $this->form->addElement('select', '6b0_2_shell_num_attempts', "<b>Number of Attempts</b>", range(0, 10));
+        $this->XINRegisterRule("6b0_2_shell_num_attempts", array("6b0_2_shell{@}=={@}Yes"), "Required.");
+        $this->form->addElement('static', null, '<BR><BR>');
 
         $this->form->addElement('advcheckbox', 'dti1_shell', "DTI 1 Shell | <i>ep2d_diff_sms2_1shell_PA_1p7</i>", null, null, array(null, "Yes"));
-        $this->form->addElement('text', 'dti1_shell_attempts', "<b>Record Attempts & Pass/Fail</b><BR><BR>");
+        $this->form->addElement('select', 'dti1_shell_attempts', "<b>Console Pass/Fail</b><BR><BR>", array(null => "", "console_pass" => "Console Pass", "console_fail" => "Console Fail"));
         $this->XINRegisterRule("dti1_shell_attempts", array("dti1_shell{@}=={@}Yes"), "Required.");
+        $this->form->addElement('select', 'dti1_shell_num_attempts', "<b>Number of Attempts</b>", range(0, 10));
+        $this->XINRegisterRule("dti1_shell_num_attempts", array("dti1_shell{@}=={@}Yes"), "Required.");
+        $this->form->addElement('static', null, '<BR><BR>');
 
         // Add DTI comments text area
         $this->form->addElement("textarea", "dti_comments", "<i>DTI Comments:</i>");
@@ -390,28 +400,36 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
         $this->form->addElement('static', null, '<BR>');
 
         $this->form->addElement('advcheckbox', 'bold_run1', "BOLD run 1 | <i>ep2d_bold_sms6_PA</i>", null, null, array(null, "Yes"));
-        $this->form->addElement('text', 'bold_run1_attempts', "<b>Record Attempts & Number of Passing Frames</b>");
+        $this->form->addElement('select', 'bold_run1_attempts', "<b>Console Pass/Fail</b>", array(null => "", "console_pass" => "Console Pass", "console_fail" => "Console Fail"));
+        $this->form->addElement('select', 'bold_run1_shell_num_attempts', "<b>Number of Attempts</b>", range(0, 10));
+        $this->XINRegisterRule("bold_run1_shell_num_attempts", array("bold_run1_shell{@}=={@}Yes"), "Required.");
         $this->XINRegisterRule("bold_run1_attempts", array("bold_run1{@}=={@}Yes"), "Required.");
         $this->form->addElement('select', 'bold_run1_firmm', "<b>FIRMM used?<b>", array('' => null, 'Yes' => "Yes", 'No' => "No"));
         $this->XINRegisterRule("bold_run1_firmm", array("bold_run1{@}=={@}Yes"), "Required.");
         $this->form->addElement('static', null, '<BR><BR>');
 
         $this->form->addElement('advcheckbox', 'bold_run2', "BOLD run 2 | <i>ep2d_bold_sms6_PA</i>", null, null, array(null, "Yes"));
-        $this->form->addElement('text', 'bold_run2_attempts', "<b>Record Attempts & Number of Passing Frames</b>");
+        $this->form->addElement('select', 'bold_run2_attempts', "<b>Console Pass/Fail</b>", array(null => "", "console_pass" => "Console Pass", "console_fail" => "Console Fail"));
+        $this->form->addElement('select', 'bold_run2_shell_num_attempts', "<b>Number of Attempts</b>", range(0, 10));
+        $this->XINRegisterRule("bold_run2_shell_num_attempts", array("bold_run2_shell{@}=={@}Yes"), "Required.");
         $this->XINRegisterRule("bold_run2_attempts", array("bold_run2{@}=={@}Yes"), "Required.");
         $this->form->addElement('select', 'bold_run2_firmm', "<b>FIRMM used?<b>", array('' => null, 'Yes' => "Yes", 'No' => "No"));
         $this->XINRegisterRule("bold_run2_firmm", array("bold_run2{@}=={@}Yes"), "Required.");
         $this->form->addElement('static', null, '<BR><BR>');
 
         $this->form->addElement('advcheckbox', 'bold_run3', "BOLD run 3 | <i>ep2d_bold_sms6_PA</i>", null, null, array(null, "Yes"));
-        $this->form->addElement('text', 'bold_run3_attempts', "<b>Record Attempts & Number of Passing Frames</b>");
+        $this->form->addElement('select', 'bold_run3_attempts', "<b>Console Pass/Fail</b>", array(null => "", "console_pass" => "Console Pass", "console_fail" => "Console Fail"));
+        $this->form->addElement('select', 'bold_run3_shell_num_attempts', "<b>Number of Attempts</b>", range(0, 10));
+        $this->XINRegisterRule("bold_run3_shell_num_attempts", array("bold_run3_shell{@}=={@}Yes"), "Required.");
         $this->XINRegisterRule("bold_run3_attempts", array("bold_run3{@}=={@}Yes"), "Required.");
         $this->form->addElement('select', 'bold_run3_firmm', "<b>FIRMM used?<b>", array('' => null, 'Yes' => "Yes", 'No' => "No"));
         $this->XINRegisterRule("bold_run3_firmm", array("bold_run3{@}=={@}Yes"), "Required.");
         $this->form->addElement('static', null, '<BR><BR>');
 
         $this->form->addElement('advcheckbox', 'bold_run4', "BOLD run 4 <i>(if needed/possible)</i>", null, null, array(null, "Yes"));
-        $this->form->addElement('text', 'bold_run4_attempts', "<b>Record Attempts & Number of Passing Frames</b>");
+        $this->form->addElement('select', 'bold_run4_attempts', "<b>Console Pass/Fail</b>", array(null => "", "console_pass" => "Console Pass", "console_fail" => "Console Fail"));
+        $this->form->addElement('select', 'bold_run4_shell_num_attempts', "<b>Number of Attempts</b>", range(0, 10));
+        $this->XINRegisterRule("bold_run4_shell_num_attempts", array("bold_run4_shell{@}=={@}Yes"), "Required.");
         $this->XINRegisterRule("bold_run4_attempts", array("bold_run4{@}=={@}Yes"), "Required.");
         $this->form->addElement('select', 'bold_run4_firmm', "<b>FIRMM used?<b>", array('' => null, 'Yes' => "Yes", 'No' => "No"));
         $this->XINRegisterRule("bold_run4_firmm", array("bold_run4{@}=={@}Yes"), "Required.");
@@ -431,15 +449,6 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
         $this->form->addElement('select', 'overall_success', "<b>Overall Scan Success</b> - to be completed following final scan session", array("" => null, 'complete_protocol_acquired' => "Complete protocol acquired", 'partial_protocol_acquired' => "Partial protocol acquired", 'acquired_but_possibly_not_usable' => "Complete/partial acquired but may not be usable", 'none_of_protocol_acquired' => "None of protocol acquired"));
         $this->form->addElement('select', 'if_none_partial_unusable', "<i>If none/partial/unusable:</i>", array("" => null, 'unable_to_stay_still' => "Subject unable to stay still", 'subject_refused' => "Subject refused", 'family_canceled' => "Family canceled", 'out_of_time' => "Ran out of time", 'scanner_issues' => "Scanner issues", 'family_declined' => "Family declined second attempt"));
         $this->XINRegisterRule("if_none_partial_unusable", array("overall_success{@}!={@}complete_protocol_acquired"), "Required if complete protocol was not acquired");
-        $this->form->addElement('text', 'total_number_scans', "Total # of scan sessions:");
-        $this->addHourMinElement('total_scan_time', "Total scan time:");
-        $this->form->addElement('text', 'total_attempts_t1w', "Total # attempts for <b>T1w:</b>");
-        $this->form->addElement('text', 'total_attempts_t2w', "Total # attempts for <b>T2w:</b>");
-        $this->form->addElement('text', 'total_attempts_dti', "Total # attempts for <b>DTI:</b>");
-        $this->form->addElement('text', 'total_attempts_bold', "Total # attempts for <b>BOLD:</b>");
-
-        $this->form->addElement('advcheckbox', 'data_sent_to_dcc', "Scan Data sent to DCC", null, null, array(null, "Yes"));
-        $this->form->addElement('advcheckbox', 'data_entry_done_loris', "MRI PF Data Entry done in LORIS", null, null, array(null, "Yes"));
 
         $this->form->addFormRule(array(&$this, 'validate_page1'));
         $this->form->addFormRule(array(&$this, 'specialRules'));
