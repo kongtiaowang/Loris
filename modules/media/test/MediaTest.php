@@ -36,9 +36,9 @@ class MediaTest extends LorisIntegrationTest
      */
     function testLoadsWithPermissionRead()
     {
-        $this->safeGet($this->url . "/media/#upload");
+        $this->safeGet($this->url . "/media/#upload");sleep(1);
 $bodyText = $this->webDriver->executescript(
-            "document.querySelector('#upload > div > div > form > div > div:nth-child(3) > div > div > p > span').textContent");
+            "document.querySelector('#upload > div > div > form > div > div:nth-child(3) > div > div > p').textContent");
         
         print_r($bodyText);
         $this->assertNotContains("You do not have access to this page.", $bodyText);
