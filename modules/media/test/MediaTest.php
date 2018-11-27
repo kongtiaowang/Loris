@@ -46,6 +46,14 @@ $bodyText = $this->webDriver->executescript(
         print_r($bodyText);
         $this->assertNotContains("You do not have access to this page.", $bodyText);
     }
-
+    function testLoads()
+    {
+        $this->safeGet($this->url . "/media/ajax/?action=getData");sleep(1);
+               $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();print_r($bodyText);
+        print_r($bodyText);
+        $this->assertNotContains("You do not have access to this page.", $bodyText);
+    }
 }
 ?>
