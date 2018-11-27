@@ -1,4 +1,4 @@
--- SRS2 Self Report MOm
+-- SRS2 SchoolAge Parent
 CREATE TABLE `SRS2_SchoolAge_Parent` (
   `CommentID` varchar(255) NOT NULL DEFAULT '',
   `UserID` varchar(255) DEFAULT NULL,
@@ -85,7 +85,7 @@ CREATE TABLE `SRS2_SchoolAge_Parent` (
 
 
 -- SRS2_SchoolAge_Parent Meta
-INSERT INTO test_names(Test_name, Full_name, Sub_Group, isDirectEntry) VALUES('SRS2_SchoolAge_Parent', "SRS2 School-Age (Send to Mom OR Dad)", 1, 1);
+INSERT INTO test_names(Test_name, Full_name, Sub_Group, isDirectEntry) VALUES('SRS2_SchoolAge_Parent', "SRS-2 School Age (Send to Mom OR Dad)", 1, 1);
 INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('SRS2_SchoolAge_Parent','SRS2_SchoolAge_Parent_page1', "Page 1", 1);
 INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('SRS2_SchoolAge_Parent','SRS2_SchoolAge_Parent_page2', "Page 2", 2);
 INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('SRS2_SchoolAge_Parent','SRS2_SchoolAge_Parent_page3', "Page 3", 3);
