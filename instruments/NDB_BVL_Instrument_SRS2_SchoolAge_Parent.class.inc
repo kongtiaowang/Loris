@@ -1,7 +1,7 @@
 <?php
 
 /**
- * This file contains the NDB_BVL_Instrument_SRS2_SchoolAge(teacher version)
+ * This file contains the NDB_BVL_Instrument_SRS2_SchoolAge_Parent
  * class
  *
  * PHP Version 5
@@ -24,7 +24,7 @@
  */
 
 
-class NDB_BVL_Instrument_SRS2_SchoolAge extends NDB_BVL_Instrument
+class NDB_BVL_Instrument_SRS2_SchoolAge_Parent extends NDB_BVL_Instrument
 {
     use instrument_validator;
     //Commonly used level of indentation;
@@ -69,8 +69,8 @@ class NDB_BVL_Instrument_SRS2_SchoolAge extends NDB_BVL_Instrument
         $this->page     = $page;            //Page label
 
         //Set the object properties
-        $this->testName = "SRS2_SchoolAge";           //test_names.Test_name
-        $this->table    = 'SRS2_SchoolAge';
+        $this->testName = "SRS2_SchoolAge_Parent";           //test_names.Test_name
+        $this->table    = 'SRS2_SchoolAge_Parent';
 
         //Data keyed by commentID
         $this->commentID   = $commentID;
@@ -98,7 +98,7 @@ class NDB_BVL_Instrument_SRS2_SchoolAge extends NDB_BVL_Instrument
     function _setupForm()
     {
 
-        if (preg_match("/SRS2_SchoolAge(_page[0-9]+)/", $this->page, $matches)) {
+        if (preg_match("/SRS2_SchoolAge_Parent(_page[0-9]+)/", $this->page, $matches)) {
             call_user_func(array($this, $matches[1]));
         } else {
             $this->_main();
@@ -118,7 +118,7 @@ class NDB_BVL_Instrument_SRS2_SchoolAge extends NDB_BVL_Instrument
     {
 
         //Display test name
-        $this->form->addElement('header', 'instrument_title', "SRS-2 - School Age (Send to Teacher)");
+        $this->form->addElement('header', 'instrument_title', "SRS-2 - School Age (Send to Mom OR Dad)");
 
         //Add date of administration field
         $this->addBasicDate('Date_taken', "Date of Administration", $this->dateOptions);
@@ -150,7 +150,7 @@ class NDB_BVL_Instrument_SRS2_SchoolAge extends NDB_BVL_Instrument
     {
 
         //Display test name
-        $this->form->addElement('header', 'instrument_title', "SRS-2 - School Age (Send to Teacher)");
+        $this->form->addElement('header', 'instrument_title', "SRS-2 - School Age (Send to Mom OR Dad)");
 
         //Add field for Age
         $field = 'child_age';$label = "Child's age in years <br><h5><i>(Please enter a numeric value between 0-100 or write NA.)</i></h5>";
@@ -216,7 +216,7 @@ class NDB_BVL_Instrument_SRS2_SchoolAge extends NDB_BVL_Instrument
     {
 
         //Display test name
-        $this->form->addElement('header', 'instrument_title', "SRS-2 - School Age (Send to Teacher)");
+        $this->form->addElement('header', 'instrument_title', "SRS-2 - School Age (Send to Mom OR Dad)");
 
         //Second block of questions
         $questions = array(
@@ -257,7 +257,7 @@ class NDB_BVL_Instrument_SRS2_SchoolAge extends NDB_BVL_Instrument
     {
 
         //Display test name
-        $this->form->addElement('header', 'instrument_title', "SRS-2 - School Age (Send to Teacher)");
+        $this->form->addElement('header', 'instrument_title', "SRS-2 - School Age (Send to Mom OR Dad)");
 
         //Third block of questions
         $questions = array(
@@ -300,7 +300,7 @@ class NDB_BVL_Instrument_SRS2_SchoolAge extends NDB_BVL_Instrument
     {
 
         //Display test name
-        $this->form->addElement('header', 'instrument_title', "SRS-2 - School Age (Send to Teacher)");
+        $this->form->addElement('header', 'instrument_title', "SRS-2 - School Age (Send to Mom OR Dad)");
 
         //Fourth block of questions
         $questions = array(
