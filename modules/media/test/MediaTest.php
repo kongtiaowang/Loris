@@ -36,7 +36,7 @@ class MediaTest extends LorisIntegrationTest
      */
     function testLoadsWithPermissionRead()
     {
-        $this->safeGet($this->url . "/media/");
+        $this->safeGet($this->url . "/media/#upload");
 $this->webDriver->executescript(
             "document.querySelector('#upload > div > div > form > div > div:nth-child(3) > div > div > p > span').textContent");
         
