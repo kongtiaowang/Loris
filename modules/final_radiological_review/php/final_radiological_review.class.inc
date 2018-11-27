@@ -10,7 +10,7 @@
  * trusted radiologist does the second review. Conflicts between any of the radiology
  * reviews are flagged for the radiologists to consult over before finalizing.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  *  @category Loris
  *  @package  Document_Repository
@@ -18,74 +18,9 @@
  *  @license  Loris license
  *  @link     https://www.github.com/aces/Loris-Trunk/
  */
-/**
- * Utility function to make things more human readable.
- *
- * This is used both below and in the history on the NDB_Form.
- *
- * This maybe should be moved into the base class so that other menus that need
- * to customize the display of how data is shown can do so in a consistent manner
- *
- * @param string  $key The key that's being prettified
- * @param unknown $val The raw value for the key
- *
- * @return string Human readable version of raw data
- */
-function _makePretty($key, $val)
-{
-    if ($key=='Conflict' || $key=="Conflict2" || $key=="Conflict") {
-        // The table was created with a boolean, which mysql turns into a tinyint.
-        // Print 'Yes' or 'No' instead of 1 or 0.
-        if ($val == 1 || $val === '1' || $val === 'true') {
-            return 'Yes';
-        } elseif ($val === "0" || $val === "false") {/* PHP turns the tinyint back
-                                                      into a string ....*/
-            return 'No';
-        } else { // Leave nulls empty so that we can distinguish
-            return '';
-        }
-    }
-    if ($key == "Finalized" || $key =="Review_Done") {
-        if ($val == "yes") {
-            return 'Yes';
-        } elseif ($val == "no") {
-            return 'No';
-        } else {
-            return '';
-        }
+ 
+namespace LORIS\final_radiological_review; 
 
-    }
-
-    if ($key == 'Final_Review_Results'
-        || $key == 'Exclusionary_Status'
-        || $key=="Final_Exclusionary"
-        || $key == "Results"
-    ) {
-        // Make the enum columns prettier by changing _ into
-        // a space and capitalizing
-        return ucwords(str_replace('_', ' ', $val));
-    } elseif ($key == 'SAS' or $key == 'PVS') {
-        switch($val) {
-        case '0':
-            return 'None';
-        case '1':
-            return 'Minimal';
-        case '2':
-            return 'Mild';
-        case '3':
-            return 'Moderate';
-        case '4':
-            return 'Marked';
-        default:
-            return '';
-        }
-    } elseif ($key == 'Project') {
-        $projectlist = Utility::getProjectList();
-        return $projectlist[$val];
-    } else {
-        return $val;
-    }
-}
 
 /**
  * Provides the PHP code for the menu filter for the final radiological review.
@@ -96,8 +31,72 @@ function _makePretty($key, $val)
  *  @license  Loris license
  *  @link     https://www.github.com/aces/Loris-Trunk/
  */
-class NDB_Menu_Filter_Final_Radiological_Review extends NDB_Menu_Filter
+class Final_Radiological_Review extends \NDB_Menu_Filter
 {
+	/**
+     * Utility function to make things more human readable.
+     *
+     * This is used both below and in the history on the NDB_Form.
+     *
+     * This maybe should be moved into the base class so that other menus that need
+     * to customize the display of how data is shown can do so in a consistent manner
+     *
+     * @param string  $key The key that's being prettified
+     * @param unknown $val The raw value for the key
+     *
+     * @return string Human readable version of raw data
+     */
+    public static function _makePretty($key, $val)
+    {
+        if ($key=='Conflict' || $key=="Conflict2" || $key=="Conflict") {
+            // The table was created with a boolean, which mysql turns into a tinyint.
+            // Print 'Yes' or 'No' instead of 1 or 0.
+            if ($val == 1 || $val === '1' || $val === 'true') {
+                return 'Yes';
+			}
+			
+			/* PHP turns the tinyint back into a string ....*/
+            return ($val === "0" || $val === "false") ? 'No' : '';
+        }
+        if ($key == "Finalized" || $key =="Review_Done") {
+            if ($val == "yes") {
+                return 'Yes';
+            } 
+            
+            return $val == "no" ? 'No' : '';
+        }
+
+        if ($key == 'Final_Review_Results'
+            || $key == 'Exclusionary_Status'
+            || $key=="Final_Exclusionary"
+            || $key == "Results"
+        ) {
+            // Make the enum columns prettier by changing _ into
+            // a space and capitalizing
+            return ucwords(str_replace('_', ' ', $val));
+        } elseif ($key == 'SAS' or $key == 'PVS') {
+            switch($val) {
+            case '0':
+                return 'None';
+            case '1':
+                return 'Minimal';
+            case '2':
+                return 'Mild';
+            case '3':
+                return 'Moderate';
+            case '4':
+                return 'Marked';
+            default:
+                return '';
+            }
+        } elseif ($key == 'Project') {
+            $projectlist = \Utility::getProjectList();
+            return $projectlist[$val];
+        } else {
+            return $val;
+        }
+    }
+    
     /**
      * Determine whether the user has permission to view this page
      *
@@ -105,7 +104,7 @@ class NDB_Menu_Filter_Final_Radiological_Review extends NDB_Menu_Filter
      */
     function _hasAccess()
     {
-        $user =& User::singleton();
+        $user =& \User::singleton();
         return (
             $user->hasPermission('view_final_radiological_review') ||
             $user->hasPermission('edit_final_radiological_review')
@@ -116,11 +115,11 @@ class NDB_Menu_Filter_Final_Radiological_Review extends NDB_Menu_Filter
      * Set up the variables required by NDB_Menu_Filter class for constructing
      * a query
      *
-     * @return null
+     * @return void
      */
     function _setupVariables()
     {
-        $config      = NDB_Config::singleton();
+        $config      = \NDB_Config::singleton();
         $useProjects = $config->getSetting("useProjects");
         if ($useProjects === "false") {
             $useProjects = false;
@@ -144,10 +143,10 @@ class NDB_Menu_Filter_Final_Radiological_Review extends NDB_Menu_Filter
             WHEN r.PVS <> r.PVS2 THEN 'prim_second'
             ELSE 'false' END)";
 
-        $DB = Database::singleton();
+        $DB = \Database::singleton();
         
         if ($DB->tableExists('mri_parameter_form') === false) {
-            throw new LorisException(
+            throw new \LorisException(
                 "Table 'mri_parameter_form' does not exist."
                 . " Please have this instrument set up in"
                 . " order to use this module properly."
@@ -155,7 +154,7 @@ class NDB_Menu_Filter_Final_Radiological_Review extends NDB_Menu_Filter
         }
 
         if ($DB->tableExists('radiology_review') === false) {
-            throw new LorisException(
+            throw new \LorisException(
                 "Table 'radiology_review' does not exist."
                 . " Please have this instrument set up in"
                 . " order to use this module properly."
@@ -347,30 +346,30 @@ class NDB_Menu_Filter_Final_Radiological_Review extends NDB_Menu_Filter
     /**
      * Setup $this->tpl_data for use by Smarty
      *
-     * @return null
+     * @return void
      */
     function _setFilterForm()
     {
-        $config      = NDB_Config::singleton();
+        $config      = \NDB_Config::singleton();
         $useProjects = $config->getSetting("useProjects");
         if ($useProjects === "false") {
             $useProjects = false;
         }
 
         $list_of_visit_labels = array(null => 'All' );
-        $visitList            = Utility::getVisitList();
+        $visitList            = \Utility::getVisitList();
         foreach ($visitList as $key=>$value) {
             $list_of_visit_labels[$key] = $value;
         }
         $list_of_sites = array(null => 'All');
-        $sitesList     = Utility::getSiteList(false);
+        $sitesList     = \Utility::getSiteList(false);
         foreach ($sitesList as $key=>$value) {
             $list_of_sites[$key] = $value;
         }
         ksort($list_of_sites);
         if ($useProjects) {
             $list_of_projects = array(null => 'All');
-            $projectList      = Utility::getProjectList();
+            $projectList      = \Utility::getProjectList();
             foreach ($projectList as $key => $value) {
                 $list_of_projects[$key] =$value;
             }
@@ -485,7 +484,7 @@ class NDB_Menu_Filter_Final_Radiological_Review extends NDB_Menu_Filter
      */
     function getJSDependencies()
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getJSDependencies();
         return array_merge(

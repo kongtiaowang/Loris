@@ -30,7 +30,7 @@
                 <a href="{$baseurl}/imaging_browser/viewSession/?sessionID={$form.SessionID.html}" target="_blank">Imaging Browser</a>
             </div>
             <div class="col-xs-6 col-xs-offset-6">
-                <a href="{$baseurl}/{$form.CandID.html}/{$form.SessionID.html}/radiology_review/?commentID={$form.CommentID.html}" target="_blank">Original Radiology Review</a>
+                <a href="{$baseurl}/instruments/radiology_review/?commentID={$form.CommentID.html}&sessionID={$form.SessionID.html}&candID={$form.CandID.html}" target="_blank">Original Radiology Review</a>
             </div>
         </div>
     </div>
