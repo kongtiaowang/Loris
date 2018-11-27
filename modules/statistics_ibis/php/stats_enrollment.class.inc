@@ -1,46 +1,70 @@
 <?php
-require_once 'Utility.class.inc';
-require_once 'NDB_Form.class.inc';
+/**
+ * The module used to display the IBIS enrollment statistics tab.
+ *
+ * PHP Version 7
+ *
+ * @category Loris
+ * @package  Main
+ * @author   Nicolas Brossard
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://github.com/aces/IBIS
+ */
+
+namespace LORIS\statistics_ibis;
 
 /**
- * The welcome menu
- * @package main
+ * The module used to display the IBIS enrollment statistics tab.
+ *
+ * PHP Version 7
+ *
+ * @category Loris
+ * @package  Main
+ * @author   Nicolas Brossard
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://github.com/aces/IBIS
  */
-class NDB_Form_statistics_ibis extends NDB_Form
+class Stats_Enrollment extends \NDB_Form
 {
-    function _hasAccess() {
-        $user =& User::singleton();
+    /**
+     * Determine whether the user has access to the module or not.
+     *
+     * @return bool true if the user has access, false otherwise.
+     */
+     function _hasAccess() {
+        $user =& \User::singleton();
 
         return $user->hasPermission('data_entry');
     }
 
+    /**
+     * InCenter function.
+     *
+     * @param string $centerID the value of centreID.
+     * @param string $Centres  the value of Centres.
+     *
+     * @return bool
+     */
     function _inCenter($centerID, $Centres) {
         foreach ($Centres as $Centre) {
             if($Centre['NumericID'] == $centerID) {
-                return TRUE;
+                return true;
             }
         }
-        return FALSE;
+        return false;
     }
 
 
-    function statistics_ibis()
+    /**
+     * Sets up the module prior to displaying it.
+     * 
+     * @return void.
+     */
+    function setup()
     {
-        $DB =& Database::singleton();
+        parent::setup();
 
-
-        $this->tpl_data['StatsTabs'] = $DB->pselect(
-            "SELECT ModuleName, SubModuleName, Description
-                 FROM StatisticsTabs
-                 ORDER BY OrderNo",
-            array()
-        );
-    }
-
-
-    function stats_enrollment()
-    {
-        $DB =& Database::singleton();
+        $DB =& \Database::singleton();
 
         $centers = $DB->pselect("SELECT CONCAT('C', CenterID) as ID, CenterID as NumericID, PSCArea as LongName, Name as ShortName FROM psc WHERE CenterID <> '1' AND Study_site = 'Y'", array());
 
@@ -48,7 +72,7 @@ class NDB_Form_statistics_ibis extends NDB_Form
         $this->tpl_data['Sites'] = array('' => 'All Sites');
         $this->tpl_data['SubProjects'] = array('' => 'All SubProjects');
         $projects[null] = 'All Projects';
-        foreach(Utility::getProjectList() as $key => $value) {
+        foreach(\Utility::getProjectList() as $key => $value) {
             $projects[$key] = $value;
         }
         $this->tpl_data['Projects'] = $projects;
@@ -63,7 +87,7 @@ class NDB_Form_statistics_ibis extends NDB_Form
             $ExtraProject_Criteria = ' AND (c.ProjectID IS NULL OR c.ProjectID=' . $_REQUEST['EnrollmentProject'] . ')';
             $currentProject = $_REQUEST['EnrollmentProject'];
             $this->tpl_data['CurrentProject'] = array('ID' => $currentProject, 'Name' => $projects[$currentProject]);
-            $SubProjects= Utility::getSubprojectsForProject($_REQUEST['EnrollmentProject']);
+            $SubProjects= \Utility::getSubprojectsForProject($_REQUEST['EnrollmentProject']);
             if (is_array($SubProjects)) {
                 $this->tpl_data['SubProjects'] = array('' => 'All SubProjects') + $SubProjects;
                 $currentSubProject = $_REQUEST['EnrollmentSubProject'];
@@ -79,9 +103,18 @@ class NDB_Form_statistics_ibis extends NDB_Form
         $this->tpl_data['enrollment_completion'] = $this->getEnrollmentData($_REQUEST['EnrollmentSite'],$_REQUEST['EnrollmentProject'],$_REQUEST['EnrollmentSubProject']);
     }
 
-
+    /**
+     * Determine the enrollment stats for a given site/project/subproject
+     * trio.
+     * 
+     * @param int site (center) ID.
+     * @param int project ID.
+     * @param int subproject ID.
+     * 
+     * @return array the enrollment data.
+     */
     function getEnrollmentData($siteID= null, $projID= null, $subpjID=null){
-        $DB =& Database::singleton();
+        $DB =& \Database::singleton();
         $enroll_data = array();
         $params = array();
         $Extra_Where = '';
@@ -306,14 +339,13 @@ class NDB_Form_statistics_ibis extends NDB_Form
     }
 
     /**
-     * Include the column formatter required to display the feedback link colours
-     * in the statistics menu
+     * Adds additional Javascript utility classes for this module.
      *
      * @return array of javascript to be inserted
      */
     function getJSDependencies()
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getJSDependencies();
         return array_merge(
@@ -321,6 +353,22 @@ class NDB_Form_statistics_ibis extends NDB_Form
             array(
                 $baseURL . "/statistics_ibis/js/form_stats_enrollment.js",
             )
+        );
+    }
+
+    /**
+     * Include additional CSS files:
+     *
+     * @return array of javascript to be inserted
+     */
+    function getCSSDependencies()
+    {
+        $factory = \NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getCSSDependencies();
+        return array_merge(
+            $deps,
+            array($baseURL . "/statistics/css/statistics.css")
         );
     }
 
