@@ -36,29 +36,12 @@ class MediaTest extends LorisIntegrationTest
      */
     function testLoadsWithPermissionRead()
     {
-        $this->setupPermissions(array("media_read"));
         $this->safeGet($this->url . "/media/");
-        $bodyText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector("body")
-        )->getText();
+$this->webDriver->executescript(
+            "document.querySelector('#upload > div > div > form > div > div:nth-child(3) > div > div > p > span').textContent");
+        
+        print_r($bodyText);
         $this->assertNotContains("You do not have access to this page.", $bodyText);
-        $this->resetPermissions();
-    }
-    /**
-     * Tests that the page does not load if the user does not have correct
-     * permissions
-     *
-     * @return void
-     */
-    function testDoesNotLoadWithoutPermission()
-    {
-        $this->setupPermissions(array());
-        $this->safeGet($this->url . "/media/");
-        $bodyText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector("body")
-        )->getText();
-        $this->assertContains("You do not have access to this page.", $bodyText);
-        $this->resetPermissions();
     }
 
 }
