@@ -1079,14 +1079,13 @@ class Utility
     {
         $val  = trim($val);
         $last = strtolower($val[strlen($val)-1]);
-
         switch($last) {
         case 'g':
-            return $val * 1024 * 1024 * 1024;
+            return intval($val) * 1024 * 1024 * 1024;
         case 'm':
-            return $val * 1024 * 1024;
+            return intval($val) * 1024 * 1024;
         case 'k':
-            return $val * 1024;
+            return intval($val) * 1024;
         default:
             return $val;
         }
