@@ -469,13 +469,6 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
 
         // Creates array of all checkbox questions for use in following XIN rule
         $checkboxquestions = array(
-                              'aahscout',
-                              'fieldmap_apinv_structural',
-                              'localizers',
-                              'fieldmap_ap_structural',
-                              't1w_run1_check',
-                              't1w_run2_check',
-                              't2w_check',
                               'dti3_shell',
                               '3b0',
                               'dti2_shell',
@@ -487,8 +480,6 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
                               'bold_run2',
                               'bold_run3',
                               'bold_run4',
-                              'data_sent_to_dcc',
-                              'data_entry_done_loris',
                              );
 
         // Makes checkbox questions not required
