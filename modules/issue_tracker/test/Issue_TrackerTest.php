@@ -37,9 +37,6 @@ class Issue_TrackerTest extends LorisIntegrationTest
     function setUp()
     {
         parent::setUp();
-        $window = new WebDriverWindow($this->webDriver);
-        $size   = new WebDriverDimension(1024, 1768);
-        $window->setSize($size);
          $this->DB->insert(
              "psc",
              array(
@@ -92,7 +89,7 @@ class Issue_TrackerTest extends LorisIntegrationTest
         $this->webDriver->get($this->url . "/issue_tracker/");
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
-        )->getText();
+        )->getText();print_r($bodyText);
         $this->assertContains("Issues", $bodyText);
     }
 
