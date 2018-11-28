@@ -24,7 +24,7 @@ namespace LORIS\media;
 class Edit extends \NDB_Form
 {
     public $skipTemplate = true;
-
+    public $AjaxModule         = true;
     /**
      * Entry point for /media/edit/
      * Checks if file id is provided and otherwise redirects to /media/ page
