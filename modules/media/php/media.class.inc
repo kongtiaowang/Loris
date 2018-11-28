@@ -27,13 +27,12 @@ namespace LORIS\media;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/CCNA/
  */
-class Media extends \NDB_Form
+class Media extends \NDB_Menu_Filter
 {
     public $hasWritePermission = false;
     public $hasHidePermission  = false;
     public $AjaxModule         = true;
     public $skipTemplate       = true;
-    public $fieldOptions;
 
     /**
      * Check user permissions
