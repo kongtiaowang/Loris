@@ -21,7 +21,7 @@ namespace LORIS\media;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/CCNA/
  */
-class Edit extends \NDB_Form
+class Edit extends \NDB_Menu_Filter
 {
     public $skipTemplate = true;
     public $AjaxModule         = true;
