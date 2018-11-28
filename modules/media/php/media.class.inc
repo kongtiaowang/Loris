@@ -27,7 +27,7 @@ namespace LORIS\media;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/CCNA/
  */
-class Media extends \NDB_Menu_Filter
+class Media extends \NDB_Page
 {
     public $hasWritePermission = false;
     public $hasHidePermission  = false;
