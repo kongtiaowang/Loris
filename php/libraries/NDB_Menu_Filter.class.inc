@@ -140,7 +140,12 @@ class NDB_Menu_Filter extends NDB_Menu
 
         // set the headers if necessary
 
-        // start the filter form
+       if (!is_array($this->headers) || count($this->headers) == 0) {
+            foreach ($this->columns as $value) {
+               if( preg_match('/[0-9A-Za-z_]+$/', $value, $match)){
+                $this->headers[] = $match[0];}
+            }
+        } // start the filter form
         $this->registerDefaultFilter();
 
         // $this->form = new HTML_QuickForm('filter');

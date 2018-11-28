@@ -40,6 +40,11 @@ class MediaTest extends LorisIntegrationTest
         $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();print_r($bodyText);
+        $this->webDriver->executescript(
+            "document.querySelector('#tab-upload').click()");
+               $bodyText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();print_r($bodyText);
         $this->assertNotContains("You do not have access to this page.", $bodyText);
     }
     function testLoadsWthPermissionRead()
