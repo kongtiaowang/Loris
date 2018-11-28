@@ -1,6 +1,6 @@
 -- Drop columns sex & scan_protocol
-ALTER TABLE mri_parameter_form_sa DROP COLUMN scan_protocol;
-ALTER TABLE mri_parameter_form_sa DROP COLUMN sex;
+--ALTER TABLE mri_parameter_form_sa DROP COLUMN scan_protocol;
+--ALTER TABLE mri_parameter_form_sa DROP COLUMN sex;
 
 -- Modify columns that now take enums
 ALTER TABLE mri_parameter_form_sa
@@ -12,9 +12,6 @@ height enum('0','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15
 ALTER TABLE mri_parameter_form_sa
 CHANGE COLUMN head_circumference
 head_circumference enum('0','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25') default NULL;
-ALTER TABLE mri_parameter_form_sa
-CHANGE COLUMN Bx_specialist
-Bx_specialist enum() default NULL;
 
 ALTER TABLE mri_parameter_form_sa DROP COLUMN session_attempts;
 ALTER TABLE mri_parameter_form_sa DROP COLUMN time_enter_mri_rm; 
@@ -45,7 +42,7 @@ ALTER TABLE mri_parameter_form_sa ADD COLUMN `time_enter_mri_room_5` varchar(255
 ALTER TABLE mri_parameter_form_sa ADD COLUMN `scan_start_time_5` varchar(255) default NULL;
 ALTER TABLE mri_parameter_form_sa ADD COLUMN `scan_end_time_5` varchar(255) default NULL;
 
-ALTER TABLE mri_parameter_form_sa DROP COLUMN aahcscout; 
+ALTER TABLE mri_parameter_form_sa DROP COLUMN aahscout; 
 ALTER TABLE mri_parameter_form_sa DROP COLUMN fieldmap_apinv_structural;
 ALTER TABLE mri_parameter_form_sa DROP COLUMN localizers; 
 ALTER TABLE mri_parameter_form_sa DROP COLUMN fieldmap_ap_structural; 
@@ -65,17 +62,17 @@ dti3_shell_attempts enum('console_pass','console_fail') default NULL;
 ALTER TABLE mri_parameter_form_sa ADD COLUMN `dti3_shell_num_attempts` enum('0','1','2','3','4','5','6','7','8','9','10') default NULL; 
 ALTER TABLE mri_parameter_form_sa CHANGE COLUMN 3b0 
 6b0 varchar(255) default NULL; 
-ALTER TABLE mri_parameter_form_sa CHANGE COLUMN 3b0_shell_attempts 
-6b0_shell_attempts enum('console_pass','console_fail') default NULL;
-ALTER TABLE mri_parameter_form_sa ADD COLUMN 6b0_shell_num_attempts` enum('0','1','2','3','4','5','6','7','8','9','10') default NULL; 
+ALTER TABLE mri_parameter_form_sa CHANGE COLUMN 3b0_attempts 
+6b0_attempts enum('console_pass','console_fail') default NULL;
+ALTER TABLE mri_parameter_form_sa ADD COLUMN 6b0_num_attempts` enum('0','1','2','3','4','5','6','7','8','9','10') default NULL; 
 ALTER TABLE mri_parameter_form_sa CHANGE COLUMN dti2_shell_attempts
 dti2_shell_attempts enum('console_pass','console_fail') default NULL;
 ALTER TABLE mri_parameter_form_sa ADD COLUMN `dti2_shell_num_attempts` enum('0','1','2','3','4','5','6','7','8','9','10') default NULL;
 ALTER TABLE mri_parameter_form_sa CHANGE COLUMN 3b0_2
 6b0_2 varchar(255) default NULL;
-ALTER TABLE mri_parameter_form_sa CHANGE COLUMN 6b0_2_shell_attempts
-6b0_2_shell_attempts enum('console_pass','console_fail') default NULL;
-ALTER TABLE mri_parameter_form_sa ADD COLUMN 6b0_2_shell_num_attempts` enum('0','1','2','3','4','5','6','7','8','9','10') default NULL;
+ALTER TABLE mri_parameter_form_sa CHANGE COLUMN 6b0_2_attempts
+6b0_2_attempts enum('console_pass','console_fail') default NULL;
+ALTER TABLE mri_parameter_form_sa ADD COLUMN 6b0_2_num_attempts` enum('0','1','2','3','4','5','6','7','8','9','10') default NULL;
 ALTER TABLE mri_parameter_form_sa CHANGE COLUMN dti1_shell_attempts
 dti1_shell_attempts enum('console_pass','console_fail') default NULL;
 ALTER TABLE mri_parameter_form_sa ADD COLUMN `dti1_shell_num_attempts` enum('0','1','2','3','4','5','6','7','8','9','10') default NULL;
@@ -91,3 +88,16 @@ ALTER TABLE mri_parameter_form_sa ADD COLUMN `bold_run3_num_attempts` enum('0','
 ALTER TABLE mri_parameter_form_sa CHANGE COLUMN bold_run4_attempts
 bold_run4_attempts enum('console_pass','console_fail') default NULL;
 ALTER TABLE mri_parameter_form_sa ADD COLUMN `bold_run4_num_attempts` enum('0','1','2','3','4','5','6','7','8','9','10') default NULL;
+
+ALTER TABLE mri_parameter_form_sa DROP COLUMN total_number_scans;
+ALTER TABLE mri_parameter_form_sa DROP COLUMN total_scan_time;
+ALTER TABLE mri_parameter_form_sa DROP COLUMN total_scan_time_status;
+ALTER TABLE mri_parameter_form_sa DROP COLUMN total_attempts_t1w;
+ALTER TABLE mri_parameter_form_sa DROP COLUMN total_attempts_t2w;
+ALTER TABLE mri_parameter_form_sa DROP COLUMN total_attempts_dti;
+ALTER TABLE mri_parameter_form_sa DROP COLUMN total_attempts_bold;
+ALTER TABLE mri_parameter_form_sa DROP COLUMN data_sent_to_dcc;
+ALTER TABLE mri_parameter_form_sa DROP COLUMN data_entry_done_loris;
+
+
+
