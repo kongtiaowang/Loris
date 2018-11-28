@@ -41,6 +41,11 @@ class MediaTest extends LorisIntegrationTest
             WebDriverBy::cssSelector("body")
         )->getText();print_r($bodyText);
         $this->assertNotContains("You do not have access to this page.", $bodyText);
+        $this->safeGet($this->url . "/media/?format=json");
+        $bodyText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();print_r($bodyText);
+        $this->assertNotContains("You do not have access to this page.", $bodyText);
     }
     /**
      * Tests that the page does not load if the user does not have correct
