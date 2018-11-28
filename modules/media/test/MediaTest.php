@@ -36,7 +36,7 @@ class MediaTest extends LorisIntegrationTest
      */
     function testLoadsWithPermissionRead()
     {
-        $this->safeGet($this->url . "/media/#upload");sleep(1);
+        $this->safeGet($this->url . "/media/");sleep(1);
                $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();print_r($bodyText);

@@ -141,7 +141,12 @@ class NDB_Config
 
         $env = getenv('LORIS_DB_CONFIG');
         if (!empty($env)) {
-            $file = $env;
+                if (!empty($travis)) {
+                      $file  = dirname(__DIR__);
+                      $file .= $env;
+                } else {
+                    $file = $env;
+                }
         } else if (file_exists(__DIR__ . "/../../project/$pathToFile")) {
             // "Classic" Loris location of project directory
             // parallel to php directory
