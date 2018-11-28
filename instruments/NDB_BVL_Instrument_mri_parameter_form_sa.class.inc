@@ -179,7 +179,9 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
             );
             $this->XINRegisterRule(
                 "scan_done_$i",
-                array("scan_done_$i{@}=={@}NEVER_REQUIRED")
+                array("scan_done_$i{@}=={@}NEVER_REQUIRED"),
+                "Not required.",
+                "scan_" . $i . "_group"
             );
             $group[] = $this->createText(
                 "time_enter_mri_room_$i",
@@ -188,7 +190,8 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
             $this->XINRegisterRule(
                 "time_enter_mri_room_$i",
                 array("scan_done_$i{@}=={@}yes"),
-                "Required if session is marked as done."
+                "Required if session is marked as done.",
+                "scan_" . $i . "_group"
             );
            $group[] = $this->createText(
                 "scan_start_time_$i",
@@ -197,7 +200,8 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
             $this->XINRegisterRule(
                 "time_enter_mri_room_$i",
                 array("scan_start_time_$i{@}=={@}yes"),
-                "Required if session is marked as done."
+                "Required if session is marked as done.",
+                "scan_" . $i . "_group"
             );
             $group[] = $this->createText(
                 "scan_end_time_$i",
@@ -206,7 +210,8 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
             $this->XINRegisterRule(
                 "time_enter_mri_room_$i",
                 array("scan_end_time_$i{@}=={@}yes"),
-                "Required if session is marked as done."
+                "Required if session is marked as done.",
+                "scan_" . $i . "_group"
             );
             $group[] = $this->createSelect(
                 "vit_e_right_$i",
@@ -281,6 +286,7 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
             $this->XINRegisterRule(
                 $question . "_passfail",
                 array($question . "_passfail{@}=={@}NEVER_REQUIRED"),
+                $question . "_group",
                 $question . "_group"
             );
             $this->form->addGroup(
@@ -304,7 +310,8 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
             $this->XINRegisterRule(
                 $question . "_anterior",
                 array($question . "_anterior{@}=={@}NEVER_REQUIRED"),
-                $question . "_group"
+                $question . "_group",
+                $question . "_group_repeat"
             );
 
             $group[] = $this->createSelect(
@@ -319,7 +326,8 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
             $this->XINRegisterRule(
                 $question . "_passfail",
                 array($question . "_passfail{@}=={@}NEVER_REQUIRED"),
-                $question . "_group"
+                $question . "_group",
+                $question . "_group_repeat"
             );
             $this->form->addGroup(
                 $group,
