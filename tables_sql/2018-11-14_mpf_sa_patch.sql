@@ -25,22 +25,28 @@ ALTER TABLE mri_parameter_form_sa ADD COLUMN `scan_done_1` enum('yes','no') defa
 ALTER TABLE mri_parameter_form_sa ADD COLUMN `time_enter_mri_room_1` varchar(255) default NULL;
 ALTER TABLE mri_parameter_form_sa ADD COLUMN `scan_start_time_1` varchar(255) default NULL;
 ALTER TABLE mri_parameter_form_sa ADD COLUMN `scan_end_time_1` varchar(255) default NULL;
+ALTER TABLE mri_parameter_form_sa ADD COLUMN `vit_e_right_1` enum('yes','no') default NULL,
 ALTER TABLE mri_parameter_form_sa ADD COLUMN `scan_done_2` enum('yes','no') default NULL;
 ALTER TABLE mri_parameter_form_sa ADD COLUMN `time_enter_mri_room_2` varchar(255) default NULL;
 ALTER TABLE mri_parameter_form_sa ADD COLUMN `scan_start_time_2` varchar(255) default NULL;
 ALTER TABLE mri_parameter_form_sa ADD COLUMN `scan_end_time_2` varchar(255) default NULL;
+ALTER TABLE mri_parameter_form_sa ADD COLUMN `vit_e_right_2` enum('yes','no') default NULL,
 ALTER TABLE mri_parameter_form_sa ADD COLUMN `scan_done_3` enum('yes','no') default NULL;
 ALTER TABLE mri_parameter_form_sa ADD COLUMN `time_enter_mri_room_3` varchar(255) default NULL;
 ALTER TABLE mri_parameter_form_sa ADD COLUMN `scan_start_time_3` varchar(255) default NULL;
 ALTER TABLE mri_parameter_form_sa ADD COLUMN `scan_end_time_3` varchar(255) default NULL;
+ALTER TABLE mri_parameter_form_sa ADD COLUMN `vit_e_right_3` enum('yes','no') default NULL,
 ALTER TABLE mri_parameter_form_sa ADD COLUMN `scan_done_4` enum('yes','no') default NULL;
 ALTER TABLE mri_parameter_form_sa ADD COLUMN `time_enter_mri_room_4` varchar(255) default NULL;
 ALTER TABLE mri_parameter_form_sa ADD COLUMN `scan_start_time_4` varchar(255) default NULL;
 ALTER TABLE mri_parameter_form_sa ADD COLUMN `scan_end_time_4` varchar(255) default NULL;
+ALTER TABLE mri_parameter_form_sa ADD COLUMN `vit_e_right_4` enum('yes','no') default NULL,
 ALTER TABLE mri_parameter_form_sa ADD COLUMN `scan_done_5` enum('yes','no') default NULL;
 ALTER TABLE mri_parameter_form_sa ADD COLUMN `time_enter_mri_room_5` varchar(255) default NULL;
 ALTER TABLE mri_parameter_form_sa ADD COLUMN `scan_start_time_5` varchar(255) default NULL;
 ALTER TABLE mri_parameter_form_sa ADD COLUMN `scan_end_time_5` varchar(255) default NULL;
+ALTER TABLE mri_parameter_form_sa ADD COLUMN `vit_e_right_5` enum('yes','no') default NULL,
+ALTER TABLE mri_parameter_form_sa DROP COLUMN `additional_sessions`;
 
 ALTER TABLE mri_parameter_form_sa DROP COLUMN aahscout;
 ALTER TABLE mri_parameter_form_sa DROP COLUMN fieldmap_apinv_structural;

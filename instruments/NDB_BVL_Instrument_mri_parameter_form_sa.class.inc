@@ -178,35 +178,44 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
                 )
             );
             $this->XINRegisterRule(
-                "scan_done_" . $i, 
+                "scan_done_$i",
                 array("scan_done_$i{@}=={@}NEVER_REQUIRED")
             );
             $group[] = $this->createText(
-                "time_enter_mri_room_" . $i,
+                "time_enter_mri_room_$i",
                 ""
             );
             $this->XINRegisterRule(
-                "time_enter_mri_room_" . $i,
+                "time_enter_mri_room_$i",
                 array("scan_done_$i{@}=={@}yes"),
                 "Required if session is marked as done."
             );
            $group[] = $this->createText(
-                "scan_start_time_" . $i,
+                "scan_start_time_$i",
                 ""
             );
             $this->XINRegisterRule(
-                "time_enter_mri_room_" . $i,
+                "time_enter_mri_room_$i",
                 array("scan_start_time_$i{@}=={@}yes"),
                 "Required if session is marked as done."
             );
             $group[] = $this->createText(
-                "scan_end_time_" . $i,
+                "scan_end_time_$i",
                 ""
             );
             $this->XINRegisterRule(
-                "time_enter_mri_room_" . $i,
+                "time_enter_mri_room_$i",
                 array("scan_end_time_$i{@}=={@}yes"),
                 "Required if session is marked as done."
+            );
+            $group[] = $this->createSelect(
+                "vit_e_right_$i",
+                "",
+                array(
+                    null => "",
+                    "yes" => "Yes",
+                    "no" => "No"
+                )
             );
             $this->form->addGroup(
                 $group,
@@ -217,13 +226,6 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
             );
             unset($group);
         }
-
-        //$this->addHourMinElement("time_enter_mri_rm", "Time Enter MRI Rm");
-        //$this->addHourMinElement("start_time", "Scan Start Time");
-        //$this->addHourMinElement("end_time", "Scan End Time");
-
-        //$this->form->addElement('select', 'vit_e_right', "Vit E (Sbj Right)", array("" => null, "Yes" => "Yes", "No" => "No"));
-        $this->form->addElement('select', 'additional_sessions', "Additional sessions", array("" => null, "Yes" => "Yes", "No" => "No"));
 
         $this->form->addElement("textarea", "overall_session_comments", "<i>Overall Session Comments:</i>");
         $this->XINRegisterRule(
@@ -470,9 +472,9 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
         // Creates array of all checkbox questions for use in following XIN rule
         $checkboxquestions = array(
                               'dti3_shell',
-                              '3b0',
+                              '6b0',
                               'dti2_shell',
-                              '3b0_2',
+                              '6b0_2',
                               'dti1_shell',
                               'FieldMap_APinv_BOLD',
                               'FieldMap_AP_BOLD',
