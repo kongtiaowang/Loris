@@ -123,25 +123,25 @@ class UserAccountsIndex extends Component {
     ];
 
     return (
-      <div>
-      <div>
-      <ButtonElement
-        label="Add User"
-        type="button"
-        buttonClass="btn btn-sm btn-primary col-xs-12 addCTA"
-        columnSize="col-sm-3 col-md-2 col-xs-12 pull-right"
-        onUserInput={() => (location.href='/user_accounts/edit_user/')}
-      />
-      </div>
-      <div id="userAccountsFilter">
-        <FilterableDataTable
-          name="userAccounts"
-          data={this.state.data.Data}
-          fields={fields}
-          columns={2}
-          getFormattedCell={this.formatColumn}
-        />
-      </div>
+      <div id="userAccountsIndex">
+        <div id="addUser" className="addCTA">
+          <ButtonElement
+            label="Add User"
+            type="button"
+            buttonClass="btn btn-sm btn-primary col-xs-12"
+            columnSize="col-sm-3 col-md-2 col-xs-12 pull-right"
+            onUserInput={() => (location.href='/user_accounts/edit_user/')}
+          />
+        </div>
+        <div id="userAccountsFilter">
+          <FilterableDataTable
+            name="userAccounts"
+            data={this.state.data.Data}
+            fields={fields}
+            columns={2}
+            getFormattedCell={this.formatColumn}
+          />
+        </div>
       </div>
     );
   }

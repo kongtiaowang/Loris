@@ -329,7 +329,7 @@ table.fancytable caption, table.listColorCoded caption {
 }
 
 /* Position module's main 'Add' call to action to be
-   above the selection filer panel */
+   above the selection filter panel */
 .addCTA {
   margin-top: -31px;
 }
