@@ -328,6 +328,12 @@ table.fancytable caption, table.listColorCoded caption {
    /*background-color: #9a5; /*#989;*/
 }
 
+/* Position module's main 'Add' call to action to be
+   above the selection filer panel */
+.addCTA {
+  margin-top: -31px;
+}
+
 input.text {
   font-family:TrebuchetMS;
   font-size:9pt;
