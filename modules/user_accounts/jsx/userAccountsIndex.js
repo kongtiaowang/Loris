@@ -71,6 +71,20 @@ class UserAccountsIndex extends Component {
         url = loris.BaseURL + '/user_accounts/edit_user/' + row.Username;
         result = <td><a href ={url}>{cell}</a></td>;
         break;
+      case 'Active':
+        if (row.Active === 'Y') {
+          result = <td>Yes</td>;
+        } else if (row.Active === 'N') {
+          result = <td>No</td>;
+        }
+        break;
+      case 'Pending Approval':
+        if (row['Pending Approval'] === 'Y') {
+          result = <td>Yes</td>;
+        } else if (row['Pending Approval'] === 'N') {
+          result = <td>No</td>;
+        }
+        break;
     }
     return result;
   }
@@ -124,11 +138,11 @@ class UserAccountsIndex extends Component {
 
     return (
       <div id="userAccountsIndex">
-        <div id="addUser" className="addCTA">
+        <div id="addUser">
           <ButtonElement
             label="Add User"
             type="button"
-            buttonClass="btn btn-sm btn-primary col-xs-12"
+            buttonClass="btn btn-sm btn-primary col-xs-12 addCTA"
             columnSize="col-sm-3 col-md-2 col-xs-12 pull-right"
             onUserInput={() => (location.href='/user_accounts/edit_user/')}
           />

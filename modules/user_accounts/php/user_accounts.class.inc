@@ -125,8 +125,8 @@ class User_Accounts extends \NDB_Menu_Filter
             }
         }
         $yesNoOptions = array(
-                         'Y' => 'Y',
-                         'N' => 'N',
+                         'Y' => 'Yes',
+                         'N' => 'No',
                         );
 
         $this->fieldOptions = array(
