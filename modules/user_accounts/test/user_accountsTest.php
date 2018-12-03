@@ -103,7 +103,6 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         $this->safeGet($this->url . "/user_accounts/");
         //testing data from RBdata.sql
         $this-> _testFilter($this->_name, $this->_table, null, "UnitTester");
-        $this-> _testFilter($this->_site, $this->_table, "2 rows", "1");
         $this-> _testFilter($this->_site, $this->_table, "1 rows", "3");
     }
     /**
@@ -142,16 +141,16 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
                 "
             );
                     $inputText = $this->webDriver->executescript(
-            "return document.querySelector('$element').value"
-        );
-         print_r($inputText);
-            $bodyText = $this->webDriver->executescript(
-                "return document.querySelector('#userAccountsFilter".
-                " > div > div.panel.panel-default >".
-                " div.table-header.panel-heading').textContent"
-            );
-            // 4 means there are 4 records under this site.
-            $this->assertContains($records, $bodyText);
+                        "return document.querySelector('$element').value"
+                    );
+                    print_r($inputText);
+                    $bodyText = $this->webDriver->executescript(
+                        "return document.querySelector('#userAccountsFilter".
+                        " > div > div.panel.panel-default >".
+                        " div.table-header.panel-heading').textContent"
+                    );
+                    // 4 means there are 4 records under this site.
+                    $this->assertContains($records, $bodyText);
         }
         //test clear filter
         $btn = $this->_clearFilter;
