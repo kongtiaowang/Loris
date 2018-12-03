@@ -141,6 +141,10 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
                  input.dispatchEvent(event);
                 "
             );
+                    $inputText = $this->webDriver->executescript(
+            "return document.querySelector('$element').value"
+        );
+         print_r($inputText);
             $bodyText = $this->webDriver->executescript(
                 "return document.querySelector('#userAccountsFilter".
                 " > div > div.panel.panel-default >".
