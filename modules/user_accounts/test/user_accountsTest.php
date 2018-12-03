@@ -39,11 +39,14 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
                                     'Y',
                                     'N',
                                    );
-    static $name   = "#userAccounts_filter > div > div:nth-child(2) > div > div > input";
-    static $site   = "#userAccounts_filter > div > div:nth-child(1) > div > div > select";
-    static $clearFilter = "#userAccounts_filter > div > div:nth-child(7) > div > div > button";
-    static $table ="#dynamictable > tbody > tr:nth-child(1)";
-    static $addUserBtn = "#addUser > div > div > button";
+    public static $name          = "#userAccounts_filter".
+                                   " > div > div:nth-child(2) > div > div > input";
+    public static $site          = "#userAccounts_filter".
+                                   " > div > div:nth-child(1) > div > div > select";
+    public static $clearFilter   = "#userAccounts_filter".
+                                   " > div > div:nth-child(7) > div > div > button";
+    public static $table         ="#dynamictable > tbody > tr:nth-child(1)";
+    public static $addUserBtn    = "#addUser > div > div > button";
     /**
      * Tests that, when loading the User accounts module > edit_user submodule, some
      * text appears in the body.
@@ -139,7 +142,9 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
                 "
             );
             $bodyText = $this->webDriver->executescript(
-                "return document.querySelector('#userAccountsFilter > div > div.panel.panel-default > div.table-header.panel-heading').textContent"
+                "return document.querySelector('#userAccountsFilter".
+                " > div > div.panel.panel-default >".
+                " div.table-header.panel-heading').textContent"
             );
             // 4 means there are 4 records under this site.
             $this->assertContains($records, $bodyText);
@@ -169,39 +174,39 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
             'First_name',
             'NewFirst'
         );
-      //  these tests below needs more time to run
-      //  $this->markTestSkipped("Skipping excessively slow test");
-      //  return;
-      //  $this->_verifyUserModification(
-      //      'user_accounts',
-      //      'UnitTester',
-      //      'First_name',
-      //      'NewFirst'
-      //  );
-      //  $this->_verifyUserModification(
-      //      'user_accounts',
-      //      'UnitTester',
-      //      'Last_name',
-      //      'NewLast'
-      //  );
-      //  $this->_verifyUserModification(
-      //      'user_accounts',
-      //      'UnitTester',
-      //      'Active',
-      //      'No'
-      //  );
-      //  $this->_verifyUserModification(
-      //      'user_accounts',
-      //      'UnitTester',
-      //      'Email',
-      //      'newemail@example.com'
-      //  );
-      //  $this->_verifyUserModification(
-      //      'user_accounts',
-      //      'UnitTester',
-      //      'Pending_approval',
-      //      'No'
-      //  );
+        //  these tests below needs more time to run
+        //  $this->markTestSkipped("Skipping excessively slow test");
+        //  return;
+        //  $this->_verifyUserModification(
+        //      'user_accounts',
+        //      'UnitTester',
+        //      'First_name',
+        //      'NewFirst'
+        //  );
+        //  $this->_verifyUserModification(
+        //      'user_accounts',
+        //      'UnitTester',
+        //      'Last_name',
+        //      'NewLast'
+        //  );
+        //  $this->_verifyUserModification(
+        //      'user_accounts',
+        //      'UnitTester',
+        //      'Active',
+        //      'No'
+        //  );
+        //  $this->_verifyUserModification(
+        //      'user_accounts',
+        //      'UnitTester',
+        //      'Email',
+        //      'newemail@example.com'
+        //  );
+        //  $this->_verifyUserModification(
+        //      'user_accounts',
+        //      'UnitTester',
+        //      'Pending_approval',
+        //      'No'
+        //  );
     }
     /**
      * Tests various My Preference page edit operations.
@@ -356,4 +361,3 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     }
 }
 ?>
-
