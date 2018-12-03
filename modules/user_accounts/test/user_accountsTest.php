@@ -2,11 +2,11 @@
 /**
  * User accounts automated integration tests
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Test
  * @package  Loris
- * @author   Nicolas Brossard <nicolasbrossard.mni@gmail.com>
+ * @author   Shen Wang <wangshen.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
@@ -17,7 +17,7 @@ require_once __DIR__
  *
  * @category Test
  * @package  Loris
- * @author   Nicolas Brossard <nicolasbrossard.mni@gmail.com>
+ * @author   Shen Wang <wangshen.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
