@@ -177,41 +177,19 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
                     "no" => "No"
                 )
             );
-            $this->XINRegisterRule(
-                "scan_done_$i",
-                array("scan_done_$i{@}=={@}NEVER_REQUIRED"),
-                "Not required.",
-                "scan_" . $i . "_group"
+            $group[] = $this->form->createElement(
+                "time",
+                "time_enter_mri_room_$i"
             );
-            $group[] = $this->createText(
-                "time_enter_mri_room_$i",
-                ""
-            );
-            $this->XINRegisterRule(
-                "time_enter_mri_room_$i",
-                array("scan_done_$i{@}=={@}yes"),
-                "Required if session is marked as done.",
-                "scan_" . $i . "_group"
-            );
+
            $group[] = $this->createText(
                 "scan_start_time_$i",
                 ""
             );
-            $this->XINRegisterRule(
-                "time_enter_mri_room_$i",
-                array("scan_start_time_$i{@}=={@}yes"),
-                "Required if session is marked as done.",
-                "scan_" . $i . "_group"
-            );
+
             $group[] = $this->createText(
                 "scan_end_time_$i",
                 ""
-            );
-            $this->XINRegisterRule(
-                "time_enter_mri_room_$i",
-                array("scan_end_time_$i{@}=={@}yes"),
-                "Required if session is marked as done.",
-                "scan_" . $i . "_group"
             );
             $group[] = $this->createSelect(
                 "vit_e_right_$i",
@@ -224,12 +202,30 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
             );
             $this->form->addGroup(
                 $group,
-                "scan_" . $i . "_group",
+                "scan_group_table{$i}",
                 null,
                 $this->_GUIDelimiter,
                 false
             );
             unset($group);
+            $this->XINRegisterRule(
+                "scan_done_{$i}",
+                array("scan_done_{$i}{@}=={@}NEVER_REQUIRED"), // rule
+                "Required.", // message
+                "scan_group_table{$i}" // group [if field is a part of a group]
+            );
+            $this->XINRegisterRule(
+                "time_enter_mri_room_$i",
+                array("scan_done_$i{@}=={@}yes"),
+                "Required if session is marked as done.",
+                "scan_group_table{$i}"
+            );
+            $this->XINRegisterRule(
+                "time_enter_mri_room_$i",
+                array("scan_start_time_$i{@}=={@}yes"),
+                "Required if session is marked as done.",
+                "scan_group_table{$i}"
+            );
         }
 
         $this->form->addElement("textarea", "overall_session_comments", "<i>Overall Session Comments:</i>");
