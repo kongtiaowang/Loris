@@ -39,14 +39,14 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
                                     'Y',
                                     'N',
                                    );
-    public static $name          = "#userAccounts_filter".
+    private $name          = "#userAccounts_filter".
                                    " > div > div:nth-child(2) > div > div > input";
-    public static $site          = "#userAccounts_filter".
+    private $site          = "#userAccounts_filter".
                                    " > div > div:nth-child(1) > div > div > select";
-    public static $clearFilter   = "#userAccounts_filter".
+    private $clearFilter   = "#userAccounts_filter".
                                    " > div > div:nth-child(7) > div > div > button";
-    public static $table         ="#dynamictable > tbody > tr:nth-child(1)";
-    public static $addUserBtn    = "#addUser > div > div > button";
+    private $table         ="#dynamictable > tbody > tr:nth-child(1)";
+    private $addUserBtn    = "#addUser > div > div > button";
     /**
      * Tests that, when loading the User accounts module > edit_user submodule, some
      * text appears in the body.
@@ -102,9 +102,9 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . "/user_accounts/");
         //testing data from RBdata.sql
-        $this-> _testFilter(self::$name, self::$table, null, "UnitTester");
-        $this-> _testFilter(self::$site, self::$table, "2 rows", "1");
-        $this-> _testFilter(self::$site, self::$table, "1 rows", "3");
+        $this-> _testFilter($this->name, $this->table, null, "UnitTester");
+        $this-> _testFilter($this->site, $this->table, "2 rows", "1");
+        $this-> _testFilter($this->site, $this->table, "1 rows", "3");
     }
     /**
      * Testing filter funtion and clear button
@@ -150,7 +150,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
             $this->assertContains($records, $bodyText);
         }
         //test clear filter
-        $btn = self::$clearFilter;
+        $btn = $this->clearFilter;
         $this->webDriver->executescript(
             "document.querySelector('$btn').click();"
         );
@@ -243,7 +243,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     {
         // adding a new user for react test
         $this->safeGet($this->url . "/user_accounts/");
-        $btn = self::$addUserBtn;
+        $btn = $this->addUserBtn;
         $this->webDriver->executescript(
             "document.querySelector('$btn').click();"
         );
@@ -354,7 +354,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function tearDown()
+    fccessUserunction tearDown()
     {
         $this->DB->delete("users", array("UserID" => 'userid'));
         parent::tearDown();
