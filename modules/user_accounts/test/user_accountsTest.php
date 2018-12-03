@@ -354,7 +354,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    fccessUserunction tearDown()
+    function tearDown()
     {
         $this->DB->delete("users", array("UserID" => 'userid'));
         parent::tearDown();
