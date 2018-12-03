@@ -309,12 +309,26 @@ class DataTable extends Component {
     // Handle string inputs
     if (typeof filterData === 'string') {
       searchKey = filterData.toLowerCase();
-      searchString = data.toLowerCase();
-
-      if (exactMatch) {
-        result = (searchString === searchKey);
-      } else {
-        result = (searchString.indexOf(searchKey) > -1);
+      switch (typeof data) {
+        case 'object':
+          // Handles the case where the data is an array
+          // and you want to search through it for
+          // the string you are filtering by
+          let searchArray = data.map((e) => e.toLowerCase());
+          if (exactMatch) {
+            result = searchArray.includes(searchKey);
+          } else {
+            result = searchArray.forEach((e) => (e.indexOf(searchKey) > -1));
+          }
+          break;
+        default:
+            searchString = data.toLowerCase();
+            if (exactMatch) {
+              result = (searchString === searchKey);
+            } else {
+              result = (searchString.indexOf(searchKey) > -1);
+            }
+          break;
       }
     }
 
