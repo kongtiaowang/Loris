@@ -50,6 +50,7 @@ class FilterableDataTable extends Component {
           columns={this.props.columns}
           filter={this.state.filter}
           fields={this.props.fields}
+          actions={this.props.actions}
           updateFilter={this.updateFilter}
           clearFilter={this.clearFilter}
         />
@@ -68,6 +69,7 @@ FilterableDataTable.defaultProps = {
 };
 
 FilterableDataTable.propTypes = {
+  actions: PropTypes.func,
   name: PropTypes.string.isRequired,
   data: PropTypes.object.isRequired,
   filter: PropTypes.object.isRequired,
