@@ -92,6 +92,11 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
     */
     function _setupForm()
     {
+        $db =& Database::singleton();
+
+        // Get the item scores
+        $query = "SELECT * FROM $this->table WHERE CommentID='".$this->getCommentID()."'";
+        $record =$db->pselectRow($query, array());
         //determine page to display
         if (preg_match(
             "/mri_parameter_form_sa(_page[0-9]+)/",
@@ -554,6 +559,33 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
         $this->validate_numeric($values, "total_attempts_dti", $errors, 0, 10);
         $this->validate_numeric($values, "total_attempts_bold", $errors, 0, 10);
         return $errors;
+    }
+
+    function score() {
+        if ($this->_determineDataEntryCompletionStatus() == "Incomplete") { 
+            return;
+        }
+     
+        // Get the item scores 
+        $db =& Database::singleton(); 
+        $query = "SELECT * FROM ".$this->table." WHERE CommentID=:cid";
+        $record = $db->pselectRow($query, array('cid' => $this->getCommentID()));
+        
+        $scores = array();  
+        
+        for ($i=1; $i <= 5; $i++) {
+            $start_time = "scan_start_time_$i"; 
+            $end_time = "scan_end_time_$i";
+            if ($record[$start_time] != NULL && $record[$end_time] != NULL) {
+                $curr_total_time = "scan_total_time_$i";
+                $timediff = $db->pselect("SELECT TIMEDIFF('".$record[$end_time]."', '".$record[$start_time]."')", array());
+                $timediff = implode($timediff[0]);
+            }
+            $scores[$curr_total_time] = $timediff;
+        }
+        
+        // save scores
+	    $db->update($this->table, $scores, array("CommentID"=>$this->getCommentID()));
     }
 
     /**
