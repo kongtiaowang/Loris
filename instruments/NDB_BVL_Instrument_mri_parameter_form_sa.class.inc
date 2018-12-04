@@ -182,14 +182,14 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
                 "time_enter_mri_room_$i"
             );
 
-           $group[] = $this->createText(
-                "scan_start_time_$i",
-                ""
+           $group[] = $this->form->createElement(
+               "time",
+                "scan_start_time_$i"
             );
 
-            $group[] = $this->createText(
-                "scan_end_time_$i",
-                ""
+            $group[] =$this->form->createElement(
+                "time",
+                "scan_end_time_$i"
             );
             $group[] = $this->createSelect(
                 "vit_e_right_$i",
@@ -211,21 +211,35 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
             $this->XINRegisterRule(
                 "scan_done_{$i}",
                 array("scan_done_{$i}{@}=={@}NEVER_REQUIRED"), // rule
-                "Required.", // message
+                "Not Required.", // message
                 "scan_group_table{$i}" // group [if field is a part of a group]
             );
             $this->XINRegisterRule(
                 "time_enter_mri_room_$i",
                 array("scan_done_$i{@}=={@}yes"),
-                "Required if session is marked as done.",
+                "All fields are required if corresponding session is marked as done.",
                 "scan_group_table{$i}"
             );
             $this->XINRegisterRule(
-                "time_enter_mri_room_$i",
-                array("scan_start_time_$i{@}=={@}yes"),
-                "Required if session is marked as done.",
+                "scan_start_time_$i",
+                array("scan_done_$i{@}=={@}yes"),
+                "All fields are required if corresponding session is marked as done.",
                 "scan_group_table{$i}"
             );
+            $this->XINRegisterRule(
+                "vit_e_right_$i",
+                array("scan_done_$i{@}=={@}yes"),
+                "All fields are required if corresponding session is marked as done.",
+                "scan_group_table{$i}"
+            );
+
+            $this->XINRegisterRule(
+                "scan_end_time_$i",
+                array("scan_done_$i{@}=={@}yes"),
+                "All fields are required if corresponding session is marked as done.",
+                "scan_group_table{$i}"
+            );
+
         }
 
         $this->form->addElement("textarea", "overall_session_comments", "<i>Overall Session Comments:</i>");
@@ -592,19 +606,19 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
             "static",
             null,
             null,
-            "<b>Time Enter MRI Room<b>"
+            "<b>Time Enter<br>MRI Room(HH:MM)<b>"
         );
         $group[] = $this->form->createElement(
             "static",
             null,
             null,
-            "<b>Scan Start Time</b>"
+            "<b>Scan Start Time(HH:MM)</b>"
         );
         $group[] = $this->form->createElement(
             "static",
             null,
             null,
-            "<b>Scan End Time</b>"
+            "<b>Scan End Time(HH:MM)</b>"
         );
         $group[] = $this->form->createElement(
             "static",

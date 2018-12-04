@@ -1193,7 +1193,6 @@ class NDB_BVL_Instrument extends NDB_Page
         }
 
         if (!empty($errors)) {
-            print_r($errors);
             return $errors;
         }
         return true;
