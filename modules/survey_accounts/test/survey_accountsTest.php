@@ -27,15 +27,23 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
 {
 
     // UI location on the page
-    static $pscid   = "#surveyAccounts_filter > div > div:nth-child(1) > div > div > input";
-    static $visit   = "#surveyAccounts_filter > div > div:nth-child(2) > div > div > select";
-    static $email   = "#surveyAccounts_filter > div > div:nth-child(3) > div > div > input";
-    static $instrument = "#surveyAccounts_filter > div > div:nth-child(4) > div > div > select";
+    static $pscid      = "#surveyAccounts_filter".
+                         " > div > div:nth-child(1) > div > div > input";
+    static $visit      = "#surveyAccounts_filter".
+                         " > div > div:nth-child(2) > div > div > select";
+    static $email      = "#surveyAccounts_filter".
+                         " > div > div:nth-child(3) > div > div > input";
+    static $instrument = "#surveyAccounts_filter".
+                         " > div > div:nth-child(4) > div > div > select";
     // clear filter button
-    static $clearFilter     = "#surveyAccounts_filter > div > div:nth-child(6) > div > div > button";
-    static $add     = "#surveyAccounts_filter > div > div:nth-child(7) > div > div > button";
+    static $clearFilter = "#surveyAccounts_filter".
+                          " > div > div:nth-child(6) > div > div > button";
+    static $add         = "#surveyAccounts_filter".
+                          " > div > div:nth-child(7) > div > div > button";
     // header of the table
-    static $table    = "#lorisworkspace > div > div.panel.panel-default > div.table-header.panel-heading > div > div";
+    static $table = "#lorisworkspace >".
+                    " div > div.panel.panel-default >".
+                    " div.table-header.panel-heading > div > div";
 
     /**
      * Insert testing data
@@ -237,7 +245,12 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
         //testing search by PSCID
         $this->safeGet($this->url . "/survey_accounts/");
         //testing data from RBdata.sql
-        $this-> _testFilter(self::$email, self::$table, "1 rows", "TestTestTest@example.com");
+        $this-> _testFilter(
+            self::$email,
+            self::$table,
+            "1 rows",
+            "TestTestTest@example.com"
+        );
         $this-> _testFilter(self::$pscid, self::$table, "1 rows", "8888");
         $this-> _testFilter(self::$pscid, self::$table, "0 rows", "test");
 
@@ -290,7 +303,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
         $inputText = $this->webDriver->executescript(
             "return document.querySelector('$element').value"
         );
-        $this->assertEquals("",$inputText);
+        $this->assertEquals("", $inputText);
     }
 }
 ?>
