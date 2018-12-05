@@ -598,6 +598,10 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
                 $timediff = $db->pselect("SELECT TIMEDIFF('".$record[$end_time]."', '".$record[$start_time]."')", array());
                 $timediff = implode($timediff[0]);
             }
+            else{
+                $curr_total_time = "scan_total_time_$i";
+                $timediff = NULL;
+            }
             $scores[$curr_total_time] = $timediff;
         }
         
