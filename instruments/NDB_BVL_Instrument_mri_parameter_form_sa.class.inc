@@ -122,6 +122,23 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
 
         // Automatically adds examiner & date of administration
         $this->_addMetadataFields();
+        
+        $score_columns 
+           = array(
+             "scan_total_time_1" => "Scan 1 (Total Time) ", 
+             "scan_total_time_2" => "Scan 2 (Total Time) ",
+             "scan_total_time_3" => "Scan 3 (Total Time) ",
+             "scan_total_time_4" => "Scan 4 (Total Time) ",
+             "scan_total_time_5" => "Scan 5 (Total Time) ",
+        );
+        
+        while ($i = current($score_columns)) { 
+           $this->addScoreColumn(
+              key($score_columns),
+              $i
+           );
+           next($score_columns); 
+        }
         $this->form->addElement('static', null, '<BR>');
     }
 
