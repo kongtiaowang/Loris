@@ -31,7 +31,8 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
     static $site        = "#dicom_filter_filter>div>div:nth-child(8)>div>div>select";
     static $gender      = "#dicom_filter_filter>div>div:nth-child(3)>div>div>input";
     static $dateOfBirth = "#dicom_filter_filter>div>div:nth-child(4)>div>div>input";
-    static $clearFilter = "#dicom_filter_filter>div>div:nth-child(9)>div>div>button";
+    static $clearFilter = "#dicom_filter_filter".
+                          ">div>div:nth-child(10)>div>div>button";
     // first row of react table
     static $table = "#dynamictable > tbody > tr:nth-child(1)";
     /**
