@@ -1,29 +1,30 @@
 <?php
 /**
- * This file contains the NDB_Menu_Filter_quality_control class
+ * This file contains the NDB_Menu_Filter_media class
  *
  * PHP Version 5
  *
  * @category Module
- * @package  Quality_Control
- * @author   Leo Thomas <lthomas.mcin@gmail.com>
+ * @package  Quality Control
  * @author   Liza Levitis <llevitis.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris/
+ * @link     https://www.github.com/aces/CCNA/
  */
+namespace LORIS\quality_control;
+
 /**
- * Imaging QC Class
+ * Main class for quality control module corresponding to /quality_control/ URL
+ * Tools section of the LorisMenu.
  *
  * PHP Version 5
  *
  * @category Module
- * @package  Quality_Control
- * @author   Leo Thomas <lthomas.mcin@gmail.com>
- * @author   Liza Levitis <llevitis.mcin@gmail.com>
+ * @package  Quality Control
+ * @author   Liza Levitis  <llevitis.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris/
+ * @link     https://www.github.com/aces/CCNA/
  */
-class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
+class Quality_Control extends \NDB_Menu_Filter
 {
     public $hasWritePermission = false;
     public $AjaxModule         = true;
@@ -37,20 +38,20 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
     function _hasAccess()
     {
         //create user object
-        $user =& User::singleton();
+        $user =& \User::singleton();
         return $user->hasPermission('data_team_helper');
     }
-    
+
     /**
-    * Checks configuration module to find which scans are relevant
-    * to the given project
-    *
-    * @return array $scan_types of desired scan types.
-    */
+     * Checks configuration module to find which scans are relevant
+     * to the given project
+     *
+     * @return array $scan_types of desired scan types.
+     */
     function _getScanTypes()
     {
-        $config = NDB_Config::singleton();
-        $db     = Database::singleton();
+        $config = \NDB_Config::singleton();
+        $db     = \Database::singleton();
 
         $toTable_scan_types = $config->getSetting('tblScanTypes');
 
@@ -86,14 +87,14 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
 
 
     /**
-    * Builds query for given modality. Works with t1w, t2w, dti.
-    *
-    * @param string $scan_type One of 't1w', 't2w', 'dti'
-    * @param string $scan_done Name of column to check in mri_parameter_form
-    * @param string $acqID     Aquisition protocol ID for given modality
-    *
-    * @return string $query for the given modality
-    */
+     * Builds query for given modality. Works with t1w, t2w, dti.
+     *
+     * @param string $scan_type One of 't1w', 't2w', 'dti'
+     * @param string $scan_done Name of column to check in mri_parameter_form
+     * @param string $acqID     Aquisition protocol ID for given modality
+     *
+     * @return string $query for the given modality
+     */
     function _buildQuery($scan_type, $scan_done, $acqID)
     {
 
@@ -151,9 +152,9 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
               ELSE 'Missing'
            END as tarchive_loc,
            (SELECT Name FROM Project WHERE ProjectID=c.ProjectID) as project,".
-           " (SELECT title FROM subproject WHERE SubprojectID=s.SubprojectID)
+            " (SELECT title FROM subproject WHERE SubprojectID=s.SubprojectID)
            as subproject,".
-           " CASE
+            " CASE
               WHEN m.Data_entry_completion_status='Incomplete' THEN 'Incomplete'
               ELSE 'Complete'
            END AS mri_parameter_form,
@@ -181,12 +182,12 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
         LEFT JOIN session s ON (f.SessionID=s.ID)
         LEFT JOIN mri_parameter_form m ON (m.CommentID=f.CommentID)
         LEFT JOIN tarchive t ON (t.SessionID=s.ID)".
-        " LEFT JOIN files fi ON (fi.SessionID=s.ID AND
+            " LEFT JOIN files fi ON (fi.SessionID=s.ID AND
         fi.AcquisitionProtocolID=".$acqID.")".
-        " LEFT JOIN mri_violations_log mvl ON".
-        " (mvl.CandID = s.CandID AND mvl.Scan_type=".$acqID."".
-        " AND mvl.PatientName LIKE CONCAT ('%', s.Visit_label,'%'))".
-        " LEFT JOIN candidate c ON (s.CandID=c.CandID)
+            " LEFT JOIN mri_violations_log mvl ON".
+            " (mvl.CandID = s.CandID AND mvl.Scan_type=".$acqID."".
+            " AND mvl.PatientName LIKE CONCAT ('%', s.Visit_label,'%'))".
+            " LEFT JOIN candidate c ON (s.CandID=c.CandID)
         LEFT JOIN files_qcstatus qc ON (qc.FileID = fi.FileID)
         LEFT JOIN mri_upload mu ON (mu.SessionID = f.SessionID) ";
 
@@ -210,13 +211,13 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
      */
     function _setFilterForm()
     {
-        $user      =& User::singleton();
-        $db        =& Database::singleton();
+        $user      =& \User::singleton();
+        $db        =& \Database::singleton();
         $siteList  = array();
-        $visitList = Utility::getVisitList();
+        $visitList = \Utility::getVisitList();
         // allow to view all sites data through filter
         if ($user->hasPermission('imaging_browser_qc')) {
-            $siteList = Utility::getSiteList();
+            $siteList = \Utility::getSiteList();
             // Index sites using their names (used to filter react tables)
             foreach ($siteList as $key => $site) {
                 unset($siteList[$key]);
@@ -235,12 +236,11 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
 
         $scan_types = $this->_getScanTypes();
 
-        $projectList     = Utility::getProjectList();
-        $subprojectList2 = array();
+        $projectList     = \Utility::getProjectList();
         foreach ($projectList as $key => $value) {
             $projectList2[$value] = $value;
         }
-        $subprojectList  = Utility::getSubprojectList();
+        $subprojectList  = \Utility::getSubprojectList();
         $subprojectList2 = array();
         foreach ($subprojectList as $key => $value) {
             $subprojectList2[$value] = $value;
@@ -256,10 +256,10 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
         }
 
         $scan_location = array(
-                          "In Imaging Browser"    => "Found in Imaging Browser",
-                          "In MRI Violated Scans" => "Found in MRI Violated Scans",
-                          "Missing"               => "Missing",
-                         );
+            "In Imaging Browser"    => "Found in Imaging Browser",
+            "In MRI Violated Scans" => "Found in MRI Violated Scans",
+            "Missing"               => "Missing",
+        );
         // Form Elements
         $this->addSelect('site', 'Site', $siteList);
         $this->addBasicText('candId', 'DCCID', ["size" => 9, "maxlength" => 7]);
@@ -271,24 +271,24 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
             'mRIParameterForm',
             "MRI Parameter Form",
             array(
-             "Incomplete" => "Incomplete",
-             "Complete"   => "Complete",
+                "Incomplete" => "Incomplete",
+                "Complete"   => "Complete",
             )
         );
         $this->addSelect(
             'scanDoneInMRIPF',
             'Scan Done in MRI PF',
             array(
-             "Yes" => "Yes",
-             "No"  => "No",
+                "Yes" => "Yes",
+                "No"  => "No",
             )
         );
         $this->addSelect(
             'tarchive',
             'Tarchive Status',
             array(
-             "In DICOM" => "In DICOM Archives",
-             "Missing"  => "Missing",
+                "In DICOM" => "In DICOM Archives",
+                "Missing"  => "Missing",
             )
         );
         $this->addSelect(
@@ -300,8 +300,8 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
             'qCStatus',
             'QC Status',
             array(
-             "Pass" => "Pass",
-             "Fail" => "Fail",
+                "Pass" => "Pass",
+                "Fail" => "Fail",
             )
         );
         $this->addSelect(
@@ -313,8 +313,8 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
             'selected',
             'Selected',
             array(
-             "True"  => "True",
-             "False" => "False",
+                "True"  => "True",
+                "False" => "False",
             )
         );
         return true;
@@ -328,7 +328,7 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
     function _setupVariables()
     {
 
-        $db =& Database::singleton();
+        $db =& \Database::singleton();
         $this->skipTemplate = true;
 
         $scan_types = $this->_getScanTypes();
@@ -352,10 +352,10 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
         foreach ($scan_types as $scan_type) {
             $scan_types[$scan_type]
                 = $this->_buildQuery(
-                    $scan_type,
-                    $scans_done[$scan_type],
-                    $acq_IDs[$scan_type]
-                );
+                $scan_type,
+                $scans_done[$scan_type],
+                $acq_IDs[$scan_type]
+            );
         }
 
         $query = implode(
@@ -368,24 +368,24 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
         $this->query = " FROM ( " . $query . " ) as tmp";
 
         $this->columns = [
-                          'PSCID',
-                          'SessionID',
-                          'cand_id',
-                          'site',
-                          'project',
-                          'subproject',
-                          'visit_label',
-                          'scan_type',
-                          'mri_parameter_form',
-                          'scan_done',
-                          'tarchive_loc',
-                          'scan_location',
-                          'qc_status',
-                          'uploaded_by',
-                          'selected',
-                          'CommentID',
-                          'TarchiveID',
-                         ];
+            'PSCID',
+            'SessionID',
+            'cand_id',
+            'site',
+            'project',
+            'subproject',
+            'visit_label',
+            'scan_type',
+            'mri_parameter_form',
+            'scan_done',
+            'tarchive_loc',
+            'scan_location',
+            'qc_status',
+            'uploaded_by',
+            'selected',
+            'CommentID',
+            'TarchiveID',
+        ];
 
         $this->group_by = 'PSCID,
             SessionID,
@@ -408,24 +408,24 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
         $this->order_by = 'PSCID';
 
         $this->headers = [
-                          'PSCID',
-                          'Session ID',
-                          'DCCID',
-                          'Site',
-                          'Project',
-                          'Subproject',
-                          'Visit Label',
-                          'Scan Type',
-                          'MRI Parameter Form',
-                          'Scan Done in MRI PF',
-                          'Tarchive',
-                          'Scan Location',
-                          'QC Status',
-                          'Uploaded By',
-                          'Selected',
-                          'CommentID',
-                          'TarchiveID',
-                         ];
+            'PSCID',
+            'Session ID',
+            'DCCID',
+            'Site',
+            'Project',
+            'Subproject',
+            'Visit Label',
+            'Scan Type',
+            'MRI Parameter Form',
+            'Scan Done in MRI PF',
+            'Tarchive',
+            'Scan Location',
+            'QC Status',
+            'Uploaded By',
+            'Selected',
+            'CommentID',
+            'TarchiveID',
+        ];
 
         return true;
     }
@@ -448,14 +448,15 @@ class NDB_Menu_Filter_Quality_Control extends NDB_Menu_Filter
      */
     function getJSDependencies()
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
             array(
-             $baseURL . "/quality_control/js/qualityControlIndex.js",
+                $baseURL . "/quality_control/js/qualityControlIndex.js",
             )
         );
     }
 }
+

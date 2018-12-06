@@ -165,7 +165,7 @@ $(function() {
       <div className="page-qualityControl">
           <QualityControlIndex
               ImgDataURL={`${loris.BaseURL}/quality_control/?format=json`}
-              BehavioralDataURL = {`${loris.BaseURL}/quality_control/?submenu=quality_control_behavioral&format=json`}/>
+              BehavioralDataURL = {`${loris.BaseURL}/quality_control/quality_control_behavioral/?format=json`}/>
       </div>
     );
   ReactDOM.render(qualityControlIndex, document.getElementById("lorisworkspace"));

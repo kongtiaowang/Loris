@@ -1,27 +1,30 @@
 <?php
 /**
- * This file contains the NDB_Menu_Filter_quality_control class
+ * This file contains the NDB_Menu_Filter_media class
  *
  * PHP Version 5
  *
  * @category Module
- * @package  Quality_Control
+ * @package  Quality Control
  * @author   Liza Levitis <llevitis.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/CCNA/
  */
+namespace LORIS\quality_control;
+
 /**
- * Behavioural QC Class
+ * Main class for quality control module corresponding to /quality_control/ URL
+ * Tools section of the LorisMenu.
  *
  * PHP Version 5
  *
  * @category Module
- * @package  Quality_Control
+ * @package  Quality Control
  * @author   Liza Levitis <llevitis.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/CCNA/
  */
-class NDB_Menu_Filter_Quality_Control_Behavioral extends NDB_Menu_Filter
+class Quality_Control_Behavioral extends \NDB_Menu_Filter
 {
     public $hasWritePermission = false;
     public $AjaxModule         = true;
@@ -34,7 +37,7 @@ class NDB_Menu_Filter_Quality_Control_Behavioral extends NDB_Menu_Filter
     function _hasAccess()
     {
         //create user object
-        $user =& User::singleton();
+        $user =& \User::singleton();
         return $user->hasPermission('data_team_helper');
     }
 
@@ -48,13 +51,13 @@ class NDB_Menu_Filter_Quality_Control_Behavioral extends NDB_Menu_Filter
      */
     function _setFilterForm()
     {
-        $user      =& User::singleton();
-        $db        = Database::singleton();
+        $user      =& \User::singleton();
+        $db        = \Database::singleton();
         $siteList  = array();
-        $visitList = Utility::getVisitList();
+        $visitList = \Utility::getVisitList();
         // allow to view all sites data through filter
         if ($user->hasPermission('access_all_profiles')) {
-            $siteList = Utility::getSiteList(false);
+            $siteList = \Utility::getSiteList(false);
             // Index sites using their names (used to filter react tables)
             foreach ($siteList as $key => $site) {
                 unset($siteList[$key]);
@@ -78,7 +81,7 @@ class NDB_Menu_Filter_Quality_Control_Behavioral extends NDB_Menu_Filter
         foreach ($instrumentsQuery as $instrument) {
             $instrumentList[$instrument['Full_name']] = $instrument['Full_name'];
         }
-        $projectList = Utility::getProjectList();
+        $projectList = \Utility::getProjectList();
         // Form Elements
         $this->addSelect('visitLabel', 'Visit Label', $visitList);
         $this->addSelect('instrument', 'Instruments', $instrumentList);
@@ -97,11 +100,10 @@ class NDB_Menu_Filter_Quality_Control_Behavioral extends NDB_Menu_Filter
     function _setupVariables()
     {
         $this->skipTemplate = true;
-        $user           =& User::singleton();
-        $config         =& NDB_Config::singleton();
+        $config         =& \NDB_Config::singleton();
         $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
         for ($i=0; $i<count($ddeInstruments); ++$i) {
-            $ddeInstruments[$i] = Database::singleton()->quote($ddeInstruments[$i]);
+            $ddeInstruments[$i] = \Database::singleton()->quote($ddeInstruments[$i]);
         }
         $query = " FROM session s JOIN flag f ON (f.sessionid = s.id)".
             " JOIN candidate c ON (c.candid = s.candid)".
@@ -122,25 +124,25 @@ class NDB_Menu_Filter_Quality_Control_Behavioral extends NDB_Menu_Filter
             ";
         }
         $this->columns  = [
-                           's.Visit_label as visit_label',
-                           's.CandID as cand_id',
-                           'c.PSCID as pscid',
-                           't.Full_name as instrument',
-                           's.ID',
-                           'f.SessionID',
-                           'f.data_entry',
-                           'f.commentid',
-                           'f.test_name',
-                          ];
+            's.Visit_label as visit_label',
+            's.CandID as cand_id',
+            'c.PSCID as pscid',
+            't.Full_name as instrument',
+            's.ID',
+            'f.SessionID',
+            'f.data_entry',
+            'f.commentid',
+            'f.test_name',
+        ];
         $query          = $query . $where;
         $this->query    = $query;
         $this->order_by = 'f.commentid';
         $this->headers  = [
-                           'Visit Label',
-                           'DCCID',
-                           'PSCID',
-                           'Instrument',
-                          ];
+            'Visit Label',
+            'DCCID',
+            'PSCID',
+            'Instrument',
+        ];
         return true;
     }
     /**
@@ -162,13 +164,13 @@ class NDB_Menu_Filter_Quality_Control_Behavioral extends NDB_Menu_Filter
      */
     function getJSDependencies()
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
             array(
-             $baseURL . "/quality_control/js/qualityControlIndex.js",
+                $baseURL . "/quality_control/js/qualityControlIndex.js",
             )
         );
     }
