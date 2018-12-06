@@ -19,8 +19,8 @@ namespace LORIS\quality_control_behavioral;
  * PHP Version 5
  *
  * @category Module
- * @package  Media
- * @author   Alex Ilea <ailea.mcin@gmail.com>
+ * @package  Quality Control
+ * @author   Liza Levitis <llevitis.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/CCNA/
  */
@@ -34,7 +34,7 @@ class Quality_Control_Behavioral extends \NDB_Menu_Filter
      * @return bool
      * @throws ConfigurationException
      */
-    function _hasAccess(\User $user) : bool
+    function _hasAccess()
     {
         //create user object
         $user =& \User::singleton();

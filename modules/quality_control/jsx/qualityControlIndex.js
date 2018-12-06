@@ -1,7 +1,5 @@
-import React from 'react';
-
+import FilterForm from 'FilterForm';
 import {Tabs, TabPane} from 'Tabs';
-import FilterableDataTable from 'FilterableDataTable';
 
 class QualityControlIndex extends React.Component {
   constructor(props) {
@@ -12,88 +10,85 @@ class QualityControlIndex extends React.Component {
       isLoadedImg: false,
       isLoadedBehavioral: false,
       imgFilter: {},
-      behavioralFilter: {},
+      behavioralFilter: {}
     };
     this.fetchData = this.fetchData.bind(this);
     this.updateBehavioralFilter = this.updateBehavioralFilter.bind(this);
     this.updateImgFilter = this.updateImgFilter.bind(this);
   }
 
-  /**
-   * Modify behaviour of specified column cells in the Data Table component
-   *
-   * @param {string} column - column name
-   * @param {string} cell - cell content
-   * @param {object} row - row content indexed by column
-   *
-   * @return {*} a formated table cell for a given column
-   */
+  formatColumn(column, cell, rowData, rowHeaders) {
+    // If a column if set as hidden, don't display it
+    if (loris.hiddenHeaders.indexOf(column) > -1) {
+      return null;
+    }
 
-  formatColumn(column, cell, row) {
-      let result = <td>{cell}</td>;
-      switch (column) {
-          case 'MRI Parameter Form':
-              let mpfURL = loris.BaseURL + '/mri_parameter_form/?commentID=' +
-                  row.CommentID + '&sessionID=' + row['Session ID'] +
-                  '&candID=' + row.DCCID;
-              result = <td> <a href={mpfURL}>{cell}</a> </td>;
-          case 'Scan Location':
-            if (cell == 'In Imaging Browser') {
-              let imgURL = loris.BaseURL + '/imaging_browser/viewSession/?sessionID=' +
-                  row['Session ID'];
-              result = <td><a href={imgURL}>{cell}</a></td>;
-            }
-          case 'Tarchive':
-            if (cell == 'In DICOM') {
-                let tarchiveURL = loris.BaseURL +
-                    '/dicom_archive/viewDetails/?tarchiveID=' + row.TarchiveID;
-                return <td><a href = {tarchiveURL}>{cell}</a></td>;
-            } else {
-              result = <td>Missing</td>;
-            }
+    // Create the mapping between rowHeaders and rowData in a row object.
+    var row = {};
+    rowHeaders.forEach(function(header, index) {
+      row[header] = rowData[index];
+    }, this);
+
+    if (column === "MRI Parameter Form") {
+      var mpfURL = loris.BaseURL + '/mri_parameter_form/?commentID=' +
+        row.CommentID + '&sessionID=' + row['Session ID'] +
+        '&candID=' + row.DCCID;
+      return <td> <a href={mpfURL}>{cell}</a> </td>;
+    } else if (column === "Scan Location" && cell === "In Imaging Browser") {
+      var imgURL = loris.BaseURL + '/imaging_browser/viewSession/?sessionID=' +
+      row['Session ID'];
+      return <td><a href={imgURL}>{cell}</a></td>;
+    } else if (column === "Tarchive") {
+      if (cell === "In DICOM") {
+        var tarchiveURL = loris.BaseURL +
+        '/dicom_archive/viewDetails/?tarchiveID=' + row.TarchiveID;
+        return <td><a href = {tarchiveURL}>{cell}</a></td>;
       }
-      return result;
+      return <td>Missing</td>;
+    }
+
+    return <td>{cell}</td>;
   }
 
   componentDidMount() {
-    this.fetchData('imaging');
-    this.fetchData('behavioral');
+    this.fetchData("imaging");
+    this.fetchData("behavioral");
   }
   fetchData(flag) {
-    if (flag === 'imaging') {
+    if (flag === "imaging") {
       $.ajax(this.props.ImgDataURL, {
-        method: 'GET',
-        dataType: 'json',
+        method: "GET",
+        dataType: "json",
         success: function(data) {
           this.setState({
             ImgData: data,
-            isLoadedImg: true,
+            isLoadedImg: true
           });
-        }.bind(this),
+        }.bind(this)
       });
-    } else if (flag === 'behavioral') {
+    } else if (flag === "behavioral") {
       $.ajax(this.props.BehavioralDataURL, {
-        method: 'GET',
-        dataType: 'json',
+        method: "GET",
+        dataType: "json",
         success: function(data) {
           this.setState({
             BehavioralData: data,
-            isLoadedBehavioral: true,
+            isLoadedBehavioral: true
           });
-        }.bind(this),
+        }.bind(this)
       });
     }
   }
   updateImgFilter(filter) {
     this.setState({
       imgFilter: filter,
-      filter: filter,
+      filter: filter
     });
   }
   updateBehavioralFilter(filter) {
     this.setState({
       behavioralFilter: filter,
-      filter: filter,
+      filter: filter
     });
   }
   render() {
@@ -108,30 +103,48 @@ class QualityControlIndex extends React.Component {
       );
     }
     let tabList = [
-      {id: 'behavioral', label: 'Behavioral'},
-      {id: 'imaging', label: 'Imaging'},
+      {id: "behavioral", label: "Behavioral"},
+      {id: "imaging", label: "Imaging"}
     ];
-
 
     let tab0 = (
         <TabPane TabId={tabList[0].id}>
-          <FilterableDataTable
-                  name="quality_control_behavioural"
-                  data={this.state.BehavioralData.Data}
-                  fields={this.state.BehavioralData.form}
-                  filter={this.state.behavioralFilter}
-                  getFormattedCell={this.formatColumn}
-          />
+            <FilterForm
+                Module="quality_control"
+                name="quality_control_behavioural"
+                id="quality_control_behavioural_filter"
+                columns={2}
+                formElements={this.state.BehavioralData.form}
+                onUpdate={this.updateBehavioralFilter}
+                filter={this.state.behavioralFilter}>
+                <br/>
+                <ButtonElement type="reset" label="Clear Filters" />
+            </FilterForm>
+            <StaticDataTable
+                Data={this.state.BehavioralData.Data}
+                Headers={this.state.BehavioralData.Headers}
+                Filter={this.state.filter}
+            />
         </TabPane>
     );
 
     let tab1 = (
-        <TabPane TabId={tabList[1].id}>
-            <FilterableDataTable
+        <TabPane TabId={tabList[1].id} >
+            <FilterForm
+                Module="quality_control"
                 name="quality_control"
-                data={this.state.ImgData.Data}
-                fields={this.state.ImgData.Data}
-                filter={this.state.imgFilter}
+                id="quality_control_filter"
+                columns={3}
+                formElements={this.state.ImgData.form}
+                onUpdate={this.updateImgFilter}
+                filter={this.state.imgFilter}>
+                <br/>
+                <ButtonElement type="reset" label="Clear Filters" />
+            </FilterForm>
+            <StaticDataTable
+                Data={this.state.ImgData.Data}
+                Headers={this.state.ImgData.Headers}
+                Filter={this.state.imgFilter}
                 getFormattedCell={this.formatColumn}
             />
         </TabPane>
@@ -155,5 +168,5 @@ $(function() {
               BehavioralDataURL = {`${loris.BaseURL}/quality_control/?submenu=quality_control_behavioral&format=json`}/>
       </div>
     );
-  ReactDOM.render(qualityControlIndex, document.getElementById('lorisworkspace'));
+  ReactDOM.render(qualityControlIndex, document.getElementById("lorisworkspace"));
 });
