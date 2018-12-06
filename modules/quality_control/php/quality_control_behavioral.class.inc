@@ -10,7 +10,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/CCNA/
  */
-namespace LORIS\quality_control_behavioral;
+namespace LORIS\quality_control;
 
 /**
  * Main class for quality control module corresponding to /quality_control/ URL
