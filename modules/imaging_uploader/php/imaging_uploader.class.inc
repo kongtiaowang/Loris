@@ -254,7 +254,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         );
         $corect_name            = $dicom_archive_settings['patientNameRegex'];
         $header_patient_name    = array();
-        $file_name = $file->fileInfo['name'];
+        $file_name = basename($file);
         $file_path = $temp_dir. "/". $file_name;
         $isPhantom = $args['values']['IsPhantom'];
         ///////////////////////////////////////////////////////////////////////
@@ -416,7 +416,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         //////////with a correct extension/////////////////////////////////////
         ///////////////////////////////////////////////////////////////////////
         $temp_dir      = $this->tempdir();
-        $new_temp_file = $temp_dir. "/". $file->fileInfo['name'];
+        $new_temp_file = $temp_dir. "/". basename($file);
         if (!copy($temp_file, $new_temp_file)) {
             throw new \LorisException(
                 "failed to copy $temp_file to $new_temp_file \n"
@@ -509,7 +509,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         if ($updateFile) {
             // Only overwrite file if it failed MRI pipeline. Need to use
             // wildcard for files that were uploaded to a random temp path.
-            $fileName = $file->fileInfo['name'];
+            $fileName = basename($file);
             $id       = $db->pselectOne(
                 "SELECT 
                 IF (InsertionComplete=0 AND 
