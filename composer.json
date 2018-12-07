@@ -9,8 +9,7 @@
         "psr/http-message": "~1.0",
         "psr/http-server-handler" : "*",
         "psr/http-server-middleware" : "*",
-        "zendframework/zend-diactoros": "^1.6",
-        "php-http/guzzle6-adapter": "*"
+        "zendframework/zend-diactoros": "^1.6"
     },
     "require-dev" : {
         "squizlabs/php_codesniffer" : "2.5.*",

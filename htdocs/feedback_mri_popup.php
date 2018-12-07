@@ -131,6 +131,7 @@ foreach ($comment_types AS $comment_type_id => $comment_array) {
 
     // loop through the predefined comments
     $j = 0;
+    if (!empty($predefined_comments)) {
     foreach ($predefined_comments
         AS $predefined_comment_id => $predefined_comment_text
     ) {
@@ -146,7 +147,7 @@ foreach ($comment_types AS $comment_type_id => $comment_array) {
         }
         $j++;
     }
-
+    }
     // print a form element for a free-form comment
     $CommentTpl['type']       = $comment_type_id;
     $CommentTpl['saved_text'] = $saved_comments[$comment_type_id]['text'];
