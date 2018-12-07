@@ -235,7 +235,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
     function isValid($file, $args)
     {
         //make sure the file-name is  valid
-        $temp_file = $file->fileInfo['tmp_name'];
+        $temp_file = basename($file);
         $temp_dir  = $this->tempdir();
         $db        = \Database::singleton();
         // creates associative array to store error messages for each form element
