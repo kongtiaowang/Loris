@@ -438,9 +438,6 @@ class DashboardTest extends LorisIntegrationTest
             )
         );
         $this->safeGet($this->url . '/dashboard/');
-        sleep(5);
-$bodyText = $this->webDriver->getPageSource();
-print_r($bodyText);
         
         $this->_testMytaskPanelAndLink(
             ".new-scans",
