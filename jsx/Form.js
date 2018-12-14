@@ -189,16 +189,14 @@ class FieldsetElement extends Component {
     let formElements = this.getFormElements();
 
     return (
-      <div style={{padding: '0px', margin: '0px'}}>
-        <fieldset
-          name={this.props.name}
-        >
-          <legend>
-            {this.props.legend}
-          </legend>
-          {formElements}
-        </fieldset>
-      </div>
+      <fieldset
+        name={this.props.name}
+      >
+        <legend>
+          {this.props.legend}
+        </legend>
+        {formElements}
+      </fieldset>
     );
   }
 }
