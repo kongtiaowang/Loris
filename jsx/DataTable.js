@@ -341,7 +341,7 @@ class DataTable extends Component {
       return this.props.actions.map((action) => {
         return (
           <button
-            className="btn btn-primary downloadCSV"
+            className="btn btn-primary"
             onClick={action.action}
           >
             {action.label}
@@ -511,15 +511,13 @@ class DataTable extends Component {
             (Maximum rows per page: {RowsPerPageDropdown})
           </div>
           <div className="pull-right" style={{marginTop: '-43px'}}>
-            <div>
             {this.renderActions()}
             <button
-              className="btn btn-primary downloadCSV"
+              className="btn btn-primary"
               onClick={this.downloadCSV.bind(null, csvData)}
             >
               Download Table as CSV
             </button>
-            </div>
             <PaginationLinks
               Total={filteredRows}
               onChangePage={this.changePage}

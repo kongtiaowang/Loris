@@ -101,7 +101,7 @@ Filter.defaultProps = {
   clearFilter: function() {
     console.warn('onUpdate() callback is not set!');
   },
-  columns: {1}
+  columns: 1,
 };
 Filter.propTypes = {
   filter: PropTypes.object.isRequired,
@@ -110,7 +110,7 @@ Filter.propTypes = {
   name: PropTypes.string,
   columns: PropTypes.string,
   title: PropTypes.string,
-  fields: PropTypes.object.isRequired
+  fields: PropTypes.object.isRequired,
 };
 
 export default Filter;
