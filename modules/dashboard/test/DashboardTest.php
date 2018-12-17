@@ -593,7 +593,8 @@ class DashboardTest extends LorisIntegrationTest
         $this->assertContains($value, $bodyText);
         $this->safeClick(WebDriverBy::cssSelector($className));
         $pageSource = $this->webDriver->executescript(
-            "return document.querySelector('body').textContent");
+            "return document.querySelector('body').textContent"
+        );
         $pageSource = $this->webDriver->executescript(
             "return document.querySelector('#bc2>a:nth-child(2)>div').textContent"
         );
