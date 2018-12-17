@@ -12,6 +12,7 @@
 
         <testsuite name='LorisModuleIntegrationTests'>
             <directory>../modules/dashboard/test/</directory>
+            <directory>../modules/dicom_archive/test/</directory>
         </testsuite>
 
     </testsuites>
