@@ -30,15 +30,19 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
                             ">div>div>fieldset>div:nth-child(2)>div>div>input";
     static $patientName = "#dicom_filter_filter".
                             ">div>div>fieldset>div:nth-child(3)>div>div>input";
-    static $site        = "#dicom_filter_filter".">div>div>fieldset>div:nth-child(9)>div>div>select";
-    static $gender      = "#dicom_filter_filter".">div>div>fieldset>div:nth-child(4)>div>div>input";
-    static $dateOfBirth = "#dicom_filter_filter".">div>div>fieldset>div:nth-child(5)>div>div>input";
+    static $site        = "#dicom_filter_filter".
+                            ">div>div>fieldset>div:nth-child(9)>div>div>select";
+    static $gender      = "#dicom_filter_filter".
+                            ">div>div>fieldset>div:nth-child(4)>div>div>input";
+    static $dateOfBirth = "#dicom_filter_filter".
+                            ">div>div>fieldset>div:nth-child(5)>div>div>input";
     static $clearFilter = "#dicom_filter_filter".
                             ">div>div>fieldset>div:nth-child(10)>div>div>button";
     // first row of react table
     static $table = "#dynamictable > tbody > tr:nth-child(1)";
-    // rows displayed of 
-    static $display = "#default-panel > div > div > div.table-header > div > div > div:nth-child(1)";
+    // rows displayed of
+    static $display = "#default-panel".
+                       ">div>div>div.table-header > div > div > div:nth-child(1)";
     /**
      * Insert testing data into the database
      *
@@ -120,7 +124,8 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
      * @return void
      */
     function _testFilter($element,$table,$records,$value)
-    {sleep(1);
+    {
+        sleep(1);
         // get element from the page
         if (strpos($element, "select") == false) {
             $this->webDriver->executescript(
@@ -144,7 +149,7 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
                  input.dispatchEvent(event);
                 "
             );
-            $row = self::$display;
+            $row      = self::$display;
             $bodyText = $this->webDriver->executescript(
                 "return document.querySelector('$row').textContent"
             );
