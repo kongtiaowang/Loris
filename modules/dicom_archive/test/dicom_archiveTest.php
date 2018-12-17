@@ -182,7 +182,12 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
         $this->webDriver->executescript(
             "document.querySelector('$location').click()"
         );
-        $text = $this->webDriver->getPageSource();
+        $text = $this->webDriver->executescript(
+            "return document.querySelector('body').textContent"
+        );
+        $text = $this->webDriver->executescript(
+            "return document.querySelector('#bc2>a:nth-child(3)>div').textContent"
+        );
         $this->assertContains('View Details', $text);
     }
     /**
@@ -201,8 +206,9 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
         $this->webDriver->executescript(
             "document.querySelector('$location').click()"
         );
-        sleep(1);
-        $text = $this->webDriver->getPageSource();
+        $text = $this->webDriver->executescript(
+            "return document.querySelector('body').textContent"
+        );
         $text = $this->webDriver->executescript(
             "return document.querySelector('#bc2>a:nth-child(3)>div').textContent"
         );
