@@ -592,10 +592,8 @@ class DashboardTest extends LorisIntegrationTest
         $bodyText = $link->findElement(WebDriverBy::cssSelector(".huge"))->getText();
         $this->assertContains($value, $bodyText);
         $this->safeClick(WebDriverBy::cssSelector($className));
-        sleep(0.5);
         $pageSource = $this->webDriver->executescript(
-            "return document.querySelector('body').textContent"
-        );print_r($pageSource);
+            "return document.querySelector('body').textContent");
         $pageSource = $this->webDriver->executescript(
             "return document.querySelector('#bc2>a:nth-child(2)>div').textContent"
         );
