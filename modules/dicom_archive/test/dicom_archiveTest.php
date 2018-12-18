@@ -125,7 +125,6 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
      */
     function _testFilter($element,$table,$records,$value)
     {
-        sleep(1);
         // get element from the page
         if (strpos($element, "select") == false) {
             $this->webDriver->executescript(
