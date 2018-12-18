@@ -441,7 +441,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->_testMytaskPanelAndLink(
             ".new-scans",
             "9",
-            "- Imaging Browser"
+            "Imaging Browser"
         );
         $this->resetPermissions();
     }
@@ -469,7 +469,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->_testMytaskPanelAndLink(
             ".conflict_resolver",
             "585",
-            "- Conflict Resolver"
+            "Conflict Resolver"
         );
         $this->resetPermissions();
     }
@@ -489,7 +489,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->_testMytaskPanelAndLink(
             ".issue_tracker",
             "1",
-            "- Issue Tracker"
+            "Issue Tracker"
         );
         $this->resetPermissions();
     }
@@ -546,7 +546,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->_testMytaskPanelAndLink(
             ".pending-accounts",
             "1",
-            "- User Accounts"
+            "User Accounts"
         );
         $this->resetPermissions();
     }
@@ -592,12 +592,12 @@ class DashboardTest extends LorisIntegrationTest
         $bodyText = $link->findElement(WebDriverBy::cssSelector(".huge"))->getText();
         $this->assertContains($value, $bodyText);
         $this->safeClick(WebDriverBy::cssSelector($className));
-        $this->webDriver->wait(3, 500)->until(
-            WebDriverExpectedCondition::presenceOfElementLocated(
-                WebDriverBy::Id('lorisworkspace')
-            )
+        $pageSource = $this->webDriver->executescript(
+            "return document.querySelector('body').textContent"
         );
-        $pageSource = $this->webDriver->getPageSource();
+        $pageSource = $this->webDriver->executescript(
+            "return document.querySelector('#bc2>a:nth-child(2)>div').textContent"
+        );
         $this->assertContains($dataSeed, $pageSource);
 
     }
