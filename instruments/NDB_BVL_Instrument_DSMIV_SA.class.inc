@@ -82,7 +82,7 @@ class NDB_BVL_Instrument_DSMIV_SA extends NDB_BVL_Instrument
      */
     function _main(){
         // display test name
-        $this->form->addElement('header', 'instrument_title', "DSM-IV Autistic Disorder Checklist (School Age)");
+        $this->form->addElement('header', 'instrument_title', "DSM-IV Autistic Disorder Checklist (School Age)"); 
 
         // automatically adds examiner & date of administration
         $this->_addMetadataFields();
