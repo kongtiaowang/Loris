@@ -202,7 +202,7 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
                 )
             );
             $group[] = $this->createDate(
-                "scan_data_$i",
+                "scan_date_$i",
                 ""
             );
             $group[] = $this->form->createElement(
