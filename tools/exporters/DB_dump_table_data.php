@@ -38,7 +38,7 @@ $tableNames = $DB->pselectCol("
 
 // Loop through all tables to generate insert statements for each.
 foreach ($tableNames as $tableName) {
-    $filename = __DIR__ . "/../../test/RBfiles/RB2_$tableName.sql";
+    $filename = __DIR__ . "/../../test/RBfiles/RB_$tableName.sql";
     exec('mysqldump '.$databaseInfo['database'].' '.
         '--complete-insert '.
         '--no-create-db '.
