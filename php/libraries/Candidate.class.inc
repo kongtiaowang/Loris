@@ -648,7 +648,7 @@ class Candidate
         $where = array('cid' => $candID);
         $key   = "ConsentID";
 
-        $consentList = $db->pselectWithIndexKey($query, $where, $key);
+        $consentList = $db->pselectWithIndexKey($query, $where, $key) ?? null;
 
         return $consentList;
     }
