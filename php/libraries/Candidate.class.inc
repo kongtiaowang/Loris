@@ -632,7 +632,7 @@ class Candidate
     /**
      * Returns list of consents and their respective statuses for this candidate
      *
-     * @return array List of consents and their associated values for this candidate
+     * @return mixed List of consents and their associated values for this candidate
      *               The keys of the arrays are the IDs of the consents
      */
     public function getConsents()
