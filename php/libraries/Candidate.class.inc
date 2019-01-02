@@ -54,9 +54,10 @@ class Candidate
      * @return Candidate the Candidate object
      * @static
      */
+  
     static public function &singleton(int $candID)
     {
-        $candidateList =& $GLOBALS['__candidateObjects'];
+        $candidateList = $GLOBALS['__candidateObjects'];
         if (!isset($candidateList[$candID])) {
             $candidateList[$candID] = new Candidate();
             $candidateList[$candID]->select($candID);
@@ -78,7 +79,7 @@ class Candidate
      */
     public function select(int $candID): void
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $config  = $factory->config();
 
         $CandArray = array('Candidate' => $candID);
@@ -216,9 +217,9 @@ class Candidate
         $factory = NDB_Factory::singleton();
         $db      = $factory->database();
 
-        $site =& Site::singleton($centerID);
+        $site = \Site::singleton($centerID);
 
-        $user =& User::singleton($_SESSION['State']->getUsername());
+        $user = \User::singleton($_SESSION['State']->getUsername());
 
         // generate candid
         $candID = Candidate::_generateCandID();
@@ -305,7 +306,7 @@ class Candidate
     static function candidateExists(int $candID, string $PSCID): bool
     {
         // make a local reference to the Database object
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $db      = $factory->database();
 
         $candidateIDs = array(
@@ -398,6 +399,7 @@ class Candidate
         $this->candidateInfo = array_merge($this->candidateInfo, $newData);
 
         \NDB_Factory::singleton()->database()->update(
+
             'candidate',
             $newData,
             array(
@@ -426,7 +428,7 @@ class Candidate
      */
     function getProjectTitle(): string
     {
-        $ProjectList = Utility::getProjectList();
+        $ProjectList = \Utility::getProjectList();
         return $ProjectList[$this->getProjectID()];
     }
 
@@ -552,7 +554,7 @@ class Candidate
      */
     public function getListOfVisitLabels(): array
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         //make sure it returns an array
         $visitLabelArray = array();
 
@@ -585,7 +587,7 @@ class Candidate
         $candID = $this->getCandID();
 
         // make a local reference to the Database object
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $db      = $factory->database();
 
         $query  = "SELECT IFNULL(max(VisitNo)+1, 1) AS nextVisitNo
@@ -634,18 +636,15 @@ class Candidate
      */
     public function getFirstVisit(): string
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $db      = $factory->database();
 
         $candID = $this->getCandID();
-
-        $query  = "SELECT Visit_label
-            FROM session s JOIN candidate c ON (c.CandID = s.CandID)
-            WHERE c.CandID=:cid AND Date_Visit IS NOT NULL
-            ORDER BY Date_Visit";
+        $query  = "SELECT Visit_label FROM session 
+          WHERE CandID = :cid AND Date_visit IS NOT NULL 
+          ORDER BY Date_visit, ID ASC LIMIT 1";
         $where  = array('cid' => $candID);
-        $vLabel = $db->pselectOne($query, $where);
-
+        $vLabel = $db->pselectCol($query, $where);
         return $vLabel;
     }
 
@@ -657,7 +656,7 @@ class Candidate
      */
     public function getConsents(): array
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $db      = $factory->database();
 
         $candID = $this->getCandID();
@@ -668,7 +667,7 @@ class Candidate
         $where = array('cid' => $candID);
         $key   = "ConsentID";
 
-        $consentList = $db->pselectWithIndexKey($query, $where, $key);
+        $consentList = $db->pselectWithIndexKey($query, $where, $key) ?? null;
 
         return $consentList;
     }
@@ -681,7 +680,7 @@ class Candidate
     static function _generateCandID(): int
     {
         // get a database connection
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $db      = $factory->database();
 
         // generate a candidate id
@@ -709,7 +708,7 @@ class Candidate
     static function _generatePSCID(string $prefix): string
     {
         // get a database connection
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $db      = $factory->database();
 
         $config = $factory->config();
@@ -756,7 +755,7 @@ class Candidate
      */
     static function _generateExternalID(): string
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $config  = $factory->config();
 
         $ExternalIDSettings = $config->getSetting('ExternalID');
@@ -802,6 +801,7 @@ class Candidate
      *
      * @return boolean True if PSCID is valid, false otherwise
      */
+
     static public function validatePSCID(
         string $PSCID,
         ?string $siteAbbrev = null
@@ -811,7 +811,7 @@ class Candidate
         $config  = $factory->config();
 
         $PSCIDSettings = $config->getSetting('PSCID');
-        $regex         = Utility::structureToPCRE(
+        $regex         = \Utility::structureToPCRE(
             $PSCIDSettings['structure'],
             $siteAbbrev
         );
@@ -944,7 +944,7 @@ class Candidate
      */
     static function getParticipantStatusOptions(): array
     {
-        $DB           =& Database::singleton();
+        $DB           = \Database::singleton();
         $options      = $DB->pselect(
             "SELECT ID,Description
             FROM participant_status_options
@@ -968,7 +968,7 @@ class Candidate
      */
     static function getParticipantStatusSubOptions(int $parentID): array
     {
-        $DB           =& Database::singleton();
+        $DB           = \Database::singleton();
         $options      = $DB->pselect(
             "SELECT ID,Description 
             FROM participant_status_options 
