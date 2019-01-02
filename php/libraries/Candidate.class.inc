@@ -625,7 +625,7 @@ class Candidate
           WHERE CandID = :cid AND Date_visit IS NOT NULL 
           ORDER BY Date_visit, ID ASC LIMIT 1";
         $where  = array('cid' => $candID);
-        $vLabel = $db->pselectOne($query, $where);
+        $vLabel = $db->pselectCol($query, $where);
         return $vLabel;
     }
 
