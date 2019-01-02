@@ -613,7 +613,7 @@ class Candidate
     /**
      * Returns first visit for a candidate based on Date_visit
      *
-     * @return string|null The visit label for the candidate's first visit
+     * @return mixed The visit label for the candidate's first visit
      */
     public function getFirstVisit()
     {
