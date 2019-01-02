@@ -54,9 +54,9 @@ class Candidate
      * @return Candidate the Candidate object
      * @static
      */
-    static public function &singleton($candID)
+    static public function singleton($candID)
     {
-        $candidateList =& $GLOBALS['__candidateObjects'];
+        $candidateList = $GLOBALS['__candidateObjects'];
         if (!isset($candidateList[$candID])) {
             $candidateList[$candID] = new Candidate();
             $candidateList[$candID]->select($candID);
@@ -78,7 +78,7 @@ class Candidate
      */
     public function select($candID)
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $config  = $factory->config();
 
         $candID    = trim($candID);
@@ -200,12 +200,12 @@ class Candidate
     static public function createNew(
         $centerID, $dateOfBirth, $edc, $gender, $PSCID = null
     ) {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $db      = $factory->database();
 
-        $site =& Site::singleton($centerID);
+        $site = \Site::singleton($centerID);
 
-        $user =& User::singleton($_SESSION['State']->getUsername());
+        $user = \User::singleton($_SESSION['State']->getUsername());
 
         // generate candid
         $candID = Candidate::_generateCandID();
@@ -291,7 +291,7 @@ class Candidate
     static function candidateExists($candID, $PSCID)
     {
         // make a local reference to the Database object
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $db      = $factory->database();
 
         $candidateIDs = array(
@@ -378,7 +378,7 @@ class Candidate
 
         $this->candidateInfo = array_merge($this->candidateInfo, $setData);
 
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $db      = $factory->database();
 
         $db->update(
@@ -408,7 +408,7 @@ class Candidate
      */
     function getProjectTitle()
     {
-        $ProjectList = Utility::getProjectList();
+        $ProjectList = \Utility::getProjectList();
         return $ProjectList[$this->getProjectID()];
     }
 
@@ -534,7 +534,7 @@ class Candidate
      */
     public function getListOfVisitLabels()
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         //make sure it returns an array
         $visitLabelArray = array();
 
@@ -567,7 +567,7 @@ class Candidate
         $candID = $this->getCandID();
 
         // make a local reference to the Database object
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $db      = $factory->database();
 
         $query  = "SELECT IFNULL(max(VisitNo)+1, 1) AS nextVisitNo
@@ -590,7 +590,7 @@ class Candidate
      */
     public function getValidSubprojects()
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $db      = $factory->database();
 
         $subprojList = null;
@@ -617,7 +617,7 @@ class Candidate
      */
     public function getFirstVisit()
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $db      = $factory->database();
 
         $candID = $this->getCandID();
@@ -637,7 +637,7 @@ class Candidate
      */
     public function getConsents()
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $db      = $factory->database();
 
         $candID = $this->getCandID();
@@ -661,7 +661,7 @@ class Candidate
     static function _generateCandID()
     {
         // get a database connection
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $db      = $factory->database();
 
         // generate a candidate id
@@ -689,7 +689,7 @@ class Candidate
     static function _generatePSCID($prefix)
     {
         // get a database connection
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $db      = $factory->database();
 
         $config = $factory->config();
@@ -736,7 +736,7 @@ class Candidate
      */
     static function _generateExternalID()
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $config  = $factory->config();
 
         $ExternalIDSettings = $config->getSetting('ExternalID');
@@ -784,11 +784,11 @@ class Candidate
      */
     static public function validatePSCID($PSCID, $siteAbbrev=null)
     {
-        $factory = NDB_Factory::singleton();
+        $factory = \NDB_Factory::singleton();
         $config  = $factory->config();
 
         $PSCIDSettings = $config->getSetting('PSCID');
-        $regex         = Utility::structureToPCRE(
+        $regex         = \Utility::structureToPCRE(
             $PSCIDSettings['structure'],
             $siteAbbrev
         );
@@ -916,7 +916,7 @@ class Candidate
      */
     static function getParticipantStatusOptions()
     {
-        $DB           =& Database::singleton();
+        $DB           = \Database::singleton();
         $options      = $DB->pselect(
             "SELECT ID,Description
             FROM participant_status_options
@@ -940,7 +940,7 @@ class Candidate
      */
     static function getParticipantStatusSubOptions($parentID)
     {
-        $DB           =& Database::singleton();
+        $DB           = \Database::singleton();
         $options      = $DB->pselect(
             "SELECT ID,Description 
             FROM participant_status_options 
