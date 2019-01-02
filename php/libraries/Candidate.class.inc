@@ -613,7 +613,7 @@ class Candidate
     /**
      * Returns first visit for a candidate based on Date_visit
      *
-     * @return mixed The visit label for the candidate's first visit
+     * @return string The visit label for the candidate's first visit
      */
     public function getFirstVisit()
     {
@@ -632,7 +632,7 @@ class Candidate
     /**
      * Returns list of consents and their respective statuses for this candidate
      *
-     * @return mixed List of consents and their associated values for this candidate
+     * @return string List of consents and their associated values for this candidate
      *               The keys of the arrays are the IDs of the consents
      */
     public function getConsents()
