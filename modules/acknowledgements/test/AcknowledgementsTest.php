@@ -133,9 +133,6 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
     private function _testFilter($element,$value)
     {
         $this->safeGet($this->url . "/acknowledgements/");
-        $bodyText = $this->webDriver
-            ->findElement(WebDriverBy::cssSelector("body"))->getText();
-        print_r($bodyText);
         if ($element == "start_date" || $element == "end_date") {
             $this->webDriver->executescript(
                 "document.getElementsByName('$element')[0].value='$value'"
@@ -153,6 +150,9 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
             WebDriverBy::ID("showdata_advanced_options")
         )->click();
         $this->safeGet($this->url . "/acknowledgements/?format=json");
+                $bodyText = $this->webDriver
+            ->findElement(WebDriverBy::cssSelector("body"))->getText();
+        print_r($bodyText);
         $bodyText = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains($value, $bodyText);
