@@ -7,7 +7,6 @@ cache:
 php:
     - "7.2"
     - "7.3"
-
 addons:
     firefox: "44.0"
 
@@ -83,8 +82,8 @@ before_script:
     - find ../project/instruments/NDB_BVL_Instrument_testtest.class.inc | php generate_tables_sql.php
     - cd ..
     - mysql LorisTest < project/tables_sql/testtest.sql
-#env:
- # - "LORIS_DB_CONFIG=test/config.xml"
+env:
+    - LORIS_DB_CONFIG=/home/travis/build/aces/Loris/test/config.xml
 
 script:
     - make checkstatic

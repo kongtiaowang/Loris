@@ -65,10 +65,23 @@ class NDB_Config
                 // in PHP < 5.5, need to assign to a variable first
                 $configFile = $config->configFilePath();
             }
-
             // Load the file
-            $config->load($configFile);
+            //  load config in test
+            $env    = getenv('LORIS_DB_CONFIG');
+            $travis = getenv('TRAVIS');
+            if (!empty($env)) {
+                if (!empty($travis)) {
+                      $file  = dirname(__DIR__);
+                      $file .= $env;
+                } else {
+                    $file = $env;
+                }
+                 $config->load($file);
+            } else {
 
+                $config->load($configFile);
+
+            }
             if (!empty($config->_settings['include'])) {
                 // Load all includes found in the config
                 $includes = Utility::asArray($config->_settings['include']);
@@ -140,7 +153,6 @@ class NDB_Config
                 "Config file $pathToFile does not exist in the defined locations."
             );
         }
-
         return $file;
     }
 
