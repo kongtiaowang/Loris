@@ -86,6 +86,7 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
         $this->safeGet($this->url . "/acknowledgements/");
         $bodyText = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("body"))->getText();
+        print_r($bodyText);
         $this->assertContains("Acknowledgements", $bodyText);
     }
     /**
@@ -149,6 +150,9 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
             WebDriverBy::ID("showdata_advanced_options")
         )->click();
         $this->safeGet($this->url . "/acknowledgements/?format=json");
+                $bodyText = $this->webDriver
+            ->findElement(WebDriverBy::cssSelector("body"))->getText();
+        print_r($bodyText);
         $bodyText = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains($value, $bodyText);
@@ -161,6 +165,9 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
     function testAddNewRecord()
     {
         $this->safeGet($this->url . "/acknowledgements/");
+        $bodyText = $this->webDriver
+            ->findElement(WebDriverBy::cssSelector("body"))->getText();
+        print_r($bodyText);
         //insert ordering
         $this->webDriver->findElement(
             WebDriverBy::Name("addordering")
