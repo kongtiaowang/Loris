@@ -134,12 +134,12 @@ abstract class LorisIntegrationTest extends TestCase
         )->getText();
        print_r($bodyText);
         
-        $this->webDriver->wait(120, 1000)->until(
+/*        $this->webDriver->wait(120, 1000)->until(
             WebDriverExpectedCondition::presenceOfElementLocated(
                 WebDriverBy::Name("username")
             )
         );
-        
+*/        
         
         $usernameEl = $this->webDriver->findElement(WebDriverBy::Name("username"));
         $passwordEl = $this->webDriver->findElement(WebDriverBy::Name("password"));
