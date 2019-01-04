@@ -30,7 +30,7 @@ abstract class LorisIntegrationTest extends TestCase
      * A reference to the Selenium WebDriver object for the test
      * to use to script a web browser.
      */
-    protected $webDriver;
+    public static $webDriver;
     protected $config;
     protected $DB;
     protected $url;
@@ -163,21 +163,6 @@ if ($this->webDriver == null) {
      */
     public function tearDown()
     {
-        if (extension_loaded('xdebug')) {
-            $data = xdebug_get_code_coverage();
-            xdebug_stop_code_coverage(false);
-        }
-
-        // Delete the temporary user.
-        $this->DB->delete("user_login_history", array('userID' => 'UnitTester'));
-        $this->DB->delete("user_perm_rel", array("UserID" => '999990'));
-        $this->DB->delete("users", array("UserID" => 'UnitTester'));
-        // Close the browser and end the session
-        if ($this->webDriver) {
-         //   $this->webDriver->quit();
-        }
-
-        $this->factory->reset();
     }
 
     /**
