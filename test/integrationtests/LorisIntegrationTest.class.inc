@@ -47,6 +47,7 @@ abstract class LorisIntegrationTest extends TestCase
      */
     public function setUp()
     {
+if ($this->webDriver == null) {
         // Set up database wrapper and config
         $this->factory = NDB_Factory::singleton();
         $this->factory->reset();
@@ -103,7 +104,6 @@ abstract class LorisIntegrationTest extends TestCase
                          WebDriverCapabilityType::BROWSER_NAME       => 'firefox',
                          WebDriverCapabilityType::JAVASCRIPT_ENABLED => true,
                         );
-        if ($this->webDriver == null) {
         $this->webDriver = RemoteWebDriver::create(
             $selenium_url,
             $capabilities
