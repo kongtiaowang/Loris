@@ -30,7 +30,7 @@ abstract class LorisIntegrationTest extends TestCase
      * A reference to the Selenium WebDriver object for the test
      * to use to script a web browser.
      */
-    protected $webDriver;
+    public static $webDriver;
     protected $config;
     protected $DB;
     protected $url;
@@ -47,6 +47,7 @@ abstract class LorisIntegrationTest extends TestCase
      */
     public function setUp()
     {
+if ($this->webDriver == null) {
         // Set up database wrapper and config
         $this->factory = NDB_Factory::singleton();
         $this->factory->reset();
@@ -103,14 +104,12 @@ abstract class LorisIntegrationTest extends TestCase
                          WebDriverCapabilityType::BROWSER_NAME       => 'firefox',
                          WebDriverCapabilityType::JAVASCRIPT_ENABLED => true,
                         );
-
         $this->webDriver = RemoteWebDriver::create(
             $selenium_url,
             $capabilities
         );
-
         $this->login("UnitTester", "4test4");
-
+        }
         if (extension_loaded('xdebug') && function_exists("xdebug_start_code_coverage")) {
             xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
         }
@@ -164,21 +163,6 @@ abstract class LorisIntegrationTest extends TestCase
      */
     public function tearDown()
     {
-        if (extension_loaded('xdebug')) {
-            $data = xdebug_get_code_coverage();
-            xdebug_stop_code_coverage(false);
-        }
-
-        // Delete the temporary user.
-        $this->DB->delete("user_login_history", array('userID' => 'UnitTester'));
-        $this->DB->delete("user_perm_rel", array("UserID" => '999990'));
-        $this->DB->delete("users", array("UserID" => 'UnitTester'));
-        // Close the browser and end the session
-        if ($this->webDriver) {
-            $this->webDriver->quit();
-        }
-
-        $this->factory->reset();
     }
 
     /**
@@ -433,28 +417,21 @@ abstract class LorisIntegrationTest extends TestCase
      */
     function safeGet($url)
     {
-        $newWebDriver = null;
+
+//        $newWebDriver = null;
 
         // keep a reference from the actual page
-        $oldBody = $this->safeFindElement(
-            WebDriverBy::xPath(
-                "
+//        $oldBody = $this->safeFindElement(
+//            WebDriverBy::xPath(
+//                "
                 //body
-                "
-            )
-        );
+//                "
+//            )
+//        );
 
-        try {
+//        try {
             // Load the new page
-            $newWebDriver = $this->webDriver->get($url);
-
-            // Use the old page reference until it detaches from the DOM
-            while (true) {
-                $oldBody->isDisplayed();
-            }
-        } catch (StaleElementReferenceException $e) {
-            return $newWebDriver;
-        }
+            return $this->webDriver->get($url);;
     }
 
     /**
