@@ -201,4 +201,3 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
         $this->assertEquals('View Session', $text);
     }
 }
-?>
