@@ -12,8 +12,7 @@
         </testsuite>
 
         <testsuite name='LorisModuleIntegrationTests'>
-            <directory>../modules/new_profile/test/</directory>
-            <directory>../modules/media/test/</directory>
+            <directory>../modules/instrument_list/test/</directory>
         </testsuite>
 
     </testsuites>
