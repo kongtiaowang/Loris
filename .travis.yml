@@ -82,6 +82,8 @@ before_script:
     - find ../project/instruments/NDB_BVL_Instrument_testtest.class.inc | php generate_tables_sql.php
     - cd ..
     - mysql LorisTest < project/tables_sql/testtest.sql
+    - rm ~/.mozilla/firefox/*.default/*.sqlite ~/.mozilla/firefox/*default/sessionstore.js
+    - rm -r ~/.cache/mozilla/firefox/*.default/*
 #env:
  # - "LORIS_DB_CONFIG=test/config.xml"
 
