@@ -432,28 +432,21 @@ abstract class LorisIntegrationTest extends TestCase
      */
     function safeGet($url)
     {
-        $newWebDriver = null;
+
+//        $newWebDriver = null;
 
         // keep a reference from the actual page
-        $oldBody = $this->safeFindElement(
-            WebDriverBy::xPath(
-                "
+//        $oldBody = $this->safeFindElement(
+//            WebDriverBy::xPath(
+//                "
                 //body
-                "
-            )
-        );
+//                "
+//            )
+//        );
 
-        try {
+//        try {
             // Load the new page
-            $newWebDriver = $this->webDriver->get($url);
-
-            // Use the old page reference until it detaches from the DOM
-            while (true) {
-                $oldBody->isDisplayed();
-            }
-        } catch (StaleElementReferenceException $e) {
-            return $newWebDriver;
-        }
+            return $this->webDriver->get($url);;
     }
 
     /**
