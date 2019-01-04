@@ -5,11 +5,10 @@ cache:
     directories:
         - vendor
 php:
-    - "7.2"
     - "7.3"
 
 addons:
-    firefox: "44.0"
+    firefox: "45.0"
 
 before_install:
     # Start Xvfb in a desktop screen size,
@@ -25,13 +24,14 @@ before_install:
     - php -S localhost:8000 -t htdocs htdocs/router.php 2>1 > /dev/null &
 
 install:
+    - npm install
     - make dev
     - phpenv rehash
 
     # Download a Selenium Web Driver release
     - wget "http://selenium-release.storage.googleapis.com/2.52/selenium-server-standalone-2.52.0.jar"
     # Extracting firefox and setting PATH variable...
-    - tar -xjf /tmp/firefox-44.0.tar.bz2 --directory /tmp
+    - tar -xjf /tmp/firefox-45.0.tar.bz2 --directory /tmp
     - export PATH="/tmp/firefox:$PATH"
     - echo "Using firefox version `firefox --version`"
 
@@ -87,7 +87,6 @@ before_script:
  # - "LORIS_DB_CONFIG=test/config.xml"
 
 script:
-    - make checkstatic
     - vendor/bin/phpunit --configuration test/phpunit.xml
 
 dist: precise
