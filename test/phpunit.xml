@@ -12,6 +12,7 @@
         </testsuite>
 
         <testsuite name='LorisModuleIntegrationTests'>
+<directory>../modules/acknowledgements/test/</directory>
         </testsuite>
 
     </testsuites>

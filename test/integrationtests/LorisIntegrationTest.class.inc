@@ -103,12 +103,12 @@ abstract class LorisIntegrationTest extends TestCase
                          WebDriverCapabilityType::BROWSER_NAME       => 'firefox',
                          WebDriverCapabilityType::JAVASCRIPT_ENABLED => true,
                         );
-
+        if ($this->webDriver == null) {
         $this->webDriver = RemoteWebDriver::create(
             $selenium_url,
             $capabilities
         );
-
+        }
         $this->login("UnitTester", "4test4");
 
         if (extension_loaded('xdebug') && function_exists("xdebug_start_code_coverage")) {
@@ -175,7 +175,7 @@ abstract class LorisIntegrationTest extends TestCase
         $this->DB->delete("users", array("UserID" => 'UnitTester'));
         // Close the browser and end the session
         if ($this->webDriver) {
-            $this->webDriver->quit();
+    //        $this->webDriver->quit();
         }
 
         $this->factory->reset();
