@@ -15,7 +15,7 @@
  * @link     https://www.github.com/aces/Loris/
  */
 use PHPUnit\Framework\TestCase;
-require __DIR__.'/vendor/autoload.php';
+//require __DIR__.'/vendor/autoload.php';
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Facebook\WebDriver\WebDriverBy;
