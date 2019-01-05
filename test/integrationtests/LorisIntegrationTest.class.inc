@@ -30,7 +30,7 @@ abstract class LorisIntegrationTest extends TestCase
      * A reference to the Selenium WebDriver object for the test
      * to use to script a web browser.
      */
-    protected $webDriver;
+    public static $webDriver = null;
     protected $config;
     protected $DB;
     protected $url;
@@ -47,6 +47,7 @@ abstract class LorisIntegrationTest extends TestCase
      */
     public function setUp()
     {
+        if (self::$webDriver == null) {
         // Set up database wrapper and config
         $this->factory = NDB_Factory::singleton();
         $this->factory->reset();
@@ -104,7 +105,7 @@ abstract class LorisIntegrationTest extends TestCase
                          WebDriverCapabilityType::JAVASCRIPT_ENABLED => true,
                         );
 
-        $this->webDriver = RemoteWebDriver::create(
+        self::$webDriver = RemoteWebDriver::create(
             $selenium_url,
             $capabilities
         );
@@ -114,7 +115,7 @@ abstract class LorisIntegrationTest extends TestCase
         if (extension_loaded('xdebug') && function_exists("xdebug_start_code_coverage")) {
             xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
         }
-
+        }
     }
 
     /**
@@ -130,25 +131,25 @@ abstract class LorisIntegrationTest extends TestCase
     {
         $this->safeGet($this->url);
         /*
-        $this->webDriver->wait(120, 1000)->until(
+        self::$webDriver->wait(120, 1000)->until(
             WebDriverExpectedCondition::presenceOfElementLocated(
                 WebDriverBy::Name("username")
             )
         );
         */
-        $usernameEl = $this->webDriver->findElement(WebDriverBy::Name("username"));
-        $passwordEl = $this->webDriver->findElement(WebDriverBy::Name("password"));
+        $usernameEl = self::$webDriver->findElement(WebDriverBy::Name("username"));
+        $passwordEl = self::$webDriver->findElement(WebDriverBy::Name("password"));
 
         $usernameEl->sendKeys($username);
         $passwordEl->sendKeys($password);
 
-        $login = $this->webDriver->findElement(WebDriverBy::Name("login"));
+        $login = self::$webDriver->findElement(WebDriverBy::Name("login"));
         $login->click();
 
         // Explicitly wait until the page is loaded.
         // Wait up to a minute, because sometimes when multiple tests
         // are run one will fail due to the login taking too long?
-        $this->webDriver->wait(120, 1000)->until(
+        self::$webDriver->wait(120, 1000)->until(
             WebDriverExpectedCondition::presenceOfElementLocated(
                 WebDriverBy::xpath("//div[@id='page'] | //input[@name='username']")
             )
@@ -164,21 +165,6 @@ abstract class LorisIntegrationTest extends TestCase
      */
     public function tearDown()
     {
-        if (extension_loaded('xdebug')) {
-            $data = xdebug_get_code_coverage();
-            xdebug_stop_code_coverage(false);
-        }
-
-        // Delete the temporary user.
-        $this->DB->delete("user_login_history", array('userID' => 'UnitTester'));
-        $this->DB->delete("user_perm_rel", array("UserID" => '999990'));
-        $this->DB->delete("users", array("UserID" => 'UnitTester'));
-        // Close the browser and end the session
-        if ($this->webDriver) {
-            $this->webDriver->quit();
-        }
-
-        $this->factory->reset();
     }
 
     /**
@@ -371,7 +357,7 @@ abstract class LorisIntegrationTest extends TestCase
      */
     function isMenuItemPresent($category, $menu)
     {
-        $configMenu = $this->webDriver->findElements(
+        $configMenu = self::$webDriver->findElements(
             WebDriverBy::xPath(
                 "
                 //ul[@class='nav navbar-nav']
@@ -435,26 +421,10 @@ abstract class LorisIntegrationTest extends TestCase
     {
         $newWebDriver = null;
 
-        // keep a reference from the actual page
-        $oldBody = $this->safeFindElement(
-            WebDriverBy::xPath(
-                "
-                //body
-                "
-            )
-        );
-
-        try {
-            // Load the new page
-            $newWebDriver = $this->webDriver->get($url);
+            $newWebDriver = self::$webDriver->get($url);
 
             // Use the old page reference until it detaches from the DOM
-            while (true) {
-                $oldBody->isDisplayed();
-            }
-        } catch (StaleElementReferenceException $e) {
             return $newWebDriver;
-        }
     }
 
     /**
@@ -473,12 +443,12 @@ abstract class LorisIntegrationTest extends TestCase
      */
     function safeFindElement(WebDriverBy $by, $waitPeriod=15)
     {
-        $wait = new WebDriverWait($this->webDriver, $waitPeriod);
+        $wait = new WebDriverWait(self::$webDriver, $waitPeriod);
         $wait->until(
             WebDriverExpectedCondition::presenceOfElementLocated($by)
         );
 
-        return $this->webDriver->findElement($by);
+        return self::$webDriver->findElement($by);
     }
 
     /**
@@ -527,7 +497,7 @@ abstract class LorisIntegrationTest extends TestCase
                 throw $e;
             }
 
-            $this->webDriver->executeScript(
+            self::$webDriver->executeScript(
                 "arguments[0].click();",
                 array($webElement)
             );
