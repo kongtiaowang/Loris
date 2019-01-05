@@ -15,6 +15,12 @@
  * @link     https://www.github.com/aces/Loris/
  */
 use PHPUnit\Framework\TestCase;
+require __DIR__.'/vendor/autoload.php';
+use Facebook\WebDriver\Remote\RemoteWebDriver;
+use Facebook\WebDriver\Remote\DesiredCapabilities;
+use Facebook\WebDriver\WebDriverBy;
+use Facebook\WebDriver\WebDriverKeys;
+use Facebook\WebDriver\WebDriverExpectedCondition;
 /**
  * Implementation of LorisIntegrationTest helper class.
  *
@@ -99,15 +105,9 @@ abstract class LorisIntegrationTest extends TestCase
         $dev = $this->config->getSettingFromXML('dev');
         $selenium_url = isset($dev['selenium_url']) ? $dev['selenium_url'] : 'http://localhost:4444/wd/hub';
 
-        $capabilities = array(
-                         WebDriverCapabilityType::BROWSER_NAME       => 'firefox',
-                         WebDriverCapabilityType::JAVASCRIPT_ENABLED => true,
-                        );
-
-        $this->webDriver = RemoteWebDriver::create(
-            $selenium_url,
-            $capabilities
-        );
+        $desired_capabilities = DesiredCapabilities::chrome();
+        $desired_capabilities->setCapability('acceptSslCerts', false);
+        $this->webDriver = RemoteWebDriver::create($selenium_url, $desired_capabilities);
 
         $this->login("UnitTester", "4test4");
 
