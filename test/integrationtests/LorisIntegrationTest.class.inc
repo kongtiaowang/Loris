@@ -30,11 +30,11 @@ abstract class LorisIntegrationTest extends TestCase
      * A reference to the Selenium WebDriver object for the test
      * to use to script a web browser.
      */
-    protected $webDriver;
-    protected $config;
-    protected $DB;
-    protected $url;
-    protected $factory;
+    public static $webDriver = null;
+    public static $config=null;
+    public static $DB=null;
+    public static $url=null;
+    public static $factory=null;
 
     private $_oldConfig = array();
 
@@ -47,25 +47,26 @@ abstract class LorisIntegrationTest extends TestCase
      */
     public function setUp()
     {
+        if (self::$webDriver == null) {
         // Set up database wrapper and config
-        $this->factory = NDB_Factory::singleton();
-        $this->factory->reset();
-        $this->factory->setTesting(false);
+        self::$factory = NDB_Factory::singleton();
+        self::$factory->reset();
+        self::$factory->setTesting(false);
 
-        $this->config = $this->factory->Config(CONFIG_XML);
+        self::$config = self::$factory->Config(CONFIG_XML);
 
-        $database = $this->config->getSetting('database');
+        $database = self::$config->getSetting('database');
 
-        $this->DB  = Database::singleton(
+        self::$DB  = Database::singleton(
             $database['database'],
             $database['username'],
             $database['password'],
             $database['host'],
             1
         );
-        $this->url = $this->config->getSetting("url");
+        self::$url = self::$config->getSetting("url");
 
-        $this->DB->insert(
+        self::$DB->insert(
             "users",
             array(
              'ID'               => 999990,
@@ -83,7 +84,7 @@ abstract class LorisIntegrationTest extends TestCase
             )
         );
 
-        $this->DB->insert(
+        self::$DB->insert(
             "user_psc_rel",
             array(
                 'UserID'    => 999990,
@@ -96,7 +97,7 @@ abstract class LorisIntegrationTest extends TestCase
         $user = User::factory('UnitTester');
         $user->updatePassword('4test4');
 
-        $dev = $this->config->getSettingFromXML('dev');
+        $dev = self::$config->getSettingFromXML('dev');
         $selenium_url = isset($dev['selenium_url']) ? $dev['selenium_url'] : 'http://localhost:4444/wd/hub';
 
         $capabilities = array(
@@ -104,7 +105,7 @@ abstract class LorisIntegrationTest extends TestCase
                          WebDriverCapabilityType::JAVASCRIPT_ENABLED => true,
                         );
 
-        $this->webDriver = RemoteWebDriver::create(
+        self::$webDriver = RemoteWebDriver::create(
             $selenium_url,
             $capabilities
         );
@@ -114,7 +115,7 @@ abstract class LorisIntegrationTest extends TestCase
         if (extension_loaded('xdebug') && function_exists("xdebug_start_code_coverage")) {
             xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
         }
-
+        }
     }
 
     /**
@@ -128,27 +129,27 @@ abstract class LorisIntegrationTest extends TestCase
      */
     protected function login($username, $password)
     {
-        $this->safeGet($this->url);
+        $this->safeGet(self::$url);
         /*
-        $this->webDriver->wait(120, 1000)->until(
+        self::$webDriver->wait(120, 1000)->until(
             WebDriverExpectedCondition::presenceOfElementLocated(
                 WebDriverBy::Name("username")
             )
         );
         */
-        $usernameEl = $this->webDriver->findElement(WebDriverBy::Name("username"));
-        $passwordEl = $this->webDriver->findElement(WebDriverBy::Name("password"));
+        $usernameEl = self::$webDriver->findElement(WebDriverBy::Name("username"));
+        $passwordEl = self::$webDriver->findElement(WebDriverBy::Name("password"));
 
         $usernameEl->sendKeys($username);
         $passwordEl->sendKeys($password);
 
-        $login = $this->webDriver->findElement(WebDriverBy::Name("login"));
+        $login = self::$webDriver->findElement(WebDriverBy::Name("login"));
         $login->click();
 
         // Explicitly wait until the page is loaded.
         // Wait up to a minute, because sometimes when multiple tests
         // are run one will fail due to the login taking too long?
-        $this->webDriver->wait(120, 1000)->until(
+        self::$webDriver->wait(120, 1000)->until(
             WebDriverExpectedCondition::presenceOfElementLocated(
                 WebDriverBy::xpath("//div[@id='page'] | //input[@name='username']")
             )
@@ -164,21 +165,6 @@ abstract class LorisIntegrationTest extends TestCase
      */
     public function tearDown()
     {
-        if (extension_loaded('xdebug')) {
-            $data = xdebug_get_code_coverage();
-            xdebug_stop_code_coverage(false);
-        }
-
-        // Delete the temporary user.
-        $this->DB->delete("user_login_history", array('userID' => 'UnitTester'));
-        $this->DB->delete("user_perm_rel", array("UserID" => '999990'));
-        $this->DB->delete("users", array("UserID" => 'UnitTester'));
-        // Close the browser and end the session
-        if ($this->webDriver) {
-            $this->webDriver->quit();
-        }
-
-        $this->factory->reset();
     }
 
     /**
@@ -200,7 +186,7 @@ abstract class LorisIntegrationTest extends TestCase
             );
         }*/
 
-        $configID = $this->DB->pselectOne(
+        $configID = self::$DB->pselectOne(
             "SELECT ID FROM ConfigSettings WHERE Name=:configName",
             array("configName" => $configName)
         );
@@ -210,7 +196,7 @@ abstract class LorisIntegrationTest extends TestCase
                 "Attempting to update Config setting not in database"
             );
         }
-        $oldVal = $this->DB->pselectOne(
+        $oldVal = self::$DB->pselectOne(
             "SELECT Value FROM Config WHERE ConfigID=:confID",
             array("confID" => $configID)
         );
@@ -220,7 +206,7 @@ abstract class LorisIntegrationTest extends TestCase
                                           'OldValue' => $oldVal,
                                          );
 
-        $this->DB->update(
+        self::$DB->update(
             "Config",
             array("Value" => $value),
             array("ConfigID" => $configID)
@@ -245,7 +231,7 @@ abstract class LorisIntegrationTest extends TestCase
         }
          */
         if (isset($this->_oldConfig[$configName])) {
-            $this->DB->update(
+            self::$DB->update(
                 "Config",
                 array("Value" => $this->_oldConfig[$configName]['OldValue']),
                 array("ConfigID" => $this->_oldConfig[$configName]['ConfigID'])
@@ -264,15 +250,15 @@ abstract class LorisIntegrationTest extends TestCase
      */
     function setupPermissions($permissions)
     {
-        $this->DB->delete("user_perm_rel", array("UserID" => '999990'));
-        $prepare = $this->DB->prepare(
+        self::$DB->delete("user_perm_rel", array("UserID" => '999990'));
+        $prepare = self::$DB->prepare(
             "INSERT INTO user_perm_rel
                 SELECT 999990, PermID
                     FROM permissions
                     WHERE code=:perm"
         );
         foreach ($permissions as $value) {
-            $this->DB->execute(
+            self::$DB->execute(
                 $prepare,
                 array("perm" => $value),
                 array('nofetch' => true)
@@ -288,7 +274,7 @@ abstract class LorisIntegrationTest extends TestCase
      */
     function resetPermissions()
     {
-        $this->DB->run(
+        self::$DB->run(
             "INSERT IGNORE INTO user_perm_rel SELECT 999990, PermID FROM permissions"
         );
     }
@@ -300,8 +286,8 @@ abstract class LorisIntegrationTest extends TestCase
      */
     function changeStudySite()
     {
-        $this->DB->insert("psc", array("CenterID" => 99, "Alias" => "BBQ"));
-        $this->DB->update("user_psc_rel", array("CenterID" => 99), array("UserID" => 999990));
+        self::$DB->insert("psc", array("CenterID" => 99, "Alias" => "BBQ"));
+        self::$DB->update("user_psc_rel", array("CenterID" => 99), array("UserID" => 999990));
     }
 
     /**
@@ -311,8 +297,8 @@ abstract class LorisIntegrationTest extends TestCase
      */
     function resetStudySite()
     {
-        $this->DB->update("user_psc_rel", array("CenterID" => 1), array("UserID" => 999990));
-        $this->DB->delete("psc", array("CenterID" => 99));
+        self::$DB->update("user_psc_rel", array("CenterID" => 1), array("UserID" => 999990));
+        self::$DB->delete("psc", array("CenterID" => 99));
     }
 
     /**
@@ -324,7 +310,7 @@ abstract class LorisIntegrationTest extends TestCase
      */
     function createSubproject($SubprojectID,$title)
     {
-        $this->DB->insert(
+        self::$DB->insert(
             "subproject",
             array(
              "SubprojectID"      => $SubprojectID,
@@ -344,7 +330,7 @@ abstract class LorisIntegrationTest extends TestCase
      */
     function deleteSubproject($title)
     {
-        $this->DB->delete(
+        self::$DB->delete(
             "subproject",
             array(
              "title"             => $title,
@@ -371,7 +357,7 @@ abstract class LorisIntegrationTest extends TestCase
      */
     function isMenuItemPresent($category, $menu)
     {
-        $configMenu = $this->webDriver->findElements(
+        $configMenu = self::$webDriver->findElements(
             WebDriverBy::xPath(
                 "
                 //ul[@class='nav navbar-nav']
@@ -394,7 +380,7 @@ abstract class LorisIntegrationTest extends TestCase
      */
     function deleteCandidate($pscid)
     {
-        $this->DB->delete("candidate", array("PSCID" => $pscid));
+        self::$DB->delete("candidate", array("PSCID" => $pscid));
     }
 
     /**
@@ -435,26 +421,10 @@ abstract class LorisIntegrationTest extends TestCase
     {
         $newWebDriver = null;
 
-        // keep a reference from the actual page
-        $oldBody = $this->safeFindElement(
-            WebDriverBy::xPath(
-                "
-                //body
-                "
-            )
-        );
-
-        try {
-            // Load the new page
-            $newWebDriver = $this->webDriver->get($url);
+            $newWebDriver = self::$webDriver->get($url);
 
             // Use the old page reference until it detaches from the DOM
-            while (true) {
-                $oldBody->isDisplayed();
-            }
-        } catch (StaleElementReferenceException $e) {
             return $newWebDriver;
-        }
     }
 
     /**
@@ -473,12 +443,12 @@ abstract class LorisIntegrationTest extends TestCase
      */
     function safeFindElement(WebDriverBy $by, $waitPeriod=15)
     {
-        $wait = new WebDriverWait($this->webDriver, $waitPeriod);
+        $wait = new WebDriverWait(self::$webDriver, $waitPeriod);
         $wait->until(
             WebDriverExpectedCondition::presenceOfElementLocated($by)
         );
 
-        return $this->webDriver->findElement($by);
+        return self::$webDriver->findElement($by);
     }
 
     /**
@@ -527,7 +497,7 @@ abstract class LorisIntegrationTest extends TestCase
                 throw $e;
             }
 
-            $this->webDriver->executeScript(
+            self::$webDriver->executeScript(
                 "arguments[0].click();",
                 array($webElement)
             );

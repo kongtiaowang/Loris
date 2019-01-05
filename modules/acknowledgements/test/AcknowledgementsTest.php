@@ -58,7 +58,7 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
     function setUp()
     {
         parent::setUp();
-        $this->DB->insert(
+        parent::$DB->insert(
             "acknowledgements",
             self::$testData
         );
@@ -72,8 +72,8 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
      */
     function tearDown()
     {
-        $this->DB->delete("acknowledgements", array('ID' => '999'));
-        $this->DB->delete("acknowledgements", array('full_name' => 'Test Test'));
+        parent::$DB->delete("acknowledgements", array('ID' => '999'));
+        parent::$DB->delete("acknowledgements", array('full_name' => 'Test Test'));
         parent::tearDown();
     }
     /**
@@ -83,8 +83,8 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
      */
     function testPageLoads()
     {
-        $this->safeGet($this->url . "/acknowledgements/");
-        $bodyText = $this->webDriver
+        $this->safeGet(parent::$url . "/acknowledgements/");
+        $bodyText = parent::$webDriver
             ->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Acknowledgements", $bodyText);
     }
@@ -97,8 +97,8 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
     function testPageLoadsWithoutPermissions()
     {
         $this->setupPermissions(array("violated_scans_view_allsites"));
-        $this->safeGet($this->url . "/acknowledgements/");
-        $bodyText = $this->webDriver
+        $this->safeGet(parent::$url . "/acknowledgements/");
+        $bodyText = parent::$webDriver
             ->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains(
             "You do not have access to this page.",
@@ -131,9 +131,9 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
      */
     private function _testFilter($element,$value)
     {
-        $this->safeGet($this->url . "/acknowledgements/");
+        $this->safeGet(parent::$url . "/acknowledgements/");
         if ($element == "start_date" || $element == "end_date") {
-            $this->webDriver->executescript(
+            parent::$webDriver->executescript(
                 "document.getElementsByName('$element')[0].value='$value'"
             );
         } elseif ($element == "present") {
@@ -141,15 +141,15 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
             $element = new WebDriverSelect($select);
             $element->selectByVisibleText($value);
         } else {
-             $this->webDriver->findElement(
+             parent::$webDriver->findElement(
                  WebDriverBy::Name($element)
              )->sendKeys($value);
         }
-        $this->webDriver->findElement(
+        parent::$webDriver->findElement(
             WebDriverBy::ID("showdata_advanced_options")
         )->click();
-        $this->safeGet($this->url . "/acknowledgements/?format=json");
-        $bodyText = $this->webDriver
+        $this->safeGet(parent::$url . "/acknowledgements/?format=json");
+        $bodyText = parent::$webDriver
             ->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains($value, $bodyText);
     }
@@ -160,21 +160,24 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
      */
     function testAddNewRecord()
     {
-        $this->safeGet($this->url . "/acknowledgements/");
+        $this->safeGet(parent::$url . "/acknowledgements/");
         //insert ordering
-        $this->webDriver->findElement(
+                $bodyText = parent::$webDriver
+            ->findElement(WebDriverBy::cssSelector("body"))->getText();
+        print_r($bodyText);
+        parent::$webDriver->findElement(
             WebDriverBy::Name("addordering")
         )->sendKeys(self::$newData['ordering']);
         //insert Full name
-        $this->webDriver->findElement(
+        parent::$webDriver->findElement(
             WebDriverBy::Name("addfull_name")
         )->sendKeys(self::$newData['full_name']);
         //insert Citation name
-        $this->webDriver->findElement(
+        parent::$webDriver->findElement(
             WebDriverBy::Name("addcitation_name")
         )->sendKeys(self::$newData['citation_name']);
         //expecting to find the value,after clicking save button
-        $this->webDriver->findElement(
+        parent::$webDriver->findElement(
             WebDriverBy::Name("fire_away")
         )->click();
         //test filter
