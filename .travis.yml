@@ -9,8 +9,11 @@ php:
     - "7.3"
 
 addons:
-    firefox: "44.0"
-
+  apt:
+    sources:
+      - google-chrome
+    packages:
+      - google-chrome-stable
 before_install:
     # Start Xvfb in a desktop screen size,
     # otherwise some tests will fail because the links
@@ -27,18 +30,16 @@ before_install:
 install:
     - make dev
     - phpenv rehash
-
+    - "wget http://selenium-release.storage.googleapis.com/3.0-beta3/selenium-server-standalone-3.0.0-beta3.jar -O selenium-server-standalone.jar && sudo mv selenium-server-standalone.jar /usr/local/bin"
+    - "wget http://chromedriver.storage.googleapis.com/2.23/chromedriver_linux64.zip -O chromedriver.zip && unzip chromedriver.zip && sudo mv chromedriver /usr/local/bin"
     # Download a Selenium Web Driver release
-    - wget "http://selenium-release.storage.googleapis.com/2.52/selenium-server-standalone-2.52.0.jar"
     # Extracting firefox and setting PATH variable...
-    - tar -xjf /tmp/firefox-44.0.tar.bz2 --directory /tmp
-    - export PATH="/tmp/firefox:$PATH"
-    - echo "Using firefox version `firefox --version`"
 
     # Start Selenium and redirect Selenium WebDriver
     # output to /dev/null so that it doesn't flood the
     # screen in the middle of our other tests
-    - DISPLAY=:99.0 java -jar selenium-server-standalone-2.52.0.jar  2>1 > /dev/null &
+    - DISPLAY=:99.0 java  -Dwebdriver.chrome.driver=/usr/local/bin/chromedriver  -jar /usr/local/bin/selenium-server-standalone.jar &
+    - whereis google-chrome
 
 before_script:
     # Set up the Loris environment
