@@ -58,7 +58,7 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
     function setUp()
     {
         parent::setUp();
-        $this->DB->insert(
+        parent::$DB->insert(
             "acknowledgements",
             self::$testData
         );
@@ -72,8 +72,8 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
      */
     function tearDown()
     {
-        $this->DB->delete("acknowledgements", array('ID' => '999'));
-        $this->DB->delete("acknowledgements", array('full_name' => 'Test Test'));
+        parent::$DB->delete("acknowledgements", array('ID' => '999'));
+        parent::$DB->delete("acknowledgements", array('full_name' => 'Test Test'));
         parent::tearDown();
     }
     /**
@@ -83,7 +83,7 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
      */
     function testPageLoads()
     {
-        $this->safeGet($this->url . "/acknowledgements/");
+        $this->safeGet(parent::$url . "/acknowledgements/");
         $bodyText = parent::$webDriver
             ->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Acknowledgements", $bodyText);
@@ -97,7 +97,7 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
     function testPageLoadsWithoutPermissions()
     {
         $this->setupPermissions(array("violated_scans_view_allsites"));
-        $this->safeGet($this->url . "/acknowledgements/");
+        $this->safeGet(parent::$url . "/acknowledgements/");
         $bodyText = parent::$webDriver
             ->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains(
@@ -131,7 +131,7 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
      */
     private function _testFilter($element,$value)
     {
-        $this->safeGet($this->url . "/acknowledgements/");
+        $this->safeGet(parent::$url . "/acknowledgements/");
         if ($element == "start_date" || $element == "end_date") {
             parent::$webDriver->executescript(
                 "document.getElementsByName('$element')[0].value='$value'"
@@ -148,7 +148,7 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
         parent::$webDriver->findElement(
             WebDriverBy::ID("showdata_advanced_options")
         )->click();
-        $this->safeGet($this->url . "/acknowledgements/?format=json");
+        $this->safeGet(parent::$url . "/acknowledgements/?format=json");
         $bodyText = parent::$webDriver
             ->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains($value, $bodyText);
@@ -160,7 +160,7 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
      */
     function testAddNewRecord()
     {
-        $this->safeGet($this->url . "/acknowledgements/");
+        $this->safeGet(parent::$url . "/acknowledgements/");
         //insert ordering
         parent::$webDriver->findElement(
             WebDriverBy::Name("addordering")
