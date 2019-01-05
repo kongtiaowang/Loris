@@ -9,11 +9,7 @@ php:
     - "7.3"
 
 addons:
-  apt:
-    sources:
-      - google-chrome
-    packages:
-      - google-chrome-stable
+    chrome: stable
 before_install:
     # Start Xvfb in a desktop screen size,
     # otherwise some tests will fail because the links
