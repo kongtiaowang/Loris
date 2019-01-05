@@ -14,13 +14,6 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-//require __DIR__.'/vendor/autoload.php';
-use Facebook\WebDriver\Remote\RemoteWebDriver as RemoteWebDriver;
-use Facebook\WebDriver\Remote\DesiredCapabilities as DesiredCapabilities;
-use Facebook\WebDriver\WebDriverBy as WebDriverBy;
-use Facebook\WebDriver\WebDriverKeys as WebDriverKeys;
-use Facebook\WebDriver\WebDriverExpectedCondition as WebDriverExpectedCondition;
-use PHPUnit\Framework\TestCase as TestCase;
 /**
  * Implementation of LorisIntegrationTest helper class.
  *
