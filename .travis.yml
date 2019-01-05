@@ -9,7 +9,7 @@ php:
     - "7.3"
 
 addons:
-    firefox: "44.0"
+    chrome: stable
 
 before_install:
     # Start Xvfb in a desktop screen size,
@@ -30,11 +30,12 @@ install:
 
     # Download a Selenium Web Driver release
     - wget "http://selenium-release.storage.googleapis.com/2.52/selenium-server-standalone-2.52.0.jar"
-    # Extracting firefox and setting PATH variable...
-    - tar -xjf /tmp/firefox-44.0.tar.bz2 --directory /tmp
-    - export PATH="/tmp/firefox:$PATH"
-    - echo "Using firefox version `firefox --version`"
-
+- wget -N http://chromedriver.storage.googleapis.com/2.30/chromedriver_linux64.zip -P ~/
+  - unzip ~/chromedriver_linux64.zip -d ~/
+  - rm ~/chromedriver_linux64.zip
+  - sudo mv -f ~/chromedriver /usr/local/share/
+  - sudo chmod +x /usr/local/share/chromedriver
+  - sudo ln -s /usr/local/share/chromedriver /usr/local/bin/chromedriver
     # Start Selenium and redirect Selenium WebDriver
     # output to /dev/null so that it doesn't flood the
     # screen in the middle of our other tests
@@ -87,6 +88,8 @@ before_script:
  # - "LORIS_DB_CONFIG=test/config.xml"
 
 script:
+  - whereis google-chrome-stable
+  - whereis chromedriver
     - make checkstatic
     - vendor/bin/phpunit --configuration test/phpunit.xml
 
