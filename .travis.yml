@@ -7,9 +7,9 @@ cache:
 php:
     - "7.2"
     - "7.3"
-
+env: BROWSER_NAME="chrome" CHROME_HEADLESS="1"
 addons:
-    firefox: "44.0"
+    chrome: stable
 
 before_install:
     # Start Xvfb in a desktop screen size,
@@ -22,25 +22,22 @@ before_install:
     - nvm install node
     - mkdir -p project project/libraries
     - pecl install -f ast-0.1.6
-    - php -S localhost:8000 -t htdocs htdocs/router.php 2>1 > /dev/null &
 
 install:
+  - travis_retry composer self-update
+  - travis_retry composer update --no-interaction $DEPENDENCIES
     - make dev
     - phpenv rehash
 
-    # Download a Selenium Web Driver release
-    - wget "http://selenium-release.storage.googleapis.com/2.52/selenium-server-standalone-2.52.0.jar"
-    # Extracting firefox and setting PATH variable...
-    - tar -xjf /tmp/firefox-44.0.tar.bz2 --directory /tmp
-    - export PATH="/tmp/firefox:$PATH"
-    - echo "Using firefox version `firefox --version`"
-
-    # Start Selenium and redirect Selenium WebDriver
-    # output to /dev/null so that it doesn't flood the
-    # screen in the middle of our other tests
-    - DISPLAY=:99.0 java -jar selenium-server-standalone-2.52.0.jar  2>1 > /dev/null &
-
 before_script:
+  - if [ "$BROWSER_NAME" = "chrome" ]; then mkdir chromedriver; wget -q -t 3 https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip; unzip chromedriver_linux64 -d chromedriver; fi
+  - if [ "$BROWSER_NAME" = "chrome" ]; then export CHROMEDRIVER_PATH=$PWD/chromedriver/chromedriver; fi
+  - sh -e /etc/init.d/xvfb start
+  - if [ ! -f jar/selenium-server-standalone-3.8.1.jar ]; then wget -q -t 3 -P jar https://selenium-release.storage.googleapis.com/3.8/selenium-server-standalone-3.8.1.jar; fi
+  - java -Dwebdriver.firefox.marionette=false -Dwebdriver.chrome.driver="$CHROMEDRIVER_PATH" -jar jar/selenium-server-standalone-3.8.1.jar -enablePassThrough false -log ./logs/selenium.log &
+  - until $(echo | nc localhost 4444); do sleep 1; echo Waiting for Selenium server on port 4444...; done; echo "Selenium server started"
+  - php -S 127.0.0.1:8000 -t htdocs htdocs/router.php &>>./logs/php-server.log &
+  - until $(echo | nc localhost 8000); do sleep 1; echo waiting for PHP server on port 8000...; done; echo "PHP server started"
     # Set up the Loris environment
     - mkdir -p project smarty/templates_c project/instruments project/tables_sql
     - chmod 777 smarty/templates_c project/instruments project/tables_sql
@@ -70,7 +67,7 @@ before_script:
     - mysql LorisTest -e "UPDATE users SET Pending_approval='N', Password_expiry='2100-01-01' WHERE ID=1"
     - cd ..
     - mysql LorisTest -e "UPDATE Config SET Value='$(pwd)/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='base')"
-    - mysql LorisTest -e "UPDATE Config SET Value='http://localhost:8000' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='url')"
+    - mysql LorisTest -e "UPDATE Config SET Value='http://127.0.0.1:8000' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='url')"
     - mkdir -p data/loris/bin/mri
     - mysql LorisTest -e "UPDATE Config SET Value='data/loris/bin/mri' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='MRICodePath')"
 
@@ -89,5 +86,7 @@ before_script:
 script:
     - make checkstatic
     - vendor/bin/phpunit --configuration test/phpunit.xml
-
+after_script:
+  - if [ -f ./logs/selenium.log ]; then cat ./logs/selenium.log; fi
+  - if [ -f ./logs/php-server.log ]; then cat ./logs/php-server.log; fi
 dist: precise
