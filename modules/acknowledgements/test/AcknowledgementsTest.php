@@ -162,6 +162,9 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
     {
         $this->safeGet(parent::$url . "/acknowledgements/");
         //insert ordering
+                $bodyText = parent::$webDriver
+            ->findElement(WebDriverBy::cssSelector("body"))->getText();
+        print_r($bodyText);
         parent::$webDriver->findElement(
             WebDriverBy::Name("addordering")
         )->sendKeys(self::$newData['ordering']);
