@@ -1,21 +1,16 @@
 sudo: required
-
-# any language should do it
-language: php
-cache:
-    directories:
-        - vendor
-
-php:
-    - "7.2"
 services:
-- docker
+  - docker
 
-install:
-- sudo apt-get update
-- sudo apt-get install -y libapparmor1
-- sudo apt-get install npm
-- npm install
-- composer install
+env:
+  COMPOSE_VERSION: 1.4.1
+
+before_install:
+ - curl -L https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+ - chmod +x docker-compose
+ - sudo mv docker-compose /usr/local/bin
+ - npm install
+
 script:
-- npm run lint:php && npm run lint:javascript && docker-compose run -T --rm integration-tests vendor/bin/phpunit --configuration test/phpunit.xml
+  - docker-compose build
+  - npm run tests:integration
