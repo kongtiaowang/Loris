@@ -22,10 +22,7 @@ clean:
 	rm -f vendor
 
 # Perform static analysis checks
-checkstatic: phpdev
-	npm run lint:php
-	npm run lint:javascript
-	vendor/bin/phan
+checkstatic:
 
 unittests: phpdev
 	vendor/bin/phpunit --configuration test/phpunit.xml
