@@ -11,5 +11,5 @@ before_install:
  - sudo mv docker-compose /usr/local/bin
 
 script:
-  - docker-compose build
-  - npm run tests:integration
+  - docker-compose run -T --rm ${CONTAINER} vendor/bin/phpunit --configuration test/phpunit.xml --testsuite LorisModuleIntegrationTests $*
+
