@@ -9,6 +9,9 @@ before_install:
  - curl -L https://github.com/docker/compose/releases/download/${COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
  - chmod +x docker-compose
  - sudo mv docker-compose /usr/local/bin
+ - apt install npm
+ - pecl install -f ast-0.1.6
+ - composer install
 
 script:
  - npm run tests:integration
