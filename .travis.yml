@@ -18,6 +18,7 @@ matrix:
       env: BROWSER_NAME="chrome" CHROME_HEADLESS="1"
       addons:
         chrome: stable
+        sauce_connect: true
 
 cache:
   directories:
