@@ -14,6 +14,9 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
+use Facebook\WebDriver\Remote\DesiredCapabilities;
+use Facebook\WebDriver\Remote\RemoteWebDriver;
+use Facebook\WebDriver\Remote\Service\DriverCommandExecutor;
 use PHPUnit\Framework\TestCase;
 /**
  * Implementation of LorisIntegrationTest helper class.
@@ -98,16 +101,14 @@ abstract class LorisIntegrationTest extends TestCase
 
         $dev = $this->config->getSettingFromXML('dev');
         $selenium_url = isset($dev['selenium_url']) ? $dev['selenium_url'] : 'http://localhost:4444/wd/hub';
-
-        $capabilities = array(
-                         WebDriverCapabilityType::BROWSER_NAME       => 'firefox',
-                         WebDriverCapabilityType::JAVASCRIPT_ENABLED => true,
-                        );
-
-        $this->webDriver = RemoteWebDriver::create(
-            $selenium_url,
-            $capabilities
-        );
+        // The createDefaultService() method expect path to the executable to be present in the environment variable
+        putenv(ChromeDriverService::CHROME_DRIVER_EXE_PROPERTY . '=' . getenv('CHROMEDRIVER_PATH'));
+        // Add --no-sandbox as a workaround for Chrome crashing: https://github.com/SeleniumHQ/selenium/issues/4961
+        $chromeOptions = new ChromeOptions();
+        $chromeOptions->addArguments(['--no-sandbox']);
+        $desiredCapabilities = DesiredCapabilities::chrome();
+        $desiredCapabilities->setCapability(ChromeOptions::CAPABILITY, $chromeOptions);
+        $this->webDriver = ChromeDriver::start($desiredCapabilities);
 
         $this->login("UnitTester", "4test4");
 

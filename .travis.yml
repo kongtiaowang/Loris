@@ -1,15 +1,29 @@
 language: php
+sudo: false
+dist: trusty
 
+php:
+  - 7.2
+
+env:
+  global:
+    - DISPLAY=:99.0
+    - BROWSER_NAME="htmlunit"
+    - CHROMEDRIVER_VERSION="2.38"
+
+matrix:
+  include:
+    # Add build to run tests against Chrome inside Travis environment
+    - php: 7.2
+      env: BROWSER_NAME="chrome" CHROME_HEADLESS="1"
+      addons:
+        chrome: stable
+        sauce_connect: true
 
 cache:
-    directories:
-        - vendor
-php:
-    - "7.2"
-    - "7.3"
-
-addons:
-    firefox: "44.0"
+  directories:
+    - $HOME/.composer/cache
+    - jar
 
 before_install:
     # Start Xvfb in a desktop screen size,
@@ -22,72 +36,30 @@ before_install:
     - nvm install node
     - mkdir -p project project/libraries
     - pecl install -f ast-0.1.6
-    - php -S localhost:8000 -t htdocs htdocs/router.php 2>1 > /dev/null &
 
 install:
-    - make dev
-    - phpenv rehash
-
-    # Download a Selenium Web Driver release
-    - wget "http://selenium-release.storage.googleapis.com/2.52/selenium-server-standalone-2.52.0.jar"
-    # Extracting firefox and setting PATH variable...
-    - tar -xjf /tmp/firefox-44.0.tar.bz2 --directory /tmp
-    - export PATH="/tmp/firefox:$PATH"
-    - echo "Using firefox version `firefox --version`"
-
-    # Start Selenium and redirect Selenium WebDriver
-    # output to /dev/null so that it doesn't flood the
-    # screen in the middle of our other tests
-    - DISPLAY=:99.0 java -jar selenium-server-standalone-2.52.0.jar  2>1 > /dev/null &
-
+  - travis_retry composer self-update
+  - composer install
 before_script:
-    # Set up the Loris environment
-    - mkdir -p project smarty/templates_c project/instruments project/tables_sql
-    - chmod 777 smarty/templates_c project/instruments project/tables_sql
-
-    # Set up the MySQL database, install the Schema, create a MySQL user
-    # for the config file, and reset the Loris user's password for testing
-    - mysql -e 'CREATE DATABASE LorisTest'
-    - mysql LorisTest < SQL/0000-00-00-schema.sql
-    - mysql LorisTest < SQL/0000-00-01-Permission.sql
-    - mysql LorisTest < SQL/0000-00-02-Menus.sql
-    - mysql LorisTest < SQL/0000-00-03-ConfigTables.sql
-    - mysql LorisTest < SQL/0000-00-04-Help.sql
-    - mysql LorisTest < docs/instruments/radiology_review.sql
-    - mysql LorisTest < test/RBdata.sql
-    - mysql LorisTest < test/test_instrument/medical_history.sql
-    - mysql LorisTest -u root -e "GRANT UPDATE,INSERT,SELECT,DELETE,DROP,CREATE TEMPORARY TABLES ON LorisTest.* TO 'SQLTestUser'@'localhost' IDENTIFIED BY 'TestPassword' WITH GRANT OPTION"
-    - cp docs/config/config.xml project/config.xml
-    - cp docs/config/config.xml test/config.xml
-    - sed -i -e "s/%HOSTNAME%/127.0.0.1/g" -e "s/%USERNAME%/SQLTestUser/g" -e "s/%PASSWORD%/TestPassword/g" -e "s/%DATABASE%/LorisTest/g" project/config.xml
-    - sed -i -e "s/%HOSTNAME%/127.0.0.1/g" -e "s/%USERNAME%/SQLTestUser/g" -e "s/%PASSWORD%/TestPassword/g" -e "s/%DATABASE%/LorisTest/g" test/config.xml
-    - mysql LorisTest -e "INSERT INTO users (UserID, Password, Real_name, First_name, Last_name, Degree, Position_title, Institution, Department, Address, City, State, Zip_code, Country, Fax, Email, Privilege, PSCPI, DBAccess, Active, Password_hash, Password_expiry, Pending_approval, Doc_Repo_Notifications, Phone) VALUES('travis', NULL, 'unix account', 'unix', 'account', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'unixtest@mail.com', 0, 'N', '', 'Y', '$2y$10$6JvNxHFCugACdUPvCpm3zeSLCEwSKsUyBbfv0/tWKAa8Ga8MmeZIG', '2019-12-06', 'N', 'N', NULL)"
-    - mysql LorisTest -e "INSERT INTO user_psc_rel VALUES ((SELECT ID FROM users WHERE UserID='travis'), 1)"
-    # Set the admin account password to a known value for testing. This needs to be done
-    # after the config.xml is setup.
-    - cd tools
-    - echo "testpass" | php ./resetpassword.php admin
-    - mysql LorisTest -e "UPDATE users SET Pending_approval='N', Password_expiry='2100-01-01' WHERE ID=1"
-    - cd ..
-    - mysql LorisTest -e "UPDATE Config SET Value='$(pwd)/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='base')"
-    - mysql LorisTest -e "UPDATE Config SET Value='http://localhost:8000' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='url')"
-    - mkdir -p data/loris/bin/mri
-    - mysql LorisTest -e "UPDATE Config SET Value='data/loris/bin/mri' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='MRICodePath')"
-
-    # Set up the testing instrument environment
-    - cp test/test_instrument/NDB_BVL_Instrument_testtest.class.inc project/instruments/NDB_BVL_Instrument_testtest.class.inc
-    - mysql LorisTest -e "INSERT INTO test_names (Test_name, Full_name, Sub_group,IsDirectEntry) VALUES ('testtest', 'testtest', '1','1')"
-    - mysql LorisTest -e "INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('testtest', '1', '99999', 'Y', 'V1', '1', '2', NULL)"
-    - cd tools
-    - find ../project/instruments/NDB_BVL_Instrument_testtest.class.inc | php lorisform_parser.php
-    - find ../project/instruments/NDB_BVL_Instrument_testtest.class.inc | php generate_tables_sql.php
-    - cd ..
-    - mysql LorisTest < project/tables_sql/testtest.sql
-#env:
- # - "LORIS_DB_CONFIG=test/config.xml"
+  - if [ "$BROWSER_NAME" = "htmlunit" ]; then mkdir chromedriver; wget -q -t 3 https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip; unzip chromedriver_linux64 -d chromedriver; fi
+  - if [ "$BROWSER_NAME" = "htmlunit" ]; then export CHROMEDRIVER_PATH=$PWD/chromedriver/chromedriver; fi
+  - sh -e /etc/init.d/xvfb start
+  - chromedriver/chromedriver --port=4444 --url-base=wd/hub &> ./logs/chromedriver.log &
+  - if [ ! -f jar/selenium-server-standalone-3.8.1.jar ]; then wget -q -t 3 -P jar https://selenium-release.storage.googleapis.com/3.8/selenium-server-standalone-3.8.1.jar; fi
+  - java -Dwebdriver.firefox.marionette=false -Dwebdriver.chrome.driver="$CHROMEDRIVER_PATH" -jar jar/selenium-server-standalone-3.8.1.jar -enablePassThrough false -log ./logs/selenium.log &
+  - until $(echo | nc localhost 4444); do sleep 1; echo Waiting for Selenium server on port 4444...; done; echo "Selenium server started"
+  - php -S 127.0.0.1:8000 -t tests/functional/web/ &>>./logs/php-server.log &
+  - until $(echo | nc localhost 8000); do sleep 1; echo waiting for PHP server on port 8000...; done; echo "PHP server started"
 
 script:
-    - make checkstatic
-    - vendor/bin/phpunit --configuration test/phpunit.xml
+  - if [ -n "$SAUCELABS" ]; then EXCLUDE_GROUP+="exclude-saucelabs,"; fi
+  - if [ "$BROWSER_NAME" = "MicrosoftEdge" ]; then EXCLUDE_GROUP+="exclude-edge,"; fi
+  - if [ -n "$EXCLUDE_GROUP" ]; then EXTRA_PARAMS+=" --exclude-group $EXCLUDE_GROUP"; fi
+  - ./vendor/bin/phpunit --coverage-clover ./logs/coverage-clover.xml $EXTRA_PARAMS
 
-dist: precise
+after_script:
+  - if [ -f ./logs/selenium.log ]; then cat ./logs/selenium.log; fi
+  - if [ -f ./logs/php-server.log ]; then cat ./logs/php-server.log; fi
+
+after_success:
+  - travis_retry php vendor/bin/php-coveralls -v
