@@ -144,7 +144,11 @@ abstract class LorisIntegrationTest extends TestCase
 
         $login = $this->webDriver->findElement(WebDriverBy::Name("login"));
         $login->click();
-
+        $this->safeGet($this->url . "/media/");
+        $bodyText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        print_r($bodyText);
         // Explicitly wait until the page is loaded.
         // Wait up to a minute, because sometimes when multiple tests
         // are run one will fail due to the login taking too long?
