@@ -83,13 +83,13 @@ before_script:
     - find ../project/instruments/NDB_BVL_Instrument_testtest.class.inc | php generate_tables_sql.php
     - cd ..
     - mysql LorisTest < project/tables_sql/testtest.sql
+    - whereis firefox
+    - rm ~/.mozilla/firefox/*.default/*.sqlite ~/.mozilla/firefox/*default/sessionstore.js
+    - rm -r ~/.cache/mozilla/firefox/*.default/*
 #env:
  # - "LORIS_DB_CONFIG=test/config.xml"
 
 script:
-    - whereis firefox
-    - rm ~/.mozilla/firefox/*.default/*.sqlite ~/.mozilla/firefox/*default/sessionstore.js
-    - rm -r ~/.cache/mozilla/firefox/*.default/*
     - vendor/bin/phpunit --configuration test/phpunit.xml
 
 dist: precise
