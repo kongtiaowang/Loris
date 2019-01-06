@@ -17,9 +17,13 @@ matrix:
          - sudo apt-get install npm
          - npm install
          - composer install
+         - sudo rm /usr/local/bin/docker-compose
+         - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+         - chmod +x docker-compose
+         - sudo mv docker-compose /usr/local/bin
       script:
-        - npm run lint:php && npm run lint:javascript && docker-compose run -T --rm integration-tests vendor/bin/phpunit --configuration test/phpunit.xml
-
+         - docker-compose run -T --rm integration-tests vendor/bin/phpunit --configuration test/phpunit.xml
+     - php : 7.2
 
 addons:
     firefox: "44.0"
