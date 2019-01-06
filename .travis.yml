@@ -9,6 +9,10 @@ php:
 
 matrix:
   include:
+    - php: 7.2
+      after_script: ~
+      after_success: ~
+
     - php : 7.3
       services: docker
       install:
@@ -23,10 +27,6 @@ matrix:
          - sudo mv docker-compose /usr/local/bin
       script:
          - docker-compose run -T --rm integration-tests vendor/bin/phpunit --configuration test/phpunit.xml
-     - php : 7.2
-
-addons:
-    firefox: "44.0"
 
 before_install:
     # Start Xvfb in a desktop screen size,
