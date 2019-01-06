@@ -16,6 +16,8 @@ matrix:
       after_success: ~
 
     - php : 7.3
+      env:
+         - DOCKER_COMPOSE_VERSION=1.4.2
       services: docker
       install:
          - sudo apt-get update
