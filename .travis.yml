@@ -43,6 +43,7 @@ before_script:
   - if [ "$BROWSER_NAME" = "htmlunit" ]; then mkdir chromedriver; wget -q -t 3 https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip; unzip chromedriver_linux64 -d chromedriver; fi
   - if [ "$BROWSER_NAME" = "htmlunit" ]; then export CHROMEDRIVER_PATH=$PWD/chromedriver/chromedriver; fi
   - sh -e /etc/init.d/xvfb start
+  - chromedriver/chromedriver --port=4444 --url-base=wd/hub &> ./logs/chromedriver.log &
   - if [ ! -f jar/selenium-server-standalone-3.8.1.jar ]; then wget -q -t 3 -P jar https://selenium-release.storage.googleapis.com/3.8/selenium-server-standalone-3.8.1.jar; fi
   - java -Dwebdriver.firefox.marionette=false -Dwebdriver.chrome.driver="$CHROMEDRIVER_PATH" -jar jar/selenium-server-standalone-3.8.1.jar -enablePassThrough false -log ./logs/selenium.log &
   - until $(echo | nc localhost 4444); do sleep 1; echo Waiting for Selenium server on port 4444...; done; echo "Selenium server started"
