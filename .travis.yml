@@ -31,7 +31,7 @@ install:
     # Download a Selenium Web Driver release
     - wget "http://selenium-release.storage.googleapis.com/2.52/selenium-server-standalone-2.52.0.jar"
     # Extracting firefox and setting PATH variable...
-    - tar -xjf /tmp/firefox-44.0.tar.bz2 --directory /tmp
+    - tar -xjf /tmp/firefox-latest.tar.bz2 --directory /tmp
     - export PATH="/tmp/firefox:$PATH"
     - echo "Using firefox version `firefox --version`"
 
