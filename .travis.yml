@@ -26,7 +26,6 @@ cache:
 
 install:
   - travis_retry composer self-update
-  - travis_retry composer update --no-interaction $DEPENDENCIES
 
 before_script:
   - if [ "$BROWSER_NAME" = "chrome" ]; then mkdir chromedriver; wget -q -t 3 https://chromedriver.storage.googleapis.com/$CHROMEDRIVER_VERSION/chromedriver_linux64.zip; unzip chromedriver_linux64 -d chromedriver; fi
