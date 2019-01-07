@@ -28,15 +28,6 @@ before_install:
     - mkdir -p project project/libraries
     - pecl install -f ast-0.1.6
     - php -S localhost:8000 -t htdocs htdocs/router.php 2>1 > /dev/null &
-    - wget -O /tmp/geckodriver.tar.gz https://github.com/mozilla/geckodriver/releases/download/v${GECKODRIVER_VERSION}/geckodriver-v${GECKODRIVER_VERSION}-linux64.tar.gz
-    - mkdir geckodriver && tar xvf /tmp/geckodriver.tar.gz -C geckodriver
-    - export PATH=geckodriver:$PATH
-    - chmod u+x geckodriver
-    - whereis geckodriver
-    - geckodriver --version
-    - echo $PATH
-    - which geckodriver
-    - locate geckodriver
 install:
     - wget -N http://chromedriver.storage.googleapis.com/2.30/chromedriver_linux64.zip -P ~/
     - unzip ~/chromedriver_linux64.zip -d ~/
@@ -57,7 +48,7 @@ install:
     # Start Selenium and redirect Selenium WebDriver
     # output to /dev/null so that it doesn't flood the
     # screen in the middle of our other tests
-    - DISPLAY=:99.0 java -Dwebdriver.gecko.driver="geckodriver/geckodriver" -jar selenium-server-standalone-3.8.1.jar  2>1 > /dev/null &
+    - DISPLAY=:99.0 java -Dwebdriver.chrome.driver= -jar selenium-server-standalone-3.8.1.jar  2>1 > /dev/null &
 
 before_script:
     - whereis google-chrome-stable
