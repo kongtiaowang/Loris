@@ -229,7 +229,7 @@ class NDB_BVL_Instrument_DSMV_checklist extends NDB_BVL_Instrument
             $this->form->addElement("select", "qb_limit_communication", "<strong>B. The disturbance causes limitations in effective communication, social participation, social relationships, academic achievement, or occupational performance.</strong>", $yesNo);
 
             $this->form->addElement("select", "qc_onset_earlychildhood", "<strong>C. Onset in the early developmental period (but may not become fully manifest until social communication demands exceed limited capacities.)</strong>", $yesNo);
-//Here 1
+
             $this->form->addElement("select", "qd_medical_condition", "<strong>D. The symptoms are not attributable to another medical or neurological condition and are not better explained by <br>low abilities in the domains of word structure and grammar, 
 <br>intellectual disability, global developmental delay, autism spectrum disorder, or another mental disorder. </strong>",$yesNo);
 
@@ -242,7 +242,7 @@ class NDB_BVL_Instrument_DSMV_checklist extends NDB_BVL_Instrument
             $this->form->addElement("select", "dsm_scd_confidence", "Given all the data that you have on this child, how confident are you about the classification of this child based on the DSM-V SCD criteria?", $confidence);
 
             $this->addTextAreaElement("dsm_scd_comments", "Comments (required for a rating of 2 or 1)", array("dsm_scd_confidence{@}=={@}2_somewhat_confident|1_not_confident"), "This field is required or specify not answered.");
-            // Here 2
+
             $this->form->addElement("select", "met_criteria_adi_r", "Met Criteria for ADI-R: ", $yesNo);
 
             $this->form->addElement("select", "met_criteria_ados2", " Met Criteria for ADOS-2:", $yesNo);
