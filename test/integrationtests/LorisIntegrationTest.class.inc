@@ -100,9 +100,9 @@ abstract class LorisIntegrationTest extends TestCase
         $selenium_url = isset($dev['selenium_url']) ? $dev['selenium_url'] : 'http://localhost:4444/wd/hub';
 
         $chromeOptions = new ChromeOptions();
-        $chromeOptions.setBinary("google-chrome-stable");
-        $chromeOptions.addArguments("--headless");
-        $chromeOptions.addArguments("no-sandbox");
+        $chromeOptions->setBinary("google-chrome-stable");
+        $chromeOptions->addArguments("--headless");
+        $chromeOptions->addArguments("no-sandbox");
         
         $caps = DesiredCapabilities::chrome();
         $caps->setCapability(ChromeOptions::CAPABILITY, $chromeOptions);
