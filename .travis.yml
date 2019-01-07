@@ -9,7 +9,7 @@ php:
     - "7.3"
 
 addons:
-    firefox: "46.0"
+    firefox: "49.0"
 
 before_install:
     # Start Xvfb in a desktop screen size,
