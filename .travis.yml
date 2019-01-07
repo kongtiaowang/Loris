@@ -9,9 +9,11 @@ cache:
         - vendor
 php:
     - "7.2"
-    - "7.3"
 addons:
     firefox: "48.0"
+matrix:
+  allow_failures:
+  - php: 7.3 
 
 before_install:
     # Start Xvfb in a desktop screen size,
