@@ -88,5 +88,8 @@ before_script:
 script:
     - vendor/bin/phpunit --configuration test/phpunit.xml
     - whereis mozilla
+    - whereis firefox
+    - echo $PATH
+
 
 dist: precise
