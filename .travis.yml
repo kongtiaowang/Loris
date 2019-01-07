@@ -12,7 +12,7 @@ php:
     - "7.3"
 
 addons:
-    firefox: "50.0.1"
+    chrome: stable
 
 before_install:
     # Start Xvfb in a desktop screen size,
@@ -27,11 +27,12 @@ before_install:
     - pecl install -f ast-0.1.6
     - php -S localhost:8000 -t htdocs htdocs/router.php 2>1 > /dev/null &
     - wget -O /tmp/geckodriver.tar.gz https://github.com/mozilla/geckodriver/releases/download/v${GECKODRIVER_VERSION}/geckodriver-v${GECKODRIVER_VERSION}-linux64.tar.gz
-    - mkdir geckodriver && tar xvf /tmp/geckodriver.tar.gz -C geckodriver
+    - tar xvf /tmp/geckodriver.tar.gz -C geckodriver
     - export PATH=geckodriver:$PATH
     - chmod u+x geckodriver
     - whereis geckodriver
     - geckodriver --version
+
 install:
     - make dev
     - phpenv rehash
