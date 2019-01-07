@@ -12,10 +12,15 @@ php:
     - "7.3"
 addons:
   chrome: stable
+
 matrix:
   allow_failures:
-  - php: 7.3 
+  - php: 7.2 
     env: KEY=VALUE
+
+  - php: 7.3
+    env: KEY=VALUE
+
 before_install:
     # Start Xvfb in a desktop screen size,
     # otherwise some tests will fail because the links
