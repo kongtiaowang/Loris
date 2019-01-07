@@ -99,9 +99,17 @@ abstract class LorisIntegrationTest extends TestCase
         $dev = $this->config->getSettingFromXML('dev');
         $selenium_url = isset($dev['selenium_url']) ? $dev['selenium_url'] : 'http://localhost:4444/wd/hub';
 
+        $chromeOptions = new ChromeOptions();
+        $chromeOptions.setBinary("google-chrome-stable");
+        $chromeOptions.addArguments("--headless");
+        $chromeOptions.addArguments("no-sandbox");
+        
+        $caps = DesiredCapabilities::chrome();
+        $caps->setCapability(ChromeOptions::CAPABILITY, $chromeOptions);
+       
         $this->webDriver = RemoteWebDriver::create(
             $selenium_url,
-            DesiredCapabilities::chrome()
+            $caps
         );
 
         $this->login("UnitTester", "4test4");
