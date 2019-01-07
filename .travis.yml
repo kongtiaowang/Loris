@@ -1,5 +1,5 @@
 language: php
-
+sudo: false
 env:
   global:
     - GECKODRIVER_VERSION=0.23.0
