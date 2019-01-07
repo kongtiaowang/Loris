@@ -99,14 +99,9 @@ abstract class LorisIntegrationTest extends TestCase
         $dev = $this->config->getSettingFromXML('dev');
         $selenium_url = isset($dev['selenium_url']) ? $dev['selenium_url'] : 'http://localhost:4444/wd/hub';
 
-        $capabilities = array(
-                         WebDriverCapabilityType::BROWSER_NAME       => 'firefox',
-                         WebDriverCapabilityType::JAVASCRIPT_ENABLED => true,
-                        );
-
         $this->webDriver = RemoteWebDriver::create(
             $selenium_url,
-            $capabilities
+            DesiredCapabilities::firefox()
         );
 
         $this->login("UnitTester", "4test4");
