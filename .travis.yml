@@ -9,7 +9,7 @@ php:
     - "7.3"
 
 addons:
-    firefox: "49.0"
+    firefox: "55.0"
 
 before_install:
     # Start Xvfb in a desktop screen size,
@@ -31,7 +31,7 @@ install:
     # Download a Selenium Web Driver release
     - wget "http://selenium-release.storage.googleapis.com/2.53/selenium-server-standalone-2.53.0.jar"
     # Extracting firefox and setting PATH variable...
-    - tar -xjf /tmp/firefox-46.0.tar.bz2 --directory /tmp
+    - tar -xjf /tmp/firefox-55.0.tar.bz2 --directory /tmp
     - export PATH="/tmp/firefox:$PATH"
     - echo "Using firefox version `firefox --version`"
 
