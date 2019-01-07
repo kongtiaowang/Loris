@@ -147,10 +147,10 @@ class NDB_BVL_Instrument_TANNER_Boys extends NDB_BVL_Instrument
 
         $options5 = array(
                      null => "",
-                     "a"  => "Not yet started growing hair",
-                     "b"  => "Has barely started growing hair",
-                     "c"  => "Facial hair growth is definitely underway",
-                     "d"  => "Facial hair growth seems completed",
+                     "a"  => "a. Not yet started growing hair",
+                     "b"  => "b. Has barely started growing hair",
+                     "c"  => "c. Facial hair growth is definitely underway",
+                     "d"  => "d. Facial hair growth seems completed",
                     );
 
         $questions = array(
