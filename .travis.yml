@@ -91,6 +91,7 @@ before_script:
     - cd ..
     - mysql LorisTest < project/tables_sql/testtest.sql
  # - "LORIS_DB_CONFIG=test/config.xml"
+    - sudo add-apt-repository ppa:jonathonf/python-3.6
     - sudo apt-get update
     - sudo apt-get install python3.6
     - sudo apt-get -y install python3-pip
