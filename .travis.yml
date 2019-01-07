@@ -1,4 +1,3 @@
-sudo: false
 language: php
 
 env:
@@ -92,9 +91,9 @@ before_script:
     - cd ..
     - mysql LorisTest < project/tables_sql/testtest.sql
  # - "LORIS_DB_CONFIG=test/config.xml"
-    - apt-get install python3.6
-    - apt-get -y install python3-pip
-    - pip install -U selenium
+    - sudo apt-get install python3.6
+    - sudo apt-get -y install python3-pip
+    - sudo pip install -U selenium
 
 script:
     - vendor/bin/phpunit --configuration test/phpunit.xml
