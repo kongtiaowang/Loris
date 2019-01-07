@@ -92,7 +92,7 @@ before_script:
 
 script:
     - vendor/bin/phpunit --configuration test/phpunit.xml
-    - whereis mozilla
+    - whereis Dwebdriver.gecko.driver
     - whereis firefox
     - echo $PATH
 
