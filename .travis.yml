@@ -27,8 +27,9 @@ before_install:
     - pecl install -f ast-0.1.6
     - php -S localhost:8000 -t htdocs htdocs/router.php 2>1 > /dev/null &
     - wget -O /tmp/geckodriver.tar.gz https://github.com/mozilla/geckodriver/releases/download/v${GECKODRIVER_VERSION}/geckodriver-v${GECKODRIVER_VERSION}-linux64.tar.gz
-    - mkdir $HOME/geckodriver && tar xvf /tmp/geckodriver.tar.gz -C $HOME/geckodriver
-    - export PATH=$HOME/geckodriver:$PATH
+    - mkdir geckodriver && tar xvf /tmp/geckodriver.tar.gz -C geckodriver
+    - export PATH=geckodriver:$PATH
+    - whereis geckodriver
 install:
     - make dev
     - phpenv rehash
