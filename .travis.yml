@@ -11,7 +11,7 @@ php:
     - "7.2"
     - "7.3"
 addons:
-    firefox: "48.0"
+  chrome: stable
 matrix:
   allow_failures:
   - php: 7.3 
@@ -38,6 +38,12 @@ before_install:
     - which geckodriver
     - locate geckodriver
 install:
+    - wget -N http://chromedriver.storage.googleapis.com/2.30/chromedriver_linux64.zip -P ~/
+    - unzip ~/chromedriver_linux64.zip -d ~/
+    - rm ~/chromedriver_linux64.zip
+    - mv -f ~/chromedriver /usr/local/share/
+    - chmod +x /usr/local/share/chromedriver
+    - ln -s /usr/local/share/chromedriver /usr/local/bin/chromedriver
     - make dev
     - phpenv rehash
 
@@ -54,6 +60,8 @@ install:
     - DISPLAY=:99.0 java -Dwebdriver.gecko.driver="geckodriver/geckodriver" -jar selenium-server-standalone-3.8.1.jar  2>1 > /dev/null &
 
 before_script:
+    - whereis google-chrome-stable
+    - whereis chromedriver
     # Set up the Loris environment
     - mkdir -p project smarty/templates_c project/instruments project/tables_sql
     - chmod 777 smarty/templates_c project/instruments project/tables_sql
