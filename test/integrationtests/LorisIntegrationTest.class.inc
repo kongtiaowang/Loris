@@ -98,7 +98,7 @@ abstract class LorisIntegrationTest extends TestCase
 
         $dev = $this->config->getSettingFromXML('dev');
         $selenium_url = isset($dev['selenium_url']) ? $dev['selenium_url'] : 'http://localhost:4444/wd/hub';
-        putenv("webdriver.chrome.driver=/usr/local/bin/chromedriver");
+//        putenv("webdriver.chrome.driver=/usr/local/bin/chromedriver");
         $chromeOptions = new ChromeOptions();
         $chromeOptions->setBinary("/usr/bin/google-chrome-stable");
         $chromeOptions->addArguments(['--headless', 'window-size=1024,768', '--no-sandbox']);
@@ -434,25 +434,25 @@ abstract class LorisIntegrationTest extends TestCase
         $newWebDriver = null;
 
         // keep a reference from the actual page
-        $oldBody = $this->safeFindElement(
-            WebDriverBy::xPath(
-                "
-                //body
-                "
-            )
-        );
+      //  $oldBody = $this->safeFindElement(
+      //      WebDriverBy::xPath(
+      //          "
+      //          //body
+      //          "
+      //      )
+      //  );
 
-        try {
+       // try {
             // Load the new page
             $newWebDriver = $this->webDriver->get($url);
 
             // Use the old page reference until it detaches from the DOM
-            while (true) {
-                $oldBody->isDisplayed();
-            }
-        } catch (StaleElementReferenceException $e) {
+        //    while (true) {
+        //        $oldBody->isDisplayed();
+        //    }
+      //  } catch (StaleElementReferenceException $e) {
             return $newWebDriver;
-        }
+      //  }
     }
 
     /**
