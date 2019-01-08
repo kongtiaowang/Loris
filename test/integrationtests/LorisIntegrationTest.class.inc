@@ -102,7 +102,7 @@ abstract class LorisIntegrationTest extends TestCase
 
         
         $chromeOptions = new ChromeOptions();
-        $chromeOptions->setBinary("google-chrome-stable");
+        $chromeOptions->setBinary("google-chrome-stable/binary");
         $chromeOptions->addArguments(['--headless', 'window-size=1024,768', '--no-sandbox']);
         $caps = DesiredCapabilities::chrome();
         $caps->setCapability(ChromeOptions::CAPABILITY, $chromeOptions);
@@ -111,8 +111,7 @@ abstract class LorisIntegrationTest extends TestCase
             $selenium_url,
             $caps
         );
-        $this->webDriver = ChromeDriver::start();
-        $this->login("UnitTester", "4test4");
+//        $this->webDriver = ChromeDriver::start();
 
         if (extension_loaded('xdebug') && function_exists("xdebug_start_code_coverage")) {
             xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
