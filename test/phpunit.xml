@@ -10,10 +10,10 @@
 
         <testsuite name='LorisCoreIntegrationTests'>
             <directory>./integrationtests/</directory>
-            <directory>../modules/acknowledgements/test/</directory>
         </testsuite>
 
         <testsuite name='LorisModuleIntegrationTests'>
+            <directory>../modules/acknowledgements/test/</directory>
         </testsuite>
 
     </testsuites>

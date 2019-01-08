@@ -40,7 +40,6 @@ install:
     - sudo ln -s /usr/local/share/chromedriver /usr/local/bin/chromedriver
     - make dev
     - phpenv rehash
-    - whereis chromedriver_linux64
 
     # Download a Selenium Web Driver release
     - wget "http://selenium-release.storage.googleapis.com/3.8/selenium-server-standalone-3.8.1.jar"
@@ -53,8 +52,6 @@ install:
     - DISPLAY=:99.0 java -Dwebdriver.chrome.driver="/usr/local/bin/chromedriver" -jar selenium-server-standalone-3.8.1.jar  2>1 > /dev/null &
 
 before_script:
-    - whereis google-chrome-stable
-    - whereis chromedriver
     # Set up the Loris environment
     - mkdir -p project smarty/templates_c project/instruments project/tables_sql
     - chmod 777 smarty/templates_c project/instruments project/tables_sql
@@ -101,8 +98,5 @@ before_script:
 
 script:
     - vendor/bin/phpunit --configuration test/phpunit.xml
-    - whereis Dwebdriver.gecko.driver
-    - whereis firefox
-    - echo $PATH
 
 dist: trusty
