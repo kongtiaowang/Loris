@@ -131,10 +131,6 @@ class NDB_BVL_Instrument_NIHToolBox_Assessment_Data extends NDB_BVL_Instrument
         $this->form->addFile('NIHToolBox_Assessment_Data', 'Upload the Assessment Data File
 <br><h6><i>(Filename should be NIHToolBox_Assessment_Data.csv)</i></h6>', array());
         $this->form->addElement('static', 'Uploaded_assessment_data', "Uploaded Assessment Data File");
-        /* $this->addLabel("<BR><strong> Upload Assessment Scores</strong>");
-         $this->form->addFile('NIHToolBoxData3', 'Upload Assessment Scores File', array());
-         //$this->XINRegisterRule("recording_file_its3",array("number_session{@}=={@}NEVER_REQUIRED"));
-         $this->form->addElement('static','Uploaded_assessment_scores', "Uploaded Asessment Scores File");*/
 
 
     }
@@ -171,36 +167,6 @@ class NDB_BVL_Instrument_NIHToolBox_Assessment_Data extends NDB_BVL_Instrument
 
     }
 
-    /* function _page3() {
-
-         $fields = array("DeviceID"	,"AssessmentName" ,	"Inst",	"RawScore",	"Theta", "TScore",	"SE","ItmCnt" ,"DateFinished" ,
-         "Column1" ,"Column2","Column3", "Column4","Column5",
-         "Language","ComputedScore","Uncorrected Standard Score","Age-Corrected Standard Score","National Percentile (age adjusted)",
-         "Fully-Corrected T-score",	"InstrumentBreakoff","InstrumentStatus2",	"InstrumentRCReason",	"InstrumentRCReasonOther",	"App Version",
-         "iPad Version","Firmware Version"
-
-         );
-         foreach($fields as $field) {
-             $group[] = &$this->form->createElement("static", null, null, $field);
-             $group[] = &$this->form->createElement("static", null, null, null);
-         }
-         $this->form->addGroup($group, 'header_group', "", $this->_GUIDelimiter, FALSE);
-         unset($group);
-
-
-       /*  for($i=1; $i <= 62; $i++){
-             foreach($fields as $field) {
-                 //$this->form->addElement('static', $field."_".$i, "Values {$i}:");
-                 $group[] = $this->form->createElement('static', $field."_".$i);
-                 $group[] = $this->form->createElement("static", null, null, null);
-             }
-             $this->form->addGroup($group, $i.'_group', "", $this->_GUIDelimiter, FALSE);
-             unset($group);
-
-         }*/
-
-
-//}
     function _saveValues($values)
     {
         $timepoint =& TimePoint::singleton($this->getSessionID());
