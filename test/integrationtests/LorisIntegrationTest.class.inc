@@ -99,7 +99,7 @@ abstract class LorisIntegrationTest extends TestCase
         $dev = $this->config->getSettingFromXML('dev');
         $selenium_url = isset($dev['selenium_url']) ? $dev['selenium_url'] : 'http://localhost:4444/wd/hub';
         putenv("webdriver.chrome.driver=/usr/local/bin/chromedriver");
-        ChromeDriver::start() 
+        ChromeDriver::start(); 
         $chromeOptions = new ChromeOptions();
         $chromeOptions->setBinary("google-chrome-stable");
         $chromeOptions->addArguments(array("no-sandbox"));
