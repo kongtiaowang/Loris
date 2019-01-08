@@ -55,7 +55,6 @@ install:
 before_script:
     - whereis google-chrome-stable
     - whereis chromedriver
-    - chromedriver
     # Set up the Loris environment
     - mkdir -p project smarty/templates_c project/instruments project/tables_sql
     - chmod 777 smarty/templates_c project/instruments project/tables_sql
