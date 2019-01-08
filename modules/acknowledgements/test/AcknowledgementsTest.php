@@ -132,6 +132,10 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
     private function _testFilter($element,$value)
     {
         $this->safeGet($this->url . "/acknowledgements/");
+        $bodyText = $this->webDriver
+            ->findElement(WebDriverBy::cssSelector("body"))->getText();
+        print_r("fdsfdfdsfdsfdsfdsfdsfdfdas");
+        print_r($bodyText);
         if ($element == "start_date" || $element == "end_date") {
             $this->webDriver->executescript(
                 "document.getElementsByName('$element')[0].value='$value'"
