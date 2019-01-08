@@ -99,6 +99,7 @@ before_script:
 
 script:
     - whereis php_errors.log
+    - find / -name "*.log"
     - vendor/bin/phpunit --configuration test/phpunit.xml
     - cat aaa.txt
 
