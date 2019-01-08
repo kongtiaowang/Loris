@@ -102,7 +102,7 @@ abstract class LorisIntegrationTest extends TestCase
 
         
         $chromeOptions = new ChromeOptions();
-        $chromeOptions->setBinary("google-chrome-stable/binary");
+        $chromeOptions->setBinary("/usr/bin/google-chrome-stable");
         $chromeOptions->addArguments(['--headless', 'window-size=1024,768', '--no-sandbox']);
         $caps = DesiredCapabilities::chrome();
         $caps->setCapability(ChromeOptions::CAPABILITY, $chromeOptions);
