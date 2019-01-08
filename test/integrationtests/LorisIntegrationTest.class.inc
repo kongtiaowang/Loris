@@ -99,11 +99,11 @@ abstract class LorisIntegrationTest extends TestCase
         $dev = $this->config->getSettingFromXML('dev');
         $selenium_url = isset($dev['selenium_url']) ? $dev['selenium_url'] : 'http://localhost:4444/wd/hub';
         putenv("webdriver.chrome.driver=/usr/local/bin/chromedriver");
-        ChromeDriver::start(); 
+
+        
         $chromeOptions = new ChromeOptions();
         $chromeOptions->setBinary("google-chrome-stable");
-        $chromeOptions->addArguments(array("no-sandbox"));
-        
+        $chromeOptions->addArguments(['--headless', 'window-size=1024,768', '--no-sandbox']);
         $caps = DesiredCapabilities::chrome();
         $caps->setCapability(ChromeOptions::CAPABILITY, $chromeOptions);
        
@@ -111,7 +111,7 @@ abstract class LorisIntegrationTest extends TestCase
             $selenium_url,
             $caps
         );
-
+        $this->webDriver = ChromeDriver::start();
         $this->login("UnitTester", "4test4");
 
         if (extension_loaded('xdebug') && function_exists("xdebug_start_code_coverage")) {
