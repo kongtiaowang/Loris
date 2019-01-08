@@ -101,7 +101,7 @@ abstract class LorisIntegrationTest extends TestCase
 
         $chromeOptions = new ChromeOptions();
         $chromeOptions->setBinary("google-chrome-stable");
-        $chromeOptions->addArguments(array("no-sandbox");
+        $chromeOptions->addArguments(array("no-sandbox"));
         
         $caps = DesiredCapabilities::chrome();
         $caps->setCapability(ChromeOptions::CAPABILITY, $chromeOptions);
