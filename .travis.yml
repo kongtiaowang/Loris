@@ -14,7 +14,6 @@ matrix:
   - php: "7.2"
   - php: "7.3"
     env: ALLOW_FAIURE='true'
-  - php: "hhvm"
   allow_failures:
   - php: "7.3"
     env: ALLOW_FAIURE='true'
@@ -32,7 +31,7 @@ before_install:
     - nvm install node
     - mkdir -p project project/libraries
     - pecl install -f ast-0.1.6
-    - php -S localhost:8000 -t htdocs htdocs/router.php |& tee -a aaa.txt
+    - php -S localhost:8000 -t htdocs htdocs/router.php &>> output.txt
 install:
     - wget -N http://chromedriver.storage.googleapis.com/2.36/chromedriver_linux64.zip -P ~/
     - unzip ~/chromedriver_linux64.zip -d ~/
@@ -101,6 +100,6 @@ script:
     - whereis php_errors.log
     - find / -name "*.log"
     - vendor/bin/phpunit --configuration test/phpunit.xml
-    - cat aaa.txt
+    - cat output.txt
 
 dist: trusty
