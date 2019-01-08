@@ -99,8 +99,6 @@ abstract class LorisIntegrationTest extends TestCase
         $dev = $this->config->getSettingFromXML('dev');
         $selenium_url = isset($dev['selenium_url']) ? $dev['selenium_url'] : 'http://localhost:4444/wd/hub';
         putenv("webdriver.chrome.driver=/usr/local/bin/chromedriver");
-
-        
         $chromeOptions = new ChromeOptions();
         $chromeOptions->setBinary("/usr/bin/google-chrome-stable");
         $chromeOptions->addArguments(['--headless', 'window-size=1024,768', '--no-sandbox']);
@@ -111,7 +109,6 @@ abstract class LorisIntegrationTest extends TestCase
             $selenium_url,
             $caps
         );
-//        $this->webDriver = ChromeDriver::start();
 
         if (extension_loaded('xdebug') && function_exists("xdebug_start_code_coverage")) {
             xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
@@ -146,11 +143,6 @@ abstract class LorisIntegrationTest extends TestCase
 
         $login = $this->webDriver->findElement(WebDriverBy::Name("login"));
         $login->click();
-        $this->safeGet($this->url . "/media/");
-        $bodyText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector("body")
-        )->getText();
-        print_r($bodyText);
         // Explicitly wait until the page is loaded.
         // Wait up to a minute, because sometimes when multiple tests
         // are run one will fail due to the login taking too long?
