@@ -20,9 +20,6 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-ini_set('error_reporting', E_ALL); // or error_reporting(E_ALL);
-ini_set('display_errors', '1');
-ini_set('display_startup_errors', '1');
 
 // Tests should not use project/config.xml
 // When running tests LORIS app should connect to a test database because some tests
