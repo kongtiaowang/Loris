@@ -11,8 +11,6 @@
         </testsuite>
 
         <testsuite name='LorisModuleIntegrationTests'>
-            <directory>../modules/acknowledgements/test/</directory>
-            <directory>../modules/statistics/test/</directory>
             <directory>./integrationtests/</directory>
         </testsuite>
 

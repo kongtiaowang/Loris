@@ -135,6 +135,9 @@ abstract class LorisIntegrationTest extends TestCase
             )
         );
         */
+                   $bodyText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();print_r($bodyText); print_r("11111111111");
         try {
         $usernameEl = $this->webDriver->findElement(WebDriverBy::Name("username"));
         $passwordEl = $this->webDriver->findElement(WebDriverBy::Name("password"));
@@ -153,9 +156,6 @@ abstract class LorisIntegrationTest extends TestCase
             )
         );
         } catch (Exception $e) {
-                   $bodyText = $this->webDriver->findElement(
-            WebDriverBy::cssSelector("body")
-        )->getText();print_r($bodyText); print_r("000000000000000000000000000000000000000000000");
         }
     }
 
