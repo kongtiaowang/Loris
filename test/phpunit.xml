@@ -5,11 +5,9 @@
         colors="true">
     <testsuites>
         <testsuite name='LorisUnitTests'>
-            <directory>./unittests/</directory>
         </testsuite>
 
         <testsuite name='LorisCoreIntegrationTests'>
-            <directory>./integrationtests/</directory>
         </testsuite>
 
         <testsuite name='LorisModuleIntegrationTests'>
