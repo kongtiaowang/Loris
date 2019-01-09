@@ -95,6 +95,7 @@ before_script:
  # - "LORIS_DB_CONFIG=test/config.xml"
 
 script:
+    - pwd
     - vendor/bin/phpunit --configuration test/phpunit.xml
     - cat aaa.txt
 
