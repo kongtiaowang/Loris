@@ -155,7 +155,7 @@ abstract class LorisIntegrationTest extends TestCase
         } catch (Exception $e) {
                    $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
-        )->getText();print_r($bodyText);
+        )->getText();print_r($bodyText); print_r("000000000000000000000000000000000000000000000");
         }
     }
 
