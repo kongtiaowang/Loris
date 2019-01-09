@@ -23,13 +23,13 @@ before_install:
     # Start Xvfb in a desktop screen size,
     # otherwise some tests will fail because the links
     # are hidden when Selenium tries to find them.
-    #- "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1600x1200x16"
-    - "export DISPLAY=:99.0"
-    - "sh -e /etc/init.d/xvfb start"
+    - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1600x1200x16"
+    #- "export DISPLAY=:99.0"
+    #- "sh -e /etc/init.d/xvfb start"
     # Ensure node version is up to date
     - nvm install node
     - mkdir -p project project/libraries
-    - php -S localhost:8000 -t htdocs htdocs/router.php >>aaa.txt 2>&1 &
+    - php -S localhost:8000 -t htdocs htdocs/router.php 2>1 > /dev/null &
     
 install:
     - wget -N http://chromedriver.storage.googleapis.com/2.36/chromedriver_linux64.zip -P ~/
@@ -95,9 +95,6 @@ before_script:
  # - "LORIS_DB_CONFIG=test/config.xml"
 
 script:
-    - pwd
     - vendor/bin/phpunit --configuration test/phpunit.xml
-    - chmod 777 aaa.txt
-    - cat aaa.txt
 
 dist: trusty

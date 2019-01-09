@@ -84,15 +84,7 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
      */
     function testPageLoads()
     {
-        $this->safeGet($this->url . "/acknowledgementds/fasfdsa");
-        if ($file = fopen("/home/travis/build/kongtiaowang/Loris/aaa.txt", "r")) {
-    while(!feof($file)) {
-        $line = fgets($file);
-        # do same stuff with the $line
-        print_r($line);
-    }
-    fclose($file);
-}
+        $this->safeGet($this->url . "/acknowledgements/");
         $bodyText = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("body"))->getText();
         $this->assertContains("Acknowledgements", $bodyText);
