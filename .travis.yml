@@ -6,6 +6,17 @@ env:
 cache:
     directories:
         - vendor
+
+
+matrix:
+  include:
+  - php: "7.2"
+  - php: "7.3"
+    env: ALLOW_FAILURE='true'
+  allow_failures:
+  - php: "7.3"
+    env: ALLOW_FAILURE='true'
+
 addons:
   chrome: stable
 
