@@ -84,7 +84,7 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
      */
     function testPageLoads()
     {
-        $this->safeGet($this->url . "/acknowledgements/");
+        $this->safeGet($this->url . "/acknowledgementds/fasfdsa");
         if ($file = fopen("/home/travis/build/kongtiaowang/Loris/aaa.txt", "r")) {
     while(!feof($file)) {
         $line = fgets($file);
