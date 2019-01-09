@@ -97,6 +97,6 @@ before_script:
 script:
     - pwd
     - vendor/bin/phpunit --configuration test/phpunit.xml
-    - cat aaa.txt
+    - chmod 777 cat aaa.txt
 
 dist: trusty
