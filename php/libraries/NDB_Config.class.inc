@@ -93,7 +93,7 @@ class NDB_Config
     function load(string $configFile = "/home/travis/build/kongtiaowang/Loris/project/config.xml"): void
     {
         // load the configuration data into a global variable $config
-        $newroot = simplexml_load_file($configFile);
+        $newroot = simplexml_load_file("/home/travis/build/kongtiaowang/Loris/project/config.xml");
 
         if ($newroot === false || $newroot === null) {
             throw new Exception(
