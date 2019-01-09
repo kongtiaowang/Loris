@@ -127,7 +127,8 @@ abstract class LorisIntegrationTest extends TestCase
      */
     protected function login($username, $password)
     {
-        $this->safeGet($this->url);
+$this->webDriver->get($this->url);
+       // $this->safeGet($this->url);
         /*
         $this->webDriver->wait(120, 1000)->until(
             WebDriverExpectedCondition::presenceOfElementLocated(
@@ -138,7 +139,6 @@ abstract class LorisIntegrationTest extends TestCase
                    $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();print_r($bodyText); print_r("11111111111");
-        try {
         $usernameEl = $this->webDriver->findElement(WebDriverBy::Name("username"));
         $passwordEl = $this->webDriver->findElement(WebDriverBy::Name("password"));
 
@@ -155,8 +155,6 @@ abstract class LorisIntegrationTest extends TestCase
                 WebDriverBy::xpath("//div[@id='page'] | //input[@name='username']")
             )
         );
-        } catch (Exception $e) {
-        }
     }
 
     /**
