@@ -127,7 +127,7 @@ abstract class LorisIntegrationTest extends TestCase
      */
     protected function login($username, $password)
     {
-$this->webDriver->get($this->url);
+       $this->safeGet($this->url);
        // $this->safeGet($this->url);
         /*
         $this->webDriver->wait(120, 1000)->until(
@@ -438,25 +438,25 @@ $this->webDriver->get($this->url);
         $newWebDriver = null;
 
         // keep a reference from the actual page
-      //  $oldBody = $this->safeFindElement(
-      //      WebDriverBy::xPath(
-      //          "
-      //          //body
-      //          "
-      //      )
-      //  );
+        $oldBody = $this->safeFindElement(
+            WebDriverBy::xPath(
+                "
+                //body
+                "
+            )
+        );
 
-       // try {
+        try {
             // Load the new page
             $newWebDriver = $this->webDriver->get($url);
 
             // Use the old page reference until it detaches from the DOM
-        //    while (true) {
-        //        $oldBody->isDisplayed();
-        //    }
-      //  } catch (StaleElementReferenceException $e) {
+            while (true) {
+                $oldBody->isDisplayed();
+          }
+        } catch (StaleElementReferenceException $e) {
             return $newWebDriver;
-      //  }
+        }
     }
 
     /**
