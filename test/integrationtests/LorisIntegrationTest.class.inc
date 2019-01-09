@@ -135,6 +135,7 @@ abstract class LorisIntegrationTest extends TestCase
             )
         );
         */
+        try {
         $usernameEl = $this->webDriver->findElement(WebDriverBy::Name("username"));
         $passwordEl = $this->webDriver->findElement(WebDriverBy::Name("password"));
 
@@ -151,6 +152,11 @@ abstract class LorisIntegrationTest extends TestCase
                 WebDriverBy::xpath("//div[@id='page'] | //input[@name='username']")
             )
         );
+        } catch (Exception $e) {
+                   $bodyText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();print_r($bodyText);
+        }
     }
 
     /**
