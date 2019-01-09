@@ -415,8 +415,8 @@ class NDB_BVL_Instrument_wiatIII_part_1 extends NDB_BVL_Instrument_wiatIII
             unset($group);
             $this->XINRegisterRule(
                 "early_reading_{$n}",
-                array("early_reading_{$n}{@}=={@}"), // rule
-                "Required.", // message
+                array("early_reading_{$n}=={@}NEVER_REQUIRED"), // rule
+                "Never Required.", // message
                 "early_reading_table{$n}" // group [if field is a part of a group]
             );
         }
