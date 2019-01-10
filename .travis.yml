@@ -18,5 +18,7 @@ install:
 - npm install
 - composer install
 - npm run compile
+before_script:
+- if [[ ${TRAVIS_PHP_VERSION:0:3} == "7.3" ]]; then sed -i 's/php7.2/php7.3/g' docker-compose.yml; fi
 script:
 - npm run lint:php && npm run lint:javascript && docker-compose run -T --rm integration-tests vendor/bin/phpunit --configuration test/phpunit.xml
