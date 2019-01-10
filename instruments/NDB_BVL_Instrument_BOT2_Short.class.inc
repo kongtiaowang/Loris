@@ -761,6 +761,8 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
         foreach ($subtest_point_score as $value) {
             $total_point_score += $record[$value];
         }
+
+        $result = $db->update($this->table, $total_point_score, array("CommentID"=>$this->getCommentID()));
     }
 
     function bot2_short_special_rules($values)
