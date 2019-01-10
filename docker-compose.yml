@@ -13,14 +13,14 @@ services:
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
 
   selenium:
-    image: selenium/standalone-firefox-debug:2.53.1
+    image: selenium/standalone-firefox-debug:3.141.59-dubnium
     ports:
       - "5900:5900"
 
   web:
     build:
       context: .
-      dockerfile: Dockerfile.test.php7
+      dockerfile: Dockerfile.test.php7.2
     volumes:
       - ./:/app
       - ./test/test_instrument:/app/project/instruments
@@ -33,7 +33,7 @@ services:
   unit-tests:
     build:
       context: .
-      dockerfile: Dockerfile.test.php7
+      dockerfile: Dockerfile.test.php7.2
     volumes:
       - ./:/app
     working_dir: /app
@@ -46,7 +46,7 @@ services:
   integration-tests:
     build:
       context: .
-      dockerfile: Dockerfile.test.php7
+      dockerfile: Dockerfile.test.php7.2
     volumes:
       - ./:/app
     working_dir: /app
