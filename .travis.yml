@@ -2,15 +2,11 @@ sudo: required
 
 # any language should do it
 language: php
-cache:
-    directories:
-        - vendor
-env:
-  global:
-    - VERSION=1.${TRAVIS_BUILD_NUMBER}
-  matrix:
-    - PHP=7.2 
-    - PHP=7.3
+
+php:
+    - "7.2"
+    - "7.3"
+
 services:
 - docker
 
