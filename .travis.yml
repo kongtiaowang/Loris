@@ -8,6 +8,7 @@ cache:
 
 php:
     - "7.2"
+    - "7.3"
 services:
 - docker
 
@@ -18,5 +19,6 @@ install:
 - sudo apt-get install npm
 - npm install
 - composer install
+- npm run compile
 script:
 - npm run lint:php && npm run lint:javascript && docker-compose run -T --rm integration-tests vendor/bin/phpunit --configuration test/phpunit.xml
