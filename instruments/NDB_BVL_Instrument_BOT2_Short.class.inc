@@ -6,7 +6,7 @@
  *
  * @category Instrument
  * @package  Main
- * @author   Suzanne Lee
+ * @author   Suzanne Lee <suzannelee.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/IBIS/
  */
@@ -16,7 +16,7 @@
  *
  * @category Instrument
  * @package  Main
- * @author   Suzanne Lee
+ * @author   Suzanne Lee <suzannelee.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/IBIS/
  */
@@ -63,9 +63,10 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
         $this->_selectMultipleElements = array();
 
         // required fields for data entry completion status
-        $this->_requiredElements = array("Examiner",
+        $this->_requiredElements = array(
+                                    "Examiner",
                                     "subtest_1_3_raw_score",
-                                    );
+                                   );
 
         // setup the form
         $this->_setupForm();
@@ -177,6 +178,11 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
         unset($group);
     }
 
+    /**
+    * Generates the first page of the form.
+     *
+    * @return void
+    */
     function _page1()
     {
         $this->addHeader("BOT 2 SHORT FORM: Bruininks-Oseretsky Test of Motor Proficiency, <i>Second Edition</i>");
@@ -425,7 +431,7 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
                     array("{$key_trial1}{@}!={@}5"),
                     "Required if the maximum score is not earned on the first trial",
                     $key . "_rule"
-                ); 
+                );
             } else {
                 $group[] =& $this->createText($key . "_trial1", "taps:");
                 $group[] =& $this->createText($key . "_trial2", "taps:");
@@ -482,7 +488,7 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
                     array("{$key_trial1}{@}!={@}6"),
                     "Required if the maximum score is not earned on the first trial",
                     $key . "_rule"
-                ); 
+                );
             } else {
                 $group[] =& $this->createText($key . "_trial1", "seconds:");
                 $group[] =& $this->createText($key . "_trial2", "seconds:");
@@ -795,22 +801,22 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
 
         if ($values["subtest_6_3_trial2"] != "") {
             $this->validate_positive_numeric($values, "subtest_6_3_trial2", $errors);
-        } 
+        }
 
         // if subtest2 basic shape == 0, the subsequent must be 0
         $subtest_2_questions = array(
-                            "subtest_2_2",
-                            "subtest_2_7",
-                           );
+                                "subtest_2_2",
+                                "subtest_2_7",
+                               );
 
         foreach ($subtest_2_questions as $key) {
             if ($values[$key . "_basic_shape"] == 0) {
-                if ($values[$key . "_closure"] != 0 ||
-                    $values[$key . "_edges"] != 0 ||
-                    $values[$key . "_orientation"] != 0 ||
-                    $values[$key . "_overall_size"] != 0 ||
-                    $values[$key . "_raw_score"] != 0 ||
-                    $values[$key . "_point_score"] != 0
+                if ($values[$key . "_closure"] != 0
+                    || $values[$key . "_edges"] != 0
+                    || $values[$key . "_orientation"] != 0
+                    || $values[$key . "_overall_size"] != 0
+                    || $values[$key . "_raw_score"] != 0
+                    || $values[$key . "_point_score"] != 0
                 ) {
                     $errors[$key] = "If Basic Shape facet is 0, all remaining facets and score must be 0";
                 }
@@ -818,12 +824,12 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
         }
 
         $between_0_and_number_optional = array(
-                "subtest_4_3"    => "5", //optional
-                "subtest_4_6"    => "10", //optional
-                "subtest_5_2"    => "6", //optional
-                "subtest_5_7"    => "10", //optional
-                "subtest_7_6"    => "10", //optional
-            );
+                                          "subtest_4_3" => "5", //optional
+                                          "subtest_4_6" => "10", //optional
+                                          "subtest_5_2" => "6", //optional
+                                          "subtest_5_7" => "10", //optional
+                                          "subtest_7_6" => "10", //optional
+                                         );
 
         foreach ($between_0_and_number_optional as $key => $max) {
             if ($values[$key . "_trial2"] != "") {
