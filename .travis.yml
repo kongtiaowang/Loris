@@ -5,10 +5,12 @@ language: php
 cache:
     directories:
         - vendor
-
-php:
-    - "7.2"
-    - "7.3"
+env:
+  global:
+    - VERSION=1.${TRAVIS_BUILD_NUMBER}
+  matrix:
+    - PHP=7.2 
+    - PHP=7.3
 services:
 - docker
 
