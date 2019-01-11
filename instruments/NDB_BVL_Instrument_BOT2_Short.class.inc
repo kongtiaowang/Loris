@@ -768,16 +768,11 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
                                        "subtest_3_2_trial1"    => 20,
                                        "subtest_3_2_trial2"    => 20,
                                        "subtest_4_3_trial1"    => 5,
-                                       //"subtest_4_3_trial2"    => 5, //optional
                                        "subtest_4_6_trial1"    => 10,
-                                       //"subtest_4_6_trial2"    => 10, //optional
                                        "subtest_5_2_trial1"    => 6,
-                                       //"subtest_5_2_trial2"    => 6, //optional
                                        "subtest_5_7_trial1"    => 10,
-                                       //"subtest_5_7_trial2"    => 10, //optional
                                        "subtest_7_1_trial1"    => 5,
                                        "subtest_7_6_trial1"    => 10,
-                                       //"subtest_7_6_trial2"    => 10, //optional
                                       );
 
         foreach ($check_between_0_and_number as $key => $max) {
@@ -809,11 +804,11 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
         }
 
         $between_0_and_number_optional = array(
-                                          "subtest_4_3" => "5", //optional
-                                          "subtest_4_6" => "10", //optional
-                                          "subtest_5_2" => "6", //optional
-                                          "subtest_5_7" => "10", //optional
-                                          "subtest_7_6" => "10", //optional
+                                          "subtest_4_3" => "5", 
+                                          "subtest_4_6" => "10", 
+                                          "subtest_5_2" => "6", 
+                                          "subtest_5_7" => "10", 
+                                          "subtest_7_6" => "10", 
                                          );
 
         foreach ($between_0_and_number_optional as $key => $max) {
