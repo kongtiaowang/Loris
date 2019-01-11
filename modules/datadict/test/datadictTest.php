@@ -104,7 +104,7 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
      */
     function testDataDictSearchKeywordFilters()
     {
-        $this->webDriver->get($this->url . "/datadict/");
+        $this->safeGet($this->url . "/datadict/");
         $element = "#data_dict_filter > div > div:nth-child(3) > div > div > input";
         $value = "NotRealMAGICNUMBER335";
         $this->webDriver->executescript(
@@ -129,7 +129,7 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
      */
     function testDataDictSearchKeywordFiltersnotCaseSensitvie()
     {
-        $this->webDriver->get($this->url . "/datadict/");
+        $this->safeGet($this->url . "/datadict/");
         $element = "#data_dict_filter > div > div:nth-child(3) > div > div > input";
         $value = "notrealMAGICNUMBER335";
         $this->webDriver->executescript(
@@ -154,7 +154,7 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
      */
     function testDataDictSearchKeywordFiltersWithoutData()
     {
-        $this->webDriver->get($this->url . "/datadict/");
+        $this->safeGet($this->url . "/datadict/");
         $element = "#data_dict_filter > div > div:nth-child(3) > div > div > input";
         $value = "noExist";
         $this->webDriver->executescript(
