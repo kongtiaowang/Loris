@@ -126,12 +126,14 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
     function testDataDictSearchKeywordFiltersnotCaseSensitvie()
     {
         $this->webDriver->get($this->url . "/datadict/");
-
-        $searchKey = $this->webDriver->findElements(
-            WebDriverBy::Name("keyword")
+        $element = "#data_dict_filter > div > div:nth-child(3) > div > div > input";
+        $this->webDriver->executescript(
+                "input = document.querySelector('$element');
+                 input.selectedIndex = 'notrealMAGICNUMBER335';
+                 event = new Event('change', { bubbles: true });
+                 input.dispatchEvent(event);
+                "
         );
-
-        $searchKey->sendKeys("notrealMAGICNUMBER335");
 
         $name = $this->webDriver->executescript(
             "return document.querySelector".
@@ -147,12 +149,17 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
     function testDataDictSearchKeywordFiltersWithoutData()
     {
         $this->webDriver->get($this->url . "/datadict/");
-
-        $searchKey = $this->webDriver->findElements(
-            WebDriverBy::Name("keyword")
-        );
-
-        $searchKey[0]->sendKeys("noExist");
+        $element = "#data_dict_filter > div > div:nth-child(3) > div > div > input";
+        $value = "noExist";
+        $this->webDriver->executescript(
+                "input = document.querySelector('$element');
+                 lastValue = input.value;
+                 input.value = '$value';
+                 event = new Event('input', { bubbles: true });
+                 input._valueTracker.setValue(lastValue);
+                 input.dispatchEvent(event);
+                "
+        );        
 
         $res = $this->webDriver->executescript(
             "return document.querySelector".
