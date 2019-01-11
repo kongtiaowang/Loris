@@ -105,17 +105,10 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
     function testDataDictSearchKeywordFilters()
     {
         $this->safeGet($this->url . "/datadict/");
-        $element = "#data_dict_filter > div > div:nth-child(3) > div > div > input";
-        $value = "NotRealMAGICNUMBER335";
-        $this->webDriver->executescript(
-                "input = document.querySelector('$element');
-                 lastValue = input.value;
-                 input.value = '$value';
-                 event = new Event('input', { bubbles: true });
-                 input._valueTracker.setValue(lastValue);
-                 input.dispatchEvent(event);
-                "
+        $searchKey = $this->webDriver->findElements(
+            WebDriverBy::Name("keyword")
         );
+        $searchKey[0]->sendKeys("NotRealMAGICNUMBER335");
         $name = $this->webDriver->executescript(
             "return document.querySelector".
                   "('#dynamictable > tbody > tr > td:nth-child(3)').textContent"
@@ -130,17 +123,10 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
     function testDataDictSearchKeywordFiltersnotCaseSensitvie()
     {
         $this->safeGet($this->url . "/datadict/");
-        $element = "#data_dict_filter > div > div:nth-child(3) > div > div > input";
-        $value = "notrealMAGICNUMBER335";
-        $this->webDriver->executescript(
-                "input = document.querySelector('$element');
-                 lastValue = input.value;
-                 input.value = '$value';
-                 event = new Event('input', { bubbles: true });
-                 input._valueTracker.setValue(lastValue);
-                 input.dispatchEvent(event);
-                "
+        $searchKey = $this->webDriver->findElements(
+            WebDriverBy::Name("keyword")
         );
+        $searchKey[0]->sendKeys("notrealMAGICNUMBER335");
         $name = $this->webDriver->executescript(
             "return document.querySelector".
                   "('#dynamictable > tbody > tr > td:nth-child(3)').textContent"
@@ -155,18 +141,10 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
     function testDataDictSearchKeywordFiltersWithoutData()
     {
         $this->safeGet($this->url . "/datadict/");
-        $element = "#data_dict_filter > div > div:nth-child(3) > div > div > input";
-        $value = "noExist";
-        $this->webDriver->executescript(
-                "input = document.querySelector('$element');
-                 lastValue = input.value;
-                 input.value = '$value';
-                 event = new Event('input', { bubbles: true });
-                 input._valueTracker.setValue(lastValue);
-                 input.dispatchEvent(event);
-                "
-        );        
-
+        $searchKey = $this->webDriver->findElements(
+            WebDriverBy::Name("keyword")
+        );
+        $searchKey[0]->sendKeys("noExist");
         $res = $this->webDriver->executescript(
             "return document.querySelector".
             "('#lorisworkspace > div > div > div.panel.panel-default >".
