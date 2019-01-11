@@ -106,12 +106,14 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
     {
         $this->webDriver->get($this->url . "/datadict/");
 
-        $searchKey = $this->webDriver->findElements(
-            WebDriverBy::Name("keyword")
+        $element = "#data_dict_filter > div > div:nth-child(3) > div > div > input";
+        $this->webDriver->executescript(
+                "input = document.querySelector('$element');
+                 input.selectedIndex = 'NotRealMAGICNUMBER335';
+                 event = new Event('change', { bubbles: true });
+                 input.dispatchEvent(event);
+                "
         );
-
-        $searchKey[0]->sendKeys("NotRealMAGICNUMBER335");
-
         $name = $this->webDriver->executescript(
             "return document.querySelector".
                   "('#dynamictable > tbody > tr > td:nth-child(3)').textContent"
