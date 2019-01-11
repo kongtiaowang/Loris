@@ -86,7 +86,6 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
       */
     function testPageUIs()
     {
-        $this->markTestSkipped("Skipping long test");
         $this->safeGet($this->url . "/server_processes_manager/");
         sleep(2);
         print_r($bodyText);
@@ -104,8 +103,6 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
       */
     function testFilters()
     {
-        $this->markTestSkipped("Skipping long test");
-        return;
         $this->_testFilter("/server_processes_manager/", "pid", "317", "1 rows");
         $this->_testFilter("/server_processes_manager/", "type", "mri_upload", "51");
         $this->_testFilter(
