@@ -62,6 +62,7 @@ CREATE TABLE `BOT2_Short` (
 `subtest_8_3_trial1` varchar(255) default NULL,
 `subtest_8_3_point_score` enum('0','1','2','3','4','5','6','7','8','9') default NULL,
 `notes_observations` varchar(255) default NULL,
+`total_point_score` varchar(255) default NULL,
 PRIMARY KEY  (`CommentID`)
 
               ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

@@ -83,6 +83,12 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
      */
     function _setupForm()
     {
+        $db =& Database::singleton();
+        // Get the item scores
+        $query  = "SELECT * FROM $this->table WHERE CommentID='".$this->getCommentID()."'";
+        $record =array();
+        $db->selectRow($query, $record);
+
         if (preg_match("/BOT2_Short(_page[0-9]+)/", $this->page, $matches)) {
             call_user_func(array($this, $matches[1]));
         } else {
@@ -706,37 +712,15 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
         $this->form->addFormRule(array(&$this, 'bot2_short_special_rules'));
     }
 
-    function _score()
+    function score()
     {
         if ($this->_determineDataEntryCompletionStatus() == "Incomplete") {
             return;
         }
 
-        //null scores
-        $this->_nullScores($this->scoreLabels);
-
-        //get the saved scores
         $db = Database::singleton();
 
         $record = $db->pselectRow("SELECT * FROM $this->table WHERE CommentID=:cid", array("cid" => $this->getCommentID() ));
-
-        //get gender
-        $record_gender = $db->pselectRow(
-            "SELECT Gender FROM candidate as c, session as s, flag as f, $this->table as
- t WHERE t.CommentID = CommentID=:cid AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID",
-            array("cid" => $this->getCommentID())
-        );
-
-        $gender = strtolower($record_gender['Gender']);
-
-        // Get the subject age in months for scoring
-        $timepoint = TimePoint::singleton($this->getSessionID());
-
-        $dob = $timepoint->getEffectiveDateOfBirth();
-
-        $age = Utility::calculateAge($dob, $record["Date_taken"]);
-
-        $age_months = $age['year'] * 12 + $age['mon'];
 
         $subtest_point_score = array(
                                 "subtest_1_3_point_score",
@@ -755,14 +739,13 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
                                 "subtest_8_3_point_score",
                                );
 
-        // Max = 88
-        $total_point_score = 0;
+        $total = array("total_point_score" => 0);
 
         foreach ($subtest_point_score as $value) {
-            $total_point_score += $record[$value];
+            $total["total_point_score"] += $record[$value];
         }
 
-        $result = $db->update($this->table, $total_point_score, array("CommentID"=>$this->getCommentID()));
+        $db->update($this->table, $total, array("CommentID" => $this->getCommentID()));
     }
 
     function bot2_short_special_rules($values)
