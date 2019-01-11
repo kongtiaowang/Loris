@@ -82,8 +82,8 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
         //Column headers
         $this->localDefaults = array_merge($this->localDefaults, array("h_1"=>"1", "h_2"=>"2", "h_3"=>"3", "h_4"=>"4", "h_5"=>"5", "h_6"=>"6",
                                             "wind_up_toy"=>"Wind-up toy", "balloon"=>"Balloon", "bubbles"=>"Bubbles", "jar"=>"Jar",
-                                            "books"=>"Books" . $this->indent . $this->indent . $this->indent . $this->indent . $this->indent . $this->indent . $this->indent,
-                                            "play"=>"Play" . $this->indent . $this->indent . $this->indent . $this->indent . $this->indent . $this->indent . $this->indent,
+                                            "books"=>"Books",
+                                            "play"=>"Play",
                                             "object_names"=>"object names:", "person_names"=>"person names:", "body_parts"=>"body parts:", "subscale"=>"Subscale", "raw_weighted"=>"Weighted Raw Score", 						    "standard_score"=>"Standard Score","percentile_rank"=>"Percentile Rank"));
 
         /**
@@ -695,12 +695,12 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
         $this->form->addGroup($group, null, "2. Shared positive affect", $this->_GUIDelimiter, false);
         unset($group);
         
-        $group[] = &$this->form->createElement("static", null, null);
+        $group[] = &$this->form->createElement("static", null, null,"");
         $group[] = &$this->form->createElement("advcheckbox", "q_3_gaze_point_following_2", null, null, null, array("unchecked", "checked"));
-        $group[] = &$this->form->createElement("static", null, null);
-        $group[] = &$this->form->createElement("static", null, null);
+        $group[] = &$this->form->createElement("static", null, null,"");
+        $group[] = &$this->form->createElement("static", null, null,"");
         $group[] = &$this->form->createElement("advcheckbox", "q_3_gaze_point_following_5", null, null, null, array("unchecked", "checked"));
-        $group[] = &$this->form->createElement("static", null, null);
+        $group[] = &$this->form->createElement("static", null, null,"");
         $group[] = &$this->form->createElement("static", "q_3_gaze_point_following_raw_score");
 
         $this->form->addGroup($group, null, "3. Gaze/point following", $this->_GUIDelimiter, false);
@@ -747,16 +747,16 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
         $group[] = &$this->form->createElement("advcheckbox", "q_8_conventional_gestures_gives", null, "gives", null, array("unchecked", "checked"));
         $group[] = &$this->form->createElement("advcheckbox", "q_8_conventional_gestures_shows", null, "shows", null, array("unchecked", "checked"));
         $group[] = &$this->form->createElement("advcheckbox", "q_8_conventional_gestures_pushes_pulls", null, "pushes/pulls", null, array("unchecked", "checked"));
-        $group[] = &$this->form->createElement('static', null, null);
+        $group[] = &$this->form->createElement('static', null, null,"");
         $group[] = &$this->form->createElement("advcheckbox", "q_8_conventional_gestures_reaches", null, "reaches", null, array("unchecked", "checked"));
-        $group[] = &$this->form->createElement("static", null, null);
+        $group[] = &$this->form->createElement("static", null, null,"");
         $group[] = &$this->form->createElement("static", "q_8_conventional_gestures_raw_score");
         $this->form->addGroup($group, null, "8. Inventory of conventional gestures", $this->_GUIDelimiter, false);
         unset($group);
         $group[] = &$this->form->createElement("advcheckbox", "q_8_conventional_gestures_points", null, "points", null, array("unchecked", "checked"));
         $group[] = &$this->form->createElement("advcheckbox", "q_8_conventional_gestures_waves", null, "waves", null, array("unchecked", "checked"));
         $group[] = &$this->form->createElement("advcheckbox", "q_8_conventional_gestures_nods_head", null, "nods head", null, array("unchecked", "checked"));
-        $group[] = &$this->form->createElement('static', null, null);
+        $group[] = &$this->form->createElement('static', null, null,"");
         $group[] = &$this->form->createElement("advcheckbox", "q_8_conventional_gestures_shakes_head", null, "shakes head", null, array("unchecked", "checked"));
         $this->form->addGroup($group, null, null, $this->_GUIDelimiter, false);
         $this->form->addElement('static', '', '<br />');
@@ -787,7 +787,7 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
         $group[] = &$this->form->createElement("advcheckbox", "q_11_inventory_of_consonants_b_p", null, "/b|p/", null, array("unchecked", "checked"));
         $group[] = &$this->form->createElement("advcheckbox", "q_11_inventory_of_consonants_d_t", null, "/d|t/", null, array("unchecked", "checked"));
         $group[] = &$this->form->createElement("advcheckbox", "q_11_inventory_of_consonants_g_k", null, "/g|k/", null, array("unchecked", "checked"));
-        $group[] = &$this->form->createElement("static", null, null);
+        $group[] = &$this->form->createElement("static", null, null,"");
         $group[] = &$this->form->createElement("static", "q_11_inventory_of_consonants_raw_score");
         $this->form->addElement('static', '', '<br />');
         $this->form->addGroup($group, null, "11. Inventory of consonants", $this->_GUIDelimiter, false);
@@ -820,8 +820,8 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
             }
             if ($row == 0) {
                 $label = "13. Inventory of words";
-                $group[] = &$this->form->createElement("static", null, null);
-                $group[] = &$this->form->createElement("static", null, null);
+                $group[] = &$this->form->createElement("static", null, null,"");
+                $group[] = &$this->form->createElement("static", null, null,"");
                 $group[] = &$this->form->createElement("static", "q_13_words_raw_score");
             } else {$label = null;}
             $this->form->addGroup($group, "q_13_words_{$row}_group", $label, $this->_GUIDelimiter, false);
@@ -843,10 +843,10 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
                 $group[] = &$this->form->createElement("text", "q_15_word_combos_" . ($col + ($row * 2)) );
             }
             if ($row == 0) {$label = "15. Inventory of word combos";
-                $group[] = &$this->form->createElement("static", null, null);
-                $group[] = &$this->form->createElement("static", null, null);
-                $group[] = &$this->form->createElement("static", null, null);
-                $group[] = &$this->form->createElement("static", null, null);
+                $group[] = &$this->form->createElement("static", null, null,"");
+                $group[] = &$this->form->createElement("static", null, null,"");
+                $group[] = &$this->form->createElement("static", null, null,"");
+                $group[] = &$this->form->createElement("static", null, null,"");
                 $group[] = &$this->form->createElement("static", "q_15_word_combos_raw_score");
             } else {$label = null;}
             $this->form->addGroup($group, "q_15_word_combos_{$row}_group", $label, $this->_GUIDelimiter, false);
@@ -971,9 +971,9 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
         $group[] = &$this->form->createElement("static", null, null, "Item");
         $group[] = &$this->form->createElement("static", null, null, "Name");
         $group[] = &$this->form->createElement("static", null, null, "Score");
-        $group[] =& $this->form->createElement("static", null, null, null);
-        $group[] =& $this->form->createElement("static", null, null, null);
-        $group[] =& $this->form->createElement("static", null, null, null);
+        $group[] =& $this->form->createElement("static", null, null, null,"");
+        $group[] =& $this->form->createElement("static", null, null, null,"");
+        $group[] =& $this->form->createElement("static", null, null, null,"");
 
         $this->form->addGroup($group, "q_16_language_comp_objects_headers", "16. Language comprehension" . $this->indent, $this->_GUIDelimiter, false);
         unset($group);
@@ -1020,8 +1020,8 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
         $group[] = &$this->form->createElement("advcheckbox", "q_17_action_schemes_other", null, "<b>other(12)</b>", null, array("unchecked", "checked"));
         $group[] = &$this->form->createElement("text", "q_17_action_schemes_other_specify");
         $group[] =& $this->form->createElement("advcheckbox", "q_17_action_schemes_none", null, "<b>none</b>", null, array("unchecked", "checked"));
-        $group[] =& $this->form->createElement("static", null, null, null);
-        $group[] =& $this->form->createElement("static", null, null, null);
+        $group[] =& $this->form->createElement("static", null, null, null,"");
+        $group[] =& $this->form->createElement("static", null, null, null,"");
 
         $this->form->addGroup($group, "q_17_action_schemes_group_2", "", $this->_GUIDelimiter, false);
         unset($group);
@@ -1037,9 +1037,9 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
         $group[] = &$this->form->createElement("static", null, null, "Action");
         $group[] = &$this->form->createElement("static", null, null, "Agent");
         $group[] = &$this->form->createElement("static", null, null, "Other Agent");
-        $group[] = &$this->form->createElement("static", null, null, null);
-        $group[] = &$this->form->createElement("static", null, null, null);
-        $group[] = &$this->form->createElement("static", null, null, null);
+        $group[] = &$this->form->createElement("static", null, null, null,"");
+        $group[] = &$this->form->createElement("static", null, null, null,"");
+        $group[] = &$this->form->createElement("static", null, null, null,"");
 
         $this->form->addGroup($group, "q_18_actions_towards_other_headers", "18. Action schemes towards other" . $this->indent, $this->_GUIDelimiter, false);
         unset($group);
@@ -1089,10 +1089,10 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
 
         $group[] = &$this->form->createElement("static", null, null, "1st Action");
         $group[] = &$this->form->createElement("static", null, null, "2nd Action");
-        $group[] = &$this->form->createElement("static", null, null, null);
-        $group[] = &$this->form->createElement("static", null, null, null);
-        $group[] = &$this->form->createElement("static", null, null, null);
-        $group[] = &$this->form->createElement("static", null, null, null);
+        $group[] = &$this->form->createElement("static", null, null, null,"");
+        $group[] = &$this->form->createElement("static", null, null, null,"");
+        $group[] = &$this->form->createElement("static", null, null, null,"");
+        $group[] = &$this->form->createElement("static", null, null, null,"");
 
         //Sequence action schemes
         $this->form->addGroup($group, "q_19_sequence_action_schemes_headers", "19. Sequence action schemes" . $this->indent, $this->_GUIDelimiter, false);
@@ -1125,11 +1125,11 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
                                 "4_stacks"=>"Stacks 4",
                                 "5_stacks"=>"Stacks 5",
                                 "not_administered"=>"Not Administered"));
-        $group[] =& $this->form->createElement("static", null, null, null);
-        $group[] =& $this->form->createElement("static", null, null, null);
-        $group[] =& $this->form->createElement("static", null, null, null);
-        $group[] =& $this->form->createElement("static", null, null, null);
-        $group[] =& $this->form->createElement("static", null, null, null);
+        $group[] =& $this->form->createElement("static", null, null, null,"");
+        $group[] =& $this->form->createElement("static", null, null, null,"");
+        $group[] =& $this->form->createElement("static", null, null, null,"");
+        $group[] =& $this->form->createElement("static", null, null, null,"");
+        $group[] =& $this->form->createElement("static", null, null, null,"");
         $this->XINRegisterRule("q_20_stacks_tower", array("q_20_stacks_tower{@}=={@}"), "Required.", "q_20_stacks_tower_group");
         $this->form->addGroup($group, "q_20_stacks_tower_group", "20. Stacks tower of blocks", $this->_GUIDelimiter, false);
         unset($group); 
