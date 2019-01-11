@@ -175,7 +175,7 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
 
         $this->form->addGroup(
             $group,
-            "subtest_ . $subtest_number . _headers",
+            "subtest_{$subtest_number}_headers",
             null,
             $this->_GUIDelimiter,
             false
