@@ -131,7 +131,7 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::Name("keyword")
         );
 
-        $searchKey[0]->sendKeys("notrealMAGICNUMBER335");
+        $searchKey->sendKeys("notrealMAGICNUMBER335");
 
         $name = $this->webDriver->executescript(
             "return document.querySelector".
