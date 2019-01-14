@@ -26,13 +26,18 @@ require_once __DIR__
 class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
 {
     //$location: css selector for react items
-    static $patientID   = "#dicom_filter_filter>div>div:nth-child(1)>div>div>input";
-    static $patientName = "#dicom_filter_filter>div>div:nth-child(2)>div>div>input";
-    static $site        = "#dicom_filter_filter>div>div:nth-child(8)>div>div>select";
-    static $gender      = "#dicom_filter_filter>div>div:nth-child(3)>div>div>input";
-    static $dateOfBirth = "#dicom_filter_filter>div>div:nth-child(4)>div>div>input";
-    static $clearFilter = "#dicom_filter_filter".
-                          ">div>div:nth-child(10)>div>div>button";
+    static $patientID   = "#dicom_filter_filter > div > div > fieldset >".
+                          " div:nth-child(2) > div > div > input";
+    static $patientName = "#dicom_filter_filter > div > div > fieldset >".
+                          " div:nth-child(3) > div > div > input";
+    static $site        = "#dicom_filter_filter > div > div > fieldset >".
+                          " div:nth-child(9) > div > div > select";
+    static $gender      = "#dicom_filter_filter > div > div > fieldset >".
+                          " div:nth-child(4) > div > div > input";
+    static $dateOfBirth = "#dicom_filter_filter > div > div > fieldset >".
+                          " div:nth-child(5) > div > div > input";
+    static $clearFilter = "#dicom_filter_filter > div > div > fieldset >".
+                          " div:nth-child(11) > div > div > button";
     // first row of react table
     static $table = "#dynamictable > tbody > tr:nth-child(1)";
     /**
