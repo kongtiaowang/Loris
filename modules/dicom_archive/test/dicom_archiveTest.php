@@ -146,9 +146,8 @@ class DicomArchiveTestIntegrationTest extends LorisIntegrationTest
                 "
             );
             $bodyText = $this->webDriver->executescript(
-                "return document.querySelector('#lorisworkspace > div >".
-                " div.panel.panel-default > div.table-header.panel-heading".
-                " > div > div').textContent"
+                "return document.querySelector('#default-panel > div > div >".
+                " div.table-header > div > div > div:nth-child(1)').textContent"
             );
             // 4 means there are 4 records under this site.
             $this->assertContains($records, $bodyText);
