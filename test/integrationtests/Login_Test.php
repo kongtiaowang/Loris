@@ -46,7 +46,11 @@ class LorisLoginTest extends LorisIntegrationTest
        $login->click();
 
        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
+       print_r($bodyText);print_r("fdfdfssfdsfdsfdsfdsfdsafdsfdsfdsfdsfdsfds");
        $this->assertContains("Welcome", $bodyText);
+ $this->webDriver->get($this->url . '/media/');
+       $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))->getText();
+       print_r($bodyText);
     }
 }
 ?>

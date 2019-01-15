@@ -1,9 +1,12 @@
 language: php
-
+env:
+  global:
+    - GECKODRIVER_VERSION=0.23.0
 
 cache:
     directories:
         - vendor
+
 
 matrix:
   include:
@@ -15,7 +18,17 @@ matrix:
     env: ALLOW_FAILURE='true'
 
 addons:
-    firefox: "44.0"
+  chrome: stable
+
+matrix:
+  include:
+  - php: "7.2"
+  - php: "7.3"
+    env: ALLOW_FAIURE='true'
+  allow_failures:
+  - php: "7.3"
+    env: ALLOW_FAIURE='true'
+
 
 before_install:
     # Start Xvfb in a desktop screen size,
@@ -24,27 +37,30 @@ before_install:
     - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1600x1200x16"
     #- "export DISPLAY=:99.0"
     #- "sh -e /etc/init.d/xvfb start"
+    - sleep 3
     # Ensure node version is up to date
     - nvm install node
     - mkdir -p project project/libraries
     - pecl install -f ast-0.1.6
     - php -S localhost:8000 -t htdocs htdocs/router.php 2>1 > /dev/null &
-
 install:
+    - wget -N http://chromedriver.storage.googleapis.com/2.36/chromedriver_linux64.zip -P ~/
+    - unzip ~/chromedriver_linux64.zip -d ~/
+    - sudo mv -f ~/chromedriver /usr/local/share/
+    - sudo chmod +x /usr/local/share/chromedriver
+    - sudo ln -s /usr/local/share/chromedriver /usr/local/bin/chromedriver
     - make dev
     - phpenv rehash
 
     # Download a Selenium Web Driver release
-    - wget "http://selenium-release.storage.googleapis.com/2.52/selenium-server-standalone-2.52.0.jar"
+    - wget "http://selenium-release.storage.googleapis.com/3.8/selenium-server-standalone-3.8.1.jar"
+    - whereis selenium-server-standalone-3.8.1.jar
     # Extracting firefox and setting PATH variable...
-    - tar -xjf /tmp/firefox-44.0.tar.bz2 --directory /tmp
-    - export PATH="/tmp/firefox:$PATH"
-    - echo "Using firefox version `firefox --version`"
 
     # Start Selenium and redirect Selenium WebDriver
     # output to /dev/null so that it doesn't flood the
     # screen in the middle of our other tests
-    - DISPLAY=:99.0 java -jar selenium-server-standalone-2.52.0.jar  2>1 > /dev/null &
+    - DISPLAY=:99.0 java -Dwebdriver.chrome.driver="/usr/local/bin/chromedriver" -jar selenium-server-standalone-3.8.1.jar  2>1 > /dev/null &
 
 before_script:
     # Set up the Loris environment
@@ -89,11 +105,9 @@ before_script:
     - find ../project/instruments/NDB_BVL_Instrument_testtest.class.inc | php generate_tables_sql.php
     - cd ..
     - mysql LorisTest < project/tables_sql/testtest.sql
-#env:
  # - "LORIS_DB_CONFIG=test/config.xml"
 
 script:
-    - make checkstatic
     - vendor/bin/phpunit --configuration test/phpunit.xml
 
-dist: precise
+dist: trusty
