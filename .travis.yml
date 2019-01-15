@@ -8,21 +8,15 @@ cache:
 matrix:
   include:
   - php: "7.2"
+    env: PHP='7.2'
   - php: "7.3"
-    env: ALLOW_FAILURE='true'
-  allow_failures:
-  - php: "7.3"
-    env: ALLOW_FAILURE='true'
-
-addons:
-    firefox: "44.0"
+    env: PHP='7.3'
 
 before_install:
 
 install:
 
 before_script:
-   php -r \phpinfo\(\)\; | grep 'PHP Version'
-   phpenv
+   echo "$PHP";
 script:
 
