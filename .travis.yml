@@ -17,6 +17,7 @@ before_install:
 install:
 
 before_script:
-   echo "$PHP";
+   sed -i "s/7.2/$PHP/g" Dockerfile.test.php7
 script:
+   cat Dockerfile.test.php7
 
