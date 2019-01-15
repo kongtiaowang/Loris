@@ -23,5 +23,6 @@ install:
 
 before_script:
    php -r \phpinfo\(\)\; | grep 'PHP Version'
+   phpenv
 script:
 
