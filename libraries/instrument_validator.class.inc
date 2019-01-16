@@ -113,35 +113,35 @@ trait instrument_validator {
 	}
 
 	// Checks if input is a number (int or float) between $min and $max
-	function validate_numeric_strict ($values, $key, &$errors, $min, $max) {
+	function validate_numeric_strict ($values, $key, &$errors, $min, $max,$group) {
 
 		if (isset($values[$key])) {
 
 			$user_input = $values[$key];
 
 			if (!is_numeric($user_input)) {
-				$errors[$key] = "Specify a number between " . $min . " and " . $max;
+				$errors[$group] = "Specify a number between " . $min . " and " . $max;
 			}
 
 			if (is_numeric($user_input) && ($user_input > $max || $user_input < $min)) {
-				$errors[$key] = "Specify a number between " . $min . " and " . $max;
+				$errors[$group] = "Specify a number between " . $min . " and " . $max;
 			}
 		}
 	}
 
 	// Checks if input is a number (int or float) greater than or equal to 0 
-	function validate_positive_numeric ($values, $key, &$errors) {
+	function validate_positive_numeric ($values, $key, &$errors,$group) {
 
 		if (isset($values[$key])) {
 		
 			$user_input = $values[$key];
 
 			if (!is_numeric($user_input)) {
-				$errors[$key] = "Specify a positive number";
+				$errors[$group] = "Specify a positive number";
 			}
 
 			if (is_numeric($user_input) && $user_input < 0) {
-				$errors[$key] = "Specify a positive number";
+				$errors[$group] = "Specify a positive number";
 			}
 		}
 	}

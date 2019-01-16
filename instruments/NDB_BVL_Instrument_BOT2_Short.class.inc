@@ -193,6 +193,7 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
     {
         $this->addHeader("BOT 2 SHORT FORM: Bruininks-Oseretsky Test of Motor Proficiency, <i>Second Edition</i>");
 
+    //Section 1
         $this->addHeader("<h3>Subtest 1: Fine Motor Precision</h3>");
 
         $group[] =& $this->form->createElement(
@@ -239,24 +240,37 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
                               5    => 5,
                               6    => 6,
                               7    => 7,
-                             );
-
+        );
+        // Section 1: Adding Group and group validations
+        $e=0;
         foreach ($subtest_1_questions as $key => $category) {
-            $group[] =& $this->createLabel($category);
-            $group[] =& $this->createText($key . "_raw_score", "");
-            $group[] =& $this->createSelect($key . "_point_score", "", $subtest_1_options);
-
+            $e++;
+            $group[] =$this->createLabel($category);
+            $group[] =$this->createText($key . "_raw_score", "");
+            $group[] =$this->createSelect($key . "_point_score", "", $subtest_1_options);
             $this->form->addGroup(
                 $group,
-                $key . "_answers",
+                "section1_row{$e}",
                 null,
                 $this->_GUIDelimiter,
                 false
             );
-
             unset($group);
+            $this->XINRegisterRule(
+                $key . "_raw_score",
+                array($key . "_raw_score{@}=={@}"), // rule
+                "Raw Score is Required.", // message
+                "section1_row{$e}" // group [if field is a part of a group]
+            );
+            $this->XINRegisterRule(
+                $key . "_point_score",
+                array($key . "_point_score{@}=={@}"), // rule
+                "Point Score is Required.", // message
+                "section1_row{$e}" // group [if field is a part of a group]
+            );
         }
-
+        // Section 1 Finish
+        // Section 2 Start
         $this->addLabel("<h3>Subtest 2: Fine Motor Integration</h3>");
 
         $group[] =& $this->form->createElement(
@@ -336,8 +350,10 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
                               0    => 0,
                               1    => 1,
                              );
-
+        // Section 2: Adding Group and group validations
+        $f=0;
         foreach ($subtest_2_questions as $key => $category) {
+            $f++;
             $group[] =& $this->createLabel($category);
             $group[] =& $this->createSelect($key . "_basic_shape", "", $subtest_2_options);
             $group[] =& $this->createSelect($key . "_closure", "", $subtest_2_options);
@@ -350,14 +366,57 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
 
             $this->form->addGroup(
                 $group,
-                $key . "_answers",
+                "section2_row{$f}",
                 null,
                 $this->_GUIDelimiter,
                 false
             );
-
             unset($group);
+            $this->XINRegisterRule(
+                $key . "_basic_shape",
+                array($key . "_basic_shape{@}=={@}"), // rule
+                "Basic shape is required.", // message
+                "section2_row{$f}" // group [if field is a part of a group]
+            );
+            $this->XINRegisterRule(
+                $key . "_closure",
+                array($key . "_closure{@}=={@}"), // rule
+                "Closure is required.", // message
+                "section2_row{$f}" // group [if field is a part of a group]
+            );
+            $this->XINRegisterRule(
+                $key . "_edges",
+                array($key . "_edges{@}=={@}"), // rule
+                "Edges is required.", // message
+                "section2_row{$f}" // group [if field is a part of a group]
+            );
+            $this->XINRegisterRule(
+                $key . "_orientation",
+                array($key . "_orientation{@}=={@}"), // rule
+                "Orientation is required.", // message
+                "section2_row{$f}" // group [if field is a part of a group]
+            );
+            $this->XINRegisterRule(
+                $key . "_overall_size",
+                array($key . "_overall_size{@}=={@}"), // rule
+                "Overall Size is required.", // message
+                "section2_row{$f}" // group [if field is a part of a group]
+            );
+            $this->XINRegisterRule(
+                $key . "_raw_score",
+                array($key . "_raw_score{@}=={@}"), // rule
+                "Raw Score is required.", // message
+                "section2_row{$f}" // group [if field is a part of a group]
+            );
+            $this->XINRegisterRule(
+                $key . "_point_score",
+                array($key . "_point_score{@}=={@}"), // rule
+                "Point Score is required.", // message
+                "section2_row{$f}" // group [if field is a part of a group]
+            );
         }
+        //Section2 Finish
+        //Section 3 Start
 
         $this->addLabel("<h3>Subtest 3: Manual Dexterity</h3>");
 
@@ -378,8 +437,9 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
                                     8    => 8,
                                     9    => 9,
                                    );
-
+        $g=0;
         foreach ($subtest_3_questions as $key=>$category) {
+            $g++;
             $group[] =& $this->createLabel($category);
             $group[] =& $this->createText($key . "_trial1", "Pennies:");
             $group[] =& $this->createText($key . "_trial2", "Pennies:");
@@ -387,14 +447,34 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
 
             $this->form->addGroup(
                 $group,
-                $key . "_answers",
+                "section3_row{$g}",
                 null,
                 $this->_GUIDelimiter,
                 false
             );
-
             unset($group);
+            $this->XINRegisterRule(
+                $key . "_trial1",
+                array($key . "_trial1{@}=={@}"), // rule
+                "Trial1 is required.", // message
+                "section3_row{$g}" // group [if field is a part of a group]
+            );
+            $this->XINRegisterRule(
+                $key . "_trial2",
+                array($key . "_trial2{@}=={@}"), // rule
+                "Trial2 is required.", // message
+                "section3_row{$g}" // group [if field is a part of a group]
+            );
+            $this->XINRegisterRule(
+                $key . "_point_score",
+                array($key . "_point_score{@}=={@}"), // rule
+                "Point Score is required.", // message
+                "section3_row{$g}" // group [if field is a part of a group]
+            );
         }
+        //Section 3 Finish
+
+        //Section 4 Start
 
         $this->addLabel("<h3>Subtest 4: Bilateral Coordination</h3>");
 
@@ -421,8 +501,9 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
                                 3    => 3,
                                 4    => 4,
                                );
-
+        $h=0;
         foreach ($subtest_4_questions as $key => $category) {
+            $h++;
             $group[] =& $this->createLabel($category);
 
             $key_trial1 = $key . "_trial1";
@@ -432,35 +513,52 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
                 $group[] =& $this->createText($key . "_trial2", "jumps:");
                 $group[] =& $this->createSelect($key . "_point_score", "", $subtest_4_3_options);
 
-                $this->XINRegisterRule(
-                    $key . "_trial2",
-                    array("{$key_trial1}{@}!={@}5"),
-                    "Required if the maximum score is not earned on the first trial",
-                    $key . "_rule"
-                );
             } else {
                 $group[] =& $this->createText($key . "_trial1", "taps:");
                 $group[] =& $this->createText($key . "_trial2", "taps:");
                 $group[] =& $this->createSelect($key . "_point_score", "", $subtest_4_6_options);
 
-                $this->XINRegisterRule(
-                    $key . "_trial2",
-                    array("{$key_trial1}{@}!={@}10"),
-                    "Required if the maximum score is not earned on the first trial",
-                    $key . "_rule"
-                );
             }
-
             $this->form->addGroup(
                 $group,
-                $key . "_answers",
+                "section4_row{$h}",
                 null,
                 $this->_GUIDelimiter,
                 false
             );
-
             unset($group);
+            $this->XINRegisterRule(
+                $key . "_trial1",
+                array($key . "_trial1{@}=={@}"), // rule
+                "Trial1 is required.", // message
+                "section4_row{$h}" // group [if field is a part of a group]
+            );
+            $this->XINRegisterRule(
+                $key . "_trial2",
+                array($key . "_trial2{@}=={@}"), // rule
+                "Trial 2 is required.", // message
+                "section4_row{$h}" // group [if field is a part of a group]
+            );
+            if ($key == "subtest_4_3") {
+                $this->XINRegisterRule(
+                    $key . "_trial2",
+                    array("{$key_trial1}{@}!={@}5"),
+                    "Required if the maximum score is not earned on the first trial", // message
+                    "section4_row{$h}" // group [if field is a part of a group]
+                );
+            }
+            else {
+                $this->XINRegisterRule(
+                    $key . "_trial2",
+                    array("{$key_trial1}{@}!={@}10"),
+                    "Required if the maximum score is not earned on the first trial",
+                    "section4_row{$h}" // group [if field is a part of a group]
+                );
+            }
         }
+        //Section 4 Start
+
+        //Section 5 Start
 
         $this->addLabel("<h3>Subtest 5: Balance</h3>");
 
@@ -479,8 +577,9 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
                               3    => 3,
                               4    => 4,
                              );
-
+        $i=0;
         foreach ($subtest_5_questions as $key => $category) {
+            $i++;
             $group[] =& $this->createLabel($category);
 
             $key_trial1 = $key . "_trial1";
@@ -489,36 +588,60 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
                 $group[] =& $this->createText($key . "_trial1", "steps:");
                 $group[] =& $this->createText($key . "_trial2", "steps:");
 
-                $this->XINRegisterRule(
-                    $key . "_trial2",
-                    array("{$key_trial1}{@}!={@}6"),
-                    "Required if the maximum score is not earned on the first trial",
-                    $key . "_rule"
-                );
             } else {
                 $group[] =& $this->createText($key . "_trial1", "seconds:");
                 $group[] =& $this->createText($key . "_trial2", "seconds:");
 
-                $this->XINRegisterRule(
-                    $key . "_trial2",
-                    array("{$key_trial1}{@}!={@}10"),
-                    "Required if the maximum score is not earned on the first trial",
-                    $key . "_rule"
-                );
             }
 
             $group[] =& $this->createSelect($key . "_point_score", "", $subtest_5_options);
 
             $this->form->addGroup(
                 $group,
-                $key . "_answers",
+                "section5_row{$i}",
                 null,
                 $this->_GUIDelimiter,
                 false
             );
-
             unset($group);
+            if ($key == "subtest_5_2") {
+                $this->XINRegisterRule(
+                    $key . "_trial2",
+                    array("{$key_trial1}{@}!={@}6"),
+                    "Required if the maximum score is not earned on the first trial",
+                    "section5_row{$i}" // group [if field is a part of a group]
+                );
+            }
+            else {
+                $this->XINRegisterRule(
+                    $key . "_trial2",
+                    array("{$key_trial1}{@}!={@}10"),
+                    "Required if the maximum score is not earned on the first trial",
+                    "section5_row{$i}" // group [if field is a part of a group]
+                );
+            }
+            $this->XINRegisterRule(
+                $key . "_trial1",
+                array($key . "_trial1{@}=={@}"), // rule
+                "Trial1 is required.", // message
+                "section5_row{$i}" // group [if field is a part of a group]
+            );
+            $this->XINRegisterRule(
+                $key . "_trial2",
+                array($key . "_trial2{@}=={@}"), // rule
+                "Trial 2 is required.", // message
+                "section5_row{$i}" // group [if field is a part of a group]
+            );
+            $this->XINRegisterRule(
+                $key . "_point_score",
+                array($key . "_point_score{@}=={@}"), // rule
+                "Point Score is required.", // message
+                "section5_row{$i}" // group [if field is a part of a group]
+            );
         }
+        //Section 5 Finish
+
+        //Section 6 Start
 
         $this->addLabel("<h3>Subtest 6: Running Speed and Agility</h3>");
 
@@ -539,33 +662,48 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
                               8    => 8,
                               9    => 9,
                               10   => 10,
+
                              );
+        $j=0;
 
         foreach ($subtest_6_questions as $key => $category) {
+            $j++;
             $group[] =& $this->createLabel($category);
             $group[] =& $this->createText($key . "_trial1", "hops:");
             $group[] =& $this->createText($key . "_trial2", "hops:");
-
-            $key_trial2 = $key . "_trial2";
-
-            $this->XINRegisterRule(
-                $key . "_trial2",
-                array("{$key_trial2}{@}=={@}NEVER_REQUIRED"),
-                "Never required."
-            );
 
             $group[] =& $this->createSelect($key . "_point_score", "", $subtest_6_options);
 
             $this->form->addGroup(
                 $group,
-                $key . "_answers",
+                "section6_row{$j}",
                 null,
                 $this->_GUIDelimiter,
                 false
             );
-
             unset($group);
+            $this->XINRegisterRule(
+                $key . "_trial2",
+                array($key . "_trial2{@}=={@}NEVER_REQUIRED"), // rule
+                "Trial 2 is required.", // message
+                "section6_row{$j}" // group [if field is a part of a group]
+            );
+            $this->XINRegisterRule(
+                $key . "_trial1",
+                array($key . "_trial1{@}=={@}"), // rule
+                "Trial 1 is required.", // message
+                "section6_row{$j}" // group [if field is a part of a group]
+            );
+            $this->XINRegisterRule(
+                $key . "_point_score",
+                array($key . "_point_score{@}=={@}"), // rule
+                "Point Score is required.", // message
+                "section6_row{$j}" // group [if field is a part of a group]
+            );
         }
+        //Section 6 Finish
+
+        //section 7 Start
 
         $this->addLabel("<h3>Subtest 7: Upper-Limb Coordination</h3>");
 
@@ -597,8 +735,9 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
                                 "subtest_7_1" => "1. Dropping and Catching a Ball - Both Hands",
                                 "subtest_7_6" => "6. Dribbling a Ball - Alternating Hands",
                                );
-
+        $k=0;
         foreach ($subtest_7_questions as $key => $category) {
+            $k++;
             $group[] =& $this->createLabel($category);
 
             if ($key == "subtest_7_1") {
@@ -622,14 +761,46 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
 
             $this->form->addGroup(
                 $group,
-                $key . "_answers",
+                "section7_row{$k}",
                 null,
                 $this->_GUIDelimiter,
                 false
             );
-
             unset($group);
+            if ($key == "subtest_7_1") {
+                $this->XINRegisterRule(
+                    $key . "_trial2",
+                    array($key . "_trial2{@}=={@}NEVER_REQUIRED"), // rule
+                    "Trial 2 is required.", // message
+                    "section7_row{$k}" // group [if field is a part of a group]
+                );
+            }
+            else{
+                $this->XINRegisterRule(
+                    $key . "_trial2",
+                    array("{$key_trial1}{@}!={@}10"),
+                    "Trial 2 Required if the maximum score(10) is not earned on the first trial",
+                    "section7_row{$k}"
+                    );
+
+            }
+            $this->XINRegisterRule(
+                $key . "_trial1",
+                array($key . "_trial1{@}=={@}"), // rule
+                "Trial 1 is required.", // message
+                "section7_row{$k}" // group [if field is a part of a group]
+            );
+            $this->XINRegisterRule(
+                $key . "_point_score",
+                array($key . "_point_score{@}=={@}"), // rule
+                "Point Score is required.", // message
+                "section7_row{$k}" // group [if field is a part of a group]
+            );
         }
+
+        //Section 7 Finish
+
+        //Section 8 Start
 
         $this->addLabel("<h3>Subtest 8: Strength</h3>");
 
@@ -674,8 +845,9 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
                                 "subtest_8_2" => "2. Select one",
                                 "subtest_8_3" => "3. Sit-ups",
                                );
-
+         $l=0;
         foreach ($subtest_8_questions as $key => $category) {
+            $l++;
             $group[] =& $this->createLabel($category);
 
             if ($key == "subtest_8_2") {
@@ -690,14 +862,26 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
 
             $this->form->addGroup(
                 $group,
-                $key . "_answers",
+                "section8_row{$l}",
                 null,
                 $this->_GUIDelimiter,
                 false
             );
-
             unset($group);
+            $this->XINRegisterRule(
+                $key . "_trial1",
+                array($key . "_trial1{@}=={@}"), // rule
+                "Raw Score is required.", // message
+                "section8_row{$l}" // group [if field is a part of a group]
+            );
+            $this->XINRegisterRule(
+                $key . "_point_score",
+                array($key . "_point_score{@}=={@}"), // rule
+                "Point Score is required.", // message
+                "section8_row{$l}" // group [if field is a part of a group]
+            );
         }
+        //Section 8 Finish
 
         $this->form->addElement("static", null, "<br/>");
 
@@ -752,44 +936,53 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
     {
         $errors = [];
 
-        $check_greater_than_0 = array(
-                                 "subtest_1_3_raw_score",
-                                 "subtest_6_3_trial1",
-                                 "subtest_8_2_trial1",
-                                 "subtest_8_3_trial1",
-                                );
+        $check_greater_than_0 = [
+                                 ["subtest_1_3_raw_score", "section1_row1"],
+                                 ["subtest_6_3_trial1","section6_row1"],
+                                 ["subtest_8_2_trial1","section8_row1"],
+                                 ["subtest_8_3_trial1","section8_row2"],
+                                ];
 
-        foreach ($check_greater_than_0 as $question) {
-            $this->validate_positive_numeric($values, $question, $errors);
+        for ( $i=0; $i<count($check_greater_than_0);$i++){
+           $field= $check_greater_than_0[$i][0];
+           $group =$check_greater_than_0[$i][1];
+            $this->validate_positive_numeric($values, $field, $errors, $group);
         }
 
-        $check_between_0_and_number = array(
-                                       "subtest_1_6_raw_score" => 12,
-                                       "subtest_3_2_trial1"    => 20,
-                                       "subtest_3_2_trial2"    => 20,
-                                       "subtest_4_3_trial1"    => 5,
-                                       "subtest_4_6_trial1"    => 10,
-                                       "subtest_5_2_trial1"    => 6,
-                                       "subtest_5_7_trial1"    => 10,
-                                       "subtest_7_1_trial1"    => 5,
-                                       "subtest_7_6_trial1"    => 10,
-                                      );
+        $check_between_0_and_number = [
+                                      ["subtest_1_6_raw_score", "section1_row2",12],
+                                      [ "subtest_3_2_trial1", "section3_row1",20],
+                                      [ "subtest_3_2_trial2", "section3_row1",20],
+                                      ["subtest_4_3_trial1","section4_row1", 5],
+                                      ["subtest_4_6_trial1","section4_row2", 10],
+                                       ["subtest_5_2_trial1","section5_row1", 6],
+                                       ["subtest_5_7_trial1","section5_row2" ,10],
+                                       ["subtest_7_1_trial1","section7_row1" ,5],
+                                       ["subtest_7_6_trial1","section7_row2", 10],
+                                      ];
 
-        foreach ($check_between_0_and_number as $key => $max) {
-            $this->validate_numeric_strict($values, $key, $errors, 0, $max);
+
+            for ( $i=0; $i<count($check_between_0_and_number);$i++){
+                $field = $check_between_0_and_number[$i][0];
+                $max = $check_between_0_and_number[$i][2];
+                $group= $check_between_0_and_number[$i][1];
+            $this->validate_numeric_strict($values, $field, $errors, 0, $max,$group);
         }
 
         if ($values["subtest_6_3_trial2"] != "") {
-            $this->validate_positive_numeric($values, "subtest_6_3_trial2", $errors);
+                $group ="section6_row1";
+            $this->validate_positive_numeric($values, "subtest_6_3_trial2", $errors,$group);
         }
 
         // if subtest2 basic shape == 0, the subsequent must be 0
-        $subtest_2_questions = array(
-                                "subtest_2_2",
-                                "subtest_2_7",
-                               );
+        $subtest_2_questions = [
+                                ["subtest_2_2","section2_row1"],
+                                ["subtest_2_7","section2_row2"],
+                               ];
 
-        foreach ($subtest_2_questions as $key) {
+        for ( $i=0; $i<count($subtest_2_questions);$i++){
+            $key=$subtest_2_questions[$i][0];
+            $group=$subtest_2_questions[$i][1];
             if ($values[$key . "_basic_shape"] == 0) {
                 if ($values[$key . "_closure"] != 0
                     || $values[$key . "_edges"] != 0
@@ -798,25 +991,28 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
                     || $values[$key . "_raw_score"] != 0
                     || $values[$key . "_point_score"] != 0
                 ) {
-                    $errors[$key] = "If Basic Shape facet is 0, all remaining facets and score must be 0";
+                    $errors[$group] = "If Basic Shape facet is 0, all remaining facets and score must be 0";
                 }
             }
         }
 
-        $between_0_and_number_optional = array(
-                                          "subtest_4_3" => "5", 
-                                          "subtest_4_6" => "10", 
-                                          "subtest_5_2" => "6", 
-                                          "subtest_5_7" => "10", 
-                                          "subtest_7_6" => "10", 
-                                         );
+        $between_0_and_number_optional = [
+                                          ["subtest_4_3","section4_row1" ,"5"],
+                                          ["subtest_4_6" ,"section4_row2","10"],
+                                          ["subtest_5_2" ,"section5_row1","6"],
+                                          ["subtest_5_7" ,"section5_row2","10"],
+                                          ["subtest_7_6" ,"section7_row2","10"],
+                                         ];
 
-        foreach ($between_0_and_number_optional as $key => $max) {
-            if ($values[$key . "_trial2"] != "") {
-                if ($values[$key . "_trial1"] == $max) {
-                    $this->validate_empty_subquestions($values, [$key . "_trial2"], $errors);
+        for ( $i=0; $i<count($between_0_and_number_optional);$i++){
+            $field = $between_0_and_number_optional[$i][0];
+            $group = $between_0_and_number_optional[$i][1];
+            $max   = $between_0_and_number_optional[$i][2];
+            if ($values[$field . "_trial2"] != "") {
+                if ($values[$field . "_trial1"] == $max) {
+                    $errors[$group] = "Trial 2 should be left empty as Trail1 has the maximum value.";
                 } else {
-                    $this->validate_numeric_strict($values, $key . "_trial2", $errors, 0, $max);
+                    $this->validate_numeric_strict($values, $field . "_trial2", $errors, 0, $max,$group);
                 }
             }
         }
