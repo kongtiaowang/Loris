@@ -103,6 +103,11 @@ $desired_capabilities = DesiredCapabilities::firefox();
 $desired_capabilities->setCapability('acceptSslCerts', false);
 $desired_capabilities->setCapability('setJavascriptEnabled', true);
 $this->webDriver = RemoteWebDriver::create($selenium_url, $desired_capabilities);
+$this->webDriver->get('http://google.com');
+        $bodyText = $this->webDriver->findElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+print_r($bodyText);
 
 
         $this->login("UnitTester", "4test4");
