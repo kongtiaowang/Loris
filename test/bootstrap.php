@@ -21,7 +21,6 @@
  * @link     https://www.github.com/aces/Loris/
  */
 
-
 // Tests should not use project/config.xml
 // When running tests LORIS app should connect to a test database because some tests
 // are destructive

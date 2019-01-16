@@ -98,19 +98,18 @@ abstract class LorisIntegrationTest extends TestCase
 
         $dev = $this->config->getSettingFromXML('dev');
         $selenium_url = isset($dev['selenium_url']) ? $dev['selenium_url'] : 'http://localhost:4444/wd/hub';
-
-        $capabilities = array(
-                         WebDriverCapabilityType::BROWSER_NAME       => 'firefox',
-                         WebDriverCapabilityType::JAVASCRIPT_ENABLED => true,
-                        );
-
+        putenv("webdriver.chrome.driver=/usr/local/bin/chromedriver");
+        $chromeOptions = new ChromeOptions();
+        $chromeOptions->setBinary("/usr/bin/google-chrome-stable");
+        $chromeOptions->addArguments(['--headless', 'window-size=1024,768', '--no-sandbox'],'ignore-certificate-errors');
+        $caps = DesiredCapabilities::chrome();
+        $caps->setCapability(ChromeOptions::CAPABILITY, $chromeOptions);
+       
         $this->webDriver = RemoteWebDriver::create(
             $selenium_url,
-            $capabilities
+            $caps
         );
-
         $this->login("UnitTester", "4test4");
-
         if (extension_loaded('xdebug') && function_exists("xdebug_start_code_coverage")) {
             xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
         }
@@ -128,7 +127,8 @@ abstract class LorisIntegrationTest extends TestCase
      */
     protected function login($username, $password)
     {
-        $this->safeGet($this->url);
+       $this->safeGet($this->url);
+       // $this->safeGet($this->url);
         /*
         $this->webDriver->wait(120, 1000)->until(
             WebDriverExpectedCondition::presenceOfElementLocated(
@@ -144,7 +144,6 @@ abstract class LorisIntegrationTest extends TestCase
 
         $login = $this->webDriver->findElement(WebDriverBy::Name("login"));
         $login->click();
-
         // Explicitly wait until the page is loaded.
         // Wait up to a minute, because sometimes when multiple tests
         // are run one will fail due to the login taking too long?
@@ -451,7 +450,7 @@ abstract class LorisIntegrationTest extends TestCase
             // Use the old page reference until it detaches from the DOM
             while (true) {
                 $oldBody->isDisplayed();
-            }
+          }
         } catch (StaleElementReferenceException $e) {
             return $newWebDriver;
         }
