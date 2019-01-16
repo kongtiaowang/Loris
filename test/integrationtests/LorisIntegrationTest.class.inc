@@ -101,7 +101,8 @@ abstract class LorisIntegrationTest extends TestCase
 
         $capabilities = array(
                          WebDriverCapabilityType::BROWSER_NAME       => 'firefox',
-                         WebDriverCapabilityType::JAVASCRIPT_ENABLED => true,
+                         WebDriverCapabilityType::JAVASCRIPT_ENABLED => TRUE,
+                         WebDriverCapabilityType::ACCEPT_SSL_CERTS   => TRUE,
                         );
 
         $this->webDriver = RemoteWebDriver::create(
