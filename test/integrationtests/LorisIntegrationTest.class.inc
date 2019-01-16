@@ -101,7 +101,7 @@ abstract class LorisIntegrationTest extends TestCase
         putenv("webdriver.chrome.driver=/usr/local/bin/chromedriver");
         $chromeOptions = new ChromeOptions();
         $chromeOptions->setBinary("/usr/bin/google-chrome-stable");
-        $chromeOptions->addArguments(['--headless', 'window-size=1024,768', '--no-sandbox']);
+        $chromeOptions->addArguments(['--headless', 'window-size=1024,768', '--no-sandbox'],'ignore-certificate-errors');
         $caps = DesiredCapabilities::chrome();
         $caps->setCapability(ChromeOptions::CAPABILITY, $chromeOptions);
        
