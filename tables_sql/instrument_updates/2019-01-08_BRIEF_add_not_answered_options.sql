@@ -1,4 +1,3 @@
--- adding not answered option to all the questions in BRIEF2 Teacher Form
 ALTER TABLE BRIEF2_Teacher MODIFY COLUMN q1_is_fidgety ENUM('N','S','O', 'not_answered') default NULL ;
 ALTER TABLE BRIEF2_Teacher MODIFY COLUMN q2_resists_accepting_different_way_to_solve_problem ENUM('N','S','O', 'not_answered') default NULL ;
 ALTER TABLE BRIEF2_Teacher MODIFY COLUMN q3_given_three_things_remembers_only_first_or_last ENUM('N','S','O', 'not_answered') default NULL ;
