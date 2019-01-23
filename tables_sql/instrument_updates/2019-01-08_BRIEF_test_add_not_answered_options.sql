@@ -23,6 +23,7 @@ ALTER TABLE BRIEF2_Teacher MODIFY COLUMN q22_small_events_trigger_big_reactions 
 ALTER TABLE BRIEF2_Teacher MODIFY COLUMN q23_has_good_ideas_lacks_follow_through ENUM('N','S','O', 'not_answered') default NULL ;
 ALTER TABLE BRIEF2_Teacher MODIFY COLUMN q24_talks_at_wrong_time ENUM('N','S','O', 'not_answered') default NULL ;
 ALTER TABLE BRIEF2_Teacher MODIFY COLUMN q25_has_trouble_finishing_tasks ENUM('N','S','O', 'not_answered') default NULL ;
+-- testing
 ALTER TABLE BRIEF2_Teacher MODIFY COLUMN q26_does_not_notice_when_behavior_causes_negative_reactions ENUM('N','S','O', 'not_answered') default NULL ;
 ALTER TABLE BRIEF2_Teacher MODIFY COLUMN q27_reacts_more_strongly_than_other_children ENUM('N','S','O', 'not_answered') default NULL ;
 ALTER TABLE BRIEF2_Teacher MODIFY COLUMN q28_has_trouble_remembering_things_even_for_minutes ENUM('N','S','O', 'not_answered') default NULL ;
