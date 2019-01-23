@@ -65,5 +65,3 @@ ALTER TABLE BRIEF2_Teacher MODIFY COLUMN q63_has_trouble_thinking_different_way_
 ALTER TABLE BRIEF2_Teacher MODIFY COLUMN how_well_do_you_know_student ENUM('not_well','moderately_well','very_well', 'not_answered') default NULL ;
 ALTER TABLE BRIEF2_Teacher MODIFY COLUMN does_student_receive_special_education_services ENUM('yes','no','not_answered') default NULL ;
 ALTER TABLE BRIEF2_Teacher MODIFY COLUMN student_gender ENUM('male','female','not_answered') default NULL ;
-
-
