@@ -638,14 +638,11 @@ class Candidate
         $db      = $factory->database();
 
         $candID = $this->getCandID();
-
-        $query  = "SELECT Visit_label
-            FROM session s JOIN candidate c ON (c.CandID = s.CandID)
-            WHERE c.CandID=:cid AND Date_Visit IS NOT NULL
-            ORDER BY Date_Visit";
+        $query  = "SELECT Visit_label FROM session 
+          WHERE CandID = :cid AND Date_visit IS NOT NULL 
+          ORDER BY Date_visit, ID ASC LIMIT 1";
         $where  = array('cid' => $candID);
         $vLabel = $db->pselectOne($query, $where);
-
         return $vLabel;
     }
 
