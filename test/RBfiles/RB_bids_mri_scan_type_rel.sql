@@ -7,4 +7,3 @@ INSERT INTO `bids_mri_scan_type_rel` (`MRIScanTypeID`, `BIDSCategoryID`, `BIDSSc
 INSERT INTO `bids_mri_scan_type_rel` (`MRIScanTypeID`, `BIDSCategoryID`, `BIDSScanTypeSubCategoryID`, `BIDSScanTypeID`, `BIDSEchoNumber`) VALUES (45,1,NULL,4,NULL);
 INSERT INTO `bids_mri_scan_type_rel` (`MRIScanTypeID`, `BIDSCategoryID`, `BIDSScanTypeSubCategoryID`, `BIDSScanTypeID`, `BIDSEchoNumber`) VALUES (48,3,NULL,5,NULL);
 UNLOCK TABLES;
-SET FOREIGN_KEY_CHECKS = 1;
