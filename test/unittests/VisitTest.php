@@ -82,12 +82,18 @@ class VisitTest extends TestCase
     function testAllVisit()
     {
         $visits = $this->_visitController->getAllVisits();
+        var_dump($visits);
+        print_r("=======");
+        var_dump($this->_listOfVisit);
         $this->assertEquals($this->_listOfVisit, $visits, "the name of the visit does not match value in DB");
     }  
 
     function testVisitsProjects()
     {
         $visits = $this->_visitController->getVisitsAndProject();
+        var_dump($visits);
+        print_r("=======");
+        var_dump($this->_listOfVisitProject);
         $this->assertEquals($this->_listOfVisitProject, $visits, "the project and subproject relation does not match value in DB");
     }
 
