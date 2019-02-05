@@ -82,7 +82,7 @@ class VisitTest extends TestCase
     function testAllVisit()
     {
         $visits = $this->_visitController->getAllVisits();
-        $this->assertArrayPart($visits,$this->_listOfVisit, "the name of the visit does not match value in DB");
+        $this->assertArraySubset($visits,$this->_listOfVisit, "the name of the visit does not match value in DB");
     }  
 
     function testVisitsProjects()
