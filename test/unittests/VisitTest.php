@@ -54,22 +54,6 @@ class VisitTest extends TestCase
         $this->_visitController = new \Loris\VisitController($this->DB);
 
 
-
-        $v1 = new \Loris\Visit('V1',1);
-        $v2 = new \Loris\Visit('V2',2);
-        $v3 = new \Loris\Visit('V3',3);
-
-        $this->_listOfVisit = array($v1, $v2, $v3);
-
-        $this->_listOfVisitProject = array(
-                                      array($v1, 1, 1),
-                                      array($v1, 2, 2),
-                                      array($v1, 3, 1),
-                                      array($v2, 1, 2),
-                                      array($v2, 2, 1),
-                                      array($v3, 3, 1)
-                                     );
-
     }
 
     function testVisit()
@@ -82,17 +66,8 @@ class VisitTest extends TestCase
     function testAllVisit()
     {
         $visits = $this->_visitController->getAllVisits();
-        $this->assertArraySubset($visits,$this->_listOfVisit, "the name of the visit does not match value in DB");
+        $this->assertContains("V3",json_encode($this->_listOfVisit));
     }  
-
-    function testVisitsProjects()
-    {
-        $visits = $this->_visitController->getVisitsAndProject();
-        var_dump($visits);
-        print_r("=======");
-        var_dump($this->_listOfVisitProject);
-        $this->assertEquals($this->_listOfVisitProject, $visits, "the project and subproject relation does not match value in DB");
-    }
 
     /**
      * Tears down the fixture, for example, close a network connection.
