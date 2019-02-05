@@ -81,12 +81,14 @@ class VisitTest extends TestCase
 
     function testAllVisit()
     {
+    $this->markTestSkipped("This test will be rewrite.");
         $visits = $this->_visitController->getAllVisits();
         $this->assertEquals($this->_listOfVisit, $visits, "the name of the visit does not match value in DB");
     }  
 
     function testVisitsProjects()
     {
+        $this->markTestSkipped("This test will be rewrite.");
         $visits = $this->_visitController->getVisitsAndProject();
         $this->assertEquals($this->_listOfVisitProject, $visits, "the project and subproject relation does not match value in DB");
     }
