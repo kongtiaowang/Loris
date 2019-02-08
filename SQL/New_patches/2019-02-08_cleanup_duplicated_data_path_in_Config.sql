@@ -16,6 +16,6 @@ WHERE Name IN ('mincPath', 'data', 'imagePath');
 -- imaging pipeline section of the Config module
 UPDATE ConfigSettings
 SET Parent=(SELECT ID FROM (SELECT * FROM ConfigSettings) AS X WHERE Name='Paths')
-WHERE Name='dataDirBasePath';
+WHERE Name='dataDirBasepath';
 
 

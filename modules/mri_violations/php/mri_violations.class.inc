@@ -169,7 +169,7 @@ class Mri_Violations extends \NDB_Menu_Filter_Form
         } else {
             $useProjects = true;
         }
-        $dir_path      = $config->getSetting("imagePath");
+        $dir_path      = $config->getSetting("dataDirBasepath");
         $this->columns = array(
                           'v.PatientName',
                           'site.Name as Site',

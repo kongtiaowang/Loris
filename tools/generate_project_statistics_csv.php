@@ -54,7 +54,7 @@ $number_visits = $db->pselect("select count(*) from session where Active='Y' AND
 // Number of candidates
 $number_candidates = $db->pselect("SELECT count(*) FROM candidate c WHERE c.Active = 'Y' and c.CenterID <> 1 and c.Entity_type != 'Scanner'", array());
 // GB of imaging data (raw and processed)
-$dir_path = $config->getSetting('imagePath');
+$dir_path = $config->getSetting('dataDirBasepath');
 $gb_imaging_data_array = NULL;
 if(file_exists($dir_path)) exec("cd $dir_path;du -h .", $gb_imaging_data_array);
 # of scans

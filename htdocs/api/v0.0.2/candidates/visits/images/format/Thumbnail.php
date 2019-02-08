@@ -91,7 +91,7 @@ class Thumbnail extends \Loris\API\Candidates\Candidate\Visit\Imaging\Image
     {
         $factory = \NDB_Factory::singleton();
         $config  = $factory->Config();
-        return $config->getSetting("imagePath") . "/pic/";
+        return $config->getSetting("dataDirBasepath") . "/pic/";
     }
 
     /**

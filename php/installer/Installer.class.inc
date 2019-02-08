@@ -322,9 +322,8 @@ class Installer
         $this->_updateConfig($DB, "base", $basepath);
         $this->_updateConfig($DB, "DownloadPath", $basepath);
 
-        $this->_updateConfig($DB, "imagePath", $datadir);
+        $this->_updateConfig($DB, "dataDirBasepath", $datadir);
         $this->_updateConfig($DB, "data", $datadir);
-        $this->_updateConfig($DB, "mincPath", $datadir);
         $this->_updateConfig($DB, "MRICodePath", $datadir);
 
         // Update the host based and URL based on the location that

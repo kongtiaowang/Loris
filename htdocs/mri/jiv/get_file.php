@@ -37,7 +37,7 @@ $config   = \NDB_Config::singleton();
 $paths    = $config->getSetting('paths');
 $pipeline = $config->getSetting('imaging_pipeline');
 
-$imagePath    = $paths['dataDirBasePath'];
+$imagePath    = $paths['dataDirBasepath'];
 $DownloadPath = $paths['DownloadPath'];
 $tarchivePath = $pipeline['tarchiveLibraryDir'];
 // Basic config validation
@@ -189,14 +189,14 @@ function validConfigPaths(array $paths): bool
         if (empty($p)) {
             throw new \LorisException(
                 'Config paths are not initialized. Please ensure that valid paths ' .
-                'are set for dataDirBasePath, downloadPath and tarchiveLibraryDir'
+                'are set for dataDirBasepath, downloadPath and tarchiveLibraryDir'
             );
             return false;
         }
         if ($p === '/') {
             throw new \LorisException(
                 'Config path invalid. Paths cannot be set to root, i.e., `/`' .
-                ' Please verify your path settings for dataDirBasePath, ' .
+                ' Please verify your path settings for dataDirBasepath, ' .
                 'downloadPath and tarchiveLibraryDir.'
             );
             return false;

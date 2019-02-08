@@ -84,7 +84,7 @@ function getFileLocation()
 {
     $config     = & NDB_Config::singleton();
     $paths      = $config->getSetting('paths');
-    $image_path = $paths['mincPath'];
+    $image_path = $paths['dataDirBasepath'];
     return $image_path;
 }
 
