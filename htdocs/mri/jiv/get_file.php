@@ -37,16 +37,14 @@ $config   = \NDB_Config::singleton();
 $paths    = $config->getSetting('paths');
 $pipeline = $config->getSetting('imaging_pipeline');
 
-$imagePath    = $paths['imagePath'];
+$imagePath    = $paths['dataDirBasePath'];
 $DownloadPath = $paths['DownloadPath'];
-$mincPath     = $paths['mincPath'];
 $tarchivePath = $pipeline['tarchiveLibraryDir'];
 // Basic config validation
 if (!validConfigPaths(
     array(
      $imagePath,
      $DownloadPath,
-     $mincPath,
      $tarchivePath,
     )
 )) {
@@ -90,17 +88,17 @@ if (strpos($FileBase, "DCM_") === 0) {
 $DownloadFilename = '';
 switch($FileExt) {
 case 'mnc':
-    $FullPath         = $mincPath . '/' . $File;
+    $FullPath         = $imagePath . '/' . $File;
     $MimeType         = "application/x-minc";
     $DownloadFilename = basename($File);
     break;
 case 'nii':
-    $FullPath         = $mincPath . '/' . $File;
+    $FullPath         = $imagePath . '/' . $File;
     $MimeType         = "application/x-nifti";
     $DownloadFilename = basename($File);
     break;
 case 'nii.gz':
-    $FullPath         = $mincPath . '/' . $File;
+    $FullPath         = $imagePath . '/' . $File;
     $MimeType         = "application/x-nifti-gz";
     $DownloadFilename = basename($File);
     break;
@@ -190,17 +188,16 @@ function validConfigPaths(array $paths): bool
     foreach ($paths as $p) {
         if (empty($p)) {
             throw new \LorisException(
-                'Config paths are not initialized. Please ensure that valid ' .
-                'paths are set for imagePath, downloadPath, mincPath and ' .
-                'tarchiveLibraryDir'
+                'Config paths are not initialized. Please ensure that valid paths ' .
+                'are set for dataDirBasePath, downloadPath and tarchiveLibraryDir'
             );
             return false;
         }
         if ($p === '/') {
             throw new \LorisException(
                 'Config path invalid. Paths cannot be set to root, i.e., `/`' .
-                ' Please verify your path settings for imagePath, ' .
-                'downloadPath, mincPath and tarchiveLibraryDir.'
+                ' Please verify your path settings for dataDirBasePath, ' .
+                'downloadPath and tarchiveLibraryDir.'
             );
             return false;
         }
@@ -226,8 +223,8 @@ function validDownloadPath($path): bool
     }
     // Make sure that the user isn't trying to break out of the $path by
     // using a relative filename.
-    // No need to check for '/' since all downloads are relative to $imagePath,
-    // $DownloadPath or $mincPath
+    // No need to check for '/' since all downloads are relative to $imagePath or
+    // $DownloadPath
     if (strpos($path, "..") !== false) {
         error_log(
             'ERROR: Invalid filename. Contains path traversal characters'
