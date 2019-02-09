@@ -35,10 +35,28 @@ $tableNames = $DB->pselectCol("
                       WHERE TABLE_SCHEMA =:dbn",
     array("dbn"=>$databaseInfo['database'])
 );
+/*
+ * Definitions of the flags used in the command below (ORDERING is IMPORTANT):
+ * --complete-insert -> Use complete INSERT statements that include column names
+ * --no-create-db    -> Do not write CREATE DATABASE statements
+ * --no-create-info  -> Do not write CREATE TABLE statements that re-create each
+ *                      dumped table
+ * --skip-opt        -> Do not add any of the --opt options (--opt is shorthand for:
+ *                      --add-drop-table --add-locks --create-options --disable-keys
+ *                      --extended-insert --lock-tables --quick --set-charset)
+ * --compact         -> This option enables the --skip-add-drop-table,
+ *                      --skip-add-locks, --skip-comments, --skip-disable-keys,
+ *                      and --skip-set-charset
+ * --add-locks       -> To undo part of --compact. Surround each table dump with
+ *                      LOCK TABLES and UNLOCK TABLES statements
+ * --verbose         -> Print more information about what the program does.
+ * --skip-tz-utc     -> This option prevents MySQL from modifying TIMESTAMP
+ *                      values to accommodate for timezone differences.
+ */
 
 // Loop through all tables to generate insert statements for each.
 foreach ($tableNames as $tableName) {
-    $filename = __DIR__ . "/../../test/RBfiles/RB_$tableName.sql";
+    $filename = __DIR__ . "/../../SQL/RB_files/RB_$tableName.sql";
     exec('mysqldump '.$databaseInfo['database'].' '.
         '--complete-insert '.
         '--no-create-db '.
@@ -47,8 +65,10 @@ foreach ($tableNames as $tableName) {
         '--compact '.
         '--add-locks '.
         '--verbose '.
-        $tableName.
-        ' | sed -E \'s/LOCK TABLES (`[^`]+`)/TRUNCATE TABLE \1;\nLOCK TABLES \1/g\''.
-        ' > '.$filename
+        '--skip-tz-utc '.
+        $tableName .
+        ' | sed -E \'s/LOCK TABLES (`[^`]+`)/SET FOREIGN_KEY_CHECKS=0;\nTRUNCATE TABLE \1;\nLOCK TABLES \1/g\''.
+        ' > '. $filename .
+        '&& echo "SET FOREIGN_KEY_CHECKS=1;" >> '. $filename
     );
 }
