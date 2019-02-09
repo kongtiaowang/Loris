@@ -33,7 +33,7 @@ class NDB_BVL_Instrument_TEST_NAME extends NDB_BVL_Instrument
      * @return void
      * @access public
      */
-    function setup($commentID, $page)
+    function setup(?string $commentID = null, ?string $page = null): void
     {
         $this->formType ="XIN";
         $this->form     = new LorisForm('test_form');
