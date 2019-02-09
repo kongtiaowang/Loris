@@ -36,8 +36,8 @@ INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (33,37,'/PATH/TO/Genomic
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (34,38,'/data/uploads/');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (35,40,'main.css');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (36,41,'25');
-INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (37,44,'abou-haider-dev.loris.ca');
-INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (38,45,'https://abou-haider-dev.loris.ca');
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (37,44,'localhost');
+INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (38,45,'https://localhost');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (39,48,'This database provides an on-line mechanism to store both imaging and behavioral data collected from various locations. Within this framework, there are several tools that will make this process as efficient and simple as possible. For more detailed information regarding any aspect of the database, please click on the Help icon at the top right. Otherwise, feel free to contact us at the DCC. We strive to make data collection almost fun.');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (40,51,'/[a-zA-Z]{3}[0-9]{4}_[0-9]{6}_[vV][0-9]+/');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (41,52,'/./i');
@@ -78,7 +78,6 @@ INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (77,88,'scout');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (78,89,'true');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (79,90,'0');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (80,91,'mri_parameter_form');
-INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (81,91,'mri_parameter_form');
 INSERT INTO `Config` (`ID`, `ConfigID`, `Value`) VALUES (82,92,'prod');
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;
