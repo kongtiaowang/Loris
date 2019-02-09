@@ -90,7 +90,7 @@
             </labelSet>
         </visitLabel>
 
-         <!-- certification module -->
+        <!-- certification module -->
         <Certification>
             <EnableCertification>1</EnableCertification>
             <CertificationProjects>

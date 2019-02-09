@@ -12,7 +12,7 @@ COPY docs/instruments/instrument_sql/bmi.sql  /bmi.sql
 COPY docs/instruments/instrument_sql/medical_history.sql  /medical_history.sql
 COPY docs/instruments/instrument_sql/mri_parameter_form.sql  /mri_parameter_form.sql
 COPY docs/instruments/instrument_sql/radiology_review.sql  /radiology_review.sql
-COPY test/RBfiles/*.sql /RBfiles/
+COPY SQL/RB_files/*.sql /RB_files/
 
 RUN echo "Use LorisTest;" | cat - \
     0000-00-00-schema.sql \
@@ -25,7 +25,7 @@ RUN echo "Use LorisTest;" | cat - \
     medical_history.sql \
     mri_parameter_form.sql \
     radiology_review.sql \
-    RBfiles/*.sql > /docker-entrypoint-initdb.d/0000-compiled.sql
+    RB_files/*.sql > /docker-entrypoint-initdb.d/0000-compiled.sql
 
 RUN echo "Use LorisTest;" >> /docker-entrypoint-initdb.d/0001-paths.sql
 RUN echo "UPDATE Config SET Value='${BASE_DIR}/' WHERE ConfigID=(SELECT ID FROM ConfigSettings WHERE Name='base');" >> /docker-entrypoint-initdb.d/0001-paths.sql
