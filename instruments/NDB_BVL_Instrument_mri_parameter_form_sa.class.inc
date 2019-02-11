@@ -524,29 +524,6 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
         $this->form->addFormRule(array(&$this, 'validate_page1'));
         $this->form->addFormRule(array(&$this, 'specialRules'));
 
-        // Creates array of all checkbox questions for use in following XIN rule
-        $checkboxquestions = array(
-                              'dti3_shell',
-                              '6b0',
-                              'dti2_shell',
-                              '6b0_2',
-                              'dti1_shell',
-                              'FieldMap_APinv_BOLD',
-                              'FieldMap_AP_BOLD',
-                              'bold_run1',
-                              'bold_run2',
-                              'bold_run3',
-                              'bold_run4',
-                             );
-
-        // Makes checkbox questions not required
-        foreach ($checkboxquestions as $check) {
-            $this->XINRegisterRule(
-                $check,
-                array("check{@}=={@}NEVER_REQUIRED")
-            );
-        }
-
     }
     // End setupForm
 
