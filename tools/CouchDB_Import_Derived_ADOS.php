@@ -45,11 +45,18 @@ class CouchDBADOSImporter
      *
      * @return null
      */
-    function __construct()
-    {
-        $factory = NDB_Factory::singleton();
-        $this->SQLDB = $factory->database();
-        $this->CouchDB = $factory->CouchDB();
+    function __construct() {
+        $factory       = \NDB_Factory::singleton();
+        $config        = \NDB_Config::singleton();
+        $couchConfig   = $config->getSetting('CouchDB');
+        $this->SQLDB   = $factory->Database();
+        $this->CouchDB = $factory->couchDB(
+            $couchConfig['dbName'],
+            $couchConfig['hostname'],
+            $couchConfig['port'],
+            $couchConfig['admin'],
+            $couchConfig['adminpass']
+        );
     }
 
     /**
@@ -72,15 +79,15 @@ print "updateDataDict";
                     'ADOS_Derived' => array(
                         'Administration' => array(
                             'Type' => "enum('None', 'Partial', 'All')",
-                            'Description' => 'Administration for hello'
+                            'Description' => 'Administration for ADOS Derived'
                         ),
                         'Data_entry' => array(
                             'Type' => "enum('In Progress', 'Complete')",
-                            'Description' => 'Data entry status for hello'
+                            'Description' => 'Data entry status for ADOS Derived'
                         ),
                         'Validity' => array(
                             'Type' => "enum('Questionable', 'Invalid', 'Valid')",
-                            'Description' => 'Validity of data for hello'
+                            'Description' => 'Validity of data for ADOS Derived'
                         ),
                         'Conflicts_Exist' => array(
                             'Type'        => "enum('Yes', 'No')",
