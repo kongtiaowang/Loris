@@ -1,0 +1,3 @@
+TRUNCATE TABLE `genomic_cpg`;
+LOCK TABLES `genomic_cpg` WRITE;
+UNLOCK TABLES;
