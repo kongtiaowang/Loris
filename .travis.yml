@@ -61,6 +61,7 @@ before_script:
     - mysql LorisTest < SQL/0000-00-02-Menus.sql
     - mysql LorisTest < SQL/0000-00-03-ConfigTables.sql
     - mysql LorisTest < SQL/0000-00-04-Help.sql
+    - mysql LorisTest < SQL/0000-00-05-ElectrophysiologyTables.sql
     - mysql LorisTest < docs/instruments/instrument_sql/aosi.sql
     - mysql LorisTest < docs/instruments/instrument_sql/bmi.sql
     - mysql LorisTest < docs/instruments/instrument_sql/medical_history.sql
