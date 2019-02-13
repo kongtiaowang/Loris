@@ -22,5 +22,5 @@ before_script:
 - sed -i "s/7.2/$TRAVIS_PHP_VERSION/g" Dockerfile.test.php7
 
 script:
-- make checkstatic
+- docker-compose up --build
 - docker-compose run -T --rm integration-tests vendor/bin/phpunit --configuration test/phpunit.xml
