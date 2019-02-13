@@ -353,8 +353,10 @@ class NDB_BVL_Instrument_ados_module2 extends NDB_BVL_Instrument_IBIS
 
         //get the saved scores
     	$db =& Database::singleton();
-
-        $record = $db->pselectRow("SELECT * FROM $this->table WHERE CommentID=:cid",array("cid" =>$this->getCommentID() ));
+  	
+    	$query = "SELECT * FROM $this->table WHERE CommentID = '$this->commentID'";
+    	$record = array();
+    	$db->selectRow($query, $record);
 
         // Get the subject age in months for scoring
         $timepoint =& TimePoint::singleton($this->getSessionID());
@@ -414,7 +416,7 @@ class NDB_BVL_Instrument_ados_module2 extends NDB_BVL_Instrument_IBIS
 
         //Determine Severity score from ados_lookup table 
        //Requires age in months:
-        $Answers = $db->pselectRow("SELECT * FROM $this->table WHERE CommentID=:cid",array("cid" =>$this->getCommentID() ));
+       $db->selectRow("SELECT * FROM $this->table WHERE CommentID='".$this->getCommentID()."'", $Answers);
        $age_months = 0;
        if($this->getSessionID() != NULL) { //quickform_parser doesn't use any specific session
             $timepoint =& TimePoint::singleton($this->getSessionID());
@@ -468,8 +470,8 @@ class NDB_BVL_Instrument_ados_module2 extends NDB_BVL_Instrument_IBIS
 
         // CSS Calculations
         $ados_age = round($age_months/12);
-        $scoreCols["ADOS_SA_CSS"]  = $this->ADOS_SA_CSS( $this->table, $record['a1'], $scoreCols['social_affect_total'], $ados_age);
-        $scoreCols["ADOS_RRB_CSS"] = $this->ADOS_RRB_CSS($this->table, $record['a1'], $scoreCols['restricted_repetitive_behavior_total'], $ados_age);
+        $scoreCols["ADOS_SA_CSS"]  = $this->ADOS_SA_CSS( $this->table, $record['a1'], $scoreCols['social_affect_total']);
+        $scoreCols["ADOS_RRB_CSS"] = $this->ADOS_RRB_CSS($this->table, $record['a1'], $scoreCols['restricted_repetitive_behavior_total']);
 
         // save scores to database
     	$result = $db->update($this->table, $scoreCols, array("CommentID"=>$this->getCommentID()));

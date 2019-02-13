@@ -23,7 +23,7 @@ class NDB_BVL_Instrument_ados2_module2 extends NDB_BVL_Instrument_IBIS
     var $option012378 = array(""=>NULL, 0=>0, 1=>1, 2=>2,3=>3,7=>7, 8=>8, "not_answered"=>"Not Answered");
 
     var $scoreCols = array("social_affect_total", "restricted_repetitive_behavior_total", "social_affect_restricted_repetitive_behavior_total", "ADOS_classification");
-    /**_
+    /**
     * sets up basic data, such as the LorisForm object, and so on.
     *
     * @param string $commentID  the CommentID identifying the data to load
@@ -356,8 +356,10 @@ class NDB_BVL_Instrument_ados2_module2 extends NDB_BVL_Instrument_IBIS
 
         //get the saved scores
     	$db =& Database::singleton();
-
-        $record = $db->pselectRow("SELECT * FROM $this->table WHERE CommentID=:cid",array("cid" =>$this->getCommentID() ));
+  	
+    	$query = "SELECT * FROM $this->table WHERE CommentID = '$this->commentID'";
+    	$record = array();
+    	$db->selectRow($query, $record);
 
         // Get the subject age in months for scoring
         $timepoint =& TimePoint::singleton($this->getSessionID());
@@ -420,7 +422,7 @@ class NDB_BVL_Instrument_ados2_module2 extends NDB_BVL_Instrument_IBIS
 
         //Determine Severity score from ados_lookup table 
        //Requires age in months:
-        $Answers = $db->pselectRow("SELECT * FROM $this->table WHERE CommentID=:cid",array("cid" =>$this->getCommentID() ));
+       $db->selectRow("SELECT * FROM $this->table WHERE CommentID='".$this->getCommentID()."'", $Answers);
        $age_months = 0;
        if($this->getSessionID() != NULL) { //quickform_parser doesn't use any specific session
             $timepoint =& TimePoint::singleton($this->getSessionID());

@@ -389,8 +389,10 @@ class NDB_BVL_Instrument_ados2_module1 extends NDB_BVL_Instrument_IBIS
 
         //get the saved scores
     	$db =& Database::singleton();
-
-    	$record = $db->pselectRow("SELECT * FROM $this->table WHERE CommentID=:cid",array("cid" =>$this->getCommentID() ));
+  	
+    	$query = "SELECT * FROM $this->table WHERE CommentID = '$this->commentID'";
+    	$record = array();
+    	$db->selectRow($query, $record);
  	
 
         //Convert the entered scores to countable scores:
@@ -469,8 +471,8 @@ class NDB_BVL_Instrument_ados2_module1 extends NDB_BVL_Instrument_IBIS
         }
 
         //Determine Severity score from ados_lookup table 
-	    //Requires age in months:
-        $Answers = $db->pselectRow("SELECT * FROM $this->table WHERE CommentID=:cid",array("cid" =>$this->getCommentID() ));
+	    //Requires age in months:  
+        $db->selectRow("SELECT * FROM $this->table WHERE CommentID='".$this->getCommentID()."'", $Answers);
 	    $age_months = 0;
         if($this->getSessionID() != NULL) { //quickform_parser doesn't use any specific session
             $timepoint =& TimePoint::singleton($this->getSessionID());
@@ -483,7 +485,7 @@ class NDB_BVL_Instrument_ados2_module1 extends NDB_BVL_Instrument_IBIS
                 $age_months = $age['year'] * 12 + $age['mon'];
 	        }
         }
-        //Severity score lookup:  column limits for age (min, max), raw score (min, max)
+        //Severity score lookup:  column limits for age (min, max), raw score (min, max) 
         // ados_lookup table columns : sevscore module minagemos maxagemos minraw maxraw   
 	    if ( $module != '' && $age_months != 0) {  
 	       $query_severity_lookup = "SELECT sevscore FROM ados_lookup WHERE module = :modname AND minagemos <= :agemonths AND maxagemos >= :agemonths AND minraw <= :rawscore AND maxraw >= :rawscore";
@@ -501,8 +503,8 @@ class NDB_BVL_Instrument_ados2_module1 extends NDB_BVL_Instrument_IBIS
 
             //($record_lookup['sevscore']);
 	    }
-	$ados_age = round($age_months/12);
         // CSS Calculations
+        $ados_age = round($age_months/12);
         $scoreCols["ADOS_SA_CSS"]  = $this->ADOS_SA_CSS( $this->table, $record['a1'], $scoreCols['social_affect_total'], $ados_age);
         $scoreCols["ADOS_RRB_CSS"] = $this->ADOS_RRB_CSS($this->table, $record['a1'], $scoreCols['restricted_repetitive_behavior_total'], $ados_age);
 
