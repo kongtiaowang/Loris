@@ -373,11 +373,8 @@ class NDB_BVL_Instrument_ados_module1 extends NDB_BVL_Instrument_IBIS
 
         //get the saved scores
     	$db =& Database::singleton();
-  	
-    	$query = "SELECT * FROM $this->table WHERE CommentID = '$this->commentID'";
-    	$record = array();
-    	$db->selectRow($query, $record);
 
+        $record = $db->pselectRow("SELECT * FROM $this->table WHERE CommentID=:cid",array("cid" =>$this->getCommentID() ));
         //Convert the entered scores to countable scores:
         //"Convert scores of 3 on the protocol to 2, and treat all other scores other than 0-3 as 0."
         $scores = array(); //holds converted scores
@@ -455,8 +452,8 @@ class NDB_BVL_Instrument_ados_module1 extends NDB_BVL_Instrument_IBIS
         }
 
         //Determine Severity score from ados_lookup table 
-	    //Requires age in months:  
-        $db->selectRow("SELECT * FROM $this->table WHERE CommentID='".$this->getCommentID()."'", $Answers);
+	    //Requires age in months:
+        $Answers = $db->pselectRow("SELECT * FROM $this->table WHERE CommentID=:cid",array("cid" =>$this->getCommentID() ));
 	    $age_months = 0;
         if($this->getSessionID() != NULL) { //quickform_parser doesn't use any specific session
             $timepoint =& TimePoint::singleton($this->getSessionID());
@@ -487,8 +484,9 @@ class NDB_BVL_Instrument_ados_module1 extends NDB_BVL_Instrument_IBIS
 
 	    }
         // CSS Calculations
-        $scoreCols["ADOS_SA_CSS"]  = $this->ADOS_SA_CSS( $this->table, $record['a1'], $scoreCols['social_affect_total']);
-        $scoreCols["ADOS_RRB_CSS"] = $this->ADOS_RRB_CSS($this->table, $record['a1'], $scoreCols['restricted_repetitive_behavior_total']);
+        $ados_age = round($age_months/12);
+        $scoreCols["ADOS_SA_CSS"]  = $this->ADOS_SA_CSS( $this->table, $record['a1'], $scoreCols['social_affect_total'], $ados_age);
+        $scoreCols["ADOS_RRB_CSS"] = $this->ADOS_RRB_CSS($this->table, $record['a1'], $scoreCols['restricted_repetitive_behavior_total'], $ados_age);
 
         // save scores to database
  	    $result = $db->update($this->table, $scoreCols, array("CommentID"=>$this->getCommentID()));
