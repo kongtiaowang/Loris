@@ -3,15 +3,15 @@
 ALTER TABLE mri_parameter_form_sa
 CHANGE COLUMN weight
 weight text DEFAULT NULL;
-ALTER TABLE mri_parameter_form_sa ADD COLUMN weight_units enum ("pounds", "kilograms") DEFAULT NULL;
+ALTER TABLE mri_parameter_form_sa ADD COLUMN weight_units enum ('pounds', 'kilograms') DEFAULT NULL;
 ALTER TABLE mri_parameter_form_sa
 CHANGE COLUMN height
 height text DEFAULT NULL;
-ALTER TABLE mri_parameter_form_sa ADD COLUMN height_units enum ("inches", "centimeters") DEFAULT NULL;
+ALTER TABLE mri_parameter_form_sa ADD COLUMN height_units enum ('inches', 'centimeters') DEFAULT NULL;
 ALTER TABLE mri_parameter_form_sa
 CHANGE COLUMN head_circumference
 head_circumference text DEFAULT NULL;
-ALTER TABLE mri_parameter_form_sa ADD COLUMN head_circumference_units enum ("inches", "centimeters") DEFAULT NULL;
+ALTER TABLE mri_parameter_form_sa ADD COLUMN head_circumference_units enum ('inches', 'centimeters') DEFAULT NULL;
 
 -- Add session date
 ALTER TABLE mri_parameter_form_sa ADD COLUMN scan_date_1 date default NULL AFTER scan_done_1;
@@ -61,8 +61,8 @@ UPDATE mri_parameter_form_sa SET dti2_shell='complete' WHERE dti2_shell='yes' AN
 ALTER TABLE mri_parameter_form_sa
 CHANGE COLUMN dti2_shell
 dti2_shell enum ('complete','partial','none') default NULL;
-ALTER TABLE mri_parameter_form_sa
 UPDATE mri_parameter_form_sa SET 6b0_2='complete' WHERE 6b0_2='yes' AND !isnull (6b0_2);
+ALTER TABLE mri_parameter_form_sa
 CHANGE COLUMN 6b0_2
 6b0_2 enum ('complete','partial','none') default NULL;
 UPDATE mri_parameter_form_sa SET dti1_shell='complete' WHERE dti1_shell='yes' AND !isnull (dti1_shell);
