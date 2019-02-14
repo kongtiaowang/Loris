@@ -462,4 +462,3 @@ class NDB_BVL_Instrument_ados2_module3 extends NDB_BVL_Instrument_IBIS
     	$result = $db->update($this->table, $scoreCols, array("CommentID"=>$this->getCommentID()));
     }    // end score function
 }
->
