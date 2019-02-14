@@ -107,19 +107,20 @@ class NDB_BVL_Instrument_BRIEF2_Teacher extends NDB_BVL_Instrument
     {
         $this->addHeader("BRIEF-2 Teacher Form");
 
-        $this->addBasicDate('birth_date', "Student's Date of Birth");
+       // $this->addBasicDate('birth_date', "Student's Date of Birth");
 
         $gender_options = array(
                            null     => "",
                            "male"   => "Male",
                            "female" => "Female",
+                           "not_answered" =>"Not Answered"
                           );
 
         $this->addSelect("student_gender", "Student's Sex", $gender_options);
 
         $this->addBasicText("student_age", "Student's Age <br><h5><i>(Please enter a numeric value between 0-100. If you don't wish to answer, enter NA.)</i></h5>");
 
-        $this->addBasicText("student_grade", "Grade <br><h5><i>(Please enter a numeric value between 1-12 or K.)</i></h5>");
+        $this->addBasicText("student_grade", "Grade <br><h5><i>(Please enter a numeric value between 1-12 or K. If you don't wish to answer, enter NA.)</i></h5>");
 
         $relationship_options = array(
                                  null        => "",
@@ -143,6 +144,7 @@ class NDB_BVL_Instrument_BRIEF2_Teacher extends NDB_BVL_Instrument
                           "not_well"        => "Not Well",
                           "moderately_well" => "Moderately Well",
                           "very_well"       => "Very Well",
+                           "not_answered"   => "Not Answered"
                          );
 
         $this->addSelect("how_well_do_you_know_student", "How well do you know this student?", $rater_options);
@@ -153,6 +155,7 @@ class NDB_BVL_Instrument_BRIEF2_Teacher extends NDB_BVL_Instrument
                            null  => "",
                            "yes" => "Yes",
                            "no"  => "No",
+                           "not_answered"   => "Not Answered"
                           );
 
         $this->addSelect("does_student_receive_special_education_services", "Does this student receive special education services?", $yes_no_options);
@@ -162,6 +165,7 @@ class NDB_BVL_Instrument_BRIEF2_Teacher extends NDB_BVL_Instrument
                     "N"  => "Never(N)",
                     "S"  => "Sometimes(S)",
                     "O"  => "Often(O)",
+                    "not_answered"   => "Not Answered"
                    );
 
         $questions = array(
@@ -220,6 +224,7 @@ class NDB_BVL_Instrument_BRIEF2_Teacher extends NDB_BVL_Instrument
                     "N"  => "Never(N)",
                     "S"  => "Sometimes(S)",
                     "O"  => "Often(O)",
+                    "not_answered"   => "Not Answered"
                    );
 
         $questions = array(
