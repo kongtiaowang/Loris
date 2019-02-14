@@ -21,6 +21,7 @@ RUN echo "Use LorisTest;" | cat - \
     0000-00-02-Menus.sql \
     0000-00-03-ConfigTables.sql \
     0000-00-04-Help.sql \
+    0000-00-05-ElectrophysiologyTables.sql \
     aosi.sql \
     bmi.sql \
     medical_history.sql \
