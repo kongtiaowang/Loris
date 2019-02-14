@@ -703,7 +703,7 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
 
         $this->form->addGroup($group, null, "3. Gaze/point following", $this->_GUIDelimiter, false);
         unset($group);
-        $this->form->addElement("static", "emotion_eye_gaze_weighted", "Emotion and Eye Gaze Weighted:");
+        //$this->form->addElement("static", "emotion_eye_gaze_weighted", "Emotion and Eye Gaze Weighted:");
         //Communication
         $this->form->addElement("header", null, "Communication");
         $this->_printHeaderCols();
@@ -736,7 +736,7 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
         $this->form->addGroup($group, null, "7. Joint attention", $this->_GUIDelimiter, false);
         unset($group);
         
-        $this->form->addElement("static", "communication_weighted", "Communication Weighted:");
+       // $this->form->addElement("static", "communication_weighted", "Communication Weighted:");
 
         //Gestures
         $this->form->addElement("header", null, "Gestures");
@@ -767,7 +767,7 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
         $this->form->addGroup($group, null, "9. Distal gestures", $this->_GUIDelimiter, false);
         unset($group);
         
-        $this->form->addElement("static", "gestures_weighted", "Gestures Weighted:");
+       // $this->form->addElement("static", "gestures_weighted", "Gestures Weighted:");
 
         //Sounds
         $this->form->addElement("header", null, "Sounds");
@@ -799,7 +799,7 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
         $this->form->addGroup($group, null, null, $this->_GUIDelimiter, false);
         unset($group);
 
-        $this->form->addElement("static", "sounds_weighted", "Sounds Weighted:");
+        //$this->form->addElement("static", "sounds_weighted", "Sounds Weighted:");
 
         //Words
         $this->form->addElement("header", null, "Words");
@@ -853,7 +853,7 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
                $this->XINRegisterRule("q_15_word_combos_" . $int, array("q_15_word_combos_" . $int . "{@}=={@}NEVER_REQUIRED"), null, "q_15_word_combos_" . intval($int / 2) . "_group");
             }
         }
-        $this->form->addElement("static", "words_weighted", "Words Weighted:");
+       // $this->form->addElement("static", "words_weighted", "Words Weighted:");
 
     }
     
@@ -995,7 +995,7 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
       $this->form->addGroup($group, null, null, $this->_GUIDelimiter, false);
         unset($group);
  
-       $this->form->addElement("static", "understanding_weighted", "Weighted Raw Score for Scale 16 - Understanding:");
+      // $this->form->addElement("static", "understanding_weighted", "Weighted Raw Score for Scale 16 - Understanding:");
        
 
         //Object Use
@@ -1135,7 +1135,7 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
         $this->form->addElement("static","q_20_stacks_tower_raw_score","Stacks Tower Raw Score:" );
 
         $this->form->addElement("static", null, "<br />");
-        $this->form->addElement("static", "object_use_weighted", "Weighted Raw Scores for Scales 17, 18, 19, and 20 - Object Use:");
+       // $this->form->addElement("static", "object_use_weighted", "Weighted Raw Scores for Scales 17, 18, 19, and 20 - Object Use:");
 
     }
     
