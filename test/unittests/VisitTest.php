@@ -55,19 +55,19 @@ class VisitTest extends TestCase
 
 
 
-        $v1 = new \Loris\Visit('V1',99901);
-        $v2 = new \Loris\Visit('V2',99902);
-        $v3 = new \Loris\Visit('V3',99903);
+        $v1 = new \Loris\Visit('V1',1);
+        $v2 = new \Loris\Visit('V2',2);
+        $v3 = new \Loris\Visit('V3',3);
 
         $this->_listOfVisit = array($v1, $v2, $v3);
 
         $this->_listOfVisitProject = array(
-                                      array($v1, 1, 11),
-                                      array($v1, 2, 13),
-                                      array($v1, 3, 11),
-                                      array($v2, 1, 12),
-                                      array($v2, 3, 11),
-                                      array($v3, 3, 11)
+                                      array($v1, 1, 1),
+                                      array($v1, 2, 3),
+                                      array($v1, 3, 1),
+                                      array($v2, 1, 2),
+                                      array($v2, 3, 1),
+                                      array($v3, 3, 1)
                                      );
 
     }

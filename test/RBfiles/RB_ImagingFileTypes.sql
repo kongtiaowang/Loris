@@ -1,0 +1,14 @@
+TRUNCATE TABLE `ImagingFileTypes`;
+LOCK TABLES `ImagingFileTypes` WRITE;
+INSERT INTO `ImagingFileTypes` (`type`, `description`) VALUES ('imp',NULL);
+INSERT INTO `ImagingFileTypes` (`type`, `description`) VALUES ('mnc',NULL);
+INSERT INTO `ImagingFileTypes` (`type`, `description`) VALUES ('nii',NULL);
+INSERT INTO `ImagingFileTypes` (`type`, `description`) VALUES ('nii.gz',NULL);
+INSERT INTO `ImagingFileTypes` (`type`, `description`) VALUES ('nrrd',NULL);
+INSERT INTO `ImagingFileTypes` (`type`, `description`) VALUES ('obj',NULL);
+INSERT INTO `ImagingFileTypes` (`type`, `description`) VALUES ('txt',NULL);
+INSERT INTO `ImagingFileTypes` (`type`, `description`) VALUES ('vertstat',NULL);
+INSERT INTO `ImagingFileTypes` (`type`, `description`) VALUES ('xfm',NULL);
+INSERT INTO `ImagingFileTypes` (`type`, `description`) VALUES ('xfmmnc',NULL);
+INSERT INTO `ImagingFileTypes` (`type`, `description`) VALUES ('xml',NULL);
+UNLOCK TABLES;
