@@ -92,6 +92,11 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
     */
     function _setupForm()
     {
+        $db =& Database::singleton();
+
+        // Get the item scores
+        $query = "SELECT * FROM $this->table WHERE CommentID='".$this->getCommentID()."'";
+        $record =$db->pselectRow($query, array());
         //determine page to display
         if (preg_match(
             "/mri_parameter_form_sa(_page[0-9]+)/",
@@ -117,6 +122,23 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
 
         // Automatically adds examiner & date of administration
         $this->_addMetadataFields();
+        
+        $score_columns 
+           = array(
+             "scan_total_time_1" => "Scan 1 (Total Time) ", 
+             "scan_total_time_2" => "Scan 2 (Total Time) ",
+             "scan_total_time_3" => "Scan 3 (Total Time) ",
+             "scan_total_time_4" => "Scan 4 (Total Time) ",
+             "scan_total_time_5" => "Scan 5 (Total Time) ",
+        );
+        
+        while ($i = current($score_columns)) { 
+           $this->addScoreColumn(
+              key($score_columns),
+              $i
+           );
+           next($score_columns); 
+        }
         $this->form->addElement('static', null, '<BR>');
     }
 
@@ -128,15 +150,14 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
         // PRE-SESSION SECTION
         $this->form->addElement('header', null, "<b><i>Pre-Session</i></b><BR><BR>");
 
-        $this->form->addElement('text', 'scan_protocol', 'Scan Protocol:');
-
-        $this->form->addElement('select', 'sex', 'Sex:', array("" => null, "male" => "Male", "female" => "Female"));
-
         $this->form->addElement('select', 'sedation', "Sedation?", array("" => null, "Yes" => "Yes", "No" => "No"));
 
-        $this->form->addElement('text', 'weight', 'Weight (lbs):');
-        $this->form->addElement('text', 'height', 'Height (inches):');
-        $this->form->addElement('text', 'head_circumference', 'Head Circumference (inches):');
+        $this->form->addElement('text', 'weight', 'Weight:');
+        $this->form->addElement('select', 'weight_units', 'Weight units:', array("" => null, "pounds" => "pounds", "kilograms" => "kilograms"));
+        $this->form->addElement('text', 'height', 'Height:');
+        $this->form->addElement('select', 'height_units', 'Weight units:', array("" => null, "inches" => "inches", "cm" => "cm"));
+        $this->form->addElement('text', 'head_circumference', 'Head Circumference:');
+        $this->form->addElement('select', 'head_circumference_units', 'Head Circumference units:', array("" => null, "inches" => "inches", "cm" => "cm"));
 
         $this->form->addElement('select', "Scanner_type", "Type of Scanner:", array("" => null, "hospital" => "Hospital", "research" => "Research", "other" => "Other"));
         $this->form->addElement("text", "Scanner_type_other", "<i>If other, specify:</i>");
@@ -164,16 +185,95 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
         // SCAN SESSION SECTION
         $this->form->addElement('header', null, "<b><i>Scan Session Information</i></b><BR><BR>");
         $this->form->addElement("text", "MR_technologist", "MR Technologist:");
-        $this->form->addElement("text", "Bx_specialist", "Bx Specialist:");
+        $examiners = $this->_getExaminerNames();
+        $this->form->addElement("select", "Bx_specialist", "Bx Specialist:", $examiners);
 
-        $this->form->addElement("text", "session_attempts", "Session #");
+        //$this->form->addElement("text", "session_attempts", "Session #");
+        $this->_displayHeadersScanSession();
+        for ($i=1; $i < 6; $i++) {
+            $group[] = $this->createLabel($i . ".");
+            $group[] = $this->createSelect(
+                "scan_done_$i",
+                "",
+                array(
+                    null => "",
+                    "yes" => "Yes",
+                    "no" => "No"
+                )
+            );
+            $group[] = $this->createDate(
+                "scan_date_$i",
+                ""
+            );
+            $group[] = $this->form->createElement(
+                "time",
+                "time_enter_mri_room_$i"
+            );
+           $group[] = $this->form->createElement(
+               "time",
+                "scan_start_time_$i"
+            );
 
-        $this->addHourMinElement("time_enter_mri_rm", "Time Enter MRI Rm");
-        $this->addHourMinElement("start_time", "Scan Start Time");
-        $this->addHourMinElement("end_time", "Scan End Time");
+            $group[] =$this->form->createElement(
+                "time",
+                "scan_end_time_$i"
+            );
+            $group[] = $this->createSelect(
+                "vit_e_right_$i",
+                "",
+                array(
+                    null => "",
+                    "yes" => "Yes",
+                    "no" => "No"
+                )
+            );
+            $this->form->addGroup(
+                $group,
+                "scan_group_table{$i}",
+                null,
+                $this->_GUIDelimiter,
+                false
+            );
+            unset($group);
+            $this->XINRegisterRule(
+                "scan_done_{$i}",
+                array("scan_done_{$i}{@}=={@}NEVER_REQUIRED"), // rule
+                "Not Required.", // message
+                "scan_group_table{$i}" // group [if field is a part of a group]
+            );
+            $this->XINRegisterRule(
+                "scan_date_$i",
+                array("scan_done_$i{@}=={@}yes"),
+                "All fields are required if corresponding session is marked as done.",
+                "scan_group_table{$i}"
+            );
+            $this->XINRegisterRule(
+                "time_enter_mri_room_$i",
+                array("scan_done_$i{@}=={@}yes"),
+                "All fields are required if corresponding session is marked as done.",
+                "scan_group_table{$i}"
+            );
+            $this->XINRegisterRule(
+                "scan_start_time_$i",
+                array("scan_done_$i{@}=={@}yes"),
+                "All fields are required if corresponding session is marked as done.",
+                "scan_group_table{$i}"
+            );
+            $this->XINRegisterRule(
+                "vit_e_right_$i",
+                array("scan_done_$i{@}=={@}yes"),
+                "All fields are required if corresponding session is marked as done.",
+                "scan_group_table{$i}"
+            );
 
-        $this->form->addElement('select', 'vit_e_right', "Vit E (Sbj Right)", array("" => null, "Yes" => "Yes", "No" => "No"));
-        $this->form->addElement('select', 'additional_sessions', "Additional sessions", array("" => null, "Yes" => "Yes", "No" => "No"));
+            $this->XINRegisterRule(
+                "scan_end_time_$i",
+                array("scan_done_$i{@}=={@}yes"),
+                "All fields are required if corresponding session is marked as done.",
+                "scan_group_table{$i}"
+            );
+
+        }
 
         $this->form->addElement("textarea", "overall_session_comments", "<i>Overall Session Comments:</i>");
         $this->XINRegisterRule(
@@ -187,17 +287,6 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
         $this->form->addElement('select', 't1w_acquired', "<b>T1w acquired?</b>", array("" => null, "Yes_2" => "Yes (2)", "Yes_1" => "Yes (1)", 'none' => 'None'));
         $this->form->addElement('select', 't2w_acquired', "<b>T2w acquired?</b>", array("" => null, "Yes" => "Yes", "No" => "No"));
 
-        $this->form->addElement('static', null, '*Repeat until pass SNR; order doesn\'t matter<BR><BR>');
-
-        $this->form->addElement('advcheckbox', 'aahscout', "<i>AAHScout</i>", null, null, array(null, "Yes"));
-        $this->form->addElement('advcheckbox', 'fieldmap_apinv_structural', "<i>FieldMap_APinv</i>", null, null, array(null, "Yes"));
-        $this->form->addElement('advcheckbox', 'localizers', "<i>Localizers</i>", null, null, array(null, "Yes"));
-        $this->form->addElement('advcheckbox', 'fieldmap_ap_structural', "<i>FieldMap_AP</i>", null, null, array(null, "Yes"));
-
-        $this->form->addElement('advcheckbox', 't1w_run1_check', "T1w run1 | <i>T1w_MPR_1mm_p4</i>", null, null, array(null, "Yes"));
-        $this->form->addElement('advcheckbox', 't1w_run2_check', "T1w run2 | <i>T1w_MPR_1mm_p4</i>", null, null, array(null, "Yes"));
-        $this->form->addElement('advcheckbox', 't2w_check', "T2w | <i>T2w_SPC_1mm_p2x2</i>", null, null, array(null, "Yes"));
-
         $this->addLabel("<h4>$this->indent <BR><b>SNR Samples</b><BR></h4>");
 
         // First group of questions
@@ -206,15 +295,21 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
         $questions        = array(
                              "t1w_run1" => "T1w run1",
                              "t1w_run2" => "T1w run2",
-                             "t2w"      => "T2w",
+                             "t1w_run3" => "T1w run3",
+                             "t2w_run1" => "T2w run1",
+                             "t2w_run2" => "T2w run2",
+                             "t2w_run3" => "T2w run3",
                             );
         $repeat_questions = array(
                              "t1w_run1_repeat" => "T1w run1 repeat",
                              "t1w_run2_repeat" => "T1w run2 repeat",
-                             "t2w_repeat"      => "T2w repeat",
+                             "t1w_run3_repeat" => "T1w run3 repeat",
+                             "t2w_run1_repeat" => "T2w run1 repeat",
+                             "t2w_run2_repeat" => "T2w run2 repeat",
+                             "t2w_run3_repeat" => "T2w run3 repeat",
                             );
 
-        // Display questions with three columns, one for anterior rating, one for superior rating, and one for a pass/fail rating. Required if preceding checkbox is filled.
+        // Display questions with two columns, one for anterior/superior ratio, and one for a pass/fail rating. Required if preceding checkbox is filled.
         $this->_displayHeaders("questions");
         foreach ($questions as $question => $label) {
             $group[] = $this->createLabel($label);
@@ -228,29 +323,19 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
                 "Required.",
                 $question . "_group"
             );
-            $group[] = $this->createText(
-                $question . "_superior",
-                ""
-            );
-            $this->XINRegisterRule(
-                $question . "_superior",
-                array($question . "_check{@}=={@}Yes"),
-                "Required.",
-                $question . "_group"
-            );
             $group[] = $this->createSelect(
                 $question . "_passfail",
                 "",
-                array(
+                array(  
                  ''     => null,
-                 'Pass' => "Pass",
-                 'Fail' => "Fail",
+                 'Pass' => "Console Pass",
+                 'Fail' => "Console Fail",
                 )
             );
             $this->XINRegisterRule(
                 $question . "_passfail",
-                array($question . "_check{@}=={@}Yes"),
-                "Required.",
+                array($question . "_passfail{@}=={@}NEVER_REQUIRED"),
+                $question . "_group",
                 $question . "_group"
             );
             $this->form->addGroup(
@@ -264,7 +349,7 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
 
         }
 
-        // Display optional repeat questions with three columns, one for anterior rating, one for superior rating, and one for a pass/fail rating.
+        // Display optional repeat questions with two columns, one for anterior/superior ratio, and one for a pass/fail rating.
         foreach ($repeat_questions as $question => $label) {
             $group[] = $this->createLabel($label);
             $group[] = $this->createText(
@@ -274,30 +359,24 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
             $this->XINRegisterRule(
                 $question . "_anterior",
                 array($question . "_anterior{@}=={@}NEVER_REQUIRED"),
-                $question . "_group"
+                $question . "_group",
+                $question . "_group_repeat"
             );
-            $group[] = $this->createText(
-                $question . "_superior",
-                ""
-            );
-            $this->XINRegisterRule(
-                $question . "_superior",
-                array($question . "_superior{@}=={@}NEVER_REQUIRED"),
-                $question . "_group"
-            );
+
             $group[] = $this->createSelect(
                 $question . "_passfail",
                 "",
                 array(
                  ''     => null,
-                 'Pass' => "Pass",
-                 'Fail' => "Fail",
+                 'Pass' => "Console Pass",
+                 'Fail' => "Console Fail",
                 )
             );
             $this->XINRegisterRule(
                 $question . "_passfail",
                 array($question . "_passfail{@}=={@}NEVER_REQUIRED"),
-                $question . "_group"
+                $question . "_group",
+                $question . "_group_repeat"
             );
             $this->form->addGroup(
                 $group,
@@ -319,36 +398,51 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
         $this->form->addElement('static', null, '<BR><BR><BR>');
 
         // Auto align success
-        $this->form->addElement('select', 'auto_align_successful', "<b><u>Was AutoAlign Successful?<b><u>", array('' => null, 'Yes' => "Yes", 'No' => "No"));
+        $this->form->addElement('select', 'auto_align_successful', "<h3><b><u>Was AutoAlign Successful?<b><u></h3>", array('' => null, 'Yes' => "Yes", 'No' => "No"));
         $this->form->addElement('static', null, '<i>(If failed, verify encoding direction for each run of DTI and BOLD)</i>');
         $this->form->addElement('static', null, '<BR>');
 
         // DTI SECTION
         $this->form->addElement('header', null, "<b>DTI</b><BR><BR>");
-        $this->form->addElement('select', 'dti_sequences_acquired', "<b>DTI Sequences Acquired?<b>", array('' => null, 'complete' => "Complete", 'partial' => "Partial", 'No' => "No"));
+        $this->form->addElement('select', 'dti_sequences_acquired', "<b>DTI Sequences Acquired?<b>", array(null => "", "complete" => "Complete", "partial" => "Partial", "none" => "None"));
 
         $this->form->addElement('static', null, '*Repeat until pass QC; run DTI in order listed<BR><BR>');
         $this->form->addElement('static', null, '<BR>');
 
-        $this->form->addElement('advcheckbox', 'dti3_shell', "DTI 3 Shell | <i>ep2d_diff_sms2_3shell_PA_1p7</i>", null, null, array(null, "Yes"));
-        $this->form->addElement('text', 'dti3_shell_attempts', "<b>Record Attempts & Pass/Fail</b><BR><BR>");
+        $this->form->addElement('select', 'dti3_shell', "DTI 3 Shell | <i>ep2d_diff_sms2_3shell_PA_1p7</i>", array(null => "", "complete" => "Complete", "partial" => "Partial", "none" => "None"));
+        $this->form->addElement('select', 'dti3_shell_attempts', "<b>Console Pass/Fail</b><BR><BR>", array(null => "", "console_pass" => "Console Pass", "console_fail" => "Console Fail"));
         $this->XINRegisterRule("dti3_shell_attempts", array("dti3_shell{@}=={@}Yes"), "Required.");
+        $this->form->addElement('select', 'dti3_shell_num_attempts', "<b>Number of Attempts</b>", range(0, 10));
+        $this->XINRegisterRule("dti3_shell_num_attempts", array("dti3_shell{@}=={@}Yes"), "Required.");
+        $this->form->addElement('static', null, '<BR><BR>');
 
-        $this->form->addElement('advcheckbox', '3b0', "3B0 | <i>ep2d_diff_sms2_3B0_AP_1p7</i>", null, null, array(null, "Yes"));
-        $this->form->addElement('text', '3b0_attempts', "<b>Record Attempts & Pass/Fail</b><BR><BR>");
-        $this->XINRegisterRule("3b0_attempts", array("3b0{@}=={@}Yes"), "Required.");
+        $this->form->addElement('select', '6b0', "6B0 | <i>ep2d_diff_sms2_6B0_AP_1p7</i>", array(null => "", "complete" => "Complete", "partial" => "Partial", "none" => "None"));
+        $this->form->addElement('select', '6b0_attempts', "<b>Console Pass/Fail</b><BR><BR>", array(null => "", "console_pass" => "Console Pass", "console_fail" => "Console Fail"));
+        $this->XINRegisterRule("6b0_attempts", array("6b0{@}=={@}Yes"), "Required.");
+        $this->form->addElement('select', '6b0_num_attempts', "<b>Number of Attempts</b>", range(0, 10));
+        $this->XINRegisterRule("6b0_num_attempts", array("6b0{@}=={@}Yes"), "Required.");
+        $this->form->addElement('static', null, '<BR><BR>');
 
-        $this->form->addElement('advcheckbox', 'dti2_shell', "DTI 2 Shell | <i>ep2d_diff_sms2_2shell_PA_1p7</i>", null, null, array(null, "Yes"));
-        $this->form->addElement('text', 'dti2_shell_attempts', "<b>Record Attempts & Pass/Fail</b><BR><BR>");
+        $this->form->addElement('select', 'dti2_shell', "DTI 2 Shell | <i>ep2d_diff_sms2_2shell_PA_1p7</i>", array(null => "", "complete" => "Complete", "partial" => "Partial", "none" => "None"));
+        $this->form->addElement('select', 'dti2_shell_attempts', "<b>Console Pass/Fail</b><BR><BR>", array(null => "", "console_pass" => "Console Pass", "console_fail" => "Console Fail"));
         $this->XINRegisterRule("dti2_shell_attempts", array("dti2_shell{@}=={@}Yes"), "Required.");
+        $this->form->addElement('select', 'dti2_shell_num_attempts', "<b>Number of Attempts</b>", range(0, 10));
+        $this->XINRegisterRule("dti2_shell_num_attempts", array("dti2_shell{@}=={@}Yes"), "Required.");
+        $this->form->addElement('static', null, '<BR><BR>');
 
-        $this->form->addElement('advcheckbox', '3b0_2', "3B0 | <i>ep2d_diff_sms2_3B0_AP_1p7</i>", null, null, array(null, "Yes"));
-        $this->form->addElement('text', '3b0_2_attempts', "<b>Record Attempts & Pass/Fail</b><BR><BR>");
-        $this->XINRegisterRule("3b0_2_attempts", array("3b0_2{@}=={@}Yes"), "Required.");
+        $this->form->addElement('select', '6b0_2', "6B0 | <i>ep2d_diff_sms2_6B0_AP_1p7</i>", array(null => "", "complete" => "Complete", "partial" => "Partial", "none" => "None"));
+        $this->form->addElement('select', '6b0_2_attempts', "<b>Console Pass/Fail</b><BR><BR>", array(null => "", "console_pass" => "Console Pass", "console_fail" => "Console Fail"));
+        $this->XINRegisterRule("6b0_2_attempts", array("6b0_2{@}=={@}Yes"), "Required.");
+        $this->form->addElement('select', '6b0_2_num_attempts', "<b>Number of Attempts</b>", range(0, 10));
+        $this->XINRegisterRule("6b0_2_num_attempts", array("6b0_2{@}=={@}Yes"), "Required.");
+        $this->form->addElement('static', null, '<BR><BR>');
 
-        $this->form->addElement('advcheckbox', 'dti1_shell', "DTI 1 Shell | <i>ep2d_diff_sms2_1shell_PA_1p7</i>", null, null, array(null, "Yes"));
-        $this->form->addElement('text', 'dti1_shell_attempts', "<b>Record Attempts & Pass/Fail</b><BR><BR>");
+        $this->form->addElement('select', 'dti1_shell', "DTI 1 Shell | <i>ep2d_diff_sms2_1shell_PA_1p7</i>", array(null => "", "complete" => "Complete", "partial" => "Partial", "none" => "None"));
+        $this->form->addElement('select', 'dti1_shell_attempts', "<b>Console Pass/Fail</b><BR><BR>", array(null => "", "console_pass" => "Console Pass", "console_fail" => "Console Fail"));
         $this->XINRegisterRule("dti1_shell_attempts", array("dti1_shell{@}=={@}Yes"), "Required.");
+        $this->form->addElement('select', 'dti1_shell_num_attempts', "<b>Number of Attempts</b>", range(0, 10));
+        $this->XINRegisterRule("dti1_shell_num_attempts", array("dti1_shell{@}=={@}Yes"), "Required.");
+        $this->form->addElement('static', null, '<BR><BR>');
 
         // Add DTI comments text area
         $this->form->addElement("textarea", "dti_comments", "<i>DTI Comments:</i>");
@@ -361,46 +455,52 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
         // BOLD SECTION
         $this->form->addElement('header', null, "<b>BOLD</b><BR><BR>");
 
-        $this->form->addElement('select', 'bold_sequences_acquired', "<b>Sequences Acquired?<b>", array('' => null, 'complete' => "Complete", 'partial' => "Partial", 'No' => "No"));
-        $this->form->addElement('select', 'bold_number_complete', "<b># of complete series:<b>", array('' => null, '0' => "0", '1' => "1", '2' => "2", '3' => "3", '4' => "4"));
+        $this->form->addElement('select', 'bold_sequences_acquired', "<b>Sequences Acquired?<b>", array(null => "", 'complete' => "Complete", 'partial' => "Partial", 'none' => "None"));
+        $this->form->addElement('select', 'bold_number_complete', "<b># of complete series:<b>", array(null => "", '0' => "0", '1' => "1", '2' => "2", '3' => "3", '4' => "4"));
         $this->XINRegisterRule("bold_number_complete", array("bold_sequences_acquired{@}=={@}complete"), "Required if 'Complete' selected in previous question.");
 
         $this->form->addElement('select', 'activity_during_scan', "<b>Activity During Scan:<b>", array('' => null, 'fixation_cross' => "Fixation Cross", 'asleep' => "Asleep", 'other' => "Other"));
         $this->form->addElement("text", "scan_activity_other", "If other, specify:");
         $this->XINRegisterRule("scan_activity_other", array("activity_during_scan{@}=={@}other"), "Required if 'Other' selected in previous question");
 
-        $this->form->addElement('static', null, '*Repeat as long as subject is able & time remains<BR><BR>');
-
-        $this->form->addElement('advcheckbox', 'FieldMap_APinv_BOLD', "<i>FieldMap_APinv</i>", null, null, array(null, "Yes"));
-        $this->form->addElement('advcheckbox', 'FieldMap_AP_BOLD', "<i>FieldMap_AP</i>", null, null, array(null, "Yes"));
+        $this->form->addElement('select', 'FieldMap_APinv_BOLD', "<i>FieldMap_APinv</i>",array('' => null, 'complete' => "Complete", 'partial' => "Partial", 'none' => "None"));
+        $this->form->addElement('select', 'FieldMap_AP_BOLD', "<i>FieldMap_AP</i>", array('' => null, 'complete' => "Complete", 'partial' => "Partial", 'none' => "None"));
 
         $this->form->addElement('static', null, '<BR><BR><i>*If necessary, briefly speak to each subject before each run to encourage them to hold still. Do not speak during the runs.</i><BR>');
         $this->form->addElement('static', null, '<i>*QC BOLD runs with FIRMM: if > 30% of the frames in any run are FD > 0.04, encourage the subject to hold more still & repeat the run.</i><BR><BR>');
         $this->form->addElement('static', null, '<BR>');
 
-        $this->form->addElement('advcheckbox', 'bold_run1', "BOLD run 1 | <i>ep2d_bold_sms6_PA</i>", null, null, array(null, "Yes"));
-        $this->form->addElement('text', 'bold_run1_attempts', "<b>Record Attempts & Number of Passing Frames</b>");
+        $this->form->addElement('select', 'bold_run1', "BOLD run 1 | <i>ep2d_bold_sms6_PA</i>", array(null => "", 'complete' => "Complete", 'partial' => "Partial", 'none' => "None"));
+        $this->form->addElement('select', 'bold_run1_attempts', "<b>Console Pass/Fail</b>", array(null => "", "console_pass" => "Console Pass", "console_fail" => "Console Fail"));
+        $this->form->addElement('select', 'bold_run1_num_attempts', "<b>Number of Attempts</b>", range(0, 10));
+        $this->XINRegisterRule("bold_run1_num_attempts", array("bold_run1{@}=={@}Yes"), "Required.");
         $this->XINRegisterRule("bold_run1_attempts", array("bold_run1{@}=={@}Yes"), "Required.");
         $this->form->addElement('select', 'bold_run1_firmm', "<b>FIRMM used?<b>", array('' => null, 'Yes' => "Yes", 'No' => "No"));
         $this->XINRegisterRule("bold_run1_firmm", array("bold_run1{@}=={@}Yes"), "Required.");
         $this->form->addElement('static', null, '<BR><BR>');
 
-        $this->form->addElement('advcheckbox', 'bold_run2', "BOLD run 2 | <i>ep2d_bold_sms6_PA</i>", null, null, array(null, "Yes"));
-        $this->form->addElement('text', 'bold_run2_attempts', "<b>Record Attempts & Number of Passing Frames</b>");
+        $this->form->addElement('select', 'bold_run2', "BOLD run 2 | <i>ep2d_bold_sms6_PA</i>", array(null => "", 'complete' => "Complete", 'partial' => "Partial", 'none' => "None"));
+        $this->form->addElement('select', 'bold_run2_attempts', "<b>Console Pass/Fail</b>", array(null => "", "console_pass" => "Console Pass", "console_fail" => "Console Fail"));
+        $this->form->addElement('select', 'bold_run2_num_attempts', "<b>Number of Attempts</b>", range(0, 10));
+        $this->XINRegisterRule("bold_run2_num_attempts", array("bold_run2{@}=={@}Yes"), "Required.");
         $this->XINRegisterRule("bold_run2_attempts", array("bold_run2{@}=={@}Yes"), "Required.");
         $this->form->addElement('select', 'bold_run2_firmm', "<b>FIRMM used?<b>", array('' => null, 'Yes' => "Yes", 'No' => "No"));
         $this->XINRegisterRule("bold_run2_firmm", array("bold_run2{@}=={@}Yes"), "Required.");
         $this->form->addElement('static', null, '<BR><BR>');
 
-        $this->form->addElement('advcheckbox', 'bold_run3', "BOLD run 3 | <i>ep2d_bold_sms6_PA</i>", null, null, array(null, "Yes"));
-        $this->form->addElement('text', 'bold_run3_attempts', "<b>Record Attempts & Number of Passing Frames</b>");
+        $this->form->addElement('select', 'bold_run3', "BOLD run 3 | <i>ep2d_bold_sms6_PA</i>", array(null => "", 'complete' => "Complete", 'partial' => "Partial", 'none' => "None"));
+        $this->form->addElement('select', 'bold_run3_attempts', "<b>Console Pass/Fail</b>", array(null => "", "console_pass" => "Console Pass", "console_fail" => "Console Fail"));
+        $this->form->addElement('select', 'bold_run3_num_attempts', "<b>Number of Attempts</b>", range(0, 10));
+        $this->XINRegisterRule("bold_run3_num_attempts", array("bold_run3{@}=={@}Yes"), "Required.");
         $this->XINRegisterRule("bold_run3_attempts", array("bold_run3{@}=={@}Yes"), "Required.");
         $this->form->addElement('select', 'bold_run3_firmm', "<b>FIRMM used?<b>", array('' => null, 'Yes' => "Yes", 'No' => "No"));
         $this->XINRegisterRule("bold_run3_firmm", array("bold_run3{@}=={@}Yes"), "Required.");
         $this->form->addElement('static', null, '<BR><BR>');
 
-        $this->form->addElement('advcheckbox', 'bold_run4', "BOLD run 4 <i>(if needed/possible)</i>", null, null, array(null, "Yes"));
-        $this->form->addElement('text', 'bold_run4_attempts', "<b>Record Attempts & Number of Passing Frames</b>");
+        $this->form->addElement('select', 'bold_run4', "BOLD run 4 <i>(if needed/possible)</i>", array(null => "", 'complete' => "Complete", 'partial' => "Partial", 'none' => "None"));
+        $this->form->addElement('select', 'bold_run4_attempts', "<b>Console Pass/Fail</b>", array(null => "", "console_pass" => "Console Pass", "console_fail" => "Console Fail"));
+        $this->form->addElement('select', 'bold_run4_num_attempts', "<b>Number of Attempts</b>", range(0, 10));
+        $this->XINRegisterRule("bold_run4_num_attempts", array("bold_run4{@}=={@}Yes"), "Required.");
         $this->XINRegisterRule("bold_run4_attempts", array("bold_run4{@}=={@}Yes"), "Required.");
         $this->form->addElement('select', 'bold_run4_firmm', "<b>FIRMM used?<b>", array('' => null, 'Yes' => "Yes", 'No' => "No"));
         $this->XINRegisterRule("bold_run4_firmm", array("bold_run4{@}=={@}Yes"), "Required.");
@@ -420,50 +520,9 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
         $this->form->addElement('select', 'overall_success', "<b>Overall Scan Success</b> - to be completed following final scan session", array("" => null, 'complete_protocol_acquired' => "Complete protocol acquired", 'partial_protocol_acquired' => "Partial protocol acquired", 'acquired_but_possibly_not_usable' => "Complete/partial acquired but may not be usable", 'none_of_protocol_acquired' => "None of protocol acquired"));
         $this->form->addElement('select', 'if_none_partial_unusable', "<i>If none/partial/unusable:</i>", array("" => null, 'unable_to_stay_still' => "Subject unable to stay still", 'subject_refused' => "Subject refused", 'family_canceled' => "Family canceled", 'out_of_time' => "Ran out of time", 'scanner_issues' => "Scanner issues", 'family_declined' => "Family declined second attempt"));
         $this->XINRegisterRule("if_none_partial_unusable", array("overall_success{@}!={@}complete_protocol_acquired"), "Required if complete protocol was not acquired");
-        $this->form->addElement('text', 'total_number_scans', "Total # of scan sessions:");
-        $this->addHourMinElement('total_scan_time', "Total scan time:");
-        $this->form->addElement('text', 'total_attempts_t1w', "Total # attempts for <b>T1w:</b>");
-        $this->form->addElement('text', 'total_attempts_t2w', "Total # attempts for <b>T2w:</b>");
-        $this->form->addElement('text', 'total_attempts_dti', "Total # attempts for <b>DTI:</b>");
-        $this->form->addElement('text', 'total_attempts_bold', "Total # attempts for <b>BOLD:</b>");
-
-        $this->form->addElement('advcheckbox', 'data_sent_to_dcc', "Scan Data sent to DCC", null, null, array(null, "Yes"));
-        $this->form->addElement('advcheckbox', 'data_entry_done_loris', "MRI PF Data Entry done in LORIS", null, null, array(null, "Yes"));
 
         $this->form->addFormRule(array(&$this, 'validate_page1'));
         $this->form->addFormRule(array(&$this, 'specialRules'));
-
-        // Creates array of all checkbox questions for use in following XIN rule
-        $checkboxquestions = array(
-                              'aahscout',
-                              'fieldmap_apinv_structural',
-                              'localizers',
-                              'fieldmap_ap_structural',
-                              't1w_run1_check',
-                              't1w_run2_check',
-                              't2w_check',
-                              'dti3_shell',
-                              '3b0',
-                              'dti2_shell',
-                              '3b0_2',
-                              'dti1_shell',
-                              'FieldMap_APinv_BOLD',
-                              'FieldMap_AP_BOLD',
-                              'bold_run1',
-                              'bold_run2',
-                              'bold_run3',
-                              'bold_run4',
-                              'data_sent_to_dcc',
-                              'data_entry_done_loris',
-                             );
-
-        // Makes checkbox questions not required
-        foreach ($checkboxquestions as $check) {
-            $this->XINRegisterRule(
-                $check,
-                array("check{@}=={@}NEVER_REQUIRED")
-            );
-        }
 
     }
     // End setupForm
@@ -511,6 +570,37 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
         return $errors;
     }
 
+    function score() {
+        if ($this->_determineDataEntryCompletionStatus() == "Incomplete") { 
+            return;
+        }
+     
+        // Get the item scores 
+        $db =& Database::singleton(); 
+        $query = "SELECT * FROM ".$this->table." WHERE CommentID=:cid";
+        $record = $db->pselectRow($query, array('cid' => $this->getCommentID()));
+        
+        $scores = array();  
+        
+        for ($i=1; $i <= 5; $i++) {
+            $start_time = "scan_start_time_$i"; 
+            $end_time = "scan_end_time_$i";
+            if ($record[$start_time] != NULL && $record[$end_time] != NULL) {
+                $curr_total_time = "scan_total_time_$i";
+                $timediff = $db->pselect("SELECT TIMEDIFF('".$record[$end_time]."', '".$record[$start_time]."')", array());
+                $timediff = implode($timediff[0]);
+            }
+            else{
+                $curr_total_time = "scan_total_time_$i";
+                $timediff = NULL;
+            }
+            $scores[$curr_total_time] = $timediff;
+        }
+        
+        // save scores
+	    $db->update($this->table, $scores, array("CommentID"=>$this->getCommentID()));
+    }
+
     /**
      * Displays headers for column section
      */
@@ -526,19 +616,13 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
                 "static",
                 null,
                 null,
-                "<b>Anterior</b>"
+                "<b>Anterior/Superior Ratio</b>"
             );
             $group[] = $this->form->createElement(
                 "static",
-                null,
-                null,
-                "<b>Superior</b>"
-            );
-            $group[] = $this->form->createElement(
-                "static",
-                null,
-                null,
-                "<b>Pass/Fail</b>"
+                 null,
+                 null,
+                 "<b>Console Pass/Fail"
             );
             $this->form->addGroup(
                 $group,
@@ -548,6 +632,59 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
                 false
             );
             unset($group);
+    }
+
+    function _displayHeadersScanSession() {
+        $group[] = $this->form->createElement(
+            "static",
+            null,
+            null,
+            ""
+        );
+        $group[] = $this->form->createElement(
+            "static",
+            null,
+            null,
+            "<b>Session Done<b>"
+        );
+        $group[] = $this->form->createElement(
+            "static",
+            null,
+            null,
+            "<b>Session Date<b>"
+        );
+        $group[] = $this->form->createElement(
+            "static",
+            null,
+            null,
+            "<b>Time Enter<br>MRI Room(HH:MM)<b>"
+        );
+        $group[] = $this->form->createElement(
+            "static",
+            null,
+            null,
+            "<b>Scan Start Time(HH:MM)</b>"
+        );
+        $group[] = $this->form->createElement(
+            "static",
+            null,
+            null,
+            "<b>Scan End Time(HH:MM)</b>"
+        );
+        $group[] = $this->form->createElement(
+            "static",
+            null,
+            null,
+            "<b>Vit E (Sbj Right)<b>"
+        );
+        $this->form->addGroup(
+            $group,
+            "scan_session_headers",
+            null,
+            $this->_GUIDelimiter,
+            false
+        );
+        unset($group);
     }
 }
 ?>

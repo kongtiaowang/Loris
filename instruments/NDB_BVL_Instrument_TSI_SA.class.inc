@@ -132,6 +132,7 @@ class NDB_BVL_Instrument_TSI_SA extends NDB_BVL_Instrument
             null                      => "",
             "not_answered"            => "Not Answered",
             "some_hs"                 => "Some High School",
+            "hs"                      => "High School",
             "some_college_2yr_degree" => "Some College/2yr. Degree",
             "college_degree"          => "College Degree",
             "some_grad_school"        => "Some Graduate School",

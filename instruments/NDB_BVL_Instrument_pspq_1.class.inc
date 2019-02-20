@@ -1,7 +1,7 @@
 <?php
 
 /**
-*This file contains the NDB_BVL_Instrument_pspq_1 class
+*This file contains the NDB_BVL_Instrument_pspq_1(Send to Mom) class
 *
 * PHP Version 5
 *
@@ -131,7 +131,7 @@ class NDB_BVL_Instrument_pspq_1 extends NDB_BVL_Instrument
     {
 
         // display test name
-        $this->form->addElement('header', 'instrument_title', "PSPQ : Personality Styles and Preferences Questionnaire");
+        $this->form->addElement('header', 'instrument_title', "PSPQ : Personality Styles and Preferences Questionnaire (Send To Mom)");
 
         // Add date of administration question
         $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
@@ -189,7 +189,7 @@ class NDB_BVL_Instrument_pspq_1 extends NDB_BVL_Instrument
     {
 
         // Display test name, and the name of the section
-        $this->form->addElement('header', 'instrument_title', "PSPQ : Personality Styles and Preferences Questionnaire");
+        $this->form->addElement('header', 'instrument_title', "PSPQ : Personality Styles and Preferences Questionnaire (Send To Mom)");
         $this->form->addElement('header', 'instrument_title1', "Self Rating");
 
         // Second group of questions
@@ -225,7 +225,7 @@ class NDB_BVL_Instrument_pspq_1 extends NDB_BVL_Instrument
     {
 
         // Display test name, and the name of the section
-        $this->form->addElement('header', 'instrument_title', "PSPQ : Personality Styles and Preferences Questionnaire");
+        $this->form->addElement('header', 'instrument_title', "PSPQ : Personality Styles and Preferences Questionnaire (Send To Mom)");
         $this->form->addElement('header', 'instrument_title1', "Self Rating");
 
         // Third group of questions
@@ -259,7 +259,7 @@ class NDB_BVL_Instrument_pspq_1 extends NDB_BVL_Instrument
     function _page4()
     {
         // Display test name
-        $this->form->addElement('header', 'instrument_title', "PSPQ : Personality Styles and Preferences Questionnaire");
+        $this->form->addElement('header', 'instrument_title', "PSPQ : Personality Styles and Preferences Questionnaire (Send To Mom)");
 
         // Indicate section
         $this->form->addElement('header', 'instrument_title1', "*OBSERVER RATING SECTION IS ABOUT YOUR SPOUSE OR PARTNER*If you do not have a partner you may skip this section.");
@@ -330,7 +330,7 @@ class NDB_BVL_Instrument_pspq_1 extends NDB_BVL_Instrument
     {
 
         // Display test name
-        $this->form->addElement('header', 'instrument_title', "PSPQ : Personality Styles and Preferences Questionnaire");
+        $this->form->addElement('header', 'instrument_title', "PSPQ : Personality Styles and Preferences Questionnaire (Send To Mom)");
 
         // Indicate section
         $this->form->addElement('header', 'instrument_title1', "Observer Rating");
@@ -369,7 +369,7 @@ class NDB_BVL_Instrument_pspq_1 extends NDB_BVL_Instrument
     {
 
         // Display test name
-        $this->form->addElement('header', 'instrument_title', "PSPQ : Personality Styles and Preferences Questionnaire");
+        $this->form->addElement('header', 'instrument_title', "PSPQ : Personality Styles and Preferences Questionnaire (Send To Mom)");
 
         // Indicate section
         $this->form->addElement('header', 'instrument_title1', "Observer Rating");

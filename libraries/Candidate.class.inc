@@ -183,6 +183,7 @@ class Candidate
        $drexid = Candidate::_generateID("DREX");
        $hopid  = Candidate::_generateID("HOP");
        $kingid = Candidate::_generateID("KING");
+       $oriid  = Candidate::_generateID("ORI");
        $parentid = Candidate::_generateID("PARENT");
        
        // insert the new candidate into the database
@@ -201,6 +202,7 @@ class Candidate
                          'DREXID'       => $drexid,
                          'HOPID'        => $hopid,
                          'KINGID'       => $kingid,
+                         'ORIID'        => $oriid,
                          'PARENTID'     => $parentid
                          );
        

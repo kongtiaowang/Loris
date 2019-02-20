@@ -75,8 +75,9 @@ $instruments = $DB->pselect($query, array());
 foreach ($instruments as $instrument) {
 	//Query to pull the data from the DB
 	$Test_name = $instrument['Test_name'];
+	if($DB->tableExists($Test_name)){
     if($Test_name == 'prefrontal_task') {
-        
+
 	    $query = "select c.PSCID, c.CandID, s.SubprojectID, s.Visit_label, s.Submitted, s.Current_stage, s.Screening, s.Visit, f.Administration, e.full_name as Examiner_name, f.Data_entry, 'See validity_of_data field' as Validity, i.* from candidate c, session s, flag f, $Test_name i left outer join examiners e on i.Examiner = e.examinerID where c.PSCID not like 'dcc%' and c.PSCID not like '0%' and c.PSCID not like '1%' and c.PSCID not like '2%' and c.PSCID != 'scanner' and i.CommentID not like 'DDE%' and c.CandID = s.CandID and s.ID = f.sessionID and f.CommentID = i.CommentID AND c.Active='Y' AND s.Active='Y' AND c.CenterID IN (2, 3, 4, 5) order by s.Visit_label, c.PSCID";
 
     } else if ($Test_name == 'radiology_review') {
@@ -88,7 +89,7 @@ foreach ($instruments as $instrument) {
             $ndb_bvl_instrument =& NDB_BVL_Instrument::factory($Test_name, '', false);
             if($ndb_bvl_instrument->ValidityEnabled == true) {
                 $extra_fields = 'f.Validity, ';
-            } 
+            }
             $NDB_Config = NDB_Config::singleton();
             $ddeInstruments = $NDB_Config->getSetting("DoubleDataEntryInstruments");
             if(in_array($Test_name, $ddeInstruments)) {
@@ -105,14 +106,13 @@ foreach ($instruments as $instrument) {
         }
     }
 	$instrument_table = $DB->pselect($query, array());
-	
+
 	if(empty($instrument_table)) {
-		print "Cannot pull instrument table data\n";
-		die();
+		print "Cannot pull instrument table data as it is empty!\n";
 	}
     MapSubprojectID($instrument_table, $config);
 	writeCSV($Test_name, $instrument_table, $dataDir);
-
+	}
 } //end foreach instrument
 
 /*
