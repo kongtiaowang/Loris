@@ -503,8 +503,24 @@ class NDB_BVL_Instrument_ados2_module1 extends NDB_BVL_Instrument_IBIS
 
             //($record_lookup['sevscore']);
 	    }
+
+	    for ($i = 2; $i <= 14; $i++) {
+            $low = $i*12;
+            $high = ($i+1)*12;
+            if ($age_months >= $low && $age_months < $high) {
+                $ados_age = $i;
+            }
+        }
         // CSS Calculations
-        $ados_age = round($age_months/12);
+        if (24 <= $age && $age < 36) {
+            $ados_age = 2;
+        } elseif (36 <= $age && $age < 48) {
+            $ados_age = 3;
+        } elseif (48 <= $age && $age < 60) {
+            $ados_age = 4;
+        } elseif (60 <= $age && $age < 72) {
+            $ados_age =
+        }
         $scoreCols["ADOS_SA_CSS"]  = $this->ADOS_SA_CSS( $this->table, $record['a1'], $scoreCols['social_affect_total'], $ados_age);
         $scoreCols["ADOS_RRB_CSS"] = $this->ADOS_RRB_CSS($this->table, $record['a1'], $scoreCols['restricted_repetitive_behavior_total'], $ados_age);
 

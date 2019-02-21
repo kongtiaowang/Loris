@@ -226,7 +226,14 @@ print "ADOSModule: $ADOSModule\n";
         }
         $PSCID=$row['PSCID'];
         $Visit_label  = $row['Visit_label'];
-        $ados_age = round($row['Candidate_Age']/12);
+        $age_months = $row['Candidate_Age'];
+        for ($i = 2; $i <= 14; $i++) {
+            $low = $i*12;
+            $high = ($i+1)*12;
+            if ($age_months >= $low && $age_months < $high) {
+                $ados_age = $i;
+            }
+        }
 
         $ADOS_SA_CSS  = NDB_BVL_Instrument_IBIS::ADOS_SA_CSS( $ADOSModule, $row['a1'], $row['social_affect_total'], $ados_age);
         $ADOS_RRB_CSS = NDB_BVL_Instrument_IBIS::ADOS_RRB_CSS($ADOSModule, $row['a1'], $row['restricted_repetitive_behavior_total'], $ados_age);
