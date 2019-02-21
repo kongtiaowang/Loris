@@ -257,7 +257,7 @@ class NDB_BVL_Instrument_IBIS extends NDB_BVL_Instrument
                 if ($ADOS_RRB_total == 0) {$ADOS_RRB_CSS = 1;}
                 elseif ($ADOS_RRB_total == 1) {$ADOS_RRB_CSS = 5;}
                 elseif ($ADOS_RRB_total == 2) {$ADOS_RRB_CSS = 6;}
-                elseif (in_range($ADOS_RRB_total, range(3, 4))) {$ADOS_RRB_CSS = 7;}
+                elseif (in_array($ADOS_RRB_total, range(3, 4))) {$ADOS_RRB_CSS = 7;}
                 elseif ($ADOS_RRB_total == 5) {$ADOS_RRB_CSS = 8;}
                 elseif ($ADOS_RRB_total == 6) {$ADOS_RRB_CSS = 9;}
                 elseif (in_array($ADOS_RRB_total, range(7, 8))) {$ADOS_RRB_CSS = 10;} 
