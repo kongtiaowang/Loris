@@ -710,3 +710,18 @@ CREATE TABLE `NIHToolBox_Assessment_Data2` (
 -- META DATA
 INSERT INTO test_names (Test_name, Full_name, Sub_group) VALUES ('NIHToolBox_Assessment_Data', 'NIH ToolBox Assessment Data', '1');
 INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('NIHToolBox_Assessment_Data', 'NIHToolBox_Assessment_Data_page1', "Page 1", 1);
+-- adding to test battery
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
+VALUES ('NIHToolBox_Assessment_Data', '0', '0', 'Y', 'Visit', 1, 'VSA', NULL);
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
+VALUES ('NIHToolBox_Assessment_Data', '0', '0', 'Y', 'Visit', 2, 'VSA', NULL);
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
+VALUES ('NIHToolBox_Assessment_Data', '0', '0', 'Y', 'Visit', 3, 'VSA', NULL);
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
+VALUES ('NIHToolBox_Assessment_Data', '0', '0', 'Y', 'Visit', 9, 'VSA', NULL);
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
+VALUES ('NIHToolBox_Assessment_Data', '0', '0', 'Y', 'Visit', 10, 'VSA', NULL);
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
+VALUES ('NIHToolBox_Assessment_Data', '0', '0', 'Y', 'Visit', 12, 'VSA', NULL);
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
+VALUES ('NIHToolBox_Assessment_Data', '0', '0', 'Y', 'Visit', 13, 'VSA', NULL);
