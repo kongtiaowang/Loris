@@ -17,6 +17,7 @@
 namespace LORIS\document_repository;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\MessageInterface;
 
 /**
  * It includes two functions.
@@ -53,6 +54,10 @@ class Files extends \NDB_Page
 
     /**
      * Handle how to operate all the files.
+     * PUT method updates a file's info.
+     * DELETE method deletes a file.
+     * POST method uploads a file.
+     * GET method gets a file. 
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
@@ -61,8 +66,29 @@ class Files extends \NDB_Page
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         switch ($request->getMethod()) {
+        case "POST":
+            if ($this->uploadDocFile($request)) {
+                return (new \LORIS\Http\Response())
+                ->withHeader("Content-Type", "text/plain")
+                ->withStatus(200)
+                ->withBody(
+                    new \LORIS\Http\StringStream(
+                        json_encode("uploaded successfully")
+                    )
+                );
+            } else {
+                return (new \LORIS\Http\Response())
+                ->withHeader("Content-Type", "text/plain")
+                ->withStatus(200)
+                ->withBody(
+                    new \LORIS\Http\StringStream(
+                        json_encode("duplicate file name")
+                    )
+                );
+            }
+          break;
         case "PUT":
-            $this->editDocFile($request);
+            $this->editDocFile();
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")
                 ->withStatus(200)
@@ -97,40 +123,26 @@ class Files extends \NDB_Page
                     )
                 );
           break;
-        case "POST":
-            $path = $request->getQueryParams();
-            $id   = basename($path['lorispath']);
-            $this->deleteFile($id);
-            return (new \LORIS\Http\Response())
-                ->withHeader("Content-Type", "text/plain")
-                ->withStatus(200)
-                ->withBody(
-                    new \LORIS\Http\StringStream(
-                        json_encode("delete")
-                    )
-                );
-          break;
         default:
-            // get all files
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")
-                ->withStatus(200);
+                ->withStatus(405)
+                ->withHeader("Allow", "GET,POST,PUT and DELETE");
         }
     }
     /**
  * Handles the document editing process
  *
- * @param ServerRequestInterface $request The incoming PSR7 request
- *
  * @throws \DatabaseException
  *
  * @return void
  */
-    function editDocFile($request): void
+    function editDocFile(): void
     {
         $db           = \Database::singleton();
         $user         = \User::singleton();
-        $req          = $request->getParsedBody();
+        $req = array();
+        $this->parse_raw_http_request($req);
         $updateValues = [
                          'File_category' => isset($req['category']) ?
                               $req['category'] : null,
@@ -157,6 +169,42 @@ class Files extends \NDB_Page
             showError("Could not update the file. Please try again!");
         }
     }
+
+function parse_raw_http_request(array &$a_data)
+{
+  // read incoming data
+  $input = file_get_contents('php://input');
+  // grab multipart boundary from content type header
+  preg_match('/boundary=(.*)$/', $_SERVER['CONTENT_TYPE'], $matches);
+  $boundary = $matches[1];
+
+  // split content by boundary and get rid of last -- element
+  $a_blocks = preg_split("/-+$boundary/", $input);
+  array_pop($a_blocks);
+
+  // loop data blocks
+  foreach ($a_blocks as $id => $block)
+  {
+    if (empty($block))
+      continue;
+
+    // you'll have to var_dump $block to understand this and maybe replace \n or \r with a visibile char
+
+    // parse uploaded files
+    if (strpos($block, 'application/octet-stream') !== FALSE)
+    {
+      // match "name", then everything after "stream" (optional) except for prepending newlines 
+      preg_match("/name=\"([^\"]*)\".*stream[\n|\r]+([^\n\r].*)?$/s", $block, $matches);
+    }
+    // parse all other fields
+    else
+    {
+      // match "name" and optional value in between newline sequences
+      preg_match('/name=\"([^\"]*)\"[\n|\r]+([^\n\r].*)?\r$/s', $block, $matches);
+    }
+    $a_data[$matches[1]] = $matches[2];
+  }        
+}
     /**
  * Handles the document deleting process
  *
@@ -315,6 +363,101 @@ class Files extends \NDB_Page
         }
 
         return $selectOptions;
+    }
+/**
+ * Handles the document upload process
+ *
+ * @param ServerRequestInterface $request The incoming PSR7 request
+ *
+ * @return bool
+ */
+    function uploadDocFile($request): bool
+    {
+        $req            = $request->getParsedBody();
+        $uploadedFiles  = $request->getUploadedFiles();
+        $uploadOK       = false;
+        $editNotifier   = new \NDB_Notifier(
+            "document_repository",
+            "edit"
+        );
+        $uploadNotifier = new \NDB_Notifier(
+            "document_repository",
+            "upload"
+        );
+        $factory        = \NDB_Factory::singleton();
+        $baseURL        = $factory->settings()->getBaseURL();
+        $config         = $factory->config();
+        $base           = $config->getSetting('base');
+        $name           = \User::singleton()->getUsername();
+        $DB       = \Database::singleton();
+        $category = $req['category']; // required
+        $site     = $req['forSite']       !== '' ? $req['forSite'] : null;
+
+        $site       = $DB->pselectOne(
+            "SELECT CenterID FROM psc WHERE Name=:name",
+            array('name' => $site)
+        );
+        $instrument = $req['instrument'] !== '' ? $req['instrument'] : null;
+        $pscid      = $req['pscid']      !== '' ? $req['pscid'] : null;
+        $visit      = $req['visitLabel'] !== '' ? $req['visitLabel'] : null;
+        $comments   = $req['comments']   !== '' ? $req['comments'] : null;
+        $version    = $req['version']    !== '' ? $req['version'] : null;
+
+        $uploadedFile = $uploadedFiles['file'];
+        $fileSize     = $uploadedFile->getSize();
+        $fileName     = $uploadedFile->getClientFileName();
+        $fileType     = pathinfo($fileName, PATHINFO_EXTENSION);
+        $uploadPath   = "$base/modules/document_repository/user_uploads/";
+        // $category is a string representation of an ID, and so should be at
+        // least equal to zero.
+        if (intval($category) < 0) {
+            throw new \LorisException(
+                "'Category' parameter must be a positive integer."
+            );
+        }
+        // Check to see if $fullPath is writable. If not, throw an error. If it
+        // doesn't exist, create an uploads folder for the logged-in user.
+        if (!is_writable($uploadPath)) {
+            if (file_exists($uploadPath)) {
+                throw new \LorisException(
+                    "User uploads path in Document Repository is not writable."
+                );
+            }
+            if (!mkdir($uploadPath, 0770)) {
+                throw new \LorisException(
+                    "User can't make a directory."
+                );
+            }
+        }
+
+        if ($uploadedFile->getError() === UPLOAD_ERR_OK
+            && !$this->existFilename($fileName)
+        ) {
+                $uploadedFile->moveTo($uploadPath.$fileName);
+
+                $success = $DB->insert(
+                    'document_repository',
+                    array(
+                     'File_category' => $category,
+                     'For_site'      => $site,
+                     'comments'      => $comments,
+                     'version'       => $version,
+                     'File_name'     => $fileName,
+                     'File_size'     => $fileSize,
+                     'Data_dir'      => $fileName,
+                     'uploaded_by'   => $name,
+                     'Instrument'    => $instrument,
+                     'PSCID'         => $pscid,
+                     'visitLabel'    => $visit,
+                     'File_type'     => $fileType,
+                    )
+                );
+                $msg_data['newDocument'] = $baseURL . "/document_repository/";
+                $msg_data['document']    = $fileName;
+                $uploadNotifier->notify($msg_data);
+                $uploadOK = true;
+        }
+        return $uploadOK;
     }
 /**
  * Check the find name in the database, if exists return false
