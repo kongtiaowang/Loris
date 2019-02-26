@@ -63,15 +63,6 @@ class NDB_BVL_Instrument_ABCL_MOM_ON_DAD extends NDB_BVL_Instrument
         $this->_selectMultipleElements = array();
 
         // required fields for data entry completion status
-        $this->_requiredElements = array(
-                                    'first_name',
-                                    'user_handicap',
-                                    '1_is_too_forgetful',
-                                    '37_gets_in_many_fights',
-                                    '63_would_rather_be_with_older_people',
-                                    '93_walks_too_much',
-                                   );
-
         // setup the form
         $this->_setupForm();
 
