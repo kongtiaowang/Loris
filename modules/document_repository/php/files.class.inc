@@ -3,7 +3,7 @@
  * It includes two functions.
  * Post method handles updating a file.
  * Delete method handles deleting a file.
- * Get method handles getting a file with ID or files.
+ * Get method handles getting a file.
  * Put method handles editing a file.
  *
  * PHP Version 7
@@ -57,7 +57,7 @@ class Files extends \NDB_Page
      * PUT method updates a file's info.
      * DELETE method deletes a file.
      * POST method uploads a file.
-     * GET method gets a file. 
+     * GET method gets a file.
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
@@ -86,7 +86,7 @@ class Files extends \NDB_Page
                     )
                 );
             }
-          break;
+            break;
         case "PUT":
             $this->editDocFile();
             return (new \LORIS\Http\Response())
@@ -139,10 +139,10 @@ class Files extends \NDB_Page
  */
     function editDocFile(): void
     {
-        $db           = \Database::singleton();
-        $user         = \User::singleton();
-        $req = array();
-        $this->parse_raw_http_request($req);
+        $db   = \Database::singleton();
+        $user = \User::singleton();
+        $req  = array();
+        $this->parseRawHttpRequest($req);
         $updateValues = [
                          'File_category' => isset($req['category']) ?
                               $req['category'] : null,
@@ -169,42 +169,56 @@ class Files extends \NDB_Page
             showError("Could not update the file. Please try again!");
         }
     }
-
-function parse_raw_http_request(array &$a_data)
-{
-  // read incoming data
-  $input = file_get_contents('php://input');
-  // grab multipart boundary from content type header
-  preg_match('/boundary=(.*)$/', $_SERVER['CONTENT_TYPE'], $matches);
-  $boundary = $matches[1];
-
-  // split content by boundary and get rid of last -- element
-  $a_blocks = preg_split("/-+$boundary/", $input);
-  array_pop($a_blocks);
-
-  // loop data blocks
-  foreach ($a_blocks as $id => $block)
-  {
-    if (empty($block))
-      continue;
-
-    // you'll have to var_dump $block to understand this and maybe replace \n or \r with a visibile char
-
-    // parse uploaded files
-    if (strpos($block, 'application/octet-stream') !== FALSE)
+    /**
+ * Handles the raw form-data from PUT method to an array.
+ *
+ * @param array $a_data an init array
+ *
+ * @throws \DatabaseException
+ *
+ * @return array
+ */
+    function parseRawHttpRequest(array &$a_data): array
     {
-      // match "name", then everything after "stream" (optional) except for prepending newlines 
-      preg_match("/name=\"([^\"]*)\".*stream[\n|\r]+([^\n\r].*)?$/s", $block, $matches);
+        // read incoming data
+        $input = file_get_contents('php://input');
+        // grab multipart boundary from content type header
+        preg_match('/boundary=(.*)$/', $_SERVER['CONTENT_TYPE'], $matches);
+        $boundary = $matches[1];
+
+        // split content by boundary and get rid of last -- element
+        $a_blocks = preg_split("/-+$boundary/", $input);
+        array_pop($a_blocks);
+
+        // loop data blocks
+        foreach ($a_blocks as $id => $block) {
+            if (empty($block)) {
+                continue;
+            }
+
+            // you'll have to var_dump $block to understand this and maybe replace
+            //  \n or \r with a visibile char
+
+            // parse uploaded files
+            if (strpos($block, 'application/octet-stream') !== false) {
+                // match "name", then everything after "stream" (optional) except
+                // for prepending newlines
+                preg_match(
+                    "/name=\"([^\"]*)\".*stream[\n|\r]+([^\n\r].*)?$/s",
+                    $block,
+                    $matches
+                );
+            } else {
+                // match "name" and optional value in between newline sequences
+                preg_match(
+                    '/name=\"([^\"]*)\"[\n|\r]+([^\n\r].*)?\r$/s',
+                    $block,
+                    $matches
+                );
+            }
+             $a_data[$matches[1]] = $matches[2];
+        }
     }
-    // parse all other fields
-    else
-    {
-      // match "name" and optional value in between newline sequences
-      preg_match('/name=\"([^\"]*)\"[\n|\r]+([^\n\r].*)?\r$/s', $block, $matches);
-    }
-    $a_data[$matches[1]] = $matches[2];
-  }        
-}
     /**
  * Handles the document deleting process
  *
@@ -255,7 +269,7 @@ function parse_raw_http_request(array &$a_data)
         }
 
     }
-/**
+    /**
  * Returns a list of categories fields from database
  *
  * @param String $id id of the Doc file
@@ -311,7 +325,7 @@ function parse_raw_http_request(array &$a_data)
                   );
         return $result;
     }
-/**
+    /**
  * Handler of parsing category
  *
  * @param string $value the value
@@ -339,7 +353,7 @@ function parse_raw_http_request(array &$a_data)
                  "id"   => $id,
                 );
     }
-/**
+    /**
  * Utility function to convert data from database to a
  * (select) dropdown friendly format
  *
@@ -364,7 +378,7 @@ function parse_raw_http_request(array &$a_data)
 
         return $selectOptions;
     }
-/**
+    /**
  * Handles the document upload process
  *
  * @param ServerRequestInterface $request The incoming PSR7 request
@@ -459,7 +473,7 @@ function parse_raw_http_request(array &$a_data)
         }
         return $uploadOK;
     }
-/**
+    /**
  * Check the find name in the database, if exists return false
  *
  * @param string $filename file name
