@@ -188,7 +188,7 @@ class DocUploadForm extends React.Component {
     let formData = this.state.formData;
     formData[formElement] = value;
 
-    this.setState({formData: formData,});
+    this.setState({formData: formData});
   }
 }
 
