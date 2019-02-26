@@ -45,10 +45,11 @@ class Files extends \NDB_Page
      */
     function _hasAccess(\User $user) : bool
     {
-        return (
-            $user->hasPermission('document_repository_delete')
-            || $user->hasPermission('document_repository_view')
-
+        return $user->hasAnyPermission(
+            array(
+             'document_repository_view',
+             'document_repository_delete',
+            )
         );
     }
 
@@ -131,12 +132,12 @@ class Files extends \NDB_Page
         }
     }
     /**
- * Handles the document editing process
- *
- * @throws \DatabaseException
- *
- * @return void
- */
+     * Handles the document editing process
+     *
+     * @throws \DatabaseException
+     *
+     * @return void
+     */
     function editDocFile(): void
     {
         $db   = \Database::singleton();
@@ -144,20 +145,13 @@ class Files extends \NDB_Page
         $req  = array();
         $this->parseRawHttpRequest($req);
         $updateValues = [
-                         'File_category' => isset($req['category']) ?
-                              $req['category'] : null,
-                         'For_site'      => isset($req['forSite']) ?
-                              $req['forSite'] : null,
-                         'Instrument'    => isset($req['instrument']) ?
-                              $req['instrument'] : null,
-                         'comments'      => isset($req['comments']) ?
-                              $req['comments'] : null,
-                         'version'       => isset($req['version']) ?
-                              $req['version'] : null,
-                         'visitLabel'    => isset($req['visitLabel']) ?
-                              $req['visitLabel'] : null,
-                         'pscid'         => isset($req['pscid']) ?
-                              $req['pscid'] : null,
+                         'File_category' => $req['category'] ?? null,
+                         'forSite'       => $req['forSite'] ?? null,
+                         'instrument'    => $req['instrument'] ?? null,
+                         'comments'      => $req['comments'] ?? null,
+                         'version'       => $req['version'] ?? null,
+                         'visitLabel'    => $req['visitLabel'] ?? null,
+                         'pscid'         => $req['pscid'] ?? null,
                         ];
         try {
             $db->update(
@@ -170,14 +164,14 @@ class Files extends \NDB_Page
         }
     }
     /**
- * Handles the raw form-data from PUT method to an array.
- *
- * @param array $a_data an init array
- *
- * @throws \DatabaseException
- *
- * @return array
- */
+     * Handles the raw form-data from PUT method to an array.
+     *
+     * @param array $a_data an init array
+     *
+     * @throws \DatabaseException
+     *
+     * @return array
+     */
     function parseRawHttpRequest(array &$a_data): array
     {
         // read incoming data
@@ -220,14 +214,14 @@ class Files extends \NDB_Page
         }
     }
     /**
- * Handles the document deleting process
- *
- * @param string $rid the file id
- *
- * @throws \DatabaseException
- *
- * @return void
- */
+     * Handles the document deleting process
+     *
+     * @param string $rid the file id
+     *
+     * @throws \DatabaseException
+     *
+     * @return void
+     */
     function deleteFile($rid): void
     {
         // create Database object
@@ -270,12 +264,12 @@ class Files extends \NDB_Page
 
     }
     /**
- * Returns a list of categories fields from database
- *
- * @param String $id id of the Doc file
- *
- * @return array
- */
+     * Returns a list of categories fields from database
+     *
+     * @param String $id id of the Doc file
+     *
+     * @return array
+     */
     function getUploadDocFields(string $id): array
     {
         $db    = \Database::singleton();
@@ -326,18 +320,18 @@ class Files extends \NDB_Page
         return $result;
     }
     /**
- * Handler of parsing category
- *
- * @param string $value the value
- *
- * @return array
- */
+    * Handler of parsing category
+    *
+    * @param string $value the value
+    *
+    * @return array
+    */
     function parseCategory($value): array
     {
-        $id    = $value['id'];
-        $depth = 0;
-        $DB    = \Database::singleton();
-            $categoryName = $value['category_name'];
+        $id           = $value['id'];
+        $depth        = 0;
+        $DB           = \Database::singleton();
+        $categoryName = $value['category_name'];
         do {
             if ($value['parent_id'] != 0) {
                 $depth       += 1;
@@ -348,21 +342,21 @@ class Files extends \NDB_Page
                 $categoryName = $value['category_name'] . ">" . $categoryName;
             }
         } while ($value['parent_id'] != 0);
-         return array(
-                 "name" => $categoryName,
-                 "id"   => $id,
-                );
+        return array(
+                "name" => $categoryName,
+                "id"   => $id,
+               );
     }
     /**
- * Utility function to convert data from database to a
- * (select) dropdown friendly format
- *
- * @param array  $options array of options
- * @param string $item    key
- * @param string $item2   value
- *
- * @return array
- */
+    * Utility function to convert data from database to a
+    * (select) dropdown friendly format
+    *
+    * @param array  $options array of options
+    * @param string $item    key
+    * @param string $item2   value
+    *
+    * @return array
+    */
     function toDocSelect($options, $item, $item2): array
     {
         $selectOptions = array();
@@ -379,12 +373,12 @@ class Files extends \NDB_Page
         return $selectOptions;
     }
     /**
- * Handles the document upload process
- *
- * @param ServerRequestInterface $request The incoming PSR7 request
- *
- * @return bool
- */
+     * Handles the document upload process
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return bool
+     */
     function uploadDocFile($request): bool
     {
         $req            = $request->getParsedBody();
@@ -474,12 +468,12 @@ class Files extends \NDB_Page
         return $uploadOK;
     }
     /**
- * Check the find name in the database, if exists return false
- *
- * @param string $filename file name
- *
- * @return bool
- */
+     * Check the find name in the database, if exists return false
+     *
+     * @param string $filename file name
+     *
+     * @return bool
+     */
     function existFilename(string $filename): bool
     {
         $DB        = \Database::singleton();
