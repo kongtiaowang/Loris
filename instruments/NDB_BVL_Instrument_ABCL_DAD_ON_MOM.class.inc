@@ -85,7 +85,9 @@ class NDB_BVL_Instrument_ABCL_DAD_ON_MOM extends NDB_BVL_Instrument
             $this->_main();
         }
         //Defines the call back function for HTML Quickform to use when validating the form.
-        $this->form->addFormRule(array(&$this, 'XINValidate'));
+        // Validations are now blocking data entry as we have currently
+        //no 'not answered' option . So quick solution from Leigh is to remove all the validations and will re implement once we add not_answered option to all instruments.
+       // $this->form->addFormRule(array(&$this, 'XINValidate'));
     }
 
     /**
@@ -359,7 +361,7 @@ class NDB_BVL_Instrument_ABCL_DAD_ON_MOM extends NDB_BVL_Instrument
             array("II_spouse_partner_comments{@}=={@}NEVER_REQUIRED")
         );
 
-        $this->form->addFormRule(array(&$this, 'abcl_special_rules'));
+       // $this->form->addFormRule(array(&$this, 'abcl_special_rules'));
     }
 
     /**
@@ -415,7 +417,7 @@ class NDB_BVL_Instrument_ABCL_DAD_ON_MOM extends NDB_BVL_Instrument
             "III_IV_V_comments",
             array("III_IV_V_comments{@}=={@}NEVER_REQUIRED")
         );
-        $this->form->addFormRule(array(&$this, 'abcl_special_rules'));
+       // $this->form->addFormRule(array(&$this, 'abcl_special_rules'));
     }
 
     /**
@@ -532,7 +534,7 @@ class NDB_BVL_Instrument_ABCL_DAD_ON_MOM extends NDB_BVL_Instrument
 
         $this->addSelect("36_gets_hurt_a_lot", "36. Gets hurt a lot, accident-prone", $options);
 
-        $this->form->addFormRule(array(&$this, 'abcl_special_rules'));
+       // $this->form->addFormRule(array(&$this, 'abcl_special_rules'));
     }
 
 
@@ -650,7 +652,7 @@ class NDB_BVL_Instrument_ABCL_DAD_ON_MOM extends NDB_BVL_Instrument
 
         $this->addSelect("62_poorly_coordinated", "62. Poorly coordinated or clumsy", $options);
 
-        $this->form->addFormRule(array(&$this, 'abcl_special_rules'));
+        //$this->form->addFormRule(array(&$this, 'abcl_special_rules'));
     }
 
     /**
@@ -785,7 +787,7 @@ class NDB_BVL_Instrument_ABCL_DAD_ON_MOM extends NDB_BVL_Instrument
             "Required if selected True for the above"
         );
 
-        $this->form->addFormRule(array(&$this, 'abcl_special_rules'));
+        //$this->form->addFormRule(array(&$this, 'abcl_special_rules'));
     }
 
     /**

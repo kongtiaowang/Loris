@@ -97,7 +97,7 @@ class NDB_BVL_Instrument_SRS2_SelfReport_Dad extends NDB_BVL_Instrument
         }
 
         //Defines the call back function for HTML Quickform to use when validating the form.
-        $this->form->addFormRule(array(&$this, 'XINValidate'));
+       // $this->form->addFormRule(array(&$this, 'XINValidate'));
     }
 
 
@@ -120,7 +120,7 @@ class NDB_BVL_Instrument_SRS2_SelfReport_Dad extends NDB_BVL_Instrument
         $this->addBasicText('respondent_age', "Your age<BR><h5><i>(Please enter a numeric value between 0-100. If you don't wish to answer, enter NA)</i></h5>");
 
         //Add Special Rules
-        $this->form->addFormRule(array(&$this, 'srs2SpecialRules'));
+       // $this->form->addFormRule(array(&$this, 'srs2SpecialRules'));
 
         //Add select for Sex
         $this->addSelect('respondent_gender', "Sex", $this->gender);
