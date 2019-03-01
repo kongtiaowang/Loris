@@ -161,24 +161,28 @@ class NDB_BVL_Instrument_SSIS_Teacher extends NDB_BVL_Instrument
 	$child_sex = array(
 			''       => NULL,
 			'male'   => 'Male',
-			'female' => 'Female'
+			'female' => 'Female',
+            'not_answered'   => 'Not Answered'
 			);
 	$frequency = array(
                         ''                => NULL,
                         'N_never'         => 'Never (N)',
                         'S_sometimes'     => 'Seldom (S)',
                         'O_often'         => 'Often (O)',
-                        'A_almost_always' => 'Almost Always (A)'
+                        'A_almost_always' => 'Almost Always (A)',
+                        'not_answered'   => 'Not Answered'
                         );
         $importance = array(
                         ''                => NULL,
                         'n_not_important' => 'not important (n)',
                         'i_important'     => 'important (i)',
-                        'c_critical'      => 'critical (c)'
+                        'c_critical'      => 'critical (c)',
+                        'not_answered'   => 'Not Answered'
                         );
 
 	// Display instrument name
-        $this->form->addElement('header', 'instrument_title', "SSIS Teacher: Social Skills Improvement System"); 
+        $this->form->addElement('header', 'instrument_title', "SSIS Teacher: Social Skills Improvement System");
+        $this->form->addElement('static','lorisSubHeader1',"<h5><i>*Please select or indicate NA/Not Answered for the questions<br> you really don't know/don't want to answer.</i></h5>" );
  
         // Add field for child's age
 	$this->addBasicText("student_age", "Student's Age <h5><i>(Please indicate the student's age in years, or write NA if you don't know.)</i></h5>");
@@ -211,7 +215,7 @@ class NDB_BVL_Instrument_SSIS_Teacher extends NDB_BVL_Instrument
 	// First group of questions
         $this->form->addElement('static', null);
         $questions = array(
-			"q1_asks_for_help"                        => "1. Asks for help from adults.",
+			"q1_asks_for_help"                                    => "1. Asks for help from adults.",
                         "q2_follows_directions"                   => "2. Follows your directions.",
                         "q3_comforts_others"                      => "3. Tries to comfort others.",
                         "q4_please"                               => '4. Says "please."',
@@ -234,8 +238,10 @@ class NDB_BVL_Instrument_SSIS_Teacher extends NDB_BVL_Instrument
 			);
 
 	// Display questions with two columns, one for a frequency rating and one for an importance rating
-        $this->_displayHeaders("questions"); 
+        $this->_displayHeaders("questions");
+        $i=0;
         foreach ($questions as $question => $label) {
+            $i++;
             $group[] = $this->createLabel($label);
             $group[] = $this->createSelect(
                 $question . "_frequency",
@@ -249,12 +255,24 @@ class NDB_BVL_Instrument_SSIS_Teacher extends NDB_BVL_Instrument
             );
             $this->form->addGroup(
                 $group,
-                $question . "_group",
+                "page1_table{$i}",
                 null,
                 $this->_GUIDelimiter,
                 false
             );
             unset($group);
+            $this->XINRegisterRule(
+                $question . "_frequency",
+                array($question . "_frequency{@}=={@}"), // rule
+                "Frequency is Required.", // message
+                "page1_table{$i}" // group [if field is a part of a group]
+            );
+            $this->XINRegisterRule(
+                $question . "_importance",
+                array($question . "_importance{@}=={@}"), // rule
+                "Importance is Required.", // message
+                "page1_table{$i}" // group [if field is a part of a group]
+            );
         
 	}   
 
@@ -279,14 +297,16 @@ class NDB_BVL_Instrument_SSIS_Teacher extends NDB_BVL_Instrument
                         'N_never'         => 'Never (N)',
                         'S_sometimes'     => 'Seldom (S)',
                         'O_often'         => 'Often (O)',
-                        'A_almost_always' => 'Almost Always (A)'
+                        'A_almost_always' => 'Almost Always (A)',
+                         'not_answered'   => 'Not Answered'
                         );
 
         $importance = array(
                         ''                => NULL,
                         'n_not_important' => 'not important (n)',
                         'i_important'     => 'important (i)',
-                        'c_critical'      => 'critical (c)'
+                        'c_critical'      => 'critical (c)',
+                         'not_answered'   => 'Not Answered'
                         );
   
 	// Second group of questions
@@ -321,7 +341,9 @@ class NDB_BVL_Instrument_SSIS_Teacher extends NDB_BVL_Instrument
 
 	// Display questions with two columns, one for a frequency rating and one for an importance rating
         $this->_displayHeaders("questions");
+        $i=0;
         foreach ($questions as $question => $label) {
+            $i++;
             $group[] = $this->createLabel($label);
             $group[] = $this->createSelect(
                 $question . "_frequency",
@@ -335,12 +357,24 @@ class NDB_BVL_Instrument_SSIS_Teacher extends NDB_BVL_Instrument
             );
             $this->form->addGroup(
                 $group,
-                $question . "_group",
+                "page2_table{$i}",
                 null,
                 $this->_GUIDelimiter,
                 false
             );
             unset($group);
+            $this->XINRegisterRule(
+                $question . "_frequency",
+                array($question . "_frequency{@}=={@}"), // rule
+                "Frequency is Required.", // message
+                "page2_table{$i}" // group [if field is a part of a group]
+            );
+            $this->XINRegisterRule(
+                $question . "_importance",
+                array($question . "_importance{@}=={@}"), // rule
+                "Importance is Required.", // message
+                "page2_table{$i}" // group [if field is a part of a group]
+            );
         }        
 
     }
@@ -364,10 +398,12 @@ class NDB_BVL_Instrument_SSIS_Teacher extends NDB_BVL_Instrument
                         'N_never'         => 'Never (N)',
                         'S_sometimes'     => 'Seldom (S)',
                         'O_often'         => 'Often (O)',
-                        'A_almost_always' => 'Almost Always (A)'
+                        'A_almost_always' => 'Almost Always (A)',
+                        'not_answered'   => 'Not Answered'
                         );
  
 	// Third group of questions
+
         $questions = array(
 			"q47_acts_without_thinking"       => "47. Acts without thinking.",
 			"q48_preoccupied_object_parts"    => "48. Is preoccupied with object parts.",
@@ -378,6 +414,7 @@ class NDB_BVL_Instrument_SSIS_Teacher extends NDB_BVL_Instrument
 			"q53_fidgets_moves"               => "53. Fidgets or moves around too much.",
 			"q54_stereotyped_motor_behaviors" => "54. Has stereotyped motor behaviors.",
 			"q55_forces_against_will"         => "55. Forces others to act against their will.",
+            "q56_withdraws_from_other"        => "56. Withdraws from others. .",
 			"q57_temper_tantrums"             => "57. Has temper tantrums.",
 			"q58_keeps_others_out"            => "58. Keeps others out of social circles.",
 			"q59_breaks_group_activities"     => "59. Breaks into or stops group activities.",
@@ -409,7 +446,8 @@ class NDB_BVL_Instrument_SSIS_Teacher extends NDB_BVL_Instrument
                         'N_never'         => 'Never (N)',
                         'S_sometimes'     => 'Seldom (S)',
                         'O_often'         => 'Often (O)',
-                        'A_almost_always' => 'Almost Always (A)'
+                        'A_almost_always' => 'Almost Always (A)',
+                        'not_answered'   => 'Not Answered'
                         );	
 
 	// Fourth group of questions

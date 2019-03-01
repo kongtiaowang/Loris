@@ -54,13 +54,6 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
         //Any HTML_Quickform multiple selects must be listed here
         $this->_selectMultipleElements = array();
 
-        // required fields for data entry completion status
-        $this->_requiredElements = array(
-                                    'first_name',
-                                    'q1_how_hard_working',
-                                    'q1_acts_too_young',
-                                    'q57_physically_attacks_people',
-                                   );
 
         // setup the form
         $this->_setupForm();

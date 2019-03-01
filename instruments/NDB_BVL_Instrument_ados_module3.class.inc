@@ -448,8 +448,9 @@ class NDB_BVL_Instrument_ados_module3 extends NDB_BVL_Instrument_IBIS
         $scoreCols['d2_weighted'] = $scores['d2'] * 0.57; // Hand Mannerisms
 
         // CSS Calculations
-        $scoreCols["ADOS_SA_CSS"]  = $this->ADOS_SA_CSS( $this->table, $record['a1'], $scoreCols['social_affect_total']);
-        $scoreCols["ADOS_RRB_CSS"] = $this->ADOS_RRB_CSS($this->table, $record['a1'], $scoreCols['restricted_repetitive_behavior_total']);
+        $ados_age = round($age_months/12);
+        $scoreCols["ADOS_SA_CSS"]  = $this->ADOS_SA_CSS( $this->table, $record['a1'], $scoreCols['social_affect_total'], $ados_age);
+        $scoreCols["ADOS_RRB_CSS"] = $this->ADOS_RRB_CSS($this->table, $record['a1'], $scoreCols['restricted_repetitive_behavior_total'], $ados_age);
 
         // save scores to database
 
