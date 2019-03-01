@@ -296,17 +296,15 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
                              "t1w_run1" => "T1w run1",
                              "t1w_run2" => "T1w run2",
                              "t1w_run3" => "T1w run3",
+                             "t1w_run4" => "T1w run4",
+                             "t1w_run5" => "T1w run5",
+                             "t1w_run6" => "T1w run6",
                              "t2w_run1" => "T2w run1",
                              "t2w_run2" => "T2w run2",
                              "t2w_run3" => "T2w run3",
-                            );
-        $repeat_questions = array(
-                             "t1w_run1_repeat" => "T1w run1 repeat",
-                             "t1w_run2_repeat" => "T1w run2 repeat",
-                             "t1w_run3_repeat" => "T1w run3 repeat",
-                             "t2w_run1_repeat" => "T2w run1 repeat",
-                             "t2w_run2_repeat" => "T2w run2 repeat",
-                             "t2w_run3_repeat" => "T2w run3 repeat",
+                             "t2w_run4" => "T2w run4",
+                             "t2w_run5" => "T2w run5",
+                             "t2w_run6" => "T2w run6",
                             );
 
         // Display questions with two columns, one for anterior/superior ratio, and one for a pass/fail rating. Required if preceding checkbox is filled.
@@ -347,47 +345,7 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
             );
             unset($group);
 
-        }
-
-        // Display optional repeat questions with two columns, one for anterior/superior ratio, and one for a pass/fail rating.
-        foreach ($repeat_questions as $question => $label) {
-            $group[] = $this->createLabel($label);
-            $group[] = $this->createText(
-                $question . "_anterior",
-                ""
-            );
-            $this->XINRegisterRule(
-                $question . "_anterior",
-                array($question . "_anterior{@}=={@}NEVER_REQUIRED"),
-                $question . "_group",
-                $question . "_group_repeat"
-            );
-
-            $group[] = $this->createSelect(
-                $question . "_passfail",
-                "",
-                array(
-                 ''     => null,
-                 'Pass' => "Console Pass",
-                 'Fail' => "Console Fail",
-                )
-            );
-            $this->XINRegisterRule(
-                $question . "_passfail",
-                array($question . "_passfail{@}=={@}NEVER_REQUIRED"),
-                $question . "_group",
-                $question . "_group_repeat"
-            );
-            $this->form->addGroup(
-                $group,
-                $question . "_group_repeat",
-                null,
-                $this->_GUIDelimiter,
-                false
-            );
-            unset($group);
-
-        }
+        
 
         // Add structural comments text area
         $this->form->addElement("textarea", "structural_comments", "<i>Structural Comments:</i>");
