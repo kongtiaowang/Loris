@@ -105,7 +105,7 @@ class NDB_BVL_Instrument_SRS2_SchoolAge extends NDB_BVL_Instrument
         }
 
         //Defines the call back function for HTML Quickform to use when validating the form.
-        $this->form->addFormRule(array(&$this, 'XINValidate'));
+       // $this->form->addFormRule(array(&$this, 'XINValidate'));
     }
 
     /**
@@ -200,7 +200,7 @@ class NDB_BVL_Instrument_SRS2_SchoolAge extends NDB_BVL_Instrument
         foreach ($questions as $field=>$label) {
             $this->addSelect($field, $label, $this->rating);
         }
-        $this->form->addFormRule(array(&$this, 'validate_page1'));
+       // $this->form->addFormRule(array(&$this, 'validate_page1'));
 
         //Add copyright message
         $this->form->addElement('static', 'lorisSubHeader1', "<h4>SRS-2 School-Age Report copyright © 2012 by Western Psychological Services. Reprint authorized by the author, J. Constantino, under WPS agreement for the sole use in registered scholarly study. Not to be reprinted in whole or in part, for any additional purpose, without the prior written authorization of WPS. All rights reserved. (rights@wpspublish.com)</h4>");

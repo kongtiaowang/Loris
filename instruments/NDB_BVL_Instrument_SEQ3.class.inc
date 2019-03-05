@@ -63,17 +63,6 @@ class NDB_BVL_Instrument_SEQ3 extends NDB_BVL_Instrument
         //Any HTML_Quickform multiple selects must be listed here
         $this->_selectMultipleElements = array();
 
-        // required fields for data entry completion status
-        $this->_requiredElements = array(
-                                    '1_react_sensitively_to_sounds',
-                                    '15_disturbed_by_bright_lights',
-                                    '36_dislike_cuddling_or_being_held',
-                                    '59_refuse_new_foods_or_avoids_certain_foods',
-                                    '75_enjoy_long_car_rides',
-                                    '87_trouble_looking_and_listening_same_time',
-                                    '98_how_often_experienced_sensations_differently',
-                                   );
-
         // setup the form
         $this->_setupForm();
 
@@ -95,7 +84,7 @@ class NDB_BVL_Instrument_SEQ3 extends NDB_BVL_Instrument
             $this->_main();
         }
         //Defines the call back function for HTML Quickform to use when validating the form.
-        $this->form->addFormRule(array(&$this, 'XINValidate'));
+        //$this->form->addFormRule(array(&$this, 'XINValidate'));
     }
 
     /**
@@ -145,7 +134,7 @@ class NDB_BVL_Instrument_SEQ3 extends NDB_BVL_Instrument
             array("person_completing_form{@}=={@}other"),
             "Required."
         );
-        $this->form->addFormRule(array(&$this, 'SEQ3_special_rules'));
+       // $this->form->addFormRule(array(&$this, 'SEQ3_special_rules'));
     }
 
     /**
@@ -594,7 +583,7 @@ class NDB_BVL_Instrument_SEQ3 extends NDB_BVL_Instrument
             array("105_list_comments_fascinations_cravings_to_senses{@}=={@}NEVER_REQUIRED"),
             "Never required."
         );
-        $this->form->addFormRule(array(&$this, 'SEQ3_special_rules'));
+       // $this->form->addFormRule(array(&$this, 'SEQ3_special_rules'));
     }
 function SEQ3_special_rules($values)
 {

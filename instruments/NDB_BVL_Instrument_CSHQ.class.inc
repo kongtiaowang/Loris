@@ -399,6 +399,7 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
         $morning_waking_questions     =
             array(
              "wakes_by_himself_item26"             => "Child wakes up by him/herself.",
+             "wakes_up_with_alarm_clock"                => "Child wakes up with alarm clock.",
              "wakes_up_in_neg_mood_item27"         => "Child wakes up in negative mood.",
              "others_wake_child_item28"            => "Adults or siblings wake up child.",
              "hard_time_getting_out_of_bed_item29" => "Child has difficulty getting out of bed in the morning",
