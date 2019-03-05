@@ -65,7 +65,6 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
         // required fields for data entry completion status
         $this->_requiredElements = array(
                                     "Examiner",
-                                    "subtest_1_3_raw_score",
                                    );
 
         // setup the form
@@ -86,8 +85,7 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
         $db =& Database::singleton();
         // Get the item scores
         $query  = "SELECT * FROM $this->table WHERE CommentID='".$this->getCommentID()."'";
-        $record =array();
-        $db->selectRow($query, $record);
+        $db->pselectRow($query, array());
 
         if (preg_match("/BOT2_Short(_page[0-9]+)/", $this->page, $matches)) {
             call_user_func(array($this, $matches[1]));

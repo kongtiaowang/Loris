@@ -9,8 +9,9 @@
 // Future improvements:
 // The SQL to pull the instrument data rely on some nastry text matching (ie. where c.PSCID not like '1%').  Ideally, this junk could be purged directly from the DB, and the SQL made more plain.
 
-require_once "generic_includes.php";
-require_once "Archive/Tar.php";
+require_once __DIR__ . '/../../vendor/autoload.php';
+require_once __DIR__ . '/../../tools/generic_includes.php';
+require_once 'Archive/Tar.php';
 require_once "Utility.class.inc";
 //Configuration variables for this script, possibly installation dependent.
 //$dataDir = "dataDump" . date("dMy");

@@ -90,6 +90,14 @@ class CouchDBDemographicsImporter {
         'ASD_DX' => array(
             'Description' => 'Combines questions 4a(autistic disorder) and 4b(PDD) on the DSMIV_checklist',
             'Type' => 'varchar(255)',
+        ),
+        'Age_at_visit_start' => array(
+            'Description' => 'Candidate age in months when visit started',
+            'Type' => 'varchar(255)',
+        ),
+        'Scan_done' => array(
+            'Description' => 'Scan done for the visit',
+            'Type' => 'varchar(255)',
         )
     );
 
@@ -156,6 +164,8 @@ class CouchDBDemographicsImporter {
                                  p.alias                                                     AS Site, 
                                  c.Gender, 
                                  s.Current_stage, 
+                                 ROUND(DATEDIFF(s.Date_visit, c.DoB) / (365/12))             AS Age_at_visit_start,
+                                 s.Scan_done                                                 AS Scan_done,                                    
                                  CASE 
                                    WHEN s.visit = 'Failure' THEN 'Failure' 
                                    WHEN s.screening = 'Failure' THEN 'Failure' 

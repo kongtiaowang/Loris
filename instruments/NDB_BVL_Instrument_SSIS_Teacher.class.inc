@@ -498,7 +498,9 @@ class NDB_BVL_Instrument_SSIS_Teacher extends NDB_BVL_Instrument
                         '2_next_lowest_20%'  => '2. Next Lowest 20%',
                         '3_middle_40%'       => '3. Middle 40%',
                         '4_next_highest_20%' => '4. Next Highest 20%',
-			'5_highest_10%'      => '5. Highest 10%'
+			            '5_highest_10%'      => '5. Highest 10%',
+                         'not_answered'      => 'Not Answered'
+
                         );
 
         // Fifth group of questions
