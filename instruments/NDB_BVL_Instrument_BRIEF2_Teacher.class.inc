@@ -94,7 +94,10 @@ class NDB_BVL_Instrument_BRIEF2_Teacher extends NDB_BVL_Instrument
     {
         // display test name
         $this->addHeader("BRIEF-2 Teacher Form");
-
+        $this->addHeader("<h3>Adapted and reproduced by special permission of the Publisher, Psychological Assessment Resources, Inc. (PAR),
+                          16204 North Florida Avenue, Lutz, Florida 33549, from the Behavior Rating Inventory of Executive Function, Second
+                          Edition by Gerard A. Gioia, PhD, Peter K. Isquith, PhD, Steven C. Guy, PhD, and Lauren Kenworthy, PhD, Copyright 
+                          1996, 1998, 2000, 2015 by PAR. Further reproduction is prohibited without permission from PAR.</h3>");
         $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
     }
 
