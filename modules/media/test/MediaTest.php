@@ -29,19 +29,19 @@ class MediaTest extends LorisIntegrationTest
 {
     //$location: css selector for react items
     static $FileName    = "#media_filter > div > div > fieldset".
-                              " > div:nth-child(2) > div > div > input";
+                              " > div:nth-child(1) > div > div > input";
     static $PSCID       = "#media_filter > div > div > fieldset".
-                              " > div:nth-child(3) > div > div > input";
+                              " > div:nth-child(2) > div > div > input";
     static $VisitLabel  = "#media_filter > div > div > fieldset".
-                              " > div:nth-child(4) > div > div > select";
+                              " > div:nth-child(3) > div > div > select";
     static $Language    = "#media_filter > div > div > fieldset".
-                              " > div:nth-child(5) > div > div > select";
+                              " > div:nth-child(4) > div > div > select";
     static $Instrument  = "#media_filter > div > div > fieldset".
-                              " > div:nth-child(6) > div > div > select";
+                              " > div:nth-child(5) > div > div > select";
     static $Site        = "#media_filter > div > div > fieldset".
-                              " > div:nth-child(7) > div > div > select";
+                              " > div:nth-child(6) > div > div > select";
     static $clearFilter = "#media_filter > div > div > fieldset".
-                              " > div:nth-child(11) > div > div > button";
+                              " > div:nth-child(10) > div > div > button";
     // first row of react table
     static $table = "#dynamictable > tbody > tr:nth-child(1)";
     // rows displayed of
@@ -87,8 +87,8 @@ class MediaTest extends LorisIntegrationTest
     function testBrowseFilter()
     {
         $this->safeGet($this->url . "/media/");
-        $this->_testFilter(self::$PSCID, self::$table, null, "MTL010");
         $this->_testFilter(self::$FileName, self::$table, null, "MTL010");
+        $this->_testFilter(self::$PSCID, self::$table, null, "MTL010");
         $this->_testFilter(self::$VisitLabel, self::$table, "3 rows", "2");
         $this->_testFilter(self::$Language, self::$table, "26", "2");
         $this->_testFilter(self::$Instrument, self::$table, "3 rows", "2");
