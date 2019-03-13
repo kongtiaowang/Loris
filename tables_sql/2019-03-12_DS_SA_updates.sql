@@ -1,0 +1,26 @@
+-- Add the IBIS SA battery instruments to DS SA battery
+INSERT INTO test_battery  ( test_name, Visit_label, SubprojectID,Active,AgeMinDays, AgeMaxDays, Stage ) VALUES('adi_r_subject', 'VSA', '21','Y',0,0,'Visit');
+INSERT INTO test_battery  ( test_name, Visit_label, SubprojectID,Active,AgeMinDays, AgeMaxDays, Stage ) VALUES('ados2_module1', 'VSA', '21','Y',0,0,'Visit');
+INSERT INTO test_battery  ( test_name, Visit_label, SubprojectID,Active,AgeMinDays, AgeMaxDays, Stage ) VALUES('ados2_module2', 'VSA', '21','Y',0,0,'Visit');
+INSERT INTO test_battery  ( test_name, Visit_label, SubprojectID,Active,AgeMinDays, AgeMaxDays, Stage ) VALUES('ados2_module3', 'VSA', '21','Y',0,0,'Visit');
+INSERT INTO test_battery  ( test_name, Visit_label, SubprojectID,Active,AgeMinDays, AgeMaxDays, Stage ) VALUES('BOT2', 'VSA', '21','Y',0,0,'Visit');
+INSERT INTO test_battery  ( test_name, Visit_label, SubprojectID,Active,AgeMinDays, AgeMaxDays, Stage ) VALUES('BOT2_Short', 'VSA', '21','Y',0,0,'Visit');
+INSERT INTO test_battery  ( test_name, Visit_label, SubprojectID,Active,AgeMinDays, AgeMaxDays, Stage ) VALUES('DAS_SA', 'VSA', '21','Y',0,0,'Visit');
+INSERT INTO test_battery  ( test_name, Visit_label, SubprojectID,Active,AgeMinDays, AgeMaxDays, Stage ) VALUES('DNA_parameter_form', 'VSA', '21','Y',0,0,'Visit');
+INSERT INTO test_battery  ( test_name, Visit_label, SubprojectID,Active,AgeMinDays, AgeMaxDays, Stage ) VALUES('DSMIV_SA', 'VSA', '21','Y',0,0,'Visit');
+INSERT INTO test_battery  ( test_name, Visit_label, SubprojectID,Active,AgeMinDays, AgeMaxDays, Stage ) VALUES('DSMV_checklist', 'VSA', '21','Y',0,0,'Visit');
+INSERT INTO test_battery  ( test_name, Visit_label, SubprojectID,Active,AgeMinDays, AgeMaxDays, Stage ) VALUES('IEP_Extraction_Form', 'VSA', '21','Y',0,0,'Visit');
+INSERT INTO test_battery  ( test_name, Visit_label, SubprojectID,Active,AgeMinDays, AgeMaxDays, Stage ) VALUES('med_records_recruit', 'VSA', '21','Y',0,0,'Visit');
+INSERT INTO test_battery  ( test_name, Visit_label, SubprojectID,Active,AgeMinDays, AgeMaxDays, Stage ) VALUES('med_records_SA', 'VSA', '21','Y',0,0,'Visit');
+INSERT INTO test_battery  ( test_name, Visit_label, SubprojectID,Active,AgeMinDays, AgeMaxDays, Stage ) VALUES('mock_scanner_training_form', 'VSA', '21','Y',0,0,'Visit');
+INSERT INTO test_battery  ( test_name, Visit_label, SubprojectID,Active,AgeMinDays, AgeMaxDays, Stage ) VALUES('mri_parameter_form_sa', 'VSA', '21','Y',0,0,'Visit');
+INSERT INTO test_battery  ( test_name, Visit_label, SubprojectID,Active,AgeMinDays, AgeMaxDays, Stage ) VALUES('neuro_screen', 'VSA', '21','Y',0,0,'Visit');
+INSERT INTO test_battery  ( test_name, Visit_label, SubprojectID,Active,AgeMinDays, AgeMaxDays, Stage ) VALUES('NIHToolBox_Assessment_Data', 'VSA', '21','Y',0,0,'Visit');
+INSERT INTO test_battery  ( test_name, Visit_label, SubprojectID,Active,AgeMinDays, AgeMaxDays, Stage ) VALUES('NIHToolBox_Assessment_Scores', 'VSA', '21','Y',0,0,'Visit');
+INSERT INTO test_battery  ( test_name, Visit_label, SubprojectID,Active,AgeMinDays, AgeMaxDays, Stage ) VALUES('NIHToolBox_Registration_Data', 'VSA', '21','Y',0,0,'Visit');
+INSERT INTO test_battery  ( test_name, Visit_label, SubprojectID,Active,AgeMinDays, AgeMaxDays, Stage ) VALUES('SA_Intervention_History', 'VSA', '21','Y',0,0,'Visit');
+INSERT INTO test_battery  ( test_name, Visit_label, SubprojectID,Active,AgeMinDays, AgeMaxDays, Stage ) VALUES('scq_subject', 'VSA', '21','Y',0,0,'Visit');
+INSERT INTO test_battery  ( test_name, Visit_label, SubprojectID,Active,AgeMinDays, AgeMaxDays, Stage ) VALUES('TANNER_Boys', 'VSA', '21','Y',0,0,'Visit');
+INSERT INTO test_battery  ( test_name, Visit_label, SubprojectID,Active,AgeMinDays, AgeMaxDays, Stage ) VALUES('TANNER_Girls', 'VSA', '21','Y',0,0,'Visit');
+INSERT INTO test_battery  ( test_name, Visit_label, SubprojectID,Active,AgeMinDays, AgeMaxDays, Stage ) VALUES('TSI_SA', 'VSA', '21','Y',0,0,'Visit');
+INSERT INTO test_battery  ( test_name, Visit_label, SubprojectID,Active,AgeMinDays, AgeMaxDays, Stage ) VALUES('WIAT_III_SA', 'VSA', '21','Y',0,0,'Visit');

@@ -80,7 +80,12 @@ class New_Profile extends \NDB_Form
             $startNum = 2000;
         } elseif ($values['ProjectID'] == 6) {
             $startNum = 3000;
+        }elseif ($values['ProjectID'] == 9) {
+            $startNum = 4000;
+        }elseif ($values['ProjectID'] == 10) {
+            $startNum = 6000;
         }
+
 
         if ($num_sites >1) {
             $candID = \Candidate::createNew(
