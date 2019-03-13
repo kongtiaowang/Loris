@@ -130,6 +130,19 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
              "scan_total_time_3" => "Scan 3 (Total Time) ",
              "scan_total_time_4" => "Scan 4 (Total Time) ",
              "scan_total_time_5" => "Scan 5 (Total Time) ",
+             "t1w_run1_snr"       => "T1w Run 1 SNR",
+             "t1w_run2_snr"       => "T1w Run 2 SNR",
+             "t1w_run3_snr"       => "T1w Run 3 SNR",
+             "t1w_run4_snr"       => "T1w Run 4 SNR",
+             "t1w_run5_snr"       => "T1w Run 5 SNR",
+             "t1w_run6_snr"       => "T1w Run 6 SNR",
+             "t2w_run1_snr"       => "T2w Run 1 SNR",
+             "t2w_run2_snr"       => "T2w Run 2 SNR",
+             "t2w_run3_snr"       => "T2w Run 3 SNR",
+             "t2w_run4_snr"       => "T2w Run 4 SNR",
+             "t2w_run5_snr"       => "T2w Run 5 SNR",
+             "t2w_run6_snr"       => "T2w Run 6 SNR",
+
         );
         
         while ($i = current($score_columns)) { 
@@ -188,9 +201,8 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
         $examiners = $this->_getExaminerNames();
         $this->form->addElement("select", "Bx_specialist", "Bx Specialist:", $examiners);
 
-        //$this->form->addElement("text", "session_attempts", "Session #");
         $this->_displayHeadersScanSession();
-        for ($i=1; $i < 6; $i++) {
+        for ($i = 1; $i < 6; $i++) {
             $group[] = $this->createLabel($i . ".");
             $group[] = $this->createSelect(
                 "scan_done_$i",
@@ -209,12 +221,12 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
                 "time",
                 "time_enter_mri_room_$i"
             );
-           $group[] = $this->form->createElement(
-               "time",
+            $group[] = $this->form->createElement(
+                "time",
                 "scan_start_time_$i"
             );
 
-            $group[] =$this->form->createElement(
+            $group[] = $this->form->createElement(
                 "time",
                 "scan_end_time_$i"
             );
@@ -292,22 +304,20 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
         // First group of questions
         $this->form->addElement('static', null, "<i>*When determining Pass/Fail status:</i> <i> T1w Pass = Ant/Sup < 2 </i> | <i> T2w Pass = Ant/Sup < 3 </i>");
 
-        $questions        = array(
-                             "t1w_run1" => "T1w run1",
-                             "t1w_run2" => "T1w run2",
-                             "t1w_run3" => "T1w run3",
-                             "t2w_run1" => "T2w run1",
-                             "t2w_run2" => "T2w run2",
-                             "t2w_run3" => "T2w run3",
-                            );
-        $repeat_questions = array(
-                             "t1w_run1_repeat" => "T1w run1 repeat",
-                             "t1w_run2_repeat" => "T1w run2 repeat",
-                             "t1w_run3_repeat" => "T1w run3 repeat",
-                             "t2w_run1_repeat" => "T2w run1 repeat",
-                             "t2w_run2_repeat" => "T2w run2 repeat",
-                             "t2w_run3_repeat" => "T2w run3 repeat",
-                            );
+        $questions = array(
+            "t1w_run1" => "T1w run1",
+            "t1w_run2" => "T1w run2",
+            "t1w_run3" => "T1w run3",
+            "t1w_run4" => "T1w run4",
+            "t1w_run5" => "T1w run5",
+            "t1w_run6" => "T1w run6",
+            "t2w_run1" => "T2w run1",
+            "t2w_run2" => "T2w run2",
+            "t2w_run3" => "T2w run3",
+            "t2w_run4" => "T2w run4",
+            "t2w_run5" => "T2w run5",
+            "t2w_run6" => "T2w run6",
+        );
 
         // Display questions with two columns, one for anterior/superior ratio, and one for a pass/fail rating. Required if preceding checkbox is filled.
         $this->_displayHeaders("questions");
@@ -323,13 +333,23 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
                 "Required.",
                 $question . "_group"
             );
+            $group[] = $this->createText(
+                $question . "_superior",
+                ""
+            );
+            $this->XINRegisterRule(
+                $question . "_superior",
+                array($question . "_check{@}=={@}Yes"),
+                "Required.",
+                $question . "_group"
+            );
             $group[] = $this->createSelect(
                 $question . "_passfail",
                 "",
-                array(  
-                 ''     => null,
-                 'Pass' => "Console Pass",
-                 'Fail' => "Console Fail",
+                array(
+                    '' => null,
+                    'Pass' => "Console Pass",
+                    'Fail' => "Console Fail",
                 )
             );
             $this->XINRegisterRule(
@@ -346,47 +366,6 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
                 false
             );
             unset($group);
-
-        }
-
-        // Display optional repeat questions with two columns, one for anterior/superior ratio, and one for a pass/fail rating.
-        foreach ($repeat_questions as $question => $label) {
-            $group[] = $this->createLabel($label);
-            $group[] = $this->createText(
-                $question . "_anterior",
-                ""
-            );
-            $this->XINRegisterRule(
-                $question . "_anterior",
-                array($question . "_anterior{@}=={@}NEVER_REQUIRED"),
-                $question . "_group",
-                $question . "_group_repeat"
-            );
-
-            $group[] = $this->createSelect(
-                $question . "_passfail",
-                "",
-                array(
-                 ''     => null,
-                 'Pass' => "Console Pass",
-                 'Fail' => "Console Fail",
-                )
-            );
-            $this->XINRegisterRule(
-                $question . "_passfail",
-                array($question . "_passfail{@}=={@}NEVER_REQUIRED"),
-                $question . "_group",
-                $question . "_group_repeat"
-            );
-            $this->form->addGroup(
-                $group,
-                $question . "_group_repeat",
-                null,
-                $this->_GUIDelimiter,
-                false
-            );
-            unset($group);
-
         }
 
         // Add structural comments text area
@@ -463,7 +442,7 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
         $this->form->addElement("text", "scan_activity_other", "If other, specify:");
         $this->XINRegisterRule("scan_activity_other", array("activity_during_scan{@}=={@}other"), "Required if 'Other' selected in previous question");
 
-        $this->form->addElement('select', 'FieldMap_APinv_BOLD', "<i>FieldMap_APinv</i>",array('' => null, 'complete' => "Complete", 'partial' => "Partial", 'none' => "None"));
+        $this->form->addElement('select', 'FieldMap_APinv_BOLD', "<i>FieldMap_APinv</i>", array('' => null, 'complete' => "Complete", 'partial' => "Partial", 'none' => "None"));
         $this->form->addElement('select', 'FieldMap_AP_BOLD', "<i>FieldMap_AP</i>", array('' => null, 'complete' => "Complete", 'partial' => "Partial", 'none' => "None"));
 
         $this->form->addElement('static', null, '<BR><BR><i>*If necessary, briefly speak to each subject before each run to encourage them to hold still. Do not speak during the runs.</i><BR>');
@@ -523,9 +502,7 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
 
         $this->form->addFormRule(array(&$this, 'validate_page1'));
         $this->form->addFormRule(array(&$this, 'specialRules'));
-
     }
-    // End setupForm
 
     /**
      * Prevents contradictory text field entry
@@ -558,15 +535,19 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
     function validate_page1($values)
     {
         $errors = [];
-        $this->validate_numeric($values, "weight", $errors, 0, 500);
-        $this->validate_numeric($values, "height", $errors, 0, 100);
-        $this->validate_numeric($values, "head_circumference", $errors, 0, 50);
-        $this->validate_numeric($values, "session_attempts", $errors, 0, 20);
-        $this->validate_numeric($values, "total_number_scans", $errors, 0, 50);
-        $this->validate_numeric($values, "total_attempts_t1w", $errors, 0, 10);
-        $this->validate_numeric($values, "total_attempts_t2w", $errors, 0, 10);
-        $this->validate_numeric($values, "total_attempts_dti", $errors, 0, 10);
-        $this->validate_numeric($values, "total_attempts_bold", $errors, 0, 10);
+        $this->validate_numeric_strict($values, "weight", $errors, 0, 200);
+        $this->validate_numeric_strict($values, "height", $errors, 0, 200);
+        $this->validate_numeric_strict($values, "head_circumference", $errors, 0, 100);
+        for ($i=1; $i <= 6; $i++) {
+            $t1_weighted_anterior = "t1_run" . $i . "_anterior";
+            $t1_weighted_posterior = "t1_run" . $i . "_posterior";
+            $t2_weighted_anterior = "t2_run" . $i . "_anterior";
+            $t2_weighted_posterior = "t2_run" . $i . "_posterior";
+            $keys = [$t1_weighted_anterior, $t1_weighted_posterior, $t2_weighted_anterior, $t2_weighted_posterior];
+            foreach ($keys as $key) {
+                $this->validate_numeric_strict($values, $key, $errors, 0, 100);
+            }
+        }
         return $errors;
     }
 
@@ -596,7 +577,22 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
             }
             $scores[$curr_total_time] = $timediff;
         }
-        
+
+        for ($i=1; $i <= 6; $i++) {
+            $t1_curr_anterior = "t1w_run" . $i . "_anterior";
+            $t1_curr_superior = "t1w_run" . $i . "_superior";
+            $t1_curr_snr = "t1w_run" . $i . "_snr";
+            $t2_curr_anterior = "t2w_run" . $i . "_anterior";
+            $t2_curr_superior = "t2w_run" . $i . "_superior";
+            $t2_curr_snr  = "t2w_run" . $i . "_snr";
+            if ($record[$t1_curr_anterior] != NULL && $record[$t1_curr_superior] != NULL) {
+                $scores[$t1_curr_snr] = number_format((floatval($record[$t1_curr_anterior]) / floatval($record[$t1_curr_superior])), 2);
+            }
+            if ($record[$t2_curr_anterior] != NULL && $record[$t2_curr_superior] != NULL) {
+                $scores[$t2_curr_snr] = number_format((floatval($record[$t2_curr_anterior]) / floatval($record[$t2_curr_superior])), 2);
+            }
+
+        }
         // save scores
 	    $db->update($this->table, $scores, array("CommentID"=>$this->getCommentID()));
     }
@@ -616,7 +612,13 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
                 "static",
                 null,
                 null,
-                "<b>Anterior/Superior Ratio</b>"
+                "<b>Anterior</b>"
+            );
+            $group[] = $this->form->createElement(
+                "static",
+                null,
+                null,
+                "<b>Superior</b>"
             );
             $group[] = $this->form->createElement(
                 "static",
