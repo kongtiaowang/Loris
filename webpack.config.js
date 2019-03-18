@@ -52,6 +52,8 @@ const config = [{
     './modules/acknowledgements/js/columnFormatter.js': './modules/acknowledgements/jsx/columnFormatter.js',
     './modules/quality_control/js/qualityControlIndex.js': './modules/quality_control/jsx/qualityControlIndex.js',
     './modules/server_processes_manager/js/server_processes_managerIndex.js': './modules/server_processes_manager/jsx/server_processes_managerIndex.js',
+    './modules/document_repository/js/docIndex.js': './modules/document_repository/jsx/docIndex.js',
+    './modules/document_repository/js/editFormIndex.js': './modules/document_repository/jsx/editFormIndex.js',
   },
   output: {
     path: __dirname + '/',
