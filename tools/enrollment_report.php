@@ -1,7 +1,7 @@
 <?php
 set_include_path(get_include_path().":../libraries:../../php/libraries:../modules/statistics_ibis/php/:");
 require_once '../../vendor/autoload.php';
-require_once "NDB_Form_statistics_ibis.class.inc";
+require_once "../modules/statistics_ibis/php/stats_enrollment.class.inc";
 
 $client = new NDB_Client();
 $client->makeCommandLine();
@@ -43,8 +43,8 @@ foreach( $centers as $site){
             }
 
         }
-        $results = NDB_Form_statistics_ibis::getEnrollmentData($siteID, $projID);
 
+        $results =\LORIS\statistics_ibis\Stats_Enrollment::getEnrollmentData($siteID,$projID);
         foreach( $results as $tablesection => $enrolldata){
             switch($tablesection){
                 case "enroll_data":
