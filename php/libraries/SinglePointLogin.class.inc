@@ -148,38 +148,6 @@ class SinglePointLogin
         // Reset passwordExpired flag
         $this->_passwordExpired = false;
 
-        if (!function_exists('getallheaders')) {
-            /**
-             * In case unable to detect getallheaders function
-             *
-             * @return array headers
-             */
-            function getallheaders(): array
-            {
-                $headers = '';
-                foreach ($_SERVER as $name => $value) {
-                    if (substr($name, 0, 5) == 'HTTP_') {
-                        $headers[str_replace(
-                            ' ',
-                            '-',
-                            ucwords(
-                                strtolower(
-                                    str_replace(
-                                        '_',
-                                        ' ',
-                                        substr(
-                                            $name,
-                                            5
-                                        )
-                                    )
-                                )
-                            )
-                        )] = $value;
-                    }
-                }
-                return $headers;
-            }
-        }
         // First try JWT authentication, which is cheaper and
         // doesn't involve database calls
         $headers    = getallheaders();
@@ -312,7 +280,7 @@ class SinglePointLogin
                   GROUP BY UserID";
         $row   = $DB->pselectRow($query, array('username' => $username));
 
-        if (intval($row['User_count'] ?? 0) !== 1) {
+        if (is_null($row) || intval($row['User_count'] ?? 0) !== 1) {
             /* Display generic failure message to front-end so that an
              * attacker will have a harder time knowing the difference
              * between a bad username and a bad password.

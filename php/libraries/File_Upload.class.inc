@@ -215,7 +215,8 @@ class File_Upload
             if (!$this->file->moveUploadedFile(
                 $this->destinationDirectory,
                 $this->destinationFilename
-            )) {
+            )
+            ) {
                 $this->setError(
                     $this->fieldName,
                     "Could not move file to "
@@ -396,7 +397,7 @@ class File_Upload
     * @return boolean true
     * @see    File_Upload::processFiles()
     */
-    function setFileHandler($fieldName, $className, $methods="")
+    function setFileHandler($fieldName, $className, $methods=array())
     {
         $default_methods =array(
                            "verify" => "isValid",

@@ -424,6 +424,7 @@ class NDB_Caller
         }
 
         // save instrument form data
+        $success = false;
         if (!isset($_REQUEST['ClearInstrument'])) {
             // If ClearInstrument was set, it's the control
             // panel, not the instrument that needs to be
@@ -436,17 +437,19 @@ class NDB_Caller
             return "";
         }
         // create an instrument status object
-        $status  = new NDB_BVL_InstrumentStatus;
-        $success = $status->select($commentID);
+        $status = new NDB_BVL_InstrumentStatus;
+        $status->select($commentID);
 
         // freeze the form to prevent data entry
         if ($status->getDataEntryStatus() != 'In Progress'
             || !$user->hasPermission('data_entry')
-            || !in_array(
+            || (isset($timepoint)
+            && !in_array(
                 $timepoint->getData("CenterID"),
                 $user->getData("CenterIDs")
-            )
+            ))
         ) {
+
             if ($instrument->preview !== true && $this->DataEntry !== 'Direct') {
                 $instrument->freeze();
             }
@@ -501,8 +504,8 @@ class NDB_Caller
             return "";
         }
         // create an instrument status object
-        $status  = new NDB_BVL_InstrumentStatus;
-        $success = $status->select($commentID);
+        $status = new NDB_BVL_InstrumentStatus;
+        $status->select($commentID);
 
         $this->page = $instrument;
         $html       = $instrument->display();

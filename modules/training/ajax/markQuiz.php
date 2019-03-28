@@ -97,9 +97,9 @@ function correct($instrumentID, $question, $answer)
  *
  * @param int $instrumentID The ID of the instrument
  *
- * @return nothing
+ * @return bool
  */
-function markQuiz($instrumentID)
+function markQuiz($instrumentID): bool
 {
     $correct = true;
     foreach ($_POST as $question => $answer) {
@@ -139,8 +139,6 @@ function process($values)
         // the identifier, training passes it as a value
         if (!empty($values['examiner'])) {
             $examinerID = $values['examiner'];
-        } else {
-            $examinerID = $this->identifier;
         }
 
         // Get the certificationID if it exists

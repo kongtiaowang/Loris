@@ -99,25 +99,25 @@ class Data_Team_Helper extends \NDB_Form
             $visit_array   = array_combine($visit_array, $visit_array);
             $list_of_sites = array();
             $this->tpl_data['visitLabels'] = $visit_array;
-            if ($user->hasPermission('access_all_profiles')) {
-                // get the list of study sites - to be replaced by the Site object
-                $list_of_sites      = \Utility::getSiteList();
-                $default_site_array =array('All Sites' => 'All Sites');
-                if (is_array($list_of_sites)) {
-                    $list_of_sites = $default_site_array + $list_of_sites;
-                }
-            } else {
-                // allow only to view own study site data
-                $list_of_sites      = $user->getStudySites();
-                $default_site_array =array('All User Sites' => 'All User Sites');
-                $list_of_sites      = $default_site_array + $list_of_sites;
+        if ($user->hasPermission('access_all_profiles')) {
+            // get the list of study sites - to be replaced by the Site object
+            $list_of_sites      = \Utility::getSiteList();
+            $default_site_array =array('All Sites' => 'All Sites');
+            if (is_array($list_of_sites)) {
+                $list_of_sites = $default_site_array + $list_of_sites;
             }
+        } else {
+            // allow only to view own study site data
+            $list_of_sites      = $user->getStudySites();
+            $default_site_array =array('All User Sites' => 'All User Sites');
+            $list_of_sites      = $default_site_array + $list_of_sites;
+        }
             $this->tpl_data['siteList'] = $list_of_sites;
             // Project list, if applicable
-            if ($config->getSetting("useProjects")==="true") {
-                $projectList = \Utility::getProjectList();
-                $this->tpl_data['projectList'] = $projectList;
-            }
+        if ($config->getSetting("useProjects")==="true") {
+            $projectList = \Utility::getProjectList();
+            $this->tpl_data['projectList'] = $projectList;
+        }
 
             $incompleteCandidates = $this->
                  getIncompleteCandidates(
@@ -336,7 +336,7 @@ class Data_Team_Helper extends \NDB_Form
      * @param int|string $site        the id or default value of the site
      * @param int|null   $project     the id of the project or can be null
      *
-     * @return unknown
+     * @return array
      */
     function instrumentInConflict(string $test_name,
         $visit_label=null,
@@ -421,8 +421,8 @@ class Data_Team_Helper extends \NDB_Form
     /**
      * FieldInConflict function
      *
-     * @param unknown_type $test_name  the value of test name
-     * @param string       $field_name the value of field name
+     * @param string $test_name  the value of test name
+     * @param string $field_name the value of field name
      *
      * @return array
      */
@@ -478,13 +478,13 @@ class Data_Team_Helper extends \NDB_Form
     /**
      * GetIncompleteCandidates function
      *
-     * @param unknown_type $test_name   the value of test name
-     * @param string       $visit_label the value of visit label
-     * @param string       $candidate   the value of candidate
-     * @param int|string   $site        the id or default value of the site
-     * @param int|null     $project     the id of the project or can be null
+     * @param string     $test_name   the value of test name
+     * @param string     $visit_label the value of visit label
+     * @param string     $candidate   the value of candidate
+     * @param int|string $site        the id or default value of the site
+     * @param int|null   $project     the id of the project or can be null
      *
-     * @return unknown
+     * @return array
      */
     function getIncompleteCandidates($test_name,
         $visit_label=null,
@@ -790,7 +790,7 @@ class Data_Team_Helper extends \NDB_Form
      *
      * @param string $visit_label the value of visit label
      *
-     * @return   unknown
+     * @return   array
      * @throws   \DatabaseException
      * @internal param unknown_type $visit
      */

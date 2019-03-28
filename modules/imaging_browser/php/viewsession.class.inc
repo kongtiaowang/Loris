@@ -325,8 +325,8 @@ class ViewSession extends \NDB_Form
     /**
      * Gets a rejected parameter according to its type
      *
-     * @param MRIFile $file file object
-     * @param string  $type type of the rejected
+     * @param \MRIFile $file file object
+     * @param string   $type type of the rejected
      *
      * @return string The parameter of the rejected
      */
@@ -338,7 +338,8 @@ class ViewSession extends \NDB_Form
             "/(Directions)([^\(]+)(\(\d+\))/",
             $file->getParameter($parameter),
             $array
-        )) {
+        )
+        ) {
             $dirList = preg_split('/\,/', $array[2]);
             if (count($dirList) > 1) {
                 sort($dirList);
@@ -351,8 +352,8 @@ class ViewSession extends \NDB_Form
     /**
      * Gets the date according to the type
      *
-     * @param MRIFile $file file object
-     * @param string  $type type of the date
+     * @param \MRIFile $file file object
+     * @param string   $type type of the date
      *
      * @return string The date if exists, if not an empty string
      */
@@ -363,7 +364,8 @@ class ViewSession extends \NDB_Form
             "/(\d{4})-?(\d{2})-?(\d{2})/",
             $file->getParameter($type),
             $array
-        )) {
+        )
+        ) {
             return (mktime(12, 0, 0, $array[2], $array[3], $array[1]));
         } else {
             return "";
@@ -485,7 +487,8 @@ class ViewSession extends \NDB_Form
                         FROM files_qcstatus 
                         WHERE FileID=:FID ",
                         $params
-                    ) > 0) {
+                    ) > 0
+                    ) {
                         $success = $this->DB->delete('files_qcstatus', $updateWhere);
                     }
                 } else {
@@ -494,7 +497,8 @@ class ViewSession extends \NDB_Form
                         FROM files_qcstatus
                         WHERE FileID=:FID ",
                         $params
-                    ) > 0) {
+                    ) > 0
+                    ) {
                         $updateSet = array(
                                       'Selected'         => $curSelected,
                                       'QCLastChangeTime' => time(),
@@ -637,9 +641,9 @@ class ViewSession extends \NDB_Form
      *
      * @param string $FileID the value of FileID
      *
-     * @return Selected status
+     * @return ?string
      */
-    function _getSelected($FileID)
+    function _getSelected($FileID): ?string
     {
 
         $selected = $this->DB->pselectOne(

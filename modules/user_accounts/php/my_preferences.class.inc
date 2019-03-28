@@ -377,12 +377,12 @@ class My_Preferences extends \NDB_Form
      * Determines if the new password that the user entered is different
      * than its current password (the one stored in the database).
      *
-     * @param Database $db          database object.
-     * @param string   $newPassword the new password the user entered.
+     * @param \Database $db          database object.
+     * @param string    $newPassword the new password the user entered.
      *
      * @return bool  true if the password changed, false otherwise.
      */
-    function _passwordChanged($db, $newPassword)
+    function _passwordChanged(\Database $db, $newPassword): bool
     {
         //--- Get current password stored in database
         $passwordQuery
@@ -394,6 +394,11 @@ class My_Preferences extends \NDB_Form
             $passwordQuery,
             array('UID' => $this->identifier)
         );
+        if (is_null($passwords)) {
+            throw new \LorisException(
+                'No existing password found for user!'
+            );
+        }
 
         if (!is_null($passwords['Password_hash'])) {
             return !password_verify($newPassword, $passwords['Password_hash']);
@@ -456,12 +461,12 @@ class My_Preferences extends \NDB_Form
      * Validates that en email address entered for a given user
      * (either new or existing) is valid and unique.
      *
-     * @param Database $DB    database object.
-     * @param string   $email user's email.
+     * @param \Database $DB    database object.
+     * @param string    $email user's email.
      *
      * @return string error message if email is invalid, null otherwise.
      */
-    private function _getEmailError($DB, $email)
+    private function _getEmailError(\Database $DB, $email)
     {
         // remove illegal characters
         $email = filter_var($email, FILTER_SANITIZE_EMAIL);

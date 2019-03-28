@@ -13,12 +13,12 @@
         "zendframework/zend-diactoros": "^1.6"
     },
     "require-dev" : {
-        "squizlabs/php_codesniffer" : "2.5.*",
+        "squizlabs/php_codesniffer" : "2.9.2",
         "phpunit/phpunit" : "6.5.*",
         "phpunit/dbunit": "3.0.*",
         "facebook/webdriver" : "dev-master",
         "phpmd/phpmd": "^2.6",
-        "phan/phan": ">1.0"
+        "phan/phan": ">1.2.2"
     },
     "scripts": {
       "pre-install-cmd": "mkdir -p project/libraries"
@@ -27,6 +27,6 @@
         "psr-4": {
             "LORIS\\": "src/"
         },
-        "classmap": ["project/libraries", "php/libraries", "php/exceptions"]
+        "classmap": ["project/libraries", "php"]
     }
 }
