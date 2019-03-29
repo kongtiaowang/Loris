@@ -93,6 +93,12 @@ class NDB_BVL_Instrument_Shipley2_Data extends NDB_BVL_Instrument
         $this->form->addFile('Shipley2_Data', 'Upload the Shipley2 Data File
 <br><h6><i>(Filename should be Shipley2_Data.csv)</i></h6>', array());
         $this->form->addElement('static', 'Uploaded_Shipley2_Data', "Uploaded  Shipley2 Data Labels File");
+        $this->XINRegisterRule("uploaded_file_val", array("{uploaded_file_val}{@}=={@}NEVER_REQUIRED"));
+
+        $this->form->addElement('hidden', 'hidden_val', "Hidden Val");
+        $this->XINRegisterRule("hidden_val", array("{hidden_val}{@}=={@}NEVER_REQUIRED"));
+        $this->XINRegisterRule("Shipley2_Data",array("hidden_val{@}=={@}NEVER_REQUIRED"));
+
 
 
     }
@@ -202,7 +208,7 @@ class NDB_BVL_Instrument_Shipley2_Data extends NDB_BVL_Instrument
             }
         }
         unset($values['candID'], $values['sessionID'], $values['commentID'], $values['test_name'], $values['page'], $values['fire_away'], $values['subtest'], $values['MAX_FILE_SIZE'],
-            $values['Shipley2_Data'], $values['valid'],$values['ids_updated']);
+            $values['Shipley2_Data'], $values['valid'],$values['ids_updated'],$values['hidden_val']);
         $this->_save($values);
         //
 
@@ -243,7 +249,7 @@ class NDB_BVL_Instrument_Shipley2_Data extends NDB_BVL_Instrument
             'File_type' => 'Shipley2',
         );
 
-        if(strpos($file->fileInfo['name'], 'Data') !== false) {
+        if(strpos($file->fileInfo['name'], 'Shipley2_Data') !== false) {
             /** @var Database $db */
             $db =& Database::singleton();
             ///Setting trackchanges to false because getting error messages

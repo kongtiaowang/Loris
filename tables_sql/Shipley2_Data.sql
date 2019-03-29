@@ -216,7 +216,7 @@ PRIMARY KEY  (`CommentID`)
 
               ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
  -- META
-INSERT INTO test_names (Test_name, Full_name, Sub_group) VALUES ('Shipley2_Data', 'Shipley2 Data', '1');
+INSERT INTO test_names (Test_name, Full_name, Sub_group) VALUES ('Shipley2_Data', 'Shipley2 Data Parser', '1');
 INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('Shipley2_Data', 'Shipley2_Data_page1', "Page 1", 1);
 
 -- adding to test battery

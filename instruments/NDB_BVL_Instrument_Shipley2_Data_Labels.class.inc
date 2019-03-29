@@ -93,6 +93,11 @@ class NDB_BVL_Instrument_Shipley2_Data_Labels extends NDB_BVL_Instrument
         $this->form->addFile('Shipley2_Data_Labels', 'Upload the Shipley2 Data Labels File
 <br><h6><i>(Filename should be Shipley2_Data_Labels.csv)</i></h6>', array());
         $this->form->addElement('static', 'Uploaded_Shipley2_Data_Labels', "Uploaded  Shipley2 Data Labels File");
+        $this->form->addElement('hidden', 'hidden_val', "Hidden Val");
+        $this->XINRegisterRule("hidden_val", array("{hidden_val}{@}=={@}NEVER_REQUIRED"));
+
+        $this->XINRegisterRule("Shipley2_Data_Labels",array("hidden_val{@}=={@}NEVER_REQUIRED"));
+
 
 
     }
@@ -199,7 +204,7 @@ class NDB_BVL_Instrument_Shipley2_Data_Labels extends NDB_BVL_Instrument
             }
         }
         unset($values['candID'], $values['sessionID'], $values['commentID'], $values['test_name'], $values['page'], $values['fire_away'], $values['subtest'], $values['MAX_FILE_SIZE'],
-            $values['Shipley2_Data_Labels'], $values['valid'],$values['ids_updated']);
+            $values['Shipley2_Data_Labels'], $values['valid'],$values['ids_updated'], $values['hidden_val']);
         $this->_save($values);
         //
 
@@ -241,7 +246,7 @@ class NDB_BVL_Instrument_Shipley2_Data_Labels extends NDB_BVL_Instrument
         );
        // print_r($main_values);
        // exit;
-        if(strpos($file->fileInfo['name'], 'Labels') !== false) {
+        if(strpos($file->fileInfo['name'], 'Data_Labels') !== false) {
             /** @var Database $db */
             $db =& Database::singleton();
             ///Setting trackchanges to false because getting error messages

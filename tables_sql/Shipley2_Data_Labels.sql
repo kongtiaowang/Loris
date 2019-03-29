@@ -161,7 +161,7 @@ PRIMARY KEY  (`CommentID`)
               ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- META
-INSERT INTO test_names (Test_name, Full_name, Sub_group) VALUES ('Shipley2_Data_Labels', 'Shipley2 Data Labels - Raw Data Parser', '1');
+INSERT INTO test_names (Test_name, Full_name, Sub_group) VALUES ('Shipley2_Data_Labels', 'Shipley2 Data Labels (Raw Data Parser)', '1');
 INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('Shipley2_Data_Labels', 'Shipley2_Data_Labels_page1', "Page 1", 1);
 -- adding to test battery
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
