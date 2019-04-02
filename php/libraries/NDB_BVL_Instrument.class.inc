@@ -2553,12 +2553,14 @@ class NDB_BVL_Instrument extends NDB_Page
     /**
      * Determines whether data entry should be allowed for this instrument
      * or not.
-     *
+     * @param Database database
      * @return boolean true if data entry is permitted
      */
-    function determineDataEntryAllowed(): bool
+    function determineDataEntryAllowed(Database $DB=null): bool
     {
+        if ($DB==null){
         $DB    = Database::singleton();
+        }
         $entry = $DB->pselectOne(
             "SELECT Data_entry FROM flag WHERE CommentID=:CID",
             array('CID' => $this->getCommentId())
