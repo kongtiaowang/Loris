@@ -1,6 +1,7 @@
 import {Tabs, TabPane} from 'Tabs';
 import DocUploadForm from './uploadForm';
 import DocCategoryForm from './categoryForm';
+import Tree from './tree';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 
@@ -154,6 +155,7 @@ class DocIndex extends React.Component {
     return (
       <Tabs tabs={tabList} defaultTab="browse" updateURL={true}>
         <TabPane TabId={tabList[0].id}>
+          <Tree />
           <FilterableDataTable
             name = "document"
             data={this.state.data.Data}

@@ -68,7 +68,8 @@ class DocTree extends \NDB_Page
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
           if ($request->getMethod()=='GET'){
-          $data= $this->getTreeData();
+           $category = basename($request->getUri()->getPath());
+           $data= $this->getTreeData();
 
        echo '<pre>';
 
@@ -77,14 +78,15 @@ class DocTree extends \NDB_Page
    //      var_dump($data);
   //        echo '---------';
    
-         var_dump($this->getAllNodesID($data,0));
-
+//         $path = $this->getAllNodesID($data,$category);
+//           $path = $this->getTree($data, 0);
+ $path = $this->getChildData($category);     
             return (new \LORIS\Http\Response())
               ->withHeader("Content-Type", "text/plain")
               ->withStatus(200)
               ->withBody(
                   new \LORIS\Http\StringStream(
-                      json_encode($tree)
+                      json_encode($path)
                   )
               );
             }
@@ -102,6 +104,18 @@ class DocTree extends \NDB_Page
         //  echo '<pre>';
         //  var_dump($res);
           
+    }
+    public function getChildData($parent_id=0) {
+
+          $DB   = \Database::singleton();
+          $category  = $DB->pselect(
+            "SELECT * FROM document_repository_categories where parent_id=$parent_id",
+            array()
+          );
+     return $category;
+        //  echo '<pre>';
+        //  var_dump($res);
+
     }
    public function getTree($data, $pId)
    {
