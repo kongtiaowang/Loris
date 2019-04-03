@@ -273,40 +273,64 @@ class NDB_BVL_Instrument_WIAT_III_SA extends NDB_BVL_Instrument
         $fp=fopen($file->fileInfo['tmp_name'], "r");
         $contents=fread($fp,filesize($file->fileInfo['tmp_name']));
         fclose($fp);
-
+        //PHI have very old UTF 16 encoding on their file
+       if ($contents[0]==chr(0xff) && $contents[1]==chr(0xfe)) {
+            $contents = iconv("UTF-16LE", "UTF-8", $contents);
+        }
         $lines =preg_split("/\\r\\n|\\r|\\n/", $contents);
-
 
         $visit = $args['visitLabel'];
 
 
-        $examinee_key = array_search('Examinee Name', $lines);
-        if($examinee_key==NULL)
+    if(strpos($contents,'Student Name'))
+    {
+        $found=0;
+        $actual_pscid=$args['PSCID'];
+
+
+        $input = $actual_pscid; //from the user
+        if(preg_match("/{$actual_pscid}/i", $contents)) {
+           $found=1;
+        }
+        if($found==0)
         {
-            $errors[]="Examinee Name doesn't exist in your txt file.Please check and try again.";
+            $errors[] = "PSCID in the file given doesn't match with the actual PSCID (" . $actual_pscid . ")";
+            return $errors;
+        }
+    }
+
+    else if(strpos($contents,'Examinee Name')) {
+
+        $examinee_key = array_search('Examinee Name', $lines);
+        if ($examinee_key == NULL) {
+            $errors[] = "Examinee Name doesn't exist in your txt file.Please check and try again.";
             return $errors;
         }
 
-        $values['Examinee Name'] =$lines[$examinee_key+1];
-        $pscid_array=explode(" ", $values['Examinee Name']);
-        $pscid=$pscid_array[1];
-        $actual_pscid=$args['PSCID'];
-        if($actual_pscid!=$pscid)
-        {
-            $errors[]="PSCID in the file given (".$pscid.") doesn't match with the actual PSCID (".$actual_pscid.")";
+        $values['Examinee Name'] = $lines[$examinee_key + 1];
+        $pscid_array = explode(" ", $values['Examinee Name']);
+        $pscid = $pscid_array[1];
+        $actual_pscid = $args['PSCID'];
+        if ($actual_pscid != $pscid) {
+            $errors[] = "PSCID in the file given (" . $pscid . ") doesn't match with the actual PSCID (" . $actual_pscid . ")";
             return $errors;
         }
 
         $test_date_key = array_search('Date of Report', $lines);
-        $values['Date of Report'] =$lines[$test_date_key+1];
+        $values['Date of Report'] = $lines[$test_date_key + 1];
 
         $values['Date of Report'] = $this->formatDate($values['Date of Report']);
 
 
-        if(!empty($args['values']['Date_taken']) && !empty($values['Date of Report']) && ($args['values']['Date_taken'] != $values['Date of Report'])){
-            $errors['Date of Administration']="Date of administration in the file ({$values['Date of Report']}) does not match the date of administration entered ({$args['values']['Date_taken']})." ;
+        if (!empty($args['values']['Date_taken']) && !empty($values['Date of Report']) && ($args['values']['Date_taken'] != $values['Date of Report'])) {
+            $errors['Date of Administration'] = "Date of administration in the file ({$values['Date of Report']}) does not match the date of administration entered ({$args['values']['Date_taken']}).";
             return $errors;
         }
+    }
+    else
+    {
+        echo "Student Name(PHI)/Examinee Name(others) doesn't exist in your txt file.Please check and try again.";
+    }
 
         return true;
     }
@@ -325,6 +349,9 @@ class NDB_BVL_Instrument_WIAT_III_SA extends NDB_BVL_Instrument
         $fp=fopen($file->fileInfo['tmp_name'], "r");
         $contents=fread($fp,filesize($file->fileInfo['tmp_name']));
         fclose($fp);
+        if ($contents[0]==chr(0xff) && $contents[1]==chr(0xfe)) {
+            $contents = iconv("UTF-16LE", "UTF-8", $contents);
+        }
 
         $values=array(
             'UserID'    =>$args['username'],
@@ -351,23 +378,57 @@ class NDB_BVL_Instrument_WIAT_III_SA extends NDB_BVL_Instrument
             "MFS" => "Math Fluency-Subtraction","MFM" => "Math Fluency-Multiplication"
 
         );
-        foreach ($domains as $key => $val) {
-            $array_key=array_search($val,$lines);
-            $val_count=$array_key+8;
-            $count=0;
-            ${$key."_DOMAIN"}= array("{$key}_RAW","{$key}_STD_SCORE","{$key}_CI","{$key}_PER_RANK","{$key}_NCE","{$key}_STANINE","{$key}_GRADE_EQUIV","{$key}_AGE_EQUIV");
-            if($array_key!=NULL) {
-                for ($i = $array_key + 1; $i <= $val_count; $i++) {
-                    $values[${$key.'_DOMAIN'}[$count]] = $lines[$i];
-                    $count++;
-                }
+        $domains_PHI = array("LC" => "Listening Comprehension","ERS" => "Early Reading Skills","RC" => "Reading Comprehension",
+            "MPS" => "Math Problem Solving", "AWF" => "Alphabetic Writing Fluency", "SC" => "Sentence Composition",
+            "WR" => "Word Reading","EC" => "Essay Composition", "PD" => "Pseudoword Decoding","OE" => "Oral Expression",
+            "NO" => "Numerical Operations","ORF" => "Oral Reading Fluency","SP" => "Spelling","MFA" => "Math Fluency—Addition",
+            "MFS" => "Math Fluency—Subtraction","MFM" => "Math Fluency—Multiplication"
 
+        );
+        //PHI Special case Processing
+        if(strpos($contents,'Student Name'))
+        {
 
-            }
-            else{
-                foreach(${$key.'_DOMAIN'} as $val)
+            foreach ($domains_PHI as $key => $val) {
+                if(strpos($contents,$val)!=FALSE)
                 {
-                    $values[$val]='--';
+                   $dom_position=strpos($contents,$val);
+                   $substring=substr ($contents ,$dom_position, 70);
+                   $main_array=explode("\t",$substring);
+                    $final_array = array_slice($main_array, 1, 8);
+                    $val_count = 7;
+                    $count = 0;
+                    ${$key . "_DOMAIN"} = array("{$key}_RAW", "{$key}_STD_SCORE", "{$key}_CI", "{$key}_PER_RANK", "{$key}_NCE", "{$key}_STANINE", "{$key}_GRADE_EQUIV", "{$key}_AGE_EQUIV");
+                    for ($i = 0; $i <= $val_count; $i++) {
+                        $values[${$key . '_DOMAIN'}[$count]] =$final_array[$i];
+                        $count++;
+                    }
+
+                }
+                else {
+                    foreach (${$key . '_DOMAIN'} as $val) {
+                        $values[$val] = '--';
+                    }
+                }
+            }
+        }
+        else {
+            foreach ($domains as $key => $val) {
+                $array_key = array_search($val, $lines);
+                $val_count = $array_key + 8;
+                $count = 0;
+                ${$key . "_DOMAIN"} = array("{$key}_RAW", "{$key}_STD_SCORE", "{$key}_CI", "{$key}_PER_RANK", "{$key}_NCE", "{$key}_STANINE", "{$key}_GRADE_EQUIV", "{$key}_AGE_EQUIV");
+                if ($array_key != NULL) {
+                    for ($i = $array_key + 1; $i <= $val_count; $i++) {
+                        $values[${$key . '_DOMAIN'}[$count]] = $lines[$i];
+                        $count++;
+                    }
+
+
+                } else {
+                    foreach (${$key . '_DOMAIN'} as $val) {
+                        $values[$val] = '--';
+                    }
                 }
             }
         }
@@ -377,23 +438,51 @@ class NDB_BVL_Instrument_WIAT_III_SA extends NDB_BVL_Instrument
             "OE_OWF" => "Oral Word Fluency","OE_SR" => "Sentence Repetition"
 
         );
-        foreach ($domains1 as $key => $val) {
-            $array_key=array_search($val,$lines);
-            $val_count=$array_key+6;
-            $count=0;
-            ${$key."_DOMAIN"}= array("{$key}_RAW","{$key}_STD_SCORE","{$key}_PER_RANK","{$key}_NCE","{$key}_STANINE","{$key}_QD");
-            if($array_key!=NULL) {
-                for ($i = $array_key + 1; $i <= $val_count; $i++) {
-                    $values[${$key.'_DOMAIN'}[$count]] = $lines[$i];
-                    $count++;
-                }
+        if(strpos($contents,'Student Name'))
+        {
 
-
-            }
-            else{
-                foreach(${$key.'_DOMAIN'} as $val)
+            foreach ($domains1 as $key => $val) {
+                if(strpos($contents,$val)!=FALSE)
                 {
-                    $values[$val]='--';
+                    $dom_position=strpos($contents,$val);
+                    $substring=substr ($contents ,$dom_position, 70);
+                    $main_array=explode("\t",$substring);
+                    $final_array = array_slice($main_array, 1, 6);
+                    $val_count = 5;
+                    $count = 0;
+                    ${$key . "_DOMAIN"} = array("{$key}_RAW", "{$key}_STD_SCORE", "{$key}_PER_RANK", "{$key}_NCE", "{$key}_STANINE", "{$key}_QD");
+                    for ($i = 0; $i <= $val_count; $i++) {
+                        $values[${$key . '_DOMAIN'}[$count]] =$final_array[$i];
+                        $count++;
+                    }
+
+                }
+                else {
+                    foreach (${$key . '_DOMAIN'} as $val) {
+                        $values[$val] = '--';
+                    }
+                }
+            }
+        }
+        else{
+
+
+            foreach ($domains1 as $key => $val) {
+                $array_key = array_search($val, $lines);
+                $val_count = $array_key + 6;
+                $count = 0;
+                ${$key . "_DOMAIN"} = array("{$key}_RAW", "{$key}_STD_SCORE", "{$key}_PER_RANK", "{$key}_NCE", "{$key}_STANINE", "{$key}_QD");
+                if ($array_key != NULL) {
+                    for ($i = $array_key + 1; $i <= $val_count; $i++) {
+                        $values[${$key . '_DOMAIN'}[$count]] = $lines[$i];
+                        $count++;
+                    }
+
+
+                } else {
+                    foreach (${$key . '_DOMAIN'} as $val) {
+                        $values[$val] = '--';
+                    }
                 }
             }
         }
