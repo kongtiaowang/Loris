@@ -8,35 +8,38 @@
  * @version 1.0.0
  *
  * */
-
+const numbers = ['two', 'three', 'four', 'five'];
+const folder = ['Root1'];
 class Tree extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {data: ['Root']};
+    this.state = {data: folder};
+    this.handle = this.handle.bind(this);
   }
 
-  componentDidMount() {
-    this.fetchData();
+  handle(id) {
+     const nodes = this.state.data;
+     nodes.push(id);
+     this.setState({data: nodes});
+     console.log(this.state.data);
   }
 
-  fetchData() {
-}
   render() {
-const list = this.state.data.map((item) => (<div>{item} > </div>));
+  const list = this.state.data.map((item, i) => (<p key={i} >{item} > </p>));
     return (
      <div>
-      {list} <TreeNode /> {a} 
+      {list} <TreeNode click={this.handle}/>
      </div>
     );
   }
 }
 export default Tree;
 
-const numbers = [1, 2, 3, 4, 5];
 class TreeNode extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {display:1};
+    this.state = {display: 1};
+    this.click = this.props.click;
   }
 componentDidMount() {
 }
@@ -48,7 +51,7 @@ handleClick(param, e) {
     });
 }
   render() {
-const node = numbers.map((number, key) => (<div onClick={(e) => this.handleClick({number}, e)}>{number}</div>));
+const node = numbers.map((number, index) => (<div onClick={()=>this.props.click(numbers[index])} key={index} >{number}</div>));
     return (
      <div>
       {node}
