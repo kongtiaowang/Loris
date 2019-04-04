@@ -25,7 +25,7 @@ class Tree extends React.Component {
   }
 
   render() {
-  const list = this.state.data.map((item, i) => (<p key={i} >{item} > </p>));
+  const list = this.state.data.map((item, i) => (<span className="glyphicon glyphicon-folder-open">{item} ></span>));
     return (
      <div>
       {list} <TreeNode click={this.handle}/>
@@ -51,11 +51,11 @@ handleClick(param, e) {
     });
 }
   render() {
-const node = numbers.map((number, index) => (<div onClick={()=>this.props.click(numbers[index])} key={index} >{number}</div>));
+const node = numbers.map((number, index) => (<span onClick={()=>this.props.click(numbers[index])} key={index} > {number} </span>));
     return (
-     <div>
+     <span>
       {node}
-     </div>
+     </span>
     );
   }
 }
