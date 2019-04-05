@@ -15,17 +15,34 @@ class Tree extends React.Component {
     super(props);
     this.state = {data: folder};
     this.handle = this.handle.bind(this);
+    this.backNode = this.backNode.bind(this);
+console.log(this.props.action);
   }
 
   handle(id) {
      const nodes = this.state.data;
+     this.props.action(id);
      nodes.push(id);
      this.setState({data: nodes});
-     console.log(this.state.data);
+   //  console.log(this.state.data);
   }
+  backNode(id) {
+     if (id===0) {
+       return;
+     }
+//   alert(this.state.data[id]);
+const arr = this.state.data.slice(0, id);
+console.log(arr);
+this.setState({data: arr});
 
+//   this.state.data = this.state.data.slice(0, id);
+   //  const nodes = this.state.data;
+   //  nodes.push(id);
+   //  this.setState({data: nodes});
+   //  console.log(this.state.data);
+  }
   render() {
-  const list = this.state.data.map((item, i) => (<span className="glyphicon glyphicon-folder-open">{item} ></span>));
+  const list = this.state.data.map((item, i) => (<span onClick={()=>this.backNode(i)} className="glyphicon glyphicon-folder-open">{item} ></span>));
     return (
      <div>
       {list} <TreeNode click={this.handle}/>

@@ -14,12 +14,14 @@ class DocIndex extends React.Component {
       data: {},
       error: false,
       newCategory: false,
+      url: 'nihao',
     };
 
     // Bind component instance to custom methods
     this.fetchData = this.fetchData.bind(this);
     this.formatColumn = this.formatColumn.bind(this);
     this.newCategoryState = this.newCategoryState.bind(this);
+    this.handle = this.handle.bind(this);
   }
 
   componentDidMount() {
@@ -35,7 +37,9 @@ class DocIndex extends React.Component {
         this.setState({error: true});
     });
   }
-
+  handle() {
+    this.setState({url: 'new url 99999999999'});
+  }
   newCategoryState() {
     this.setState({newCategory: true});
   }
@@ -155,13 +159,13 @@ class DocIndex extends React.Component {
     return (
       <Tabs tabs={tabList} defaultTab="browse" updateURL={true}>
         <TabPane TabId={tabList[0].id}>
-          <Tree />
           <FilterableDataTable
+            url = {this.state.url}
             name = "document"
             data={this.state.data.Data}
             fields={fields}
             getFormattedCell={this.formatColumn}
-          />
+          ><Tree action={this.handle}/></FilterableDataTable>
         </TabPane>
         <TabPane TabId={tabList[1].id}>
           <DocUploadForm
