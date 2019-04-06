@@ -258,13 +258,21 @@ export class App extends React.Component {
                 });
         }).then((result) => {
             console.log(result);
+	    console.log(this.state.page);
             if (result.status == 200) {
                 this.setState({
                     page : Object.assign(
                         {},
                         this.state.page,
                         {
-                            data : this.state.page.data.concat(result.data)
+                            data : this.state.page.data.concat(result.data),
+                            meta : Object.assign(
+                                {},
+                                this.state.page.meta,
+                                {
+                                    itemsFound : Number(this.state.page.meta.itemsFound)+1,
+                                }
+                            ),
                         }
                     )
                 });
@@ -339,7 +347,7 @@ export class App extends React.Component {
                     <div className="form-group">
                         <label> DCCID: </label>
                         <br/>
-                        <input className="form-control" type="text" defaultValue={this.state.candId} onChange={(e) => {
+                        <input className="form-control" type="text" name="candId" defaultValue={this.state.candId} onChange={(e) => {
                             this.setState({
                                 candId : e.target.value
                             });
@@ -349,7 +357,7 @@ export class App extends React.Component {
                     <div className="form-group">
                         <label> PSCID: </label>
                         <br/>
-                        <input className="form-control" type="text" defaultValue={this.state.pscId} onChange={(e) => {
+                        <input className="form-control" type="text" name="pscId" defaultValue={this.state.pscId} onChange={(e) => {
                             this.setState({
                                 pscId : e.target.value
                             });
@@ -539,7 +547,8 @@ export class App extends React.Component {
 				    {
 					(!this.state.lockTabs && this.state.tabIndex == index) ?
 					<span className="badge">
-			                	{this.state.page.data.length}
+			                	{/* {this.state.page.data.length} */}
+						{this.state.page.meta.itemsFound}
                                     	</span> :
 					undefined
 				    }
@@ -555,7 +564,8 @@ export class App extends React.Component {
                             }}>
                                 Search Results &nbsp;
                                 <span className="badge">
-                                    {this.state.page.data.length}
+                                    {/*{this.state.page.data.length}*/}
+				    {this.state.page.meta.itemsFound}
                                 </span>
                             </a>
                         </li> :
@@ -694,6 +704,7 @@ export class App extends React.Component {
                                                             if (index < 0) {
                                                                 return;
                                                             }
+console.log(this.state.page);
                                                             const appointments = this.state.page.data.slice();
                                                             appointments.splice(index, 1);
                                                             this.setState({
@@ -701,9 +712,16 @@ export class App extends React.Component {
                                                                     {},
                                                                     this.state.page,
                                                                     {
-                                                                        data : appointments
+                                                                        data : appointments,
+									meta : Object.assign(
+                                                                    	    {},
+                                                                            this.state.page.meta,
+                                                                            {
+                                                                                itemsFound : (Number(this.state.page.meta.itemsFound)-1),
+                                                                            }
+                                                                	),
                                                                     }
-                                                                )
+                                                                ),
                                                             });
                                                     });
                                                     swal.close();
