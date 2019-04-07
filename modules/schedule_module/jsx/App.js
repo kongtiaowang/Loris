@@ -215,7 +215,7 @@ export class App extends React.Component {
             fetchSessionsOfCandidateError : undefined,
         });
     }
-    
+
     createAppointment () {
         const body = [
             "CandID=" + encodeURIComponent(this.state.candId),
@@ -307,6 +307,21 @@ export class App extends React.Component {
         if (tabIndex == undefined) {
             tabIndex = this.state.tabIndex;
         }
+        if (this.state.lockTabs && this.state.searchFilters != undefined) {
+            Api.fetchAppointments(Object.assign(
+                {
+                    itemsPerPage : parseInt(this.state.desiredItemsPerPage),
+                    page : parseInt(this.state.desiredPage),
+                },
+                this.state.searchFilters
+            ))
+                .then((page) => {
+                    this.setState({
+                        page : page
+                    });
+                });
+            return;
+        }
         Api.fetchAppointments(Object.assign(
             {
                 itemsPerPage : parseInt(this.state.desiredItemsPerPage),
@@ -320,7 +335,7 @@ export class App extends React.Component {
                 });
             });
     }
-    
+
     componentDidMount () {
         this.fetchPage();
         this.fetchTab();
@@ -328,10 +343,10 @@ export class App extends React.Component {
 
     render() {
         let createAppointmentButton;
-        let editAppointmentButton;     
-        
+        let editAppointmentButton;
+
         createAppointmentButton = (
-            <div className='Create Appointment Button'> 
+            <div className='Create Appointment Button'>
             <button className="btn btn-default" onClick={this.openAppointmentForm}>
                 <span className='glyphicon glyphicon-calendar'/> Create Appointment
             </button>
@@ -405,14 +420,14 @@ export class App extends React.Component {
                             });
                         }}>
                         <option value="">- Select a Session -</option>
-                        {   
+                        {
                             this.state.sessionsOfCandidate.sessions.map((s) => {
-                                return <option key={s.SessionID} value={s.SessionID}>{s.SiteName} - {s.Visit_Label}</option>;          
+                                return <option key={s.SessionID} value={s.SessionID}>{s.SiteName} - {s.Visit_Label}</option>;
                             })
                         }
                         </select>
                     </div>
-                </div>    
+                </div>
                 <div className="col-lg-6 col-md-6 col-sm-6">
                     <div className="form-group">
                         <label> Type of Appointment: </label>
@@ -430,7 +445,7 @@ export class App extends React.Component {
                         }
                         </select>
                     </div>
-                </div>    
+                </div>
                 <br/>
                 </div>
                 <br/>
@@ -501,6 +516,7 @@ export class App extends React.Component {
                         this.setState({
                             tabIndex : 0,
                             lockTabs : true,
+                            searchFilters : filters,
                         });
                         Api.fetchAppointments(filters)
                             .then((page) => {
@@ -512,6 +528,7 @@ export class App extends React.Component {
                     onClear={() => {
                         this.setState({
                             lockTabs : false,
+                            searchFilters : undefined,
                         });
                         this.fetchTab();
                     }}
@@ -543,7 +560,7 @@ export class App extends React.Component {
                                 }}>
                                     {/* Renders the tab name */}
                                     {tab.label} &nbsp;
-				    
+
 				    {
 					(!this.state.lockTabs && this.state.tabIndex == index) ?
 					<span className="badge">
@@ -625,7 +642,7 @@ export class App extends React.Component {
                                             dataEntryStatus = "In Progress";
                                             dataEntryLabelColor = "warning";
                                         } else {
-                                            dataEntryStatus = "Complete"; 
+                                            dataEntryStatus = "Complete";
                                             dataEntryLabelColor = "success";                                       }
                                     } else if (a.hasDataEntryInProgress == "1") {
                                         dataEntryStatus = "In Progress";
@@ -673,7 +690,7 @@ export class App extends React.Component {
                                                 <span className={"label label-"+dataEntryLabelColor}>{dataEntryStatus}</span>
                                             </td>
                                             <td>
-                                                <button className="btn btn-default" onClick={() => 
+                                                <button className="btn btn-default" onClick={() =>
                                                 {this.openEditForm(); this.setCurrAppointment(a);}}>
                                                     <span className='glyphicon glyphicon-edit'/> Edit
                                                 </button>
@@ -686,7 +703,7 @@ export class App extends React.Component {
                                                     type: "warning",
                                                     showCancelButton: true,
                                                     confirmButtonClass: "btn-danger",
-                                                    confirmButtonText: "Yes, delete it!",  
+                                                    confirmButtonText: "Yes, delete it!",
                                                     cancelButtonText: "No, keep appointment!",
                                                     closeOnConfirm: false,
                                                     closeOnCancel: false
