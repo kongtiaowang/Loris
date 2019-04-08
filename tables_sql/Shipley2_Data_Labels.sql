@@ -163,16 +163,11 @@ PRIMARY KEY  (`CommentID`)
 -- META
 INSERT INTO test_names (Test_name, Full_name, Sub_group) VALUES ('Shipley2_Data_Labels', 'Shipley2 Data Labels (Raw Data Parser)', '1');
 INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('Shipley2_Data_Labels', 'Shipley2_Data_Labels_page1', "Page 1", 1);
--- adding to test battery
+
+-- adding to  IBIS EP, Infant DS V06 battery
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
-VALUES ('Shipley2_Data_Labels', '0', '0', 'Y', 'Visit', 1, 'VSA', NULL);
+VALUES ('Shipley2_Data', '0', '0', 'Y', 'Visit', 18, 'V06', NULL);
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
-VALUES ('Shipley2_Data_Labels', '0', '0', 'Y', 'Visit', 2, 'VSA', NULL);
+VALUES ('Shipley2_Data', '0', '0', 'Y', 'Visit', 19, 'V06', NULL);
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
-VALUES ('Shipley2_Data_Labels', '0', '0', 'Y', 'Visit', 3, 'VSA', NULL);
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
-VALUES ('Shipley2_Data_Labels', '0', '0', 'Y', 'Visit', 9, 'VSA', NULL);
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
-VALUES ('Shipley2_Data_Labels', '0', '0', 'Y', 'Visit', 10, 'VSA', NULL);
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
-VALUES ('Shipley2_Data_Labels', '0', '0', 'Y', 'Visit', 21, 'VSA', NULL);
+VALUES ('Shipley2_Data', '0', '0', 'Y', 'Visit', 20, 'V06', NULL);

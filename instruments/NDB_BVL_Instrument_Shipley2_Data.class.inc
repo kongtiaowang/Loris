@@ -328,7 +328,7 @@ class NDB_BVL_Instrument_Shipley2_Data extends NDB_BVL_Instrument
                     "select f.CommentID from flag as f
                   join `session` as s on f.SessionID=s.ID
                   join `candidate` as c on s.CandID=c.CandID
-                  WHERE s.Visit_label='VSA' and c.PSCID=:pscid
+                  WHERE s.Visit_label='V06' and c.PSCID=:pscid
                   and f.Test_name=:tesna and f.CommentID not like 'DDE_%'",
                     array(
                         'pscid' => $pscid,
@@ -344,7 +344,7 @@ class NDB_BVL_Instrument_Shipley2_Data extends NDB_BVL_Instrument
             }
             if($valid==0)
             {
-                echo "No matching PSCID found in the csv file to update the data under VSA visit label. \n
+                echo "No matching PSCID found in the csv file to update the data under V06 visit label. \n
                 Please check your file and try again.";
                 return false;
             }
