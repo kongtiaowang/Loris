@@ -257,8 +257,6 @@ export class App extends React.Component {
                     };
                 });
         }).then((result) => {
-            console.log(result);
-	    console.log(this.state.page);
             if (result.status == 200) {
                 this.setState({
                     page : Object.assign(
@@ -564,9 +562,8 @@ export class App extends React.Component {
 				    {
 					(!this.state.lockTabs && this.state.tabIndex == index) ?
 					<span className="badge">
-			                	{/* {this.state.page.data.length} */}
 						{this.state.page.meta.itemsFound}
-                                    	</span> :
+                    </span> :
 					undefined
 				    }
                                 </a>
@@ -581,8 +578,7 @@ export class App extends React.Component {
                             }}>
                                 Search Results &nbsp;
                                 <span className="badge">
-                                    {/*{this.state.page.data.length}*/}
-				    {this.state.page.meta.itemsFound}
+				                    {this.state.page.meta.itemsFound}
                                 </span>
                             </a>
                         </li> :
@@ -710,41 +706,40 @@ export class App extends React.Component {
                                                     },
                                                     (isConfirm) => {
                                                     if (isConfirm) {
-                                                    fetch(
-                                                            "/schedule_module/ajax/delete_appointment.php?AppointmentID="+a.AppointmentID,
-                                                            {
-                                                                credentials : "include",
-                                                                method : "DELETE",
-                                                            }
-                                                        ).then(() => {
-                                                            const index = this.state.page.data.findIndex(item => item.AppointmentID == a.AppointmentID);
-                                                            if (index < 0) {
-                                                                return;
-                                                            }
-console.log(this.state.page);
-                                                            const appointments = this.state.page.data.slice();
-                                                            appointments.splice(index, 1);
-                                                            this.setState({
-                                                                page : Object.assign(
-                                                                    {},
-                                                                    this.state.page,
-                                                                    {
-                                                                        data : appointments,
-									meta : Object.assign(
-                                                                    	    {},
-                                                                            this.state.page.meta,
-                                                                            {
-                                                                                itemsFound : (Number(this.state.page.meta.itemsFound)-1),
-                                                                            }
-                                                                	),
-                                                                    }
-                                                                ),
-                                                            });
-                                                    });
-                                                    swal.close();
+                                                        fetch(
+                                                                "/schedule_module/ajax/delete_appointment.php?AppointmentID="+a.AppointmentID,
+                                                                {
+                                                                    credentials : "include",
+                                                                    method : "DELETE",
+                                                                }
+                                                            ).then(() => {
+                                                                const index = this.state.page.data.findIndex(item => item.AppointmentID == a.AppointmentID);
+                                                                if (index < 0) {
+                                                                    return;
+                                                                }
+                                                                const appointments = this.state.page.data.slice();
+                                                                appointments.splice(index, 1);
+                                                                this.setState({
+                                                                    page : Object.assign(
+                                                                        {},
+                                                                        this.state.page,
+                                                                        {
+                                                                            data : appointments,
+                                                                            meta : Object.assign(
+                                                                                {},
+                                                                                this.state.page.meta,
+                                                                                {
+                                                                                    itemsFound : (Number(this.state.page.meta.itemsFound)-1),
+                                                                                }
+                                                                            ),
+                                                                        }
+                                                                    ),
+                                                                });
+                                                        });
+                                                        wal.close();
                                                     } else {
-                                                    //swal("Canceled", "The appointment has not been deleted", "error");
-                                                    swal.close();
+                                                        //swal("Canceled", "The appointment has not been deleted", "error");
+                                                        swal.close();
                                                     }
                                                     });
                                                 }}>
