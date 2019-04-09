@@ -1572,7 +1572,7 @@
 	        React.createElement(
 	          'b',
 	          null,
-	          ' [site]_interscan_[subject initial]_[scanner name]_[scanner_location]_[date][scan number] '
+	          ' [site]_interscan_[subject initials]_[scanner name]_[scanner_location]_[date][scan number] '
 	        ),
 	        React.createElement('br', null),
 	        'where',
@@ -1583,12 +1583,12 @@
 	          React.createElement(
 	            'li',
 	            null,
-	            '[site] is the three letter site abbreviation'
+	            '[site] is the three-letter site abbreviation'
 	          ),
 	          React.createElement(
 	            'li',
 	            null,
-	            '[subject initial] are the subject\'s initials (three letters)'
+	            '[subject initials] are the subject\u2019s initials (three letters)'
 	          ),
 	          React.createElement(
 	            'li',
@@ -1598,7 +1598,7 @@
 	          React.createElement(
 	            'li',
 	            null,
-	            '[scanner locartion] is the three-letter scanner location'
+	            '[scanner location] three-letter scanner location'
 	          ),
 	          React.createElement(
 	            'li',
@@ -1608,7 +1608,7 @@
 	          React.createElement(
 	            'li',
 	            null,
-	            '[scan number] is an optional string of the form \'_scan1\' for multi-part scans'
+	            '[scan number] is an optional string of the form \u2019_scan1\u2019 for multi-part scans'
 	          )
 	        ),
 	        'All the file name parts are case-insensitive. Example of a valid file name:',
