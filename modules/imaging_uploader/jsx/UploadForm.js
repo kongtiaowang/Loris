@@ -274,11 +274,11 @@ class UploadForm extends React.Component {
           where<br/>
           <ul>
             <li>[site] is the three-letter site abbreviation</li>
-            <li>[subject initials] are the subject's initials (three letters)</li>
+            <li>[subject initials] are the subject&rsquo;s initials (three letters)</li>
             <li>[scanner name] is the name of the scanner</li>
             <li>[scanner location] three-letter scanner location</li>
             <li>[date] is the scan acquisition date in format YYYYMMDD</li>
-            <li>[scan number] is an optional string of the form '_scan1' for multi-part scans</li>
+            <li>[scan number] is an optional string of the form &rsquo;_scan1&rsquo; for multi-part scans</li>
           </ul>
           All the file name parts are case-insensitive. Example of a valid file name:<br/>
           UNC_interscan_BEA_trio_HOS_20190324_scan2.tar.gz
