@@ -25,17 +25,17 @@ $conditions = array("TRUE");
 
 $queryValues = array();
 
-// Filter by Visit label 
+// Filter by Visit label
 if (isset($_GET["VisitLabel"])) {
 
     // Check for valid visit label
     $visit = $DB->pselectRow(
         "
-            SELECT 
-                * 
-            FROM 
+            SELECT
+                *
+            FROM
                 Visit_Windows
-            WHERE 
+            WHERE
                 Visit_label = :visitLabel
         ",
         array("visitLabel" => $_GET["VisitLabel"])
@@ -48,7 +48,7 @@ if (isset($_GET["VisitLabel"])) {
         ]));
     }
 
-    // If filtering for visit label, add boolean 
+    // If filtering for visit label, add boolean
     array_push($conditions, "session.Visit_label = :visitLabel");
 
     $queryValues["visitLabel"] = $_GET["VisitLabel"];
@@ -57,14 +57,14 @@ if (isset($_GET["VisitLabel"])) {
 // Filter by Site (Center ID)
 if (isset($_GET["CenterID"])) {
 
-    // Check for valid site 
+    // Check for valid site
     $site = $DB->pselectRow(
         "
-            SELECT 
-                * 
-            FROM 
-                psc 
-            WHERE 
+            SELECT
+                *
+            FROM
+                psc
+            WHERE
                 CenterID = :centerId
         ",
         array("centerId" => $_GET["CenterID"])
@@ -77,7 +77,7 @@ if (isset($_GET["CenterID"])) {
         ]));
     }
 
-    // If filtering for site, add boolean 
+    // If filtering for site, add boolean
     array_push($conditions, "session.CenterID = :centerId");
 
     $queryValues["centerId"] = $_GET["CenterID"];
@@ -89,11 +89,11 @@ if (isset($_GET["AppointmentTypeID"])) {
     // Check for valid appointment type
     $appt_type = $DB->pselectRow(
         "
-            SELECT 
-                * 
-            FROM 
+            SELECT
+                *
+            FROM
                 appointment_type
-            WHERE 
+            WHERE
                 AppointmentTypeID = :appointmentTypeId
         ",
         array("appointmentTypeId" => $_GET["AppointmentTypeID"])
@@ -119,7 +119,7 @@ if (isset($_GET["CandID"])) {
     $queryValues["candId"] = $_GET["CandID"];
 }
 
-// Filter by PSCID 
+// Filter by PSCID
 if (isset($_GET["PSCID"])) {
 
     array_push($conditions, "candidate.PSCID = :pscId");
@@ -206,7 +206,7 @@ if (isset($_GET["StartDateMin"])) {
     }
 
     array_push($conditions, "appointment.StartsAt >= :startsAtMin");
-    
+
     $startsAtMin = $_GET["StartDateMin"] . " 00:00:00";
 
     $queryValues["startsAtMin"] = $startsAtMin;
@@ -240,11 +240,11 @@ if (isset($_GET["ProjectID"])) {
 
     $project = $DB->pselectRow(
         "
-            SELECT 
+            SELECT
                 *
-            FROM 
+            FROM
                 Project
-            WHERE 
+            WHERE
                 ProjectID = :projectId
         ",
         array("projectId" => $_GET["ProjectID"])
@@ -267,11 +267,11 @@ if (isset($_GET["SubprojectID"])) {
 
     $subproject = $DB->pselectRow(
         "
-            SELECT 
-                * 
-            FROM 
+            SELECT
+                *
+            FROM
                 session
-            WHERE 
+            WHERE
                 SubprojectID = :subprojectId
         ",
         array("subprojectId" => $_GET["SubprojectID"])
@@ -289,7 +289,7 @@ if (isset($_GET["SubprojectID"])) {
     $queryValues["subprojectId"] = $_GET["SubprojectID"];
 }
 
-// Join the conditions 
+// Join the conditions
 $conditionStr = join(" AND ", $conditions);
 
 $page = isset($_GET["page"]) ? intval($_GET["page"]) : 0;
@@ -306,7 +306,7 @@ if ($itemsPerPage < 1) {
 $start = $page * $itemsPerPage;
 $count = $itemsPerPage;
 
-// Selects all appointments if not filtering, selects all appointments 
+// Selects all appointments if not filtering, selects all appointments
 $appointments = $DB->pselect(
     "
         SELECT
@@ -324,13 +324,13 @@ $appointments = $DB->pselect(
             appointment_type
         ON
             appointment_type.AppointmentTypeID = appointment.AppointmentTypeID
-        JOIN 
-            session 
-        ON 
+        JOIN
+            session
+        ON
             appointment.SessionID = session.ID
         JOIN
             candidate
-        ON 
+        ON
             session.CandID = candidate.CandID
         JOIN
             subproject
@@ -339,7 +339,9 @@ $appointments = $DB->pselect(
         WHERE
             {$conditionStr}
         ORDER BY
-            PSCID ASC
+            PSCID ASC,
+            appointment.StartsAt DESC,
+            session.Visit_label ASC
         LIMIT
             {$start}, {$count}
     ",
@@ -352,13 +354,13 @@ $itemsFound = $DB->pselectOne(
             COUNT(*)
         FROM
             appointment
-        JOIN 
-            session 
-        ON 
+        JOIN
+            session
+        ON
             appointment.SessionID = session.ID
         JOIN
             candidate
-        ON 
+        ON
             session.CandID = candidate.CandID
         JOIN
             subproject
