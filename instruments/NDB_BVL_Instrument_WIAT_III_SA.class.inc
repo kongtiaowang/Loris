@@ -277,12 +277,15 @@ class NDB_BVL_Instrument_WIAT_III_SA extends NDB_BVL_Instrument
        if ($contents[0]==chr(0xff) && $contents[1]==chr(0xfe)) {
             $contents = iconv("UTF-16LE", "UTF-8", $contents);
         }
+        $contents=utf8_decode($contents);
+        $current_encoding = mb_detect_encoding($contents, 'auto');
+        $contents = iconv($current_encoding, 'UTF-8//IGNORE', $contents);
         $lines =preg_split("/\\r\\n|\\r|\\n/", $contents);
 
         $visit = $args['visitLabel'];
 
 
-    if(strpos($contents,'Student Name'))
+    if(strpos($contents,'Student Name (Special Case)'))
     {
         $found=0;
         $actual_pscid=$args['PSCID'];
@@ -299,37 +302,25 @@ class NDB_BVL_Instrument_WIAT_III_SA extends NDB_BVL_Instrument
         }
     }
 
-    else if(strpos($contents,'Examinee Name')) {
+    else if(strpos($contents,'Examinee Name') || strpos($contents,'Student Name')) {
 
-        $examinee_key = array_search('Examinee Name', $lines);
-        if ($examinee_key == NULL) {
-            $errors[] = "Examinee Name doesn't exist in your txt file.Please check and try again.";
-            return $errors;
+        $found=0;
+        $actual_pscid=$args['PSCID'];
+
+
+        $input = $actual_pscid; //from the user
+        if(preg_match("/{$actual_pscid}/i", $contents)) {
+            $found=1;
         }
-
-        $values['Examinee Name'] = $lines[$examinee_key + 1];
-        $pscid_array = explode(" ", $values['Examinee Name']);
-        $pscid = $pscid_array[1];
-        $actual_pscid = $args['PSCID'];
-        if ($actual_pscid != $pscid) {
-            $errors[] = "PSCID in the file given (" . $pscid . ") doesn't match with the actual PSCID (" . $actual_pscid . ")";
-            return $errors;
-        }
-
-        $test_date_key = array_search('Date of Report', $lines);
-        $values['Date of Report'] = $lines[$test_date_key + 1];
-
-        $values['Date of Report'] = $this->formatDate($values['Date of Report']);
-
-
-        if (!empty($args['values']['Date_taken']) && !empty($values['Date of Report']) && ($args['values']['Date_taken'] != $values['Date of Report'])) {
-            $errors['Date of Administration'] = "Date of administration in the file ({$values['Date of Report']}) does not match the date of administration entered ({$args['values']['Date_taken']}).";
+        if($found==0)
+        {
+            $errors[] = "PSCID in the file given doesn't match with the actual PSCID (" . $actual_pscid . ")";
             return $errors;
         }
     }
     else
     {
-        echo "Student Name(PHI)/Examinee Name(others) doesn't exist in your txt file.Please check and try again.";
+        echo "Student Name (Special Case)(PHI)/Examinee Name(others) doesn't exist in your txt file.Please check and try again.";
     }
 
         return true;
@@ -352,6 +343,13 @@ class NDB_BVL_Instrument_WIAT_III_SA extends NDB_BVL_Instrument
         if ($contents[0]==chr(0xff) && $contents[1]==chr(0xfe)) {
             $contents = iconv("UTF-16LE", "UTF-8", $contents);
         }
+        if (strpos($contents, '>') !== false) {
+            $contents= str_replace(">","less ",$contents);
+        }
+        $contents=utf8_decode($contents);
+        $current_encoding = mb_detect_encoding($contents, 'auto');
+        $contents = iconv($current_encoding, 'UTF-8//IGNORE', $contents);
+        $contents=str_replace("?","-",$contents);
 
         $values=array(
             'UserID'    =>$args['username'],
@@ -360,6 +358,9 @@ class NDB_BVL_Instrument_WIAT_III_SA extends NDB_BVL_Instrument
             'File_name' =>$file->getDestinationFilename(),
             'Data_dir'  =>$file->getDestinationDirectory()
         );
+        if (strpos($contents, '>') !== false) {
+           $contents= str_replace(">","less ",$contents);
+        }
 
 
         //Cycle through the lines and extract the data
@@ -386,7 +387,7 @@ class NDB_BVL_Instrument_WIAT_III_SA extends NDB_BVL_Instrument
 
         );
         //PHI Special case Processing
-        if(strpos($contents,'Student Name'))
+        if(strpos($contents,'Student Name (Special Case)'))
         {
 
             foreach ($domains_PHI as $key => $val) {
@@ -438,7 +439,7 @@ class NDB_BVL_Instrument_WIAT_III_SA extends NDB_BVL_Instrument
             "OE_OWF" => "Oral Word Fluency","OE_SR" => "Sentence Repetition"
 
         );
-        if(strpos($contents,'Student Name'))
+        if(strpos($contents,'Student Name (Special Case)'))
         {
 
             foreach ($domains1 as $key => $val) {
@@ -505,6 +506,7 @@ class NDB_BVL_Instrument_WIAT_III_SA extends NDB_BVL_Instrument
         $result = $db->update($this->testName, $values, array('CommentID'=>$args['CommentID']));
         return true;
     }
+
 
     function formatDate($date){
         if(empty($date)){
