@@ -25,6 +25,11 @@ class NDB_BVL_Instrument_TSI_SA extends NDB_BVL_Instrument
     use instrument_validator;
     var $ValidityEnabled  = false;
     var $ValidityRequired = false;
+    
+    var $scoreLabels = array(
+        'adjusted_income'
+    );
+    
     /**
      * Sets up basic data, such as the LorisForm object, and so on.
      *
@@ -99,6 +104,212 @@ class NDB_BVL_Instrument_TSI_SA extends NDB_BVL_Instrument
         $this->_addMetadataFields();
         $this->form->addElement('static', null, '<BR>');
     }
+    
+    /**
+     * Scores the instrument: computes the adjusted income and saves it
+     * in the database
+     * 
+     * @return void
+     * @access private
+     */
+    function score() {
+        //null scores
+        $this->_nullScores($this->scoreLabels);
+        $db =& Database::singleton();
+        // Get the item scores
+        $record= $db->pselectRow(
+            "SELECT * FROM $this->table WHERE CommentID=:cid",
+            array('cid'=>$this->getCommentID())
+        );
+        $scores = array();
+        
+        $scores['adjusted_income'] = null;
+        $invalidFields = $this->_getInvalidFieldsForAdjustedIncome($record);
+        
+        // If there are no invalid fields, compute the adjusted income. Otherwise
+        // leave it as NULL
+        if (count($invalidFields) == 0) {
+            $scores['adjusted_income'] = $this->_getAdjustedIncome(
+                $record['household_ses_1'], $record['zip_code_1']
+            );
+            
+            // When the parents are not living together, compute the mean of
+            // both adjusted incomes
+            if (isset($record['same_home']) && $record['same_home'] == 'no') {
+                $adjustedIncome2 = $this->_getAdjustedIncome(
+                    $record['household_ses_2'], $record['zip_code_2']
+                );
+                $scores['adjusted_income'] = ($scores['adjusted_income'] + $adjustedIncome2) / 2;
+            }
+        } 
+        
+        $result = $db->update($this->table, $scores, array('CommentID'=>$this->getCommentID()));     
+    }
+    
+    /**
+     * Sets the values that will appear in the form when it is reloaded.
+     * 
+     * @return void
+     * @access private
+     */
+    function _setDefaultsArray($vals) {
+        $realValuesOnForm = count($this->form->getSubmitValues()) == 0
+            ? $vals : $this->form->getSubmitValues();
+        $invalidFields = $this->_getInvalidFieldsForAdjustedIncome($realValuesOnForm);
+        if (count($invalidFields) != 0) {
+            $errorMessages = array_values($invalidFields);
+            $vals['adjusted_income'] = "Not computed: $errorMessages[0]";
+        }
+        
+        return parent::_setDefaultsArray($vals);
+    }
+
+    
+    /**
+     * Computes the adjusted income for a given income and zip code.
+     * 
+     * @param $income  one of the selected incomes in the form.
+     * @param $zipCode houshold zip code.
+     * 
+     * @return float The adjusted income
+     * 
+     * @access private
+     */
+    function _getAdjustedIncome($income, $zipCode) {
+        $midPoint = 0;
+        switch($income) { 
+            case "less_than_25K": $midPoint = 12500; break;
+            case "25K-35K"      : $midPoint = 30000; break;
+            case "35K-50K"      : $midPoint = 42750; break;
+            case "50K-75K"      : $midPoint = 62500; break;
+            case "75K-100K"     : $midPoint = 87500; break;
+            case "100K-150K"    : $midPoint = 125000; break;
+            case "150K-200K"    : $midPoint = 175000; break;
+            case "over_200K"    : $midPoint = 200000; break;
+            default             : throw new LorisException("Cannot compute adjusted income: unexpected income $income");
+        }
+        
+        $medianIncome = $this->_getMedianIncome($zipCode);
+        if (is_null($medianIncome)) {
+            throw new LorisException("Invalid zip code $zipCode");
+        }
+        if (is_null($medianIncome[$zipCode]) || $medianIncome[$zipCode] == '') {
+            throw new LorisException("Median income for zip code $zipCode is unknown");
+        }
+        
+        return ($midPoint + (0.0)) / $medianIncome[$zipCode];
+    }
+    
+    /**
+     * Gets the median income for a given zip code.
+     * 
+     * @param $zipCode houshold zip code.
+     * 
+     * @return array a hash with one key (the zip code) and one value (the median
+     *               income, which can be null). This method will return null if
+     *               the zip code is unknown/invalid.
+     * 
+     * @access private
+     */
+    function _getMedianIncome($zipCode) {
+        $db =& Database::singleton();
+        $row= $db->pselectRow(
+            "SELECT MedianIncome FROM median_income WHERE ZipCode=:zip",
+            array('zip' => $zipCode)
+        );
+        
+        // No info in the database for this zip code: return null
+        if (count($row) == 0) {
+            return null;
+        } 
+        
+        return array( $zipCode => $row['MedianIncome']);
+    }
+
+   
+    /**
+     * Checks that all fields used to compute the adjusted income are valid
+     * 
+     * @param $values all the cvalues entered in the form
+     * 
+     * @return array a hash where the keys are the invalid field names and the values
+     *               are the error messages why they are invalid.
+     * @access private
+     */
+    function _getInvalidFieldsForAdjustedIncome($values) {
+        $invalidFields = array();
+        
+        #-----------------------------------------------------------------#
+        # SES and zip code of household 1 have to be defined all the time #
+        #-----------------------------------------------------------------#
+        if(!$this->_isValidForAdjustedIncome($values, 'household_ses_1')) {
+            $invalidFields['household_ses_1'] = "the income for household 1 is unknown";
+        }
+        if(!$this->_isValidForAdjustedIncome($values, 'zip_code_1')) {
+            $invalidFields['zip_code_1'] = "the zip code for household 1 is unknown";
+        }
+
+        #-----------------------------------------------------------------#
+        # SES and zip code of household 2 have to be defined only if the  #
+        # parents do not live in the same home                            #
+        #-----------------------------------------------------------------#
+        if(isset($values['same_home']) && $values['same_home'] == 'no') {
+            if(!$this->_isValidForAdjustedIncome($values, 'household_ses_2')) {
+                $invalidFields['household_ses_2'] = "the income for household 2 is unknown";
+            }
+            if(!$this->_isValidForAdjustedIncome($values, 'zip_code_2')) {
+                $invalidFields['zip_code_2'] = "the zip code for household 2 is unknown";
+            }
+        }
+        
+        if (count($invalidFields) != 0) {
+            return $invalidFields;
+        }
+        
+        #--------------------------------------------------------#
+        # Checks that we have the median income associated to    #
+        # zip code 1                                             #
+        #--------------------------------------------------------#
+        $medianIncome = $this->_getMedianIncome($values['zip_code_1']);
+        if (is_null($medianIncome)) {
+            $invalidFields['zip_code_1'] = "zip code " . $values['zip_code_1'] . " is invalid";
+        } else if (is_null($medianIncome[$values['zip_code_1']]) || $medianIncome[$values['zip_code_1']] == '') {
+            $invalidFields['zip_code_1'] = "Median income for zip code " . $values['zip_code_1'] . " is unknown";
+        }
+
+        #--------------------------------------------------------#
+        # Checks that we have the median income associated to    #
+        # zip code 2 only if the parents are not living in the   #
+        # same household                                         #
+        #--------------------------------------------------------#
+        if (isset($values['same_home']) && $values['same_home'] == 'no') {
+            $medianIncome = $this->_getMedianIncome($values['zip_code_2']);
+            if (is_null($medianIncome)) {
+                $invalidFields['zip_code_1'] = "zip code " . $values['zip_code_2'] . " is invalid";
+            } else if (is_null($medianIncome[$values['zip_code_2']]) || $medianIncome[$values['zip_code_2']] == '') {
+                $invalidFields['zip_code_2'] = "Median income for zip code " . $values['zip_code_2'] . " is unknown";
+            }
+        }
+        
+        return $invalidFields;  
+    }
+    
+    /**
+     * Checks if a field is valid (i.e can be used) for the computation of the
+     * adjusted income.
+     * 
+     * @param $values array of the values entered in the form.
+     * @param $key    name of the field to check.
+     * 
+     * @return boolean true if the field is valid, false otherwise.
+     * 
+     * @access private
+     */
+    
+    function _isValidForAdjustedIncome($values, $key) {
+        return isset($values[$key]) && $values[$key] != '' && $values[$key] != 'not_answered';
+    }
+
     /**
      * Generates page 1 of the form
      */
@@ -164,9 +375,41 @@ class NDB_BVL_Instrument_TSI_SA extends NDB_BVL_Instrument
         $this->form->addElement('static', null, "Occupation:");
         $this->form->addElement("select", "father_education", "Education:", $education_choices);
         $this->form->addElement('static', null, "<BR><BR>");
+        
+        $days_choices = array(
+            null  => "",
+            "0"   => "0",
+            "0.5" => "0.5",
+            "1"   => "1",
+            "1.5" => "1.5",
+            "2"   => "2",
+            "2.5" => "2.5",
+            "3"   => "3",
+            "3.5" => "3.5",
+            "4"   => "4",
+            "4.5" => "4.5",
+            "5"   => "5",
+            "5.5" => "5.5",
+            "6"   => "6",
+            "6.5" => "6.5",
+            "7"   => "7",
+            "not_answered"  => "Not Answered",
+        );
+        
         $this->form->addElement("select", "household_ses_1", "Household SES 1 (or combined):", $ses_income);
+        $this->addTextElement("zip_code_1", "$this->indent Household Zip Code:");
+        $this->form->addElement('select', "days_at_house_1", "$this->indent Days per week child spends at this address:", $days_choices);
+        $this->form->addElement('static', null, "<BR>");
+        
         $this->form->addElement("select", "household_ses_2", "Household SES 2 (if 2 households):", $ses_income);
-        $this->XINRegisterRule("household_ses_2", array("same_home{@}=={@}no"), "Required if parents not cohabitating.");
+        $this->addTextElement("zip_code_2", "$this->indent Household Zip Code:");
+        $this->form->addElement('select', "days_at_house_2", "$this->indent Days per week child spends at this address:", $days_choices);
+        $this->XINRegisterRule("household_ses_2" , array("same_home{@}=={@}no"), "Required if parents not cohabitating.");
+        $this->XINRegisterRule("zip_code_2", array("zip_code_2{@}=={@}NEVER_REQUIRED"));
+        $this->XINRegisterRule("days_at_house_2" , array("same_home{@}=={@}no"), "Required if parents not cohabitating.");
+       
+        $this->addScoreColumn("adjusted_income", "Adjusted Income (<i>using the U.S. Census Bureau, 2013-2017 American Community Survey 5-Year Estimates</i>):");
+        
         $this->form->addElement('header', null, "Parent's Telephone:");
         $this->form->addElement('static', null, "Home:");
         $this->form->addElement('static', null, "Work: $this->indent days/hrs");
@@ -244,6 +487,52 @@ class NDB_BVL_Instrument_TSI_SA extends NDB_BVL_Instrument
         $errors = [];
         $this->validate_numeric($values, "weight_pounds", $errors, 0, 120);
         $this->validate_numeric($values, "weight_ounces", $errors, 0, 15);
+        
+        // If the parents are not living together
+        if ($values['same_home'] == 'no') {
+            $zipCode2Unset       = !isset($values['zip_code_2'])        || $values['zip_code_2']        == '';
+            $zipCode2StatusUnset = !isset($values['zip_code_2_status']) || $values['zip_code_2_status'] == '';
+            
+            // Checks that zip_code_2 was answered
+            if ($zipCode2Unset && $zipCode2StatusUnset) {
+                $errors['zip_code_2_group'] = 'Required if the parent are not cohabitating';
+            }
+                
+            if ($values['days_at_house_1'] + $values['days_at_house_2'] > 7) {
+                $errors['days_at_house_1'] = 'The sum of the days spent at both households cannot exceed 7';
+                $errors['days_at_house_2'] = 'The sum of the days spent at both households cannot exceed 7';
+            }
+        // Parents are living together: validate the section pertaining to household 2 is empty
+        } else {
+            if ($values['household_ses_2'] != '') {
+                $errors['household_ses_2'] = "Must be left blank unless the parents are "
+                                           . "not cohabitating (section Parent's information, above)";
+            }
+            if ($values['zip_code_2'] != '' || $values['zip_code_2_status'] != '') {
+                $errors['zip_code_2_group'] = "Must be left blank unless the parents are "
+                                           . "not cohabitating (section Parent's information, above)";
+            }
+            if ($values['days_at_house_2'] != '') {
+                $errors['days_at_house_2'] = "Must be left blank unless the parents are "
+                                           . "not cohabitating (section Parent's information, above)";
+            }
+        }
+
+        // Check that we have information on each entered zip code in the database.
+        $this->validate_zip_code($values, "zip_code_1", $errors, "zip_code_1_group");
+        if (!isset($errors['zip_code_1_group']) && isset($values['zip_code_1']) && $values['zip_code_1'] != '') {
+            if (is_null($this->_getMedianIncome($values['zip_code_1']))) {
+                $errors['zip_code_1_group'] = "Zip code does not exist";
+            }   
+        }
+
+        $this->validate_zip_code($values, "zip_code_2", $errors, "zip_code_2_group");
+        if (!isset($errors['zip_code_2_group']) && isset($values['zip_code_2']) && $values['zip_code_2'] != '') {
+            if (is_null($this->_getMedianIncome($values['zip_code_2']))) {
+                $errors['zip_code_2_group'] = "Zip code does not exist";
+            }   
+        }
+            
         return $errors;
     }
 }
