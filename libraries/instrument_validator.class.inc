@@ -145,5 +145,16 @@ trait instrument_validator {
 			}
 		}
 	}
+
+	// Checks if input is a number (int or float) greater than or equal to 0 
+	function validate_zip_code ($values, $key, &$errors, $group) {
+
+		if (isset($values[$key]) && $values[$key] != '') {
+		
+			if (!preg_match('/^[0-9]{5}$/', $values[$key])) {
+				$errors[$group] = 'Please enter a valid 5 digit zip code';
+		    }
+		}
+	}
 }
 ?>
