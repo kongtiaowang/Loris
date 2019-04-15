@@ -6,12 +6,12 @@ require_once "Utility.class.inc";
 
 
 
-$instrument_array_VO6 =array("aims","aosi","neuro_screen","ibq_r","mullen","ACEFamilyMedicalHistory","med_psych_hist","head_measurements_subject","tsi","tsi_followup");
+$instrument_array_VO6 =array("aims","aosi","neuro_screen","ibq_r","mullen","ACEFamilyMedicalHistory","med_psych_hist","head_measurements_subject","fyi","tsi","tsi_followup");
 
-$instrument_array_V12=array("aims","aosi","csbs","JointAttentionAssessment","DSMV_checklist","head_measurements_subject","ibq_r","macarthur_words_gestures",
+$instrument_array_V12=array("aims","aosi","csbs","JointAttentionAssessment","DSMV_checklist","head_measurements_subject","ibq_r","fyi","macarthur_words_gestures",
                               "mullen","neuro_screen","SEQ3","med_psych_hist","tsi","tsi_followup",);
 
-$instrument_array_V24=array("ACESubjectMedicalHistory","adi_r_subject","ados2_module1",
+$instrument_array_V24=array("ACESubjectMedicalHistory","adi_r_subject","ados2_module1","fyi",
     "ados2_module2","ados2_module3","CBCL_1_to_5_yrs", "csbs","DSMV_checklist","head_measurements_subject","BSRC","macarthur_words_gestures",
     "mullen","neuro_screen","QRS","SEQ3","HandPreference","m_chat_subject","med_psych_hist","tsi","tsi_followup",);
 
