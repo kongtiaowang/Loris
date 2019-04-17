@@ -316,15 +316,17 @@ class NDB_BVL_Instrument_Shipley2_Data_Labels extends NDB_BVL_Instrument
                     }
                 }
 
-
+                $timepoint =& TimePoint::singleton($this->getSessionID());
+               // $vl=$timepoint->getVisitLabel(),
                 $final_upload_values=array_merge($main_values,$upload_values);
                 $commentid = $db->pselectOne(
                     "select f.CommentID from flag as f
                   join `session` as s on f.SessionID=s.ID
                   join `candidate` as c on s.CandID=c.CandID
-                  WHERE s.Visit_label='V06' and c.PSCID=:pscid
+                  WHERE s.Visit_label=:vl and c.PSCID=:pscid
                   and f.Test_name=:tesna and f.CommentID not like 'DDE_%'",
                     array(
+                        'vl'   => $timepoint->getVisitLabel(),
                         'pscid' => $pscid,
                         'tesna' => $this->testName,
                     )
@@ -338,7 +340,7 @@ class NDB_BVL_Instrument_Shipley2_Data_Labels extends NDB_BVL_Instrument
             }
             if($valid==0)
             {
-                echo "No matching PSCID found in the csv file to update the data under V06 visit label. \n
+                echo "No matching PSCID found in the csv file to update the data under given visit label. \n
                 Please check your file and try again.";
                 return false;
             }

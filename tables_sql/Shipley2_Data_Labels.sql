@@ -166,8 +166,20 @@ INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_num
 
 -- adding to  IBIS EP, Infant DS V06 battery
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
-VALUES ('Shipley2_Data', '0', '0', 'Y', 'Visit', 18, 'V06', NULL);
+VALUES ('Shipley2_Data_Labels', '0', '0', 'Y', 'Visit', 18, 'V06', NULL);
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
-VALUES ('Shipley2_Data', '0', '0', 'Y', 'Visit', 19, 'V06', NULL);
+VALUES ('Shipley2_Data_Labels', '0', '0', 'Y', 'Visit', 19, 'V06', NULL);
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
-VALUES ('Shipley2_Data', '0', '0', 'Y', 'Visit', 20, 'V06', NULL);
+VALUES ('Shipley2_Data_Labels', '0', '0', 'Y', 'Visit', 20, 'V06', NULL);
+
+-- adding to VSA visit label
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
+VALUES ('Shipley2_Data_Labels', '0', '0', 'Y', 'Visit', 1, 'VSA', NULL);
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
+VALUES ('Shipley2_Data_Labels', '0', '0', 'Y', 'Visit', 2, 'VSA', NULL);
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
+VALUES ('Shipley2_Data_Labels', '0', '0', 'Y', 'Visit', 3, 'VSA', NULL);
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
+VALUES ('Shipley2_Data_Labels', '0', '0', 'Y', 'Visit', 9, 'VSA', NULL);
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
+VALUES ('Shipley2_Data_Labels', '0', '0', 'Y', 'Visit', 10, 'VSA', NULL);
