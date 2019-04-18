@@ -1010,7 +1010,7 @@ class NDB_BVL_Instrument_CBCL_6_To_18 extends NDB_BVL_Instrument
                       "q74_showing_off_clowning"                       => "74. Showing off or clowning",
                       "q75_too_shy_or_timid"                           => "75. Too shy or timid",
                       "q76_sleeps_less_than_most_kids"                 => "76. Sleeps less than most kids",
-                      "q77_sleeps_more_than_most_kids_day_or_night"    => "77. Sleeps more than most kids during the day and/or night",
+                      "q77_sleeps_more_than_most_kids_day_or_night"    => "77. Sleeps more than most kids during the day and/or night (describe):",
                       "q78_inattentive_easily_distracted"              => "78. Inattentive or easily distracted",
                       "q79_speech_problem"                             => "79. Speech problem (describe):",
                       "q80_stares_blankly"                             => "80. Stares blankly",
