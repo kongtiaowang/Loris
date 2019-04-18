@@ -93,6 +93,9 @@ class NDB_BVL_Instrument_NIHToolBox_Registration_Data extends NDB_BVL_Instrument
         $this->form->addFile('NIHToolBox_Registration_Data', 'Upload the NIH ToolBox Registration Data File
 <br><h6><i>(Filename should be NIHToolBox_Registration_Data.csv)</i></h6>', array());
         $this->form->addElement('static', 'Uploaded_registration_data', "Uploaded NIH ToolBox Registration Data File");
+        $this->form->addElement('hidden', 'hidden_val', "Hidden Val");
+        $this->XINRegisterRule("hidden_val", array("{hidden_val}{@}=={@}NEVER_REQUIRED"));
+        $this->XINRegisterRule("NIHToolBox_Registration_Data",array("hidden_val{@}=={@}NEVER_REQUIRED"));
 
 
     }
@@ -169,7 +172,7 @@ class NDB_BVL_Instrument_NIHToolBox_Registration_Data extends NDB_BVL_Instrument
             }
         }
         unset($values['candID'], $values['sessionID'], $values['commentID'], $values['test_name'], $values['page'], $values['fire_away'], $values['subtest'], $values['MAX_FILE_SIZE'],
-            $values['NIHToolBox_Registration_Data'], $values['valid'],$values['ids_updated']);
+            $values['NIHToolBox_Registration_Data'], $values['valid'],$values['ids_updated'],$values['hidden_val']);
         $this->_save($values);
         //
 
