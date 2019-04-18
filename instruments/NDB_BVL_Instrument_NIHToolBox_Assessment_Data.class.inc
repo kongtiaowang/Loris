@@ -308,19 +308,23 @@ class NDB_BVL_Instrument_NIHToolBox_Assessment_Data extends NDB_BVL_Instrument
                 {
                     $count=62;
                 }
+
                 foreach ($entries as $i => $entry) {
                     $i++;
+                           if($i<=62) {
+                                    $f = 0;
+                                    foreach ($fields as &$value) {
+                                        if ($i > 30 && $i <= $count) {
+                                            $upload_values2["{$value}_{$i}"] = $entry[$f];
+                                        } else {
+                                            $upload_values["{$value}_{$i}"] = $entry[$f];
+                                        }
+                                        $f++;
+                                    }
 
-                    $f = 0;
-                    foreach ($fields as &$value) {
-                        if ($i > 30 && $i<=$count) {
-                            $upload_values2["{$value}_{$i}"] = $entry[$f];
-                        } else {
-                            $upload_values["{$value}_{$i}"] = $entry[$f];
-                        }
-                        $f++;
-                    }
+                           }
                 }
+
                 $commentid = $db->pselectOne(
                     "select f.CommentID from flag as f
                   join `session` as s on f.SessionID=s.ID

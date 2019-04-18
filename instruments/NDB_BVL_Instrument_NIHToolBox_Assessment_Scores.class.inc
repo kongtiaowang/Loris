@@ -277,16 +277,18 @@ class NDB_BVL_Instrument_NIHToolBox_Assessment_Scores extends NDB_BVL_Instrument
                 }
                 foreach ($entries as $i => $entry) {
                     $m=$i+1;
-                    $f = 0;
+                    if($m<=$count) {
+                        $f = 0;
                         foreach ($fields as &$value) {
-                            if($m<=$count) {
+                            if ($m <= $count) {
 
-                               $upload_values["{$value}_{$m}"] = $entry[$f];
+                                $upload_values["{$value}_{$m}"] = $entry[$f];
                             }
 
 
                             $f++;
                         }
+                    }
                 }
 
                 $final_upload_values=array_merge($main_values,$upload_values);

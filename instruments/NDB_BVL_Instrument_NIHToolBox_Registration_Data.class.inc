@@ -249,14 +249,14 @@ class NDB_BVL_Instrument_NIHToolBox_Registration_Data extends NDB_BVL_Instrument
                     $count=1;
                 }
                 foreach ($entries as $i => $entry) {
-
-                    $f = 0;
-                    foreach ($fields as &$value) {
-                        if($count==1)
-                        {
-                            $upload_values["{$value}"] = $entry[$f];
+                    if($i==$count) {
+                        $f = 0;
+                        foreach ($fields as &$value) {
+                            if ($count == 1) {
+                                $upload_values["{$value}"] = $entry[$f];
+                            }
+                            $f++;
                         }
-                        $f++;
                     }
                 }
                 $final_upload_values=array_merge($main_values,$upload_values);
