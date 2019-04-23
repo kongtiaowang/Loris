@@ -513,9 +513,9 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
 
         $options = array(
                     null => "",
-                    "0"  => "Not True (as far as you know)",
-                    "1"  => "Somewhat or Sometimes True",
-                    "2"  => "Very True or Often True",
+                    "0"  => "0 - Not True (as far as you know)",
+                    "1"  => "1 - Somewhat or Sometimes True",
+                    "2"  => "2 - Very True or Often True",
                    );
 
         $questions = array(
@@ -622,9 +622,9 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
 
         $options = array(
                     null => "",
-                    "0"  => "Not True (as far as you know)",
-                    "1"  => "Somewhat or Sometimes True",
-                    "2"  => "Very True or Often True",
+                    "0"  => "0 - Not True (as far as you know)",
+                    "1"  => "1 - Somewhat or Sometimes True",
+                    "2"  => "2 - Very True or Often True",
                    );
 
         $questions = array(
