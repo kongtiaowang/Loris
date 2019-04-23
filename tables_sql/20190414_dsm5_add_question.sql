@@ -1,0 +1,1 @@
+ALTER TABLE DSMV_checklist ADD has_asd varchar(255) DEFAULT NULL;

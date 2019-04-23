@@ -34,7 +34,7 @@ class NDB_BVL_Instrument_DSMV_checklist extends NDB_BVL_Instrument
     * @return void
     * @access public
     */
-    function setup($commentID, $page)
+    function setup($commentID, $page): void
     {
         $this->formType ="XIN";
         $this->form     = new LorisForm('DSMV_checklist');
@@ -116,7 +116,7 @@ class NDB_BVL_Instrument_DSMV_checklist extends NDB_BVL_Instrument
         $this->form->addFormRule(array(&$this, 'XINValidate'));
     }
 
-    function getDataEntryCompletionStatus()
+    function getDataEntryCompletionStatus(): string
     {
         $db        =& Database::singleton();
         $query_asd ="SELECT meet_dsm_asd FROM DSMV_checklist WHERE CommentID=:cid";
@@ -190,11 +190,12 @@ class NDB_BVL_Instrument_DSMV_checklist extends NDB_BVL_Instrument
 
         $this->form->addElement("select", "meet_dsm_asd", "<BR><strong>Meets DSM-V Criteria for Autism Spectrum Disorder</strong><BR>$this->indent - All symptoms in category A present<BR>$this->indent - At least two symptoms in category B<BR>$this->indent - Symptoms present in early childhood<BR>$this->indent - Symptoms not better explained by intellectual disability or global delay alone<BR>$this->indent - Significant impairment in social, occupational, or other area of functioning", $this->yesNo);
 
-         $this->form->addElement("select", "dsm_asd_confidence", "<BR> <strong>Confidence rating.</strong>Given all the data that you have on this child, how confident are you about the classification of this child based on the DSM-V ASD criteria?", $this->confidence);
+        $this->form->addElement("select", "dsm_asd_confidence", "<BR> <strong>Confidence rating.</strong>Given all the data that you have on this child, how confident are you about the classification of this child based on the DSM-V ASD criteria?", $this->confidence);
 
-         $this->addTextAreaElement("dsm_asd_comments", "Comments (required for a rating of 2 or 1):", array("dsm_asd_confidence{@}=={@}2_somewhat_confident|1_not_confident"), "This field is required or specify not answered.");
+        $this->addTextAreaElement("dsm_asd_comments", "Comments (required for a rating of 2 or 1):", array("dsm_asd_confidence{@}=={@}2_somewhat_confident|1_not_confident"), "This field is required or specify not answered.");
+        $this->form->addElement("advcheckbox", "has_asd", "Check here if N/A because has ASD", null, null, array("", "NA"));
 
-         $this->form->addElement("static", null, "<BR>"); //line space
+        $this->form->addElement("static", null, "<BR>"); //line space
     }
 
     function _page2()
