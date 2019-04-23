@@ -93,6 +93,10 @@ class NDB_BVL_Instrument_NIHToolBox_Assessment_Scores extends NDB_BVL_Instrument
         $this->form->addFile('NIHToolBox_Assessment_Scores', 'Upload the NIH ToolBox Assessment Scores File
 <br><h6><i>(Filename should be NIHToolBox_Assessment_Scores.csv)</i></h6>', array());
         $this->form->addElement('static', 'Uploaded_Assessment_Scores', "Uploaded  NIH ToolBox Assessment Scores File");
+        $this->form->addElement('hidden', 'hidden_val', "Hidden Val");
+        $this->XINRegisterRule("hidden_val", array("{hidden_val}{@}=={@}NEVER_REQUIRED"));
+        $this->XINRegisterRule("NIHToolBox_Assessment_Scores",array("hidden_val{@}=={@}NEVER_REQUIRED"));
+
 
 
     }
@@ -191,7 +195,7 @@ class NDB_BVL_Instrument_NIHToolBox_Assessment_Scores extends NDB_BVL_Instrument
             }
         }
         unset($values['candID'], $values['sessionID'], $values['commentID'], $values['test_name'], $values['page'], $values['fire_away'], $values['subtest'], $values['MAX_FILE_SIZE'],
-            $values['NIHToolBox_Assessment_Scores'], $values['valid'],$values['ids_updated']);
+            $values['NIHToolBox_Assessment_Scores'], $values['valid'],$values['ids_updated'],$values['hidden_val']);
         $this->_save($values);
         //
 
@@ -273,16 +277,18 @@ class NDB_BVL_Instrument_NIHToolBox_Assessment_Scores extends NDB_BVL_Instrument
                 }
                 foreach ($entries as $i => $entry) {
                     $m=$i+1;
-                    $f = 0;
+                    if($m<=$count) {
+                        $f = 0;
                         foreach ($fields as &$value) {
-                            if($m<=$count) {
+                            if ($m <= $count) {
 
-                               $upload_values["{$value}_{$m}"] = $entry[$f];
+                                $upload_values["{$value}_{$m}"] = $entry[$f];
                             }
 
 
                             $f++;
                         }
+                    }
                 }
 
                 $final_upload_values=array_merge($main_values,$upload_values);
