@@ -336,10 +336,14 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
             );
         }
 
-        $field = "sleep_behavior_duration";$label = "Sleep Behavior(Hours)<h5><i>(Please enter the child's usual amount of sleep each day in hours between 0-24 or write NA)</i></h5>";
-        $group[] = $this->createText($field, $label);
-        $this->addGroup($group, $field . "_group", $label, null, false);
-        unset($group);
+        $this->addHeader("<h4><b><u>Sleep Behaviour</u></b></h4>");
+        $this->addHourMinElement(
+            "sleep_behavior_duration",
+            "Child’s usual amount of sleep each day:",
+            array(),
+            'This field is required',
+            true
+        );
 
         $this->_displayHeadersSleepBehaviors("sleep_behavior");
         $b=0;
@@ -394,7 +398,6 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
             );
         }
 
-       $this->form->addFormRule(array(&$this, 'validate_page1'));
 
     }
 
@@ -725,26 +728,6 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
         $result = $db->update($this->table, $score, array("CommentID" => $this->getCommentID()));
     }
 
-    /*
-     * Validates page 1 of the form using instrument_validator.php
-     */
-    function validate_page1($values)
-    {
-
-        if (isset($values['sleep_behavior_duration'])) {
-            if (is_numeric($values['sleep_behavior_duration'])) {
-                if (intval($values['sleep_behavior_duration']) > 24 || intval($values['sleep_behavior_duration']) < 0) {
-                    $errors['sleep_behavior_duration_group'] = "Please enter a numeric value in minutes or NA";
-                }
-            } else {
-                if ($values['sleep_behavior_duration'] != 'NA') {
-                    $errors['sleep_behavior_duration_group'] = "Please enter a numeric value in minutes or NA";
-                }
-            }
-
-            return $errors;
-        }
-    }
 
     /*
      * Validates page 2 of the form using instrument_validator.php
