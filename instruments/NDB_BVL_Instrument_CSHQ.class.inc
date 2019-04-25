@@ -300,67 +300,101 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
         );
 
         $this->_displayHeaders("bedtime");
+        $a=0;
         foreach ($bedtime_questions as $question => $label) {
-            $group[] = $this->createLabel($label);
-            $group[] = $this->createSelect(
+            $a++;
+            $group[] = &$this->createLabel($label);
+            $group[] = &$this->createSelect(
                 $question . "_frequency",
                 "",
                 $answer_choices
             );
-            $group[] = $this->createSelect(
+            $group[] = &$this->createSelect(
                 $question . "_problem",
                 "",
                 $problem_choices
             );
             $this->form->addGroup(
                 $group,
-                $question . "_group",
+                "section1_row{$a}",
                 null,
                 $this->_GUIDelimiter,
                 false
             );
             unset($group);
+            $this->XINRegisterRule(
+                $question . "_frequency",
+                array($question . "_frequency{@}=={@}"), // rule
+                "Field is required.", // message
+                "section1_row{$a}" // group [if field is a part of a group]
+            );
+            $this->XINRegisterRule(
+                $question . "_problem",
+                array($question . "_problem{@}=={@}"), // rule
+                "Field is required.", // message
+                "section1_row{$a}" // group [if field is a part of a group]
+            );
         }
 
-        $field = "sleep_behavior_duration";$label = "Sleep Behavior<h5><i>(Please enter the child's usual amount of sleep each day in hours between 0-24 or write NA)</i></h5>";
+        $field = "sleep_behavior_duration";$label = "Sleep Behavior(Hours)<h5><i>(Please enter the child's usual amount of sleep each day in hours between 0-24 or write NA)</i></h5>";
         $group[] = $this->createText($field, $label);
         $this->addGroup($group, $field . "_group", $label, null, false);
         unset($group);
 
         $this->_displayHeadersSleepBehaviors("sleep_behavior");
+        $b=0;
         foreach ($sleep_behavior_questions as $question => $label) {
-            $group[] = $this->createLabel($label);
-            $group[] = $this->createSelect(
+            $b++;
+            $group[] = &$this->createLabel($label);
+            $group[] = &$this->createSelect(
                 $question . "_frequency",
                 "",
                 $answer_choices
             );
-            $group[] = $this->createSelect(
+            $group[] = &$this->createSelect(
                 $question . "_problem",
                 "",
                 $problem_choices
             );
             if ($question == "reports_pain_during_sleep") {
-                $group[] = $this->createLabel("If child reports body pain during sleep, where?");
-                $group[] = $this->createText(
+                $group[] = &$this->createLabel("If child reports body pain during sleep, where?");
+                $group[] = &$this->createText(
                     $question . "_body_pain",
                     ""
                 );
             } else {
-                $group[] = $this->createLabel("");
-                $group[] = $this->createLabel("");
+                $group[] = &$this->createLabel("");
+                $group[] = &$this->createLabel("");
             }
             $this->form->addGroup(
                 $group,
-                $question . "_group",
+                "section2_row{$b}",
                 null,
                 $this->_GUIDelimiter,
                 false
             );
             unset($group);
+            $this->XINRegisterRule(
+                $question . "_frequency",
+                array($question . "_frequency{@}=={@}"), // rule
+                "Field is required.", // message
+                "section2_row{$b}" // group [if field is a part of a group]
+            );
+            $this->XINRegisterRule(
+                $question . "_problem",
+                array($question . "_problem{@}=={@}"), // rule
+                "Field is required.", // message
+                "section2_row{$b}" // group [if field is a part of a group]
+            );
+            $this->XINRegisterRule(
+                $question . "_body_pain",
+                array( $question . "_body_pain{@}=={@}NEVER_REQUIRED"), // rule
+                "Field is required.", // message
+                "section2_row{$b}" // group [if field is a part of a group]
+            );
         }
 
-        $this->form->addFormRule(array(&$this, 'validate_page1'));
+       $this->form->addFormRule(array(&$this, 'validate_page1'));
 
     }
 
@@ -416,30 +450,44 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
 
         $this->addHeader("<h4><b><u>Waking During the Night</u></b></h4>");
         $this->_displayHeaders("waking_during_night");
+        $a=0;
         foreach ($waking_during_night_questions as $question => $label) {
-            $group[] = $this->createLabel($label);
-            $group[] = $this->createSelect(
+            $a++;
+            $group[] = &$this->createLabel($label);
+            $group[] = &$this->createSelect(
                 $question . "_frequency",
                 "",
                 $answer_choices
             );
-            $group[] = $this->createSelect(
+            $group[] = &$this->createSelect(
                 $question . "_problem",
                 "",
                 $problem_choices
             );
             $this->form->addGroup(
                 $group,
-                $question . "_group",
+                "page2_section1_row{$a}",
                 null,
                 $this->_GUIDelimiter,
                 false
             );
             unset($group);
+            $this->XINRegisterRule(
+                $question . "_frequency",
+                array($question . "_frequency{@}=={@}"), // rule
+                "Field is required.", // message
+                "page2_section1_row{$a}" // group [if field is a part of a group]
+            );
+            $this->XINRegisterRule(
+                $question . "_problem",
+                array($question . "_problem{@}=={@}"), // rule
+                "Field is required.", // message
+                "page2_section1_row{$a}" // group [if field is a part of a group]
+            );
         }
 
         $field = "waking_during_night_duration";$label = "<h5><i>Please enter a numerical value for the number of minutes waking usually last per night or write NA</i></h5>";
-        $group[] = $this->createText($field, $label);
+        $group[] = &$this->createText($field, $label);
         $this->addGroup($group, $field . "_group", $label, null, false);
         unset($group);
 
@@ -452,32 +500,49 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
             true
         );
 
+
         $this->_displayHeaders("morning_waking");
+        $b=0;
         foreach ($morning_waking_questions as $question => $label) {
+            $b++;
             $group[] = $this->createLabel($label);
             $group[] = $this->createSelect(
                 $question . "_frequency",
                 "",
                 $answer_choices
             );
-            $group[] = $this->createSelect(
+            $group[] = &$this->createSelect(
                 $question . "_problem",
                 "",
                 $problem_choices
             );
             $this->form->addGroup(
                 $group,
-                $question . "_group",
+                "page2_section2_row{$b}",
                 null,
                 $this->_GUIDelimiter,
                 false
             );
             unset($group);
+            $this->XINRegisterRule(
+                $question . "_frequency",
+                array($question . "_frequency{@}=={@}"), // rule
+                "Field is required.", // message
+                "page2_section2_row{$b}" // group [if field is a part of a group]
+            );
+            $this->XINRegisterRule(
+                $question . "_problem",
+                array($question . "_problem{@}=={@}"), // rule
+                "Field is required.", // message
+                "page2_section2_row{$b}" // group [if field is a part of a group]
+            );
         }
 
         $this->addHeader("<h4><b><u>Daytime Sleepiness</u></b></h4>");
+        $c=0;
         $this->_displayHeaders("daytime_sleepiness");
         foreach ($daytime_sleepiness_questions as $question => $label) {
+            $c++;
             $group[] = $this->createLabel($label);
             $group[] = $this->createSelect(
                 $question . "_frequency",
@@ -491,12 +556,25 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
             );
             $this->form->addGroup(
                 $group,
-                $question . "_group",
+                "page2_section3_row{$c}",
                 null,
                 $this->_GUIDelimiter,
                 false
             );
             unset($group);
+            $this->XINRegisterRule(
+                $question . "_frequency",
+                array($question . "_frequency{@}=={@}"), // rule
+                "Field is required.", // message
+                "page2_section3_row{$c}" // group [if field is a part of a group]
+            );
+            $this->XINRegisterRule(
+                $question . "_problem",
+                array($question . "_problem{@}=={@}"), // rule
+                "Field is required.", // message
+                "page2_section3_row{$c}" // group [if field is a part of a group]
+            );
+
         }
 
         $this->addHeader(
@@ -652,12 +730,20 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
      */
     function validate_page1($values)
     {
-        $errors = [];
-        if ($values['bed_time'] != '') {
-            $this->validate_empty_subquestions($values, ["bed_time_status"], $errors);
+
+        if (isset($values['sleep_behavior_duration'])) {
+            if (is_numeric($values['sleep_behavior_duration'])) {
+                if (intval($values['sleep_behavior_duration']) > 24 || intval($values['sleep_behavior_duration']) < 0) {
+                    $errors['sleep_behavior_duration_group'] = "Please enter a numeric value in minutes or NA";
+                }
+            } else {
+                if ($values['sleep_behavior_duration'] != 'NA') {
+                    $errors['sleep_behavior_duration_group'] = "Please enter a numeric value in minutes or NA";
+                }
+            }
+
+            return $errors;
         }
-        $this->validate_numeric($values, "sleep_behavior_duration", $errors, 0, 24);
-        return $errors;
     }
 
     /*
@@ -665,11 +751,19 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
      */
     function validate_page2($values)
     {
-        $errors = [];
-        if ($values['morning_waking_time'] != '') {
-            $this->validate_empty_subquestions($values, ["morning_waking_time_status"], $errors);
+
+        if (isset($values['waking_during_night_duration'])) {
+            if (is_numeric($values['waking_during_night_duration'])) {
+                if (intval($values['waking_during_night_duration']) > 720 || intval($values['waking_during_night_duration']) < 0) {
+                    $errors['waking_during_night_duration_group'] = "Please enter a numeric value in minutes or NA";
+                }
+            } else {
+                if ($values['waking_during_night_duration'] != 'NA') {
+                    $errors['waking_during_night_duration_group'] = "Please enter a numeric value in minutes or NA";
+                }
+            }
+
+            return $errors;
         }
-        $this->validate_numeric($values, "waking_during_night_duration", $errors, 0, 720);
-        return $errors;
     }
 }
