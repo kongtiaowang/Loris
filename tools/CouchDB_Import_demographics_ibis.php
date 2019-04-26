@@ -432,9 +432,9 @@ class CouchDBDemographicsImporter {
                         $ADOS_SA_CSS = NDB_BVL_Instrument_IBIS::ADOS_SA_CSS($ADOSModule, $row['a1'], $row['social_affect_total'], $ados_age);
                     }
 
-                        if ($ADOS_SA_CSS > 3) {
+                        if ($ADOS_SA_CSS > 3 && $row['Visit_label'] =='V24') {
                             $atypical = "Yes";
-                        } else if ($find_atypical_row['mullen_criteria'] == 'Yes'){
+                        } else if ($find_atypical_row['mullen_criteria'] == 'Yes' && $find_atypical_row['Visit_label']== 'V24'){
                             $atypical = "Yes";
                         }
                         else {
