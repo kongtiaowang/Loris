@@ -8,4 +8,4 @@
 -- 
 
 UPDATE mri_protocol SET image_storage_regex = 'p4 M/ND(?!/NORM)'
-WHERE Scan_type IN (SELECT ID FROM mri_scan_type WHERE Scan_type IN ('T1wRawSA', 'T2RawSA'));
+WHERE Scan_type IN (SELECT ID FROM mri_scan_type WHERE Scan_type IN ('T1wRawSA', 'T2wRawSA'));
