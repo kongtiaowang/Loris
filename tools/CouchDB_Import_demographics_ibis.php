@@ -442,8 +442,10 @@ class CouchDBDemographicsImporter {
                         }
 
                         $this->Dictionary["Atypical"] = array(
-                            'Description' => 'ASD_DX (No) AND have 2 or more sub-scales (T score) less than 35 on Mullen at V24 
-                             OR 1 or more sub-scale (Tscore) less than 30 on Mullen at V24 OR ADOS_CSS score greater than 3 on ADOS at V24',
+                            'Description' => 'No ASD_DX at V24 AND have 
+                             2 or more sub-scales (T score) less than 35 on Mullen at V24 
+                             OR  1 or more sub-scale (T score) less than 30 on Mullen at V24 
+                             OR ADOS_CSS score greater than 3 on ADOS at V24',
                             'Type' => "varchar(100)",
                         );
                         $demographics['Atypical'] = $atypical;
