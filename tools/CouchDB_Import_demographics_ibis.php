@@ -88,7 +88,10 @@ class CouchDBDemographicsImporter {
         ),
 
         'ASD_DX' => array(
-            'Description' => 'Combines questions 4a(autistic disorder) and 4b(PDD) on the DSMIV_checklist',
+            'Description' => 'YES ==> If 4a/4b on DSMIV_checklist(V24) is yes.
+                              ATYPICAL ==> If 2 or more sub-scales less than 35 (t score) on Mullen(V24) OR
+                              1 or more sub-scale less than 30 (tscore) on Mullen(V24) OR Greater than 3 CSS on ADOS(V24).
+                              NO ==> If 4a/4b on DSMIV_checklist(V24) is no and not atypical.',
             'Type' => 'varchar(255)',
         ),
         'Age_at_visit_start' => array(
@@ -159,7 +162,7 @@ class CouchDBDemographicsImporter {
                                  END                                                         AS Risk, 
                                  CASE 
                                    WHEN (dsm.q4_criteria_autistic_disorder = 'no' && dsm.q4_criteria_PDD ='no') THEN 'No' 
-                                   WHEN (dsm.q4_criteria_autistic_disorder = 'yes' || dsm.q4_criteria_PDD ='yes') THEN 'Yes'  
+                                   WHEN (dsm.q4_criteria_autistic_disorder = 'yes' || dsm.q4_criteria_PDD ='yes') THEN 'YES (DSM_IV questions 4a/4b is Yes)'  
                                  END                                                         AS ASD_DX, 
                                  p.alias                                                     AS Site, 
                                  c.Gender, 
@@ -387,7 +390,7 @@ class CouchDBDemographicsImporter {
                                                          JOIN candidate c using (candid) 
                                                          LEFT JOIN flag f  ON ( f.SessionID = s.ID)
                                                          LEFT JOIN mullen mullen ON ( mullen.CommentID = f.CommentID )
-                                                         where c.Candid=$candid and f.Test_name IN('mullen') 
+                                                         where c.Candid=$candid and f.Test_name IN('mullen') and s.Visit_label IN('V24')
                                                          AND f.CommentID NOT LIKE 'DDE%'", array());
 
             foreach($find_atypical as $find_atypical_row) {
@@ -433,22 +436,16 @@ class CouchDBDemographicsImporter {
                     }
 
                         if ($ADOS_SA_CSS > 3 && $row['Visit_label'] =='V24') {
-                            $atypical = "Yes";
+                            $atypical = "ATYPICAL (ADOS css score greater than 3 at V24) ";
                         } else if ($find_atypical_row['mullen_criteria'] == 'Yes' && $find_atypical_row['Visit_label']== 'V24'){
-                            $atypical = "Yes";
+                            $atypical = "ATYPICAL (Mullen: 1 or more sub-scale Tscore less than 30 at V24)";
                         }
                         else {
-                            $atypical = 'No';
+                            $atypical = 'NO (DSM_IV questions 4a/4b is no and not atypical) ';
                         }
 
-                        $this->Dictionary["Atypical"] = array(
-                            'Description' => 'No ASD_DX at V24 AND have 
-                             2 or more sub-scales (T score) less than 35 on Mullen at V24 
-                             OR  1 or more sub-scale (T score) less than 30 on Mullen at V24 
-                             OR ADOS_CSS score greater than 3 on ADOS at V24',
-                            'Type' => "varchar(100)",
-                        );
-                        $demographics['Atypical'] = $atypical;
+
+                        $demographics['ASD_DX'] = $atypical;
                     }
             }
             //atypical code finished
