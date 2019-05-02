@@ -224,9 +224,7 @@ class NDB_BVL_Instrument_DSMV_checklist extends NDB_BVL_Instrument
             $this->form->addElement("select", "qa2_change_communication", "2. Deficits in changing communication to match context or the needs of the listener, such as speaking differently in a classroom than on a playground, communicating differently to a child than an adult, and avoiding the use of overly formal language.", $yesNo);
 
             $this->form->addElement("select", "qa3_deficit_followrules", "3. Deficits in the ability to follow rules for conversation and storytelling, such as taking turns in conversation, rephrasing when misunderstood, and knowing how to use verbal and nonverbal signals to regulate interaction.", $yesNo);
-
-            $this->form->addElement("select", "qa4_difficulties_not_explicitly_stated", "<BR><strong>4. Difficulties understanding what is not explicitly stated (e.g., making inferences) and nonliteral or ambiguous meanings of language (e.g. idioms, humour, metaphors, multiple meanings that depend on the context for interpretation).</strong>", $yesNo);
-
+            
             $this->form->addElement("select", "qb_limit_communication", "<strong>B. The disturbance causes limitations in effective communication, social participation, social relationships, academic achievement, or occupational performance.</strong>", $yesNo);
 
             $this->form->addElement("select", "qc_onset_earlychildhood", "<strong>C. Onset in the early developmental period (but may not become fully manifest until social communication demands exceed limited capacities.)</strong>", $yesNo);
