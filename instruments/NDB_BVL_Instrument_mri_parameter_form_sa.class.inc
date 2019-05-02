@@ -168,9 +168,9 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
         $this->form->addElement('text', 'weight', 'Weight:');
         $this->form->addElement('select', 'weight_units', 'Weight units:', array("" => null, "pounds" => "pounds", "kilograms" => "kilograms"));
         $this->form->addElement('text', 'height', 'Height:');
-        $this->form->addElement('select', 'height_units', 'Weight units:', array("" => null, "inches" => "inches", "cm" => "cm"));
+        $this->form->addElement('select', 'height_units', 'Height units:', array("" => null, "inches" => "inches", "centimeters" => "cm"));
         $this->form->addElement('text', 'head_circumference', 'Head Circumference:');
-        $this->form->addElement('select', 'head_circumference_units', 'Head Circumference units:', array("" => null, "inches" => "inches", "cm" => "cm"));
+        $this->form->addElement('select', 'head_circumference_units', 'Head Circumference units:', array("" => null, "inches" => "inches", "centimeters" => "cm"));
 
         $this->form->addElement('select', "Scanner_type", "Type of Scanner:", array("" => null, "hospital" => "Hospital", "research" => "Research", "other" => "Other"));
         $this->form->addElement("text", "Scanner_type_other", "<i>If other, specify:</i>");
@@ -297,7 +297,10 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
         // STRUCTURAL SECTION
         $this->form->addElement('header', null, "<b>Structural</b><BR><BR>");
         $this->form->addElement('select', 't1w_acquired', "<b>T1w acquired?</b>", array("" => null, "Yes_2" => "Yes (2)", "Yes_1" => "Yes (1)", 'none' => 'None'));
+        $this->form->addElement('select', 't1w_num_attempts', "Total number of T1w runs and/or attempts", range(0, 10));
         $this->form->addElement('select', 't2w_acquired', "<b>T2w acquired?</b>", array("" => null, "Yes" => "Yes", "No" => "No"));
+        $this->form->addElement('select', 't2w_num_attempts', "Total number of T2w runs and/or attempts", range(0, 10));
+
 
         $this->addLabel("<h4>$this->indent <BR><b>SNR Samples</b><BR></h4>");
 
