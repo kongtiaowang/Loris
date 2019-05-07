@@ -12,7 +12,7 @@
  *  The following component is for saved queries dropdown which appears in the
  *  tab bar of the base component.
  */
-SavedQueriesList = React.createClass({
+var SavedQueriesList = React.createClass({
     getDefaultProps: function() {
         queriesLoaded: false
     },
@@ -79,7 +79,7 @@ SavedQueriesList = React.createClass({
  *  The following component is the data queries base element. It controls which tab is currently
  *  shown, along with keeping the state of the current query being built and running the query.
  */
-DataQueryApp = React.createClass({
+var DataQueryApp = React.createClass({
     componentDidMount: function() {
         // Before the dataquery is loaded into the window, this function is called to gather
         // any data that was not passed in the initial load.
@@ -87,7 +87,7 @@ DataQueryApp = React.createClass({
         // The left and right menu items are part of the same menu, but bootstrap considers
         // them two separate ones, so we need to make sure that only one is selected by removing
         // "active" from all the tab classes and only adding it to the really active one
-        var domNode = this.getDOMNode();
+        var domNode = this;
         $(domNode).find('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
             $(domNode).find('li').removeClass("active");
             if(e.target) {
@@ -140,7 +140,8 @@ DataQueryApp = React.createClass({
             "field"      : rule.field,
             "operator"   : rule.operator,
             "value"      : rule.value,
-            "instrument" : rule.instrument
+            "instrument" : rule.instrument,
+            "visit"      : rule.visit
         }
         return savedRule;
     },
@@ -169,7 +170,7 @@ DataQueryApp = React.createClass({
 
         $.post(loris.BaseURL + "/AjaxHelper.php?Module=dataquery&script=saveQuery.php",
             {
-                Fields: this.state.fields,
+                Fields: this.state.selectedFields,
                 Filters: filter,
                 QueryName: name,
                 SharedQuery: shared,
@@ -223,7 +224,8 @@ DataQueryApp = React.createClass({
                 session: this.props.AllSessions
             },
             selectedFields : {},
-            downloadableFields : {}
+            downloadableFields : {},
+            loading : false
         };
     },
     loadFilterRule: function(rule) {
@@ -281,7 +283,34 @@ DataQueryApp = React.createClass({
         $.ajax({
             url: loris.BaseURL + "/AjaxHelper.php?Module=dataquery&script=" + script,
             success: function(data) {
-                rule.session = data;
+                var i,
+                    allSessions = {},
+                    allCandiates = {};
+                // Loop through data and divide into individual visits with unique PSCIDs
+                // storing a master list of unique PSCIDs
+                for(i = 0; i < data.length; i++){
+                    if(!allSessions[data[i][1]]){
+                        allSessions[data[i][1]] = [];
+                    }
+                    allSessions[data[i][1]].push(data[i][0]);
+                    if(!allCandiates[data[i][0]]){
+                        allCandiates[data[i][0]] = []
+                    }
+                    allCandiates[data[i][0]].push(data[i][1]);
+                }
+                rule.candidates = {
+                    "allCandiates" : allCandiates,
+                    "allSessions" : allSessions
+                };
+                if (rule.visit == "All") {
+                    rule.session = Object.keys(allCandiates);
+                } else {
+                    if (allSessions[rule.visit]) {
+                        rule.session = allSessions[rule.visit];
+                    } else {
+                        rule.session = [];
+                    }
+                }
             },
             async: false,
             data: {
@@ -314,7 +343,10 @@ DataQueryApp = React.createClass({
     loadSavedQuery: function (fields, criteria) {
         // Used to load a saved query
 
-        var filterState = {};
+        var filterState = {},
+            selectedFields = {},
+            fieldsList = [];
+        this.setState({"loading" : true});
         if(Array.isArray(criteria)){
             // This is used to load a query that is saved in the old format
             // so translate it into the new format, grouping the given critiras
@@ -331,7 +363,8 @@ DataQueryApp = React.createClass({
                         "instrument" : fieldInfo[0],
                         "field"      : fieldInfo[1],
                         "value"      : item.Value,
-                        "type"       : "rule"
+                        "type"       : "rule",
+                        "visit"      : "All"
                     };
                 switch(item.Operator) {
                     case "=":
@@ -352,17 +385,59 @@ DataQueryApp = React.createClass({
                 }
                 return rule;
             });
+
+            var fieldSplit;
+            fieldsList = fields;
+            for(var i = 0; i < fields.length; i++){
+                fieldSplit = fields[i].split(",");
+                if(!selectedFields[fieldSplit[0]]){
+                    selectedFields[fieldSplit[0]] = {};
+                    selectedFields[fieldSplit[0]][fieldSplit[1]] = {};
+                    selectedFields[fieldSplit[0]].allVisits = {};
+                    for(var key in this.props.Visits){
+                        selectedFields[fieldSplit[0]].allVisits[key] = 1;
+                        selectedFields[fieldSplit[0]][fieldSplit[1]][key] = [key];
+                    }
+                } else {
+                    selectedFields[fieldSplit[0]][fieldSplit[1]] = {};
+                    for(var key in this.props.Visits){
+                        selectedFields[fieldSplit[0]].allVisits[key]++;
+                        selectedFields[fieldSplit[0]][fieldSplit[1]][key] = [key];
+                    }
+                }
+            }
         } else {
             // Query was saved in the new format
             filterState = criteria;
+            selectedFields = fields;
+            for(var instrument in fields){
+                for(var field in fields[instrument]){
+                    if(field === "allVisits"){
+                        continue;
+                    } else {
+                        fieldsList.push(instrument + "," + field);
+                    }
+                }
+            }
         }
-        filterState = this.loadFilterGroup(filterState);
+        if(filterState.children && filterState.children.length > 0){
+            filterState = this.loadFilterGroup(filterState);
+        } else {
+            filterState.children = [
+                    {
+                        type: "rule"
+                    }
+            ];
+            filterState.session = this.props.AllSessions;
+        }
         this.setState(function(state) {
            return  {
-                fields: fields,
+                fields: fieldsList,
+                selectedFields: selectedFields,
                 filter: filterState,
                 alertLoaded: true,
-                alertSaved: false
+                alertSaved: false,
+                loading: false
             }
         });
     },
@@ -375,7 +450,11 @@ DataQueryApp = React.createClass({
                 // Adding a new visit for field, add visit to field and
                 // increase count of visit in allVisits
                 temp[field.field][visit] = visit;
-                temp.allVisits[visit]++;
+                if(temp.allVisits[visit]){
+                    temp.allVisits[visit]++;
+                } else {
+                    temp.allVisits[visit] = 1;
+                }
             } else {
                 // Removing visit, delete visit from field
                 delete temp[field.field][visit];
@@ -444,15 +523,17 @@ DataQueryApp = React.createClass({
                 }
             } else {
                 // The category already has fields but not the desired one, add it
-                selectedFields[category][fieldName] = JSON.parse(JSON.stringify(that.props.Visits));
+                if(!selectedFields[category][fieldName]) {
+                    selectedFields[category][fieldName] = {};
+                }
 
                 // Increment the visit count for the visit, setting it to 1 if doesn't exist
-                for(var key in that.props.Visits){
-                    if(selectedFields[category].allVisits[key]){
-                        selectedFields[category].allVisits[key]++;
-                    } else {
-                        selectedFields[category].allVisits[key] = 1;
+                for(var key in selectedFields[category].allVisits){
+                    if(key == "allVisits") {
+                        continue;
                     }
+                    selectedFields[category].allVisits[key]++;
+                    selectedFields[category][fieldName][key] = key;
                 }
                 fields.push(category + "," + fieldName);
                 if(downloadable){
@@ -488,14 +569,18 @@ DataQueryApp = React.createClass({
                 // Wait until all ajax calls have completed before computing the rowdata
                 if(semaphore == 0){
                     var rowdata = that.getRowData(that.state.grouplevel);
-                    that.setState({'rowData': rowdata});
+                    that.setState({
+                        'rowData': rowdata,
+                        "loading" : false
+                    });
                 }
             };
 
         // Reset the rowData and sessiondata
         this.setState({
             "rowData" : {},
-            "sessiondata" : {}
+            "sessiondata" : {},
+            "loading" : true
         });
 
         // Get list of DocTypes to be retrieved
@@ -508,72 +593,70 @@ DataQueryApp = React.createClass({
                 var sessionInfo = [];
 
                 // Build the session data to be queried for the given category
-                for(var j = 0; j < this.state.filter.session.length; j++){
-                    for(var key in this.state.selectedFields[category].allVisits){
-                        var temp = [];
-                        if(Array.isArray(this.state.filter.session[j])){
-                            // Using allSessions, only use the PSCID
-                            temp.push(this.state.filter.session[j][0]);
-                        } else {
-                            temp.push(this.state.filter.session[j]);
+                for (var j = 0; j < this.state.filter.session.length; j++) {
+                    if (Array.isArray(this.state.filter.session[j])) {
+                        if(this.state.selectedFields[category].allVisits[this.state.filter.session[j][1]]) {
+                            sessionInfo.push(this.state.filter.session[j]);
                         }
-                        // Add the visit to the temp variable then add to the sessions to be queried
-                        temp.push(key);
-                        sessionInfo.push(temp);
+                    } else {
+                        for (var key in this.state.selectedFields[category].allVisits) {
+                            var temp = [];
+
+                            temp.push(this.state.filter.session[j]);
+                            // Add the visit to the temp variable then add to the sessions to be queried
+                            temp.push(key);
+                            sessionInfo.push(temp);
+                        }
                     }
                 }
 
                 DocTypes.push(category);
-                // Split the sessions to be queried into subqueries so that they don't exceed the defualt
-                // php defualt setting for maximum variables allowed in a single request
-                for(var j = 0; j < sessionInfo.length; j += 999){
-                    // keep track of the number of requests waiting for a response
-                    semaphore++;
-                    sectionedSessions = sessionInfo.slice(j, j+999);
-                    $.ajax({
-                        type: "POST",
-                        url: loris.BaseURL + "/AjaxHelper.php?Module=dataquery&script=retrieveCategoryDocs.php",
-                        data: {
-                            DocType: category,
-                            Sessions: sectionedSessions
-                        },
-                        dataType: 'text',
-                        success: function(data) {
-                            if(data) {
-                                var i, row, rows, identifier,
-                                    sessiondata = that.state.sessiondata;
-                                data = JSON.parse(data);
-                                rows = data.rows;
-                                for(i = 0; i < rows.length; i += 1) {
-                                    /*
-                                     * each row is a JSON object of the
-                                     * form:
-                                     * {
-                                     *  "key" : [category, pscid, vl],
-                                     *  "value" : [pscid, vl],
-                                     *  "doc": {
-                                     *      Meta: { stuff }
-                                     *      data: { "FieldName" : "Value", .. }
-                                     * }
-                                     */
-                                    row = rows[i];
-                                    identifier = row.value;
-                                    if(!sessiondata.hasOwnProperty(identifier)) {
-                                        sessiondata[identifier] = {
-                                        }
+                // keep track of the number of requests waiting for a response
+                semaphore++;
+                sectionedSessions = JSON.stringify(sessionInfo);
+                $.ajax({
+                    type: "POST",
+                    url: loris.BaseURL + "/AjaxHelper.php?Module=dataquery&script=retrieveCategoryDocs.php",
+                    data: {
+                        DocType: category,
+                        Sessions: sectionedSessions
+                    },
+                    dataType: 'text',
+                    success: function(data) {
+                        if(data) {
+                            var i, row, rows, identifier,
+                                sessiondata = that.state.sessiondata;
+                            data = JSON.parse(data);
+                            rows = data.rows;
+                            for(i = 0; i < rows.length; i += 1) {
+                                /*
+                                 * each row is a JSON object of the
+                                 * form:
+                                 * {
+                                 *  "key" : [category, pscid, vl],
+                                 *  "value" : [pscid, vl],
+                                 *  "doc": {
+                                 *      Meta: { stuff }
+                                 *      data: { "FieldName" : "Value", .. }
+                                 * }
+                                 */
+                                row = rows[i];
+                                identifier = row.value;
+                                if(!sessiondata.hasOwnProperty(identifier)) {
+                                    sessiondata[identifier] = {
                                     }
-
-                                    sessiondata[identifier][row.key[0]] = row.doc;
-
                                 }
-                                that.setState({ 'sessiondata' : sessiondata});
+
+                                sessiondata[identifier][row.key[0]] = row.doc;
+
                             }
-                            console.log("Received data");
-                            semaphore--;
-                            ajaxComplete();
+                            that.setState({ 'sessiondata' : sessiondata});
                         }
-                    });
-                }
+                        console.log("Received data");
+                        semaphore--;
+                        ajaxComplete();
+                    }
+                });
             }
         }
     },
@@ -625,21 +708,19 @@ DataQueryApp = React.createClass({
                 Identifiers.push(session);
             }
         } else {
-            // Displaying the data in the longitudial way
+            // Displaying the data in the longitudinal way
 
             var Visits = {},
                 visit, identifier, temp, colHeader, index, instrument, fieldSplit;
 
             // Loop trough session data building the row identifiers and desired visits
             for(var session in sessiondata){
-                sessiondata[session.toUpperCase()] = sessiondata[session];
-                delete session[session];
-                temp = session.split(',')
-                visit = temp[1].toUpperCase();
+                temp = session.split(',');
+                visit = temp[1];
                 if (!Visits[visit]) {
                     Visits[visit] = true;
                 }
-                identifier = temp[0].toUpperCase();
+                identifier = temp[0];
                 if (Identifiers.indexOf(identifier) === -1) {
                     Identifiers.push(identifier);
                 }
@@ -700,10 +781,10 @@ DataQueryApp = React.createClass({
     },
     resetQuery: function(){
         // Used to reset the current query
-// TODO: reset values of new format
         this.setState({
             fields: [],
-            criteria: {}
+            criteria: {},
+            selectedFields : {}
         });
     },
     changeDataDisplay: function(displayID){
@@ -733,6 +814,7 @@ DataQueryApp = React.createClass({
         tabs.push(<InfoTabPane
                 TabId="Info"
                 UpdatedTime={this.props.UpdatedTime}
+                Loading={this.state.loading}
         />);
 
         // Add the field select tab
@@ -743,6 +825,7 @@ DataQueryApp = React.createClass({
                 selectedFields={this.state.selectedFields}
                 Visits={this.props.Visits}
                 fieldVisitSelect = {this.fieldVisitSelect}
+                Loading={this.state.loading}
         />);
 
         // Add the filter builder tab
@@ -752,11 +835,12 @@ DataQueryApp = React.createClass({
                 filter={this.state.filter}
                 updateFilter={this.updateFilter}
                 Visits={this.props.Visits}
+                Loading={this.state.loading}
             />
         );
 
         // Define the data displayed type and add the view data tab
-        var displayType = (this.state.grouplevel === 0) ? "Cross-sectional" : "Longitudial";
+        var displayType = (this.state.grouplevel === 0) ? "Cross-sectional" : "Longitudinal";
         tabs.push(<ViewDataTabPane
                 TabId="ViewData"
                 Fields={this.state.fields}
@@ -769,12 +853,16 @@ DataQueryApp = React.createClass({
                 onRunQueryClicked={this.runQuery}
                 displayType={displayType}
                 changeDataDisplay={this.changeDataDisplay}
+                Loading={this.state.loading}
         />);
 
         // Add the stats tab
-        tabs.push(<StatsVisualizationTabPane TabId="Statistics"
+        tabs.push(<StatsVisualizationTabPane
+                TabId="Statistics"
                 Fields={this.state.rowData.RowHeaders}
-                Data={this.state.rowData.rowdata} />);
+                Data={this.state.rowData.rowdata}
+                Loading={this.state.loading}
+        />);
 
         // Add the manage saved queries tab
         tabs.push(<ManageSavedQueriesTabPane TabId="SavedQueriesTab"
@@ -783,6 +871,7 @@ DataQueryApp = React.createClass({
                         onSaveQuery={this.saveCurrentQuery}
                         queryDetails={this.state.savedQueries}
                         queriesLoaded={this.state.queriesLoaded}
+                        Loading={this.state.loading}
                 />);
 
         // Display load alert if alert is present
@@ -856,4 +945,8 @@ DataQueryApp = React.createClass({
     }
 });
 
-RDataQueryApp = React.createFactory(DataQueryApp);
+window.SavedQueriesList = SavedQueriesList;
+window.DataQueryApp = DataQueryApp;
+window.RDataQueryApp = React.createFactory(DataQueryApp);
+
+export default DataQueryApp;

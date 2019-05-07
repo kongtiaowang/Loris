@@ -1,7 +1,7 @@
 <script type="text/javascript" src="{$baseurl}/mri_violations/js/mri_protocol_violations.js"></script>
-<link rel="stylesheet" href="css/c3.css">
-<script src="js/d3.min.js" charset="utf-8"></script>
-<script src="js/c3.min.js"></script>
+<link rel="stylesheet" href="{$baseurl}/css/c3.css">
+<script src="{$baseurl}/js/d3.min.js" charset="utf-8"></script>
+<script src="{$baseurl}/js/c3.min.js"></script>
 
 <div class="col-sm-12">
     <div class="col-md-8 col-sm-8">
@@ -124,44 +124,20 @@
                     <td align="right" id="pageLinks"></td>
                 </tr>
             </table>
-
-            <table class="dynamictable table table-hover table-primary table-bordered" border="0" width="100%">
-                <thead>
-                <tr class="info">
-                    <th nowrap="nowrap">No.</th>
-                    {section name=header loop=$headers}
-                        <th nowrap="nowrap"><a href="{$baseurl}/mri_violations/?submenu=mri_protocol_violations&filter[order][field]={$headers[header].name}&filter[order][fieldOrder]={$headers[header].fieldOrder}">{$headers[header].displayName}</a></th>
-                    {/section}
-                </tr>
-                </thead>
-                <tbody>
-                {section name=item loop=$items}
-                    <tr>
-                        <!-- print out data rows -->
-                        {section name=piece loop=$items[item]}
-                            <td nowrap="nowrap" bgcolor="{$items[item][piece].bgcolor}">
-                                {$items[item][piece].value}
-                            </td>
-                        {/section}
-                    </tr>
-                    {sectionelse}
-                    <tr><td colspan="19">No data found</td></tr>
-                {/section}
-                </tbody>
-            </table>
-        </div>
+          <div class="dynamictable" id="datatable"></div> 
+             
+      </div>
     </div>
 </div>
 <script>
-var pageLinks = RPaginationLinks(
-{
-    RowsPerPage : {$rowsPerPage},
-    Total: {$TotalItems},
-    onChangePage: function(pageNum) {
-        location.href="{$baseurl}/mri_violations/?submenu=mri_protocol_violations&pageID=" + pageNum
-    },
-    Active: {$pageID}
-});
-React.render(pageLinks, document.getElementById("pageLinks"));
-</script>
 
+loris.hiddenHeaders = {(empty($hiddenHeaders))? [] : $hiddenHeaders };
+var table = RDynamicDataTable({
+     "DataURL" : "{$baseurl}/mri_violations/?submenu=mri_protocol_violations&format=json",
+     "getFormattedCell" : formatColumn,
+     "freezeColumn" : "PatientName"
+     
+  });
+ReactDOM.render(table, document.getElementById("datatable"));
+
+</script>

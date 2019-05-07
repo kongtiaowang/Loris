@@ -317,10 +317,14 @@ class NDB_Menu_Filter extends NDB_Menu
 
         // 2. After resetting filters (if applicable), set the new
         // filters using the appropriate method.
-        if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+        if ($_SERVER['REQUEST_METHOD'] === 'GET'
+            || ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['filter']))
+        ) {
             // If it's a GET request (ie just reloading the page with
             // previous filters or clicking on a sort column, use
             // the filters that were saved into the session.
+            // OR a post request with no new defined filters (ie a second
+            // form on the page)
             $savedFilters = $_SESSION['State']->getProperty('filter');
             $this->_setFilters($savedFilters);
 
@@ -526,7 +530,8 @@ class NDB_Menu_Filter extends NDB_Menu
             }
         }
 
-        if (is_array($this->searchKeyword)
+        if (isset($this->searchKeyword)
+            && is_array($this->searchKeyword)
             && count($this->searchKeyword) > 0
             && !empty($this->searchKey['keyword'])
         ) {
@@ -586,11 +591,10 @@ class NDB_Menu_Filter extends NDB_Menu
     {
         $wheredetails = $this->_getBaseFilter();
         $db           = Database::singleton();
-        if (empty($this->group_by)) {
+        if (empty($this->group_by) && empty($this->having)) {
             $query = "SELECT COUNT(*)" . $this->query . $wheredetails['clause'];
-        } else if (!empty($this->group_by)) {
+        } else {
             $query = "SELECT COUNT(*) FROM ($query) as tmptable";
-
         }
         $this->TotalItems = $db->pselectOne($query, $wheredetails['params']);
 
@@ -614,6 +618,15 @@ class NDB_Menu_Filter extends NDB_Menu
         $this->tpl_data['rowsPerPage'] = $rowsPerPage;
         $this->tpl_data['pageID']      = $pageID;
 
+        $this->tpl_data['filterfield'] = isset($_GET['filter']['order']['field'])
+              ? $_GET['filter']['order']['field']
+              : '';
+
+        $this->tpl_data['filterfieldOrder']
+            = isset($_GET['filter']['order']['fieldOrder'])
+              ? $_GET['filter']['order']['fieldOrder']
+              : '';
+
         $this->tpl_data['TotalItems'] = $this->TotalItems;
         // print out column headings
         $i = 0;
@@ -634,7 +647,7 @@ class NDB_Menu_Filter extends NDB_Menu
         // get the template data for the table rows
         if (is_array($this->list) && !empty($this->list)) {
             // print out data rows
-            $this->_setDataTableRows($rowsPerPage*($pageID-1));
+            $this->_setDataTableRows($rowsPerPage*($pageID-1)+1);
         }
     }
 
@@ -678,15 +691,29 @@ class NDB_Menu_Filter extends NDB_Menu
      */
     function display()
     {
-        // dump the html for the menu
-        $this->tpl_data['csvUrl']  = 'main.php?'
-            . $_SERVER['QUERY_STRING']
-            . '&format=csv';
+        if (isset($_REQUEST['format'])) {
+            switch($_REQUEST['format']) {
+            case 'json':
+                       header('Content-Type: application/json');
+                return $this->toJSON();
+            }
+        }
+        if ($this->skipTemplate) {
+            return "";
+        }
+        // Set the csvFile links
+        $uri    = ltrim($_SERVER['REQUEST_URI'], "/");
+        $suffix = strpos($uri, '?') ? '&format=csv' : '?&format=csv';
+        $this->tpl_data['csvUrl']  = $uri . $suffix;
         $this->tpl_data['csvFile'] = $_REQUEST['test_name'];
         if (isset($_REQUEST['subtest'])) {
             $this->tpl_data['csvFile'] .= '-' . $_REQUEST['subtest'];
+        } elseif (isset($_REQUEST['submenu'])) {
+            $this->tpl_data['csvFile'] .= '-' . $_REQUEST['submenu'];
         }
         $this->tpl_data['csvFile'] .= date('-Y_m_d');
+
+        // dump the html for the menu
         $smarty = new Smarty_neurodb($this->Module);
         $smarty->assign('mode', $this->mode);
         $smarty->assign('form', $this->form->toArray());
@@ -730,9 +757,12 @@ class NDB_Menu_Filter extends NDB_Menu
             },
             $this->headers
         );
+
+        $MappedData = array();
         foreach ($data as $row) {
             $MappedData[] = array_values($row);
         }
+
         return array(
                 'Headers' => $headers,
                 'Data'    => $MappedData,
@@ -776,8 +806,12 @@ class NDB_Menu_Filter extends NDB_Menu
                 ." ".$this->filter['order']['fieldOrder'].", ";
         }
         $query .= $this->order_by;
-        // get the list
 
+        if (!empty($this->limit)) {
+            $query .= " LIMIT $this->limit";
+        }
+
+        // get the list
         $this->_getNumberPages($query);
 
         $config         =& NDB_Config::singleton();
@@ -821,7 +855,6 @@ class NDB_Menu_Filter extends NDB_Menu
             $depends,
             array(
              $baseURL . '/js/components/PaginationLinks.js',
-             $baseURL . '/js/components/FilterTable.js',
              $baseURL . '/js/components/StaticDataTable.js',
              $baseURL . '/js/components/DynamicDataTable.js',
             )

@@ -14,7 +14,7 @@ class NDB_BVL_Instrument_radiology_review extends NDB_BVL_Instrument
     */
     function setup($commentID, $page){
         $this->formType="XIN";
-        $this->form = new HTML_Quickform('test_form');
+        $this->form = new LorisForm('test_form');
         $this->page = $page;            // page label (number or
                                         // string - used by
                                         // user-defined child classes)
@@ -72,8 +72,8 @@ class NDB_BVL_Instrument_radiology_review extends NDB_BVL_Instrument
         $this->form->addElement('select', 'Review_results', 'Results of local radiology review?', $normal_option);
         $this->XINRegisterRule("Review_results", array("Scan_done{@}=={@}yes"), "Please enter the scan information");
 
-        $this->form->addElement('select', 'abnormal_atypical_exculsionary', $this->indent . "If the results are ABNORMAL or ATYPICAL:", $exclusionaryOrNot);
-        $this->XINRegisterRule('abnormal_atypical_exculsionary', array('Review_results{@}=={@}abnormal|atypical'), "Please indicate if the Abnormal or Atypical review is Exclusionary or Not."); 
+        $this->form->addElement('select', 'abnormal_atypical_exclusionary', $this->indent . "If the results are ABNORMAL or ATYPICAL:", $exclusionaryOrNot);
+        $this->XINRegisterRule('abnormal_atypical_exclusionary', array('Review_results{@}=={@}abnormal|atypical'), "Please indicate if the Abnormal or Atypical review is Exclusionary or Not.");
         
        	$this->form->addElement('static', null, $this->indent . $this->indent . 'If Abnormal or Atypical, describe incidental finding(s)'); 
 //        $this->form->addElement('textarea', 'Incidental_findings', 'Description of incidental findings:');
@@ -104,10 +104,7 @@ class NDB_BVL_Instrument_radiology_review extends NDB_BVL_Instrument
         $examiners = $this->_getExaminerNames();
         $this->form->addElement('select', 'Examiner', 'Radiologist', $examiners);
 
-     	$this->form->addGroupRule('Date_taken', 'Date of Administration is required', 'required');
-
-        $this->form->registerRule('checkdate', 'callback', '_checkDate');
-        $this->form->addRule('Date_taken', 'Date of Administration is invalid', 'checkdate');
+     	$this->form->addRule('Date_taken', 'Date of Administration is required', 'required');
 
         $this->form->addRule('Examiner', 'Examiner is required', 'required');
     }

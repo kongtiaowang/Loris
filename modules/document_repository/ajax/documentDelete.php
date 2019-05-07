@@ -1,5 +1,15 @@
 <?php
-
+/**
+  * Document_repository module
+  *
+  * PHP Version 5
+  *
+  * @category Test
+  * @package  Loris
+  * @author   Loris Team <loris.info@mcin.ca>
+  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+  * @link     https://github.com/aces/Loris
+  */
 $user =& User::singleton();
 if (!$user->hasPermission('document_repository_delete')) {
     header("HTTP/1.1 403 Forbidden");
@@ -12,40 +22,49 @@ require_once "NDB_Config.class.inc";
 require_once "Email.class.inc";
 $client = new NDB_Client();
 $client->initialize("../../project/config.xml");
+$factory = NDB_Factory::singleton();
+$baseURL = $factory->settings()->getBaseURL();
 
 $config = NDB_Config::singleton();
 
 // create Database object
 $DB =& Database::singleton();
 
+$Notifier = new NDB_Notifier(
+    "document_repository",
+    "delete"
+);
+
 $rid = $_POST['id'];
 
-$fileName = $DB->pselectOne("Select File_name from document_repository where record_id =:identifier",
-                            array(':identifier' => $rid));
-$userName = $DB->pselectOne("Select uploaded_by from document_repository where record_id =:identifier",
-                            array(':identifier'=> $rid));
-$dataDir  = $DB->pselectOne("Select Data_dir from document_repository where record_id =:identifier",
-                            array(':identifier'=> $rid));
+$fileName = $DB->pselectOne(
+    "Select File_name from document_repository where record_id =:identifier",
+    array(':identifier' => $rid)
+);
+$userName = $DB->pselectOne(
+    "Select uploaded_by from document_repository where record_id =:identifier",
+    array(':identifier' => $rid)
+);
+$dataDir  = $DB->pselectOne(
+    "Select Data_dir from document_repository where record_id =:identifier",
+    array(':identifier' => $rid)
+);
 
 $user =& User::singleton();
 
 //if user has document repository delete permission
 if ($user->hasPermission('document_repository_delete')) {
     $DB->delete("document_repository", array("record_id" => $rid));
-    $www = $config->getSetting('www');
-    $msg_data['deleteDocument'] = $www['url'] . "/main.php?test_name=document_repository";
-    $msg_data['document'] = $fileName;
-    $msg_data['study'] = $config->getSetting('title');
-    $query_Doc_Repo_Notification_Emails = "SELECT Email from users where Active='Y' and Doc_Repo_Notifications='Y' and UserID<>:uid";
-    $Doc_Repo_Notification_Emails = $DB->pselect($query_Doc_Repo_Notification_Emails, array("uid"=>$user->getUsername()));
-    foreach ($Doc_Repo_Notification_Emails as $email) {
-        Email::send($email['Email'], 'document_repository.tpl', $msg_data);
-    }
+    $msg_data['deleteDocument'] = $baseURL. "/document_repository/";
+    $msg_data['document']       = $fileName;
+
+    $Notifier->notify($msg_data);
 }
 
 $path = __DIR__ . "/../user_uploads/$dataDir";
 
-if (file_exists($path))
+if (file_exists($path)) {
     unlink($path);
+}
 
 ?>

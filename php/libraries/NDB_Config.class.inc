@@ -222,7 +222,7 @@ class NDB_Config
             $this->_siteSettings =& $this->_settings;
         } else {
             $user     =& User::singleton($username);
-            $siteName = Utility::getCleanString($user->getSiteName());
+            $siteName = Utility::getCleanString($user->getSiteNames());
             if (isset($this->_settings['sites'][$siteName])
                 && is_array($this->_settings['sites'][$siteName])
             ) {
@@ -539,7 +539,7 @@ class NDB_Config
                        Link,
                        ID
                   FROM LorisMenu
-                  WHERE Parent IS NULL",
+                  WHERE Parent IS NULL ORDER BY OrderNumber",
                 array()
             );
         } else {
@@ -549,7 +549,7 @@ class NDB_Config
                         Link,
                         ID
                   FROM LorisMenu
-                  WHERE Parent=:ParentID",
+                  WHERE Parent=:ParentID ORDER BY OrderNumber",
                 array('ParentID' => $parent)
             );
 

@@ -9,7 +9,7 @@
 /*
  *  The following component is used for displaying operator for the group component
  */
-LogicOperator = React.createClass({
+var LogicOperator = React.createClass({
 	changeOperator: function(op) {
 		// Wrapper function updating operator
 		this.props.updateGroupOperator(op);
@@ -17,14 +17,16 @@ LogicOperator = React.createClass({
 	render: function() {
 		// Renders the html for the component
 
-		var andClass = "btn btn-primary",
-			orClass = "btn btn-primary";
+		var andClass = "btn",
+			orClass = "btn";
 
 		// Set operator to OR if logicOperator is 1, AND otherwise
 		if(this.props.logicOperator === 1) {
-			orClass += " active";
+			orClass += " btn-primary";
+			andClass += " switch"
 		} else {
-			andClass += " active";
+			andClass += " btn-primary";
+			orClass += " switch"
 		}
 		return (
 			<div className="btn-group" role="group">
@@ -38,7 +40,7 @@ LogicOperator = React.createClass({
 /*
  *  The following component is used for displaying a filter rule
  */
-FilterRule = React.createClass({
+var FilterRule = React.createClass({
 	getInitialState: function() {
 		return {
 			operators: {
@@ -50,9 +52,13 @@ FilterRule = React.createClass({
 		    	"startsWith" : "startsWith",
 		    	"contains" : "contains"
 				// }
-			}
+			},
+			value: "",
 		}
 	},
+	componentWillMount: function() {
+       this.valueSet = loris.debounce(this.valueSet,1000);
+    },
 	selectInstrument: function(event){
 		// Update the rules instrument, getting the instruments avalible fields
 		var rule = this.props.rule,
@@ -65,9 +71,9 @@ FilterRule = React.createClass({
             }, 'json');
 		}
 	},
-	fieldSelect: function() {
+	fieldSelect: function(event) {
 		// Update the rules desired field, setting the rules field and field type
-		var rule = this.props.rule;
+		var rule = JSON.parse(JSON.stringify(this.props.rule));
 		delete rule.field;
 		delete rule.fieldType;
 		delete rule.operator;
@@ -78,11 +84,11 @@ FilterRule = React.createClass({
 			rule.field = rule.fields[event.target.value].key[1];
 			rule.fieldType = rule.fields[event.target.value].value.Type;
 		}
-		this.props.updateRule(that.props.index, rule);
+		this.props.updateRule(this.props.index, rule);
 	},
-	operatorSelect: function() {
+	operatorSelect: function(event) {
 		// Update the desired rule operation for the selected field
-		var rule = this.props.rule;
+		var rule = JSON.parse(JSON.stringify(this.props.rule));
 		delete rule.operator;
 		delete rule.value;
 		delete rule.visit;
@@ -90,16 +96,26 @@ FilterRule = React.createClass({
 		if(event.target.value) {
 			rule.operator = event.target.value;
 		}
-		this.props.updateRule(that.props.index, rule);
+		this.props.updateRule(this.props.index, rule);
+	},
+	valueChange: function(event) {
+		var rule = JSON.parse(JSON.stringify(this.props.rule));
+		delete rule.visit;
+		delete rule.candidates;
+
+		rule.value = event.target.value;
+
+		this.setState({
+			value: event.target.value
+		});
+		this.valueSet();
+		this.props.updateRule(this.props.index, rule);
 	},
 	valueSet: function() {
 		// Update the value to filter for, and runs the query for the rules parameters
-		var rule = this.props.rule,
+		var rule = JSON.parse(JSON.stringify(this.props.rule)),
 			that = this;
-		delete rule.value;
-		delete rule.visit;
-		delete rule.candidates;
-		if(event.target.value) {
+		if(this.state.value) {
 			var responseHandler = function(data) {
 					var i,
 						allSessions = {},
@@ -122,14 +138,14 @@ FilterRule = React.createClass({
 					};
 		            rule.session = Object.keys(allCandiates);
 		            rule.visit = "All";
-		            that.props.updateSessions(rule);
+		            that.props.updateSessions(that.props.index, rule);
 		        },
 				ajaxRetrieve = function(script) {
 		            $.get(loris.BaseURL + "/AjaxHelper.php?Module=dataquery&script=" + script,
 		                  {
 		                    category: rule.instrument,
 		                    field: rule.field,
-		                    value: event.target.value
+		                    value: that.state.value
 		                  },
 		                  responseHandler,
 		                  'json'
@@ -157,24 +173,21 @@ FilterRule = React.createClass({
 		    	default:
 		    		break;
 		    }
-
-			rule.value = event.target.value;
 		}
-		this.props.updateRule(that.props.index, rule);
 	},
 	updateVisit: function(event) {
 		// Update rule to filter for specified visit
-		var rule = this.props.rule;
+		var rule = JSON.parse(JSON.stringify(this.props.rule));
 		rule.visit = event.target.value;
 
 		if(event.target.value === "all"){
 			// If all visits, use keys of master list
-			rule.sessions = Object.keys(rule.candidates.allCandiates);
+			rule.session = Object.keys(rule.candidates.allCandiates);
 		} else {
 			// Else use list of PSCIDs for given vist
-			rule.sessions = rule.candidates.allSessions[event.target.value];
+			rule.session = rule.candidates.allSessions[event.target.value];
 		}
-		this.props.updateRule(that.props.index, rule);
+		this.props.updateSessions(this.props.index, rule);
 	},
 	render: function() {
 		// Renders the html for the component
@@ -195,7 +208,7 @@ FilterRule = React.createClass({
 					);
 				}),
 				operators = [],
-				inputOptions, input, operatorKey, operatorSelect, options, value;
+				inputOptions, input, operatorKey, operatorSelect, options, value, inputType;
 
 			if(this.props.rule.fieldType) {
 				// Only display operators if field is selected
@@ -230,7 +243,7 @@ FilterRule = React.createClass({
 							});
 							value = (this.props.rule.value) ? this.props.rule.value : "";
 							input = (
-								<select className="input-sm col-xs-3" onChange={this.valueSet} value={value}>
+								<select className="input-sm col-xs-3" onChange={this.valueChange} value={value}>
 									<option value=""></option>
 									{options}
 								</select>
@@ -240,7 +253,7 @@ FilterRule = React.createClass({
 							input = (
 								<input type="text"
 									   className="input-sm col-xs-3"
-									   onChange={this.valueSet}
+									   onChange={this.valueChange}
 									   value={this.props.rule.value}
 								/>
 							);
@@ -315,7 +328,7 @@ FilterRule = React.createClass({
 /*
  *  The following component is used for displaying a filter group
  */
-FilterGroup = React.createClass({
+var FilterGroup = React.createClass({
 	updateChild: function(index, child) {
 		// Update a specified child in the groups children
 
@@ -460,7 +473,7 @@ FilterGroup = React.createClass({
 				<button className="btn btn-danger btn-sm pull-right"
 										onClick={this.props.deleteGroup.bind(this, this.props.index)}
 				>
-					<span className="glyphicon glyphicon-remove"></span> Add Rule
+					<span className="glyphicon glyphicon-remove"></span> Delete Group
 				</button>
 			)
 		}
@@ -499,7 +512,7 @@ FilterGroup = React.createClass({
 /*
  *  The following component is the base componenet for the filter builder
  */
-FilterBuilder = React.createClass({
+var FilterBuilder = React.createClass({
     render: function() {
         return (
         	<div>
@@ -517,3 +530,15 @@ FilterBuilder = React.createClass({
         );
     }
 });
+
+window.LogicOperator = LogicOperator;
+window.FilterRule = FilterRule;
+window.FilterGroup = FilterGroup;
+window.FilterBuilder = FilterBuilder;
+
+export default {
+  LogicOperator,
+  FilterRule,
+  FilterGroup,
+  FilterBuilder
+};

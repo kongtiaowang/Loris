@@ -113,6 +113,9 @@ class SocketWrapper
         if ($this->socket) {
             $status = fgets($this->socket);
             if ($status === false) {
+                if ($this->eof()) {
+                    return $status;
+                }
                 throw new \LorisException(
                     "Could not read from CouchDB server at $this->host:$this->port"
                 );
@@ -191,9 +194,9 @@ class CouchDB
     function _constructURL($op, $doc)
     {
         $config = NDB_Config::singleton();
-        $db     = $config->getSetting("CouchDB");
+        $db     = $config->getSetting('CouchDB');
 
-        return "$op /$db[database]/$doc";
+        return "$op /$db[dbName]/$doc";
     }
 
     /**
