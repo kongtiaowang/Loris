@@ -29,6 +29,8 @@ script:
 # Unable to initialize database, use the following code to debug. - docker-compose up --build
 #- docker-compose up --build
 - docker-compose run -T --rm integration-tests vendor/bin/phpunit --configuration test/phpunit.xml --coverage-clover=coverage.xml
+- vendor/bin/phpunit --coverage-clover=coverage.xml
+
 after_success:
     - bash <(curl -s https://codecov.io/bash)
 
