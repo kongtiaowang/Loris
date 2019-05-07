@@ -3,6 +3,10 @@ sudo: required
 # any language should do it
 language: php
 
+env:
+  - CODECOV_TOKEN="943aee61-a474-4dab-843d-cd3d8d119411"
+
+
 matrix:
   include:
   - php: "7.2"
