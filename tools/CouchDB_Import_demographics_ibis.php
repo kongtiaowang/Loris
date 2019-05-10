@@ -88,7 +88,10 @@ class CouchDBDemographicsImporter {
         ),
 
         'ASD_DX' => array(
-            'Description' => 'Combines questions 4a(autistic disorder) and 4b(PDD) on the DSMIV_checklist',
+            'Description' => 'YES ==> If 4a/4b on DSMIV_checklist(V24) is yes.
+                              ATYPICAL ==> If 2 or more sub-scales less than 35 (t score) on Mullen(V24) OR
+                              1 or more sub-scale less than 30 (tscore) on Mullen(V24) OR Greater than 3 CSS on ADOS(V24).
+                              NO ==> If 4a/4b on DSMIV_checklist(V24) is no and not atypical.',
             'Type' => 'varchar(255)',
         ),
         'Age_at_visit_start' => array(
@@ -159,7 +162,7 @@ class CouchDBDemographicsImporter {
                                  END                                                         AS Risk, 
                                  CASE 
                                    WHEN (dsm.q4_criteria_autistic_disorder = 'no' && dsm.q4_criteria_PDD ='no') THEN 'No' 
-                                   WHEN (dsm.q4_criteria_autistic_disorder = 'yes' || dsm.q4_criteria_PDD ='yes') THEN 'Yes'  
+                                   WHEN (dsm.q4_criteria_autistic_disorder = 'yes' || dsm.q4_criteria_PDD ='yes') THEN 'YES (DSM_IV questions 4a/4b is Yes)'  
                                  END                                                         AS ASD_DX, 
                                  p.alias                                                     AS Site, 
                                  c.Gender, 
@@ -299,6 +302,30 @@ class CouchDBDemographicsImporter {
         }
         */
     }
+    /**
+     * Gets the ADOS module that was Administered at a particular
+     * SessionID
+     *
+     * @param int $SessionID The Session
+     *
+     * @return string Test_name of ADOS module. null if not found
+     */
+    function getADOSModule($SessionID)
+    {
+        $rows = $this->SQLDB->pselect(
+            "SELECT Test_name, Administration FROM flag " .
+            "WHERE SessionID=:SID AND Test_name LIKE 'ados%'" .
+            " AND CommentID NOT LIKE 'DDE%'",
+            array('SID' => $SessionID)
+        );
+        foreach ($rows as $row) {
+            if ($row['Administration'] === 'All') {
+                return $row['Test_name'];
+            }
+        }
+
+        return null;
+    }
 
     function run() {
         $config = $this->CouchDB->replaceDoc('Config:BaseConfig', $this->Config);
@@ -351,6 +378,78 @@ class CouchDBDemographicsImporter {
                     }
                 }
             }
+
+            //Finding Atypical value
+            $candid=$demographics['CandID'];
+            if($demographics['Visit_label']=='V24' && $demographics['ASD_DX']=='No')
+            {
+            $find_atypical = $this->SQLDB->pselect("SELECT CASE  
+                                                         WHEN (mullen.visual_reception_t < 30 || mullen.gross_motor_t < 30 ||
+                                                         mullen.fine_motor_t < 30 || mullen.receptive_language_t <30) THEN 'Yes'
+                                                         ELSE 'No' END AS mullen_criteria, s.ID,s.Visit_label FROM  session s
+                                                         JOIN candidate c using (candid) 
+                                                         LEFT JOIN flag f  ON ( f.SessionID = s.ID)
+                                                         LEFT JOIN mullen mullen ON ( mullen.CommentID = f.CommentID )
+                                                         where c.Candid=$candid and f.Test_name IN('mullen') and s.Visit_label IN('V24')
+                                                         AND f.CommentID NOT LIKE 'DDE%'", array());
+
+            foreach($find_atypical as $find_atypical_row) {
+                    $sessionID = $find_atypical_row['ID'];
+                    $ADOSModule = $this->getADOSModule($sessionID);
+                    $Fields = array(
+                        'c.PSCID',
+                        's.Visit_label',
+                        'i.Candidate_Age',
+                        'i.social_affect_total',
+                        'i.a1'
+                    );
+                    if ($ADOSModule != NULL) {
+
+                        $selectq = "SELECT " . join(",", $Fields) .
+                            " FROM flag f LEFT JOIN " . $ADOSModule . " i USING (CommentID)" .
+                            " LEFT JOIN session s ON (s.ID=f.SessionID)" .
+                            " LEFT JOIN candidate c USING (CandID) " .
+                            "WHERE f.Test_name=:AM AND f.SessionID=:SID and c.CandiD=:CID AND s.Active='Y'" .
+                            " AND c.Active='Y' AND f.CommentID NOT LIKE 'DDE%'";
+                        $row = $this->SQLDB->pselectRow($selectq,
+                            array(
+                                "AM" => $ADOSModule,
+                                'SID' => $sessionID,
+                                'CID' => $demographics['CandID']
+                            )
+                        );
+                        if ($row === array()) {
+                            return;
+                        }
+                        $PSCID = $row['PSCID'];
+                        $Visit_label = $row['Visit_label'];
+                        $age_months = $row['Candidate_Age'];
+                        for ($i = 2; $i <= 14; $i++) {
+                            $low = $i * 12;
+                            $high = ($i + 1) * 12;
+                            if ($age_months >= $low && $age_months < $high) {
+                                $ados_age = $i;
+                            }
+                        }
+
+                        $ADOS_SA_CSS = NDB_BVL_Instrument_IBIS::ADOS_SA_CSS($ADOSModule, $row['a1'], $row['social_affect_total'], $ados_age);
+                    }
+
+                        if ($ADOS_SA_CSS > 3 && $row['Visit_label'] =='V24') {
+                            $atypical = "ATYPICAL (ADOS css score greater than 3 at V24) ";
+                        } else if ($find_atypical_row['mullen_criteria'] == 'Yes' && $find_atypical_row['Visit_label']== 'V24'){
+                            $atypical = "ATYPICAL (Mullen: 1 or more sub-scale Tscore less than 30 at V24)";
+                        }
+                        else {
+                            $atypical = 'NO (DSM_IV questions 4a/4b is no and not atypical) ';
+                        }
+
+
+                        $demographics['ASD_DX'] = $atypical;
+                    }
+            }
+            //atypical code finished
+
 
             $success = $this->CouchDB->replaceDoc($id, array('Meta' => array(
                 'DocType' => 'demographics',

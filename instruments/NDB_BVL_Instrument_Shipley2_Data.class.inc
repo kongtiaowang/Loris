@@ -1,6 +1,6 @@
 <?php
 /*
- * This file contains the NDB_BVL_Instrument_NIHToolBox_Assessment_Scores
+ * This file contains the NDB_BVL_Instrument_Shipley2_Data
  * class
  *
  * PHP Version 7
@@ -13,7 +13,7 @@
  */
 
 /**
- * Creates the form elements for the NIHToolBox_Assessment_Scores instrument
+ * Creates the form elements for the Shipley2_Data instrument
  *
  * @category Instrument
  * @package  Neuropsych
@@ -23,7 +23,7 @@
  */
 
 
-class NDB_BVL_Instrument_NIHToolBox_Assessment_Scores extends NDB_BVL_Instrument
+class NDB_BVL_Instrument_Shipley2_Data extends NDB_BVL_Instrument
 {
     var $ValidityEnabled = false;
     var $ValidityRequired = false;
@@ -44,8 +44,8 @@ class NDB_BVL_Instrument_NIHToolBox_Assessment_Scores extends NDB_BVL_Instrument
         $this->page = $page;
 
         // set the object properties
-        $this->testName = "NIHToolBox_Assessment_Scores";           // test_names.Test_name
-        $this->table = 'NIHToolBox_Assessment_Scores';             // name of table containing
+        $this->testName = "Shipley2_Data";           // test_names.Test_name
+        $this->table = 'Shipley2_Data';             // name of table containing
 
         // data keyed by commentID
         $this->commentID = $commentID;
@@ -65,7 +65,7 @@ class NDB_BVL_Instrument_NIHToolBox_Assessment_Scores extends NDB_BVL_Instrument
     {
         //determine page to display
         if (preg_match(
-            "/NIHToolBox_Assessment_Scores(_page[0-9]+)/",
+            "/Shipley2_Data(_page[0-9]+)/",
             $this->page,
             $matches
         )) {
@@ -83,19 +83,21 @@ class NDB_BVL_Instrument_NIHToolBox_Assessment_Scores extends NDB_BVL_Instrument
 
         // automatically adds examiner & date of administration
         $this->_addMetadataFields();
-        $this->form->addElement('static', 'lorisSubHeader', "<strong>Instructions:</strong><BR><i>The NIHToolBox Assessment Scores instrument parses the data and updates the data 
+        $this->form->addElement('static', 'lorisSubHeader', "<strong>Instructions:</strong><BR><i>Shipley2 Data instrument parses the data and updates the data 
  all around. (Similar to DTIPrep Instrument already in use)<br>
  <b>ie; if you have multiple candidate data in your file</b>; it will check across all the candidates and updates 
  the data for all the valid candidates found in the file.
   <br>This will save your time of going to each candidate and uploading the file.</i><br>
 ");
         $this->form->addElement('static', null, '<br>');
-        $this->form->addFile('NIHToolBox_Assessment_Scores', 'Upload the NIH ToolBox Assessment Scores File
-<br><h6><i>(Filename should be NIHToolBox_Assessment_Scores.csv)</i></h6>', array());
-        $this->form->addElement('static', 'Uploaded_Assessment_Scores', "Uploaded  NIH ToolBox Assessment Scores File");
+        $this->form->addFile('Shipley2_Data', 'Upload the Shipley2 Data File
+<br><h6><i>(Filename should be Shipley2_Data.csv)</i></h6>', array());
+        $this->form->addElement('static', 'Uploaded_Shipley2_Data', "Uploaded  Shipley2 Data Labels File");
+        $this->XINRegisterRule("uploaded_file_val", array("{uploaded_file_val}{@}=={@}NEVER_REQUIRED"));
+
         $this->form->addElement('hidden', 'hidden_val', "Hidden Val");
         $this->XINRegisterRule("hidden_val", array("{hidden_val}{@}=={@}NEVER_REQUIRED"));
-        $this->XINRegisterRule("NIHToolBox_Assessment_Scores",array("hidden_val{@}=={@}NEVER_REQUIRED"));
+        $this->XINRegisterRule("Shipley2_Data",array("hidden_val{@}=={@}NEVER_REQUIRED"));
 
 
 
@@ -104,13 +106,24 @@ class NDB_BVL_Instrument_NIHToolBox_Assessment_Scores extends NDB_BVL_Instrument
     function _page1()
     {
 
-        $fields = array("No","DeviceID"	,"AssessmentName" ,	"Inst",	"RawScore",	"Theta", "TScore",	"SE","ItmCnt" ,"DateFinished" ,
-            "Column1" ,"Column2","Column3", "Column4","Column5",
-            "Language","ComputedScore","Uncorrected_Standard_Score","Age_Corrected_Standard Score","National_Percentile",
-            "Fully_Corrected_T_score", "InstrumentBreakoff","InstrumentStatus2","InstrumentRCReason","InstrumentRCReasonOther", "App_Version",
-            "iPad_Version","Firmware_Version"
+        $fields = array("No",'participant_id','redcap_survey_identifier','relationship','relationship_other',
+            'intake_complete',	'shipley2_timestamp','shipley2_vocab_01','shipley2_vocab_02','shipley2_vocab_03',	'shipley2_vocab_04',	'shipley2_vocab_05',
+            'shipley2_vocab_06', 'shipley2_vocab_07', 'shipley2_vocab_08', 'shipley2_vocab_09', 'shipley2_vocab_10', 'shipley2_vocab_11', 'shipley2_vocab_12',
+            'shipley2_vocab_13', 'shipley2_vocab_14', 'shipley2_vocab_15', 'shipley2_vocab_16', 'shipley2_vocab_17', 'shipley2_vocab_18', 'shipley2_vocab_19',
+            'shipley2_vocab_20', 'shipley2_vocab_21', 'shipley2_vocab_22', 'shipley2_vocab_23', 'shipley2_vocab_24', 'shipley2_vocab_25', 'shipley2_vocab_26',
+            'shipley2_vocab_27', 'shipley2_vocab_28', 'shipley2_vocab_29', 'shipley2_vocab_30', 'shipley2_vocab_31', 'shipley2_vocab_32', 'shipley2_vocab_33',
+            'shipley2_vocab_34', 'shipley2_vocab_35', 'shipley2_vocab_36', 'shipley2_vocab_37', 'shipley2_vocab_38', 'shipley2_vocab_39', 'shipley2_vocab_40',
+            'shipley2_abstract_01', 'shipley2_abstract_02', 'shipley2_abstract_03', 'shipley2_abstract_04', 'shipley2_abstract_05', 'shipley2_abstract_06', 'shipley2_abstract_07',
+            'shipley2_abstract_08', 'shipley2_abstract_09', 'shipley2_abstract_10', 'shipley2_abstract_11', 'shipley2_abstract_12', 'shipley2_abstract_13', 'shipley2_abstract_14',
+            'shipley2_abstract_15', 'shipley2_abstract_16', 'shipley2_abstract_17', 'shipley2_abstract_18', 'shipley2_abstract_19', 'shipley2_abstract_20', 'shipley2_abstract_21',
+            'shipley2_abstract_22', 'shipley2_abstract_23', 'shipley2_abstract_24', 'shipley2_abstract_25', 'shipley_block_01_answer', 'shipley_block_02_answer',
+            'shipley_block_03_answer', 'shipley_block_04_answer', 'shipley_block_05_answer1', 'shipley_block_05_answer2', 'shipley_block_06_answer1', 'shipley_block_06_answer2',
+            'shipley_block_07_answer1', 'shipley_block_07_answer2', 'shipley_block_08_answer1', 'shipley_block_08_answer2', 'shipley_block_09_answer1', 'shipley_block_09_answer2',
+            'shipley_block_10_answer1', 'shipley_block_10_answer2', 'shipley_block_10_answer3', 'shipley_block_10_answer4', 'shipley_block_11_answer1', 'shipley_block_11_answer2',
+            'shipley_block_11_answer3', 'shipley_block_11_answer4', 'shipley_block_12_answer1', 'shipley_block_12_answer2', 'shipley_block_12_answer3', 'shipley_block_12_answer4',
+            'shipley2_complete'
+            );
 
-        );
         foreach ($fields as $field) {
             $group[] = &$this->form->createElement("static", null, null, $field);
             $group[] = &$this->form->createElement("static", null, null, null);
@@ -149,7 +162,7 @@ class NDB_BVL_Instrument_NIHToolBox_Assessment_Scores extends NDB_BVL_Instrument
 
 
         //set the the IDs to the handler functions.
-        if(isset($values['NIHToolBox_Assessment_Scores']) && !empty($values['NIHToolBox_Assessment_Scores']['name'])) {
+        if(isset($values['Shipley2_Data']) && !empty($values['Shipley2_Data']['name'])) {
             require_once "File_Upload.class.inc";
             $file=new File_Upload;
 
@@ -158,7 +171,7 @@ class NDB_BVL_Instrument_NIHToolBox_Assessment_Scores extends NDB_BVL_Instrument
 
 
             //Tell File_Upload what file handlers to use.
-            $file->setFileHandler("NIHToolBox_Assessment_Scores", $this);
+            $file->setFileHandler("Shipley2_Data", $this);
 
             //Set the target directory that you want files moved into once they are validated and processed.
             $config = NDB_Config::singleton();
@@ -166,7 +179,7 @@ class NDB_BVL_Instrument_NIHToolBox_Assessment_Scores extends NDB_BVL_Instrument
             if(empty($dir)) {
                 $dir = ".";
             };
-            $file->setBaseUploadDirectory($dir . "/NIHToolBox_Assessment_Scores/");
+            $file->setBaseUploadDirectory($dir . "/Shipley2_Data/");
 
             //Set the prefix to prepend to the filenames
             //$file->setFilenamePrefix($timepoint->getVisitLabel()."-".$this->testName."-");
@@ -195,7 +208,7 @@ class NDB_BVL_Instrument_NIHToolBox_Assessment_Scores extends NDB_BVL_Instrument
             }
         }
         unset($values['candID'], $values['sessionID'], $values['commentID'], $values['test_name'], $values['page'], $values['fire_away'], $values['subtest'], $values['MAX_FILE_SIZE'],
-            $values['NIHToolBox_Assessment_Scores'], $values['valid'],$values['ids_updated'],$values['hidden_val']);
+            $values['Shipley2_Data'], $values['valid'],$values['ids_updated'],$values['hidden_val']);
         $this->_save($values);
         //
 
@@ -233,9 +246,10 @@ class NDB_BVL_Instrument_NIHToolBox_Assessment_Scores extends NDB_BVL_Instrument
         $main_values = array(
             'Data_dir_assessment' => $file->getDestinationDirectory(),
             'UserID' => $args['username'],
-            'File_type' => 'NIHToolBox',
+            'File_type' => 'Shipley2',
         );
-        if(strpos($file->fileInfo['name'], 'Scores') !== false) {
+
+        if(strpos($file->fileInfo['name'], 'Shipley2_Data') !== false) {
             /** @var Database $db */
             $db =& Database::singleton();
             ///Setting trackchanges to false because getting error messages
@@ -243,18 +257,28 @@ class NDB_BVL_Instrument_NIHToolBox_Assessment_Scores extends NDB_BVL_Instrument
             ////////////////////////////////////////////////////////////////
             //uploading values to NIHToolBox_Assessment_Scores
 
-            $main_values['Uploaded_Assessment_Scores'] = $file->getDestinationFilename();
+            $main_values['Uploaded_Shipley2_Data'] = $file->getDestinationFilename();
 
             $result = array();
             $file = fopen($file->fileInfo['tmp_name'], "r");
             while (!feof($file)) {
                 $data = fgetcsv($file, 0, ",");
-                $key = array_shift($data);
+                $outputData = array($data[2], $data[0], $data[1]);
+                for($f=3;$f<=99;$f++)
+                {
+                    if($f!=5) {
+                        array_push($outputData, $data[$f]);
+                    }
+                }
+                fputcsv($file, $outputData);
+                $key = array_shift($outputData);
                 if (!isset($result[$key])) {
                     $result[$key] = array();
                 }
-                $result[$key][] = $data;
+                $result[$key][] = $outputData;
             }
+           // print_r($result);
+           // exit;
 //Now, to print it out, this is all I have to do
             $valid=0;
             $ids_updated='';
@@ -262,13 +286,22 @@ class NDB_BVL_Instrument_NIHToolBox_Assessment_Scores extends NDB_BVL_Instrument
                 $upload_values=array();
                 //echo $pscid . "\n";
                 //loop through all unique pscid found and update the date all around
-                $fields = array("DeviceID"	,"AssessmentName" ,	"Inst",	"RawScore",	"Theta", "TScore",	"SE","ItmCnt" ,"DateFinished" ,
-                    "Column1" ,"Column2","Column3", "Column4","Column5",
-                    "Language","ComputedScore","Uncorrected_Standard_Score","Age_Corrected_Standard_Score","National_Percentile",
-                    "Fully_Corrected_T_score", "InstrumentBreakoff","InstrumentStatus2","InstrumentRCReason","InstrumentRCReasonOther", "App_Version",
-                    "iPad_Version","Firmware_Version"
-
-                );
+                $fields = array('participant_id','redcap_survey_identifier','relationship','relationship_other',
+                    'intake_complete',	'shipley2_timestamp','shipley2_vocab_01','shipley2_vocab_02','shipley2_vocab_03',	'shipley2_vocab_04',	'shipley2_vocab_05',
+                    'shipley2_vocab_06', 'shipley2_vocab_07', 'shipley2_vocab_08', 'shipley2_vocab_09', 'shipley2_vocab_10', 'shipley2_vocab_11', 'shipley2_vocab_12',
+                    'shipley2_vocab_13', 'shipley2_vocab_14', 'shipley2_vocab_15', 'shipley2_vocab_16', 'shipley2_vocab_17', 'shipley2_vocab_18', 'shipley2_vocab_19',
+                    'shipley2_vocab_20', 'shipley2_vocab_21', 'shipley2_vocab_22', 'shipley2_vocab_23', 'shipley2_vocab_24', 'shipley2_vocab_25', 'shipley2_vocab_26',
+                    'shipley2_vocab_27', 'shipley2_vocab_28', 'shipley2_vocab_29', 'shipley2_vocab_30', 'shipley2_vocab_31', 'shipley2_vocab_32', 'shipley2_vocab_33',
+                    'shipley2_vocab_34', 'shipley2_vocab_35', 'shipley2_vocab_36', 'shipley2_vocab_37', 'shipley2_vocab_38', 'shipley2_vocab_39', 'shipley2_vocab_40',
+                    'shipley2_abstract_01', 'shipley2_abstract_02', 'shipley2_abstract_03', 'shipley2_abstract_04', 'shipley2_abstract_05', 'shipley2_abstract_06', 'shipley2_abstract_07',
+                    'shipley2_abstract_08', 'shipley2_abstract_09', 'shipley2_abstract_10', 'shipley2_abstract_11', 'shipley2_abstract_12', 'shipley2_abstract_13', 'shipley2_abstract_14',
+                    'shipley2_abstract_15', 'shipley2_abstract_16', 'shipley2_abstract_17', 'shipley2_abstract_18', 'shipley2_abstract_19', 'shipley2_abstract_20', 'shipley2_abstract_21',
+                    'shipley2_abstract_22', 'shipley2_abstract_23', 'shipley2_abstract_24', 'shipley2_abstract_25', 'shipley_block_01_answer', 'shipley_block_02_answer',
+                    'shipley_block_03_answer', 'shipley_block_04_answer', 'shipley_block_05_answer1', 'shipley_block_05_answer2', 'shipley_block_06_answer1', 'shipley_block_06_answer2',
+                    'shipley_block_07_answer1', 'shipley_block_07_answer2', 'shipley_block_08_answer1', 'shipley_block_08_answer2', 'shipley_block_09_answer1', 'shipley_block_09_answer2',
+                    'shipley_block_10_answer1', 'shipley_block_10_answer2', 'shipley_block_10_answer3', 'shipley_block_10_answer4', 'shipley_block_11_answer1', 'shipley_block_11_answer2',
+                    'shipley_block_11_answer3', 'shipley_block_11_answer4', 'shipley_block_12_answer1', 'shipley_block_12_answer2', 'shipley_block_12_answer3', 'shipley_block_12_answer4',
+                    'shipley2_complete');
                 //2 sessions per candidate allowed as per the current files given
                 $count=count($entries);
                 if($count>2)
@@ -277,41 +310,43 @@ class NDB_BVL_Instrument_NIHToolBox_Assessment_Scores extends NDB_BVL_Instrument
                 }
                 foreach ($entries as $i => $entry) {
                     $m=$i+1;
-                    if($m<=$count) {
-                        $f = 0;
-                        foreach ($fields as &$value) {
-                            if ($m <= $count) {
+                    $f = 0;
+                    foreach ($fields as &$value) {
+                        if($m<=$count) {
 
-                                $upload_values["{$value}_{$m}"] = $entry[$f];
-                            }
-
-
-                            $f++;
+                            $upload_values["{$value}_{$m}"] = $entry[$f];
                         }
+
+
+                        $f++;
                     }
                 }
 
+
                 $final_upload_values=array_merge($main_values,$upload_values);
+                $timepoint =& TimePoint::singleton($this->getSessionID());
                 $commentid = $db->pselectOne(
                     "select f.CommentID from flag as f
                   join `session` as s on f.SessionID=s.ID
                   join `candidate` as c on s.CandID=c.CandID
-                  WHERE s.Visit_label='VSA' and c.PSCID=:pscid
+                  WHERE s.Visit_label=:vl and c.PSCID=:pscid
                   and f.Test_name=:tesna and f.CommentID not like 'DDE_%'",
                     array(
+                        'vl'   => $timepoint->getVisitLabel(),
                         'pscid' => $pscid,
                         'tesna' => $this->testName,
                     )
                 );
                 if(!empty($commentid)) {
                     $valid++;
+                    //print_r($upload_values);
                     $result = $db->update($this->testName, $final_upload_values, array('CommentID' => $commentid));
                     $ids_updated .= $pscid.",";
                 }
             }
             if($valid==0)
             {
-                echo "No matching PSCID found in the csv file to update the data under VSA visit label. \n
+                echo "No matching PSCID found in the csv file to update the data under given visit label. \n
                 Please check your file and try again.";
                 return false;
             }

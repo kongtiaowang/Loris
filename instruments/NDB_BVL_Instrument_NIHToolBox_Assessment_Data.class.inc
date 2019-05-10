@@ -131,6 +131,9 @@ class NDB_BVL_Instrument_NIHToolBox_Assessment_Data extends NDB_BVL_Instrument
         $this->form->addFile('NIHToolBox_Assessment_Data', 'Upload the Assessment Data File
 <br><h6><i>(Filename should be NIHToolBox_Assessment_Data.csv)</i></h6>', array());
         $this->form->addElement('static', 'Uploaded_assessment_data', "Uploaded Assessment Data File");
+        $this->form->addElement('hidden', 'hidden_val', "Hidden Val");
+        $this->XINRegisterRule("hidden_val", array("{hidden_val}{@}=={@}NEVER_REQUIRED"));
+        $this->XINRegisterRule("NIHToolBox_Assessment_Data",array("hidden_val{@}=={@}NEVER_REQUIRED"));
 
 
     }
@@ -227,7 +230,7 @@ class NDB_BVL_Instrument_NIHToolBox_Assessment_Data extends NDB_BVL_Instrument
             }
         }
         unset($values['candID'], $values['sessionID'], $values['commentID'], $values['test_name'], $values['page'], $values['fire_away'], $values['subtest'], $values['MAX_FILE_SIZE'],
-            $values['NIHToolBox_Assessment_Data']);
+            $values['NIHToolBox_Assessment_Data'],$values['hidden_val']);
         $this->_save($values);
 
     }
@@ -305,19 +308,23 @@ class NDB_BVL_Instrument_NIHToolBox_Assessment_Data extends NDB_BVL_Instrument
                 {
                     $count=62;
                 }
+
                 foreach ($entries as $i => $entry) {
                     $i++;
+                           if($i<=62) {
+                                    $f = 0;
+                                    foreach ($fields as &$value) {
+                                        if ($i > 30 && $i <= $count) {
+                                            $upload_values2["{$value}_{$i}"] = $entry[$f];
+                                        } else {
+                                            $upload_values["{$value}_{$i}"] = $entry[$f];
+                                        }
+                                        $f++;
+                                    }
 
-                    $f = 0;
-                    foreach ($fields as &$value) {
-                        if ($i > 30 && $i<=$count) {
-                            $upload_values2["{$value}_{$i}"] = $entry[$f];
-                        } else {
-                            $upload_values["{$value}_{$i}"] = $entry[$f];
-                        }
-                        $f++;
-                    }
+                           }
                 }
+
                 $commentid = $db->pselectOne(
                     "select f.CommentID from flag as f
                   join `session` as s on f.SessionID=s.ID

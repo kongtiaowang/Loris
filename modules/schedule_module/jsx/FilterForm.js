@@ -71,7 +71,7 @@ export class FilterForm extends React.Component {
                             <div className="col-lg-6 col-md-6 col-sm-6">
                                 <div className="form-group">
                                     <label>DCCID</label>
-                                    <input type="text" value={this.state.candId} className="form-control" onChange={(e) => {
+                                    <input type="text" value={this.state.candId} name="dccId" className="form-control" onChange={(e) => {
                                         this.setState({
                                             candId : e.target.value
                                         })
@@ -126,7 +126,7 @@ export class FilterForm extends React.Component {
                             <div className="col-lg-6 col-md-6 col-sm-6">
                                 <div className="form-group">
                                     <label>PSCID</label>
-                                    <input type="text" value={this.state.pscId} className="form-control" onChange={(e) => {
+                                    <input type="text" value={this.state.pscId} name="pscId" className="form-control" onChange={(e) => {
                                         this.setState({
                                             pscId : e.target.value
                                         })
