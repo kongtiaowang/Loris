@@ -125,7 +125,7 @@ class Videos extends \NDB_Menu_Filter
         }
         
         /// hack for Visit Labels... maybe get all the real visit labels from DB?
-        $list_of_visit_labels = array(null=>'Any','V06'=>'V06','V12'=>'V12','V24'=>'V24','V36'=>'V36');
+        $list_of_visit_labels = array(null=>'Any','V06'=>'V06','V12'=>'V12','V24'=>'V24','V36'=>'V36','VSA'=>'VSA');
         $subproject_options = \Utility::getSubprojectList();
         $subproject_options = array(null=>'Any') + $subproject_options;
         $DB = \Database::singleton();
