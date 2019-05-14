@@ -102,7 +102,6 @@ class Reliability extends \NDB_Menu_Filter
         } else {
             $extra_where = " AND EARLI_Candidate='no'";
         }
-        $_REQUEST['EARLI'];
         $video_query = "CASE 
                         WHEN videos.record_id IS NULL THEN 'No' 
                         ELSE videos.record_id
@@ -497,7 +496,6 @@ class Reliability extends \NDB_Menu_Filter
 
 
         $instrument_records = $db->pselect("SELECT i.CommentID FROM {$instrument} as i, flag as f, session as s, candidate as c WHERE i.CommentID=f.CommentID AND f.sessionID=s.ID AND s.CandID = c.CandID AND s.Current_stage<>'Recycling Bin' AND f.Data_entry='Complete' AND i.CommentID LIKE CONCAT('%',:currpsc,'%') AND s.visit_label<>'v18' AND i.CommentID NOT LIKE 'DDE%' {$phi_site_clause} AND f.Administration <> 'None' AND c.ProjectID =:pid ORDER BY RIGHT(i.CommentID, 6)", array("currpsc"=>$current_site,"pid"=>$projectID));
-      //  print_r($instrument_records);
         $params = array();
         $params['currentSite']    = $current_site;
         $params['projectID']      = $projectID;
@@ -704,6 +702,7 @@ AND s.Current_stage<>'Recycling Bin') as t",$params1);
     function cross_site_flagging_visitlevel($instrument, $current_site, $reliability_sites, $db, $visit_label, $projectID){
         $db =& \Database::singleton();
 
+        $ratio = 0.1;
         $reliability_site_index = 0;
         // We want the site to be random, starting from 0 causes a bias towards the first entry
         // in $reliability_sites.. so shuffle the array to eliminate the bias
@@ -764,8 +763,6 @@ AND s.Current_stage<>'Recycling Bin') as t",$params1);
         // echo("Max (ratio: {$ratio}/jump: {$jump_step}): {$max} <BR><BR>");
         for ($i = 0; $i < count($instrument_records) && $current_count + 1 <= $max; $i += 2) {
             $commentID = $instrument_records[$i]["CommentID"];
-            print $commentID;
-            print"\n";
             if (!find_cID($commentID, $this->reliability_table)) {
                 $db->insert(
                     'reliability',
