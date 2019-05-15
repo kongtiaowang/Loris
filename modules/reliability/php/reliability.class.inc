@@ -752,7 +752,7 @@ AND r.CommentID=f.CommentID
 AND f.sessionID=s.ID 
 AND s.Current_stage<>'Recycling Bin') as t",$params1);
         $total_count   = count($instrument_records);
-        if ($ratio *$total_records_count >= $total_count) {
+        if ($ratio*$total_records_count >= $total_count) {
             $max = $total_count;
         } else {
             $max = floor($ratio * $total_records_count);
