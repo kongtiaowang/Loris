@@ -17,6 +17,8 @@ class NDAR_Release_MRI {
         'dicom_0x0010:el_0x0020',
         'dicom_0x0010:el_0x0030',
         'dicom_0x0010:el_0x0040',
+        'dicom_0x0010:el_0x1001',
+        'dicom_0x0010:el_0x2154',
         'dicom_0x0008:el_0x0090',
         'dicom_0x0008:el_0x1048',
         'dicom_0x0010:el_0x1010',
