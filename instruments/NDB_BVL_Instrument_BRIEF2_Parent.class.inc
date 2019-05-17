@@ -23,6 +23,18 @@
 class NDB_BVL_Instrument_BRIEF2_Parent extends NDB_BVL_Instrument
 {
     use instrument_validator;
+    var $scoreLabels = array(
+        'inhibit_raw_score',
+        'shift_raw_score',
+        'emotional_control_raw_score',
+       'initiate_raw_score',
+       'working_memory_raw_score',
+       'plan_raw_score',
+      'self_monitor_raw_score',
+      'task_monitor_raw_score',
+      'material_org_raw_score',
+      'GEC_raw_score'
+    );
     /**
     * Sets up basic data, such as the HTML_Quickform object, and so on.
     *
@@ -68,6 +80,7 @@ class NDB_BVL_Instrument_BRIEF2_Parent extends NDB_BVL_Instrument
 
     }
 
+
     //If the instrument is not paged, remove the switch from the _setupForm method and add all the form Elements in this function.
 
     /**
@@ -103,6 +116,44 @@ class NDB_BVL_Instrument_BRIEF2_Parent extends NDB_BVL_Instrument
                           1996, 1998, 2000, 2015 by PAR. Further reproduction is prohibited without permission from PAR.</h3>");
 
         $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
+
+        $this->form->addElement('header', null, "Score Summary");
+
+
+        //scoring column headers
+        $group[] = $this->form->createElement('static', "raw_score", null, null);
+        $group[] = $this->form->createElement('static', "T_score", null, null);
+        $group[] = $this->form->createElement('static', "percentile", null, null);
+        $group[] = $this->form->createElement('static', "CI", null, null);
+        $this->form->addGroup($group, 'score_header_group', "<strong>Domain</strong>", $this->_GUIDelimiter, FALSE);
+        unset($group);
+
+
+        //score fields
+        $domains = array("inhibit" => "Inhibit","self_monitor" => "Self Monitor","shift" => "Shift",
+            "emotional_control" => "Emotional Control", "initiate" => "Initiate", "working_memory" => "Working Memory",
+            "plan" => "Plan/Organize","task_monitor" => "Task Monitor","material_org" => "Material Organization","GEC" => "Global Executive Composite",
+
+        );
+        $columnHeaders = array("raw_score" => "Raw Score", "T_score" => "T Score",
+            "percentile" => "Percentile", "CI" => "90 % Confidence Interval",
+        );
+
+        foreach ($columnHeaders as $field => $label) {
+            $columnHeaders[$field] .= "     ";
+        }
+        $this->localDefaults = array_merge($this->localDefaults, $columnHeaders);
+
+        foreach ($domains as $field => $label) {
+            foreach ($columnHeaders as $scoreField => $scoreLabel) {
+
+                $group[] = $this->form->createElement('static', "{$field}_{$scoreField}", null, null);
+            }
+            $this->form->addGroup($group, "{$label}_group", $label, $this->_GUIDelimiter, FALSE);
+            unset($group);
+
+
+        }
     }
 
     /**
@@ -264,6 +315,127 @@ class NDB_BVL_Instrument_BRIEF2_Parent extends NDB_BVL_Instrument
         }
 
         return $errors;
+    }
+    function score()
+    {
+       /* if($this->_determineDataEntryCompletionStatus() == "Incomplete") {
+            return;
+        }*/
+
+        //null scores
+        $this->_nullScores($this->scoreLabels);
+
+        //get the saved scores
+        $db =& Database::singleton();
+        $query = "SELECT * FROM $this->table WHERE CommentID = '$this->commentID'";
+        $record = $db->pselectRow($query, array());
+        $inhibit_array=array($record['q1_is_fidgety'],
+            $record['q10_does_not_think_before_doing_impulsive'],
+            $record['q16_gets_out_of_control_more_than_friends'],
+            $record['q24_talks_at_wrong_time'],
+            $record['q30_gets_out_of_seat_at_wrong_times'],
+            $record['q39_acts_too_wild_or_out_of_control'],
+            $record['q48_has_trouble_putting_brakes_on_actions'],
+            $record['q62_becomes_too_silly'],
+        );
+        $self_monitor_array=array($record['q4_unaware_of_how_behavior_affects_bothers_others'],
+            $record['q13_has_poor_understanding_of_own_strengths_weaknesses'],
+            $record['q20_does_not_realize_certain_actions_bother_others'],
+            $record['q26_does_not_notice_when_behavior_causes_negative_reactions'],
+        );
+
+        $shift_array=array($record['q2_resists_accepting_different_way_to_solve_problem'],
+            $record['q11_has_trouble_getting_used_to_new_situations'],
+            $record['q17_gets_stuck_on_one_topic_activity'],
+            $record['q31_becomes_upset_with_new_situations'],
+            $record['q40_thinks_too_much_about_same_topic'],
+            $record['q49_resists_change_of_routine_foods_places'],
+            $record['q58_has_trouble_moving_from_one_activity_to_another'],
+            $record['q60_is_disturbed_by_change_of_teacher_or_class'],
+        );
+        $emotional_control_array=array($record['q6_has_explosive_angry_outbursts'],
+            $record['q14_has_outbursts_for_little_reason'],
+            $record['q22_small_events_trigger_big_reactions'],
+            $record['q27_reacts_more_strongly_than_other_children'],
+            $record['q34_mood_changes_frequently'],
+            $record['q43_angry_or_tearful_outbursts_intense_end_suddenly'],
+            $record['q51_mood_easily_influenced_by_situation'],
+            $record['q56_becomes_upset_too_easily'],
+        );
+        $initiate_array=array($record['q9_is_not_a_self_starter'],
+            $record['q38_needs_to_be_told_to_begin_task'],
+            $record['q50_has_trouble_getting_started_on_homework_tasks'],
+            $record['q55_does_not_take_initiative'],
+            $record['q61_has_trouble_organizing_activities_with_friends'],
+        );
+        $working_memory_array=array($record['q3_given_three_things_remembers_only_first_or_last'],
+            $record['q12_has_a_short_attention_span'],
+            $record['q19_has_trouble_with_chores_tasks_more_than_one_step'],
+            $record['q25_has_trouble_finishing_tasks'],
+            $record['q28_has_trouble_remembering_things_even_for_minutes'],
+            $record['q32_has_trouble_concentrating_tasks_schoolwork'],
+            $record['q41_forgets_what_he_she_was_doing'],
+            $record['q46_needs_help_from_adult_to_stay_on_tas'],
+        );
+        $plan_array=array($record['q7_does_not_plan_ahead_school_assignments'],
+            $record['q15_gets_caught_up_in_details_misses_big_picture'],
+            $record['q23_has_good_ideas_lacks_follow_through'],
+            $record['q35_has_good_ideas_cannot_get_on_paper'],
+            $record['q44_becomes_overwhelmed_by_large_assignments'],
+            $record['q52_underestimates_time_needed_to_finish_tasks'],
+            $record['q57_starts_assignments_tasks_last_minute'],
+            $record['q59_has_trouble_carrying_out_actions_to_reach_goals'],
+        );
+        $task_monitor_array=array($record['q5_work_is_sloppy'],
+            $record['q21_written_work_is_poorly_organized'],
+            $record['q29_makes_careless_errors'],
+            $record['q33_has_poor_handwriting'],
+            $record['q42_does_not_check_work_for_mistakes'],
+        );
+        $material_org_array=array($record['q8_cannot_find_things_in_room_or_school_desk'],
+            $record['q37_leaves_messes_others_clean_up'],
+            $record['q45_loses_lunch_box_money_permission_slips_homework'],
+            $record['q47_forgets_to_hand_in_homework_even_when_completed'],
+            $record['q53_does_not_bring_home_homework_sheets_materials'],
+            $record['q63_leaves_trail_of_belongings'],
+        );
+        $scores['inhibit_raw_score']=$this->findRowScore($inhibit_array);
+        $scores['shift_raw_score'] =$this->findRowScore($shift_array);
+        $scores['emotional_control_raw_score']=$this->findRowScore($emotional_control_array);
+        $scores['initiate_raw_score']=$this->findRowScore($initiate_array);
+        $scores['working_memory_raw_score']=$this->findRowScore($working_memory_array);
+        $scores['plan_raw_score']=$this->findRowScore($plan_array);
+        $scores['self_monitor_raw_score'] =$this->findRowScore($self_monitor_array);
+        $scores['task_monitor_raw_score']=$this->findRowScore($task_monitor_array);
+        $scores['material_org_raw_score']=$this->findRowScore($material_org_array);
+        $scores['GEC_raw_score']= $scores['inhibit_raw_score'] + $scores['shift_raw_score'] +
+            $scores['emotional_control_raw_score'] +  $scores['initiate_raw_score']
+            + $scores['working_memory_raw_score'] +  $scores['plan_raw_score']
+            + $scores['self_monitor_raw_score'] + $scores['task_monitor_raw_score']
+            +  $scores['material_org_raw_score'];
+        $result = $db->update($this->table, $scores, array('CommentID'=>$this->getCommentID()));
+    }
+
+
+    function findRowScore($scale_array)
+    {
+        $raw_score=0;
+        foreach ($scale_array as $val)
+        {
+            if($val=='N')
+            {
+                $raw_score=$raw_score+1;
+            }
+            if($val=='S')
+            {
+                $raw_score=$raw_score+2;
+            }
+            if($val=='O')
+            {
+                $raw_score=$raw_score+3;
+            }
+        }
+        return $raw_score;
     }
 }
 ?>
