@@ -174,7 +174,7 @@
             </fieldset>
             <fieldset>
                 <legend>Options</legend>
-            <div>
+            <div class="row">
                 <div class="col-md-2">
                     <label for="use_existing_database">Use existing database:</label>
                 </div>
@@ -183,7 +183,7 @@
                                         Check this if the database already exists but does not have Loris installed yet
                 </div>
             </div>
-            <div>
+            <div class="row">
                 <div class="col-md-2">
                     <label for="use_existing_tables">Use existing tables:</label>
                 </div>
@@ -192,7 +192,7 @@
                                         Check this if you already installed Loris at the specified database
                 </div>
             </div>
-            <div>
+            <div class="row">
                 <div class="col-md-2">
                     <label for="use_existing_configs">Use existing configs:</label>
                 </div>
