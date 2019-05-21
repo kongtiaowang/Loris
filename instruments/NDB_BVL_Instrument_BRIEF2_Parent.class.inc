@@ -33,7 +33,7 @@ class NDB_BVL_Instrument_BRIEF2_Parent extends NDB_BVL_Instrument
       'self_monitor_raw_score',
       'task_monitor_raw_score',
       'material_org_raw_score',
-      'GEC_raw_score'
+     // 'GEC_raw_score'
     );
     /**
     * Sets up basic data, such as the HTML_Quickform object, and so on.
@@ -132,7 +132,7 @@ class NDB_BVL_Instrument_BRIEF2_Parent extends NDB_BVL_Instrument
         //score fields
         $domains = array("inhibit" => "Inhibit","self_monitor" => "Self Monitor","shift" => "Shift",
             "emotional_control" => "Emotional Control", "initiate" => "Initiate", "working_memory" => "Working Memory",
-            "plan" => "Plan/Organize","task_monitor" => "Task Monitor","material_org" => "Material Organization","GEC" => "Global Executive Composite",
+            "plan" => "Plan/Organize","task_monitor" => "Task Monitor","material_org" => "Material Organization",//"GEC" => "Global Executive Composite",
 
         );
         $columnHeaders = array("raw_score" => "Raw Score", "T_score" => "T Score",
@@ -318,9 +318,9 @@ class NDB_BVL_Instrument_BRIEF2_Parent extends NDB_BVL_Instrument
     }
     function score()
     {
-       /* if($this->_determineDataEntryCompletionStatus() == "Incomplete") {
+        if($this->_determineDataEntryCompletionStatus() == "Incomplete") {
             return;
-        }*/
+        }
 
         //null scores
         $this->_nullScores($this->scoreLabels);
@@ -413,6 +413,61 @@ class NDB_BVL_Instrument_BRIEF2_Parent extends NDB_BVL_Instrument
             + $scores['working_memory_raw_score'] +  $scores['plan_raw_score']
             + $scores['self_monitor_raw_score'] + $scores['task_monitor_raw_score']
             +  $scores['material_org_raw_score'];
+
+        $timepoint =& TimePoint::singleton($this->getSessionID());
+        $dob = $timepoint->getEffectiveDateOfBirth();
+
+        $age = Utility::calculateAge($dob, $record["Date_taken"]);
+        $age_months = $age['year'] * 12 + $age['mon'] + ($age['day']/30);
+       $age_years=$age_months/12;
+       $age_years=round($age_years);
+        if(in_array($age_years, range(5, 7))) {
+            $age_range="5 to 7";
+        }
+        if(in_array($age_years, range(8, 10))) {
+            $age_range="8 to 10";
+        }
+        if(in_array($age_years, range(11, 13))) {
+            $age_range="11 to 13";
+        }
+        if(in_array($age_years, range(14, 18))) {
+            $age_range="14 to 18";
+        }
+        echo $age_years;
+        //$age_range;
+        $query_gender = "SELECT Gender FROM candidate as c, session as s, flag as f, $this->table as t WHERE t.CommentID = '$this->commentID' 
+AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
+        $record_gender = $db->pselectRow($query_gender, array());
+        if($record_gender['Gender']=='Male')
+        {
+            $gender='M';
+        }
+        if($record_gender['Gender']=='Female')
+        {
+            $gender='F';
+        }
+
+        $scales=array("inhibit","self_monitor","shift","emotional_control","initiate","working_memory","plan","task_monitor","material_org");
+
+
+        foreach ($scales as $field) {
+            $fied_raw_score=$scores[$field.'_raw_score'];
+
+                $query_scores1 = "SELECT * FROM BRIEF2_Parent_lookup WHERE
+                age_years='$age_range' AND sex='$gender'  AND scale_raw_score= '$fied_raw_score' AND scale='$field'";
+                $record_1 = $db->pselectRow($query_scores1, array());
+                if (array_key_exists('scale_T_score',$record_1)) {
+                    $scores[$field.'_T_score']=($record_1['scale_T_score']);
+                }
+                if (array_key_exists('scale_percentile',$record_1)) {
+                    $scores[$field.'_percentile']=($record_1['scale_percentile']);
+                }
+                if (array_key_exists('scale_CI',$record_1)) {
+                    $scores[$field.'_CI']= ($record_1['scale_T_score']-$record_1['scale_CI'])."-".($record_1['scale_T_score']+$record_1['scale_CI']);
+                }
+
+        }
+
         $result = $db->update($this->table, $scores, array('CommentID'=>$this->getCommentID()));
     }
 
