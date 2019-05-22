@@ -23,6 +23,18 @@
 class NDB_BVL_Instrument_BRIEF2_Teacher extends NDB_BVL_Instrument
 {
     use instrument_validator;
+    var $scoreLabels = array(
+        'inhibit_raw_score',
+        'shift_raw_score',
+        'emotional_control_raw_score',
+        'initiate_raw_score',
+        'working_memory_raw_score',
+        'plan_raw_score',
+        'self_monitor_raw_score',
+        'task_monitor_raw_score',
+        'material_org_raw_score',
+        // 'GEC_raw_score'
+    );
     /**
     * Sets up basic data, such as the HTML_Quickform object, and so on.
     *
@@ -99,6 +111,44 @@ class NDB_BVL_Instrument_BRIEF2_Teacher extends NDB_BVL_Instrument
                           Edition by Gerard A. Gioia, PhD, Peter K. Isquith, PhD, Steven C. Guy, PhD, and Lauren Kenworthy, PhD, Copyright 
                           1996, 1998, 2000, 2015 by PAR. Further reproduction is prohibited without permission from PAR.</h3>");
         $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
+
+        $this->form->addElement('header', null, "Score Summary");
+
+
+        //scoring column headers
+        $group[] = $this->form->createElement('static', "raw_score", null, null);
+        $group[] = $this->form->createElement('static', "T_score", null, null);
+        $group[] = $this->form->createElement('static', "percentile", null, null);
+        $group[] = $this->form->createElement('static', "CI", null, null);
+        $this->form->addGroup($group, 'score_header_group', "<strong>Domain</strong>", $this->_GUIDelimiter, FALSE);
+        unset($group);
+
+
+        //score fields
+        $domains = array("inhibit" => "Inhibit","self_monitor" => "Self Monitor","shift" => "Shift",
+            "emotional_control" => "Emotional Control", "initiate" => "Initiate", "working_memory" => "Working Memory",
+            "plan" => "Plan/Organize","task_monitor" => "Task Monitor","material_org" => "Material Organization",//"GEC" => "Global Executive Composite",
+
+        );
+        $columnHeaders = array("raw_score" => "Raw Score", "T_score" => "T Score",
+            "percentile" => "Percentile", "CI" => "90 % Confidence Interval",
+        );
+
+        foreach ($columnHeaders as $field => $label) {
+            $columnHeaders[$field] .= "     ";
+        }
+        $this->localDefaults = array_merge($this->localDefaults, $columnHeaders);
+
+        foreach ($domains as $field => $label) {
+            foreach ($columnHeaders as $scoreField => $scoreLabel) {
+
+                $group[] = $this->form->createElement('static', "{$field}_{$scoreField}", null, null);
+            }
+            $this->form->addGroup($group, "{$label}_group", $label, $this->_GUIDelimiter, FALSE);
+            unset($group);
+
+
+        }
     }
 
     /**
