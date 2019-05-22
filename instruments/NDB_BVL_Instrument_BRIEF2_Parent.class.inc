@@ -433,8 +433,6 @@ class NDB_BVL_Instrument_BRIEF2_Parent extends NDB_BVL_Instrument
         if(in_array($age_years, range(14, 18))) {
             $age_range="14 to 18";
         }
-        echo $age_years;
-        //$age_range;
         $query_gender = "SELECT Gender FROM candidate as c, session as s, flag as f, $this->table as t WHERE t.CommentID = '$this->commentID' 
 AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $record_gender = $db->pselectRow($query_gender, array());
