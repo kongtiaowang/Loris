@@ -33,7 +33,7 @@ class NDB_BVL_Instrument_BRIEF2_Teacher extends NDB_BVL_Instrument
         'self_monitor_raw_score',
         'task_monitor_raw_score',
         'material_org_raw_score',
-        // 'GEC_raw_score'
+        'GEC_raw_score'
     );
     /**
     * Sets up basic data, such as the HTML_Quickform object, and so on.
@@ -127,7 +127,7 @@ class NDB_BVL_Instrument_BRIEF2_Teacher extends NDB_BVL_Instrument
         //score fields
         $domains = array("inhibit" => "Inhibit","self_monitor" => "Self Monitor","shift" => "Shift",
             "emotional_control" => "Emotional Control", "initiate" => "Initiate", "working_memory" => "Working Memory",
-            "plan" => "Plan/Organize","task_monitor" => "Task Monitor","material_org" => "Material Organization",//"GEC" => "Global Executive Composite",
+            "plan" => "Plan/Organize","task_monitor" => "Task Monitor","material_org" => "Material Organization","GEC" => "Global Executive Composite",
 
         );
         $columnHeaders = array("raw_score" => "Raw Score", "T_score" => "T Score",
@@ -467,7 +467,7 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
             $gender='F';
         }
 
-        $scales=array("inhibit","self_monitor","shift","emotional_control","initiate","working_memory","plan","task_monitor","material_org");
+        $scales=array("inhibit","self_monitor","shift","emotional_control","initiate","working_memory","plan","task_monitor","material_org","GEC");
 
 
         foreach ($scales as $field) {
