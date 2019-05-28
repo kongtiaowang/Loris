@@ -20,9 +20,7 @@
     "max-len": [1, 80, 2, {"ignoreComments": true}],
     "react/jsx-uses-react": "error",
     "react/jsx-uses-vars": "error",
-    "prefer-rest-params": "warn",
     "array-callback-return": 0,
-    "require-jsdoc": "warn",
     "no-implicit-globals": 0,
     "no-invalid-this": 0,
     "no-alert": 0,
@@ -30,7 +28,7 @@
       "capIsNewExceptions": ["DynamicTable"]
     }],
     "no-console": ["warn", {
-      "allow": ["info", "warn", "error"]
+      "allow": ["error"]
     }]
   },
   "globals": {
