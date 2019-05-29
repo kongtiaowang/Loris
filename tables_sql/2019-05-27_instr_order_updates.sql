@@ -8,7 +8,7 @@ INSERT INTO `test_subgroups` (`ID`, `Subgroup_name`) VALUES ('16', 'Miscellaneou
 UPDATE test_names tn
 SET tn.Sub_group = (SELECT ID FROM test_subgroups where Subgroup_name='Parent Forms')
 WHERE tn.test_name IN ('ADULT_SELF_REPORT_MOM', 'ADULT_SELF_REPORT_DAD',
-'ABCL_DAD_ON_MOM','ABCL_MOM_ON_DAD', 'ABC2','BRIEF2_Parent' 'CBCL_6_To_18',
+'ABCL_DAD_ON_MOM','ABCL_MOM_ON_DAD', 'ABC2','BRIEF2_Parent', 'CBCL_6_To_18',
 'UCD_Charge_GI_History','CCC2','conners_parent','SA_Intervention_History',
 'MASC2_Parent','QRS','rbs_r','SEQ3','Shipley2_Data', 'Shipley2_Data_Labels',
 'SRS2_SchoolAge_Parent','SRS2_InformantReport_Mom_On_Dad','SRS2_InformantReport_Dad_On_Mom',
@@ -46,51 +46,51 @@ ALTER TABLE `test_battery`
 CHANGE COLUMN `instr_order` `instr_order` INT(10) NULL DEFAULT NULL ;
 
 -- adding all survey instruments to testbattery table to get an order number
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('rbs_r','0','0','N','Visit');
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('CBCL_1_to_5_yrs','0','0','N','Visit');
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('sibling_socialcontact','0','0','N','Visit');
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('peer_socialcontact','0','0','N','Visit');
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('pspq_1','0','0','N','Visit');
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('pspq_2','0','0','N','Visit');
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('m_chat_rf','0','0','N','Visit');
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('air_pollution','0','0','N','Visit');
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('SEQ3','0','0','N','Visit');
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('CCC2','0','0','N','Visit');
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('conners_parent','0','0','N','Visit');
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('conners_teacher','0','0','N','Visit');
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('UCD_Charge_GI_History','0','0','N','Visit');
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('MASC2_Parent','0','0','N','Visit');
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('MASC2_Self_Report','0','0','N','Visit');
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('CSHQ','0','0','N','Visit');
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('QRS','0','0','N','Visit');
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('BRIEF2_Parent','0','0','N','Visit');
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('BRIEF2_Teacher','0','0','N','Visit');
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('Seizure_Questionnaire','0','0','N','Visit');
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('ABC2','0','0','N','Visit');
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('Teachers_Report_Form_6_To_18','0','0','N','Visit');
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('scq_proband_survey','0','0','N','Visit');
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('CBCL_6_To_18','0','0','N','Visit');
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('SRS2_SchoolAge','0','0','N','Visit');
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('SSIS_Parent','0','0','N','Visit');
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('SSIS_Teacher','0','0','N','Visit');
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('ABCL_DAD_ON_MOM','0','0','N','Visit');
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('ABCL_MOM_ON_DAD','0','0','N','Visit');
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('ADULT_SELF_REPORT_DAD','0','0','N','Visit');
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('ADULT_SELF_REPORT_MOM','0','0','N','Visit');
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('SRS2_InformantReport_Mom_On_Dad','0','0','N','Visit');
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('SRS2_InformantReport_Dad_On_Mom','0','0','N','Visit');
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('SRS2_SelfReport_Mom','0','0','N','Visit');
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('SRS2_SelfReport_Dad','0','0','N','Visit');
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('SRS2_SchoolAge_Parent','0','0','N','Visit');
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('SRS2_SchoolAge_Parent_proband','0','0','N','Visit');
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('EARLI_interview_PART_4','0','0','N','Visit');
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('pspq_father','0','0','N','Visit');
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('pspq_mother','0','0','N','Visit');
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('eye_tracking','0','0','N','Visit');
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('SRS2_InformantReport','0','0','N','Visit');
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('SRS2_SelfReport','0','0','N','Visit');
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('SRS2_1','0','0','N','Visit');
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('SRS2_2','0','0','N','Visit');
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('rbs_r','0','0','Y','Visit');
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('CBCL_1_to_5_yrs','0','0','Y','Visit');
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('sibling_socialcontact','0','0','Y','Visit');
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('peer_socialcontact','0','0','Y','Visit');
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('pspq_1','0','0','Y','Visit');
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('pspq_2','0','0','Y','Visit');
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('m_chat_rf','0','0','Y','Visit');
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('air_pollution','0','0','Y','Visit');
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('SEQ3','0','0','Y','Visit');
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('CCC2','0','0','Y','Visit');
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('conners_parent','0','0','Y','Visit');
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('conners_teacher','0','0','Y','Visit');
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('UCD_Charge_GI_History','0','0','Y','Visit');
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('MASC2_Parent','0','0','Y','Visit');
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('MASC2_Self_Report','0','0','Y','Visit');
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('CSHQ','0','0','Y','Visit');
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('QRS','0','0','Y','Visit');
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('BRIEF2_Parent','0','0','Y','Visit');
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('BRIEF2_Teacher','0','0','Y','Visit');
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('Seizure_Questionnaire','0','0','Y','Visit');
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('ABC2','0','0','Y','Visit');
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('Teachers_Report_Form_6_To_18','0','0','Y','Visit');
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('scq_proband_survey','0','0','Y','Visit');
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('CBCL_6_To_18','0','0','Y','Visit');
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('SRS2_SchoolAge','0','0','Y','Visit');
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('SSIS_Parent','0','0','Y','Visit');
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('SSIS_Teacher','0','0','Y','Visit');
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('ABCL_DAD_ON_MOM','0','0','Y','Visit');
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('ABCL_MOM_ON_DAD','0','0','Y','Visit');
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('ADULT_SELF_REPORT_DAD','0','0','Y','Visit');
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('ADULT_SELF_REPORT_MOM','0','0','Y','Visit');
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('SRS2_InformantReport_Mom_On_Dad','0','0','Y','Visit');
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('SRS2_InformantReport_Dad_On_Mom','0','0','Y','Visit');
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('SRS2_SelfReport_Mom','0','0','Y','Visit');
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('SRS2_SelfReport_Dad','0','0','Y','Visit');
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('SRS2_SchoolAge_Parent','0','0','Y','Visit');
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('SRS2_SchoolAge_Parent_proband','0','0','Y','Visit');
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('EARLI_interview_PART_4','0','0','Y','Visit');
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('pspq_father','0','0','Y','Visit');
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('pspq_mother','0','0','Y','Visit');
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('eye_tracking','0','0','Y','Visit');
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('SRS2_InformantReport','0','0','Y','Visit');
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('SRS2_SelfReport','0','0','Y','Visit');
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('SRS2_1','0','0','Y','Visit');
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('SRS2_2','0','0','Y','Visit');
 
 
 UPDATE test_battery SET instr_order='1' where test_name='Aberrant_Behavior_Checklist';
