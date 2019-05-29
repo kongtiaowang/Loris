@@ -375,7 +375,7 @@ class NDB_BVL_Instrument_BRIEF2_Parent extends NDB_BVL_Instrument
             $record['q28_has_trouble_remembering_things_even_for_minutes'],
             $record['q32_has_trouble_concentrating_tasks_schoolwork'],
             $record['q41_forgets_what_he_she_was_doing'],
-            $record['q46_needs_help_from_adult_to_stay_on_tas'],
+            $record['q46_needs_help_from_adult_to_stay_on_task'],
         );
         $plan_array=array($record['q7_does_not_plan_ahead_school_assignments'],
             $record['q15_gets_caught_up_in_details_misses_big_picture'],
