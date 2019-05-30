@@ -63,9 +63,6 @@ tblScanTypes - This setting determines which scan types are considered "NEW" for
 ImagingBrowserLinkedInstruments - This setting defines which instruments to 
         include a link to on the "View Session" page.
 
-useProjects - This setting determines whether "project" filtering dropdowns exist
-        on the menu page.
-
 useEDC - This setting determines whether "EDC" filtering dropdowns exist
         on the menu page.
 
@@ -92,3 +89,5 @@ For downloading large DICOM files, it may be necessary to increase the
   as configured by the study.
 - The control panel on the "View Session" page includes links to the DICOM Archive 
   and download capabilities for any DICOM tars associated with the given session.
+  Note that DICOM downloads will be prepended with the `PatientName` field 
+  though they are not actually stored this way on the filesystem.

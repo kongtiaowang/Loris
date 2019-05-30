@@ -10,7 +10,7 @@
      - Input the right 'Patient Name'
      - Input the right 'Date of Birth'
      - Input the right 'Archive Location'
-     - Input the right 'Gender'
+     - Input the right 'Sex'
      - Input the right 'Acquisition Date'
      - Input the right 'Series UID'
      - Check the results in the table
@@ -33,5 +33,6 @@
     pages' or 'View own-site Imaging Browser pages' permission is set
     [Manual Testing]
 11. Ensure that clicking on any row in the 'Archive Location' column triggers a download of the corresponding 
-    archived DICOM study
+    archived DICOM study. Make sure that the copy of the file downloaded to
+    your system is prepended with the Patient Name field.
     [Manual Testing]

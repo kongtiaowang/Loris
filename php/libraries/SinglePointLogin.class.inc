@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * This class provides a single point to deal with user authentication
  * and validation of login, displaying the login page if necessary.
@@ -53,7 +53,7 @@ class SinglePointLogin
      * @return void
      * @access public
      */
-    function showPasswordExpiryScreen()
+    function showPasswordExpiryScreen(): void
     {
         // FIXME: This is a temporary hack until the password reset logic is
         // refactored to be sane and keep a token that can be authenticated.
@@ -74,7 +74,7 @@ class SinglePointLogin
      * @return bool
      * @access public
      */
-    function isLoggedIn()
+    function isLoggedIn(): bool
     {
         return $this->_isLoggedIn;
     }
@@ -85,7 +85,7 @@ class SinglePointLogin
      * @return bool
      * @access public
      */
-    function passwordExpired()
+    function passwordExpired(): bool
     {
         return $this->_passwordExpired;
     }
@@ -93,10 +93,10 @@ class SinglePointLogin
     /**
      * Saves the new password if last was expired
      *
-     * @return void
+     * @return bool
      * @access public
      */
-    function save()
+    function save(): bool
     {
         // get saved data to pre-populate form
         $user =& User::factory($_POST['username']);
@@ -121,15 +121,18 @@ class SinglePointLogin
         ) {
             $this->_lastError = 'The password is weak, or'
                . ' the passwords do not match';
+            return false;
         }
 
         if (password_verify($_POST['password'], $data['Password_hash'])) {
             $this->_lastError = 'You cannot keep the same password';
-        }
-
-        // if errors
-        if (!empty($this->_lastError)) {
             return false;
+        }
+        // Check if password is present in existing data breaches.
+        if ($user->pwnedPassword($_POST['password'])) {
+            $this->_lastError = 'The password you chose is too common. Please '
+                . 'choose a more unique password.';
+                return false;
         }
 
         // Reset passwordExpired flag
@@ -141,45 +144,13 @@ class SinglePointLogin
     /**
      * Attempt to authenticate a user's credentials by any supported means.
      *
-     * @return void (but may modified session state)
+     * @return bool Whether a user has successfully authenticated.
      */
-    function authenticate()
+    function authenticate(): bool
     {
         // Reset passwordExpired flag
         $this->_passwordExpired = false;
 
-        if (!function_exists('getallheaders')) {
-            /**
-             * In case unable to detect getallheaders function
-             *
-             * @return array headers
-             */
-            function getallheaders()
-            {
-                $headers = '';
-                foreach ($_SERVER as $name => $value) {
-                    if (substr($name, 0, 5) == 'HTTP_') {
-                        $headers[str_replace(
-                            ' ',
-                            '-',
-                            ucwords(
-                                strtolower(
-                                    str_replace(
-                                        '_',
-                                        ' ',
-                                        substr(
-                                            $name,
-                                            5
-                                        )
-                                    )
-                                )
-                            )
-                        )] = $value;
-                    }
-                }
-                return $headers;
-            }
-        }
         // First try JWT authentication, which is cheaper and
         // doesn't involve database calls
         $headers    = getallheaders();
@@ -212,7 +183,7 @@ class SinglePointLogin
      *
      * @return true if the session is valid, false otherwise
      */
-    function JWTAuthenticate($token)
+    function JWTAuthenticate(string $token): bool
     {
         $factory = NDB_Factory::singleton();
         $config  = $factory->config();
@@ -230,7 +201,8 @@ class SinglePointLogin
         $this->_username
             = isset($decodedArray['user'])
                 ? $decodedArray['user'] : 'Unknown';
-        return isset($decodedArray['user']);
+        return isset($decodedArray['user'])
+            && !$this->accountLocked($decodedArray['user']);
     }
 
     /**
@@ -248,8 +220,12 @@ class SinglePointLogin
      * @return bool False unless account is valid and password correct.
      * @access public
      */
-    function passwordAuthenticate($username, $password, $redirect = true)
-    {
+    function passwordAuthenticate(
+        string $username,
+        string $password,
+        bool $redirect = true
+    ): bool {
+
         $this->_lastError = '';
 
          ///////////////////////////
@@ -262,9 +238,9 @@ class SinglePointLogin
                      'Success'         => 'Y',
                      'Failcode'        => null,
                      'Login_timestamp' => date('Y-m-d H:i:s'),
-                     'IP_address'      => isset($_SERVER['REMOTE_ADDR'])
-                                              ? $_SERVER['REMOTE_ADDR']
-                                              : 'Unknown',
+                     'IP_address'      => $_SERVER['HTTP_X_FORWARDED_FOR']
+                         ?? $_SERVER['REMOTE_ADDR']
+                         ?? 'Unknown',
                      'Page_requested'  => isset($_SERVER['REQUEST_URI'])
                                               ? $_SERVER['REQUEST_URI']
                                               : 'Unknown',
@@ -308,7 +284,7 @@ class SinglePointLogin
                   GROUP BY UserID";
         $row   = $DB->pselectRow($query, array('username' => $username));
 
-        if (intval($row['User_count'] ?? 0) !== 1) {
+        if (is_null($row) || intval($row['User_count'] ?? 0) !== 1) {
             /* Display generic failure message to front-end so that an
              * attacker will have a harder time knowing the difference
              * between a bad username and a bad password.
@@ -316,13 +292,50 @@ class SinglePointLogin
             $this->_lastError = "Incorrect username or password.";
             return false;
         }
+        /* Check whether a user's account is locked due to too many bad login
+         * attempts before actually trying to authenticate their credentials.
+         */
+        if ($this->accountLocked($username)) {
+            $this->_lastError = 'This account is currently suspended due '
+                . 'to too many bad login attempts.';
+            $this->insertFailedDetail('Account locked', $setArray);
+            return false;
+        }
         // Validate passsword
-        $oldhash = $row['Password_hash'];
+        $oldhash = $row['Password_hash'] ?? '';
         if (password_verify($password, $oldhash)) {
             // Rehash according to latest standards if necessary.
             if (password_needs_rehash($oldhash, PASSWORD_DEFAULT)) {
                 $user = \User::factory($username);
                 $user->updatePassword($password);
+            }
+
+            if ($row['Active'] == 'N'
+                || $this->disabledDueToInactivity($username, 365)
+            ) {
+                $this->_lastError = "Your account has been deactivated."
+                    . " Please contact your project administrator to"
+                    . " reactivate this account.";
+                $this->insertFailedDetail(
+                    "user account not active",
+                    $setArray
+                );
+
+                return false;
+            }
+
+            // check if the account is no longer active
+            $date       = new DateTime();
+            $currentDay = $date->getTimestamp();
+
+            if (($row['active_to'] != null)
+                && ($currentDay > strtotime($row['active_to']))
+            ) {
+                $this->_lastError = "Your account has expired."
+                    . " Please contact your project administrator to re-activate"
+                    . " this account.";
+                return false;
+
             }
 
             // Check whether the account is expired.
@@ -402,12 +415,80 @@ class SinglePointLogin
     }
 
     /**
+     * Determines whether a user's account is locked due to too many failed
+     * attempts.
+     *
+     * @param string $username The user account to check.
+     *
+     * @return bool
+     */
+    function accountLocked(string $username): bool
+    {
+        /* A user is locked out if they have made X attempts in the last Y
+         * minutes or X' attempts in the last Y' minutes.
+         * The reason for using two time windows is to provide some flexibility:
+         * legitimate locked-out users to try again in a short time while also
+         * preventing attackers from simply trying another X login attempts
+         * after Y minutes.
+         */
+
+        /* These represent X and X' above, but with more helpful names.
+         * These values represent the maximum number of attempts a user may make
+         * to login before being locked out.
+         */
+        $shortLockoutThreshold = 10;
+        $longLockoutThreshold  = 15;
+        // These represent Y and Y' above, but with more helpful names.
+        $shortWindowInMinutes = 15;
+        $longWindowInMinutes  = 60;
+
+        // SQL code to run.
+        $query  = "SELECT COUNT(loginhistoryID) as loginattempts " .
+            "FROM user_login_history " .
+            "WHERE userID = :username " .
+            "AND IP_address = :ip " .
+            "AND Success = 'N' " .
+            "AND Login_timestamp > ( " .
+            "SELECT IF( MAX(Login_timestamp) > DATE_SUB(NOW(), ".
+            "INTERVAL :timeWindowInMinutes MINUTE), " .
+                "MAX(Login_timestamp), DATE_SUB(NOW(), " .
+                "INTERVAL :timeWindowInMinutes MINUTE) " .
+            ") " .
+            "FROM user_login_history " .
+            "WHERE userID = :username " .
+            "AND Success = 'Y'" .
+        ");";
+        $params = array(
+                   'username'            => $username,
+                   'timeWindowInMinutes' => $shortWindowInMinutes,
+                   'ip'                  => $_SERVER['REMOTE_ADDR'],
+                  );
+
+        // Query DB for login attempts.
+        $database  = \NDB_Factory::singleton()->database();
+        $statement = $database->prepare($query);
+
+        $shortFailCount = intval(
+            $database->execute($statement, $params)[0]['loginattempts']
+        );
+
+        $params['timeWindowInMinutes'] = $longWindowInMinutes;
+
+        $longFailCount = intval(
+            $database->execute($statement, $params)[0]['loginattempts']
+        );
+
+        return $shortFailCount > $shortLockoutThreshold
+            || $longFailCount > $longLockoutThreshold;
+    }
+
+    /**
      * Sets the session data (State object)
      *
      * @return void
      * @access public
      */
-    function setState()
+    function setState(): void
     {
         // someone is logged in
         $this->_isLoggedIn = true;
@@ -426,7 +507,7 @@ class SinglePointLogin
      * @return void
      * @access public
      */
-    function clearState()
+    function clearState(): void
     {
         // someone is logged in
         $this->_isLoggedIn = false;
@@ -439,15 +520,15 @@ class SinglePointLogin
         $_SESSION['State']->setUsername(null);
     }
 
-     /**
-      * Inserts the login (or failed-login) detail into the user_login_history
-      *
-      * @param String $description description for the failed-login
-      * @param Array  $setArray    contains data to be inserted
-      *
-      * @return null
-      */
-    function insertFailedDetail($description, $setArray)
+    /**
+     * Inserts the login (or failed-login) detail into the user_login_history
+     *
+     * @param string $description description for the failed-login
+     * @param array  $setArray    contains data to be inserted
+     *
+     * @return void
+     */
+    function insertFailedDetail(string $description, array $setArray): void
     {
         // create DB object
         $DB =& Database::singleton();
@@ -464,19 +545,30 @@ class SinglePointLogin
      * As a side-effect, if true, will also set user field 'active' to 'N'
      * Need to have already confirmed valid user
      *
-     * @param String $username            username
-     * @param Int    $maximumDaysInactive Most allowable days for inactivity
+     * @param string $username            username
+     * @param int    $maximumDaysInactive Most allowable days for inactivity
      *
      * @return bool - true if the user has now been disabled
      */
-    function disabledDueToInactivity($username, $maximumDaysInactive)
-    {
+    function disabledDueToInactivity(
+        string $username,
+        int $maximumDaysInactive
+    ): bool {
+
         $DB    =& Database::singleton();
         $query = "SELECT MAX(Login_timestamp) as Login_timestamp
                   FROM user_login_history 
                   WHERE UserID = :username";
 
-        $row        = $DB->pselectRow($query, array('username' => $username));
+        $row = $DB->pselectRow($query, array('username' => $username));
+
+        /* If the login timestamp is null then this is the user's first time
+         * logging in. This will always be the case in our CI environment.
+         * The user should not be disabled in this case.
+         */
+        if (is_null($row['Login_timestamp'])) {
+            return false;
+        }
         $last_login = new DateTime($row['Login_timestamp']);
         $time_now   = new DateTime("now");
         $interval   = $last_login->diff($time_now);
@@ -492,4 +584,3 @@ class SinglePointLogin
         return false;
     }
 }
-?>
