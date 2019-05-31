@@ -40,10 +40,9 @@ WHERE tn.test_name IN ('IEP_Extraction_Form','med_records_SA'
 
 UPDATE test_names tn
 SET tn.Sub_group = (SELECT ID FROM test_subgroups where Subgroup_name='MRI')
-WHERE tn.test_name IN ('dtiprep')
+WHERE tn.test_name IN ('dtiprep');
 
-ALTER TABLE `test_battery`
-CHANGE COLUMN `instr_order` `instr_order` INT(10) NULL DEFAULT NULL ;
+ALTER TABLE `test_battery` CHANGE COLUMN `instr_order` `instr_order` INT(10) NULL DEFAULT NULL ;
 
 -- adding all survey instruments to testbattery table to get an order number
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage ) VALUES('rbs_r','0','0','Y','Visit');
