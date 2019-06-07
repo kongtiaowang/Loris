@@ -27,6 +27,19 @@ class NDB_BVL_Instrument_MASC2_Parent extends NDB_BVL_Instrument
 
     var $ValidityEnabled = false;
     var $ValidityRequired = false;
+    var $scoreLabels = array(
+        'masc2_total_score',
+        'SP_score',
+        'GAD_score',
+        'SA_total_score',
+        'HR_score',
+        'PF_score',
+        'OC_score',
+        'PS_total_score',
+        'Panic_score',
+        'TR_score',
+        'HA_score'
+    );
 
     /**
      * Sets up basic data, such as the LorisForm object, and so on.
@@ -142,6 +155,42 @@ class NDB_BVL_Instrument_MASC2_Parent extends NDB_BVL_Instrument
             "Required",
             "other_relationship_to_child"
         );
+
+        $this->form->addElement('header', null, "Score Summary");
+
+
+        //scoring column headers
+        $group[] = $this->form->createElement('static', "score", null, null);
+        $group[] = $this->form->createElement('static', "T_score", null, null);
+        $group[] = $this->form->createElement('static', "classification", null, null);
+        $this->form->addGroup($group, 'score_header_group', "<strong>Domain</strong>", $this->_GUIDelimiter, FALSE);
+        unset($group);
+
+
+        //score fields
+        $domains = array("masc2_total" => "MASC2 Total Score","SP" => "Separation Anxiety/Phobias(S/P)","GAD" => "Gad Index(GAD)",
+            "SA_total" => "Social Anxiety Total Score(SA:T)", "HR" => "Humiliation/Rejection", "PF" => "Performance Fears",
+            "OC" => "Obsessions & Compulsions","PS_total" => "Physical Symptoms Total(PS:T)","Panic" => "Panic(P)","TR" => "Tense/Restless(T/R)",
+            "HA" => "Harm Avoidance(HA)"
+
+        );
+        $columnHeaders = array("score" => "Score", "T_score" => "T Score","classification" =>"Classification");
+
+        foreach ($columnHeaders as $field => $label) {
+            $columnHeaders[$field] .= "     ";
+        }
+        $this->localDefaults = array_merge($this->localDefaults, $columnHeaders);
+
+        foreach ($domains as $field => $label) {
+            foreach ($columnHeaders as $scoreField => $scoreLabel) {
+
+                $group[] = $this->form->createElement('static', "{$field}_{$scoreField}", null, null);
+            }
+            $this->form->addGroup($group, "{$label}_group", $label, $this->_GUIDelimiter, FALSE);
+            unset($group);
+
+
+        }
     }
 
     function _page1() {
@@ -260,6 +309,174 @@ class NDB_BVL_Instrument_MASC2_Parent extends NDB_BVL_Instrument
         }
     }
 
+    function score()
+    {
+        if($this->_determineDataEntryCompletionStatus() == "Incomplete") {
+            return;
+        }
+
+        //null scores
+        $this->_nullScores($this->scoreLabels);
+
+        //get the saved scores
+        $db =& Database::singleton();
+        $query = "SELECT * FROM $this->table WHERE CommentID = '$this->commentID'";
+        $record = $db->pselectRow($query, array());
+        $sp_array=array($record['q26'],
+            $record['q30'],
+            $record['q33'],
+            $record['q4'],
+            $record['q7'],
+            $record['q9'],
+            $record['q17'],
+            $record['q19'],
+            $record['q23'],
+        );
+        $gad_array=array($record['q27'],
+            $record['q29'],
+            $record['q31'],
+            $record['q1'],
+            $record['q7'],
+            $record['q6'],
+            $record['q39'],
+            $record['q40'],
+            $record['q13'],
+            $record['q17'],
+            $record['q22'],
+        );
+        $HR_array=array($record['q29'],
+            $record['q3'],
+            $record['q10'],
+            $record['q16'],
+            $record['q22'],
+        );
+        $PF_array=array($record['q32'],
+            $record['q36'],
+            $record['q38'],
+            $record['q14'],
+        );
+        $OC_array=array($record['q41'],
+            $record['q42'],
+            $record['q43'],
+            $record['q44'],
+            $record['q45'],
+            $record['q46'],
+            $record['q47'],
+            $record['q48'],
+            $record['q49'],
+            $record['q50'],
+        );
+        $panic_array=array($record['q41'],
+            $record['q31'],
+            $record['q37'],
+            $record['q6'],
+            $record['q12'],
+            $record['q18'],
+            $record['q20'],
+            $record['q24'],
+        );
+        $TR_array=array($record['q27'],
+            $record['1'],
+            $record['q34'],
+            $record['q6'],
+            $record['q8'],
+            $record['q15'],
+        );
+        $HA_array=array($record['q28'],
+            $record['q2'],
+            $record['q35'],
+            $record['q5'],
+            $record['q11'],
+            $record['q13'],
+            $record['q21'],
+            $record['q25'],
+        );
+
+        $scores['SP_score']=$this->findRowScore($sp_array);
+        $scores['GAD_score'] =$this->findRowScore($gad_array);
+        $scores['HR_score']=$this->findRowScore($HR_array);
+        $scores['PF_score']=$this->findRowScore($PF_array);
+        $scores['OC_score']=$this->findRowScore($OC_array);
+        $scores['Panic_score']=$this->findRowScore($panic_array);
+        $scores['TR_score'] =$this->findRowScore($TR_array);
+        $scores['HA_score']=$this->findRowScore($HA_array);
+        $scores['SA_total_score']=$scores['HR_score'] +$scores['PF_score'];
+        $scores['PS_total_score']=$scores['Panic_score']+$scores['TR_score'];
+        $scores['masc2_total_score']= $scores['SP_score'] +
+            $scores['PS_total'] +  $scores['OC_score']+$scores['SA_total']+ $scores['HA_score']+$record['q39']+$record['q40'];
+        $timepoint =& TimePoint::singleton($this->getSessionID());
+        $dob = $timepoint->getEffectiveDateOfBirth();
+
+        $age = Utility::calculateAge($dob, $record["Date_taken"]);
+        $age_months = $age['year'] * 12 + $age['mon'] + ($age['day']/30);
+        $age_years=$age_months/12;
+        $age_years=round($age_years);
+        if(in_array($age_years, range(8, 11))) {
+            $age_range="8 to 11";
+        }
+        if(in_array($age_years, range(12, 15))) {
+            $age_range="12 to 15";
+        }
+        if(in_array($age_years, range(16, 19))) {
+            $age_range="16 to 19";
+        }
+
+        $query_gender = "SELECT Gender FROM candidate as c, session as s, flag as f, $this->table as t WHERE t.CommentID = '$this->commentID' 
+AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
+        $record_gender = $db->pselectRow($query_gender, array());
+        if($record_gender['Gender']=='Male')
+        {
+            $gender='M';
+        }
+        if($record_gender['Gender']=='Female')
+        {
+            $gender='F';
+        }
+
+        $scales=array("masc2_total","SP","GAD","initiate","SA_total","HR","PF","OC","PS_total","Panic","TR","HA");
+    /*    foreach ($scales as $field) {
+            $fied_raw_score=$scores[$field.'_score'];
+
+            $query_scores1 = "SELECT * FROM MASC2_Parent_lookup WHERE
+                age_years='$age_range' AND sex='$gender'  AND scale_raw_score= '$fied_raw_score' AND scale='$field'";
+            $record_1 = $db->pselectRow($query_scores1, array());
+            if (array_key_exists('scale_T_score',$record_1)) {
+                $scores[$field.'_T_score']=($record_1['scale_T_score']);
+            }
+            if (array_key_exists('scale_classification',$record_1)) {
+                $scores[$field.'_classificatiomn']=($record_1['scale_percentile']);
+            }
+
+        }*/
+
+        $result = $db->update($this->table, $scores, array('CommentID'=>$this->getCommentID()));
+    }
+
+
+    function findRowScore($scale_array)
+    {
+        $raw_score=0;
+        foreach ($scale_array as $val)
+        {
+            if($val=='0')
+            {
+                $raw_score=$raw_score+0;
+            }
+            if($val=='1')
+            {
+                $raw_score=$raw_score+1;
+            }
+            if($val=='2')
+            {
+                $raw_score=$raw_score+2;
+            }
+            if($val=='3')
+            {
+                $raw_score=$raw_score+3;
+            }
+        }
+        return $raw_score;
+    }
 
 
 }
