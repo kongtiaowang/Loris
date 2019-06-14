@@ -191,6 +191,7 @@ class NDB_BVL_Instrument_MASC2_Parent extends NDB_BVL_Instrument
 
 
         }
+        $this->form->addElement("static", "anxiety_probability_score", "Anxiety Probability Score:");
     }
 
     function _page1() {
@@ -314,6 +315,7 @@ class NDB_BVL_Instrument_MASC2_Parent extends NDB_BVL_Instrument
         if($this->_determineDataEntryCompletionStatus() == "Incomplete") {
             return;
         }
+        $scores['score_validity'] =NULL;
 
         //null scores
         $this->_nullScores($this->scoreLabels);
@@ -392,34 +394,45 @@ class NDB_BVL_Instrument_MASC2_Parent extends NDB_BVL_Instrument
             $record['q25'],
         );
 
-        $scores['SP_score']=$this->findRowScore($sp_array);
-        $scores['GAD_score'] =$this->findRowScore($gad_array);
-        $scores['HR_score']=$this->findRowScore($HR_array);
-        $scores['PF_score']=$this->findRowScore($PF_array);
-        $scores['OC_score']=$this->findRowScore($OC_array);
-        $scores['Panic_score']=$this->findRowScore($panic_array);
-        $scores['TR_score'] =$this->findRowScore($TR_array);
-        $scores['HA_score']=$this->findRowScore($HA_array);
+        $scores['SP_score']=$this->findRawScore($sp_array);
+        $scores['GAD_score'] =$this->findRawScore($gad_array);
+        $scores['HR_score']=$this->findRawScore($HR_array);
+        $scores['PF_score']=$this->findRawScore($PF_array);
+        $scores['OC_score']=$this->findRawScore($OC_array);
+        $scores['Panic_score']=$this->findRawScore($panic_array);
+        $scores['TR_score'] =$this->findRawScore($TR_array);
+        $scores['HA_score']=$this->findRawScore($HA_array);
         $scores['SA_total_score']=$scores['HR_score'] +$scores['PF_score'];
         $scores['PS_total_score']=$scores['Panic_score']+$scores['TR_score'];
-        $scores['masc2_total_score']= $scores['SP_score'] +
-            $scores['PS_total'] +  $scores['OC_score']+$scores['SA_total']+ $scores['HA_score']+$record['q39']+$record['q40'];
+        $scores['masc2_total_score']=$scores['SP_score'] + $scores['PS_total'] +  $scores['OC_score']+ $scores['SA_total']+ $scores['HA_score']+$record['q39']+$record['q40'];
         $timepoint =& TimePoint::singleton($this->getSessionID());
         $dob = $timepoint->getEffectiveDateOfBirth();
 
         $age = Utility::calculateAge($dob, $record["Date_taken"]);
+
         $age_months = $age['year'] * 12 + $age['mon'] + ($age['day']/30);
         $age_years=$age_months/12;
         $age_years=round($age_years);
         if(in_array($age_years, range(8, 11))) {
             $age_range="8 to 11";
         }
-        if(in_array($age_years, range(12, 15))) {
+        else if(in_array($age_years, range(12, 15))) {
             $age_range="12 to 15";
         }
-        if(in_array($age_years, range(16, 19))) {
+        else if(in_array($age_years, range(16, 19))) {
             $age_range="16 to 19";
         }
+
+        else if($age_years<8)
+        {
+            $scores['score_validity'] ="Age not valid for scoring";
+        }
+
+            if($scores['score_validity']!=NULL) {
+                echo "T score and classification are applicable only for ages above 8 years";
+                echo "\n";
+            }
+
 
         $query_gender = "SELECT Gender FROM candidate as c, session as s, flag as f, $this->table as t WHERE t.CommentID = '$this->commentID' 
 AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
@@ -432,28 +445,97 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         {
             $gender='F';
         }
+        if($age_range!="NA") {
+            $scales = array("masc2_total", "SP", "GAD", "SA_total", "HR", "PF", "OC", "PS_total", "Panic", "TR", "HA");
+            foreach ($scales as $field) {
+                $field_raw_score = $scores[$field . '_score'];
 
-        $scales=array("masc2_total","SP","GAD","initiate","SA_total","HR","PF","OC","PS_total","Panic","TR","HA");
-    /*    foreach ($scales as $field) {
-            $fied_raw_score=$scores[$field.'_score'];
+                $query_scores1 = "SELECT * FROM MASC2_Parent_lookup WHERE
+                age_years='$age_range' AND sex='$gender'  AND (scale_raw_score =$field_raw_score  OR  $field_raw_score BETWEEN SUBSTRING_INDEX 
+                (`scale_raw_score`,'-', 1) AND SUBSTRING_INDEX(`scale_raw_score`,'-', -1) ) AND scale='$field'";
+                $record_1 = $db->pselectRow($query_scores1, array());
+                if (empty($record_1)) {
+                    $max_range = "SELECT * FROM MASC2_Parent_lookup WHERE
+                age_years='$age_range' AND sex='$gender'  AND scale_raw_score like '%+%'  AND scale='$field'";
+                    $max_range_array = $db->pselectRow($max_range, array());
+                    //  print_r($max_range_array);
+                    $max_number_array = explode("+", $max_range_array['scale_raw_score']);
+                    $max_number = $max_number_array[0];
+                    //  echo $max_number;
+                    if ($field_raw_score >= $max_number) {
+                        $scores[$field . '_T_score'] = ($max_range_array['scale_T_score']);
+                        $scores[$field . '_classification'] = ($max_range_array['scale_classification']);
 
-            $query_scores1 = "SELECT * FROM MASC2_Parent_lookup WHERE
-                age_years='$age_range' AND sex='$gender'  AND scale_raw_score= '$fied_raw_score' AND scale='$field'";
-            $record_1 = $db->pselectRow($query_scores1, array());
-            if (array_key_exists('scale_T_score',$record_1)) {
-                $scores[$field.'_T_score']=($record_1['scale_T_score']);
+                    }
+                    $min_range="SELECT * FROM MASC2_Parent_lookup WHERE
+                age_years='$age_range' AND sex='$gender'  AND scale_raw_score like '%<%'  AND scale='$field'";
+                    $min_range_array = $db->pselectRow($min_range, array());
+                    $min_number_array = explode("<=", $min_range_array['scale_raw_score']);
+                    $min_number = $min_number_array[1];
+                    //  echo $min_number;
+                    if ($field_raw_score <= $min_number) {
+                        $scores[$field . '_T_score'] = ($min_range_array['scale_T_score']);
+                        $scores[$field . '_classification'] = ($min_range_array['scale_classification']);
+                    }
+
+                } else{
+                    if (array_key_exists('scale_T_score', $record_1)) {
+                        if ($record_1['scale_T_score'] == "" || ($record_1['scale_T_score'] == NULL)) {
+                            $scores[$field . '_T_score'] = "NA";
+                        } else {
+                            $scores[$field . '_T_score'] = ($record_1['scale_T_score']);
+                        }
+                    } else {
+                        $scores[$field . '_T_score'] = "NA";
+                    }
+                if (array_key_exists('scale_classification', $record_1)) {
+                    if ($record_1['scale_classification'] == "" || ($record_1['scale_classification'] == NULL)) {
+                        $scores[$field . 'classification'] = "NA";
+                    } else {
+                        $scores[$field . '_classification'] = ($record_1['scale_classification']);
+                    }
+                } else {
+                    $scores[$field . '_classification'] = "NA";
+                }
+
             }
-            if (array_key_exists('scale_classification',$record_1)) {
-                $scores[$field.'_classificatiomn']=($record_1['scale_percentile']);
+        }
+        $anxiety_score=0;
+            if($scores['GAD_T_score']>=60)
+            {
+                $anxiety_score=$anxiety_score+1;
+            }
+            if($scores['SP_T_score']>=60)
+            {
+                $anxiety_score=$anxiety_score+1;
+            }
+            if($scores['SA_total_T_score']>=60)
+            {
+                $anxiety_score=$anxiety_score+1;
+            }
+            if($anxiety_score==0)
+            {
+                $scores['anxiety_probability_score']="Low Probability";
+            }
+            if($anxiety_score==1)
+            {
+                $scores['anxiety_probability_score']="Borderline Probability";
+            }
+            if($anxiety_score==2)
+            {
+                $scores['anxiety_probability_score']="High Probability";
+            }
+            if($anxiety_score==3)
+            {
+                $scores['anxiety_probability_score']="Very High Probability";
             }
 
-        }*/
-
+        }
         $result = $db->update($this->table, $scores, array('CommentID'=>$this->getCommentID()));
     }
 
 
-    function findRowScore($scale_array)
+    function findRawScore($scale_array)
     {
         $raw_score=0;
         foreach ($scale_array as $val)
