@@ -169,16 +169,23 @@ class DocTree extends \NDB_Page
         }
 
         $subcategories    = $db->pselect(
-            "SELECT id,category_name 
+            "SELECT id,category_name,'fileNode' 
              FROM document_repository_categories WHERE parent_id=$id",
             array()
         );
+
+
+foreach ($subcategories as $k=>$v) {
+          $v 
+
+}
+        print_r($subcategories);
         $parentcategories =   $this->getParents($tree, $id);
         $result['allsubcategories'] = $allsubcategories;
         $result['currentcategory']  = $currentcategory;
         $result['parentcategory']   = $parentcategories;
         $result['subcategories']    = $subcategories;
-
+        $result['files']            = $files;
         return $result;
     }
 

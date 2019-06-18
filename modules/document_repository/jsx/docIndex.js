@@ -17,6 +17,7 @@ class DocIndex extends React.Component {
       newCategory: false,
       tableData: [],
       childrenNode: [],
+      childrenFile: [],
       parentNode: [],
       checked: false,
     };
@@ -65,6 +66,7 @@ class DocIndex extends React.Component {
         this.setState({
           tableData: fillData,
           childrenNode: myJson['subcategories'],
+          childrenFile: myJson['files'],
           parentNode: myJson['parentcategory'],
         });
       });
@@ -215,6 +217,7 @@ class DocIndex extends React.Component {
               <ChildTree
                 action={this.handle}
                 childrenNode={this.state.childrenNode}
+                childrenFile={this.state.childrenFile}
               />
             }
           >
@@ -246,6 +249,7 @@ class DocIndex extends React.Component {
           <ChildTree
             action={this.handle}
             childrenNode={this.state.childrenNode}
+            childrenFile={this.state.childrenFile}
           />}
         >
         <div>

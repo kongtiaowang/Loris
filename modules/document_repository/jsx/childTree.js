@@ -34,6 +34,8 @@ class ChildTree extends Component {
   render() {
     let childList = null;
     let childrenNode = this.props.childrenNode;
+    let childrenFile = this.props.childrenFile;
+    console.log(childrenFile);
     if (Object.entries(childrenNode).length !== 0) {
       childList = childrenNode.map((node, index) => (
         <tr
