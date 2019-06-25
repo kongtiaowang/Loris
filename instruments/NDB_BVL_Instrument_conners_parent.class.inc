@@ -229,4 +229,26 @@ class NDB_BVL_Instrument_conners_parent extends NDB_BVL_Instrument
 		
 		return $errors;
 	}
+
+    function score()
+    {
+        if ($this->_determineDataEntryCompletionStatus() == "Incomplete") {
+            return;
+        }
+
+        //null scores
+        $this->_nullScores($this->scoreLabels);
+
+        //get the saved scores
+        $db =& Database::singleton();
+        $query = "SELECT * FROM $this->table WHERE CommentID = '$this->commentID'";
+        $record = $db->pselectRow($query, array());
+        $IN_array = array($record['q1_is_fidgety'],
+            $record['q17'],
+            $record['q27'],
+            $record['q30'],
+            $record['q34'],
+            $record['q41'],
+        );
+    }
 }
