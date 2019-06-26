@@ -15,8 +15,22 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/IBIS/
  */
+
 class NDB_BVL_Instrument_conners_parent extends NDB_BVL_Instrument
 {
+    
+    var $scoreLabels = array(
+        'IN_raw_score',
+        'HY_raw_score',
+        'LP_raw_score',
+        'EF_raw_score',
+        'AG_raw_score',
+        'PR_raw_score',
+        'PI_raw_score',
+        'NI_raw_score',
+    );
+
+
 
     /**
      * Sets up basic data, such as the LorisForm object, and so on.
@@ -118,6 +132,41 @@ class NDB_BVL_Instrument_conners_parent extends NDB_BVL_Instrument
 
         $this->addLabel("Please specify the grade: K-12 (or NA if you do not wish to answer)");
         $this->addBasicText("grade", "Grade:");
+
+        $this->form->addElement('header', null, "Score Summary");
+
+
+        //scoring column headers
+        $group[] = $this->form->createElement('static', "raw_score", null, null);
+        $group[] = $this->form->createElement('static', "T_score", null, null);
+        $this->form->addGroup($group, 'score_header_group', "<strong>Domain</strong>", $this->_GUIDelimiter, FALSE);
+        unset($group);
+
+
+        //score fields
+        $domains = array("IN" => "Inattention","HY" => "Hyperactivity","LP" => "Learning Problems",
+            "EF" => "Executive Functioning", "AG" => "Defiance/Aggression", "PR" => "Peer Relations",
+            "PI" => "Positive Impression","NI" => "Negative Impression",
+
+        );
+        $columnHeaders = array("raw_score" => "Raw Score", "T_score" => "T Score",
+        );
+
+        foreach ($columnHeaders as $field => $label) {
+            $columnHeaders[$field] .= "     ";
+        }
+        $this->localDefaults = array_merge($this->localDefaults, $columnHeaders);
+
+        foreach ($domains as $field => $label) {
+            foreach ($columnHeaders as $scoreField => $scoreLabel) {
+
+                $group[] = $this->form->createElement('static', "{$field}_{$scoreField}", null, null);
+            }
+            $this->form->addGroup($group, "{$label}_group", $label, $this->_GUIDelimiter, FALSE);
+            unset($group);
+
+
+        }
     }
 
     function _page1() {
@@ -236,19 +285,146 @@ class NDB_BVL_Instrument_conners_parent extends NDB_BVL_Instrument
             return;
         }
 
+
         //null scores
         $this->_nullScores($this->scoreLabels);
+        $score_grid_q1=array(0=>0,1=>1,2=>2,3=>3);
+        $score_grid_q2=array(0=>0,1=>0,2=>0,3=>1);
+        $score_grid_q3=array(0=>0,1=>1,2=>2,3=>3);
+        $score_grid_q4=array(0=>0,1=>1,2=>2,3=>3);
+        $score_grid_q5=array(0=>0,1=>1,2=>2,3=>3);
+        $score_grid_q6=array(0=>0,1=>1,2=>2,3=>3);
+        $score_grid_q7=array(0=>0,1=>1,2=>2,3=>3);
+        $score_grid_q8=array(0=>0,1=>1,2=>2,3=>3);
+        $score_grid_q9=array(0=>0,1=>0,2=>1,3=>1);
+        $score_grid_q10=array(0=>0,1=>1,2=>2,3=>3);
+        $score_grid_q11=array(0=>0,1=>0,2=>1,3=>1);
+        $score_grid_q12=array(0=>1,1=>0,2=>0,3=>0);
+        $score_grid_q13=array(0=>0,1=>1,2=>2,3=>3);
+        $score_grid_q14=array(0=>0,1=>1,2=>2,3=>3);
+        $score_grid_q15=array(0=>0,1=>1,2=>2,3=>3);
+        $score_grid_q16=array(0=>1,1=>1,2=>0,3=>0);
+        $score_grid_q17=array(0=>0,1=>1,2=>2,3=>3);
+        $score_grid_q18=array(0=>0,1=>1,2=>2,3=>3);
+        $score_grid_q19=array(0=>0,1=>1,2=>2,3=>3);
+        $score_grid_q20=array(0=>0,1=>1,2=>2,3=>3);
+        $score_grid_q21=array(0=>0,1=>1,2=>2,3=>3);
+        $score_grid_q22=array(0=>0,1=>0,2=>1,3=>1);
+        $score_grid_q23=array(0=>0,1=>1,2=>2,3=>3);
+        $score_grid_q24=array(0=>0,1=>1,2=>2,3=>3);
+        $score_grid_q25=array(0=>0,1=>1,2=>2,3=>3);
+        $score_grid_q26=array(0=>0,1=>1,2=>2,3=>3);
+        $score_grid_q27=array(0=>0,1=>1,2=>2,3=>3);
+        $score_grid_q28=array(0=>0,1=>1,2=>2,3=>3);
+        $score_grid_q29=array(0=>0,1=>0,2=>1,3=>1);
+        $score_grid_q30=array(0=>0,1=>1,2=>2,3=>3);
+        $score_grid_q31=array(0=>0,1=>0,2=>0,3=>1);
+        $score_grid_q32=array(0=>0,1=>1,2=>2,3=>3);
+        $score_grid_q33=array(0=>1,1=>1,2=>0,3=>0);
+        $score_grid_q34=array(0=>0,1=>1,2=>2,3=>3);
+        $score_grid_q35=array(0=>0,1=>1,2=>2,3=>3);
+        $score_grid_q36=array(0=>0,1=>1,2=>2,3=>3);
+        $score_grid_q37=array(0=>0,1=>0,2=>0,3=>1);
+        $score_grid_q38=array(0=>0,1=>1,2=>2,3=>3);
+        $score_grid_q39=array(0=>0,1=>1,2=>2,3=>3);
+        $score_grid_q40=array(0=>0,1=>0,2=>0,3=>1);
+        $score_grid_q41=array(0=>0,1=>1,2=>2,3=>3);
+        $score_grid_q42=array(0=>1,1=>0,2=>0,3=>0);
+        $score_grid_q43=array(0=>0,1=>1,2=>2,3=>3);
 
         //get the saved scores
         $db =& Database::singleton();
         $query = "SELECT * FROM $this->table WHERE CommentID = '$this->commentID'";
         $record = $db->pselectRow($query, array());
-        $IN_array = array($record['q1_is_fidgety'],
-            $record['q17'],
-            $record['q27'],
-            $record['q30'],
-            $record['q34'],
-            $record['q41'],
+        $IN_array = array(
+            $score_grid_q17[$record['q17']],
+            $score_grid_q27[$record['q27']],
+            $score_grid_q30[$record['q30']],
+            $score_grid_q34[$record['q34']],
+            $score_grid_q41[ $record['q41']],
         );
+        $HY_array=array(
+            $score_grid_q3[$record['q3']],
+            $score_grid_q5[$record['q5']],
+            $score_grid_q7[$record['q7']],
+            $score_grid_q13[$record['q13']],
+            $score_grid_q24[$record['q24']],
+            $score_grid_q28[$record['q28']],
+        );
+        $LP_array=array(
+            $score_grid_q8[$record['q8']],
+             $score_grid_q10[$record['q10']],
+             $score_grid_q25[$record['q25']],
+             $score_grid_q36[$record['q36']],
+             $score_grid_q39[$record['q39']],
+        );
+        $EF_array=array(
+             $score_grid_q1[$record['q1']],
+             $score_grid_q15[$record['q15']],
+             $score_grid_q20[$record['q20']],
+             $score_grid_q32[$record['q32']],
+             $score_grid_q35[$record['q35']],
+        );
+        $AG_array=array(
+            $score_grid_q14[$record['q14']],
+             $score_grid_q19[$record['q19']],
+             $score_grid_q21[$record['q21']],
+             $score_grid_q23[$record['q23']],
+             $score_grid_q26[$record['q26']],
+        );
+        $PR_array=array(
+            $score_grid_q4[$record['q4']],
+             $score_grid_q6[$record['q6']],
+             $score_grid_q18[$record['q18']],
+             $score_grid_q38[$record['q38']],
+             $score_grid_q43[$record['q43']],
+        );
+        $PI_array=array(
+             $score_grid_q2[$record['q2']],
+             $score_grid_q12[$record['q12']],
+             $score_grid_q31[$record['q31']],
+             $score_grid_q37[$record['q37']],
+             $score_grid_q40[$record['q40']],
+             $score_grid_q42[$record['q42']],
+        );
+        $NI_array=array(
+            $score_grid_q9[$record['q9']],
+            $score_grid_q11[ $record['q11']],
+             $score_grid_q16[$record['q16']],
+            $score_grid_q22[ $record['q22']],
+             $score_grid_q29[$record['q29']],
+            $score_grid_q33[ $record['q33']],
+        );
+        $scores['IN_raw_score']=$this->findRowScore($IN_array);
+        $scores['HY_raw_score'] =$this->findRowScore($HY_array);
+        $scores['LP_raw_score']=$this->findRowScore($LP_array);
+        $scores['EF_raw_score']=$this->findRowScore($EF_array);
+        $scores['AG_raw_score']=$this->findRowScore($AG_array);
+        $scores['PR_raw_score']=$this->findRowScore($PR_array);
+        $scores['PI_raw_score'] =$this->findRowScore($PI_array);
+        $scores['NI_raw_score']=$this->findRowScore($NI_array);
+
+
+        $result = $db->update($this->table, $scores, array('CommentID'=>$this->getCommentID()));
+    }
+    function findRowScore($scale_array)
+    {
+        $raw_score=0;
+        foreach ($scale_array as $val)
+        {
+            if($val=='1')
+            {
+                $raw_score=$raw_score+1;
+            }
+            if($val=='2')
+            {
+                $raw_score=$raw_score+2;
+            }
+            if($val=='3')
+            {
+                $raw_score=$raw_score+3;
+            }
+        }
+        return $raw_score;
     }
 }
