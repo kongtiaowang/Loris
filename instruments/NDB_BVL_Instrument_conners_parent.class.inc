@@ -139,7 +139,7 @@ class NDB_BVL_Instrument_conners_parent extends NDB_BVL_Instrument
         //scoring column headers
         $group[] = $this->form->createElement('static', "raw_score", null, null);
         $group[] = $this->form->createElement('static', "T_score", null, null);
-        $this->form->addGroup($group, 'score_header_group', "<strong>Domain</strong>", $this->_GUIDelimiter, FALSE);
+        $this->form->addGroup($group, 'score_header_group', "<strong>Scale</strong>", $this->_GUIDelimiter, FALSE);
         unset($group);
 
 
@@ -278,7 +278,7 @@ class NDB_BVL_Instrument_conners_parent extends NDB_BVL_Instrument
 		
 		return $errors;
 	}
-
+// scoring Sruthy
     function score()
     {
         if ($this->_determineDataEntryCompletionStatus() == "Incomplete") {
@@ -403,7 +403,75 @@ class NDB_BVL_Instrument_conners_parent extends NDB_BVL_Instrument
         $scores['PR_raw_score']=$this->findRowScore($PR_array);
         $scores['PI_raw_score'] =$this->findRowScore($PI_array);
         $scores['NI_raw_score']=$this->findRowScore($NI_array);
+        $timepoint =& TimePoint::singleton($this->getSessionID());
+        $dob = $timepoint->getEffectiveDateOfBirth();
 
+        $age = Utility::calculateAge($dob, $record["Date_taken"]);
+        $valid="YES";
+        $age_months = $age['year'] * 12 + $age['mon'] + ($age['day']/30);
+        $age_years=$age_months/12;
+        $age_years=round($age_years);
+        if($age_years>11 || $age_years<6)
+        {
+            $valid="NO";
+            echo "T score unavailable...T score is applicable only for ages between 6 to 11";
+            echo "\n";
+        }
+        $query_gender = "SELECT Gender FROM candidate as c, session as s, flag as f, $this->table as t WHERE t.CommentID = '$this->commentID' 
+AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
+        $record_gender = $db->pselectRow($query_gender, array());
+        if($record_gender['Gender']=='Male')
+        {
+            $gender='M';
+        }
+        if($record_gender['Gender']=='Female')
+        {
+            $gender='F';
+        }
+        if($valid=='YES')
+        {
+            $scales = array("IN", "HY", "LP", "EF", "AG", "PR","PI","NI");
+            foreach ($scales as $field) {
+                $field_raw_score = $scores[$field . '_raw_score'];
+
+                $query_scores1 = "SELECT * FROM conners_parent_lookup WHERE
+                age_years='$age_years' AND sex='$gender'  AND scale_raw_score =$field_raw_score AND scale='$field'";
+                $record_1 = $db->pselectRow($query_scores1, array());
+                if (empty($record_1)) {
+                    $max_range = "SELECT * FROM conners_parent_lookup WHERE
+                age_years='$age_years' AND sex='$gender'  AND scale_raw_score like '%plus%' AND scale='$field'";
+                    $max_range_array = $db->pselectRow($max_range, array());
+                    if(empty($max_range_array))
+                    {
+                        $scores[$field . '_T_score'] = "NA";
+                    }
+                    else {
+                        $max_number_array = explode("plus", $max_range_array['scale_raw_score']);
+                        $max_number = $max_number_array[0];
+                        //  echo $max_number;
+                        if ($field_raw_score >= $max_number) {
+                            $scores[$field . '_T_score'] = ($max_range_array['scale_T_score']);
+
+                        }
+                    }
+                } else{
+                    if (array_key_exists('scale_T_score', $record_1)) {
+                        if ($record_1['scale_T_score'] == "" || ($record_1['scale_T_score'] == NULL)) {
+                            $scores[$field . '_T_score'] = "NA";
+                        } else {
+                            $scores[$field . '_T_score'] = ($record_1['scale_T_score']);
+                        }
+                    } else {
+                        $scores[$field . '_T_score'] = "NA";
+                    }
+                }
+            }
+        }
+        function replaceString($val)
+        {
+            return str_replace(">", "Greater than ", "$val");
+        }
+        $scores = array_map("replaceString", $scores);
 
         $result = $db->update($this->table, $scores, array('CommentID'=>$this->getCommentID()));
     }
@@ -427,4 +495,5 @@ class NDB_BVL_Instrument_conners_parent extends NDB_BVL_Instrument
         }
         return $raw_score;
     }
+
 }
