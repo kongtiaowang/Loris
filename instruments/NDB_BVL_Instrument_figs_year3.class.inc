@@ -154,7 +154,7 @@ class NDB_BVL_Instrument_figs_year3 extends NDB_BVL_Instrument
         
         $candID = isset($_REQUEST['candID']) ? $_REQUEST['candID'] : '';
         $sessionID = isset($_REQUEST['sessionID']) ? $_REQUEST['sessionID'] : '';
-        $url = "$baseURL/figs_year3/?candID=$candID&sessionID=$sessionID&commentID=".$this->getCommentID();
+        $url = "$baseURL/instruments/figs_year3/?candID=$candID&sessionID=$sessionID&commentID=".$this->getCommentID();
         
         // checklists display
         if($this->page == 'checklists') {
@@ -231,7 +231,7 @@ class NDB_BVL_Instrument_figs_year3 extends NDB_BVL_Instrument
         $testName = isset($_REQUEST['test_name']) ? $_REQUEST['test_name'] : '';
         $candID= isset($_REQUEST['candID']) ? $_REQUEST['candID'] : '';
         $sessionID= isset($_REQUEST['sessionID']) ? $_REQUEST['sessionID'] : '';
-    	$formAttribsArray = "$baseURL/$testName/?candID=$candID&sessionID=$sessionID&commentID=".$this->getCommentID();
+    	$formAttribsArray = "$baseURL/instruments/$testName/?candID=$candID&sessionID=$sessionID&commentID=".$this->getCommentID();
         if (!empty($this->relativeID)) {
         	$formAttribsArray .= '&relativeID='.$this->relativeID;
         }
@@ -450,7 +450,7 @@ class NDB_BVL_Instrument_figs_year3 extends NDB_BVL_Instrument
         $candID = isset($_REQUEST['candID']) ? $_REQUEST['candID'] : '';
         $sessionID = isset($_REQUEST['sessionID']) ? $_REQUEST['sessionID'] : '';
         $this->form->addElement('header', null, 'View checklists');
-        $url = "$baseURL/figs_year3/?candID=$candID&sessionID=$sessionID&commentID=".$this->getCommentID();
+        $url = "$baseURL/instruments/figs_year3/?candID=$candID&sessionID=$sessionID&commentID=".$this->getCommentID();
         if(is_array($relatives)) {
             foreach($relatives AS $relativeID=>$relativeCode) {
                 $this->form->addElement('link', null, $relativeCode, "$url&relativeID=$relativeID&checklist=checklists", 'open');
@@ -528,7 +528,7 @@ class NDB_BVL_Instrument_figs_year3 extends NDB_BVL_Instrument
         // Create a submit button using my own save method.
         // Create links if they have been marked as yes
         $this->form->addElement('header', null, 'Access checklists');
-        $url = "$baseURL/figs_year3/?candID=".$_REQUEST['candID']."&sessionID=".$_REQUEST['sessionID']."&commentID=".$this->getCommentID();
+        $url = "$baseURL/instruments/figs_year3/?candID=".$_REQUEST['candID']."&sessionID=".$_REQUEST['sessionID']."&commentID=".$this->getCommentID();
 
         $db =& Database::singleton();
         $query = "SELECT Checklist_Other, Checklist_Depression, Checklist_Mania, Checklist_Psychosis, Checklist_Alcohol, Checklist_Drugs, Checklist_Nicotine, Checklist_Schizoid, Checklist_ASP, Checklist_Tic, Checklist_OCD, Checklist_ADHD FROM figs_year3_relatives WHERE RelativeID='$this->relativeID'";
