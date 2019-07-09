@@ -368,7 +368,7 @@ class NDB_BVL_Instrument_MASC2_Parent extends NDB_BVL_Instrument
             $record['q49'],
             $record['q50'],
         );
-        $panic_array=array($record['q41'],
+        $panic_array=array(
             $record['q31'],
             $record['q37'],
             $record['q6'],
@@ -378,9 +378,8 @@ class NDB_BVL_Instrument_MASC2_Parent extends NDB_BVL_Instrument
             $record['q24'],
         );
         $TR_array=array($record['q27'],
-            $record['1'],
+            $record['q1'],
             $record['q34'],
-            $record['q6'],
             $record['q8'],
             $record['q15'],
         );
@@ -404,7 +403,7 @@ class NDB_BVL_Instrument_MASC2_Parent extends NDB_BVL_Instrument
         $scores['HA_score']=$this->findRawScore($HA_array);
         $scores['SA_total_score']=$scores['HR_score'] +$scores['PF_score'];
         $scores['PS_total_score']=$scores['Panic_score']+$scores['TR_score'];
-        $scores['masc2_total_score']=$scores['SP_score'] + $scores['PS_total'] +  $scores['OC_score']+ $scores['SA_total']+ $scores['HA_score']+$record['q39']+$record['q40'];
+        $scores['masc2_total_score']=$scores['SP_score'] + $scores['PS_total_score'] +  $scores['OC_score']+ $scores['SA_total_score']+ $scores['HA_score']+$record['q39']+$record['q40'];
         $timepoint =& TimePoint::singleton($this->getSessionID());
         $dob = $timepoint->getEffectiveDateOfBirth();
 
