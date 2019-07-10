@@ -411,7 +411,7 @@ class NDB_BVL_Instrument_MASC2_Parent extends NDB_BVL_Instrument
 
         $age_months = $age['year'] * 12 + $age['mon'] + ($age['day']/30);
         $age_years=$age_months/12;
-        $age_years=round($age_years);
+        $age_years=floor($age_years);
         if(in_array($age_years, range(8, 11))) {
             $age_range="8 to 11";
         }
