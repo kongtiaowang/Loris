@@ -381,11 +381,32 @@ class CouchDBDemographicsImporter {
 
             //Finding Atypical value
             $candid=$demographics['CandID'];
+            $mullen_complex= "WHEN (mullen.visual_reception_t < 35 && (mullen.gross_motor_t < 35 ||
+            mullen.fine_motor_t < 35 || mullen.receptive_language_t <35 ||
+            mullen.expressive_language_t <35)) THEN 'Yes_2'
+            
+            WHEN (mullen.gross_motor_t < 35 && (mullen.visual_reception_t < 35 ||
+            mullen.fine_motor_t < 35 || mullen.receptive_language_t <35 ||
+            mullen.expressive_language_t <35)) THEN 'Yes_2'
+            
+            WHEN (mullen.fine_motor_t < 35 && (mullen.visual_reception_t < 35 ||
+            mullen.gross_motor_t < 35 || mullen.receptive_language_t <35 ||
+            mullen.expressive_language_t <35)) THEN 'Yes_2'
+            
+            WHEN ( mullen.receptive_language_t < 35 && (mullen.visual_reception_t < 35 ||
+            mullen.gross_motor_t < 35 ||  mullen.fine_motor_t <35 ||
+            mullen.expressive_language_t <35)) THEN 'Yes_2'
+            
+            WHEN (mullen.expressive_language_t< 35 && (mullen.visual_reception_t < 35 ||
+            mullen.gross_motor_t < 35 ||  mullen.fine_motor_t <35 ||
+            mullen.receptive_language_t <35)) THEN 'Yes_2'";
             if($demographics['Visit_label']=='V24' && $demographics['ASD_DX']=='No')
             {
             $find_atypical = $this->SQLDB->pselect("SELECT CASE  
                                                          WHEN (mullen.visual_reception_t < 30 || mullen.gross_motor_t < 30 ||
-                                                         mullen.fine_motor_t < 30 || mullen.receptive_language_t <30) THEN 'Yes'
+                                                         mullen.fine_motor_t < 30 || mullen.receptive_language_t <30 ||
+                                                         mullen.expressive_language_t <30) THEN 'Yes'"
+                                                         .$mullen_complex."
                                                          ELSE 'No' END AS mullen_criteria, s.ID,s.Visit_label FROM  session s
                                                          JOIN candidate c using (candid) 
                                                          LEFT JOIN flag f  ON ( f.SessionID = s.ID)
@@ -401,6 +422,7 @@ class CouchDBDemographicsImporter {
                         's.Visit_label',
                         'i.Candidate_Age',
                         'i.social_affect_total',
+                        'i.severity_score_lookup',
                         'i.a1'
                     );
                     if ($ADOSModule != NULL) {
@@ -432,15 +454,18 @@ class CouchDBDemographicsImporter {
                             }
                         }
 
-                        $ADOS_SA_CSS = NDB_BVL_Instrument_IBIS::ADOS_SA_CSS($ADOSModule, $row['a1'], $row['social_affect_total'], $ados_age);
+                        //Leigh says this is SA version; at V24 css is severity score lookup
+                        //$ADOS_SA_CSS = NDB_BVL_Instrument_IBIS::ADOS_SA_CSS($ADOSModule, $row['a1'], $row['social_affect_total'], $ados_age);
+                        $ADOS_CSS = $row['severity_score_lookup'];
                     }
 
-                        if ($ADOS_SA_CSS > 3 && $row['Visit_label'] =='V24') {
-                            $atypical = "ATYPICAL (ADOS css score greater than 3 at V24) ";
+                        if ($ADOS_CSS > 3 && $row['Visit_label'] =='V24') {
+                            $atypical = "ATYPICAL (ADOS severity score greater than 3 at V24) ";
                         } else if ($find_atypical_row['mullen_criteria'] == 'Yes' && $find_atypical_row['Visit_label']== 'V24'){
                             $atypical = "ATYPICAL (Mullen: 1 or more sub-scale Tscore less than 30 at V24)";
-                        }
-                        else {
+                        } else if ($find_atypical_row['mullen_criteria'] == 'Yes_2' && $find_atypical_row['Visit_label']== 'V24'){
+                            $atypical = "ATYPICAL (Mullen: 2 or more sub-scale Tscore less than 35 at V24)";
+                        } else {
                             $atypical = 'NO (DSM_IV questions 4a/4b is no and not atypical) ';
                         }
 
