@@ -422,6 +422,7 @@ class CouchDBDemographicsImporter {
                         's.Visit_label',
                         'i.Candidate_Age',
                         'i.social_affect_total',
+                        'i.severity_score_lookup',
                         'i.a1'
                     );
                     if ($ADOSModule != NULL) {
@@ -453,11 +454,13 @@ class CouchDBDemographicsImporter {
                             }
                         }
 
-                        $ADOS_SA_CSS = NDB_BVL_Instrument_IBIS::ADOS_SA_CSS($ADOSModule, $row['a1'], $row['social_affect_total'], $ados_age);
+                        //Leigh says this is SA version; at V24 css is severity score lookup
+                        //$ADOS_SA_CSS = NDB_BVL_Instrument_IBIS::ADOS_SA_CSS($ADOSModule, $row['a1'], $row['social_affect_total'], $ados_age);
+                        $ADOS_CSS = $row['severity_score_lookup'];
                     }
 
-                        if ($ADOS_SA_CSS > 3 && $row['Visit_label'] =='V24') {
-                            $atypical = "ATYPICAL (ADOS css score greater than 3 at V24) ";
+                        if ($ADOS_CSS > 3 && $row['Visit_label'] =='V24') {
+                            $atypical = "ATYPICAL (ADOS severity score greater than 3 at V24) ";
                         } else if ($find_atypical_row['mullen_criteria'] == 'Yes' && $find_atypical_row['Visit_label']== 'V24'){
                             $atypical = "ATYPICAL (Mullen: 1 or more sub-scale Tscore less than 30 at V24)";
                         } else if ($find_atypical_row['mullen_criteria'] == 'Yes_2' && $find_atypical_row['Visit_label']== 'V24'){
