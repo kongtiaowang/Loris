@@ -251,104 +251,112 @@ class NDB_BVL_Instrument_conners_teacher extends NDB_BVL_Instrument
         }
         //null scores
         $this->_nullScores($this->scoreLabels);
+        //
+        //
+        //Teacher Score Grid
         $score_grid_q1=array(0=>0,1=>1,2=>2,3=>3);
-        $score_grid_q2=array(0=>0,1=>0,2=>0,3=>1);
+        $score_grid_q2=array(0=>1,1=>0,2=>0,3=>0);
         $score_grid_q3=array(0=>0,1=>1,2=>2,3=>3);
-        $score_grid_q4=array(0=>0,1=>1,2=>2,3=>3);
+        $score_grid_q4=array(0=>1,1=>0,2=>0,3=>0);
         $score_grid_q5=array(0=>0,1=>1,2=>2,3=>3);
-        $score_grid_q6=array(0=>0,1=>1,2=>2,3=>3);
+        $score_grid_q6=array(0=>0,1=>0,2=>1,3=>1);
         $score_grid_q7=array(0=>0,1=>1,2=>2,3=>3);
         $score_grid_q8=array(0=>0,1=>1,2=>2,3=>3);
-        $score_grid_q9=array(0=>0,1=>0,2=>1,3=>1);
+        $score_grid_q9=array(0=>1,1=>1,2=>0,3=>0);
         $score_grid_q10=array(0=>0,1=>1,2=>2,3=>3);
-        $score_grid_q11=array(0=>0,1=>0,2=>1,3=>1);
-        $score_grid_q12=array(0=>1,1=>0,2=>0,3=>0);
-        $score_grid_q13=array(0=>0,1=>1,2=>2,3=>3);
+        $score_grid_q11=array(0=>0,1=>1,2=>2,3=>3);
+        $score_grid_q12=array(0=>0,1=>1,2=>2,3=>3);
+        $score_grid_q13=array(0=>1,1=>1,2=>0,3=>0);
         $score_grid_q14=array(0=>0,1=>1,2=>2,3=>3);
         $score_grid_q15=array(0=>0,1=>1,2=>2,3=>3);
-        $score_grid_q16=array(0=>1,1=>1,2=>0,3=>0);
+        $score_grid_q16=array(0=>0,1=>1,2=>2,3=>3);
         $score_grid_q17=array(0=>0,1=>1,2=>2,3=>3);
         $score_grid_q18=array(0=>0,1=>1,2=>2,3=>3);
-        $score_grid_q19=array(0=>0,1=>1,2=>2,3=>3);
+        $score_grid_q19=array(0=>0,1=>0,2=>0,3=>1);
         $score_grid_q20=array(0=>0,1=>1,2=>2,3=>3);
-        $score_grid_q21=array(0=>0,1=>1,2=>2,3=>3);
-        $score_grid_q22=array(0=>0,1=>0,2=>1,3=>1);
-        $score_grid_q23=array(0=>0,1=>1,2=>2,3=>3);
+        $score_grid_q21=array(0=>0,1=>0,2=>1,3=>1);
+        $score_grid_q22=array(0=>0,1=>1,2=>2,3=>3);
+        $score_grid_q23=array(0=>3,1=>2,2=>1,3=>0);
         $score_grid_q24=array(0=>0,1=>1,2=>2,3=>3);
-        $score_grid_q25=array(0=>0,1=>1,2=>2,3=>3);
+        $score_grid_q25=array(0=>0,1=>0,2=>0,3=>1);
         $score_grid_q26=array(0=>0,1=>1,2=>2,3=>3);
         $score_grid_q27=array(0=>0,1=>1,2=>2,3=>3);
         $score_grid_q28=array(0=>0,1=>1,2=>2,3=>3);
-        $score_grid_q29=array(0=>0,1=>0,2=>1,3=>1);
+        $score_grid_q29=array(0=>0,1=>1,2=>2,3=>3);
         $score_grid_q30=array(0=>0,1=>1,2=>2,3=>3);
         $score_grid_q31=array(0=>0,1=>0,2=>0,3=>1);
         $score_grid_q32=array(0=>0,1=>1,2=>2,3=>3);
-        $score_grid_q33=array(0=>1,1=>1,2=>0,3=>0);
-        $score_grid_q34=array(0=>0,1=>1,2=>2,3=>3);
+        $score_grid_q33=array(0=>0,1=>0,2=>1,3=>1);
+        $score_grid_q34=array(0=>0,1=>0,2=>0,3=>1);
         $score_grid_q35=array(0=>0,1=>1,2=>2,3=>3);
         $score_grid_q36=array(0=>0,1=>1,2=>2,3=>3);
-        $score_grid_q37=array(0=>0,1=>0,2=>0,3=>1);
-        $score_grid_q38=array(0=>0,1=>1,2=>2,3=>3);
+        $score_grid_q37=array(0=>0,1=>1,2=>2,3=>3);
+        $score_grid_q38=array(0=>0,1=>0,2=>1,3=>1);
         $score_grid_q39=array(0=>0,1=>1,2=>2,3=>3);
-        $score_grid_q40=array(0=>0,1=>0,2=>0,3=>1);
-        $score_grid_q41=array(0=>0,1=>1,2=>2,3=>3);
-        $score_grid_q42=array(0=>1,1=>0,2=>0,3=>0);
-        $score_grid_q43=array(0=>0,1=>1,2=>2,3=>3);
+
         //get the saved scores
         $db =& Database::singleton();
         $query = "SELECT * FROM $this->table WHERE CommentID = '$this->commentID'";
         $record = $db->pselectRow($query, array());
+       //3,10,26,36,39
         $IN_array = array(
-            $score_grid_q17[$record['q17']],
-            $score_grid_q27[$record['q27']],
-            $score_grid_q30[$record['q30']],
-            $score_grid_q34[$record['q34']],
-            $score_grid_q41[$record['q41']],
-        );
-        $HY_array=array(
             $score_grid_q3[$record['q3']],
-            $score_grid_q5[$record['q5']],
-            $score_grid_q7[$record['q7']],
-            $score_grid_q13[$record['q13']],
-            $score_grid_q24[$record['q24']],
-            $score_grid_q28[$record['q28']],
-        );
-        $LE_array=array(
-            $score_grid_q8[$record['q8']],
             $score_grid_q10[$record['q10']],
-            $score_grid_q25[$record['q25']],
+            $score_grid_q26[$record['q26']],
             $score_grid_q36[$record['q36']],
             $score_grid_q39[$record['q39']],
         );
-        $AG_array=array(
+       // 1,8,22,24,30,32
+        $HY_array=array(
+            $score_grid_q1[$record['q1']],
+            $score_grid_q8[$record['q8']],
+            $score_grid_q22[$record['q22']],
+            $score_grid_q24[$record['q24']],
+            $score_grid_q30[$record['q30']],
+            $score_grid_q32[$record['q32']],
+        );
+        //14,16,18,23,28,35
+        $LE_array=array(
             $score_grid_q14[$record['q14']],
-            $score_grid_q19[$record['q19']],
-            $score_grid_q21[$record['q21']],
-            $score_grid_q23[$record['q23']],
-            $score_grid_q26[$record['q26']],
-        );
-        $PR_array=array(
-            $score_grid_q4[$record['q4']],
-            $score_grid_q6[$record['q6']],
+            $score_grid_q16[$record['q16']],
             $score_grid_q18[$record['q18']],
-            $score_grid_q38[$record['q38']],
-            $score_grid_q43[$record['q43']],
+            $score_grid_q23[$record['q23']],
+            $score_grid_q28[$record['q28']],
+            $score_grid_q35[$record['q35']],
         );
+        //5,7,12,15,17
+        $AG_array=array(
+            $score_grid_q5[$record['q5']],
+            $score_grid_q7[$record['q7']],
+            $score_grid_q12[$record['q12']],
+            $score_grid_q15[$record['q15']],
+            $score_grid_q17[$record['q17']],
+        );
+        //11,20,27,29,37
+        $PR_array=array(
+            $score_grid_q11[$record['q11']],
+            $score_grid_q20[$record['q20']],
+            $score_grid_q27[$record['q27']],
+            $score_grid_q29[$record['q29']],
+            $score_grid_q37[$record['q37']],
+        );
+        //2,4,19,25,31,34
         $PI_array=array(
             $score_grid_q2[$record['q2']],
-            $score_grid_q12[$record['q12']],
+            $score_grid_q4[$record['q4']],
+            $score_grid_q19[$record['q19']],
+            $score_grid_q25[$record['q25']],
             $score_grid_q31[$record['q31']],
-            $score_grid_q37[$record['q37']],
-            $score_grid_q40[$record['q40']],
-            $score_grid_q42[$record['q42']],
+            $score_grid_q34[$record['q34']],
         );
+        //6,9,13,21,33,38
         $NI_array=array(
+            $score_grid_q6[$record['q6']],
             $score_grid_q9[$record['q9']],
-            $score_grid_q11[$record['q11']],
-            $score_grid_q16[$record['q16']],
-            $score_grid_q22[$record['q22']],
-            $score_grid_q29[$record['q29']],
+            $score_grid_q13[$record['q13']],
+            $score_grid_q21[$record['q21']],
             $score_grid_q33[$record['q33']],
+            $score_grid_q38[$record['q38']],
         );
         $scores['IN_raw_score']=$this->findRowScore($IN_array);
         $scores['HY_raw_score'] =$this->findRowScore($HY_array);
@@ -363,7 +371,7 @@ class NDB_BVL_Instrument_conners_teacher extends NDB_BVL_Instrument
         $valid="YES";
         $age_months = $age['year'] * 12 + $age['mon'] + ($age['day']/30);
         $age_years=$age_months/12;
-        $age_years=round($age_years);
+        $age_years=floor($age_years);
         if($age_years>11 || $age_years<6)
         {
             $valid="NO";
@@ -386,11 +394,12 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
             $scales = array("IN", "HY", "LE", "AG", "PR","PI","NI");
             foreach ($scales as $field) {
                 $field_raw_score = $scores[$field . '_raw_score'];
-                $query_scores1 = "SELECT * FROM conners_parent_lookup WHERE
-                age_years='$age_years' AND sex='$gender'  AND scale_raw_score =$field_raw_score AND scale='$field'";
+                $query_scores1 = "SELECT * FROM conners_teacher_lookup WHERE
+                age_years='$age_years' AND sex='$gender'  AND (scale_raw_score ='$field_raw_score'  OR  '$field_raw_score' BETWEEN SUBSTRING_INDEX 
+                (`scale_raw_score`,'-', 1) AND SUBSTRING_INDEX(`scale_raw_score`,'-', -1) ) AND scale='$field'";
                 $record_1 = $db->pselectRow($query_scores1, array());
                 if (empty($record_1)) {
-                    $max_range = "SELECT * FROM conners_parent_lookup WHERE
+                    $max_range = "SELECT * FROM conners_teacher_lookup WHERE
                 age_years='$age_years' AND sex='$gender'  AND scale_raw_score like '%plus%' AND scale='$field'";
                     $max_range_array = $db->pselectRow($max_range, array());
                     if(empty($max_range_array))
@@ -422,7 +431,12 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         {
             return str_replace(">", "Greater than ", "$val");
         }
+        function replaceString2($val)
+        {
+            return str_replace("<", "Less than ", "$val");
+        }
         $scores = array_map("replaceString", $scores);
+        $scores = array_map("replaceString2", $scores);
         $result = $db->update($this->table, $scores, array('CommentID'=>$this->getCommentID()));
     }
     function findRowScore($scale_array)
