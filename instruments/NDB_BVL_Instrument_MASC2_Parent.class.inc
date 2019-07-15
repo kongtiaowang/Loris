@@ -368,7 +368,7 @@ class NDB_BVL_Instrument_MASC2_Parent extends NDB_BVL_Instrument
             $record['q49'],
             $record['q50'],
         );
-        $panic_array=array($record['q41'],
+        $panic_array=array(
             $record['q31'],
             $record['q37'],
             $record['q6'],
@@ -378,9 +378,8 @@ class NDB_BVL_Instrument_MASC2_Parent extends NDB_BVL_Instrument
             $record['q24'],
         );
         $TR_array=array($record['q27'],
-            $record['1'],
+            $record['q1'],
             $record['q34'],
-            $record['q6'],
             $record['q8'],
             $record['q15'],
         );
@@ -404,7 +403,7 @@ class NDB_BVL_Instrument_MASC2_Parent extends NDB_BVL_Instrument
         $scores['HA_score']=$this->findRawScore($HA_array);
         $scores['SA_total_score']=$scores['HR_score'] +$scores['PF_score'];
         $scores['PS_total_score']=$scores['Panic_score']+$scores['TR_score'];
-        $scores['masc2_total_score']=$scores['SP_score'] + $scores['PS_total'] +  $scores['OC_score']+ $scores['SA_total']+ $scores['HA_score']+$record['q39']+$record['q40'];
+        $scores['masc2_total_score']=$scores['SP_score'] + $scores['PS_total_score'] +  $scores['OC_score']+ $scores['SA_total_score']+ $scores['HA_score']+$record['q39']+$record['q40'];
         $timepoint =& TimePoint::singleton($this->getSessionID());
         $dob = $timepoint->getEffectiveDateOfBirth();
 
@@ -412,7 +411,7 @@ class NDB_BVL_Instrument_MASC2_Parent extends NDB_BVL_Instrument
 
         $age_months = $age['year'] * 12 + $age['mon'] + ($age['day']/30);
         $age_years=$age_months/12;
-        $age_years=round($age_years);
+        $age_years=floor($age_years);
         if(in_array($age_years, range(8, 11))) {
             $age_range="8 to 11";
         }
@@ -451,7 +450,7 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
                 $field_raw_score = $scores[$field . '_score'];
 
                 $query_scores1 = "SELECT * FROM MASC2_Parent_lookup WHERE
-                age_years='$age_range' AND sex='$gender'  AND (scale_raw_score =$field_raw_score  OR  $field_raw_score BETWEEN SUBSTRING_INDEX 
+                age_years='$age_range' AND sex='$gender'  AND (scale_raw_score ='$field_raw_score'  OR  '$field_raw_score' BETWEEN SUBSTRING_INDEX 
                 (`scale_raw_score`,'-', 1) AND SUBSTRING_INDEX(`scale_raw_score`,'-', -1) ) AND scale='$field'";
                 $record_1 = $db->pselectRow($query_scores1, array());
                 if (empty($record_1)) {
