@@ -459,7 +459,7 @@ class CouchDBDemographicsImporter {
                         $ADOS_CSS = $row['severity_score_lookup'];
                     }
 
-                        if ($ADOS_CSS > 3 && $row['Visit_label'] =='V24') {
+                        if ($ADOS_CSS >= 3 && $row['Visit_label'] =='V24') {
                             $atypical = "ATYPICAL (ADOS severity score greater than 3 at V24) ";
                         } else if ($find_atypical_row['mullen_criteria'] == 'Yes' && $find_atypical_row['Visit_label']== 'V24'){
                             $atypical = "ATYPICAL (Mullen: 1 or more sub-scale Tscore less than 30 at V24)";
