@@ -139,21 +139,21 @@ class NDB_BVL_Instrument_conners_parent extends NDB_BVL_Instrument
         //scoring column headers
         $group[] = $this->form->createElement('static', "raw_score", null, null);
         $group[] = $this->form->createElement('static', "T_score", null, null);
+        $group[] = $this->form->createElement('static', "validity", null, null);
         $this->form->addGroup($group, 'score_header_group', "<strong>Scale</strong>", $this->_GUIDelimiter, FALSE);
         unset($group);
 
 
         //score fields
         $domains = array("IN" => "Inattention","HY" => "Hyperactivity","LP" => "Learning Problems",
-            "EF" => "Executive Functioning", "AG" => "Defiance/Aggression", "PR" => "Peer Relations",
-            "PI" => "Positive Impression","NI" => "Negative Impression",
+            "EF" => "Executive Functioning", "AG" => "Defiance/Aggression", "PR" => "Peer Relations", "PI" => "Positive Impression","NI" => "Negative Impression"
 
         );
-        $columnHeaders = array("raw_score" => "Raw Score", "T_score" => "T Score",
+        $columnHeaders = array("raw_score" => "Raw Score", "T_score" => "T Score", "validity" => "Validity"
         );
 
         foreach ($columnHeaders as $field => $label) {
-            $columnHeaders[$field] .= "     ";
+            $columnHeaders[$field] .= "   ";
         }
         $this->localDefaults = array_merge($this->localDefaults, $columnHeaders);
 
@@ -167,6 +167,8 @@ class NDB_BVL_Instrument_conners_parent extends NDB_BVL_Instrument
 
 
         }
+
+
     }
 
     function _page1() {
@@ -433,7 +435,8 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
             $scales = array("IN", "HY", "LP", "EF", "AG", "PR","PI","NI");
             foreach ($scales as $field) {
                 $field_raw_score = $scores[$field . '_raw_score'];
-
+                if ($field != 'NI' && $field !='PI') {
+                    $scores[$field . '_validity']="--";
                 $query_scores1 = "SELECT * FROM conners_parent_lookup WHERE
                 age_years='$age_years' AND sex='$gender'  AND (scale_raw_score ='$field_raw_score'  OR  '$field_raw_score' BETWEEN SUBSTRING_INDEX 
                 (`scale_raw_score`,'-', 1) AND SUBSTRING_INDEX(`scale_raw_score`,'-', -1) ) AND scale='$field'";
@@ -466,15 +469,52 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
                         $scores[$field . '_T_score'] = "NA";
                     }
                 }
+                }
+                else{
+                    if($field=='PI')
+                    {
+                        if ( in_array($field_raw_score, range(0,3)) ) {
+                            $scores[$field . '_validity'] = "Probably Valid";
+                        }
+                        elseif ($field_raw_score==4)
+                        {
+                            $scores[$field . '_validity'] = "Possibly Invalid";
+                        }
+                        elseif(in_array($field_raw_score, range(5,6)) )
+                        {
+                            $scores[$field . '_validity'] = "Probably Invalid";
+                        }
+                        else{
+                            $scores[$field . '_validity'] = "NA";
+                        }
+                    }
+                    if($field=='NI')
+                    {
+                        if ( in_array($field_raw_score, range(0,2)) ) {
+                            $scores[$field . '_validity'] = "Probably Valid";
+                        }
+                        elseif ($field_raw_score==3)
+                        {
+                            $scores[$field . '_validity'] = "Possibly Invalid";
+                        }
+                        elseif(in_array($field_raw_score, range(4,6)) )
+                        {
+                            $scores[$field . '_validity'] = "Probably Invalid";
+                        }
+                        else{
+                            $scores[$field . '_validity'] = "NA";
+                        }
+                    }
+                }
             }
         }
         function replaceString($val)
         {
-            return str_replace(">", "Greater than ", "$val");
+            return str_replace(">", "Greater than or equal to ", "$val");
         }
         function replaceString2($val)
         {
-            return str_replace("<", "Less than ", "$val");
+            return str_replace("<", "Less than or equal to", "$val");
         }
         $scores = array_map("replaceString", $scores);
         $scores = array_map("replaceString2", $scores);

@@ -114,13 +114,14 @@ class NDB_BVL_Instrument_conners_teacher extends NDB_BVL_Instrument
         //scoring column headers
         $group[] = $this->form->createElement('static', "raw_score", null, null);
         $group[] = $this->form->createElement('static', "T_score", null, null);
+        $group[] = $this->form->createElement('static', "validity", null, null);
         $this->form->addGroup($group, 'score_header_group', "<strong>Scale</strong>", $this->_GUIDelimiter, FALSE);
         unset($group);
         //score fields
         $domains = array("IN" => "Inattention","HY" => "Hyperactivity","LE" => "Learning Problems/Executive Functioning", "AG" => "Defiance/Aggression",
-            "PR" => "Peer Relations",
+            "PR" => "Peer Relations","PI" => "Positive Impression","NI" => "Negative Impression"
         );
-        $columnHeaders = array("raw_score" => "Raw Score", "T_score" => "T Score/Validity",
+        $columnHeaders = array("raw_score" => "Raw Score", "T_score" => "T Score", "validity" => "Validity",
         );
         foreach ($columnHeaders as $field => $label) {
             $columnHeaders[$field] .= "     ";
@@ -135,31 +136,6 @@ class NDB_BVL_Instrument_conners_teacher extends NDB_BVL_Instrument
                 $this->form->addGroup($group, "{$label}_group", $label, $this->_GUIDelimiter, FALSE);
 
             unset($group);
-        }
-
-        //scoring column headers
-        $group1[] = $this->form->createElement('static', "raw_score", null, null);
-        $group1[] = $this->form->createElement('static', "validity", null, null);
-        $this->form->addGroup($group1, 'score_header_group1', "<strong>Validity Scale Guidelines</strong>", $this->_GUIDelimiter, FALSE);
-        unset($group1);
-        //score fields
-        $domains1 = array("PI" => "Positive Impression","NI" => "Negative Impression",
-        );
-        $columnHeaders1 = array("raw_score" => "Raw Score", "validity" => "Validity",
-        );
-        foreach ($columnHeaders1 as $field => $label) {
-            $columnHeaders1[$field] .= "     ";
-        }
-        $this->localDefaults = array_merge($this->localDefaults, $columnHeaders1);
-        foreach ($domains1 as $field => $label) {
-            foreach ($columnHeaders1 as $scoreField => $scoreLabel) {
-                $group1[] = $this->form->createElement('static', "{$field}_{$scoreField}", null, null);
-
-            }
-
-            $this->form->addGroup($group1, "{$label}_group", $label, $this->_GUIDelimiter, FALSE);
-
-            unset($group1);
         }
     }
 
@@ -423,7 +399,7 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
             foreach ($scales as $field) {
                 $field_raw_score = $scores[$field . '_raw_score'];
                 if ($field != 'NI' && $field !='PI') {
-
+                    $scores[$field . '_validity']="--";
                     $query_scores1 = "SELECT * FROM conners_teacher_lookup WHERE
                 age_years='$age_years' AND sex='$gender'  AND (scale_raw_score ='$field_raw_score'  OR  '$field_raw_score' BETWEEN SUBSTRING_INDEX 
                 (`scale_raw_score`,'-', 1) AND SUBSTRING_INDEX(`scale_raw_score`,'-', -1) ) AND scale='$field'";
@@ -494,11 +470,11 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         }
         function replaceString($val)
         {
-            return str_replace(">", "Greater than ", "$val");
+            return str_replace(">", "Greater than or equal to ", "$val");
         }
         function replaceString2($val)
         {
-            return str_replace("<", "Less than ", "$val");
+            return str_replace("<", "Less than or equal to", "$val");
         }
         $scores = array_map("replaceString", $scores);
         $scores = array_map("replaceString2", $scores);
