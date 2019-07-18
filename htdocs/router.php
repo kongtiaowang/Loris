@@ -10,14 +10,14 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-
-
 $url     = ltrim($_SERVER['REQUEST_URI'], "/");
+$urlpath = ltrim($_SERVER['PHP_SELF'], "/");
+
 $request = $_SERVER['REQUEST_URI'];
 
 if ($request != '/'
-    && file_exists(__DIR__ . $request)
-    && $request != "/acknowledgements/"
+    && (    file_exists(__DIR__ . $request)
+    || file_exists(__DIR__ . "/" . $urlpath))
     && strpos($request, "/api/") === false
 ) {
     // FIXME: Should this be in the main index.php to prevent the need
@@ -26,7 +26,7 @@ if ($request != '/'
 }
 if (preg_match(
     '#^([a-zA-Z_-]+)/ajax/([a-zA-Z0-9_.-/]+)$#',
-    $url
+    $urlpath
 )
 ) {
     // RewriteRule
@@ -34,7 +34,7 @@ if (preg_match(
     //      /AjaxHelper.php?Module=$1&script=$2 [QSA]
     // NOT SURE IF THIS WORKS IF FILE IS NOT SPECIFIED
 
-    $getParams = explode("/", $url);
+    $getParams = explode("/", $urlpath);
 
     $_GET["Module"] = $getParams[0];
     $_GET['script'] = $getParams[2];
