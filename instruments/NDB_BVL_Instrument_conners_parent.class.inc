@@ -139,7 +139,7 @@ class NDB_BVL_Instrument_conners_parent extends NDB_BVL_Instrument
         //scoring column headers
         $group[] = $this->form->createElement('static', "raw_score", null, null);
         $group[] = $this->form->createElement('static', "T_score", null, null);
-        $group[] = $this->form->createElement('static', "validity", null, null);
+        $group[] = $this->form->createElement('static', "response_style", null, null);
         $this->form->addGroup($group, 'score_header_group', "<strong>Scale</strong>", $this->_GUIDelimiter, FALSE);
         unset($group);
 
@@ -149,7 +149,7 @@ class NDB_BVL_Instrument_conners_parent extends NDB_BVL_Instrument
             "EF" => "Executive Functioning", "AG" => "Defiance/Aggression", "PR" => "Peer Relations", "PI" => "Positive Impression","NI" => "Negative Impression"
 
         );
-        $columnHeaders = array("raw_score" => "Raw Score", "T_score" => "T Score", "validity" => "Validity"
+        $columnHeaders = array("raw_score" => "Raw Score", "T_score" => "T Score", "response_style" => "Response Style"
         );
 
         foreach ($columnHeaders as $field => $label) {
@@ -382,8 +382,8 @@ class NDB_BVL_Instrument_conners_parent extends NDB_BVL_Instrument
              $score_grid_q43[$record['q43']],
         );
         $PI_array=array(
-             $score_grid_q2[$record['q2']],
-             $score_grid_q12[$record['q12']],
+            $score_grid_q2[$record['q2']],
+            $score_grid_q12[$record['q12']],
              $score_grid_q31[$record['q31']],
              $score_grid_q37[$record['q37']],
              $score_grid_q40[$record['q40']],
@@ -436,7 +436,7 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
             foreach ($scales as $field) {
                 $field_raw_score = $scores[$field . '_raw_score'];
                 if ($field != 'NI' && $field !='PI') {
-                    $scores[$field . '_validity']="--";
+                    $scores[$field . '_response_style']="--";
                 $query_scores1 = "SELECT * FROM conners_parent_lookup WHERE
                 age_years='$age_years' AND sex='$gender'  AND (scale_raw_score ='$field_raw_score'  OR  '$field_raw_score' BETWEEN SUBSTRING_INDEX 
                 (`scale_raw_score`,'-', 1) AND SUBSTRING_INDEX(`scale_raw_score`,'-', -1) ) AND scale='$field'";
@@ -473,36 +473,23 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
                 else{
                     if($field=='PI')
                     {
-                        if ( in_array($field_raw_score, range(0,3)) ) {
-                            $scores[$field . '_validity'] = "Probably Valid";
-                        }
-                        elseif ($field_raw_score==4)
+                        if ($field_raw_score>=5)
                         {
-                            $scores[$field . '_validity'] = "Possibly Invalid";
+                            $scores[$field . '_response_style'] = "Possible Positive Response Style Indicated";
                         }
-                        elseif(in_array($field_raw_score, range(5,6)) )
-                        {
-                            $scores[$field . '_validity'] = "Probably Invalid";
-                        }
+
                         else{
-                            $scores[$field . '_validity'] = "NA";
+                            $scores[$field . '_response_style'] = "NA";
                         }
                     }
                     if($field=='NI')
                     {
-                        if ( in_array($field_raw_score, range(0,2)) ) {
-                            $scores[$field . '_validity'] = "Probably Valid";
-                        }
-                        elseif ($field_raw_score==3)
+                       if ($field_raw_score>=5)
                         {
-                            $scores[$field . '_validity'] = "Possibly Invalid";
-                        }
-                        elseif(in_array($field_raw_score, range(4,6)) )
-                        {
-                            $scores[$field . '_validity'] = "Probably Invalid";
+                            $scores[$field . '_response_style'] = "Possible Negative Response Style Indicated";
                         }
                         else{
-                            $scores[$field . '_validity'] = "NA";
+                            $scores[$field . '_response_style'] = "NA";
                         }
                     }
                 }
