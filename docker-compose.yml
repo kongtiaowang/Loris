@@ -8,6 +8,7 @@ services:
         BASE_DIR: /app/
     volumes:
       - ./test/mysql-config:/etc/mysql/conf.d
+      - ./raisinbread/RB_files:/app/RB_files
     environment:
       - MYSQL_DATABASE=LorisTest
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
