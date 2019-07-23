@@ -1,0 +1,1 @@
+ALTER TABLE mri_parameter_form_sa MODIFY COLUMN head_circumference_units ENUM('inches','centimeters','NA') default NULL ;
