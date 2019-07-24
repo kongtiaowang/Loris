@@ -5,8 +5,8 @@ language: php
 
 matrix:
   include:
-  - php: "7.2"
-  - php: "7.3"
+    t: "make"
+    t: "integration-tests" 
 
 services:
 - docker
@@ -18,11 +18,13 @@ install:
 - sudo apt-get install npm
 - make dev
 
-before_script:
-- sed -i "s/7.2/$TRAVIS_PHP_VERSION/g" Dockerfile.test.php7
-
 script:
 # Unable to initialize database, use the following code to debug. - docker-compose up --build
 # docker-compose up --build
-- make checkstatic
-- docker-compose run -T --rm integration-tests vendor/bin/phpunit --configuration test/phpunit.xml
+- if[ $t == "make" ]; then 
+   make checkstatic 
+  fi
+#  fi 
+#- if[ $TEST_SUITE == "integration-tests" ]; then
+#  docker-compose run -T --rm $TEST_SUITE vendor/bin/phpunit --configuration test/phpunit.xml
+#  fi
