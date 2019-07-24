@@ -5,11 +5,8 @@ language: php
 
 matrix:
   include:
-  - php: "7.2"
     t: "make"
-  - php: "7.2"
     t: "integration-tests" 
-  - php: "7.3"
 
 services:
 - docker
@@ -20,9 +17,6 @@ install:
 - pecl install -f ast-0.1.6
 - sudo apt-get install npm
 - make dev
-
-before_script:
-- sed -i "s/7.2/$TRAVIS_PHP_VERSION/g" Dockerfile.test.php7
 
 script:
 # Unable to initialize database, use the following code to debug. - docker-compose up --build
