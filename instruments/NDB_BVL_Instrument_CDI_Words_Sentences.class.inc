@@ -385,7 +385,8 @@ class NDB_BVL_Instrument_CDI_Words_Sentences extends NDB_BVL_Instrument
         $part_2_names =
             array(
                 "alligator", "animal", "ant", "bear", "bee", "bird", "bug",
-                "bunny", "butterfly", "cat", "chicken", "cow", "deer", "dog", "frog",
+                "bunny", "butterfly", "cat", "chicken", "cow", "deer", "dog","donkey","duck",
+                 "elephant","fish","frog",
                 "giraffe", "goose", "hen", "horse", "kitty", "lamb", "lion",
                 "monkey", "moose", "mouse", "owl", "penguin", "pig", "pony",
                 "puppy", "rooster", "sheep", "squirrel", "teddybear", "tiger", "turkey",
@@ -429,7 +430,7 @@ class NDB_BVL_Instrument_CDI_Words_Sentences extends NDB_BVL_Instrument
 
         $part_5_names =
             array(
-                "apple", "applesauce", "banana", "beans", "bread", "butter", "cake",
+                "apple", "applesauce", "banana", "beans", "bread", "butter", "cake","candy",
                 "carrots", "cereal", "cheerios", "cheese", "chicken", "chocolate",
                 "coffee", "coke", "cookie", "corn", "cracker", "donut", "drink",
                 "egg", "fish", "food", "french_fries", "grapes", "green_beans",
