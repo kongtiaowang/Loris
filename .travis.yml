@@ -6,13 +6,7 @@ language: php
 matrix:
   include:
   - php: "7.2"
-      env:
-       - TEST_SUITE=make
-       - TEST_SUITE=integration-tests
   - php: "7.3"
-      env:
-       - TEST_SUITE=make
-       - TEST_SUITE=integration-tests
 
 services:
 - docker
