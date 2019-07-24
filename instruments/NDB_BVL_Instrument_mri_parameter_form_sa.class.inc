@@ -169,8 +169,8 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
         $this->form->addElement('select', 'weight_units', 'Weight units:', array("" => null, "pounds" => "pounds", "kilograms" => "kilograms"));
         $this->form->addElement('text', 'height', 'Height:');
         $this->form->addElement('select', 'height_units', 'Height units:', array("" => null, "inches" => "inches", "centimeters" => "cm"));
-        $this->form->addElement('text', 'head_circumference', 'Head Circumference:');
-        $this->form->addElement('select', 'head_circumference_units', 'Head Circumference units:', array("" => null, "inches" => "inches", "centimeters" => "cm"));
+        $this->form->addElement('text', 'head_circumference', 'Head Circumference:<br><h5><i>(Please enter a numeric value between 0-100 or NA if applicable)</i></h5>');
+        $this->form->addElement('select', 'head_circumference_units', 'Head Circumference units:', array("" => null, "inches" => "inches", "centimeters" => "cm","NA" => "NA"));
 
         $this->form->addElement('select', "Scanner_type", "Type of Scanner:", array("" => null, "hospital" => "Hospital", "research" => "Research", "other" => "Other"));
         $this->form->addElement("text", "Scanner_type_other", "<i>If other, specify:</i>");
@@ -540,7 +540,7 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
         $errors = [];
         $this->validate_numeric_strict($values, "weight", $errors, 0, 200);
         $this->validate_numeric_strict($values, "height", $errors, 0, 200);
-        $this->validate_numeric_strict($values, "head_circumference", $errors, 0, 100);
+        $this->validate_numeric($values, "head_circumference", $errors, 0, 100);
         for ($i=1; $i <= 6; $i++) {
             $t1_weighted_anterior = "t1_run" . $i . "_anterior";
             $t1_weighted_posterior = "t1_run" . $i . "_posterior";
