@@ -14,7 +14,7 @@ services:
     environment:
       - MYSQL_DATABASE=LorisTest
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
-    command: bash -c " echo 'Use LorisTest;' | cat 
+    command: bash -c " echo 'Use LorisTest;' | cat -
      /app/SQL/*.sql
     /app/instrument_sql/*.sql  
     /app/RB_files/*.sql > /docker-entrypoint-initdb.d/0000-compiled.sql"
