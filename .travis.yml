@@ -14,10 +14,6 @@ matrix:
 services:
 - docker
 
-env:
-- TEST_SUITE=unit-tests
-- TEST_SUITE=integration-tests
-
 install:
 - sudo apt-get update
 - sudo apt-get install -y libapparmor1
