@@ -6,7 +6,13 @@ language: php
 matrix:
   include:
   - php: "7.2"
+      env:
+       - TEST_SUITE=make
+       - TEST_SUITE=integration-tests
   - php: "7.3"
+      env:
+       - TEST_SUITE=make
+       - TEST_SUITE=integration-tests
 
 services:
 - docker
@@ -28,5 +34,9 @@ before_script:
 script:
 # Unable to initialize database, use the following code to debug. - docker-compose up --build
 # docker-compose up --build
-- make checkstatic
-- docker-compose run -T --rm $TEST_SUITE vendor/bin/phpunit --configuration test/phpunit.xml
+- if[ $TEST_SUITE == "make" ]; then
+  make checkstatic
+  fi 
+- if[ $TEST_SUITE == "integration-tests" ]; then
+  docker-compose run -T --rm $TEST_SUITE vendor/bin/phpunit --configuration test/phpunit.xml
+  fi
