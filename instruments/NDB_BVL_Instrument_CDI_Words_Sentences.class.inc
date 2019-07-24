@@ -153,19 +153,19 @@ class NDB_BVL_Instrument_CDI_Words_Sentences extends NDB_BVL_Instrument
         $query_scores = "SELECT * FROM CDI_WS_percentiles_lookup WHERE age_months=" . $age_months . " AND sex='$gender' AND score_raw=" . $scores[$scale_number] . " AND subscale='$scale_number'";
         $PercentileScore = $db->pselectRow($query_scores, array());
 
+
         $scores[$scale_percentile] = $PercentileScore['score_percentile'];
 
         if ($PercentileScore == NULL) {
             $score_holder = $scores[$scale_number];
-            $query_scores1a = "SELECT * FROM CDI_WS_percentiles_lookup WHERE age_months=$age_months AND sex='$gender' AND subscale='$scale_number' AND score_raw>$score_holder ORDER BY score_raw ASC LIMIT 1";
+            $query_scores1a = "SELECT * FROM CDI_WS_percentiles_lookup WHERE age_months=$age_months AND sex='$gender' AND subscale='$scale_number' AND score_raw>$score_holder ORDER BY score_raw ASC";
             $record_1a = $db->pselectRow($query_scores1a, array());
             if (empty($record_1a)) {
 
-                $db->pselectRow("SELECT * from CDI_WS_percentiles_lookup WHERE age_months=$age_months AND sex='$gender' AND subscale='$scale_number' ORDER BY score_raw ASC LIMIT 1", array());
-
+                $db->pselectRow("SELECT * from CDI_WS_percentiles_lookup WHERE age_months=$age_months AND sex='$gender' AND subscale='$scale_number' ORDER BY score_raw ASC", array());
             }
 
-            $query_scores1b = "SELECT * FROM CDI_WS_percentiles_lookup WHERE age_months=" . $age_months . " AND sex='$gender' AND subscale='$scale_number' AND score_raw<$score_holder ORDER BY score_raw DESC LIMIT 1";
+            $query_scores1b = "SELECT * FROM CDI_WS_percentiles_lookup WHERE age_months=" . $age_months . " AND sex='$gender' AND subscale='$scale_number' AND score_raw<$score_holder ORDER BY score_raw DESC";
             $record_1b = $db->pselectRow($query_scores1b, array());
 
             //print "scale: $scale_number score: " . $scores[$scale_number] . " x< " . $record_1b['score_raw'] . " x> " . $record_1a['score_raw'] . " Y> " . $record_1b['score_percentile'] . " Y< " . $record_1b['score_percentile'] . '<br />';
@@ -385,7 +385,8 @@ class NDB_BVL_Instrument_CDI_Words_Sentences extends NDB_BVL_Instrument
         $part_2_names =
             array(
                 "alligator", "animal", "ant", "bear", "bee", "bird", "bug",
-                "bunny", "butterfly", "cat", "chicken", "cow", "deer", "dog", "frog",
+                "bunny", "butterfly", "cat", "chicken", "cow", "deer", "dog","donkey","duck",
+                 "elephant","fish","frog",
                 "giraffe", "goose", "hen", "horse", "kitty", "lamb", "lion",
                 "monkey", "moose", "mouse", "owl", "penguin", "pig", "pony",
                 "puppy", "rooster", "sheep", "squirrel", "teddybear", "tiger", "turkey",
@@ -429,7 +430,7 @@ class NDB_BVL_Instrument_CDI_Words_Sentences extends NDB_BVL_Instrument
 
         $part_5_names =
             array(
-                "apple", "applesauce", "banana", "beans", "bread", "butter", "cake",
+                "apple", "applesauce", "banana", "beans", "bread", "butter", "cake","candy",
                 "carrots", "cereal", "cheerios", "cheese", "chicken", "chocolate",
                 "coffee", "coke", "cookie", "corn", "cracker", "donut", "drink",
                 "egg", "fish", "food", "french_fries", "grapes", "green_beans",
@@ -1065,7 +1066,7 @@ class NDB_BVL_Instrument_CDI_Words_Sentences extends NDB_BVL_Instrument
         $record =$db->pselectRow("SELECT * FROM $this->table WHERE CommentID=:cid", array("cid" =>$this->getCommentID()));
 
         // Get gender
-        $query_gender = "SELECT Gender FROM candidate as c, session as s, flag as f, $this->table as t WHERE CommentID=:cid AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
+        $query_gender = "SELECT Gender FROM candidate as c, session as s, flag as f, $this->table as t WHERE t.CommentID=:cid AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $record_gender = $db->pselectRow($query_gender,array("cid" =>$this->getCommentID() ));
         $gender = strtolower($record_gender['Gender']);
 

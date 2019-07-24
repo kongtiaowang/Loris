@@ -132,6 +132,8 @@ class NDB_BVL_Instrument_MASC2_Self_Report extends NDB_BVL_Instrument
             "father"             => "Father",
             "step_mother"        => "Step Mother",
             "step_father"        => "Step Father",
+            "clinician"          =>"Clinician",
+            "self_report"        => "Self Report",
             "other"             => "Other",
         );
         $this->addSelect("relationship_to_child", "What is your relationship to the child?", $opts);
