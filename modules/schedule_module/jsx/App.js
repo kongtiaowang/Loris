@@ -528,7 +528,9 @@ export class App extends React.Component {
                             lockTabs : false,
                             searchFilters : undefined,
                         });
-                        this.fetchTab();
+                        setTimeout(() => {
+                            this.fetchTab();
+                        }, 1);
                     }}
                 />
                 <h style={{margin : "10px"}}>
