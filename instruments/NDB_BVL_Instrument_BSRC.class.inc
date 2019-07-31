@@ -218,7 +218,7 @@ INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, Subp
 
      $this->addMonthYear("stopdate_behaviorintervention","If, No, date stopped",$monthYearOptions);
      $this->XINRegisterRule("stopdate_behaviorintervention", array("continue_behaviorintervention{@}=={@}no"), "Required");
-       
+
        //multiselect4
      $this->addSelect('indgrp_behaviorintervention',"Individual or Group<BR><h5><i>(Cmd+Click or Ctrl+Click to select multiple options)</i></h5>", $this->indgrp, array("multiple"));
      $this->XINRegisterRule("indgrp_behaviorintervention", array("servicetype_behaviorintervention{@}=={@}yes"), "Required");
@@ -247,10 +247,14 @@ INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, Subp
      $this->addMonthYear("stopdate_other","If, No, date stopped",$monthYearOptions);
      $this->XINRegisterRule("stopdate_other", array("continue_other{@}=={@}no"), "Required");
 
-     $this->addSelect("indgrp_other","Individual or Group",$this->indgrp);
-     $this->XINRegisterRule("indgrp_other", array("servicetype_other{@}=={@}yes"), "Required");
 
-     $this->addSelect("setting_other","Setting",$this->setting);
+       //multiselect4
+       $this->addSelect('indgrp_other',"Individual or Group<BR><h5><i>(Cmd+Click or Ctrl+Click to select multiple options)</i></h5>", $this->indgrp, array("multiple"));
+       $this->XINRegisterRule("indgrp_other", array("servicetype_other{@}=={@}yes"), "Required");
+       $this->_selectMultipleElements[] = "indgrp_other";
+
+
+       $this->addSelect("setting_other","Setting",$this->setting);
      $this->XINRegisterRule("setting_other", array("servicetype_other{@}=={@}yes"), "Required");
 
      $this->addNumericElement("avg_other","Average hours per week");
