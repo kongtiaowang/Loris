@@ -16,7 +16,8 @@ export class FilterForm extends React.Component {
             centerId : "",
             visitLabel : "",
             projectId : "",
-            subprojectId : "",
+            /** @type {string[]} */
+            subprojectId : [],
             appointmentTypeId : "",
 
             startDate : "",
@@ -94,12 +95,13 @@ export class FilterForm extends React.Component {
                                 </div>
                                 <div className="form-group">
                                     <label>Project</label>
-                                    <select className="form-control" value={this.state.projectId} onChange={(e) => {
+                                    <select className="form-control" multiple value={this.state.projectId} onChange={(e) => {
                                         this.setState({
-                                            projectId : e.target.value
+                                            projectId : [...e.target.options]
+                                            .filter(o => o.selected)
+                                            .map(o => o.value)
                                         })
                                     }}>
-                                        <option value="">-Select a Project-</option>
                                         {
                                             this.state.projects.map((s) => {
                                                 return <option key={s.ProjectID} value={s.ProjectID}>{s.Name}</option>;
@@ -149,12 +151,13 @@ export class FilterForm extends React.Component {
                                 </div>
                                 <div className="form-group">
                                     <label>Subproject</label>
-                                    <select className="form-control" value={this.state.subprojectId} onChange={(e) => {
+                                    <select className="form-control" multiple value={this.state.subprojectId} onChange={(e) => {
                                         this.setState({
-                                            subprojectId : e.target.value
+                                            subprojectId : [...e.target.options]
+                                                .filter(o => o.selected)
+                                                .map(o => o.value)
                                         })
                                     }}>
-                                        <option value="">-Select a Subproject-</option>
                                         {
                                             this.state.subprojects.map((s) => {
                                                 return <option key={s.SubprojectID} value={s.SubprojectID}>{s.title}</option>;

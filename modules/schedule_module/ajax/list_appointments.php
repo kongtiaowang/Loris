@@ -237,56 +237,52 @@ if (isset($_GET["StartDateMax"])) {
 
 // Filter by Project
 if (isset($_GET["ProjectID"])) {
-
-    $project = $DB->pselectRow(
-        "
-            SELECT
-                *
-            FROM
-                Project
-            WHERE
-                ProjectID = :projectId
-        ",
-        array("projectId" => $_GET["ProjectID"])
-    );
-
-    if (empty($project)) {
-        http_response_code(400);
-        die(json_encode([
-            "error" => "Invalid Project."
-        ]));
+    $arr = $_GET["ProjectID"];
+    if (!is_array($arr)) {
+        $arr = [$arr];
     }
 
-    array_push($conditions, "candidate.ProjectID = :projectId");
+    if (count($arr) == 0) {
+        $arr = [-1];
+    }
 
-    $queryValues["projectId"] = $_GET["ProjectID"];
+    $projectIdList = implode(
+        ",",
+        array_map(
+            function ($v) {
+                global $DB;
+                return $DB->quote($v);
+            },
+            $arr
+        )
+    );
+
+    array_push($conditions, "candidate.ProjectID IN({$projectIdList})");
 }
 
 // Filter by Subproject
 if (isset($_GET["SubprojectID"])) {
-
-    $subproject = $DB->pselectRow(
-        "
-            SELECT
-                *
-            FROM
-                session
-            WHERE
-                SubprojectID = :subprojectId
-        ",
-        array("subprojectId" => $_GET["SubprojectID"])
-    );
-
-    if (empty($subproject)) {
-        http_response_code(400);
-        die(json_encode([
-            "error" => "Invalid Subproject."
-        ]));
+    $arr = $_GET["SubprojectID"];
+    if (!is_array($arr)) {
+        $arr = [$arr];
     }
 
-    array_push($conditions, "session.SubprojectID = :subprojectId");
+    if (count($arr) == 0) {
+        $arr = [-1];
+    }
 
-    $queryValues["subprojectId"] = $_GET["SubprojectID"];
+    $subprojectIdList = implode(
+        ",",
+        array_map(
+            function ($v) {
+                global $DB;
+                return $DB->quote($v);
+            },
+            $arr
+        )
+    );
+
+    array_push($conditions, "session.SubprojectID IN({$subprojectIdList})");
 }
 
 // Join the conditions

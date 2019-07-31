@@ -91,7 +91,25 @@ class AppointmentApi {
     }
     fetchAppointments (filters = {}) {
         const queryString = Object.keys(filters)
-            .map(key => `${key}=${encodeURIComponent(filters[key])}`)
+            .map((key) => {
+                const value = filters[key];
+                if (value == undefined) {
+                    return "";
+                }
+                if (value instanceof Array) {
+                    if (value.length == 0) {
+                        return "";
+                    }
+                    return value
+                        .map(v => `${key}[]=${encodeURIComponent(v)}`)
+                        .join('&');
+                } else {
+                    return `${key}=${encodeURIComponent(value)}`;
+                }
+            })
+            .filter((part) => {
+                return part != "";
+            })
             .join("&");
         return fetch(
             `/schedule_module/ajax/list_appointments.php?${queryString}`,
