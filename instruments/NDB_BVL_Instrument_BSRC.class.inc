@@ -138,8 +138,10 @@ INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, Subp
      $this->addMonthYear("stopdate_occupationaltherapy","If, No, date stopped",$monthYearOptions);
      $this->XINRegisterRule("stopdate_occupationaltherapy", array("continue_occupationaltherapy{@}=={@}no"), "Required");
 
-     $this->addSelect("indgrp_occupationaltherapy","Individual or Group",$this->indgrp);
+      //multiselect1
+     $this->addSelect('indgrp_occupationaltherapy',"Individual or Group<BR><h5><i>(Cmd+Click or Ctrl+Click to select multiple options)</i></h5>", $this->indgrp, array("multiple"));
      $this->XINRegisterRule("indgrp_occupationaltherapy", array("servicetype_occupationaltherapy{@}=={@}yes"), "Required");
+     $this->_selectMultipleElements[] = "indgrp_occupationaltherapy";
 
      $this->addSelect("setting_occupationaltherapy","Setting",$this->setting);
      $this->XINRegisterRule("setting_occupationaltherapy", array("servicetype_occupationaltherapy{@}=={@}yes"), "Required");
@@ -163,8 +165,10 @@ INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, Subp
      $this->addMonthYear("stopdate_physicaltherapy","If, No, date stopped",$monthYearOptions);
      $this->XINRegisterRule("stopdate_physicaltherapy", array("continue_physicaltherapy{@}=={@}no"), "Required");
 
-     $this->addSelect("indgrp_physicaltherapy","Individual or Group",$this->indgrp);
-     $this->XINRegisterRule("indgrp_physicaltherapy", array("servicetype_physicaltherapy{@}=={@}yes"), "Required");
+      //multiselect2
+      $this->addSelect('indgrp_physicaltherapy',"Individual or Group<BR><h5><i>(Cmd+Click or Ctrl+Click to select multiple options)</i></h5>", $this->indgrp, array("multiple"));
+      $this->XINRegisterRule("indgrp_physicaltherapy", array("servicetype_physicaltherapy{@}=={@}yes"), "Required");
+      $this->_selectMultipleElements[] = "indgrp_physicaltherapy";
 
      $this->addSelect("setting_physicaltherapy","Setting",$this->setting);
      $this->XINRegisterRule("setting_physicaltherapy", array("servicetype_physicaltherapy{@}=={@}yes"), "Required");
@@ -188,8 +192,10 @@ INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, Subp
      $this->addMonthYear("stopdate_speechlangtherapy","If, No, date stopped",$monthYearOptions);
      $this->XINRegisterRule("stopdate_speechlangtherapy", array("continue_speechlangtherapy{@}=={@}no"), "Required");
 
-     $this->addSelect("indgrp_speechlangtherapy","Individual or Group",$this->indgrp);
+     //multiselect3
+     $this->addSelect('indgrp_speechlangtherapy',"Individual or Group<BR><h5><i>(Cmd+Click or Ctrl+Click to select multiple options)</i></h5>", $this->indgrp, array("multiple"));
      $this->XINRegisterRule("indgrp_speechlangtherapy", array("servicetype_speechlangtherapy{@}=={@}yes"), "Required");
+     $this->_selectMultipleElements[] = "indgrp_speechlangtherapy";
 
      $this->addSelect("setting_speechlangtherapy","Setting",$this->setting);
      $this->XINRegisterRule("setting_speechlangtherapy", array("servicetype_speechlangtherapy{@}=={@}yes"), "Required");
@@ -213,10 +219,15 @@ INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, Subp
      $this->addMonthYear("stopdate_behaviorintervention","If, No, date stopped",$monthYearOptions);
      $this->XINRegisterRule("stopdate_behaviorintervention", array("continue_behaviorintervention{@}=={@}no"), "Required");
 
-     $this->addSelect("indgrp_behaviorintervention","Individual or Group",$this->indgrp);
-     $this->XINRegisterRule("indgrp_behaviorintervention", array("servicetype_behaviorintervention{@}=={@}yes"), "Required");
+     $this->addSelect("","Individual or Group",$this->indgrp);
 
-     $this->addSelect("setting_behaviorintervention","Setting",$this->setting);
+       //multiselect4
+     $this->addSelect('indgrp_behaviorintervention',"Individual or Group<BR><h5><i>(Cmd+Click or Ctrl+Click to select multiple options)</i></h5>", $this->indgrp, array("multiple"));
+     $this->XINRegisterRule("indgrp_behaviorintervention", array("servicetype_behaviorintervention{@}=={@}yes"), "Required");
+     $this->_selectMultipleElements[] = "indgrp_behaviorintervention";
+
+
+       $this->addSelect("setting_behaviorintervention","Setting",$this->setting);
      $this->XINRegisterRule("setting_behaviorintervention", array("servicetype_behaviorintervention{@}=={@}yes"), "Required");
 
      $this->addNumericElement("avg_behaviorintervention","Average hours per week");
