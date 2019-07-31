@@ -113,6 +113,21 @@ export class App extends React.Component {
                 )
             });
         };
+        this.getPageData = () => {
+            Api.fetchAppointments(Object.assign(
+                {
+                    itemsPerPage : Number.MAX_SAFE_INTEGER,
+                    page : 0,
+                },
+                (
+                    (this.state.lockTabs && this.state.searchFilters != undefined) ?
+                        this.state.searchFilters :
+                        tabs[this.state.tabIndex].filters
+                )
+            )).then((page) => {
+                console.log(page);
+            });
+        };
 
         this.fetchSessionsOfCandidate = debounce(() => {
             const candId = this.state.candId;
@@ -784,6 +799,9 @@ export class App extends React.Component {
                             `${this.state.page.meta.itemsFound} items found`
                         }
                     </div>
+                    <button className="btn btn-primary" onClick={this.getPageData}>
+                        Download as CSV
+                    </button>
                 </div>
                 {editAppointmentButton}
             </div>
