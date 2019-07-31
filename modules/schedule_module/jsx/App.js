@@ -214,7 +214,13 @@ export class App extends React.Component {
                 ];
                 csv.push(line.map(quote).join(","));
             }
-            download("appointments.csv", csv.join("\n"));
+
+            const today = new Date();
+            const date = today.getFullYear() + "-" +(today.getMonth()+1) + "-" + today.getDate();
+            const time = today.getHours() + "_" + today.getMinutes() + "_" + today.getSeconds();
+            const datetime = date + "-" + time;
+
+            download("appointments-" + datetime + ".csv", csv.join("\n"));
         };
 
         this.fetchSessionsOfCandidate = debounce(() => {
