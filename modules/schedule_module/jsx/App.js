@@ -4,6 +4,49 @@ import {FilterForm} from "./FilterForm";
 import {EditForm} from "./EditForm";
 import {debounce} from "lodash";
 
+function download(filename, text) {
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    element.setAttribute('download', filename);
+
+    element.style.display = 'none';
+    document.body.appendChild(element);
+
+    element.click();
+
+    document.body.removeChild(element);
+}
+
+function deriveDataEntryStatus (a) {
+    let dataEntryStatus = "Unknown";
+    let dataEntryLabelColor = "default";
+    if (a.started != "1") {
+        dataEntryStatus  = "Upcoming";
+        dataEntryLabelColor = "default";
+    } else if (a.hasDataEntryComplete == "1") {
+        if (a.hasDataEntryInProgress == "1" || a.hasDataEntryNotStarted == "1") {
+            dataEntryStatus = "In Progress";
+            dataEntryLabelColor = "warning";
+        } else {
+            dataEntryStatus = "Complete";
+            dataEntryLabelColor = "success";                                       }
+    } else if (a.hasDataEntryInProgress == "1") {
+        dataEntryStatus = "In Progress";
+        dataEntryLabelColor = "warning";
+    } else if (a.hasDataEntryNotStarted == "1") {
+        dataEntryStatus = "Not Started";
+        dataEntryLabelColor = "warning";
+    } else {
+        dataEntryStatus = "No Data Found";
+        dataEntryLabelColor = "danger";
+    }
+
+    return {
+        dataEntryStatus,
+        dataEntryLabelColor,
+    };
+}
+
 const today = new Date();
 const yesterday = new Date(today.getTime() - 24*60*60*1000);
 const next30days = new Date(today.getTime() + 30 * 24*60*60*1000);
@@ -113,7 +156,7 @@ export class App extends React.Component {
                 )
             });
         };
-        this.getPageData = () => {
+        this.downloadAsCSV = () => {
             Api.fetchAppointments(Object.assign(
                 {
                     itemsPerPage : Number.MAX_SAFE_INTEGER,
@@ -125,8 +168,53 @@ export class App extends React.Component {
                         tabs[this.state.tabIndex].filters
                 )
             )).then((page) => {
-                console.log(page);
+                this.convertToCSV(page);
             });
+        };
+
+        this.convertToCSV = (page) => {
+            const quote = (str) => {
+                if (str.indexOf(`"`) > 0 || str.indexOf(",") > 0) {
+                    str = str.replace(/\"/g, `""`);
+                    return `"${str}"`;
+                } else {
+                    return str;
+                }
+            };
+            const csv = [];
+            const line = [
+                "DCCID",
+                "PSCID",
+                "Site",
+                "Visit Label",
+                "Subproject",
+                "Starts At",
+                "Appointment Type",
+                "Data Entry Status",
+            ];
+            csv.push(line.map(quote).join(","));
+
+            for (const row of page.data) {
+                const site = this.state.sites.find(item => item.CenterID == row.CenterID);
+                const appointmentType = this.state.appointmentTypes
+                    .find(item => item.AppointmentTypeID == row.AppointmentTypeID);
+
+                const {
+                    dataEntryStatus,
+                } = deriveDataEntryStatus(row);
+                const line = [
+                    row.CandID,
+                    row.PSCID,
+                    site.Name,
+                    row.Visit_label,
+                    row.title,
+                    row.StartsAt,
+                    appointmentType.Name,
+                    dataEntryStatus,
+                ];
+                csv.push(line.map(quote).join(","));
+            }
+            download("appointments.csv", csv.join("\n"));
         };
 
         this.fetchSessionsOfCandidate = debounce(() => {
@@ -645,28 +733,10 @@ export class App extends React.Component {
                                     const appointmentType = this.state.appointmentTypes
                                         .find(at => at.AppointmentTypeID == a.AppointmentTypeID);
 
-                                    let dataEntryStatus = "Unknown";
-                                    let dataEntryLabelColor = "default";
-                                    if (a.started != "1") {
-                                        dataEntryStatus  = "Upcoming";
-                                        dataEntryLabelColor = "default";
-                                    } else if (a.hasDataEntryComplete == "1") {
-                                        if (a.hasDataEntryInProgress == "1" || a.hasDataEntryNotStarted == "1") {
-                                            dataEntryStatus = "In Progress";
-                                            dataEntryLabelColor = "warning";
-                                        } else {
-                                            dataEntryStatus = "Complete";
-                                            dataEntryLabelColor = "success";                                       }
-                                    } else if (a.hasDataEntryInProgress == "1") {
-                                        dataEntryStatus = "In Progress";
-                                        dataEntryLabelColor = "warning";
-                                    } else if (a.hasDataEntryNotStarted == "1") {
-                                        dataEntryStatus = "Not Started";
-                                        dataEntryLabelColor = "warning";
-                                    } else {
-                                        dataEntryStatus = "No Data Found";
-                                        dataEntryLabelColor = "danger";
-                                    }
+                                    const {
+                                        dataEntryStatus,
+                                        dataEntryLabelColor,
+                                    } = deriveDataEntryStatus(a);
 
                                     return (
                                         <tr key={a.AppointmentID}>
@@ -799,8 +869,8 @@ export class App extends React.Component {
                             `${this.state.page.meta.itemsFound} items found`
                         }
                     </div>
-                    <button className="btn btn-primary" onClick={this.getPageData}>
-                        Download as CSV
+                    <button className="btn btn-primary" onClick={this.downloadAsCSV}>
+                        Download Table as CSV
                     </button>
                 </div>
                 {editAppointmentButton}
