@@ -218,9 +218,7 @@ INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, Subp
 
      $this->addMonthYear("stopdate_behaviorintervention","If, No, date stopped",$monthYearOptions);
      $this->XINRegisterRule("stopdate_behaviorintervention", array("continue_behaviorintervention{@}=={@}no"), "Required");
-
-     $this->addSelect("","Individual or Group",$this->indgrp);
-
+       
        //multiselect4
      $this->addSelect('indgrp_behaviorintervention',"Individual or Group<BR><h5><i>(Cmd+Click or Ctrl+Click to select multiple options)</i></h5>", $this->indgrp, array("multiple"));
      $this->XINRegisterRule("indgrp_behaviorintervention", array("servicetype_behaviorintervention{@}=={@}yes"), "Required");
