@@ -495,16 +495,11 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
                 }
             }
         }
-        function replaceString($val)
-        {
-            return str_replace(">", "Greater than or equal to ", "$val");
-        }
-        function replaceString2($val)
-        {
-            return str_replace("<", "Less than or equal to", "$val");
-        }
-        $scores = array_map("replaceString", $scores);
-        $scores = array_map("replaceString2", $scores);
+
+           $scores= str_replace(">", "Greater than or equal to ", $scores);
+
+            $scores= str_replace("<", "Less than or equal to ", $scores);
+
         $result = $db->update($this->table, $scores, array('CommentID'=>$this->getCommentID()));
     }
     function findRowScore($scale_array)
