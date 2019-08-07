@@ -295,8 +295,6 @@ if ($page < 0) {
 $itemsPerPage = isset($_GET["itemsPerPage"]) ? intval($_GET["itemsPerPage"]) : 20;
 if ($itemsPerPage < 1) {
     $itemsPerPage = 1;
-} else if ($itemsPerPage > 100) {
-    $itemsPerPage = 100;
 }
 
 $start = $page * $itemsPerPage;
