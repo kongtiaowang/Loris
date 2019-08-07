@@ -291,6 +291,7 @@ class DirectDataEntryMainPage
         $valid = $this->Instrument->directEntryValidation();
 
         if($valid === true) {
+            $this->Instrument->score();
             header("HTTP/1.0 200 OK");
             $DB = Database::singleton();
             $DB->update(
