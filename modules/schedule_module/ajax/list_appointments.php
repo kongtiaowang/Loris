@@ -300,6 +300,28 @@ if ($itemsPerPage < 1) {
 $start = $page * $itemsPerPage;
 $count = $itemsPerPage;
 
+$sortOrder = isset($_GET["sortOrder"]) ? strtoupper($_GET["sortOrder"]) : "ASC";
+if ($sortOrder != "ASC" && $sortOrder != "DESC") {
+    $sortOrder = "ASC";
+}
+
+$sortColumn = isset($_GET["sortColumn"]) ? $_GET["sortColumn"] : "PSCID";
+
+$columns = [
+    "PSCID",
+    "CandID",
+    "Visit_label",
+    "CenterID",
+    "title",
+    "StartsAt",
+    "AppointmentTypeName",
+    "Name",
+];
+
+if (!in_array($sortColumn, $columns)) {
+    $sortColumn = "PSCID";
+}
+
 // Selects all appointments if not filtering, selects all appointments
 $appointments = $DB->pselect(
     "
@@ -311,7 +333,9 @@ $appointments = $DB->pselect(
             session.CenterID,
             subproject.title,
             (NOW() > appointment.StartsAt) AS started,
-            {$dataEntryColumns}
+            {$dataEntryColumns},
+            appointment_type.Name AS AppointmentTypeName,
+            psc.Name
         FROM
             appointment
         JOIN
@@ -330,9 +354,14 @@ $appointments = $DB->pselect(
             subproject
         ON
             session.SubprojectID = subproject.SubprojectID
+        JOIN
+            psc
+        ON
+            session.CenterID = psc.CenterID
         WHERE
             {$conditionStr}
         ORDER BY
+            {$sortColumn} {$sortOrder},
             PSCID ASC,
             appointment.StartsAt DESC,
             session.Visit_label ASC

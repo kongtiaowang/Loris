@@ -120,6 +120,8 @@ export class App extends React.Component {
                     pagesFound : -1,
                 },
             },
+            sortOrder: "ASC",
+            sortColumn: "PSCID",
         };
 
         this.openAppointmentForm = () => {
@@ -419,6 +421,8 @@ export class App extends React.Component {
                 {
                     itemsPerPage : parseInt(this.state.desiredItemsPerPage),
                     page : parseInt(this.state.desiredPage),
+                    sortColumn : this.state.sortColumn,
+                    sortOrder : this.state.sortOrder,
                 },
                 this.state.searchFilters
             ))
@@ -433,6 +437,8 @@ export class App extends React.Component {
             {
                 itemsPerPage : parseInt(this.state.desiredItemsPerPage),
                 page : parseInt(this.state.desiredPage),
+                sortColumn : this.state.sortColumn,
+                sortOrder : this.state.sortOrder,
             },
             tabs[tabIndex].filters
         ))
@@ -646,7 +652,7 @@ export class App extends React.Component {
                 {createAppointmentButton}
                 </h>
                 <br/>
-                <ul className="nav nav-tabs" style={{margin : "10px"}}>
+                <ul className="nav nav-tabs" style={{marginTop : "10px", marginBottom : "10px", marginLeft: "0px"}}>
                     {
                         /* Map the tabs array to jsx element (makes new array; old array + new info) */
                         tabs.map((tab, index) => (
@@ -701,25 +707,193 @@ export class App extends React.Component {
                         <thead style={{backgroundColor : "#064785"}}>
                             <tr>
                                 <th>
-                                    DCCID
+                                    <button className="column-header" onClick={() => {
+                                        this.setState({
+                                            sortColumn : "CandID",
+                                            sortOrder : (
+                                                this.state.sortColumn == "CandID" &&
+                                                this.state.sortOrder == "ASC"
+                                            ) ?
+                                                "DESC" :
+                                                "ASC"
+                                        });
+                                        setTimeout(() => {
+                                            this.fetchTab();
+                                        }, 1);
+                                    }}>
+                                        DCCID
+                                        {
+                                            (this.state.sortColumn == "CandID") ?
+                                            <span className={
+                                                this.state.sortOrder == "DESC" ?
+                                                'glyphicon glyphicon-triangle-bottom' :
+                                                'glyphicon glyphicon-triangle-top'
+                                            }/> :
+                                            undefined
+                                        }
+                                    </button>
                                 </th>
                                 <th>
-                                    PSCID
+                                    <button className="column-header" onClick={() => {
+                                        this.setState({
+                                            sortColumn : "PSCID",
+                                            sortOrder : (
+                                                this.state.sortColumn == "PSCID" &&
+                                                this.state.sortOrder == "ASC"
+                                            ) ?
+                                                "DESC" :
+                                                "ASC"
+                                        });
+                                        setTimeout(() => {
+                                            this.fetchTab();
+                                        }, 1);
+                                    }}>
+                                        PSCID
+                                        {
+                                            (this.state.sortColumn == "PSCID") ?
+                                            <span className={
+                                                this.state.sortOrder == "DESC" ?
+                                                'glyphicon glyphicon-triangle-bottom' :
+                                                'glyphicon glyphicon-triangle-top'
+                                            }/> :
+                                            undefined
+                                        }
+                                    </button>
                                 </th>
                                 <th>
-                                    Site
+                                    <button className="column-header" onClick={() => {
+                                        this.setState({
+                                            sortColumn : "Name",
+                                            sortOrder : (
+                                                this.state.sortColumn == "Name" &&
+                                                this.state.sortOrder == "ASC"
+                                            ) ?
+                                                "DESC" :
+                                                "ASC"
+                                        });
+                                        setTimeout(() => {
+                                            this.fetchTab();
+                                        }, 1);
+                                    }}>
+                                        Site
+                                        {
+                                            (this.state.sortColumn == "Name") ?
+                                            <span className={
+                                                this.state.sortOrder == "DESC" ?
+                                                'glyphicon glyphicon-triangle-bottom' :
+                                                'glyphicon glyphicon-triangle-top'
+                                            }/> :
+                                            undefined
+                                        }
+                                    </button>
                                 </th>
                                 <th>
-                                    Visit Label
+                                    <button className="column-header" onClick={() => {
+                                        this.setState({
+                                            sortColumn : "Visit_label",
+                                            sortOrder : (
+                                                this.state.sortColumn == "Visit_label" &&
+                                                this.state.sortOrder == "ASC"
+                                            ) ?
+                                                "DESC" :
+                                                "ASC"
+                                        });
+                                        setTimeout(() => {
+                                            this.fetchTab();
+                                        }, 1);
+                                    }}>
+                                        Visit Label
+                                        {
+                                            (this.state.sortColumn == "Visit_label") ?
+                                            <span className={
+                                                this.state.sortOrder == "DESC" ?
+                                                'glyphicon glyphicon-triangle-bottom' :
+                                                'glyphicon glyphicon-triangle-top'
+                                            }/> :
+                                            undefined
+                                        }
+                                    </button>
                                 </th>
                                 <th>
-                                    Subproject
+                                    <button className="column-header" onClick={() => {
+                                        this.setState({
+                                            sortColumn : "title",
+                                            sortOrder : (
+                                                this.state.sortColumn == "title" &&
+                                                this.state.sortOrder == "ASC"
+                                            ) ?
+                                                "DESC" :
+                                                "ASC"
+                                        });
+                                        setTimeout(() => {
+                                            this.fetchTab();
+                                        }, 1);
+                                    }}>
+                                        Subproject
+                                        {
+                                            (this.state.sortColumn == "title") ?
+                                            <span className={
+                                                this.state.sortOrder == "DESC" ?
+                                                'glyphicon glyphicon-triangle-bottom' :
+                                                'glyphicon glyphicon-triangle-top'
+                                            }/> :
+                                            undefined
+                                        }
+                                    </button>
                                 </th>
                                 <th>
-                                    Starts At
+                                    <button className="column-header" onClick={() => {
+                                        this.setState({
+                                            sortColumn : "StartsAt",
+                                            sortOrder : (
+                                                this.state.sortColumn == "StartsAt" &&
+                                                this.state.sortOrder == "ASC"
+                                            ) ?
+                                                "DESC" :
+                                                "ASC"
+                                        });
+                                        setTimeout(() => {
+                                            this.fetchTab();
+                                        }, 1);
+                                    }}>
+                                        Starts At
+                                        {
+                                            (this.state.sortColumn == "StartsAt") ?
+                                            <span className={
+                                                this.state.sortOrder == "DESC" ?
+                                                'glyphicon glyphicon-triangle-bottom' :
+                                                'glyphicon glyphicon-triangle-top'
+                                            }/> :
+                                            undefined
+                                        }
+                                    </button>
                                 </th>
                                 <th>
-                                    Appointment Type
+                                    <button className="column-header" onClick={() => {
+                                        this.setState({
+                                            sortColumn : "AppointmentTypeName",
+                                            sortOrder : (
+                                                this.state.sortColumn == "AppointmentTypeName" &&
+                                                this.state.sortOrder == "ASC"
+                                            ) ?
+                                                "DESC" :
+                                                "ASC"
+                                        });
+                                        setTimeout(() => {
+                                            this.fetchTab();
+                                        }, 1);
+                                    }}>
+                                        Appointment Type
+                                        {
+                                            (this.state.sortColumn == "AppointmentTypeName") ?
+                                            <span className={
+                                                this.state.sortOrder == "DESC" ?
+                                                'glyphicon glyphicon-triangle-bottom' :
+                                                'glyphicon glyphicon-triangle-top'
+                                            }/> :
+                                            undefined
+                                        }
+                                    </button>
                                 </th>
                                 <th>
                                     Data Entry Status
@@ -829,7 +1003,7 @@ export class App extends React.Component {
                                                                     ),
                                                                 });
                                                         });
-                                                        wal.close();
+                                                        swal.close();
                                                     } else {
                                                         //swal("Canceled", "The appointment has not been deleted", "error");
                                                         swal.close();
