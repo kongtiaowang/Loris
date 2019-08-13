@@ -300,4 +300,25 @@
         ->register("MRI", new MriDataEntryExpression())
         ->register("Blood Collection", new BloodCollectionDataEntryExpression())
         ->getColumns();
+
+    $dataEntryStatusExpression = "
+    (
+        CASE
+            WHEN NOT (NOW() > StartsAt) THEN
+                'Upcoming'
+            WHEN hasDataEntryComplete THEN
+                IF(
+                    (hasDataEntryInProgress OR hasDataEntryNotStarted),
+                    'In Progress',
+                    'Complete'
+                )
+            WHEN hasDataEntryInProgress THEN
+                'In Progress'
+            WHEN hasDataEntryNotStarted THEN
+                'Not Started'
+            ELSE
+                'No Data Found'
+        END
+    )
+    ";
 ?>

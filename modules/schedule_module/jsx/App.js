@@ -17,33 +17,30 @@ function download(filename, text) {
     document.body.removeChild(element);
 }
 
-function deriveDataEntryStatus (a) {
-    let dataEntryStatus = "Unknown";
-    let dataEntryLabelColor = "default";
-    if (a.started != "1") {
-        dataEntryStatus  = "Upcoming";
-        dataEntryLabelColor = "default";
-    } else if (a.hasDataEntryComplete == "1") {
-        if (a.hasDataEntryInProgress == "1" || a.hasDataEntryNotStarted == "1") {
-            dataEntryStatus = "In Progress";
-            dataEntryLabelColor = "warning";
-        } else {
-            dataEntryStatus = "Complete";
-            dataEntryLabelColor = "success";                                       }
-    } else if (a.hasDataEntryInProgress == "1") {
-        dataEntryStatus = "In Progress";
-        dataEntryLabelColor = "warning";
-    } else if (a.hasDataEntryNotStarted == "1") {
-        dataEntryStatus = "Not Started";
-        dataEntryLabelColor = "warning";
-    } else {
-        dataEntryStatus = "No Data Found";
-        dataEntryLabelColor = "danger";
+function deriveDataEntryLabelColor (a) {
+    switch (a.dataEntryStatus) {
+        case "Upcoming": {
+            return "default";
+        }
+        case "In Progress": {
+            return "warning";
+        }
+        case "Complete": {
+            return "success";
+        }
+        case "Not Started": {
+            return "warning";
+        }
+        case "No Data Found":
+        default: {
+            return "danger";
+        }
     }
-
+}
+function deriveDataEntryStatus (a) {
     return {
-        dataEntryStatus,
-        dataEntryLabelColor,
+        dataEntryStatus : a.dataEntryStatus,
+        dataEntryLabelColor : deriveDataEntryLabelColor(a),
     };
 }
 
@@ -631,12 +628,19 @@ export class App extends React.Component {
                             lockTabs : true,
                             searchFilters : filters,
                         });
-                        Api.fetchAppointments(filters)
-                            .then((page) => {
-                                this.setState({
-                                    page : page
-                                });
+                        Api.fetchAppointments(Object.assign(
+                            {
+                                itemsPerPage : parseInt(this.state.desiredItemsPerPage),
+                                page : parseInt(this.state.desiredPage),
+                                sortColumn : this.state.sortColumn,
+                                sortOrder : this.state.sortOrder,
+                            },
+                            filters
+                        )).then((page) => {
+                            this.setState({
+                                page : page
                             });
+                        });
                     }}
                     onClear={() => {
                         this.setState({
@@ -896,7 +900,31 @@ export class App extends React.Component {
                                     </button>
                                 </th>
                                 <th>
-                                    Data Entry Status
+                                    <button className="column-header" onClick={() => {
+                                        this.setState({
+                                            sortColumn : "dataEntryStatus",
+                                            sortOrder : (
+                                                this.state.sortColumn == "dataEntryStatus" &&
+                                                this.state.sortOrder == "ASC"
+                                            ) ?
+                                                "DESC" :
+                                                "ASC"
+                                        });
+                                        setTimeout(() => {
+                                            this.fetchTab();
+                                        }, 1);
+                                    }}>
+                                        Data Entry Status
+                                        {
+                                            (this.state.sortColumn == "dataEntryStatus") ?
+                                            <span className={
+                                                this.state.sortOrder == "DESC" ?
+                                                'glyphicon glyphicon-triangle-bottom' :
+                                                'glyphicon glyphicon-triangle-top'
+                                            }/> :
+                                            undefined
+                                        }
+                                    </button>
                                 </th>
                                 <th>
                                     Edit
