@@ -33,7 +33,10 @@ class NDB_BVL_Instrument_BRIEF2_Teacher extends NDB_BVL_Instrument
         'self_monitor_raw_score',
         'task_monitor_raw_score',
         'material_org_raw_score',
-        'GEC_raw_score'
+        'GEC_raw_score',
+        'behav_reg_index_raw_score',
+        'emotion_reg_index_raw_score',
+        'cogn_reg_index_raw_score'
     );
     /**
     * Sets up basic data, such as the HTML_Quickform object, and so on.
@@ -125,9 +128,11 @@ class NDB_BVL_Instrument_BRIEF2_Teacher extends NDB_BVL_Instrument
 
 
         //score fields
-        $domains = array("inhibit" => "Inhibit","self_monitor" => "Self Monitor","shift" => "Shift",
-            "emotional_control" => "Emotional Control", "initiate" => "Initiate", "working_memory" => "Working Memory",
-            "plan" => "Plan/Organize","task_monitor" => "Task Monitor","material_org" => "Material Organization","GEC" => "Global Executive Composite",
+        $domains = array("inhibit" => "Inhibit","self_monitor" => "Self Monitor", "behav_reg_index"=>"Behavior Regulation Index",
+            "shift" => "Shift", "emotional_control" => "Emotional Control", "emotion_reg_index" =>"Emotion Regulation Index",
+            "initiate" => "Initiate", "working_memory" => "Working Memory", "plan" => "Plan/Organize","task_monitor" => "Task Monitor","material_org" => "Material Organization",
+            "cogn_reg_index"=> "Cognitive Regulation Index",
+            "GEC" => "Global Executive Composite",
 
         );
         $columnHeaders = array("raw_score" => "Raw Score", "T_score" => "T Score",
@@ -422,14 +427,20 @@ class NDB_BVL_Instrument_BRIEF2_Teacher extends NDB_BVL_Instrument
             $record['q53_does_not_bring_home_homework_sheets_materials'],
         );
         $scores['inhibit_raw_score']=$this->findRowScore($inhibit_array);
+        $scores['self_monitor_raw_score'] =$this->findRowScore($self_monitor_array);
+        $scores['behav_reg_index_raw_score'] = $scores['inhibit_raw_score'] + $scores['self_monitor_raw_score'];
+
         $scores['shift_raw_score'] =$this->findRowScore($shift_array);
-        $scores['emotional_control_raw_score']=$this->findRowScore($emotional_control_array);
+        $scores['emotional_control_raw_score'] =$this->findRowScore($emotional_control_array);
+        $scores['emotion_reg_index_raw_score'] =$scores['shift_raw_score'] +  $scores['emotional_control_raw_score'];
+
         $scores['initiate_raw_score']=$this->findRowScore($initiate_array);
         $scores['working_memory_raw_score']=$this->findRowScore($working_memory_array);
         $scores['plan_raw_score']=$this->findRowScore($plan_array);
-        $scores['self_monitor_raw_score'] =$this->findRowScore($self_monitor_array);
         $scores['task_monitor_raw_score']=$this->findRowScore($task_monitor_array);
         $scores['material_org_raw_score']=$this->findRowScore($material_org_array);
+        $scores['cogn_reg_index_raw_score']= $scores['initiate_raw_score'] + $scores['working_memory_raw_score'] +  $scores['plan_raw_score'] +  $scores['task_monitor_raw_score'] + $scores['material_org_raw_score'];
+
         $scores['GEC_raw_score']= $scores['inhibit_raw_score'] + $scores['shift_raw_score'] +
             $scores['emotional_control_raw_score'] +  $scores['initiate_raw_score']
             + $scores['working_memory_raw_score'] +  $scores['plan_raw_score']
@@ -442,7 +453,7 @@ class NDB_BVL_Instrument_BRIEF2_Teacher extends NDB_BVL_Instrument
         $age = Utility::calculateAge($dob, $record["Date_taken"]);
         $age_months = $age['year'] * 12 + $age['mon'] + ($age['day']/30);
         $age_years=$age_months/12;
-        $age_years=round($age_years);
+        $age_years=floor($age_years);
         if(in_array($age_years, range(5, 7))) {
             $age_range="5 to 7";
         }
@@ -467,11 +478,12 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
             $gender='F';
         }
 
-        $scales=array("inhibit","self_monitor","shift","emotional_control","initiate","working_memory","plan","task_monitor","material_org","GEC");
+        $scales=array("inhibit","self_monitor","behav_reg_index","shift","emotional_control","emotion_reg_index","initiate","working_memory","plan","task_monitor","material_org","cogn_reg_index","GEC");
 
 
         foreach ($scales as $field) {
             $fied_raw_score=$scores[$field.'_raw_score'];
+
 
             $query_scores1 = "SELECT * FROM BRIEF2_Teacher_lookup WHERE
                 age_years='$age_range' AND sex='$gender'  AND scale_raw_score= '$fied_raw_score' AND scale='$field'";
@@ -487,6 +499,7 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
             }
 
         }
+        $scores= str_replace(">", "Greater than ", $scores);
 
         $result = $db->update($this->table, $scores, array('CommentID'=>$this->getCommentID()));
     }
