@@ -49,9 +49,17 @@ if (isset($_GET["VisitLabel"])) {
     }
 
     // If filtering for visit label, add boolean
-    array_push($conditions, "session.Visit_label = :visitLabel");
+    array_push($conditions, "Visit_label = :visitLabel");
 
     $queryValues["visitLabel"] = $_GET["VisitLabel"];
+}
+
+// Filter by dataEntryStatus
+if (isset($_GET["dataEntryStatus"])) {
+
+    array_push($conditions, "{$dataEntryStatusExpression} = :dataEntryStatus");
+
+    $queryValues["dataEntryStatus"] = $_GET["dataEntryStatus"];
 }
 
 // Filter by Site (Center ID)
@@ -78,7 +86,7 @@ if (isset($_GET["CenterID"])) {
     }
 
     // If filtering for site, add boolean
-    array_push($conditions, "session.CenterID = :centerId");
+    array_push($conditions, "CenterID = :centerId");
 
     $queryValues["centerId"] = $_GET["CenterID"];
 }
@@ -106,7 +114,7 @@ if (isset($_GET["AppointmentTypeID"])) {
         ]));
     }
 
-    array_push($conditions, "appointment.AppointmentTypeID = :appointmentTypeId");
+    array_push($conditions, "AppointmentTypeID = :appointmentTypeId");
 
     $queryValues["appointmentTypeId"] = $_GET["AppointmentTypeID"];
 }
@@ -114,7 +122,7 @@ if (isset($_GET["AppointmentTypeID"])) {
 // Filter by DCCID
 if (isset($_GET["CandID"])) {
 
-    array_push($conditions, "session.CandID = :candId");
+    array_push($conditions, "CandID = :candId");
 
     $queryValues["candId"] = $_GET["CandID"];
 }
@@ -122,7 +130,7 @@ if (isset($_GET["CandID"])) {
 // Filter by PSCID
 if (isset($_GET["PSCID"])) {
 
-    array_push($conditions, "candidate.PSCID = :pscId");
+    array_push($conditions, "PSCID = :pscId");
 
     $queryValues["pscId"] = $_GET["PSCID"];
 }
@@ -137,7 +145,7 @@ if (isset($_GET["StartsAt"])) {
         ]));
     }
 
-    array_push($conditions, "appointment.StartsAt = :startsAt");
+    array_push($conditions, "StartsAt = :startsAt");
 
     $queryValues["startsAt"] = $_GET["StartsAt"];
 }
@@ -152,8 +160,8 @@ if (isset($_GET["StartDate"])) {
         ]));
     }
 
-    array_push($conditions, "appointment.StartsAt >= :startsAtMin");
-    array_push($conditions, "appointment.StartsAt < :startsAtMax");
+    array_push($conditions, "StartsAt >= :startsAtMin");
+    array_push($conditions, "StartsAt < :startsAtMax");
 
     $startsAtMin = $_GET["StartDate"] . " 00:00:00";
     $startsAtMax = date(
@@ -177,10 +185,10 @@ if (isset($_GET["StartTime"])) {
         ]));
     }
 
-    array_push($conditions, "TIME(appointment.StartsAt) >= :startsAtTimeMin");
+    array_push($conditions, "TIME(StartsAt) >= :startsAtTimeMin");
     array_push($conditions, "(
         :startsAtTimeMin = '23:59:00' OR
-        TIME(appointment.StartsAt) < :startsAtTimeMax
+        TIME(StartsAt) < :startsAtTimeMax
     )");
 
     $startsAtTimeMin = $_GET["StartTime"] . ":00";
@@ -205,7 +213,7 @@ if (isset($_GET["StartDateMin"])) {
         ]));
     }
 
-    array_push($conditions, "appointment.StartsAt >= :startsAtMin");
+    array_push($conditions, "StartsAt >= :startsAtMin");
 
     $startsAtMin = $_GET["StartDateMin"] . " 00:00:00";
 
@@ -222,7 +230,7 @@ if (isset($_GET["StartDateMax"])) {
         ]));
     }
 
-    array_push($conditions, "appointment.StartsAt < :startsAtMax");
+    array_push($conditions, "StartsAt < :startsAtMax");
 
     $startsAtMax = date(
         "Y-m-d",
@@ -257,7 +265,7 @@ if (isset($_GET["ProjectID"])) {
         )
     );
 
-    array_push($conditions, "candidate.ProjectID IN({$projectIdList})");
+    array_push($conditions, "ProjectID IN({$projectIdList})");
 }
 
 // Filter by Subproject
@@ -282,7 +290,7 @@ if (isset($_GET["SubprojectID"])) {
         )
     );
 
-    array_push($conditions, "session.SubprojectID IN({$subprojectIdList})");
+    array_push($conditions, "SubprojectID IN({$subprojectIdList})");
 }
 
 // Join the conditions
@@ -300,42 +308,87 @@ if ($itemsPerPage < 1) {
 $start = $page * $itemsPerPage;
 $count = $itemsPerPage;
 
+$sortOrder = isset($_GET["sortOrder"]) ? strtoupper($_GET["sortOrder"]) : "ASC";
+if ($sortOrder != "ASC" && $sortOrder != "DESC") {
+    $sortOrder = "ASC";
+}
+
+$sortColumn = isset($_GET["sortColumn"]) ? $_GET["sortColumn"] : "PSCID";
+
+$columns = [
+    "PSCID",
+    "CandID",
+    "Visit_label",
+    "CenterID",
+    "title",
+    "StartsAt",
+    "AppointmentTypeName",
+    "Name",
+    "dataEntryStatus",
+];
+
+if (!in_array($sortColumn, $columns)) {
+    $sortColumn = "PSCID";
+}
+
 // Selects all appointments if not filtering, selects all appointments
+$subQueryBody = "
+FROM
+    appointment
+JOIN
+    appointment_type
+ON
+    appointment_type.AppointmentTypeID = appointment.AppointmentTypeID
+JOIN
+    session
+ON
+    appointment.SessionID = session.ID
+JOIN
+    candidate
+ON
+    session.CandID = candidate.CandID
+JOIN
+    subproject
+ON
+    session.SubprojectID = subproject.SubprojectID
+JOIN
+    psc
+ON
+    session.CenterID = psc.CenterID
+";
+$subQuery = "
+SELECT
+    appointment.AppointmentID,
+    appointment.SessionID,
+    appointment.AppointmentTypeID,
+    appointment.StartsAt,
+    candidate.PSCID,
+    session.CandID,
+    session.Visit_label,
+    session.CenterID,
+    session.SubprojectID,
+    candidate.ProjectID,
+    subproject.title,
+    (NOW() > appointment.StartsAt) AS started,
+    appointment_type.Name AS AppointmentTypeName,
+    psc.Name,
+    {$dataEntryColumns}
+{$subQueryBody}
+";
 $appointments = $DB->pselect(
     "
         SELECT
-            appointment.*,
-            candidate.PSCID,
-            session.CandID,
-            session.Visit_label,
-            session.CenterID,
-            subproject.title,
-            (NOW() > appointment.StartsAt) AS started,
-            {$dataEntryColumns}
+            *,
+            {$dataEntryStatusExpression} AS dataEntryStatus
         FROM
-            appointment
-        JOIN
-            appointment_type
-        ON
-            appointment_type.AppointmentTypeID = appointment.AppointmentTypeID
-        JOIN
-            session
-        ON
-            appointment.SessionID = session.ID
-        JOIN
-            candidate
-        ON
-            session.CandID = candidate.CandID
-        JOIN
-            subproject
-        ON
-            session.SubprojectID = subproject.SubprojectID
+            ({$subQuery}) AS subQuery
         WHERE
             {$conditionStr}
         ORDER BY
+            {$sortColumn} {$sortOrder},
             PSCID ASC,
-            appointment.StartsAt DESC,
-            session.Visit_label ASC
+            StartsAt DESC,
+            Visit_label ASC
         LIMIT
             {$start}, {$count}
     ",
@@ -347,19 +400,7 @@ $itemsFound = $DB->pselectOne(
         SELECT
             COUNT(*)
         FROM
-            appointment
-        JOIN
-            session
-        ON
-            appointment.SessionID = session.ID
-        JOIN
-            candidate
-        ON
-            session.CandID = candidate.CandID
-        JOIN
-            subproject
-        ON
-            session.SubprojectID = subproject.SubprojectID
+            ({$subQuery}) AS subQuery
         WHERE
             {$conditionStr}
     ",
