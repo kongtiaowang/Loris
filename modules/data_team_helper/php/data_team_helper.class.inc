@@ -500,6 +500,9 @@ class Data_Team_Helper extends \NDB_Form
         }
         
         global $DB;
+        # IBIS specific change: Join appointment table on session ID & behavioral appointment type and 
+        # only consider instrument to be incomplete if the start date according to the schedule module
+        # has passed.
         $query = "SELECT DISTINCT s.ID, s.visit_label, c.PSCID,s.candid,".
                  " f.SessionID, f.test_name,f.data_entry,f.commentid,".
                  " t.Full_name FROM session s".
