@@ -512,7 +512,7 @@ class Data_Team_Helper extends \NDB_Form
         $where = " WHERE s.Active = 'Y' AND c.Active = 'Y'".
                    " AND coalesce(f.data_entry,'In Progress') = 'In Progress'".
                    " AND psc.Centerid!= '1' AND c.Entity_type != 'Scanner'".
-                   " AND a.AppointmentID >= CURDATE()";
+                   " AND CURDATE() >= a.StartsAt";
 
         if (count($ddeInstruments) > 0) {
             $ddeInstruments = implode(",", $ddeInstruments);
