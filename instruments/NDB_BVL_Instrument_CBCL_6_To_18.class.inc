@@ -1509,6 +1509,7 @@ function score()
         $record['q57_physically_attacks_people'],
         $record['q68_screams_a_lot'],
         $record['q86_stubborn_sullen_irritable'],
+        $record['q87_sudden_changes_in_mood_feelings'],
         $record['q88_sulks_a_lot'],
         $record['q89_suspicious'],
         $record['q94_teases_a_lot'],
