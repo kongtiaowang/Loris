@@ -23,6 +23,69 @@
 class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
 {
     use instrument_validator;
+    var $ValidityEnabled = false;
+    var $ValidityRequired = false;
+    var $scoreLabels = array('anxious_score',
+        'anxious_T_score',
+        'anxious_percentile',
+        'depressed_score',
+        'depressed_T_score',
+        'depressed_percentile',
+        'som_comp_score',
+        'som_comp_T_score',
+        'som_comp_percentile',
+        'social_prob_score',
+        'social_prob_T_score',
+        'social_prob_percentile',
+        'thought_prob_score',
+        'thought_prob_T_score',
+        'thought_prob_percentile',
+        'rule_break_behav_score',
+        'rule_break_behav_T_score',
+        'rule_break_behav_percentile',
+        'aggr_behav_score',
+        'aggr_behav_T_score',
+        'aggr_behav_percentile',
+        'attention_prob_score',
+        'attention_prob_T_score',
+        'attention_prob_percentile',
+        'internalizing_score',
+        'internalizing_T_score',
+        'internalizing_percentile',
+        'externalizing_score',
+        'externalizing_T_score',
+        'externalizing_percentile',
+        'total_problems_score',
+        'total_problems_T_score',
+        'total_problems_percentile',
+        'depressive_prob_score',
+        'depressive_prob_T_score',
+        'depressive_prob_percentile',
+        'anx_prob_score',
+        'anx_prob_T_score',
+        'anx_prob_percentile',
+        'som_prob_score',
+        'som_prob_T_score',
+        'som_prob_percentile',
+        'attention_hyper_prob_score',
+        'attention_hyper_prob_T_score',
+        'attention_hyper_prob_percentile',
+        'oppo_def_prob_score',
+        'oppo_def_prob_T_score',
+        'oppo_def_prob_percentile',
+        'conduct_prob_score',
+        'conduct_prob_T_score',
+        'conduct_prob_percentile',
+        'sluggish_cogn_tempo_score',
+        'sluggish_cogn_tempo_T_score',
+        'sluggish_cogn_tempo_percentile',
+        'obsessive_comp_prob_score',
+        'obsessive_comp_prob_T_score',
+        'obsessive_comp_prob_percentile',
+        'stress_prob_score',
+        'stress_prob_T_score',
+        'stress_prob_percentile',
+    );
     /**
     * Sets up basic data, such as the HTML_Quickform object, and so on.
     *
@@ -91,6 +154,74 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
         $this->addHeader("Teacher's Report Form (TRF) for Ages 6-18");
 
         $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
+
+        for($i=1;$i<=4;$i++)
+        {
+            if($i==1) {
+                $this->form->addElement('header', null, "Syndrome Scales  ");
+                $domains=array("anxious" => "Anxious/Depressed","depressed" => "Withdrawn/Depressed","som_comp" => "Somatic Complaints",
+                    "social_prob" => "Social Problems", "thought_prob" => "Thought Problems", "attention_prob" => "Attention Problems",
+                    "rule_break_behav" => "Rule Breaking Behaviour",
+                    "aggr_behav" => "Aggressive Behaviour",
+                );
+            }
+            if($i==2) {
+                $this->form->addElement('header', null, "Internalizing, Externalizing, Total Problems, Other Problems  ");
+                $domains=array("internalizing" => "Internalizing","externalizing" => "Externalizing","total_problems" => "Total Problems",
+                );
+            }
+            if($i==3)
+            {
+                $this->form->addElement('header', null, "DSM-5-Oriented Scales  ");
+                $domains = array("depressive_prob" => "Depressive Problems","anx_prob" => "Anxiety Problems","som_prob" => "Somatic Problems",
+                    "attention_hyper_prob" => "Attention Deficit/ Hyperactivity Problems", "oppo_def_prob" => "Oppositional Defiant Problems",
+                    "conduct_prob" => "Conduct Problem"
+                );
+            }
+            if($i==4)
+            {
+                $this->form->addElement('header', null, "2007 Scales");
+                $domains = array("sluggish_cogn_tempo" => "Sluggish Cognitive Tempo","obsessive_comp_prob" => " Obsessive-Compulsive Problems",
+                    "stress_prob" => " Stress Problems",
+
+                );
+            }
+            //scoring column headers
+            $group[] = $this->form->createElement('static', "score", null, null);
+            $group[] = $this->form->createElement('static', "T_score", null, null);
+            $group[] = $this->form->createElement('static', "percentile", null, null);
+            $this->form->addGroup($group, 'score_header_group_'.$i, "<strong>Domain</strong>", $this->_GUIDelimiter, FALSE);
+            unset($group);
+
+
+            //score fields
+
+            $columnHeaders = array("score" => "Score", "T_score" => "T Score","percentile" =>"Percentile");
+
+            foreach ($columnHeaders as $field => $label) {
+                $columnHeaders[$field] .= "     ";
+            }
+            $this->localDefaults = array_merge($this->localDefaults, $columnHeaders);
+
+            foreach ($domains as $field => $label) {
+                foreach ($columnHeaders as $scoreField => $scoreLabel) {
+
+                    $group[] = $this->form->createElement('static', "{$field}_{$scoreField}", null, null);
+                }
+                $this->form->addGroup($group, "{$label}_group_{$i}", $label, $this->_GUIDelimiter, FALSE);
+                unset($group);
+
+
+            }
+
+
+            //scoring column headers
+            $group[] = $this->form->createElement('static', "score", null, null);
+            $group[] = $this->form->createElement('static', "T_score", null, null);
+            $group[] = $this->form->createElement('static', "percentile", null, null);
+            $this->form->addGroup($group, 'score_header_group_'.$i, "<strong>Domain</strong>", $this->_GUIDelimiter, FALSE);
+            unset($group);
+        }
     }
 
     /**
@@ -849,6 +980,436 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
         }
 
         return $errors;
+    }
+    function score()
+    {
+
+
+        if($this->_determineDataEntryCompletionStatus() == "Incomplete") {
+            return;
+        }
+        $scores['score_validity'] =NULL;
+
+        //null scores
+        $this->_nullScores($this->scoreLabels);
+
+        //get the saved scores
+        $db =& Database::singleton();
+        $query = "SELECT * FROM $this->table WHERE CommentID = '$this->commentID'";
+        $record = $db->pselectRow($query, array());
+
+
+        // Syndrome Raw Score calculation Start
+        $anxious_array = array(
+            $record['q14_cries_a_lot'],
+            $record['q29_fears_animals_situations_places'],
+            $record['q30_fears_going_to_school'],
+            $record['q31_fears_might_think_do_something_bad'],
+            $record['q32_feels_has_to_be_perfect'],
+            $record['q33_feels_complains_no_one_loves_them'],
+            $record['q35_feels_worthless_inferior'],
+            $record['q45_nervous_high_strung_tense '],
+            $record['q50_too_fearful_or_anxious'],
+            $record['q52_feels_too_guilty'],
+            $record['q71_self_conscious_easily_embarrassed'],
+            $record['q81_feels_hurt_when_criticized '],
+            $record['q91_talks_about_killing_self'],
+            $record['q112_worries'],
+            $record['q106_overly_anxious_to_please'],
+            $record['q108_is_afraid_making_mistakes'],
+            $record['q112_worries'],
+
+        );
+        $depressed_array = array(
+            $record['q5_very_little_they_enjoy'],
+            $record['q42_would_rather_be_alone'],
+            $record['q65_refuses_to_talk'],
+            $record['q69_secretive'],
+            $record['q75_too_shy_or_timid'],
+            $record['q102_underactive_slow_moving_lacks_energy'],
+            $record['q103_unhappy_sad_depressed'],
+            $record['q111_withdrawn_doesnt_get_involved_with_others'],
+
+        );
+        $som_comp_array = array(
+            $record['q51_feels_dizzy_lightheaded'],
+            $record['q54_overtired_without_good_reason'],
+            $record['q56a_aches_or_pains'],
+            $record['q56b_headaches'],
+            $record['q56c_nausea_feels_sick'],
+            $record['q56d_eye_problems '],
+            $record['q56e_rashes_or_skin_problems'],
+            $record['q56f_stomachaches'],
+            $record['q56g_vomiting_throwing_up'],
+
+        );
+        $social_prob_array = array(
+            $record['q11_clings_to_adults_dependent'],
+            $record['q12_complains_of_loneliness'],
+            $record['q25_doesnt_get_along_with_other_pupils'],
+            $record['q27_easily_jealous'],
+            $record['q34_feels_others_out_to_get_them'],
+            $record['q36_gets_hurt_a_lot_accident_prone'],
+            $record['q38_gets_teased_a_lot'],
+            $record['q48_not_liked_by_other_pupils '],
+            $record['q62_poorly_coordinated_clumsy'],
+            $record['q64_prefers_younger_children'],
+            $record['q79_speech_problem'],
+
+
+        );
+        $thought_prob_array = array(
+            $record['q9_cant_get_mind_off_certain_thoughts'],
+            $record['q18_harms_self_attempts_suicide'],
+            $record['q40_hears_sounds_voices_arent_there'],
+            $record['q46_nervous_movements_twitching'],
+            $record['q58_picks_nose_skin_other_parts_of_body'],
+            $record['q66_repeats_certain_acts_compulsions'],
+            $record['q70_sees_things_that_arent_there'],
+            $record['q83_stores_up_many_things_doesnt_need'],
+            $record['q84_strange_behaviour'],
+            $record['q85_strange_ideas'],
+        );
+        $attention_prob_array = array(
+
+            $record['q1_acts_too_young'],
+            $record['q2_hums_makes_noises_in_class '],
+            $record['q4_fails_to_finish_things_starts'],
+            $record['q7_bragging_boasting '],
+            $record['q8_cant_concentrate_for_long'],
+            $record['q10_cant_sit_still_restless'],
+            $record['q13_confused_in_a_fog'],
+            $record['q15_fidgets'],
+            $record['q17_daydreams_gets_lost_in_thoughts'],
+            $record['q22_difficulty_following_directions'],
+            $record['q24_disturbs_other_pupils'],
+            $record['q41_impulsive_acts_without_thinking'],
+            $record['q49_has_difficulty_learning'],
+            $record['q53_talks_out_of_turn '],
+            $record['q60_apathetic_unmotivated'],
+            $record['q61_poor_school_work'],
+            $record['q67_disrupts_class_discipline'],
+            $record['q72_messy_work'],
+            $record['q73_behaves_irresponsibly'],
+            $record['q74_showing_off_clowning'],
+            $record['q78_inattentive_easily_distracted'],
+            $record['q80_stares_blankly'],
+            $record['q92_underachieving_not_working_to_potential'],
+            $record['q93_talks_too_much'],
+            $record['q100_fails_to_carry_out_tasks '],
+            $record['q109_whining'],
+
+        );
+        $rule_break_behav_array = array(
+            $record['q26_doesnt_feel_guilty_misbehaving'],
+            $record['q28_breaks_school_rules'],
+            $record['q39_hangs_around_others_who_get_in_trouble'],
+            $record['q43_lying_or_cheating'],
+            $record['q63_prefers_older_children_youths'],
+            $record['q82_steals'],
+            $record['q90_swearing_or_obscene_language'],
+            $record['q96_seems_preoccupied_with_sex'],
+            $record['q98_tardy_to_school_class'],
+            $record['q99_smokes_chews_sniffs_tobacco '],
+            $record['q101_truancy_unexplained_absence'],
+            $record['q105_uses_alcohol_drugs_nonmedical'],
+
+        );
+        $aggr_behav_array = array(
+            $record['q3_argues_a_lot'],
+            $record['q16_cruelty_bullying_meanness'],
+            $record['q16_cruelty_bullying_meanness'],
+            $record['q19_demands_a_lot_of_attention'],
+            $record['q20_destroys_own_things'],
+            $record['q21_destroys_others_property'],
+            $record['q23_disobedient_at_school'],
+            $record['q37_gets_in_many_fights'],
+            $record['q57_physically_attacks_people'],
+            $record['q68_screams_a_lot'],
+            $record['q76_explosive_unpredictable_behavior'],
+            $record['q77_demands_must_be_met_immediately'],
+            $record['q86_stubborn_sullen_irritable'],
+            $record['q87_sudden_changes_in_mood_feelings'],
+            $record['q88_sulks_a_lot'],
+            $record['q89_suspicious'],
+            $record['q94_teases_a_lot'],
+            $record['q95_temper_tantrums_hot_temper'],
+            $record['q97_threatens_people'],
+            $record['q104_unusually_loud'],
+        );
+
+        $other_prob_array= array(
+            $record['q44_bites_fingernails'],
+            $record['q47_overconforms_to_rules '],
+            $record['q55_overweight'],
+            $record['q56h_other'],
+            $record['q59_sleeps_in_class'],
+            $record['q107_dislikes_school'],
+            $record['q110_unclean_personal_appearance'],
+            $record['additional_problem_1'],
+            $record['additional_problem_2'],
+            $record['additional_problem_3'],
+        );
+
+        $scores['anxious_score'] = $this->findRawScore($anxious_array);
+        $scores['depressed_score'] = $this->findRawScore($depressed_array);
+        $scores['som_comp_score'] = $this->findRawScore($som_comp_array);
+        $scores['social_prob_score'] = $this->findRawScore($social_prob_array);
+        $scores['thought_prob_score'] = $this->findRawScore($thought_prob_array);
+        $scores['attention_prob_score'] = $this->findRawScore($attention_prob_array);
+        $scores['rule_break_behav_score'] = $this->findRawScore($rule_break_behav_array);
+        $scores['aggr_behav_score'] =  $this->findRawScore($aggr_behav_array);
+        $scores['other_prob_score'] =  $this->findRawScore($other_prob_array);
+        // Syndrome Raw Score calculation Finished
+        //Internalization
+        $scores['internalizing_score'] = $this->findRawScore($anxious_array) +  $this->findRawScore($depressed_array) + $this->findRawScore($som_comp_array);
+        $scores['externalizing_score'] = $this->findRawScore($rule_break_behav_array)  +  $this->findRawScore($aggr_behav_array);
+        // Sum of ext +int +other_prob +social + thought + attention
+        $scores['total_problems_score'] =$this->findRawScore($social_prob_array) + $this->findRawScore($thought_prob_array) +  $this->findRawScore($attention_prob_array) + $this->findRawScore($other_prob_array) + $scores['internalizing_score'] + $scores['externalizing_score'];
+        //Internalization, Ext, to scoring finish
+        //DSM oriented scoring start
+        $depressive_prob_array=array(
+            $record['q5_very_little_they_enjoy'],
+            $record['q14_cries_a_lot'],
+            $record['q18_harms_self_attempts_suicide'],
+            $record['q35_feels_worthless_inferior'],
+            $record['q52_feels_too_guilty'],
+            $record['q54_overtired_without_good_reason'],
+            $record['q60_apathetic_unmotivated'],
+            $record['q91_talks_about_killing_self'],
+            $record['q102_underactive_slow_moving_lacks_energy'],
+            $record['q103_unhappy_sad_depressed'],
+        );
+        $scores['depressive_prob_score'] = $this->findRawScore($depressive_prob_array);
+
+        $anx_prob_array=array(
+            $record['q11_clings_to_adults_dependent'],
+            $record['q29_fears_animals_situations_places'],
+            $record['q30_fears_going_to_school'],
+            $record['q31_fears_might_think_do_something_bad'],
+            $record['q45_nervous_high_strung_tense'],
+            $record['q47_nightmares'],
+            $record['q50_too_fearful_or_anxious'],
+            $record['q71_self_conscious_easily_embarrassed'],
+            $record['q112_worries'],
+
+        );
+        $scores['anx_prob_score'] = $this->findRawScore($anx_prob_array);
+
+        $som_prob_array=array(
+            $record['q56a_aches_or_pains'],
+            $record['q56b_headaches'],
+            $record['q56c_nausea_feels_sick'],
+            $record['q56d_eye_problems'],
+            $record['q56e_rashes_or_skin_problems'],
+            $record['q56f_stomachaches'],
+            $record['q56g_vomiting_throwing_up'],
+
+        );
+        $scores['som_prob_score'] = $this->findRawScore($som_prob_array);
+
+        $attention_hyper_prob_array=array(
+            $record['q4_fails_to_finish_things_starts'],
+            $record['q8_cant_concentrate_for_long'],
+            $record['q10_cant_sit_still_restless'],
+            $record['q15_fidgets'],
+            $record['q22_difficulty_following_directions'],
+            $record['q24_disturbs_other_pupils'],
+            $record['q41_impulsive_acts_without_thinking'],
+            $record['q53_talks_out_of_turn'],
+            $record['q67_disrupts_class_discipline'],
+            $record['q78_inattentive_easily_distracted'],
+            $record['q93_talks_too_much'],
+            $record['q100_fails_to_carry_out_tasks'],
+            $record['q104_unusually_loud'],
+
+        );
+        $scores['attention_hyper_prob_score']=$this->findRawScore($attention_hyper_prob_array);
+
+        $oppo_def_prob_array=array(
+            $record['q3_argues_a_lot'],
+            $record['q6_defiant_talks_back'],
+            $record['q23_disobedient_at_school'],
+            $record['q86_stubborn_sullen_irritable'],
+            $record['q95_temper_tantrums_hot_temper'],
+        );
+        $scores['oppo_def_prob_score']=$this->findRawScore($oppo_def_prob_array);
+
+        $conduct_prob_array=array(
+            $record['q16_cruelty_bullying_meanness'],
+            $record['q21_destroys_others_property'],
+            $record['q26_doesnt_feel_guilty_misbehaving'],
+            $record['q28_breaks_school_rules'],
+            $record['q37_gets_in_many_fights'],
+            $record['q39_hangs_around_others_who_get_in_trouble'],
+            $record['q43_lying_or_cheating'],
+            $record['q57_physically_attacks_people'],
+            $record['q73_behaves_irresponsibly'],
+            $record['q82_steals'],
+            $record['q90_swearing_or_obscene_language'],
+            $record['q97_threatens_people'],
+            $record['q101_truancy_unexplained_absence'],
+
+        );
+        $scores['conduct_prob_score']=$this->findRawScore($conduct_prob_array);
+        // DSM oriented scoring finish
+
+        //2007 scales scoring start
+
+        $sluggish_cogn_tempo_array=array(
+            $record['q13_confused_in_a_fog'],
+            $record['q17_daydreams_gets_lost_in_thoughts'],
+            $record['q60_apathetic_unmotivated'],
+            $record['q80_stares_blankly'],
+            $record['q102_underactive_slow_moving_lacks_energy'],
+
+        );
+        $scores['sluggish_cogn_tempo_score'] =$this->findRawScore($sluggish_cogn_tempo_array);
+
+        $obsessive_comp_prob_array=array(
+            $record['q9_cant_get_mind_off_certain_thoughts'],
+            $record['q31_fears_might_think_do_something_bad'],
+            $record['q32_feels_has_to_be_perfect'],
+            $record['q52_feels_too_guilty'],
+            $record['q66_repeats_certain_acts_compulsions'],
+            $record['q84_strange_behaviour'],
+            $record['q85_strange_ideas'],
+            $record['q112_worries'],
+
+        );
+        $scores['obsessive_comp_prob_score'] =$this->findRawScore($obsessive_comp_prob_array);
+
+        $stress_prob_array=array(
+            $record['q3_argues_a_lot'],
+            $record['q8_cant_concentrate_for_long'],
+            $record['q9_cant_get_mind_off_certain_thoughts'],
+            $record['q11_clings_to_adults_dependent'],
+            $record['q31_fears_might_think_do_something_bad'],
+            $record['q34_feels_others_out_to_get_them'],
+            $record['q45_nervous_high_strung_tense'],
+            $record['q50_too_fearful_or_anxious'],
+            $record['q52_feels_too_guilty'],
+            $record['q69_secretive'],
+            $record['q87_sudden_changes_in_mood_feelings'],
+            $record['q103_unhappy_sad_depressed'],
+            $record['q111_withdrawn_doesnt_get_involved_with_others'],
+
+
+        );
+        $scores['stress_prob_score'] =$this->findRawScore($stress_prob_array);
+        // 2007 scoring finish
+
+        $timepoint =& TimePoint::singleton($this->getSessionID());
+        $dob = $timepoint->getEffectiveDateOfBirth();
+
+        $age = Utility::calculateAge($dob, $record["Date_taken"]);
+
+        $age_months = $age['year'] * 12 + $age['mon'] + ($age['day'] / 30);
+        $age_years = $age_months / 12;
+        $age_years = floor($age_years);
+        if (in_array($age_years, range(6, 11))) {
+            $age_range = "6 to 11";
+        } else if (in_array($age_years, range(12, 18))) {
+            $age_range = "12 to 18";
+        } else if ($age_years < 6 && $age_years >18) {
+            $scores['score_validity'] = "Age not valid for scoring";
+        }
+
+        if ($scores['score_validity'] != NULL) {
+            echo "T score and classification are applicable only for ages  6 to 18 years";
+            echo "\n";
+        }
+
+
+        $query_gender = "SELECT Gender FROM candidate as c, session as s, flag as f, $this->table as t WHERE t.CommentID = '$this->commentID'
+AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
+        $record_gender = $db->pselectRow($query_gender, array());
+        if ($record_gender['Gender'] == 'Male') {
+            $gender = 'M';
+        }
+        if ($record_gender['Gender'] == 'Female') {
+            $gender = 'F';
+        }
+        $scales=array(
+            'anxious',
+            'depressed',
+            'som_comp',
+            'social_prob',
+            'thought_prob',
+            'rule_break_behav',
+            'aggr_behav',
+            'attention_prob',
+            'internalizing',
+            'externalizing',
+            'total_problems',
+            'depressive_prob',
+            'anx_prob',
+            'som_prob',
+            'attention_hyper_prob',
+            'oppo_def_prob',
+            'conduct_prob',
+            'sluggish_cogn_tempo',
+            'obsessive_comp_prob',
+            'stress_prob'
+        );
+
+
+        foreach ($scales as $field) {
+            $fied_raw_score=$scores[$field.'_score'];
+
+            $query_scores1 = "SELECT * FROM CBCL_6_To_18_lookup WHERE
+                age_years='$age_range' AND sex='$gender'  AND scale_raw_score= '$fied_raw_score' AND scale='$field'";
+            $record_1 = $db->pselectRow($query_scores1, array());
+            if (array_key_exists('scale_T_score', $record_1)) {
+                if ($record_1['scale_T_score'] == "" || ($record_1['scale_T_score'] == NULL)) {
+                    $scores[$field . '_T_score'] = "NA";
+                } else {
+                    $scores[$field . '_T_score'] = ($record_1['scale_T_score']);
+                }
+            } else {
+                $scores[$field . '_T_score'] = "NA";
+            }
+
+            if (array_key_exists('scale_percentile', $record_1)) {
+                if ($record_1['scale_percentile'] == "" || ($record_1['scale_percentile'] == NULL)) {
+                    $scores[$field . '_percentile'] = "NA";
+                } else {
+                    $scores[$field . '_percentile'] = ($record_1['scale_percentile']);
+                }
+            } else {
+                $scores[$field . '_percentile'] = "NA";
+            }
+
+
+        }
+
+        $result = $db->update($this->table, $scores, array('CommentID'=>$this->getCommentID()));
+
+
+    }
+    function findRawScore($scale_array)
+    {
+        $raw_score=0;
+        foreach ($scale_array as $val)
+        {
+            if($val=='0')
+            {
+                $raw_score=$raw_score+0;
+            }
+            if($val=='1')
+            {
+                $raw_score=$raw_score+1;
+            }
+            if($val=='2')
+            {
+                $raw_score=$raw_score+2;
+            }
+            if($val=='3')
+            {
+                $raw_score=$raw_score+3;
+            }
+        }
+        return $raw_score;
     }
 }
 ?>
