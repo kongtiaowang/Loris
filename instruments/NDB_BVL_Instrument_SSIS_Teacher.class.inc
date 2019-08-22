@@ -460,7 +460,7 @@ class NDB_BVL_Instrument_SSIS_Teacher extends NDB_BVL_Instrument
 			"q68_says_bad_about_self"    => "68. Says bad things about self.",
 			"q69_disobeys_rules"         => "69. Disobeys rules or requests.",
 			"q70_low_energy_lethargic"   => "70. Has low energy or is lethargic.",
-			"q71_sleeping_problems"      => "71. Has sleeping problems.",
+			"q71_sleeping_problems"      => "71. Gets Distracted Easily.",
 			"q72_odd_gestures"           => "72. Uses odd physical gestures in interactions.",
 			"q73_talks_back"             => "73. Talks back to adults.",
 			"q74_sad_depressed"          => "74. Acts sad or depressed.",
