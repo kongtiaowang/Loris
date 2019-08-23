@@ -85,7 +85,16 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
         'stress_prob_score',
         'stress_prob_T_score',
         'stress_prob_percentile',
+        'Inatt_score',
+        'Inatt_T_score',
+        'Inatt_percentile',
+        'HyperImp_score',
+        'HyperImp_T_score',
+        'HyperImp_percentile',
     );
+
+
+
     /**
     * Sets up basic data, such as the HTML_Quickform object, and so on.
     *
@@ -155,7 +164,7 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
 
         $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
 
-        for($i=1;$i<=4;$i++)
+        for($i=1;$i<=5;$i++)
         {
             if($i==1) {
                 $this->form->addElement('header', null, "Syndrome Scales  ");
@@ -170,7 +179,12 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
                 $domains=array("internalizing" => "Internalizing","externalizing" => "Externalizing","total_problems" => "Total Problems",
                 );
             }
-            if($i==3)
+            if($i==3) {
+                $this->form->addElement('header', null, "Attention Problems Subscales:  ");
+                $domains=array("Inatt" => "Inattention (I)","HyperImp" => "Hyperactivity-Impulsivity (H-I)",
+                );
+            }
+            if($i==4)
             {
                 $this->form->addElement('header', null, "DSM-5-Oriented Scales  ");
                 $domains = array("depressive_prob" => "Depressive Problems","anx_prob" => "Anxiety Problems","som_prob" => "Somatic Problems",
@@ -178,7 +192,7 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
                     "conduct_prob" => "Conduct Problem"
                 );
             }
-            if($i==4)
+            if($i==5)
             {
                 $this->form->addElement('header', null, "2007 Scales");
                 $domains = array("sluggish_cogn_tempo" => "Sluggish Cognitive Tempo","obsessive_comp_prob" => " Obsessive-Compulsive Problems",
@@ -1008,18 +1022,17 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
             $record['q32_feels_has_to_be_perfect'],
             $record['q33_feels_complains_no_one_loves_them'],
             $record['q35_feels_worthless_inferior'],
-            $record['q45_nervous_high_strung_tense '],
+            $record['q45_nervous_high_strung_tense'],
             $record['q50_too_fearful_or_anxious'],
             $record['q52_feels_too_guilty'],
             $record['q71_self_conscious_easily_embarrassed'],
-            $record['q81_feels_hurt_when_criticized '],
+            $record['q81_feels_hurt_when_criticized'],
             $record['q91_talks_about_killing_self'],
-            $record['q112_worries'],
             $record['q106_overly_anxious_to_please'],
             $record['q108_is_afraid_making_mistakes'],
             $record['q112_worries'],
-
         );
+
         $depressed_array = array(
             $record['q5_very_little_they_enjoy'],
             $record['q42_would_rather_be_alone'],
@@ -1037,7 +1050,7 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
             $record['q56a_aches_or_pains'],
             $record['q56b_headaches'],
             $record['q56c_nausea_feels_sick'],
-            $record['q56d_eye_problems '],
+            $record['q56d_eye_problems'],
             $record['q56e_rashes_or_skin_problems'],
             $record['q56f_stomachaches'],
             $record['q56g_vomiting_throwing_up'],
@@ -1051,7 +1064,7 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
             $record['q34_feels_others_out_to_get_them'],
             $record['q36_gets_hurt_a_lot_accident_prone'],
             $record['q38_gets_teased_a_lot'],
-            $record['q48_not_liked_by_other_pupils '],
+            $record['q48_not_liked_by_other_pupils'],
             $record['q62_poorly_coordinated_clumsy'],
             $record['q64_prefers_younger_children'],
             $record['q79_speech_problem'],
@@ -1073,9 +1086,9 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
         $attention_prob_array = array(
 
             $record['q1_acts_too_young'],
-            $record['q2_hums_makes_noises_in_class '],
+            $record['q2_hums_makes_noises_in_class'],
             $record['q4_fails_to_finish_things_starts'],
-            $record['q7_bragging_boasting '],
+            $record['q7_bragging_boasting'],
             $record['q8_cant_concentrate_for_long'],
             $record['q10_cant_sit_still_restless'],
             $record['q13_confused_in_a_fog'],
@@ -1085,7 +1098,7 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
             $record['q24_disturbs_other_pupils'],
             $record['q41_impulsive_acts_without_thinking'],
             $record['q49_has_difficulty_learning'],
-            $record['q53_talks_out_of_turn '],
+            $record['q53_talks_out_of_turn'],
             $record['q60_apathetic_unmotivated'],
             $record['q61_poor_school_work'],
             $record['q67_disrupts_class_discipline'],
@@ -1096,10 +1109,11 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
             $record['q80_stares_blankly'],
             $record['q92_underachieving_not_working_to_potential'],
             $record['q93_talks_too_much'],
-            $record['q100_fails_to_carry_out_tasks '],
+            $record['q100_fails_to_carry_out_tasks'],
             $record['q109_whining'],
 
         );
+
         $rule_break_behav_array = array(
             $record['q26_doesnt_feel_guilty_misbehaving'],
             $record['q28_breaks_school_rules'],
@@ -1110,14 +1124,14 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
             $record['q90_swearing_or_obscene_language'],
             $record['q96_seems_preoccupied_with_sex'],
             $record['q98_tardy_to_school_class'],
-            $record['q99_smokes_chews_sniffs_tobacco '],
+            $record['q99_smokes_chews_sniffs_tobacco'],
             $record['q101_truancy_unexplained_absence'],
             $record['q105_uses_alcohol_drugs_nonmedical'],
 
         );
         $aggr_behav_array = array(
             $record['q3_argues_a_lot'],
-            $record['q16_cruelty_bullying_meanness'],
+            $record['q6_defiant_talks_back'],
             $record['q16_cruelty_bullying_meanness'],
             $record['q19_demands_a_lot_of_attention'],
             $record['q20_destroys_own_things'],
@@ -1140,7 +1154,7 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
 
         $other_prob_array= array(
             $record['q44_bites_fingernails'],
-            $record['q47_overconforms_to_rules '],
+            $record['q47_overconforms_to_rules'],
             $record['q55_overweight'],
             $record['q56h_other'],
             $record['q59_sleeps_in_class'],
@@ -1224,6 +1238,7 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
             $record['q104_unusually_loud'],
 
         );
+
         $scores['attention_hyper_prob_score']=$this->findRawScore($attention_hyper_prob_array);
 
         $oppo_def_prob_array=array(
@@ -1299,6 +1314,41 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
         $scores['stress_prob_score'] =$this->findRawScore($stress_prob_array);
         // 2007 scoring finish
 
+        $Inatt_array= array($record['q1_acts_too_young'],
+            $record['q4_fails_to_finish_things_starts'],
+            $record['q8_cant_concentrate_for_long'],
+            $record['q13_confused_in_a_fog'],
+            $record['q17_daydreams_gets_lost_in_thoughts'],
+            $record['q22_difficulty_following_directions'],
+            $record['q49_has_difficulty_learning'],
+            $record['q60_apathetic_unmotivated'],
+            $record['q61_poor_school_work'],
+            $record['q72_messy_work'],
+            $record['q78_inattentive_easily_distracted'],
+            $record['q80_stares_blankly'],
+            $record['q92_underachieving_not_working_to_potential'],
+            $record['q100_fails_to_carry_out_tasks'],
+        );
+
+        $scores['Inatt_score'] =$this->findRawScore($Inatt_array);
+
+        $HyperImp_array= array(
+            $record['q2_hums_makes_noises_in_class'],
+            $record['q7_bragging_boasting'],
+            $record['q10_cant_sit_still_restless'],
+            $record['q15_fidgets'],
+            $record['q24_disturbs_other_pupils'],
+            $record['q41_impulsive_acts_without_thinking'],
+            $record['q53_talks_out_of_turn'],
+            $record['q67_disrupts_class_discipline'],
+            $record['q73_behaves_irresponsibly'],
+            $record['q74_showing_off_clowning'],
+            $record['q93_talks_too_much'],
+            $record['q109_whining'],
+            );
+
+        $scores['HyperImp_score'] = $this->findRawScore($HyperImp_array);
+
         $timepoint =& TimePoint::singleton($this->getSessionID());
         $dob = $timepoint->getEffectiveDateOfBirth();
 
@@ -1350,14 +1400,16 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
             'conduct_prob',
             'sluggish_cogn_tempo',
             'obsessive_comp_prob',
-            'stress_prob'
+            'stress_prob',
+            'Inatt',
+            'HyperImp'
         );
 
 
         foreach ($scales as $field) {
             $fied_raw_score=$scores[$field.'_score'];
 
-            $query_scores1 = "SELECT * FROM CBCL_6_To_18_lookup WHERE
+            $query_scores1 = "SELECT * FROM Teachers_Report_Form_6_To_18_lookup WHERE
                 age_years='$age_range' AND sex='$gender'  AND scale_raw_score= '$fied_raw_score' AND scale='$field'";
             $record_1 = $db->pselectRow($query_scores1, array());
             if (array_key_exists('scale_T_score', $record_1)) {
