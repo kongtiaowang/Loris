@@ -412,7 +412,7 @@ class NDB_BVL_Instrument_conners_parent extends NDB_BVL_Instrument
         $valid="YES";
         $age_months = $age['year'] * 12 + $age['mon'] + ($age['day']/30);
         $age_years=$age_months/12;
-        $age_years=round($age_years);
+        $age_years=floor($age_years);
         if($age_years>11 || $age_years<6)
         {
             $valid="NO";
