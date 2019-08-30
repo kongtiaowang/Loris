@@ -338,7 +338,6 @@ class NDB_BVL_Instrument_MASC2_Parent extends NDB_BVL_Instrument
             $record['q29'],
             $record['q31'],
             $record['q1'],
-            $record['q7'],
             $record['q6'],
             $record['q39'],
             $record['q40'],
