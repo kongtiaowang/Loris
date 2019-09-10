@@ -98,9 +98,12 @@ abstract class LorisIntegrationTest extends TestCase
 
         $dev = $this->config->getSettingFromXML('dev');
         $selenium_url = isset($dev['selenium_url']) ? $dev['selenium_url'] : 'http://localhost:4444/wd/hub';
+
         $desired_capabilities = DesiredCapabilities::firefox();
         $desired_capabilities->setCapability('acceptInsecureCerts', true);
         $desired_capabilities->setCapability('acceptSslCerts', false); 
+        $desired_capabilities->setJavascriptEnabled(true);
+
         $this->webDriver = RemoteWebDriver::create(
             $selenium_url,
             $desired_capabilities
