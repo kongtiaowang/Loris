@@ -18,6 +18,8 @@ services:
       - /dev/shm:/dev/shm
     ports:
       - "5900:5900"
+    environment:
+      - SE_OPTS=-enablePassThrough false
 
   web:
     build:
