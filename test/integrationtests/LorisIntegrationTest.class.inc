@@ -101,7 +101,7 @@ abstract class LorisIntegrationTest extends TestCase
 
         $this->webDriver = RemoteWebDriver::create(
             $selenium_url,
-            DesiredCapabilities::chrome()
+            DesiredCapabilities::firefox()
         );
 
         $this->login("UnitTester", "4test4");
