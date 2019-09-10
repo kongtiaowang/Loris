@@ -102,7 +102,6 @@ abstract class LorisIntegrationTest extends TestCase
         $desired_capabilities = DesiredCapabilities::firefox();
         $desired_capabilities->setCapability('acceptInsecureCerts', true);
         $desired_capabilities->setCapability('acceptSslCerts', false); 
-        $desired_capabilities->setJavascriptEnabled(true);
 
         $this->webDriver = RemoteWebDriver::create(
             $selenium_url,
