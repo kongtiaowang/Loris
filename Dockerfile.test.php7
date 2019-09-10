@@ -2,7 +2,7 @@ FROM php:7.2
 
 RUN apt-get update && \
     apt-get install -y mysql-client libzip-dev \
-    apt-install -y php7.2-zip
+    apt-get install -y php7.2-zip
 
 # Install extensions through the scripts the container provides
 RUN docker-php-ext-install pdo_mysql zip
