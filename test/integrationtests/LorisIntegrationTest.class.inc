@@ -97,7 +97,7 @@ abstract class LorisIntegrationTest extends TestCase
         $user->updatePassword('4test4');
 
         $dev = $this->config->getSettingFromXML('dev');
-        $selenium_url = isset($dev['selenium_url']) ? $dev['selenium_url'] : 'http://localhost:4444/wd/hub';
+        $selenium_url = isset($dev['selenium_url']) ? $dev['selenium_url'] : 'https://localhost:4444/wd/hub';
 
         $desired_capabilities = DesiredCapabilities::firefox();
         $desired_capabilities->setCapability('acceptInsecureCerts', true);
