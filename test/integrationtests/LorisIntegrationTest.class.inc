@@ -98,12 +98,12 @@ abstract class LorisIntegrationTest extends TestCase
 
         $dev = $this->config->getSettingFromXML('dev');
         $selenium_url = isset($dev['selenium_url']) ? $dev['selenium_url'] : 'https://localhost:4444/wd/hub';
-//        $profile = new FirefoxProfile();
-//        $profile->setPreference("setAcceptUntrustedCertificates", true);
-//        $profile->setPreference("setAssumeUntrustedCertificateIssuer", true);
-//        $profile->setPreference("security.insecure_field_warning.contextual.enabled", false);
+        $profile = new FirefoxProfile();
+        $profile->setPreference("setAcceptUntrustedCertificates", true);
+        $profile->setPreference("setAssumeUntrustedCertificateIssuer", true);
+        $profile->setPreference("security.insecure_field_warning.contextual.enabled", false);
         $desired_capabilities = DesiredCapabilities::firefox();
-//        $desired_capabilities->setCapability(FirefoxDriver::PROFILE,$profile);
+        $desired_capabilities->setCapability(FirefoxDriver::PROFILE,$profile);
         $desired_capabilities->setCapability('acceptInsecureCerts', true);
         $desired_capabilities->setCapability('acceptSslCerts', false); 
 
