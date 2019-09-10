@@ -964,7 +964,7 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
                 $field = $check_between_0_and_number[$i][0];
                 $max = $check_between_0_and_number[$i][2];
                 $group= $check_between_0_and_number[$i][1];
-            $this->validate_numeric_strict($values, $field, $errors, 0, $max,$group);
+            $this->validate_numeric_strict_group($values, $field, $errors, 0, $max,$group);
         }
 
         if ($values["subtest_6_3_trial2"] != "") {
@@ -1010,7 +1010,7 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
                 if ($values[$field . "_trial1"] == $max) {
                     $errors[$group] = "Trial 2 should be left empty as Trail1 has the maximum value.";
                 } else {
-                    $this->validate_numeric_strict($values, $field . "_trial2", $errors, 0, $max,$group);
+                    $this->validate_numeric_strict_group($values, $field . "_trial2", $errors, 0, $max,$group);
                 }
             }
         }
