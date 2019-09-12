@@ -23,18 +23,18 @@ namespace Loris\Behavioural;
  */
 class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
 {
+    /**
+     * FIXME: LINST instruments should parse the full name
+     * and the subtest names from the linst file, not select
+     * them from the database.
+     */
+    use \LegacyInstrumentTrait;
 
     var $InstrumentType = 'LINST';
 
     var $LinstQuestions = array();
 
     var $LinstLines = array();
-
-    /**
-     * True if the page is being previewed from the instrument builder,
-     * and not really loaded.
-     */
-    var $preview = false;
 
     /**
      * Sets up the variables required for a LINST instrument to load
@@ -99,55 +99,16 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
     }
 
     /**
-     * Looks up the full name for the current instrument
-     * TODO: Update this to parse from LINST file
-     *
-     * @return string the full name of the instrument
-     */
-    function getFullName(): string
-    {
-        $db =& Database::singleton();
-
-        $success = $db->pselectOne(
-            "SELECT Full_name FROM test_names WHERE Test_name=:TN",
-            array('TN' => $this->testName)
-        );
-        return $success;
-    }
-
-    /**
-     * Gets a list of subtests of the current instrument
-     * TODO: Update this to parse from LINST file
-     *
-     * @return array
-     */
-    function getSubtestList(): array
-    {
-        // get a database connection
-        $db =& \Database::singleton();
-
-        $query = "SELECT Subtest_name AS Name, Description
-            FROM instrument_subtests
-            WHERE Test_name=:TN
-                ORDER BY Order_number";
-
-        $results = $db->pselect($query, array('TN' => $this->testName));
-
-        return $results;
-    }
-
-
-    /**
      * This runs the XIN rules on all the elements on the current page to ensure
      * that no rules were violated.
      *
      * @param array $elements The value of all the elements on the current page
      *                        to validate.
      *
-     * @return array associative array of errors (fieldname => errormessage) or true
-     *         if no errors.
+     * @return array|true associative array of errors (fieldname => errormessage)
+     *         or true if no errors.
      */
-    function XINValidate(array $elements): array
+    function XINValidate(array $elements)
     {
         unset($elements['key'], $elements['pageNum'], $elements['nextpage']);
         $this->XINDebug = false;  //Turn this on to see rules debuggin output
@@ -316,9 +277,9 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
      * Run registered rules for $elname. Only used for instrument builder
      * instruments.
      *
-     * @param string  $elname     The element to be validate
-     * @param array   $elements   array of values from current page.
-     * @param boolean $registered Array of all rules which have been
+     * @param string $elname     The element to be validate
+     * @param array  $elements   array of values from current page.
+     * @param array  $registered Array of all rules which have been registered.
      *                            registered.
      *
      * @return boolean true if the element passes, false if it fails a rule.
@@ -326,7 +287,7 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
     function DINRunElementRules(
         string $elname,
         array $elements,
-        bool $registered
+        array $registered
     ): bool {
         foreach ($registered['rules'] AS $rule) {
             //Loop through the assigned rules (which is the array of formatted
@@ -639,6 +600,8 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     if ($addElements) {
                         $this->addNumericElement($pieces[1], $pieces[2]);
                     }
+                    // FIXME: This variable is never populated.
+                    $options = array();
                     $this->LinstQuestions[$pieces[1]]
                         = array(
                            'type'    => 'numeric',

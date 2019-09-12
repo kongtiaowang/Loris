@@ -126,12 +126,6 @@ class NDB_Menu_Filter extends NDB_Menu
     var $searchKey = array();
 
     /**
-     * A list of arrays to be used as field options on
-     * front-end forms.
-     */
-    var $fieldOptions = array();
-
-    /**
      * Calls other member functions to do all the work necessary to create the menu
      *
      * @return void
@@ -142,10 +136,13 @@ class NDB_Menu_Filter extends NDB_Menu
         parent::setup();
 
         // setup the menu's variables
-        $success = $this->_setupVariables();
+        $this->_setupVariables();
 
         // set the headers if necessary
-        if (!is_array($this->headers) || count($this->headers) == 0) {
+        if ((!is_array($this->headers)
+            || count($this->headers) == 0)
+            && is_iterable($this->columns)
+        ) {
             foreach ($this->columns as $value) {
                 if (preg_match('/[0-9A-Za-z_]+$/', $value, $match)) {
                     $this->headers[] = $match[0];
@@ -162,7 +159,7 @@ class NDB_Menu_Filter extends NDB_Menu
         $this->_setupFilters();
 
         // build the menu
-        $success = $this->_build();
+        $this->_build();
 
         return true;
     }
@@ -388,7 +385,7 @@ class NDB_Menu_Filter extends NDB_Menu
     function _build()
     {
         // show selection form table
-        $success = $this->_setFilterForm();
+        $this->_setFilterForm();
 
         if ($this->AjaxModule) {
             return;
@@ -397,7 +394,7 @@ class NDB_Menu_Filter extends NDB_Menu
         $this->list = $this->_getList();
 
         // show data table with user information and access URLs
-        $success = $this->_setDataTable();
+        $this->_setDataTable();
     }
 
     /**

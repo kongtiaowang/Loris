@@ -47,7 +47,7 @@ class Stats_Demographic extends \NDB_Form
      * InCenter function
      *
      * @param string $centerID the value of centerID
-     * @param string $centers  the value of Centers
+     * @param array  $centers  the value of Centers
      *
      * @return bool
      */
@@ -63,41 +63,41 @@ class Stats_Demographic extends \NDB_Form
     /**
      * RenderStatsTable function
      *
-     * @param string $sectionHeader    the value of sectionHeader
-     * @param string $tableHeader      the value of tableHeader
-     * @param string $subcats          the value of subcats
-     * @param string $visits           the value of visits
-     * @param string $dropdownName     the value of dropdownName
-     * @param string $dropdownOpt      the value of dropdownOpt
-     * @param string $dropdownSelected the value of dropdownSelected
-     * @param string $centers          the value of centers
-     * @param string $data             the value of data
-     * @param string $subsection       the value of subsection=''
-     * @param string $disclamer        the value of disclamer=''
-     * @param string $projectID        the value of projectID is null
+     * @param string  $sectionHeader    the value of sectionHeader
+     * @param string  $tableHeader      the value of tableHeader
+     * @param array   $subcats          the value of subcats
+     * @param ?array  $visits           the value of visits
+     * @param string  $dropdownName     the value of dropdownName
+     * @param string  $dropdownOpt      the value of dropdownOpt
+     * @param string  $dropdownSelected the value of dropdownSelected
+     * @param array   $centers          the value of centers
+     * @param array   $data             the value of data
+     * @param string  $subsection       the value of subsection=''
+     * @param string  $disclamer        the value of disclamer=''
+     * @param ?string $projectID        the value of projectID is null
      *
      * @return string
      */
-    function renderStatsTable($sectionHeader,
+    function renderStatsTable(
+        $sectionHeader,
         $tableHeader,
-        $subcats,
-        $visits,
+        array $subcats,
+        ?array $visits,
         $dropdownName,
         $dropdownOpt,
         $dropdownSelected,
         $centers,
-        $data,
+        array $data,
         $subsection='',
         $disclamer='',
         $projectID=null
-    ) {
+    ): string {
         // This line replaces the empty $projectID string with null
         // `$projectID ?? null` would retain empty strings.
         $projectID = empty($projectID) ? null : $projectID;
         $tpl_data  = array();
-        $tpl_data['test_name'] = isset($_REQUEST['test_name']) ?
+        $tpl_data['test_name']  = isset($_REQUEST['test_name']) ?
             htmlspecialchars($_REQUEST['test_name']) : '';
-
         $tpl_data['Subsection'] = $subsection;
         $tpl_data['Visits']     = $visits;
         $smarty = new \Smarty_neurodb('statistics');
@@ -117,11 +117,13 @@ class Stats_Demographic extends \NDB_Form
             $subcat  = $row['Subcat'];
             $center  = $row['CenterID'];
 
-            if (in_array($vl, $visits)
+            if (in_array($vl, $visits ?? array())
                 && in_array($subcat, $subcats)
                 && $this->_inCenter($center, $centers)
             ) {
                 $C = 'C' . $center;
+                // Ensure $tpl_data['data'] is not null before continuing
+                $tpl_data['data'] = $tpl_data['data'] ?? array();
                 $tpl_data['data'][$subproj][$vl][$subcat] += $row['val'];
                 $tpl_data['data'][$subproj][$vl]['total'] += $row['val'];
                 $tpl_data['data'][$subproj][$subcat]      += $row['val'];
@@ -155,10 +157,8 @@ class Stats_Demographic extends \NDB_Form
     function setup()
     {
         parent::setup();
-        $db          = \Database::singleton();
-        $config      = \NDB_Config::singleton();
-        $useProjects = $config->getSetting('useProjects');
-        $this->tpl_data['useProjects'] = $useProjects;
+        $visits = \Utility::getExistingVisitLabels();
+        $db     = \Database::singleton();
         //This boolean is for optional use by project if the demographics table
         // queries any information from the mri_parameter_form table
         $this->tpl_data['mri_table_exists'] = true;
@@ -190,17 +190,17 @@ class Stats_Demographic extends \NDB_Form
         }
 
         //SUBPROJECTS
-        $suproject_query = '';
-        // Only search for subprojects if $currentProject is a positive int.
-        if (is_numeric($currentProject) && intval($currentProject) >= 0) {
+        $subprojectQuery = '';
+        // Only search for subprojects if $demographicProject is a positive int.
+        if (is_numeric($demographicProject) && intval($demographicProject) >= 0) {
             $subprojList ="";
-            $subprojects = \Utility::getSubprojectsForProject($currentProject);
+            $subprojects = \Utility::getSubprojectsForProject($demographicProject);
             foreach ($subprojects as $key=>$val) {
                 $subprojList .= $key.",";
             }
             $subprojList = substr($subprojList, 0, -1);
             if (!empty($subprojList)) {
-                $suproject_query ="AND s.SubprojectID IN ($subprojList)";
+                $subprojectQuery ="AND s.SubprojectID IN ($subprojList)";
             }
         }
 
@@ -209,7 +209,7 @@ class Stats_Demographic extends \NDB_Form
         $paramSite       = '';
 
         if (!empty($demographicSite)) {
-            $paramSite           = 'AND (c.CenterID IS NULL OR c.CenterID=:sid) ';
+            $paramSite           = 'AND (s.CenterID IS NULL OR s.CenterID=:sid) ';
             $demographicSite     = htmlspecialchars($demographicSite);
             $this->params['sid'] = $demographicSite;
         }
@@ -254,11 +254,12 @@ class Stats_Demographic extends \NDB_Form
                           count(DISTINCT(c.PSCID)) as val
                       FROM candidate as c
                           LEFT JOIN session s ON (s.CandID=c.CandID)
-                      WHERE c.CenterID <> '1'
+                      WHERE c.RegistrationCenterID <> '1'
+                          AND s.CenterID <> '1'
                           AND c.Entity_type != 'Scanner'
                           AND c.Active = 'Y'
-                          $Param_Project
-                          $Param_Site
+                          $paramProject
+                          $paramSite
                       GROUP BY s.subprojectid",
             $this->params ?? array()
         );
@@ -280,13 +281,14 @@ class Stats_Demographic extends \NDB_Form
                       FROM candidate as c
                       	  LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
                           LEFT JOIN session s ON (s.CandID=c.CandID)
-                      WHERE c.CenterID <> '1'
+                      WHERE c.RegistrationCenterID <> '1'
+                          AND s.CenterID <> '1'
                           AND c.Entity_type != 'Scanner'
                           AND c.Active='Y'
                           AND (ps.participant_status=1
                                OR ps.participant_status IS NULL)
-                          $Param_Project
-                          $Param_Site
+                          $paramProject
+                          $paramSite
                       GROUP BY s.subprojectid",
             $this->params ?? array()
         );
@@ -308,12 +310,13 @@ class Stats_Demographic extends \NDB_Form
                       FROM candidate as c
                       	  LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
                           LEFT JOIN session s ON (s.CandID=c.CandID)
-                      WHERE c.CenterID <> '1'
+                      WHERE c.RegistrationCenterID <> '1'
+                          AND s.CenterID <> '1'
                           AND c.Entity_type != 'Scanner'
                           AND c.Active='Y'
                           AND ps.participant_status=5
-                          $Param_Project
-                          $Param_Site
+                          $paramProject
+                          $paramSite
                       GROUP BY s.subprojectid",
             $this->params ?? array()
         );
@@ -332,14 +335,15 @@ class Stats_Demographic extends \NDB_Form
                       	  LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
                           LEFT JOIN session s ON (s.CandID=c.CandID)
                       WHERE coalesce(s.active, 'Y')='Y'
-                          AND c.CenterID <> '1'
+                          AND c.RegistrationCenterID <> '1'
+                          AND s.CenterID <> '1'
                           AND c.Entity_type != 'Scanner'
                           AND c.Active='Y'
                           AND (ps.participant_status=1 OR
                                ps.participant_status IS NULL)
                           AND c.Sex='Male'
-                          $Param_Project
-                          $Param_Site
+                          $paramProject
+                          $paramSite
                       GROUP BY s.subprojectid",
             $this->params ?? array()
         );
@@ -362,14 +366,15 @@ class Stats_Demographic extends \NDB_Form
                       	  LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
                           LEFT JOIN session s ON (s.CandID=c.CandID)
                       WHERE coalesce(s.active, 'Y')='Y'
-                          AND c.CenterID <> '1'
+                          AND c.RegistrationCenterID <> '1'
+                          AND s.CenterID <> '1'
                           AND c.Entity_type != 'Scanner'
                           AND c.Active='Y'
                           AND (ps.participant_status=1
                                OR ps.participant_status IS NULL)
                           AND c.Sex='Female'
-                          $Param_Project
-                          $Param_Site
+                          $paramProject
+                          $paramSite
                       GROUP BY s.subprojectid",
             $this->params ?? array()
         );
@@ -394,13 +399,14 @@ class Stats_Demographic extends \NDB_Form
                       	  LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
                           LEFT JOIN session s ON (s.CandID=c.CandID)
                       WHERE coalesce(s.active, 'Y')='Y'
-                          AND c.CenterID <> '1'
+                          AND c.RegistrationCenterID <> '1'
+                          AND s.CenterID <> '1'
                           AND c.Entity_type != 'Scanner'
                           AND (ps.participant_status=1
                           OR ps.participant_status IS NULL)
                           AND c.Active='Y'
-                          $Param_Project
-                          $Param_Site) 
+                          $paramProject
+                          $paramSite) 
                                 as res
               GROUP BY rowid",
             $this->params ?? array()
@@ -427,7 +433,7 @@ class Stats_Demographic extends \NDB_Form
             $result = $db->pselect(
                 "SELECT count(*) as val,
                         f.Data_entry as Subcat,
-                        c.CenterID as CenterID,
+                        c.RegistrationCenterID as CenterID,
                         s.SubprojectID as SubprojectID,
                         s.visit_label as VLabel
                 FROM session s
@@ -436,16 +442,17 @@ class Stats_Demographic extends \NDB_Form
                 JOIN ".$db->escape($demographicInstrument).
                      " i USING(CommentID)
                 WHERE s.Active='Y'
-                AND c.CenterID <> '1'
+                AND c.RegistrationCenterID <> '1'
+                AND s.CenterID <> '1'
                 AND f.Data_entry='Complete'
                 AND f.Administration='All'
                 AND f.CommentID NOT LIKE 'DDE%'
                 $paramProject
-                GROUP BY c.CenterID, SubprojectID, VLabel, Subcat
+                GROUP BY c.RegistrationCenterID, SubprojectID, VLabel, Subcat
                 UNION
                 SELECT count(*) as val,
                        'Incomplete' as Subcat,
-                       c.CenterID as CenterID,
+                       c.RegistrationCenterID as CenterID,
                        s.SubprojectID as SubprojectID,
                        s.visit_label as VLabel
                 FROM session s
@@ -453,11 +460,13 @@ class Stats_Demographic extends \NDB_Form
                 JOIN flag f ON (f.SessionID=s.ID)
                 JOIN ".$db->escape($demographicInstrument).
                      " i USING(CommentID)
-                WHERE s.Active='Y' AND s.CenterID <> 1
-                    $Param_Project
+                WHERE s.Active='Y' 
+                    AND c.RegistrationCenterID <> '1'
+                    AND s.CenterID <> '1'
+                    $paramProject
                     AND f.CommentID NOT LIKE 'DDE%'
                     AND (f.Data_entry IS NULL OR f.Data_entry <> 'Complete')
-                GROUP BY c.CenterID, SubprojectID, VLabel, Subcat
+                GROUP BY c.RegistrationCenterID, SubprojectID, VLabel, Subcat
                 ",
                 $this->params ?? array()
             );
@@ -482,19 +491,20 @@ class Stats_Demographic extends \NDB_Form
                               'Female',
                              );
             $result        = $db->pselect(
-                "SELECT c.CenterID as CenterID,
+                "SELECT s.CenterID as CenterID,
                         s.SubprojectID as SubprojectID,
                         s.visit_label as VLabel,
                         c.sex as Subcat,
                         count(s.CandID) as val
                 FROM session s
                 JOIN candidate c ON (s.CandID=c.CandID)
-                WHERE s.active='Y' AND s.CenterID <> '1'
+                WHERE s.active='Y' AND s.CenterID <> '1' 
+                AND c.RegistrationCenterID <> '1'
                 AND (s.Current_stage IN ('Visit', 'Screening', 'Approval')
                 $subprojectQuery)
                 AND COALESCE(s.Screening,'') NOT IN ('Failure', 'Withdrawal')
                 AND COALESCE(s.Visit,'') NOT IN ('Failure', 'Withdrawal')
-                GROUP BY c.CenterID, SubprojectID, VLabel, Subcat",
+                GROUP BY s.CenterID, SubprojectID, VLabel, Subcat",
                 array()
             );
             $this->tpl_data['RecruitsTable'] = $this->renderStatsTable(

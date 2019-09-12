@@ -82,19 +82,21 @@ class Dashboard extends \NDB_Form
             $this->getTotalRecruitment()
         );
 
-        $useProjects = $config->getSetting('useProjects');
-        $this->tpl_data['useProjects'] = $useProjects;
-        if ($useProjects == "true") {
-            $projects = \Utility::getProjectList();
-            foreach ($projects as $projectID => $project) {
-                $projectInfo = $config->getProjectSettings($projectID);
-                $this->createProjectProgressBar(
-                    $projectID,
-                    $projectInfo['Name'],
-                    $projectInfo['recruitmentTarget'],
-                    $this->getTotalRecruitmentByProject($projectID)
+        $projects = \Utility::getProjectList();
+        foreach ($projects as $projectID => $project) {
+            $projectInfo = $config->getProjectSettings($projectID);
+            if (is_null($projectInfo)) {
+                throw new \LorisException(
+                    'No project settings exist in the Database for ' .
+                    'project ID ' . intval($projectID)
                 );
             }
+            $this->createProjectProgressBar(
+                $projectID,
+                $projectInfo['Name'],
+                $projectInfo['recruitmentTarget'],
+                $this->getTotalRecruitmentByProject($projectID)
+            );
         }
 
         // Charts
@@ -144,7 +146,7 @@ class Dashboard extends \NDB_Form
                      LEFT JOIN session s ON (flag.SessionID=s.ID)
 		             LEFT JOIN candidate c ON (c.CandID=s.CandID)
 		             LEFT JOIN Project p ON (c.ProjectID=p.ProjectID ) 
-                     WHERE FIND_IN_SET(c.CenterID, :siteID) 
+                     WHERE FIND_IN_SET(s.CenterID, :siteID) 
 			            AND s.Active='Y' AND c.Active='Y'",
                     array('siteID' => implode(',', $siteID))
                 );
@@ -207,7 +209,7 @@ class Dashboard extends \NDB_Form
             $this->tpl_data['violated_scans'] = $DB->pselectOne(
                 "SELECT COUNT(*) FROM mri_protocol_violated_scans
 			LEFT JOIN candidate c USING (CandID)
-		WHERE COALESCE(c.CenterID, 0) <> 1",
+		WHERE COALESCE(c.RegistrationCenterID, 0) <> 1",
                 /* include null CenterIDs so we don't accidentally
                 filter things out */
                 array()
@@ -275,7 +277,7 @@ class Dashboard extends \NDB_Form
                 if ($bvl_feedback[$i]['Feedback_level'] === 'profile') {
                     $bvl_feedback[$i]['URL'] = '/' . $bvl_feedback[$i]['CandID'];
                 } else if ($bvl_feedback[$i]['Feedback_level'] === 'visit') {
-                    $bvl_feedback[$i]['URL'] = '/instrument_list/?candID= '
+                    $bvl_feedback[$i]['URL'] = '/instrument_list/?candID='
                         . $bvl_feedback[$i]['CandID'] . '&sessionID='
                         . $bvl_feedback[$i]['SessionID'];
                 } else if ($bvl_feedback[$i]['Feedback_level'] === 'instrument') {
@@ -307,7 +309,8 @@ class Dashboard extends \NDB_Form
         $DB = \Database::singleton();
         $totalRecruitment = $DB->pselectOne(
             "SELECT COUNT(*) FROM candidate c
-             WHERE c.Active='Y' AND c.Entity_type='Human' AND c.CenterID <> 1",
+             WHERE c.Active='Y' AND c.Entity_type='Human' 
+             AND c.RegistrationCenterID <> 1",
             array()
         );
         return $totalRecruitment;
@@ -327,7 +330,7 @@ class Dashboard extends \NDB_Form
             "SELECT COUNT(*)
              FROM candidate c
              WHERE c.Active='Y' AND c.ProjectID=:PID AND c.Entity_type='Human'
-             AND c.CenterID <> 1",
+             AND c.RegistrationCenterID <> 1",
             array('PID' => $projectID)
         );
         return $totalRecruitment;
@@ -347,7 +350,7 @@ class Dashboard extends \NDB_Form
             "SELECT COUNT(c.CandID)
              FROM candidate c
              WHERE c.Sex=:sex AND c.Active='Y' AND c.Entity_type='Human'
-             AND c.CenterID <> 1",
+             AND c.RegistrationCenterID <> 1",
             array('sex' => $sex)
         );
         return $total;
@@ -369,7 +372,7 @@ class Dashboard extends \NDB_Form
             "SELECT COUNT(c.CandID)
              FROM candidate c
              WHERE c.Sex=:sex AND c.Active='Y' AND c.ProjectID=:PID
-             AND c.Entity_type='Human' AND c.CenterID <> 1",
+             AND c.Entity_type='Human' AND c.RegistrationCenterID <> 1",
             array(
              'sex' => $sex,
              'PID' => $projectID,

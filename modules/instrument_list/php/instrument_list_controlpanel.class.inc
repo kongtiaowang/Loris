@@ -71,14 +71,14 @@ class Instrument_List_ControlPanel extends \TimePoint
         }
 
         // BVLQC - get permission and set the tpl element
-        $user =& \User::singleton();
+        $user = \User::singleton();
         $this->tpl_data['access']['bvl_qc']
             = $user->hasPermission('bvl_feedback');
 
         // BVLQCType
-        $success = $this->_displayBVLQCType();
+        $this->_displayBVLQCType();
         // BVLQCStatus
-        $success = $this->_displayBVLQCStatus();
+        $this->_displayBVLQCStatus();
 
         $smarty = new \Smarty_neurodb("instrument_list");
         $smarty->assign($this->tpl_data);
@@ -163,7 +163,6 @@ class Instrument_List_ControlPanel extends \TimePoint
                     }
                 }
                 unset($flagList);
-                unset($constantsArray);
                 unset($flagTypeIDs);
                 unset($flagName);
                 unset($flagStatus);
@@ -189,7 +188,7 @@ class Instrument_List_ControlPanel extends \TimePoint
                 $battery = new \NDB_BVL_Battery();
 
                 // set the SessionID for the battery
-                $success = $battery->selectBattery(
+                $battery->selectBattery(
                     $this->getData('SessionID')
                 );
 
@@ -218,12 +217,10 @@ class Instrument_List_ControlPanel extends \TimePoint
 
             return;
         }
-        $condition1 = isset($_REQUEST['setSubmitted']);
-        $condition2 = $condition1 ?
-            $_REQUEST['setSubmitted'] == 'N' :
-            false;
-        $condition3 = $this->_hasAccessSendToDCC();
-        $condition4 = !in_array(
+        $submitted  = $_REQUEST['setSubmitted'] ?? '';
+        $condition1 = $submitted == 'N';
+        $condition2 = $this->_hasAccessSendToDCC();
+        $condition3 = !in_array(
             $currentStage,
             array(
              null,
@@ -233,12 +230,10 @@ class Instrument_List_ControlPanel extends \TimePoint
             )
         );
         // un-submit to dcc
-        if ($condition1 && $condition2 && $condition3 && $condition4) {
+        if ($condition1 && $condition2 && $condition3) {
 
             $this->setData(
-                array(
-                 'Submitted' => $_REQUEST['setSubmitted'],
-                )
+                array('Submitted' => $submitted)
             );
 
                 // revert from approval (or the bin)
@@ -255,7 +250,7 @@ class Instrument_List_ControlPanel extends \TimePoint
 
                 $battery = new \NDB_BVL_Battery();
                 // set the SessionID for the battery
-                $success = $battery->selectBattery(
+                $battery->selectBattery(
                     $this->getData('SessionID')
                 );
                 // get the list of instruments
@@ -268,26 +263,24 @@ class Instrument_List_ControlPanel extends \TimePoint
 
                 // detect conflicts for all the instruments
 
-                foreach ($batteryList as $instrument) {
-                    // If the instrument requires double data entry,
-                    // detect conflicts
-                    if (in_array($instrument['Test_name'], $ddeInstruments)) {
-                        // ConflictDetector::
-                        //clearConflictsForInstance($instrument['CommentID']);
-                        \ConflictDetector::clearConflictsForInstance(
-                            $instrument['CommentID']
-                        );
-                        $diff =\ConflictDetector::detectConflictsForCommentIds(
-                            $instrument['Test_name'],
-                            $instrument['CommentID'],
-                            $instrument['DDECommentID']
-                        );
-                        \ConflictDetector::recordUnresolvedConflicts($diff);
-
-                    }
+            foreach ($batteryList as $instrument) {
+                // If the instrument requires double data entry,
+                // detect conflicts
+                if (in_array($instrument['Test_name'], $ddeInstruments)) {
+                    // ConflictDetector::
+                    //clearConflictsForInstance($instrument['CommentID']);
+                    \ConflictDetector::clearConflictsForInstance(
+                        $instrument['CommentID']
+                    );
+                    $diff =\ConflictDetector::detectConflictsForCommentIds(
+                        $instrument['Test_name'],
+                        $instrument['CommentID'],
+                        $instrument['DDECommentID']
+                    );
+                    \ConflictDetector::recordUnresolvedConflicts($diff);
                 }
-
-                return;
+            }
+            return;
         }
 
         // set the BVLQC flag
@@ -295,13 +288,25 @@ class Instrument_List_ControlPanel extends \TimePoint
         if (!empty($_REQUEST['setBVLQCStatus'])
             && $user->hasPermission('bvl_feedback')
         ) {
+            // If 'setBVLQCStatus' is set and not empty,
+            // update the value of 'BVLQCStatus' to what is
+            // in the request.
             $this->setData(
                 array(
                  'BVLQCStatus' => $_REQUEST['setBVLQCStatus'],
                 )
             );
             return;
-        } else {
+        } else if (isset($_REQUEST['setBVLQCStatus'])
+            && empty($_REQUEST['setBVLQCStatus'])
+        ) {
+            // In order to set the 'BVLQCStatus' value as null, the
+            // front-end appends 'setBVLQCStatus' to the request with
+            // an empty string as value.
+            //
+            // If 'setBVLQCStatus' is set and empty,
+            // update the value of 'BVLQCStatus' to null.
+            // Otherwise, do nothing.
             $this->setData(
                 array('BVLQCStatus' => null)
             );
@@ -310,13 +315,25 @@ class Instrument_List_ControlPanel extends \TimePoint
         if (!empty($_REQUEST['setBVLQCType'])
             && $user->hasPermission('bvl_feedback')
         ) {
+            // If 'setBVLQCType' is set and not empty,
+            // update the value of 'BVLQCType' to what is
+            // in the request.
             $this->setData(
                 array(
                  'BVLQCType' => $_REQUEST['setBVLQCType'],
                 )
             );
             return;
-        } else {
+        } else if (isset($_REQUEST['setBVLQCType'])
+            && empty($_REQUEST['setBVLQCType'])
+        ) {
+            // In order to set the 'BVLQCType' value as null, the
+            // front-end appends 'setBVLQCType' to the request with
+            // an empty string as value.
+            //
+            // If 'setBVLQCType' is set and empty,
+            // update the value of 'BVLQVType' to null.
+            // Otherwise, do nothing.
             $this->setData(
                 array('BVLQCType' => null)
             );
@@ -374,7 +391,7 @@ class Instrument_List_ControlPanel extends \TimePoint
         $battery = new \NDB_BVL_Battery;
 
         // set the SessionID for the battery
-        $success = $battery->selectBattery($_REQUEST['sessionID']);
+        $battery->selectBattery($_REQUEST['sessionID']);
 
         // get the list of instruments
         $batteryList = $battery->getBatteryVerbose();
@@ -384,7 +401,8 @@ class Instrument_List_ControlPanel extends \TimePoint
         $ddeInstruments = $config->getSetting('DoubleDataEntryInstruments');
 
         // loop the list and check the Data Entry status
-        $ddeConflictDetected =false;
+        $ddeConflictDetected = false;
+        $dataEntry           = '';
         foreach ($batteryList as $instrument) {
             $status = new \NDB_BVL_InstrumentStatus();
             $status->select($instrument['CommentID']);
@@ -581,7 +599,7 @@ class Instrument_List_ControlPanel extends \TimePoint
         $battery = new \NDB_BVL_Battery();
 
         // set the SessionID for the battery
-        $success = $battery->selectBattery($this->getData('SessionID'));
+        $battery->selectBattery($this->getData('SessionID'));
 
         // get the list of instruments
         $batteryList = $battery->getBatteryVerbose();
@@ -686,7 +704,7 @@ class Instrument_List_ControlPanel extends \TimePoint
         $battery = new \NDB_BVL_Battery();
 
         // set the SessionID for the battery
-        $success = $battery->selectBattery($this->getData('SessionID'));
+        $battery->selectBattery($this->getData('SessionID'));
 
         // get the list of instruments
         $batteryList = $battery->getBatteryVerbose();

@@ -1,19 +1,6 @@
-SET FOREIGN_KEY_CHECKS=0;
-
-
-DROP TABLE IF EXISTS `permissions`;
-
-
-DROP TABLE IF EXISTS `permissions_category`;
-
-
-DROP TABLE IF EXISTS `user_perm_rel`;
-
-SET FOREIGN_KEY_CHECKS=1;
 --
 -- Table structure for table `permissions_category`
 --
-
 
 CREATE TABLE `permissions_category` (
   `ID` int(10) NOT NULL AUTO_INCREMENT,
@@ -107,7 +94,14 @@ INSERT INTO `permissions` VALUES
     (45,'issue_tracker_reporter', 'Can add a new issue, edit own issue, comment on all', 2),
     (46,'issue_tracker_developer', 'Can re-assign issues, mark issues as closed, comment on all, edit issues.', 2),
     (47,'imaging_browser_phantom_allsites', 'Can access only phantom data from all sites in Imaging Browser', 2),
-    (48,'imaging_browser_phantom_ownsite', 'Can access only phantom data from own site in Imaging Browser', 2);
+    (48,'imaging_browser_phantom_ownsite', 'Can access only phantom data from own site in Imaging Browser', 2),
+    (49,'data_release_upload', 'Data Release: Upload file', 2),
+    (50,'data_release_edit_file_access', 'Data Release: Grant other users view-file permissions', 2),
+    (51,'instrument_manager_read', 'Instrument Manager: View module', 2),
+    (52,'instrument_manager_write', 'Instrument Manager: Install new instruments via file upload', 2),
+    (53,'publication_view', 'Publication - Access to module', 2),
+    (54,'publication_propose', 'Publication - Propose a project', 2),
+    (55,'publication_approve', 'Publication - Approve or reject proposed publication projects', 2);
 
 
 INSERT INTO `user_perm_rel` (userID, permID)
@@ -129,3 +123,4 @@ CREATE TABLE `notification_modules_perm_rel` (
 -- populate notification perm table
 INSERT INTO notification_modules_perm_rel SELECT nm.id, p.permID FROM notification_modules nm JOIN permissions p WHERE nm.module_name='media' AND (p.code='media_write' OR p.code='media_read');
 INSERT INTO notification_modules_perm_rel SELECT nm.id, p.permID FROM notification_modules nm JOIN permissions p WHERE nm.module_name='document_repository' AND (p.code='document_repository_view' OR p.code='document_repository_delete');
+INSERT INTO notification_modules_perm_rel SELECT nm.id, p.permID FROM notification_modules nm JOIN permissions p WHERE nm.module_name='publication' AND (p.code='publication_view' OR p.code='publication_propose' OR p.code='publication_approve');

@@ -2,7 +2,7 @@
 
 1.  Access the 'DICOM Archive' under 'Imaging' Tab and check to see if the user has permission
     [Automation Testing]
-2.  Click on 'Selection Filter' to show and hide the Filter options
+2.  Under 'Selection Filter' section, verfiy that the following Filter options exist: Patient ID, Patient Name, Sex, Date of Birth, Acquisition Date, Archive Location, Series UID, Site.
     [Manual Testing]
 3.  Choose a parameter from the 'Selection Filter' that applies: [Automation Testing]
      - Select the right 'Site'
@@ -33,5 +33,6 @@
     pages' or 'View own-site Imaging Browser pages' permission is set
     [Manual Testing]
 11. Ensure that clicking on any row in the 'Archive Location' column triggers a download of the corresponding 
-    archived DICOM study
+    archived DICOM study. Make sure that the copy of the file downloaded to
+    your system is prepended with the Patient Name field.
     [Manual Testing]

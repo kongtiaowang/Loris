@@ -178,26 +178,23 @@ class My_Preferences extends \NDB_Form
             }
         }
         // END NOTIFICATIONS UPDATE
-
-        // make the set
         foreach ($values as $key => $value) {
-            if (!empty($value)) {
+            // Password updates are handled separately. Password_hash is removed
+            // from the initial update as otherwise it will be recorded in the
+            // history table unencrypted.
+            if (!empty($value) && $key != 'Password_hash') {
                 $set[$key] = $value;
             } else {
                 $set[$key] = null;
             }
         }
-
         // update the user
         $success = $user->update($set);
 
-        // prepend two random characters
-        if (isset($set['Password_hash'])) {
-            // Update CouchDB. Must do before password is salted/hashed.
-            $user->updatePassword(
-                $set['Password_hash'],
-                $values['Password_expiry'] ?? ''
-            );
+        // Now set the password. Note that this field is named incorrectly at this
+        // point in the code and represents a plaintext password, not a hash.
+        if (isset($values['Password_hash'])) {
+            $user->updatePassword($values['Password_hash']);
         }
 
         // send the user an email
@@ -377,12 +374,12 @@ class My_Preferences extends \NDB_Form
      * Determines if the new password that the user entered is different
      * than its current password (the one stored in the database).
      *
-     * @param Database $db          database object.
-     * @param string   $newPassword the new password the user entered.
+     * @param \Database $db          database object.
+     * @param string    $newPassword the new password the user entered.
      *
      * @return bool  true if the password changed, false otherwise.
      */
-    function _passwordChanged($db, $newPassword)
+    function _passwordChanged(\Database $db, $newPassword): bool
     {
         //--- Get current password stored in database
         $passwordQuery
@@ -394,6 +391,11 @@ class My_Preferences extends \NDB_Form
             $passwordQuery,
             array('UID' => $this->identifier)
         );
+        if (is_null($passwords)) {
+            throw new \LorisException(
+                'No existing password found for user!'
+            );
+        }
 
         if (!is_null($passwords['Password_hash'])) {
             return !password_verify($newPassword, $passwords['Password_hash']);
@@ -416,6 +418,7 @@ class My_Preferences extends \NDB_Form
 
         // if password is user-defined, and user wants to change password
         if (!empty($values['Password_hash'])) {
+
             // check password strength
             $isPasswordStrong = \User::isPasswordStrong(
                 $values['Password_hash'],
@@ -440,6 +443,10 @@ class My_Preferences extends \NDB_Form
                         . 'are identical: please choose another one';
                 }
             }
+            if (\User::pwnedPassword($values['Password_hash'])) {
+                $errors['Password_hash'] = 'The password you chose is too '
+                    . 'common. Please choose a more unique password.';
+            }
         }
 
         // Validate email
@@ -456,12 +463,12 @@ class My_Preferences extends \NDB_Form
      * Validates that en email address entered for a given user
      * (either new or existing) is valid and unique.
      *
-     * @param Database $DB    database object.
-     * @param string   $email user's email.
+     * @param \Database $DB    database object.
+     * @param string    $email user's email.
      *
      * @return string error message if email is invalid, null otherwise.
      */
-    private function _getEmailError($DB, $email)
+    private function _getEmailError(\Database $DB, $email)
     {
         // remove illegal characters
         $email = filter_var($email, FILTER_SANITIZE_EMAIL);

@@ -4,8 +4,10 @@ import PropTypes from 'prop-types';
 import {Tabs, TabPane} from 'Tabs';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
+import TriggerableModal from 'TriggerableModal';
 
 import MediaUploadForm from './uploadForm';
+import MediaEditForm from './editForm';
 
 class MediaIndex extends Component {
   constructor(props) {
@@ -13,6 +15,7 @@ class MediaIndex extends Component {
 
     this.state = {
       data: {},
+      fieldOptions: {},
       error: false,
       isLoaded: false,
     };
@@ -36,7 +39,7 @@ class MediaIndex extends Component {
   fetchData() {
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
       .then((resp) => resp.json())
-      .then((data) => this.setState({data}))
+      .then((data) => this.setState({data: data.data, fieldOptions: data.fieldOptions}))
       .catch((error) => {
         this.setState({error: true});
         console.error(error);
@@ -77,9 +80,25 @@ class MediaIndex extends Component {
         result = <td className={style}><a href={sessionURL}>{cell}</a></td>;
       }
       break;
+    case 'Site':
+      result = <td className={style}>{this.state.fieldOptions.sites[cell]}</td>;
+      break;
     case 'Edit Metadata':
-      const editURL = loris.BaseURL + '/media/edit/?id=' + row['Edit Metadata'];
-      result = <td className={style}><a href={editURL}>Edit</a></td>;
+      if (!this.props.hasPermission('media_write')) {
+          return;
+      }
+      const editButton = (
+            <TriggerableModal title="Edit Media File" label="Edit">
+                    <MediaEditForm
+                DataURL={`${loris.BaseURL}/media/ajax/FileUpload.php?action=getData&idMediaFile=${row['Edit Metadata']}`}
+                action={`${loris.BaseURL}/media/ajax/FileUpload.php?action=edit`}
+                /* this should be passed to onSubmit function
+                   upon refactoring editForm.js*/
+                fetchData={this.fetchData }
+                    />
+            </TriggerableModal>
+      );
+      result = <td className={style}>{editButton}</td>;
       break;
     }
 
@@ -102,8 +121,8 @@ class MediaIndex extends Component {
     * XXX: Currently, the order of these fields MUST match the order of the
     * queried columns in _setupVariables() in media.class.inc
     */
-    const options = this.state.data.fieldOptions;
-    const fields = [
+    const options = this.state.fieldOptions;
+    let fields = [
       {label: 'File Name', show: true, filter: {
         name: 'fileName',
         type: 'text',
@@ -152,8 +171,10 @@ class MediaIndex extends Component {
         options: options.hidden,
         hide: !this.props.hasPermission('superUser'),
       }},
-      {label: 'Edit Metadata', show: true},
     ];
+    if (this.props.hasPermission('media_write')) {
+      fields.push({label: 'Edit Metadata', show: true});
+    }
     const tabs = [{id: 'browse', label: 'Browse'}];
     const uploadTab = () => {
       if (this.props.hasPermission('media_write')) {
@@ -163,7 +184,7 @@ class MediaIndex extends Component {
             <MediaUploadForm
               DataURL={`${loris.BaseURL}/media/ajax/FileUpload.php?action=getData`}
               action={`${loris.BaseURL}/media/ajax/FileUpload.php?action=upload`}
-              maxUploadSize={this.state.data.maxUploadSize}
+              maxUploadSize={options.maxUploadSize}
             />
           </TabPane>
         );
@@ -175,7 +196,7 @@ class MediaIndex extends Component {
         <TabPane TabId={tabs[0].id}>
           <FilterableDataTable
             name="media"
-            data={this.state.data.Data}
+            data={this.state.data}
             fields={fields}
             getFormattedCell={this.formatColumn}
           />
