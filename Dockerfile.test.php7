@@ -4,9 +4,7 @@ RUN apt-get update && \
     apt-get install -y \
      ariadb-client\
       zlib1g-dev \
-     libzip \
+     libzip-dev \
 
 # Install extensions through the scripts the container provides
 RUN docker-php-ext-install pdo_mysql \
-  && docker-php-ext-configure zip --with-libzip \
-  && docker-php-ext-install zip
