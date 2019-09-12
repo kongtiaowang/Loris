@@ -5,4 +5,4 @@ RUN apt-get update && \
 
 # Install extensions through the scripts the container provides
 RUN docker-php-ext-install pdo_mysql \
-    docker-php-ext-install zip --with-libzip
+    docker-php-ext-install zip
