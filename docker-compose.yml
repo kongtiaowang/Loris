@@ -58,6 +58,7 @@ services:
       - selenium
       - web
     entrypoint: /app/test/wait-for-services.sh
+    tty: true
 
   selenium-debug:
     image: selenium/standalone-firefox-debug:2.53.1

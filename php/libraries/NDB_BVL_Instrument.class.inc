@@ -10,6 +10,8 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
+use \Psr\Http\Message\ServerRequestInterface;
+use \Psr\Http\Message\ResponseInterface;
 
 /**
  * Base class for all NeuroDB behavioural instruments
@@ -24,7 +26,6 @@
  */
 abstract class NDB_BVL_Instrument extends NDB_Page
 {
-
     /**
      * Determines whether this instrument should load data in
      * JSON format from the "Data" column of the flag table, or
@@ -222,6 +223,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             if (!class_exists($class)) {
                 include_once $base."project/instruments/$class.class.inc";
             }
+
             // Now go ahead and instantiate it
             $obj = new $class(
                 new Module($instrument, $base ."project/"),
@@ -436,6 +438,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         // because that's part of the DirectEntry template
         // and has Save/Continue and go back buttons
         if (!$this->form->isFrozen() && $this->DataEntryType === 'normal') {
+            $buttons   = array();
             $buttons[] = $this->form->createElement(
                 'submit',
                 'fire_away',
@@ -1236,26 +1239,20 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * @param string $group   Empty if a non-grouped element is registering the rule.
      *                        Otherwise, name of the group registering the rule.
      *
-     * @return bool
+     * @return void
      */
     function XINRegisterRule(
         string $elname,
         array $rules,
         string $message="",
         string $group=""
-    ): bool {
-        if (!is_array($rules)) {
-            $rules_array[] = $rules;
-        } else {
-            $rules_array = $rules;
-        }
+    ): void {
         $this->XINRules[$elname]['message'] = $message;
         $this->XINRules[$elname]['group']   = $group;
 
-        foreach ($rules_array AS $rule) {
+        foreach ($rules AS $rule) {
             $this->XINRules[$elname]['rules'][] = $rule;
         }
-        return true;
     }
 
 
@@ -1283,6 +1280,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $errors = array();
         //Conditions for the rule to be true, thus the element to be required.
         $rule_outcomes = array();
+        $rules_array   = array();
 
         foreach ($rules['rules'] AS $rule) {
             //Loop through the assigned rules (which is the array of formatted
@@ -1450,7 +1448,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     {
         $sessionID = $this->getSessionID();
 
-        if (!empty($sessionID)) {
+        if ($sessionID !== -1) {
             $timepoint  = \TimePoint::singleton($sessionID);
             $visitLabel = $timepoint->getVisitLabel();
             return $visitLabel;
@@ -1466,7 +1464,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     function getSubprojectID(): ?int
     {
         $sessionID = $this->getSessionID();
-        if (!empty($sessionID)) {
+        if ($sessionID !== -1) {
             $timepoint    = \Timepoint::singleton($sessionID);
             $subprojectID = $timepoint->getSubprojectID();
             return $subprojectID;
@@ -1595,6 +1593,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                            'not_answered' => 'Not Answered',
                           )
     ): void {
+        $group   = array();
         $group[] = $this->createText($field, $label);
         $this->WrapperTextElements[$field] = $group[0];
         $group[] = $this->createSelect(
@@ -1628,6 +1627,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         array $rules=array(),
         string $rule_message='You must specify or select from the drop-down'
     ): void {
+        $group   = array();
         $group[] = $this->form->createElement(
             "textarea",
             $field,
@@ -1671,6 +1671,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         array $rules=array(),
         string $rule_message='This field is required.'
     ): void {
+        $group   = array();
         $group[] = $this->form->createElement(
             "textarea",
             $field,
@@ -1726,6 +1727,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 . "if you want to leave this time blank.";
         }
 
+        $group   = array();
         $group[] = $this->form->createElement(
             "time",
             $field,
@@ -1775,6 +1777,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $options = $this->dateOptions;
         }
 
+        $group   = array();
         $group[] = $this->createDate(
             $name . "_date",
             $label,
@@ -1855,6 +1858,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         string $label,
         array $dateArray
     ): void {
+        $group   = array();
         $group[] = $this->createDate($name . "_date", null, $dateArray);
         //add to array of dates and times.
         $this->dateTimeFields[] = $name . "_date";
@@ -1907,6 +1911,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         string $field,
         string $label
     ): void {
+        $group   = array();
         $group[] = $this->createText($field, $label);
         $this->WrapperNumericElements[$field] = $group[0];
         $group[] = $this->createSelect(
@@ -1943,6 +1948,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function addNumericElementRD(string $field, string $label): void
     {
+        $group   = array();
         $group[] = $this->createText($field, $label);
         $group[] = $this->createSelect(
             $field . "_status",
@@ -2231,10 +2237,21 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function getControlPanel(): string
     {
+        $sessionID = $this->getSessionID();
+        $timepoint = \TimePoint::singleton($sessionID);
+        $candID    = $timepoint->getCandID();
         if (!empty($_REQUEST['commentID'])) {
             // make the control panel object for the current instrument
-            $controlPanel = new NDB_BVL_InstrumentStatus_ControlPanel;
-            $controlPanel->select($_REQUEST['commentID']);
+            $controlPanel = new NDB_BVL_InstrumentStatus_ControlPanel(
+                $this->testName,
+                $this->getCommentID() ?? '',
+                $candID,
+                $sessionID,
+                $this->page ?? ''
+            );
+            $this->addHidden('test_name', $this->testName);
+            $this->addHidden('page', $this->page);
+            $this->addHidden('subtest', $this->page);
 
             $config = NDB_Config::singleton();
             $paths  = $config->getSetting('paths');
@@ -2629,7 +2646,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             )
         );
     }
-
     /**
      * Returns true if this instrument saves its data in JSON format to
      * the flag column, rather than directly in MySQL tables.
@@ -2640,5 +2656,22 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     {
         return $this->jsonData;
     }
-}
 
+    /**
+     * A form extends the basic page handler to call save() on a POST request.
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return ResponseInterface The PSR15 response to the request.
+     */
+    public function handle(ServerRequestInterface $request) : ResponseInterface
+    {
+        if ($request->getMethod() === "POST") {
+            $this->save();
+        }
+
+        return (new \Zend\Diactoros\Response())
+            ->withBody(new \LORIS\Http\StringStream($this->display() ?? ""));
+    }
+
+}
