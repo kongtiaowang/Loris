@@ -2,31 +2,31 @@
 
 ## Purpose
 
-The electrophysiology browser is intended to allow users to view candidate
+The Electrophysiology Browser is intended to allow users to view candidate
 electrophysiology (EEG, MEG...) sessions collected for a study.
 
 ## Intended Users
 
 The primary types of users are:
 1. Electrophysiology researchers who want to know details about the inserted datasets
-2. Site coordinators or researchers ensuring the uploaded electrophysiology have
+2. Site coordinators or researchers ensuring the uploaded electrophysiology data have
 been correctly inserted into LORIS.
 
 ## Scope
 
-The electrophysiology browser displays electrophysiology datasets that have been
-inserted into LORIS from a BIDS collection. Derived or processed electrophysiolgy
+The Electrophysiology Browser displays electrophysiology datasets that have been
+inserted into LORIS from a BIDS-format collection. Derived or processed electrophysiology
 datasets can also be accessed via this module.
 
 NOT in scope at the moment:
 
-Viewing capabilities of the electrophysiology datasets. This will be a feature
-added later on.
+Visualization of channel signal data and electrode positions for each electrophysiology dataset. 
+(These are in development and will be added in future.)
 
 ## Permissions
 
-The electrophysiology browser uses the following permissions. Anyone of them is 
-sufficient to have access to the module.
+The Electrophysiology Browser uses the following permissions. Any of them is 
+sufficient to provide access to view data in the module.
 
 electrophysiology_browser_view_allsites
   - This permission gives the user access to all electrophysiology datasets present in the database
