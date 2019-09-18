@@ -28,7 +28,8 @@ namespace LORIS\electrophysiology_browser;
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
  */
-class ElectrophysiologyBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
+class ElectrophysiologyBrowserRowProvisioner
+    extends \LORIS\Data\Provisioners\DBRowProvisioner
 {
     /**
      * Create an ElectrophyiologyBrowserRowProvisioner, which gets rows for the
