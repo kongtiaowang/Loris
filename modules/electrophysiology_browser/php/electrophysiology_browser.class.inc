@@ -68,7 +68,7 @@ class Electrophysiology_Browser extends \DataFrameworkMenu
     function getFieldOptions(): array
     {
         // create user object
-        $user          = \User::singleton();
+        $user          = \NDB_Factory::singleton()->user();
         $list_of_sites = array();
 
         // grep the sites available to the user
