@@ -33,3 +33,8 @@ electrophysiology_browser_view_allsites
   
 electrophysiology_browser_view_site
   - This permission gives the user access to electrophysiology datasets from their own site(s) only
+
+## Download
+
+You can download all the files related to a recording (channel information,
+electrode information, task event information, the actual recording...)

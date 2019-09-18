@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 /**
  * This class implements a data Instance which represents a single
  * row in the dicom archive menu table.
@@ -37,7 +37,7 @@ class ElectrophysiologyBrowserRow implements \LORIS\Data\DataInstance
      *                     returns
      * @param integer $cid The centerID affiliated with this row.
      */
-    public function __construct(array $row, $cid)
+    public function __construct(array $row, int $cid)
     {
         $this->DBRow    = $row;
         $this->CenterID = $cid;
@@ -59,7 +59,7 @@ class ElectrophysiologyBrowserRow implements \LORIS\Data\DataInstance
      *
      * @return integer The CenterID
      */
-    public function getCenterID()
+    public function getCenterID(): int
     {
         return $this->CenterID;
     }
