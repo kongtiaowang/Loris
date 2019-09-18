@@ -52,7 +52,8 @@ class ElectrophysiologyBrowserRowProvisioner extends \LORIS\Data\Provisioners\DB
               LEFT JOIN session s   ON (s.ID=pf.SessionID)
               LEFT JOIN candidate c USING (CandID)
               LEFT JOIN psc         ON (s.CenterID=psc.CenterID)
-              LEFT JOIN physiological_output_type pot USING (PhysiologicalOutputTypeID)
+              LEFT JOIN physiological_output_type pot 
+                USING (PhysiologicalOutputTypeID)
             WHERE c.Active='Y'
               AND s.Active='Y' 
               AND pf.FileType IN (
