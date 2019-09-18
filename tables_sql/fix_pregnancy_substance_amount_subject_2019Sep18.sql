@@ -1,4 +1,4 @@
-ALTER TABLE tsi CHANGE pregnancy_substance_amount_subject pregnancy_substance_amount_subject VARCHAR(255) DEFAULT NULL;
+ALTER TABLE tsi CHANGE pregnancy_substance_amount_subject pregnancy_substance_amount_subject TEXT;
 
 UPDATE tsi SET pregnancy_substance_amount_subject='rtrtrt' WHERE CommentID='965327dcc00074821251239212121';
 UPDATE tsi SET pregnancy_substance_amount_subject='eere' WHERE CommentID='965327dcc00074821251239212121';

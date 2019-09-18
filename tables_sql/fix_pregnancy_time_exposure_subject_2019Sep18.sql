@@ -1,4 +1,4 @@
-ALTER TABLE tsi CHANGE pregnancy_time_exposure_subject pregnancy_time_exposure_subject VARCHAR(255) DEFAULT NULL;
+ALTER TABLE tsi CHANGE pregnancy_time_exposure_subject pregnancy_time_exposure_subject TEXT;
 
 
 UPDATE tsi SET pregnancy_time_exposure_subject='rterere' WHERE CommentID='965327dcc00074821251239212121';
