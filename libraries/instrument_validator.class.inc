@@ -128,18 +128,18 @@ trait instrument_validator {
 			}
 		}
 	}
-    function validate_numeric_strict_group ($values, $key, &$errors, $min, $max, $group) {
+    function validate_numeric_strict_group ($values, $key, &$errors, $min, $max, $group, $label='raw score') {
 
         if (isset($values[$key])) {
 
             $user_input = $values[$key];
 
             if (!is_numeric($user_input)) {
-                $errors[$group] = "Raw score should be between " . $min . " and " . $max;
+                $errors[$group] = ucfirst($label) . " should be between " . $min . " and " . $max;
             }
 
             if (is_numeric($user_input) && ($user_input > $max || $user_input < $min)) {
-                $errors[$group] = "Raw score should be between " . $min . " and " . $max;
+                $errors[$group] = ucfirst($label) . " should be between " . $min . " and " . $max;
             }
         }
     }
