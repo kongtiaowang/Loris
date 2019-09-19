@@ -15,14 +15,14 @@ class NDB_BVL_Instrument_tsi_ds extends NDB_BVL_Instrument
     );
 
     var $educationChoices = array(
-            null                      => '',
-            'not_answered'            => 'Not Answered',
-            'some_hs'                 => 'Some High School',
-            'hs'                      => 'High School',
-            'some_college_2yr_degree' => 'Some College/2yr. Degree',
-            'college_degree'          => 'College Degree',
-            'some_grad_school'        => 'Some Graduate School',
-            'grad_degree'             => 'Graduate Degree',
+        null                      => '',
+        'not_answered'            => 'Not Answered',
+        'some_hs'                 => 'Some High School',
+        'hs'                      => 'High School',
+        'some_college_2yr_degree' => 'Some College/2yr. Degree',
+        'college_degree'          => 'College Degree',
+        'some_grad_school'        => 'Some Graduate School',
+        'grad_degree'             => 'Graduate Degree',
     );
 
     var $ethnicityChoices  = array(
@@ -42,33 +42,33 @@ class NDB_BVL_Instrument_tsi_ds extends NDB_BVL_Instrument
     );
             
     var $notSavedInDbFields = array(
-            'subject_name'                    => 'Subject\'s name:',
-            'mother_first_name'               => 'First name:',
-            'mother_middle_name'              => 'Middle name:',
-            'mother_last_name'                => 'Last name:',
-            'father_first_name'               => 'First name:',
-            'father_middle_name'              => 'Middle name:',
-            'father_last_name'                => 'Last name:',
-            'phone_home'                      => 'Home phone:',
-            'phone_best_time'                 => 'Best time to call:',
-            'phone_work'                      => 'Phone number at work:',
-            'phone_days'                      => 'Days/hrs',
-            'phone_msg'                       => 'OK to leave message?', 
-            'phone_cell_mom'                  => 'Cell phone number (mom):',
-            'phone_cell_dad'                  => 'Cell phone number (dad):',
-            'phone_limited_minutes'           => 'Limited minutes?',
-            'email'                           => 'Email:',
-            'additional_contact_phone'        => 'Phone number of an additional contact:',
-            'additional_contact_name'         => 'Contact name:',
-            'additional_contact_relationship' => 'Contact relationship:',
-            'parents_address'                 => 'Parent\'s address:',
-            'name_sibling1'                   => 'Name:',
-            'name_sibling2'                   => 'Name:',
-            'name_sibling3'                   => 'Name:',
-            'diagnoses'                       => 'Any diagnoses, dates and locations:',
-            'cognitive_dev_testing'           => 'Has X had any other cognitive/developmental testing?',
-            'evaluation_done_by'              => 'If yes, where was evaluation done/who conducted the evaluation?',
-            'family_in_study'                 => 'Is any member of your family participating in a research study at this time?'
+        'subject_name'                    => 'Subject\'s name:',
+        'mother_first_name'               => 'First name:',
+        'mother_middle_name'              => 'Middle name:',
+        'mother_last_name'                => 'Last name:',
+        'father_first_name'               => 'First name:',
+        'father_middle_name'              => 'Middle name:',
+        'father_last_name'                => 'Last name:',
+        'phone_home'                      => 'Home phone:',
+        'phone_best_time'                 => 'Best time to call:',
+        'phone_work'                      => 'Phone number at work:',
+        'phone_days'                      => 'Days/hrs',
+        'phone_msg'                       => 'OK to leave message?', 
+        'phone_cell_mom'                  => 'Cell phone number (mom):',
+        'phone_cell_dad'                  => 'Cell phone number (dad):',
+        'phone_limited_minutes'           => 'Limited minutes?',
+        'email'                           => 'Email:',
+        'additional_contact_phone'        => 'Phone number of an additional contact:',
+        'additional_contact_name'         => 'Contact name:',
+        'additional_contact_relationship' => 'Contact relationship:',
+        'parents_address'                 => 'Parent\'s address:',
+        'name_sibling1'                   => 'Name:',
+        'name_sibling2'                   => 'Name:',
+        'name_sibling3'                   => 'Name:',
+        'diagnoses'                       => 'Any diagnoses, dates and locations:',
+        'cognitive_dev_testing'           => 'Has X had any other cognitive/developmental testing?',
+        'evaluation_done_by'              => 'If yes, where was evaluation done/who conducted the evaluation?',
+        'family_in_study'                 => 'Is any member of your family participating in a research study at this time?'
     );
 
     
@@ -160,11 +160,11 @@ class NDB_BVL_Instrument_tsi_ds extends NDB_BVL_Instrument
         $ageInMonthsFormula  = '   TIMESTAMPDIFF( YEAR , DoB, CURDATE()) * 12'
                              . ' + TIMESTAMPDIFF( MONTH, DoB, CURDATE()) % 12';
         $query = "
-            SELECT PSCID                         AS subject_pscid, 
-                   DoB                           AS subject_dob,
-                   ($ageInMonthsFormula)         AS subject_age_month,
-                   COALESCE(EDC,'UNKNOWN')       AS subject_edc, 
-                   Gender                        AS subject_gender
+            SELECT c.PSCID                         AS subject_pscid, 
+                   c.DoB                           AS subject_dob,
+                   ($ageInMonthsFormula)           AS subject_age_month,
+                   COALESCE(c.EDC,'UNKNOWN')       AS subject_edc, 
+                   c.Gender                        AS subject_gender
             FROM candidate c
             JOIN session s USING (candid)
             JOIN flag f ON (s.ID=f.sessionID)
@@ -220,7 +220,6 @@ class NDB_BVL_Instrument_tsi_ds extends NDB_BVL_Instrument
             'subject_age_month' => 'Subject\'s age (in months):',
             'subject_edc'       => 'Expected Due Date:',
             'subject_gender'    => 'Subject\'s Gender:'
-
         );
         
         //---------------------//
@@ -514,28 +513,29 @@ class NDB_BVL_Instrument_tsi_ds extends NDB_BVL_Instrument
         
         $this->addYesNoSelect(
             'med_his_q_1_med_surgical_problems',
-            '1. Has X ever had any serious medical or surgical problems?',
+            '1. Has X ever had any serious medical or surgical problems?'
         );
         $this->addYesNoSelect(
             'med_his_q_2_hospitalized',
-            '2. Has X ever been hospitalized?',
+            '2. Has X ever been hospitalized?'
         );
         $this->addYesNoSelect(
             'med_his_q_3_surgery',
-            '3. Surgery of any type?',
+            '3. Surgery of any type?'
         );
         $this->addTextElement(
             'med_his_q_3_surgery_describe', 
             "{$this->indent}Describe:",
-            array('med_his_q_3_surgery{@}=={@}yes'), 'This field is required if there was surgery'
+            array('med_his_q_3_surgery{@}=={@}yes'), 
+            'This field is required if there was surgery'
         );
         $this->addYesNoSelect(
             'med_his_q_4_metal',
-            '4. Does X have any metal plates, clips, etc. from surgery?<br>(pacemaker, vascular stints, metallic ear tubes, other metal implants or braces)',
+            '4. Does X have any metal plates, clips, etc. from surgery?<br>(pacemaker, vascular stints, metallic ear tubes, other metal implants or braces)'
         );
         $this->addYesNoSelect(
             'med_his_q_5_medications', 
-            '5. Has X taken any medications over the last 12 months?',
+            '5. Has X taken any medications over the last 12 months?'
         );
         $this->addTextElement(
             'med_his_q_5_medications_describe',
@@ -555,11 +555,11 @@ class NDB_BVL_Instrument_tsi_ds extends NDB_BVL_Instrument
         );
         $this->addYesNoSelect(
             'med_his_q_7_doctor',
-            '7. Has X seen a doctor over the last 12 months?',
+            '7. Has X seen a doctor over the last 12 months?'
         );
         $this->addYesNoSelect(
             'med_his_q_8_brain_MRI', 
-            '8. Has X ever had an MRI of the brain?', 
+            '8. Has X ever had an MRI of the brain?'
         );
         $this->addSelect(
             'med_his_q_8_brain_MRI_results', 
@@ -569,7 +569,7 @@ class NDB_BVL_Instrument_tsi_ds extends NDB_BVL_Instrument
         $this->XINRegisterRule ('med_his_q_8_brain_MRI_results', array('med_his_q_8_brain_MRI{@}=={@}yes'), 'Please specify the results of the MRI');
         $this->addTextElement(
             'med_his_q_8_brain_MRI_notes', 
-            "{$this->indent}Notes", 
+            "{$this->indent}Notes"
         );
         $this->XINRegisterRule (
             'med_his_q_8_brain_MRI_notes', 
