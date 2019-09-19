@@ -51,7 +51,7 @@ class Electrophysiology_Browser extends \DataFrameworkMenu
      * Tells the base class that this page's provisioner can support
      * the UserSiteMatch filter.
      *
-     * @return bool|void always true
+     * @return bool always true
      * @throws \DatabaseException
      */
     public function useSiteFilter(): bool
@@ -63,7 +63,7 @@ class Electrophysiology_Browser extends \DataFrameworkMenu
      * Set up the variables required by NDB_Menu_Filter class for
      * constructing a query
      *
-     * @return bool always true
+     * @return array list of sites
      */
     function getFieldOptions(): array
     {
