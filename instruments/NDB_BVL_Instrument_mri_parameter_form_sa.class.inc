@@ -169,9 +169,10 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
         $this->form->addElement('select', 'weight_units', 'Weight units:', array("" => null, "pounds" => "pounds", "kilograms" => "kilograms"));
         $this->form->addElement('text', 'height', 'Height:');
         $this->form->addElement('select', 'height_units', 'Height units:', array("" => null, "inches" => "inches", "centimeters" => "cm"));
-        $this->form->addElement('text', 'head_circumference', 'Head Circumference:<br><h5><i>(Please enter a numeric value between 0-100 or NA if applicable)</i></h5>');
-        $this->form->addElement('select', 'head_circumference_units', 'Head Circumference units:', array("" => null, "inches" => "inches", "centimeters" => "cm","NA" => "NA"));
-
+        $this->form->addElement('text', 'head_circumference', "Head Circumference:<br><i>(Please enter a numeric value between 0-100 or select 'NA' below)</i>");
+        $this->XINRegisterRule("head_circumference", array("head_circumference{@}=={@}NEVER_REQUIRED"));
+        $this->addSelect('head_circumference_units', 'Head Circumference units:', array("" => null, "inches" => "inches", "centimeters" => "cm","NA" => "NA"));
+        
         $this->form->addElement('select', "Scanner_type", "Type of Scanner:", array("" => null, "hospital" => "Hospital", "research" => "Research", "other" => "Other"));
         $this->form->addElement("text", "Scanner_type_other", "<i>If other, specify:</i>");
         $this->XINRegisterRule("Scanner_type_other", array("Scanner_type{@}=={@}other"), "Required if 'Other' selected in previous question");
@@ -540,7 +541,18 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
         $errors = [];
         $this->validate_numeric_strict($values, "weight", $errors, 0, 200);
         $this->validate_numeric_strict($values, "height", $errors, 0, 200);
-        $this->validate_numeric($values, "head_circumference", $errors, 0, 100);
+
+        // If the user did not select NA in the unit section
+        // ensure circumference is a float number between 0 and 100 inc. 
+        if($values['head_circumference_units'] != 'NA') {
+            $this->validate_numeric_strict($values, "head_circumference", $errors, 0, 100);
+        }
+        // If the user selected NA in the unit section
+        // ensure circumference field is empty
+        elseif($values['head_circumference'] != '') {
+            $errors['head_circumference'] = 'You must leave this field blank since you answered NA below';
+        }
+        
         for ($i=1; $i <= 6; $i++) {
             $t1_weighted_anterior = "t1_run" . $i . "_anterior";
             $t1_weighted_posterior = "t1_run" . $i . "_posterior";
@@ -597,7 +609,7 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
 
         }
         // save scores
-	    $db->update($this->table, $scores, array("CommentID"=>$this->getCommentID()));
+        $db->update($this->table, $scores, array("CommentID"=>$this->getCommentID()));
     }
 
     /**
