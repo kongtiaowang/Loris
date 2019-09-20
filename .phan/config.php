@@ -18,6 +18,7 @@ return [
 	"suppress_issue_types" => [
         "PhanTypeInvalidDimOffset",
 		"PhanUndeclaredMethod",
+		"PhanUndeclaredVariableDim",
         "PhanTypeMismatchDimFetch",
 		"PhanUndeclaredClassMethod",
 		"PhanTypeMismatchArgument",

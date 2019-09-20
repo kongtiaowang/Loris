@@ -177,8 +177,6 @@ class New_Profile extends \NDB_Form
                 );
                 $psc_labelOptions[$siteID] = $center['Name'];
             }
-        } else {
-            $psc_labelOptions = null;
         }
         $site = $psc_labelOptions;
 
