@@ -101,7 +101,7 @@ INSERT INTO `permissions` VALUES
     (52,'instrument_manager_write', 'Instrument Manager: Install new instruments via file upload', 2),
     (53,'publication_view', 'Publication - Access to module', 2),
     (54,'publication_propose', 'Publication - Propose a project', 2),
-    (55,'publication_approve', 'Publication - Approve or reject proposed publication projects', 2);
+    (55,'publication_approve', 'Publication - Approve or reject proposed publication projects', 2),
     (56,'electrophysiology_browser_view_allsites', 'View all-sites Electrophysiology Browser pages', 2),
     (57,'electrophysiology_browser_view_site', 'View own site Electrophysiology Browser pages', 2);
 
