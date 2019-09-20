@@ -35,7 +35,7 @@ INSERT INTO LorisMenu (Label, OrderNumber) VALUES
      ('Candidate', 1),
      ('Clinical', 2),
      ('Imaging', 3),
-     ('Electrophysiology', 4)
+     ('Electrophysiology', 4),
      ('Reports', 5),
      ('Tools', 6),
      ('Admin', 7);
