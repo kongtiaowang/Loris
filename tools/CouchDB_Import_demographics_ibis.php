@@ -96,7 +96,7 @@ class CouchDBDemographicsImporter {
             'Description' => 'YES ==> If 4a/4b on DSMIV_checklist(V24) is yes at V24.
                               NO ==> If 4a/4b on DSMIV_checklist(V24) is no and not atypical at V24.
                               ATYPICAL ==> If 2 or more major sub-scales less than 35 (t score) on Mullen(V24) OR
-                              1 or more major sub-scale less than 30 (tscore) on Mullen(V24) OR Greater than 3 CSS on ADOS(V24).',
+                              1 or more major sub-scale less than 30 (tscore) on Mullen(V24) OR Greater than or Equal to 3 CSS on ADOS(V24).',
             'Type' => 'varchar(255)',
         ),
         'Age_at_visit_start' => array(
@@ -419,77 +419,71 @@ class CouchDBDemographicsImporter {
                                                          AND f.CommentID NOT LIKE 'DDE%'", array());
 
             foreach($find_atypical as $find_atypical_row) {
-                    $sessionID = $find_atypical_row['ID'];
-                    $ADOSModule = $this->getADOSModule($sessionID);
-                    $Fields = array(
-                        'c.PSCID',
-                        's.Visit_label',
-                        'i.Candidate_Age',
-                        'i.social_affect_total',
-                        'i.severity_score_lookup',
-                        'i.a1'
+                $sessionID = $find_atypical_row['ID'];
+                $ADOSModule = $this->getADOSModule($sessionID);
+                $Fields = array(
+                    'c.PSCID',
+                    's.Visit_label',
+                    'i.Candidate_Age',
+                    'i.social_affect_total',
+                    'i.severity_score_lookup',
+                    'i.a1'
+                );
+                if ($ADOSModule != NULL) {
+
+                    $selectq = "SELECT " . join(",", $Fields) .
+                        " FROM flag f LEFT JOIN " . $ADOSModule . " i USING (CommentID)" .
+                        " LEFT JOIN session s ON (s.ID=f.SessionID)" .
+                        " LEFT JOIN candidate c USING (CandID) " .
+                        "WHERE f.Test_name='$ADOSModule' AND f.SessionID=:SID AND s.Active='Y'" .
+                        " AND c.Active='Y' AND f.CommentID NOT LIKE 'DDE%'";
+                    $row = $this->SQLDB->pselectRow($selectq,
+                        array(
+                            'SID' => $sessionID,
+                        )
                     );
-                    if ($ADOSModule != NULL) {
-
-                        $selectq = "SELECT " . join(",", $Fields) .
-                            " FROM flag f LEFT JOIN " . $ADOSModule . " i USING (CommentID)" .
-                            " LEFT JOIN session s ON (s.ID=f.SessionID)" .
-                            " LEFT JOIN candidate c USING (CandID) " .
-                            "WHERE f.Test_name=:AM AND f.SessionID=:SID and c.CandiD=:CID AND s.Active='Y'" .
-                            " AND c.Active='Y' AND f.CommentID NOT LIKE 'DDE%'";
-                        $row = $this->SQLDB->pselectRow($selectq,
-                            array(
-                                "AM" => $ADOSModule,
-                                'SID' => $sessionID,
-                                'CID' => $demographics['CandID']
-                            )
-                        );
-                        if ($row === array()) {
-                            return;
+                    if ($row === array()) {
+                       return;
+                    }
+                    $PSCID = $row['PSCID'];
+                    $Visit_label = $row['Visit_label'];
+                    $age_months = $row['Candidate_Age'];
+                    for ($i = 2; $i <= 14; $i++) {
+                        $low = $i * 12;
+                        $high = ($i + 1) * 12;
+                        if ($age_months >= $low && $age_months < $high) {
+                            $ados_age = $i;
                         }
-                        $PSCID = $row['PSCID'];
-                        $Visit_label = $row['Visit_label'];
-                        $age_months = $row['Candidate_Age'];
-                        for ($i = 2; $i <= 14; $i++) {
-                            $low = $i * 12;
-                            $high = ($i + 1) * 12;
-                            if ($age_months >= $low && $age_months < $high) {
-                                $ados_age = $i;
-                            }
-                        }
-
-                        //Leigh says this is SA version; at V24 css is severity score lookup
-                        //$ADOS_SA_CSS = NDB_BVL_Instrument_IBIS::ADOS_SA_CSS($ADOSModule, $row['a1'], $row['social_affect_total'], $ados_age);
-                        $ADOS_CSS = $row['severity_score_lookup'];
                     }
 
-                    $dsm_no_check =$this->SQLDB->pselectRow("SELECT CASE WHEN (dsm.q4_criteria_autistic_disorder = 'no' && dsm.q4_criteria_PDD ='no') 
-                                                         THEN 'No' END as dsm_no, c.PSCID,s.Visit_label
-                                                         FROM  session s
-                                                         JOIN candidate c using (candid) 
-                                                         LEFT JOIN flag f  ON ( f.SessionID = s.ID)
-                                                         LEFT JOIN DSMIV_checklist dsm ON ( dsm.CommentID = f.CommentID )
-                                                         where c.Candid=$candid and f.Test_name IN('DSMIV_checklist') and
-                                                         f.SessionID=:SID and c.CandiD=:CID AND s.Active='Y' 
-                    AND f.CommentID NOT LIKE 'DDE%'", array( 'SID' => $sessionID,
-                        'CID' => $demographics['CandID']));
+                    //Leigh says this is SA version; at V24 css is severity score lookup
+                    //$ADOS_SA_CSS = NDB_BVL_Instrument_IBIS::ADOS_SA_CSS($ADOSModule, $row['a1'], $row['social_affect_total'], $ados_age);
+                    $ADOS_CSS = $row['severity_score_lookup'];
+                }
 
+                if ($demographics['ASD_DX'] != NULL) {
 
-
-                        if ($ADOS_CSS >= 3 && $row['Visit_label'] =='V24') {
-                            $atypical = "ATYPICAL (ADOS severity score greater than 3 at V24) ";
-                        } else if ($find_atypical_row['mullen_criteria'] == 'Yes' && $find_atypical_row['Visit_label']== 'V24'){
-                            $atypical = "ATYPICAL (Mullen: 1 or more sub-scale Tscore less than 30 at V24)";
-                        } else if ($find_atypical_row['mullen_criteria'] == 'Yes_2' && $find_atypical_row['Visit_label']== 'V24'){
-                            $atypical = "ATYPICAL (Mullen: 2 or more sub-scale Tscore less than 35 at V24)";
-                        } else if ($dsm_no_check =='No' && $find_atypical_row['Visit_label']== 'V24'){
-                            $atypical = 'NO (DSM_IV questions 4a/4b is no and not atypical) ';
-                        }
-
-
-                        $demographics['DX_Subgroups'] = $atypical;
+                    if ($ADOS_CSS >= 3 && $find_atypical_row['Visit_label'] == 'V24' && $ADOSModule!=NULL) {
+                        $atypical = "ATYPICAL (ADOS severity score greater than or equal to 3 at V24) ";
+                    } else if ($find_atypical_row['mullen_criteria'] == 'Yes' && $find_atypical_row['Visit_label'] == 'V24') {
+                        $atypical = "ATYPICAL (Mullen: 1 or more sub-scale Tscore less than 30 at V24)";
+                    } else if ($find_atypical_row['mullen_criteria'] == 'Yes_2' && $find_atypical_row['Visit_label'] == 'V24') {
+                        $atypical = "ATYPICAL (Mullen: 2 or more sub-scale Tscore less than 35 at V24)";
+                    } else if ($demographics['ASD_DX']=='NO (DSM_IV questions 4a/4b is No at V24)'
+                        && $find_atypical_row['Visit_label'] == 'V24') {
+                        $atypical = 'NO (DSM_IV questions 4a/4b is no and not atypical) ';
+                    } else {
+                        $atypical = $demographics['ASD_DX'];
                     }
+
+                    $demographics['DX_Subgroups'] = $atypical;
+                }
+                else{
+                    $demographics['DX_Subgroups'] = $demographics['ASD_DX'];
+                }
             }
+            }
+
             //atypical code finished
 
 
