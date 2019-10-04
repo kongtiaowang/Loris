@@ -1,8 +1,7 @@
 <?php
 
 
-
-require_once "ProjectUtility.class.inc";
+set_include_path(get_include_path().":../libraries:../../php/libraries:");
 
 class NDB_BVL_Instrument_fyi extends NDB_BVL_Instrument
 {
