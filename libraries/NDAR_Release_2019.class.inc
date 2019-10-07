@@ -20,7 +20,7 @@ class NDAR_Release_2019
         } else {
             $GUID = "AND COALESCE(pcc.Value, '') <> ''";
         }
-        $Base = "COALESCE(s.Current_stage, '') <> 'Recycling Bin' AND COALESCE(s.Visit, '') NOT IN ('Failure', 'Withdrawal') AND COALESCE(s.Screening, '') NOT IN ('Failure', 'Withdrawal') AND f.Administration='All' AND f.Data_entry='Complete' AND NOT EXISTS (SELECT 'x' FROM conflicts_unresolved cu WHERE cu.CommentId1=i.CommentID OR cu.CommentId2=i.CommentID) AND s.CenterID IN (1,2, 3, 4, 5) AND ( (ps.study_consent = 'yes' OR ps.study_consent IS NULL) AND ps.study_consent_withdrawal IS NULL) AND ((ps.ndar_consent = 'yes' OR ps.ndar_consent IS NULL) AND ps.ndar_consent_withdrawal IS NULL) AND c.Active='Y' AND s.Active ='Y'";
+        $Base = "COALESCE(s.Current_stage, '') <> 'Recycling Bin' AND COALESCE(s.Visit, '') NOT IN ('Failure', 'Withdrawal') AND COALESCE(s.Screening, '') NOT IN ('Failure', 'Withdrawal') AND f.Administration='All' AND f.Data_entry='Complete' AND NOT EXISTS (SELECT 'x' FROM conflicts_unresolved cu WHERE cu.CommentId1=i.CommentID OR cu.CommentId2=i.CommentID) AND s.CenterID IN (2, 3, 4, 5) AND ( (ps.study_consent = 'yes' OR ps.study_consent IS NULL) AND ps.study_consent_withdrawal IS NULL) AND ((ps.ndar_consent = 'yes' OR ps.ndar_consent IS NULL) AND ps.ndar_consent_withdrawal IS NULL) AND c.Active='Y' AND s.Active ='Y'";
         if ($this->instrument == 'adi_r_proband') {
             if ($this->project == 2) {
 
@@ -36,7 +36,7 @@ class NDAR_Release_2019
             } else {
                 return $Base . " AND s.SubprojectID <> 3 AND i.score='Fail' $GUID";
             }
-        } else if ($this->instrument == 'scq_proband') {
+        } else if ($this->instrument == 'scq_proband_survey') {
             // Check scq_diagnosis=ASD_Positive and 6/12mo recruit
             if ($this->project == 2) {
                 return $Base . " AND s.Visit_label IN ('VSA') $GUID";
@@ -55,18 +55,18 @@ class NDAR_Release_2019
             }
         } else if ($this->instrument == 'vineland_proband') {
             if ($this->project == 1) {
-                return "COALESCE(s.Current_stage, '') <> 'Recycling Bin' AND COALESCE(s.Visit, '') NOT IN ('Failure', 'Withdrawal') AND COALESCE(s.Screening, '') NOT IN ('Failure', 'Withdrawal') AND f.Administration='All' AND f.Data_entry='Complete' AND s.CenterID IN (1,2, 3, 4, 5) AND s.SubprojectID IN (1, 2, 3) AND ( (ps.study_consent = 'yes' OR ps.study_consent IS NULL) AND ps.study_consent_withdrawal IS NULL) AND ((ps.ndar_consent = 'yes' OR ps.ndar_consent IS NULL) AND ps.ndar_consent_withdrawal IS NULL) $GUID";
+                return "COALESCE(s.Current_stage, '') <> 'Recycling Bin' AND COALESCE(s.Visit, '') NOT IN ('Failure', 'Withdrawal') AND COALESCE(s.Screening, '') NOT IN ('Failure', 'Withdrawal') AND f.Administration='All' AND f.Data_entry='Complete' AND s.CenterID IN (2, 3, 4, 5) AND s.SubprojectID IN (1, 2, 3) AND ( (ps.study_consent = 'yes' OR ps.study_consent IS NULL) AND ps.study_consent_withdrawal IS NULL) AND ((ps.ndar_consent = 'yes' OR ps.ndar_consent IS NULL) AND ps.ndar_consent_withdrawal IS NULL) $GUID";
             } else {
                 // No DDE
                 return "COALESCE(s.Current_stage, '') <> 'Recycling Bin' AND COALESCE(s.Visit, '') NOT IN ('Failure', 'Withdrawal') AND COALESCE(s.Screening, '') NOT IN ('Failure', 'Withdrawal') AND
-             f.Administration='All' AND f.Data_entry='Complete' AND s.CenterID IN (1,2, 3, 4, 5) AND s.SubprojectID=9 AND s.Visit_label='VSA' AND ( (ps.study_consent = 'yes' OR ps.study_consent IS NULL) AND ps.study_consent_withdrawal IS NULL) AND ((ps.ndar_consent = 'yes' OR ps.ndar_consent IS NULL) AND ps.ndar_consent_withdrawal IS NULL) $GUID ";
+             f.Administration='All' AND f.Data_entry='Complete' AND s.CenterID IN (2, 3, 4, 5) AND s.SubprojectID=9 AND s.Visit_label='VSA' AND ( (ps.study_consent = 'yes' OR ps.study_consent IS NULL) AND ps.study_consent_withdrawal IS NULL) AND ((ps.ndar_consent = 'yes' OR ps.ndar_consent IS NULL) AND ps.ndar_consent_withdrawal IS NULL) $GUID ";
             }
         } else if ($this->instrument == 'vineland_subject') {
             // No DDE
             if ($this->project == 2) {
-                return "COALESCE(s.Current_stage, '') <> 'Recycling Bin' AND COALESCE(s.Visit, '') NOT IN ('Failure', 'Withdrawal') AND COALESCE(s.Screening, '') NOT IN ('Failure', 'Withdrawal') AND f.Administration='All' AND f.Data_entry='Complete' AND s.CenterID IN (1,2, 3, 4, 5) AND ((s.SubprojectID=9 AND UPPER(s.Visit_label) IN ('VSA')) OR (s.SubprojectID=10 AND UPPER(s.Visit_label) IN ('VSA'))) AND ( (ps.study_consent = 'yes' OR ps.study_consent IS NULL) AND ps.study_consent_withdrawal IS NULL) AND ((ps.ndar_consent = 'yes' OR ps.ndar_consent IS NULL) AND ps.ndar_consent_withdrawal IS NULL) $GUID ";
+                return "COALESCE(s.Current_stage, '') <> 'Recycling Bin' AND COALESCE(s.Visit, '') NOT IN ('Failure', 'Withdrawal') AND COALESCE(s.Screening, '') NOT IN ('Failure', 'Withdrawal') AND f.Administration='All' AND f.Data_entry='Complete' AND s.CenterID IN (2, 3, 4, 5) AND ((s.SubprojectID=9 AND UPPER(s.Visit_label) IN ('VSA')) OR (s.SubprojectID=10 AND UPPER(s.Visit_label) IN ('VSA'))) AND ( (ps.study_consent = 'yes' OR ps.study_consent IS NULL) AND ps.study_consent_withdrawal IS NULL) AND ((ps.ndar_consent = 'yes' OR ps.ndar_consent IS NULL) AND ps.ndar_consent_withdrawal IS NULL) $GUID ";
             } else {
-                return "COALESCE(s.Current_stage, '') <> 'Recycling Bin' AND COALESCE(s.Visit, '') NOT IN ('Failure', 'Withdrawal') AND COALESCE(s.Screening, '') NOT IN ('Failure', 'Withdrawal') AND f.Administration='All' AND f.Data_entry='Complete' AND s.CenterID IN (1,2, 3, 4, 5) AND ((s.SubprojectID=1 AND UPPER(s.Visit_label) IN ('VSA')) OR (s.SubprojectID=2 AND UPPER(s.Visit_label) IN ('VSA')) OR (s.SubprojectID=3 AND UPPER(s.Visit_label) IN ('VSA'))) AND ( (ps.study_consent = 'yes' OR ps.study_consent IS NULL) AND ps.study_consent_withdrawal IS NULL) AND ((ps.ndar_consent = 'yes' OR ps.ndar_consent IS NULL) AND ps.ndar_consent_withdrawal IS NULL) $GUID ";
+                return "COALESCE(s.Current_stage, '') <> 'Recycling Bin' AND COALESCE(s.Visit, '') NOT IN ('Failure', 'Withdrawal') AND COALESCE(s.Screening, '') NOT IN ('Failure', 'Withdrawal') AND f.Administration='All' AND f.Data_entry='Complete' AND s.CenterID IN (2, 3, 4, 5) AND ((s.SubprojectID=1 AND UPPER(s.Visit_label) IN ('VSA')) OR (s.SubprojectID=2 AND UPPER(s.Visit_label) IN ('VSA')) OR (s.SubprojectID=3 AND UPPER(s.Visit_label) IN ('VSA'))) AND ( (ps.study_consent = 'yes' OR ps.study_consent IS NULL) AND ps.study_consent_withdrawal IS NULL) AND ((ps.ndar_consent = 'yes' OR ps.ndar_consent IS NULL) AND ps.ndar_consent_withdrawal IS NULL) $GUID ";
             }
         } else if ($this->instrument == 'prefrontal_task' || $this->instrument == 'csbs') {
             if ($this->project == 2 && $this->instrument == 'csbs') {
@@ -115,12 +115,12 @@ class NDAR_Release_2019
                 return " COALESCE( medpsychflag.CommentID, neuroscreenflag.CommentID, tsiflag.CommentID) IS NOT NULL AND
                     COALESCE(s.Current_stage, '') <> 'Recycling Bin' AND COALESCE(s.Visit, '') NOT IN ('Failure', 'Withdrawal')
                     AND COALESCE(s.Screening, '') NOT IN ('Failure', 'Withdrawal')
-                    AND s.CenterID IN (1,2, 3, 4, 5) AND ((s.SubprojectID=9 AND UPPER(s.Visit_label) IN ('VSA')) OR (s.SubprojectID=10 AND UPPER(s.Visit_label) IN ('VSA'))) AND ( (ps.study_consent = 'yes' OR ps.study_consent IS NULL) AND ps.study_consent_withdrawal IS NULL) AND ((ps.ndar_consent = 'yes' OR ps.ndar_consent IS NULL) AND ps.ndar_consent_withdrawal IS NULL) $GUID";
+                    AND s.CenterID IN (2, 3, 4, 5) AND ((s.SubprojectID=9 AND UPPER(s.Visit_label) IN ('VSA')) OR (s.SubprojectID=10 AND UPPER(s.Visit_label) IN ('VSA'))) AND ( (ps.study_consent = 'yes' OR ps.study_consent IS NULL) AND ps.study_consent_withdrawal IS NULL) AND ((ps.ndar_consent = 'yes' OR ps.ndar_consent IS NULL) AND ps.ndar_consent_withdrawal IS NULL) $GUID";
             } else {
                 return " COALESCE( medpsychflag.CommentID, neuroscreenflag.CommentID, tsiflag.CommentID) IS NOT NULL AND
                     COALESCE(s.Current_stage, '') <> 'Recycling Bin' AND COALESCE(s.Visit, '') NOT IN ('Failure', 'Withdrawal')
                     AND COALESCE(s.Screening, '') NOT IN ('Failure', 'Withdrawal')
-                    AND s.CenterID IN (1,2, 3, 4, 5) AND ((s.SubprojectID=1 AND UPPER(s.Visit_label) IN ('VSA')) OR (s.SubprojectID=2 AND UPPER(s.Visit_label) IN ('VSA')) OR (s.SubprojectID=3 AND UPPER(s.Visit_label) IN ('VSA'))) AND ( (ps.study_consent = 'yes' OR ps.study_consent IS NULL) AND ps.study_consent_withdrawal IS NULL) AND ((ps.ndar_consent = 'yes' OR ps.ndar_consent IS NULL) AND ps.ndar_consent_withdrawal IS NULL) $GUID";
+                    AND s.CenterID IN (2, 3, 4, 5) AND ((s.SubprojectID=1 AND UPPER(s.Visit_label) IN ('VSA')) OR (s.SubprojectID=2 AND UPPER(s.Visit_label) IN ('VSA')) OR (s.SubprojectID=3 AND UPPER(s.Visit_label) IN ('VSA'))) AND ( (ps.study_consent = 'yes' OR ps.study_consent IS NULL) AND ps.study_consent_withdrawal IS NULL) AND ((ps.ndar_consent = 'yes' OR ps.ndar_consent IS NULL) AND ps.ndar_consent_withdrawal IS NULL) $GUID";
             }
         } else if (($this->instrument == 'head_measurements_subject' || $this->instrument == 'height_weight') && $this->project == 2) {
             return $Base . " AND ((s.SubprojectID=9 AND UPPER(s.Visit_label) IN ('VSA')) OR (s.SubprojectID=10 AND UPPER(s.Visit_label) IN ('VSA'))) $GUID";
@@ -175,7 +175,7 @@ class NDAR_Release_2019
             return $Base . " AND c.ProjectID = $this->project $GUID";
         }
         else{
-          if ($this->project == 2) {
+            if ($this->project == 2) {
                 return $Base . " AND UPPER(s.Visit_label) IN ('VSA') $GUID";
             }
             else{
@@ -193,13 +193,13 @@ class NDAR_Release_2019
             return "c.IBISID AS src_subject_id, ";
         }
         if (strpos($this->instrument, '_proband') !== FALSE) {
-            if ($this->instrument == 'm_chat_proband' || $this->instrument == 'scq_proband') {
+            if ($this->instrument == 'm_chat_proband' || $this->instrument == 'scq_proband_survey') {
                 // No validity
-                return "c.IBISID AS src_subject_id,  pcp.Value as subjectkey,  CASE c.Probandsex WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS sex, ROUND(DATEDIFF(i.Date_taken, c.ProbandDoB) / (365/12)) AS interview_age, i.Date_taken as interview_date, ";
+                return "c.IBISID AS src_subject_id,  pcp.Value as subjectkey,  CASE c.ProbandGender WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS sex, ROUND(DATEDIFF(i.Date_taken, c.ProbandDoB) / (365/12)) AS interview_age, i.Date_taken as interview_date, ";
             }
-            return "c.IBISID AS src_subject_id, pcp.Value as subjectkey,  CASE c.Probandsex WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS sex, ROUND(DATEDIFF(i.Date_taken, c.ProbandDoB) / (365/12)) AS interview_age, f.Validity as validity_of_data, i.Date_taken as interview_date, ";
+            return "c.IBISID AS src_subject_id, pcp.Value as subjectkey,  CASE c.ProbandGender WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS sex, ROUND(DATEDIFF(i.Date_taken, c.ProbandDoB) / (365/12)) AS interview_age, f.Validity as validity_of_data, i.Date_taken as interview_date, ";
         } else {
-            $NoValidities = array('macarthur_words_gestures', 'seq', 'rbs_r', 'ibq_r', 'head_measurements_subject', 'prefrontal_task', 'fyi', 'scq_proband',
+            $NoValidities = array('macarthur_words_gestures', 'seq', 'rbs_r', 'ibq_r', 'head_measurements_subject', 'prefrontal_task', 'fyi', 'scq_proband_survey',
                 'height_weight','phys_neuro_exam', 'ECBQ', 'FamilyEnvironmentScales','BSRC', 'JointAttentionAssessment','SRS');
             $ados = array('ados_module1','ados_module2','ados_module3','ados2_module1','ados2_module2','ados2_module3') ;
             if (in_array($this->instrument, $NoValidities)) {
@@ -221,7 +221,7 @@ class NDAR_Release_2019
                 return "c.IBISID AS src_subject_id, pcc.Value AS subjectkey, CASE c.Gender WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS sex , 
                 ROUND(DATEDIFF(DATE(i.Timestamp_1), c.DoB) / (365/12)) AS interview_age, DATE(i.Timestamp_1) as interview_date, ";
             }
-            else if($this->instrument == 'BOT2_Short' || $this->instrument == 'CSHQ')
+            else if($this->instrument == 'BOT2_Short' || $this->instrument == 'CSHQ' ||  $this->instrument == 'WIAT_III_SA_2' )
             {
                 return "c.IBISID AS src_subject_id, pcc.Value AS subjectkey, CASE c.Gender WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS sex , ROUND(DATEDIFF(i.Date_taken, c.DoB) / (365/12)) AS interview_age, i.Date_taken as interview_date";
             }
@@ -732,80 +732,80 @@ class NDAR_Release_2019
                 WHEN \'step_mother\' THEN \'9\'  WHEN \'care_giver\' THEN \'5\' 
                 END as childmeas_compby',
                 'CASE i.hear_loss WHEN \'no\' THEN \'0\' WHEN \'yes\' THEN \'1\'WHEN \'\' THEN \'-9\' END as ccc2hearing',
-            $this->getProperValue('i.CCC2_response_1','ccc2itm01'),
-            $this->getProperValue('i.CCC2_response_2','ccc2itm02'),
-            $this->getProperValue('i.CCC2_response_3','ccc2itm03'),
-            $this->getProperValue('i.CCC2_response_4','ccc2itm04'),
-            $this->getProperValue('i.CCC2_response_5','ccc2itm05'),
-            $this->getProperValue('i.CCC2_response_7','ccc2itm07'),
-            $this->getProperValue('i.CCC2_response_8','ccc2itm08'),
-            $this->getProperValue('i.CCC2_response_9','ccc2itm09'),
-            $this->getProperValue('i.CCC2_response_10','ccc2itm10'),
-            $this->getProperValue('i.CCC2_response_11','ccc2itm11'),
-            $this->getProperValue('i.CCC2_response_12','ccc2itm12'),
-            $this->getProperValue('i.CCC2_response_13','ccc2itm13'),
-            $this->getProperValue('i.CCC2_response_14','ccc2itm14'),
-            $this->getProperValue('i.CCC2_response_15','ccc2itm15'),
-            $this->getProperValue('i.CCC2_response_16','ccc2itm16'),
-            $this->getProperValue('i.CCC2_response_17','ccc2itm17'),
-            $this->getProperValue('i.CCC2_response_18','ccc2itm18'),
-            $this->getProperValue('i.CCC2_response_19','ccc2itm19'),
-            $this->getProperValue('i.CCC2_response_20','ccc2itm20'),
-            $this->getProperValue('i.CCC2_response_21','ccc2itm21'),
-            $this->getProperValue('i.CCC2_response_22','ccc2itm22'),
-            $this->getProperValue('i.CCC2_response_23','ccc2itm23'),
-            $this->getProperValue('i.CCC2_response_24','ccc2itm24'),
-            $this->getProperValue('i.CCC2_response_25','ccc2itm25'),
-            $this->getProperValue('i.CCC2_response_26','ccc2itm26'),
-            $this->getProperValue('i.CCC2_response_27','ccc2itm27'),
-            $this->getProperValue('i.CCC2_response_28','ccc2itm28'),
-            $this->getProperValue('i.CCC2_response_29','ccc2itm29'),
-            $this->getProperValue('i.CCC2_response_30','ccc2itm30'),
-            $this->getProperValue('i.CCC2_response_31','ccc2itm31'),
-            $this->getProperValue('i.CCC2_response_32','ccc2itm32'),
-            $this->getProperValue('i.CCC2_response_33','ccc2itm33'),
-            $this->getProperValue('i.CCC2_response_34','ccc2itm34'),
-            $this->getProperValue('i.CCC2_response_35','ccc2itm35'),
-            $this->getProperValue('i.CCC2_response_36','ccc2itm36'),
-            $this->getProperValue('i.CCC2_response_37','ccc2itm37'),
-            $this->getProperValue('i.CCC2_response_38','ccc2itm38'),
-            $this->getProperValue('i.CCC2_response_39','ccc2itm39'),
-            $this->getProperValue('i.CCC2_response_40','ccc2itm40'),
-            $this->getProperValue('i.CCC2_response_41','ccc2itm41'),
-            $this->getProperValue('i.CCC2_response_42','ccc2itm42'),
-            $this->getProperValue('i.CCC2_response_43','ccc2itm43'),
-            $this->getProperValue('i.CCC2_response_44','ccc2itm44'),
-            $this->getProperValue('i.CCC2_response_45','ccc2itm45'),
-            $this->getProperValue('i.CCC2_response_46','ccc2itm46'),
-            $this->getProperValue('i.CCC2_response_47','ccc2itm47'),
-            $this->getProperValue('i.CCC2_response_48','ccc2itm48'),
-            $this->getProperValue('i.CCC2_response_49','ccc2itm49'),
-            $this->getProperValue('i.CCC2_response_50','ccc2itm50'),
-            $this->getProperValue('i.CCC2_response_51','ccc2itm51'),
-            $this->getProperValue('i.CCC2_response_52','ccc2itm52'),
-            $this->getProperValue('i.CCC2_response_53','ccc2itm53'),
-            $this->getProperValue('i.CCC2_response_54','ccc2itm54'),
-            $this->getProperValue('i.CCC2_response_55','ccc2itm55'),
-            $this->getProperValue('i.CCC2_response_56','ccc2itm56'),
-            $this->getProperValue('i.CCC2_response_57','ccc2itm57'),
-            $this->getProperValue('i.CCC2_response_58','ccc2itm58'),
-            $this->getProperValue('i.CCC2_response_59','ccc2itm59'),
-            $this->getProperValue('i.CCC2_response_60','ccc2itm60'),
-            $this->getProperValue('i.CCC2_response_61','ccc2itm61'),
-            $this->getProperValue('i.CCC2_response_62','ccc2itm62'),
-            $this->getProperValue('i.CCC2_response_63','ccc2itm63'),
-            $this->getProperValue('i.CCC2_response_64','ccc2itm64'),
-            $this->getProperValue('i.CCC2_response_65','ccc2itm65'),
-            $this->getProperValue('i.CCC2_response_66','ccc2itm66'),
-            $this->getProperValue('i.CCC2_response_67','ccc2itm67'),
-            $this->getProperValue('i.CCC2_response_68','ccc2itm68'),
-            $this->getProperValue('i.CCC2_response_69','ccc2itm69'),
-            $this->getProperValue('i.CCC2_response_70','ccc2itm70'),
-        );
+                $this->getProperValue('i.CCC2_response_1','ccc2itm01'),
+                $this->getProperValue('i.CCC2_response_2','ccc2itm02'),
+                $this->getProperValue('i.CCC2_response_3','ccc2itm03'),
+                $this->getProperValue('i.CCC2_response_4','ccc2itm04'),
+                $this->getProperValue('i.CCC2_response_5','ccc2itm05'),
+                $this->getProperValue('i.CCC2_response_7','ccc2itm07'),
+                $this->getProperValue('i.CCC2_response_8','ccc2itm08'),
+                $this->getProperValue('i.CCC2_response_9','ccc2itm09'),
+                $this->getProperValue('i.CCC2_response_10','ccc2itm10'),
+                $this->getProperValue('i.CCC2_response_11','ccc2itm11'),
+                $this->getProperValue('i.CCC2_response_12','ccc2itm12'),
+                $this->getProperValue('i.CCC2_response_13','ccc2itm13'),
+                $this->getProperValue('i.CCC2_response_14','ccc2itm14'),
+                $this->getProperValue('i.CCC2_response_15','ccc2itm15'),
+                $this->getProperValue('i.CCC2_response_16','ccc2itm16'),
+                $this->getProperValue('i.CCC2_response_17','ccc2itm17'),
+                $this->getProperValue('i.CCC2_response_18','ccc2itm18'),
+                $this->getProperValue('i.CCC2_response_19','ccc2itm19'),
+                $this->getProperValue('i.CCC2_response_20','ccc2itm20'),
+                $this->getProperValue('i.CCC2_response_21','ccc2itm21'),
+                $this->getProperValue('i.CCC2_response_22','ccc2itm22'),
+                $this->getProperValue('i.CCC2_response_23','ccc2itm23'),
+                $this->getProperValue('i.CCC2_response_24','ccc2itm24'),
+                $this->getProperValue('i.CCC2_response_25','ccc2itm25'),
+                $this->getProperValue('i.CCC2_response_26','ccc2itm26'),
+                $this->getProperValue('i.CCC2_response_27','ccc2itm27'),
+                $this->getProperValue('i.CCC2_response_28','ccc2itm28'),
+                $this->getProperValue('i.CCC2_response_29','ccc2itm29'),
+                $this->getProperValue('i.CCC2_response_30','ccc2itm30'),
+                $this->getProperValue('i.CCC2_response_31','ccc2itm31'),
+                $this->getProperValue('i.CCC2_response_32','ccc2itm32'),
+                $this->getProperValue('i.CCC2_response_33','ccc2itm33'),
+                $this->getProperValue('i.CCC2_response_34','ccc2itm34'),
+                $this->getProperValue('i.CCC2_response_35','ccc2itm35'),
+                $this->getProperValue('i.CCC2_response_36','ccc2itm36'),
+                $this->getProperValue('i.CCC2_response_37','ccc2itm37'),
+                $this->getProperValue('i.CCC2_response_38','ccc2itm38'),
+                $this->getProperValue('i.CCC2_response_39','ccc2itm39'),
+                $this->getProperValue('i.CCC2_response_40','ccc2itm40'),
+                $this->getProperValue('i.CCC2_response_41','ccc2itm41'),
+                $this->getProperValue('i.CCC2_response_42','ccc2itm42'),
+                $this->getProperValue('i.CCC2_response_43','ccc2itm43'),
+                $this->getProperValue('i.CCC2_response_44','ccc2itm44'),
+                $this->getProperValue('i.CCC2_response_45','ccc2itm45'),
+                $this->getProperValue('i.CCC2_response_46','ccc2itm46'),
+                $this->getProperValue('i.CCC2_response_47','ccc2itm47'),
+                $this->getProperValue('i.CCC2_response_48','ccc2itm48'),
+                $this->getProperValue('i.CCC2_response_49','ccc2itm49'),
+                $this->getProperValue('i.CCC2_response_50','ccc2itm50'),
+                $this->getProperValue('i.CCC2_response_51','ccc2itm51'),
+                $this->getProperValue('i.CCC2_response_52','ccc2itm52'),
+                $this->getProperValue('i.CCC2_response_53','ccc2itm53'),
+                $this->getProperValue('i.CCC2_response_54','ccc2itm54'),
+                $this->getProperValue('i.CCC2_response_55','ccc2itm55'),
+                $this->getProperValue('i.CCC2_response_56','ccc2itm56'),
+                $this->getProperValue('i.CCC2_response_57','ccc2itm57'),
+                $this->getProperValue('i.CCC2_response_58','ccc2itm58'),
+                $this->getProperValue('i.CCC2_response_59','ccc2itm59'),
+                $this->getProperValue('i.CCC2_response_60','ccc2itm60'),
+                $this->getProperValue('i.CCC2_response_61','ccc2itm61'),
+                $this->getProperValue('i.CCC2_response_62','ccc2itm62'),
+                $this->getProperValue('i.CCC2_response_63','ccc2itm63'),
+                $this->getProperValue('i.CCC2_response_64','ccc2itm64'),
+                $this->getProperValue('i.CCC2_response_65','ccc2itm65'),
+                $this->getProperValue('i.CCC2_response_66','ccc2itm66'),
+                $this->getProperValue('i.CCC2_response_67','ccc2itm67'),
+                $this->getProperValue('i.CCC2_response_68','ccc2itm68'),
+                $this->getProperValue('i.CCC2_response_69','ccc2itm69'),
+                $this->getProperValue('i.CCC2_response_70','ccc2itm70'),
+            );
         } else if ($this->instrument == 'scq_proband_survey' || $this->instrument == 'scq_subject') {
 
             $fields = array(
-                'i.score as scq_total_score',
+                "CASE WHEN  i.score IS NULL THEN '999' WHEN i.score= '' THEN '999' WHEN i.score= 'not_answered' THEN '999' WHEN i.score= '0' THEN '999' ELSE i.score END as scq_total_score",
                 $this->getFirstUpper('i.q1_talk_short_phrases','q1_talk_short_phrases'),
                 $this->getFirstUpper('i.q2_to_and_fro','q2_to_and_fro'),
                 $this->getFirstUpper('i.q3_odd_phrases','q3_odd_phrases'),
@@ -852,42 +852,42 @@ class NDAR_Release_2019
         }
         else if ($this->instrument == 'MASC2_Parent' || $this->instrument == 'MASC2_Self_Report') {
             $fields = array(
-                 $this->getMASCValue('TR_T_score','masc_physicaltenset'),
+                $this->getMASCValue('i.TR_T_score','masc_physicaltenset'),
                 '\'99999\' as masc_physicalsomatict',
-                 $this->getMASCValue('PS_total_T_score','masc_physicaltotalt'),
+                $this->getMASCValue('i.PS_total_T_score','masc_physicaltotalt'),
                 '\'99999\' as masc_harmavoidperfectionismt',
                 '\'99999\' as masc_harmavoidanxiouscopingt',
-                 $this->getMASCValue('HA_T_score','masc_harmavoidtotalt'),
-                 $this->getMASCValue('HR_T_score','masc_socialhumiliationt'),
-                 $this->getMASCValue('PF_T_score','masc_socialperformancet'),
-                 $this->getMASCValue('SA_total_T_score','masc_socialtotalt'),
-                 $this->getMASCValue('SP_T_score','masc_separationpanict'),
-                 $this->getMASCValue('masc2_total_T_score','masc_masctotalt'),
-                 $this->getMASCValue('GAD_T_score','masc_anxietydisorderindext'),
-                 $this->getMASCValue('GAD_score','masc_gad_totalscore'),
-                 $this->getMASCValue('OC_score','masc_oc_totalscore'),
-                 $this->getMASCValue('OC_T_score','masc_oc_tscore'),
-                 $this->getMASCValue('Panic_score','masc_p_totalscore'),
-                 $this->getMASCValue('Panic_T_score','masc_p_tscore'),
+                $this->getMASCValue('i.HA_T_score','masc_harmavoidtotalt'),
+                $this->getMASCValue('i.HR_T_score','masc_socialhumiliationt'),
+                $this->getMASCValue('i.PF_T_score','masc_socialperformancet'),
+                $this->getMASCValue('i.SA_total_T_score','masc_socialtotalt'),
+                $this->getMASCValue('i.SP_T_score','masc_separationpanict'),
+                $this->getMASCValue('i.masc2_total_T_score','masc_masctotalt'),
+                $this->getMASCValue('i.GAD_T_score','masc_anxietydisorderindext'),
+                $this->getMASCValue('i.GAD_score','masc_gad_totalscore'),
+                $this->getMASCValue('i.OC_score','masc_oc_totalscore'),
+                $this->getMASCValue('i.OC_T_score','masc_oc_tscore'),
+                $this->getMASCValue('i.Panic_score','masc_p_totalscore'),
+                $this->getMASCValue('i.Panic_T_score','masc_p_tscore'),
             );
 
         }
         else if ($this->instrument == 'conners_parent') {
             $fields = array(
-                $this->getConnersValue('IN_raw_score','c3ps_inraw'),
-                $this->getConnersValue('HY_raw_score','c3ps_hyraw'),
-                $this->getConnersValue('LP_raw_score','c3ps_lpraw'),
-                $this->getConnersValue('EF_raw_score','c3ps_efraw'),
-                $this->getConnersValue('AG_raw_score','c3ps_agraw'),
-                $this->getConnersValue('PR_raw_score','c3ps_prraw'),
-                $this->getConnersValue('IN_T_score','c3ps_int'),
-                $this->getConnersValue('HY_T_score','c3ps_hyt'),
-                $this->getConnersValue('LP_T_score','c3ps_lpt'),
-                $this->getConnersValue('EF_T_score','c3ps_eft'),
-                $this->getConnersValue('AG_T_score','c3ps_agt'),
-                $this->getConnersValue('PR_raw_score','c3ps_prt'),
-                $this->getConnersValue('PI_raw_score','c3ps_piraw'),
-                $this->getConnersValue('NI_raw_score','c3ps_niraw'),
+                $this->getConnersValue('i.IN_raw_score','c3ps_inraw'),
+                $this->getConnersValue('i.HY_raw_score','c3ps_hyraw'),
+                $this->getConnersValue('i.LP_raw_score','c3ps_lpraw'),
+                $this->getConnersValue('i.EF_raw_score','c3ps_efraw'),
+                $this->getConnersValue('i.AG_raw_score','c3ps_agraw'),
+                $this->getConnersValue('i.PR_raw_score','c3ps_prraw'),
+                $this->getConnersValue('i.IN_T_score','c3ps_int'),
+                $this->getConnersValue('i.HY_T_score','c3ps_hyt'),
+                $this->getConnersValue('i.LP_T_score','c3ps_lpt'),
+                $this->getConnersValue('i.EF_T_score','c3ps_eft'),
+                $this->getConnersValue('i.AG_T_score','c3ps_agt'),
+                $this->getConnersValue('i.PR_raw_score','c3ps_prt'),
+                $this->getConnersValue('i.PI_raw_score','c3ps_piraw'),
+                $this->getConnersValue('i.NI_raw_score','c3ps_niraw'),
             );
 
         }
@@ -1861,7 +1861,7 @@ class NDAR_Release_2019
         } else { $test_fields = ""; }
 
         if ($this->instrument == 'demographics') {
-            return "SELECT DISTINCT ". $test_fields ." IBISID AS src_subject_id, CandidateGUID as subjectkey, ProbandGUID as subjectkey_sibling1, CASE c.Gender WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS sex, CASE c.Probandsex WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END as sibling_type1, c.CenterID as Site, CASE s.SubprojectID WHEN 1 THEN 'High Risk' WHEN 2 THEN 'High Risk' WHEN 3 THEN 'Low Risk' END as Cohort FROM candidate c JOIN session s ON (s.CandID=c.CandID) WHERE c.Active='Y' AND s.Active='Y' AND COALESCE(s.Current_stage, '') <> 'Recycling Bin' AND COALESCE(s.Visit, '') NOT IN ('Failure', 'Withdrawal') AND COALESCE(s.Screening, '') NOT IN ('Failure', 'Withdrawal') AND pcc.Value IS NOT NULL AND s.SubprojectID IN (1, 2, 3) AND c.CenterID IN (1,2, 3, 4, 5) ";
+            return "SELECT DISTINCT ". $test_fields ." IBISID AS src_subject_id, CandidateGUID as subjectkey, ProbandGUID as subjectkey_sibling1, CASE c.Gender WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS sex, CASE c.Probandsex WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END as sibling_type1, c.CenterID as Site, CASE s.SubprojectID WHEN 1 THEN 'High Risk' WHEN 2 THEN 'High Risk' WHEN 3 THEN 'Low Risk' END as Cohort FROM candidate c JOIN session s ON (s.CandID=c.CandID) WHERE c.Active='Y' AND s.Active='Y' AND COALESCE(s.Current_stage, '') <> 'Recycling Bin' AND COALESCE(s.Visit, '') NOT IN ('Failure', 'Withdrawal') AND COALESCE(s.Screening, '') NOT IN ('Failure', 'Withdrawal') AND pcc.Value IS NOT NULL AND s.SubprojectID IN (1, 2, 3) AND c.CenterID IN (2, 3, 4, 5) ";
         } else if ($this->instrument == 'charge') {
             return "SELECT ". $test_fields . $this->getFields() . " FROM session s JOIN candidate c USING (CandID) JOIN participant_status ps ON (ps.CandID = c.CandID) LEFT JOIN flag medpsychflag ON (s.ID=medpsychflag.SessionID AND medpsychflag.Test_name='med_psych_hist' AND medpsychflag.Administration='All' AND medpsychflag.Data_entry='Complete' AND EXISTS (SELECT 'x' FROM flag df WHERE df.CommentID=CONCAT('DDE_', medpsychflag.CommentID) AND df.Data_entry='Complete') AND NOT EXISTS (SELECT 'x' FROM conflicts_unresolved cu WHERE cu.CommentId1=medpsychflag.CommentID OR cu.CommentId2=medpsychflag.CommentID) )
                     LEFT JOIN flag neuroscreenflag ON (s.ID=neuroscreenflag.SessionID AND neuroscreenflag.Test_name='neuro_screen' AND neuroscreenflag.Administration='All' AND neuroscreenflag.Data_entry='Complete' AND EXISTS (SELECT 'x' FROM flag df WHERE df.CommentID=CONCAT('DDE_', neuroscreenflag.CommentID) AND df.Data_entry='Complete') AND NOT EXISTS (SELECT 'x' FROM conflicts_unresolved cu WHERE cu.CommentId1=neuroscreenflag.CommentID OR cu.CommentId2=neuroscreenflag.CommentID))
@@ -1953,6 +1953,36 @@ class NDAR_Release_2019
             }
             return $brief2_parent_query;
         }
+        else if($this->instrument == 'WIAT_III_SA_1' ) {
+
+            $a1=$this->getWiatValue('i.OE_STD_SCORE','orex_ss');
+            $a2=$this->getWiatValue('i.ORF_STD_SCORE',' orf_ss');
+            $a3=$this->getWiatValue('i.ORF_ORA_STD_SCORE','ora_ss');
+            $a4=$this->getWiatValue('i.ORF_ORR_STD_SCORE','orr_ss');
+            $wait_part1_felds= "'999' as handedness,'999' as readspeed_score, $a1, $a2, $a3,$a4";
+            $wait_part_1_query= "SELECT ". $test_fields . $this->getCommonFields() .$wait_part1_felds. " FROM WIAT_III_SA i 
+        JOIN flag f ON (f.CommentID=i.CommentID) 
+        JOIN session s ON (s.ID=f.SessionID) 
+        JOIN candidate c ON (c.CandID=s.CandID) JOIN participant_status ps ON (ps.CandID = c.CandID) 
+        JOIN participant_status_options pso ON (pso.ID = ps.participant_status) 
+        LEFT JOIN parameter_candidate AS pcc ON (pcc.ParameterTypeID=(SELECT ParameterTypeID FROM parameter_type WHERE name='CandidateGUID') AND pcc.CandID=c.CandID)
+        LEFT JOIN parameter_candidate AS pcp ON (pcp.ParameterTypeID=(SELECT ParameterTypeID FROM parameter_type WHERE name='ProbandGUID') AND pcp.CandID=c.CandID)
+        WHERE " . $this->getWhere() . " AND c.ProjectID= $this->project AND pso.Description NOT IN ('Ineligible', 'Excluded','Refused/Not Enrolled')";
+
+            return $wait_part_1_query;
+        }
+        else if($this->instrument == 'WIAT_III_SA_2' ) {
+            $wait_part_2_query= "SELECT ". $test_fields . $this->getCommonFields() ." FROM WIAT_III_SA i 
+        JOIN flag f ON (f.CommentID=i.CommentID) 
+        JOIN session s ON (s.ID=f.SessionID) 
+        JOIN candidate c ON (c.CandID=s.CandID) JOIN participant_status ps ON (ps.CandID = c.CandID) 
+        JOIN participant_status_options pso ON (pso.ID = ps.participant_status) 
+        LEFT JOIN parameter_candidate AS pcc ON (pcc.ParameterTypeID=(SELECT ParameterTypeID FROM parameter_type WHERE name='CandidateGUID') AND pcc.CandID=c.CandID)
+        LEFT JOIN parameter_candidate AS pcp ON (pcp.ParameterTypeID=(SELECT ParameterTypeID FROM parameter_type WHERE name='ProbandGUID') AND pcp.CandID=c.CandID)
+        WHERE " . $this->getWhere() . " AND c.ProjectID= $this->project AND pso.Description NOT IN ('Ineligible', 'Excluded','Refused/Not Enrolled')";
+
+            return $wait_part_2_query;
+        }
 
         print  "SELECT ". $test_fields . $this->getFields() . " FROM " . $this->instrument . " i JOIN flag f ON (f.CommentID=i.CommentID) 
          JOIN session s ON (s.ID=f.SessionID)
@@ -1961,7 +1991,7 @@ class NDAR_Release_2019
          LEFT JOIN parameter_candidate AS pcc ON (pcc.ParameterTypeID=(SELECT ParameterTypeID FROM parameter_type WHERE name='CandidateGUID') AND pcc.CandID=c.CandID)
          LEFT JOIN parameter_candidate AS pcp ON (pcp.ParameterTypeID=(SELECT ParameterTypeID FROM parameter_type WHERE name='ProbandGUID') AND pcp.CandID=c.CandID)
          WHERE " . $this->getWhere() . " AND c.ProjectID= $this->project AND pso.Description NOT IN ('Ineligible', 'Excluded','Refused/Not Enrolled')";
-        return "SELECT ". $test_fields . $this->getFields() . " FROM " . $this->instrument . " i 
+        return "SELECT ". $test_fields . $this->getFields() . " FROM " . $this->instrument . " i  
         JOIN flag f ON (f.CommentID=i.CommentID) 
         JOIN session s ON (s.ID=f.SessionID) 
         JOIN candidate c ON (c.CandID=s.CandID) JOIN participant_status ps ON (ps.CandID = c.CandID) 
@@ -2337,49 +2367,104 @@ class NDAR_Release_2019
 
     function run()
     {
-         /*  $headers = array('ados_module1' => 'ados1_2001-02', 'ados_module2' => 'ados2_2001-02', 'ados_module3' => 'ados3_2001-02',
-            'ados2_module1' => 'ados1_2012-01', 'ados2_module2' => 'ados2_2012-01', 'ados2_module3' => 'ados3_2012-01',
-            'adi_r_proband' => 'adi_2003-04', 'aosi' => 'earli_aosi-01', 'csbs' => 'csbs_dp_behavior-02', 'edi' => 'edi-01', 'charge' => 'charge_medical_history-02',
-            'fyi' => 'fyi-01', 'ibq_r' => 'ibq_r-01', 'macarthur_words_gestures' => 'mci_words_gestures-01', 'vineland_proband' => 'vinelandsurvey_2005-05',
-            'm_chat_proband' => 'm_chat-02', 'mullen' => 'mullen-03', 'prefrontal_task' => 'prefront_task-01', 'edi2' => 'edi-01',
-            'rbs_r' => 'rbs_r-02', 'seq' => 'seq-01', 'vineland_subject' => 'vinelandsurvey_2005-05', 'adi_r_subject' => 'adir_2003-04',
-            'head_measurements_subject' => 'charge_physicalexam-01', 'ndar_subject' => 'ndar_subject-01', 'height_weight' => 'height_weight-01', 'phys_neuro_exam' => 'ace_physexam-01',
-            'ECBQ' =>'ecbq-01', 'FamilyEnvironmentScales' =>'fenvs-01','BSRC' =>'intervention_hx-01','JointAttentionAssessment' =>'jntat-01',
-            'LENA_DataTrackingForm' =>'lena-01', 'SRS' =>'srs_preschool_2006-01');*/
-           
-           
-           $headers= array(  'ados2_module1' => 'ados1_2012-01', 'ados2_module2' => 'ados2_2012-01', 'ados2_module3' => 'ados3_2012-01',
-               'adi_r_subject' => 'adir_2003-04', 'rbs_r' => 'rbs_r-02',
-               'CCC2' => 'ccc2-01', 'ABC2' => 'abc_community-02','BOT2_Short' => 'bot2-01', 'CSHQ'=>'cshq-01', 'DAS_SA'=>'das_ii_school-04',
-               'MASC2_Parent' =>'masc_p-01','conners_parent' =>'conners3_ps-01','BRIEF2_Parent' => 'briefii-01'
-           );
+        /*  $headers = array('ados_module1' => 'ados1_2001-02', 'ados_module2' => 'ados2_2001-02', 'ados_module3' => 'ados3_2001-02',
+           'ados2_module1' => 'ados1_2012-01', 'ados2_module2' => 'ados2_2012-01', 'ados2_module3' => 'ados3_2012-01',
+           'adi_r_proband' => 'adi_2003-04', 'aosi' => 'earli_aosi-01', 'csbs' => 'csbs_dp_behavior-02', 'edi' => 'edi-01', 'charge' => 'charge_medical_history-02',
+           'fyi' => 'fyi-01', 'ibq_r' => 'ibq_r-01', 'macarthur_words_gestures' => 'mci_words_gestures-01', 'vineland_proband' => 'vinelandsurvey_2005-05',
+           'm_chat_proband' => 'm_chat-02', 'mullen' => 'mullen-03', 'prefrontal_task' => 'prefront_task-01', 'edi2' => 'edi-01',
+           'rbs_r' => 'rbs_r-02', 'seq' => 'seq-01', 'vineland_subject' => 'vinelandsurvey_2005-05', 'adi_r_subject' => 'adir_2003-04',
+           'head_measurements_subject' => 'charge_physicalexam-01', 'ndar_subject' => 'ndar_subject-01', 'height_weight' => 'height_weight-01', 'phys_neuro_exam' => 'ace_physexam-01',
+           'ECBQ' =>'ecbq-01', 'FamilyEnvironmentScales' =>'fenvs-01','BSRC' =>'intervention_hx-01','JointAttentionAssessment' =>'jntat-01',
+           'LENA_DataTrackingForm' =>'lena-01', 'SRS' =>'srs_preschool_2006-01');*/
+
+
+        $headers= array(  'ados2_module1' => 'ados1_2012-01', 'ados2_module2' => 'ados2_2012-01', 'ados2_module3' => 'ados3_2012-01',
+            'adi_r_subject' => 'adir_2003-04', 'rbs_r' => 'rbs_r-02',
+            'CCC2' => 'ccc2-01', 'ABC2' => 'abc_community-02','BOT2_Short' => 'bot2-01', 'CSHQ'=>'cshq-01', 'DAS_SA'=>'das_ii_school-04',
+            'MASC2_Parent' =>'masc_p-01','conners_parent' =>'conners3_ps-01','BRIEF2_Parent' => 'briefii-01','WIAT_III_SA_1'=>'wiat_iii-01',
+            'WIAT_III_SA_2'=>'wiat_iiip2-01'
+        );
         $Query = $this->getQuery();
         // print $Query;
         $db = &Database::singleton();
         $header = $headers[$this->instrument];
         $project_map = array(1 => '_IBIS1_SA', 2 => '_IBIS2_SA');
         $ending = $project_map[$this->project] . ".csv";
-        if ($this->instrument == 'scq_proband_survey' || $this->instrument == 'scq_subject') {
-            $results = $db->pselect($Query . " AND i.scq_version='lifetime'", array());
+        if ($this->instrument == 'scq_proband_survey') {
+            $results = $db->pselect($Query, array());
+
+
             $converted = $this->process($results);
             $header = 'scq_lifetime-04';
-            if($this->project==1) {
+            if ($this->project == 1) {
                 $this->writeResults($converted, $header, '/var/www/loris/project/tools/NDAR_2019/IBIS1/' . $this->instrument . '_lifetime' . $ending);
-            }
-            else{
+            } else {
                 $this->writeResults($converted, $header, '/var/www/loris/project/tools/NDAR_2019/IBIS2/' . $this->instrument . '_lifetime' . $ending);
             }
-            $results = $db->pselect($Query . " AND i.scq_version='current'", array());
+            $results = $db->pselect($Query, array());
             $converted = $this->process($results);
             $header = 'scq_current-04';
-            if($this->project==1) {
+            if ($this->project == 1) {
                 $this->writeResults($converted, $header, '/var/www/loris/project/tools/NDAR_2019/IBIS1/' . $this->instrument . '_current' . $ending);
-            }
-            else{
+            } else {
                 $this->writeResults($converted, $header, '/var/www/loris/project/tools/NDAR_2019/IBIS2/' . $this->instrument . '_current' . $ending);
             }
+        }
 
-        } else {
+        else if ($this->instrument == 'scq_subject') {
+            $results = $db->pselect($Query . " AND i.scq_version='lifetime'", array());
+
+
+            $converted = $this->process($results);
+            $header = 'scq_lifetime-04';
+            if ($this->project == 1) {
+                $this->writeResults($converted, $header, '/var/www/loris/project/tools/NDAR_2019/IBIS1/' . $this->instrument . '_lifetime' . $ending);
+            } else {
+                $this->writeResults($converted, $header, '/var/www/loris/project/tools/NDAR_2019/IBIS2/' . $this->instrument . '_lifetime' . $ending);
+            }
+            $results = $db->pselect($Query, array());
+            $converted = $this->process($results);
+            $header = 'scq_current-04';
+            if ($this->project == 1) {
+                $this->writeResults($converted, $header, '/var/www/loris/project/tools/NDAR_2019/IBIS1/' . $this->instrument . '_current' . $ending);
+            } else {
+                $this->writeResults($converted, $header, '/var/www/loris/project/tools/NDAR_2019/IBIS2/' . $this->instrument . '_current' . $ending);
+            }
+        }
+
+
+
+
+        else if($this->instrument == 'WIAT_III_SA_1')
+        {
+
+            $results = $db->pselect($Query, array());
+            $converted = $this->process($results);
+            if($this->project==1) {
+                $ending="IBIS1_SA_WIAT_III_PART_1.csv";
+                $this->writeResults($converted, $header, '/var/www/loris/project/tools/NDAR_2019/IBIS1/' . $ending);
+            }
+            else{
+                $ending="IBIS2_SA_WIAT_III_PART_1.csv";
+                $this->writeResults($converted, $header, '/var/www/loris/project/tools/NDAR_2019/IBIS2/' .$ending);
+            }
+        }
+        else if($this->instrument == 'WIAT_III_SA_2')
+        {
+
+            $results = $db->pselect($Query, array());
+            $converted = $this->process($results);
+            if($this->project==1) {
+                $ending="IBIS1_SA_WIAT_III_PART_2.csv";
+                $this->writeResults($converted, $header, '/var/www/loris/project/tools/NDAR_2019/IBIS1/' . $ending);
+            }
+            else{
+                $ending="IBIS2_SA_WIAT_III_PART_2.csv";
+                $this->writeResults($converted, $header, '/var/www/loris/project/tools/NDAR_2019/IBIS2/' .$ending);
+            }
+        }
+
+        else {
             $results = $db->pselect($Query, array());
             $converted = $this->process($results);
             if($this->project==1) {
@@ -2483,15 +2568,19 @@ class NDAR_Release_2019
 
     function getProperValue($value, $alias)
     {
-        return "CASE $value WHEN 'not_answered' THEN '-9' WHEN '' THEN '-9' ELSE SUBSTRING_INDEX($value, \".\", 1) END as $alias";
+        return "CASE  WHEN $value IS NULL  THEN '-9' WHEN $value= 'not_answered'  THEN '-9' WHEN $value= '' THEN '-9' ELSE SUBSTRING_INDEX($value, \".\", 1) END as $alias";
     }
     function getMASCValue($value, $alias)
     {
-        return "CASE $value WHEN NULL THEN '99999' WHEN '' THEN '99999' ELSE $value END as $alias";
+        return "CASE WHEN $value IS NULL THEN '99999' WHEN $value= '' THEN '99999' ELSE $value END as $alias";
     }
     function getConnersValue($value, $alias)
     {
-        return "CASE $value WHEN NULL THEN '99999' WHEN '' THEN '99999' ELSE $value END as $alias";
+        return "CASE WHEN $value IS  NULL THEN '99999' WHEN $value= '' THEN '99999' WHEN $value= 'NA' THEN '99999' ELSE $value END as $alias";
+    }
+    function getWiatValue($value, $alias)
+    {
+        return "CASE WHEN $value IS NULL THEN '999' WHEN $value='' THEN '999' WHEN  $value ='--' THEN '999' ELSE $value END as $alias";
     }
 
 
