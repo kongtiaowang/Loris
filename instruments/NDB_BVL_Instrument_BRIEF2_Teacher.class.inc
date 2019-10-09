@@ -362,13 +362,13 @@ class NDB_BVL_Instrument_BRIEF2_Teacher extends NDB_BVL_Instrument
             $record['q30_gets_out_of_seat_at_wrong_times'],
             $record['q39_acts_too_wild_or_out_of_control'],
             $record['q48_has_trouble_putting_brakes_on_actions'],
-            $record['q58_has_trouble_moving_from_one_activity_to_another'],
+            $record['q58_does_not_think_of_consequences_before_acting'],
         );
         $self_monitor_array=array($record['q4_unaware_of_how_behavior_affects_bothers_others'],
             $record['q13_has_poor_understanding_of_own_strengths_weaknesses'],
             $record['q20_does_not_realize_certain_actions_bother_others'],
             $record['q26_does_not_notice_when_behavior_causes_negative_reactions'],
-            $record['q59_has_trouble_carrying_out_actions_to_reach_goals'],
+            $record['q59_is_unaware_of_own_behavior_when_in_group'],
         );
 
         $shift_array=array($record['q2_resists_accepting_different_way_to_solve_problem'],
@@ -377,9 +377,9 @@ class NDB_BVL_Instrument_BRIEF2_Teacher extends NDB_BVL_Instrument
             $record['q31_becomes_upset_with_new_situations'],
             $record['q40_thinks_too_much_about_same_topic'],
             $record['q49_resists_change_of_routine_foods_places'],
-            $record['q58_has_trouble_moving_from_one_activity_to_another'],
-            $record['q60_is_disturbed_by_change_of_teacher_or_class'],
-            $record['q63_leaves_trail_of_belongings'],
+            $record['q58_does_not_think_of_consequences_before_acting'],
+            $record['q60_has_problems_with_differeny_ways_solving_problem'],
+            $record['q63_has_trouble_thinking_different_way_to_solve_problem'],
         );
         $emotional_control_array=array($record['q6_has_explosive_angry_outbursts'],
             $record['q14_has_outbursts_for_little_reason'],
@@ -392,15 +392,15 @@ class NDB_BVL_Instrument_BRIEF2_Teacher extends NDB_BVL_Instrument
         );
         $initiate_array=array($record['q9_is_not_a_self_starter'],
             $record['q38_needs_to_be_told_to_begin_task'],
-            $record['q50_has_trouble_getting_started_on_homework_tasks'],
+            $record['q50_q50_has_trouble_getting_started_on_work'],
             $record['q55_does_not_take_initiative'],
         );
         $working_memory_array=array($record['q3_given_three_things_remembers_only_first_or_last'],
             $record['q12_has_a_short_attention_span'],
-            $record['q19_has_trouble_with_chores_tasks_more_than_one_step'],
+            $record['q19_has_trouble_with_tasks_more_than_one_step'],
             $record['q25_has_trouble_finishing_tasks'],
             $record['q28_has_trouble_remembering_things_even_for_minutes'],
-            $record['q32_has_trouble_concentrating_tasks_schoolwork'],
+            $record['q32_has_trouble_concentrating_on_schoolwork'],
             $record['q41_forgets_what_he_she_was_doing'],
             $record['q46_needs_help_from_adult_to_stay_on_task'],
         );
@@ -410,7 +410,7 @@ class NDB_BVL_Instrument_BRIEF2_Teacher extends NDB_BVL_Instrument
             $record['q35_has_good_ideas_cannot_get_on_paper'],
             $record['q44_becomes_overwhelmed_by_large_assignments'],
             $record['q52_underestimates_time_needed_to_finish_tasks'],
-            $record['q57_starts_assignments_tasks_last_minute'],
+            $record['q57_starts_assignments_at_last_minute'],
             $record['q61_tests_poorly_even_when_knows_correct_answers'],
         );
         $task_monitor_array=array($record['q5_work_is_sloppy'],
@@ -420,7 +420,7 @@ class NDB_BVL_Instrument_BRIEF2_Teacher extends NDB_BVL_Instrument
             $record['q42_does_not_check_work_for_mistakes'],
             $record['q62_leaves_work_incomplete'],
         );
-        $material_org_array=array($record['q8_cannot_find_things_in_room_or_school_desk'],
+        $material_org_array=array($record['q8_cannot_find_things_in_desk'],
             $record['q37_leaves_messes_others_clean_up'],
             $record['q45_loses_lunch_box_money_permission_slips_homework'],
             $record['q47_forgets_to_hand_in_homework_even_when_completed'],
