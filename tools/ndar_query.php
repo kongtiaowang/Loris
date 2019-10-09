@@ -31,32 +31,33 @@ else{
 
 if ($argv[1]=="ibis1")
 {
-    $IBIS = array('CCC2','ABC2','BOT2_Short','CSHQ','DAS_SA','MASC2_Parent','conners_parent','BRIEF2_Parent');
-   //$IBIS = array ('ados_module1', 'ados_module2', 'ados_module3', 'ados2_module1','ados2_module2','ados2_module3','adi_r_proband','aosi','csbs','edi','fyi','ibq_r','m_chat_proband','macarthur_words_gestures','mullen','prefrontal_task','rbs_r','scq_proband','scq_subject','seq','vineland_proband','vineland_subject','charge');
-  //IBIS1 SA instrument array
-   // $IBIS= array('ados2_module1','ados2_module2','ados2_module3','scq_subject','scq_proband_survey','rbs_r',
-       // 'CCC2');
+    //$IBIS = array('CCC2','ABC2','BOT2_Short','CSHQ','DAS_SA','MASC2_Parent','conners_parent','BRIEF2_Parent','WIAT_III_SA_1','WIAT_III_SA_2');
+    //$IBIS = array ('ados_module1', 'ados_module2', 'ados_module3', 'ados2_module1','ados2_module2','ados2_module3','adi_r_proband','aosi','csbs','edi','fyi','ibq_r','m_chat_proband','macarthur_words_gestures','mullen','prefrontal_task','rbs_r','scq_proband','scq_subject','seq','vineland_proband','vineland_subject','charge');
+    //IBIS1 SA instrument array
+    $IBIS= array('ados2_module1','ados2_module2','ados2_module3','scq_subject','scq_proband_survey','rbs_r',
+        'CCC2','ABC2','BOT2_Short','CSHQ','DAS_SA','MASC2_Parent','conners_parent','BRIEF2_Parent','WIAT_III_SA_1','WIAT_III_SA_2');
+    // 'CCC2');
     foreach($IBIS as $instrument) {
-      $run = new NDAR_Release_2019 ($instrument, 1, $validating);
-      $run->run();
-  }
+        $run = new NDAR_Release_2019 ($instrument, 1, $validating);
+        $run->run();
+    }
 }
 
 if ($argv[1]=="ibis2")
 {
-    $IBIS2 = array('CCC2','ABC2','BOT2_Short','CSHQ','DAS_SA','MASC2_Parent','conners_parent','BRIEF2_Parent');
-   // $IBIS2=array('BRIEF2_Parent');
+    //$IBIS2 = $IBIS = array('CCC2','ABC2','BOT2_Short','CSHQ','DAS_SA','MASC2_Parent','conners_parent','BRIEF2_Parent','WIAT_III_SA_1','WIAT_III_SA_2');
     //$IBIS2 = array('adi_r_proband','aosi','csbs','ibq_r','macarthur_words_gestures', 'm_chat_proband', 'scq_proband','mullen','rbs_r','vineland_proband','vineland_subject','edi2','height_weight','phys_neuro_exam', 'charge',
     //'ados2_module1','ados2_module2','ados2_module3','ECBQ','FamilyEnvironmentScales','BSRC','JointAttentionAssessment','LENA_DataTrackingForm','SRS');
 
     //IBIS1 SA instrument array
 
-   // $IBIS2= array('ados2_module1','ados2_module2','ados2_module3','scq_subject','scq_proband_survey','rbs_r',
-  foreach($IBIS2 as $instrument) {
-      $run = new NDAR_Release_2019 ($instrument, 2, $validating);
-      $run->run();
+    $IBIS2= array('ados2_module1','ados2_module2','ados2_module3','scq_subject','scq_proband_survey','rbs_r',
+        'CCC2','ABC2','BOT2_Short','CSHQ','DAS_SA','MASC2_Parent','conners_parent','BRIEF2_Parent','WIAT_III_SA_1','WIAT_III_SA_2');
+    foreach($IBIS2 as $instrument) {
+        $run = new NDAR_Release_2019 ($instrument, 2, $validating);
+        $run->run();
 
-  }
+    }
 }
 
 
