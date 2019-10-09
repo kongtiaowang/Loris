@@ -12,6 +12,7 @@
  */
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
+use \Loris\StudyEntities\Candidate\CandID;
 
 /**
  * Base class for all NeuroDB behavioural instruments
@@ -945,10 +946,15 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         }
 
         //get examiner certifications for profiles part of IBIS2
-        $candID  = isset($_REQUEST['candID']) ? $_REQUEST['candID'] : '';
+        $candID    = isset($_REQUEST['candID']) ? $_REQUEST['candID'] : '';
+        $sessionID = $this->getSessionID();
+
         $project = $db->pselectOne(
-            "SELECT ProjectID from candidate where CandID =:cnd_id",
-            array('cnd_id' => $candID)
+            "SELECT ProjectID from session where CandID =:cnd_id AND ID=:sid",
+            array(
+             'cnd_id' => $candID,
+             'sid'    => $sessionID,
+            )
         );
 
         list(
@@ -2278,12 +2284,12 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     /**
      * Function that displays the html the fetch feedback panel.
      *
-     * @param int $candID    The candidate ID for the panel.
-     * @param int $sessionID The session ID for the panel.
+     * @param CandID $candID    The candidate ID for the panel.
+     * @param int    $sessionID The session ID for the panel.
      *
      * @return string
      */
-    function getFeedbackPanel(int $candID, int $sessionID): string
+    function getFeedbackPanel(CandID $candID, int $sessionID): string
     {
 
         $commentID = $this->getCommentID();

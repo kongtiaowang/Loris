@@ -3,7 +3,7 @@
  * This file contains a TimePoint class which represent's a single session
  * for a single candidate in Loris.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Loris
@@ -11,6 +11,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
+use \LORIS\StudyEntities\Candidate\CandID;
 
 /**
  * The Loris TimePoint class
@@ -126,10 +127,12 @@ class TimePoint
                          s.Current_stage, s.Screening, s.Date_screening, s.Visit,
                          s.Date_visit, s.Approval, s.Date_approval, s.Active,
                          s.registeredBy, s.UserID, u.Real_name, s.Hardcopy_request,
-                         s.BVLQCStatus, s.BVLQCType, s.BVLQCExclusion, s.Scan_done
+                         s.BVLQCStatus, s.BVLQCType, s.BVLQCExclusion, s.Scan_done,
+                         pr.Name as ProjectName, p.Alias as SiteAlias
                     FROM session AS s
                         LEFT JOIN psc AS p USING (CenterID)
                         LEFT JOIN users AS u on (s.registeredBy=u.UserID)
+                        LEFT JOIN Project AS pr USING(ProjectID)
                     WHERE s.ID = :SID AND s.Active = 'Y'";
         $row   = $db->pselectRow($query, array('SID' => $sessionID));
 
@@ -194,6 +197,7 @@ class TimePoint
      *                                    being created. If null, consecutive V1, V2,
      *                                    etc will be created.
      * @param \Site       $psc            The center of the timepoint
+     * @param \Project    $project        The project of the timepoint
      *
      * @throws DatabaseException
      *
@@ -203,7 +207,8 @@ class TimePoint
         \Candidate $candidate,
         int $SubprojectID,
         ?string $nextVisitLabel,
-        \Site $psc
+        \Site $psc,
+        \Project $project
     ): void {
 
         // insert into session set CandID=$candID,
@@ -238,6 +243,7 @@ class TimePoint
                        'VisitNo'         => $visitNo,
                        'Visit_label'     => $VisitLabel,
                        'CenterID'        => $psc->getCenterID(),
+                       'ProjectID'       => $project->getId(),
                        'Current_stage'   => 'Not Started',
                        'Submitted'       => 'N',
                        'registeredBy'    => $userID,
@@ -245,7 +251,6 @@ class TimePoint
                        'Date_registered' => $today,
                        'Date_active'     => $today,
                       );
-
         // insert the data
         $db->insert('session', $insertData);
     }
@@ -254,7 +259,7 @@ class TimePoint
      * Validates if a given visit_label follows the study's config settings
      * and if that same visit label can be created for the given candidate.
      *
-     * @param integer $candid       The candidate identifier
+     * @param CandID  $candid       The candidate identifier
      * @param integer $subprojectID The subprojectID
      * @param string  $visitLabel   The visit label
      *
@@ -263,7 +268,7 @@ class TimePoint
      * @return void
      */
     static function isValidVisitLabel(
-        int $candid,
+        CandID $candid,
         int $subprojectID,
         string $visitLabel
     ): void {
@@ -377,15 +382,15 @@ class TimePoint
     /**
      * Returns the CandID for the candidate who had this visit.
      *
-     * @return integer (6 digit) CandID for this timepoint.
+     * @return CandID (6 digit) CandID for this timepoint.
      */
-    function getCandID(): int
+    function getCandID(): CandID
     {
         /* _timePointInfo contains information that comes from the database
-         * which returns values in string format. Intval is used here to
-         * ensure we return a numerical ID instead of its string representation.
+         * which returns values in string format. CandID is used here to
+         * ensure we return a validated CandID object.
          */
-        return intval($this->_timePointInfo["CandID"]);
+        return new CandID($this->_timePointInfo["CandID"]);
     }
 
     /**
