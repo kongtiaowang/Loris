@@ -377,7 +377,6 @@ class NDB_BVL_Instrument_BRIEF2_Teacher extends NDB_BVL_Instrument
             $record['q31_becomes_upset_with_new_situations'],
             $record['q40_thinks_too_much_about_same_topic'],
             $record['q49_resists_change_of_routine_foods_places'],
-            $record['q58_does_not_think_of_consequences_before_acting'],
             $record['q60_has_problems_with_differeny_ways_solving_problem'],
             $record['q63_has_trouble_thinking_different_way_to_solve_problem'],
         );
