@@ -27,6 +27,12 @@ class NDB_BVL_Instrument_MASC2_Self_Report extends NDB_BVL_Instrument
 
     var $ValidityEnabled = false;
     var $ValidityRequired = false;
+
+var $scoreCols = array("masc2_total" => "MASC2 Total Score","SP" => "Separation Anxiety/Phobias(S/P)","GAD" => "Gad Index(GAD)",
+"SA_total" => "Social Anxiety Total Score(SA:T)", "HR" => "Humiliation/Rejection", "PF" => "Performance Fears",
+"OC" => "Obsessions & Compulsions","PS_total" => "Physical Symptoms Total(PS:T)","Panic" => "Panic(P)","TR" => "Tense/Restless(T/R)",
+"HA" => "Harm Avoidance(HA)"
+);
     var $scoreLabels = array(
         'masc2_total_score',
         'SP_score',
@@ -167,17 +173,13 @@ class NDB_BVL_Instrument_MASC2_Self_Report extends NDB_BVL_Instrument
         $this->form->addGroup($group, 'score_header_group', "<strong>Domain</strong>", $this->_GUIDelimiter, FALSE);
         unset($group);
         //score fields
-        $domains = array("masc2_total" => "MASC2 Total Score","SP" => "Separation Anxiety/Phobias(S/P)","GAD" => "Gad Index(GAD)",
-            "SA_total" => "Social Anxiety Total Score(SA:T)", "HR" => "Humiliation/Rejection", "PF" => "Performance Fears",
-            "OC" => "Obsessions & Compulsions","PS_total" => "Physical Symptoms Total(PS:T)","Panic" => "Panic(P)","TR" => "Tense/Restless(T/R)",
-            "HA" => "Harm Avoidance(HA)"
-        );
+
         $columnHeaders = array("score" => "Score", "T_score" => "T Score","classification" =>"Classification");
         foreach ($columnHeaders as $field => $label) {
             $columnHeaders[$field] .= "     ";
         }
         $this->localDefaults = array_merge($this->localDefaults, $columnHeaders);
-        foreach ($domains as $field => $label) {
+        foreach ($this->scoreCols as $field=>$label)  {
             foreach ($columnHeaders as $scoreField => $scoreLabel) {
                 $group[] = $this->form->createElement('static', "{$field}_{$scoreField}", null, null);
             }

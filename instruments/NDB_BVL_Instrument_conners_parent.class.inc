@@ -18,6 +18,11 @@
 
 class NDB_BVL_Instrument_conners_parent extends NDB_BVL_Instrument
 {
+
+    var $scoreCols=array("IN" => "Inattention","HY" => "Hyperactivity","LP" => "Learning Problems",
+        "EF" => "Executive Functioning", "AG" => "Defiance/Aggression", "PR" => "Peer Relations", "PI" => "Positive Impression","NI" => "Negative Impression"
+
+    );
     
     var $scoreLabels = array(
         'IN_raw_score',
@@ -133,7 +138,7 @@ class NDB_BVL_Instrument_conners_parent extends NDB_BVL_Instrument
         $this->addLabel("Please specify the grade: K-12 (or NA if you do not wish to answer)");
         $this->addBasicText("grade", "Grade:");
 
-        $this->form->addElement('header', null, "Score Summary");
+        $this->form->addElement('header', 'sdsds', "Score Summary");
 
 
         //scoring column headers
@@ -145,10 +150,7 @@ class NDB_BVL_Instrument_conners_parent extends NDB_BVL_Instrument
 
 
         //score fields
-        $domains = array("IN" => "Inattention","HY" => "Hyperactivity","LP" => "Learning Problems",
-            "EF" => "Executive Functioning", "AG" => "Defiance/Aggression", "PR" => "Peer Relations", "PI" => "Positive Impression","NI" => "Negative Impression"
 
-        );
         $columnHeaders = array("raw_score" => "Raw Score", "T_score" => "T Score", "response_style" => "Response Style"
         );
 
@@ -157,7 +159,7 @@ class NDB_BVL_Instrument_conners_parent extends NDB_BVL_Instrument
         }
         $this->localDefaults = array_merge($this->localDefaults, $columnHeaders);
 
-        foreach ($domains as $field => $label) {
+        foreach ($this->scoreCols as $field=>$label) {
             foreach ($columnHeaders as $scoreField => $scoreLabel) {
 
                 $group[] = $this->form->createElement('static', "{$field}_{$scoreField}", null, null);
