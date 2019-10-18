@@ -39,7 +39,7 @@ class NDB_BVL_FeedbackTest extends Loris_PHPUnit_Database_TestCase
      * @throws Exception
      * @return void
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->createLorisDBConnection();
@@ -53,7 +53,7 @@ class NDB_BVL_FeedbackTest extends Loris_PHPUnit_Database_TestCase
      * @throws LorisException
      * @return void
      */
-    public function testCreateFeedbackTypeWithInvalidName()
+    public function testCreateFeedbackTypeWithInvalidName(): void
     {
         $this->setExpectedException('LorisException');
         $this->_feedbackObj->createFeedbackType("");
@@ -83,7 +83,7 @@ class NDB_BVL_FeedbackTest extends Loris_PHPUnit_Database_TestCase
      * @covers NDB_BVL_Feedback::getFeedbackTypeIdByName
      * @return void
      */
-    public function testGetFeedbackTypeIdByNameForExistingValue()
+    public function testGetFeedbackTypeIdByNameForExistingValue(): void
     {
         $this->assertEquals(
             5,
@@ -99,7 +99,7 @@ class NDB_BVL_FeedbackTest extends Loris_PHPUnit_Database_TestCase
      * @covers NDB_BVL_Feedback::getFeedbackTypeIdByName
      * @return void
      */
-    public function testGetFeedbackTypeIdByNameForNoneExistingValue()
+    public function testGetFeedbackTypeIdByNameForNoneExistingValue(): void
     {
         $this->assertEmpty(
             $res = $this->_feedbackObj->getFeedbackTypeIdByName(

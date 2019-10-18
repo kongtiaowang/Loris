@@ -154,7 +154,7 @@ class UtilityTest extends TestCase
      *
      * @return void
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         $this->_factory->reset();   
@@ -195,9 +195,9 @@ class UtilityTest extends TestCase
     /**
      * Data provider for testCalculateAgeFormat
      * 
-     * @return void
+     * @return array
      */
-    public function ageIncorrectFormatProvider()
+    public function ageIncorrectFormatProvider(): array
     {
         return array(
             array("1990\\07\\05", "2018\\05\\23"),

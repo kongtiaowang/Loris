@@ -8,9 +8,9 @@ class NDB_Menu_Filter_Test extends TestCase
      * Set up sets a fake $_SESSION object that we can use for
      * assertions
      */
-    function setUp() {
+    function setUp(): void {
         global $_SESSION;
-        $this->Session = $this->getMockBuilder(stdClass::class)->setMethods(array('getProperty', 'setProperty', 'getUsername', 'isLoggedIn'))->getMock();
+        $this->Session = $this->getMockBuilder(\stdClass::class)->setMethods(array('getProperty', 'setProperty', 'getUsername', 'isLoggedIn'))->getMock();
         $_SESSION = array(
             'State' => $this->Session
         );
