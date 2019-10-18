@@ -198,7 +198,7 @@
 	            //console.log(this.state.queryIDs[key][0]);
 	            for (var i = 0; i < this.state.queryIDs[key].length; i += 1) {
 	                var curRequest;
-	                curRequest = Promise.resolve($.ajax(loris.BaseURL + "/AjaxHelper.php?Module=dataquery&script=GetDoc.php&DocID=" + that.state.queryIDs[key][i]), {
+	                curRequest = Promise.resolve($.ajax(loris.BaseURL + "/AjaxHelper.php?Module=dataquery&script=GetDoc.php&DocID=" + encodeURIComponent(that.state.queryIDs[key][i])), {
 	                    data: {
 	                        DocID: that.state.queryIDs[key][i]
 	                    },
