@@ -272,6 +272,15 @@ class NDB_BVL_Instrument_SEQ3 extends NDB_BVL_Instrument
                     "frequently"      => "Frequently",
                     "always"          => "Almost Always/Always",
                    );
+        $NA_options = array(
+            null              => "",
+            "never"           => "Never/Almost Never",
+            "once_in_a_while" => "Once in a while",
+            "sometimes"       => "Sometimes",
+            "frequently"      => "Frequently",
+            "always"          => "Almost Always/Always",
+            "NA"              => "Not Answered"
+        );
 
         $this->addSelect("36_dislike_cuddling_or_being_held", "36. ... dislike cuddling or being held?", $options);
 
@@ -293,7 +302,7 @@ class NDB_BVL_Instrument_SEQ3 extends NDB_BVL_Instrument
 
         $this->addSelect("45_fascinated_with_touch", "45. ... seem fascinated with touch?", $options);
 
-        $this->addSelect("46_bothered_by_tags_or_seams", "46. ... seem bothered by tags or seams on clothing?", $options);
+        $this->addSelect("46_bothered_by_tags_or_seams", "46. ... seem bothered by tags or seams on clothing?", $NA_options);
 
         $this->addSelect("47_bothered_by_tight_clothing", "47. ... seem bothered by tight clothing (such as turtlenecks, elastic, sleeves, or stocking caps)?", $options);
 
@@ -339,6 +348,15 @@ class NDB_BVL_Instrument_SEQ3 extends NDB_BVL_Instrument
                     "frequently"      => "Frequently",
                     "always"          => "Almost Always/Always",
                    );
+        $NA_options = array(
+            null              => "",
+            "never"           => "Never/Almost Never",
+            "once_in_a_while" => "Once in a while",
+            "sometimes"       => "Sometimes",
+            "frequently"      => "Frequently",
+            "always"          => "Almost Always/Always",
+            "NA"              => "Not Answered"
+        );
 
         $this->addSelect("59_refuse_new_foods_or_avoids_certain_foods", "59. ... refuse to try new foods or avoid certain tastes, smells, or textures of food?", $options);
 
@@ -370,7 +388,7 @@ class NDB_BVL_Instrument_SEQ3 extends NDB_BVL_Instrument
 
         $this->addSelect("73_gag_in_response_to_certain_smells", "73. ... gag in response to certain smells?", $options);
 
-        $this->addSelect("74_trouble_distinguishing_different_tastes_or_flavors", "74. ... have trouble distinguishing between different types of tastes or flavors?", $options);
+        $this->addSelect("74_trouble_distinguishing_different_tastes_or_flavors", "74. ... have trouble distinguishing between different types of tastes or flavors?", $NA_options);
     }
 
     /**
@@ -392,6 +410,7 @@ class NDB_BVL_Instrument_SEQ3 extends NDB_BVL_Instrument
                     "frequently"      => "Frequently",
                     "always"          => "Almost Always/Always",
                    );
+
 
         $this->addSelect("75_enjoy_long_car_rides", "75. ... enjoy long car rides?", $options);
 
@@ -440,6 +459,16 @@ class NDB_BVL_Instrument_SEQ3 extends NDB_BVL_Instrument
                     "always"          => "Almost Always/Always",
                    );
 
+        $NA_options = array(
+            null              => "",
+            "never"           => "Never/Almost Never",
+            "once_in_a_while" => "Once in a while",
+            "sometimes"       => "Sometimes",
+            "frequently"      => "Frequently",
+            "always"          => "Almost Always/Always",
+            "NA"              => "Not Answered"
+        );
+
         $this->form->addElement("static", null, "<br/>");
 
         $this->addSelect("87_trouble_looking_and_listening_same_time", "87. ... seem to have trouble looking and listening at the same time? (For example: Shuts eyes to listen more closely or blocks out sound to focus on visual task.)", $options);
@@ -450,7 +479,7 @@ class NDB_BVL_Instrument_SEQ3 extends NDB_BVL_Instrument
 
         $this->addSelect("90_event_in_sense_causes_feeling_in_different_sense", "90. ... report that an event in one sense causes a feeling in a different sense? (For example: Musical notes have colors, or flavors have shapes.)", $options);
 
-        $this->addSelect("91_confuse_which_sense_something_is_from", "91. ... seem to confuse which sense something is coming from? (For example: Turns up the volume if something is blocking the view of the TV.)", $options);
+        $this->addSelect("91_confuse_which_sense_something_is_from", "91. ... seem to confuse which sense something is coming from? (For example: Turns up the volume if something is blocking the view of the TV.)", $NA_options);
 
         $this->addSelect("92_more_sensitive_to_social_touch", "92. ... seem more sensitive to social touch (such as a pat on the back, touch on the arm, or hug) in a noisy environment than in a quiet one?", $options);
 

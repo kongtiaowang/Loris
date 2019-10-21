@@ -204,6 +204,15 @@ class NDB_BVL_Instrument_MASC2_Self_Report extends NDB_BVL_Instrument
                 2 => "2 - Sometimes true",
                 3 => "3 - Often true"
             );
+        $options_NA =
+            array(
+                null=>"",
+                0 => "0 - Never true",
+                1 => "1 - Rarely true",
+                2 => "2 - Sometimes true",
+                3 => "3 - Often true",
+                "NA"=>"Not Answered",
+            );
 
         $questions =
             array(
@@ -233,11 +242,19 @@ class NDB_BVL_Instrument_MASC2_Self_Report extends NDB_BVL_Instrument
                 "q24" => "24. My heart races or skips beat.",
                 "q25" => "25. I stay away from things that upset him/her."
             );
+        $na_quest_array=array("q3");
 
         $this->displayHeaders(1);
         foreach ($questions as $qNum=>$qLabel) {
             $group[] =& $this->createLabel($qLabel);
-            $group[] =& $this->createSelect($qNum, $qLabel, $options);
+            if (in_array($qNum, $na_quest_array))
+            {
+                $group[] =& $this->createSelect($qNum, $qLabel, $options_NA);
+            }
+            else{
+                $group[] =& $this->createSelect($qNum, $qLabel, $options);
+            }
+
             $this->form->addGroup(
                 $group,
                 "page1_questions_" . $qNum,
