@@ -10,7 +10,7 @@ class NDB_Menu_Filter_Test extends TestCase
      */
     function setUp(): void {
         global $_SESSION;
-        $this->Session = $this->getMockBuilder(\stdClass::class)->setMethods(array('getProperty', 'setProperty', 'getUsername', 'isLoggedIn'))->getMock();
+        $this->Session = $this->getMockBuilder(\stdClass::class)->onlyMethods(array('getProperty', 'setProperty', 'getUsername', 'isLoggedIn'))->getMock();
         $_SESSION = array(
             'State' => $this->Session
         );
@@ -36,7 +36,7 @@ class NDB_Menu_Filter_Test extends TestCase
         $method = array('_resetFilters');
         $allOtherMethods = $this->_getAllMethodsExcept($method);
         $stub = $this->getMockBuilder('NDB_Menu_Filter')
-            ->setMethods($allOtherMethods)
+            ->onlyMethods($allOtherMethods)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -61,7 +61,7 @@ class NDB_Menu_Filter_Test extends TestCase
         $method = array('_setSearchKeyword');
         $allOtherMethods = $this->_getAllMethodsExcept($method);
         $stub = $this->getMockBuilder('NDB_Menu_Filter')
-            ->setMethods($allOtherMethods)
+            ->onlyMethods($allOtherMethods)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -86,7 +86,7 @@ class NDB_Menu_Filter_Test extends TestCase
         $method = array('_setFilters');
         $allOtherMethods = $this->_getAllMethodsExcept($method);
         $stub = $this->getMockBuilder('NDB_Menu_Filter')
-            ->setMethods($allOtherMethods)
+            ->onlyMethods($allOtherMethods)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -141,7 +141,7 @@ class NDB_Menu_Filter_Test extends TestCase
         $method = array('_setFilterSortOrder');
         $allOtherMethods = $this->_getAllMethodsExcept($method);
         $stub = $this->getMockBuilder('NDB_Menu_Filter')
-            ->setMethods($allOtherMethods)
+            ->onlyMethods($allOtherMethods)
             ->disableOriginalConstructor()
             ->getMock();
 
