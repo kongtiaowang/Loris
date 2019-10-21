@@ -10,6 +10,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
+require_once __DIR__ . '/../../vendor/autoload.php';
 use PHPUnit\Framework\TestCase;
 use LORIS\StudyEntities\Candidate\CandID;
 /**
@@ -26,7 +27,6 @@ class CandidateTest extends TestCase
     /**
      * Candidate Information as available in the Candidate object
      *
-     * @var array contains _candidate info retrieved by the select method
      */
     private $_candidateInfo
         = array(
@@ -48,14 +48,12 @@ class CandidateTest extends TestCase
     /**
      * List of timepoints (visits) that a Candidate has registered
      *
-     * @var array list of time points are retrieved in the select method
      */
     private $_listOfTimePoints = array();
 
     /**
      * Candidate object use in tests
      *
-     * @var Candidate
      */
     private $_candidate;
 
@@ -97,7 +95,7 @@ class CandidateTest extends TestCase
     /**
      * Test double for NDB_Config object
      *
-     * @var \NDB_Config | PHPUnit_Framework_MockObject_MockObject
+     * @var \NDB_Config | PHPUnit\Framework_MockObject_MockObject
      */
     private $_configMock;
 
@@ -258,7 +256,7 @@ class CandidateTest extends TestCase
      * @covers Candidate::getData
      * @return void
      */
-    public function testGetDataReturnsAllInformationIfGivenNull(): void
+    public function testSetDataWithValueSucceeds(): void
     {
         $this->_setUpTestDoublesForSelectCandidate();
         $this->_candidate->select($this->_candidateInfo['CandID']);
