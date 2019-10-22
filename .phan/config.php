@@ -37,7 +37,6 @@ return [
 		"htdocs",
 		"modules",
         "src",
-		"vendor",
         "test"
 	],
 	"exclude_analysis_directory_list" => [
