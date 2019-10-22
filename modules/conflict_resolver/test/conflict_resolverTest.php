@@ -118,7 +118,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
             "You do not have access to this page.",
             $bodyText
         );
-        $this->assertContains(
+        $this->assertStringContainsString(
             "Resolved Conflicts",
             $bodyText
         );
@@ -141,7 +141,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
          $bodyText = $this->webDriver->findElement(
              WebDriverBy::cssSelector("body")
          )->getText();
-         $this->assertContains("Resolved Conflicts", $bodyText);
+         $this->assertStringContainsString("Resolved Conflicts", $bodyText);
          $this->resetPermissions();
     }
 
@@ -157,7 +157,10 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
          $bodyText = $this->webDriver->findElement(
              WebDriverBy::cssSelector("body")
          )->getText();
-         $this->assertContains("You do not have access to this page.", $bodyText);
+         $this->assertStringContainsString(
+             "You do not have access to this page.",
+             $bodyText
+         );
          $this->resetPermissions();
     }
     /**
@@ -216,7 +219,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
                 "return document.querySelector('$row').textContent"
             );
             // 4 means there are 4 records under this site.
-            $this->assertContains($records, $bodyText);
+            $this->assertStringContainsString($records, $bodyText);
             //test clear filter
             $btn = self::$clearFilter;
             $this->webDriver->executescript(
@@ -274,7 +277,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
              "return document.querySelector('$row').textContent"
          );
             // 4 means there are 4 records under this site.
-         $this->assertContains("of 585", $bodyText);
+         $this->assertStringContainsString("of 585", $bodyText);
 
     }
 }

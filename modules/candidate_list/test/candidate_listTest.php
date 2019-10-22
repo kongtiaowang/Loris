@@ -91,14 +91,14 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->safeGet($this->url . "/candidate_list/");
         $bodyText = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertContains("Access Profile", $bodyText);
+        $this->assertStringContainsString("Access Profile", $bodyText);
         // Ensure that the default is basic mode (which means the button
         // says "Advanced")
          $btn           = self::$advancedFilter;
             $buttonText = $this->webDriver->executescript(
                 "return document.querySelector('$btn').textContent"
             );
-            $this->assertContains("Advanced", $buttonText);
+            $this->assertStringContainsString("Advanced", $buttonText);
     }
     /**
      * Tests that, after clicking the "Advanced" button, all of the
@@ -111,7 +111,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->safeGet($this->url . "/candidate_list/");
         $bodyText = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertContains("Access Profile", $bodyText);
+        $this->assertStringContainsString("Access Profile", $bodyText);
         // Switch to Advanced mode
          $btn = self::$advancedFilter;
            $this->webDriver->executescript(
@@ -223,7 +223,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
                 "return document.querySelector('$row').textContent"
             );
             // 4 means there are 4 records under this site.
-            $this->assertContains($records, $bodyText);
+            $this->assertStringContainsString($records, $bodyText);
             //test clear filter
             $btn = self::$clearFilter;
             $this->webDriver->executescript(
@@ -277,7 +277,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
             "document.querySelector('$btn').click();"
         );sleep(2);
         $URL =  $this->webDriver->executescript("return window.location.href;");
-        $this->assertContains("300001", $URL);
+        $this->assertStringContainsString("300001", $URL);
         $this->resetPermissions();
     }
     /**
@@ -298,7 +298,7 @@ class CandidateListTestIntegrationTest extends LorisIntegrationTestWithCandidate
         );
                 $bodyText = $this->webDriver
                     ->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertContains(
+        $this->assertStringContainsString(
             "Candidate Profile",
             $bodyText
         );
