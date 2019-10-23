@@ -52,7 +52,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
     {
         parent::setUp();
         $this->setUpConfigSetting("useProjects", "true");
-        $this->DB->insert(
+/*        $this->DB->insert(
             "conflicts_resolved",
             array(
              'ResolvedID'          => '999999',
@@ -85,6 +85,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
               'Value2'         => 'no',
              )
          );
+*/
     }
      /**
      * Delete testing data from database
@@ -96,11 +97,12 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
     {
         parent::tearDown();
         $this->restoreConfigSetting("useProjects");
-        $this->DB->delete("conflicts_resolved", array('ResolvedID' => '999999'));
+/*        $this->DB->delete("conflicts_resolved", array('ResolvedID' => '999999'));
         $this->DB->delete(
             "conflicts_unresolved",
             array('TableName' => 'TestTestTest')
         );
+*/
     }
 
      /**
@@ -110,10 +112,11 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
      */
     function testConflictResolverPermission(): void
     {
-         $this->setupPermissions(array("conflict_resolver"));
+  //       $this->setupPermissions(array("conflict_resolver"));
          $this->safeGet($this->url . "/conflict_resolver/");
         $bodyText = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("body"))->getText();
+print_r($bodyText);
         $this->assertNotContains(
             "You do not have access to this page.",
             $bodyText
