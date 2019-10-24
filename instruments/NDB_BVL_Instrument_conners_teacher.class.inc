@@ -400,10 +400,21 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
                 $field_raw_score = $scores[$field . '_raw_score'];
                 if ($field != 'NI' && $field !='PI') {
                     $scores[$field . '_validity']="--";
-                    $query_scores1 = "SELECT * FROM conners_teacher_lookup WHERE
+                    if($field_raw_score==0)
+                    {
+                        $query_scores1 = "SELECT * FROM conners_teacher_lookup WHERE
                 age_years='$age_years' AND sex='$gender'  AND (scale_raw_score ='$field_raw_score'  OR  '$field_raw_score' BETWEEN SUBSTRING_INDEX 
                 (`scale_raw_score`,'-', 1) AND SUBSTRING_INDEX(`scale_raw_score`,'-', -1) ) AND scale='$field'";
-                    $record_1 = $db->pselectRow($query_scores1, array());
+                        $record_1 = $db->pselectRow($query_scores1, array());
+                    }
+                    else{
+                        $query_scores1 = "SELECT * FROM conners_teacher_lookup WHERE
+                age_years='$age_years' AND sex='$gender'  AND (scale_raw_score =$field_raw_score  OR  $field_raw_score BETWEEN SUBSTRING_INDEX 
+                (`scale_raw_score`,'-', 1) AND SUBSTRING_INDEX(`scale_raw_score`,'-', -1) ) AND scale='$field'";
+                        $record_1 = $db->pselectRow($query_scores1, array());
+
+                    }
+
                     if (empty($record_1)) {
                         $max_range = "SELECT * FROM conners_teacher_lookup WHERE
                 age_years='$age_years' AND sex='$gender'  AND scale_raw_score like '%plus%' AND scale='$field'";

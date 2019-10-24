@@ -447,11 +447,20 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
             $scales = array("masc2_total", "SP", "GAD", "SA_total", "HR", "PF", "OC", "PS_total", "Panic", "TR", "HA");
             foreach ($scales as $field) {
                 $field_raw_score = $scores[$field . '_score'];
-
-                $query_scores1 = "SELECT * FROM MASC2_Parent_lookup WHERE
+                 if($field_raw_score==0)
+                 {
+                     $query_scores1 = "SELECT * FROM MASC2_Parent_lookup WHERE
                 age_years='$age_range' AND sex='$gender'  AND (scale_raw_score ='$field_raw_score'  OR  '$field_raw_score' BETWEEN SUBSTRING_INDEX 
                 (`scale_raw_score`,'-', 1) AND SUBSTRING_INDEX(`scale_raw_score`,'-', -1) ) AND scale='$field'";
-                $record_1 = $db->pselectRow($query_scores1, array());
+                     $record_1 = $db->pselectRow($query_scores1, array());
+                 }
+                 else{
+                     $query_scores1 = "SELECT * FROM MASC2_Parent_lookup WHERE
+                age_years='$age_range' AND sex='$gender'  AND (scale_raw_score =$field_raw_score  OR  $field_raw_score BETWEEN SUBSTRING_INDEX 
+                (`scale_raw_score`,'-', 1) AND SUBSTRING_INDEX(`scale_raw_score`,'-', -1) ) AND scale='$field'";
+                     $record_1 = $db->pselectRow($query_scores1, array());
+                 }
+
                 if (empty($record_1)) {
                     $max_range = "SELECT * FROM MASC2_Parent_lookup WHERE
                 age_years='$age_range' AND sex='$gender'  AND scale_raw_score like '%+%'  AND scale='$field'";
