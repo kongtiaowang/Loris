@@ -23,7 +23,8 @@ return [
 		"PhanUndeclaredClassMethod",
 		"PhanTypeMismatchArgument",
 		"PhanTypeMismatchProperty",
-        "PhanTypeArraySuspiciousNullable"
+        "PhanTypeArraySuspiciousNullable",
+        "PhanAccessMethodInternal"
 	],
 	"analyzed_file_extensions" => ["php", "inc"],
 	"directory_list" => [
@@ -36,7 +37,6 @@ return [
 		"htdocs",
 		"modules",
         "src",
-		"vendor",
         "test"
 	],
 	"exclude_analysis_directory_list" => [

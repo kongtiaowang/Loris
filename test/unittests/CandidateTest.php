@@ -10,6 +10,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
+require_once __DIR__ . '/../../vendor/autoload.php';
 use PHPUnit\Framework\TestCase;
 use LORIS\StudyEntities\Candidate\CandID;
 /**
@@ -26,7 +27,6 @@ class CandidateTest extends TestCase
     /**
      * Candidate Information as available in the Candidate object
      *
-     * @var array contains _candidate info retrieved by the select method
      */
     private $_candidateInfo
         = array(
@@ -48,14 +48,12 @@ class CandidateTest extends TestCase
     /**
      * List of timepoints (visits) that a Candidate has registered
      *
-     * @var array list of time points are retrieved in the select method
      */
     private $_listOfTimePoints = array();
 
     /**
      * Candidate object use in tests
      *
-     * @var Candidate
      */
     private $_candidate;
 
@@ -97,14 +95,14 @@ class CandidateTest extends TestCase
     /**
      * Test double for NDB_Config object
      *
-     * @var \NDB_Config | PHPUnit_Framework_MockObject_MockObject
+     * @var \NDB_Config | PHPUnit\Framework\MockObject\MockObject
      */
     private $_configMock;
 
     /**
      * Test double for Database object
      *
-     * @var \Database | PHPUnit_Framework_MockObject_MockObject
+     * @var \Database | PHPUnit\Framework\MockObject\MockObject
      */
     private $_dbMock;
 
@@ -126,7 +124,7 @@ class CandidateTest extends TestCase
      *
      * @return void
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -162,7 +160,7 @@ class CandidateTest extends TestCase
      *
      * @return void
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         $this->_factory->reset();
@@ -176,7 +174,7 @@ class CandidateTest extends TestCase
      * @covers Candidate::getData
      * @covers Candidate::getListOfTimePoints
      */
-    public function testSelectRetrievesCandidateInfo()
+    public function testSelectRetrievesCandidateInfo(): void
     {
         $this->_setUpTestDoublesForSelectCandidate();
 
@@ -203,7 +201,7 @@ class CandidateTest extends TestCase
      * @covers Candidate::select
      * @throws LorisException
      */
-    public function testsSelectFailsWhenInvalidCandidateIdPassed()
+    public function testsSelectFailsWhenInvalidCandidateIdPassed(): void
     {
         $this->expectException('DomainException');
         $this->_candidate->select(new CandID('88888'));
@@ -216,7 +214,7 @@ class CandidateTest extends TestCase
      * @covers Candidate::setData
      * @covers Candidate::getData
      */
-    public function testSetDataWithArraySucceeds()
+    public function testSetDataWithArraySucceeds(): void
     {
         $this->_setUpTestDoublesForSelectCandidate();
         $this->_candidate->select($this->_candidateInfo['CandID']);
@@ -241,7 +239,7 @@ class CandidateTest extends TestCase
      * @covers Candidate::setData
      * @return void
      */
-    public function testSetDataThrowsLorisException()
+    public function testSetDataThrowsLorisException(): void
     {
         $this->expectException('\LorisException');
 
@@ -258,7 +256,7 @@ class CandidateTest extends TestCase
      * @covers Candidate::getData
      * @return void
      */
-    public function testGetDataReturnsAllInformationIfGivenNull()
+    public function testSetDataWithValueSucceeds(): void
     {
         $this->_setUpTestDoublesForSelectCandidate();
         $this->_candidate->select($this->_candidateInfo['CandID']);
@@ -281,7 +279,7 @@ class CandidateTest extends TestCase
      * @covers Candidate::getProjectID
      * @return void
      */
-    public function testGetProjectID()
+    public function testGetProjectID(): void
     {
         $this->_setUpTestDoublesForSelectCandidate();
         $this->_candidate->select($this->_candidateInfo['CandID']);
@@ -316,7 +314,7 @@ class CandidateTest extends TestCase
      * @covers Candidate::getCandID
      * @return void
      */
-    public function testGetCandID()
+    public function testGetCandID(): void
     {
         $this->_setUpTestDoublesForSelectCandidate();
         $this->_candidate->select($this->_candidateInfo['CandID']);
@@ -333,7 +331,7 @@ class CandidateTest extends TestCase
      * @covers Candidate::getPSCID
      * @return void
      */
-    public function testGetPSCID()
+    public function testGetPSCID(): void
     {
         $this->_setUpTestDoublesForSelectCandidate();
         $this->_candidate->select($this->_candidateInfo['CandID']);
@@ -350,7 +348,7 @@ class CandidateTest extends TestCase
      * @covers Candidate::getCandidateSite
      * @return void
      */
-    public function testGetCandidateSite()
+    public function testGetCandidateSite(): void
     {
         $this->_setUpTestDoublesForSelectCandidate();
         $this->_candidate->select($this->_candidateInfo['CandID']);
@@ -365,7 +363,7 @@ class CandidateTest extends TestCase
      * @covers Candidate::getCenterID
      * @return void
      */
-    public function testGetCenterID()
+    public function testGetCenterID(): void
     {
         $this->_setUpTestDoublesForSelectCandidate();
         $this->_candidate->select($this->_candidateInfo['CandID']);
@@ -397,7 +395,7 @@ class CandidateTest extends TestCase
      * @covers Candidate::getCandidateEDC
      * @return void
      */
-    public function testGetCandidateEDC()
+    public function testGetCandidateEDC(): void
     {
         $this->_setUpTestDoublesForSelectCandidate();
         $this->_candidate->select($this->_candidateInfo['CandID']);
@@ -414,7 +412,7 @@ class CandidateTest extends TestCase
      * @covers Candidate::getCandidateSex
      * @return void
      */
-    public function testGetCandidateSex()
+    public function testGetCandidateSex(): void
     {
         $this->_setUpTestDoublesForSelectCandidate();
         $this->_candidate->select($this->_candidateInfo['CandID']);
@@ -436,7 +434,7 @@ class CandidateTest extends TestCase
      * @covers Candidate::isActive
      * @return void
      */
-    public function testIsActive()
+    public function testIsActive(): void
     {
         $this->_setUpTestDoublesForSelectCandidate();
         $this->_candidate->select($this->_candidateInfo['CandID']);
@@ -453,7 +451,7 @@ class CandidateTest extends TestCase
      * @covers Candidate::registeredBy
      * @return void
      */
-    public function testRegisteredBy()
+    public function testRegisteredBy(): void
     {
         $this->_setUpTestDoublesForSelectCandidate();
         $this->_candidate->select($this->_candidateInfo['CandID']);
@@ -470,7 +468,7 @@ class CandidateTest extends TestCase
      * @covers Candidate::lastRecordChangeBy
      * @return void
      */
-    public function testLastRecordChangeBy()
+    public function testLastRecordChangeBy(): void
     {
         $this->_setUpTestDoublesForSelectCandidate();
         $this->_candidate->select($this->_candidateInfo['CandID']);
@@ -488,7 +486,7 @@ class CandidateTest extends TestCase
      * @covers Candidate::getListOfVisitLabels
      * @return void
      */
-    public function testGetListOfVisitLabels()
+    public function testGetListOfVisitLabels(): void
     {
         $this->_setUpTestDoublesForSelectCandidate();
 
@@ -525,7 +523,7 @@ class CandidateTest extends TestCase
      * @covers Candidate::getValidSubprojects
      * @return void
      */
-    public function testGetValidSubprojectsReturnsAListOfSubprojects()
+    public function testGetValidSubprojectsReturnsAListOfSubprojects(): void
     {
         $subprojects = array(
                            array('SubprojectID' => 1),
@@ -588,7 +586,7 @@ class CandidateTest extends TestCase
      * @covers Candidate::getFirstVisit
      * @return void
      */
-    public function testGetFirstVisitReturnsFirstVisitLabel()
+    public function testGetFirstVisitReturnsFirstVisitLabel(): void
     {
         $this->_setUpTestDoublesForSelectCandidate();
 
@@ -607,7 +605,7 @@ class CandidateTest extends TestCase
      * @covers Candidate::getFirstVisit
      * @return void
      */
-    public function testGetFirstVisitReturnsEmptyString()
+    public function testGetFirstVisitReturnsEmptyString(): void
     {
         $this->_setUpTestDoublesForSelectCandidate();
 
@@ -626,7 +624,7 @@ class CandidateTest extends TestCase
      * @covers Candidate::getNextVisitNo
      * @return void
      */
-    public function testGetNextVisitNoReturnsNextVisitNumber()
+    public function testGetNextVisitNoReturnsNextVisitNumber(): void
     {
         $this->_setUpTestDoublesForSelectCandidate();
 
@@ -645,7 +643,7 @@ class CandidateTest extends TestCase
      * @covers Candidate::getNextVisitNo
      * @return void
      */
-    public function testGetNextVisitNoReturnsOneWhenNextVisitDoesNotExist()
+    public function testGetNextVisitNoReturnsOneWhenNextVisitDoesNotExist(): void
     {
         $this->_setUpTestDoublesForSelectCandidate();
 
@@ -664,7 +662,7 @@ class CandidateTest extends TestCase
      * @covers Candidate::getSessionID
      * @return void
      */
-    public function testGetSessionIDForExistingVisit()
+    public function testGetSessionIDForExistingVisit(): void
     {
         $this->_setUpTestDoublesForSelectCandidate();
         $this->_candidate->select($this->_candidateInfo['CandID']);
@@ -679,7 +677,7 @@ class CandidateTest extends TestCase
      * @covers Candidate::getSessionID
      * @return void
      */
-    public function testGetSessionIDReturnsNullForNoneExistingVisit()
+    public function testGetSessionIDReturnsNullForNoneExistingVisit(): void
     {
         $this->_setUpTestDoublesForSelectCandidate();
         $this->_candidate->select($this->_candidateInfo['CandID']);
@@ -694,7 +692,7 @@ class CandidateTest extends TestCase
      * @covers Candidate::candidateExists
      * @return void
      */
-    public function testCandidateExistsReturnsTrueWhenCandidateExists()
+    public function testCandidateExistsReturnsTrueWhenCandidateExists(): void
     {
         $this->_dbMock->expects($this->once())
             ->method('pselectRow')
@@ -715,7 +713,7 @@ class CandidateTest extends TestCase
      * @covers Candidate::candidateExists
      * @return void
      */
-    public function testCandidateExistsReturnsFalseWhenCandidateDoesNotExists()
+    public function testCandidateExistsReturnsFalseWhenCandidateDoesNotExists(): void
     {
         $this->_dbMock->expects($this->once())
             ->method('pselectRow')
@@ -735,7 +733,7 @@ class CandidateTest extends TestCase
      * @covers Candidate::validatePSCID
      * @return void
      */
-    public function testValidatePSCID()
+    public function testValidatePSCID(): void
     {
         $seq = array(
                 'seq' => array(
@@ -782,7 +780,7 @@ class CandidateTest extends TestCase
      * @covers Candidate::getConsents
      * @return void
      */
-    public function testGetConsents()
+    public function testGetConsents(): void
     {
         $this->_setUpTestDoublesForSelectCandidate();
         $this->_candidate->select($this->_candidateInfo['CandID']);
@@ -815,7 +813,7 @@ class CandidateTest extends TestCase
      * @covers Candidate::getParticipantStatusOptions
      * @return void
      */
-    public function testGetParticipantStatusOptions()
+    public function testGetParticipantStatusOptions(): void
     {
         $this->_setUpMockDB();
         $this->_DB->setFakeTableData(
@@ -845,7 +843,7 @@ class CandidateTest extends TestCase
      * @covers Candidate::getParticipantStatusSubOptions
      * @return void
      */
-    public function testGetParticipantStatusSubOptions()
+    public function testGetParticipantStatusSubOptions(): void
     {
         $this->_setUpMockDB();
         $this->_DB->setFakeTableData(
@@ -876,7 +874,7 @@ class CandidateTest extends TestCase
      * @covers Candidate::createNew
      * @return void
      */
-    public function testCreateNew()
+    public function testCreateNew(): void
     {
         $this->markTestIncomplete("Test not implemented!");
     }
@@ -886,7 +884,7 @@ class CandidateTest extends TestCase
      *
      * @return void
      */
-    private function _setUpTestDoublesForSelectCandidate()
+    private function _setUpTestDoublesForSelectCandidate(): void
     {
         $this->_dbMock->expects($this->at(0))
             ->method('pselectRow')
@@ -917,7 +915,7 @@ class CandidateTest extends TestCase
      *
      * @return void
      */
-    private function _setUpMockDB()
+    private function _setUpMockDB(): void
     {
         $this->_factoryForDB = NDB_Factory::singleton();
         $this->_factoryForDB->reset();

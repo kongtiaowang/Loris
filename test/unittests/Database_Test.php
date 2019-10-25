@@ -84,10 +84,10 @@ class Database_Test extends TestCase
 
     function testUpdateEscapesHTML() {
         $this->_factory   = NDB_Factory::singleton();
-        $stub = $this->getMockBuilder('FakeDatabase')->setMethods($this->_getAllMethodsExcept(array('update')))->getMock();
+        $stub = $this->getMockBuilder(FakeDatabase::class)->onlyMethods($this->_getAllMethodsExcept(array('update')))->getMock();
 
-        $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
-        $stmt = $this->getMockBuilder('PDOStatement')->getMock();
+        $stub->_PDO = $this->getMockBuilder(FakePDO::class)->getMock();
+        $stmt = $this->getMockBuilder(PDOStatement::class)->getMock();
 
 
         $stmt->expects($this->once())->method("execute")->with(
@@ -104,10 +104,10 @@ class Database_Test extends TestCase
 
     function testUnsafeUpdateDoesntEscapeHTML() {
         $this->_factory   = NDB_Factory::singleton();
-        $stub = $this->getMockBuilder('FakeDatabase')->setMethods($this->_getAllMethodsExcept(array('unsafeupdate')))->getMock();
+        $stub = $this->getMockBuilder(FakeDatabase::class)->onlyMethods($this->_getAllMethodsExcept(array('unsafeupdate')))->getMock();
 
-        $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
-        $stmt = $this->getMockBuilder('PDOStatement')->getMock();
+        $stub->_PDO = $this->getMockBuilder(FakePDO::class)->getMock();
+        $stmt = $this->getMockBuilder(PDOStatement::class)->getMock();
 
 
         $stmt->expects($this->once())->method("execute")->with(
@@ -123,7 +123,7 @@ class Database_Test extends TestCase
     }
     function testInsertEscapesHTML() {
         $this->_factory   = NDB_Factory::singleton();
-        $stub = $this->getMockBuilder('FakeDatabase')->setMethods($this->_getAllMethodsExcept(array('insert')))->getMock();
+        $stub = $this->getMockBuilder('\FakeDatabase')->onlyMethods($this->_getAllMethodsExcept(array('insert')))->getMock();
 
         $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
         $stmt = $this->getMockBuilder('PDOStatement')->getMock();
@@ -143,7 +143,7 @@ class Database_Test extends TestCase
 
     function testUnsafeInsertDoesntEscapeHTML() {
         $this->_factory   = NDB_Factory::singleton();
-        $stub = $this->getMockBuilder('FakeDatabase')->setMethods($this->_getAllMethodsExcept(array('unsafeinsert')))->getMock();
+        $stub = $this->getMockBuilder('FakeDatabase')->onlyMethods($this->_getAllMethodsExcept(array('unsafeinsert')))->getMock();
 
         $stub->_PDO = $this->getMockBuilder('FakePDO')->getMock();
         $stmt = $this->getMockBuilder('PDOStatement')->getMock();

@@ -43,7 +43,7 @@ class VisitTest extends TestCase
      *
      * @return void
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->factory = NDB_Factory::singleton();
         $this->factory->reset();
@@ -113,7 +113,7 @@ class VisitTest extends TestCase
      * @return void
      * @covers Visit::getName
      */
-    function testVisit()
+    function testVisit(): void
     {
         $visit_name = "Visit 1";
         $visit      = new Visit($visit_name);
@@ -182,7 +182,7 @@ class VisitTest extends TestCase
      *
      * @return void
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         $this->factory->reset();

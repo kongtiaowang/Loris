@@ -48,11 +48,11 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function setUp()
+    function setUp(): void
     {
         parent::setUp();
         $this->setUpConfigSetting("useProjects", "true");
-        $this->DB->insert(
+/*        $this->DB->insert(
             "conflicts_resolved",
             array(
              'ResolvedID'          => '999999',
@@ -85,6 +85,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
               'Value2'         => 'no',
              )
          );
+*/
     }
      /**
      * Delete testing data from database
@@ -92,15 +93,16 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function tearDown()
+    function tearDown(): void
     {
         parent::tearDown();
         $this->restoreConfigSetting("useProjects");
-        $this->DB->delete("conflicts_resolved", array('ResolvedID' => '999999'));
+/*        $this->DB->delete("conflicts_resolved", array('ResolvedID' => '999999'));
         $this->DB->delete(
             "conflicts_unresolved",
             array('TableName' => 'TestTestTest')
         );
+*/
     }
 
      /**
@@ -108,17 +110,18 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testConflictResolverPermission()
+    function testConflictResolverPermission(): void
     {
-         $this->setupPermissions(array("conflict_resolver"));
+  //       $this->setupPermissions(array("conflict_resolver"));
          $this->safeGet($this->url . "/conflict_resolver/");
         $bodyText = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("body"))->getText();
+print_r($bodyText);
         $this->assertNotContains(
             "You do not have access to this page.",
             $bodyText
         );
-        $this->assertContains(
+        $this->assertStringContainsString(
             "Resolved Conflicts",
             $bodyText
         );
@@ -131,7 +134,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testConflictResolverResolvedConflictsPermission()
+    function testConflictResolverResolvedConflictsPermission(): void
     {
          $this->setupPermissions(array("conflict_resolver"));
          $this->safeGet(
@@ -141,7 +144,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
          $bodyText = $this->webDriver->findElement(
              WebDriverBy::cssSelector("body")
          )->getText();
-         $this->assertContains("Resolved Conflicts", $bodyText);
+         $this->assertStringContainsString("Resolved Conflicts", $bodyText);
          $this->resetPermissions();
     }
 
@@ -150,14 +153,17 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testConflictResolverWithoutPermission()
+    function testConflictResolverWithoutPermission(): void
     {
          $this->setupPermissions(array());
          $this->safeGet($this->url . "/conflict_resolver/");
          $bodyText = $this->webDriver->findElement(
              WebDriverBy::cssSelector("body")
          )->getText();
-         $this->assertContains("You do not have access to this page.", $bodyText);
+         $this->assertStringContainsString(
+             "You do not have access to this page.",
+             $bodyText
+         );
          $this->resetPermissions();
     }
     /**
@@ -166,7 +172,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testFiltersForUnresolvedConflicts()
+    function testFiltersForUnresolvedConflicts(): void
     {
         $this->safeGet($this->url . "/conflict_resolver/");
         //testing data
@@ -189,7 +195,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function _testFilter($element,$records,$value)
+    function _testFilter($element,$records,$value): void
     {
         // get element from the page
         if (strpos($element, "select") === false) {
@@ -216,7 +222,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
                 "return document.querySelector('$row').textContent"
             );
             // 4 means there are 4 records under this site.
-            $this->assertContains($records, $bodyText);
+            $this->assertStringContainsString($records, $bodyText);
             //test clear filter
             $btn = self::$clearFilter;
             $this->webDriver->executescript(
@@ -233,7 +239,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testFiltersForResolvedConflicts()
+    function testFiltersForResolvedConflicts(): void
     {
         $this->safeGet($this->url."/conflict_resolver/resolved_conflicts/");
         $this-> _testFilter(self::$ForSite, "displayed of 14", '2');
@@ -250,7 +256,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testSaveUnresolvedToResolved()
+    function testSaveUnresolvedToResolved(): void
     {
         $this->markTestSkipped(
             'Todo:Rewrite this test function.'
@@ -274,7 +280,7 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
              "return document.querySelector('$row').textContent"
          );
             // 4 means there are 4 records under this site.
-         $this->assertContains("of 585", $bodyText);
+         $this->assertStringContainsString("of 585", $bodyText);
 
     }
 }

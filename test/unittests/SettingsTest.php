@@ -27,7 +27,6 @@ class SettingsTest extends TestCase
     /**
      * Test double for NDB_Config object
      *
-     * @var NDB_Config | PHPUnit_Framework_MockObject_MockObject
      */
     private $_configMock;
 
@@ -41,7 +40,6 @@ class SettingsTest extends TestCase
     /**
      * Database config values returned by NDB_Config::getSetting()
      *
-     * @var array database config values
      */
     private $_databaseConfigValues = array();
 
@@ -54,7 +52,7 @@ class SettingsTest extends TestCase
      *
      * @return void
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

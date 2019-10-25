@@ -1,5 +1,4 @@
 <?php
-namespace Loris\Tests;
 set_include_path(get_include_path().":" .  __DIR__  . "/../../php/libraries:");
 use PHPUnit\Framework\TestCase;
 require_once __DIR__ . '/../../vendor/autoload.php';
@@ -13,13 +12,13 @@ class NDB_BVL_Instrument_ToJSON_Test extends TestCase
      * Set up sets a fake $_SESSION object that we can use for
      * assertions
      */
-    function setUp() {
+    function setUp(): void {
         global $_SESSION;
         if(!defined("UNIT_TESTING")) {
             define("UNIT_TESTING", true);
         }
         date_default_timezone_set("UTC");
-        $this->Session = $this->getMockBuilder(\stdClass::class)->setMethods(array('getProperty', 'setProperty', 'getUsername', 'isLoggedIn'))->getMock();
+        $this->Session = $this->getMockBuilder(\stdClass::class)->onlyMethods(array('getProperty', 'setProperty', 'getUsername', 'isLoggedIn'))->getMock();
         $this->MockSinglePointLogin = $this->getMockBuilder('SinglePointLogin')->getMock();
         $this->Session->method("getProperty")->willReturn($this->MockSinglePointLogin);
 
@@ -42,7 +41,7 @@ class NDB_BVL_Instrument_ToJSON_Test extends TestCase
         $this->Client->makeCommandLine();
         $this->Client->initialize(__DIR__ . "/../../project/config.xml");
 
-        $this->i = $this->getMockBuilder(\NDB_BVL_Instrument::class)->disableOriginalConstructor()->setMethods(array("getFullName", "getSubtestList"))->getMock();
+        $this->i = $this->getMockBuilder(\NDB_BVL_Instrument::class)->disableOriginalConstructor()->onlyMethods(array("getFullName", "getSubtestList"))->getMock();
         $this->i->method('getFullName')->willReturn("Test Instrument");
         $this->i->method('getSubtestList')->willReturn(array());
         $this->i->form = $this->QuickForm;
@@ -365,7 +364,7 @@ class NDB_BVL_Instrument_ToJSON_Test extends TestCase
     }
 
     function testPageGroup() {
-        $this->i = $this->getMockBuilder(\NDB_BVL_Instrument::class)->disableOriginalConstructor()->setMethods(array("getFullName", "getSubtestList", '_setupForm'))->getMock();
+        $this->i = $this->getMockBuilder(\NDB_BVL_Instrument::class)->disableOriginalConstructor()->onlyMethods(array("getFullName", "getSubtestList", '_setupForm'))->getMock();
         $this->i->method('getFullName')->willReturn("Test Instrument");
         $this->i->method('getSubtestList')->willReturn(
             array(

@@ -346,7 +346,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function tearDown()
+    function tearDown(): void
     {
         $this->DB->delete("users", array("UserID" => 'userid'));
         parent::tearDown();

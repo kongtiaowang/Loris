@@ -13,13 +13,13 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
      * Set up sets a fake $_SESSION object that we can use for
      * assertions
      */
-    function setUp() {
+    function setUp(): void {
         global $_SESSION;
         if(!defined("UNIT_TESTING")) {
             define("UNIT_TESTING", true);
         }
         date_default_timezone_set("UTC");
-        $this->Session = $this->getMockBuilder(\stdClass::class)->setMethods(array('getProperty', 'setProperty', 'getUsername', 'isLoggedIn'))->getMock();
+        $this->Session = $this->getMockBuilder(\stdClass::class)->onlyMethods(array('getProperty', 'setProperty', 'getUsername', 'isLoggedIn'))->getMock();
         $this->MockSinglePointLogin = $this->getMockBuilder('SinglePointLogin')->getMock();
         $this->Session->method("getProperty")->willReturn($this->MockSinglePointLogin);
 
@@ -41,7 +41,7 @@ class NDB_BVL_Instrument_LINST_ToJSON_Test extends TestCase
         $this->Client->makeCommandLine();
         $this->Client->initialize(__DIR__ . "/../../project/config.xml");
 
-        $this->i = $this->getMockBuilder("\Loris\Behavioural\NDB_BVL_Instrument_LINST")->disableOriginalConstructor()->setMethods(array("getFullName"))->getMock();
+        $this->i = $this->getMockBuilder("\Loris\Behavioural\NDB_BVL_Instrument_LINST")->disableOriginalConstructor()->onlyMethods(array("getFullName"))->getMock();
         $this->i->method('getFullName')->willReturn("Test Instrument");
         $this->i->form = $this->QuickForm;
         $this->i->testName = "Test";

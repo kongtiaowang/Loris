@@ -55,7 +55,7 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function setUp()
+    function setUp(): void
     {
         parent::setUp();
         $this->DB->insert(
@@ -70,7 +70,7 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function tearDown()
+    function tearDown(): void
     {
         $this->DB->delete("acknowledgements", array('ID' => '999'));
         $this->DB->delete("acknowledgements", array('full_name' => 'Test Test'));
@@ -81,12 +81,12 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testPageLoads()
+    function testPageLoads(): void
     {
         $this->safeGet($this->url . "/acknowledgements/");
         $bodyText = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertContains("Acknowledgements", $bodyText);
+        $this->assertStringContainsString("Acknowledgements", $bodyText);
     }
     /**
      * Tests that, the homepage should have "You do not have access to this page."
@@ -94,13 +94,13 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testPageLoadsWithoutPermissions()
+    function testPageLoadsWithoutPermissions(): void
     {
         $this->setupPermissions(array("violated_scans_view_allsites"));
         $this->safeGet($this->url . "/acknowledgements/");
         $bodyText = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertContains(
+        $this->assertStringContainsString(
             "You do not have access to this page.",
             $bodyText
         );
@@ -112,7 +112,7 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testFilterWithData()
+    function testFilterWithData(): void
     {
         $this->markTestSkipped(
             'Skipping tests until Travis and React get along better.'
@@ -133,7 +133,7 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    private function _testFilter($element,$value)
+    private function _testFilter($element,$value): void
     {
         $this->safeGet($this->url . "/acknowledgements/");
         if ($element == "startDate" || $element == "endDate") {
@@ -155,14 +155,14 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
         $this->safeGet($this->url . "/acknowledgements/?format=json");
         $bodyText = $this->webDriver
             ->findElement(WebDriverBy::cssSelector("body"))->getText();
-        $this->assertContains($value, $bodyText);
+        $this->assertStringContainsString($value, $bodyText);
     }
     /**
      * Tests that, adding a new record, then this record appears on the page.
      *
      * @return void
      */
-    function testAddNewRecord()
+    function testAddNewRecord(): void
     {
         $this->markTestSkipped(
             'Skipping tests until Travis and React get along better.'

@@ -25,7 +25,7 @@ use PHPUnit\Framework\TestCase;
  */
 class NDB_BVL_Battery_Test extends TestCase
 {
-    function setUp() {
+    function setUp(): void {
         $client = new NDB_Client();
         $client->makeCommandLine();
         $client->initialize();
@@ -178,7 +178,7 @@ class NDB_BVL_Battery_Test extends TestCase
 
     }
 
-    function tearDown() {
+    function tearDown(): void {
         $this->DB->run("DROP TEMPORARY TABLE test_names");
         $this->DB->run("DROP TEMPORARY TABLE test_battery");
 

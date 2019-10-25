@@ -42,7 +42,7 @@ class NDB_PageTest extends TestCase
      *
      * @return void
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->_module = new Module("test_module", "php/libraries/");
@@ -56,7 +56,7 @@ class NDB_PageTest extends TestCase
      *
      * @return void
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
     }
@@ -67,7 +67,7 @@ class NDB_PageTest extends TestCase
      * @covers NDB_Page::_construct
      * @return void
      */
-    public function testConstruct()
+    public function testConstruct(): void
     {
         $this->assertEquals("test_module", $this->_page->name);
         $this->assertEquals("test_page", $this->_page->page);
@@ -84,7 +84,7 @@ class NDB_PageTest extends TestCase
      * @covers NDB_Page::getTemplateData
      * @return void
      */
-    public function testSetAndGetTemplateVar()
+    public function testSetAndGetTemplateVar(): void
     {
         $this->_page->setTemplateVar("test_var", "test_value");
         $data = $this->_page->getTemplateData();
@@ -98,7 +98,7 @@ class NDB_PageTest extends TestCase
      * @covers NDB_Page::addFile
      * @return void
      */
-    public function testAddFile()
+    public function testAddFile(): void
     {
         $this->_page->addFile("test_name", "test_label");
         $this->assertEquals(
@@ -117,7 +117,7 @@ class NDB_PageTest extends TestCase
      * @covers NDB_Page::addHeader
      * @return void
      */
-    public function testAddHeader()
+    public function testAddHeader(): void
     {
         $this->_page->addHeader("test_header");
         $this->assertEquals(
@@ -134,7 +134,7 @@ class NDB_PageTest extends TestCase
      * @covers NDB_Page::addSelect
      * @return void
      */
-    public function testAddSelect()
+    public function testAddSelect(): void
     {
         $this->_page->addSelect("test_name", "test_label", array());
         $this->assertEquals(
@@ -154,7 +154,7 @@ class NDB_PageTest extends TestCase
      * @covers NDB_Page::addLabel
      * @return void
      */
-    public function testAddLabel()
+    public function testAddLabel(): void
     {
         $this->_page->addLabel("test_label");
         $this->assertEquals(
