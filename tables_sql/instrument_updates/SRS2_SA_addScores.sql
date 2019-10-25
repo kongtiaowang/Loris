@@ -53,6 +53,12 @@ ALTER TABLE SRS2_SchoolAge ADD COLUMN Com_T_score TEXT default NULL;
 ALTER TABLE SRS2_SchoolAge ADD COLUMN Mot_T_score TEXT default NULL;
 ALTER TABLE SRS2_SchoolAge ADD COLUMN score_validity TEXT default NULL;
 
+ALTER TABLE SRS2_SchoolAge_Parent ADD COLUMN score_range TEXT default NULL;
+ALTER TABLE SRS2_SchoolAge_Parent_proband ADD COLUMN score_range TEXT default NULL;
+ALTER TABLE SRS2_SchoolAge ADD COLUMN score_range TEXT default NULL;
+
+
+
 
 
 

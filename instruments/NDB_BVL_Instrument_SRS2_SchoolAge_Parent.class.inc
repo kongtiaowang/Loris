@@ -140,12 +140,15 @@ class NDB_BVL_Instrument_SRS2_SchoolAge_Parent extends NDB_BVL_Instrument
             "other_relationship_to_child"
         );
 
+
+
         for($i=1;$i<=3;$i++)
         {
             if($i==1) {
                 $this->form->addElement('header', null, "SRS2 Total Score Results ");
                 $domains=array("total" => "Total Raw Score",
                 );
+
             }
             if($i==2) {
                 $this->form->addElement('header', null, "DSM - Compatible Scales ");
@@ -194,6 +197,7 @@ class NDB_BVL_Instrument_SRS2_SchoolAge_Parent extends NDB_BVL_Instrument
             $this->form->addGroup($group, 'score_header_group_'.$i, "<strong>Domain</strong>", $this->_GUIDelimiter, FALSE);
             unset($group);
         }
+        $this->form->addElement('static', 'score_range', 'Score Range');
 
 
     }
@@ -631,7 +635,32 @@ else{
                         $scores[$field . '_T_score'] = "NA";
                     }
                 }
+
+
             }
+
+        if($scores['total_T_score']>=76)
+        {
+            $scores['score_range']= "Severe";
+        }
+        else if(in_array($scores['total_T_score'], range(66, 75)))
+        {
+            $scores['score_range']= "Moderate";
+        }
+        else if(in_array($scores['total_T_score'], range(60, 65)))
+        {
+            $scores['score_range']= "Mold";
+        }
+        else if($scores['total_T_score']<=59)
+        {
+            $scores['score_range']= "Normal";
+        }
+        else{
+            $scores['score_range']= "NA";
+
+        }
+
+
 
        $scores= str_replace(">", "Greater than or ", $scores);
 
