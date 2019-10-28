@@ -120,7 +120,6 @@ class TimePoint
             $this->_stageOptions = array_values($this->_stageOptions);
         }
 
-        // make a local reference to the Database object
 
         // get user data from database
         $query = "SELECT s.ID AS SessionID, s.CandID, p.Name AS PSC, s.CenterID,
@@ -135,7 +134,7 @@ class TimePoint
                         LEFT JOIN users AS u on (s.registeredBy=u.UserID)
                         LEFT JOIN Project AS pr USING(ProjectID)
                     WHERE s.ID = :SID AND s.Active = 'Y'";
-        $row   = $factory->database()->pselectRow(
+        $row   = $db->pselectRow(
             $query,
             array('SID' => $sessionID)
         );
