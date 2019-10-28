@@ -61,7 +61,7 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testDoesNotLoadWithoutMRICodePath()
+    function testDoesNotLoadWithoutMRICodePath(): void
     {
         $this->setupConfigSetting('mriCodePath', null);
         $this->setupPermissions(array("server_processes_manager"));
@@ -79,7 +79,7 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testLoadsWithoutPermissionRead()
+    function testLoadsWithoutPermissionRead(): void
     {
         // This function sets mriCodePath for all future functions
         $this->setupConfigSetting('mriCodePath', self::MRI_CODE_PATH);
@@ -97,7 +97,7 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function testDoesNotLoadWithPermission()
+    function testDoesNotLoadWithPermission(): void
     {
         $this->setupPermissions(array("server_processes_manager"));
         $this->safeGet($this->url . "/server_processes_manager/");
@@ -113,7 +113,7 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
       *
       * @return void
       */
-    function testPageUIs()
+    function testPageUIs(): void
     {
         $this->markTestSkipped("Skipping long test");
         $this->safeGet($this->url . "/server_processes_manager/");
@@ -130,10 +130,23 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
       *
       * @return void
       */
-    function testFilters()
+    function testFilters(): void
     {
         $this->markTestSkipped("Skipping long test");
         return;
+        $this->_testFilters("/server_processes_manager/", "pid", "317", "1 rows");
+        $this->_testFilters(
+            "/server_processes_manager/",
+            "type",
+            "mri_upload",
+            "51"
+        );
+        $this->_testFilters(
+            "/server_processes_manager/",
+            "userid",
+            "admin",
+            "51"
+        );
     }
     /**
       * This function could test filter function in each Tabs.
@@ -145,7 +158,7 @@ class Server_Processes_ManagerTest extends LorisIntegrationTest
       *
       * @return void
       */
-    function _testFilter($url,$filter,$testData,$expectDataRows)
+    function _testFilters($url,$filter,$testData,$expectDataRows): void
     {
         $this->safeGet($this->url . $url);
         sleep(1);
