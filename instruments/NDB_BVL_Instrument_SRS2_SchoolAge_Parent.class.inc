@@ -193,7 +193,7 @@ class NDB_BVL_Instrument_SRS2_SchoolAge_Parent extends NDB_BVL_Instrument
             //scoring column headers
             $group[] = $this->form->createElement('static', "score", null, null);
             $group[] = $this->form->createElement('static', "T_score", null, null);
-            $group[] = $this->form->createElement('static', "percentile", null, null);
+            //$group[] = $this->form->createElement('static', "percentile", null, null);
             $this->form->addGroup($group, 'score_header_group_'.$i, "<strong>Domain</strong>", $this->_GUIDelimiter, FALSE);
             unset($group);
         }
