@@ -9,6 +9,8 @@ CREATE TABLE `Radiology_Review_VSA` (
 
                             `Data_entry_completion_status` enum('Incomplete','Complete') NOT NULL default 'Incomplete',
 `Date_taken` date default NULL,
+`Candidate_Age` varchar(255) default NULL,
+`Window_Difference` varchar(255) default NULL,
 `reviewed` varchar(255) default NULL,
 `clinical_mri` enum('no','yes') default NULL,
 `clinical_follow` enum('no','yes') default NULL,

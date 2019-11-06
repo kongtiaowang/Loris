@@ -1,8 +1,5 @@
 <?php
 
-
-set_include_path(get_include_path().":../libraries:../../php/libraries:");
-
 class NDB_BVL_Instrument_Radiology_Review_VSA extends NDB_BVL_Instrument
 {
 
@@ -673,18 +670,5 @@ spectrum but not clinically relevant",
     function _page3(){
          $this->addLabel("<h3>Additional Comments:</h3>");
          $this->form->addElement("textarea", "additional_comments", "Additional Comments", array('cols'=>50, 'rows'=>4));
-    }
-    function _saveValues($values){
-              if(isset($values['Date_taken'])) {
-                  $date = $values['Date_taken'];
-                  if(!empty($date['Y']) && !empty($date['M']) && !empty($date['d'])) {
-                      $values['Date_taken'] = $this->_getDatabaseDate($date); //sprintf("%04d-%02d-%02d", $date['Y'], $date['M'], $date['d']);
-                      $this->_saveCandidateAge($values);
-                  }  else {
-                      unset($values['Date_taken']);
-                  }
-             }
-
-
     }
 }
