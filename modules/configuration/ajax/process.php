@@ -77,15 +77,20 @@ foreach ($_POST as $key => $value) {
         // This is different from the above is_numeric case; this makes use of
         // Config.ID, not Config.ConfigID (which is a FK to ConfigSettings.ID).
         // The Config table is the one that will be modified here.
-        $keySplit         = explode("-", $key); // e.g. 'add-10' or 'remove-49'
+        $keySplit         = explode("-", $key); // e.g. 'add-18' or "remove"
+        $valueSplit       = explode("-", $value); // e.g. "remove-74" or other values
+        $removeID         = $valueSplit[1]; 
+        // action only get one action add or id 
         $action           = $keySplit[0];
+        // action from remove button only get remove
         $ConfigSettingsID = $keySplit[1];
-        assert(count($keySplit) == 2);
+        
         if ($action == 'add') {
             // This branch adds a new entry to the Config table.
             if ($value === "") {
                 continue;
             }
+            print_r($value);
             if (isDuplicate($ConfigSettingsID, $value)) {
                 displayError(400, "Duplicate Value in the Instrument Form");
                 exit();
@@ -109,11 +114,11 @@ foreach ($_POST as $key => $value) {
                     'Value'    => $value,
                 )
             );
-        } elseif ($action == 'remove') {
+        } elseif ($action =="remove") {
             // Delete an entry from the Config table.
             $DB->delete(
                 'Config',
-                array('ConfigID' => $ConfigSettingsID)
+                array('ID' => $removeID)
             );
         } else {
             displayError(400, 'Invalid action');
