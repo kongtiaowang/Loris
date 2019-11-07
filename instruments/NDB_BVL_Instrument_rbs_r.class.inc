@@ -210,8 +210,16 @@ class NDB_BVL_Instrument_rbs_r extends NDB_BVL_Instrument
 
         //Overall scores...
         $this->form->addElement('header', null, "Total scores");
-        $this->form->addElement('static', 'overall_endorsed', "Overall number of items endorsed");
-        $this->form->addElement('static', 'overall_score', "Overall score");
+
+        $group[] = $this->form->createElement('static', "overall_endorsed", null, null);
+        $this->form->addGroup($group, "overall_endorsed_score_group", "Overall number of items endorsed:", $this->_GUIDelimiter, FALSE);
+        unset($group);
+
+        $group[] = $this->form->createElement('static', "overall_score", null, null);
+        $this->form->addGroup($group, "overall_score_group", "Overall score:", $this->_GUIDelimiter, FALSE);
+        unset($group);
+
+
 
         //Subscale scores...
         $this->form->addElement('header', null, "Subscale scores");

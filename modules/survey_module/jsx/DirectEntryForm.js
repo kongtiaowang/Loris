@@ -394,11 +394,20 @@ class LabelElement extends React.Component {
 		let description = '';
 		if (!!this.props.element.Description) {
 			description = (
-				<h3 className='col-xs-12 field_question'>
+				<h3 className='inline'>
 					<Markdown content={this.props.element.Description} />
 				</h3>
 			);
 		}
+    var h=this.props.element.Description;
+    if(h.includes("score"))
+    {
+      description = (
+				<h3 className={labelClass}>
+					<Markdown content=''/>
+				</h3>
+      );
+    }
 		return (
 			<div>
 				{description}
@@ -414,22 +423,30 @@ class HeaderElement extends React.Component {
 	}
 
 	render() {
-		let element;
-		switch(this.props.element.Options.Level) {
-			default: 
-				element = (
+    let element;
+    var g=this.props.element.Description;
+    if(g.includes("score")){
+        element = (
 					<h1>
-						<Markdown content={this.props.element.Description} />
 					</h1>
-				);
-		}
-		return (
+		 );
+		 }
+		 else {
+        element = (
+					<h1>
+						<Markdown content={this.props.element.Description}/>
+					</h1>
+        );
+      }
+    return (
 			<div>
-				{element}
+        {element}
 			</div>
-		);
-	}
+    );
+    }
+
 }
+
 
 
 export default Page;

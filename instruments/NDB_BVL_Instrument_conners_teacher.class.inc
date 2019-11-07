@@ -137,7 +137,7 @@ class NDB_BVL_Instrument_conners_teacher extends NDB_BVL_Instrument
 
             }
 
-                $this->form->addGroup($group, "{$label}_group", $label, $this->_GUIDelimiter, FALSE);
+                $this->form->addGroup($group, "{$label}_score_group", $label, $this->_GUIDelimiter, FALSE);
 
             unset($group);
         }
