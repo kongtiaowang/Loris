@@ -123,8 +123,8 @@ class DirectEntryFormElement extends React.Component {
 				</h4>
 			);
 		}
-    var h=this.props.element.Name;
-    var str=h.toLowerCase();
+    var element_name=this.props.element.Name;
+    var str=element_name.toLowerCase();
 		if(group=='true' && str.includes("score"))
 		{
       questionClass = "hidden";
@@ -432,8 +432,8 @@ class HeaderElement extends React.Component {
 
 	render() {
     let element;
-    var g=this.props.element.Description;
-    var str=g.toLowerCase();
+    var score_header=this.props.element.Description;
+    var str=score_header.toLowerCase();
     if(str.includes("score")){
         element = (
 					<h1>
@@ -449,13 +449,12 @@ class HeaderElement extends React.Component {
       }
     return (
 			<div>
-        {element}
+         {element}
 			</div>
     );
     }
 
 }
-
 
 
 export default Page;
