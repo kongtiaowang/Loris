@@ -407,15 +407,6 @@ class LabelElement extends React.Component {
 				</h3>
 			);
 		}
-    var h=this.props.element.Description;
-    if(h.includes("score"))
-    {
-      description = (
-				<h3 className={labelClass}>
-					<Markdown content=''/>
-				</h3>
-      );
-    }
 		return (
 			<div>
 				{description}
