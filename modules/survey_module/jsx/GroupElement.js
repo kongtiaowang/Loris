@@ -96,12 +96,12 @@ class ElementGroup extends React.Component {
 			);
 		}
 		var h=this.props.element.Name;
-		if(h.includes("score"))
+		var str=h.toLowerCase();
+		if(str.includes("score"))
 		{
-			var classname="hidden"
+			var classname="hidden";
       description = (
-				<h3 className={labelClass}>
-					<Markdown content=''/>
+				<h3 >
 				</h3>
       );
 		}

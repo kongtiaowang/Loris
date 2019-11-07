@@ -55,6 +55,7 @@ class DirectEntryFormElement extends React.Component {
 		let element;
 		let errorMessage;
 		let questionClass = 'question-container col-xs-12 col-sm-10 col-sm-offset-1';
+		let group;
 
 		switch(this.props.element.Type) {
 			case "select":
@@ -98,6 +99,7 @@ class DirectEntryFormElement extends React.Component {
 				);
 				break;
 			case "ElementGroup":
+				group="true";
 				element = (
 					<GroupElement
 						element={this.props.element}
@@ -120,6 +122,12 @@ class DirectEntryFormElement extends React.Component {
 					* {this.props.errors[this.props.element.Name]}
 				</h4>
 			);
+		}
+    var h=this.props.element.Name;
+    var str=h.toLowerCase();
+		if(group=='true' && str.includes("score"))
+		{
+      questionClass = "hidden";
 		}
 
 		return (
@@ -425,7 +433,8 @@ class HeaderElement extends React.Component {
 	render() {
     let element;
     var g=this.props.element.Description;
-    if(g.includes("score")){
+    var str=g.toLowerCase();
+    if(str.includes("score")){
         element = (
 					<h1>
 					</h1>
