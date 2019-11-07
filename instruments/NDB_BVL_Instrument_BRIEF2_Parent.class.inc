@@ -23,13 +23,7 @@
 class NDB_BVL_Instrument_BRIEF2_Parent extends NDB_BVL_Instrument
 {
     use instrument_validator;
-    var $scoreCols = array("inhibit" => "Inhibit","self_monitor" => "Self Monitor","behav_reg_index"=>"Behavior Regulation Index",
-        "shift" => "Shift", "emotional_control" => "Emotional Control", "emotion_reg_index" =>"Emotion Regulation Index",
-        "initiate" => "Initiate", "working_memory" => "Working Memory", "plan" => "Plan/Organize","task_monitor" => "Task Monitor","material_org" => "Material Organization",
-        "cogn_reg_index"=> "Cognitive Regulation Index",
-        "GEC" => "Global Executive Composite",
 
-    );
     var $scoreLabels = array(
         'inhibit_raw_score',
         'shift_raw_score',
@@ -156,7 +150,7 @@ class NDB_BVL_Instrument_BRIEF2_Parent extends NDB_BVL_Instrument
         }
         $this->localDefaults = array_merge($this->localDefaults, $columnHeaders);
 
-        foreach ($this->scoreCols as $field=>$label)  {
+        foreach ($domains as $field=>$label)  {
             foreach ($columnHeaders as $scoreField => $scoreLabel) {
 
                 $group[] = $this->form->createElement('static', "{$field}_{$scoreField}", null, null);
