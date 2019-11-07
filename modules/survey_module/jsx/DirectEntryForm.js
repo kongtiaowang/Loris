@@ -402,7 +402,7 @@ class LabelElement extends React.Component {
 		let description = '';
 		if (!!this.props.element.Description) {
 			description = (
-				<h3 className='inline'>
+				<h3 className='col-xs-12 field_question'>
 					<Markdown content={this.props.element.Description} />
 				</h3>
 			);
