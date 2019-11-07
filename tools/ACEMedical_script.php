@@ -75,9 +75,14 @@ foreach($result as $row) {
 
       if ($row['premature_birth'] == 'yes') {
           $final_result['full_term'] = 'no';
-          $final_result['info_gest'] = (float)$row['weeks_gestation'];
+          $final_result['info_gest'] = $row['weeks_gestation'];
       } else if ($row['premature_birth'] == 'no') {
           $final_result['full_term'] = 'yes';
+          $final_result['info_gest'] = $row['weeks_gestation'];
+      }
+      else{
+          $final_result['full_term'] = $row['premature_birth'];
+          $final_result['info_gest'] = $row['weeks_gestation'];
       }
 
      if ($row['q14_child_hospitalised_days'] == '' && $row['q14_child_hospitalised_hours'] == '') {
@@ -160,6 +165,7 @@ foreach($result as $row) {
   }
 
 //print_r($final_result);
+  //exit;
 }
 $WhereCriteria['CommentID'] = $db->pselectOne("SELECT i.CommentID FROM ACESubjectMedicalHistory i
                                                JOIN flag f ON f.CommentID = i.CommentID AND f.CommentID NOT LIKE 'DDE%'
@@ -171,6 +177,8 @@ $WhereCriteria['CommentID'] = $db->pselectOne("SELECT i.CommentID FROM ACESubjec
     $result = $db->update('ACESubjectMedicalHistory', $final_result, $WhereCriteria);
     print serialize($WhereCriteria) . " ";
     print serialize($final_result) . "\n";
+
+
   }
 }
 ?>

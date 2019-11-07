@@ -209,6 +209,15 @@ class NDB_BVL_Instrument_MASC2_Self_Report extends NDB_BVL_Instrument
                 2 => "2 - Sometimes true",
                 3 => "3 - Often true"
             );
+        $options_NA =
+            array(
+                null=>"",
+                0 => "0 - Never true",
+                1 => "1 - Rarely true",
+                2 => "2 - Sometimes true",
+                3 => "3 - Often true",
+                "NA"=>"Not Answered",
+            );
 
         $questions =
             array(
@@ -238,11 +247,19 @@ class NDB_BVL_Instrument_MASC2_Self_Report extends NDB_BVL_Instrument
                 "q24" => "24. My heart races or skips beat.",
                 "q25" => "25. I stay away from things that upset him/her."
             );
+        $na_quest_array=array("q3");
 
         $this->displayHeaders(1);
         foreach ($questions as $qNum=>$qLabel) {
             $group[] =& $this->createLabel($qLabel);
-            $group[] =& $this->createSelect($qNum, $qLabel, $options);
+            if (in_array($qNum, $na_quest_array))
+            {
+                $group[] =& $this->createSelect($qNum, $qLabel, $options_NA);
+            }
+            else{
+                $group[] =& $this->createSelect($qNum, $qLabel, $options);
+            }
+
             $this->form->addGroup(
                 $group,
                 "page1_questions_" . $qNum,
@@ -445,11 +462,20 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
             $scales = array("masc2_total", "SP", "GAD", "SA_total", "HR", "PF", "OC", "PS_total", "Panic", "TR", "HA");
             foreach ($scales as $field) {
                 $field_raw_score = $scores[$field . '_score'];
-
-                $query_scores1 = "SELECT * FROM MASC2_Self_Report_lookup WHERE
+                      if($field_raw_score==0)
+                      {
+                          $query_scores1 = "SELECT * FROM MASC2_Self_Report_lookup WHERE
                 age_years='$age_range' AND sex='$gender'  AND (scale_raw_score ='$field_raw_score'  OR  '$field_raw_score' BETWEEN SUBSTRING_INDEX 
                 (`scale_raw_score`,'-', 1) AND SUBSTRING_INDEX(`scale_raw_score`,'-', -1) ) AND scale='$field'";
-                $record_1 = $db->pselectRow($query_scores1, array());
+                          $record_1 = $db->pselectRow($query_scores1, array());
+                      }
+                      else{
+                          $query_scores1 = "SELECT * FROM MASC2_Self_Report_lookup WHERE
+                age_years='$age_range' AND sex='$gender'  AND (scale_raw_score =$field_raw_score  OR  $field_raw_score BETWEEN SUBSTRING_INDEX 
+                (`scale_raw_score`,'-', 1) AND SUBSTRING_INDEX(`scale_raw_score`,'-', -1) ) AND scale='$field'";
+                          $record_1 = $db->pselectRow($query_scores1, array());
+                      }
+
                 if (empty($record_1)) {
                     $max_range = "SELECT * FROM MASC2_Self_Report_lookup WHERE
                 age_years='$age_range' AND sex='$gender'  AND scale_raw_score like '%+%'  AND scale='$field'";
