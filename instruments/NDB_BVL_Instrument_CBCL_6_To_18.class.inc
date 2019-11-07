@@ -176,7 +176,7 @@ class NDB_BVL_Instrument_CBCL_6_To_18 extends NDB_BVL_Instrument
         for($i=1;$i<=4;$i++)
         {
             if($i==1) {
-                $this->form->addElement('header', null, "Syndrome Scales  ");
+                $this->form->addElement('header', null, "Syndrome Scales (Scores)  ");
                 $domains=array("anxious" => "Anxious/Depressed","depressed" => "Withdrawn/Depressed","som_comp" => "Somatic Complaints",
                     "social_prob" => "Social Problems", "thought_prob" => "Thought Problems", "attention_prob" => "Attention Problems",
                     "rule_break_behav" => "Rule Breaking Behaviour",
@@ -184,13 +184,13 @@ class NDB_BVL_Instrument_CBCL_6_To_18 extends NDB_BVL_Instrument
                 );
             }
             if($i==2) {
-                $this->form->addElement('header', null, "Internalizing, Externalizing, Total Problems, Other Problems  ");
+                $this->form->addElement('header', null, "Internalizing, Externalizing, Total Problems, Other Problems (Scores)  ");
                 $domains=array("internalizing" => "Internalizing","externalizing" => "Externalizing","total_problems" => "Total Problems",
                 );
             }
             if($i==3)
             {
-                $this->form->addElement('header', null, "DSM-5-Oriented Scales  ");
+                $this->form->addElement('header', null, "DSM-5-Oriented Scales (Scores)  ");
                 $domains = array("depressive_prob" => "Depressive Problems","anx_prob" => "Anxiety Problems","som_prob" => "Somatic Problems",
                     "attention_hyper_prob" => "Attention Deficit/ Hyperactivity Problems", "oppo_def_prob" => "Oppositional Defiant Problems",
                     "conduct_prob" => "Conduct Problem"
@@ -198,7 +198,7 @@ class NDB_BVL_Instrument_CBCL_6_To_18 extends NDB_BVL_Instrument
             }
             if($i==4)
             {
-                $this->form->addElement('header', null, "2007 Scales");
+                $this->form->addElement('header', null, "2007 Scales (Scores)");
                 $domains = array("sluggish_cogn_tempo" => "Sluggish Cognitive Tempo","obsessive_comp_prob" => " Obsessive-Compulsive Problems",
                     "stress_prob" => " Stress Problems",
 
@@ -226,7 +226,7 @@ class NDB_BVL_Instrument_CBCL_6_To_18 extends NDB_BVL_Instrument
 
                     $group[] = $this->form->createElement('static', "{$field}_{$scoreField}", null, null);
                 }
-                $this->form->addGroup($group, "{$label}_group_{$i}", $label, $this->_GUIDelimiter, FALSE);
+                $this->form->addGroup($group, "{$label}_score_group_{$i}", $label, $this->_GUIDelimiter, FALSE);
                 unset($group);
 
 
