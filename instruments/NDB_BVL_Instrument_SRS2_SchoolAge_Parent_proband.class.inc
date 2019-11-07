@@ -147,13 +147,13 @@ class NDB_BVL_Instrument_SRS2_SchoolAge_Parent_proband extends NDB_BVL_Instrumen
                 );
             }
             if($i==2) {
-                $this->form->addElement('header', null, "DSM - Compatible Scales ");
+                $this->form->addElement('header', null, "DSM5 - Compatible Scales (Scores) ");
                 $domains=array("DSM5_SCI" => "SCI","DSM5_RRB" => "RRB",
                 );
             }
             if($i==3)
             {
-                $this->form->addElement('header', null, "Treatment Subscales");
+                $this->form->addElement('header', null, "Treatment Subscales (Scores)");
                 $domains = array("Awr" => " Social Awareness (Awr)","Cog" => "Social Cognition (Cog)","Com" => "Social Communication (Com)",
                     "Mot" => "Social Motivaton (Mot)"
                 );
