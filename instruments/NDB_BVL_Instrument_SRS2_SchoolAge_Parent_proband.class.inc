@@ -147,13 +147,13 @@ class NDB_BVL_Instrument_SRS2_SchoolAge_Parent_proband extends NDB_BVL_Instrumen
                 );
             }
             if($i==2) {
-                $this->form->addElement('header', null, "DSM - Compatible Scales ");
+                $this->form->addElement('header', null, "DSM5 - Compatible Scales (Scores) ");
                 $domains=array("DSM5_SCI" => "SCI","DSM5_RRB" => "RRB",
                 );
             }
             if($i==3)
             {
-                $this->form->addElement('header', null, "Treatment Subscales");
+                $this->form->addElement('header', null, "Treatment Subscales (Scores)");
                 $domains = array("Awr" => " Social Awareness (Awr)","Cog" => "Social Cognition (Cog)","Com" => "Social Communication (Com)",
                     "Mot" => "Social Motivaton (Mot)"
                 );
@@ -179,7 +179,7 @@ class NDB_BVL_Instrument_SRS2_SchoolAge_Parent_proband extends NDB_BVL_Instrumen
 
                     $group[] = $this->form->createElement('static', "{$field}_{$scoreField}", null, null);
                 }
-                $this->form->addGroup($group, "{$label}_group_{$i}", $label, $this->_GUIDelimiter, FALSE);
+                $this->form->addGroup($group, "{$label}_score_group_{$i}", $label, $this->_GUIDelimiter, FALSE);
                 unset($group);
 
 
@@ -192,7 +192,9 @@ class NDB_BVL_Instrument_SRS2_SchoolAge_Parent_proband extends NDB_BVL_Instrumen
             $this->form->addGroup($group, 'score_header_group_'.$i, "<strong>Domain</strong>", $this->_GUIDelimiter, FALSE);
             unset($group);
         }
-        $this->form->addElement('static', 'score_range', 'Score Range');
+        $group[] = $this->form->createElement('static', "score_range", null, null);
+        $this->form->addGroup($group, "score_range_group", "Score Range:", $this->_GUIDelimiter, FALSE);
+        unset($group);
 
     }
 

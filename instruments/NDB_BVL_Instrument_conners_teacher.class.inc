@@ -17,6 +17,7 @@
  */
 class NDB_BVL_Instrument_conners_teacher extends NDB_BVL_Instrument
 {
+
     var $scoreLabels = array(
         'IN_raw_score',
         'HY_raw_score',
@@ -127,13 +128,13 @@ class NDB_BVL_Instrument_conners_teacher extends NDB_BVL_Instrument
             $columnHeaders[$field] .= "     ";
         }
         $this->localDefaults = array_merge($this->localDefaults, $columnHeaders);
-        foreach ($domains as $field => $label) {
+        foreach ($domains as $field=>$label) {
             foreach ($columnHeaders as $scoreField => $scoreLabel) {
                     $group[] = $this->form->createElement('static', "{$field}_{$scoreField}", null, null);
 
             }
 
-                $this->form->addGroup($group, "{$label}_group", $label, $this->_GUIDelimiter, FALSE);
+                $this->form->addGroup($group, "{$label}_score_group", $label, $this->_GUIDelimiter, FALSE);
 
             unset($group);
         }

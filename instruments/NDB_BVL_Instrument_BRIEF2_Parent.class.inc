@@ -23,6 +23,7 @@
 class NDB_BVL_Instrument_BRIEF2_Parent extends NDB_BVL_Instrument
 {
     use instrument_validator;
+
     var $scoreLabels = array(
         'inhibit_raw_score',
         'shift_raw_score',
@@ -149,12 +150,12 @@ class NDB_BVL_Instrument_BRIEF2_Parent extends NDB_BVL_Instrument
         }
         $this->localDefaults = array_merge($this->localDefaults, $columnHeaders);
 
-        foreach ($domains as $field => $label) {
+        foreach ($domains as $field=>$label)  {
             foreach ($columnHeaders as $scoreField => $scoreLabel) {
 
                 $group[] = $this->form->createElement('static', "{$field}_{$scoreField}", null, null);
             }
-            $this->form->addGroup($group, "{$label}_group", $label, $this->_GUIDelimiter, FALSE);
+            $this->form->addGroup($group, "{$label}_score_group", $label, $this->_GUIDelimiter, FALSE);
             unset($group);
 
 

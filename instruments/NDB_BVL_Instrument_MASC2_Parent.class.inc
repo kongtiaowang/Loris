@@ -168,12 +168,13 @@ class NDB_BVL_Instrument_MASC2_Parent extends NDB_BVL_Instrument
 
 
         //score fields
-        $domains = array("masc2_total" => "MASC2 Total Score","SP" => "Separation Anxiety/Phobias(S/P)","GAD" => "Gad Index(GAD)",
+        $domains =array("masc2_total" => "MASC2 Total Score","SP" => "Separation Anxiety/Phobias(S/P)","GAD" => "Gad Index(GAD)",
             "SA_total" => "Social Anxiety Total Score(SA:T)", "HR" => "Humiliation/Rejection", "PF" => "Performance Fears",
             "OC" => "Obsessions & Compulsions","PS_total" => "Physical Symptoms Total(PS:T)","Panic" => "Panic(P)","TR" => "Tense/Restless(T/R)",
             "HA" => "Harm Avoidance(HA)"
 
         );
+
         $columnHeaders = array("score" => "Score", "T_score" => "T Score","classification" =>"Classification");
 
         foreach ($columnHeaders as $field => $label) {
@@ -181,17 +182,21 @@ class NDB_BVL_Instrument_MASC2_Parent extends NDB_BVL_Instrument
         }
         $this->localDefaults = array_merge($this->localDefaults, $columnHeaders);
 
-        foreach ($domains as $field => $label) {
+
+        foreach ($domains as $field => $label)  {
             foreach ($columnHeaders as $scoreField => $scoreLabel) {
 
                 $group[] = $this->form->createElement('static', "{$field}_{$scoreField}", null, null);
             }
-            $this->form->addGroup($group, "{$label}_group", $label, $this->_GUIDelimiter, FALSE);
+            $this->form->addGroup($group, "{$label}_score_group", $label, $this->_GUIDelimiter, FALSE);
             unset($group);
 
 
         }
-        $this->form->addElement("static", "anxiety_probability_score", "Anxiety Probability Score:");
+        $group[] = $this->form->createElement('static', "anxiety_probability_score", null, null);
+$this->form->addGroup($group, "anxiety_probability_score_group", "Anxiety Probability Score:", $this->_GUIDelimiter, FALSE);
+            unset($group);
+
     }
 
     function _page1() {
