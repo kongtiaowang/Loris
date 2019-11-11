@@ -1,9 +1,9 @@
 <?php
-
+require('IBIS/libraries/instrument_validator.class.inc');
 class NDB_BVL_Instrument_Radiology_Review_VSA extends NDB_BVL_Instrument
 {
 
-
+  use instrument_validator;
     /**
     * sets up basic data, such as the LorisForm object, and so on.
     *
@@ -15,12 +15,11 @@ class NDB_BVL_Instrument_Radiology_Review_VSA extends NDB_BVL_Instrument
     static $cssStyle = "style='color:white; background-color: black;border: 10px solid black;margin-left:0'";
     static $cssStyle2 = "style='background-color: gray;border: 10px solid gray;height:100%;width:100%;float:left;'";
     var $options = array(""=>"Choose one", "mild"=>"Mild", "moderate"=>"Moderate", "marked"=>"Marked");
+    var $rating_options = array(""=>"Choose one", "0"=>"0", "0-5"=>"0-5", "5-10"=>"5-10",">10"=>">10","confluent"=>"confluent" );
     function setup($commentID, $page): void{
         $this->formType="XIN";
         $this->form = new LorisForm('test_form');
         $this->page = $page;            // page label (number or
-        // string - used by
-        // user-defined child classes)
         
         // set the object properties
         $this->testName = "Radiology_Review_VSA";           // test_names.Test_name
@@ -40,6 +39,7 @@ class NDB_BVL_Instrument_Radiology_Review_VSA extends NDB_BVL_Instrument
                               'emptyOptionValue' => null,
                              );
         // setup the form
+        $db =& Database::singleton();
         $this->_setupForm();
 
     }
@@ -84,7 +84,7 @@ class NDB_BVL_Instrument_Radiology_Review_VSA extends NDB_BVL_Instrument
         //Visit Label:
         $this->form->addElement('static', "visitLabel", "Visit Label:  ".$visitLabel);
  
-        // this date doesn't work at all ????????????
+        // Date of Administration
         $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
         //Reviewed By:
         $this->form->addElement('text', "reviewed", "Reviewed By:");
@@ -151,11 +151,11 @@ spectrum but not clinically relevant",
                 false
             );
             unset($group);
-
+            $this->form->addFormRule(array(&$this, 'size_rules'));
         }
     }
     function _page1(){
- 
+
         $this->addLabel("<h3>Results of Radiological Review</h3>");
         //section start
         $this->addLabel("<h4>Please only check if finding is present (default if not indicated is “not present”):</h4>");
@@ -193,16 +193,17 @@ spectrum but not clinically relevant",
         );
         unset($group);
         $subtest_2_questions = array(
-                                "subtest_2_1" => "Cavum septum pellucidum,<br>vergae, or velum interpositum",
-                                "subtest_2_2" => "Mega Cisterna Magna",
-                                "subtest_2_3" => "Empty Sella Configuration",
+                                "subtest_2_1" => array("question"=>"Cavum septum pellucidum,<br>vergae, or velum interpositum","answer"=>"NA"),
+                                "subtest_2_2" => array("question"=>"Mega Cisterna Magna","answer"=>"NA"),
+                                "subtest_2_3" => array("question"=>"Empty Sella Configuration","answer"=>"NA"),
                                );
         $f=0;
-        foreach ($subtest_2_questions as $key => $category) {
+        foreach ($subtest_2_questions as $key => $value) {
             $f++;
-            $group[] = $this->createLabel($category."<br><br>");
+            $group[] = $this->createLabel($value["question"]."<br><br>");
             $group[] = $this->form->createElement("advcheckbox",$key."_check", null, null, null, array("no", "yes"));
-            $group[] = $this->createText($key . "_size_","");
+          //  $group[] = $this->createText($key . "_size_","");
+            $group[] = $this->createLabel($value["answer"]);
             $group[] = $this->createTextArea($key . "_comment","");
 
             $this->form->addGroup(
@@ -251,20 +252,22 @@ spectrum but not clinically relevant",
         );
         unset($group);
         $subtest_3_questions = array(
-                                "subtest_3_1" => "Chiari 1 Malformation",
-                                "subtest_3_2" => "Dysgenesis of the Corpus Callosum",
-                                "subtest_3_3" => "Agenesis of the Septum Pellucidum",
-                                "subtest_3_4" => "Ventriculomegaly",
+                                "subtest_3_1" => array("question"=>"Chiari 1 Malformation","answer"=>"(indicate size(mm) and with our w/out spinal cord syrinx)"),
+                                "subtest_3_2" => array("question"=>"Dysgenesis of the Corpus Callosum","answer"=>"NA"),
+                                "subtest_3_3" => array("question"=>"Agenesis of the Septum Pellucidum","answer"=>"NA"),
+                                "subtest_3_4" => array("question"=>"Ventriculomegaly"),
                                );
         $f=0;
-        foreach ($subtest_3_questions as $key => $category) {
+        foreach ($subtest_3_questions as $key => $value) {
             $f++;
-            $group[] = $this->createLabel($category."<br><br>");
+            $group[] = $this->createLabel($value["question"]."<br><br>");
             $group[] = $this->form->createElement("advcheckbox",$key."_check", null, null, null, array("no", "yes"));
-            if ($category == "Ventriculomegaly") {
+            if ($value["question"] == "Ventriculomegaly") {
                 $group[] = $this->createSelect($key . "_circleOne", null, $this->options);
+            } elseif ($value["question"] == "Chiari 1 Malformation") {
+                $group[] = $this->createLabel($value["answer"]);
             } else {
-                $group[] = $this->createText($key . "_size","");
+                $group[] = $this->createLabel("NA");
             }
             
             $group[] = $this->createTextArea($key . "_comment","");
@@ -389,7 +392,7 @@ spectrum but not clinically relevant",
             $f++;
             $group[] = $this->createLabel($category."<br><br>");
             $group[] = $this->form->createElement("advcheckbox",$key."_check", null, null, null, array("no", "yes"));
-            $group[] = $this->createText($key . "_size","");
+	    $group[] = $this->createLabel("NA");
             $group[] = $this->createTextArea($key . "_comment","");
 
             $this->form->addGroup(
@@ -450,7 +453,7 @@ spectrum but not clinically relevant",
             if ($category == "Periventricular leukomalacia" || $category == "Encephalomalacia" ) {
                 $group[] = $this->createSelect($key . "_circleOne", null, $this->options);
             } else {
-                $group[] = $this->createText($key . "_size","");
+                $group[] = $this->createSelect($key . "_circleOne",null, array(""=>"Choose one:*IF YES, FILL OUT LAST TABLE*","yes"=>"Yes", "no"=>"No"));
             }
             $group[] = $this->createTextArea($key . "_comment","");
 
@@ -578,7 +581,7 @@ spectrum but not clinically relevant",
             if ($category == "Sinus Opacification" || $category == "Mastoid Opacification") {
                 $group[] = $this->createSelect($key . "_circleOne", null, $this->options);
             } else {
-                $group[] = $this->createText($key . "_size","");
+                $group[] = $this->createLabel("NA");
             } 
             $group[] = $this->createTextArea($key . "_comment","");
 
@@ -593,9 +596,11 @@ spectrum but not clinically relevant",
 
         }
        // section finish
+       $this->form->addFormRule(array(&$this, 'size_rules'));
 
     }
     function _page2(){
+    $this->white_matter_rules();
         $this->addLabel("<h3>2. White Matter Lesion Rating (Please, only fill out if indicated above)</h3>");
         $group[] = $this->form->createElement(
             "static",
@@ -620,7 +625,7 @@ spectrum but not clinically relevant",
             "static",
             null,
             null,
-            "<b>Comments (ie: confluentlesions)</b>"
+            "<b>Comments (ie: confluent lesions)</b>"
         );
         $this->form->addGroup(
             $group,
@@ -651,9 +656,9 @@ spectrum but not clinically relevant",
         foreach ($subtest_9_questions as $key => $category) {
             $f++;
             $group[] = $this->createLabel($category."<br><br>");
-            $group[] = $this->createText($key . "_wm","");
-            $group[] = $this->createText($key . "_blackholes",""); 
-            $group[] = $this->createTextArea($key . "_comment","");
+            $group[] = $this->createSelect($key . "_wm", null, $this->rating_options);
+            $group[] = $this->createSelect($key . "_blackholes", null, $this->rating_options);
+            $group[] = $this->createText($key . "_comment",null);
 
             $this->form->addGroup(
                 $group,
@@ -663,12 +668,64 @@ spectrum but not clinically relevant",
                 false
             );
             unset($group);
-
         }
-     
+        $this->form->addFormRule(array(&$this, 'page2_rules'));
     }
     function _page3(){
          $this->addLabel("<h3>Additional Comments:</h3>");
          $this->form->addElement("textarea", "additional_comments", "Additional Comments", array('cols'=>50, 'rows'=>4));
     }
+    function size_rules($values)
+    {
+        $errors = [];
+        $check_greater_than_0 = [
+                                 ["subtest_4_1_size", "section4_row1"],
+                                 ["subtest_4_2_size", "section4_row2"],
+                                 ["subtest_4_3_size", "section4_row3"],
+                                 ["subtest_4_4_size", "section4_row4"],
+                                 ["subtest_6_1_size", "section6_row1"],
+                                 ["subtest_7_1_size", "section7_row1"],
+                                 ["subtest_7_2_size", "section7_row2"],
+                                 ["subtest_7_3_size", "section7_row3"],
+                                 ["subtest_7_4_size", "section7_row4"],
+                                 ["subtest_7_5_size", "section7_row5"],
+                                 ["subtest_7_6_size", "section7_row6"],
+                                 ["subtest_7_7_size", "section7_row7"],
+                                ];
+        for ( $i=0; $i<count($check_greater_than_0);$i++){
+           $field = $check_greater_than_0[$i][0];
+           $group = $check_greater_than_0[$i][1];
+           if ($values["$field"] != "") {
+           $this->validate_positive_numeric($values, $field, $errors, $group);
+           }
+           $check = $field;
+           $check = str_replace("size","check",$check);
+           if ($values["$field"] == "" && $values["$check"] == "yes") {
+           $this->validate_positive_numeric($values, $field, $errors, $group);
+           }           
+        }
+          $db =& Database::singleton();
+          $this->white_matter_rules();
+        return $errors;
+    }
+function white_matter_rules(){
+          $db =& Database::singleton();
+         $subtest_6_1_circleOne = $db->pselectOne(
+            "SELECT subtest_6_1_circleOne FROM Radiology_Review_VSA ",array("CommentID"=>$this->getCommentID()));
+        if ((string)$subtest_6_1_circleOne != "yes") {
+            for ($i=1; $i<9; $i++)
+            {
+            $val = "subtest_9_".$i."_wm";
+            $db->update("Radiology_Review_VSA",array("$val"=>null), array("CommentID"=>$this->getCommentID()));
+            $val = "subtest_9_".$i."_blackholes";
+            $db->update("Radiology_Review_VSA",array("$val"=>null), array("CommentID"=>$this->getCommentID()));
+            $val = "subtest_9_".$i."_comment";
+            $db->update("Radiology_Review_VSA",array("$val"=>null), array("CommentID"=>$this->getCommentID()));
+            } 
+       }
+    }
+function page2_rules($values)
+{
+  $this->white_matter_rules();
+}
 }

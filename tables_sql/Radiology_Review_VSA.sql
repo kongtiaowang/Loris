@@ -69,7 +69,7 @@ CREATE TABLE `Radiology_Review_VSA` (
 `subtest_5_3_size` varchar(255) default NULL,
 `subtest_5_3_comment` text default NULL,
 `subtest_6_1_check` varchar(255) default NULL,
-`subtest_6_1_size` varchar(255) default NULL,
+`subtest_6_1_circleOne` enum('','yes','no') default NULL,
 `subtest_6_1_comment` text default NULL,
 `subtest_6_2_check` varchar(255) default NULL,
 `subtest_6_2_circleOne` enum('','mild','moderate','marked') default NULL,
