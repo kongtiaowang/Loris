@@ -1,5 +1,4 @@
 <?php
-require('IBIS/libraries/instrument_validator.class.inc');
 class NDB_BVL_Instrument_Radiology_Review_VSA extends NDB_BVL_Instrument
 {
 
@@ -14,8 +13,8 @@ class NDB_BVL_Instrument_Radiology_Review_VSA extends NDB_BVL_Instrument
     */
     static $cssStyle = "style='color:white; background-color: black;border: 10px solid black;margin-left:0'";
     static $cssStyle2 = "style='background-color: gray;border: 10px solid gray;height:100%;width:100%;float:left;'";
-    var $options = array(""=>"Choose one", "mild"=>"Mild", "moderate"=>"Moderate", "marked"=>"Marked");
-    var $rating_options = array(""=>"Choose one", "0"=>"0", "0-5"=>"0-5", "5-10"=>"5-10",">10"=>">10","confluent"=>"confluent" );
+    var $options = array(NULL=>"Choose one", "mild"=>"Mild", "moderate"=>"Moderate", "marked"=>"Marked");
+    var $rating_options = array(NULL=>"Choose one", "0"=>"0", "0-5"=>"0-5", "5-10"=>"5-10",">10"=>">10","confluent"=>"confluent" );
     function setup($commentID, $page): void{
         $this->formType="XIN";
         $this->form = new LorisForm('test_form');
@@ -252,7 +251,7 @@ spectrum but not clinically relevant",
         );
         unset($group);
         $subtest_3_questions = array(
-                                "subtest_3_1" => array("question"=>"Chiari 1 Malformation","answer"=>"(indicate size(mm) and with our w/out spinal cord syrinx)"),
+                                "subtest_3_1" => array("question"=>"Chiari 1 Malformation (indicate size(mm) and with or w/out spinal cord syrinx)"),
                                 "subtest_3_2" => array("question"=>"Dysgenesis of the Corpus Callosum","answer"=>"NA"),
                                 "subtest_3_3" => array("question"=>"Agenesis of the Septum Pellucidum","answer"=>"NA"),
                                 "subtest_3_4" => array("question"=>"Ventriculomegaly"),
@@ -264,8 +263,8 @@ spectrum but not clinically relevant",
             $group[] = $this->form->createElement("advcheckbox",$key."_check", null, null, null, array("no", "yes"));
             if ($value["question"] == "Ventriculomegaly") {
                 $group[] = $this->createSelect($key . "_circleOne", null, $this->options);
-            } elseif ($value["question"] == "Chiari 1 Malformation") {
-                $group[] = $this->createLabel($value["answer"]);
+            } elseif ($value["question"] == "Chiari 1 Malformation (indicate size(mm) and with or w/out spinal cord syrinx)") {
+                $group[] = $this->createText($key . "_size","");
             } else {
                 $group[] = $this->createLabel("NA");
             }
@@ -567,11 +566,10 @@ spectrum but not clinically relevant",
         $subtest_8_questions = array(
                                 "subtest_8_1" => "Sinus Opacification",
                                 "subtest_8_2" => "Mastoid Opacification",
-                                "subtest_8_3" => "Focal cortical dysplasia",
-                                "subtest_8_4" => "Orbital Findings",
-                                "subtest_8_5" => "Lesions in the bone",
-                                "subtest_8_6" => "Lesions in the scalp",
-                                "subtest_8_7" => "Lesions of the skull base",
+                                "subtest_8_3" => "Orbital Findings",
+                                "subtest_8_4" => "Lesions in the bone",
+                                "subtest_8_5" => "Lesions in the scalp",
+                                "subtest_8_6" => "Lesions of the skull base",
                                );
         $f=0;
         foreach ($subtest_8_questions as $key => $category) {
@@ -600,7 +598,7 @@ spectrum but not clinically relevant",
 
     }
     function _page2(){
-    $this->white_matter_rules();
+
         $this->addLabel("<h3>2. White Matter Lesion Rating (Please, only fill out if indicated above)</h3>");
         $group[] = $this->form->createElement(
             "static",
@@ -637,13 +635,12 @@ spectrum but not clinically relevant",
         unset($group);
         $subtest_9_questions = array(
                                 "subtest_9_1" => "Juxta cortical",
-                                "subtest_9_2" => "Deep white",
-                                "subtest_9_3" => "matter",
-                                "subtest_9_4" => "Periventricular white matter",
-                                "subtest_9_5" => "Corpus Callosum",
-                                "subtest_9_6" => "Brain Stem",
-                                "subtest_9_7" => "Cerebellum",
-                                "subtest_9_8" => "Cervical Cord",
+                                "subtest_9_2" => "Deep white matter",
+                                "subtest_9_3" => "Periventricular white matter",
+                                "subtest_9_4" => "Corpus Callosum",
+                                "subtest_9_5" => "Brain Stem",
+                                "subtest_9_6" => "Cerebellum",
+                                "subtest_9_7" => "Cervical Cord",
                                );
 
         $subtest_9_options = array(
@@ -669,7 +666,6 @@ spectrum but not clinically relevant",
             );
             unset($group);
         }
-        $this->form->addFormRule(array(&$this, 'page2_rules'));
     }
     function _page3(){
          $this->addLabel("<h3>Additional Comments:</h3>");
@@ -679,6 +675,7 @@ spectrum but not clinically relevant",
     {
         $errors = [];
         $check_greater_than_0 = [
+                                 ["subtest_3_1_size", "section3_row1"],
                                  ["subtest_4_1_size", "section4_row1"],
                                  ["subtest_4_2_size", "section4_row2"],
                                  ["subtest_4_3_size", "section4_row3"],
@@ -700,32 +697,46 @@ spectrum but not clinically relevant",
            }
            $check = $field;
            $check = str_replace("size","check",$check);
-           if ($values["$field"] == "" && $values["$check"] == "yes") {
-           $this->validate_positive_numeric($values, $field, $errors, $group);
-           }           
+           if ($values[$field] != '' && $values["$check"] != "yes") {
+            $errors[$group] = "You must check the 'Present' box if you indicate a size or comment";
+           }
         }
-          $db =& Database::singleton();
-          $this->white_matter_rules();
+                $page2_entry = [
+                                 "subtest_9_1_wm",
+                                 "subtest_9_1_blackholes",
+                                 "subtest_9_1_comment",
+                                 "subtest_9_2_wm",
+                                 "subtest_9_2_blackholes",
+                                 "subtest_9_2_comment",                                 
+                                 "subtest_9_3_wm",
+                                 "subtest_9_3_blackholes",
+                                 "subtest_9_3_comment",
+                                 "subtest_9_4_wm",
+                                 "subtest_9_4_blackholes",
+                                 "subtest_9_4_comment",
+                                 "subtest_9_5_wm",
+                                 "subtest_9_5_blackholes",
+                                 "subtest_9_5_comment",
+                                 "subtest_9_6_wm",
+                                 "subtest_9_6_blackholes",
+                                 "subtest_9_6_comment",
+                                 "subtest_9_7_wm",
+                                 "subtest_9_7_blackholes",
+                                 "subtest_9_7_comment",
+                                ]; 
+              $db =& Database::singleton();
+              for ( $i=0; $i<count($page2_entry);$i++){
+                  $item  = $page2_entry[$i]; 
+                  $value = $db->pselectOne(
+                  "SELECT $item FROM Radiology_Review_VSA ",array("CommentID"=>$this->getCommentID()));
+                  if ($value != "" && $value != NULL && ($values["subtest_6_1_circleOne"] != "yes" 
+                      || $values["subtest_6_1_check"] != "yes")){
+                     $errors['section6_row1'] = "You must check the 'Present' box and choose 'YES' since you entered information on page 2";
+                     return $errors;
+                  }
+              }
+              
         return $errors;
     }
-function white_matter_rules(){
-          $db =& Database::singleton();
-         $subtest_6_1_circleOne = $db->pselectOne(
-            "SELECT subtest_6_1_circleOne FROM Radiology_Review_VSA ",array("CommentID"=>$this->getCommentID()));
-        if ((string)$subtest_6_1_circleOne != "yes") {
-            for ($i=1; $i<9; $i++)
-            {
-            $val = "subtest_9_".$i."_wm";
-            $db->update("Radiology_Review_VSA",array("$val"=>null), array("CommentID"=>$this->getCommentID()));
-            $val = "subtest_9_".$i."_blackholes";
-            $db->update("Radiology_Review_VSA",array("$val"=>null), array("CommentID"=>$this->getCommentID()));
-            $val = "subtest_9_".$i."_comment";
-            $db->update("Radiology_Review_VSA",array("$val"=>null), array("CommentID"=>$this->getCommentID()));
-            } 
-       }
-    }
-function page2_rules($values)
-{
-  $this->white_matter_rules();
-}
+
 }
