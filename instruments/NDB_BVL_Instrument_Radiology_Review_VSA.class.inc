@@ -14,7 +14,7 @@ class NDB_BVL_Instrument_Radiology_Review_VSA extends NDB_BVL_Instrument
     static $cssStyle = "style='color:white; background-color: black;border: 10px solid black;margin-left:0'";
     static $cssStyle2 = "style='background-color: gray;border: 10px solid gray;height:100%;width:100%;float:left;'";
     var $options = array(NULL=>"Choose one", "mild"=>"Mild", "moderate"=>"Moderate", "marked"=>"Marked");
-    var $rating_options = array(NULL=>"Choose one", "0"=>"0", "0-5"=>"0-5", "5-10"=>"5-10",">10"=>">10","confluent"=>"confluent" );
+    var $rating_options = array(NULL=>"Choose one", "0"=>"0", "0-5"=>"0-5", "5-10"=>"5-10","more_than_10"=>">10","confluent"=>"confluent" );
     function setup($commentID, $page): void{
         $this->formType="XIN";
         $this->form = new LorisForm('test_form');
@@ -150,7 +150,6 @@ spectrum but not clinically relevant",
                 false
             );
             unset($group);
-            $this->form->addFormRule(array(&$this, 'size_rules'));
         }
     }
     function _page1(){
@@ -452,7 +451,7 @@ spectrum but not clinically relevant",
             if ($category == "Periventricular leukomalacia" || $category == "Encephalomalacia" ) {
                 $group[] = $this->createSelect($key . "_circleOne", null, $this->options);
             } else {
-                $group[] = $this->createSelect($key . "_circleOne",null, array(""=>"Choose one:*IF YES, FILL OUT LAST TABLE*","yes"=>"Yes", "no"=>"No"));
+                $group[] = $this->createLabel('(If present, please fill out page 2)');
             }
             $group[] = $this->createTextArea($key . "_comment","");
 
@@ -571,7 +570,7 @@ spectrum but not clinically relevant",
                                 "subtest_8_5" => "Lesions in the scalp",
                                 "subtest_8_6" => "Lesions of the skull base",
                                );
-        $f=0;
+        $f=0;	
         foreach ($subtest_8_questions as $key => $category) {
             $f++;
             $group[] = $this->createLabel($category."<br><br>");
@@ -666,6 +665,7 @@ spectrum but not clinically relevant",
             );
             unset($group);
         }
+        $this->form->addFormRule(array(&$this, 'page2_rules'));
     }
     function _page3(){
          $this->addLabel("<h3>Additional Comments:</h3>");
@@ -680,14 +680,12 @@ spectrum but not clinically relevant",
                                  ["subtest_4_2_size", "section4_row2"],
                                  ["subtest_4_3_size", "section4_row3"],
                                  ["subtest_4_4_size", "section4_row4"],
-                                 ["subtest_6_1_size", "section6_row1"],
                                  ["subtest_7_1_size", "section7_row1"],
                                  ["subtest_7_2_size", "section7_row2"],
                                  ["subtest_7_3_size", "section7_row3"],
                                  ["subtest_7_4_size", "section7_row4"],
                                  ["subtest_7_5_size", "section7_row5"],
                                  ["subtest_7_6_size", "section7_row6"],
-                                 ["subtest_7_7_size", "section7_row7"],
                                 ];
         for ( $i=0; $i<count($check_greater_than_0);$i++){
            $field = $check_greater_than_0[$i][0];
@@ -698,9 +696,25 @@ spectrum but not clinically relevant",
            $check = $field;
            $check = str_replace("size","check",$check);
            if ($values[$field] != '' && $values["$check"] != "yes") {
-            $errors[$group] = "You must check the 'Present' box if you indicate a size or comment";
+            $errors[$group] = "You must check the 'Present' box if you specify a size";
            }
         }
+
+        $check_present = [
+            "subtest_3_4" => "section3_row4",
+            "subtest_4_5" => "section4_row5",
+            "subtest_4_6" => "section4_row6",
+            "subtest_6_2" => "section6_row2",
+            "subtest_6_3" => "section6_row3",
+            "subtest_8_1" => "section8_row1",
+            "subtest_8_2" => "section8_row2",
+        ];
+        foreach($check_present as $subtest => $group){
+           if ($values["{$subtest}_circleOne"] != '' && $values["{$subtest}_check"] != "yes") {
+            $errors[$group] = "You must check the 'Present' box if you specify a size";
+           }
+        }
+ 
                 $page2_entry = [
                                  "subtest_9_1_wm",
                                  "subtest_9_1_blackholes",
@@ -729,9 +743,9 @@ spectrum but not clinically relevant",
                   $item  = $page2_entry[$i]; 
                   $value = $db->pselectOne(
                   "SELECT $item FROM Radiology_Review_VSA ",array("CommentID"=>$this->getCommentID()));
-                  if ($value != "" && $value != NULL && ($values["subtest_6_1_circleOne"] != "yes" 
+                  if ($value != "" && $value != NULL && ($values["subtest_6_1_check"] != "yes" 
                       || $values["subtest_6_1_check"] != "yes")){
-                     $errors['section6_row1'] = "You must check the 'Present' box and choose 'YES' since you entered information on page 2";
+                     $errors['section6_row1'] = "You must check the 'Present' box since you entered information on page 2";
                      return $errors;
                   }
               }
@@ -739,4 +753,47 @@ spectrum but not clinically relevant",
         return $errors;
     }
 
+    function page2_rules($values)
+    {
+        $errors = [];
+        
+        $db =& Database::singleton();
+        $value = $db->pselectOne(
+            "SELECT subtest_6_1_check FROM Radiology_Review_VSA ", 
+            array("CommentID" => $this->getCommentID())
+        );
+        if ($value != 'yes'){
+            $page2_entry = [
+                "subtest_9_1_wm"              => 'section9_row1',
+                "subtest_9_1_blackholes"      => 'section9_row1',
+                "subtest_9_1_comment"         => 'section9_row1',
+                "subtest_9_2_wm"              => 'section9_row2',
+                "subtest_9_2_blackholes"      => 'section9_row2',
+                "subtest_9_2_comment"         => 'section9_row2',
+                "subtest_9_3_wm"              => 'section9_row3',
+                "subtest_9_3_blackholes"      => 'section9_row3',
+                "subtest_9_3_comment"         => 'section9_row3',
+                "subtest_9_4_wm"              => 'section9_row4',
+                "subtest_9_4_blackholes"      => 'section9_row4',
+                "subtest_9_4_comment"         => 'section9_row4',
+                "subtest_9_5_wm"              => 'section9_row5',
+                "subtest_9_5_blackholes"      => 'section9_row5',
+                "subtest_9_5_comment"         => 'section9_row5',
+                "subtest_9_6_wm"              => 'section9_row6',
+                "subtest_9_6_blackholes"      => 'section9_row6',
+                "subtest_9_6_comment"         => 'section9_row6',
+                "subtest_9_7_wm"              => 'section9_row7',
+                "subtest_9_7_blackholes"      => 'section9_row7',
+                "subtest_9_7_comment"         => 'section9_row7'
+            ];
+        
+            foreach($page2_entry as $field => $group) {
+                if($values[$field] != '') {
+                     $errors[$group] = "You cannot enter information on that line since you did not indicate the presence of Focal white-matter hyperintensity  on page 1";
+                }
+            }
+        }
+
+        return $errors;
+    }
 }
