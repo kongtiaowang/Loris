@@ -740,9 +740,10 @@ spectrum but not clinically relevant",
                                 ]; 
               $db =& Database::singleton();
               for ( $i=0; $i<count($page2_entry);$i++){
-                  $item  = $page2_entry[$i]; 
+                  $item  = $page2_entry[$i];
+                  $commentID=$this->getCommentID();
                   $value = $db->pselectOne(
-                  "SELECT $item FROM Radiology_Review_VSA ",array("CommentID"=>$this->getCommentID()));
+                  "SELECT $item FROM Radiology_Review_VSA where CommentID='$commentID'",array());
                   if ($value != "" && $value != NULL && ($values["subtest_6_1_check"] != "yes" 
                       || $values["subtest_6_1_check"] != "yes")){
                      $errors['section6_row1'] = "You must check the 'Present' box since you entered information on page 2";
@@ -758,9 +759,10 @@ spectrum but not clinically relevant",
         $errors = [];
         
         $db =& Database::singleton();
+        $commentID=$this->getCommentID();
         $value = $db->pselectOne(
-            "SELECT subtest_6_1_check FROM Radiology_Review_VSA ", 
-            array("CommentID" => $this->getCommentID())
+            "SELECT subtest_6_1_check FROM Radiology_Review_VSA where CommentID='$commentID'",
+            array()
         );
         if ($value != 'yes'){
             $page2_entry = [
