@@ -141,7 +141,7 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
         $group[] = $this->form->createElement('static', "t2w_run4_snr_header", null, null);
         $group[] = $this->form->createElement('static', "t2w_run5_snr_header", null, null);
         $group[] = $this->form->createElement('static', "t2w_run6_snr_header", null, null);
-        $this->form->addGroup($group, 'score_header_group', "<strong>Session/Scan</strong>", $this->_GUIDelimiter, FALSE);
+        $this->form->addGroup($group, 'score_header_group', "<strong>Session/Scan</strong>", $this->_GUIDelimiter, FALSE); 
         unset($group);
 
 
