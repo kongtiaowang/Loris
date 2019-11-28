@@ -411,6 +411,11 @@ class NDB_BVL_Instrument_SA_Intervention_History extends NDB_BVL_Instrument
             false
         );
         unset($group);
+        $this->addSelect(
+            "nursery_school_hours_per_week",
+            "How many hours a week?",
+            range(0, 40)
+        );
     }
     function _page2Headers($age_range) {
         $group[] =& $this->form->createElement(
