@@ -226,6 +226,10 @@ class NDB_BVL_Instrument_NIHToolBox_Registration_Data extends NDB_BVL_Instrument
             $file = fopen($file->fileInfo['tmp_name'], "r");
             while (!feof($file)) {
                 $data = fgetcsv($file, 0, ",");
+                if ((string) $data[0] != '0' and empty($data[0]))
+                {
+                    continue;
+                }
                 $key = array_shift($data);
                 if (!isset($result[$key])) {
                     $result[$key] = array();
@@ -237,7 +241,6 @@ class NDB_BVL_Instrument_NIHToolBox_Registration_Data extends NDB_BVL_Instrument
             $ids_updated='';
             foreach ($result as $pscid => $entries) {
                 $upload_values=array();
-               // echo $pscid . "\n";
                 //loop through all unique pscid found and update the date all around
                 $fields = array("DeviceID", "Name", "Age", "Education", "Mothers_Education", "Fathers_Education", "Guardians_Education",
                     "Starting_Level_Override", "Gender", "Handedness", "Race", "Ethnicity", "Assessment_Name"
@@ -249,7 +252,7 @@ class NDB_BVL_Instrument_NIHToolBox_Registration_Data extends NDB_BVL_Instrument
                     $count=1;
                 }
                 foreach ($entries as $i => $entry) {
-                    if($i==$count) {
+                    if($i==0) {
                         $f = 0;
                         foreach ($fields as &$value) {
                             if ($count == 1) {
