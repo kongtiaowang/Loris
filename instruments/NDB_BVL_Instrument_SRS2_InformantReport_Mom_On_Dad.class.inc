@@ -39,7 +39,7 @@ class NDB_BVL_Instrument_SRS2_InformantReport_Mom_On_Dad extends NDB_BVL_Instrum
                      );
     var $informant = array(
                       ''               => null,
-                      'Spouse/Partner' => 'spouse_partner',
+                      'spouse_partner' => 'Spouse/Partner',
                       'mother'         => 'Mother',
                       'father'         => 'Father',
                       'step_mother'    => 'Step Mother',
