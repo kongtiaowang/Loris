@@ -100,8 +100,3 @@ UPDATE flag SET Administration='All', Data_entry='Complete' where CommentID='218
 UPDATE flag SET Administration='All', Data_entry='Complete' where CommentID='622437UNC0137589431471551316777';
 UPDATE flag SET Administration='All', Data_entry='Complete' where CommentID='710239UNC0154591711471557153753';
 UPDATE flag SET Administration='All', Data_entry='Complete' where CommentID='216279UNC0150596111471557340532';
-
-
-
-
-
