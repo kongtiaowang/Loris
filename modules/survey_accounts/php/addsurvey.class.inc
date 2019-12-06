@@ -141,7 +141,10 @@ class AddSurvey extends \NDB_Form
                 return array('Email' => 'Email is required.');
         }
         if (empty($values['Test_name'])) {
-            return array('Test_name' => 'Please choose an instrumvvvvenxsxt.');
+            return array('Test_name' => 'Please choose an instrument.');
+        }
+        if (in_array('', $values['Test_name'])) {
+            return array('Test_name' => 'Please unselect the blank option in the instrument list.');
         }
         if ($_REQUEST['fire_away'] !== 'Create survey') {
             if (!filter_var(
@@ -223,36 +226,41 @@ class AddSurvey extends \NDB_Form
                 )
             );
 
-            $this->tpl_data['success'] = $success;
 
-            if ($email) {
-                $config = \NDB_Config::singleton();
-                $www = $config->getSetting("www");
 
-                if ($values['Test_name'] == 'air_pollution') {
-                    $url.= $www['url'] . '/survey.php?key=' .
-                        urlencode($key)."<\n>";
-                } else {
-                    $url.= $www['url'] . '/survey_module/?key=' .
-                        urlencode($key)."\n";
-                }
-                if ($values['VL'] == 'VSA') {
-                    $parentid = $this->getParentID($values['CandID']);
-                    $parent_portal_note = "\nYou can access all your surveys on our Parent Portal.\nPlease note that to log into your Parent Portal, you will be asked for the Parent ID and Email, listed below. 
+            $config = \NDB_Config::singleton();
+            $www = $config->getSetting("www");
+
+            if ($instrument == 'air_pollution') {
+                $url.= $www['url'] . '/survey.php?key=' .
+                    urlencode($key) . "<\n>";
+            } else {
+                $url.= $www['url'] . '/survey_module/?key=' .
+                    urlencode($key) . "\n";
+            }
+        }
+        $this->tpl_data['success'] = $success;
+        if ($values['VL'] == 'VSA') {
+            $parentid = $this->getParentID($values['CandID']);
+            $parent_portal_note = "\nYou can access all your surveys on our Parent Portal.\nPlease note that to log into your Parent Portal, you will be asked for the Parent ID and Email, listed below. 
 \n" . $www['url'] . "/parent_portal/
                 ParentID:  $parentid
                 Email: " . $values['Email'] . "\n\n You can also click the link below to access the survey(s) individually.\n";
-                    $url.= $parent_portal_note . $url;
-                }
+            $urls= $parent_portal_note . $url;
+        }
+        else{
+            $urls=$url;
+        }
 
                 $msg_data = array(
                     'study' => $config->getSetting("title"),
-                    'url' => $url,
+                    'url' => $urls,
                     'EmailForm' => $values['email_dialog'],
                 );
+            if ($email) {
                 \Email::send($values['Email'], 'new_survey.tpl', $msg_data, "", "IBIS Team <noreply@ibis.loris.ca>");
             }
-        }
+
     }
 
     function getParentID($cnid)
