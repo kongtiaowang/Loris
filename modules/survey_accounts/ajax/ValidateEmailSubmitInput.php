@@ -31,7 +31,6 @@ $client->initialize();
 
 $db = Database::singleton();
 
-
 $numCandidates = $db->pselectOne(
     "SELECT COUNT(*) FROM candidate 
             WHERE PSCID=:v_PSCID 
@@ -69,7 +68,6 @@ if ($numSessions != 1) {
     );
     exit;
 }
-
 if (empty($_REQUEST['TN'])) {
     echo json_encode(
         array('error_msg' => 'Please choose an instrument')
@@ -82,22 +80,28 @@ $instrument_list = $db->pselect(
              JOIN session s on s.ID = f.SessionID
              WHERE s.CandID=:v_CandID  
              AND UPPER(s.Visit_label)=UPPER(:v_VL) 
-             AND s.Active='Y'",
+             AND s.Active='Y'and f.CommentID not like '%DDE%'",
     array(
      'v_CandID' => $_REQUEST['dccid'],
      'v_VL'     => $_REQUEST['VL'],
     )
 );
+$instr_string=$_REQUEST['TN'];
+$selected_instr=explode(",", $instr_string);
+$existing_instr='';
 foreach ($instrument_list as $instrument) {
-    if ($_REQUEST['TN'] == $instrument['Test_name']) {
-        echo json_encode(
-            array(
-             'error_msg' => "Instrument ". $_REQUEST['TN'].
-                " already exists for given candidate for visit ". $_REQUEST['VL'],
-            )
-        );
-        exit;
+if(in_array($instrument['Test_name'], $selected_instr)){
+    $existing_instr.=$instrument['Test_name'].'<br>';
+
     }
+}
+if($existing_instr!='') {
+    echo json_encode(
+        array(
+            'error_msg' => "These instrument(s) already exist for visit ". $values['VL'] .":<br>". $existing_instr
+        )
+    );
+    exit;
 }
 
 if (!empty($_REQUEST['Email']) ) {

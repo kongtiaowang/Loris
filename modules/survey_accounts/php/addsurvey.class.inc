@@ -141,7 +141,7 @@ class AddSurvey extends \NDB_Form
                 return array('Email' => 'Email is required.');
         }
         if (empty($values['Test_name'])) {
-            return array('Test_name' => 'Please choose an instrument.');
+            return array('Test_name' => 'Please choose an instrumvvvvenxsxt.');
         }
         if ($_REQUEST['fire_away'] !== 'Create survey') {
             if (!filter_var(
@@ -168,21 +168,21 @@ class AddSurvey extends \NDB_Form
      */
     function _process($values)
     {
+        $db        = \Database::singleton();
+        $SessionID = $db->pselectOne(
+            "SELECT ID FROM session".
+            " WHERE CandID=:v_CandID AND Visit_label=:v_VL",
+            array(
+                'v_CandID' => $values['CandID'],
+                'v_VL'     => $values['VL'],
+            )
+        );
 
+        $timepoint =& \TimePoint::singleton($SessionID);
         $selected_instruments=$values['Test_name'];
+        $url='';
         foreach ($selected_instruments as $instrument) {
             $db = \Database::singleton();
-            $SessionID = $db->pselectOne(
-                "SELECT ID FROM session" .
-                " WHERE CandID=:v_CandID AND Visit_label=:v_VL",
-                array(
-                    'v_CandID' => $values['CandID'],
-                    'v_VL' => $values['VL'],
-                )
-            );
-
-            $timepoint =& \TimePoint::singleton($SessionID);
-
             $InstrumentExists = $db->pselectOne(
                 "SELECT 'x' FROM participant_accounts
             WHERE Test_name=:TN AND SessionID=:SID",
@@ -215,7 +215,7 @@ class AddSurvey extends \NDB_Form
                 "participant_accounts",
                 array(
                     'SessionID' => $SessionID,
-                    'Test_name' => $values['Test_name'],
+                    'Test_name' => $instrument,
                     'Email' => $values['Email'],
                     'Status' => $status,
                     'OneTimePassword' => $key,
@@ -224,26 +224,25 @@ class AddSurvey extends \NDB_Form
             );
 
             $this->tpl_data['success'] = $success;
-            echo $success;
 
             if ($email) {
                 $config = \NDB_Config::singleton();
                 $www = $config->getSetting("www");
 
                 if ($values['Test_name'] == 'air_pollution') {
-                    $url = $www['url'] . '/survey.php?key=' .
-                        urlencode($key);
+                    $url.= $www['url'] . '/survey.php?key=' .
+                        urlencode($key)."<\n>";
                 } else {
-                    $url = $www['url'] . '/survey_module/?key=' .
-                        urlencode($key);
+                    $url.= $www['url'] . '/survey_module/?key=' .
+                        urlencode($key)."\n";
                 }
                 if ($values['VL'] == 'VSA') {
                     $parentid = $this->getParentID($values['CandID']);
                     $parent_portal_note = "\nYou can access all your surveys on our Parent Portal.\nPlease note that to log into your Parent Portal, you will be asked for the Parent ID and Email, listed below. 
 \n" . $www['url'] . "/parent_portal/
                 ParentID:  $parentid
-                Email: " . $values['Email'] . "\n\n You can also click the link below to access this survey individually.\n";
-                    $url = $parent_portal_note . $url;
+                Email: " . $values['Email'] . "\n\n You can also click the link below to access the survey(s) individually.\n";
+                    $url.= $parent_portal_note . $url;
                 }
 
                 $msg_data = array(
