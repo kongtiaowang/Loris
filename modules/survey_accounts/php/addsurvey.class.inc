@@ -23,8 +23,11 @@ namespace LORIS\survey_accounts;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
+
 class AddSurvey extends \NDB_Form
 {
+
+
     /**
      * Determine whether the logged in user has access to this page.
      * Tied to data_entry
@@ -102,20 +105,22 @@ class AddSurvey extends \NDB_Form
              JOIN session s on s.ID = f.SessionID
              WHERE s.CandID=:v_CandID  
              AND UPPER(s.Visit_label)=UPPER(:v_VL) 
-             AND s.Active='Y'",
+             AND s.Active='Y' and f.CommentID not like '%DDE%'",
             array(
              'v_CandID' => $values['CandID'],
              'v_VL'     => $values['VL'],
             )
         );
-        $reminder        = " already exists for given candidate for visit ";
+        $existing_instr='';
         foreach ($instrument_list as $instrument) {
-            if ($values['Test_name'] == $instrument['Test_name']) {
-                return array(
-                        'Test_name' => "Instrument ". $values['Test_name'].
-                                       $reminder. $values['VL'],
-                       );
+                if(in_array($instrument['Test_name'], $values['Test_name'])){
+                    $existing_instr.=$instrument['Test_name'].'<br>';
             }
+        }
+        if($existing_instr!='') {
+            return array(
+                'Test_name' => "These instrument(s) already exist for visit ". $values['VL'] .":<br>". $existing_instr
+            );
         }
 
         if (!empty($values['Email']) ) {
@@ -148,8 +153,8 @@ class AddSurvey extends \NDB_Form
 
             }
         }
-
         return array();
+
     }
 
     /**
@@ -163,88 +168,91 @@ class AddSurvey extends \NDB_Form
      */
     function _process($values)
     {
-        $db        = \Database::singleton();
-        $SessionID = $db->pselectOne(
-            "SELECT ID FROM session".
-            " WHERE CandID=:v_CandID AND Visit_label=:v_VL",
-            array(
-             'v_CandID' => $values['CandID'],
-             'v_VL'     => $values['VL'],
-            )
-        );
 
-        $timepoint =& \TimePoint::singleton($SessionID);
+        $selected_instruments=$values['Test_name'];
+        foreach ($selected_instruments as $instrument) {
+            $db = \Database::singleton();
+            $SessionID = $db->pselectOne(
+                "SELECT ID FROM session" .
+                " WHERE CandID=:v_CandID AND Visit_label=:v_VL",
+                array(
+                    'v_CandID' => $values['CandID'],
+                    'v_VL' => $values['VL'],
+                )
+            );
 
-        $InstrumentExists = $db->pselectOne(
-            "SELECT 'x' FROM participant_accounts
+            $timepoint =& \TimePoint::singleton($SessionID);
+
+            $InstrumentExists = $db->pselectOne(
+                "SELECT 'x' FROM participant_accounts
             WHERE Test_name=:TN AND SessionID=:SID",
-            array(
-             'TN'  => $values['Test_name'],
-             'SID' => $SessionID,
-            )
-        );
-        if ($InstrumentExists == 'x') {
-            return;
-        }
-        $battery = new \NDB_BVL_Battery();
-        $battery->selectBattery($SessionID);
-
-        $commentID = $battery->addInstrument($values['Test_name']);
-
-        $key = $this->_generateSurveyKey();
-
-        $email = false;
-        if (isset($_REQUEST['send_email'])) {
-            $email = true;
-        }
-        if ($email) {
-            $status = 'Sent';
-        } else {
-            $status = 'Created';
-        }
-
-        $success = $db->insert(
-            "participant_accounts",
-            array(
-             'SessionID'       => $SessionID,
-             'Test_name'       => $values['Test_name'],
-             'Email'           => $values['Email'],
-             'Status'          => $status,
-             'OneTimePassword' => $key,
-             'CommentID'       => $commentID,
-            )
-        );
-        $this->tpl_data['success'] = $success;
-
-        if ($email) {
-            $config = \NDB_Config::singleton();
-            $www    = $config->getSetting("www");
-
-            if($values['Test_name'] == 'air_pollution')
-            {
-                $url=$www['url'] . '/survey.php?key=' .
-                    urlencode($key);
+                array(
+                    'TN' => $instrument,
+                    'SID' => $SessionID,
+                )
+            );
+            if ($InstrumentExists == 'x') {
+                return;
             }
-            else{
-                $url=$www['url'] . '/survey_module/?key=' .
-                    urlencode($key);
+            $battery = new \NDB_BVL_Battery();
+            $battery->selectBattery($SessionID);
+
+            $commentID = $battery->addInstrument($instrument);
+
+            $key = $this->_generateSurveyKey();
+
+            $email = false;
+            if (isset($_REQUEST['send_email'])) {
+                $email = true;
             }
-           if($values['VL']== 'VSA')
-            {
-                $parentid=$this->getParentID($values['CandID']);
-                $parent_portal_note="\nYou can access all your surveys on our Parent Portal.\nPlease note that to log into your Parent Portal, you will be asked for the Parent ID and Email, listed below. 
-\n".$www['url'] ."/parent_portal/
+            if ($email) {
+                $status = 'Sent';
+            } else {
+                $status = 'Created';
+            }
+
+            $success = $db->insert(
+                "participant_accounts",
+                array(
+                    'SessionID' => $SessionID,
+                    'Test_name' => $values['Test_name'],
+                    'Email' => $values['Email'],
+                    'Status' => $status,
+                    'OneTimePassword' => $key,
+                    'CommentID' => $commentID,
+                )
+            );
+
+            $this->tpl_data['success'] = $success;
+            echo $success;
+
+            if ($email) {
+                $config = \NDB_Config::singleton();
+                $www = $config->getSetting("www");
+
+                if ($values['Test_name'] == 'air_pollution') {
+                    $url = $www['url'] . '/survey.php?key=' .
+                        urlencode($key);
+                } else {
+                    $url = $www['url'] . '/survey_module/?key=' .
+                        urlencode($key);
+                }
+                if ($values['VL'] == 'VSA') {
+                    $parentid = $this->getParentID($values['CandID']);
+                    $parent_portal_note = "\nYou can access all your surveys on our Parent Portal.\nPlease note that to log into your Parent Portal, you will be asked for the Parent ID and Email, listed below. 
+\n" . $www['url'] . "/parent_portal/
                 ParentID:  $parentid
-                Email: ".$values['Email']."\n\n You can also click the link below to access this survey individually.\n";
-                $url=$parent_portal_note.$url;
-            }
+                Email: " . $values['Email'] . "\n\n You can also click the link below to access this survey individually.\n";
+                    $url = $parent_portal_note . $url;
+                }
 
-            $msg_data = array(
-                         'study'     => $config->getSetting("title"),
-                         'url'       => $url,
-                         'EmailForm' => $values['email_dialog'],
-                        );
-            \Email::send($values['Email'], 'new_survey.tpl', $msg_data,"", "IBIS Team <noreply@ibis.loris.ca>");
+                $msg_data = array(
+                    'study' => $config->getSetting("title"),
+                    'url' => $url,
+                    'EmailForm' => $values['email_dialog'],
+                );
+                \Email::send($values['Email'], 'new_survey.tpl', $msg_data, "", "IBIS Team <noreply@ibis.loris.ca>");
+            }
         }
     }
 
@@ -282,6 +290,7 @@ class AddSurvey extends \NDB_Form
     function setup()
     {
         parent::setup();
+        $this->_selectMultipleElements = array('Test_name');
 
         $this->redirect = "test_name=$this->name";
         $this->addBasicText("CandID", "DCCID");
@@ -289,11 +298,12 @@ class AddSurvey extends \NDB_Form
         $this->addSelect("VL", "Visit Label", \Utility::getVisitList());
         $this->addSelect(
             "Test_name",
-            "Instrument",
+            "Instrument<BR><h5><i>(Cmd+Click or Ctrl+Click to select multiple options)</i></h5>",
             array_merge(
                 array('' => ''),
                 $this->getOrderedDirectInstruments()
-            )
+            ),
+            array("multiple")
         );
         $this->addBasicText("Email", "Email address");
         $this->addBasicText("Email2", "Confirm Email address");
