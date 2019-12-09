@@ -271,7 +271,6 @@ class NDB_BVL_Instrument_bjh_mri_screening extends NDB_BVL_Instrument
 
         // automatically adds examiner & date of administration
         $this->_addMetadataFields();
-
     }
 
     /**
@@ -361,57 +360,8 @@ class NDB_BVL_Instrument_bjh_mri_screening extends NDB_BVL_Instrument
                 );
             }
         }
-
         unset($question_grp);
 
         $this->addLabel('Note that make-up containing metal (e.g., "glitter"), any type of metal hairpins or hair holders, or watches should NOT be worn in the scanner room.');
-    }
-
-    /**
-     * Preprocesses the array of values to be saved into the database
-     * (such as to rearrange date fields or process uploaded files)
-     *
-     * @param array $values the array of values ready to be passed to
-     *                      an Database::update call as the set array
-     *
-     * @return void
-     */
-    function _saveValues($values)
-    {
-        $timepoint =& TimePoint::singleton($this->getSessionID());
-        $candidate =& Candidate::singleton($timepoint->getCandID());
-        $this->_nullStatus($values);
-
-        if(isset($values['Date_taken'])) {
-            $this->_saveCandidateAge($values);
-        }
-
-        $grp = [
-            'metal_in_eye_set',
-            'endoscopy_camera_set',
-            'programmable_shunt_set',
-            'neurostimulator_set',
-            'penible_implant_set',
-            'coils_filters_stents_set',
-            'bullets_bbs_shrapnel_set',
-            'aneurysm_clip_set',
-            'implanted_drug_pumps_set',
-            'implanted_metal_device_set',
-            'artificial_heart_valve_set',
-            'date_entry',
-            ];
-
-        foreach ($grp as $key) {
-            if(isset($values[$key])) {
-                $date = $values[$key];
-                if(!empty($date['Y']) && !empty($date['M']) && !empty($date['d'])) {
-                    $values[$key] = $this->_getDatabaseDate($date); //sprintf("%04d-%02d-%02d", $date['Y'], $date['M'], $date['d']);
-                    //$values[$key] = sprintf("%04d-%02d-%02d", $date['Y'], $date['M'], $date['d']);
-                }
-            }
-        }
-
-        unset($values['candID'], $values['sessionID'], $values['commentID'], $values['test_name'], $values['page'], $values['fire_away'], $values['subtest']);
-        $this->_save($values);
     }
 }
