@@ -279,11 +279,6 @@ class NDB_BVL_Instrument_mri_screening_questionnaire extends NDB_BVL_Instrument
         // Header
         $this->addHeader("MRI Safety Checklist");
 
-        $this->addBasicText(
-            'patient_name_checklist',
-            'Name:'
-        );
-
         $question_grp = [
             ['injured_by_metallic', 'Have you/your child ever been injured by any metallic foreign body (e.g., bullets, BB, shrapnel, etc.)?', 1],
             ['injured_to_eye_metallic', 'Have you/your child ever had an injury to the eye involving a metallic object (e.g. metallic slivers, shavings, foreign body, etc.)?', 1],
@@ -295,6 +290,8 @@ class NDB_BVL_Instrument_mri_screening_questionnaire extends NDB_BVL_Instrument
 
         foreach ($question_grp as list($key, $val, $flag)) {
             $this->addYesNoElement($key, $val);
+            $this->form->addRule($key, $val . ' must be set', 'required');
+
             if ($flag) {
                 $this->addBasicText("{$key}_desc", $this->indent . 'If yes, describe:');
                 $this->XINRegisterRule(
@@ -338,6 +335,8 @@ class NDB_BVL_Instrument_mri_screening_questionnaire extends NDB_BVL_Instrument
 
         foreach ($question_grp as list($key, $val, $flag)) {
             $this->addYesNoElement($key, $val);
+            $this->form->addRule($key, $val . ' must be set', 'required');
+            
             if ($flag) {
                 $this->addBasicText("{$key}_desc", $this->indent . 'If yes, describe:');
                 $this->XINRegisterRule(
