@@ -1,4 +1,4 @@
-INSERT INTO test_names (test_name, full_name, sub_group, isdirectentry) VALUES ('mri_screening_questionnaire', 'MRI Screening Questionnaire', 1, null);
+INSERT INTO test_names (test_name, full_name, sub_group, isdirectentry) VALUES ('mri_screening_questionnaire', 'MRI Screening Questionnaire', 8, 0);
 
 INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES 
 ('mri_screening_questionnaire', 'mri_screening_questionnaire_page1', "Page 1", 1);
