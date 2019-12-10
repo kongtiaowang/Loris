@@ -53,8 +53,7 @@ class NDB_BVL_Instrument_mri_screening_questionnaire extends NDB_BVL_Instrument
             'aneurysm_clip_set',
             'implanted_drug_pumps_set',
             'implanted_metal_device_set',
-            'artificial_heart_valve_set',
-            'date_entry'
+            'artificial_heart_valve_set'
         );
 
         //The array of selects with multiple answers allowed
@@ -279,8 +278,6 @@ class NDB_BVL_Instrument_mri_screening_questionnaire extends NDB_BVL_Instrument
 
         // Header
         $this->addHeader("MRI Safety Checklist");
-
-        $this->addBasicDate('date_entry', 'Date:', $this->dateOptions);
 
         $this->addBasicText(
             'patient_name_checklist',
