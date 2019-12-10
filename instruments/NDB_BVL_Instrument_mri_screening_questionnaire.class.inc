@@ -293,7 +293,7 @@ class NDB_BVL_Instrument_mri_screening_questionnaire extends NDB_BVL_Instrument
             $this->form->addRule($key, $val . ' must be set', 'required');
 
             if ($flag) {
-                $this->addBasicText("{$key}_desc", $this->indent . 'If yes, describe:');
+                $this->addBasicTextArea("{$key}_desc", $this->indent . 'If yes, describe:');
                 $this->XINRegisterRule(
                     "{$key}_desc",
                     array("$key{@}=={@}yes"),
@@ -336,9 +336,9 @@ class NDB_BVL_Instrument_mri_screening_questionnaire extends NDB_BVL_Instrument
         foreach ($question_grp as list($key, $val, $flag)) {
             $this->addYesNoElement($key, $val);
             $this->form->addRule($key, $val . ' must be set', 'required');
-            
+
             if ($flag) {
-                $this->addBasicText("{$key}_desc", $this->indent . 'If yes, describe:');
+                $this->addBasicTextArea("{$key}_desc", $this->indent . 'If yes, describe:');
                 $this->XINRegisterRule(
                     "{$key}_desc",
                     array("$key{@}=={@}yes"),
