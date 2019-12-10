@@ -242,7 +242,7 @@ class AddSurvey extends \NDB_Form
         $this->tpl_data['success'] = $success;
         if ($values['VL'] == 'VSA') {
             $parentid = $this->getParentID($values['CandID']);
-            $parent_portal_note = "\nYou can access all your surveys on our Parent Portal.\nPlease note that to log into your Parent Portal, you will be asked for the Parent ID and Email, listed below. 
+            $parent_portal_note = "\nYou can access all of your surveys on our Parent Portal.\nPlease note that to log into your Parent Portal, you will be asked for the Parent ID and Email, listed below. 
 \n" . $www['url'] . "/parent_portal/
                 ParentID:  $parentid
                 Email: " . $values['Email'] . "\n\n You can also click the link below to access the survey(s) individually.\n";
