@@ -121,6 +121,9 @@ class NDB_BVL_Instrument_mri_screening_questionnaire extends NDB_BVL_Instrument
         // Header
         $this->addHeader("MRI Screening Questionnaire: Patient");
 
+        // automatically adds examiner & date of administration
+        $this->_addMetadataFields();
+
         $this->addLabel('The following items may be harmful to you during your MR scan or may interfere with the MRI examination.
         Please check "Yes" or "No" to indicate whether you have or have had any of the following.
         Remove ALL metallic objects prior to MRI. Please provide any implant card.');
@@ -258,8 +261,6 @@ class NDB_BVL_Instrument_mri_screening_questionnaire extends NDB_BVL_Instrument
             $completed_by_choices
         );
 
-        // automatically adds examiner & date of administration
-        $this->_addMetadataFields();
     }
 
     /**
@@ -277,7 +278,7 @@ class NDB_BVL_Instrument_mri_screening_questionnaire extends NDB_BVL_Instrument
         );
 
         // Header
-        $this->addHeader("MRI Safety Checklist (11/26/2014)");
+        $this->addHeader("MRI Safety Checklist");
 
         $this->addBasicDate('date_entry', 'Date:', $this->dateOptions);
 
