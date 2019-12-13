@@ -26,7 +26,7 @@ class NDB_BVL_Instrument_escs_coding_sheet extends NDB_BVL_Instrument
              null           => '',
              '0'           => '0',
              '1'          => '1'
-        );
+        ); // Here we use 0, 1 instead of No, Yes because No Yes will not be visible with so many items on the same screen.
 
     private $ija_grp1 = [
             "ija_ec" => "Eye Contact (EC)",
@@ -42,14 +42,14 @@ class NDB_BVL_Instrument_escs_coding_sheet extends NDB_BVL_Instrument
     private $ija_grp3 = ["ija_care" => "Bid to Caregiver"];
         
     private $rja_grp1 = [
-            'ija_fo' => 'Follows Point'
+            'rja_fo' => 'Follows Point'
         ];
 
     private $rja_grp2 = [
-            'left' => 'Left',
-            'back_left' => 'Back Left',
-            'rigft' => 'Rigft',
-            'back_rigft' => 'Back Rigft'
+            'rja_left' => 'Left',
+            'rja_back_left' => 'Back Left',
+            'rja_right' => 'Rigft',
+            'rja_back_right' => 'Back Right'
         ];
 
     private $imitation_grp = [
@@ -300,15 +300,8 @@ class NDB_BVL_Instrument_escs_coding_sheet extends NDB_BVL_Instrument
         $this->addBasicTextArea('note1', 'Notes');
         
         $this->not_required_field('note1');
-    }
 
-
-    function not_required_field($key) {
-        return $this->XINRegisterRule(
-                    $key,
-                    array("{$key}{@}=={@}NEVER_REQUIRED"),
-                    "Not required"
-                );
+        $this->form->addFormRule(array(&$this, 'conflict_rules1'));
     }
 
 
@@ -327,7 +320,7 @@ class NDB_BVL_Instrument_escs_coding_sheet extends NDB_BVL_Instrument
         $this->page_section($this->ibr_grp2, 2);
         
         $this->addLabel('Bid to caregiver');
-        $this->page_section($this->ija_grp3, 3);
+        $this->page_section($this->ibr_grp3, 3);
 
         $this->addLabel('Responding to Behavioral Requests');
 
@@ -339,6 +332,57 @@ class NDB_BVL_Instrument_escs_coding_sheet extends NDB_BVL_Instrument
         $this->addBasicTextArea('note2', 'Notes');
 
         $this->not_required_field('note2');
+
+        $this->form->addFormRule(array(&$this, 'conflict_rules2'));
+    }
+
+
+    /**
+     * Conflict check for page 1
+     */
+    function conflict_rules1($values) {
+        $errors = [];
+
+        for ($i = 1; $i <= 2; $i++) {
+            foreach ($this->rja_grp2 as $key => $label) {
+                if (!empty($values["{$key}{$i}"]) && !empty($values["{$key}_d_{$i}"])) {
+                    $errors["{$key}{$i}"] = "You could not have both $label and delayed as passed.";
+                }
+            }
+        }
+        return $errors;
+    }
+
+
+    /**
+     * Conflict check for page 2
+     */
+    function conflict_rules2($values) {
+        $errors = [];
+
+        for ($i = 1; $i <= $this->max_trial; $i++) {
+            if (!empty($values["rbr_wo_g_p$i"]) && !empty($values["rbr_wo_g_f$i"])) {
+                $errors["rbr_wo_g_p$i"] = "You could not have both pass and fail at the same time at Without Gesture $i";
+            }
+        }
+
+
+        for ($i = 1; $i <= $this->max_trial; $i++) {
+            if (!empty($values["rbr_w_g_p$i"]) && !empty($values["rbr_w_g_f$i"])) {
+                $errors["rbr_w_g_p$i"] = "You could not have both pass and fail at the same time at With Gesture $i";
+            }
+        }
+
+        return $errors;
+    }
+
+
+    private function not_required_field($key) {
+        return $this->XINRegisterRule(
+                    $key,
+                    array("{$key}{@}=={@}NEVER_REQUIRED"),
+                    "Not required"
+                );
     }
 
 
@@ -397,17 +441,25 @@ class NDB_BVL_Instrument_escs_coding_sheet extends NDB_BVL_Instrument
         $calculated['rja_follows_pt_sum'] = $cnt;
 
         $cnt = 0;
+        $zero_cnt = 0;
         for ($i = 1; $i <= 2; $i++) {
             foreach ($this->rja_grp2 as $key => $label) {
-                if (!empty($record["$key$i"])) {
+                if ($record["{$key}{$i}"] == 1 || $record["{$key}_d_{$i}"] == 1) {
                     $cnt ++;
                 }
-                if (!empty($record["{$key}_d_{$i}"])) {
-                    $cnt ++;
+                else if ((!is_null($record["{$key}{$i}"]) && $record["{$key}{$i}"] == 0) || (!is_null($record["{$key}_d_{$i}"]) && $record["{$key}_d_{$i}"] == 0)) {
+                    $zero_cnt ++;
                 }
             }
         }
-        $calculated['rja_line_regard_pt_correct'] = round($cnt / (4*4) * 100, 2);
+
+        $cnt_sum = $cnt + $zero_cnt;
+        if ($cnt_sum > 0) {
+            $calculated['rja_line_regard_pt_correct'] = round($cnt / $cnt_sum * 100, 2);
+        }
+        else {
+            $calculated['rja_line_regard_pt_correct'] = null;
+        }
         $calculated['rja_pt_sum'] = $cnt + $calculated['rja_follows_pt_sum'];
 
         
@@ -471,7 +523,7 @@ class NDB_BVL_Instrument_escs_coding_sheet extends NDB_BVL_Instrument
         $calculated['rbr_without_g_fail_sum'] = $cnt;
 
 
-        $rbr_grp1_pass = 'rbr_w_g_p'; // pass
+        $key = 'rbr_w_g_p'; // pass
         $cnt = 0;
         for ($i = 1; $i <= $this->max_trial; $i++) {
             if (!empty($record["$key$i"])) {
@@ -480,7 +532,7 @@ class NDB_BVL_Instrument_escs_coding_sheet extends NDB_BVL_Instrument
         }
         $calculated['rbr_with_g_pass_sum'] = $cnt;
 
-        $rbr_grp1_pass = 'rbr_w_g_f'; // fail
+        $key = 'rbr_w_g_f'; // fail
         $cnt = 0;
         for ($i = 1; $i <= $this->max_trial; $i++) {
             if (!empty($record["$key$i"])) {
@@ -500,6 +552,53 @@ class NDB_BVL_Instrument_escs_coding_sheet extends NDB_BVL_Instrument
             $calculated['rbr_correct'] = null;
         }
         $calculated['rbr_total'] = $rbr_sum;
+
+        // Clean the JA section if all are 0 or null
+        $ija_rja = ['ija_lower_total',
+                'ija_higher_total',
+                'ija_total',
+                'ija_bid_caregiver_total',
+                'rja_follows_pt_sum',
+                'rja_line_regard_pt_correct',
+                'rja_pt_sum'];
+        
+        $cnt = 0;        
+        foreach ($ija_rja as $key) {
+            if (!empty($calculated[$key])) {
+                $cnt ++;
+            }
+        }
+
+        if ($cnt == 0) {
+            foreach ($ija_rja as $key) {
+                $calculated[$key] = null;
+            }
+        }
+
+        // Clean the BR section if all are 0 or null
+        $ibr_rbr = ['ibr_lower_total',
+                'ibr_higher_total',
+                'ibr_total',
+                'ibr_bid_caregiver_total',
+                'rbr_without_g_pass_sum',
+                'rbr_without_g_fail_sum',
+                'rbr_with_g_pass_sum',
+                'rbr_with_g_fail_sum',
+                'rbr_correct',
+                'rbr_total'];
+
+        $cnt = 0;        
+        foreach ($ibr_rbr as $key) {
+            if (!empty($calculated[$key])) {
+                $cnt ++;
+            }
+        }
+
+        if ($cnt == 0) {
+            foreach ($ibr_rbr as $key) {
+                $calculated[$key] = null;
+            }
+        }
 
         //save scores
         if (!empty($calculated)) {
