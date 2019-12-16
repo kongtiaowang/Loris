@@ -81,6 +81,11 @@ class NDB_BVL_Instrument_escs_coding_sheet extends NDB_BVL_Instrument
             'rbr_w_g_f' => 'Fail'
         ];
 
+    // To prepare for V22
+    public function getFullName()
+    {
+        return "Early Social Communication Scales Coding Sheet";
+    }
 
     /**
      * Sets up basic data, such as the LorisForm object, and so on.
