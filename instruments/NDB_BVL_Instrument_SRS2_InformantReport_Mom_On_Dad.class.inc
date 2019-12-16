@@ -136,8 +136,8 @@ class NDB_BVL_Instrument_SRS2_InformantReport_Mom_On_Dad extends NDB_BVL_Instrum
 
 
         $this->addSelect('informant_rel_to_child', "The person I am filling this questionnaire out about has the following relationship to the child in the study:", $this->informant_rel_child);
-        $group[] = $this->createText('informant_rel_to_child_other', $this->indent."If Other please specify");
-        $this->addGroup($group, "informant_rel_to_child_other_group", $this->indent."If Other please specify", null, false);
+        $group1[] = $this->createText('informant_rel_to_child_other', $this->indent."If Other please specify");
+        $this->addGroup($group1, "informant_rel_to_child_other_group", $this->indent."If Other please specify", null, false);
 
         //Add field for Age
         $this->addBasicText('informant_age', "Your age<BR><h5><i>(Please enter a numeric value between 0-100. If you don't wish to answer, enter NA)</i></h5>");
