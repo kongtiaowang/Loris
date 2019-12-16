@@ -18,8 +18,6 @@ class NDB_BVL_Instrument_escs_coding_sheet extends NDB_BVL_Instrument
     var $ValidityEnabled  = false;
     var $ValidityRequired = false;
 
-    private $optional = array('class' => 'form-control input-sm');
-
     private $max_trial = 20;
 
     private $yes_no = array(
