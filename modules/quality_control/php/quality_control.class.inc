@@ -126,17 +126,20 @@ class Quality_Control extends \NDB_Menu_Filter
 		switch ($mriPfTable ) {
 			case null: 
 			    $noMriPf = 1;
+			    break;
 		    case 'mri_parameter_form_sa':
 		        $mriPfTableAlias = 'm_sa';
 		        break;
 	        case 'mri_parameter_form': 
 		        $mriPfTableAlias = 'm';
 		        break;
-		    default: throw new IllegalArgumentException("Unsupported MRI parameter form table $mriPfTable");
+		    default: throw new \InvalidArgumentException("Unsupported MRI parameter form table $mriPfTable");
 		}
 		
 		$db =& \Database::singleton();
-		$mriPfDoneValueSet = $db->PDO->quote(implode(',', $mriPfDoneValues));
+		$mriPfDoneValueSet = is_null($mriPfDoneValues)
+		    ? ''
+		    : $db->quote(implode(',', $mriPfDoneValues));
 		
         $select =  " SELECT DISTINCT
            c.PSCID,
@@ -428,7 +431,7 @@ class Quality_Control extends \NDB_Menu_Filter
 			case 'T2NormSA': return array('Yes_2', 'Yes_1');
 		}
 		
-		return ('Complete', 'Partial');
+		return array('Complete', 'Partial');
 	}
 	
     /**
@@ -456,10 +459,10 @@ class Quality_Control extends \NDB_Menu_Filter
 			$mriPfDoneValues = $this->_getMriPfDoneValues($scan_type);
             $scan_types[$scan_type] = $this->_buildQuery(
                 $scan_type,
-                $this->_getMriPfTableName($scan_type),
                 $this->_getMriPfColumnName($scan_type),
+                $this->_getMriPfTableName($scan_type),
                 $acq_IDs[$scan_type],
-                &$mriPfDoneValues
+                $mriPfDoneValues
             );
         }
 
