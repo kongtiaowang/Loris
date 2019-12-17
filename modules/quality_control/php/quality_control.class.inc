@@ -236,8 +236,8 @@ class Quality_Control extends \NDB_Menu_Filter
 
         $where = " WHERE 1=1
           AND NOT f.CommentID LIKE 'DDE%'
-          AND f.Test_name='mri_parameter_form'
-          AND s.Active='Y'
+          AND f.Test_name=" . (is_null($mriPfTable) ? "''" : "'$mriPfTable'") .
+        " AND s.Active='Y'
           AND s.CenterID <> '1' ";
 
         $query = $select.$joins.$where;
