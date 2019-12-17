@@ -160,7 +160,7 @@ class NDB_BVL_Instrument_escs_coding_sheet extends NDB_BVL_Instrument
     function _main()
     {
         // Header
-        $this->addHeader("Early Social Communication Scales - Coding Sheet");
+        $this->addHeader("Early Social Communication Scales");
 
         // automatically adds examiner & date of administration
         $this->_addMetadataFields();
