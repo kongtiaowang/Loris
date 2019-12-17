@@ -399,7 +399,7 @@ class Quality_Control extends \NDB_Menu_Filter
      * 
      * @return string the column name.
      */
-    function _getMriPfColumnName(string $scanType) : string
+    function _getMriPfColumnName(string $scanType) : ?string
     {
         switch ($scanType) {
             case 't1w':
