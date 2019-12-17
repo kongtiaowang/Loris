@@ -56,16 +56,45 @@ class Imaging_Browser extends \NDB_Menu_Filter
     {
         $config = \NDB_Config::singleton();
         $DB     = \Database::singleton();
-        $toTable_scan_types = $config->getSetting('tblScanTypes');
 
+        //-------------------------------------------//
+        // Build associative array of all scan types //
+        //-------------------------------------------//
         $all_scan_types_2d = $DB->pselect(
             "SELECT ID, Scan_type FROM mri_scan_type mri",
             array()
         );
-
         foreach ($all_scan_types_2d as $row) {
-            $type = $row['Scan_type'];
-            $all_scan_types[$row['ID']] = $type;
+            $all_scan_types[$row['ID']] = $row['Scan_type'];
+        }
+
+        //---------------------------------------------------------------------//
+        // Build associate array of all groups for which we want info          //
+        //---------------------------------------------------------------------//
+        $toTable_scan_type_groups = $config->getSetting('tblScanTypeGroups');
+        $allGroupsQuery = sprintf(
+            "SELECT DISTINCT mstg.Description, mstg.Name, mstg.MriScanTypeGroupID, mgqpt.Threshold, mst.ID, mst.Scan_type
+             FROM mri_scan_type mst 
+             JOIN mri_scan_type_groups_rel mstgr ON (mstgr.MriScanTypeID=mst.ID)
+             JOIN mri_scan_type_groups mstg ON (mstg.MriScanTypeGroupID=mstgr.MriScanTypeGroupID)
+             JOIN mri_group_qc_pass_threshold mgqpt ON (mgqpt.MriScanTypeGroupID=mstg.MriScanTypeGroupID)
+             WHERE mstg.Name IN (%s)
+            ",
+            implode(",", array_fill(0, count($toTable_scan_type_groups), '?'))
+        );
+        $toTable_scan_type_groups = $DB->pselect($allGroupsQuery, array_values($toTable_scan_type_groups));
+
+        //----------------------------------------------------------------//
+        // Build associative array of properties for each scan type group //
+        //----------------------------------------------------------------//
+        foreach ($toTable_scan_type_groups as $row) {
+            $scanTypeGroups[$row['Name']] = array(
+                'Description'        => $row['Description'],
+                'MriScanTypeGroupID' => $row['MriScanTypeGroupID'],
+                'Threshold'          => $row['Threshold']
+            );
+            $scanTypeGroups[$row['Name']]['ScanTypeIDs'][]      = $row['ID'];
+            $toTable_scan_types[$row['ID']]                     = $row['Scan_type'];
         }
 
         // Get the intersection between all the scan types and those
@@ -100,7 +129,6 @@ class Imaging_Browser extends \NDB_Menu_Filter
             $this->acqpid = '';
             $acqpif       = "'new'";
         }
-
         $NewDataSubquery = "CASE 
             COALESCE(Max(fqc.QCLastChangeTime), 'new')
             WHEN 'new' THEN {$acqpif}
@@ -108,17 +136,6 @@ class Imaging_Browser extends \NDB_Menu_Filter
             ELSE ''
             END";
 
-        foreach ($scan_id_types as $id => $type) {
-            $pass[$id]          = $type . 'pass';
-            $qc[$id]            = $type . 'QC';
-            $coalesce_desc[$id] = $pass[$id] . '.' . $qc[$id];
-            $case_desc[$id]     = "CASE
-                COALESCE($coalesce_desc[$id], '')
-                WHEN '' THEN ''
-                WHEN 1 THEN 'Passed'
-                WHEN 2 THEN 'Failed'
-                END";
-        }
 
         $PendingFailSubquery = "
             CASE s.MRIQCStatus
@@ -137,17 +154,39 @@ class Imaging_Browser extends \NDB_Menu_Filter
             LEFT JOIN files_qcstatus fqc ON (fqc.FileID=f.FileID) 
             JOIN mri_acquisition_dates md ON (md.SessionID=s.ID)";
 
+        //----------------------------------------------------------------------------//
+        // For each group, build (dynamically) a table that will list the QC value of //
+        // the scans in that group, for that specific session                         //
+        //----------------------------------------------------------------------------//
         $left_joins = "";
-        foreach ($case_desc as $key => $value) {
+        foreach ($scanTypeGroups as $groupName => $properties) {
+            // Table alias for the dynamically created table
+            $leftJoinTableAlias[$groupName] = $DB->escape("{$groupName}pass");
+            // Column name for the column that contains the Qc value of the scans in that group
+            $sumColumnName[$groupName]      = $DB->escape("{$groupName}QCValue");
+            // Name of the header in the imaging browser's result table for the column that indicates
+            // whether Qc for that group is 'Passed', 'Failed' or ''
+            $headerName[$groupName]         = "{$properties['Description']}_QC_Status";
+
+            // To compute the Qc value of the group, we compute the sum of each Qc value for each 'Passed' scan that
+            // belongs to that group. The scan Qc value for a given scan type is found in mri_scan_type_qc_value.
             $left_joins .= "
-            LEFT JOIN (SELECT files.SessionID, 
-            MIN(files_qcstatus.QCStatus+0) as " . $DB->escape($qc[$key]) . " 
-            FROM files 
-            JOIN files_qcstatus USING (FileID) 
-            WHERE files.AcquisitionProtocolID=" . $DB->quote($key) . " 
-            AND files_qcstatus.QCStatus IN (1, 2) 
-            GROUP BY files.SessionID) " . $DB->escape($pass[$key]) . "
-            ON (" . $DB->escape($pass[$key]) . ".SessionID=f.SessionID) ";
+                LEFT JOIN (
+                    SELECT files.SessionID, 
+                           SUM(
+                               CASE WHEN files_qcstatus.QCStatus = 'Pass' THEN mstqv.Value ELSE 0 END
+                           ) as {$sumColumnName[$groupName]}
+                    FROM files 
+                    JOIN files_qcstatus USING (FileID) 
+                    JOIN mri_scan_type_qc_value mstqv 
+                        ON (files.AcquisitionProtocolID=mstqv.MriScanTypeID)
+                    JOIN mri_scan_type_groups_rel mstgr 
+                        ON (files.AcquisitionProtocolID=mstgr.MriScanTypeID)
+                    JOIN mri_scan_type_groups mstg USING (MriScanTypeGroupID)
+                    WHERE files_qcstatus.QCStatus IN ('Pass', 'Fail')
+                    AND mstg.MriScanTypeGroupID = '{$properties['MriScanTypeGroupID']}'
+                    GROUP BY files.SessionID
+                ) {$leftJoinTableAlias[$groupName]} ON ({$leftJoinTableAlias[$groupName]}.SessionID=f.SessionID) ";
         }
 
         $where = "
@@ -186,18 +225,23 @@ class Imaging_Browser extends \NDB_Menu_Filter
             }
         }
 
-        // Initialize the arrays that go into this->columns and
-        // $this->headers so that array_merge works even if no
-        // $scan_types are set in the configuration module
-        $modalities_subquery_as = array();
-        $as = array();
-
-        foreach ($case_desc as $key => $value) {
-            $modalities_subquery[$key] = $value;
-            $as[$key] = $scan_id_types[$key] . '_QC_Status';
-            $modalities_subquery_as[$key] = $modalities_subquery[$key] .
-                                            ' as ' .
-                                            $as[$key];
+        //-------------------------------------------------------------------------------------//
+        // Set the final value that will appear in the imaging browser's column associated to  //
+        // each group. To do this, we compare the total Qc value for that group with the       //
+        // group's threshold found in mri_group_qc_pass_threshold:                             //
+        // 1. If the total Qcvalue is NULL, then no scans within that group have been Qced, so // 
+        //    set the value to ''.                                                             //
+        // 2. If total >= threshold, set value to 'Passed'.                                    //
+        // 3. If total < Threshold, set value to 'Failed'.                                     //
+        //-------------------------------------------------------------------------------------//
+        foreach ($scanTypeGroups as $groupName => $properties) {
+            $groupSubquery[$groupName]  = "
+                CASE 
+                  WHEN ISNULL({$leftJoinTableAlias[$groupName]}.{$sumColumnName[$groupName]}) THEN ''
+                  WHEN {$leftJoinTableAlias[$groupName]}.{$sumColumnName[$groupName]} >= {$properties['Threshold']} THEN 'Passed'
+                  ELSE 'Failed'
+                END AS {$headerName[$groupName]}
+            ";
         }
 
         $this->columns = array(
@@ -214,7 +258,7 @@ class Imaging_Browser extends \NDB_Menu_Filter
         $this->columns = array_merge(
             $this->columns,
             array("GROUP_CONCAT(DISTINCT OutputType) as Links"),
-            $modalities_subquery_as,
+            $groupSubquery,
             array('s.ID as sessionID')
         );
 
@@ -235,7 +279,7 @@ class Imaging_Browser extends \NDB_Menu_Filter
                          );
         $this->headers = array_merge(
             $this->headers,
-            $as,
+            array_values($headerName),
             array('sessionID')
         );
 
