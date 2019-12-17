@@ -118,26 +118,42 @@ class Quality_Control extends \NDB_Menu_Filter
      */
     function _buildQuery($scan_type, $mriPfColumn, $mriPfTable, $acqID, $mriPfDoneValues)
     {
-		$mriPfTableAlias ='';
-		$noMriPf = 0;
-		
-		// Set the value of $mriPfTable to be the table alias used in 
-		// the SQL statement below
-		switch ($mriPfTable ) {
-			case null: 
-			    $noMriPf = 1;
-		    case 'mri_parameter_form_sa':
-		        $mriPfTableAlias = 'm_sa';
-		        break;
-	        case 'mri_parameter_form': 
-		        $mriPfTableAlias = 'm';
-		        break;
-		    default: throw new IllegalArgumentException("Unsupported MRI parameter form table $mriPfTable");
-		}
-		
-		$db =& \Database::singleton();
-		$mriPfDoneValueSet = $db->PDO->quote(implode(',', $mriPfDoneValues));
-		
+        $mriPfTableAlias ='';
+        $noMriPf = 0;
+        
+        // Set the value of $mriPfTable to be the table alias used in 
+        // the SQL statement below
+        switch ($mriPfTable) {
+            case null: 
+                $noMriPf = 1;
+                break;
+            case 'mri_parameter_form_sa':
+                $mriPfTableAlias = 'm_sa';
+                break;
+            case 'mri_parameter_form': 
+                $mriPfTableAlias = 'm';
+                break;
+            default: throw new \InvalidArgumentException("Unsupported MRI parameter form table $mriPfTable");
+        }
+        
+        $scanDoneSQL = '';
+        if($noMriPf || is_null($mriPfTable) || is_null($mriPfColumn)) {
+            $scanDoneSQL = "''";
+        } else {
+            $db =& \Database::singleton();
+            $mriPfDoneValueSet = is_null($mriPfDoneValues)
+                ? ''
+                : $db->quote(implode(',', $mriPfDoneValues));
+
+            $scanDoneSQL = "
+                CASE
+                  WHEN {$mriPfTableAlias}.$mriPfColumn IS NULL THEN ''
+                  WHEN FIND_IN_SET({$mriPfTableAlias}.$mriPfColumn, $mriPfDoneValueSet)>0 THEN 'Yes'
+                  ELSE 'No'
+                END
+            ";
+        }
+        
         $select =  " SELECT DISTINCT
            c.PSCID,
            s.ID as SessionID,
@@ -198,11 +214,7 @@ class Quality_Control extends \NDB_Menu_Filter
               WHEN m.Data_entry_completion_status='Incomplete' THEN 'Incomplete'
               ELSE 'Complete'
            END AS mri_parameter_form,
-           CASE
-              WHEN ($noMriPf OR {$mriPfTableAlias}.$mriPfColumn IS NULL) THEN ''
-              WHEN FIND_IN_SET({$mriPfTableAlias}.$mriPfColumn, $mriPfDoneValueSet)>0 THEN 'Yes'
-              ELSE 'No'
-           END as scan_done,
+           $scanDoneSQL as scan_done,
            CASE
               WHEN (fi.fileID IS NULL AND mvl.PatientName IS NULL) THEN 'Missing'
               WHEN fi.fileID IS NOT NULL THEN 'In Imaging Browser'
@@ -233,8 +245,8 @@ class Quality_Control extends \NDB_Menu_Filter
 
         $where = " WHERE 1=1
           AND NOT f.CommentID LIKE 'DDE%'
-          AND f.Test_name='mri_parameter_form'
-          AND s.Active='Y'
+          AND f.Test_name=" . (is_null($mriPfTable) ? "''" : "'$mriPfTable'") .
+        " AND s.Active='Y'
           AND s.CenterID <> '1' ";
 
         $query = $select.$joins.$where;
@@ -370,41 +382,41 @@ class Quality_Control extends \NDB_Menu_Filter
      */
     function _getMriPfTableName(string $scanType) : string
     {
-		if (preg_match('/SA$/', $scanType)) {
-			return 'mri_parameter_form_sa';
-		} elseif (preg_match('/EP$/', $scanType)) {
-			return null;
-		} 
+        if (preg_match('/SA$/', $scanType)) {
+            return 'mri_parameter_form_sa';
+        } elseif (preg_match('/EP$/', $scanType)) {
+            return null;
+        } 
 
         return 'mri_parameter_form';
-	}
-	
-	/**
-	 * Gets the name of the column in the table returned by _getMriPfTableName
-	 * that tells whether the given scan type was acquired or not.
-	 * 
-	 * @param string $scanType a scan type from table mri_scan_types.
-	 * 
-	 * @return string the column name.
-	 */
-	function _getMriPfColumnName(string $scanType) : string
+    }
+    
+    /**
+     * Gets the name of the column in the table returned by _getMriPfTableName
+     * that tells whether the given scan type was acquired or not.
+     * 
+     * @param string $scanType a scan type from table mri_scan_types.
+     * 
+     * @return string the column name.
+     */
+    function _getMriPfColumnName(string $scanType) : ?string
     {
         switch ($scanType) {
-			case 't1w':
-			case 't1relx':      return 'T1_Scan_done';
-			case 't2w':         return 'T2_Scan_done';
-			case 'dti':         return 'DTI_Scan_done';
-			case 'DTI65':  
-			case 'DTI65_B1000': return 'DTI65_Scan_done';
-			case 'fMRI':        return 'BOLD_Scan_done';
-			case 'T1wNormSA':
-			case 'T1wRawSA':    return 't1w_acquired';
-			case 'T2wNormSA':
-			case 'T2wRawSA':    return 't2w_acquired';
-		}
-		
-        return 'mri_parameter_form';
-	}
+            case 't1w':
+            case 't1relx':      return 'T1_Scan_done';
+            case 't2w':         return 'T2_Scan_done';
+            case 'dti':         return 'DTI_Scan_done';
+            case 'DTI65':  
+            case 'DTI65_B1000': return 'DTI65_Scan_done';
+            case 'fMRI':        return 'BOLD_Scan_done';
+            case 'T1wNormSA':
+            case 'T1wRawSA':    return 't1w_acquired';
+            case 'T2wNormSA':
+            case 'T2wRawSA':    return 't2w_acquired';
+        }
+        
+        return null;
+    }
 
     /**
      * Gets the set of values in the column whose name is returned by
@@ -415,22 +427,22 @@ class Quality_Control extends \NDB_Menu_Filter
      * 
      * @return array the set of values as an array of strings.
      */
-	function _getMriPfDoneValues(string $scanType) : array
+    function _getMriPfDoneValues(string $scanType) : array
     {
-		if (preg_match('/EP$/', $scanType)) {
-			return null;
-		}
-		
+        if (preg_match('/EP$/', $scanType)) {
+            return null;
+        }
+        
         switch ($scanType) {
-			case 'T1wRawSA':
-			case 'T1wNormSA':
-			case 'T2RawSA':
-			case 'T2NormSA': return array('Yes_2', 'Yes_1');
-		}
-		
-		return ('Complete', 'Partial');
-	}
-	
+            case 'T1wRawSA':
+            case 'T1wNormSA':
+            case 'T2RawSA':
+            case 'T2NormSA': return array('Yes_2', 'Yes_1');
+        }
+        
+        return array('Complete', 'Partial');
+    }
+    
     /**
      * Build a list of imaging QC to display in Data Table
      *
@@ -453,13 +465,13 @@ class Quality_Control extends \NDB_Menu_Filter
         }
 
         foreach ($scan_types as $scan_type) {
-			$mriPfDoneValues = $this->_getMriPfDoneValues($scan_type);
+            $mriPfDoneValues = $this->_getMriPfDoneValues($scan_type);
             $scan_types[$scan_type] = $this->_buildQuery(
                 $scan_type,
-                $this->_getMriPfTableName($scan_type),
                 $this->_getMriPfColumnName($scan_type),
+                $this->_getMriPfTableName($scan_type),
                 $acq_IDs[$scan_type],
-                &$mriPfDoneValues
+                $mriPfDoneValues
             );
         }
 
