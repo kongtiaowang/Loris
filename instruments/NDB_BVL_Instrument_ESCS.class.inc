@@ -180,33 +180,30 @@ class NDB_BVL_Instrument_ESCS extends NDB_BVL_Instrument
         $this->form->addGroup($group, "sec{$section}_header", "", $this->_GUIDelimiter, FALSE);
         unset($group);
 
-        $group = array();
-        $group[] = $this->form->createElement('static', null, null, 'Initiating Joint Attention');
-        $ija_lst = ['ija_lower_total',
-            'ija_higher_total',
-            'ija_total',
-            'ija_bid_caregiver_total'];
+        $ija_ibr_lst = [
+            'Initiating Joint Attention' => ['ija_lower_total',
+                'ija_higher_total',
+                'ija_total',
+                'ija_bid_caregiver_total'],
+            
+            'Initiating Behavioral Requests' => ['ibr_lower_total',
+                'ibr_higher_total',
+                'ibr_total',
+                'ibr_bid_caregiver_total']
+        ];
 
-        foreach ($ija_lst as $key) {
-            $group[] = $this->form->createElement('static', $key);
+        $cnt = 0;
+        foreach ($ija_ibr_lst as $label => $lst) {
+            $cnt ++;
+            $group = array();
+            $group[] = $this->form->createElement('static', null, null, $label);
+            
+            foreach ($lst as $key) {
+                $group[] = $this->form->createElement('static', $key);
+            }
+            $this->form->addGroup($group, "sec1_row{$cnt}", "", $this->_GUIDelimiter, FALSE);
+            unset($group);
         }
-        $this->form->addGroup($group, "sec1_row1", "", $this->_GUIDelimiter, FALSE);
-        unset($group);
-
-
-        $group = array();
-        $group[] = $this->form->createElement('static', null, null, 'Initiating Behavioral Requests');
-        $ibr_lst = ['ibr_lower_total',
-            'ibr_higher_total',
-            'ibr_total',
-            'ibr_bid_caregiver_total'];
-
-        foreach ($ibr_lst as $key) {
-            $group[] = $this->form->createElement('static', $key);
-        }
-        $this->form->addGroup($group, "sec1_row2", "", $this->_GUIDelimiter, FALSE);
-        unset($group);
-
 
         $this->addLabel("Responding to Joint Attention");
 
@@ -227,34 +224,29 @@ class NDB_BVL_Instrument_ESCS extends NDB_BVL_Instrument
         $this->form->addGroup($group, "sec2_header", "", $this->_GUIDelimiter, FALSE);
         unset($group);
 
-
-        $group = array();
-        $group[] = $this->form->createElement('static', null, null, 'Without Gesture');
-
         $rbr_lst = [
-            'rbr_without_g_pass_sum',
-            'rbr_without_g_fail_sum'];
+            'Without Gesture' => [
+                'rbr_without_g_pass_sum',
+                'rbr_without_g_fail_sum'
+            ],
+            'With Gesture' => [
+                'rbr_with_g_pass_sum',
+                'rbr_with_g_fail_sum'
+            ]
+        ];
 
-        foreach ($rbr_lst as $key) {
-            $group[] = $this->form->createElement('static', $key);
+        $cnt = 0;
+        foreach ($rbr_lst as $label => $lst) {
+            $cnt ++;
+            $group = array();
+            $group[] = $this->form->createElement('static', null, null, $label);
+
+            foreach ($lst as $key) {
+                $group[] = $this->form->createElement('static', $key);
+            }
+            $this->form->addGroup($group, "sec2_row{$cnt}", "", $this->_GUIDelimiter, FALSE);
+            unset($group);
         }
-
-        $this->form->addGroup($group, "sec2_row1", "", $this->_GUIDelimiter, FALSE);
-        unset($group);
-
-        $group = array();
-        $group[] = $this->form->createElement('static', null, null, 'With Gesture');
-
-        $rbr_lst = [
-            'rbr_with_g_pass_sum',
-            'rbr_with_g_fail_sum'];
-
-        foreach ($rbr_lst as $key) {
-            $group[] = $this->form->createElement('static', $key);
-        }
-
-        $this->form->addGroup($group, "sec2_row2", "", $this->_GUIDelimiter, FALSE);
-        unset($group);
 
         $this->form->addElement('static', 'rbr_correct', "RBR % Correct: ");
         $this->form->addElement('static', 'rbr_total', "RBR Total:");
@@ -422,20 +414,17 @@ class NDB_BVL_Instrument_ESCS extends NDB_BVL_Instrument
      */
     function conflict_rules2($values) {
         $errors = [];
-
         for ($i = 1; $i <= $this->max_trial; $i++) {
             if (!empty($values["rbr_wo_g_p$i"]) && !empty($values["rbr_wo_g_f$i"])) {
                 $errors["rbr_wo_g_p$i"] = "You could not have both pass and fail at the same time at Without Gesture $i";
             }
         }
 
-
         for ($i = 1; $i <= $this->max_trial; $i++) {
             if (!empty($values["rbr_w_g_p$i"]) && !empty($values["rbr_w_g_f$i"])) {
                 $errors["rbr_w_g_p$i"] = "You could not have both pass and fail at the same time at With Gesture $i";
             }
         }
-
         return $errors;
     }
 
@@ -445,7 +434,7 @@ class NDB_BVL_Instrument_ESCS extends NDB_BVL_Instrument
                     $key,
                     array("{$key}{@}=={@}NEVER_REQUIRED"),
                     "Not required"
-                );
+            );
     }
 
 
@@ -462,46 +451,28 @@ class NDB_BVL_Instrument_ESCS extends NDB_BVL_Instrument
 
         $calculated = [];
 
-        $cnt = 0;
-        foreach ($this->ija_grp1 as $key => $label) {
-            for ($i = 1; $i <= $this->max_trial; $i++) {
-                if (!empty($record["$key$i"])) {
-                    $cnt ++;
-                }
-            }
-        }
-        $calculated['ija_lower_total'] = $cnt;
+        $lst = ['ija_lower_total' => 'ija_grp1',
+            'ija_higher_total' => 'ija_grp2',
+            'ija_bid_caregiver_total' => 'ija_grp3',
+            'rja_follows_pt_sum' => 'rja_grp1',
+            'pt_imitation_sum' => 'imitation_grp',
+            'ibr_lower_total' => 'ibr_grp1',
+            'ibr_higher_total' => 'ibr_grp2',
+            'ibr_bid_caregiver_total' => 'ibr_grp3'];
 
-        $cnt = 0;
-        foreach ($this->ija_grp2 as $key => $label) {
-            for ($i = 1; $i <= $this->max_trial; $i++) {
-                if (!empty($record["$key$i"])) {
-                    $cnt ++;
+        foreach ($lst as $lst_index => $grp_index) {
+            $cnt = 0;
+            foreach ($this->$grp_index as $key => $label) {
+                for ($i = 1; $i <= $this->max_trial; $i++) {
+                    if (!empty($record["$key$i"])) {
+                        $cnt ++;
+                    }
                 }
             }
+            $calculated[$lst_index] = $cnt;
         }
-        $calculated['ija_higher_total'] = $cnt;
-        $calculated['ija_total'] = $cnt + $calculated['ija_lower_total'];
-
-        $cnt = 0;
-        foreach ($this->ija_grp3 as $key => $label) {
-            for ($i = 1; $i <= $this->max_trial; $i++) {
-                if (!empty($record["$key$i"])) {
-                    $cnt ++;
-                }
-            }
-        }
-        $calculated['ija_bid_caregiver_total'] = $cnt;
-
-        $cnt = 0;
-        foreach ($this->rja_grp1 as $key => $label) {
-            for ($i = 1; $i <= $this->max_trial; $i++) {
-                if (!empty($record["$key$i"])) {
-                    $cnt ++;
-                }
-            }
-        }
-        $calculated['rja_follows_pt_sum'] = $cnt;
+        $calculated['ija_total'] = $calculated['ija_lower_total'] + $calculated['ija_higher_total'];
+        $calculated['ibr_total'] = $calculated['ibr_lower_total'] + $calculated['ibr_higher_total'];
 
         $cnt = 0;
         $zero_cnt = 0;
@@ -525,84 +496,20 @@ class NDB_BVL_Instrument_ESCS extends NDB_BVL_Instrument
         }
         $calculated['rja_pt_sum'] = $cnt + $calculated['rja_follows_pt_sum'];
 
-        
-        $cnt = 0;
-        foreach ($this->imitation_grp as $key => $label) {
+        $lst = ['rbr_without_g_pass_sum' => 'rbr_wo_g_p', // rbr_grp1_pass
+            'rbr_without_g_fail_sum' => 'rbr_wo_g_f', //rbr_grp1_fail
+            'rbr_with_g_pass_sum' =>'rbr_w_g_p',
+            'rbr_with_g_fail_sum' => 'rbr_w_g_f'];
+
+        foreach ($lst as $lst_index => $key) {
+            $cnt = 0;
             for ($i = 1; $i <= $this->max_trial; $i++) {
                 if (!empty($record["$key$i"])) {
                     $cnt ++;
                 }
             }
+            $calculated[$lst_index] = $cnt;
         }
-        $calculated['pt_imitation_sum'] = $cnt;
-
-        $cnt = 0;
-        foreach ($this->ibr_grp1 as $key => $label) {
-            for ($i = 1; $i <= $this->max_trial; $i++) {
-                if (!empty($record["$key$i"])) {
-                    $cnt ++;
-                }
-            }
-        }
-        $calculated['ibr_lower_total'] = $cnt;
-
-        $cnt = 0;
-        foreach ($this->ibr_grp2 as $key => $label) {
-            for ($i = 1; $i <= $this->max_trial; $i++) {
-                if (!empty($record["$key$i"])) {
-                    $cnt ++;
-                }
-            }
-        }
-        $calculated['ibr_higher_total'] = $cnt;
-        $calculated['ibr_total'] = $calculated['ibr_lower_total'] + $cnt;
-
-        $cnt = 0;
-        foreach ($this->ibr_grp3 as $key => $label) {
-            for ($i = 1; $i <= $this->max_trial; $i++) {
-                if (!empty($record["$key$i"])) {
-                    $cnt ++;
-                }
-            }
-        }
-        $calculated['ibr_bid_caregiver_total'] = $cnt;
-
-        $key = 'rbr_wo_g_p'; //rbr_grp1_pass
-        $cnt = 0;
-        for ($i = 1; $i <= $this->max_trial; $i++) {
-            if (!empty($record["$key$i"])) {
-                $cnt ++;
-            }
-        }
-        $calculated['rbr_without_g_pass_sum'] = $cnt;
-
-        $key = 'rbr_wo_g_f'; //rbr_grp1_fail
-        $cnt = 0;
-        for ($i = 1; $i <= $this->max_trial; $i++) {
-            if (!empty($record["$key$i"])) {
-                $cnt ++;
-            }
-        }
-        $calculated['rbr_without_g_fail_sum'] = $cnt;
-
-
-        $key = 'rbr_w_g_p'; // pass
-        $cnt = 0;
-        for ($i = 1; $i <= $this->max_trial; $i++) {
-            if (!empty($record["$key$i"])) {
-                $cnt ++;
-            }
-        }
-        $calculated['rbr_with_g_pass_sum'] = $cnt;
-
-        $key = 'rbr_w_g_f'; // fail
-        $cnt = 0;
-        for ($i = 1; $i <= $this->max_trial; $i++) {
-            if (!empty($record["$key$i"])) {
-                $cnt ++;
-            }
-        }
-        $calculated['rbr_with_g_fail_sum'] = $cnt;
 
         $rbr_pass_sum = $calculated['rbr_without_g_pass_sum'] + $calculated['rbr_with_g_pass_sum'];
         $rbr_fail_sum = $calculated['rbr_without_g_fail_sum'] + $calculated['rbr_with_g_fail_sum'];
