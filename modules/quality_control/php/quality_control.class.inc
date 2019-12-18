@@ -380,7 +380,7 @@ class Quality_Control extends \NDB_Menu_Filter
      * 
      * @return string the table name.
      */
-    function _getMriPfTableName(string $scanType) : string
+    function _getMriPfTableName(string $scanType) : ?string
     {
         if (preg_match('/SA$/', $scanType)) {
             return 'mri_parameter_form_sa';
@@ -427,7 +427,7 @@ class Quality_Control extends \NDB_Menu_Filter
      * 
      * @return array the set of values as an array of strings.
      */
-    function _getMriPfDoneValues(string $scanType) : array
+    function _getMriPfDoneValues(string $scanType) : ?array
     {
         if (preg_match('/EP$/', $scanType)) {
             return null;
