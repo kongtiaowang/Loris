@@ -79,10 +79,10 @@ class NDB_BVL_Instrument_ESCS extends NDB_BVL_Instrument
             'rbr_w_g_f' => 'Fail'
         ];
 
-    // To prepare for V22
+
     public function getFullName()
     {
-        return "Early Social Communication Scales Coding Sheet";
+        return "Early Social Communication Scales";
     }
 
     /**
@@ -165,41 +165,101 @@ class NDB_BVL_Instrument_ESCS extends NDB_BVL_Instrument
         // automatically adds examiner & date of administration
         $this->_addMetadataFields();
 
-        $this->addLabel('Initiating Joint Attention');
+        $this->addLabel('');
+        $group = array();
+        
+        $group_total = ['',
+            "Lower-Level Total",
+            "Higher-Level Total",
+            "Total",
+            "Bid to Caregiver Total"];
 
-        $this->form->addElement('static', 'ija_lower_total', "Lower-Level Total:");
-        $this->form->addElement('static', 'ija_higher_total', "Higher-Level Total:");
-        $this->form->addElement('static', 'ija_total', "IJA Total:");
+        foreach ($group_total as $label) {
+            $group[] = $this->form->createElement('static', null, null, $label);
+        }
+        $this->form->addGroup($group, "sec{$section}_header", "", $this->_GUIDelimiter, FALSE);
+        unset($group);
 
-        $this->form->addElement('static', 'ija_bid_caregiver_total', "Bid to Caregiver Total:");
+        $group = array();
+        $group[] = $this->form->createElement('static', null, null, 'Initiating Joint Attention');
+        $ija_lst = ['ija_lower_total',
+            'ija_higher_total',
+            'ija_total',
+            'ija_bid_caregiver_total'];
+
+        foreach ($ija_lst as $key) {
+            $group[] = $this->form->createElement('static', $key);
+        }
+        $this->form->addGroup($group, "sec1_row1", "", $this->_GUIDelimiter, FALSE);
+        unset($group);
+
+
+        $group = array();
+        $group[] = $this->form->createElement('static', null, null, 'Initiating Behavioral Requests');
+        $ibr_lst = ['ibr_lower_total',
+            'ibr_higher_total',
+            'ibr_total',
+            'ibr_bid_caregiver_total'];
+
+        foreach ($ibr_lst as $key) {
+            $group[] = $this->form->createElement('static', $key);
+        }
+        $this->form->addGroup($group, "sec1_row2", "", $this->_GUIDelimiter, FALSE);
+        unset($group);
+
 
         $this->addLabel("Responding to Joint Attention");
 
         $this->form->addElement('static', 'rja_follows_pt_sum', "Follows Point Total:");
-        $this->form->addElement('static', 'rja_line_regard_pt_correct', "% Correct (in %):");
-        $this->form->addElement('static', 'rja_pt_sum', "RJA Total:");
+        
+        $this->form->addElement('static', 'rja_line_regard_pt_correct', "% Correct:");
 
-        $this->form->addElement('static', 'pt_imitation_sum', "Point in Imitation Total:");
-
-        $this->addLabel('Initiating Behavioral Requests');
-
-        $this->form->addElement('static', 'ibr_lower_total', "Lower-Level Total:");
-        $this->form->addElement('static', 'ibr_higher_total', "Higher-Level Total:");
-        $this->form->addElement('static', 'ibr_total', "IBR Total:");
-
-        $this->form->addElement('static', 'ibr_bid_caregiver_total', "Bid to Caregiver Total:");
-
+        $this->addLabel("");
         $this->addLabel("Responding to Behavioral Requests");
 
-        $this->addLabel("Without Gesture");
-        $this->form->addElement('static', 'rbr_without_g_pass_sum', "Pass Total:");
-        $this->form->addElement('static', 'rbr_without_g_fail_sum', "Fail Total:");
+        $group_total = ["",
+            "Pass Total",
+            "Fail Total"];
+        
+        foreach ($group_total as $label) {
+            $group[] = $this->form->createElement('static', null, null, $label);
+        }
+        $this->form->addGroup($group, "sec2_header", "", $this->_GUIDelimiter, FALSE);
+        unset($group);
 
-        $this->addLabel("With Gesture");
-        $this->form->addElement('static', 'rbr_with_g_pass_sum', "Pass Total:");
-        $this->form->addElement('static', 'rbr_with_g_fail_sum', "Fail Total:");
-        $this->form->addElement('static', 'rbr_correct', "% Correct (in %): ");
+
+        $group = array();
+        $group[] = $this->form->createElement('static', null, null, 'Without Gesture');
+
+        $rbr_lst = [
+            'rbr_without_g_pass_sum',
+            'rbr_without_g_fail_sum'];
+
+        foreach ($rbr_lst as $key) {
+            $group[] = $this->form->createElement('static', $key);
+        }
+
+        $this->form->addGroup($group, "sec2_row1", "", $this->_GUIDelimiter, FALSE);
+        unset($group);
+
+        $group = array();
+        $group[] = $this->form->createElement('static', null, null, 'With Gesture');
+
+        $rbr_lst = [
+            'rbr_with_g_pass_sum',
+            'rbr_with_g_fail_sum'];
+
+        foreach ($rbr_lst as $key) {
+            $group[] = $this->form->createElement('static', $key);
+        }
+
+        $this->form->addGroup($group, "sec2_row2", "", $this->_GUIDelimiter, FALSE);
+        unset($group);
+
+        $this->form->addElement('static', 'rbr_correct', "RBR % Correct: ");
         $this->form->addElement('static', 'rbr_total', "RBR Total:");
+
+        $this->form->addElement('static', 'pt_imitation_sum', "Point in Imitation Total:");
        
         $this->addLabel("Notes:");
         $this->form->addElement('static', 'note1');
