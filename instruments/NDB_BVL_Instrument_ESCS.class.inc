@@ -532,7 +532,7 @@ class NDB_BVL_Instrument_ESCS extends NDB_BVL_Instrument
                 'rja_line_regard_pt_correct',
                 'rja_pt_sum'];
         
-        $cnt = 0;        
+        $cnt = 0;
         foreach ($ija_rja as $key) {
             if (!empty($calculated[$key])) {
                 $cnt ++;
@@ -557,7 +557,7 @@ class NDB_BVL_Instrument_ESCS extends NDB_BVL_Instrument
                 'rbr_correct',
                 'rbr_total'];
 
-        $cnt = 0;        
+        $cnt = 0;
         foreach ($ibr_rbr as $key) {
             if (!empty($calculated[$key])) {
                 $cnt ++;
