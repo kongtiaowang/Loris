@@ -1,4 +1,4 @@
-CREATE TABLE `escs_coding_sheet` (
+CREATE TABLE `ESCS` (
 `CommentID` varchar(255) NOT NULL default '',
 
                             `UserID` varchar(255) default NULL,

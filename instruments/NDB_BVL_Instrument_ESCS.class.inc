@@ -1,6 +1,6 @@
 <?php
 /**
- * This file contains the NDB_BVL_Instrument_escs_coding_sheet
+ * This file contains the NDB_BVL_Instrument_ESCS
  * class
  *
  * PHP Version 7
@@ -13,7 +13,7 @@
  * @link     https://www.github.com/aces/IBIS/
  */
 
-class NDB_BVL_Instrument_escs_coding_sheet extends NDB_BVL_Instrument
+class NDB_BVL_Instrument_ESCS extends NDB_BVL_Instrument
 {
     var $ValidityEnabled  = false;
     var $ValidityRequired = false;
@@ -102,8 +102,8 @@ class NDB_BVL_Instrument_escs_coding_sheet extends NDB_BVL_Instrument
         $this->page     = $page;
 
         // set the object properties
-        $this->testName  = 'escs_coding_sheet'; // test_names.Test_name
-        $this->table     = 'escs_coding_sheet';
+        $this->testName  = 'ESCS'; // test_names.Test_name
+        $this->table     = 'ESCS';
         $this->commentID = $commentID; // data keyed by commentID
 
         //The array of dates/timestamps to convert to database dates/timestamps
@@ -141,7 +141,7 @@ class NDB_BVL_Instrument_escs_coding_sheet extends NDB_BVL_Instrument
     function _setupForm()
     {
         //determine page to display
-        if (preg_match("/escs_coding_sheet(_page[0-9]+)/", 
+        if (preg_match("/ESCS(_page[0-9]+)/", 
             $this->page, $matches)) {
             call_user_func(array($this, $matches[1]));
         } else {
