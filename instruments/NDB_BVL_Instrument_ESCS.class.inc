@@ -80,11 +80,18 @@ class NDB_BVL_Instrument_ESCS extends NDB_BVL_Instrument
         ];
 
 
-    public function getFullName()
+    public function getFullName(): string
     {
         return "Early Social Communication Scales";
     }
 
+
+    function getSubtestList(): array {
+        return [['Name' => 'ESCS_page1', 'Description' => "IJA&RJA"],
+                ['Name' => 'ESCS_page2', 'Description' => "IBR&RBR"]];
+    }
+
+    
     /**
      * Sets up basic data, such as the LorisForm object, and so on.
      *
@@ -177,7 +184,7 @@ class NDB_BVL_Instrument_ESCS extends NDB_BVL_Instrument
         foreach ($group_total as $label) {
             $group[] = $this->form->createElement('static', null, null, $label);
         }
-        $this->form->addGroup($group, "sec{$section}_header", "", $this->_GUIDelimiter, FALSE);
+        $this->form->addGroup($group, "sec1_header", "", $this->_GUIDelimiter, FALSE);
         unset($group);
 
         $ija_ibr_lst = [
@@ -310,7 +317,7 @@ class NDB_BVL_Instrument_ESCS extends NDB_BVL_Instrument
                 $group[] = $this->createSelect("$key$i", "", $this->yes_no);
                 $this->not_required_field("$key$i");
             }
-            $this->form->addGroup($group, "sec{$section}_row{$key}$i", "", $this->_GUIDelimiter, FALSE);
+            $this->form->addGroup($group, "sec{$section}_row$i", "", $this->_GUIDelimiter, FALSE);
             unset($group);
 
             $group = array();
@@ -320,7 +327,7 @@ class NDB_BVL_Instrument_ESCS extends NDB_BVL_Instrument
                 $group[] = $this->createSelect("{$key}_d_{$i}", "", $this->yes_no);
                 $this->not_required_field("{$key}_d_{$i}");
             }
-            $this->form->addGroup($group, "sec{$section}_row{$key}{$i}d", "", $this->_GUIDelimiter, FALSE);
+            $this->form->addGroup($group, "sec{$section}_row{$i}d", "", $this->_GUIDelimiter, FALSE);
         }
     }
 
@@ -333,6 +340,9 @@ class NDB_BVL_Instrument_ESCS extends NDB_BVL_Instrument
     function _page1()
     {
         $this->addLabel('Initiating Joint Attention');
+
+        //$this->form->addElement('static', 'ija_test_item', "note");
+        //$this->addBasicTextArea('ija_test_item', 'Notes');
 
         $this->page_section($this->ija_grp1, 1);
         $this->addLabel('');
@@ -357,6 +367,7 @@ class NDB_BVL_Instrument_ESCS extends NDB_BVL_Instrument
         $this->not_required_field('note1');
 
         $this->form->addFormRule(array(&$this, 'conflict_rules1'));
+
     }
 
 
@@ -397,11 +408,13 @@ class NDB_BVL_Instrument_ESCS extends NDB_BVL_Instrument
      */
     function conflict_rules1($values) {
         $errors = [];
-
         for ($i = 1; $i <= 2; $i++) {
             foreach ($this->rja_grp2 as $key => $label) {
                 if (!empty($values["{$key}{$i}"]) && !empty($values["{$key}_d_{$i}"])) {
-                    $errors["{$key}{$i}"] = "You could not have both $label and delayed as passed.";
+                    $errors["sec5_row{$i}"] = "You could not have both $label and delayed as passed.";
+                    $errors["sec5_row{$i}d"] = "You could not have both $label and delayed as passed.";
+                    /*$errors["sec5_row{$i}"] = ["{$key}{$i}" => "You could not have both $label and delayed as passed."];
+                    $errors["sec5_row{$i}d"] = ["{$key}_d_{$i}" => "You could not have both $label and delayed as passed."];*/
                 }
             }
         }
@@ -416,13 +429,23 @@ class NDB_BVL_Instrument_ESCS extends NDB_BVL_Instrument
         $errors = [];
         for ($i = 1; $i <= $this->max_trial; $i++) {
             if (!empty($values["rbr_wo_g_p$i"]) && !empty($values["rbr_wo_g_f$i"])) {
-                $errors["rbr_wo_g_p$i"] = "You could not have both pass and fail at the same time at Without Gesture $i";
+                $errors["sec4_rowrbr_wo_g_p"] = "You could not have both pass and fail at the same time at Without Gesture $i";
+                $errors["sec4_rowrbr_wo_g_f"] = "You could not have both pass and fail at the same time at Without Gesture $i";
+
+                // The following is a possible solution for cell level error notification, which is not yet supported in Loris
+                /*$errors["sec4_rowrbr_wo_g_p"] = ["rbr_wo_g_p$i" => "You could not have both pass and fail at the same time at Without Gesture $i"];
+                $errors["sec4_rowrbr_wo_g_f"] = ["rbr_wo_g_f$i" => "You could not have both pass and fail at the same time at Without Gesture $i"];*/
             }
         }
 
         for ($i = 1; $i <= $this->max_trial; $i++) {
             if (!empty($values["rbr_w_g_p$i"]) && !empty($values["rbr_w_g_f$i"])) {
-                $errors["rbr_w_g_p$i"] = "You could not have both pass and fail at the same time at With Gesture $i";
+                $errors["sec5_rowrbr_w_g_p"] = "You could not have both pass and fail at the same time at With Gesture $i";
+                $errors["sec5_rowrbr_w_g_f"] = "You could not have both pass and fail at the same time at With Gesture $i";
+
+                // The following is a possible solution for cell level error notification, which is not yet supported in Loris
+                /*$errors["sec5_rowrbr_w_g_p"] = ["rbr_w_g_p$i" => "You could not have both pass and fail at the same time at With Gesture $i"];
+                $errors["sec5_rowrbr_w_g_f"] = ["rbr_w_g_f$i" => "You could not have both pass and fail at the same time at With Gesture $i"];*/
             }
         }
         return $errors;
@@ -431,9 +454,9 @@ class NDB_BVL_Instrument_ESCS extends NDB_BVL_Instrument
 
     private function not_required_field($key) {
         return $this->XINRegisterRule(
-                    $key,
-                    array("{$key}{@}=={@}NEVER_REQUIRED"),
-                    "Not required"
+                $key,
+                array("{$key}{@}=={@}NEVER_REQUIRED"),
+                "Not required"
             );
     }
 
