@@ -192,7 +192,6 @@ class NDB_BVL_Instrument_ESCS extends NDB_BVL_Instrument
                 'ija_higher_total',
                 'ija_total',
                 'ija_bid_caregiver_total'],
-            
             'Initiating Behavioral Requests' => ['ibr_lower_total',
                 'ibr_higher_total',
                 'ibr_total',
@@ -206,7 +205,7 @@ class NDB_BVL_Instrument_ESCS extends NDB_BVL_Instrument
             $group[] = $this->form->createElement('static', null, null, $label);
             
             foreach ($lst as $key) {
-                $group[] = $this->form->createElement('static', $key);
+                $group[] = $this->form->createElement('static', $key, '', '');
             }
             $this->form->addGroup($group, "sec1_row{$cnt}", "", $this->_GUIDelimiter, FALSE);
             unset($group);
@@ -216,7 +215,8 @@ class NDB_BVL_Instrument_ESCS extends NDB_BVL_Instrument
 
         $this->form->addElement('static', 'rja_follows_pt_sum', "Follows Point Total:");
         
-        $this->form->addElement('static', 'rja_line_regard_pt_correct', "% Correct:");
+        $this->form->addElement('static', 'rja_line_regard_pt_correct', "Line of Regard % Correct:");
+        $this->form->addElement('static', 'rja_pt_sum', "RJA Total:");
 
         $this->addLabel("");
         $this->addLabel("Responding to Behavioral Requests");
@@ -249,7 +249,7 @@ class NDB_BVL_Instrument_ESCS extends NDB_BVL_Instrument
             $group[] = $this->form->createElement('static', null, null, $label);
 
             foreach ($lst as $key) {
-                $group[] = $this->form->createElement('static', $key);
+                $group[] = $this->form->createElement('static', $key, '', '');
             }
             $this->form->addGroup($group, "sec2_row{$cnt}", "", $this->_GUIDelimiter, FALSE);
             unset($group);
@@ -367,7 +367,6 @@ class NDB_BVL_Instrument_ESCS extends NDB_BVL_Instrument
         $this->not_required_field('note1');
 
         $this->form->addFormRule(array(&$this, 'conflict_rules1'));
-
     }
 
 
@@ -376,8 +375,8 @@ class NDB_BVL_Instrument_ESCS extends NDB_BVL_Instrument
      *
      * @return void
      */
-    function _page2() {
-
+    function _page2()
+    {
         $this->addLabel('Initiating Behavioral Requests');
 
         $this->page_section($this->ibr_grp1, 1);
@@ -413,8 +412,6 @@ class NDB_BVL_Instrument_ESCS extends NDB_BVL_Instrument
                 if (!empty($values["{$key}{$i}"]) && !empty($values["{$key}_d_{$i}"])) {
                     $errors["sec5_row{$i}"] = "You could not have both $label and delayed as passed.";
                     $errors["sec5_row{$i}d"] = "You could not have both $label and delayed as passed.";
-                    /*$errors["sec5_row{$i}"] = ["{$key}{$i}" => "You could not have both $label and delayed as passed."];
-                    $errors["sec5_row{$i}d"] = ["{$key}_d_{$i}" => "You could not have both $label and delayed as passed."];*/
                 }
             }
         }
@@ -431,10 +428,6 @@ class NDB_BVL_Instrument_ESCS extends NDB_BVL_Instrument
             if (!empty($values["rbr_wo_g_p$i"]) && !empty($values["rbr_wo_g_f$i"])) {
                 $errors["sec4_rowrbr_wo_g_p"] = "You could not have both pass and fail at the same time at Without Gesture $i";
                 $errors["sec4_rowrbr_wo_g_f"] = "You could not have both pass and fail at the same time at Without Gesture $i";
-
-                // The following is a possible solution for cell level error notification, which is not yet supported in Loris
-                /*$errors["sec4_rowrbr_wo_g_p"] = ["rbr_wo_g_p$i" => "You could not have both pass and fail at the same time at Without Gesture $i"];
-                $errors["sec4_rowrbr_wo_g_f"] = ["rbr_wo_g_f$i" => "You could not have both pass and fail at the same time at Without Gesture $i"];*/
             }
         }
 
@@ -442,10 +435,6 @@ class NDB_BVL_Instrument_ESCS extends NDB_BVL_Instrument
             if (!empty($values["rbr_w_g_p$i"]) && !empty($values["rbr_w_g_f$i"])) {
                 $errors["sec5_rowrbr_w_g_p"] = "You could not have both pass and fail at the same time at With Gesture $i";
                 $errors["sec5_rowrbr_w_g_f"] = "You could not have both pass and fail at the same time at With Gesture $i";
-
-                // The following is a possible solution for cell level error notification, which is not yet supported in Loris
-                /*$errors["sec5_rowrbr_w_g_p"] = ["rbr_w_g_p$i" => "You could not have both pass and fail at the same time at With Gesture $i"];
-                $errors["sec5_rowrbr_w_g_f"] = ["rbr_w_g_f$i" => "You could not have both pass and fail at the same time at With Gesture $i"];*/
             }
         }
         return $errors;
