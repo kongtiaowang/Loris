@@ -205,7 +205,7 @@ class NDB_BVL_Instrument_ESCS extends NDB_BVL_Instrument
             $group[] = $this->form->createElement('static', null, null, $label);
             
             foreach ($lst as $key) {
-                $group[] = $this->form->createElement('static', $key, '', '');
+                $group[] = $this->form->createElement('static', $key);
             }
             $this->form->addGroup($group, "sec1_row{$cnt}", "", $this->_GUIDelimiter, FALSE);
             unset($group);
@@ -249,7 +249,7 @@ class NDB_BVL_Instrument_ESCS extends NDB_BVL_Instrument
             $group[] = $this->form->createElement('static', null, null, $label);
 
             foreach ($lst as $key) {
-                $group[] = $this->form->createElement('static', $key, '', '');
+                $group[] = $this->form->createElement('static', $key);
             }
             $this->form->addGroup($group, "sec2_row{$cnt}", "", $this->_GUIDelimiter, FALSE);
             unset($group);
