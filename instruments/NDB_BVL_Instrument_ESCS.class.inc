@@ -341,9 +341,6 @@ class NDB_BVL_Instrument_ESCS extends NDB_BVL_Instrument
     {
         $this->addLabel('Initiating Joint Attention');
 
-        //$this->form->addElement('static', 'ija_test_item', "note");
-        //$this->addBasicTextArea('ija_test_item', 'Notes');
-
         $this->page_section($this->ija_grp1, 1);
         $this->addLabel('');
         
