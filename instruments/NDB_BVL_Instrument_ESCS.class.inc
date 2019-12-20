@@ -102,7 +102,7 @@ class NDB_BVL_Instrument_ESCS extends NDB_BVL_Instrument
      * @access   public
      * @abstract
      */
-    function setup(?string $commentID = NULL, ?string $page = NULL): void
+    function setup($commentID = null, $page = null)
     {
         $this->formType = 'XIN';
         $this->form     = new LorisForm('test_form');
