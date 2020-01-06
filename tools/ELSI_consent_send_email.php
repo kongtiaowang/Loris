@@ -15,7 +15,7 @@ $yes_elsi_consents=$DB->pselect("SELECT c.PSCID,cn.Label,ccr.Status,ccr.Dategive
                            join candidate_consent_rel ccr ON(c.CandID=ccr.CandidateID)
                            join consent cn ON (cn.ConsentID=ccr.ConsentID)
                            join candidate_consent_history cch ON(ccr.DateGiven=cch.DateGiven)
-                           where ccr.Status='Yes'and cn.Name='elsi_consent'and cch.Status='Yes'
+                           where ccr.Status='Yes'and cn.Name='elsi_consent'and cch.Status='Yes' and c.CenterID!=1
                            group by c.PSCID,cn.Label,ccr.Status,ccr.Dategiven order by EntryDate",array());
 $num=0;
 foreach ($yes_elsi_consents as $yes_elsi) {
@@ -31,7 +31,7 @@ if(!empty($yes_list))
     $today_date=date("Y-m-d");
     $msg_data['yes_consent_list']    = $yes_list;
     $msg_data['today_date']    = $today_date;
-    $receiver_email="sruthy.mcin@gmail.com";
+    $receiver_email="kmacduffie@gmail.com";
     sendHtmlEmail($receiver_email, 'ELSI_yes_consent_notification.tpl', $msg_data,$headers);
 }
 function sendHtmlEmail(
