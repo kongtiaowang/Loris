@@ -489,6 +489,8 @@ class Candidate
             $pscidArrays[1] = array(4, 5, 6, 7, 8, 9);
         } elseif($startNumber == 6000) {
             $pscidArrays[1] = array(6, 7, 8, 9);
+        } elseif($startNumber == 7000) {
+            $pscidArrays[1] = array(7, 8, 9);
         }
 
 

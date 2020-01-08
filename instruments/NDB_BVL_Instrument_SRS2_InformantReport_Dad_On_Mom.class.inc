@@ -39,12 +39,19 @@ class NDB_BVL_Instrument_SRS2_InformantReport_Dad_On_Mom extends NDB_BVL_Instrum
                      );
     var $informant = array(
                       ''               => null,
+                      'spouse_partner' => 'Spouse/Partner',
                       'mother'         => 'Mother',
                       'father'         => 'Father',
                       'step_mother'    => 'Step Mother',
                       'step_father'    => 'Step Father',
                       'other'          => 'Other',
                      );
+    var $informant_rel_child = array(
+        ''               => null,
+        'biological_mother' => 'Biological Mother',
+        'biological_father'  => 'Biological Father',
+        'other'          => 'Other',
+    );
 
     var $gender = array(
                    ''       => null,
@@ -121,6 +128,10 @@ class NDB_BVL_Instrument_SRS2_InformantReport_Dad_On_Mom extends NDB_BVL_Instrum
     {
         //Display test name
         $this->form->addElement('header', 'instrument_title', "SRS-2 - Informant Report (Dad's Report on Mom)");
+
+        $this->addSelect('informant_rel_to_child', "The person I am filling this questionnaire out about has the following relationship to the child in the study:", $this->informant_rel_child);
+        $group1[] = $this->createText('informant_rel_to_child_other', $this->indent."If Other please specify");
+        $this->addGroup($group1, "informant_rel_to_child_other_group", $this->indent."If Other please specify", null, false);
 
         //Add date of administration field
         $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);

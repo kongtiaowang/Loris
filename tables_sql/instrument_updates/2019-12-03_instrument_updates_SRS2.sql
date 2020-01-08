@@ -1,0 +1,2 @@
+ALTER TABLE SRS2_InformantReport_Dad_On_Mom MODIFY COLUMN informant ENUM('mother','father','step_mother','step_father','spouse_partner','','other') default NULL;
+ALTER TABLE SRS2_InformantReport_Mom_On_Dad MODIFY COLUMN informant ENUM('mother','father','step_mother','step_father','spouse_partner','','other') default NULL;

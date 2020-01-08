@@ -4,6 +4,46 @@ import {FilterForm} from "./FilterForm";
 import {EditForm} from "./EditForm";
 import {debounce} from "lodash";
 
+function download(filename, text) {
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    element.setAttribute('download', filename);
+
+    element.style.display = 'none';
+    document.body.appendChild(element);
+
+    element.click();
+
+    document.body.removeChild(element);
+}
+
+function deriveDataEntryLabelColor (a) {
+    switch (a.dataEntryStatus) {
+        case "Upcoming": {
+            return "default";
+        }
+        case "In Progress": {
+            return "warning";
+        }
+        case "Complete": {
+            return "success";
+        }
+        case "Not Started": {
+            return "warning";
+        }
+        case "No Data Found":
+        default: {
+            return "danger";
+        }
+    }
+}
+function deriveDataEntryStatus (a) {
+    return {
+        dataEntryStatus : a.dataEntryStatus,
+        dataEntryLabelColor : deriveDataEntryLabelColor(a),
+    };
+}
+
 const today = new Date();
 const yesterday = new Date(today.getTime() - 24*60*60*1000);
 const next30days = new Date(today.getTime() + 30 * 24*60*60*1000);
@@ -77,6 +117,8 @@ export class App extends React.Component {
                     pagesFound : -1,
                 },
             },
+            sortOrder: "ASC",
+            sortColumn: "PSCID",
         };
 
         this.openAppointmentForm = () => {
@@ -112,6 +154,72 @@ export class App extends React.Component {
                     }
                 )
             });
+        };
+        this.downloadAsCSV = () => {
+            Api.fetchAppointments(Object.assign(
+                {
+                    itemsPerPage : Number.MAX_SAFE_INTEGER,
+                    page : 0,
+                },
+                (
+                    (this.state.lockTabs && this.state.searchFilters != undefined) ?
+                        this.state.searchFilters :
+                        tabs[this.state.tabIndex].filters
+                )
+            )).then((page) => {
+                this.convertToCSV(page);
+            });
+        };
+
+        this.convertToCSV = (page) => {
+            const quote = (str) => {
+                if (str.indexOf(`"`) > 0 || str.indexOf(",") > 0) {
+                    str = str.replace(/\"/g, `""`);
+                    return `"${str}"`;
+                } else {
+                    return str;
+                }
+            };
+            const csv = [];
+            const line = [
+                "DCCID",
+                "PSCID",
+                "Site",
+                "Visit Label",
+                "Subproject",
+                "Starts At",
+                "Appointment Type",
+                "Data Entry Status",
+            ];
+            csv.push(line.map(quote).join(","));
+
+            for (const row of page.data) {
+                const site = this.state.sites.find(item => item.CenterID == row.CenterID);
+                const appointmentType = this.state.appointmentTypes
+                    .find(item => item.AppointmentTypeID == row.AppointmentTypeID);
+
+                const {
+                    dataEntryStatus,
+                } = deriveDataEntryStatus(row);
+                const line = [
+                    row.CandID,
+                    row.PSCID,
+                    site.Name,
+                    row.Visit_label,
+                    row.title,
+                    row.StartsAt,
+                    appointmentType.Name,
+                    dataEntryStatus,
+                ];
+                csv.push(line.map(quote).join(","));
+            }
+
+            const today = new Date();
+            const date = today.getFullYear() + "-" +(today.getMonth()+1) + "-" + today.getDate();
+            const time = today.getHours() + "_" + today.getMinutes() + "_" + today.getSeconds();
+            const datetime = date + "-" + time;
+
+            download("appointments-" + datetime + ".csv", csv.join("\n"));
         };
 
         this.fetchSessionsOfCandidate = debounce(() => {
@@ -310,6 +418,8 @@ export class App extends React.Component {
                 {
                     itemsPerPage : parseInt(this.state.desiredItemsPerPage),
                     page : parseInt(this.state.desiredPage),
+                    sortColumn : this.state.sortColumn,
+                    sortOrder : this.state.sortOrder,
                 },
                 this.state.searchFilters
             ))
@@ -324,6 +434,8 @@ export class App extends React.Component {
             {
                 itemsPerPage : parseInt(this.state.desiredItemsPerPage),
                 page : parseInt(this.state.desiredPage),
+                sortColumn : this.state.sortColumn,
+                sortOrder : this.state.sortOrder,
             },
             tabs[tabIndex].filters
         ))
@@ -516,26 +628,35 @@ export class App extends React.Component {
                             lockTabs : true,
                             searchFilters : filters,
                         });
-                        Api.fetchAppointments(filters)
-                            .then((page) => {
-                                this.setState({
-                                    page : page
-                                });
+                        Api.fetchAppointments(Object.assign(
+                            {
+                                itemsPerPage : parseInt(this.state.desiredItemsPerPage),
+                                page : parseInt(this.state.desiredPage),
+                                sortColumn : this.state.sortColumn,
+                                sortOrder : this.state.sortOrder,
+                            },
+                            filters
+                        )).then((page) => {
+                            this.setState({
+                                page : page
                             });
+                        });
                     }}
                     onClear={() => {
                         this.setState({
                             lockTabs : false,
                             searchFilters : undefined,
                         });
-                        this.fetchTab();
+                        setTimeout(() => {
+                            this.fetchTab();
+                        }, 1);
                     }}
                 />
                 <h style={{margin : "10px"}}>
                 {createAppointmentButton}
                 </h>
                 <br/>
-                <ul className="nav nav-tabs" style={{margin : "10px"}}>
+                <ul className="nav nav-tabs" style={{marginTop : "10px", marginBottom : "10px", marginLeft: "0px"}}>
                     {
                         /* Map the tabs array to jsx element (makes new array; old array + new info) */
                         tabs.map((tab, index) => (
@@ -590,28 +711,220 @@ export class App extends React.Component {
                         <thead style={{backgroundColor : "#064785"}}>
                             <tr>
                                 <th>
-                                    DCCID
+                                    <button className="column-header" onClick={() => {
+                                        this.setState({
+                                            sortColumn : "CandID",
+                                            sortOrder : (
+                                                this.state.sortColumn == "CandID" &&
+                                                this.state.sortOrder == "ASC"
+                                            ) ?
+                                                "DESC" :
+                                                "ASC"
+                                        });
+                                        setTimeout(() => {
+                                            this.fetchTab();
+                                        }, 1);
+                                    }}>
+                                        DCCID
+                                        {
+                                            (this.state.sortColumn == "CandID") ?
+                                            <span className={
+                                                this.state.sortOrder == "DESC" ?
+                                                'glyphicon glyphicon-triangle-bottom' :
+                                                'glyphicon glyphicon-triangle-top'
+                                            }/> :
+                                            undefined
+                                        }
+                                    </button>
                                 </th>
                                 <th>
-                                    PSCID
+                                    <button className="column-header" onClick={() => {
+                                        this.setState({
+                                            sortColumn : "PSCID",
+                                            sortOrder : (
+                                                this.state.sortColumn == "PSCID" &&
+                                                this.state.sortOrder == "ASC"
+                                            ) ?
+                                                "DESC" :
+                                                "ASC"
+                                        });
+                                        setTimeout(() => {
+                                            this.fetchTab();
+                                        }, 1);
+                                    }}>
+                                        PSCID
+                                        {
+                                            (this.state.sortColumn == "PSCID") ?
+                                            <span className={
+                                                this.state.sortOrder == "DESC" ?
+                                                'glyphicon glyphicon-triangle-bottom' :
+                                                'glyphicon glyphicon-triangle-top'
+                                            }/> :
+                                            undefined
+                                        }
+                                    </button>
                                 </th>
                                 <th>
-                                    Site
+                                    <button className="column-header" onClick={() => {
+                                        this.setState({
+                                            sortColumn : "Name",
+                                            sortOrder : (
+                                                this.state.sortColumn == "Name" &&
+                                                this.state.sortOrder == "ASC"
+                                            ) ?
+                                                "DESC" :
+                                                "ASC"
+                                        });
+                                        setTimeout(() => {
+                                            this.fetchTab();
+                                        }, 1);
+                                    }}>
+                                        Site
+                                        {
+                                            (this.state.sortColumn == "Name") ?
+                                            <span className={
+                                                this.state.sortOrder == "DESC" ?
+                                                'glyphicon glyphicon-triangle-bottom' :
+                                                'glyphicon glyphicon-triangle-top'
+                                            }/> :
+                                            undefined
+                                        }
+                                    </button>
                                 </th>
                                 <th>
-                                    Visit Label
+                                    <button className="column-header" onClick={() => {
+                                        this.setState({
+                                            sortColumn : "Visit_label",
+                                            sortOrder : (
+                                                this.state.sortColumn == "Visit_label" &&
+                                                this.state.sortOrder == "ASC"
+                                            ) ?
+                                                "DESC" :
+                                                "ASC"
+                                        });
+                                        setTimeout(() => {
+                                            this.fetchTab();
+                                        }, 1);
+                                    }}>
+                                        Visit Label
+                                        {
+                                            (this.state.sortColumn == "Visit_label") ?
+                                            <span className={
+                                                this.state.sortOrder == "DESC" ?
+                                                'glyphicon glyphicon-triangle-bottom' :
+                                                'glyphicon glyphicon-triangle-top'
+                                            }/> :
+                                            undefined
+                                        }
+                                    </button>
                                 </th>
                                 <th>
-                                    Subproject
+                                    <button className="column-header" onClick={() => {
+                                        this.setState({
+                                            sortColumn : "title",
+                                            sortOrder : (
+                                                this.state.sortColumn == "title" &&
+                                                this.state.sortOrder == "ASC"
+                                            ) ?
+                                                "DESC" :
+                                                "ASC"
+                                        });
+                                        setTimeout(() => {
+                                            this.fetchTab();
+                                        }, 1);
+                                    }}>
+                                        Subproject
+                                        {
+                                            (this.state.sortColumn == "title") ?
+                                            <span className={
+                                                this.state.sortOrder == "DESC" ?
+                                                'glyphicon glyphicon-triangle-bottom' :
+                                                'glyphicon glyphicon-triangle-top'
+                                            }/> :
+                                            undefined
+                                        }
+                                    </button>
                                 </th>
                                 <th>
-                                    Starts At
+                                    <button className="column-header" onClick={() => {
+                                        this.setState({
+                                            sortColumn : "StartsAt",
+                                            sortOrder : (
+                                                this.state.sortColumn == "StartsAt" &&
+                                                this.state.sortOrder == "ASC"
+                                            ) ?
+                                                "DESC" :
+                                                "ASC"
+                                        });
+                                        setTimeout(() => {
+                                            this.fetchTab();
+                                        }, 1);
+                                    }}>
+                                        Starts At
+                                        {
+                                            (this.state.sortColumn == "StartsAt") ?
+                                            <span className={
+                                                this.state.sortOrder == "DESC" ?
+                                                'glyphicon glyphicon-triangle-bottom' :
+                                                'glyphicon glyphicon-triangle-top'
+                                            }/> :
+                                            undefined
+                                        }
+                                    </button>
                                 </th>
                                 <th>
-                                    Appointment Type
+                                    <button className="column-header" onClick={() => {
+                                        this.setState({
+                                            sortColumn : "AppointmentTypeName",
+                                            sortOrder : (
+                                                this.state.sortColumn == "AppointmentTypeName" &&
+                                                this.state.sortOrder == "ASC"
+                                            ) ?
+                                                "DESC" :
+                                                "ASC"
+                                        });
+                                        setTimeout(() => {
+                                            this.fetchTab();
+                                        }, 1);
+                                    }}>
+                                        Appointment Type
+                                        {
+                                            (this.state.sortColumn == "AppointmentTypeName") ?
+                                            <span className={
+                                                this.state.sortOrder == "DESC" ?
+                                                'glyphicon glyphicon-triangle-bottom' :
+                                                'glyphicon glyphicon-triangle-top'
+                                            }/> :
+                                            undefined
+                                        }
+                                    </button>
                                 </th>
                                 <th>
-                                    Data Entry Status
+                                    <button className="column-header" onClick={() => {
+                                        this.setState({
+                                            sortColumn : "dataEntryStatus",
+                                            sortOrder : (
+                                                this.state.sortColumn == "dataEntryStatus" &&
+                                                this.state.sortOrder == "ASC"
+                                            ) ?
+                                                "DESC" :
+                                                "ASC"
+                                        });
+                                        setTimeout(() => {
+                                            this.fetchTab();
+                                        }, 1);
+                                    }}>
+                                        Data Entry Status
+                                        {
+                                            (this.state.sortColumn == "dataEntryStatus") ?
+                                            <span className={
+                                                this.state.sortOrder == "DESC" ?
+                                                'glyphicon glyphicon-triangle-bottom' :
+                                                'glyphicon glyphicon-triangle-top'
+                                            }/> :
+                                            undefined
+                                        }
+                                    </button>
                                 </th>
                                 <th>
                                     Edit
@@ -628,28 +941,10 @@ export class App extends React.Component {
                                     const appointmentType = this.state.appointmentTypes
                                         .find(at => at.AppointmentTypeID == a.AppointmentTypeID);
 
-                                    let dataEntryStatus = "Unknown";
-                                    let dataEntryLabelColor = "default";
-                                    if (a.started != "1") {
-                                        dataEntryStatus  = "Upcoming";
-                                        dataEntryLabelColor = "default";
-                                    } else if (a.hasDataEntryComplete == "1") {
-                                        if (a.hasDataEntryInProgress == "1" || a.hasDataEntryNotStarted == "1") {
-                                            dataEntryStatus = "In Progress";
-                                            dataEntryLabelColor = "warning";
-                                        } else {
-                                            dataEntryStatus = "Complete";
-                                            dataEntryLabelColor = "success";                                       }
-                                    } else if (a.hasDataEntryInProgress == "1") {
-                                        dataEntryStatus = "In Progress";
-                                        dataEntryLabelColor = "warning";
-                                    } else if (a.hasDataEntryNotStarted == "1") {
-                                        dataEntryStatus = "Not Started";
-                                        dataEntryLabelColor = "warning";
-                                    } else {
-                                        dataEntryStatus = "No Data Found";
-                                        dataEntryLabelColor = "danger";
-                                    }
+                                    const {
+                                        dataEntryStatus,
+                                        dataEntryLabelColor,
+                                    } = deriveDataEntryStatus(a);
 
                                     return (
                                         <tr key={a.AppointmentID}>
@@ -736,7 +1031,7 @@ export class App extends React.Component {
                                                                     ),
                                                                 });
                                                         });
-                                                        wal.close();
+                                                        swal.close();
                                                     } else {
                                                         //swal("Canceled", "The appointment has not been deleted", "error");
                                                         swal.close();
@@ -782,6 +1077,9 @@ export class App extends React.Component {
                             `${this.state.page.meta.itemsFound} items found`
                         }
                     </div>
+                    <button className="btn btn-primary" onClick={this.downloadAsCSV}>
+                        Download Table as CSV
+                    </button>
                 </div>
                 {editAppointmentButton}
             </div>

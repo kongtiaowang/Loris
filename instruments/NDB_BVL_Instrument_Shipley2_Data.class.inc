@@ -258,15 +258,38 @@ class NDB_BVL_Instrument_Shipley2_Data extends NDB_BVL_Instrument
             //uploading values to NIHToolBox_Assessment_Scores
 
             $main_values['Uploaded_Shipley2_Data'] = $file->getDestinationFilename();
+            $fields = array('participant_id','redcap_survey_identifier','relationship','relationship_other',
+                'intake_complete',	'shipley2_timestamp','shipley2_vocab_01','shipley2_vocab_02','shipley2_vocab_03',	'shipley2_vocab_04',	'shipley2_vocab_05',
+                'shipley2_vocab_06', 'shipley2_vocab_07', 'shipley2_vocab_08', 'shipley2_vocab_09', 'shipley2_vocab_10', 'shipley2_vocab_11', 'shipley2_vocab_12',
+                'shipley2_vocab_13', 'shipley2_vocab_14', 'shipley2_vocab_15', 'shipley2_vocab_16', 'shipley2_vocab_17', 'shipley2_vocab_18', 'shipley2_vocab_19',
+                'shipley2_vocab_20', 'shipley2_vocab_21', 'shipley2_vocab_22', 'shipley2_vocab_23', 'shipley2_vocab_24', 'shipley2_vocab_25', 'shipley2_vocab_26',
+                'shipley2_vocab_27', 'shipley2_vocab_28', 'shipley2_vocab_29', 'shipley2_vocab_30', 'shipley2_vocab_31', 'shipley2_vocab_32', 'shipley2_vocab_33',
+                'shipley2_vocab_34', 'shipley2_vocab_35', 'shipley2_vocab_36', 'shipley2_vocab_37', 'shipley2_vocab_38', 'shipley2_vocab_39', 'shipley2_vocab_40',
+                'shipley2_abstract_01', 'shipley2_abstract_02', 'shipley2_abstract_03', 'shipley2_abstract_04', 'shipley2_abstract_05', 'shipley2_abstract_06', 'shipley2_abstract_07',
+                'shipley2_abstract_08', 'shipley2_abstract_09', 'shipley2_abstract_10', 'shipley2_abstract_11', 'shipley2_abstract_12', 'shipley2_abstract_13', 'shipley2_abstract_14',
+                'shipley2_abstract_15', 'shipley2_abstract_16', 'shipley2_abstract_17', 'shipley2_abstract_18', 'shipley2_abstract_19', 'shipley2_abstract_20', 'shipley2_abstract_21',
+                'shipley2_abstract_22', 'shipley2_abstract_23', 'shipley2_abstract_24', 'shipley2_abstract_25', 'shipley_block_01_answer', 'shipley_block_02_answer',
+                'shipley_block_03_answer', 'shipley_block_04_answer', 'shipley_block_05_answer1', 'shipley_block_05_answer2', 'shipley_block_06_answer1', 'shipley_block_06_answer2',
+                'shipley_block_07_answer1', 'shipley_block_07_answer2', 'shipley_block_08_answer1', 'shipley_block_08_answer2', 'shipley_block_09_answer1', 'shipley_block_09_answer2',
+                'shipley_block_10_answer1', 'shipley_block_10_answer2', 'shipley_block_10_answer3', 'shipley_block_10_answer4', 'shipley_block_11_answer1', 'shipley_block_11_answer2',
+                'shipley_block_11_answer3', 'shipley_block_11_answer4', 'shipley_block_12_answer1', 'shipley_block_12_answer2', 'shipley_block_12_answer3', 'shipley_block_12_answer4',
+                'shipley2_complete');
+            //print_r($fields);
 
             $result = array();
             $file = fopen($file->fileInfo['tmp_name'], "r");
+            $ex_header=fgetcsv($file, 0, ",");
+
+            $avail_headers=array_intersect($ex_header,$fields);
+            $avail_header_keys=array_keys($avail_headers);
+
+
             while (!feof($file)) {
                 $data = fgetcsv($file, 0, ",");
-                $outputData = array($data[2], $data[0], $data[1]);
-                for($f=3;$f<=99;$f++)
+                $outputData = array($data[2]);
+                for($f=0;$f<=99;$f++)
                 {
-                    if($f!=5) {
+                    if(in_array($f,$avail_header_keys)) {
                         array_push($outputData, $data[$f]);
                     }
                 }
@@ -277,7 +300,7 @@ class NDB_BVL_Instrument_Shipley2_Data extends NDB_BVL_Instrument
                 }
                 $result[$key][] = $outputData;
             }
-           // print_r($result);
+          //print_r($result);
            // exit;
 //Now, to print it out, this is all I have to do
             $valid=0;
@@ -286,22 +309,6 @@ class NDB_BVL_Instrument_Shipley2_Data extends NDB_BVL_Instrument
                 $upload_values=array();
                 //echo $pscid . "\n";
                 //loop through all unique pscid found and update the date all around
-                $fields = array('participant_id','redcap_survey_identifier','relationship','relationship_other',
-                    'intake_complete',	'shipley2_timestamp','shipley2_vocab_01','shipley2_vocab_02','shipley2_vocab_03',	'shipley2_vocab_04',	'shipley2_vocab_05',
-                    'shipley2_vocab_06', 'shipley2_vocab_07', 'shipley2_vocab_08', 'shipley2_vocab_09', 'shipley2_vocab_10', 'shipley2_vocab_11', 'shipley2_vocab_12',
-                    'shipley2_vocab_13', 'shipley2_vocab_14', 'shipley2_vocab_15', 'shipley2_vocab_16', 'shipley2_vocab_17', 'shipley2_vocab_18', 'shipley2_vocab_19',
-                    'shipley2_vocab_20', 'shipley2_vocab_21', 'shipley2_vocab_22', 'shipley2_vocab_23', 'shipley2_vocab_24', 'shipley2_vocab_25', 'shipley2_vocab_26',
-                    'shipley2_vocab_27', 'shipley2_vocab_28', 'shipley2_vocab_29', 'shipley2_vocab_30', 'shipley2_vocab_31', 'shipley2_vocab_32', 'shipley2_vocab_33',
-                    'shipley2_vocab_34', 'shipley2_vocab_35', 'shipley2_vocab_36', 'shipley2_vocab_37', 'shipley2_vocab_38', 'shipley2_vocab_39', 'shipley2_vocab_40',
-                    'shipley2_abstract_01', 'shipley2_abstract_02', 'shipley2_abstract_03', 'shipley2_abstract_04', 'shipley2_abstract_05', 'shipley2_abstract_06', 'shipley2_abstract_07',
-                    'shipley2_abstract_08', 'shipley2_abstract_09', 'shipley2_abstract_10', 'shipley2_abstract_11', 'shipley2_abstract_12', 'shipley2_abstract_13', 'shipley2_abstract_14',
-                    'shipley2_abstract_15', 'shipley2_abstract_16', 'shipley2_abstract_17', 'shipley2_abstract_18', 'shipley2_abstract_19', 'shipley2_abstract_20', 'shipley2_abstract_21',
-                    'shipley2_abstract_22', 'shipley2_abstract_23', 'shipley2_abstract_24', 'shipley2_abstract_25', 'shipley_block_01_answer', 'shipley_block_02_answer',
-                    'shipley_block_03_answer', 'shipley_block_04_answer', 'shipley_block_05_answer1', 'shipley_block_05_answer2', 'shipley_block_06_answer1', 'shipley_block_06_answer2',
-                    'shipley_block_07_answer1', 'shipley_block_07_answer2', 'shipley_block_08_answer1', 'shipley_block_08_answer2', 'shipley_block_09_answer1', 'shipley_block_09_answer2',
-                    'shipley_block_10_answer1', 'shipley_block_10_answer2', 'shipley_block_10_answer3', 'shipley_block_10_answer4', 'shipley_block_11_answer1', 'shipley_block_11_answer2',
-                    'shipley_block_11_answer3', 'shipley_block_11_answer4', 'shipley_block_12_answer1', 'shipley_block_12_answer2', 'shipley_block_12_answer3', 'shipley_block_12_answer4',
-                    'shipley2_complete');
                 //2 sessions per candidate allowed as per the current files given
                 $count=count($entries);
                 if($count>2)
@@ -311,7 +318,7 @@ class NDB_BVL_Instrument_Shipley2_Data extends NDB_BVL_Instrument
                 foreach ($entries as $i => $entry) {
                     $m=$i+1;
                     $f = 0;
-                    foreach ($fields as &$value) {
+                    foreach ($avail_headers as &$value) {
                         if($m<=$count) {
 
                             $upload_values["{$value}_{$m}"] = $entry[$f];

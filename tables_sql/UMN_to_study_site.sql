@@ -1,0 +1,1 @@
+UPDATE `psc` SET `Study_site`='Y',`Name` ='UMN' WHERE `CenterID`='11';
