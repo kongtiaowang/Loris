@@ -255,15 +255,32 @@ class NDB_BVL_Instrument_Shipley2_Data_Labels extends NDB_BVL_Instrument
             //uploading values to NIHToolBox_Assessment_Scores
 
             $main_values['Uploaded_Shipley2_Data_Labels'] = $file->getDestinationFilename();
+            $fields = array("Participant", "Survey_Identifier","Relationship", "Specify_other_relationship","Complete1","Survey_Timestamp","TALK","COUCH","REMEMBER",
+                'PARDON','HIDEOUS','MASSIVE','PROBABLE','IMPOSTOR','FASCINATE','EVIDENT','NARRATE','HAUL','HILARITY',
+                'IGNORANT','CAPTION','INDICATE','SOLEMN','FORTIFY','MERIT','RENOWN',
+                'FACILITATE','AMULET','STERILE','CORDIAL','SQUANDER','SERRATED','PLAGIARIZE','ORIFICE',
+                'PRISTINE','INNOCUOUS','JOCOSE','RUE','INEXORABLE','DIVEST','MOLLIFY',
+                'QUERULOUS','ABET','DESUETUDE','PEREGRINATE','QUOTIDIAN',"1_2_3_4_5_FILL","whiteblack_shortlong_downFILL","AB_BC_CD_DFILL","10_1_9_2_8_FILL","A_Z_B_Y_C_X_D_FILL",
+                "oh_ho_rat_tar_mood_FILL","escape_scape_cape_FILL","mist_is_wasp_as_pint_in_toneFILL","NE_SE_SE_NW_E_W_N_FILL","12321_23432_34543_456_FILL",
+                "knit_in_spud_up_both_to_stay_FILL","57326_73265_32657_26573_FILL"	,
+                "Scotland_landscape_scapegoat_FILL_ee","3_7_5_11_2_FILL",
+                "tam_tan_rib_rid_rat_raw_hip_FILL",	"G_V_J_T_M_R_FILL",
+                "surgeon_1234567_snore_17635_rogue_FILL",
+                "4_11_7_20_3_FILL",	"two_w_four_r_one_o_three_FILL"	,"thicken_10_founder_4_nectarine_FILL",
+                "3124_82_73_154_46_13_FILL","KW_MS_PP_TN_FILL",
+                "pole_post_FILL","9_6_12_7_3_FILL","trauma_tuna_flight_fit_wife_a_FILL_glossy_gravity");
 
             $result = array();
             $file = fopen($file->fileInfo['tmp_name'], "r");
+            $ex_header=fgetcsv($file, 0, ",");
+            $avail_headers=array_intersect($ex_header,$fields);
+            $avail_header_keys=array_keys($avail_headers);
             while (!feof($file)) {
                 $data = fgetcsv($file, 0, ",");
-                $outputData = array($data[2], $data[0], $data[1]);
-                for($f=3;$f<=72;$f++)
+                $outputData = array($data[2]);
+                for($f=0;$f<=72;$f++)
                 {
-                    if($f!=5) {
+                    if(in_array($f,$avail_header_keys)){
                         array_push($outputData, $data[$f]);
                     }
                 }
@@ -282,20 +299,7 @@ class NDB_BVL_Instrument_Shipley2_Data_Labels extends NDB_BVL_Instrument
                 $upload_values=array();
                 //echo $pscid . "\n";
                 //loop through all unique pscid found and update the date all around
-                $fields = array("Participant", "Survey_Identifier","Relationship", "Specify_other_relationship","Complete1","Survey_Timestamp","TALK","COUCH","REMEMBER",
-                    'PARDON','HIDEOUS','MASSIVE','PROBABLE','IMPOSTOR','FASCINATE','EVIDENT','NARRATE','HAUL','HILARITY',
-                    'IGNORANT','CAPTION','INDICATE','SOLEMN','FORTIFY','MERIT','RENOWN',
-                    'FACILITATE','AMULET','STERILE','CORDIAL','SQUANDER','SERRATED','PLAGIARIZE','ORIFICE',
-                    'PRISTINE','INNOCUOUS','JOCOSE','RUE','INEXORABLE','DIVEST','MOLLIFY',
-                    'QUERULOUS','ABET','DESUETUDE','PEREGRINATE','QUOTIDIAN',"1_2_3_4_5_FILL","whiteblack_shortlong_downFILL","AB_BC_CD_DFILL","10_1_9_2_8_FILL","A_Z_B_Y_C_X_D_FILL",
-                    "oh_ho_rat_tar_mood_FILL","escape_scape_cape_FILL","mist_is_wasp_as_pint_in_toneFILL","NE_SE_SE_NW_E_W_N_FILL","12321_23432_34543_456_FILL",
-                    "knit_in_spud_up_both_to_stay_FILL","57326_73265_32657_26573_FILL"	,
-                    "Scotland_landscape_scapegoat_FILL_ee","3_7_5_11_2_FILL",
-                    "tam_tan_rib_rid_rat_raw_hip_FILL",	"G_V_J_T_M_R_FILL",
-                    "surgeon_1234567_snore_17635_rogue_FILL",
-                    "4_11_7_20_3_FILL",	"two_w_four_r_one_o_three_FILL"	,"thicken_10_founder_4_nectarine_FILL",
-                    "3124_82_73_154_46_13_FILL","KW_MS_PP_TN_FILL",
-                    "pole_post_FILL","9_6_12_7_3_FILL","trauma_tuna_flight_fit_wife_a_FILL_glossy_gravity");
+
                 //2 sessions per candidate allowed as per the current files given
                 $count=count($entries);
                 if($count>2)
@@ -305,7 +309,7 @@ class NDB_BVL_Instrument_Shipley2_Data_Labels extends NDB_BVL_Instrument
                 foreach ($entries as $i => $entry) {
                     $m=$i+1;
                     $f = 0;
-                    foreach ($fields as &$value) {
+                    foreach ($avail_headers as &$value) {
                         if($m<=$count) {
 
                             $upload_values["{$value}_{$m}"] = $entry[$f];

@@ -1,0 +1,1 @@
+ALTER TABLE MASC2_Self_Report MODIFY COLUMN relationship_to_child ENUM('mother','father','step_mother','step_father','clinician','self_report','other') default NULL ;

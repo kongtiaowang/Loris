@@ -84,6 +84,8 @@ class New_Profile extends \NDB_Form
             $startNum = 4000;
         }elseif ($values['ProjectID'] == 10) {
             $startNum = 6000;
+        } elseif ($values['ProjectID'] == 8) {
+            $startNum = 7000;
         }
 
 

@@ -411,6 +411,11 @@ class NDB_BVL_Instrument_SA_Intervention_History extends NDB_BVL_Instrument
             false
         );
         unset($group);
+        $this->addSelect(
+            "nursery_school_hours_per_week",
+            "How many hours a week?",
+            range(0, 40)
+        );
     }
     function _page2Headers($age_range) {
         $group[] =& $this->form->createElement(
@@ -627,7 +632,7 @@ class NDB_BVL_Instrument_SA_Intervention_History extends NDB_BVL_Instrument
             $this->_page2Questions("age_9_10", $i, $type_of_intervention, $hours_array, $mins_array);
         }
         ##### 8. Age 8-9 ######
-        $this->addHeader("<h4>8. Age 10-11 (third grade):</h4>");
+        $this->addHeader("<h4>8. Age 8-9 (third grade):</h4>");
         $this->_page2Headers("age_8_9");
         for ($i=1; $i <= 6; $i++) {
             $this->_page2Questions("age_8_9", $i, $type_of_intervention, $hours_array, $mins_array);

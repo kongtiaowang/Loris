@@ -445,11 +445,13 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
        // $scores["q_17_action_schemes_raw_score"] = $this->_countChecked($record, "q_17_action_schemes_");
         $scores["q_18_actions_towards_other_raw_score"] = $this->_countActionTowardsOther($record, 6);
         $scores["q_19_sequence_action_schemes_raw_score"] = $this->_countAction1($record, 6);
-        if (is_numeric(intval(substr($record["q_20_stacks_tower"], 0, 1)))) {
-            $scores["q_20_stacks_tower_raw_score"] = intval(substr($record["q_20_stacks_tower"], 0, 1));
-        } else {
-            $scores["q_20_stacks_tower_raw_score"] = 0;
-        }
+       if($record["q_20_stacks_tower"]=="not_administered")
+       {
+           $scores["q_20_stacks_tower_raw_score"] = "Not Administered";
+       }
+       else{
+           $scores["q_20_stacks_tower_raw_score"] = intval(substr($record["q_20_stacks_tower"], 0, 1));
+       }
     	
         // Do q16 specially
         // If 2 scores in a category are 0, the rest should be 0 too.

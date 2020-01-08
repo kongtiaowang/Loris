@@ -80,6 +80,7 @@ class Reliability extends \NDB_Menu_Filter
         }
         $id = $site_id[$site];
         return $id;
+
     }
     function _setupVariables()
     {
@@ -95,13 +96,12 @@ class Reliability extends \NDB_Menu_Filter
 
         $this->_populate_reliability_table();
 
-        // the base query
+
         if (isset($_REQUEST['EARLI']) && $_REQUEST['EARLI'] == 1) {
             $extra_where = " AND EARLI_Candidate='yes'";
         } else {
             $extra_where = " AND EARLI_Candidate='no'";
         }
-
         $video_query = "CASE 
                         WHEN videos.record_id IS NULL THEN 'No' 
                         ELSE videos.record_id
@@ -241,12 +241,14 @@ class Reliability extends \NDB_Menu_Filter
                                       'V12' => 'V12',
                                       'V24' => 'V24',
                                       'V36' => 'V36',
+                                      'VSA' => 'VSA'
                                      );
         $list_of_visit_labels_only = array(
                                       'V06' => 'V06',
                                       'V12' => 'V12',
                                       'V24' => 'V24',
                                       'V36' => 'V36',
+                                      'VSA' => 'VSA'
                                      );
         $subproject_options        = \Utility::getSubprojectList();
         $subproject_options        = array(null => 'Any') + $subproject_options;
@@ -264,6 +266,7 @@ class Reliability extends \NDB_Menu_Filter
                                       'aims'          => 'AIMS',
                                       'ados2_module1' => 'ADOS2 Module1',
                                       'ados2_module2' => 'ADOS2 Module2',
+                                      'ados2_module3' => 'ADOS2 Module3',
                                      );
         $list_of_instruments_only  = array(
                                       'csbs'          => 'CSBS',
@@ -274,6 +277,7 @@ class Reliability extends \NDB_Menu_Filter
                                       'aosi'          => 'AOSI',
                                       'ados2_module1' => 'ADOS2 (Module 1)',
                                       'ados2_module2' => 'ADOS2 (Module2)',
+                                      'ados2_module3' => 'ADOS2 (Module3)',
                                      );
         $lock_options     = array(
                              null       => '',
@@ -394,17 +398,23 @@ class Reliability extends \NDB_Menu_Filter
             $this->within_site_flagging_visitlevel("aosi", 0.1, $site, $db, 'V12', 1);
             $this->within_site_flagging_visitlevel("ados_module1", 0.1, $site, $db, 'V24', 1);
             $this->within_site_flagging_visitlevel("ados_module1", 0.1, $site, $db, 'V36', 1);
+            $this->within_site_flagging_visitlevel("ados_module1", 0.1, $site, $db, 'VSA', 1);
             $this->within_site_flagging_visitlevel("ados_module2", 0.1, $site, $db, 'V24', 1);
             $this->within_site_flagging_visitlevel("ados_module2", 0.1, $site, $db, 'V36', 1);
+            $this->within_site_flagging_visitlevel("ados_module2", 0.1, $site, $db, 'VSA', 1);
             $this->within_site_flagging_visitlevel("ados_module3", 0.1, $site, $db, 'V24', 1);
             $this->within_site_flagging_visitlevel("ados_module3", 0.1, $site, $db, 'V36', 1);
+            $this->within_site_flagging_visitlevel("ados_module3", 0.1, $site, $db, 'VSA', 1);
 
             $this->within_site_flagging_visitlevel("ados2_module1", 0.1, $site, $db, 'V24', 1);
             $this->within_site_flagging_visitlevel("ados2_module1", 0.1, $site, $db, 'V36', 1);
+            $this->within_site_flagging_visitlevel("ados2_module1", 0.1, $site, $db, 'VSA', 1);
             $this->within_site_flagging_visitlevel("ados2_module2", 0.1, $site, $db, 'V24', 1);
             $this->within_site_flagging_visitlevel("ados2_module2", 0.1, $site, $db, 'V36', 1);
+            $this->within_site_flagging_visitlevel("ados2_module2", 0.1, $site, $db, 'VSA', 1);
             $this->within_site_flagging_visitlevel("ados2_module3", 0.1, $site, $db, 'V24', 1);
             $this->within_site_flagging_visitlevel("ados2_module3", 0.1, $site, $db, 'V36', 1);
+            $this->within_site_flagging_visitlevel("ados2_module3", 0.1, $site, $db, 'VSA', 1);
 
             //ibis 2 reliability
             $this->within_site_flagging_visitlevel("aims", 0.1, $site, $db, 'V03', 2);
@@ -418,10 +428,13 @@ class Reliability extends \NDB_Menu_Filter
             $this->within_site_flagging("csbs", 0.1, $site, $db, 2);
             $this->within_site_flagging_visitlevel("ados2_module1", 0.1, $site, $db, 'V24', 2);
             $this->within_site_flagging_visitlevel("ados2_module1", 0.1, $site, $db, 'V36', 2);
+            $this->within_site_flagging_visitlevel("ados2_module1", 0.1, $site, $db, 'VSA', 2);
             $this->within_site_flagging_visitlevel("ados2_module2", 0.1, $site, $db, 'V24', 2);
             $this->within_site_flagging_visitlevel("ados2_module2", 0.1, $site, $db, 'V36', 2);
+            $this->within_site_flagging_visitlevel("ados2_module2", 0.1, $site, $db, 'VSA', 2);
             $this->within_site_flagging_visitlevel("ados2_module3", 0.1, $site, $db, 'V24', 2);
             $this->within_site_flagging_visitlevel("ados2_module3", 0.1, $site, $db, 'V36', 2);
+            $this->within_site_flagging_visitlevel("ados2_module3", 0.1, $site, $db, 'VSA', 2);
         }
 
         foreach ($site_list as $site) {
@@ -432,16 +445,22 @@ class Reliability extends \NDB_Menu_Filter
 
             $this->cross_site_flagging_visitlevel("ados_module1", $site, array_remove($site, $site_list), $db, 'V24', 1);
             $this->cross_site_flagging_visitlevel("ados_module1", $site, array_remove($site, $site_list), $db, 'V36', 1);
+            $this->cross_site_flagging_visitlevel("ados_module1", $site, array_remove($site, $site_list), $db, 'VSA', 1);
             $this->cross_site_flagging_visitlevel("ados_module2", $site, array_remove($site, $site_list), $db, 'V24', 1);
             $this->cross_site_flagging_visitlevel("ados_module2", $site, array_remove($site, $site_list), $db, 'V36', 1);
+            $this->cross_site_flagging_visitlevel("ados_module2", $site, array_remove($site, $site_list), $db, 'VSA', 1);
             $this->cross_site_flagging_visitlevel("ados_module3", $site, array_remove($site, $site_list), $db, 'V24', 1);
             $this->cross_site_flagging_visitlevel("ados_module3", $site, array_remove($site, $site_list), $db, 'V36', 1);
+            $this->cross_site_flagging_visitlevel("ados_module3", $site, array_remove($site, $site_list), $db, 'VSA', 1);
             $this->cross_site_flagging_visitlevel("ados2_module1", $site, array_remove($site, $site_list), $db, 'V24', 1);
             $this->cross_site_flagging_visitlevel("ados2_module1", $site, array_remove($site, $site_list), $db, 'V36', 1);
+            $this->cross_site_flagging_visitlevel("ados2_module1", $site, array_remove($site, $site_list), $db, 'VSA', 1);
             $this->cross_site_flagging_visitlevel("ados2_module2", $site, array_remove($site, $site_list), $db, 'V24', 1);
             $this->cross_site_flagging_visitlevel("ados2_module2", $site, array_remove($site, $site_list), $db, 'V36', 1);
+            $this->cross_site_flagging_visitlevel("ados2_module2", $site, array_remove($site, $site_list), $db, 'VSA', 1);
             $this->cross_site_flagging_visitlevel("ados2_module3", $site, array_remove($site, $site_list), $db, 'V24', 1);
             $this->cross_site_flagging_visitlevel("ados2_module3", $site, array_remove($site, $site_list), $db, 'V36', 1);
+            $this->cross_site_flagging_visitlevel("ados2_module3", $site, array_remove($site, $site_list), $db, 'VSA', 1);
 
             // IBIS2 reliability
             $this->cross_site_flagging("aosi", $site, array("UofA"), $db, 2);
@@ -450,10 +469,13 @@ class Reliability extends \NDB_Menu_Filter
 
             $this->cross_site_flagging_visitlevel("ados2_module1", $site, array_remove($site, $site_list), $db, 'V24', 2);
             $this->cross_site_flagging_visitlevel("ados2_module1", $site, array_remove($site, $site_list), $db, 'V36', 2);
+            $this->cross_site_flagging_visitlevel("ados2_module1", $site, array_remove($site, $site_list), $db, 'VSA', 2);
             $this->cross_site_flagging_visitlevel("ados2_module2", $site, array_remove($site, $site_list), $db, 'V24', 2);
             $this->cross_site_flagging_visitlevel("ados2_module2", $site, array_remove($site, $site_list), $db, 'V36', 2);
+            $this->cross_site_flagging_visitlevel("ados2_module2", $site, array_remove($site, $site_list), $db, 'VSA', 2);
             $this->cross_site_flagging_visitlevel("ados2_module3", $site, array_remove($site, $site_list), $db, 'V24', 2);
             $this->cross_site_flagging_visitlevel("ados2_module3", $site, array_remove($site, $site_list), $db, 'V36', 2);
+            $this->cross_site_flagging_visitlevel("ados2_module3", $site, array_remove($site, $site_list), $db, 'VSA', 2);
             //ados2 module3
 
         }
@@ -471,6 +493,7 @@ class Reliability extends \NDB_Menu_Filter
         if ($current_site == "STL" && ($instrument == "aosi")) {
             $phi_site_clause = " AND Date_taken >= '2010-02-15' ";
         }
+
 
         $instrument_records = $db->pselect("SELECT i.CommentID FROM {$instrument} as i, flag as f, session as s, candidate as c WHERE i.CommentID=f.CommentID AND f.sessionID=s.ID AND s.CandID = c.CandID AND s.Current_stage<>'Recycling Bin' AND f.Data_entry='Complete' AND i.CommentID LIKE CONCAT('%',:currpsc,'%') AND s.visit_label<>'v18' AND i.CommentID NOT LIKE 'DDE%' {$phi_site_clause} AND f.Administration <> 'None' AND c.ProjectID =:pid ORDER BY RIGHT(i.CommentID, 6)", array("currpsc"=>$current_site,"pid"=>$projectID));
         $params = array();
@@ -697,7 +720,6 @@ AND s.Current_stage<>'Recycling Bin') as t",$params1);
         if ($current_site == "STL" && ($instrument == "aosi")) {
             $phi_site_clause = " AND Date_taken >= '2010-02-15' ";
         }
-
         $instrument_records = $db->pselect("SELECT i.CommentID FROM {$instrument} as i, flag as f, session as s, candidate as c WHERE i.CommentID=f.CommentID AND f.sessionID=s.ID AND s.CandID = c.CandID AND s.Current_stage<>'Recycling Bin' AND f.Data_entry='Complete' AND i.CommentID LIKE CONCAT('%',:currpsc,'%') AND s.visit_label=:vl {$query_extra} AND i.CommentID NOT LIKE 'DDE%' {$phi_site_clause} AND f.Administration <> 'None' AND c.ProjectID =:pid ORDER BY RIGHT(i.CommentID, 6)", array("currpsc"=>$current_site,"vl"=>$visit_label,"pid"=>$projectID));
         $params = array();
         $params['currentSite']    = $current_site;
@@ -739,7 +761,6 @@ AND s.Current_stage<>'Recycling Bin') as t",$params1);
         // echo("Site: {$current_site} <BR>");
         // echo($current_count . " --- " . $total_count . "<BR>");
         // echo("Max (ratio: {$ratio}/jump: {$jump_step}): {$max} <BR><BR>");
-
         for ($i = 0; $i < count($instrument_records) && $current_count + 1 <= $max; $i += 2) {
             $commentID = $instrument_records[$i]["CommentID"];
             if (!find_cID($commentID, $this->reliability_table)) {

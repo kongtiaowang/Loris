@@ -24,7 +24,7 @@ class schedule_module extends \NDB_Page {
                      )
                 );
     }
-    
+
     function getCSSDependencies()
     {
         $factory = \NDB_Factory::singleton();

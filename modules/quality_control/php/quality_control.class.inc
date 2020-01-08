@@ -53,16 +53,36 @@ class Quality_Control extends \NDB_Menu_Filter
         $config = \NDB_Config::singleton();
         $db     = \Database::singleton();
 
-        $toTable_scan_types = $config->getSetting('tblScanTypes');
-
+        //-------------------------------------------//
+        // Build associative array of all scan types //
+        //-------------------------------------------//
         $all_scan_types_2d = $db->pselect(
             "SELECT ID, Scan_type FROM mri_scan_type mri",
             array()
         );
-
         foreach ($all_scan_types_2d as $row) {
-            $type = $row['Scan_type'];
-            $all_scan_types[$row['ID']] = $type;
+            $all_scan_types[$row['ID']] = $row['Scan_type'];
+        }
+
+        //---------------------------------------------------------------//
+        // Build array of the scan types that belong to any of the scan  //
+        // type groups listed in $toTable_scan_type_groups               //
+        //---------------------------------------------------------------//
+        $toTable_scan_type_groups = $config->getSetting('tblScanTypeGroups');
+
+        $query = sprintf(
+            "
+             SELECT DISTINCT ID, Scan_type
+             FROM mri_scan_type mri
+             JOIN mri_scan_type_groups_rel mstgr ON (mri.ID=mstgr.MriScanTypeID)
+             JOIN mri_scan_type_groups mstg ON (mstgr.MriScanTypeGroupID=mstg.MriScanTypeGroupID)
+             WHERE mstg.Name IN (%s)
+            ",
+            implode(",", array_fill(0, count($toTable_scan_type_groups), '?'))
+        );
+        $scan_types_in_all_groups_2d = $db->pselect($query, $toTable_scan_type_groups);
+        foreach ($scan_types_in_all_groups_2d as $row) {
+            $scan_types_in_all_groups[$row['ID']] = $row['Scan_type'];
         }
 
         // Get the intersection between all the scan types and those
@@ -72,8 +92,8 @@ class Quality_Control extends \NDB_Menu_Filter
         // acquisition protocol ID/scan type) combination.
         $scan_id_types =array_flip(
             array_intersect_key(
-                array_flip($all_scan_types),
-                array_flip($toTable_scan_types)
+                array_flip($scan_types_in_all_groups),
+                array_flip($all_scan_types)
             )
         );
         $scan_types    =[];
@@ -81,6 +101,7 @@ class Quality_Control extends \NDB_Menu_Filter
         foreach ($scan_id_types as $scan) {
             $scan_types[$scan] = $scan;
         }
+        
         return $scan_types;
     }
 
@@ -95,9 +116,44 @@ class Quality_Control extends \NDB_Menu_Filter
      *
      * @return string $query for the given modality
      */
-    function _buildQuery($scan_type, $scan_done, $acqID)
+    function _buildQuery($scan_type, $mriPfColumn, $mriPfTable, $acqID, $mriPfDoneValues)
     {
+        $mriPfTableAlias ='';
+        $noMriPf = 0;
+        
+        // Set the value of $mriPfTable to be the table alias used in 
+        // the SQL statement below
+        switch ($mriPfTable) {
+            case null: 
+                $noMriPf = 1;
+                break;
+            case 'mri_parameter_form_sa':
+                $mriPfTableAlias = 'm_sa';
+                break;
+            case 'mri_parameter_form': 
+                $mriPfTableAlias = 'm';
+                break;
+            default: throw new \InvalidArgumentException("Unsupported MRI parameter form table $mriPfTable");
+        }
+        
+        $scanDoneSQL = '';
+        if($noMriPf || is_null($mriPfTable) || is_null($mriPfColumn)) {
+            $scanDoneSQL = "''";
+        } else {
+            $db =& \Database::singleton();
+            $mriPfDoneValueSet = is_null($mriPfDoneValues)
+                ? ''
+                : $db->quote(implode(',', $mriPfDoneValues));
 
+            $scanDoneSQL = "
+                CASE
+                  WHEN {$mriPfTableAlias}.$mriPfColumn IS NULL THEN ''
+                  WHEN FIND_IN_SET({$mriPfTableAlias}.$mriPfColumn, $mriPfDoneValueSet)>0 THEN 'Yes'
+                  ELSE 'No'
+                END
+            ";
+        }
+        
         $select =  " SELECT DISTINCT
            c.PSCID,
            s.ID as SessionID,
@@ -158,12 +214,7 @@ class Quality_Control extends \NDB_Menu_Filter
               WHEN m.Data_entry_completion_status='Incomplete' THEN 'Incomplete'
               ELSE 'Complete'
            END AS mri_parameter_form,
-           CASE
-              WHEN m.".$scan_done." IS NULL THEN ''
-              WHEN (m.".$scan_done." = 'Complete'
-              OR m.".$scan_done." = 'Partial') THEN 'Yes'
-              ELSE 'No'
-           END as scan_done,
+           $scanDoneSQL as scan_done,
            CASE
               WHEN (fi.fileID IS NULL AND mvl.PatientName IS NULL) THEN 'Missing'
               WHEN fi.fileID IS NOT NULL THEN 'In Imaging Browser'
@@ -181,6 +232,7 @@ class Quality_Control extends \NDB_Menu_Filter
         $joins = " FROM flag f
         LEFT JOIN session s ON (f.SessionID=s.ID)
         LEFT JOIN mri_parameter_form m ON (m.CommentID=f.CommentID)
+        LEFT JOIN mri_parameter_form_sa m_sa ON (m_sa.CommentID=f.CommentID)
         LEFT JOIN tarchive t ON (t.SessionID=s.ID)".
             " LEFT JOIN files fi ON (fi.SessionID=s.ID AND
         fi.AcquisitionProtocolID=".$acqID.")".
@@ -193,8 +245,8 @@ class Quality_Control extends \NDB_Menu_Filter
 
         $where = " WHERE 1=1
           AND NOT f.CommentID LIKE 'DDE%'
-          AND f.Test_name='mri_parameter_form'
-          AND s.Active='Y'
+          AND f.Test_name=" . (is_null($mriPfTable) ? "''" : "'$mriPfTable'") .
+        " AND s.Active='Y'
           AND s.CenterID <> '1' ";
 
         $query = $select.$joins.$where;
@@ -319,6 +371,78 @@ class Quality_Control extends \NDB_Menu_Filter
         );
         return true;
     }
+    
+    /**
+     * Gets the name of the table where the MRI parameter form info is stored
+     * for the given scan type.
+     * 
+     * @param $scanType a scan type from table mri_scan_types.
+     * 
+     * @return string the table name.
+     */
+    function _getMriPfTableName(string $scanType) : ?string
+    {
+        if (preg_match('/SA$/', $scanType)) {
+            return 'mri_parameter_form_sa';
+        } elseif (preg_match('/EP$/', $scanType)) {
+            return null;
+        } 
+
+        return 'mri_parameter_form';
+    }
+    
+    /**
+     * Gets the name of the column in the table returned by _getMriPfTableName
+     * that tells whether the given scan type was acquired or not.
+     * 
+     * @param string $scanType a scan type from table mri_scan_types.
+     * 
+     * @return string the column name.
+     */
+    function _getMriPfColumnName(string $scanType) : ?string
+    {
+        switch ($scanType) {
+            case 't1w':
+            case 't1relx':      return 'T1_Scan_done';
+            case 't2w':         return 'T2_Scan_done';
+            case 'dti':         return 'DTI_Scan_done';
+            case 'DTI65':  
+            case 'DTI65_B1000': return 'DTI65_Scan_done';
+            case 'fMRI':        return 'BOLD_Scan_done';
+            case 'T1wNormSA':
+            case 'T1wRawSA':    return 't1w_acquired';
+            case 'T2wNormSA':
+            case 'T2wRawSA':    return 't2w_acquired';
+        }
+        
+        return null;
+    }
+
+    /**
+     * Gets the set of values in the column whose name is returned by
+     * _getMriPfColumnName indicating the a partial or complete (including multiple)
+     * scan of the given type was acquired.
+     * 
+     * @param string $scanType a scan type from table mri_scan_types.
+     * 
+     * @return array the set of values as an array of strings.
+     */
+    function _getMriPfDoneValues(string $scanType) : ?array
+    {
+        if (preg_match('/EP$/', $scanType)) {
+            return null;
+        }
+        
+        switch ($scanType) {
+            case 'T1wRawSA':
+            case 'T1wNormSA':
+            case 'T2RawSA':
+            case 'T2NormSA': return array('Yes_2', 'Yes_1');
+        }
+        
+        return array('Complete', 'Partial');
+    }
+    
     /**
      * Build a list of imaging QC to display in Data Table
      *
@@ -338,23 +462,16 @@ class Quality_Control extends \NDB_Menu_Filter
                 "SELECT ID FROM mri_scan_type WHERE Scan_type=:scan_type",
                 $query_params
             );
-            if (substr("$scan_type", 0, 2) == "t1") {
-                $scans_done[$scan_type] = "T1_Scan_done";
-            } elseif (substr("$scan_type", 0, 3) == "t2w") {
-                $scans_done[$scan_type] = "T2_Scan_done";
-            } elseif (substr("$scan_type", 0, 3) == "dti") {
-                $scans_done[$scan_type] = "dti_Scan_done";
-            } else {
-                $scans_done[$scan_type] = $scan_type . "_Scan_done";
-            }
         }
 
         foreach ($scan_types as $scan_type) {
-            $scan_types[$scan_type]
-                = $this->_buildQuery(
+            $mriPfDoneValues = $this->_getMriPfDoneValues($scan_type);
+            $scan_types[$scan_type] = $this->_buildQuery(
                 $scan_type,
-                $scans_done[$scan_type],
-                $acq_IDs[$scan_type]
+                $this->_getMriPfColumnName($scan_type),
+                $this->_getMriPfTableName($scan_type),
+                $acq_IDs[$scan_type],
+                $mriPfDoneValues
             );
         }
 
