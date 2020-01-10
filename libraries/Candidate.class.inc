@@ -1,75 +1,115 @@
-<?php
+<?php declare(strict_types=1);
 /**
- * OVERRIDDEN BY IBIS SO THAT IBISID CAN BE GENERATED.
- * ALSO, TO MAKE IBIS2 CANDIDATES START WITH "1".
- * ALSO, TO HANDLE CANDIDATE PLAN FOR IBIS2
+ * This file contains a class which is a wrapper around the concept
+ * of a candidate in Loris.
  *
- * Candidate class
- * @package main
+ * PHP Version 7
+ *
+ * @category Main
+ * @package  Loris
+ * @author   Alex Zijdenbos <zijdenbos@example.com>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
-//require_once("Site.class.inc");
-//require_once("PEAR.php");
-
+/* Define constants used by the file */
 // error codes
 define('CANDIDATE_INVALID', 1);
 define('PSCID_NOT_SPECIFIED', 2);
 define('PSCID_NOT_UNIQUE', 3);
 define('PSCID_INVALID_STRUCTURE', 4);
-
+define('EDC_NOT_SPECIFIED', 5);
 // id ranges...
 define('CANDIDATE_MIN_CANDID', 100000);
 define('CANDIDATE_MAX_CANDID', 999999);
 define('CANDIDATE_MIN_PSCID', 1000);
 define('CANDIDATE_MAX_PSCID', 9999);
-
+/**
+ * Wrapper around a candidate in Loris. Mostly, it gets information
+ * from the candidate table, but this class is abstract enough that
+ * it could get information from other places too such as parameter_candidate
+ * if relevant.
+ *
+ * @category Main
+ * @package  Loris
+ * @author   Alex Zijdenbos <zijdenbos@example.com>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris-Trunk/
+ */
 class Candidate
 {
     var $candidateInfo;
     var $listOfTimePoints;
 
-    function &singleton($candID)
+    /**
+     * This returns a single Candidate object for the given
+     * candID, and will only ever instantiate one object in
+     * the event that it's called multiple times.
+     *
+     * @param integer $candID A 6 digit Loris CandID that matches
+     *                        a candidate in the candidate table
+     *
+     * @return Candidate the Candidate object
+     * @static
+     */
+    static public function &singleton(int $candID)
     {
         $candidateList =& $GLOBALS['__candidateObjects'];
-        if(!isset($candidateList[$candID])) {
+        if (!isset($candidateList[$candID])) {
             $candidateList[$candID] = new Candidate();
-            $success = $candidateList[$candID]->select($candID);
-
+            $candidateList[$candID]->select($candID);
         }
 
         return $candidateList[$candID];
     }
-    
-    function select($candID)
+
+    /**
+     * This does the work of selecting the candidate and related
+     * information from the database and populating it into the
+     * Candidate object. Used by singleton method.
+     *
+     * @param integer $candID The 6 digit Loris CandID
+     *
+     * @return void As a side-effect loads candidate into current
+     *              object
+     * @throws DatabaseException | LorisException
+     */
+    public function select(int $candID): void
     {
-        // right off, set the candID
-        $candID = trim($candID);
-        $config = NDB_Config::singleton();
+        $factory = NDB_Factory::singleton();
+        $config  = $factory->config();
+
+        $CandArray = array('Candidate' => $candID);
+
         // make a local reference to the Database object
-        $db = Database::singleton();
+        $db = $factory->database();
 
         // get candidate data from database
-        $query = "SELECT c.CenterID, c.CandID, c.PSCID, c.DoB, c.EDC, c.Gender, p.Name 
-          AS PSC, c.Ethnicity, c.Active, u1.Real_name as RegisteredBy, c.UserID, c.Entity_type, c.ProjectID 
-          FROM candidate as c left join psc as p using (CenterID) left join users as u1 on (u1.UserID = c.RegisteredBy) 
-          WHERE c.CandID=:candidateID AND c.Active = 'Y'";
-        $row = array();
-        $row = $db->pselectRow($query, array('candidateID' => $candID));
-        
+        $query = "SELECT c.RegistrationCenterID, c.CandID, c.PSCID, c.DoB, 
+            c.EDC, c.Sex, c.Entity_type,
+            p.Name AS PSC, c.Ethnicity,
+            c.Active, u1.Real_name as RegisteredBy, c.UserID, c.ProjectID
+            FROM candidate as c
+            LEFT JOIN psc as p ON (p.CenterID=c.RegistrationCenterID)
+            LEFT JOIN users as u1 ON (u1.UserID = c.RegisteredBy)
+            WHERE c.CandID=:Candidate AND c.Active = 'Y'";
+
+        $row = $db->pselectRow($query, $CandArray);
 
         if (!is_array($row) || sizeof($row) == 0) {
-            throw new LorisException("Could not select Candidate data from the database (DCCID: $candID)", 
-                                     CANDIDATE_INVALID);
+            throw new LorisException(
+                "Could not select Candidate data from the database (DCCID: $candID)",
+                CANDIDATE_INVALID
+            );
         }
 
         // store user data in object property
-        foreach($row AS $key=>$value) {
+        foreach ($row AS $key=>$value) {
             $this->candidateInfo[$key] = $value;
         }
-        
-        if ($config->getSetting('useProjects') === 'true') {
-            $this->candidateInfo['ProjectTitle'] = $this->getProjectTitle();
-        }
+
+        $this->candidateInfo['ProjectTitle'] = $this->getProjectTitle();
+
         $headerSetting = $config->getSetting('HeaderTable');
         if (!empty($headerSetting)) {
             $params = array();
@@ -79,24 +119,30 @@ class Candidate
             }
             foreach ($parameterCandSettings as $parameter_type) {
                 $row = $db->pselectRow(
-                        "SELECT Value, pt.Description
-                        FROM candidate c
-                        JOIN parameter_candidate pc ON (pc.CandID=c.CandID)
-                        LEFT JOIN parameter_type pt ON
-                        (pc.ParameterTypeID=pt.ParameterTypeID)
-                        WHERE c.CandID=:Candidate AND pt.Name=:PTName",
-                        array(
-                            'Candidate' => $candID,
-                            'PTName'    => $parameter_type,
-                            )
-                        );
+                    "SELECT Value, pt.Description
+                    FROM candidate c
+                    JOIN parameter_candidate pc ON (pc.CandID=c.CandID)
+                    LEFT JOIN parameter_type pt ON
+                    (pc.ParameterTypeID=pt.ParameterTypeID)
+                    WHERE c.CandID=:Candidate AND pt.Name=:PTName",
+                    array(
+                     'Candidate' => $candID,
+                     'PTName'    => $parameter_type,
+                    )
+                );
+                // Sanitize values coming from the parameter_candidate table
+                // before injecting them into the HTML table.
                 if (!empty($row['Value'])) {
-                    $params[$row['Description']] = $row['Value'];
+                    $params[$row['Description']] = htmlentities(
+                        $row['Value'],
+                        ENT_QUOTES,
+                        'UTF-8'
+                    );
                 }
             }
+
             $this->candidateInfo['DisplayParameters'] = $params;
         }
-
         // check that PSCID matches CandID when entered into the boxes
         // on the candidate_list form (and is therefore trying to open
         // the timepoint_list page, which is why the if statement checks
@@ -113,536 +159,152 @@ class Candidate
                 trim($_REQUEST['PSCID'])
             ) != strtolower($this->getPSCID())
             ) {
-                throw new Exception("IDs do not match");
+                throw new LorisException("IDs do not match");
             }
         }
 
         // get Time Point SessionIDs for the $candID
         // select ALL of them - later you can filter out cancelled and inactive ones
-        $query = "SELECT s.ID FROM session as s WHERE s.CandID=:candidateID AND s.Active='Y' ORDER BY ID";
-        $row = $db->pselect($query, array('candidateID' => $candID));
+        $query = "SELECT s.ID FROM session as s
+            WHERE s.CandID=:Candidate AND s.Active='Y'
+            ORDER BY ID";
+        $row   = $db->pselect($query, $CandArray);
 
         // store user data in object property
-        foreach($row AS $value) {
-            $this->listOfTimePoints[] = $value["ID"];
+        foreach ($row AS $value) {
+            $this->listOfTimePoints[] = intval($value["ID"]);
         }
-   }
-   
-   /**
-   * creates a new candidate, assigning CandID and PSCID - MUST be called statically
-   *
-   * @param int    $centerID    centerID of the site to which the candidate will belong
-   * @param string $dateOfBirth date of birth written as YYYY-MM-DD
-   * @param string $edc         estimated date of confinement written as YYYY-MM-DD
-   * @param string $gender      gender, either 'Male' or 'Female'
-   * @param string $PSCID       PSCID specified by the user, if available
-   * @return int   $candID      candidate id of the new candidate
-   * @throws PEAR::Error
-   * @static
-   */
-   function createNew($centerID, $dateOfBirth, $edc, $gender, $PSCID=null, $startNumber=0)
-   {
-       if(isset($this) && (!empty($this->candidateInfo['candID']))) {
-           throw new LorisException("createNew must be called statically");
-       }
-       
-       $db =& Database::singleton();
-       
-       $site =& Site::singleton($centerID);
-       
-       $user =& User::singleton($_SESSION['State']->getUsername());
-       
-       // generate candid
-       $candID = Candidate::_generateCandID();
 
-       // figure out how to generate PSCID
-       $config =& NDB_Config::singleton();
-       $PSCIDSettings = $config->getSetting('PSCID');
-
-
-       if($PSCIDSettings['generation'] == 'user') {
-           // check pscid is specified
-           if(empty($PSCID)) {
-               throw new LorisException("PSCID must be specified", PSCID_NOT_SPECIFIED);
-           }
-
-           // check pscid structure
-           if(!Candidate::validatePSCID($PSCID, $site->getSiteAlias())) {
-               throw new LorisException("PSCID has an invalid structure", PSCID_INVALID_STRUCTURE);
-           }
-
-           // check pscid uniqueness
-           if($db-pselectOne("SELECT count(PSCID) FROM candidate WHERE PSCID=:pID", array('pID' => $PSCID)) > 0) {
-               throw new LorisException("PSCID not unique", PSCID_NOT_UNIQUE);
-           }
-       } else {           
-           $PSCID = Candidate::_generatePSCID($site->getSiteAlias(), $startNumber);
-       }
-       
-       $ibisid = Candidate::_generateID("IBIS");
-       $drexid = Candidate::_generateID("DREX");
-       $hopid  = Candidate::_generateID("HOP");
-       $kingid = Candidate::_generateID("KING");
-       $oriid  = Candidate::_generateID("ORI");
-       $parentid = Candidate::_generateID("PARENT");
-       
-       // insert the new candidate into the database
-       $setArray = array('CandID'       => $candID,
-                         'CenterID'     => $centerID,
-                         'PSCID'        => $PSCID,
-                         'DoB'          => $dateOfBirth,
-                         'EDC'          => $edc,
-                         'Gender'       => $gender,
-                         'Date_active'  => date('Y-m-d'),
-                         'Date_registered' => date('Y-m-d'),
-                         'Entity_type'  => 'Human',
-                         'RegisteredBy' => $user->getUsername(),
-                         'UserID'       => $user->getUsername(),
-                         'IBISID'       => $ibisid,
-                         'DREXID'       => $drexid,
-                         'HOPID'        => $hopid,
-                         'KINGID'       => $kingid,
-                         'ORIID'        => $oriid,
-                         'PARENTID'     => $parentid
-                         );
-       
-       $db->insert('candidate', $setArray);
-       
-       // return the new candid
-       return $candID;
-   }
-
-    /**
-     * @return array list of SessionIDs w/ 1st Time Point indexed to 0
-     */
-    function getListOfTimePoints()
-    {
-        return $this->listOfTimePoints;
     }
 
     /**
-     * @return array with SessionIDs w/ 1st Time Point indexed to 0
-     */
-    function getSessionID($visitNo)
-    {
-        return $this->listOfTimePoints[$visitNo-1];
-    }
-
-    function getData($var = null)
-    {
-        if (is_null($var)) {
-            return $this->candidateInfo;
-        }
-        else {
-            return $this->candidateInfo[$var];
-        }
-    }
-
-    function setData($var, $value=null)
-    {
-        if(!is_array($var)) {
-            $setData = array($var=>$value);
-        } else {
-            $setData = $var;
-        }
-
-        $this->candidateInfo = array_merge($this->candidateInfo, $setData);
-
-        $db =& Database::singleton();
-        $success = $db->update('candidate', $setData, array('CandID'=>$this->getData('CandID')));
-        return true;
-    }
-
-    function getProjectID()
-    {
-        return $this->candidateInfo["ProjectID"];
-    }
-   /**
-     * Returns the name of the candidate's project from the
-     * config file
+     * Creates a new candidate, assigning CandID and PSCID.
      *
-     * @return string Project name
-     */
-    function getProjectTitle()
-    {
-        $ProjectList = Utility::getProjectList();
-        return $ProjectList[$this->getProjectID()];
-    }
-
-   function getCandID()
-    {
-        return $this->candidateInfo["CandID"];
-    }
-
-
-    function getPSCID()
-    {
-        return $this->candidateInfo["PSCID"];
-    }
-
-    function getCandidateSite()
-    {
-        return $this->candidateInfo["PSC"];
-    }
-    
-    function getCenterID()
-    {
-        return $this->candidateInfo["CenterID"];
-    }
-
-    function getCandidateDoB()
-    {
-        return $this->candidateInfo["DoB"];
-    }
-
-    function getCandidateEDC()
-    {
-        return $this->candidateInfo["EDC"];
-    }
-
-    function getCandidateGender()
-    {
-        return $this->candidateInfo["Gender"];
-    }
-
-    function getCandidateEthnicity()
-    {
-        return $this->candidateInfo["Ethnicity"];
-    }
-
-    function getCandidateZIP()
-    {
-        return $this->candidateInfo["ZIP"];
-    }
-
-    function isActive()
-    {
-        return $this->candidateInfo["Active"];
-    }
-
-    function registeredBy()
-    {
-        return $this->candidateInfo["RegisteredBy"];
-    }
-
-    function lastRecordChangeBy()
-    {
-        return $this->candidateInfo["UserID"];
-    }
-    
-    /**
-     * returns the list of visit labels w/ corresponding SessionID (session.ID field) as key
-     *@return array $visitLabelArray - format SessionID=>Visit_label
-     *@throws PEAR:Error
-     */
-    function getListOfVisitLabels()
-    {
-        //make sure it returns an array
-        $visitLabelArray = array();
-
-        $candID=$this->getCandID();
-       // make a local reference to the Database object
-        $db =& Database::singleton();
-
-        $query  = "SELECT ID, Visit_label FROM session WHERE CandID=:candidateID AND Active='Y' ORDER BY ID";
-        $result = $db->pselect($query, array('candidateID' => $candID));
-
-        // map the array [VisitNo]=>Visit_label
-        foreach ($result as $row) {
-            $visitLabelArray[$row["ID"]] = $row["Visit_label"];
-        }
-        return $visitLabelArray;
-    }
-    
-    function getFirstVisit() {
-        $candID = $this->getCandID();
-        $db =& Database::singleton();
-
-        $query  = "SELECT Visit_label FROM session s JOIN candidate c ON (c.CandID = s.CandID)
-            WHERE c.CandID=:cid AND Visit_label NOT LIKE '%Screening%' AND Date_Visit IS NOT NULL
-            ORDER BY Date_Visit";
-        $where  = array('cid'=>$candID);
-        $vLabel = $db->pselectOne($query, $where);
-
-        return $vLabel;
-    }
-
-    /**
-     * return the next visit number for the time point you are
-     * trying to register
-     * can be called statically
-     *@throws PEAR:Error
-     */
-    function getNextVisitNo()
-    {
-        $candID=$this->getCandID();
-        // make a local reference to the Database object
-        $db =& Database::singleton();
-
-        $query  = "SELECT IFNULL(max(VisitNo)+1, 1) AS nextVisitNo FROM session WHERE CandID=:candidateID AND (Active='Y' OR Active is null) GROUP BY CandID";
-        $result = $db->pselectRow($query, array('candidateID' => $candID));
-        
-        //return the next visit No
-        return $result["nextVisitNo"];
-    }
-
-    /**
-     * return the suggested visit label for the time point you are
-     * trying to register
-     * can be called statically
-     *@throws PEAR:Error
-     */
-    function getNextVisitLabel()
-    {
-        $config =& NDB_Config::singleton();
-        $visitLabelSettings = $config->getSetting('visitLabel');
-        
-        $candID=$this->getCandID();
-        // make a local reference to the Database object
-        $db =& Database::singleton();
-
-        if($visitLabelSettings['generation'] == 'user' && !empty($visitLabelSettings['suggest'])) {
-            $existingVisitLabels = $this->getListOfVisitLabels();
-            $query  = "SELECT IFNULL(max(VisitNo)+1, 1) AS nextVisitLabel FROM session WHERE CandID=:candidateID AND (Active='Y' OR Active is null) GROUP BY CandID";
-            $result = $db->pselectRow($query, array('candidateID' => $candID));
-    
-            $nextVisitLabel = $result['nextVisitLabel'];
-            if(!empty($existingVisitLabels)){
-                while(in_array($nextVisitLabel, $existingVisitLabels)) {
-                    $nextVisitLabel++;
-                }
-            } else {
-                // display V1 as a suggested visit label when starting the 1st timepoint
-                $nextVisitLabel = '1';
-            }
-            
-            $nextVisitLabel = str_replace('%value%', $nextVisitLabel, $visitLabelSettings['suggest']);
-        }
-        
-        //return the next visit No
-        return $nextVisitLabel;
-    }
-    function getCandidatePlan()
-    {
-	    $candID=$this->getCandID();
-	    // make a local reference to the Database object
-	    $db =& Database::singleton();
-	    $query = "SELECT Value as Plan FROM candidate c JOIN parameter_candidate pc ON (pc.CandID=c.CandID) LEFT JOIN parameter_type pt ON (pc.ParameterTypeID=pt.ParameterTypeID) WHERE c.CandID=:CandidateID AND pt.Name='candidate_plan';";
-        $params = array('CandidateID'=>$candID);
-        $plan = $db->pselectOne($query, $params);
-	    return $plan;
-
-    }    
-    /**
-    * generates a new random CandID
-    * @static
-    * @return int
-    * @throws PEAR::Error
-    */
-    function _generateCandID()
-    {
-        // get a database connection
-        $db =& Database::singleton();
-        
-        // generate a candidate id
-        $candID = rand(CANDIDATE_MIN_CANDID, CANDIDATE_MAX_CANDID);
-        
-        // make sure the cand id is not used
-        while($db->pselectOne("SELECT count(CandID) FROM candidate WHERE CandID=:candidateID", array('candidateID' => $candID)) > 0) {
-            // pick a new candidate id
-            $candID = rand(CANDIDATE_MIN_CANDID, CANDIDATE_MAX_CANDID);
-        }
-        
-        return $candID;
-    }  
-
-    /**
-    * generates a new random PSCID
-    * @param string $prefix  the prefix to use for the PSCID
-    * @static
-    * @return string
-    * @throws PEAR::Error
-    */
-    function _generatePSCID($prefix, $startNumber)
-    {
-        // The generatePSCID() function is confusing and I don't fully understand it, but
-        // from what I understand it generates an array with a list of possible values for
-        // each digit/section of the PSCID based on the config.xml. 
-        // generateFirst/RandomStringFromArrays then concatenates the first option (or a random one)
-        // from each together to get a valid PSCID, and then checks if it already exists in the database
-        // If it does, it increments the number until it gets a unique PSCID.
-        // - Dave
-        $db =& Database::singleton();
-        
-        $config =& NDB_Config::singleton();
-        $PSCIDSettings = $config->getSetting('PSCID');
-        $pscidArrays = Candidate::generateArrays($PSCIDSettings, $prefix);
-
-        // If IBIS2, take "0" out of the possibilities for the first digit of the numbers.
-        if($startNumber == 1000) {
-            $pscidArrays[1] = array(1, 2, 3, 4, 5, 6, 7, 8, 9);
-        } elseif($startNumber == 2000) {
-            $pscidArrays[1] = array(2, 3, 4, 5, 6, 7, 8, 9);
-        } elseif($startNumber == 3000) {
-            $pscidArrays[1] = array(3, 4, 5, 6, 7, 8, 9);
-        } elseif($startNumber == 4000) {
-            $pscidArrays[1] = array(4, 5, 6, 7, 8, 9);
-        } elseif($startNumber == 6000) {
-            $pscidArrays[1] = array(6, 7, 8, 9);
-        } elseif($startNumber == 7000) {
-            $pscidArrays[1] = array(7, 8, 9);
-        }
-
-
-        // run one first time, then loop until the pscid is not used
-        do {
-            // pick a new pscid
-            if($PSCIDSettings['generation'] == 'sequential') {
-                if(!empty($pscid)) {
-                    $pscid++;
-                } else {
-                    $pscid = Candidate::generateFirstStringFromArrays($pscidArrays);
-                }
-            } else {
-                $pscid = Candidate::generateRandomStringFromArrays($pscidArrays);
-            }
-            
-            // check if the pscid is used
-        } while($db->pselectOne("SELECT count(PSCID) FROM candidate WHERE PSCID=:pID", array('pID' => $pscid)) > 0);
-        
-        return $pscid;
-    }
-
-    function _generateID($ID) {
-        $db =& Database::singleton();
-
-        do {
-            //Currently 6 digit rand is used to generate more secure ParentIDs as suggested by Pierre'.
-           // 4 digit rand generation for other external ids
-            if($ID=="PARENT") {
-                $randid = $ID . rand(100000, 999999);
-            }
-            else{
-                $randid = $ID . rand(1000, 9999);
-            }
-            $nid = $ID . "ID";
-        } while($db->pselectOne("SELECT count($nid) FROM candidate WHERE `$nid`=:randomIDQ", array('randomIDQ' => $randid)) > 0);
-        return $randid;
-    }
-    
-    function validatePSCID($PSCID, $siteAbbrev=null)
-    {
-        $config =& NDB_Config::singleton();
-        $PSCIDSettings = $config->getSetting('PSCID');
-        $regex = Utility::structureToPCRE($PSCIDSettings['structure'], $siteAbbrev);
-        return preg_match($regex, $PSCID);
-    }
-
-
-    function generateRandomStringFromArrays($arrays)
-    {
-        $string = "";
-        foreach($arrays AS $array) {
-            if(is_array($array))
-                $string .= $array[array_rand($array)];
-            else
-                $string .= $array;
-        }
-        return $string;
-    }
-
-    function generateFirstStringFromArrays($arrays)
-    {
-        $string = "";
-        foreach($arrays AS $array) {
-            $string .= array_shift($array);
-        }
-        return $string;
-    }
-
-    function generateArrays($idStructure, $siteAbbrev=null)
-    {
-        $idStructure = $idStructure['structure']['seq'];
-
-        $arrays = array();
-        foreach($idStructure AS $seq) {
-            if(isset($seq['@']['length'])) {
-                $length = $seq['@']['length'];
-            } elseif(isset($seq['@']['minLength'])) {
-                $length = $seq['@']['minLength'];
-            } else {
-                $length = 1;
-            }
-
-            for($i=0; $i<$length; $i++) {
-                switch($seq['@']['type']) {
-                case 'alpha':
-                    $arrays[] = range('a','z');
-                    break;
-                
-                case 'alphanumeric':
-                    $arrays[] = array_merge(range(0, 9), range('a', 'z'));
-                    break;
-                
-                case 'numeric':
-                    $arrays[] = range(0, 9);
-                    break;
-                
-                case 'static':
-                    $arrays[] = array($seq['#']);
-                    break;
-
-                case 'set':
-                    if(strpos($seq['#'], '|') !== false) {
-                        $arrays[] = explode('|', $seq['#']);
-                    } else {
-                        $arrays[] = str_split($seq['#']);
-                    }
-                    break;
-
-                case 'siteAbbrev':
-                    $arrays[] = array($siteAbbrev);
-                    break;
-                }
-            }
-        }
-
-        return $arrays;
-    }
-    /**
-     * generates list of valid subprojects for a given project id
+     * FIXME Ideally the signature of this function should be changed so that
+     * $useEDC is the second-to-last parameter. This would add some clarity as
+     * it is an optional parameter based on configuration
+     * settings. However, this will not be backward compatiable.
+     *
+     * @param int         $centerID    centerID of the site to which the
+     *                                  candidate will belong
+     * @param string      $dateOfBirth date of birth written as YYYY-MM-DD
+     * @param string|null $edc         estimated date of confinement written as
+     *                                      YYYY-MM-DD. Value should be null
+     *                                      unless the useEDC setting is
+     *                                      configured to be true.
+     * @param string      $sex         sex, either 'Male' or 'Female'
+     * @param string|null $PSCID       PSCID specified by the user, if available
+     * @param int|null    $projectID   The project ID, if available
+     *
+     * @return int   $candID      candidate id of the new candidate
+     * @throws Exception
      * @static
-     * @return array
-     * @throws Utility::isErrorX
      */
-    function getValidSubprojects()
-    {
-        $projID = $this->getProjectID();
-        $db =& Database::singleton();
-        $query  = "SELECT SubprojectID from project_rel where ProjectID = :prj";
-        $params = array('prj'=>$projID);
-        $subproj   = $db->pselect($query, $params);
-        foreach($subproj as $row){
-            foreach($row as $key =>$val){
-                if($key == 'SubprojectID') {
-                    $subprojList[$val] = $val;
-                }
-            }
+    function createNew( string $centerID,
+                        string $dateOfBirth,
+                        ?string $edc,
+                        string $sex,
+                        ?string $PSCID = null,
+                        int $projectID = null,
+                        ?int $startNumber=0
+    ): int {
+
+
+        $db =\Database::singleton();
+        $factory = NDB_Factory::singleton();
+
+
+        $site = \Site::singleton($centerID);
+
+        $user = \User::singleton($_SESSION['State']->getUsername());
+
+        // generate candid
+        $candID = Candidate::_generateCandID();
+        // figure out how to generate PSCID
+        $config        = $factory->config();
+        $PSCIDSettings = $config->getSetting('PSCID');
+        $useEDC        = $config->getSetting('useEDC');
+
+        if (($useEDC === '1' || $useEDC === 'true') && empty($edc)) {
+            throw new \LorisException(
+                "EDC must be specified",
+                EDC_NOT_SPECIFIED
+            );
         }
-        return $subprojList;
+
+        if ($PSCIDSettings['generation'] == 'user') {
+            // check pscid is specified
+            if (empty($PSCID)) {
+                throw new Exception(
+                    "PSCID must be specified",
+                    PSCID_NOT_SPECIFIED
+                );
+            }
+
+            // check pscid structure
+            if (!Candidate::validatePSCID($PSCID, $site->getSiteAlias())) {
+                throw new LorisException(
+                    "PSCID has an invalid structure",
+                    PSCID_INVALID_STRUCTURE
+                );
+            }
+        } else {
+            $PSCID = Candidate::_generatePSCID($site->getSiteAlias(), $startNumber);
+        }
+        $ibisid = Candidate::_generateID("IBIS");
+        $drexid = Candidate::_generateID("DREX");
+        $hopid  = Candidate::_generateID("HOP");
+        $kingid = Candidate::_generateID("KING");
+        $oriid  = Candidate::_generateID("ORI");
+        $parentid = Candidate::_generateID("PARENT");
+
+        // insert the new candidate into the database
+        $setArray = array('CandID'       => $candID,
+            'RegistrationCenterID' => $centerID,
+            'PSCID'                => $PSCID,
+            'DoB'                  => $dateOfBirth,
+            'EDC'                  => $edc,
+            'Sex'                  => $sex,
+            'ProjectID'            => $projectID,
+            'Date_active'          => date('Y-m-d'),
+            'Date_registered'      => date('Y-m-d'),
+            'Entity_type'          => 'Human',
+            'RegisteredBy'         => $user->getUsername(),
+            'UserID'               => $user->getUsername(),
+            'IBISID'       => $ibisid,
+            'DREXID'       => $drexid,
+            'HOPID'        => $hopid,
+            'KINGID'       => $kingid,
+            'ORIID'        => $oriid,
+            'PARENTID'     => $parentid
+        );
+
+        $db->insert('candidate', $setArray);
+
+        // return the new candid
+        return intval((string) $candID);
     }
-
-
-    static function candidateExists($candID, $PSCID)
-    {   
+    /**
+     * Checks if candidate exist given a candidate ID and PSCID
+     * Used to check that PSCID matches CandID when entered into the boxes
+     * on the candidate_list form
+     *
+     * @param int    $candID 6 digit Loris CandID
+     * @param string $PSCID  project study center ID
+     *
+     * @return bool TRUE if candidate is found (in candidate table), FALSE otherwise
+     * @throws DatabaseException
+     */
+    static function candidateExists(int $candID, string $PSCID): bool
+    {
         // make a local reference to the Database object
         $factory = NDB_Factory::singleton();
         $db      = $factory->database();
 
         $candidateIDs = array(
-                         ':candidate_id' => $candID,
-                         ':pscid'        => $PSCID,
-                        );  
+            ':candidate_id' => $candID,
+            ':pscid'        => $PSCID,
+        );
 
         // get candidate data from database
         $query = "SELECT CandID
@@ -652,27 +314,326 @@ class Candidate
 
         $row = $db->pselectRow($query, $candidateIDs);
 
-        if (!empty($row)) {
-            return true;
-        }   
-
-        return false;
-
+        return $row !== null;
     }
-    static function getParticipantStatusOptions()
+
+    /**
+     * Get a list of timepoints that this Candidate has registered
+     *
+     * @return array|null Non-associative array of SessionIDs 1st Time Point
+     *               indexed to 0
+     */
+    function getListOfTimePoints(): ?array
     {
-        $DB           =& Database::singleton();
-        $options      = $DB->pselect(
-            "SELECT ID,Description
-            FROM participant_status_options
-            WHERE parentID IS NULL",
-            array()
-        );
-        $option_array = array();
-        foreach ($options as $option) {
-            $option_array[$option['ID']] = $option['Description'];
+        return $this->listOfTimePoints;
+    }
+
+    /**
+     * Returns the sessionID for this Candidate's nth visit
+     *
+     * @param integer $visitNo The visit number for which you
+     *                         want the SessionID
+     *
+     * @return int|null SessionID of candidate's nth visit, NULL if none found
+     */
+    function getSessionID(int $visitNo): ?int
+    {
+        if (isset($this->listOfTimePoints[$visitNo-1]) ) {
+            return intval($this->listOfTimePoints[$visitNo-1]);
         }
-        return $option_array;
+
+        return null;
+    }
+
+    /**
+     * Return a piece of data about this candidate
+     *
+     * @param string|null $var The type of data about the Candidate
+     *                    to be returned
+     *
+     * @return mixed The info requested
+     */
+    public function getData(?string $var = null)
+    {
+        if (is_null($var)) {
+            return $this->candidateInfo;
+        } else {
+            return $this->candidateInfo[$var] ?? null;
+        }
+    }
+
+    /**
+     * Sets some data about the candidate and saves it into the
+     * database.
+     *
+     * @param array $newData Key-value pair(s) of the field(s) to change and the
+     *                              new value(s).
+     *
+     * @return bool
+     *
+     * @throws DatabaseException
+     * @throws LorisException
+     */
+    public function setData(array $newData): bool
+    {
+        /* $newData should be in the form: array($key => $value). Count should
+         * equal 1 if this is the case.
+         */
+        if (empty($newData)) {
+            throw new LorisException(
+                'Candidate::setData() cannot be called with an empty array!'
+            );
+            return false;
+        }
+        $this->candidateInfo = array_merge($this->candidateInfo, $newData);
+
+        \NDB_Factory::singleton()->database()->update(
+            'candidate',
+            $newData,
+            array(
+             'CandID' => $this->getData('CandID'),
+            )
+        );
+        return true;
+    }
+
+
+    /**
+     * Returns the ProjectID for the current candidate
+     *
+     * @return integer CandID of candidate
+     */
+    function getProjectID(): int
+    {
+        return intval($this->candidateInfo["ProjectID"]);
+    }
+
+    /**
+     * Returns the name of the candidate's project from the
+     * config file
+     *
+     * @return string Project name
+     */
+    function getProjectTitle(): string
+    {
+        $ProjectList = Utility::getProjectList();
+        return $ProjectList[$this->getProjectID()] ?? '';
+    }
+
+    /**
+     * Returns the CandID of this candidate
+     *
+     * @return integer 6 digit CandID
+     */
+    function getCandID()
+    {
+        return $this->candidateInfo["CandID"];
+    }
+
+
+    /**
+     * Returns the PSCID of this candidate
+     *
+     * @return string The PSCID identifier for candidate
+     */
+    function getPSCID(): string
+    {
+        return $this->candidateInfo["PSCID"];
+    }
+
+    /**
+     * Returns the site of this candidate
+     *
+     * @return string Site name of this candidate's site
+     */
+    function getCandidateSite(): string
+    {
+        return $this->candidateInfo["PSC"];
+    }
+
+
+    /**
+     * Returns the ID of this candidate's site
+     *
+     * @return integer The numeric ID of the candidate's site
+     */
+    function getCenterID(): int
+    {
+        return intval($this->candidateInfo["RegistrationCenterID"]);
+    }
+
+    /**
+     * Returns the date of birth of this candidate
+     *
+     * @return string|null The DoB in YYYY-MM-DD format
+     */
+    function getCandidateDoB(): ?string
+    {
+        return $this->candidateInfo["DoB"];
+    }
+
+    /**
+     * Returns the expect date of confinement (due date)
+     * of this candidate.
+     *
+     * @return string|null The DoB in YYYY-MM-DD format
+     */
+    function getCandidateEDC(): ?string
+    {
+        return $this->candidateInfo["EDC"];
+    }
+
+    /**
+     * Return the candidate's sex
+     *
+     * @return string|null Male|Female String describing the sex
+     *                     and null if scanner
+     */
+    function getCandidateSex(): ?string
+    {
+        return $this->candidateInfo["Sex"];
+    }
+
+    /**
+     * Return the candidate's ethnicity
+     *
+     * @return     string The ethnicity of candidate
+     * @deprecated
+     */
+    function getCandidateEthnicity(): string
+    {
+        return $this->candidateInfo["Ethnicity"];
+    }
+
+    /**
+     * Return whether the candidate is active
+     *
+     * @return string Y|N|null Active flag for this candidate
+     */
+    function isActive(): string
+    {
+        return $this->candidateInfo["Active"];
+    }
+
+    /**
+     * Return the user that registered (created) this candidate
+     *
+     * @return string UserID of user who created this candidate.
+     */
+    function registeredBy(): string
+    {
+        return $this->candidateInfo["RegisteredBy"];
+    }
+
+    /**
+     * Return the user who last changed this candidate
+     *
+     * @return string UserID of user who last changed this candidate
+     */
+    function lastRecordChangeBy(): string
+    {
+        return $this->candidateInfo["UserID"];
+    }
+
+    /**
+     * Returns the list of visit labels w/ corresponding SessionID as key
+     *
+     * @return array Associative array in the format SessionID=>Visit_label
+     * @throws DatabaseException
+     */
+    public function getListOfVisitLabels(): array
+    {
+        $factory = NDB_Factory::singleton();
+        //make sure it returns an array
+        $visitLabelArray = array();
+
+        $candID = $this->getCandID();
+
+        // make a local reference to the Database object
+        //
+        $db = $factory->database();
+
+        $query  = "SELECT ID, Visit_label FROM session
+            WHERE CandID=:Candidate AND Active='Y' ORDER BY ID";
+        $result = $db->pselect($query, array('Candidate' => $candID));
+
+        // map the array [VisitNo]=>Visit_label
+        foreach ($result as $row) {
+            $visitLabelArray[$row["ID"]] = $row["Visit_label"];
+        }
+        return $visitLabelArray;
+    }
+
+    /**
+     * Generates list of valid subprojects for a the selected Candidate's
+     * project
+     *
+     * @return array Array of the form SubprojectID => SubprojectID
+     *               or NULL if none exist
+     * @throws DatabaseException
+     */
+    public function getValidSubprojects(): array
+    {
+        $subprojList = array();
+
+        $projID  = $this->getProjectID();
+        $query   = "SELECT SubprojectID from project_rel where ProjectID = :prj";
+        $params  = array('prj' => $projID);
+        $subproj = \NDB_Factory::singleton()
+            ->database()
+            ->pselect($query, $params);
+
+        foreach ($subproj as $row) {
+            foreach ($row as $key =>$val) {
+                if ($key == 'SubprojectID') {
+                    $subprojList[$val] = $val;
+                }
+            }
+        }
+
+        return $subprojList;
+    }
+    /**
+     * Returns first visit for a candidate based on Date_visit
+     *
+     * @return string The visit label for the candidate's first visit
+     */
+    public function getFirstVisit(): string
+    {
+        $factory = NDB_Factory::singleton();
+        $db      = $factory->database();
+
+        $candID = $this->getCandID();
+        $query  = "SELECT Visit_label FROM session 
+          LEFT JOIN candidate USING (CandID)
+          WHERE CandID = :cid AND VisitNo = 1
+          AND Entity_type <> 'Scanner'";
+        $where  = array('cid' => $candID);
+        $result = $db->pselectOne($query, $where);
+        return $result ?? '';
+    }
+
+    /**
+     * Returns the next visit number that should be created for this
+     * candidate.
+     *
+     * @return int The next visit number
+     */
+    public function getNextVisitNo() : int
+    {
+        $factory = NDB_Factory::singleton();
+        $db      = $factory->database();
+
+        $query  = "SELECT MAX(s.VisitNo)+1
+                    FROM candidate AS c
+                        LEFT JOIN session AS s USING (CandID)
+                    WHERE c.CandID=:CaID AND s.Active='Y' AND c.Active='Y'";
+        $result = $db->pselectOne($query, array('CaID' => $this->getCandID()));
+
+        if ($result === null) {
+            return 1;
+        }
+        return intval($result);
     }
 
     /**
@@ -681,7 +642,7 @@ class Candidate
      * @return array List of consents and their associated values for this candidate
      *               The keys of the arrays are the IDs of the consents
      */
-    public function getConsents()
+    public function getConsents(): array
     {
         $factory = NDB_Factory::singleton();
         $db      = $factory->database();
@@ -699,5 +660,221 @@ class Candidate
         return $consentList;
     }
 
+    /**
+     * Validate's that a PSCID matches the format defined by project
+     * config
+     *
+     * @param string      $PSCID      The PSCID to validate
+     * @param string|null $siteAbbrev (optional) The site of the candidate
+     *                           being validated to check against appropriate
+     *                           parts of PSCID definition
+     *
+     * @return boolean True if PSCID is valid, false otherwise
+     */
+    static public function validatePSCID(
+        string $PSCID,
+        ?string $siteAbbrev = null
+    ): bool {
+
+        $factory = NDB_Factory::singleton();
+        $config  = $factory->config();
+
+        $PSCIDSettings = $config->getSetting('PSCID');
+        $regex         = Utility::structureToPCRE(
+            $PSCIDSettings['structure'],
+            $siteAbbrev
+        );
+        //preg_match returns 1 on success.
+        return preg_match($regex, $PSCID) === 1;
+    }
+
+    /**
+     * Gets the participant_status options from participant_status_options table
+     *
+     * @return array Options array suitable for use in QuickForm select
+     *               element
+     */
+    static function getParticipantStatusOptions(): array
+    {
+        $DB           =& Database::singleton();
+        $options      = $DB->pselect(
+            "SELECT ID,Description
+            FROM participant_status_options
+            WHERE parentID IS NULL",
+            array()
+        );
+        $option_array = array();
+        foreach ($options as $option) {
+            $option_array[$option['ID']] = $option['Description'];
+        }
+        return $option_array;
+    }
+
+    /**
+     * Gets the participant_status options suboptions from participant_status_options
+     *
+     * @param int $parentID parent ID of the participant status option
+     *
+     * @return array Options array suitable for use in QuickForm select
+     *               element
+     */
+    static function getParticipantStatusSubOptions(int $parentID): array
+    {
+        $DB           =& Database::singleton();
+        $options      = $DB->pselect(
+            "SELECT ID,Description 
+            FROM participant_status_options 
+            WHERE parentID=:pid",
+            array('pid' => $parentID)
+        );
+        $option_array = array();
+        foreach ($options as $option) {
+            $option_array[$option['ID']] = $option['Description'];
+        }
+        return $option_array;
+    }
+    /**
+     * generates a new random CandID
+     * @static
+     * @return int
+     * @throws PEAR::Error
+     */
+    function _generateCandID()
+    {
+        // get a database connection
+        $db =& Database::singleton();
+
+        // generate a candidate id
+        $candID = rand(CANDIDATE_MIN_CANDID, CANDIDATE_MAX_CANDID);
+
+        // make sure the cand id is not used
+        while($db->pselectOne("SELECT count(CandID) FROM candidate WHERE CandID=:candidateID", array('candidateID' => $candID)) > 0) {
+            // pick a new candidate id
+            $candID = rand(CANDIDATE_MIN_CANDID, CANDIDATE_MAX_CANDID);
+        }
+
+        return $candID;
+    }
+    /**
+     * generates a new random PSCID
+     * @param string $prefix  the prefix to use for the PSCID
+     * @static
+     * @return string
+     * @throws PEAR::Error
+     */
+    function _generatePSCID($prefix, $startNumber)
+    {
+        // The generatePSCID() function is confusing and I don't fully understand it, but
+        // from what I understand it generates an array with a list of possible values for
+        // each digit/section of the PSCID based on the config.xml.
+        // generateFirst/RandomStringFromArrays then concatenates the first option (or a random one)
+        // from each together to get a valid PSCID, and then checks if it already exists in the database
+        // If it does, it increments the number until it gets a unique PSCID.
+        // - Dave
+        $db =& Database::singleton();
+
+        $config =& NDB_Config::singleton();
+        $PSCIDSettings = $config->getSetting('PSCID');
+        $pscidArrays = Candidate::generateArrays($PSCIDSettings, $prefix);
+        // If IBIS2, take "0" out of the possibilities for the first digit of the numbers.
+        if($startNumber == 1000) {
+            $pscidArrays[1] = array(1, 2, 3, 4, 5, 6, 7, 8, 9);
+        } elseif($startNumber == 2000) {
+            $pscidArrays[1] = array(2, 3, 4, 5, 6, 7, 8, 9);
+        } elseif($startNumber == 3000) {
+            $pscidArrays[1] = array(3, 4, 5, 6, 7, 8, 9);
+        } elseif($startNumber == 4000) {
+            $pscidArrays[1] = array(4, 5, 6, 7, 8, 9);
+        } elseif($startNumber == 6000) {
+            $pscidArrays[1] = array(6, 7, 8, 9);
+        } elseif($startNumber == 7000) {
+            $pscidArrays[1] = array(7, 8, 9);
+        }
+        // run one first time, then loop until the pscid is not used
+        do {
+            // pick a new pscid
+            if($PSCIDSettings['generation'] == 'sequential') {
+                if(!empty($pscid)) {
+                    $pscid++;
+                } else {
+                    $pscid = Candidate::generateFirstStringFromArrays($pscidArrays);
+                }
+            } else {
+                $pscid = Candidate::generateRandomStringFromArrays($pscidArrays);
+            }
+
+            // check if the pscid is used
+        } while($db->pselectOne("SELECT count(PSCID) FROM candidate WHERE PSCID=:pID", array('pID' => $pscid)) > 0);
+
+        return $pscid;
+    }
+    function generateArrays($idStructure, $siteAbbrev=null)
+    {
+        $idStructure = $idStructure['structure']['seq'];
+        $arrays = array();
+        foreach($idStructure AS $seq) {
+            if(isset($seq['@']['length'])) {
+                $length = $seq['@']['length'];
+            } elseif(isset($seq['@']['minLength'])) {
+                $length = $seq['@']['minLength'];
+            } else {
+                $length = 1;
+            }
+            for($i=0; $i<$length; $i++) {
+                switch($seq['@']['type']) {
+                    case 'alpha':
+                        $arrays[] = range('a','z');
+                        break;
+
+                    case 'alphanumeric':
+                        $arrays[] = array_merge(range(0, 9), range('a', 'z'));
+                        break;
+
+                    case 'numeric':
+                        $arrays[] = range(0, 9);
+                        break;
+
+                    case 'static':
+                        $arrays[] = array($seq['#']);
+                        break;
+                    case 'set':
+                        if(strpos($seq['#'], '|') !== false) {
+                            $arrays[] = explode('|', $seq['#']);
+                        } else {
+                            $arrays[] = str_split($seq['#']);
+                        }
+                        break;
+                    case 'siteAbbrev':
+                        $arrays[] = array($siteAbbrev);
+                        break;
+                }
+            }
+        }
+        return $arrays;
+    }
+    function generateFirstStringFromArrays($arrays)
+    {
+        $string = "";
+        foreach($arrays AS $array) {
+            $string .= array_shift($array);
+        }
+        return $string;
+    }
+    function _generateID($ID) {
+        $db =& Database::singleton();
+        do {
+            //Currently 6 digit rand is used to generate more secure ParentIDs as suggested by Pierre'.
+            // 4 digit rand generation for other external ids
+            if($ID=="PARENT") {
+                $randid = $ID . rand(100000, 999999);
+            }
+            else{
+                $randid = $ID . rand(1000, 9999);
+            }
+            $nid = $ID . "ID";
+        } while($db->pselectOne("SELECT count($nid) FROM candidate WHERE `$nid`=:randomIDQ", array('randomIDQ' => $randid)) > 0);
+        return $randid;
+    }
+
 }
-?>
+

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /**
  * New_profile
  *
@@ -6,20 +7,23 @@
  *
  * @category Main
  * @package  Loris
- * @author   Ted Strauss <ted.strauss@mcgill.ca>
+ * @author   Shen Wang <shen.wang2@mcgill.ca>
+ *           Zaliqa Rosli <zaliqa.rosli@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-  namespace LORIS\new_profile;
+namespace LORIS\new_profile;
+
 
 /**
  * New_profile
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Main
  * @package  Loris
- * @author   Ted Strauss <ted.strauss@mcgill.ca>
+ * @author   Shen Wang <shen.wang2@mcgill.ca>
+ *           Zaliqa Rosli <zaliqa.rosli@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
@@ -30,7 +34,7 @@ class New_Profile extends \NDB_Form
      *
      * @return bool true if they have access to this page
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
         // create user object
         $user =& \User::singleton();
@@ -88,14 +92,14 @@ class New_Profile extends \NDB_Form
             $startNum = 7000;
         }
 
-
         if ($num_sites >1) {
             $candID = \Candidate::createNew(
                 $values['psc'],
                 $dob,
                 $edc,
-                $values['gender'],
+                $values['sex'],
                 $values['PSCID'] ?? null,
+                isset($values['ProjectID']) ? intval($values['ProjectID']) : null,
                 $startNum
             );
         } else {
@@ -105,8 +109,9 @@ class New_Profile extends \NDB_Form
                 $centerID,
                 $dob,
                 $edc,
-                $values['gender'],
+                $values['sex'],
                 $values['PSCID'] ?? null,
+                isset($values['ProjectID']) ? intval($values['ProjectID']) : null,
                 $startNum
             );
         }
@@ -114,10 +119,6 @@ class New_Profile extends \NDB_Form
         // get the candidate
         $candidate =& \Candidate::singleton($candID);
 
-        if ($config->getSetting('useProjects') == "true") {
-            $candidate->setData('ProjectID', $values['ProjectID']);
-
-        }
 
         $db = \Database::singleton();
         if( $values['ProjectID'] == '2'){
@@ -225,25 +226,25 @@ class New_Profile extends \NDB_Form
             );
         }
 
-        if ($config->getSetting("useProjects") == "true") {
+
             $projects = \Utility::getProjectList();
             $projList = array('' => '');
             foreach ($projects as $projectID => $projectName) {
                 $projList[$projectID] = $projectName;
             }
             $this->addSelect('ProjectID', 'Project', $projList);
-        }
+
 
         // add gender
-        $genderOptions = array(
+        $sexOptions = array(
                           ''       => '',
                           'Male'   => 'Male',
                           'Female' => 'Female',
                          );
-        $this->addSelect('gender', 'Gender', $genderOptions);
+        $this->addSelect('sex', 'Sex', $sexOptions);
 
         // gender rules
-        $this->addRule('gender', 'Gender is required', 'required');
+        $this->addRule('sex', 'Sex is required', 'required');
         $this->addSelect("candidate_plan", 'Candidate Plan',
             array(
                 ''         => '',
@@ -304,10 +305,6 @@ class New_Profile extends \NDB_Form
         if ($config->getSetting('useEDC') == "true") {
             if (empty($values['edc1'])) {
                 $errors['edc1'] = 'Expected Date of Confinement field is required';
-            } else if (strlen($values['edc1']) > 2
-                && !\Utility::_checkDate($values['edc1'])
-            ) {
-                $errors['edc1'] = 'EDC is not a valid date';
             }
 
             if (empty($values['edc2'])) {
@@ -318,9 +315,23 @@ class New_Profile extends \NDB_Form
                 $errors['edc1'] = 'Estimated Due date fields must match.';
             }
         }
+        // Validate date format
+        $dobFormat = $config->getSetting('dobFormat');
+        if (strtolower($dobFormat) == 'ym' || strtolower($dobFormat) == 'my') {
+            // Dates still need to be submitted into the database in format
+            // YYYY-DD-MM. This is a last check before _process is called.
+            if ($config->getSetting('useEDC') == "true"
+                && strlen($values['edcDate']) < 10
+            ) {
+                $errors['edcFormat'] = 'EDC is not in valid date format.';
+            }
+            if (strlen($values['dobDate']) < 10) {
+                $errors['dobFormat'] = 'DOB is not in valid date format.';
+            }
+        }
 
-        if (empty($values['gender'])) {
-            $errors['gender'] = 'Gender is required.';
+        if (empty($values['sex'])) {
+            $errors['sex'] = 'Gender is required.';
         }
 
         $PSCIDsettings = $config->getSetting('PSCID');
@@ -353,8 +364,8 @@ class New_Profile extends \NDB_Form
                     $errors['PSCID'] = 'PSCID has already been registered';
             }
         }
-        $useProjects = $config->getSetting('useProjects');
-        if ($useProjects === "true" && empty($values['ProjectID'])) {
+
+        if (empty($values['ProjectID'])) {
             $errors['ProjectID'] = "Project is required";
         }
 
