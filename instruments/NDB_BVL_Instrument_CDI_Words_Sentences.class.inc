@@ -996,7 +996,7 @@ class NDB_BVL_Instrument_CDI_Words_Sentences extends NDB_BVL_Instrument
                 ),
             );
 
-        for ($i = 0; $i <= sizeof($part_2_e_pairs); $i++) {
+        for ($i = 0; $i < sizeof($part_2_e_pairs); $i++) {
 
             // index remapping
             if ($i == 0) {
@@ -1013,9 +1013,6 @@ class NDB_BVL_Instrument_CDI_Words_Sentences extends NDB_BVL_Instrument
             }
 
             $idx = $i + 1;
-            if ($idx == 38) {
-                $idx = 1;
-            }
 
             $variableIdx = $j + 1;
             // index remapping
