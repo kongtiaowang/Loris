@@ -1,0 +1,1 @@
+ALTER TABLE pspq_InformantReport_dad_on_mom ADD COLUMN Date_taken DATE DEFAULT NULL AFTER Data_entry_completion_status;
