@@ -1,4 +1,5 @@
 <?php
+error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING);
 set_include_path(get_include_path().":../libraries:../../php/libraries:");
 require_once '../../vendor/autoload.php';
 require_once "Database.class.inc";
@@ -10,18 +11,19 @@ $yes_list=array();
 
 $DB        =& Database::singleton();
 
-
+// consider the 'Yes' update status from the history table. Date given might vary in some cases.
 $yes_elsi_consents=$DB->pselect("SELECT c.PSCID,cn.Label,ccr.Status,ccr.Dategiven, MAX(cch.Entrydate)as EntryDate from candidate c 
                            join candidate_consent_rel ccr ON(c.CandID=ccr.CandidateID)
                            join consent cn ON (cn.ConsentID=ccr.ConsentID)
                            join candidate_consent_history cch ON(ccr.DateGiven=cch.DateGiven)
                            where ccr.Status='Yes'and cn.Name='elsi_consent'and cch.Status='Yes' and c.CenterID!=1
+                           and  DATE(Entrydate)=SUBDATE(CURDATE(),1)
                            group by c.PSCID,cn.Label,ccr.Status,ccr.Dategiven order by EntryDate",array());
 $num=0;
 foreach ($yes_elsi_consents as $yes_elsi) {
     $num++;
     $push_val = "<tr><td>".$num.".</td><td>".$yes_elsi['PSCID']."</td><td>".$yes_elsi['Label'].
-        "</td><td>".$yes_elsi['Status']."</td><td>".$yes_elsi['Dategiven']."</td></tr>";
+        "</td><td>".$yes_elsi['Status']."</td><td>".$yes_elsi['Dategiven']."</td><td>".$yes_elsi['EntryDate']."</td></tr>";
     array_push($yes_list,$push_val);
 
 }
