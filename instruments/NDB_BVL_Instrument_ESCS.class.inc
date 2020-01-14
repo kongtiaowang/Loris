@@ -87,8 +87,8 @@ class NDB_BVL_Instrument_ESCS extends NDB_BVL_Instrument
 
 
     function getSubtestList(): array {
-        return [['Name' => 'ESCS_page1', 'Description' => "IJA&RJA"],
-                ['Name' => 'ESCS_page2', 'Description' => "IBR&RBR"]];
+        return [['Name' => 'ESCS_page1', 'Description' => "IJA & RJA"],
+                ['Name' => 'ESCS_page2', 'Description' => "IBR & RBR"]];
     }
 
     
