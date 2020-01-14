@@ -22,9 +22,9 @@ class NDB_BVL_Instrument_ESCS extends NDB_BVL_Instrument
 
     private $yes_no = array(
              null           => '',
-             '0'           => '0',
-             '1'          => '1'
-        ); // Here we use 0, 1 instead of No, Yes because No Yes will not be visible with so many items on the same screen.
+             '0'           => 'N',
+             '1'          => 'Y'
+        ); // Here we use N, Y instead of No, Yes because No Yes will not be visible with so many items on the same screen.
 
     private $ija_grp1 = [
             "ija_ec" => "Eye Contact (EC)",
