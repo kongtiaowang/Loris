@@ -92,6 +92,7 @@ class NDB_BVL_Instrument_pspq_SelfReport_mom extends NDB_BVL_Instrument
         $this->form->addElement('header', 'instrument_title_2', "Self Rating");
 
         $this->form->addElement('static', null, "<br /><br />");
+        $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
 
        // $this->addNumericElement('respondent_age','Your Age <BR>(Please indicate your age in years)');
         $field = 'respondent_age';$label = 'Your Age <BR>(Please indicate your age in years)';
