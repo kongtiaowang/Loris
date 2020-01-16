@@ -30,7 +30,7 @@
 
 class LorisForm
 {
-// variable directEntry & directValues are added for Jordan's new survey module (Reason for Override)
+// variable directEntry & directValues were added for Jordan's new survey module (Reason for Override)
     var $form          = array();
     var $defaultValues = array();
     var $formRules     = array();
