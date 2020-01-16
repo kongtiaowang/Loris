@@ -5,6 +5,7 @@
 
 class NDB_BVL_Instrument_edi extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
 	
 /*
 INSERT INTO test_names VALUES ('', 'edi', 'EDI', '0', '1');
@@ -197,7 +198,8 @@ INSERT INTO test_battery VALUES ('', 'edi', '1050', '1140', 'Y', 'Visit', '2');
     * @return void
     * @access public
     */
-    function setup($commentID, $page){
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
+    {
         $this->formType="XIN";
         $this->form = new LorisForm('test_form');
         $this->page = $page;            // page label (number or
@@ -347,7 +349,8 @@ INSERT INTO test_battery VALUES ('', 'edi', '1050', '1140', 'Y', 'Visit', '2');
 
     }
     
-    function _determineDataEntryCompletionStatus(){
+    function _determineDataEntryCompletionStatus(): string
+    {
     
         // If Date_taken has not yet been set, then don't run any of the following code.
         if(is_null($this->Date_taken)){
@@ -677,7 +680,7 @@ INSERT INTO test_battery VALUES ('', 'edi', '1050', '1140', 'Y', 'Visit', '2');
 				$this->form->addElement('static', null, "<br/>");
     }
 
-    function score() {
+    function score(): void {
         if($this->_determineDataEntryCompletionStatus() == "Incomplete") {
                 return;
         }

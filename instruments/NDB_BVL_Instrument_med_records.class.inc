@@ -3,7 +3,10 @@
 
 
 
-class NDB_BVL_Instrument_med_records extends NDB_BVL_Instrument {
+class NDB_BVL_Instrument_med_records extends NDB_BVL_Instrument
+{
+    use LegacyInstrumentTrait;
+
     var $ValidityEnabled = false;
     var $ValidityRequired = false;
 
@@ -438,7 +441,7 @@ function _possibleExclusionaryCriteria() {
   	}
 
 	
-    function score() {
+    function score(): void {
      //  if($this->_determineDataEntryCompletionStatus() == "Incomplete") {
      //       return;
      //  }

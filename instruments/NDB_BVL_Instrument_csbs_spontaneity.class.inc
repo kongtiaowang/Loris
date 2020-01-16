@@ -5,6 +5,7 @@
 
 class NDB_BVL_Instrument_csbs_spontaneity extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
 
 /*
 INSERT INTO test_names VALUES('', 'csbs_spontaneity', 'CSBS Sponeneity Coding Sheet', 0, 1, NULL);
@@ -48,7 +49,8 @@ INSERT INTO instrument_subtests VALUES('', 'csbs_spontaneity', 'csbs_spontaneity
     * @return void
     * @access public
     */
-    function setup($commentID, $page){
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
+    {
         $this->formType="XIN";
         $this->form = new LorisForm('test_form');
         $this->page = $page;            // page label (number or
@@ -380,7 +382,7 @@ INSERT INTO instrument_subtests VALUES('', 'csbs_spontaneity', 'csbs_spontaneity
 	}
 
 
-	function score()
+	function score(): void
 	{
 
 //       if($this->_determineDataEntryCompletionStatus() == "Incomplete") 

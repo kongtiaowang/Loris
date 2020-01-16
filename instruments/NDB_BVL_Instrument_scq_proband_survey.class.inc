@@ -22,6 +22,8 @@
  */
 class NDB_BVL_Instrument_scq_proband_survey extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
+
     var $yesNo = array(null=>"", "yes"=>"Yes", "no"=>"No");
     var $onlyYesNo = array(null=>"","yes"=>"Yes","no"=>"No");
     var $scoreCols = array("score", "scq_diagnosis");
@@ -33,7 +35,8 @@ class NDB_BVL_Instrument_scq_proband_survey extends NDB_BVL_Instrument
      * @return void
      * @access public
      */
-    function setup($commentID, $page){
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
+    {
         $this->formType="XIN";
         $this->form = new LorisForm('scq_proband_survey_form');
         $this->page = $page;            // page label (number or
@@ -195,7 +198,7 @@ class NDB_BVL_Instrument_scq_proband_survey extends NDB_BVL_Instrument
         }
         $this->_addAdditionalComments();
     }
-    function score() {
+    function score(): void {
         //skip scoring if all data has not yet been entered.
         if($this->_determineDataEntryCompletionStatus() == "Incomplete") {
             return;

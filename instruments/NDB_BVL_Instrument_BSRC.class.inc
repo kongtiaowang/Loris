@@ -5,7 +5,7 @@
 
 class NDB_BVL_Instrument_BSRC extends NDB_BVL_Instrument
 {
-
+    use LegacyInstrumentTrait;
 
 /*
 INSERT INTO test_names (Test_name, Full_name, Sub_group) VALUES ('BSRC', 'BSRC', '1');
@@ -22,7 +22,8 @@ INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, Subp
                        "not_answered"=>"Not Answered");
    var $intervention = array('speech'=>'Speech-language Therapy','occupational'=>'Occupational Therapy',
                   'physical'=>'Physical Therapy','behavior_intervention'=>'Comprehensive behavioral intervention/special educational services','other'=>'Other','not_answered'=>'Not Answered');
-   function setup($commentID, $page){
+   function setup(?string $commentID = NULL, ?string $page = NULL): void
+    {
        $this->formType="XIN";
        $this->form = new LorisForm('test_form');
        $this->page = $page;            // page label (number or

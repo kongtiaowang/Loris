@@ -5,6 +5,7 @@
 
 class NDB_BVL_Instrument_mullen extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
 
     /*
     INSERT INTO test_names VALUES ('', 'mullen', 'Mullen (Mullen Scales of Early Learning)', '0', '1');
@@ -472,7 +473,8 @@ class NDB_BVL_Instrument_mullen extends NDB_BVL_Instrument
     * @return void
     * @access public
     */
-    function setup($commentID, $page){
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
+    {
         $this->formType="XIN";
         $this->form = new LorisForm('test_form');
         $this->page = $page;            // page label (number or
@@ -1145,7 +1147,7 @@ Anything above the ceiling level will be considered/scored as 0<br><br>
     }
 
 
-    function score() {
+    function score(): void {
          $this->_nullScores($this->scoreLabels);
          if($this->_determineDataEntryCompletionStatus() == "Incomplete") {
             return;
@@ -1659,7 +1661,8 @@ Anything above the ceiling level will be considered/scored as 0<br><br>
     }
 
      // For certification module
-     function _getExaminerNames() {
+     function _getExaminerNames(): array
+     {
         $db =& Database::singleton();
 
         $centerID = $db->pselectOne("SELECT session.CenterID FROM session, flag WHERE session.ID=flag.SessionID and flag.CommentID=:cmnt_id", array('cmnt_id'=>$this->getCommentID()));

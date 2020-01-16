@@ -18,7 +18,7 @@
 
 class NDB_BVL_Instrument_conners_parent extends NDB_BVL_Instrument
 {
-
+    use LegacyInstrumentTrait;
     
     var $scoreLabels = array(
         'IN_raw_score',
@@ -41,7 +41,7 @@ class NDB_BVL_Instrument_conners_parent extends NDB_BVL_Instrument
      * @return void
      * @access public
      */
-    function setup($commentID, $page)
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
     {
         $this->formType = 'XIN';
         $this->form     = new LorisForm('conners_parent_form');
@@ -283,7 +283,7 @@ class NDB_BVL_Instrument_conners_parent extends NDB_BVL_Instrument
 		return $errors;
 	}
 // scoring Sruthy
-    function score()
+    function score(): void
     {
         if ($this->_determineDataEntryCompletionStatus() == "Incomplete") {
             return;

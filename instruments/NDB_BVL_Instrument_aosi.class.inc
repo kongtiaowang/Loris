@@ -9,6 +9,8 @@ function TrialName($press, $trial) {
 }
 class NDB_BVL_Instrument_aosi extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
+
 /**
 INSERT INTO test_names VALUES ('', 'aosi', 'AOSI', '0', '1');
 INSERT INTO instrument_subtests VALUES('', 'aosi', 'aosi_page1', 'Item Adminstration', 1);
@@ -38,7 +40,8 @@ INSERT INTO instrument_subtests VALUES('', 'aosi', 'aosi_page2', 'General Observ
     * @return void
     * @access public
     */
-    function setup($commentID = null, $page = null){
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
+    {
         $this->formType="XIN";
         $this->form = new LorisForm('test_form');
         $this->page = $page;            // page label (number or
@@ -333,7 +336,7 @@ INSERT INTO instrument_subtests VALUES('', 'aosi', 'aosi_page2', 'General Observ
     }
 
     
-    function score() {
+    function score(): void {
         if($this->_determineDataEntryCompletionStatus() == "Incomplete") {
             return;
         }
@@ -561,7 +564,7 @@ INSERT INTO instrument_subtests VALUES('', 'aosi', 'aosi_page2', 'General Observ
     * @return mixed
     * @throws PEAR::error
     */
-    function _nullScores($scoreCols)
+    function _nullScores(array $scoreCols): void
     {
         $db=& Database::singleton();
         

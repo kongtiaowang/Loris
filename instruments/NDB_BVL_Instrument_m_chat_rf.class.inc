@@ -19,6 +19,8 @@
  */
 class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
+
     var $questions = array(
         'q1_point_across_room' => '1. If you point at something across the room, does your child look at it? (FOR EXAMPLE, if you point at a toy or an animal, does your child look at the toy or animal?)',
         'q2_deaf' => '2. Have you ever wondered if your child might be deaf?',
@@ -50,7 +52,7 @@ class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument
      * @return void
      * @access public
      */
-    function setup($commentID, $page)
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
     {
         $this->formType = 'XIN';
         $this->form = new LorisForm('test_form');
@@ -154,7 +156,7 @@ class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument
 
 
     // score function
-//    function score()
+//    function score(): void
 //    {
 //        if ($this->_determineDataEntryCompletionStatus() == "Incomplete") {
 //            return;

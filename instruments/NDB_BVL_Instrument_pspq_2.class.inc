@@ -24,6 +24,8 @@
 
 class NDB_BVL_Instrument_pspq_2 extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
+
     use instrument_validator;
 
     // DECLARE GLOBAL VARIABLES
@@ -64,7 +66,7 @@ class NDB_BVL_Instrument_pspq_2 extends NDB_BVL_Instrument
                                   );
 
 
-    // Abstract function setup($commentID, $page);
+    // Abstract function setup(?string $commentID = NULL, ?string $page = NULL): void;
     /**
      * Sets up basic data, such as the LorisForm object, and so on.
      *
@@ -74,7 +76,7 @@ class NDB_BVL_Instrument_pspq_2 extends NDB_BVL_Instrument
      * @return void
      * @access public
      */
-    function setup($commentID=null, $page=null)
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
     {
         $this->formType = "XIN";
         $this->form     = new LorisForm('test_form');

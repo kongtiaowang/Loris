@@ -1,8 +1,9 @@
 <?php
 class NDB_BVL_Instrument_Radiology_Review_VSA extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
 
-  use instrument_validator;
+    use instrument_validator;
     /**
     * sets up basic data, such as the LorisForm object, and so on.
     *
@@ -15,7 +16,8 @@ class NDB_BVL_Instrument_Radiology_Review_VSA extends NDB_BVL_Instrument
     static $cssStyle2 = "style='background-color: gray;border: 10px solid gray;height:100%;width:100%;float:left;'";
     var $options = array(NULL=>"Choose one", "mild"=>"Mild", "moderate"=>"Moderate", "marked"=>"Marked");
     var $rating_options = array(NULL=>"Choose one", "0"=>"0", "0-5"=>"0-5", "5-10"=>"5-10","more_than_10"=>">10","confluent"=>"confluent" );
-    function setup($commentID, $page): void{
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
+    {
         $this->formType="XIN";
         $this->form = new LorisForm('test_form');
         $this->page = $page;            // page label (number or

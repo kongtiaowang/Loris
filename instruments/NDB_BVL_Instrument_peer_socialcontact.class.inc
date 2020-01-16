@@ -5,6 +5,8 @@
 
 class NDB_BVL_Instrument_peer_socialcontact extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
+
     var $ValidityEnabled = false;
     var $ValidityRequired = false;
 
@@ -82,7 +84,7 @@ class NDB_BVL_Instrument_peer_socialcontact extends NDB_BVL_Instrument
                             '10'=>'10','11'=>'11','12'=>'12','13'=>'13','14'=>'14','15'=>'15','16'=>'16','17'=>'17','18'=>'18',
                             '19'=>'19','20'=>'20','21'=>'21','22'=>'22','23'=>'23','24'=>'24','refused_dontknow'=>"Refused/I Don't Know","not_answered"=>"Not answered");
     var $promote_play = array(''=>NULL,'almost_always'=>'a. Almost always','sometimes'=>'b. Sometimes','never'=>'c. Never', 'refused_dontknow'=>"Refused/I Don't Know","not_answered"=>"Not answered");
-    //abstract function setup($commentID, $page);
+    //abstract function setup(?string $commentID = NULL, ?string $page = NULL): void;
     /**
      * sets up basic data, such as the LorisForm object, and so on.
      *
@@ -91,7 +93,8 @@ class NDB_BVL_Instrument_peer_socialcontact extends NDB_BVL_Instrument
      * @return void
      * @access public
      */
-    function setup($commentID, $page){
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
+    {
         $this->formType="XIN";
         $this->form = new LorisForm('test_form');
         $this->page = $page;            // page label (number or
@@ -852,7 +855,9 @@ class NDB_BVL_Instrument_peer_socialcontact extends NDB_BVL_Instrument
      //  print_r($errors);
         return $errors;
     }
-     function getReview() {
+
+    function getReview(): string
+    {
         $DB = Database::singleton();
         $smarty = new Smarty_neurodb();
         $tpl_data = array();

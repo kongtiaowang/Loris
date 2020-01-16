@@ -1,6 +1,8 @@
 <?php
 class NDB_BVL_Instrument_m_chat extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
+
     var $ValidityEnabled = false;
     var $ValidityRequired = false;
 
@@ -84,7 +86,7 @@ class NDB_BVL_Instrument_m_chat extends NDB_BVL_Instrument
         $this->_addAdditionalComments();        
 	}
 
-	function score() {
+	function score(): void {
 		//skip scoring if all data has not yet been entered.
 		if($this->_determineDataEntryCompletionStatus() == "Incomplete") {
 			return;

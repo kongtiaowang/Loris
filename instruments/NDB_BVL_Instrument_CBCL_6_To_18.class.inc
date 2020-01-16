@@ -22,6 +22,8 @@
  */
 class NDB_BVL_Instrument_CBCL_6_To_18 extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
+
     use instrument_validator;
     var $ValidityEnabled = false;
     var $ValidityRequired = false;
@@ -95,7 +97,7 @@ class NDB_BVL_Instrument_CBCL_6_To_18 extends NDB_BVL_Instrument
     * @return void
     * @access public
     */
-    function setup($commentID, $page)
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
     {
         $this->formType ="XIN";
         $this->form     = new LorisForm('test_form');
@@ -1371,7 +1373,7 @@ class NDB_BVL_Instrument_CBCL_6_To_18 extends NDB_BVL_Instrument
 
         return $errors;
     }
-function score()
+function score(): void
 {
 
 

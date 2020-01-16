@@ -4,9 +4,12 @@
 
 class NDB_BVL_Instrument_ACEFamilyMedicalHistory extends NDB_BVL_Instrument
 {
-   var $indent = "&nbsp;&nbsp;&nbsp;&nbsp;";
+    use LegacyInstrumentTrait;
 
- function setup($commentID, $page){
+    var $indent = "&nbsp;&nbsp;&nbsp;&nbsp;";
+
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
+    {
 
         $this->formType="XIN";
         $this->form = new LorisForm('test_form');

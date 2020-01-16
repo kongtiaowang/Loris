@@ -22,7 +22,7 @@ class NDB_BVL_Instrument_EARLI_interview_revised extends NDB_BVL_Instrument_EARL
 
 
 
-	function setup($commentID = null, $page = null)
+	function setup(?string $commentID = NULL, ?string $page = NULL): void
 	{
 
 		$this->formType="XIN";

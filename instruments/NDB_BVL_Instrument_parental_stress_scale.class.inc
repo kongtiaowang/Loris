@@ -5,6 +5,8 @@
 
 class NDB_BVL_Instrument_parental_stress_scale extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
+
     /**
     * sets up basic data, such as the LorisForm object, and so on.
     *
@@ -13,7 +15,8 @@ class NDB_BVL_Instrument_parental_stress_scale extends NDB_BVL_Instrument
     * @return void
     * @access public
     */
-    function setup($commentID, $page){
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
+    {
         //INSERT INTO instrument_subtests VALUES('', 'parental_stress_scale', 'parental_stress_scale_page1', 'Page1', 1);
        //INSERT INTO test_names(Test_name, Full_name,Sub_group,isDirectEntry) VALUES ('parental_stress_scale','Parental Stress Scales',6, true);
         $this->formType="XIN";
@@ -134,7 +137,7 @@ class NDB_BVL_Instrument_parental_stress_scale extends NDB_BVL_Instrument
         }
     }
 
-    function score() {
+    function score(): void {
         //get the saved scores
         if ($this->_determineDataEntryCompletionStatus() == "Incomplete") {
             return;

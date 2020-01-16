@@ -26,7 +26,8 @@ class NDB_BVL_Instrument_med_records_proband extends NDB_BVL_Instrument_med_reco
 	 * @return void
 	 * @access public
 	 */
-	function setup($commentID, $page) {
+	function setup(?string $commentID = NULL, ?string $page = NULL): void
+    {
 		// set the object properties
 		$this->testName = "med_records_proband"; // test_names.Test_name
 		$this->table = 'med_records_proband'; // name of database table corresponding to instrument

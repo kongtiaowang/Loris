@@ -15,6 +15,8 @@
 
 class NDB_BVL_Instrument_mri_screening_questionnaire extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
+
     var $ValidityEnabled  = false;
     var $ValidityRequired = false;
 
@@ -28,7 +30,7 @@ class NDB_BVL_Instrument_mri_screening_questionnaire extends NDB_BVL_Instrument
      * @access   public
      * @abstract
      */
-    function setup($commentID = null, $page = null)
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
     {
         $this->formType = 'XIN';
         $this->form     = new LorisForm('test_form');

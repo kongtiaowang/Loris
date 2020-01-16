@@ -1,6 +1,9 @@
 <?php
 
-class NDB_BVL_Instrument_i3 extends NDB_BVL_Instrument{
+class NDB_BVL_Instrument_i3 extends NDB_BVL_Instrument
+{
+	use LegacyInstrumentTrait;
+
 	var $yesNo = array(null=>"", "yes" =>"Yes", "no" =>"No", "NA" =>"NA", "Unknown" => "Unknown");	
 	/*
 	INSERT INTO test_names VALUES ('', 'intense_interest_inv', 'Intense Interests Inventory', '0', '1');
@@ -21,7 +24,8 @@ class NDB_BVL_Instrument_i3 extends NDB_BVL_Instrument{
 	 * @return void
 	 * @access public
 	 */
-	function setup($commentID, $page){
+	function setup(?string $commentID = NULL, ?string $page = NULL): void
+    {
 		$this->formType="XIN";
 		$this->form = new LorisForm('test_form');
 		$this->page = $page;            // page label (number or

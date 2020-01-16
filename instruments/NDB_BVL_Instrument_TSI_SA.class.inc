@@ -22,6 +22,8 @@
  */
 class NDB_BVL_Instrument_TSI_SA extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
+
     use instrument_validator;
     var $ValidityEnabled  = false;
     var $ValidityRequired = false;
@@ -38,7 +40,7 @@ class NDB_BVL_Instrument_TSI_SA extends NDB_BVL_Instrument
      * @return void
      * @access public
      */
-    function setup($commentID, $page)
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
     {
         $this->formType ="XIN";
         $this->form     = new LorisForm('TSI_SA');
@@ -112,7 +114,7 @@ class NDB_BVL_Instrument_TSI_SA extends NDB_BVL_Instrument
      * @return void
      * @access private
      */
-    function score() {
+    function score(): void {
         //null scores
         $this->_nullScores($this->scoreLabels);
         $db =& Database::singleton();
@@ -152,16 +154,16 @@ class NDB_BVL_Instrument_TSI_SA extends NDB_BVL_Instrument
      * @return void
      * @access private
      */
-    function _setDefaultsArray($vals) {
+    function _setDefaultsArray($defaults): array {
         $realValuesOnForm = count($this->form->getSubmitValues()) == 0
-            ? $vals : $this->form->getSubmitValues();
+            ? $defaults : $this->form->getSubmitValues();
         $invalidFields = $this->_getInvalidFieldsForAdjustedIncome($realValuesOnForm);
         if (count($invalidFields) != 0) {
             $errorMessages = array_values($invalidFields);
-            $vals['adjusted_income'] = "Not computed: $errorMessages[0]";
+            $defaults['adjusted_income'] = "Not computed: $errorMessages[0]";
         }
         
-        return parent::_setDefaultsArray($vals);
+        return parent::_setDefaultsArray($defaults);
     }
 
     

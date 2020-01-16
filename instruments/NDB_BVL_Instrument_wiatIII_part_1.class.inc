@@ -47,7 +47,7 @@ class NDB_BVL_Instrument_wiatIII_part_1 extends NDB_BVL_Instrument_wiatIII
         "word_reading_total_SC",
 
     );
-    //abstract function setup($commentID, $page);
+    //abstract function setup(?string $commentID = NULL, ?string $page = NULL): void;
     /**
      * sets up basic data, such as the LorisForm object, and so on.
      *
@@ -56,7 +56,8 @@ class NDB_BVL_Instrument_wiatIII_part_1 extends NDB_BVL_Instrument_wiatIII
      * @return void
      * @access public
      */
-    function setup($commentID, $page){
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
+    {
         $this->formType="XIN";
         $this->form = new LorisForm('test_form');
         $this->page = $page;            // page label (number or
@@ -140,7 +141,7 @@ class NDB_BVL_Instrument_wiatIII_part_1 extends NDB_BVL_Instrument_wiatIII
         $this->addLabel("*Reminder: do not round up to next month or year");
 
     }
-    function score() {
+    function score(): void {
         if($this->_determineDataEntryCompletionStatus() == "Incomplete") {
             return;
         }

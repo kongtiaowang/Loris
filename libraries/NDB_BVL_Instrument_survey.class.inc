@@ -2,6 +2,7 @@
 
 class NDB_BVL_Instrument_survey extends \NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
 
     /**
      * Wrapper to create an Hour/Minute field, with an accompanying status field.
@@ -21,7 +22,8 @@ class NDB_BVL_Instrument_survey extends \NDB_BVL_Instrument
         $rules = array(),
         $rule_message = null,
         $with_status_field = false  //toggles an optional NA dropdown for HourMin element
-    ) {
+    ): void
+    {
         if ($rule_message === null) {
             $rule_message = "You are required to select a status "
                 . "if you want to leave this time blank.";

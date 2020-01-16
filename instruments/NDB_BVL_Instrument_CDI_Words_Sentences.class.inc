@@ -24,6 +24,7 @@
 
 class NDB_BVL_Instrument_CDI_Words_Sentences extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
 
     /*
    INSERT INTO instrument_subtests VALUES('', 'CDI_Words_Sentences', 'CDI_Words_Sentences_page1', 'PART I - A. VOCABULARY CHECKLIST 1-4', 1);
@@ -69,7 +70,7 @@ class NDB_BVL_Instrument_CDI_Words_Sentences extends NDB_BVL_Instrument
      * @return void
      * @access public
      */
-    function setup($commentID, $page)
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
     {
         $this->formType = "XIN";
         $this->form = new LorisForm('CDI_Words_Sentences_form');
@@ -1051,7 +1052,7 @@ class NDB_BVL_Instrument_CDI_Words_Sentences extends NDB_BVL_Instrument
     }
 
 
-    function score()
+    function score(): void
     {
         if ($this->_determineDataEntryCompletionStatus() == "Incomplete") {
             return;

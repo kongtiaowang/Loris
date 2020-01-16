@@ -27,6 +27,8 @@
 
 class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
+
     use instrument_validator;
     var $ValidityEnabled  = false;
     var $ValidityRequired = false;
@@ -39,7 +41,7 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
     * @return void
     * @access public
     */
-    function setup($commentID, $page)
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
     {
         $this->formType ="XIN";
         $this->form     = new LorisForm('mri_parameter_form_sa_form');
@@ -704,7 +706,7 @@ $count=0;
       return $errors;
     }
     
-    function score() {
+    function score(): void {
         if ($this->_determineDataEntryCompletionStatus() == "Incomplete") { 
             return;
         }
