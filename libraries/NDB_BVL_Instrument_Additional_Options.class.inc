@@ -25,7 +25,7 @@
  */
 class NDB_BVL_Instrument_Additional_Options extends NDB_BVL_Instrument
 {
-
+    use LegacyInstrumentTrait;
 
     /**
      * options

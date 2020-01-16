@@ -25,6 +25,8 @@
 
 class NDB_BVL_Instrument_DAS_SA extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
+
     var $ValidityEnabled = false;
     var $ValidityRequired = false;
 
@@ -36,7 +38,7 @@ class NDB_BVL_Instrument_DAS_SA extends NDB_BVL_Instrument
      * @return void
      * @access public
      */
-    function setup($commentID, $page)
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
     {
 
         $this->formType = "XIN";
@@ -192,7 +194,7 @@ class NDB_BVL_Instrument_DAS_SA extends NDB_BVL_Instrument
         $this->form->addElement("textarea", "other_comments", "Comments:", array('cols'=>25, 'rows'=>4));
         $this->XINRegisterRule("other_comments", array("{other_comments}{@}=={@}NEVER_REQUIRED"));
     }
-    function _saveValues($values)
+    function _saveValues(array $values): void
     {
         $timepoint =& TimePoint::singleton($this->getSessionID());
         $candidate =& Candidate::singleton($timepoint->getCandID());

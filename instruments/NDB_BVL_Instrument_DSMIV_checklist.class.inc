@@ -2,6 +2,7 @@
 
 class NDB_BVL_Instrument_DSMIV_checklist extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
    
     var $yesNo = array(null=>"", 'yes'=>"Yes", 'no'=>"No");
     var $confidence = array(null=>"", 'very_confident'=>"Very Confident", 'somewhat_confident'=>"Somewhat Confident", 'not_confident'=>"Not Confident");
@@ -17,7 +18,8 @@ class NDB_BVL_Instrument_DSMIV_checklist extends NDB_BVL_Instrument
     * @return void
     * @access public
     */
-    function setup($commentID, $page){
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
+    {
         $this->formType="XIN";
         $this->form = new LorisForm('DSMIV_checklist');
         $this->page = $page;            // page label (number or

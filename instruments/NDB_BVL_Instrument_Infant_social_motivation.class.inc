@@ -22,6 +22,8 @@
  */
 class NDB_BVL_Instrument_Infant_social_motivation extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
+
     /**
      * sets up basic data, such as the LorisForm object, and so on.
      *
@@ -30,7 +32,7 @@ class NDB_BVL_Instrument_Infant_social_motivation extends NDB_BVL_Instrument
      * @return void
      * @access public
      */
-    function setup($commentID, $page)
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
     {
         $this->formType = "XIN";
         $this->form = new LorisForm('Infant_social_motivation_form');

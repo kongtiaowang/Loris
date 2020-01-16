@@ -37,7 +37,7 @@ class NDB_BVL_Instrument_EARLI_interview_S7_inserts extends NDB_BVL_Instrument_E
     * @return void
     * @access public
     */
-	function setup($commentID = null, $page = null)
+	function setup(?string $commentID = NULL, ?string $page = NULL): void
 	{
 
 		$this->formType="XIN";

@@ -37,7 +37,7 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
      * @access public
      */
 
-    function setup($commentID, $page)
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
     {
         $this->formType = "XIN";
         $this->form     = new LorisForm('CSHQ_form');
@@ -600,7 +600,7 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
 
     }
 
-    function score()
+    function score(): void
     {
         if ($this->_determineDataEntryCompletionStatus() == "Incomplete") {
             return;

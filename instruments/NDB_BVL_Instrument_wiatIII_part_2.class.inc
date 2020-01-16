@@ -44,7 +44,7 @@ class NDB_BVL_Instrument_wiatIII_part_2 extends NDB_BVL_Instrument_wiatIII
      * @return void
      * @access public
      */
-    function setup($commentID, $page)
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
     {
         $this->formType = 'XIN';
         $this->form     = new LorisForm('wiatIII_part_2_form');
@@ -148,7 +148,7 @@ class NDB_BVL_Instrument_wiatIII_part_2 extends NDB_BVL_Instrument_wiatIII
     }
 
 
-    function score() {
+    function score(): void {
         if($this->_determineDataEntryCompletionStatus() == "Incomplete") {
             return;
         }

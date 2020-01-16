@@ -35,7 +35,8 @@ DoB Proband should be somewhere in the candidate table.  For now, we'll just mak
     * @return void
     * @access public
     */
-    function setup($commentID, $page){
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
+    {
         // set the object properties
         $this->testName = "adi_r_proband";           // test_names.Test_name
         $this->table = 'adi_r_proband';              // name of database table corresponding to instrument
@@ -46,7 +47,7 @@ DoB Proband should be somewhere in the candidate table.  For now, we'll just mak
 
     }
     
-    function score() {
+    function score(): void {
                 
         $db =& Database::singleton();
 

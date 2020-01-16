@@ -5,6 +5,8 @@
 
 class NDB_BVL_Instrument_dna_tracking extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
+
     /*
     INSERT INTO test_names (Test_name,Full_name, Sub_group) VALUES ('dna_tracking','DNA Tracking',1);
 
@@ -27,7 +29,8 @@ class NDB_BVL_Instrument_dna_tracking extends NDB_BVL_Instrument
     var $saliva_no_collection = array(''=>NULL, 'never_scheduled'=>'Never scheduled','child_too_old'=>'Child was too old','family_declined'=>'Family Declined','family_not_responsive'=>'Family not responsive','individual_declined'=>'Individual declined','individual_not_responsive'=>'Individual not responsive','collected_blood_sample'=>'Got blood sample','other'=>'Other','not_answered'=>'Not Answered');
     var $blood_no_collection = array(''=>NULL, 'never_scheduled'=>'Never scheduled','child_too_old'=>'Child was too old','family_declined'=>'Family Declined','family_not_responsive'=>'Family not responsive','parent_did_not_want_child_blood_drawn'=>"Parent did not want child's blood drawn" ,'draw_attempted_unable_to_obtain'=>'Draw attempted, but unable to obtain' ,'individual_declined'=>'Individual declined','individual_not_responsive'=>'Individual not responsive','other'=>'Other','not_answered'=>'Not Answered');
 
-    function setup($commentID, $page){
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
+    {
 
         $this->formType="XIN";
         $this->form = new LorisForm('test_form');

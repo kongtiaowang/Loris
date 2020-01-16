@@ -20,6 +20,7 @@
  */
 class NDB_BVL_Instrument_IBIS extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
 
     function ADOS_SA_CSS($ADOS_Version, $ados_a1, $ADOS_social_affect_total, $age)
     {

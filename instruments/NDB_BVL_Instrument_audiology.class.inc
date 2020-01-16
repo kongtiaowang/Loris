@@ -5,6 +5,8 @@
 
 class NDB_BVL_Instrument_audiology extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
+
 /*
 INSERT INTO test_names VALUES ('', 'audiology', 'Audiology Evaluation Results', '0', '1');
 
@@ -24,7 +26,8 @@ INSERT INTO test_battery VALUES ('', 'audiology', '660', '780', 'Y', 'Visit', '2
     * @return void
     * @access public
     */
-    function setup($commentID, $page){
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
+    {
         $this->formType="XIN";
         $this->form = new LorisForm('test_form');
         $this->page = $page;            // page label (number or

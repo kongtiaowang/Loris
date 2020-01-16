@@ -22,6 +22,8 @@
  */
 class NDB_BVL_Instrument_TANNER_Boys extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
+
     /**
     * Sets up basic data, such as the LorisForm object, and so on.
     *
@@ -32,7 +34,7 @@ class NDB_BVL_Instrument_TANNER_Boys extends NDB_BVL_Instrument
     *
     * @access public
     */
-    function setup($commentID, $page)
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
     {
         $this->formType ="XIN";
         $this->form     = new LorisForm('test_form');

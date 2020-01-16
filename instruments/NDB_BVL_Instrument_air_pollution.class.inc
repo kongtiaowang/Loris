@@ -17,6 +17,7 @@
  */
 class NDB_BVL_Instrument_air_pollution extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
 
     /**
      * Sets up basic data, such as the LorisForm object, and so on.
@@ -26,7 +27,7 @@ class NDB_BVL_Instrument_air_pollution extends NDB_BVL_Instrument
      * @return void
      * @access public
      */
-    function setup($commentID, $page)
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
     {
         $this->formType = 'XIN';
         $this->form = new LorisForm('test_form');
@@ -272,9 +273,9 @@ HTML;
      * @return string The HTML to be inserted into the review section of
      *                the final page of the survey module for this instrument.
      */
-    function getReview()
+    function getReview(): string
     {
-        return;
+        return '';
     }
 
 }

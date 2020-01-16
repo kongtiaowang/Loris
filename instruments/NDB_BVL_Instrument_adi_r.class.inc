@@ -5,6 +5,8 @@
 
 class NDB_BVL_Instrument_adi_r extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
+
 	//Commonly used level of indentation;
 	var $indent = "&nbsp;&nbsp;&nbsp;&nbsp;";
 	
@@ -24,7 +26,7 @@ class NDB_BVL_Instrument_adi_r extends NDB_BVL_Instrument
     // Holds the algorithm score conversions
     var $scores = array();
 
-    //abstract function setup($commentID, $page);
+    //abstract function setup(?string $commentID = NULL, ?string $page = NULL): void;
 	/**
     * sets up basic data, such as the LorisForm object, and so on.
     *
@@ -1220,7 +1222,7 @@ e skills first apparent");               // $this->form->addElement('select', 'q
     // both adi_r_subject and proband are treated
     // as one.
     //
-    function _getExaminerNames()
+    function _getExaminerNames(): array
     {
         $db =& Database::singleton();
 

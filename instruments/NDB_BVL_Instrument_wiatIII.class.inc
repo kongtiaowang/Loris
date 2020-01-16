@@ -23,6 +23,8 @@
 
 class NDB_BVL_Instrument_wiatIII extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
+
     var $ValidityEnabled  = false;
     var $ValidityRequired = false;
 

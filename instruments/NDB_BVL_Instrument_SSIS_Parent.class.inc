@@ -25,10 +25,12 @@
 
 class NDB_BVL_Instrument_SSIS_Parent extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
+
     use instrument_validator;
 
     /**
-     * Abstract function setup($commentID, $page);
+     * Abstract function setup(?string $commentID = NULL, ?string $page = NULL): void;
      * Sets up basic data, such as the LorisForm object, and so on.
      *
      * @param string $commentID  the CommentID identifying the data to load
@@ -37,7 +39,8 @@ class NDB_BVL_Instrument_SSIS_Parent extends NDB_BVL_Instrument
      * @return void
      * @access public
      */
-    function setup($commentID=NULL, $page=NULL){
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
+    {
 
         $this->formType = "XIN";
         $this->form     = new LorisForm('SSIS_Parent_form');

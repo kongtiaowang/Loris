@@ -5,6 +5,8 @@
 
 class NDB_BVL_Instrument_prefrontal_task extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
+
     var $ValidityEnabled = false;
     var $ValidityRequired = false;
 
@@ -24,7 +26,8 @@ INSERT INTO test_battery VALUES ('', 'prefrontal_task', '300', '780', 'Y', 'Visi
     * @return void
     * @access public
     */
-    function setup($commentID, $page){
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
+    {
         $this->formType="XIN";
         $this->form = new LorisForm('test_form');
         $this->page = $page;            // page label (number or

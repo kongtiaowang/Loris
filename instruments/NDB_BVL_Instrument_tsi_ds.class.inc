@@ -2,6 +2,8 @@
 
 class NDB_BVL_Instrument_tsi_ds extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
+
     use instrument_validator;
     
     var $ValidityEnabled  = false;
@@ -80,7 +82,8 @@ class NDB_BVL_Instrument_tsi_ds extends NDB_BVL_Instrument
      * @return void
      * @access public
      */
-    function setup($commentID = NULL, $page = NULL){
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
+    {
         $this->formType  = 'XIN';
         $this->form      = new LorisForm('test_form');
         $this->page      = $page;                      // page label 
@@ -150,7 +153,7 @@ class NDB_BVL_Instrument_tsi_ds extends NDB_BVL_Instrument
         $this->form->addFormRule(array(&$this,'XINValidate'));
     }
 
-    function _setDefaultsArray($defaults) {
+    function _setDefaultsArray(array $defaults): array {
         //------------------------------------------------------------//
         // The subject's PSCID, DoB, age im months and gender         //
         // are not entered manually: they all come from the database  //

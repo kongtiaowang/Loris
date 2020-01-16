@@ -5,6 +5,7 @@
 
 class NDB_BVL_Instrument_scq extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
 
 	var $yesNo = array(null=>"", "yes"=>"Yes", "no"=>"No", "not_answered"=>"Not Answered");
     var $onlyYesNo = array(null=>"","yes"=>"Yes","no"=>"No");
@@ -153,7 +154,7 @@ class NDB_BVL_Instrument_scq extends NDB_BVL_Instrument
 
 	}
 
-	function score() {
+	function score(): void {
 		//skip scoring if all data has not yet been entered.
 		if($this->_determineDataEntryCompletionStatus() == "Incomplete") {
 			return;

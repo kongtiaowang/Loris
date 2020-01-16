@@ -5,6 +5,8 @@
 
 class NDB_BVL_Instrument_TEST_NAME extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
+
     /**
     * sets up basic data, such as the LorisForm object, and so on.
     *
@@ -13,7 +15,8 @@ class NDB_BVL_Instrument_TEST_NAME extends NDB_BVL_Instrument
     * @return void
     * @access public
     */
-    function setup($commentID, $page){
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
+    {
         $this->formType="XIN";
         $this->form = new LorisForm('test_form');
         $this->page = $page;            // page label (number or

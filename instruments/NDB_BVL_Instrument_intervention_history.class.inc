@@ -5,6 +5,8 @@
 
 class NDB_BVL_Instrument_intervention_history extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
+
 /**
 INSERT INTO test_names VALUES ('', 'intervention_history', 'Intervention History', '0', '1', NULL);
 INSERT INTO instrument_subtests VALUES('', 'intervention_history', 'intervention_history_page1', 'Intervention 1', 1);
@@ -55,7 +57,8 @@ INSERT INTO test_battery VALUES ('', 'intervention_history', '1053', '1179', 'Y'
     * @return void
     * @access public
     */
-    function setup($commentID, $page){
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
+    {
         $this->formType="XIN";
         $this->form = new LorisForm('test_form');
         $this->page = $page;            // page label (number or
@@ -245,7 +248,7 @@ INSERT INTO test_battery VALUES ('', 'intervention_history', '1053', '1179', 'Y'
 
     }
 
-	function score()
+	function score(): void
 	{
 
         if ($this->_determineDataEntryCompletionStatus() == "Incomplete") {

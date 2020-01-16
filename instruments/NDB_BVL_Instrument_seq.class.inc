@@ -5,6 +5,8 @@
 
 class NDB_BVL_Instrument_seq extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
+
 	var $ValidityEnabled = false;
 	var $ValidityRequired = false;
 	var $respondentAgeYears;
@@ -73,7 +75,8 @@ class NDB_BVL_Instrument_seq extends NDB_BVL_Instrument
     * @return void
     * @access public
     */
-	function setup($commentID, $page){
+	function setup(?string $commentID = NULL, ?string $page = NULL): void
+    {
 		$this->formType="XIN";
 		$this->form = new LorisForm('test_form');
 		$this->page = $page;            // page label (number or
@@ -241,7 +244,7 @@ class NDB_BVL_Instrument_seq extends NDB_BVL_Instrument
 	/*
      * calculates SEQ score
      */
-	function score()
+	function score(): void
 	{
 		if ($this->_determineDataEntryCompletionStatus() == "Incomplete") {
 			return;
