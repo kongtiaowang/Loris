@@ -30,10 +30,7 @@ class parent_portal extends \NDB_Form
      *
      * @return bool whether the user has access
      */
-    function _hasAccess()
-    {
-        return true;
-    }
+
 
     /**
      * CommonPageSetup sets up the common form elements which
