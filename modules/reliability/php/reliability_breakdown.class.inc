@@ -7,9 +7,9 @@ namespace LORIS\reliability;
  */
 class Reliability_breakdown extends \NDB_Menu
 {
-    function _hasAccess() {
-        $user =& \User::singleton();
-        return $user->hasPermission('send_to_dcc');
+    function _hasAccess(\User $user) : bool
+    {
+       $user->hasPermission('send_to_dcc');
     }
 
     function setup()

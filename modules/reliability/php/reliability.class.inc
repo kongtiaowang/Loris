@@ -55,14 +55,15 @@ class Reliability extends \NDB_Menu_Filter
 
     var $reliability_table;
 
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        $user =& \User::singleton();
 
-        if ($user->hasPermission('access_all_profiles') || $user->hasPermission('reliability_edit_all')) {
-            return true;
-        }
-        return false;
+        if($user->hasPermission('access_all_profiles')|| $user->hasPermission('reliability_edit_all'))
+            {
+
+                return true;
+            }
+            return false;
     }
     //@codingStandardsIgnoreEnd
     /**
@@ -124,19 +125,19 @@ class Reliability extends \NDB_Menu_Filter
         }
 
         $config      =& \NDB_Config::singleton();
-        $useProjects = $config->getSetting("useProjects");
+
         $this->columns = array(
             'candidate.PSCID',
             'reliability.reliability_center_id',
             'p.name as site',
             'session.SubprojectID as Cohort',
             'session.CandID AS DCCID',
-            'candidate.Gender',
+            'candidate.Sex',
             'session.Visit_label',
         );
-        if ($useProjects === "true") {
+
             $this->columns[] = 'pr.Name as Project';
-        }
+
         $this->columns  =array_merge(
             $this->columns,
             array(
@@ -159,12 +160,12 @@ class Reliability extends \NDB_Menu_Filter
             'Site of Reliability Test',
             'Cohort',
             'DCCID',
-            'Gender',
+            'Sex',
             'Visit_label',
         );
-        if ($useProjects === "true") {
+
             $this->headers[] = 'Project';
-        }
+
         $this->headers =array_merge($this->headers, array('CommentID', 'Instrument','File_in_DB', 'reliability_score', 'Current Stage', 'Invalid', 'Manual Swap', 'Reliable'));
 
         // Set header as hidden from the data table
@@ -297,9 +298,9 @@ class Reliability extends \NDB_Menu_Filter
         $this->addSelect('Instrument', 'Instrument:', $list_of_instruments);
         $this->addSelect('Invalid', 'Invalid Candidate:', array('' => '', 'yes' => 'Yes', 'no' => 'No'));
         $config =&\NDB_Config::singleton();
-        if ($config->getSetting("useProjects")=="true") {
+
             $this->addSelect('ProjectID', 'Project:', array('' => 'All') + $list_of_projects);
-        }
+
 
         // $this->addSelect('Lock_record', 'Lock_record:', $lock_options);
 
