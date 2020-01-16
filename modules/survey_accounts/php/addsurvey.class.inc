@@ -34,12 +34,10 @@ class AddSurvey extends \NDB_Form
      *
      * @return boolean true if user has access to this page
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        // create user object
-        $editor =& \User::singleton();
 
-        return $editor->hasPermission('user_accounts');
+        return $user->hasPermission('user_accounts');
     }
 
     /**
