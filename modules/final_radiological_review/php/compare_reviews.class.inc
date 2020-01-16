@@ -41,9 +41,8 @@ class Compare_Reviews extends \NDB_Form
      *
      * @return boolean page access
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        $user =& \User::singleton();
         return (
             $user->hasPermission('view_final_radiological_review') ||
             $user->hasPermission('edit_final_radiological_review')

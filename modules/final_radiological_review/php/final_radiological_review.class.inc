@@ -102,9 +102,8 @@ class Final_Radiological_Review extends \NDB_Menu_Filter
      *
      * @return bool whether the user hass access
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        $user =& \User::singleton();
         return (
             $user->hasPermission('view_final_radiological_review') ||
             $user->hasPermission('edit_final_radiological_review')
@@ -120,10 +119,6 @@ class Final_Radiological_Review extends \NDB_Menu_Filter
     function _setupVariables()
     {
         $config      = \NDB_Config::singleton();
-        $useProjects = $config->getSetting("useProjects");
-        if ($useProjects === "false") {
-            $useProjects = false;
-        }
 
         $conflict_condition1 = "(CASE
             WHEN r.CommentID IS NULL THEN 'NA'
@@ -189,7 +184,7 @@ class Final_Radiological_Review extends \NDB_Menu_Filter
             JOIN session s ON (s.ID=f.SessionID)
             JOIN candidate c ON (c.CandID=s.CandID)
             LEFT JOIN Project pjct ON (pjct.ProjectID=c.ProjectID)
-            LEFT JOIN psc ON (c.CenterID=psc.CenterID)
+            LEFT JOIN psc ON (c.RegistrationCenterID=psc.CenterID)
             LEFT JOIN radiology_review orig ON (orig.CommentID=($radiologyReviewSubquery))
             LEFT JOIN final_radiological_review r ON (r.CommentID=($frrSubquery))
             WHERE mpf.commentid NOT LIKE 'DDE_%' AND mpf.commentid IS NOT NULL
@@ -233,9 +228,9 @@ class Final_Radiological_Review extends \NDB_Menu_Filter
                           'c.CandID as DCCID',
                           's.visit_label as Visit_Label',
                          );
-        if ($useProjects) {
+
             $this->columns[] = 'pjct.Name as Project';
-        }
+
 
         $this->columns = array_merge(
             $this->columns,
@@ -265,9 +260,9 @@ class Final_Radiological_Review extends \NDB_Menu_Filter
                            'DCCID',
                            'Visit_Label',
                           );
-        if ($useProjects) {
+
             $this->headers[] = 'Project';
-        }
+
         $this->headers = array_merge(
             $this->headers,
             array(
@@ -351,10 +346,7 @@ class Final_Radiological_Review extends \NDB_Menu_Filter
     function _setFilterForm()
     {
         $config      = \NDB_Config::singleton();
-        $useProjects = $config->getSetting("useProjects");
-        if ($useProjects === "false") {
-            $useProjects = false;
-        }
+
 
         $list_of_visit_labels = array(null => 'All' );
         $visitList            = \Utility::getVisitList();
@@ -367,13 +359,12 @@ class Final_Radiological_Review extends \NDB_Menu_Filter
             $list_of_sites[$key] = $value;
         }
         ksort($list_of_sites);
-        if ($useProjects) {
             $list_of_projects = array(null => 'All');
             $projectList      = \Utility::getProjectList();
             foreach ($projectList as $key => $value) {
                 $list_of_projects[$key] =$value;
             }
-        }
+
         $options_boolean           = array(
                                       null  => 'All',
                                       'yes' => 'Yes',
@@ -461,9 +452,9 @@ class Final_Radiological_Review extends \NDB_Menu_Filter
         $this->addSelect('Exclusionary_Status', 'Exclusionary Status', $exclude);
 
         $this->addSelect('Finalized', 'Finalized', $options_boolean_finalized);
-        if ($useProjects) {
+
             $this->addSelect('Project', 'Project', $list_of_projects);
-        }
+
         $this->addBasicText(
             'keyword',
             'Search keyword in Comments',
