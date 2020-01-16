@@ -179,13 +179,13 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     static function factory(
         string $instrument,
         string $commentID = '',
-        ?string $page,
+        string $page='',
         bool $guarantee_exists = true
     ) {
         $class = "NDB_BVL_Instrument_$instrument";
 
         // Ensure 'page' is a string.
-        $page = $page ?? ''?? null;
+        $page = $page ?? '';
 
         // Make sure the instrument class has been included/required!
         $factory = NDB_Factory::singleton();

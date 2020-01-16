@@ -95,7 +95,7 @@ class DirectDataEntryMainPage
             $this->Instrument = \NDB_BVL_Instrument::factory(
                 $this->SurveyInfo['Test_name'],
                 $this->SurveyInfo['CommentID'],
-                null,
+                '',
                 true
             );
         } catch(\Exception $e) {
@@ -164,15 +164,17 @@ class DirectDataEntryMainPage
      */
     function handlePATCH() {
 
+
+        $s=$this->SurveyInfo['Test_name'];
         try {
             $this->Instrument = \NDB_BVL_Instrument::factory(
                 $this->SurveyInfo['Test_name'],
                 $this->SurveyInfo['CommentID'],
-                null,
+                '',
                 true
             );
         } catch(\Exception $e) {
-            throw new Exception("Instrument not found", 405);
+            throw new Exception("Instrument  not found", 405);
         }
 
         $fp   = fopen("php://input", "r");
@@ -182,7 +184,7 @@ class DirectDataEntryMainPage
         }
         fclose($fp);
 
-        $data            = json_decode($data);
+        $data            = json_decode($data,true);
         $instrument_name = $this->Instrument->testName;
 
         if(count($data) !== 1) {
@@ -228,7 +230,7 @@ class DirectDataEntryMainPage
         fclose($fp);
 
         $data = json_decode($data, true);
-        $subtest = null;
+        $subtest = '';
 
         if($data['page'] !== 0) {
             $subtest = $data['page'];
@@ -281,7 +283,7 @@ class DirectDataEntryMainPage
             $this->Instrument = \NDB_BVL_Instrument::factory(
                 $this->SurveyInfo['Test_name'],
                 $this->SurveyInfo['CommentID'],
-                null,
+                '',
                 true
             );
         } catch(\Exception $e) {
