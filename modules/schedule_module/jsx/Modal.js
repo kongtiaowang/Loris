@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 class Modal extends React.Component {
   constructor() {
     super();
@@ -97,10 +98,10 @@ class Modal extends React.Component {
 }
 
 Modal.propTypes = {
-  title: React.PropTypes.string,
-  show: React.PropTypes.bool.isRequired,
-  closeModal: React.PropTypes.func.isRequired,
-  throwWarning: React.PropTypes.bool.isRequired,
+  title: PropTypes.string,
+  show: PropTypes.bool.isRequired,
+  closeModal: PropTypes.func.isRequired,
+  throwWarning: PropTypes.bool.isRequired,
 };
 
 Modal.defaultProps = {
