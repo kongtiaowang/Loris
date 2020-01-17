@@ -27,16 +27,14 @@ class Videos extends \NDB_Menu_Filter
     
     var $reliability_table;
 
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        
-    	//create user object
-    	$user =& \User::singleton();
-        if($user->hasPermission('earli_videos')) {
-            return true;
-        }
-    	return $user->hasPermission('video_upload');
-    	    	
+        return $user->hasAnyPermission(
+            array(
+                'earli_videos',
+                'video_upload',
+            )
+        );
     }
 
     function _isEARLIUser() {
