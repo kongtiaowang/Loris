@@ -19,19 +19,18 @@ class video_upload extends \NDB_Form
 
 
 
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        error_log("_hasAccess");
-        // create user object
-        $user =& \User::singleton();
+        return $user->hasAnyPermission(
+            array(
+                'earli_videos',
+            ));
 
-        if ($user->hasPermission('earli_videos')) {
-            return true;
-        }
-        if ($user->hasStudySite()) {
-            return $user->hasPermission('data_entry');
-        }
+            if ($user->hasStudySite()) {
+                return $user->hasPermission('data_entry');
+            }
         return false;
+
     }
 
     function _isEARLIUser() {
