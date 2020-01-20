@@ -309,12 +309,12 @@ class NDB_BVL_Instrument_mri_screening_questionnaire extends NDB_BVL_Instrument
         $this->addLabel('PLEASE INDICATE IF YOU / YOUR CHILD HAVE ANY OF THE FOLLOWING:');
 
         $question_grp = [
-            ['biostimulator', 'Any type of biostimulator', 1, 'Type:'],
-            ['internal_electrode', 'Any type of internal electrode(s)', 1, 'Describe:'],
+            ['biostimulator', 'Any type of biostimulator', 1, 'type:'],
+            ['internal_electrode', 'Any type of internal electrode(s)', 1, 'describe:'],
             ['implanted_insulin_pump', 'Implanted insulin pump', '', ''],
             ['swan_ganz_atheter', 'Swan-Ganz Catheter', '', ''],
             ['halo_vest_metallic', 'Halo vest or metallic cervical fixation devices', '', ''],
-            ['electronic_implant', 'Any type pf electronic, mechanical, or magnetic implant', 1, 'Type:'],
+            ['electronic_implant', 'Any type of electronic, mechanical, or magnetic implant', 1, 'type:'],
             ['ear_tubes', 'Ear tubes', '', ''],
             ['intravascular_coil', 'Any type of intravascular coil, filter or stent', '', ''],
             ['implanted_drug_infusion', 'Implanted drug infusion device', '', ''],
@@ -328,19 +328,19 @@ class NDB_BVL_Instrument_mri_screening_questionnaire extends NDB_BVL_Instrument
             ['braces', 'Braces', '', ''],
             ['wire_mesh', 'Wire mesh', '', ''],
             ['artificial_limb_joint', 'Artificial limb or joint', '', ''],
-            ['implanted_orthopedic_item', 'Implanted orthopedic item(s), such as pins, rods, screws, nails, clips, plates, wire, etc.', 1, 'Type:'],
+            ['implanted_orthopedic_item', 'Implanted orthopedic item(s), such as pins, rods, screws, nails, clips, plates, wire, etc.', 1, 'type:'],
             ['iud', 'IUD', '', ''],
             ['pessary', 'Pessary', '', ''],
             ['penile_prosthesis', 'Penile Prosthesis', '', ''],
             ['diaphragm', 'Diaphragm', '', '']
         ];
 
-        foreach ($question_grp as list($key, $val, $flag)) {
+        foreach ($question_grp as list($key, $val, $flag, $label)) {
             $this->addYesNoElement($key, $val);
             $this->form->addRule($key, $val . ' must be set', 'required');
 
             if ($flag) {
-                $this->addBasicTextArea("{$key}_desc", $this->indent . 'If yes, describe:');
+                $this->addBasicTextArea("{$key}_desc", $this->indent . 'If yes, '. $label);
                 $this->XINRegisterRule(
                     "{$key}_desc",
                     array("$key{@}=={@}yes"),

@@ -70,8 +70,10 @@ class NDB_BVL_Instrument_CDI_Words_Sentences extends NDB_BVL_Instrument
      * @return void
      * @access public
      */
+
     function setup(?string $commentID = NULL, ?string $page = NULL): void
     {
+
         $this->formType = "XIN";
         $this->form = new LorisForm('CDI_Words_Sentences_form');
         $this->page = $page;            // page label (number or
@@ -96,16 +98,6 @@ class NDB_BVL_Instrument_CDI_Words_Sentences extends NDB_BVL_Instrument
         $this->_requiredElements = array(
             'Examiner',
             'CommentID',
-        );
-
-        $config = NDB_Config::singleton();
-        $this->dateOptions = array(
-            'language' => 'en',
-            'format' => 'YMd',
-            'minYear' => $config->getSetting('startYear'),
-            'maxYear' => $config->getSetting('endYear'),
-            'addEmptyOption' => true,
-            'emptyOptionValue' => null,
         );
 
         // setup the form
@@ -467,13 +459,14 @@ class NDB_BVL_Instrument_CDI_Words_Sentences extends NDB_BVL_Instrument
 
         $part_7_names =
             array(
-                "ankle", "arm", "belly_button", "buttocks/bottom", "cheek", "chin",
+                "ankle", "arm", "belly_button", "buttocks/bottom*", "cheek", "chin",
                 "ear", "eye", "face", "feet", "finger", "hair", "hand", "head",
-                "knee", "leg", "lips", "mouth", "nose", "owie/boo_boo", "penis",
-                "shoulder", "tooth", "toe", "tongue", "tummy", "vagina"
+                "knee", "leg", "lips", "mouth", "nose", "owie/boo_boo", "penis*",
+                "shoulder", "tooth", "toe", "tongue", "tummy", "vagina*"
             );
 
         $this->displayCheckbox($part_7_names, "part_7");
+        $this->addLabel("* or word used in your family");
 
     }
 
@@ -515,6 +508,7 @@ class NDB_BVL_Instrument_CDI_Words_Sentences extends NDB_BVL_Instrument
 
         /* 10. Outside Things (31) */
 
+        $this->addLabel("<h3><u>10. Outside Things (31)</u></h3>");
         $part_10_names =
             array(
                 "backyard", "cloud", "flag", "flower", "garden", "grass", "hose",
@@ -535,25 +529,27 @@ class NDB_BVL_Instrument_CDI_Words_Sentences extends NDB_BVL_Instrument
 
         $part_11_names =
             array(
-                "beach", "camping", "church", "circus", "country", "downtown",
+                "beach", "camping", "church*", "circus", "country", "downtown",
                 "farm", "gas_station", "home", "house", "movie", "outside",
                 "park", "party", "picnic", "playground", "school", "store",
                 "woods", "work", "yard", "zoo"
             );
 
         $this->displayCheckbox($part_11_names, "part_11");
+        $this->addLabel("* or word used in your family");
 
         /* 12. People (29) */
         $this->addLabel("<h3><u>12. People (29)</u></h3>");
         $part_12_names =
             array(
                 "aunt", "baby", "babysitter", "babysitter's_name", "boy",
-                "brother", "child", "clown", "cowboy", "daddy", "doctor",
-                "fireman", "friend", "girl", "grandma", "grandpa", "lady",
-                "mailman", "man", "mommy", "nurse", "child's_own_name", "people",
+                "brother", "child", "clown", "cowboy", "daddy*", "doctor",
+                "fireman", "friend", "girl", "grandma*", "grandpa*", "lady",
+                "mailman", "man", "mommy*", "nurse", "child's_own_name", "people",
                 "person", "pet's_name", "police", "sister", "teacher", "uncle"
             );
         $this->displayCheckbox($part_12_names, "part_12");
+        $this->addLabel("* or word used in your family");
 
         /* 13. Games and Routines (25) */
         $this->addLabel("<h3><u>13. Games and Routines (25)</u></h3>");
@@ -610,6 +606,7 @@ class NDB_BVL_Instrument_CDI_Words_Sentences extends NDB_BVL_Instrument
         $this->displayCheckbox($part_15_names, "part_15");
 
         /* 16. Words About Time (12) */
+        $this->addLabel("<h3><u>16. Words About Time (12)</u></h3>");
         $part_16_names =
             array(
                 "after", "before", "day", "later", "morning", "night",
@@ -692,9 +689,9 @@ class NDB_BVL_Instrument_CDI_Words_Sentences extends NDB_BVL_Instrument
                 who are not present? For example, a child who saw a parade last
                 week might later say parade, clown, or band.",
                 "2. Does your child ever talk about something that's going to
-                happen in the future, for example, saying 'choo choo' or 
-                'airplane' before you leave the house for a trip, or saying
-                'swing' when you are going to the park?",
+                happen in the future, for example, saying \"choo choo\" or 
+                \"airplane\" before you leave the house for a trip, or saying
+                \"swing\" when you are going to the park?",
                 "3. Does your child talk about objects that are not present
                 such as asking about a missing or absent toy, referring to 
                 a pet out of view, or asking about someone not present?",
@@ -703,7 +700,7 @@ class NDB_BVL_Instrument_CDI_Words_Sentences extends NDB_BVL_Instrument
                 teddy bear when you say 'where's the bear?'",
                 "5. Does your child ever pick up or point to an object and name
                 an absent person to whom the object belongs? For example, 
-                a child might point to mommy's shoe and say 'mommy'."
+                a child might point to mommy's shoe and say \"mommy\"."
             );
 
         for ($i = 0; $i < sizeof($part_1_b_questions); $i++) {
@@ -722,17 +719,17 @@ class NDB_BVL_Instrument_CDI_Words_Sentences extends NDB_BVL_Instrument
         $this->addLabel("<h3>A. Word Endings/Part 1</h3>");
         $part_2_a_questions =
             array(
-                "1. To talk about more than one thing, we add an 's' to 
+                "1. To talk about more than one thing, we add an \"s\" to 
                 many words. Examples include cars (for more than one car), shoes,
                 dogs, and keys. Has your child begun to do this?",
-                "2. To talk about ownership, we add an 's', for example, 
+                "2. To talk about ownership, we add an \"s\", for example, 
                 Daddy's key, kitty's dish, and baby's bottle. Has your child begun
                 to do this?",
-                "3. To talk about activities, we sometimes add 'ing' to verbs.
+                "3. To talk about activities, we sometimes add \"ing\" to verbs.
                 Examples include looking, running, and crying. Has your child begun
                 to do this?",
                 "4. To talk about things that happened in the past, we often add
-                'ed' to the verb. Examples include kissed, opened, and pushed. Has
+                \"ed\" to the verb. Examples include kissed, opened, and pushed. Has
                 your child begun to do this?"
             );
         for ($i = 0; $i < sizeof($part_2_a_questions); $i++) {
@@ -762,8 +759,8 @@ class NDB_BVL_Instrument_CDI_Words_Sentences extends NDB_BVL_Instrument
 
         $this->addLabel("<h3>C. Word Endings/Part 2</h3>");
         $this->addLabel("<h4>$this->indent  Young children often place the wrong endings
-                        on words. For example, a child might say 'Auntie goed
-                        home.' Mistakes like this are often a sign of progress
+                        on words. For example, a child might say \"Auntie goed
+                        home.\" Mistakes like this are often a sign of progress
                         in language. In the following lists, please mark all the
                         mistakes of this kind you have heard.</h4>");
         $this->addLabel("<h4><i>Nouns</i></h4>");
@@ -788,8 +785,8 @@ class NDB_BVL_Instrument_CDI_Words_Sentences extends NDB_BVL_Instrument
 
         $this->addSelect(
             "part_2_c_last_question",
-            "Has your child begun to combine words yet, such as 'nother cracker',
-            or 'doggie bite?'",
+            "Has your child begun to combine words yet, such as \"nother cracker\",
+            or \"doggie bite?\"",
             $this->frequency
         );
 
@@ -815,12 +812,6 @@ class NDB_BVL_Instrument_CDI_Words_Sentences extends NDB_BVL_Instrument
 
         $part_2_e_pairs =
             array(
-                array(
-                    null => "",
-                    "two_foot" => "Two foot.",
-                    "two_feet" => "Two feet."
-                ),
-
                 array(
                     null => "",
                     "two_foot" => "Two foot.",
@@ -1009,45 +1000,65 @@ class NDB_BVL_Instrument_CDI_Words_Sentences extends NDB_BVL_Instrument
             );
 
         for ($i = 0; $i < sizeof($part_2_e_pairs); $i++) {
-            if ($i != 0) {
-                if ($i == 4 || $i == 5) {
-                    $this->addSelect(
-                        "part_2_e_" . $i,
-                        $i . ". (Talking about something happening right now)",
-                        $part_2_e_pairs[$i]
-                    );
-                    $this->XINRegisterRule(
-                        "part_2_e_" . $i,
-                        array("part_2_c_last_question{@}=={@}not_yet|sometimes"),
-                        "Required if 'Not Yet' or 'Sometimes' selected for the
-                     question following Part II - Section C."
-                    );
-                } elseif ($i == 6 || $i == 10 || $i == 11 || $i == 12) {
-                    $this->addSelect(
-                        "part_2_e_" . $i,
-                        $i . ". (Talking about something that already happened)",
-                        $part_2_e_pairs[$i]
-                    );
-                    $this->XINRegisterRule(
-                        "part_2_e_" . $i,
-                        array("part_2_c_last_question{@}=={@}not_yet|sometimes"),
-                        "Required if 'Not Yet' or 'Sometimes' selected for the
-                     question following Part II - Section C."
-                    );
-                } else {
-                    $this->addSelect(
-                        "part_2_e_" . $i,
-                        $i . ".",
-                        $part_2_e_pairs[$i]
-                    );
-                    $this->XINRegisterRule(
-                        "part_2_e_" . $i,
-                        array("part_2_c_last_question{@}=={@}not_yet|sometimes"),
-                        "Required if 'Not Yet' or 'Sometimes' selected for the
-                     question following Part II - Section C."
-                    );
+
+            // index remapping
+            if ($i == 0) {
+                $j = 35;
+            }
+            else if ($i == 1) {
+                $j = 0;
+            }
+            else if ($i == 2) {
+                $j = 36;
+            }
+            else {
+                $j = $i - 2;
+            }
+
+            $idx = $i + 1;
+
+            $variableIdx = $j + 1;
+            // index remapping
+
+            $label_txt = '';
+            foreach ($part_2_e_pairs[$j] as $key => $val) {
+                if (!is_null($key)) {
+                    if (!empty($label_txt)) {
+                        $label_txt .= " / ";
+                    }
+                    $label_txt .= $val;
                 }
             }
+
+            if ($i == 3 || $i == 4) {
+                $this->addSelect(
+                    "part_2_e_" . $variableIdx,
+                    $idx . ". (Talking about something happening right now) " . $label_txt,
+                    $part_2_e_pairs[$j]
+                );
+
+            } elseif (in_array($i, [5, 9, 10, 11])) {
+                $this->addSelect(
+                    "part_2_e_" . $variableIdx,
+                    $idx . ". (Talking about something that already happened) " . $label_txt,
+                    $part_2_e_pairs[$j]
+                );
+
+            } else {
+                $this->addSelect(
+                    "part_2_e_" . $variableIdx,
+                    $idx . "." . $label_txt,
+                    $part_2_e_pairs[$j]
+                );
+            }
+
+            $this->XINRegisterRule(
+                "part_2_e_" . $variableIdx,
+                array("part_2_c_last_question{@}=={@}not_yet|sometimes"),
+                "Required if 'Not Yet' or 'Sometimes' selected for the
+                question following Part II - Section C."
+            );
+
         }
     }
 
@@ -1129,7 +1140,7 @@ class NDB_BVL_Instrument_CDI_Words_Sentences extends NDB_BVL_Instrument
 
         $part_2_e_first_options =
             array(
-                "two_foot", "two_foot", "kitty_sleep", "i_make_tower",
+                "two_foot", "kitty_sleep", "i_make_tower",
                 "i_fall_down", "more_cookie", "these_my_tooth", "baby_blanket",
                 "doggie_kiss_me", "daddy_pick_me_up", "kitty_go_away",
                 "doggie_table", "that_my_truck", "baby_crying", "you_fix_it",
