@@ -22,7 +22,7 @@
                     <th>Ethnic Category</th>
                     <th>Females</th>
                     <th>Males</th>
-                    <th>Sex / Gender unknown or not reported</th>
+                    <th>Sex / Sex unknown or not reported</th>
                     <th>Total</th>
                 </tr>
                 </thead>
@@ -56,7 +56,7 @@
                     <th>Racial Categories</th>
                     <th>Females</th>
                     <th>Males</th>
-                    <th>Sex / Gender unknown or not reported</th>
+                    <th>Sex / Sex unknown or not reported</th>
                     <th>Total</th>
                 </tr>
                 </thead>
@@ -89,7 +89,7 @@
                     <th>Racial Categories (Hispanic or Latinos)</th>
                     <th>Females</th>
                     <th>Males</th>
-                    <th>Sex / Gender unknown or not reported</th>
+                    <th>Sex / Sex unknown or not reported</th>
                     <th>Total</th>
                 </tr>
                 </thead>

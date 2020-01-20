@@ -197,22 +197,22 @@ class NDAR_Release_2018
                 if ($this->instrument == 'head_measurements_subject'|| $this->instrument == 'height_weight' ||$this->instrument == 'phys_neuro_exam') {
                     return "c.IBISID AS src_subject_id, c.CandidateGUID AS subjectkey, CASE c.Sex WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS Gender, ROUND(DATEDIFF(i.Date_taken, c.DoB) / (365/12)) AS interview_age, i.Date_taken AS interview_date, ";
                 }
-                return "c.IBISID AS src_subject_id, c.CandidateGUID AS subjectkey, CASE c.Sex WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS Gender , ROUND(DATEDIFF(i.Date_taken, c.DoB) / (365/12)) AS interview_age, i.Date_taken as interview_date, ";
+                return "c.IBISID AS src_subject_id, c.CandidateGUID AS subjectkey, CASE c.Sex WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS Sex , ROUND(DATEDIFF(i.Date_taken, c.DoB) / (365/12)) AS interview_age, i.Date_taken as interview_date, ";
             }
             else if (in_array($this->instrument, $ados)) {
-                return "c.IBISID AS src_subject_id , c.CandidateGUID AS  subjectkey, CASE c.Sex WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS Gender , ROUND(DATEDIFF(i.Date_taken, c.DoB) / (365/12)) AS interview_age, i.Date_taken as interview_date, ";
+                return "c.IBISID AS src_subject_id , c.CandidateGUID AS  subjectkey, CASE c.Sex WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS Sex , ROUND(DATEDIFF(i.Date_taken, c.DoB) / (365/12)) AS interview_age, i.Date_taken as interview_date, ";
             }
             else if($this->instrument == 'aosi')
             {
-                return "c.IBISID AS src_subject_id, c.CandidateGUID AS subjectkey, CASE c.Sex WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS Gender , ROUND(DATEDIFF(i.Date_taken, c.DoB) / (365/12)) AS interview_age, f.Validity as validity_of_data, i.Date_taken as interview_date, 
+                return "c.IBISID AS src_subject_id, c.CandidateGUID AS subjectkey, CASE c.Sex WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS Sex , ROUND(DATEDIFF(i.Date_taken, c.DoB) / (365/12)) AS interview_age, f.Validity as validity_of_data, i.Date_taken as interview_date, 
                  CASE i.examiner_location WHEN 'Examiner' THEN '0' WHEN ' In-room observer' THEN '1' WHEN 'Behind mirror' THEN '2' WHEN 'Videotape' THEN '3' WHEN 'Not Answered' THEN '9' END AS aosi_assessmenttype,";
             }
             else if($this->instrument == 'LENA_DataTrackingForm')
             {
-                return "c.IBISID AS src_subject_id, c.CandidateGUID AS subjectkey, CASE c.Sex WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS Gender , 
+                return "c.IBISID AS src_subject_id, c.CandidateGUID AS subjectkey, CASE c.Sex WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS Sex , 
                 ROUND(DATEDIFF(DATE(i.Timestamp_1), c.DoB) / (365/12)) AS interview_age, DATE(i.Timestamp_1) as interview_date, ";
             }
-            return "c.IBISID AS src_subject_id, c.CandidateGUID AS subjectkey, CASE c.Sex WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS Gender , ROUND(DATEDIFF(i.Date_taken, c.DoB) / (365/12)) AS interview_age, f.Validity as validity_of_data, i.Date_taken as interview_date, ";
+            return "c.IBISID AS src_subject_id, c.CandidateGUID AS subjectkey, CASE c.Sex WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS Sex , ROUND(DATEDIFF(i.Date_taken, c.DoB) / (365/12)) AS interview_age, f.Validity as validity_of_data, i.Date_taken as interview_date, ";
         }
     }
 

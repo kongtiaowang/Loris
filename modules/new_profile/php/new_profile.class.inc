@@ -243,7 +243,7 @@ class New_Profile extends \NDB_Form
                          );
         $this->addSelect('sex', 'Sex', $sexOptions);
 
-        // gender rules
+        // Sex rules
         $this->addRule('sex', 'Sex is required', 'required');
         $this->addSelect("candidate_plan", 'Candidate Plan',
             array(

@@ -117,9 +117,9 @@ class NDAR_Release_2015 {
                 if($this->instrument == 'head_measurements_subject') {
                 return "c.IBISID, c.CandidateGUID as subjectkey, CASE c.Sex WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS Gender, ROUND(DATEDIFF(i.Date_taken, c.DoB) / (365/12)) AS Candidate_Age_in_Months, i.Date_taken as interview_date, ";
                 }
-                return "c.IBISID, c.CandidateGUID, CASE c.Sex WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS Gender , ROUND(DATEDIFF(i.Date_taken, c.DoB) / (365/12)) AS Candidate_Age_in_Months, i.Date_taken as interview_date, ";
+                return "c.IBISID, c.CandidateGUID, CASE c.Sex WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS Sex , ROUND(DATEDIFF(i.Date_taken, c.DoB) / (365/12)) AS Candidate_Age_in_Months, i.Date_taken as interview_date, ";
             }
-            return "c.IBISID, c.CandidateGUID, CASE c.Sex WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS Gender , ROUND(DATEDIFF(i.Date_taken, c.DoB) / (365/12)) AS Candidate_Age_in_Months, f.Validity as validity_of_data, i.Date_taken as interview_date, ";
+            return "c.IBISID, c.CandidateGUID, CASE c.Sex WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS Sex , ROUND(DATEDIFF(i.Date_taken, c.DoB) / (365/12)) AS Candidate_Age_in_Months, f.Validity as validity_of_data, i.Date_taken as interview_date, ";
         }
     }
     function getInstrumentFields() {

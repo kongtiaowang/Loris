@@ -280,7 +280,7 @@ class Stats_Enrollment extends \NDB_Form
                         GROUP BY Gender" , $params);
             }
             else if($race_cat === "unknown_not_reported"){
-                $results = $DB->pselect("SELECT COALESCE(Gender,'Unknown') as Gender ,COUNT( DISTINCT cad.CandID) as val FROM candidate cad
+                $results = $DB->pselect("SELECT COALESCE(Gender,'Unknown') as Sex ,COUNT( DISTINCT cad.CandID) as val FROM candidate cad
                         JOIN session sn on cad.CandID= sn.CandID
                         LEFT JOIN flag fg on sn.ID = fg.SessionID
                         LEFT JOIN tsi ti on fg.CommentID = ti.CommentID 

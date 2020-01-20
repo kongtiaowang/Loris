@@ -169,7 +169,7 @@ class NDAR_Release_Defaced {
             }
 
             $pieces = explode("_", $file);
-            $info = $db->pselectRow("SELECT ProbandGUID, CandidateGUID, CenterID, DoB, IBISID, Gender FROM candidate WHERE CandID=:dccid", array('dccid' => $pieces[1]));
+            $info = $db->pselectRow("SELECT ProbandGUID, CandidateGUID, CenterID, DoB, IBISID, Sex FROM candidate WHERE CandID=:dccid", array('dccid' => $pieces[1]));
 
             $file_anonymized = $this->replaceID($file, $pieces[1], $info['IBISID']);
             $this->anonFile("/home/driusan/NDAR/IBIS2/Valid/$file", "IBIS2_anon/$file_anonymized");

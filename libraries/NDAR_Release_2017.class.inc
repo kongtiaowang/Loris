@@ -153,12 +153,12 @@ class NDAR_Release_2017
                 if ($this->instrument == 'head_measurements_subject'|| $this->instrument == 'height_weight' ||$this->instrument == 'phys_neuro_exam') {
                     return "c.IBISID AS src_subject_id, c.CandidateGUID AS subjectkey, CASE c.Sex WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS Gender, ROUND(DATEDIFF(i.Date_taken, c.DoB) / (365/12)) AS interview_age, i.Date_taken AS interview_date, ";
                 }
-                return "c.IBISID AS src_subject_id, c.CandidateGUID AS subjectkey, CASE c.Sex WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS Gender , ROUND(DATEDIFF(i.Date_taken, c.DoB) / (365/12)) AS interview_age, i.Date_taken as interview_date, ";
+                return "c.IBISID AS src_subject_id, c.CandidateGUID AS subjectkey, CASE c.Sex WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS Sex , ROUND(DATEDIFF(i.Date_taken, c.DoB) / (365/12)) AS interview_age, i.Date_taken as interview_date, ";
             }
             else if (in_array($this->instrument, $ados)) {
-                return "c.IBISID AS src_subject_id , c.CandidateGUID AS  subjectkey, CASE c.Sex WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS Gender , ROUND(DATEDIFF(i.Date_taken, c.DoB) / (365/12)) AS interview_age, i.Date_taken as interview_date, ";
+                return "c.IBISID AS src_subject_id , c.CandidateGUID AS  subjectkey, CASE c.Sex WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS Sex , ROUND(DATEDIFF(i.Date_taken, c.DoB) / (365/12)) AS interview_age, i.Date_taken as interview_date, ";
             }
-            return "c.IBISID AS src_subject_id, c.CandidateGUID AS subjectkey, CASE c.Sex WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS Gender , ROUND(DATEDIFF(i.Date_taken, c.DoB) / (365/12)) AS interview_age, f.Validity as validity_of_data, i.Date_taken as interview_date, ";
+            return "c.IBISID AS src_subject_id, c.CandidateGUID AS subjectkey, CASE c.Sex WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS Sex , ROUND(DATEDIFF(i.Date_taken, c.DoB) / (365/12)) AS interview_age, f.Validity as validity_of_data, i.Date_taken as interview_date, ";
         }
     }
 
