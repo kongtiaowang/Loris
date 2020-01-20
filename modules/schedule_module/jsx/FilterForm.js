@@ -1,65 +1,65 @@
 import Panel from 'Panel';
-import {Api} from "./Api";
+import {Api} from './Api';
 
 export class FilterForm extends React.Component {
-    constructor (props) {
+    constructor(props) {
         super(props);
         this.state = {
-            sites : [],
-            visitLabels : [],
-            projects : [],
-            subprojects : [],
-            appointmentTypes : [],
+            sites: [],
+            visitLabels: [],
+            projects: [],
+            subprojects: [],
+            appointmentTypes: [],
 
-            candId : "",
-            pscId : "",
-            centerId : "",
-            visitLabel : "",
-            projectId : "",
+            candId: '',
+            pscId: '',
+            centerId: '',
+            visitLabel: '',
+            projectId: '',
             /** @type {string[]} */
-            subprojectId : [],
-            appointmentTypeId : "",
+            subprojectId: [],
+            appointmentTypeId: '',
 
-            startDate : "",
-            startTime : "",
+            startDate: '',
+            startTime: '',
 
-            startDateMin : "",
-            startDateMax : "",
+            startDateMin: '',
+            startDateMax: '',
         };
     }
-    componentDidMount () {
+    componentDidMount() {
         Api.getOrFetchSites()
             .then((data) => {
                 this.setState({
-                    sites : data
+                    sites: data,
                 });
             });
         Api.getOrFetchVisitLabels()
             .then((data) => {
                 this.setState({
-                    visitLabels : data
+                    visitLabels: data,
                 });
             });
         Api.getOrFetchProjects()
             .then((data) => {
                 this.setState({
-                    projects : data
+                    projects: data,
                 });
             });
         Api.getOrFetchSubprojects()
             .then((data) => {
                 this.setState({
-                    subprojects : data
+                    subprojects: data,
                 });
             });
         Api.getOrFetchAppointmentTypes()
             .then((data) => {
                 this.setState({
-                    appointmentTypes : data
+                    appointmentTypes: data,
                 });
             });
     }
-    render () {
+    render() {
         return (
             <Panel
                 id={this.props.id}
@@ -74,16 +74,16 @@ export class FilterForm extends React.Component {
                                     <label>DCCID</label>
                                     <input type="text" value={this.state.candId} name="dccId" className="form-control" onChange={(e) => {
                                         this.setState({
-                                            candId : e.target.value
-                                        })
+                                            candId: e.target.value,
+                                        });
                                     }}/>
                                 </div>
                                 <div className="form-group">
                                     <label>Site</label>
                                     <select className="form-control" value={this.state.centerId} onChange={(e) => {
                                         this.setState({
-                                            centerId : e.target.value
-                                        })
+                                            centerId: e.target.value,
+                                        });
                                     }}>
                                         <option value="">-Select a Site-</option>
                                         {
@@ -97,10 +97,10 @@ export class FilterForm extends React.Component {
                                     <label>Project</label>
                                     <select className="form-control" multiple value={this.state.projectId} onChange={(e) => {
                                         this.setState({
-                                            projectId : [...e.target.options]
-                                            .filter(o => o.selected)
-                                            .map(o => o.value)
-                                        })
+                                            projectId: [...e.target.options]
+                                            .filter((o) => o.selected)
+                                            .map((o) => o.value),
+                                        });
                                     }}>
                                         {
                                             this.state.projects.map((s) => {
@@ -113,8 +113,8 @@ export class FilterForm extends React.Component {
                                     <label>Appointment Type</label>
                                     <select className="form-control" value={this.state.appointmentTypeId} onChange={(e) => {
                                         this.setState({
-                                            appointmentTypeId : e.target.value
-                                        })
+                                            appointmentTypeId: e.target.value,
+                                        });
                                     }}>
                                         <option value="">-Select an Appointment Type-</option>
                                         {
@@ -130,16 +130,16 @@ export class FilterForm extends React.Component {
                                     <label>PSCID</label>
                                     <input type="text" value={this.state.pscId} name="pscId" className="form-control" onChange={(e) => {
                                         this.setState({
-                                            pscId : e.target.value
-                                        })
+                                            pscId: e.target.value,
+                                        });
                                     }}/>
                                 </div>
                                 <div className="form-group">
                                     <label>Visit Label</label>
                                     <select className="form-control" value={this.state.visitLabel} onChange={(e) => {
                                         this.setState({
-                                            visitLabel : e.target.value
-                                        })
+                                            visitLabel: e.target.value,
+                                        });
                                     }}>
                                         <option value="">-Select a Visit Label-</option>
                                         {
@@ -153,10 +153,10 @@ export class FilterForm extends React.Component {
                                     <label>Subproject</label>
                                     <select className="form-control" multiple value={this.state.subprojectId} onChange={(e) => {
                                         this.setState({
-                                            subprojectId : [...e.target.options]
-                                                .filter(o => o.selected)
-                                                .map(o => o.value)
-                                        })
+                                            subprojectId: [...e.target.options]
+                                                .filter((o) => o.selected)
+                                                .map((o) => o.value),
+                                        });
                                     }}>
                                         {
                                             this.state.subprojects.map((s) => {
@@ -173,16 +173,16 @@ export class FilterForm extends React.Component {
                                     <label>Date</label>
                                     <input type="date" value={this.state.startDate} className="form-control" onChange={(e) => {
                                         this.setState({
-                                            startDate : e.target.value
-                                        })
+                                            startDate: e.target.value,
+                                        });
                                     }}/>
                                 </div>
                                 <div className="form-group">
                                     <label>Earliest Date</label>
                                     <input type="date" value={this.state.startDateMin} className="form-control" onChange={(e) => {
                                         this.setState({
-                                            startDateMin : e.target.value
-                                        })
+                                            startDateMin: e.target.value,
+                                        });
                                     }}/>
                                 </div>
                             </div>
@@ -190,18 +190,18 @@ export class FilterForm extends React.Component {
                                 <div className="form-group">
                                     <label>Time</label>
                                     <input type="time" value={this.state.startTime} className="form-control" onChange={(e) => {
-                                        console.log(e.target.value)
+                                        console.log(e.target.value);
                                         this.setState({
-                                            startTime : e.target.value
-                                        })
+                                            startTime: e.target.value,
+                                        });
                                     }}/>
                                 </div>
                                 <div className="form-group">
                                     <label>Latest Date</label>
                                     <input type="date" value={this.state.startDateMax} className="form-control" onChange={(e) => {
                                         this.setState({
-                                            startDateMax : e.target.value
-                                        })
+                                            startDateMax: e.target.value,
+                                        });
                                     }}/>
                                 </div>
                             </div>
@@ -210,37 +210,37 @@ export class FilterForm extends React.Component {
                             <button className="btn btn-primary" onClick={() => {
                                 if (this.props.onApply != undefined) {
                                     const filters = {};
-                                    if (this.state.candId != "") {
+                                    if (this.state.candId != '') {
                                         filters.CandID = this.state.candId;
                                     }
-                                    if (this.state.pscId != "") {
+                                    if (this.state.pscId != '') {
                                         filters.PSCID = this.state.pscId;
                                     }
-                                    if (this.state.centerId != "") {
+                                    if (this.state.centerId != '') {
                                         filters.CenterID = this.state.centerId;
                                     }
-                                    if (this.state.visitLabel != "") {
+                                    if (this.state.visitLabel != '') {
                                         filters.VisitLabel = this.state.visitLabel;
                                     }
-                                    if (this.state.projectId != "") {
+                                    if (this.state.projectId != '') {
                                         filters.ProjectID = this.state.projectId;
                                     }
-                                    if (this.state.subprojectId != "") {
+                                    if (this.state.subprojectId != '') {
                                         filters.SubprojectID = this.state.subprojectId;
                                     }
-                                    if (this.state.appointmentTypeId != "") {
+                                    if (this.state.appointmentTypeId != '') {
                                         filters.AppointmentTypeID = this.state.appointmentTypeId;
                                     }
-                                    if (this.state.startDate != "") {
+                                    if (this.state.startDate != '') {
                                         filters.StartDate = this.state.startDate;
                                     }
-                                    if (this.state.startTime != "") {
+                                    if (this.state.startTime != '') {
                                         filters.StartTime = this.state.startTime;
                                     }
-                                    if (this.state.startDateMin != "") {
+                                    if (this.state.startDateMin != '') {
                                         filters.StartDateMin = this.state.startDateMin;
                                     }
-                                    if (this.state.startDateMax != "") {
+                                    if (this.state.startDateMax != '') {
                                         filters.StartDateMax = this.state.startDateMax;
                                     }
                                     this.props.onApply(filters);
@@ -249,19 +249,19 @@ export class FilterForm extends React.Component {
                             &nbsp;
                             <button className="btn btn-default" onClick={() => {
                                 this.setState({
-                                    candId : "",
-                                    pscId : "",
-                                    centerId : "",
-                                    visitLabel : "",
-                                    projectId : "",
-                                    subprojectId : "",
-                                    appointmentTypeId : "",
+                                    candId: '',
+                                    pscId: '',
+                                    centerId: '',
+                                    visitLabel: '',
+                                    projectId: '',
+                                    subprojectId: '',
+                                    appointmentTypeId: '',
 
-                                    startDate : "",
-                                    startTime : "",
+                                    startDate: '',
+                                    startTime: '',
 
-                                    startDateMin : "",
-                                    startDateMax : "",
+                                    startDateMin: '',
+                                    startDateMax: '',
                                 });
                                 if (this.props.onClear != undefined) {
                                     this.props.onClear();
@@ -281,5 +281,5 @@ FilterForm.defaultProps = {
   title: 'Selection Filter',
   onUpdate: function() {
     console.warn('onUpdate() callback is not set!');
-  }
+  },
 };
