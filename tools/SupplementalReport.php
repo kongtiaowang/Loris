@@ -39,7 +39,7 @@ function GetGrantStatus($candid, $visit) {
     }
 }
 $filename = '';
-// PSCID, Gender, SubprojectID, child_ethnicity, candidate_race, FYI_V12_Risk, ADI_R_Subject_V24_Date, ADI_R_Summary, Grant_Status_V12, Grant_Status_V24
+// PSCID, Sex, SubprojectID, child_ethnicity, candidate_race, FYI_V12_Risk, ADI_R_Subject_V24_Date, ADI_R_Summary, Grant_Status_V12, Grant_Status_V24
 $lastsite = '';
 foreach($candidates as &$c) {
     $site = substr($c['PSCID'], 0, 3);
