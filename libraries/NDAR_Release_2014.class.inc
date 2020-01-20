@@ -108,9 +108,9 @@ class NDAR_Release_2014 {
         if(strpos($this->instrument, '_proband') !== FALSE) {
             if($this->instrument == 'm_chat_proband' || $this->instrument =='scq_proband' ) {
                 // No validity
-                return "c.IBISID,  c.ProbandGUID,  c.ProbandGender, ROUND(DATEDIFF(i.Date_taken, c.ProbandDoB) / (365/12)) AS Proband_Age_in_Months, i.Date_taken, ";
+                return "c.IBISID,  c.ProbandGUID,  c.ProbandSex, ROUND(DATEDIFF(i.Date_taken, c.ProbandDoB) / (365/12)) AS Proband_Age_in_Months, i.Date_taken, ";
             }
-                return "c.IBISID, c.ProbandGUID, c.ProbandGender, ROUND(DATEDIFF(i.Date_taken, c.ProbandDoB) / (365/12)) AS Proband_Age_in_Months, f.Validity as validity_of_data, i.Date_taken, ";
+                return "c.IBISID, c.ProbandGUID, c.ProbandSex, ROUND(DATEDIFF(i.Date_taken, c.ProbandDoB) / (365/12)) AS Proband_Age_in_Months, f.Validity as validity_of_data, i.Date_taken, ";
         } else {
             $NoValidities = array('macarthur_words_gestures', 'seq','rbs_r', 'ibq_r', 'head_measurements_subject', 'prefrontal_task', 'fyi','scq_proband');
             if(in_array($this->instrument, $NoValidities)) {
@@ -1520,7 +1520,7 @@ class NDAR_Release_2014 {
 
     function getQuery() {
         if($this->instrument == 'demographics') {
-            return "SELECT DISTINCT IBISID, CandidateGUID, ProbandGUID, Sex, ProbandGender, c.CenterID as Site, CASE s.SubprojectID WHEN 1 THEN 'High Risk' WHEN 2 THEN 'High Risk' WHEN 3 THEN 'Low Risk' END as Cohort FROM candidate c JOIN session s ON (s.CandID=c.CandID) WHERE c.Active='Y' AND s.Active='Y' AND COALESCE(s.Current_stage, '') <> 'Recycling Bin' AND COALESCE(s.Visit, '') NOT IN ('Failure', 'Withdrawal') AND COALESCE(s.Screening, '') NOT IN ('Failure', 'Withdrawal') AND c.CandidateGUID IS NOT NULL AND s.SubprojectID IN (1, 2, 3) AND c.CenterID IN (2, 3, 4, 5) ";
+            return "SELECT DISTINCT IBISID, CandidateGUID, ProbandGUID, Sex, ProbandSex, c.CenterID as Site, CASE s.SubprojectID WHEN 1 THEN 'High Risk' WHEN 2 THEN 'High Risk' WHEN 3 THEN 'Low Risk' END as Cohort FROM candidate c JOIN session s ON (s.CandID=c.CandID) WHERE c.Active='Y' AND s.Active='Y' AND COALESCE(s.Current_stage, '') <> 'Recycling Bin' AND COALESCE(s.Visit, '') NOT IN ('Failure', 'Withdrawal') AND COALESCE(s.Screening, '') NOT IN ('Failure', 'Withdrawal') AND c.CandidateGUID IS NOT NULL AND s.SubprojectID IN (1, 2, 3) AND c.CenterID IN (2, 3, 4, 5) ";
             } else if($this->instrument == 'charge') {
                 return "SELECT " . $this->getFields() . " FROM session s JOIN candidate c USING (CandID) JOIN participant_status ps ON (ps.CandID = c.CandID) LEFT JOIN flag medpsychflag ON (s.ID=medpsychflag.SessionID AND medpsychflag.Test_name='med_psych_hist' AND medpsychflag.Administration='All' AND medpsychflag.Data_entry='Complete' AND EXISTS (SELECT 'x' FROM flag df WHERE df.CommentID=CONCAT('DDE_', medpsychflag.CommentID) AND df.Data_entry='Complete') AND NOT EXISTS (SELECT 'x' FROM conflicts_unresolved cu WHERE cu.CommentId1=medpsychflag.CommentID OR cu.CommentId2=medpsychflag.CommentID) )
                     LEFT JOIN flag neuroscreenflag ON (s.ID=neuroscreenflag.SessionID AND neuroscreenflag.Test_name='neuro_screen' AND neuroscreenflag.Administration='All' AND neuroscreenflag.Data_entry='Complete' AND EXISTS (SELECT 'x' FROM flag df WHERE df.CommentID=CONCAT('DDE_', neuroscreenflag.CommentID) AND df.Data_entry='Complete') AND NOT EXISTS (SELECT 'x' FROM conflicts_unresolved cu WHERE cu.CommentId1=neuroscreenflag.CommentID OR cu.CommentId2=neuroscreenflag.CommentID))
@@ -1530,7 +1530,7 @@ class NDAR_Release_2014 {
                     LEFT JOIN tsi tsi ON (tsiflag.CommentID=tsi.CommentID)
                     WHERE " . $this->getWhere();
             } else if($this->instrument == 'ndar_subject') {
-                 return "SELECT c.IBISID, s.CenterID as Site, CASE s.SubprojectID WHEN 1 THEN 'High Risk' WHEN 2 THEN 'High Risk' WHEN 3 THEN 'Low Risk' WHEN 9 THEN 'High Risk' WHEN 10 THEN 'Low Risk' END as Cohort, c.ProbandGUID,  c.ProbandGender, c.CandidateGUID, c.Sex, i.Date_taken,ROUND(DATEDIFF(i.Date_taken, c.DoB) / (365/12)) AS Candidate_Age_in_Months, i.Date_taken,ROUND(DATEDIFF(i.Date_taken, c.ProbandDoB) / (365/12)) AS Proband_Age_in_Months, i.Candidate_race as race, i.child_ethnicity as ethnic_group from candidate c  left join session s on s.CandID = c.CandID join flag f on f.SessionID = s.ID join tsi i on i.CommentID=f.CommentID join participant_status ps on ps.CandID = c.CandID WHERE ". $this->getWhere();
+                 return "SELECT c.IBISID, s.CenterID as Site, CASE s.SubprojectID WHEN 1 THEN 'High Risk' WHEN 2 THEN 'High Risk' WHEN 3 THEN 'Low Risk' WHEN 9 THEN 'High Risk' WHEN 10 THEN 'Low Risk' END as Cohort, c.ProbandGUID,  c.ProbandSex, c.CandidateGUID, c.Sex, i.Date_taken,ROUND(DATEDIFF(i.Date_taken, c.DoB) / (365/12)) AS Candidate_Age_in_Months, i.Date_taken,ROUND(DATEDIFF(i.Date_taken, c.ProbandDoB) / (365/12)) AS Proband_Age_in_Months, i.Candidate_race as race, i.child_ethnicity as ethnic_group from candidate c  left join session s on s.CandID = c.CandID join flag f on f.SessionID = s.ID join tsi i on i.CommentID=f.CommentID join participant_status ps on ps.CandID = c.CandID WHERE ". $this->getWhere();
             }
         return "SELECT " . $this->getFields() . " FROM " . $this->instrument . " i JOIN flag f ON (f.CommentID=i.CommentID) JOIN session s ON (s.ID=f.SessionID) JOIN candidate c ON (c.CandID=s.CandID) JOIN participant_status ps ON (ps.CandID = c.CandID) JOIN participant_status_options pso ON (pso.ID = ps.participant_status) WHERE " . $this->getWhere()." AND c.ProjectID= $this->project AND (pso.Description <> 'Ineligible' || pso.Description <> 'Excluded')";
     }
@@ -1774,9 +1774,9 @@ class NDAR_Release_2014 {
 	  }
 	  $type='';
 	  $type_pr ='';
-	  if($row['ProbandGender']== 'Male') {
+	  if($row['ProbandSex']== 'Male') {
 		  $type = "Full Brother FB";
-	  } else if($row['ProbandGender'] == 'Female'){
+	  } else if($row['ProbandSex'] == 'Female'){
 		  $type = "Full Sister FS";
 	  } else {
 		  $type = " ";
@@ -1807,7 +1807,7 @@ class NDAR_Release_2014 {
           //fputcsv($fd, $candidate);
           $converted = $candidate;
 	  if(!empty($row['ProbandGUID'])){
-		  $proband   = array($row['IBISID']."pr", $row['ProbandGUID'], $row['ProbandGender'], $row['Site'], "Proband", $row['Proband_Age_in_Months'], $row['Date_taken'],
+		  $proband   = array($row['IBISID']."pr", $row['ProbandGUID'], $row['ProbandSex'], $row['Site'], "Proband", $row['Proband_Age_in_Months'], $row['Date_taken'],
 				  'No',"Unknown or not reported","Unknown or not reported",'No','Yes','No', "Proband of Sibling",$row['CandidateGUID'], $row['IBISID'], $type_pr);
                   $converted[] = $proband;
 	//	  fputcsv($fd, $proband);

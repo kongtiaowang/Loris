@@ -15,7 +15,7 @@ if (Utility::isErrorX($db)) {
             exit(1);
 }
 $project = array(1=>'IBIS1',2=>'IBIS2');
-$query = "SELECT distinct c.IBISID,c.PSCID,c.CandID as DCCID,  c.CandidateGUID,s.CenterID as Site, s.SubprojectID , c.ProbandGUID,  c.ProbandGender,c.ProjectID from candidate c 
+$query = "SELECT distinct c.IBISID,c.PSCID,c.CandID as DCCID,  c.CandidateGUID,s.CenterID as Site, s.SubprojectID , c.ProbandGUID,  c.ProbandSex,c.ProjectID from candidate c 
           join session s ON s.CandID = c.CandID 
           join participant_status ps on ps.CandID = c.CandID
           WHERE COALESCE(s.Current_stage, '') <> 'Recycling Bin' AND COALESCE(s.Visit, '') NOT IN ('Failure', 'Withdrawal') 
@@ -33,7 +33,7 @@ if (Utility::isErrorX($record)) {
   if ($fd === FALSE) {
     exit(-1);
   }
-$headers = array('IBISID','PSCID','DCCID','CandidateGUID','Site','SubprojectID','ProbandGUID','ProbandGender','ProjectID');
+$headers = array('IBISID','PSCID','DCCID','CandidateGUID','Site','SubprojectID','ProbandGUID','ProbandSex','ProjectID');
  fputcsv($fd, $headers);
 foreach($record as $candidate) {
 fputcsv($fd, $candidate);

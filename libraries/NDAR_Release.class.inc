@@ -57,9 +57,9 @@ class NDAR_Release {
         if(strpos($this->instrument, '_proband') !== FALSE) {
             if($this->instrument == 'm_chat_proband') {
                 // No validity
-                return "c.IBISID, s.Visit_label, s.CenterID as Site, CASE s.SubprojectID WHEN 1 THEN 'High Risk' WHEN 2 THEN 'High Risk' WHEN 3 THEN 'Low Risk' END as Cohort, c.ProbandGUID, c.ProbandDoB, c.ProbandGender, ROUND(DATEDIFF(i.Date_taken, c.ProbandDoB) / (365/12)) AS Proband_Age_in_Months, i.Date_taken, ";
+                return "c.IBISID, s.Visit_label, s.CenterID as Site, CASE s.SubprojectID WHEN 1 THEN 'High Risk' WHEN 2 THEN 'High Risk' WHEN 3 THEN 'Low Risk' END as Cohort, c.ProbandGUID, c.ProbandDoB, c.ProbandSex, ROUND(DATEDIFF(i.Date_taken, c.ProbandDoB) / (365/12)) AS Proband_Age_in_Months, i.Date_taken, ";
             }
-            return "c.IBISID, s.Visit_label, s.CenterID as Site, CASE s.SubprojectID WHEN 1 THEN 'High Risk' WHEN 2 THEN 'High Risk' WHEN 3 THEN 'Low Risk' END as Cohort, c.ProbandGUID, c.ProbandDoB, c.ProbandGender, ROUND(DATEDIFF(i.Date_taken, c.ProbandDoB) / (365/12)) AS Proband_Age_in_Months, f.Validity, i.Date_taken, ";
+            return "c.IBISID, s.Visit_label, s.CenterID as Site, CASE s.SubprojectID WHEN 1 THEN 'High Risk' WHEN 2 THEN 'High Risk' WHEN 3 THEN 'Low Risk' END as Cohort, c.ProbandGUID, c.ProbandDoB, c.ProbandSex, ROUND(DATEDIFF(i.Date_taken, c.ProbandDoB) / (365/12)) AS Proband_Age_in_Months, f.Validity, i.Date_taken, ";
         } else {
             $NoValidities = array('scq_subject', 'macarthur_words_gestures', 'rbs_r', 'seq', 'ibq_r', 'head_measurements_subject', 'prefrontal_task', 'fyi', 'edi');
             if(in_array($this->instrument, $NoValidities)) {
@@ -2044,7 +2044,7 @@ class NDAR_Release {
 
     function getQuery() {
         if($this->instrument == 'demographics') {
-            return "SELECT DISTINCT IBISID, CandidateGUID, ProbandGUID, Sex, ProbandGender, c.CenterID as Site, DoB, CASE s.SubprojectID WHEN 1 THEN 'High Risk' WHEN 2 THEN 'High Risk' WHEN 3 THEN 'Low Risk' END as Cohort FROM candidate c JOIN session s ON (s.CandID=c.CandID) WHERE c.Active='Y' AND s.Active='Y' AND COALESCE(s.Current_stage, '') <> 'Recycling Bin' AND COALESCE(s.Visit, '') NOT IN ('Failure', 'Withdrawal') AND COALESCE(s.Screening, '') NOT IN ('Failure', 'Withdrawal') AND c.CandidateGUID IS NOT NULL AND s.SubprojectID IN (1, 2, 3) AND c.CenterID IN (2, 3, 4, 5)";
+            return "SELECT DISTINCT IBISID, CandidateGUID, ProbandGUID, Sex, ProbandSex, c.CenterID as Site, DoB, CASE s.SubprojectID WHEN 1 THEN 'High Risk' WHEN 2 THEN 'High Risk' WHEN 3 THEN 'Low Risk' END as Cohort FROM candidate c JOIN session s ON (s.CandID=c.CandID) WHERE c.Active='Y' AND s.Active='Y' AND COALESCE(s.Current_stage, '') <> 'Recycling Bin' AND COALESCE(s.Visit, '') NOT IN ('Failure', 'Withdrawal') AND COALESCE(s.Screening, '') NOT IN ('Failure', 'Withdrawal') AND c.CandidateGUID IS NOT NULL AND s.SubprojectID IN (1, 2, 3) AND c.CenterID IN (2, 3, 4, 5)";
             } else if($this->instrument == 'charge') {
                 return "SELECT " . $this->getFields() . " FROM session s JOIN candidate c USING (CandID)
                     LEFT JOIN flag audflag ON (s.ID=audflag.SessionID AND audflag.Test_name='audiology' AND audflag.Administration='All' AND audflag.Data_entry='Complete' AND EXISTS (SELECT 'x' FROM flag df WHERE df.CommentID=CONCAT('DDE_', audflag.CommentID) AND df.Data_entry='Complete') AND NOT EXISTS (SELECT 'x' FROM conflicts_unresolved cu WHERE cu.CommentId1=audflag.CommentID OR cu.CommentId2=audflag.CommentID) )

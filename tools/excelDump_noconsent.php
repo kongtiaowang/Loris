@@ -170,7 +170,7 @@ if (count($result) > 0) {
 */
 $Test_name = "candidate_info";
 //this query is a but clunky, but it gets rid of all the crap that would otherwise appear.
-$query = "SELECT DISTINCT c.PSCID, c.CandID, c.Sex, c.DoB, ROUND(DATEDIFF(NOW(),c.DoB)/(365/12)) as Candidate_Age, s.SubprojectID, c.ProjectID, pc.Value as Plan, c.EDC, pc1.Value as Comments, c.flagged_caveatemptor as Caveat_Emptor, c.flagged_info as Caveat_Emptor_reason, c.flagged_other as Caveat_Emptor_detail, c.ProbandGender, c.ProbandDoB,ROUND(DATEDIFF(c.DoB, c.ProbandDoB) / (365/12)) AS Age_difference,ps.ndar_consent from candidate c LEFT JOIN session s ON (c.CandID = s.CandID) LEFT JOIN parameter_candidate pc ON (c.CandID = pc.CandID AND pc.ParameterTypeID=73754) LEFT JOIN parameter_candidate pc1 ON (c.CandID = pc1.CandID AND pc1.ParameterTypeID=7296) LEFT JOIN participant_status ps ON (ps.CandID=c.CandID) WHERE c.CenterID IN (2,3,4,5) AND c.Active='Y'  AND s.Active='Y' ORDER BY c.PSCID";
+$query = "SELECT DISTINCT c.PSCID, c.CandID, c.Sex, c.DoB, ROUND(DATEDIFF(NOW(),c.DoB)/(365/12)) as Candidate_Age, s.SubprojectID, c.ProjectID, pc.Value as Plan, c.EDC, pc1.Value as Comments, c.flagged_caveatemptor as Caveat_Emptor, c.flagged_info as Caveat_Emptor_reason, c.flagged_other as Caveat_Emptor_detail, c.ProbandSex, c.ProbandDoB,ROUND(DATEDIFF(c.DoB, c.ProbandDoB) / (365/12)) AS Age_difference,ps.ndar_consent from candidate c LEFT JOIN session s ON (c.CandID = s.CandID) LEFT JOIN parameter_candidate pc ON (c.CandID = pc.CandID AND pc.ParameterTypeID=73754) LEFT JOIN parameter_candidate pc1 ON (c.CandID = pc1.CandID AND pc1.ParameterTypeID=7296) LEFT JOIN participant_status ps ON (ps.CandID=c.CandID) WHERE c.CenterID IN (2,3,4,5) AND c.Active='Y'  AND s.Active='Y' ORDER BY c.PSCID";
 $results = $DB->pselect($query, array());
 
 foreach($results as &$result) {
@@ -211,7 +211,7 @@ $fieldsInQuery = "SELECT c.CandID, c.PSCID, s.Visit_label, s.SubprojectID, p.Ali
         $tablesToJoin = " FROM session s JOIN candidate c USING (CandID) LEFT JOIN psc p ON (p.CenterID=s.CenterID) LEFT JOIN caveat_options c_o ON (c_o.ID=c.flagged_reason) LEFT JOIN parameter_candidate AS pc_comment ON (pc_comment.CandID=c.CandID) AND pc_comment.ParameterTypeID=(SELECT ParameterTypeID FROM parameter_type WHERE Name='candidate_comment') LEFT JOIN participant_status ps ON (ps.CandID=c.CandID) LEFT JOIN participant_status_options pso ON (pso.ID=ps.participant_status)";
         // If proband fields are being used, add proband information into the query
         if ($config->getSetting("useProband") === "true") {
-            $probandFields = ", c.ProbandGender as Gender_proband, ROUND(DATEDIFF(c.DoB, c.ProbandDoB) / (365/12)) AS Age_difference";
+            $probandFields = ", c.ProbandSex as Gender_proband, ROUND(DATEDIFF(c.DoB, c.ProbandDoB) / (365/12)) AS Age_difference";
             $fieldsInQuery .= $probandFields;
         }
         // If expected date of confinement is being used, add EDC information into the query
