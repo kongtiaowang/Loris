@@ -195,9 +195,9 @@ class NDAR_Release_2019
         if (strpos($this->instrument, '_proband') !== FALSE) {
             if ($this->instrument == 'm_chat_proband' || $this->instrument == 'scq_proband_survey') {
                 // No validity
-                return "c.IBISID AS src_subject_id,  pcp.Value as subjectkey,  CASE c.ProbandGender WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS sex, ROUND(DATEDIFF(i.Date_taken, c.ProbandDoB) / (365/12)) AS interview_age, i.Date_taken as interview_date, ";
+                return "c.IBISID AS src_subject_id,  pcp.Value as subjectkey,  CASE c.ProbandSex WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS sex, ROUND(DATEDIFF(i.Date_taken, c.ProbandDoB) / (365/12)) AS interview_age, i.Date_taken as interview_date, ";
             }
-            return "c.IBISID AS src_subject_id, pcp.Value as subjectkey,  CASE c.ProbandGender WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS sex, ROUND(DATEDIFF(i.Date_taken, c.ProbandDoB) / (365/12)) AS interview_age, f.Validity as validity_of_data, i.Date_taken as interview_date, ";
+            return "c.IBISID AS src_subject_id, pcp.Value as subjectkey,  CASE c.ProbandSex WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS sex, ROUND(DATEDIFF(i.Date_taken, c.ProbandDoB) / (365/12)) AS interview_age, f.Validity as validity_of_data, i.Date_taken as interview_date, ";
         } else {
             $NoValidities = array('macarthur_words_gestures', 'seq', 'rbs_r', 'ibq_r', 'head_measurements_subject', 'prefrontal_task', 'fyi', 'scq_proband_survey',
                 'height_weight','phys_neuro_exam', 'ECBQ', 'FamilyEnvironmentScales','BSRC', 'JointAttentionAssessment','SRS');

@@ -278,14 +278,14 @@ class QC_Checks {
 
         print "\n\n CHECK IF proband Sex in Vineland and proband Sex in candidate are same\n";
         print "--------------------------------------\n";
-        $data = $DB->pselect("SELECT c.PSCID,c.CandID, c.ProbandGender,v.SEX from candidate c JOIN session s on s.CandID=c.CandID join flag f2 on ( s.ID=f2.SessionID AND f2.CommentID NOT LIKE 'DDE%' ) JOIN vineland_proband v ON (v.CommentID=f2.CommentID) WHERE s.CenterID IN (3,3,4,5) AND c.Active='Y' AND c.CenterID = $this->site", array());
-        $header = array('PSCID', 'DCCID', 'ProbandGender', 'Vineland_ProbandGender');
+        $data = $DB->pselect("SELECT c.PSCID,c.CandID, c.ProbandSex,v.SEX from candidate c JOIN session s on s.CandID=c.CandID join flag f2 on ( s.ID=f2.SessionID AND f2.CommentID NOT LIKE 'DDE%' ) JOIN vineland_proband v ON (v.CommentID=f2.CommentID) WHERE s.CenterID IN (3,3,4,5) AND c.Active='Y' AND c.CenterID = $this->site", array());
+        $header = array('PSCID', 'DCCID', 'ProbandSex', 'Vineland_ProbandSex');
         foreach($header as $row) {
             print $row."\t";
         }
         foreach($data as $row) {
-            if(!empty($row['ProbandGender']) ) {
-                $gender = substr($row['ProbandGender'], 0, 1);
+            if(!empty($row['ProbandSex']) ) {
+                $gender = substr($row['ProbandSex'], 0, 1);
                 if( !empty( $row['SEX'])  && (strcasecmp($row['SEX'],$gender) != 0)) {
                     $row['SEX'] = "\t".$row['SEX'];
                     print implode("\t", $row);

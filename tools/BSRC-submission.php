@@ -610,7 +610,7 @@ if (empty($argv[1])) {
                 null AS children,
                 null AS number_asd,
                 c.ProbandDoB AS child_1_dob,
-                c.ProbandGender AS child_1_gender,
+                c.ProbandSex AS child_1_gender,
                 p.2012alg_clinical_diag AS child_1_diagnosis,
                 null AS child_2_dob,
                 null AS child_2_gender,
