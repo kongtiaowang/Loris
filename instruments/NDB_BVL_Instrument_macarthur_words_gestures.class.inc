@@ -333,8 +333,8 @@ class NDB_BVL_Instrument_macarthur_words_gestures extends NDB_BVL_Instrument
 
         $record = $db->pselectRow("SELECT * FROM $this->table WHERE CommentID=:cid",array("cid" =>$this->getCommentID() ));
 
-        // Get gender   
-        $query_gender = "SELECT Gender FROM candidate as c, session as s, flag as f, $this->table as t WHERE t.CommentID = '$this->commentID' 
+        // Get Sex
+        $query_gender = "SELECT Sex FROM candidate as c, session as s, flag as f, $this->table as t WHERE t.CommentID = '$this->commentID' 
 AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $record_gender = $db->pselectRow($query_gender, array());
         $gender=strtolower($record_gender['Gender']);

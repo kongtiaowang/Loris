@@ -155,7 +155,7 @@ class NDB_BVL_Instrument_tsi_ds extends NDB_BVL_Instrument
 
     function _setDefaultsArray(array $defaults): array {
         //------------------------------------------------------------//
-        // The subject's PSCID, DoB, age im months and gender         //
+        // The subject's PSCID, DoB, age im months and Sex         //
         // are not entered manually: they all come from the database  //
         //------------------------------------------------------------//
         $defaults = parent::_setDefaultsArray($defaults);
