@@ -47,6 +47,13 @@ class Imaging_Browser extends \NDB_Menu_Filter
     }
 
     /**
+     * BEGIN OVERRIDE
+     * 
+     * The entire _setupVariables method is overridden and differs in almost
+     * every way from the LORIS 20.0 version...
+     */
+
+    /**
      * Set up the variables required by NDB_Menu_Filter class for constructing
      * a query
      *
@@ -332,6 +339,10 @@ class Imaging_Browser extends \NDB_Menu_Filter
         );
     }
 
+    /**
+     * END OVERRIDE
+     */
+     
     /**
      * Setup $this->tpl_data for use by Smarty
      *
