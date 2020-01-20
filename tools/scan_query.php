@@ -33,7 +33,7 @@ $project = array(1=>'IBIS1',2=>'IBIS2',3=>'FRX',4=>'EARLI');
 //$visit = array('V06'); $project = array(1=>'IBIS1');
 foreach ($project as $key=>$val) {
     foreach ($visit as $visit_label) {
-        $query = "SELECT c.CandID,c.PSCID, s.ID, c.Gender, CASE s.SubprojectID WHEN 1
+        $query = "SELECT c.CandID,c.PSCID, s.ID, c.Sex, CASE s.SubprojectID WHEN 1
             THEN '6 mo recruit' WHEN 2 THEN '12mo recruit'
             WHEN 3 THEN 'Control'
             WHEN 4 THEN 'FRX 6mo' WHEN 5 THEN 'FRX 12mo'

@@ -38,13 +38,13 @@ class NDB_Menu_Filter_blind_coding extends NDB_Menu_Filter
         }
 
         // set the class variables
-        $this->columns = array('b.CommentID', 'c.PSCID', 'b.reliability_center_id AS Site', 's.SubprojectID as Cohort', 's.CandID AS DCCID', 'c.Gender', 's.Visit_label', 'b.Instrument', 'b.Reliability_score', 's.Current_stage', 'b.Invalid');
+        $this->columns = array('b.CommentID', 'c.PSCID', 'b.reliability_center_id AS Site', 's.SubprojectID as Cohort', 's.CandID AS DCCID', 'c.Sex', 's.Visit_label', 'b.Instrument', 'b.Reliability_score', 's.Current_stage', 'b.Invalid');
 
         $this->query = $query;
         $this->group_by = '';
         $this->order_by = 'b.Instrument, s.CandID, s.Visit_label';
         $this->headers = array('PSCID', 'reliability_center_id','Cohort', 'DCCID', 'Gender', 'Visit_label', 'Instrument', 'Reliability_score', 'Reliable');
-        $this->validFilters = array('b.CommentID', 'b.reliability_center_id', 's.SubprojectID', 'c.CenterID', 's.CandID', 'c.PSCID', 'c.Gender', 's.Visit_label', 'b.Instrument', 'b.Reliability_score', 's.Current_stage', 'b.invalid');
+        $this->validFilters = array('b.CommentID', 'b.reliability_center_id', 's.SubprojectID', 'c.CenterID', 's.CandID', 'c.PSCID', 'c.Sex', 's.Visit_label', 'b.Instrument', 'b.Reliability_score', 's.Current_stage', 'b.invalid');
 
         $this->formToFilter = array(
                                     'CommentID' => 'b.CommentID',
@@ -53,7 +53,7 @@ class NDB_Menu_Filter_blind_coding extends NDB_Menu_Filter
                                     'reliability_center_id'=> 'b.reliability_center_id',
                                     'DCCID' => 'c.CandID',
                                     'PSCID' => 'c.PSCID',
-                                    'Gender' => 'c.Gender',
+                                    'Gender' => 'c.Sex',
                                     'Visit_label' => 's.Visit_label',
 				                    'Instrument' => 'b.Instrument',
                                     'Reliability_score'=>'b.Reliability_score',

@@ -39,7 +39,7 @@ $candidateList = $db->pselect("SELECT distinct CandID from candidate", array());
 
 $query1 = $db->pselect("SELECT
 f.CommentID,
-c.CandID, c.IBISId, c.CenterID, c.Gender,
+c.CandID, c.IBISId, c.CenterID, c.Sex,
 s.Visit_label,s.SubprojectID, s.ID,
 t.Candidate_Age, t.child_ethnicity, t.father_ethnicity, t.mother_ethnicity,
 t.candidate_race, t.mother_race, t.father_race, t.ses_income, t.primary_language, t.primary_language_status,

@@ -587,7 +587,7 @@ if (empty($argv[1])) {
                 t.Date_taken AS date_of_testing,
                 ROUND(t.Candidate_Age) AS age_at_testing,
                 c.DoB AS baby_dob,
-                c.Gender AS baby_gender,
+                c.Sex AS baby_gender,
                 t.candidate_race AS baby_race,
                 t.child_ethnicity AS baby_ethnicity,
                 null AS baby_birth_order,

@@ -63,9 +63,9 @@ class NDAR_Release {
         } else {
             $NoValidities = array('scq_subject', 'macarthur_words_gestures', 'rbs_r', 'seq', 'ibq_r', 'head_measurements_subject', 'prefrontal_task', 'fyi', 'edi');
             if(in_array($this->instrument, $NoValidities)) {
-                return "c.IBISID, s.Visit_label, s.CenterID as Site, CASE s.SubprojectID WHEN 1 THEN 'High Risk' WHEN 2 THEN 'High Risk' WHEN 3 THEN 'Low Risk' END as Cohort, c.CandidateGUID, c.DoB, c.Gender, ROUND(DATEDIFF(i.Date_taken, c.DoB) / (365/12)) AS Candidate_Age_in_Months, i.Date_taken, ";
+                return "c.IBISID, s.Visit_label, s.CenterID as Site, CASE s.SubprojectID WHEN 1 THEN 'High Risk' WHEN 2 THEN 'High Risk' WHEN 3 THEN 'Low Risk' END as Cohort, c.CandidateGUID, c.DoB, c.Sex, ROUND(DATEDIFF(i.Date_taken, c.DoB) / (365/12)) AS Candidate_Age_in_Months, i.Date_taken, ";
             }
-            return "c.IBISID, s.Visit_label, s.CenterID as Site, CASE s.SubprojectID WHEN 1 THEN 'High Risk' WHEN 2 THEN 'High Risk' WHEN 3 THEN 'Low Risk' END as Cohort, c.CandidateGUID, c.DoB, c.Gender, ROUND(DATEDIFF(i.Date_taken, c.DoB) / (365/12)) AS Candidate_Age_in_Months, f.Validity, i.Date_taken, ";
+            return "c.IBISID, s.Visit_label, s.CenterID as Site, CASE s.SubprojectID WHEN 1 THEN 'High Risk' WHEN 2 THEN 'High Risk' WHEN 3 THEN 'Low Risk' END as Cohort, c.CandidateGUID, c.DoB, c.Sex, ROUND(DATEDIFF(i.Date_taken, c.DoB) / (365/12)) AS Candidate_Age_in_Months, f.Validity, i.Date_taken, ";
         }
     }
     function getInstrumentFields() {
