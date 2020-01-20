@@ -173,7 +173,7 @@ class CouchDBDemographicsImporter {
                                    WHEN (dsm.q4_criteria_autistic_disorder = 'yes' || dsm.q4_criteria_PDD ='yes') THEN 'YES (DSM_IV questions 4a/4b is Yes)'  
                                  END                                                         AS DX_Subgroups, 
                                  p.alias                                                     AS Site, 
-                                 c.Gender, 
+                                 c.Sex, 
                                  s.Current_stage, 
                                  ROUND(DATEDIFF(s.Date_visit, c.DoB) / (365/12))             AS Age_at_visit_start,
                                  s.Scan_done                                                 AS Scan_done,                                    

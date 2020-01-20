@@ -138,7 +138,7 @@ class Stats_Enrollment extends \NDB_Form
         foreach($ethnic_categories as $ethnic_cat){
             $gender = array('Female' => 0, 'Male' => 0, 'Unknown' => 0);
             if($ethnic_cat === "not_answered") {
-                $results = $DB->pselect("SELECT ProjectID, COALESCE(Gender, 'Unknown') as Gender, COUNT( DISTINCT cad.CandID) as val
+                $results = $DB->pselect("SELECT ProjectID, COALESCE(Sex, 'Unknown') as Sex, COUNT( DISTINCT cad.CandID) as val
                     FROM candidate cad 
                     JOIN session sn on cad.CandID= sn.CandID 
                     JOIN flag fg on sn.ID = fg.SessionID
@@ -147,11 +147,11 @@ class Stats_Enrollment extends \NDB_Form
                     WHERE (ti.child_ethnicity = '$ethnic_cat' OR ti.child_ethnicity IS NULL)
                     AND fg.CommentID NOT LIKE 'DDE%' AND sn.CenterID <> '1' AND sn.Active='Y' 
                     AND cad.Active='Y' $Extra_Where AND fg.Administration <> 'None' 
-                    GROUP BY Gender,ProjectID
+                    GROUP BY Sex,ProjectID
                     ", $params);
             }
             else{
-                $results = $DB->pselect("SELECT ProjectID, COALESCE(Gender, 'Unknown') as Gender, COUNT( DISTINCT cad.CandID) as val
+                $results = $DB->pselect("SELECT ProjectID, COALESCE(Sex, 'Unknown') as Sex, COUNT( DISTINCT cad.CandID) as val
                     FROM candidate cad 
                     JOIN session sn on cad.CandID= sn.CandID 
                     JOIN flag fg on sn.ID = fg.SessionID
@@ -160,7 +160,7 @@ class Stats_Enrollment extends \NDB_Form
                     WHERE ti.child_ethnicity = '$ethnic_cat' 
                     AND fg.CommentID NOT LIKE 'DDE%' AND sn.CenterID <> '1' AND sn.Active='Y' 
                     AND cad.Active='Y' $Extra_Where AND fg.Administration <> 'None' 
-                    GROUP BY Gender,ProjectID
+                    GROUP BY Sex,ProjectID
                     ", $params);
             }
             if(is_null($results)){
@@ -196,7 +196,7 @@ class Stats_Enrollment extends \NDB_Form
 
             if($race_cat === "more_than_one_race"){
                 $race_cat = '%'.$race_cat.'%';
-                $results = $DB->pselect("SELECT COALESCE(Gender, 'Unknown') as Gender, COUNT( DISTINCT cad.CandID) as val 
+                $results = $DB->pselect("SELECT COALESCE(Sex, 'Unknown') as Sex, COUNT( DISTINCT cad.CandID) as val 
                         FROM candidate cad
                         JOIN session sn on cad.CandID= sn.CandID
                         LEFT JOIN flag fg on sn.ID = fg.SessionID
@@ -209,7 +209,7 @@ class Stats_Enrollment extends \NDB_Form
                         GROUP BY Gender" , $params);
             }
             else if($race_cat === "unknown_not_reported"){
-                $results = $DB->pselect("SELECT COALESCE(Gender, 'Unknown') as Gender, COUNT( DISTINCT cad.CandID) as val FROM candidate cad
+                $results = $DB->pselect("SELECT COALESCE(Sex, 'Unknown') as Sex, COUNT( DISTINCT cad.CandID) as val FROM candidate cad
                         JOIN session sn on cad.CandID= sn.CandID
                         LEFT JOIN flag fg on sn.ID = fg.SessionID
                         LEFT JOIN tsi ti on fg.CommentID = ti.CommentID 
@@ -222,7 +222,7 @@ class Stats_Enrollment extends \NDB_Form
 
             }else{
 
-                $results = $DB->pselect("SELECT COALESCE(Gender, 'Unknown') as Gender, COUNT( DISTINCT cad.CandID) as val 
+                $results = $DB->pselect("SELECT COALESCE(Sex, 'Unknown') as Sex, COUNT( DISTINCT cad.CandID) as val 
                         FROM candidate cad
                         JOIN session sn on cad.CandID= sn.CandID
                         LEFT JOIN flag fg on sn.ID = fg.SessionID
@@ -268,7 +268,7 @@ class Stats_Enrollment extends \NDB_Form
             $gender = array('Female' => 0, 'Male' => 0, 'Unknown' => 0);
             if($race_cat === "more_than_one_race"){
                 $race_cat = '%'.$race_cat.'%';
-                $results = $DB->pselect("SELECT COALESCE(Gender, 'Unknown') as Gender, COUNT( DISTINCT cad.CandID) as val FROM candidate cad
+                $results = $DB->pselect("SELECT COALESCE(Sex, 'Unknown') as Sex, COUNT( DISTINCT cad.CandID) as val FROM candidate cad
                         JOIN session sn on cad.CandID= sn.CandID
                         LEFT JOIN flag fg on sn.ID = fg.SessionID
                         LEFT JOIN tsi ti on fg.CommentID = ti.CommentID 
@@ -280,7 +280,7 @@ class Stats_Enrollment extends \NDB_Form
                         GROUP BY Gender" , $params);
             }
             else if($race_cat === "unknown_not_reported"){
-                $results = $DB->pselect("SELECT COALESCE(Gender,'Unknown') as Gender ,COUNT( DISTINCT cad.CandID) as val FROM candidate cad
+                $results = $DB->pselect("SELECT COALESCE(Sex,'Unknown') as Sex ,COUNT( DISTINCT cad.CandID) as val FROM candidate cad
                         JOIN session sn on cad.CandID= sn.CandID
                         LEFT JOIN flag fg on sn.ID = fg.SessionID
                         LEFT JOIN tsi ti on fg.CommentID = ti.CommentID 
@@ -291,7 +291,7 @@ class Stats_Enrollment extends \NDB_Form
                         AND fg.Test_name='tsi' 
                         GROUP BY Gender" , $params);
             }else{
-                $results = $DB->pselect("SELECT COALESCE(Gender, 'Unknown') as Gender,COUNT( DISTINCT cad.CandID) as val FROM candidate cad
+                $results = $DB->pselect("SELECT COALESCE(Sex, 'Unknown') as Sex,COUNT( DISTINCT cad.CandID) as val FROM candidate cad
                         JOIN session sn on cad.CandID= sn.CandID
                         LEFT JOIN flag fg on sn.ID = fg.SessionID
                         LEFT JOIN tsi ti on fg.CommentID = ti.CommentID 

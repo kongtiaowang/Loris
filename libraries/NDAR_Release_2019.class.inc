@@ -204,29 +204,29 @@ class NDAR_Release_2019
             $ados = array('ados_module1','ados_module2','ados_module3','ados2_module1','ados2_module2','ados2_module3') ;
             if (in_array($this->instrument, $NoValidities)) {
                 if ($this->instrument == 'head_measurements_subject'|| $this->instrument == 'height_weight' ||$this->instrument == 'phys_neuro_exam') {
-                    return "c.IBISID AS src_subject_id, pcc.Value AS subjectkey, CASE c.Gender WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS sex, ROUND(DATEDIFF(i.Date_taken, c.DoB) / (365/12)) AS interview_age, i.Date_taken AS interview_date, ";
+                    return "c.IBISID AS src_subject_id, pcc.Value AS subjectkey, CASE c.Sex WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS sex, ROUND(DATEDIFF(i.Date_taken, c.DoB) / (365/12)) AS interview_age, i.Date_taken AS interview_date, ";
                 }
-                return "c.IBISID AS src_subject_id, pcc.Value AS subjectkey, CASE c.Gender WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS sex , ROUND(DATEDIFF(i.Date_taken, c.DoB) / (365/12)) AS interview_age, i.Date_taken as interview_date, ";
+                return "c.IBISID AS src_subject_id, pcc.Value AS subjectkey, CASE c.Sex WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS sex , ROUND(DATEDIFF(i.Date_taken, c.DoB) / (365/12)) AS interview_age, i.Date_taken as interview_date, ";
             }
             else if (in_array($this->instrument, $ados)) {
-                return "c.IBISID AS src_subject_id , pcc.Value AS  subjectkey, CASE c.Gender WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS sex , ROUND(DATEDIFF(i.Date_taken, c.DoB) / (365/12)) AS interview_age, i.Date_taken as interview_date, ";
+                return "c.IBISID AS src_subject_id , pcc.Value AS  subjectkey, CASE c.Sex WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS sex , ROUND(DATEDIFF(i.Date_taken, c.DoB) / (365/12)) AS interview_age, i.Date_taken as interview_date, ";
             }
             else if($this->instrument == 'aosi')
             {
-                return "c.IBISID AS src_subject_id, pcc.Value AS subjectkey, CASE c.Gender WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS sex , ROUND(DATEDIFF(i.Date_taken, c.DoB) / (365/12)) AS interview_age, f.Validity as validity_of_data, i.Date_taken as interview_date, 
+                return "c.IBISID AS src_subject_id, pcc.Value AS subjectkey, CASE c.Sex WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS sex , ROUND(DATEDIFF(i.Date_taken, c.DoB) / (365/12)) AS interview_age, f.Validity as validity_of_data, i.Date_taken as interview_date, 
                  CASE i.examiner_location WHEN 'Examiner' THEN '0' WHEN ' In-room observer' THEN '1' WHEN 'Behind mirror' THEN '2' WHEN 'Videotape' THEN '3' WHEN 'Not Answered' THEN '9' END AS aosi_assessmenttype,";
             }
             else if($this->instrument == 'LENA_DataTrackingForm')
             {
-                return "c.IBISID AS src_subject_id, pcc.Value AS subjectkey, CASE c.Gender WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS sex , 
+                return "c.IBISID AS src_subject_id, pcc.Value AS subjectkey, CASE c.Sex WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS sex , 
                 ROUND(DATEDIFF(DATE(i.Timestamp_1), c.DoB) / (365/12)) AS interview_age, DATE(i.Timestamp_1) as interview_date, ";
             }
             else if($this->instrument == 'BOT2_Short' || $this->instrument == 'CSHQ' ||  $this->instrument == 'WIAT_III_SA_2' )
             {
-                return "c.IBISID AS src_subject_id, pcc.Value AS subjectkey, CASE c.Gender WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS sex , ROUND(DATEDIFF(i.Date_taken, c.DoB) / (365/12)) AS interview_age, i.Date_taken as interview_date";
+                return "c.IBISID AS src_subject_id, pcc.Value AS subjectkey, CASE c.Sex WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS sex , ROUND(DATEDIFF(i.Date_taken, c.DoB) / (365/12)) AS interview_age, i.Date_taken as interview_date";
             }
 
-            return "c.IBISID AS src_subject_id, pcc.Value AS subjectkey, CASE c.Gender WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS sex , ROUND(DATEDIFF(i.Date_taken, c.DoB) / (365/12)) AS interview_age, i.Date_taken as interview_date, ";
+            return "c.IBISID AS src_subject_id, pcc.Value AS subjectkey, CASE c.Sex WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS sex , ROUND(DATEDIFF(i.Date_taken, c.DoB) / (365/12)) AS interview_age, i.Date_taken as interview_date, ";
         }
     }
 
@@ -1714,7 +1714,7 @@ class NDAR_Release_2019
         } else if ($this->instrument == 'charge') {
             $fields = array(
                 'pcc.Value as subjectkey',
-                "CASE c.Gender WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS sex",
+                "CASE c.Sex WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS sex",
                 'medpsych.Date_taken as interview_date',
                 'medpsych.Candidate_Age as interview_age',
                 "CASE medpsych.q16_has_child_ever WHEN 'b_meningitis_encephalitis' THEN 'Yes' WHEN 'b_meningitis_encephalitis{@}c_lost_consciousness_head_injury' THEN 'Yes' ELSE 'NK' END as q16_has_child_ever",
@@ -1861,7 +1861,7 @@ class NDAR_Release_2019
         } else { $test_fields = ""; }
 
         if ($this->instrument == 'demographics') {
-            return "SELECT DISTINCT ". $test_fields ." IBISID AS src_subject_id, CandidateGUID as subjectkey, ProbandGUID as subjectkey_sibling1, CASE c.Gender WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS sex, CASE c.Probandsex WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END as sibling_type1, c.CenterID as Site, CASE s.SubprojectID WHEN 1 THEN 'High Risk' WHEN 2 THEN 'High Risk' WHEN 3 THEN 'Low Risk' END as Cohort FROM candidate c JOIN session s ON (s.CandID=c.CandID) WHERE c.Active='Y' AND s.Active='Y' AND COALESCE(s.Current_stage, '') <> 'Recycling Bin' AND COALESCE(s.Visit, '') NOT IN ('Failure', 'Withdrawal') AND COALESCE(s.Screening, '') NOT IN ('Failure', 'Withdrawal') AND pcc.Value IS NOT NULL AND s.SubprojectID IN (1, 2, 3) AND c.CenterID IN (2, 3, 4, 5) ";
+            return "SELECT DISTINCT ". $test_fields ." IBISID AS src_subject_id, CandidateGUID as subjectkey, ProbandGUID as subjectkey_sibling1, CASE c.Sex WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS sex, CASE c.Probandsex WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END as sibling_type1, c.CenterID as Site, CASE s.SubprojectID WHEN 1 THEN 'High Risk' WHEN 2 THEN 'High Risk' WHEN 3 THEN 'Low Risk' END as Cohort FROM candidate c JOIN session s ON (s.CandID=c.CandID) WHERE c.Active='Y' AND s.Active='Y' AND COALESCE(s.Current_stage, '') <> 'Recycling Bin' AND COALESCE(s.Visit, '') NOT IN ('Failure', 'Withdrawal') AND COALESCE(s.Screening, '') NOT IN ('Failure', 'Withdrawal') AND pcc.Value IS NOT NULL AND s.SubprojectID IN (1, 2, 3) AND c.CenterID IN (2, 3, 4, 5) ";
         } else if ($this->instrument == 'charge') {
             return "SELECT ". $test_fields . $this->getFields() . " FROM session s JOIN candidate c USING (CandID) JOIN participant_status ps ON (ps.CandID = c.CandID) LEFT JOIN flag medpsychflag ON (s.ID=medpsychflag.SessionID AND medpsychflag.Test_name='med_psych_hist' AND medpsychflag.Administration='All' AND medpsychflag.Data_entry='Complete' AND EXISTS (SELECT 'x' FROM flag df WHERE df.CommentID=CONCAT('DDE_', medpsychflag.CommentID) AND df.Data_entry='Complete') AND NOT EXISTS (SELECT 'x' FROM conflicts_unresolved cu WHERE cu.CommentId1=medpsychflag.CommentID OR cu.CommentId2=medpsychflag.CommentID) )
                     LEFT JOIN flag neuroscreenflag ON (s.ID=neuroscreenflag.SessionID AND neuroscreenflag.Test_name='neuro_screen' AND neuroscreenflag.Administration='All' AND neuroscreenflag.Data_entry='Complete' AND EXISTS (SELECT 'x' FROM flag df WHERE df.CommentID=CONCAT('DDE_', neuroscreenflag.CommentID) AND df.Data_entry='Complete') AND NOT EXISTS (SELECT 'x' FROM conflicts_unresolved cu WHERE cu.CommentId1=neuroscreenflag.CommentID OR cu.CommentId2=neuroscreenflag.CommentID))
@@ -1871,7 +1871,7 @@ class NDAR_Release_2019
                     LEFT JOIN tsi tsi ON (tsiflag.CommentID=tsi.CommentID)
                     WHERE " . $this->getWhere();
         } else if ($this->instrument == 'ndar_subject') {
-            return "SELECT ". $test_fields ." c.IBISID AS src_subject_id, s.CenterID as Site, CASE s.SubprojectID WHEN 1 THEN 'High Risk' WHEN 2 THEN 'High Risk' WHEN 3 THEN 'Low Risk' WHEN 9 THEN 'High Risk' WHEN 10 THEN 'Low Risk' END as phenotype, pcp.Value as subjectkey_sibling1,   CASE c.Probandsex WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS sibling_type1, pcc.Value as subjectkey, CASE c.Gender WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS sex, i.Date_taken,ROUND(DATEDIFF(i.Date_taken, c.DoB) / (365/12)) AS interview_age, i.Date_taken as interview_date,ROUND(DATEDIFF(i.Date_taken, c.ProbandDoB) / (365/12)) AS Proband_Age_in_Months, i.Candidate_race as race, i.child_ethnicity as ethnic_group from candidate c  left join session s on s.CandID = c.CandID join flag f on f.SessionID = s.ID join tsi i on i.CommentID=f.CommentID join participant_status ps on ps.CandID = c.CandID WHERE " . $this->getWhere();
+            return "SELECT ". $test_fields ." c.IBISID AS src_subject_id, s.CenterID as Site, CASE s.SubprojectID WHEN 1 THEN 'High Risk' WHEN 2 THEN 'High Risk' WHEN 3 THEN 'Low Risk' WHEN 9 THEN 'High Risk' WHEN 10 THEN 'Low Risk' END as phenotype, pcp.Value as subjectkey_sibling1,   CASE c.Probandsex WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS sibling_type1, pcc.Value as subjectkey, CASE c.Sex WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS sex, i.Date_taken,ROUND(DATEDIFF(i.Date_taken, c.DoB) / (365/12)) AS interview_age, i.Date_taken as interview_date,ROUND(DATEDIFF(i.Date_taken, c.ProbandDoB) / (365/12)) AS Proband_Age_in_Months, i.Candidate_race as race, i.child_ethnicity as ethnic_group from candidate c  left join session s on s.CandID = c.CandID join flag f on f.SessionID = s.ID join tsi i on i.CommentID=f.CommentID join participant_status ps on ps.CandID = c.CandID WHERE " . $this->getWhere();
         }
         else if($this->instrument == 'height_weight' || $this->instrument == 'phys_neuro_exam' )
         {

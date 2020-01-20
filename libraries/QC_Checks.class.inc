@@ -273,10 +273,10 @@ class QC_Checks {
             }
         }
         /* ************************************************************************* */
-        // CHECK IF proband gender in Vineland, proband gender in candidate are same
+        // CHECK IF proband Sex in Vineland, proband Sex in candidate are same
         /* ************************************************************************* */
 
-        print "\n\n CHECK IF proband gender in Vineland and proband gender in candidate are same\n";
+        print "\n\n CHECK IF proband Sex in Vineland and proband Sex in candidate are same\n";
         print "--------------------------------------\n";
         $data = $DB->pselect("SELECT c.PSCID,c.CandID, c.ProbandGender,v.SEX from candidate c JOIN session s on s.CandID=c.CandID join flag f2 on ( s.ID=f2.SessionID AND f2.CommentID NOT LIKE 'DDE%' ) JOIN vineland_proband v ON (v.CommentID=f2.CommentID) WHERE s.CenterID IN (3,3,4,5) AND c.Active='Y' AND c.CenterID = $this->site", array());
         $header = array('PSCID', 'DCCID', 'ProbandGender', 'Vineland_ProbandGender');

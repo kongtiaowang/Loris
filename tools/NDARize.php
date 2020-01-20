@@ -14,7 +14,7 @@
  * - Remove any field ending with _status
  * - Change any "not_answered" entry to blank
  * - Replace any fields containing a lone . with a blank cell
- * - Change gender from m/f or Male/Female to M/F (capital)
+ * - Change Sex from m/f or Male/Female to M/F (capital)
  * - Replace yes/no with capital Yes/No
  * - Execute a script called NDARize/($filename).ndar.php to add instrument specific rules
  **/

@@ -155,7 +155,7 @@ class NDB_BVL_Instrument_tsi_ds extends NDB_BVL_Instrument
 
     function _setDefaultsArray(array $defaults): array {
         //------------------------------------------------------------//
-        // The subject's PSCID, DoB, age im months and gender         //
+        // The subject's PSCID, DoB, age im months and Sex         //
         // are not entered manually: they all come from the database  //
         //------------------------------------------------------------//
         $defaults = parent::_setDefaultsArray($defaults);
@@ -167,7 +167,7 @@ class NDB_BVL_Instrument_tsi_ds extends NDB_BVL_Instrument
                    c.DoB                           AS subject_dob,
                    ($ageInMonthsFormula)           AS subject_age_month,
                    COALESCE(c.EDC,'UNKNOWN')       AS subject_edc, 
-                   c.Gender                        AS subject_gender
+                   c.Sex                        AS subject_gender
             FROM candidate c
             JOIN session s USING (candid)
             JOIN flag f ON (s.ID=f.sessionID)

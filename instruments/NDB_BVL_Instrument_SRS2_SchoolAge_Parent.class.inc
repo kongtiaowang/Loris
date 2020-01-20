@@ -581,7 +581,7 @@ class NDB_BVL_Instrument_SRS2_SchoolAge_Parent extends NDB_BVL_Instrument
 
 
 
-        $query_gender = "SELECT Gender FROM candidate as c, session as s, flag as f, $this->table as t WHERE t.CommentID = '$this->commentID' 
+        $query_gender = "SELECT Sex FROM candidate as c, session as s, flag as f, $this->table as t WHERE t.CommentID = '$this->commentID' 
 AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $record_gender = $db->pselectRow($query_gender, array());
         if($record_gender['Gender']=='Male')
