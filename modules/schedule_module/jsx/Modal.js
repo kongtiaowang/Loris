@@ -8,9 +8,9 @@ class Modal extends React.Component {
   closeModal() {
     if (this.props.throwWarning) {
       swal({
-        title: "Are You Sure?",
-        text: "Leaving the form will result in the loss of any information entered.",
-        type: "warning",
+        title: 'Are You Sure?',
+        text: 'Leaving the form will result in the loss of any information entered.',
+        type: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Proceed',
         cancelButtonText: 'Cancel',
@@ -33,7 +33,7 @@ class Modal extends React.Component {
       left: 0,
       right: 0,
       backgroundColor: 'rgba(0,0,0,0.1)',
-      padding: 50
+      padding: 50,
     };
 
     // White Modal Window
@@ -59,22 +59,24 @@ class Modal extends React.Component {
       color: '#FFFFFF',
       fontSize: 24,
       padding: 20,
-    }
+    };
 
     const glyphStyle = {
       marginLeft: 'auto',
-      cursor: 'pointer'
-    }
+      cursor: 'pointer',
+    };
 
     const bodyStyle = {
-      padding: 15
-    }
+      padding: 15,
+    };
 
     let modal;
     if (this.props.show) {
       modal = (
         <div style={backdropStyle} onClick={this.closeModal}>
-          <div style={modalStyle} onClick={e => {e.stopPropagation()}}>
+          <div style={modalStyle} onClick={(e) => {
+e.stopPropagation();
+}}>
             <div style={titleStyle}>
               {this.props.title}
               <span style={glyphStyle} onClick={this.closeModal}>
