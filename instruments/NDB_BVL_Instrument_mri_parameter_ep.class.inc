@@ -19,9 +19,9 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
     var $ValidityRequired = false;
 
     private $yes_no = array(
-            null           => '',
-            '0'           => 'No',
-            '1'          => 'Yes'
+            null => '',
+            '0'  => 'No',
+            '1'  => 'Yes'
     );
 
     private $study_grp = [
@@ -29,7 +29,6 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
         'ds' => 'Infant-DS',
         'ds_ctrl' => 'Infant-DS Ctrl'
     ];
-
     
     private $orientation_grp = [
         'supine' => 'Supine',
@@ -65,6 +64,8 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
             'dti4' => [0 => 'DTI 4', 1 => 'DWI dir105 APinv']
         ];
 
+    private $pg2_number_of_lines = 6;
+
     public function getFullName(): string
     {
         return 'IBIS EP & Infant DS param Form';
@@ -73,7 +74,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
 
     function getSubtestList(): array {
         return [['Name' => 'mri_parameter_ep_page1', 'Description' => 'Record'],
-                ['Name' => 'mri_parameter_ep_page2', 'Description' => 'Structuaral'],
+                ['Name' => 'mri_parameter_ep_page2', 'Description' => 'Structural'],
                 ['Name' => 'mri_parameter_ep_page3', 'Description' => 'BOLD'],
                 ['Name' => 'mri_parameter_ep_page4', 'Description' => 'DTI'],
                 ['Name' => 'mri_parameter_ep_page5', 'Description' => 'BOLD+']];
@@ -107,10 +108,6 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
             'Date_taken'
         );
 
-        //The array of selects with multiple answers allowed
-        //Any LorisForm multiple selects must be listed here
-        $this->_selectMultipleElements = array();
-
         // required fields for data entry completion status
         $this->_requiredElements = array(
             'Examiner',
@@ -123,8 +120,6 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
             'study',
             'orientation',
             'vitamine'];
-
-        $this->db =& Database::singleton();
 
         // setup the form
         $this->_setupForm();
@@ -172,24 +167,39 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
 
         $this->addLabel('Phase encode angle calculation:');
         $group = array();
+        $group[] = $this->form->createElement('static', null, null, '');
         $group[] = $this->form->createElement('static', null, null, 'if AP angle is Positive');
+        $group[] = $this->form->createElement('static', null, null, '  ');
+        $group[] = $this->form->createElement('static', null, null, '');
         $group[] = $this->form->createElement('static', null, null, 'if AP angle is Negative');
         $this->form->addGroup($group, 'sec01_header', '', $this->_GUIDelimiter, FALSE);
         unset($group);
 
         $group = array();
         $grp = ['-180', '180'];
+        $cnt = 0;
         foreach ($grp as $key) {
-            $group[] = $this->form->createElement('static', null, null, "$key +");
+            $group[] = $this->form->createElement('static', null, null, '');
+            $group[] = $this->form->createElement('static', null, null, $key);
+            if ($cnt ++ == 0) {
+                $group[] = $this->form->createElement('static', null, null, '');
+            }
         }
 
         $this->form->addGroup($group, 'sec01_row', '', $this->_GUIDelimiter, FALSE);
         unset($group);
 
         $grp = ['ap_p', 'ap_n'];
-        for ($i = 0; $i < 2; $i++) {
-            $group = array();
-            foreach ($grp as $idx => $key) {
+        $angle_record_lines = 2;
+        for ($i = 0; $i < $angle_record_lines; $i++) {
+            $group = [];
+            $cnt = 0;
+            foreach ($grp as $key) {
+
+                if ($cnt ++ == 1) {
+                    $group[] = $this->form->createElement('static', null, null, '');
+                }
+                $group[] = $this->form->createElement('static', null, null, ($i == 0)? '+': '');
 
                 $group[] = $this->createText("$key{$i}");
                 $this->not_required_field("$key{$i}");
@@ -302,9 +312,9 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
      */
     function _page2()
     {
-        $this->addLabel('Structuaral');
+        $this->addLabel('Structural');
 
-        $group = array();
+        $group = [];
         $group[] = $this->form->createElement('static', null, null, 'T1');
         $group[] = $this->form->createElement('static', null, null, 'T2');
         $group[] = $this->form->createElement('static', null, null, 'Anterior');
@@ -317,7 +327,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
         $grp1 = ['t1_', 't2_'];
         $grp2 = ['anterior', 'superior', 'ant_d_sup'];
 
-        for ($i = 0; $i < 6; $i++) {
+        for ($i = 0; $i < $this->pg2_number_of_lines; $i++) {
 
             foreach ($grp1 as $key) {
                 $group[] = $this->createSelect("$key{$i}", '', $this->yes_no);
@@ -341,41 +351,69 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
             $this->form->addRule("t{$i}_pass", "T{$i} Passed must be set", 'required');
         }
 
-        $this->addLabel('Fails if Ant/Sup > 2.5; needs one T1 and one T2 to pass');
-        $this->form->addFormRule(array(&$this, 'constraint_rules1'));
+        $this->addLabel('Fails if Ant/Sup > 2.5; needs one T1 and one T2 to pass.');
+        $this->form->addFormRule(array(&$this, 'constraint_rules_pg2'));
     }
 
 
     /**
      * constraint check for page 2
      */
-    function constraint_rules1($values) {
+    function constraint_rules_pg2($values) {
         $errors = [];
        
-        $fail = false;
-        for ($i = 0; $i < 6; $i++) {
-            if (floatval($values["ant_d_sup{$i}"]) > 2.5 && $values["s_pass{$i}"]) {
-                $errors["sec2_row{$i}"] = 'Because Ant/Sup > 2.5, this line doesn\'t pass';
-                $fail = true;
+        $grp2 = ['anterior', 'superior'];
+        for ($i = 0; $i < $this->pg2_number_of_lines; $i++) {
+
+            foreach ($grp2 as $key) {
+                $val = $values["$key{$i}"];
+                if (!empty($val) && !is_numeric($val)) {
+                    $errors["sec2_row{$i}"] = 'The value should be numeric.';
+                }
+            }
+
+            if (abs(round(floatval($values["anterior{$i}"]) / floatval($values["superior{$i}"]), 2) - floatval($values["ant_d_sup{$i}"])) > 0.05) {
+                $errors["sec2_row{$i}"] = 'The value Anterior / Superior differences Anterior divided by Superior by a little too much (over 0.05).';
+            }
+
+            $val = $values["ant_d_sup{$i}"];
+            if (!empty($val) && !is_numeric($val)) {
+                $errors["sec2_row{$i}"] = 'The value should be numeric.';
+            }
+            else if (floatval($values["ant_d_sup{$i}"]) > 2.5 && $values["s_pass{$i}"]) {
+                $errors["sec2_row{$i}"] = 'Because Ant/Sup > 2.5, this line doesn\'t pass.';
             }
         }
+
         $grp = ['t1_', 't2_'];
-        $cnt_1 = 0;
-        $cnt_2 = 0;
-        for ($i = 0; $i < 6; $i++) {
-            if ($values["t1_{$i}"] == '1') {
-                $cnt_1 ++;
+
+        $cnt = [];
+        foreach ($grp as $key) {
+            $cnt[$key] = 0;
+        }
+
+        for ($i = 0; $i < $this->pg2_number_of_lines; $i++) {
+            foreach ($grp as $key) {
+                if ($values["$key{$i}"] == '1') {
+                    $cnt[$key] ++;
+                }
             }
-            if ($values["t2_{$i}"] == '1') {
-                $cnt_2 ++;
+        }
+        $already_failed = false;
+        if ($values["t1_pass"] == '1' && $cnt['t1_'] == 0) {
+            $errors["sec2_row0"] = 'Needs one T1 to pass.';
+            $already_failed = true;
+        }
+
+        if ($values["t2_pass"] == '1' && $cnt['t2_'] == 0) {
+            if ($already_failed) {
+                $errors["sec2_row0"] = 'Needs one T1 and one T2 to pass.';
+            }
+            else {
+                $errors["sec2_row0"] = 'Needs one T2 to pass.';
             }
         }
-        if ($values["t1_pass"] == '1' && $cnt_1 == 0) {
-            $errors["sec2_row0"] = 'Needs one T1 to pass';
-        }
-        else if ($values["t2_pass"] == '1' && $cnt_2 == 0) {
-            $errors["sec2_row0"] = 'Needs one T2 to pass';
-        }
+
         return $errors;
     }
 
@@ -456,7 +494,11 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
         $errors = [];
         $i = 0;
         foreach ($this->bold_firmm_grp as $key => $label) {
-            if (floatval($values["{$key}02_{$i}"]) < 70 && !empty($values["{$key}pass_{$i}"])) {
+            $tmp_02val = intval($values["{$key}02_{$i}"]);
+            if (!($tmp_02val >= 0 && $tmp_02val <= 100)) {
+                $errors["sec3_2_row{$i}"] = '% 0.2mm value is not valid.';
+            }
+            else if (intval($values["{$key}02_{$i}"]) < 70 && !empty($values["{$key}pass_{$i}"])) {
                 $errors["sec3_2_row{$i}"] = 'Because % 0.2mm < 70%, this line doesn\'t pass';
             }
             $i ++;
@@ -513,7 +555,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
             $i++;
         }
 
-        $this->addLabel('Verify phase encode dirction : should be AP for both AP and APinv sequences');
+        $this->addLabel('Verify phase encode direction : should be AP for both AP and APinv sequences');
         $this->addSelect('dti_pass', 'DTI Passed', $this->yes_no);
         $this->addLabel('PE direction will default to L >> R. Please set to A >> P, then edit the angle to set P >> A');
     }
@@ -591,18 +633,11 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
         );
     }
 
-    private function translate_yes_no_msg($key) {
-        if (isset($this->yes_no[$key])) {
-            return $this->yes_no[$key];
-        }
-        return $key;
-    }
-
     function score() {
         if ($this->_determineDataEntryCompletionStatus() == 'Incomplete') { 
             return;
         }
-     
+
         // Get the item scores 
         $db =& Database::singleton(); 
         $query = "SELECT * FROM ".$this->table." WHERE CommentID=:cid";
@@ -612,7 +647,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
 
         $grp = ['t1_pass', 't2_pass', 'bold_pass', 'dti_pass'];
         foreach ($grp as $key) {
-            $scores["{$key}_msg"] = $this->translate_yes_no_msg($record[$key]);
+            $scores["{$key}_msg"] = $this->yes_no[$record[$key]] ?? $record[$key];
         }
 
         // save scores

@@ -1,7 +1,7 @@
-INSERT INTO test_names (test_name, full_name, sub_group, isdirectentry) values('mri_parameter_ep', 'MRI Parameter form EP & Infant DS', 1, 0);
+INSERT INTO test_names (test_name, full_name, sub_group, isdirectentry) values('mri_parameter_ep', 'MRI Parameter form EP & Infant DS', 8, 0);
 
 INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('mri_parameter_ep', 'mri_parameter_ep_page1', "Record", 1);
-INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('mri_parameter_ep', 'mri_parameter_ep_page2', "Structuaral", 2);
+INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('mri_parameter_ep', 'mri_parameter_ep_page2', "Structural", 2);
 INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('mri_parameter_ep', 'mri_parameter_ep_page3', "BOLD", 3);
 INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('mri_parameter_ep', 'mri_parameter_ep_page4', "DTI", 4);
 INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('mri_parameter_ep', 'mri_parameter_ep_page5', "BOLD+", 5);
