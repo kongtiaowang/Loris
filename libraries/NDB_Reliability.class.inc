@@ -65,12 +65,6 @@ class NDB_Reliability extends NDB_Form
         $obj->reliability_center_id = $reliability_center_id;
         $obj->identifier = $identifier;
 
-        $access = $obj->_hasAccess();
-
-        // check that user has access
-        if ($access == false) {
-            throw new Exception("You do not have access to this page.");
-        }
 
         if (method_exists($obj, $page)) {
             $success       = $obj->$page();

@@ -121,7 +121,7 @@ class Reliability extends \NDB_Menu_Filter
         // only view their own profiles, unless they have permission to see all
         if (!($user->hasPermission('reliability_edit_all') || $user->hasPermission('access_all_profiles'))) {
             $site_arr = implode(",", $user->getCenterIDs());
-            $query .= " AND candidate.centerID IN (" . $site_arr . ") ";
+            $query .= " AND candidate.RegistrationcenterID IN (" . $site_arr . ") ";
         }
 
         $config      =& \NDB_Config::singleton();
@@ -173,7 +173,7 @@ class Reliability extends \NDB_Menu_Filter
         $this->validFilters = array(
                                'reliability.reliability_center_id',
                                'session.SubprojectID',
-                               'candidate.CenterID',
+                               'candidate.RegistrationCenterID',
                                'session.CandID',
                                'candidate.PSCID',
                                'candidate.Gender',
@@ -187,7 +187,7 @@ class Reliability extends \NDB_Menu_Filter
 
         $this->formToFilter = array(
                                'SubprojectID'          => 'session.SubprojectID',
-                               'CenterID'              => 'candidate.CenterID',
+                               'CenterID'              => 'candidate.RegistrationCenterID',
                                'reliability_center_id' => 'reliability.reliability_center_id',
                                'DCCID'                 => 'session.CandID',
                                'PSCID'                 => 'candidate.PSCID',
@@ -859,7 +859,7 @@ AND reliability_center_id<>:currentSite_id)",$params1);
         $query ="SELECT reliability.CommentID as OldID,".
             " reliability.reliability_center_id as CenterID,".
             " reliability.Reliability_score as Score,".
-            " candidate.CenterID as OldCenterID ".
+            " candidate.RegistrationCenterID as OldCenterID ".
             " FROM candidate JOIN session ON ".
             "(session.CandID = candidate.CandID) ".
             "JOIN flag ON (flag.SessionID = session.ID) ".

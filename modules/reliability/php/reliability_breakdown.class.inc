@@ -10,6 +10,7 @@ class Reliability_breakdown extends \NDB_Menu
     function _hasAccess(\User $user) : bool
     {
        $user->hasPermission('send_to_dcc');
+       return true;
     }
 
     function setup()
