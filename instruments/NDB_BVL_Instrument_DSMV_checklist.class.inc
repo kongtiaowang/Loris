@@ -2,6 +2,7 @@
 
 class NDB_BVL_Instrument_DSMV_checklist extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
 
     var $yesNo      = array(
                        null  => "",
@@ -34,7 +35,7 @@ class NDB_BVL_Instrument_DSMV_checklist extends NDB_BVL_Instrument
     * @return void
     * @access public
     */
-    function setup($commentID, $page): void
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
     {
         $this->formType ="XIN";
         $this->form     = new LorisForm('DSMV_checklist');

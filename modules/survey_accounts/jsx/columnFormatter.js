@@ -15,27 +15,25 @@ function formatColumn(column, cell, rowData, rowHeaders) {
         return null;
     }
   // Create the mapping between rowHeaders and rowData in a row object.
-  var row = {};
+  let row = {};
   rowHeaders.forEach(function(header, index) {
     row[header] = rowData[index];
   }, this);
   if (column === 'URL') {
       if (row.SurveyName === 'Air Pollution') {
-          var url = loris.BaseURL + "/survey.php?key=" + row.URL;
-          return (<td><a href={url}>{cell}</a></td>);
-      }
-      else{
-          var url = loris.BaseURL + "/survey_module/?key=" + row.URL;
-          return (<td><a href={url}>{cell}</a></td>);
+        let url = loris.BaseURL + '/survey.php?key=' + row.URL;
+        return (<td><a href={url}>{cell}</a></td>);
+      } else {
+        let url = loris.BaseURL + '/survey_module/?key=' + row.URL;
+        return (<td><a href={url}>{cell}</a></td>);
       }
   }
     if (column === 'Parent Portal') {
-        var parentid = row['Parent Portal'];
-        if (parentid !="NA") {
-            var url = loris.BaseURL + "/parent_portal/?id=" + parentid;
-            return (<td><a href={url} target="_blank">Go To Parent Portal</a></td>);
-        }
-        else{
+        let parentid = row['Parent Portal'];
+        if (parentid !='NA') {
+          let url = loris.BaseURL + '/parent_portal/?id=' + parentid;
+          return (<td><a href={url} target='_blank'>Go To Parent Portal</a></td>);
+        } else {
             return <td>NA</td>;
         }
     }

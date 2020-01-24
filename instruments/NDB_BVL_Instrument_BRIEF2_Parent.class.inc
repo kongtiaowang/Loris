@@ -22,6 +22,8 @@
  */
 class NDB_BVL_Instrument_BRIEF2_Parent extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
+
     use instrument_validator;
 
     var $scoreLabels = array(
@@ -48,7 +50,7 @@ class NDB_BVL_Instrument_BRIEF2_Parent extends NDB_BVL_Instrument
     * @return void
     * @access public
     */
-    function setup($commentID, $page)
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
     {
         $this->formType ="XIN";
         $this->form     = new LorisForm('test_form');
@@ -322,7 +324,7 @@ class NDB_BVL_Instrument_BRIEF2_Parent extends NDB_BVL_Instrument
 
         return $errors;
     }
-    function score()
+    function score(): void
     {
         if($this->_determineDataEntryCompletionStatus() == "Incomplete") {
             return;
@@ -445,7 +447,7 @@ class NDB_BVL_Instrument_BRIEF2_Parent extends NDB_BVL_Instrument
         if(in_array($age_years, range(14, 18))) {
             $age_range="14 to 18";
         }
-        $query_gender = "SELECT Gender FROM candidate as c, session as s, flag as f, $this->table as t WHERE t.CommentID = '$this->commentID' 
+        $query_gender = "SELECT Sex FROM candidate as c, session as s, flag as f, $this->table as t WHERE t.CommentID = '$this->commentID' 
 AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $record_gender = $db->pselectRow($query_gender, array());
         if($record_gender['Gender']=='Male')

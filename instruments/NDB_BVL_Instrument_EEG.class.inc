@@ -1,6 +1,8 @@
 <?php
 class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
+
   use instrument_validator;
 
   static $cssStyle = "style='color:white; background-color: black;border: 10px solid black;margin-left:0;'";
@@ -29,7 +31,8 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
    * @return void
    * @access public
    */
-   function setup($commentID = NULL, $page = NULL) {
+   function setup(?string $commentID = NULL, ?string $page = NULL): void
+   {
        parent::setup($commentID, $page);
 		
        $this->formType="XIN";
@@ -78,7 +81,7 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
      * @param array $defaults The current default values.
      * @return array the updated default values.
      */
-    function _setDefaultsArray($defaults) {
+    function _setDefaultsArray(array $defaults): array {
         $defaults = parent::_setDefaultsArray($defaults);
 
         $defaults['subjectID']    = $this->getPSCID();
@@ -274,7 +277,7 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
      *
      * @param array $values Values entered in the form.
      */
-    function _saveValues($values) {
+    function _saveValues(array $values): void {
 
         //----------------------------------------------------------//
         // *_chooser fields are always posted but do not exist in   //

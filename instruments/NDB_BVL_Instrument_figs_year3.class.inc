@@ -5,6 +5,7 @@
 
 class NDB_BVL_Instrument_figs_year3 extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
     
     var $_relationshipCodeRegex = '/^MOM|DAD|MGM|MGF|PGM|PGF|FX|MX|PX|HX|(FB|FS|HB|HS|CID|CIS|MA|MU|PA|PU)[0-9]+$/';
     
@@ -24,7 +25,7 @@ class NDB_BVL_Instrument_figs_year3 extends NDB_BVL_Instrument
     * @return void
     * @access public
     */
-    function setup($commentID, $page)
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
     {
         $this->form = new LorisForm('test_form');
         // deprecated // $this->form->registerRule('requiredIf', null, 'HTML_QuickForm_Rule_RequiredIf', 'RequiredIf.inc');
@@ -89,7 +90,8 @@ class NDB_BVL_Instrument_figs_year3 extends NDB_BVL_Instrument
     }
     
     // Computes the difference between two instances of an instrument
-    function diff($otherInstrument) {
+    function diff(NDB_BVL_Instrument $otherInstrument): array
+    {
         $db =& Database::singleton();
 
         // Load this instance data
@@ -224,7 +226,7 @@ class NDB_BVL_Instrument_figs_year3 extends NDB_BVL_Instrument
     * @return void
     * @access public
     */
-    function display()
+    function display(): string
     {
         $factory  = NDB_Factory::singleton();
         $baseURL = $factory->settings()->getBaseURL();
@@ -287,10 +289,10 @@ class NDB_BVL_Instrument_figs_year3 extends NDB_BVL_Instrument
     * @access private
     */
 
-    function _saveValues($values)
+    function _saveValues(array $values): void
     {   
         if($values['ClearInstrument']== 1) {
-           return NULL; 
+           return; 
         }
         $this->_nullStatus($values);
         if(isset($values['Date_taken'])) {
@@ -385,7 +387,7 @@ class NDB_BVL_Instrument_figs_year3 extends NDB_BVL_Instrument
     * @return void
     * @access private
     */
-    function _save($values)
+    function _save(array $values): void
     {
         // clear any fields starting with __
         foreach(array_keys($values) AS $key) {
@@ -405,7 +407,7 @@ class NDB_BVL_Instrument_figs_year3 extends NDB_BVL_Instrument
     * @return void
     * @access public
     */
-    function freeze()
+    function freeze(): void
     {
         // if it's a quickform, freeze it
         $this->form->freeze();
@@ -1741,7 +1743,7 @@ work or with social relationships?", $questionOptions);
         return true;
     }
 
-    function _determineDataEntryCompletionStatus()
+    function _determineDataEntryCompletionStatus(): string
     {
         $db =& Database::singleton();
 
@@ -1768,7 +1770,7 @@ work or with social relationships?", $questionOptions);
     * @access private
     * @return void
     */
-    function _setDataEntryCompletionStatus($status)
+    function _setDataEntryCompletionStatus(string $status): void
     {
         if(!in_array($status, array('Complete', 'Incomplete'))) throw new LorisException("Invalid status passed to _setDataEntryCompletionStatus - '$status' should have been either 'Complete' or 'Incomplete'<br>\n");
 
@@ -1786,7 +1788,7 @@ work or with social relationships?", $questionOptions);
     * @return string   either 'Complete' or 'Incomplete'
     * @access public
     */
-    function getDataEntryCompletionStatus()
+    function getDataEntryCompletionStatus(): string
     {
         $db =& Database::singleton();
 
@@ -1799,12 +1801,12 @@ work or with social relationships?", $questionOptions);
      * algorithms revised July 2, 2002.
      */
 
-    function score()
+    function score(): void
     {
         $db =& Database::singleton();
 
         // null the existing scores
-        $success = $this->_nullScores();
+        $success = $this->_nullScores($this->scoreCols);
 
         $param = array('cID'=>$this->getCommentID());
         $query = "SELECT RelativeID FROM figs_year3_relatives WHERE CommentID=:cID";
@@ -1909,7 +1911,7 @@ work or with social relationships?", $questionOptions);
             $success = $db->update('figs_year3', $scores, array('CommentID'=>$this->getCommentID()));
         }
         // return an array w/ all scores
-        return array('instrument'=>$scores, 'relatives'=>$relativeScores);
+        //return array('instrument'=>$scores, 'relatives'=>$relativeScores);
     }
     
     /**
@@ -3035,7 +3037,7 @@ ADHD_Q3g_Reliability
     * @return mixed
     * @throws $this->error
     */
-    function _nullScores()
+    function _nullScores(array $scoreCols): void
     {
         $db=& Database::singleton();
         
@@ -3055,7 +3057,8 @@ ADHD_Q3g_Reliability
         
         return;
     }
-    function clearInstrument() {
+    function clearInstrument(): void
+    {
 
         $config = NDB_Config::singleton();
         $dbconfig = $config->getSetting('database');

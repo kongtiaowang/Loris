@@ -7,6 +7,7 @@ require_once "Candidate.class.inc";
 
 class NDB_BVL_Instrument_edi2 extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
 	
 /*
 INSERT INTO test_names(Test_name,Full_name,LimitAge,Sub_group) VALUES ('edi2', 'EDI_IBIS2 (Early Development Interview - IBIS2)', '0', '3');
@@ -204,7 +205,8 @@ INSERT INTO help(hash, topic) VALUES (md5('edi2'),'EDI_IBIS2');
     * @return void
     * @access public
     */
-    function setup($commentID = null, $page = null){
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
+    {
         $this->formType="XIN";
         $this->form = new LorisForm('test_form');
         $this->page = $page;            // page label (number or
@@ -333,7 +335,8 @@ INSERT INTO help(hash, topic) VALUES (md5('edi2'),'EDI_IBIS2');
 
     }
     
-    function _determineDataEntryCompletionStatus(){
+    function _determineDataEntryCompletionStatus(): string
+    {
     
         // If Date_taken has not yet been set, then don't run any of the following code.
         if(is_null($this->Date_taken)){
@@ -590,7 +593,7 @@ INSERT INTO help(hash, topic) VALUES (md5('edi2'),'EDI_IBIS2');
 				$this->form->addElement('static', null, "<br/>");
     }
 
-    function score() {
+    function score(): void {
         if($this->_determineDataEntryCompletionStatus() == "Incomplete") {
                 return;
         }

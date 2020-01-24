@@ -6,6 +6,8 @@ require_once "TimePoint.class.inc";
 
 class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
+
     /*
     INSERT INTO test_names VALUES ('', 'med_psych_hist', 'Medical Psychiatric History', '0', '1');
     INSERT INTO instrument_subtests VALUES('', 'med_psych_hist', 'med_psych_hist_page1', '1. Pregnancy History', 1);
@@ -39,7 +41,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
     * @access public
     */
 
-    function setup($commentID, $page)
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
     {
         $this->formType ="XIN";
         $this->form     = new LorisForm('test_form');

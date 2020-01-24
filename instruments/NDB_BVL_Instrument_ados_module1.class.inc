@@ -51,7 +51,8 @@ class NDB_BVL_Instrument_ados_module1 extends NDB_BVL_Instrument_IBIS
     * @return void
     * @access public
     */
-    function setup($commentID, $page){
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
+    {
         $this->formType="XIN";
         $this->form = new LorisForm('test_form');
         $this->page = $page;            // page label (number or
@@ -363,7 +364,7 @@ class NDB_BVL_Instrument_ados_module1 extends NDB_BVL_Instrument_IBIS
 
     } // End Form
 
-    function score(){
+    function score(): void{
     	if ($this->_determineDataEntryCompletionStatus() == "Incomplete") {
     		return;
     	}

@@ -9,7 +9,7 @@ $client->makeCommandLine();
 $client->initialize('../config.xml');
 
 $DB =& Database::singleton();
-$candidates = $DB->pselect("SELECT c.PSCID, c.Gender, s.SubprojectID, c.CandID, s.Visit_label  FROM session s JOIN candidate c USING (CandID) WHERE s.Active='Y' and c.Active='Y' AND c.PSCID <> 'scanner' AND c.ProjectID=1 AND ((s.SubprojectID IN (1, 3) AND s.Visit_label='V06') OR (s.SubprojectID=2 AND s.Visit_label='V12')) AND c.CenterID <> 1 ORDER BY PSCID", array());
+$candidates = $DB->pselect("SELECT c.PSCID, c.Sex, s.SubprojectID, c.CandID, s.Visit_label  FROM session s JOIN candidate c USING (CandID) WHERE s.Active='Y' and c.Active='Y' AND c.PSCID <> 'scanner' AND c.ProjectID=1 AND ((s.SubprojectID IN (1, 3) AND s.Visit_label='V06') OR (s.SubprojectID=2 AND s.Visit_label='V12')) AND c.CenterID <> 1 ORDER BY PSCID", array());
 
 function GetInstrumentData($instrument, $candid, $visit) {
     global $DB;
@@ -39,7 +39,7 @@ function GetGrantStatus($candid, $visit) {
     }
 }
 $filename = '';
-// PSCID, Gender, SubprojectID, child_ethnicity, candidate_race, FYI_V12_Risk, ADI_R_Subject_V24_Date, ADI_R_Summary, Grant_Status_V12, Grant_Status_V24
+// PSCID, Sex, SubprojectID, child_ethnicity, candidate_race, FYI_V12_Risk, ADI_R_Subject_V24_Date, ADI_R_Summary, Grant_Status_V12, Grant_Status_V24
 $lastsite = '';
 foreach($candidates as &$c) {
     $site = substr($c['PSCID'], 0, 3);

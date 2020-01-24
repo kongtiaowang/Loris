@@ -101,7 +101,7 @@ if (empty($argv[1])) {
     $TQ = array(
            "Hopkins" =>
                 "SELECT DISTINCT c.HopID,
-                c.Gender,
+                c.Sex,
                 t.candidate_race,
                 t.mother_age_yrs * 12 as mother_age_mths,
                 t.mother_education,

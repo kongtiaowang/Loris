@@ -5,6 +5,8 @@
 
 class NDB_BVL_Instrument_radiology_review extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
+
     var $ValidityEnabled = false;
     var $ValidityRequired = false;
 
@@ -16,7 +18,8 @@ class NDB_BVL_Instrument_radiology_review extends NDB_BVL_Instrument
     * @return void
     * @access public
     */
-    function setup($commentID, $page){
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
+    {
         $this->formType="XIN";
         $this->form = new LorisForm('test_form');
         $this->page = $page;            // page label (number or
@@ -93,7 +96,7 @@ class NDB_BVL_Instrument_radiology_review extends NDB_BVL_Instrument
     * @return void
     * @access private
     */
-    function _addMetadataFields()
+    function _addMetadataFields(): void
     {
         $config =& NDB_Config::singleton();
         $this->dateOptions = array(

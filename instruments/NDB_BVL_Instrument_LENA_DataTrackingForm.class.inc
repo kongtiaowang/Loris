@@ -5,6 +5,8 @@
 
 class NDB_BVL_Instrument_LENA_DataTrackingForm extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
+
     var $ValidityEnabled = false;
     var $ValidityRequired = false;
     var $participate = array(""=>null,
@@ -32,7 +34,8 @@ class NDB_BVL_Instrument_LENA_DataTrackingForm extends NDB_BVL_Instrument
     * @return void
     * @access public
     */
-    function setup($commentID, $page){
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
+    {
 
         $this->formType="XIN";
         $this->form = new LorisForm('test_form');
@@ -269,7 +272,7 @@ class NDB_BVL_Instrument_LENA_DataTrackingForm extends NDB_BVL_Instrument
         return true;
     }
 
-    function _saveValues ($values)
+    function _saveValues (array $values): void
     {
         $timepoint =& TimePoint::singleton($this->getSessionID());
         $candidate =& Candidate::singleton($timepoint->getCandID());

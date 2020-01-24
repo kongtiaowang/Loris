@@ -26,11 +26,7 @@ namespace LORIS\parent_portal;
 class view_surveys extends \NDB_Form
 {
 
-
-    function _hasAccess()
-    {
-        return true;
-    }
+    
 
 
     function setup()

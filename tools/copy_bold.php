@@ -42,7 +42,7 @@ $db = Database::singleton();
 
 $files = $db->pselect("SELECT c.CandID, c.PSCID, c.IBISID, c.CandidateGUID,
     c.ProbandGUID, c.DoB, s.CenterID, s.Visit_label,
-    s.Current_stage, f.File, fqc.QCStatus, c.Gender
+    s.Current_stage, f.File, fqc.QCStatus, c.Sex
     FROM files f
     LEFT JOIN files_qcstatus fqc USING (FileID)
     LEFT JOIN session s ON (s.ID=f.SessionID)

@@ -3,6 +3,8 @@
 
 class NDB_BVL_Instrument_head_measurements extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
+
 /*
 INSERT INTO test_names VALUES ('', 'head_measurements', 'Measurements Data Sheet', '0', '1');
 INSERT INTO test_battery VALUES ('', 'head_measurements', '1050', '1140', 'Y', 'Visit', '3');

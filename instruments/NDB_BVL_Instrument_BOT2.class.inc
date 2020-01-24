@@ -22,6 +22,8 @@
  */
 class NDB_BVL_Instrument_BOT2 extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
+
     /**
      * Sample SQL statement for test_names table and instrument subtests table
      *
@@ -38,7 +40,7 @@ class NDB_BVL_Instrument_BOT2 extends NDB_BVL_Instrument
      * @return void
      * @access public
      */
-    function setup($commentID, $page)
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
     {
         $this->formType = "XIN";
         $this->form = new LorisForm('BOT2_form');
@@ -643,7 +645,7 @@ class NDB_BVL_Instrument_BOT2 extends NDB_BVL_Instrument
         $record= $db->pselectRow("SELECT * FROM $this->table WHERE CommentID=:cid",array("cid" =>$this->getCommentID() ) );
 
         // Get gender
-        $record_gender= $db->pselectRow("SELECT Gender FROM candidate as c, session as s, flag as f, $this->table as
+        $record_gender= $db->pselectRow("SELECT Sex FROM candidate as c, session as s, flag as f, $this->table as
  t WHERE t.CommentID = CommentID=:cid AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID",array("cid" =>$this->getCommentID()));
         $gender = strtolower($record_gender['Gender']);
 

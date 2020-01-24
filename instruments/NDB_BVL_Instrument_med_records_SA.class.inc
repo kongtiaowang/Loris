@@ -1,13 +1,16 @@
 <?php
 class NDB_BVL_Instrument_med_records_SA extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
+
     var $ValidityEnabled = false;
     var $ValidityRequired = false;
 
 
 
 
-    function setup($commentID = NULL, $page= NULL){
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
+    {
 
         $this->formType="XIN";
         $this->form = new LorisForm('test_form');

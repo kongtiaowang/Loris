@@ -27,12 +27,12 @@ class Survey_Accounts extends \NDB_Menu_Filter
     /**
      * Determine if user has permission to access this page
      *
+     * @param \User $user The user whose access is being checked
+     *
      * @return boolean true if access is permitted
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        // create user object
-        $user =& \User::singleton();
 
         return $user->hasPermission('user_accounts');
     }
@@ -45,7 +45,6 @@ class Survey_Accounts extends \NDB_Menu_Filter
      */
     function _setupVariables()
     {
-        $user =& \User::singleton();
 
         // the base query
         $query = " FROM participant_accounts p 

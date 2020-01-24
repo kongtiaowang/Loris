@@ -24,6 +24,7 @@
 
 class NDB_BVL_Instrument_MASC2_Parent extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
 
     var $ValidityEnabled = false;
     var $ValidityRequired = false;
@@ -50,7 +51,7 @@ class NDB_BVL_Instrument_MASC2_Parent extends NDB_BVL_Instrument
      * @return void
      * @access public
      */
-    function setup($commentID, $page)
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
     {
         $this->formType = "XIN";
         $this->form = new LorisForm('MASC2_Parent_form');
@@ -332,7 +333,7 @@ $this->form->addGroup($group, "anxiety_probability_score_group", "Anxiety Probab
         }
     }
 
-    function score()
+    function score(): void
     {
         if($this->_determineDataEntryCompletionStatus() == "Incomplete") {
             return;
@@ -454,7 +455,7 @@ $this->form->addGroup($group, "anxiety_probability_score_group", "Anxiety Probab
             }
 
 
-        $query_gender = "SELECT Gender FROM candidate as c, session as s, flag as f, $this->table as t WHERE t.CommentID = '$this->commentID' 
+        $query_gender = "SELECT Sex FROM candidate as c, session as s, flag as f, $this->table as t WHERE t.CommentID = '$this->commentID' 
 AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $record_gender = $db->pselectRow($query_gender, array());
         if($record_gender['Gender']=='Male')

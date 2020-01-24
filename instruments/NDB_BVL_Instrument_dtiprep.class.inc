@@ -17,6 +17,7 @@
  */
 class NDB_BVL_Instrument_DTIprep extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
 
     /**
      * Sets up basic data, such as the LorisForm object, and so on.
@@ -26,7 +27,7 @@ class NDB_BVL_Instrument_DTIprep extends NDB_BVL_Instrument
      * @return void
      * @access public
      */
-    function setup($commentID = null, $page = null)
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
     {
         $this->formType = 'XIN';
         $this->form     = new LorisForm('test_form');
@@ -167,7 +168,7 @@ class NDB_BVL_Instrument_DTIprep extends NDB_BVL_Instrument
      * @return void
      * @access private
      */
-    function _saveValues($values)
+    function _saveValues(array $values): void
     {
         $timepoint = TimePoint::singleton($this->getSessionID());
         $candidate = Candidate::singleton($timepoint->getCandID());

@@ -25,6 +25,8 @@
 
 class NDB_BVL_Instrument_mock_scanner_training_form extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
+
     var $ValidityEnabled = false;
     var $ValidityRequired = false;
     var $TrainingOptions= array(
@@ -57,7 +59,8 @@ class NDB_BVL_Instrument_mock_scanner_training_form extends NDB_BVL_Instrument
      * @return void
      * @access public
      */
-    function setup($commentID = NULL, $page= NULL){
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
+    {
 
         $this->formType="XIN";
         $this->form = new LorisForm('test_form');

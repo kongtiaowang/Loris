@@ -1,6 +1,6 @@
 Test Plan: Reliability
 
-1) Selection Filter: Try filtering by Subproject, Site, Instrument, Gender, Invalid Candidate, DCCID, PSCID, Site or Reliability and Visit Label – make sure both “Enter” and “Show Data” work to show results
+1) Selection Filter: Try filtering by Subproject, Site, Instrument, Sex, Invalid Candidate, DCCID, PSCID, Site or Reliability and Visit Label – make sure both “Enter” and “Show Data” work to show results
 
 2) Make sure “Clear Form” resets back to blank DCCID; Blank PSCID, your “site” and all other fields read “All”, and that is reflected in the list of Log Entries below
 

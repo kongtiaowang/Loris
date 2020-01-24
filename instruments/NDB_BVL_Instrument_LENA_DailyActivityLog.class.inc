@@ -5,6 +5,8 @@
 
 class NDB_BVL_Instrument_LENA_DailyActivityLog extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
+
     var  $rate_day = array(""=>null,"typical"=>"A. typical/ordinary talk time",
                        "more_talkative"=>"B. more talkative than usual",
                        "less_talkative"=>"C. less talkative than usual",
@@ -25,7 +27,8 @@ class NDB_BVL_Instrument_LENA_DailyActivityLog extends NDB_BVL_Instrument
     * @return void
     * @access public
     */
-    function setup($commentID, $page){
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
+    {
 
         $this->formType="XIN";
         $this->form = new LorisForm('test_form');
@@ -123,7 +126,7 @@ class NDB_BVL_Instrument_LENA_DailyActivityLog extends NDB_BVL_Instrument
         //Defines the call back function for HTML Quickform to use when validating the form.
         $this->form->addFormRule(array(&$this,'XINValidate'));
     }
-    function getDataEntryCompletionStatus()
+    function getDataEntryCompletionStatus(): string
     {
         $db =& Database::singleton();
         $query_lena ="SELECT day1_more_recordings,day2_more_recordings,day3_more_recordings FROM $this->table WHERE CommentID=:cid";

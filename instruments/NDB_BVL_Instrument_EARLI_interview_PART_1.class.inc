@@ -9,7 +9,7 @@ class NDB_BVL_Instrument_EARLI_interview_PART_1 extends NDB_BVL_Instrument_EARLI
      * @return void
      * @access public
      */
-    function setup($commentID, $page)
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
     {
 
         $this->formType="XIN";
@@ -1031,7 +1031,7 @@ class NDB_BVL_Instrument_EARLI_interview_PART_1 extends NDB_BVL_Instrument_EARLI
         $this->form->addElement('static', null, "<br/>");
 
         //q3-16
-        $this->form->addElement("select", "q3_16_0", "3-16) What was the gender of the baby born from your 1st pregnancy? ",  array(NULL=>"", "01" => "01 Boy", "02" => "02 Girl", "88_Refused" => "88 Refused", "99_Do_not_know"=>"99 Do not know", "Not_Answered"=>"Not Answered"));
+        $this->form->addElement("select", "q3_16_0", "3-16) What was the Sex of the baby born from your 1st pregnancy? ",  array(NULL=>"", "01" => "01 Boy", "02" => "02 Girl", "88_Refused" => "88 Refused", "99_Do_not_know"=>"99 Do not know", "Not_Answered"=>"Not Answered"));
         $this->XINRegisterRule("q3_16_0", array("q3_16_0{@}=={@}NEVER_REQUIRED"));
         $this->form->addElement('static', null, " $this->indent <b>Record answer, then go to question 3-18 (If Proband, automatic fill)</b>");
         $this->form->addElement('static', null, "<br/>");

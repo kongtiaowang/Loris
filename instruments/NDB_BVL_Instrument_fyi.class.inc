@@ -5,6 +5,8 @@ set_include_path(get_include_path().":../libraries:../../php/libraries:");
 
 class NDB_BVL_Instrument_fyi extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
+
 /*
 INSERT INTO test_names VALUES ('', 'fyi', 'First Year Inventory', '0', '1');
 INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page1', '#1-#46', 1);
@@ -36,7 +38,8 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
     * @access public
     */
 
-    function setup($commentID, $page){
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
+    {
         $this->formType="XIN";
         $this->form = new LorisForm('test_form');
         $this->page = $page;            // page label (number or
@@ -337,7 +340,7 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
         $this->form->addElement("static", null, "Thank you for taking the time to respond to this questionnaire.");
     }
     
-    function score() {
+    function score(): void {
          if($this->_determineDataEntryCompletionStatus() == "Incomplete") {
             return;
          }

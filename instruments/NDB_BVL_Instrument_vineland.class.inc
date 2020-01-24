@@ -5,6 +5,8 @@
 
 class NDB_BVL_Instrument_vineland extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
+
     /**
     * sets up basic data, such as the LorisForm object, and so on.
     *
@@ -422,7 +424,7 @@ class NDB_BVL_Instrument_vineland extends NDB_BVL_Instrument
        * @return void
        * @access private
        */
-      function _saveValues($values)
+      function _saveValues(array $values): void
       {
           $timepoint =& TimePoint::singleton($this->getSessionID());
           $candidate =& Candidate::singleton($timepoint->getCandID());
@@ -695,9 +697,9 @@ $db->_trackChanges = false;
           return $output;
       }
 
-      function _setDefaultsArray($vals) {
-          $vals['Date_taken_display'] = $vals['Date_taken'];
-          return parent::_setDefaultsArray($vals);
+      function _setDefaultsArray(array $defaults): array {
+          $defaults['Date_taken_display'] = $vals['Date_taken'];
+          return parent::_setDefaultsArray($defaults);
       }
     /**
     * Constructs a section (page) of the instrument in a uniform fashion.
@@ -764,7 +766,7 @@ $db->_trackChanges = false;
         }
     }
 
-    function score() {
+    function score(): void {
         $sections = array(
             array('Name' => "REC", 'Items' => 21),
             array('Name' => "EXP", 'Items' => 55),

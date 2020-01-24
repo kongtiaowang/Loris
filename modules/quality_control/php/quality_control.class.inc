@@ -43,6 +43,13 @@ class Quality_Control extends \NDB_Menu_Filter
     }
 
     /**
+     * BEGIN OVERRIDE
+     * 
+     * Function _getScanTypes has been rewritten for IBIS. Refer to IBIS PR#1178
+     * for details on how it differs from the LORIS 20.0 version.
+     */
+
+    /**
      * Checks configuration module to find which scans are relevant
      * to the given project
      *
@@ -105,8 +112,18 @@ class Quality_Control extends \NDB_Menu_Filter
         return $scan_types;
     }
 
+    /**
+     * END OVERRIDE
+     */
 
 
+    /**
+     * BEGIN OVERRIDE
+     * 
+     * Function _buildQuery has been rewritten for IBIS. Refer to IBIS PR#1178
+     * for details on how it differs from the LORIS 20.0 version.
+     */
+     
     /**
      * Builds query for given modality. Works with t1w, t2w, dti.
      *
@@ -253,6 +270,11 @@ class Quality_Control extends \NDB_Menu_Filter
 
         return $query;
     }
+
+    /**
+     * END OVERRIDE
+     */
+
     /**
      * Create a form to filter behavioral QC by various criteria
      *
@@ -372,6 +394,16 @@ class Quality_Control extends \NDB_Menu_Filter
         return true;
     }
     
+
+    /**
+     * BEGIN OVERRIDE
+     * 
+     * New methods _getMriPfTableName, _getMriPfColumnName and _getMriPfDoneValues
+     * for IBIS.
+     * 
+     * See IBIS PR#1178.
+     */
+     
     /**
      * Gets the name of the table where the MRI parameter form info is stored
      * for the given scan type.
@@ -444,6 +476,10 @@ class Quality_Control extends \NDB_Menu_Filter
     }
     
     /**
+     * END OVERRIDE
+     */
+    
+    /**
      * Build a list of imaging QC to display in Data Table
      *
      * @return bool
@@ -455,6 +491,11 @@ class Quality_Control extends \NDB_Menu_Filter
         $db =& \Database::singleton();
         $this->skipTemplate = true;
 
+        /**
+         * BEGIN OVERRIDE
+         * 
+         * Changed the way the MRI PF is parsed for IBIS. Refer to IBIS PR#1178 for details.
+         */
         $scan_types = $this->_getScanTypes();
         foreach ($scan_types as $scan_type) {
             $query_params        = array('scan_type' => $scan_type);
@@ -474,6 +515,10 @@ class Quality_Control extends \NDB_Menu_Filter
                 $mriPfDoneValues
             );
         }
+        
+        /**
+         * END OVERRIDE
+         */
 
         $query = implode(
             "

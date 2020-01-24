@@ -2,8 +2,10 @@
 
 class NDB_BVL_Instrument_tsi_followup extends NDB_BVL_Instrument
 {
-    	var $ValidityEnabled = false;
-    	var $ValidityRequired = false;
+    use LegacyInstrumentTrait;
+
+    var $ValidityEnabled = false;
+    var $ValidityRequired = false;
 
 	var $yesNo = array(null=>"", "yes"=>"Yes", "no"=>"No", "not_answered"=>"Not Answered");
 
@@ -91,7 +93,8 @@ class NDB_BVL_Instrument_tsi_followup extends NDB_BVL_Instrument
 
 
 
-	function setup($commentID, $page){
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
+    {
 		$this->formType="XIN";
 		$this->form = new LorisForm('test_form');
 		$this->page = $page;            // page label (number or
@@ -496,7 +499,7 @@ class NDB_BVL_Instrument_tsi_followup extends NDB_BVL_Instrument
      */
         }
      
-     function score() {
+     function score(): void {
             $db =& Database::singleton();
 
             // Get the item scores

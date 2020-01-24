@@ -26,6 +26,8 @@
 
 class NDB_BVL_Instrument_SRS2_SelfReport_Dad extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
+
     //Commonly used level of indentation;
     var $indent = "&nbsp;&nbsp;&nbsp;&nbsp;";
 
@@ -45,7 +47,7 @@ class NDB_BVL_Instrument_SRS2_SelfReport_Dad extends NDB_BVL_Instrument
                    'other'  => 'Other',
                   );
      /**
-     * Abstract function setup($commentID, $page);
+     * Abstract function setup(?string $commentID = NULL, ?string $page = NULL): void;
      * Sets up basic data, such as the LorisForm object, and so on.
      *
      * @param string $commentID the CommentID identifying the data to load
@@ -54,7 +56,7 @@ class NDB_BVL_Instrument_SRS2_SelfReport_Dad extends NDB_BVL_Instrument
      * @return void
      * @access public
      */
-    function setup($commentID, $page)
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
     {
         $this->formType ="XIN";
         $this->form     = new LorisForm('test_form');
@@ -329,7 +331,7 @@ class NDB_BVL_Instrument_SRS2_SelfReport_Dad extends NDB_BVL_Instrument
      *
      * @return void
      */
-    function getReview()
+    function getReview(): string
     {
         $DB       = Database::singleton();
         $smarty   = new Smarty_neurodb();

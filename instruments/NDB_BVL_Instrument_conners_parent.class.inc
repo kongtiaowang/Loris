@@ -18,7 +18,7 @@
 
 class NDB_BVL_Instrument_conners_parent extends NDB_BVL_Instrument
 {
-
+    use LegacyInstrumentTrait;
     
     var $scoreLabels = array(
         'IN_raw_score',
@@ -41,7 +41,7 @@ class NDB_BVL_Instrument_conners_parent extends NDB_BVL_Instrument
      * @return void
      * @access public
      */
-    function setup($commentID, $page)
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
     {
         $this->formType = 'XIN';
         $this->form     = new LorisForm('conners_parent_form');
@@ -283,7 +283,7 @@ class NDB_BVL_Instrument_conners_parent extends NDB_BVL_Instrument
 		return $errors;
 	}
 // scoring Sruthy
-    function score()
+    function score(): void
     {
         if ($this->_determineDataEntryCompletionStatus() == "Incomplete") {
             return;
@@ -421,7 +421,7 @@ class NDB_BVL_Instrument_conners_parent extends NDB_BVL_Instrument
             echo "T score unavailable...T score is applicable only for ages between 6 to 11";
             echo "\n";
         }
-        $query_gender = "SELECT Gender FROM candidate as c, session as s, flag as f, $this->table as t WHERE t.CommentID = '$this->commentID' 
+        $query_gender = "SELECT Sex FROM candidate as c, session as s, flag as f, $this->table as t WHERE t.CommentID = '$this->commentID' 
 AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $record_gender = $db->pselectRow($query_gender, array());
         if($record_gender['Gender']=='Male')

@@ -3,13 +3,10 @@ namespace LORIS\schedule_module;
 class schedule_module extends \NDB_Page {
     public $skipTemplate = true;
 
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        $user = \User::singleton();
-        if ($user->hasPermission('schedule_module')) {
-            return true;
-        }
-        return false;
+
+        return ($user->hasPermission('schedule_module'));
     }
 
     function getJSDependencies()

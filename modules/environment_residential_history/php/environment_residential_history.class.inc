@@ -34,10 +34,6 @@ class environment_residential_history extends \NDB_Page
      *
      * @return bool whether the user has access
      */
-    function _hasAccess()
-    {
-        return true;
-    }
 
     /**
      * Overrides base getJSDependencies() to add support for dicom specific

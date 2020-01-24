@@ -24,8 +24,8 @@ $name = $val;
 $query = "SELECT ". $test_fields ."  c.IBISID as src_subject_id, s.CenterID as Site, CASE s.SubprojectID 
 WHEN 1 THEN 'NK' WHEN 2 THEN 'NK' WHEN 3 THEN 'NK' WHEN 9 THEN 'NK' WHEN 10 THEN 'NK' 
 END as phenotype, pcp.Value as subjectkey_sibling1, 
-CASE c.ProbandGender WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS sibling_type1, 
-pcc.Value as subjectkey, CASE c.Gender WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS Gender, 
+CASE c.ProbandSex WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS sibling_type1, 
+pcc.Value as subjectkey, CASE c.Sex WHEN 'Male' THEN 'M' WHEN 'Female' THEN 'F' END AS Sex, 
 i.Date_taken as interview_date,ROUND(DATEDIFF(i.Date_taken, c.DoB) / (365/12)) AS interview_age, 
 i.Date_taken,ROUND(DATEDIFF(i.Date_taken, c.ProbandDoB) / (365/12)) 
 AS Proband_Age_in_Months, i.Candidate_race as race, i.child_ethnicity as ethnic_group from candidate c join session s on s.CandID = c.CandID join 

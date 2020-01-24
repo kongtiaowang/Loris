@@ -27,6 +27,8 @@
 
 class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
+
     use instrument_validator;
     var $ValidityEnabled  = false;
     var $ValidityRequired = false;
@@ -39,7 +41,7 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
     * @return void
     * @access public
     */
-    function setup($commentID, $page)
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
     {
         $this->formType ="XIN";
         $this->form     = new LorisForm('mri_parameter_form_sa_form');
@@ -359,7 +361,7 @@ $count=0;
 
         // STRUCTURAL SECTION
         $this->form->addElement('header', null, "<b>Structural</b><BR><BR>");
-        $this->form->addElement('select', 't1w_acquired', "<b>T1w acquired?</b>", array("" => null, "Yes_2" => "Yes (2)", "Yes_1" => "Yes (1)", 'none' => 'None'));
+        $this->form->addElement('select', 't1w_acquired', "<b>T1w acquired?</b>", array("" => null, "Yes_2" => 'At least 2 T1s acquired', "Yes_1" => 'Only one T1 acquired', 'none' => 'No T1 acquired'));
         $this->form->addElement('select', 't1w_num_attempts', "Total number of T1w runs and/or attempts", range(0, 10));
         $this->form->addElement('select', 't2w_acquired', "<b>T2w acquired?</b>", array("" => null, "Yes" => "Yes", "No" => "No"));
         $this->form->addElement('select', 't2w_num_attempts', "Total number of T2w runs and/or attempts", range(0, 10));
@@ -636,6 +638,18 @@ $count=0;
                     $errors['medication_specify'] = "This field should be left blank if the previous field answer is not 'Yes'.";
                 }
             }
+
+            // Validate consistency between t1w_acquired and t1w_num_attempts
+            if ($values['t1w_acquired'] == 'Yes_2' && $values['t1w_num_attempts'] < 2) {
+                $errors['t1w_num_attempts'] =
+                    'Since 2 T1s were acquired, you must select a number of attempts greater or equal to 2';
+            }
+
+            if ($values['t1w_acquired'] == 'Yes_1' && $values['t1w_num_attempts'] < 1) {
+                $errors['t1w_num_attempts'] =
+                    'Since one T1 was acquired, you must select a number of attempts greater or equal to 1';
+            }
+
         return $errors;
     }
     function validate_pages($values)
@@ -700,11 +714,22 @@ $count=0;
                 }
             }
 
+            // Validate consistency between t1w_acquired and t1w_num_attempts
+            if ($values["t1w_acquired_$num"] == 'Yes_2' && $values["t1w_num_attempts_$num"] < 2) {
+                $errors["t1w_num_attempts_$num"] =
+                    'Since 2 T1s were acquired, you must select a number of attempts greater or equal to 2';
+            }
+
+            if ($values["t1w_acquired_$num"] == 'Yes_1' && $values["t1w_num_attempts_$num"] < 1) {
+                $errors["t1w_num_attempts_$num"] =
+                    'Since one T1 was acquired, you must select a number of attempts greater or equal to 1';
+            }
+
 
       return $errors;
     }
     
-    function score() {
+    function score(): void {
         if ($this->_determineDataEntryCompletionStatus() == "Incomplete") { 
             return;
         }
@@ -918,7 +943,7 @@ $count=0;
 
         // STRUCTURAL SECTION
         $this->form->addElement('header', null, "<b>Structural</b><BR><BR>");
-        $this->form->addElement('select', "t1w_acquired_{$i}", "<b>T1w acquired?</b>", array("" => null, "Yes_2" => "Yes (2)", "Yes_1" => "Yes (1)", 'none' => 'None'));
+        $this->form->addElement('select', "t1w_acquired_{$i}", "<b>T1w acquired?</b>", array("" => null, "Yes_2" => 'At least 2 T1s acquired', "Yes_1" => 'Only one T1 acquired', 'none' => 'No T1 acquired'));
         $this->form->addElement('select', "t1w_num_attempts_{$i}", "Total number of T1w runs and/or attempts", range(0, 10));
         $this->form->addElement('select', "t2w_acquired_{$i}", "<b>T2w acquired?</b>", array("" => null, "Yes" => "Yes", "No" => "No"));
         $this->form->addElement('select', "t2w_num_attempts_{$i}", "Total number of T2w runs and/or attempts", range(0, 10));
@@ -1104,7 +1129,7 @@ $count=0;
         $this->form->addElement("header", null, "<b><i>Post-Session</i></b><BR><BR>");
         $this->form->addElement("select", "overall_success_{$i}", "<b>Overall Scan Success</b> - to be completed following final scan session", array("" => null, "complete_protocol_acquired" => "Complete protocol acquired", "partial_protocol_acquired" => "Partial protocol acquired", "acquired_but_possibly_not_usable" => "Complete/partial acquired but may not be usable", "none_of_protocol_acquired" => "None of protocol acquired"));
         $this->form->addElement("select", "if_none_partial_unusable_{$i}", "<i>If none/partial/unusable:</i>", array("" => null, "unable_to_stay_still" => "Subject unable to stay still", "subject_refused" => "Subject refused", "family_canceled" => "Family canceled", "out_of_time" => "Ran out of time", "scanner_issues" => "Scanner issues", "family_declined" => "Family declined second attempt"));
-        $this->XINRegisterRule("if_none_partial_unusable_{$i}", array("overall_success{@}!={@}complete_protocol_acquired"), "Required if complete protocol was not acquired");
+        $this->XINRegisterRule("if_none_partial_unusable_{$i}", array("overall_success_$i{@}!={@}complete_protocol_acquired"), "Required if complete protocol was not acquired");
 
         $this->form->addFormRule(array(&$this, "validate_pages"));
         //$this->form->addFormRule(array(&$this, 'XINValidate'));

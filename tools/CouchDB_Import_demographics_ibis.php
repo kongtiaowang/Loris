@@ -173,7 +173,7 @@ class CouchDBDemographicsImporter {
                                    WHEN (dsm.q4_criteria_autistic_disorder = 'yes' || dsm.q4_criteria_PDD ='yes') THEN 'YES (DSM_IV questions 4a/4b is Yes)'  
                                  END                                                         AS DX_Subgroups, 
                                  p.alias                                                     AS Site, 
-                                 c.Gender, 
+                                 c.Sex, 
                                  s.Current_stage, 
                                  ROUND(DATEDIFF(s.Date_visit, c.DoB) / (365/12))             AS Age_at_visit_start,
                                  s.Scan_done                                                 AS Scan_done,                                    
@@ -217,7 +217,7 @@ class CouchDBDemographicsImporter {
 
         // If proband fields are being used, add proband information into the query
         if ($config->getSetting("useProband") === "true") {
-            $probandFields = ", c.ProbandGender as Gender_proband, ROUND(DATEDIFF(c.DoB, c.ProbandDoB) / (365/12)) AS Age_difference";
+            $probandFields = ", c.ProbandSex as Gender_proband, ROUND(DATEDIFF(c.DoB, c.ProbandDoB) / (365/12)) AS Age_difference";
             $fieldsInQuery .= $probandFields;
         }
         // If expected date of confinement is being used, add EDC information into the query

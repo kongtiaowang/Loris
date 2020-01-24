@@ -22,6 +22,8 @@
  */
 class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
+
     use instrument_validator;
     /**
      * Sample SQL statement for test_names table and instrument subtests table
@@ -40,7 +42,7 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
      * @return void
      * @access public
      */
-    function setup($commentID, $page)
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
     {
         $this->formType = "XIN";
         $this->form     = new LorisForm('BOT2_Short_form');
@@ -894,7 +896,7 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
         $this->form->addFormRule(array(&$this, 'bot2_short_special_rules'));
     }
 
-    function score()
+    function score(): void
     {
         if ($this->_determineDataEntryCompletionStatus() == "Incomplete") {
             return;

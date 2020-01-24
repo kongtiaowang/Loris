@@ -5,6 +5,8 @@
 
 class NDB_BVL_Instrument_macarthur_words_gestures extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
+
     /*
     INSERT INTO test_names VALUES ('', 'macarthur_words_gestures', 'MacArthur CDI - Words & Gestures', '0', '1');
     INSERT INTO instrument_subtests VALUES('', 'macarthur_words_gestures', 'macarthur_words_gestures_page1', 'Part I', 1);
@@ -66,7 +68,8 @@ class NDB_BVL_Instrument_macarthur_words_gestures extends NDB_BVL_Instrument
     * @return void
     * @access public
     */
-    function setup($commentID, $page){
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
+    {
         $this->formType="XIN";
         $this->form = new LorisForm('test_form');
         $this->page = $page;            // page label (number or
@@ -316,7 +319,7 @@ class NDB_BVL_Instrument_macarthur_words_gestures extends NDB_BVL_Instrument
         }
     }
 
-    function score() {
+    function score(): void {
         if($this->_determineDataEntryCompletionStatus() == "Incomplete") {
             return;
         }
@@ -330,8 +333,8 @@ class NDB_BVL_Instrument_macarthur_words_gestures extends NDB_BVL_Instrument
 
         $record = $db->pselectRow("SELECT * FROM $this->table WHERE CommentID=:cid",array("cid" =>$this->getCommentID() ));
 
-        // Get gender   
-        $query_gender = "SELECT Gender FROM candidate as c, session as s, flag as f, $this->table as t WHERE t.CommentID = '$this->commentID' 
+        // Get Sex
+        $query_gender = "SELECT Sex FROM candidate as c, session as s, flag as f, $this->table as t WHERE t.CommentID = '$this->commentID' 
 AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $record_gender = $db->pselectRow($query_gender, array());
         $gender=strtolower($record_gender['Gender']);

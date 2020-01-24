@@ -16,7 +16,8 @@ INSERT INTO test_battery VALUES ('', 'head_measurements_proband', '1050', '1140'
     * @return void
     * @access public
     */
-    function setup($commentID, $page){
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
+    {
         // set the object properties
         $this->testName = "head_measurements_proband";           // test_names.Test_name
         $this->table = 'head_measurements_proband';              // name of database table corresponding to instrument

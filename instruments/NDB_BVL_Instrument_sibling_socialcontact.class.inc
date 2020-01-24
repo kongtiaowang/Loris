@@ -5,6 +5,8 @@
 
 class NDB_BVL_Instrument_sibling_socialcontact extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
+
     var $ValidityEnabled = false;
     var $ValidityRequired = false;
 
@@ -21,7 +23,7 @@ class NDB_BVL_Instrument_sibling_socialcontact extends NDB_BVL_Instrument
                           'refused_dontknow'=>"Refused/I Don't Know");
     var $rating2 = array(''=>NULL,'very_well'=>'Very Well','okay'=>'Okay','not_very_well'=>'Not very well',
                          'refused_dontknow'=>"Refused/I Don't Know");
-    //abstract function setup($commentID, $page);
+    //abstract function setup(?string $commentID = NULL, ?string $page = NULL): void;
     /**
      * sets up basic data, such as the LorisForm object, and so on.
      *
@@ -30,7 +32,8 @@ class NDB_BVL_Instrument_sibling_socialcontact extends NDB_BVL_Instrument
      * @return void
      * @access public
      */
-    function setup($commentID, $page){
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
+    {
         $this->formType="XIN";
         $this->form = new LorisForm('test_form');
         $this->page = $page;            // page label (number or
@@ -207,7 +210,8 @@ class NDB_BVL_Instrument_sibling_socialcontact extends NDB_BVL_Instrument
 //print_r($errors);
         return $errors;
     }
-    function getReview() {
+    function getReview(): string
+    {
         $DB = Database::singleton();
         $smarty = new Smarty_neurodb();
         $tpl_data = array();

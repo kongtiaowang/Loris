@@ -1,11 +1,11 @@
-import Modal from "./Modal";
-import {Api} from "./Api";
-import {FilterForm} from "./FilterForm";
-import {EditForm} from "./EditForm";
-import {debounce} from "lodash";
+import Modal from './Modal';
+import {Api} from './Api';
+import {FilterForm} from './FilterForm';
+import {EditForm} from './EditForm';
+import {debounce} from 'lodash';
 
 function download(filename, text) {
-    var element = document.createElement('a');
+    let element = document.createElement('a');
     element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
     element.setAttribute('download', filename);
 
@@ -17,43 +17,43 @@ function download(filename, text) {
     document.body.removeChild(element);
 }
 
-function deriveDataEntryLabelColor (a) {
+function deriveDataEntryLabelColor(a) {
     switch (a.dataEntryStatus) {
-        case "Upcoming": {
-            return "default";
+        case 'Upcoming': {
+            return 'default';
         }
-        case "In Progress": {
-            return "warning";
+        case 'In Progress': {
+            return 'warning';
         }
-        case "Complete": {
-            return "success";
+        case 'Complete': {
+            return 'success';
         }
-        case "Not Started": {
-            return "warning";
+        case 'Not Started': {
+            return 'warning';
         }
-        case "No Data Found":
+        case 'No Data Found':
         default: {
-            return "danger";
+            return 'danger';
         }
     }
 }
-function deriveDataEntryStatus (a) {
+function deriveDataEntryStatus(a) {
     return {
-        dataEntryStatus : a.dataEntryStatus,
-        dataEntryLabelColor : deriveDataEntryLabelColor(a),
+        dataEntryStatus: a.dataEntryStatus,
+        dataEntryLabelColor: deriveDataEntryLabelColor(a),
     };
 }
 
 const today = new Date();
 const yesterday = new Date(today.getTime() - 24*60*60*1000);
 const next30days = new Date(today.getTime() + 30 * 24*60*60*1000);
-function zeroPad (str, length=2) {
+function zeroPad(str, length=2) {
     if (str.length >= length) {
         return str;
     }
-    return "0".repeat(length-str.length) + str;
+    return '0'.repeat(length-str.length) + str;
 }
-function toDateString (date) {
+function toDateString(date) {
     const y = date.getFullYear();
     const m = zeroPad((date.getMonth()+1).toString());
     const d = zeroPad(date.getDate().toString());
@@ -61,105 +61,105 @@ function toDateString (date) {
 }
 const tabs = [
     {
-        label : "All",
-        filters : {}
+        label: 'All',
+        filters: {},
     },
     {
-        label : "Past",
-        filters : {
-            StartDateMax : toDateString(yesterday)
-        }
+        label: 'Past',
+        filters: {
+            StartDateMax: toDateString(yesterday),
+        },
     },
     {
-        label : "Next 30 Days",
-        filters : {
-            StartDateMin : toDateString(today),
-            StartDateMax : toDateString(next30days)
-        }
+        label: 'Next 30 Days',
+        filters: {
+            StartDateMin: toDateString(today),
+            StartDateMax: toDateString(next30days),
+        },
     },
 ];
 
 export class App extends React.Component {
-    constructor () {
+    constructor() {
         super();
         this.state = {
-            candId : "",
-            pscId : "",
-            centerId : "",
-            appointmentTypeId : "",
-            startsAt : "",
-            seen : "0",
-            visitLabel : "",
-            sites : [],
-            visitLabels : [],
+            candId: '',
+            pscId: '',
+            centerId: '',
+            appointmentTypeId: '',
+            startsAt: '',
+            seen: '0',
+            visitLabel: '',
+            sites: [],
+            visitLabels: [],
             appointmentTypes: [],
-            open : {
-                createAppointmentForm : false,
-                editAppointmentForm : false,
+            open: {
+                createAppointmentForm: false,
+                editAppointmentForm: false,
             },
-            tabIndex : 0,
-            lockTabs : false,
-            sessionId : -1,
-            sessionsOfCandidate : {
-                candId : "",
-                pscId : "",
-                sessions : [],
+            tabIndex: 0,
+            lockTabs: false,
+            sessionId: -1,
+            sessionsOfCandidate: {
+                candId: '',
+                pscId: '',
+                sessions: [],
             },
-            fetchSessionsOfCandidateError : undefined,
-            desiredItemsPerPage : "20",
-            desiredPage : "0",
-            page : {
-                data : [],
-                meta : {
-                    page : -1,
-                    itemsPerPage : -1,
-                    itemsFound : -1,
-                    pagesFound : -1,
+            fetchSessionsOfCandidateError: undefined,
+            desiredItemsPerPage: '20',
+            desiredPage: '0',
+            page: {
+                data: [],
+                meta: {
+                    page: -1,
+                    itemsPerPage: -1,
+                    itemsFound: -1,
+                    pagesFound: -1,
                 },
             },
-            sortOrder: "ASC",
-            sortColumn: "PSCID",
+            sortOrder: 'ASC',
+            sortColumn: 'PSCID',
         };
 
         this.openAppointmentForm = () => {
             this.setState({
-                open : Object.assign(
+                open: Object.assign(
                     {},
                     this.state.open,
                     {
-                        createAppointmentForm : true
+                        createAppointmentForm: true,
                     }
-                )
+                ),
             });
         };
         this.closeAppointmentForm = () => {
             this.setState({
-                open : Object.assign(
+                open: Object.assign(
                     {},
                     this.state.open,
                     {
-                        createAppointmentForm : false
+                        createAppointmentForm: false,
                     }
-                )
+                ),
             });
             this.clearForm();
         };
         this.closeEditForm = () => {
             this.setState({
-                open : Object.assign(
+                open: Object.assign(
                     {},
                     this.state.open,
                     {
-                        editAppointmentForm : false
+                        editAppointmentForm: false,
                     }
-                )
+                ),
             });
         };
         this.downloadAsCSV = () => {
             Api.fetchAppointments(Object.assign(
                 {
-                    itemsPerPage : Number.MAX_SAFE_INTEGER,
-                    page : 0,
+                    itemsPerPage: Number.MAX_SAFE_INTEGER,
+                    page: 0,
                 },
                 (
                     (this.state.lockTabs && this.state.searchFilters != undefined) ?
@@ -173,7 +173,7 @@ export class App extends React.Component {
 
         this.convertToCSV = (page) => {
             const quote = (str) => {
-                if (str.indexOf(`"`) > 0 || str.indexOf(",") > 0) {
+                if (str.indexOf(`"`) > 0 || str.indexOf(',') > 0) {
                     str = str.replace(/\"/g, `""`);
                     return `"${str}"`;
                 } else {
@@ -182,21 +182,21 @@ export class App extends React.Component {
             };
             const csv = [];
             const line = [
-                "DCCID",
-                "PSCID",
-                "Site",
-                "Visit Label",
-                "Subproject",
-                "Starts At",
-                "Appointment Type",
-                "Data Entry Status",
+                'DCCID',
+                'PSCID',
+                'Site',
+                'Visit Label',
+                'Subproject',
+                'Starts At',
+                'Appointment Type',
+                'Data Entry Status',
             ];
-            csv.push(line.map(quote).join(","));
+            csv.push(line.map(quote).join(','));
 
             for (const row of page.data) {
-                const site = this.state.sites.find(item => item.CenterID == row.CenterID);
+                const site = this.state.sites.find((item) => item.CenterID == row.CenterID);
                 const appointmentType = this.state.appointmentTypes
-                    .find(item => item.AppointmentTypeID == row.AppointmentTypeID);
+                    .find((item) => item.AppointmentTypeID == row.AppointmentTypeID);
 
                 const {
                     dataEntryStatus,
@@ -211,76 +211,76 @@ export class App extends React.Component {
                     appointmentType.Name,
                     dataEntryStatus,
                 ];
-                csv.push(line.map(quote).join(","));
+                csv.push(line.map(quote).join(','));
             }
 
             const today = new Date();
-            const date = today.getFullYear() + "-" +(today.getMonth()+1) + "-" + today.getDate();
-            const time = today.getHours() + "_" + today.getMinutes() + "_" + today.getSeconds();
-            const datetime = date + "-" + time;
+            const date = today.getFullYear() + '-' +(today.getMonth()+1) + '-' + today.getDate();
+            const time = today.getHours() + '_' + today.getMinutes() + '_' + today.getSeconds();
+            const datetime = date + '-' + time;
 
-            download("appointments-" + datetime + ".csv", csv.join("\n"));
+            download('appointments-' + datetime + '.csv', csv.join('\n'));
         };
 
         this.fetchSessionsOfCandidate = debounce(() => {
             const candId = this.state.candId;
-            const pscId  = this.state.pscId;
+            const pscId = this.state.pscId;
 
-            //Clear the error state
+            // Clear the error state
             this.setState({
-                fetchSessionsOfCandidateError : undefined,
+                fetchSessionsOfCandidateError: undefined,
             });
 
-            //If we're fetching the sessions of a different candidate,
-            //discard the fetched sessions
+            // If we're fetching the sessions of a different candidate,
+            // discard the fetched sessions
             if (
                 this.state.sessionsOfCandidate.candId != candId ||
                 this.state.sessionsOfCandidate.pscId != pscId
             ) {
                 this.setState({
-                    sessionId : -1,
-                    sessionsOfCandidate : {
-                        candId : candId,
-                        pscId : pscId,
-                        sessions : [],
+                    sessionId: -1,
+                    sessionsOfCandidate: {
+                        candId: candId,
+                        pscId: pscId,
+                        sessions: [],
                     },
                 });
             }
-            if (candId == "" || pscId == "") {
-                //No input yet
+            if (candId == '' || pscId == '') {
+                // No input yet
                 return;
             }
 
-            //Fetch the sessions
+            // Fetch the sessions
             Api.fetchSessionsOfCandidate(candId, pscId)
                 .then((result) => {
                     console.log(result);
                     if (result.status != 200) {
                         this.setState({
-                            fetchSessionsOfCandidateError : (typeof result.json.error == "string") ?
+                            fetchSessionsOfCandidateError: (typeof result.json.error == 'string') ?
                                 result.json.error :
-                                "An unknown error occurred",
+                                'An unknown error occurred',
                         });
                         return;
                     }
                     if (this.state.candId != candId || this.state.pscId != pscId) {
-                        //The user typed in something else,
-                        //and we just fetched the sessions of the previously entered candId.
-                        //So, ignore this result.
+                        // The user typed in something else,
+                        // and we just fetched the sessions of the previously entered candId.
+                        // So, ignore this result.
                         return;
                     }
                     this.setState({
-                        sessionId : -1,
-                        sessionsOfCandidate : {
-                            candId : candId,
-                            pscId : pscId,
-                            sessions : result.json,
+                        sessionId: -1,
+                        sessionsOfCandidate: {
+                            candId: candId,
+                            pscId: pscId,
+                            sessions: result.json,
                         },
                     });
                 })
                 .catch((err) => {
                     this.setState({
-                        fetchSessionsOfCandidateError : err.message,
+                        fetchSessionsOfCandidateError: err.message,
                     });
                 });
         }, 500);
@@ -290,97 +290,97 @@ export class App extends React.Component {
         }, 500);
     }
 
-    openEditForm () {
+    openEditForm() {
             let open = this.state.open;
             open.editAppointmentForm = true;
             this.setState({
-                open : open
+                open: open,
             });
     }
 
-    setCurrAppointment (a) {
+    setCurrAppointment(a) {
             let currAppointment = this.state.currAppointment;
             currAppointment = a;
             this.setState({currAppointment});
     }
 
-    clearForm () {
+    clearForm() {
         this.setState({
-            candId : "",
-            pscId : "",
-            centerId : "",
-            appointmentTypeId : "",
-            startDate : "",
-            startTime : "",
-            seen : "0",
-            visitLabel : "",
-            sessionId : -1,
-            sessionsOfCandidate : {
-                candId : "",
-                pscId : "",
-                sessions : [],
+            candId: '',
+            pscId: '',
+            centerId: '',
+            appointmentTypeId: '',
+            startDate: '',
+            startTime: '',
+            seen: '0',
+            visitLabel: '',
+            sessionId: -1,
+            sessionsOfCandidate: {
+                candId: '',
+                pscId: '',
+                sessions: [],
             },
-            fetchSessionsOfCandidateError : undefined,
+            fetchSessionsOfCandidateError: undefined,
         });
     }
 
-    createAppointment () {
+    createAppointment() {
         const body = [
-            "CandID=" + encodeURIComponent(this.state.candId),
-            "PSCID=" + encodeURIComponent(this.state.pscId),
-            "SessionID=" + (
+            'CandID=' + encodeURIComponent(this.state.candId),
+            'PSCID=' + encodeURIComponent(this.state.pscId),
+            'SessionID=' + (
                 this.state.sessionId > 0 ?
                     encodeURIComponent(this.state.sessionId) :
-                    ""
+                    ''
             ),
-            "AppointmentTypeID=" + encodeURIComponent(this.state.appointmentTypeId),
-            "StartsAt=" + (
+            'AppointmentTypeID=' + encodeURIComponent(this.state.appointmentTypeId),
+            'StartsAt=' + (
                 (
                     /^\d{4,6}\-\d{2}\-\d{2}$/.test(this.state.startDate) &&
                     /^\d{2}\:\d{2}$/.test(this.state.startTime)
                 ) ?
                     encodeURIComponent(
                         this.state.startDate +
-                        " " +
+                        ' ' +
                         this.state.startTime +
-                        ":00"
+                        ':00'
                     ) :
-                    ""
+                    ''
             ),
-        ].join("&");
+        ].join('&');
         return fetch(
-            "/schedule_module/ajax/create_appointment.php",
+            '/schedule_module/ajax/create_appointment.php',
             {
-                credentials : "include",
-                method : "POST",
-                body : body,
-                headers : { "Content-Type":"application/x-www-form-urlencoded" }
+                credentials: 'include',
+                method: 'POST',
+                body: body,
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
             }
         ).then((res) => {
             return res.json()
                 .then((data) => {
                     return {
-                        status : res.status,
-                        data : data,
+                        status: res.status,
+                        data: data,
                     };
                 });
         }).then((result) => {
             if (result.status == 200) {
                 this.setState({
-                    page : Object.assign(
+                    page: Object.assign(
                         {},
                         this.state.page,
                         {
-                            data : this.state.page.data.concat(result.data),
-                            meta : Object.assign(
+                            data: this.state.page.data.concat(result.data),
+                            meta: Object.assign(
                                 {},
                                 this.state.page.meta,
                                 {
-                                    itemsFound : Number(this.state.page.meta.itemsFound)+1,
+                                    itemsFound: Number(this.state.page.meta.itemsFound)+1,
                                 }
                             ),
                         }
-                    )
+                    ),
                 });
             } else {
                 throw new Error(result.data.error);
@@ -388,65 +388,65 @@ export class App extends React.Component {
         });
     }
 
-    fetchPage () {
+    fetchPage() {
         Api.getOrFetchSites()
             .then((data) => {
                 this.setState({
-                    sites : data
+                    sites: data,
                 });
             });
         Api.getOrFetchVisitLabels()
             .then((data) => {
                 this.setState({
-                    visitLabels : data
+                    visitLabels: data,
                 });
             });
         Api.getOrFetchAppointmentTypes()
             .then((data) => {
                 this.setState({
-                    appointmentTypes : data
+                    appointmentTypes: data,
                 });
             });
     }
 
-    fetchTab (tabIndex) {
+    fetchTab(tabIndex) {
         if (tabIndex == undefined) {
             tabIndex = this.state.tabIndex;
         }
         if (this.state.lockTabs && this.state.searchFilters != undefined) {
             Api.fetchAppointments(Object.assign(
                 {
-                    itemsPerPage : parseInt(this.state.desiredItemsPerPage),
-                    page : parseInt(this.state.desiredPage),
-                    sortColumn : this.state.sortColumn,
-                    sortOrder : this.state.sortOrder,
+                    itemsPerPage: parseInt(this.state.desiredItemsPerPage),
+                    page: parseInt(this.state.desiredPage),
+                    sortColumn: this.state.sortColumn,
+                    sortOrder: this.state.sortOrder,
                 },
                 this.state.searchFilters
             ))
                 .then((page) => {
                     this.setState({
-                        page : page
+                        page: page,
                     });
                 });
             return;
         }
         Api.fetchAppointments(Object.assign(
             {
-                itemsPerPage : parseInt(this.state.desiredItemsPerPage),
-                page : parseInt(this.state.desiredPage),
-                sortColumn : this.state.sortColumn,
-                sortOrder : this.state.sortOrder,
+                itemsPerPage: parseInt(this.state.desiredItemsPerPage),
+                page: parseInt(this.state.desiredPage),
+                sortColumn: this.state.sortColumn,
+                sortOrder: this.state.sortOrder,
             },
             tabs[tabIndex].filters
         ))
             .then((page) => {
                 this.setState({
-                    page : page
+                    page: page,
                 });
             });
     }
 
-    componentDidMount () {
+    componentDidMount() {
         this.fetchPage();
         this.fetchTab();
     }
@@ -474,7 +474,7 @@ export class App extends React.Component {
                         <br/>
                         <input className="form-control" type="text" name="candId" defaultValue={this.state.candId} onChange={(e) => {
                             this.setState({
-                                candId : e.target.value
+                                candId: e.target.value,
                             });
                             this.fetchSessionsOfCandidate();
                         }}/>
@@ -484,7 +484,7 @@ export class App extends React.Component {
                         <br/>
                         <input className="form-control" type="text" name="pscId" defaultValue={this.state.pscId} onChange={(e) => {
                             this.setState({
-                                pscId : e.target.value
+                                pscId: e.target.value,
                             });
                             this.fetchSessionsOfCandidate();
                         }}/>
@@ -504,7 +504,7 @@ export class App extends React.Component {
                         <br/>
                         <input className="form-control" type="date" defaultValue={this.state.startDate} onChange={(e) => {
                         this.setState({
-                            startDate : e.target.value
+                            startDate: e.target.value,
                         });
                         }}/>
                     </div>
@@ -513,7 +513,7 @@ export class App extends React.Component {
                         <br/>
                         <input className="form-control" type="time" defaultValue={this.state.startTime} onChange={(e) => {
                         this.setState({
-                            startTime : e.target.value
+                            startTime: e.target.value,
                         });
                         }}/>
                     </div>
@@ -526,7 +526,7 @@ export class App extends React.Component {
                         <br/>
                         <select className="form-control" defaultValue={this.state.sessionId} onChange={(e) => {
                             this.setState({
-                                sessionId : e.target.value
+                                sessionId: e.target.value,
                             });
                         }}>
                         <option value="">- Select a Session -</option>
@@ -544,7 +544,7 @@ export class App extends React.Component {
                         <br/>
                         <select className="form-control" defaultValue={this.state.appointmentTypeId} onChange={(e) => {
                         this.setState({
-                            appointmentTypeId : e.target.value
+                            appointmentTypeId: e.target.value,
                         });
                         }}>
                         <option value="">- Select an Appointment Type -</option>
@@ -563,11 +563,11 @@ export class App extends React.Component {
                     <button className="btn btn-primary" onClick={() => {
                         this.createAppointment()
                             .then(() => {
-                                swal("Success!", "Appointment created!", "success");
+                                swal('Success!', 'Appointment created!', 'success');
                                 this.closeAppointmentForm();
                             })
                             .catch((err) => {
-                                swal("Unable to create appointment", err.message, "error");
+                                swal('Unable to create appointment', err.message, 'error');
                             });
                     }}>
                         Create
@@ -590,27 +590,27 @@ export class App extends React.Component {
                         appointment={this.state.currAppointment}
                         onEdit={(edited) => {
                             const appointments = this.state.page.data.slice();
-                            const index = appointments.findIndex(item => item.AppointmentID == edited.AppointmentID);
+                            const index = appointments.findIndex((item) => item.AppointmentID == edited.AppointmentID);
                             appointments[index] = edited;
                             this.setState({
-                                page : Object.assign(
+                                page: Object.assign(
                                     {},
                                     this.state.page,
                                     {
-                                        data : appointments
+                                        data: appointments,
                                     }
                                 ),
-                                toEdit : undefined,
+                                toEdit: undefined,
                             });
-                            swal("Success!", "Appointment updated!", "success");
+                            swal('Success!', 'Appointment updated!', 'success');
                             this.closeEditForm();
                         }}
                         onError={(err) => {
-                            swal("Unable to edit appointment", err.message, "error");
+                            swal('Unable to edit appointment', err.message, 'error');
                         }}
                         onCancel={() => {
                             this.setState({
-                                toEdit : undefined,
+                                toEdit: undefined,
                             });
                             this.closeEditForm();
                         }}
@@ -619,52 +619,52 @@ export class App extends React.Component {
             </div>
         );
 
-        return(
+        return (
             <div>
                 <FilterForm
                     onApply={(filters) => {
                         this.setState({
-                            tabIndex : 0,
-                            lockTabs : true,
-                            searchFilters : filters,
+                            tabIndex: 0,
+                            lockTabs: true,
+                            searchFilters: filters,
                         });
                         Api.fetchAppointments(Object.assign(
                             {
-                                itemsPerPage : parseInt(this.state.desiredItemsPerPage),
-                                page : parseInt(this.state.desiredPage),
-                                sortColumn : this.state.sortColumn,
-                                sortOrder : this.state.sortOrder,
+                                itemsPerPage: parseInt(this.state.desiredItemsPerPage),
+                                page: parseInt(this.state.desiredPage),
+                                sortColumn: this.state.sortColumn,
+                                sortOrder: this.state.sortOrder,
                             },
                             filters
                         )).then((page) => {
                             this.setState({
-                                page : page
+                                page: page,
                             });
                         });
                     }}
                     onClear={() => {
                         this.setState({
-                            lockTabs : false,
-                            searchFilters : undefined,
+                            lockTabs: false,
+                            searchFilters: undefined,
                         });
                         setTimeout(() => {
                             this.fetchTab();
                         }, 1);
                     }}
                 />
-                <h style={{margin : "10px"}}>
+                <h style={{margin: '10px'}}>
                 {createAppointmentButton}
                 </h>
                 <br/>
-                <ul className="nav nav-tabs" style={{marginTop : "10px", marginBottom : "10px", marginLeft: "0px"}}>
+                <ul className="nav nav-tabs" style={{marginTop: '10px', marginBottom: '10px', marginLeft: '0px'}}>
                     {
                         /* Map the tabs array to jsx element (makes new array; old array + new info) */
                         tabs.map((tab, index) => (
                             /* Set tab label to element key + if current tab is selected tab, set to active (this gives the appearance of being on a certain tab on the front end*/
                             <li key={tab.label} className={[
-                                    (!this.state.lockTabs && this.state.tabIndex == index) ? "active" : "",
-                                    (this.state.lockTabs) ? "disabled" : ""
-                            ].join(" ")}>
+                                    (!this.state.lockTabs && this.state.tabIndex == index) ? 'active' : '',
+                                    (this.state.lockTabs) ? 'disabled' : '',
+                            ].join(' ')}>
                                 {/* preventDefault prevents nagivation to a new page */}
                                 <a href="#/" onClick={(e) => {
                                     e.preventDefault();
@@ -673,20 +673,20 @@ export class App extends React.Component {
                                     }
                                     /* (Don't do this when disabling) Change current tab to tab that was clicked, fetch corresponding data */
                                     this.setState({
-                                        tabIndex : index
+                                        tabIndex: index,
                                     });
                                     this.fetchTab(index);
                                 }}>
                                     {/* Renders the tab name */}
                                     {tab.label} &nbsp;
 
-				    {
-					(!this.state.lockTabs && this.state.tabIndex == index) ?
-					<span className="badge">
-						{this.state.page.meta.itemsFound}
+{
+(!this.state.lockTabs && this.state.tabIndex == index) ?
+<span className="badge">
+{this.state.page.meta.itemsFound}
                     </span> :
-					undefined
-				    }
+undefined
+}
                                 </a>
                             </li>
                         ))
@@ -699,7 +699,7 @@ export class App extends React.Component {
                             }}>
                                 Search Results &nbsp;
                                 <span className="badge">
-				                    {this.state.page.meta.itemsFound}
+{this.state.page.meta.itemsFound}
                                 </span>
                             </a>
                         </li> :
@@ -708,18 +708,18 @@ export class App extends React.Component {
                 </ul>
                 <div className="table-responsive">
                     <table className="table table-striped table-hover">
-                        <thead style={{backgroundColor : "#064785"}}>
+                        <thead style={{backgroundColor: '#064785'}}>
                             <tr>
                                 <th>
                                     <button className="column-header" onClick={() => {
                                         this.setState({
-                                            sortColumn : "CandID",
-                                            sortOrder : (
-                                                this.state.sortColumn == "CandID" &&
-                                                this.state.sortOrder == "ASC"
+                                            sortColumn: 'CandID',
+                                            sortOrder: (
+                                                this.state.sortColumn == 'CandID' &&
+                                                this.state.sortOrder == 'ASC'
                                             ) ?
-                                                "DESC" :
-                                                "ASC"
+                                                'DESC' :
+                                                'ASC',
                                         });
                                         setTimeout(() => {
                                             this.fetchTab();
@@ -727,9 +727,9 @@ export class App extends React.Component {
                                     }}>
                                         DCCID
                                         {
-                                            (this.state.sortColumn == "CandID") ?
+                                            (this.state.sortColumn == 'CandID') ?
                                             <span className={
-                                                this.state.sortOrder == "DESC" ?
+                                                this.state.sortOrder == 'DESC' ?
                                                 'glyphicon glyphicon-triangle-bottom' :
                                                 'glyphicon glyphicon-triangle-top'
                                             }/> :
@@ -740,13 +740,13 @@ export class App extends React.Component {
                                 <th>
                                     <button className="column-header" onClick={() => {
                                         this.setState({
-                                            sortColumn : "PSCID",
-                                            sortOrder : (
-                                                this.state.sortColumn == "PSCID" &&
-                                                this.state.sortOrder == "ASC"
+                                            sortColumn: 'PSCID',
+                                            sortOrder: (
+                                                this.state.sortColumn == 'PSCID' &&
+                                                this.state.sortOrder == 'ASC'
                                             ) ?
-                                                "DESC" :
-                                                "ASC"
+                                                'DESC' :
+                                                'ASC',
                                         });
                                         setTimeout(() => {
                                             this.fetchTab();
@@ -754,9 +754,9 @@ export class App extends React.Component {
                                     }}>
                                         PSCID
                                         {
-                                            (this.state.sortColumn == "PSCID") ?
+                                            (this.state.sortColumn == 'PSCID') ?
                                             <span className={
-                                                this.state.sortOrder == "DESC" ?
+                                                this.state.sortOrder == 'DESC' ?
                                                 'glyphicon glyphicon-triangle-bottom' :
                                                 'glyphicon glyphicon-triangle-top'
                                             }/> :
@@ -767,13 +767,13 @@ export class App extends React.Component {
                                 <th>
                                     <button className="column-header" onClick={() => {
                                         this.setState({
-                                            sortColumn : "Name",
-                                            sortOrder : (
-                                                this.state.sortColumn == "Name" &&
-                                                this.state.sortOrder == "ASC"
+                                            sortColumn: 'Name',
+                                            sortOrder: (
+                                                this.state.sortColumn == 'Name' &&
+                                                this.state.sortOrder == 'ASC'
                                             ) ?
-                                                "DESC" :
-                                                "ASC"
+                                                'DESC' :
+                                                'ASC',
                                         });
                                         setTimeout(() => {
                                             this.fetchTab();
@@ -781,9 +781,9 @@ export class App extends React.Component {
                                     }}>
                                         Site
                                         {
-                                            (this.state.sortColumn == "Name") ?
+                                            (this.state.sortColumn == 'Name') ?
                                             <span className={
-                                                this.state.sortOrder == "DESC" ?
+                                                this.state.sortOrder == 'DESC' ?
                                                 'glyphicon glyphicon-triangle-bottom' :
                                                 'glyphicon glyphicon-triangle-top'
                                             }/> :
@@ -794,13 +794,13 @@ export class App extends React.Component {
                                 <th>
                                     <button className="column-header" onClick={() => {
                                         this.setState({
-                                            sortColumn : "Visit_label",
-                                            sortOrder : (
-                                                this.state.sortColumn == "Visit_label" &&
-                                                this.state.sortOrder == "ASC"
+                                            sortColumn: 'Visit_label',
+                                            sortOrder: (
+                                                this.state.sortColumn == 'Visit_label' &&
+                                                this.state.sortOrder == 'ASC'
                                             ) ?
-                                                "DESC" :
-                                                "ASC"
+                                                'DESC' :
+                                                'ASC',
                                         });
                                         setTimeout(() => {
                                             this.fetchTab();
@@ -808,9 +808,9 @@ export class App extends React.Component {
                                     }}>
                                         Visit Label
                                         {
-                                            (this.state.sortColumn == "Visit_label") ?
+                                            (this.state.sortColumn == 'Visit_label') ?
                                             <span className={
-                                                this.state.sortOrder == "DESC" ?
+                                                this.state.sortOrder == 'DESC' ?
                                                 'glyphicon glyphicon-triangle-bottom' :
                                                 'glyphicon glyphicon-triangle-top'
                                             }/> :
@@ -821,13 +821,13 @@ export class App extends React.Component {
                                 <th>
                                     <button className="column-header" onClick={() => {
                                         this.setState({
-                                            sortColumn : "title",
-                                            sortOrder : (
-                                                this.state.sortColumn == "title" &&
-                                                this.state.sortOrder == "ASC"
+                                            sortColumn: 'title',
+                                            sortOrder: (
+                                                this.state.sortColumn == 'title' &&
+                                                this.state.sortOrder == 'ASC'
                                             ) ?
-                                                "DESC" :
-                                                "ASC"
+                                                'DESC' :
+                                                'ASC',
                                         });
                                         setTimeout(() => {
                                             this.fetchTab();
@@ -835,9 +835,9 @@ export class App extends React.Component {
                                     }}>
                                         Subproject
                                         {
-                                            (this.state.sortColumn == "title") ?
+                                            (this.state.sortColumn == 'title') ?
                                             <span className={
-                                                this.state.sortOrder == "DESC" ?
+                                                this.state.sortOrder == 'DESC' ?
                                                 'glyphicon glyphicon-triangle-bottom' :
                                                 'glyphicon glyphicon-triangle-top'
                                             }/> :
@@ -848,13 +848,13 @@ export class App extends React.Component {
                                 <th>
                                     <button className="column-header" onClick={() => {
                                         this.setState({
-                                            sortColumn : "StartsAt",
-                                            sortOrder : (
-                                                this.state.sortColumn == "StartsAt" &&
-                                                this.state.sortOrder == "ASC"
+                                            sortColumn: 'StartsAt',
+                                            sortOrder: (
+                                                this.state.sortColumn == 'StartsAt' &&
+                                                this.state.sortOrder == 'ASC'
                                             ) ?
-                                                "DESC" :
-                                                "ASC"
+                                                'DESC' :
+                                                'ASC',
                                         });
                                         setTimeout(() => {
                                             this.fetchTab();
@@ -862,9 +862,9 @@ export class App extends React.Component {
                                     }}>
                                         Starts At
                                         {
-                                            (this.state.sortColumn == "StartsAt") ?
+                                            (this.state.sortColumn == 'StartsAt') ?
                                             <span className={
-                                                this.state.sortOrder == "DESC" ?
+                                                this.state.sortOrder == 'DESC' ?
                                                 'glyphicon glyphicon-triangle-bottom' :
                                                 'glyphicon glyphicon-triangle-top'
                                             }/> :
@@ -875,13 +875,13 @@ export class App extends React.Component {
                                 <th>
                                     <button className="column-header" onClick={() => {
                                         this.setState({
-                                            sortColumn : "AppointmentTypeName",
-                                            sortOrder : (
-                                                this.state.sortColumn == "AppointmentTypeName" &&
-                                                this.state.sortOrder == "ASC"
+                                            sortColumn: 'AppointmentTypeName',
+                                            sortOrder: (
+                                                this.state.sortColumn == 'AppointmentTypeName' &&
+                                                this.state.sortOrder == 'ASC'
                                             ) ?
-                                                "DESC" :
-                                                "ASC"
+                                                'DESC' :
+                                                'ASC',
                                         });
                                         setTimeout(() => {
                                             this.fetchTab();
@@ -889,9 +889,9 @@ export class App extends React.Component {
                                     }}>
                                         Appointment Type
                                         {
-                                            (this.state.sortColumn == "AppointmentTypeName") ?
+                                            (this.state.sortColumn == 'AppointmentTypeName') ?
                                             <span className={
-                                                this.state.sortOrder == "DESC" ?
+                                                this.state.sortOrder == 'DESC' ?
                                                 'glyphicon glyphicon-triangle-bottom' :
                                                 'glyphicon glyphicon-triangle-top'
                                             }/> :
@@ -902,13 +902,13 @@ export class App extends React.Component {
                                 <th>
                                     <button className="column-header" onClick={() => {
                                         this.setState({
-                                            sortColumn : "dataEntryStatus",
-                                            sortOrder : (
-                                                this.state.sortColumn == "dataEntryStatus" &&
-                                                this.state.sortOrder == "ASC"
+                                            sortColumn: 'dataEntryStatus',
+                                            sortOrder: (
+                                                this.state.sortColumn == 'dataEntryStatus' &&
+                                                this.state.sortOrder == 'ASC'
                                             ) ?
-                                                "DESC" :
-                                                "ASC"
+                                                'DESC' :
+                                                'ASC',
                                         });
                                         setTimeout(() => {
                                             this.fetchTab();
@@ -916,9 +916,9 @@ export class App extends React.Component {
                                     }}>
                                         Data Entry Status
                                         {
-                                            (this.state.sortColumn == "dataEntryStatus") ?
+                                            (this.state.sortColumn == 'dataEntryStatus') ?
                                             <span className={
-                                                this.state.sortOrder == "DESC" ?
+                                                this.state.sortOrder == 'DESC' ?
                                                 'glyphicon glyphicon-triangle-bottom' :
                                                 'glyphicon glyphicon-triangle-top'
                                             }/> :
@@ -937,9 +937,9 @@ export class App extends React.Component {
                         <tbody>
                             {
                                 this.state.page.data.map((a, index) => {
-                                    const site = this.state.sites.find(s => s.CenterID == a.CenterID);
+                                    const site = this.state.sites.find((s) => s.CenterID == a.CenterID);
                                     const appointmentType = this.state.appointmentTypes
-                                        .find(at => at.AppointmentTypeID == a.AppointmentTypeID);
+                                        .find((at) => at.AppointmentTypeID == a.AppointmentTypeID);
 
                                     const {
                                         dataEntryStatus,
@@ -952,17 +952,17 @@ export class App extends React.Component {
                                                 {a.CandID}
                                             </td>
                                             <td>
-                                                <a href={"/" + a.CandID + "/"}>{a.PSCID}</a>
+                                                <a href={'/' + a.CandID + '/'}>{a.PSCID}</a>
                                             </td>
                                             <td>
                                                 {
                                                     (site == undefined) ?
-                                                        "Site #"+a.CenterID :
+                                                        'Site #'+a.CenterID :
                                                         site.Name
                                                 }
                                             </td>
                                             <td>
-                                                <a href={"/instrument_list/?candID=" + a.CandID + "&sessionID=" + a.SessionID}>{a.Visit_label}</a>
+                                                <a href={'/instrument_list/?candID=' + a.CandID + '&sessionID=' + a.SessionID}>{a.Visit_label}</a>
                                             </td>
                                             <td>
                                                 {a.title}
@@ -973,58 +973,59 @@ export class App extends React.Component {
                                             <td>
                                                 {
                                                     (appointmentType == undefined) ?
-                                                        "Appointment Type #"+a.AppointmentTypeID :
+                                                        'Appointment Type #'+a.AppointmentTypeID :
                                                         appointmentType.Name
                                                 }
                                             </td>
                                             <td>
-                                                <span className={"label label-"+dataEntryLabelColor}>{dataEntryStatus}</span>
+                                                <span className={'label label-'+dataEntryLabelColor}>{dataEntryStatus}</span>
                                             </td>
                                             <td>
-                                                <button className="btn btn-default" onClick={() =>
-                                                {this.openEditForm(); this.setCurrAppointment(a);}}>
+                                                <button className="btn btn-default" onClick={() => {
+this.openEditForm(); this.setCurrAppointment(a);
+}}>
                                                     <span className='glyphicon glyphicon-edit'/> Edit
                                                 </button>
                                             </td>
                                             <td>
                                                 <button className="btn btn-default" onClick={() => {
                                                 swal({
-                                                    title: "Are you sure you want to delete?",
-                                                    text: "Appointments cannot be recovered",
-                                                    type: "warning",
+                                                    title: 'Are you sure you want to delete?',
+                                                    text: 'Appointments cannot be recovered',
+                                                    type: 'warning',
                                                     showCancelButton: true,
-                                                    confirmButtonClass: "btn-danger",
-                                                    confirmButtonText: "Yes, delete it!",
-                                                    cancelButtonText: "No, keep appointment!",
+                                                    confirmButtonClass: 'btn-danger',
+                                                    confirmButtonText: 'Yes, delete it!',
+                                                    cancelButtonText: 'No, keep appointment!',
                                                     closeOnConfirm: false,
-                                                    closeOnCancel: false
+                                                    closeOnCancel: false,
                                                     },
                                                     (isConfirm) => {
                                                     if (isConfirm) {
                                                         fetch(
-                                                                "/schedule_module/ajax/delete_appointment.php?AppointmentID="+a.AppointmentID,
+                                                                '/schedule_module/ajax/delete_appointment.php?AppointmentID='+a.AppointmentID,
                                                                 {
-                                                                    credentials : "include",
-                                                                    method : "DELETE",
+                                                                    credentials: 'include',
+                                                                    method: 'DELETE',
                                                                 }
                                                             ).then(() => {
-                                                                const index = this.state.page.data.findIndex(item => item.AppointmentID == a.AppointmentID);
+                                                                const index = this.state.page.data.findIndex((item) => item.AppointmentID == a.AppointmentID);
                                                                 if (index < 0) {
                                                                     return;
                                                                 }
                                                                 const appointments = this.state.page.data.slice();
                                                                 appointments.splice(index, 1);
                                                                 this.setState({
-                                                                    page : Object.assign(
+                                                                    page: Object.assign(
                                                                         {},
                                                                         this.state.page,
                                                                         {
-                                                                            data : appointments,
-                                                                            meta : Object.assign(
+                                                                            data: appointments,
+                                                                            meta: Object.assign(
                                                                                 {},
                                                                                 this.state.page.meta,
                                                                                 {
-                                                                                    itemsFound : (Number(this.state.page.meta.itemsFound)-1),
+                                                                                    itemsFound: (Number(this.state.page.meta.itemsFound)-1),
                                                                                 }
                                                                             ),
                                                                         }
@@ -1033,7 +1034,7 @@ export class App extends React.Component {
                                                         });
                                                         swal.close();
                                                     } else {
-                                                        //swal("Canceled", "The appointment has not been deleted", "error");
+                                                        // swal("Canceled", "The appointment has not been deleted", "error");
                                                         swal.close();
                                                     }
                                                     });
@@ -1052,7 +1053,7 @@ export class App extends React.Component {
                     <div className="form-group col-md-2">
                         Items Per Page: <input className="form-control" type="number" value={this.state.desiredItemsPerPage} onChange={(e) => {
                             this.setState({
-                                desiredItemsPerPage : e.target.value
+                                desiredItemsPerPage: e.target.value,
                             });
                             this.refreshTab();
                         }}/>
@@ -1060,7 +1061,7 @@ export class App extends React.Component {
                     <div className="form-group col-md-2">
                         Page: <input className="form-control" type="number" value={this.state.desiredPage} onChange={(e) => {
                             this.setState({
-                                desiredPage : e.target.value
+                                desiredPage: e.target.value,
                             });
                             this.refreshTab();
                         }}/>
@@ -1068,12 +1069,12 @@ export class App extends React.Component {
                     <div className="form-group col-md-6">
                         {
                             this.state.page.meta.pagesFound < 0 ?
-                            "" :
+                            '' :
                             `${this.state.page.meta.pagesFound} page(s) found, `
                         }
                         {
                             this.state.page.meta.itemsFound < 0 ?
-                            "" :
+                            '' :
                             `${this.state.page.meta.itemsFound} items found`
                         }
                     </div>
@@ -1083,6 +1084,6 @@ export class App extends React.Component {
                 </div>
                 {editAppointmentButton}
             </div>
-        )
+        );
     }
 }

@@ -5,6 +5,8 @@
 
 class NDB_BVL_Instrument_csbs extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
+
 /*
 INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page1', 'Scoring Worksheet', 1);
 INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behaviour Scales', 2);
@@ -54,7 +56,8 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
     * @return void
     * @access public
     */
-    function setup($commentID, $page){
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
+    {
         $this->formType="XIN";
         $this->form = new LorisForm('test_form');
         $this->page = $page;            // page label (number or
@@ -363,7 +366,7 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
         unset($group);
     }
     
-    function score(){
+    function score(): void{
     	if($this->_determineDataEntryCompletionStatus() == "Incomplete") {
     		return;
     	}

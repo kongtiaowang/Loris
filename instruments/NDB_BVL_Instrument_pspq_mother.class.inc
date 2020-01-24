@@ -5,6 +5,8 @@
 
 class NDB_BVL_Instrument_pspq_mother extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
+
     var $ValidityEnabled = false;
     var $ValidityRequired = false;
 
@@ -24,7 +26,7 @@ class NDB_BVL_Instrument_pspq_mother extends NDB_BVL_Instrument
 
     var $gender = array(''=>NULL,'male'=>'Male','female'=>'Female');
 
-    //abstract function setup($commentID, $page);
+    //abstract function setup(?string $commentID = NULL, ?string $page = NULL): void;
     /**
      * sets up basic data, such as the LorisForm object, and so on.
      *
@@ -33,7 +35,8 @@ class NDB_BVL_Instrument_pspq_mother extends NDB_BVL_Instrument
      * @return void
      * @access public
      */
-    function setup($commentID, $page){
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
+    {
         $this->formType="XIN";
         $this->form = new LorisForm('test_form');
         $this->page = $page;            // page label (number or
@@ -359,7 +362,7 @@ class NDB_BVL_Instrument_pspq_mother extends NDB_BVL_Instrument
 
        return $errors;
     }
-    function getReview() {
+    function getReview(): string {
         $DB = Database::singleton();
         $smarty = new Smarty_neurodb();
         $tpl_data = array();
