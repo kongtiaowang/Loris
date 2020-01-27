@@ -8,9 +8,16 @@ services:
         BASE_DIR: /app/
     volumes:
       - ./test/mysql-config:/etc/mysql/conf.d
+      - ./raisinbread/RB_files:/app/RB_files
+      - ./SQL:/app/SQL
+      - ./raisinbread/instruments/instrument_sql:/app/instrument_sql
     environment:
       - MYSQL_DATABASE=LorisTest
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
+    command: bash -c " echo 'Use LorisTest;' | cat -
+     /app/SQL/*.sql
+    /app/instrument_sql/*.sql  
+    /app/RB_files/*.sql > /docker-entrypoint-initdb.d/0000-compiled.sql"
 
   selenium:
     image: selenium/standalone-firefox-debug:3.8.1-aluminum
