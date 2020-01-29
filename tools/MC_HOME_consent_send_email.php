@@ -12,26 +12,25 @@ $yes_list=array();
 $DB        =& Database::singleton();
 
 // consider the 'Yes' update status from the history table. Date given might vary in some cases.
-$yes_elsi_consents=$DB->pselect("SELECT c.PSCID,cn.Label,ccr.Status,ccr.Dategiven, MAX(cch.Entrydate)as EntryDate from candidate c 
+$yes_mc_home_consents=$DB->pselect("SELECT c.PSCID,cn.Label,ccr.Status,ccr.Dategiven, MAX(cch.Entrydate)as EntryDate from candidate c 
                            join candidate_consent_rel ccr ON(c.CandID=ccr.CandidateID)
                            join consent cn ON (cn.ConsentID=ccr.ConsentID)
                            join candidate_consent_history cch ON(ccr.DateGiven=cch.DateGiven)
-                           where ccr.Status='Yes'and cn.Name='elsi_consent'and cch.Status='Yes' and c.CenterID!=1
+                           where ccr.Status='Yes'and cn.Name='MC_HOME_consent'and cch.Status='Yes' and c.CenterID!=1
                            and  DATE(Entrydate)=SUBDATE(CURDATE(),1)
                            group by c.PSCID,cn.Label,ccr.Status,ccr.Dategiven order by EntryDate",array());
 $num=0;
-foreach ($yes_elsi_consents as $yes_elsi) {
+foreach ($yes_mc_home_consents as $yes_mc_home) {
     $num++;
-$pscid=$yes_elsi['PSCID'];
-$consent_name=$yes_elsi['Label'];
+    $pscid=$yes_mc_home['PSCID'];
+    $consent_name=$yes_mc_home['Label'];
     $already_reported_consent=$DB->pselectOne("SELECT count(*) from reported_consent_log alr
 where alr.PSCID='$pscid' and alr.consent_name='$consent_name'",array());
     if($already_reported_consent==0) {
-        $push_val = "<tr><td>" . $num . ".</td><td>" . $yes_elsi['PSCID'] . "</td><td>" . $yes_elsi['Label'] .
-            "</td><td>" . $yes_elsi['Status'] . "</td><td>" . $yes_elsi['Dategiven'] . "</td><td>" . $yes_elsi['EntryDate'] . "</td></tr>";
+        $push_val = "<tr><td>" . $num . ".</td><td>" . $yes_mc_home['PSCID'] . "</td><td>" . $yes_mc_home['Label'] .
+            "</td><td>" . $yes_mc_home['Status'] . "</td><td>" . $yes_mc_home['Dategiven'] . "</td><td>" . $yes_mc_home['EntryDate'] . "</td></tr>";
         array_push($yes_list, $push_val);
         $DB->insert("reported_consent_log", array('PSCID' => $pscid, 'consent_name' => $consent_name, 'reported' => '1'));
-
     }
 
 }
@@ -41,8 +40,9 @@ if(!empty($yes_list))
     $today_date=date("Y-m-d");
     $msg_data['yes_consent_list']    = $yes_list;
     $msg_data['today_date']    = $today_date;
-    $receiver_email="sruthy.mcin@gmail.com";
-    sendHtmlEmail($receiver_email, 'ELSI_yes_consent_notification.tpl', $msg_data,$headers);
+    //For testing purpose
+    $receiver_email="sruthymathew369@gmail.com, sruthy.mcin@gmail.com";
+    sendHtmlEmail($receiver_email, 'MC_HOME_yes_consent_notification.tpl', $msg_data,$headers);
 }
 function sendHtmlEmail(
     $to,
