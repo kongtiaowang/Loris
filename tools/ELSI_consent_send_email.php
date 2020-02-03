@@ -21,6 +21,7 @@ $yes_elsi_consents=$DB->pselect("SELECT c.PSCID,cn.Label,ccr.Status,ccr.Dategive
                            group by c.PSCID,cn.Label,ccr.Status,ccr.Dategiven order by EntryDate",array());
 $num=0;
 foreach ($yes_elsi_consents as $yes_elsi) {
+    $today_date=date("Y-m-d");
     $num++;
 $pscid=$yes_elsi['PSCID'];
 $consent_name=$yes_elsi['Label'];
@@ -30,7 +31,7 @@ where alr.PSCID='$pscid' and alr.consent_name='$consent_name'",array());
         $push_val = "<tr><td>" . $num . ".</td><td>" . $yes_elsi['PSCID'] . "</td><td>" . $yes_elsi['Label'] .
             "</td><td>" . $yes_elsi['Status'] . "</td><td>" . $yes_elsi['Dategiven'] . "</td><td>" . $yes_elsi['EntryDate'] . "</td></tr>";
         array_push($yes_list, $push_val);
-        $DB->insert("reported_consent_log", array('PSCID' => $pscid, 'consent_name' => $consent_name, 'reported' => '1'));
+        $DB->insert("reported_consent_log", array('PSCID' => $pscid, 'consent_name' => $consent_name, 'reported' => '1','DateAdded' =>$today_date));
 
     }
 
@@ -41,7 +42,7 @@ if(!empty($yes_list))
     $today_date=date("Y-m-d");
     $msg_data['yes_consent_list']    = $yes_list;
     $msg_data['today_date']    = $today_date;
-    $receiver_email="sruthy.mcin@gmail.com";
+    $receiver_email="kmacduffie@gmail.com";
     sendHtmlEmail($receiver_email, 'ELSI_yes_consent_notification.tpl', $msg_data,$headers);
 }
 function sendHtmlEmail(

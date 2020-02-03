@@ -21,6 +21,7 @@ $yes_mc_home_consents=$DB->pselect("SELECT c.PSCID,cn.Label,ccr.Status,ccr.Dateg
                            group by c.PSCID,cn.Label,ccr.Status,ccr.Dategiven order by EntryDate",array());
 $num=0;
 foreach ($yes_mc_home_consents as $yes_mc_home) {
+    $today_date=date("Y-m-d");
     $num++;
     $pscid=$yes_mc_home['PSCID'];
     $consent_name=$yes_mc_home['Label'];
@@ -30,7 +31,7 @@ where alr.PSCID='$pscid' and alr.consent_name='$consent_name'",array());
         $push_val = "<tr><td>" . $num . ".</td><td>" . $yes_mc_home['PSCID'] . "</td><td>" . $yes_mc_home['Label'] .
             "</td><td>" . $yes_mc_home['Status'] . "</td><td>" . $yes_mc_home['Dategiven'] . "</td><td>" . $yes_mc_home['EntryDate'] . "</td></tr>";
         array_push($yes_list, $push_val);
-        $DB->insert("reported_consent_log", array('PSCID' => $pscid, 'consent_name' => $consent_name, 'reported' => '1'));
+        $DB->insert("reported_consent_log", array('PSCID' => $pscid, 'consent_name' => $consent_name, 'reported' => '1', 'DateAdded' =>$today_date));
     }
 
 }
@@ -40,8 +41,7 @@ if(!empty($yes_list))
     $today_date=date("Y-m-d");
     $msg_data['yes_consent_list']    = $yes_list;
     $msg_data['today_date']    = $today_date;
-    //For testing purpose
-    $receiver_email="sruthymathew369@gmail.com, sruthy.mcin@gmail.com";
+    $receiver_email="sima0034@umn.edu, jjwolff@umn.edu";
     sendHtmlEmail($receiver_email, 'MC_HOME_yes_consent_notification.tpl', $msg_data,$headers);
 }
 function sendHtmlEmail(

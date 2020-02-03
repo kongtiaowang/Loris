@@ -1,6 +1,6 @@
 Subject: [IBIS Study] MC Home Consented Candidate List - {$today_date}
 
-<b>The below list of Candidates has given 'YES' consent to ELSI.</b><br>
+<b>The below list of Candidates has given 'YES' consent to MC Home.</b><br>
 
 <table  border="1">
    <tr><td>No</td><td>PSCID</td><td>Consent Name</td><td>Consent Status</td><td>Consent Given Date</td><td>Database Entry Date</td></tr>
