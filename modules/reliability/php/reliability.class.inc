@@ -55,14 +55,15 @@ class Reliability extends \NDB_Menu_Filter
 
     var $reliability_table;
 
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        $user =& \User::singleton();
 
-        if ($user->hasPermission('access_all_profiles') || $user->hasPermission('reliability_edit_all')) {
-            return true;
-        }
-        return false;
+        if($user->hasPermission('access_all_profiles')|| $user->hasPermission('reliability_edit_all'))
+            {
+
+                return true;
+            }
+            return false;
     }
     //@codingStandardsIgnoreEnd
     /**
@@ -120,23 +121,23 @@ class Reliability extends \NDB_Menu_Filter
         // only view their own profiles, unless they have permission to see all
         if (!($user->hasPermission('reliability_edit_all') || $user->hasPermission('access_all_profiles'))) {
             $site_arr = implode(",", $user->getCenterIDs());
-            $query .= " AND candidate.centerID IN (" . $site_arr . ") ";
+            $query .= " AND candidate.RegistrationcenterID IN (" . $site_arr . ") ";
         }
 
         $config      =& \NDB_Config::singleton();
-        $useProjects = $config->getSetting("useProjects");
+
         $this->columns = array(
             'candidate.PSCID',
             'reliability.reliability_center_id',
             'p.name as site',
             'session.SubprojectID as Cohort',
             'session.CandID AS DCCID',
-            'candidate.Gender',
+            'candidate.Sex',
             'session.Visit_label',
         );
-        if ($useProjects === "true") {
+
             $this->columns[] = 'pr.Name as Project';
-        }
+
         $this->columns  =array_merge(
             $this->columns,
             array(
@@ -159,12 +160,12 @@ class Reliability extends \NDB_Menu_Filter
             'Site of Reliability Test',
             'Cohort',
             'DCCID',
-            'Gender',
+            'Sex',
             'Visit_label',
         );
-        if ($useProjects === "true") {
+
             $this->headers[] = 'Project';
-        }
+
         $this->headers =array_merge($this->headers, array('CommentID', 'Instrument','File_in_DB', 'reliability_score', 'Current Stage', 'Invalid', 'Manual Swap', 'Reliable'));
 
         // Set header as hidden from the data table
@@ -172,7 +173,7 @@ class Reliability extends \NDB_Menu_Filter
         $this->validFilters = array(
                                'reliability.reliability_center_id',
                                'session.SubprojectID',
-                               'candidate.CenterID',
+                               'candidate.RegistrationCenterID',
                                'session.CandID',
                                'candidate.PSCID',
                                'candidate.Gender',
@@ -186,7 +187,7 @@ class Reliability extends \NDB_Menu_Filter
 
         $this->formToFilter = array(
                                'SubprojectID'          => 'session.SubprojectID',
-                               'CenterID'              => 'candidate.CenterID',
+                               'CenterID'              => 'candidate.RegistrationCenterID',
                                'reliability_center_id' => 'reliability.reliability_center_id',
                                'DCCID'                 => 'session.CandID',
                                'PSCID'                 => 'candidate.PSCID',
@@ -297,9 +298,9 @@ class Reliability extends \NDB_Menu_Filter
         $this->addSelect('Instrument', 'Instrument:', $list_of_instruments);
         $this->addSelect('Invalid', 'Invalid Candidate:', array('' => '', 'yes' => 'Yes', 'no' => 'No'));
         $config =&\NDB_Config::singleton();
-        if ($config->getSetting("useProjects")=="true") {
+
             $this->addSelect('ProjectID', 'Project:', array('' => 'All') + $list_of_projects);
-        }
+
 
         // $this->addSelect('Lock_record', 'Lock_record:', $lock_options);
 
@@ -858,7 +859,7 @@ AND reliability_center_id<>:currentSite_id)",$params1);
         $query ="SELECT reliability.CommentID as OldID,".
             " reliability.reliability_center_id as CenterID,".
             " reliability.Reliability_score as Score,".
-            " candidate.CenterID as OldCenterID ".
+            " candidate.RegistrationCenterID as OldCenterID ".
             " FROM candidate JOIN session ON ".
             "(session.CandID = candidate.CandID) ".
             "JOIN flag ON (flag.SessionID = session.ID) ".
