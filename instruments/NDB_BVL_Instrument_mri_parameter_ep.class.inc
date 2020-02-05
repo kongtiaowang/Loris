@@ -369,6 +369,10 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
                 }
             }
 
+            if (empty($values["superior{$i}"]) && empty($values["anterior{$i}"]) && !empty($values["ant_d_sup{$i}"])) {
+                $errors["sec2_row{$i}"] = 'The Anterior, Superior are not provided while you have an Anterior / Superior provided.';
+            }
+
             if (empty($values["superior{$i}"]) && !empty($values["anterior{$i}"])) {
                 $errors["sec2_row{$i}"] = 'The Superior is not provided while you have an Anterior provided.';
             }
