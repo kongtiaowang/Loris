@@ -274,8 +274,7 @@ class NDB_BVL_Instrument_rbs_ecs extends NDB_BVL_Instrument
     function _comment($key) {
         $val = 'In total, how often do the above behaviors interfere with other activities or interactions? Circle the best answer';
         $name = "{$key}_interfere";
-        $this->addSelect($name, $val, $this->evaluation_options);
-        $this->form->addRule($name, $val . ' must be set', 'required');
+        $this->addSelect($name, $val, $this->evaluation_options, ['required' => true]);
 
         $name = "{$key}_comment";
 
