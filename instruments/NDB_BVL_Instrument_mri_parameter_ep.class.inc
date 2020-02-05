@@ -29,7 +29,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
         'ds' => 'Infant-DS',
         'ds_ctrl' => 'Infant-DS Ctrl'
     ];
-    
+
     private $orientation_grp = [
         'supine' => 'Supine',
         'leftlat' => 'Left Lateral',
@@ -80,7 +80,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
                 ['Name' => 'mri_parameter_ep_page5', 'Description' => 'BOLD+']];
     }
 
-    
+
     /**
      * Sets up basic data, such as the LorisForm object, and so on.
      *
@@ -134,7 +134,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
     function _setupForm()
     {
         //determine page to display
-        if (preg_match("/mri_parameter_ep(_page[0-9]+)/", 
+        if (preg_match("/mri_parameter_ep(_page[0-9]+)/",
             $this->page, $matches)) {
             call_user_func(array($this, $matches[1]));
         } else {
@@ -163,7 +163,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
         $this->form->addElement('static', 'bold_pass_msg', 'BOLD Passed');
         $this->form->addElement('static', 'dti_pass_msg', 'DTI Passed');
 
-        $this->addLabel('');
+        $this->addLabel(''); // Only to add an empty line
 
         $this->addLabel('Phase encode angle calculation:');
         $group = array();
@@ -208,7 +208,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
             unset($group);
         }
 
-        $this->addLabel('');
+        $this->addLabel(''); // Only to add an empty line
 
         $group = array();
         $group[] = $this->form->createElement('static', null, null, 'AP angle');
@@ -222,7 +222,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
                 '5' => '-175',
                 '10' => '-170'];
 
-        $i = 0;        
+        $i = 0;
         foreach ($grp as $key => $val) {
             $group = array();
             $group[] = $this->form->createElement('static', null, null, $key);
@@ -247,7 +247,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
         $group[] = $this->form->createElement('static', null, null, '');
         $this->form->addGroup($group, 'sec03_header', '', $this->_GUIDelimiter, FALSE);
         unset($group);
-        
+
         foreach ($grp as $key => $val) {
             $group = array();
             $group[] = $this->form->createElement('static', null, null, $key);
@@ -275,11 +275,9 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
 
         foreach ($grp as $key => $label) {
             $group_arr = "{$key}_grp";
-            $this->addSelect($key, $label, $this->$group_arr, array('multiple'));
-            $this->form->addRule($key, $label . ' must be set', 'required');
-         
+            $this->addSelect($key, $label, $this->$group_arr, ['multiple' => true, 'required'=> true]);
         }
-        
+
         $this->addTextElement(
             'time_enter',
             'Time entered room:'
@@ -301,7 +299,6 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
             $this->form->addGroup($group, "sec1_row{$i}", '', $this->_GUIDelimiter, FALSE);
             unset($group);
         }
-
     }
 
 
@@ -361,7 +358,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
      */
     function constraint_rules_pg2($values) {
         $errors = [];
-       
+
         $grp2 = ['anterior', 'superior'];
         for ($i = 0; $i < $this->pg2_number_of_lines; $i++) {
 
@@ -461,9 +458,9 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
             $group = array();
             $group[] = $this->createSelect("{$key}run{$i}", '', $this->yes_no);
             $this->not_required_field("{$key}run{$i}");
-            
+
             $group[] = $this->form->createElement('static', null, null, $label);
-            
+
             $group[] = $this->createSelect("{$key}firmm_{$i}", '', $this->yes_no);
             $this->not_required_field("{$key}firmm_{$i}");
 
@@ -634,15 +631,15 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
     }
 
     function score() {
-        if ($this->_determineDataEntryCompletionStatus() == 'Incomplete') { 
+        if ($this->_determineDataEntryCompletionStatus() == 'Incomplete') {
             return;
         }
 
-        // Get the item scores 
-        $db =& Database::singleton(); 
+        // Get the item scores
+        $db =& Database::singleton();
         $query = "SELECT * FROM ".$this->table." WHERE CommentID=:cid";
         $record = $db->pselectRow($query, array('cid' => $this->getCommentID()));
-        
+
         $scores = array();
 
         $grp = ['t1_pass', 't2_pass', 'bold_pass', 'dti_pass'];
