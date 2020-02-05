@@ -158,10 +158,10 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
         // automatically adds examiner & date of administration
         $this->_addMetadataFields();
 
-        $this->form->addElement('static', 't1_pass_msg', 'T1 Passed');
-        $this->form->addElement('static', 't2_pass_msg', 'T2 Passed');
-        $this->form->addElement('static', 'bold_pass_msg', 'BOLD Passed');
-        $this->form->addElement('static', 'dti_pass_msg', 'DTI Passed');
+        $this->form->addElement('static', 't1_pass_msg', 'T1 Passed?');
+        $this->form->addElement('static', 't2_pass_msg', 'T2 Passed?');
+        $this->form->addElement('static', 'bold_pass_msg', 'BOLD Passed?');
+        $this->form->addElement('static', 'dti_pass_msg', 'DTI Passed?');
 
         $this->addLabel(''); // Only to add an empty line
 
