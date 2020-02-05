@@ -72,7 +72,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
     }
 
 
-    function getSubtestList(): array {
+    public function getSubtestList(): array {
         return [['Name' => 'mri_parameter_ep_page1', 'Description' => 'Record'],
                 ['Name' => 'mri_parameter_ep_page2', 'Description' => 'Structural'],
                 ['Name' => 'mri_parameter_ep_page3', 'Description' => 'BOLD'],
@@ -369,8 +369,13 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
                 }
             }
 
-            if (abs(round(floatval($values["anterior{$i}"]) / floatval($values["superior{$i}"]), 2) - floatval($values["ant_d_sup{$i}"])) > 0.05) {
-                $errors["sec2_row{$i}"] = 'The value Anterior / Superior differences Anterior divided by Superior by a little too much (over 0.05).';
+            if (empty($values["superior{$i}"]) && !empty($values["anterior{$i}"])) {
+                $errors["sec2_row{$i}"] = 'The Superior is not provided while you have an Anterior provided.';
+            }
+            else {
+                if ((floatval($values["superior{$i}"]) != 0) && abs(round(floatval($values["anterior{$i}"]) / floatval($values["superior{$i}"]), 2) - floatval($values["ant_d_sup{$i}"])) > 0.05) {
+                    $errors["sec2_row{$i}"] = 'The value Anterior / Superior differences that of the Anterior divided by Superior too much (over 0.05).';
+                }
             }
 
             $val = $values["ant_d_sup{$i}"];
@@ -448,7 +453,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
         $group[] = $this->form->createElement('static', null, null, 'Ran?');
         $group[] = $this->form->createElement('static', null, null, '');
         $group[] = $this->form->createElement('static', null, null, 'FIRMM');
-        $group[] = $this->form->createElement('static', null, null, '%0.2mm');
+        $group[] = $this->form->createElement('static', null, null, '% 0.2mm');
         $group[] = $this->form->createElement('static', null, null, 'Pass?');
         $this->form->addGroup($group, 'sec3_2_header', '', $this->_GUIDelimiter, FALSE);
         unset($group);
@@ -491,12 +496,17 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
         $errors = [];
         $i = 0;
         foreach ($this->bold_firmm_grp as $key => $label) {
-            $tmp_02val = intval($values["{$key}02_{$i}"]);
-            if (!($tmp_02val >= 0 && $tmp_02val <= 100)) {
-                $errors["sec3_2_row{$i}"] = '% 0.2mm value is not valid. It should be a value between 0 and 100.';
+            if (!empty($values["{$key}02_{$i}"]) && !is_numeric($values["{$key}02_{$i}"])) {
+                $errors["sec3_2_row{$i}"] = '% 0.2mm should not have a non-numeric value.';
             }
-            else if (intval($values["{$key}02_{$i}"]) < 70 && !empty($values["{$key}pass_{$i}"])) {
-                $errors["sec3_2_row{$i}"] = 'Because % 0.2mm < 70%, this line doesn\'t pass';
+            else {
+                $tmp_02val = intval($values["{$key}02_{$i}"]);
+                if (!($tmp_02val >= 0 && $tmp_02val <= 100)) {
+                    $errors["sec3_2_row{$i}"] = '% 0.2mm value is not valid. It should be a value between 0 and 100.';
+                }
+                else if (intval($values["{$key}02_{$i}"]) < 70 && !empty($values["{$key}pass_{$i}"])) {
+                    $errors["sec3_2_row{$i}"] = 'Because % 0.2mm < 70%, this line doesn\'t pass';
+                }
             }
             $i ++;
         }
