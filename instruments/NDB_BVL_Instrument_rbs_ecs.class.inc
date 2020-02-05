@@ -135,7 +135,7 @@ class NDB_BVL_Instrument_rbs_ecs extends NDB_BVL_Instrument
 
     public function getFullName()
     {
-        return 'Repetitive Behavior Scales Early Childhood Supplement';
+        return 'Repetitive Behavior Scales Early Childhood Supplement (RBS-ECS)';
     }
 
     function getSubtestList(): array {
