@@ -124,6 +124,9 @@ class ViewSession extends \NDB_Form
                                                  true : false;
             $this->tpl_data['has_qc_permission'] = ($this->_hasQCPerm()) ?
                                                     true : false;
+
+            $this->tpl_data['sessionID'] = $this->sessionID;
+
             if ($this->_hasQCPerm()) {
                 $this->FormAction = "/imaging_browser/viewSession/?sessionID=" .
                          $this->sessionID;
