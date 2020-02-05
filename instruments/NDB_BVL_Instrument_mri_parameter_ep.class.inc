@@ -413,8 +413,9 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
 
         if ($values["t2_pass"] == '1' && $cnt['t2_'] == 0) {
             if ($already_failed) {
-                $errors['t1_pass'] = 'Needs one T1 and one T2 to pass.';
-                $errors['t2_pass'] = 'Needs one T1 and one T2 to pass.';
+                foreach ($grp as $key) {
+                    $errors["{$key}pass"] = 'Needs one T1 and one T2 to pass.';
+                }
             }
             else {
                 $errors['t2_pass'] = 'Needs one T2 to pass.';
