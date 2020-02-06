@@ -10,15 +10,9 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
   // Each field $x has an associated field $x_chooser (a file chooser user to choose
   //   a file on the local system).
   static $FILE_FIELDS = array(
-      'file_top'              => [ 'required' => 1, 'page' => ''         , 'name' => 'File Name'],
+      'file_top'              => [ 'required' => 0, 'page' => ''         , 'name' => 'File Name'],
       'second_file_top'       => [ 'required' => 0, 'page' => ''         , 'name' => 'Secondary File'], 
       'photo_file'            => [ 'required' => 0, 'page' => 'EEG_page1', 'name' => 'Photo File'],
-      'file_paradigm1'        => [ 'required' => 1, 'page' => 'EEG_page2', 'name' => 'File Name'],
-      'second_file_paradigm1' => [ 'required' => 0, 'page' => 'EEG_page2', 'name' => 'SecondaryFile'],
-      'file_paradigm2'        => [ 'required' => 1, 'page' => 'EEG_page3', 'name' => 'File Name'],
-      'second_file_paradigm2' => [ 'required' => 0, 'page' => 'EEG_page3', 'name' => 'Secondary File'],
-      'file_paradigm4'        => [ 'required' => 1, 'page' => 'EEG_page5', 'name' => 'File Name'],
-      'second_file_paradigm4' => [ 'required' => 0, 'page' => 'EEG_page5', 'name' => 'Secondary File']
   );
 
   /**
@@ -139,7 +133,7 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
         $this->addSelect('caregiver_present', 'Caregiver Present?', array(NULL=>"","y"=>"Yes","n"=>"No"));
         $this->addTextElement("caregiver_role", "Caregiver role:");
 
-        $this->addScoreColumn('file_top', "File Name:");
+        $this->addScoreColumn('file_top', "File Name (optional):");
         $this->form->addElement('file', "file_top_chooser", '');
         $this->XINRegisterRule("file_top_chooser", array("file_top_chooser{@}==={@}NEVER_REQUIRED"));
 
@@ -165,9 +159,9 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
 
         $this->addSelect('net_quality_rating', 'Net Quality Rating:', array(NULL=>"","1"=>"1","2"=>"2","3"=>"3","not_answered"=>"Not Answered"));
         $this->addTextAreaElement("netting_notes", "Netting Notes:");
-        $this->addSelect('Photo_of_Net_Placement_Taken', 'Photo of Net Placement Taken?', array(NULL=>"","y"=>"Yes","n"=>"No"));
+        $this->addSelect('Photo_of_Net_Placement_Taken', 'Photo of Net Placement Taken? If yes, please upload to database', array(NULL=>"","y"=>"Yes","n"=>"No"));
 
-        $this->addScoreColumn('photo_file', "Photo File:");
+        $this->addScoreColumn('photo_file', "Photo File (optional):");
         $this->form->addElement('file', "photo_file_chooser", '');
         $this->XINRegisterRule("photo_file_chooser", array("photo_file_chooser{@}==={@}NEVER_REQUIRED"));
     }
@@ -179,19 +173,9 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
         // PARADIGM 1:Resting Bubbles
         $this->form->addElement("header", null, "<div ".self::$cssStyle2." >PARADIGM 1: Resting Bubbles</div>");
 
-        $this->addScoreColumn('file_paradigm1',  "File Name:");
-        $this->form->addElement('file', "file_paradigm1_chooser", '');
-        $this->XINRegisterRule("file_paradigm1_chooser", array("file_paradigm1_chooser{@}==={@}NEVER_REQUIRED"));
-
-        $this->addScoreColumn('second_file_paradigm1',  "Secondary File (optional):");
-        $this->form->addElement('file', "second_file_paradigm1_chooser", '');
-        $this->XINRegisterRule("second_file_paradigm1_chooser", array("second_file_paradigm1_chooser{@}==={@}NEVER_REQUIRED"));
-
         $this->addTextAreaElement("note_1_1", "Artifact/Net Movement Notes:");
-        $this->addTextAreaElement("note_1_2", "Soothing Devices Used:");
         $this->addTextAreaElement("note_1_3", "General Notes (child behavior, breaks taken, adjustments etc.):");
         $this->addSelect('mood_1', 'Mood:', array(NULL=>"","1"=>"1","2"=>"2","3"=>"3","4"=>"4","5"=>"5"));
-        $this->addSelect('quality_1', 'Quality Rating:', array(NULL=>"","1"=>"1","2"=>"2","3"=>"3"));
         $this->addTextElement("trials_completed_1", "Trials Completed:");
     }
 
@@ -201,14 +185,6 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
     function _page3(){
         // PARADIGM 2:VEP
         $this->form->addElement('header', null, "<div ".self::$cssStyle2." >PARADIGM 2: VEP</div>");
-
-        $this->addScoreColumn('file_paradigm2',  "File Name:");
-        $this->form->addElement('file', "file_paradigm2_chooser", '');
-        $this->XINRegisterRule("file_paradigm2_chooser", array("file_paradigm2_chooser{@}==={@}NEVER_REQUIRED"));
-
-        $this->addScoreColumn('second_file_paradigm2',  "Secondary File (optional):");
-        $this->form->addElement('file', "second_file_paradigm2_chooser", '');
-        $this->XINRegisterRule("second_file_paradigm2_chooser", array("second_file_paradigm2_chooser{@}==={@}NEVER_REQUIRED"));
 
         $this->addTextAreaElement("note_2_1", "Artifact/Net Movement Notes:");
         $this->addTextAreaElement("note_2_2", "Soothing Devices Used:");
@@ -240,14 +216,6 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
         // PARADIGM 4: Social/NonSocial
         $this->form->addElement('header', null, "<div ".self::$cssStyle2." >PARADIGM 4: Social/NonSocial</div>");
 
-        $this->addScoreColumn('file_paradigm4',  "File Name:");
-        $this->form->addElement('file', "file_paradigm4_chooser", '');
-        $this->XINRegisterRule("file_paradigm4_chooser", array("file_paradigm4_chooser{@}==={@}NEVER_REQUIRED"));
-
-        $this->addScoreColumn('second_file_paradigm4',  "Secondary File (optional):");
-        $this->form->addElement('file', "second_file_paradigm4_chooser", '');
-        $this->XINRegisterRule("second_file_paradigm4_chooser", array("second_file_paradigm4_chooser{@}==={@}NEVER_REQUIRED"));
-
         $this->addTextAreaElement("note_4_1", "Artifact/Net Movement Notes:");
         $this->addTextAreaElement("note_4_2", "Soothing Devices Used:");
         $this->addTextAreaElement("note_4_3", "General Notes (child behavior, breaks taken, adjustments etc.):");
@@ -263,8 +231,6 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
         $this->form->addElement('header', null, "<div ".self::$cssStyle2." >Overall EEG Session Information</div>");
         $this->addTextAreaElement("note_5_1", "General Notes:", array('cols'=>50, 'rows'=>4));
         $this->addTextElement("end_time", "End time (24h format, HH:MM, e.g. 13:00):");
-        $this->addSelect('overall_5', 'Overall Irritablity:', array(""=>"","f"=>"Female","m"=>"Male"));
-        $this->addSelect('experimental_order_5', 'Experimental Order:', array(""=>"","f"=>"Female","m"=>"Male"));
 
         $this->addTextAreaElement("note_5_2", "Notes on Order Deviations:");
     }
@@ -398,7 +364,7 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
         if (isset($values['Photo_of_Net_Placement_Taken'])) {
             if ($values['Photo_of_Net_Placement_Taken'] == 'n') {
                 if ($values['photo_file_chooser']['name'] != '') {
-                    $errors['photo_file_chooser'] = 'You cannot a file unless you indicate that a photo was taken (above)';
+                    $errors['photo_file_chooser'] = 'You cannot select a file unless you indicate that a photo was taken (above)';
                 } else {
                     $db        =& Database::singleton();
                     $photoFile = $db->pselectOne(
@@ -478,7 +444,7 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
             }
 
             // File chooser was used to specify the same file as the one in the DB
-            // for $k: that an update and that's OK
+            // for $k: that's an update and that's OK
             if(!is_null($fileAlreadyUploaded) && $values["{$k}_chooser"]['name'] == $fileAlreadyUploaded) {
                 continue;
             }
