@@ -5,7 +5,7 @@
  * This file contains the NDB_BVL_Instrument_vrrsb
  * class
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Instrument
  * @package  Neuropsych
@@ -26,6 +26,15 @@
 
 class NDB_BVL_Instrument_vrrsb extends NDB_BVL_Instrument
 {
+    private $options_2 = array(
+            null => '',
+            0 => 'Not TRUE',
+            1 => 'Sometimes TRUE',
+            2 => 'Often TRUE',
+            3 => 'Almost Always TRUE',
+            9 => 'N/A'
+    );
+
     /**
      * sets up basic data, such as the LorisForm object, and so on.
      *
@@ -61,7 +70,6 @@ class NDB_BVL_Instrument_vrrsb extends NDB_BVL_Instrument
 
         // setup the form
         $this->_setupForm();
-
     }
 
     //If the instrument is not paged, remove the switch from the _setupForm method and add all the form Elements in this function.
@@ -131,19 +139,9 @@ some of which ask you to compare your child’s behavior to the child in the vid
             array(
                 null => "",
                 0 => "Not at all",
-                1 => "Some what but less than child in video",
+                1 => "Somewhat but less than child in video",
                 2 => "About the same as child in video",
                 3 => "More than child in video",
-                9 => "N/A"
-            );
-
-        $options_2 =
-            array(
-                null => "",
-                0 => "Not True",
-                1 => "Sometimes True",
-                2 => "Often True",
-                3 => "Almost True",
                 9 => "N/A"
             );
 
@@ -154,17 +152,16 @@ some of which ask you to compare your child’s behavior to the child in the vid
                 'q3' => '3) Is your child able to pretend (engage in make-believe play)?',
                 'q4' => '4) Does your child have a sense of humor?',
                 'q5' => '5)  Does your child try to involve others in play?',
-                'q6' => '6) Does your child respond positively to adults who are trying to',
-                'q7' => '7) hold his/her attention?',
-                'q8' => '8) Does your child look at you (making eye contact) when you are playing together?',
-                'q9' => '9) When you approach your child to play with him or her, does he/she seem happy to include you or glad that you are involved?',
-                'q10' => '10) Does your child seem interested in whether you are paying attention to what he or she is doing?',
-                'q11' => '11) Is your child able to let you know what he or she DOESN’T want?',
-                'q12' => '12) Is your child able to let you know what he or she DOES want?',
-                'q13' => '13) Does your child understand simple verbal requests?',
-
-
+                'q6' => '6) Does your child respond positively to adults who are trying to hold his/her attention?',
+                'q7' => '7) Does your child look at you (making eye contact) when you are playing together?',
+                'q8' => '8) When you approach your child to play with him or her, does he/she seem happy to include you or glad that you are involved?',
+                'q9' => '9) Does your child seem interested in whether you are paying attention to what he or she is doing?',
+                'q10' => '10) Is your child able to let you know what he or she DOESN’T want?',
+                'q11' => '11) Is your child able to let you know what he or she DOES want?',
+                'q12' => '12) Does your child cooperate with an adult’s request for help (e.g., clean-up, picking up toys)?',
+                'q13' => '13) Does your child understand simple verbal requests?'
             );
+
         foreach ($sect1_questions as $question => $label) {
             $this->addSelect(
                 $question,
@@ -196,25 +193,23 @@ Month. Note that the headings for the answers are different from Section I:<br><
             $this->addSelect(
                 $question,
                 $label,
-                $options_2
+                $this->options_2
             );
         }
-
     }
-
 
     function _page2()
     {
         $this->addHeader("<br>Video-Referenced Rating of Reciprocal Social Behavior
             <h5><b>Section 2 Continued</b><br>");
 
-        $options_2 =
+        $this->options_2 =
             array(
                 null => "",
-                0 => "Not True",
-                1 => "Sometimes True",
-                2 => "Often True",
-                3 => "Almost True",
+                0 => "Not TRUE",
+                1 => "Sometimes TRUE",
+                2 => "Often TRUE",
+                3 => "Almost Always TRUE",
                 9 => "N/A"
             );
 
@@ -249,23 +244,14 @@ Month. Note that the headings for the answers are different from Section I:<br><
             $this->addSelect(
                 $question,
                 $label,
-                $options_2
+                $this->options_2
             );
         }
 
-        $this->addTextElement("q49", "Please estimate approx. total # of words your child uses TO COMMUNICATE with you/anyone:");
-        $this->addTextElement("q50", "In the space provided, please write the most sophisticated sentence your child has spoken in the past
-                                    2 months—if he/she ONLY speaks in phrases, please write the most sophisticated phrase your child
-                                    has spoken in the past 2 months:");
+        $this->addTextElement('q49', '49) Please estimate approx. total # of words your child uses TO COMMUNICATE with you/anyone:');
+        $this->addTextElement('q50', '50) In the space provided, please write the most sophisticated sentence your child has spoken in the past 2 months—if he/she ONLY speaks in phrases, please write the most sophisticated phrase your child has spoken in the past 2 months:');
 
-
-        $this->addHeader("<h6><b>Appendix Items</b></h6>");
-        $this->addSelect("app_1","Tends to withdraw or isolate him/her self when you attempt
-to play with him/her?",$options_2);
+        $this->addHeader('<h6><b>Appendix Items:</b></h6>');
+        $this->addSelect("app_1",'Tends to withdraw or isolate him/her self when you attempt to play with him/her?',$this->options_2);
     }
-
-
-
 }
-
-
