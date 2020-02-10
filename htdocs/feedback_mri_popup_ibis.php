@@ -14,6 +14,7 @@
 define("GROUP_LORIS_DEFAULT", 1);
 define("GROUP_IBIS_EP_DS", 2);
 
+set_include_path(get_include_path().":../../project/libraries:../../php/libraries:");
 require_once __DIR__ . "/../../vendor/autoload.php";
 ini_set('default_charset', 'utf-8');
 ob_start('ob_gzhandler');
