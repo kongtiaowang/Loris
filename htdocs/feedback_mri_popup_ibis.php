@@ -18,7 +18,7 @@ set_include_path(get_include_path().":../../project/libraries:../../php/librarie
 require_once __DIR__ . "/../../vendor/autoload.php";
 ini_set('default_charset', 'utf-8');
 ob_start('ob_gzhandler');
-require_once "NDB_Client.class.inc";
+
 $client = new NDB_Client;
 if ($client->initialize() == false) {
     $login = $_SESSION['State']->getProperty('login');
