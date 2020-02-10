@@ -605,7 +605,7 @@
 	
 	    openWindowHandler: function openWindowHandler(e) {
 	        e.preventDefault();
-	        window.open(this.props.BaseURL + "/feedback_mri_popup.php?fileID=" + this.props.FileID, "feedback_mri", "width=500,height=800,toolbar=no,location=no," + "status=yes,scrollbars=yes,resizable=yes");
+	        window.open(this.props.BaseURL + "/feedback_mri_popup_ibis.php?fileID=" + this.props.FileID + "&sessionID=" + this.props.sessionID, "feedback_mri", "width=500,height=800,toolbar=no,location=no," + "status=yes,scrollbars=yes,resizable=yes");
 	    },
 	    render: function render() {
 	        if (!this.props.FileID || this.props.FileID === '') {
@@ -670,6 +670,7 @@
 	            "div",
 	            { className: "row mri-second-row-panel col-xs-12" },
 	            React.createElement(ImageQCCommentsButton, { FileID: this.props.FileID,
+                    sessionID: this.props.sessionID,
 	                BaseURL: this.props.BaseURL
 	            }),
 	            React.createElement(DownloadButton, { FileName: this.props.Fullname,
@@ -742,7 +743,8 @@
 	                XMLProtocol: this.props.XMLProtocol,
 	                XMLReport: this.props.XMLReport,
 	                NrrdFile: this.props.NrrdFile,
-	                OtherTimepoints: this.props.OtherTimepoints
+	                OtherTimepoints: this.props.OtherTimepoints,
+	                sessionID: this.props.sessionID
 	            }),
 	            this.props.HeadersExpanded ? React.createElement(ImagePanelHeadersTable, {
 	                HeaderInfo: this.props.HeaderInfo }) : ''
@@ -788,7 +790,7 @@
 	                }),
 	                this.state.BodyCollapsed ? '' : React.createElement(ImagePanelBody, {
 	                    BaseURL: this.props.BaseURL,
-	
+	                    sessionID: this.props.sessionID,
 	                    FileID: this.props.FileID,
 	                    Filename: this.props.Filename,
 	                    Checkpic: this.props.Checkpic,
