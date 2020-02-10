@@ -31,9 +31,4 @@ class Module extends \Module
      *
      * @return bool whether access is granted
      */
-    public function hasAccess(\User $user) : bool
-    {
-        return $user->hasPermission('schedule_module');
-
-    }
 }

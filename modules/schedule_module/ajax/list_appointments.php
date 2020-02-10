@@ -445,7 +445,8 @@ $itemsFound = $DB->pselectOne(
 
 echo json_encode(
     [
-        "data" => $appointments,
+        "Data" => $appointments,
+        "fieldOptions" => $fieldOptions,
         "meta" => [
             "page"         => $page,
             "itemsPerPage" => $itemsPerPage,

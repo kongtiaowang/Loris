@@ -27,6 +27,23 @@ class Schedule_Module extends \NDB_Page
 {
     public $skipTemplate = true;
     /**
+     * {@inheritDoc}
+     *
+     * @param \User $user The user whose access is being checked.
+     *
+     * @return bool whether access is granted
+     */
+    public function hasAccess(\User $user) : bool
+    {
+        return $user->hasPermission('schedule_module');
+
+    }
+    /**
+     * Sets up the query for the resolved_conflicts submodule
+     *
+     * @return void
+     */
+    /**
      * Gathers JS dependencies and merges them with the parent
      *
      * @return array of javascript to be inserted
