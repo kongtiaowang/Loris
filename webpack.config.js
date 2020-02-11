@@ -61,6 +61,7 @@ const config = [{
     './modules/document_repository/js/editFormIndex.js': './modules/document_repository/jsx/editFormIndex.js',
     './modules/publication/js/publicationIndex.js': './modules/publication/jsx/publicationIndex.js',
     './modules/publication/js/viewProjectIndex.js': './modules/publication/jsx/viewProjectIndex.js',
+    './modules/schedule_module/js/scheduleIndex.js': './modules/schedule_module/jsx/scheduleIndex.js',
   },
   output: {
     path: __dirname + '/',
