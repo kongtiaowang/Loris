@@ -50,7 +50,15 @@ class Filter extends Component {
       } else {
         searchParams.set(name, value);
       }
+////////
+      let obj = this.props.fields.find((obj)=>obj[name] == name);
+      console.log(name,"dddd",obj,"dddd");
+      // todo      
+    //  let comparison = null;
+      // parse comparison from fileds by name
+/////       
       filter[name] = {value, exactMatch};
+      console.log(filter[name]);
     }
     this.props.updateFilter(filter);
     history.replaceState(filter, '', `?${searchParams.toString()}`);
@@ -74,6 +82,9 @@ class Filter extends Component {
         case 'date':
           element = <DateElement key={filter.name}/>;
           break;
+        case 'time':
+          element = <TimeElement key={filter.name}/>;
+          break;
         case 'checkbox':
           element = <CheckboxElement key={filter.name}/>;
           break;
@@ -94,7 +105,6 @@ class Filter extends Component {
           }
         ));
       }
-
       return result;
     }, []);
   }

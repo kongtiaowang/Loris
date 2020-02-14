@@ -284,6 +284,23 @@ class Utility
 
         return $testName;
     }
+    /**
+     * Gets a list of Appointment Type used by the database
+     *
+     * @return array<string, string> of the form AppointmentID=>AppointmentTypeName
+     */
+    static function getAppointmentTypeList() : array
+    {
+        $factory = \NDB_Factory::singleton();
+        $DB      = $factory->database();
+        // get the list of projects
+        $AppointmentTypeList = $DB->pselectColWithIndexKey(
+            "SELECT AppointmentTypeID, Name FROM appointment_type",
+            array(),
+            'AppointmentTypeID'
+        ) ?? array();
+        return $AppointmentTypeList;      
+    }
 
     /**
      * Transforms a config structure (such as in PSCID) into a
