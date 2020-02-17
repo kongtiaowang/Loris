@@ -55,7 +55,7 @@ class Timepoint_List extends \NDB_Menu
 
         foreach ($listOfTimePoints as $sessionID) {
             // create timepoint object
-            $timePoint = \TimePoint::singleton(new SessionID($sessionID));
+            $timePoint = \TimePoint::singleton(new \SessionID($sessionID));
             // check if at least one timepoint belongs to the user's site
             if ($user->hasCenter($timePoint->getCenterID())) {
                 return true;
@@ -93,7 +93,6 @@ class Timepoint_List extends \NDB_Menu
     {
         // create candidate object
         $candidate = \Candidate::singleton($this->candID);
-        $DB        = \Database::singleton();
 
         $numberOfVisits           = 0;
         $this->tpl_data['candID'] = $this->candID;
