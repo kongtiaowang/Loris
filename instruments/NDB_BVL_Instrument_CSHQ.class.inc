@@ -730,7 +730,7 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
 
 
         $score['total_score'] = 0;
-        foreach ($abbreviated_questions as  $key => $aq) {
+        foreach ($abbreviated_questions as  $aq) {
             $score['total_score'] += $record[$aq];
         }
         $result = $db->update($this->table, $score, array("CommentID" => $this->getCommentID()));
