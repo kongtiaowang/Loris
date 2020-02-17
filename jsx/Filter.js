@@ -50,15 +50,14 @@ class Filter extends Component {
       } else {
         searchParams.set(name, value);
       }
-////////
-      let obj = this.props.fields.find((obj)=>obj[name] == name);
-      console.log(name,"dddd",obj,"dddd");
-      // todo      
-    //  let comparison = null;
-      // parse comparison from fileds by name
-/////       
-      filter[name] = {value, exactMatch};
-      console.log(filter[name]);
+      let obj = this.props.fields.find((obj)=>obj['filter']['name'] == name);
+      let comparison = null;
+      if (obj['filter']['comparison'] !== null) {
+        comparison = obj['filter']['comparison'];
+        filter[name] = {value, exactMatch, comparison};
+      } else {
+          filter[name] = {value, exactMatch};
+      }
     }
     this.props.updateFilter(filter);
     history.replaceState(filter, '', `?${searchParams.toString()}`);
