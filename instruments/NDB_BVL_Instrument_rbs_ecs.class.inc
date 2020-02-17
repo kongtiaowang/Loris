@@ -47,7 +47,7 @@ class NDB_BVL_Instrument_rbs_ecs extends NDB_BVL_Instrument
             '8_locomotion' => '8. LOCOMOTION (repeatedly spins, scoots, crawls, walks, hops or runs in circles/back & forth)',
             '9_vocalizations' => '9. VOCALIZATIONS (repeats same sound, word or phrase - do not count attempts at communication)'
         ];
-    
+
     private $question_grp2 = [
             '10_hits_with_body_part' => '10. HITS SELF WITH BODY PART (hits or slaps head, arms, legs or other body part)',
             '11_hits_with_object' => '11. HITS SELF WITH OBJECT (hits or bangs head or other body area with objects, e.g. toys)',
@@ -81,7 +81,6 @@ class NDB_BVL_Instrument_rbs_ecs extends NDB_BVL_Instrument
             '33_play' => '33. PLAY (follows a rigid play routine; insists that others play in a specific way; upset if play routine is altered)',
             '34_social_interaction' => '34. SOCIAL INTERACTION (insists that others respond in a specific way; follows a set verbal script or routine regardless of context or social behavior of other children or adults)'
         ];
-
 
     private $question_grp_frequency = [
             ['repetitive_motor', 'I. Repetitive Motor Behavior', 'Raw score / 9 ='],
@@ -138,7 +137,7 @@ class NDB_BVL_Instrument_rbs_ecs extends NDB_BVL_Instrument
         return 'Repetitive Behavior Scales Early Childhood Supplement (RBS-ECS)';
     }
 
-    function getSubtestList(): array {
+    public function getSubtestList(): array {
         return [['Name' => 'rbs_ecs_page1', 'Description' => 'Page 1'],
                 ['Name' => 'rbs_ecs_page2', 'Description' => 'Page 2'],
                 ['Name' => 'rbs_ecs_page3', 'Description' => 'Page 3'],
@@ -154,7 +153,7 @@ class NDB_BVL_Instrument_rbs_ecs extends NDB_BVL_Instrument
     function _setupForm()
     {
         //determine page to display
-        if (preg_match("/rbs_ecs(_page[0-9]+)/", 
+        if (preg_match("/rbs_ecs(_page[0-9]+)/",
             $this->page, $matches)) {
             call_user_func(array($this, $matches[1]));
         } else {
@@ -175,8 +174,16 @@ class NDB_BVL_Instrument_rbs_ecs extends NDB_BVL_Instrument
         // Header
         $this->addHeader('Scoring sheet for RBS-ECS');
 
-        // automatically adds examiner & date of administration
-        $this->_addMetadataFields();
+        $config      =& NDB_Config::singleton();
+        $dateOptions = array(
+            'language'         => 'en',
+            'format'           => 'YMd',
+            'minYear'          => $config->getSetting('startYear'),
+            'maxYear'          => $config->getSetting('endYear'),
+            'addEmptyOption'   => true,
+            'emptyOptionValue' => null,
+        );
+        $this->addBasicDate('Date_taken', 'Date Taken', $dateOptions, ['required' => true]);
 
         $this->addLabel('<strong>Items Endorsed & Interference Rating</strong>');
         $group = array();
@@ -189,7 +196,7 @@ class NDB_BVL_Instrument_rbs_ecs extends NDB_BVL_Instrument
 
         $count = 0;
         foreach ($this->question_grp_frequency as list($key, $label, $info)) {
-            
+
             $count += 1;
             $group = array();
             $group[] = $this->createLabel($label);
@@ -218,7 +225,7 @@ class NDB_BVL_Instrument_rbs_ecs extends NDB_BVL_Instrument
 
         $count = 0;
         foreach ($this->question_grp_frequency as list($key, $label, $adjust)) {
-            
+
             $count += 1;
             $group = array();
             $group[] = $this->createLabel($label);
@@ -233,14 +240,13 @@ class NDB_BVL_Instrument_rbs_ecs extends NDB_BVL_Instrument
                     $this->_GUIDelimiter,
                     false
                 );
-
             unset($group);
         }
-        
+
         $this->addLabel('<strong>Comments</strong>');
         $group = array();
         //scoring column headers
-        
+
         $group[] = $this->form->createElement('static', null, null, 'I. Repetitive Motor');
         $group[] = $this->form->createElement('static', null, null, 'II. Self-Directed & Self-Injurious Behavior');
         $group[] = $this->form->createElement('static', null, null, 'III. Restricted Behavior');
@@ -293,7 +299,6 @@ class NDB_BVL_Instrument_rbs_ecs extends NDB_BVL_Instrument
         Make your ratings based on your observations and interactions with your child over the past <b>month</b>.<br><br>';
     }
 
-
     /**
      * Page 1
      *
@@ -342,7 +347,6 @@ class NDB_BVL_Instrument_rbs_ecs extends NDB_BVL_Instrument
      *
      * @return void
      */
-     
     function _page3()
     {
         $title = 'III. Restricted Behavior';
@@ -359,13 +363,11 @@ class NDB_BVL_Instrument_rbs_ecs extends NDB_BVL_Instrument
         $this->_comment($key);
     }
 
-
     /**
      * Page 4
      *
      * @return void
      */
-     
     function _page4()
     {
         $title = 'IV. Ritual & Routine Behavior';
@@ -451,4 +453,3 @@ class NDB_BVL_Instrument_rbs_ecs extends NDB_BVL_Instrument
         }
     }
 }
-
