@@ -142,25 +142,16 @@ class FeedbackMRI_IBIS
             't2_comment' => ['l' => 'COMMENT', 't' => 'text']
         ],
         'DWI' => [
-            'dwi_red_artifact' => ['l' => 'RED ARTIFACT',
+            'dwi_qc' => ['l' => 'PRELIMINARY QC OF DWI',
                 't' => 'select',
                 'o' => [
-                    '' => '', '1' => '1 (PROBLEM PRESENT)', '2' => '0 PROBLEM ABSENT'
+                    '' => '', '1' => 'PRELIMINARY PASS', '2' => 'PRELIMINARY FAILURE', '3' => 'PRELIMINARY QUESTIONABLE'
                 ]
             ],
-            'dwi_green_artifact' => ['l' => 'GREEN ARTIFACT',
+            'dwi_exclusion_reason' => ['l' => 'PRELIMINARY DWI EXCLUSION REASON ',
                 't' => 'select',
                 'o' => [
-                    '' => '',
-                    '1' => 'PASS',
-                    '2' => 'FAIL',
-                    '3' => 'QUESTIONABLE'
-                ]
-            ],
-            'dwi_blue_artifact' => ['l' => 'BLUE ARTIFACT',
-                't' => 'select',
-                'o' => [
-                    '' => '', '1' => '1 (PROBLEM PRESENT)', '2' => '0 PROBLEM ABSENT'
+                    '' => '', '1' => 'Motion', '2' => 'Coverage', '3' => 'Other'
                 ]
             ],
             'dwi_comment' => ['l' => 'COMMENT', 't' => 'text']
