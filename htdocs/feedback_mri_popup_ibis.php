@@ -83,31 +83,21 @@ if ($group == GROUP_IBIS_EP_DS) {
      * UPDATE SECTION
      */
     if (isset($_POST['fire_away']) && $_POST['fire_away'] && $user->hasPermission('imaging_browser_qc')) {
-        // Or :
-        //unset($_POST['fire_away']);
+        $values = [];
         $commentItems = $comments->getCommentItems();
         foreach ($commentItems as $lbl => $itms){
             foreach ($itms as $id => $itm) {
-                if ($itm['t'] == 'select') {
-                    if (empty($_POST[$id])) {
-                        $errors[$id] = $itm['l'] . ' is required.';
-                    }
+                if (isset($_POST[$id]) && !empty($_POST[$id])) {
+                    $values[$id] = $_POST[$id];
+                }
+                else {
+                    $values[$id] = null;
                 }
             }
         }
-        if (empty($errors)) {
-            $values = [];
-            foreach ($commentItems as $lbl => $itms){
-                foreach ($itms as $id => $itm) {
-                    if (isset($_POST[$id]) && !empty($_POST[$id])) {
-                        $values[$id] = $_POST[$id];
-                    }
-                }
-            }
-            if (!empty($values)) {
-                $comments->save($values);
-                $tpl_data['saved'] = true;
-            }
+        if (!empty($values)) {
+            $comments->save($values);
+            $tpl_data['saved'] = true;
         }
 
         unset($_POST['fire_away']);
