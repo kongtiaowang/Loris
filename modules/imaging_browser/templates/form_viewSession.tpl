@@ -21,8 +21,8 @@
           <script>
           ReactDOM.render(
                   RImagePanel({
-                      'BaseURL' : "{$baseurl}",
-
+                      'BaseURL'  : "{$baseurl}",
+                      'sessionID': "{$sessionID}",
                       'FileID'   : "{$files[file].FileID}",
                       'Filename' : "{$files[file].Filename}",
                       'QCStatus' : "{$files[file].QCStatus}",

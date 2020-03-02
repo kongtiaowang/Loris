@@ -42,6 +42,7 @@ select{@}PuttingTrial1{@}Trial#1{@}NULL=>''{-}'l'=>'L'{-}'r'=>'R'{-}'b'=>'B'{-}'
 select{@}PuttingTrial2{@}Trial#2{@}NULL=>''{-}'l'=>'L'{-}'r'=>'R'{-}'b'=>'B'{-}'nr'=>'NR'{-}'not_answered'=>'Not Answered'
 select{@}PuttingTrial3{@}Trial#3{@}NULL=>''{-}'l'=>'L'{-}'r'=>'R'{-}'b'=>'B'{-}'nr'=>'NR'{-}'not_answered'=>'Not Answered'
 header{@}{@}Validity
+select{@}validity{@}Validity{@}NULL=>''{-}'1'=>'1. Data is valid'{-}'2'=>'2. Questionable validity'{-}'3'=>'3. Invalid data'
 textarea{@}CommentValidity{@}Comments About Validity:
 select{@}CommentValidity_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
 static{@}LateralityIndex{@}Laterality Index(LI)

@@ -627,25 +627,28 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
 
         $reverse_items =
             array(
-             "item1",
-             "item2",
-             "item3",
-             "item10",
-             "item11",
-             "item26",
+             "goes_to_bed_at_same_time_item1_frequency",
+             "falls_asleep_in_20_min_item2_frequency",
+             "falls_asleep_in_own_bed_item3_frequency",
+             "sleeps_right_amount_item10_frequency",
+             "sleeps_same_amount_each_day_item11_frequency",
+             "wakes_by_himself_item26_frequency",
             );
 
         // reverse the scoring for (R) questions
         foreach ($abbreviated_questions as $aq) {
-            foreach ($reverse_items as $ri) {
-                if (strpos($aq, $ri) !== false) {
-                    if ($record[$aq] == 3) {
-                        $record[$aq] = 1;
-                    }
-                    if ($record[$aq] == 1) {
-                        $record[$aq] = 3;
-                    }
+            if (in_array($aq, $reverse_items)) {
+                if($record[$aq]==1)
+                {
+                    $record[$aq]=3;
                 }
+                else if($record[$aq]==3)
+                {
+                $record[$aq]=1;
+            }
+            else{
+                $record[$aq]=$record[$aq];
+            }
             }
         }
 
@@ -697,8 +700,8 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
                                               "_item29_",
                                               "_item30_",
                                               "_item31_",
-                                              "_item32_",
-                                              "_item33_",
+                                              "_item32",
+                                              "_item33",
                                              ),
             );
 
@@ -711,18 +714,23 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
         $score['sleep_disordered_breathing'] = 0;
         $score['daytime_sleepiness']         = 0;
 
+
+
         foreach ($subscale_questions as $subscale => $questions) {
             foreach ($questions as $question) {
                 foreach ($abbreviated_questions as $aq) {
-                    if (strpos($aq, $question) !== false) {
+                    if (strpos($aq, $question) !== false && strpos($aq, 'problem') === false) {
                         $score[$subscale] += $record[$aq];
+
                     }
                 }
             }
         }
 
+
+
         $score['total_score'] = 0;
-        foreach ($abbreviated_questions as $aq) {
+        foreach ($abbreviated_questions as  $aq) {
             $score['total_score'] += $record[$aq];
         }
         $result = $db->update($this->table, $score, array("CommentID" => $this->getCommentID()));
