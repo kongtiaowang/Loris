@@ -46,7 +46,7 @@ class NDB_BVL_Instrument_ESCS extends NDB_BVL_Instrument
     private $rja_grp2 = [
             'rja_left' => 'Left',
             'rja_back_left' => 'Back Left',
-            'rja_right' => 'Rigft',
+            'rja_right' => 'Right',
             'rja_back_right' => 'Back Right'
         ];
 
@@ -62,7 +62,7 @@ class NDB_BVL_Instrument_ESCS extends NDB_BVL_Instrument
 
     private $ibr_grp2 = [
             'ibr_pt' => 'Point',
-            'ibr_pt_ec' => 'Pint & EC',
+            'ibr_pt_ec' => 'Point & EC',
             'ibr_gv' => 'Give',
             'ibr_gv_ec' => 'Give & EC'
         ];

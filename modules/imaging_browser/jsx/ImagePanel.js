@@ -398,8 +398,8 @@ var ImageQCCommentsButton = React.createClass({
   openWindowHandler: function(e) {
     e.preventDefault();
     window.open(
-            this.props.BaseURL + "/feedback_mri_popup.php?fileID=" +
-            this.props.FileID,
+            this.props.BaseURL + "/feedback_mri_popup_ibis.php?fileID=" +
+            this.props.FileID + "&sessionID=" + this.props.sessionID,
             "feedback_mri",
             "width=500,height=800,toolbar=no,location=no," +
             "status=yes,scrollbars=yes,resizable=yes"
@@ -457,6 +457,7 @@ var ImageDownloadButtons = React.createClass({
             <div className="row mri-second-row-panel col-xs-12">
                 <ImageQCCommentsButton FileID={this.props.FileID}
                     BaseURL={this.props.BaseURL}
+                    sessionID={this.props.sessionID}
                 />
                 <DownloadButton FileName={this.props.Fullname}
                     Label="Download Minc"
@@ -521,6 +522,7 @@ var ImagePanelBody = React.createClass({
                             XMLReport={this.props.XMLReport}
                             NrrdFile={this.props.NrrdFile}
                             OtherTimepoints={this.props.OtherTimepoints}
+                            sessionID={this.props.sessionID}
                         />
                     {this.props.HeadersExpanded ? <ImagePanelHeadersTable
                                     HeaderInfo={this.props.HeaderInfo} /> : ''}
@@ -552,6 +554,7 @@ var ImagePanel = React.createClass({
                 <div className="panel panel-default">
                 <ImagePanelHeader
                     FileID={this.props.FileID}
+
                     Filename={this.props.Filename}
                     QCStatus={this.props.QCStatus}
                     onToggleBody={this.toggleBody}
@@ -563,7 +566,7 @@ var ImagePanel = React.createClass({
                 {this.state.BodyCollapsed ? '' :
                     <ImagePanelBody
                         BaseURL={this.props.BaseURL}
-
+                        sessionID={this.props.sessionID}
                         FileID={this.props.FileID}
                         Filename={this.props.Filename}
                         Checkpic={this.props.Checkpic}
