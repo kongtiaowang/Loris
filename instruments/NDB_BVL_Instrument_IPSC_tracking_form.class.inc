@@ -26,6 +26,7 @@
 class NDB_BVL_Instrument_IPSC_tracking_form extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
+    
     var $ValidityEnabled = false;
     var $ValidityRequired = false;
 

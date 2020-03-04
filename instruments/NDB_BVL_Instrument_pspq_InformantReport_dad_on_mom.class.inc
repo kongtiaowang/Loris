@@ -6,6 +6,7 @@
 class NDB_BVL_Instrument_pspq_InformantReport_dad_on_mom extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
+
     var $ValidityEnabled = false;
     var $ValidityRequired = false;
 
