@@ -199,6 +199,7 @@ const config = [
     lorisModule('server_processes_manager', ['server_processes_managerIndex']),
     // lorisModule('instruments', ['instrumentlistwidget']),
     lorisModule('candidate_profile', ['CandidateInfo']),
+    lorisModule('schedule_module', ['scheduleIndex']),
 ];
 
 // Support project overrides

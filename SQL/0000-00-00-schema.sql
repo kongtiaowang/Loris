@@ -2109,3 +2109,27 @@ CREATE TABLE `issues_attachments` (
     `mime_type` varchar(255) NOT NULL DEFAULT '',
     PRIMARY KEY (`ID`)
 ) DEFAULT CHARSET=utf8mb4;
+CREATE TABLE `appointment_type` (
+  `AppointmentTypeID` int(10) UNSIGNED NOT NULL,
+  `Name` varchar(32) NOT NULL,
+  PRIMARY KEY (`AppointmentTypeID`),
+  UNIQUE KEY (`Name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+INSERT INTO `appointment_type` (`AppointmentTypeID`, `Name`) VALUES
+(3, 'Behavioral'),
+(2, 'Blood Collection'),
+(1, 'MRI');
+
+CREATE TABLE `appointment` (
+  `AppointmentID` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `SessionID` int(10) UNSIGNED NOT NULL,
+  `AppointmentTypeID` int(10) UNSIGNED NOT NULL,
+  `StartsAt` datetime NOT NULL,
+  PRIMARY KEY (`AppointmentID`),
+  KEY `AppointmentTypeID` (`AppointmentTypeID`),
+  KEY `SessionID` (`SessionID`),
+  CONSTRAINT `appointment_belongsToSession` FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`),
+  CONSTRAINT `appointment_hasAppointmentType` FOREIGN KEY (`AppointmentTypeID`) REFERENCES `appointment_type` (`AppointmentTypeID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
