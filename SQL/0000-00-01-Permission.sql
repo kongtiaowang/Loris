@@ -109,8 +109,8 @@ INSERT INTO `permissions` VALUES
     (61,'battery_manager_edit','Add, activate, and deactivate entries in Test Battery',2),
     (62,'module_manager_view', 'Module Manager: access the module', 2),
     (63,'module_manager_edit', 'Module Manager: edit installed modules', 2),
-    (63,'schedule_module', 'Schedule Module: edit and delete the appointment', 2);    
-
+    (64,'schedule_module', 'Schedule Module: edit and delete the appointment', 2),
+    (65,'candidate_dod_edit', 'Edit dates of death', 2);
 
 INSERT INTO `user_perm_rel` (userID, permID)
   SELECT u.ID, p.permID 
