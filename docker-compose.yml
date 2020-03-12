@@ -20,6 +20,8 @@ services:
       - "5900:5900"
     environment:
       - SE_OPTS=-enablePassThrough false
+    links:
+      - web:web
 
   web:
     build:
@@ -33,7 +35,7 @@ services:
     depends_on:
       - db
     ports:
-      - "8000:80"
+      - "8000:8000"
 #    command: php -S 0.0.0.0:8000 -t /app/htdocs /app/htdocs/router.php
 
   unit-tests:

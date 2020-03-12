@@ -132,7 +132,6 @@ abstract class LorisIntegrationTest extends TestCase
             $selenium_url,
             $desired_capabilities
         );
-
         $this->login("UnitTester", $this->validPassword);
 
         if (extension_loaded('xdebug')
@@ -154,7 +153,7 @@ abstract class LorisIntegrationTest extends TestCase
      */
     protected function login($username, $password)
     {
-        $this->safeGet($this->url);
+        $this->safeGet($this->url);sleep(100);
         /*
         $this->webDriver->wait(120, 1000)->until(
             WebDriverExpectedCondition::presenceOfElementLocated(
