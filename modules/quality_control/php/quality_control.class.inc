@@ -1,44 +1,45 @@
 <?php
 /**
- * This file contains the NDB_Menu_Filter_media class
+ * This file contains the Quality_Control class
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Module
- * @package  Quality Control
+ * @package  Quality_Control
  * @author   Liza Levitis <llevitis.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/CCNA/
+ * @link     https://www.github.com/aces/Loris
  */
 namespace LORIS\quality_control;
 
 /**
- * Main class for quality control module corresponding to /quality_control/ URL
- * Tools section of the LorisMenu.
+ * Main class for quality control module corresponding to /quality_control/
+ * endpoint.
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Module
- * @package  Quality Control
- * @author   Liza Levitis  <llevitis.mcin@gmail.com>
+ * @package  Quality_Control
+ * @author   Liza Levitis <llevitis.mcin@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/CCNA/
+ * @link     https://www.github.com/aces/Loris
  */
 class Quality_Control extends \NDB_Menu_Filter
 {
-    public $hasWritePermission = false;
-    public $AjaxModule         = true;
+    public $AjaxModule = true;
+    public $fieldOptions;
 
     /**
      * Check user permissions
      *
+     * @param \User $user UserID
+     *
      * @return bool
-     * @throws ConfigurationException
+     * @throws \ConfigurationException
      */
-    function _hasAccess()
+    function _hasAccess(\User $user) : bool
     {
-        //create user object
-        $user =& \User::singleton();
+        // FIXME This module should have its own permission.
         return $user->hasPermission('data_team_helper');
     }
 
@@ -55,7 +56,7 @@ class Quality_Control extends \NDB_Menu_Filter
      *
      * @return array $scan_types of desired scan types.
      */
-    function _getScanTypes()
+    function _getScanTypes(): array
     {
         $config = \NDB_Config::singleton();
         $db     = \Database::singleton();
@@ -76,6 +77,7 @@ class Quality_Control extends \NDB_Menu_Filter
         // type groups listed in $toTable_scan_type_groups               //
         //---------------------------------------------------------------//
         $toTable_scan_type_groups = $config->getSetting('tblScanTypeGroups');
+        $toTable_scan_type_groups = explode(',', $toTable_scan_type_groups);
 
         $query = sprintf(
             "
@@ -127,13 +129,16 @@ class Quality_Control extends \NDB_Menu_Filter
     /**
      * Builds query for given modality. Works with t1w, t2w, dti.
      *
-     * @param string $scan_type One of 't1w', 't2w', 'dti'
-     * @param string $scan_done Name of column to check in mri_parameter_form
-     * @param string $acqID     Aquisition protocol ID for given modality
+     * @param string $scan_type       One of 't1w', 't2w', 'dti'
+     * @param string $mriPfColumn     Name of column to check in the MRI parameter form
+     * @param string $mriPfTable      Name of the table that contains the MRI parameter form
+     * @param string $acqID           Aquisition protocol ID for given modality
+     * @param string $mriPfDoneValues Comma separated list of values indicating that a particular
+     *                                scan modality was done in the MRI parameter form
      *
      * @return string $query for the given modality
      */
-    function _buildQuery($scan_type, $mriPfColumn, $mriPfTable, $acqID, $mriPfDoneValues)
+    function _buildQuery($scan_type, $mriPfColumn, $mriPfTable, $acqID, $mriPfDoneValues): string
     {
         $mriPfTableAlias ='';
         $noMriPf = 0;
@@ -185,44 +190,13 @@ class Quality_Control extends \NDB_Menu_Filter
                       *
                   FROM
                       tarchive_series ts
+                  LEFT JOIN mri_protocol mp ON mp.Scan_type=".$acqID."
                   WHERE
                       ts.TarchiveID = t.TarchiveID
-                      AND(
-                          ts.EchoTime BETWEEN(
-                              SELECT
-                                  SUBSTRING_INDEX(mp.TE_range, '-', 1)
-                              FROM
-                                  mri_protocol mp
-                              WHERE
-                                  mp.Scan_type = ".$acqID." LIMIT 1
-                          ) AND(
-                              SELECT
-                                  SUBSTRING_INDEX(mp.TE_range, '-', -1)
-                              FROM
-                                  mri_protocol mp
-                              WHERE
-                                   mp.Scan_type = ".$acqID." LIMIT 1
-                           )
-                      )
-                      AND(
-                          (ts.RepetitionTime = (
-                              SELECT
-                                  SUBSTRING_INDEX(mp.TR_range, ',', 1)
-                              FROM
-                                  mri_protocol mp
-                              WHERE
-                                  mp.Scan_type = ".$acqID." LIMIT 1
-                          )) OR ( ts.RepetitionTime = (
-                              SELECT
-                                  SUBSTRING_INDEX(mp.TR_range, ',', -1)
-                              FROM
-                                  mri_protocol mp
-                              WHERE
-                                  mp.Scan_type = ".$acqID." LIMIT 1
-                           ))
-                      )
-               ) THEN 'In DICOM'
-              ELSE 'Missing'
+                      AND (ts.EchoTime BETWEEN mp.TE_min AND mp.TE_max)
+                      AND (ts.RepetitionTime BETWEEN mp.TR_min AND mp.TR_max)".
+               " ) THEN 'In DICOM'".
+              " ELSE 'Missing'
            END as tarchive_loc,
            (SELECT Name FROM Project WHERE ProjectID=c.ProjectID) as project,".
             " (SELECT title FROM subproject WHERE SubprojectID=s.SubprojectID)
@@ -245,26 +219,27 @@ class Quality_Control extends \NDB_Menu_Filter
            mu.uploadedBy as uploaded_by,
            f.CommentID as CommentID ";
 
-        //print_r($select);
         $joins = " FROM flag f
-        LEFT JOIN session s ON (f.SessionID=s.ID)
-        LEFT JOIN mri_parameter_form m ON (m.CommentID=f.CommentID)
-        LEFT JOIN mri_parameter_form_sa m_sa ON (m_sa.CommentID=f.CommentID)
-        LEFT JOIN tarchive t ON (t.SessionID=s.ID)".
-            " LEFT JOIN files fi ON (fi.SessionID=s.ID AND
-        fi.AcquisitionProtocolID=".$acqID.")".
-            " LEFT JOIN mri_violations_log mvl ON".
-            " (mvl.CandID = s.CandID AND mvl.Scan_type=".$acqID."".
-            " AND mvl.PatientName LIKE CONCAT ('%', s.Visit_label,'%'))".
-            " LEFT JOIN candidate c ON (s.CandID=c.CandID)
-        LEFT JOIN files_qcstatus qc ON (qc.FileID = fi.FileID)
-        LEFT JOIN mri_upload mu ON (mu.SessionID = f.SessionID) ";
+           LEFT JOIN session s ON (f.SessionID=s.ID)
+           LEFT JOIN mri_parameter_form m ON (m.CommentID=f.CommentID)
+           LEFT JOIN mri_parameter_form_sa m_sa ON (m_sa.CommentID=f.CommentID)
+           LEFT JOIN tarchive t ON (t.SessionID=s.ID)
+           LEFT JOIN files fi ON (fi.SessionID=s.ID AND fi.AcquisitionProtocolID=$acqID)
+           LEFT JOIN mri_violations_log mvl 
+              ON (
+                      mvl.CandID = s.CandID
+                  AND mvl.Scan_type=$acqID
+                  AND mvl.PatientName LIKE CONCAT ('%', s.Visit_label,'%')
+              )
+           LEFT JOIN candidate c ON (s.CandID=c.CandID)
+           LEFT JOIN files_qcstatus qc ON (qc.FileID = fi.FileID)
+           LEFT JOIN mri_upload mu ON (mu.SessionID = f.SessionID) ";
 
         $where = " WHERE 1=1
           AND NOT f.CommentID LIKE 'DDE%'
-          AND f.Test_name=" . (is_null($mriPfTable) ? "''" : "'$mriPfTable'") .
-        " AND s.Active='Y'
-          AND s.CenterID <> '1' ";
+          AND s.Active='Y'
+          AND s.CenterID <> '1'
+          AND f.Test_name=" . (is_null($mriPfTable) ? "''" : "'$mriPfTable'");
 
         $query = $select.$joins.$where;
 
@@ -276,17 +251,17 @@ class Quality_Control extends \NDB_Menu_Filter
      */
 
     /**
-     * Create a form to filter behavioral QC by various criteria
+     * Build a list of imaging QC to display in Data Table
      *
-     * @return bool
-     * @throws ConfigurationException
-     * @throws DatabaseException
-     * @throws Exception
+     * @return void
+     * @throws \DatabaseException
      */
-    function _setFilterForm()
+    function _setupVariables(): void
     {
-        $user      =& \User::singleton();
-        $db        =& \Database::singleton();
+
+        $this->skipTemplate = true;
+        $user      = \User::singleton();
+        $db        = \Database::singleton();
         $siteList  = array();
         $visitList = \Utility::getVisitList();
         // allow to view all sites data through filter
@@ -303,14 +278,15 @@ class Quality_Control extends \NDB_Menu_Filter
             foreach ($siteIDs as $val) {
                 $site = &Site::singleton($val);
                 if ($site->isStudySite()) {
-                    $siteList[$site->getCenterName()] = $site->getCenterName();
+                     $siteList[$site->getCenterName()] = $site->getCenterName();
                 }
             }
         }
 
         $scan_types = $this->_getScanTypes();
 
-        $projectList     = \Utility::getProjectList();
+        $projectList  = \Utility::getProjectList();
+        $projectList2 = array();
         foreach ($projectList as $key => $value) {
             $projectList2[$value] = $value;
         }
@@ -320,7 +296,7 @@ class Quality_Control extends \NDB_Menu_Filter
             $subprojectList2[$value] = $value;
         }
         //print_r($subprojectList2);
-        $uploaderList =[];
+        $uploaderList = array();
         $uploaders    = $db -> pselect(
             "SELECT UploadedBy FROM mri_upload GROUP BY UploadedBy",
             array()
@@ -330,70 +306,111 @@ class Quality_Control extends \NDB_Menu_Filter
         }
 
         $scan_location = array(
-            "In Imaging Browser"    => "Found in Imaging Browser",
-            "In MRI Violated Scans" => "Found in MRI Violated Scans",
-            "Missing"               => "Missing",
+                          "In Imaging Browser"    => "Found in Imaging Browser",
+                          "In MRI Violated Scans" => "Found in MRI Violated Scans",
+                          "Missing"               => "Missing",
+                         );
+
+        $this->fieldOptions
+            = [
+               'site'             => $siteList,
+               'project'          => $projectList2,
+               'subproject'       => $subprojectList2,
+               'scanType'         => $scan_types,
+               'mRIParameterForm' => array(
+                                      "Incomplete" => "Incomplete",
+                                      "Complete"   => "Complete",
+                                     ),
+               'scanDoneInMRIPF'  => array(
+                                      "Yes" => "Yes",
+                                      "No"  => "No",
+                                     ),
+               'tarchive'         => array(
+                                      "In DICOM" => "In DICOM Archives",
+                                      "Missing"  => "Missing",
+                                     ),
+               'scanLocation'     => $scan_location,
+               'qCStatus'         => array(
+                                      "Pass" => "Pass",
+                                      "Fail" => "Fail",
+                                     ),
+               'uploadedBy'       => $uploaderList,
+               'selected'         => array(
+                                      "True"  => "True",
+                                      "False" => "False",
+                                     ),
+               'visitLabel'       => $visitList,
+              ];
+
+        $scan_types = $this->_getScanTypes();
+        foreach ($scan_types as $scan_type) {
+            $query_params        = array('scan_type' => $scan_type);
+            $acq_IDs[$scan_type] = $db->pselectOne(
+                "SELECT ID FROM mri_scan_type WHERE Scan_type=:scan_type",
+                $query_params
+            );
+        }
+
+        foreach ($scan_types as $scan_type) {
+            $mriPfDoneValues = $this->_getMriPfDoneValues($scan_type);
+            $scan_types[$scan_type] = $this->_buildQuery(
+                $scan_type,
+                $this->_getMriPfColumnName($scan_type),
+                $this->_getMriPfTableName($scan_type),
+                $acq_IDs[$scan_type],
+                $mriPfDoneValues
+            );
+        }
+
+        $query = implode(
+            "
+          UNION ALL
+          ",
+            $scan_types
         );
-        // Form Elements
-        $this->addSelect('site', 'Site', $siteList);
-        $this->addBasicText('candId', 'DCCID', ["size" => 9, "maxlength" => 7]);
-        $this->addBasicText('pSCID', 'PSCID', ["size" => 9, "maxlength" => 7]);
-        $this->addSelect('project', 'Project', $projectList2);
-        $this->addSelect('subproject', 'Subproject', $subprojectList2);
-        $this->addSelect('scanType', 'Scan Type', $scan_types);
-        $this->addSelect(
-            'mRIParameterForm',
-            "MRI Parameter Form",
-            array(
-                "Incomplete" => "Incomplete",
-                "Complete"   => "Complete",
-            )
-        );
-        $this->addSelect(
-            'scanDoneInMRIPF',
-            'Scan Done in MRI PF',
-            array(
-                "Yes" => "Yes",
-                "No"  => "No",
-            )
-        );
-        $this->addSelect(
-            'tarchive',
-            'Tarchive Status',
-            array(
-                "In DICOM" => "In DICOM Archives",
-                "Missing"  => "Missing",
-            )
-        );
-        $this->addSelect(
-            'scanLocation',
-            'Scan Location',
-            $scan_location
-        );
-        $this->addSelect(
-            'qCStatus',
-            'QC Status',
-            array(
-                "Pass" => "Pass",
-                "Fail" => "Fail",
-            )
-        );
-        $this->addSelect(
-            'uploadedBy',
-            'Uploaded By',
-            $uploaderList
-        );
-        $this->addSelect(
-            'selected',
-            'Selected',
-            array(
-                "True"  => "True",
-                "False" => "False",
-            )
-        );
-        return true;
+
+        $this->query = " FROM ( " . $query . " ) as tmp";
+
+        $this->columns = [
+                          'PSCID',
+                          'SessionID',
+                          'cand_id',
+                          'site',
+                          'project',
+                          'subproject',
+                          'visit_label',
+                          'scan_type',
+                          'mri_parameter_form',
+                          'scan_done',
+                          'tarchive_loc',
+                          'scan_location',
+                          'qc_status',
+                          'uploaded_by',
+                          'selected',
+                          'CommentID',
+                          'TarchiveID',
+                         ];
+
+        $this->group_by = 'PSCID,
+            SessionID,
+            cand_id,
+            site,
+            project,
+            subproject,
+            visit_label,
+            scan_type,
+            mri_parameter_form,
+            scan_done,
+            tarchive_loc,
+            scan_location,
+            qc_status,
+            selected,
+            uploaded_by,
+            CommentID,
+            TarchiveID ';
+
+        $this->order_by = 'PSCID';
     }
-    
 
     /**
      * BEGIN OVERRIDE
@@ -480,130 +497,6 @@ class Quality_Control extends \NDB_Menu_Filter
      */
     
     /**
-     * Build a list of imaging QC to display in Data Table
-     *
-     * @return bool
-     * @throws DatabaseException
-     */
-    function _setupVariables()
-    {
-
-        $db =& \Database::singleton();
-        $this->skipTemplate = true;
-
-        /**
-         * BEGIN OVERRIDE
-         * 
-         * Changed the way the MRI PF is parsed for IBIS. Refer to IBIS PR#1178 for details.
-         */
-        $scan_types = $this->_getScanTypes();
-        foreach ($scan_types as $scan_type) {
-            $query_params        = array('scan_type' => $scan_type);
-            $acq_IDs[$scan_type] = $db->pselectOne(
-                "SELECT ID FROM mri_scan_type WHERE Scan_type=:scan_type",
-                $query_params
-            );
-        }
-
-        foreach ($scan_types as $scan_type) {
-            $mriPfDoneValues = $this->_getMriPfDoneValues($scan_type);
-            $scan_types[$scan_type] = $this->_buildQuery(
-                $scan_type,
-                $this->_getMriPfColumnName($scan_type),
-                $this->_getMriPfTableName($scan_type),
-                $acq_IDs[$scan_type],
-                $mriPfDoneValues
-            );
-        }
-        
-        /**
-         * END OVERRIDE
-         */
-
-        $query = implode(
-            "
-          UNION ALL
-          ",
-            $scan_types
-        );
-
-        $this->query = " FROM ( " . $query . " ) as tmp";
-
-        $this->columns = [
-            'PSCID',
-            'SessionID',
-            'cand_id',
-            'site',
-            'project',
-            'subproject',
-            'visit_label',
-            'scan_type',
-            'mri_parameter_form',
-            'scan_done',
-            'tarchive_loc',
-            'scan_location',
-            'qc_status',
-            'uploaded_by',
-            'selected',
-            'CommentID',
-            'TarchiveID',
-        ];
-
-        $this->group_by = 'PSCID,
-            SessionID,
-            cand_id,
-            site,
-            project,
-            subproject,
-            visit_label,
-            scan_type,
-            mri_parameter_form,
-            scan_done,
-            tarchive_loc,
-            scan_location,
-            qc_status,
-            selected,
-            uploaded_by,
-            CommentID,
-            TarchiveID ';
-
-        $this->order_by = 'PSCID';
-
-        $this->headers = [
-            'PSCID',
-            'Session ID',
-            'DCCID',
-            'Site',
-            'Project',
-            'Subproject',
-            'Visit Label',
-            'Scan Type',
-            'MRI Parameter Form',
-            'Scan Done in MRI PF',
-            'Tarchive',
-            'Scan Location',
-            'QC Status',
-            'Uploaded By',
-            'Selected',
-            'CommentID',
-            'TarchiveID',
-        ];
-
-        return true;
-    }
-    /**
-     * Converts the results of this menu filter to a JSON format to be retrieved
-     * with ?format=json
-     *
-     * @return a json encoded string of the headers and data from this table
-     */
-    function toJSON()
-    {
-        $result         = $this->toArray();
-        $result['form'] = $this->form->form;
-        return json_encode($result);
-    }
-    /**
      * Include additional JS files
      *
      * @return array of javascript to be inserted
@@ -616,7 +509,7 @@ class Quality_Control extends \NDB_Menu_Filter
         return array_merge(
             $deps,
             array(
-                $baseURL . "/quality_control/js/qualityControlIndex.js",
+             $baseURL . "/quality_control/js/qualityControlIndex.js",
             )
         );
     }
