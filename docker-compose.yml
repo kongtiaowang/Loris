@@ -13,7 +13,7 @@ services:
       - MYSQL_ROOT_PASSWORD=rootpassword
 
   selenium:
-    image: selenium/standalone-firefox-debug:3.8.1-aluminum
+    image: selenium/standalone-firefox:3.8.1-aluminum
     volumes:
       - /dev/shm:/dev/shm
     ports:
@@ -26,12 +26,12 @@ services:
   web:
     build:
       context: .
-      dockerfile: Dockerfile.test.php7
+      dockerfile: Dockerfile
     volumes:
-      - ./:/app
-      - ./test/test_instrument:/app/project/instruments
+      - ./:/var/www/html
+      - ./test/test_instrument:/var/www/html/project/instruments
     environment:
-      - LORIS_DB_CONFIG=/app/test/config.xml
+      - LORIS_DB_CONFIG=/var/www/html/test/config.xml
     depends_on:
       - db
     ports:
@@ -67,60 +67,5 @@ services:
       - web
     entrypoint: /app/test/wait-for-services.sh
     links:
-      - db
-      - selenium:selenium
       - web:web
-  selenium-debug:
-    image: selenium/standalone-firefox-debug:2.53.1
-    links:
-      - web-debug:web
-    ports:
-      - "5901:5900"
 
-  web-debug:
-    build:
-      context: .
-      dockerfile: Dockerfile.test.php7.debug
-    volumes:
-      - ./:/app
-      - ./test/test_instrument:/app/project/instruments
-    environment:
-      - LORIS_DB_CONFIG=/app/test/config.xml
-      - XDEBUG_CONFIG=remote_host=${XDEBUG_REMOTE_HOST}
-      - PHP_IDE_CONFIG=serverName=LorisTests
-    depends_on:
-      - db
-    command: php -S 0.0.0.0:8000 -t /app/htdocs /app/htdocs/router.php
-
-  unit-tests-debug:
-    build:
-      context: .
-      dockerfile: Dockerfile.test.php7.debug
-    volumes:
-      - ./:/app
-    working_dir: /app
-    environment:
-      - LORIS_DB_CONFIG=test/config.xml
-      - XDEBUG_CONFIG=remote_host=${XDEBUG_REMOTE_HOST}
-      - PHP_IDE_CONFIG=serverName=LorisTests
-    depends_on:
-      - db
-    entrypoint: /app/test/wait-for-services.sh
-
-  integration-tests-debug:
-    build:
-      context: .
-      dockerfile: Dockerfile.test.php7.debug
-    volumes:
-      - ./:/app
-    working_dir: /app
-    environment:
-      - LORIS_DB_CONFIG=test/config.xml
-      - SELENIUM_REQUIRED=true
-      - XDEBUG_CONFIG=remote_host=${XDEBUG_REMOTE_HOST}
-      - PHP_IDE_CONFIG=serverName=LorisTests
-    links:
-      - db
-      - selenium-debug:selenium
-      - web-debug:web
-    entrypoint: /app/test/wait-for-services.sh
