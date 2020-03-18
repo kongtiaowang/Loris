@@ -67,7 +67,7 @@ abstract class LorisIntegrationTest extends TestCase
             $database['host'],
             1
         );
-        $this->url = $this->config->getSetting("url");
+        //$this->url = $this->config->getSetting("url");
         $password  = new \Password($this->validPassword);
 
         $this->DB->insert(
@@ -132,7 +132,9 @@ abstract class LorisIntegrationTest extends TestCase
             $selenium_url,
             $desired_capabilities
         );
-
+$this->webDriver->get("https://web:80");
+$a = $this->webDriver->getPageSource();
+print_r($a);
         $this->login("UnitTester", $this->validPassword);
 
         if (extension_loaded('xdebug')
@@ -154,7 +156,7 @@ abstract class LorisIntegrationTest extends TestCase
      */
     protected function login($username, $password)
     {
-        $this->safeGet($this->url);
+        $this->safeGet($this->url);sleep(100);
         /*
         $this->webDriver->wait(120, 1000)->until(
             WebDriverExpectedCondition::presenceOfElementLocated(
