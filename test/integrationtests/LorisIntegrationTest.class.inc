@@ -132,7 +132,7 @@ abstract class LorisIntegrationTest extends TestCase
             $selenium_url,
             $desired_capabilities
         );
-$this->webDriver->get("https://web:8000");
+$this->webDriver->get("https://web:80");
 $a = $this->webDriver->getPageSource();
 print_r($a);
         $this->login("UnitTester", $this->validPassword);
