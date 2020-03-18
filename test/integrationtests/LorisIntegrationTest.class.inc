@@ -67,7 +67,7 @@ abstract class LorisIntegrationTest extends TestCase
             $database['host'],
             1
         );
-        $this->url = $this->config->getSetting("url");
+        //$this->url = $this->config->getSetting("url");
         $password  = new \Password($this->validPassword);
 
         $this->DB->insert(
@@ -132,7 +132,7 @@ abstract class LorisIntegrationTest extends TestCase
             $selenium_url,
             $desired_capabilities
         );
-$this->webDriver->get("https://web:80");
+$this->webDriver->get("https://web:8000");
 $a = $this->webDriver->getPageSource();
 print_r($a);
         $this->login("UnitTester", $this->validPassword);
