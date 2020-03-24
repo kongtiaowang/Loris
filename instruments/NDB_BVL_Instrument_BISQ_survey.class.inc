@@ -85,7 +85,7 @@ class NDB_BVL_Instrument_BISQ_survey extends NDB_BVL_Instrument
     {
         // display test name
         $this->addHeader("Brief Infant Sleep Questionnaire (BISQ_survey)");
-        $this->_addMetadataFields();
+        $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
         $opts = array(
             null => "",
             "mother" => "Mother",
