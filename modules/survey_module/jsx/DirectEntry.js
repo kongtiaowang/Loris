@@ -361,7 +361,7 @@ class DirectEntry extends React.Component {
 			 );
 		} else if (this.state.page === -1 || (this.state.page === 0 && this.state.InstrumentJSON.Elements.length === 1)) {
 			 buttons = (
-			 	<button type="button" className="btn btn-primary btn-lg">Done</button>
+				<button type="button" className="btn btn-primary btn-lg" onClick={this.nextPage}>Done</button>
 			 );
 		} else if (this.state.page === 0) {
 			buttons = (
