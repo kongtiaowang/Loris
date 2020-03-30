@@ -170,7 +170,7 @@ class NDB_BVL_Instrument_apsi_survey extends NDB_BVL_Instrument
                 'q13' => '13) Is it difficult to soothe your child when he/she is upset?',
                 'q14' => '14) Does your child show sustained interest and pleasure in interacting with others?',
                 'q15' => '15) Does your child have difficulty with change, such as moving from one activity to another, giving up a toy, using a new cup, or other changes in routine?',
-                'q16' => '16) Compared to other children his/her age, does your child have difficulty using his/her hands or controlling his/her movements (e.g., grasping something small, rolling  over, sitting up or walking)?',
+                'q16' => '16) Compared to other children his/her age, does your child have difficulty using his/her hands or controlling his/her movements (e.g., grasping something small, rolling over, sitting up or walking)?',
                 'q17' => '17) Does your child have unusual or repetitive motor behaviours such as walking on his/her toes, hand posturing or flapping, or flicking fingers close to his/her eyes?',
                 'q18' => '18) Does your child ever take someone else’s hand and place it on an object, or use another’s hand for actions such as opening a door?',
                 'q19' => '19) Does your child have any unusual sensory behaviours such as smelling of toys or objects, feeling or avoiding certain textures, or seeking out or avoiding particular sounds?',
