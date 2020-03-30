@@ -1,0 +1,165 @@
+<?php
+/*
+ * This file contains the NDB_BVL_Instrument_BISQ_survey
+ * class
+ *
+ * PHP Version 5
+ *
+ * @category Instrument
+ * @package  Neuropsych
+ * @author   sruthy.mathew@mcin.ca
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/IBIS/
+ */
+/**
+ * Creates the form elements for the BISQ instrument (Survey Version)
+ *
+ * @category Instrument
+ * @package  Neuropsych
+ * @author   sruthy.mathew@mcin.ca
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/IBIS/
+ */
+class NDB_BVL_Instrument_BISQ_survey extends NDB_BVL_Instrument
+{
+    /**
+     * sets up basic data, such as the LorisForm object, and so on.
+     *
+     * @param string $commentID the CommentID identifying the data to load
+     * @param string $page if a multipage form, the page to show
+     * @return void
+     * @access public
+     */
+    function setup($commentID, $page)
+    {
+        $this->formType = "XIN";
+        $this->form = new LorisForm('BISQ_survey_form');
+        $this->page = $page;            // page label (number or
+        // string - used by
+        // user-defined child classes)
+        // set the object properties
+        $this->testName = "BISQ_survey";           // test_names.Test_name
+        $this->table = 'BISQ_survey';              // name of database table corresponding to instrument
+        // data keyed by commentID
+        $this->commentID = $commentID;
+        //The array of dates/timestamps to convert to database dates/timestamps
+        //Any LorisForm date elements must be listed here
+        $this->dateTimeFields = array("Date_taken");
+        //The array of selects with multiple answers allowed
+        //Any LorisForm multiple selects must be listed here
+        $this->_selectMultipleElements = array();
+        // required fields for data entry completion status
+        $this->_requiredElements = array('CommentID');
+        // setup the form
+        $this->_setupForm();
+    }
+    //If the instrument is not paged, remove the switch from the _setupForm method and add all the form Elements in this function.
+    /**
+     * method to build the LorisForm object into a paged form
+     *
+     * @return void
+     * @access private
+     */
+    function _setupForm()
+    {
+        //determine page to display
+        if (preg_match(
+            "/BISQ_survey(_page[0-9]+)/",
+            $this->page,
+            $matches
+        )) {
+            call_user_func(array($this, $matches[1]));
+        } else {
+            $this->_main();
+        }
+        $this->form->addFormRule(array(&$this, 'XINValidate'));
+    }
+    /**
+     * generates the main page of the form.
+     *
+     * @return void
+     * @access private
+     *
+     */
+    function _main()
+    {
+        // display test name
+        $this->addHeader("Brief Infant Sleep Questionnaire (BISQ_survey)");
+        $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
+        $opts = array(
+            null => "",
+            "mother" => "Mother",
+            "father" => "Father",
+            "step_mother" => "Step Mother",
+            "step_father" => "Step Father",
+            "other" => "Other",
+        );
+        $this->addSelect("responder", "Name of the Responder:", $opts);
+        $this->addBasicText("other_responder", $this->indent . "If Other, please describe:");
+        $this->XINRegisterRule(
+            "other_responder",
+            array("responder{@}=={@}other"),
+            "Required",
+            "other_responder"
+        );
+        $opts1 = array(
+            null => "",
+            "oldest" => "Oldest",
+            "middle" => "Middle",
+            "youngest" => "Youngest",
+            "step_father" => "Not Answered",
+
+        );
+        $this->addSelect("birth_order", "Birth order of the child:", $opts1);
+        $where_opts = array(
+            null => "",
+            "infant_crib_seperate_room" => "Infant crib in a separate room",
+            "infant_crib_parent_room" => "Infant crib in parents’ room",
+            "parents_bed" => "In parents’ bed",
+            "infant_crib_in_room_with_sibling" => "Infant crib in room with sibling",
+            "other" => "Other",
+        );
+        $this->addSelect("sleeping_arrangement", "Sleeping arrangement:", $where_opts);
+        $this->addBasicText("other_sleeping_arrangement", $this->indent . "If Other, please describe:");
+        $this->XINRegisterRule(
+            "other_sleeping_arrangement",
+            array("sleeping_arrangement{@}=={@}other"),
+            "Required",
+            "other_sleeping_arrangement"
+        );
+        $pos_opts = array(
+            null => "",
+            "belly" => "On his/her belly ",
+            "side" => "On his/her side",
+            "back" => "On his/her back",
+            "not_answered" => "Not Answered",
+        );
+        $this->addSelect("sleep_position", "In what position does your child sleep most of the time?", $pos_opts);
+        $this->addHourMinElement("night_sleep", "How much time does your child spend in sleep during the NIGHT (between 7 in the evening and 7 in the morning)? ");
+        $this->addHourMinElement("day_sleep", "How much time does your child spend in sleep during the DAY (between 7 in the morning and 7 in the evening)?");
+        $this->addTextElement("night_wakes_average_count","Average number of night wakings per night:");
+        $this->addHourMinElement("night_wakefullness", "How much time during the night does your child spend in wakefulness (from 10 in the evening to 6 in the morning)? ");
+        $this->addHourMinElement("time_to_put_to_sleep", "How long does it take to put your baby to sleep in the evening? ");
+        $sleep_opts = array(
+            null => "",
+            "while_feeding" => "While feeding ",
+            "being_rocked" => "Being rocked",
+            "bed_alone" => "In bed alone",
+            "bed_near_parent" => "In bed near parent",
+            "not_answered" => "Not Answered",
+        );
+        $this->addSelect("sleep_opts", " How does your baby fall asleep?", $sleep_opts);
+        $this->addHourMinElement("when_fall_asleep", "When does your baby usually fall asleep for the night: ");
+        $sleep_prob_opts = array(
+         null => "",
+         "belly" => " A very serious problem ",
+         "side" => "A small problem",
+         "back" => "Not a problem at all",
+         "not_answered" => "Not Answered"
+        );
+        $this->addSelect("is_sleep_problem", " Do you consider your child’s sleep as a problem?", $sleep_prob_opts);
+
+    }
+
+
+}
