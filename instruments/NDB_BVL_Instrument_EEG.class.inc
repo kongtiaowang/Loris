@@ -11,9 +11,21 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
   //   a file on the local system).
   static $FILE_FIELDS = array(
       'file_top'              => [ 'required' => 0, 'page' => ''         , 'name' => 'File Name'],
-      'second_file_top'       => [ 'required' => 0, 'page' => ''         , 'name' => 'Secondary File'], 
-      'photo_file'            => [ 'required' => 0, 'page' => 'EEG_page1', 'name' => 'Photo File'],
+      'second_file_top'       => [ 'required' => 0, 'page' => ''         , 'name' => 'Secondary File']
   );
+
+  private const YES_NO = array(
+      null => '',
+      'y'  => 'Yes',
+      'n'  => 'No'
+  );
+
+  private const PARADIGM_COMPLETENESS = [
+      null => '',
+      'y' => 'Yes',
+      'n' => 'No',
+      'p' => 'Partial'
+  ];
 
   /**
    * sets up basic data, such as the LorisForm object, and so on.
@@ -25,7 +37,7 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
    */
    function setup($commentID = NULL, $page = NULL) {
        parent::setup($commentID, $page);
-		
+
        $this->formType="XIN";
        $this->form = new LorisForm('test_form');
 
@@ -44,7 +56,7 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
            'addEmptyOption'   => true,
            'emptyOptionValue' => null,
        );
-       
+
        // setup the form
        $this->_setupForm();
    }
@@ -77,11 +89,11 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
 
         $defaults['subjectID']    = $this->getPSCID();
         $defaults['ageAtSession'] = 'Unknown';
-	
+
         $dateOfAdministration = $this->getDateOfAdministration();
         if ($dateOfAdministration) {
             $age = $this->getCandidateAge($dateOfAdministration);
-            if(is_array($age)) { 
+            if(is_array($age)) {
                 if($age['year']) {
                     $defaults['ageAtSession'] = sprintf(
                         "%d year(s), %d month(s), %d day(s)", $age['year'], $age['mon'], $age['day']
@@ -91,9 +103,9 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
                 } else {
                     $defaults['ageAtSession'] = "{$age['day']} day(s)";
                 }
-            } 
+            }
         }
-		
+
         $gender = 'Unknown';
         $session = $this->getSessionID();
         if (!empty($session)) {
@@ -102,7 +114,7 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
             $gender    = $candidate->getCandidateGender() ?? 'Unknown';
         }
         $defaults['gender'] = $gender;
-    
+
         foreach (array_keys(self::$FILE_FIELDS) as $f) {
             $defaults[$f] = $defaults[$f] ?? '<None>';
         }
@@ -114,7 +126,7 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
      * generates the main page of the form.
      *
      * @return void
-     * @access private  
+     * @access private
      */
     function _main(){
         // display test name
@@ -130,12 +142,10 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
 
         $this->addTextElement("experimenter_initials", "Experimenter Initials:");
         $this->addTextElement("behavioral_assistant_initials", "Behavioral Assistant Initials:");
-        $this->addSelect('caregiver_present', 'Caregiver Present?', array(NULL=>"","y"=>"Yes","n"=>"No"));
-        $this->addTextElement("caregiver_role", "Caregiver role:");
+        $this->addSelect('caregiver_present', 'Caregiver Present?', self::YES_NO);
 
-        $this->addScoreColumn('file_top', "File Name (optional):");
+        $this->addScoreColumn('file_top', "File Name:");
         $this->form->addElement('file', "file_top_chooser", '');
-        $this->XINRegisterRule("file_top_chooser", array("file_top_chooser{@}==={@}NEVER_REQUIRED"));
 
         $this->addScoreColumn('second_file_top', 'Secondary File (optional):');
         $this->form->addElement('file', "second_file_top_chooser", '');
@@ -144,95 +154,93 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
         $this->addTextElement("ofc", "Head Measurement (OFC): (CM)");
         $this->addTextElement("net_serial_number", "Net Serial Number:");
         $this->addTextAreaElement("additional_notes", "Additional Pre-Session Notes:");
-    }
 
-    /**
-     * Generates the 'EEG Net Information' section.
-     */
-    function _page1(){
-       // EEG Net Information
-        $this->form->addElement("header", null, "<div ".self::$cssStyle2.">EEG Net Information</div>");
-        $this->addSelect("impedance_before_netting", "Impedances measured before netting?", array(NULL=>"","y"=>"Yes","n"=>"No")); 
+        // EEG Net Information
+        $this->form->addElement('header', null, "<div ".self::$cssStyle2." style='text-align:center'>EEG Net Information</div>");
+        $this->addSelect("impedance_before_netting", "Impedances measured before netting?", self::YES_NO);
         $this->addTextAreaElement("bad_channels_before_netting", "Bad channels before netting:");
-        $this->addSelect('impedance_after_netting', 'Impedances measured after netting?', array(NULL=>"","y"=>"Yes","n"=>"No"));
+        $this->addSelect('impedance_after_netting', 'Impedances measured after netting?', self::YES_NO);
         $this->addTextAreaElement("bad_channels_after_netting", "Bad channels after netting:");
-
         $this->addSelect('net_quality_rating', 'Net Quality Rating:', array(NULL=>"","1"=>"1","2"=>"2","3"=>"3","not_answered"=>"Not Answered"));
-        $this->addTextAreaElement("netting_notes", "Netting Notes:");
-        $this->addSelect('Photo_of_Net_Placement_Taken', 'Photo of Net Placement Taken? If yes, please upload to database', array(NULL=>"","y"=>"Yes","n"=>"No"));
-
-        $this->addScoreColumn('photo_file', "Photo File (optional):");
-        $this->form->addElement('file', "photo_file_chooser", '');
-        $this->XINRegisterRule("photo_file_chooser", array("photo_file_chooser{@}==={@}NEVER_REQUIRED"));
     }
 
     /**
      * Generates the 'Resting Bubbles' section.
      */
-    function _page2(){
-        // PARADIGM 1:Resting Bubbles
-        $this->form->addElement("header", null, "<div ".self::$cssStyle2." >PARADIGM 1: Resting Bubbles</div>");
+    function _page1(){
+        // PARADIGM 1: Resting (Bubbles)
+        $this->form->addElement("header", null, "<div ".self::$cssStyle2." >PARADIGM 1: Resting (Bubbles)</div>");
 
-        $this->addTextAreaElement("note_1_1", "Artifact/Net Movement Notes:");
-        $this->addTextAreaElement("note_1_3", "General Notes (child behavior, breaks taken, adjustments etc.):");
+        $this->addTextAreaElement('note_1_1', 'Artifact/Net Movement Notes:');
+        $this->addTextAreaElement('note_1_2', 'General Notes (soothing devices used, child behavior, breaks taken, etc.):');
         $this->addSelect('mood_1', 'Mood:', array(NULL=>"","1"=>"1","2"=>"2","3"=>"3","4"=>"4","5"=>"5"));
-        $this->addTextElement("trials_completed_1", "Trials Completed:");
+        $this->addSelect('paradigm_completed_1', 'Paradigm Completed?', self::PARADIGM_COMPLETENESS);
     }
 
     /**
      * Generates the 'VEP' section.
      */
-    function _page3(){
-        // PARADIGM 2:VEP
-        $this->form->addElement('header', null, "<div ".self::$cssStyle2." >PARADIGM 2: VEP</div>");
+    function _page2(){
+        // PARADIGM 2: Visual (Checkerboard)
+        $this->form->addElement('header', null, "<div ".self::$cssStyle2." >PARADIGM 2: Visual (Checkerboard)</div>");
 
         $this->addTextAreaElement("note_2_1", "Artifact/Net Movement Notes:");
-        $this->addTextAreaElement("note_2_2", "Soothing Devices Used:");
-        $this->addTextAreaElement("note_2_3", "General Notes (child behavior, breaks taken, adjustments etc.):");
+        $this->addTextAreaElement("note_2_2", "General Notes (soothing devices used, child behavior, breaks taken, etc.):");
         $this->addSelect('mood_2', 'Mood:', array(NULL=>"","1"=>"1","2"=>"2","3"=>"3","4"=>"4","5"=>"5"));
-        $this->addSelect('quality_2', 'Quality Rating:', array(NULL=>"","1"=>"1","2"=>"2","3"=>"3"));
-        $this->addTextElement("trials_completed_2", "Trials Completed:");
+        $this->addSelect('paradigm_completed_2', 'Paradigm Completed?', self::PARADIGM_COMPLETENESS);
     }
 
     /**
      * Generates the 'AEP' section.
      */
-    function _page4(){
-        // PARADIGM 3:AEP    
-        $this->form->addElement('header', null, "<div ".self::$cssStyle2." >PARADIGM 3: AEP</div>");
+    function _page3(){
+        // PARADIGM 3: Resting (Bubbles)
+        $this->form->addElement('header', null, "<div ".self::$cssStyle2." >PARADIGM 3: Resting (Bubbles)</div>");
 
         $this->addTextAreaElement("note_3_1", "Artifact/Net Movement Notes:");
-        $this->addTextAreaElement("note_3_2", "Soothing Devices Used:");
-        $this->addTextAreaElement("note_3_3", "General Notes (child behavior, breaks taken, adjustments etc.):");
+        $this->addTextAreaElement("note_3_2", "General Notes (soothing devices used, child behavior, breaks taken, etc.):");
         $this->addSelect('mood_3', 'Mood:', array(NULL=>"","1"=>"1","2"=>"2","3"=>"3","4"=>"4","5"=>"5"));
-        $this->addSelect('quality_3', 'Quality Rating:', array(NULL=>"","1"=>"1","2"=>"2","3"=>"3"));
-        $this->addTextElement("trials_completed_3", "Trials Completed:");
+        $this->addSelect('paradigm_completed_3', 'Paradigm Completed?', self::PARADIGM_COMPLETENESS);
     }
 
     /**
      * Generates the 'Social/Non-social' section.
      */
-    function _page5(){
-        // PARADIGM 4: Social/NonSocial
-        $this->form->addElement('header', null, "<div ".self::$cssStyle2." >PARADIGM 4: Social/NonSocial</div>");
+    function _page4(){
+        // PARADIGM 4: Auditory (Bubbles with Tone)
+        $this->form->addElement('header', null, "<div ".self::$cssStyle2." >PARADIGM 4: Auditory (Bubbles with Tone)</div>");
 
         $this->addTextAreaElement("note_4_1", "Artifact/Net Movement Notes:");
-        $this->addTextAreaElement("note_4_2", "Soothing Devices Used:");
-        $this->addTextAreaElement("note_4_3", "General Notes (child behavior, breaks taken, adjustments etc.):");
+        $this->addTextAreaElement("note_4_2", "General Notes (soothing devices used, child behavior, breaks taken, etc.):");
         $this->addSelect('mood_4', 'Mood:', array(NULL=>"","1"=>"1","2"=>"2","3"=>"3","4"=>"4","5"=>"5"));
-        $this->addSelect('quality_4', 'Quality Rating:', array(NULL=>"","1"=>"1","2"=>"2","3"=>"3"));
-        $this->addTextElement("trials_completed_4", "Trials Completed:");
+        $this->addSelect('paradigm_completed_4', 'Paradigm Completed?', self::PARADIGM_COMPLETENESS);
     }
 
     /**
-     * Generates the 'Overall EEG session' section.
+     * Generates the 'Resting Bubbles' section.
+     */
+    function _page5(){
+        // PARADIGM 5:Resting (Bubbles)
+        $this->form->addElement("header", null, "<div ".self::$cssStyle2." >PARADIGM 5: Resting (Bubbles)</div>");
+
+        $this->addTextAreaElement("note_5_1", "Artifact/Net Movement Notes:");
+        $this->addTextAreaElement("note_5_2", "General Notes (soothing devices used, child behavior, breaks taken, etc.):");
+        $this->addSelect('mood_5', 'Mood:', array(NULL=>"","1"=>"1","2"=>"2","3"=>"3","4"=>"4","5"=>"5"));
+        //$this->addTextElement("trials_completed_5", "Trials Completed:");
+        $this->addSelect('paradigm_completed_5', 'Paradigm Completed?', self::PARADIGM_COMPLETENESS);
+    }
+
+    /**
+     * Generates the 'General EEG session' section.
      */
     function _page6(){
-        $this->form->addElement('header', null, "<div ".self::$cssStyle2." >Overall EEG Session Information</div>");
-        $this->addTextAreaElement("note_5_1", "General Notes:", array('cols'=>50, 'rows'=>4));
+        $this->form->addElement('header', null, "<div ".self::$cssStyle2." >General Session Notes</div>");
+        $this->addTextAreaElement("note_6_1", "General Notes:");
         $this->addTextElement("end_time", "End time (24h format, HH:MM, e.g. 13:00):");
 
-        $this->addTextAreaElement("note_5_2", "Notes on Order Deviations:");
+        $this->addSelect('standard_paradigm_order', 'Standard Paradigm Order Used?', self::YES_NO);
+
+        $this->addTextAreaElement("note_6_2", "Order Deviations Notes:");
     }
 
     /**
@@ -258,12 +266,12 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
 
         //--------------------------//
         // Process all file fields  //
-        //--------------------------// 
+        //--------------------------//
         foreach (self::$FILE_FIELDS as $k => $v) {
             //---------------------------------------------//
             // If the associated file chooser was used and //
             // the chooser is on the current page          //
-            //---------------------------------------------//     
+            //---------------------------------------------//
             if ($v['page'] != $this->page || $files["{$k}_chooser"]["name"] == '') {
                 continue;
             }
@@ -281,7 +289,7 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
             );
             $eegDateTaken = $row['date_taken'];
             $mediaID      = $row['ID'];
-           
+
             // Build insert query
             $config    = NDB_Config::singleton();
             $mediaPath = $config->getSetting('mediaPath');
@@ -300,7 +308,7 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
             //-----------------------------------------------------------//
             // Try to move the file from the tmp upload directory to the //
             // media module upload directory                             //
-            //-----------------------------------------------------------//          
+            //-----------------------------------------------------------//
             if (move_uploaded_file($files["{$k}_chooser"]["tmp_name"], $mediaPath . $files["{$k}_chooser"]['name'])) {
                 try {
                     // File alread exists in media module: update
@@ -325,7 +333,7 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
                     );
                 } catch (DatabaseException $e) {
                     print_r($e);
-                } 
+                }
             } // if move_upload
         } // foreach
     }
@@ -348,7 +356,7 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
             } elseif($matches[1] > 23 || $matches[2] > 59) {
                 $errors['start_time_group'] = 'You must enter a time in 24H format, using the colon as the hour/minute separator (e.g. 08:15 or 20:30)';
             }
-        } 
+        }
 
         //----------------------------------//
         // Validate end time, if specified  //
@@ -360,38 +368,12 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
                 $errors['end_time_group'] = 'You must enter a time in 24H format, using the colon as the hour/minute separator (e.g. 08:15 or 20:30)';
             }
         }
- 
-        if (isset($values['Photo_of_Net_Placement_Taken'])) {
-            if ($values['Photo_of_Net_Placement_Taken'] == 'n') {
-                if ($values['photo_file_chooser']['name'] != '') {
-                    $errors['photo_file_chooser'] = 'You cannot select a file unless you indicate that a photo was taken (above)';
-                } else {
-                    $db        =& Database::singleton();
-                    $photoFile = $db->pselectOne(
-                        "SELECT photo_file FROM {$this->table} WHERE CommentID=:CommentID",
-                        array("CommentID"=>$this->getCommentID())
-                    );
-                    if ($photoFile != '') {
-                        $errors['Photo_of_Net_Placement_Taken'] = 'You cannot select "No" since a photo file has been uploaded in the database';
-                    }
-                }
-            } elseif ($values['photo_file_chooser']['name'] == '' && $values['Photo_of_Net_Placement_Taken'] == 'y') {
-                $db        =& Database::singleton();
-                $photoFile = $db->pselectOne(
-                    "SELECT photo_file FROM {$this->table} WHERE CommentID=:CommentID",
-                    array("CommentID"=>$this->getCommentID())
-                );
-                if ($photoFile == '') {
-                    $errors['photo_file_chooser'] = 'You must select a file since you indicated that a photo was taken (above)';
-                }
-            }
-        }
 
         //---------------//
         // Validate OFC  //
         //---------------//
         $this->validate_positive_numeric($values, 'ofc', $errors, 'ofc_group');
-      
+
         //--------------------------------------------------------------------//
         // Validate that there are no duplicates in the set of files chosen   //
         // with the file choosers on the current page                        //
@@ -415,7 +397,7 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
         }
 
         //-----------------------------//
-        // Validate all required files // 
+        // Validate all required files //
         //-----------------------------//
         foreach (self::$FILE_FIELDS as $k => $v) {
             if (isset($errors["{$k}_chooser"])) {
@@ -429,14 +411,14 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
             if ($v['page'] != $this->page) {
                 continue;
             }
-       
+
             $db        =& Database::singleton();
             // Check that a file for $k already exists in the DB
             $fileAlreadyUploaded = $db->pselectOne(
                 "SELECT $k FROM {$this->table} WHERE CommentID=:CommentID",
                 array('CommentID' => $this->getCommentID())
             );
-      
+
             // File chooser for $k was not used but there's already a file in the DB
             // for $k: all good
             if ($fileAlreadyUploaded && $values["{$k}_chooser"]['name'] == '') {
@@ -473,8 +455,7 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
                 }
             } // else
         } // foreach
- 
+
         return $errors;
     }
 }
- 
