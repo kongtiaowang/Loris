@@ -6,6 +6,7 @@
         <table class="table table-striped table-bordered">
         <tbody><tr class="reviewPage">
             <td><div><b>No</b></div></td>
+            <td><div><b>Visit</b></div></td>
             <td><div><b>Survey</b></div></td>
             <td><div><b>Status</b></div></td>
             <td><div><b>Survey Link</b></div></td>
@@ -15,6 +16,7 @@
         {section name=data loop=$survey_data}
         <tr class="reviewPage">
             <td><div><p>{$number++}</p></div></td>
+            <td><div><p>{$survey_data[data].Visit_label}</p></div></td>
             <td><div><p>{$survey_data[data].Full_name}</p></div></td>
             {if $survey_data[data].Status == 'Complete'}
                 <td id="complete"><div><p>{$survey_data[data].Status}</p></div></td>
