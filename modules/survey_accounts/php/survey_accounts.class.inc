@@ -56,6 +56,8 @@ class Survey_Accounts extends \NDB_Menu_Filter
             AND   s.Active = 'Y'";
         $parent_portal_query = "CASE 
                         WHEN (s.Visit_label='VSA' AND p.Email!='') THEN c.ParentID 
+                        WHEN (s.Visit_label IN ('V06', 'V12','V24','V36') and c.ProjectID IN('5','8','10' )
+                        AND p.Email!='') THEN c.ParentID
                         ELSE 'NA'
                         END";
 
