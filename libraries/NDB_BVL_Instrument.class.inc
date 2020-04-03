@@ -1129,7 +1129,7 @@ class NDB_BVL_Instrument extends NDB_Page
     function _getQuickformDate($databaseValue)
     {
         throw new Exception(
-            "The function _getQuickformDate has been depricated. 
+            "The function _getQuickformDate has been depricated.
             Please contact LORIS developer mail list for support."
         );
     }
@@ -2274,11 +2274,7 @@ class NDB_BVL_Instrument extends NDB_Page
 
         $inst = json_decode($this->toDirectJSON());
 
-        $temp = $this->getFlatInstrumentJSON($inst);
-
-        $smarty   = new Smarty_neurodb();
         $tpl_data = array();
-
         $tpl_data['questions'] = $this->getFlatInstrumentJSON($inst);
 
         $Responses = $DB->pselectRow(
@@ -2296,7 +2292,7 @@ class NDB_BVL_Instrument extends NDB_Page
     }
 
     /**
-     * Function that takes a API formatted instrument and flattens 
+     * Function that takes a API formatted instrument and flattens
      * the object to a non nested element array
      *
      * @param array $json the array to be flatten
@@ -2306,7 +2302,7 @@ class NDB_BVL_Instrument extends NDB_Page
     function getFlatInstrumentJSON($json) {
 
         $flatArray = array();
-        
+
         foreach ($json->Elements as $element) {
             if ($element->Type === "ElementGroup") {
                 $flatArray = array_merge(
@@ -2319,6 +2315,7 @@ class NDB_BVL_Instrument extends NDB_Page
                     case "text":
                     case "date":
                     case "time":
+                    case 'advcheckbox':
                         $Description = $element->Description;
                         if (!$Description) {
                             // for elements nested in groups need to get description
@@ -2624,7 +2621,7 @@ class NDB_BVL_Instrument extends NDB_Page
             $tempForm[] = PageElementsFormatter::formatElement($value, $key);
         }
         $tempPage["Elements"] = $tempForm;
-        
+
         $this->form->form = array();
         $tempForm = array();
         $instrumentJSON['form'][] = $tempPage;
