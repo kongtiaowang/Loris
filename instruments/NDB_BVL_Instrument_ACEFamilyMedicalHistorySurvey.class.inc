@@ -65,10 +65,6 @@ class NDB_BVL_Instrument_ACEFamilyMedicalHistorySurvey extends NDB_BVL_Instrumen
      *
      */
 
-    /*
-      * Header function for yes/no questions
-      *
-      */
 
     function displayHeaders($header_count) {
         $group[] =& $this->form->createElement(
@@ -128,7 +124,7 @@ class NDB_BVL_Instrument_ACEFamilyMedicalHistorySurvey extends NDB_BVL_Instrumen
         $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
         $table_heading = array('mother' => 'Biological Mother', 'father' => 'Biological Father', 'sibling1' => 'Sibling 1', 'sibling2' => 'Sibling 2',
             'sibling3' => 'Sibling 3', 'sibling4' => 'Sibling 4', 'sibling5' => 'Sibling 5');
-        $questions = array('relation' => 'Specify Relation', 'currentage' => 'Current age(months)', 'gender' => 'Sex: Male(M) or Female(F)',
+        $questions = array('relation' => 'Specify Relation', 'currentage' => "Current age (Parent's age can be entered in years)", 'gender' => 'Sex: Male(M) or Female(F)',
             'last_grade_completed' => 'Last Grade Completed', 'asd' => '1. Autism Spectrum Disorder', 'autistic_disorder' => '2. Autistic Disorder',
             'asperger_syndrome' => '3. Asperger Syndrome', 'rett_syndrome' => '4. Rett Syndrome', 'pdd_nos' => '5. PDD-NOS', 'history_speechdelay' => '6. History Speech Delay',
             'history_development_delay' => '7. History Development Delay', 'history_learndisability' => '8. History Learning Disability',
@@ -146,7 +142,10 @@ class NDB_BVL_Instrument_ACEFamilyMedicalHistorySurvey extends NDB_BVL_Instrumen
         $c=0;
         foreach ($questions as $key => $question) {
             $c++;
-            $this->displayHeaders($c);
+
+                $this->displayHeaders($c);
+            
+
             if ($key == "relation") {
 
 
