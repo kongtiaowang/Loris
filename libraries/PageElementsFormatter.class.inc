@@ -1,7 +1,7 @@
 <?php
 
 class PageElementsFormatter {
-	
+
 	static function formatElement($element, $elName) {
 		$tempElement = array(
 					"Type" => $element['type'],
@@ -27,9 +27,12 @@ class PageElementsFormatter {
         			"Level" => 1
     			);
 				break;
-			case 'group': 
+			case 'group':
 				$tempElement = self::formatGroup($element, $tempElement);
 				break;
+			case 'advcheckbox':
+			    $tempElement = self::formatAdvcheckbox($element, $tempElement);
+			    break;
 		}
 		return $tempElement;
 	}
@@ -56,7 +59,7 @@ class PageElementsFormatter {
 		if($oldElem['type'] === 'textarea') {
 			$newElem['Type'] = 'text';
 			$newElem['Options']['Type'] = 'large';
-		} 
+		}
 
 		return $newElem;
 	}
@@ -86,6 +89,19 @@ class PageElementsFormatter {
 		return $newElem;
 	}
 
+    private function formatAdvcheckbox($oldElem, $newElem) {
+        $newElem['States'] = array(
+            'Values' => [],
+            'RequireResponse' => false,
+        );
+        if (isset($oldElem['checkStates'])) {
+            foreach ($oldElem['checkStates'] as $key => $value) {
+                $newElem['States']['Values'][$key] = $value;
+            }
+        }
+        else {
+            $newElem['States']['Values'] = [0, 1]; // Default to an arbitrary [0, 1], [false, true] is not supported to simplify the issue
+        }
+        return $newElem;
+    }
 }
-
-?>

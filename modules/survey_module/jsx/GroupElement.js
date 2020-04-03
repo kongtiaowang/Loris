@@ -325,6 +325,14 @@ class BaseElement extends React.Component {
 		this.props.updateAnswer(this.props.element.Name, e.target.value);
 	}
 
+	onSelect(lNull, value) {
+		if (this.props.value !== value) {
+			this.props.updateAnswer(this.props.element.Name, value);
+		} else {
+			this.props.updateAnswer(this.props.element.Name, lNull);
+		}
+	}
+
 	render() {
 		let element;
 		let classInfo = this.props.classInfo;
@@ -376,6 +384,25 @@ class BaseElement extends React.Component {
 						{options}
 					</select>
 				);
+				break;
+			case 'advcheckbox':
+				let value = this.props.value != null ? this.props.value : '';
+				let checked = '';
+				let lNull = this.props.element.States.Values[0];
+				let strValue = String(this.props.element.States.Values[1]);
+				if (strValue === value) {
+					checked = (
+						<i className="glyphicon glyphicon-ok" ></i>
+					);
+				}
+
+				element = (
+						<div className="selectBox" onClick={this.onSelect.bind(this, lNull, strValue)}>
+							<label className="btn btn-default btn-box">
+								{checked}
+							</label>
+						</div>
+					);
 				break;
 			case 'label':
 				let content = '';
