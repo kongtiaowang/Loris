@@ -63,6 +63,18 @@ class ElementGroup extends React.Component {
 				labelClass = 'col-xs-12 col-sm-2 field_question';
 				elementClass = 'col-xs-12 col-sm-2';
 				break;
+            case 6:
+                labelClass = 'col-xs-12 col-sm-2 field_question';
+                elementClass = 'col-xs-10 col-sm-custom';
+                break;
+            case 7:
+                labelClass = 'col-xs-12 col-sm-2 field_question';
+                elementClass = 'col-xs-10 col-sm-custom';
+                break;
+            case 8:
+                labelClass = 'col-xs-12 col-sm-2 field_question';
+                elementClass = 'col-xs-10 col-sm-custom';
+                break;
 		}
 
 		if(this.props.errors[this.props.element.Name]) {

@@ -62,6 +62,11 @@
         -webkit-box-shadow: inset 0 3px 5px rgba(0,0,0,0.125);
         box-shadow: inset 0 3px 5px rgba(0,0,0,0.125);
     }
+    @media (min-width: 768px) {
+        .col-sm-custom {
+            width: 12.16666667%;
+        }
+    }
 </style>
 
 <div id="reactInput">
