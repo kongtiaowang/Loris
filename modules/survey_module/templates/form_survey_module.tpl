@@ -18,17 +18,18 @@
 	.field_input > * {
 		margin-bottom: 5px;
 	}
-	.btn-circle {
+	.btn-circle, .btn-box {
         width: 30px;
         height: 30px;
         text-align: center;
         padding: 6px 0;
         font-size: 12px;
         line-height: 1.428571429;
-        border-radius: 15px;
         margin-right: 10px;
         background: white;
-
+    }
+    .btn-circle {
+        border-radius: 15px;
     }
     .select-option:hover {
       	background: lightgrey;
@@ -61,6 +62,9 @@
         background-image: none;
         -webkit-box-shadow: inset 0 3px 5px rgba(0,0,0,0.125);
         box-shadow: inset 0 3px 5px rgba(0,0,0,0.125);
+    }
+    .h3title {
+        font-size: 24px;
     }
     @media (min-width: 768px) {
         .col-sm-custom {

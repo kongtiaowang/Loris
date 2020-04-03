@@ -61,10 +61,9 @@ class DirectEntry extends React.Component {
 			api_url: url.origin + "/survey_module/ajax/survey_api.php" + url.search,
 			submitState: 0 //0 = not submitted, 1 = successfull submit, 2 = already submitted, 3 = error in form submit
 	    };
-
 	}
 
-	componentWillMount() {
+	componentDidMount() {
 
 		$.ajax({
 		  url: this.state.api_url,
@@ -111,7 +110,6 @@ class DirectEntry extends React.Component {
 				});
 			}
 		});
-
 		
 	}
 
