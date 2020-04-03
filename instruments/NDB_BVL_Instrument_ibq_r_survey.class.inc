@@ -87,7 +87,7 @@ class NDB_BVL_Instrument_ibq_r_survey extends NDB_BVL_Instrument
         // setup the form
         $this->_setupForm();
         // required fields for data entry completion status
-        $this->_requiredElements = array('Date_taken', 'q_1', 'q_11', 'q_32', 'q_46', 'q_90', 'q_149', 'q_174');
+      //  $this->_requiredElements = array('Date_taken', 'q_1', 'q_11', 'q_32', 'q_46', 'q_90', 'q_149', 'q_174');
         /**
          * Array of column names to be ignored by the double data entry conflict detector.
          */
@@ -118,7 +118,8 @@ class NDB_BVL_Instrument_ibq_r_survey extends NDB_BVL_Instrument
     */
     function _setupForm()
     {
-    	$this->answer_options=array(NULL=>'', '1'=>'1', '2'=>'2', '3'=>'3', '4'=>'4', '5'=>'5', '6'=>'6', '7'=>'7', 'n/a'=>'Does not apply');
+    	$this->answer_options=array(NULL=>'', '1'=>'Never', '2'=>'Very Rarely', '3'=>'Less than Half the Time', '4'=>'About Half the Time',
+            '5'=>'More than half the Time', '6'=>'Almost Always', '7'=>'Always', 'n/a'=>'Does not apply');
 
     	if(preg_match('/(_page[0-9])/', $this->page, $matches)) {
     		call_user_func(array($this, $matches[1]));
@@ -127,6 +128,78 @@ class NDB_BVL_Instrument_ibq_r_survey extends NDB_BVL_Instrument
     	}
 
     	$this->form->addFormRule(array(&$this,'XINValidate'));
+    }
+
+    function score(){
+        if($this->_determineDataEntryCompletionStatus() == "Incomplete") {
+            return;
+        }
+
+        //null scores
+        $this->_nullScores($this->scoreLabels);
+
+        //get the saved scores
+        $db =& Database::singleton();
+
+        $record = $db->pselectRow("SELECT * FROM $this->table WHERE CommentID=:cid",array("cid" =>$this->getCommentID() ));
+        //do the math...
+        $reverseItems = array(1, 14, 117,
+            11, 16, 19, 76,
+            163,
+            176, 179, 182, 185, 188, 191,
+            22, 24, 26, 29, 120, 121,
+            7, 105, 108, 124, 125, 127, 128, 130, 132,
+            89, 173);
+        //restrict to numerical scores
+        foreach ($record as $field=>$value) {
+            if(is_numeric($value)) {
+                $record[$field] = intval($value);
+            } else {
+                $record[$field] = null;
+            }
+            //reverse as needed
+            if (in_array(preg_replace("/q_/", "", $field), $reverseItems) && !is_null($record[$field])) {
+                $record[$field] = 8 - $record[$field];
+            }
+        }
+
+
+        //calculate subscales
+        $subScales = array("activity_level"=>array(1, 2, 3, 12, 13, 14, 32, 33, 38, 39, 111, 112, 115, 116, 117),
+            "distress_to_limitations"=>array_merge(array(11), range(15, 20), array(41, 44, 75, 76, 93, 109, 113, 114, 118)),
+            "fear"=>array_merge(array(90, 94, 99), range(150, 158), range(161, 164)),
+            "duration_of_orienting"=>array_merge(range(46, 51), array(54, 55, 91, 92, 100, 101)),
+            "smiling_and_laughter"=>array(34, 36, 37, 40, 43, 53, 56, 57, 110, 149),
+            "high_pleasure"=>array_merge(array(58, 65, 66, 67), range(77, 82), array(165)),
+            "low_pleasure"=>array_merge(range(59, 64), range(68, 74)),
+            "soothability"=>range(174, 191),
+            "falling_reactivity"=>array_merge(range(21, 29), range(119, 122)),
+            "cuddliness"=>array_merge(array(5, 6, 7, 105, 106, 107, 108), range(123, 132)),
+            "perceptual_sensitivity"=>array_merge(array(4, 83, 84, 95, 96), range(133, 139)),
+            "sadness"=>array_merge(array(30, 31), range(140, 145), range(166, 171)),
+            "approach"=>array_merge(range(85, 89), array(97, 98, 104, 159, 160, 172, 173)),
+            "vocal_reactivity"=>array(8, 9, 10, 35, 42, 45, 52, 102, 103, 146, 147, 148)
+        );
+
+        foreach($subScales as $field=>$array) {
+            $numericalResponses = 0;
+            foreach($array as $question) {
+                $scores[$field] += $record["q_".$question];
+                if($record["q_".$question]) {
+                    $numericalResponses++;
+                }
+            }
+            //take average of numerical responses
+            if ($numericalResponses == 0) {
+                $scores[$field] = null;
+            } else {
+                $scores[$field] = round($scores[$field] / $numericalResponses, 2);
+            }
+        }
+
+        //save scores
+        $result = $db->update($this->table, $scores, array("CommentID"=>$this->getCommentID()));
+
     }
 
     function _main(){
@@ -145,12 +218,18 @@ class NDB_BVL_Instrument_ibq_r_survey extends NDB_BVL_Instrument
         );
 
         $this->addBasicDate('Date_taken', 'Date Taken', $dateOptions);
+        foreach($this->scoreLabels as $field=>$label) {
+           // $this->form->addElement('static', $field, $label);
+            $group[] = $this->form->createElement('static', $field, null, null);
+            $this->form->addGroup($group, "{$field}_score_group", "$label", $this->_GUIDelimiter, FALSE);
+            unset($group);
+        }
     }
 
     function _page1(){
         $this->form->addElement('header', null, 'Feeding');
         $this->form->addElement('static', null, 'During feeding, how often did the baby:');
-        $this->form->addElement('select', 'q_1', '1) lie or sit quietly', $this->answer_options);
+        $this->form->addElement('select', 'q_1', '1) lie or sittly', $this->answer_options);
         $this->form->addElement('select', 'q_2', '2) squirm or kick', $this->answer_options);
         $this->form->addElement('select', 'q_3', '3) wave arms', $this->answer_options);
         $this->form->addElement('select', 'q_4', '4) notice lumpy texture in food (e.g., oatmeal)', $this->answer_options);
@@ -482,73 +561,5 @@ class NDB_BVL_Instrument_ibq_r_survey extends NDB_BVL_Instrument
         $this->form->addElement('select', 'q_191', '191) take more than 10 minutes to soothe', $this->answer_options);
     } // end function _setupForm
 
-    function score(){
-        if($this->_determineDataEntryCompletionStatus() == 'Incomplete') {
-            return;
-        }
 
-        //null scores
-        $this->_nullScores($this->scoreLabels);
-
-        //get the saved scores
-        $db =& Database::singleton();
-
-        $record = $db->pselectRow('SELECT * FROM $this->table WHERE CommentID=:cid',array('cid' =>$this->getCommentID() ));
-        //do the math...
-        $reverseItems = array(1, 14, 117,
-            11, 16, 19, 76,
-            163,
-            176, 179, 182, 185, 188, 191,
-            22, 24, 26, 29, 120, 121,
-            7, 105, 108, 124, 125, 127, 128, 130, 132,
-            89, 173);
-        //restrict to numerical scores
-        foreach ($record as $field=>$value) {
-            if(is_numeric($value)) {
-                $record[$field] = intval($value);
-            } else {
-                $record[$field] = null;
-            }
-            //reverse as needed
-            if (in_array(preg_replace('/q_/', '', $field), $reverseItems) && !is_null($record[$field])) {
-                $record[$field] = 8 - $record[$field];
-            }
-        }
-
-        //calculate subscales
-        $subScales = array('activity_level'=>array(1, 2, 3, 12, 13, 14, 32, 33, 38, 39, 111, 112, 115, 116, 117),
-            'distress_to_limitations'=>array_merge(array(11), range(15, 20), array(41, 44, 75, 76, 93, 109, 113, 114, 118)),
-            'fear'=>array_merge(array(90, 94, 99), range(150, 158), range(161, 164)),
-            'duration_of_orienting'=>array_merge(range(46, 51), array(54, 55, 91, 92, 100, 101)),
-            'smiling_and_laughter'=>array(34, 36, 37, 40, 43, 53, 56, 57, 110, 149),
-            'high_pleasure'=>array_merge(array(58, 65, 66, 67), range(77, 82), array(165)),
-            'low_pleasure'=>array_merge(range(59, 64), range(68, 74)),
-            'soothability'=>range(174, 191),
-            'falling_reactivity'=>array_merge(range(21, 29), range(119, 122)),
-            'cuddliness'=>array_merge(array(5, 6, 7, 105, 106, 107, 108), range(123, 132)),
-            'perceptual_sensitivity'=>array_merge(array(4, 83, 84, 95, 96), range(133, 139)),
-            'sadness'=>array_merge(array(30, 31), range(140, 145), range(166, 171)),
-            'approach'=>array_merge(range(85, 89), array(97, 98, 104, 159, 160, 172, 173)),
-            'vocal_reactivity'=>array(8, 9, 10, 35, 42, 45, 52, 102, 103, 146, 147, 148)
-        );
-
-        foreach($subScales as $field=>$array) {
-            $numericalResponses = 0;
-            foreach($array as $question) {
-                $scores[$field] += $record['q_'.$question];
-                if($record['q_'.$question]) {
-                    $numericalResponses++;
-                }
-            }
-            //take average of numerical responses
-            if ($numericalResponses == 0) {
-                $scores[$field] = null;
-            } else {
-                $scores[$field] = round($scores[$field] / $numericalResponses, 2);
-            }
-        }
-
-        //save scores
-        $result = $db->update($this->table, $scores, array('CommentID'=>$this->getCommentID()));
-    }
 }

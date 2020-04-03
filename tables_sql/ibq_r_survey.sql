@@ -1,5 +1,9 @@
 CREATE TABLE `ibq_r_survey` (
 `CommentID` varchar(255) NOT NULL default '',
+`UserID` varchar(255) DEFAULT NULL,
+`Examiner` varchar(255) DEFAULT NULL,
+`Testdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`Data_entry_completion_status` enum('Incomplete','Complete') NOT NULL DEFAULT 'Incomplete',
 `Date_taken` date,
 `Candidate_Age` varchar(50),
 `Window_Difference` varchar(50),
