@@ -229,7 +229,7 @@ class NDB_BVL_Instrument_ibq_r_survey extends NDB_BVL_Instrument
     function _page1(){
         $this->form->addElement('header', null, 'Feeding');
         $this->form->addElement('static', null, 'During feeding, how often did the baby:');
-        $this->form->addElement('select', 'q_1', '1) lie or sittly', $this->answer_options);
+        $this->form->addElement('select', 'q_1', '1) lie or sit quietly', $this->answer_options);
         $this->form->addElement('select', 'q_2', '2) squirm or kick', $this->answer_options);
         $this->form->addElement('select', 'q_3', '3) wave arms', $this->answer_options);
         $this->form->addElement('select', 'q_4', '4) notice lumpy texture in food (e.g., oatmeal)', $this->answer_options);
