@@ -352,6 +352,7 @@ class BaseElement extends React.Component {
 			);
 		}
 
+		let rightTxt = null;
 		switch(this.props.element.Type){
 			case 'text':
 				value = this.props.value != null ? this.props.value : '';
@@ -387,22 +388,33 @@ class BaseElement extends React.Component {
 				break;
 			case 'advcheckbox':
 				let value = this.props.value != null ? this.props.value : '';
-				let checked = '';
-				let lNull = this.props.element.States.Values[0];
-				let strValue = String(this.props.element.States.Values[1]);
-				if (strValue === value) {
-					checked = (
-						<i className="glyphicon glyphicon-ok" ></i>
-					);
-				}
-
-				element = (
+				let checked = null;
+				if (this.props.element.States.length == 2) {
+					let lNull = this.props.element.States[0];
+					let strValue = String(this.props.element.States[1]);
+					if (strValue === value) {
+						checked = (
+							<i className="glyphicon glyphicon-ok" ></i>
+						);
+					}
+					if (this.props.element.RightTxt !== '') {
+						rightTxt = (
+							<div className="h3title rightTxt">
+								<span>{this.props.element.RightTxt}</span>
+							</div>
+						);
+					}
+					element = (
 						<div className="selectBox" onClick={this.onSelect.bind(this, lNull, strValue)}>
 							<label className="btn btn-default btn-box">
 								{checked}
 							</label>
 						</div>
 					);
+				}
+				else {
+					element = null;
+				}
 				break;
 			case 'label':
 				let content = '';
@@ -447,6 +459,7 @@ class BaseElement extends React.Component {
 		return (
 			<div className={classInfo}>
 				{element}
+				{rightTxt}
 				{errorMessage}
 			</div>
 		);

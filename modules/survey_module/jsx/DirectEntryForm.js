@@ -477,23 +477,34 @@ class AdvcheckboxElement extends React.Component {
 	render() {
 		let checkbox = [];
 		let value = this.props.value != null ? this.props.value : '';
-		let checked = '';
-		let lNull = this.props.element.States.Values[0];
-		let strValue = String(this.props.element.States.Values[1]);
-		if (strValue === value) {
-			checked = (
-				<i className="glyphicon glyphicon-ok" ></i>
+		let checked = null;
+		if (this.props.element.States.length == 2) {
+			let lNull = this.props.element.States[0];
+			let strValue = String(this.props.element.States[1]);
+			if (strValue === value) {
+				checked = (
+					<i className="glyphicon glyphicon-ok" ></i>
+				);
+			}
+			let rightTxt = null;
+			if (this.props.element.RightTxt !== '') {
+				rightTxt = (
+					<div className="h3title rightTxt">
+						<span>{this.props.element.RightTxt}</span>
+					</div>
+				);
+			}
+			checkbox = (
+				<div className="col-xs-9 col-sm-6 select-option" onClick={this.onSelect.bind(this, lNull, strValue)}>
+					<div className="selectBox">
+						<label className="btn btn-default btn-box">
+							{checked}
+						</label>
+					</div>
+					{rightTxt}
+				</div>
 			);
 		}
-		checkbox.push(
-			<div className="col-xs-9 col-sm-6 select-option" onClick={this.onSelect.bind(this, lNull, strValue)}>
-				<div className="selectBox">
-					<label className="btn btn-default btn-box">
-						{checked}
-					</label>
-				</div>
-			</div>
-		);
 
 		let classInfo = 'col-xs-3 col-sm-6 h3title field_question';
 		if(this.props.error) {
