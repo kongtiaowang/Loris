@@ -42,7 +42,6 @@ class NDB_BVL_Instrument_ibq_r_survey extends NDB_BVL_Instrument
         ];
     }
 
-    // for reference only here
 	var $scoreLabels = array('activity_level'=>'Activity Level',
 							'distress_to_limitations'=>'Distress to Limitations',
 							'fear'=>'Fear',
@@ -205,6 +204,11 @@ class NDB_BVL_Instrument_ibq_r_survey extends NDB_BVL_Instrument
     function _main(){
         // display test name
         $this->form->addElement('header', 'instrument_title', 'Infant Behavior Questionnaire - Revised (IBQ-R)');
+
+		$this->addLabel('<h2>INSTRUCTIONS:</h2>Please read carefully before starting:<br><br>
+<p>As you read each description of the baby’s behavior below, please indicate how often the baby did this during the LAST WEEK (the past seven days) by circling one of the numbers in the left column.  These numbers indicate how often you observed the behavior described during the last week.</p><br>
+<p>The “Does Not Apply” is used when you did not see the baby in the situation described during the last week.  For example, if the situation mentions the baby having to wait for food or liquids and there was no time during the last week when the baby had to wait, check the choice. “Does Not Apply” is different from “Never”.  “Never” is used when you saw the baby in the situation but the baby never engaged in the behavior listed during the last week.  For example, if the baby did have to wait for food or liquids at least once but never cried loudly while waiting, choose the answer.</p><br>
+<p>Please be sure to choose an answer for every item.</p>');
 
         $config      =& NDB_Config::singleton();
 
@@ -429,7 +433,7 @@ class NDB_BVL_Instrument_ibq_r_survey extends NDB_BVL_Instrument
         $this->form->addElement('static', null, 'When your baby was upset about something, how often did s/he:');
         $this->form->addElement('select', 'q_120', '120) stay upset for up to 10 minutes or longer', $this->answer_options);
         $this->form->addElement('select', 'q_121', '121) stay upset for up to 20 minutes or longer', $this->answer_options);
-        $this->form->addElement('select', 'q_122', '122) soothe her/himself with other things (such as a stuffed animal, or', $this->answer_options);
+        $this->form->addElement('select', 'q_122', '122) soothe her/himself with other things (such as a stuffed animal, or a blanket)?', $this->answer_options);
 
         $this->form->addElement('static', null, 'When rocked or hugged, in the last week, how often did your baby:');
         $this->form->addElement('select', 'q_123', '123) seem to enjoy her/himself', $this->answer_options);
