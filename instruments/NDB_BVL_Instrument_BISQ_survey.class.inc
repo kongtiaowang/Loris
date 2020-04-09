@@ -135,14 +135,12 @@ class NDB_BVL_Instrument_BISQ_survey extends NDB_BVL_Instrument
             "not_answered" => "Not Answered",
         );
 
-
-
         $this->addSelect("sleep_position", "In what position does your child sleep most of the time?", $pos_opts);
-        $this->displayHourMinElementCustom("night_sleep","How much time does your child spend in sleep during the NIGHT (between 7 in the evening and 7 in the morning)? ");
-        $this->displayHourMinElementCustom("day_sleep", "How much time does your child spend in sleep during the DAY (between 7 in the morning and 7 in the evening)?");
+        $this->displayHourMinElementCustom("night_sleep", "Night sleep", "How much time does your child spend in sleep during the NIGHT (between 7 in the evening and 7 in the morning)? ");
+        $this->displayHourMinElementCustom("day_sleep", "Day sleep", "How much time does your child spend in sleep during the DAY (between 7 in the morning and 7 in the evening)?");
         $this->addTextElement("night_wakes_average_count","Average number of night wakings per night:");
-        $this->displayHourMinElementCustom("night_wakefullness", "How much time during the night does your child spend in wakefulness (from 10 in the evening to 6 in the morning)? ");
-        $this->displayHourMinElementCustom("time_to_put_to_sleep", "How long does it take to put your baby to sleep in the evening? ");
+        $this->displayHourMinElementCustom("night_wakefullness", 'Night wakefullness', "How much time during the night does your child spend in wakefulness (from 10 in the evening to 6 in the morning)? ");
+        $this->displayHourMinElementCustom("time_to_put_to_sleep", "Time to put to sleep", "How long does it take to put your baby to sleep in the evening? ");
         $sleep_opts = array(
             null => "",
             "while_feeding" => "While feeding ",
@@ -152,7 +150,7 @@ class NDB_BVL_Instrument_BISQ_survey extends NDB_BVL_Instrument
             "not_answered" => "Not Answered",
         );
         $this->addSelect("sleep_opts", " How does your baby fall asleep?", $sleep_opts);
-        $this->displayHourMinElementCustom("when_fall_asleep", "When does your baby usually fall asleep for the night: ");
+        $this->displayHourMinElementCustom("when_fall_asleep", "When fall asleep", "When does your baby usually fall asleep for the night: ");
         $sleep_prob_opts = array(
          null => "",
          "belly" => " A very serious problem ",
@@ -164,47 +162,46 @@ class NDB_BVL_Instrument_BISQ_survey extends NDB_BVL_Instrument
 
     }
 
-function displayHourMinElementCustom($field,$label)
-{
+    function displayHourMinElementCustom($field, $field_label, $label)
+    {
+        for ($i = 0; $i <= 12; $i ++) {
+            $hours_options["$i"]="$i Hr(s)";
+        }
+        for ($i = 0; $i <= 60; $i+=5) {
+            $min_options["$i"]="$i mins";
+        }
+        $default_val = array(null => '');
+        $hours_options=array_merge($default_val,$hours_options);
+        $min_options=array_merge($default_val,$min_options);
+        $group   = array();
+        $group[] = $this->createSelect($field."_hours", $field_label.' hours', $hours_options);
+        $group[] = $this->createSelect($field."_mins", $field_label.' minutes', $min_options);
+        $group[] = $this->createSelect(
+            $field."_status",
+            $field_label . ' status',
+            array(
+                null           => '',
+                "dnk"          => "Unknown",
+                'not_answered' => 'Prefer not to answer',
+            )
+        );
+        $this->addGroup($group, $field . "_group", $label, null, false);
+        unset($group);
+        $this->XINRegisterRule(
+            $field . "_status",
+            array("{$field}_hours{@}=={@}","{$field}_mins{@}=={@}"),
+            "Please select one of the option if you don't want to enter the time details."
+        );
+        $this->XINRegisterRule(
+            $field . "_hours",
+            array("{$field}_status{@}=={@}","{$field}_mins{@}!={@}"),
+            "Hours Required."
+        );
+        $this->XINRegisterRule(
+            $field . "_mins",
+            array("{$field}_status{@}=={@}","{$field}_hours{@}!={@}"),
+            "Mins Required."
+        );
 
-    for ($i = 0; $i <= 12; $i ++) {
-        $hours_options["$i"]="$i Hr(s)";
     }
-    for ($i = 0; $i <= 60; $i+=5) {
-        $min_options["$i"]="$i mins";
-    }
-    $default_val = array("" => '');
-    $hours_options=array_merge($default_val,$hours_options);
-    $min_options=array_merge($default_val,$min_options);
-    $group   = array();
-    $group[] = $this->createSelect($field."_hours", $field."_hours", $hours_options);
-    $group[] = $this->createSelect($field."_mins", $field."_mins", $min_options);
-    $group[] = $this->createSelect(
-        $field."_status",
-        "",
-        array(
-            null           => '',
-            "dnk"          => "Unknown",
-            'not_answered' => 'Prefer not to answer',
-        )
-    );
-    $this->addGroup($group, $field . "_group", $label, null, false);
-    unset($group);
-    $this->XINRegisterRule(
-        $field . "_status",
-        array("{$field}_hours{@}=={@}","{$field}_mins{@}=={@}"),
-        "Please select one of the option if you don't want to enter the time details."
-    );
-    $this->XINRegisterRule(
-        $field . "_hours",
-        array("{$field}_status{@}=={@}","{$field}_mins{@}!={@}"),
-        "Hours Required."
-    );
-    $this->XINRegisterRule(
-        $field . "_mins",
-        array("{$field}_status{@}=={@}","{$field}_hours{@}!={@}"),
-        "Mins Required."
-    );
-
-}
 }
