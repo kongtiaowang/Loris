@@ -95,7 +95,7 @@ class NDB_BVL_Instrument_BISQ_survey extends NDB_BVL_Instrument
             "other" => "Other",
         );
         $this->addSelect("responder", "Responder:", $opts);
-        $this->addBasicText("other_responder", $this->indent . "If Other, please describe:");
+        $this->addBasicText("other_responder", $this->indent . "If Other, please specify:");
         $this->XINRegisterRule(
             "other_responder",
             array("responder{@}=={@}other"),
