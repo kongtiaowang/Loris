@@ -121,6 +121,8 @@ class NDB_BVL_Instrument_ACEFamilyMedicalHistorySurvey extends NDB_BVL_Instrumen
     {
 
         $this->addHeader("ACE Family Medical History - Survey Version");
+        $this->form->addElement('static', 'lorisSubHeader', "<strong>Instructions:</strong><BR>1. To be completed by the study subject’s primary caregiver.
+<br>2. Do not include the study subject in responses about biological siblings");
         $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
         $table_heading = array('mother' => 'Biological Mother', 'father' => 'Biological Father', 'sibling1' => 'Sibling 1', 'sibling2' => 'Sibling 2',
             'sibling3' => 'Sibling 3', 'sibling4' => 'Sibling 4', 'sibling5' => 'Sibling 5');
