@@ -24,6 +24,22 @@
 
 class NDB_BVL_Instrument_apsi_survey extends NDB_BVL_Instrument
 {
+    private const questions_loss = ['speech_loss' => 'Did loss involve speech?',
+        'eye_contact_social_emot_loss' => 'And/or eye contact and social-emotional connectedness?'];
+
+    private const relevant_questions = ['speech_loss_occurred_before_eye_loss' => 'Speech Loss occured BEFORE loss of eye contact and social-emotional connectedness',
+        'speech_loss_occurred_after_eye_loss' => 'Speech Loss occured AFTER loss of eye contact and social-emotional connectedness',
+        'speech_loss_occurred_close_to_eye_loss' => 'Speech loss and loss of eye contact and social-emotional connectedness closely together in time'];
+
+    private const options =
+        [
+            null => "",
+            'n' => "No",
+            'p' => "Possibly",
+            'd' => "Definitely"
+            //'NA' => "Not applicable"
+        ];
+
     public function getFullName(): string
     {
         return 'Autism Parent Screen for Infants Survey (APSI Survey)';
@@ -103,8 +119,8 @@ class NDB_BVL_Instrument_apsi_survey extends NDB_BVL_Instrument
         // display test name
         $this->addHeader("Autism Parent Screen for Infants Survey (APSI Survey)");
 
+        $this->addLabel('Instructions: Please answer each of the questions below, based on your child’s <u>current</u> (not past) behaviour, by placing a check beside the box that most applies (either “No”, “Possibly” or “Definitely”). We appreciate that some of the questions refer to behaviours not expected in very young infants, notably 6- to 9-month-olds; your responses to those questions will be treated accordingly. Thank you for assisting us in monitoring your child’s development.');
         $config      =& NDB_Config::singleton();
-
         $dateOptions = array(
             'language'         => 'en',
             'format'           => 'YMd',
@@ -138,20 +154,12 @@ class NDB_BVL_Instrument_apsi_survey extends NDB_BVL_Instrument
     {
         $this->addHeader("<h3>Autism Parent Screen for Infants Survey (APSI Survey)</h3>");
 
-        $options =
-            array(
-                null => "",
-                'n' => "No",
-                'p' => "Possibly",
-                'd' => "Definitely",
-                'NA' => "Not applicable"
-            );
-
-        $optionsYesNo = array(
-            null => '',
-            'n'  => 'No',
-            'y'  => 'Yes',
-        );
+        $optionsYesNo =
+            [
+                null => '',
+                'n'  => 'No',
+                'y'  => 'Yes',
+            ];
 
         $page1_questions =
             array(
@@ -170,7 +178,7 @@ class NDB_BVL_Instrument_apsi_survey extends NDB_BVL_Instrument
                 'q13' => '13) Is it difficult to soothe your child when he/she is upset?',
                 'q14' => '14) Does your child show sustained interest and pleasure in interacting with others?',
                 'q15' => '15) Does your child have difficulty with change, such as moving from one activity to another, giving up a toy, using a new cup, or other changes in routine?',
-                'q16' => '16) Compared to other children his/her age, does your child have difficulty using his/her hands or controlling his/her movements (e.g., grasping something small, rolling  over, sitting up or walking)?',
+                'q16' => '16) Compared to other children his/her age, does your child have difficulty using his/her hands or controlling his/her movements (e.g., grasping something small, rolling over, sitting up or walking)?',
                 'q17' => '17) Does your child have unusual or repetitive motor behaviours such as walking on his/her toes, hand posturing or flapping, or flicking fingers close to his/her eyes?',
                 'q18' => '18) Does your child ever take someone else’s hand and place it on an object, or use another’s hand for actions such as opening a door?',
                 'q19' => '19) Does your child have any unusual sensory behaviours such as smelling of toys or objects, feeling or avoiding certain textures, or seeking out or avoiding particular sounds?',
@@ -184,27 +192,38 @@ class NDB_BVL_Instrument_apsi_survey extends NDB_BVL_Instrument
             );
 
          foreach ($page1_questions as $question => $label) {
-             $this->addSelect($question, $label, $options);
+             $this->addSelect($question, $label, self::options);
          }
 
-         $questions_loss = ['speech_loss' => 'Speech',
-         'eye_contact_social_emot_loss' => 'And/or eye contact and social-emotional connectedness'];
-
-         foreach ($questions_loss as $question => $label) {
+         foreach (self::questions_loss as $question => $label) {
              $this->addSelect($question, $label, $optionsYesNo);
+             $this->XINRegisterRule($question, array("q26{@}=={@}p|d"), "Required");
          }
 
          $this->addBasicTextArea("other_skills_lost","If other, please identify skill(s) lost:");
          $this->XINRegisterRule('other_skills_lost',array("other_skills_lost{@}=={@}NEVER_REQUIRED"));
 
-         $relevant_questions =
-             ['speech_loss_occurred_before_eye_loss' => 'Speech Loss occured BEFORE loss of eye contact and social-emotional connectedness',
-             'speech_loss_occurred_after_eye_loss' => 'Speech Loss occured AFTER loss of eye contact and social-emotional connectedness',
-             'speech_loss_occurred_close_to_eye_loss' => 'Speech loss and loss of eye contact and social-emotional connectedness closely together in time'];
-
-         foreach ($relevant_questions as $question => $label) {
+         foreach (self::relevant_questions as $question => $label) {
              $this->addSelect($question, $label, $optionsYesNo);
+             $this->XINRegisterRule($question, array("q26{@}=={@}p|d"), "Required");
          }
+
+         $this->form->addFormRule(array(&$this, 'conflict_rules'));
+    }
+
+    /**
+     * Conflict check
+     */
+    function conflict_rules($values) {
+        $errors = [];
+        if (in_array($values['q26'], ['n'])) {
+            $check_fields = array_merge(array_keys(self::questions_loss), ['other_skills_lost'], array_keys(self::relevant_questions));
+            foreach ($check_fields as $key) {
+                if (!empty($values[$key])) {
+                    $errors[$key] = "You should not answer this question if the answer of the question 26 is No";
+                }
+            }
+        }
+        return $errors;
     }
 }
-

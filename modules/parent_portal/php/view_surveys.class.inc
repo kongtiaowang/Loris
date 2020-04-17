@@ -59,7 +59,7 @@ class view_surveys extends \NDB_Form
             JOIN flag f ON (f.CommentID =p.CommentID)
             JOIN test_names tn ON (tn.Test_name=f.Test_name)
             LEFT JOIN instrument_completion_time ict ON (tn.ID=ict.TestNameID)
-            WHERE s.Visit_label='VSA' and p.Email=:surv_email
+            WHERE p.Email=:surv_email
             AND c.ParentID=:pid
             ORDER BY p.Status",
                 array(

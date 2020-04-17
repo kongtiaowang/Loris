@@ -109,6 +109,16 @@ class DirectEntryFormElement extends React.Component {
 					/>
 				);
 				break;
+			case 'advcheckbox':
+				element = (
+					<AdvcheckboxElement
+						element={this.props.element}
+						value={this.props.values[this.props.element.Name]}
+						updateAnswer={this.props.updateAnswer}
+						error={this.props.errors[this.props.element.Name]}
+					/>
+					);
+				break;
 			default:
 				element = (
 					<NotImplement element={this.props.element} />
@@ -167,6 +177,7 @@ class Page extends React.Component {
 	}
 }
 
+
 class SelectElement extends React.Component {
 
 	constructor(props) {
@@ -203,7 +214,7 @@ class SelectElement extends React.Component {
 			options.push(
 				<div className="col-xs-12 col-sm-6 select-option" onClick={this.onSelect.bind(this, key)}>
 					<div className="selectBox">
-						<label className="btn btn-defualt btn-circle">
+						<label className="btn btn-default btn-circle">
 							{checked}
 						</label>
 					</div>
@@ -447,6 +458,75 @@ class HeaderElement extends React.Component {
 
 }
 
+class AdvcheckboxElement extends React.Component {
+	constructor(props) {
+	    super(props);
+	    this.state = {
+	        value: ''
+	    };
+	}
+
+	onSelect(lNull, value) {
+		if (this.props.value !== value) {
+			this.props.updateAnswer(this.props.element.Name, value);
+		} else {
+			this.props.updateAnswer(this.props.element.Name, lNull);
+		}
+	}
+
+	render() {
+		let checkbox = [];
+		let value = this.props.value != null ? this.props.value : '';
+		let checked = null;
+		if (this.props.element.States.length == 2) {
+			let lNull = this.props.element.States[0];
+			let strValue = String(this.props.element.States[1]);
+			if (strValue === value) {
+				checked = (
+					<i className="glyphicon glyphicon-ok" ></i>
+				);
+			}
+			let rightTxt = null;
+			if (this.props.element.RightTxt !== '') {
+				rightTxt = (
+					<div className="h3title rightTxt">
+						<span>{this.props.element.RightTxt}</span>
+					</div>
+				);
+			}
+			checkbox = (
+				<div className="col-xs-9 col-sm-6 select-option" onClick={this.onSelect.bind(this, lNull, strValue)}>
+					<div className="selectBox">
+						<label className="btn btn-default btn-box">
+							{checked}
+						</label>
+					</div>
+					{rightTxt}
+				</div>
+			);
+		}
+
+		let classInfo = 'col-xs-3 col-sm-6 h3title field_question';
+		if(this.props.error) {
+			classInfo += ' has-error';
+		}
+
+		let description = '';
+		if (!!this.props.element.Description) {
+			description = (
+				<div className={classInfo}>
+					<Markdown content={this.props.element.Description} />
+				</div>
+			);
+		}
+
+		return (
+			<div className='row field_input' data-toggle="buttons">
+				{description}
+				{checkbox}
+			</div>
+		);
+	}
+}
 
 export default Page;
-
