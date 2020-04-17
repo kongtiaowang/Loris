@@ -3,11 +3,11 @@
 class PageElementsFormatter {
 
 	static function formatElement($element, $elName) {
-		$tempElement = array(
-					"Type" => $element['type'],
-					"Name" => $elName,
-					"Description" => $element['label'],
-				);
+        $tempElement = array(
+			"Type" => $element['type'],
+			"Name" => $elName,
+			"Description" => $element['label'],
+        );
 		switch ($tempElement['Type']) {
 			case 'select':
 				$tempElement = self::formatSelect($element, $tempElement);
@@ -41,7 +41,7 @@ class PageElementsFormatter {
 		$newElem['Options'] = array(
 			'Values' => array(),
 			'AllowMultiple' => false,
-			'RequireResponse' => false,
+			'RequireResponse' => false
 		);
 		foreach ($oldElem['options'] as $key => $value) {
 			$newElem['Options']['Values'][$key] = $value;
@@ -53,7 +53,7 @@ class PageElementsFormatter {
 	private function formatText($oldElem, $newElem) {
 		$newElem['Options'] = array(
 			'Type' => "small",
-			'RequireResponse' => false,
+			'RequireResponse' => false
 		);
 
 		if($oldElem['type'] === 'textarea') {
@@ -90,18 +90,22 @@ class PageElementsFormatter {
 	}
 
     private function formatAdvcheckbox($oldElem, $newElem) {
-        $newElem['States'] = array(
-            'Values' => [],
-            'RequireResponse' => false,
-        );
+        $newElem['RightTxt'] = '';
+
+        if (isset($oldElem['_text']) && !empty($oldElem['_text'])) {
+            $newElem['RightTxt'] = $oldElem['_text'];
+        }
+
         if (isset($oldElem['checkStates'])) {
+            $newElem['States'] = [];
             foreach ($oldElem['checkStates'] as $key => $value) {
-                $newElem['States']['Values'][$key] = $value;
+                $newElem['States'][$key] = $value;
             }
         }
         else {
-            $newElem['States']['Values'] = [0, 1]; // Default to an arbitrary [0, 1], [false, true] is not supported to simplify the issue
+            $newElem['States'] = [0, 1]; // Default to an arbitrary [0, 1], [false, true] is not supported to simplify the issue
         }
+
         return $newElem;
     }
 }
