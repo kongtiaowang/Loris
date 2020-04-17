@@ -5,17 +5,6 @@
 
 class NDB_BVL_Instrument_macarthur_words_gestures_survey extends NDB_BVL_Instrument
 {
-    /*
-    INSERT INTO test_names(Test_name, Full_name, Sub_Group, IsDirectEntry) VALUES('macarthur_words_gestures_survey', 'MacArthur CDI - Words & Gestures (Survey Version)', 13, 1);
-   INSERT INTO instrument_subtests  (Test_name, Subtest_name, Description, Order_number) VALUES('macarthur_words_gestures_survey', 'macarthur_words_gestures_survey_page1', 'Part I', 1);
-   INSERT INTO instrument_subtests  (Test_name, Subtest_name, Description, Order_number) VALUES('macarthur_words_gestures_survey', 'macarthur_words_gestures_survey_page2', 'D. VOCABULARY 1-3', 2);
-   INSERT INTO instrument_subtests  (Test_name, Subtest_name, Description, Order_number)VALUES( 'macarthur_words_gestures_survey', 'macarthur_words_gestures_survey_page3', 'D. VOCABULARY 4-7', 3);
-   INSERT INTO instrument_subtests  (Test_name, Subtest_name, Description, Order_number) VALUES('macarthur_words_gestures_survey', 'macarthur_words_gestures_survey_page4', 'D. VOCABULARY 8-10', 4);
-   INSERT INTO instrument_subtests  (Test_name, Subtest_name, Description, Order_number) VALUES('macarthur_words_gestures_survey', 'macarthur_words_gestures_survey_page5', 'D. VOCABULARY 11-13', 5);
-   INSERT INTO instrument_subtests  (Test_name, Subtest_name, Description, Order_number) VALUES('macarthur_words_gestures_survey', 'macarthur_words_gestures_survey_page6', 'D. VOCABULARY 14-19', 6);
-   INSERT INTO instrument_subtests  (Test_name, Subtest_name, Description, Order_number) VALUES( 'macarthur_words_gestures_survey', 'macarthur_words_gestures_survey_page7', 'Part II', 7);
-
-   */
 
 
     var $ValidityEnabled = false;
@@ -147,14 +136,11 @@ class NDB_BVL_Instrument_macarthur_words_gestures_survey extends NDB_BVL_Instrum
 
             $this->form->addElement("header",null,"<b>FIRST SIGNS OF UNDERSTANDING SCORES </b>");
 
-
             $group[]= $this->form->createElement("static", "raw_response", null, null);
             $group[]= $this->form->createElement("static", "percentile", null, null);
             $this->form->addGroup($group, null, null, $this->_GUIDelimiter, false);
             unset($group);
 
-            $this->form->addElement("static",null,null);
-            $this->form->addElement("static",null,null);
 
             $group[]= $this->form->createElement("static", 'I_A_1', null, null);
             $this->form->addGroup($group, 'I_A_1_score_group', "Responds when name is called:", $this->_GUIDelimiter, false);
@@ -174,7 +160,6 @@ class NDB_BVL_Instrument_macarthur_words_gestures_survey extends NDB_BVL_Instrum
             $this->form->addGroup($group, 'phrases_understood_score_group', "<b>PHRASES UNDERSTOOD:</b>", $this->_GUIDelimiter, false);
             unset($group);
 
-
             $this->form->addElement("header",null,"<b>STARTING TO TALK SCORES:</b>");
 
 
@@ -189,8 +174,6 @@ class NDB_BVL_Instrument_macarthur_words_gestures_survey extends NDB_BVL_Instrum
 
 
             $this->form->addElement("header",null,"<b>VOCABULARY CHECKLIST SCORES:</b>");
-
-
 
             $group[]= $this->form->createElement("static", 'words_understood_number', null, null);
             $group[]= $this->form->createElement("static", 'words_understood_percentile', null, null);

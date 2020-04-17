@@ -525,3 +525,14 @@ CREATE TABLE `macarthur_words_gestures_survey` (
 PRIMARY KEY  (`CommentID`)
 
               ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Meta
+INSERT INTO test_names(Test_name, Full_name, Sub_Group, IsDirectEntry) VALUES('macarthur_words_gestures_survey', 'MacArthur CDI - Words & Gestures (Survey Version)', 13, 1);
+INSERT INTO instrument_subtests  (Test_name, Subtest_name, Description, Order_number) VALUES('macarthur_words_gestures_survey', 'macarthur_words_gestures_survey_page1', 'Part I', 1);
+INSERT INTO instrument_subtests  (Test_name, Subtest_name, Description, Order_number) VALUES('macarthur_words_gestures_survey', 'macarthur_words_gestures_survey_page2', 'D. VOCABULARY 1-3', 2);
+INSERT INTO instrument_subtests  (Test_name, Subtest_name, Description, Order_number)VALUES( 'macarthur_words_gestures_survey', 'macarthur_words_gestures_survey_page3', 'D. VOCABULARY 4-7', 3);
+INSERT INTO instrument_subtests  (Test_name, Subtest_name, Description, Order_number) VALUES('macarthur_words_gestures_survey', 'macarthur_words_gestures_survey_page4', 'D. VOCABULARY 8-10', 4);
+INSERT INTO instrument_subtests  (Test_name, Subtest_name, Description, Order_number) VALUES('macarthur_words_gestures_survey', 'macarthur_words_gestures_survey_page5', 'D. VOCABULARY 11-13', 5);
+INSERT INTO instrument_subtests  (Test_name, Subtest_name, Description, Order_number) VALUES('macarthur_words_gestures_survey', 'macarthur_words_gestures_survey_page6', 'D. VOCABULARY 14-19', 6);
+INSERT INTO instrument_subtests  (Test_name, Subtest_name, Description, Order_number) VALUES( 'macarthur_words_gestures_survey', 'macarthur_words_gestures_survey_page7', 'Part II', 7);
+
