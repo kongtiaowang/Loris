@@ -184,5 +184,22 @@ class NDB_BVL_Instrument_tanner_girls_survey extends NDB_BVL_Instrument
             array('q5_begun_to_menstruate{@}=={@}b'),
             'Required.'
         );
+
+        $this->form->addFormRule(array(&$this, 'tanner_girls_special_rules'));
+    }
+
+    function tanner_girls_special_rules($values)
+    {
+        $errors = array();
+        if (isset($values['q5_begun_to_menstruate']) && $values['q5_begun_to_menstruate'] == 'n') {
+            $fields = ['q5a_month', 'q5a_year', 'q5b_first_day_of_last_menstrual_period'];
+            foreach ($fields as $field) {
+                if (!empty($values[$field])) {
+                    $errors[$field] = 'This field should be empty because you have choose "No" for the question 5.';
+                }
+            }
+        }
+        return $errors;
     }
 }
+
