@@ -12,7 +12,3 @@ WHERE CommentID IN (
 DELETE FROM flag
 WHERE test_name IN ('SEQ3')
 AND sessionid = (SELECT id FROM session WHERE visit_label='V12' AND candid=624363);
-
-
-
-
