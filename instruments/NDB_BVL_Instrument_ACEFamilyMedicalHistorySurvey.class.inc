@@ -131,7 +131,7 @@ class NDB_BVL_Instrument_ACEFamilyMedicalHistorySurvey extends NDB_BVL_Instrumen
             'asperger_syndrome' => '3. Asperger Syndrome', 'rett_syndrome' => '4. Rett Syndrome', 'pdd_nos' => '5. PDD-NOS', 'history_speechdelay' => '6. History Speech Delay',
             'history_development_delay' => '7. History Development Delay', 'history_learndisability' => '8. History Learning Disability',
             'seizure_epilepsy' => '9. Seizure disorder/Epilepsy', 'cerebral_palsy' => '10. Cerebral Palsy', 'down_syndrome' => '11. Down Syndrome',
-            'mental_retardation' => '12. Intellectual Disability', 'tuberoussclerosis' => '13. Tuberosclerosis', 'fragilex' => '14. FragileX',
+            'mental_retardation' => '12. Intellectual Disability', 'tuberoussclerosis' => '13. Tuberous Sclerosis (Alt. Tuberosclerosis)', 'fragilex' => '14. FragileX',
             'neurofibomarosis' => '15. Neurofibromatosis', 'congenitalblindness' => '16. Congenital blindness', 'deafness' => '17. Hearing Impairment',
             'hearingcorrect_aid' => $this->indent . 'a. Hearing corrected', 'bipolar' => '18. Bipolar', 'depression' => '19. Depression',
             'anxiety' => '20. Anxiety', 'ocd' => '21. Obsessive Compulsive', 'schizophernai' => '22. Schizophrenia', 'selfinjuring' => '23. Self injuring',

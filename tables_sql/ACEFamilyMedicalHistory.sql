@@ -8,6 +8,9 @@ CREATE TABLE `ACEFamilyMedicalHistory` (
                           `Testdate` timestamp NOT NULL,
 
                           `Data_entry_completion_status` enum('Incomplete','Complete') NOT NULL default 'Incomplete',
+`Date_taken` date,
+`Candidate_Age` varchar(20),
+`Window_Difference` varchar(20),
 `relation_sibling1` enum('full_sibling','maternal_half','paternal_half') default NULL,
 `relation_sibling2` enum('full_sibling','maternal_half','paternal_half') default NULL,
 `relation_sibling3` enum('full_sibling','maternal_half','paternal_half') default NULL,
