@@ -205,7 +205,7 @@ class NDB_BVL_Instrument_apsi_survey extends NDB_BVL_Instrument
 
          foreach (self::relevant_questions as $question => $label) {
              $this->addSelect($question, $label, $optionsYesNo);
-             $this->XINRegisterRule($question, array("q26{@}=={@}p|d"), "Required");
+             $this->XINRegisterRule($question, array("q26{@}=={@}p|d", 'speech_loss{@}=={@}y'), "Required");
          }
 
          $this->form->addFormRule(array(&$this, 'conflict_rules'));
@@ -216,11 +216,19 @@ class NDB_BVL_Instrument_apsi_survey extends NDB_BVL_Instrument
      */
     function conflict_rules($values) {
         $errors = [];
-        if (in_array($values['q26'], ['n'])) {
+        if ($values['q26'] == 'n') {
             $check_fields = array_merge(array_keys(self::questions_loss), ['other_skills_lost'], array_keys(self::relevant_questions));
             foreach ($check_fields as $key) {
                 if (!empty($values[$key])) {
                     $errors[$key] = "You should not answer this question if the answer of the question 26 is No";
+                }
+            }
+        }
+        else if (in_array($values['q26'], ['p', 'd']) && ($values['speech_loss'] == 'n')) {
+            $check_fields = array_keys(self::relevant_questions);
+            foreach ($check_fields as $key) {
+                if (!empty($values[$key])) {
+                    $errors[$key] = "You should not answer this question if Speech Loss has NOT happened.";
                 }
             }
         }
