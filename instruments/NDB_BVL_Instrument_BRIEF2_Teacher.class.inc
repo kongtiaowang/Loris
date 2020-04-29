@@ -172,7 +172,7 @@ class NDB_BVL_Instrument_BRIEF2_Teacher extends NDB_BVL_Instrument
                            null     => "",
                            "male"   => "Male",
                            "female" => "Female",
-                           "not_answered" =>"Not Answered"
+                           "not_answered" =>"Prefer not to answer"
                           );
 
         $this->addSelect("student_gender", "Student's Sex", $gender_options);
@@ -203,7 +203,7 @@ class NDB_BVL_Instrument_BRIEF2_Teacher extends NDB_BVL_Instrument
                           "not_well"        => "Not Well",
                           "moderately_well" => "Moderately Well",
                           "very_well"       => "Very Well",
-                           "not_answered"   => "Not Answered"
+                           "not_answered"   => "Prefer not to answer"
                          );
 
         $this->addSelect("how_well_do_you_know_student", "How well do you know this student?", $rater_options);
@@ -214,7 +214,7 @@ class NDB_BVL_Instrument_BRIEF2_Teacher extends NDB_BVL_Instrument
                            null  => "",
                            "yes" => "Yes",
                            "no"  => "No",
-                           "not_answered"   => "Not Answered"
+                           "not_answered"   => "Prefer not to answer"
                           );
 
         $this->addSelect("does_student_receive_special_education_services", "Does this student receive special education services?", $yes_no_options);
@@ -224,7 +224,7 @@ class NDB_BVL_Instrument_BRIEF2_Teacher extends NDB_BVL_Instrument
                     "N"  => "Never(N)",
                     "S"  => "Sometimes(S)",
                     "O"  => "Often(O)",
-                    "not_answered"   => "Not Answered"
+                    "not_answered"   => "Prefer not to answer"
                    );
 
         $questions = array(
@@ -283,7 +283,7 @@ class NDB_BVL_Instrument_BRIEF2_Teacher extends NDB_BVL_Instrument
                     "N"  => "Never(N)",
                     "S"  => "Sometimes(S)",
                     "O"  => "Often(O)",
-                    "not_answered"   => "Not Answered"
+                    "not_answered"   => "Prefer not to answer"
                    );
 
         $questions = array(

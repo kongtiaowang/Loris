@@ -266,7 +266,7 @@ class NDB_BVL_Instrument_rbs_r extends NDB_BVL_Instrument
                           '1_mild_problems'    => "1 = behavior occurs and is a mild problem",
                           '2_moderate_problem' => "2 = behavior occurs and is a moderate problem",
                           '3_severe_problem'   => "3 = behavior occurs and is a severe problem",
-                          'not_answered'       => "Not Answered",
+                          'not_answered'       => "Prefer not to answer",
                          );
 
         //The first question of each section...
