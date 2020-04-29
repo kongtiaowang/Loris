@@ -151,3 +151,7 @@ INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, Subp
 VALUES ('Vineland_SA', '0', '0', 'Y', 'Visit', 9, 'VSA', NULL);
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
 VALUES ('Vineland_SA', '0', '0', 'Y', 'Visit', 10, 'VSA', NULL);
+
+-- DS SA battery --
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
+VALUES ('Vineland_SA', 0, 0, 'Y', 'Visit', 21, 'VSA', NULL);
