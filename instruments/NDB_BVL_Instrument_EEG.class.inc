@@ -27,6 +27,11 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
       'p' => 'Partial'
   ];
 
+  var $ValidityRequired = true;
+
+  var $_requiredElements = array('file_top');
+
+
   /**
    * sets up basic data, such as the LorisForm object, and so on.
    *
@@ -146,6 +151,7 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
 
         $this->addScoreColumn('file_top', "File Name:");
         $this->form->addElement('file', "file_top_chooser", '');
+        $this->XINRegisterRule("file_top_chooser", array("second_file_top_chooser{@}==={@}NEVER_REQUIRED"));
 
         $this->addScoreColumn('second_file_top', 'Secondary File (optional):');
         $this->form->addElement('file', "second_file_top_chooser", '');
@@ -287,7 +293,7 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
                 "SELECT e.Date_Taken, m.ID FROM {$this->table} e LEFT JOIN media m ON (e.{$k}=m.file_name) WHERE e.CommentID=:CommentID",
                 array("CommentID"=>$this->getCommentID())
             );
-            $eegDateTaken = $row['date_taken'];
+            $eegDateTaken = $row['Date_Taken'];
             $mediaID      = $row['ID'];
 
             // Build insert query
