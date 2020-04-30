@@ -1131,7 +1131,7 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $this->addTextArea("II_F_replacement_comments", "OTHER COMMENTS:", array('II_F_replacement_comments{@}=={@}NEVER_REQUIRED'));
     }
 
-    function addTextArea(
+    private function addTextArea(
         $field,
         $label,
         $rules=array(),
