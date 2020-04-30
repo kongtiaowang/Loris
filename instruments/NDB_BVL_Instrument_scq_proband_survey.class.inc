@@ -116,22 +116,8 @@ class NDB_BVL_Instrument_scq_proband_survey extends NDB_BVL_Instrument
             "Required",
             "other_relationship_to_child"
         );
-
-        if (strrpos($this->testName, '_proband') === false) {
-            $this->addScoreColumn(
-                'Candidate_Age',
-                'Candidate Age (Months)',
-                'Please enter date of administration and press Save'
-            );
-            $this->addScoreColumn(
-                'Window_Difference',
-                'Window Difference (+/- Days)',
-                'Please enter date of administration and press Save'
-            );
-        }
-        $this->form->addElement("static", "score", "Score: ");
-        $this->form->addElement("static", "scq_diagnosis", "SCQ Diagnosis: ");
     }
+
     function _page1() {
         $this->form->addElement("header", null, "Capable of phrase speech");
         $this->form->addElement("select", "q1_talk_short_phrases", "1. Is she/he now able to talk using short phrases or sentences? If <i>no</i>, skip to question 8.", $this->onlyYesNo);
