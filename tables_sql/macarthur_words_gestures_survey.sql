@@ -519,9 +519,7 @@ CREATE TABLE `macarthur_words_gestures_survey` (
 `II_E_15` enum('yes','no','not_answered') default NULL,
 `II_F_replacement` enum('yes','no','not_answered') default NULL,
 `II_F_replacement_examples` text default NULL,
-`II_F_replacement_examples_status` enum('not_answered') default NULL,
 `II_F_replacement_comments` text default NULL,
-`II_F_replacement_comments_status` enum('not_answered') default NULL,
 PRIMARY KEY  (`CommentID`)
 
               ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
