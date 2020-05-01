@@ -58,6 +58,10 @@ class NDB_BVL_Instrument_perinatal_data extends NDB_BVL_Instrument
             'c' => [
                 'f' => 'feet',
                 'i' => 'inches'
+            ],
+            'r' => [
+                'f' => [0, 7],
+                'i' => [0, 12]
             ]
         ],
         'supplement_3months_before' => [
@@ -269,9 +273,29 @@ class NDB_BVL_Instrument_perinatal_data extends NDB_BVL_Instrument
                 }
             }
         }
+        $this->form->addFormRule(array(&$this, 'valueControl'));
     }
 
     private function not_required_field($key) {
         return $this->XINRegisterRule($key, array("{$key}{@}=={@}NEVER_REQUIRED"), "Not required");
+    }
+
+    function valueControl($values) {
+        $errors = array();
+        $itm = 'height';
+        foreach (self::QUESTIONS[$itm]['c'] as $key => $label) {
+            $subKey = "{$itm}_{$key}";
+            $ranges = self::QUESTIONS[$itm]['r'];
+            if (!empty($values[$subKey])) {
+                $range = $ranges[$key];
+                if ($values[$subKey] < $range[0]) {
+                    $errors[$subKey] = "Must be no less than $range[0].";
+                }
+                else if ($values[$subKey] > $range[1]) {
+                    $errors[$subKey] = "Must be no more than $range[1].";
+                }
+            }
+        }
+        return $errors;
     }
 }
