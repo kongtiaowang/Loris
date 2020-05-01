@@ -123,10 +123,10 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
               );
 
         while ($i = current($score_columns)) {
-            $this->addScoreColumn(
-                key($score_columns),
-                $i
-            );
+              $f=key($score_columns);
+            $group[] = $this->form->createElement('static', "$f", null, null);
+            $this->form->addGroup($group, "{$f}_score_group", "$i:", $this->_GUIDelimiter, FALSE);
+            unset($group);
             next($score_columns);
         }
         $opts = array(
