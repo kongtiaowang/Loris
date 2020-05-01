@@ -41,12 +41,10 @@ class NDB_BVL_Instrument_macarthur_words_gestures_survey extends NDB_BVL_Instrum
         "I_C_2_score",
         "Data_entry_completion_status");
 
-
-
     //answers to often asked questions
-    var $yesNo = array(''=>null, 'yes'=>"Yes", 'no'=>"No", 'not_answered'=>"Not Answered");
-    var $neverSomeOften = array(''=>null, 'never'=>"Never", 'sometimes'=>"Sometimes", 'often'=>"Often", 'not_answered'=>"Not Answered");
-    var $underSays = array(''=>null, 'understands'=>"Understands", "says_and_understands"=>"Says and Understands", 'not_answered'=>"Not Answered");
+    var $yesNo = array(''=>null, 'yes'=>"Yes", 'no'=>"No", 'not_answered'=>"Not Known");
+    var $neverSomeOften = array(''=>null, 'never'=>"Never", 'sometimes'=>"Sometimes", 'often'=>"Often", 'not_answered'=>"Not Known");
+    var $underSays = array(''=>null, 'understands'=>"Understands", "says_and_understands"=>"Says and Understands", 'not_answered'=>"Not Known");
 
     /**
     * sets up basic data, such as the LorisForm object, and so on.
@@ -338,8 +336,8 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
                 7 => array("arm", "belly button", "cheek", "ear", "eye", "face", "foot", "finger", "hair", "hand", "head", "knee", "leg", "mouth", "nose", "owie/boo boo", "tooth", "toe", "tongue", "tummy"),
                 8 => array("bathroom", "bathtub", "bed", "bedroom", "chair", "couch", "crib", "door", "drawer", "garage", "high chair", "kitchen", "living room", "oven", "play pen", "potty", "refrigerator", "rocking chair", "sink", "stairs", "stove", "table", "TV", "window"),
                 9 => array("blanket", "bottle", "bowl", "box", "broom", "brush", "clock", "comb", "cup", "dish", "fork", "glass", "glasses", "hammer", "keys", "lamp", "light", "medicine", "money", "paper", "penny", "picture", "pillow", "plant", "plate", "purse", "radio", "scissors", "soap", "spoon", "telephone", "toothbrush", "towel", "trash", "vacuum", "watch"),
-                10 => array("backyard", "beach", "church*", "flower", "garden", "home", "house", "moon", "outside", "park", "party", "pool", "rain", "rock", "school", "shovel", "sky", "slide", "snow", "star", "store", "sun", "swing", "tree", "water", "work", "zoo"),
-                11 => array("aunt", "baby", "babysitter", "babysitter's name", "boy", "brother", "child", "daddy*", "girl", "grandma", "grandpa", "lady", "man", "mommy*", "child's own name", "people", "person", "sister", "teacher", "uncle"),
+                10 => array("backyard", "beach", "church (or word used in your family)", "flower", "garden", "home", "house", "moon", "outside", "park", "party", "pool", "rain", "rock", "school", "shovel", "sky", "slide", "snow", "star", "store", "sun", "swing", "tree", "water", "work", "zoo"),
+                11 => array("aunt", "baby", "babysitter", "babysitter's name", "boy", "brother", "child", "daddy (or word used in your family)", "girl", "grandma", "grandpa", "lady", "man", "mommy (or word used in your family)", "child's own name", "people", "person", "sister", "teacher", "uncle"),
                 12 => array("bath", "breakfast", "bye or bye bye", "dinner", "don't", "hello", "hi", "lunch", "nap", "night night", "no", "patty cake", "peekaboo", "please", "shh/shush/hush", "thank you", "wait", "wanna/want to", "yes"),
                 13 => array("bite", "blow", "break", "bring", "bump", "clean", "close", "cry", "dance", "draw", "drink", "drive", "eat", "fall", "feed", "finish", "get", "give", "go", "help", "hit", "hug", "hurry", "jump", "kick", "kiss", "look", "love", "open", "play", "pull", "push", "put", "read", "ride", "run", "say", "see", "show", "sing", "sleep", "smile", "splash", "stop", "swim", 	"swing", "take", "throw", "tickle", "touch", "watch", "walk", "wash", "wipe", "write"),
                 14 => array("day", "later", "morning", "night", "now", "today", "tomorrow", "tonight"),
@@ -471,7 +469,6 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
             //$this->addCheckbox('testCheckbox', 'Check this checkbox default value is 1');
             //$this->addCheckbox('testCheckbox', 'Check this checkbox default value is 1', array('value' => '1'));
             $this->form->addElement('advcheckbox', "I_B_" . $qNum, $label, null, array(null, "understands"));
-            $this->XINRegisterRule("I_B_" . $qNum, array("I_B_" . $qNum . "{@}=={@}NEVER_REQUIRED"));
             $qNum++;
         }
 
@@ -503,7 +500,6 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $qNum = 1;
         foreach($questionArray as $label) {
             $this->form->addElement('select', "I_D_1_" . $qNum, $label, $this->underSays);
-            $this->XINRegisterRule("I_D_1_" . $qNum, array("I_D_1_" . $qNum . "{@}=={@}NEVER_REQUIRED"));
             $qNum++;
         }
 
@@ -547,7 +543,6 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $qNum = 1;
         foreach($questionArray as $label) {
             $this->form->addElement('select', "I_D_2_" . $qNum, $label, $this->underSays);
-            $this->XINRegisterRule("I_D_2_" . $qNum, array("I_D_2_" . $qNum . "{@}=={@}NEVER_REQUIRED"));
             $qNum++;
         }
 
@@ -564,7 +559,6 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $qNum = 1;
         foreach($questionArray as $label) {
             $this->form->addElement('select', "I_D_3_" . $qNum, $label, $this->underSays);
-            $this->XINRegisterRule("I_D_3_" . $qNum, array("I_D_3_" . $qNum . "{@}=={@}NEVER_REQUIRED"));
             $qNum++;
         }
     }
@@ -582,7 +576,6 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $qNum = 1;
         foreach($questionArray as $label) {
             $this->form->addElement('select', "I_D_4_" . $qNum, $label, $this->underSays);
-            $this->XINRegisterRule("I_D_4_" . $qNum, array("I_D_4_" . $qNum . "{@}=={@}NEVER_REQUIRED"));
             $qNum++;
         }
 
@@ -620,7 +613,6 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $qNum = 1;
         foreach($questionArray as $label) {
             $this->form->addElement('select', "I_D_5_" . $qNum, $label, $this->underSays);
-            $this->XINRegisterRule("I_D_5_" . $qNum, array("I_D_5_" . $qNum . "{@}=={@}NEVER_REQUIRED"));
             $qNum++;
         }
 
@@ -647,7 +639,6 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $qNum = 1;
         foreach($questionArray as $label) {
             $this->form->addElement('select', "I_D_6_" . $qNum, $label, $this->underSays);
-            $this->XINRegisterRule("I_D_6_" . $qNum, array("I_D_6_" . $qNum . "{@}=={@}NEVER_REQUIRED"));
             $qNum++;
         }
 
@@ -675,7 +666,6 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $qNum = 1;
         foreach($questionArray as $label) {
             $this->form->addElement('select', "I_D_7_" . $qNum, $label, $this->underSays);
-            $this->XINRegisterRule("I_D_7_" . $qNum, array("I_D_7_" . $qNum . "{@}=={@}NEVER_REQUIRED"));
             $qNum++;
         }
     }
@@ -709,7 +699,6 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $qNum = 1;
         foreach($questionArray as $label) {
             $this->form->addElement('select', "I_D_8_" . $qNum, $label, $this->underSays);
-            $this->XINRegisterRule("I_D_8_" . $qNum, array("I_D_8_" . $qNum . "{@}=={@}NEVER_REQUIRED"));
             $qNum++;
         }
 
@@ -753,14 +742,13 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $qNum = 1;
         foreach($questionArray as $label) {
             $this->form->addElement('select', "I_D_9_" . $qNum, $label, $this->underSays);
-            $this->XINRegisterRule("I_D_9_" . $qNum, array("I_D_9_" . $qNum . "{@}=={@}NEVER_REQUIRED"));
             $qNum++;
         }
 
         $this->form->addElement('header', null, "10. OUTSIDE THINGS AND PLACES TO GO (27)");
         $questionArray = array("backyard",
         "beach",
-        "church*",
+        "church (or word used in your family)",
         "flower",
         "garden",
         "home",
@@ -788,10 +776,8 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $qNum = 1;
         foreach($questionArray as $label) {
             $this->form->addElement('select', "I_D_10_" . $qNum, $label, $this->underSays);
-            $this->XINRegisterRule("I_D_10_" . $qNum, array("I_D_10_" . $qNum . "{@}=={@}NEVER_REQUIRED"));
             $qNum++;
         }
-        $this->form->addElement("static", null, "* or word used in your family");
     }
 
     function _page5(){
@@ -803,13 +789,13 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         "boy",
         "brother",
         "child",
-        "daddy*",
+        "daddy (or word used in your family)",
         "girl",
         "grandma",
         "grandpa",
         "lady",
         "man",
-        "mommy*",
+        "mommy (or word used in your family)",
         "child's own name",
         "people",
         "person",
@@ -819,7 +805,6 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $qNum = 1;
         foreach($questionArray as $label) {
             $this->form->addElement('select', "I_D_11_" . $qNum, $label, $this->underSays);
-            $this->XINRegisterRule("I_D_11_" . $qNum, array("I_D_11_" . $qNum . "{@}=={@}NEVER_REQUIRED"));
             $qNum++;
         }
 
@@ -846,7 +831,6 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $qNum = 1;
         foreach($questionArray as $label) {
             $this->form->addElement('select', "I_D_12_" . $qNum, $label, $this->underSays);
-            $this->XINRegisterRule("I_D_12_" . $qNum, array("I_D_12_" . $qNum . "{@}=={@}NEVER_REQUIRED"));
             $qNum++;
         }
 
@@ -909,7 +893,6 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $qNum = 1;
         foreach($questionArray as $label) {
             $this->form->addElement('select', "I_D_13_" . $qNum, $label, $this->underSays);
-            $this->XINRegisterRule("I_D_13_" . $qNum, array("I_D_13_" . $qNum . "{@}=={@}NEVER_REQUIRED"));
             $qNum++;
         }
     }
@@ -927,7 +910,6 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $qNum = 1;
         foreach($questionArray as $label) {
             $this->form->addElement('select', "I_D_14_" . $qNum, $label, $this->underSays);
-            $this->XINRegisterRule("I_D_14_" . $qNum, array("I_D_14_" . $qNum . "{@}=={@}NEVER_REQUIRED"));
             $qNum++;
         }
 
@@ -972,7 +954,6 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $qNum = 1;
         foreach($questionArray as $label) {
             $this->form->addElement('select', "I_D_15_" . $qNum, $label, $this->underSays);
-            $this->XINRegisterRule("I_D_15_" . $qNum, array("I_D_15_" . $qNum . "{@}=={@}NEVER_REQUIRED"));
             $qNum++;
         }
 
@@ -991,7 +972,6 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $qNum = 1;
         foreach($questionArray as $label) {
             $this->form->addElement('select', "I_D_16_" . $qNum, $label, $this->underSays);
-            $this->XINRegisterRule("I_D_16_" . $qNum, array("I_D_16_" . $qNum . "{@}=={@}NEVER_REQUIRED"));
             $qNum++;
         }
 
@@ -1005,7 +985,6 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $qNum = 1;
         foreach($questionArray as $label) {
             $this->form->addElement('select', "I_D_17_" . $qNum, $label, $this->underSays);
-            $this->XINRegisterRule("I_D_17_" . $qNum, array("I_D_17_" . $qNum . "{@}=={@}NEVER_REQUIRED"));
             $qNum++;
         }
 
@@ -1024,7 +1003,6 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $qNum = 1;
         foreach($questionArray as $label) {
             $this->form->addElement('select', "I_D_18_" . $qNum, $label, $this->underSays);
-            $this->XINRegisterRule("I_D_18_" . $qNum, array("I_D_18_" . $qNum . "{@}=={@}NEVER_REQUIRED"));
             $qNum++;
         }
 
@@ -1040,7 +1018,6 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $qNum = 1;
         foreach($questionArray as $label) {
             $this->form->addElement('select', "I_D_19_" . $qNum, $label, $this->underSays);
-            $this->XINRegisterRule("I_D_19_" . $qNum, array("I_D_19_" . $qNum . "{@}=={@}NEVER_REQUIRED"));
             $qNum++;
         }
     }
@@ -1149,9 +1126,32 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $this->form->addElement('header', null, "F. PRETEND OBJECTS");
         $this->form->addElement('select', "II_F_replacement", "During play, children sometimes use an object as a replacement for another.", $this->yesNo);
 
-        $this->addTextAreaElement("II_F_replacement_examples", $this->indent . "If yes, please give several examples:", array("II_F_replacement{@}=={@}yes"));
+        $this->addTextArea("II_F_replacement_examples", $this->indent . "If yes, please give several examples:", array("II_F_replacement{@}=={@}yes"));
 
-        $this->addTextAreaElement("II_F_replacement_comments", "OTHER COMMENTS:");
+        $this->addTextArea("II_F_replacement_comments", "OTHER COMMENTS:", array('II_F_replacement_comments{@}=={@}NEVER_REQUIRED'));
+    }
+
+    private function addTextArea(
+        $field,
+        $label,
+        $rules=array(),
+        $rule_message='This field is required.'
+    ) {
+        $this->form->addElement(
+            "textarea",
+            $field,
+            $label,
+            array(
+                'cols'  => 25,
+                'rows'  => 4,
+                'class' => 'form-control',
+            )
+        );
+        $this->XINRegisterRule(
+            $field,
+            $rules,
+            $rule_message
+        );
     }
 }
 

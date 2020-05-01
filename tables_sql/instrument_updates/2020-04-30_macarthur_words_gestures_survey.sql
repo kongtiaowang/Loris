@@ -1,0 +1,2 @@
+ALTER TABLE macarthur_words_gestures_survey DROP COLUMN `II_F_replacement_examples_status`;
+ALTER TABLE macarthur_words_gestures_survey DROP COLUMN `II_F_replacement_comments_status`;
