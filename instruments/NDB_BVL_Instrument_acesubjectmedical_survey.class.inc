@@ -141,119 +141,7 @@ class NDB_BVL_Instrument_acesubjectmedical_survey extends NDB_BVL_Instrument
 
         $this->addBasicDate('Date_taken', 'Date Taken', $dateOptions);
 
-        $items1 = [
-            '1' => ['t' => 'sec', 'l' => 'Diagnostic History'],
-            'diag_aofc' => ['l' => '1. Age of first concern (in months)',
-                'r' => [1, 150]
-            ],
-            'devel_concern' => ['l' => '2. Developmental concern',
-                'o' => [
-                    NULL=>'',
-                    '1_cognitive/learning'=>'1. Cognitive/learning',
-                    '2_behavior'=>'2. Behavior',
-                    '3_hearing'=>'3. Hearing',
-                    '4_motor'=>'4. Motor',
-                    '5_language'=>'5. Language',
-                    'nk'=>'Not Known',
-                    'none'=>'None'
-                 ]
-            ],
-            'aut_diag' => ['l' => '3. Autism-related diagnosis',
-                  'o' => [
-                    NULL=>'',
-                    '1_autism'=>'1. Autism',
-                    '2_autism_spectrum_disorder'=>'2. Autism Spectrum Disorder',
-                    '3_asperger_syndrome'=>'3. Asperger syndrome',
-                    '4_pdd-nos'=>'4. PDD-NOS',
-                    'nk'=>'Not Known',
-                    'none'=>'None'
-                  ]
-            ],
-            'diag_ageatdiag' => ['l' => '4. Age at diagnosis (in months)',
-                    'r' => [1, 360]
-            ],
-            'diag_diagnosismadeby' => ['l' => '5.Diagnosis made by',
-                'o' => [
-                    NULL=>'',
-                    'physician'=>'Physician',
-                    'psychologist'=>'Psychologist',
-                    'other'=>'Other',
-                    'nk'=>'Not Known',
-                    'none'=>'None'
-                ]
-            ],
-            '2' => ['t' => 'sec', 'l' => 'Prenatal/Early Postnatal History'],
-            'preg_complic' => ['l' => '6. Complications during pregnancy?',
-                'o' => self::default_option
-            ],
-            'preg_dxdrug' => ['l' => '7. Used prescription medications during pregnancy?',
-                'o' => self::default_option
-            ],
-            'birth_weight_lbs' => ['l' => '8. Birth weight pounds',
-                'r' => [1, 25]
-            ],
-            'ldnb_lgthin' => [
-                'l' => '9. What was the baby\'s length at birth (inches)',
-            ],
-            'full_term' => ['l' => '10. Full-term delivery?',
-                'o' => self::default_option
-            ],
-            'info_gest' => ['l' => 'If No, how many weeks gestation?',
-                'r' => [1, 45]
-            ],
-            'ldnb_hosptotalmom' => [
-                'l' => '11. How many days in the hospital after birth?',
-            ],
-            '3' => ['t' => 'sec', 'l' => 'Developmental History'],
-            'earlydev_walk' => ['l' => '12. Age when first walked unaided (in months)'],
-            'age_firstword' => ['l' => '13. Age of first single words (in months)'],
-            'age_3word' => ['l' => '14. Age at 3-word sentences (in months)', 'r' => [1, 150]],
-            'current_lang' => ['l' => '15. Current speech/language: Verbal?',
-                'o' => self::default_option
-            ],
-            'verb_words' => ['l' => 'If yes, how many words?',
-                'o' => [
-                    NULL=>'',
-                    '1_max9_single_words'=>'1. <10 single words',
-                    '2_10_or_more_single_words'=>'2. Speaks in 10 or more single words',
-                    '3_2_word_combinations'=>'3. Speaks in 2 word combinations',
-                    '4_3_or_more_word_combinations'=>'4. Speaks in 3 or more word combinations',
-                    'nk'=>'Not Known',
-                ]
-            ],
-            'othmem_devdelay' => ['l' => '16. Developmental Delay',
-                'o' => self::default_option
-            ],
-            'school_perf' => ['l' => '17. School Performance',
-                'o' => [
-                    NULL=>'',
-                    '1_below_grade_level'=>'1. Below grade level',
-                    '2_at_grade_level'=>'2. At grade level',
-                    '3_above_grade_level'=>'3. Above grade level',
-                    '4_mixed'=>'4. Mixed',
-                    'nk'=>'Not Known',
-                    'none'=>'None'
-                ]
-            ],
-            '4' => ['t' => 'sec', 'l' => 'Current Medications'],
-            'rx_behav' => ['l' => '18. Prescription medications for behavioral concerns',
-                'o' => self::default_option
-            ],
-            'rx_phys' => ['l' => '19. Prescription medications for physical health concerns',
-                'o' => self::default_option
-            ],
-            'otc_med' => ['l' => '20. Over-the-counter medications',
-                'o' => self::default_option
-            ],
-            'ds_med' => ['l' => '21. Dietary Supplements',
-                'o' => self::default_option
-            ],
-            'gastro_spec_diet' => ['l' => '22. Does subject have a special diet?',
-                'o' => self::default_option
-            ]
-        ];
-
-        $this->create_form_item($items1);
+        $this->create_form_item(self::Items1);
 
         $this->form->addFormRule(array(&$this, 'main_valueControl'));
 
@@ -271,13 +159,12 @@ class NDB_BVL_Instrument_acesubjectmedical_survey extends NDB_BVL_Instrument
     }
 
     function main_valueControl($values) {
-        $def = [
-            'diag_aofc' => [1, 150],
-            'diag_ageatdiag' => [1, 360],
-            'birth_weight_lbs' => [1, 25],
-            'info_gest' => [1, 45],
-            'age_3word' => [1, 150]
-        ];
+        $def = [];
+        foreach (self::Items1 as $key => $itm) {
+            if (isset($itm['r'])) {
+                $def[$key] = $itm['r'];
+            }
+        }
 
         $errors = array();
 
@@ -290,6 +177,9 @@ class NDB_BVL_Instrument_acesubjectmedical_survey extends NDB_BVL_Instrument
                     $errors[$key] = "Must be no more than $range[1].";
                 }
             }
+        }
+        if (in_array($values['full_term'], ['Yes', 'nk']) && !empty($values['info_gest'])) {
+            $errors['info_gest'] = 'You have chosen ' . ($values['full_term'] == 'Yes' ? "Yes" : "Not Known") . ', a value should not be here.';
         }
         return $errors;
     }
@@ -324,7 +214,7 @@ class NDB_BVL_Instrument_acesubjectmedical_survey extends NDB_BVL_Instrument
             'rev_headfebseiz' => ['l' => '25. Febrile Seizures',
                 'o' => self::default_option
             ],
-            'rev_headfebseizage' => ['l' => 'Febrile Seizures: Age(s)',
+            'rev_headfebseizage' => ['l' => 'Febrile Seizures: Age (months)',
             ],
             'rev_headseizure' => ['l' => '26. Non-Febrile Seizures',
                 'o' => self::default_option
@@ -370,7 +260,7 @@ class NDB_BVL_Instrument_acesubjectmedical_survey extends NDB_BVL_Instrument
             'rev_eartest' => ['l' => '31. Hearing Testing',
                 'o' => self::default_option
             ],
-            'rev_eartestages' => ['l' => 'Hearing Testing: Age(s)'],
+            'rev_eartestages' => ['l' => 'Hearing Testing: Age (months)'],
             'rev_eartestresult' => ['l' => 'Hearing Testing: Result',
                 'o' => [
                     NULL=>'',
@@ -418,7 +308,6 @@ class NDB_BVL_Instrument_acesubjectmedical_survey extends NDB_BVL_Instrument
             'rev_skineczema' => ['l' => '40. Eczema',
                 'o' => self::default_option
             ],
-
             'rev_skinabscesses' => ['l' => '41. Skin Infections/Abscesses',
                 'o' => self::default_option
             ]
@@ -452,6 +341,34 @@ class NDB_BVL_Instrument_acesubjectmedical_survey extends NDB_BVL_Instrument
                 array($itm['r']),
                 $itm['l']);
         }
+
+        $this->form->addFormRule(array(&$this, 'page1Control'));
+    }
+
+    function page1Control($values) {
+        $errors = array();
+        $section = [
+            'rev_headmeningitis' => ['l' => 'Meningitis',
+                't' => 'text',
+                'o' => ['rev_headmeningitisage', 'rev_headmeningitisorg']
+            ],
+            'rev_headimagestudy' => ['l' => 'Imaging Studies' ,
+                't' => 'choice',
+                'o' => ['rev_headimagestudytype', 'rev_headimagestudyresult']
+            ]
+        ];
+
+        foreach ($section as $parentKey => $itm) {
+            if ($values[$parentKey] == 'No') {
+                foreach ($itm['o'] as $key) {
+                    if (!empty($values[$key])) {
+                        $errors[$key] = 'You have chosen No ' . $itm['l'] . ', a ' .
+                            ($itm['t'] =='choice' ? 'choice should not be made' : ' value should not be entered') . ' here.';
+                    }
+                }
+            }
+        }
+        return $errors;
     }
 
     /**
@@ -654,4 +571,117 @@ class NDB_BVL_Instrument_acesubjectmedical_survey extends NDB_BVL_Instrument
                 $itm['l']);
         }
     }
+
+    private const Items1 = [
+        '1' => ['t' => 'sec', 'l' => 'Diagnostic History'],
+        'diag_aofc' => ['l' => '1. Age of first concern (in months)',
+            'r' => [1, 150]
+        ],
+        'devel_concern' => ['l' => '2. Developmental concern',
+            'o' => [
+                NULL=>'',
+                '1_cognitive/learning'=>'1. Cognitive/learning',
+                '2_behavior'=>'2. Behavior',
+                '3_hearing'=>'3. Hearing',
+                '4_motor'=>'4. Motor',
+                '5_language'=>'5. Language',
+                'nk'=>'Not Known',
+                'none'=>'None'
+            ]
+        ],
+        'aut_diag' => ['l' => '3. Autism-related diagnosis',
+            'o' => [
+                NULL=>'',
+                '1_autism'=>'1. Autism',
+                '2_autism_spectrum_disorder'=>'2. Autism Spectrum Disorder',
+                '3_asperger_syndrome'=>'3. Asperger syndrome',
+                '4_pdd-nos'=>'4. PDD-NOS',
+                'nk'=>'Not Known',
+                'none'=>'None'
+            ]
+        ],
+        'diag_ageatdiag' => ['l' => '4. Age at diagnosis (in months)',
+            'r' => [1, 360]
+        ],
+        'diag_diagnosismadeby' => ['l' => '5.Diagnosis made by',
+            'o' => [
+                NULL=>'',
+                'physician'=>'Physician',
+                'psychologist'=>'Psychologist',
+                'other'=>'Other',
+                'nk'=>'Not Known',
+                'none'=>'None'
+            ]
+        ],
+        '2' => ['t' => 'sec', 'l' => 'Prenatal/Early Postnatal History'],
+        'preg_complic' => ['l' => '6. Complications during pregnancy?',
+            'o' => self::default_option
+        ],
+        'preg_dxdrug' => ['l' => '7. Used prescription medications during pregnancy?',
+            'o' => self::default_option
+        ],
+        'birth_weight_lbs' => ['l' => '8. Birth weight pounds',
+            'r' => [0.5, 25]
+        ],
+        'ldnb_lgthin' => [
+            'l' => '9. What was the baby\'s length at birth (inches)',
+            'r' => [10, 28]
+        ],
+        'full_term' => ['l' => '10. Full-term delivery?',
+            'o' => self::default_option
+        ],
+        'info_gest' => ['l' => 'If No, how many weeks gestation?',
+            'r' => [1, 45]
+        ],
+        'ldnb_hosptotalmom' => [
+            'l' => '11. How many days in the hospital after birth?',
+        ],
+        '3' => ['t' => 'sec', 'l' => 'Developmental History'],
+        'earlydev_walk' => ['l' => '12. Age when first walked unaided (in months)'],
+        'age_firstword' => ['l' => '13. Age of first single words (in months)'],
+        'age_3word' => ['l' => '14. Age at 3-word sentences (in months)', 'r' => [1, 150]],
+        'current_lang' => ['l' => '15. Current speech/language: Verbal?',
+            'o' => self::default_option
+        ],
+        'verb_words' => ['l' => 'If yes, how many words?',
+            'o' => [
+                NULL=>'',
+                '1_max9_single_words'=>'1. <10 single words',
+                '2_10_or_more_single_words'=>'2. Speaks in 10 or more single words',
+                '3_2_word_combinations'=>'3. Speaks in 2 word combinations',
+                '4_3_or_more_word_combinations'=>'4. Speaks in 3 or more word combinations',
+                'nk'=>'Not Known',
+            ]
+        ],
+        'othmem_devdelay' => ['l' => '16. Developmental Delay',
+            'o' => self::default_option
+        ],
+        'school_perf' => ['l' => '17. School Performance',
+            'o' => [
+                NULL=>'',
+                '1_below_grade_level'=>'1. Below grade level',
+                '2_at_grade_level'=>'2. At grade level',
+                '3_above_grade_level'=>'3. Above grade level',
+                '4_mixed'=>'4. Mixed',
+                'nk'=>'Not Known',
+                'none'=>'None'
+            ]
+        ],
+        '4' => ['t' => 'sec', 'l' => 'Current Medications'],
+        'rx_behav' => ['l' => '18. Prescription medications for behavioral concerns',
+            'o' => self::default_option
+        ],
+        'rx_phys' => ['l' => '19. Prescription medications for physical health concerns',
+            'o' => self::default_option
+        ],
+        'otc_med' => ['l' => '20. Over-the-counter medications',
+            'o' => self::default_option
+        ],
+        'ds_med' => ['l' => '21. Dietary Supplements',
+            'o' => self::default_option
+        ],
+        'gastro_spec_diet' => ['l' => '22. Does subject have a special diet?',
+            'o' => self::default_option
+        ]
+    ];
 }
