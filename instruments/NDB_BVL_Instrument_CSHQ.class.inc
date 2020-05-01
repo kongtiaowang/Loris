@@ -815,7 +815,7 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
         foreach ($items as $key) {
             if (!empty($values[$key. '_status'])) {
                 if (!empty($values[$key. '_hours']) || !empty($values[$key. '_mins'])) {
-                    $errors[$key. '_group'] = 'You have entered hours or minutes, you can not choose Unknown.';
+                    $errors[$key. '_group'] = 'You have entered hours or minutes, you can not choose ' . ($values[$key. '_status'] == 'not_answered'? 'Prefer not to answer' : 'Unknown') . '.';
                 }
             }
         }
