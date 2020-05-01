@@ -107,7 +107,7 @@ class NDB_BVL_Instrument_BISQ_survey extends NDB_BVL_Instrument
             "oldest" => "Oldest",
             "middle" => "Middle",
             "youngest" => "Youngest",
-            "step_father" => "Not Answered",
+            "not_answered" => "Not Known",
 
         );
         $this->addSelect("birth_order", "Birth order of the child:", $opts1);
@@ -132,7 +132,7 @@ class NDB_BVL_Instrument_BISQ_survey extends NDB_BVL_Instrument
             "belly" => "On his/her belly ",
             "side" => "On his/her side",
             "back" => "On his/her back",
-            "not_answered" => "Not Answered",
+            "not_answered" => "Not Known",
         );
 
         $this->addSelect("sleep_position", "In what position does your child sleep most of the time?", $pos_opts);
@@ -147,7 +147,7 @@ class NDB_BVL_Instrument_BISQ_survey extends NDB_BVL_Instrument
             "being_rocked" => "Being rocked",
             "bed_alone" => "In bed alone",
             "bed_near_parent" => "In bed near parent",
-            "not_answered" => "Not Answered",
+            "not_answered" => "Not Known",
         );
         $this->addSelect("sleep_opts", " How does your baby fall asleep?", $sleep_opts);
         $this->displayHourMinElementCustom("when_fall_asleep", "When fall asleep", "When does your baby usually fall asleep for the night: ");
@@ -156,20 +156,24 @@ class NDB_BVL_Instrument_BISQ_survey extends NDB_BVL_Instrument
          "belly" => " A very serious problem ",
          "side" => "A small problem",
          "back" => "Not a problem at all",
-         "not_answered" => "Not Answered"
+         "not_answered" => "Not Known"
         );
         $this->addSelect("is_sleep_problem", " Do you consider your child’s sleep as a problem?", $sleep_prob_opts);
 
+        $this->form->addFormRule(array(&$this, 'customDateCheck'));
     }
 
     function displayHourMinElementCustom($field, $field_label, $label)
     {
-        for ($i = 0; $i <= 12; $i ++) {
-            $hours_options["$i"]="$i Hr(s)";
+        for ($i = 0; $i < 24; $i ++) {
+            $hours_options["$i"]="$i hour(s)";
         }
-        for ($i = 0; $i <= 60; $i+=5) {
-            $min_options["$i"]="$i mins";
+        for ($i = 0; $i < 60; $i+=5) {
+            $min_options["$i"]="$i minutes";
         }
+
+        $min_options['59']="59 minute(s)";
+
         $default_val = array(null => '');
         $hours_options=array_merge($default_val,$hours_options);
         $min_options=array_merge($default_val,$min_options);
@@ -202,6 +206,17 @@ class NDB_BVL_Instrument_BISQ_survey extends NDB_BVL_Instrument
             array("{$field}_status{@}=={@}","{$field}_hours{@}!={@}"),
             "Mins Required."
         );
+    }
 
+    function customDateCheck($values) {
+        $errors = [];
+        foreach (['night_sleep', 'day_sleep', 'night_wakefullness', 'time_to_put_to_sleep', 'when_fall_asleep'] as $key) {
+            if (!empty($values[$key. '_status'])) {
+                if (!empty($values[$key. '_hours']) || !empty($values[$key. '_mins'])) {
+                    $errors[$key. '_group'] = 'You have entered hours or minutes, you can not choose ' . ($values[$key. '_status'] == 'not_answered'? 'Prefer not to answer' : 'Unknown') . '.';
+                }
+            }
+        }
+        return $errors;
     }
 }
