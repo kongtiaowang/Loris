@@ -469,6 +469,7 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
             //$this->addCheckbox('testCheckbox', 'Check this checkbox default value is 1');
             //$this->addCheckbox('testCheckbox', 'Check this checkbox default value is 1', array('value' => '1'));
             $this->form->addElement('advcheckbox', "I_B_" . $qNum, $label, null, array(null, "understands"));
+            $this->XINRegisterRule("I_B_" . $qNum, array("I_B_" . $qNum . "{@}=={@}NEVER_REQUIRED"));
             $qNum++;
         }
 
@@ -500,6 +501,7 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $qNum = 1;
         foreach($questionArray as $label) {
             $this->form->addElement('select', "I_D_1_" . $qNum, $label, $this->underSays);
+            $this->XINRegisterRule("I_D_1_" . $qNum, array("I_D_1_" . $qNum . "{@}=={@}NEVER_REQUIRED"));
             $qNum++;
         }
 
@@ -543,6 +545,7 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $qNum = 1;
         foreach($questionArray as $label) {
             $this->form->addElement('select', "I_D_2_" . $qNum, $label, $this->underSays);
+            $this->XINRegisterRule("I_D_2_" . $qNum, array("I_D_2_" . $qNum . "{@}=={@}NEVER_REQUIRED"));
             $qNum++;
         }
 
@@ -559,6 +562,7 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $qNum = 1;
         foreach($questionArray as $label) {
             $this->form->addElement('select', "I_D_3_" . $qNum, $label, $this->underSays);
+            $this->XINRegisterRule("I_D_3_" . $qNum, array("I_D_3_" . $qNum . "{@}=={@}NEVER_REQUIRED"));
             $qNum++;
         }
     }
@@ -576,6 +580,7 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $qNum = 1;
         foreach($questionArray as $label) {
             $this->form->addElement('select', "I_D_4_" . $qNum, $label, $this->underSays);
+            $this->XINRegisterRule("I_D_4_" . $qNum, array("I_D_4_" . $qNum . "{@}=={@}NEVER_REQUIRED"));
             $qNum++;
         }
 
@@ -613,6 +618,7 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $qNum = 1;
         foreach($questionArray as $label) {
             $this->form->addElement('select', "I_D_5_" . $qNum, $label, $this->underSays);
+            $this->XINRegisterRule("I_D_5_" . $qNum, array("I_D_5_" . $qNum . "{@}=={@}NEVER_REQUIRED"));
             $qNum++;
         }
 
@@ -639,6 +645,7 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $qNum = 1;
         foreach($questionArray as $label) {
             $this->form->addElement('select', "I_D_6_" . $qNum, $label, $this->underSays);
+            $this->XINRegisterRule("I_D_6_" . $qNum, array("I_D_6_" . $qNum . "{@}=={@}NEVER_REQUIRED"));
             $qNum++;
         }
 
@@ -666,6 +673,7 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $qNum = 1;
         foreach($questionArray as $label) {
             $this->form->addElement('select', "I_D_7_" . $qNum, $label, $this->underSays);
+            $this->XINRegisterRule("I_D_7_" . $qNum, array("I_D_7_" . $qNum . "{@}=={@}NEVER_REQUIRED"));
             $qNum++;
         }
     }
@@ -699,6 +707,7 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $qNum = 1;
         foreach($questionArray as $label) {
             $this->form->addElement('select', "I_D_8_" . $qNum, $label, $this->underSays);
+            $this->XINRegisterRule("I_D_8_" . $qNum, array("I_D_8_" . $qNum . "{@}=={@}NEVER_REQUIRED"));
             $qNum++;
         }
 
@@ -742,6 +751,7 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $qNum = 1;
         foreach($questionArray as $label) {
             $this->form->addElement('select', "I_D_9_" . $qNum, $label, $this->underSays);
+            $this->XINRegisterRule("I_D_9_" . $qNum, array("I_D_9_" . $qNum . "{@}=={@}NEVER_REQUIRED"));
             $qNum++;
         }
 
@@ -776,6 +786,7 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $qNum = 1;
         foreach($questionArray as $label) {
             $this->form->addElement('select', "I_D_10_" . $qNum, $label, $this->underSays);
+            $this->XINRegisterRule("I_D_10_" . $qNum, array("I_D_10_" . $qNum . "{@}=={@}NEVER_REQUIRED"));
             $qNum++;
         }
     }
@@ -805,6 +816,7 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $qNum = 1;
         foreach($questionArray as $label) {
             $this->form->addElement('select', "I_D_11_" . $qNum, $label, $this->underSays);
+            $this->XINRegisterRule("I_D_11_" . $qNum, array("I_D_11_" . $qNum . "{@}=={@}NEVER_REQUIRED"));
             $qNum++;
         }
 
@@ -831,6 +843,7 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $qNum = 1;
         foreach($questionArray as $label) {
             $this->form->addElement('select', "I_D_12_" . $qNum, $label, $this->underSays);
+            $this->XINRegisterRule("I_D_12_" . $qNum, array("I_D_12_" . $qNum . "{@}=={@}NEVER_REQUIRED"));
             $qNum++;
         }
 
@@ -893,6 +906,7 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $qNum = 1;
         foreach($questionArray as $label) {
             $this->form->addElement('select', "I_D_13_" . $qNum, $label, $this->underSays);
+            $this->XINRegisterRule("I_D_13_" . $qNum, array("I_D_13_" . $qNum . "{@}=={@}NEVER_REQUIRED"));
             $qNum++;
         }
     }
@@ -910,6 +924,7 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $qNum = 1;
         foreach($questionArray as $label) {
             $this->form->addElement('select', "I_D_14_" . $qNum, $label, $this->underSays);
+            $this->XINRegisterRule("I_D_14_" . $qNum, array("I_D_14_" . $qNum . "{@}=={@}NEVER_REQUIRED"));
             $qNum++;
         }
 
@@ -954,6 +969,7 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $qNum = 1;
         foreach($questionArray as $label) {
             $this->form->addElement('select', "I_D_15_" . $qNum, $label, $this->underSays);
+            $this->XINRegisterRule("I_D_15_" . $qNum, array("I_D_15_" . $qNum . "{@}=={@}NEVER_REQUIRED"));
             $qNum++;
         }
 
@@ -972,6 +988,7 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $qNum = 1;
         foreach($questionArray as $label) {
             $this->form->addElement('select', "I_D_16_" . $qNum, $label, $this->underSays);
+            $this->XINRegisterRule("I_D_16_" . $qNum, array("I_D_16_" . $qNum . "{@}=={@}NEVER_REQUIRED"));
             $qNum++;
         }
 
@@ -985,6 +1002,7 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $qNum = 1;
         foreach($questionArray as $label) {
             $this->form->addElement('select', "I_D_17_" . $qNum, $label, $this->underSays);
+            $this->XINRegisterRule("I_D_17_" . $qNum, array("I_D_17_" . $qNum . "{@}=={@}NEVER_REQUIRED"));
             $qNum++;
         }
 
@@ -1003,6 +1021,7 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $qNum = 1;
         foreach($questionArray as $label) {
             $this->form->addElement('select', "I_D_18_" . $qNum, $label, $this->underSays);
+            $this->XINRegisterRule("I_D_18_" . $qNum, array("I_D_18_" . $qNum . "{@}=={@}NEVER_REQUIRED"));
             $qNum++;
         }
 
@@ -1018,6 +1037,7 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $qNum = 1;
         foreach($questionArray as $label) {
             $this->form->addElement('select', "I_D_19_" . $qNum, $label, $this->underSays);
+            $this->XINRegisterRule("I_D_19_" . $qNum, array("I_D_19_" . $qNum . "{@}=={@}NEVER_REQUIRED"));
             $qNum++;
         }
     }
