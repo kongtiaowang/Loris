@@ -181,6 +181,9 @@ class NDB_BVL_Instrument_acesubjectmedical_survey extends NDB_BVL_Instrument
         if (in_array($values['full_term'], ['Yes', 'nk']) && !empty($values['info_gest'])) {
             $errors['info_gest'] = 'You have chosen ' . ($values['full_term'] == 'Yes' ? "Yes" : "Not Known") . ', a value should not be here.';
         }
+        if ($values['current_lang'] = 'No' && !empty($values['verb_words'])) {
+            $errors['verb_words'] = 'You have chosen No for "Current speech/language: Verbal?", a choice should not be made here.';
+        }
         return $errors;
     }
 
