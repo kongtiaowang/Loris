@@ -490,10 +490,12 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
         unset($group);
 
         $this->addHeader("<h4><b><u>Morning Waking</u></b></h4>");
-        $this->displayHourMinElementCustom(
+        $this->addHourMinElement(
             'morning_waking_time',
             'Write in the time of day child usually wakes in the morning.',
-            'Morning waking time'
+            array(),
+            'This field is required',
+            true
         );
 
 
