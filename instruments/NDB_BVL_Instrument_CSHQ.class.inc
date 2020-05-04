@@ -293,11 +293,7 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
             );
 
         $this->addHeader("<h4><b><u>Bedtime</u></b></h4>");
-        $this->displayHourMinElementCustom(
-            'bed_time',
-            'Write in the child\'s bedtime:',
-            'bed time'
-        );
+        $this->addHourMinElement('bed_time', 'Write in the child\'s bedtime:');
 
         $this->_displayHeaders("bedtime");
         $a=0;
@@ -781,7 +777,7 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
     }
 
     function validate_page1($values) {
-        return $this->customDateCheck($values, ['bed_time', 'sleep_behavior_duration']);
+        return $this->customDateCheck($values, ['sleep_behavior_duration']);
     }
 
     /*
