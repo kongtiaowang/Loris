@@ -35,5 +35,6 @@ CREATE TABLE `apsi_survey` (
 `speech_loss_occurred_before_eye_loss` enum('n','y'),
 `speech_loss_occurred_after_eye_loss` enum('n','y'),
 `speech_loss_occurred_close_to_eye_loss` enum('n','y'),
+`words_used_before_speech_loss` text,
 PRIMARY KEY  (`CommentID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
