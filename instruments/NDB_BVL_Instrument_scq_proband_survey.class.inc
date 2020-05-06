@@ -118,19 +118,21 @@ class NDB_BVL_Instrument_scq_proband_survey extends NDB_BVL_Instrument
         );
     }
 
+    private const PG1_questionArray = array(
+        "q2_to_and_fro"=>"2. Can you have a to and fro \"conversation\" with her/him that involves taking turns or building on what you have said?",
+        "q3_odd_phrases"=>"3. Has he/she ever used odd phrases or said the same thing over and over in almost exactly the same way (either phrases that she/he has heard other people use or ones that she/he has made up)?",
+        "q4_socially_inappropriate"=>"4. Has she/he ever used socially inappropriate questions or statements? For example, has she/he ever regularly asked personal questions or made personal comments at weird times?",
+        "q5_pronouns_mixed"=>"5. Has she/he ever got her/his pronouns mixed up (e.g., saying <i>you</i> or <i>she/he</i> for <i>I</i>)?",
+        "q6_words_invented"=>"6. Has she/he ever used words that she/he seemed to have invented or made up her/himself; put things in odd, indirect ways; or used metaphorical ways of saying things (e.g., saying <i>hot rain</i> for <i>steam</i>)?",
+        "q7_said_same_thing"=>"7. Has she/he ever said the same thing over and over in exactly the same way or insisted that you say the same thing over and over again?");
+
     function _page1() {
         $this->form->addElement("header", null, "Capable of phrase speech");
         $this->form->addElement("select", "q1_talk_short_phrases", "1. Is she/he now able to talk using short phrases or sentences? If <i>no</i>, skip to question 8.", $this->onlyYesNo);
         //Phrase speech
         $this->form->addElement("header", null, "Phrase speech");
-        $this->form->addElement("select", "q2_to_and_fro", "2. Can you have a to and fro \"conversation\" with her/him that involves taking turns or building on what you have said?", $this->yesNo);
-        //$this->form->addElement("static", null, "Has she/he ever...");
-        $questionArray = array("q3_odd_phrases"=>"3. Has he/she ever used odd phrases or said the same thing over and over in almost exactly the same way (either phrases that she/he has heard other people use or ones that she/he has made up)?",
-            "q4_socially_inappropriate"=>"4. Has she/he ever used socially inappropriate questions or statements? For example, has she/he ever regularly asked personal questions or made personal comments at weird times?",
-            "q5_pronouns_mixed"=>"5. Has she/he ever got her/his pronouns mixed up (e.g., saying <i>you</i> or <i>she/he</i> for <i>I</i>)?",
-            "q6_words_invented"=>"6. Has she/he ever used words that she/he seemed to have invented or made up her/himself; put things in odd, indirect ways; or used metaphorical ways of saying things (e.g., saying <i>hot rain</i> for <i>steam</i>)?",
-            "q7_said_same_thing"=>"7. Has she/he ever said the same thing over and over in exactly the same way or insisted that you say the same thing over and over again?");
-        foreach($questionArray as $field=>$label) {
+
+        foreach(self::PG1_questionArray as $field=>$label) {
             $this->form->addElement("select", $field, $this->indent . $label, $this->yesNo);
             $this->XINRegisterRule($field, array("q1_talk_short_phrases{@}=={@}yes"), "This field is required if she/he is capable of phrase speech");
         }
@@ -179,8 +181,22 @@ class NDB_BVL_Instrument_scq_proband_survey extends NDB_BVL_Instrument
         foreach($questionArray as $field=>$label) {
             $this->form->addElement("select", $field, $this->indent . $label, $this->yesNo);
         }
-        $this->_addAdditionalComments();
+
+        $this->form->addFormRule(array(&$this, 'validate_page1'));
     }
+
+    function validate_page1($values) {
+        $errors = [];
+        if ($values['q1_talk_short_phrases'] == 'no') {
+            foreach(array_keys(self::PG1_questionArray) as $key) {
+                if (!empty($values[$key])) {
+                    $errors[$key] = 'You can not choose any value here if she/he is not capable of phrase speech.';
+                }
+            }
+        }
+        return $errors;
+    }
+
     function score() {
         //skip scoring if all data has not yet been entered.
         if($this->_determineDataEntryCompletionStatus() == "Incomplete") {
@@ -225,8 +241,6 @@ class NDB_BVL_Instrument_scq_proband_survey extends NDB_BVL_Instrument
         $calculatedScores["scq_diagnosis"] = $calculatedScores["score"] >= 11 ? "ASD Positive" : "ASD Negative";
         //save the resultant total
         $result = $db->update($this->table, $calculatedScores, array('CommentID'=>$this->getCommentID()));
-    }
-    function _addAdditionalComments() {
     }
 }
 ?>
