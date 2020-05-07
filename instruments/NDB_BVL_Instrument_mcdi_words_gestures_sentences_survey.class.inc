@@ -315,6 +315,17 @@ class NDB_BVL_Instrument_mcdi_words_gestures_sentences_survey extends NDB_BVL_In
             $this->form->addElement('select', 'III_C_V' . $qNum, $label1 . ' / ' . $label2, [null => '', '1' => $label1, '2' => $label2, 'NK' => 'Not Known']);
             $qNum++;
         }
+
+        $this->form->addFormRule(array(&$this,'page9_validate'));
+    }
+
+    function page9_validate($values)
+    {
+        $errors = array();
+        if (!empty($values['III_D']) && ($values['III_D_status'] == 'not_answered')) {
+            $errors['III_D'] = 'You have chosen "Not Answered", you should not enter a text as response.';
+        }
+        return $errors;
     }
 
     private function makeWordPickItem($QuestionArray, $prefix) {
