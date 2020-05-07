@@ -357,15 +357,26 @@ class BaseElement extends React.Component {
 			case 'text':
 				value = this.props.value != null ? this.props.value : '';
 
-				element = (
-					<input
-						type="text"
-						name={this.props.element.Name}
-						className="form-control"
-						onChange={this.updateValue}
-						value={value}
-					/>
-				);
+				if (this.props.element.Options.Type === 'small') {
+					element = (
+						<input
+							type="text"
+							name={this.props.element.Name}
+							className="form-control"
+							onChange={this.updateValue}
+							value={value}
+						/>
+					);
+				} else {
+					element = (
+						<textarea
+							name={this.props.element.Name}
+							className="form-control"
+							onChange={this.updateValue}
+							value={value}
+						/>
+					);
+				}
 				break;
 			case 'select':
 				let options = [];
