@@ -833,7 +833,7 @@ CREATE TABLE `mcdi_words_gestures_sentences_survey` (
 `III_C_V_31` enum('N','Y'),
 `III_C_additional` enum('NY','ST','OF','NK'),
 `III_D` text,
-`III_D_status` enum('not_answered'),
+`III_D_status` enum('', 'not_answered'),
 `III_C_V1` enum('1','2','NK'),
 `III_C_V2` enum('1','2','NK'),
 `III_C_V3` enum('1','2','NK'),
