@@ -25,11 +25,18 @@
 class NDB_BVL_Instrument_apsi_survey extends NDB_BVL_Instrument
 {
     private const questions_loss = ['speech_loss' => 'Did loss involve speech?',
-        'eye_contact_social_emot_loss' => 'And/or eye contact and social-emotional connectedness?'];
+        'eye_contact_social_emot_loss' => 'Did loss involve eye contact and social-emotional connectedness?'];
 
-    private const relevant_questions = ['speech_loss_occurred_before_eye_loss' => 'Speech Loss occured BEFORE loss of eye contact and social-emotional connectedness',
-        'speech_loss_occurred_after_eye_loss' => 'Speech Loss occured AFTER loss of eye contact and social-emotional connectedness',
-        'speech_loss_occurred_close_to_eye_loss' => 'Speech loss and loss of eye contact and social-emotional connectedness closely together in time'];
+    private const relevant_questions = [
+        'speech_loss_occurred_before_eye_loss' => ['t' => 's',
+            'l' => 'Speech Loss occured BEFORE loss of eye contact and social-emotional connectedness'],
+        'speech_loss_occurred_after_eye_loss' => ['t' => 's',
+            'l' => 'Speech Loss occured AFTER loss of eye contact and social-emotional connectedness'],
+        'speech_loss_occurred_close_to_eye_loss' => ['t' => 's',
+            'l' => 'Speech loss and loss of eye contact and social-emotional connectedness occurred closely together in time'],
+        'words_used_before_speech_loss' => ['t' => 't',
+            'l' => 'If relevant, please list words used meaningfully (i.e., to refer consistently to particular objects, persons or actions) before speech loss:']
+    ];
 
     private const options =
         [
@@ -167,7 +174,7 @@ class NDB_BVL_Instrument_apsi_survey extends NDB_BVL_Instrument
                 'q2' => '2) Does your child visually fixate on, or stare at, certain objects such as lights, or objects with patterns?',
                 'q3' => '3) Does your child frequently fail to respond, or show a delay in responding, when you call his/her name?',
                 'q4' => '4) Does your child react to changes in your facial expression (i.e., without changes in your voice) when you are upset or distressed?',
-                'q5' => '5) Does your child enjoy and anticipate the pleasure of social games such as “peek-a- boo” or “Ring around the Rosie”?',
+                'q5' => '5) Does your child enjoy and <u>anticipate</u> the pleasure of social games such as “peek-a- boo” or “Ring around the Rosie”?',
                 'q6' => '6) Does your child imitate the sounds or actions of others?',
                 'q7' => '7) Does your child vocalize back-and-forth with you, either by babbling or speaking in response to your attempts to converse and interact with him/her?',
                 'q8' => '8) Is it difficult to establish eye contact with your child, or does he/she look only briefly at others in face-to-face contact?',
@@ -188,7 +195,7 @@ class NDB_BVL_Instrument_apsi_survey extends NDB_BVL_Instrument
                 'q23' => '23) Does your child share interest in an object or event with others by moving his/her eyes between the object and the person?',
                 'q24' => '24) Does your child point at a distance to objects or events such as an airplane or a balloon, specifically to “show” and share with you, rather than to “ask” for the object?',
                 'q25' => '25) Does your child use gestures such as waving good-bye, nodding his/her head or blowing a kiss?',
-                'q26' => '26) Over the past 2-3 months, has your child lost any skills, either words spoken or his/her ability to look at and establish a social-emotional connection with others?',
+                'q26' => '26) If relevant, over the past 2-3 months, has your child lost any skills, either words spoken or his/her ability to look at and establish a social-emotional connection with others?',
             );
 
          foreach ($page1_questions as $question => $label) {
@@ -200,12 +207,21 @@ class NDB_BVL_Instrument_apsi_survey extends NDB_BVL_Instrument
              $this->XINRegisterRule($question, array("q26{@}=={@}p|d"), "Required");
          }
 
+         $this->addLabel('If answered no to question 26, skip the following questions and submit the survey.');
+
          $this->addBasicTextArea("other_skills_lost","If other, please identify skill(s) lost:");
          $this->XINRegisterRule('other_skills_lost',array("other_skills_lost{@}=={@}NEVER_REQUIRED"));
 
-         foreach (self::relevant_questions as $question => $label) {
-             $this->addSelect($question, $label, $optionsYesNo);
-             $this->XINRegisterRule($question, array("q26{@}=={@}p|d", 'speech_loss{@}=={@}y'), "Required");
+         foreach (self::relevant_questions as $question => $itm) {
+             if ($itm['t'] == 's') {
+                 $this->addSelect($question, $itm['l'], $optionsYesNo);
+             }
+             elseif ($itm['t'] == 't') {
+                 $this->addBasicTextArea($question, $itm['l']);
+             }
+             if (in_array($itm['t'], ['s', 't'])) {
+                 $this->XINRegisterRule($question, array("q26{@}=={@}p|d", 'speech_loss{@}=={@}y'), "Required");
+             }
          }
 
          $this->form->addFormRule(array(&$this, 'conflict_rules'));
