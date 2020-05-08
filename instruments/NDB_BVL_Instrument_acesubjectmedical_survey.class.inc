@@ -515,7 +515,7 @@ class NDB_BVL_Instrument_acesubjectmedical_survey extends NDB_BVL_Instrument
                 ],
                 'multiple'=>true
             ],
-            'gen_dis_conf' => ['l' => 'If check above, is the genetic disorder confirmed by a physician-ordered genetic analysis?',
+            'gen_dis_conf' => ['l' => 'If checked above, is the genetic disorder confirmed by a physician-ordered genetic analysis?',
                 'o' => self::default_option
             ],
             '7' => ['t' => 'sec', 'l' => 'Mental Health'],
