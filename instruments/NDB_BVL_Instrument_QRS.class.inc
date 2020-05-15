@@ -158,8 +158,17 @@ class NDB_BVL_Instrument_QRS extends NDB_BVL_Instrument
                 2 => "2 Partial agreement with the statement.",
                 3 => "3 Partial disagreement with the statement",
                 4 => "4 Strong disagreement with the statement"
-            ); 
-       
+            );
+        $options_na =
+            array(
+                null => "",
+                1 => "1 Strong agreement with the statement. ",
+                2 => "2 Partial agreement with the statement.",
+                3 => "3 Partial disagreement with the statement",
+                4 => "4 Strong disagreement with the statement",
+                'na'=> "Not Applicable"
+            );
+
         $page1_questions =
             array(
                 "q1" => "1. ___ demands that others do things for him/her more than is necessary.", 
@@ -191,12 +200,23 @@ class NDB_BVL_Instrument_QRS extends NDB_BVL_Instrument
                           with me or a stranger."
                 );  
 
-         foreach ($page1_questions as $question => $label) { 
-             $this->addSelect(
-                 $question, 
-                 $label, 
-                 $options
-             );
+         foreach ($page1_questions as $question => $label) {
+             if($question=='q13')
+             {
+                 $this->addSelect(
+                     $question,
+                     $label,
+                     $options_na
+                 );
+             }
+             else{
+                 $this->addSelect(
+                     $question,
+                     $label,
+                     $options
+                 );
+             }
+
          }
     }
 
@@ -273,6 +293,15 @@ class NDB_BVL_Instrument_QRS extends NDB_BVL_Instrument
                 3 => "3 Partial disagreement with the statement.",
                 4 => "4 Strong disagreement with the statement."
             );
+        $options_na =
+            array(
+                null => "",
+                1 => "1 Strong agreement with the statement.",
+                2 => "2 Partial agreement with the statement.",
+                3 => "3 Partial disagreement with the statement.",
+                4 => "4 Strong disagreement with the statement.",
+                'na' => "Not Applicable"
+            );
 
         $page3_questions = 
             array(
@@ -306,6 +335,14 @@ class NDB_BVL_Instrument_QRS extends NDB_BVL_Instrument
             );
 
         foreach ($page3_questions as $question => $label) {
+            if($question='q59')
+            {
+                $this->addSelect(
+                    $question,
+                    $label,
+                    $options_na
+                );
+            }
              $this->addSelect(
                  $question,
                  $label,
