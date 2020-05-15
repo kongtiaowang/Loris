@@ -34,8 +34,6 @@ class NDB_BVL_Instrument_apsi_survey extends NDB_BVL_Instrument
             'l' => 'Speech Loss occured AFTER loss of eye contact and social-emotional connectedness'],
         'speech_loss_occurred_close_to_eye_loss' => ['t' => 's',
             'l' => 'Speech loss and loss of eye contact and social-emotional connectedness occurred closely together in time'],
-        'words_used_before_speech_loss' => ['t' => 't',
-            'l' => 'If relevant, please list words used meaningfully (i.e., to refer consistently to particular objects, persons or actions) before speech loss:']
     ];
 
     private const options =
@@ -168,6 +166,14 @@ class NDB_BVL_Instrument_apsi_survey extends NDB_BVL_Instrument
                 'y'  => 'Yes',
             ];
 
+        $speechLossOptions =
+            [
+                null => '',
+                'before_loss_eye_social'  => 'Speech loss occurred BEFORE loss of eye-contact and social-emotional connectedness',
+                'after_loss_eye_social'  => 'Speech loss occurred AFTER loss of eye contact and social-emotional connectedness',
+                 'closely_together_loss'  => 'The two occurred closely together in time'
+            ];
+
         $page1_questions =
             array(
                 'q1' => '1) Does your child have difficulty visually tracking a moving object, that is, smoothly moving his/her eyes to follow an object’s direction of movement?',
@@ -195,34 +201,32 @@ class NDB_BVL_Instrument_apsi_survey extends NDB_BVL_Instrument
                 'q23' => '23) Does your child share interest in an object or event with others by moving his/her eyes between the object and the person?',
                 'q24' => '24) Does your child point at a distance to objects or events such as an airplane or a balloon, specifically to “show” and share with you, rather than to “ask” for the object?',
                 'q25' => '25) Does your child use gestures such as waving good-bye, nodding his/her head or blowing a kiss?',
-                'q26' => '26) If relevant, over the past 2-3 months, has your child lost any skills, either words spoken or his/her ability to look at and establish a social-emotional connection with others?',
+                'q26' => '26) Over the past 2-3 months, has your child lost any skills, either words spoken or his/her ability to look at and establish a social-emotional connection with others?',
             );
 
          foreach ($page1_questions as $question => $label) {
              $this->addSelect($question, $label, self::options);
          }
-
+        $this->addLabel('*<i>If answered <b>No</b> to question 26, <b>skip</b> the following questions and submit the survey.</i>');
          foreach (self::questions_loss as $question => $label) {
              $this->addSelect($question, $label, $optionsYesNo);
              $this->XINRegisterRule($question, array("q26{@}=={@}p|d"), "Required");
          }
 
-         $this->addLabel('If answered no to question 26, skip the following questions and submit the survey.');
 
          $this->addBasicTextArea("other_skills_lost","If other, please identify skill(s) lost:");
          $this->XINRegisterRule('other_skills_lost',array("other_skills_lost{@}=={@}NEVER_REQUIRED"));
+        $this->addBasicTextArea('words_used_before_speech_loss', "If relevant, please list words used meaningfully (i.e., to refer consistently to particular objects, persons or actions) before speech loss:");
+        $this->XINRegisterRule('words_used_before_speech_loss',array("words_used_before_speech_loss{@}=={@}NEVER_REQUIRED"));
 
-         foreach (self::relevant_questions as $question => $itm) {
-             if ($itm['t'] == 's') {
-                 $this->addSelect($question, $itm['l'], $optionsYesNo);
-             }
-             elseif ($itm['t'] == 't') {
-                 $this->addBasicTextArea($question, $itm['l']);
-             }
-             if (in_array($itm['t'], ['s', 't'])) {
-                 $this->XINRegisterRule($question, array("q26{@}=={@}p|d", 'speech_loss{@}=={@}y'), "Required");
-             }
-         }
+
+
+        $this->addSelect('speech_loss_happened_when', "If relevant, please indicate whether speech loss occurred BEFORE or AFTER 
+        loss of eye contact and social-emotional connectedness, or whether the two occurred closely together in time",
+         $speechLossOptions);
+        $this->XINRegisterRule('speech_loss_happened_when',array("speech_loss_happened_when{@}=={@}NEVER_REQUIRED"));
+
+
 
          $this->form->addFormRule(array(&$this, 'conflict_rules'));
     }

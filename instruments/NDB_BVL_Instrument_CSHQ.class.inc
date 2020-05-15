@@ -232,6 +232,14 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
              2    => "Sometimes (2-4)",
              1    => "Rarely (0-1)",
             );
+        $answer_choices_na  =
+            array(
+                null => "",
+                3    => "Usually (5-7)",
+                2    => "Sometimes (2-4)",
+                1    => "Rarely (0-1)",
+                'na' => "Not Applicable"
+            );
         $problem_choices =
             array(
              null  => "",
@@ -344,11 +352,20 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
         foreach ($sleep_behavior_questions as $question => $label) {
             $b++;
             $group[] = &$this->createLabel($label);
-            $group[] = &$this->createSelect(
+            if($question=='sleeps_same_amount_each_day_item11') {
+                $group[] = &$this->createSelect(
                 $question . "_frequency",
                 "",
-                $answer_choices
+                $answer_choices_na
             );
+            }
+            else {
+                $group[] = &$this->createSelect(
+                    $question . "_frequency",
+                    "",
+                    $answer_choices
+                );
+            }
             $group[] = &$this->createSelect(
                 $question . "_problem",
                 "",
