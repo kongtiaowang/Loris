@@ -181,9 +181,9 @@ class NDB_BVL_Instrument_Infant_social_motivation_survey extends NDB_BVL_Instrum
             array(
                 'q25'  =>  '25. Engages with you by imitating your facial expressions or sounds.',
                 'q26'  =>  '26. Smiles or laughs in anticipation of interacting with trusted adults or other children.',
-                'q27'  =>  '25. Makes eye contact and smiles during social interactions.',
+                'q27'  =>  '27. Makes eye contact and smiles during social interactions.',
                 'q28'  =>  '28. Appears curious about group activities.',
-                'q39'  =>  '29. Looks at what others are looking at or attending to.',
+                'q29'  =>  '29. Looks at what others are looking at or attending to.',
                 'q30'  =>  '30. Is persistent when trying to engage someone.',
                 'q31'  =>  '31. Prefers focusing on objects over interacting with others.',
                 'q32'  =>  '32. Avoids looking at other children.',
