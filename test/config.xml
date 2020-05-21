@@ -13,6 +13,7 @@
     <dev>
         <sandbox>0</sandbox>
         <selenium_url>http://selenium:4444/wd/hub</selenium_url>
+        <test_url>http://web:8000</test_url>
     </dev>
 
     <!-- database settings -->

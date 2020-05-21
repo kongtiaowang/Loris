@@ -55,7 +55,7 @@ abstract class LorisIntegrationTest extends TestCase
     /**
      * Does basic setting up of Loris variables for this test, such as
      * instantiting the config and database objects, creating a user
-     * to user for the tests, and logging in.
+     *  user for the tests, and logging in.
      *
      * @return void
      */
@@ -77,7 +77,6 @@ abstract class LorisIntegrationTest extends TestCase
             $database['host'],
             1
         );
-        $this->url = $this->config->getSetting("url");
         $password  = new \Password($this->validPassword);
 
         $this->DB->insert(
@@ -123,7 +122,6 @@ abstract class LorisIntegrationTest extends TestCase
         $selenium_url = $dev['selenium_url'] ?? 'http://localhost:4444/wd/hub';
         $desired_capabilities = DesiredCapabilities::firefox();
         $desired_capabilities->setCapability('acceptSslCerts', false);
-
         // running headless model in Travis
         if (getenv('HEADLESS')) {
             $desired_capabilities->setCapability(
@@ -131,7 +129,7 @@ abstract class LorisIntegrationTest extends TestCase
                 ['args' => ['-headless']]
             );
         }
-
+        $this->url = getenv('DOCKER_URL');
         $this->webDriver = RemoteWebDriver::create(
             $selenium_url,
             $desired_capabilities
