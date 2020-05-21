@@ -55,7 +55,7 @@ abstract class LorisIntegrationTest extends TestCase
     /**
      * Does basic setting up of Loris variables for this test, such as
      * instantiting the config and database objects, creating a user
-     * to user for the tests, and logging in.
+     *  user for the tests, and logging in.
      *
      * @return void
      */
@@ -129,7 +129,7 @@ abstract class LorisIntegrationTest extends TestCase
                 ['args' => ['-headless']]
             );
         }
-        $this->url = $dev['test_url'];
+        $this->url = getenv('DOCKER_URL');
         $this->webDriver = RemoteWebDriver::create(
             $selenium_url,
             $desired_capabilities
