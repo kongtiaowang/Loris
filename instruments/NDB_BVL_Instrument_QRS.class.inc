@@ -108,6 +108,8 @@ class NDB_BVL_Instrument_QRS extends NDB_BVL_Instrument
             'emptyOptionValue' => null,
         );
 
+        $this->form->addElement('static', null, "<i><h3>*Please fill this form out with regard to your child who has enrolled in our study, NOT their older sibling with autism</i></h3>");
+
         $this->dateOptions = $dateOptions;
 
         $this->addBasicDate('Date_taken', 'Date of Administration', $dateOptions);
@@ -335,7 +337,7 @@ class NDB_BVL_Instrument_QRS extends NDB_BVL_Instrument
             );
 
         foreach ($page3_questions as $question => $label) {
-            if($question='q59')
+            if($question=='q59')
             {
                 $this->addSelect(
                     $question,
@@ -343,11 +345,13 @@ class NDB_BVL_Instrument_QRS extends NDB_BVL_Instrument
                     $options_na
                 );
             }
-             $this->addSelect(
-                 $question,
-                 $label,
-                 $options
-             );
+            else {
+                $this->addSelect(
+                    $question,
+                    $label,
+                    $options
+                );
+            }
          }
 
         
