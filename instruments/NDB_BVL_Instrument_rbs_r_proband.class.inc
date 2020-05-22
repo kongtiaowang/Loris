@@ -1,6 +1,6 @@
 <?php
 
-class NDB_BVL_Instrument_rbs_r extends NDB_BVL_Instrument
+class NDB_BVL_Instrument_rbs_r_proband extends NDB_BVL_Instrument
 {
     use instrument_validator;
 
@@ -8,9 +8,9 @@ class NDB_BVL_Instrument_rbs_r extends NDB_BVL_Instrument
     var $ValidityRequired = false;
 
     /*
-    INSERT INTO test_names VALUES ('', 'rbs_r', 'RBS-R - Subject (Repetitive Behavior Scale Revised - Subject) - Survey', '0', '1');
-    INSERT INTO instrument_subtests VALUES('', 'rbs_r', 'rbs_r_page1', 'Subscales', 1);
-    -- INSERT INTO test_battery VALUES ('', 'rbs_r', '1050', '1140', 'Y', 'Visit', '3');
+    INSERT INTO test_names VALUES ('', 'rbs_r_proband', 'RBS-R - Proband (Repetitive Behavior Scale Revised - Proband) - Survey', '0', '1');
+    INSERT INTO instrument_subtests VALUES('', 'rbs_r_proband', 'rbs_r_proband_page1', 'Subscales', 1);
+    -- INSERT INTO test_battery VALUES ('', 'rbs_r_proband', '1050', '1140', 'Y', 'Visit', '3');
     */
 
     /* These are used without the _score and _endorsed prefix by the instrument.
@@ -115,8 +115,8 @@ class NDB_BVL_Instrument_rbs_r extends NDB_BVL_Instrument
         // user-defined child classes)
 
         // set the object properties
-        $this->testName = "rbs_r";           // test_names.Test_name
-        $this->table    = 'rbs_r';              // name of database table corresponding to instrument
+        $this->testName = "rbs_r_proband";           // test_names.Test_name
+        $this->table    = 'rbs_r_proband';              // name of database table corresponding to instrument
         // data keyed by commentID
         $this->commentID = $commentID;
 
@@ -172,7 +172,7 @@ class NDB_BVL_Instrument_rbs_r extends NDB_BVL_Instrument
     */
     function _setupForm()
     {
-        if (preg_match("/rbs_r(_page[0-9]+)/", $this->page, $matches)) {
+        if (preg_match("/rbs_r_proband(_page[0-9]+)/", $this->page, $matches)) {
             call_user_func(array($this, $matches[1]));
         } else {
             $this->_main();
@@ -191,7 +191,7 @@ class NDB_BVL_Instrument_rbs_r extends NDB_BVL_Instrument
     function _main()
     {
         // display test name
-        $this->form->addElement('header', 'instrument_title', "RBS-R - Subject (Repetitive Behavior Scale Revised - Subject) - Survey");
+        $this->form->addElement('header', 'instrument_title', "RBS-R - Proband (Repetitive Behavior Scale Revised - Proband) - Survey");
 
         $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
         $this->form->addElement('select', 'respondent', 'What is your relationship to the child', array(
@@ -238,7 +238,7 @@ class NDB_BVL_Instrument_rbs_r extends NDB_BVL_Instrument
     function _page1()
     {
         $this->addHeader("<h3><b>Instructions:</b><BR>
-                         Please fill this form out with regard to your child who has enrolled in our study, NOT their older sibling with autism.<br>
+                         Please fill this form out with regard to your oldest child who has autism.<br>
                          Please rate this person's behavior by reading each of the items listed and then
                          choosing the score that best describes how much of a problem the item is for the
                          person. Be sure to read and score all items listed. Make your ratings based on your
