@@ -1,7 +1,5 @@
 <?php
 
-
-
 class NDB_BVL_Instrument_rbs_r extends NDB_BVL_Instrument
 {
     use instrument_validator;
@@ -239,7 +237,6 @@ class NDB_BVL_Instrument_rbs_r extends NDB_BVL_Instrument
 
     function _page1()
     {
-
         $this->addHeader("<h3><b>Instructions:</b><BR>
         Please fill this form out with regard to your child who has enrolled in our study, NOT their older sibling with autism.<br>
                          Please rate this person's behavior by reading each of the items listed and then
@@ -300,7 +297,6 @@ class NDB_BVL_Instrument_rbs_r extends NDB_BVL_Instrument
 
             $this->form->addElement('select', $field, $label, $answerOptions);
         }
-
     }
 
     function score()
@@ -373,7 +369,6 @@ class NDB_BVL_Instrument_rbs_r extends NDB_BVL_Instrument
 
         // save the resultant total
         $result = $db->update($this->table, $this->calculatedScores, array('CommentID' => $this->getCommentID()));
-
     }
 
     function validate_main_page($values)
