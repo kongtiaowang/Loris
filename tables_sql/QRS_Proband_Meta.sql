@@ -1,0 +1,4 @@
+INSERT INTO test_names(Test_name, Full_name, Sub_Group, isDirectEntry) VALUES('QRS_Proband', "QRS - Proband (Questionnaire on Resources and Stress - Proband) - Survey", 13, 1);
+INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('QRS_Proband','QRS_Proband_page1', "Page 1", 1);
+INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('QRS_Proband','QRS_Proband_page2', "Page 2", 2);
+INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('QRS_Proband','QRS_Proband_page3', "Page 3", 3);
