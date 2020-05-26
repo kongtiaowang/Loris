@@ -98,6 +98,7 @@ class NDB_BVL_Instrument_toddler_social_motivation_survey extends NDB_BVL_Instru
     {
         // display test name
         $this->addHeader("Toddler Social Motivation Questionnaire");
+        $this->form->addElement('static', null, "<i><h3>*Please fill this form out with regard to your child who has enrolled in our study, NOT their older sibling with autism</i></h3>");
         $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
         $opts = array(
             null => "",

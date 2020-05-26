@@ -100,6 +100,7 @@ class NDB_BVL_Instrument_mcdi_words_gestures_sentences_survey extends NDB_BVL_In
     function _main(){
         // display test name
         $this->form->addElement('header', 'instrument_title', "MCDI - Words, Gestures & Sentences");
+        $this->form->addElement('static', null, "<i><h3>*Please fill this form out with regard to your child who has enrolled in our study, NOT their older sibling with autism</i></h3>");
 
         $config      =& NDB_Config::singleton();
 

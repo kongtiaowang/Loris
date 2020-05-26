@@ -125,6 +125,7 @@ class NDB_BVL_Instrument_apsi_survey extends NDB_BVL_Instrument
         $this->addHeader("Autism Parent Screen for Infants Survey (APSI Survey)");
 
         $this->addLabel('Instructions: Please answer each of the questions below, based on your child’s <u>current</u> (not past) behaviour, by placing a check beside the box that most applies (either “No”, “Possibly” or “Definitely”). We appreciate that some of the questions refer to behaviours not expected in very young infants, notably 6- to 9-month-olds; your responses to those questions will be treated accordingly. Thank you for assisting us in monitoring your child’s development.');
+        $this->form->addElement('static', null, "<i><h3>*Please fill this form out with regard to your child who has enrolled in our study, NOT their older sibling with autism</i></h3>");
         $config      =& NDB_Config::singleton();
         $dateOptions = array(
             'language'         => 'en',

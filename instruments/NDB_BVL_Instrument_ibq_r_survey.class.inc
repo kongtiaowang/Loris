@@ -209,6 +209,7 @@ class NDB_BVL_Instrument_ibq_r_survey extends NDB_BVL_Instrument
 <p>As you read each description of the baby’s behavior below, please indicate how often the baby did this during the LAST WEEK (the past seven days) by circling one of the numbers in the left column.  These numbers indicate how often you observed the behavior described during the last week.</p><br>
 <p>The “Does Not Apply” is used when you did not see the baby in the situation described during the last week.  For example, if the situation mentions the baby having to wait for food or liquids and there was no time during the last week when the baby had to wait, check the choice. “Does Not Apply” is different from “Never”.  “Never” is used when you saw the baby in the situation but the baby never engaged in the behavior listed during the last week.  For example, if the baby did have to wait for food or liquids at least once but never cried loudly while waiting, choose the answer.</p><br>
 <p>Please be sure to choose an answer for every item.</p>');
+        $this->form->addElement('static', null, "<i><h3>*Please fill this form out with regard to your child who has enrolled in our study, NOT their older sibling with autism</i></h3>");
 
         $config      =& NDB_Config::singleton();
 

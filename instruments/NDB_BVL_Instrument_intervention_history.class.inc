@@ -128,6 +128,7 @@ INSERT INTO test_battery VALUES ('', 'intervention_history', '1053', '1179', 'Y'
         $this->form->addElement('header', 'instrument_title', "Intervention History");
         $this->form->addElement("static", null, "<br/>");
         $this->form->addElement("static", null, "<br/>");
+        $this->form->addElement('static', null, "<i><h3>*Please fill this form out with regard to your child who has enrolled in our study, NOT their older sibling with autism</i></h3>");
         
         // automatically adds examiner & date of administration
         $this->_addMetadataFields();
