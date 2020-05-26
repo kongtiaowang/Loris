@@ -1,6 +1,6 @@
 <?php
 /**
- * This file contains the NDB_BVL_Instrument_QRS (Subject) class
+ * This file contains the NDB_BVL_Instrument_QRS_Proband class
  *
  * PHP Version 5
  *
@@ -12,7 +12,7 @@
  */
 
 /**
- * Creates the form elements for the QRS (Subject) instrument
+ * Creates the form elements for the QRS_Proband instrument
  *
  * @category Instrument
  * @package  Neuropsych
@@ -20,7 +20,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/IBIS/
  */
-class NDB_BVL_Instrument_QRS extends NDB_BVL_Instrument
+class NDB_BVL_Instrument_QRS_Proband extends NDB_BVL_Instrument
 {
     /**
      * Sets up basic data, such as the LorisForm object, and so on.
@@ -34,14 +34,14 @@ class NDB_BVL_Instrument_QRS extends NDB_BVL_Instrument
     function setup($commentID, $page)
     {
         $this->formType = "XIN";
-        $this->form     = new LorisForm('QRS_form');
+        $this->form     = new LorisForm('QRS_Proband_form');
         $this->page     = $page;            // page label (number or
         // string - used by
         // user-defined child classes)
 
         // set the object properties
-        $this->testName = "QRS";           // test_names.Test_name
-        $this->table    = 'QRS';              // name of database table corresponding to instrument
+        $this->testName = "QRS_Proband";           // test_names.Test_name
+        $this->table    = 'QRS_Proband';              // name of database table corresponding to instrument
         // data keyed by commentID
         $this->commentID = $commentID;
 
@@ -73,7 +73,7 @@ class NDB_BVL_Instrument_QRS extends NDB_BVL_Instrument
     {
         //determine page to display
         if (preg_match(
-            "/QRS(_page[0-9]+)/",
+            "/QRS_Proband(_page[0-9]+)/",
             $this->page,
             $matches
         )) {
@@ -93,7 +93,7 @@ class NDB_BVL_Instrument_QRS extends NDB_BVL_Instrument
     function _main()
     {
         // display test name
-        $this->addHeader("QRS - Subject (Questionnaire on Resources and Stress - Subject) - Survey");
+        $this->addHeader("QRS - Proband (Questionnaire on Resources and Stress - Proband) - Survey");
         $config      =& NDB_Config::singleton();
         $dateOptions = array(
                         'language'         => 'en',
@@ -104,7 +104,7 @@ class NDB_BVL_Instrument_QRS extends NDB_BVL_Instrument
                         'emptyOptionValue' => null,
                        );
 
-        $this->form->addElement('static', null, "<i><h3>*Please fill this form out with regard to your child who has enrolled in our study, NOT their older sibling with autism</i></h3>");
+        $this->form->addElement('static', null, "<i><h3>*Please fill this form out with regard to your oldest child who has autism.</i></h3>");
 
         $this->dateOptions = $dateOptions;
 
@@ -229,7 +229,7 @@ class NDB_BVL_Instrument_QRS extends NDB_BVL_Instrument
     function _page2()
     {
         $this->addHeader(
-            "QRS - Subject (Questionnaire on Resources and Stress - Subject) - Survey<br>
+            "QRS - Proband (Questionnaire on Resources and Stress - Proband) - Survey<br>
             <h5><b>1 = Strong agreement with the statement.</b><br>
             <b>2 = Partial agreement with the statement.</b><br>
             <b>3 = Partial disagreement with the statement.</b><br>
@@ -291,7 +291,7 @@ class NDB_BVL_Instrument_QRS extends NDB_BVL_Instrument
     function _page3()
     {
         $this->addHeader(
-            "QRS - Subject (Questionnaire on Resources and Stress - Subject) - Survey<br>
+            "QRS - Proband (Questionnaire on Resources and Stress - Proband) - Survey<br>
             <h5><b>1 = Strong agreement with the statement.</b><br>
             <b>2 = Partial agreement with the statement.</b><br>
             <b>3 = Partial disagreement with the statement.</b><br>
