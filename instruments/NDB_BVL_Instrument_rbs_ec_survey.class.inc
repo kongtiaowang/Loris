@@ -140,7 +140,7 @@ class NDB_BVL_Instrument_rbs_ec_survey extends NDB_BVL_Instrument
          <p><b>INSTRUCTIONS</b>: Please rate your child’s behavior for each of the 14 items listed by circling the score that best describes how <u>often</u> the behavior occurs. Be sure to read and score all items. Make your ratings based on your child’s behavior over the past <u>month</u>. Use the definitions in the box given below to score each item:</p>'
             . self::ScoresInstruction .
         '<p>If an item is “not applicable” because your child cannot yet perform a particular behavior (for instance, he or she is not yet grasping objects), the item should be scored as “0” (behavior does not occur).</p>');
-
+        $this->form->addElement('static', null, "<i><h3>*Please fill this form out with regard to your child who has enrolled in our study, NOT their older sibling with autism</i></h3>");
         $config      =& NDB_Config::singleton();
         $dateOptions = array(
             'language'         => 'en',

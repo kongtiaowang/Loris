@@ -99,6 +99,7 @@ class NDB_BVL_Instrument_SA_Intervention_History extends NDB_BVL_Instrument
         // display test name
         $this->addHeader("EDUCATIONAL/INTERVENTION HISTORY<br>
                          <h5>Adapted from HISTORY QUESTIONNAIRE: Long-term Outcomes in Autism Study</h5>");
+        $this->form->addElement('static', null, "<i><h3>*Please fill this form out with regard to your child who has enrolled in our study, NOT their older sibling with autism</i></h3>");
         $this->_addMetadataFields();
         $opts = array(
             null              => "",

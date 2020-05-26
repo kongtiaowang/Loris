@@ -173,6 +173,7 @@ class NDB_BVL_Instrument_rbs_ecs extends NDB_BVL_Instrument
     {
         // Header
         $this->addHeader('Scoring sheet for RBS-ECS');
+        $this->form->addElement('static', null, "<i><h3>*Please fill this form out with regard to your child who has enrolled in our study, NOT their older sibling with autism</i></h3>");
 
         $config      =& NDB_Config::singleton();
         $dateOptions = array(
