@@ -1,7 +1,6 @@
 <?php
 /**
- * This file contains the NDB_BVL_Instrument_UCD_Charge_GI_History
- * class
+ * This file contains the NDB_BVL_Instrument_QRS class
  *
  * PHP Version 5
  *
@@ -21,7 +20,6 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/IBIS/
  */
-
 class NDB_BVL_Instrument_QRS extends NDB_BVL_Instrument
 {
     /**
@@ -129,6 +127,11 @@ class NDB_BVL_Instrument_QRS extends NDB_BVL_Instrument
         );
     }
 
+    /**
+    * Generates the first page of the form.
+    *
+    * @return void
+    */
     function _page1()
     {
         $this->addHeader(
@@ -190,14 +193,14 @@ class NDB_BVL_Instrument_QRS extends NDB_BVL_Instrument
                             "q17" => "17. ___'s problems or illnesses do not stand in the way of our family progress.",
                             "q18" => "18. When others are around ___ I cannot relax; I am always on guard.",
                             "q19" => "19. Professionals (nurses, etc.) in an institution would not understand ___ better
-                          than I do",
+                            than I do",
                             "q20" => "20. I worry about what will happen to ___ when I can no longer take care of him/her.",
                             "q21" => "21. I would rather be caring for ___ than doing some other kind of work.",
                             "q22" => "22. I have given up things I have really wanted to do in order to care for ___.",
                             "q23" => "23. ___ is able to fit into the family social group.",
                             "q24" => "24. Some members of my family don't like the way I do things.",
                             "q25" => "25. It appears to me that it doesn't make any difference to ___ if he/she is
-                          with me or a stranger.",
+                            with me or a stranger.",
                            );
 
         foreach ($page1_questions as $question => $label) {
@@ -217,6 +220,12 @@ class NDB_BVL_Instrument_QRS extends NDB_BVL_Instrument
         }
     }
 
+
+    /**
+    * Generates the second page of the form.
+    *
+    * @return void
+    */
     function _page2()
     {
         $this->addHeader(
@@ -238,7 +247,7 @@ class NDB_BVL_Instrument_QRS extends NDB_BVL_Instrument
         $page2_questions = array(
                             "q26" => "26. ___ knows the difference between strangers and friends.",
                             "q27" => "27. I am afraid that other members of the family will be hurt because they
-                          are related to ___.",
+                            are related to ___.",
                             "q28" => "28. I avoid taking ___ out in public.",
                             "q29" => "29. People simply don't understand what it is like to live with ___.",
                             "q30" => "30. ___ can feed himself/herself.",
@@ -274,6 +283,11 @@ class NDB_BVL_Instrument_QRS extends NDB_BVL_Instrument
         }
     }
 
+    /**
+    * Generates the third page of the form.
+    *
+    * @return void
+    */
     function _page3()
     {
         $this->addHeader(
