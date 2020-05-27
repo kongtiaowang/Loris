@@ -1,0 +1,2 @@
+INSERT INTO test_names(Test_name, Full_name, Sub_Group, isDirectEntry) VALUES('rbs_r_proband', "RBS-R - Proband (Repetitive Behavior Scale Revised - Proband) - Survey", 1, 1);
+INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('rbs_r_proband','rbs_r_proband_page1', "Subscales", 1);
