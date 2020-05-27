@@ -122,6 +122,7 @@ INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_num
         $this->form->addElement('header', 'instrument_title', "First Year Inventory Survey Version");
 
         $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
+        $this->form->addElement('static', null, "<i><h3>*Please fill this form out with regard to your child who has enrolled in our study, NOT their older sibling with autism</i></h3>");
 
         $this->form->addElement("select", "mother_ethnicity", "Baby's Mother Race/Ethnicity: (check 1 or more)", array(null=>"", "white"=>"White",
         "black_african_american"=>"Black/African-American",

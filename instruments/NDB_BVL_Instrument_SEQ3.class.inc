@@ -97,6 +97,7 @@ class NDB_BVL_Instrument_SEQ3 extends NDB_BVL_Instrument
     {
         // display test name
         $this->addHeader("Sensory Experiences Questionnaire Version 3.0");
+        $this->form->addElement('static', null, "<i><h3>*Please fill this form out with regard to your child who has enrolled in our study, NOT their older sibling with autism</i></h3>");
 
         $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
     }

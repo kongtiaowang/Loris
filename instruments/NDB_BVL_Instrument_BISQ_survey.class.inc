@@ -85,6 +85,7 @@ class NDB_BVL_Instrument_BISQ_survey extends NDB_BVL_Instrument
     {
         // display test name
         $this->addHeader("Brief Infant Sleep Questionnaire (BISQ_survey)");
+        $this->form->addElement('static', null, "<i><h3>*Please fill this form out with regard to your child who has enrolled in our study, NOT their older sibling with autism</i></h3>");
         $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
         $opts = array(
             null => "",
