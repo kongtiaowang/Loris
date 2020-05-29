@@ -233,7 +233,14 @@ class NDB_BVL_Instrument_SRS2_SchoolAge_Parent_proband extends NDB_BVL_Instrumen
         $this->XINRegisterRule('informant_other', $rules_array, "Please specify relationship", 'informant_other_group');
 
         //Add instructions
-        $this->form->addElement('static', 'lorisSubHeader', "<strong>Instructions:</strong><BR>For each question, please choose an option that best describes the child's behaviour <strong>over the past 6 months.</strong>");
+        $this->form->addElement(
+            'static',
+            'lorisSubHeader',
+            "<strong>Instructions:</strong><br><br>
+            <i>Please fill this form out with regard to your older child who has autism.</i><br>
+            For each question, please choose an option that best describes the child's behaviour
+            <strong>over the past 6 months.</strong>"
+        );
 
         //First block of questions
         $questions = array(
@@ -575,7 +582,7 @@ class NDB_BVL_Instrument_SRS2_SchoolAge_Parent_proband extends NDB_BVL_Instrumen
 
 
 
-        $query_gender = "SELECT Gender FROM candidate as c, session as s, flag as f, $this->table as t WHERE t.CommentID = '$this->commentID' 
+        $query_gender = "SELECT Gender FROM candidate as c, session as s, flag as f, $this->table as t WHERE t.CommentID = '$this->commentID'
 AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $record_gender = $db->pselectRow($query_gender, array());
         if($record_gender['Gender']=='Male')
@@ -592,20 +599,20 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         foreach ($scales as $field) {
             $field_raw_score = $scores[$field . '_score'];
             if($field_raw_score==0) {
-                $query_scores1 = "SELECT * FROM SRS2_SchoolAge_lookup WHERE form_relation ='SRS2_Parent' and 
-                sex='$gender'  AND (scale_raw_score ='$field_raw_score'  OR  '$field_raw_score' BETWEEN SUBSTRING_INDEX 
+                $query_scores1 = "SELECT * FROM SRS2_SchoolAge_lookup WHERE form_relation ='SRS2_Parent' and
+                sex='$gender'  AND (scale_raw_score ='$field_raw_score'  OR  '$field_raw_score' BETWEEN SUBSTRING_INDEX
                 (`scale_raw_score`,'-', 1) AND SUBSTRING_INDEX(`scale_raw_score`,'-', -1) ) AND scale='$field'";
                 $record_1 = $db->pselectRow($query_scores1, array());
             }
             else{
-                $query_scores1 = "SELECT * FROM SRS2_SchoolAge_lookup WHERE form_relation ='SRS2_Parent' and 
-                sex='$gender'  AND (scale_raw_score =$field_raw_score  OR  $field_raw_score BETWEEN SUBSTRING_INDEX 
+                $query_scores1 = "SELECT * FROM SRS2_SchoolAge_lookup WHERE form_relation ='SRS2_Parent' and
+                sex='$gender'  AND (scale_raw_score =$field_raw_score  OR  $field_raw_score BETWEEN SUBSTRING_INDEX
                 (`scale_raw_score`,'-', 1) AND SUBSTRING_INDEX(`scale_raw_score`,'-', -1) ) AND scale='$field'";
                 $record_1 = $db->pselectRow($query_scores1, array());
 
             }
             if (empty($record_1)) {
-                $max_range = "SELECT * FROM SRS2_SchoolAge_lookup WHERE form_relation ='SRS2_Parent' and 
+                $max_range = "SELECT * FROM SRS2_SchoolAge_lookup WHERE form_relation ='SRS2_Parent' and
                  sex='$gender'  AND scale_raw_score like '%>=%' AND scale='$field'";
                 $max_range_array = $db->pselectRow($max_range, array());
                 if(empty($max_range_array))
@@ -682,6 +689,5 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
 
         return $raw_score;
     }
-
 }
 ?>
