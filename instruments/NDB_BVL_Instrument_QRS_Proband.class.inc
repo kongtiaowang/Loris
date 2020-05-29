@@ -104,7 +104,7 @@ class NDB_BVL_Instrument_QRS_Proband extends NDB_BVL_Instrument
                         'emptyOptionValue' => null,
                        );
 
-        $this->form->addElement('static', null, "<i><h3>*Please fill this form out with regard to your oldest child who has autism.</i></h3>");
+        $this->form->addElement('static', null, "<i><h3>*Please fill this form out with regard to your older child who has autism.</i></h3>");
 
         $this->dateOptions = $dateOptions;
 
