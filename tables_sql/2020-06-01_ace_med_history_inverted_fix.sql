@@ -1,0 +1,2 @@
+UPDATE test_names SET Full_name = 'ACE Subject Medical History - Survey' WHERE Test_name = 'acesubjectmedical_survey';
+UPDATE test_names SET Full_name = 'ACE Family Medical History - Survey' WHERE Test_name = 'ACEFamilyMedicalHistorySurvey';
