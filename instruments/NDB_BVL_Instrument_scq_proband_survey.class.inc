@@ -87,7 +87,11 @@ class NDB_BVL_Instrument_scq_proband_survey extends NDB_BVL_Instrument
     function _main()
     {
         // display test name
-        $this->addHeader("Social Communication Questionnaire - Lifetime");
+        $this->addHeader(
+            "Social Communication Questionnaire - Lifetime<br><br>
+            <i>Please fill this form out with regard to your older child who has autism.</i>"
+        );
+
         $config =& NDB_Config::singleton();
         $dateOptions = array(
             'language' => 'en',
@@ -127,6 +131,8 @@ class NDB_BVL_Instrument_scq_proband_survey extends NDB_BVL_Instrument
         "q7_said_same_thing"=>"7. Has she/he ever said the same thing over and over in exactly the same way or insisted that you say the same thing over and over again?");
 
     function _page1() {
+        $this->addHeader("<i>Please fill this form out with regard to your older child who has autism.</i>");
+
         $this->form->addElement("header", null, "Capable of phrase speech");
         $this->form->addElement("select", "q1_talk_short_phrases", "1. Is she/he now able to talk using short phrases or sentences? If <i>no</i>, skip to question 8.", $this->onlyYesNo);
         //Phrase speech

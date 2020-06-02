@@ -237,22 +237,23 @@ class NDB_BVL_Instrument_rbs_r extends NDB_BVL_Instrument
 
     function _page1()
     {
-        $this->addHeader("<h3><b>Instructions:</b><BR>
-                         Please fill this form out with regard to your child who has enrolled in our study, NOT their older sibling with autism.<br>
+        $this->addHeader("<h3><b>Instructions:</b><br><br>
+                         <i>Please fill this form out with regard to your child who has enrolled in our study,
+                         NOT their older sibling with autism.</i><br><br>
                          Please rate this person's behavior by reading each of the items listed and then
                          choosing the score that best describes how much of a problem the item is for the
                          person. Be sure to read and score all items listed. Make your ratings based on your
                          observations and interactions with the person over the last month. Use the definitions
                          in the box given below to score each item.<BR>
-                         <BR>$this->indent 0 = behavior <u>does not occur</u><BR>
-                         $this->indent 1 = behavior occurs and is a <u>mild</u> problem<BR>
-                         $this->indent 2 = behavior occurs and is a <u>moderate</u> problem.<BR>
-                         $this->indent 3 = behavior occurs and is a <u>severe</u> problem.<BR>
-                         <BR> When deciding on a score for each item, consider:<BR>
+                         <br>$this->indent 0 = behavior <u>does not occur</u><br>
+                         $this->indent 1 = behavior occurs and is a <u>mild</u> problem<br>
+                         $this->indent 2 = behavior occurs and is a <u>moderate</u> problem.<br>
+                         $this->indent 3 = behavior occurs and is a <u>severe</u> problem.<br>
+                         <br> When deciding on a score for each item, consider:<br>
                          $this->indent (a) <u>how frequently the behavior occurs</u>
-                         (e.g. weekly versus hourly)<BR>
+                         (e.g. weekly versus hourly)<br>
                          $this->indent (b) <u>how difficult it is to interrupt the behavior</u> (e.g. can
-                         be easily redirected versus becomes distressed if interrupted)<BR>
+                         be easily redirected versus becomes distressed if interrupted)<br>
                          $this->indent (c) <u>how much the behavior interferes</u> with ongoing events
                          (e.g. easy to ignore versus very disruptive).</h3>");
 
