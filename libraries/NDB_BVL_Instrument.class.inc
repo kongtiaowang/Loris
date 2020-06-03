@@ -361,7 +361,16 @@ class NDB_BVL_Instrument extends NDB_Page
         }
     }
 
-
+    /**
+     * Determines whether a submit button should be displayed at the bottom
+     * of the instrument.
+     *
+     * @return bool true if a submit button should be displayed, false otherwise.
+     */
+    function shouldHaveSubmitButton()
+    {
+        return true;
+    }
 
     /**
      * Method to display the form - usually not overridden as it
@@ -398,14 +407,17 @@ class NDB_BVL_Instrument extends NDB_Page
         // because that's part of the DirectEntry template
         // and has Save/Continue and go back buttons
         if (!$this->form->isFrozen() && $this->DataEntryType === 'normal') {
-            $buttons[] = $this->form->createElement(
-                'submit',
-                'fire_away',
-                'Save Data',
-                array('class' => 'button')
-            );
-            //$buttons[] = $this->form->createElement('reset', null, 'Reset');
-            $this->addGroup($buttons, null, null, "&nbsp;");
+            if ($this->shouldHaveSubmitButton()) {
+                $buttons[] = $this->form->createElement(
+                    'submit',
+                    'fire_away',
+                    'Save Data',
+                    array('class' => 'button')
+                );
+             
+                //$buttons[] = $this->form->createElement('reset', null, 'Reset');
+                $this->addGroup($buttons, null, null, "&nbsp;");
+            }
         }
 
         // get saved data to pre-populate form

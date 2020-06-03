@@ -157,6 +157,25 @@ class LorisForm
     }
 
     /**
+     * Creates a submit button to be rendered on the page
+     *
+     * @param string $elname  The element name.
+     * @param string $label   The label to attach to this element.
+     * @param array  $attribs An array of other attributes that should
+     *                        get added. Currently only the "class"
+     *                        attribute gets added.
+     * 
+     * @return &array
+     */
+    public function addSubmit($elname, $value, $attribs = array())
+    {
+        $attribs['value'] = $value;
+        $el         =& $this->addBase($elname, null, $attribs);
+        $el['type'] = 'submit';
+        return $el;
+    }
+
+    /**
      * Creates a static element to be rendered on the page
      *
      * Reimplementation of HTML_QuickForm's "addStatic" API.
