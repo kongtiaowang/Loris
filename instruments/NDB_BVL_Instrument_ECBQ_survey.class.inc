@@ -677,7 +677,7 @@ class NDB_BVL_Instrument_ECBQ_survey extends NDB_BVL_Instrument
                             "q160_seem_to_enjoy_himself_herself"                    => "160. Seem to enjoy him/herself?",
                             "q161_mold_to_your_body"                                => "161. Mold to your body? ",
                             "q162_seek_hugs_and_kisses"                             => "162. Seek hugs and kisses? ",
-                            // While a story was being read to your child, how often did s/he
+                            // While a story was being read to your child, how often did she/he
                             "q163_enjoy_listening_to_the_story"                     => "163. Enjoy listening to the story?",
                             // When hearing about a future family outing (such as a trip, to the playground), how often did your child
                             "q164_become_very_enthusiastic"                         => "164. Become very enthusiastic?",
@@ -713,7 +713,7 @@ class NDB_BVL_Instrument_ECBQ_survey extends NDB_BVL_Instrument
         $page7_question_headers = array(
                                    "q157_immediately_return_to_watching_TV_program"       => "When interrupted during a favorite TV show, how often did your child",
                                    "q159_pull_away_and_kick"                              => "While being held on your lap, how often did your child",
-                                   "q163_enjoy_listening_to_the_story"                    => "While a story was being read to your child, how often did s/he",
+                                   "q163_enjoy_listening_to_the_story"                    => "While a story was being read to your child, how often did she/he",
                                    "q164_become_very_enthusiastic"                        => "When hearing about a future family outing (such as a trip, to the playground), how often did your child",
                                    "q167_stay_interested_in_book_for_5_minutes_or_less"   => "While looking at picture books on his/her own, how often did your child",
                                    "q171_become_easily_frustrated"                        => "When tired after a long day of activities, how often did your child",
