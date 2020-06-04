@@ -1,10 +1,9 @@
 <?php
 /**
- * Map wrong information entered in comments to the right column Interviewed By for PSS
- * Once completed, we will remove the separate not answered status field for past and future PSS
+ * Update Common Loris fields(Dat_taken, examiner,data_entry etc for the globally parsed instruments like Shipley, NIH)
  *
  * @category Main
- * @package  map scattered interviewed_by information to the right column for PSS
+ * @package  update common Loris fields across candidates
  * @author   Sruthy Mathew
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @version  GIT: <git_id>
