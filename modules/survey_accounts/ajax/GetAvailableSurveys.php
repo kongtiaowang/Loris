@@ -1,14 +1,14 @@
 <?php
 /**
- * This is used by the Loris survey module to retrieve the email
- * template for the current instrument. It is used in the survey_accounts
- * page via AJAX to update the email template with the current page
+ * This is used by the Loris survey module to retrieve the instruments
+ * available for a candidate on selecting a visit label when
+ * creating a survey
  *
  * PHP Version 5
  *
  * @category Survey
  * @package  Loris
- * @author   Dave MacFarlane <driusan@bic.mni.mcgill.ca>
+ * @author   Sruthy Mathew <sruthy.mcin@gmail.com>
  * @license  Loris license
  * @link     https://www.github.com/aces/Loris-Trunk/
  */

@@ -23,8 +23,6 @@ $(document).ready(function () {
             },
             function(result) {
                 result = JSON.parse(result);
-                $("#email-error").show();
-                $("#email-error").html(result.error_msg);
                 $('[name="Test_name[]"]').html(result.option_string);
             }
 
@@ -127,8 +125,6 @@ $(document).ready(function () {
             },
             function(result) {
                 result = JSON.parse(result);
-                $("#email-error").show();
-                $("#email-error").html(result.error_msg);
                 $('[name="Test_name[]"]').html(result.option_string);
             }
 
