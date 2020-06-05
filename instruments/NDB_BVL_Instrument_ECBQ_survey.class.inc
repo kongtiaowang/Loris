@@ -249,7 +249,7 @@ class NDB_BVL_Instrument_ECBQ_survey extends NDB_BVL_Instrument
                    );
 
         $page2_questions = array(
-                            // When s/he was carried, how often did your child
+                            // When she/he was carried, how often did your child
                             "q14_like_to_be_held"                               => "14. Like to be held?",
                             "q15_push_against_you_until_put_down"               => "15. Push against you until put down?",
                             "q16_squirm"                                        => "16. Squirm?",
@@ -279,7 +279,7 @@ class NDB_BVL_Instrument_ECBQ_survey extends NDB_BVL_Instrument
                             "q34_notice_that_material_was_soft_or_rough"        => "34. Notice that material was very soft (cotton) or rough (wool)?",
                             "q35_notice_low_pitched_noises"                     => "35. Notice low-pitched noises such as the air-conditioner, heater, or refrigerator running or starting up?",
                             "q36_blink_a_lot"                                   => "36. Blink a lot?",
-                            "q37_get_very_enthusiastic_about_things"            => "37. Get very enthusiastic about the things s/he was going to do?",
+                            "q37_get_very_enthusiastic_about_things"            => "37. Get very enthusiastic about the things she/he was going to do?",
                             // While at home, how often did your child
                             "q38_show_fear_at_a_loud_sound"                     => "38. Show fear at a loud sound (blender, vacuum cleaner, etc.)?",
                             "q39_seem_afraid_of_the_dark"                       => "39. Seem afraid of the dark?",
@@ -291,7 +291,7 @@ class NDB_BVL_Instrument_ECBQ_survey extends NDB_BVL_Instrument
                            );
 
         $page2_question_headers = array(
-                                   "q14_like_to_be_held"                           => "When s/he was carried, how often did your child",
+                                   "q14_like_to_be_held"                           => "When she/he was carried, how often did your child",
                                    "q19_get_easily_irritated"                      => "While having trouble completing a task (e.g., building, drawing, dressing), how often did your child",
                                    "q21_engage_in_an_activity_with_child"          => "When a familiar child came to your home, how often did your child",
                                    "q23_stop_and_think_before_deciding"            => "When offered a choice of activities, how often did your child",
@@ -337,7 +337,7 @@ class NDB_BVL_Instrument_ECBQ_survey extends NDB_BVL_Instrument
                             "q43_look_immediately_when_you_pointed"              => "43. Look immediately when you pointed at something?",
                             "q44_choose_to_take_chances_for_fun_and_excitement"  => "44. Choose to take chances for the fun and excitement of it?",
                             "q45_not_like_going_down_high_slides"                => "45. <u>Not</u> like going down high slides at the amusement park or playground?",
-                            // When s/he was upset, how often did your child
+                            // When she/he was upset, how often did your child
                             "q46_change_to_feeling_better_within_minutes"        => "46. Change to feeling better within a few minutes?",
                             "q47_soothe_only_with_difficulty"                    => "47. Soothe only with difficulty?",
                             "q48_stay_upset_for_10_minutes_or_longer"            => "48. Stay upset for 10 minutes or longer?",
@@ -353,14 +353,14 @@ class NDB_BVL_Instrument_ECBQ_survey extends NDB_BVL_Instrument
                             "q55_complain_about_odors_on_others"                 => "55. Complain about odors on others, such as perfume?",
                             "q56_seem_to_be_bothered_by_bright_light"            => "56. Seem to be bothered by bright light?",
                             "q57_move_quickly_from_one_place_to_another"         => "57. Move quickly from one place to another?",
-                            "q58_notice_smoothness_or_roughness_of_objects"      => "58. Notice the smoothness or roughness of objects s/he touched?",
+                            "q58_notice_smoothness_or_roughness_of_objects"      => "58. Notice the smoothness or roughness of objects she/he touched?",
                             "q59_become_sad_or_blue_for_no_reason"               => "59. Become sad or blue for no apparent reason?",
                             // After having been interrupted, how often did your child
                             "q60_return_to_previous_activity"                    => "60. Return to a previous activity?",
                             "q61_have_difficulty_returning_to_previous_activity" => "61. Have difficulty returning to the previous activity?",
                             // While watching TV or hearing a story, how often did your child
                             "q62_seem_frightened_by_monster_characters"          => "62. Seem frightened by ‘monster’ characters?",
-                            // When you suggested an outdoor activity that s/he really likes, how often did your child
+                            // When you suggested an outdoor activity that she/he really likes, how often did your child
                             "q63_respond_immediately"                            => "63. Respond immediately?",
                             "q64_run_to_door_before_getting_ready"               => "64. Run to the door before getting ready?",
                             // When told that loved adults would visit, how often did your child
@@ -368,22 +368,22 @@ class NDB_BVL_Instrument_ECBQ_survey extends NDB_BVL_Instrument
                             "q66_become_very_happy"                              => "66. Become very happy?",
                             // When taking a quiet, warm bath, how often did your child
                             "q67_seem_to_relax_and_enjoy"                        => "67. Seem to relax and enjoy him/herself?",
-                            // When s/he couldn’t find something to play with, how often did your child
+                            // When she/he couldn’t find something to play with, how often did your child
                             "q68_get_angry"                                      => "68. Get angry?",
                            );
 
         $page3_question_headers = array(
                                    "q43_look_immediately_when_you_pointed"       => "While playing outdoors, how often did your child",
-                                   "q46_change_to_feeling_better_within_minutes" => "When s/he was upset, how often did your child",
+                                   "q46_change_to_feeling_better_within_minutes" => "When she/he was upset, how often did your child",
                                    "q49_play_for_5_minutes_or_less"              => "When engaged in play with his/her favorite toy, how often did your child",
                                    "q52_watch_rather_than_join"                  => "When approaching unfamiliar children playing, how often did your child",
                                    "q55_complain_about_odors_on_others"          => "During everyday activities, how often did your child",
                                    "q60_return_to_previous_activity"             => "After having been interrupted, how often did your child",
                                    "q62_seem_frightened_by_monster_characters"   => "While watching TV or hearing a story, how often did your child",
-                                   "q63_respond_immediately"                     => "When you suggested an outdoor activity that s/he really likes, how often did your child",
+                                   "q63_respond_immediately"                     => "When you suggested an outdoor activity that she/he really likes, how often did your child",
                                    "q65_get_very_excited"                        => "When told that loved adults would visit, how often did your child",
                                    "q67_seem_to_relax_and_enjoy"                 => "When taking a quiet, warm bath, how often did your child",
-                                   "q68_get_angry"                               => "When s/he couldn’t find something to play with, how often did your child",
+                                   "q68_get_angry"                               => "When she/he couldn’t find something to play with, how often did your child",
                                   );
 
         foreach ($page3_questions as $key => $question) {
@@ -528,7 +528,7 @@ class NDB_BVL_Instrument_ECBQ_survey extends NDB_BVL_Instrument
                             "q116_have_a_hard_time_settling_down"                      => "116. Have a hard time settling down?",
                             "q117_seem_to_feel_down_or_blue"                           => "117. Seem to feel down or blue?",
                             "q118_become_sadly_tearful"                                => "118. Become sadly tearful?",
-                            // When given something to eat that s/he didn’t like, how often did your child
+                            // When given something to eat that she/he didn’t like, how often did your child
                             "q119_become_angry"                                        => "119. Become angry?",
                             // During everyday activities, how often did your child seem able to
                             "q120_easily_shift_attention_from_one_activity_to_another" => "120. Easily shift attention from one activity to another?",
@@ -548,7 +548,7 @@ class NDB_BVL_Instrument_ECBQ_survey extends NDB_BVL_Instrument
                                    "q109_squirm_and_try_to_get_away"                          => "When being dressed or undressed, how often did your child",
                                    "q111_stop_an_activity_quickly"                            => "When told “no”, how often did your child",
                                    "q115_calm_down_quickly"                                   => "Following an exciting activity or event, how often did your child",
-                                   "q119_become_angry"                                        => "When given something to eat that s/he didn’t like, how often did your child",
+                                   "q119_become_angry"                                        => "When given something to eat that she/he didn’t like, how often did your child",
                                    "q120_easily_shift_attention_from_one_activity_to_another" => "During everyday activities, how often did your child seem able to",
                                    "q122_run_through_the_house"                               => "While playing indoors, how often did your child",
                                   );
@@ -589,11 +589,11 @@ class NDB_BVL_Instrument_ECBQ_survey extends NDB_BVL_Instrument
                             "q128_scratch_himself_herself"                          => "128. Scratch him/herself?",
                             "q129_tear_materials_close_at_hand"                     => "129. Tear materials close at hand?",
                             // Before an exciting event (such as receiving a new toy), how often did your child
-                            "q130_get_so_worked_up_trouble_sitting_still"           => "130. Get so worked up that s/he had trouble sitting still?",
+                            "q130_get_so_worked_up_trouble_sitting_still"           => "130. Get so worked up that she/he had trouble sitting still?",
                             "q131_get_very_excited_about_getting_it"                => "131. Get very excited about getting it?",
                             "q132_remain_pretty_calm"                               => "132. Remain pretty calm?",
                             "q133_seem_eager_to_have_it_right_away"                 => "133. Seem eager to have it right away?",
-                            // When s/he asked for something and you said “no”, how often did your child
+                            // When she/he asked for something and you said “no”, how often did your child
                             "q134_become_frustrated"                                => "134. Become frustrated?",
                             "q135_protest_with_anger"                               => "135. Protest with anger?",
                             "q136_have_a_temper_tantrum"                            => "136. Have a temper tantrum?",
@@ -612,11 +612,11 @@ class NDB_BVL_Instrument_ECBQ_survey extends NDB_BVL_Instrument
                             // When being gently rocked, how often did your child
                             "q146_smile"                                            => "146. Smile?",
                             "q147_make_sounds_of_pleasure"                          => "147. Make sounds of pleasure?",
-                            // While visiting relatives or adult family friends s/he sees infrequently, how often did your child
+                            // While visiting relatives or adult family friends she/he sees infrequently, how often did your child
                             "q148_stay_back_and_avoid_eye_contact"                  => "148. Stay back and avoid eye contact?",
                             "q149_hide_his_her_face"                                => "149. Hide his/her face?",
                             "q150_warm_up_to_the_person_within_a_few_minutes"       => "150. \"Warm up\" to the person within a few minutes?",
-                            // When you removed something s/he should not have been playing with, how often did your child
+                            // When you removed something she/he should not have been playing with, how often did your child
                             "q151_become_sad"                                       => "151. Become sad?",
                             // During everyday activities, how often did your child
                             "q152_become_bothered_by_sounds_in_noisy_environments"  => "152. Become bothered by sounds while in noisy environments?",
@@ -629,13 +629,13 @@ class NDB_BVL_Instrument_ECBQ_survey extends NDB_BVL_Instrument
         $page6_question_headers = array(
                                    "q126_become_easily_distracted"                        => "When playing alone, how often did your child",
                                    "q130_get_so_worked_up_trouble_sitting_still"          => "Before an exciting event (such as receiving a new toy), how often did your child",
-                                   "q134_become_frustrated"                               => "When s/he asked for something and you said “no”, how often did your child",
+                                   "q134_become_frustrated"                               => "When she/he asked for something and you said “no”, how often did your child",
                                    "q138_notice_sighs_or_sounds"                          => "While playing or walking outdoors, how often did your child",
                                    "q140_grab_the_object_as_soon_as_it_was_set_down"      => "When you gave your child an attractive toy, how often did your child",
                                    "q142_seem_unable_to_wait_for_as_long_as_1_minute"     => "When asked to wait for a desirable item (such as ice cream), how often did your child",
                                    "q146_smile"                                           => "When being gently rocked, how often did your child",
-                                   "q148_stay_back_and_avoid_eye_contact"                 => "While visiting relatives or adult family friends s/he sees infrequently, how often did your child",
-                                   "q151_become_sad"                                      => "When you removed something s/he should not have been playing with, how often did your child",
+                                   "q148_stay_back_and_avoid_eye_contact"                 => "While visiting relatives or adult family friends she/he sees infrequently, how often did your child",
+                                   "q151_become_sad"                                      => "When you removed something she/he should not have been playing with, how often did your child",
                                    "q152_become_bothered_by_sounds_in_noisy_environments" => "During everyday activities, how often did your child",
                                   );
 
@@ -677,7 +677,7 @@ class NDB_BVL_Instrument_ECBQ_survey extends NDB_BVL_Instrument
                             "q160_seem_to_enjoy_himself_herself"                    => "160. Seem to enjoy him/herself?",
                             "q161_mold_to_your_body"                                => "161. Mold to your body? ",
                             "q162_seek_hugs_and_kisses"                             => "162. Seek hugs and kisses? ",
-                            // While a story was being read to your child, how often did s/he
+                            // While a story was being read to your child, how often did she/he
                             "q163_enjoy_listening_to_the_story"                     => "163. Enjoy listening to the story?",
                             // When hearing about a future family outing (such as a trip, to the playground), how often did your child
                             "q164_become_very_enthusiastic"                         => "164. Become very enthusiastic?",
@@ -713,7 +713,7 @@ class NDB_BVL_Instrument_ECBQ_survey extends NDB_BVL_Instrument
         $page7_question_headers = array(
                                    "q157_immediately_return_to_watching_TV_program"       => "When interrupted during a favorite TV show, how often did your child",
                                    "q159_pull_away_and_kick"                              => "While being held on your lap, how often did your child",
-                                   "q163_enjoy_listening_to_the_story"                    => "While a story was being read to your child, how often did s/he",
+                                   "q163_enjoy_listening_to_the_story"                    => "While a story was being read to your child, how often did she/he",
                                    "q164_become_very_enthusiastic"                        => "When hearing about a future family outing (such as a trip, to the playground), how often did your child",
                                    "q167_stay_interested_in_book_for_5_minutes_or_less"   => "While looking at picture books on his/her own, how often did your child",
                                    "q171_become_easily_frustrated"                        => "When tired after a long day of activities, how often did your child",
@@ -758,7 +758,7 @@ class NDB_BVL_Instrument_ECBQ_survey extends NDB_BVL_Instrument
                             // When you mildly criticized or corrected his/her behavior, how often did your child
                             "q184_get_mad"                                          => "184. Get mad?",
                             "q185_have_hurt_feelings"                               => "185. Have hurt feelings?",
-                            // When s/he was upset, how often did your child
+                            // When she/he was upset, how often did your child
                             "q186_cry_for_more_than_3_minutes_even_when_comforted"  => "186. Cry for more than 3 minutes, even when being comforted?",
                             "q187_cheer_up_within_minute_or_two_when_comforted"     => "187. Cheer up within a minute or two when being comforted?",
                             "q188_become_easily_soothed"                            => "188. Become easily soothed?",
@@ -779,19 +779,19 @@ class NDB_BVL_Instrument_ECBQ_survey extends NDB_BVL_Instrument
                             // When around large gatherings of familiar adults or children, how often did your child
                             "q199_want_to_be_involved_in_a_group_activity"          => "199. Want to be involved in a group activity?",
                             "q200_enjoy_playing_with_a_number_of_different_people"  => "200. Enjoy playing with a number of different people?",
-                            // When s/he was asked to share his/her toys, how often did your child
+                            // When she/he was asked to share his/her toys, how often did your child
                             "q201_become_sad"                                       => "201. Become sad?",
                            );
 
         $page8_question_headers = array(
                                    "q184_get_mad"                                         => "When you mildly criticized or corrected his/her behavior, how often did your child",
-                                   "q186_cry_for_more_than_3_minutes_even_when_comforted" => "When s/he was upset, how often did your child",
+                                   "q186_cry_for_more_than_3_minutes_even_when_comforted" => "When she/he was upset, how often did your child",
                                    "q189_find_another_activity_to_do_when_asked"          => "When you were busy, how often did your child",
                                    "q190_want_to_jump_from_heights"                       => "While playing outdoors, how often did your child",
                                    "q194_chew_his_her_lower_lip"                          => "When playing alone, how often did your child",
                                    "q198_become_extremely_animated"                       => "When given a wrapped present, how often did your child",
                                    "q199_want_to_be_involved_in_a_group_activity"         => "When around large gatherings of familiar adults or children, how often did your child",
-                                   "q201_become_sad"                                      => "When s/he was asked to share his/her toys, how often did your child",
+                                   "q201_become_sad"                                      => "When she/he was asked to share his/her toys, how often did your child",
                                   );
 
         foreach ($page8_questions as $key => $question) {
