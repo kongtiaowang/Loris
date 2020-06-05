@@ -105,17 +105,6 @@ class NDB_BVL_Instrument_ksad extends NDB_BVL_Instrument
         $this->form->addFormRule(array(&$this, 'XINValidate'));
     }
 
-    /**
-     * Indicates whether there should be a submit button at the bottom
-     * of the form.
-     *
-     * @return boolean true if there should be a submit button, false otherwise.
-     */
-    function shouldHaveSubmitButton()
-    {
-        return $this->page != 'ksad_page1' && $this->page != 'ksad_page2';
-    }
-
     function _main()
     {
         $this->addHeader("KSAD");
@@ -124,6 +113,36 @@ class NDB_BVL_Instrument_ksad extends NDB_BVL_Instrument
         // Automatically adds examiner & date of administration
         $this->_addMetadataFields();
 
+    }
+
+    /**
+     * Override sthe method defined in the base class so as not to add a 'Save Data'
+     * button at the bottom of the responses and ratings pages.
+     *
+     * @param array  $elements   The group of elements to add to the page
+     * @param string $name       The name to give this group
+     * @param string $label      A label to attach to the group
+     * @param string $separator  The separator to use between group elements
+     * @param string $appendName unused
+     *
+     * @return void
+     */
+    function addGroup($elements, $name, $label, $separator, $appendName=null)
+    {
+        // If the element added is the 'Save Data' button that all forms have
+        // at the bottom of their page
+        if (count($elements) == 1 && $elements[0]['type'] == 'submit' 
+            && isset($elements[0]['value']) && $elements[0]['value'] == 'Save Data'
+        ) {
+            // If the page displayed is either the responses or ratings file, don't
+            // add the button: we already have the 'Upload File' button
+            if ($this->page == 'ksad_page1' || $this->page == 'ksad_page2') {
+                return;
+            }
+        }
+
+        // Revert to normal behaviour in other cases
+        parent::addGroup($elements, $name, $label, $separator, $appendName);
     }
 
     /**
@@ -159,11 +178,16 @@ class NDB_BVL_Instrument_ksad extends NDB_BVL_Instrument
         $this->form->addElement('file'  , 'ksad_responses_file', 'Upload the KSAD candidate responses file:');
         $this->form->addElement('static', 'ResponsesFileName'  , 'Uploaded responses file:');
 
-        $this->form->addSubmit(
+        //--------------------------------//
+        // Create the upload file button  //
+        //--------------------------------//
+        $buttons[] = $this->form->createElement(
+            'submit',
             'fire_away',
             'Upload File',
             array('class' => 'button')
         );
+        $this->addGroup($buttons, null, null, "&nbsp;");
 
         if ($this->getFieldValue('ResponsesFileName') != false) {
             $this->XINRegisterRule('ksad_responses_file', array("ksad_responses_file{@}=={@}NEVER_REQUIRED"));
@@ -236,11 +260,16 @@ class NDB_BVL_Instrument_ksad extends NDB_BVL_Instrument
         $this->form->addElement('file'  , 'ksad_ratings_file'  , 'Upload the KSAD symptoms ratings file:');
         $this->form->addElement('static', 'RatingsFileName'    , 'Uploaded ratings file:');
 
-        $this->form->addSubmit(
+        //--------------------------------//
+        // Create the upload file button  //
+        //--------------------------------//
+        $buttons[] = $this->form->createElement(
+            'submit',
             'fire_away',
             'Upload File',
             array('class' => 'button')
         );
+        $this->addGroup($buttons, null, null, "&nbsp;");
 
         if ($this->getFieldValue('RatingsFileName') != false) {
             $this->XINRegisterRule('ksad_ratings_file', array("ksad_ratings_file{@}=={@}NEVER_REQUIRED"));
