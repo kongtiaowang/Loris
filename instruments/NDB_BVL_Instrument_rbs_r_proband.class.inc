@@ -193,6 +193,12 @@ class NDB_BVL_Instrument_rbs_r_proband extends NDB_BVL_Instrument
         // display test name
         $this->form->addElement('header', 'instrument_title', "RBS-R - Proband (Repetitive Behavior Scale Revised - Proband) - Survey");
 
+        $this->form->addElement(
+            'static',
+            null,
+            "<h3><i>*Please fill this form out with regard to your oldest child who has autism.</i></h3>"
+        );
+
         $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
         $this->form->addElement('select', 'respondent', 'What is your relationship to the child', array(
             '' => '',
@@ -237,24 +243,31 @@ class NDB_BVL_Instrument_rbs_r_proband extends NDB_BVL_Instrument
 
     function _page1()
     {
-        $this->addHeader("<h3><b>Instructions:</b><br><br>
-                         <i>Please fill this form out with regard to your oldest child who has autism.</i><br><br>
-                         Please rate this person's behavior by reading each of the items listed and then
-                         choosing the score that best describes how much of a problem the item is for the
-                         person. Be sure to read and score all items listed. Make your ratings based on your
-                         observations and interactions with the person over the last month. Use the definitions
-                         in the box given below to score each item.<br>
-                         <br>$this->indent 0 = behavior <u>does not occur</u><br>
-                         $this->indent 1 = behavior occurs and is a <u>mild</u> problem<br>
-                         $this->indent 2 = behavior occurs and is a <u>moderate</u> problem.<br>
-                         $this->indent 3 = behavior occurs and is a <u>severe</u> problem.<br>
-                         <br> When deciding on a score for each item, consider:<br>
-                         $this->indent (a) <u>how frequently the behavior occurs</u>
-                         (e.g. weekly versus hourly)<br>
-                         $this->indent (b) <u>how difficult it is to interrupt the behavior</u> (e.g. can
-                         be easily redirected versus becomes distressed if interrupted)<br>
-                         $this->indent (c) <u>how much the behavior interferes</u> with ongoing events
-                         (e.g. easy to ignore versus very disruptive).</h3>");
+        $this->form->addElement(
+            'static',
+            null,
+            "<h3><b>Instructions:</b>
+            <br><br>
+            <i>*Please fill this form out with regard to your oldest child who has autism.</i>
+            <br><br>
+            Please rate this person's behavior by reading each of the items listed and then
+            choosing the score that best describes how much of a problem the item is for the
+            person. Be sure to read and score all items listed. Make your ratings based on your
+            observations and interactions with the person over the last month. Use the definitions
+            in the box given below to score each item.
+            <br><br>
+            $this->indent 0 = behavior <u>does not occur</u><br>
+            $this->indent 1 = behavior occurs and is a <u>mild</u> problem<br>
+            $this->indent 2 = behavior occurs and is a <u>moderate</u> problem.<br>
+            $this->indent 3 = behavior occurs and is a <u>severe</u> problem.<br>
+            <br> When deciding on a score for each item, consider:<br>
+            $this->indent (a) <u>how frequently the behavior occurs</u>
+            (e.g. weekly versus hourly)<br>
+            $this->indent (b) <u>how difficult it is to interrupt the behavior</u> (e.g. can
+            be easily redirected versus becomes distressed if interrupted)<br>
+            $this->indent (c) <u>how much the behavior interferes</u> with ongoing events
+            (e.g. easy to ignore versus very disruptive).</h3>"
+        );
 
         //The only answer choices available in the entire form.
         $answerOptions = array(
