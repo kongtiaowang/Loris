@@ -150,7 +150,7 @@ class NDB_BVL_Instrument_IPSC_tracking_form extends NDB_BVL_Instrument
                 $notification_reciever_email='sruthy.mcin@gmail.com,sruthymathew369@gmail.com';
             }
             else{
-                $notification_reciever_email='roseg@email.unc.edu,jason_stein@med.unc.edu';
+                $notification_reciever_email='roseg@email.unc.edu,jason_stein@med.unc.edu,abeltran@email.unc.edu';
             }
             $msg_data['PSCID'] = $PSCID;
             $msg_data['blood_draw_date'] = date_format($blood_draw_date,"F d, Y");
