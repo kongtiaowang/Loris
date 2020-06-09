@@ -266,10 +266,14 @@ class NDB_BVL_Instrument_NIHToolBox_Assessment_Data extends NDB_BVL_Instrument
     function importFile(&$file, $args)
     {
 
+        $sesionID=$this->getSessionID();
         $main_values = array(
              'Data_dir_assessment' => $file->getDestinationDirectory(),
              'UserID' => $args['username'],
              'File_type' => 'NIHToolBox',
+             'Examiner'  =>$this->getExaminerID('NIH ToolBox Not Applicable'),
+             'Date_taken'=>$this->getDateAdmin($sesionID),
+             'Data_entry_completion_status' =>'Complete'
         );
 
         if(strpos($file->fileInfo['name'], 'Data') !== false) {
@@ -339,6 +343,8 @@ class NDB_BVL_Instrument_NIHToolBox_Assessment_Data extends NDB_BVL_Instrument
                 $final_upload_values=array_merge($main_values,$upload_values);
                 if(!empty($commentid)) {
                     $result = $db->update($this->testName, $final_upload_values, array('CommentID' => $commentid));
+                    $result2= $db->update('flag', array('Data_entry' => 'Complete', 'Administration'    =>'All'),
+                            array('CommentID' => $commentid));
                     $valid++;
                     $ids_updated .= $pscid.",";
 
@@ -382,5 +388,34 @@ class NDB_BVL_Instrument_NIHToolBox_Assessment_Data extends NDB_BVL_Instrument
     function getTargetDirectory(&$file, $args){
         $output=$args['candID']."/";
         return $output;
+    }
+
+    function getExaminerID($fullName)
+    {
+        $DB         = \Database::singleton();
+        $examinerID = $DB->pselectOne(
+            "SELECT examinerID
+             FROM examiners
+             WHERE full_name=:fullName",
+            array('fullName' => $fullName)
+        );
+
+        //returned as a string
+        return $examinerID;
+    }
+
+    function getDateAdmin($sessionID)
+    {
+        $db =& Database::singleton();
+        $NIH_Asses_Score_CommentID=$db->pselectOne("select CommentID from flag where 
+test_name='NIHToolBox_Assessment_Scores' and CommentID not like '%DDE%'and sessionID=:sid", array('sid'=>$sessionID));
+
+        $query      = "SELECT Date_taken from NIHToolBox_Assessment_Scores where CommentID=:CID";
+        $fieldValue = $db->pselectOne($query, array('CID' => $NIH_Asses_Score_CommentID));
+
+        if (!empty($fieldValue)) {
+            return $fieldValue;
+        }
+        return NULL;
     }
 }
