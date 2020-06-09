@@ -25,6 +25,7 @@ class NDB_BVL_Instrument_scq_proband_survey extends NDB_BVL_Instrument
     var $yesNo = array(null=>"", "yes"=>"Yes", "no"=>"No");
     var $onlyYesNo = array(null=>"","yes"=>"Yes","no"=>"No");
     var $scoreCols = array("score", "scq_diagnosis");
+
     /**
      * sets up basic data, such as the LorisForm object, and so on.
      *
@@ -56,6 +57,7 @@ class NDB_BVL_Instrument_scq_proband_survey extends NDB_BVL_Instrument
         // setup the form
         $this->_setupForm();
     }
+
     //If the instrument is not paged, remove the switch from the _setupForm method and add all the form Elements in this function.
     /**
      * method to build the LorisForm object into a paged form
@@ -77,6 +79,7 @@ class NDB_BVL_Instrument_scq_proband_survey extends NDB_BVL_Instrument
         }
         $this->form->addFormRule(array(&$this, 'XINValidate'));
     }
+
     /**
      * generates the main page of the form.
      *
@@ -87,9 +90,12 @@ class NDB_BVL_Instrument_scq_proband_survey extends NDB_BVL_Instrument
     function _main()
     {
         // display test name
-        $this->addHeader(
-            "Social Communication Questionnaire - Lifetime<br><br>
-            <i>Please fill this form out with regard to your older child who has autism.</i>"
+        $this->addHeader("Social Communication Questionnaire - Lifetime");
+
+        $this->form->addElement(
+            'static',
+            null,
+            "<h3><i>*Please fill this form out with regard to your oldest child who has autism.</i></h3>"
         );
 
         $config =& NDB_Config::singleton();
@@ -131,7 +137,11 @@ class NDB_BVL_Instrument_scq_proband_survey extends NDB_BVL_Instrument
         "q7_said_same_thing"=>"7. Has she/he ever said the same thing over and over in exactly the same way or insisted that you say the same thing over and over again?");
 
     function _page1() {
-        $this->addHeader("<i>Please fill this form out with regard to your older child who has autism.</i>");
+        $this->form->addElement(
+            'static',
+            null,
+            "<h3><i>*Please fill this form out with regard to your oldest child who has autism.</i></h3>"
+        );
 
         $this->form->addElement("header", null, "Capable of phrase speech");
         $this->form->addElement("select", "q1_talk_short_phrases", "1. Is she/he now able to talk using short phrases or sentences? If <i>no</i>, skip to question 8.", $this->onlyYesNo);
