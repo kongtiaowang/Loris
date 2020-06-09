@@ -234,6 +234,8 @@ class NDB_BVL_Instrument_NIHToolBox_Assessment_Scores extends NDB_BVL_Instrument
             'Data_dir_assessment' => $file->getDestinationDirectory(),
             'UserID' => $args['username'],
             'File_type' => 'NIHToolBox',
+            'Examiner'  =>$this->getExaminerID('NIH ToolBox Not Applicable'),
+            'Data_entry_completion_status' =>'Complete'
         );
         if(strpos($file->fileInfo['name'], 'Scores') !== false) {
             /** @var Database $db */
@@ -255,6 +257,7 @@ class NDB_BVL_Instrument_NIHToolBox_Assessment_Scores extends NDB_BVL_Instrument
                 }
                 $result[$key][] = $data;
             }
+           // print_r($result);
 //Now, to print it out, this is all I have to do
             $valid=0;
             $ids_updated='';
@@ -290,6 +293,10 @@ class NDB_BVL_Instrument_NIHToolBox_Assessment_Scores extends NDB_BVL_Instrument
                         }
                     }
                 }
+                $upload_values['Date_taken']=date("Y-m-d", strtotime($upload_values['DateFinished_1']));
+                if (DateTime::createFromFormat('Y-m-d', $upload_values['Date_taken']) == FALSE) {
+                    echo "Cannot Find Valid DateFinished(10th column) in csv file to consider as Date of Administration";
+                }
 
                 $final_upload_values=array_merge($main_values,$upload_values);
                 $commentid = $db->pselectOne(
@@ -303,9 +310,12 @@ class NDB_BVL_Instrument_NIHToolBox_Assessment_Scores extends NDB_BVL_Instrument
                         'tesna' => $this->testName,
                     )
                 );
+
                 if(!empty($commentid)) {
                     $valid++;
                     $result = $db->update($this->testName, $final_upload_values, array('CommentID' => $commentid));
+                    $result2= $db->update('flag', array('Data_entry' => 'Complete', 'Administration'    =>'All'),
+                        array('CommentID' => $commentid));
                     $ids_updated .= $pscid.",";
                 }
             }
@@ -341,4 +351,19 @@ class NDB_BVL_Instrument_NIHToolBox_Assessment_Scores extends NDB_BVL_Instrument
         $output=$args['candID']."/";
         return $output;
     }
+
+    function getExaminerID($fullName)
+    {
+        $DB         = \Database::singleton();
+        $examinerID = $DB->pselectOne(
+            "SELECT examinerID
+             FROM examiners
+             WHERE full_name=:fullName",
+            array('fullName' => $fullName)
+        );
+
+        //returned as a string
+        return $examinerID;
+    }
+
 }
