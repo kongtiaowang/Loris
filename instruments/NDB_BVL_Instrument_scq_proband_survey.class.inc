@@ -116,7 +116,7 @@ class NDB_BVL_Instrument_scq_proband_survey extends NDB_BVL_Instrument
         $this->form->addElement(
             'static',
             null,
-            "<h3><i>*Please fill this form out with regard to your oldest child who has autism.</i></h3>"
+            "<h3><i>*Please fill this form out with regard to your older child who has autism.</i></h3>"
         );
 
         $config            =& NDB_Config::singleton();
@@ -163,7 +163,7 @@ class NDB_BVL_Instrument_scq_proband_survey extends NDB_BVL_Instrument
         $this->form->addElement(
             'static',
             null,
-            "<h3><i>*Please fill this form out with regard to your oldest child who has autism.</i></h3>"
+            "<h3><i>*Please fill this form out with regard to your older child who has autism.</i></h3>"
         );
 
         $this->form->addElement("header", null, "Capable of phrase speech");
