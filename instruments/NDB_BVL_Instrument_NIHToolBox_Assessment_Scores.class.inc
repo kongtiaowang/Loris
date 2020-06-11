@@ -310,6 +310,40 @@ class NDB_BVL_Instrument_NIHToolBox_Assessment_Scores extends NDB_BVL_Instrument
                         'tesna' => $this->testName,
                     )
                 );
+                $NIH_Assess_Data_commentid = $db->pselectOne(
+                    "select f.CommentID from flag as f
+                  join `session` as s on f.SessionID=s.ID
+                  join `candidate` as c on s.CandID=c.CandID
+                  WHERE s.Visit_label='VSA' and c.PSCID=:pscid
+                  and f.Test_name=:tesna and f.CommentID not like 'DDE_%'",
+                    array(
+                        'pscid' => $pscid,
+                        'tesna' => 'NIHToolBox_Assessment_Data',
+                    )
+                );
+                $NIH_Reg_Data_commentid = $db->pselectOne(
+                    "select f.CommentID from flag as f
+                  join `session` as s on f.SessionID=s.ID
+                  join `candidate` as c on s.CandID=c.CandID
+                  WHERE s.Visit_label='VSA' and c.PSCID=:pscid
+                  and f.Test_name=:tesna and f.CommentID not like 'DDE_%'",
+                    array(
+                        'pscid' => $pscid,
+                        'tesna' => 'NIHToolBox_Registration_Data',
+                    )
+                );
+
+                //Date taken is updated for all the NIHforms where the DateFinished from NIHToolBox AssessmentScores
+
+              if(!empty($NIH_Assess_Data_commentid))
+              {
+                  $db->update('NIHToolBox_Assessment_Data', array('Date_taken' => $upload_values['Date_taken']), array('CommentID' => $NIH_Assess_Data_commentid));
+              }
+
+                if(!empty($NIH_Reg_Data_commentid))
+                {
+                    $db->update('NIHToolBox_Registration_Data', array('Date_taken' => $upload_values['Date_taken']), array('CommentID' => $NIH_Reg_Data_commentid));
+                }
 
                 if(!empty($commentid)) {
                     $valid++;
