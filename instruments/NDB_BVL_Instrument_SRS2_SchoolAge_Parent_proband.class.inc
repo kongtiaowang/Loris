@@ -23,7 +23,6 @@
  * @link     https://www.github.com/aces/IBIS/
  */
 
-
 class NDB_BVL_Instrument_SRS2_SchoolAge_Parent_proband extends NDB_BVL_Instrument
 {
     use instrument_validator;
@@ -117,9 +116,14 @@ class NDB_BVL_Instrument_SRS2_SchoolAge_Parent_proband extends NDB_BVL_Instrumen
      */
     function _main()
     {
-
         //Display test name
         $this->form->addElement('header', 'instrument_title', "SRS-2 - School Age Proband (Send to Mom OR Dad)");
+
+        $this->form->addElement(
+            'static',
+            null,
+            "<h3><i>*Please fill this form out with regard to your older child who has autism.</i></h3>"
+        );
 
         //Add date of administration field
         $this->addBasicDate('Date_taken', "Date of Administration", $this->dateOptions);
@@ -164,7 +168,6 @@ class NDB_BVL_Instrument_SRS2_SchoolAge_Parent_proband extends NDB_BVL_Instrumen
             $this->form->addGroup($group, 'score_header_group_'.$i, "<strong>Domain</strong>", $this->_GUIDelimiter, FALSE);
             unset($group);
 
-
             //score fields
 
             $columnHeaders = array("score" => "Score", "T_score" => "T Score");
@@ -185,7 +188,6 @@ class NDB_BVL_Instrument_SRS2_SchoolAge_Parent_proband extends NDB_BVL_Instrumen
 
             }
 
-
             //scoring column headers
             $group[] = $this->form->createElement('static', "score", null, null);
             $group[] = $this->form->createElement('static', "T_score", null, null);
@@ -205,9 +207,19 @@ class NDB_BVL_Instrument_SRS2_SchoolAge_Parent_proband extends NDB_BVL_Instrumen
      */
     function _page1()
     {
-
         //Display test name
         $this->form->addElement('header', 'instrument_title', "SRS-2 - School Age Proband (Send to Mom OR Dad)");
+
+        //Add instructions
+        $this->form->addElement(
+            'static',
+            'lorisSubHeader',
+            "<strong>Instructions:</strong><br><br>
+            <i>*Please fill this form out with regard to your older child who has autism.</i><br>
+            <br>
+            For each question, please choose an option that best describes the child's behaviour
+            <strong>over the past 6 months.</strong>"
+        );
 
         //Add field for Age
         $field = 'child_age';$label = "Child's age in years <br><h5><i>(Please enter a numeric value between 0-100 or write NA.)</i></h5>";
@@ -231,16 +243,6 @@ class NDB_BVL_Instrument_SRS2_SchoolAge_Parent_proband extends NDB_BVL_Instrumen
         unset($group);
         $rules_array = array("informant{@}=={@}other");
         $this->XINRegisterRule('informant_other', $rules_array, "Please specify relationship", 'informant_other_group');
-
-        //Add instructions
-        $this->form->addElement(
-            'static',
-            'lorisSubHeader',
-            "<strong>Instructions:</strong><br><br>
-            <i>Please fill this form out with regard to your older child who has autism.</i><br>
-            For each question, please choose an option that best describes the child's behaviour
-            <strong>over the past 6 months.</strong>"
-        );
 
         //First block of questions
         $questions = array(
