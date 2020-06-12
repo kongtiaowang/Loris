@@ -103,7 +103,7 @@ class NDB_BVL_Instrument_CBCL_1_To_5_survey extends NDB_BVL_Instrument
     /**
      * Sample SQL statement for test_names table and instrument subtests table
      *
-     * INSERT INTO test_names (Test_name, Full_name, Sub_Group, isDirectEntry) VALUES ('CBCL_1_To_5_survey', "CBCL (Child Behavior Checklist) For Ages 1.5-5 - Survey", 1, 1);
+     * INSERT INTO test_names (Test_name, Full_name, Sub_Group, isDirectEntry) VALUES ('CBCL_1_To_5_survey', "CBCL (Child Behavior Checklist) 1.5 to 5 years - Survey", 1, 1);
      * INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('CBCL_1_To_5_survey','CBCL_1_To_5_survey_page1', "Page 1", 1);
      * INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('CBCL_1_To_5_survey','CBCL_1_To_5_survey_page2', "Page 2", 2);
      * INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('CBCL_1_To_5_survey','CBCL_1_To_5_survey_page3', "Page 3", 3);
@@ -182,13 +182,17 @@ class NDB_BVL_Instrument_CBCL_1_To_5_survey extends NDB_BVL_Instrument
     function _main()
     {
         // display test name
-        $this->addHeader("CBCL (Child Behavior Checklist) For Ages 1.5-5 - Survey");
+        $this->addHeader("CBCL (Child Behavior Checklist) 1.5 to 5 years - Survey");
 
         $this->form->addElement(
             'static',
             null,
             "<h3>
-                <b>Instructions:</b><br><br>
+                <b>Instructions:</b>
+                <br><br>
+                <i>*Please fill this form out with regard to your child who has enrolled in our study,
+                NOT their older sibling with autism.</i>
+                <br><br>
                 Please fill out this form to reflect <b><i>your</i></b> view of the child's behavior
                 even if other people might not agree. <b><i>Be sure to answer all items.</b></i>
             </h3>"
@@ -289,13 +293,17 @@ class NDB_BVL_Instrument_CBCL_1_To_5_survey extends NDB_BVL_Instrument
     */
     function _page1()
     {
-        $this->addHeader("CBCL (Child Behavior Checklist) For Ages 1.5-5 - Survey");
+        $this->addHeader("CBCL (Child Behavior Checklist) 1.5 to 5 years - Survey");
 
         $this->form->addElement(
             'static',
             null,
             "<h3>
-                <b>Instructions:</b><br><br>
+                <b>Instructions:</b>
+                <br><br>
+                <i>*Please fill this form out with regard to your child who has enrolled in our study,
+                NOT their older sibling with autism.</i>
+                <br><br>
                 For each item that describes your child <b><i>now or within the past 2 months</i></b>,
                 please select <b><i>2</i></b> if the item is <b><i>very true or often true</b></i> of the child.
                 Select the <b><i>1</i></b> if the item is <b><i>somewhat or sometimes true</b></i> of the child.
@@ -413,7 +421,7 @@ class NDB_BVL_Instrument_CBCL_1_To_5_survey extends NDB_BVL_Instrument
     */
     function _page2()
     {
-        $this->addHeader("CBCL (Child Behavior Checklist) For Ages 1.5-5 - Survey");
+        $this->addHeader("CBCL (Child Behavior Checklist) 1.5 to 5 years - Survey");
 
         $options = array(
                     null => '',
@@ -472,7 +480,7 @@ class NDB_BVL_Instrument_CBCL_1_To_5_survey extends NDB_BVL_Instrument
     */
     function _page3()
     {
-        $this->addHeader("CBCL (Child Behavior Checklist) For Ages 1.5-5 - Survey");
+        $this->addHeader("CBCL (Child Behavior Checklist) 1.5 to 5 years - Survey");
 
         $options = array(
                     null => '',
@@ -530,7 +538,7 @@ class NDB_BVL_Instrument_CBCL_1_To_5_survey extends NDB_BVL_Instrument
     */
     function _page4()
     {
-        $this->addHeader("CBCL (Child Behavior Checklist) For Ages 1.5-5 - Survey");
+        $this->addHeader("CBCL (Child Behavior Checklist) 1.5 to 5 years - Survey");
 
         $options = array(
                     null => '',
