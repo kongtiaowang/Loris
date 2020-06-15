@@ -196,7 +196,7 @@ class NDB_BVL_Instrument_rbs_r_proband extends NDB_BVL_Instrument
         $this->form->addElement(
             'static',
             null,
-            "<h3><i>*Please fill this form out with regard to your oldest child who has autism.</i></h3>"
+            "<h3><i>*Please fill this form out with regard to your older child who has autism.</i></h3>"
         );
 
         $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
@@ -248,7 +248,7 @@ class NDB_BVL_Instrument_rbs_r_proband extends NDB_BVL_Instrument
             null,
             "<h3><b>Instructions:</b>
             <br><br>
-            <i>*Please fill this form out with regard to your oldest child who has autism.</i>
+            <i>*Please fill this form out with regard to your older child who has autism.</i>
             <br><br>
             Please rate this person's behavior by reading each of the items listed and then
             choosing the score that best describes how much of a problem the item is for the
