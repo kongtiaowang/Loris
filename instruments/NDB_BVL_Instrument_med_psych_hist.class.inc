@@ -578,6 +578,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
              "h_generalized_edema"             => "h. Generalized edema",
              "i_proteinuria"                   => "i. Proteinuria",
              "j_high_blood_pressure"           => "j. High blood pressure",
+             "none"                            => "None",
              "not_answered"                    => "Not Answered",
             ),
             array("multiple")
@@ -605,6 +606,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
                           "q_thalidomide"               => "q. Thalidomide (please specify why)",
                           "r_misoprostol"               => "r. Misoprostol (please specify why)",
                           "s_other"                     => "s. Other (please specify medication and why)",
+                          "none"                        => "None",
                           "not_answered"                => "Not Answered",
                          );
 
@@ -617,7 +619,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
 
         $this->form->addElement("static", null, "Please specify when's");
         foreach($questionArray as $field=>$label) {
-            if ($field != "not_answered" && $field != null) {
+            if ($field != "not_answered" && $field != null && $field != "none") {
                 $this->addSelect("q6_{$field}_when_taken", $this->indent . "If $label were taken, when?:", array(null => "", "0_before" => "0 Before", "1_after" => "1 After", "2_both" => "2 Both", "3_breastfeeding" => "3 Breastfeeding", "not_answered" => "Not Answered"), array("multiple"));
                 $this->XINRegisterRule("q6_{$field}_when_taken", array("q6_pregnancy_meds{@}=={@}{$field}"), "Please specify when $label was taken");
                 $this->_selectMultipleElements[] = "q6_{$field}_when_taken";
@@ -643,6 +645,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
              "b_abnormal_ultrasound_or_sonogram" => "b. Abnormal ultrasound or sonogram",
              "c_abnormal_amniocentesis_or_CVS"   => "c. Abnormality from an amniocentesis or CVS",// (please specify)
              "d_other"                           => "d. Other (please specify)",
+             "none"                              => "None",
              "not_answered"                      => "Not answered",
             ),
             array("multiple")
@@ -661,6 +664,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
                  "a_drink_alcohol"               => "a. Drink alcohol",
                  "b_smoke_cigarettes_or_tobacco" => "b. Smoke cigarettes or tobacco",
                  "not_answered"                  => "Not Answered",
+                 "none"                          => "None",
                 ),
                 array("multiple")
             );
@@ -760,6 +764,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
                  "l_clinical_dysmaturity"                => "l. Clinical dysmaturity",
                  "m_difficulty_regulating_temperature"   => "m. Difficulty regulating temperature",
                  "n_oxygen_treatment"                    => "n. Oxygen treatment (>30 %)",
+                 "none"                                  => "None",
                  "not_answered"                          => "Not Answered",
                 ),
                 array("multiple")
@@ -814,6 +819,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
                           "a_abnormal_brain_picture"         => "a. Had an abnormal picture of the brain",
                           "b_meningitis_encephalitis"        => "b. Been hospitalized for meningitis or encephalitis",
                           "c_lost_consciousness_head_injury" => "c. Lost consciousness due to a head injury",
+                          "none"                             => "None",
                           "not_answered"                     => "Not Answered",
                          );
         $this->addSelect("q16_has_child_ever", "16. Has this child ever...", $questionArray, array("multiple"));
@@ -837,6 +843,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
              "d_heart_defect"             => "d. Heart defect (please specify",
              "e_kidney_defect"            => "e. Kidney defect(please specify)",
              "f_other_defect"             => "f. Other defect(please specify)",
+             "none"                       => "None",
              "not_answered"               => "Not Answered",
             ),
             array("multiple")
