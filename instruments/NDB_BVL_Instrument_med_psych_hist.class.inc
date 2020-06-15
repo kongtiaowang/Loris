@@ -582,7 +582,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
             ),
             array("multiple")
         );
-        $this->addTextElement("q5_pregnancy_health_problems_specify", $this->indent . "If other, (please specify)", array("q5_pregnancy_health_problems{@}=={@}f_other_major_illness_or_injury"), "If other health problems, please specify or select Not Answered");
+        $this->addTextElement("q5_pregnancy_health_problems_specify", $this->indent . "If other, (please specify)", array("q5_preg_health_probs{@}=={@}f_other_major_illness_or_injury"), "If other health problems, please specify or select Not Answered");
 
         $questionArray = array(
                           null                          => null,
