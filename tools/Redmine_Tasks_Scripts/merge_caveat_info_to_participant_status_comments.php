@@ -61,11 +61,6 @@ $candidate_comment=getCandidateComment($candidate['CandID']);
                         {
                             $c++;
                             print $c . ")" . $update_values['PSCID'] . "\n";
-                       /*     print"
-                        *Caveat Reason({$update_values['caveat_reason']})\n
-                        *Caveat Other Comment({$update_values['caveat_other_comment']})\n
-                        *Candidate Comment({$candidate_comment})\n
-                        *Participant_comment(({$update_values['ps_comment']})\n";*/
 
                             print "FINAL CONCATENATED COMMENT= {$final_concatenated_string}";
 
@@ -74,19 +69,20 @@ $candidate_comment=getCandidateComment($candidate['CandID']);
 
         print"\n";
         if ($confirm) {
+            if($final_concatenated_string!=='') {
 
-            print "Updated\n";
+                print "Updated\n";
 
-            $db->update('participant_status',
-                array(
-                    'reason_specify'    => $final_concatenated_string,
+                $db->update('participant_status',
+                    array(
+                        'reason_specify' => $final_concatenated_string,
 
-                ),
-                array(
-                    'CandID'          =>$candidate['CandID']
-                )
-            );
-            print"\n";
+                    ),
+                    array(
+                        'CandID' => $candidate['CandID']
+                    )
+                );
+            }
         }
 
 
