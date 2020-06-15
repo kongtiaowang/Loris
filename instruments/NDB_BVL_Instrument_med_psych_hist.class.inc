@@ -320,8 +320,8 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
 
             $firstVisit = false;
             $vLabel     = $db->pselectOne(
-                "SELECT Visit_label FROM session s JOIN candidate c 
-                                   ON (c.CandID = s.CandID) WHERE c.CandID=:cid 
+                "SELECT Visit_label FROM session s JOIN candidate c
+                                   ON (c.CandID = s.CandID) WHERE c.CandID=:cid
                                    ORDER BY Date_Visit",
                 array('cid' => $cand['CandID'])
             );//get first visit for candidate
@@ -768,8 +768,12 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
             //13.
             $this->form->addElement("select", "q13_neonatal_icu", "13. Did this child stay in the neonatal intensive care unit?", $this->yesNo);
             $this->addTextElement("q13_neonatal_icu_reason", $this->indent . $this->indent . "If yes, why did the child stay at NICU", array("q13_neonatal_icu{@}=={@}1_yes"), "Please indicate the reason why child was in the Neonatal ICU");
-            $this->addNumericElement("q13_neonatal_icu_days", $this->indent . $this->indent . "a. Number of days", array("q13_neonatal_icu{@}=={@}1_yes"), "Please indicate the number of days spent in the Neonatal ICU");
-            $this->addNumericElement("q13_neonatal_icu_hours", $this->indent . $this->indent . "b. Number of hours", array("q13_neonatal_icu{@}=={@}1_yes"), "Please indicate the number of hours spent in the Neonatal ICU");
+
+            $this->addNumericElement("q13_neonatal_icu_days", $this->indent . $this->indent . "a. Number of days");
+            $this->XINRegisterRule("q13_neonatal_icu_days", array("q13_neonatal_icu{@}=={@}1_yes"), "Please indicate the number of days spent in the Neonatal ICU", "q13_neonatal_icu_days_group");
+
+            $this->addNumericElement("q13_neonatal_icu_hours", $this->indent . $this->indent . "a. Number of hours");
+            $this->XINRegisterRule("q13_neonatal_icu_hours", array("q13_neonatal_icu{@}=={@}1_yes"), "Please indicate the number of hours spent in the Neonatal ICU", "q13_neonatal_icu_hours_group");
 
             //14.
             $this->form->addElement("static", null, "14. How many days or hours total did this child stay in the hospital?");
@@ -842,7 +846,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
         $this->addTextElement("q17_f_other_defect_specify", $this->indent . "If other defect, please specify", array("q17_birth_defects{@}=={@}f_other_defect"), "Please specify the other defect.");
 
         //18.
-        $this->form->addElement("select", "q18_other_chronic", "18. Does the child being evaluated today for autism have any other chronic medical problems?", $this->yesNo);
+        $this->form->addElement("select", "q18_other_chronic", "18. Does the child being evaluated today have any other chronic medical problems?", $this->yesNo);
         $this->form->addElement("static", null, $this->indent . "If yes...");
         $abc = array(
                 "a" => "1",
@@ -883,8 +887,8 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
 
         $firstVisit = false;
         $vLabel     = $db->pselectOne(
-            "SELECT Visit_label FROM session s JOIN candidate c 
-                                   ON (c.CandID = s.CandID) WHERE c.CandID=:cid 
+            "SELECT Visit_label FROM session s JOIN candidate c
+                                   ON (c.CandID = s.CandID) WHERE c.CandID=:cid
                                    ORDER BY Date_Visit",
             array('cid' => $cand['CandID'])
         );//get first visit for candidate
@@ -898,6 +902,5 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
 
         return $errors;
     }
-
 }
 ?>
