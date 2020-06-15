@@ -320,8 +320,8 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
 
             $firstVisit = false;
             $vLabel     = $db->pselectOne(
-                "SELECT Visit_label FROM session s JOIN candidate c 
-                                   ON (c.CandID = s.CandID) WHERE c.CandID=:cid 
+                "SELECT Visit_label FROM session s JOIN candidate c
+                                   ON (c.CandID = s.CandID) WHERE c.CandID=:cid
                                    ORDER BY Date_Visit",
                 array('cid' => $cand['CandID'])
             );//get first visit for candidate
@@ -578,11 +578,12 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
              "h_generalized_edema"             => "h. Generalized edema",
              "i_proteinuria"                   => "i. Proteinuria",
              "j_high_blood_pressure"           => "j. High blood pressure",
+             "none"                            => "None",
              "not_answered"                    => "Not Answered",
             ),
             array("multiple")
         );
-        $this->addTextElement("q5_pregnancy_health_problems_specify", $this->indent . "If other, (please specify)", array("q5_pregnancy_health_problems{@}=={@}f_other_major_illness_or_injury"), "If other health problems, please specify or select Not Answered");
+        $this->addTextElement("q5_pregnancy_health_problems_specify", $this->indent . "If other, (please specify)", array("q5_preg_health_probs{@}=={@}f_other_major_illness_or_injury"), "If other health problems, please specify or select Not Answered");
 
         $questionArray = array(
                           null                          => null,
@@ -605,6 +606,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
                           "q_thalidomide"               => "q. Thalidomide (please specify why)",
                           "r_misoprostol"               => "r. Misoprostol (please specify why)",
                           "s_other"                     => "s. Other (please specify medication and why)",
+                          "none"                        => "None",
                           "not_answered"                => "Not Answered",
                          );
 
@@ -617,7 +619,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
 
         $this->form->addElement("static", null, "Please specify when's");
         foreach($questionArray as $field=>$label) {
-            if ($field != "not_answered" && $field != null) {
+            if ($field != "not_answered" && $field != null && $field != "none") {
                 $this->addSelect("q6_{$field}_when_taken", $this->indent . "If $label were taken, when?:", array(null => "", "0_before" => "0 Before", "1_after" => "1 After", "2_both" => "2 Both", "3_breastfeeding" => "3 Breastfeeding", "not_answered" => "Not Answered"), array("multiple"));
                 $this->XINRegisterRule("q6_{$field}_when_taken", array("q6_pregnancy_meds{@}=={@}{$field}"), "Please specify when $label was taken");
                 $this->_selectMultipleElements[] = "q6_{$field}_when_taken";
@@ -643,6 +645,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
              "b_abnormal_ultrasound_or_sonogram" => "b. Abnormal ultrasound or sonogram",
              "c_abnormal_amniocentesis_or_CVS"   => "c. Abnormality from an amniocentesis or CVS",// (please specify)
              "d_other"                           => "d. Other (please specify)",
+             "none"                              => "None",
              "not_answered"                      => "Not answered",
             ),
             array("multiple")
@@ -661,6 +664,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
                  "a_drink_alcohol"               => "a. Drink alcohol",
                  "b_smoke_cigarettes_or_tobacco" => "b. Smoke cigarettes or tobacco",
                  "not_answered"                  => "Not Answered",
+                 "none"                          => "None",
                 ),
                 array("multiple")
             );
@@ -760,6 +764,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
                  "l_clinical_dysmaturity"                => "l. Clinical dysmaturity",
                  "m_difficulty_regulating_temperature"   => "m. Difficulty regulating temperature",
                  "n_oxygen_treatment"                    => "n. Oxygen treatment (>30 %)",
+                 "none"                                  => "None",
                  "not_answered"                          => "Not Answered",
                 ),
                 array("multiple")
@@ -768,8 +773,12 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
             //13.
             $this->form->addElement("select", "q13_neonatal_icu", "13. Did this child stay in the neonatal intensive care unit?", $this->yesNo);
             $this->addTextElement("q13_neonatal_icu_reason", $this->indent . $this->indent . "If yes, why did the child stay at NICU", array("q13_neonatal_icu{@}=={@}1_yes"), "Please indicate the reason why child was in the Neonatal ICU");
-            $this->addNumericElement("q13_neonatal_icu_days", $this->indent . $this->indent . "a. Number of days", array("q13_neonatal_icu{@}=={@}1_yes"), "Please indicate the number of days spent in the Neonatal ICU");
-            $this->addNumericElement("q13_neonatal_icu_hours", $this->indent . $this->indent . "b. Number of hours", array("q13_neonatal_icu{@}=={@}1_yes"), "Please indicate the number of hours spent in the Neonatal ICU");
+
+            $this->addNumericElement("q13_neonatal_icu_days", $this->indent . $this->indent . "a. Number of days");
+            $this->XINRegisterRule("q13_neonatal_icu_days", array("q13_neonatal_icu{@}=={@}1_yes"), "Please indicate the number of days spent in the Neonatal ICU", "q13_neonatal_icu_days_group");
+
+            $this->addNumericElement("q13_neonatal_icu_hours", $this->indent . $this->indent . "a. Number of hours");
+            $this->XINRegisterRule("q13_neonatal_icu_hours", array("q13_neonatal_icu{@}=={@}1_yes"), "Please indicate the number of hours spent in the Neonatal ICU", "q13_neonatal_icu_hours_group");
 
             //14.
             $this->form->addElement("static", null, "14. How many days or hours total did this child stay in the hospital?");
@@ -810,6 +819,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
                           "a_abnormal_brain_picture"         => "a. Had an abnormal picture of the brain",
                           "b_meningitis_encephalitis"        => "b. Been hospitalized for meningitis or encephalitis",
                           "c_lost_consciousness_head_injury" => "c. Lost consciousness due to a head injury",
+                          "none"                             => "None",
                           "not_answered"                     => "Not Answered",
                          );
         $this->addSelect("q16_has_child_ever", "16. Has this child ever...", $questionArray, array("multiple"));
@@ -833,6 +843,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
              "d_heart_defect"             => "d. Heart defect (please specify",
              "e_kidney_defect"            => "e. Kidney defect(please specify)",
              "f_other_defect"             => "f. Other defect(please specify)",
+             "none"                       => "None",
              "not_answered"               => "Not Answered",
             ),
             array("multiple")
@@ -842,7 +853,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
         $this->addTextElement("q17_f_other_defect_specify", $this->indent . "If other defect, please specify", array("q17_birth_defects{@}=={@}f_other_defect"), "Please specify the other defect.");
 
         //18.
-        $this->form->addElement("select", "q18_other_chronic", "18. Does the child being evaluated today for autism have any other chronic medical problems?", $this->yesNo);
+        $this->form->addElement("select", "q18_other_chronic", "18. Does the child being evaluated today have any other chronic medical problems?", $this->yesNo);
         $this->form->addElement("static", null, $this->indent . "If yes...");
         $abc = array(
                 "a" => "1",
@@ -883,8 +894,8 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
 
         $firstVisit = false;
         $vLabel     = $db->pselectOne(
-            "SELECT Visit_label FROM session s JOIN candidate c 
-                                   ON (c.CandID = s.CandID) WHERE c.CandID=:cid 
+            "SELECT Visit_label FROM session s JOIN candidate c
+                                   ON (c.CandID = s.CandID) WHERE c.CandID=:cid
                                    ORDER BY Date_Visit",
             array('cid' => $cand['CandID'])
         );//get first visit for candidate
@@ -898,6 +909,5 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
 
         return $errors;
     }
-
 }
 ?>
