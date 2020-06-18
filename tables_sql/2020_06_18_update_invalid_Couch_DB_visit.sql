@@ -1,0 +1,1 @@
+UPDATE Visit_Windows SET Visit_label='V18-CVD-VINELANDSUBJECT' where Visit_label='V18-CVD VINELAND SUBJECT';
