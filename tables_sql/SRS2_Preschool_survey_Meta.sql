@@ -1,0 +1,5 @@
+INSERT INTO test_names (Test_name, Full_name, Sub_Group, isDirectEntry) VALUES ('SRS2_Preschool_survey', "SRS-2 Pre-School (Social Responsiveness Scale - Pre-School) - Survey", 1, 1);
+INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('SRS2_Preschool_survey','SRS2_Preschool_survey_page1', "Page 1", 1);
+INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('SRS2_Preschool_survey','SRS2_Preschool_survey_page2', "Page 2", 2);
+INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('SRS2_Preschool_survey','SRS2_Preschool_survey_page3', "Page 3", 3);
+INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('SRS2_Preschool_survey','SRS2_Preschool_survey_page4', "Page 4", 4);
