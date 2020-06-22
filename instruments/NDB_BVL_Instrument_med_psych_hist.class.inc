@@ -586,6 +586,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
         );
         $this->addTextElement("q5_pregnancy_health_problems_specify", $this->indent . "If other, (please specify)", array("q5_preg_health_probs{@}=={@}f_other_major_illness_or_injury"), "If other health problems, please specify or select Not Answered");
 
+        // $questionArray --> q6 dropdown
         $questionArray = array(
                           null                          => null,
                           "a_antibio_infections"        => "a. Antibiotics for infections",
@@ -618,19 +619,54 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
             array("multiple")
         );
 
+        // $subquestionLabels --> q6a-s subquestion labels
+        $subquestionLabels = array(
+                              "a_antibio_infections"        => "a. If Antibiotics for infections",
+                              "b_acne_meds"                 => "b. If Medications for acne",
+                              "c_birth_control_meds"        => "c. If Medications for birth control",
+                              "d_antihypertensives"         => "d. If Antihypertensives for high blood pressure",
+                              "e_heart_cardiac_meds"        => "e. If Medications for heart or cardiac problems",
+                              "f_ADD_meds"                  => "f. If Medications for Attention Deficit Disorder",
+                              "g_antiepilep_anti_seizure"   => "g. If Antiepileptics or anti-seizure medications",
+                              "h_diabetes_meds"             => "h. If Medications to control diabetes",
+                              "i_thyroid_meds"              => "i. If Medications to regulate thyroid",
+                              "j_antidepressants"           => "j. If Antidepressants",
+                              "k_mood_stabs_anti_psychos"   => "k. If Mood stabilizers or anti-psychotics",
+                              "l_tranquilizers_nerve_pills" => "l. If Tranquilizers or nerve pills",
+                              "m_pain_killers"              => "m. If Pain killers",
+                              "n_sedatives_sleeping_pills"  => "n. If Sedatives or sleeping pills",
+                              "o_anti_inflam_immune"        => "o. If Anti-inflammatory or anti-immune drugs",
+                              "p_treatment_for_HIV"         => "p. If Treatment for HIV",
+                              "q_thalidomide"               => "q. If Thalidomide (please specify why)",
+                              "r_misoprostol"               => "r. If Misoprostol (please specify why)",
+                              "s_other"                     => "s. If Other (please specify medication and why)",
+                             );
+
         $this->form->addElement("static", null, "Please specify when's");
-        foreach ($questionArray as $field=>$label) {
-            if ($field != "not_answered" && $field != null && $field != "none") {
-                $this->addSelect("q6_{$field}_when_taken", $this->indent . "If $label were taken, when?:", array(null => "", "0_before" => "0 Before", "1_after" => "1 After", "2_both" => "2 Both", "3_breastfeeding" => "3 Breastfeeding", "not_answered" => "Not Answered"), array("multiple"));
-                $this->XINRegisterRule("q6_{$field}_when_taken", array("q6_pregnancy_meds{@}=={@}{$field}"), "Please specify when $label was taken");
-                $this->_selectMultipleElements[] = "q6_{$field}_when_taken";
-            }
+        foreach ($subquestionLabels as $field => $label) {
+            $this->addSelect(
+                "q6_{$field}_when_taken",
+                $this->indent . $label . " were taken, when?:",
+                array(
+                 null              => "",
+                 "0_before"        => "0 Before",
+                 "1_after"         => "1 After",
+                 "2_both"          => "2 Both",
+                 "3_breastfeeding" => "3 Breastfeeding",
+                 "not_answered"    => "Not Answered",
+                ),
+                array("multiple")
+            );
+            $this->XINRegisterRule("q6_{$field}_when_taken", array("q6_pregnancy_meds{@}=={@}{$field}"), "Please specify when $field was taken");
+            $this->_selectMultipleElements[] = "q6_{$field}_when_taken";
         }
 
         $this->form->addElement("static", null, "Please specify what's and why's");
         $this->addTextElement("q6_preg_meds_q_thalid_specify", $this->indent . "If q. Thalidomide, please specify why medication was prescribed", array("q6_pregnancy_meds{@}=={@}q_thalidomide"), "If Thalidomide was prescribed, please specify why.");
         $this->addTextElement("q6_preg_meds_r_miso_specify", $this->indent . "If r. Misoprostol, please specify why medication was prescribed", array("q6_pregnancy_meds{@}=={@}r_misoprostol"), "If Misoprostol was prescribed, please specify why.");
         $this->addTextElement("q6_preg_meds_s_other_specify", $this->indent . "If s. Other, please specify medication and why it was prescribed", array("q6_pregnancy_meds{@}=={@}s_other"), "If Other meds were prescribed, please specify which and why.");
+
+        $this->form->addFormRule(array(&$this, 'validate_page3'));
     }
 
     function _page4()
@@ -925,6 +961,62 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
         if ($vLabel != $current_visitlabel && empty($values['followup_form_updated'])) {
             $errors['followup_form_updated'] = "PLease indicate if there were changes";
         }
+
+        return $errors;
+    }
+
+    function validate_page3($values)
+    {
+        $errors = [];
+
+        $q6_subq = array(
+                    "a_antibio_infections",
+                    "b_acne_meds",
+                    "c_birth_control_meds",
+                    "d_antihypertensives",
+                    "e_heart_cardiac_meds",
+                    "f_ADD_meds",
+                    "g_antiepilep_anti_seizure",
+                    "h_diabetes_meds",
+                    "i_thyroid_meds",
+                    "j_antidepressants",
+                    "k_mood_stabs_anti_psychos",
+                    "l_tranquilizers_nerve_pills",
+                    "m_pain_killers",
+                    "n_sedatives_sleeping_pills",
+                    "o_anti_inflam_immune",
+                    "p_treatment_for_HIV",
+                    "q_thalidomide",
+                    "r_misoprostol",
+                    "s_other",
+                   );
+
+        $q6_answer_array = $values["q6_pregnancy_meds"];
+
+        foreach ($q6_subq as $q) {
+            if (!in_array($q, $q6_answer_array)) {
+                $tmp = "";
+                foreach ($values["q6_{$q}_when_taken"] as $i) {
+                     $tmp .= $i;
+                }
+                $values["q6_{$q}_when_taken"] = $tmp;
+
+                $this->validate_empty_subquestions($values, ["q6_{$q}_when_taken"], $errors);
+            }
+        }
+
+        /*
+        $q6_specify = array(
+            "q_thalidomide" => "q6_preg_meds_q_thalid_specify",
+            "r_misoprostol" => "q6_preg_meds_r_miso_specify",
+            "s_other" => "q6_preg_meds_s_other_specify",
+        );
+
+        foreach ($q6_specify as $field => $question) {
+            if (!in_array($field, $q6_answer_array)) {
+                $this->validate_empty_subquestions($values, [$question], $errors);
+            }
+        }*/
 
         return $errors;
     }
