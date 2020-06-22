@@ -6,6 +6,7 @@ require_once "TimePoint.class.inc";
 
 class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
 {
+    use instrument_validator;
     /*
     INSERT INTO test_names VALUES ('', 'med_psych_hist', 'Medical Psychiatric History', '0', '1');
     INSERT INTO instrument_subtests VALUES('', 'med_psych_hist', 'med_psych_hist_page1', '1. Pregnancy History', 1);
@@ -663,8 +664,8 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
                  null                            => "",
                  "a_drink_alcohol"               => "a. Drink alcohol",
                  "b_smoke_cigarettes_or_tobacco" => "b. Smoke cigarettes or tobacco",
-                 "not_answered"                  => "Not Answered",
                  "none"                          => "None",
+                 "not_answered"                  => "Not Answered",
                 ),
                 array("multiple")
             );
@@ -686,6 +687,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
             $this->form->addElement('static', null, null);
 
             //9.
+            // $questionArray --> q9 dropdown
             $questionArray = array(
                               null                        => "",
                               "a_marijuana_hashish"       => "a. Smoke marijuana or hashish (THC)",
@@ -695,8 +697,9 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
                               "e_amphet_stims"            => "e. Take Amphetamines or other stimulants",
                               "f_ecstasy"                 => "f. Take Ecstasy",
                               "g_hallucinogens"           => "g. Take Hallucinogens",
-                              "h_inhalants"               => "h. Take inhalants that you sniff or breathe",
+                              "h_inhalants"               => "h. Take Inhalants that you sniff or breathe",
                               "i_other"                   => "i. Other (please specify)",
+                              "none"                      => "None",
                               "not_answered"              => "Not Answered",
                              );
 
@@ -707,26 +710,40 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
                 array("multiple")
             );
 
+            // $subquestionLabels --> q9a-i subquestion labels
+            $subquestionLabels = array(
+                "a_marijuana_hashish" => "a. If marijuana or hashish (THC) was smoked, when?",
+                "b_cocaine_crack_free_base" => "b. If Cocaine, Crack, or Free base was taken, when?",
+                "c_heroin" => "c. If Heroin (includes speed balling) was taken, when?",
+                "d_methadone" => "d. If Methadone was taken, when?",
+                "e_amphet_stims" => "e. If Amphetamines or other stimulants were taken, when?",
+                "f_ecstasy" => "f. If Ecstasy was taken, when?",
+                "g_hallucinogens" => "g. If Hallucinogens were taken, when?",
+                "h_inhalants" => "h. If Inhalants that you sniff or breathe were taken, when?",
+                "i_other" => "i. If Other drugs were taken, when? (please specify)",
+            );
+
             $this->form->addElement("static", null, "Please specify when the drugs were taken");
-            foreach($questionArray as $field=>$label) {
-                if ($field != "not_answered" && $field != null) {
-                    $this->addSelect(
-                        "q9_{$field}_when_taken",
-                        $this->indent . "If $label were taken, when?:",
-                        array(
-                            null => "",
-                            "0_before" => "0 Before",
-                            "1_after" => "1 After",
-                            "2_both" => "2 Both",
-                            "3_breastfeeding" => "3 Breastfeeding",
-                            "not_answered" => "Not Answered",
-                        ),
-                        array("multiple")
-                    );
-                    $this->XINRegisterRule("q9_{$field}_when_taken", array("q9_pregnancy_drugs{@}=={@}{$field}"), "Please specify when $label was taken");
-                    $this->_selectMultipleElements[] = "q9_{$field}_when_taken";
-                }
+
+            foreach($subquestionLabels as $field => $label) {
+                $this->addSelect(
+                    "q9_{$field}_when_taken",
+                    $this->indent . $label,
+                    array(
+                        null => "",
+                        "0_before" => "0 Before",
+                        "1_after" => "1 After",
+                        "2_both" => "2 Both",
+                        "3_breastfeeding" => "3 Breastfeeding",
+                        "not_answered" => "Not Answered",
+                    ),
+                    array("multiple")
+                );
+
+                $this->XINRegisterRule("q9_{$field}_when_taken", array("q9_pregnancy_drugs{@}=={@}{$field}"), "Please specify when $field was/were taken");
+                $this->_selectMultipleElements[] = "q9_{$field}_when_taken";
             }
+
             $this->addTextElement("q9_i_other_specify", $this->indent . $this->indent ."If other drugs, please specify", array("q9_pregnancy_drugs{@}=={@}i_other"), "If other drugs were taken, please specify");
 
             //Labour, Deliver and Newborn info
@@ -784,6 +801,8 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
             $this->form->addElement("static", null, "14. How many days or hours total did this child stay in the hospital?");
             $this->addNumericElement("q14_child_hospitalised_days", $this->indent . "Number of days:");
             $this->addNumericElement("q14_child_hospitalised_hours", $this->indent . "Number of hours:");
+
+            $this->form->addFormRule(array(&$this, 'validate_page4'));
     }
 
     function _page5()
@@ -907,6 +926,38 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
             $errors['followup_form_updated'] = "PLease indicate if there were changes";
         }
 
+        return $errors;
+    }
+
+    function validate_page4($values)
+    {
+        $errors = [];
+
+        $q9_subq = array(
+            "a_marijuana_hashish",
+            "b_cocaine_crack_free_base",
+            "c_heroin",
+            "d_methadone",
+            "e_amphet_stims",
+            "f_ecstasy",
+            "g_hallucinogens",
+            "h_inhalants",
+            "i_other",
+        );
+
+        $q9_answer_array = $values["q9_pregnancy_drugs"];
+
+        foreach ($q9_subq as $q) {
+            if (!in_array($q, $q9_answer_array)) {
+                $tmp = "";
+                foreach ($values["q9_{$q}_when_taken"] as $i) {
+                     $tmp .= $i;
+                }
+                $values["q9_{$q}_when_taken"] = $tmp;
+
+                $this->validate_empty_subquestions($values, ["q9_{$q}_when_taken"], $errors);
+            }
+        }
         return $errors;
     }
 }
