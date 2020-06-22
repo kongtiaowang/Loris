@@ -61,31 +61,31 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
         //The array of selects with multiple answers allowed
         //Any LorisForm multiple selects must be listed here
         $this->_selectMultipleElements = array(
-        //        "a_aut_spect_disorder_who",
-        //        "b_fragile_x_who",
-        //        "c_tuberous_sclerosis_who",
-        //        "d_neurofibromatosis_who",
-        //        "e_rett_syndrome_who",
-        //        "f_child_disint_disorder_who",
-        //        "g_prader_willi_syndrome_who",
-        //        "h_angelman_syndrome_who",
-        //        "i_other_chromosomal_who",
-        //        "j_congenital_rubella_who",
-        //        "k_pku_who",
-        //        "l_hydrocephalus_who",
-        //        "m_cerebral_palsy_who",
-        //        "n_mental_retardation_who",
-        //        "o_seizures_who",
-        //        "p_speech_delay_therapy_who",
-        //        "q_add_who",
-        //        "r_panic_anxiety_dis_who",
-        //        "s_depression_who",
-        //        "t_manic_depres_bi_who",
-        //        "u_schizophrenia_who",
-        //        "v_hospital_mental_ill_who",
-        //        "w_birth_defects_who",
-        //        "x_cancer_who",
-        //        "y_norrie_syndrome_who",
+                                          //        "a_aut_spect_disorder_who",
+                                          //        "b_fragile_x_who",
+                                          //        "c_tuberous_sclerosis_who",
+                                          //        "d_neurofibromatosis_who",
+                                          //        "e_rett_syndrome_who",
+                                          //        "f_child_disint_disorder_who",
+                                          //        "g_prader_willi_syndrome_who",
+                                          //        "h_angelman_syndrome_who",
+                                          //        "i_other_chromosomal_who",
+                                          //        "j_congenital_rubella_who",
+                                          //        "k_pku_who",
+                                          //        "l_hydrocephalus_who",
+                                          //        "m_cerebral_palsy_who",
+                                          //        "n_mental_retardation_who",
+                                          //        "o_seizures_who",
+                                          //        "p_speech_delay_therapy_who",
+                                          //        "q_add_who",
+                                          //        "r_panic_anxiety_dis_who",
+                                          //        "s_depression_who",
+                                          //        "t_manic_depres_bi_who",
+                                          //        "u_schizophrenia_who",
+                                          //        "v_hospital_mental_ill_who",
+                                          //        "w_birth_defects_who",
+                                          //        "x_cancer_who",
+                                          //        "y_norrie_syndrome_who",
                                           "q4_pregnancy_ART_type",
                                           "q5_pregnancy_health_problems",
                                           "q6_pregnancy_meds",
@@ -131,7 +131,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
         // This hasn't been implemented terrifically smoothly.  It may require an extra "Save Data" click.
         // During most regular workflows (data entry), the glitches should go unnoticed.  Hopefully.
         $query   = "SELECT abbrev_full_version from med_psych_hist WHERE CommentID = '".$this->getCommentID()."'";
-        $version = $db->pselectOne($query,array());
+        $version = $db->pselectOne($query, array());
 
         if ($version == 'abbrev') {
             $this->_requiredElements = array_merge($this->_requiredElements, array("child_pregnancy_number"));
@@ -139,7 +139,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
             $this->_requiredElements = array_merge($this->_requiredElements, array("q4_pregnancy_ART", "q10_meds_induce_labor", "q15_seizures_convulsions"));
         }
         $record = $db->pselectOne("SELECT followup_form_updated FROM med_psych_hist WHERE CommentID=:cid", array('cid' => $this->getCommentID()));
-        if($record == 'no') {
+        if ($record == 'no') {
             $this->_requiredElements = array();
         }
 
@@ -290,7 +290,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
         $this->yesNo = array_merge(array(null => ''), $this->yesNo);
 
         //determine page to display
-        if(preg_match("/med_psych_hist(_page[0-9]+)/", $this->page, $matches)) {
+        if (preg_match("/med_psych_hist(_page[0-9]+)/", $this->page, $matches)) {
             call_user_func(array($this, $matches[1]));
         } else {
             $this->_main();
@@ -310,7 +310,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
     {
 
         $db = & Database::singleton();
-        if(isset($_REQUEST['CommentID'])) {
+        if (isset($_REQUEST['CommentID'])) {
             $cand = $db->pselectRow(
                 "SELECT c.CandID, s.Visit_label from session as s, flag as f, candidate c where f.sessionId = s.ID and
                                  s.CandID=c.CandID and f.CommentID=:cid",
@@ -326,7 +326,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
                                    ORDER BY Date_Visit",
                 array('cid' => $cand['CandID'])
             );//get first visit for candidate
-            if($vLabel ==  $cand['Visit_label']) {
+            if ($vLabel ==  $cand['Visit_label']) {
                 $firstVisit = true; //if current visit label is same as visit label returned must be first visit
             }
             $current_visitlabel = $cand['Visit_label'];
@@ -394,7 +394,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
                              "twentieth"   => "Twentieth",
                             );
         reset($firstToTwentieth);
-        while(list($field, $label) = each($firstToTwentieth)){
+        while (list($field, $label) = each($firstToTwentieth)) {
             //        foreach($firstToTwentieth as $label=>$nth) {
             $this->form->addElement('static', null, "{$label} Pregnancy");
             $this->form->addElement(
@@ -515,7 +515,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
         $this->form->addGroup($group, null, "Disorder", $this->_GUIDelimiter, false);
         unset($group);
 
-        foreach($questionArray as $field=>$label) {
+        foreach ($questionArray as $field=>$label) {
             $group[] = $this->form->createElement("select", $field, $label, $answerArray);
             $group[] = $this->form->createElement("select", "{$field}_who", null, $realtives, "multiple");
             //$group[] = $this->form->addSelect("{$field}_who", null, $realtives, array("multiple"));  // BREAKS FORMATING!
@@ -533,7 +533,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
             $this->XINRegisterRule("{$field}_who_other_status", array("{$field}_who{@}=={@}other", "{$field}_who_other{@}=={@}"), "Please specify the relative, or select Not Answered", "{$field}_group");
             unset($group);
 
-            if($field == "i_other_chromosomal") {
+            if ($field == "i_other_chromosomal") {
                 $this->addTextElement("i_other_chromosomal_other", $this->indent . "Please specify", array("i_other_chromosomal{@}=={@}1_yes|2_not_sure"), "Please specify the chromosomal abnormality");
             } elseif ($field == "x_cancer") {
                 $this->addTextElement("x_cancer_other", $this->indent . "Please specify", array("x_cancer{@}=={@}1_yes|2_not_sure"), "Please specify the cancer type");
@@ -619,7 +619,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
         );
 
         $this->form->addElement("static", null, "Please specify when's");
-        foreach($questionArray as $field=>$label) {
+        foreach ($questionArray as $field=>$label) {
             if ($field != "not_answered" && $field != null && $field != "none") {
                 $this->addSelect("q6_{$field}_when_taken", $this->indent . "If $label were taken, when?:", array(null => "", "0_before" => "0 Before", "1_after" => "1 After", "2_both" => "2 Both", "3_breastfeeding" => "3 Breastfeeding", "not_answered" => "Not Answered"), array("multiple"));
                 $this->XINRegisterRule("q6_{$field}_when_taken", array("q6_pregnancy_meds{@}=={@}{$field}"), "Please specify when $label was taken");
@@ -712,30 +712,30 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
 
             // $subquestionLabels --> q9a-i subquestion labels
             $subquestionLabels = array(
-                "a_marijuana_hashish" => "a. If marijuana or hashish (THC) was smoked, when?",
-                "b_cocaine_crack_free_base" => "b. If Cocaine, Crack, or Free base was taken, when?",
-                "c_heroin" => "c. If Heroin (includes speed balling) was taken, when?",
-                "d_methadone" => "d. If Methadone was taken, when?",
-                "e_amphet_stims" => "e. If Amphetamines or other stimulants were taken, when?",
-                "f_ecstasy" => "f. If Ecstasy was taken, when?",
-                "g_hallucinogens" => "g. If Hallucinogens were taken, when?",
-                "h_inhalants" => "h. If Inhalants that you sniff or breathe were taken, when?",
-                "i_other" => "i. If Other drugs were taken, when? (please specify)",
-            );
+                                  "a_marijuana_hashish"       => "a. If marijuana or hashish (THC) was smoked, when?",
+                                  "b_cocaine_crack_free_base" => "b. If Cocaine, Crack, or Free base was taken, when?",
+                                  "c_heroin"                  => "c. If Heroin (includes speed balling) was taken, when?",
+                                  "d_methadone"               => "d. If Methadone was taken, when?",
+                                  "e_amphet_stims"            => "e. If Amphetamines or other stimulants were taken, when?",
+                                  "f_ecstasy"                 => "f. If Ecstasy was taken, when?",
+                                  "g_hallucinogens"           => "g. If Hallucinogens were taken, when?",
+                                  "h_inhalants"               => "h. If Inhalants that you sniff or breathe were taken, when?",
+                                  "i_other"                   => "i. If Other drugs were taken, when? (please specify)",
+                                 );
 
             $this->form->addElement("static", null, "Please specify when the drugs were taken");
 
-            foreach($subquestionLabels as $field => $label) {
+            foreach ($subquestionLabels as $field => $label) {
                 $this->addSelect(
                     "q9_{$field}_when_taken",
                     $this->indent . $label,
                     array(
-                        null => "",
-                        "0_before" => "0 Before",
-                        "1_after" => "1 After",
-                        "2_both" => "2 Both",
-                        "3_breastfeeding" => "3 Breastfeeding",
-                        "not_answered" => "Not Answered",
+                     null              => "",
+                     "0_before"        => "0 Before",
+                     "1_after"         => "1 After",
+                     "2_both"          => "2 Both",
+                     "3_breastfeeding" => "3 Breastfeeding",
+                     "not_answered"    => "Not Answered",
                     ),
                     array("multiple")
                 );
@@ -889,7 +889,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
     function Med_Rules($values)
     {
         $errors = array();
-        if(($values['q8_pregnancy_alcohol_tobacco'] == 'b_smoke_cigarettes_or_tobacco')
+        if (($values['q8_pregnancy_alcohol_tobacco'] == 'b_smoke_cigarettes_or_tobacco')
             || ($values['q8_b_tobacco_when_taken'] != null)
             && ($values['q8_b1_cigarette_perday']) == null
         ) {
@@ -918,11 +918,11 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
                                    ORDER BY Date_Visit",
             array('cid' => $cand['CandID'])
         );//get first visit for candidate
-        if($vLabel ==  $cand['Visit_label']) {
+        if ($vLabel ==  $cand['Visit_label']) {
             $firstVisit = true; //if current visit label is same as visit label returned must be first visit
         }
         $current_visitlabel = $cand['Visit_label'];
-        if($vLabel != $current_visitlabel && empty($values['followup_form_updated'])) {
+        if ($vLabel != $current_visitlabel && empty($values['followup_form_updated'])) {
             $errors['followup_form_updated'] = "PLease indicate if there were changes";
         }
 
@@ -934,16 +934,16 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
         $errors = [];
 
         $q9_subq = array(
-            "a_marijuana_hashish",
-            "b_cocaine_crack_free_base",
-            "c_heroin",
-            "d_methadone",
-            "e_amphet_stims",
-            "f_ecstasy",
-            "g_hallucinogens",
-            "h_inhalants",
-            "i_other",
-        );
+                    "a_marijuana_hashish",
+                    "b_cocaine_crack_free_base",
+                    "c_heroin",
+                    "d_methadone",
+                    "e_amphet_stims",
+                    "f_ecstasy",
+                    "g_hallucinogens",
+                    "h_inhalants",
+                    "i_other",
+                   );
 
         $q9_answer_array = $values["q9_pregnancy_drugs"];
 
