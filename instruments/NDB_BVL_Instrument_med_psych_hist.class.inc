@@ -740,7 +740,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
             $this->addTextElement("q11_birth_weight_lbs", $this->indent . "...in pounds");
             $this->addTextElement("q11_birth_weight_ozs", $this->indent . "...and ounces");
 
-            $this->form->addElement("static", null, "11b. What where this child's APGAR scores at...");
+            $this->form->addElement("static", null, "11b. What were this child's APGAR scores at...");
             $this->addTextElement("q11_apgar_1_minute", $this->indent . "...at 1 minute:");
             $this->addTextElement("q11_apgar_5_minute", $this->indent . "...at 5 minutes:");
 
