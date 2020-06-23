@@ -50,12 +50,12 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
     );
     static $newData  = array(
         'ordering'      => '9999',
-        'full_name'     => 'Test Test',
+        'full_name'     => 'Test-Test',
         'citation_name' => "Test's Citation",
         'affiliations'  => 'McGill',
         'degrees'       => 'Bachelors',
         'roles'         => 'Investigators',
-        'start_date'    => '2016-11-11',
+        'start_date'    => '2020-01-01',
         'present'       => 'Yes',
     );
     /**
@@ -82,7 +82,7 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
     function tearDown()
     {
         $this->DB->delete("acknowledgements", array('ID' => '999'));
-        $this->DB->delete("acknowledgements", array('full_name' => 'Test Test'));
+        $this->DB->delete("acknowledgements", array('full_name' => 'Test-Test'));
         parent::tearDown();
     }
 
@@ -92,70 +92,11 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function testPermissions(): void
-    {
-        $this->checkPagePermissions(
-            '/acknowledgements/',
-            array(
-                'acknowledgements_view',
-                'acknowledgements_edit'
-            ),
-            "Acknowledgements"
-        );
-    }
-
-    /**
-     * Tests filter and clearfilter function
-     *
-     * @return void
-     */
-    function testFilters()
-    {
-        $this->safeGet($this->url . "/acknowledgements/");
-        $this->_filterTest(
-            self::$fullname,
-            self::$display,
-            self::$clearFilter,
-            self::$testData['full_name'],
-            "1 row"
-        );
-        $this->_filterTest(
-            self::$citationName,
-            self::$display,
-            self::$clearFilter,
-            self::$testData['citation_name'],
-            "1 row"
-        );
-        $this->_filterTest(
-            self::$startDate,
-            self::$display,
-            self::$clearFilter,
-            self::$testData['start_date'],
-            "1 row"
-        );
-        $this->_filterTest(
-            self::$endDate,
-            self::$display,
-            self::$clearFilter,
-            self::$testData['end_date'],
-            "1 row"
-        );
-        $this->_filterTest(
-            self::$present,
-            self::$display,
-            self::$clearFilter,
-            self::$testData['present'],
-            "31"
-        );
-    }
-    /**
-     * Tests that, adding a new record, then this record appears on the page.
-     *
-     * @return void
-     */
     function testAddNewRecord()
     {
-        $this->safeGet($this->url . "/acknowledgements/");
+        $this->safeGet($this->url . "/acknowledgements/"); 
+        $a=$this->safeFindElement(
+            WebDriverBy::cssSelector("body"))->getText();print_r($a);
         $this->safeFindElement(
             WebDriverBy::cssSelector("div:nth-child(2) > .btn:nth-child(1)")
         )->click();
@@ -182,11 +123,9 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
         $this->safeClick(
             WebDriverBy::cssSelector('button[name="fire_away"]')
         );
-        $this->safeFindElement(
-            WebDriverBy::Name("fire_away"))->click();
+        $this->safeGet($this->url . "/acknowledgements/");
         $a=$this->safeFindElement(
             WebDriverBy::cssSelector("body"))->getText();print_r($a);
-        $this->safeGet($this->url . "/acknowledgements/");
         $this->_filterTest(
             self::$fullname,
             self::$display,
