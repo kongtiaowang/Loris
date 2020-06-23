@@ -140,9 +140,9 @@ class AcknowledgementsIndex extends Component {
       body: formObject,
     })
     .then((resp) => {
-     this.setState({
-       debug: 'click',
-     });
+   //  this.setState({
+   //    debug: 'click',
+   //  });
       if (resp.ok && resp.status === 200) {
         swal.fire('Success!', 'Acknowledgement added.', 'success').then((result) => {
           if (result.value) {
