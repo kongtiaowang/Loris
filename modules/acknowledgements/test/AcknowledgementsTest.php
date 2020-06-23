@@ -184,8 +184,8 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
         $el_dropdown->selectByVisibleText("Yes");
         //expecting to find the value,after clicking save button
         $this->safeClick(
-            WebDriverBy::Name("fire_away")
-        )->click();
+            WebDriverBy::cssSelector('button[name="fire_away"]')
+        );
         sleep(10);
             $bodyText = $this->safeFindElement(
                 WebDriverBy::cssSelector("#swal2-title")
