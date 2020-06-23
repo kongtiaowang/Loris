@@ -56,6 +56,7 @@ class AcknowledgementsIndex extends Component {
         consultants: 'Consultants',
         lpCsfCollection: 'LP/CSF Collection',
       },
+      debug: null,
       showModal: false,
     };
 
@@ -139,6 +140,9 @@ class AcknowledgementsIndex extends Component {
       body: formObject,
     })
     .then((resp) => {
+     this.setState({
+       debug: 'click',
+     });
       if (resp.ok && resp.status === 200) {
         swal.fire('Success!', 'Acknowledgement added.', 'success').then((result) => {
           if (result.value) {
@@ -325,6 +329,12 @@ class AcknowledgementsIndex extends Component {
             emptyOption={true}
             required={true}
             onUserInput={this.setFormData}
+          />
+
+          <TextboxElement
+            name='debug'
+            label='debug'
+            value={this.state.debug}
           />
           <div>
             <ButtonElement
