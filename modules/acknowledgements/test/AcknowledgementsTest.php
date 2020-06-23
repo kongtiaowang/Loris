@@ -95,8 +95,6 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
     function testAddNewRecord()
     {
         $this->safeGet($this->url . "/acknowledgements/"); 
-        $a=$this->safeFindElement(
-            WebDriverBy::cssSelector("body"))->getText();print_r($a);
         $this->safeFindElement(
             WebDriverBy::cssSelector("div:nth-child(2) > .btn:nth-child(1)")
         )->click();
@@ -120,9 +118,6 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
         );
         $el_dropdown->selectByVisibleText("Yes");
         //expecting to find the value,after clicking save button
-        $this->safeClick(
-            WebDriverBy::cssSelector('button[name="fire_away"]')
-        );
         $this->safeGet($this->url . "/acknowledgements/");
         $a=$this->safeFindElement(
             WebDriverBy::cssSelector("body"))->getText();print_r($a);
