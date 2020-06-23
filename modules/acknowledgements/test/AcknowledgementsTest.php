@@ -56,7 +56,6 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
         'degrees'       => 'Bachelors',
         'roles'         => 'Investigators',
         'start_date'    => '2016-11-11',
-        'end_date'      => '2017-11-11',
         'present'       => 'Yes',
     );
     /**
@@ -175,9 +174,6 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
         $this->safeFindElement(
             WebDriverBy::Name("addStartDate")
         )->sendKeys(self::$newData['start_date']);
-        $this->safeFindElement(
-            WebDriverBy::Name("addEndDate")
-        )->sendKeys(self::$newData['end_date']);
         $el_dropdown = new WebDriverSelect(
             $this->safeFindElement(WebDriverBy::Name("addPresent"))
         );
@@ -186,6 +182,8 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
         $this->safeClick(
             WebDriverBy::cssSelector('button[name="fire_away"]')
         );
+        $this->safeFindElement(
+            WebDriverBy::Name("fire_away")->click();
         $a=$this->safeFindElement(
             WebDriverBy::cssSelector("body"))->getText();print_r($a);
         $this->safeGet($this->url . "/acknowledgements/");
