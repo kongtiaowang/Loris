@@ -36,7 +36,7 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
 
     // Initial array data
 
-    static $testData = array(
+    static $testData = [
         'ID'            => '999',
         'ordering'      => '999',
         'full_name'     => 'Demo Test',
@@ -47,8 +47,8 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
         'start_date'    => '2015-01-01',
         'end_date'      => '2016-01-01',
         'present'       => 'Yes',
-    );
-    static $newData  = array(
+    ];
+    static $newData  = [
         'ordering'      => '9999',
         'full_name'     => 'Test-Test',
         'citation_name' => "Test's Citation",
@@ -57,7 +57,7 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
         'roles'         => 'Investigators',
         'start_date'    => '2020-01-01',
         'present'       => 'Yes',
-    );
+    ];
     /**
      * Insert testing data into the database
      * author: Wang Shen
@@ -80,15 +80,31 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
      * @return void
      */
     function tearDown()
-    {
-        $this->DB->delete("acknowledgements", array('ID' => '999'));
-        $this->DB->delete("acknowledgements", array('full_name' => 'Test-Test'));
+    }
+        $this->DB->delete("acknowledgements", ['ID' => '999']);
+        $this->DB->delete("acknowledgements", ['full_name' => 'Test Test']);
         parent::tearDown();
     }
 
     /**
      * Ensures that the module loads if and only if the user has one of the
      * module permissions codes.
+     *
+     * @return void
+     */
+    public function testPermissions(): void
+    {
+        $this->checkPagePermissions(
+            '/acknowledgements/',
+            [
+                'acknowledgements_view',
+                'acknowledgements_edit'
+            ],
+            "Acknowledgements"
+        );
+    }
+    /**
+     * Tests that, adding a new record, then this record appears on the page.
      *
      * @return void
      */
