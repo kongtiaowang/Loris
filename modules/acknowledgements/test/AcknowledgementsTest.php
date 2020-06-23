@@ -186,6 +186,8 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
         $this->safeClick(
             WebDriverBy::cssSelector('button[name="fire_away"]')
         );
+        $a=$this->safeFindElement(
+            WebDriverBy::cssSelector("body"))->getText();print_r($a);
         $this->safeGet($this->url . "/acknowledgements/");
         $this->_filterTest(
             self::$fullname,
