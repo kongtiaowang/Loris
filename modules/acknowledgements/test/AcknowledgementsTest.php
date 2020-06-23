@@ -80,7 +80,7 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
      * @return void
      */
     function tearDown()
-    }
+    {
         $this->DB->delete("acknowledgements", ['ID' => '999']);
         $this->DB->delete("acknowledgements", ['full_name' => 'Test Test']);
         parent::tearDown();
