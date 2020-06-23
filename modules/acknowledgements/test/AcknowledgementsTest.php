@@ -50,7 +50,7 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
     ];
     static $newData  = [
         'ordering'      => '9999',
-        'full_name'     => 'Test-Test',
+        'full_name'     => 'Test Test',
         'citation_name' => "Test's Citation",
         'affiliations'  => 'McGill',
         'degrees'       => 'Bachelors',
