@@ -94,7 +94,7 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
      */
     function testAddNewRecord()
     {
-        $this->safeGet($this->url . "/acknowledgements/"); 
+        $this->safeGet($this->url . "/acknowledgements/");
         $this->safeFindElement(
             WebDriverBy::cssSelector("div:nth-child(2) > .btn:nth-child(1)")
         )->click();
@@ -122,8 +122,6 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
             WebDriverBy::cssSelector('button[name="fire_away"]')
         )->click();
         $this->safeGet($this->url . "/acknowledgements/");
-        $a=$this->safeFindElement(
-            WebDriverBy::cssSelector("body"))->getText();print_r($a);
         $this->_filterTest(
             self::$fullname,
             self::$display,
