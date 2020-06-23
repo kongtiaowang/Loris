@@ -118,6 +118,9 @@ class AcknowledgementsIntegrationTest extends LorisIntegrationTest
         );
         $el_dropdown->selectByVisibleText("Yes");
         //expecting to find the value,after clicking save button
+        $this->safeFindElement(
+            WebDriverBy::cssSelector('button[name="fire_away"]')
+        )->click();
         $this->safeGet($this->url . "/acknowledgements/");
         $a=$this->safeFindElement(
             WebDriverBy::cssSelector("body"))->getText();print_r($a);
