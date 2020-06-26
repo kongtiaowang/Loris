@@ -39,9 +39,9 @@ class CouchDBADOSImporter
      * a pointer to both the CouchDB and MySQL DB handler, which is
      * used instead of the ::singleton() methods so that the test
      * suite can mock them out for testing.
-     * 
-     * This is a constructor called automagically by PHP, it should not be called 
-     * manually. 
+     *
+     * This is a constructor called automagically by PHP, it should not be called
+     * manually.
      *
      * @return null
      */
@@ -67,7 +67,7 @@ class CouchDBADOSImporter
      */
     function updateDataDict()
     {
-print "updateDataDict"; 
+print "updateDataDict";
 
         $this->CouchDB->replaceDoc(
             "DataDictionary:ADOS_Derived",
@@ -95,14 +95,14 @@ print "updateDataDict";
                         ),
                         'DDE_Complete' => array(
                             'Type'        => "enum('Yes', 'No')",
-                            'Description' => 
+                            'Description' =>
                             'Double Data Entry was completed for instrument'
                         ),
                         'Candidate_Age' => array(
                             'Type' => 'varchar(255)',
                             'Description' => 'Age of Candidate'),
                         'ADOS_Version' => array(
-                            'Type' => 
+                            'Type' =>
                             "enum('ados1_module1','ados1_module2','ados1_module3'"
                             . ",'ados2_module1','ados2_module2','ados2_module3')",
                             'Description' => 'Version of ADOS Administered'
@@ -113,12 +113,12 @@ print "updateDataDict";
                         ),
                         'restricted_repetitive_behavior_total' => array(
                             'Type' => "varchar(255)",
-                            'Description' => 
+                            'Description' =>
                             'Restricted Repetitive Behaviour Total score'
                         ),
                         'social_affect_restricted_repetitive_behavior_total' => array(
                             'Type' => "varchar(255)",
-                            'Description' => 
+                            'Description' =>
                             'Social Affect Restricted Repetitive Behaviour'
                             . ' Total score'
                         ),
@@ -159,7 +159,7 @@ print "updateDataDict";
             "WHERE SessionID=:SID AND Test_name LIKE 'ados%'" .
             " AND CommentID NOT LIKE 'DDE%'",
             array('SID' => $SessionID)
-        ); 
+        );
         foreach ($rows as $row) {
             if ($row['Administration'] === 'All') {
                 return $row['Test_name'];
@@ -193,7 +193,7 @@ print "ADOSModule: $ADOSModule\n";
             's.Visit_label',
             'f.Administration', 'f.Data_entry', 'f.Validity',
             /* Special cases, do them later */
-            //'Conflicts_Exist', 'DDE_Complete', 
+            //'Conflicts_Exist', 'DDE_Complete',
             'i.Candidate_Age',
             /* Not a field, just the value of getADOSModule,
              * but don't forget to add it in the replaceDoc
@@ -227,6 +227,12 @@ print "ADOSModule: $ADOSModule\n";
         $PSCID=$row['PSCID'];
         $Visit_label  = $row['Visit_label'];
         $age_months = $row['Candidate_Age'];
+
+        // if the candidate is 23 months old, round to 24 months
+        if ($age_months >= 23 && $age_months < 24) {
+            $age_months = 24;
+        }
+
         for ($i = 2; $i <= 14; $i++) {
             $low = $i*12;
             $high = ($i+1)*12;
