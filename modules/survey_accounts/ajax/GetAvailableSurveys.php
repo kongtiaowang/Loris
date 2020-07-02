@@ -31,19 +31,61 @@ $client->makeCommandLine();
 $client->initialize();
 
 $DB = Database::singleton();
+$extraparam='';
+$visit_label=$_REQUEST['VL'];
+$candid=$_REQUEST['dccid'];
+if($candid!=NULL || $candid!='')
+{
 
-$result = $DB->pselect(
-    "SELECT Test_name, Full_name from test_names where IsDirectEntry=1 
+}
+
+$survey_test_battery_count=$DB->pselectOne("select count(*) from survey_test_battery where Visit_label=:vl",
+    array('vl'     => $_REQUEST['VL']));
+if($survey_test_battery_count!=0)
+{
+    $result = $DB->pselect(
+        "SELECT tn.Test_name, tn.Full_name from test_names tn
+          join survey_test_battery stb ON (stb.Test_name=tn.test_name)
+ where stb.Visit_label='{$visit_label}'
+and tn.Test_name not in (SELECT f.Test_name FROM flag f
+             JOIN session s on s.ID = f.SessionID
+             WHERE s.CandID=:v_CandID  
+             AND UPPER(s.Visit_label)=UPPER(:v_VL) 
+             AND s.Active='Y'and f.CommentID not like '%DDE%') ORDER BY tn.Full_name",
+        array(
+            'v_CandID' => $_REQUEST['dccid'],
+            'v_VL' => $_REQUEST['VL'],
+        )
+    );
+    if(empty($result))
+    {
+        $result=$DB->pselect(
+                "SELECT tn.Test_name, tn.Full_name from test_names tn
+          join survey_test_battery stb ON (stb.Test_name=tn.test_name)
+ where stb.Visit_label='{$visit_label}' ORDER BY tn.Full_name",array());
+
+    }
+}
+else {
+
+    $result = $DB->pselect(
+        "SELECT Test_name, Full_name from test_names where IsDirectEntry=1 
 and Test_name not in (SELECT f.Test_name FROM flag f
              JOIN session s on s.ID = f.SessionID
              WHERE s.CandID=:v_CandID  
              AND UPPER(s.Visit_label)=UPPER(:v_VL) 
              AND s.Active='Y'and f.CommentID not like '%DDE%') ORDER BY Full_name",
-    array(
-     'v_CandID' => $_REQUEST['dccid'],
-     'v_VL'     => $_REQUEST['VL'],
-    )
-);
+        array(
+            'v_CandID' => $_REQUEST['dccid'],
+            'v_VL' => $_REQUEST['VL'],
+        )
+    );
+    if (empty($result)) {
+        $result = $DB->pselect(
+            "SELECT Test_name, Full_name from test_names where IsDirectEntry=1 ORDER BY Full_name", array());
+
+    }
+}
 $visit=$_REQUEST['VL'];
 $count=0;
 foreach($result as $data)
