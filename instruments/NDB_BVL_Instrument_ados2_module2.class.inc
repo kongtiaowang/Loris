@@ -55,11 +55,11 @@ class NDB_BVL_Instrument_ados2_module2 extends NDB_BVL_Instrument_IBIS
         // required fields for data entry completion status
         $this->_requiredElements = array('Examiner', "a1", "c1");
 
-		
+
 		/**
 		 * Array of column names to be ignored by the double data entry conflict detector.
 		 */
-        $this->_doubleDataEntryDiffIgnoreColumns = array('CommentID', 'UserID', 'Testdate', 'Window_Difference', 
+        $this->_doubleDataEntryDiffIgnoreColumns = array('CommentID', 'UserID', 'Testdate', 'Window_Difference',
                 'Candidate_Age',
                 // Text entry columns
                 'd1_specify',
@@ -134,34 +134,34 @@ class NDB_BVL_Instrument_ados2_module2 extends NDB_BVL_Instrument_IBIS
     	$this->form->addElement("header",null,"SUMMARY SCORES:");
 
     	$this->form->addElement('static', "social_affect_total", "Social Affect Total:");
-    
+
     	$this->form->addElement('static', "restricted_repetitive_behavior_total", "Restricted and Repetitive Behavior Total:");
-    
+
     	$this->form->addElement('static', "social_affect_restricted_repetitive_behavior_total", "Social Affect and Restricted and Repetitive Behavior Total:");
-    
+
     	$this->form->addElement('static', "ADOS_classification", "ADOS Classification:");
         $this->form->addElement('static', "ADOS_SA_CSS","ADOS_SA_CSS:");
-        $this->form->addElement('static', "ADOS_RRB_CSS","ADOS_RRB_CSS:");    
+        $this->form->addElement('static', "ADOS_RRB_CSS","ADOS_RRB_CSS:");
         $this->form->addElement('header', null, 'Severity Scores:');
         $this->form->addElement('static', 'severity_score_lookup', 'Severity Score:');
         $this->form->addElement("textarea", "other_comments", "Comments about Validity:", array('cols'=>25, 'rows'=>4));
         $this->XINRegisterRule("other_comments", array("{other_comments}{@}=={@}NEVER_REQUIRED"));
 
     }
-    
-/*	
+
+/*
 	//They decided not to use this section - it was only partially implemented.
 	//Section A: Observation
 	//Question #1 - Free Play
         $this->form->addElement('header', null, "OBSERVATION:");
-        
+
 
         $group[] =&$this->form->createElement('textarea', 'obs_q_1', null, "Communication Sample");
         $group[] =&$this->form->createElement('advcheckbox', 'obs_q_1_check', null, "Not Answered");
         $this->form->addGroup($group, 'obs_q_1_group', '1. Free Play', false);
         unset($group);
 
-        
+
 
         $group[] =&$this->form->createElement('textarea', 'obs_q_1_notes', null, "Notes");
         $group[] =&$this->form->createElement('advcheckbox', 'obs_q_1_notes_check', null, "Not Answered");
@@ -178,7 +178,7 @@ class NDB_BVL_Instrument_ados2_module2 extends NDB_BVL_Instrument_IBIS
 
 
 	//Question #2 - Response to Name
-        
+
 
         $group[] =&$this->form->createElement('textarea', 'obs_q_2_notes', null, "Notes");
         $group[] =&$this->form->createElement('advcheckbox', 'obs_q_2_notes_check', null, "Not Answered");
@@ -192,7 +192,7 @@ class NDB_BVL_Instrument_ados2_module2 extends NDB_BVL_Instrument_IBIS
 
 
 	//Question #3 - Response to Joint Attention
-        
+
 
         $group[] =&$this->form->createElement('textarea', 'obs_q_3_notes', null, "Notes");
         $group[] =&$this->form->createElement('advcheckbox', 'obs_q_3_notes_check', null, "Not Answered");
@@ -206,7 +206,7 @@ class NDB_BVL_Instrument_ados2_module2 extends NDB_BVL_Instrument_IBIS
 
 
 	//Question #4 - Bubble Play
-        
+
 
         $group[] =&$this->form->createElement('textarea', 'obs_q_4_notes', null, "Notes");
         $group[] =&$this->form->createElement('advcheckbox', 'obs_q_4_notes_check', null, "Not Answered");
@@ -220,7 +220,7 @@ class NDB_BVL_Instrument_ados2_module2 extends NDB_BVL_Instrument_IBIS
 
 
 	//Question #5 - Anticipation of a Routine with Objects
-        
+
 
         $group[] =&$this->form->createElement('textarea', 'obs_q_5_notes', null, "Notes");
         $group[] =&$this->form->createElement('advcheckbox', 'obs_q_5_notes_check', null, "Not Answered");
@@ -238,111 +238,111 @@ class NDB_BVL_Instrument_ados2_module2 extends NDB_BVL_Instrument_IBIS
     	//CODING
     	//Section A: Language and Communication
         $this->form->addElement('header', null, "CODING:");
-        
+
 
         $this->form->addElement('header', null, "Section A: Language and Communication");
-        
-        
+
+
         $this->form->addElement('select', 'a1', '1. Overall Level of Non-Echoed Language', $this->option0123);
-        
+
         $this->form->addElement('select', 'a2', '2. Speech Abnormalities Associated with Autism (Intonation/Volume/Rhythm/Rate)', $this->option01278);
-        
+
         $this->form->addElement('select', 'a3', '3. Immediate Echolalia', $this->option0123);
-        
+
         $this->form->addElement('select', 'a4', '4. Stereotyped/Idiosyncratic Use of Words or Phrases', $this->option0123);
-        
+
         $this->form->addElement('select', 'a5', '5. Conversation', $this->option0123);
-        
+
         $this->form->addElement('select', 'a6', '6. Pointing', $this->option0123);
-        
+
         $this->form->addElement('select', 'a7', '7. Descriptive, Conventional, Instrumental, or Informational Gestures', $this->option01238);
 
-        
-        
+
+
 
 
 	   //Section B: Reciprocal Social Interaction
         $this->form->addElement('header', null, "Section B: Reciprocal Social Interaction");
-        
-        
+
+
 
         $this->form->addElement('select', 'b1', '1. Unusual Eye Contact', $this->option02);
-        
+
         $this->form->addElement('select', 'b2', '2. Facial Expressions Directed to Others', $this->option012);
-        
+
         $this->form->addElement('select', 'b3', '3. Shared Enjoyment in Interaction', $this->option0123);
-        
+
         $this->form->addElement('select', 'b4', '4. Response to Name', $this->option0123);
-        
+
         $this->form->addElement('select', 'b5', '5. Showing', $this->option012);
-        
+
         $this->form->addElement('select', 'b6', '6. Spontaneous Initiation of Joint Attention', $this->option012);
-        
+
         $this->form->addElement('select', 'b7', '7. Response to Joint Attention', $this->option0123);
-        
+
         $this->form->addElement('select', 'b8', '8. Quality of Social Overtures', $this->option0123);
-        
+
         $this->form->addElement('select', 'b9a', '9a. Amount of Social Overtures/Maintenance:EXAMINER', $this->option01237);
-        
+
         $this->form->addElement('select', 'b9b', '9b. Amount of Social Overtures/Maintenance of Attention:PARENT/CAREGIVER', $this->option012378);
-        
+
 
         $this->form->addElement('select', 'b10', '10. Quality of Social Response', $this->option0123);
-        
+
         $this->form->addElement('select', 'b11', '11. Amount of Reciprocal Social Communication', $this->option0123);
-        
+
         $this->form->addElement('select', 'b12', '12. Overall Quality of Rapport', $this->option0123);
-        
- 
-        
-        
+
+
+
+
     }
-    
+
     function _page2(){
     	//Section C: Play
         $this->form->addElement('header', null, "Section C: Play");
-        
-        
+
+
         $this->form->addElement('select', 'c1', '1. Functional Play with Objects', $this->option0123);
-        
+
         $this->form->addElement('select', 'c2', '2. Imagination/Creativity', $this->option0123);
 
-        
-        
+
+
 
     	//Section D: Stereotyped Behaviors and Restricted Interests
         $this->form->addElement('header', null, "Section D: Stereotyped Behaviors and Restricted Interests");
-        
-        
+
+
         $this->form->addElement('select', 'd1', '1. Unusual Sensory Interest in Play Material/Person', $this->option0123);
-        
+
      	$this->addTextAreaElement('d1_specify', $this->indent . "Please specify:");
-        
+
         $this->form->addElement('select', 'd2', '2. Hand and Finger and Other Complex Mannerisms', $this->option0123);
-        
+
     	$this->addTextAreaElement('d2_specify', $this->indent . "Please specify:");
-        
+
         $this->form->addElement('select', 'd3', '3. Self-Injurious Behavior', $this->option012);
-        
+
         $this->form->addElement('select', 'd4', '4. Unusually Repetitive Interests or Stereotyped Behaviors', $this->option0123);
-        
+
     	$this->addTextAreaElement('d4_specify', $this->indent . "Please specify unusual preoccupations, rituals, repetitive behaviors:");
 
-        
-        
+
+
 
     	//Section E: Other Abnormal Behaviors
         $this->form->addElement('header', null, "Section E: Other Abnormal Behaviors");
-        
-        
+
+
         $this->form->addElement('select', 'e1', '1. Overactivity', $this->option01237);
-        
+
         $this->form->addElement('select', 'e2', '2. Tantrums, Aggression, Negative or Disruptive Behavior', $this->option0123);
-        
+
         $this->form->addElement('select', 'e3', '3. Anxiety', $this->option012);
 
-        
-        
+
+
 
     } // End Form
 
@@ -350,7 +350,7 @@ class NDB_BVL_Instrument_ados2_module2 extends NDB_BVL_Instrument_IBIS
     	if ($this->_determineDataEntryCompletionStatus() == "Incomplete") {
     		return;
     	}
-	
+
         // null scores
         $this->_nullScores($this->scoreCols);
 
@@ -362,14 +362,14 @@ class NDB_BVL_Instrument_ados2_module2 extends NDB_BVL_Instrument_IBIS
         // Get the subject age in months for scoring
         $timepoint =& TimePoint::singleton($this->getSessionID());
         $dob = $timepoint->getEffectiveDateOfBirth();
-        
+
 		$age = Utility::calculateAge($dob, $record["Date_taken"]);
        		$age_years = $age['year'] + ($age['mon']/12);
         if(!is_array($age)) {
             throw new LorisException("Could not compute age");
-        }  
+        }
 
-	
+
         //Convert the entered scores to countable scores:
         //"Convert scores of 3 on the protocol to 2, and treat all other scores other than 0-3 as 0."
         $scores = array(); //holds converted scores
@@ -388,13 +388,13 @@ class NDB_BVL_Instrument_ados2_module2 extends NDB_BVL_Instrument_IBIS
                 $scores[$field] = 0;
             }
         }
-        
+
         // The cutoff depends on the age of the child. Younger ones have more leeway.
         if($age_years < 5) {
     		$scoreCols["social_affect_total"] = $scores["a6"] + $scores["a7"] + $scores["b1"] + $scores["b2"] + $scores["b3"] + $scores["b5"] + $scores["b6"] + $scores["b8"] + $scores["b11"] + $scores["b12"];
     		$scoreCols["restricted_repetitive_behavior_total"] = $scores["a4"] + $scores["d1"] + $scores["d2"] + $scores["d4"];
     		$scoreCols["social_affect_restricted_repetitive_behavior_total"] = $scoreCols["social_affect_total"] + $scoreCols["restricted_repetitive_behavior_total"];
-    
+
     		if($scoreCols["social_affect_restricted_repetitive_behavior_total"] >= 7 && $scoreCols["social_affect_restricted_repetitive_behavior_total"] <= 9){
     			$scoreCols["ADOS_classification"] = "autism spectrum";
     		} elseif ($scoreCols["social_affect_restricted_repetitive_behavior_total"] >= 10) {
@@ -408,7 +408,7 @@ class NDB_BVL_Instrument_ados2_module2 extends NDB_BVL_Instrument_IBIS
         	$scoreCols["social_affect_total"] = $scores["a6"] + $scores["a7"] + $scores["b1"] + $scores["b2"] + $scores["b3"] + $scores["b5"] + $scores["b6"] + $scores["b8"] + $scores["b11"] + $scores["b12"];
         	$scoreCols["restricted_repetitive_behavior_total"] = $scores["a5"] + $scores["d1"] + $scores["d2"] + $scores["d4"];
         	$scoreCols["social_affect_restricted_repetitive_behavior_total"] = $scoreCols["social_affect_total"] + $scoreCols["restricted_repetitive_behavior_total"];
-        
+
         	if($scoreCols["social_affect_restricted_repetitive_behavior_total"] >= 8 && $scoreCols["social_affect_restricted_repetitive_behavior_total"] < 9){
         		$scoreCols["ADOS_classification"] = "autism spectrum";
         	} elseif ($scoreCols["social_affect_restricted_repetitive_behavior_total"] >= 9) {
@@ -418,7 +418,7 @@ class NDB_BVL_Instrument_ados2_module2 extends NDB_BVL_Instrument_IBIS
         	}
         }
 
-        //Determine Severity score from ados_lookup table 
+        //Determine Severity score from ados_lookup table
        //Requires age in months:
         $Answers = $db->pselectRow("SELECT * FROM $this->table WHERE CommentID=:cid",array("cid" =>$this->getCommentID() ));
        $age_months = 0;
@@ -434,8 +434,8 @@ class NDB_BVL_Instrument_ados2_module2 extends NDB_BVL_Instrument_IBIS
             }
        }
 
-       //Severity score lookup:  column limits for age (min, max), raw score (min, max) 
-       // ados_lookup table columns : sevscore module minagemos maxagemos minraw maxraw   
+       //Severity score lookup:  column limits for age (min, max), raw score (min, max)
+       // ados_lookup table columns : sevscore module minagemos maxagemos minraw maxraw
         if ($age_months != 0) {
             $query_severity_lookup = "SELECT sevscore FROM ados_lookup WHERE module = :modname AND minagemos <= :agemonths AND maxagemos >= :agemonths AND minraw <= :rawscore AND maxraw >= :rawscore";
             $record_lookup = array();
@@ -467,13 +467,19 @@ class NDB_BVL_Instrument_ados2_module2 extends NDB_BVL_Instrument_IBIS
         $scoreCols['b5_weighted'] = $scores['b5'] * 0.56; // Showing
         $scoreCols['b6_weighted'] = $scores['b6'] * 0.25;// Initiation of Joint Attention
 
-        // Restricted Repetitive Behaviours 
-        $scoreCols['a5_weighted'] = $scores['a5'] * 0.02; //Stereotyped language 
-        $scoreCols['d1_weighted'] = $scores['d1'] * 0.10; // Unusual Sensory Interest 
+        // Restricted Repetitive Behaviours
+        $scoreCols['a5_weighted'] = $scores['a5'] * 0.02; //Stereotyped language
+        $scoreCols['d1_weighted'] = $scores['d1'] * 0.10; // Unusual Sensory Interest
         $scoreCols['d4_weighted'] = $scores['d4'] * 0.01; // Repetitive Interests
         $scoreCols['d2_weighted'] = $scores['d2'] * 0.16; // Hand Mannerisms
 
         // CSS Calculations
+
+        // if the candidate is 23 months old, round to 24 months
+        if ($age_months >= 23 && $age_months < 24) {
+            $age_months = 24;
+        }
+
         for ($i = 2; $i <= 14; $i++) {
             $low = $i*12;
             $high = ($i+1)*12;
@@ -486,6 +492,6 @@ class NDB_BVL_Instrument_ados2_module2 extends NDB_BVL_Instrument_IBIS
 
         // save scores to database
     	$result = $db->update($this->table, $scoreCols, array("CommentID"=>$this->getCommentID()));
-    }    // end score function
+    }   // end score function
 }
 ?>
