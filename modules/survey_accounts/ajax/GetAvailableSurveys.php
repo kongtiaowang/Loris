@@ -31,15 +31,9 @@ $client->makeCommandLine();
 $client->initialize();
 
 $DB = Database::singleton();
-$extraparam='';
 $visit_label=$_REQUEST['VL'];
 $candid=$_REQUEST['dccid'];
-if($candid!=NULL || $candid!='')
-{
-
-}
-
-$survey_test_battery_count=$DB->pselectOne("select count(*) from survey_test_battery where Visit_label=:vl",
+$survey_test_battery_count = $DB->pselectOne("select count(*) from survey_test_battery where Visit_label=:vl",
     array('vl'     => $_REQUEST['VL']));
 if($survey_test_battery_count!=0)
 {
@@ -59,7 +53,7 @@ and tn.Test_name not in (SELECT f.Test_name FROM flag f
     );
     if(empty($result))
     {
-        $result=$DB->pselect(
+        $result = $DB->pselect(
                 "SELECT tn.Test_name, tn.Full_name from test_names tn
           join survey_test_battery stb ON (stb.Test_name=tn.test_name)
  where stb.Visit_label='{$visit_label}' ORDER BY tn.Full_name",array());
