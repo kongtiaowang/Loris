@@ -179,9 +179,9 @@ class NDB_BVL_Instrument_LENA_LanguageSampleActivityLog extends NDB_BVL_Instrume
         $this->addSelect("free_play_session_time_specify_minute", $this->indent . "Minute:", $minute_options);
         $this->addSelect("free_play_session_time_specify_period", $this->indent . "AM/PM:", $period_options);
 
-        $this->XINRegisterRule('free_play_session_time_specify_hour', array('did_you_do_free_play_session_today{@}=={@}yes'), 'Required');
-        $this->XINRegisterRule('free_play_session_time_specify_minute', array('did_you_do_free_play_session_today{@}=={@}yes'), 'Required');
-        $this->XINRegisterRule('free_play_session_time_specify_period', array('did_you_do_free_play_session_today{@}=={@}yes'), 'Required');
+        $this->XINRegisterRule('free_play_session_time_specify_hour', array('did_you_do_free_play_session_today{@}=={@}yes'), 'Required.');
+        $this->XINRegisterRule('free_play_session_time_specify_minute', array('did_you_do_free_play_session_today{@}=={@}yes'), 'Required.');
+        $this->XINRegisterRule('free_play_session_time_specify_period', array('did_you_do_free_play_session_today{@}=={@}yes'), 'Required.');
 
         $feeling_options = array(
                             null   => "",
@@ -220,7 +220,7 @@ class NDB_BVL_Instrument_LENA_LanguageSampleActivityLog extends NDB_BVL_Instrume
 
         $this->form->addElement('text', 'primary_language_specify', $this->indent . 'If other, specify:');
 
-        $this->XINRegisterRule('primary_language_specify', array('primary_language{@}=={@}other'), 'Required if other language');
+        $this->XINRegisterRule('primary_language_specify', array('primary_language{@}=={@}other'), 'Required if other language.');
 
         $this->form->addElement("static", null, "<br><br>");
 
