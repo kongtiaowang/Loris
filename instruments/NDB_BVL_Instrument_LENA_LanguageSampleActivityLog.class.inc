@@ -24,8 +24,6 @@ class NDB_BVL_Instrument_LENA_LanguageSampleActivityLog extends NDB_BVL_Instrume
 {
     use instrument_validator;
 
-    // TO DO: validate empty subq, validate numeric
-
     /**
      * Sample SQL statement for test_names table and instrument subtests table
      *
@@ -105,28 +103,6 @@ class NDB_BVL_Instrument_LENA_LanguageSampleActivityLog extends NDB_BVL_Instrume
         $this->_addMetadataFields();
 
         $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
-
-        /*
-        $this->form->addElement(
-            'select',
-            'respondent',
-            'What is your relationship to the child',
-            array(
-             ''            => '',
-             'mother'      => 'Mother',
-             'father'      => 'Father',
-             'step_mother' => 'Step Mother',
-             'step_father' => 'Step Father',
-             'other'       => 'Other',
-            )
-        );
-
-        $this->form->addElement('text', 'respondent_specify', 'If other, specify:');
-
-        $this->XINRegisterRule('respondent_specify', array('respondent{@}=={@}other'), 'Required if other');
-
-        $this->form->addFormRule(array(&$this, 'validate_main_page'));
-        */
     }
 
     /**
@@ -360,8 +336,6 @@ class NDB_BVL_Instrument_LENA_LanguageSampleActivityLog extends NDB_BVL_Instrume
             $this->validate_empty_subquestions($values, ["primary_language_specify"], $errors);
         }
 
-        // print_r($values);
-
         $child_care_questionnaire_labels = array(
                                             "center_based"          => "Center-based",
                                             "in_home_non_family"    => "In home: Non-family (e.g., private daycare run out of home)",
@@ -418,7 +392,7 @@ class NDB_BVL_Instrument_LENA_LanguageSampleActivityLog extends NDB_BVL_Instrume
 
             if ($days != "" && $hours != "" && $peer_group != "" && $start_age != "" && $end_age != "") {
                 $start_age_input = $values[$key . "_start_age"];
-                $end_age_input = $values[$key . "_end_age"];
+                $end_age_input   = $values[$key . "_end_age"];
 
                 if (!ctype_digit($start_age_input) && $start_age_input != "NA") {
                     $errors["section_row" . $j] .= $this->indent . "Start age must be a number";
