@@ -21,7 +21,7 @@ class My_Preferences extends \NDB_Form
      */
     function _getDefaults()
     {
-        $defaults = array();
+        $defaults = [];
 
         $user = \User::factory($this->identifier);
         // get the user defaults
@@ -30,7 +30,7 @@ class My_Preferences extends \NDB_Form
         unset($defaults['Password_hash']);
 
         // An array of each field that requires front-end sanitization
-        $fieldsThatAreStrings = array(
+        $fieldsThatAreStrings = [
             'UserID',
             'First_name',
             'Last_name',
@@ -44,7 +44,7 @@ class My_Preferences extends \NDB_Form
             'Zip_code',
             'Country',
             'Fax',
-        );
+        ];
         // Prevent Javascript injection on all fields
         foreach ($fieldsThatAreStrings as $fieldName) {
             // this check prevents PHP Notices
@@ -110,13 +110,6 @@ class My_Preferences extends \NDB_Form
 
         $user = \User::factory($this->identifier);
 
-        // If editing a user and nothing was specified in the password text field
-        // remove the key from the value set, otherwise Password_hash
-        // will be set to '' by the system
-        if ($values['Password_hash'] == '') {
-            unset($values['Password_hash']);
-        }
-
         // START NOTIFICATIONS UPDATE
         // get current notifications for user
         $curr_sub = \NDB_Notifier::getUserNotificationModuleServices(
@@ -142,22 +135,22 @@ class My_Preferences extends \NDB_Form
                         if ($subscribed === 'N') {
                             $DB->insert(
                                 'users_notifications_rel',
-                                array(
+                                [
                                     "module_id"  => $module_id,
                                     "service_id" => $service_id,
                                     "user_id"    => $user->getData("ID"),
-                                )
+                                ]
                             );
                         }
                     } else {
                         if ($subscribed === 'Y') {
                             $DB->delete(
                                 'users_notifications_rel',
-                                array(
+                                [
                                     "module_id"  => $module_id,
                                     "service_id" => $service_id,
                                     "user_id"    => $user->getData("ID"),
-                                )
+                                ]
                             );
                         }
                     }
@@ -166,7 +159,13 @@ class My_Preferences extends \NDB_Form
             }
         }
         // END NOTIFICATIONS UPDATE
-        $set = array();
+        $set = [];
+        // If editing a user and nothing was specified in the password text field
+        // remove the key from the value set, otherwise Password_hash
+        // will be set to '' by the system
+        if ($values['Password_hash'] == '') {
+            unset($values['Password_hash']);
+        }
         foreach ($values as $key => $value) {
             // Password updates are handled separately. Password_hash is removed
             // from the initial update as otherwise it will be recorded in the
@@ -191,21 +190,12 @@ class My_Preferences extends \NDB_Form
             );
         }
 
-        // create an instance of the config object
-        $factory = \NDB_Factory::singleton();
-        $config  = $factory->config();
-
         // send the user an email
-        $msg_data          = array();
+        $msg_data          = [];
         $msg_data['study'] = $config->getSetting('title');
-        $msg_data['url']   = $factory->settings()->getBaseURL();
         $msg_data['realname'] = $values['Real_name'];
-        $msg_data['username'] = $user->getUsername();
-        $msg_data['password'] = $values['Password_hash'];
 
-        $template = (is_null($this->identifier))
-            ? 'new_user.tpl' : 'edit_user.tpl';
-        \Email::send($values['Email'], $template, $msg_data);
+        \Email::send($values['Email'], 'account_details_changed.tpl', $msg_data);
 
         $this->tpl_data['success'] = true;
     }
@@ -244,12 +234,12 @@ class My_Preferences extends \NDB_Form
             'First_name',
             'First name',
             [],
-            array(
+            [
                 'oninvalid' => "this.setCustomValidity('$firstNameInvalidMsg')",
                 'onchange'  => "this.setCustomValidity('')",
                 'pattern'   => '^\s*\S.{0,119}\s*$',
                 'required'  => true,
-            )
+            ]
         );
         // The supplied pattern is:
         //   - must have at least one non-whitespace characters (i.e. required)
@@ -261,12 +251,12 @@ class My_Preferences extends \NDB_Form
             'Last_name',
             'Last name',
             [],
-            array(
+            [
                 'oninvalid' => "this.setCustomValidity('$lastNameInvalidMsg')",
                 'onchange'  => "this.setCustomValidity('')",
                 'pattern'   => '^\s*\S.{0,119}\s*$',
                 'required'  => true,
-            )
+            ]
         );
 
         // email address
@@ -274,10 +264,10 @@ class My_Preferences extends \NDB_Form
             'Email',
             'Email address',
             [],
-            array(
+            [
                 'oninvalid' => "this.setCustomValidity('Email address is required')",
                 'onchange'  => "this.setCustomValidity('')",
-            )
+            ]
         );
 
         // email address rules
@@ -298,7 +288,7 @@ class My_Preferences extends \NDB_Form
         $this->addSelect('language_preference', 'Language preference', $languages);
 
         // Notification headers
-        $nGroup   = array();
+        $nGroup   = [];
         $nGroup[] = $this->createLabel("Module");
         $nGroup[] = $this->createLabel("Operation");
         $nGroup[] = $this->createLabel("Description");
@@ -316,10 +306,10 @@ class My_Preferences extends \NDB_Form
         unset($nGroup);
 
         // Notification rows
-        $notification_rows =array();
+        $notification_rows =[];
         foreach ($notifier_list as $module=>$operation_services) {
             foreach ($operation_services as $operation=>$services) {
-                $nGroup   = array();
+                $nGroup   = [];
                 $nGroup[] = $this->createLabel($module);
                 $nGroup[] = $this->createLabel($operation);
                 $nGroup[] = $this->createLabel($services['desc']);
@@ -364,7 +354,7 @@ class My_Preferences extends \NDB_Form
         //------------------------------------------------------------
 
         // unique key and password rules
-        $this->form->addFormRule(array(&$this, '_validateMyPreferences'));
+        $this->form->addFormRule([&$this, '_validateMyPreferences']);
     }
 
 
@@ -380,7 +370,7 @@ class My_Preferences extends \NDB_Form
         // create DB object
         $factory = \NDB_Factory::singleton();
         $DB      = $factory->database();
-        $errors  = array();
+        $errors  = [];
 
         // NOTE The 'Password_hash' key actually represents a plaintext password
         $plaintext = $values['Password_hash'];
@@ -451,7 +441,7 @@ class My_Preferences extends \NDB_Form
 
         // check email address' uniqueness
         $query  = "SELECT COUNT(*) FROM users WHERE Email = :VEmail ";
-        $params = array('VEmail' => $email);
+        $params = ['VEmail' => $email];
         if (!is_null($this->identifier)) {
             $query        .= " AND userID <> :UID";
             $params['UID'] = $this->identifier;

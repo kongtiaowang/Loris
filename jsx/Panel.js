@@ -15,9 +15,8 @@ import PropTypes from 'prop-types';
  */
 class Panel extends Component {
   /**
-   * Construct the React component
-   *
-   * @param {array} props - The React props
+   * @constructor
+   * @param {object} props - React Component properties
    */
   constructor(props) {
     super(props);
@@ -71,9 +70,17 @@ class Panel extends Component {
     ) : '';
 
     return (
-      <div className="panel panel-primary" style={{height: this.props.panelSize}}>
+      <div
+        className="panel panel-primary"
+        style={{height: this.props.panelSize}}
+      >
         {panelHeading}
-        <div id={this.props.id} className={this.panelClass} role="tabpanel" style={{height: 'calc(100% - 3em)'}}>
+        <div
+          id={this.props.id}
+          className={this.panelClass}
+          role="tabpanel"
+          style={{height: 'calc(100% - 3em)'}}
+        >
           <div className="panel-body"
                style={{...this.props.style, height: this.props.height}}>
             {this.props.children}

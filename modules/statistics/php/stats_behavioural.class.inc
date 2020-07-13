@@ -84,14 +84,14 @@ class Stats_Behavioural extends \NDB_Form
               WHERE CenterID <> '1'
                     AND Study_site = 'Y'
 	            AND CenterID IN (" . $sitesString . ")",
-            array()
+            []
         );
 
         $this->tpl_data['Centers'] = $centers;
 
         // PROJECTS
         $allProjectList = \Utility::getProjectList();
-        $projects       = array();
+        $projects       = [];
         $projects['']   = 'All Projects';
 
         $userProjectsIDs = $user->getData('ProjectIDs');
@@ -105,10 +105,10 @@ class Stats_Behavioural extends \NDB_Form
             if (isset($_REQUEST['site'])
                 && $_REQUEST['site'] == $row['NumericID']
             ) {
-                $this->tpl_data['CurrentSite'] = array(
+                $this->tpl_data['CurrentSite'] = [
                     'ID'   => $row['NumericID'],
                     'Name' => $row['LongName'],
-                );
+                ];
             }
 
         }
@@ -117,10 +117,10 @@ class Stats_Behavioural extends \NDB_Form
         ) {
             $currentProject = htmlspecialchars($_REQUEST['BehaviouralProject']);
             $this->tpl_data['CurrentProject']
-                = array(
+                = [
                     'ID'   => $currentProject,
                     'Name' => $projects[$currentProject],
-                );
+                ];
             $Param_Project       ='AND (s.ProjectID IS NULL 
                                    OR c.RegistrationProjectID=:pid)';
             $this->params['pid'] = htmlspecialchars($_REQUEST['BehaviouralProject']);
@@ -161,7 +161,7 @@ class Stats_Behavioural extends \NDB_Form
                     $suproject_query
                     $Param_Project
                 GROUP by s.ID, s.CenterID, VLabel, f.Data_Entry",
-            $this->params ?? array()
+            $this->params ?? []
         );
 
         foreach ($result as $row) {
@@ -169,29 +169,30 @@ class Stats_Behavioural extends \NDB_Form
             // so that they don't wrap. Note that "c"(enter array) needs to
             // be a reference since we'll be modifying it.
             $center = $row['CenterID'];
-            $vl     = intval($row['VLabel']);
+            $vl     = $row['VLabel'];
+            $value  = intval($row['val']);
             $c      =& $this->tpl_data['behaviour']['C' . $center];
 
-            if (isset($c[$vl]['total'])) {
-                $c[$vl]['total'] += intval($row['val']);
+            if (array_key_exists('total', $c[$vl])) {
+                $c[$vl]['total'] += $value;
             } else {
-                $c[$vl]['total'] = intval($row['val']);
+                $c[$vl]['total'] = $value;
             }
             if (isset($c['all']['total'])) {
-                $c['all']['total'] += $row['val'];
+                $c['all']['total'] += $value;
             } else {
-                $c['all']['total'] = $row['val'];
+                $c['all']['total'] = $value;
             }
             if ($row['Data_Entry'] == 'Complete') {
                 if (isset($c[$vl]['complete'])) {
-                    $c[$vl]['complete'] += $row['val'];
+                    $c[$vl]['complete'] += $value;
                 } else {
-                    $c[$vl]['complete'] = $row['val'];
+                    $c[$vl]['complete'] = $value;
                 }
                 if (isset($c['all']['complete'])) {
-                    $c['all']['complete'] += $row['val'];
+                    $c['all']['complete'] += $value;
                 } else {
-                    $c['all']['complete'] = $row['val'];
+                    $c['all']['complete'] = $value;
                 }
             }
             if (!empty($c) && is_array($c)) {
@@ -234,34 +235,35 @@ class Stats_Behavioural extends \NDB_Form
                     $suproject_query
                     $Param_Project
                 GROUP BY s.CenterID, VLabel, f.Data_Entry",
-            $this->params ?? array()
+            $this->params ?? []
         );
 
         foreach ($result as $row) {
             $center = $row['CenterID'];
-            $vl     = intval($row['VLabel']);
+            $vl     = $row['VLabel'];
+            $value  = intval($row['val']);
             $c      =& $this->tpl_data['dde']['C' . $center];
 
-            if (isset($c[$vl]['total'])) {
-                $c[$vl]['total'] += $row['val'];
+            if (array_key_exists('total', $c[$vl])) {
+                $c[$vl]['total'] += $value;
             } else {
-                $c[$vl]['total'] = $row['val'];
+                $c[$vl]['total'] = $value;
             }
             if (isset($c['all']['total'])) {
-                $c['all']['total'] += $row['val'];
+                $c['all']['total'] += $value;
             } else {
-                $c['all']['total'] = $row['val'];
+                $c['all']['total'] = $value;
             }
             if ($row['Data_Entry'] == 'Complete') {
                 if (isset($c[$vl]['complete'])) {
-                    $c[$vl]['complete'] += $row['val'];
+                    $c[$vl]['complete'] += $value;
                 } else {
-                    $c[$vl]['complete'] = $row['val'];
+                    $c[$vl]['complete'] = $value;
                 }
                 if (isset($c['all']['complete'])) {
-                    $c['all']['complete'] += $row['val'];
+                    $c['all']['complete'] += $value;
                 } else {
-                    $c['all']['complete'] = $row['val'];
+                    $c['all']['complete'] = $value;
                 }
             }
             if (!empty($c) && is_array($c)) {
@@ -301,9 +303,9 @@ class Stats_Behavioural extends \NDB_Form
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
                 $baseURL . "/statistics/js/form_stats_behavioural.js",
-            )
+            ]
         );
     }
 
@@ -319,7 +321,7 @@ class Stats_Behavioural extends \NDB_Form
         $deps    = parent::getCSSDependencies();
         return array_merge(
             $deps,
-            array($baseURL . "/statistics/css/statistics.css")
+            [$baseURL . "/statistics/css/statistics.css"]
         );
     }
 }

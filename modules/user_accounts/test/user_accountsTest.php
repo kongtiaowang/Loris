@@ -63,36 +63,36 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         $password = new \Password($this->validPassword);
         $this->DB->insert(
             "users",
-            array(
-                'ID'               => 999995,
-                'UserID'           => 'UnitTesterTwo',
-                'Real_name'        => 'Unit Tester 2',
-                'First_name'       => 'Unit 2',
-                'Last_name'        => 'Tester 2',
-                'Email'            => 'tester2@example.com',
-                'Privilege'        => 0,
-                'PSCPI'            => 'N',
-                'Active'           => 'Y',
-                'Password_hash'    => $password,
-                'Password_expiry'  => '2099-12-31',
-                'Pending_approval' => 'N',
-            )
+            [
+                'ID'                     => 999995,
+                'UserID'                 => 'UnitTesterTwo',
+                'Real_name'              => 'Unit Tester 2',
+                'First_name'             => 'Unit 2',
+                'Last_name'              => 'Tester 2',
+                'Email'                  => 'tester2@example.com',
+                'Privilege'              => 0,
+                'PSCPI'                  => 'N',
+                'Active'                 => 'Y',
+                'Password_hash'          => $password,
+                'PasswordChangeRequired' => false,
+                'Pending_approval'       => 'N'
+            ]
         );
 
         $this->DB->insert(
             "user_psc_rel",
-            array(
+            [
                 'UserID'   => 999995,
                 'CenterID' => 1,
-            )
+            ]
         );
 
         $this->DB->insert(
             "user_project_rel",
-            array(
+            [
                 'UserID'    => 999995,
                 'ProjectID' => 1,
-            )
+            ]
         );
     }
 
@@ -497,10 +497,10 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      */
     function tearDown()
     {
-        $this->DB->delete("users", array("UserID" => 'userid'));
-        $this->DB->delete("user_psc_rel", array("UserID" => 999995));
-        $this->DB->delete("user_project_rel", array("UserID" => 999995));
-        $this->DB->delete("users", array("UserID" => 'UnitTesterTwo'));
+        $this->DB->delete("users", ["UserID" => 'userid']);
+        $this->DB->delete("user_psc_rel", ["UserID" => 999995]);
+        $this->DB->delete("user_project_rel", ["UserID" => 999995]);
+        $this->DB->delete("users", ["UserID" => 'UnitTesterTwo']);
         parent::tearDown();
     }
 }
