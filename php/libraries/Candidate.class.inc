@@ -7,6 +7,7 @@
  */
 
 use LORIS\StudyEntities\Candidate\CandID;
+
 // error codes
 define('CANDIDATE_INVALID', 1);
 define('PSCID_NOT_SPECIFIED', 2);
@@ -282,6 +283,8 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
             // Generate candid and insert into setArray
             $candID = $generator->generate();
             $setArray['CandID'] = (string) $candID;
+            $parentID = Candidate::_generateID("PARENT");
+            $setArray['ParentID'] = $parentID;
             try {
                 \Database::singleton()->insert('candidate', $setArray);
             } catch (\DatabaseException | \DomainException $e) {
@@ -295,7 +298,23 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
         // Return the new CandID
         return $candID;
     }
-
+    /**
+     * Generate a ParentID for a candidate
+     *
+     * @param string $IDtype  likes Parent
+     *
+     * @return string $randid likes Parent23456
+     * @throws DatabaseException
+     */
+    function _generateID(string $IDtype): string {
+        $factory = \NDB_Factory::singleton();
+        $db      = $factory->database();
+        do {
+            $randid = $IDtype . rand(1, 999999);
+            $nid = $IDtype . "ID";
+        } while($db->pselectOne("SELECT count($nid) FROM candidate WHERE `$nid`=:randomIDQ", array('randomIDQ' => $randid)) > 0);
+        return $randid;
+    }
     /**
      * Checks if candidate exist given a candidate ID and PSCID
      * Used to check that PSCID matches CandID when entered into the boxes
