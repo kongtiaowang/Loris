@@ -41,7 +41,7 @@ class NDB_BVL_Instrument_tanner_boys_survey extends NDB_BVL_Instrument
     *
     * @access public
     */
-    function setup(string $commentID, string $page) : void
+    function setup($commentID, $page)
     {
         $this->formType ='XIN';
         $this->form     = new LorisForm('test_form');

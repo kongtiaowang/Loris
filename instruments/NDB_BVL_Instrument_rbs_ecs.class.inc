@@ -262,7 +262,7 @@ class NDB_BVL_Instrument_rbs_ecs extends NDB_BVL_Instrument
 
         $group = array();
         foreach ($section_lst as $key) {
-            $name = "{$key}_comment";
+            $name = "{$key}_comments";
             $group[] = $this->form->createElement('static', $name, null, null);
         }
 
