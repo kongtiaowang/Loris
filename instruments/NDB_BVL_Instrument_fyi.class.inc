@@ -15,7 +15,7 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
     var $ValidityRequired = false;
 
    var $scoreCols = array('risk_score' => "Risk Score",
-   'percentile' => "Percentile", 
+   'percentile' => "Percentile",
    'soc_com_risk'=>"Social-Communication domain",
    'sen_reg_risk'=>"Sensory-Regulatory domain",
 	'orientrec'=>"Social Orienting and Receptive",
@@ -42,17 +42,17 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
         $this->page = $page;            // page label (number or
         // string - used by
         // user-defined child classes)
-        
+
         // set the object properties
         $this->testName = "fyi";           // test_names.Test_name
         $this->table = 'fyi';              // name of database table corresponding to instrument
         // data keyed by commentID
         $this->commentID = $commentID;
-        
+
         //The array of dates/timestamps to convert to database dates/timestamps
         //Any LorisForm date elements must be listed here
         $this->dateTimeFields=array("Date_taken");
-            
+
         //The array of selects with multiple answers allowed
         //Any LorisForm multiple selects must be listed here
         $this->_selectMultipleElements = array("mother_ethnicity", "father_ethnicity");
@@ -72,17 +72,17 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
 							 'q_62_status',
 							 'q_63',
 							 'q_63_status',
-                             'orientrec', 
-                             'affeng', 
-                             'imitate', 
-                             'express', 
-                             'senproc', 
-                             'regpat', 
+                             'orientrec',
+                             'affeng',
+                             'imitate',
+                             'express',
+                             'senproc',
+                             'regpat',
                              'react',
-                             'repplay', 
-                             'soc_com_risk', 
-                             'sen_reg_risk', 
-                             'risk_score', 
+                             'repplay',
+                             'soc_com_risk',
+                             'sen_reg_risk',
+                             'risk_score',
                              'percentile',
                              'Data_entry_completion_status');
 
@@ -91,7 +91,7 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
         $this->_setupForm();
 
     }
-    
+
     /**
     * method to build the LorisForm object into a paged form
     *
@@ -108,7 +108,7 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
         //Defines the call back function for HTML Quickform to use when validating the form.
         $this->form->addFormRule(array(&$this,'XINValidate'));
     }
-    
+
     /**
     * generates the main page of the form.
     *
@@ -119,7 +119,20 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
     function _main(){
         // display test name
         $this->form->addElement('header', 'instrument_title', "First Year Inventory");
-        
+
+        $this->form->addElement(
+         'static',
+         null,
+         "<h4>
+            <b>Instructions:</b><br>
+            <br>
+            No two babies are alike. We are interested in some of the behaviors that make your baby unique. There are no right or wrong answers to these questions.
+            They are just descriptions of the range of behaviors we find in one-year-olds. Please answer each question as it applies to your baby within the week before or after your baby's first birthday.
+            Please answer every question and give the most accurate answer you can. Again, we are not looking for any particular answer. We just want to know how your baby behaves and responds in various ways.
+         </h4>");
+
+         $this->form->addElement("static", null, "<br>");
+
         // automatically adds examiner & date of administration
         $this->_addMetadataFields();
 
@@ -130,12 +143,12 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
         "american_indian_alaskan_native"=>"American-Indian/Alaskan Native",
         "native_hawaiian_pacific_islander"=>"Native Hawaiian/Pacific Islander",
         "not_answered"=>"Not Answered"), array("multiple"));
-        
+
         $education_levels = array(null => "", "not_answered" => "Not Answered", "j_high" => "Junior High", "some_hs" => "Some Highschool", "high_school"=> "High School", "some_college" => "Some College/2yr Degree", "college_degree" => "College Degree", "some_grad_level" => "Some Graduate Level", "grad_degree" => "Graduate Degree");
-        
+
         $this->form->addElement("select", "mother_highest_grade", "Mother's highest grade completed or degree obtained:", $education_levels);
-        
-        
+
+
         $this->form->addElement("select", "father_ethnicity", "Baby's Father Race/Ethnicity (check 1 or more)", array(null=>"", "white"=>"White",
         "black_african_american"=>"Black/African-American",
         "hispanic_latino"=>"Hispanic/Latino",
@@ -143,24 +156,35 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
         "american_indian_alaskan_native"=>"American-Indian/Alaskan Native",
         "native_hawaiian_pacific_islander"=>"Native Hawaiian/Pacific Islander",
         "not_answered"=>"Not Answered"), array("multiple"));
-        
+
         $this->form->addElement("select", "father_highest_grade", "Father's highest grade completed or degree obtained:", $education_levels);
-        
+
         $this->form->addElement("select", "person_filling_out", "The person filling out this form is the (check one):", array(null=>"", "mother"=>"Mother", "father"=>"Father", "both"=>"Both", "other"=>"Other (specify):", "not_answered"=>"Not Answered"));
         $this->addTextElement("person_filling_out_specify", $this->indent . "Specify:", array("person_filling_out{@}=={@}other"), "Please specify.");
-        
+
          $this->form->addElement("header", null, "Scores");
          foreach($this->scoreCols as $db_name=>$english_name){
-            $this->form->addElement("static", $db_name, $english_name);            
+            $this->form->addElement("static", $db_name, $english_name);
          }
     }
-   
+
     function _page1(){
-        $this->form->addElement("header", null, "Please check the ONE BOX...");
+      $this->form->addElement(
+         'static',
+         null,
+         "<h4>
+            <b>Instructions:</b><br>
+            <br>
+            For the following questions, select ONE OPTION that best describes how frequently this behaviour occurs
+            - Never, Seldom, Sometimes, or Often.
+         </h4>");
+
+         $this->form->addElement("static", null, "<br>");
+
         $questionArray = array("1. Does your baby turn to look at you when you call your baby's name?",
                     "2. Does your baby seem bothered by loud sounds?",
                     "3. Does your baby seem overly sensitive to your touch (for example, fuss or pull away when you touch him or her)?",
-                    "4. During familiar games like 'I'm gonna get you? does your baby get excited because he or she knows what will happen next?",
+                    "4. During familiar games like \"I'm gonna get you\", does your baby get excited because he or she knows what will happen next?",
                     "5. Does your baby seem to have trouble hearing?",
                     "6. When you and your baby are facing each other, does your baby turn his or her eyes to avoid looking at you?",
                     "7. In new or strange situations, does your baby look at your face for comfort?",
@@ -191,7 +215,7 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
                     "32. Does your baby babble by putting sounds together, such as 'ba-ba', 'ga-ga-ga', or 'ba-dee'?",
                     "33. Does your baby enjoy staring at a bright light for long periods of time?",
                     "34. Does your baby use gestures such as raising arms to be picked up, shaking head, or waving bye-bye?",
-                    "35. When you say 'Where's (a familiar person or object)?? without pointing or showing, will your baby look at the person or object named?",
+                    "35. When you say \"Where's (a familiar person or object)?\" without pointing or showing, will your baby look at the person or object named?",
                     "36. Does your baby use the first finger and tip of the thumb to pick up a very small object like a raisin or a Cheerio?",
                     "37. Does your baby seem to get stuck on playing with a part of a toy (such as an eyeball, label, wheel or tag), instead of the whole toy?",
                     "38. Does your baby communicate with you by using his or her finger to point at objects or pictures",
@@ -211,49 +235,58 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
                 $this->form->addElement("static", null, "<BR>");
             }
             $counter++;
-        }        
+        }
     }
 
     function _page2(){
-        $this->form->addElement("header", null, "For the following questions, please circle the ONE ANSWER that best describes your baby:");
-        
-        $this->form->addElement("select", "q_47", "47. Which of the following best describes your baby's typical play..?", array(
+      $this->form->addElement(
+         'static',
+         null,
+         "<h4>
+             <b>Instructions:</b><br>
+             <br>
+             For the following questions, please select the ONE ANSWER that best describes your baby.
+         </h4>");
+
+      $this->form->addElement("static", null, "<br>");
+
+        $this->form->addElement("select", "q_47", "47. Which of the following best describes your baby's typical play with a favorite toy?", array(
                                 ""=>null,
                                 "a_same_way"=>"a. Uses the toy in more or less the same way all the time.",
                                 "b_new_way"=>"b. Occasionally finds a new way to play with the toy.",
                                 "c_often_explores"=>"c. Often explores new ways to play with the toy.",
                                 "not_answered"=>"Not Answered"));
 
-        $this->form->addElement("select", "q_48", "48. Which of the following describes your baby's interest in toys..?", array(
+        $this->form->addElement("select", "q_48", "48. Which of the following describes your baby's interest in toys on a typical day?", array(
                                 ""=>null,
                                 "a_one_or_two"=>"a. Plays with one or two special toys most of the time.",
                                 "b_small_number"=>"b. Plays with a small number of toys (3-5).",
                                 "c_large_number"=>"c. Plays with a large number of toys (6 or more).",
                                 "not_answered"=>"Not Answered"));
 
-        $this->form->addElement("select", "q_49", "49. When you introduce your baby to a new game..?", array(
+        $this->form->addElement("select", "q_49", "49. When you introduce your baby to a new game (peek-a-boo, so-big, patty-cake, etc.) how does your baby respond?", array(
                                 ""=>null,
                                 "a_joins_in_immediately"=>"a. Almost always joins in immediately without any help.",
                                 "b_usually_joins_in"=>"b. Usually joins in, with a little help.",
                                 "c_joins_in_only_with_a_lot"=>"c Joins in only with a lot of help",
-                                "d_doesn_t_seem_interested"=>"d. Doesn't seem very interested in new baby games.", 
+                                "d_doesn_t_seem_interested"=>"d. Doesn't seem very interested in new baby games.",
                                 "not_answered"=>"Not Answered"));
 
-        $this->form->addElement("select", "q_50", "50. What do you typically have to do to get your baby to look..?", array(
+        $this->form->addElement("select", "q_50", "50. What do you typically have to do to get your baby to look up from playing with a favorite toy?", array(
                                 ""=>null,
                                 "a_show_different_toy"=>"a. Just show him or her different toy.",
                                 "b_move_shake_make_noise"=>"b. Move, shake or make a noise with the different toy.",
                                 "c_take_favourite"=>"c. Take the favorite toy away and give your baby the different toy.",
                                 "not_answered"=>"Not Answered"));
 
-        $this->form->addElement("select", "q_51", "51. What is your baby's usual reaction..?", array(
+        $this->form->addElement("select", "q_51", "51. What is your baby's usual reaction to somewhat painful experiences, like bumping his or her head?", array(
                                 ""=>null,
                                 "a_doesn_t_notice"=>"a. Doesn't seem to notice.",
                                 "b_reacts_a_little"=>"b. Reacts a little but gets over it quickly.",
                                 "c_sensitive_or_cries"=>"c. Seems very sensitive or cries for a long time.",
                                 "not_answered"=>"Not Answered"));
 
-        $this->form->addElement("select", "q_52", "52. What do you typically have to do to get your baby to turn..?", array(
+        $this->form->addElement("select", "q_52", "52. What do you typically have to do to get your baby to turn towards you?", array(
                                 ""=>null,
                                 "a_say_name"=>"a. Simply say your baby's name.",
                                 "b_say_name_several"=>"b. Say your baby's name several times.",
@@ -261,7 +294,7 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
                                 "d_doesn_t_do"=>"d. Your baby doesn't do this yet.",
                                 "not_answered"=>"Not Answered"));
 
-        $this->form->addElement("select", "q_53", "53. What do you typically have to do to get your baby to smile..?", array(
+        $this->form->addElement("select", "q_53", "53. What do you typically have to do to get your baby to smile or laugh at you?", array(
                                 ""=>null,
                                 "a_smiling_laughing"=>"a. Smiling and laughing is enough.",
                                 "b_touch_tickle"=>"b. Usually need to touch and tickle.",
@@ -300,7 +333,7 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
                                 "d_upset_calmed_6_or_more"=>"d. Gets upset and needs to be calmed 6 or more times.",
                                 "not_answered"=>"Not Answered"));
 
-        $this->form->addElement("select", "q_58", "58. If you start a game by copying or imitating a sound..?", array(
+        $this->form->addElement("select", "q_58", "58. If you start a game by copying or imitating a sound your baby makes, what does your baby typically do?", array(
                                 ""=>null,
                                 "a_doesn_t_notice_sound"=>"a. Doesn't seem to notice the sound.",
                                 "b_looks_but_doesn_t_make"=>"b. Looks at you, but doesn't make the sound.",
@@ -308,7 +341,7 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
                                 "d_plays_making"=>"d. Plays the game, making the sound seveial liiiies.",
                                 "not_answered"=>"Not Answered"));
 
-        $this->form->addElement("select", "q_59", "59. When your baby is awake and not eating..?", array(
+        $this->form->addElement("select", "q_59", "59. When your baby is awake and not eating, does your baby keep a toy or object in his or her mouth?", array(
                                 ""=>null,
                                 "a_almost_never"=>"a Almost never keeps a toy or object in his or her mouth.",
                                 "b_sometimes"=>"b. Sometimes keeps a toy or object in his or her mouth.",
@@ -316,7 +349,7 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
                                 "d_almost_always"=>"d. Almost always keeps a toy or object in his or her mouth.",
                                 "not_answered"=>"Not Answered"));
 
-        $this->form->addElement("select", "q_60", "60. Which of the following best describes the way your baby coordinates..?", array(
+        $this->form->addElement("select", "q_60", "60. Which of the following best describes the way your baby coordinates his or her eyes and hands while playing with a toy?", array(
                                 ""=>null,
                                 "a_almost_always"=>"a. Almost always looks at the toy that he or she is physically handling.",
                                 "b_sometimes"=>"b. Sometimes looks at the toy that he or she is physically handling.",
@@ -325,18 +358,18 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
                                 "not_answered"=>"Not Answered"));
 
         $questionArray = array("p", "b", "t", "d", "k", "g", "m", "n", "w", "y", "h", "s");
-         $this->form->addElement("static", null, "61. Please check all of the following sounds you've heard your baby use in babble..:");
+         $this->form->addElement("static", null, "61. Please check all of the following sounds you've heard your baby use in babble, word approximations, or words:");
          foreach($questionArray as $letter) {
             $this->form->addElement("advcheckbox", "sounds_" . $letter, null, $letter, null, array("not_used", "used"));
         }
 
-        $this->addTextAreaElement("q_62", "62. Do you or others have any concerns..?  If yes, please describe.");
+        $this->addTextAreaElement("q_62", "62. Do you or others (grandparents, doctor, babysitter) have any concerns about your baby's development in any area? If yes, please describe.");
 
         $this->addTextAreaElement("q_63", "63. Does your baby have any unusual physical or medical characteristics? If yes, please describe.");
 
         $this->form->addElement("static", null, "Thank you for taking the time to respond to this questionnaire.");
     }
-    
+
     function score() {
          if($this->_determineDataEntryCompletionStatus() == "Incomplete") {
             return;
@@ -349,13 +382,13 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
          $this->_nullScores($this->scoreCols);
 
         $score_record = $db->pselectRow("SELECT * FROM $this->table WHERE CommentID=:cid",array("cid" =>$this->getCommentID() ));
-         
-         
+
+
          //print_r($score_record);
-         
+
          //Calculate risk points
          $risk_points = array();
-         
+
          //Question 1
          if($score_record["q_1"] == "never" || $score_record["q_1"] == "seldom"){
             $risk_points["q_1"] = 2;
@@ -366,14 +399,14 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
          else if ($score_record["q_1"] == "often" ){
             $risk_points["q_1"] = 0;
          }
-         
+
          if($score_record["q_2"] == "never" || $score_record["q_2"] == "often"){
             $risk_points["q_2"] = 1;
          }
          else if ($score_record["q_2"] == "sometimes" || $score_record["q_2"] == "seldom"){
             $risk_points["q_2"] = 0;
          }
-         
+
          if($score_record["q_3"] == "never" || $score_record["q_3"] == "seldom"){
             $risk_points["q_3"] = 0;
          }
@@ -383,7 +416,7 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
          else if ($score_record["q_3"] == "often" ){
             $risk_points["q_3"] = 2;
          }
-         
+
          if($score_record["q_4"] == "never" || $score_record["q_4"] == "seldom"){
             $risk_points["q_4"] = 2;
          }
@@ -393,7 +426,7 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
          else if ($score_record["q_4"] == "often" ){
             $risk_points["q_4"] = 0;
          }
-         
+
          if($score_record["q_5"] == "never"){
             $risk_points["q_5"] = 0;
          }
@@ -403,7 +436,7 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
          else if ($score_record["q_5"] == "often" ||  $score_record["q_5"] == "sometimes"){
             $risk_points["q_5"] = 2;
          }
-         
+
          if($score_record["q_6"] == "never" || $score_record["q_6"] == "seldom"){
             $risk_points["q_6"] = 0;
          }
@@ -413,7 +446,7 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
          else if ($score_record["q_6"] == "often" ){
             $risk_points["q_6"] = 2;
          }
-         
+
          if($score_record["q_7"] == "never"){
             $risk_points["q_7"] = 2;
          }
@@ -423,63 +456,63 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
          else if ($score_record["q_7"] == "often" ||  $score_record["q_7"] == "sometimes"){
             $risk_points["q_7"] = 0;
          }
-         
+
          if($score_record["q_8"] == "never" || $score_record["q_8"] == "seldom" || $score_record["q_8"] == "sometimes"){
             $risk_points["q_8"] = 0;
          }
          else if ($score_record["q_8"] == "often"){
             $risk_points["q_8"] = 1;
          }
-         
+
          if($score_record["q_9"] == "never" || $score_record["q_9"] == "seldom" || $score_record["q_9"] == "sometimes"){
             $risk_points["q_9"] = 0;
          }
          else if ($score_record["q_9"] == "often"){
             $risk_points["q_9"] = 1;
          }
-         
+
          if($score_record["q_10"] == "never" || $score_record["q_10"] == "seldom"){
             $risk_points["q_10"] = 2;
          }
          else if ($score_record["q_10"] == "often" || $score_record["q_10"] == "sometimes"){
             $risk_points["q_10"] = 0;
          }
-         
+
          if($score_record["q_11"] == "never" || $score_record["q_11"] == "seldom" || $score_record["q_11"] == "sometimes"){
             $risk_points["q_11"] = 0;
          }
          else if ($score_record["q_11"] == "often"){
             $risk_points["q_11"] = 1;
          }
-         
+
          if($score_record["q_12"] == "never" || $score_record["q_12"] == "seldom"){
             $risk_points["q_12"] = 2;
          }
          else if ($score_record["q_12"] == "often" || $score_record["q_12"] == "sometimes"){
             $risk_points["q_12"] = 0;
          }
-         
+
          if($score_record["q_13"] == "never" || $score_record["q_13"] == "seldom" || $score_record["q_13"] == "sometimes"){
             $risk_points["q_13"] = 0;
          }
          else if ($score_record["q_13"] == "often"){
             $risk_points["q_13"] = 1;
          }
-         
+
          if($score_record["q_14"] == "never" || $score_record["q_14"] == "seldom"){
             $risk_points["q_14"] = 2;
          }
          else if ($score_record["q_14"] == "often" || $score_record["q_14"] == "sometimes"){
             $risk_points["q_14"] = 0;
          }
-         
+
          if($score_record["q_15"] == "never" || $score_record["q_15"] == "seldom" || $score_record["q_15"] == "sometimes"){
             $risk_points["q_15"] = 0;
          }
          else if ($score_record["q_15"] == "often"){
             $risk_points["q_15"] = 1;
          }
-         
+
          if($score_record["q_16"] == "never" || $score_record["q_16"] == "seldom"){
             $risk_points["q_16"] = 2;
          }
@@ -489,14 +522,14 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
          else if ($score_record["q_16"] == "often" ){
             $risk_points["q_16"] = 0;
          }
-         
+
          if($score_record["q_17"] == "never" || $score_record["q_17"] == "seldom" || $score_record["q_17"] == "sometimes"){
             $risk_points["q_17"] = 0;
          }
          else if ($score_record["q_17"] == "often"){
             $risk_points["q_17"] = 1;
          }
-         
+
          if($score_record["q_18"] == "never" || $score_record["q_18"] == "seldom"){
             $risk_points["q_18"] = 2;
          }
@@ -506,21 +539,21 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
          else if ($score_record["q_18"] == "often" ){
             $risk_points["q_18"] = 0;
          }
-         
+
          if($score_record["q_19"] == "often" || $score_record["q_19"] == "seldom" || $score_record["q_19"] == "sometimes"){
             $risk_points["q_19"] = 0;
          }
          else if ($score_record["q_19"] == "never"){
             $risk_points["q_19"] = 1;
          }
-         
+
          if($score_record["q_20"] == "often" || $score_record["q_20"] == "seldom" || $score_record["q_20"] == "sometimes"){
             $risk_points["q_20"] = 0;
          }
          else if ($score_record["q_20"] == "never"){
             $risk_points["q_20"] = 1;
          }
-         
+
          if($score_record["q_21"] == "never"){
             $risk_points["q_21"] = 2;
          }
@@ -530,14 +563,14 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
          else if ($score_record["q_21"] == "often" ||  $score_record["q_21"] == "sometimes"){
             $risk_points["q_21"] = 0;
          }
-         
+
          if($score_record["q_22"] == "often" || $score_record["q_22"] == "seldom" || $score_record["q_22"] == "sometimes"){
             $risk_points["q_22"] = 0;
          }
          else if ($score_record["q_22"] == "never"){
             $risk_points["q_22"] = 1;
          }
-         
+
          if($score_record["q_23"] == "never"){
             $risk_points["q_23"] = 0;
          }
@@ -547,56 +580,56 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
          else if ($score_record["q_23"] == "often" ||  $score_record["q_23"] == "sometimes"){
             $risk_points["q_23"] = 2;
          }
-         
+
          if($score_record["q_24"] == "never" || $score_record["q_24"] == "seldom"){
             $risk_points["q_24"] = 2;
          }
          else if ($score_record["q_24"] == "often" || $score_record["q_24"] == "sometimes"){
             $risk_points["q_24"] = 0;
          }
-         
+
          if($score_record["q_25"] == "never" || $score_record["q_25"] == "seldom"){
             $risk_points["q_25"] = 2;
          }
          else if ($score_record["q_25"] == "often" || $score_record["q_25"] == "sometimes"){
             $risk_points["q_25"] = 0;
          }
-         
+
          if($score_record["q_26"] == "never" || $score_record["q_26"] == "seldom"){
             $risk_points["q_26"] = 2;
          }
          else if ($score_record["q_26"] == "often" || $score_record["q_26"] == "sometimes"){
             $risk_points["q_26"] = 0;
          }
-         
+
          if($score_record["q_27"] == "never" || $score_record["q_27"] == "seldom" || $score_record["q_27"] == "sometimes"){
             $risk_points["q_27"] = 0;
          }
          else if ($score_record["q_27"] == "often"){
             $risk_points["q_27"] = 2;
          }
-         
+
          if($score_record["q_28"] == "never" || $score_record["q_28"] == "seldom"){
             $risk_points["q_28"] = 2;
          }
          else if ($score_record["q_28"] == "often" || $score_record["q_28"] == "sometimes"){
             $risk_points["q_28"] = 0;
          }
-         
+
          if($score_record["q_29"] == "never" || $score_record["q_29"] == "seldom"){
             $risk_points["q_29"] = 2;
          }
          else if ($score_record["q_29"] == "often" || $score_record["q_29"] == "sometimes"){
             $risk_points["q_29"] = 0;
          }
-         
+
          if($score_record["q_30"] == "never" || $score_record["q_30"] == "seldom" || $score_record["q_30"] == "sometimes"){
             $risk_points["q_30"] = 0;
          }
          else if ($score_record["q_30"] == "often"){
             $risk_points["q_30"] = 2;
          }
-         
+
          if($score_record["q_31"] == "never"){
             $risk_points["q_31"] = 2;
          }
@@ -606,7 +639,7 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
          else if ($score_record["q_31"] == "often" ||  $score_record["q_31"] == "sometimes"){
             $risk_points["q_31"] = 0;
          }
-         
+
          if($score_record["q_32"] == "never" || $score_record["q_32"] == "seldom"){
             $risk_points["q_32"] = 2;
          }
@@ -616,7 +649,7 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
          else if ($score_record["q_32"] == "often" ){
             $risk_points["q_32"] = 0;
          }
-         
+
          if($score_record["q_33"] == "never" || $score_record["q_33"] == "seldom"){
             $risk_points["q_33"] = 0;
          }
@@ -626,7 +659,7 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
          else if ($score_record["q_33"] == "often" ){
             $risk_points["q_33"] = 2;
          }
-         
+
          if($score_record["q_34"] == "never" || $score_record["q_34"] == "seldom"){
             $risk_points["q_34"] = 2;
          }
@@ -636,7 +669,7 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
          else if ($score_record["q_34"] == "often" ){
             $risk_points["q_34"] = 0;
          }
-         
+
          if($score_record["q_35"] == "never"){
             $risk_points["q_35"] = 2;
          }
@@ -646,28 +679,28 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
          else if ($score_record["q_35"] == "often" ||  $score_record["q_35"] == "sometimes"){
             $risk_points["q_35"] = 0;
          }
-         
+
          if($score_record["q_36"] == "never" || $score_record["q_36"] == "seldom" || $score_record["q_36"] == "sometimes"){
             $risk_points["q_36"] = 0;
          }
          else if ($score_record["q_36"] == "often"){
             $risk_points["q_36"] = 1;
          }
-         
+
          if($score_record["q_37"] == "never" || $score_record["q_37"] == "seldom" || $score_record["q_37"] == "sometimes"){
             $risk_points["q_37"] = 0;
          }
          else if ($score_record["q_37"] == "often"){
             $risk_points["q_37"] = 1;
          }
-         
+
          if($score_record["q_38"] == "often" || $score_record["q_38"] == "seldom" || $score_record["q_38"] == "sometimes"){
             $risk_points["q_38"] = 0;
          }
          else if ($score_record["q_38"] == "never"){
             $risk_points["q_38"] = 1;
          }
-         
+
          if($score_record["q_39"] == "never" || $score_record["q_39"] == "seldom"){
             $risk_points["q_39"] = 0;
          }
@@ -677,21 +710,21 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
          else if ($score_record["q_39"] == "often" ){
             $risk_points["q_39"] = 2;
          }
-         
+
          if($score_record["q_40"] == "never" || $score_record["q_40"] == "seldom" || $score_record["q_40"] == "sometimes"){
             $risk_points["q_40"] = 2;
          }
          else if ($score_record["q_40"] == "often"){
             $risk_points["q_40"] = 0;
          }
-         
+
          if($score_record["q_41"] == "never" || $score_record["q_41"] == "seldom"){
             $risk_points["q_41"] = 2;
          }
          else if ($score_record["q_41"] == "often" || $score_record["q_41"] == "sometimes"){
             $risk_points["q_41"] = 0;
          }
-         
+
          if($score_record["q_42"] == "never" || $score_record["q_42"] == "seldom"){
             $risk_points["q_42"] = 0;
          }
@@ -701,7 +734,7 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
          else if ($score_record["q_42"] == "often" ){
             $risk_points["q_42"] = 2;
          }
-         
+
          if($score_record["q_43"] == "never" || $score_record["q_43"] == "seldom"){
             $risk_points["q_43"] = 0;
          }
@@ -711,42 +744,42 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
          else if ($score_record["q_43"] == "often" ){
             $risk_points["q_43"] = 2;
          }
-         
+
          if($score_record["q_44"] == "never" || $score_record["q_44"] == "seldom" || $score_record["q_44"] == "sometimes"){
             $risk_points["q_44"] = 0;
          }
          else if ($score_record["q_44"] == "often"){
             $risk_points["q_44"] = 1;
          }
-         
+
          if($score_record["q_45"] == "never" || $score_record["q_45"] == "seldom" || $score_record["q_45"] == "sometimes"){
             $risk_points["q_45"] = 0;
          }
          else if ($score_record["q_45"] == "often"){
             $risk_points["q_45"] = 1;
          }
-         
+
          if($score_record["q_46"] == "never" || $score_record["q_46"] == "seldom" || $score_record["q_46"] == "sometimes"){
             $risk_points["q_46"] = 0;
          }
          else if ($score_record["q_46"] == "often"){
             $risk_points["q_46"] = 1;
          }
-         
+
          if(substr($score_record["q_47"], 0, 1) == "b" || substr($score_record["q_47"], 0, 1) == "c" || substr($score_record["q_47"], 0, 1) == "d"){
             $risk_points["q_47"] = 0;
          }
          else if (substr($score_record["q_47"], 0, 1) == "a"){
             $risk_points["q_47"] = 1;
          }
-         
+
          if(substr($score_record["q_48"], 0, 1) == "b" || substr($score_record["q_48"], 0, 1) == "c" || substr($score_record["q_48"], 0, 1) == "d"){
             $risk_points["q_48"] = 0;
          }
          else if (substr($score_record["q_48"], 0, 1) == "a"){
             $risk_points["q_48"] = 2;
          }
-         
+
          if(substr($score_record["q_49"], 0, 1) == "a" || substr($score_record["q_49"], 0, 1) == "b"){
             $risk_points["q_49"] = 0;
          }
@@ -756,28 +789,28 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
          else if (substr($score_record["q_49"], 0, 1) == "d" ){
             $risk_points["q_49"] = 2;
          }
-         
+
          if(substr($score_record["q_50"], 0, 1) == "a" || substr($score_record["q_50"], 0, 1) == "b" || substr($score_record["q_50"], 0, 1) == "d"){
             $risk_points["q_50"] = 0;
          }
          else if (substr($score_record["q_50"], 0, 1) == "c"){
             $risk_points["q_50"] = 2;
          }
-         
+
          if(substr($score_record["q_51"], 0, 1) == "b" || substr($score_record["q_51"], 0, 1) == "d"){
             $risk_points["q_51"] = 0;
          }
          else if (substr($score_record["q_51"], 0, 1) == "a" || substr($score_record["q_51"], 0, 1) == "c"){
             $risk_points["q_51"] = 2;
          }
-         
+
          if(substr($score_record["q_52"], 0, 1) == "a" || substr($score_record["q_52"], 0, 1) == "b"){
             $risk_points["q_52"] = 0;
          }
          else if (substr($score_record["q_52"], 0, 1) == "c" || substr($score_record["q_52"], 0, 1) == "d"){
             $risk_points["q_52"] = 2;
          }
-         
+
          if(substr($score_record["q_53"], 0, 1) == "a"){
             $risk_points["q_53"] = 0;
          }
@@ -787,21 +820,21 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
          else if (substr($score_record["q_53"], 0, 1) == "c"  || substr($score_record["q_53"], 0, 1) == "d"){
             $risk_points["q_53"] = 2;
          }
-         
+
          if(substr($score_record["q_54"], 0, 1) == "a" || substr($score_record["q_54"], 0, 1) == "b" || substr($score_record["q_54"], 0, 1) == "c"){
             $risk_points["q_54"] = 0;
          }
          else if (substr($score_record["q_54"], 0, 1) == "d"){
             $risk_points["q_54"] = 2;
          }
-         
+
          if(substr($score_record["q_55"], 0, 1) == "a" || substr($score_record["q_55"], 0, 1) == "b" || substr($score_record["q_55"], 0, 1) == "d"){
             $risk_points["q_55"] = 0;
          }
          else if (substr($score_record["q_55"], 0, 1) == "c"){
             $risk_points["q_55"] = 1;
          }
-         
+
          if(substr($score_record["q_56"], 0, 1) == "a" || substr($score_record["q_56"], 0, 1) == "b"){
             $risk_points["q_56"] = 0;
          }
@@ -811,7 +844,7 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
          else if (substr($score_record["q_56"], 0, 1) == "d"  ){
             $risk_points["q_56"] = 2;
          }
-         
+
          if(substr($score_record["q_57"], 0, 1) == "a" || substr($score_record["q_57"], 0, 1) == "b"){
             $risk_points["q_57"] = 0;
          }
@@ -821,7 +854,7 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
          else if (substr($score_record["q_57"], 0, 1) == "d"  ){
             $risk_points["q_57"] = 2;
          }
-         
+
          if(substr($score_record["q_58"], 0, 1) == "a"){
             $risk_points["q_58"] = 2;
          }
@@ -831,24 +864,24 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
          else if (substr($score_record["q_58"], 0, 1) == "c"   || substr($score_record["q_58"], 0, 1) == "d"){
             $risk_points["q_58"] = 0;
          }
-         
+
          if(substr($score_record["q_59"], 0, 1) == "a" || substr($score_record["q_59"], 0, 1) == "b" || substr($score_record["q_59"], 0, 1) == "c"){
             $risk_points["q_59"] = 0;
          }
          else if (substr($score_record["q_59"], 0, 1) == "d"){
             $risk_points["q_59"] = 2;
          }
-         
+
          if(substr($score_record["q_60"], 0, 1) == "a" || substr($score_record["q_60"], 0, 1) == "b"){
             $risk_points["q_60"] = 0;
          }
          else if (substr($score_record["q_60"], 0, 1) == "c" || substr($score_record["q_60"], 0, 1) == "d"){
             $risk_points["q_60"] = 2;
          }
-         
+
          $sound_total = 0;
          $BDM_total = 0;
-         
+
          $questionArray = array("p", "b", "t", "d", "k", "g", "m", "n", "w", "y", "h", "s");
          foreach($questionArray as $letter) {
             if($score_record["sounds_" . $letter] == "used"){
@@ -860,16 +893,16 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
          }
          $X = 0;
          $Y = 0;
-         
+
          if($BDM_total < 2){
             $X = 1;
          }
          if($sound_total <= 3){
             $Y = 1;
          }
-         
+
          $XY_total = $X + $Y;
-         
+
          $D111 = 0;
          if (array_key_exists("q_1", $risk_points)) {
              $D111 += $risk_points["q_1"];
@@ -897,7 +930,7 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
          }
          if (array_key_exists("q_52", $risk_points)) {
              $D111 += $risk_points["q_52"];
-         }    
+         }
 
          $D112 = 0;
          if (array_key_exists("q_4", $risk_points)) {
@@ -993,7 +1026,7 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
          if (array_key_exists("q_55", $risk_points)) {
              $D116 += $risk_points["q_55"];
          }
-         
+
          $D117 = 0;
          if (array_key_exists("q_15", $risk_points)) {
              $D117 += $risk_points["q_15"];
@@ -1039,7 +1072,7 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
          if (array_key_exists("q_48", $risk_points)) {
              $D118 += $risk_points["q_48"];
          }
-          
+
          if($D111 >= 12){
             $calculatedScores['orientrec'] = 50;
          }
@@ -1072,8 +1105,8 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
          }
          else if($D111 == 0){
             $calculatedScores['orientrec'] = 0;
-         }         
-            
+         }
+
          if($D112 >= 11){
             $calculatedScores['affeng'] = 50;
          }
@@ -1101,7 +1134,7 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
          else if($D112 == 0){
             $calculatedScores['affeng'] = 0;
          }
-         
+
          if($D113 >= 9){
             $calculatedScores['imitate'] = 50;
          }
@@ -1132,8 +1165,8 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
          else if($D113 == 0){
             $calculatedScores['imitate'] = 0;
          }
-         
-         
+
+
          if($D114 >= 6){
             $calculatedScores['express'] = 50;
          }
@@ -1155,7 +1188,7 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
          else if($D114 == 0){
             $calculatedScores['express'] = 0;
          }
-         
+
          if($D115 >= 7){
             $calculatedScores['senproc'] = 50;
          }
@@ -1180,7 +1213,7 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
          else if($D115 ==  0){
             $calculatedScores['senproc'] = 0;
          }
-         
+
          if($D116 >= 7){
             $calculatedScores['regpat'] = 50;
          }
@@ -1205,7 +1238,7 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
          else if($D116 ==  0){
             $calculatedScores['regpat'] = 0;
          }
-         
+
          if($D117 >= 4){
             $calculatedScores['react'] = 50;
          }
@@ -1221,7 +1254,7 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
          else if($D117 == 0){
             $calculatedScores['react'] = 0;
          }
-         
+
          if($D118 >= 11){
             $calculatedScores['repplay'] = 50;
          }
@@ -1258,18 +1291,18 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
          else if($D118 == 0){
             $calculatedScores['repplay'] = 0;
          }
-         
-         
+
+
          $calculatedScores['soc_com_risk'] = ($calculatedScores['orientrec'] + $calculatedScores['affeng'] + $calculatedScores['imitate']
                                              + $calculatedScores['express'])/4.0;
          $calculatedScores['sen_reg_risk'] = ($calculatedScores['senproc'] + $calculatedScores['regpat'] + $calculatedScores['react']
                                              + $calculatedScores['repplay'])/4.0;
-                                             
+
          $calculatedScores['risk_score'] = ($calculatedScores['soc_com_risk'] + $calculatedScores['sen_reg_risk'])/2.0;
-         
+
          //print_r($calculatedScores);
-         
-         
+
+
          if($calculatedScores['risk_score'] == 0){
             $calculatedScores['percentile'] = 5;
          }
@@ -1504,7 +1537,7 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
          else{
             $calculatedScores['percentile'] = 100;
          }
-         
+
          // save the resultant total
          $result = $db->update($this->table, $calculatedScores, array('CommentID'=>$this->getCommentID()));
           ProjectUtility::SetSupplementalGrantStatus($this->getSessionID());
