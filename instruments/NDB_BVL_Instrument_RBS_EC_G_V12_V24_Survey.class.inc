@@ -1,6 +1,6 @@
 <?php
 /**
- * This file contains the NDB_BVL_Instrument_rbs_ec_general_survey class
+ * This file contains the NDB_BVL_Instrument_RBS_EC_G_V12_V24_Survey class
  *
  * PHP Version 7
  *
@@ -12,7 +12,7 @@
  */
 
  /**
- * Creates the form elements for the rbs_ec_general_survey instrument
+ * Creates the form elements for the RBS_EC_G_V12_V24_Survey instrument
  *
  * @category Instrument
  * @package  Neuropsych
@@ -20,7 +20,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/IBIS/
  */
-class NDB_BVL_Instrument_rbs_ec_general_survey extends NDB_BVL_Instrument
+class NDB_BVL_Instrument_RBS_EC_G_V12_V24_Survey extends NDB_BVL_Instrument
 {
     use instrument_validator;
 
@@ -48,12 +48,12 @@ class NDB_BVL_Instrument_rbs_ec_general_survey extends NDB_BVL_Instrument
     /**
      * Sample SQL statement for test_names table and instrument subtests table
      *
-     * INSERT INTO test_names (Test_name, Full_name, Sub_Group, isDirectEntry) VALUES ('rbs_ec_general_survey', "RBS - EC - G (Repetitive Behavior Scale for Early Childhood - General Version) - Survey", 1, 1);
-     * INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('rbs_ec_general_survey','rbs_ec_general_survey_page1', "Page 1", 1);
-     * INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('rbs_ec_general_survey','rbs_ec_general_survey_page2', "Page 2", 2);
-     * INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('rbs_ec_general_survey','rbs_ec_general_survey_page3', "Page 3", 3);
-     * INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('rbs_ec_general_survey','rbs_ec_general_survey_page4', "Page 4", 4);
-     * INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('rbs_ec_general_survey','rbs_ec_general_survey_page5', "Page 5", 5);
+     * INSERT INTO test_names (Test_name, Full_name, Sub_Group, isDirectEntry) VALUES ('RBS_EC_G_V12_V24_Survey', "RBS - EC - G (Repetitive Behavior Scale for Early Childhood - General Version) - Survey", 1, 1);
+     * INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('RBS_EC_G_V12_V24_Survey','RBS_EC_G_V12_V24_Survey_page1', "Page 1", 1);
+     * INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('RBS_EC_G_V12_V24_Survey','RBS_EC_G_V12_V24_Survey_page2', "Page 2", 2);
+     * INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('RBS_EC_G_V12_V24_Survey','RBS_EC_G_V12_V24_Survey_page3', "Page 3", 3);
+     * INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('RBS_EC_G_V12_V24_Survey','RBS_EC_G_V12_V24_Survey_page4', "Page 4", 4);
+     * INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('RBS_EC_G_V12_V24_Survey','RBS_EC_G_V12_V24_Survey_page5', "Page 5", 5);
      */
 
     /**
@@ -68,14 +68,14 @@ class NDB_BVL_Instrument_rbs_ec_general_survey extends NDB_BVL_Instrument
     function setup($commentID, $page)
     {
         $this->formType = "XIN";
-        $this->form     = new LorisForm('rbs_ec_general_survey_form');
+        $this->form     = new LorisForm('RBS_EC_G_V12_V24_Survey_form');
         $this->page     = $page;            // page label (number or
         // string - used by
         // user-defined child classes)
 
         // set the object properties
-        $this->testName = "rbs_ec_general_survey";           // test_names.Test_name
-        $this->table    = 'rbs_ec_general_survey';           // name of database table corresponding to instrument
+        $this->testName = "RBS_EC_G_V12_V24_Survey";           // test_names.Test_name
+        $this->table    = 'RBS_EC_G_V12_V24_Survey';           // name of database table corresponding to instrument
         // data keyed by commentID
         $this->commentID = $commentID;
 
@@ -109,7 +109,7 @@ class NDB_BVL_Instrument_rbs_ec_general_survey extends NDB_BVL_Instrument
     */
     function _setupForm()
     {
-        if (preg_match("/rbs_ec_general_survey(_page[0-9]+)/", $this->page, $matches)) {
+        if (preg_match("/RBS_EC_G_V12_V24_Survey(_page[0-9]+)/", $this->page, $matches)) {
             call_user_func(array($this, $matches[1]));
         } else {
             $this->_main();

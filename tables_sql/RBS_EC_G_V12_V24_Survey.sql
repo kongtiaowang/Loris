@@ -1,4 +1,4 @@
-CREATE TABLE `rbs_ec_general_survey` (
+CREATE TABLE `RBS_EC_G_V12_V24_Survey` (
 `CommentID` varchar(255) NOT NULL default '',
 `UserID` varchar(255) default NULL,
 `Examiner` varchar(255) default NULL,
