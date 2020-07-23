@@ -458,13 +458,6 @@ if ($confirm === false) {
 
         echo "\npspq_1 --> CommentID " . $old_cid . " transferred to --> pspq_SelfReport_mom and flag --> CommentID " . $new_cid_self_report . "\n" .
              "pspq_1 --> CommentID " . $old_cid . " transferred to --> pspq_InformantReport_mom_on_dad and flag --> CommentID " . $new_cid_informant_report . "\n";
-
-/*
-        // Prints message to tell user that script is running every 40 rows
-        if ($i%40 == 0) {
-            echo "\nScript running...\n";
-        }
-        $i++;*/
     }
 
     $num_rows_pspq_self_mom_AFTER      = $db->pselectOne(
@@ -837,12 +830,6 @@ if ($confirm === false) {
 
         echo "\npspq_2 --> CommentID " . $old_cid . " transferred to --> pspq_SelfReport_dad and flag --> CommentID " . $new_cid_self_report . "\n" .
         "pspq_2 --> CommentID " . $old_cid . " transferred to --> pspq_InformantReport_dad_on_mom and flag --> CommentID " . $new_cid_informant_report . "\n";
-/*
-        // Prints message to tell user that script is running every 40 rows
-        if ($i%40 == 0) {
-            echo "\nScript running...\n";
-        }
-        $i++;*/
     }
 
     $num_rows_pspq_self_dad_AFTER      = $db->pselectOne(
