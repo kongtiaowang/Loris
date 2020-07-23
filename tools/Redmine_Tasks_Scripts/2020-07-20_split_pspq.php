@@ -146,10 +146,82 @@ if ($confirm === false) {
     * PSPQ1 (SECOND HALF OF QUESTIONS) --> pspq_InformantReport_mom_on_dad
     */
 
-    // Get TestIDs for PSPQ Mom instruments
+    // TestIDs for PSPQ Mom instruments
     $test_id_pspq_1   = 77;
     $test_id_self_mom = 167;
     $test_id_informant_mom_on_dad = 169;
+
+    // Get total # of rows for each instrument
+    $num_rows_pspq_1        = $db->pselectOne(
+        "SELECT
+            COUNT(*)
+        FROM
+            pspq_1
+        ",
+        array()
+    );
+    $num_rows_pspq_self_mom = $db->pselectOne(
+        "SELECT
+            COUNT(*)
+        FROM
+            pspq_SelfReport_mom
+        ",
+        array()
+    );
+    $num_rows_pspq_informant_mom = $db->pselectOne(
+        "SELECT
+            COUNT(*)
+        FROM
+            pspq_InformantReport_mom_on_dad
+        ",
+        array()
+    );
+
+    // Get total # of rows in the flag table for each instrument
+    $flag_rows_pspq_1        = $db->pselectOne(
+        "SELECT
+            COUNT(*)
+        FROM
+            flag
+        WHERE
+            Test_name = 'pspq_1'
+        ",
+        array()
+    );
+    $flag_rows_pspq_self_mom = $db->pselectOne(
+        "SELECT
+            COUNT(*)
+        FROM
+            flag
+        WHERE
+            Test_name = 'pspq_SelfReport_mom'
+        ",
+        array()
+    );
+    $flag_rows_pspq_informant_mom = $db->pselectOne(
+        "SELECT
+            COUNT(*)
+        FROM
+            flag
+        WHERE
+            Test_name = 'pspq_InformantReport_mom_on_dad'
+        ",
+        array()
+    );
+
+    echo "\n*** PSPQ MOM INSTRUMENTS ***\n" .
+         "\n* BEFORE *\n" .
+         "\n# of rows in pspq_1: " . $num_rows_pspq_1 . "\n" .
+         "# of rows in pspq_SelfReport_mom: " . $num_rows_pspq_self_mom . "\n" .
+         "# of rows in pspq_InformantReport_mom_on_dad: " . $num_rows_pspq_informant_mom . "\n" .
+         "Expected # of rows in pspq_SelfReport_mom: " . $num_rows_pspq_1 . " + " . $num_rows_pspq_self_mom . " = " . ($num_rows_pspq_1 + $num_rows_pspq_self_mom) . "\n" .
+         "Expected # of rows in pspq_InformantReport_mom_on_dad: " . $num_rows_pspq_1 . " + " . $num_rows_pspq_informant_mom . " = " . ($num_rows_pspq_1 + $num_rows_pspq_informant_mom) . "\n" .
+         "\n# of rows in flag for pspq_1: " . $flag_rows_pspq_1 . "\n" .
+         "# of rows in flag for pspq_SelfReport_mom: " . $flag_rows_pspq_self_mom . "\n" .
+         "# of rows in flag for pspq_InformantReport_mom_on_dad: " . $flag_rows_pspq_informant_mom . "\n" .
+         "Expected # of rows in flag for pspq_SelfReport_mom: " . $flag_rows_pspq_1 . " + " . $flag_rows_pspq_self_mom . " = " . ($flag_rows_pspq_1 + $flag_rows_pspq_self_mom) . "\n" .
+         "Expected # of rows in flag for pspq_InformantReport_mom_on_dad: " . $flag_rows_pspq_1 . " + " . $flag_rows_pspq_informant_mom . " = " . ($flag_rows_pspq_1 + $flag_rows_pspq_informant_mom) . "\n"
+         ;
 
     // All pspq_1 comment ids
     $pspq_1_comment_ids_array = $db->pselect(
@@ -160,6 +232,8 @@ if ($confirm === false) {
         ",
         array()
     );
+
+    $i = 0;
 
     foreach ($pspq_1_comment_ids_array as $cid) {
         $is_dde = false;
@@ -381,17 +455,152 @@ if ($confirm === false) {
                 )
             );
         }
+
+        echo "\npspq_1 --> CommentID " . $old_cid . " transferred to --> pspq_SelfReport_mom and flag --> CommentID " . $new_cid_self_report . "\n" .
+             "pspq_1 --> CommentID " . $old_cid . " transferred to --> pspq_InformantReport_mom_on_dad and flag --> CommentID " . $new_cid_informant_report . "\n";
+
+/*
+        // Prints message to tell user that script is running every 40 rows
+        if ($i%40 == 0) {
+            echo "\nScript running...\n";
+        }
+        $i++;*/
     }
 
+    $num_rows_pspq_self_mom_AFTER      = $db->pselectOne(
+        "SELECT
+            COUNT(*)
+        FROM
+            pspq_SelfReport_mom
+        ",
+        array()
+    );
+    $num_rows_pspq_informant_mom_AFTER = $db->pselectOne(
+        "SELECT
+            COUNT(*)
+        FROM
+            pspq_InformantReport_mom_on_dad
+        ",
+        array()
+    );
+
+    $flag_rows_pspq_self_mom_AFTER      = $db->pselectOne(
+        "SELECT
+            COUNT(*)
+        FROM
+            flag
+        WHERE
+            Test_name = 'pspq_SelfReport_mom'
+        ",
+        array()
+    );
+    $flag_rows_pspq_informant_mom_AFTER = $db->pselectOne(
+        "SELECT
+            COUNT(*)
+        FROM
+            flag
+        WHERE
+            Test_name = 'pspq_InformantReport_mom_on_dad'
+        ",
+        array()
+    );
+
+    echo "\n* AFTER *\n" .
+        "# of rows in pspq_SelfReport_mom: " . $num_rows_pspq_self_mom_AFTER . "\n" .
+        "# of rows in pspq_InformantReport_mom_on_dad: " . $num_rows_pspq_informant_mom_AFTER . "\n" .
+        "# of rows in flag for pspq_SelfReport_mom: " . $flag_rows_pspq_self_mom_AFTER . "\n" .
+        "# of rows in flag for pspq_InformantReport_mom_on_dad: " . $flag_rows_pspq_informant_mom_AFTER . "\n";
+
+    if ($num_rows_pspq_self_mom_AFTER == ($num_rows_pspq_1 + $num_rows_pspq_self_mom)
+        && $num_rows_pspq_informant_mom_AFTER == ($num_rows_pspq_1 + $num_rows_pspq_informant_mom)
+        && $flag_rows_pspq_self_mom_AFTER == ($flag_rows_pspq_1 + $flag_rows_pspq_self_mom)
+        && $flag_rows_pspq_informant_mom_AFTER == ($flag_rows_pspq_1 + $flag_rows_pspq_informant_mom)
+    ) {
+        echo "\nPSPQ MOM MIGRATION SUCCESSFUL\n";
+    } else {
+        echo "\nPSPQ MOM MIGRATION FAILED\n";
+    }
     /*
     * PSPQ2 (FIRST HALF OF QUESTIONS) --> pspq_SelfReport_dad
     * PSPQ2 (SECOND HALF OF QUESTIONS) --> pspq_InformantReport_dad_on_mom
     */
 
-    // Get TestIDs for PSPQ Dad instruments
+    // TestIDs for PSPQ Dad instruments
     $test_id_pspq_2   = 78;
     $test_id_self_dad = 166;
     $test_id_informant_dad_on_mom = 168;
+
+    // Get total # of rows for each instrument
+    $num_rows_pspq_2        = $db->pselectOne(
+        "SELECT
+            COUNT(*)
+        FROM
+            pspq_2
+        ",
+        array()
+    );
+    $num_rows_pspq_self_dad = $db->pselectOne(
+        "SELECT
+            COUNT(*)
+        FROM
+            pspq_SelfReport_dad
+        ",
+        array()
+    );
+    $num_rows_pspq_informant_dad = $db->pselectOne(
+        "SELECT
+            COUNT(*)
+        FROM
+            pspq_InformantReport_dad_on_mom
+        ",
+        array()
+    );
+
+    // Get total # of rows in the flag table for each instrument
+    $flag_rows_pspq_2        = $db->pselectOne(
+        "SELECT
+            COUNT(*)
+        FROM
+            flag
+        WHERE
+            Test_name = 'pspq_2'
+        ",
+        array()
+    );
+    $flag_rows_pspq_self_dad = $db->pselectOne(
+        "SELECT
+            COUNT(*)
+        FROM
+            flag
+        WHERE
+            Test_name = 'pspq_SelfReport_dad'
+        ",
+        array()
+    );
+    $flag_rows_pspq_informant_dad = $db->pselectOne(
+        "SELECT
+            COUNT(*)
+        FROM
+            flag
+        WHERE
+            Test_name = 'pspq_InformantReport_dad_on_mom'
+        ",
+        array()
+    );
+
+    echo "\n*** PSPQ DAD INSTRUMENTS ***\n" .
+            "\n* BEFORE *\n" .
+            "\n# of rows in pspq_2: " . $num_rows_pspq_2 . "\n" .
+            "# of rows in pspq_SelfReport_dad: " . $num_rows_pspq_self_dad . "\n" .
+            "# of rows in pspq_InformantReport_dad_on_mom: " . $num_rows_pspq_informant_dad . "\n" .
+            "Expected # of rows in pspq_SelfReport_dad: " . $num_rows_pspq_2 . " + " . $num_rows_pspq_self_dad . " = " . ($num_rows_pspq_2 + $num_rows_pspq_self_dad) . "\n" .
+            "Expected # of rows in pspq_InformantReport_dad_on_mom: " . $num_rows_pspq_2 . " + " . $num_rows_pspq_informant_dad . " = " . ($num_rows_pspq_2 + $num_rows_pspq_informant_dad) . "\n" .
+            "\n# of rows in flag for pspq_2: " . $flag_rows_pspq_2 . "\n" .
+            "# of rows in flag for pspq_SelfReport_dad: " . $flag_rows_pspq_self_dad . "\n" .
+            "# of rows in flag for pspq_InformantReport_dad_on_mom: " . $flag_rows_pspq_informant_dad . "\n" .
+            "Expected # of rows in flag for pspq_SelfReport_dad: " . $flag_rows_pspq_2 . " + " . $flag_rows_pspq_self_dad . " = " . ($flag_rows_pspq_2 + $flag_rows_pspq_self_dad) . "\n" .
+            "Expected # of rows in flag for pspq_InformantReport_dad_on_mom: " . $flag_rows_pspq_2 . " + " . $flag_rows_pspq_informant_dad . " = " . ($flag_rows_pspq_2 + $flag_rows_pspq_informant_dad) . "\n"
+            ;
 
     // All pspq_2 comment ids
     $pspq_2_comment_ids_array = $db->pselect(
@@ -402,6 +611,8 @@ if ($confirm === false) {
         ",
         array()
     );
+
+    $i = 0;
 
     foreach ($pspq_2_comment_ids_array as $cid) {
         $is_dde = false;
@@ -623,23 +834,103 @@ if ($confirm === false) {
                 )
             );
         }
+
+        echo "\npspq_2 --> CommentID " . $old_cid . " transferred to --> pspq_SelfReport_dad and flag --> CommentID " . $new_cid_self_report . "\n" .
+        "pspq_2 --> CommentID " . $old_cid . " transferred to --> pspq_InformantReport_dad_on_mom and flag --> CommentID " . $new_cid_informant_report . "\n";
+/*
+        // Prints message to tell user that script is running every 40 rows
+        if ($i%40 == 0) {
+            echo "\nScript running...\n";
+        }
+        $i++;*/
     }
 
-    echo "\nRun this tool again with the argument 'confirm'\n";
+    $num_rows_pspq_self_dad_AFTER      = $db->pselectOne(
+        "SELECT
+            COUNT(*)
+        FROM
+            pspq_SelfReport_dad
+        ",
+        array()
+    );
+    $num_rows_pspq_informant_dad_AFTER = $db->pselectOne(
+        "SELECT
+            COUNT(*)
+        FROM
+            pspq_InformantReport_dad_on_mom
+        ",
+        array()
+    );
+
+    $flag_rows_pspq_self_dad_AFTER      = $db->pselectOne(
+        "SELECT
+            COUNT(*)
+        FROM
+            flag
+        WHERE
+            Test_name = 'pspq_SelfReport_dad'
+        ",
+        array()
+    );
+    $flag_rows_pspq_informant_dad_AFTER = $db->pselectOne(
+        "SELECT
+            COUNT(*)
+        FROM
+            flag
+        WHERE
+            Test_name = 'pspq_InformantReport_dad_on_mom'
+        ",
+        array()
+    );
+
+    echo "\n* AFTER *\n" .
+        "# of rows in pspq_SelfReport_dad: " . $num_rows_pspq_self_dad_AFTER . "\n" .
+        "# of rows in pspq_InformantReport_dad_on_mom: " . $num_rows_pspq_informant_dad_AFTER . "\n" .
+        "# of rows in flag for pspq_SelfReport_dad: " . $flag_rows_pspq_self_dad_AFTER . "\n" .
+        "# of rows in flag for pspq_InformantReport_dad_on_mom: " . $flag_rows_pspq_informant_dad_AFTER . "\n";
+
+    if ($num_rows_pspq_self_dad_AFTER == ($num_rows_pspq_2 + $num_rows_pspq_self_dad) &&
+        $num_rows_pspq_informant_dad_AFTER == ($num_rows_pspq_2 + $num_rows_pspq_informant_dad) &&
+        $flag_rows_pspq_self_dad_AFTER == ($flag_rows_pspq_2 + $flag_rows_pspq_self_dad) &&
+        $flag_rows_pspq_informant_dad_AFTER == ($flag_rows_pspq_2 + $flag_rows_pspq_informant_dad)
+    ) {
+        echo "\nPSPQ DAD MIGRATION SUCCESSFUL\n";
+    } else {
+        echo "\nPSPQ DAD MIGRATION FAILED\n";
+    }
+
+    echo "\nRun this tool again with the argument 'confirm' to remove pspq_1 and pspq_2 from the following tables:\n flag, test_names, test_battery, instrument_subtests\n";
 }
 
 if ($confirm) {
+
+    echo "\nThe following statements are running:\n
+    DELETE FROM instrument_subtests WHERE Test_name = 'pspq_1'
+    DELETE FROM test_names WHERE Test_name = 'pspq_1'
+    DELETE FROM test_battery WHERE Test_name = 'pspq_1'
+    DELETE FROM flag WHERE Test_name = 'pspq_1'\n";
+
     // Remove pspq_1
     $db->run("DELETE FROM instrument_subtests WHERE Test_name = 'pspq_1'");
     $db->run("DELETE FROM test_names WHERE Test_name = 'pspq_1'");
     $db->run("DELETE FROM test_battery WHERE Test_name = 'pspq_1'");
     $db->run("DELETE FROM flag WHERE Test_name = 'pspq_1'");
 
+    echo "\npspq_1 has successfully been removed from the following tables: flag, test_names, test_battery, instrument_subtests\n";
+
+    echo "\nThe following statements are running:\n
+    DELETE FROM instrument_subtests WHERE Test_name = 'pspq_2'
+    DELETE FROM test_names WHERE Test_name = 'pspq_2'
+    DELETE FROM test_battery WHERE Test_name = 'pspq_2'
+    DELETE FROM flag WHERE Test_name = 'pspq_2'\n";
+
     // Remove pspq_2
     $db->run("DELETE FROM instrument_subtests WHERE Test_name = 'pspq_2'");
     $db->run("DELETE FROM test_names WHERE Test_name = 'pspq_2'");
     $db->run("DELETE FROM test_battery WHERE Test_name = 'pspq_2'");
     $db->run("DELETE FROM flag WHERE Test_name = 'pspq_2'");
+
+    echo "\npspq_2 has successfully been removed from the following tables: flag, test_names, test_battery, instrument_subtests\n";
 
     // Keeping tables just in case
     // $db->run("DROP TABLE pspq_1");
