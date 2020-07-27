@@ -1,4 +1,5 @@
 import React from 'react';
+import swal from 'sweetalert2';
 
 class EmailElement extends React.Component {
   constructor() {
@@ -101,7 +102,7 @@ class ProjectFormFields extends React.Component {
 
   deleteUpload(uploadID) {
     let self = this;
-    swal({
+    swal.fire({
       title: 'Are you sure?',
       text: 'Are you sure you want to delete this file?',
       type: 'warning',
@@ -309,7 +310,7 @@ class ProjectFormFields extends React.Component {
 
     let voiTypeOptions = {
       All: 'All',
-      Behavioral: 'Behavioral',
+      Behavioural: 'Behavioural',
       Imaging: 'Imaging',
     };
 
@@ -319,8 +320,8 @@ class ProjectFormFields extends React.Component {
     if (type && type !== 'All') {
       voiOptions = this.props.allVOIs[type];
     } else {
-      // maintain behavioral VoIs by creating an object copy
-      const bvlCopy = Object.assign({}, allVOIs.Behavioral);
+      // maintain behavioural VoIs by creating an object copy
+      const bvlCopy = Object.assign({}, allVOIs.Behavioural);
       voiOptions = Object.assign(bvlCopy, allVOIs.Imaging);
     }
 
