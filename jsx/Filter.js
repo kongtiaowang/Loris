@@ -53,12 +53,6 @@ class Filter extends Component {
     ) {
       delete filter[name];
     } else {
-      if (value.constructor === Array) {
-        searchParams.delete(name);
-        value.forEach((v) => searchParams.append(name, v));
-      } else {
-        searchParams.set(name, value);
-      }
       let obj = this.props.fields.find((obj)=>obj['filter']['name'] == name);
       let comparison = null;
       if (obj['filter']['comparison'] !== null) {
@@ -134,6 +128,7 @@ class Filter extends Component {
           }
         ));
       }
+
       return result;
     }, []);
   }
