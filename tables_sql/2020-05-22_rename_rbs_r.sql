@@ -1,0 +1,1 @@
+UPDATE test_names SET Full_name = 'RBS-R - Subject (Repetitive Behavior Scale Revised - Subject) - Survey' WHERE Test_name = 'rbs_r';

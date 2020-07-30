@@ -3,7 +3,7 @@
  * This file contains the NDB_BVL_Instrument_BISQ
  * class
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Instrument
  * @package  Neuropsych
@@ -55,7 +55,7 @@ class NDB_BVL_Instrument_BISQ extends NDB_BVL_Instrument
         // setup the form
         $this->_setupForm();
     }
-    //If the instrument is not paged, remove the switch from the _setupForm method and add all the form Elements in this function.
+
     /**
      * method to build the LorisForm object into a paged form
      *
@@ -64,16 +64,8 @@ class NDB_BVL_Instrument_BISQ extends NDB_BVL_Instrument
      */
     function _setupForm()
     {
-        //determine page to display
-        if (preg_match(
-            "/BISQ(_page[0-9]+)/",
-            $this->page,
-            $matches
-        )) {
-            call_user_func(array($this, $matches[1]));
-        } else {
-            $this->_main();
-        }
+        $this->_main();
+
         $this->form->addFormRule(array(&$this, 'XINValidate'));
     }
     /**
@@ -96,8 +88,8 @@ class NDB_BVL_Instrument_BISQ extends NDB_BVL_Instrument
             "step_father" => "Step Father",
             "other" => "Other",
         );
-        $this->addSelect("responder", "Name of the Responder:", $opts);
-        $this->addBasicText("other_responder", $this->indent . "If Other, please describe:");
+        $this->addSelect("responder", "Role of the Responder:", $opts);
+        $this->addBasicText("other_responder", $this->indent . "If Other, please specify:");
         $this->XINRegisterRule(
             "other_responder",
             array("responder{@}=={@}other"),
@@ -122,7 +114,7 @@ class NDB_BVL_Instrument_BISQ extends NDB_BVL_Instrument
             "other" => "Other",
         );
         $this->addSelect("sleeping_arrangement", "Sleeping arrangement:", $where_opts);
-        $this->addBasicText("other_sleeping_arrangement", $this->indent . "If Other, please describe:");
+        $this->addBasicText("other_sleeping_arrangement", $this->indent . "If Other, please specify:");
         $this->XINRegisterRule(
             "other_sleeping_arrangement",
             array("sleeping_arrangement{@}=={@}other"),
@@ -162,6 +154,4 @@ class NDB_BVL_Instrument_BISQ extends NDB_BVL_Instrument
         $this->addSelect("is_sleep_problem", " Do you consider your child’s sleep as a problem?", $sleep_prob_opts);
 
     }
-
-
 }

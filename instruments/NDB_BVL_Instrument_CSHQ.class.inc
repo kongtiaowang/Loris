@@ -71,6 +71,8 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
                               'emptyOptionValue' => null,
                              );
 
+        $this->scoreCols = [];
+
         // setup the form
         $this->_setupForm();
     }
@@ -121,10 +123,10 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
               );
 
         while ($i = current($score_columns)) {
-            $this->addScoreColumn(
-                key($score_columns),
-                $i
-            );
+              $f=key($score_columns);
+            $group[] = $this->form->createElement('static', "$f", null, null);
+            $this->form->addGroup($group, "{$f}_score_group", "$i:", $this->_GUIDelimiter, FALSE);
+            unset($group);
             next($score_columns);
         }
         $opts = array(
@@ -230,6 +232,14 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
              2    => "Sometimes (2-4)",
              1    => "Rarely (0-1)",
             );
+        $answer_choices_na  =
+            array(
+                null => "",
+                3    => "Usually (5-7)",
+                2    => "Sometimes (2-4)",
+                1    => "Rarely (0-1)",
+                'na' => "Not Applicable"
+            );
         $problem_choices =
             array(
              null  => "",
@@ -291,13 +301,7 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
             );
 
         $this->addHeader("<h4><b><u>Bedtime</u></b></h4>");
-        $this->addHourMinElement(
-            "bed_time",
-            "Write in the child's bedtime:",
-            array(),
-            'This field is required',
-            true
-        );
+        $this->addHourMinElement('bed_time', 'Write in the child\'s bedtime:');
 
         $this->_displayHeaders("bedtime");
         $a=0;
@@ -337,12 +341,10 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
         }
 
         $this->addHeader("<h4><b><u>Sleep Behaviour</u></b></h4>");
-        $this->addHourMinElement(
-            "sleep_behavior_duration",
-            "Child’s usual amount of sleep each day:",
-            array(),
-            'This field is required',
-            true
+        $this->displayHourMinElementCustom(
+            'sleep_behavior_duration',
+            'Child\'s usual amount of sleep each day:',
+            'Usual amount of daily sleep'
         );
 
         $this->_displayHeadersSleepBehaviors("sleep_behavior");
@@ -350,11 +352,20 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
         foreach ($sleep_behavior_questions as $question => $label) {
             $b++;
             $group[] = &$this->createLabel($label);
-            $group[] = &$this->createSelect(
+            if($question=='sleeps_same_amount_each_day_item11') {
+                $group[] = &$this->createSelect(
                 $question . "_frequency",
                 "",
-                $answer_choices
+                $answer_choices_na
             );
+            }
+            else {
+                $group[] = &$this->createSelect(
+                    $question . "_frequency",
+                    "",
+                    $answer_choices
+                );
+            }
             $group[] = &$this->createSelect(
                 $question . "_problem",
                 "",
@@ -390,15 +401,16 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
                 "Field is required.", // message
                 "section2_row{$b}" // group [if field is a part of a group]
             );
-            $this->XINRegisterRule(
-                $question . "_body_pain",
-                array( $question . "_body_pain{@}=={@}NEVER_REQUIRED"), // rule
-                "Field is required.", // message
-                "section2_row{$b}" // group [if field is a part of a group]
-            );
+            if ($question == 'reports_pain_during_sleep') {
+                $this->XINRegisterRule(
+                    $question . "_body_pain",
+                    array("{$question}_problem{@}=={@}1"), // rule
+                    "Field is required.", // message
+                    "section2_row{$b}" // group [if field is a part of a group]
+                );
+            }
         }
-
-
+        $this->form->addFormRule(array(&$this, 'validate_page1'));
     }
 
     function _page2()
@@ -496,8 +508,8 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
 
         $this->addHeader("<h4><b><u>Morning Waking</u></b></h4>");
         $this->addHourMinElement(
-            "morning_waking_time",
-            "Write in the time of day child usually wakes in the morning.",
+            'morning_waking_time',
+            'Write in the time of day child usually wakes in the morning.',
             array(),
             'This field is required',
             true
@@ -600,7 +612,56 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
 
     }
 
-    function score(): void
+
+    function displayHourMinElementCustom($field, $label, $field_label)
+    {
+        for ($i = 0; $i < 24; $i ++) {
+            $hours_options["$i"]="$i hour(s)";
+        }
+        for ($i = 0; $i < 60; $i += 5) {
+            $min_options["$i"]="$i minute(s)";
+        }
+        $min_options['59']="59 minute(s)";
+
+        $default_val = array(null => '');
+        $hours_options=array_merge($default_val,$hours_options);
+        $min_options=array_merge($default_val,$min_options);
+        $group   = array();
+        $group[] = $this->createSelect($field."_hours", $field_label.' hours', $hours_options);
+        $group[] = $this->createSelect($field."_mins", $field_label.' minutes', $min_options);
+        $group[] = $this->createSelect(
+            $field."_status",
+            $field_label . ' status',
+            array(
+                null           => '',
+                "dnk"          => "Unknown",
+                'not_answered' => 'Prefer not to answer',
+            )
+        );
+
+        $this->addGroup($group, $field . "_group", $label, null, false);
+        unset($group);
+        $this->XINRegisterRule(
+            $field . "_status",
+            array("{$field}_hours{@}=={@}","{$field}_mins{@}=={@}"),
+            "Please select one of the option if you don't want to enter the time details."
+        );
+        $this->XINRegisterRule(
+            $field . "_hours",
+            array("{$field}_status{@}=={@}","{$field}_mins{@}!={@}"),
+            "Hours Required."
+        );
+        $this->XINRegisterRule(
+            $field . "_mins",
+            array("{$field}_status{@}=={@}","{$field}_hours{@}!={@}"),
+            "Mins Required."
+        );
+
+        $this->addLabel('');
+    }
+
+    function score()
+
     {
         if ($this->_determineDataEntryCompletionStatus() == "Incomplete") {
             return;
@@ -736,6 +797,9 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
         $result = $db->update($this->table, $score, array("CommentID" => $this->getCommentID()));
     }
 
+    function validate_page1($values) {
+        return $this->customDateCheck($values, ['sleep_behavior_duration']);
+    }
 
     /*
      * Validates page 2 of the form using instrument_validator.php
@@ -754,7 +818,24 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
                 }
             }
 
+            $err = $this->customDateCheck($values, ['morning_waking_time']);
+
+            if (!empty($err)) {
+                $errors = array_merge($errors, $err);
+            }
             return $errors;
         }
+    }
+
+    private function customDateCheck($values, $items) {
+        $errors = [];
+        foreach ($items as $key) {
+            if (!empty($values[$key. '_status'])) {
+                if (!empty($values[$key. '_hours']) || !empty($values[$key. '_mins'])) {
+                    $errors[$key. '_group'] = 'You have entered hours or minutes, you can not choose ' . ($values[$key. '_status'] == 'not_answered'? 'Prefer not to answer' : 'Unknown') . '.';
+                }
+            }
+        }
+        return $errors;
     }
 }

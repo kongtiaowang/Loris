@@ -1,7 +1,5 @@
 <?php
 
-
-
 class NDB_BVL_Instrument_rbs_r extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
@@ -12,7 +10,7 @@ class NDB_BVL_Instrument_rbs_r extends NDB_BVL_Instrument
     var $ValidityRequired = false;
 
     /*
-    INSERT INTO test_names VALUES ('', 'rbs_r', 'Repetitive Behavior Scale - Revised', '0', '1');
+    INSERT INTO test_names VALUES ('', 'rbs_r', 'RBS-R - Subject (Repetitive Behavior Scale Revised - Subject) - Survey', '0', '1');
     INSERT INTO instrument_subtests VALUES('', 'rbs_r', 'rbs_r_page1', 'Subscales', 1);
     -- INSERT INTO test_battery VALUES ('', 'rbs_r', '1050', '1140', 'Y', 'Visit', '3');
     */
@@ -195,7 +193,14 @@ class NDB_BVL_Instrument_rbs_r extends NDB_BVL_Instrument
     function _main()
     {
         // display test name
-        $this->form->addElement('header', 'instrument_title', "Repetitive Behavior Scale - Revised (RBS-R)");
+        $this->form->addElement('header', 'instrument_title', "RBS-R - Subject (Repetitive Behavior Scale Revised - Subject) - Survey");
+
+        $this->form->addElement(
+            'static',
+            null,
+            "<h3><i>*Please fill this form out with regard to your child who has enrolled in our study,
+            NOT their older sibling with autism.</i></h3>"
+        );
 
         $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
         $this->form->addElement('select', 'respondent', 'What is your relationship to the child', array(
@@ -221,8 +226,6 @@ class NDB_BVL_Instrument_rbs_r extends NDB_BVL_Instrument
         $this->form->addGroup($group, "overall_score_group", "Overall score:", $this->_GUIDelimiter, FALSE);
         unset($group);
 
-
-
         //Subscale scores...
         $this->form->addElement('header', null, "Subscale scores");
         //scoring columns
@@ -243,24 +246,33 @@ class NDB_BVL_Instrument_rbs_r extends NDB_BVL_Instrument
 
     function _page1()
     {
+        $this->form->addElement(
+            'static',
+            null,
+            "<h3><b>Instructions:</b>
+            <br><br>
+            <i>*Please fill this form out with regard to your child who has enrolled in our study,
+            NOT their older sibling with autism.</i>
+            <br><br>
+            Please rate this person's behavior by reading each of the items listed and then
+            choosing the score that best describes how much of a problem the item is for the
+            person. Be sure to read and score all items listed. Make your ratings based on your
+            observations and interactions with the person over the last month. Use the definitions
+            in the box given below to score each item.
+            <br><br>
+            $this->indent 0 = behavior <u>does not occur</u><br>
+            $this->indent 1 = behavior occurs and is a <u>mild</u> problem<br>
+            $this->indent 2 = behavior occurs and is a <u>moderate</u> problem.<br>
+            $this->indent 3 = behavior occurs and is a <u>severe</u> problem.<br>
+            <br> When deciding on a score for each item, consider:<br>
+            $this->indent (a) <u>how frequently the behavior occurs</u>
+            (e.g. weekly versus hourly)<br>
+            $this->indent (b) <u>how difficult it is to interrupt the behavior</u> (e.g. can
+            be easily redirected versus becomes distressed if interrupted)<br>
+            $this->indent (c) <u>how much the behavior interferes</u> with ongoing events
+            (e.g. easy to ignore versus very disruptive).</h3>"
+        );
 
-        $this->addHeader("<h3><b>Instructions:</b><BR>
-                         Please rate this person's behavior by reading each of the items listed and then
-                         choosing the score that best describes how much of a problem the item is for the 
-                         person. Be sure to read and score all items listed. Make your ratings based on your
-                         observations and interactions with the person over the last month. Use the definitions
-                         in the box given below to score each item.<BR>
-                         <BR>$this->indent 0 = behavior <u>does not occur</u><BR>
-                         $this->indent 1 = behavior occurs and is a <u>mild</u> problem<BR>
-                         $this->indent 2 = behavior occurs and is a <u>moderate</u> problem.<BR>
-                         $this->indent 3 = behavior occurs and is a <u>severe</u> problem.<BR>
-                         <BR> When deciding on a score for each item, consider:<BR>
-                         $this->indent (a) <u>how frequently the behavior occurs</u> 
-                         (e.g. weekly versus hourly)<BR>
-                         $this->indent (b) <u>how difficult it is to interrupt the behavior</u> (e.g. can
-                         be easily redirected versus becomes distressed if interrupted)<BR>
-                         $this->indent (c) <u>how much the behavior interferes</u> with ongoing events 
-                         (e.g. easy to ignore versus very disruptive).</h3>");
         //The only answer choices available in the entire form.
         $answerOptions = array(
                           null                 => '',
@@ -268,7 +280,7 @@ class NDB_BVL_Instrument_rbs_r extends NDB_BVL_Instrument
                           '1_mild_problems'    => "1 = behavior occurs and is a mild problem",
                           '2_moderate_problem' => "2 = behavior occurs and is a moderate problem",
                           '3_severe_problem'   => "3 = behavior occurs and is a severe problem",
-                          'not_answered'       => "Not Answered",
+                          'not_answered'       => "Prefer not to answer",
                          );
 
         //The first question of each section...
@@ -280,11 +292,12 @@ class NDB_BVL_Instrument_rbs_r extends NDB_BVL_Instrument
                           'q29_insists_things_remain'     => "V. Sameness Behavior Subscale",
                           'q40_fascination_preoccupation' => "VI. Restricted Behavior Subscale",
                          );
+
         $sectionDefinitions = array(
                                 'q1_whole_body'             => "(DEFINITION: apparently purposeless movements or actions
                                                             that are repeated in a similar manner)",
-                                'q7_hits_self_body_part'    => "(DEFINITION: movements or actions that have the potential 
-                                                            to cause redness, bruising, or other injury to the body, 
+                                'q7_hits_self_body_part'    => "(DEFINITION: movements or actions that have the potential
+                                                            to cause redness, bruising, or other injury to the body,
                                                             and that are repeated in a similar manner)",
                                 'q15_arranging_ordering'    => "(DEFINITION: behavior that is repeated and is performed
                                                             according to a rule, or involves things being done \"just so\")",
@@ -303,7 +316,6 @@ class NDB_BVL_Instrument_rbs_r extends NDB_BVL_Instrument
 
             $this->form->addElement('select', $field, $label, $answerOptions);
         }
-
     }
 
     function score(): void
@@ -341,11 +353,11 @@ class NDB_BVL_Instrument_rbs_r extends NDB_BVL_Instrument
             }
             //print "key: $key Q num: " . $questionNum;
             //only work with the numbered subscale questions...
-            if ($questionNum == 0) { 
+            if ($questionNum == 0) {
               continue;
             }
             //Only count the non-zero answers in both the number endorsed and the subscale scores
-            if ($value == 0) { 
+            if ($value == 0) {
               continue;
             }
             //Overall score and number endorsed...
@@ -376,7 +388,6 @@ class NDB_BVL_Instrument_rbs_r extends NDB_BVL_Instrument
 
         // save the resultant total
         $result = $db->update($this->table, $this->calculatedScores, array('CommentID' => $this->getCommentID()));
-
     }
 
     function validate_main_page($values)
