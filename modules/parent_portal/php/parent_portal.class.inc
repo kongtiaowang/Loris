@@ -78,8 +78,7 @@ class parent_portal extends \NDB_Form
                 "SELECT COUNT(*) FROM participant_accounts p
                  JOIN session s ON (p.SessionID=s.ID)
                  JOIN candidate c ON (c.CandID=s.CandID)
-                 WHERE s.Visit_label='VSA'
-                 AND p.Email=:surv_email AND c.ParentID=:pid",
+                 WHERE p.Email=:surv_email AND c.ParentID=:pid",
                 array(
                     'surv_email' => $values['email'],
                     'pid'        => $values['parentID'],

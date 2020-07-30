@@ -1,0 +1,3 @@
+INSERT INTO `Visit_Windows` (`Visit_label`, `WindowMinDays`, `WindowMaxDays`, `OptimumMinDays`, `OptimumMaxDays`, `WindowMidpointDays`, `ID`) VALUES ('V9-CVD', NULL, NULL, NULL, NULL, NULL, DEFAULT);
+INSERT INTO `Visit_Windows` (`Visit_label`, `WindowMinDays`, `WindowMaxDays`, `OptimumMinDays`, `OptimumMaxDays`, `WindowMidpointDays`, `ID`) VALUES ('V12-CVD', NULL, NULL, NULL, NULL, NULL, DEFAULT);
+INSERT INTO `Visit_Windows` (`Visit_label`, `WindowMinDays`, `WindowMaxDays`, `OptimumMinDays`, `OptimumMaxDays`, `WindowMidpointDays`, `ID`) VALUES ('V18-CVD VINELAND SUBJECT', NULL, NULL, NULL, NULL, NULL, DEFAULT);

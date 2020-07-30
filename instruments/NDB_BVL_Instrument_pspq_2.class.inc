@@ -43,6 +43,10 @@ class NDB_BVL_Instrument_pspq_2 extends NDB_BVL_Instrument
                    '5_often'          => '5. Often',
                    '6_very_often'     => '6. Very Often',
                   );
+
+    var $rating_na = array(''=>NULL, '1_very_rarely'=>"1. Very Rarely", '2_rarely'=>"2. Rarely",
+        '3_occasionally'=>"3. Occasionally",'4_somewhat_often'=>'4. Somewhat Often',
+        '5_often'=>'5. Often','6_very_often'=>'6. Very Often','na'=>'Not Applicable');
     var $relationship_child     = array(
                                    ''           => null,
                                    'mother'     => '(Biological) Mother',
@@ -173,7 +177,14 @@ class NDB_BVL_Instrument_pspq_2 extends NDB_BVL_Instrument
                      );
 
         foreach ($questions as $field=>$label) {
-            $this->addSelect($field, $label, $this->rating);
+            if($field=='q4_hard_avoid_sidetrack')
+            {
+                $this->addSelect($field, $label, $this->rating_na);
+            }
+            else {
+                $this->addSelect($field, $label, $this->rating);
+            }
+
         }
 
         // Validate text fields using instrument validator class
@@ -247,7 +258,13 @@ class NDB_BVL_Instrument_pspq_2 extends NDB_BVL_Instrument
                      );
 
         foreach ($questions as $field=>$label) {
-            $this->addSelect($field, $label, $this->rating);
+            if($field=='q25_connecting_people'|| $field=='q29_longpauses_conversations')
+            {
+                $this->addSelect($field, $label, $this->rating_na);
+            }
+            else{
+                $this->addSelect($field, $label, $this->rating);
+            }
         }
 
     }

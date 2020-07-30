@@ -20,19 +20,20 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     row[header] = rowData[index];
   }, this);
   if (column === 'URL') {
-      if (row.SurveyName === 'Air Pollution') {
-        let url = loris.BaseURL + '/survey.php?key=' + row.URL;
-        return (<td><a href={url}>{cell}</a></td>);
+      if (row.SurveyName === 'AP (Air Pollution) - Survey') {
+          let url = loris.BaseURL + '/survey.php?key=' + row.URL;
+          return (<td><a href={url}>{cell}</a></td>);
       } else {
-        let url = loris.BaseURL + '/survey_module/?key=' + row.URL;
-        return (<td><a href={url}>{cell}</a></td>);
+          let url = loris.BaseURL + '/survey_module/?key=' + row.URL;
+          return (<td><a href={url}>{cell}</a></td>);
       }
   }
     if (column === 'Parent Portal') {
         let parentid = row['Parent Portal'];
         if (parentid !='NA') {
           let url = loris.BaseURL + '/parent_portal/?id=' + parentid;
-          return (<td><a href={url} target='_blank'>Go To Parent Portal</a></td>);
+          let text='Go To Parent Portal';
+          return (<td><a href={url} target='_blank'>{text}</a></td>);
         } else {
             return <td>NA</td>;
         }

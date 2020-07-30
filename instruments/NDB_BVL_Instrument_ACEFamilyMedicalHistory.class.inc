@@ -28,7 +28,7 @@ class NDB_BVL_Instrument_ACEFamilyMedicalHistory extends NDB_BVL_Instrument
         //Any LorisForm date elements must be listed here
         //rathi updatethis
 
-        $this->_requiredElements = array('Date_taken', 'Examiner','day1_child_sick');
+        $this->_requiredElements = array('Date_taken', 'Examiner');
 
         $config = NDB_Config::singleton();
         $this->dateOptions = array(
@@ -71,17 +71,23 @@ class NDB_BVL_Instrument_ACEFamilyMedicalHistory extends NDB_BVL_Instrument
      */
     function _main(){
         $this->addHeader("ACE Family Medical History");
+
+        $this->addBasicDate('Date_taken', 'Date Taken', $this->dateOptions, ['required' => true]);
+
+        $examiners = $this->_getExaminerNames();
+        $this->addSelect('Examiner', 'Examiner', $examiners, ['required' => true]);
+
         $table_heading = array('mother'=>'Biological Mother', 'father'=>'Biological Father', 'sibling1'=>'Sibling 1', 'sibling2'=>'Sibling 2',
                        'sibling3'=>'Sibling 3','sibling4'=>'Sibling 4','sibling5'=>'Sibling 5');
         $questions = array('header'=>null,'relation'=>'Specify Relation','currentage'=>'Current age(months)','gender'=>'Sex: Male(M) or Female(F)',
-                           'last_grade_completed'=>'Last Grade Completed','asd'=>'1. Austism Spectrum Disoder','autistic_disorder'=>'2. Autistic Disorder',
+                           'last_grade_completed'=>'Last Grade Completed','asd'=>'1. Autism Spectrum Disorder','autistic_disorder'=>'2. Autistic Disorder',
                            'asperger_syndrome'=>'3. Asperger Syndrome','rett_syndrome'=>'4. Rett Syndrome','pdd_nos'=>'5. PDD-NOS','history_speechdelay'=>'6. History Speech Delay',
                            'history_development_delay'=>'7. History Development Delay','history_learndisability'=>'8. History Learning Disability',
-                           'seizure_epilepsy'=>'9. Seizure disorder/Epilepsy','cerebral_palsy'=>'10. Celebral Palsy','down_syndrome'=>'11. Down Syndrome',
-                           'mental_retardation'=>'12. Intellectual Disability','tuberoussclerosis'=>'13. Tuber Sclerosis','fragilex'=>'14. FragileX', 
-                           'neurofibomarosis'=>'15. Neurofibomarosis', 'congenitalblindness'=>'16. Congenital blindness','deafness'=>'17. Hearing impairement',
+                           'seizure_epilepsy'=>'9. Seizure disorder/Epilepsy','cerebral_palsy'=>'10. Cerebral Palsy','down_syndrome'=>'11. Down Syndrome',
+                           'mental_retardation'=>'12. Intellectual Disability','tuberoussclerosis'=>'13. Tuberous Sclerosis (Alt. Tuberosclerosis)','fragilex'=>'14. FragileX', 
+                           'neurofibomarosis'=>'15. Neurofibromatosis', 'congenitalblindness'=>'16. Congenital blindness','deafness'=>'17. Hearing Impairment',
                            'hearingcorrect_aid'=>$this->indent.'a. Hearing corrected','bipolar'=>'18. Bipolar','depression'=>'19. Depression',
-                           'anxiety'=>'20. Anxiety','ocd'=>'21. Obsessive Compulsive','schizophernai'=>'22. Schizophernia','selfinjuring'=>'23. Self injuring',
+                           'anxiety'=>'20. Anxiety','ocd'=>'21. Obsessive Compulsive','schizophernai'=>'22. Schizophrenia','selfinjuring'=>'23. Self injuring',
                            'adhd'=>'24. ADHD','eating_disorder'=>'25. Eating disorder','disrupted_sleeppatterns'=>'26. Disrupted sleep patterns', 
                             'tournette'=>'27. Tournette Syndrome');
         $options = array(''=>'','yes'=>'Yes','no'=>'No');
@@ -96,16 +102,19 @@ class NDB_BVL_Instrument_ACEFamilyMedicalHistory extends NDB_BVL_Instrument
 		    } else {     
 			    $field = $key."_".$k;
                             if($key == 'currentage') {
-			        $group[] = $this->form->createElement("text",$field,null,null);
+			                       $group[] = $this->form->createElement("text",$field,null,null);
+			                       $this->fieldNotRequired($field);
                             } else if ($key == 'relation') {
                                 if($k == 'mother' || $k == 'father') {
                                    $group[] = $this->form->createElement("static",null,null, null);
                                  } else {
                                     $group[] = $this->form->createElement("select",$field,null,$relation);
+                                    $this->fieldNotRequired($field);
                                   }
                             } else if ($key == 'last_grade_completed') { 
                                if($k == 'mother' || $k == 'father') {
                                     $group[] = $this->form->createElement("text",$field,null,null);
+                                    $this->fieldNotRequired($field);
                                  } else {
                                     $group[] = $this->form->createElement("static",null,null, null);
                                   }
@@ -114,8 +123,9 @@ class NDB_BVL_Instrument_ACEFamilyMedicalHistory extends NDB_BVL_Instrument
                                 if($key == 'gender') {
                                      $group[] = $this->form->createElement("select",$field,null,$gender);
                                 } else {
-			             $group[] = $this->form->createElement("select",$field,null,$options);
+			                         $group[] = $this->form->createElement("select",$field,null,$options);
                                 }
+                                $this->fieldNotRequired($field);
                            }
 		    }
 	    }
@@ -126,5 +136,12 @@ class NDB_BVL_Instrument_ACEFamilyMedicalHistory extends NDB_BVL_Instrument
 
     }
 
+    function fieldNotRequired($name) {
+        $this->XINRegisterRule(
+            $name,
+            array("$name{@}=={@}NEVER_REQUIRED"),
+            'Not required'
+        );
+    }
 }
 ?>

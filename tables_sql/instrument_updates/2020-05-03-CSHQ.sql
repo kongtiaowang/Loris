@@ -1,0 +1,2 @@
+ALTER TABLE CSHQ DROP COLUMN bed_time_hours;
+ALTER TABLE CSHQ DROP COLUMN bed_time_mins;

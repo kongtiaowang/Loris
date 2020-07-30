@@ -8,6 +8,9 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
 
+
+    use instrument_validator;
+
     /*
     INSERT INTO test_names VALUES ('', 'med_psych_hist', 'Medical Psychiatric History', '0', '1');
     INSERT INTO instrument_subtests VALUES('', 'med_psych_hist', 'med_psych_hist_page1', '1. Pregnancy History', 1);
@@ -62,31 +65,31 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
         //The array of selects with multiple answers allowed
         //Any LorisForm multiple selects must be listed here
         $this->_selectMultipleElements = array(
-        //        "a_aut_spect_disorder_who",
-        //        "b_fragile_x_who",
-        //        "c_tuberous_sclerosis_who",
-        //        "d_neurofibromatosis_who",
-        //        "e_rett_syndrome_who",
-        //        "f_child_disint_disorder_who",
-        //        "g_prader_willi_syndrome_who",
-        //        "h_angelman_syndrome_who",
-        //        "i_other_chromosomal_who",
-        //        "j_congenital_rubella_who",
-        //        "k_pku_who",
-        //        "l_hydrocephalus_who",
-        //        "m_cerebral_palsy_who",
-        //        "n_mental_retardation_who",
-        //        "o_seizures_who",
-        //        "p_speech_delay_therapy_who",
-        //        "q_add_who",
-        //        "r_panic_anxiety_dis_who",
-        //        "s_depression_who",
-        //        "t_manic_depres_bi_who",
-        //        "u_schizophrenia_who",
-        //        "v_hospital_mental_ill_who",
-        //        "w_birth_defects_who",
-        //        "x_cancer_who",
-        //        "y_norrie_syndrome_who",
+                                          //        "a_aut_spect_disorder_who",
+                                          //        "b_fragile_x_who",
+                                          //        "c_tuberous_sclerosis_who",
+                                          //        "d_neurofibromatosis_who",
+                                          //        "e_rett_syndrome_who",
+                                          //        "f_child_disint_disorder_who",
+                                          //        "g_prader_willi_syndrome_who",
+                                          //        "h_angelman_syndrome_who",
+                                          //        "i_other_chromosomal_who",
+                                          //        "j_congenital_rubella_who",
+                                          //        "k_pku_who",
+                                          //        "l_hydrocephalus_who",
+                                          //        "m_cerebral_palsy_who",
+                                          //        "n_mental_retardation_who",
+                                          //        "o_seizures_who",
+                                          //        "p_speech_delay_therapy_who",
+                                          //        "q_add_who",
+                                          //        "r_panic_anxiety_dis_who",
+                                          //        "s_depression_who",
+                                          //        "t_manic_depres_bi_who",
+                                          //        "u_schizophrenia_who",
+                                          //        "v_hospital_mental_ill_who",
+                                          //        "w_birth_defects_who",
+                                          //        "x_cancer_who",
+                                          //        "y_norrie_syndrome_who",
                                           "q4_pregnancy_ART_type",
                                           "q5_pregnancy_health_problems",
                                           "q6_pregnancy_meds",
@@ -132,7 +135,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
         // This hasn't been implemented terrifically smoothly.  It may require an extra "Save Data" click.
         // During most regular workflows (data entry), the glitches should go unnoticed.  Hopefully.
         $query   = "SELECT abbrev_full_version from med_psych_hist WHERE CommentID = '".$this->getCommentID()."'";
-        $version = $db->pselectOne($query,array());
+        $version = $db->pselectOne($query, array());
 
         if ($version == 'abbrev') {
             $this->_requiredElements = array_merge($this->_requiredElements, array("child_pregnancy_number"));
@@ -140,7 +143,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
             $this->_requiredElements = array_merge($this->_requiredElements, array("q4_pregnancy_ART", "q10_meds_induce_labor", "q15_seizures_convulsions"));
         }
         $record = $db->pselectOne("SELECT followup_form_updated FROM med_psych_hist WHERE CommentID=:cid", array('cid' => $this->getCommentID()));
-        if($record == 'no') {
+        if ($record == 'no') {
             $this->_requiredElements = array();
         }
 
@@ -291,7 +294,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
         $this->yesNo = array_merge(array(null => ''), $this->yesNo);
 
         //determine page to display
-        if(preg_match("/med_psych_hist(_page[0-9]+)/", $this->page, $matches)) {
+        if (preg_match("/med_psych_hist(_page[0-9]+)/", $this->page, $matches)) {
             call_user_func(array($this, $matches[1]));
         } else {
             $this->_main();
@@ -311,7 +314,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
     {
 
         $db = & Database::singleton();
-        if(isset($_REQUEST['CommentID'])) {
+        if (isset($_REQUEST['CommentID'])) {
             $cand = $db->pselectRow(
                 "SELECT c.CandID, s.Visit_label from session as s, flag as f, candidate c where f.sessionId = s.ID and
                                  s.CandID=c.CandID and f.CommentID=:cid",
@@ -322,12 +325,12 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
 
             $firstVisit = false;
             $vLabel     = $db->pselectOne(
-                "SELECT Visit_label FROM session s JOIN candidate c 
-                                   ON (c.CandID = s.CandID) WHERE c.CandID=:cid 
+                "SELECT Visit_label FROM session s JOIN candidate c
+                                   ON (c.CandID = s.CandID) WHERE c.CandID=:cid
                                    ORDER BY Date_Visit",
                 array('cid' => $cand['CandID'])
             );//get first visit for candidate
-            if($vLabel ==  $cand['Visit_label']) {
+            if ($vLabel ==  $cand['Visit_label']) {
                 $firstVisit = true; //if current visit label is same as visit label returned must be first visit
             }
             $current_visitlabel = $cand['Visit_label'];
@@ -395,7 +398,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
                              "twentieth"   => "Twentieth",
                             );
         reset($firstToTwentieth);
-        while(list($field, $label) = each($firstToTwentieth)){
+        while (list($field, $label) = each($firstToTwentieth)) {
             //        foreach($firstToTwentieth as $label=>$nth) {
             $this->form->addElement('static', null, "{$label} Pregnancy");
             $this->form->addElement(
@@ -516,7 +519,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
         $this->form->addGroup($group, null, "Disorder", $this->_GUIDelimiter, false);
         unset($group);
 
-        foreach($questionArray as $field=>$label) {
+        foreach ($questionArray as $field=>$label) {
             $group[] = $this->form->createElement("select", $field, $label, $answerArray);
             $group[] = $this->form->createElement("select", "{$field}_who", null, $realtives, "multiple");
             //$group[] = $this->form->addSelect("{$field}_who", null, $realtives, array("multiple"));  // BREAKS FORMATING!
@@ -534,7 +537,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
             $this->XINRegisterRule("{$field}_who_other_status", array("{$field}_who{@}=={@}other", "{$field}_who_other{@}=={@}"), "Please specify the relative, or select Not Answered", "{$field}_group");
             unset($group);
 
-            if($field == "i_other_chromosomal") {
+            if ($field == "i_other_chromosomal") {
                 $this->addTextElement("i_other_chromosomal_other", $this->indent . "Please specify", array("i_other_chromosomal{@}=={@}1_yes|2_not_sure"), "Please specify the chromosomal abnormality");
             } elseif ($field == "x_cancer") {
                 $this->addTextElement("x_cancer_other", $this->indent . "Please specify", array("x_cancer{@}=={@}1_yes|2_not_sure"), "Please specify the cancer type");
@@ -580,12 +583,14 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
              "h_generalized_edema"             => "h. Generalized edema",
              "i_proteinuria"                   => "i. Proteinuria",
              "j_high_blood_pressure"           => "j. High blood pressure",
+             "none"                            => "None",
              "not_answered"                    => "Not Answered",
             ),
             array("multiple")
         );
-        $this->addTextElement("q5_pregnancy_health_problems_specify", $this->indent . "If other, (please specify)", array("q5_pregnancy_health_problems{@}=={@}f_other_major_illness_or_injury"), "If other health problems, please specify or select Not Answered");
+        $this->addTextElement("q5_pregnancy_health_problems_specify", $this->indent . "If other, (please specify)", array("q5_preg_health_probs{@}=={@}f_other_major_illness_or_injury"), "If other health problems, please specify or select Not Answered");
 
+        // $questionArray --> q6 dropdown
         $questionArray = array(
                           null                          => null,
                           "a_antibio_infections"        => "a. Antibiotics for infections",
@@ -607,6 +612,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
                           "q_thalidomide"               => "q. Thalidomide (please specify why)",
                           "r_misoprostol"               => "r. Misoprostol (please specify why)",
                           "s_other"                     => "s. Other (please specify medication and why)",
+                          "none"                        => "None",
                           "not_answered"                => "Not Answered",
                          );
 
@@ -617,19 +623,54 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
             array("multiple")
         );
 
+        // $subquestionLabels --> q6a-s subquestion labels
+        $subquestionLabels = array(
+                              "a_antibio_infections"        => "a. If Antibiotics for infections",
+                              "b_acne_meds"                 => "b. If Medications for acne",
+                              "c_birth_control_meds"        => "c. If Medications for birth control",
+                              "d_antihypertensives"         => "d. If Antihypertensives for high blood pressure",
+                              "e_heart_cardiac_meds"        => "e. If Medications for heart or cardiac problems",
+                              "f_ADD_meds"                  => "f. If Medications for Attention Deficit Disorder",
+                              "g_antiepilep_anti_seizure"   => "g. If Antiepileptics or anti-seizure medications",
+                              "h_diabetes_meds"             => "h. If Medications to control diabetes",
+                              "i_thyroid_meds"              => "i. If Medications to regulate thyroid",
+                              "j_antidepressants"           => "j. If Antidepressants",
+                              "k_mood_stabs_anti_psychos"   => "k. If Mood stabilizers or anti-psychotics",
+                              "l_tranquilizers_nerve_pills" => "l. If Tranquilizers or nerve pills",
+                              "m_pain_killers"              => "m. If Pain killers",
+                              "n_sedatives_sleeping_pills"  => "n. If Sedatives or sleeping pills",
+                              "o_anti_inflam_immune"        => "o. If Anti-inflammatory or anti-immune drugs",
+                              "p_treatment_for_HIV"         => "p. If Treatment for HIV",
+                              "q_thalidomide"               => "q. If Thalidomide (please specify why)",
+                              "r_misoprostol"               => "r. If Misoprostol (please specify why)",
+                              "s_other"                     => "s. If Other (please specify medication and why)",
+                             );
+
         $this->form->addElement("static", null, "Please specify when's");
-        foreach($questionArray as $field=>$label) {
-            if ($field != "not_answered" && $field != null) {
-                $this->addSelect("q6_{$field}_when_taken", $this->indent . "If $label were taken, when?:", array(null => "", "0_before" => "0 Before", "1_after" => "1 After", "2_both" => "2 Both", "3_breastfeeding" => "3 Breastfeeding", "not_answered" => "Not Answered"), array("multiple"));
-                $this->XINRegisterRule("q6_{$field}_when_taken", array("q6_pregnancy_meds{@}=={@}{$field}"), "Please specify when $label was taken");
-                $this->_selectMultipleElements[] = "q6_{$field}_when_taken";
-            }
+        foreach ($subquestionLabels as $field => $label) {
+            $this->addSelect(
+                "q6_{$field}_when_taken",
+                $this->indent . $label . " were taken, when?:",
+                array(
+                 null              => "",
+                 "0_before"        => "0 Before",
+                 "1_after"         => "1 After",
+                 "2_both"          => "2 Both",
+                 "3_breastfeeding" => "3 Breastfeeding",
+                 "not_answered"    => "Not Answered",
+                ),
+                array("multiple")
+            );
+            $this->XINRegisterRule("q6_{$field}_when_taken", array("q6_pregnancy_meds{@}=={@}{$field}"), "Please specify when $field was taken");
+            $this->_selectMultipleElements[] = "q6_{$field}_when_taken";
         }
 
         $this->form->addElement("static", null, "Please specify what's and why's");
         $this->addTextElement("q6_preg_meds_q_thalid_specify", $this->indent . "If q. Thalidomide, please specify why medication was prescribed", array("q6_pregnancy_meds{@}=={@}q_thalidomide"), "If Thalidomide was prescribed, please specify why.");
         $this->addTextElement("q6_preg_meds_r_miso_specify", $this->indent . "If r. Misoprostol, please specify why medication was prescribed", array("q6_pregnancy_meds{@}=={@}r_misoprostol"), "If Misoprostol was prescribed, please specify why.");
         $this->addTextElement("q6_preg_meds_s_other_specify", $this->indent . "If s. Other, please specify medication and why it was prescribed", array("q6_pregnancy_meds{@}=={@}s_other"), "If Other meds were prescribed, please specify which and why.");
+
+        $this->form->addFormRule(array(&$this, 'validate_page3'));
     }
 
     function _page4()
@@ -645,6 +686,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
              "b_abnormal_ultrasound_or_sonogram" => "b. Abnormal ultrasound or sonogram",
              "c_abnormal_amniocentesis_or_CVS"   => "c. Abnormality from an amniocentesis or CVS",// (please specify)
              "d_other"                           => "d. Other (please specify)",
+             "none"                              => "None",
              "not_answered"                      => "Not answered",
             ),
             array("multiple")
@@ -662,6 +704,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
                  null                            => "",
                  "a_drink_alcohol"               => "a. Drink alcohol",
                  "b_smoke_cigarettes_or_tobacco" => "b. Smoke cigarettes or tobacco",
+                 "none"                          => "None",
                  "not_answered"                  => "Not Answered",
                 ),
                 array("multiple")
@@ -684,6 +727,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
             $this->form->addElement('static', null, null);
 
             //9.
+            // $questionArray --> q9 dropdown
             $questionArray = array(
                               null                        => "",
                               "a_marijuana_hashish"       => "a. Smoke marijuana or hashish (THC)",
@@ -693,8 +737,9 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
                               "e_amphet_stims"            => "e. Take Amphetamines or other stimulants",
                               "f_ecstasy"                 => "f. Take Ecstasy",
                               "g_hallucinogens"           => "g. Take Hallucinogens",
-                              "h_inhalants"               => "h. Take inhalants that you sniff or breathe",
+                              "h_inhalants"               => "h. Take Inhalants that you sniff or breathe",
                               "i_other"                   => "i. Other (please specify)",
+                              "none"                      => "None",
                               "not_answered"              => "Not Answered",
                              );
 
@@ -705,26 +750,40 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
                 array("multiple")
             );
 
+            // $subquestionLabels --> q9a-i subquestion labels
+            $subquestionLabels = array(
+                                  "a_marijuana_hashish"       => "a. If marijuana or hashish (THC) was smoked, when?",
+                                  "b_cocaine_crack_free_base" => "b. If Cocaine, Crack, or Free base was taken, when?",
+                                  "c_heroin"                  => "c. If Heroin (includes speed balling) was taken, when?",
+                                  "d_methadone"               => "d. If Methadone was taken, when?",
+                                  "e_amphet_stims"            => "e. If Amphetamines or other stimulants were taken, when?",
+                                  "f_ecstasy"                 => "f. If Ecstasy was taken, when?",
+                                  "g_hallucinogens"           => "g. If Hallucinogens were taken, when?",
+                                  "h_inhalants"               => "h. If Inhalants that you sniff or breathe were taken, when?",
+                                  "i_other"                   => "i. If Other drugs were taken, when? (please specify)",
+                                 );
+
             $this->form->addElement("static", null, "Please specify when the drugs were taken");
-            foreach($questionArray as $field=>$label) {
-                if ($field != "not_answered" && $field != null) {
-                    $this->addSelect(
-                        "q9_{$field}_when_taken",
-                        $this->indent . "If $label were taken, when?:",
-                        array(
-                            null => "",
-                            "0_before" => "0 Before",
-                            "1_after" => "1 After",
-                            "2_both" => "2 Both",
-                            "3_breastfeeding" => "3 Breastfeeding",
-                            "not_answered" => "Not Answered",
-                        ),
-                        array("multiple")
-                    );
-                    $this->XINRegisterRule("q9_{$field}_when_taken", array("q9_pregnancy_drugs{@}=={@}{$field}"), "Please specify when $label was taken");
-                    $this->_selectMultipleElements[] = "q9_{$field}_when_taken";
-                }
+
+            foreach ($subquestionLabels as $field => $label) {
+                $this->addSelect(
+                    "q9_{$field}_when_taken",
+                    $this->indent . $label,
+                    array(
+                     null              => "",
+                     "0_before"        => "0 Before",
+                     "1_after"         => "1 After",
+                     "2_both"          => "2 Both",
+                     "3_breastfeeding" => "3 Breastfeeding",
+                     "not_answered"    => "Not Answered",
+                    ),
+                    array("multiple")
+                );
+
+                $this->XINRegisterRule("q9_{$field}_when_taken", array("q9_pregnancy_drugs{@}=={@}{$field}"), "Please specify when $field was/were taken");
+                $this->_selectMultipleElements[] = "q9_{$field}_when_taken";
             }
+
             $this->addTextElement("q9_i_other_specify", $this->indent . $this->indent ."If other drugs, please specify", array("q9_pregnancy_drugs{@}=={@}i_other"), "If other drugs were taken, please specify");
 
             //Labour, Deliver and Newborn info
@@ -738,7 +797,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
             $this->addTextElement("q11_birth_weight_lbs", $this->indent . "...in pounds");
             $this->addTextElement("q11_birth_weight_ozs", $this->indent . "...and ounces");
 
-            $this->form->addElement("static", null, "11b. What where this child's APGAR scores at...");
+            $this->form->addElement("static", null, "11b. What were this child's APGAR scores at...");
             $this->addTextElement("q11_apgar_1_minute", $this->indent . "...at 1 minute:");
             $this->addTextElement("q11_apgar_5_minute", $this->indent . "...at 5 minutes:");
 
@@ -762,6 +821,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
                  "l_clinical_dysmaturity"                => "l. Clinical dysmaturity",
                  "m_difficulty_regulating_temperature"   => "m. Difficulty regulating temperature",
                  "n_oxygen_treatment"                    => "n. Oxygen treatment (>30 %)",
+                 "none"                                  => "None",
                  "not_answered"                          => "Not Answered",
                 ),
                 array("multiple")
@@ -770,13 +830,19 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
             //13.
             $this->form->addElement("select", "q13_neonatal_icu", "13. Did this child stay in the neonatal intensive care unit?", $this->yesNo);
             $this->addTextElement("q13_neonatal_icu_reason", $this->indent . $this->indent . "If yes, why did the child stay at NICU", array("q13_neonatal_icu{@}=={@}1_yes"), "Please indicate the reason why child was in the Neonatal ICU");
-            $this->addNumericElement("q13_neonatal_icu_days", $this->indent . $this->indent . "a. Number of days", array("q13_neonatal_icu{@}=={@}1_yes"), "Please indicate the number of days spent in the Neonatal ICU");
-            $this->addNumericElement("q13_neonatal_icu_hours", $this->indent . $this->indent . "b. Number of hours", array("q13_neonatal_icu{@}=={@}1_yes"), "Please indicate the number of hours spent in the Neonatal ICU");
+
+            $this->addNumericElement("q13_neonatal_icu_days", $this->indent . $this->indent . "a. Number of days");
+            $this->XINRegisterRule("q13_neonatal_icu_days", array("q13_neonatal_icu{@}=={@}1_yes"), "Please indicate the number of days spent in the Neonatal ICU", "q13_neonatal_icu_days_group");
+
+            $this->addNumericElement("q13_neonatal_icu_hours", $this->indent . $this->indent . "a. Number of hours");
+            $this->XINRegisterRule("q13_neonatal_icu_hours", array("q13_neonatal_icu{@}=={@}1_yes"), "Please indicate the number of hours spent in the Neonatal ICU", "q13_neonatal_icu_hours_group");
 
             //14.
             $this->form->addElement("static", null, "14. How many days or hours total did this child stay in the hospital?");
             $this->addNumericElement("q14_child_hospitalised_days", $this->indent . "Number of days:");
             $this->addNumericElement("q14_child_hospitalised_hours", $this->indent . "Number of hours:");
+
+            $this->form->addFormRule(array(&$this, 'validate_page4'));
     }
 
     function _page5()
@@ -812,6 +878,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
                           "a_abnormal_brain_picture"         => "a. Had an abnormal picture of the brain",
                           "b_meningitis_encephalitis"        => "b. Been hospitalized for meningitis or encephalitis",
                           "c_lost_consciousness_head_injury" => "c. Lost consciousness due to a head injury",
+                          "none"                             => "None",
                           "not_answered"                     => "Not Answered",
                          );
         $this->addSelect("q16_has_child_ever", "16. Has this child ever...", $questionArray, array("multiple"));
@@ -835,6 +902,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
              "d_heart_defect"             => "d. Heart defect (please specify",
              "e_kidney_defect"            => "e. Kidney defect(please specify)",
              "f_other_defect"             => "f. Other defect(please specify)",
+             "none"                       => "None",
              "not_answered"               => "Not Answered",
             ),
             array("multiple")
@@ -844,7 +912,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
         $this->addTextElement("q17_f_other_defect_specify", $this->indent . "If other defect, please specify", array("q17_birth_defects{@}=={@}f_other_defect"), "Please specify the other defect.");
 
         //18.
-        $this->form->addElement("select", "q18_other_chronic", "18. Does the child being evaluated today for autism have any other chronic medical problems?", $this->yesNo);
+        $this->form->addElement("select", "q18_other_chronic", "18. Does the child being evaluated today have any other chronic medical problems?", $this->yesNo);
         $this->form->addElement("static", null, $this->indent . "If yes...");
         $abc = array(
                 "a" => "1",
@@ -861,7 +929,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
     function Med_Rules($values)
     {
         $errors = array();
-        if(($values['q8_pregnancy_alcohol_tobacco'] == 'b_smoke_cigarettes_or_tobacco')
+        if (($values['q8_pregnancy_alcohol_tobacco'] == 'b_smoke_cigarettes_or_tobacco')
             || ($values['q8_b_tobacco_when_taken'] != null)
             && ($values['q8_b1_cigarette_perday']) == null
         ) {
@@ -885,21 +953,108 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
 
         $firstVisit = false;
         $vLabel     = $db->pselectOne(
-            "SELECT Visit_label FROM session s JOIN candidate c 
-                                   ON (c.CandID = s.CandID) WHERE c.CandID=:cid 
+            "SELECT Visit_label FROM session s JOIN candidate c
+                                   ON (c.CandID = s.CandID) WHERE c.CandID=:cid
                                    ORDER BY Date_Visit",
             array('cid' => $cand['CandID'])
         );//get first visit for candidate
-        if($vLabel ==  $cand['Visit_label']) {
+        if ($vLabel ==  $cand['Visit_label']) {
             $firstVisit = true; //if current visit label is same as visit label returned must be first visit
         }
         $current_visitlabel = $cand['Visit_label'];
-        if($vLabel != $current_visitlabel && empty($values['followup_form_updated'])) {
+        if ($vLabel != $current_visitlabel && empty($values['followup_form_updated'])) {
             $errors['followup_form_updated'] = "PLease indicate if there were changes";
         }
 
         return $errors;
     }
 
+    function validate_page3($values)
+    {
+        $errors = [];
+
+        $q6_subq = array(
+                    "a_antibio_infections",
+                    "b_acne_meds",
+                    "c_birth_control_meds",
+                    "d_antihypertensives",
+                    "e_heart_cardiac_meds",
+                    "f_ADD_meds",
+                    "g_antiepilep_anti_seizure",
+                    "h_diabetes_meds",
+                    "i_thyroid_meds",
+                    "j_antidepressants",
+                    "k_mood_stabs_anti_psychos",
+                    "l_tranquilizers_nerve_pills",
+                    "m_pain_killers",
+                    "n_sedatives_sleeping_pills",
+                    "o_anti_inflam_immune",
+                    "p_treatment_for_HIV",
+                    "q_thalidomide",
+                    "r_misoprostol",
+                    "s_other",
+                   );
+
+        $q6_answer_array = $values["q6_pregnancy_meds"];
+
+        foreach ($q6_subq as $q) {
+            if (!in_array($q, $q6_answer_array)) {
+                $tmp = "";
+                foreach ($values["q6_{$q}_when_taken"] as $i) {
+                     $tmp .= $i;
+                }
+                $values["q6_{$q}_when_taken"] = $tmp;
+
+                $this->validate_empty_subquestions($values, ["q6_{$q}_when_taken"], $errors);
+            }
+        }
+
+        /*
+        $q6_specify = array(
+            "q_thalidomide" => "q6_preg_meds_q_thalid_specify",
+            "r_misoprostol" => "q6_preg_meds_r_miso_specify",
+            "s_other" => "q6_preg_meds_s_other_specify",
+        );
+
+        foreach ($q6_specify as $field => $question) {
+            if (!in_array($field, $q6_answer_array)) {
+                $this->validate_empty_subquestions($values, [$question], $errors);
+            }
+        }*/
+
+        return $errors;
+    }
+
+    function validate_page4($values)
+    {
+        $errors = [];
+
+        $q9_subq = array(
+                    "a_marijuana_hashish",
+                    "b_cocaine_crack_free_base",
+                    "c_heroin",
+                    "d_methadone",
+                    "e_amphet_stims",
+                    "f_ecstasy",
+                    "g_hallucinogens",
+                    "h_inhalants",
+                    "i_other",
+                   );
+
+        $q9_answer_array = $values["q9_pregnancy_drugs"];
+
+        foreach ($q9_subq as $q) {
+            if (!in_array($q, $q9_answer_array)) {
+                $tmp = "";
+                foreach ($values["q9_{$q}_when_taken"] as $i) {
+                     $tmp .= $i;
+                }
+                $values["q9_{$q}_when_taken"] = $tmp;
+
+                $this->validate_empty_subquestions($values, ["q9_{$q}_when_taken"], $errors);
+            }
+        }
+        return $errors;
+    }
 }
 ?>

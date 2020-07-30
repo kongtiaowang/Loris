@@ -207,6 +207,15 @@ class NDB_BVL_Instrument_conners_parent extends NDB_BVL_Instrument
                 3 => "3 - Very much true"
             );
 
+        $options_na =
+            array(
+                null => "",
+                0 => "0 - Not true at all",
+                1 => "1 - Just a little true",
+                2 => "2 - Pretty much true",
+                3 => "3 - Very much true",
+                'not_applicable'=> "Not Applicable"
+            );
         $questions =
             array(
                 "q1" => "1. Forgets to turn in completed work",
@@ -255,7 +264,13 @@ class NDB_BVL_Instrument_conners_parent extends NDB_BVL_Instrument
             );
 
         foreach ($questions as $key => $question) {
-            $this->addSelect($key, $question, $options);
+            if($key=='q42' || $key=='q11')
+            {
+                $this->addSelect($key, $question, $options_na);
+            }
+            else{
+                $this->addSelect($key, $question, $options);
+            }
         }
 
         $this->addLabel("<h3>Additional Questions</h3>");

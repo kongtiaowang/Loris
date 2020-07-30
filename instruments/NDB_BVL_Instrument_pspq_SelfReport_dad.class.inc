@@ -16,6 +16,9 @@ class NDB_BVL_Instrument_pspq_SelfReport_dad extends NDB_BVL_Instrument
     var $rating = array(''=>NULL, '1_very_rarely'=>"1. Very Rarely", '2_rarely'=>"2. Rarely",
                         '3_occasionally'=>"3. Occasionally",'4_somewhat_often'=>'4. Somewhat Often',
                         '5_often'=>'5. Often','6_very_often'=>'6. Very Often');
+    var $rating_na = array(''=>NULL, '1_very_rarely'=>"1. Very Rarely", '2_rarely'=>"2. Rarely",
+        '3_occasionally'=>"3. Occasionally",'4_somewhat_often'=>'4. Somewhat Often',
+        '5_often'=>'5. Often','6_very_often'=>'6. Very Often','na'=>'Not Applicable');
     var $respondent = array(''=>NULL,'mother'=>'Mother','father'=>'Father','stepmother'=>'Step-Mother',
                             'stepfather'=>'Step-Father','other'=>'Other');
 
@@ -131,8 +134,14 @@ class NDB_BVL_Instrument_pspq_SelfReport_dad extends NDB_BVL_Instrument
                            "q12_easy_approach"=>"12. People find it easy to approach me");
 
         foreach($questions as $field=>$label) {
-            $this->addSelect($field, $label, $this->rating);
-            $this->XINRegisterRule($field,array("$field{@}=={@}NEVER_REQUIRED"));
+            if($field=='q4_hard_avoid_sidetrack')
+            {
+                $this->addSelect($field, $label, $this->rating_na);
+            }
+            else {
+                $this->addSelect($field, $label, $this->rating);
+            }
+            //$this->XINRegisterRule($field,array("$field{@}=={@}NEVER_REQUIRED"));
 
         }
 
@@ -159,7 +168,7 @@ class NDB_BVL_Instrument_pspq_SelfReport_dad extends NDB_BVL_Instrument
 
         foreach($questions as $field=>$label) {
             $this->addSelect($field, $label, $this->rating);
-            $this->XINRegisterRule($field,array("$field{@}=={@}NEVER_REQUIRED"));
+           // $this->XINRegisterRule($field,array("$field{@}=={@}NEVER_REQUIRED"));
         }
 
       //  $this->form->addFormRule(array(&$this, 'PSPQ_Rules'));
@@ -183,8 +192,15 @@ class NDB_BVL_Instrument_pspq_SelfReport_dad extends NDB_BVL_Instrument
                            "q36_enjoy_chatting"=>"36. I enjoy chatting with people");
 
         foreach($questions as $field=>$label) {
-            $this->addSelect($field, $label, $this->rating);
-            $this->XINRegisterRule($field,array("$field{@}=={@}NEVER_REQUIRED"));
+            if($field=='q25_connecting_people'|| $field=='q29_longpauses_conversations')
+            {
+                $this->addSelect($field, $label, $this->rating_na);
+            }
+            else{
+                $this->addSelect($field, $label, $this->rating);
+            }
+
+            //$this->XINRegisterRule($field,array("$field{@}=={@}NEVER_REQUIRED"));
         }
 
        // $this->form->addFormRule(array(&$this, 'PSPQ_Rules'));

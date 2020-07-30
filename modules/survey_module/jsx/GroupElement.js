@@ -63,6 +63,18 @@ class ElementGroup extends React.Component {
 				labelClass = 'col-xs-12 col-sm-2 field_question';
 				elementClass = 'col-xs-12 col-sm-2';
 				break;
+            case 6:
+                labelClass = 'col-xs-12 col-sm-2 field_question';
+                elementClass = 'col-xs-10 col-sm-custom';
+                break;
+            case 7:
+                labelClass = 'col-xs-12 col-sm-2 field_question';
+                elementClass = 'col-xs-10 col-sm-custom';
+                break;
+            case 8:
+                labelClass = 'col-xs-12 col-sm-2 field_question';
+                elementClass = 'col-xs-10 col-sm-custom';
+                break;
 		}
 
 		if(this.props.errors[this.props.element.Name]) {
@@ -313,6 +325,14 @@ class BaseElement extends React.Component {
 		this.props.updateAnswer(this.props.element.Name, e.target.value);
 	}
 
+	onSelect(lNull, value) {
+		if (this.props.value !== value) {
+			this.props.updateAnswer(this.props.element.Name, value);
+		} else {
+			this.props.updateAnswer(this.props.element.Name, lNull);
+		}
+	}
+
 	render() {
 		let element;
 		let classInfo = this.props.classInfo;
@@ -332,19 +352,31 @@ class BaseElement extends React.Component {
 			);
 		}
 
+		let rightTxt = null;
 		switch(this.props.element.Type){
 			case 'text':
 				value = this.props.value != null ? this.props.value : '';
 
-				element = (
-					<input
-						type="text"
-						name={this.props.element.Name}
-						className="form-control"
-						onChange={this.updateValue}
-						value={value}
-					/>
-				);
+				if (this.props.element.Options.Type === 'small') {
+					element = (
+						<input
+							type="text"
+							name={this.props.element.Name}
+							className="form-control"
+							onChange={this.updateValue}
+							value={value}
+						/>
+					);
+				} else {
+					element = (
+						<textarea
+							name={this.props.element.Name}
+							className="form-control"
+							onChange={this.updateValue}
+							value={value}
+						/>
+					);
+				}
 				break;
 			case 'select':
 				let options = [];
@@ -364,6 +396,36 @@ class BaseElement extends React.Component {
 						{options}
 					</select>
 				);
+				break;
+			case 'advcheckbox':
+				let value = this.props.value != null ? this.props.value : '';
+				let checked = null;
+				if (this.props.element.States.length == 2) {
+					let lNull = this.props.element.States[0];
+					let strValue = String(this.props.element.States[1]);
+					if (strValue === value) {
+						checked = (
+							<i className="glyphicon glyphicon-ok" ></i>
+						);
+					}
+					if (this.props.element.RightTxt !== '') {
+						rightTxt = (
+							<div className="h3title rightTxt">
+								<span>{this.props.element.RightTxt}</span>
+							</div>
+						);
+					}
+					element = (
+						<div className="selectBox" onClick={this.onSelect.bind(this, lNull, strValue)}>
+							<label className="btn btn-default btn-box">
+								{checked}
+							</label>
+						</div>
+					);
+				}
+				else {
+					element = null;
+				}
 				break;
 			case 'label':
 				let content = '';
@@ -408,6 +470,7 @@ class BaseElement extends React.Component {
 		return (
 			<div className={classInfo}>
 				{element}
+				{rightTxt}
 				{errorMessage}
 			</div>
 		);
