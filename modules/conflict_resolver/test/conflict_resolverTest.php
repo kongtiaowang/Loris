@@ -218,14 +218,6 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
     function testSaveUnresolvedToResolved()
     {
          //set canID 475906 to resolved
-         $row        = self::$display;
-        $this->safeGet($this->url."/conflict_resolver/");
-         //todo find this
-        $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector($row)
-        )->getText();
-         // 4 means there are 4 records under this site.
-        $this->assertContains("of 574", $bodyText);
         $this->safeGet(
             $this->url .
             "/conflict_resolver/?CandID=475906&instrument=radiology_review"
@@ -235,13 +227,13 @@ class ConflictResolverTestIntegrationTest extends LorisIntegrationTest
         $el_dropdown = new WebDriverSelect(
             $this->safeFindElement(WebDriverBy::cssSelector("$element"))
         );
-        $el_dropdown->selectByVisibleText("no");sleep(2);
+        $el_dropdown->selectByVisibleText("no");
         $this->safeGet($this->url."/conflict_resolver/");
          //todo find this
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector($row)
         )->getText();
          // 4 means there are 4 records under this site.
-        $this->assertContains("of 573", $bodyText);
+        $this->assertContains("of 572", $bodyText);
     }
 }
