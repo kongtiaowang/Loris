@@ -183,16 +183,6 @@ class NDB_BVL_Instrument_Med_Psych_History_survey extends NDB_BVL_Instrument
                                   "8"  => "Eighth",
                                   "9"  => "Ninth",
                                   "10" => "Tenth",
-                                  "11" => "Eleventh",
-                                  "12" => "Twelfth",
-                                  "13" => "Thirtheenth",
-                                  "14" => "Fourteenth",
-                                  "15" => "Fifteenth",
-                                  "16" => "Sixteenth",
-                                  "17" => "Seventeenth",
-                                  "18" => "Eighteenth",
-                                  "19" => "Ninteenth",
-                                  "20" => "Twentieth",
                                  );
 
         $q1a_options = array(
@@ -1251,7 +1241,7 @@ class NDB_BVL_Instrument_Med_Psych_History_survey extends NDB_BVL_Instrument
     {
         $errors = [];
 
-        for ($i = 1; $i <= 20; $i++) {
+        for ($i = 1; $i <= 10; $i++) {
             if ($values["q1_a_what_was_the_outcome_of_pregnancy_" . $i] != "live_birth") {
                 $this->validate_empty_subquestions($values, ["q1_a1_if_live_birth_child_still_living_pregnancy_" . $i], $errors);
             }
