@@ -63,7 +63,19 @@ class NDB_BVL_Instrument_Med_Psych_History_survey extends NDB_BVL_Instrument
 
         //The array of dates/timestamps to convert to database dates/timestamps
         //Any LorisForm date elements must be listed here
-        $this->dateTimeFields =array("Date_taken");
+        $this->dateTimeFields = array(
+                                 "Date_taken",
+                                 "q1_b_date_of_birth_pregnancy_1",
+                                 "q1_b_date_of_birth_pregnancy_2",
+                                 "q1_b_date_of_birth_pregnancy_3",
+                                 "q1_b_date_of_birth_pregnancy_4",
+                                 "q1_b_date_of_birth_pregnancy_5",
+                                 "q1_b_date_of_birth_pregnancy_6",
+                                 "q1_b_date_of_birth_pregnancy_7",
+                                 "q1_b_date_of_birth_pregnancy_8",
+                                 "q1_b_date_of_birth_pregnancy_9",
+                                 "q1_b_date_of_birth_pregnancy_10",
+                                );
 
         //The array of selects with multiple answers allowed
         //Any LorisForm multiple selects must be listed here
