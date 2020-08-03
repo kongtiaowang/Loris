@@ -147,7 +147,6 @@ class NDB_BVL_Instrument_Med_Psych_History_survey extends NDB_BVL_Instrument
     {
         $this->addHeader("Medical and Psychiatric History - Survey");
 
-        // TO DO: CHANGE INSTRUCTIONS
         $this->form->addElement(
             'static',
             null,
@@ -289,21 +288,21 @@ class NDB_BVL_Instrument_Med_Psych_History_survey extends NDB_BVL_Instrument
             disorder or problem listed. If so, provide details regarding who has the disorder or problem by selecting the appropriate person.
             <h4><i>
             <br>
-            Column Definitions:
+            Definitions:
             <br><br>
-            Child = child being evaluated in this study;<br>
+            Child = Child being evaluated in this study;<br>
             Parents of Child (Mom) = Mother of child being evaluated;<br>
             Parents of Child (Dad)= Father of child being evaluated;<br>
-            Siblings = brothers or sisters of child being evaluated;<br>
-            1⁄2 Siblings = half brothers or sisters of child;<br>
-            First Cousins = first cousins of child being evaluated;<br>
-            Aunts and Uncles = aunts and uncles of child being evaluated;<br>
-            Grandparents = grandparents of child being evaluated;<br>
+            Siblings = Brothers or sisters of child being evaluated;<br>
+            1⁄2 Siblings = Half brothers or sisters of child;<br>
+            First Cousins = First cousins of child being evaluated;<br>
+            Aunts and Uncles = Aunts and uncles of child being evaluated;<br>
+            Grandparents = Grandparents of child being evaluated;<br>
             Other = Other blood relatives of child being evaluated.<br>
             <br>
             For the relative options 1⁄2 Siblings, First Cousins, Aunts and Uncles and Grandparents, Maternal and Paternal are defined as follows:<br>
-            Maternal = mother’s (of child being evaluated) side of the family,<br>
-            Paternal = father’s (of child being evaluated) side of the family.
+            Maternal = Mother’s (of child being evaluated) side of the family,<br>
+            Paternal = Father’s (of child being evaluated) side of the family.
             </i></h4>"
         );
 
@@ -357,7 +356,7 @@ class NDB_BVL_Instrument_Med_Psych_History_survey extends NDB_BVL_Instrument
                                 "aunts_uncles_pat"     => "Aunts & Uncles (Paternal)",
                                 "grandparents_mat"     => "Grandparents (Maternal)",
                                 "grandparents_pat"     => "Grandparents (Paternal)",
-                                // "multiple_relatives"   => "Multiple Relatives",
+                                "multiple"             => "Multiple Relatives (specify relationships)",
                                 "other"                => "Other (specify relationship)",
                                 "not_answered"         => "Not Answered",
                                );
@@ -385,6 +384,12 @@ class NDB_BVL_Instrument_Med_Psych_History_survey extends NDB_BVL_Instrument
             null,
             null,
             "<h4><b><i>If Other, specify relationship</i></b></h4>"
+        );
+        $group[] =& $this->form->createElement(
+            "static",
+            null,
+            null,
+            "<h4><b><i>If Multiple Relatives, specify relationships</i></b></h4>"
         );
         $this->addGroup(
             $group,
@@ -417,6 +422,11 @@ class NDB_BVL_Instrument_Med_Psych_History_survey extends NDB_BVL_Instrument
                 $this->indent . "If other relative, specify:"
             );
 
+            $group[] =& $this->createText(
+                "q3_disorder_" . $i . "_relative_multiple",
+                $this->indent . "If multiple relatives, specify:"
+            );
+
             $this->XINRegisterRule(
                 "q3_disorder_" . $i . "_relative",
                 array("q3_disorder_{$i}_presence{@}=={@}yes"),
@@ -428,6 +438,13 @@ class NDB_BVL_Instrument_Med_Psych_History_survey extends NDB_BVL_Instrument
                 "q3_disorder_" . $i . "_relative_other",
                 array("q3_disorder_{$i}_relative{@}=={@}other"),
                 "Required if other.",
+                "q3_disorder_" . $i . "_group"
+            );
+
+            $this->XINRegisterRule(
+                "q3_disorder_" . $i . "_relative_multiple",
+                array("q3_disorder_{$i}_relative{@}=={@}multiple"),
+                "Required if multiple.",
                 "q3_disorder_" . $i . "_group"
             );
 
@@ -1282,6 +1299,10 @@ class NDB_BVL_Instrument_Med_Psych_History_survey extends NDB_BVL_Instrument
 
             if ($values["q3_disorder_" . $i . "_relative"] != "other") {
                 $this->validate_empty_subquestions($values, ["q3_disorder_" . $i . "_relative_other"], $errors);
+            }
+
+            if ($values["q3_disorder_" . $i . "_relative"] != "multiple") {
+                $this->validate_empty_subquestions($values, ["q3_disorder_" . $i . "_relative_multiple"], $errors);
             }
         }
 
