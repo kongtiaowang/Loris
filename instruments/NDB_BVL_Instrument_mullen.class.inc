@@ -505,9 +505,11 @@ class NDB_BVL_Instrument_mullen extends NDB_BVL_Instrument
 
 
         // Get the subject DoB for scoring
-        if($this->getSessionID() != NULL) { //quickform_parser doesn't use any specific session
-            $timepoint =& TimePoint::singleton($this->getSessionID());
-            $dob = $timepoint->getEffectiveDateOfBirth();
+        if($this->getSessionID() != NULL ) { //quickform_parser doesn't use any specific session
+            if($this->getSessionID()!=-1) {
+                $timepoint =& TimePoint::singleton($this->getSessionID());
+                $dob = $timepoint->getEffectiveDateOfBirth();
+            }
         }
         if(!empty($dob) && !empty($record['Date_taken'])) {
             $age = Utility::calculateAge($dob, $record["Date_taken"]);
@@ -519,7 +521,7 @@ class NDB_BVL_Instrument_mullen extends NDB_BVL_Instrument
           $this->localDefaults = array_merge($this->localDefaults, $this->composite_band_of_error($age_months));
         }
 
-        // required fields for data entry completion status
+        // required fields for data entry completionstatus
         $this->_requiredElements = array('Examiner', "Date_taken");
 
         $this->_doubleDataEntryDiffIgnoreColumns = array_merge(array('CommentID', 'UserID', 'Testdate',

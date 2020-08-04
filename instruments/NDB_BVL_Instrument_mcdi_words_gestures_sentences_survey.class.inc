@@ -21,24 +21,7 @@ class NDB_BVL_Instrument_mcdi_words_gestures_sentences_survey extends NDB_BVL_In
     var $_doubleDataEntryDiffIgnoreColumns = array('CommentID', 'Testdate', 'Window_Difference', 'Candidate_Age',
         "Data_entry_completion_status");
 
-    public function getFullName()
-    {
-        return 'MCDI - Words, Gestures & Sentences Survey';
-    }
-
-    public function getSubtestList(): array
-    {
-        return [['Name' => 'mcdi_words_gestures_sentences_survey_page1', 'Description' => 'Part I: A1-3'],
-            ['Name' => 'mcdi_words_gestures_sentences_survey_page2', 'Description' => 'Part I: A4-5'],
-            ['Name' => 'mcdi_words_gestures_sentences_survey_page3', 'Description' => 'Part I: A6-8'],
-            ['Name' => 'mcdi_words_gestures_sentences_survey_page4', 'Description' => 'Part I: A9-11'],
-            ['Name' => 'mcdi_words_gestures_sentences_survey_page5', 'Description' => 'Part I: A12-14'],
-            ['Name' => 'mcdi_words_gestures_sentences_survey_page6', 'Description' => 'Part I: A15-18'],
-            ['Name' => 'mcdi_words_gestures_sentences_survey_page7', 'Description' => 'Part I: A19-22, B'],
-            ['Name' => 'mcdi_words_gestures_sentences_survey_page8', 'Description' => 'Part II'],
-            ['Name' => 'mcdi_words_gestures_sentences_survey_page9', 'Description' => 'Part III']
-        ];
-    }
+    use LegacyInstrumentTrait;
 
     /**
      * sets up basic data, such as the LorisForm object, and so on.
@@ -48,7 +31,8 @@ class NDB_BVL_Instrument_mcdi_words_gestures_sentences_survey extends NDB_BVL_In
      * @return void
      * @access public
      */
-    function setup($commentID, $page){
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
+    {
         $this->formType="XIN";
         $this->form = new LorisForm('test_form');
         $this->page = $page;            // page label (number or string - used by user-defined child classes)

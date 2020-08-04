@@ -2,7 +2,14 @@
 
 class NDB_BVL_Instrument_adi_r extends NDB_BVL_Instrument
 {
-    use LegacyInstrumentTrait;
+    public function getFullName(): string
+    {
+        return '';
+    }
+
+    function getSubtestList(): array {
+        return [];
+    }
 
 	//Commonly used level of indentation;
 	var $indent = "&nbsp;&nbsp;&nbsp;&nbsp;";
@@ -34,7 +41,7 @@ class NDB_BVL_Instrument_adi_r extends NDB_BVL_Instrument
     * @return void
     * @access public
     */
-    function _setup($commentID = null, $page = null){
+    function setup(?string $commentID = NULL, ?string $page = NULL): void{
         $this->formType="XIN";
         $this->form = new LorisForm('test_form');
         $this->page = $page;            // page label (number or
@@ -70,7 +77,7 @@ class NDB_BVL_Instrument_adi_r extends NDB_BVL_Instrument
     */
     function _setupForm(){
 
-        $this->_getAge();
+        //$this->_getAge();
 
         if(preg_match("/(_page[0-9]+)/",$this->page,$matches)){
             call_user_func(array($this, $matches[1]));

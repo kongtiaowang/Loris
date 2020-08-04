@@ -5,6 +5,8 @@ require_once('NDB_BVL_Instrument_adi_r.class.inc');
 
 class NDB_BVL_Instrument_adi_r_subject extends NDB_BVL_Instrument_adi_r
 {
+
+    use LegacyInstrumentTrait;
 /*
 These SQL's are for testing purposes only and do not represent actual database values
 
@@ -43,7 +45,7 @@ DoB subject should be somewhere in the candidate table.  For now, we'll just mak
         $this->table = 'adi_r_subject';              // name of database table corresponding to instrument
 
         // setup the form
-        $this->_setup($commentID, $page);
+        $this->_setupForm();
 
     }
     

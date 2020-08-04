@@ -5,7 +5,14 @@
 
 class NDB_BVL_Instrument_scq extends NDB_BVL_Instrument
 {
-    use LegacyInstrumentTrait;
+    public function getFullName(): string
+    {
+        return '';
+    }
+
+    function getSubtestList(): array {
+        return [];
+    }
 
 	var $yesNo = array(null=>"", "yes"=>"Yes", "no"=>"No", "not_answered"=>"Not Answered");
     var $onlyYesNo = array(null=>"","yes"=>"Yes","no"=>"No");
@@ -19,7 +26,8 @@ class NDB_BVL_Instrument_scq extends NDB_BVL_Instrument
     * @return void
     * @access public
     */
-	function _setup($commentID, $page){
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
+	{
 		$this->formType="XIN";
 		$this->form = new LorisForm('test_form');
 		$this->page = $page;            // page label (number or

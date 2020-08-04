@@ -22,6 +22,7 @@
  */
 class NDB_BVL_Instrument_Infant_social_motivation_survey extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
     private const Options = [
         null                 => '',
         'not_true'           => 'Not TRUE',

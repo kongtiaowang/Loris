@@ -15,6 +15,7 @@
 
 class NDB_BVL_Instrument_rbs_ecs extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
     var $ValidityEnabled  = false;
     var $ValidityRequired = false;
 
@@ -132,17 +133,6 @@ class NDB_BVL_Instrument_rbs_ecs extends NDB_BVL_Instrument
         $this->_setupForm();
     }
 
-    public function getFullName()
-    {
-        return 'Repetitive Behavior Scales Early Childhood Supplement (RBS-ECS)';
-    }
-
-    public function getSubtestList(): array {
-        return [['Name' => 'rbs_ecs_page1', 'Description' => 'Page 1'],
-                ['Name' => 'rbs_ecs_page2', 'Description' => 'Page 2'],
-                ['Name' => 'rbs_ecs_page3', 'Description' => 'Page 3'],
-                ['Name' => 'rbs_ecs_page4', 'Description' => 'Page 4']];
-    }
 
     /**
      * Method to build the LorisForm object into a paged form

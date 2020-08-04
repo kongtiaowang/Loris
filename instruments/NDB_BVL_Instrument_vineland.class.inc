@@ -5,7 +5,14 @@
 
 class NDB_BVL_Instrument_vineland extends NDB_BVL_Instrument
 {
-    use LegacyInstrumentTrait;
+    public function getFullName(): string
+    {
+        return '';
+    }
+
+    function getSubtestList(): array {
+        return [];
+    }
 
     /**
     * sets up basic data, such as the LorisForm object, and so on.
@@ -15,7 +22,8 @@ class NDB_BVL_Instrument_vineland extends NDB_BVL_Instrument
     * @return void
     * @access public
     */
-    function _setup($commentID, $page){
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
+    {
         $this->formType="XIN";
         $this->form = new LorisForm('test_form');
         $this->page = $page;            // page label (number or
@@ -94,9 +102,10 @@ class NDB_BVL_Instrument_vineland extends NDB_BVL_Instrument
          // Get the item scores
 
          $db =& Database::singleton();
-
-         $query = "SELECT * FROM ".$this->table." WHERE CommentID='".$this->getCommentID()."'";
-         $record = $db->pselectRow($query, array());
+    if($this->getCommentID()!=NULL) {
+        $query = "SELECT * FROM " . $this->table . " WHERE CommentID='" . $this->getCommentID() . "'";
+        $record = $db->pselectRow($query, array());
+    }
          
 
          $this->_addMetadataFields();
@@ -219,11 +228,13 @@ class NDB_BVL_Instrument_vineland extends NDB_BVL_Instrument
       
          // add rules
          // parent report question
-         if($this->getFieldValue("File_name")===false){
-             $this->form->addRule("vineland_file", "Vineland file is required.", 'required', null, 'server');
-         } else {
-             $this->XINRegisterRule("vineland_file", array("vineland_file{@}==={@}NEVER_REQUIRED"));
-         }
+        if($this->commentID!=NULL) {
+            if ($this->getFieldValue("File_name") === false) {
+                $this->form->addRule("vineland_file", "Vineland file is required.", 'required', null, 'server');
+            } else {
+                $this->XINRegisterRule("vineland_file", array("vineland_file{@}==={@}NEVER_REQUIRED"));
+            }
+        }
          // handedness questions
 
 	   $this->form->addElement('static', null, "<br /><br />");
@@ -748,15 +759,17 @@ $db->_trackChanges = false;
         $ndar_item = $item . "_NDAR";
         $commentid = $this->getCommentID();
 
-        $record = $db->pSelectRow("select $item, $corritem from " . $this->table . " WHERE CommentID=:cid", array('cid' => $commentid));
+        if($commentid!=NULL) {
+            $record = $db->pSelectRow("select $item, $corritem from " . $this->table . " WHERE CommentID=:cid", array('cid' => $commentid));
 
-        if($record[$corritem] == "") {
-            $setvalue = $record[$item];
-            $success = $db->update($this->table, array($ndar_item=> $setvalue),
-                array('CommentID' => $commentid)
-            );
-        } else {
-            $setvalue = $record[$corritem];
+            if ($record[$corritem] == "") {
+                $setvalue = $record[$item];
+                $success = $db->update($this->table, array($ndar_item => $setvalue),
+                    array('CommentID' => $commentid)
+                );
+            } else {
+                $setvalue = $record[$corritem];
+            }
         }
     }
 

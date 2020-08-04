@@ -4,6 +4,7 @@ require_once('NDB_BVL_Instrument_scq.class.inc');
 
 class NDB_BVL_Instrument_scq_proband extends NDB_BVL_Instrument_scq
 {
+    use LegacyInstrumentTrait;
     var $ValidityEnabled = false;
     var $ValidityRequired = false;
 
@@ -29,7 +30,7 @@ INSERT INTO test_battery VALUES ('', 'scq_proband', '1050', '1140', 'Y', 'Visit'
         $this->testName = "scq_proband";           // test_names.Test_name
         $this->table = 'scq_proband';              // name of database table corresponding to instrument
 
-        $this->_setup($commentID, $page);
+        $this->_setupForm();
     }
     function _addAdditionalComments() {
         $this->form->addElement('static',null,'<br>');

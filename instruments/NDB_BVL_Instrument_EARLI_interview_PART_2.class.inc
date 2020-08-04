@@ -2,7 +2,7 @@
 require_once('NDB_BVL_Instrument_EARLI_interview.class.inc');
 
 class NDB_BVL_Instrument_EARLI_interview_PART_2 extends NDB_BVL_Instrument_EARLI_interview {
-
+    use LegacyInstrumentTrait;
 
     /**
      * sets up basic data, such as  *

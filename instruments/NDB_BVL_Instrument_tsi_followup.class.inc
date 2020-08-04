@@ -18,10 +18,12 @@ class NDB_BVL_Instrument_tsi_followup extends NDB_BVL_Instrument
         if($sessionid === false){
            return null;    
         }
-        $timepoint =& TimePoint::singleton($sessionid);
-        $candidate =& Candidate::singleton($timepoint->getCandID());
-        $candID = $timepoint->getCandID(); 
-        $projID = $candidate->getProjectID();
+        if($this->getSessionID()!=-1) {
+            $timepoint =& TimePoint::singleton($sessionid);
+            $candidate =& Candidate::singleton($timepoint->getCandID());
+            $candID = $timepoint->getCandID();
+            $projID = $candidate->getProjectID();
+        }
 
         if ($projID == 2) {
             //for IBIS2 tsi is part of Screening visit

@@ -40,7 +40,7 @@ insert into instrument_subtests values ('', 'EARLI_interview_S3_inserts', 'EARLI
 
 
 class NDB_BVL_Instrument_EARLI_interview_S3_inserts extends NDB_BVL_Instrument_EARLI_interview {
-
+    use LegacyInstrumentTrait;
 
          var $dateOptions1960 = array(
                 'language' => 'en',

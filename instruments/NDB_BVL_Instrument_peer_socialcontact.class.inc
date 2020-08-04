@@ -194,7 +194,7 @@ class NDB_BVL_Instrument_peer_socialcontact extends NDB_BVL_Instrument
            $group [] = $this->createText("peer_initials_".$i,"Initials of child $i:");
            $this->addGroup($group,"peer_initials_".$i."_group","Initials of child $i:",null, false);
            unset($group);
-           $this->XINRegisterRule('peer_initials_'.$i, array("peer_initials_.$i{@}=={@}NEVER_REQUIRED"), null, "peer_initials_".$i."_group");
+           $this->XINRegisterRule('peer_initials_'.$i, array("peer_initials_.$i{@}=={@}NEVER_REQUIRED"), '', "peer_initials_".$i."_group");
         }
         $this->form->addElement("static", null, "<br><br>");
         $this->form->addFormRule(array(&$this, 'Peer_Rules'));
@@ -419,7 +419,7 @@ class NDB_BVL_Instrument_peer_socialcontact extends NDB_BVL_Instrument
 
             $group [] = $this->createText("activity_".$i,"Type or name of group activity :");
             $this->addGroup($group,"activity_".$i."_group","Type or name of group activity :",null, false);
-            $this->XINRegisterRule('activity_'.$i, array("activity_$i{@}=={@}NEVER_REQUIRED"), null, "activity_".$i."_group");
+            $this->XINRegisterRule('activity_'.$i, array("activity_$i{@}=={@}NEVER_REQUIRED"), '', "activity_".$i."_group");
             unset($group);
             $this->addSelect('activity_desc_'.$i,"Which one of the following best describes the group",$this->activity_desc);
             $this->XINRegisterRule('activity_desc_'.$i, array("activity_desc_$i{@}=={@}NEVER_REQUIRED") );
@@ -464,7 +464,7 @@ class NDB_BVL_Instrument_peer_socialcontact extends NDB_BVL_Instrument
             $group [] = $this->createText("special_service_".$i,"Type or name of group activity :");
             $this->addGroup($group,"special_service_".$i."_group","Type or name of group activity :",null, false);
             unset($group);
-            $this->XINRegisterRule('special_service_'.$i, array("special_service_.$i{@}=={@}NEVER_REQUIRED"), null, "special_service_".$i."_group");
+            $this->XINRegisterRule('special_service_'.$i, array("special_service_.$i{@}=={@}NEVER_REQUIRED"), '', "special_service_".$i."_group");
             $this->addSelect('special_service_desc_'.$i,"Which one of the following best describes the group",$this->special_service);
             $this->XINRegisterRule('special_service_desc_'.$i, array("special_service_$i{@}=={@}NEVER_REQUIRED") );
 

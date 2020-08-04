@@ -22,7 +22,8 @@
  * @link     https://www.github.com/aces/IBIS/
  */
 class NDB_BVL_Instrument_ksad extends NDB_BVL_Instrument
-{   
+{
+    use LegacyInstrumentTrait;
     // Max number of error messages to show when parsing an uploaded file
     const MAX_UPLOAD_ERRORS_SHOWN = 10;
 
@@ -66,7 +67,7 @@ class NDB_BVL_Instrument_ksad extends NDB_BVL_Instrument
      *
      * @access public
      */
-    function setup($commentID, $page)
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
     {
         // Set the object properties
         $this->formType  = 'XIN';

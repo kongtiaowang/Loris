@@ -15,6 +15,7 @@
 
 class NDB_BVL_Instrument_rbs_ec_survey extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
     var $ValidityEnabled  = false;
     var $ValidityRequired = false;
 
@@ -95,16 +96,7 @@ class NDB_BVL_Instrument_rbs_ec_survey extends NDB_BVL_Instrument
         // setup the form
         $this->_setupForm();
     }
-
-    public function getFullName()
-    {
-        return 'Repetitive Behavior Scale for Early Childhood (Infant Items) Survey';
-    }
-
-    public function getSubtestList(): array {
-        return [['Name' => 'rbs_ec_survey_page1', 'Description' => 'Page 1'],
-                ['Name' => 'rbs_ec_survey_page2', 'Description' => 'Page 2']];
-    }
+    
 
     /**
      * Method to build the LorisForm object into a paged form

@@ -2,7 +2,8 @@
 
 require_once('NDB_BVL_Instrument_med_records.class.inc');
 
-class NDB_BVL_Instrument_med_records_24 extends NDB_BVL_Instrument_med_records {
+class NDB_BVL_Instrument_med_records_24 extends NDB_BVL_Instrument {
+    use LegacyInstrumentTrait;
 	/*
     INSERT INTO test_names VALUES('', 'med_records_24', 'Medical Records Data Extraction: 24 months', '0', '1');
     INSERT INTO instrument_subtests VALUES('', 'med_records_24', 'med_records_24_page1', '1. Possible Exclusionary Criteria', 1);
@@ -164,8 +165,29 @@ class NDB_BVL_Instrument_med_records_24 extends NDB_BVL_Instrument_med_records {
 
 
 		// setup the form
-		$this->_setup ( $commentID, $page );
+        $this->_setupForm();
 	}
+
+    /*
+    * Method to build the LorisForm object into a paged form
+    *
+    * @return void
+    * @access private
+    */
+    function _setupForm()
+    {
+        //determine page to display
+        if (preg_match(
+            "/med_records_24(_page[0-9]+)/",
+            $this->page,
+            $matches
+        )) {
+            call_user_func(array($this, $matches[1]));
+        } else {
+            $this->_main();
+        }
+        $this->form->addFormRule(array(&$this, 'XINValidate'));
+    }
 	
 	/**
 	 * generates the main page of the form.

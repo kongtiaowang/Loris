@@ -129,7 +129,7 @@ class NDB_BVL_Instrument_ibq_r_survey extends NDB_BVL_Instrument
     	$this->form->addFormRule(array(&$this,'XINValidate'));
     }
 
-    function score(){
+    function score(): void {
         if($this->_determineDataEntryCompletionStatus() == "Incomplete") {
             return;
         }
