@@ -2,6 +2,7 @@
 require_once('NDB_BVL_Instrument_EARLI_interview.class.inc');
 
 class NDB_BVL_Instrument_EARLI_interview_PART_1 extends NDB_BVL_Instrument_EARLI_interview {
+    use LegacyInstrumentTrait;
     /**
      * sets up basic data, such as  *
      * @param string $commentID  the CommentID identifying the data to load

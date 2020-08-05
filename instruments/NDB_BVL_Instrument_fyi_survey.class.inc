@@ -5,6 +5,7 @@
 
 class NDB_BVL_Instrument_fyi_survey extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
 /*
 INSERT INTO test_names(Test_name, Full_name, Sub_Group, IsDirectEntry) VALUES('fyi_survey', 'First Year Inventory - Survey Version', '13', '1');
 INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number)  VALUES('fyi_survey', 'fyi_survey_page1', '#1-#46', 1);
@@ -38,7 +39,8 @@ INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_num
     * @access public
     */
 
-    function setup($commentID, $page){
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
+    {
         $this->formType="XIN";
         $this->form = new LorisForm('test_form');
         $this->page = $page;            // page label (number or
@@ -388,7 +390,8 @@ INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_num
          return $errors;
     }
 
-    function score() {
+    function score(): void
+    {
          if($this->_determineDataEntryCompletionStatus() == "Incomplete") {
             return;
          }

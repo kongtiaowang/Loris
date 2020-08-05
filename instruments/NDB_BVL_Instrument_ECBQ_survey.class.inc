@@ -22,6 +22,7 @@
  */
 class NDB_BVL_Instrument_ECBQ_survey extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
     /**
      * Sample SQL statement for test_names table and instrument subtests table
      *
@@ -45,7 +46,7 @@ class NDB_BVL_Instrument_ECBQ_survey extends NDB_BVL_Instrument
      * @return void
      * @access public
      */
-    function setup($commentID, $page)
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
     {
         $this->formType = "XIN";
         $this->form     = new LorisForm('ECBQ_survey_form');

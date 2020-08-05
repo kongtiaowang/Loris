@@ -23,6 +23,7 @@
  */
 class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
 {
+    use LegacyInstrumentTrait;
     use instrument_validator;
     var $ValidityEnabled  = false;
     var $ValidityRequired = false;
@@ -660,7 +661,7 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
         $this->addLabel('');
     }
 
-    function score()
+    function score(): void
 
     {
         if ($this->_determineDataEntryCompletionStatus() == "Incomplete") {

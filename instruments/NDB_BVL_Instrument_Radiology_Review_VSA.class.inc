@@ -75,10 +75,12 @@ class NDB_BVL_Instrument_Radiology_Review_VSA extends NDB_BVL_Instrument
         $visitLabel = '';
         $session = $this->getSessionID();
         if (!empty($session)) {
-          $timepoint = \TimePoint::singleton($session);
-          $visitLabel = $timepoint->getVisitLabel();
-          $candidate = \Candidate::singleton($timepoint->getCandID());
-          $pscid     = $candidate->getPSCID();
+            if($session!=-1) {
+                $timepoint = \TimePoint::singleton($session);
+                $visitLabel = $timepoint->getVisitLabel();
+                $candidate = \Candidate::singleton($timepoint->getCandID());
+                $pscid = $candidate->getPSCID();
+            }
         }
         //PSCID:
         $this->form->addElement('static', "pscid", "PSCID:  ".$pscid);        

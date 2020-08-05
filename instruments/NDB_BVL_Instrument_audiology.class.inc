@@ -5,7 +5,14 @@
 
 class NDB_BVL_Instrument_audiology extends NDB_BVL_Instrument
 {
-    use LegacyInstrumentTrait;
+    public function getFullName(): string
+    {
+        return '';
+    }
+
+    function getSubtestList(): array {
+        return [];
+    }
 
 /*
 INSERT INTO test_names VALUES ('', 'audiology', 'Audiology Evaluation Results', '0', '1');

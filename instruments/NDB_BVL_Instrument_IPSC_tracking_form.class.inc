@@ -131,7 +131,7 @@ class NDB_BVL_Instrument_IPSC_tracking_form extends NDB_BVL_Instrument
     }
 
 // This function is overridden here to send the email notifications if blood draw date is set.
-    function _save($values)
+    function _save(array $values): void
     {
         // clear any fields starting with __
         foreach (array_keys($values) AS $key) {

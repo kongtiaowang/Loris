@@ -261,7 +261,7 @@ class NDB_BVL_Instrument_LENA_DailyActivityLog extends NDB_BVL_Instrument
         $list = array ("_environment","_dlpstatus","_individuals","_notes");
         foreach($list as $term) {
            $final_field = $field.$term;
-           $this->XINRegisterRule($final_field, array("$final_field{@}=={@}NEVER_REQUIRED"),null,$groupname);
+           $this->XINRegisterRule($final_field, array("$final_field{@}=={@}NEVER_REQUIRED"),'',$groupname);
 
         }
         $this->form->addGroup($group, $groupname, null, $this->_GUIDelimiter, false);

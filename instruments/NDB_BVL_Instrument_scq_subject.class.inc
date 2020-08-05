@@ -4,6 +4,7 @@ require_once('NDB_BVL_Instrument_scq.class.inc');
 
 class NDB_BVL_Instrument_scq_subject extends NDB_BVL_Instrument_scq
 {
+    use LegacyInstrumentTrait;
 /*
 INSERT INTO test_names VALUES ('', 'scq_subject', 'SCQ (Subject)', '0', '1');
 
@@ -26,7 +27,7 @@ INSERT INTO test_battery VALUES ('', 'scq_subject', '1050', '1140', 'Y', 'Visit'
         $this->testName = "scq_subject";           // test_names.Test_name
         $this->table = 'scq_subject';              // name of database table corresponding to instrument
 
-        $this->_setup($commentID, $page);
+        $this->_setupForm();
     }
 }
 ?>

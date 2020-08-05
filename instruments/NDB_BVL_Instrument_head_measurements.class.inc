@@ -3,7 +3,14 @@
 
 class NDB_BVL_Instrument_head_measurements extends NDB_BVL_Instrument
 {
-    use LegacyInstrumentTrait;
+    public function getFullName(): string
+    {
+        return '';
+    }
+
+    function getSubtestList(): array {
+        return [];
+    }
 
 /*
 INSERT INTO test_names VALUES ('', 'head_measurements', 'Measurements Data Sheet', '0', '1');
@@ -20,7 +27,8 @@ INSERT INTO test_battery VALUES ('', 'head_measurements', '1050', '1140', 'Y', '
     * @return void
     * @access public
     */
-    function _setup($commentID, $page){
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
+    {
         $this->formType="XIN";
         $this->form = new LorisForm('test_form');
         $this->page = $page;            // page label (number or

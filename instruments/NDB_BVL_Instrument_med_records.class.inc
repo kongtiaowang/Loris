@@ -5,7 +5,14 @@
 
 class NDB_BVL_Instrument_med_records extends NDB_BVL_Instrument
 {
-    use LegacyInstrumentTrait;
+    public function getFullName(): string
+    {
+        return '';
+    }
+
+    function getSubtestList(): array {
+        return [];
+    }
 
     var $ValidityEnabled = false;
     var $ValidityRequired = false;
@@ -24,7 +31,7 @@ class NDB_BVL_Instrument_med_records extends NDB_BVL_Instrument
 	 * @return void
 	 * @access public
 	 */
-	function _setup($commentID, $page) {
+    function setup(?string $commentID = NULL, ?string $page = NULL): void {
 		$this->formType = "XIN";
 //		$this->	
 		$this->form = new LorisForm ( 'test_form' );
@@ -49,33 +56,19 @@ class NDB_BVL_Instrument_med_records extends NDB_BVL_Instrument
 		$this->dateOptions = array ('language' => 'en', 'format' => 'YMd', 'minYear' => $config->getSetting ( 'startYear' ) - 20, //allows for siblings up to 20 years older than candidate
 'maxYear' => $config->getSetting ( 'endYear' ), 'addEmptyOption' => true, 'emptyOptionValue' => null );
                  $db = & Database::singleton();
-                $this->project = $db->pselectOne("SELECT c.ProjectID from $this->table n JOIN flag f 
+                $this->project = $db->pselectOne("SELECT c.ProjectID from med_records_24 n JOIN flag f 
                                     ON (f.CommentID= n.CommentID) JOIN session s ON (s.ID = f.SessionID) 
                                     JOIN candidate c ON (c.CandID=s.CandID) 
                                     WHERE n.CommentID=:cid", array('cid'=>$this->getCommentID()));
 
 
 		// setup the form
-        $this->_setupForm();
+       // $this->_setupForm();
 
 	}
 	
-    /**
-    * method to build the LorisForm object into a paged forms erase
-    *
-    * @return void
-    * @access private
-    */
-function _setupForm(){
-    	 //Defines the call back function for HTML Quickform to use when validating the form.
-        $this->form->addFormRule(array(&$this,'XINValidate'));
-    	
-    	if(preg_match("/(_page[0-9]+)/",$this->page,$matches)){
-            call_user_func(array($this, $matches[1]));
-        } else {
-            $this->_main();
-        }
-    }
+
+
     
 function _possibleExclusionaryCriteria() {
 		$this->form->addElement ( 'header', null, "Possible Exclusionary Criteria:" );

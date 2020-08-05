@@ -5,7 +5,14 @@
 
 class NDB_BVL_Instrument_TEST_NAME extends NDB_BVL_Instrument
 {
-    use LegacyInstrumentTrait;
+    public function getFullName(): string
+    {
+        return '';
+    }
+
+    function getSubtestList(): array {
+        return [];
+    }
 
     /**
     * sets up basic data, such as the LorisForm object, and so on.

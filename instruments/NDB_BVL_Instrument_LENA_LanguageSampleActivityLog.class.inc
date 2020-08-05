@@ -22,6 +22,7 @@
  */
 class NDB_BVL_Instrument_LENA_LanguageSampleActivityLog extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
     use instrument_validator;
 
     /**
@@ -40,7 +41,7 @@ class NDB_BVL_Instrument_LENA_LanguageSampleActivityLog extends NDB_BVL_Instrume
      * @return void
      * @access public
      */
-    function setup($commentID, $page)
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
     {
         $this->formType = "XIN";
         $this->form     = new LorisForm('LENA_LanguageSampleActivityLog_form');

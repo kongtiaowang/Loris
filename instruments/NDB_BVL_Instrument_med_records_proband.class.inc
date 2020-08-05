@@ -3,6 +3,7 @@
 require_once('NDB_BVL_Instrument_med_records.class.inc');
 
 class NDB_BVL_Instrument_med_records_proband extends NDB_BVL_Instrument_med_records {
+    use LegacyInstrumentTrait;
 	/*
     INSERT INTO test_names VALUES('', 'med_records_proband', 'Medical Records Data Extraction: Proband', '0', '1');
     INSERT INTO instrument_subtests VALUES('', 'med_records_proband', 'med_records_proband_page1', '1. Possible Exclusionary Criteria', 1);
@@ -90,11 +91,32 @@ class NDB_BVL_Instrument_med_records_proband extends NDB_BVL_Instrument_med_reco
                                  'seventeenth_percentage_length',
                                  'seventeenth_weight_percentage'
                                  );
-	       
 
-		// setup the form
-		$this->_setup ( $commentID, $page );
-	}
+
+        // setup the form
+        $this->_setupForm();
+    }
+
+    /*
+    * Method to build the LorisForm object into a paged form
+    *
+    * @return void
+    * @access private
+    */
+    function _setupForm()
+    {
+        //determine page to display
+        if (preg_match(
+            "/med_records_proband(_page[0-9]+)/",
+            $this->page,
+            $matches
+        )) {
+            call_user_func(array($this, $matches[1]));
+        } else {
+            $this->_main();
+        }
+        $this->form->addFormRule(array(&$this, 'XINValidate'));
+    }
 	
 	/**
 	 * generates the main page of the form.

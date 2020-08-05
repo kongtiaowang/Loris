@@ -25,7 +25,7 @@ INSERT INTO test_battery VALUES ('', 'head_measurements_subject', '1050', '1140'
         $this->_doubleDataEntryDiffIgnoreColumns = array('CommentID', 'UserID', 'Testdate', 'Window_Difference',
                 'Candidate_Age','Data_entry_completion_status','comments_status');
 
-        $this->_setup($commentID, $page);
+        $this->_setupForm();
     }   
 
     /**

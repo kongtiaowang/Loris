@@ -23,7 +23,14 @@
 
 class NDB_BVL_Instrument_wiatIII extends NDB_BVL_Instrument
 {
-    use LegacyInstrumentTrait;
+    public function getFullName(): string
+    {
+        return '';
+    }
+
+    function getSubtestList(): array {
+        return [];
+    }
 
     var $ValidityEnabled  = false;
     var $ValidityRequired = false;

@@ -4,6 +4,7 @@ require_once('NDB_BVL_Instrument_vineland.class.inc');
 
 class NDB_BVL_Instrument_vineland_proband extends NDB_BVL_Instrument_vineland
 {
+    use LegacyInstrumentTrait;
 /*
 -- INSERT INTO test_names VALUES ('', 'vineland_proband', 'Vineland II ABS (Proband)', '0', '1');
 
@@ -38,8 +39,8 @@ INSERT INTO instrument_subtests VALUES('', 'vineland_proband', 'vineland_proband
         // set the object properties
         $this->testName = "vineland_proband";           // test_names.Test_name
         $this->table = 'vineland_proband';              // name of database table corresponding to instrument
-    
-        $this->_setup($commentID, $page);
+
+        $this->_setupForm();
     }
     
 }

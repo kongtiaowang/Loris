@@ -6,6 +6,7 @@ require_once 'NDB_BVL_Instrument_m_chat.class.inc';
 
 class NDB_BVL_Instrument_m_chat_subject extends NDB_BVL_Instrument_m_chat
 {
+    use LegacyInstrumentTrait;
 	/*
 	INSERT INTO test_names VALUES ('', 'm_chat_subject', 'M-CHAT (Subject)', '0', '1');
 

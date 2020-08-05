@@ -21,6 +21,7 @@
  */
 class NDB_BVL_Instrument_SRS2_Preschool_survey extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
     use instrument_validator;
 
     var $scoreLabels = array(
@@ -54,7 +55,7 @@ class NDB_BVL_Instrument_SRS2_Preschool_survey extends NDB_BVL_Instrument
      * @return void
      * @access public
      */
-    function setup($commentID, $page)
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
     {
         $this->formType ="XIN";
         $this->form     = new LorisForm('SRS2_Preschool_survey_form');
@@ -413,7 +414,7 @@ class NDB_BVL_Instrument_SRS2_Preschool_survey extends NDB_BVL_Instrument
         return $errors;
     }
 
-    function score()
+    function score(): void
     {
         if ($this->_determineDataEntryCompletionStatus() == "Incomplete") {
             return;

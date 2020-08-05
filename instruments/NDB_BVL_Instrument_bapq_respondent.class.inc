@@ -5,7 +5,14 @@
 
 class NDB_BVL_Instrument_bapq_respondent extends NDB_BVL_Instrument
 {
-    use LegacyInstrumentTrait;
+    public function getFullName(): string
+    {
+        return '';
+    }
+
+    function getSubtestList(): array {
+        return [];
+    }
 
     //Commonly used level of indentation;
     var $indent = "&nbsp;&nbsp;&nbsp;&nbsp;";

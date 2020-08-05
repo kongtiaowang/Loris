@@ -2,7 +2,7 @@
 require_once('NDB_BVL_Instrument_EARLI_interview.class.inc');
 
 class NDB_BVL_Instrument_EARLI_interview_PART_3 extends NDB_BVL_Instrument_EARLI_interview {
-
+    use LegacyInstrumentTrait;
 
 	var $dateOptions = array(
                 'language' => 'en',

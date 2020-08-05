@@ -41,7 +41,7 @@ class NDB_BVL_Instrument_tanner_girls_survey extends NDB_BVL_Instrument
     *
     * @access public
     */
-    function setup($commentID, $page)
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
     {
         $this->formType ='XIN';
         $this->form     = new LorisForm('test_form');

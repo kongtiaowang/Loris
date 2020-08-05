@@ -2,7 +2,14 @@
 
 class NDB_BVL_Instrument_EARLI_interview extends NDB_BVL_Instrument
 {
-    use LegacyInstrumentTrait;
+    public function getFullName(): string
+    {
+        return '';
+    }
+
+    function getSubtestList(): array {
+        return [];
+    }
 
     var $dateOptions1960 = array(
         'language' => 'en',
