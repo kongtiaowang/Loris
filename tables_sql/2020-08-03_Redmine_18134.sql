@@ -21,22 +21,6 @@ WHERE
     );
 
 DELETE FROM
-    flag
-WHERE
-    Test_name
-IN
-    ('scq_proband_survey') AND
-    SessionId = (
-        SELECT
-            ID
-        FROM
-            session
-        WHERE
-            Visit_label='VSA-CVD' AND
-            CandID=703739
-    );
-
-DELETE FROM
     participant_accounts
 WHERE
     CommentID IN (
@@ -55,4 +39,20 @@ WHERE
                     Visit_label='VSA-CVD' AND
                     CandID=703739
             )
+    );
+
+DELETE FROM
+    flag
+WHERE
+    Test_name
+IN
+    ('scq_proband_survey') AND
+    SessionId = (
+        SELECT
+            ID
+        FROM
+            session
+        WHERE
+            Visit_label='VSA-CVD' AND
+            CandID=703739
     );
