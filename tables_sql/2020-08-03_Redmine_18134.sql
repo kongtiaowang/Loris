@@ -35,3 +35,24 @@ IN
             Visit_label='VSA-CVD' AND
             CandID=703739
     );
+
+DELETE FROM
+    participant_accounts
+WHERE
+    CommentID IN (
+        SELECT
+            CommentID
+        FROM
+            flag
+        WHERE
+            Test_name='scq_proband_survey' AND
+            SessionID = (
+                SELECT
+                    ID
+                FROM
+                    session
+                WHERE
+                    Visit_label='VSA-CVD' AND
+                    CandID=703739
+            )
+    );
