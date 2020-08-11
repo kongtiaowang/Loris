@@ -15,6 +15,7 @@ env:
   - TEST_SUITE=static
   - TEST_SUITE=unit
   - TEST_SUITE=integration
+  - DEBUG=true
 
 services:
 - docker
