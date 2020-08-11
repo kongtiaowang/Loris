@@ -45,6 +45,6 @@ INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (41,'electrophysiology_bro
 INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (42,'my_preferences','Y');
 INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (43,'candidate_profile','Y');
 INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (44,'schedule_module','Y');
-
+INSERT INTO `modules` (`ID`, `Name`, `Active`) VALUES (45,'dqt','Y');
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;
