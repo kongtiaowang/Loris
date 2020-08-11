@@ -212,17 +212,24 @@ class AddSurvey extends \NDB_Form
                 $status = 'Created';
             }
 
-            $success = $db->insert(
-                "participant_accounts",
-                array(
-                    'SessionID' => $SessionID,
-                    'Test_name' => $instrument,
-                    'Email' => $values['Email'],
-                    'Status' => $status,
-                    'OneTimePassword' => $key,
-                    'CommentID' => $commentID,
-                )
-            );
+            try{
+                $db->insert(
+                    "participant_accounts",
+                    array(
+                        'SessionID' => $SessionID,
+                        'Test_name' => $instrument,
+                        'Email' => $values['Email'],
+                        'Status' => $status,
+                        'OneTimePassword' => $key,
+                        'CommentID' => $commentID,
+                    )
+                );
+
+            } catch(\DatabaseException $e) {
+                error_log($e->getMessage());
+                $this->tpl_data['success'] = false;
+            }
+            $this->tpl_data['success'] = true;
 
 
 
@@ -237,7 +244,6 @@ class AddSurvey extends \NDB_Form
                     urlencode($key) . "\n";
             }
         }
-        $this->tpl_data['success'] = $success;
         if ($values['VL'] == 'VSA') {
             $parentid = $this->getParentID($values['CandID']);
             $parent_portal_note = "\nYou can access all of your surveys on our Parent Portal.\nPlease note that to log into your Parent Portal, you will be asked for the Parent ID and Email, listed below. 

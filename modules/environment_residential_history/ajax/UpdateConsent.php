@@ -16,7 +16,11 @@ require_once "Email.class.inc";
 $DB =& Database::singleton();
 
 $commentID=$_POST['comment'];
-$candidate = Candidate::singleton($commentID);
+//$candidate = Candidate::singleton($commentID);
+$sessionID= $DB->pselectOne("SELECT s.ID from session s join flag f on (f.SessionID=s.ID)
+where f.CommentID=:cmid",array('cmid' => $commentID));
+$timepoint =& TimePoint::singleton($sessionID);
+$candidate =& Candidate::singleton($timepoint->getCandID());
 $candid = $candidate->getData('CandID');
 $pscid = $DB->pselectOne("SELECT c.PSCID from candidate c where c.CandID=:candid",array('candid' => $candid));
 $consent_vals_history = array();
@@ -63,7 +67,7 @@ if (isset($_POST['mail_consent'])) {
 
         $cand_info_details = $DB->pselect(
             "SELECT ps.Name as center_name,ca.PSCID as PSCID from psc ps  
-             JOIN  candidate ca ON (ca.CenterID=ps.CenterID)
+             JOIN  candidate ca ON (ca.RegistrationCenterID=ps.CenterID)
              WHERE ca.CandID=:candid",
             array('candid' => $candid)
         );

@@ -49,10 +49,13 @@ class NDB_BVL_Instrument_air_pollution extends NDB_BVL_Instrument
             'addEmptyOption' => true,
             'emptyOptionValue' => null
         );
-
-        $candidate = Candidate::singleton($commentID);
-        $this->centerID = $candidate->getData('CenterID');
-        $this->siteName = Site::singleton($this->centerID)->getCenterName();
+        
+if ($commentID!='' || $commentID!=NULL) {
+    $timepoint =& TimePoint::singleton($this->getSessionID());
+    $candidate =& Candidate::singleton($timepoint->getCandID());
+    $this->centerID = $candidate->getData('RegistrationCenterID');
+    $this->siteName = Site::singleton($this->centerID)->getCenterName();
+}
 
         // setup the form
         $this->_setupForm();
