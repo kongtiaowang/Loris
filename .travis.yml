@@ -13,9 +13,8 @@ matrix:
 
 env:
   - TEST_SUITE=static
-  - TEST_SUITE=unit
-  - TEST_SUITE=integration
-  - DEBUG=true
+  - TEST_SUITE=unit DEBUG=true
+  - TEST_SUITE=integration DEBUG=true
 
 services:
 - docker
