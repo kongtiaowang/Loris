@@ -57,6 +57,7 @@ $VSA_array=array("ABCL Informant (Adult Informant Behavior Checklist – Ages 18
 "TANNER Staging Questionnaire (Girls) - Survey",
 "TRF (Teacher's Report Form) Ages 6 to 18 - Survey",
 "Peer Contact Questionnaire – Survey",
+"AP (Air Pollution) - Survey",
 "SSCQ (Sibling Social Contact Questionnaire) - Survey"
 );
 $V06_array = array('ACE Family Medical History - Survey',
@@ -80,6 +81,7 @@ $V06_array = array('ACE Family Medical History - Survey',
 'SRS-2 Informant - Mom on Dad (Social Responsiveness Scale – Informant) - Mom on Dad - Survey',
 'SRS-2 Pre-School (Social Responsiveness Scale - Pre-School) - Survey',
 'Peer Contact Questionnaire – Survey',
+'Medical and Psychiatric History - Survey'
 'SSCQ (Sibling Social Contact Questionnaire) - Survey'
 );
 
@@ -98,6 +100,7 @@ $V12_array= array('ACE Family Medical History - Survey',
 'SEQ3 (Sensory Experiences Questionnaire - Version 3.0) - Survey',
 'SMQ - Infant (Social Motivation Questionnaire - Infant) - Survey',
 'Peer Contact Questionnaire – Survey',
+'Medical and Psychiatric History - Survey',
 'SSCQ (Sibling Social Contact Questionnaire) - Survey',
 );
 
@@ -122,6 +125,7 @@ $V24_array=array('ACE Family Medical History - Survey',
 'SEQ3 (Sensory Experiences Questionnaire - Version 3.0) - Survey',
 'SMQ - Toddler (Social Motivation Questionnaire - Toddler) - Survey',
 'Peer Contact Questionnaire – Survey',
+'Medical and Psychiatric History - Survey',
 'SSCQ (Sibling Social Contact Questionnaire) - Survey',
 );
 $DB         = \Database::singleton();
