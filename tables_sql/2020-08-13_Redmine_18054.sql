@@ -1,5 +1,5 @@
 -- Addresses Redmine 18054
--- Sets Data_entry ='Complete' and Administration = 'All' in flag table for 54 UNC candidates
+-- Sets Data_entry = 'Complete' and Administration = 'All' in flag table for 54 UNC candidates
 
 -- Update 1
 UPDATE
