@@ -81,7 +81,7 @@ $V06_array = array('ACE Family Medical History - Survey',
 'SRS-2 Informant - Mom on Dad (Social Responsiveness Scale – Informant) - Mom on Dad - Survey',
 'SRS-2 Pre-School (Social Responsiveness Scale - Pre-School) - Survey',
 'Peer Contact Questionnaire – Survey',
-'Medical and Psychiatric History - Survey'
+'Medical and Psychiatric History - Survey',
 'SSCQ (Sibling Social Contact Questionnaire) - Survey'
 );
 
