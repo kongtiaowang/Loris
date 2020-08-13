@@ -12,6 +12,7 @@
  */
 namespace LORIS\api\Endpoints;
 
+use LORIS\StudyEntities\Candidate\Sex;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \LORIS\api\Endpoint;
@@ -57,10 +58,10 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function allowedMethods() : array
     {
-        return array(
+        return [
             'GET',
             'POST',
-        );
+        ];
     }
 
     /**
@@ -71,10 +72,10 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     protected function supportedVersions() : array
     {
-        return array(
+        return [
             "v0.0.2",
             "v0.0.3",
-        );
+        ];
     }
 
     /**
@@ -147,7 +148,7 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         $filter = new HasAnyPermissionOrUserSiteMatch(
-            array('access_all_profiles')
+            ['access_all_profiles']
         );
 
         $provisioner = (new \LORIS\api\Provisioners\CandidatesProvisioner())
@@ -158,7 +159,7 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
             ->toArray($request->getAttribute('user'));
 
         $this->_cache = new \LORIS\Http\Response\JsonResponse(
-            array('Candidates' => $candidates)
+            ['Candidates' => $candidates]
         );
 
         return $this->_cache;
@@ -203,12 +204,14 @@ class Candidates extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         $pscid = $data['Candidate']['PSCID'] ?? null;
 
+        $sex = new Sex($data['Candidate']['Sex']);
+
         try {
             $candid = \Candidate::createNew(
                 $centerid,
                 $data['Candidate']['DoB'],
                 $data['Candidate']['EDC'],
-                $data['Candidate']['Sex'],
+                $sex,
                 $pscid,
                 $project->getId()
             );

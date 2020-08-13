@@ -1,5 +1,36 @@
 # CHANGELOG
 
+- ***When adding content to this document, make sure to create a section for each module 
+if the changes only impact a single module and that section does not already exist in
+the document. When changes affect the entire software, make sure to add them in the 
+core section.***
+
+- ***When possible please provide the number of the pull request(s) containing the 
+changes in the following format: PR #1234***
+
+##LORIS 24.0 (Release Date: ??)
+### Core
+#### Features
+- *Add item here*
+#### Updates and Improvements
+- Module-specific permissions added for Survey Accounts, Imaging Behavioural
+Quality Control, and Behavioural Quality Control. (PR #6041)
+- Addition of a new `account_request_date` in `users` table that will be used when
+requesting a new account and will be displayed in the User Accounts module (PR #6191)
+- Candidate's age can be retrieved from the Candidate class in days, months, or years (PR #5945)
+#### Bug Fixes
+- *Add item here*
+### Modules
+#### Issue Tracker
+- Readability of comments and history was improved. (PR #6138)
+### Clean Up
+- *Add item here*
+### Notes For Existing Projects
+- *Add item here*
+### Notes For Developers
+- *Add item here*
+
+
 ## LORIS 23.0.0 (Release Date: 2020-06-12)
 
 ### Core
@@ -84,4 +115,3 @@ be used by projects having custom modules not in LORIS. (PR #5913)
 - Config files for static analysis have been moved to the `test/` directory. (PR #5871)
 - Dashboard was refactored to turn panels into module widgets. (PR #5896)
 - Add CSSGrid component type (PR #6090)
-

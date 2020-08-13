@@ -96,10 +96,17 @@ class IssueTrackerIndex extends Component {
       break;
     case 'Site':
       // if cell is an array containing all sites values
-      if (JSON.stringify(Object.keys(this.state.data.centerIDs)) == JSON.stringify(cell)) {
+      if (
+          JSON.stringify(
+              Object.keys(this.state.data.centerIDs)) == JSON.stringify(cell)
+      ) {
         result = <td>All Sites</td>;
       } else {
-        result = <td>{cell.map((v) => this.state.data.fieldOptions.sites[v]).filter((v) => v != undefined).join(', ')}</td>;
+        result = <td>
+              {cell.map((v) =>
+                  this.state.data.fieldOptions.sites[v]).filter(
+                      (v) => v != undefined).join(', ')}
+        </td>;
       }
       break;
     case 'PSCID':
@@ -213,9 +220,22 @@ class IssueTrackerIndex extends Component {
 
     const filterPresets = [
       {label: 'All Issues', filter: {}},
-      {label: 'Active Issues', filter: {status: {value: ['acknowledged', 'assigned', 'feedback', 'new', 'resolved']}}},
-      {label: 'Closed Issues', filter: {status: {value: ['closed'], exactMatch: true}}},
-      {label: 'My Issues', filter: {assignee: {value: this.state.data.fieldOptions.userID, exactMatch: true}}},
+      {label: 'Active Issues', filter: {
+        status: {
+          value: ['acknowledged', 'assigned', 'feedback', 'new', 'resolved'],
+        },
+      }},
+      {label: 'Closed Issues', filter: {
+        status: {value: ['closed'], exactMatch: true},
+      }},
+      {label: 'My Issues', filter: {
+        assignee: {
+          value: this.state.data.fieldOptions.userID, exactMatch: true,
+        },
+        status: {
+          value: ['acknowledged', 'assigned', 'feedback', 'new', 'resolved'],
+        },
+      }},
     ];
 
     const addIssue = () => {

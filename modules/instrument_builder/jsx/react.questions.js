@@ -37,6 +37,9 @@ class LorisElement extends Component {
       case 'label':
         elementHtml = <p>{element.Description}</p>;
         break;
+      case 'line':
+        elementHtml = <div></div>;
+        break;
       case 'score':
         elementHtml = <StaticElement text={0} label={element.Description} />;
 
@@ -104,12 +107,18 @@ class QuestionText extends Component {
     let errorClass = 'form-group';
     if (this.props.element.error && this.props.element.error.questionText) {
       // If an error is present, display the error
-      errorMessage = (<font className="form-error">{this.props.element.error.questionText}</font>);
+      errorMessage = (
+        <font className="form-error">
+          {this.props.element.error.questionText}
+        </font>
+      );
       errorClass += ' has-error';
     }
     return (
       <div className={errorClass}>
-        <label className="col-sm-2 control-label">{this.props.inputLabel}: </label>
+        <label className="col-sm-2 control-label">
+          {this.props.inputLabel}:
+        </label>
         <div className="col-sm-6">
           <input className="form-control col-xs-12"
             type="text" id="questionText"
@@ -153,7 +162,11 @@ class BasicOptions extends Component {
     let errorClass = 'form-group';
     if (this.props.element.error && this.props.element.error.questionName) {
       // If an error is present, display the error
-      errorMessage = (<font className="form-error">{this.props.element.error.questionName}</font>);
+      errorMessage = (
+        <font className="form-error">
+          {this.props.element.error.questionName}
+        </font>
+      );
       errorClass += ' has-error';
     }
     return (
@@ -290,7 +303,10 @@ class DropdownOptions extends Component {
         <div className="form-group">
           <label className="col-sm-2 control-label">Preview: </label>
           <div className="col-sm-2">
-            <select multiple={multi} id="selectOptions" className="form-control">
+            <select multiple={multi}
+                    id="selectOptions"
+                    className="form-control"
+            >
               {Object.keys(options).map(function(option, key) {
                 return (<option key={key}>{options[option]}</option>);
               })}
@@ -346,7 +362,9 @@ class DateOptions extends Component {
     if (this.props.element.error && this.props.element.error.dateOption) {
       // If an error is present, display the error
       errorMessage = (
-        <span className="form-error">{this.props.element.error.dateOption}</span>
+        <span className="form-error">
+          {this.props.element.error.dateOption}
+        </span>
       );
       dateOptionsClass += ' has-error';
     }
@@ -437,7 +455,11 @@ class NumericOptions extends Component {
 
         // If an error is present, display the error
     if (this.props.element.error && this.props.element.error.numeric) {
-      errorMessage = (<span className="form-error">{this.props.element.error.numeric}</span>);
+      errorMessage = (
+        <span className="form-error">
+          {this.props.element.error.numeric}
+        </span>
+      );
       optionsClass += 'options form-group has-error';
     }
 
@@ -501,6 +523,11 @@ class ListElements extends Component {
     let textSize = 'small';
     // Set the options for the desired type
     switch (newId) {
+      case 'line':
+        newState.Options = {};
+        newState.Name = '';
+        newState.Description = '';
+        break;
       case 'textarea':
         textSize = 'large';
         // falls through
@@ -526,8 +553,8 @@ class ListElements extends Component {
         break;
       case 'numeric':
         newState.Options = {
-          MinValue: 0,
-          MaxValue: 0,
+          MinValue: null,
+          MaxValue: null,
         };
         break;
       default:
@@ -539,57 +566,144 @@ class ListElements extends Component {
   render() {
     return (
         <div className="form-group">
-            <label htmlFor="selected-input" className="col-sm-2 control-label">Question Type:</label>
+            <label htmlFor="selected-input"
+                   className="col-sm-2 control-label"
+            >Question Type:</label>
             <div className="col-sm-4">
                 <div className="btn-group">
-                    <button id="selected-input" type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                    <button id="selected-input"
+                            type="button"
+                            className="btn btn-default dropdown-toggle"
+                            data-toggle="dropdown"
+                    >
                         <span id="search_concept">{this.props.value} </span>
                         <span className="caret"></span>
                     </button>
                     <ul className="dropdown-menu" role="menu">
                         <li>
-                            <div className="col-sm-12"><h5 className="">Information</h5></div>
+                            <div className="col-sm-12">
+                              <h5 className="">Information</h5>
+                            </div>
                         </li>
-                        <li onClick={this.selectType.bind(this, 'header', 'Header')}>
-                            <a id="header" className="option" title="Centered, header information">Header</a>
+                        <li onClick={this.selectType.bind(
+                          this,
+                          'header',
+                          'Header'
+                        )}>
+                            <a id="header"
+                               className="option"
+                               title="Centered, header information"
+                            >Header</a>
                         </li>
-                        <li onClick={this.selectType.bind(this, 'label', 'Label')}>
-                            <a id="label" className="option" title="Unemphasized display text">Label</a>
+                        <li onClick={this.selectType.bind(
+                          this,
+                          'label',
+                          'Label'
+                        )}>
+                            <a id="label"
+                               className="option"
+                               title="Unemphasized display text"
+                            >Label</a>
                         </li>
-                        <li onClick={this.selectType.bind(this, 'score', 'Scored Field')}>
-                            <a id="scored" className="option" title="Column which stores calculated data">Scored Field</a>
+                        <li onClick={this.selectType.bind(
+                          this,
+                          'score',
+                          'Scored Field'
+                        )}>
+                            <a id="scored"
+                               className="option"
+                               title="Column which stores calculated data"
+                            >Scored Field</a>
                         </li>
                         <li className="divider"></li>
                         <li>
-                            <div className="col-sm-12"><h5 className="">Data entry</h5></div>
+                            <div className="col-sm-12">
+                              <h5 className="">Data entry</h5>
+                            </div>
                         </li>
-                        <li onClick={this.selectType.bind(this, 'textbox', 'Textbox')}>
-                            <a id="textbox" className="option" title="Text box for user data entry">Textbox</a>
+                        <li onClick={this.selectType.bind(
+                          this,
+                          'textbox',
+                          'Textbox'
+                        )}>
+                            <a id="textbox"
+                               className="option"
+                               title="Text box for user data entry"
+                            >Textbox</a>
                         </li>
-                        <li onClick={this.selectType.bind(this, 'textarea', 'Textarea')}>
-                            <a id="textarea" className="option" title="Larger text area for data entry">Textarea</a>
+                        <li onClick={this.selectType.bind(
+                          this,
+                          'textarea',
+                          'Textarea'
+                        )}>
+                            <a id="textarea"
+                               className="option"
+                               title="Larger text area for data entry"
+                            >Textarea</a>
                         </li>
-                        <li onClick={this.selectType.bind(this, 'dropdown', 'Dropdown')}>
-                            <a id="dropdown" className="option" title="Dropdown menu for users to select data from">Dropdown</a>
+                        <li onClick={this.selectType.bind(
+                          this,
+                          'dropdown',
+                          'Dropdown'
+                        )}>
+                            <a id="dropdown"
+                               className="option"
+                               title={'Dropdown menu for users to select '
+                                     + 'data from'}
+                            >Dropdown</a>
                         </li>
-                        <li onClick={this.selectType.bind(this, 'multiselect', 'Multiselect')}>
-                            <a id="multiselect" className="option" title="Data entry where multiple options may be selected">Multiselect</a>
+                        <li onClick={this.selectType.bind(
+                          this,
+                          'multiselect',
+                          'Multiselect'
+                        )}>
+                            <a id="multiselect"
+                               className="option"
+                               title={'Data entry where multiple options '
+                                     + 'may be selected'}
+                            >Multiselect</a>
                         </li>
-                        <li onClick={this.selectType.bind(this, 'date', 'Date')}>
-                            <a id="date" className="option" title="User data entry of a date">Date</a>
+                        <li onClick={this.selectType.bind(
+                          this,
+                          'date',
+                          'Date'
+                        )}>
+                            <a id="date"
+                               className="option"
+                               title="User data entry of a date"
+                            >Date</a>
                         </li>
-                        <li onClick={this.selectType.bind(this, 'numeric', 'Numeric')}>
-                            <a id="numeric" className="option" title="User data entry of a number">Numeric</a>
+                        <li onClick={
+                          this.selectType.bind(this, 'numeric', 'Numeric')
+                        }>
+                            <a id="numeric"
+                               className="option"
+                               title="User data entry of a number"
+                            >Numeric</a>
                         </li>
                         <li className="divider"></li>
                         <li>
-                            <div className="col-sm-12"><h5 className="">Formatting</h5></div>
+                            <div className="col-sm-12">
+                              <h5 className="">Formatting</h5>
+                            </div>
                         </li>
-                        <li onClick={this.selectType.bind(this, 'line', 'Blank Line')}>
-                            <a id="line" className="option" title="Empty line">Blank Line</a>
+                        <li onClick={
+                          this.selectType.bind(this, 'line', 'Blank Line')
+                        }>
+                            <a id="line"
+                               className="option"
+                               title="Empty line"
+                            >Blank Line</a>
                         </li>
-                        <li onClick={this.selectType.bind(this, 'page-break', 'Page Break')}>
-                            <a id="page-break" className="option" title="Start a new page">Page Break</a>
+                        <li onClick={this.selectType.bind(
+                            this,
+                            'page-break',
+                            'Page Break'
+                        )}>
+                            <a id="page-break"
+                               className="option"
+                               title="Start a new page"
+                            >Page Break</a>
                         </li>
                     </ul>
                 </div>
@@ -609,10 +723,23 @@ class AddElement extends Component {
     if (this.props !== undefined && this.props.element) {
       // Editing an element, set to elements state
       this.state = {
-        Options: Instrument.clone(this.props.element.Options === undefined ? {} : this.props.element.Options ),
-        Description: Instrument.clone(this.props.element.Description),
-        Name: Instrument.clone(this.props.element.Name === undefined ? '' : this.props.element.Name),
-        selected: Instrument.clone(this.props.element.selected),
+        Options: Instrument.clone(this.props.element.Options === undefined ?
+          {} :
+          this.props.element.Options
+        ),
+        Description: Instrument.clone(
+          this.props.element.Description === undefined ?
+          {} :
+          this.props.element.Description
+        ),
+        Name: Instrument.clone(this.props.element.Name === undefined ?
+          '' :
+          this.props.element.Name
+        ),
+        selected: Instrument.clone(this.props.element.selected === undefined ?
+          {} :
+          this.props.element.selected
+        ),
       };
     } else {
       this.state = {
@@ -679,10 +806,16 @@ class AddElement extends Component {
         });
         hasError = true;
       }
-      if (minYear > 9999 || minYear < 1000 || maxYear > 9999 || maxYear < 1000) {
+      if (minYear > 9999
+        || minYear < 1000
+        || maxYear > 9999
+        || maxYear < 1000
+      ) {
         let temp = (this.state.error) ? this.state.error : {};
 
-        temp.dateOption = 'The year must have exactly 4 digits. Please choose an integer number between 1000 and 9999.';
+        temp.dateOption = 'The year must have exactly 4 digits. '
+                          + 'Please choose an integer number '
+                          + 'between 1000 and 9999.';
         this.setState({
           error: temp,
         });
@@ -698,12 +831,12 @@ class AddElement extends Component {
       }
     }
 
-        // Checking for error on numeric field
+    // Checking for error on numeric field
     if (selected === 'numeric') {
       let min = this.state.Options.MinValue;
       let max = this.state.Options.MaxValue;
 
-      if (min >= max) {
+      if (min != null && max != null && min >= max) {
         let temp = (this.state.error) ? this.state.error : {};
         temp.numeric = 'Max value must be larger than min value';
         this.setState({
@@ -712,7 +845,7 @@ class AddElement extends Component {
         hasError = true;
       }
 
-            // If error corrected, remove error message and error
+      // If error corrected, remove error message and error
       if (!hasError && this.state.error) {
         let temp = this.state.error;
         delete temp.numeric;
@@ -772,6 +905,8 @@ class AddElement extends Component {
 
     // Setup the desired element to be added
     switch (selected) {
+      case 'line':
+        break;
       case 'header':
       case 'label':
         questionName = '';
@@ -832,7 +967,9 @@ class AddElement extends Component {
     // setting any values
     this.setState(function(state) {
       let temp = state.options;
-      let option = multi ? $('#newmultiSelectOption').val() : $('#newSelectOption').val();
+      let option = multi ?
+        $('#newmultiSelectOption').val() :
+        $('#newSelectOption').val();
       temp.push(option);
       return {
         options: temp,
@@ -852,27 +989,48 @@ class AddElement extends Component {
     let buttons;
         // Set the inputs to display based on the desired element type
     switch (this.state.selected.id) {
+      case 'line':
+        break;
       case 'header':
       case 'label':
-        questionInput = <QuestionText updateState={this.updateState} element={this.state}/>;
+        questionInput = <QuestionText
+          updateState={this.updateState}
+          element={this.state}
+        />;
         break;
       case 'page-break':
-        questionInput = <QuestionText updateState={this.updateState} element={this.state} inputLabel={'Page Name'}/>;
+        questionInput = <QuestionText
+          updateState={this.updateState}
+          element={this.state}
+          inputLabel={'Page Name'}
+        />;
         break;
       case 'score':
       case 'textbox':
       case 'textarea':
-        questionInput = <BasicOptions updateState={this.updateState} element={this.state}/>;
+        questionInput = <BasicOptions
+          updateState={this.updateState}
+          element={this.state}
+        />;
         break;
       case 'multiselect':
       case 'dropdown':
-        questionInput = <DropdownOptions updateState={this.updateState} element={this.state}/>;
+        questionInput = <DropdownOptions
+          updateState={this.updateState}
+          element={this.state}
+        />;
         break;
       case 'date':
-        questionInput = <DateOptions updateState={this.updateState} element={this.state}/>;
+        questionInput = <DateOptions
+          updateState={this.updateState}
+          element={this.state}
+        />;
         break;
       case 'numeric':
-        questionInput = <NumericOptions updateState={this.updateState} element={this.state}/>;
+        questionInput = <NumericOptions
+          updateState={this.updateState}
+          element={this.state}
+        />;
         break;
       default:
         break;

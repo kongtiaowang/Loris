@@ -53,13 +53,19 @@ class Configuration extends \NDB_Form
         $scans      = $DB->pselect(
             "SELECT Scan_type
              FROM mri_scan_type",
-            array()
+            []
         );
-        $scan_types = array('' => '');
+        $scan_types = ['' => ''];
         foreach ($scans as $type) {
             $val = $type['Scan_type'];
             $scan_types[$val] = $val;
         }
+
+        $date_format = [
+            ''    => '',
+            'Ymd' => 'Ymd (EX: 2015-12-28)',
+            'Ym'  => 'Ym (EX: 2015-12)'
+        ];
 
         $instruments     = \Utility::getAllInstruments();
         $instruments[''] = '';
@@ -69,11 +75,12 @@ class Configuration extends \NDB_Form
         $this->tpl_data['instruments']     = $instruments;
         $this->tpl_data['sandbox']         = $config->getSetting("sandbox");
         $this->tpl_data['scan_types']      = $scan_types;
-        $this->tpl_data['lookup_center']   = array(
+        $this->tpl_data['date_format']     = $date_format;
+        $this->tpl_data['lookup_center']   = [
             ''            => '',
             'PatientID'   => 'PatientID',
             'PatientName' => 'PatientName',
-        );
+        ];
     }
 
     /**
@@ -90,7 +97,7 @@ class Configuration extends \NDB_Form
             "SELECT Label, Name 
              FROM ConfigSettings 
              WHERE Parent IS NULL AND Visible=1 ORDER BY OrderNumber",
-            array()
+            []
         );
 
         return $parentConfigItems;
@@ -111,7 +118,7 @@ class Configuration extends \NDB_Form
         // Get the names and meta-information for the config settings in the database
         $configs = $this->DB->pselect(
             "SELECT * FROM ConfigSettings WHERE Visible=1 ORDER BY OrderNumber",
-            array()
+            []
         );
 
         // Check whether any setting is overwritten in the config.xml
@@ -139,7 +146,7 @@ class Configuration extends \NDB_Form
             if ($setting['Disabled'] == 'No') {
                 $value = $this->DB->pselect(
                     "SELECT ID, Value FROM Config WHERE ConfigID=:ID",
-                    array('ID' => $setting['ID'])
+                    ['ID' => $setting['ID']]
                 );
                 if ($value) {
                     foreach ($value as $subvalue) {
@@ -150,9 +157,9 @@ class Configuration extends \NDB_Form
         }
 
         // build a tree from configs array
-        $tree = array();
+        $tree = [];
         foreach ($configs as &$node) {
-            $node['Children']  = array();
+            $node['Children']  = [];
             $tree[$node['ID']] = &$node;
 
         }
@@ -176,9 +183,9 @@ class Configuration extends \NDB_Form
         $deps    = parent::getJSDependencies();
         return array_merge(
             $deps,
-            array(
+            [
                 $baseURL . "/configuration/js/configuration_helper.js",
-            )
+            ]
         );
     }
 

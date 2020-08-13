@@ -40,10 +40,10 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
     function _hasAccess(\User $user) : bool
     {
         return $user->hasAnyPermission(
-            array(
+            [
                 'issue_tracker_reporter',
                 'issue_tracker_developer',
-            )
+            ]
         );
     }
 
@@ -56,7 +56,8 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
     {
         $provisioner = new IssueRowProvisioner();
 
-        $user = \User::singleton();
+        $factory = \NDB_Factory::singleton();
+        $user    = $factory->user();
 
         if ($user->hasPermission('access_all_profiles') === false) {
             $provisioner = $provisioner->filter(
@@ -81,7 +82,7 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
         bool $DCC = true
     ): array {
         $user  = \User::singleton();
-        $sites = array();
+        $sites = [];
         if ($user->hasPermission('access_all_profiles')) {
             // get the list of study sites - to be replaced by the Site object
             $sites = \Utility::getSiteList($study_site, $DCC);
@@ -100,35 +101,42 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
      */
     function toJSON(): string
     {
-        $user = \User::singleton();
-        $db   = \Database::singleton();
+        $factory = \NDB_Factory::singleton();
+        $user    = $factory->user();
+        $db      = $factory->database();
 
-        // sites
-        $sites = Issue_Tracker::getSites();
+        //sites
+        $sites = [];
+        if ($user->hasPermission('access_all_profiles')) {
+            $sites = \Utility::getSiteList();
+        } else {
+            // allow only to view own site data
+            $sites = $user->getStudySites();
+        }
 
-        // reporters
-        $reporters         = array();
+        //reporters
+        $reporters         = [];
         $reporter_expanded = $db->pselect(
             "SELECT u.UserID,
                     u.Real_name
              FROM issues i
              INNER JOIN users u
                ON(i.assignee=u.UserID)",
-            array()
+            []
         );
         foreach ($reporter_expanded as $r_row) {
             $reporters[$r_row['UserID']] = $r_row['Real_name'];
         }
 
-        // assignees
-        $assignees         = array();
+        //assignees
+        $assignees         = [];
         $assignee_expanded = $db->pselect(
             "SELECT u.UserID,
                     u.Real_name
              FROM issues i
              INNER JOIN users u
                ON(i.assignee=u.UserID)",
-            array()
+            []
         );
         foreach ($assignee_expanded as $a_row) {
             $assignees[$a_row['UserID']] = $a_row['Real_name'];
@@ -147,29 +155,29 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
             []
         );
 
-        $priorities = array(
+        $priorities = [
             'low'       => 'Low',
             'normal'    => 'Normal',
             'high'      => 'High',
             'urgent'    => 'Urgent',
             'immediate' => 'Immediate',
-        );
+        ];
 
-        $statuses = array(
+        $statuses = [
             'new'          => 'New',
             'acknowledged' => 'Acknowledged',
             'feedback'     => 'Feedback',
             'assigned'     => 'Assigned',
             'resolved'     => 'Resolved',
             'closed'       => 'Closed',
-        );
+        ];
 
         $unorgCategories = $db -> pselect(
             "SELECT categoryName
              FROM issues_categories",
             []
         );
-        $categories      = array();
+        $categories      = [];
         foreach ($unorgCategories as $r_row) {
             $categoryName = $r_row['categoryName'];
             if ($categoryName) {
@@ -217,7 +225,7 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
         $baseurl = $factory->settings()->getBaseURL();
         return array_merge(
             parent::getJSDependencies(),
-            array($baseurl . "/issue_tracker/js/issueTrackerIndex.js")
+            [$baseurl . "/issue_tracker/js/issueTrackerIndex.js"]
         );
     }
 }

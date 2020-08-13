@@ -63,6 +63,20 @@ class TestEndpoint implements RequestHandlerInterface
     }
 
     /**
+     * This function can be overridden in a module's page to load the necessary
+     * resources to check the permissions of a user.
+     *
+     * @param \User                  $user    The user to load the resources for
+     * @param ServerRequestInterface $request The PSR15 Request being handled
+     *
+     * @return void
+     */
+    public function loadResources(
+        \User $user, ServerRequestInterface $request
+    ) : void {
+    }
+
+    /**
      * This acts as an Ajax enpoint that handles all action requests from the
      * Battery Manager Module.
      *
@@ -192,7 +206,7 @@ class TestEndpoint implements RequestHandlerInterface
                          firstVisit
                   FROM test_battery";
         // Select duplicate entry from Test Battery
-        $entries = $this->db->pselect($query, array());
+        $entries = $this->db->pselect($query, []);
 
         $testArray = $test->toSQL();
         foreach ($entries as $entry) {

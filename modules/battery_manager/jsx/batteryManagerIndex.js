@@ -336,8 +336,8 @@ class BatteryManagerIndex extends Component {
           type: 'select',
           options: options.active,
         }},
-      {label: 'Change Status', show: hasPermission('batter_manager_edit')},
-      {label: 'Edit Metadata', show: hasPermission('batter_manager_edit')},
+      {label: 'Change Status', show: hasPermission('battery_manager_edit')},
+      {label: 'Edit Metadata', show: hasPermission('battery_manager_edit')},
     ];
 
     const actions = [
@@ -424,7 +424,6 @@ class BatteryManagerIndex extends Component {
 
       if (duplicate && duplicate.id !== test.id) {
         if (duplicate.active === 'N') {
-          console.log('Duplicate Not Active');
           const edit = test.id ? 'This will deactivate the current test.' : '';
           swal.fire({
             title: 'Test Duplicate',
@@ -444,7 +443,6 @@ class BatteryManagerIndex extends Component {
             }
           });
         } else if (duplicate.active === 'Y') {
-          console.log('Duplicate Active');
           swal.fire(
             'Test Duplicate', 'You cannot duplicate an active test', 'error'
           );
