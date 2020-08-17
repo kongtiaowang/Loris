@@ -48,12 +48,16 @@ class NDB_BVL_Instrument_SA_Consent_Form extends NDB_BVL_Instrument
             'emptyOptionValue' => null
         );
 
-       $candidate = Candidate::singleton($commentID);
-        $this->centerID = $candidate->getData('CenterID');
-        $this->candID=$candidate->getData('CandID');
-        $this->siteName = Site::singleton($this->centerID)->getCenterName();
+        if ($commentID!='' || $commentID!=NULL) {
+            $timepoint =& TimePoint::singleton($this->getSessionID());
+            $candidate =& Candidate::singleton($timepoint->getCandID());
+            $this->candID = $candidate->getData('CandID');
+            $this->centerID = $candidate->getData('CenterID');
+            $this->siteName = Site::singleton($this->centerID)->getCenterName();
+        }
 
-        // setup the form
+
+       // setup the form
         $this->_setupForm();
     }
 
@@ -90,7 +94,7 @@ class NDB_BVL_Instrument_SA_Consent_Form extends NDB_BVL_Instrument
 
         $content1 = <<< 'HTML'
         <center><textarea cols=100 rows=5>
-        DCC Sample SA Consent Text (High Risk) For the study sites, the consent form will be populated here.
+        DCC Sample SA Consent Text (Low Risk) For the study sites
         Your participation in this study is completely voluntary.  You may choose not to take part at all.  If you decide to participate in the study you may stop participating at any time. Any data that was collected as part of this study will remain as part of the study records and cannot be removed.  If you decide not to take part in the study or if you stop participating at any time, you won’t be penalized or lose any benefits for which you otherwise qualify.  
 
         If you do not wish to participate in this study or want to end your participation in the study, you may send us a reply to this email stating so. You will not be penalized or lose any benefits for which you otherwise qualify.
@@ -102,7 +106,7 @@ class NDB_BVL_Instrument_SA_Consent_Form extends NDB_BVL_Instrument
 HTML;
         $content2 = <<< 'HTML'
         <center><textarea cols=100 rows=5>
-        DCC Sample SA Consent Text (High Risk) For the study sites, the consent form will be populated here.
+        DCC Sample SA Consent Text (High Risk) For the study sites.
         Your participation in this study is completely voluntary.  You may choose not to take part at all.  If you decide to participate in the study you may stop participating at any time. Any data that was collected as part of this study will remain as part of the study records and cannot be removed.  If you decide not to take part in the study or if you stop participating at any time, you won’t be penalized or lose any benefits for which you otherwise qualify.  
 
         If you do not wish to participate in this study or want to end your participation in the study, you may send us a reply to this email stating so. You will not be penalized or lose any benefits for which you otherwise qualify.
@@ -127,26 +131,26 @@ HTML;
               break;
           case 2: // SEA
               if (in_array($subproject, $HR_array)) {
-                  $this->form->addElement('static', 'lorisSubHeader', "<center><embed src='../images/IBIS_Consent_SA_SEA_HR.pdf' width=\"800px\" height=\"400px\" /></center>");
+                  $this->form->addElement('static', 'lorisSubHeader', "<center><embed src='../images/IBIS_Consent_SA_SEA_HR.pdf' width=\"800px\" height=\"600px\" /></center>");
               }
               else{
-                  $this->form->addElement('static', 'lorisSubHeader', "<center><embed src='../images/IBIS_Consent_SA_SEA_LR.pdf' width=\"800px\" height=\"400px\" /></center>");
+                  $this->form->addElement('static', 'lorisSubHeader', "<center><embed src='../images/IBIS_Consent_SA_SEA_LR.pdf' width=\"800px\" height=\"600px\" /></center>");
               }
                   break;
               case 3: // PHI
           if (in_array($subproject, $HR_array)) {
-                  $this->form->addElement('static', 'lorisSubHeader', "<center><embed src='../images/IBIS_Consent_SA_PHI_HR.pdf' width=\"800px\" height=\"400px\" /></center>");
+                  $this->form->addElement('static', 'lorisSubHeader', "<center><embed src='../images/IBIS_Consent_SA_PHI_HR.pdf' width=\"800px\" height=\"600px\" /></center>");
               }
               else{
-                  $this->form->addElement('static', 'lorisSubHeader', "<center><embed src='../images/IBIS_Consent_SA_PHI_LR.pdf' width=\"800px\" height=\"400px\" /></center>");
+                  $this->form->addElement('static', 'lorisSubHeader', "<center><embed src='../images/IBIS_Consent_SA_PHI_LR.pdf' width=\"800px\" height=\"600px\" /></center>");
               }
           break;
         case 4: // STL
             if (in_array($subproject, $HR_array)) {
-                $this->form->addElement('static', 'lorisSubHeader', "<center><embed src='../images/IBIS_Consent_SA_STL_HR.pdf' width=\"800px\" height=\"400px\" /></center>");
+                $this->form->addElement('static', 'lorisSubHeader', "<center><embed src='../images/IBIS_Consent_SA_STL_HR.pdf' width=\"800px\" height=\"600px\" /></center>");
             }
             else{
-                $this->form->addElement('static', 'lorisSubHeader', "<center><embed src='../images/IBIS_Consent_SA_STL_LR.pdf' width=\"800px\" height=\"400px\" /></center>");
+                $this->form->addElement('static', 'lorisSubHeader', "<center><embed src='../images/IBIS_Consent_SA_STL_LR.pdf' width=\"800px\" height=\"600px\" /></center>");
             }
             break;
           break;
