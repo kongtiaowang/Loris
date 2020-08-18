@@ -24,6 +24,8 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 ### Modules
 #### Issue Tracker
 - Readability of comments and history was improved. (PR #6138)
+#### Schedule Module
+- New module created to schedule appointment within LORIS. (PR #6150)
 ### Clean Up
 - *Add item here*
 ### Notes For Existing Projects
