@@ -23,7 +23,9 @@ declare -a tools_list=(
     'delete_candidate.php'
     'delete_ignored_conflicts.php'
     'delete_timepoint.php'
+    'CouchDB_Confirm_Integrity.php'
     'detect_duplicated_commentids.php'
+    'generate_project_statistics_csv.php'
     'generic_includes.php'
     'importers/CandidateImporter.php'
     'importers/DataImporter.class.inc'
@@ -45,6 +47,7 @@ declare -a tools_list=(
     'populate_visit_windows.php'
     'manage_modules.php'
     'DB_date_zeros_removal.php'
+    'CouchDB_Import_MRI.php'
 )
 
 # And on all PHP files in this array
