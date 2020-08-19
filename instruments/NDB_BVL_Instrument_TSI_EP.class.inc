@@ -152,7 +152,6 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
                                    "otc_4"                           => "OTC/prescription/dose",// specify
                                   );
 
-    // MOVE
     const Q13_DEV_FACTORS_PROBAND_OPTIONS = array(
                                              null                                                   => '',
                                              "benign_kidney_enlargement"                            => "Benign kidney enlargement",
@@ -728,42 +727,40 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
                 self::YES_NO_OPTIONS
             );
 
-            if ($i > 1) {
-                $this->XINRegisterRule(
-                    "sibling_" . $i . "_dob",
-                    array("sibling_{$i}_dob{@}=={@}NEVER_REQUIRED"),
-                    "Never required.",
-                    "sibling_" . $i . "_group"
-                );
+            $this->XINRegisterRule(
+                "sibling_" . $i . "_dob",
+                array("sibling_{$i}_dob{@}=={@}NEVER_REQUIRED"),
+                "Never required.",
+                "sibling_" . $i . "_group"
+            );
 
-                $this->XINRegisterRule(
-                    "sibling_" . $i . "_gender",
-                    array("sibling_{$i}_gender{@}=={@}NEVER_REQUIRED"),
-                    "Never required.",
-                    "sibling_" . $i . "_group"
-                );
+            $this->XINRegisterRule(
+                "sibling_" . $i . "_gender",
+                array("sibling_{$i}_gender{@}=={@}NEVER_REQUIRED"),
+                "Never required.",
+                "sibling_" . $i . "_group"
+            );
 
-                $this->XINRegisterRule(
-                    "sibling_" . $i . "_diagnoses",
-                    array("sibling_{$i}_diagnoses{@}=={@}NEVER_REQUIRED"),
-                    "Never required.",
-                    "sibling_" . $i . "_group"
-                );
+            $this->XINRegisterRule(
+                "sibling_" . $i . "_diagnoses",
+                array("sibling_{$i}_diagnoses{@}=={@}NEVER_REQUIRED"),
+                "Never required.",
+                "sibling_" . $i . "_group"
+            );
 
-                $this->XINRegisterRule(
-                    "sibling_" . $i . "_type",
-                    array("sibling_{$i}_type{@}=={@}NEVER_REQUIRED"),
-                    "Never required.",
-                    "sibling_" . $i . "_group"
-                );
+            $this->XINRegisterRule(
+                "sibling_" . $i . "_type",
+                array("sibling_{$i}_type{@}=={@}NEVER_REQUIRED"),
+                "Never required.",
+                "sibling_" . $i . "_group"
+            );
 
-                $this->XINRegisterRule(
-                    "sibling_" . $i . "_live_in_home",
-                    array("sibling_{$i}_live_in_home{@}=={@}NEVER_REQUIRED"),
-                    "Never required.",
-                    "sibling_" . $i . "_group"
-                );
-            }
+            $this->XINRegisterRule(
+                "sibling_" . $i . "_live_in_home",
+                array("sibling_{$i}_live_in_home{@}=={@}NEVER_REQUIRED"),
+                "Never required.",
+                "sibling_" . $i . "_group"
+            );
 
             $this->addGroup(
                 $group,
@@ -1910,46 +1907,6 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
             }
 
             $errors["proband_group"] .= ".";
-        }
-
-        $sibling_fields = array();
-
-        if ($values["sibling_1_dob"] == "") {
-            array_push($sibling_fields, "Sibling Date of Birth");
-        }
-
-        if ($values["sibling_1_gender"] == "") {
-            array_push($sibling_fields, "Sibling Gender");
-        }
-
-        if ($values["sibling_1_diagnoses"] == "") {
-            array_push($sibling_fields, "Sibling Diagnoses");
-        }
-
-        if ($values["sibling_1_type"] == "") {
-            array_push($sibling_fields, "Sibling Relationship Type");
-        }
-
-        if ($values["sibling_1_live_in_home"] == "") {
-            array_push($sibling_fields, "Sibling Live in Home");
-        }
-
-        $count = count($sibling_fields);
-
-        if (!empty($sibling_fields)) {
-            $errors["sibling_1_group"] = "Required: ";
-
-            foreach ($sibling_fields as $field) {
-                $errors["sibling_1_group"] .= $field;
-
-                if ($count > 1) {
-                    $errors["sibling_1_group"] .= ", ";
-                }
-
-                $count--;
-            }
-
-            $errors["sibling_1_group"] .= ".";
         }
 
         if ($values["enrolled_in_other_studies_or_registries"] != "yes") {
