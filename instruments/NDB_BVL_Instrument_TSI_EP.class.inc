@@ -1198,8 +1198,11 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
             $q1_exclusionary_options,
             array("multiple")
         );
-
-        $this->XINRegisterRule("pro_medhist_q1_exclusionary_conditions", array("pro_medhist_q1_had_serious_medical_or_surgical_problems{@}=={@}yes"), 'Required if yes');
+        $this->XINRegisterRule(
+            "pro_medhist_q1_exclusionary_conditions",
+            array("pro_medhist_q1_exclusionary_conditions{@}=={@}NEVER_REQUIRED"),
+            "Never required."
+        );
 
         $this->form->addElement('text', "pro_medhist_q1_other", $this->indent . 'Other:');
         $this->XINRegisterRule("pro_medhist_q1_other", array("pro_medhist_q1_exclusionary_conditions{@}=={@}other"), 'Required if other');
