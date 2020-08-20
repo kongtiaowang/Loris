@@ -2106,6 +2106,11 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
             $this->validate_empty_subquestions($values, ["inf_devfactors_q10_list"], $errors);
         }
 
+        if ($values["inf_devfactors_q11_breastfeeding"] == "yes" && $values["inf_devfactors_q11b_if_weaned_how_long_breastfeed"] == "yes") {
+            $errors["inf_devfactors_q11_breastfeeding"] = "11. and 11b. cannot both be answered 'Yes'";
+            $errors["inf_devfactors_q11b_if_weaned_how_long_breastfeed"] = "11. and 11b. cannot both be answered 'Yes'";
+        }
+
         if ($values["inf_devfactors_q11b_if_weaned_how_long_breastfeed"] != "yes") {
             $this->validate_empty_subquestions($values, ["inf_devfactors_q11b_how_long_breastfeed_weeks"], $errors);
             $this->validate_empty_subquestions($values, ["inf_devfactors_q11b_how_long_breastfeed_months"], $errors);
