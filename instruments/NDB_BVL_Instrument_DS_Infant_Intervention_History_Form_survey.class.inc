@@ -118,14 +118,26 @@ class NDB_BVL_Instrument_DS_Infant_Intervention_History_Form_survey extends NDB_
 
         //The array of dates/timestamps to convert to database dates/timestamps
         //Any LorisForm date elements must be listed here
-        $this->dateTimeFields = array("Date_taken");
+        $this->dateTimeFields = array(
+                                 "Date_taken",
+                                 "Date_completed_6_months",
+                                 "Date_completed_12_months",
+                                 "Date_completed_24_months",
+                                );
 
         //The array of selects with multiple answers allowed
         //Any LorisForm multiple selects must be listed here
         $this->_selectMultipleElements = array();
 
         // required fields for data entry completion status
-        $this->_requiredElements = array("q1_a_what_was_the_outcome_of_pregnancy_1");
+        $this->_requiredElements = array(
+                                    "page1_occupational_therapy_yes_no",
+                                    "page2_same_as_previous",
+                                    "page3_same_as_previous",
+                                    "page4_same_as_previous",
+                                    "page5_same_as_previous",
+                                    "page6_same_as_previous",
+                                   );
 
         // setup the form
         $this->_setupForm();
