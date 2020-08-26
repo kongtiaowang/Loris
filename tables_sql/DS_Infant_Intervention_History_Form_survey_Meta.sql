@@ -1,4 +1,4 @@
-INSERT INTO test_names (Test_name, Full_name, Sub_Group, isDirectEntry) VALUES ('DS_Infant_Intervention_History_Form_survey', "Intervention History Form – Infant DS - Survey", 1, 1);
+INSERT INTO test_names (Test_name, Full_name, Sub_Group, isDirectEntry) VALUES ('DS_Infant_Intervention_History_Form_survey', "Intervention History Form - DS-Infant - Survey", 1, 1);
 INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('DS_Infant_Intervention_History_Form_survey','DS_Infant_Intervention_History_Form_survey_page1', "Page 1", 1);
 INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('DS_Infant_Intervention_History_Form_survey','DS_Infant_Intervention_History_Form_survey_page2', "Page 2", 2);
 INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('DS_Infant_Intervention_History_Form_survey','DS_Infant_Intervention_History_Form_survey_page3', "Page 3", 3);

@@ -80,7 +80,7 @@ class NDB_BVL_Instrument_DS_Infant_Intervention_History_Form_survey extends NDB_
     /**
      * Sample SQL statement for test_names table and instrument subtests table
      *
-     * INSERT INTO test_names (Test_name, Full_name, Sub_Group, isDirectEntry) VALUES ('DS_Infant_Intervention_History_Form_survey', "Intervention History Form – Infant DS - Survey", 1, 1);
+     * INSERT INTO test_names (Test_name, Full_name, Sub_Group, isDirectEntry) VALUES ('DS_Infant_Intervention_History_Form_survey', "Intervention History Form - DS-Infant - Survey", 1, 1);
      * INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('DS_Infant_Intervention_History_Form_survey','DS_Infant_Intervention_History_Form_survey_page1', "Page 1", 1);
      * INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('DS_Infant_Intervention_History_Form_survey','DS_Infant_Intervention_History_Form_survey_page2', "Page 2", 2);
      * INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('DS_Infant_Intervention_History_Form_survey','DS_Infant_Intervention_History_Form_survey_page3', "Page 3", 3);
@@ -172,7 +172,7 @@ class NDB_BVL_Instrument_DS_Infant_Intervention_History_Form_survey extends NDB_
     function _main()
     {
         // display test name
-        $this->addHeader("Intervention History Form – Infant DS - Survey");
+        $this->addHeader("Intervention History Form - DS-Infant - Survey");
 
         $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
         $this->form->addElement(
@@ -203,7 +203,7 @@ class NDB_BVL_Instrument_DS_Infant_Intervention_History_Form_survey extends NDB_
     */
     function _page1()
     {
-        $this->addHeader("Intervention History Form – Infant DS - Survey");
+        $this->addHeader("Intervention History Form - DS-Infant - Survey");
 
         $this->form->addElement(
             'static',
@@ -230,7 +230,7 @@ class NDB_BVL_Instrument_DS_Infant_Intervention_History_Form_survey extends NDB_
     */
     function _page2()
     {
-        $this->addHeader("Intervention History Form – Infant DS - Survey");
+        $this->addHeader("Intervention History Form - DS-Infant - Survey");
 
         $this->addSelect("page2_same_as_previous", "Same as previous month? <h4><i>If yes, skip to next page</i></h4>", self::YES_NO_OPTIONS);
 
@@ -252,7 +252,7 @@ class NDB_BVL_Instrument_DS_Infant_Intervention_History_Form_survey extends NDB_
     */
     function _page3()
     {
-        $this->addHeader("Intervention History Form – Infant DS - Survey");
+        $this->addHeader("Intervention History Form - DS-Infant - Survey");
 
         $this->addSelect("page3_same_as_previous", "Same as previous month? <h4><i>If yes, skip to next page</i></h4>", self::YES_NO_OPTIONS);
 
@@ -274,7 +274,7 @@ class NDB_BVL_Instrument_DS_Infant_Intervention_History_Form_survey extends NDB_
     */
     function _page4()
     {
-        $this->addHeader("Intervention History Form – Infant DS - Survey");
+        $this->addHeader("Intervention History Form - DS-Infant - Survey");
 
         $this->addSelect("page4_same_as_previous", "Same as previous month? <h4><i>If yes, skip to next page</i></h4>", self::YES_NO_OPTIONS);
 
@@ -296,7 +296,7 @@ class NDB_BVL_Instrument_DS_Infant_Intervention_History_Form_survey extends NDB_
     */
     function _page5()
     {
-        $this->addHeader("Intervention History Form – Infant DS - Survey");
+        $this->addHeader("Intervention History Form - DS-Infant - Survey");
 
         $this->addSelect("page5_same_as_previous", "Same as previous month? <h4><i>If yes, skip to next page</i></h4>", self::YES_NO_OPTIONS);
 
@@ -318,7 +318,7 @@ class NDB_BVL_Instrument_DS_Infant_Intervention_History_Form_survey extends NDB_
     */
     function _page6()
     {
-        $this->addHeader("Intervention History Form – Infant DS - Survey");
+        $this->addHeader("Intervention History Form - DS-Infant - Survey");
 
         $this->addSelect("page6_same_as_previous", "Same as previous month? <h4><i>If yes, skip to next page</i></h4>", self::YES_NO_OPTIONS);
 
@@ -344,7 +344,7 @@ class NDB_BVL_Instrument_DS_Infant_Intervention_History_Form_survey extends NDB_
     */
     function _page7()
     {
-        $this->addHeader("Intervention History Form – Infant DS - Survey");
+        $this->addHeader("Intervention History Form - DS-Infant - Survey");
 
         if ($this->getTimepoint() != "V06" && $this->getTimepoint() != "V6-CVD") {
             $this->addSelect("page7_same_as_previous", "Same as previous month? <h4><i>If yes, skip to next page</i></h4>", self::YES_NO_OPTIONS);
@@ -374,7 +374,7 @@ class NDB_BVL_Instrument_DS_Infant_Intervention_History_Form_survey extends NDB_
     */
     function _page8()
     {
-        $this->addHeader("Intervention History Form – Infant DS - Survey");
+        $this->addHeader("Intervention History Form - DS-Infant - Survey");
 
         if ($this->getTimepoint() != "V06" && $this->getTimepoint() != "V6-CVD") {
             $this->addSelect("page8_same_as_previous", "Same as 6-9 months? <h4><i>If yes, skip to next page</i></h4>", self::YES_NO_OPTIONS);
@@ -408,7 +408,7 @@ class NDB_BVL_Instrument_DS_Infant_Intervention_History_Form_survey extends NDB_
     */
     function _page9()
     {
-        $this->addHeader("Intervention History Form – Infant DS - Survey");
+        $this->addHeader("Intervention History Form - DS-Infant - Survey");
 
         if ($this->getTimepoint() == "V24" || $this->getTimepoint() == "V24-CVD") {
             $this->addSelect("page9_same_as_previous", "Same as 9-12 months? <h4><i>If yes, skip to next page</i></h4>", self::YES_NO_OPTIONS);
@@ -438,7 +438,7 @@ class NDB_BVL_Instrument_DS_Infant_Intervention_History_Form_survey extends NDB_
     */
     function _page10()
     {
-        $this->addHeader("Intervention History Form – Infant DS - Survey");
+        $this->addHeader("Intervention History Form - DS-Infant - Survey");
 
         if ($this->getTimepoint() == "V24" || $this->getTimepoint() == "V24-CVD") {
             $this->addSelect("page10_same_as_previous", "Same as 12-18 months? <h4><i>If yes, skip to next page</i></h4>", self::YES_NO_OPTIONS);
