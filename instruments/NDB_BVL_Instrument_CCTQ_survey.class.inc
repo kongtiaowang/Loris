@@ -66,15 +66,7 @@ class NDB_BVL_Instrument_CCTQ_survey extends NDB_BVL_Instrument_survey
 
         //The array of dates/timestamps to convert to database dates/timestamps
         //Any LorisForm date elements must be listed here
-        $this->dateTimeFields = array(
-                                 "Date_taken",
-                                 "A_q3a_date_of_most_recent_test",
-                                 "A_q3b_date_of_most_recent_negative_test",
-                                 "A_q3c_date_of_most_recent_positive_test",
-                                 "A_q4a_date_of_most_recent_test",
-                                 "A_q4b_date_of_most_recent_negative_test",
-                                 "A_q4c_date_of_most_recent_positive_test",
-                                );
+        $this->dateTimeFields = array("Date_taken");
 
         //The array of selects with multiple answers allowed
         //Any LorisForm multiple selects must be listed here
@@ -82,12 +74,11 @@ class NDB_BVL_Instrument_CCTQ_survey extends NDB_BVL_Instrument_survey
 
         // required fields for data entry completion status
         $this->_requiredElements = array(
-                                    "A_q1_healthcare_provider_told_have_or_most_likely_have_covid_19",
-                                    "A_q5_has_anyone_else_living_in_your_home_had_covid_19",
-                                    "B_q2_did_your_school_close_because_of_covid_19",
-                                    "B_q4a_eating",
-                                    "B_q7_indicate_covid_19_positive_or_negative_impact_on_your_life",
-                                    "B_q9a_had_difficulty_sleeping",
+                                    "did_you_have_to_read_the_survey_questions_to_your_child",
+                                    "q1_child_wakes_up_at",
+                                    "q9_child_normally_wakes_up_at",
+                                    "q17_if_child_has_to_be_awakened_how_difficult_do_you_find_it",
+                                    "q27_my_child_is",
                                    );
 
         // setup the form
@@ -256,7 +247,6 @@ class NDB_BVL_Instrument_CCTQ_survey extends NDB_BVL_Instrument_survey
 
         $this->addSelect("q5_child_takes_regular_naps", "5. ... child takes regular naps", self::YES_NO_OPTIONS);
 
-        // $this->form->addElement('text', 'q5_if_yes_how_many_days_per_week_do_they_nap', $this->indent . 'If yes, how many days/week do they nap?');
         $this->addSelect("q5_if_yes_how_many_days_per_week_do_they_nap", $this->indent . "If yes, how many days/week do they nap?", $q5_options);
 
         $this->XINRegisterRule('q5_if_yes_how_many_days_per_week_do_they_nap', array('q5_child_takes_regular_naps{@}=={@}yes'), 'Required if yes');
@@ -331,7 +321,6 @@ class NDB_BVL_Instrument_CCTQ_survey extends NDB_BVL_Instrument_survey
 
         $this->addSelect("q13_child_takes_regular_naps", "13. ... my child takes regular naps", self::YES_NO_OPTIONS);
 
-        // $this->form->addElement('text', 'q13_if_yes_how_many_days_per_week_do_they_nap', $this->indent . 'If yes, how many days/week do they nap?');
         $this->addSelect("q13_if_yes_how_many_days_per_week_do_they_nap", $this->indent . 'If yes, how many days/week do they nap?', $q13_options);
 
         $this->XINRegisterRule('q13_if_yes_how_many_days_per_week_do_they_nap', array('q13_child_takes_regular_naps{@}=={@}yes'), 'Required if yes');
