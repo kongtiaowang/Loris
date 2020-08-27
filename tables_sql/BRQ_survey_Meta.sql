@@ -5,3 +5,4 @@ INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_num
 INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('BRQ_survey','BRQ_survey_page4', "Page 4", 4);
 INSERT INTO survey_test_battery (Test_name, Visit_label) VALUES ('BRQ_survey','VSA');
 INSERT INTO survey_test_battery (Test_name, Visit_label) VALUES ('BRQ_survey','VSA-CVD');
+INSERT INTO survey_test_battery (Test_name, Visit_label) VALUES ('BRQ_survey','VSA-Sleep');
