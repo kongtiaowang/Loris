@@ -5,3 +5,5 @@ INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_num
 INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('COVID_Child_Self_Report_survey','COVID_Child_Self_Report_survey_page4', "Page 4", 4);
 INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('COVID_Child_Self_Report_survey','COVID_Child_Self_Report_survey_page5', "Page 5", 5);
 INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('COVID_Child_Self_Report_survey','COVID_Child_Self_Report_survey_page6', "Page 6", 6);
+INSERT INTO survey_test_battery (Test_name, Visit_label) VALUES ('COVID_Child_Self_Report_survey','VSA');
+INSERT INTO survey_test_battery (Test_name, Visit_label) VALUES ('COVID_Child_Self_Report_survey','VSA-CVD');
