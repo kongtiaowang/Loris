@@ -1,7 +1,7 @@
 -- survey test battery updates
 
-INSERT INTO survey_test_battery (Test_name, Visit_label) VALUES ('scq_proband_survey','VSA');
-INSERT INTO survey_test_battery (Test_name, Visit_label) VALUES ('scq_proband_survey','VSA-CVD');
+INSERT INTO survey_test_battery (Test_name, Visit_label) VALUES ('scq_subject_survey','VSA');
+INSERT INTO survey_test_battery (Test_name, Visit_label) VALUES ('scq_subject_survey','VSA-CVD');
 INSERT INTO survey_test_battery (Test_name, Visit_label) VALUES ('m_chat_rf','V24');
 INSERT INTO survey_test_battery (Test_name, Visit_label) VALUES ('m_chat_rf','V24-CVD');
 
