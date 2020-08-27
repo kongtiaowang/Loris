@@ -38,6 +38,43 @@ VALUES ('Vineland_SA', '0', '0', 'Y', 'Visit', 9, 'VSA-CVD', NULL);
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
 VALUES ('Vineland_SA', '0', '0', 'Y', 'Visit', 10, 'VSA-CVD', NULL);
 
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
+VALUES ('Vineland_SA', '0', '0', 'Y', 'Visit', 18, 'V06', NULL);
+
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
+VALUES ('Vineland_SA', '0', '0', 'Y', 'Visit', 18, 'V6-CVD', NULL);
+
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
+VALUES ('Vineland_SA', '0', '0', 'Y', 'Visit', 18, 'V12', NULL);
+
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
+VALUES ('Vineland_SA', '0', '0', 'Y', 'Visit', 18, 'V12-CVD', NULL);
+
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
+VALUES ('Vineland_SA', '0', '0', 'Y', 'Visit', 18, 'V24', NULL);
+
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
+VALUES ('Vineland_SA', '0', '0', 'Y', 'Visit', 18, 'V24-CVD', NULL);
+
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
+VALUES ('Vineland_SA', '0', '0', 'Y', 'Visit', 19, 'V06', NULL);
+
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
+VALUES ('Vineland_SA', '0', '0', 'Y', 'Visit', 19, 'V6-CVD', NULL);
+
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
+VALUES ('Vineland_SA', '0', '0', 'Y', 'Visit', 19, 'V12', NULL);
+
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
+VALUES ('Vineland_SA', '0', '0', 'Y', 'Visit', 19, 'V12-CVD', NULL);
+
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
+VALUES ('Vineland_SA', '0', '0', 'Y', 'Visit', 19, 'V24', NULL);
+
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
+VALUES ('Vineland_SA', '0', '0', 'Y', 'Visit', 19, 'V24-CVD', NULL);
+
+
 -- TSI
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
 VALUES ('TSI_SA', '0', '0', 'Y', 'Visit', 1, 'VSA-CVD', NULL);
