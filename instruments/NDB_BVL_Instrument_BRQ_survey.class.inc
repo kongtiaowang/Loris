@@ -74,7 +74,12 @@ class NDB_BVL_Instrument_BRQ_survey extends NDB_BVL_Instrument
         $this->_selectMultipleElements = array();
 
         // required fields for data entry completion status
-        $this->_requiredElements = array();
+        $this->_requiredElements = array(
+                                    "q1_perform_the_same_activities_in_the_hour_before_bed",
+                                    "q6_q11_perform_the_same_activities_in_the_hour_before_bed",
+                                    "q11_perform_the_same_activities_in_the_hour_before_bed",
+                                    "q16_read_listen_to_a_story",
+                                   );
 
         // setup the form
         $this->_setupForm();
