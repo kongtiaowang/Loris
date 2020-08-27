@@ -9,3 +9,9 @@ INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_num
 INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('DS_Infant_Intervention_History_Form_survey','DS_Infant_Intervention_History_Form_survey_page8', "Page 8", 8);
 INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('DS_Infant_Intervention_History_Form_survey','DS_Infant_Intervention_History_Form_survey_page9', "Page 9", 9);
 INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('DS_Infant_Intervention_History_Form_survey','DS_Infant_Intervention_History_Form_survey_page10', "Page 10", 10);
+INSERT INTO survey_test_battery (Test_name, Visit_label) VALUES ('DS_Infant_Intervention_History_Form_survey','V06');
+INSERT INTO survey_test_battery (Test_name, Visit_label) VALUES ('DS_Infant_Intervention_History_Form_survey','V6-CVD');
+INSERT INTO survey_test_battery (Test_name, Visit_label) VALUES ('DS_Infant_Intervention_History_Form_survey','V12');
+INSERT INTO survey_test_battery (Test_name, Visit_label) VALUES ('DS_Infant_Intervention_History_Form_survey','V12-CVD');
+INSERT INTO survey_test_battery (Test_name, Visit_label) VALUES ('DS_Infant_Intervention_History_Form_survey','V24');
+INSERT INTO survey_test_battery (Test_name, Visit_label) VALUES ('DS_Infant_Intervention_History_Form_survey','V24-CVD');
