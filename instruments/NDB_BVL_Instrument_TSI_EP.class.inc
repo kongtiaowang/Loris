@@ -152,7 +152,6 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
                                    "otc_4"                           => "OTC/prescription/dose",// specify
                                   );
 
-    // MOVE
     const Q13_DEV_FACTORS_PROBAND_OPTIONS = array(
                                              null                                                   => '',
                                              "benign_kidney_enlargement"                            => "Benign kidney enlargement",
@@ -728,42 +727,40 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
                 self::YES_NO_OPTIONS
             );
 
-            if ($i > 1) {
-                $this->XINRegisterRule(
-                    "sibling_" . $i . "_dob",
-                    array("sibling_{$i}_dob{@}=={@}NEVER_REQUIRED"),
-                    "Never required.",
-                    "sibling_" . $i . "_group"
-                );
+            $this->XINRegisterRule(
+                "sibling_" . $i . "_dob",
+                array("sibling_{$i}_dob{@}=={@}NEVER_REQUIRED"),
+                "Never required.",
+                "sibling_" . $i . "_group"
+            );
 
-                $this->XINRegisterRule(
-                    "sibling_" . $i . "_gender",
-                    array("sibling_{$i}_gender{@}=={@}NEVER_REQUIRED"),
-                    "Never required.",
-                    "sibling_" . $i . "_group"
-                );
+            $this->XINRegisterRule(
+                "sibling_" . $i . "_gender",
+                array("sibling_{$i}_gender{@}=={@}NEVER_REQUIRED"),
+                "Never required.",
+                "sibling_" . $i . "_group"
+            );
 
-                $this->XINRegisterRule(
-                    "sibling_" . $i . "_diagnoses",
-                    array("sibling_{$i}_diagnoses{@}=={@}NEVER_REQUIRED"),
-                    "Never required.",
-                    "sibling_" . $i . "_group"
-                );
+            $this->XINRegisterRule(
+                "sibling_" . $i . "_diagnoses",
+                array("sibling_{$i}_diagnoses{@}=={@}NEVER_REQUIRED"),
+                "Never required.",
+                "sibling_" . $i . "_group"
+            );
 
-                $this->XINRegisterRule(
-                    "sibling_" . $i . "_type",
-                    array("sibling_{$i}_type{@}=={@}NEVER_REQUIRED"),
-                    "Never required.",
-                    "sibling_" . $i . "_group"
-                );
+            $this->XINRegisterRule(
+                "sibling_" . $i . "_type",
+                array("sibling_{$i}_type{@}=={@}NEVER_REQUIRED"),
+                "Never required.",
+                "sibling_" . $i . "_group"
+            );
 
-                $this->XINRegisterRule(
-                    "sibling_" . $i . "_live_in_home",
-                    array("sibling_{$i}_live_in_home{@}=={@}NEVER_REQUIRED"),
-                    "Never required.",
-                    "sibling_" . $i . "_group"
-                );
-            }
+            $this->XINRegisterRule(
+                "sibling_" . $i . "_live_in_home",
+                array("sibling_{$i}_live_in_home{@}=={@}NEVER_REQUIRED"),
+                "Never required.",
+                "sibling_" . $i . "_group"
+            );
 
             $this->addGroup(
                 $group,
@@ -1201,8 +1198,11 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
             $q1_exclusionary_options,
             array("multiple")
         );
-
-        $this->XINRegisterRule("pro_medhist_q1_exclusionary_conditions", array("pro_medhist_q1_had_serious_medical_or_surgical_problems{@}=={@}yes"), 'Required if yes');
+        $this->XINRegisterRule(
+            "pro_medhist_q1_exclusionary_conditions",
+            array("pro_medhist_q1_exclusionary_conditions{@}=={@}NEVER_REQUIRED"),
+            "Never required."
+        );
 
         $this->form->addElement('text', "pro_medhist_q1_other", $this->indent . 'Other:');
         $this->XINRegisterRule("pro_medhist_q1_other", array("pro_medhist_q1_exclusionary_conditions{@}=={@}other"), 'Required if other');
@@ -1912,46 +1912,6 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
             $errors["proband_group"] .= ".";
         }
 
-        $sibling_fields = array();
-
-        if ($values["sibling_1_dob"] == "") {
-            array_push($sibling_fields, "Sibling Date of Birth");
-        }
-
-        if ($values["sibling_1_gender"] == "") {
-            array_push($sibling_fields, "Sibling Gender");
-        }
-
-        if ($values["sibling_1_diagnoses"] == "") {
-            array_push($sibling_fields, "Sibling Diagnoses");
-        }
-
-        if ($values["sibling_1_type"] == "") {
-            array_push($sibling_fields, "Sibling Relationship Type");
-        }
-
-        if ($values["sibling_1_live_in_home"] == "") {
-            array_push($sibling_fields, "Sibling Live in Home");
-        }
-
-        $count = count($sibling_fields);
-
-        if (!empty($sibling_fields)) {
-            $errors["sibling_1_group"] = "Required: ";
-
-            foreach ($sibling_fields as $field) {
-                $errors["sibling_1_group"] .= $field;
-
-                if ($count > 1) {
-                    $errors["sibling_1_group"] .= ", ";
-                }
-
-                $count--;
-            }
-
-            $errors["sibling_1_group"] .= ".";
-        }
-
         if ($values["enrolled_in_other_studies_or_registries"] != "yes") {
             $this->validate_empty_subquestions($values, ["enrolled_in_other_studies_or_registries_list"], $errors);
         }
@@ -2147,6 +2107,11 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
 
         if ($values["inf_devfactors_q10_gastrointestinal_condition"] != "yes") {
             $this->validate_empty_subquestions($values, ["inf_devfactors_q10_list"], $errors);
+        }
+
+        if ($values["inf_devfactors_q11_breastfeeding"] == "yes" && $values["inf_devfactors_q11b_if_weaned_how_long_breastfeed"] == "yes") {
+            $errors["inf_devfactors_q11_breastfeeding"] = "11. and 11b. cannot both be answered 'Yes'";
+            $errors["inf_devfactors_q11b_if_weaned_how_long_breastfeed"] = "11. and 11b. cannot both be answered 'Yes'";
         }
 
         if ($values["inf_devfactors_q11b_if_weaned_how_long_breastfeed"] != "yes") {
