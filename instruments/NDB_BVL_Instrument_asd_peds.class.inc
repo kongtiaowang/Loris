@@ -202,7 +202,7 @@ class NDB_BVL_Instrument_asd_peds extends NDB_BVL_Instrument
             foreach ($columnHeaders as $columnField => $columnHeader) {
                 $group[] = $this->form->createElement('static', "{$scoreField}_{$columnField}", null, null);
             }
-            $this->form->addGroup($group, "{$scoreLabel}_score_group_{$i}", $scoreLabel, $this->_GUIDelimiter, false);
+            $this->form->addGroup($group, "{$scoreField}_score_group", $scoreLabel, $this->_GUIDelimiter, false);
             unset($group);
         }
     }
