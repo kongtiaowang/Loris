@@ -265,6 +265,7 @@ const config = [
   lorisModule('server_processes_manager', ['server_processes_managerIndex']),
   lorisModule('instruments', ['CandidateInstrumentList']),
   lorisModule('candidate_profile', ['CandidateInfo']),
+  lorisModule('parent_portal', ['ParentPortalIndex']),
 ];
 
 // Support project overrides

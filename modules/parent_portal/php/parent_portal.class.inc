@@ -113,6 +113,20 @@ class parent_portal extends \NDB_Form
         exit;
     }
 
-
+    /**
+     * Include additional JS files
+     *
+     * @return array of javascript to be inserted
+     */
+    function getJSDependencies(): array
+    {
+        $factory = \NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            [$baseURL . '/parent_portal/js/ParentPortalIndex.js']
+        );
+    }
 }
 ?>
