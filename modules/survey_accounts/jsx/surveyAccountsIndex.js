@@ -70,11 +70,11 @@ class SurveyAccountsIndex extends Component {
       result = <td>{this.state.data.fieldOptions.instruments[cell]}</td>;
       break;
     case 'Parent Portal':
-      const pidUrl = loris.BaseURL + '/parent_portal?id=' + row['Parent Portal'];
-      result = row['Parent Portal'] !== null ? <td><a href={pidUrl}>Go To Parent Portal</a></td> : <td>NA</td>;
+      const pUrl = loris.BaseURL + '/parent_portal?id=' + row['Parent Portal'];
+      const content = <td><a href={pUrl}>Go To Parent Portal</a></td>;
+      result = row['Parent Portal'] !== null ? content : <td>NA</td>;
       break;
     }
-
     return result;
   }
 
