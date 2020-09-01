@@ -15,11 +15,15 @@ class ParentPortalIndex extends React.Component {
     super(props);
     this.state = {
       configData: {},
-      formData: {},
-      isLoaded: false,
+      formData: {
+        parentID: props.parentID,
+      },
+      view_surveys: false,
       error: false,
+      errorMsg: '',
       submitDisabled: false,
     };
+    this.setFormData = this.setFormData.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
@@ -30,41 +34,50 @@ class ParentPortalIndex extends React.Component {
   }
 
   /**
-   * Retrieve data from the provided URL and save it in state
-   *
-   * @return {object}
-   */
-  /**
-   * It checks the date of birth and Expected Date of Confinement,
-   * the date fields must match.
-   * If match, this function will return true.
-   *
-   * @return {boolean}
-   */
-  validateMatchDate() {
-    let validate = false;
-    const formData = this.state.formData;
-    if (formData.dobDate !== formData.dobDateConfirm) {
-      swal.fire('Error!', 'Date of Birth fields must match', 'error');
-    } else if (this.state.configData['edc'] === 'true' &&
-         (formData.edcDate !== formData.edcDateConfirm)
-    ) {
-      swal.fire('Error!', 'EDC fields must match', 'error');
-    } else {
-      validate = true;
-    }
-    return validate;
-  }
-
-  /**
    * Handles form submission
    *
    * @param {event} e - Form submission event
    */
   handleSubmit(e) {
     e.preventDefault();
-  }
+    this.setState({errorMsg: ''});
+    // Set form data and upload the media file
+    let formData = this.state.formData;
+    let formObject = new FormData();
+    for (let key in formData) {
+      if (formData[key] !== '') {
+        formObject.append(key, formData[key]);
+      }
+    }
 
+    fetch(this.props.submitURL, {
+      method: 'POST',
+      cache: 'no-cache',
+      credentials: 'same-origin',
+      body: formObject,
+    })
+    .then((resp) => {
+      if (resp.ok) {
+        this.setState({view_surveys: true});
+      } else {
+      this.setState({errorMsg: 'No Surveys Found With The Above Information.'});
+      }
+        }).catch((error) => {
+          console.error(error);
+        });
+  }
+  /**
+   * Set the form data based on state values of child elements/components
+   *
+   * @param {string} formElement - name of the selected element
+   * @param {string} value - selected value for corresponding form element
+   */
+  setFormData(formElement, value) {
+    let formData = Object.assign({}, this.state.formData);
+    formData[formElement] = value;
+
+    this.setState({formData: formData});
+  }
   /**
    * Renders the React component.
    *
@@ -75,38 +88,50 @@ class ParentPortalIndex extends React.Component {
     if (this.state.error) {
       return <h3>An error occured while loading the page.</h3>;
     }
+    if (!this.state.view_surveys) {
     // Waiting for async data to load
-    if (!this.state.isLoaded) {
-      return <Loader/>;
-    }
      return (
-      <FormElement
+      <FieldsetElement legend={'Go To Parent Portal'}>
+        <FormElement
           name = "newProfileForm"
-          onSubmit = {this.handleSubmit}
+            onSubmit={this.handleSubmit}
         >
-          <TextElement
-            name = "dobDate"
-            label = "Date of Birth"
-          />
-          <TextElement
-            name = "dobDateConfirm"
-            label = "Date of Birth Confirm"
-          />
-          <ButtonElement
+           <TextboxElement
+            name = "parentID"
+            label = "Enter ParentID:"
+            onUserInput = {this.setFormData}
+            value = {this.state.formData.parentID}
+            required = {true}
+            />
+           <TextboxElement
+            name = "email"
+            label = "Enter Email:"
+            onUserInput = {this.setFormData}
+            value = {this.state.formData.email}
+            required = {true}
+            />
+           <div style={{color: 'red'}}>{this.state.errorMsg}</div>
+           <ButtonElement
             name = "fire_away"
-            label = "Create"
+            label = "Go To Parent Portal"
             id = "button"
             type = "submit"
-          />
-        </FormElement>
+            />
+          </FormElement>
+        </FieldsetElement>
      );
+    } else {
+      return <div>view sesison</div>;
+    }
   }
 }
 window.addEventListener('load', () => {
+const urlParams = new URLSearchParams(window.location.search);
+const parentid = urlParams.get('id');
   ReactDOM.render(
     <ParentPortalIndex
-      dataURL = {`${loris.BaseURL}/parent_portal/?format=json`}
-      submitURL = {`${loris.BaseURL}/parent_portal/`}
+      parentID = {parentid}
+      submitURL = {`${loris.BaseURL}/parent_portal/survey_handle`}
     />,
     document.getElementById('lorisworkspace')
   );
