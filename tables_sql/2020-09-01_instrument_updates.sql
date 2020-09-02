@@ -226,7 +226,7 @@ WHERE
                     CandID=703739
             )
     );
---ssis
+-- ssis
 DELETE FROM
  SSIS_Parent
 WHERE
