@@ -85,6 +85,7 @@ class Filter extends Component {
               key={filter.name}
               options={filter.options}
               sortByValue={filter.sortByValue}
+              autoSelect={false}
             />
           );
           break;
@@ -94,6 +95,7 @@ class Filter extends Component {
             options={filter.options}
             multiple={true}
             emptyOption={false}
+            autoSelect={false}
           />;
           break;
         case 'numeric':
