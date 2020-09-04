@@ -15,7 +15,7 @@ INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, Subp
 VALUES ('DSMIV_checklist', '0', '0', 'Y', 'Visit', 3, 'VSA-CVD', NULL);
 
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
-VALUES ('DSMIV_SA', '0', '0', 'Y', 'Visit', 9, 'VSA-CVD', NULL);
+VALUES ('DSMIV_checklist', '0', '0', 'Y', 'Visit', 9, 'VSA-CVD', NULL);
 
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
 VALUES ('DSMIV_checklist', '0', '0', 'Y', 'Visit', 10, 'VSA-CVD', NULL);
