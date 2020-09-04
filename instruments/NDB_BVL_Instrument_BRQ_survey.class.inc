@@ -185,7 +185,7 @@ class NDB_BVL_Instrument_BRQ_survey extends NDB_BVL_Instrument
         $this->addHeader("BRQ (Bedtime Routine Questionnaire) - Survey");
 
         $page2_questions = array(
-                            "q6_q11_perform_the_same_activities_in_the_hour_before_bed"   => "6. ...perform <b><u>the same activities</u></b> in the hour before going to bed?",
+                            "q6_perform_the_same_activities_in_the_hour_before_bed"       => "6. ...perform <b><u>the same activities</u></b> in the hour before going to bed?",
                             "q7_perform_activities_in_the_same_order_before_going_to_bed" => "7. ...perform events <b><u>in the same order</u></b> before going to bed (for example, bathe, brush teeth, read/listen to story, go to bed)?",
                             "q8_sleep_in_the_same_place"                                  => "8. ...sleep <b><u>in the same place</u></b> (for example, in his/her bed, in parent’s bed, on couch)?",
                             "q9_go_to_bed_at_the_same_time"                               => "9. ...go to bed <b><u>at the same time</u></b> (within 10 minutes)?",
@@ -220,6 +220,14 @@ class NDB_BVL_Instrument_BRQ_survey extends NDB_BVL_Instrument
                             "q15_get_put_to_bed_by_the_same_person"                        => "15. ...get put to bed <b><u>by the same person</u></b>?",
                            );
 
+        $page3_options = array(
+                          "1_not_at_all"  => "Not at all",
+                          "2_a_little"    => "A little",
+                          "3_moderately"  => "Moderately",
+                          "4_quite_a_bit" => "Quite a bit",
+                          "5_extremely"   => "Extremely",
+                         );
+
         $this->form->addElement(
             'static',
             null,
@@ -227,7 +235,7 @@ class NDB_BVL_Instrument_BRQ_survey extends NDB_BVL_Instrument
         );
 
         foreach ($page3_questions as $field => $label) {
-            $this->addSelect($field, $label, self::OPTIONS);
+            $this->addSelect($field, $label, $page3_options);
         }
     }
 
