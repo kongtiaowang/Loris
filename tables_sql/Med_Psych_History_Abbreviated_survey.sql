@@ -1,12 +1,12 @@
-CREATE TABLE `Med_Psych_History_survey` (
+CREATE TABLE `Med_Psych_History_Abbreviated_survey` (
     `CommentID` varchar(255) NOT NULL default '',
     `UserID` varchar(255) default NULL,
     `Examiner` varchar(255) default NULL,
     `Testdate` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `Data_entry_completion_status` enum('Incomplete','Complete') NOT NULL default 'Incomplete',
-    `Date_taken` date default NULL,
     `Candidate_Age` varchar(255) default NULL,
     `Window_Difference` varchar(255) default NULL,
+    `Date_taken` date default NULL,
     `respondent` enum('mother','father','step_mother','step_father','other') default NULL,
     `respondent_specify` varchar(255) default NULL,
     `q1_a_what_was_the_outcome_of_pregnancy_1` enum('live_birth','stillbirth','elective_termination','miscarriage') default NULL,
