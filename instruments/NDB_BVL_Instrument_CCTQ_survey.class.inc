@@ -207,7 +207,7 @@ class NDB_BVL_Instrument_CCTQ_survey extends NDB_BVL_Instrument_survey
             "<h3>Instructions:</h3><br>
             The following questions ask about sleep/wake patterns during \"scheduled days\" in contrast to \"free days.\"
             Think about your child's behavior during recent weeks when answering these questions.
-            For questions with changing conditions (e.g., child goes to day cate at 7:00 am 1 day/week and 9:00 am 3 days/week),
+            For questions with changing conditions (e.g., child goes to daycare at 7:00 am 1 day/week and 9:00 am 3 days/week),
             fill in or select the most frequent common answer.
             <br><br>
             Scheduled Days
@@ -362,7 +362,7 @@ class NDB_BVL_Instrument_CCTQ_survey extends NDB_BVL_Instrument_survey
             null,
             "<h3>Instructions</h3><br>
             For each of the following questions, please select the answer that best describes your child.
-            Make your judgments based on how the behaivor of your child was in recent weeks.
+            Make your judgments based on how the behavior of your child was in recent weeks.
             There are no \"right\" or \"wrong\" answers."
         );
 
@@ -482,7 +482,7 @@ class NDB_BVL_Instrument_CCTQ_survey extends NDB_BVL_Instrument_survey
             null,
             "After answering the previous questions, you may have a feeling which \"Chronotype\" or \"Time-of-Day type\" your child is.
             <br><br>
-            For example, if you child would like to sleep quite a bit longer on \"Free Days\" compared to \"Scheduled Days\" or if it is difficult
+            For example, if your child would like to sleep quite a bit longer on \"Free Days\" compared to \"Scheduled Days\" or if it is difficult
             for your child to get out of bed on Monday mornings, then he/she is more likely to be an Evening Type person (a \"Night Owl\").
             If your child, however, regularly wakes up and feels perky once they get out of bed, and your child prefers to go to bed rather early than late,
             then they are more likely a Morning Type person (a \"Morning Lark\").
