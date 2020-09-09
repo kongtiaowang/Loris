@@ -997,7 +997,6 @@ if ($confirm) {
          "\nflag (pspq_SelfReport_mom): " . $flag_self_mom_diff .
          "\nflag (pspq_InformantReport_mom_on_dad): " . $flag_informant_mom_diff . "\n";
 
-    /*
     echo "\nThe following statements are running:\n
     DELETE FROM instrument_subtests WHERE Test_name = 'pspq_2'
     DELETE FROM test_names WHERE Test_name = 'pspq_2'
@@ -1011,7 +1010,7 @@ if ($confirm) {
     $db->run("DELETE FROM flag WHERE Test_name = 'pspq_2'");
 
     echo "\npspq_2 has successfully been removed from the following tables: flag, test_names, test_battery, instrument_subtests\n";
-    */
+
     echo "\nScript complete\n";
 }
 
