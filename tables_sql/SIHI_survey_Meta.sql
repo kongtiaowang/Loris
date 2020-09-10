@@ -4,5 +4,4 @@ INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_num
 INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('SIHI_survey','SIHI_survey_page3', "Page 3", 3);
 INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('SIHI_survey','SIHI_survey_page4', "Page 4", 4);
 INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('SIHI_survey','SIHI_survey_page5', "Page 5", 5);
-INSERT INTO survey_test_battery (Test_name, Visit_label) VALUES ('SIHI_survey','VSA');
-INSERT INTO survey_test_battery (Test_name, Visit_label) VALUES ('SIHI_survey','VSA-CVD');
+INSERT INTO survey_test_battery (Test_name, Visit_label) VALUES ('SIHI_survey','VSA-Sleep');
