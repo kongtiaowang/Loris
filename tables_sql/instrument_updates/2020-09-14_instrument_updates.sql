@@ -34,6 +34,11 @@ INSERT INTO survey_test_battery (Test_name, Visit_label) VALUES ('BISQ_survey','
 INSERT INTO survey_test_battery (Test_name, Visit_label) VALUES ('rbs_ec_survey','V09');
 INSERT INTO survey_test_battery (Test_name, Visit_label) VALUES ('Infant_social_motivation_survey','V09');
 
+INSERT INTO survey_test_battery (Test_name, Visit_label) VALUES ('apsi_survey','V9-CVD');
+INSERT INTO survey_test_battery (Test_name, Visit_label) VALUES ('BISQ_survey','V9-CVD');
+INSERT INTO survey_test_battery (Test_name, Visit_label) VALUES ('rbs_ec_survey','V9-CVD');
+INSERT INTO survey_test_battery (Test_name, Visit_label) VALUES ('Infant_social_motivation_survey','V9-CVD');
+
 INSERT INTO survey_test_battery (Test_name, Visit_label) VALUES ('apsi_survey','V18');
 INSERT INTO survey_test_battery (Test_name, Visit_label) VALUES ('BISQ_survey','V18');
 INSERT INTO survey_test_battery (Test_name, Visit_label) VALUES ('RBS_EC_G_V12_V24_Survey','V18');
@@ -53,5 +58,3 @@ INSERT INTO survey_test_battery (Test_name, Visit_label) VALUES ('m_chat_rf','V1
 -- Redmine 18286
 ALTER TABLE `DSMV_checklist` ADD COLUMN `dsm_social_disorder_comments` TEXT DEFAULT NULL;
 ALTER TABLE `DSMV_checklist` ADD COLUMN `dsm_social_disorder_comments_status` enum('not_answered') DEFAULT NULL;
-
-
