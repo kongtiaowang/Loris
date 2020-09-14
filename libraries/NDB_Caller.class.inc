@@ -253,7 +253,6 @@ class NDB_Caller
                                . "NDB_BVL_Instrument_$test_name.class.inc";
             $linstfile = $base."project/instruments/$test_name.linst";
 
-            error_log($phpfile."df---------------------------------------------");
             if ($this->existsAndRequire($phpfile)
                 || $test_name=='instrument_preview'
             ) {
