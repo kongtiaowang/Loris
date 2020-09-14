@@ -248,6 +248,7 @@ class NDB_BVL_Instrument_DSMV_checklist extends NDB_BVL_Instrument
 
             $this->form->addElement("select", "discussed_adir_ados2_scores", "Discussed ADI-R and ADOS-2 scores:.", $yesNo);
 
+        $this->addTextAreaElement("dsm_social_disorder_comments", "Comments (required for inconsistent ADI and/or ADOS score(s) and DSM-V classification) :");
             $this->form->addElement("static", null, "<BR>"); //line space
 
         $this->XINRegisterRule(
