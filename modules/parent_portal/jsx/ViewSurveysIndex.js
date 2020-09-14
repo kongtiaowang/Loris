@@ -15,17 +15,36 @@ class ViewSurveysIndex extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-         data: {},
+      data: {},
+      error: false,
+      isLoaded: false,
     };
+    this.fetchData = this.fetchData.bind(this);
     this.formatColumn = this.formatColumn.bind(this);
   }
-
-  /**
+ /**
    * Called by React when the component has been rendered on the page.
    */
   componentDidMount() {
+    this.fetchData()
+      .then(() => this.setState({isLoaded: true}));
   }
-
+  /**
+   * Retrieve data from the provided URL and save it in state
+   * Additionally add hiddenHeaders to global loris variable
+   * for easy access by columnFormatter.
+   *
+   * @return {object}
+   */
+  fetchData() {
+    return fetch(this.props.dataURL, {credentials: 'same-origin'})
+      .then((resp) => resp.json())
+      .then((data) => this.setState({data}))
+      .catch((error) => {
+        this.setState({error: true});
+        console.error(error);
+      });
+  }
   /**
    * Renders the React component.
    *
@@ -55,7 +74,7 @@ class ViewSurveysIndex extends React.Component {
     // Waiting for async data to load
      return (
           <StaticDataTable
-            Data={'http://wangshen-dev.loris.ca/survey_accounts/?format=json'}
+            Data= {this.state.data.Data}
             Headers={[
               'PSCID',
               'DCCID',
@@ -65,6 +84,7 @@ class ViewSurveysIndex extends React.Component {
               'Sex',
               'Output Type',
               'Subproject',
+              'dfdsa',
             ]}
 
             getFormattedCell={this.formatColumn}
@@ -78,6 +98,7 @@ const parentid = urlParams.get('id');
   ReactDOM.render(
     <ViewSurveysIndex
       parentID = {parentid}
+      dataURL={`${loris.BaseURL}/survey_accounts/?format=json`}
     />,
     document.getElementById('lorisworkspace')
   );

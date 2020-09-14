@@ -266,6 +266,7 @@ const config = [
   lorisModule('instruments', ['CandidateInstrumentList']),
   lorisModule('candidate_profile', ['CandidateInfo']),
   lorisModule('parent_portal', ['ParentPortalIndex']),
+  lorisModule('parent_portal', ['ViewSurveysIndex']),
 ];
 
 // Support project overrides
