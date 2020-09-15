@@ -129,6 +129,7 @@ class ParentPortalIndex extends React.Component {
     } else {
       return (
        <ViewSurveysIndex
+         id = {this.state.formData.parentID}
          data = {this.state.survey_data}
        />
       );
