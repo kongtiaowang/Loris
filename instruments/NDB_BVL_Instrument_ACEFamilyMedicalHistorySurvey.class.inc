@@ -138,7 +138,7 @@ class NDB_BVL_Instrument_ACEFamilyMedicalHistorySurvey extends NDB_BVL_Instrumen
             'hearingcorrect_aid' => $this->indent . 'a. Hearing corrected', 'bipolar' => '18. Bipolar', 'depression' => '19. Depression',
             'anxiety' => '20. Anxiety', 'ocd' => '21. Obsessive Compulsive', 'schizophernai' => '22. Schizophrenia', 'selfinjuring' => '23. Self injuring',
             'adhd' => '24. ADHD', 'eating_disorder' => '25. Eating disorder', 'disrupted_sleeppatterns' => '26. Disrupted sleep patterns',
-            'tournette' => '27. Tournette Syndrome');
+            'tournette' => '27. Tourette Syndrome');
         $options = array('' => '', 'yes' => 'Yes', 'no' => 'No');
         $relation = array("" => null, 'full_sibling' => 'Full', 'maternal_half' => 'Maternal Half', 'paternal_half' => 'Paternal Half');
         $gender = array('' => null, 'male' => 'Male', 'female' => 'Female');
