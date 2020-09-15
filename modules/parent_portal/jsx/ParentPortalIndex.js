@@ -62,7 +62,7 @@ class ParentPortalIndex extends React.Component {
     .then((resp) => {
       if (resp.ok) {
             resp.json().then((data) => {
-            this.setState({survey_data: resp.json});
+            this.setState({survey_data: data});
             this.setState({view_surveys: true});
           });
       } else {
