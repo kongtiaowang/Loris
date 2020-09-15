@@ -40,7 +40,6 @@ class NDB_BVL_Instrument_IPSC_tracking_form extends NDB_BVL_Instrument
      */
     function setup(?string $commentID = NULL, ?string $page = NULL): void
     {
-
         $this->formType = "XIN";
         $this->form = new LorisForm('test_form');
         $this->page = $page;
@@ -84,13 +83,10 @@ class NDB_BVL_Instrument_IPSC_tracking_form extends NDB_BVL_Instrument
         } else {
             $this->_main();
         }
-
     }
-
 
     function _main()
     {
-
         // automatically adds examiner & date of administration
         $this->_addMetadataFields();
         $this->addSelect(
@@ -98,7 +94,7 @@ class NDB_BVL_Instrument_IPSC_tracking_form extends NDB_BVL_Instrument
             '1.Did the recruiter ask about blood draw?',
             array('not_yet_called' => 'NOT YET CALLED', 'yes' => 'Yes', 'no' => 'No')
         );
-        $this->addBasicDate('IPSC_consent_data', '2. Consent date', $this->dateOptions);
+        $this->addBasicDate('IPSC_consent_date', '2. Consent date', $this->dateOptions);
         $this->addSelect(
             "blood_draw_location",
             '3. Blood draw location',
@@ -108,13 +104,10 @@ class NDB_BVL_Instrument_IPSC_tracking_form extends NDB_BVL_Instrument
         $this->addBasicDate('blood_draw_date', '5. Blood draw date', $this->dateOptions);
         $this->addBasicTextArea("ipsc_notes", "Notes: ");
         $this->form->addFormRule(array(&$this, 'IPSC_Rules'));
-
-
     }
 
     function IPSC_Rules($values)
     {
-
         $errors = array();
 
         if ($values['blood_draw_location'] != NULL && $values['blood_draw_date'] == NULL) {
@@ -132,6 +125,7 @@ class NDB_BVL_Instrument_IPSC_tracking_form extends NDB_BVL_Instrument
 
 // This function is overridden here to send the email notifications if blood draw date is set.
     function _save(array $values): void
+
     {
         // clear any fields starting with __
         foreach (array_keys($values) AS $key) {
@@ -171,8 +165,6 @@ class NDB_BVL_Instrument_IPSC_tracking_form extends NDB_BVL_Instrument
             array('CommentID' => $this->getCommentID())
         );
 
-
-
         // Extract the old data and merge it with what was submitted so that we
         // don't overwrite data from other pages.
         $oldData = $db->pselectOne(
@@ -197,7 +189,6 @@ class NDB_BVL_Instrument_IPSC_tracking_form extends NDB_BVL_Instrument
             array("Data" => json_encode($newData)),
             array('CommentID' => $this->getCommentID())
         );
-
     }
 }
 ?>

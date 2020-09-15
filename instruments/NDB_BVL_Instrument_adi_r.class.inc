@@ -79,6 +79,7 @@ class NDB_BVL_Instrument_adi_r extends NDB_BVL_Instrument
 
         //$this->_getAge();
 
+
         if(preg_match("/(_page[0-9]+)/",$this->page,$matches)){
             call_user_func(array($this, $matches[1]));
         } else {

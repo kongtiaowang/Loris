@@ -122,6 +122,7 @@ class NDB_BVL_Instrument_ibq_r extends NDB_BVL_Instrument
     	//calculate subscales
 
         }
+
         
     function score(): void{
 
