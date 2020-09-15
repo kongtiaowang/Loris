@@ -373,10 +373,11 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
         $this->form->addElement("static", null, "Thank you for taking the time to respond to this questionnaire.");
     }
 
+
     
     function score(): void {
+         if($this->_determineDataEntryCompletionStatus() == "Incomplete") {
 
-        if($this->_determineDataEntryCompletionStatus() == "Incomplete") {
             return;
          }
 

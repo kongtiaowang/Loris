@@ -11,7 +11,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
 
     use instrument_validator;
 
-    /*
+/*
     INSERT INTO test_names VALUES ('', 'med_psych_hist', 'Medical Psychiatric History', '0', '1');
     INSERT INTO instrument_subtests VALUES('', 'med_psych_hist', 'med_psych_hist_page1', '1. Pregnancy History', 1);
     INSERT INTO instrument_subtests VALUES('', 'med_psych_hist', 'med_psych_hist_page2', '3. Child and Relatives', 2);

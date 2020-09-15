@@ -585,6 +585,7 @@ class NDB_BVL_Instrument_SRS2_SchoolAge_Parent_proband extends NDB_BVL_Instrumen
         $scores['total_score'] =$this->findRowScore($RRB_array) + $scores['DSM5_SCI_score'];
 
 
+
         $query_gender = "SELECT Sex FROM candidate as c, session as s, flag as f, $this->table as t WHERE t.CommentID = '$this->commentID' 
 AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $record_gender = $db->pselectRow($query_gender, array());

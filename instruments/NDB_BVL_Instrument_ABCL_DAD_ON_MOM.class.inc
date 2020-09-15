@@ -112,6 +112,7 @@ class NDB_BVL_Instrument_ABCL_DAD_ON_MOM extends NDB_BVL_Instrument
 
         $config      =& NDB_Config::singleton();
 
+
         $dateOptions = array(
             'language'         => 'en',
             'format'           => 'YMd',
@@ -560,12 +561,12 @@ class NDB_BVL_Instrument_ABCL_DAD_ON_MOM extends NDB_BVL_Instrument
     function _page4()
     {
         $this->addHeader("ABCL Informant (Adult Informant Behavior Checklist) Ages 18-59 - Dad on Mom");
-
         $this->addSelect("37_gets_in_many_fights", "37. Gets in many fights", self::Default_Options);
 
         $this->addSelect("38_poor_relations_with_neighbors", "38. Her relations with neighbors are poor", self::Default_Options);
 
         $this->addSelect("39_hangs_around_people_who_get_in_trouble", "39. Hangs around people who get in trouble", self::Default_Options);
+
 
         $this->addSelect("40_hears_sounds_or_voices", "40.(i) Hears sounds or voices that aren't there", self::Default_Options);
 

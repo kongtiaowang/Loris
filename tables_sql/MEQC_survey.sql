@@ -1,0 +1,23 @@
+CREATE TABLE `MEQC_survey` (
+    `CommentID` varchar(255) NOT NULL default '',
+    `UserID` varchar(255) default NULL,
+    `Examiner` varchar(255) default NULL,
+    `Testdate` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `Data_entry_completion_status` enum('Incomplete','Complete') NOT NULL default 'Incomplete',
+    `Candidate_Age` varchar(255) default NULL,
+    `Window_Difference` varchar(255) default NULL,
+    `Date_taken` date default NULL,
+    `respondent` enum('mother','father','step_mother','step_father','other') default NULL,
+    `respondent_specify` varchar(255) default NULL,
+    `q1_is_it_easy_to_get_up_in_the_morning` enum('no_way','sort_of','pretty_easy','cinch') default NULL,
+    `q2_how_alert_are_you_in_first_half_hour_youre_up` enum('out_of_it','a_little_dazed','okay','ready_to_take_on_the_world') default NULL,
+    `q3_imagine_school_canceled_when_would_you_get_out_of_bed` enum('5_00_and_6_30_am','6_30_and_7_45_am','7_45_and_9_45_am','9_45_and_11_00_am','11_00_am_and_noon') default NULL,
+    `q4_parents_decided_to_let_you_set_own_bedtime_what_time` enum('8_00_and_9_00_pm','9_00_and_10_15_pm','10_15_pm_and_12_30_am','12_30_and_1_45_am','1_45_and_3_00_am') default NULL,
+    `q5_have_to_take_two_hour_test_can_take_it_when_best_what_time` enum('8_00_to_10_00_am','11_00_am_to_1_00_pm','3_00_to_5_00_pm','7_00_to_9_00_pm') default NULL,
+    `q6_gym_class_is_set_7_00_am_how_do_you_think_you_will_do` enum('my_best','okay','worse_than_usual','awful') default NULL,
+    `q7_when_does_your_body_tell_you_its_time_for_bed` enum('8_00_and_9_00_pm','9_00_and_10_15_pm','10_15_pm_and_12_30_am','12_30_and_1_45_am','1_45_and_3_00_am') default NULL,
+    `q8_had_to_get_up_at_6_00_am_what_would_it_be_like` enum('awful','not_so_great','okay','fine') default NULL,
+    `q9_when_you_wake_up_how_long_to_be_totally_with_it` enum('0_to_10_minutes','11_to_20_minutes','21_to_40_minutes','more_than_40_minutes') default NULL,
+    `q10_when_do_you_have_most_energy_to_do_favorite_things` enum('morning_tired_in_evening','morning_more_than_evening','evening_more_than_morning','evening_tired_in_morning') default NULL,
+    PRIMARY KEY  (`CommentID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

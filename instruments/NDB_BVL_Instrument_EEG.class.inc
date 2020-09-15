@@ -22,6 +22,7 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
       'n'  => 'No'
   );
 
+
   private const PARADIGM_COMPLETENESS = [
       null => '',
       'y' => 'Yes',
@@ -224,6 +225,8 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
         $this->addSelect('mood_4', 'Mood:', array(NULL=>"","1"=>"1","2"=>"2","3"=>"3","4"=>"4","5"=>"5"));
         $this->addSelect('paradigm_completed_4', 'Paradigm Completed?', self::PARADIGM_COMPLETENESS);
     }
+
+
 
     /**
      * Generates the 'Resting Bubbles' section.
