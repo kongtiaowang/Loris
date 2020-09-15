@@ -22,6 +22,7 @@
  */
 class NDB_BVL_Instrument_DS_Infant_Intervention_History_Form_survey extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
     use instrument_validator;
 
     const YES_NO_OPTIONS = array(
@@ -102,7 +103,7 @@ class NDB_BVL_Instrument_DS_Infant_Intervention_History_Form_survey extends NDB_
      * @return void
      * @access public
      */
-    function setup($commentID, $page)
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
     {
         $this->formType = "XIN";
         $this->form     = new LorisForm('DS_Infant_Intervention_History_Form_survey_form');

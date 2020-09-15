@@ -22,6 +22,7 @@
  */
 class NDB_BVL_Instrument_CCTQ_survey extends NDB_BVL_Instrument_survey
 {
+    use LegacyInstrumentTrait;
     use instrument_validator;
 
     const YES_NO_OPTIONS = array(
@@ -50,7 +51,7 @@ class NDB_BVL_Instrument_CCTQ_survey extends NDB_BVL_Instrument_survey
      * @return void
      * @access public
      */
-    function setup($commentID, $page)
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
     {
         $this->formType = "XIN";
         $this->form     = new LorisForm('CCTQ_survey_form');
