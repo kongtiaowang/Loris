@@ -1,3 +1,5 @@
+import ViewSurveysIndex from './ViewSurveysIndex';
+
 /**
  * New Profile Form
  *
@@ -18,6 +20,7 @@ class ParentPortalIndex extends React.Component {
       formData: {
         parentID: props.parentID,
       },
+      survey_data: {},
       view_surveys: false,
       error: false,
       errorMsg: '',
@@ -58,9 +61,10 @@ class ParentPortalIndex extends React.Component {
     })
     .then((resp) => {
       if (resp.ok) {
-       const vurl = loris.BaseURL +
-         '/parent_portal/view_surveys/?id=' + this.state.formData.parentID;
-       location.replace(vurl);
+            resp.json().then((data) => {
+            this.setState({survey_data: resp.json});
+            this.setState({view_surveys: true});
+          });
       } else {
       this.setState({errorMsg: 'No Surveys Found With The Above Information.'});
       }
@@ -91,6 +95,7 @@ class ParentPortalIndex extends React.Component {
       return <h3>An error occured while loading the page.</h3>;
     }
     // Waiting for async data to load
+    if (!this.state.view_surveys) {
      return (
       <FieldsetElement legend={'Go To Parent Portal'}>
         <FormElement
@@ -121,6 +126,13 @@ class ParentPortalIndex extends React.Component {
           </FormElement>
         </FieldsetElement>
      );
+    } else {
+      return (
+       <ViewSurveysIndex
+         data = {this.state.survey_data}
+       />
+      );
+    }
   }
 }
 window.addEventListener('load', () => {

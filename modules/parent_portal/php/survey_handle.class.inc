@@ -39,13 +39,14 @@ class Survey_Handle extends \NDB_Form
     {
         if ($request->getMethod()=='POST') {  
             $values   = $request->getParsedBody();
-            if ($this->_validate($values)) {
+            $result   = $this->_validate($values);
+            if ($result) {
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")
                 ->withStatus(200)
                 ->withBody(
                     new \LORIS\Http\StringStream(
-                        json_encode($values)
+                        json_encode($result)
                     )
                 );
             }
@@ -63,8 +64,8 @@ class Survey_Handle extends \NDB_Form
     {
             $db = \Database::singleton();
 
-            $numSurveys = $db->pselectOne(
-                "SELECT COUNT(*) FROM participant_accounts p
+            $surveys = $db->pselect(
+                "SELECT * FROM participant_accounts p
                  JOIN session s ON (p.SessionID=s.ID)
                  JOIN candidate c ON (c.CandID=s.CandID)
                  WHERE p.Email=:surv_email AND c.ParentID=:pid",
@@ -73,10 +74,10 @@ class Survey_Handle extends \NDB_Form
                     'pid'        => $values['parentID'],
                 )
             );
-            if ($numSurveys == 0) {
+            if (empty($surveys)) {
                return false;
-            }
-            return true;
+            }                                    
+            return $surveys;
 
     }
 }
