@@ -36,7 +36,7 @@ if (isset($_POST['SA_consent'])) {
 
         $cand_info_details = $DB->pselect(
             "SELECT ps.Name as center_name,ca.PSCID as PSCID from psc ps  
-             JOIN  candidate ca ON (ca.CenterID=ps.CenterID)
+             JOIN  candidate ca ON (ca.RegistrationCenterID=ps.CenterID)
              WHERE ca.CandID=:candid",
             array('candid' => $candid)
         );

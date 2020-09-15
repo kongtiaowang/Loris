@@ -23,6 +23,7 @@
  */
 class NDB_BVL_Instrument_asd_peds extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
     use instrument_validator;
 
     var $ValidityEnabled  = false;
@@ -100,7 +101,7 @@ class NDB_BVL_Instrument_asd_peds extends NDB_BVL_Instrument
      * @return void
      * @access public
      */
-    function setup($commentID, $page)
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
     {
         $this->formType = "XIN";
         $this->form     = new LorisForm('asd_peds_form');
@@ -286,7 +287,7 @@ class NDB_BVL_Instrument_asd_peds extends NDB_BVL_Instrument
         return $this->indent . '1 = ' . $this->_dichotomous_grp1[$key] . '<br>' . $this->indent . '2 = ' . $this->_dichotomous_grp2[$key] . '<br>' . $this->indent . '3 = ' . $this->_dichotomous_grp3[$key];
     }
 
-    function score()
+    function score(): void
     {
         if ($this->_determineDataEntryCompletionStatus() == "Incomplete") {
             return;

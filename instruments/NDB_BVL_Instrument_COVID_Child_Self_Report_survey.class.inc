@@ -22,6 +22,7 @@
  */
 class NDB_BVL_Instrument_COVID_Child_Self_Report_survey extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
     use instrument_validator;
 
     const YES_NO_OPTIONS = array(
@@ -51,7 +52,7 @@ class NDB_BVL_Instrument_COVID_Child_Self_Report_survey extends NDB_BVL_Instrume
      * @return void
      * @access public
      */
-    function setup($commentID, $page)
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
     {
         $this->formType = "XIN";
         $this->form     = new LorisForm('COVID_Child_Self_Report_survey_form');

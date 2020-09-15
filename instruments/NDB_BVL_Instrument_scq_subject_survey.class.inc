@@ -22,6 +22,7 @@
  */
 class NDB_BVL_Instrument_scq_subject_survey extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
     var $yesNo     = array(
                       null  => "",
                       "yes" => "Yes",
@@ -46,7 +47,7 @@ class NDB_BVL_Instrument_scq_subject_survey extends NDB_BVL_Instrument
      * @return void
      * @access public
      */
-    function setup($commentID, $page)
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
     {
         $this->formType ="XIN";
         $this->form     = new LorisForm('scq_subject_survey_form');
@@ -242,7 +243,7 @@ class NDB_BVL_Instrument_scq_subject_survey extends NDB_BVL_Instrument
         return $errors;
     }
 
-    function score()
+    function score(): void
     {
         //skip scoring if all data has not yet been entered.
         if ($this->_determineDataEntryCompletionStatus() == "Incomplete") {

@@ -17,7 +17,7 @@
  */
 class NDB_BVL_Instrument_SA_Consent_Form extends NDB_BVL_Instrument
 {
-
+    use LegacyInstrumentTrait;
     /**
      * Sets up basic data, such as the LorisForm object, and so on.
      *
@@ -26,7 +26,7 @@ class NDB_BVL_Instrument_SA_Consent_Form extends NDB_BVL_Instrument
      * @return void
      * @access public
      */
-    function setup($commentID, $page)
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
     {
         $this->formType = 'XIN';
         $this->form = new LorisForm('test_form');
@@ -48,11 +48,12 @@ class NDB_BVL_Instrument_SA_Consent_Form extends NDB_BVL_Instrument
             'emptyOptionValue' => null
         );
 
+
         if ($commentID!='' || $commentID!=NULL) {
             $timepoint =& TimePoint::singleton($this->getSessionID());
             $candidate =& Candidate::singleton($timepoint->getCandID());
             $this->candID = $candidate->getData('CandID');
-            $this->centerID = $candidate->getData('CenterID');
+            $this->centerID = $candidate->getData('RegistrationCenterID');
             $this->siteName = Site::singleton($this->centerID)->getCenterName();
         }
 
