@@ -23,7 +23,7 @@
  * @license  Loris license
  * @link     https://www.github.com/aces/Loris
  */
-require_once __DIR__ . '/../generic_includes.php';
+require_once __DIR__ . '/../../../tools/generic_includes.php';
 require_once 'Database.class.inc';
 require_once 'Utility.class.inc';
 
