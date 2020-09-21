@@ -297,7 +297,7 @@ class NDB_BVL_Instrument_ksad extends NDB_BVL_Instrument
      *
      * @param $values array array of submitted values.
      */
-    function _saveValues($values)
+    function _saveValues(array $values): void
     {
         if ($this->page == 'ksad_page1') {
             //--------------------------------------------------//
