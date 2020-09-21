@@ -3,7 +3,7 @@
 cd /var/www/loris/tools
 
 printf "Before Imports\n"
-php CouchDB_Import_figs.php
+# php CouchDB_Import_figs.php
 # php CouchDB_Import_Demographics.php
 php CouchDB_Import_demographics_ibis.php
 php CouchDB_Import_Instruments.php

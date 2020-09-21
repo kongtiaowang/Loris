@@ -230,15 +230,15 @@ class CouchDBDemographicsImporter {
             $consents = \Utility::getConsentList();
             foreach ($consents as $consentID => $consent) {
                 $consentName = $consent['Name'];
+                $cField = $this->SQLDB->escape("cc$consentID");
                 $consentFields = ",
-                                cc" . $this->SQLDB->escape($consentID) . ".Status AS " . $consentName . ", 
-                                cc" . $this->SQLDB->escape($consentID) . ".DateGiven AS " . $consentName . "_date, 
-                                cc" . $this->SQLDB->escape($consentID) . ".DateWithdrawn AS " . $consentName . "_withdrawal";
+                               $cField.Status AS " . $consentName . ",
+                               $cField.DateGiven AS " . $consentName . "_date,
+                               $cField.DateWithdrawn AS " . $consentName . "_withdrawal";
                 $fieldsInQuery .= $consentFields;
-                $tablesToJoin .= "
-                                LEFT JOIN candidate_consent_rel cc" . $this->SQLDB->escape($consentID) . " ON 
-                                  (cc" . $this->SQLDB->escape($consentID) . ".CandidateID=c.CandID) AND 
-                                  cc" . $this->SQLDB->escape($consentID) . ".ConsentID=(SELECT ConsentID FROM consent WHERE Name='" . $consentName . "') ";
+                $tablesToJoin  .= "
+                                LEFT JOIN candidate_consent_rel $cField ON ($cField.CandidateID=c.CandID) 
+                                AND $cField.ConsentID=(SELECT ConsentID FROM consent WHERE Name='" . $consentName . "') ";
             }
         }
 
@@ -264,16 +264,6 @@ class CouchDBDemographicsImporter {
             $this->Dictionary["EDC"] = array(
                 'Description' => 'Expected Date of Confinement (Due Date)',
                 'Type' => "varchar(255)"
-            );
-        }
-        if ($config->getSetting("useProjects") === "true") {
-            $projects = \Utility::getProjectList();
-            $projectsEnum = "enum('";
-            $projectsEnum .= implode("', '", $projects);
-            $projectsEnum .= "')";
-            $this->Dictionary["Project"] = array(
-                'Description' => 'Project for which the candidate belongs',
-                'Type' => $projectsEnum
             );
         }
         // If consent is being used, update the data dictionary
