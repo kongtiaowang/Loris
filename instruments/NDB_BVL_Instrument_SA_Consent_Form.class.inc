@@ -120,7 +120,7 @@ HTML;
 
         $LR_array = array(3, 10);
         $HR_array = array(1, 2, 9);
-        $subproject= $this->getSubprojectID();
+        $subproject= $this->getSubprojectIDD();
       switch ($this->centerID) {
           case 1: // DCC
               if (in_array($subproject, $HR_array)) {
@@ -203,7 +203,7 @@ HTML;
        return;
     }
 
-    function getSubprojectID()
+    function getSubprojectIDD()
     {
 
         $db =& Database::singleton();
