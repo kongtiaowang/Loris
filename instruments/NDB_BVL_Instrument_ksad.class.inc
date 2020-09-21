@@ -314,7 +314,7 @@ class NDB_BVL_Instrument_ksad extends NDB_BVL_Instrument
                     $values
                 );
                 if (!$uploadedFile) {
-                    return null;
+                    return;
                 }
                 
                 $values['ResponsesFileName'] = $uploadedFile;
@@ -336,7 +336,7 @@ class NDB_BVL_Instrument_ksad extends NDB_BVL_Instrument
                     $values
                 );
                 if (!$uploadedFile) {
-                    return null;
+                    return;
                 }
 
                 $values['RatingsFileName'] = $uploadedFile;
