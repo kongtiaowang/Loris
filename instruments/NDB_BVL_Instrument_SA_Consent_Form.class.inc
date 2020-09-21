@@ -198,10 +198,11 @@ HTML;
      * @return string The HTML to be inserted into the review section of
      *                the final page of the survey module for this instrument.
      */
-    function getReview()
+    function getReview(): string
     {
-       return;
+        return '';
     }
+
 
     function getSubprojectIDD()
     {
