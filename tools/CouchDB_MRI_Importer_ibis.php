@@ -95,7 +95,15 @@ class CouchDBMRIImporter
 
         foreach($s as $scan){
             $scantype=$scan['ScanType'];
-            
+
+            //-------------------------------------------------------------------------//
+            // Add to the query a subselect that will compute the number of selected   //
+            // files (0,1,...) for the given session/modality                          //
+            //-------------------------------------------------------------------------//
+            $Query .= ', (' 
+                   .  $this->_getQueryForSelectedFiles('count(*)', $scantype) 
+                   . ") AS NbSelected_$scantype";
+
             //-------------------------------------------------------------------------//
             // Add to the query a subselect that will compute the selected file        //
             // for the given session/modality. If more than one selected file exists,  //
@@ -199,8 +207,7 @@ class CouchDBMRIImporter
         $header['Algorithm_'.$type]           = $FileObj->getParameter('Algorithm');
         $header['AcquisitionDate_'.$type]     = $this->_getDate(
             $FileObj,
-            'acquisition_date',
-            $acqDate
+            'acquisition_date'
         );
         $header['FileInsertDate_'.$type]      = $FileObj->getParameter('InsertTime');
         $header['SeriesDescription_'.$type]   = $FileObj->getParameter($ser_desc);
@@ -225,18 +232,15 @@ class CouchDBMRIImporter
         $header['TotalRejected_'.$type] = $FileObj->getParameter($tot_rej);
         $header['SlicewiseRejected_'.$type] = $this->_getRejected(
             $FileObj,
-            'slicewise',
-            $sliceRej
+            'slicewise'
         );
         $header['InterlaceRejected_'.$type] = $this->_getRejected(
             $FileObj,
-            'interlace',
-            $laceRej
+            'interlace'
         );
         $header[$inter_rej]      = $this->_getRejected(
             $FileObj,
-            'intergradient',
-            $interRej
+            'intergradient'
         );
         $header['Caveat_'.$type] = $FileObj->getParameter('Caveat');
         $header['ProcessingPipeline_'.$type] = $FileObj->getParameter($pipeline);
@@ -248,11 +252,10 @@ class CouchDBMRIImporter
      *
      * @param MRIFile $file  file object
      * @param string  $type  type of the date
-     * @param array   $array array containing the date
      *
      * @return date if exists, if not an empty string
      */
-    function _getDate($file, $type, $array)
+    function _getDate($file, $type)
     {
         if (preg_match(
             "/(\d{4})-?(\d{2})-?(\d{2})/",
@@ -288,11 +291,10 @@ class CouchDBMRIImporter
      *
      * @param MRIFile $file  file object
      * @param string  $type  type of the rejected
-     * @param array   $array array containing rejected
      *
      * @return parameter of the rejected
      */
-    function _getRejected($file, $type, $array)
+    function _getRejected($file, $type)
     {
         $parameter = 'processing:' . $type . '_rejected';
         if (preg_match(
@@ -426,9 +428,9 @@ class CouchDBMRIImporter
         foreach ($CandidateData as &$row) {
             foreach ($ScanTypes as $scanType) {
                 $scan_type = $scanType['ScanType'];
-                if (!empty($row['Selected_' . $scan_type])) {
+                if ($row["NbSelected_$scan_type"] == 1) {
                     $fileID             = $this->SQLDB->pselectOne(
-                        "SELECT FileID FROM files WHERE File=:fname",
+                        "SELECT FileID FROM files WHERE BINARY File=:fname",
                         array('fname' => $row['Selected_' . $scan_type])
                     );
                     $FileObj            = new MRIFile($fileID);
@@ -497,12 +499,12 @@ class CouchDBMRIImporter
                                                        = $mri_feedback->getAllCommentTypes(
             );
             foreach ($feedback_types as $CommentTypeID => $comments) {
-                if (!empty($comments['field'])) {
+                if (isset($comments['field']) && !empty($comments['field'])) {
                     $fieldName = $comments['field'];
-                    $type
-                               =
-                        "enum ('" . implode("','", $comments['values']) . "')";
-
+                    $commentsValues = !is_array($comments['values'])
+                        ? [$comments['values']] : $comments['values'];
+                    $type      =
+                        "enum ('" . implode("','", $commentsValues) . "')";
                     $cmt_field = "Comment_" . $fieldName . "_$ScanType";
                     $scanfield = "$fieldName $ScanType";
                     $cmt_Array = array(
@@ -535,18 +537,16 @@ class CouchDBMRIImporter
                     $preDefinedComments as
                     $preDefinedCommentTypeID => $preDefinedComment
                 ) {
-                    $preDef_field
-                                                     =
-                        $preDefinedComment['field'] . "_$ScanType";
-                    $preDef_cmt
-                                                     = $preDefinedComment['Comment'];
+                    $preDefinedCommentField          = $preDefinedComment['field'] ?? '';
+                    $preDef_field                    =
+                        $preDefinedCommentField . "_$ScanType";
+                    $preDef_cmt                      = $preDefinedComment['Comment'];
                     $preDef_Array                    = array(
                         'Type'        => "enum('Yes', 'No')",
                         'Description' => "$preDef_cmt $ScanType",
                     );
                     $this->Dictionary[$preDef_field] = $preDef_Array;
-                    $pre[$preDefinedCommentTypeID]
-                                                     = $preDefinedComment['field'];
+                    $pre[$preDefinedCommentTypeID]   = $preDefinedCommentField;
                 }
                 $this->feedback_PreDefinedComments[$CommentTypeID] = $pre;
 
