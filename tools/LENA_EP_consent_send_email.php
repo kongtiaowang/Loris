@@ -16,7 +16,7 @@ $yes_lena_ep_consents=$DB->pselect("SELECT c.PSCID,cn.Label,ccr.Status,ccr.Dateg
                            join candidate_consent_rel ccr ON(c.CandID=ccr.CandidateID)
                            join consent cn ON (cn.ConsentID=ccr.ConsentID)
                            join candidate_consent_history cch ON(ccr.DateGiven=cch.DateGiven)
-                           where ccr.Status='Yes'and cn.Name='LENA_EP_consent'and cch.Status='Yes' and c.CenterID!=1
+                           where ccr.Status='Yes'and cn.Name='LENA_EP_consent'and cch.Status='Yes' and c.RegistrationCenterID!=1
                            and  DATE(Entrydate)=SUBDATE(CURDATE(),1)
                            group by c.PSCID,cn.Label,ccr.Status,ccr.Dategiven order by EntryDate",array());
 $num=0;
