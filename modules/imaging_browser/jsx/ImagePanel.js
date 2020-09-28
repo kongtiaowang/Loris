@@ -509,8 +509,8 @@ class ImageQCCommentsButton extends Component {
   openWindowHandler(e) {
     e.preventDefault();
     window.open(
-      this.props.BaseURL + '/feedback_mri_popup.php?fileID=' +
-      this.props.FileID,
+      this.props.BaseURL + '/feedback_mri_popup_ibis.php?fileID=' +
+      this.props.FileID + '&sessionID=' + this.props.SessionID,
       'feedback_mri',
       'width=500,height=800,toolbar=no,location=no,' +
       'status=yes,scrollbars=yes,resizable=yes'
@@ -534,9 +534,10 @@ class ImageQCCommentsButton extends Component {
     );
   }
 }
-DownloadButton.propTypes = {
+ImageQCCommentsButton.propTypes = {
   FileID: PropTypes.string,
   BaseURL: PropTypes.string,
+  SessionID: PropTypes.string,
 };
 
 class LongitudinalViewButton extends Component {
@@ -588,6 +589,7 @@ class ImageDownloadButtons extends Component {
       <div className="row mri-second-row-panel col-xs-12">
         <ImageQCCommentsButton FileID={this.props.FileID}
                                BaseURL={this.props.BaseURL}
+                               SessionID={this.props.SessionID}
         />
         <DownloadButton FileName={this.props.Fullname}
                         Label="Download Minc"
@@ -621,6 +623,7 @@ ImageDownloadButtons.propTypes = {
   XMLReport: PropTypes.string,
   NrrdFile: PropTypes.string,
   OtherTimepoints: PropTypes.string,
+  SessionID: PropTypes.string,
 };
 
 class ImagePanelBody extends Component {
@@ -668,6 +671,7 @@ class ImagePanelBody extends Component {
           XMLReport={this.props.XMLReport}
           NrrdFile={this.props.NrrdFile}
           OtherTimepoints={this.props.OtherTimepoints}
+          SessionID={this.props.SessionID}
         />
         {this.props.HeadersExpanded ? <ImagePanelHeadersTable
           HeaderInfo={this.props.HeaderInfo}/> : ''}
@@ -692,6 +696,7 @@ ImagePanelBody.propTypes = {
   OtherTimepoints: PropTypes.string,
   HeadersExpanded: PropTypes.string,
   Checkpic: PropTypes.string,
+  SessionID: PropTypes.string,
 };
 
 class ImagePanel extends Component {
@@ -754,6 +759,7 @@ class ImagePanel extends Component {
               NrrdFile={this.props.NrrdFile}
               OtherTimepoints={this.props.OtherTimepoints}
               SeriesUID={this.props.SeriesUID}
+              SessionID={this.props.SessionID}
             />}
         </div>
       </div>
@@ -778,6 +784,7 @@ ImagePanel.propTypes = {
   HeaderInfo: PropTypes.string,
   HeadersExpanded: PropTypes.string,
   Checkpic: PropTypes.string,
+  SessionID: PropTypes.string,
 };
 
 let RImagePanel = React.createFactory(ImagePanel);
