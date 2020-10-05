@@ -200,7 +200,7 @@ class Candidate
      * @throws Exception
      * @static
      */
-    function createNew( string $centerID,
+    function createNew( int $centerID,
                         string $dateOfBirth,
                         ?string $edc,
                         string $sex,
