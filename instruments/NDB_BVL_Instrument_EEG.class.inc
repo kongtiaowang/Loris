@@ -120,7 +120,7 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
         if (!empty($session)) {
             $timepoint = \TimePoint::singleton($session);
             $candidate = \Candidate::singleton($timepoint->getCandID());
-            $gender    = $candidate->getCandidateGender() ?? 'Unknown';
+            $gender    = $candidate->getCandidateSex() ?? 'Unknown';
         }
         $defaults['gender'] = $gender;
 
@@ -155,11 +155,11 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
 
         $this->addScoreColumn('file_top', "File Name:");
         $this->form->addElement('file', "file_top_chooser", '');
-        $this->XINRegisterRule("file_top_chooser", array("second_file_top_chooser{@}==={@}NEVER_REQUIRED"));
+        $this->XINRegisterRule("file_top_chooser", array("second_file_top_chooser{@}=={@}NEVER_REQUIRED"));
 
         $this->addScoreColumn('second_file_top', 'Secondary File (optional):');
         $this->form->addElement('file', "second_file_top_chooser", '');
-        $this->XINRegisterRule("second_file_top_chooser", array("second_file_top_chooser{@}==={@}NEVER_REQUIRED"));
+        $this->XINRegisterRule("second_file_top_chooser", array("second_file_top_chooser{@}=={@}NEVER_REQUIRED"));
 
         $this->addTextElement("ofc", "Head Measurement (OFC): (CM)");
         $this->addTextElement("net_serial_number", "Net Serial Number:");
