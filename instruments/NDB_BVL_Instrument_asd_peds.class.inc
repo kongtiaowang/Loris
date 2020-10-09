@@ -387,9 +387,6 @@ class NDB_BVL_Instrument_asd_peds extends NDB_BVL_Instrument
         // $value is the question's answer
         foreach ($responses as $value) {
             switch ($value) {
-            case 1:
-                $score += 1;
-                break;
             case 3:
                 $score += 3;
                 break;
