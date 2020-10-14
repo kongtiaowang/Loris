@@ -7,10 +7,12 @@ CREATE TABLE `IPSC_tracking_form` (
     `Date_taken` date default NULL,
     `Candidate_Age` varchar(255) default NULL,
     `Window_Difference` varchar(255) default NULL,
-    `recruiter_asked_blood_draw` enum('not_yet_called','yes','no') default NULL,
+    `recruiter_asked_blood_draw` enum('yes','not_yet_asked') default NULL,
+    `did_family_agree_to_project` enum('yes','no') default NULL,
     `IPSC_consent_date` date default NULL,
     `blood_draw_location` enum('site','take_home_kit_sent') default NULL,
     `fedex_tracking_number` text default NULL,
+    `was_the_blood_draw_successful` enum('yes','no') default NULL,
     `blood_draw_date` date default NULL,
     `ipsc_notes` text default NULL,
     PRIMARY KEY  (`CommentID`)

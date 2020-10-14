@@ -26,7 +26,7 @@
 class NDB_BVL_Instrument_IPSC_tracking_form extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
-    
+
     var $ValidityEnabled = false;
     var $ValidityRequired = false;
 
@@ -91,18 +91,36 @@ class NDB_BVL_Instrument_IPSC_tracking_form extends NDB_BVL_Instrument
         $this->_addMetadataFields();
         $this->addSelect(
             "recruiter_asked_blood_draw",
-            '1.Did the recruiter ask about blood draw?',
-            array('not_yet_called' => 'NOT YET CALLED', 'yes' => 'Yes', 'no' => 'No')
+            '1. Did the recruiter ask about blood draw?',
+            array('yes' => 'Yes', 'not_yet_asked' => 'Not yet asked')
         );
-        $this->addBasicDate('IPSC_consent_date', '2. Consent date', $this->dateOptions);
+
+        $this->addSelect(
+            "did_family_agree_to_project",
+            '2. Did family agree to the project?',
+            array('yes' => 'Yes', 'no' => 'No')
+        );
+
+        $this->addBasicDate('IPSC_consent_date', '3. Consent date', $this->dateOptions);
+
         $this->addSelect(
             "blood_draw_location",
-            '3. Blood draw location',
+            '4. Blood draw location',
             array(NULL => '', 'site' => 'SITE', 'take_home_kit_sent' => 'TAKE HOME KIT SENT ')
         );
-        $this->addBasicTextArea("fedex_tracking_number", "4. Fedex tracking number of the return label");
-        $this->addBasicDate('blood_draw_date', '5. Blood draw date', $this->dateOptions);
-        $this->addBasicTextArea("ipsc_notes", "Notes: ");
+
+        $this->addBasicTextArea("fedex_tracking_number", "5. Fedex tracking number of the return label");
+
+        $this->addSelect(
+            "was_the_blood_draw_successful",
+            '6. Was the blood draw successful?',
+            array('yes' => 'Yes', 'no' => 'No')
+        );
+
+        $this->addBasicDate('blood_draw_date', '7. Blood draw date', $this->dateOptions);
+
+        $this->addBasicTextArea("ipsc_notes", "Notes:");
+
         $this->form->addFormRule(array(&$this, 'IPSC_Rules'));
     }
 
@@ -111,21 +129,18 @@ class NDB_BVL_Instrument_IPSC_tracking_form extends NDB_BVL_Instrument
         $errors = array();
 
         if ($values['blood_draw_location'] != NULL && $values['blood_draw_date'] == NULL) {
-
             $errors['blood_draw_date'] = "Please enter the Blood Draw Date as you have entered the Blood Draw Location";
         }
 
         if ($values['blood_draw_location'] == NULL && $values['blood_draw_date'] != NULL) {
-
             $errors['blood_draw_location'] = "Please enter the Blood Draw Location as you have entered the Blood Draw Date";
-
         }
+
         return $errors;
     }
 
-// This function is overridden here to send the email notifications if blood draw date is set.
+    // This function is overridden here to send the email notifications if blood draw date is set.
     function _save(array $values): void
-
     {
         // clear any fields starting with __
         foreach (array_keys($values) AS $key) {
@@ -134,20 +149,22 @@ class NDB_BVL_Instrument_IPSC_tracking_form extends NDB_BVL_Instrument
             }
             $values = Utility::nullifyEmpty($values, $key);
         }
+
         $db =& Database::singleton();
         $candidate = Candidate::singleton($this->commentID);
         $PSCID = $candidate-> getPSCID();
         $centerID = $candidate->getData('RegistrationCenterID');
-        if ($values['blood_draw_date'] != NULL && $values['blood_draw_date'] != '') {
 
+        if ($values['blood_draw_date'] != NULL && $values['blood_draw_date'] != '') {
             $blood_draw_date=date_create($values['blood_draw_date']);
+
             if($centerID==1)
             {
                 $notification_reciever_email='sruthy.mcin@gmail.com,sruthymathew369@gmail.com';
-            }
-            else{
+            } else {
                 $notification_reciever_email='roseg@email.unc.edu,jason_stein@med.unc.edu,abeltran@email.unc.edu';
             }
+
             $msg_data['PSCID'] = $PSCID;
             $msg_data['blood_draw_date'] = date_format($blood_draw_date,"F d, Y");
             $old_blood_draw_date = $db->pselectOne(
@@ -159,6 +176,7 @@ class NDB_BVL_Instrument_IPSC_tracking_form extends NDB_BVL_Instrument
                 Email::send($notification_reciever_email, 'IPSC_tracking_blood_draw_notification.tpl', $msg_data, "", "IBIS Team <noreply@ibis.loris.ca>");
             }
         }
+
         $result = $db->update(
             $this->table,
             $values,
