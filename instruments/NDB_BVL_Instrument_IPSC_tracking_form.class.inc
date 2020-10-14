@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * This file contains the NDB_BVL_Instrument_mock_scanner_training_form
  * class
  *
@@ -22,44 +22,43 @@
  * @link     https://www.github.com/aces/IBIS/
  */
 
-
 class NDB_BVL_Instrument_IPSC_tracking_form extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
 
-    var $ValidityEnabled = false;
+    var $ValidityEnabled  = false;
     var $ValidityRequired = false;
 
     /**
      * sets up basic data, such as the LorisForm object, and so on.
      *
-     * @param string $commentID the CommentID identifying the data to load
-     * @param string $page if a multipage form, the page to show
+     * @param  string $commentID the CommentID identifying the data to load
+     * @param  string $page      if a multipage form, the page to show
      * @return void
      * @access public
      */
-    function setup(?string $commentID = NULL, ?string $page = NULL): void
+    function setup(?string $commentID = null, ?string $page = null): void
     {
         $this->formType = "XIN";
-        $this->form = new LorisForm('test_form');
-        $this->page = $page;
+        $this->form     = new LorisForm('test_form');
+        $this->page     = $page;
 
         // set the object properties
         $this->testName = "IPSC_tracking_form";           // test_names.Test_name
-        $this->table = 'IPSC_tracking_form';             // name of table containing
+        $this->table    = 'IPSC_tracking_form';             // name of table containing
 
         // data keyed by commentID
         $this->commentID = $commentID;
 
-        $config = NDB_Config::singleton();
+        $config            = NDB_Config::singleton();
         $this->dateOptions = array(
-            'language' => 'en',
-            'format' => 'YMd',
-            'minYear' => $config->getSetting('startYear'),
-            'maxYear' => $config->getSetting('endYear'),
-            'addEmptyOption' => true,
-            'emptyOptionValue' => null,
-        );
+                              'language'         => 'en',
+                              'format'           => 'YMd',
+                              'minYear'          => $config->getSetting('startYear'),
+                              'maxYear'          => $config->getSetting('endYear'),
+                              'addEmptyOption'   => true,
+                              'emptyOptionValue' => null,
+                             );
 
         // setup the form
         $this->_setupForm();
@@ -92,13 +91,19 @@ class NDB_BVL_Instrument_IPSC_tracking_form extends NDB_BVL_Instrument
         $this->addSelect(
             "recruiter_asked_blood_draw",
             '1. Did the recruiter ask about blood draw?',
-            array('yes' => 'Yes', 'not_yet_asked' => 'Not yet asked')
+            array(
+             'yes'           => 'Yes',
+             'not_yet_asked' => 'Not yet asked',
+            )
         );
 
         $this->addSelect(
             "did_family_agree_to_project",
             '2. Did family agree to the project?',
-            array('yes' => 'Yes', 'no' => 'No')
+            array(
+             'yes' => 'Yes',
+             'no'  => 'No',
+            )
         );
 
         $this->addBasicDate('IPSC_consent_date', '3. Consent date', $this->dateOptions);
@@ -106,7 +111,11 @@ class NDB_BVL_Instrument_IPSC_tracking_form extends NDB_BVL_Instrument
         $this->addSelect(
             "blood_draw_location",
             '4. Blood draw location',
-            array(NULL => '', 'site' => 'SITE', 'take_home_kit_sent' => 'TAKE HOME KIT SENT ')
+            array(
+             null                 => '',
+             'site'               => 'SITE',
+             'take_home_kit_sent' => 'TAKE HOME KIT SENT ',
+            )
         );
 
         $this->addBasicTextArea("fedex_tracking_number", "5. Fedex tracking number of the return label");
@@ -114,7 +123,10 @@ class NDB_BVL_Instrument_IPSC_tracking_form extends NDB_BVL_Instrument
         $this->addSelect(
             "was_the_blood_draw_successful",
             '6. Was the blood draw successful?',
-            array('yes' => 'Yes', 'no' => 'No')
+            array(
+             'yes' => 'Yes',
+             'no'  => 'No',
+            )
         );
 
         $this->addBasicDate('blood_draw_date', '7. Blood draw date', $this->dateOptions);
@@ -128,11 +140,11 @@ class NDB_BVL_Instrument_IPSC_tracking_form extends NDB_BVL_Instrument
     {
         $errors = array();
 
-        if ($values['blood_draw_location'] != NULL && $values['blood_draw_date'] == NULL) {
+        if ($values['blood_draw_location'] != null && $values['blood_draw_date'] == null) {
             $errors['blood_draw_date'] = "Please enter the Blood Draw Date as you have entered the Blood Draw Location";
         }
 
-        if ($values['blood_draw_location'] == NULL && $values['blood_draw_date'] != NULL) {
+        if ($values['blood_draw_location'] == null && $values['blood_draw_date'] != null) {
             $errors['blood_draw_location'] = "Please enter the Blood Draw Location as you have entered the Blood Draw Date";
         }
 
@@ -150,29 +162,28 @@ class NDB_BVL_Instrument_IPSC_tracking_form extends NDB_BVL_Instrument
             $values = Utility::nullifyEmpty($values, $key);
         }
 
-        $db =& Database::singleton();
+        $db        =& Database::singleton();
         $candidate = Candidate::singleton($this->commentID);
-        $PSCID = $candidate-> getPSCID();
-        $centerID = $candidate->getData('RegistrationCenterID');
+        $PSCID     = $candidate-> getPSCID();
+        $centerID  = $candidate->getData('RegistrationCenterID');
 
-        if ($values['blood_draw_date'] != NULL && $values['blood_draw_date'] != '') {
-            $blood_draw_date=date_create($values['blood_draw_date']);
+        if ($values['blood_draw_date'] != null && $values['blood_draw_date'] != '') {
+            $blood_draw_date =date_create($values['blood_draw_date']);
 
-            if($centerID==1)
-            {
-                $notification_reciever_email='sruthy.mcin@gmail.com,sruthymathew369@gmail.com';
+            if ($centerID == 1) {
+                $notification_reciever_email ='sruthy.mcin@gmail.com,sruthymathew369@gmail.com';
             } else {
-                $notification_reciever_email='roseg@email.unc.edu,jason_stein@med.unc.edu,abeltran@email.unc.edu';
+                $notification_reciever_email ='roseg@email.unc.edu,jason_stein@med.unc.edu,abeltran@email.unc.edu';
             }
 
-            $msg_data['PSCID'] = $PSCID;
-            $msg_data['blood_draw_date'] = date_format($blood_draw_date,"F d, Y");
-            $old_blood_draw_date = $db->pselectOne(
+            $msg_data['PSCID']           = $PSCID;
+            $msg_data['blood_draw_date'] = date_format($blood_draw_date, "F d, Y");
+            $old_blood_draw_date         = $db->pselectOne(
                 "SELECT blood_draw_date FROM IPSC_tracking_form WHERE CommentID=:cid",
                 array('cid' => $this->getCommentID())
             );
 
-            if($values['blood_draw_date']!=$old_blood_draw_date) {
+            if ($values['blood_draw_date']!=$old_blood_draw_date) {
                 Email::send($notification_reciever_email, 'IPSC_tracking_blood_draw_notification.tpl', $msg_data, "", "IBIS Team <noreply@ibis.loris.ca>");
             }
         }
@@ -209,4 +220,4 @@ class NDB_BVL_Instrument_IPSC_tracking_form extends NDB_BVL_Instrument
         );
     }
 }
-?>
+
