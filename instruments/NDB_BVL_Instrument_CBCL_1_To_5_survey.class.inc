@@ -142,13 +142,7 @@ class NDB_BVL_Instrument_CBCL_1_To_5_survey extends NDB_BVL_Instrument
         //Any LorisForm multiple selects must be listed here
         $this->_selectMultipleElements = array();
 
-        // required fields for data entry completion status
-        $this->_requiredElements = array(
-                                    "q1_aches_or_pains",
-                                    "q30_easily_jealous",
-                                    "q55_plays_with_own_sex_parts_too_much",
-                                    "q79_rapid_shifts_sadness_excitement",
-                                   );
+
 
         // setup the form
         $this->_setupForm();
