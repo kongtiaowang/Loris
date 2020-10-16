@@ -225,6 +225,14 @@ class CouchDBDemographicsImporter {
             $EDCFields = ", c.EDC as EDC";
             $fieldsInQuery .= $EDCFields;
         }
+        $projects = \Utility::getProjectList();
+        $projectsEnum = "enum('";
+        $projectsEnum .= implode("', '", $projects);
+        $projectsEnum .= "')";
+        $this->Dictionary["Project"] = array(
+            'Description' => 'Project for which the candidate belongs',
+            'Type' => $projectsEnum
+        );
         // If consent is being used, add consent information into query
         if ($config->getSetting("useConsent") === "true") {
             $consents = \Utility::getConsentList();
