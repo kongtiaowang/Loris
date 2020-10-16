@@ -136,21 +136,20 @@ class NDB_BVL_Instrument_macarthur_words_gestures_survey extends NDB_BVL_Instrum
 
             $this->form->addElement("header",null,"<b>FIRST SIGNS OF UNDERSTANDING SCORES </b>");
 
-            $group[]= $this->form->createElement("static", "raw_response", null, null);
+           // $group[]= $this->form->createElement("static", "raw_response", null, null);
             $group[]= $this->form->createElement("static", "percentile", null, null);
             $this->form->addGroup($group, null, null, $this->_GUIDelimiter, false);
             unset($group);
 
-
-            $group[]= $this->form->createElement("static", 'I_A_1', null, null);
+            $group[]= $this->form->createElement("static", '', null, null);
             $this->form->addGroup($group, 'I_A_1_score_group', "Responds when name is called:", $this->_GUIDelimiter, false);
             unset($group);
 
-            $group[]= $this->form->createElement("static", 'I_A_2', null, null);
+            $group[]= $this->form->createElement("static", '', null, null);
             $this->form->addGroup($group, 'I_A_2_score_group', "Responds to 'no no':", $this->_GUIDelimiter, false);
             unset($group);
 
-            $group[]= $this->form->createElement("static", 'I_A_3', null, null);
+            $group[]= $this->form->createElement("static", '', null, null);
             $this->form->addGroup($group, 'I_A_3_score_group', "Responds to 'there's mommy/daddy':", $this->_GUIDelimiter, false);
             unset($group);
 
@@ -430,12 +429,12 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $this->form->addElement('header', null, "PART I EARLY WORDS");
 
         $this->form->addElement('header', null, "A. FIRST SIGNS OF UNDERSTANDING");
-        if (isset($_REQUEST['commentID'])) {
+
 
             $this->form->addElement('select', "I_A_1", "1. Respond when name is called (e.g., by turning and looking at source).", $this->yesNo);
             $this->form->addElement('select', "I_A_2", "2. Respond to `no no` (by stopping what he/she is doing, at least for a moment).", $this->yesNo);
             $this->form->addElement('select', "I_A_3", "3. React to `there's mommy/daddy` by looking around for them.", $this->yesNo);
-        }
+
         $this->form->addElement('header', null, "B. PHRASES (28)");
         $this->form->addElement('static', null, "In the list below, please mark the phrases that your child seems to understand.");
         $questionArray = array("Are you hungry?",
