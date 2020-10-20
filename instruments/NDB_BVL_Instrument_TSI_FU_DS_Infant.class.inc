@@ -61,7 +61,7 @@ class NDB_BVL_Instrument_TSI_FU_DS_Infant extends NDB_BVL_Instrument
     /**
      * Sample SQL statement for test_names table and instrument subtests table
      *
-     * INSERT INTO test_names (Test_name, Full_name, Sub_Group, isDirectEntry) VALUES ('TSI_FU_DS_Infant', "Telephone Screening Interview - DS-Infant", 1, 0);
+     * INSERT INTO test_names (Test_name, Full_name, Sub_Group, isDirectEntry) VALUES ('TSI_FU_DS_Infant', "TSI-FU DS-Infant (Telephone Screening Interview - Follow-Up - DS-Infant)", 9, 0);
      * INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('TSI_FU_DS_Infant','TSI_FU_DS_Infant_page1', "Page 1", 1);
      * INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('TSI_FU_DS_Infant','TSI_FU_DS_Infant_page2', "Page 2", 2);
      * INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('TSI_FU_DS_Infant','TSI_FU_DS_Infant_page3', "Page 3", 3);
