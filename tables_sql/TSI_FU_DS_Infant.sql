@@ -10,6 +10,8 @@ CREATE TABLE `TSI_FU_DS_Infant` (
     `are_bio_parents_living_in_same_home` enum('yes','no') default NULL,
     `if_not_in_same_home_childs_primary_address_with` enum('mother','father') default NULL,
     `are_parents_divorced_or_separated` enum('yes','no') default NULL,
+    `when_did_you_move_primary` varchar(255) default NULL,
+    `when_did_you_move_secondary` varchar(255) default NULL,
     `household_ses_mother_or_combined` enum('less_than_25K','25K-35K','35K-50K','50K-75K','75K-100K','100K-150K','150K-200K','over_200K') default NULL,
     `household_ses_father_if_2_households` enum('less_than_25K','25K-35K','35K-50K','50K-75K','75K-100K','100K-150K','150K-200K','over_200K') default NULL,
     `sibling_1_dob` date default NULL,
