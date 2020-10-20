@@ -84,6 +84,28 @@ class NDB_BVL_Instrument_IPSC_tracking_form extends NDB_BVL_Instrument
         }
     }
 
+    /**
+     * Accepts an array usable as input to HTML_Quickform::setDefaults()
+     * and does any necessary preprocessing on that array.
+     *
+     * @param array $defaults the array to be passed on to
+     *                        HTML_Quickform::setDefaults()
+     *
+     * @return array the processed array ready for setDefaults()
+     * @access private
+     */
+    function _setDefaultsArray(array $defaults): array
+    {
+        $modifiedDefaults = parent::_setDefaultsArray($defaults);
+
+        // If the form has not been filled out yet, default value for 'recruiter_asked_blood_draw'
+        // will be null: set it to 'not_yet_asked' in this case
+        $modifiedDefaults['recruiter_asked_blood_draw'] 
+            = $modifiedDefaults['recruiter_asked_blood_draw'] ?? 'not_yet_asked';
+
+        return $modifiedDefaults;
+    }
+
     function _main()
     {
         // automatically adds examiner & date of administration
