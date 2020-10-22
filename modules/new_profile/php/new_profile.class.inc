@@ -94,7 +94,7 @@ class New_Profile extends \NDB_Form
 
         if ($num_sites >1) {
             $candID = \Candidate::createNew(
-                $values['psc'],
+                (int)$values['psc'],
                 $dob,
                 $edc,
                 $values['sex'],
