@@ -185,6 +185,7 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
                                      "vacuum_extraction"   => "Vacuum Extraction",
                                      "vaginal_delivery"    => "Vaginal Delivery",
                                      "other"               => "Other (explain)",
+                                     "not_answered"        => "Not Answered",
                                     );
 
     /**
@@ -1016,7 +1017,7 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
         $this->XINRegisterRule("pro_devfactors_q13_exclusionary_conditions", array("pro_devfactors_q13_complications_during_pregnancy_delivery{@}=={@}yes"), 'Required if yes');
 
         $this->form->addElement('text', "pro_devfactors_q13_other", $this->indent . 'Other:');
-        $this->XINRegisterRule("pro_devfactors_q13_other", array("pro_devfactors_q13_complications_during_pregnancy_delivery{@}=={@}other"), 'Required if other');
+        $this->XINRegisterRule("pro_devfactors_q13_other", array("pro_devfactors_q13_exclusionary_conditions{@}=={@}other"), 'Required if other');
 
         $this->form->addElement('static', null, null);
 
@@ -1395,16 +1396,23 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
         $this->form->addElement('text',  "inf_devfactors_q10_list", $this->indent . 'If yes, list:');
         $this->XINRegisterRule("inf_devfactors_q10_list", array("inf_devfactors_q10_gastrointestinal_condition{@}=={@}yes"), 'Required if yes');
 
+        $q11_weaned_options = array(
+                               null           => "",
+                               "weaned"       => "Weaned",
+                               "not_weaned"   => "Not Weaned",
+                               "not_answered" => "Not Answered",
+                              );
+
         // Q11
         $this->addSelect("inf_devfactors_q11_breastfeeding", "11. Are you breastfeeding INFANT?", self::YES_NO_OPTIONS);
         $this->addSelect("inf_devfactors_q11a_did_you_breastfeed", "11a. Did you ever breastfeed your INFANT?", self::YES_NO_NA_OPTIONS);
-        $this->addSelect("inf_devfactors_q11b_if_weaned_how_long_breastfeed", "11b. If weaned, how long did you breastfeed in total?", self::YES_NO_NA_OPTIONS);
+        $this->addSelect("inf_devfactors_q11b_if_weaned_how_long_breastfeed", "11b. If weaned, how long did you breastfeed in total?", $q11_weaned_options);
 
         $this->form->addElement('text', "inf_devfactors_q11b_how_long_breastfeed_weeks", $this->indent . 'Weeks');
         $this->form->addElement('text', "inf_devfactors_q11b_how_long_breastfeed_months", $this->indent . 'Months');
 
-        $this->XINRegisterRule("inf_devfactors_q11b_how_long_breastfeed_weeks", array('inf_devfactors_q11b_if_weaned_how_long_breastfeed{@}=={@}yes'), 'Required if yes');
-        $this->XINRegisterRule("inf_devfactors_q11b_how_long_breastfeed_months", array('inf_devfactors_q11b_if_weaned_how_long_breastfeed{@}=={@}yes'), 'Required if yes');
+        $this->XINRegisterRule("inf_devfactors_q11b_how_long_breastfeed_weeks", array('inf_devfactors_q11b_if_weaned_how_long_breastfeed{@}=={@}weaned'), 'Required if weaned');
+        $this->XINRegisterRule("inf_devfactors_q11b_how_long_breastfeed_months", array('inf_devfactors_q11b_if_weaned_how_long_breastfeed{@}=={@}weaned'), 'Required if weaned');
 
         // Q12
         $this->addSelect("inf_devfactors_q12_exposure_to_medication_alcohol_drugs", "12. INFANT exposure in-utero or breastfeeding to medication, alcohol, or drugs?", self::YES_NO_OPTIONS);
@@ -2023,10 +2031,6 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
             ) {
                 $errors["page3_q12_" . $key . "_group"] = $this->indent . "Type & Dose Required.";
             }
-        }
-
-        if ($values["pro_devfactors_q13_exclusionary_conditions"] != "other") {
-            $this->validate_empty_subquestions($values, ["pro_devfactors_q13_other"], $errors);
         }
 
         $q15_subquestions = array(
