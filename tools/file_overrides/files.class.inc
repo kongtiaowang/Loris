@@ -164,6 +164,10 @@ class Files extends \NDB_Page
         $db           = \Database::singleton();
         $user         = \User::singleton();
         $updateValues = [
+                        // Override code starts here
+                        'file_category' => $req['category'] ?? null,
+                        'for_site'   => $req['forSite'] ?? null,
+                        // Override code ends here
                          'instrument' => $req['instrument'] ?? null,
                          'comments'   => $req['comments'] ?? null,
                          'version'    => $req['version'] ?? null,
