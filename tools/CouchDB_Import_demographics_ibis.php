@@ -38,8 +38,8 @@ class CouchDBDemographicsImporter {
             'Description' => 'Risk group of candidate',
             'Type' => 'varchar(255)'
         ),        
-        'Gender' => array(
-            'Description' => 'Candidate\'s gender',
+        'Sex' => array(
+            'Description' => 'Candidate\'s sex',
             'Type' => "enum('Male', 'Female')"
         ),
         'Site' => array(
@@ -217,7 +217,7 @@ class CouchDBDemographicsImporter {
 
         // If proband fields are being used, add proband information into the query
         if ($config->getSetting("useProband") === "true") {
-            $probandFields = ", c.ProbandSex as Gender_proband, ROUND(DATEDIFF(c.DoB, c.ProbandDoB) / (365/12)) AS Age_difference";
+            $probandFields = ", c.ProbandSex as Sex_proband, ROUND(DATEDIFF(c.DoB, c.ProbandDoB) / (365/12)) AS Age_difference";
             $fieldsInQuery .= $probandFields;
         }
         // If expected date of confinement is being used, add EDC information into the query
@@ -258,8 +258,8 @@ class CouchDBDemographicsImporter {
         $config = \NDB_Config::singleton();
         // If proband fields are being used, update the data dictionary
         if ($config->getSetting("useProband") === "true") {
-            $this->Dictionary["Gender_proband"] = array(
-                'Description' => 'Proband\'s gender',
+            $this->Dictionary["Sex_proband"] = array(
+                'Description' => 'Proband\'s sex',
                 'Type' => "enum('Male','Female')"
             );
             $this->Dictionary["Age_difference"] = array(
