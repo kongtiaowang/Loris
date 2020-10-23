@@ -238,13 +238,13 @@ class NDB_BVL_Instrument_CCTQ_survey extends NDB_BVL_Instrument_survey
             "<b><u>On Scheduled Days ...</u></b>"
         );
 
-        $this->addHourMinElement('q1_child_wakes_up_at', "1. ... child wakes up at");
+        $this->addHourMinElement('q1_child_wakes_up_at', "1. ... child wakes up at", [], "No time entered. Fields may appear to be filled. Please clear and re-enter with the appropriate time.", false);
 
         $this->addSelect("q2_child_regularly_wakes_up", "2. ... child regularly wakes up", $q2_options);
 
-        $this->addHourMinElement('q3_child_gets_up_out_of_bed_at', "3. ... child gets up (out of bed) at");
+        $this->addHourMinElement('q3_child_gets_up_out_of_bed_at', "3. ... child gets up (out of bed) at", [], "No time entered. Fields may appear to be filled. Please clear and re-enter with the appropriate time.", false);
 
-        $this->addHourMinElement('q4_child_is_fully_awake_by', "4. ... child is fully awake by");
+        $this->addHourMinElement('q4_child_is_fully_awake_by', "4. ... child is fully awake by", [], "No time entered. Fields may appear to be filled. Please clear and re-enter with the appropriate time.", false);
 
         $this->addSelect("q5_child_takes_regular_naps", "5. ... child takes regular naps", self::YES_NO_OPTIONS);
 
@@ -266,9 +266,9 @@ class NDB_BVL_Instrument_CCTQ_survey extends NDB_BVL_Instrument_survey
             "<b><u>On nights before Scheduled Days ...</u></b>"
         );
 
-        $this->addHourMinElement('q6_child_goes_to_bed_body_in_bed_at', "6. ... child goes to bed (body in bed) at");
+        $this->addHourMinElement('q6_child_goes_to_bed_body_in_bed_at', "6. ... child goes to bed (body in bed) at", [], "No time entered. Fields may appear to be filled. Please clear and re-enter with the appropriate time.", false);
 
-        $this->addHourMinElement('q7_child_is_ready_to_fall_asleep_lights_turned_out_at', "7. ... child is ready to fall asleep (lights turned out) at");
+        $this->addHourMinElement('q7_child_is_ready_to_fall_asleep_lights_turned_out_at', "7. ... child is ready to fall asleep (lights turned out) at", [], "No time entered. Fields may appear to be filled. Please clear and re-enter with the appropriate time.", false);
 
         $this->form->addElement('text', 'q8_how_many_minutes_does_it_take_child_to_fall_asleep_lights_out', '8. ... how many minutes does it take child to fall asleep (after lights turned out)?');
 
@@ -308,7 +308,7 @@ class NDB_BVL_Instrument_CCTQ_survey extends NDB_BVL_Instrument_survey
             "<b><u>On Free Days ...</u></b>"
         );
 
-        $this->addHourMinElement('q9_child_normally_wakes_up_at', "9. ... my child normally wakes up at");
+        $this->addHourMinElement('q9_child_normally_wakes_up_at', "9. ... my child normally wakes up at", [], "No time entered. Fields may appear to be filled. Please clear and re-enter with the appropriate time.", false);
 
         $this->addSelect("q10_child_wakes_up_at_normal_time_but_goes_back_to_sleep", "10. ... my child wakes up at their normal time on scheduled days, but then goes back to sleep after waking", self::YES_NO_OPTIONS);
 
@@ -316,9 +316,9 @@ class NDB_BVL_Instrument_CCTQ_survey extends NDB_BVL_Instrument_survey
 
         $this->XINRegisterRule('q10_if_yes_how_many_minutes_does_child_go_back_to_sleep_for', array('q10_child_wakes_up_at_normal_time_but_goes_back_to_sleep{@}=={@}yes'), 'Required if yes');
 
-        $this->addHourMinElement('q11_child_gets_up_out_of_bed_at', "11. ... my child gets up (out of bed) by");
+        $this->addHourMinElement('q11_child_gets_up_out_of_bed_at', "11. ... my child gets up (out of bed) by", [], "No time entered. Fields may appear to be filled. Please clear and re-enter with the appropriate time.", false);
 
-        $this->addHourMinElement('q12_child_is_fully_awake_by', "12. ... my child is fully awake by");
+        $this->addHourMinElement('q12_child_is_fully_awake_by', "12. ... my child is fully awake by", [], "No time entered. Fields may appear to be filled. Please clear and re-enter with the appropriate time.", false);
 
         $this->addSelect("q13_child_takes_regular_naps", "13. ... my child takes regular naps", self::YES_NO_OPTIONS);
 
@@ -340,9 +340,9 @@ class NDB_BVL_Instrument_CCTQ_survey extends NDB_BVL_Instrument_survey
             "<b><u>On nights before Free Days ...</u></b>"
         );
 
-        $this->addHourMinElement('q14_child_goes_to_bed_body_in_bed_at', "14. ... my child goes to bed (body in bed) at");
+        $this->addHourMinElement('q14_child_goes_to_bed_body_in_bed_at', "14. ... my child goes to bed (body in bed) at", [], "No time entered. Fields may appear to be filled. Please clear and re-enter with the appropriate time.", false);
 
-        $this->addHourMinElement('q15_child_is_ready_to_fall_asleep_lights_turned_out_at', "15. ... my child is ready to fall asleep (lights turned out) at");
+        $this->addHourMinElement('q15_child_is_ready_to_fall_asleep_lights_turned_out_at', "15. ... my child is ready to fall asleep (lights turned out) at", [], "No time entered. Fields may appear to be filled. Please clear and re-enter with the appropriate time.", false);
 
         $this->form->addElement('text', 'q16_how_many_minutes_does_it_take_child_fall_asleep_lights_out', '16. ... how many minutes does it take child to fall asleep (after lights turned out)?');
 
