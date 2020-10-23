@@ -22,6 +22,7 @@
  */
 class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
     use instrument_validator;
 
     var $ValidityEnabled  = false;
@@ -209,7 +210,7 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
      * @return void
      * @access public
      */
-    function setup($commentID, $page)
+    function setup(?string $commentID = NULL, ?string $page = NULL): void
     {
         $this->formType = "XIN";
         $this->form     = new LorisForm('TSI_EP_form');
