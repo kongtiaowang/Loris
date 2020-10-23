@@ -30,6 +30,21 @@ INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_num
 	'react'=>"Reactivity",
 	'repplay'=>"Repetitive Play & Behavior");
 
+    //----------------------------------------------------------------//
+    // Possible choices for both the mother's and father's ethnicity  //
+    //----------------------------------------------------------------//
+    var $ethnicities = array(
+        'white'                            => 'White',
+        'black_african_american'           => 'Black/African-American',
+        'hispanic_latino'                  => 'Hispanic/Latino',
+        'asian'                            => 'Asian',
+        'american_indian_alaskan_native'   => 'American-Indian/Alaskan Native',
+        'native_hawaiian_pacific_islander' => 'Native Hawaiian/Pacific Islander',
+        'not_answered'                     => 'Not answered'
+    );
+
+
+
     /**
     * sets up basic data, such as the LorisForm object, and so on.
     *
@@ -57,9 +72,6 @@ INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_num
         //Any LorisForm date elements must be listed here
         $this->dateTimeFields=array("Date_taken");
 
-        //The array of selects with multiple answers allowed
-        //Any LorisForm multiple selects must be listed here
-        $this->_selectMultipleElements = array("mother_ethnicity", "father_ethnicity");
 
       /**
        * Array of column names to be ignored by the double data entry conflict detector.
@@ -102,6 +114,7 @@ INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_num
             call_user_func(array($this, $matches[1]));
         } else {
             $this->_main();
+            $this->form->addFormRule(array(&$this,'validate_main'));
         }
 
         //Defines the call back function for HTML Quickform to use when validating the form.
@@ -134,25 +147,35 @@ INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_num
 
         $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
 
-        $this->form->addElement("select", "mother_ethnicity", "Baby's Mother Race/Ethnicity: (check 1 or more)", array(null=>"", "white"=>"White",
-        "black_african_american"=>"Black/African-American",
-        "hispanic_latino"=>"Hispanic/Latino",
-        "asian"=>"Asian",
-        "american_indian_alaskan_native"=>"American-Indian/Alaskan Native",
-        "native_hawaiian_pacific_islander"=>"Native Hawaiian/Pacific Islander",
-        "not_answered"=>"Not Answered"), array("multiple"));
+        //------------------------------------//
+        // Set up mother's ethnicity section  //
+        //------------------------------------//
+        $this->form->addElement("static", null, "Baby's Mother Race/Ethnicity: (check 1 or more)");
+        foreach($this->ethnicities as $ethnicityID => $ethnicityDescription) {
+           $this->form->addElement("advcheckbox", "mother_ethnicity_$ethnicityID", null, $ethnicityDescription, null, array("not_used", "used"));
+            $this->XINRegisterRule(
+                "mother_ethnicity_$ethnicityID",
+                array("mother_ethnicity_$ethnicityID{@}=={@}NEVER_REQUIRED"),
+                "Not required"
+            );
+        }
 
         $education_levels = array(null => "", "not_answered" => "Not Answered", "j_high" => "Junior High", "some_hs" => "Some Highschool", "high_school"=> "High School", "some_college" => "Some College/2yr Degree", "college_degree" => "College Degree", "some_grad_level" => "Some Graduate Level", "grad_degree" => "Graduate Degree");
 
         $this->form->addElement("select", "mother_highest_grade", "Mother's highest grade completed or degree obtained:", $education_levels);
 
-        $this->form->addElement("select", "father_ethnicity", "Baby's Father Race/Ethnicity (check 1 or more)", array(null=>"", "white"=>"White",
-        "black_african_american"=>"Black/African-American",
-        "hispanic_latino"=>"Hispanic/Latino",
-        "asian"=>"Asian",
-        "american_indian_alaskan_native"=>"American-Indian/Alaskan Native",
-        "native_hawaiian_pacific_islander"=>"Native Hawaiian/Pacific Islander",
-        "not_answered"=>"Not Answered"), array("multiple"));
+        //------------------------------------//
+        // Set up mother's ethnicity section  //
+        //------------------------------------//
+        $this->form->addElement("static", null, "Baby's Father Race/Ethnicity: (check 1 or more)");
+        foreach($this->ethnicities as $ethnicityID => $ethnicityDescription) {
+           $this->form->addElement("advcheckbox", "father_ethnicity_$ethnicityID", null, $ethnicityDescription, null, array("not_used", "used"));
+            $this->XINRegisterRule(
+                "father_ethnicity_$ethnicityID",
+                array("father_ethnicity_$ethnicityID{@}=={@}NEVER_REQUIRED"),
+                "Not required"
+            );
+        }
 
         $this->form->addElement("select", "father_highest_grade", "Father's highest grade completed or degree obtained:", $education_levels);
 
@@ -1563,5 +1586,39 @@ INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_num
          #echo("\nBDM: " . $BDM_total);
         // print_r($calculatedScores);
      }
+
+    /**
+     * Validates the main page.
+     *
+     * @param $values array array of submitted values.
+     *
+     * @return array errors found in the validation (empty if none).
+     */
+    function validate_main(array $values) : array
+    {
+        $errors = [];
+ 
+        //---------------------------------------------//
+        // Validation of mother and father ethnicity   //
+        //---------------------------------------------//
+        $parents = array('mother', 'father');
+        foreach ($parents as $parent) {
+            $nbChecked = 0;
+            foreach ($this->ethnicities as $ethnicityID => $ethnicityDescription) {
+                if ($values["{$parent}_ethnicity_$ethnicityID"] == 'used') {
+                    $nbChecked++;
+                }
+            }
+
+            if ($nbChecked == 0) {
+                $errors["{$parent}_ethnicity_not_answered"] = 
+                    "You must check 'Not answered' if none of the choices apply or if you do not want to answer this question";
+            } elseif ($nbChecked > 1 && $values["{$parent}_ethnicity_not_answered"] == 'used') {
+                $errors["{$parent}_ethnicity_not_answered"] = 'If you check this box, it has to be the only one checked';
+            }
+        }
+
+        return $errors;
+    }
 }
 ?>
