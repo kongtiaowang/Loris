@@ -28,7 +28,7 @@ class NDB_BVL_Instrument_Vineland_3_Proband extends NDB_BVL_Instrument_Vineland_
     /**
      * {@inheritDoc}
      */
-    function getTestName()
+    function getTestName() : string
     {
         return 'Vineland_3_Proband';
     }
@@ -36,7 +36,7 @@ class NDB_BVL_Instrument_Vineland_3_Proband extends NDB_BVL_Instrument_Vineland_
     /**
      * {@inheritDoc}
      */
-    function getTableName()
+    function getTableName() : string
     {
         return 'Vineland_3_Proband';
     }
@@ -44,7 +44,7 @@ class NDB_BVL_Instrument_Vineland_3_Proband extends NDB_BVL_Instrument_Vineland_
     /**
      * {@inheritDoc}
      */
-    function getInstrumentShortName()
+    function getInstrumentShortName() : string
     {
         return 'Vineland 3 Proband';
     }

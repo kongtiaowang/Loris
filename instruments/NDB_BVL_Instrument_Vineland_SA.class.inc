@@ -28,7 +28,7 @@ class NDB_BVL_Instrument_Vineland_SA extends NDB_BVL_Instrument_Vineland_3
     /**
      * {@inheritDoc}
      */
-    function getTestName()
+    function getTestName() : string
     {
         return 'Vineland_SA';
     }
@@ -36,7 +36,7 @@ class NDB_BVL_Instrument_Vineland_SA extends NDB_BVL_Instrument_Vineland_3
     /**
      * {@inheritDoc}
      */
-    function getTableName()
+    function getTableName() : string
     {
         return 'Vineland_SA';
     }
@@ -44,7 +44,7 @@ class NDB_BVL_Instrument_Vineland_SA extends NDB_BVL_Instrument_Vineland_3
     /**
      * {@inheritDoc}
      */
-    function getInstrumentShortName()
+    function getInstrumentShortName() : string
     {
         return 'Vineland SA';
     }
