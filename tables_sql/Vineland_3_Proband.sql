@@ -26,9 +26,9 @@ INSERT INTO test_names (Test_name, Full_name, Sub_group, TestExpert, IsDirectEnt
 -- ---------------------------------------------------------------
 
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
-VALUES ('Vineland_3_Proband', '0', '0', 'Y', 'Visit', 20, 'V06', NULL);
+VALUES ('Vineland_3_Proband', '0', '0', 'Y', 'Visit', 18, 'V06', NULL);
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
-VALUES ('Vineland_3_Proband', '0', '0', 'Y', 'Visit', 23, 'V06', NULL);
+VALUES ('Vineland_3_Proband', '0', '0', 'Y', 'Visit', 19, 'V06', NULL);
 
 -- ------------------------------------------------------------------
 -- Add the Vineland_3_Proband instrument to the V6-CVD visit for
@@ -36,7 +36,7 @@ VALUES ('Vineland_3_Proband', '0', '0', 'Y', 'Visit', 23, 'V06', NULL);
 -- ------------------------------------------------------------------
 
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
-VALUES ('Vineland_3_Proband', '0', '0', 'Y', 'Visit', 20, 'V6-CVD', NULL);
+VALUES ('Vineland_3_Proband', '0', '0', 'Y', 'Visit', 18, 'V6-CVD', NULL);
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
-VALUES ('Vineland_3_Proband', '0', '0', 'Y', 'Visit', 23, 'V6-CVD', NULL);
+VALUES ('Vineland_3_Proband', '0', '0', 'Y', 'Visit', 19, 'V6-CVD', NULL);
 
