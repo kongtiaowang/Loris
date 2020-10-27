@@ -1,6 +1,6 @@
 <?php
 /*
- * This file contains the NDB_BVL_Instrument_Vineland_SA
+ * This file contains the NDB_BVL_Instrument_Vineland_3_proband
  * class
  *
  * PHP Version 7
@@ -13,7 +13,7 @@
  */
 
 /**
- * Creates the form elements for the Vineland_SA instrument
+ * Creates the form elements for the Vineland 3 Proband instrument
  *
  * @category Instrument
  * @package  Neuropsych
@@ -23,14 +23,14 @@
  */
 require_once('NDB_BVL_Instrument_Vineland_3.class.inc');
 
-class NDB_BVL_Instrument_Vineland_SA extends NDB_BVL_Instrument_Vineland_3
+class NDB_BVL_Instrument_Vineland_3_Proband extends NDB_BVL_Instrument_Vineland_3
 {
     /**
      * {@inheritDoc}
      */
     function getTestName()
     {
-        return 'Vineland_SA';
+        return 'Vineland_3_Proband';
     }
 
     /**
@@ -38,7 +38,7 @@ class NDB_BVL_Instrument_Vineland_SA extends NDB_BVL_Instrument_Vineland_3
      */
     function getTableName()
     {
-        return 'Vineland_SA';
+        return 'Vineland_3_Proband';
     }
 
     /**
@@ -46,7 +46,7 @@ class NDB_BVL_Instrument_Vineland_SA extends NDB_BVL_Instrument_Vineland_3
      */
     function getInstrumentShortName()
     {
-        return 'Vineland SA';
+        return 'Vineland 3 Proband';
     }
 }
 
