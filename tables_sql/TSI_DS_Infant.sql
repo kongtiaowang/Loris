@@ -106,7 +106,7 @@ CREATE TABLE `TSI_DS_Infant` (
     `inf_devfactors_q10_other` varchar(128) default NULL,
     `inf_devfactors_q11_breastfeeding` enum('yes','no') default NULL,
     `inf_devfactors_q11a_did_you_breastfeed` enum('yes','no','not_answered') default NULL,
-    `inf_devfactors_q11b_if_weaned_how_long_breastfeed` enum('yes','no','not_answered') default NULL,
+    `inf_devfactors_q11b_if_weaned_how_long_breastfeed` enum('weaned','not_weaned','not_answered') default NULL,
     `inf_devfactors_q11b_how_long_breastfeed_weeks` varchar(128) default NULL,
     `inf_devfactors_q11b_how_long_breastfeed_months` varchar(128) default NULL,
     `inf_devfactors_q12_exposure_to_medication_alcohol_drugs` enum('yes','no') default NULL,
