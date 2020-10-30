@@ -46,7 +46,7 @@ CREATE TABLE `TSI_FU_DS_Infant` (
     `inf_devfactors_q9_problems_with_sleep_apnea_or_breathing` enum('yes','no') default NULL,
     `inf_devfactors_q10_gastrointestinal_condition` enum('yes','no') default NULL,
     `inf_devfactors_q11_breastfeeding` enum('yes','no') default NULL,
-    `inf_devfactors_q11b_if_weaned_how_long_breastfeed` enum('yes','no','not_answered') default NULL,
+    `inf_devfactors_q11b_if_weaned_how_long_breastfeed` enum('weaned','not_weaned','not_answered') default NULL,
     `inf_devfactors_q11b_how_long_breastfeed_weeks` varchar(255) default NULL,
     `inf_devfactors_q11b_how_long_breastfeed_months` varchar(255) default NULL,
     `inf_devfactors_q15_first_degree_relative` enum('yes','no') default NULL,

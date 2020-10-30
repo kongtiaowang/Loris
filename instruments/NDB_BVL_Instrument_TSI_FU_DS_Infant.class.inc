@@ -439,16 +439,23 @@ class NDB_BVL_Instrument_TSI_FU_DS_Infant extends NDB_BVL_Instrument
         // Q10
         $this->addSelect("inf_devfactors_q10_gastrointestinal_condition", "10. Any newly diagnosed gastrointestinal conditions?", self::YES_NO_OPTIONS);
 
+        $q11_weaned_options = array(
+            null           => "",
+            "weaned"       => "Weaned",
+            "not_weaned"   => "Not Weaned",
+            "not_answered" => "Not Answered",
+           );
+
         // Q11
         $this->addSelect("inf_devfactors_q11_breastfeeding", "11. Have you ever or are you breastfeeding your infant?", self::YES_NO_OPTIONS);
 
-        $this->addSelect("inf_devfactors_q11b_if_weaned_how_long_breastfeed", "11b. If weaned, how long did you breastfeed?", self::YES_NO_NA_OPTIONS);
+        $this->addSelect("inf_devfactors_q11b_if_weaned_how_long_breastfeed", "11b. If weaned, how long did you breastfeed?", $q11_weaned_options);
 
         $this->form->addElement('text', "inf_devfactors_q11b_how_long_breastfeed_weeks", $this->indent . 'Weeks');
         $this->form->addElement('text', "inf_devfactors_q11b_how_long_breastfeed_months", $this->indent . 'Months');
 
-        $this->XINRegisterRule("inf_devfactors_q11b_how_long_breastfeed_weeks", array('inf_devfactors_q11b_if_weaned_how_long_breastfeed{@}=={@}yes'), 'Required if yes');
-        $this->XINRegisterRule("inf_devfactors_q11b_how_long_breastfeed_months", array('inf_devfactors_q11b_if_weaned_how_long_breastfeed{@}=={@}yes'), 'Required if yes');
+        $this->XINRegisterRule("inf_devfactors_q11b_how_long_breastfeed_weeks", array('inf_devfactors_q11b_if_weaned_how_long_breastfeed{@}=={@}weaned'), 'Required if weaned');
+        $this->XINRegisterRule("inf_devfactors_q11b_how_long_breastfeed_months", array('inf_devfactors_q11b_if_weaned_how_long_breastfeed{@}=={@}weaned'), 'Required if weaned');
 
         // Q15
         $q15_subquestions = array(
@@ -728,12 +735,7 @@ class NDB_BVL_Instrument_TSI_FU_DS_Infant extends NDB_BVL_Instrument
             $this->validate_empty_subquestions($values, ["inf_devfactors_q10_list"], $errors);
         }
 
-        if ($values["inf_devfactors_q11_breastfeeding"] == "yes" && $values["inf_devfactors_q11b_if_weaned_how_long_breastfeed"] == "yes") {
-            $errors["inf_devfactors_q11_breastfeeding"] = "11. and 11b. cannot both be answered 'Yes'";
-            $errors["inf_devfactors_q11b_if_weaned_how_long_breastfeed"] = "11. and 11b. cannot both be answered 'Yes'";
-        }
-
-        if ($values["inf_devfactors_q11b_if_weaned_how_long_breastfeed"] != "yes") {
+        if ($values["inf_devfactors_q11b_if_weaned_how_long_breastfeed"] != "weaned") {
             $this->validate_empty_subquestions($values, ["inf_devfactors_q11b_how_long_breastfeed_weeks"], $errors);
             $this->validate_empty_subquestions($values, ["inf_devfactors_q11b_how_long_breastfeed_months"], $errors);
         }
