@@ -2,8 +2,6 @@
 
 
 
-require_once "TimePoint.class.inc";
-
 class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
