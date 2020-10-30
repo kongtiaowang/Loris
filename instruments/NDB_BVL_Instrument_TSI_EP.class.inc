@@ -433,7 +433,7 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
 
         $this->addSelect("proband_infant_full_siblings", $this->indent . "Are the proband and infant full siblings?", self::YES_NO_OPTIONS);
 
-        $this->addBasicDate("when_diagnosed_with_autism", $this->indent . 'When were they diagnosed with autism?', $this->dateOptions);
+        $this->form->addElement('text', "when_diagnosed_with_autism", $this->indent . 'When were they diagnosed with autism?');
         $this->form->addElement('text', "diagnosed_with_autism_by", $this->indent . $this->indent . "By whom?");
 
         $this->form->addElement('static', null, "<i>If proband is 31 months or older, administer SCQ. If 30 months or younger, administer m-CHAT.</i>");
@@ -929,7 +929,7 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
         $this->form->addElement('static', null, null);
 
         // Q5A
-        $this->form->addElement('static', null, "5a. Head injury in PROBAND?<h6><i>(Send details to exclusionary committee for review – loss of consciousness, finding on any scan completed)</i></h6>");
+        $this->addSelect("pro_devfactors_q5a_head_injury", "5a. Head injury in PROBAND?<h6><i>(Send details to exclusionary committee for review – loss of consciousness, finding on any scan completed)</i></h6>", self::YES_NO_OPTIONS);
 
         $this->form->addElement('static', null, null);
 
