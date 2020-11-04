@@ -21,9 +21,9 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/IBIS/
  */
-require_once('NDB_BVL_Instrument_Vineland_3.class.inc');
+require_once('AbstractNDB_BVL_Instrument_Vineland_3.class.inc');
 
-class NDB_BVL_Instrument_Vineland_3_Proband extends NDB_BVL_Instrument_Vineland_3
+class NDB_BVL_Instrument_Vineland_3_Proband extends AbstractNDB_BVL_Instrument_Vineland_3
 {
     /**
      * {@inheritDoc}

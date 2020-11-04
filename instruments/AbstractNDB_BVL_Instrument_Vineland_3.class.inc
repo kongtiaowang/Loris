@@ -1,6 +1,6 @@
 <?php
 /*
- * This file contains the NDB_BVL_Instrument_Vineland_3
+ * This file contains the AbstractNDB_BVL_Instrument_Vineland_3
  * class
  *
  * PHP Version 7
@@ -12,7 +12,7 @@
  */
 
 /**
- * Creates the form elements for the Vineland_3 instrument
+ * Creates the form elements for the abstract Vineland_3 instrument
  *
  * @category Instrument
  * @package  Neuropsych
@@ -21,7 +21,7 @@
  */
 
 
-abstract class NDB_BVL_Instrument_Vineland_3 extends NDB_BVL_Instrument
+abstract class AbstractNDB_BVL_Instrument_Vineland_3 extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
 
