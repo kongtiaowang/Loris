@@ -8,7 +8,7 @@ VERSION: .
 	tools/gen-version.sh
 
 phpdev:
-	composer install
+	composer self-update 1.10.17
 
 javascript:
 	npm install
