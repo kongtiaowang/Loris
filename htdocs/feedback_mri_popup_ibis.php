@@ -39,7 +39,7 @@ if ($user->hasPermission('imaging_browser_qc')) {
 
 $group = GROUP_LORIS_DEFAULT;
 $data_set_ibis_1_2 = ['IBIS1', 'IBIS2']; // VSA visit only
-$data_set_ibis_ep_ds = ['IBIS EP', 'Down Syndrome Infant'];
+$data_set_ibis_ep_ds = ['IBIS EP', 'Down Syndrome Infant', 'Down Syndrome SA'];
 if (isset($_REQUEST['sessionID'])) {
 
     $sessionID = $_REQUEST['sessionID'];
