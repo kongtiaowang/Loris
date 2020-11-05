@@ -223,8 +223,11 @@ class NDB_BVL_Instrument_TSI_FU_EP_Infant extends NDB_BVL_Instrument
 
         $this->form->addElement('static', null, "<h4>Household income change since last visit?</h4>");
 
-        $this->addSelect("household_ses_mother_or_combined", "Household SES Mother or combined", self::HOUSEHOLD_SES_OPTIONS);
-        $this->addSelect("household_ses_father_if_2_households", "Household SES Father if 2 households", self::HOUSEHOLD_SES_OPTIONS);
+        $this->addSelect("household_ses_mother_or_combined", "Household SES Mother or combined", self::HOUSEHOLD_SES_OPTIONS, ['disabled' => 'disabled']);
+        $this->addSelect("household_ses_father_if_2_households", "Household SES Father if 2 households", self::HOUSEHOLD_SES_OPTIONS, ['disabled' => 'disabled']);
+
+        $this->XINRegisterRule("household_ses_mother_or_combined", array("household_ses_father_if_2_households{@}=={@}null"), 'Required');
+        $this->XINRegisterRule("household_ses_father_if_2_households", array("household_ses_mother_or_combined{@}=={@}null"), 'Required');
 
         $this->form->addElement('static', null, null);
 
