@@ -176,10 +176,20 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * @return object|null the new object of $instrument type
      * @access public
      */
+//--------------------------------------------------------------------//
+// IBIS overrides the signature for this function and allows for a    //
+// null $page. This is to circumvent the fact that class              //
+// NDB_BVL_InstrumentStatus_ControlPanel can call the factory method  //
+// and pass it a null $page, which would throw a PHP fatal error.     //
+// The signature should be reverted to the one found in the standard  //
+// LORIS code base as soon as IBIS uses a version of LORIS >= 22.0    //
+// (version where the code in NDB_BVL_InstrumentStatus_ControlPanel   //
+// was fixed).                                                        //
+//--------------------------------------------------------------------//
     static function factory(
         string $instrument,
         string $commentID = '',
-        string $page='',
+        ?string $page='',
         bool $guarantee_exists = true
     ) {
         $class = "NDB_BVL_Instrument_$instrument";
