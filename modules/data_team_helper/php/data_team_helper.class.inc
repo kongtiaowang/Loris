@@ -495,22 +495,17 @@ class Data_Team_Helper extends \NDB_Form
         }
         
         global $DB;
-        # IBIS specific change: Join appointment table on session ID & behavioral appointment type and 
-        # only consider instrument to be incomplete if the start date according to the schedule module
-        # has passed.
         $query = "SELECT DISTINCT s.ID, s.visit_label, c.PSCID,s.candid,".
                  " f.SessionID, f.test_name,f.data_entry,f.commentid,".
                  " t.Full_name FROM session s".
                  " JOIN flag f ON (f.sessionid = s.id) JOIN candidate c".
                  " ON (c.candid = s.candid)".
                  " JOIN test_names t ON (t.Test_name = f.Test_name)".
-                 " JOIN psc ON (s.CenterID = psc.CenterID)".
-                 " JOIN appointment a on (a.SessionID = s.id AND a.AppointmentTypeID = 3)";
+                 " JOIN psc ON (s.CenterID = psc.CenterID)";
 
         $where = " WHERE s.Active = 'Y' AND c.Active = 'Y'".
                    " AND coalesce(f.data_entry,'In Progress') = 'In Progress'".
-                   " AND psc.Centerid!= '1' AND c.Entity_type != 'Scanner'".
-                   " AND CURDATE() >= a.StartsAt";
+                   " AND psc.Centerid!= '1' AND c.Entity_type != 'Scanner'";
 
         if (count($ddeInstruments) > 0) {
             $ddeInstruments = implode(",", $ddeInstruments);
