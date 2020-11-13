@@ -136,23 +136,13 @@ class NDB_BVL_Instrument_macarthur_words_gestures_survey extends NDB_BVL_Instrum
 
             $this->form->addElement("header",null,"<b>FIRST SIGNS OF UNDERSTANDING SCORES </b>");
 
-           // $group[]= $this->form->createElement("static", "raw_response", null, null);
-            $group[]= $this->form->createElement("static", "percentile", null, null);
-            $this->form->addGroup($group, null, null, $this->_GUIDelimiter, false);
-            unset($group);
 
-            $group[]= $this->form->createElement("static", '', null, null);
-            $this->form->addGroup($group, 'I_A_1_score_group', "Responds when name is called:", $this->_GUIDelimiter, false);
-            unset($group);
 
-            $group[]= $this->form->createElement("static", '', null, null);
-            $this->form->addGroup($group, 'I_A_2_score_group', "Responds to 'no no':", $this->_GUIDelimiter, false);
-            unset($group);
 
-            $group[]= $this->form->createElement("static", '', null, null);
-            $this->form->addGroup($group, 'I_A_3_score_group', "Responds to 'there's mommy/daddy':", $this->_GUIDelimiter, false);
-            unset($group);
-
+        $group[]= $this->form->createElement("static", "raw_response", null, null);
+        $group[]= $this->form->createElement("static", "percentile", null, null);
+        $this->form->addGroup($group, 'header1_score_group', null, $this->_GUIDelimiter, false);
+        unset($group);
 
             $group[]= $this->form->createElement("static", 'phrases_understood_number', null, null);
             $group[]= $this->form->createElement("static", 'phrases_understood_percentile', null, null);
@@ -173,6 +163,10 @@ class NDB_BVL_Instrument_macarthur_words_gestures_survey extends NDB_BVL_Instrum
 
 
             $this->form->addElement("header",null,"<b>VOCABULARY CHECKLIST SCORES:</b>");
+        $group[]= $this->form->createElement("static", "raw_response", null, null);
+        $group[]= $this->form->createElement("static", "percentile", null, null);
+        $this->form->addGroup($group, 'header2_score_group', null, $this->_GUIDelimiter, false);
+        unset($group);
 
             $group[]= $this->form->createElement("static", 'words_understood_number', null, null);
             $group[]= $this->form->createElement("static", 'words_understood_percentile', null, null);
@@ -187,7 +181,10 @@ class NDB_BVL_Instrument_macarthur_words_gestures_survey extends NDB_BVL_Instrum
 
 
             $this->form->addElement("header",null,"PART 2: ACTIONS AND GESTURES - SCORES");
-
+        $group[]= $this->form->createElement("static", "raw_response", null, null);
+        $group[]= $this->form->createElement("static", "percentile", null, null);
+        $this->form->addGroup($group, 'header3_score_group', null, $this->_GUIDelimiter, false);
+        unset($group);
 
 
             $group[]= $this->form->createElement("static", 'early_gestures_number', null, null);
@@ -229,7 +226,7 @@ class NDB_BVL_Instrument_macarthur_words_gestures_survey extends NDB_BVL_Instrum
             }
         }
     }
-
+//1b max score
     function CalculatePercentile($scale, $age_months, $gender, &$scores) {
         $db = Database::singleton();
         $scale_number = $scale . "_number";
@@ -242,22 +239,35 @@ class NDB_BVL_Instrument_macarthur_words_gestures_survey extends NDB_BVL_Instrum
 
         if ($PercentileScore == NULL) {
             $score_holder = $scores[$scale_number];
-            $query_scores1a = "SELECT * FROM macarthur_lookup WHERE age_months=$age_months AND sex='$gender' AND subscale='$scale_number' AND score_raw>$score_holder ORDER BY score_raw ASC";
-            $record_1a= $db->pselectRow($query_scores1a, array());
+            //get min score
+            $query_scores1a = "SELECT * FROM macarthur_lookup WHERE age_months=$age_months AND sex='$gender' 
+AND subscale='$scale_number' AND score_raw>$score_holder ORDER BY score_raw ASC limit 1";
+            $record_1a= $db->pselect($query_scores1a, array());
             if(empty($record_1a)) {
-                $db->pselectRow("SELECT * from macarthur_lookup WHERE age_months=$age_months AND sex='$gender'     AND subscale='$scale_number' ORDER BY score_raw ASC", array());
+                $db->pselectRow("SELECT * from macarthur_lookup WHERE age_months=$age_months AND sex='$gender' 
+    AND subscale='$scale_number' ORDER BY score_raw ASC limit 1", array());
             }
 
-            $query_scores1b = "SELECT * FROM macarthur_lookup WHERE age_months=".$age_months. " AND sex='$gender' AND subscale='$scale_number' AND score_raw<$score_holder ORDER BY score_raw DESC";
-            $record_1b = $db->pselectRow($query_scores1b, array());
+            $query_scores1b = "SELECT * FROM macarthur_lookup WHERE age_months=".$age_months. " AND sex='$gender'
+             AND subscale='$scale_number' AND score_raw>$score_holder ORDER BY score_raw DESC limit 1";
+
+            $record_1b = $db->pselect($query_scores1b, array());
 
             //print "scale: $scale_number score: " . $scores[$scale_number] . " x< " . $record_1b['score_raw'] . " x> " . $record_1a['score_raw'] . " Y> " . $record_1b['score_percentile'] . " Y< " . $record_1b['score_percentile'] . '<br />';
-            $percentile_calculation1 = (
-                    ($scores[$scale_number]-$record_1b['score_raw'])/
-                    ($record_1a['score_raw']-$record_1b['score_raw'])
-                    )*($record_1a['score_percentile']-$record_1b['score_percentile'])+$record_1b['score_percentile'];
+ $max_score=$record_1b[0]['score_raw'];
 
-            $scores[$scale_percentile]=round($percentile_calculation1);
+$max_percentile=$record_1b[0]['score_percentile'];
+
+$min_score=$record_1a[0]['score_raw'];
+
+$min_percetile=$record_1a[0]['score_percentile'];
+
+
+            $percentile_calculation1= $scores[$scale_number]-$max_score/($min_score-$max_score)
+                *($min_percetile-$max_percentile) + $max_percentile;
+
+
+            $scores[$scale_percentile]=abs(round($percentile_calculation1));
 
         }
         if($scores[$scale_percentile] > 99) {
@@ -283,7 +293,7 @@ class NDB_BVL_Instrument_macarthur_words_gestures_survey extends NDB_BVL_Instrum
         $query_gender = "SELECT Sex FROM candidate as c, session as s, flag as f, $this->table as t WHERE t.CommentID = '$this->commentID' 
 AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $record_gender = $db->pselectRow($query_gender, array());
-        $gender=strtolower($record_gender['Gender']);
+        $gender=strtolower($record_gender['Sex']);
 
         // Get the subject age in months for scoring
         $timepoint = TimePoint::singleton($this->getSessionID());
@@ -299,7 +309,7 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $phrases_number = 0;
         $qNum = 1;
         foreach($questionArray as $label) {
-            if($record["I_B_" . $qNum] == "understands"){
+            if($record["I_B_" . $qNum] == "1"){
                 $phrases_number++;
             }
             $qNum++;

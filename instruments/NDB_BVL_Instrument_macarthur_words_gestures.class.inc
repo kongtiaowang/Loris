@@ -296,22 +296,25 @@ class NDB_BVL_Instrument_macarthur_words_gestures extends NDB_BVL_Instrument
 
         if ($PercentileScore == NULL) {
             $score_holder = $scores[$scale_number];
-            $query_scores1a = "SELECT * FROM macarthur_lookup WHERE age_months=$age_months AND sex='$gender' AND subscale='$scale_number' AND score_raw>$score_holder ORDER BY score_raw ASC";
-            $record_1a= $db->pselectRow($query_scores1a, array());
+            $query_scores1a = "SELECT * FROM macarthur_lookup WHERE age_months=$age_months AND sex='$gender' 
+AND subscale='$scale_number' AND score_raw>$score_holder ORDER BY score_raw ASC limit 1";
+            $record_1a= $db->pselect($query_scores1a, array());
             if(empty($record_1a)) {
-                $db->pselectRow("SELECT * from macarthur_lookup WHERE age_months=$age_months AND sex='$gender'     AND subscale='$scale_number' ORDER BY score_raw ASC", array());
+                $db->pselect("SELECT * from macarthur_lookup WHERE age_months=$age_months AND sex='$gender'     
+AND subscale='$scale_number' ORDER BY score_raw ASC limit 1", array());
             }
 
-            $query_scores1b = "SELECT * FROM macarthur_lookup WHERE age_months=".$age_months. " AND sex='$gender' AND subscale='$scale_number' AND score_raw<$score_holder ORDER BY score_raw DESC";
-            $record_1b = $db->pselectRow($query_scores1b, array());
+            $query_scores1b = "SELECT * FROM macarthur_lookup WHERE age_months=".$age_months. " AND sex='$gender' 
+            AND subscale='$scale_number' AND score_raw>$score_holder ORDER BY score_raw DESC limit 1";
+            $record_1b = $db->pselect($query_scores1b, array());
 
             //print "scale: $scale_number score: " . $scores[$scale_number] . " x< " . $record_1b['score_raw'] . " x> " . $record_1a['score_raw'] . " Y> " . $record_1b['score_percentile'] . " Y< " . $record_1b['score_percentile'] . '<br />';
             $percentile_calculation1 = (
-                    ($scores[$scale_number]-$record_1b['score_raw'])/
-                    ($record_1a['score_raw']-$record_1b['score_raw'])
-                    )*($record_1a['score_percentile']-$record_1b['score_percentile'])+$record_1b['score_percentile'];
+                    ($scores[$scale_number]-$record_1b[0]['score_raw'])/
+                    ($record_1a[0]['score_raw']-$record_1b[0]['score_raw'])
+                    )*($record_1a[0]['score_percentile']-$record_1b[0]['score_percentile'])+$record_1b[0]['score_percentile'];
 
-            $scores[$scale_percentile]=round($percentile_calculation1);
+            $scores[$scale_percentile]=abs(round($percentile_calculation1));
 
         }
         if($scores[$scale_percentile] > 99) {
@@ -337,7 +340,7 @@ class NDB_BVL_Instrument_macarthur_words_gestures extends NDB_BVL_Instrument
         $query_gender = "SELECT Sex FROM candidate as c, session as s, flag as f, $this->table as t WHERE t.CommentID = '$this->commentID' 
 AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $record_gender = $db->pselectRow($query_gender, array());
-        $gender=strtolower($record_gender['Gender']);
+        $gender=strtolower($record_gender['Sex']);
 
         // Get the subject age in months for scoring
         $timepoint = TimePoint::singleton($this->getSessionID());
