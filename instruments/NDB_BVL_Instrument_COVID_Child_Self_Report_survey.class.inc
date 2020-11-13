@@ -603,6 +603,8 @@ class NDB_BVL_Instrument_COVID_Child_Self_Report_survey extends NDB_BVL_Instrume
         $this->addSelect("B_q7_indicate_covid_19_positive_or_negative_impact_on_your_life", "7. Please indicate the extent to which you view the COVID-19 outbreak as having either a positive or negative impact on your life.", $q7_options);
 
         $this->addSelect("B_q8_since_covid_19_how_often_happy_satisfied_with_your_life", "8. Since becoming aware of the COVID-19 outbreak, how often have you felt happy and satisfied with your life?", $q8_options);
+
+        $this->form->addFormRule(array(&$this, 'validate_page5'));
     }
 
     /**
@@ -683,6 +685,33 @@ class NDB_BVL_Instrument_COVID_Child_Self_Report_survey extends NDB_BVL_Instrume
 
         if ($values["B_q2a1_has_your_school_offered_meals_during_school_closure"] == "2_no") {
             $this->validate_empty_subquestions($values, ["B_q2a1a_have_you_been_able_to_get_school_provided_meals"], $errors);
+        }
+
+        return $errors;
+    }
+
+    function validate_page5($values)
+    {
+        $errors = [];
+
+        $q6_options = array(
+            "1_meditation_mindfulness_practices",
+            "2_engaging_in_more_family_activities",
+            "3_eating_more_often_including_snacking",
+            "4_increasing_time_reading_or_activities",
+            "5_drinking_alcohol",
+            "6_using_tobacco",
+            "7_using_marijuana",
+            "8_vaping_marijuana",
+            "9_vaping_other_substances",
+            "10_talking_to_healthcare_providers_more_frequently",
+            "11_volunteer_work",
+           );
+
+        if ($values["B_q6_12_i_have_not_done_any_of_these_things_to_cope"] != NULL) {
+            foreach ($q6_options as $q) {
+                $this->validate_empty_subquestions($values, ["B_q6_" . $q], $errors, "Cannot select other options when 'I have not done any of these things to cope with the COVID-19 outbreak' option has been selected.");
+            }
         }
 
         return $errors;
