@@ -249,7 +249,7 @@ AND subscale='$scale_number' AND score_raw>$score_holder ORDER BY score_raw ASC 
             }
 
             $query_scores1b = "SELECT * FROM macarthur_lookup WHERE age_months=".$age_months. " AND sex='$gender'
-             AND subscale='$scale_number' AND score_raw>$score_holder ORDER BY score_raw DESC limit 1";
+             AND subscale='$scale_number' AND score_raw<$score_holder ORDER BY score_raw DESC limit 1";
 
             $record_1b = $db->pselect($query_scores1b, array());
 
@@ -263,8 +263,9 @@ $min_score=$record_1a[0]['score_raw'];
 $min_percetile=$record_1a[0]['score_percentile'];
 
 
-            $percentile_calculation1= $scores[$scale_number]-$max_score/($min_score-$max_score)
-                *($min_percetile-$max_percentile) + $max_percentile;
+
+            $percentile_calculation1= ($scores[$scale_number] - $max_score)/($min_score - $max_score)
+                *($min_percetile - $max_percentile) + $max_percentile;
 
 
             $scores[$scale_percentile]=abs(round($percentile_calculation1));

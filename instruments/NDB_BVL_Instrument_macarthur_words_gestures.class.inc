@@ -305,7 +305,7 @@ AND subscale='$scale_number' ORDER BY score_raw ASC limit 1", array());
             }
 
             $query_scores1b = "SELECT * FROM macarthur_lookup WHERE age_months=".$age_months. " AND sex='$gender' 
-            AND subscale='$scale_number' AND score_raw>$score_holder ORDER BY score_raw DESC limit 1";
+            AND subscale='$scale_number' AND score_raw<$score_holder ORDER BY score_raw DESC limit 1";
             $record_1b = $db->pselect($query_scores1b, array());
 
             //print "scale: $scale_number score: " . $scores[$scale_number] . " x< " . $record_1b['score_raw'] . " x> " . $record_1a['score_raw'] . " Y> " . $record_1b['score_percentile'] . " Y< " . $record_1b['score_percentile'] . '<br />';
