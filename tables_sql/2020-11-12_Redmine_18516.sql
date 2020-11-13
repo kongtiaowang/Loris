@@ -1,1 +1,2 @@
 ALTER TABLE CSHQ ADD `which_cshq_did_you_administer` enum('a_abbreviated','b_long_form') default NULL AFTER `other_relationship_to_child`;
+UPDATE CSHQ SET `which_cshq_did_you_administer` = 'b_long_form' WHERE Data_entry_completion_status = 'Complete';
