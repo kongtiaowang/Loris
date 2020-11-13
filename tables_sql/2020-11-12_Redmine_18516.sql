@@ -1,0 +1,1 @@
+ALTER TABLE CSHQ ADD `which_cshq_did_you_administer` enum('a_abbreviated','b_long_form') default NULL AFTER `other_relationship_to_child`;

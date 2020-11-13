@@ -264,6 +264,15 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
             “No,” or Not applicable (N/A).</h4>"
         );
 
+        $cshq_options = array(
+            "a_abbreviated" => "a) The abbreviated 33 question version (this is not the version recommended to administer)",
+            "b_long_form" => "b) The long form 52 question version (this is the version that is recommended)",
+        );
+
+        $this->addSelect("which_cshq_did_you_administer", "For Study Staff Only: Which CSHQ did you administer?", $cshq_options);
+
+        $this->XINRegisterRule("which_cshq_did_you_administer", array("which_cshq_did_you_administer{@}=={@}NEVER_REQUIRED"), "Not required");
+
         $bedtime_questions        =
             array(
              "goes_to_bed_at_same_time_item1"      => "Child goes to bed at the same time at night.",
