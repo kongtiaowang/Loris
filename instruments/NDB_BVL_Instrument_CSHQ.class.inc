@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * This file contains the NDB_BVL_Instrument_CSHQ
  * class
  *
@@ -37,8 +37,7 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
      * @return void
      * @access public
      */
-
-    function setup(?string $commentID = NULL, ?string $page = NULL): void
+    function setup(?string $commentID = null, ?string $page = null): void
     {
         $this->formType = "XIN";
         $this->form     = new LorisForm('CSHQ_form');
@@ -78,7 +77,7 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
         $this->_setupForm();
     }
 
-    /*
+    /**
      * Method to build the LorisForm object into a paged form
      *
      * @return void
@@ -91,7 +90,8 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
             "/CSHQ(_page[0-9]+)/",
             $this->page,
             $matches
-        )) {
+        )
+        ) {
             call_user_func(array($this, $matches[1]));
         } else {
             $this->_main();
@@ -100,7 +100,7 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
     }
 
     /**
-     * generates the main page of the form.
+     * Generates the main page of the form.
      *
      * @return void
      * @access private
@@ -124,20 +124,20 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
               );
 
         while ($i = current($score_columns)) {
-              $f=key($score_columns);
+            $f       = key($score_columns);
             $group[] = $this->form->createElement('static', "$f", null, null);
-            $this->form->addGroup($group, "{$f}_score_group", "$i:", $this->_GUIDelimiter, FALSE);
+            $this->form->addGroup($group, "{$f}_score_group", "$i:", $this->_GUIDelimiter, false);
             unset($group);
             next($score_columns);
         }
         $opts = array(
-            null              => "",
-            "mother"             => "Mother",
-            "father"             => "Father",
-            "step_mother"        => "Step Mother",
-            "step_father"        => "Step Father",
-            "other"             => "Other",
-        );
+                 null          => "",
+                 "mother"      => "Mother",
+                 "father"      => "Father",
+                 "step_mother" => "Step Mother",
+                 "step_father" => "Step Father",
+                 "other"       => "Other",
+                );
         $this->addSelect("relationship_to_child", "What is your relationship to the child?", $opts);
         $this->addBasicText("other_relationship_to_child", $this->indent."If Other, please describe:");
         $this->XINRegisterRule(
@@ -226,29 +226,28 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
 
     function _page1()
     {
-        $answer_choices  =
-            array(
-             null => "",
-             3    => "Usually (5-7)",
-             2    => "Sometimes (2-4)",
-             1    => "Rarely (0-1)",
-            );
-        $answer_choices_na  =
-            array(
-                null => "",
-                3    => "Usually (5-7)",
-                2    => "Sometimes (2-4)",
-                1    => "Rarely (0-1)",
-                'na' => "Not Applicable"
-            );
-        $problem_choices =
-            array(
-             null  => "",
-             1     => "Yes",
-             0     => "No",
-             "n/a" => "N/A",
-            );
+        $answer_choices    = array(
+                              null => "",
+                              3    => "Usually (5-7)",
+                              2    => "Sometimes (2-4)",
+                              1    => "Rarely (0-1)",
+                             );
+        $answer_choices_na = array(
+                              null => "",
+                              3    => "Usually (5-7)",
+                              2    => "Sometimes (2-4)",
+                              1    => "Rarely (0-1)",
+                              'na' => "Not Applicable",
+                             );
+        $problem_choices   = array(
+                              null  => "",
+                              1     => "Yes",
+                              0     => "No",
+                              "n/a" => "N/A",
+                             );
+
         $this->addHeader("Child's Sleep Habit (Preschool and School-Aged)");
+
         $this->addHeader(
             "<h4>The following statements are about your child’s sleep
             habits and possible difficulties with sleep. Think about the
@@ -264,48 +263,57 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
             “No,” or Not applicable (N/A).</h4>"
         );
 
-        $bedtime_questions        =
-            array(
-             "goes_to_bed_at_same_time_item1"      => "Child goes to bed at the same time at night.",
-             "falls_asleep_in_20_min_item2"        => "Child falls asleep within 20 minutes after going to bed.",
-             "falls_asleep_in_own_bed_item3"       => "Child falls asleep in own bed.",
-             "falls_asleep_in_others_bed_item4"    => "Child falls asleep in parent's or sibling's bed",
-             "falls_asleep_with_movement"          => "Child falls asleep with rocking or rhythmic movements.",
-             "falls_asleep_with_object"            => "Child needs special object to fall asleep (dolls, special blanket, etc.)",
-             "needs_parent_in_room_to_sleep_item5" => "Child needs parent in the room to fall asleep.",
-             "ready_to_go_to_bed"                  => "Child is ready to go to bed at bedtime.",
-             "resists_going_to_bed"                => "Child resists going to bed at bedtime.",
-             "struggles_at_bedtime_item6"          => "Child struggles at bedtime (cries, refuses to stay in bed, etc.)",
-             "afraid_of_sleeping_in_dark_item7"    => "Child is afraid of sleeping in the dark.",
-             "afraid_of_sleeping_alone_item8"      => "Child is afraid of sleep alone.",
-            );
-        $sleep_behavior_questions =
-            array(
-             "sleeps_too_little_item9"             => "Child sleeps too little.",
-             "sleeps_too_much"                     => "Child sleeps too much",
-             "sleeps_right_amount_item10"          => "Child sleeps the right amount",
-             "sleeps_same_amount_each_day_item11"  => "Child sleeps about the same amount each day.",
-             "wets_bed_at_night_item12"            => "Child wets the bed at night.",
-             "talks_during_sleep_item13"           => "Child talks during sleep.",
-             "restless_and_moves_alot_item14"      => "Child is restless and moves a lot during sleep.",
-             "sleepwalks_item15"                   => "Child sleepwalks during the night.",
-             "moves_to_others_bed_at_night_item16" => "Child moves to someone else's bed during the night (parent, brother, sister, etc.)",
-             "reports_pain_during_sleep"           => "Child reports pain during sleep.",
-             "grinds_teeth_during_sleep_item17"    => "Child grinds teeth during sleep (your dentist may have told you this).",
-             "snores_loudly_item18"                => "Child snores loudly.",
-             "stops_breathing_item19"              => "Child seems to stop breathing during sleep.",
-             "snorts_and_gasps_item20"             => "Child snorts and/or gasps during sleep.",
-             "trouble_sleeping_away_item21"        => "Child has trouble sleeping away from home (visiting relatives, vacation).",
-             "complains_about_sleeping_problems"   => "Child complains about problems sleeping.",
-             "awakens_screaming_sweating_item22"   => "Child awakens during night screaming, sweating, and inconsolable.",
-             "alarmed_by_scary_dream_item23"       => "Child awakens alarmed by a frightening dream.",
-            );
+        $cshq_options = array(
+                         "a_abbreviated" => "a) The abbreviated 33 question version (this is not the version recommended to administer)",
+                         "b_long_form"   => "b) The long form 52 question version (this is the version that is recommended)",
+                        );
+
+        $this->addSelect("which_cshq_did_you_administer", "For Study Staff Only: Which CSHQ did you administer?", $cshq_options);
+
+        $this->XINRegisterRule("which_cshq_did_you_administer", array("which_cshq_did_you_administer{@}=={@}NEVER_REQUIRED"), "Not required");
+
+        $bedtime_questions        = array(
+                                     "goes_to_bed_at_same_time_item1"      => "Child goes to bed at the same time at night.",
+                                     "falls_asleep_in_20_min_item2"        => "Child falls asleep within 20 minutes after going to bed.",
+                                     "falls_asleep_in_own_bed_item3"       => "Child falls asleep in own bed.",
+                                     "falls_asleep_in_others_bed_item4"    => "Child falls asleep in parent's or sibling's bed",
+                                     "falls_asleep_with_movement"          => "Child falls asleep with rocking or rhythmic movements.",
+                                     "falls_asleep_with_object"            => "Child needs special object to fall asleep (dolls, special blanket, etc.)",
+                                     "needs_parent_in_room_to_sleep_item5" => "Child needs parent in the room to fall asleep.",
+                                     "ready_to_go_to_bed"                  => "Child is ready to go to bed at bedtime.",
+                                     "resists_going_to_bed"                => "Child resists going to bed at bedtime.",
+                                     "struggles_at_bedtime_item6"          => "Child struggles at bedtime (cries, refuses to stay in bed, etc.)",
+                                     "afraid_of_sleeping_in_dark_item7"    => "Child is afraid of sleeping in the dark.",
+                                     "afraid_of_sleeping_alone_item8"      => "Child is afraid of sleep alone.",
+                                    );
+        $sleep_behavior_questions = array(
+                                     "sleeps_too_little_item9"             => "Child sleeps too little.",
+                                     "sleeps_too_much"                     => "Child sleeps too much",
+                                     "sleeps_right_amount_item10"          => "Child sleeps the right amount",
+                                     "sleeps_same_amount_each_day_item11"  => "Child sleeps about the same amount each day.",
+                                     "wets_bed_at_night_item12"            => "Child wets the bed at night.",
+                                     "talks_during_sleep_item13"           => "Child talks during sleep.",
+                                     "restless_and_moves_alot_item14"      => "Child is restless and moves a lot during sleep.",
+                                     "sleepwalks_item15"                   => "Child sleepwalks during the night.",
+                                     "moves_to_others_bed_at_night_item16" => "Child moves to someone else's bed during the night (parent, brother, sister, etc.)",
+                                     "reports_pain_during_sleep"           => "Child reports pain during sleep.",
+                                     "grinds_teeth_during_sleep_item17"    => "Child grinds teeth during sleep (your dentist may have told you this).",
+                                     "snores_loudly_item18"                => "Child snores loudly.",
+                                     "stops_breathing_item19"              => "Child seems to stop breathing during sleep.",
+                                     "snorts_and_gasps_item20"             => "Child snorts and/or gasps during sleep.",
+                                     "trouble_sleeping_away_item21"        => "Child has trouble sleeping away from home (visiting relatives, vacation).",
+                                     "complains_about_sleeping_problems"   => "Child complains about problems sleeping.",
+                                     "awakens_screaming_sweating_item22"   => "Child awakens during night screaming, sweating, and inconsolable.",
+                                     "alarmed_by_scary_dream_item23"       => "Child awakens alarmed by a frightening dream.",
+                                    );
 
         $this->addHeader("<h4><b><u>Bedtime</u></b></h4>");
         $this->addHourMinElement('bed_time', 'Write in the child\'s bedtime:');
 
         $this->_displayHeaders("bedtime");
-        $a=0;
+
+        $a = 0;
+
         foreach ($bedtime_questions as $question => $label) {
             $a++;
             $group[] = &$this->createLabel($label);
@@ -349,18 +357,19 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
         );
 
         $this->_displayHeadersSleepBehaviors("sleep_behavior");
-        $b=0;
+
+        $b = 0;
+
         foreach ($sleep_behavior_questions as $question => $label) {
             $b++;
             $group[] = &$this->createLabel($label);
-            if($question=='sleeps_same_amount_each_day_item11') {
+            if ($question=='sleeps_same_amount_each_day_item11') {
                 $group[] = &$this->createSelect(
-                $question . "_frequency",
-                "",
-                $answer_choices_na
-            );
-            }
-            else {
+                    $question . "_frequency",
+                    "",
+                    $answer_choices_na
+                );
+            } else {
                 $group[] = &$this->createSelect(
                     $question . "_frequency",
                     "",
@@ -411,62 +420,59 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
                 );
             }
         }
+
         $this->form->addFormRule(array(&$this, 'validate_page1'));
     }
 
     function _page2()
     {
-        $answer_choices  =
-            array(
-             null => "",
-             3    => "Usually (5-7)",
-             2    => "Sometimes (2-4)",
-             1    => "Rarely (0-1)",
-            );
-        $problem_choices =
-            array(
-             null  => "",
-             1     => "Yes",
-             0     => "No",
-             "n/a" => "N/A",
-            );
+        $answer_choices  = array(
+                            null => "",
+                            3    => "Usually (5-7)",
+                            2    => "Sometimes (2-4)",
+                            1    => "Rarely (0-1)",
+                           );
+        $problem_choices = array(
+                            null  => "",
+                            1     => "Yes",
+                            0     => "No",
+                            "n/a" => "N/A",
+                           );
 
-        $sleepy_choices =
-            array(
-             null => "",
-             "1"  => "Not sleepy",
-             "2"  => "Very Sleepy",
-             "3"  => "Falls Asleep",
-            );
+        $sleepy_choices = array(
+                           null => "",
+                           "1"  => "Not sleepy",
+                           "2"  => "Very Sleepy",
+                           "3"  => "Falls Asleep",
+                          );
+
         $this->addHeader("Child's Sleep Habit (Preschool and School-Aged)");
-        $waking_during_night_questions =
-            array(
-             "awakes_once_item24"            => "Child awakes once during the night.",
-             "awakes_more_than_once_item25"  => "Child awakes more than once during the night.",
-             "returns_to_sleep_without_help" => "Child returns to sleep without help after waking.",
-                //"length_waking" => "Write the number of minutes a night waking usually lasts:"
-            );
-        $morning_waking_questions     =
-            array(
-             "wakes_by_himself_item26"             => "Child wakes up by him/herself.",
-             "wakes_up_with_alarm_clock"                => "Child wakes up with alarm clock.",
-             "wakes_up_in_neg_mood_item27"         => "Child wakes up in negative mood.",
-             "others_wake_child_item28"            => "Adults or siblings wake up child.",
-             "hard_time_getting_out_of_bed_item29" => "Child has difficulty getting out of bed in the morning",
-             "takes_long_time_to_be_alert_item30"  => "Child takes a long time to become alert in the morning.",
-             "wakes_up_early"                      => "Child wakes up very early in the morning.",
-             "good_appetite_in_morning"            => "Child has a good appetite in the morning.",
-            );
-        $daytime_sleepiness_questions =
-            array(
-             "naps_during_day"       => "Child naps during the day.",
-             "suddenly_falls_asleep" => "Child suddenly falls asleep in the middle of active behavior.",
-             "seems_tired_item31"    => "Child seems tired.",
-            );
+
+        $waking_during_night_questions = array(
+                                          "awakes_once_item24"            => "Child awakes once during the night.",
+                                          "awakes_more_than_once_item25"  => "Child awakes more than once during the night.",
+                                          "returns_to_sleep_without_help" => "Child returns to sleep without help after waking.",
+                                          //"length_waking" => "Write the number of minutes a night waking usually lasts:"
+                                         );
+        $morning_waking_questions     = array(
+                                         "wakes_by_himself_item26"             => "Child wakes up by him/herself.",
+                                         "wakes_up_with_alarm_clock"           => "Child wakes up with alarm clock.",
+                                         "wakes_up_in_neg_mood_item27"         => "Child wakes up in negative mood.",
+                                         "others_wake_child_item28"            => "Adults or siblings wake up child.",
+                                         "hard_time_getting_out_of_bed_item29" => "Child has difficulty getting out of bed in the morning",
+                                         "takes_long_time_to_be_alert_item30"  => "Child takes a long time to become alert in the morning.",
+                                         "wakes_up_early"                      => "Child wakes up very early in the morning.",
+                                         "good_appetite_in_morning"            => "Child has a good appetite in the morning.",
+                                        );
+        $daytime_sleepiness_questions = array(
+                                         "naps_during_day"       => "Child naps during the day.",
+                                         "suddenly_falls_asleep" => "Child suddenly falls asleep in the middle of active behavior.",
+                                         "seems_tired_item31"    => "Child seems tired.",
+                                        );
 
         $this->addHeader("<h4><b><u>Waking During the Night</u></b></h4>");
         $this->_displayHeaders("waking_during_night");
-        $a=0;
+        $a =0;
         foreach ($waking_during_night_questions as $question => $label) {
             $a++;
             $group[] = &$this->createLabel($label);
@@ -516,9 +522,8 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
             true
         );
 
-
         $this->_displayHeaders("morning_waking");
-        $b=0;
+        $b =0;
         foreach ($morning_waking_questions as $question => $label) {
             $b++;
             $group[] = $this->createLabel($label);
@@ -555,7 +560,7 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
         }
 
         $this->addHeader("<h4><b><u>Daytime Sleepiness</u></b></h4>");
-        $c=0;
+        $c =0;
         $this->_displayHeaders("daytime_sleepiness");
         foreach ($daytime_sleepiness_questions as $question => $label) {
             $c++;
@@ -597,13 +602,12 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
             "<h4>During the past week, your child has appeared very sleepy or fallen asleep" .
             " during the following (check all that apply):</h4>"
         );
-        $sleepy_questions =
-            array(
-             "play_alone"           => "Play alone",
-             "watching_tv_item32"   => "Watching TV",
-             "riding_in_car_item33" => "Riding in car",
-             "eating_meals"         => "Eating meals",
-            );
+        $sleepy_questions = array(
+                             "play_alone"           => "Play alone",
+                             "watching_tv_item32"   => "Watching TV",
+                             "riding_in_car_item33" => "Riding in car",
+                             "eating_meals"         => "Eating meals",
+                            );
 
         foreach ($sleepy_questions as $sq => $label) {
             $this->addSelect($sq, $label, $sleepy_choices);
@@ -613,30 +617,29 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
 
     }
 
-
     function displayHourMinElementCustom($field, $label, $field_label)
     {
         for ($i = 0; $i < 24; $i ++) {
-            $hours_options["$i"]="$i hour(s)";
+            $hours_options["$i"] = "$i hour(s)";
         }
         for ($i = 0; $i < 60; $i += 5) {
-            $min_options["$i"]="$i minute(s)";
+            $min_options["$i"] = "$i minute(s)";
         }
-        $min_options['59']="59 minute(s)";
+        $min_options['59'] = "59 minute(s)";
 
-        $default_val = array(null => '');
-        $hours_options=array_merge($default_val,$hours_options);
-        $min_options=array_merge($default_val,$min_options);
-        $group   = array();
-        $group[] = $this->createSelect($field."_hours", $field_label.' hours', $hours_options);
-        $group[] = $this->createSelect($field."_mins", $field_label.' minutes', $min_options);
-        $group[] = $this->createSelect(
+        $default_val   = array(null => '');
+        $hours_options = array_merge($default_val, $hours_options);
+        $min_options   = array_merge($default_val, $min_options);
+        $group         = array();
+        $group[]       = $this->createSelect($field."_hours", $field_label.' hours', $hours_options);
+        $group[]       = $this->createSelect($field."_mins", $field_label.' minutes', $min_options);
+        $group[]       = $this->createSelect(
             $field."_status",
             $field_label . ' status',
             array(
-                null           => '',
-                "dnk"          => "Unknown",
-                'not_answered' => 'Prefer not to answer',
+             null           => '',
+             "dnk"          => "Unknown",
+             'not_answered' => 'Prefer not to answer',
             )
         );
 
@@ -644,25 +647,33 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
         unset($group);
         $this->XINRegisterRule(
             $field . "_status",
-            array("{$field}_hours{@}=={@}","{$field}_mins{@}=={@}"),
+            array(
+             "{$field}_hours{@}=={@}",
+             "{$field}_mins{@}=={@}",
+            ),
             "Please select one of the option if you don't want to enter the time details."
         );
         $this->XINRegisterRule(
             $field . "_hours",
-            array("{$field}_status{@}=={@}","{$field}_mins{@}!={@}"),
+            array(
+             "{$field}_status{@}=={@}",
+             "{$field}_mins{@}!={@}",
+            ),
             "Hours Required."
         );
         $this->XINRegisterRule(
             $field . "_mins",
-            array("{$field}_status{@}=={@}","{$field}_hours{@}!={@}"),
+            array(
+             "{$field}_status{@}=={@}",
+             "{$field}_hours{@}!={@}",
+            ),
             "Mins Required."
         );
 
         $this->addLabel('');
     }
 
-    function score(): void
-
+    function score()
     {
         if ($this->_determineDataEntryCompletionStatus() == "Incomplete") {
             return;
@@ -687,85 +698,79 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
             }
         }
 
-        $reverse_items =
-            array(
-             "goes_to_bed_at_same_time_item1_frequency",
-             "falls_asleep_in_20_min_item2_frequency",
-             "falls_asleep_in_own_bed_item3_frequency",
-             "sleeps_right_amount_item10_frequency",
-             "sleeps_same_amount_each_day_item11_frequency",
-             "wakes_by_himself_item26_frequency",
-            );
+        $reverse_items = array(
+                          "goes_to_bed_at_same_time_item1_frequency",
+                          "falls_asleep_in_20_min_item2_frequency",
+                          "falls_asleep_in_own_bed_item3_frequency",
+                          "sleeps_right_amount_item10_frequency",
+                          "sleeps_same_amount_each_day_item11_frequency",
+                          "wakes_by_himself_item26_frequency",
+                         );
 
         // reverse the scoring for (R) questions
         foreach ($abbreviated_questions as $aq) {
             if (in_array($aq, $reverse_items)) {
-                if($record[$aq]==1)
-                {
-                    $record[$aq]=3;
+                if ($record[$aq] == 1) {
+                    $record[$aq] = 3;
+                } else if ($record[$aq] == 3) {
+                    $record[$aq] = 1;
+                } else {
+                    $record[$aq] = $record[$aq];
                 }
-                else if($record[$aq]==3)
-                {
-                $record[$aq]=1;
-            }
-            else{
-                $record[$aq]=$record[$aq];
-            }
             }
         }
 
-        $subscale_questions =
-            array(
-             'bedtime_resistance'         => array(
-                                              "_item1_",
-                                              "_item3_",
-                                              "_item4_",
-                                              "_item5_",
-                                              "_item6_",
-                                              "_item8_",
-                                             ),
-             'sleep_onset_delay'          => array("_item2_"),
-             'sleep_duration'             => array(
-                                              "_item9_",
-                                              "_item10_",
-                                              "_item11_",
-                                             ),
-             'sleep_anxiety'              => array(
-                                              "_item5_",
-                                              "_item7_",
-                                              "_item8_",
-                                              "_item21_",
-                                             ),
-             'night_wakings'              => array(
-                                              "_item16_",
-                                              "_item24_",
-                                              "_item25_",
-                                             ),
-             'parasomnias'                => array(
-                                              "_item12_",
-                                              "_item13_",
-                                              "_item14_",
-                                              "_item15_",
-                                              "_item17_",
-                                              "_item22_",
-                                              "_item23_",
-                                             ),
-             'sleep_disordered_breathing' => array(
-                                              "_item18_",
-                                              "_item19_",
-                                              "_item20_",
-                                             ),
-             'daytime_sleepiness'         => array(
-                                              "_item26_",
-                                              "_item27_",
-                                              "_item28_",
-                                              "_item29_",
-                                              "_item30_",
-                                              "_item31_",
-                                              "_item32",
-                                              "_item33",
-                                             ),
-            );
+        $subscale_questions = array(
+                               'bedtime_resistance'         => array(
+                                                                "_item1_",
+                                                                "_item3_",
+                                                                "_item4_",
+                                                                "_item5_",
+                                                                "_item6_",
+                                                                "_item8_",
+                                                               ),
+                               'sleep_onset_delay'          => array("_item2_"),
+                               'sleep_duration'             => array(
+                                                                "_item9_",
+                                                                "_item10_",
+                                                                "_item11_",
+                                                               ),
+                               'sleep_anxiety'              => array(
+                                                                "_item5_",
+                                                                "_item7_",
+                                                                "_item8_",
+                                                                "_item21_",
+                                                               ),
+                               'night_wakings'              => array(
+                                                                "_item16_",
+                                                                "_item24_",
+                                                                "_item25_",
+                                                               ),
+                               'parasomnias'                => array(
+                                                                "_item12_",
+                                                                "_item13_",
+                                                                "_item14_",
+                                                                "_item15_",
+                                                                "_item17_",
+                                                                "_item22_",
+                                                                "_item23_",
+                                                               ),
+                               'sleep_disordered_breathing' => array(
+                                                                "_item18_",
+                                                                "_item19_",
+                                                                "_item20_",
+                                                               ),
+                               'daytime_sleepiness'         => array(
+                                                                "_item26_",
+                                                                "_item27_",
+                                                                "_item28_",
+                                                                "_item29_",
+                                                                "_item30_",
+                                                                "_item31_",
+                                                                "_item32",
+                                                                "_item33",
+                                                               ),
+                              );
 
         $score['bedtime_resistance'] = 0;
         $score['sleep_onset_delay']  = 0;
@@ -775,8 +780,6 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
         $score['parasomnias']        = 0;
         $score['sleep_disordered_breathing'] = 0;
         $score['daytime_sleepiness']         = 0;
-
-
 
         foreach ($subscale_questions as $subscale => $questions) {
             foreach ($questions as $question) {
@@ -789,25 +792,25 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
             }
         }
 
-
-
         $score['total_score'] = 0;
+
         foreach ($abbreviated_questions as  $aq) {
             $score['total_score'] += $record[$aq];
         }
+
         $result = $db->update($this->table, $score, array("CommentID" => $this->getCommentID()));
     }
 
-    function validate_page1($values) {
+    function validate_page1($values)
+    {
         return $this->customDateCheck($values, ['sleep_behavior_duration']);
     }
 
-    /*
+    /**
      * Validates page 2 of the form using instrument_validator.php
      */
     function validate_page2($values)
     {
-
         if (isset($values['waking_during_night_duration'])) {
             if (is_numeric($values['waking_during_night_duration'])) {
                 if (intval($values['waking_during_night_duration']) > 720 || intval($values['waking_during_night_duration']) < 0) {
@@ -828,8 +831,10 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
         }
     }
 
-    private function customDateCheck($values, $items) {
+    private function customDateCheck($values, $items)
+    {
         $errors = [];
+
         foreach ($items as $key) {
             if (!empty($values[$key. '_status'])) {
                 if (!empty($values[$key. '_hours']) || !empty($values[$key. '_mins'])) {
@@ -837,6 +842,7 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
                 }
             }
         }
+
         return $errors;
     }
 }
