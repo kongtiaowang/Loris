@@ -250,6 +250,8 @@ class NDB_BVL_Instrument_COVID_Child_Self_Report_survey extends NDB_BVL_Instrume
             array("A_q2b_3_travel_to_different_state_or_country{@}=={@}yes"),
             'Required if travelled to a different state or country'
         );
+
+        $this->form->addFormRule(array(&$this, 'validate_page1'));
     }
 
     /**
@@ -665,6 +667,65 @@ class NDB_BVL_Instrument_COVID_Child_Self_Report_survey extends NDB_BVL_Instrume
          return $errors;
     }
 
+    function validate_page1($values)
+    {
+        $errors = [];
+
+        $q2_options = array(
+            "1_fever_or_chills",
+            "2_cough",
+            "3_shortness_of_breath",
+            "4_sore_throat",
+            "5_headache",
+            "6_muscle_or_body_aches",
+            "7_runny_nose",
+            "8_fatigue_or_excessive_sleepiness",
+            "9_diarrhea_nausea_or_vomiting",
+            "10_loss_of_sense_of_smell_or_taste",
+            "11_itchy_red_eyes",
+           );
+
+        $q2a_options = array(
+                    "1_kept_overnight_in_hospital",
+                    "2_saw_healthcare_provider_in_person",
+                    "3_spoke_to_healthcare_provider_by_phone_email_online",
+                    "4_self_isolated_or_quarantined_at_home",
+                    );
+
+        $q2b_options = array(
+                    "1_have_contact_with_someone_tested_positive",
+                    "2_have_contact_with_someone_who_likely_had",
+                    "3_travel_to_different_state_or_country",
+                    );
+
+
+        if ($values["A_q2_12_none_of_the_above"] != NULL && $values["A_q2_12_none_of_the_above"] != "no") {
+            foreach ($q2_options as $q) {
+                if ($values["A_q2_" . $q] != NULL && $values["A_q2_" . $q] != "no") {
+                    $this->validate_empty_subquestions($values, ["A_q2_" . $q], $errors, "Cannot select other options when 'None of the Above' option has been selected.");
+                }
+            }
+        }
+
+        if ($values["A_q2a_5_none_of_the_above"] != NULL && $values["A_q2a_5_none_of_the_above"] != "no") {
+            foreach ($q2a_options as $q) {
+                if ($values["A_q2a_" . $q] != NULL && $values["A_q2a_" . $q] != "no") {
+                    $this->validate_empty_subquestions($values, ["A_q2a_" . $q], $errors, "Cannot select other options when 'None of the Above' option has been selected.");
+                }
+            }
+        }
+
+        if ($values["A_q2b_4_none_of_the_above"] != NULL && $values["A_q2b_4_none_of_the_above"] != "no") {
+            foreach ($q2b_options as $q) {
+                if ($values["A_q2b_" . $q] != NULL && $values["A_q2b_" . $q] != "no") {
+                    $this->validate_empty_subquestions($values, ["A_q2b_" . $q], $errors, "Cannot select other options when 'None of the Above' option has been selected.");
+                }
+            }
+        }
+
+        return $errors;
+    }
+
     function validate_page3($values)
     {
         $errors = [];
@@ -708,9 +769,19 @@ class NDB_BVL_Instrument_COVID_Child_Self_Report_survey extends NDB_BVL_Instrume
             "11_volunteer_work",
            );
 
-        if ($values["B_q6_12_i_have_not_done_any_of_these_things_to_cope"] != NULL) {
+           if ($values["A_q2b_4_none_of_the_above"] != NULL && $values["A_q2b_4_none_of_the_above"] != "no") {
+            foreach ($q2b_options as $q) {
+                if ($values["A_q2b_" . $q] != NULL && $values["A_q2b_" . $q] != "no") {
+                    $this->validate_empty_subquestions($values, ["A_q2b_" . $q], $errors, "Cannot select other options when 'None of the Above' option has been selected.");
+                }
+            }
+        }
+
+        if ($values["B_q6_12_i_have_not_done_any_of_these_things_to_cope"] != NULL && $values["B_q6_12_i_have_not_done_any_of_these_things_to_cope"] != "no") {
             foreach ($q6_options as $q) {
-                $this->validate_empty_subquestions($values, ["B_q6_" . $q], $errors, "Cannot select other options when 'I have not done any of these things to cope with the COVID-19 outbreak' option has been selected.");
+                if ($values["B_q6_" . $q] != NULL && $values["B_q6_" . $q] != "no") {
+                    $this->validate_empty_subquestions($values, ["B_q6_" . $q], $errors, "Cannot select other options when 'I have not done any of these things to cope with the COVID-19 outbreak' option has been selected.");
+                }
             }
         }
 
