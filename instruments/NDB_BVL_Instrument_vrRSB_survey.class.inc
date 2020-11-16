@@ -108,7 +108,6 @@ class NDB_BVL_Instrument_vrRSB_survey extends NDB_BVL_Instrument
     {
         // display test name
         $this->addHeader("Video-Referenced Rating of Reciprocal Social Behavior");
-        $this->_addMetadataFields();
         $opts = array(
             null => "",
             "mother" => "Mother",
@@ -116,6 +115,8 @@ class NDB_BVL_Instrument_vrRSB_survey extends NDB_BVL_Instrument
             "day_care_provider" => "Day care Provider",
             "other" => "Other",
         );
+
+        $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
         $this->addSelect("filling_out_form", "This form filled out by:", $opts);
         $this->addBasicText("other_filling_out_form", $this->indent . "If Other, please describe:");
         $this->XINRegisterRule(
@@ -129,21 +130,45 @@ class NDB_BVL_Instrument_vrRSB_survey extends NDB_BVL_Instrument
     function _page1()
     {
         $this->addHeader("Video-Referenced Rating of Reciprocal Social Behavior");
-        $this->addHeader("<h3>Instructions for Section I:</h3><br>
-                         <h4>You are about to view a brief video segment that shows the social behaviors of a child who has not
-yet begun to talk (other than a few simple words). Then you will complete a series of questions,
-some of which ask you to compare your child’s behavior to the child in the video.<br></h4>");
+        $this->addHeader("<h2>Instructions for Section I:</h2><br>
+                         <h3>You are about to view a brief video segment that shows the social behaviors of a 
+                         child who has not yet begun to talk (other than a few simple words). <br>Then you will complete a series of questions, some of which ask you to compare your child’s behavior to the child in the video.
+<br>Here you will watch a <b><u>3-minute video</u></b> before answering several questions about your child.
+<br>To play the video, press the triangular play icon. You may watch the video as many times as you wish.<br></h3>");
+        $content = <<< 'HTML'
+<video width="420" height="340" controls>
+ <source src='../images/vRRSB_video.mp4' type="video/mp4">
+ Your browser does not support the video tag.
+</video>
+HTML;
+
+        $this->form->addElement('static', 'lorisSubHeader', $content);
+        $this->addHeader("<h2>After watching the video, first <u>review</u> the following questions:</h2>");
 
         $this->addSelect(
             "q0",
-            "I have watched the video for this questionnaire",
+            "<ul><li>Were you able to view the video?</li></ul>",
             array(
                 null => "",
-                0 => "No",
-                1 => "Yes"
+                1 => "Yes",
+                0 => "No"
+
             )
         );
+        $this->addSelect(
+            "q0_hear_video",
+            "<ul><li>Were you able to hear the video?</li></ul>",
+            array(
+                null => "",
+                1 => "Yes",
+                0 => "No"
 
+            )
+        );
+        $this->addHeader("<h3>IF YOU ANSWERED <b>NO</b> TO EITHER OF THESE QUESTIONS PLEASE CONTACT 
+<u><i>ibisnetwork@cidd.unc.edu</i></u></h3>");
+        $this->addHeader("<h3>If you answered <b>YES</b> to both questions above, please proceed to questions 1-13. 
+<br>...<i>In comparison to the child in the video:</i></h3>");
 //As per NDAR Data Dictionary:https://ndar.nih.gov/data_structure.html?short_name=vrrsb01
         $options_1 =
             array(
