@@ -25,8 +25,11 @@ class NDB_BVL_Instrument_survey extends \NDB_BVL_Instrument
     ): void
     {
         if ($rule_message === null) {
-            $rule_message = "You are required to select a status "
-                . "if you want to leave this time blank.";
+            if ($with_status_field === true) {
+                $rule_message = "You are required to select a status if you want to leave this time blank.";
+            } elseif ($with_status_field === false) {
+                $rule_message = "Required.";
+            }
         }
 
         $group[] =& $this->form->createElement(
@@ -64,7 +67,5 @@ class NDB_BVL_Instrument_survey extends \NDB_BVL_Instrument
         $this->addGroup($group, $field . "_group", $label, null, false);
         unset($group);
     }
-
 }
-
 ?>
