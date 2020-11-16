@@ -768,14 +768,6 @@ class NDB_BVL_Instrument_COVID_Child_Self_Report_survey extends NDB_BVL_Instrume
                        "11_volunteer_work",
                       );
 
-        if ($values["A_q2b_4_none_of_the_above"] != null && $values["A_q2b_4_none_of_the_above"] != "no") {
-            foreach ($q2b_options as $q) {
-                if ($values["A_q2b_" . $q] != null && $values["A_q2b_" . $q] != "no") {
-                    $this->validate_empty_subquestions($values, ["A_q2b_" . $q], $errors, "Cannot select other options when 'None of the Above' option has been selected.");
-                }
-            }
-        }
-
         if ($values["B_q6_12_i_have_not_done_any_of_these_things_to_cope"] != null && $values["B_q6_12_i_have_not_done_any_of_these_things_to_cope"] != "no") {
             foreach ($q6_options as $q) {
                 if ($values["B_q6_" . $q] != null && $values["B_q6_" . $q] != "no") {
@@ -787,4 +779,3 @@ class NDB_BVL_Instrument_COVID_Child_Self_Report_survey extends NDB_BVL_Instrume
         return $errors;
     }
 }
-
