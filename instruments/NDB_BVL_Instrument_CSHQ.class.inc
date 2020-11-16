@@ -673,7 +673,7 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
         $this->addLabel('');
     }
 
-    function score()
+    function score(): void
     {
         if ($this->_determineDataEntryCompletionStatus() == "Incomplete") {
             return;
