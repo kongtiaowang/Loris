@@ -165,6 +165,8 @@ class NDB_BVL_Instrument_BSRC_survey extends NDB_BVL_Instrument
 
         $this->form->addElement('static', null, null);
 
+        $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
+
         $this->addBasicDate('child_birth_date', 'CHILD\'S BIRTH DATE', $dateOptions);
 
         $this->addBasicDate('today_date', 'TODAY\'S DATE', $dateOptions);

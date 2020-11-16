@@ -8,6 +8,7 @@ CREATE TABLE `BSRC_survey` (
                             `Testdate` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
                             `Data_entry_completion_status` enum('Incomplete','Complete') NOT NULL default 'Incomplete',
+`Date_taken` date DEFAULT NULL,
 `child_birth_date` date default NULL,
 `today_date` date default NULL,
 `date_last_visit` date default NULL,
