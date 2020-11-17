@@ -120,6 +120,7 @@ class Edit_User extends \NDB_Form
                 }
             }
 
+            $defaults['examiner'] = $defaults['examiner'] ?? [];
             foreach ($defaults['examiner'] as $cid=>$vals) {
                 //sets pending approval info
                 if ($cid=='pending') {
@@ -141,8 +142,9 @@ class Edit_User extends \NDB_Form
 
             // Notification defaults
             // "notif_".$module."_".$operation."_".$service
+            $user_id  = $user->getData("ID") ?? -1;
             $curr_sub = \NDB_Notifier::getUserNotificationModuleServices(
-                $user->getData("ID")
+                $user_id
             );
             foreach ($curr_sub as $module=>$operations) {
                 foreach ($operations as $operation => $services) {
@@ -217,6 +219,7 @@ class Edit_User extends \NDB_Form
             ? array_keys($values['permID']) : [];
         $editorPermissions = $editor->getPermissionIDs() ?? [];
         $permIDs           = [];
+        $passwordExpired   = false;
         // store the permission IDs
         if (!empty($values['permID'])) {
             // An editor can only grant permissions that they have already been
@@ -256,8 +259,8 @@ class Edit_User extends \NDB_Form
         unset($values['NA_UserID']);
         // generate new password
         if (!empty($values['NA_Password'])) {
-            $values['Password_hash']   = \Utility::randomString();
-            $values['Password_expiry'] = '1990-04-01';
+            $values['Password_hash'] = \Utility::randomString();
+            $passwordExpired         = true;
         }
         unset($values['NA_Password']);
         // If editing a user and nothing was specified in the password text field
@@ -493,17 +496,11 @@ class Edit_User extends \NDB_Form
         // and represents a plaintext password, not a hash.
         if (isset($values['Password_hash'])) {
 
-            // Set custom expiry date if the value is present.
-            // Otherwise, use null which will cause the expiry to be 6 months
-            // from the current date.
-            $expiry = isset($values['Password_expiry']) ?
-                new \DateTime($values['Password_expiry'])
-                : null;
             $user->updatePassword(
                 new \Password(
                     htmlspecialchars_decode($values['Password_hash'])
                 ),
-                $expiry
+                $passwordExpired
             );
         }
 
@@ -652,29 +649,27 @@ class Edit_User extends \NDB_Form
                 'UserID_Group',
                 'User name',
                 $this->_GUIDelimiter,
-                false
+                ['required' => true]
             );
             unset($group);
 
         } else {
             // It is an existing user:
-            //     display user name
+            //     display user name and account request date
             $this->addScoreColumn('UserID', 'User name');
+            $this->addScoreColumn('account_request_date', 'Account Request Date');
         }
 
         // password
-        $group   = [];
-        $group[] = $this->createPassword('Password_hash');
-        $group[] = $this->createCheckbox('NA_Password', 'Generate new password');
-        $this->addGroup(
-            $group,
-            'Password_Group',
-            'New Password',
-            $this->_GUIDelimiter,
-            false
-        );
-        $this->addPassword('__Confirm', 'Confirm Password');
-        unset($group);
+        if ($this->isCreatingNewUser()) {
+            $pwd_attribs = ['required' => true];
+        } else {
+            $pwd_attribs = [];
+        }
+
+        $this->addPassword('Password_hash', 'Password', $pwd_attribs);
+        $this->addCheckbox('NA_Password', 'Generate new password', []);
+        $this->addPassword('__Confirm', 'Confirm Password', $pwd_attribs);
 
         // The supplied pattern is:
         //   - must have at least one non-whitespace characters
@@ -739,14 +734,19 @@ class Edit_User extends \NDB_Form
             'Email_Group',
             'Email address',
             $this->_GUIDelimiter,
-            false
+            ['required' => true]
         );
         unset($group);
 
         // Add a confirm email text field only if creating a new user
         // (to make sure that account creation email goes through)
         if ($this->isCreatingNewUser()) {
-            $this->addBasicText('__ConfirmEmail', 'Confirm Email');
+            $this->addBasicText(
+                '__ConfirmEmail',
+                'Confirm Email',
+                [],
+                ['required' => true]
+            );
         }
 
         //------------------------------------------------------------
@@ -774,7 +774,10 @@ class Edit_User extends \NDB_Form
             'CenterIDs',
             'Sites',
             $siteOptions,
-            ['multiple' => 'multiple']
+            [
+                'multiple' => 'multiple',
+                'required' => true,
+            ]
         );
 
         // START PROJECT SECTION
@@ -789,7 +792,10 @@ class Edit_User extends \NDB_Form
             'ProjectIDs',
             'Projects',
             $projectOptions,
-            ['multiple' => 'multiple']
+            [
+                'multiple' => 'multiple',
+                'required' => true,
+            ]
         );
         // END PROJECT SECTION
 
@@ -1100,16 +1106,20 @@ class Edit_User extends \NDB_Form
         if ($values['Email'] === $values['Password_hash']
             && $values['Password_hash'] !== ''
         ) {
-            $errors['Password_Group'] = self::PASSWORD_ERROR_IS_EMAIL;
+            $errors['Password'] = self::PASSWORD_ERROR_IS_EMAIL;
         }
 
         // Make sure the user is not using their username as their password.
-        if ((isset($values['UserID'])
+        // case 1 - New user and Make user name match email address not checked
+        // case 2 - New user and Make user name match email address checked
+        //          already handled in email/password check
+        // case 3 - Edit user
+        if ((isset($values['UserID']) && !isset($values['NA_UserID'])
             && $values['UserID'] === $values['Password_hash'])
             || (!empty($this->identifier)
             && $this->identifier === $values['Password_hash'])
         ) {
-            $errors['Password_Group'] = self::PASSWORD_ERROR_IS_USER;
+            $errors['Password'] = self::PASSWORD_ERROR_IS_USER;
         }
 
         if (!is_null($this->identifier)) {
@@ -1119,21 +1129,21 @@ class Edit_User extends \NDB_Form
                 ['UID' => $this->identifier]
             );
 
-            //case of new user the password column will be null
-            //so either password should be set or
+            // case of new user the password column will be null
+            // so either password should be set or
             // password should be generated
             if (is_null($pass)
                 && empty($values['Password_hash'])
                 && $values['NA_Password'] != 'on'
             ) {
-                $errors['Password_Group']
+                $errors['Password']
                     = 'Please specify password or click Generate new password';
             }
         }
         // Ensure that the password and confirm password fields match.
         // TODO This validation should be done on the front-end instead.
         if ($plaintext !== $values['__Confirm']) {
-            $errors['Password_Group'] = self::PASSWORD_ERROR_NO_MATCH;
+            $errors['Password'] = self::PASSWORD_ERROR_NO_MATCH;
         }
 
         // if password is user-defined, and user wants to change password
@@ -1149,10 +1159,10 @@ class Edit_User extends \NDB_Form
                 $isPasswordDifferent = \User::factory($this->identifier)
                     ->isPasswordDifferent($decoded);
                 if (! $isPasswordDifferent) {
-                    $errors['Password_Group'] = self::PASSWORD_ERROR_NO_CHANGE;
+                    $errors['Password'] = self::PASSWORD_ERROR_NO_CHANGE;
                 }
             } catch (\InvalidArgumentException $e) {
-                $errors['Password_Group'] = $e->getMessage();
+                $errors['Password'] = $e->getMessage();
             }
         }
 
@@ -1170,7 +1180,7 @@ class Edit_User extends \NDB_Form
             && $values['NA_Password'] == 'on'
             && $plaintext != ''
         ) {
-            $errors['Password_Group'] = 'You must leave the password field empty '
+            $errors['Password'] = 'You must leave the password field empty '
                 . 'if you want the system to generate one for you';
         }
 
@@ -1178,7 +1188,7 @@ class Edit_User extends \NDB_Form
             && ($values['NA_Password'] != 'on')
             && empty($plaintext)
         ) {
-            $errors['Password_Group'] = 'Password is required';
+            $errors['Password'] = 'Password is required';
         }
 
         //======================================
@@ -1308,19 +1318,17 @@ class Edit_User extends \NDB_Form
      *
      * @param int $permID permission ID.
      *
-     * @return string the description.
+     * @return ?string the description.
      */
-    function getDescriptionUsingPermID($permID): string
+    function getDescriptionUsingPermID($permID): ?string
     {
         $db_factory = \NDB_Factory::singleton();
         $db         = $db_factory->database();
 
-        $description = $db->pselectOne(
+        return $db->pselectOne(
             "SELECT Description FROM permissions WHERE permID =:pID",
             ['pID' => $permID]
         );
-
-        return $description;
     }
 
     /**

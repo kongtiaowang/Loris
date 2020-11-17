@@ -3,6 +3,10 @@ import Modal from 'jsx/Modal';
 import CommentList from './CommentList';
 import IssueUploadAttachmentForm from './attachments/uploadForm';
 import AttachmentsList from './attachments/attachmentsList';
+import swal from 'sweetalert2';
+
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 
 /**
  * Issue add/edit form
@@ -12,11 +16,12 @@ import AttachmentsList from './attachments/attachmentsList';
  * and editing an existing issue.
  *
  * @author Caitrin Armstrong
- * */
-import React, {Component} from 'react';
-import PropTypes from 'prop-types';
-
+ */
 class IssueForm extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -37,18 +42,31 @@ class IssueForm extends Component {
     this.setFormData = this.setFormData.bind(this);
     this.isValidForm = this.isValidForm.bind(this);
     this.showAlertMessage = this.showAlertMessage.bind(this);
-    this.closeAttachmentUploadModal = this.closeAttachmentUploadModal.bind(this);
+    this.closeAttachmentUploadModal = this.closeAttachmentUploadModal
+                                      .bind(this);
     this.openAttachmentUploadModal = this.openAttachmentUploadModal.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.getFormData();
   }
 
+  /**
+   * Open 'Attachment Upload' Modal
+   *
+   * @param {object} e - Event object
+   */
   openAttachmentUploadModal(e) {
     e.preventDefault();
     this.setState({showAttachmentUploadModal: true});
   }
+
+  /**
+   * Close 'Attachment Upload' Modal
+   */
   closeAttachmentUploadModal() {
     this.setState({
       upload: {
@@ -61,6 +79,11 @@ class IssueForm extends Component {
     });
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     // If error occurs, return a message.
     // XXX: Replace this with a UI component for 500 errors.
@@ -88,6 +111,11 @@ class IssueForm extends Component {
     let isWatching = this.state.issueData.watching;
     let attachmentUploadBtn = null;
     let attachmentFileElement = null;
+
+    const siteOptions = this.state.Data.sites;
+    // Add an 'All Sites' options in the Site dropdown
+    // to allow NULL value
+    siteOptions['all'] = 'All Sites';
 
     if (this.state.isNewIssue) {
       headerText = 'Create New Issue';
@@ -223,7 +251,7 @@ class IssueForm extends Component {
             name='centerID'
             label='Site'
             emptyOption={true}
-            options={this.state.Data.sites}
+            options={siteOptions}
             onUserInput={this.setFormData}
             disabled={!hasEditPermission}
             value={this.state.formData.centerID}
@@ -330,7 +358,13 @@ class IssueForm extends Component {
         // is set to the empty option instead of an array of
         // the user's sites.
         if (newIssue) {
-            formData.centerID = null;
+          formData.centerID = null;
+        } else {
+          // if we edit an issue
+          // a NULL centerID (= All Sites) is converted to the ALL Sites option
+          if (formData.centerID == null) {
+            formData.centerID = 'all';
+          }
         }
 
         this.setState({
@@ -373,6 +407,10 @@ class IssueForm extends Component {
 
     for (let key in myFormData) {
       if (myFormData[key] !== '') {
+        // All Sites selected - Ignore value to store NULL in DB
+        if (myFormData['centerID'] == 'all') {
+          myFormData['centerID'] = null;
+        }
         formData.append(key, myFormData[key]);
       }
     }
@@ -387,7 +425,9 @@ class IssueForm extends Component {
       processData: false,
       success: function(data) {
         let msgType = 'success';
-        let message = this.state.isNewIssue ? 'You will be redirected to main page in 2 seconds!' : '';
+        let message = this.state.isNewIssue ?
+          'You will be redirected to main page in 2 seconds!' :
+          '';
         this.showAlertMessage(msgType, message);
         this.setState({
           submissionResult: 'success',
@@ -485,7 +525,7 @@ class IssueForm extends Component {
       };
     }
 
-    swal({
+    swal.fire({
       title: title,
       type: type,
       text: text,

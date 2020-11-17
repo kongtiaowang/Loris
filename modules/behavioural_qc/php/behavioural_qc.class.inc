@@ -1,33 +1,16 @@
 <?php
-/**
- * This is a file called used by the behavioural qc browser
- * auto-complete to retrieve candidates for a given
- * instrument and/or visit.
- *
- * PHP Version 7
- *
- * @category Behavioural
- * @package  Loris
- * @author   Evan McIlroy <evanmcilroy@gmail.com>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris/
- */
 namespace LORIS\behavioural_qc;
 /**
- * Dashboard: displays recruitment and study progression charts,
- * user tasks and document repository notifications
+ * This class contains functions to assist a researcher in assuring that
+ * behavioural data is complete and consistent. It displays incomplete forms
+ * as well as conflicts in data entry.
  *
- * @category Behavioural
- * @package  Loris
- * @author   Evan McIlroy <evanmcilroy@gmail.com>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 class Behavioural_QC extends \NDB_Form
 {
-
     /**
-     * Class that returns the Behavioural Quality Control.
+     * {@inheritDoc}
      *
      * @param \User $user The user whose access is being checked
      *
@@ -35,7 +18,7 @@ class Behavioural_QC extends \NDB_Form
      */
     function _hasAccess(\User $user) : bool
     {
-        return ($user->hasPermission('quality_control'));
+        return $user->hasPermission('behavioural_quality_control_view');
     }
 
     /**
@@ -51,15 +34,21 @@ class Behavioural_QC extends \NDB_Form
         $user     =& \User::singleton();
         $sanitize = array_map('htmlspecialchars', $_REQUEST);
 
-        $instrument   = $this->getTestNameusingMappedName(
-            $sanitize['instrument'] ?? null
-        );
-        $site_default =$this->getDefaultSite();
+        $instr = null;
+        if (isset($sanitize['instrument'])
+            && $sanitize['instrument'] != 'All Instruments'
+        ) {
+            $instr = $sanitize['instrument'];
+        }
+        $instrument = $this->getTestNameusingMappedName($instr);
+
+        $site_default = $this->getDefaultSite();
         //construct the instrument drop down..
         $this->tpl_data['visit_label'] = $sanitize['visit_label'] ?? null;
         $this->tpl_data['FieldName']   = $sanitize['FieldName'] ?? null;
         $this->tpl_data['project']     = $sanitize['project'] ?? null;
         $this->tpl_data['site']        = $sanitize['site'] ?? null;
+
         if (isset($sanitize['PSCID']) && !empty($sanitize['PSCID'])) {
             $this->tpl_data['PSCID'] = $sanitize['PSCID'];
         } elseif (isset($sanitize['candidate']) && !empty($sanitize['candidate'])) {
@@ -67,7 +56,8 @@ class Behavioural_QC extends \NDB_Form
         } else {
             $this->tpl_data['candidate'] = null;
         }
-        $this->tpl_data['test_name'] = $instrument;
+        $this->tpl_data['test_name']    = $instrument;
+        $this->tpl_data['test_name_id'] = $sanitize['instrument'];
 
         $candID = null;
         if (isset($sanitize['PSCID']) && !empty($sanitize['PSCID'])
@@ -248,12 +238,12 @@ class Behavioural_QC extends \NDB_Form
             }
         }
 
-        if (($project !=null)&&($project!='All Projects')) {
+        if (($project !=null)&&($project != 'All Projects')) {
             $where         .= " AND psr.ProjectID = :PID";
             $qparams['PID'] = $project;
         }
 
-        if (isset($test_name) && $test_name !='All Instruments'
+        if (isset($test_name) && $test_name != 'All Instruments'
             && $test_name!=null
         ) {
 
@@ -301,11 +291,11 @@ class Behavioural_QC extends \NDB_Form
     {
         $sanitize = array_map('htmlspecialchars', $_REQUEST);
         if (!empty($sanitize[$Filter])
-            && $sanitize[$Filter] !=='All Fields'
-            && (strtolower($sanitize[$Filter]) !=='any')
-            && ($sanitize[$Filter] !=='All Visits')
-            && $sanitize[$Filter] !=='all_flags'
-            && ($sanitize[$Filter] !=='All Instruments')
+            && $sanitize[$Filter] !== 'All Fields'
+            && (strtolower($sanitize[$Filter]) !== 'any')
+            && ($sanitize[$Filter] !== 'All Visits')
+            && $sanitize[$Filter] !== 'all_flags'
+            && ($sanitize[$Filter] !== 'All Instruments')
         ) {
             global $DB;
             if ($Filter == 'instrument') {
@@ -377,13 +367,13 @@ class Behavioural_QC extends \NDB_Form
         }
 
         //filter for testname
-        if (($test_name !=null)&&($test_name!='All Instruments')) {
+        if (($test_name !=null)&&($test_name != 'All Instruments')) {
             $where        .= " AND TableName LIKE CONCAT(:TN, '%')";
             $qparams['TN'] = $test_name;
         }
 
         //filter for visit
-        if (($visit_label !=null)&&($visit_label!='All Visits')) {
+        if (($visit_label !=null)&&($visit_label != 'All Visits')) {
             $where        .= " AND s.visit_label = :VL";
             $qparams['VL'] = $visit_label;
         }
@@ -522,13 +512,13 @@ class Behavioural_QC extends \NDB_Form
         $qparams = [];
 
         //filter for testname
-        if (($test_name !=null)&&($test_name!='All Instruments')) {
+        if (($test_name !=null)&&($test_name != 'All Instruments')) {
             $where        .= " AND f.test_name = :TN";
             $qparams['TN'] = $test_name;
         }
 
         //filter for visit
-        if (($visit_label !=null)&&($visit_label!='All Visits')) {
+        if (($visit_label !=null)&&($visit_label != 'All Visits')) {
             $where        .= " AND s.visit_label = :VL";
             $qparams['VL'] = $visit_label;
         }
@@ -758,14 +748,14 @@ class Behavioural_QC extends \NDB_Form
      * @param string|null $full_name    the value of full name
      * @param string|null $subprojectID the value of subproject ID
      *
-     * @return string
+     * @return ?string
      * @throws \DatabaseException
      */
-    function getTestNameusingMappedName($full_name, $subprojectID = null): string
+    function getTestNameusingMappedName($full_name, $subprojectID = null): ?string
     {
         $DB        = \NDB_Factory::singleton()->database();
         $test_name = '';
-        if ((!(is_null($full_name)))) {
+        if (!is_null($full_name)) {
             if ($DB->ColumnExists('test_battery', 'Test_name_display')) {
                 $sqlSelectOne = "SELECT Test_name".
                     " FROM test_battery".
@@ -775,7 +765,10 @@ class Behavioural_QC extends \NDB_Form
                     ['display' => $full_name]
                 );
             } else {
-                $test_name = \Utility::getTestNameUsingFullName($full_name);
+                $test_name = $DB->pselectOne(
+                    "SELECT Test_name FROM test_names WHERE Full_name =:fname",
+                    ['fname' => $full_name]
+                );
             }
         }
         return $test_name;

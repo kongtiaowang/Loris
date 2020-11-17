@@ -2,10 +2,23 @@ import FilterForm from 'FilterForm';
 import {Tabs, TabPane} from 'Tabs';
 import PublicationUploadForm from './uploadForm.js';
 
+/**
+ * Publication index component
+ */
 class PublicationIndex extends React.Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor() {
     super();
-    loris.hiddenHeaders = ['Description', 'Keywords', 'Variables Of Interest', 'Publication ID', 'Collaborators'];
+    loris.hiddenHeaders = [
+      'Description',
+      'Keywords',
+      'Variables Of Interest',
+      'Publication ID',
+      'Collaborators',
+    ];
     this.state = {
       isLoaded: false,
       filter: {},
@@ -17,10 +30,16 @@ class PublicationIndex extends React.Component {
     this.resetFilters = this.resetFilters.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.fetchData();
   }
 
+  /**
+   * Fetch data
+   */
   fetchData() {
     $.ajax(this.props.DataURL, {
       method: 'GET',
@@ -37,14 +56,26 @@ class PublicationIndex extends React.Component {
     });
   }
 
+  /**
+   * Update filter
+   * @param {*} filter
+   */
   updateFilter(filter) {
     this.setState({filter});
   }
 
+  /**
+   * Reset filters
+   */
   resetFilters() {
     this.publicationsFilter.clearFilter();
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     if (!this.state.isLoaded) {
       return (
@@ -72,8 +103,10 @@ class PublicationIndex extends React.Component {
       proposalTab = (
         <TabPane TabId={tabList[1].id}>
           <PublicationUploadForm
-            DataURL={`${loris.BaseURL}/publication/ajax/getData.php?action=getData`}
-            action={`${loris.BaseURL}/publication/ajax/FileUpload.php?action=upload`}
+            DataURL={loris.BaseURL
+                    +'/publication/ajax/getData.php?action=getData'}
+            action={loris.BaseURL
+                   + '/publication/ajax/FileUpload.php?action=upload'}
             editMode={false}
           />
         </TabPane>
@@ -116,6 +149,16 @@ class PublicationIndex extends React.Component {
     );
   }
 
+  /**
+   * Format column
+   *
+   * @param {string} column
+   * @param {*} cell
+   * @param {object} rowData
+   * @param {string[]} rowHeaders
+   *
+   * @return {JSX} - React markup for the component
+   */
   formatColumn(column, cell, rowData, rowHeaders) {
     // If a column if set as hidden, don't display it
     if (loris.hiddenHeaders.indexOf(column) > -1) {

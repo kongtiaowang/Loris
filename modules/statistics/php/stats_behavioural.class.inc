@@ -26,6 +26,12 @@ namespace LORIS\statistics;
 class Stats_Behavioural extends \NDB_Form
 {
     /**
+     * The default params
+     */
+    protected $siteParams    = [];
+    protected $projectParams = [];
+
+    /**
      * Checking user's permission
      *
      * @param \User $user The user whose access is being checked
@@ -93,6 +99,7 @@ class Stats_Behavioural extends \NDB_Form
         $allProjectList = \Utility::getProjectList();
         $projects       = [];
         $projects['']   = 'All Projects';
+        $Param_Project  = '';
 
         $userProjectsIDs = $user->getData('ProjectIDs');
         foreach ($userProjectsIDs as $ProjectID) {
@@ -115,19 +122,34 @@ class Stats_Behavioural extends \NDB_Form
 
         if ($_REQUEST['BehaviouralProject'] ?? ''
         ) {
+
             $currentProject = htmlspecialchars($_REQUEST['BehaviouralProject']);
             $this->tpl_data['CurrentProject']
                 = [
                     'ID'   => $currentProject,
                     'Name' => $projects[$currentProject],
                 ];
-            $Param_Project       ='AND (s.ProjectID IS NULL 
-                                   OR c.RegistrationProjectID=:pid)';
-            $this->params['pid'] = htmlspecialchars($_REQUEST['BehaviouralProject']);
+            $Param_Project ='AND (s.ProjectID IS NULL
+                               OR c.RegistrationProjectID=:pid)';
+            $this->projectParams['pid']
+                = htmlspecialchars($_REQUEST['BehaviouralProject']);
+        } elseif (!empty($userProjectsIDs)) {
+
+            $currentProject = '';
+            $paramProjects  = [];
+            foreach ($userProjectsIDs as $key => $projectID) {
+                $paramProjects[] = ":paramProjectID$key";
+                $this->projectParams["paramProjectID$key"] = $projectID;
+            }
+            $Param_Project ="AND (s.ProjectID IS NULL 
+                                   OR s.ProjectID IN
+                                       (" . implode(',', $paramProjects) . ")
+                                 )";
         } else {
             $currentProject = '';
-            $Param_Project  = '';
+            $Param_Project  ="AND (s.ProjectID IS NULL)";
         }
+
         //
         //SUBPROJECTS
         $suproject_query = '';
@@ -135,14 +157,66 @@ class Stats_Behavioural extends \NDB_Form
         if (is_numeric($currentProject) && intval($currentProject) >= 0) {
             $subprojects = \Utility::getSubprojectsForProject($currentProject);
             $subprojList = implode(',', array_keys($subprojects));
-            $subprojList = substr($subprojList, 0, -1);
             if (!empty($subprojList)) {
                 $suproject_query ="AND s.SubprojectID IN ($subprojList)";
             }
             $Visits = \Utility::getVisitList($currentProject);
+        } else {
+            $Visits = \Utility::getVisitList();
         }
 
         $this->tpl_data['Visits'] = $Visits ?? '';
+
+        //SITES
+
+        $Param_Centers = '';
+        if ($user->hasPermission('access_all_profiles')) {
+            $list_of_sites = \Utility::getSiteList();
+        } else {
+            $list_of_sites = $user->getStudySites();
+        }
+
+        if (!empty($list_of_sites)) {
+            $paramCenters      = [];
+            $list_of_sites_ids = array_keys($list_of_sites);
+            foreach ($list_of_sites_ids as $key => $siteID) {
+                $paramCenters[] = ":paramSiteID$key";
+                $this->siteParams["paramSiteID$key"] = $siteID;
+            }
+            $Param_Centers = "AND (s.CenterID IS NULL 
+                              OR s.CenterID IN
+                                  (" . implode(',', $paramCenters) . ")
+                            )";
+        } else {
+            $Param_Centers = "AND (s.CenterID IS NULL)";
+        }
+
+        $centers = $DB->pselect(
+            "SELECT CONCAT('C', CenterID) as ID,
+                    CenterID as NumericID,
+                    IFNULL(PSCArea,Name) as LongName,
+                    Name as ShortName
+              FROM psc as s
+              WHERE s.CenterID <> '1'
+                    AND s.Study_site = 'Y'
+                    $Param_Centers",
+            $this->siteParams ?? []
+        );
+
+        $this->tpl_data['Centers'] = $centers;
+
+        foreach ($centers as $row) {
+            $this->tpl_data['Sites'][$row['NumericID']] = $row['LongName'];
+            if (isset($_REQUEST['site'])
+                && $_REQUEST['site'] == $row['NumericID']
+            ) {
+                $this->tpl_data['CurrentSite'] = [
+                    'ID'   => $row['NumericID'],
+                    'Name' => $row['LongName'],
+                ];
+            }
+
+        }
 
         //---- BEHAVIORAL STATS -----
         $result = $DB->pselect(
@@ -157,11 +231,11 @@ class Stats_Behavioural extends \NDB_Form
                     AND s.Current_stage <> 'Recycling Bin'
                     AND f.CommentID NOT LIKE 'DDE%'
                     AND s.CenterID <> '1'
-	            AND s.CenterID IN (" . $sitesString . ")
-                    $suproject_query
                     $Param_Project
+                    $suproject_query
+                    $Param_Centers
                 GROUP by s.ID, s.CenterID, VLabel, f.Data_Entry",
-            $this->params ?? []
+            array_merge($this->projectParams, $this->siteParams) ?? []
         );
 
         foreach ($result as $row) {
@@ -169,29 +243,30 @@ class Stats_Behavioural extends \NDB_Form
             // so that they don't wrap. Note that "c"(enter array) needs to
             // be a reference since we'll be modifying it.
             $center = $row['CenterID'];
-            $vl     = intval($row['VLabel']);
+            $vl     = $row['VLabel'];
+            $value  = intval($row['val']);
             $c      =& $this->tpl_data['behaviour']['C' . $center];
 
-            if (isset($c[$vl]['total'])) {
-                $c[$vl]['total'] += intval($row['val']);
+            if (array_key_exists('total', $c[$vl])) {
+                $c[$vl]['total'] += $value;
             } else {
-                $c[$vl]['total'] = intval($row['val']);
+                $c[$vl]['total'] = $value;
             }
             if (isset($c['all']['total'])) {
-                $c['all']['total'] += $row['val'];
+                $c['all']['total'] += $value;
             } else {
-                $c['all']['total'] = $row['val'];
+                $c['all']['total'] = $value;
             }
             if ($row['Data_Entry'] == 'Complete') {
                 if (isset($c[$vl]['complete'])) {
-                    $c[$vl]['complete'] += $row['val'];
+                    $c[$vl]['complete'] += $value;
                 } else {
-                    $c[$vl]['complete'] = $row['val'];
+                    $c[$vl]['complete'] = $value;
                 }
                 if (isset($c['all']['complete'])) {
-                    $c['all']['complete'] += $row['val'];
+                    $c['all']['complete'] += $value;
                 } else {
-                    $c['all']['complete'] = $row['val'];
+                    $c['all']['complete'] = $value;
                 }
             }
             if (!empty($c) && is_array($c)) {
@@ -230,38 +305,39 @@ class Stats_Behavioural extends \NDB_Form
                     AND f.CommentID LIKE 'DDE%'
                     AND c.Active = 'Y'
                     AND s.CenterID <> '1'
-                    AND s.CenterID IN(" . $sitesString . ")
-                    $suproject_query
                     $Param_Project
+                    $suproject_query
+                    $Param_Centers
                 GROUP BY s.CenterID, VLabel, f.Data_Entry",
-            $this->params ?? []
+            array_merge($this->projectParams, $this->siteParams) ?? []
         );
 
         foreach ($result as $row) {
             $center = $row['CenterID'];
-            $vl     = intval($row['VLabel']);
+            $vl     = $row['VLabel'];
+            $value  = intval($row['val']);
             $c      =& $this->tpl_data['dde']['C' . $center];
 
-            if (isset($c[$vl]['total'])) {
-                $c[$vl]['total'] += $row['val'];
+            if (array_key_exists('total', $c[$vl])) {
+                $c[$vl]['total'] += $value;
             } else {
-                $c[$vl]['total'] = $row['val'];
+                $c[$vl]['total'] = $value;
             }
             if (isset($c['all']['total'])) {
-                $c['all']['total'] += $row['val'];
+                $c['all']['total'] += $value;
             } else {
-                $c['all']['total'] = $row['val'];
+                $c['all']['total'] = $value;
             }
             if ($row['Data_Entry'] == 'Complete') {
                 if (isset($c[$vl]['complete'])) {
-                    $c[$vl]['complete'] += $row['val'];
+                    $c[$vl]['complete'] += $value;
                 } else {
-                    $c[$vl]['complete'] = $row['val'];
+                    $c[$vl]['complete'] = $value;
                 }
                 if (isset($c['all']['complete'])) {
-                    $c['all']['complete'] += $row['val'];
+                    $c['all']['complete'] += $value;
                 } else {
-                    $c['all']['complete'] = $row['val'];
+                    $c['all']['complete'] = $value;
                 }
             }
             if (!empty($c) && is_array($c)) {

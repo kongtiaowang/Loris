@@ -1,6 +1,14 @@
 import ProjectFormFields from './projectFields';
+import swal from 'sweetalert2';
 
+/**
+ * View project component
+ */
 class ViewProject extends React.Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -22,11 +30,15 @@ class ViewProject extends React.Component {
     this.fetchData = this.fetchData.bind(this);
   }
 
+  /**
+   * Handle submit
+   * @param {object} e - Event object
+   */
   handleSubmit(e) {
     e.preventDefault();
 
     if (Object.keys(this.state.formErrors).length > 0) {
-      swal(
+      swal.fire(
         'Please fix any remaining form errors before submission',
         '',
         'error'
@@ -55,7 +67,7 @@ class ViewProject extends React.Component {
       contentType: false,
       processData: false,
       success: function() {
-        swal('Edit Successful!', '', 'success');
+        swal.fire('Edit Successful!', '', 'success');
       },
       error: function(jqXHR) {
         console.error(jqXHR);
@@ -65,11 +77,14 @@ class ViewProject extends React.Component {
         } catch (e) {
           console.error(e);
         }
-        swal('Edit failed!', resp, 'error');
+        swal.fire('Edit failed!', resp, 'error');
       },
     });
   }
 
+  /**
+   * Fetch data
+   */
   fetchData() {
     let self = this;
     $.ajax(this.props.DataURL, {
@@ -92,9 +107,15 @@ class ViewProject extends React.Component {
         if (data.files) {
           data.files.forEach(function(f) {
             let existFileFlag = 'existingUpload_';
-            let pubType = existFileFlag + 'publicationType_' + f.PublicationUploadID;
-            let pubCit = existFileFlag + 'publicationCitation_' + f.PublicationUploadID;
-            let pubVer = existFileFlag + 'publicationVersion_' + f.PublicationUploadID;
+            let pubType = existFileFlag
+                          + 'publicationType_'
+                          + f.PublicationUploadID;
+            let pubCit = existFileFlag
+                         + 'publicationCitation_'
+                         + f.PublicationUploadID;
+            let pubVer = existFileFlag
+                         + 'publicationVersion_'
+                         + f.PublicationUploadID;
             formData[pubType] = f.PublicationUploadTypeID;
             formData[pubCit] = f.Citation;
             formData[pubVer] = f.Version;
@@ -123,15 +144,24 @@ class ViewProject extends React.Component {
     });
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.fetchData();
   }
 
+  /**
+   * Create file download links
+   * @return {JSX} - React markup for the component
+   */
   createFileDownloadLinks() {
     let files = this.state.files;
     let toReturn = [];
     files.forEach(function(f) {
-      let download = loris.BaseURL + '/publication/ajax/FileDownload.php?File=' + f.Filename;
+      let download = loris.BaseURL
+                     + '/publication/ajax/FileDownload.php?File='
+                     + f.Filename;
       let link = <a href={download}>{f.Filename}</a>;
       let uploadType = this.state.uploadTypes[f.PublicationUploadTypeID];
       toReturn.push(
@@ -161,6 +191,12 @@ class ViewProject extends React.Component {
     return toReturn;
   }
 
+  /**
+   * Create menu filter links
+   * @param {string[]} stringArr
+   * @param {string} filterVar
+   * @return {JSX} - React markup for the component
+   */
   createMenuFilterLinks(stringArr, filterVar) {
     let links = [];
     stringArr.forEach(
@@ -181,6 +217,10 @@ class ViewProject extends React.Component {
     return links;
   }
 
+  /**
+   * Create static components
+   * @return {JSX} - React markup for the component
+   */
   createStaticComponents() {
     let collaborators;
     let keywords;
@@ -254,6 +294,10 @@ class ViewProject extends React.Component {
    );
   }
 
+  /**
+   * Create editable components
+   * @return {JSX} - React markup for the component
+   */
   createEditableComponents() {
     return (
       <div>
@@ -279,6 +323,12 @@ class ViewProject extends React.Component {
     );
   }
 
+  /**
+   * Add list item
+   * @param {string} formElement
+   * @param {*} value
+   * @param {string} pendingValKey
+   */
   addListItem(formElement, value, pendingValKey) {
     let formData = this.state.formData;
     let listItems = formData[formElement] || [];
@@ -290,6 +340,11 @@ class ViewProject extends React.Component {
     });
   }
 
+  /**
+   * Remove list item
+   * @param {string} formElement
+   * @param {*} value
+   */
   removeListItem(formElement, value) {
     let formData = this.state.formData;
     let listItems = formData[formElement];
@@ -305,6 +360,11 @@ class ViewProject extends React.Component {
     }
   }
 
+  /**
+   * Set form data
+   * @param {*} formElement
+   * @param {*} value
+   */
   setFormData(formElement, value) {
     let formData = this.state.formData;
     formData[formElement] = value;
@@ -313,6 +373,11 @@ class ViewProject extends React.Component {
     });
   }
 
+  /**
+   * Set file data
+   * @param {string} formElement
+   * @param {*} value
+   */
   setFileData(formElement, value) {
     let numFiles = this.state.numFiles;
     if (!this.state.formData[formElement]) {
@@ -322,6 +387,11 @@ class ViewProject extends React.Component {
     this.setFormData(formElement, value);
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     if (!this.state.isLoaded) {
       return (
@@ -363,7 +433,9 @@ class ViewProject extends React.Component {
       }
       // Set review button only if user does not have edit permission
       // to avoid having 2 submit buttons
-      reviewBtn = this.state.userCanEdit ? undefined : <ButtonElement label="Submit" />;
+      reviewBtn = this.state.userCanEdit ?
+        undefined :
+        <ButtonElement label="Submit" />;
     } else {
       const statClassMap = {
         Pending: 'text-warning',

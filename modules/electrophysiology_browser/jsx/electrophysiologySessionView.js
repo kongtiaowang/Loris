@@ -22,6 +22,10 @@ import SidebarContent from './components/SidebarContent';
  * @author Alizée Wickenheiser
  */
 class ElectrophysiologySessionView extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -179,8 +183,10 @@ class ElectrophysiologySessionView extends Component {
     const dataURL = loris.BaseURL + '/electrophysiology_browser/sessions/';
     const sessionID = this.props.sessionid;
     const outputTypeArg = '?outputType=' + this.state.url.params['outputType'];
-    return fetch(dataURL + sessionID + outputTypeArg, {credentials: 'same-origin'})
-      .then((resp) => {
+    return fetch(
+        dataURL + sessionID + outputTypeArg,
+        {credentials: 'same-origin'}
+      ).then((resp) => {
         if (!resp.ok) {
           throw Error(resp.statusText);
         }
@@ -196,8 +202,12 @@ class ElectrophysiologySessionView extends Component {
         }
         appState.database = database;
         this.setState(appState);
-        document.getElementById('nav_next').href = dataURL + data.nextSession + outputTypeArg;
-        document.getElementById('nav_previous').href = dataURL + data.prevSession + outputTypeArg;
+        document.getElementById(
+          'nav_next'
+        ).href = dataURL + data.nextSession + outputTypeArg;
+        document.getElementById(
+          'nav_previous'
+        ).href = dataURL + data.prevSession + outputTypeArg;
         if (data.prevSession !== '') {
           document.getElementById('nav_previous').style.display = 'block';
         }
@@ -222,6 +232,11 @@ class ElectrophysiologySessionView extends Component {
     });
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     if (!this.state.isLoaded) {
       return (

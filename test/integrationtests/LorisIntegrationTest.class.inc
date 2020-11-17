@@ -93,8 +93,7 @@ abstract class LorisIntegrationTest extends TestCase
                 'PSCPI'            => 'N',
                 'Active'           => 'Y',
                 'Password_hash'    => $password,
-                'Password_expiry'  => '2099-12-31',
-                'Pending_approval' => 'N',
+                'Pending_approval' => 'N'
             ]
         );
 
@@ -346,6 +345,38 @@ abstract class LorisIntegrationTest extends TestCase
             ["UserID" => 999990]
         );
         $this->DB->delete("psc", ["CenterID" => 99]);
+        $this->DB->run('SET foreign_key_checks =1');
+    }
+
+    /**
+     * Helper function to change the users Project
+     *
+     * @return void
+     */
+    function changeUserProject()
+    {
+        $this->DB->insert("Project", ["ProjectID" => 99, "Alias" => "BBQ"]);
+        $this->DB->update(
+            "user_project_rel",
+            ["ProjectID" => 99],
+            ["UserID" => 999990]
+        );
+    }
+
+    /**
+     * Helper function to reset the users Project
+     *
+     * @return void
+     */
+    function resetUserProject()
+    {
+        $this->DB->run('SET foreign_key_checks =0');
+        $this->DB->update(
+            "user_project_rel",
+            ["ProjectID" => 1],
+            ["UserID" => 999990]
+        );
+        $this->DB->delete("Project", ["ProjectID" => 99]);
         $this->DB->run('SET foreign_key_checks =1');
     }
 
@@ -620,12 +651,17 @@ abstract class LorisIntegrationTest extends TestCase
      *
      * @param string $needle   This string should be in $haystack.
      * @param string $haystack The HTML body of the page.
+     * @param string $jsError  React render error message.
      *
      * @return void
      */
-    private function _verifyPermission(string $needle, string $haystack): void
-    {
+    private function _verifyPermission(
+        string $needle,
+        string $haystack,
+        string $jsError= "An error occured while loading the page."
+    ): void {
         $this->assertContains($needle, $haystack);
+        $this->assertNotContains($jsError, $haystack);
         $this->resetPermissions();
     }
 
