@@ -1,10 +1,14 @@
+import React, {Component} from 'react';
+
 /**
  * React component used to display a button and a collapsible list
  * with comments.
  */
-import React, {Component} from 'react';
-
 class CommentList extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -14,10 +18,18 @@ class CommentList extends Component {
     this.toggleCollapsed = this.toggleCollapsed.bind(this);
   }
 
+  /**
+   * Toggle Collapsed
+   */
   toggleCollapsed() {
     this.setState({collapsed: !this.state.collapsed});
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     const changes = this.props.commentHistory.reduce(function(carry, item) {
       let label = item.dateAdded.concat(' - ', item.addedBy);
@@ -37,7 +49,9 @@ class CommentList extends Component {
       const item = changes[key];
       const textItems = Object.keys(item.data).map(function(index, j) {
         if (index == 'comment') {
-            comment = <div style={{marginTop: '1em'}}><Markdown content={item.data[index]} /></div>;
+            comment = <div style={{marginTop: '1em'}}>
+              <Markdown content={item.data[index]} />
+            </div>;
             return;
         }
         return (
@@ -61,14 +75,18 @@ class CommentList extends Component {
       } else if (datediffSec < 60*60*24) {
           timestr = <span> {Math.round(datediffSec / (60*60))} hours ago</span>;
       } else {
-          timestr = <span> on {item.date.toLocaleDateString()} at {item.date.toTimeString()}</span>;
+          timestr = <span>
+            on {item.date.toLocaleDateString()} at {item.date.toTimeString()}
+          </span>;
       }
 
       return (
         <div key={i}>
           <hr/>
           <div className='history-item-label'>
-            Updated by <span className="history-item-user">{item.user}</span>{timestr}:
+            Updated by
+            <span className="history-item-user">{item.user}</span>
+            {timestr}:
           </div>
           <ul className='history-item-changes'>
             {textItems}

@@ -11,14 +11,26 @@ changes in the following format: PR #1234***
 ##LORIS 24.0 (Release Date: ??)
 ### Core
 #### Features
-- *Add item here*
+- Data tables may now stream data as they're loading rather than waiting
+  until all data has loaded. (PR #6853)
+
 #### Updates and Improvements
-- *Add item here*
+- Module-specific permissions added for Survey Accounts, Imaging Behavioural
+Quality Control, and Behavioural Quality Control. (PR #6041)
+- Addition of a new `account_request_date` in `users` table that will be used when
+requesting a new account and will be displayed in the User Accounts module (PR #6191)
+- Candidate's age can be retrieved from the Candidate class in days, months, or years (PR #5945)
+- Addition of autoSelect prop to React SelectElement allows for auto-selection of only available select option (PR #6156)
+- An `AcquisitionDate` field has been added to the `files` table (PR #6892)
 #### Bug Fixes
 - *Add item here*
 ### Modules
+#### Help Editor
+- Cleaned up the deprecated column `Parent Topic` (PR #7025)
 #### Issue Tracker
 - Readability of comments and history was improved. (PR #6138)
+#### Candidate Parameters
+- Consents may now be grouped in UI of consent tab (PR #6042, PR #6044)
 ### Clean Up
 - *Add item here*
 ### Notes For Existing Projects
@@ -111,4 +123,3 @@ be used by projects having custom modules not in LORIS. (PR #5913)
 - Config files for static analysis have been moved to the `test/` directory. (PR #5871)
 - Dashboard was refactored to turn panels into module widgets. (PR #5896)
 - Add CSSGrid component type (PR #6090)
-
