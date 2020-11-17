@@ -59,7 +59,7 @@ abstract class LorisIntegrationTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         // Set up database wrapper and config
         $this->factory = NDB_Factory::singleton();
@@ -155,7 +155,7 @@ abstract class LorisIntegrationTest extends TestCase
      *
      * @return void but side-effect logs in active webDriver
      */
-    protected function login($username, $password)
+    protected function login($username, $password): void
     {
         $this->safeGet($this->url);
         /*
@@ -196,7 +196,7 @@ abstract class LorisIntegrationTest extends TestCase
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         if (extension_loaded('xdebug')) {
             $data = xdebug_get_code_coverage();
@@ -265,7 +265,7 @@ abstract class LorisIntegrationTest extends TestCase
      *
      * @return void
      */
-    function restoreConfigSetting($configName)
+    function restoreConfigSetting($configName): void
     {
         if (isset($this->_oldConfig[$configName])) {
             $this->DB->update(
@@ -309,7 +309,7 @@ abstract class LorisIntegrationTest extends TestCase
      *
      * @return void
      */
-    function resetPermissions()
+    function resetPermissions(): void
     {
         $this->DB->run(
             "INSERT IGNORE INTO user_perm_rel SELECT 999990, PermID FROM permissions"
@@ -321,7 +321,7 @@ abstract class LorisIntegrationTest extends TestCase
      *
      * @return void
      */
-    function changeStudySite()
+    function changeStudySite(): void
     {
         $this->DB->insert("psc", ["CenterID" => 99, "Alias" => "BBQ"]);
         $this->DB->update(
@@ -353,7 +353,7 @@ abstract class LorisIntegrationTest extends TestCase
      *
      * @return void
      */
-    function changeUserProject()
+    function changeUserProject(): void
     {
         $this->DB->insert("Project", ["ProjectID" => 99, "Alias" => "BBQ"]);
         $this->DB->update(
@@ -368,7 +368,7 @@ abstract class LorisIntegrationTest extends TestCase
      *
      * @return void
      */
-    function resetUserProject()
+    function resetUserProject(): void
     {
         $this->DB->run('SET foreign_key_checks =0');
         $this->DB->update(
@@ -388,7 +388,7 @@ abstract class LorisIntegrationTest extends TestCase
      *
      * @return void
      */
-    function createSubproject($SubprojectID, $title)
+    function createSubproject($SubprojectID, $title): void
     {
         $this->DB->insert(
             "subproject",
@@ -408,7 +408,7 @@ abstract class LorisIntegrationTest extends TestCase
      *
      * @return void
      */
-    function deleteSubproject($title)
+    function deleteSubproject($title): void
     {
         $this->DB->delete(
             "subproject",
@@ -572,7 +572,7 @@ abstract class LorisIntegrationTest extends TestCase
      *
      * @return void
      */
-    function safeClick(WebDriverBy $by, $waitPeriod=15, $allowJavascriptClick=true)
+    function safeClick(WebDriverBy $by, $waitPeriod=15, $allowJavascriptClick=true): void
     {
         $webElement = $this->safeFindElement($by, $waitPeriod);
 
