@@ -556,6 +556,8 @@ class DataTable extends Component {
       </select>
     );
 
+    const loading = this.props.loading ? 'Loading...' : '';
+
     let header = this.props.hide.rowsPerPage === true ? '' : (
       <div className="table-header">
         <div className="row">
@@ -572,6 +574,7 @@ class DataTable extends Component {
             }}>
               {rows.length} rows displayed of {filteredCount}.
               (Maximum rows per page: {rowsPerPageDropdown})
+              {loading}
             </div>
             <div style={{
               order: '2',
