@@ -226,7 +226,7 @@ abstract class LorisIntegrationTest extends TestCase
      *
      * @return void
      */
-    function setupConfigSetting($configName, $value)
+    function setupConfigSetting($configName, $value): void
     {
         $configID = $this->DB->pselectOne(
             "SELECT ID FROM ConfigSettings WHERE Name=:configName",
@@ -285,7 +285,7 @@ abstract class LorisIntegrationTest extends TestCase
      *
      * @return void
      */
-    function setupPermissions($permissions)
+    function setupPermissions($permissions): void
     {
         $this->DB->delete("user_perm_rel", ["UserID" => '999990']);
         $prepare = $this->DB->prepare(
