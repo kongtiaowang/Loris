@@ -38,7 +38,7 @@ jobs:
     - name: Install dependencies
       run: make dev
     - name: Run test suite
-      run: npm run tests:integration
+      run: npm run tests:unit
 
       
     # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
