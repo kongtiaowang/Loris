@@ -27,7 +27,7 @@ jobs:
           ${{ runner.os }}-php-
     - name: Install dependencies
       if: steps.composer-cache.outputs.cache-hit != 'true'
-      run: composer self-update 1.10.17 --prefer-dist --no-progress --no-suggest
+      run: composer self-update 1.10.17 
     - name: makedev
       run: make dev
     - name: test
