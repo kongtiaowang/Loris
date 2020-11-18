@@ -1,4 +1,4 @@
-name: Phan and formatting checks
+name: Phan and Formatting
 
 on:
   push:

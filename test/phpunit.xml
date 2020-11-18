@@ -10,6 +10,9 @@
 
         <testsuite name='LorisCoreIntegrationTests'>
             <directory>./integrationtests/</directory>
+        </testsuite>
+
+        <testsuite name='LorisModuleIntegrationTests'>
             <directory>../raisinbread/test/api/</directory>
             <directory>../modules/api/test/</directory>
             <directory>../modules/acknowledgements/test/</directory>
@@ -52,12 +55,10 @@
             <directory>../modules/user_accounts/test/</directory>
             <directory>../test/test_instrument/</directory>
         </testsuite>
-
     </testsuites>
     <!-- This is currently breaking the coverage.xml generation, so
          for now it's disabled, but eventually we'll want to make
          sure everything is tested.. -->
-
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
             <directory suffix=".inc">../php/libraries</directory>
@@ -70,5 +71,4 @@
             <!--directory>../modules/dashboard/ajax/</directory-->
         </whitelist>
     </filter>
-
 </phpunit>
