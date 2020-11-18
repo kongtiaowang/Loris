@@ -28,9 +28,7 @@ jobs:
 
     - name: Install dependencies
       if: steps.composer-cache.outputs.cache-hit != 'true'
-      run: composer install --prefer-dist --no-progress --no-suggest
-    - name: Install dependencies
-      run: sudo apt-get 
+      run: composer install --prefer-dist --no-progress --no-suggest 
     - name: Install dependencies
       run: sudo apt-get install -y libapparmor1
     - name: Install dependencies
