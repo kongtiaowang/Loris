@@ -18,8 +18,8 @@ jobs:
     - uses: actions/checkout@v2
     - name: php version
       run: echo $PWD
-    - name: fdsfkdlsfd;lsfk;ldskfadfkd;lasfkfk;lak;
-      run: echo ${{PHP }}
+    - name: fdsfkdlsfd
+      run: echo ${{ PHP }}
     - name: fjdksa
       run: echo ${{ matrix.os }}
     - name: Validate composer.json and composer.lock
