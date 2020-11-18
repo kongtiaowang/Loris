@@ -25,16 +25,16 @@ jobs:
         key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
         restore-keys: |
           ${{ runner.os }}-php-
+
     - name: Install dependencies
       if: steps.composer-cache.outputs.cache-hit != 'true'
-      run: composer self-update 1.10.17 
-    - name: makedev
+      run: composer install --prefer-dist --no-progress --no-suggest
+    - name: Install make
       run: make dev
-    - name: test
-      run: npm run tests:static
 
     # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
     # Docs: https://getcomposer.org/doc/articles/scripts.md
 
-    # - name: Run test suite
+    - name: Run test suite
+      run: npm run tests:unit
     #   run: composer run-script test
