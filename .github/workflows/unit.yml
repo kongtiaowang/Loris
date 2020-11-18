@@ -12,6 +12,11 @@ jobs:
     strategy:
       matrix:
         php: [7.3, 7.4]
+        include:
+        - php: 7.3
+          TARGET: 7.3
+        - php: 7.4
+          TARGET: 7.4
     steps:
     - uses: actions/checkout@v2
       env:
@@ -19,7 +24,7 @@ jobs:
     - name: php version
       run: echo $PWD
     - name: fjdksa
-      run: echo ${{ matrix.os }}
+      run: echo ${{ matrix.php }}
     - name: Validate composer.json and composer.lock
       run: composer validate
 
