@@ -37,4 +37,4 @@ jobs:
     - name: Install dependencies
       run: make dev
     - name: Run test suite
-      run: npm run tests:unit a:${{ matrix.os }}
+      run: npm run tests:unit
