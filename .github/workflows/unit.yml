@@ -18,7 +18,7 @@ jobs:
     - name: php version
       run: echo $PWD
     - name: fjdksa
-      run: echo ${{ matrix.php }}
+      run: sed -i "s/7.3/${{ matrix.php }}/g" /home/runner/work/Loris/Loris/Dockerfile.test.php7
     - name: Validate composer.json and composer.lock
       run: composer validate
 
