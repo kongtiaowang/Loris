@@ -18,8 +18,6 @@ jobs:
         PHP: 7.4
     - name: php version
       run: echo $PWD
-    - name: fdsfkdlsfd
-      run: echo ${{ PHP }}
     - name: fjdksa
       run: echo ${{ matrix.os }}
     - name: Validate composer.json and composer.lock
