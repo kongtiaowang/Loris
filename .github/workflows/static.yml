@@ -36,5 +36,5 @@ jobs:
     # Docs: https://getcomposer.org/doc/articles/scripts.md
 
     - name: Run test suite
-      run: npm run tests:unittest
+      run: npm run tests:unit
     #   run: composer run-script test
