@@ -24,8 +24,6 @@ class NDB_BVL_Instrument_BSRC_survey extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
 
-    use instrument_validator;
-
     var $ValidityEnabled = false;
     var $ValidityRequired = false;
 
@@ -36,7 +34,6 @@ class NDB_BVL_Instrument_BSRC_survey extends NDB_BVL_Instrument
     );
 
     const INDIVIDUAL_GROUP_OPTIONS = array(
-        null => "",
         "individual" => "Individual",
         "group" => "Group",
     );
@@ -58,7 +55,6 @@ class NDB_BVL_Instrument_BSRC_survey extends NDB_BVL_Instrument
     );
 
     const CHILD_ENROLLMENT_OPTIONS = array(
-        null => "",
         'speech_language_therapy' => 'Speech-language therapy',
         'occupational_therapy' => 'Occupational therapy',
         'physical_therapy' => 'Physical therapy',
@@ -71,7 +67,7 @@ class NDB_BVL_Instrument_BSRC_survey extends NDB_BVL_Instrument
      *
      * INSERT INTO test_names (Test_name, Full_name, Sub_Group, isDirectEntry) VALUES ('BSRC_survey', "BSRC Intervention History Form - Survey", 1, 1);
      * INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('BSRC_survey', 'BSRC_survey_page1', "Page 1", 1);
-     * INSERT INTO survey_test_battery (Test_name, Visit_label) VALUES ('BSRC_survey', 'V6');
+     * INSERT INTO survey_test_battery (Test_name, Visit_label) VALUES ('BSRC_survey', 'V06');
      * INSERT INTO survey_test_battery (Test_name, Visit_label) VALUES ('BSRC_survey', 'V6-CVD');
      * INSERT INTO survey_test_battery (Test_name, Visit_label) VALUES ('BSRC_survey', 'V12');
      * INSERT INTO survey_test_battery (Test_name, Visit_label) VALUES ('BSRC_survey', 'V12-CVD');
@@ -105,16 +101,37 @@ class NDB_BVL_Instrument_BSRC_survey extends NDB_BVL_Instrument
 
         //The array of dates/timestamps to convert to database dates/timestamps
         //Any LorisForm date elements must be listed here
-        $this->dateTimeFields = array("Date_taken");
+        $this->dateTimeFields = array(
+            "Date_taken",
+            "child_birth_date",
+            "today_date",
+            "date_last_visit",
+            "occupational_therapy_date",
+            "occupational_therapy_stopped_date",
+            "physical_therapy_date",
+            "physical_therapy_stopped_date",
+            "speech_language_therapy_date",
+            "speech_language_therapy_stopped_date",
+            "comprehensive_behavioral_date",
+            "comprehensive_behavioral_stopped_date",
+            "other_date",
+            "other_stopped_date",
+            );
 
         //The array of selects with multiple answers allowed
         //Any LorisForm multiple selects must be listed here
         $this->_selectMultipleElements = array(
+            "occupational_therapy_individual_group",
+            "physical_therapy_individual_group",
+            "speech_language_therapy_individual_group",
+            "comprehensive_behavioral_individual_group",
+            "other_individual_group",
             "if_checked_9_please_check"
         );
 
         // required fields for data entry completion status
         $this->_requiredElements = array(
+            "CommentID",
             "did_professional_refer_early_intervention"
         );
 
@@ -164,8 +181,6 @@ class NDB_BVL_Instrument_BSRC_survey extends NDB_BVL_Instrument
         );
 
         $this->form->addElement('static', null, null);
-
-        $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
 
         $this->addBasicDate('child_birth_date', 'CHILD\'S BIRTH DATE', $dateOptions);
 
@@ -223,48 +238,44 @@ class NDB_BVL_Instrument_BSRC_survey extends NDB_BVL_Instrument
 
             if ($name == "did_child_receive_early_intervention") {
                 foreach ($early_intervention_services as $q2Key => $q2Question) {
-                    $this->form->addElement('text', $q2Key, $q2Question, ['disabled' => 'disabled']);
-                    $this->XINRegisterRule("$q2Key", array("did_child_receive_early_intervention{@}=={@}yes"), 'Required if yes');
+                    $this->addNumericElement($q2Key, $q2Question);
+                    $this->XINRegisterRule("$q2Key", array("did_child_receive_early_intervention{@}=={@}NEVER_REQUIRED"));
                 }
             } elseif ($name == "did_child_receive_developmental_delays") {
-                $group = array();
-                $group[] = $this->form->createElement("static", null, null, "Service Type");
-                $group[] = $this->form->createElement("static", null, null, "Date Started");
-                $group[] = $this->form->createElement("static", null, null, "Still receiving intervention?");
-                $group[] = $this->form->createElement("static", null, null, "Individual or Group");
-                $group[] = $this->form->createElement("static", null, null, "Setting");
-                $group[] = $this->form->createElement("static", null, null, "Average hours per week");
-                $this->addGroup($group, "q5_headers", null, $this->_GUIDelimiter, false);
-                unset($group);
+                $this->addLabel("<BR> If YES to #5, please complete the following:");
 
                 foreach (self::SERVICE_TYPE_OPTIONS as $q5Key => $q5Question) {
-                    $group[] = $this->createSelect($q5Key, $q5Question, self::YES_NO_OPTIONS);
-                    $group[] = $this->createDate("date_{$q5Key}", "Date Started");
-                    $group[] = $this->createSelect("still_receiving_intervention_{$q5Key}", "Still receiving intervention?", self::YES_NO_OPTIONS);
-                    $group[] = $this->createDate("stopped_date_{$q5Key}", "If, NO, date stopped:");
-                    $group[] = $this->createSelect("individual_group_{$q5Key}", "Individual or Group", self::INDIVIDUAL_GROUP_OPTIONS);
-                    $group[] = $this->createSelect("setting_{$q5Key}", "Setting", self::SETTING_OPTIONS);
-                    $group[] = $this->createText("other_setting_{$q5Key}", "Other:");
-                    $group[] = $this->createText("average_hours_{$q5Key}", "Average hours per week");
-                    $this->XINRegisterRule("stopped_date_{$q5Key}", array("still_receiving_intervention_{$q5Key}{@}=={@}no"), $this->indent . "Required if no.", "q5_" . $q5Key . "_group");
-                    $this->XINRegisterRule("other_setting_{$q5Key}", array("setting_{$q5Key}{@}=={@}other"), $this->indent . "Required if other.", "q5_" . $q5Key . "_group");
-                    $this->addGroup($group, "group_{$q5Key}", $q5Question, $this->_GUIDelimiter, false);
-                    unset($group);
+                    $this->addHeader($q5Question);
+                    $this->addOptionalSelect("{$q5Key}_received", "Received {$q5Question}", self::YES_NO_OPTIONS,
+                        "did_child_receive_developmental_delays", "yes", "Required if your child receive services for developmental delays.");
+                    $this->addOptionalDate("{$q5Key}_date", "Date Started",
+                        "{$q5Key}_received", "yes", "Required if you received {$q5Question}.");
+                    $this->addOptionalSelect("{$q5Key}_intervention", "Still receiving intervention?", self::YES_NO_OPTIONS,
+                        "{$q5Key}_intervention", "NEVER_REQUIRED");
+                    $this->addOptionalDate("{$q5Key}_stopped_date", "If, NO, date stopped:",
+                        "{$q5Key}_intervention", "no", "Required if you have stopped receiving intervention.");
+                    $this->addSelect("{$q5Key}_individual_group", "Individual or Group", self::INDIVIDUAL_GROUP_OPTIONS, array("multiple"));
+                    $this->XINRegisterRule("{$q5Key}_individual_group", array("{$q5Key}_received{@}=={@}yes"), "Required");
+                    $this->addOptionalSelect("{$q5Key}_setting", "Setting", self::SETTING_OPTIONS,
+                        "{$q5Key}_received", "yes", "Required if you received {$q5Question}.");
+                    $this->addOptionalText("{$q5Key}_other_setting", "Other:",
+                        "{$q5Key}_setting", "other", "Required if other.");
+                    $this->addOptionalText("{$q5Key}_average_hours", "Average hours per week",
+                        "{$q5Key}_average_hours", "NEVER_REQUIRED");
                 }
 
             } elseif ($name == "how_many_hours_child_intervention") {
                 $this->addLabel($label);
                 foreach ($hours_intervention_services as $q6Key => $q6Question) {
-                    $this->form->addElement('text', $q6Key, $q6Question);
+                    $this->addNumericElement($q6Key, $q6Question);
                 }
             } elseif ($name == "did_child_receive_complementary_therapies_autism") {
-                $this->form->addElement('text', "q7_specify", "if YES, please specify", ['disabled' => 'disabled']);
-                $this->XINRegisterRule("q7_specify", array("did_child_receive_complementary_therapies_autism{@}=={@}yes"), 'Required if yes');
+                $this->addTextAreaElement("q7_specify", "If YES, please specify", array("did_child_receive_complementary_therapies_autism{@}=={@}yes"), "If Yes, please specify:");
             } elseif ($name == "did_child_receive_medical_therapies_autism") {
-                $this->form->addElement('text', "q8_specify", "if YES, please specify", ['disabled' => 'disabled']);
-                $this->XINRegisterRule("q8_specify", array("did_child_receive_medical_therapies_autism{@}=={@}yes"), 'Required if yes');
+                $this->addTextAreaElement("q8_specify", "if YES, please specify", array("did_child_receive_medical_therapies_autism{@}=={@}yes"), "If Yes, please specify:");
             } elseif ($name == "if_checked_9_please_check") {
-                $this->addSelect($name, $label, self::CHILD_ENROLLMENT_OPTIONS, ["multiple"]);
+                $this->addSelect($name, $label, self::CHILD_ENROLLMENT_OPTIONS, array("multiple"));
+                $this->XINRegisterRule($name, array("do_you_continue_enrollment_intervention{@}=={@}yes"), "Required");
             }
         }
 
@@ -280,37 +291,139 @@ class NDB_BVL_Instrument_BSRC_survey extends NDB_BVL_Instrument
 
     function validate_page1($values)
     {
-        $errors = [];
+        $errors = array();
 
-        if ($values["did_child_receive_early_intervention"] != "yes") {
-            $this->validate_empty_subquestions($values, ["average_hours_per_week"], $errors);
-            $this->validate_empty_subquestions($values, ["total_hours_since_last_visit"], $errors);
-        } else {
-            $this->validate_positive_numeric($values, ["average_hours_per_week"], $errors);
-            $this->validate_positive_numeric($values, ["total_hours_since_last_visit"], $errors);
+        $datetaken = $values['Date_taken'];
+        $datelastvisit = $values['date_last_visit'];
+
+        $list_of_fields = array('average_hours_per_week', 'since_yours_last_visit',
+            'in_past_year', 'occupational_therapy_average_hours', 'physical_therapy_average_hours',
+            'speech_language_therapy_average_hours', 'comprehensive_behavioral_average_hours', 'other_average_hours');
+        foreach ($list_of_fields as $field) {
+            if ($values[$field] < 0 || $values[$field] > 168) {
+                $error = $field . "_group";
+                $errors[$error] = 'Please enter a value between 0 and 168';
+
+            }
+        }
+        if ($values['do_you_continue_enrollment_intervention'] == 'yes' &&
+            ($values['if_checked_9_please_check'] == "" || $values['if_checked_9_please_check'] == null)) {
+
+            $errors['if_checked_9_please_check'] = 'Required if #9 is checked as Yes';
         }
 
-        $this->validate_positive_numeric($values, ["since_yours_last_visit"], $errors);
-        $this->validate_positive_numeric($values, ["in_past_year"], $errors);
+        if ($datelastvisit > $datetaken) {
 
-        if ($values["did_child_receive_complementary_therapies_autism"] != "yes") {
-            $this->validate_empty_subquestions($values, ["q7_specify"], $errors);
+            $errors['date_lastVisit_date_group'] = 'Date last visit should be before Date Taken';
         }
 
-        if ($values["did_child_receive_medical_therapies_autism"] != "yes") {
-            $this->validate_empty_subquestions($values, ["q8_specify"], $errors);
+        if ($values['occupational_therapy_received'] == 'yes'
+            && ($values['occupational_therapy_average_hours'] == null || $values['occupational_therapy_average_hours'] == "")
+            && ($values['occupational_therapy_average_hours_status'] == null
+                || $values['occupational_therapy_average_hours_status'] == "")) {
+
+            $errors['occupational_therapy_average_hours_group'] = 'Required';
+        }
+        if ($values['physical_therapy_received'] == 'yes'
+            && ($values['physical_therapy_average_hours'] == null || $values['physical_therapy_average_hours'] == "")
+            && ($values['physical_therapy_average_hours_status'] == null
+                || $values['physical_therapy_average_hours_status'] == "")) {
+
+            $errors['physical_therapy_average_hours_group'] = 'Required';
+        }
+
+        if ($values['speech_language_therapy_received'] == 'yes'
+            && ($values['speech_language_therapy_average_hours'] == null || $values['speech_language_therapy_average_hours'] == "")
+            && ($values['speech_language_therapy_average_hours_status'] == null
+                || $values['speech_language_therapy_average_hours_status'] == "")) {
+
+            $errors['speech_language_therapy_average_hours_group'] = 'Required';
+        }
+        if ($values['comprehensive_behavioral_received'] == 'yes'
+            && ($values['comprehensive_behavioral_average_hours'] == null || $values['comprehensive_behavioral_average_hours'] == "")
+            && ($values['comprehensive_behavioral_average_hours_status'] == null
+                || $values['comprehensive_behavioral_average_hours_status'] == "")) {
+
+            $errors['comprehensive_behavioral_average_hours_group'] = 'Required';
+        }
+        if ($values['other_received'] == 'yes'
+            && ($values['other_average_hours'] == null || $values['other_average_hours'] == "")
+            && ($values['other_average_hours_status'] == null || $values['other_average_hours_status'] == "")) {
+
+            $errors['other_average_hours_group'] = 'Required';
+        }
+        if ($values['did_child_receive_early_intervention'] == 'yes'
+            && ($values['average_hours_per_week'] == null
+                || $values['average_hours_per_week'] == "")
+            && ($values['average_hours_per_week_status'] == null
+                || $values['average_hours_per_week_status'] == "")) {
+
+            $errors['average_hours_per_week_group'] = 'Required';
+        }
+
+        if ($values['did_child_receive_early_intervention'] == 'yes'
+            && ($values['total_hours_since_last_visit'] == null
+                || $values['total_hours_since_last_visit'] == "")
+            && ($values['total_hours_since_last_visit_status'] == null
+                || $values['total_hours_since_last_visit_status'] == "")) {
+
+            $errors['total_hours_since_last_visit_group'] = 'Required';
+        }
+
+        $servicelist = array('occupational_therapy', 'physical_therapy',
+            'speech_language_therapy', 'comprehensive_behavioral', 'other');
+
+        foreach ($servicelist as $list) {
+            $service = $list . '_received';
+            if ($values['did_child_receive_developmental_delays'] == 'yes'
+                && ($values[$service] == null || $values[$service] == "")) {
+
+                $errors[$service] = "Required";
+            }
+            $continue = $list.'_intervention';
+            if ($values['did_child_receive_developmental_delays'] == 'yes' && $values[$service] == 'yes'
+                && ($values[$continue] == null || $values[$continue] == "")) {
+
+                $errors[$continue] = "Required";
+            }
+//            $start = $values[$list . '_date'];
+//            $stop = $values[$list . '_stopped_date'];
+//            if (!empty($start && $stop)) {
+//                if ($start >= $stop) {
+//                    $errors[$list . '_stopped_date'] = "Intervention stop date should be after intervention start date";
+//                }
+//            }
+
         }
 
         return $errors;
     }
 
-    function validate_positive_numeric($values, $question, &$errors)
+    function addOptionalSelect(string $name, string $label, array $options, $dependencyName, $dependencyValue, $message = null)
     {
-        if (isset($values[$question])) {
-            $user_input = $values[$question];
-            if ((!is_numeric($user_input) || (is_numeric($user_input) && $user_input < 0)) && $user_input != "") {
-                $errors[$question] = "Specify a positive number";
-            }
+        if ($message == null) {
+            $this->addSelect($name, $label, $options);
+            $this->XINRegisterRule($name, array("{$dependencyName}{@}=={@}{$dependencyValue}"));
+        } else {
+            $this->addSelect($name, $label, $options);
+            $this->XINRegisterRule($name, array("{$dependencyName}{@}=={@}{$dependencyValue}"), $message);
+        }
+    }
+
+    function addOptionalDate(string $name, string $label, $dependencyName, $dependencyValue, $message)
+    {
+        $this->addMonthYear($name, $label);
+        $this->XINRegisterRule($name, array("{$dependencyName}{@}=={@}{$dependencyValue}"), $message);
+    }
+
+    function addOptionalText(string $name, string $label, $dependencyName, $dependencyValue, $message = null)
+    {
+        if ($message == null) {
+            $this->addTextElement($name, $label);
+            $this->XINRegisterRule($name, array("{$dependencyName}{@}=={@}{$dependencyValue}"));
+        } else {
+            $this->addTextElement($name, $label);
+            $this->XINRegisterRule($name, array("{$dependencyName}{@}=={@}{$dependencyValue}"), $message);
         }
     }
 }
