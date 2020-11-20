@@ -24,6 +24,8 @@ class NDB_BVL_Instrument_BSRC_survey extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
 
+    use instrument_validator;
+
     var $ValidityEnabled = false;
     var $ValidityRequired = false;
 
@@ -385,6 +387,10 @@ class NDB_BVL_Instrument_BSRC_survey extends NDB_BVL_Instrument
                 && ($values[$continue] == null || $values[$continue] == "")) {
 
                 $errors[$continue] = "Required";
+            }
+            if ($values['did_child_receive_developmental_delays'] == 'yes' && $values[$service] == 'yes'
+                && $values[$continue] == "yes" && $values[$list . '_stopped_date'] != null) {
+                $errors[$list . '_stopped_date'] = "You must leave this field since you entered yes above.";
             }
 //            $start = $values[$list . '_date'];
 //            $stop = $values[$list . '_stopped_date'];
