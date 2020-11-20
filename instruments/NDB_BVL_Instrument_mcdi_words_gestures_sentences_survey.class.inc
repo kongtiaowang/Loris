@@ -15,18 +15,37 @@
 
 class NDB_BVL_Instrument_mcdi_words_gestures_sentences_survey extends NDB_BVL_Instrument
 {
+    use LegacyInstrumentTrait;
+
     var $ValidityEnabled  = false;
     var $ValidityRequired = false;
+
+    var $scoreLabels = array(
+                        "words_produced_number",
+                        "early_gestures_number",
+                        "later_gestures_number",
+                        "total_gestures_number",
+                        "words_produced_percentile",
+                        "early_gestures_percentile",
+                        "later_gestures_percentile",
+                        "total_gestures_percentile",
+                       );
 
     var $_doubleDataEntryDiffIgnoreColumns = array(
                                               'CommentID',
                                               'Testdate',
                                               'Window_Difference',
                                               'Candidate_Age',
+                                              "words_produced_number",
+                                              "early_gestures_number",
+                                              "later_gestures_number",
+                                              "total_gestures_number",
+                                              "words_produced_percentile",
+                                              "early_gestures_percentile",
+                                              "later_gestures_percentile",
+                                              "total_gestures_percentile",
                                               "Data_entry_completion_status",
                                              );
-
-    use LegacyInstrumentTrait;
 
     /**
      * sets up basic data, such as the LorisForm object, and so on.
@@ -124,13 +143,16 @@ class NDB_BVL_Instrument_mcdi_words_gestures_sentences_survey extends NDB_BVL_In
 
     function _page1()
     {
-        $this->form->addElement('header', null, "Part I Words Children Use");
+        $this->form->addElement('header', null, "Part I: Words Children Use");
+
+        $this->form->addElement('header', null, 'A. Vocabulary Checklist');
 
         $this->form->addElement(
-            'header',
+            'static',
             null,
-            '<h3>A. Vocabulary Checklist</h3>
- Children understand many more words than they say. We are particularly interested in the words your child SAYS. Please go through the list and mark the words you have heard your child use. If your child uses a different pronunciation of a word (for example, "raffe" instead of "giraffe" or "sketti" for spaghetti"), mark the word anyway. Remember that this is a "catalogue" of all the words that are used by many different children. Don\'t worry if your child knows only a few of these right now.'
+            'Children understand many more words than they say. We are particularly interested in the words your child SAYS.
+            Please go through the list and mark the words you have heard your child use. If your child uses a different pronunciation of a word (for example, "raffe" instead of "giraffe" or "sketti" for spaghetti"), mark the word anyway.
+            Remember that this is a "catalogue" of all the words that are used by many different children. Don\'t worry if your child knows only a few of these right now.'
         );
 
         $this->form->addElement('header', null, "1. Sounds Effects and Animal Sounds (12)");
@@ -219,6 +241,7 @@ class NDB_BVL_Instrument_mcdi_words_gestures_sentences_survey extends NDB_BVL_In
         $this->makeWordPickItem(self::WordQuestion_I_A_22, 'I_A_22_');
 
         $this->form->addElement('header', null, 'B. How Children Use Words');
+
         $qNum = 1;
         foreach (self::Question_I_B as $label) {
             $this->form->addElement('select', 'I_B_' . $qNum, $label, self::FrequencyOption);
@@ -228,7 +251,7 @@ class NDB_BVL_Instrument_mcdi_words_gestures_sentences_survey extends NDB_BVL_In
 
     function _page8()
     {
-        $this->form->addElement('header', null, 'Part II Actions and Gestures');
+        $this->form->addElement('header', null, 'Part II: Actions and Gestures');
 
         $this->form->addElement('header', null, 'A. First Communicative Gestures');
         $this->addLabel('When infants are first learning to communicate, they often use gestures to make their wishes known. For each item below, mark the line that describes your child\'s actions right now.');
@@ -278,7 +301,7 @@ class NDB_BVL_Instrument_mcdi_words_gestures_sentences_survey extends NDB_BVL_In
 
     function _page9()
     {
-        $this->form->addElement('header', null, 'Part III Sentences and Grammar');
+        $this->form->addElement('header', null, 'Part III: Sentences and Grammar');
 
         $this->form->addElement('header', null, 'A. Word Endings/ Part 1');
 
@@ -297,7 +320,8 @@ class NDB_BVL_Instrument_mcdi_words_gestures_sentences_survey extends NDB_BVL_In
         $this->addLabel('Verbs:');
         $this->makeWordPickItem(self::WordQuestion_III_B_V, 'III_B_V_');
 
-        $this->addLabel('C. Word Endings/ Part 2');
+        $this->form->addElement('header', null, 'C. Word Endings/ Part 2');
+
         $this->addLabel('Young children often place the wrong endings on words. For example, a child might say "Auntie goed home." Mistakes like this are often a sign of progress in language. In the following lists, please mark all the mistakes of this kind you have heard your child say recently. ');
 
         $this->addLabel('Nouns:');
@@ -308,9 +332,12 @@ class NDB_BVL_Instrument_mcdi_words_gestures_sentences_survey extends NDB_BVL_In
 
         $this->form->addElement('select', 'III_C_additional', 'Has your child begun to combine words yet, such as "Nother Cracker", or "Doggie Bite?"', self::FrequencyOption);
 
-        $this->addTextAreaElement('III_D', 'D. Examples: Please list three of the longest sentences you have heard your child say recently.');
+        $this->form->addElement('header', null, 'D. Examples:');
 
-        $this->addLabel('E. Complexity');
+        $this->addTextAreaElement('III_D', 'Please list three of the longest sentences you have heard your child say recently.');
+
+        $this->form->addElement('header', null, 'E. Complexity');
+
         $this->addLabel('In each of the following pairs, please mark the one that sounds most like the way your child talks right now. If your child is saying sentences even longer or more complicated than the two provided, just pick the second one.');
 
         $qNum = 1;
@@ -335,16 +362,275 @@ class NDB_BVL_Instrument_mcdi_words_gestures_sentences_survey extends NDB_BVL_In
     {
         $qNum = 1;
         foreach ($QuestionArray as $label) {
-
             $column = $prefix . $qNum;
             $this->form->addElement('advcheckbox', $column, $label, $label, null, self::NoYesCheckbox);
-
-            //$this->form->addElement('select', $prefix . $qNum, $label, ['N' =>'No', 'Y' => 'Yes']);
-            // Used to generate sql
-
             $this->XINRegisterRule($column, array($column . '{@}=={@}NEVER_REQUIRED'));
             $qNum++;
         }
+    }
+
+    function Sum($question_count, &$record, $question_prefix, &$count)
+    {
+        for ($qNum = 1; $qNum <= $question_count; $qNum++) {
+            if ($record[$question_prefix . $qNum] == "Y") {
+                $count++;
+            }
+        }
+    }
+
+    function CalculatePercentile($scale, $age_months, $gender, &$scores)
+    {
+        $db = Database::singleton();
+
+        $scale_number     = $scale . "_number";
+        $scale_percentile = $scale . "_percentile";
+
+        $query_scores    = "SELECT * FROM macarthur_lookup WHERE age_months=".$age_months. " AND sex='$gender' AND score_raw=".$scores[$scale_number]." AND subscale='$scale_number'";
+        $PercentileScore = $db->pselectRow($query_scores, array());
+
+        $scores[$scale_percentile] = $PercentileScore['score_percentile'];
+
+        if ($PercentileScore == null) {
+            $score_holder   = $scores[$scale_number];
+            $query_scores1a = "
+                SELECT
+                    *
+                FROM
+                    macarthur_lookup
+                WHERE
+                    age_months = $age_months AND
+                    sex = '$gender' AND
+                    subscale = '$scale_number' AND
+                    score_raw > $score_holder
+                ORDER BY
+                    score_raw
+                ASC
+                    limit 1"
+            ;
+
+            $record_1a = $db->pselect($query_scores1a, array());
+            if (empty($record_1a)) {
+                $db->pselect(
+                    "
+                    SELECT
+                        *
+                    FROM
+                        macarthur_lookup
+                    WHERE
+                        age_months = $age_months AND
+                        sex = '$gender' AND
+                        subscale = '$scale_number'
+                    ORDER BY
+                        score_raw
+                    ASC
+                        limit 1",
+                    array()
+                );
+            }
+
+            $query_scores1b = "
+                SELECT
+                    *
+                FROM
+                    macarthur_lookup
+                WHERE
+                    age_months = " . $age_months . " AND
+                    sex = '$gender' AND
+                    subscale = '$scale_number' AND
+                    score_raw < $score_holder
+                ORDER BY
+                    score_raw
+                DESC
+                    limit 1";
+
+            $record_1b = $db->pselect($query_scores1b, array());
+
+            // print "scale: $scale_number score: " . $scores[$scale_number] . " x< " . $record_1b['score_raw'] . " x> " . $record_1a['score_raw'] . " Y> " . $record_1b['score_percentile'] . " Y< " . $record_1b['score_percentile'] . '<br />';
+            $percentile_calculation1 = (
+                    ($scores[$scale_number]-$record_1b[0]['score_raw'])/
+                    ($record_1a[0]['score_raw']-$record_1b[0]['score_raw'])
+                    )*($record_1a[0]['score_percentile']-$record_1b[0]['score_percentile'])+$record_1b[0]['score_percentile'];
+
+            $scores[$scale_percentile] =abs(round($percentile_calculation1));
+        }
+
+        if ($scores[$scale_percentile] > 99) {
+            $scores[$scale_percentile] = 99;
+        }
+    }
+
+    function score(): void
+    {
+        if ($this->_determineDataEntryCompletionStatus() == "Incomplete") {
+            return;
+        }
+
+        // Null scores
+        $this->_nullScores($this->scoreLabels);
+
+        // Get saved data
+        $db     = Database::singleton();
+        $record = $db->pselectRow("SELECT * FROM $this->table WHERE CommentID=:cid", array("cid" => $this->getCommentID()));
+
+        // Get the subject's Sex
+        $query_gender  = "
+            SELECT
+                Sex
+            FROM
+                candidate as c,
+                session as s,
+                flag as f,
+                $this->table as t
+            WHERE
+                t.CommentID = '$this->commentID' AND
+                f.CommentID=t.CommentID AND
+                s.ID=f.SessionID AND
+                s.CandID=c.CandID
+            ";
+        $record_gender = $db->pselectRow($query_gender, array());
+        $gender        = strtolower($record_gender['Sex']);
+
+        // Get the subject's Age in months
+        $timepoint  = TimePoint::singleton($this->getSessionID());
+        $dob        = $timepoint->getEffectiveDateOfBirth();
+        $age        = Utility::calculateAge($dob, $record["Date_taken"]);
+        $age_months = $age['year'] * 12 + $age['mon'];
+
+        // Initialize scores
+        $scores = array(
+                   "words_produced_number"     => 0, // Part I: A
+                   "early_gestures_number"     => 0, // Part II: A, B
+                   "later_gestures_number"     => 0, // Part II: C, D, E
+                   "total_gestures_number"     => 0, // Part II: A, B, C, D, E
+                   "words_produced_percentile" => 0,
+                   "early_gestures_percentile" => 0,
+                   "later_gestures_percentile" => 0,
+                   "total_gestures_percentile" => 0,
+                  );
+
+        /******************************
+         * Part I: Words Children Use *
+         ******************************/
+
+        // Section A: Vocabulary Checklist
+
+        $I_A_question_count = array(
+                               1  => count(self::WordQuestion_I_A_1),
+                               2  => count(self::WordQuestion_I_A_2),
+                               3  => count(self::WordQuestion_I_A_3),
+                               4  => count(self::WordQuestion_I_A_4),
+                               5  => count(self::WordQuestion_I_A_5),
+                               6  => count(self::WordQuestion_I_A_6),
+                               7  => count(self::WordQuestion_I_A_7),
+                               8  => count(self::WordQuestion_I_A_8),
+                               9  => count(self::WordQuestion_I_A_9),
+                               10 => count(self::WordQuestion_I_A_10),
+                               11 => count(self::WordQuestion_I_A_11),
+                               12 => count(self::WordQuestion_I_A_12),
+                               13 => count(self::WordQuestion_I_A_13),
+                               14 => count(self::WordQuestion_I_A_14),
+                               15 => count(self::WordQuestion_I_A_15),
+                               16 => count(self::WordQuestion_I_A_16),
+                               17 => count(self::WordQuestion_I_A_17),
+                               18 => count(self::WordQuestion_I_A_18),
+                               19 => count(self::WordQuestion_I_A_19),
+                               20 => count(self::WordQuestion_I_A_20),
+                               21 => count(self::WordQuestion_I_A_21),
+                               22 => count(self::WordQuestion_I_A_22),
+                              );
+
+        $says       = array();
+        $says_total = 0;
+
+        for ($i = 1; $i <= 22; $i++) {
+            $says[$i] = 0;
+            $this->Sum($I_A_question_count[$i], $record, "I_A_" . $i . "_", $says[$i]);
+            $says_total += $says[$i];
+        }
+
+        // Total # of words produced
+        $scores["words_produced_number"] = $says_total;
+
+        // Section B: How Children Use Words
+        // No scoring
+
+        /********************************
+         * Part II: Action and Gestures *
+         ********************************/
+
+        // Section A: First Communicative Gestures
+
+        $II_A_question_count = count(self::Question_II_A); // == 13
+
+        $first_gestures_ST_or_OF = 0;
+
+        // Count # of questions answered Sometimes or Often
+        for ($qNum = 1; $qNum <= $II_A_question_count; $qNum++) {
+            if ($record["II_A_" . $qNum] == "ST" || $record["II_A_" . $qNum] == "OF") {
+                $first_gestures_ST_or_OF++;
+            }
+        }
+
+        // Part B: Games and Routines
+        // Part C: Actions with Objects
+        // Part D: Pretending to be a Parent
+        // Part E: Imitating Other Adult Actions
+
+        $YesActions = array(
+                       'B' => 0,
+                       'C' => 0,
+                       'D' => 0,
+                       'E' => 0,
+                      );
+
+        $II_B_question_count = count(self::Question_II_B); // == 6
+        $II_C_question_count = count(self::Question_II_C); // == 17
+        $II_D_question_count = count(self::Question_II_D); // == 13
+        $II_E_question_count = count(self::Question_II_E); // == 16
+
+        $this->Sum($II_B_question_count, $record, "II_B_", $YesActions['B']);
+        $this->Sum($II_C_question_count, $record, "II_C_", $YesActions['C']);
+        $this->Sum($II_D_question_count, $record, "II_D_", $YesActions['D']);
+        $this->Sum($II_E_question_count, $record, "II_E_", $YesActions['E']);
+
+        $YesActions_total_sum = $YesActions['B'] + $YesActions['C'] + $YesActions['D'] + $YesActions['E'];
+
+        $scores["total_gestures_number"] = $first_gestures_ST_or_OF + $YesActions_total_sum;
+        $scores["early_gestures_number"] = $first_gestures_ST_or_OF + $YesActions['B'];
+        $scores["later_gestures_number"] = $YesActions['C'] + $YesActions['D'] + $YesActions['E'];
+
+        /***********************************
+         * Part III: Sentences and Grammar *
+         ***********************************/
+        // No Scoring
+
+        // Establish standard scores and percentile rank for subscales
+        // This only has data for the ages 8-18 months. After that,
+        // percentile ranks only exist for Macarthur Words and Sentences scale,
+        // but we still use words and gestures in V24
+        // to compare the subject against him/herself.
+        $Scales = array(
+                   "words_produced",
+                   "early_gestures",
+                   "later_gestures",
+                   "total_gestures",
+                  );
+
+        foreach ($Scales as $scale) {
+            if ($age_months >= 8 && $age_months <= 18) {
+                $this->CalculatePercentile($scale, $age_months, $gender, $scores);
+            } elseif ($age_months < 8) {
+                $scale_percentile          = $scale . "_percentile";
+                $scores[$scale_percentile] = "Candidate too young to score";
+            } else {
+                $scale_percentile          = $scale . "_percentile";
+                $scores[$scale_percentile] = "Candidate too old to score";
+            }
+        }
+        // End percentiles calculation
+
+        // Save scores
+        $result = $db->update($this->table, $scores, array("CommentID" => $this->getCommentID()));
     }
 
     // Answers to often asked questions
