@@ -29,35 +29,35 @@ class NDB_BVL_Instrument_TSI_FU_DS_Infant extends NDB_BVL_Instrument
     var $ValidityRequired = false;
 
     const YES_NO_NA_OPTIONS = array(
-                               null           => "",
-                               "yes"          => "Yes",
-                               "no"           => "No",
-                               "not_answered" => "Not Answered",
-                              );
+        null           => "",
+        "yes"          => "Yes",
+        "no"           => "No",
+        "not_answered" => "Not Answered",
+    );
 
     const YES_NO_OPTIONS = array(
-                            null  => "",
-                            "yes" => "Yes",
-                            "no"  => "No",
-                           );
+        null  => "",
+        "yes" => "Yes",
+        "no"  => "No",
+    );
 
     const GENDER_OPTIONS = array(
-                            null     => "",
-                            "male"   => "Male",
-                            "female" => "Female",
-                           );
+        null     => "",
+        "male"   => "Male",
+        "female" => "Female",
+    );
 
     const HOUSEHOLD_SES_OPTIONS = array(
-                                   null            => '',
-                                   'less_than_25K' => 'less than $24,999',
-                                   '25K-35K'       => '$25,000 - 34,999',
-                                   '35K-50K'       => '$35,000 - 49,999',
-                                   '50K-75K'       => '$50,000 - 74,999',
-                                   '75K-100K'      => '$75,000 - 99,999',
-                                   '100K-150K'     => '$100,000 - 149,999',
-                                   '150K-200K'     => '$150,000 - 199,999',
-                                   'over_200K'     => 'over $200,000',
-                                  );
+        null            => '',
+        'less_than_25K' => 'less than $24,999',
+        '25K-35K'       => '$25,000 - 34,999',
+        '35K-50K'       => '$35,000 - 49,999',
+        '50K-75K'       => '$50,000 - 74,999',
+        '75K-100K'      => '$75,000 - 99,999',
+        '100K-150K'     => '$100,000 - 149,999',
+        '150K-200K'     => '$150,000 - 199,999',
+        'over_200K'     => 'over $200,000',
+    );
 
     /**
      * Sample SQL statement for test_names table and instrument subtests table
@@ -102,11 +102,11 @@ class NDB_BVL_Instrument_TSI_FU_DS_Infant extends NDB_BVL_Instrument
 
         // required fields for data entry completion status
         $this->_requiredElements = array(
-                                    "are_bio_parents_living_in_same_home",
-                                    "inf_devfactors_q1_specific_neurological_problems",
-                                    "inf_medhist_q1_had_serious_medical_or_surgical_problems",
-                                    "likelihood_of_child_sleeping_through_a_scan_rating",
-                                   );
+            "are_bio_parents_living_in_same_home",
+            "inf_devfactors_q1_specific_neurological_problems",
+            "inf_medhist_q1_had_serious_medical_or_surgical_problems",
+            "likelihood_of_child_sleeping_through_a_scan_rating",
+        );
 
         // setup the form
         $this->_setupForm();
@@ -159,16 +159,16 @@ class NDB_BVL_Instrument_TSI_FU_DS_Infant extends NDB_BVL_Instrument
         $this->addHeader("Telephone Screening Interview - Follow-Up - DS-Infant");
 
         $page1_questions = array(
-                            "are_bio_parents_living_in_same_home" => "Are biological parents living in the same home?",
-                            "are_parents_divorced_or_separated"   => "Are parents divorced or separated?",
-                           );
+            "are_bio_parents_living_in_same_home" => "Are biological parents living in the same home?",
+            "are_parents_divorced_or_separated"   => "Are parents divorced or separated?",
+        );
 
         $pii_address = array(
-                        "Street Address",
-                        "City",
-                        "State",
-                        "Zip Code",
-                       );
+            "Street Address",
+            "City",
+            "State",
+            "Zip Code",
+        );
 
         foreach ($page1_questions as $field => $label) {
             $this->addSelect($field, $label, self::YES_NO_OPTIONS);
@@ -222,6 +222,9 @@ class NDB_BVL_Instrument_TSI_FU_DS_Infant extends NDB_BVL_Instrument
         $this->addSelect("household_ses_mother_or_combined", "Household SES Mother or combined", self::HOUSEHOLD_SES_OPTIONS);
         $this->addSelect("household_ses_father_if_2_households", "Household SES Father if 2 households", self::HOUSEHOLD_SES_OPTIONS);
 
+        $this->XINRegisterRule("household_ses_mother_or_combined", array("household_ses_mother_or_combined{@}=={@}NEVER_REQUIRED"));
+        $this->XINRegisterRule("household_ses_father_if_2_households", array("household_ses_father_if_2_households{@}=={@}NEVER_REQUIRED"));
+
         $this->form->addElement('static', null, null);
 
         $this->form->addElement('static', null, "<h4>Any new siblings or changes in medical or psychiatric status of existing siblings?</h4>");
@@ -229,18 +232,18 @@ class NDB_BVL_Instrument_TSI_FU_DS_Infant extends NDB_BVL_Instrument
         $this->form->addElement('static', null, "<h4><b>New Siblings or sibling with change in status</b></h4>");
 
         $sibling_status = array(
-                           null => '',
-                           "ns" => "NS",
-                           "nd" => "ND",
-                          );
+            null => '',
+            "ns" => "NS",
+            "nd" => "ND",
+        );
 
         $sibling_options = array(
-                            null      => '',
-                            "half"    => "Half",
-                            "full"    => "Full",
-                            "step"    => "Step",
-                            "adopted" => "Adopted",
-                           );
+            null      => '',
+            "half"    => "Half",
+            "full"    => "Full",
+            "step"    => "Step",
+            "adopted" => "Adopted",
+        );
 
         // INFANT'S SIBLINGS
         $group[] =& $this->form->createElement(
@@ -444,7 +447,7 @@ class NDB_BVL_Instrument_TSI_FU_DS_Infant extends NDB_BVL_Instrument
             "weaned"       => "Weaned",
             "not_weaned"   => "Not Weaned",
             "not_answered" => "Not Answered",
-           );
+        );
 
         // Q11
         $this->addSelect("inf_devfactors_q11_breastfeeding", "11. Have you ever or are you breastfeeding your infant?", self::YES_NO_OPTIONS);
@@ -459,13 +462,13 @@ class NDB_BVL_Instrument_TSI_FU_DS_Infant extends NDB_BVL_Instrument
 
         // Q15
         $q15_subquestions = array(
-                             "intellectual_disability" => "Intellectual Disability",
-                             "schizophrenia"           => "Schizophrenia",
-                             "bipolar_disorder"        => "Bipolar Disorder",
-                             "psychosis"               => "Psychosis",
-                             "ocd"                     => "Obsessive Compulsive Disorder (OCD)",
-                             "tourettes_disorder"      => "Tourettes Disorder",
-                            );
+            "intellectual_disability" => "Intellectual Disability",
+            "schizophrenia"           => "Schizophrenia",
+            "bipolar_disorder"        => "Bipolar Disorder",
+            "psychosis"               => "Psychosis",
+            "ocd"                     => "Obsessive Compulsive Disorder (OCD)",
+            "tourettes_disorder"      => "Tourettes Disorder",
+        );
 
         $this->addSelect("inf_devfactors_q15_first_degree_relative", "15. Any first degree relative (mom, dad, or full siblings) recently diagnosed with:", self::YES_NO_OPTIONS);
 
@@ -577,14 +580,14 @@ class NDB_BVL_Instrument_TSI_FU_DS_Infant extends NDB_BVL_Instrument
         $this->form->addElement('static', null, null);
 
         $q6_options = array(
-                       null                             => '',
-                       "metallic_ear_tubes"             => "Metallic Ear Tubes",
-                       "pacemaker"                      => "Pacemaker",
-                       "vascular_stints"                => "Vascular Stints",
-                       "other_metal_implants_or_braces" => "Other metal implants or braces",
-                       "sternal_wires"                  => "Sternal wires (allowed for MRI is 6 weeks post-surgery)",
-                       "pacer_wires"                    => "Pacer wires (exclusionary)",
-                      );
+            null                             => '',
+            "metallic_ear_tubes"             => "Metallic Ear Tubes",
+            "pacemaker"                      => "Pacemaker",
+            "vascular_stints"                => "Vascular Stints",
+            "other_metal_implants_or_braces" => "Other metal implants or braces",
+            "sternal_wires"                  => "Sternal wires (allowed for MRI is 6 weeks post-surgery)",
+            "pacer_wires"                    => "Pacer wires (exclusionary)",
+        );
 
         // Q1
         $this->addSelect("inf_medhist_q1_had_serious_medical_or_surgical_problems", "1. Has infant had any serious medical or surgical problems since last visit?", self::YES_NO_OPTIONS);
@@ -630,19 +633,19 @@ class NDB_BVL_Instrument_TSI_FU_DS_Infant extends NDB_BVL_Instrument
         $this->addBasicText("inf_medhist_q12_what_time_does_X_go_to_sleep_at_night", "12. What time does X go to sleep at night?");
 
         $scale_of_1_to_10 = array(
-                             null                  => "",
-                             "0_not_at_all_likely" => "0 - Not at all likely",
-                             "1"                   => "1",
-                             "2"                   => "2",
-                             "3"                   => "3",
-                             "4"                   => "4",
-                             "5"                   => "5",
-                             "6"                   => "6",
-                             "7"                   => "7",
-                             "8"                   => "8",
-                             "9"                   => "9",
-                             "10_very_likely"      => "10 - Very likely",
-                            );
+            null                  => "",
+            "0_not_at_all_likely" => "0 - Not at all likely",
+            "1"                   => "1",
+            "2"                   => "2",
+            "3"                   => "3",
+            "4"                   => "4",
+            "5"                   => "5",
+            "6"                   => "6",
+            "7"                   => "7",
+            "8"                   => "8",
+            "9"                   => "9",
+            "10_very_likely"      => "10 - Very likely",
+        );
 
         $this->addSelect("likelihood_of_child_sleeping_through_a_scan_rating", "On a scale of 1 – 10, please rate the likelihood of your child sleeping through a scan.", $scale_of_1_to_10);
 
@@ -674,12 +677,12 @@ class NDB_BVL_Instrument_TSI_FU_DS_Infant extends NDB_BVL_Instrument
         $this->form->addElement('static', null, null);
 
         $research_staff_questions = array(
-                                     "q1_infant_meets_any_medical_neurological_exclusion_criteria" => "1. This infant meets any of the medical or neurological exclusion criteria for this study.",
-                                     "q2_subject_has_evidence_for_contraindication_to_MRI"         => "2. This subject has evidence for contraindication to MRI.",
-                                     "q3_additional_documentation_required_to_MRI"                 => "3. Additional documentation required to approve MRI safety. Medical records sent for review.",
-                                     "q4_additional_documentation_completed"                       => "4. Additional documentation completed and submitted to MRI tech.",
-                                     "q5_proceed_to_next_level_beyond_screening"                   => "5. Proceed to next level beyond screening.",
-                                    );
+            "q1_infant_meets_any_medical_neurological_exclusion_criteria" => "1. This infant meets any of the medical or neurological exclusion criteria for this study.",
+            "q2_subject_has_evidence_for_contraindication_to_MRI"         => "2. This subject has evidence for contraindication to MRI.",
+            "q3_additional_documentation_required_to_MRI"                 => "3. Additional documentation required to approve MRI safety. Medical records sent for review.",
+            "q4_additional_documentation_completed"                       => "4. Additional documentation completed and submitted to MRI tech.",
+            "q5_proceed_to_next_level_beyond_screening"                   => "5. Proceed to next level beyond screening.",
+        );
 
         foreach ($research_staff_questions as $key => $question) {
             $this->addSelect($key, $question, self::YES_NO_OPTIONS);
@@ -744,13 +747,13 @@ class NDB_BVL_Instrument_TSI_FU_DS_Infant extends NDB_BVL_Instrument
         $this->validate_positive_numeric($values, "inf_devfactors_q11b_how_long_breastfeed_months", $errors);
 
         $q15_subquestions = array(
-                             "intellectual_disability",
-                             "schizophrenia",
-                             "bipolar_disorder",
-                             "psychosis",
-                             "ocd",
-                             "tourettes_disorder",
-                            );
+            "intellectual_disability",
+            "schizophrenia",
+            "bipolar_disorder",
+            "psychosis",
+            "ocd",
+            "tourettes_disorder",
+        );
 
         foreach ($q15_subquestions as $key) {
             if ($values["inf_devfactors_q15_first_degree_relative"] != "yes" && ($values["inf_devfactors_q15_" . $key . "_mother"] != "" || $values["inf_devfactors_q15_" . $key . "_father"] != "" || $values["inf_devfactors_q15_" . $key . "_full_sibling"] != "")) {
