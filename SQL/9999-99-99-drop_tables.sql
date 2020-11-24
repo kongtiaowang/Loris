@@ -179,3 +179,5 @@ DROP TABLE IF EXISTS `hrrt_archive_files`;
 DROP TABLE IF EXISTS `hrrt_archive`;
 DROP TABLE IF EXISTS `Project`;
 DROP TABLE IF EXISTS `subproject`;
+DROP TABLE IF EXISTS `appointment_type`;
+DROP TABLE IF EXISTS `appointment`;
