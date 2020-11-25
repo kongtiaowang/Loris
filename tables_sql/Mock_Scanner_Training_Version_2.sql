@@ -379,4 +379,8 @@ INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_num
 INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('Mock_Scanner_Training_Version_2','Mock_Scanner_Training_Version_2_page4', "Page 4", 4);
 INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('Mock_Scanner_Training_Version_2','Mock_Scanner_Training_Version_2_page5', "Page 5", 5);
 INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('Mock_Scanner_Training_Version_2','Mock_Scanner_Training_Version_2_page6', "Page 6", 6);
-INSERT INTO test_battery (Test_name, Visit_label) VALUES ('Mock_Scanner_Training_Version_2', 'VSA-CVD');
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('Mock_Scanner_Training_Version_2', '0', '0', 'Y', 'Visit', 1, 'VSA-CVD', NULL);
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('Mock_Scanner_Training_Version_2', '0', '0', 'Y', 'Visit', 2, 'VSA-CVD', NULL);
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('Mock_Scanner_Training_Version_2', '0', '0', 'Y', 'Visit', 3, 'VSA-CVD', NULL);
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('Mock_Scanner_Training_Version_2', '0', '0', 'Y', 'Visit', 9, 'VSA-CVD', NULL);
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('Mock_Scanner_Training_Version_2', '0', '0', 'Y', 'Visit', 10, 'VSA-CVD', NULL);
