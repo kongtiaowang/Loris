@@ -402,6 +402,15 @@ class NDB_BVL_Instrument_BSRC_survey extends NDB_BVL_Instrument
 
         }
 
+        foreach ($servicelist as $list) {
+            $service = $list . '_received';
+            if ($values['did_child_receive_developmental_delays'] == 'no'
+                && ($values[$service] != null || $values[$service] != "")) {
+
+                $errors[$service] = "Not required";
+            }
+        }
+
         return $errors;
     }
 
