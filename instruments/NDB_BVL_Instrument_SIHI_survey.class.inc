@@ -159,7 +159,7 @@ class NDB_BVL_Instrument_SIHI_survey extends NDB_BVL_Instrument
                           );
 
         $rate_concern_options = array(
-                                 "1_mild"     => "1 - Mild",
+                                 "1"          => "1 - Mild",
                                  "2"          => "2",
                                  "3"          => "3",
                                  "4"          => "4",
@@ -168,7 +168,7 @@ class NDB_BVL_Instrument_SIHI_survey extends NDB_BVL_Instrument
                                  "7"          => "7",
                                  "8"          => "8",
                                  "9"          => "9",
-                                 "10_extreme" => "10 - Extreme",
+                                 "10"         => "10 - Extreme",
                                 );
 
         $this->addSelect("i_q1_any_concerns_about_childs_nighttime_sleep", "1. Any concerns about your child's nighttime sleep?", $yes_no_options);
@@ -230,7 +230,7 @@ class NDB_BVL_Instrument_SIHI_survey extends NDB_BVL_Instrument
                           );
 
         $rate_concern_options = array(
-                                 "1_mild"     => "1 - Mild",
+                                 "1"          => "1 - Mild",
                                  "2"          => "2",
                                  "3"          => "3",
                                  "4"          => "4",
@@ -239,7 +239,7 @@ class NDB_BVL_Instrument_SIHI_survey extends NDB_BVL_Instrument
                                  "7"          => "7",
                                  "8"          => "8",
                                  "9"          => "9",
-                                 "10_extreme" => "10 - Extreme",
+                                 "10"         => "10 - Extreme",
                                 );
 
         $this->addSelect("ii_q1_any_concerns_about_childs_nighttime_sleep", "1. Any concerns about your child's nighttime sleep?", $yes_no_options);
@@ -301,7 +301,7 @@ class NDB_BVL_Instrument_SIHI_survey extends NDB_BVL_Instrument
                           );
 
         $rate_concern_options = array(
-                                 "1_mild"     => "1 - Mild",
+                                 "1"          => "1 - Mild",
                                  "2"          => "2",
                                  "3"          => "3",
                                  "4"          => "4",
@@ -310,7 +310,7 @@ class NDB_BVL_Instrument_SIHI_survey extends NDB_BVL_Instrument
                                  "7"          => "7",
                                  "8"          => "8",
                                  "9"          => "9",
-                                 "10_extreme" => "10 - Extreme",
+                                 "10"         => "10 - Extreme",
                                 );
 
         $this->addSelect("iii_q1_any_concerns_about_childs_nighttime_sleep", "1. Any concerns about your child's nighttime sleep?", $yes_no_options);
@@ -372,7 +372,7 @@ class NDB_BVL_Instrument_SIHI_survey extends NDB_BVL_Instrument
                           );
 
         $rate_concern_options = array(
-                                 "1_mild"     => "1 - Mild",
+                                 "1"          => "1 - Mild",
                                  "2"          => "2",
                                  "3"          => "3",
                                  "4"          => "4",
@@ -381,7 +381,7 @@ class NDB_BVL_Instrument_SIHI_survey extends NDB_BVL_Instrument
                                  "7"          => "7",
                                  "8"          => "8",
                                  "9"          => "9",
-                                 "10_extreme" => "10 - Extreme",
+                                 "10"         => "10 - Extreme",
                                 );
 
         $this->addSelect("iv_q1_any_concerns_about_childs_nighttime_sleep", "1. Any concerns about your child's nighttime sleep?", $yes_no_options);
@@ -443,7 +443,7 @@ class NDB_BVL_Instrument_SIHI_survey extends NDB_BVL_Instrument
                           );
 
         $rate_concern_options = array(
-                                 "1_mild"     => "1 - Mild",
+                                 "1"          => "1 - Mild",
                                  "2"          => "2",
                                  "3"          => "3",
                                  "4"          => "4",
@@ -452,7 +452,7 @@ class NDB_BVL_Instrument_SIHI_survey extends NDB_BVL_Instrument
                                  "7"          => "7",
                                  "8"          => "8",
                                  "9"          => "9",
-                                 "10_extreme" => "10 - Extreme",
+                                 "10"         => "10 - Extreme",
                                 );
 
         $this->addSelect("v_q1_any_concerns_about_childs_nighttime_sleep", "1. Any concerns about your child's nighttime sleep?", $yes_no_options);
