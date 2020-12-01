@@ -28,6 +28,7 @@ services:
     volumes:
       - ./:/app
       - ./test/test_instrument:/app/project/instruments
+      - /data-raisinbread/:/data-raisinbread
     environment:
       - LORIS_DB_CONFIG=/app/test/config.xml
     depends_on:
@@ -65,7 +66,7 @@ services:
     entrypoint: /app/test/wait-for-services.sh
 
   selenium-debug:
-    image: selenium/standalone-firefox-debug:2.53.1
+    image: selenium/standalone-firefox-debug:3.8.1-aluminum
     links:
       - web-debug:web
     ports:
