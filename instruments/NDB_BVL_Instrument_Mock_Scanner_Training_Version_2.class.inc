@@ -154,10 +154,11 @@ class NDB_BVL_Instrument_Mock_Scanner_Training_Version_2 extends NDB_BVL_Instrum
     /**
      * Display a specific page of the instrument.
      *
-     * @param int $i page number (1..6)
+     * @param string "_page$i" page number (1..6)
      */
-    function _displayPage(int $i)
+    function _displayPage(string $pagei)
     {
+        $i = (int)substr($pagei, -1);
         $this->addHeader("Session #: $i");
         $this->addDateElement("session_date_$i", 'Date');
         $this->addRequiredSelect(
