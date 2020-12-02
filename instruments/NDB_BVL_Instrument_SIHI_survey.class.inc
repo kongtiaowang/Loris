@@ -65,7 +65,12 @@ class NDB_BVL_Instrument_SIHI_survey extends NDB_BVL_Instrument
         //Any HTML_Quickform multiple selects must be listed here
         $this->selectMultipleElements = array();
         // required fields for data entry completion status
-        $this->_requiredElements = array('q1_any_concerns_about_childs_nighttime_sleep');
+        $this->_requiredElements = array(
+            'i_q1_any_concerns_about_childs_nighttime_sleep',
+            'ii_q1_any_concerns_about_childs_nighttime_sleep',
+            'iii_q1_any_concerns_about_childs_nighttime_sleep',
+            'iv_q1_any_concerns_about_childs_nighttime_sleep',
+            'v_q1_any_concerns_about_childs_nighttime_sleep');
         // setup the form
         $this->_setupForm();
     }
