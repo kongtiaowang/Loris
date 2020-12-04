@@ -372,7 +372,7 @@ CREATE TABLE `Mock_Scanner_Training_Version_2` (
 `session_comments_6_status` enum('not_answered') default NULL,
 PRIMARY KEY (`CommentID`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO test_names(Test_name, Full_name, Sub_group) VALUES('Mock_Scanner_Training_Version_2','Mock Scanner Training: IBIS School Age Project', 1);
+INSERT INTO test_names(Test_name, Full_name, Sub_group) VALUES('Mock_Scanner_Training_Version_2','Mock Scanner Training: IBIS School Age Project', 8);
 INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('Mock_Scanner_Training_Version_2','Mock_Scanner_Training_Version_2_page1', "Page 1", 1);
 INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('Mock_Scanner_Training_Version_2','Mock_Scanner_Training_Version_2_page2', "Page 2", 2);
 INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('Mock_Scanner_Training_Version_2','Mock_Scanner_Training_Version_2_page3', "Page 3", 3);
