@@ -1,0 +1,10 @@
+ALTER TABLE `SIHI_survey` MODIFY COLUMN `i_q1_if_yes_rate_concern` enum('1','2','3','4','5','6','7','8','9','10') default NULL AFTER `i_q1_any_concerns_about_childs_nighttime_sleep`;
+ALTER TABLE `SIHI_survey` MODIFY COLUMN `i_q2_if_yes_rate_concern` enum('1','2','3','4','5','6','7','8','9','10') default NULL AFTER `i_q2_any_concerns_about_childs_daytime_sleep`;
+ALTER TABLE `SIHI_survey` MODIFY COLUMN `ii_q1_if_yes_rate_concern` enum('1','2','3','4','5','6','7','8','9','10') default NULL AFTER `ii_q1_any_concerns_about_childs_nighttime_sleep`;
+ALTER TABLE `SIHI_survey` MODIFY COLUMN `ii_q2_if_yes_rate_concern` enum('1','2','3','4','5','6','7','8','9','10') default NULL AFTER `ii_q2_any_concerns_about_childs_daytime_sleep`;
+ALTER TABLE `SIHI_survey` MODIFY COLUMN `iii_q1_if_yes_rate_concern` enum('1','2','3','4','5','6','7','8','9','10') default NULL AFTER `iii_q1_any_concerns_about_childs_nighttime_sleep`;
+ALTER TABLE `SIHI_survey` MODIFY COLUMN `iii_q2_if_yes_rate_concern` enum('1','2','3','4','5','6','7','8','9','10') default NULL AFTER `iii_q2_any_concerns_about_childs_daytime_sleep`;
+ALTER TABLE `SIHI_survey` MODIFY COLUMN `iv_q1_if_yes_rate_concern` enum('1','2','3','4','5','6','7','8','9','10') default NULL AFTER `iv_q1_any_concerns_about_childs_nighttime_sleep`;
+ALTER TABLE `SIHI_survey` MODIFY COLUMN `iv_q2_if_yes_rate_concern` enum('1','2','3','4','5','6','7','8','9','10') default NULL AFTER `iv_q2_any_concerns_about_childs_daytime_sleep`;
+ALTER TABLE `SIHI_survey` MODIFY COLUMN `v_q1_if_yes_rate_concern` enum('1','2','3','4','5','6','7','8','9','10') default NULL AFTER `v_q1_any_concerns_about_childs_nighttime_sleep`;
+ALTER TABLE `SIHI_survey` MODIFY COLUMN `v_q2_if_yes_rate_concern` enum('1','2','3','4','5','6','7','8','9','10') default NULL AFTER `v_q2_any_concerns_about_childs_daytime_sleep`;
