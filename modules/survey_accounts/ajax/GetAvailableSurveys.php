@@ -38,9 +38,9 @@ $survey_test_battery_count = $DB->pselectOne("select count(*) from survey_test_b
 if($survey_test_battery_count!=0)
 {
     $result = $DB->pselect(
-        "SELECT tn.Test_name, tn.Full_name from test_names tn
+        "SELECT distinct tn.Test_name, tn.Full_name from test_names tn
           join survey_test_battery stb ON (stb.Test_name=tn.test_name)
- where stb.Visit_label='{$visit_label}'
+ where stb.Visit_label IN('{$visit_label}', 'All')
 and tn.Test_name not in (SELECT f.Test_name FROM flag f
              JOIN session s on s.ID = f.SessionID
              WHERE s.CandID=:v_CandID  
@@ -54,9 +54,9 @@ and tn.Test_name not in (SELECT f.Test_name FROM flag f
     if(empty($result))
     {
         $result = $DB->pselect(
-                "SELECT tn.Test_name, tn.Full_name from test_names tn
+                "SELECT distinct tn.Test_name, tn.Full_name from test_names tn
           join survey_test_battery stb ON (stb.Test_name=tn.test_name)
- where stb.Visit_label='{$visit_label}' ORDER BY tn.Full_name",array());
+ where stb.Visit_label IN ('{$visit_label}','All') ORDER BY tn.Full_name",array());
 
     }
 }
