@@ -59,12 +59,12 @@ class NDB_BVL_Instrument_Mock_Scanner_Training_Version_2 extends NDB_BVL_Instrum
         $this->dateTimeFields = array(
             "Date_taken",
             "mock_time",
-            "session_date_1_date",
-            "session_date_2_date",
-            "session_date_3_date",
-            "session_date_4_date",
-            "session_date_5_date",
-            "session_date_6_date",
+            "session_date_1",
+            "session_date_2",
+            "session_date_3",
+            "session_date_4",
+            "session_date_5",
+            "session_date_6",
             "total_session_duration_1",
             "total_session_duration_2",
             "total_session_duration_3",
@@ -343,8 +343,8 @@ class NDB_BVL_Instrument_Mock_Scanner_Training_Version_2 extends NDB_BVL_Instrum
         //                                    //
         //====================================//
 
-        if (empty($values["session_date_{$p}_date"]) && empty($values["session_date_{$p}_date_status"])) {
-            $errors["session_date_{$p}_date_group"] = "Required";
+        if (empty($values["session_date_{$p}"]) && empty($values["session_date_{$p}_status"])) {
+            $errors["session_date_{$p}_group"] = "Required";
         }
 
         //---------------------------------------------//
