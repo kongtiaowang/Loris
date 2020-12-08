@@ -194,12 +194,12 @@ class NDB_BVL_Instrument_Mock_Scanner_Training_Version_2 extends NDB_BVL_Instrum
         //   At home training tools     //
         //------------------------------//
         $this->addSubHeader('At Home Training Tools');
-        $this->addYesNoSelect("tool_training_protocol_$i", 'Parent training Protocol');
-        $this->addYesNoSelect("tool_story_board_$i", 'Visual story board');
-        $this->addYesNoSelect("tool_social_story_$i", 'Social story');
-        $this->addYesNoSelect("tool_site_video_$i", 'COVID MRI video');
-        $this->addYesNoSelect("tool_generic_video_$i", 'Generic MRI video');
-        $this->addYesNoSelect("tool_body_awareness_video_$i", 'Body awareness video');
+        $this->addSelect("tool_training_protocol_$i", 'Parent training Protocol', YES_NO);
+        $this->addSelect("tool_story_board_$i", 'Visual story board', YES_NO);
+        $this->addSelect("tool_social_story_$i", 'Social story', YES_NO);
+        $this->addSelect("tool_site_video_$i", 'COVID MRI video', YES_NO);
+        $this->addSelect("tool_generic_video_$i", 'Generic MRI video', YES_NO);
+        $this->addSelect("tool_body_awareness_video_$i", 'Body awareness video', YES_NO);
 
         //-----------------------------------------//
         //   Reinforcers used during visit         //
@@ -272,7 +272,7 @@ class NDB_BVL_Instrument_Mock_Scanner_Training_Version_2 extends NDB_BVL_Instrum
      */
     function addYesNoSelect(string $field, string $text)
     {
-        $this->addSelect($field, $text, YES_NO);
+        $this->addRequiredSelect($field, $text, YES_NO);
     }
 
     /**
@@ -405,23 +405,44 @@ class NDB_BVL_Instrument_Mock_Scanner_Training_Version_2 extends NDB_BVL_Instrum
                 }
             }
 
-            if (!$hasAYes && empty($values["tool_other_$p"])) {
+            if (!$hasAYes) {
                 $errors["training_home_$p"] =
                     'You must specify at least one training tool used at home (below)';
             }
         } else {
             foreach ($questions as $q) {
-                if (!empty($values["{$q}_$p"])) {
+                if (!empty($values["{$q}_$p"]) || $values["{$q}_$p"] == 'Yes') {
                     $errors["{$q}_$p"] =
                         'You must leave this field empty since you indicated that no training at home was done';
                 }
             }
-
-            if (!empty($values["tool_other_$p"])) {
-                $errors["tool_other_$p"] =
-                    'You must leave this field empty since you indicated that no training at home was done';
-            }
         }
+
+        //--------------------------------------------//
+        // Validation of the Reinforcers used         //
+        //--------------------------------------------//
+        $questions1 = array(
+            'reinforcer_preferred_treat', 'reinforcer_generic_treat', 'reinforcer_prize',
+            'reinforcer_social_reinforcer', 'reinforcer_delayed_reinforcer', 'reinforcer_verbal_praise',
+            'reinforcer_sb', 'reinforcer_spin_office_chair'
+        );
+//        foreach ($questions1 as $question) {
+//            if (empty($values["{$question}_$p"]) || $values["{$question}_$p"] == NULL || $values["{$question}_$p"] == "") {
+//                $errors["{$question}_$p"] = 'You must specify Yes or No.';
+//            }
+//        }
+
+        //--------------------------------------------//
+        // Validation of the Bx Strategies            //
+        //--------------------------------------------//
+//        $questions2 = array('_wb', '_motion_sensor', '_pref_video', '_verb_reminders', '_mod_sibling', '_increase_sound',
+//        '_listen_music', '_body_awareness_video', '_competition', '_face_camera', '_fsv', '_generic_power_card', '_token_board',
+//        '_power_cards_pref', '_shaping', '_social_story', '_dance_game', '_token_board_pref', '_vc', '_vsb', '_vt', '_simon_says');
+//        foreach ($questions2 as $q) {
+//            if (empty($values["bx_strategies_{$p}_{$q}"])  || $values["bx_strategies_{$p}_{$q}"] == NULL || $values["bx_strategies_{$p}_{$q}"] == "") {
+//                $errors["bx_strategies_{$p}_{$q}"] = 'You must specify Yes or No.';
+//            }
+//        }
 
         //-------------------------------------//
         // Validation of the facade section    //
