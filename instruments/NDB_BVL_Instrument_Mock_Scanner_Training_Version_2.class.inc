@@ -460,21 +460,22 @@ class NDB_BVL_Instrument_Mock_Scanner_Training_Version_2 extends NDB_BVL_Instrum
         //-------------------------------------//
         // Validation of the mask breaks       //
         //-------------------------------------//
-        if (!empty($values["subject_mask_breaks_$p"]) && $values["subject_mask_breaks_$p"] == 'no') {
-            if (!empty($values["how_many_breaks_$p"]) || !empty($values["how_many_breaks_{$p}_status"])) {
+        if (!empty($values["subject_mask_breaks_$p"]) && $values["subject_mask_breaks_$p"] == 'No') {
+            if (!empty($values["how_many_breaks_$p"]) && !empty($values["how_many_breaks_{$p}_status"])) {
                 $errors["how_many_breaks_{$p}_group"] =
                     "You must leave this line empty since you did not answer 'Yes' above";
             }
-            if (!empty($values["break_duration_$p"]) || !empty($values["break_duration_{$p}_status"])) {
+            if (!empty($values["break_duration_$p"]) && !empty($values["break_duration_{$p}_status"])) {
                 $errors["break_duration_{$p}_group"] =
                     "You must leave this line empty since you did not answer 'Yes' above";
             }
         } elseif (!empty($values["subject_mask_breaks_$p"]) && $values["subject_mask_breaks_$p"] == 'Yes') {
-            if (empty($values["how_many_breaks_$p"]) || empty($values["how_many_breaks_{$p}_status"])) {
+            if (empty($values["how_many_breaks_$p"]) && empty($values["how_many_breaks_{$p}_status"])) {
                 $errors["how_many_breaks_{$p}_group"] =
                     "You must fill this line since you answered 'Yes' above";
             }
-            if (empty($values["break_duration_$p"]) || empty($values["break_duration_{$p}_status"])) {
+
+            if (empty($values["break_duration_$p"]) && empty($values["break_duration_{$p}_status"])) {
                 $errors["break_duration_{$p}_group"] =
                     "You must fill this line since you answered 'Yes' above";
             }
