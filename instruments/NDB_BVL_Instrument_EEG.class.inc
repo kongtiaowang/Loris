@@ -2,85 +2,92 @@
 class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
+    use instrument_validator;
 
-  use instrument_validator;
+    static $cssStyle  = "style='color:white; background-color: black;border: 10px solid black;margin-left:0;'";
+    static $cssStyle2 = "style='background-color: gray;border: 10px solid gray;height:100%;width:100%;float:left;'";
 
-  static $cssStyle = "style='color:white; background-color: black;border: 10px solid black;margin-left:0;'";
-  static $cssStyle2 = "style='background-color: gray;border: 10px solid gray;height:100%;width:100%;float:left;'";
+    // All the form fields that contain the name of a file uploaded on the server
+    // Each field $x has an associated field $x_chooser (a file chooser user to choose
+    //   a file on the local system).
+    static $FILE_FIELDS = array(
+                           'file_top'        => [
+                                                 'required' => 0,
+                                                 'page'     => '',
+                                                 'name'     => 'File Name',
+                                                ],
+                           'second_file_top' => [
+                                                 'required' => 0,
+                                                 'page'     => '',
+                                                 'name'     => 'Secondary File',
+                                                ],
+                          );
 
-  // All the form fields that contain the name of a file uploaded on the server
-  // Each field $x has an associated field $x_chooser (a file chooser user to choose
-  //   a file on the local system).
-  static $FILE_FIELDS = array(
-      'file_top'              => [ 'required' => 0, 'page' => ''         , 'name' => 'File Name'],
-      'second_file_top'       => [ 'required' => 0, 'page' => ''         , 'name' => 'Secondary File']
-  );
-
-  private const YES_NO = array(
-      null => '',
-      'y'  => 'Yes',
-      'n'  => 'No'
-  );
-
-
-  private const PARADIGM_COMPLETENESS = [
-      null => '',
-      'y' => 'Yes',
-      'n' => 'No',
-      'p' => 'Partial'
-  ];
-
-  var $ValidityRequired = true;
-
-  var $_requiredElements = array('file_top');
+    private const YES_NO = array(
+                            null => '',
+                            'y'  => 'Yes',
+                            'n'  => 'No',
+                           );
 
 
-  /**
-   * sets up basic data, such as the LorisForm object, and so on.
-   *
-   * @param string $commentID  the CommentID identifying the data to load
-   * @param string $page       if a multipage form, the page to show
-   * @return void
-   * @access public
-   */
-   function setup(?string $commentID = NULL, ?string $page = NULL): void
-   {
-       parent::setup($commentID, $page);
+    private const PARADIGM_COMPLETENESS = [
+                                           null => '',
+                                           'y'  => 'Yes',
+                                           'n'  => 'No',
+                                           'p'  => 'Partial',
+                                          ];
 
-       $this->formType="XIN";
-       $this->form = new LorisForm('test_form');
+    var $ValidityRequired = true;
 
-       // set the object properties
-       $this->testName = "EEG";          // test_names.Test_name
-       $this->table = 'EEG';             // name of database table corresponding to instrument
-       //The array of dates/timestamps to convert to database dates/timestamps
-       //Any LorisForm date elements must be listed here
-       $this->dateTimeFields=array("Date_taken");
-       $config             = NDB_Config::singleton();
-       $this->dateOptions  = array(
-           'language'         => 'en',
-           'format'           => 'YMd',
-           'minYear'          => $config->getSetting('startYear'),
-           'maxYear'          => $config->getSetting('endYear'),
-           'addEmptyOption'   => true,
-           'emptyOptionValue' => null,
-       );
+    var $_requiredElements = array('file_top');
 
-       // setup the form
-       $this->_setupForm();
-   }
+    /**
+     * Sets up basic data, such as the LorisForm object, and so on.
+     *
+     * @param  string $commentID the CommentID identifying the data to load
+     * @param  string $page      if a multipage form, the page to show
+     * @return void
+     * @access public
+     */
+    function setup(?string $commentID = null, ?string $page = null): void
+    {
+        parent::setup($commentID, $page);
 
-   /**
-    * method to build the LorisForm object into a paged form
-    *
-    * @return void
-    * @access private
-    */
-    function _setupForm(){
-        if(preg_match("/EEG(_page[0-9]+)/",$this->page,$matches)){
-           call_user_func(array($this, $matches[1]));
+        $this->formType ="XIN";
+        $this->form     = new LorisForm('test_form');
+
+        // set the object properties
+        $this->testName = "EEG";          // test_names.Test_name
+        $this->table    = 'EEG';             // name of database table corresponding to instrument
+        //The array of dates/timestamps to convert to database dates/timestamps
+        //Any LorisForm date elements must be listed here
+        $this->dateTimeFields =array("Date_taken");
+        $config            = NDB_Config::singleton();
+        $this->dateOptions = array(
+                              'language'         => 'en',
+                              'format'           => 'YMd',
+                              'minYear'          => $config->getSetting('startYear'),
+                              'maxYear'          => $config->getSetting('endYear'),
+                              'addEmptyOption'   => true,
+                              'emptyOptionValue' => null,
+                             );
+
+         // setup the form
+         $this->_setupForm();
+    }
+
+    /**
+     * Method to build the LorisForm object into a paged form
+     *
+     * @return void
+     * @access private
+     */
+    function _setupForm()
+    {
+        if (preg_match("/EEG(_page[0-9]+)/", $this->page, $matches)) {
+            call_user_func(array($this, $matches[1]));
         } else {
-           $this->_main();
+            $this->_main();
         }
 
         $this->form->addFormRule(array(&$this, 'XINValidate'));
@@ -90,10 +97,11 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
     /**
      * Sets the default values for the form fields.
      *
-     * @param array $defaults The current default values.
+     * @param  array $defaults The current default values.
      * @return array the updated default values.
      */
-    function _setDefaultsArray(array $defaults): array {
+    function _setDefaultsArray(array $defaults): array
+    {
         $defaults = parent::_setDefaultsArray($defaults);
 
         $defaults['subjectID']    = $this->getPSCID();
@@ -102,12 +110,15 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
         $dateOfAdministration = $this->getDateOfAdministration();
         if ($dateOfAdministration) {
             $age = $this->getCandidateAge($dateOfAdministration);
-            if(is_array($age)) {
-                if($age['year']) {
+            if (is_array($age)) {
+                if ($age['year']) {
                     $defaults['ageAtSession'] = sprintf(
-                        "%d year(s), %d month(s), %d day(s)", $age['year'], $age['mon'], $age['day']
+                        "%d year(s), %d month(s), %d day(s)",
+                        $age['year'],
+                        $age['mon'],
+                        $age['day']
                     );
-                } elseif($age['mon']) {
+                } elseif ($age['mon']) {
                     $defaults['ageAtSession'] = sprintf("%d month(s), %d day(s)", $age['mon'], $age['day']);
                 } else {
                     $defaults['ageAtSession'] = "{$age['day']} day(s)";
@@ -115,7 +126,7 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
             }
         }
 
-        $gender = 'Unknown';
+        $gender  = 'Unknown';
         $session = $this->getSessionID();
         if (!empty($session)) {
             $timepoint = \TimePoint::singleton($session);
@@ -132,19 +143,20 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
     }
 
     /**
-     * generates the main page of the form.
+     * Generates the main page of the form.
      *
      * @return void
      * @access private
      */
-    function _main(){
+    function _main()
+    {
         // display test name
         $this->form->addElement('header', null, "<div ".self::$cssStyle.">IBIS-EP EEG Project: EEG Session Log</div>");
         $this->form->addElement('header', null, "<div ".self::$cssStyle2." style='text-align:center'>Subject and Session Information</div>");
 
-        $this->addScoreColumn('subjectID'      , "Subject ID:");
-        $this->addScoreColumn('gender'         , "Subject's gender:");
-        $this->addBasicDate('Date_taken'       , "Session Date:", $this->dateOptions);
+        $this->addScoreColumn('subjectID', "Subject ID:");
+        $this->addScoreColumn('gender', "Subject's gender:");
+        $this->addBasicDate('Date_taken', "Session Date:", $this->dateOptions);
         $this->addScoreColumn('ageAtSession', "Age at session:");
 
         $this->addTextElement("start_time", "Start time (24h format, HH:MM, e.g. 13:00):");
@@ -171,73 +183,76 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
         $this->addTextAreaElement("bad_channels_before_netting", "Bad channels before netting:");
         $this->addSelect('impedance_after_netting', 'Impedances measured after netting?', self::YES_NO);
         $this->addTextAreaElement("bad_channels_after_netting", "Bad channels after netting:");
-        $this->addSelect('net_quality_rating', 'Net Quality Rating:', array(NULL=>"","1"=>"1","2"=>"2","3"=>"3","not_answered"=>"Not Answered"));
+        $this->addSelect('net_quality_rating', 'Net Quality Rating:', array(null => "", "1" => "1", "2" => "2", "3" => "3", "not_answered" => "Not Answered"));
     }
 
     /**
      * Generates the 'Resting Bubbles' section.
      */
-    function _page1(){
+    function _page1()
+    {
         // PARADIGM 1: Resting (Bubbles)
         $this->form->addElement("header", null, "<div ".self::$cssStyle2." >PARADIGM 1: Resting (Bubbles)</div>");
 
         $this->addTextAreaElement('note_1_1', 'Artifact/Net Movement Notes:');
         $this->addTextAreaElement('note_1_2', 'General Notes (soothing devices used, child behavior, breaks taken, etc.):');
-        $this->addSelect('mood_1', 'Mood:', array(NULL=>"","1"=>"1","2"=>"2","3"=>"3","4"=>"4","5"=>"5"));
+        $this->addSelect('mood_1', 'Mood:', array(null => "", "1" => "1", "2" => "2", "3" => "3", "4" => "4", "5" => "5"));
         $this->addSelect('paradigm_completed_1', 'Paradigm Completed?', self::PARADIGM_COMPLETENESS);
     }
 
     /**
      * Generates the 'VEP' section.
      */
-    function _page2(){
+    function _page2()
+    {
         // PARADIGM 2: Visual (Checkerboard)
         $this->form->addElement('header', null, "<div ".self::$cssStyle2." >PARADIGM 2: Visual (Checkerboard)</div>");
 
         $this->addTextAreaElement("note_2_1", "Artifact/Net Movement Notes:");
         $this->addTextAreaElement("note_2_2", "General Notes (soothing devices used, child behavior, breaks taken, etc.):");
-        $this->addSelect('mood_2', 'Mood:', array(NULL=>"","1"=>"1","2"=>"2","3"=>"3","4"=>"4","5"=>"5"));
+        $this->addSelect('mood_2', 'Mood:', array(null => "", "1" => "1", "2" => "2", "3" => "3", "4" => "4", "5" => "5"));
         $this->addSelect('paradigm_completed_2', 'Paradigm Completed?', self::PARADIGM_COMPLETENESS);
     }
 
     /**
      * Generates the 'AEP' section.
      */
-    function _page3(){
+    function _page3()
+    {
         // PARADIGM 3: Resting (Bubbles)
         $this->form->addElement('header', null, "<div ".self::$cssStyle2." >PARADIGM 3: Resting (Bubbles)</div>");
 
         $this->addTextAreaElement("note_3_1", "Artifact/Net Movement Notes:");
         $this->addTextAreaElement("note_3_2", "General Notes (soothing devices used, child behavior, breaks taken, etc.):");
-        $this->addSelect('mood_3', 'Mood:', array(NULL=>"","1"=>"1","2"=>"2","3"=>"3","4"=>"4","5"=>"5"));
+        $this->addSelect('mood_3', 'Mood:', array(null => "", "1" => "1", "2" => "2", "3" => "3", "4" => "4", "5" => "5"));
         $this->addSelect('paradigm_completed_3', 'Paradigm Completed?', self::PARADIGM_COMPLETENESS);
     }
 
     /**
      * Generates the 'Social/Non-social' section.
      */
-    function _page4(){
+    function _page4()
+    {
         // PARADIGM 4: Auditory (Bubbles with Tone)
         $this->form->addElement('header', null, "<div ".self::$cssStyle2." >PARADIGM 4: Auditory (Bubbles with Tone)</div>");
 
         $this->addTextAreaElement("note_4_1", "Artifact/Net Movement Notes:");
         $this->addTextAreaElement("note_4_2", "General Notes (soothing devices used, child behavior, breaks taken, etc.):");
-        $this->addSelect('mood_4', 'Mood:', array(NULL=>"","1"=>"1","2"=>"2","3"=>"3","4"=>"4","5"=>"5"));
+        $this->addSelect('mood_4', 'Mood:', array(null => "", "1" => "1", "2" => "2", "3" => "3", "4" => "4", "5" => "5"));
         $this->addSelect('paradigm_completed_4', 'Paradigm Completed?', self::PARADIGM_COMPLETENESS);
     }
-
-
 
     /**
      * Generates the 'Resting Bubbles' section.
      */
-    function _page5(){
+    function _page5()
+    {
         // PARADIGM 5:Resting (Bubbles)
         $this->form->addElement("header", null, "<div ".self::$cssStyle2." >PARADIGM 5: Resting (Bubbles)</div>");
 
         $this->addTextAreaElement("note_5_1", "Artifact/Net Movement Notes:");
         $this->addTextAreaElement("note_5_2", "General Notes (soothing devices used, child behavior, breaks taken, etc.):");
-        $this->addSelect('mood_5', 'Mood:', array(NULL=>"","1"=>"1","2"=>"2","3"=>"3","4"=>"4","5"=>"5"));
+        $this->addSelect('mood_5', 'Mood:', array(null => "", "1" => "1", "2" => "2", "3" => "3", "4" => "4", "5" => "5"));
         //$this->addTextElement("trials_completed_5", "Trials Completed:");
         $this->addSelect('paradigm_completed_5', 'Paradigm Completed?', self::PARADIGM_COMPLETENESS);
     }
@@ -245,26 +260,27 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
     /**
      * Generates the 'General EEG session' section.
      */
-    function _page6(){
+    function _page6()
+    {
         $this->form->addElement('header', null, "<div ".self::$cssStyle2." >General Session Notes</div>");
 
         $how_many_options = array(
-            null => "",
-            "1" => "1",
-            "2" => "2",
-            "3" => "3",
-            "4" => "4",
-            "5" => "5",
-            "6" => "6",
-            "7" => "7",
-        );
+                             null => "",
+                             "1"  => "1",
+                             "2"  => "2",
+                             "3"  => "3",
+                             "4"  => "4",
+                             "5"  => "5",
+                             "6"  => "6",
+                             "7"  => "7",
+                            );
 
         $usable_data_options = array(
-            null => "",
-            "yes" => "Yes",
-            "no" => "No",
-            "do_not_know" => "I do not know",
-        );
+                                null          => "",
+                                "yes"         => "Yes",
+                                "no"          => "No",
+                                "do_not_know" => "I do not know",
+                               );
 
         $this->addSelect('how_many_paradigms_completed', 'How many paradigms were completed?', $how_many_options);
 
@@ -284,7 +300,8 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
      *
      * @param array $values Values entered in the form.
      */
-    function _saveValues(array $values): void {
+    function _saveValues(array $values): void
+    {
 
         //----------------------------------------------------------//
         // *_chooser fields are always posted but do not exist in   //
@@ -318,10 +335,10 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
             // but the file was uploaded through the EEG form for field $k, then //
             // that's OK (counts as an update)                                   //
             //-------------------------------------------------------------------//
-            $db        =& Database::singleton();
-            $row = $db->pselectRow(
+            $db           =& Database::singleton();
+            $row          = $db->pselectRow(
                 "SELECT e.Date_Taken, m.ID FROM {$this->table} e LEFT JOIN media m ON (e.{$k}=m.file_name) WHERE e.CommentID=:CommentID",
-                array("CommentID"=>$this->getCommentID())
+                array("CommentID" => $this->getCommentID())
             );
             $eegDateTaken = $row['Date_Taken'];
             $mediaID      = $row['ID'];
@@ -332,14 +349,14 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
             $user      =& User::singleton();
 
             $query = [
-              'session_id'    => $values["sessionID"],
-              'instrument'    => $values["test_name"],
-              'date_taken'    => $eegDateTaken,
-              'file_name'     => $files["{$k}_chooser"]["name"],
-              'file_type'     => $_FILES["{$k}_chooser"]["type"],
-              'data_dir'      => $mediaPath,
-              'uploaded_by'   => $user->getData('UserID'),
-            ];
+                      'session_id'  => $values["sessionID"],
+                      'instrument'  => $values["test_name"],
+                      'date_taken'  => $eegDateTaken,
+                      'file_name'   => $files["{$k}_chooser"]["name"],
+                      'file_type'   => $_FILES["{$k}_chooser"]["type"],
+                      'data_dir'    => $mediaPath,
+                      'uploaded_by' => $user->getData('UserID'),
+                     ];
 
             //-----------------------------------------------------------//
             // Try to move the file from the tmp upload directory to the //
@@ -348,9 +365,9 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
             if (move_uploaded_file($files["{$k}_chooser"]["tmp_name"], $mediaPath . $files["{$k}_chooser"]['name'])) {
                 try {
                     // File alread exists in media module: update
-                    if(!is_null($mediaID)) {
+                    if (!is_null($mediaID)) {
                         $db->update('media', $query, array('ID' => $mediaID));
-                    // File does not exist in media module: insert new
+                        // File does not exist in media module: insert new
                     } else {
                         $db->insert('media', $query);
                     }
@@ -364,7 +381,7 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
                     // was defined as a "score" (i.e not submitted by the POST)
                     $db->update(
                         $this->table,
-                        array($k          => $files["{$k}_chooser"]["name"]),
+                        array($k => $files["{$k}_chooser"]["name"]),
                         array('CommentID' => $this->getCommentID())
                     );
                 } catch (DatabaseException $e) {
@@ -377,19 +394,20 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
     /**
      * Perfoms addtional validation on top of those done in 'XINvalidate'.
      *
-     * @param array $values Values entered in the form.
+     * @param  array $values Values entered in the form.
      * @return array Errors found.
      */
-    function eeg_rules($values) {
+    function eeg_rules($values)
+    {
         $errors = array();
 
         //------------------------------------//
         // Validate start time, if specified  //
         //------------------------------------//
-        if(isset($values['start_time_status']) && $values['start_time_status'] == '' && isset($values['start_time'])) {
-            if(!preg_match('/^([0-9]?[0-9]):([0-5][0-9])$/', $values['start_time'], $matches)) {
+        if (isset($values['start_time_status']) && $values['start_time_status'] == '' && isset($values['start_time'])) {
+            if (!preg_match('/^([0-9]?[0-9]):([0-5][0-9])$/', $values['start_time'], $matches)) {
                 $errors['start_time_group'] = 'You must enter a time in 24H format, using the colon as the hour/minute separator (e.g. 08:15 or 20:30)';
-            } elseif($matches[1] > 23 || $matches[2] > 59) {
+            } elseif ($matches[1] > 23 || $matches[2] > 59) {
                 $errors['start_time_group'] = 'You must enter a time in 24H format, using the colon as the hour/minute separator (e.g. 08:15 or 20:30)';
             }
         }
@@ -397,10 +415,10 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
         //----------------------------------//
         // Validate end time, if specified  //
         //----------------------------------//
-        if(isset($values['end_time_status']) && $values['end_time_status'] == '' && isset($values['end_time'])) {
-            if(!preg_match('/^([0-9]?[0-9]):([0-5][0-9])$/', $values['end_time'], $matches)) {
+        if (isset($values['end_time_status']) && $values['end_time_status'] == '' && isset($values['end_time'])) {
+            if (!preg_match('/^([0-9]?[0-9]):([0-5][0-9])$/', $values['end_time'], $matches)) {
                 $errors['end_time_group'] = 'You must enter a time in 24H format, using the colon as the hour/minute separator (e.g. 08:15 or 20:30)';
-            } elseif($matches[1] > 23 || $matches[2] > 59) {
+            } elseif ($matches[1] > 23 || $matches[2] > 59) {
                 $errors['end_time_group'] = 'You must enter a time in 24H format, using the colon as the hour/minute separator (e.g. 08:15 or 20:30)';
             }
         }
@@ -448,7 +466,7 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
                 continue;
             }
 
-            $db        =& Database::singleton();
+            $db =& Database::singleton();
             // Check that a file for $k already exists in the DB
             $fileAlreadyUploaded = $db->pselectOne(
                 "SELECT $k FROM {$this->table} WHERE CommentID=:CommentID",
@@ -463,17 +481,17 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
 
             // File chooser was used to specify the same file as the one in the DB
             // for $k: that's an update and that's OK
-            if(!is_null($fileAlreadyUploaded) && $values["{$k}_chooser"]['name'] == $fileAlreadyUploaded) {
+            if (!is_null($fileAlreadyUploaded) && $values["{$k}_chooser"]['name'] == $fileAlreadyUploaded) {
                 continue;
             }
 
             // File chooser for $k was not used and no file in the DB for $k: error
             if ($values["{$k}_chooser"]['name'] == '' && $v['required']) {
                 $errors["{$k}_chooser"] = 'You must select a file to upload';
-            //----------------------------------------------//
-            // The file chooser associated to $k was used   //
-            // (i.e a file for $k is supplied)              //
-            //----------------------------------------------//
+                //----------------------------------------------//
+                // The file chooser associated to $k was used   //
+                // (i.e a file for $k is supplied)              //
+                //----------------------------------------------//
             } else {
                 //-----------------------------------------------------------------//
                 // Check that there is not already a file with the same name       //
@@ -482,10 +500,10 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
                 $query = "SELECT 1 FROM media WHERE file_name=:fileName";
                 $fileAlreadyExists = $db->pselectOne(
                     $query,
-                    array('fileName'  => $values["{$k}_chooser"]['name'])
+                    array('fileName' => $values["{$k}_chooser"]['name'])
                 );
 
-                if($fileAlreadyExists) {
+                if ($fileAlreadyExists) {
                     $errors["{$k}_chooser"] = "A file with name {$values["{$k}_chooser"]['name']} "
                                             . "has already been uploaded in the database. Please choose another one";
                 }
