@@ -91,13 +91,15 @@ CREATE TABLE `EEG` (
 -- --------------------------------------------------------
 -- Columns for section Overall EEG Session Information   --
 -- --------------------------------------------------------
-`note_6_1` text,
-`note_6_1_status` enum('not_answered'),
-`end_time` varchar(255),
-`end_time_status` enum('not_answered'),
-`standard_paradigm_order` enum('y','n'),
-`note_6_2` text,
-`note_6_2_status` enum('not_answered'),
+`how_many_paradigms_completed`         enum('1','2','3','4','5','6','7'),
+`any_usable_data_for_this_session`     enum('yes','no','do_not_know'),
+`note_6_1`                             text,
+`note_6_1_status`                      enum('not_answered'),
+`end_time`                             varchar(255),
+`end_time_status`                      enum('not_answered'),
+`standard_paradigm_order`              enum('y','n'),
+`note_6_2`                             text,
+`note_6_2_status`                      enum('not_answered'),
 
 PRIMARY KEY  (`CommentID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
