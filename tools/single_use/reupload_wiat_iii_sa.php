@@ -133,7 +133,7 @@ foreach ($wiat as  $candID => $instrumentData) {
     try {
         $error = $form->isValid($file, $args);
         if ($error !== TRUE) {
-            printf("{$instrumentData["FILE_NAME"]} is invalid and will not be re-uploaded: {$error[0]}\n");
+            print "{$instrumentData["FILE_NAME"]} is invalid and will not be re-uploaded: {$error[0]}\n";
         } else {
             //-------------------------------------------------//
             // Import the file in the database: exit on error  //
@@ -142,7 +142,7 @@ foreach ($wiat as  $candID => $instrumentData) {
             print "Successfully reuploaded file {$instrumentData['FILE_NAME']}\n";
         }
     } catch (Exception $e) {
-        printf("{$instrumentData["FILE_NAME"]} could not be re-uploaded: " . $e->getMessage());
+        printf "{$instrumentData["FILE_NAME"]} could not be re-uploaded: " . $e->getMessage();
     }
 }
 ?>
