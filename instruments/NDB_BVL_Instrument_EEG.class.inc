@@ -247,7 +247,31 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
      */
     function _page6(){
         $this->form->addElement('header', null, "<div ".self::$cssStyle2." >General Session Notes</div>");
+
+        $how_many_options = array(
+            null => "",
+            "1" => "1",
+            "2" => "2",
+            "3" => "3",
+            "4" => "4",
+            "5" => "5",
+            "6" => "6",
+            "7" => "7",
+        );
+
+        $usable_data_options = array(
+            null => "",
+            "yes" => "Yes",
+            "no" => "No",
+            "do_not_know" => "I do not know",
+        );
+
+        $this->addSelect('how_many_paradigms_completed', 'How many paradigms were completed?', $how_many_options);
+
+        $this->addSelect('any_usable_data_for_this_session', 'Do you think there was any usable data for this entire session?', $usable_data_options);
+
         $this->addTextAreaElement("note_6_1", "General Notes:");
+
         $this->addTextElement("end_time", "End time (24h format, HH:MM, e.g. 13:00):");
 
         $this->addSelect('standard_paradigm_order', 'Standard Paradigm Order Used?', self::YES_NO);
