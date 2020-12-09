@@ -150,7 +150,7 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
         $this->addTextElement("start_time", "Start time (24h format, HH:MM, e.g. 13:00):");
 
         $this->addTextElement("experimenter_initials", "Experimenter Initials:");
-        $this->addTextElement("behavioral_assistant_initials", "Behavioral Assistant Initials:");
+        $this->addTextElement("behavioral_assistant_initials", "Behavioral Assistant Initials (write the word PARENT if the parent acted as the BA):");
         $this->addSelect('caregiver_present', 'Caregiver Present?', self::YES_NO);
 
         $this->addScoreColumn('file_top', "File Name:");
