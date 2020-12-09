@@ -80,6 +80,7 @@ class NDB_BVL_Instrument_WIAT_III_SA extends NDB_BVL_Instrument
         ],
         "HEADERS" => [
             "Score Name"              => null,
+            "Subtest"                 => null,
             "Raw Score"               => "RAW",
             "Standard Score"          => "STD_SCORE",
             "95% Confidence Interval" => "CI",
