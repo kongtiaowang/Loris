@@ -1,0 +1,2 @@
+ALTER TABLE EEG ADD `how_many_paradigms_completed` enum('1','2','3','4','5','6','7') AFTER `paradigm_completed_5`;
+ALTER TABLE EEG ADD `any_usable_data_for_this_session` enum('yes','no','do_not_know') AFTER `how_many_paradigms_completed`;
