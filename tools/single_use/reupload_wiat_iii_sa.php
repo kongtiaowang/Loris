@@ -142,7 +142,7 @@ foreach ($wiat as  $candID => $instrumentData) {
             print "Successfully reuploaded file {$instrumentData['FILE_NAME']}\n";
         }
     } catch (Exception $e) {
-        printf "{$instrumentData["FILE_NAME"]} could not be re-uploaded: " . $e->getMessage();
+        print "{$instrumentData["FILE_NAME"]} could not be re-uploaded: " . $e->getMessage();
     }
 }
 ?>
