@@ -593,11 +593,9 @@ class NDB_BVL_Instrument_mcdi_words_gestures_sentences_survey extends NDB_BVL_In
         $this->Sum($II_D_question_count, $record, "II_D_", $YesActions['D']);
         $this->Sum($II_E_question_count, $record, "II_E_", $YesActions['E']);
 
-        $YesActions_total_sum = $YesActions['B'] + $YesActions['C'] + $YesActions['D'] + $YesActions['E'];
-
-        $scores["total_gestures_number"] = $first_gestures_ST_or_OF + $YesActions_total_sum;
         $scores["early_gestures_number"] = $first_gestures_ST_or_OF + $YesActions['B'];
         $scores["later_gestures_number"] = $YesActions['C'] + $YesActions['D'] + $YesActions['E'];
+        $scores["total_gestures_number"] = $scores["early_gestures_number"] + $scores["later_gestures_number"];
 
         /***********************************
          * Part III: Sentences and Grammar *
