@@ -52,18 +52,30 @@ class ImagePanelHeader extends Component {
         </div>
       </div>
     );
+
+    let acquiredOn = this.props.HeaderInfo.AcquisitionDate
+        ? ' acquired on ' + this.props.HeaderInfo.AcquisitionDate : ' (acq. date unknown) ';
+    let acquisitionDate = this.props.HeaderInfo.AcquisitionDate
+        ? this.props.HeaderInfo.AcquisitionDate : '(acq. date unknown)';
+
     return (
 
       <div className="panel-heading clearfix">
-        <input type="checkbox" data-file-id={this.props.FileID}
-               className="mripanel user-success"/>
-        <h3 className="panel-title" data-toggle="tooltip" title={this.props.Filename}>
-          {this.props.Filename}
-        </h3>
-        {QCStatusLabel}
-        {arrow}
-        {headerButton}
+        <input type="checkbox" data-file-id={this.props.FileID} className="mripanel user-success" />
+          <h3
+             className="panel-title"
+             data-toggle="tooltip"
+             title={this.props.Filename + acquiredOn}
+          >
+               {this.props.Filename}
+               &nbsp;&nbsp;&#8227;&#8227;&nbsp;&nbsp;
+               {acquisitionDate}&nbsp;
+          </h3>
+          {QCStatusLabel}
+          {arrow}
+          {headerButton}
       </div>
+
     );
   }
 }
@@ -75,6 +87,7 @@ ImagePanelHeader.propTypes = {
   HeadersExpanded: PropTypes.string,
   FileID: PropTypes.string,
   Filename: PropTypes.string,
+  HeaderInfo: PropTypes.object,
 };
 
 class ImagePanelHeadersTable extends Component {
@@ -729,6 +742,7 @@ class ImagePanel extends Component {
           <ImagePanelHeader
             FileID={this.props.FileID}
             Filename={this.props.Filename}
+            HeaderInfo={this.props.HeaderInfo}
             QCStatus={this.props.QCStatus}
             onToggleBody={this.toggleBody}
             onToggleHeaders={this.toggleHeaders}
@@ -785,6 +799,8 @@ ImagePanel.propTypes = {
   HeadersExpanded: PropTypes.string,
   Checkpic: PropTypes.string,
   SessionID: PropTypes.string,
+  Filename: PropTypes.string,
+  HeaderInfo: PropTypes.object,
 };
 
 let RImagePanel = React.createFactory(ImagePanel);
