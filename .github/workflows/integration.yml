@@ -1,4 +1,4 @@
-name: LORIS Test Suite
+name: LORIS Integration Test Suite
 
 on:
   - push
@@ -9,10 +9,6 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
         matrix:
-            testsuite:
-            - static
-            - unit
-            - integration
             php:
             - 7.3
             - 7.4
@@ -46,4 +42,4 @@ jobs:
       run: make dev
 
     - name: Run Test Suite
-      run: npm run tests:${{ matrix.testsuite }}
+      run: npm run tests:integration
