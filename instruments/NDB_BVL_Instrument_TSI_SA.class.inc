@@ -55,7 +55,8 @@ class NDB_BVL_Instrument_TSI_SA extends NDB_BVL_Instrument
         $this->commentID = $commentID;
         //The array of dates/timestamps to convert to database dates/timestamps
         //Any LorisForm date elements must be listed here
-        $this->dateTimeFields = array("Date_taken", "sibling_dob_1", "sibling_dob_2", "sibling_dob_3", "sibling_dob_4");
+        $this->dateTimeFields = array("Date_taken", "sibling_dob_1", "sibling_dob_2", "sibling_dob_3", "sibling_dob_4",
+            "sibling_dob_5", "sibling_dob_6", "sibling_dob_7", "sibling_dob_8", "sibling_dob_9", "sibling_dob_10");
         $this->_requiredElements = array(
             'CommentID',
             'Date_taken',
@@ -448,8 +449,7 @@ class NDB_BVL_Instrument_TSI_SA extends NDB_BVL_Instrument
         $this->form->addElement('static', null, "Additional contact: $this->indent relationship:");
         $this->form->addElement('static', null, "Parent 1 (or combined) Address:");
         $this->form->addElement('static', null, "Parent 2 Address (if 2 households):");
-        $this->form->addElement('header', null, "*** Only for Subjects with Autism ***");
-        $this->form->addElement('header', null, "<h4>Proband with autism</h4>");
+        $this->form->addElement('header', null, "<h4>Proband</h4>");
         $this->form->addElement('static', null, "Name:");
 //        $this->form->addText('subject_firstname', "First name");
 //        $this->XINRegisterRule("subject_firstname", array("subject_firstname{@}=={@}NEVER_REQUIRED"));
@@ -461,6 +461,8 @@ class NDB_BVL_Instrument_TSI_SA extends NDB_BVL_Instrument
         $this->XINRegisterRule("subject_gender", array("subject_gender{@}=={@}NEVER_REQUIRED"));
         $this->form->addSelect('subject_living_in_home', "Living in the home?", array(null => "", "y" => "Y", "n" => "N"));
         $this->XINRegisterRule("subject_living_in_home", array("subject_living_in_home{@}=={@}NEVER_REQUIRED"));
+        $this->form->addSelect('proband_with_autism', "Proband with autism?", array(null => "", "y" => "Y", "n" => "N"));
+        $this->XINRegisterRule("proband_with_autism", array("proband_with_autism{@}=={@}NEVER_REQUIRED"));
         $this->form->addText('subject_current_diagnoses', "Current diagnoses:");
         $this->XINRegisterRule("subject_current_diagnoses", array("subject_current_diagnoses{@}=={@}NEVER_REQUIRED"));
         $this->form->addText('subject_current_diagnoses_by', "Diagnoses by:");
@@ -474,7 +476,7 @@ class NDB_BVL_Instrument_TSI_SA extends NDB_BVL_Instrument
         $group[] =& $this->form->createElement("static", null, null, "Live in home?");
         $this->addGroup($group, "other_siblings_headers", null, $this->_GUIDelimiter, false);
         unset($group);
-        for ($i = 1; $i <= 4; $i++) {
+        for ($i = 1; $i <= 10; $i++) {
             $group[] =& $this->createText("sibiling_name_{$i}", "", ['disabled' => 'disabled']);
             $group[] =& $this->createDate("sibling_dob_{$i}", "");
             $group[] =& $this->createSelect("sibling_gender_{$i}", "", array(null => "", "m" => "M", "f" => "F"));
