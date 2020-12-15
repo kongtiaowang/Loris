@@ -15,6 +15,9 @@ $(document).ready(function() {
         $("#page_wrapper_sidebar").toggleClass("wrapper");
 
         $('.navbar-toggle').on('click', function (event) {
+            $("#bvl_feedback_menu").toggleClass("active_panel");
+            $("#bvl_panel_wrapper").toggleClass("bvl_panel");
+
 
 
             //We check if a sidebar exists on the page and toggle it if such.
