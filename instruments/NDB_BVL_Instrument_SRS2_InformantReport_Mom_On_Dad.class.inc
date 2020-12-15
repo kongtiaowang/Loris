@@ -158,7 +158,64 @@ class NDB_BVL_Instrument_SRS2_InformantReport_Mom_On_Dad extends NDB_BVL_Instrum
         unset($group);
         $rules_array = array("informant{@}=={@}other");
         $this->XINRegisterRule('informant_other', $rules_array, "Please specify relationship", 'informant_other_group');
+        for($i=1;$i<=3;$i++)
+        {
+            if($i==1) {
+                $this->form->addElement('header', null, "SRS2 Total Score Results ");
+                $domains=array("total" => "Total Raw Score",
+                );
 
+            }
+            if($i==2) {
+                $this->form->addElement('header', null, "DSM5 - Compatible Scales (Scores) ");
+                $domains=array("DSM5_SCI" => "SCI","DSM5_RRB" => "RRB",
+                );
+            }
+            if($i==3)
+            {
+                $this->form->addElement('header', null, "Treatment Subscales (Scores)");
+                $domains = array("Awr" => " Social Awareness (Awr)","Cog" => "Social Cognition (Cog)","Com" => "Social Communication (Com)",
+                    "Mot" => "Social Motivaton (Mot)"
+                );
+            }
+            //scoring column headers
+            $group[] = $this->form->createElement('static', "score", null, null);
+            $group[] = $this->form->createElement('static', "T_score", null, null);
+            $this->form->addGroup($group, 'score_header_group_'.$i, "<strong>Domain</strong>", $this->_GUIDelimiter, FALSE);
+            unset($group);
+
+
+            //score fields
+
+            $columnHeaders = array("score" => "Score", "T_score" => "T Score");
+
+            foreach ($columnHeaders as $field => $label) {
+                $columnHeaders[$field] .= "     ";
+            }
+            $this->localDefaults = array_merge($this->localDefaults, $columnHeaders);
+
+            foreach ($domains as $field => $label) {
+                foreach ($columnHeaders as $scoreField => $scoreLabel) {
+
+                    $group[] = $this->form->createElement('static', "{$field}_{$scoreField}", null, null);
+                }
+                $this->form->addGroup($group, "{$label}_score_group_{$i}", $label, $this->_GUIDelimiter, FALSE);
+                unset($group);
+
+
+            }
+
+
+            //scoring column headers
+            $group[] = $this->form->createElement('static', "score", null, null);
+            $group[] = $this->form->createElement('static', "T_score", null, null);
+            $this->form->addGroup($group, 'score_header_group_'.$i, "<strong>Domain</strong>", $this->_GUIDelimiter, FALSE);
+            unset($group);
+        }
+
+        $group[] = $this->form->createElement('static', "score_range", null, null);
+        $this->form->addGroup($group, "score_range_group", "Score Range:", $this->_GUIDelimiter, FALSE);
+        unset($group);
         //Display informant rating section
         $this->form->addElement('header', 'instrument_title1', "Informant Section");       
         //Add instructions
@@ -395,6 +452,293 @@ class NDB_BVL_Instrument_SRS2_InformantReport_Mom_On_Dad extends NDB_BVL_Instrum
         $html = $smarty->fetch("directentry_review.tpl");
         return $html;
     }
+    function score(): void
+    {
+
+
+        if ($this->_determineDataEntryCompletionStatus() == "Incomplete") {
+            return;
+        }
+
+        $score_grid_q1=array('1_not_true'=>0,'2_sometimes_true'=>1,'3_often_true'=>2,'4_almost_always_true'=>3);
+        $score_grid_q2=array('1_not_true'=>0,'2_sometimes_true'=>1,'3_often_true'=>2,'4_almost_always_true'=>3);
+        $score_grid_q3=array('1_not_true'=>3,'2_sometimes_true'=>2,'3_often_true'=>1,'4_almost_always_true'=>0);
+        $score_grid_q4=array('1_not_true'=>0,'2_sometimes_true'=>1,'3_often_true'=>2,'4_almost_always_true'=>3);
+        $score_grid_q5=array('1_not_true'=>0,'2_sometimes_true'=>1,'3_often_true'=>2,'4_almost_always_true'=>3);
+        $score_grid_q6=array('1_not_true'=>0,'2_sometimes_true'=>1,'3_often_true'=>2,'4_almost_always_true'=>3);
+        $score_grid_q7=array('1_not_true'=>3,'2_sometimes_true'=>2,'3_often_true'=>1,'4_almost_always_true'=>0);
+        $score_grid_q8=array('1_not_true'=>0,'2_sometimes_true'=>1,'3_often_true'=>2,'4_almost_always_true'=>3);
+        $score_grid_q9=array('1_not_true'=>0,'2_sometimes_true'=>1,'3_often_true'=>2,'4_almost_always_true'=>3);
+        $score_grid_q10=array('1_not_true'=>0,'2_sometimes_true'=>1,'3_often_true'=>2,'4_almost_always_true'=>3);
+        $score_grid_q11=array('1_not_true'=>3,'2_sometimes_true'=>2,'3_often_true'=>1,'4_almost_always_true'=>0);
+        $score_grid_q12=array('1_not_true'=>3,'2_sometimes_true'=>2,'3_often_true'=>1,'4_almost_always_true'=>0);
+        $score_grid_q13=array('1_not_true'=>0,'2_sometimes_true'=>1,'3_often_true'=>2,'4_almost_always_true'=>3);
+        $score_grid_q14=array('1_not_true'=>0,'2_sometimes_true'=>1,'3_often_true'=>2,'4_almost_always_true'=>3);
+        $score_grid_q15=array('1_not_true'=>3,'2_sometimes_true'=>2,'3_often_true'=>1,'4_almost_always_true'=>0);
+        $score_grid_q16=array('1_not_true'=>0,'2_sometimes_true'=>1,'3_often_true'=>2,'4_almost_always_true'=>3);
+        $score_grid_q17=array('1_not_true'=>3,'2_sometimes_true'=>2,'3_often_true'=>1,'4_almost_always_true'=>0);
+        $score_grid_q18=array('1_not_true'=>0,'2_sometimes_true'=>1,'3_often_true'=>2,'4_almost_always_true'=>3);
+        $score_grid_q19=array('1_not_true'=>0,'2_sometimes_true'=>1,'3_often_true'=>2,'4_almost_always_true'=>3);
+        $score_grid_q20=array('1_not_true'=>0,'2_sometimes_true'=>1,'3_often_true'=>2,'4_almost_always_true'=>3);
+        $score_grid_q21=array('1_not_true'=>3,'2_sometimes_true'=>2,'3_often_true'=>1,'4_almost_always_true'=>0);
+        $score_grid_q22=array('1_not_true'=>3,'2_sometimes_true'=>2,'3_often_true'=>1,'4_almost_always_true'=>0);
+        $score_grid_q23=array('1_not_true'=>0,'2_sometimes_true'=>1,'3_often_true'=>2,'4_almost_always_true'=>3);
+        $score_grid_q24=array('1_not_true'=>0,'2_sometimes_true'=>1,'3_often_true'=>2,'4_almost_always_true'=>3);
+        $score_grid_q25=array('1_not_true'=>0,'2_sometimes_true'=>1,'3_often_true'=>2,'4_almost_always_true'=>3);
+        $score_grid_q26=array('1_not_true'=>3,'2_sometimes_true'=>2,'3_often_true'=>1,'4_almost_always_true'=>0);
+        $score_grid_q27=array('1_not_true'=>0,'2_sometimes_true'=>1,'3_often_true'=>2,'4_almost_always_true'=>3);
+        $score_grid_q28=array('1_not_true'=>0,'2_sometimes_true'=>1,'3_often_true'=>2,'4_almost_always_true'=>3);
+        $score_grid_q29=array('1_not_true'=>0,'2_sometimes_true'=>1,'3_often_true'=>2,'4_almost_always_true'=>3);
+        $score_grid_q30=array('1_not_true'=>0,'2_sometimes_true'=>1,'3_often_true'=>2,'4_almost_always_true'=>3);
+        $score_grid_q31=array('1_not_true'=>0,'2_sometimes_true'=>1,'3_often_true'=>2,'4_almost_always_true'=>3);
+        $score_grid_q32=array('1_not_true'=>3,'2_sometimes_true'=>2,'3_often_true'=>1,'4_almost_always_true'=>0);
+        $score_grid_q33=array('1_not_true'=>0,'2_sometimes_true'=>1,'3_often_true'=>2,'4_almost_always_true'=>3);
+        $score_grid_q34=array('1_not_true'=>0,'2_sometimes_true'=>1,'3_often_true'=>2,'4_almost_always_true'=>3);
+        $score_grid_q35=array('1_not_true'=>0,'2_sometimes_true'=>1,'3_often_true'=>2,'4_almost_always_true'=>3);
+        $score_grid_q36=array('1_not_true'=>0,'2_sometimes_true'=>1,'3_often_true'=>2,'4_almost_always_true'=>3);
+        $score_grid_q37=array('1_not_true'=>0,'2_sometimes_true'=>1,'3_often_true'=>2,'4_almost_always_true'=>3);
+        $score_grid_q38=array('1_not_true'=>3,'2_sometimes_true'=>2,'3_often_true'=>1,'4_almost_always_true'=>0);
+        $score_grid_q39=array('1_not_true'=>0,'2_sometimes_true'=>1,'3_often_true'=>2,'4_almost_always_true'=>3);
+        $score_grid_q40=array('1_not_true'=>3,'2_sometimes_true'=>2,'3_often_true'=>1,'4_almost_always_true'=>0);
+        $score_grid_q41=array('1_not_true'=>0,'2_sometimes_true'=>1,'3_often_true'=>2,'4_almost_always_true'=>3);
+        $score_grid_q42=array('1_not_true'=>0,'2_sometimes_true'=>1,'3_often_true'=>2,'4_almost_always_true'=>3);
+        $score_grid_q43=array('1_not_true'=>3,'2_sometimes_true'=>2,'3_often_true'=>1,'4_almost_always_true'=>0);
+        $score_grid_q44=array('1_not_true'=>0,'2_sometimes_true'=>1,'3_often_true'=>2,'4_almost_always_true'=>3);
+        $score_grid_q45=array('1_not_true'=>3,'2_sometimes_true'=>2,'3_often_true'=>1,'4_almost_always_true'=>0);
+        $score_grid_q46=array('1_not_true'=>0,'2_sometimes_true'=>1,'3_often_true'=>2,'4_almost_always_true'=>3);
+        $score_grid_q47=array('1_not_true'=>0,'2_sometimes_true'=>1,'3_often_true'=>2,'4_almost_always_true'=>3);
+        $score_grid_q48=array('1_not_true'=>3,'2_sometimes_true'=>2,'3_often_true'=>1,'4_almost_always_true'=>0);
+        $score_grid_q49=array('1_not_true'=>0,'2_sometimes_true'=>1,'3_often_true'=>2,'4_almost_always_true'=>3);
+        $score_grid_q50=array('1_not_true'=>0,'2_sometimes_true'=>1,'3_often_true'=>2,'4_almost_always_true'=>3);
+        $score_grid_q51=array('1_not_true'=>0,'2_sometimes_true'=>1,'3_often_true'=>2,'4_almost_always_true'=>3);
+        $score_grid_q52=array('1_not_true'=>3,'2_sometimes_true'=>2,'3_often_true'=>1,'4_almost_always_true'=>0);
+        $score_grid_q53=array('1_not_true'=>0,'2_sometimes_true'=>1,'3_often_true'=>2,'4_almost_always_true'=>3);
+        $score_grid_q54=array('1_not_true'=>0,'2_sometimes_true'=>1,'3_often_true'=>2,'4_almost_always_true'=>3);
+        $score_grid_q55=array('1_not_true'=>3,'2_sometimes_true'=>2,'3_often_true'=>1,'4_almost_always_true'=>0);
+        $score_grid_q56=array('1_not_true'=>0,'2_sometimes_true'=>1,'3_often_true'=>2,'4_almost_always_true'=>3);
+        $score_grid_q57=array('1_not_true'=>0,'2_sometimes_true'=>1,'3_often_true'=>2,'4_almost_always_true'=>3);
+        $score_grid_q58=array('1_not_true'=>0,'2_sometimes_true'=>1,'3_often_true'=>2,'4_almost_always_true'=>3);
+        $score_grid_q59=array('1_not_true'=>0,'2_sometimes_true'=>1,'3_often_true'=>2,'4_almost_always_true'=>3);
+        $score_grid_q60=array('1_not_true'=>0,'2_sometimes_true'=>1,'3_often_true'=>2,'4_almost_always_true'=>3);
+        $score_grid_q61=array('1_not_true'=>0,'2_sometimes_true'=>1,'3_often_true'=>2,'4_almost_always_true'=>3);
+        $score_grid_q62=array('1_not_true'=>0,'2_sometimes_true'=>1,'3_often_true'=>2,'4_almost_always_true'=>3);
+        $score_grid_q63=array('1_not_true'=>0,'2_sometimes_true'=>1,'3_often_true'=>2,'4_almost_always_true'=>3);
+        $score_grid_q64=array('1_not_true'=>0,'2_sometimes_true'=>1,'3_often_true'=>2,'4_almost_always_true'=>3);
+        $score_grid_q65=array('1_not_true'=>0,'2_sometimes_true'=>1,'3_often_true'=>2,'4_almost_always_true'=>3);
+
+        //get the saved scores
+        $db =& Database::singleton();
+        $query = "SELECT * FROM $this->table WHERE CommentID = '$this->commentID'";
+        $record = $db->pselectRow($query, array());
+
+
+        $Awr_array = array(
+            $score_grid_q2[$record['q2_wrong_facialexpressions']],
+            $score_grid_q7[$record['q7_aware_others_feeling']],
+            $score_grid_q25[$record['q25_diff_wavelength']],
+            $score_grid_q32[$record['q32_good_personal_hygiene']],
+            $score_grid_q45[$record['q45_pay_attention']],
+            $score_grid_q52[$record['q52_overly_loud']],
+            $score_grid_q54[$record['q54_thinkpeople_as_objects']],
+            $score_grid_q56[$record['q56_walk_btwn_people']],
+        );
+
+        $Cog_array=array(
+            $score_grid_q5[$record['q5_others_take_advantage']],
+            $score_grid_q10[$record['q10_takethings_literally']],
+            $score_grid_q15[$record['q15_changefacialexp_understandmeaning']],
+            $score_grid_q17[$record['q17_recognize_unfair']],
+            $score_grid_q30[$record['q30_upset_situations']],
+            $score_grid_q40[$record['q40_imaginative']],
+            $score_grid_q42[$record['q42_overly_sensitive']],
+            $score_grid_q44[$record['q44_chains_causation']],
+            $score_grid_q48[$record['q48_goodsense_humor']],
+            $score_grid_q58[$record['q58_concentration_parts']],
+            $score_grid_q59[$record['q59_suspicious_ofpeople']],
+            $score_grid_q62[$record['q62_reason_unusual']],
+        );
+
+        $Com_array=array(
+            $score_grid_q12[$record['q12_communicate_toothers']],
+            $score_grid_q13[$record['q13_awkward_turn_takingtalk']],
+            $score_grid_q16[$record['q16_avoideyecontact']],
+            $score_grid_q18[$record['q18_difficulty_makingfriends']],
+            $score_grid_q19[$record['q19_frustrated_conveyingideas']],
+            $score_grid_q21[$record['q21_imitate_actions']],
+            $score_grid_q22[$record['q22_interact_appropriately']],
+            $score_grid_q26[$record['q26_offer_comfort']],
+            $score_grid_q33[$record['q33_socially_awkward']],
+            $score_grid_q35[$record['q35_trouble_keepingup']],
+            $score_grid_q36[$record['q36_difficulty_relating_adults']],
+            $score_grid_q37[$record['q37_difficulty_relating_peers']],
+            $score_grid_q38[$record['q38_respond_moodchange']],
+            $score_grid_q41[$record['q41_wander_aimlessly']],
+            $score_grid_q46[$record['q46_serious_facialexp']],
+            $score_grid_q47[$record['q47_laugh_inappropriately']],
+            $score_grid_q51[$record['q51_diff_directqstn']],
+            $score_grid_q53[$record['q53_monotone_voice']],
+            $score_grid_q55[$record['q55_invade_personalspace']],
+            $score_grid_q57[$record['q57_gets_teased']],
+            $score_grid_q60[$record['q60_emotionally_distant']],
+            $score_grid_q61[$record['q61_inflexible']],
+
+        );
+
+        $Mot_array=array(
+            $score_grid_q1[$record['q1_uncomfortable_socialsituations']],
+            $score_grid_q3[$record['q3_self_confident']],
+            $score_grid_q6[$record['q6_rather_be_alone']],
+            $score_grid_q9[$record['q9_overly_dependent']],
+            $score_grid_q11[$record['q11_has_selfconfidence']],
+            $score_grid_q23[$record['q23_joingroups_activities']],
+            $score_grid_q27[$record['q27_avoid_socialinteractions']],
+            $score_grid_q34[$record['q34_avoid_emotionallyclose']],
+            $score_grid_q43[$record['q43_separates_easily']],
+            $score_grid_q64[$record['q64_tense_socialsituations']],
+            $score_grid_q65[$record['q65_staring_gazing']],
+
+        );
+
+        $RRB_array=array(
+            $score_grid_q4[$record['q4_rigid_inflexible']],
+            $score_grid_q8[$record['q8_behave_strange_bizarre']],
+            $score_grid_q14[$record['q14_notwell_coordinated']],
+            $score_grid_q20[$record['q20_unusual_interests']],
+            $score_grid_q24[$record['q24_diff_changeroutine']],
+            $score_grid_q28[$record['q28_think_overandover']],
+            $score_grid_q29[$record['q29_odd_weird']],
+            $score_grid_q31[$record['q31_cant_getmind_off']],
+            $score_grid_q39[$record['q39_interested_toofew_topics']],
+            $score_grid_q49[$record['q49_wellat_tasks']],
+            $score_grid_q50[$record['q50_repetitive_behavior']],
+            $score_grid_q63[$record['q63_touching_unusual']],
+
+
+        );
+
+        $scores['Awr_score'] =$this->findRowScore($Awr_array);
+        $scores['Cog_score'] =$this->findRowScore($Cog_array);
+        $scores['Com_score'] =$this->findRowScore($Com_array);
+        $scores['Mot_score'] =$this->findRowScore($Mot_array);
+        $scores['DSM5_RRB_score'] =$this->findRowScore($RRB_array);
+        $scores['DSM5_SCI_score'] =$this->findRowScore($Awr_array) + $this->findRowScore($Cog_array) + $this->findRowScore($Com_array)+ $this->findRowScore($Mot_array);
+        $scores['total_score'] =$this->findRowScore($RRB_array) + $scores['DSM5_SCI_score'];
+
+
+
+        $query_gender = "SELECT Sex FROM candidate as c, session as s, flag as f, $this->table as t WHERE t.CommentID = '$this->commentID' 
+AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
+        $record_gender = $db->pselectRow($query_gender, array());
+        if($record_gender['Sex']=='Male')
+        {
+            $gender='M';
+        }
+        if($record_gender['Sex']=='Female')
+        {
+            $gender='F';
+        }
+
+
+        $scales = array("total", "DSM5_SCI", "DSM5_RRB", "Awr", "Cog", "Com","Mot");
+        foreach ($scales as $field) {
+            $field_raw_score = $scores[$field . '_score'];
+            if($field_raw_score==0) {
+                $query_scores1 = "SELECT * FROM SRS2_SchoolAge_lookup WHERE form_relation ='SRS2_Parent' and 
+                sex='$gender'  AND (scale_raw_score ='$field_raw_score'  OR  '$field_raw_score' BETWEEN SUBSTRING_INDEX 
+                (`scale_raw_score`,'-', 1) AND SUBSTRING_INDEX(`scale_raw_score`,'-', -1) ) AND scale='$field'";
+                $record_1 = $db->pselectRow($query_scores1, array());
+            }
+            else{
+                $query_scores1 = "SELECT * FROM SRS2_SchoolAge_lookup WHERE form_relation ='SRS2_Parent' and 
+                sex='$gender'  AND (scale_raw_score =$field_raw_score  OR  $field_raw_score BETWEEN SUBSTRING_INDEX 
+                (`scale_raw_score`,'-', 1) AND SUBSTRING_INDEX(`scale_raw_score`,'-', -1) ) AND scale='$field'";
+                $record_1 = $db->pselectRow($query_scores1, array());
+
+            }
+            if (empty($record_1)) {
+                $max_range = "SELECT * FROM SRS2_SchoolAge_lookup WHERE form_relation ='SRS2_Parent' and 
+                 sex='$gender'  AND scale_raw_score like '%>=%' AND scale='$field'";
+                $max_range_array = $db->pselectRow($max_range, array());
+                if(empty($max_range_array))
+                {
+                    $scores[$field . '_T_score'] = "NA";
+                }
+                else {
+                    $max_number_array = explode(">=", $max_range_array['scale_raw_score']);
+                    $max_number = $max_number_array[0];
+                    if ($field_raw_score >= $max_number) {
+                        $scores[$field . '_T_score'] = ($max_range_array['scale_T_score']);
+
+                    }
+                }
+            } else{
+                if (array_key_exists('scale_T_score', $record_1)) {
+                    if ($record_1['scale_T_score'] == "" || ($record_1['scale_T_score'] == NULL)) {
+                        $scores[$field . '_T_score'] = "NA";
+                    } else {
+                        $scores[$field . '_T_score'] = ($record_1['scale_T_score']);
+                    }
+                } else {
+                    $scores[$field . '_T_score'] = "NA";
+                }
+            }
+
+
+        }
+
+        if($scores['total_T_score']>=76)
+        {
+            $scores['score_range']= "Severe";
+        }
+        else if(in_array($scores['total_T_score'], range(66, 75)))
+        {
+            $scores['score_range']= "Moderate";
+        }
+        else if(in_array($scores['total_T_score'], range(60, 65)))
+        {
+            $scores['score_range']= "Mold";
+        }
+        else if($scores['total_T_score']<=59)
+        {
+            $scores['score_range']= "Normal";
+        }
+        else{
+            $scores['score_range']= "NA";
+
+        }
+
+
+
+        $scores= str_replace(">", "Greater than or ", $scores);
+
+        $scores= str_replace("<", "Less than or", $scores);
+
+        $result = $db->update($this->table, $scores, array('CommentID'=>$this->getCommentID()));
+
+    }
+
+    function findRowScore($scale_array)
+    {
+        $raw_score=0;
+        foreach ($scale_array as $val)
+        {
+            if($val=='1')
+            {
+                $raw_score=$raw_score+1;
+            }
+            if($val=='2')
+            {
+                $raw_score=$raw_score+2;
+            }
+            if($val=='3')
+            {
+                $raw_score=$raw_score+3;
+            }
+        }
+
+        return $raw_score;
+    }
+
 
 
 }
