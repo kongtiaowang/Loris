@@ -2,3 +2,4 @@ config.xml
 .*.swp
 *.un~
 *.csv
+.idea/
