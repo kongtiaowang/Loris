@@ -79,7 +79,7 @@ CREATE TABLE `BSRC_survey` (
     `did_child_receive_medical_therapies_autism` enum('yes','no') default NULL,
     `q8_specify` varchar(128) default NULL,
     `q8_specify_status` enum('not_answered') default NULL,
-    `do_you_continue_enrollment_intervention` enum('yes','no') default NULL,
+    `do_you_continue_enrollment_intervention` enum('yes','no','na') default NULL,
     `if_checked_9_please_check` varchar(128) default NULL,
     `additional_info_about_services` text default NULL,
     `additional_info_about_services_status` enum('not_answered') default NULL,
