@@ -136,10 +136,6 @@ class Database_Test extends TestCase
      */
     function testSetFakeData()
     {
-        $client = new NDB_Client();
-        $client->makeCommandLine();
-        $client->initialize();
-
         $this->DB->setFakeTableData(
             "Config",
             [
@@ -152,7 +148,7 @@ class Database_Test extends TestCase
         );
 
         $allCandidates = $this->DB->pselect("SELECT * FROM Config", []);
-
+        $this->DB->run("DROP TEMPORARY TABLE Config");
         $this->assertEquals(
             $allCandidates,
             [
