@@ -86,7 +86,6 @@ class Database_Test extends TestCase
     {
         $this->factory = NDB_Factory::singleton();
         $this->factory->reset();
-        $this->factory->setTesting(false);
         $this->config = $this->factory->Config(CONFIG_XML);
         $database     = $this->config->getSetting('database');
         $this->DB     = Database::singleton(
@@ -96,6 +95,9 @@ class Database_Test extends TestCase
             $database['host'],
             1
         );
+
+        $this->factory->setDatabase($this->DB);
+        $this->factory->setConfig($this->config);
     }
 
     /**
@@ -134,10 +136,6 @@ class Database_Test extends TestCase
      */
     function testSetFakeData()
     {
-        $client = new NDB_Client();
-        $client->makeCommandLine();
-        $client->initialize();
-
         $this->DB->setFakeTableData(
             "Config",
             [
@@ -150,7 +148,7 @@ class Database_Test extends TestCase
         );
 
         $allCandidates = $this->DB->pselect("SELECT * FROM Config", []);
-
+        $this->DB->run("DROP TEMPORARY TABLE Config");
         $this->assertEquals(
             $allCandidates,
             [

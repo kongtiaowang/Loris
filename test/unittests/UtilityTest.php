@@ -1216,7 +1216,6 @@ class UtilityTest extends TestCase
     {
         $this->_mockFactory = \NDB_Factory::singleton();
         $this->_mockFactory->reset();
-        $this->_mockFactory->setTesting(false);
         $this->_mockConfig = $this->_mockFactory->Config(CONFIG_XML);
         $database          = $this->_mockConfig->getSetting('database');
         $this->_mockDB     = \Database::singleton(
@@ -1226,5 +1225,8 @@ class UtilityTest extends TestCase
             $database['host'],
             true
         );
+
+        $this->_mockFactory->setDatabase($this->_mockDB);
+        $this->_mockFactory->setConfig($this->_mockConfig);
     }
 }
