@@ -106,7 +106,11 @@ class CouchDBDemographicsImporter {
         'Scan_done' => array(
             'Description' => 'Scan done for the visit',
             'Type' => 'varchar(255)',
-        )
+        ),
+        'session_feedback' => array(
+            'Description' => 'Behavioural feedback at the session level',
+            'Type' => "varchar(255)",
+                )
     );
 
     var $Config = array(
@@ -333,9 +337,42 @@ class CouchDBDemographicsImporter {
         return null;
     }
 
+    function getSessionID($candID,$visit)
+    {
+        $row = $this->SQLDB->pselectRow(
+            "SELECT s.ID FROM session s
+             join candidate c on (c.CandID=s.CandID)
+            WHERE s.Visit_label=:vl AND c.CandID=:cid
+            and s.Active='Y'",
+            array('cid' => $candID, 'vl' =>$visit)
+        );
+
+        return $row['ID'];
+    }
+
+    function getSessionFeedback($SessionID)
+    {
+        $row = $this->SQLDB->pselectRow(
+            "select s.candID,s.Visit_label, GROUP_CONCAT(fbe.Comment SEPARATOR '---->') as session_feedback_comments 
+from session s
+LEFT JOIN feedback_bvl_thread fbt ON (fbt.SessionID=s.ID) 
+LEFT JOIN feedback_bvl_entry fbe ON (fbe.FeedbackID=fbt.FeedbackID)
+WHERE s.ID=:SID
+group by s.CandID,s.Visit_label",
+            array('SID' => $SessionID)
+        );
+         return $row['session_feedback_comments'];
+
+    }
+
+
+
+
     function run() {
         $config = $this->CouchDB->replaceDoc('Config:BaseConfig', $this->Config);
         print "Updating Config:BaseConfig: $config";
+        // Run query
+        $max_len = $this->SQLDB->run("SET SESSION group_concat_max_len = 100000;", array());
 
         // Run query
         $demographics = $this->SQLDB->pselect($this->_generateQuery(), array());
@@ -346,6 +383,10 @@ class CouchDBDemographicsImporter {
             $id = 'Demographics_Session_' . $demographics['PSCID'] . '_' . $demographics['Visit_label'];
             $demographics['Cohort'] = $this->_getSubproject($demographics['SubprojectID']);
             unset($demographics['SubprojectID']);
+            $candid=$demographics['CandID'];
+            $visit=$demographics['Visit_label'];
+            $sid=$this->getSessionID($candid,$visit);
+            $demographics['session_feedback'] = $this->getSessionFeedback($sid);
             if(isset($demographics['ProjectID'])) {
                 $demographics['Project'] = $this->_getProject($demographics['ProjectID']);
                 unset($demographics['ProjectID']);
