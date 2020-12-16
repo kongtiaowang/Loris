@@ -780,7 +780,7 @@ class NDB_BVL_Instrument_SA_Intervention_History extends NDB_BVL_Instrument
                     $this->XINRegisterRule($q2Key, array("did_child_receive_early_intervention{@}=={@}yes"), "Required");
                 }
             } elseif ($name == "did_child_receive_developmental_delays") {
-                $this->addLabel("<BR> If YES to #5, please complete the following:");
+                $this->addLabel("<BR> If YES to #20, please complete the following:");
 
                 foreach (self::SERVICE_TYPE_OPTIONS as $q5Key => $q5Question) {
                     $this->addHeader($q5Question);

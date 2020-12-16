@@ -71,3 +71,4 @@ ALTER TABLE SA_Intervention_History ADD COLUMN `do_you_continue_enrollment_inter
 ALTER TABLE SA_Intervention_History ADD COLUMN `if_checked_9_please_check` varchar(128) default NULL;
 ALTER TABLE SA_Intervention_History ADD COLUMN `additional_info_about_services` text default NULL;
 ALTER TABLE SA_Intervention_History ADD COLUMN `additional_info_about_services_status` enum('not_answered') default NULL;
+INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('SA_Intervention_History','SA_Intervention_History_page3', "Page 3", 3);
