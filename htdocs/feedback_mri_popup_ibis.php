@@ -57,7 +57,8 @@ if (isset($_REQUEST['sessionID'])) {
         $result = $DB->pselect($query, $qparams);
 
         if (count($result) > 0) {
-            if ($result[0]['Visit_label'] == 'VSA') {
+            $vlabel = $result[0]['Visit_label'];
+            if ($vlabel == 'VSA' || preg_match('/-CVD$/', $vlabel)) {
                 $group = GROUP_IBIS_EP_DS;
             }
         }
