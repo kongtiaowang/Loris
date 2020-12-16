@@ -122,7 +122,7 @@ class NDB_BVL_Instrument_Mock_Scanner_Training_Version_2 extends NDB_BVL_Instrum
         // automatically adds examiner & date of administration
         $this->_addMetadataFields();
 
-        $this->addHeader('Mock Scanner Training: IBIS School Age Project');
+        $this->addHeader('Mock Scanner Training - COVID');
         $this->addRequiredSelect(
             'total_mock_sessions',
             'Total # of mock sessions:',
@@ -241,14 +241,14 @@ class NDB_BVL_Instrument_Mock_Scanner_Training_Version_2 extends NDB_BVL_Instrum
         $this->addYesNoSelect("bx_strategies_{$i}_vsb", 'Visual story board');
         $this->addYesNoSelect("bx_strategies_{$i}_vt", 'Visual timer');
         $this->addYesNoSelect("bx_strategies_{$i}_simon_says", 'Simon says');
-
-        $this->addSubHeader('Facade');
         $this->addRequiredSelect(
             "facade_type_$i",
             'Was a facade used on the scanner?',
             array('' => NULL, 'space' => 'Space', 'none' => 'None', 'other' => 'Other')
         );
         $this->addTextAreaElement("other_facade_$i", "{$this->indent}<i>Other:</i>");
+
+        $this->addSubHeader('COVID Safety Precautions');
 
         $this->addYesNoSelect("zoom_call_{$i}", 'Zoom call prior to mock scan?');
         $this->addYesNoSelect("parent_in_room_{$i}", 'Parent in the room?');
