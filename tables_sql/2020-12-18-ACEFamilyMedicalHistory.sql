@@ -1,0 +1,14 @@
+ALTER TABLE `ACEFamilyMedicalHistory` ADD COLUMN `dob_mother` date default NULL AFTER `relation_sibling5`;
+ALTER TABLE `ACEFamilyMedicalHistory` ADD COLUMN `dob_father` date default NULL AFTER `dob_mother`;
+ALTER TABLE `ACEFamilyMedicalHistory` ADD COLUMN `dob_sibling1` date default NULL AFTER `dob_father`;
+ALTER TABLE `ACEFamilyMedicalHistory` ADD COLUMN `dob_sibling2` date default NULL AFTER `dob_sibling1`;
+ALTER TABLE `ACEFamilyMedicalHistory` ADD COLUMN `dob_sibling3` date default NULL AFTER `dob_sibling2`;
+ALTER TABLE `ACEFamilyMedicalHistory` ADD COLUMN `dob_sibling4` date default NULL AFTER `dob_sibling3`;
+ALTER TABLE `ACEFamilyMedicalHistory` ADD COLUMN `dob_sibling5` date default NULL AFTER `dob_sibling4`;
+ALTER TABLE `ACEFamilyMedicalHistory` ADD COLUMN `age_first_diagnosis_mother` varchar(255) default NULL AFTER `pdd_nos_sibling5`;
+ALTER TABLE `ACEFamilyMedicalHistory` ADD COLUMN `age_first_diagnosis_father` varchar(255) default NULL AFTER `age_first_diagnosis_mother`;
+ALTER TABLE `ACEFamilyMedicalHistory` ADD COLUMN `age_first_diagnosis_sibling1` varchar(255) default NULL AFTER `age_first_diagnosis_father`;
+ALTER TABLE `ACEFamilyMedicalHistory` ADD COLUMN `age_first_diagnosis_sibling2` varchar(255) default NULL AFTER `age_first_diagnosis_sibling1`;
+ALTER TABLE `ACEFamilyMedicalHistory` ADD COLUMN `age_first_diagnosis_sibling3` varchar(255) default NULL AFTER `age_first_diagnosis_sibling2`;
+ALTER TABLE `ACEFamilyMedicalHistory` ADD COLUMN `age_first_diagnosis_sibling4` varchar(255) default NULL AFTER `age_first_diagnosis_sibling3`;
+ALTER TABLE `ACEFamilyMedicalHistory` ADD COLUMN `age_first_diagnosis_sibling5` varchar(255) default NULL AFTER `age_first_diagnosis_sibling4`;
