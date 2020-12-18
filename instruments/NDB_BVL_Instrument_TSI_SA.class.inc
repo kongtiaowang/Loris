@@ -449,7 +449,7 @@ class NDB_BVL_Instrument_TSI_SA extends NDB_BVL_Instrument
         $this->form->addElement('static', null, "Additional contact: $this->indent relationship:");
         $this->form->addElement('static', null, "Parent 1 (or combined) Address:");
         $this->form->addElement('static', null, "Parent 2 Address (if 2 households):");
-        $this->form->addElement('header', null, "<h4>Proband</h4>");
+        $this->form->addElement('header', null, "Proband");
         $this->form->addElement('static', null, "Name:");
 //        $this->form->addText('subject_firstname', "First name");
 //        $this->XINRegisterRule("subject_firstname", array("subject_firstname{@}=={@}NEVER_REQUIRED"));
