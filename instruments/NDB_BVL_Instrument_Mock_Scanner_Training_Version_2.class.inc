@@ -128,7 +128,7 @@ class NDB_BVL_Instrument_Mock_Scanner_Training_Version_2 extends NDB_BVL_Instrum
 
     function _main()
     {
-        $this->addHeader('Mock Scanner Training - COVID');
+        $this->addHeader('Mock Scanner Training Form - COVID');
 
         // automatically adds examiner & date of administration
         $this->_addMetadataFields();
