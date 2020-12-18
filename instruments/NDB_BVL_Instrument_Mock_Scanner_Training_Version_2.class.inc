@@ -87,6 +87,15 @@ class NDB_BVL_Instrument_Mock_Scanner_Training_Version_2 extends NDB_BVL_Instrum
             "bx_specialist_ppe_5",
             "bx_specialist_ppe_6"
         );
+        $config = NDB_Config::singleton();
+        $this->dateOptions = array(
+            'language' => 'en',
+            'format' => 'YMd',
+            'minYear' => $config->getSetting('startYear'),
+            'maxYear' => $config->getSetting('endYear'),
+            'addEmptyOption' => true,
+            'emptyOptionValue' => null,
+        );
 
         // setup the form
         $this->_setupForm();
@@ -119,10 +128,11 @@ class NDB_BVL_Instrument_Mock_Scanner_Training_Version_2 extends NDB_BVL_Instrum
 
     function _main()
     {
+        $this->addHeader('Mock Scanner Training - COVID');
+
         // automatically adds examiner & date of administration
         $this->_addMetadataFields();
 
-        $this->addHeader('Mock Scanner Training - COVID');
         $this->addRequiredSelect(
             'total_mock_sessions',
             'Total # of mock sessions:',
@@ -142,11 +152,13 @@ class NDB_BVL_Instrument_Mock_Scanner_Training_Version_2 extends NDB_BVL_Instrum
             }
         }
 
-        $this->form->addElement(
-            'static',
-            null,
-            empty($msg) ? '' : "<font color='red'>*** $msg ***</font>"
-        );
+        if ($msg != '') {
+            $this->form->addElement(
+                'static',
+                null,
+                "<font color='red'>*** $msg ***</font>"
+            );
+        }
 
         $this->addHourMinElement('mock_time', 'Approximate total mock time: (hours:minutes)');
     }
