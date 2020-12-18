@@ -87,6 +87,15 @@ class NDB_BVL_Instrument_Mock_Scanner_Training_Version_2 extends NDB_BVL_Instrum
             "bx_specialist_ppe_5",
             "bx_specialist_ppe_6"
         );
+        $config = NDB_Config::singleton();
+        $this->dateOptions = array(
+            'language' => 'en',
+            'format' => 'YMd',
+            'minYear' => $config->getSetting('startYear'),
+            'maxYear' => $config->getSetting('endYear'),
+            'addEmptyOption' => true,
+            'emptyOptionValue' => null,
+        );
 
         // setup the form
         $this->_setupForm();
@@ -119,34 +128,28 @@ class NDB_BVL_Instrument_Mock_Scanner_Training_Version_2 extends NDB_BVL_Instrum
 
     function _main()
     {
+        $this->addHeader('Mock Scanner Training Form - COVID');
+
         // automatically adds examiner & date of administration
         $this->_addMetadataFields();
 
-        $this->addHeader('Mock Scanner Training - COVID');
         $this->addRequiredSelect(
             'total_mock_sessions',
             'Total # of mock sessions:',
             array('' => NULL, 1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5, 6 => 6)
         );
         $totalMockSessions = $this->form->getValue('total_mock_sessions');
-        $msg = '';
         if (!empty($totalMockSessions)) {
             if ($totalMockSessions == 1) {
-                $msg = "Remember to only fill page 1 and leave the other pages empty.";
+                $this->form->addElement('static', null, "*** Remember to only fill page 1 and leave the other pages empty. ***");
             } elseif ($totalMockSessions == 2) {
-                $msg = "Remember to only fill page 1 and 2 and leave the other pages empty.";
+                $this->form->addElement('static', null, "*** Remember to only fill page 1 and 2 and leave the other pages empty. ***");
             } elseif ($totalMockSessions != 6) {
-                $msg = "Remember to only fill pages 1 through $totalMockSessions and leave the other pages empty.";
+                $this->form->addElement('static', null, "*** Remember to only fill pages 1 through {$totalMockSessions} and leave the other pages empty. ***");
             } else {
-                $msg = "Remember to fill all the pages, i.e. 1 through 6.";
+                $this->form->addElement('static', null, "*** Remember to fill all the pages, i.e. 1 through 6. ***");
             }
         }
-
-        $this->form->addElement(
-            'static',
-            null,
-            empty($msg) ? '' : "<font color='red'>*** $msg ***</font>"
-        );
 
         $this->addHourMinElement('mock_time', 'Approximate total mock time: (hours:minutes)');
     }
