@@ -15,7 +15,7 @@ WHERE
                     session
                 WHERE
                     Visit_label='VSA-CVD' AND
-                    CandID=942335
+                    CandID=237123
             )
     );
 
@@ -36,7 +36,7 @@ WHERE
                     session
                 WHERE
                     Visit_label='VSA-CVD' AND
-                    CandID=942335
+                    CandID=237123
             )
     );
 
@@ -53,5 +53,5 @@ IN
             session
         WHERE
             Visit_label='VSA-CVD' AND
-            CandID=942335
+            CandID=237123
     ); 
