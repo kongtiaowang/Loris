@@ -1,0 +1,11 @@
+ALTER TABLE `BSRC_survey` MODIFY `occupational_therapy_individual_group` enum('individual','group') default NULL;
+ALTER TABLE `BSRC_survey` MODIFY `physical_therapy_individual_group` enum('individual','group') default NULL;
+ALTER TABLE `BSRC_survey` MODIFY `speech_language_therapy_individual_group` enum('individual','group') default NULL;
+ALTER TABLE `BSRC_survey` MODIFY `comprehensive_behavioral_individual_group` enum('individual','group') default NULL;
+ALTER TABLE `BSRC_survey` MODIFY `other_individual_group` enum('individual','group') default NULL;
+ALTER TABLE `BSRC_survey` ADD COLUMN `child_enrollment_speech_language_therapy` VARCHAR(255) DEFAULT NULL AFTER `do_you_continue_enrollment_intervention`;
+ALTER TABLE `BSRC_survey` ADD COLUMN `child_enrollment_occupational_therapy` VARCHAR(255) DEFAULT NULL AFTER `child_enrollment_speech_language_therapy`;
+ALTER TABLE `BSRC_survey` ADD COLUMN `child_enrollment_physical_therapy` VARCHAR(255) DEFAULT NULL AFTER `child_enrollment_occupational_therapy`;
+ALTER TABLE `BSRC_survey` ADD COLUMN `child_enrollment_comprehensive_behavioral` VARCHAR(255) DEFAULT NULL AFTER `child_enrollment_physical_therapy`;
+ALTER TABLE `BSRC_survey` ADD COLUMN `child_enrollment_other` VARCHAR(255) DEFAULT NULL AFTER `child_enrollment_comprehensive_behavioral`;
+ALTER TABLE `BSRC_survey` DROP COLUMN `if_checked_9_please_check`;

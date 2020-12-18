@@ -129,14 +129,7 @@ class NDB_BVL_Instrument_BSRC_survey extends NDB_BVL_Instrument
 
         //The array of selects with multiple answers allowed
         //Any LorisForm multiple selects must be listed here
-        $this->_selectMultipleElements = array(
-            "occupational_therapy_individual_group",
-            "physical_therapy_individual_group",
-            "speech_language_therapy_individual_group",
-            "comprehensive_behavioral_individual_group",
-            "other_individual_group",
-            "if_checked_9_please_check"
-        );
+        $this->_selectMultipleElements = array();
 
         // required fields for data entry completion status
         $this->_requiredElements = array(
@@ -255,7 +248,7 @@ class NDB_BVL_Instrument_BSRC_survey extends NDB_BVL_Instrument
                     $this->XINRegisterRule("{$q5Key}_intervention", array("did_child_receive_developmental_delays{@}=={@}yes", "{$q5Key}_received{@}=={@}yes"), "Required if your child received {$q5Question}.");
                     $this->addBasicDate("{$q5Key}_stopped_date", "If, NO, date stopped:");
                     $this->XINRegisterRule("{$q5Key}_stopped_date", array("did_child_receive_developmental_delays{@}=={@}yes", "{$q5Key}_received{@}=={@}yes", "{$q5Key}_intervention{@}=={@}no"), "Required if your child has stopped receiving intervention.");
-                    $this->addSelect("{$q5Key}_individual_group", "Individual or Group", self::INDIVIDUAL_GROUP_OPTIONS, array("multiple"));
+                    $this->addSelect("{$q5Key}_individual_group", "Individual or Group", self::INDIVIDUAL_GROUP_OPTIONS);
                     $this->XINRegisterRule("{$q5Key}_individual_group", array("did_child_receive_developmental_delays{@}=={@}yes", "{$q5Key}_received{@}=={@}yes"), "Required if your child received {$q5Question}.");
                     $this->addSelect("{$q5Key}_setting", "Setting", self::SETTING_OPTIONS);
                     $this->XINRegisterRule("{$q5Key}_setting", array("did_child_receive_developmental_delays{@}=={@}yes", "{$q5Key}_received{@}=={@}yes"), "Required if your child received {$q5Question}.");
@@ -276,10 +269,12 @@ class NDB_BVL_Instrument_BSRC_survey extends NDB_BVL_Instrument
                 $this->addTextAreaElement("q8_specify", "if YES, please specify", array("did_child_receive_medical_therapies_autism{@}=={@}yes"), "If Yes, please specify:");
             } elseif ($name == "do_you_continue_enrollment_intervention") {
                 $this->addSelect($name, $label, self::YES_NO_NA_OPTIONS);
-            }
-            elseif ($name == "if_checked_9_please_check") {
-                $this->addSelect($name, $label, self::CHILD_ENROLLMENT_OPTIONS, array("multiple"));
-                $this->XINRegisterRule($name, array("do_you_continue_enrollment_intervention{@}=={@}yes"), "Required");
+            } elseif ($name == "if_checked_9_please_check") {
+                $this->form->addElement("static", null, $label);
+                foreach(self::CHILD_ENROLLMENT_OPTIONS as $optionName => $optionLabel) {
+                    $this->form->addElement("advcheckbox", "child_enrollment_$optionName", $optionLabel, array("not_used", "used"));
+                    $this->XINRegisterRule("child_enrollment_$optionName", array("child_enrollment_$optionName{@}=={@}NEVER_REQUIRED"));
+                }
             }
         }
 
@@ -302,12 +297,35 @@ class NDB_BVL_Instrument_BSRC_survey extends NDB_BVL_Instrument
             "did_professional_recommend_child_socialization", "did_child_participate_socialization",
             "did_child_receive_developmental_delays", "how_many_hours_child_intervention",
             "did_child_receive_complementary_therapies_autism", "did_child_receive_medical_therapies_autism",
-            "do_you_continue_enrollment_intervention", "if_checked_9_please_check"
+            "do_you_continue_enrollment_intervention"
         );
 
         $early_intervention_services = array(
             "average_hours_per_week", "total_hours_since_last_visit"
         );
+
+        $CHILD_ENROLLMENT_OPTIONS = array('speech_language_therapy', 'occupational_therapy', 'physical_therapy', 'comprehensive_behavioral', 'other');
+
+        if ($values["do_you_continue_enrollment_intervention"] == "no" || $values["do_you_continue_enrollment_intervention"] == "na") {
+            foreach($CHILD_ENROLLMENT_OPTIONS as $option) {
+                $question = "child_enrollment_" . $option;
+                if ($values[$question] == 1) {
+                    $errors[$question] = 'This must be left blank because you did not answer yes above.';
+                }
+            }
+        }
+        if ($values["do_you_continue_enrollment_intervention"] == "yes") {
+            $selectedOptions = array();
+            foreach($CHILD_ENROLLMENT_OPTIONS as $option) {
+                $question = "child_enrollment_" . $option;
+                if ($values[$question] == 1) {
+                    array_push($selectedOptions, $question);
+                }
+            }
+            if (empty($selectedOptions)) {
+                $errors["do_you_continue_enrollment_intervention"] = 'You must select at least one option in question 10 since you selected yes here.';
+            }
+        }
 
         foreach ($required_questions as $name) {
 //            if ($name != "if_checked_9_please_check" && $name != "how_many_hours_child_intervention") {
@@ -315,13 +333,6 @@ class NDB_BVL_Instrument_BSRC_survey extends NDB_BVL_Instrument
 //                    $errors[$name] = 'Required';
 //                }
 //            }
-            if ($name == "if_checked_9_please_check") {
-                if ($values["do_you_continue_enrollment_intervention"] == "no") {
-                    if ($values['if_checked_9_please_check'] != "" || $values['if_checked_9_please_check'] != null) {
-                        $errors["if_checked_9_please_check"] = 'This must be left blank because you answered no above.';
-                    }
-                }
-            }
             if ($name == "did_child_receive_early_intervention") {
                 if ($values[$name] == "no") {
                     foreach ($early_intervention_services as $question) {
@@ -386,34 +397,6 @@ class NDB_BVL_Instrument_BSRC_survey extends NDB_BVL_Instrument
             }
         }
         return $errors;
-    }
-
-    function addOptionalSelect(string $name, string $label, array $options, $dependencyName, $dependencyValue, $message = null)
-    {
-        if ($message == null) {
-            $this->addSelect($name, $label, $options);
-            $this->XINRegisterRule($name, array("{$dependencyName}{@}=={@}{$dependencyValue}"));
-        } else {
-            $this->addSelect($name, $label, $options);
-            $this->XINRegisterRule($name, array("{$dependencyName}{@}=={@}{$dependencyValue}"), $message);
-        }
-    }
-
-    function addOptionalDate(string $name, string $label, $dependencyName, $dependencyValue, $message)
-    {
-        $this->addMonthYear($name, $label);
-        $this->XINRegisterRule($name, array("{$dependencyName}{@}=={@}{$dependencyValue}"), $message);
-    }
-
-    function addOptionalText(string $name, string $label, $dependencyName, $dependencyValue, $message = null)
-    {
-        if ($message == null) {
-            $this->addTextElement($name, $label);
-            $this->XINRegisterRule($name, array("{$dependencyName}{@}=={@}{$dependencyValue}"));
-        } else {
-            $this->addTextElement($name, $label);
-            $this->XINRegisterRule($name, array("{$dependencyName}{@}=={@}{$dependencyValue}"), $message);
-        }
     }
 }
 
