@@ -244,7 +244,7 @@ class AddSurvey extends \NDB_Form
                     urlencode($key) . "\n";
             }
         }
-        if ($values['VL'] == 'VSA') {
+        if ($values['Email'] != '') {
             $parentid = $this->getParentID($values['CandID']);
             $parent_portal_note = "\nYou can access all of your surveys on our Parent Portal.\nPlease note that to log into your Parent Portal, you will be asked for the Parent ID and Email, listed below. 
 \n" . $www['url'] . "/parent_portal/
