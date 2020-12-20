@@ -95,8 +95,8 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
             call_user_func(array($this, $matches[1]));
         } else {
             $this->_main();
+            $this->form->addFormRule(array(&$this, 'XINValidate'));
         }
-        $this->form->addFormRule(array(&$this, 'XINValidate'));
     }
 
     /**
@@ -263,14 +263,34 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
             “No,” or Not applicable (N/A).</h4>"
         );
 
-        $cshq_options = array(
-                         "a_abbreviated" => "a) The abbreviated 33 question version (this is not the version recommended to administer)",
-                         "b_long_form"   => "b) The long form 52 question version (this is the version that is recommended)",
-                        );
+        // If the session's user name is not null then it means that this instrument is
+        // being accessed through the timepoint list by someone who logged into LORIS
+        // (i.e. we are not in real "survey" mode)
+        $isDataEntryStaffEditingForm = !is_null($_SESSION['State']->getUsername());
 
-        $this->addSelect("which_cshq_did_you_administer", "For Study Staff Only: Which CSHQ did you administer?", $cshq_options);
+        // Data entry staff get to answer this question
+        if ($isDataEntryStaffEditingForm) {
+            $cshq_options = array(
+                "a_abbreviated" => "a) The abbreviated 33 question version (this is not the version recommended to administer)",
+                "b_long_form"   => "b) The long form 52 question version (this is the version that is recommended)",
+            );
 
-        $this->XINRegisterRule("which_cshq_did_you_administer", array("which_cshq_did_you_administer{@}=={@}NEVER_REQUIRED"), "Not required");
+            $this->addSelect(
+                "which_cshq_did_you_administer",
+                "<u>For Study Staff Only</u>: Which CSHQ did you administer?",
+                $cshq_options
+            );
+            $this->XINRegisterRule("which_cshq_did_you_administer", array("which_cshq_did_you_administer{@}=={@}NEVER_REQUIRED"), "Not required");
+        // Participants who fill the survey cannot answer the question: they can only
+        // see what type of questionnaire they are filling
+        } else {
+            $formAdministered = $this->getFieldValue("which_cshq_did_you_administer") == "b_long_form"
+                ? "b) The long form 52 question version (this is the version that is recommended)"
+                : "a) The abbreviated 33 question version (this is not the version recommended to administer)";
+            $this->addLabel(
+                "<u>For Study Staff Only</u>: Which CSHQ did you administer? " . $formAdministered
+            );
+        }
 
         $bedtime_questions        = array(
                                      "goes_to_bed_at_same_time_item1"      => "Child goes to bed at the same time at night.",
@@ -399,6 +419,7 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
                 false
             );
             unset($group);
+
             $this->XINRegisterRule(
                 $question . "_frequency",
                 array($question . "_frequency{@}=={@}"), // rule
@@ -421,11 +442,33 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
             }
         }
 
-        $this->form->addFormRule(array(&$this, 'validate_page1'));
+        // We only validate the answers if the instrument is not accessed through the
+        // timepoint list. This allows someone to answer question 'which questionnaire
+        // did you administer' without answering all the other questions
+        if (!$isDataEntryStaffEditingForm) {
+            $this->form->addFormRule(array(&$this, 'XINValidate'));
+            $this->form->addFormRule(array(&$this, 'validate_page1'));
+        }
     }
 
     function _page2()
     {
+        $isLongQuestionnaire         = $this->getFieldValue("which_cshq_did_you_administer") != "a_abbreviated";
+
+        // If the session's user name is not null then it means that this instrument is
+        // being accessed through the timepoint list by someone who logged into LORIS
+        // (i.e. we are not in real "survey" mode)
+        $isDataEntryStaffEditingForm = !is_null($_SESSION['State']->getUsername());
+
+        // Do not display the page if the abbreviated questionnaire is used
+        if (!$isLongQuestionnaire) {
+            $msg = "The questions that are usually on this page are not accessible "
+                 . "since this is the abbreviated version of the questionnaire.";
+            $this->addHeader($msg);
+            $this->form->freeze();
+            return;
+        }
+
         $answer_choices  = array(
                             null => "",
                             3    => "Usually (5-7)",
@@ -494,6 +537,7 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
                 false
             );
             unset($group);
+
             $this->XINRegisterRule(
                 $question . "_frequency",
                 array($question . "_frequency{@}=={@}"), // rule
@@ -613,8 +657,12 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
             $this->addSelect($sq, $label, $sleepy_choices);
         }
 
-        $this->form->addFormRule(array(&$this, 'validate_page2'));
-
+        // We only validate the answers if the instrument is not accessed through the
+        // timepoint list and if the long questionnaire version is used
+        if (!$isDataEntryStaffFillingForm && $isLongQuestionnaire) {
+            $this->form->addFormRule(array(&$this, 'XINValidate'));
+            $this->form->addFormRule(array(&$this, 'validate_page2'));
+        }
     }
 
     function displayHourMinElementCustom($field, $label, $field_label)
