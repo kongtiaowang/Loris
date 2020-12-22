@@ -28,6 +28,25 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
     var $ValidityEnabled  = false;
     var $ValidityRequired = false;
 
+    var $LONG_CSHQ_QUESTIONS = [
+        "falls_asleep_with_movement",
+        "falls_asleep_with_object",
+        "ready_to_go_to_bed",
+        "resists_going_to_bed",
+        "sleeps_too_much",
+        "reports_pain_during_sleep",
+        "complains_about_sleeping_problems",
+
+        "returns_to_sleep_without_help",
+        "wakes_up_with_alarm_clock",
+        "wakes_up_early",
+        "good_appetite_in_morning",
+        "naps_during_day",
+        "suddenly_falls_asleep",
+        "play_alone",
+        "eating_meals"
+    ];
+
     /**
      * Sets up basic data, such as the LorisForm object, and so on.
      *
@@ -100,6 +119,33 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
     }
 
     /**
+     * Overriden _saveValue function that adds this to the standard behaviour:
+     *
+     * - if the abbreviated version is saved, all the answers to the questions that
+     *   belong exclusively to the long CSHQ are set to NULL.
+     */
+    function _saveValues(array $values): void
+    {
+        $isDataEntryStaffEditingForm = !is_null($_SESSION['State']->getUsername());
+        if ($this->getFieldValue("which_cshq_did_you_administer") == "a_abbreviated"
+          && $isDataEntryStaffEditingForm
+        ) {
+            foreach ($this->LONG_CSHQ_QUESTIONS as $question) {
+                if ($question == "play_alone" || $question == "eating_meals") {
+                    $values[$question] = null;
+                } else {
+                    $values["{$question}_frequency"] = null;
+                    $values["{$question}_problem"]   = null;
+                    if ($question == "reports_pain_during_sleep") {
+                        $values["reports_pain_during_sleep_body_pain"] = null;
+                    }
+                }
+            }
+        }
+        parent::_saveValues($values);
+     }
+
+    /**
      * Generates the main page of the form.
      *
      * @return void
@@ -109,7 +155,41 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
     {
         // display test name
         $this->addHeader("Child's Sleep Habit  (Preschool and School Aged)");
+
+        // If the session's user name is not null then it means that this instrument is
+        // being accessed through the timepoint list by someone who logged into LORIS
+        // (i.e. we are not in real "survey" mode)
+        $isDataEntryStaffEditingForm = !is_null($_SESSION['State']->getUsername());
+
+        // Data entry staff get to answer this question
+        if ($isDataEntryStaffEditingForm) {
+            $cshq_options = array(
+                "a_abbreviated" => "a) The abbreviated 33 question version (this is not the version recommended to administer)",
+                "b_long_form"   => "b) The long form 52 question version (this is the version that is recommended)",
+            );
+
+            $this->addSelect(
+                "which_cshq_did_you_administer",
+                "<u>For Study Staff Only</u>: Which CSHQ did you administer?",
+                $cshq_options
+            );
+        // Participants who fill the survey cannot answer the question: they can only
+        // see what type of questionnaire they are filling
+        } else {
+            $formAdministered = $this->getFieldValue("which_cshq_did_you_administer") == "b_long_form"
+                ? "b) The long form 52 question version (this is the version that is recommended)"
+                : "a) The abbreviated 33 question version (this is not the version recommended to administer)";
+            $this->addLabel(
+                "<u>For Study Staff Only</u>: Which CSHQ did you administer? " . $formAdministered
+            );
+        }
+
+        // This is a survey: we do not want to force the entry staff to enter an
+        // administration date
         $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
+        if (isDataEntryStaffEditingForm) {
+            $this->XINRegisterRule("Date_taken", array("Date_taken{@}=={@}NEVER_REQUIRED"), "Not required");
+        }
         $score_columns
             = array(
                'bedtime_resistance'         => 'Bedtime Resistance',
@@ -139,6 +219,12 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
                  "other"       => "Other",
                 );
         $this->addSelect("relationship_to_child", "What is your relationship to the child?", $opts);
+        // This is a survey: we do not want to force the data entry staff to enter
+        // the relationship to child
+        if (isDataEntryStaffEditingForm) {
+            $this->XINRegisterRule("relationship_to_child", array("relationship_to_child{@}=={@}NEVER_REQUIRED"), "Not required");
+        }
+
         $this->addBasicText("other_relationship_to_child", $this->indent."If Other, please describe:");
         $this->XINRegisterRule(
             "other_relationship_to_child",
@@ -268,29 +354,8 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
         // (i.e. we are not in real "survey" mode)
         $isDataEntryStaffEditingForm = !is_null($_SESSION['State']->getUsername());
 
-        // Data entry staff get to answer this question
-        if ($isDataEntryStaffEditingForm) {
-            $cshq_options = array(
-                "a_abbreviated" => "a) The abbreviated 33 question version (this is not the version recommended to administer)",
-                "b_long_form"   => "b) The long form 52 question version (this is the version that is recommended)",
-            );
-
-            $this->addSelect(
-                "which_cshq_did_you_administer",
-                "<u>For Study Staff Only</u>: Which CSHQ did you administer?",
-                $cshq_options
-            );
-            $this->XINRegisterRule("which_cshq_did_you_administer", array("which_cshq_did_you_administer{@}=={@}NEVER_REQUIRED"), "Not required");
-        // Participants who fill the survey cannot answer the question: they can only
-        // see what type of questionnaire they are filling
-        } else {
-            $formAdministered = $this->getFieldValue("which_cshq_did_you_administer") == "b_long_form"
-                ? "b) The long form 52 question version (this is the version that is recommended)"
-                : "a) The abbreviated 33 question version (this is not the version recommended to administer)";
-            $this->addLabel(
-                "<u>For Study Staff Only</u>: Which CSHQ did you administer? " . $formAdministered
-            );
-        }
+        // Whether the long or abbreviated questionnaire is administered
+        $isLongQuestionnaire         = $this->getFieldValue("which_cshq_did_you_administer") != "a_abbreviated";
 
         $bedtime_questions        = array(
                                      "goes_to_bed_at_same_time_item1"      => "Child goes to bed at the same time at night.",
@@ -336,13 +401,20 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
 
         foreach ($bedtime_questions as $question => $label) {
             $a++;
-            $group[] = &$this->createLabel($label);
-            $group[] = &$this->createSelect(
+
+            // Don't display the question if it is exclusively for the long CSHQ and
+            // we are administering the short version
+            if (!$isLongQuestionnaire && $this->isQuestionForLongCshq($question)) {
+                continue;
+            }
+
+            $group[] = $this->createLabel($label);
+            $group[] = $this->createSelect(
                 $question . "_frequency",
                 "",
                 $answer_choices
             );
-            $group[] = &$this->createSelect(
+            $group[] = $this->createSelect(
                 $question . "_problem",
                 "",
                 $problem_choices
@@ -382,34 +454,39 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
 
         foreach ($sleep_behavior_questions as $question => $label) {
             $b++;
-            $group[] = &$this->createLabel($label);
+            // Don't display the question if it is exclusively for the long CSHQ and
+            // we are administering the short version
+            if (!$isLongQuestionnaire && $this->isQuestionForLongCshq($question)) {
+                continue;
+            }
+            $group[] = $this->createLabel($label);
             if ($question=='sleeps_same_amount_each_day_item11') {
-                $group[] = &$this->createSelect(
+                $group[] = $this->createSelect(
                     $question . "_frequency",
                     "",
                     $answer_choices_na
                 );
             } else {
-                $group[] = &$this->createSelect(
+                $group[] = $this->createSelect(
                     $question . "_frequency",
                     "",
                     $answer_choices
                 );
             }
-            $group[] = &$this->createSelect(
+            $group[] = $this->createSelect(
                 $question . "_problem",
                 "",
                 $problem_choices
             );
             if ($question == "reports_pain_during_sleep") {
-                $group[] = &$this->createLabel("If child reports body pain during sleep, where?");
-                $group[] = &$this->createText(
+                $group[] = $this->createLabel("If child reports body pain during sleep, where?");
+                $group[] = $this->createText(
                     $question . "_body_pain",
                     ""
                 );
             } else {
-                $group[] = &$this->createLabel("");
-                $group[] = &$this->createLabel("");
+                $group[] = $this->createLabel("");
+                $group[] = $this->createLabel("");
             }
             $this->form->addGroup(
                 $group,
@@ -442,13 +519,21 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
             }
         }
 
-        // We only validate the answers if the instrument is not accessed through the
-        // timepoint list. This allows someone to answer question 'which questionnaire
-        // did you administer' without answering all the other questions
-        if (!$isDataEntryStaffEditingForm) {
-            $this->form->addFormRule(array(&$this, 'XINValidate'));
-            $this->form->addFormRule(array(&$this, 'validate_page1'));
-        }
+        $this->form->addFormRule(array(&$this, 'XINValidate'));
+        $this->form->addFormRule(array(&$this, 'validate_page1'));
+    }
+
+    /**
+     * Determines if a question is asked only in the long version of
+     * the CSHQ.
+     *
+     * @param string $questionID ID of the question.
+     *
+     * @return bool true if the question is asked only in the long version of
+     *              the CSHQ, false otherwise.
+     */
+    function isQuestionForLongCshq(string $questionID) {
+        return in_array($questionID, $this->LONG_CSHQ_QUESTIONS);
     }
 
     function _page2()
@@ -459,15 +544,6 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
         // being accessed through the timepoint list by someone who logged into LORIS
         // (i.e. we are not in real "survey" mode)
         $isDataEntryStaffEditingForm = !is_null($_SESSION['State']->getUsername());
-
-        // Do not display the page if the abbreviated questionnaire is used
-        if (!$isLongQuestionnaire) {
-            $msg = "The questions that are usually on this page are not accessible "
-                 . "since this is the abbreviated version of the questionnaire.";
-            $this->addHeader($msg);
-            $this->form->freeze();
-            return;
-        }
 
         $answer_choices  = array(
                             null => "",
@@ -518,13 +594,20 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
         $a =0;
         foreach ($waking_during_night_questions as $question => $label) {
             $a++;
-            $group[] = &$this->createLabel($label);
-            $group[] = &$this->createSelect(
+
+            // Don't display the question if it is exclusively for the long CSHQ and
+            // we are administering the short version
+            if (!$isLongQuestionnaire && $this->isQuestionForLongCshq($question)) {
+                continue;
+            }
+
+            $group[] = $this->createLabel($label);
+            $group[] = $this->createSelect(
                 $question . "_frequency",
                 "",
                 $answer_choices
             );
-            $group[] = &$this->createSelect(
+            $group[] = $this->createSelect(
                 $question . "_problem",
                 "",
                 $problem_choices
@@ -553,7 +636,7 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
         }
 
         $field = "waking_during_night_duration";$label = "<h5><i>Please enter a numerical value for the number of minutes waking usually last per night or write NA</i></h5>";
-        $group[] = &$this->createText($field, $label);
+        $group[] = $this->createText($field, $label);
         $this->addGroup($group, $field . "_group", $label, null, false);
         unset($group);
 
@@ -570,13 +653,20 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
         $b =0;
         foreach ($morning_waking_questions as $question => $label) {
             $b++;
+
+            // Don't display the question if it is exclusively for the long CSHQ and
+            // we are administering the short version
+            if (!$isLongQuestionnaire && $this->isQuestionForLongCshq($question)) {
+                continue;
+            }
+
             $group[] = $this->createLabel($label);
             $group[] = $this->createSelect(
                 $question . "_frequency",
                 "",
                 $answer_choices
             );
-            $group[] = &$this->createSelect(
+            $group[] = $this->createSelect(
                 $question . "_problem",
                 "",
                 $problem_choices
@@ -608,6 +698,13 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
         $this->_displayHeaders("daytime_sleepiness");
         foreach ($daytime_sleepiness_questions as $question => $label) {
             $c++;
+
+            // Don't display the question if it is exclusively for the long CSHQ and
+            // we are administering the short version
+            if (!$isLongQuestionnaire && $this->isQuestionForLongCshq($question)) {
+                continue;
+            }
+
             $group[] = $this->createLabel($label);
             $group[] = $this->createSelect(
                 $question . "_frequency",
@@ -654,15 +751,16 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
                             );
 
         foreach ($sleepy_questions as $sq => $label) {
+            // Don't display the question if it is exclusively for the long CSHQ and
+            // we are administering the short version
+            if (!$isLongQuestionnaire && $this->isQuestionForLongCshq($sq)) {
+                continue;
+            }
             $this->addSelect($sq, $label, $sleepy_choices);
         }
 
-        // We only validate the answers if the instrument is not accessed through the
-        // timepoint list and if the long questionnaire version is used
-        if (!$isDataEntryStaffFillingForm && $isLongQuestionnaire) {
-            $this->form->addFormRule(array(&$this, 'XINValidate'));
-            $this->form->addFormRule(array(&$this, 'validate_page2'));
-        }
+        $this->form->addFormRule(array(&$this, 'XINValidate'));
+        $this->form->addFormRule(array(&$this, 'validate_page2'));
     }
 
     function displayHourMinElementCustom($field, $label, $field_label)
@@ -859,6 +957,8 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
      */
     function validate_page2($values)
     {
+        $errors = [];
+
         if (isset($values['waking_during_night_duration'])) {
             if (is_numeric($values['waking_during_night_duration'])) {
                 if (intval($values['waking_during_night_duration']) > 720 || intval($values['waking_during_night_duration']) < 0) {
@@ -875,8 +975,9 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
             if (!empty($err)) {
                 $errors = array_merge($errors, $err);
             }
-            return $errors;
         }
+
+        return $errors;
     }
 
     private function customDateCheck($values, $items)
