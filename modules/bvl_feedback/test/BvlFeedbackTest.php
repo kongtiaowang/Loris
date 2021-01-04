@@ -36,10 +36,27 @@ class BvlFeedbackTest extends LorisIntegrationTest
      *
      * @return void
      */
+    function setUp(): void
+    {
+        parent::setUp();
+    }
+    /**
+     * Delete testing data from database
+     *
+     * @return void
+     */
+    function tearDown(): void
+    {
+        parent::tearDown();
+    }
     public function testBVLFeedbackLoads()
     {
+ $this->safeGet($this->url."/dashboard");
+sleep(50);
         // Candidate Profile
         $this->safeGet($this->url . "/300002/");
+print_r("dddd");
+sleep(20);
         $this->webDriver->executescript(
             "document.querySelector('#nav-right >".
             " li:nth-child(1) > a > span').click()"
