@@ -83,8 +83,8 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         $user     = $request->getAttribute("user");
         $loris    = $request->getAttribute("loris");
         $tpl_data = [
-            'test_name' => $this->PageName,
-        ];
+                     'test_name' => $this->PageName,
+                    ];
         $menu     = [];
 
         $modules = $loris->getActiveModules();
@@ -131,12 +131,12 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         }
         // Basic page outline variables
         $tpl_data += [
-            'study_title' => $this->Config->getSetting('title'),
-            'baseurl'     => $this->BaseURL,
-            'menus'       => $menu,
-            'currentyear' => date('Y'),
-            'sandbox'     => ($this->Config->getSetting("sandbox") === '1'),
-        ];
+                      'study_title' => $this->Config->getSetting('title'),
+                      'baseurl'     => $this->BaseURL,
+                      'menus'       => $menu,
+                      'currentyear' => date('Y'),
+                      'sandbox'     => ($this->Config->getSetting("sandbox") === '1'),
+                     ];
 
         $get = $request->getQueryParams();
         $tpl_data['sessionID']   = $get['sessionID'] ?? '';
