@@ -289,7 +289,7 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         // that need it, but is currently required for backwards compatibility.
         // This should also come after the above call to handle() in order for
         // updated data on the controlPanel to be properly displayed.
-        if (!is_null($paeg)) {
+        if (!is_null($page)) {
             if (method_exists($page, 'getControlPanel')) {
                 $tpl_data['control_panel'] = $page->getControlPanel();
             }
