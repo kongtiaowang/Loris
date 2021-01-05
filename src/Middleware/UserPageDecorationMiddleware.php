@@ -264,9 +264,9 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
             $WindowName = md5($url);
 
             $tpl_data['links'][] = [
-                'url'        => $url,
-                'label'      => $label,
-                'windowName' => $WindowName,
+                                    'url'        => $url,
+                                    'label'      => $label,
+                                    'windowName' => $WindowName,
                                    ];
         }
 
