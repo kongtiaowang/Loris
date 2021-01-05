@@ -201,25 +201,25 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         $tpl_data['studyParams'] = [
                                     'useEDC'      => $this->Config->getSetting(
                                         'useEDC'
-                                                     ),
+                                    ),
                                     'useProband'  => $this->Config->getSetting(
                                         'useProband'
-                                                     ),
+                                    ),
                                     'useFamilyID' => $this->Config->getSetting(
                                         'useFamilyID'
-                                                     ),
+                                    ),
                                     'useConsent'  => $this->Config->getSetting(
                                         'useConsent'
-                                                     ),
+                                    ),
                                    ];
         $tpl_data['jsonParams']  = json_encode(
             [
-                'BaseURL'   => $this->BaseURL,
-                'TestName'  => $tpl_data['test_name'] ?? '',
-                'Subtest'   => $tpl_data['subtest'] ?? '',
-                'CandID'    => $tpl_data['candID'] ?? '',
-                'SessionID' => $tpl_data['sessionID'] ?? '',
-                'CommentID' => $tpl_data['commentID'] ?? '',
+             'BaseURL'   => $this->BaseURL,
+             'TestName'  => $tpl_data['test_name'] ?? '',
+             'Subtest'   => $tpl_data['subtest'] ?? '',
+             'CandID'    => $tpl_data['candID'] ?? '',
+             'SessionID' => $tpl_data['sessionID'] ?? '',
+             'CommentID' => $tpl_data['commentID'] ?? '',
             ]
         );
 
@@ -267,7 +267,7 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
                 'url'        => $url,
                 'label'      => $label,
                 'windowName' => $WindowName,
-            ];
+                                   ];
         }
 
         // Handle needs to be called before formaction, because handle potentially
@@ -308,10 +308,10 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
 
         // Finally, the actual content and render it..
         $tpl_data += [
-            'jsfiles'   => $this->JSFiles,
-            'cssfiles'  => $this->CSSFiles,
-            'workspace' => $undecorated->getBody(),
-        ];
+                      'jsfiles'   => $this->JSFiles,
+                      'cssfiles'  => $this->CSSFiles,
+                      'workspace' => $undecorated->getBody(),
+                     ];
 
         $smarty = new \Smarty_neurodb;
         $smarty->assign($tpl_data);
