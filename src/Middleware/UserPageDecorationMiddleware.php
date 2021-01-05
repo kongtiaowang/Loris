@@ -39,10 +39,10 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
     /**
      * Create a constructor for UserPageDecorationMiddleware
      *
-     * @param User   $user     The user
+     * @param \User   $user     The user
      * @param string $baseurl  The base url
      * @param string $pagename The page name
-     * @param string $config   The loris config
+     * @param \NDB_Config $config   The loris config
      * @param array  $JS       The JS files
      * @param array  $CSS      The CSS files
      */
