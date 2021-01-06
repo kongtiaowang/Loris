@@ -11,9 +11,28 @@ services:
     environment:
       - MYSQL_DATABASE=LorisTest
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
-
+  firefox:
+    image: selenium/node-firefox:4.0.0-beta-1-prerelease-20201208
+    volumes:
+      - /dev/shm:/dev/shm
+    depends_on:
+      - selenium-hub
+    environment:
+      - SE_EVENT_BUS_HOST=selenium-hub
+      - SE_EVENT_BUS_PUBLISH_PORT=4442
+      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
+    ports:
+      - "6901:5900"
+      
+  selenium-hub:
+    image: selenium/hub:4.0.0-beta-1-prerelease-20201208
+    ports:
+      - "4442:4442"
+      - "4443:4443"
+      - "4444:4444"
+      
   selenium:
-    image: selenium/standalone-firefox-debug:3.8.1-aluminum
+    image: selenium/standalone-firefox-debug:3.9.0
     volumes:
       - /dev/shm:/dev/shm
     ports:
@@ -61,12 +80,13 @@ services:
       - DOCKER_WEB_SERVER=http://web:8000
     depends_on:
       - db
-      - selenium
+      - selenium-hub
+      - firefox
       - web
     entrypoint: /app/test/wait-for-services.sh
 
   selenium-debug:
-    image: selenium/standalone-firefox-debug:3.8.1-aluminum
+    image: selenium/standalone-firefox-debug:3.141.59
     links:
       - web-debug:web
     ports:
