@@ -48,29 +48,42 @@ class ProjectUtility extends PEAR
         if($tpd['Visit_label'] == 'v06' || $tpd['Visit_label'] == 'V06') {
             return 'Parent Grant';
         }
-        $CommentStart = $tpd['CandID'] . $tpd['PSC'] . '%';
+
         $DB =& Database::singleton();
-        $fyi_risk_score = $DB->pselectOne("SELECT risk_score FROM fyi WHERE CommentID LIKE :CommentStart", 
-            array('CommentStart' => $CommentStart));
-        if(is_null($fyi_risk_score)) {
+        $query = "SELECT risk_score "
+               . "FROM fyi "
+               . "JOIN flag ON (flag.CommentID=fyi.CommentID AND fyi.CommentID NOT LIKE 'DDE%') "
+               . "WHERE sessionID=:sessionID";
+        $fyi_risk_score = $DB->pselectOne($query, array('sessionID' => $sessionID));
+        if (is_null($fyi_risk_score)) {
             return 'N/A';
-        } else if ($fyi_risk_score < 10) {
-            return 'Supplemental Grant';
-        } else {
-            if($tpd['Visit_label'] == 'v12' || $tpd['Visit_label'] == 'V12') {
-                return 'Parent Grant';
-            } else if($tpd['Visit_label'] == 'v24' || $tpd['Visit_label'] == 'V24') {
-                $adi_r_diagnosis = $DB->pselectOne('SELECT summary_diagnosis FROM adi_r_subject WHERE CommentID LIKE :CommentStart', 
-                    array('CommentStart' => $CommentStart));
-                if($adi_r_diagnosis == 'ASD+') {
-                    return 'Parent Grant';
-                } else if ($adi_r_diagnosis == 'ASD-') {
-                    return 'Supplemental Grant';
-                } else {
-                    return 'N/A';
-                }
-            }
         }
+        if ($fyi_risk_score < 10) {
+            return 'Supplemental Grant';
+        }
+
+        if ($tpd['Visit_label'] == 'v12' || $tpd['Visit_label'] == 'V12') {
+            return 'Parent Grant';
+        }
+
+        if ($tpd['Visit_label'] == 'v24' || $tpd['Visit_label'] == 'V24') {
+            $query = "SELECT a.summary_diagnosis "
+                   . "FROM adi_r_subject a "
+                   . "JOIN flag f ON (f.CommentID = a.CommentID AND a.CommentID NOT LIKE 'DDE%') "
+                   . "WHERE sessionID =:sessionID";
+            error_log("------------------ getting adi_r diag --------------------");
+            $adi_r_diagnosis = $DB->pselectOne($query, array('sessionID' => $sessionID));
+            error_log("------------------ adi_r diag is $adi_r_diagnosis --------------------");
+            if ($adi_r_diagnosis == 'ASD+') {
+                return 'Parent Grant';
+            }
+            if ($adi_r_diagnosis == 'ASD-') {
+                return 'Supplemental Grant';
+            }
+
+            return 'N/A';
+        }
+
         return '';
     }
 
