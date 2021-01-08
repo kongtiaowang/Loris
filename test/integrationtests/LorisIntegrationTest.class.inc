@@ -119,7 +119,7 @@ abstract class LorisIntegrationTest extends TestCase
         $user->updatePassword($password);
 
         $dev          = $this->config->getSettingFromXML('dev');
-        $selenium_url = $dev['selenium_url'] ?? 'http://localhost:4444/wd/hub';
+        $selenium_url =  'http://selenium:4444/wd/hub';
         $desired_capabilities = DesiredCapabilities::firefox();
         $desired_capabilities->setCapability('acceptSslCerts', false);
 
