@@ -50,10 +50,10 @@ class ProjectUtility extends PEAR
         }
 
         $DB =& Database::singleton();
-        $query = "SELECT risk_score "
+        $query = "SELECT fyi.risk_score "
                . "FROM fyi "
                . "JOIN flag ON (flag.CommentID=fyi.CommentID AND fyi.CommentID NOT LIKE 'DDE%') "
-               . "WHERE sessionID=:sessionID";
+               . "WHERE flag.sessionID=:sessionID";
         $fyi_risk_score = $DB->pselectOne($query, array('sessionID' => $sessionID));
         if (is_null($fyi_risk_score)) {
             return 'N/A';
@@ -70,10 +70,8 @@ class ProjectUtility extends PEAR
             $query = "SELECT a.summary_diagnosis "
                    . "FROM adi_r_subject a "
                    . "JOIN flag f ON (f.CommentID = a.CommentID AND a.CommentID NOT LIKE 'DDE%') "
-                   . "WHERE sessionID =:sessionID";
-            error_log("------------------ getting adi_r diag --------------------");
+                   . "WHERE f.sessionID =:sessionID";
             $adi_r_diagnosis = $DB->pselectOne($query, array('sessionID' => $sessionID));
-            error_log("------------------ adi_r diag is $adi_r_diagnosis --------------------");
             if ($adi_r_diagnosis == 'ASD+') {
                 return 'Parent Grant';
             }
