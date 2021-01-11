@@ -153,11 +153,20 @@ class NDB_BVL_Instrument_ksad extends NDB_BVL_Instrument
     {
         $this->addHeader("KSAD - User Responses");
 
-        $timepoint =& TimePoint::singleton($this->getSessionID());
-        $candidate =& Candidate::singleton($timepoint->getCandID());
-        $pscid  = $candidate->getPSCID();
-        $candID = $candidate->getCandID();
-        $vlabel = $timepoint->getVisitLabel();
+        // If the instrument is instantiated in "generic" mode (e.g. data dict
+        // building process), then $pscid, $candid and $vlabel get generic values
+        // otherwise they are set according to the instrument properties
+        if (is_null($this->getCommentID())) {
+            $pscid  = "PSCID";
+            $candID = "CANDID";
+            $vlabel = "VLABEL";
+        } else {
+            $timepoint =& TimePoint::singleton($this->getSessionID());
+            $candidate =& Candidate::singleton($timepoint->getCandID());
+            $pscid  = $candidate->getPSCID();
+            $candID = $candidate->getCandID();
+            $vlabel = $timepoint->getVisitLabel();
+        }
 
         //------------------------//
         // Display instructions   //
@@ -236,11 +245,20 @@ class NDB_BVL_Instrument_ksad extends NDB_BVL_Instrument
     {
         $this->addHeader("KSAD - Symptoms Ratings");
 
-        $timepoint =& TimePoint::singleton($this->getSessionID());
-        $candidate =& Candidate::singleton($timepoint->getCandID());
-        $pscid  = $candidate->getPSCID();
-        $candID = $candidate->getCandID();
-        $vlabel = $timepoint->getVisitLabel();
+        // If the instrument is instantiated in "generic" mode (e.g. data dict
+        // building process), then $pscid, $candid and $vlabel get generic values
+        // otherwise they are set according to the instrument properties
+        if (is_null($this->getCommentID())) {
+            $pscid  = "PSCID";
+            $candID = "CANDID";
+            $vlabel = "VLABEL";
+        } else {
+            $timepoint =& TimePoint::singleton($this->getSessionID());
+            $candidate =& Candidate::singleton($timepoint->getCandID());
+            $pscid  = $candidate->getPSCID();
+            $candID = $candidate->getCandID();
+            $vlabel = $timepoint->getVisitLabel();
+        }
 
         //------------------------//
         // Display instructions   //
