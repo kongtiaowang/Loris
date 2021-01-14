@@ -277,7 +277,7 @@ class NDB_BVL_Instrument_ACEFamilyMedicalHistorySurvey extends NDB_BVL_Instrumen
                   {
                       if($values[$key."_".$h]=="")
                       {
-                          $errors[$key."_".$h] = "Information of atleast one Sibling is Required";
+                          $errors[$key."_".$h] = "Information up to Sibling 1 is Required";
                       }
                   }
               }
@@ -297,7 +297,7 @@ class NDB_BVL_Instrument_ACEFamilyMedicalHistorySurvey extends NDB_BVL_Instrumen
                   {
                       if($values[$key."_".$h]=="")
                       {
-                          $errors[$key."_".$h] = "Information of atleast one Sibling is Required";
+                          $errors[$key."_".$h] = "Information up to Sibling 1 is Required";
                       }
                   }
 
