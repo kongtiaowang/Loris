@@ -230,7 +230,7 @@ class NDB_BVL_Instrument_ACEFamilyMedicalHistorySurvey extends NDB_BVL_Instrumen
 
             $this->form->addGroup(
                 $group,
-                $key . "_group{1}",
+                $key . "_group",
                 null,
                 $this->_GUIDelimiter,
                 false
@@ -313,6 +313,11 @@ class NDB_BVL_Instrument_ACEFamilyMedicalHistorySurvey extends NDB_BVL_Instrumen
                 if ($values[$question] == "yes" && $values[$check_quest]=="" ) {
                     $errors[$check_quest] = "Age at first diagnosis reuired for $g";
 
+                }
+                if($values[$check_quest]!="") {
+                    if (!is_numeric($values[$check_quest])) {
+                        $errors[$check_quest] = "The age must be a number.";
+                    }
                 }
             }
         }
