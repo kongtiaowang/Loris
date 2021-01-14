@@ -24,3 +24,4 @@ INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_num
 INSERT INTO `consent`(`Name`,`Label`) VALUES ('NDAR_consent_SA', 'NDAR Consent SA');
 
 INSERT INTO `survey_test_battery` (`Test_name`, `Active`, `Visit_label`) VALUES ('NDAR_Consent_SA_Form', 'Y', 'VSA');
+INSERT INTO `survey_test_battery` (`Test_name`, `Active`, `Visit_label`) VALUES ('NDAR_Consent_SA_Form', 'Y', 'VSA-CVD');
