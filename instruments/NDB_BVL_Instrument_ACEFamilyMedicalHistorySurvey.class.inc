@@ -63,7 +63,7 @@ class NDB_BVL_Instrument_ACEFamilyMedicalHistorySurvey extends NDB_BVL_Instrumen
         }
 
         //Defines the call back function for HTML Quickform to use when validating the form.
-        $this->form->addFormRule(array(&$this,'XINValidate'));
+       // $this->form->addFormRule(array(&$this,'XINValidate'));
     }
 
     /**
@@ -227,6 +227,7 @@ class NDB_BVL_Instrument_ACEFamilyMedicalHistorySurvey extends NDB_BVL_Instrumen
                 $group[] =& $this->createSelect($key . "_sibling4", $question . "_sibling4", $options);
                 $group[] =& $this->createSelect($key . "_sibling5", $question . "_sibling5", $options);
             }
+
             $this->form->addGroup(
                 $group,
                 $key . "_group",
@@ -234,44 +235,91 @@ class NDB_BVL_Instrument_ACEFamilyMedicalHistorySurvey extends NDB_BVL_Instrumen
                 $this->_GUIDelimiter,
                 false
             );
+
+
             unset($group);
+
         }
         $this->form->addFormRule(array(&$this, 'validate_main'));
+
     }
 
     function validate_main($values) {
         $errors = array();
 
-        $table_heading = array('mother', 'father', 'sibling1', 'sibling2', 'sibling3', 'sibling4', 'sibling5');
-        $questions = array('asd', 'autistic_disorder', 'asperger_syndrome', 'rett_syndrome', 'pdd_nos');
-        $hasAYes = false;
-        foreach ($questions as $q) {
-            foreach ($table_heading as $h) {
-                $question = $q . "_" . $h;
-                if ($values[$question] == "yes") {
-                    $hasAYes = true;
-                    break;
-                }
-            }
+        $errors = array();
+        if($values['Date_taken']=='')
+        {
+            $errors['Date_taken'] = "Required";
         }
-        if ($hasAYes) {
-            foreach ($table_heading as $option) {
-                $question = "age_first_diagnosis_" . $option;
-                if ($values[$question] != null && $values[$question] != "") {
-                    if (!is_numeric($values[$question])) {
-                        $errors[$question] = "The age must be a number.";
+        $questions_main = array('relation' => 'Specify Relation', 'dob' => 'Date of birth', 'currentage' => "Current age (Parent's age can be entered in years)", 'gender' => 'Sex: Male(M) or Female(F)',
+            'last_grade_completed' => 'Last Grade Completed', 'asd' => '1. Autism Spectrum Disorder', 'autistic_disorder' => '2. Autistic Disorder',
+            'asperger_syndrome' => '3. Asperger Syndrome', 'rett_syndrome' => '4. Rett Syndrome', 'pdd_nos' => '5. PDD-NOS', 'history_speechdelay' => '6. History Speech Delay',
+            'history_development_delay' => '7. History Development Delay', 'history_learndisability' => '8. History Learning Disability',
+            'seizure_epilepsy' => '9. Seizure disorder/Epilepsy', 'cerebral_palsy' => '10. Cerebral Palsy', 'down_syndrome' => '11. Down Syndrome',
+            'mental_retardation' => '12. Intellectual Disability', 'tuberoussclerosis' => '13. Tuberous Sclerosis (Alt. Tuberosclerosis)', 'fragilex' => '14. FragileX',
+            'neurofibomarosis' => '15. Neurofibromatosis', 'congenitalblindness' => '16. Congenital blindness', 'deafness' => '17. Hearing Impairment',
+            'hearingcorrect_aid' => $this->indent . 'a. Hearing corrected', 'bipolar' => '18. Bipolar', 'depression' => '19. Depression',
+            'anxiety' => '20. Anxiety', 'ocd' => '21. Obsessive Compulsive', 'schizophernai' => '22. Schizophrenia', 'selfinjuring' => '23. Self injuring',
+            'adhd' => '24. ADHD', 'eating_disorder' => '25. Eating disorder', 'disrupted_sleeppatterns' => '26. Disrupted sleep patterns',
+            'tournette' => '27. Tourette Syndrome');
+        $table_heading_main_1 = array( 'sibling1' => 'Proband');
+        $table_heading_main_2 = array('mother' => 'Biological Mother', 'father' => 'Biological Father', 'sibling1' => 'Proband');
+        $table_heading_main_3 = array('mother' => 'Biological Mother', 'father' => 'Biological Father', 'sibling1' => 'Proband', 'sibling2' => 'Sibling 1',
+            'sibling3' => 'Sibling 2', 'sibling4' => 'Sibling 3', 'sibling5' => 'Sibling 4');
+        $table_heading_main_4 = array('mother' => 'Biological Mother', 'father' => 'Biological Father');
+
+          foreach ($questions_main as $key => $question) {
+              if($key=='relation')
+              {
+                  foreach ($table_heading_main_1 as $h => $g)
+                  {
+                      if($values[$key."_".$h]=="")
+                      {
+                          $errors[$key."_".$h] = "Information up to Proband is Required";
+                      }
+                  }
+              }
+              else if($key=='last_grade_completed')
+              {
+                  foreach ($table_heading_main_4 as $h => $g)
+                  {
+                      if($values[$key."_".$h]=="")
+                      {
+                          $errors[$key."_".$h] = "Required";
+                      }
+                  }
+              }
+
+              else{
+                  foreach ($table_heading_main_2 as $h => $g)
+                  {
+                      if($values[$key."_".$h]=="")
+                      {
+                          $errors[$key."_".$h] = "Information up to Proband is Required";
+                      }
+                  }
+
+              }
+          }
+
+
+        $questions = array('asd', 'autistic_disorder', 'asperger_syndrome', 'rett_syndrome', 'pdd_nos');
+          foreach ($table_heading_main_3 as $h =>$g) {
+                foreach ($questions as $q) {
+                    $question = $q . "_" . $h;
+                $check_quest = "age_first_diagnosis_" . $h;
+                if ($values[$question] == "yes" && $values[$check_quest]=="" ) {
+                    $errors[$check_quest] = "Age at first diagnosis Required for $g";
+
+                }
+                if($values[$check_quest]!="") {
+                    if (!is_numeric($values[$check_quest])) {
+                        $errors[$check_quest] = "The age must be a number.";
                     }
                 }
             }
-        } else {
-            foreach ($table_heading as $option) {
-                $question = "age_first_diagnosis_" . $option;
-                if ($values[$question] != null && $values[$question] != "") {
-                    $errors[$question] = "You must leave this empty.";
-                }
-            }
         }
-
         return $errors;
     }
 
