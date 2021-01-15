@@ -263,9 +263,8 @@ class NDB_BVL_Instrument_ACEFamilyMedicalHistorySurvey extends NDB_BVL_Instrumen
             'anxiety' => '20. Anxiety', 'ocd' => '21. Obsessive Compulsive', 'schizophernai' => '22. Schizophrenia', 'selfinjuring' => '23. Self injuring',
             'adhd' => '24. ADHD', 'eating_disorder' => '25. Eating disorder', 'disrupted_sleeppatterns' => '26. Disrupted sleep patterns',
             'tournette' => '27. Tourette Syndrome');
-        $table_heading_main_1 = array( 'sibling1' => 'Proband', 'sibling2' => 'Sibling 1');
-        $table_heading_main_2 = array('mother' => 'Biological Mother', 'father' => 'Biological Father',
-            'sibling1' => 'Proband', 'sibling2' => 'Sibling 1');
+        $table_heading_main_1 = array( 'sibling1' => 'Proband');
+        $table_heading_main_2 = array('mother' => 'Biological Mother', 'father' => 'Biological Father', 'sibling1' => 'Proband');
         $table_heading_main_3 = array('mother' => 'Biological Mother', 'father' => 'Biological Father', 'sibling1' => 'Proband', 'sibling2' => 'Sibling 1',
             'sibling3' => 'Sibling 2', 'sibling4' => 'Sibling 3', 'sibling5' => 'Sibling 4');
         $table_heading_main_4 = array('mother' => 'Biological Mother', 'father' => 'Biological Father');
@@ -277,7 +276,7 @@ class NDB_BVL_Instrument_ACEFamilyMedicalHistorySurvey extends NDB_BVL_Instrumen
                   {
                       if($values[$key."_".$h]=="")
                       {
-                          $errors[$key."_".$h] = "Information up to Sibling 1 is Required";
+                          $errors[$key."_".$h] = "Information up to Proband is Required";
                       }
                   }
               }
@@ -297,7 +296,7 @@ class NDB_BVL_Instrument_ACEFamilyMedicalHistorySurvey extends NDB_BVL_Instrumen
                   {
                       if($values[$key."_".$h]=="")
                       {
-                          $errors[$key."_".$h] = "Information up to Sibling 1 is Required";
+                          $errors[$key."_".$h] = "Information up to Proband is Required";
                       }
                   }
 
@@ -311,7 +310,7 @@ class NDB_BVL_Instrument_ACEFamilyMedicalHistorySurvey extends NDB_BVL_Instrumen
                     $question = $q . "_" . $h;
                 $check_quest = "age_first_diagnosis_" . $h;
                 if ($values[$question] == "yes" && $values[$check_quest]=="" ) {
-                    $errors[$check_quest] = "Age at first diagnosis reuired for $g";
+                    $errors[$check_quest] = "Age at first diagnosis Required for $g";
 
                 }
                 if($values[$check_quest]!="") {
