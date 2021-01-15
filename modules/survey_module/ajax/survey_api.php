@@ -204,15 +204,22 @@ class DirectDataEntryMainPage
                 header("HTTP/1.0 400 Bad Request");
             }
         } else {
-            $this->Header("HTTP/1.1 403 Forbidden");
+            //$this->Header("HTTP/1.1 403 Forbidden");
+            //Date entry in survey mode for Parents should be allowed even if Status is updated
+            // as Complete/None from timepoint list as per Leigh
+            // Ref: Redmine 18733 for more info
             if (!$this->Instrument->determineDataEntryAllowed()) {
-                $msg = "Can not update instruments that"
-                       . " are flagged as complete";
-                // $this->JSON = array('error' => $msg);
-            } else {
-                // $this->JSON = array("error" => "Could not update.");
+                try {
+                    $this->Instrument->_save($data);
+                    //On Saving Data; the status has to be updated
+                    $this->updateStatus('In Progress');
+
+
+                } catch (Exception $e) {
+                    header("HTTP/1.0 400 Bad Request");
+                }
             }
-        }
+            }
     }
 
     /**
