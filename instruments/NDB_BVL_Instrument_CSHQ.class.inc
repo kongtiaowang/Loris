@@ -126,10 +126,8 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
      */
     function _saveValues(array $values): void
     {
-        $isDataEntryStaffEditingForm = !is_null($_SESSION['State']->getUsername());
-        if ($this->getFieldValue("which_cshq_did_you_administer") == "a_abbreviated"
-          && $isDataEntryStaffEditingForm
-        ) {
+        if ($this->getFieldValue("which_cshq_did_you_administer") == "a_abbreviated")
+        {
             foreach ($this->LONG_CSHQ_QUESTIONS as $question) {
                 if ($question == "play_alone" || $question == "eating_meals") {
                     $values[$question] = null;
@@ -146,6 +144,24 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
      }
 
     /**
+     * Determines if the current instance of this instrument should contain a question
+     * asking which version of the CSHQ this is.
+     *
+     * @return bool true if the current instance should have the question, false
+     *              otherwise.
+     */
+    function _hasFormTypeQuestion()
+    {
+        // If the comment ID is null (e.g. data dictionnary building process)
+        // then the for question is used
+        if (is_null($this->getCommentID())) {
+            return true;
+        }
+
+        return !is_null($_SESSION['State']->getUsername());
+    }
+
+    /**
      * Generates the main page of the form.
      *
      * @return void
@@ -156,13 +172,8 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
         // display test name
         $this->addHeader("Child's Sleep Habit  (Preschool and School Aged)");
 
-        // If the session's user name is not null then it means that this instrument is
-        // being accessed through the timepoint list by someone who logged into LORIS
-        // (i.e. we are not in real "survey" mode)
-        $isDataEntryStaffEditingForm = !is_null($_SESSION['State']->getUsername());
-
         // Data entry staff get to answer this question
-        if ($isDataEntryStaffEditingForm) {
+        if ($this->_hasFormTypeQuestion()) {
             $cshq_options = array(
                 "a_abbreviated" => "a) The abbreviated 33 question version (this is not the version recommended to administer)",
                 "b_long_form"   => "b) The long form 52 question version (this is the version that is recommended)",
@@ -187,7 +198,7 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
         // This is a survey: we do not want to force the entry staff to enter an
         // administration date
         $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
-        if (isDataEntryStaffEditingForm) {
+        if ($this->_hasFormTypeQuestion()) {
             $this->XINRegisterRule("Date_taken", array("Date_taken{@}=={@}NEVER_REQUIRED"), "Not required");
         }
         $score_columns
@@ -221,7 +232,7 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
         $this->addSelect("relationship_to_child", "What is your relationship to the child?", $opts);
         // This is a survey: we do not want to force the data entry staff to enter
         // the relationship to child
-        if (isDataEntryStaffEditingForm) {
+        if ($this->_hasFormTypeQuestion()) {
             $this->XINRegisterRule("relationship_to_child", array("relationship_to_child{@}=={@}NEVER_REQUIRED"), "Not required");
         }
 
@@ -348,11 +359,6 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
             whether or not the sleep habit is a problem by circling “Yes,”
             “No,” or Not applicable (N/A).</h4>"
         );
-
-        // If the session's user name is not null then it means that this instrument is
-        // being accessed through the timepoint list by someone who logged into LORIS
-        // (i.e. we are not in real "survey" mode)
-        $isDataEntryStaffEditingForm = !is_null($_SESSION['State']->getUsername());
 
         // Whether the long or abbreviated questionnaire is administered
         $isLongQuestionnaire         = $this->getFieldValue("which_cshq_did_you_administer") != "a_abbreviated";
@@ -539,11 +545,6 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
     function _page2()
     {
         $isLongQuestionnaire         = $this->getFieldValue("which_cshq_did_you_administer") != "a_abbreviated";
-
-        // If the session's user name is not null then it means that this instrument is
-        // being accessed through the timepoint list by someone who logged into LORIS
-        // (i.e. we are not in real "survey" mode)
-        $isDataEntryStaffEditingForm = !is_null($_SESSION['State']->getUsername());
 
         $answer_choices  = array(
                             null => "",
