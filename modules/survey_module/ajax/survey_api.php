@@ -205,9 +205,9 @@ class DirectDataEntryMainPage
             }
         } else {
             //$this->Header("HTTP/1.1 403 Forbidden");
-            //Date entry in survey mode should allow even if Status is updated
-            // as Complete from timempoint list as per Leigh
-            // Ref: Redmine 18733
+            //Date entry in survey mode for Parents should be allowed even if Status is updated
+            // as Complete/None from timepoint list as per Leigh
+            // Ref: Redmine 18733 for more info
             if (!$this->Instrument->determineDataEntryAllowed()) {
                 try {
                     $this->Instrument->_save($data);
