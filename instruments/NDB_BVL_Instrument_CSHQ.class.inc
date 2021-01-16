@@ -158,7 +158,7 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
             return true;
         }
 
-        return !is_null($_SESSION['State']->getUsername());
+        return !is_null(isset($_SESSION) && $_SESSION['State']->getUsername());
     }
 
     /**
