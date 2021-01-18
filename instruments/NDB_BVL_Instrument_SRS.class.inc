@@ -339,7 +339,9 @@ SUMIF ( Q4=>0 and Q8=>0 and Q14=>0 and Q20=>0 and Q24=>0 and Q28=>0 and Q29=>0 a
         $totals = array();
 
         // ignored in subscale scoring
-        $ignored = array(35, 36);
+        //Remove this as per redmine 18744
+        //$ignored = array(35, 36);
+        $ignored = array(0);
 
         foreach($this->ForwardCoded as $QuestionNumber) {
 
