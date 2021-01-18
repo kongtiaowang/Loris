@@ -64,7 +64,6 @@ class Survey_Accounts extends \NDB_Menu_Filter
         $this->columns      = array(
                                'c.PSCID AS PSCID',
                                's.Visit_label AS Visit',
-                               'p.Email as Email',
                                'tn.Full_name as SurveyName',
                                'p.OneTimePassword as URL',
                                'p.Status',
@@ -75,7 +74,6 @@ class Survey_Accounts extends \NDB_Menu_Filter
         $this->validFilters = array(
                                'c.PSCID',
                                's.Visit_label',
-                               'p.Email',
                                'p.Test_name',
                                'p.OneTimePassword',
                                'p.Status',
@@ -84,7 +82,6 @@ class Survey_Accounts extends \NDB_Menu_Filter
         $this->formToFilter = array(
                                'PSCID'      => 'c.PSCID',
                                'VisitLabel' => 's.Visit_label',
-                               'Email'      => 'p.Email',
                                'key'        => 'p.OneTimePassword',
                                'Instrument' => 'p.Test_name',
                               );
