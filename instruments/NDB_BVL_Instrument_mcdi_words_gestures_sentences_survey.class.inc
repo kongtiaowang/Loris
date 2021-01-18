@@ -25,10 +25,16 @@ class NDB_BVL_Instrument_mcdi_words_gestures_sentences_survey extends NDB_BVL_In
                         "early_gestures_number",
                         "later_gestures_number",
                         "total_gestures_number",
+                        "word_endings",
+                        "word_forms",
+                        "word_endings_pt_2",
+                        "grammatical_complexity",
                         "words_produced_percentile",
                         "early_gestures_percentile",
                         "later_gestures_percentile",
                         "total_gestures_percentile",
+                        "word_forms_percentile",
+                        "grammatical_complexity_percentile",
                        );
 
     var $_doubleDataEntryDiffIgnoreColumns = array(
@@ -44,6 +50,12 @@ class NDB_BVL_Instrument_mcdi_words_gestures_sentences_survey extends NDB_BVL_In
                                               "early_gestures_percentile",
                                               "later_gestures_percentile",
                                               "total_gestures_percentile",
+                                              "word_endings",
+                                              "word_forms",
+                                              "word_endings_pt_2",
+                                              "grammatical_complexity",
+                                              "word_forms_percentile",
+                                              "grammatical_complexity_percentile",
                                               "Data_entry_completion_status",
                                              );
 
@@ -341,8 +353,8 @@ class NDB_BVL_Instrument_mcdi_words_gestures_sentences_survey extends NDB_BVL_In
         $this->addLabel('In each of the following pairs, please mark the one that sounds most like the way your child talks right now. If your child is saying sentences even longer or more complicated than the two provided, just pick the second one.');
 
         $qNum = 1;
-        foreach (self::Question_III_C_V as list($label1, $label2)) {
-            $this->form->addElement('select', 'III_C_V' . $qNum, $label1 . ' / ' . $label2, [null => '', '1' => $label1, '2' => $label2, 'NK' => 'Not Known']);
+        foreach (self::Question_III_E as list($label1, $label2)) {
+            $this->form->addElement('select', 'III_E_' . $qNum, $label1 . ' / ' . $label2, [null => '', '1' => $label1, '2' => $label2, 'NK' => 'Not Known']);
             $qNum++;
         }
 
@@ -378,14 +390,14 @@ class NDB_BVL_Instrument_mcdi_words_gestures_sentences_survey extends NDB_BVL_In
         }
     }
 
-    function CalculatePercentile($scale, $age_months, $gender, &$scores)
+    function CalculateMacarthurPercentile($scale, $age_months, $gender, &$scores)
     {
         $db = Database::singleton();
 
         $scale_number     = $scale . "_number";
         $scale_percentile = $scale . "_percentile";
 
-        $query_scores    = "SELECT * FROM macarthur_lookup WHERE age_months=".$age_months. " AND sex='$gender' AND score_raw=".$scores[$scale_number]." AND subscale='$scale_number'";
+        $query_scores    = "SELECT * FROM macarthur_lookup WHERE age_months=" . $age_months . " AND sex='$gender' AND score_raw=".$scores[$scale_number]." AND subscale='$scale_number'";
         $PercentileScore = $db->pselectRow($query_scores, array());
 
         $scores[$scale_percentile] = $PercentileScore['score_percentile'];
@@ -459,6 +471,152 @@ class NDB_BVL_Instrument_mcdi_words_gestures_sentences_survey extends NDB_BVL_In
         }
     }
 
+    function CalculateCDIPercentile($scale, $age_months, $gender, &$scores)
+    {
+        $db = Database::singleton();
+
+        $scale_percentile = $scale . "_percentile";
+
+        // word_forms scores are not affected by the Sex of the candidate
+        if ($scale != "word_forms") {
+            $query_scores    = "SELECT * FROM CDI_WS_percentiles_lookup WHERE age_months=".$age_months. " AND score_raw=".$scores[$scale]." AND subscale='$scale'";
+            $PercentileScore = $db->pselectRow($query_scores, array());
+
+            $scores[$scale_percentile] = $PercentileScore['score_percentile'];
+
+            if ($PercentileScore == null) {
+                $score_holder   = $scores[$scale];
+                $query_scores1a = "
+                    SELECT
+                        *
+                    FROM
+                        macarthur_lookup
+                    WHERE
+                        age_months = $age_months AND
+                        subscale = '$scale' AND
+                        score_raw > $score_holder
+                    ORDER BY
+                        score_raw
+                    ASC
+                        limit 1"
+                ;
+
+                $record_1a = $db->pselect($query_scores1a, array());
+                if (empty($record_1a)) {
+                    $db->pselect(
+                        "
+                        SELECT
+                            *
+                        FROM
+                            macarthur_lookup
+                        WHERE
+                            age_months = $age_months AND
+                            subscale = '$scale'
+                        ORDER BY
+                            score_raw
+                        ASC
+                            limit 1",
+                        array()
+                    );
+                }
+
+                $query_scores1b = "
+                    SELECT
+                        *
+                    FROM
+                        macarthur_lookup
+                    WHERE
+                        age_months = " . $age_months . " AND
+                        subscale = '$scale' AND
+                        score_raw < $score_holder
+                    ORDER BY
+                        score_raw
+                    DESC
+                        limit 1";
+
+                $record_1b = $db->pselect($query_scores1b, array());
+
+                $percentile_calculation1 = (
+                        ($scores[$scale]-$record_1b[0]['score_raw'])/
+                        ($record_1a[0]['score_raw']-$record_1b[0]['score_raw'])
+                        )*($record_1a[0]['score_percentile']-$record_1b[0]['score_percentile'])+$record_1b[0]['score_percentile'];
+
+                $scores[$scale_percentile] = abs(round($percentile_calculation1));
+            }
+        } else {
+            $query_scores    = "SELECT * FROM CDI_WS_percentiles_lookup WHERE age_months=".$age_months. " AND score_raw=".$scores[$scale]." AND subscale='$scale'";
+            $PercentileScore = $db->pselectRow($query_scores, array());
+
+            $scores[$scale_percentile] = $PercentileScore['score_percentile'];
+
+            if ($PercentileScore == null) {
+                $score_holder   = $scores[$scale];
+                $query_scores1a = "
+                    SELECT
+                        *
+                    FROM
+                        macarthur_lookup
+                    WHERE
+                        age_months = $age_months AND
+                        subscale = '$scale' AND
+                        score_raw > $score_holder
+                    ORDER BY
+                        score_raw
+                    ASC
+                        limit 1"
+                ;
+
+                $record_1a = $db->pselect($query_scores1a, array());
+                if (empty($record_1a)) {
+                    $db->pselect(
+                        "
+                        SELECT
+                            *
+                        FROM
+                            macarthur_lookup
+                        WHERE
+                            age_months = $age_months AND
+                            subscale = '$scale'
+                        ORDER BY
+                            score_raw
+                        ASC
+                            limit 1",
+                        array()
+                    );
+                }
+
+                $query_scores1b = "
+                    SELECT
+                        *
+                    FROM
+                        macarthur_lookup
+                    WHERE
+                        age_months = " . $age_months . " AND
+                        subscale = '$scale' AND
+                        score_raw < $score_holder
+                    ORDER BY
+                        score_raw
+                    DESC
+                        limit 1";
+
+                $record_1b = $db->pselect($query_scores1b, array());
+
+                $percentile_calculation1 = (
+                        ($scores[$scale]-$record_1b[0]['score_raw'])/
+                        ($record_1a[0]['score_raw']-$record_1b[0]['score_raw'])
+                        )*($record_1a[0]['score_percentile']-$record_1b[0]['score_percentile'])+$record_1b[0]['score_percentile'];
+
+                $scores[$scale_percentile] = abs(round($percentile_calculation1));
+
+            }
+
+            if ($scores[$scale_percentile] > 99) {
+                $scores[$scale_percentile] = 99;
+            }
+
+        }
+    }
+
     function score(): void
     {
         if ($this->_determineDataEntryCompletionStatus() == "Incomplete") {
@@ -474,19 +632,19 @@ class NDB_BVL_Instrument_mcdi_words_gestures_sentences_survey extends NDB_BVL_In
 
         // Get the subject's Sex
         $query_gender  = "
-            SELECT
-                Sex
-            FROM
-                candidate as c,
-                session as s,
-                flag as f,
-                $this->table as t
-            WHERE
-                t.CommentID = '$this->commentID' AND
-                f.CommentID=t.CommentID AND
-                s.ID=f.SessionID AND
-                s.CandID=c.CandID
-            ";
+        SELECT
+            Sex
+        FROM
+            candidate as c,
+            session as s,
+            flag as f,
+            $this->table as t
+        WHERE
+            t.CommentID = '$this->commentID' AND
+            f.CommentID=t.CommentID AND
+            s.ID=f.SessionID AND
+            s.CandID=c.CandID
+        ";
         $record_gender = $db->pselectRow($query_gender, array());
         $gender        = strtolower($record_gender['Sex']);
 
@@ -498,14 +656,20 @@ class NDB_BVL_Instrument_mcdi_words_gestures_sentences_survey extends NDB_BVL_In
 
         // Initialize scores
         $scores = array(
-                   "words_produced_number"     => 0, // Part I: A
-                   "early_gestures_number"     => 0, // Part II: A, B
-                   "later_gestures_number"     => 0, // Part II: C, D, E
-                   "total_gestures_number"     => 0, // Part II: A, B, C, D, E
-                   "words_produced_percentile" => 0,
-                   "early_gestures_percentile" => 0,
-                   "later_gestures_percentile" => 0,
-                   "total_gestures_percentile" => 0,
+                   "words_produced_number"             => 0, // Part I: A, B
+                   "early_gestures_number"             => 0, // Part II: A, B
+                   "later_gestures_number"             => 0, // Part II: C, D, E
+                   "total_gestures_number"             => 0, // Part II: A, B, C, D, E
+                   "word_endings"                      => 0, // Part III: A
+                   "word_forms"                        => 0, // Part III: B
+                   "word_endings_pt_2"                 => 0, // Part III: C
+                   "grammatical_complexity"            => 0, // Part III: E
+                   "words_produced_percentile"         => 0,
+                   "early_gestures_percentile"         => 0,
+                   "later_gestures_percentile"         => 0,
+                   "total_gestures_percentile"         => 0,
+                   "word_forms_percentile"             => 0,
+                   "grammatical_complexity_percentile" => 0,
                   );
 
         /******************************
@@ -552,7 +716,18 @@ class NDB_BVL_Instrument_mcdi_words_gestures_sentences_survey extends NDB_BVL_In
         $scores["words_produced_number"] = $says_total;
 
         // Section B: How Children Use Words
-        // No scoring
+        $I_B_question_count = count(self::Question_I_B); // == 5
+
+        $how_children_use_words_ST_or_OF = 0;
+
+        // Count # of questions answered Sometimes or Often
+        for ($qNum = 1; $qNum <= $I_B_question_count; $qNum++) {
+            if ($record["I_B_" . $qNum] == "ST" || $record["I_B_" . $qNum] == "OF") {
+                $how_children_use_words_ST_or_OF++;
+            }
+        }
+
+        $scores["words_produced_number"] += $how_children_use_words_ST_or_OF;
 
         /********************************
          * Part II: Action and Gestures *
@@ -600,7 +775,59 @@ class NDB_BVL_Instrument_mcdi_words_gestures_sentences_survey extends NDB_BVL_In
         /***********************************
          * Part III: Sentences and Grammar *
          ***********************************/
+
+        // Section A: Word Endings
+        $III_A_question_count = count(self::Question_III_A); // == 5
+
+        $word_endings = 0;
+
+        for ($qNum = 1; $qNum <= $III_A_question_count; $qNum++) {
+            if ($record["III_A_" . $qNum] == "ST" || $record["III_A_" . $qNum] == "OF") {
+                $word_endings++;
+            }
+        }
+
+        // $this->Sum($III_A_question_count, $record, "III_A_", $word_endings);
+
+        $scores["word_endings"] = $word_endings;
+
+        // Section B: Word Forms
+        $III_B_nouns_count = count(self::WordQuestion_III_B_N); // == 5
+        $III_B_verbs_count = count(self::WordQuestion_III_B_V); // == 20
+
+        $word_forms_nouns = 0;
+        $word_forms_verbs = 0;
+
+        $this->Sum($III_B_nouns_count, $record, "III_B_N_", $word_forms_nouns);
+        $this->Sum($III_B_verbs_count, $record, "III_B_V_", $word_forms_verbs);
+
+        $scores["word_forms"] = $word_forms_nouns + $word_forms_verbs;
+
+        // Section C: Word Endings Part 2
+        $III_C_nouns_count = count(self::WordQuestion_III_C_N); // == 14
+        $III_C_verbs_count = count(self::WordQuestion_III_C_V); // == 31
+
+        $word_endings_pt_2_nouns = 0;
+        $word_endings_pt_2_verbs = 0;
+
+        $this->Sum($III_C_nouns_count, $record, "III_C_N_", $word_endings_pt_2_nouns);
+        $this->Sum($III_C_verbs_count, $record, "III_C_V_", $word_endings_pt_2_verbs);
+
+        $scores["word_endings_pt_2"] = $word_endings_pt_2_nouns + $word_endings_pt_2_verbs;
+
+        // Section D: Examples
         // No Scoring
+
+        // Section E: Complexity
+        $III_E_question_count = count(self::Question_III_E);
+
+        for ($i = 1; $i < $III_E_question_count; $i++) {
+            if ($record["III_E_" . $i] == '2') {
+                $III_E_complex_question_count += 1;
+            }
+        }
+
+        $scores["grammatical_complexity"] = $III_E_question_count;
 
         // Establish standard scores and percentile rank for subscales
         // This only has data for the ages 8-18 months. After that,
@@ -614,17 +841,57 @@ class NDB_BVL_Instrument_mcdi_words_gestures_sentences_survey extends NDB_BVL_In
                    "total_gestures",
                   );
 
-        foreach ($Scales as $scale) {
-            if ($age_months >= 8 && $age_months <= 18) {
-                $this->CalculatePercentile($scale, $age_months, $gender, $scores);
+        // 8-18 months
+        $macarthur_lookup_scales = array(
+                                    "words_produced",
+                                    "early_gestures",
+                                    "later_gestures",
+                                    "total_gestures",
+                                   );
+
+        // 16-30 months
+        $CDI_WS_percentiles_lookup_scales = array(
+        // "words_produced_number",
+                                             "word_forms",
+                                             "grammatical_complexity",
+                                            );
+
+        // Age range for instrument scoring is 8-24 months
+
+        foreach ($macarthur_lookup_scales as $scale) {
+            $scale_percentile = $scale . "_percentile";
+
+            if ($age_months >= 8 && $age_months <= 24) {
+                // The macarthur_lookup table currently only has data for 8-18 months
+                if ($age_months <= 18) {
+                    $this->CalculateMacarthurPercentile($scale, $age_months, $gender, $scores);
+                } else {
+                    $scores[$scale_percentile] = "Data Not Found in macarthur_lookup Table";
+                }
             } elseif ($age_months < 8) {
-                $scale_percentile          = $scale . "_percentile";
                 $scores[$scale_percentile] = "Candidate too young to score";
-            } else {
-                $scale_percentile          = $scale . "_percentile";
+            } elseif ($age_months > 24) {
                 $scores[$scale_percentile] = "Candidate too old to score";
             }
         }
+
+        foreach ($CDI_WS_percentiles_lookup_scales as $scale) {
+            $scale_percentile = $scale . "_percentile";
+
+            if ($age_months >= 8 && $age_months <= 24) {
+                // The CDI_WS_percentiles_lookup table currently only has data for 16-30 months
+                if ($age_months >= 16) {
+                    $this->CalculateCDIPercentile($scale, $age_months, $gender, $scores);
+                } else {
+                    $scores[$scale_percentile] = "Data Not Found in CDI_WS_percentiles_lookup Table";
+                }
+            } elseif ($age_months < 8) {
+                $scores[$scale_percentile] = "Candidate too young to score";
+            } elseif ($age_months > 24) {
+                $scores[$scale_percentile] = "Candidate too old to score";
+            }
+        }
+
         // End percentiles calculation
 
         // Save scores
@@ -1575,154 +1842,154 @@ class NDB_BVL_Instrument_mcdi_words_gestures_sentences_survey extends NDB_BVL_In
                                           'wented',
                                          ];
 
-    private const Question_III_C_V = [
-                                      [
-                                       'Two shoe',
-                                       'Two Shoes',
-                                      ],
-                                      [
-                                       'Two foot',
-                                       'Two feet',
-                                      ],
-                                      [
-                                       'Daddy car',
-                                       'Daddy\'s car',
-                                      ],
-                                      [
-                                       'Kitty sleep (talking about right now)',
-                                       'Kitty sleeping (talking about right now)',
-                                      ],
-                                      [
-                                       'I make tower (talking about right now)',
-                                       'I making tower (talking about right now)',
-                                      ],
-                                      [
-                                       'I fall down (talking about something that already happened)',
-                                       'I fell down (talking about something that already happened)',
-                                      ],
-                                      [
-                                       'More cookie!',
-                                       'More cookies!',
-                                      ],
-                                      [
-                                       'These my tooth',
-                                       'These my teeth',
-                                      ],
-                                      [
-                                       'Baby blanket',
-                                       'Baby\'s blanket',
-                                      ],
-                                      [
-                                       'Doggie kiss me (talking about something that already happened)',
-                                       'Doggie kissed me (talking about something that already happened)',
-                                      ],
-                                      [
-                                       'Daddy pick me up (talking about something that already happened)',
-                                       'Daddy picked me up (talking about something that already happened)',
-                                      ],
-                                      [
-                                       'Kitty go away (talking about something that already happened)',
-                                       'Kitty went away (talking about something that already happened)',
-                                      ],
-                                      [
-                                       'Doggie table',
-                                       'Doggie on table',
-                                      ],
-                                      [
-                                       'That my truck',
-                                       'That\'s my truck',
-                                      ],
-                                      [
-                                       'Baby crying',
-                                       'Baby is crying',
-                                      ],
-                                      [
-                                       'You fix it?',
-                                       'Can you fix it?',
-                                      ],
-                                      [
-                                       'Read me story, Mommy',
-                                       'Read me a story, Mommy',
-                                      ],
-                                      [
-                                       'No wash dolly',
-                                       'Don\'t wash dolly',
-                                      ],
-                                      [
-                                       'Want more juice',
-                                       'Want juice in there',
-                                      ],
-                                      [
-                                       'There a kitty',
-                                       'There\'s a kitty',
-                                      ],
-                                      [
-                                       'Go bye-bye',
-                                       'Wanna go bye-bye',
-                                      ],
-                                      [
-                                       'Where mommy go?',
-                                       'Where did Mommy go?',
-                                      ],
-                                      [
-                                       'Coffee hot',
-                                       'That coffee hot',
-                                      ],
-                                      [
-                                       'I no do it',
-                                       'I can\'t do it',
-                                      ],
-                                      [
-                                       'I like read stories',
-                                       'I like to read stories',
-                                      ],
-                                      [
-                                       'Don\'t read book',
-                                       'Don\'t want you read that book',
-                                      ],
-                                      [
-                                       'Turn on light',
-                                       'Turn on the light so I can see',
-                                      ],
-                                      [
-                                       'I want that',
-                                       'I want that one you got',
-                                      ],
-                                      [
-                                       'Want cookies',
-                                       'Want cookies and milk',
-                                      ],
-                                      [
-                                       'Cookie mommy',
-                                       'Cookie for mommy',
-                                      ],
-                                      [
-                                       'Baby want eat',
-                                       'Baby want to eat',
-                                      ],
-                                      [
-                                       'Lookit me!',
-                                       'Lookit me dancing!',
-                                      ],
-                                      [
-                                       'Lookit!',
-                                       'Lookit what I got!',
-                                      ],
-                                      [
-                                       'Where\'s my dolly?',
-                                       'Where\'s my dolly name Sam?',
-                                      ],
-                                      [
-                                       'We made this',
-                                       'Me and Paul made this',
-                                      ],
-                                      [
-                                       'I sing song',
-                                       'I sing song for you',
-                                      ],
-                                      [
-                                       'Baby crying',
-                                       'Baby crying cuz she\'s sad',
-                                      ],
-                                     ];
+    private const Question_III_E = [
+                                    [
+                                     'Two shoe',
+                                     'Two Shoes',
+                                    ],
+                                    [
+                                     'Two foot',
+                                     'Two feet',
+                                    ],
+                                    [
+                                     'Daddy car',
+                                     'Daddy\'s car',
+                                    ],
+                                    [
+                                     'Kitty sleep (talking about right now)',
+                                     'Kitty sleeping (talking about right now)',
+                                    ],
+                                    [
+                                     'I make tower (talking about right now)',
+                                     'I making tower (talking about right now)',
+                                    ],
+                                    [
+                                     'I fall down (talking about something that already happened)',
+                                     'I fell down (talking about something that already happened)',
+                                    ],
+                                    [
+                                     'More cookie!',
+                                     'More cookies!',
+                                    ],
+                                    [
+                                     'These my tooth',
+                                     'These my teeth',
+                                    ],
+                                    [
+                                     'Baby blanket',
+                                     'Baby\'s blanket',
+                                    ],
+                                    [
+                                     'Doggie kiss me (talking about something that already happened)',
+                                     'Doggie kissed me (talking about something that already happened)',
+                                    ],
+                                    [
+                                     'Daddy pick me up (talking about something that already happened)',
+                                     'Daddy picked me up (talking about something that already happened)',
+                                    ],
+                                    [
+                                     'Kitty go away (talking about something that already happened)',
+                                     'Kitty went away (talking about something that already happened)',
+                                    ],
+                                    [
+                                     'Doggie table',
+                                     'Doggie on table',
+                                    ],
+                                    [
+                                     'That my truck',
+                                     'That\'s my truck',
+                                    ],
+                                    [
+                                     'Baby crying',
+                                     'Baby is crying',
+                                    ],
+                                    [
+                                     'You fix it?',
+                                     'Can you fix it?',
+                                    ],
+                                    [
+                                     'Read me story, Mommy',
+                                     'Read me a story, Mommy',
+                                    ],
+                                    [
+                                     'No wash dolly',
+                                     'Don\'t wash dolly',
+                                    ],
+                                    [
+                                     'Want more juice',
+                                     'Want juice in there',
+                                    ],
+                                    [
+                                     'There a kitty',
+                                     'There\'s a kitty',
+                                    ],
+                                    [
+                                     'Go bye-bye',
+                                     'Wanna go bye-bye',
+                                    ],
+                                    [
+                                     'Where mommy go?',
+                                     'Where did Mommy go?',
+                                    ],
+                                    [
+                                     'Coffee hot',
+                                     'That coffee hot',
+                                    ],
+                                    [
+                                     'I no do it',
+                                     'I can\'t do it',
+                                    ],
+                                    [
+                                     'I like read stories',
+                                     'I like to read stories',
+                                    ],
+                                    [
+                                     'Don\'t read book',
+                                     'Don\'t want you read that book',
+                                    ],
+                                    [
+                                     'Turn on light',
+                                     'Turn on the light so I can see',
+                                    ],
+                                    [
+                                     'I want that',
+                                     'I want that one you got',
+                                    ],
+                                    [
+                                     'Want cookies',
+                                     'Want cookies and milk',
+                                    ],
+                                    [
+                                     'Cookie mommy',
+                                     'Cookie for mommy',
+                                    ],
+                                    [
+                                     'Baby want eat',
+                                     'Baby want to eat',
+                                    ],
+                                    [
+                                     'Lookit me!',
+                                     'Lookit me dancing!',
+                                    ],
+                                    [
+                                     'Lookit!',
+                                     'Lookit what I got!',
+                                    ],
+                                    [
+                                     'Where\'s my dolly?',
+                                     'Where\'s my dolly name Sam?',
+                                    ],
+                                    [
+                                     'We made this',
+                                     'Me and Paul made this',
+                                    ],
+                                    [
+                                     'I sing song',
+                                     'I sing song for you',
+                                    ],
+                                    [
+                                     'Baby crying',
+                                     'Baby crying cuz she\'s sad',
+                                    ],
+                                   ];
 }
