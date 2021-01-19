@@ -29,10 +29,10 @@ class NDB_BVL_Instrument_mcdi_words_gestures_sentences_survey extends NDB_BVL_In
                         "word_forms",
                         "word_endings_pt_2",
                         "grammatical_complexity",
-                        "words_produced_percentile",
-                        "early_gestures_percentile",
-                        "later_gestures_percentile",
-                        "total_gestures_percentile",
+                        "words_produced_number_percentile",
+                        "early_gestures_number_percentile",
+                        "later_gestures_number_percentile",
+                        "total_gestures_number_percentile",
                         "word_forms_percentile",
                         "grammatical_complexity_percentile",
                        );
@@ -46,10 +46,10 @@ class NDB_BVL_Instrument_mcdi_words_gestures_sentences_survey extends NDB_BVL_In
                                               "early_gestures_number",
                                               "later_gestures_number",
                                               "total_gestures_number",
-                                              "words_produced_percentile",
-                                              "early_gestures_percentile",
-                                              "later_gestures_percentile",
-                                              "total_gestures_percentile",
+                                              "words_produced_number_percentile",
+                                              "early_gestures_number_percentile",
+                                              "later_gestures_number_percentile",
+                                              "total_gestures_number_percentile",
                                               "word_endings",
                                               "word_forms",
                                               "word_endings_pt_2",
@@ -151,6 +151,50 @@ class NDB_BVL_Instrument_mcdi_words_gestures_sentences_survey extends NDB_BVL_In
             "Required",
             "other_relationship_to_child"
         );
+
+        // SCORING TABLE
+
+        $this->form->addElement('header', null, "Score Summary");
+
+        $group[] = $this->form->createElement('static', "raw_score", null, null);
+        $group[] = $this->form->createElement('static', "percentile", null, null);
+
+        $this->form->addGroup($group, 'score_header_group', "<strong>Scale</strong>", $this->_GUIDelimiter, false);
+        unset($group);
+
+        $scales = array(
+                   "words_produced_number"  => "Words Produced Number",
+                   "early_gestures_number"  => "Early Gestures Number",
+                   "later_gestures_number"  => "Later Gestures Number",
+                   "total_gestures_number"  => "Total Gestures Number",
+                   "word_endings"           => "Word Endings", // Percentile omitted
+                   "word_forms"             => "Word Forms",
+                   "word_endings_pt_2"      => "Word Endings Part 2", // Percentile omitted
+                   "grammatical_complexity" => "Grammatical Complexity",
+                  );
+
+        $columnHeaders = array(
+                          "raw_score"  => "Raw Score",
+                          "percentile" => "Percentile",
+                         );
+
+        foreach ($columnHeaders as $field => $label) {
+            $columnHeaders[$field] .= "     ";
+        }
+
+        $this->localDefaults = array_merge($this->localDefaults, $columnHeaders);
+
+        foreach ($scales as $field => $label) {
+            foreach ($columnHeaders as $scoreField => $scoreLabel) {
+                if ($scoreField == "raw_score") {
+                    $group[] = $this->form->createElement('static', "{$field}", null, null);
+                } elseif ($scoreField == "percentile") {
+                    $group[] = $this->form->createElement('static', "{$field}_{$scoreField}", null, null);
+                }
+            }
+            $this->form->addGroup($group, "{$field}_score_group", $label, $this->_GUIDelimiter, false);
+            unset($group);
+        }
     }
 
     function _page1()
@@ -394,7 +438,8 @@ class NDB_BVL_Instrument_mcdi_words_gestures_sentences_survey extends NDB_BVL_In
     {
         $db = Database::singleton();
 
-        $scale_number     = $scale . "_number";
+        $scale_number     = $scale;
+
         $scale_percentile = $scale . "_percentile";
 
         $query_scores    = "SELECT * FROM macarthur_lookup WHERE age_months=" . $age_months . " AND sex='$gender' AND score_raw=".$scores[$scale_number]." AND subscale='$scale_number'";
@@ -457,7 +502,6 @@ class NDB_BVL_Instrument_mcdi_words_gestures_sentences_survey extends NDB_BVL_In
 
             $record_1b = $db->pselect($query_scores1b, array());
 
-            // print "scale: $scale_number score: " . $scores[$scale_number] . " x< " . $record_1b['score_raw'] . " x> " . $record_1a['score_raw'] . " Y> " . $record_1b['score_percentile'] . " Y< " . $record_1b['score_percentile'] . '<br />';
             $percentile_calculation1 = (
                     ($scores[$scale_number]-$record_1b[0]['score_raw'])/
                     ($record_1a[0]['score_raw']-$record_1b[0]['score_raw'])
@@ -664,10 +708,10 @@ class NDB_BVL_Instrument_mcdi_words_gestures_sentences_survey extends NDB_BVL_In
                    "word_forms"                        => 0, // Part III: B
                    "word_endings_pt_2"                 => 0, // Part III: C
                    "grammatical_complexity"            => 0, // Part III: E
-                   "words_produced_percentile"         => 0,
-                   "early_gestures_percentile"         => 0,
-                   "later_gestures_percentile"         => 0,
-                   "total_gestures_percentile"         => 0,
+                   "words_produced_number_percentile"  => 0,
+                   "early_gestures_number_percentile"  => 0,
+                   "later_gestures_number_percentile"  => 0,
+                   "total_gestures_number_percentile"  => 0,
                    "word_forms_percentile"             => 0,
                    "grammatical_complexity_percentile" => 0,
                   );
@@ -820,6 +864,7 @@ class NDB_BVL_Instrument_mcdi_words_gestures_sentences_survey extends NDB_BVL_In
 
         // Section E: Complexity
         $III_E_question_count = count(self::Question_III_E);
+        $III_E_complex_question_count = 0;
 
         for ($i = 1; $i < $III_E_question_count; $i++) {
             if ($record["III_E_" . $i] == '2') {
@@ -827,31 +872,25 @@ class NDB_BVL_Instrument_mcdi_words_gestures_sentences_survey extends NDB_BVL_In
             }
         }
 
-        $scores["grammatical_complexity"] = $III_E_question_count;
+        $scores["grammatical_complexity"] = $III_E_complex_question_count;
 
         // Establish standard scores and percentile rank for subscales
         // This only has data for the ages 8-18 months. After that,
         // percentile ranks only exist for Macarthur Words and Sentences scale,
         // but we still use words and gestures in V24
         // to compare the subject against him/herself.
-        $Scales = array(
-                   "words_produced",
-                   "early_gestures",
-                   "later_gestures",
-                   "total_gestures",
-                  );
 
         // 8-18 months
         $macarthur_lookup_scales = array(
-                                    "words_produced",
-                                    "early_gestures",
-                                    "later_gestures",
-                                    "total_gestures",
+                                    "words_produced_number",
+                                    "early_gestures_number",
+                                    "later_gestures_number",
+                                    "total_gestures_number",
                                    );
 
         // 16-30 months
         $CDI_WS_percentiles_lookup_scales = array(
-        // "words_produced_number",
+                                            // "words_produced_number",
                                              "word_forms",
                                              "grammatical_complexity",
                                             );
