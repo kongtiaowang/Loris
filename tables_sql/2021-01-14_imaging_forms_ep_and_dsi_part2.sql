@@ -26,6 +26,15 @@ WHERE CommentID IN (
     AND f.test_name = 'Radiology_Review_VSA'
 );
 
+DELETE FROM flag
+WHERE test_name = 'Radiology_Review_VSA'
+AND sessionid IN (
+    SELECT id
+    FROM session
+    WHERE visit_label IN ('V06-CVD', 'V12-CVD', 'V24-CVD')
+    AND subprojectid IN (18,20,23)
+);
+
 -- #####################################
 --
 -- mock_scanner_training_form_infant
@@ -42,4 +51,13 @@ WHERE CommentID IN (
     WHERE s.visit_label IN ('V06-CVD', 'V12-CVD', 'V24-CVD')
     AND s.subprojectid IN (18,20,23)
     AND f.test_name = 'Mock_Scanner_Training_Version_2'
+);
+
+DELETE FROM flag
+WHERE test_name = 'Mock_Scanner_Training_Version_2'
+AND sessionid IN (
+    SELECT id
+    FROM session
+    WHERE visit_label IN ('V06-CVD', 'V12-CVD', 'V24-CVD')
+    AND subprojectid IN (18,20,23)
 );
