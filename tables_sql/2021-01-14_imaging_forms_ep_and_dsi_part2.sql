@@ -23,11 +23,11 @@ WHERE CommentID IN (
     JOIN session s ON (f.sessionid=s.id)
     WHERE s.visit_label IN ('V06-CVD', 'V12-CVD', 'V24-CVD')
     AND s.subprojectid IN (18,20,23)
-    AND f.test_name = 'Radiology_Review_VSA'
+    AND f.test_name = 'radiology_review_infant'
 );
 
 DELETE FROM flag
-WHERE test_name = 'Radiology_Review_VSA'
+WHERE test_name = 'radiology_review_infant'
 AND sessionid IN (
     SELECT id
     FROM session
@@ -50,11 +50,11 @@ WHERE CommentID IN (
     JOIN session s ON (f.sessionid=s.id)
     WHERE s.visit_label IN ('V06-CVD', 'V12-CVD', 'V24-CVD')
     AND s.subprojectid IN (18,20,23)
-    AND f.test_name = 'Mock_Scanner_Training_Version_2'
+    AND f.test_name = 'mock_scanner_training_form_infant'
 );
 
 DELETE FROM flag
-WHERE test_name = 'Mock_Scanner_Training_Version_2'
+WHERE test_name = 'mock_scanner_training_form_infant'
 AND sessionid IN (
     SELECT id
     FROM session
