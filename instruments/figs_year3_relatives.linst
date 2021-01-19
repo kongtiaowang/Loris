@@ -434,8 +434,7 @@ text{@}Tic_Q1Description{@}If no, skip to question 2. If yes, describe:
 select{@}Tic_Q1a{@}1.a) ...did the motor tic(s) last 4 or more weeks?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
 select{@}Tic_Q1b{@}1.b) ...did the motor tic(s) last a year or more?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
 select{@}Tic_Q1c{@}1.c) ...did the motor tic(s) start before age 18 years?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
-select{@}Tic_Q1d{@}1.d) ...did the motor tic(s) cause distress for _________ or impairment at school,
-work or with social relationships?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
+select{@}Tic_Q1d{@}1.d) ...did the motor tic(s) cause distress for _________ or impairment at school, work or with social relationships?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
 select{@}Tic_Q2{@}2. Did he/she have single or multiple vocal tics (sudden, rapid, recurrent, nonrhythmic, stereotyped vocalizations) that occurred many times a day?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
 text{@}Tic_Q2Description{@}If no to question 2, but yes to question 1, skip to question 3. If no to both discontinue checklist. If yes, describe:
 select{@}Tic_Q2a{@}2.a) ...did the vocal tic(s) last 4 or more weeks?{@}NULL=>''{-}'0'=>'0. No'{-}'1'=>'1. Yes'{-}'9'=>'9. Unk'{-}'NA'=>'N/A'
