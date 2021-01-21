@@ -237,7 +237,7 @@ class AddSurvey extends \NDB_Form
             $www = $config->getSetting("www");
 
             if ($instrument == 'air_pollution' || $instrument == 'SA_Consent_Form' ||
-                $instrument == 'NDAR_Consent_SA_Form') {
+                $instrument == 'NDAR_Consent_SA_Form' || $instrument == 'IBIS_SA_SLEEP_Consent_Form') {
                 $url.= $www['url'] . '/survey.php?key=' .
                     urlencode($key) . "<\n>";
             } else {
