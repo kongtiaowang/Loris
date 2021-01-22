@@ -445,13 +445,13 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
 
         foreach ($pii_contact as $field) {
             if ($field == "Date of Birth") {
-                $this->addBasicDate("mother_dob", $this->indent . $field, $this->dateOptions);
+                $this->addDateElement("mother_dob", $this->indent . $field);
             } else {
                 $this->form->addElement('text', null, $this->indent . $field, ['disabled' => 'disabled']);
             }
         }
 
-        $this->form->addElement('text', "mother_occupation", $this->indent . "Occupation");
+        $this->addTextElement("mother_occupation", $this->indent . "Occupation");
         $this->addSelect("mother_education", $this->indent . "Education", self::EDUCATION_OPTIONS);
 
         $this->form->addElement('static', null, null);
@@ -461,13 +461,13 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
 
         foreach ($pii_contact as $field) {
             if ($field == "Date of Birth") {
-                $this->addBasicDate("father_dob", $this->indent . $field, $this->dateOptions);
+                $this->addDateElement("father_dob", $this->indent . $field);
             } elseif ($field != "Maiden Name") {
                 $this->form->addElement('text', null, $this->indent . $field, ['disabled' => 'disabled']);
             }
         }
 
-        $this->form->addElement('text', "father_occupation", $this->indent . "Occupation");
+        $this->addTextElement("father_occupation", $this->indent . "Occupation");
         $this->addSelect("father_education", $this->indent . "Education", self::EDUCATION_OPTIONS);
 
         $this->form->addElement('static', null, null);
