@@ -296,7 +296,7 @@ SUMIF ( Q4=>0 and Q8=>0 and Q14=>0 and Q20=>0 and Q24=>0 and Q28=>0 and Q29=>0 a
         }
         $this->_nullScores($this->scoreCols);
         $db =& Database::singleton();
-        $Answers=$db->pselectRow("SELECT * FROM $this->table WHERE SELECT * FROM ".$this->table." WHERE CommentID=:cid",array("cid" =>$this->getCommentID() ) );
+        $Answers=$db->pselectRow("SELECT * FROM ".$this->table." WHERE CommentID=:cid",array("cid" =>$this->getCommentID() ) );
 
         if ($this->getSessionID() != NULL) { //quickform_parser doesn't use any specific session
             $timepoint =& TimePoint::singleton($this->getSessionID());
