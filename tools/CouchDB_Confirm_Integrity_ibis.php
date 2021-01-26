@@ -86,11 +86,11 @@ class CouchDBIntegrityChecker
             //IBIS Override Query Start here (IBIS database has so many Inactive Sessions and
             //it makes the LORIS default pselectRow fails
             $sqlDB = $this->SQLDB->pselectRow(
-                "SELECT c.*, s.Visit_label, s.Active, c.Active as cActive
-                FROM candidate c
-                LEFT JOIN session s USING (CandID)
-                WHERE c.PSCID=:PID AND s.Visit_label=:VL 
-                and s.Active='Y'",
+                "SELECT c.PSCID, c.Active as cActive, s.Visit_label
+                 FROM candidate c
+                 LEFT JOIN session s
+                 ON (c.CandID=s.CandID AND s.Visit_label=:VL AND s.Active='Y')
+                 WHERE c.PSCID=:PID",
                 array(
                     "PID" => $pscid,
                     "VL" => $vl
@@ -98,41 +98,30 @@ class CouchDBIntegrityChecker
             );
             ////IBIS Override Query Ends Here
 
-            if (!empty($sqlDB) && $sqlDB['cActive'] == 'N') {
-                print "PSCID $pscid is inactive but $row[id] still exists. 
-                Deleting Doc.\n";
-
+            // Candidate not in LORIS DB anymore: delete doc
+            if (empty($sqlDB)) {
+                print "Candidate $pscid does not exist: deleting doc {$row['id']}.\n";
                 $this->CouchDB->deleteDoc($row['id']);
-            } else if (!empty($sqlDB) && $sqlDB['Active'] != 'Y') {
-                $numActive = $this->SQLDB->execute(
-                    $activeExists, array(
-                    'PID' => $pscid,
-                    'VL' => $vl)
-                );
-
-                if (!array_key_exists('count', $numActive[0])
-                    || $numActive[0]['count'] == '0'
-                ) {
-                    print "PSCID $pscid VL $vl is cancelled and has no active "
-                           . "equivalent session but $row[id] still exists.\n";
-
-                    $this->CouchDB->deleteDoc($row['id']);
-                } else {
-                    print "There is an active session for $pscid $vl overriding 
-                    the cancelled one. Keeping $row[id]\n";
-                }
-            } else if (!empty($sqlDB) && $sqlDB['PSCID'] !== $pscid) {
-                print "PSCID $pscid case sensitivity mismatch for $row[id].\n";
-
+            // Candidate is in LORIS DB but is inactive now: delete doc
+            } else if ($sqlDB['cActive'] == 'N') {
+                print "PSCID $pscid is inactive: deleting doc {$row['id']}.\n";
                 $this->CouchDB->deleteDoc($row['id']);
-            } else if (!empty($sqlDB) && $sqlDB['Visit_label'] !== $vl) {
-                print "Visit Label case sensitivity mismatch for $row[id].\n";
-
+            // Visit has been either deleted or inactivated: delete doc
+            } else if (empty($sqlDB['Visit_label'])) {
+                print "No active visit $vl found for $pscid: deleting doc {$row['id']}.\n";
                 $this->CouchDB->deleteDoc($row['id']);
+            // Case mismatch for PSCID: delete doc
+            }  else if ($sqlDB['PSCID'] !== $pscid) {
+                print "PSCID $pscid case sensitivity mismatch: deleting doc {$row['id']}\n";
+                $this->CouchDB->deleteDoc($row['id']);
+            // Case mismatch for visit label: delete doc
+            } else if ($sqlDB['Visit_label'] !== $vl) {
+                print "Visit Label case sensitivity mismatch: deleting doc {$row['id']}\n";
+                $this->CouchDB->deleteDoc($row['id']);
+            // All good: keep the doc
             } else {
-                print "Nothing wrong with $row[id]!\n";
+                print "Nothing wrong with {$row['id']}!\n";
             }
-
         }
     }
 }
