@@ -392,8 +392,19 @@ class NDB_BVL_Instrument_neuro_screen extends NDB_BVL_Instrument
             $this->form->addElement("static", null, "22. Measurements");
             //$this->form->addElement("static", null, "(Sometimes this is erroneously called #21)");
             $db =Database::singleton();
-            $HMSRow = $db->pselectRow("SELECT hms.CommentID, hms.SessionID, s.CandID FROM flag ns left join flag hms ON (hms.Test_name='head_measurements_subject' AND hms.SessionID=ns.SessionID) LEFT JOIN session s ON (s.ID=hms.SessionID) WHERE ns.CommentID=:CID AND ns.CommentID NOT LIKE 'DDE%'",
-                    array("CID" => $this->getCommentID()));
+            $HMSRow = $db->pselectRow(
+                "SELECT hms.CommentID, hms.SessionID, s.CandID
+                 FROM flag ns
+                 LEFT JOIN flag hms
+                   ON (hms.Test_name='head_measurements_subject' AND hms.SessionID=ns.SessionID)
+                 LEFT JOIN session s
+                 ON (s.ID=hms.SessionID)
+                 WHERE ns.CommentID=:CID
+                 AND ns.CommentID NOT LIKE 'DDE%'
+                 AND hms.CommentID NOT LIKE 'DDE%'
+                ",
+                array("CID" => $this->getCommentID())
+            );
             $this->form->addElement("static", null, "<i>Note that this question has been moved to the <a href=\"?test_name=head_measurements_subject&candID=$HMSRow[CandID]&sessionID=$HMSRow[SessionID]&commentID=$HMSRow[CommentID]\">Head Measurements (Subject)</a> form</i>");
             /*
                $this->form->addElement("static", null, "Head Circumferences (cm):");
