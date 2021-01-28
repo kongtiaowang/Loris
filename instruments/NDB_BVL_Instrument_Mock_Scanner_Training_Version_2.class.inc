@@ -48,4 +48,3 @@ class NDB_BVL_Instrument_Mock_Scanner_Training_Version_2 extends AbstractNDB_BVL
 }
 
 ?>
-
