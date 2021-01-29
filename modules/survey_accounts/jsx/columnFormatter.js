@@ -21,7 +21,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   }, this);
   if (column === 'URL') {
       if (row.SurveyName === 'AP (Air Pollution) - Survey' ||row.SurveyName === 'IBIS SA Consent Form'
-          ||row.SurveyName === 'NDAR Consent Form - SA') {
+          ||row.SurveyName === 'NDAR Consent Form - SA' || row.SurveyName === 'IBIS SA-SLEEP - Consent Form') {
           let url = loris.BaseURL + '/survey.php?key=' + row.URL;
           return (<td><a href={url}>{cell}</a></td>);
       } else {

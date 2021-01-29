@@ -25,7 +25,7 @@
             {else}
             <td id="not_started"><div><p>Not Started</p></div></td>
             {/if}
-            {if $survey_data[data].Test_name === 'air_pollution' || $survey_data[data].Test_name === 'SA_Consent_Form' || $survey_data[data].Test_name === 'NDAR_Consent_SA_Form'}
+            {if $survey_data[data].Test_name === 'air_pollution' || $survey_data[data].Test_name === 'SA_Consent_Form' || $survey_data[data].Test_name === 'NDAR_Consent_SA_Form' || $survey_data[data].Test_name === 'IBIS_SA_SLEEP_Consent_Form'}
                 <td><div><p><a href="{$airp_url}{$survey_data[data].OneTimePassword}" target="_blank">Open Survey</a></p></div></td>
             {else}
                 <td><div><p><a href="{$reg_url}{$survey_data[data].OneTimePassword}" target="_blank">Open Survey</a></p></div></td>
