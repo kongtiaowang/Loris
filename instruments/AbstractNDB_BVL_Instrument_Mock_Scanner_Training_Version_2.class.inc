@@ -504,4 +504,3 @@ abstract class AbstractNDB_BVL_Instrument_Mock_Scanner_Training_Version_2 extend
 }
 
 ?>
-
