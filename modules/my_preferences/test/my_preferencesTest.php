@@ -330,8 +330,6 @@ class MyPreferencesIntegrationTest extends LorisIntegrationTest
     /**
      * Accesses the current user.
      *
-     * @param string $userId ID of the user whose page should be accessed.
-     *
      * @return void
      */
     function _accessUser()
