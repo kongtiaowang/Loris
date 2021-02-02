@@ -328,7 +328,19 @@ class MyPreferencesIntegrationTest extends LorisIntegrationTest
             WebDriverBy::cssSelector("body")
         )->getText();
     }
-
+    /**
+     * Accesses the current user.
+     *
+     * @param string $userId ID of the user whose page should be accessed.
+     *
+     * @return void
+     */
+    function _accessUser($userId)
+    {
+        $this->safeGet(
+            $this->url . "/user_accounts/edit_user/?identifier=$userId"
+        );
+    }
     /**
      * Performed after every test.
      *
