@@ -51,7 +51,6 @@ class MyPreferencesIntegrationTest extends LorisIntegrationTest
                 'PSCPI'            => 'N',
                 'Active'           => 'Y',
                 'Password_hash'    => $password,
-                'Password_expiry'  => '2099-12-31',
                 'Pending_approval' => 'N',
             ]
         );
@@ -135,7 +134,6 @@ class MyPreferencesIntegrationTest extends LorisIntegrationTest
         // Set the value and submit the changes
         $this->setValue($fieldName, $newValue);
         $this->submit($page, $userId);
-
         // Reload
         $this->_accessUser($page, $userId);
 
@@ -329,7 +327,17 @@ class MyPreferencesIntegrationTest extends LorisIntegrationTest
             WebDriverBy::cssSelector("body")
         )->getText();
     }
-
+    /**
+     * Accesses the current user.
+     *
+     * @return void
+     */
+    function _accessUser()
+    {
+        $this->safeGet(
+            $this->url . "/my_preferences/"
+        );
+    }
     /**
      * Performed after every test.
      *
