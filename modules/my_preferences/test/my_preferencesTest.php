@@ -51,7 +51,6 @@ class MyPreferencesIntegrationTest extends LorisIntegrationTest
                 'PSCPI'            => 'N',
                 'Active'           => 'Y',
                 'Password_hash'    => $password,
-                'Password_expiry'  => '2099-12-31',
                 'Pending_approval' => 'N',
             ]
         );
