@@ -134,7 +134,6 @@ class MyPreferencesIntegrationTest extends LorisIntegrationTest
         // Set the value and submit the changes
         $this->setValue($fieldName, $newValue);
         $this->submit($page, $userId);
-
         // Reload
         $this->_accessUser($page, $userId);
 
@@ -335,10 +334,10 @@ class MyPreferencesIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function _accessUser($userId)
+    function _accessUser()
     {
         $this->safeGet(
-            $this->url . "/user_accounts/edit_user/?identifier=$userId"
+            $this->url . "/my_preferences/"
         );
     }
     /**
