@@ -41,6 +41,7 @@ class NDB_BVL_Instrument_SA_Intervention_History extends NDB_BVL_Instrument
                               );
 
     const INDIVIDUAL_GROUP_OPTIONS = array(
+                                      null         => "",
                                       "individual" => "Individual",
                                       "group"      => "Group",
                                      );
@@ -830,7 +831,7 @@ class NDB_BVL_Instrument_SA_Intervention_History extends NDB_BVL_Instrument
                     $this->XINRegisterRule("{$q5Key}_intervention", array("did_child_receive_developmental_delays{@}=={@}yes", "{$q5Key}_received{@}=={@}yes"), "Required if your child received {$q5Question}.");
                     $this->addBasicDate("{$q5Key}_stopped_date", "If, NO, date stopped:");
                     $this->XINRegisterRule("{$q5Key}_stopped_date", array("did_child_receive_developmental_delays{@}=={@}yes", "{$q5Key}_received{@}=={@}yes", "{$q5Key}_intervention{@}=={@}no"), "Required if your child has stopped receiving intervention.");
-                    $this->addSelect("{$q5Key}_individual_group", "Individual or Group", self::INDIVIDUAL_GROUP_OPTIONS, array("multiple"));
+                    $this->addSelect("{$q5Key}_individual_group", "Individual or Group", self::INDIVIDUAL_GROUP_OPTIONS);
                     $this->XINRegisterRule("{$q5Key}_individual_group", array("did_child_receive_developmental_delays{@}=={@}yes", "{$q5Key}_received{@}=={@}yes"), "Required if your child received {$q5Question}.");
                     $this->addSelect("{$q5Key}_setting", "Setting", self::SETTING_OPTIONS);
                     $this->XINRegisterRule("{$q5Key}_setting", array("did_child_receive_developmental_delays{@}=={@}yes", "{$q5Key}_received{@}=={@}yes"), "Required if your child received {$q5Question}.");
