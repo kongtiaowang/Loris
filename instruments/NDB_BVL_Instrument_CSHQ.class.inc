@@ -364,38 +364,38 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
         $isLongQuestionnaire         = $this->getFieldValue("which_cshq_did_you_administer") != "a_abbreviated";
 
         $bedtime_questions        = array(
-                                     "goes_to_bed_at_same_time_item1"      => "Child goes to bed at the same time at night.",
-                                     "falls_asleep_in_20_min_item2"        => "Child falls asleep within 20 minutes after going to bed.",
-                                     "falls_asleep_in_own_bed_item3"       => "Child falls asleep in own bed.",
-                                     "falls_asleep_in_others_bed_item4"    => "Child falls asleep in parent's or sibling's bed",
-                                     "falls_asleep_with_movement"          => "Child falls asleep with rocking or rhythmic movements.",
-                                     "falls_asleep_with_object"            => "Child needs special object to fall asleep (dolls, special blanket, etc.)",
-                                     "needs_parent_in_room_to_sleep_item5" => "Child needs parent in the room to fall asleep.",
-                                     "ready_to_go_to_bed"                  => "Child is ready to go to bed at bedtime.",
-                                     "resists_going_to_bed"                => "Child resists going to bed at bedtime.",
-                                     "struggles_at_bedtime_item6"          => "Child struggles at bedtime (cries, refuses to stay in bed, etc.)",
-                                     "afraid_of_sleeping_in_dark_item7"    => "Child is afraid of sleeping in the dark.",
-                                     "afraid_of_sleeping_alone_item8"      => "Child is afraid of sleep alone.",
+                                     "goes_to_bed_at_same_time_item1"      => "1. Child goes to bed at the same time at night.",
+                                     "falls_asleep_in_20_min_item2"        => "2. Child falls asleep within 20 minutes after going to bed.",
+                                     "falls_asleep_in_own_bed_item3"       => "3. Child falls asleep in own bed.",
+                                     "falls_asleep_in_others_bed_item4"    => "4. Child falls asleep in parent's or sibling's bed",
+                                     "falls_asleep_with_movement"          => "5. Child falls asleep with rocking or rhythmic movements.",
+                                     "falls_asleep_with_object"            => "6. Child needs special object to fall asleep (dolls, special blanket, etc.)",
+                                     "needs_parent_in_room_to_sleep_item5" => "7. Child needs parent in the room to fall asleep.",
+                                     "ready_to_go_to_bed"                  => "8. Child is ready to go to bed at bedtime.",
+                                     "resists_going_to_bed"                => "9. Child resists going to bed at bedtime.",
+                                     "struggles_at_bedtime_item6"          => "10. Child struggles at bedtime (cries, refuses to stay in bed, etc.)",
+                                     "afraid_of_sleeping_in_dark_item7"    => "11. Child is afraid of sleeping in the dark.",
+                                     "afraid_of_sleeping_alone_item8"      => "12. Child is afraid of sleep alone.",
                                     );
         $sleep_behavior_questions = array(
-                                     "sleeps_too_little_item9"             => "Child sleeps too little.",
-                                     "sleeps_too_much"                     => "Child sleeps too much",
-                                     "sleeps_right_amount_item10"          => "Child sleeps the right amount",
-                                     "sleeps_same_amount_each_day_item11"  => "Child sleeps about the same amount each day.",
-                                     "wets_bed_at_night_item12"            => "Child wets the bed at night.",
-                                     "talks_during_sleep_item13"           => "Child talks during sleep.",
-                                     "restless_and_moves_alot_item14"      => "Child is restless and moves a lot during sleep.",
-                                     "sleepwalks_item15"                   => "Child sleepwalks during the night.",
-                                     "moves_to_others_bed_at_night_item16" => "Child moves to someone else's bed during the night (parent, brother, sister, etc.)",
-                                     "reports_pain_during_sleep"           => "Child reports pain during sleep.",
-                                     "grinds_teeth_during_sleep_item17"    => "Child grinds teeth during sleep (your dentist may have told you this).",
-                                     "snores_loudly_item18"                => "Child snores loudly.",
-                                     "stops_breathing_item19"              => "Child seems to stop breathing during sleep.",
-                                     "snorts_and_gasps_item20"             => "Child snorts and/or gasps during sleep.",
-                                     "trouble_sleeping_away_item21"        => "Child has trouble sleeping away from home (visiting relatives, vacation).",
-                                     "complains_about_sleeping_problems"   => "Child complains about problems sleeping.",
-                                     "awakens_screaming_sweating_item22"   => "Child awakens during night screaming, sweating, and inconsolable.",
-                                     "alarmed_by_scary_dream_item23"       => "Child awakens alarmed by a frightening dream.",
+                                     "sleeps_too_little_item9"             => "1. Child sleeps too little.",
+                                     "sleeps_too_much"                     => "2. Child sleeps too much",
+                                     "sleeps_right_amount_item10"          => "3. Child sleeps the right amount",
+                                     "sleeps_same_amount_each_day_item11"  => "4. Child sleeps about the same amount each day.",
+                                     "wets_bed_at_night_item12"            => "5. Child wets the bed at night.",
+                                     "talks_during_sleep_item13"           => "6. Child talks during sleep.",
+                                     "restless_and_moves_alot_item14"      => "7. Child is restless and moves a lot during sleep.",
+                                     "sleepwalks_item15"                   => "8. Child sleepwalks during the night.",
+                                     "moves_to_others_bed_at_night_item16" => "9. Child moves to someone else's bed during the night (parent, brother, sister, etc.)",
+                                     "reports_pain_during_sleep"           => "10. Child reports pain during sleep.",
+                                     "grinds_teeth_during_sleep_item17"    => "11. Child grinds teeth during sleep (your dentist may have told you this).",
+                                     "snores_loudly_item18"                => "12. Child snores loudly.",
+                                     "stops_breathing_item19"              => "13. Child seems to stop breathing during sleep.",
+                                     "snorts_and_gasps_item20"             => "14. Child snorts and/or gasps during sleep.",
+                                     "trouble_sleeping_away_item21"        => "15. Child has trouble sleeping away from home (visiting relatives, vacation).",
+                                     "complains_about_sleeping_problems"   => "16. Child complains about problems sleeping.",
+                                     "awakens_screaming_sweating_item22"   => "17. Child awakens during night screaming, sweating, and inconsolable.",
+                                     "alarmed_by_scary_dream_item23"       => "18. Child awakens alarmed by a frightening dream.",
                                     );
 
         $this->addHeader("<h4><b><u>Bedtime</u></b></h4>");
@@ -569,25 +569,25 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
         $this->addHeader("Child's Sleep Habit (Preschool and School-Aged)");
 
         $waking_during_night_questions = array(
-                                          "awakes_once_item24"            => "Child awakes once during the night.",
-                                          "awakes_more_than_once_item25"  => "Child awakes more than once during the night.",
-                                          "returns_to_sleep_without_help" => "Child returns to sleep without help after waking.",
+                                          "awakes_once_item24"            => "1. Child awakes once during the night.",
+                                          "awakes_more_than_once_item25"  => "2. Child awakes more than once during the night.",
+                                          "returns_to_sleep_without_help" => "3. Child returns to sleep without help after waking.",
                                           //"length_waking" => "Write the number of minutes a night waking usually lasts:"
                                          );
         $morning_waking_questions     = array(
-                                         "wakes_by_himself_item26"             => "Child wakes up by him/herself.",
-                                         "wakes_up_with_alarm_clock"           => "Child wakes up with alarm clock.",
-                                         "wakes_up_in_neg_mood_item27"         => "Child wakes up in negative mood.",
-                                         "others_wake_child_item28"            => "Adults or siblings wake up child.",
-                                         "hard_time_getting_out_of_bed_item29" => "Child has difficulty getting out of bed in the morning",
-                                         "takes_long_time_to_be_alert_item30"  => "Child takes a long time to become alert in the morning.",
-                                         "wakes_up_early"                      => "Child wakes up very early in the morning.",
-                                         "good_appetite_in_morning"            => "Child has a good appetite in the morning.",
+                                         "wakes_by_himself_item26"             => "1. Child wakes up by him/herself.",
+                                         "wakes_up_with_alarm_clock"           => "2. Child wakes up with alarm clock.",
+                                         "wakes_up_in_neg_mood_item27"         => "3. Child wakes up in negative mood.",
+                                         "others_wake_child_item28"            => "4. Adults or siblings wake up child.",
+                                         "hard_time_getting_out_of_bed_item29" => "5. Child has difficulty getting out of bed in the morning",
+                                         "takes_long_time_to_be_alert_item30"  => "6. Child takes a long time to become alert in the morning.",
+                                         "wakes_up_early"                      => "7. Child wakes up very early in the morning.",
+                                         "good_appetite_in_morning"            => "8. Child has a good appetite in the morning.",
                                         );
         $daytime_sleepiness_questions = array(
-                                         "naps_during_day"       => "Child naps during the day.",
-                                         "suddenly_falls_asleep" => "Child suddenly falls asleep in the middle of active behavior.",
-                                         "seems_tired_item31"    => "Child seems tired.",
+                                         "naps_during_day"       => "1. Child naps during the day.",
+                                         "suddenly_falls_asleep" => "2. Child suddenly falls asleep in the middle of active behavior.",
+                                         "seems_tired_item31"    => "3. Child seems tired.",
                                         );
 
         $this->addHeader("<h4><b><u>Waking During the Night</u></b></h4>");
@@ -745,10 +745,10 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
             " during the following (check all that apply):</h4>"
         );
         $sleepy_questions = array(
-                             "play_alone"           => "Play alone",
-                             "watching_tv_item32"   => "Watching TV",
-                             "riding_in_car_item33" => "Riding in car",
-                             "eating_meals"         => "Eating meals",
+                             "play_alone"           => "1. Play alone",
+                             "watching_tv_item32"   => "2. Watching TV",
+                             "riding_in_car_item33" => "3. Riding in car",
+                             "eating_meals"         => "4. Eating meals",
                             );
 
         foreach ($sleepy_questions as $sq => $label) {
@@ -774,12 +774,14 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
         }
         $min_options['59'] = "59 minute(s)";
 
-        $default_val   = array(null => '');
-        $hours_options = array_merge($default_val, $hours_options);
-        $min_options   = array_merge($default_val, $min_options);
+        $default_val_hours   = array(null => 'Select hours');
+        $default_val_minutes   = array(null => 'Select minutes');
+        $hours_options = array_merge($default_val_hours, $hours_options);
+        $min_options   = array_merge($default_val_minutes, $min_options);
         $group         = array();
         $group[]       = $this->createSelect($field."_hours", $field_label.' hours', $hours_options);
         $group[]       = $this->createSelect($field."_mins", $field_label.' minutes', $min_options);
+        $group[]       = $this->createLabel("Only applicable if skipping the question:");
         $group[]       = $this->createSelect(
             $field."_status",
             $field_label . ' status',
@@ -798,7 +800,7 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
              "{$field}_hours{@}=={@}",
              "{$field}_mins{@}=={@}",
             ),
-            "Please select one of the option if you don't want to enter the time details."
+            "Please select one of the options if you don't want to enter the time details."
         );
         $this->XINRegisterRule(
             $field . "_hours",
