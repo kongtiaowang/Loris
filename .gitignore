@@ -1,5 +1,6 @@
 project
 smarty/templates_c
+mysql/
 .gitmodules
 project-*
 *.un~
