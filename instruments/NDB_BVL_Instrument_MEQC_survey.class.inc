@@ -43,7 +43,7 @@ class NDB_BVL_Instrument_MEQC_survey extends NDB_BVL_Instrument
      * @return void
      * @access public
      */
-    function setup(?string $commentID = NULL, ?string $page = NULL): void
+    function setup(?string $commentID = null, ?string $page = null): void
     {
         $this->formType = "XIN";
         $this->form     = new LorisForm('MEQC_survey');
@@ -121,9 +121,10 @@ class NDB_BVL_Instrument_MEQC_survey extends NDB_BVL_Instrument
         $this->form->addElement(
             'select',
             'respondent',
-            'What is your relationship to the child',
+            'Individual completing this Questionnaire:',
             array(
              ''            => '',
+             'child'       => 'Child',
              'mother'      => 'Mother',
              'father'      => 'Father',
              'step_mother' => 'Step Mother',
@@ -132,9 +133,13 @@ class NDB_BVL_Instrument_MEQC_survey extends NDB_BVL_Instrument
             )
         );
 
-        $this->form->addElement('text', 'respondent_specify', 'If other, specify:');
+        $this->form->addElement('text', 'respondent_explain', 'If not child, explain:');
 
-        $this->XINRegisterRule('respondent_specify', array('respondent{@}=={@}other'), 'Required if other');
+        $this->XINRegisterRule('respondent_explain', array('respondent{@}!={@}child'), 'Required if not child');
+
+        $this->form->addElement('text', 'other_specify', 'If other, specify:');
+
+        $this->XINRegisterRule('other_specify', array('respondent{@}=={@}other'), 'Required if other');
 
         $this->form->addFormRule(array(&$this, 'validate_main_page'));
     }
@@ -278,11 +283,14 @@ class NDB_BVL_Instrument_MEQC_survey extends NDB_BVL_Instrument
     {
          $errors = [];
 
+        if ($values["respondent"] == "child") {
+            $this->validate_empty_subquestions($values, ["respondent_explain"], $errors);
+        }
+
         if ($values["respondent"] != "other") {
-            $this->validate_empty_subquestions($values, ["respondent_specify"], $errors);
+            $this->validate_empty_subquestions($values, ["other_specify"], $errors);
         }
 
          return $errors;
     }
 }
-?>
