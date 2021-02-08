@@ -1,13 +1,9 @@
 CREATE TABLE `SA_Intervention_History` (
 `CommentID` varchar(255) NOT NULL default '',
-
-                            `UserID` varchar(100) default NULL,
-
-                            `Examiner` varchar(100) default NULL,
-
-                            `Testdate` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-
-                            `Data_entry_completion_status` enum('Incomplete','Complete') NOT NULL default 'Incomplete',
+`UserID` varchar(100) default NULL,
+`Examiner` varchar(100) default NULL,
+`Testdate` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`Data_entry_completion_status` enum('Incomplete','Complete') NOT NULL default 'Incomplete',
 `Date_taken` date default NULL,
 `Candidate_Age` varchar(100) default NULL,
 `Window_Difference` varchar(100) default NULL,
@@ -315,7 +311,7 @@ CREATE TABLE `SA_Intervention_History` (
 `occupational_therapy_date` date default NULL,
 `occupational_therapy_intervention` enum('yes','no') default NULL,
 `occupational_therapy_stopped_date` date default NULL,
-`occupational_therapy_individual_group` varchar(128) default NULL,
+`occupational_therapy_individual_group` enum('individual','group') default NULL,
 `occupational_therapy_setting` enum('office_clinic','home','daycare_preschool','other') default NULL,
 `occupational_therapy_other_setting` varchar(128) default NULL,
 `occupational_therapy_other_setting_status` enum('not_answered') default NULL,
@@ -325,7 +321,7 @@ CREATE TABLE `SA_Intervention_History` (
 `physical_therapy_date` date default NULL,
 `physical_therapy_intervention` enum('yes','no') default NULL,
 `physical_therapy_stopped_date` date default NULL,
-`physical_therapy_individual_group` varchar(128) default NULL,
+`physical_therapy_individual_group` enum('individual','group') default NULL,
 `physical_therapy_setting` enum('office_clinic','home','daycare_preschool','other') default NULL,
 `physical_therapy_other_setting` varchar(128) default NULL,
 `physical_therapy_other_setting_status` enum('not_answered') default NULL,
@@ -335,7 +331,7 @@ CREATE TABLE `SA_Intervention_History` (
 `speech_language_therapy_date` date default NULL,
 `speech_language_therapy_intervention` enum('yes','no') default NULL,
 `speech_language_therapy_stopped_date` date default NULL,
-`speech_language_therapy_individual_group` varchar(128) default NULL,
+`speech_language_therapy_individual_group` enum('individual','group') default NULL,
 `speech_language_therapy_setting` enum('office_clinic','home','daycare_preschool','other') default NULL,
 `speech_language_therapy_other_setting` varchar(128) default NULL,
 `speech_language_therapy_other_setting_status` enum('not_answered') default NULL,
@@ -345,7 +341,7 @@ CREATE TABLE `SA_Intervention_History` (
 `comprehensive_behavioral_date` date default NULL,
 `comprehensive_behavioral_intervention` enum('yes','no') default NULL,
 `comprehensive_behavioral_stopped_date` date default NULL,
-`comprehensive_behavioral_individual_group` varchar(128) default NULL,
+`comprehensive_behavioral_individual_group` enum('individual','group') default NULL,
 `comprehensive_behavioral_setting` enum('office_clinic','home','daycare_preschool','other') default NULL,
 `comprehensive_behavioral_other_setting` varchar(128) default NULL,
 `comprehensive_behavioral_other_setting_status` enum('not_answered') default NULL,
@@ -355,7 +351,7 @@ CREATE TABLE `SA_Intervention_History` (
 `other_date` date default NULL,
 `other_intervention` enum('yes','no') default NULL,
 `other_stopped_date` date default NULL,
-`other_individual_group` varchar(128) default NULL,
+`other_individual_group` enum('individual','group') default NULL,
 `other_setting` enum('office_clinic','home','daycare_preschool','other') default NULL,
 `other_other_setting` varchar(128) default NULL,
 `other_other_setting_status` enum('not_answered') default NULL,
@@ -376,7 +372,4 @@ CREATE TABLE `SA_Intervention_History` (
 `additional_info_about_services` text default NULL,
 `additional_info_about_services_status` enum('not_answered') default NULL,
 PRIMARY KEY  (`CommentID`)
-
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-

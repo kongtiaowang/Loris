@@ -24,111 +24,112 @@ class NDB_BVL_Instrument_SA_Intervention_History extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
 
-    var $ValidityEnabled = false;
+    var $ValidityEnabled  = false;
     var $ValidityRequired = false;
 
     const YES_NO_OPTIONS = array(
-        null => "",
-        "yes" => "Yes",
-        "no" => "No",
-    );
+                            null  => "",
+                            "yes" => "Yes",
+                            "no"  => "No",
+                           );
 
     const YES_NO_NA_OPTIONS = array(
-        null => "",
-        "yes" => "Yes",
-        "no" => "No",
-        "na" => "Not applicable",
-    );
+                               null  => "",
+                               "yes" => "Yes",
+                               "no"  => "No",
+                               "na"  => "Not applicable",
+                              );
 
     const INDIVIDUAL_GROUP_OPTIONS = array(
-        "individual" => "Individual",
-        "group" => "Group",
-    );
+                                      null         => "",
+                                      "individual" => "Individual",
+                                      "group"      => "Group",
+                                     );
 
     const SETTING_OPTIONS = array(
-        null => "",
-        "office_clinic" => "Office/clinic",
-        "home" => "Home",
-        "daycare_preschool" => "Daycare/preschool",
-        "other" => "Other",
-    );
+                             null                => "",
+                             "office_clinic"     => "Office/clinic",
+                             "home"              => "Home",
+                             "daycare_preschool" => "Daycare/preschool",
+                             "other"             => "Other",
+                            );
 
     const SERVICE_TYPE_OPTIONS = array(
-        'occupational_therapy' => 'Occupational Therapy',
-        'physical_therapy' => 'Physical Therapy',
-        'speech_language_therapy' => 'Speech-language therapy',
-        'comprehensive_behavioral' => 'Comprehensive behavioral/educational interventions',
-        'other' => 'Other',
-    );
+                                  'occupational_therapy'     => 'Occupational Therapy',
+                                  'physical_therapy'         => 'Physical Therapy',
+                                  'speech_language_therapy'  => 'Speech-language therapy',
+                                  'comprehensive_behavioral' => 'Comprehensive behavioral/educational interventions',
+                                  'other'                    => 'Other',
+                                 );
 
     const CHILD_ENROLLMENT_OPTIONS = array(
-        'speech_language_therapy' => 'Speech-language therapy',
-        'occupational_therapy' => 'Occupational therapy',
-        'physical_therapy' => 'Physical therapy',
-        'comprehensive_behavioral' => 'Comprehensive behavioral intervention/special educational services',
-        'other' => 'Other',
-    );
+                                      'speech_language_therapy'  => 'Speech-language therapy',
+                                      'occupational_therapy'     => 'Occupational therapy',
+                                      'physical_therapy'         => 'Physical therapy',
+                                      'comprehensive_behavioral' => 'Comprehensive behavioral intervention/special educational services',
+                                      'other'                    => 'Other',
+                                     );
 
     /**
      * Sets up basic data, such as the LorisForm object, and so on.
      *
      * @param string $commentID the CommentID identifying the data to load
-     * @param string $page if a multipage form, the page to show
+     * @param string $page      if a multipage form, the page to show
      *
      * @return void
      * @access public
      */
-    function setup(?string $commentID = NULL, ?string $page = NULL): void
+    function setup(?string $commentID = null, ?string $page = null): void
     {
         $this->formType = "XIN";
-        $this->form = new LorisForm('SA_Intervention_History_form');
-        $this->page = $page;            // page label (number or
+        $this->form     = new LorisForm('SA_Intervention_History_form');
+        $this->page     = $page;            // page label (number or
         // string - used by
         // user-defined child classes)
         // set the object properties
         $this->testName = 'SA_Intervention_History';           // test_names.Test_name
-        $this->table = 'SA_Intervention_History';              // name of database table corresponding to instrument
+        $this->table    = 'SA_Intervention_History';              // name of database table corresponding to instrument
         // data keyed by commentID
         $this->commentID = $commentID;
         //The array of dates/timestamps to convert to database dates/timestamps
         //Any HTML_Quickform date elements must be listed here
         $this->dateTimeFields = array(
-            "Date_taken",
-            "occupational_therapy_date",
-            "occupational_therapy_stopped_date",
-            "physical_therapy_date",
-            "physical_therapy_stopped_date",
-            "speech_language_therapy_date",
-            "speech_language_therapy_stopped_date",
-            "comprehensive_behavioral_date",
-            "comprehensive_behavioral_stopped_date",
-            "other_date",
-            "other_stopped_date",
-            );
+                                 "Date_taken",
+                                 "occupational_therapy_date",
+                                 "occupational_therapy_stopped_date",
+                                 "physical_therapy_date",
+                                 "physical_therapy_stopped_date",
+                                 "speech_language_therapy_date",
+                                 "speech_language_therapy_stopped_date",
+                                 "comprehensive_behavioral_date",
+                                 "comprehensive_behavioral_stopped_date",
+                                 "other_date",
+                                 "other_stopped_date",
+                                );
         //The array of selects with multiple answers allowed
         //Any HTML_Quickform multiple selects must be listed here
         $this->_selectMultipleElements = array(
-            "occupational_therapy_individual_group",
-            "physical_therapy_individual_group",
-            "speech_language_therapy_individual_group",
-            "comprehensive_behavioral_individual_group",
-            "other_individual_group",
-            "if_checked_9_please_check"
-        );
+                                          "occupational_therapy_individual_group",
+                                          "physical_therapy_individual_group",
+                                          "speech_language_therapy_individual_group",
+                                          "comprehensive_behavioral_individual_group",
+                                          "other_individual_group",
+                                          "if_checked_9_please_check",
+                                         );
         // required fields for data entry completion status
         $this->_requiredElements = array(
-            'Examiner',
-            'CommentID',
-        );
-        $config = NDB_Config::singleton();
+                                    'Examiner',
+                                    'CommentID',
+                                   );
+        $config            = NDB_Config::singleton();
         $this->dateOptions = array(
-            'language' => 'en',
-            'format' => 'YMd',
-            'minYear' => $config->getSetting('startYear'),
-            'maxYear' => $config->getSetting('endYear'),
-            'addEmptyOption' => true,
-            'emptyOptionValue' => null,
-        );
+                              'language'         => 'en',
+                              'format'           => 'YMd',
+                              'minYear'          => $config->getSetting('startYear'),
+                              'maxYear'          => $config->getSetting('endYear'),
+                              'addEmptyOption'   => true,
+                              'emptyOptionValue' => null,
+                             );
         // setup the form
         $this->_setupForm();
     }
@@ -145,12 +146,13 @@ class NDB_BVL_Instrument_SA_Intervention_History extends NDB_BVL_Instrument
             "/SA_Intervention_History(_page[0-9]+)/",
             $this->page,
             $matches
-        )) {
+        )
+        ) {
             call_user_func(array($this, $matches[1]));
         } else {
             $this->_main();
         }
-       // $this->form->addFormRule(array(&$this, 'XINValidate'));
+        // $this->form->addFormRule(array(&$this, 'XINValidate'));
     }
     /**
      * generates the main page of the form.
@@ -161,18 +163,20 @@ class NDB_BVL_Instrument_SA_Intervention_History extends NDB_BVL_Instrument
     function _main()
     {
         // display test name
-        $this->addHeader("EDUCATIONAL/INTERVENTION HISTORY<br>
-                         <h5>Adapted from HISTORY QUESTIONNAIRE: Long-term Outcomes in Autism Study</h5>");
+        $this->addHeader(
+            "EDUCATIONAL/INTERVENTION HISTORY<br>
+                         <h5>Adapted from HISTORY QUESTIONNAIRE: Long-term Outcomes in Autism Study</h5>"
+        );
         $this->form->addElement('static', null, "<i><h3>*Please fill this form out with regard to your child who has enrolled in our study, NOT their older sibling with autism</i></h3>");
         $this->_addMetadataFields();
         $opts = array(
-            null              => "",
-            "mother"             => "Mother",
-            "father"             => "Father",
-            "step_mother"        => "Step Mother",
-            "step_father"        => "Step Father",
-            "other"             => "Other",
-        );
+                 null          => "",
+                 "mother"      => "Mother",
+                 "father"      => "Father",
+                 "step_mother" => "Step Mother",
+                 "step_father" => "Step Father",
+                 "other"       => "Other",
+                );
         $this->addSelect("relationship_to_child", "Your relationship to the child:", $opts);
         $this->addBasicText("relationship_to_child_other", $this->indent."If Other, please describe:");
         $this->XINRegisterRule(
@@ -185,68 +189,70 @@ class NDB_BVL_Instrument_SA_Intervention_History extends NDB_BVL_Instrument
     }
     function _page1()
     {
-        $this->addLabel("<h4>We’re going to discuss any special services or supports your child has received since
+        $this->addLabel(
+            "<h4>We’re going to discuss any special services or supports your child has received since
                                  he/she was a baby.  If there are any details you are unsure of, do your best to give an
                                  estimate. As with all the information you provide to us, your responses will remain
-                                 confidential and will be used only for the purposes of the study.<br><br></h4>");
-        $yesNoOptions =
+                                 confidential and will be used only for the purposes of the study.<br><br></h4>"
+        );
+        $yesNoOptions    =
             array(
-                null => "",
-                "yes" => "Yes",
-                "no" => "No",
-                "dont_know" => "Don't know"
+             null        => "",
+             "yes"       => "Yes",
+             "no"        => "No",
+             "dont_know" => "Don't know",
             );
-        $minutes_array =
+        $minutes_array   =
             array(
-                null => "",
-                30 => "30",
-                60 => "60",
-                90 => "90",
-                120 => "120",
-                180 => "180"
+             null => "",
+             30   => "30",
+             60   => "60",
+             90   => "90",
+             120  => "120",
+             180  => "180",
             );
         $num_times_array =
             array(
-                null=>"",
-                1=>"1",
-                2=>"2",
-                3=>"3",
-                4=>"4",
-                5=>"5",
-                6=>"6",
-                7=>"7"
+             null => "",
+             1    => "1",
+             2    => "2",
+             3    => "3",
+             4    => "4",
+             5    => "5",
+             6    => "6",
+             7    => "7",
             );
-        $years_array =
+        $years_array     =
             array(
-                null => "",
-                0 => "0",
-                1 => "1",
-                2 => "2",
-                3 => "3",
-                4 => "4",
-                5 => "5",
-                6 => "6",
-                7 => "7",
-                8 => "8",
-                9 => "9",
-                10 => "10"
+             null => "",
+             0    => "0",
+             1    => "1",
+             2    => "2",
+             3    => "3",
+             4    => "4",
+             5    => "5",
+             6    => "6",
+             7    => "7",
+             8    => "8",
+             9    => "9",
+             10   => "10",
             );
-        $months_array =
+        $months_array    =
             array(
-                null=>"",
-                1=>"1",
-                2=>"2",
-                3=>"3",
-                4=>"4",
-                5=>"5",
-                6=>"6",
-                7=>"7",
-                8=>"8",
-                9=>"9",
-                10=>"10",
-                11=>"11"
+             null => "",
+             1    => "1",
+             2    => "2",
+             3    => "3",
+             4    => "4",
+             5    => "5",
+             6    => "6",
+             7    => "7",
+             8    => "8",
+             9    => "9",
+             10   => "10",
+             11   => "11",
             );
-        ####### QUESTION 1 #######
+        // QUESTION 1 #######
         $this->addSelect(
             "birth_to_three_services",
             "1. Has [child's name] ever received Birth to Three services?",
@@ -256,12 +262,14 @@ class NDB_BVL_Instrument_SA_Intervention_History extends NDB_BVL_Instrument
             "static",
             null,
             null,
-            "Minutes");
+            "Minutes"
+        );
         $group[] =& $this->form->createElement(
             "static",
             null,
             null,
-            "Times per week");
+            "Times per week"
+        );
         $this->addGroup(
             $group,
             "q1_frequency_headers",
@@ -304,12 +312,14 @@ class NDB_BVL_Instrument_SA_Intervention_History extends NDB_BVL_Instrument
             "static",
             null,
             null,
-            "Years");
+            "Years"
+        );
         $group[] =& $this->form->createElement(
             "static",
             null,
             null,
-            "Months");
+            "Months"
+        );
         $this->addGroup(
             $group,
             "q1_duration_headers",
@@ -348,7 +358,7 @@ class NDB_BVL_Instrument_SA_Intervention_History extends NDB_BVL_Instrument
             false
         );
         unset($group);
-        ####### QUESTION 2 #######
+        // QUESTION 2 #######
         $this->addSelect(
             "day_care",
             "<b>2. Has she/he ever attended a <u>day care</u></b>",
@@ -368,12 +378,14 @@ class NDB_BVL_Instrument_SA_Intervention_History extends NDB_BVL_Instrument
             "static",
             null,
             null,
-            "Years");
+            "Years"
+        );
         $group[] =& $this->form->createElement(
             "static",
             null,
             null,
-            "Months");
+            "Months"
+        );
         $this->addGroup(
             $group,
             "q2_duration_headers",
@@ -417,7 +429,7 @@ class NDB_BVL_Instrument_SA_Intervention_History extends NDB_BVL_Instrument
             "How many hours a week?",
             range(0, 40)
         );
-        ######## QUESTION #3 ########
+        // QUESTION #3 ########
         $this->addSelect(
             "nursery_school_preschool",
             "<b>3. Did he/she ever attend <u>nursery school</u>?</b>",
@@ -432,12 +444,14 @@ class NDB_BVL_Instrument_SA_Intervention_History extends NDB_BVL_Instrument
             "static",
             null,
             null,
-            "Years");
+            "Years"
+        );
         $group[] =& $this->form->createElement(
             "static",
             null,
             null,
-            "Months");
+            "Months"
+        );
         $this->addGroup(
             $group,
             "q3_duration_headers",
@@ -482,32 +496,38 @@ class NDB_BVL_Instrument_SA_Intervention_History extends NDB_BVL_Instrument
             range(0, 40)
         );
     }
-    function _page2Headers($age_range) {
+    function _page2Headers($age_range)
+    {
         $group[] =& $this->form->createElement(
             "static",
             null,
             null,
-            "Type of intervention");
+            "Type of intervention"
+        );
         $group[] =& $this->form->createElement(
             "static",
             null,
             null,
-            "Hours per week");
+            "Hours per week"
+        );
         $group[] =& $this->form->createElement(
             "static",
             null,
             null,
-            "Mins");
+            "Mins"
+        );
         $group[] =& $this->form->createElement(
             "static",
             null,
             null,
-            "Location (e.g. school, home)");
+            "Location (e.g. school, home)"
+        );
         $group[] =& $this->form->createElement(
             "static",
             null,
             null,
-            "Description");
+            "Description"
+        );
         $this->addGroup(
             $group,
             $age_range . "_headers",
@@ -517,7 +537,8 @@ class NDB_BVL_Instrument_SA_Intervention_History extends NDB_BVL_Instrument
         );
         unset($group);
     }
-    function _page2Questions($age_range, $i, $type_of_intervention, $hours_array, $mins_array) {
+    function _page2Questions($age_range, $i, $type_of_intervention, $hours_array, $mins_array)
+    {
         $group[] =& $this->createSelect(
             "{$age_range}_type_of_intervention_{$i}",
             "",
@@ -581,26 +602,38 @@ class NDB_BVL_Instrument_SA_Intervention_History extends NDB_BVL_Instrument
             );
             $this->XINRegisterRule(
                 "{$age_range}_hours_{$i}",
-                array("{$age_range}_type_of_intervention_{$i}{@}!={@}", "{$age_range}_type_of_intervention_{$i}{@}!={@}13"),
+                array(
+                 "{$age_range}_type_of_intervention_{$i}{@}!={@}",
+                 "{$age_range}_type_of_intervention_{$i}{@}!={@}13",
+                ),
                 "All the fields in the row are required if a type of intervention is specified.",
                 "{$age_range}_{$i}_headers"
             );
             $this->XINRegisterRule(
                 "{$age_range}_min_{$i}",
-                array("{$age_range}_type_of_intervention_{$i}{@}!={@}", "{$age_range}_type_of_intervention_{$i}{@}!={@}13"),
+                array(
+                 "{$age_range}_type_of_intervention_{$i}{@}!={@}",
+                 "{$age_range}_type_of_intervention_{$i}{@}!={@}13",
+                ),
                 "All the fields in the row are required if a type of intervention is specified.",
                 "{$age_range}_{$i}_headers"
             );
             $this->XINRegisterRule(
                 "{$age_range}_location_{$i}",
-                array("{$age_range}_type_of_intervention_{$i}{@}!={@}", "{$age_range}_type_of_intervention_{$i}{@}!={@}13"),
+                array(
+                 "{$age_range}_type_of_intervention_{$i}{@}!={@}",
+                 "{$age_range}_type_of_intervention_{$i}{@}!={@}13",
+                ),
                 "Not required.",
                 "All the fields in the row are required if a type of intervention is specified.",
                 "{$age_range}_{$i}_headers"
             );
             $this->XINRegisterRule(
                 "{$age_range}_description_{$i}",
-                array("{$age_range}_type_of_intervention_{$i}{@}!={@}", "{$age_range}_type_of_intervention_{$i}{@}!={@}13"),
+                array(
+                 "{$age_range}_type_of_intervention_{$i}{@}!={@}",
+                 "{$age_range}_type_of_intervention_{$i}{@}!={@}13",
+                ),
                 "All the fields in the row are required if a type of intervention is specified.",
                 "{$age_range}_{$i}_headers"
             );
@@ -614,33 +647,37 @@ class NDB_BVL_Instrument_SA_Intervention_History extends NDB_BVL_Instrument
         );
         unset($group);
     }
-    function _page2() {
+    function _page2()
+    {
         $yesNoOptions =
             array(
-                null => "",
-                "yes" => "Yes",
-                "no" => "No"
+             null  => "",
+             "yes" => "Yes",
+             "no"  => "No",
             );
-        ###### QUESTION 4 #######
+        // QUESTION 4 #######
         $this->addSelect(
             "support_in_school",
             "<b>4. Has he/she ever received any supports or special services <u>in school</u></b>?",
             $yesNoOptions
         );
-        ###### QUESTION 5 ########
+        // QUESTION 5 ########
         $this->addSelect(
             "support_outside_school",
             "<b>5. Has your child ever received any supports or special services outside school,
              such as at home or in a clinic or other community setting?</b>",
             $yesNoOptions
         );
-        $this->addHeader("<h4>If YES selected for either 4 or 5, go through each age interval
+        $this->addHeader(
+            "<h4>If YES selected for either 4 or 5, go through each age interval
                          on this page to catalog services received, beginning with the interval
                          child's current age. Use the following codes to categorize each service received.
                          If uncertain, code 12 for Other and briefly describe. If no services were received for a given
-                         interval, pick N/A.</h4>");
+                         interval, pick N/A.</h4>"
+        );
 
-        $this->addHeader("<h4>For the intervals below, please indicate which of the following services the child
+        $this->addHeader(
+            "<h4>For the intervals below, please indicate which of the following services the child
                          has received:<br><br>
                          $this->indent 1. ABA/Lovaas/naturalistic behavioral (PRT, ESDM)<br>
                          $this->indent 2. Counseling/psychological<br>
@@ -658,25 +695,26 @@ class NDB_BVL_Instrument_SA_Intervention_History extends NDB_BVL_Instrument
                          Please fill in as much detail as possible about the child’s intervention including the type of
                          service/intervention (using codes above), estimate of hours/minutes per week, and where the service
                          was provided. If '12' is selected for 'Type of Intervention', please describe it
-                         further in 'Description'</h4>");
+                         further in 'Description'</h4>"
+        );
         $type_of_intervention =
             array(
-                null => "",
-                1 => "1. ABA/Lovaas/naturalistic behavioral (PRT, ESDM)",
-                2 => "2. Counseling/psychological",
-                3 => "3. Developmental (RDI, Floortime)",
-                4 => "4. Occupational therapy",
-                5 => "5. Physical therapy",
-                6 => "6. Recreational",
-                7 => "7. Sensory/sensory integration",
-                8 => "8. Social skills in training",
-                9 => "9. Speech language",
-                10 => "10. TEACCH",
-                11 => "11. Special education (for non-specific in-school services",
-                12 => "12. Other (biomedical/nutritional/alternative/)",
-                13 => "13. N/A"
+             null => "",
+             1    => "1. ABA/Lovaas/naturalistic behavioral (PRT, ESDM)",
+             2    => "2. Counseling/psychological",
+             3    => "3. Developmental (RDI, Floortime)",
+             4    => "4. Occupational therapy",
+             5    => "5. Physical therapy",
+             6    => "6. Recreational",
+             7    => "7. Sensory/sensory integration",
+             8    => "8. Social skills in training",
+             9    => "9. Speech language",
+             10   => "10. TEACCH",
+             11   => "11. Special education (for non-specific in-school services",
+             12   => "12. Other (biomedical/nutritional/alternative/)",
+             13   => "13. N/A",
             );
-        $hours_array = array(null => "");
+        $hours_array          = array(null => "");
         for ($i=0; $i <= 50; $i++) {
             array_push($hours_array, $i);
         }
@@ -684,55 +722,55 @@ class NDB_BVL_Instrument_SA_Intervention_History extends NDB_BVL_Instrument
         foreach (array(0, 15, 30, 45) as $min) {
             array_push($mins_array, $min);
         }
-        ##### 6. Age 10-11 ######
+        // 6. Age 10-11 ######
         $this->addHeader("<h4>6. Age 10-11 (fifth grade):</h4>");
         $this->_page2Headers("age_10_11");
         for ($i=1; $i <= 6; $i++) {
             $this->_page2Questions("age_10_11", $i, $type_of_intervention, $hours_array, $mins_array);
         }
-        ##### 7. Age 9-10 ######
+        // 7. Age 9-10 ######
         $this->addHeader("<h4>7. Age 9-10 (fourth grade):</h4>");
         $this->_page2Headers("age_9_10");
         for ($i=1; $i <= 6; $i++) {
             $this->_page2Questions("age_9_10", $i, $type_of_intervention, $hours_array, $mins_array);
         }
-        ##### 8. Age 8-9 ######
+        // 8. Age 8-9 ######
         $this->addHeader("<h4>8. Age 8-9 (third grade):</h4>");
         $this->_page2Headers("age_8_9");
         for ($i=1; $i <= 6; $i++) {
             $this->_page2Questions("age_8_9", $i, $type_of_intervention, $hours_array, $mins_array);
         }
-        ##### 9. Age 7-8 ######
+        // 9. Age 7-8 ######
         $this->addHeader("<h4>9. Age 7-8 (second grade):</h4>");
         $this->_page2Headers("age_7_8");
         for ($i=1; $i <= 6; $i++) {
             $this->_page2Questions("age_7_8", $i, $type_of_intervention, $hours_array, $mins_array);
         }
-        ##### 10. Age 6-7 ######
+        // 10. Age 6-7 ######
         $this->addHeader("<h4>10. Age 6-7 (first grade):</h4>");
         $this->_page2Headers("age_6_7");
         for ($i=1; $i <= 6; $i++) {
             $this->_page2Questions("age_6_7", $i, $type_of_intervention, $hours_array, $mins_array);
         }
-        ##### 11. Age 5-6 ######
+        // 11. Age 5-6 ######
         $this->addHeader("<h4>11. Age 5-6 (kindergarten):</h4>");
         $this->_page2Headers("age_5_6");
         for ($i=1; $i <= 6; $i++) {
             $this->_page2Questions("age_5_6", $i, $type_of_intervention, $hours_array, $mins_array);
         }
-        ##### 12. Age 4-5 ######
+        // 12. Age 4-5 ######
         $this->addHeader("<h4>12. Age 4-5:</h4>");
         $this->_page2Headers("age_4_5");
         for ($i=1; $i <= 6; $i++) {
             $this->_page2Questions("age_4_5", $i, $type_of_intervention, $hours_array, $mins_array);
         }
-        ##### 13. Age 3-4 ######
+        // 13. Age 3-4 ######
         $this->addHeader("<h4>13. Age 3-4:</h4>");
         $this->_page2Headers("age_3_4");
         for ($i=1; $i <= 6; $i++) {
             $this->_page2Questions("age_3_4", $i, $type_of_intervention, $hours_array, $mins_array);
         }
-        ##### 14. Age 2-3 ######
+        // 14. Age 2-3 ######
         $this->addHeader("<h4>14. Age 2-3:</h4>");
         $this->_page2Headers("age_2_3");
         for ($i=1; $i <= 6; $i++) {
@@ -745,29 +783,30 @@ class NDB_BVL_Instrument_SA_Intervention_History extends NDB_BVL_Instrument
         );
     }
 
-    function _page3() {
+    function _page3()
+    {
         $early_intervention_services = array(
-            "average_hours_per_week" => "Average hours per week",
-            "total_hours_since_last_visit" => "Total hours since last visit",
-        );
+                                        "average_hours_per_week"       => "Average hours per week",
+                                        "total_hours_since_last_visit" => "Total hours since last visit",
+                                       );
 
         $hours_intervention_services = array(
-            "since_yours_last_visit" => "a. since your last visit to our research program?",
-            "in_past_year" => "b. in the past year?",
-        );
+                                        "since_yours_last_visit" => "a. since your last visit to our research program?",
+                                        "in_past_year"           => "b. in the past year?",
+                                       );
 
         $page3_questions = array(
-            "did_professional_refer_early_intervention" => "16) Since your last visit, did <u>a professional refer</u> your child to an <u>“early intervention” or “birth-to-three” program?</u> (Depending on where you live, these programs may have different names.) (TAKEN FROM BSRC FORM)",
-            "did_child_receive_early_intervention" => "17) Since your last visit, did your child <u>receive</u> any <u>“early intervention” or “birth-to-three” program</u> services? (TAKEN FROM BSRC FORM)",
-            "did_professional_recommend_child_socialization" => "18) Since your last visit, did <u>a professional recommend</u> that your child attend any community based <u>classes/activities designed to increase socialization</u> (eg. MommyandMe, Gymboree, etc.) (TAKEN FROM BSRC FORM)",
-            "did_child_participate_socialization" => "19) Since your last visit, did your child <u>participate</u> in any classes/activities designed to increase socialization whether or not recommended by a professional (eg. MommyandMe, Gymboree, etc.). (TAKEN FROM BSRC FORM)",
-            "did_child_receive_developmental_delays" => "20) Since your last visit, did your child receive services for developmental delays of any kind (such as motor or language delays) or concerns about delay? (TAKEN FROM BSRC FORM)",
-            "how_many_hours_child_intervention" => "21) On average, how many hours per week has your child been in intervention (TAKEN FROM BSRC FORM)",
-            "did_child_receive_complementary_therapies_autism" => "22) At any point since your last visit, did your child <u>receive complementary or alternative therapies used to treat symptoms of autism?</u> (TAKEN FROM BSRC FORM)",
-            "did_child_receive_medical_therapies_autism" => "23) At any point since your last visit, did your child <u>receive medical or pharmacological interventions used to treat symptoms of autism?</u> (TAKEN FROM BSRC FORM)",
-            "do_you_continue_enrollment_intervention" => "24) If this is your child’s 36-month assessment, do you plan to continue your child’s enrollment in intervention during the next year? (TAKEN FROM BSRC FORM)",
-            "if_checked_9_please_check" => "25) If you checked yes in #24, please check all that apply below: (TAKEN FROM BSRC FORM)",
-        );
+                            "did_professional_refer_early_intervention"        => "16) Since your last visit, did <u>a professional refer</u> your child to an <u>“early intervention” or “birth-to-three” program?</u> (Depending on where you live, these programs may have different names.) (TAKEN FROM BSRC FORM)",
+                            "did_child_receive_early_intervention"             => "17) Since your last visit, did your child <u>receive</u> any <u>“early intervention” or “birth-to-three” program</u> services? (TAKEN FROM BSRC FORM)",
+                            "did_professional_recommend_child_socialization"   => "18) Since your last visit, did <u>a professional recommend</u> that your child attend any community based <u>classes/activities designed to increase socialization</u> (eg. MommyandMe, Gymboree, etc.) (TAKEN FROM BSRC FORM)",
+                            "did_child_participate_socialization"              => "19) Since your last visit, did your child <u>participate</u> in any classes/activities designed to increase socialization whether or not recommended by a professional (eg. MommyandMe, Gymboree, etc.). (TAKEN FROM BSRC FORM)",
+                            "did_child_receive_developmental_delays"           => "20) Since your last visit, did your child receive services for developmental delays of any kind (such as motor or language delays) or concerns about delay? (TAKEN FROM BSRC FORM)",
+                            "how_many_hours_child_intervention"                => "21) On average, how many hours per week has your child been in intervention (TAKEN FROM BSRC FORM)",
+                            "did_child_receive_complementary_therapies_autism" => "22) At any point since your last visit, did your child <u>receive complementary or alternative therapies used to treat symptoms of autism?</u> (TAKEN FROM BSRC FORM)",
+                            "did_child_receive_medical_therapies_autism"       => "23) At any point since your last visit, did your child <u>receive medical or pharmacological interventions used to treat symptoms of autism?</u> (TAKEN FROM BSRC FORM)",
+                            "do_you_continue_enrollment_intervention"          => "24) If this is your child’s 36-month assessment, do you plan to continue your child’s enrollment in intervention during the next year? (TAKEN FROM BSRC FORM)",
+                            "if_checked_9_please_check"                        => "25) If you checked yes in #24, please check all that apply below: (TAKEN FROM BSRC FORM)",
+                           );
 
         foreach ($page3_questions as $name => $label) {
             if ($name != "how_many_hours_child_intervention" && $name != "if_checked_9_please_check" && $name != "do_you_continue_enrollment_intervention") {
@@ -792,7 +831,7 @@ class NDB_BVL_Instrument_SA_Intervention_History extends NDB_BVL_Instrument
                     $this->XINRegisterRule("{$q5Key}_intervention", array("did_child_receive_developmental_delays{@}=={@}yes", "{$q5Key}_received{@}=={@}yes"), "Required if your child received {$q5Question}.");
                     $this->addBasicDate("{$q5Key}_stopped_date", "If, NO, date stopped:");
                     $this->XINRegisterRule("{$q5Key}_stopped_date", array("did_child_receive_developmental_delays{@}=={@}yes", "{$q5Key}_received{@}=={@}yes", "{$q5Key}_intervention{@}=={@}no"), "Required if your child has stopped receiving intervention.");
-                    $this->addSelect("{$q5Key}_individual_group", "Individual or Group", self::INDIVIDUAL_GROUP_OPTIONS, array("multiple"));
+                    $this->addSelect("{$q5Key}_individual_group", "Individual or Group", self::INDIVIDUAL_GROUP_OPTIONS);
                     $this->XINRegisterRule("{$q5Key}_individual_group", array("did_child_receive_developmental_delays{@}=={@}yes", "{$q5Key}_received{@}=={@}yes"), "Required if your child received {$q5Question}.");
                     $this->addSelect("{$q5Key}_setting", "Setting", self::SETTING_OPTIONS);
                     $this->XINRegisterRule("{$q5Key}_setting", array("did_child_receive_developmental_delays{@}=={@}yes", "{$q5Key}_received{@}=={@}yes"), "Required if your child received {$q5Question}.");
@@ -835,23 +874,29 @@ class NDB_BVL_Instrument_SA_Intervention_History extends NDB_BVL_Instrument
         $errors = array();
 
         $required_questions = array(
-            "did_professional_refer_early_intervention", "did_child_receive_early_intervention",
-            "did_professional_recommend_child_socialization", "did_child_participate_socialization",
-            "did_child_receive_developmental_delays", "how_many_hours_child_intervention",
-            "did_child_receive_complementary_therapies_autism", "did_child_receive_medical_therapies_autism",
-            "do_you_continue_enrollment_intervention", "if_checked_9_please_check"
-        );
+                               "did_professional_refer_early_intervention",
+                               "did_child_receive_early_intervention",
+                               "did_professional_recommend_child_socialization",
+                               "did_child_participate_socialization",
+                               "did_child_receive_developmental_delays",
+                               "how_many_hours_child_intervention",
+                               "did_child_receive_complementary_therapies_autism",
+                               "did_child_receive_medical_therapies_autism",
+                               "do_you_continue_enrollment_intervention",
+                               "if_checked_9_please_check",
+                              );
 
         $early_intervention_services = array(
-            "average_hours_per_week", "total_hours_since_last_visit"
-        );
+                                        "average_hours_per_week",
+                                        "total_hours_since_last_visit",
+                                       );
 
         foreach ($required_questions as $name) {
-//            if ($name != "if_checked_9_please_check" && $name != "how_many_hours_child_intervention") {
-//                if ($values[$name] == null || $values[$name] == "") {
-//                    $errors[$name] = 'Required';
-//                }
-//            }
+            //            if ($name != "if_checked_9_please_check" && $name != "how_many_hours_child_intervention") {
+            //                if ($values[$name] == null || $values[$name] == "") {
+            //                    $errors[$name] = 'Required';
+            //                }
+            //            }
             if ($name == "if_checked_9_please_check") {
                 if ($values["do_you_continue_enrollment_intervention"] == "no") {
                     if ($values['if_checked_9_please_check'] != "" || $values['if_checked_9_please_check'] != null) {
@@ -862,8 +907,9 @@ class NDB_BVL_Instrument_SA_Intervention_History extends NDB_BVL_Instrument
             if ($name == "did_child_receive_early_intervention") {
                 if ($values[$name] == "no") {
                     foreach ($early_intervention_services as $question) {
-                        if (($values[$question] != NULL && $values[$question] != "") ||
-                            ($values[$question . "_status"] != NULL && $values[$question . "_status"] != "")) {
+                        if (($values[$question] != null && $values[$question] != "")
+                            || ($values[$question . "_status"] != null && $values[$question . "_status"] != "")
+                        ) {
                             $errors[$question . "_group"] = 'Not required, please leave the field blank';
                         }
                     }
@@ -872,8 +918,9 @@ class NDB_BVL_Instrument_SA_Intervention_History extends NDB_BVL_Instrument
             if ($name == "did_child_receive_complementary_therapies_autism") {
                 if ($values[$name] == "no") {
                     $question = "q7_specify";
-                    if (($values[$question] != NULL && $values[$question] != "") ||
-                        ($values[$question . "_status"] != NULL && $values[$question . "_status"] != "")) {
+                    if (($values[$question] != null && $values[$question] != "")
+                        || ($values[$question . "_status"] != null && $values[$question . "_status"] != "")
+                    ) {
                         $errors[$question . "_group"] = 'Not required, please leave the field blank';
                     }
                 }
@@ -881,15 +928,31 @@ class NDB_BVL_Instrument_SA_Intervention_History extends NDB_BVL_Instrument
             if ($name == "did_child_receive_medical_therapies_autism") {
                 if ($values[$name] == "no") {
                     $question = "q8_specify";
-                    if (($values[$question] != NULL && $values[$question] != "") ||
-                        ($values[$question . "_status"] != NULL && $values[$question . "_status"] != "")) {
+                    if (($values[$question] != null && $values[$question] != "")
+                        || ($values[$question . "_status"] != null && $values[$question . "_status"] != "")
+                    ) {
                         $errors[$question . "_group"] = 'Not required, please leave the field blank';
                     }
                 }
             }
             if ($name == "did_child_receive_developmental_delays") {
-                $services = array('occupational_therapy', 'physical_therapy', 'speech_language_therapy', 'comprehensive_behavioral', 'other');
-                $options = array('_received', '_date', '_intervention', '_stopped_date', '_individual_group', '_setting', '_other_setting', '_average_hours');
+                $services = array(
+                             'occupational_therapy',
+                             'physical_therapy',
+                             'speech_language_therapy',
+                             'comprehensive_behavioral',
+                             'other',
+                            );
+                $options  = array(
+                             '_received',
+                             '_date',
+                             '_intervention',
+                             '_stopped_date',
+                             '_individual_group',
+                             '_setting',
+                             '_other_setting',
+                             '_average_hours',
+                            );
 
                 foreach ($services as $service) {
                     foreach ($options as $option) {
