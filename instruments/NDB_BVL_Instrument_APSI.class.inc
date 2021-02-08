@@ -124,15 +124,23 @@ class NDB_BVL_Instrument_APSI extends NDB_BVL_Instrument
         $this->addHeader("<h3>Autism Parent Screen for Infants (APSI)</h3>");
 
 
-        $options = 
+        $options =
             array(
-                null => "", 
+                null => "",
                 'no' => "No",
                 'possibly' => "Possibly",
                 'definitely' => "Definitely",
                 'NA' => "Not Answered"
-            ); 
-       
+            );
+
+        $speechLossOptions =
+            [
+                null => '',
+                'before_loss_eye_social'  => 'Speech loss occurred BEFORE loss of eye-contact and social-emotional connectedness',
+                'after_loss_eye_social'  => 'Speech loss occurred AFTER loss of eye contact and social-emotional connectedness',
+                'closely_together_loss'  => 'The two occurred closely together in time'
+            ];
+
         $page1_questions =
             array(
                 'q1' => '1) Does your child have difficulty visually tracking a moving object, that is, smoothly moving his/her eyes to follow an object’s direction of movement?',
@@ -164,10 +172,10 @@ class NDB_BVL_Instrument_APSI extends NDB_BVL_Instrument
 
             );
 
-         foreach ($page1_questions as $question => $label) { 
+         foreach ($page1_questions as $question => $label) {
              $this->addSelect(
-                 $question, 
-                 $label, 
+                 $question,
+                 $label,
                  $options
              );
          }
@@ -180,17 +188,11 @@ contact and social-emotional connectedness", null, null, array(NULL,'yes'));
         $this->addBasicTextArea("other_skills_lost","If other, please identify skill(s) lost:");
         $this->XINRegisterRule('other_skills_lost',array("other_skills_lost{@}=={@}NEVER_REQUIRED"));
 
-        $this->addHeader("<h4><b><i>If relevant, please indicate with a checkmark whether</b></i></h4>");
-        $this->form->addElement("advcheckbox", "speech_loss_occurred_before_eye_loss", "Speech Loss occured BEFORE loss of eye contact and social-emotional connectedness", null, null, array(NULL,'yes'));
-        $this->XINRegisterRule('speech_loss_occurred_before_eye_loss',array("speech_loss_occurred_before_eye_loss{@}=={@}NEVER_REQUIRED"));
-        $this->form->addElement("advcheckbox", "speech_loss_occurred_after_eye_loss", "Speech Loss occured AFTER loss of eye contact and social-emotional connectedness", null, null, array(NULL,'yes'));
-        $this->XINRegisterRule('speech_loss_occurred_after_eye_loss',array("speech_loss_occurred_after_eye_loss{@}=={@}NEVER_REQUIRED"));
-        $this->form->addElement("advcheckbox", "speech_loss_occurred_close_to_eye_loss", "Speech loss and loss of eye contact and social-emotional connectedness closely together in time", null, null, array(NULL,'yes'));
-        $this->XINRegisterRule('speech_loss_occurred_close_to_eye_loss',array("speech_loss_occurred_close_to_eye_loss{@}=={@}NEVER_REQUIRED"));
-
+        $this->addSelect('speech_loss_happened_when', "If relevant, please indicate whether speech loss occurred BEFORE or AFTER
+        loss of eye contact and social-emotional connectedness, or whether the two occurred closely together in time",
+            $speechLossOptions);
+        $this->XINRegisterRule('speech_loss_happened_when',array("speech_loss_happened_when{@}=={@}NEVER_REQUIRED"));
     }
-
-
 }
 
 

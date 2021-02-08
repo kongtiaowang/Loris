@@ -42,9 +42,7 @@ CREATE TABLE `APSI` (
 `speech_loss` varchar(100) default NULL,
 `eye_contact_social_emot_loss` varchar(100) default NULL,
 `other_skills_lost` text default NULL,
-`speech_loss_occurred_before_eye_loss` varchar(100) default NULL,
-`speech_loss_occurred_after_eye_loss` varchar(100) default NULL,
-`speech_loss_occurred_close_to_eye_loss` varchar(100) default NULL,
+`speech_loss_happened_when` TEXT default NULL,
 PRIMARY KEY  (`CommentID`)
 
               ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
