@@ -951,8 +951,8 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
         $timepoint =& TimePoint::singleton($this->getSessionID());
         $dob = $timepoint->getEffectiveDateOfBirth();
         $interval = date_diff(date_create($dob), date_create($record["Date_taken"]));
-        $age = $interval->format("%Y.%M");
-        $age_years = $interval->format("%Y");
+        $age = $interval->format("%y.%m");
+        $age_years = $interval->format("%y");
         $subtest_name = array(
             "subtest_1_3",
             "subtest_1_6",
@@ -1032,6 +1032,8 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
             $band_ci = $this->getBandCI($age_years);
             $scores['bot2_short_CI_band'] = "+/- " . $band_ci;
             $scores['bot2_short_CI_interval'] = ($std_score - $band_ci) . "-" . ($std_score + $band_ci);
+            $scores= str_replace(">", "Greater than or equal to ", $scores);
+            $scores= str_replace("<", "Less than or equal to ", $scores);
             $db->update($this->table, $scores, array("CommentID" => $this->getCommentID()));
         }
 
