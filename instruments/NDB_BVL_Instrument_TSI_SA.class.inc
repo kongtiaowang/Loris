@@ -492,8 +492,9 @@ class NDB_BVL_Instrument_TSI_SA extends NDB_BVL_Instrument
             $this->addGroup($group, "sibling_group_{$i}", null, $this->_GUIDelimiter, false);
             unset($group);
         }
-        $this->form->addElement('static', null, "Enrolled in any other Research Studies?");
-        $this->form->addElement('static', null, "If yes, list:");
+        $this->form->addElement('select', "enrolled_in_other_studies", "Enrolled in any other Research Studies?", $yes_no);
+        $this->form->addElement('text', "other_studies_list", "$this->indent<i>If yes, list:</i>");
+        $this->XINRegisterRule("other_studies_list", array("enrolled_in_other_studies{@}=={@}yes"), "Required.");
         $this->form->addElement('header', null, "Developmental Factors Younger Sibling SUBJECT:");
         $this->form->addElement('select', "neurological_problems", "Any specific neurological problems in SUBJECT?", $yes_no);
         $this->form->addElement('text', "neurological_problems_list", "$this->indent<i>List:</i>");

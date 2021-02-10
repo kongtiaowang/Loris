@@ -87,6 +87,8 @@ CREATE TABLE `TSI_SA` (
 `sibiling_dx_10` varchar(255) default NULL,
 `sibling_half_full_step_10` enum('half','full','step') default NULL,
 `sibling_live_in_home_10` enum('y','n') default NULL,
+`enrolled_in_other_studies` enum('yes','no','not_answered') default NULL,
+`other_studies_list` varchar(255) default NULL,
 `neurological_problems` enum('yes','no','not_answered') default NULL,
 `neurological_problems_list` varchar(255) default NULL,
 `genetic_conditions` enum('yes','no','not_answered') default NULL,
