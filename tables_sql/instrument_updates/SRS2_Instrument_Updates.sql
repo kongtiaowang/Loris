@@ -424,8 +424,3 @@ INSERT INTO SRS2_SchoolAge_lookup VALUES
 ('SRS2_Adult','M/F', 'DSM5_RRB','88','29'),
 ('SRS2_Adult','M/F', 'DSM5_RRB','89',''),
 ('SRS2_Adult','M/F', 'DSM5_RRB','90','>=30');
-
-
-
-
-
