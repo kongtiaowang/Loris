@@ -43,6 +43,7 @@ class NDB_BVL_Instrument_BSRC_survey extends NDB_BVL_Instrument
     );
 
     const INDIVIDUAL_GROUP_OPTIONS = array(
+        null => "",
         "individual" => "Individual",
         "group" => "Group",
     );
