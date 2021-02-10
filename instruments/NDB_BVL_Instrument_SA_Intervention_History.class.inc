@@ -882,8 +882,6 @@ class NDB_BVL_Instrument_SA_Intervention_History extends NDB_BVL_Instrument
                                "how_many_hours_child_intervention",
                                "did_child_receive_complementary_therapies_autism",
                                "did_child_receive_medical_therapies_autism",
-                               "do_you_continue_enrollment_intervention",
-                               "if_checked_9_please_check",
                               );
 
         $early_intervention_services = array(
@@ -892,18 +890,6 @@ class NDB_BVL_Instrument_SA_Intervention_History extends NDB_BVL_Instrument
                                        );
 
         foreach ($required_questions as $name) {
-            //            if ($name != "if_checked_9_please_check" && $name != "how_many_hours_child_intervention") {
-            //                if ($values[$name] == null || $values[$name] == "") {
-            //                    $errors[$name] = 'Required';
-            //                }
-            //            }
-            if ($name == "if_checked_9_please_check") {
-                if ($values["do_you_continue_enrollment_intervention"] == "no") {
-                    if ($values['if_checked_9_please_check'] != "" || $values['if_checked_9_please_check'] != null) {
-                        $errors["if_checked_9_please_check"] = 'This must be left blank because you answered no above.';
-                    }
-                }
-            }
             if ($name == "did_child_receive_early_intervention") {
                 if ($values[$name] == "no") {
                     foreach ($early_intervention_services as $question) {
