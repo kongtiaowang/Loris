@@ -951,8 +951,19 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
         $timepoint =& TimePoint::singleton($this->getSessionID());
         $dob = $timepoint->getEffectiveDateOfBirth();
         $interval = date_diff(date_create($dob), date_create($record["Date_taken"]));
-        $age = $interval->format("%y.%m");
+        $age_months = $interval->format("%m");
+        if($age_months==10 or $age_months==11)
+        {
+            $age_months= 9;
+        }
+        //Hack to make a proper mathematical range to check the value
+        //Deciaml Range should be between .5-.9
+        //Age with months >9 will make an wrong mathematical value
+        //So Months >9 (10 & 11) are considered as 9 as all the lookup values in between 9 &11 monts have same
+        //value in lookup table. Look up table also adjusted in that way
         $age_years = $interval->format("%y");
+        $age = $age_years.".".$age_months;
+        //echo $age;
         $subtest_name = array(
             "subtest_1_3",
             "subtest_1_6",
@@ -993,7 +1004,6 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
         );
 
 
-
         $db->update($this->table, $scores, array("CommentID" => $this->getCommentID()));
         foreach ($subtest_point_score as $value) {
             $scores["total_point_score"] += $scores["{$value}"];
@@ -1008,7 +1018,7 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
             $query_scores = "SELECT * FROM BOT2_Short_lookup WHERE
                 sex='$sex'  AND (age ='$age'  OR  '$age' BETWEEN SUBSTRING_INDEX 
                 (`age`,'-', 1) AND SUBSTRING_INDEX(`age`,'-', -1) )AND
-                (total_point_score ='$total_point_score'  OR  '$total_point_score' BETWEEN SUBSTRING_INDEX 
+                (total_point_score =$total_point_score  OR  $total_point_score BETWEEN SUBSTRING_INDEX 
                 (`total_point_score`,'-', 1) AND SUBSTRING_INDEX(`total_point_score`,'-', -1) )";
             $record_1 = $db->pselectRow($query_scores, array());
 
@@ -1032,8 +1042,8 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
             $band_ci = $this->getBandCI($age_years);
             $scores['bot2_short_CI_band'] = "+/- " . $band_ci;
             $scores['bot2_short_CI_interval'] = ($std_score - $band_ci) . "-" . ($std_score + $band_ci);
-            $scores= str_replace(">", "Greater than or equal to ", $scores);
-            $scores= str_replace("<", "Less than or equal to ", $scores);
+            $scores= str_replace(">", "Greater than ", $scores);
+            $scores= str_replace("<", "Less than ", $scores);
             $db->update($this->table, $scores, array("CommentID" => $this->getCommentID()));
         }
 
@@ -1237,7 +1247,7 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         else {
             foreach ($check_array as $key => $value) {
                 if (stristr($key, '-') !== FALSE) {
-                    $range = array_map('intval', explode('-', $key));
+                    $range = explode('-', $key);
                     if ($search_key >= $range[0] && $search_key <= $range[1]) {
                         $point_score = $value;
                         break;
