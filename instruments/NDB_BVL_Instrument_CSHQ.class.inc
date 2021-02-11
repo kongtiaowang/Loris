@@ -203,15 +203,15 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
         }
         $score_columns
             = array(
-               'bedtime_resistance'         => 'Bedtime Resistance',
-               'sleep_onset_delay'          => 'Sleep Onset Delay',
-               'sleep_duration'             => 'Sleep Duration',
-               'sleep_anxiety'              => 'Sleep Anxiety',
-               'night_wakings'              => 'Night Wakings',
-               'parasomnias'                => 'Parasomnias',
-               'sleep_disordered_breathing' => 'Sleep Disordered Breathing',
-               'daytime_sleepiness'         => 'Daytime Sleepiness',
-               'total_score'                => 'Total Score',
+               'score_bedtime_resistance'         => 'Bedtime Resistance',
+               'score_sleep_onset_delay'          => 'Sleep Onset Delay',
+               'score_sleep_duration'             => 'Sleep Duration',
+               'score_sleep_anxiety'              => 'Sleep Anxiety',
+               'score_night_wakings'              => 'Night Wakings',
+               'score_parasomnias'                => 'Parasomnias',
+               'score_sleep_disordered_breathing' => 'Sleep Disordered Breathing',
+               'score_daytime_sleepiness'         => 'Daytime Sleepiness',
+               'score_total'                      => 'Total Score',
               );
 
         while ($i = current($score_columns)) {
@@ -869,82 +869,55 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
             }
         }
 
-        $subscale_questions = array(
-                               'bedtime_resistance'         => array(
-                                                                "_item1_",
-                                                                "_item3_",
-                                                                "_item4_",
-                                                                "_item5_",
-                                                                "_item6_",
-                                                                "_item8_",
-                                                               ),
-                               'sleep_onset_delay'          => array("_item2_"),
-                               'sleep_duration'             => array(
-                                                                "_item9_",
-                                                                "_item10_",
-                                                                "_item11_",
-                                                               ),
-                               'sleep_anxiety'              => array(
-                                                                "_item5_",
-                                                                "_item7_",
-                                                                "_item8_",
-                                                                "_item21_",
-                                                               ),
-                               'night_wakings'              => array(
-                                                                "_item16_",
-                                                                "_item24_",
-                                                                "_item25_",
-                                                               ),
-                               'parasomnias'                => array(
-                                                                "_item12_",
-                                                                "_item13_",
-                                                                "_item14_",
-                                                                "_item15_",
-                                                                "_item17_",
-                                                                "_item22_",
-                                                                "_item23_",
-                                                               ),
-                               'sleep_disordered_breathing' => array(
-                                                                "_item18_",
-                                                                "_item19_",
-                                                                "_item20_",
-                                                               ),
-                               'daytime_sleepiness'         => array(
-                                                                "_item26_",
-                                                                "_item27_",
-                                                                "_item28_",
-                                                                "_item29_",
-                                                                "_item30_",
-                                                                "_item31_",
-                                                                "_item32",
-                                                                "_item33",
-                                                               ),
-                              );
-
-        $score['bedtime_resistance'] = 0;
-        $score['sleep_onset_delay']  = 0;
-        $score['sleep_duration']     = 0;
-        $score['sleep_anxiety']      = 0;
-        $score['night_wakings']      = 0;
-        $score['parasomnias']        = 0;
-        $score['sleep_disordered_breathing'] = 0;
-        $score['daytime_sleepiness']         = 0;
+        $subscale_questions = [
+            'score_bedtime_resistance'         => [
+                "_item1_", "_item3_", "_item4_", "_item5_", "_item6_", "_item8_"
+            ],
+            'score_sleep_onset_delay'          => [
+                 "_item2_"
+            ],
+            'score_sleep_duration'             => [
+                "_item9_", "_item10_", "_item11_"
+            ],
+            'score_sleep_anxiety'              => [
+                "_item5_", "_item7_", "_item8_", "_item21_"
+            ],
+            'score_night_wakings'              => [
+                "_item16_", "_item24_", "_item25_"
+            ],
+            'score_parasomnias'                => [
+                "_item12_", "_item13_", "_item14_", "_item15_", "_item17_", "_item22_", "_item23_"
+            ],
+            'score_sleep_disordered_breathing' => [
+                "_item18_", "_item19_", "_item20_"
+            ],
+            'score_daytime_sleepiness'         => [
+                "_item26_",  "_item27_", "_item28_", "_item29_", "_item30_", "_item31_", "_item32", "_item33"
+            ],
+        ];
 
         foreach ($subscale_questions as $subscale => $questions) {
+            $score[$subscale] = 0;
             foreach ($questions as $question) {
                 foreach ($abbreviated_questions as $aq) {
                     if (strpos($aq, $question) !== false && strpos($aq, 'problem') === false) {
+                        if (!isset($record[$aq]) || is_null($record[$aq])) {
+                            $score[$subscale] = 'Unknown (not enough data)'; 
+                            break(2);
+                        }
                         $score[$subscale] += $record[$aq];
-
                     }
                 }
             }
         }
 
-        $score['total_score'] = 0;
-
-        foreach ($abbreviated_questions as  $aq) {
-            $score['total_score'] += $record[$aq];
+        $score['score_total'] = 0;
+        foreach ($abbreviated_questions as $aq) {
+            if (!isset($record[$aq]) || is_null($record[$aq])) {
+                $score['score_total'] = 'Unknown (not enough data)';
+                break;
+            }
+            $score['score_total'] += $record[$aq];
         }
 
         $result = $db->update($this->table, $score, array("CommentID" => $this->getCommentID()));
