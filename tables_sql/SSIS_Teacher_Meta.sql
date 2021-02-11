@@ -4,7 +4,3 @@ INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_num
 INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('SSIS_Teacher','SSIS_Teacher_page3', "Page 3", 3);
 INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('SSIS_Teacher','SSIS_Teacher_page4', "Page 4", 4);
 INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('SSIS_Teacher','SSIS_Teacher_page5', "Page 5", 5);
-
-
-
-
