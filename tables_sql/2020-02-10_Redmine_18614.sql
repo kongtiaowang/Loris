@@ -1,0 +1,2 @@
+ALTER TABLE TSI_SA ADD `enrolled_in_other_studies` enum('yes','no','not_answered') default NULL AFTER `sibling_live_in_home_10`;
+ALTER TABLE TSI_SA ADD `other_studies_list` varchar(255) default NULL AFTER `enrolled_in_other_studies`;

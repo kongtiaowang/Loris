@@ -27,50 +27,59 @@ class NDB_BVL_Instrument_TSI_SA extends NDB_BVL_Instrument
 
     use instrument_validator;
 
-    var $ValidityEnabled = false;
+    var $ValidityEnabled  = false;
     var $ValidityRequired = false;
 
-    var $scoreLabels = array(
-        'adjusted_income'
-    );
+    var $scoreLabels = array('adjusted_income');
 
     /**
      * Sets up basic data, such as the LorisForm object, and so on.
      *
-     * @param string $commentID the CommentID identifying the data to load
-     * @param string $page if a multipage form, the page to show
+     * @param  string $commentID the CommentID identifying the data to load
+     * @param  string $page      if a multipage form, the page to show
      * @return void
      * @access public
      */
-    function setup(?string $commentID = NULL, ?string $page = NULL): void
+    function setup(?string $commentID = null, ?string $page = null): void
     {
         $this->formType = "XIN";
-        $this->form = new LorisForm('TSI_SA');
-        $this->page = $page;            // page label (number or
+        $this->form     = new LorisForm('TSI_SA');
+        $this->page     = $page;            // page label (number or
         // string - used by user-defined child classes)
         // set the object properties
         $this->testName = "TSI_SA";           // test_names.Test_name
-        $this->table = 'TSI_SA';             // name of table containing
+        $this->table    = 'TSI_SA';             // name of table containing
         // data keyed by commentID
         $this->commentID = $commentID;
         //The array of dates/timestamps to convert to database dates/timestamps
         //Any LorisForm date elements must be listed here
-        $this->dateTimeFields = array("Date_taken", "sibling_dob_1", "sibling_dob_2", "sibling_dob_3", "sibling_dob_4",
-            "sibling_dob_5", "sibling_dob_6", "sibling_dob_7", "sibling_dob_8", "sibling_dob_9", "sibling_dob_10");
+        $this->dateTimeFields    = array(
+                                    "Date_taken",
+                                    "sibling_dob_1",
+                                    "sibling_dob_2",
+                                    "sibling_dob_3",
+                                    "sibling_dob_4",
+                                    "sibling_dob_5",
+                                    "sibling_dob_6",
+                                    "sibling_dob_7",
+                                    "sibling_dob_8",
+                                    "sibling_dob_9",
+                                    "sibling_dob_10",
+                                   );
         $this->_requiredElements = array(
-            'CommentID',
-            'Date_taken',
-            'Examiner',
-        );
-        $config = NDB_Config::singleton();
+                                    'CommentID',
+                                    'Date_taken',
+                                    'Examiner',
+                                   );
+        $config            = NDB_Config::singleton();
         $this->dateOptions = array(
-            'language' => 'en',
-            'format' => 'YMd',
-            'minYear' => $config->getSetting('startYear'),
-            'maxYear' => $config->getSetting('endYear'),
-            'addEmptyOption' => true,
-            'emptyOptionValue' => null,
-        );
+                              'language'         => 'en',
+                              'format'           => 'YMd',
+                              'minYear'          => $config->getSetting('startYear'),
+                              'maxYear'          => $config->getSetting('endYear'),
+                              'addEmptyOption'   => true,
+                              'emptyOptionValue' => null,
+                             );
         // setup the form
         $this->_setupForm();
     }
@@ -138,14 +147,16 @@ class NDB_BVL_Instrument_TSI_SA extends NDB_BVL_Instrument
         // leave it as NULL
         if (count($invalidFields) == 0) {
             $scores['adjusted_income'] = $this->_getAdjustedIncome(
-                $record['household_ses_1'], $record['zip_code_1']
+                $record['household_ses_1'],
+                $record['zip_code_1']
             );
 
             // When the parents are not living together, compute the mean of
             // both adjusted incomes
             if (isset($record['same_home']) && $record['same_home'] == 'no') {
-                $adjustedIncome2 = $this->_getAdjustedIncome(
-                    $record['household_ses_2'], $record['zip_code_2']
+                $adjustedIncome2           = $this->_getAdjustedIncome(
+                    $record['household_ses_2'],
+                    $record['zip_code_2']
                 );
                 $scores['adjusted_income'] = ($scores['adjusted_income'] + $adjustedIncome2) / 2;
             }
@@ -164,7 +175,7 @@ class NDB_BVL_Instrument_TSI_SA extends NDB_BVL_Instrument
     {
         $realValuesOnForm = count($this->form->getSubmitValues()) == 0
             ? $defaults : $this->form->getSubmitValues();
-        $invalidFields = $this->_getInvalidFieldsForAdjustedIncome($realValuesOnForm);
+        $invalidFields    = $this->_getInvalidFieldsForAdjustedIncome($realValuesOnForm);
         if (count($invalidFields) != 0) {
             $errorMessages = array_values($invalidFields);
             $defaults['adjusted_income'] = "Not computed: $errorMessages[0]";
@@ -188,32 +199,32 @@ class NDB_BVL_Instrument_TSI_SA extends NDB_BVL_Instrument
     {
         $midPoint = 0;
         switch ($income) {
-            case "less_than_25K":
-                $midPoint = 12500;
-                break;
-            case "25K-35K"      :
-                $midPoint = 30000;
-                break;
-            case "35K-50K"      :
-                $midPoint = 42750;
-                break;
-            case "50K-75K"      :
-                $midPoint = 62500;
-                break;
-            case "75K-100K"     :
-                $midPoint = 87500;
-                break;
-            case "100K-150K"    :
-                $midPoint = 125000;
-                break;
-            case "150K-200K"    :
-                $midPoint = 175000;
-                break;
-            case "over_200K"    :
-                $midPoint = 200000;
-                break;
-            default             :
-                throw new LorisException("Cannot compute adjusted income: unexpected income $income");
+        case "less_than_25K":
+            $midPoint = 12500;
+            break;
+        case "25K-35K"      :
+            $midPoint = 30000;
+            break;
+        case "35K-50K"      :
+            $midPoint = 42750;
+            break;
+        case "50K-75K"      :
+            $midPoint = 62500;
+            break;
+        case "75K-100K"     :
+            $midPoint = 87500;
+            break;
+        case "100K-150K"    :
+            $midPoint = 125000;
+            break;
+        case "150K-200K"    :
+            $midPoint = 175000;
+            break;
+        case "over_200K"    :
+            $midPoint = 200000;
+            break;
+        default             :
+            throw new LorisException("Cannot compute adjusted income: unexpected income $income");
         }
 
         $medianIncome = $this->_getMedianIncome($zipCode);
@@ -240,7 +251,7 @@ class NDB_BVL_Instrument_TSI_SA extends NDB_BVL_Instrument
      */
     function _getMedianIncome($zipCode)
     {
-        $db =& Database::singleton();
+        $db  =& Database::singleton();
         $row = $db->pselectRow(
             "SELECT MedianIncome FROM median_income WHERE ZipCode=:zip",
             array('zip' => $zipCode)
@@ -268,9 +279,9 @@ class NDB_BVL_Instrument_TSI_SA extends NDB_BVL_Instrument
     {
         $invalidFields = array();
 
-        #-----------------------------------------------------------------#
-        # SES and zip code of household 1 have to be defined all the time #
-        #-----------------------------------------------------------------#
+        // -----------------------------------------------------------------#
+        // SES and zip code of household 1 have to be defined all the time #
+        // -----------------------------------------------------------------#
         if (!$this->_isValidForAdjustedIncome($values, 'household_ses_1')) {
             $invalidFields['household_ses_1'] = "the income for household 1 is unknown";
         }
@@ -278,10 +289,10 @@ class NDB_BVL_Instrument_TSI_SA extends NDB_BVL_Instrument
             $invalidFields['zip_code_1'] = "the zip code for household 1 is unknown";
         }
 
-        #-----------------------------------------------------------------#
-        # SES and zip code of household 2 have to be defined only if the  #
-        # parents do not live in the same home                            #
-        #-----------------------------------------------------------------#
+        // -----------------------------------------------------------------#
+        // SES and zip code of household 2 have to be defined only if the  #
+        // parents do not live in the same home                            #
+        // -----------------------------------------------------------------#
         if (isset($values['same_home']) && $values['same_home'] == 'no') {
             if (!$this->_isValidForAdjustedIncome($values, 'household_ses_2')) {
                 $invalidFields['household_ses_2'] = "the income for household 2 is unknown";
@@ -295,10 +306,10 @@ class NDB_BVL_Instrument_TSI_SA extends NDB_BVL_Instrument
             return $invalidFields;
         }
 
-        #--------------------------------------------------------#
-        # Checks that we have the median income associated to    #
-        # zip code 1                                             #
-        #--------------------------------------------------------#
+        // --------------------------------------------------------#
+        // Checks that we have the median income associated to    #
+        // zip code 1                                             #
+        // --------------------------------------------------------#
         $medianIncome = $this->_getMedianIncome($values['zip_code_1']);
         if (is_null($medianIncome)) {
             $invalidFields['zip_code_1'] = "zip code " . $values['zip_code_1'] . " is invalid";
@@ -306,11 +317,11 @@ class NDB_BVL_Instrument_TSI_SA extends NDB_BVL_Instrument
             $invalidFields['zip_code_1'] = "Median income for zip code " . $values['zip_code_1'] . " is unknown";
         }
 
-        #--------------------------------------------------------#
-        # Checks that we have the median income associated to    #
-        # zip code 2 only if the parents are not living in the   #
-        # same household                                         #
-        #--------------------------------------------------------#
+        // --------------------------------------------------------#
+        // Checks that we have the median income associated to    #
+        // zip code 2 only if the parents are not living in the   #
+        // same household                                         #
+        // --------------------------------------------------------#
         if (isset($values['same_home']) && $values['same_home'] == 'no') {
             $medianIncome = $this->_getMedianIncome($values['zip_code_2']);
             if (is_null($medianIncome)) {
@@ -348,13 +359,13 @@ class NDB_BVL_Instrument_TSI_SA extends NDB_BVL_Instrument
         $this->form->addElement('header', null, "Identifying Information");
         $this->form->addElement('header', null, "<h4>This type of identifying information should not be entered in the database.</h4>");
         $non_asked_subject_questions = array(
-            "Subject's Name:",
-            "Subject ID:",
-            "Date of Contact:",
-            "Date of Birth:",
-            "Examiner:",
-            "Subject's Sex: $this->indent Subject's Age (in yr/mo):",
-        );
+                                        "Subject's Name:",
+                                        "Subject ID:",
+                                        "Date of Contact:",
+                                        "Date of Birth:",
+                                        "Examiner:",
+                                        "Subject's Sex: $this->indent Subject's Age (in yr/mo):",
+                                       );
         foreach ($non_asked_subject_questions as $field) {
             if ($field == "Date of Contact:") {
                 $this->addDateElement("contact", $field);
@@ -362,34 +373,34 @@ class NDB_BVL_Instrument_TSI_SA extends NDB_BVL_Instrument
                 $this->form->addElement('static', null, $field);
             }
         }
-        $yes_no = array(
-            null => "",
-            "yes" => "Yes",
-            "no" => "No",
-            "not_answered" => "Not Answered",
-        );
+        $yes_no            = array(
+                              null           => "",
+                              "yes"          => "Yes",
+                              "no"           => "No",
+                              "not_answered" => "Not Answered",
+                             );
         $education_choices = array(
-            null => "",
-            "not_answered" => "Not Answered",
-            "some_hs" => "Some High School",
-            "hs" => "High School",
-            "some_college_2yr_degree" => "Some College/2yr. Degree",
-            "college_degree" => "College Degree",
-            "some_grad_school" => "Some Graduate School",
-            "grad_degree" => "Graduate Degree",
-        );
-        $ses_income = array(
-            null => "",
-            "less_than_25K" => "less than $24,999",
-            "25K-35K" => "$25,000 - 34,999",
-            "35K-50K" => "$35,000 - 49,999",
-            "50K-75K" => "$50,000 - 74,999",
-            "75K-100K" => "$75,000 - 99,999",
-            "100K-150K" => "$100,000 - 149,999",
-            "150K-200K" => "$150,000 - 199,000",
-            "over_200K" => "over $200,000",
-            "not_answered" => "Not Answered",
-        );
+                              null                      => "",
+                              "not_answered"            => "Not Answered",
+                              "some_hs"                 => "Some High School",
+                              "hs"                      => "High School",
+                              "some_college_2yr_degree" => "Some College/2yr. Degree",
+                              "college_degree"          => "College Degree",
+                              "some_grad_school"        => "Some Graduate School",
+                              "grad_degree"             => "Graduate Degree",
+                             );
+        $ses_income        = array(
+                              null            => "",
+                              "less_than_25K" => "less than $24,999",
+                              "25K-35K"       => "$25,000 - 34,999",
+                              "35K-50K"       => "$35,000 - 49,999",
+                              "50K-75K"       => "$50,000 - 74,999",
+                              "75K-100K"      => "$75,000 - 99,999",
+                              "100K-150K"     => "$100,000 - 149,999",
+                              "150K-200K"     => "$150,000 - 199,000",
+                              "over_200K"     => "over $200,000",
+                              "not_answered"  => "Not Answered",
+                             );
         $this->form->addElement('header', null, "Parent's Information:");
         $this->form->addElement("select", "same_home", "Parents living in the same home?", $yes_no);
         $this->form->addElement("select", "divorced_or_separated", "Parents divorced or separated?", $yes_no);
@@ -406,24 +417,24 @@ class NDB_BVL_Instrument_TSI_SA extends NDB_BVL_Instrument
         $this->form->addElement('static', null, "<BR><BR>");
 
         $days_choices = array(
-            null => "",
-            "0" => "0",
-            "0.5" => "0.5",
-            "1" => "1",
-            "1.5" => "1.5",
-            "2" => "2",
-            "2.5" => "2.5",
-            "3" => "3",
-            "3.5" => "3.5",
-            "4" => "4",
-            "4.5" => "4.5",
-            "5" => "5",
-            "5.5" => "5.5",
-            "6" => "6",
-            "6.5" => "6.5",
-            "7" => "7",
-            "not_answered" => "Not Answered",
-        );
+                         null           => "",
+                         "0"            => "0",
+                         "0.5"          => "0.5",
+                         "1"            => "1",
+                         "1.5"          => "1.5",
+                         "2"            => "2",
+                         "2.5"          => "2.5",
+                         "3"            => "3",
+                         "3.5"          => "3.5",
+                         "4"            => "4",
+                         "4.5"          => "4.5",
+                         "5"            => "5",
+                         "5.5"          => "5.5",
+                         "6"            => "6",
+                         "6.5"          => "6.5",
+                         "7"            => "7",
+                         "not_answered" => "Not Answered",
+                        );
 
         $this->form->addElement("select", "household_ses_1", "Household SES 1 (or combined):", $ses_income);
         $this->addTextElement("zip_code_1", "$this->indent Household Zip Code:");
@@ -451,12 +462,12 @@ class NDB_BVL_Instrument_TSI_SA extends NDB_BVL_Instrument
         $this->form->addElement('static', null, "Parent 2 Address (if 2 households):");
         $this->form->addElement('header', null, "Proband");
         $this->form->addElement('static', null, "Name:");
-//        $this->form->addText('subject_firstname', "First name");
-//        $this->XINRegisterRule("subject_firstname", array("subject_firstname{@}=={@}NEVER_REQUIRED"));
-//        $this->form->addText('subject_middlename', "Middle name");
-//        $this->XINRegisterRule("subject_middlename", array("subject_middlename{@}=={@}NEVER_REQUIRED"));
-//        $this->form->addText('subject_lastname', "Last name");
-//        $this->XINRegisterRule("subject_lastname", array("subject_lastname{@}=={@}NEVER_REQUIRED"));
+        //        $this->form->addText('subject_firstname', "First name");
+        //        $this->XINRegisterRule("subject_firstname", array("subject_firstname{@}=={@}NEVER_REQUIRED"));
+        //        $this->form->addText('subject_middlename', "Middle name");
+        //        $this->XINRegisterRule("subject_middlename", array("subject_middlename{@}=={@}NEVER_REQUIRED"));
+        //        $this->form->addText('subject_lastname', "Last name");
+        //        $this->XINRegisterRule("subject_lastname", array("subject_lastname{@}=={@}NEVER_REQUIRED"));
         $this->form->addSelect('subject_gender', "Gender:", array(null => "", "m" => "M", "f" => "F"));
         $this->XINRegisterRule("subject_gender", array("subject_gender{@}=={@}NEVER_REQUIRED"));
         $this->form->addSelect('subject_living_in_home', "Living in the home?", array(null => "", "y" => "Y", "n" => "N"));
@@ -492,8 +503,9 @@ class NDB_BVL_Instrument_TSI_SA extends NDB_BVL_Instrument
             $this->addGroup($group, "sibling_group_{$i}", null, $this->_GUIDelimiter, false);
             unset($group);
         }
-        $this->form->addElement('static', null, "Enrolled in any other Research Studies?");
-        $this->form->addElement('static', null, "If yes, list:");
+        $this->form->addElement('select', "enrolled_in_other_studies", "Enrolled in any other Research Studies?", $yes_no);
+        $this->form->addElement('text', "other_studies_list", "$this->indent<i>If yes, list:</i>");
+        $this->XINRegisterRule("other_studies_list", array("enrolled_in_other_studies{@}=={@}yes"), "Required.");
         $this->form->addElement('header', null, "Developmental Factors Younger Sibling SUBJECT:");
         $this->form->addElement('select', "neurological_problems", "Any specific neurological problems in SUBJECT?", $yes_no);
         $this->form->addElement('text', "neurological_problems_list", "$this->indent<i>List:</i>");
@@ -556,7 +568,7 @@ class NDB_BVL_Instrument_TSI_SA extends NDB_BVL_Instrument
 
         // If the parents are not living together
         if ($values['same_home'] == 'no') {
-            $zipCode2Unset = !isset($values['zip_code_2']) || $values['zip_code_2'] == '';
+            $zipCode2Unset       = !isset($values['zip_code_2']) || $values['zip_code_2'] == '';
             $zipCode2StatusUnset = !isset($values['zip_code_2_status']) || $values['zip_code_2_status'] == '';
 
             // Checks that zip_code_2 was answered
