@@ -102,7 +102,103 @@ class NDB_BVL_Instrument_SEQ3 extends NDB_BVL_Instrument
         $this->form->addElement('static', null, "<i><h3>*Please fill this form out with regard to your child who has enrolled in our study, NOT their older sibling with autism</i></h3>");
 
         $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
+
+
+        //SCORE HEADER 1 START
+        $this->form->addElement('header', null, "SEQ Sensory Response Pattern Scores (4 Factor Model including HYPER, HYPO, SIRS, EP):");
+
+
+        //scoring column headers
+        $group[] = $this->form->createElement('static', "total_score", null, null);
+        $this->form->addGroup($group, 'score_header_group', "<strong>Scale</strong>", $this->_GUIDelimiter, FALSE);
+        unset($group);
+
+        $domains = array("HYPER" => "Hyperresponsiveness", "HYPO" => "Hyporesponsiveness",
+            "SIRS" => "SIRS (Sensory Interests, Repetitions, and Seeking
+Behavior)", "EP" => "Enhanced Perception",
+        );
+
+
+        $columnHeaders = array("total_score" => "Total Score");
+
+        foreach ($columnHeaders as $field => $label) {
+            $columnHeaders[$field] .= "   ";
+        }
+        $this->localDefaults = array_merge($this->localDefaults, $columnHeaders);
+
+        foreach ($domains as $field => $label) {
+            foreach ($columnHeaders as $scoreField => $scoreLabel) {
+
+                $group[] = $this->form->createElement('static', "{$field}_{$scoreField}", null, null);
+            }
+            $this->form->addGroup($group, "{$label}_score_group", $label, $this->_GUIDelimiter, FALSE);
+            unset($group);
+
+
+        }
+        //SCORE HEADER 1 FINISH
+        //SCORE HEADER 2 START
+        $this->form->addElement('header', null, "SEQ Context Scores (Social/Nonsocial) ");
+
+
+        //scoring column headers
+        $group[] = $this->form->createElement('static', "total_score", null, null);
+        $this->form->addGroup($group, 'score_header_group_1', "<strong>Scale</strong>", $this->_GUIDelimiter, FALSE);
+        unset($group);
+        $domains = array("SOCIAL_SENSORY" => "SOCIAL sensory responsiveness",
+            "NONSOCIAL_SENSORY" => "NONSOCIAL sensory responsiveness"
+        );
+        $columnHeaders = array("total_score" => "Total Score");
+
+        foreach ($columnHeaders as $field => $label) {
+            $columnHeaders[$field] .= "   ";
+        }
+        $this->localDefaults = array_merge($this->localDefaults, $columnHeaders);
+
+        foreach ($domains as $field => $label) {
+            foreach ($columnHeaders as $scoreField => $scoreLabel) {
+
+                $group[] = $this->form->createElement('static', "{$field}_{$scoreField}", null, null);
+            }
+            $this->form->addGroup($group, "{$label}_score_group_1", $label, $this->_GUIDelimiter, FALSE);
+            unset($group);
+
+
+        }
+        //SCORE HEADER 2 FINISH
+        //SCORE HEADER 3 START
+        $this->form->addElement('header', null, "SEQ Sensory Modality Scores:");
+
+
+        //scoring column headers
+        $group[] = $this->form->createElement('static', "total_score", null, null);
+        $this->form->addGroup($group, 'score_header_group_2', "<strong>Scale</strong>", $this->_GUIDelimiter, FALSE);
+        unset($group);
+        $domains = array("Auditory" => "Auditory",
+            "Visual" => "Visual", "Tactile" => "Tactile",
+            "Gustatory_or_Oflactory" => "Gustatory/Olfactory",
+            "Vestibular" => "Vestibular/Proprioception"
+        );
+        $columnHeaders = array("total_score" => "Total Score");
+
+        foreach ($columnHeaders as $field => $label) {
+            $columnHeaders[$field] .= "   ";
+        }
+        $this->localDefaults = array_merge($this->localDefaults, $columnHeaders);
+
+        foreach ($domains as $field => $label) {
+            foreach ($columnHeaders as $scoreField => $scoreLabel) {
+
+                $group[] = $this->form->createElement('static', "{$field}_{$scoreField}", null, null);
+            }
+            $this->form->addGroup($group, "{$label}_score_group_2", $label, $this->_GUIDelimiter, FALSE);
+            unset($group);
+
+
+        }
+        //SCORE HEADER 3 FINISH
     }
+
 
     /**
     * Generates the first page of the form.
@@ -658,6 +754,8 @@ function ageValidator($array,$string, &$errors)
 
     }
 }
+
+
 
 }
 ?>
