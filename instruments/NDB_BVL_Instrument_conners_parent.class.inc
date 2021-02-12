@@ -430,10 +430,10 @@ class NDB_BVL_Instrument_conners_parent extends NDB_BVL_Instrument
         $age_months = $age['year'] * 12 + $age['mon'] + ($age['day']/30);
         $age_years=$age_months/12;
         $age_years=floor($age_years);
-        if($age_years>11 || $age_years<6)
+        if($age_years>18 || $age_years<6)
         {
             $valid="NO";
-            echo "T score unavailable...T score is applicable only for ages between 6 to 11";
+            echo "T score unavailable...T score is applicable only for ages between 6 to 18";
             echo "\n";
         }
         $query_gender = "SELECT Sex FROM candidate as c, session as s, flag as f, $this->table as t WHERE t.CommentID = '$this->commentID' 
