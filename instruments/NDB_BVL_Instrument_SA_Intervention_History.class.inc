@@ -195,63 +195,58 @@ class NDB_BVL_Instrument_SA_Intervention_History extends NDB_BVL_Instrument
                                  estimate. As with all the information you provide to us, your responses will remain
                                  confidential and will be used only for the purposes of the study.<br><br></h4>"
         );
-        $yesNoOptions    =
-            array(
-             null        => "",
-             "yes"       => "Yes",
-             "no"        => "No",
-             "dont_know" => "Don't know",
-            );
-        $minutes_array   =
-            array(
-             null => "",
-             30   => "30",
-             60   => "60",
-             90   => "90",
-             120  => "120",
-             180  => "180",
-            );
-        $num_times_array =
-            array(
-             null => "",
-             1    => "1",
-             2    => "2",
-             3    => "3",
-             4    => "4",
-             5    => "5",
-             6    => "6",
-             7    => "7",
-            );
-        $years_array     =
-            array(
-             null => "",
-             0    => "0",
-             1    => "1",
-             2    => "2",
-             3    => "3",
-             4    => "4",
-             5    => "5",
-             6    => "6",
-             7    => "7",
-             8    => "8",
-             9    => "9",
-             10   => "10",
-            );
-        $months_array    =
-            array(
-             null => "",
-             1    => "1",
-             2    => "2",
-             3    => "3",
-             4    => "4",
-             5    => "5",
-             6    => "6",
-             7    => "7",
-             8    => "8",
-             9    => "9",
-             10   => "10",
-             11   => "11",
-            );
+        $yesNoOptions    = array(
+                            null        => "",
+                            "yes"       => "Yes",
+                            "no"        => "No",
+                            "dont_know" => "Don't know",
+                           );
+        $minutes_array   = array(
+                            null => "",
+                            30   => "30",
+                            60   => "60",
+                            90   => "90",
+                            120  => "120",
+                            180  => "180",
+                           );
+        $num_times_array = array(
+                            null => "",
+                            1    => "1",
+                            2    => "2",
+                            3    => "3",
+                            4    => "4",
+                            5    => "5",
+                            6    => "6",
+                            7    => "7",
+                           );
+        $years_array     = array(
+                            null => "",
+                            0    => "0",
+                            1    => "1",
+                            2    => "2",
+                            3    => "3",
+                            4    => "4",
+                            5    => "5",
+                            6    => "6",
+                            7    => "7",
+                            8    => "8",
+                            9    => "9",
+                            10   => "10",
+                           );
+        $months_array    = array(
+                            null => "",
+                            1    => "1",
+                            2    => "2",
+                            3    => "3",
+                            4    => "4",
+                            5    => "5",
+                            6    => "6",
+                            7    => "7",
+                            8    => "8",
+                            9    => "9",
+                            10   => "10",
+                            11   => "11",
+                           );
         // QUESTION 1 #######
         $this->addSelect(
             "birth_to_three_services",
@@ -649,12 +644,11 @@ class NDB_BVL_Instrument_SA_Intervention_History extends NDB_BVL_Instrument
     }
     function _page2()
     {
-        $yesNoOptions =
-            array(
-             null  => "",
-             "yes" => "Yes",
-             "no"  => "No",
-            );
+        $yesNoOptions = array(
+                         null  => "",
+                         "yes" => "Yes",
+                         "no"  => "No",
+                        );
         // QUESTION 4 #######
         $this->addSelect(
             "support_in_school",
@@ -697,23 +691,22 @@ class NDB_BVL_Instrument_SA_Intervention_History extends NDB_BVL_Instrument
                          was provided. If '12' is selected for 'Type of Intervention', please describe it
                          further in 'Description'</h4>"
         );
-        $type_of_intervention =
-            array(
-             null => "",
-             1    => "1. ABA/Lovaas/naturalistic behavioral (PRT, ESDM)",
-             2    => "2. Counseling/psychological",
-             3    => "3. Developmental (RDI, Floortime)",
-             4    => "4. Occupational therapy",
-             5    => "5. Physical therapy",
-             6    => "6. Recreational",
-             7    => "7. Sensory/sensory integration",
-             8    => "8. Social skills in training",
-             9    => "9. Speech language",
-             10   => "10. TEACCH",
-             11   => "11. Special education (for non-specific in-school services",
-             12   => "12. Other (biomedical/nutritional/alternative/)",
-             13   => "13. N/A",
-            );
+        $type_of_intervention = array(
+                                 null => "",
+                                 1    => "1. ABA/Lovaas/naturalistic behavioral (PRT, ESDM)",
+                                 2    => "2. Counseling/psychological",
+                                 3    => "3. Developmental (RDI, Floortime)",
+                                 4    => "4. Occupational therapy",
+                                 5    => "5. Physical therapy",
+                                 6    => "6. Recreational",
+                                 7    => "7. Sensory/sensory integration",
+                                 8    => "8. Social skills in training",
+                                 9    => "9. Speech language",
+                                 10   => "10. TEACCH",
+                                 11   => "11. Special education (for non-specific in-school services",
+                                 12   => "12. Other (biomedical/nutritional/alternative/)",
+                                 13   => "13. N/A",
+                                );
         $hours_array          = array(null => "");
         for ($i=0; $i <= 50; $i++) {
             array_push($hours_array, $i);
@@ -852,8 +845,7 @@ class NDB_BVL_Instrument_SA_Intervention_History extends NDB_BVL_Instrument
                 $this->addTextAreaElement("q8_specify", "if YES, please specify", array("did_child_receive_medical_therapies_autism{@}=={@}yes"), "If Yes, please specify:");
             } elseif ($name == "do_you_continue_enrollment_intervention") {
                 $this->addSelect($name, $label, self::YES_NO_NA_OPTIONS);
-            }
-            elseif ($name == "if_checked_9_please_check") {
+            } elseif ($name == "if_checked_9_please_check") {
                 $this->addSelect($name, $label, self::CHILD_ENROLLMENT_OPTIONS, array("multiple"));
                 $this->XINRegisterRule($name, array("do_you_continue_enrollment_intervention{@}=={@}yes"), "Required");
             }
@@ -882,8 +874,6 @@ class NDB_BVL_Instrument_SA_Intervention_History extends NDB_BVL_Instrument
                                "how_many_hours_child_intervention",
                                "did_child_receive_complementary_therapies_autism",
                                "did_child_receive_medical_therapies_autism",
-                               "do_you_continue_enrollment_intervention",
-                               "if_checked_9_please_check",
                               );
 
         $early_intervention_services = array(
@@ -892,18 +882,6 @@ class NDB_BVL_Instrument_SA_Intervention_History extends NDB_BVL_Instrument
                                        );
 
         foreach ($required_questions as $name) {
-            //            if ($name != "if_checked_9_please_check" && $name != "how_many_hours_child_intervention") {
-            //                if ($values[$name] == null || $values[$name] == "") {
-            //                    $errors[$name] = 'Required';
-            //                }
-            //            }
-            if ($name == "if_checked_9_please_check") {
-                if ($values["do_you_continue_enrollment_intervention"] == "no") {
-                    if ($values['if_checked_9_please_check'] != "" || $values['if_checked_9_please_check'] != null) {
-                        $errors["if_checked_9_please_check"] = 'This must be left blank because you answered no above.';
-                    }
-                }
-            }
             if ($name == "did_child_receive_early_intervention") {
                 if ($values[$name] == "no") {
                     foreach ($early_intervention_services as $question) {
