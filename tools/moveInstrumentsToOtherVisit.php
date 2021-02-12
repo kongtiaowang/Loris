@@ -103,7 +103,9 @@ $notMovedComments = [];
 foreach ($fromInstruments as $fromInstrument) {
     $fromInstrumentStatus = new NDB_BVL_InstrumentStatus();
     $fromInstrumentStatus->select($fromInstrument['CommentID']);
-    if (is_null($fromInstrumentStatus->getDataEntryStatus())) {
+
+    // Empty instruments (i.e non-surveys) are not moved, but empty surveys are.
+    if (is_null($fromInstrumentStatus->getDataEntryStatus()) && !$fromInstrument['isDirectEntry']) {
         $notMovedComments[] = "-- Instrument {$fromInstrument['Test_name']} has not "
                             . "been filled out yet. Skipping.\n";
         continue;
