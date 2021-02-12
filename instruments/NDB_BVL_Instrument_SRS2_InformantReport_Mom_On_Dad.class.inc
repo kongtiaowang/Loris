@@ -551,7 +551,7 @@ class NDB_BVL_Instrument_SRS2_InformantReport_Mom_On_Dad extends NDB_BVL_Instrum
             $score_grid_q30[$record['q30_upset_situations']],
             $score_grid_q40[$record['q40_imaginative']],
             $score_grid_q42[$record['q42_overly_sensitive']],
-            $score_grid_q44[$record['q44_chains_causation']],
+            $score_grid_q44[$record['q44_trouble_chains_causation']],
             $score_grid_q48[$record['q48_goodsense_humor']],
             $score_grid_q58[$record['q58_concentration_parts']],
             $score_grid_q59[$record['q59_suspicious_ofpeople']],
@@ -564,21 +564,21 @@ class NDB_BVL_Instrument_SRS2_InformantReport_Mom_On_Dad extends NDB_BVL_Instrum
             $score_grid_q16[$record['q16_avoideyecontact']],
             $score_grid_q18[$record['q18_difficulty_makingfriends']],
             $score_grid_q19[$record['q19_frustrated_conveyingideas']],
-            $score_grid_q21[$record['q21_imitate_actions']],
+            $score_grid_q21[$record['q21_imitate_actionsexpressions']],
             $score_grid_q22[$record['q22_interact_appropriately']],
             $score_grid_q26[$record['q26_offer_comfort']],
             $score_grid_q33[$record['q33_socially_awkward']],
             $score_grid_q35[$record['q35_trouble_keepingup']],
-            $score_grid_q36[$record['q36_difficulty_relating_adults']],
-            $score_grid_q37[$record['q37_difficulty_relating_peers']],
+            $score_grid_q36[$record['q36_difficulty_relating_family']],
+            $score_grid_q37[$record['q37_difficulty_relating_adults']],
             $score_grid_q38[$record['q38_respond_moodchange']],
             $score_grid_q41[$record['q41_wander_aimlessly']],
             $score_grid_q46[$record['q46_serious_facialexp']],
-            $score_grid_q47[$record['q47_laugh_inappropriately']],
+            $score_grid_q47[$record['q47_laugh_inappropriate']],
             $score_grid_q51[$record['q51_diff_directqstn']],
             $score_grid_q53[$record['q53_monotone_voice']],
             $score_grid_q55[$record['q55_invade_personalspace']],
-            $score_grid_q57[$record['q57_gets_teased']],
+            $score_grid_q57[$record['q57_isolate_myself']],
             $score_grid_q60[$record['q60_emotionally_distant']],
             $score_grid_q61[$record['q61_inflexible']],
 
@@ -589,11 +589,11 @@ class NDB_BVL_Instrument_SRS2_InformantReport_Mom_On_Dad extends NDB_BVL_Instrum
             $score_grid_q3[$record['q3_self_confident']],
             $score_grid_q6[$record['q6_rather_be_alone']],
             $score_grid_q9[$record['q9_overly_dependent']],
-            $score_grid_q11[$record['q11_has_selfconfidence']],
+            $score_grid_q11[$record['q11_have_selfconfidence']],
             $score_grid_q23[$record['q23_joingroups_activities']],
             $score_grid_q27[$record['q27_avoid_socialinteractions']],
             $score_grid_q34[$record['q34_avoid_emotionallyclose']],
-            $score_grid_q43[$record['q43_separates_easily']],
+            $score_grid_q43[$record['q43_enjoy_smalltalk']],
             $score_grid_q64[$record['q64_tense_socialsituations']],
             $score_grid_q65[$record['q65_staring_gazing']],
 
@@ -609,9 +609,9 @@ class NDB_BVL_Instrument_SRS2_InformantReport_Mom_On_Dad extends NDB_BVL_Instrum
             $score_grid_q29[$record['q29_odd_weird']],
             $score_grid_q31[$record['q31_cant_getmind_off']],
             $score_grid_q39[$record['q39_interested_toofew_topics']],
-            $score_grid_q49[$record['q49_wellat_tasks']],
+            $score_grid_q49[$record['q49_wellat_intellectualtasks']],
             $score_grid_q50[$record['q50_repetitive_behavior']],
-            $score_grid_q63[$record['q63_touching_unusual']],
+            $score_grid_q63[$record['q63_greeting_unusual']],
 
 
         );
@@ -643,21 +643,21 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         foreach ($scales as $field) {
             $field_raw_score = $scores[$field . '_score'];
             if($field_raw_score==0) {
-                $query_scores1 = "SELECT * FROM SRS2_SchoolAge_lookup WHERE form_relation ='SRS2_Parent' and 
-                sex='$gender'  AND (scale_raw_score ='$field_raw_score'  OR  '$field_raw_score' BETWEEN SUBSTRING_INDEX 
+                $query_scores1 = "SELECT * FROM SRS2_SchoolAge_lookup WHERE form_relation ='SRS2_Adult' and 
+                sex='M/F'  AND (scale_raw_score =$field_raw_score  OR  $field_raw_score BETWEEN SUBSTRING_INDEX 
                 (`scale_raw_score`,'-', 1) AND SUBSTRING_INDEX(`scale_raw_score`,'-', -1) ) AND scale='$field'";
                 $record_1 = $db->pselectRow($query_scores1, array());
             }
             else{
-                $query_scores1 = "SELECT * FROM SRS2_SchoolAge_lookup WHERE form_relation ='SRS2_Parent' and 
-                sex='$gender'  AND (scale_raw_score =$field_raw_score  OR  $field_raw_score BETWEEN SUBSTRING_INDEX 
+                $query_scores1 = "SELECT * FROM SRS2_SchoolAge_lookup WHERE form_relation ='SRS2_Adult' and 
+                sex='M/F'  AND (scale_raw_score =$field_raw_score  OR  $field_raw_score BETWEEN SUBSTRING_INDEX 
                 (`scale_raw_score`,'-', 1) AND SUBSTRING_INDEX(`scale_raw_score`,'-', -1) ) AND scale='$field'";
                 $record_1 = $db->pselectRow($query_scores1, array());
 
             }
             if (empty($record_1)) {
-                $max_range = "SELECT * FROM SRS2_SchoolAge_lookup WHERE form_relation ='SRS2_Parent' and 
-                 sex='$gender'  AND scale_raw_score like '%>=%' AND scale='$field'";
+                $max_range = "SELECT * FROM SRS2_SchoolAge_lookup WHERE form_relation ='SRS2_Adult' and 
+                 sex='M/F'  AND scale_raw_score like '%>=%' AND scale='$field'";
                 $max_range_array = $db->pselectRow($max_range, array());
                 if(empty($max_range_array))
                 {
