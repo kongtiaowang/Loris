@@ -254,7 +254,11 @@ class CouchDBDemographicsImporter {
             }
         }
 
-        $concatQuery = $fieldsInQuery . $tablesToJoin . " WHERE s.Active='Y' AND c.Active='Y' AND c.Entity_type != 'Scanner'";
+        $concatQuery = $fieldsInQuery . $tablesToJoin . " WHERE s.Active='Y' AND c.Active='Y' 
+        AND c.Entity_type != 'Scanner'
+        AND c.RegistrationCenterID NOT IN (1,8,9,10)
+        AND (ps.participant_status NOT IN (2,3,4) OR ps.participant_status IS NULL)
+        AND c.ProjectID NOT IN (5,6)";
         return $concatQuery;
     }
 
