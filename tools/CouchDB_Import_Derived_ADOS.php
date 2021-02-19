@@ -211,8 +211,12 @@ print "ADOSModule: $ADOSModule\n";
             " FROM flag f LEFT JOIN ". $ADOSModule ." i USING (CommentID)" .
             " LEFT JOIN session s ON (s.ID=f.SessionID)" .
             " LEFT JOIN candidate c USING (CandID) " .
+            " LEFT JOIN participant_status ps ON ( ps.Candid = c.Candid )" .
             "WHERE f.Test_name=:AM AND f.SessionID=:SID AND s.Active='Y'" .
-            " AND c.Active='Y' AND f.CommentID NOT LIKE 'DDE%'";
+            " AND c.Active='Y' AND f.CommentID NOT LIKE 'DDE%'" .
+            " AND c.RegistrationCenterID NOT IN (1,8,9,10)" .
+            " AND (ps.participant_status NOT IN (2,3,4) OR ps.participant_status IS NULL)".
+            " AND c.ProjectID NOT IN (5,6)";
 
 //        print "selectq: " . $selectq . "\n";
         $row = $this->SQLDB->pselectRow($selectq,
