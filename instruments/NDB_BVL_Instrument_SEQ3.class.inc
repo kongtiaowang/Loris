@@ -756,6 +756,362 @@ function ageValidator($array,$string, &$errors)
 }
 
 
+function score(): void
+{
 
+    //get the saved scores
+    $db =& Database::singleton();
+    $query = "SELECT * FROM $this->table WHERE CommentID = '$this->commentID'";
+    $record = $db->pselectRow($query, array());
+
+    $score_grid=array('never'=>1,'once_in_a_while'=>2,'
+    sometimes'=>3,'frequently'=>4,'always'=>5);
+
+    $Hyper_array=array(
+        $score_grid[$record['1_react_sensitively_to_sounds']],
+        $score_grid[$record['2_make_nosie_to_avoid_other_sounds']],
+        $score_grid[$record['9_bothered_by_everyday_sounds']],
+        $score_grid[$record['10_show_distress']],
+        $score_grid[$record['15_disturbed_by_bright_lights']],
+        $score_grid[$record['18_avoid_face_or_gaze_during_social_games']],
+        $score_grid[$record['36_dislike_cuddling_or_being_held']],
+        $score_grid[$record['38_avoid_touching_certain_textures']],
+        $score_grid[$record['40_trouble_adjusting_to_water_temperature']],
+        $score_grid[$record['42_dislike_being_in_water']],
+        $score_grid[$record['44_sensitive_to_bothered_by_sticky_material']],
+        $score_grid[$record['46_bothered_by_tags_or_seams']],
+        $score_grid[$record['47_bothered_by_tight_clothing']],
+        $score_grid[$record['49_show_distress_during_grooming`']],
+        $score_grid[$record['51_react_negatively_pull_away_when_touched`']],
+        $score_grid[$record['52_dislike_being_tickled']],
+        $score_grid[$record['54_react_negatively_to_haircuts']],
+        $score_grid[$record['59_refuse_new_foods_or_avoids_certain_foods']],
+        $score_grid[$record['61_sensitive_to_or_bothered_by_people_smell']],
+        $score_grid[$record['63_picky_eater']],
+        $score_grid[$record['72_refuse_food_they_like_if_mixed_with_another']],
+        $score_grid[$record['73_gag_in_response_to_certain_smells']],
+        $score_grid[$record['77_uneasy_or_dizzy_from_swing_merry_go_round_rocker']],
+        $score_grid[$record['81_avoid_escalators_elevators_or_other']],
+        $score_grid[$record['83_react_negatively_moved_quickly_tipped_backwards_spun_around']],
+        $score_grid[$record['87_trouble_looking_and_listening_same_time']],
+        $score_grid[$record['89_overwhelmed_in_places_a_lot_of_activity']],
+        $score_grid[$record['92_more_sensitive_to_social_touch']],
+        $score_grid[$record['95_avoid_toys_make_noise_and_light_up_same_time']],
+        $score_grid[$record['96_trouble_focusing_other_sounds_happening']],
+        $score_grid[$record['97_shut_down_when_too_much_stimulation']],
+    );
+$Hypo_array=array(
+    $score_grid[$record['4_ignore_loud_noises']],
+    $score_grid[$record['8_ignore_you_when_you_call_name']],
+    $score_grid[$record['14_trouble_distinguishing_between_sounds']],
+    $score_grid[$record['22_slow_to_notice_new_objects_or_toys']],
+    $score_grid[$record['23_slow_to_look_at_objects_near_them']],
+    $score_grid[$record['31_ignore_not_notice_someone_new_or_different']],
+    $score_grid[$record['34_trouble_distinguishing_visual_sensations']],
+    $score_grid[$record['43_ignore_or_not_notice_when_tap_shoulder']],
+    $score_grid[$record['53_slow_to_react_to_pain']],
+    $score_grid[$record['56_unaware_of_extreme_temperatures']],
+    $score_grid[$record['58_trouble_distinguishing_between_different_touch_sensations']],
+    $score_grid[$record['69_unaware_of_strong_unpleasant_smells_others_notice']],
+    $score_grid[$record['74_trouble_distinguishing_different_tastes_or_flavors']],
+    $score_grid[$record['82_unaware_of_moving_unstable_surfaces']],
+    $score_grid[$record['84_spin_self_around_without_becoming_dizzy']],
+    $score_grid[$record['86_trouble_distinguishing_movement_sensations']],
+    $score_grid[$record['91_confuse_which_sense_something_is_from']],
+    $score_grid[$record['94_increase_background_noise_to_improve_attention_to_activity']],
+
+);
+
+$Sirs_array=
+    array(
+        $score_grid[$record['7_fascinated_with_sounds']],
+        $score_grid[$record['11_fascinated_excited_by_others_singing']],
+        $score_grid[$record['16_fascinated_by_own_reflection_in_persons_eyes']],
+        $score_grid[$record['17_stare_at_lights_or_moving_objects']],
+        $score_grid[$record['19_fascinated_by_visual_effect_of_water']],
+        $score_grid[$record['21_fascinated_with_lights']],
+        $score_grid[$record['25_look_at_objects_using_side_vision']],
+        $score_grid[$record['27_watch_objects_they_move_rapidly']],
+        $score_grid[$record['28_fascinated_by_reflection_in_shiny_surfaces']],
+        $score_grid[$record['29_look_at_angles_or_corners_of_objects']],
+        $score_grid[$record['30_fascinated_by_flickering_or_scrolling_motions']],
+        $score_grid[$record['32_watch_hands_or_fingers_move_or_flicker']],
+        $score_grid[$record['37_crave_intense_firm_touch']],
+        $score_grid[$record['39_like_feeling_of_air_blowing']],
+        $score_grid[$record['41_crave_being_tickled']],
+        $score_grid[$record['45_fascinated_with_touch']],
+        $score_grid[$record['50_touch_or_rub_certain_surfaces_or_materials']],
+        $score_grid[$record['55_fascinated_with_textures_or_surfaces']],
+        $score_grid[$record['57_rub_wet_substances_on_smooth_surface']],
+        $score_grid[$record['60_smell_objects_or_toys_during_play']],
+        $score_grid[$record['62_put_objects_toys_non_food_items_in_mouth']],
+        $score_grid[$record['64_crave_foods_with_strong_taste']],
+        $score_grid[$record['65_fascinated_with_particular_taste']],
+        $score_grid[$record['67_fascinated_with_particular_smells']],
+        $score_grid[$record['68_mouth_suck_chew_hands_or_fingers']],
+        $score_grid[$record['71_lick_non_food_objects']],
+        $score_grid[$record['76_jump_rock_spin']],
+        $score_grid[$record['78_seek_physical_rough_housing_play']],
+        $score_grid[$record['79_enjoy_being_upside_down']],
+        $score_grid[$record['80_flaps_arms_or_hands_when_excited']],
+        $score_grid[$record['85_unusual_postures_with_hands_fingers_arms']],
+    );
+    $Ep_array= array(
+            $score_grid[$record['3_notice_sounds_in_environment_before_others']],
+            $score_grid[$record['5_make_accurate_impersonations']],
+            $score_grid[$record['6_demonstrates_perfect_pitch']],
+            $score_grid[$record['12_ability_to_copy_environmental_sounds']],
+            $score_grid[$record['20_notice_minor_changes_in_physical_environment']],
+            $score_grid[$record['24_notice_changes_in_visual_appearance_of_others']],
+            $score_grid[$record['33_visually_distracted_by_little_things_moving']],
+            $score_grid[$record['48_easily_find_objects_by_feel']],
+            $score_grid[$record['66_notice_smells_before_other_people']],
+            $score_grid[$record['70_taste_difference_between_different_brands_same_food']],
+            $score_grid[$record['88_report_certain_letters_or_numbers_particular_color']],
+            $score_grid[$record['90_event_in_sense_causes_feeling_in_different_sense']],
+
+        );
+    $Auditory_array= array(
+        $score_grid[$record['1_react_sensitively_to_sounds']],
+        $score_grid[$record['2_make_nosie_to_avoid_other_sounds']],
+        $score_grid[$record['3_notice_sounds_in_environment_before_others']],
+        $score_grid[$record['4_ignore_loud_noises']],
+        $score_grid[$record['5_make_accurate_impersonations']],
+        $score_grid[$record['6_demonstrates_perfect_pitch']],
+        $score_grid[$record['7_fascinated_with_sounds']],
+        $score_grid[$record['8_ignore_you_when_you_call_name']],
+        $score_grid[$record['9_bothered_by_everyday_sounds']],
+        $score_grid[$record['10_show_distress']],
+        $score_grid[$record['11_fascinated_excited_by_others_singing']],
+        $score_grid[$record['12_ability_to_copy_environmental_sounds']],
+        $score_grid[$record['14_trouble_distinguishing_between_sounds']],
+    );
+    $Visual_array= array(
+        $score_grid[$record['15_disturbed_by_bright_lights']],
+        $score_grid[$record['16_fascinated_by_own_reflection_in_persons_eyes']],
+        $score_grid[$record['17_stare_at_lights_or_moving_objects']],
+        $score_grid[$record['18_avoid_face_or_gaze_during_social_games']],
+        $score_grid[$record['19_fascinated_by_visual_effect_of_water']],
+        $score_grid[$record['20_notice_minor_changes_in_physical_environment']],
+        $score_grid[$record['21_fascinated_with_lights']],
+        $score_grid[$record['22_slow_to_notice_new_objects_or_toys']],
+        $score_grid[$record['23_slow_to_look_at_objects_near_them']],
+        $score_grid[$record['24_notice_changes_in_visual_appearance_of_others']],
+        $score_grid[$record['25_look_at_objects_using_side_vision']],
+        $score_grid[$record['27_watch_objects_they_move_rapidly']],
+        $score_grid[$record['28_fascinated_by_reflection_in_shiny_surfaces']],
+        $score_grid[$record['29_look_at_angles_or_corners_of_objects']],
+        $score_grid[$record['30_fascinated_by_flickering_or_scrolling_motions']],
+        $score_grid[$record['31_ignore_not_notice_someone_new_or_different']],
+        $score_grid[$record['32_watch_hands_or_fingers_move_or_flicker']],
+        $score_grid[$record['33_visually_distracted_by_little_things_moving']],
+        $score_grid[$record['34_trouble_distinguishing_visual_sensations']],
+    );
+    $Tactile_array= array(
+        $score_grid[$record['36_dislike_cuddling_or_being_held']],
+        $score_grid[$record['37_crave_intense_firm_touch']],
+        $score_grid[$record['38_avoid_touching_certain_textures']],
+        $score_grid[$record['39_like_feeling_of_air_blowing']],
+        $score_grid[$record['40_trouble_adjusting_to_water_temperature']],
+        $score_grid[$record['41_crave_being_tickled']],
+        $score_grid[$record['42_dislike_being_in_water']],
+        $score_grid[$record['43_ignore_or_not_notice_when_tap_shoulder']],
+        $score_grid[$record['44_sensitive_to_bothered_by_sticky_material']],
+        $score_grid[$record['45_fascinated_with_touch']],
+        $score_grid[$record['46_bothered_by_tags_or_seams']],
+        $score_grid[$record['47_bothered_by_tight_clothing']],
+        $score_grid[$record['48_easily_find_objects_by_feel']],
+        $score_grid[$record['49_show_distress_during_grooming']],
+        $score_grid[$record['50_touch_or_rub_certain_surfaces_or_materials']],
+        $score_grid[$record['51_react_negatively_pull_away_when_touched']],
+        $score_grid[$record['52_dislike_being_tickled']],
+        $score_grid[$record['53_slow_to_react_to_pain']],
+        $score_grid[$record['54_react_negatively_to_haircuts']],
+        $score_grid[$record['55_fascinated_with_textures_or_surfaces']],
+        $score_grid[$record['56_unaware_of_extreme_temperatures']],
+        $score_grid[$record['57_rub_wet_substances_on_smooth_surface']],
+        $score_grid[$record['58_trouble_distinguishing_between_different_touch_sensations']],
+    );
+
+    $Gustatory_array=array(
+        $score_grid[$record['59_refuse_new_foods_or_avoids_certain_foods']],
+        $score_grid[$record['60_smell_objects_or_toys_during_play']],
+        $score_grid[$record['61_sensitive_to_or_bothered_by_people_smell']],
+        $score_grid[$record['62_put_objects_toys_non_food_items_in_mouth']],
+        $score_grid[$record['63_picky_eater']],
+        $score_grid[$record['64_crave_foods_with_strong_taste']],
+        $score_grid[$record['65_fascinated_with_particular_taste']],
+        $score_grid[$record['66_notice_smells_before_other_people']],
+        $score_grid[$record['67_fascinated_with_particular_smells']],
+        $score_grid[$record['68_mouth_suck_chew_hands_or_fingers']],
+        $score_grid[$record['69_unaware_of_strong_unpleasant_smells_others_notice']],
+        $score_grid[$record['70_taste_difference_between_different_brands_same_food']],
+        $score_grid[$record['71_lick_non_food_objects']],
+        $score_grid[$record['72_refuse_food_they_like_if_mixed_with_another']],
+        $score_grid[$record['73_gag_in_response_to_certain_smells']],
+        $score_grid[$record['74_trouble_distinguishing_different_tastes_or_flavors']],
+    );
+
+    $Vestibular_array=array(
+        $score_grid[$record['76_jump_rock_spin']],
+        $score_grid[$record['77_uneasy_or_dizzy_from_swing_merry_go_round_rocker']],
+        $score_grid[$record['78_seek_physical_rough_housing_play']],
+        $score_grid[$record['79_enjoy_being_upside_down']],
+        $score_grid[$record['80_flaps_arms_or_hands_when_excited']],
+        $score_grid[$record['81_avoid_escalators_elevators_or_other']],
+        $score_grid[$record['82_unaware_of_moving_unstable_surfaces']],
+        $score_grid[$record['83_react_negatively_moved_quickly_tipped_backwards_spun_around']],
+        $score_grid[$record['84_spin_self_around_without_becoming_dizzy']],
+        $score_grid[$record['85_unusual_postures_with_hands_fingers_arms']],
+        $score_grid[$record['86_trouble_distinguishing_movement_sensations']],
+
+    );
+    $Social_sensory_array=array(
+        $score_grid[$record['5_make_accurate_impersonations']],
+        $score_grid[$record['8_ignore_you_when_you_call_name']],
+        $score_grid[$record['10_show_distress']],
+        $score_grid[$record['11_fascinated_excited_by_others_singing']],
+        $score_grid[$record['16_fascinated_by_own_reflection_in_persons_eyes']],
+        $score_grid[$record['18_avoid_face_or_gaze_during_social_games']],
+        $score_grid[$record['23_slow_to_look_at_objects_near_them']],
+        $score_grid[$record['24_notice_changes_in_visual_appearance_of_others']],
+        $score_grid[$record['31_ignore_not_notice_someone_new_or_different']],
+        $score_grid[$record['36_dislike_cuddling_or_being_held']],
+        $score_grid[$record['37_crave_intense_firm_touch']],
+        $score_grid[$record['41_crave_being_tickled']],
+        $score_grid[$record['43_ignore_or_not_notice_when_tap_shoulder']],
+        $score_grid[$record['51_react_negatively_pull_away_when_touched']],
+        $score_grid[$record['52_dislike_being_tickled']],
+        $score_grid[$record['54_react_negatively_to_haircuts']],
+        $score_grid[$record['61_sensitive_to_or_bothered_by_people_smell']],
+        $score_grid[$record['78_seek_physical_rough_housing_play']],
+        $score_grid[$record['83_react_negatively_moved_quickly_tipped_backwards_spun_around']],
+        $score_grid[$record['92_more_sensitive_to_social_touch']],
+    );
+
+    $Nonsocial_sensory_array=array(
+        $score_grid[$record['1_react_sensitively_to_sounds']],
+        $score_grid[$record['2_make_nosie_to_avoid_other_sounds']],
+        $score_grid[$record['3_notice_sounds_in_environment_before_others']],
+        $score_grid[$record['4_ignore_loud_noises']],
+        $score_grid[$record['6_demonstrates_perfect_pitch']],
+        $score_grid[$record['7_fascinated_with_sounds']],
+        $score_grid[$record['9_bothered_by_everyday_sounds']],
+        $score_grid[$record['12_ability_to_copy_environmental_sounds']],
+        $score_grid[$record['14_trouble_distinguishing_between_sounds']],
+        $score_grid[$record['15_disturbed_by_bright_lights']],
+        $score_grid[$record['17_stare_at_lights_or_moving_objects']],
+        $score_grid[$record['19_fascinated_by_visual_effect_of_water']],
+        $score_grid[$record['20_notice_minor_changes_in_physical_environment']],
+        $score_grid[$record['21_fascinated_with_lights']],
+        $score_grid[$record['22_slow_to_notice_new_objects_or_toys']],
+        $score_grid[$record['25_look_at_objects_using_side_vision']],
+        $score_grid[$record['27_watch_objects_they_move_rapidly']],
+        $score_grid[$record['28_fascinated_by_reflection_in_shiny_surfaces']],
+        $score_grid[$record['29_look_at_angles_or_corners_of_objects']],
+        $score_grid[$record['30_fascinated_by_flickering_or_scrolling_motions']],
+        $score_grid[$record['32_watch_hands_or_fingers_move_or_flicker']],
+        $score_grid[$record['33_visually_distracted_by_little_things_moving']],
+        $score_grid[$record['34_trouble_distinguishing_visual_sensations']],
+        $score_grid[$record['38_avoid_touching_certain_textures']],
+        $score_grid[$record['39_like_feeling_of_air_blowing']],
+        $score_grid[$record['40_trouble_adjusting_to_water_temperature']],
+        $score_grid[$record['42_dislike_being_in_water']],
+        $score_grid[$record['44_sensitive_to_bothered_by_sticky_material']],
+        $score_grid[$record['45_fascinated_with_touch']],
+        $score_grid[$record['46_bothered_by_tags_or_seams']],
+        $score_grid[$record['47_bothered_by_tight_clothing']],
+        $score_grid[$record['48_easily_find_objects_by_feel']],
+        $score_grid[$record['49_show_distress_during_grooming']],
+        $score_grid[$record['50_touch_or_rub_certain_surfaces_or_materials']],
+        $score_grid[$record['51_react_negatively_pull_away_when_touched']],
+        $score_grid[$record['53_slow_to_react_to_pain']],
+        $score_grid[$record['55_fascinated_with_textures_or_surfaces']],
+        $score_grid[$record['56_unaware_of_extreme_temperatures']],
+        $score_grid[$record['57_rub_wet_substances_on_smooth_surface']],
+        $score_grid[$record['58_trouble_distinguishing_between_different_touch_sensations']],
+        $score_grid[$record['59_refuse_new_foods_or_avoids_certain_foods']],
+        $score_grid[$record['60_smell_objects_or_toys_during_play']],
+        $score_grid[$record['62_put_objects_toys_non_food_items_in_mouth']],
+        $score_grid[$record['63_picky_eater']],
+        $score_grid[$record['64_crave_foods_with_strong_taste']],
+        $score_grid[$record['65_fascinated_with_particular_taste']],
+        $score_grid[$record['66_notice_smells_before_other_people']],
+        $score_grid[$record['67_fascinated_with_particular_smells']],
+        $score_grid[$record['68_mouth_suck_chew_hands_or_fingers']],
+        $score_grid[$record['69_unaware_of_strong_unpleasant_smells_others_notice']],
+        $score_grid[$record['70_taste_difference_between_different_brands_same_food']],
+        $score_grid[$record['71_lick_non_food_objects']],
+        $score_grid[$record['72_refuse_food_they_like_if_mixed_with_another']],
+        $score_grid[$record['73_gag_in_response_to_certain_smells']],
+        $score_grid[$record['74_trouble_distinguishing_different_tastes_or_flavors']],
+        $score_grid[$record['76_jump_rock_spin']],
+        $score_grid[$record['77_uneasy_or_dizzy_from_swing_merry_go_round_rocker']],
+        $score_grid[$record['79_enjoy_being_upside_down']],
+        $score_grid[$record['80_flaps_arms_or_hands_when_excited']],
+        $score_grid[$record['81_avoid_escalators_elevators_or_other']],
+        $score_grid[$record['82_unaware_of_moving_unstable_surfaces']],
+        $score_grid[$record['84_spin_self_around_without_becoming_dizzy']],
+        $score_grid[$record['85_unusual_postures_with_hands_fingers_arms']],
+        $score_grid[$record['86_trouble_distinguishing_movement_sensations']],
+        $score_grid[$record['87_trouble_looking_and_listening_same_time']],
+        $score_grid[$record['88_report_certain_letters_or_numbers_particular_color']],
+        $score_grid[$record['90_event_in_sense_causes_feeling_in_different_sense']],
+        $score_grid[$record['91_confuse_which_sense_something_is_from']],
+        $score_grid[$record['92_more_sensitive_to_social_touch']],
+        $score_grid[$record['94_increase_background_noise_to_improve_attention_to_activity']],
+        $score_grid[$record['95_avoid_toys_make_noise_and_light_up_same_time']],
+    );
+
+
+    $scores['HYPER_total_score'] =$this->findRowScore($Hyper_array);
+    $scores['HYPO_total_score'] =$this->findRowScore($Hypo_array);
+    $scores['SIRS_total_score'] =$this->findRowScore($Sirs_array);
+    $scores['EP_total_score'] =$this->findRowScore($Ep_array);
+    $scores['Auditory_total_score'] =$this->findRowScore($Auditory_array);
+    $scores['Visual_total_score'] =$this->findRowScore($Visual_array);
+    $scores['Tactile_total_score'] =$this->findRowScore($Tactile_array);
+    $scores['Gustatory_or_Oflactory_total_score'] =$this->findRowScore($Gustatory_array);
+    $scores['Vestibular_total_score'] =$this->findRowScore($Vestibular_array);
+    $scores['SOCIAL_SENSORY_total_score'] =$this->findRowScore($Social_sensory_array);
+    $scores['NONSOCIAL_SENSORY_total_score'] =$this->findRowScore($Nonsocial_sensory_array);
+
+
+    $result = $db->update($this->table, $scores, array('CommentID'=>$this->getCommentID()));
+}
+
+    function findRowScore($scale_array)
+    {
+        $raw_score=0;
+        foreach ($scale_array as $val)
+        {
+            if($val=='1')
+            {
+                $raw_score=$raw_score+1;
+            }
+            if($val=='2')
+            {
+                $raw_score=$raw_score+2;
+            }
+            if($val=='3')
+            {
+                $raw_score=$raw_score+3;
+            }
+            if($val=='4')
+            {
+                $raw_score=$raw_score+4;
+            }
+            if($val=='3')
+            {
+                $raw_score=$raw_score+5;
+            }
+        }
+        if($raw_score==0)
+        {
+            $raw_score="Unable to Score (Data Insufficient)";
+        }
+
+        return $raw_score;
+    }
 }
 ?>
