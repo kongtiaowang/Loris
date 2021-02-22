@@ -42,7 +42,7 @@ class NDB_BVL_Instrument_Med_Psych_History_Abbreviated_survey extends NDB_BVL_In
      * @return void
      * @access public
      */
-    function setup(?string $commentID = NULL, ?string $page = NULL): void
+    function setup(?string $commentID = null, ?string $page = null): void
     {
         $this->formType = "XIN";
         $this->form     = new LorisForm('Med_Psych_History_Abbreviated_survey_form');
@@ -186,6 +186,7 @@ class NDB_BVL_Instrument_Med_Psych_History_Abbreviated_survey extends NDB_BVL_In
                                  );
 
         $q1a_options = array(
+                        null                   => "",
                         "live_birth"           => "Live birth",
                         "stillbirth"           => "Stillbirth",
                         "elective_termination" => "Elective Termination (including ectopic or tubal pregnancies)",
@@ -193,11 +194,13 @@ class NDB_BVL_Instrument_Med_Psych_History_Abbreviated_survey extends NDB_BVL_In
                        );
 
         $q1c_options = array(
+                        null                                => "",
                         "greater_than_37_completed_weeks"   => "Greater than 37 completed weeks",
                         "less_than_28_completed_weeks"      => "Less than 28 completed weeks",
                         "between_28_and_32_completed_weeks" => "Between 28 and 32 completed weeks",
                         "between_32_and_37_completed_weeks" => "Between 32 and 37 completed weeks",
                         "fetus_age_at_delivery_unknown"     => "Fetus age at delivery unknown",
+                        "not_answered"                      => "Not Answered",
                        );
 
         $options = array(
@@ -557,4 +560,4 @@ class NDB_BVL_Instrument_Med_Psych_History_Abbreviated_survey extends NDB_BVL_In
         return $errors;
     }
 }
-?>
+
