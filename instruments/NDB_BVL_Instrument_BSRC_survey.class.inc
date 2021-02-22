@@ -411,7 +411,7 @@ class NDB_BVL_Instrument_BSRC_survey extends NDB_BVL_Instrument
                             if ($values[$service . '_received'] == 'yes' && $option != "_received") {
                                 if ($values[$service . '_intervention'] == 'yes' && $option == "_stopped_date") {
                                     if ($values[$question] != null || $values[$question] != "") {
-                                        $errors[$question] = "You must leave this field since you entered yes above.";
+                                        $errors[$question] = "You must leave this field blank since you entered yes above.";
                                     }
                                 }
                                 if ($values[$service . '_setting'] != 'other' && $option == "_other_setting") {
