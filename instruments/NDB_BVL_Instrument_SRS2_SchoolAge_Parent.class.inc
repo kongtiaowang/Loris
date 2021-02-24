@@ -576,8 +576,26 @@ class NDB_BVL_Instrument_SRS2_SchoolAge_Parent extends NDB_BVL_Instrument
         $scores['Com_score'] =$this->findRowScore($Com_array);
         $scores['Mot_score'] =$this->findRowScore($Mot_array);
         $scores['DSM5_RRB_score'] =$this->findRowScore($RRB_array);
-        $scores['DSM5_SCI_score'] =$this->findRowScore($Awr_array) + $this->findRowScore($Cog_array) + $this->findRowScore($Com_array)+ $this->findRowScore($Mot_array);
-        $scores['total_score'] =$this->findRowScore($RRB_array) + $scores['DSM5_SCI_score'];
+        $if_empty_sci_array=array($scores['Awr_score'],$scores['Cog_score'],$scores['Com_score'],$scores['Mot_score']);
+        if (count(array_unique($if_empty_sci_array)) === 1 &&
+            end($if_empty_sci_array) === 'Unable to score/Data Insufficient')
+        {
+            $scores['DSM5_SCI_score']='Unable to score/Data Insufficient';
+        }
+        else {
+            $scores['DSM5_SCI_score'] = $this->findRowScore($Awr_array) +
+                $this->findRowScore($Cog_array) + $this->findRowScore($Com_array) + $this->findRowScore($Mot_array);
+        }
+
+        if ($scores['DSM5_SCI_score']==='Unable to score/Data Insufficient'
+            && $scores['DSM5_RRB_score']==='Unable to score/Data Insufficient')
+        {
+            $scores['total_score'] ='Unable to score/Data Insufficient';
+        }
+        else{
+
+            $scores['total_score'] = $this->findRowScore($RRB_array) + $scores['DSM5_SCI_score'];
+        }
 
 
 
@@ -597,28 +615,28 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $scales = array("total", "DSM5_SCI", "DSM5_RRB", "Awr", "Cog", "Com","Mot");
         foreach ($scales as $field) {
             $field_raw_score = $scores[$field . '_score'];
-if($field_raw_score==0) {
-    $query_scores1 = "SELECT * FROM SRS2_SchoolAge_lookup WHERE form_relation ='SRS2_Parent' and 
+            if ($field_raw_score === 'Unable to score/Data Insufficient') {
+                $scores[$field . '_T_score'] = 'Unable to score/Data Insufficient';
+            } else {
+                if ($field_raw_score == 0) {
+                    $query_scores1 = "SELECT * FROM SRS2_SchoolAge_lookup WHERE form_relation ='SRS2_Parent' and 
                 sex='$gender'  AND (scale_raw_score ='$field_raw_score'  OR  '$field_raw_score' BETWEEN SUBSTRING_INDEX 
                 (`scale_raw_score`,'-', 1) AND SUBSTRING_INDEX(`scale_raw_score`,'-', -1) ) AND scale='$field'";
-    $record_1 = $db->pselectRow($query_scores1, array());
-}
-else{
-    $query_scores1 = "SELECT * FROM SRS2_SchoolAge_lookup WHERE form_relation ='SRS2_Parent' and 
+                    $record_1 = $db->pselectRow($query_scores1, array());
+                } else {
+                    $query_scores1 = "SELECT * FROM SRS2_SchoolAge_lookup WHERE form_relation ='SRS2_Parent' and 
                 sex='$gender'  AND (scale_raw_score =$field_raw_score  OR  $field_raw_score BETWEEN SUBSTRING_INDEX 
                 (`scale_raw_score`,'-', 1) AND SUBSTRING_INDEX(`scale_raw_score`,'-', -1) ) AND scale='$field'";
-    $record_1 = $db->pselectRow($query_scores1, array());
+                    $record_1 = $db->pselectRow($query_scores1, array());
 
-}
+                }
                 if (empty($record_1)) {
                     $max_range = "SELECT * FROM SRS2_SchoolAge_lookup WHERE form_relation ='SRS2_Parent' and 
                  sex='$gender'  AND scale_raw_score like '%>=%' AND scale='$field'";
                     $max_range_array = $db->pselectRow($max_range, array());
-                    if(empty($max_range_array))
-                    {
+                    if (empty($max_range_array)) {
                         $scores[$field . '_T_score'] = "NA";
-                    }
-                    else {
+                    } else {
                         $max_number_array = explode(">=", $max_range_array['scale_raw_score']);
                         $max_number = $max_number_array[0];
                         if ($field_raw_score >= $max_number) {
@@ -626,7 +644,7 @@ else{
 
                         }
                     }
-                } else{
+                } else {
                     if (array_key_exists('scale_T_score', $record_1)) {
                         if ($record_1['scale_T_score'] == "" || ($record_1['scale_T_score'] == NULL)) {
                             $scores[$field . '_T_score'] = "NA";
@@ -640,26 +658,26 @@ else{
 
 
             }
+        }
+        if($scores['total_T_score']=='Unable to score/Data Insufficient')
+        {
+            $scores['score_range'] = "Not Applicable";
+        }
 
-        if($scores['total_T_score']>=76)
-        {
-            $scores['score_range']= "Severe";
-        }
-        else if(in_array($scores['total_T_score'], range(66, 75)))
-        {
-            $scores['score_range']= "Moderate";
-        }
-        else if(in_array($scores['total_T_score'], range(60, 65)))
-        {
-            $scores['score_range']= "Mold";
-        }
-        else if($scores['total_T_score']<=59)
-        {
-            $scores['score_range']= "Normal";
-        }
-        else{
-            $scores['score_range']= "NA";
+        else {
 
+            if ($scores['total_T_score'] >= 76) {
+                $scores['score_range'] = "Severe";
+            } else if (in_array($scores['total_T_score'], range(66, 75))) {
+                $scores['score_range'] = "Moderate";
+            } else if (in_array($scores['total_T_score'], range(60, 65))) {
+                $scores['score_range'] = "Mild";
+            } else if ($scores['total_T_score'] <= 59) {
+                $scores['score_range'] = "Normal";
+            } else {
+                $scores['score_range'] = "NA";
+
+            }
         }
 
 
@@ -675,8 +693,14 @@ else{
     function findRowScore($scale_array)
     {
         $raw_score=0;
+        $empty=0;
+        $array_count=count($scale_array);
         foreach ($scale_array as $val)
         {
+            if($val==='' || $val===null)
+            {
+                $empty++;
+            }
             if($val=='1')
             {
                 $raw_score=$raw_score+1;
@@ -690,6 +714,12 @@ else{
                 $raw_score=$raw_score+3;
             }
         }
+        if($empty==$array_count)
+        {
+            $raw_score="Unable to score/Data Insufficient";
+        }
+
+
 
         return $raw_score;
     }
