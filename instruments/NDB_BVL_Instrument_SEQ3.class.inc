@@ -953,6 +953,7 @@ $Sirs_array=
     );
 
     $Vestibular_array=array(
+        $score_grid[$record['75_enjoy_long_car_rides']],
         $score_grid[$record['76_jump_rock_spin']],
         $score_grid[$record['77_uneasy_or_dizzy_from_swing_merry_go_round_rocker']],
         $score_grid[$record['78_seek_physical_rough_housing_play']],
