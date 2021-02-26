@@ -209,7 +209,7 @@ class CouchDBDemographicsImporter {
                                  ps.reason_specify                                           AS Status_comments,
                                  CASE
                                    WHEN c.ProjectID NOT IN (1,2) THEN 'NOT IBIS 1 OR IBIS 2'
-                                   WHEN pso.description NOT IN ('Active', 'Inactive', 'Active - Flagged', 'Complete') OR cc1.Status = 'no' THEN 'NOT A PRIORITY TO BRING BACK AT VSA'
+                                   WHEN COALESCE(pso.description,'Active') NOT IN ('Active', 'Inactive', 'Active - Flagged', 'Complete') OR cc1.Status = 'no' THEN 'NOT A PRIORITY TO BRING BACK AT VSA'
                                    WHEN (dsm.q4_criteria_autistic_disorder = 'yes' || dsm.q4_criteria_PDD ='yes') THEN 'PRIORITY TO BRING BACK AT VSA'
                                    WHEN nb_scans_before_vsa.count >= 2 AND (f24dsm.commentid IS NOT NULL OR f24mullen.commentid IS NOT NULL) THEN 'PRIORITY TO BRING BACK AT VSA'
                                    WHEN scanned_at_vsa.count >= 1 AND fvsadsm.commentid IS NOT NULL THEN 'SCAN AND DSMV DONE AT VSA'
