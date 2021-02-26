@@ -1,0 +1,11 @@
+ALTER TABLE SEQ3 ADD `HYPER_total_score` text default NULL;
+ALTER TABLE SEQ3 ADD `HYPO_total_score` text default NULL;
+ALTER TABLE SEQ3 ADD `SIRS_total_score` text default NULL;
+ALTER TABLE SEQ3 ADD `EP_total_score` text default NULL;
+ALTER TABLE SEQ3 ADD `Auditory_total_score` text default NULL;
+ALTER TABLE SEQ3 ADD `Visual_total_score` text default NULL;
+ALTER TABLE SEQ3 ADD `Tactile_total_score` text default NULL;
+ALTER TABLE SEQ3 ADD `Gustatory_or_Oflactory_total_score` text default NULL;
+ALTER TABLE SEQ3 ADD `Vestibular_total_score` text default NULL;
+ALTER TABLE SEQ3 ADD `SOCIAL_SENSORY_total_score` text default NULL;
+ALTER TABLE SEQ3 ADD `NONSOCIAL_SENSORY_total_score` text default NULL
