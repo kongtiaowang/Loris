@@ -223,13 +223,23 @@ class CouchDBDemographicsImporter {
                                  LEFT JOIN (
                                      SELECT candid, COUNT(*) as count FROM session
                                      WHERE session.visit_label IN ('V3', 'V03', 'V06', 'V09', 'V12', 'V15', 'V18', 'V24', 'V36')
-                                     AND session.scan_done='Y'
+                                     AND EXISTS(
+                                       SELECT 1
+                                       FROM files 
+                                       WHERE files.filetype='mnc'
+                                       AND files.sessionid=session.id
+                                     )
                                      GROUP BY candid
                                  ) nb_scans_before_vsa ON (nb_scans_before_vsa.candid=c.candid)
                                  LEFT JOIN (
                                      SELECT candid, COUNT(*) as count FROM session
-                                     WHERE session.visit_label IN ('VSA')
-                                     AND session.scan_done='Y'
+                                     WHERE session.visit_label IN ('VSA','VSA-CVD')
+                                     AND EXISTS(
+                                       SELECT 1 
+                                       FROM files 
+                                       WHERE files.filetype='mnc'
+                                       AND files.sessionid=session.id 
+                                     )
                                      GROUP BY candid
                                  ) scanned_at_vsa ON (scanned_at_vsa.candid=c.candid)
                                  LEFT JOIN psc p 
@@ -276,7 +286,7 @@ class CouchDBDemographicsImporter {
                                        WHERE flag.test_name = 'DSMV_checklist'
                                        AND flag.CommentID NOT LIKE 'DDE%'
                                        AND flag.data_entry IS NOT NULL
-                                       AND session.visit_label='VSA'
+                                       AND session.visit_label IN ('VSA', 'VSA-CVD')
                                  ) fvsadsm ON (fvsadsm.candid=c.candid)
                                  LEFT JOIN participant_status_options pso 
                                        ON ( pso.id = ps.participant_status )";
