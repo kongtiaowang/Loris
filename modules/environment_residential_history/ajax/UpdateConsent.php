@@ -78,7 +78,7 @@ if (isset($_POST['mail_consent'])) {
                     $Toothkit_Consent_Notification_Email = "flakel@wustl.edu, klohrc@wustl.edu, c.pritchard@wustl.edu";
                     break;
                 case "SEA":
-                    $Toothkit_Consent_Notification_Email = "tstjohn@u.washington.edu, cnm7@uw.edu, kammsyd@uw.edu";
+                    $Toothkit_Consent_Notification_Email = "lcheers@uw.edu, ibisstudy@uw.edu";
                     break;
                 case "UNC":
                     $Toothkit_Consent_Notification_Email = "cchappel@med.unc.edu";
