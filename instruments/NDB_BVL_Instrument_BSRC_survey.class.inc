@@ -249,7 +249,7 @@ class NDB_BVL_Instrument_BSRC_survey extends NDB_BVL_Instrument
                     $this->addBasicDate("{$q5Key}_stopped_date", "If, NO, date stopped:");
                     $this->XINRegisterRule("{$q5Key}_stopped_date", array("did_child_receive_developmental_delays{@}=={@}yes", "{$q5Key}_received{@}=={@}yes", "{$q5Key}_intervention{@}=={@}no"), "Required if your child has stopped receiving intervention.");
                     $this->addSelect("{$q5Key}_individual_group", "Individual or Group", self::INDIVIDUAL_GROUP_OPTIONS);
-                    $this->XINRegisterRule("{$q5Key}_individual_group", array("did_child_receive_developmental_delays{@}=={@}yes", "{$q5Key}_received{@}=={@}yes"), "Required if your child received {$q5Question}.");
+                    $this->XINRegisterRule("{$q5Key}_individual_group", array("{$q5Key}_individual_group{@}=={@}NEVER_REQUIRED"));
                     $this->addSelect("{$q5Key}_setting", "Setting", self::SETTING_OPTIONS);
                     $this->XINRegisterRule("{$q5Key}_setting", array("did_child_receive_developmental_delays{@}=={@}yes", "{$q5Key}_received{@}=={@}yes"), "Required if your child received {$q5Question}.");
                     $this->addBasicText("{$q5Key}_other_setting", "Other:");
@@ -339,11 +339,6 @@ class NDB_BVL_Instrument_BSRC_survey extends NDB_BVL_Instrument
         }
 
         foreach ($required_questions as $name) {
-            //            if ($name != "if_checked_9_please_check" && $name != "how_many_hours_child_intervention") {
-            //                if ($values[$name] == null || $values[$name] == "") {
-            //                    $errors[$name] = 'Required';
-            //                }
-            //            }
             if ($name == "did_child_receive_early_intervention") {
                 if ($values[$name] == "no") {
                     foreach ($early_intervention_services as $question) {
@@ -395,8 +390,13 @@ class NDB_BVL_Instrument_BSRC_survey extends NDB_BVL_Instrument
                             );
 
                 foreach ($services as $service) {
+                    if ($values[$service . "_intervention"] == "no" && $values[$service . "_individual_group"] != "") {
+                        $errors[$service . "_individual_group"] = "Not required, please leave the field blank.";
+                    }
+
                     foreach ($options as $option) {
                         $question = $service . $option;
+
                         if ($values[$name] == 'no') {
                             if ($values[$question] != null || $values[$question] != "") {
                                 $errors[$question] = "Not required, please leave the field blank.";
@@ -411,7 +411,7 @@ class NDB_BVL_Instrument_BSRC_survey extends NDB_BVL_Instrument
                             if ($values[$service . '_received'] == 'yes' && $option != "_received") {
                                 if ($values[$service . '_intervention'] == 'yes' && $option == "_stopped_date") {
                                     if ($values[$question] != null || $values[$question] != "") {
-                                        $errors[$question] = "You must leave this field since you entered yes above.";
+                                        $errors[$question] = "You must leave this field blank since you entered yes above.";
                                     }
                                 }
                                 if ($values[$service . '_setting'] != 'other' && $option == "_other_setting") {
@@ -428,5 +428,3 @@ class NDB_BVL_Instrument_BSRC_survey extends NDB_BVL_Instrument
         return $errors;
     }
 }
-
-
