@@ -131,7 +131,8 @@ SUMIF ( Q4=>0 and Q8=>0 and Q14=>0 and Q20=>0 and Q24=>0 and Q28=>0 and Q29=>0 a
         )
     );
 
-    var $scoreCols = array("srs_score", "awareness_score", "cognition_score", "communication_score", "motivation_score", "mannerisms_score");
+    var $scoreCols = array("srs_score", "awareness_score", "cognition_score", "communication_score",
+        "motivation_score", "mannerisms_score");
 
     // Question numbers where not true = 0 and always true = 3
     // in the scoring algorithm
@@ -267,13 +268,56 @@ SUMIF ( Q4=>0 and Q8=>0 and Q14=>0 and Q20=>0 and Q24=>0 and Q28=>0 and Q29=>0 a
         );
 
 
-        $this->form->addElement("static", "srs_score", "SRS Total Score:");
+     /*   $this->form->addElement("static", "srs_score", "SRS Total Score:");
         $this->form->addElement("static", "awareness_score", "Social Awareness Score:");
         $this->form->addElement("static", "cognition_score", "Social Cognition Score:");
         $this->form->addElement("static", "communication_score", "Social Communication Score:");
         $this->form->addElement("static", "motivation_score", "Social Motivation Score:");
-        $this->form->addElement("static", "mannerisms_score", "Autistic Mannerisms Score:");
+        $this->form->addElement("static", "mannerisms_score", "Autistic Mannerisms Score:");*/
 
+
+        $this->form->addElement('header', null, "Score Summary");
+
+        //scoring column headers
+        $group[] = $this->form->createElement('static', "score", null, null);
+        $group[] = $this->form->createElement('static', "t_score", null, null);
+        $this->form->addGroup($group, 'score_header_group', "<strong>Scale</strong>", $this->_GUIDelimiter, false);
+        unset($group);
+
+        $scales = array(
+            'srs'   => "SRS Total Score",
+            'awareness'     => "Social Awareness Score",
+            'cognition'     => "Social Cognition Score",
+            'communication'     => "Social Communication Score",
+            'motivation'     => "Social Motivation Score",
+            'mannerisms'     => "Autistic Mannerisms Score"
+        );
+
+        $columnHeaders = array(
+            "score" => "Score",
+            "t_score"   => "T Score",
+        );
+
+        foreach ($columnHeaders as $field => $label) {
+            $columnHeaders[$field] .= "     ";
+        }
+
+        $this->localDefaults = array_merge($this->localDefaults, $columnHeaders);
+
+        foreach ($scales as $field => $label) {
+            foreach ($columnHeaders as $scoreField => $scoreLabel) {
+                $group[] = $this->form->createElement('static', "{$field}_{$scoreField}", null, null);
+            }
+            $this->form->addGroup($group, "{$label}_score_group", $label, $this->_GUIDelimiter, false);
+            unset($group);
+        }
+
+        $this->form->addElement('static', null, "");
+
+
+        $group[] = $this->form->createElement('static', "score_range", null, null);
+        $this->form->addGroup($group, "score_range_score_group", "Score Range", $this->_GUIDelimiter, false);
+        unset($group);
         /*   function _page($pageNum) { */
         //$this->form->addElement('header', 'instrument_title', "Social Responsiveness Scale Page (SRS) - Page $pageNum");
         $this->form->addElement('header', 'instrument_title', "Social Responsiveness Scale Page (SRS)");
@@ -296,7 +340,7 @@ SUMIF ( Q4=>0 and Q8=>0 and Q14=>0 and Q20=>0 and Q24=>0 and Q28=>0 and Q29=>0 a
         }
         $this->_nullScores($this->scoreCols);
         $db =& Database::singleton();
-        $Answers=$db->pselectRow("SELECT * FROM ".$this->table." WHERE CommentID=:cid",array("cid" =>$this->getCommentID() ) );
+        $Answers = $db->pselectRow("SELECT * FROM " . $this->table . " WHERE CommentID=:cid", array("cid" => $this->getCommentID()));
 
         if ($this->getSessionID() != NULL) { //quickform_parser doesn't use any specific session
             $timepoint =& TimePoint::singleton($this->getSessionID());
@@ -305,11 +349,11 @@ SUMIF ( Q4=>0 and Q8=>0 and Q14=>0 and Q20=>0 and Q24=>0 and Q28=>0 and Q29=>0 a
 
         if (!empty($dob) && !empty($Answers['Date_taken'])) {
             $age = Utility::calculateAge($dob, $Answers["Date_taken"]);
-            if(is_array($age)) {
+            if (is_array($age)) {
                 $age_months = $age['year'] * 12 + $age['mon'];
             } else {
                 $scores['srs_score'] = "Error calculating age. Must specify date of administration.";
-                $db->update($this->table, $scores, array('CommentID'=>$this->getCommentID()));
+                $db->update($this->table, $scores, array('CommentID' => $this->getCommentID()));
                 return;
             }
         }
@@ -343,10 +387,10 @@ SUMIF ( Q4=>0 and Q8=>0 and Q14=>0 and Q20=>0 and Q24=>0 and Q28=>0 and Q29=>0 a
         //$ignored = array(35, 36);
         $ignored = array(0);
 
-        foreach($this->ForwardCoded as $QuestionNumber) {
+        foreach ($this->ForwardCoded as $QuestionNumber) {
 
-            foreach($this->subscales as $subscale => $questions) {
-                if(in_array($QuestionNumber, $questions)) {
+            foreach ($this->subscales as $subscale => $questions) {
+                if (in_array($QuestionNumber, $questions)) {
                     $currentSubscale = $subscale;
                 }
                 if ($currentSubscale != null) {
@@ -354,34 +398,34 @@ SUMIF ( Q4=>0 and Q8=>0 and Q14=>0 and Q20=>0 and Q24=>0 and Q28=>0 and Q29=>0 a
                 }
             }
 
-            switch($Answers[$fields_array[$QuestionNumber]]) {
+            switch ($Answers[$fields_array[$QuestionNumber]]) {
                 case 'not_true':
                     $score += 0;
-                    if(!in_array($QuestionNumber, $ignored)) {
+                    if (!in_array($QuestionNumber, $ignored)) {
                         $totals[$currentSubscale] += 0;
                     }
                     break;
                 case 'sometimes_true':
                     $score += 1;
-                    if(!in_array($QuestionNumber, $ignored)) {
+                    if (!in_array($QuestionNumber, $ignored)) {
                         $totals[$currentSubscale] += 1;
                     }
                     break;
                 case 'often_true':
                     $score += 2;
-                    if(!in_array($QuestionNumber, $ignored)) {
+                    if (!in_array($QuestionNumber, $ignored)) {
                         $totals[$currentSubscale] += 2;
                     }
                     break;
                 case 'always_true':
                     $score += 3;
-                    if(!in_array($QuestionNumber, $ignored)) {
+                    if (!in_array($QuestionNumber, $ignored)) {
                         $totals[$currentSubscale] += 3;
                     }
                     break;
                 case 'not_answered':
                     $not_answered += 1;
-                    if(!in_array($QuestionNumber, $ignored)) {
+                    if (!in_array($QuestionNumber, $ignored)) {
                         $scores[$currentSubscale] = 0;
                     }
                     break;
@@ -390,10 +434,10 @@ SUMIF ( Q4=>0 and Q8=>0 and Q14=>0 and Q20=>0 and Q24=>0 and Q28=>0 and Q29=>0 a
             $currentSubscale = null;
         }
 
-        foreach($this->ReverseCoded as $QuestionNumber) {
+        foreach ($this->ReverseCoded as $QuestionNumber) {
 
-            foreach($this->subscales as $subscale => $questions) {
-                if(in_array($QuestionNumber, $questions)) {
+            foreach ($this->subscales as $subscale => $questions) {
+                if (in_array($QuestionNumber, $questions)) {
                     $currentSubscale = $subscale;
                 }
                 if ($currentSubscale != null) {
@@ -401,7 +445,7 @@ SUMIF ( Q4=>0 and Q8=>0 and Q14=>0 and Q20=>0 and Q24=>0 and Q28=>0 and Q29=>0 a
                 }
             }
 
-            switch($Answers[$fields_array[$QuestionNumber]]) {
+            switch ($Answers[$fields_array[$QuestionNumber]]) {
                 case 'not_true':
                     $score += 3;
                     $totals[$currentSubscale] += 3;
@@ -423,28 +467,140 @@ SUMIF ( Q4=>0 and Q8=>0 and Q14=>0 and Q20=>0 and Q24=>0 and Q28=>0 and Q29=>0 a
                     $scores[$currentSubscale] = 0;
                     break;
             }
-
             $currentSubscale = null;
         }
-        $scores['srs_score'] = $score;
 
-        if($not_answered > 7) {
+        foreach($scores as $key=>$value)
+        {
+            if(is_null($key) || $key == '')
+                unset($scores[$key]);
+        }
+        $scores['srs_score'] = $score;
+        if ($not_answered > 7) {
             $scores['srs_score'] = "More than 7 questions not answered. Score is invalid.";
+            $scores['srs_t_score']="Unable to score/Data Insufficient";
+        }
+        else{
+            $query = "
+                        SELECT
+                            T_Score
+                        from
+                            SRS2_Preschool_lookup
+                        WHERE
+                            Raw_Score = :raw_score
+                        AND
+                            Scale = 'Total'
+                    ";
+
+            $where = array(
+                'raw_score' => $scores['srs_score']
+            );
+
+
+
+            $query_result_total = $db->pselectRow($query, $where);
+            $scores['srs_t_score']=$query_result_total['T_Score'];
+            if($scores['srs_t_score']==90)
+            {
+                $scores['srs_t_score']='Greater than or equal to 90';
+            }
+
         }
 
-        foreach($this->scoreCols as $scoreCol) {
+        foreach ($this->scoreCols as $scoreCol) {
+            $lookup_scale_name=$this->getLookupScaleName($scoreCol);
+            $key=explode("_",$scoreCol);
+            $scale=$key[0];
             if ($scoreCol != 'srs_score') {
-                if ($scores[$scoreCol] === 0 || $totals[$scoreCol] == null) {
+                if ($scores[$scoreCol] === 0 || $totals[$scoreCol] === null) {
                     $scores[$scoreCol] = "Not all questions in the subscale were answered. Score is invalid.";
+                    $scores[$scale . "_t_score"]="Unable to score/Data Insufficient";
                 } else {
                     $scores[$scoreCol] = $totals[$scoreCol];
+                    $query = "
+                        SELECT
+                            T_Score
+                        from
+                            SRS2_Preschool_lookup
+                        WHERE
+                            Raw_Score = :raw_score
+                        AND
+                            Scale = :scale
+                    ";
+
+                    $where = array(
+                        'raw_score' => $scores[$scoreCol],
+                        'scale' => $lookup_scale_name,
+                    );
+
+
+
+                    $query_result = $db->pselectRow($query, $where);
+
+                    $field_t_score = $scale . "_t_score";
+                    $scores[$field_t_score] = $query_result['T_Score'];
+                    if($scores[$field_t_score]==90)
+                    {
+                        $scores[$field_t_score]="Greater than or equal to 90";
+                    }
+                    if($scores[$field_t_score]==30)
+                    {
+                        $scores[$field_t_score]="Less than or equal to 30";
+                    }
                 }
             }
         }
+        if( $scores['srs_t_score']==="Unable to score/Data Insufficient") {
+            $scores['score_range'] = "NA";
+        }
+        else {
+
+            if ($scores['srs_t_score'] >= 76) {
+                $scores['score_range'] = "Severe";
+            } else if (in_array($scores['srs_t_score'], range(66, 75))) {
+                $scores['score_range'] = "Moderate";
+            } else if (in_array($scores['srs_t_score'], range(60, 65))) {
+                $scores['score_range'] = "Mild";
+            } else if ($scores['srs_t_score'] <= 59) {
+                $scores['score_range'] = "Normal";
+            } else {
+                $scores['score_range'] = "NA";
+            }
+        }
+
+
 
         // save the resultant total
-        $result = $db->update($this->table, $scores, array('CommentID'=>$this->getCommentID()));
+        $result = $db->update($this->table, $scores, array('CommentID' => $this->getCommentID()));
     }
+
+
+function getLookupScaleName($scale)
+{
+
+    if ($scale == 'srs_score') {
+        $scale_name = "Total";
+    }
+    if ($scale == 'awareness_score') {
+        $scale_name = "Awr";
+    }
+    if ($scale == 'cognition_score') {
+        $scale_name = "Cog";
+    }
+    if ($scale == 'communication_score') {
+        $scale_name = "Com";
+    }
+    if ($scale == 'motivation_score') {
+        $scale_name = "Mot";
+    }
+    if ($scale == 'mannerisms_score') {
+        $scale_name = "DSM_RRB";
+    }
+
+    return $scale_name;
+
+}
+
 }
 
 ?>
