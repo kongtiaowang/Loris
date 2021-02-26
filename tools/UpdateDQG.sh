@@ -21,5 +21,5 @@ php CouchDB_Confirm_Integrity_ibis.php
 # curl -X GET http://admin:MxedMdia=40sheets@nihace_couch:5984/ibisfilteredlogin/_design/DQG-2.0/_view/categories > /dev/null &
 
 printf "Before Curl\n"
-curl -X GET http://admin:MxedMdia=40sheets@nihace_couch:5984/ibisunfiltered/_design/DQG-2.0/_view/categories > /dev/null
+curl -X GET http://ibis_admin:MxedMdia=40sheets@192.168.1.91:5984/ibisunfiltered/_design/DQG-2.0/_view/categories > /dev/null
 printf "After Curl\n"
