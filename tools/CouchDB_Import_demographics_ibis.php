@@ -110,7 +110,16 @@ class CouchDBDemographicsImporter {
         'session_feedback' => array(
             'Description' => 'Behavioural feedback at the session level',
             'Type' => "varchar(255)",
-                )
+        ),
+        'vsa_priority_data_status' => array(
+            'Description' => 'NOT IBIS 1 OR IBIS 2 ==> Not an IBIS 1 or an IBIS 2 candidate.
+                              NOT A PRIORITY TO BRING BACK AT VSA ==> If participant status is Excluded, Ineligible, Refused, Not enrolled or study consent is NO.
+                              PRIORITY TO BRING BACK AT VSA ==> If candidate has an ASD+ diagnosis at V24, 2 scans before VSA, has Mullen data or DSMIV data at V24.
+                              SCAN DONE AT VSA ==> If a scan was done at VSA but no Mullen data and no DSMIV data at V24.
+                              DSMV DONE AT VSA ==> If Mullen data or DSMIV data at V24 but no scan at VSA.
+                              SCAN AND DSMV DONE AT VSA ==> If a scan was done at VSA and either Mullen data or DSMIV data at V24.',
+            'Type' => 'varchar(255)',
+        )
     );
 
     var $Config = array(
@@ -197,9 +206,42 @@ class CouchDBDemographicsImporter {
                                  pc_comment.value                                            AS Comment, 
                                  COALESCE(pso.description, 'Active')                         AS Status, 
                                  ps.participant_suboptions                                   AS Status_reason, 
-                                 ps.reason_specify                                           AS Status_comments";
+                                 ps.reason_specify                                           AS Status_comments,
+                                 CASE
+                                   WHEN c.ProjectID NOT IN (1,2) THEN 'NOT IBIS 1 OR IBIS 2'
+                                   WHEN COALESCE(pso.description,'Active') NOT IN ('Active', 'Inactive', 'Active - Flagged', 'Complete') OR cc1.Status = 'no' THEN 'NOT A PRIORITY TO BRING BACK AT VSA'
+                                   WHEN (dsm.q4_criteria_autistic_disorder = 'yes' || dsm.q4_criteria_PDD ='yes') THEN 'PRIORITY TO BRING BACK AT VSA'
+                                   WHEN nb_scans_before_vsa.count >= 2 AND (f24dsm.commentid IS NOT NULL OR f24mullen.commentid IS NOT NULL) THEN 'PRIORITY TO BRING BACK AT VSA'
+                                   WHEN scanned_at_vsa.count >= 1 AND fvsadsm.commentid IS NOT NULL THEN 'SCAN AND DSMV DONE AT VSA'
+                                   WHEN scanned_at_vsa.count >= 1 THEN 'SCAN DONE AT VSA'
+                                   WHEN  fvsadsm.commentid IS NOT NULL THEN 'DSMV DONE AT VSA'
+                                   ELSE 'NOT A PRIORITY TO BRING BACK AT VSA'
+                                 END                                                         AS vsa_priority_data_status
+                          ";
         $tablesToJoin = " FROM   session s 
                                  JOIN candidate c using (candid) 
+                                 LEFT JOIN (
+                                     SELECT candid, COUNT(*) as count FROM session
+                                     WHERE session.visit_label IN ('V3', 'V03', 'V06', 'V09', 'V12', 'V15', 'V18', 'V24', 'V36')
+                                     AND EXISTS(
+                                       SELECT 1
+                                       FROM files 
+                                       WHERE files.filetype='mnc'
+                                       AND files.sessionid=session.id
+                                     )
+                                     GROUP BY candid
+                                 ) nb_scans_before_vsa ON (nb_scans_before_vsa.candid=c.candid)
+                                 LEFT JOIN (
+                                     SELECT candid, COUNT(*) as count FROM session
+                                     WHERE session.visit_label IN ('VSA','VSA-CVD')
+                                     AND EXISTS(
+                                       SELECT 1 
+                                       FROM files 
+                                       WHERE files.filetype='mnc'
+                                       AND files.sessionid=session.id 
+                                     )
+                                     GROUP BY candid
+                                 ) scanned_at_vsa ON (scanned_at_vsa.candid=c.candid)
                                  LEFT JOIN psc p 
                                         ON ( p.centerid = s.centerid ) 
                                  LEFT JOIN caveat_options c_o 
@@ -216,8 +258,38 @@ class CouchDBDemographicsImporter {
                                            AND f.Test_name ='DSMIV_checklist' AND f.CommentID  NOT LIKE 'DDE%'
                                  LEFT JOIN DSMIV_checklist dsm
                                        ON ( dsm.CommentID = f.CommentID )
+                                 LEFT JOIN (
+                                       SELECT candidate.candid as candid, flag.commentid as commentid
+                                       FROM flag
+                                       JOIN session   ON session.id       = flag.sessionid
+                                       JOIN candidate ON candidate.candid = session.candid
+                                       WHERE flag.test_name = 'DSMIV_checklist'
+                                       AND flag.CommentID NOT LIKE 'DDE%'
+                                       AND flag.data_entry IS NOT NULL
+                                       AND session.visit_label='V24'
+                                 ) f24dsm ON (f24dsm.candid=c.candid)
+                                 LEFT JOIN (
+                                       SELECT candidate.candid as candid, flag.commentid as commentid
+                                       FROM flag
+                                       JOIN session   ON session.id      = flag.sessionid
+                                       JOIN candidate ON candidate.candid = session.candid
+                                       WHERE flag.test_name = 'mullen'
+                                       AND flag.CommentID NOT LIKE 'DDE%'
+                                       AND flag.data_entry IS NOT NULL
+                                       AND session.visit_label='V24'
+                                 ) f24mullen ON (f24mullen.candid = c.candid)
+                                 LEFT JOIN (
+                                       SELECT candidate.candid as candid, flag.commentid as commentid
+                                       FROM flag
+                                       JOIN session   ON session.id       = flag.sessionid
+                                       JOIN candidate ON candidate.candid = session.candid
+                                       WHERE flag.test_name = 'DSMV_checklist'
+                                       AND flag.CommentID NOT LIKE 'DDE%'
+                                       AND flag.data_entry IS NOT NULL
+                                       AND session.visit_label IN ('VSA', 'VSA-CVD')
+                                 ) fvsadsm ON (fvsadsm.candid=c.candid)
                                  LEFT JOIN participant_status_options pso 
-              ON ( pso.id = ps.participant_status )";
+                                       ON ( pso.id = ps.participant_status )";
 
         // If proband fields are being used, add proband information into the query
         if ($config->getSetting("useProband") === "true") {
@@ -259,6 +331,7 @@ class CouchDBDemographicsImporter {
         AND c.RegistrationCenterID NOT IN (1,8,9,10)
         AND (ps.participant_status NOT IN (2,3,4) OR ps.participant_status IS NULL)
         AND c.ProjectID NOT IN (5,6)";
+
         return $concatQuery;
     }
 
