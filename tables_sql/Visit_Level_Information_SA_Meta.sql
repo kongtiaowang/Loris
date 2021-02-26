@@ -24,11 +24,3 @@ INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, Subp
 -- IBIS2 Low Risk
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('Visit_Level_Information_SA', '0', '0', 'Y', 'Visit', 10, 'VSA', NULL);
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('Visit_Level_Information_SA', '0', '0', 'Y', 'Visit', 10, 'VSA-CVD', NULL);
-
--- IBISSA LR
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('Visit_Level_Information_SA', '0', '0', 'Y', 'Visit', 12, 'VSA', NULL);
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('Visit_Level_Information_SA', '0', '0', 'Y', 'Visit', 12, 'VSA-CVD', NULL);
-
--- IBISSA HR
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('Visit_Level_Information_SA', '0', '0', 'Y', 'Visit', 13, 'VSA', NULL);
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('Visit_Level_Information_SA', '0', '0', 'Y', 'Visit', 13, 'VSA-CVD', NULL);
