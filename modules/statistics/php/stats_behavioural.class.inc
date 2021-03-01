@@ -101,9 +101,10 @@ class Stats_Behavioural extends \NDB_Form
         $projects['']   = 'All Projects';
         $Param_Project  = '';
 
-        $userProjectsIDs = $user->getData('ProjectIDs');
+        $userProjectsIDs = $user->getProjectIDs();
         foreach ($userProjectsIDs as $ProjectID) {
-            $projects[$ProjectID] = $allProjectList[$ProjectID];
+            $projects[$ProjectID->__toString()]
+                = $allProjectList[$ProjectID->__toString()];
         }
 
         $this->tpl_data['Projects'] = $projects;
@@ -120,22 +121,19 @@ class Stats_Behavioural extends \NDB_Form
 
         }
 
-        if ($_REQUEST['BehaviouralProject'] ?? ''
-        ) {
-
-            $currentProject = htmlspecialchars($_REQUEST['BehaviouralProject']);
+        if ($_REQUEST['BehaviouralProject'] ?? '') {
+            $currentProject = new \ProjectID($_REQUEST['BehaviouralProject']);
             $this->tpl_data['CurrentProject']
                 = [
                     'ID'   => $currentProject,
-                    'Name' => $projects[$currentProject],
+                    'Name' => $projects["$currentProject"],
                 ];
             $Param_Project ='AND (s.ProjectID IS NULL
                                OR c.RegistrationProjectID=:pid)';
             $this->projectParams['pid']
                 = htmlspecialchars($_REQUEST['BehaviouralProject']);
         } elseif (!empty($userProjectsIDs)) {
-
-            $currentProject = '';
+            $currentProject = null;
             $paramProjects  = [];
             foreach ($userProjectsIDs as $key => $projectID) {
                 $paramProjects[] = ":paramProjectID$key";
@@ -146,15 +144,14 @@ class Stats_Behavioural extends \NDB_Form
                                        (" . implode(',', $paramProjects) . ")
                                  )";
         } else {
-            $currentProject = '';
+            $currentProject = null;
             $Param_Project  ="AND (s.ProjectID IS NULL)";
         }
 
         //
         //SUBPROJECTS
         $suproject_query = '';
-        // Only search for subprojects if $currentProject is a positive int.
-        if (is_numeric($currentProject) && intval($currentProject) >= 0) {
+        if ($currentProject !== null) {
             $subprojects = \Utility::getSubprojectsForProject($currentProject);
             $subprojList = implode(',', array_keys($subprojects));
             if (!empty($subprojList)) {

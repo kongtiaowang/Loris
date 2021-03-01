@@ -84,11 +84,11 @@ class Timepoint_List extends \NDB_Menu
         $listOfSessionIDs = $candidate->getListOfTimePoints();
 
         $user     = \User::singleton();
-        $username = $user->getData('UserID');
+        $username = $user->getUsername();
 
-        $feedback_select_inactive = null;
+        $feedback_select_inactive = false;
         if ($user->hasPermission('bvl_feedback')) {
-            $feedback_select_inactive = 'Y';
+            $feedback_select_inactive = true;
         }
 
         $listOfTimePoints = array_map(

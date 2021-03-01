@@ -215,14 +215,14 @@ class UserTest extends TestCase
     /**
      * Test double for NDB_Config object
      *
-     * @var \NDB_Config | PHPUnit\Framework\MockObject\MockObject
+     * @var \NDB_Config&PHPUnit\Framework\MockObject\MockObject
      */
     private $_configMock;
     private $_mockConfig;
     /**
      * Test double for Database object
      *
-     * @var \Database | PHPUnit\Framework\MockObject\MockObject
+     * @var \Database&PHPUnit\Framework\MockObject\MockObject
      */
     private $_dbMock;
     /**
@@ -274,10 +274,17 @@ class UserTest extends TestCase
             true
         );
 
-        $this->_mockConfig  = $this->getMockBuilder('NDB_Config')->getMock();
-        $this->_mockDB      = $this->getMockBuilder('Database')->getMock();
+        $mockconfig = $this->getMockBuilder('NDB_Config')->getMock();
+        $mockdb     = $this->getMockBuilder('Database')->getMock();
+
+        '@phan-var \Database $mockdb';
+        '@phan-var \NDB_Config $mockconfig';
+
+        $this->_mockDB      = $mockdb;
+        $this->_mockConfig  = $mockconfig;
         $this->_mockFactory = \NDB_Factory::singleton();
-        $this->_mockFactory->setDatabase($this->_mockDB);
+        $this->_mockFactory->setDatabase($mockdb);
+
         $this->_factory->setConfig($this->_mockConfig);
 
         $this->_userInfoComplete       = $this->_userInfo;
@@ -570,7 +577,7 @@ class UserTest extends TestCase
     public function testHasProjectWhenTrue()
     {
         $this->_user = \User::factory(self::USERNAME);
-        $this->assertTrue($this->_user->hasProject(3));
+        $this->assertTrue($this->_user->hasProject(new \ProjectID("3")));
     }
 
     /**
@@ -582,7 +589,7 @@ class UserTest extends TestCase
     public function testHasProjectWhenFalse()
     {
         $this->_user = \User::factory(self::USERNAME);
-        $this->assertFalse($this->_user->hasProject(5));
+        $this->assertFalse($this->_user->hasProject(new \ProjectID("5")));
     }
 
     /**
@@ -646,7 +653,9 @@ class UserTest extends TestCase
         $passwordExpired = true;
 
         // Cause usePwnedPasswordsAPI config option to return false.
-        $this->_mockConfig->expects($this->any())
+        $mockConfig = &$this->_mockConfig;
+        '@phan-var \PHPUnit\Framework\MockObject\MockObject $mockConfig';
+        $mockConfig->expects($this->any())
             ->method('settingEnabled')
             ->willReturn(false);
 
@@ -684,6 +693,7 @@ class UserTest extends TestCase
         $this->_user->updatePassword(
             new \Password(\Utility::randomString(16))
         );
+
         //Re-populate the user object now that the password has been changed
         $this->_user = \User::factory(self::USERNAME);
 
@@ -836,6 +846,7 @@ class UserTest extends TestCase
             ->willReturn([1, 2]);
         $mockUser->expects($this->once())->method("getProjectIDs")
             ->willReturn([1, 3]);
+        '@phan-var \User $mockUser';
         $this->assertTrue($this->_user->isAccessibleBy($mockUser));
     }
 
@@ -854,6 +865,8 @@ class UserTest extends TestCase
             ->willReturn([2, 2]);
         $mockUser->expects($this->once())->method("getProjectIDs")
             ->willReturn([4, 4]);
+        '@phan-var \User $mockUser';
+
         $this->assertFalse($this->_user->isAccessibleBy($mockUser));
     }
 

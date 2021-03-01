@@ -142,7 +142,7 @@ class Edit_User extends \NDB_Form
 
             // Notification defaults
             // "notif_".$module."_".$operation."_".$service
-            $user_id  = $user->getData("ID") ?? -1;
+            $user_id  = $user->getId() ?? -1;
             $curr_sub = \NDB_Notifier::getUserNotificationModuleServices(
                 $user_id
             );
@@ -270,7 +270,7 @@ class Edit_User extends \NDB_Form
             unset($values['Password_hash']);
         }
         // multi-site UPDATE
-        $uid           = $user->getData('ID');
+        $uid           = $user->getId();
         $us_curr_sites = $values['CenterIDs'];
         if (!$this->isCreatingNewUser()) {
             $DB->delete('user_psc_rel', ["UserID" => $uid]);
@@ -467,7 +467,7 @@ class Edit_User extends \NDB_Form
             // insert a new user
             \User::insert($set);
             $user = \User::factory($set['UserID']);
-            $uid  = $user->getData('ID');
+            $uid  = $user->getId();
             foreach ($us_curr_sites as $site) {
                 $DB->insert(
                     'user_psc_rel',
@@ -763,7 +763,7 @@ class Edit_User extends \NDB_Form
             $siteOptions = \Utility::getSiteList(false);
         } else {
             // allow only to add to their own site
-            $site_arr = $editor->getData('CenterIDs');
+            $site_arr = $editor->getCenterIDs();
             foreach ($site_arr as $key => $val) {
                 $site[$key]        =& \Site::singleton($val);
                 $siteOptions[$val] = $site[$key]->getCenterName();
@@ -781,11 +781,12 @@ class Edit_User extends \NDB_Form
         );
 
         // START PROJECT SECTION
-        $editorProjects = $editor->getData('ProjectIDs');
+        $editorProjects = $editor->getProjectIDs();
         $projects       = \Utility::getProjectList();
         $projectOptions = [];
         foreach ($editorProjects as $key => $projectID) {
-            $projectOptions[$projectID] = $projects[$projectID];
+            $projectOptions[$projectID->__toString()]
+                = $projects[$projectID->__toString()];
         }
 
         $this->addSelect(
@@ -993,7 +994,7 @@ class Edit_User extends \NDB_Form
                 $editor->getPermissionIDs()
             );
             foreach ($permDiff as $permID) {
-                $this->addHidden("permID[$permID]", 1);
+                $this->addHidden("permID[$permID]", "1");
             }
         }
 
@@ -1014,7 +1015,7 @@ class Edit_User extends \NDB_Form
      */
     static function canRejectAccount(\User $user)
     {
-        return $user->getData('Pending_approval') == 'Y'
+        return $user->isPendingApproval()
             && !$user->hasLoggedIn();
     }
 

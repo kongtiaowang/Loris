@@ -188,7 +188,7 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         );
 
         // User related template variables that used to be in main.php.
-        $site_arr    = $this->user->getData('CenterIDs');
+        $site_arr    = $this->user->getCenterIDs();
         $site        = array();
         $isStudySite = array();
         foreach ($site_arr as $key => $val) {
@@ -197,14 +197,14 @@ class UserPageDecorationMiddleware implements MiddlewareInterface
         }
 
         $oneIsStudySite   = in_array("1", $isStudySite);
-        $tpl_data['user'] = $this->user->getData();
+        $tpl_data['user'] = [];
         $tpl_data['user']['permissions']          = $this->user->getPermissions();
         $tpl_data['user']['user_from_study_site'] = $oneIsStudySite;
         $tpl_data['userNumSites']         = count($site_arr);
         $tpl_data['user']['SitesTooltip'] = str_replace(
             ";",
             "<br/>",
-            $this->user->getData('Sites')
+            $this->user->getSiteNames()
         );
 
         $tpl_data['hasHelpEditPermission'] = $this->user->hasPermission(
