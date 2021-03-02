@@ -1,0 +1,6 @@
+-- VSA-CVD for IBIS 2 Low Risk, IBIS 2 High Risk, 6 month recruit, 12 month recruit, Control
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('MC_HOME_UMN_REVISED', '0', '0', 'Y', 'Visit', '9', 'VSA-CVD', NULL);
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('MC_HOME_UMN_REVISED', '0', '0', 'Y', 'Visit', '10', 'VSA-CVD', NULL);
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('MC_HOME_UMN_REVISED', '0', '0', 'Y', 'Visit', '1', 'VSA-CVD', NULL);
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('MC_HOME_UMN_REVISED', '0', '0', 'Y', 'Visit', '2', 'VSA-CVD', NULL);
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('MC_HOME_UMN_REVISED', '0', '0', 'Y', 'Visit', '3', 'VSA-CVD', NULL);
