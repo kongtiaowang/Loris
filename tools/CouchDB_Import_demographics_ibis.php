@@ -114,10 +114,10 @@ class CouchDBDemographicsImporter {
         'vsa_priority_data_status' => array(
             'Description' => 'NOT IBIS 1 OR IBIS 2 ==> Not an IBIS 1 or an IBIS 2 candidate.
                               NOT A PRIORITY TO BRING BACK AT VSA ==> If participant status is Excluded, Ineligible, Refused, Not enrolled or study consent is NO.
-                              PRIORITY TO BRING BACK AT VSA ==> If candidate has an ASD+ diagnosis at V24, 2 scans before VSA, has Mullen data or DSMIV data at V24.
-                              SCAN DONE AT VSA ==> If a scan was done at VSA but no Mullen data and no DSMIV data at V24.
-                              DSMV DONE AT VSA ==> If Mullen data or DSMIV data at V24 but no scan at VSA.
-                              SCAN AND DSMV DONE AT VSA ==> If a scan was done at VSA and either Mullen data or DSMIV data at V24.',
+                              PRIORITY TO BRING BACK AT VSA ==> If candidate has an ASD+ diagnosis at V24 or 2 scans before VSA and Mullen or DSMIV data at V24.
+                              SCAN DONE AT VSA ==> If a scan was done at VSA but there is no DSMV data.
+                              DSMV DONE AT VSA ==> If there is DSMV data at VSA but no scan.
+                              SCAN AND DSMV DONE AT VSA ==> If a scan was done at VSA and there is also DSMV data.',
             'Type' => 'varchar(255)',
         )
     );
