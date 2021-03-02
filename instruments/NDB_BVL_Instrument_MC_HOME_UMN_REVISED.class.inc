@@ -156,11 +156,17 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
         // display test name
         $this->addHeader("HOME-MC University of Minnesota Revised Version");
 
+        $this->form->addElement("static", null, "Please tell us about your family and who lives in your home (use the family’s response to this question to tailor how you ask questions related to family members).");
+
+        $this->form->addElement("static", null, "Researchers will also note if responses include connection with other people over virtual means (vs. in-person).");
+
         $this->form->addElement(
             'static',
             'lorisSubHeader',
             '<h3>ROUTINES AND RESPONSIBILITY</h3>'
         );
+
+        $this->form->addElement("static", null, "<i>We will start out by asking some questions about things that happen on a typical day for the family and tasks ____ does around the home. Note to staff: Questions are listed in the order that they were asked (numbers are not chronological). YES/NO indicate how the data are coded into LORIS (and are synonymous with plus (yes) and minus (no)).</i>");
 
         $this->form->addElement("static", null, "<br/>");
 
@@ -215,6 +221,8 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
             '<h3>EMOTIONAL NEEDS</h3>'
         );
 
+        $this->form->addElement("static", null, "<i>These next questions ask about feelings. Note to staff: Questions are listed in the order that they were asked (numbers are not chronological). YES/NO indicate how the data are coded into LORIS (and are synonymous with plus (yes) and minus (no)).</i>");
+
         $this->form->addElement("static", null, "<br/>");
 
         $score_options = array(
@@ -264,6 +272,8 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
             'lorisSubHeader',
             '<h3>LEARNING BEHAVIOR</h3>'
         );
+
+        $this->form->addElement("static", null, "<i>These next questions ask about things in the house that ____ has access to. Note to staff: Questions are listed in the order that they were asked (numbers are not chronological). YES/NO indicate how the data are coded into LORIS (and are synonymous with plus (yes) and minus (no)).</i>");
 
         $this->form->addElement("static", null, "<br/>");
 
@@ -318,6 +328,8 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
             '<h3>RECREATIONAL ACTIVITIES</h3>'
         );
 
+        $this->form->addElement("static", null, "<i>These next questions ask about activities you do as a family. Note to staff: Questions are listed in the order that they were asked (numbers are not chronological). YES/NO indicate how the data are coded into LORIS (and are synonymous with plus (yes) and minus (no)).</i>");
+
         $this->form->addElement("static", null, "<br/>");
 
         $score_options = array(
@@ -368,6 +380,8 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
             'lorisSubHeader',
             '<h3>PLACES/TRAVEL</h3>'
         );
+
+        $this->form->addElement("static", null, "<i>These next questions ask about places ____ regularly goes to or has been. Note to staff: Questions are listed in the order that they were asked (numbers are not chronological). YES/NO indicate how the data are coded into LORIS (and are synonymous with plus (yes) and minus (no)).</i>");
 
         $this->form->addElement("static", null, "<br/>");
 
@@ -420,6 +434,8 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
             '<h3>FAMILY AND FRIENDS</h3>'
         );
 
+        $this->form->addElement("static", null, "<i>These next questions ask about time spent with friends and family members. Note to staff: Questions are listed in the order that they were asked (numbers are not chronological). YES/NO indicate how the data are coded into LORIS (and are synonymous with plus (yes) and minus (no)).</i>");
+
         $this->form->addElement("static", null, "<br/>");
 
         $score_options = array(
@@ -470,6 +486,8 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
             'lorisSubHeader',
             '<h3>HOUSE</h3>'
         );
+
+        $this->form->addElement("static", null, "These next questions ask about the house. Note to staff: Questions are listed in the order that they were asked (numbers are not chronological). YES/NO indicate how the data are coded into LORIS (and are synonymous with plus (yes) and minus (no)).");
 
         $this->form->addElement("static", null, "<br/>");
 
@@ -532,6 +550,8 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
             '<h3>PARENT-CHILD INTERACTIONS</h3>'
         );
 
+        $this->form->addElement("static", null, "Note to staff: Questions are listed in the order that they were asked (numbers are not chronological). YES/NO indicate how the data are coded into LORIS (and are synonymous with plus (yes) and minus (no)).");
+
         $this->form->addElement("static", null, "<br/>");
 
         $score_options = array(
@@ -588,6 +608,8 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
             'lorisSubHeader',
             '<h3>PARENT-VISITOR INTERACTIONS</h3>'
         );
+
+        $this->form->addElement("static", null, "Note to staff: Questions are listed in the order that they were asked (numbers are not chronological). YES/NO indicate how the data are coded into LORIS (and are synonymous with plus (yes) and minus (no)).");
 
         $this->form->addElement("static", null, "<br/>");
 
