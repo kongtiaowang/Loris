@@ -224,10 +224,7 @@ class NDB_BVL_Instrument_Visit_Level_Information_SA extends NDB_BVL_Instrument
 
         $this->addSelect("q2_ppe_used", "2. Was PPE Used at any time during the assessment?", $q2_options);
 
-        $this->addSelect("q3_subject_scan", "3. Did the subject:", $q3_options);
-
-        $this->form->addElement('text', "q3_i_if_no_scan_scheduled", $this->indent . "i) If no scan will be scheduled, indicate the reason:");
-        $this->XINRegisterRule("q3_i_if_no_scan_scheduled", array("q3_subject_scan{@}=={@}d_will_likely_not_get_scanned"), 'Required if answered d)');
+        // Question 3 omitted
 
         $this->addSelect("q4_family_asked_questionnaire", "4. Was family asked the COVID screening questions?", $q4_options);
 
@@ -332,8 +329,6 @@ class NDB_BVL_Instrument_Visit_Level_Information_SA extends NDB_BVL_Instrument
             if ($key == "vabs_3"
                 || $key == "intervention_hx_form"
                 || $key == "tanner"
-                || $key == "mock_scan"
-                || $key == "mri_scan"
             ) {
                 $this->addSelect($key . "_method_of_collection", $this->indent . "Method of Collection", $method_of_collection_options);
                 $this->XINRegisterRule($key . "_method_of_collection", array("{$key}_was_collected{@}=={@}yes"), 'Required if yes');
@@ -358,7 +353,7 @@ class NDB_BVL_Instrument_Visit_Level_Information_SA extends NDB_BVL_Instrument
                     "Never required."
                 );
 
-            $this->addSelect($key . "_parent_ppe", $this->indent . "Parent PPE", $subject_ppe, array("multiple"));
+            $this->addSelect($key . "_parent_ppe", $this->indent . "Parent PPE", $parent_ppe, array("multiple"));
 
             $this->XINRegisterRule(
                 $key . "_parent_ppe",
