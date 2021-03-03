@@ -113,11 +113,13 @@ class CouchDBDemographicsImporter {
         ),
         'vsa_priority_data_status' => array(
             'Description' => 'NOT IBIS 1 OR IBIS 2 ==> Not an IBIS 1 or an IBIS 2 candidate.
-                              NOT A PRIORITY TO BRING BACK AT VSA ==> If participant status is Excluded, Ineligible, Refused, Not enrolled or study consent is NO.
-                              PRIORITY TO BRING BACK AT VSA ==> If candidate has an ASD+ diagnosis at V24 or 2 scans before VSA and Mullen or DSMIV data at V24.
+                              NOT A PRIORITY TO BRING BACK AT VSA ==> If participant status is Excluded, Ineligible, Refused, Not enrolled or study consent is NO 
+                                          OR none of the other conditions (below) are met.
+                              SCAN AND DSMV DONE AT VSA ==> If a scan was done at VSA and there is also DSMV data.
                               SCAN DONE AT VSA ==> If a scan was done at VSA but there is no DSMV data.
                               DSMV DONE AT VSA ==> If there is DSMV data at VSA but no scan.
-                              SCAN AND DSMV DONE AT VSA ==> If a scan was done at VSA and there is also DSMV data.',
+                              PRIORITY TO BRING BACK AT VSA ==> If candidate has an ASD+ diagnosis at V24 
+                                          OR 2 scans before VSA along with data for either the Mullen or DSMIV.',
             'Type' => 'varchar(255)',
         )
     );
@@ -210,11 +212,11 @@ class CouchDBDemographicsImporter {
                                  CASE
                                    WHEN c.ProjectID NOT IN (1,2) THEN 'NOT IBIS 1 OR IBIS 2'
                                    WHEN COALESCE(pso.description,'Active') NOT IN ('Active', 'Inactive', 'Active - Flagged', 'Complete') OR cc1.Status = 'no' THEN 'NOT A PRIORITY TO BRING BACK AT VSA'
-                                   WHEN (dsm.q4_criteria_autistic_disorder = 'yes' || dsm.q4_criteria_PDD ='yes') THEN 'PRIORITY TO BRING BACK AT VSA'
-                                   WHEN nb_scans_before_vsa.count >= 2 AND (f24dsm.commentid IS NOT NULL OR f24mullen.commentid IS NOT NULL) THEN 'PRIORITY TO BRING BACK AT VSA'
                                    WHEN scanned_at_vsa.count >= 1 AND fvsadsm.commentid IS NOT NULL THEN 'SCAN AND DSMV DONE AT VSA'
                                    WHEN scanned_at_vsa.count >= 1 THEN 'SCAN DONE AT VSA'
-                                   WHEN  fvsadsm.commentid IS NOT NULL THEN 'DSMV DONE AT VSA'
+                                   WHEN fvsadsm.commentid IS NOT NULL THEN 'DSMV DONE AT VSA'
+                                   WHEN (dsm24.q4_criteria_autistic_disorder = 'yes' || dsm24.q4_criteria_PDD ='yes') THEN 'PRIORITY TO BRING BACK AT VSA'
+                                   WHEN nb_scans_before_vsa.count >= 2 AND (f24dsm.commentid IS NOT NULL OR f24mullen.commentid IS NOT NULL) THEN 'PRIORITY TO BRING BACK AT VSA'
                                    ELSE 'NOT A PRIORITY TO BRING BACK AT VSA'
                                  END                                                         AS vsa_priority_data_status
                           ";
@@ -268,6 +270,10 @@ class CouchDBDemographicsImporter {
                                        AND flag.data_entry IS NOT NULL
                                        AND session.visit_label='V24'
                                  ) f24dsm ON (f24dsm.candid=c.candid)
+                                 LEFT JOIN (
+                                      SELECT CommentID, q4_criteria_autistic_disorder, q4_criteria_PDD
+                                      FROM DSMIV_checklist
+                                 ) dsm24 ON (dsm24.commentid=f24dsm.commentid)
                                  LEFT JOIN (
                                        SELECT candidate.candid as candid, flag.commentid as commentid
                                        FROM flag
