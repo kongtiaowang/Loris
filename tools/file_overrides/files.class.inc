@@ -117,12 +117,13 @@ class Files extends \NDB_Page
         case "GET":
             //overide code starts here
             $record = urldecode(basename($request->getUri()->getPath()));
+            $record_id = urldecode(basename(dirname($request->getUri()->getPath())));
             if (!is_numeric($record)) {
                 $DB   = \Database::singleton();
                 $name =  $DB->pselectOne(
                     "SELECT uploaded_by FROM document_repository
-             WHERE File_Name=:name",
-                    array('name' => $record)
+             WHERE File_Name=:name and record_id=:recid",
+                    array('name' => $record, 'recid' => $record_id)
                 );
                 //override code ends here
                 $file = __DIR__ . "/../user_uploads/$name/$record";
