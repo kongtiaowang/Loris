@@ -156,11 +156,17 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
         // display test name
         $this->addHeader("HOME-MC University of Minnesota Revised Version");
 
+        $this->form->addElement("static", null, "Please tell us about your family and who lives in your home (use the family’s response to this question to tailor how you ask questions related to family members).");
+
+        $this->form->addElement("static", null, "Researchers will also note if responses include connection with other people over virtual means (vs. in-person).");
+
         $this->form->addElement(
             'static',
             'lorisSubHeader',
             '<h3>ROUTINES AND RESPONSIBILITY</h3>'
         );
+
+        $this->form->addElement("static", null, "<i>We will start out by asking some questions about things that happen on a typical day for the family and tasks ____ does around the home. Note to staff: Questions are listed in the order that they were asked (numbers are not chronological). YES/NO indicate how the data are coded into LORIS (and are synonymous with plus (yes) and minus (no)).</i>");
 
         $this->form->addElement("static", null, "<br/>");
 
@@ -186,7 +192,7 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
                                      "q1"  => "+ Any indication of a predictable schedule (YES)<br>- No indication of a predictable schedule (NO)",
                                      "q11" => "+ Parent encourages child to do at least 3 selfcare tasks routinely. (YES)<br>- Parent does NOT encourage child to do at least three selfcare tasks. (If child just does selfcare tasks on their own, this is still a minus.) (NO)",
                                      "q12" => "+ Parent encourages child to clean at least ONE living/play space routinely. (YES)<br>- Parent does NOT encourage child to clean at least ONE living/play space. (If child just cleans living/play space on their own, this is still a minus.) (NO)",
-                                     "q13" => "+ Parent encourages child to pick up at least ONE type of clothing child routinely. (YES)<br>- Parent does NOT encourage child to put clothing away. (If child just does this on their own, this is still a minus.) (NO)",
+                                     "q13" => "+ Parent encourages child to pick up at least ONE type of clothing routinely. (YES)<br>- Parent does NOT encourage child to put clothing away. (If child just does this on their own, this is still a minus.) (NO)",
                                      "q14" => "+ Parents have at least ONE clear limit (YES)<br>- Parents do NOT have at least ONE clear limit (NO)",
                                      "q15" => "+ Parent has set consequences for rules that are broken OR parent says child has not broken any rules yet, but can still describe hypothetical response if they do. (YES)<br>- Parent does not have set consequences OR parents differ in the extent that they enforce rules OR there are NO rules. (NO)",
                                      "q19" => "+ 0 or 1 physical punishments minimal (YES)<br>- 2+  physical punishments (were physical punishments minimal) (NO)",
@@ -215,6 +221,8 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
             '<h3>EMOTIONAL NEEDS</h3>'
         );
 
+        $this->form->addElement("static", null, "<i>These next questions ask about feelings. Note to staff: Questions are listed in the order that they were asked (numbers are not chronological). YES/NO indicate how the data are coded into LORIS (and are synonymous with plus (yes) and minus (no)).</i>");
+
         $this->form->addElement("static", null, "<br/>");
 
         $score_options = array(
@@ -238,8 +246,8 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
                                      "q3"  => "+ Parent HAS praised child at least 2x in past week (YES)<br>-Parent has NOT praised child at least 2x (NO)",
                                      "q20" => "+ Parent responds appropriately (YES)<br>-Parent responds with harsh comment or harsh punishment (NO)",
                                      "q18" => "+ 0 – 1 minimal expressions of anger TO child in past week (YES)<br>- 2+ expressions of anger TO child in past week (NO)",
-                                     "q21" => "+ 0-1 cries last week in front of child (YES)<br>- 2+ cries last week in front of child (NO)",
-                                     "q2"  => "+ Tolerance (helps child work though it or allows something like a night light) (YES)<br>- Intolerance (says the child is just being silly, does not offer help to child or says they do not believe in coddling that way) (NO)",
+                                     "q21" => "+ 0-1 cried last week in front of child (YES)<br>- 2+ cries last week in front of child (NO)",
+                                     "q2"  => "+ Tolerance (helps child work through it or allows something like a night light) (YES)<br>- Intolerance (says the child is just being silly, does not offer help to child or says they do not believe in coddling that way) (NO)",
                                     );
 
         foreach ($page2_question_prompts as $q => $prompt) {
@@ -265,6 +273,8 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
             '<h3>LEARNING BEHAVIOR</h3>'
         );
 
+        $this->form->addElement("static", null, "<i>These next questions ask about things in the house that ____ has access to. Note to staff: Questions are listed in the order that they were asked (numbers are not chronological). YES/NO indicate how the data are coded into LORIS (and are synonymous with plus (yes) and minus (no)).</i>");
+
         $this->form->addElement("static", null, "<br/>");
 
         $score_options = array(
@@ -282,7 +292,7 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
                                    "q27" => "27. Kids are often asking their parents what a word means. Does _______ have access to a dictionary or some other tool (like Siri or Google) for learning a word at home? Do you ever ask or encourage ____ to look up words him/herself using one of those tools?",
                                    "q29" => "29. Does _____ have access to some kind of music device like a tape recorder, CD, radio, iPod, iPad, MP3, or music streaming? Can _______ use it by him/herself?",
                                    "q30" => "30. Does____ have access to any musical instruments?",
-                                   "q32" => "32. Observation or Does ____ have a desk or other place of their own appropriate for doing homework?",
+                                   "q32" => "32. Observation or Does ____ have a desk or other place of their own, appropriate for doing homework?",
                                   );
 
         $page3_score_descriptions = array(
@@ -317,6 +327,8 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
             'lorisSubHeader',
             '<h3>RECREATIONAL ACTIVITIES</h3>'
         );
+
+        $this->form->addElement("static", null, "<i>These next questions ask about activities you do as a family. Note to staff: Questions are listed in the order that they were asked (numbers are not chronological). YES/NO indicate how the data are coded into LORIS (and are synonymous with plus (yes) and minus (no)).</i>");
 
         $this->form->addElement("static", null, "<br/>");
 
@@ -369,6 +381,8 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
             '<h3>PLACES/TRAVEL</h3>'
         );
 
+        $this->form->addElement("static", null, "<i>These next questions ask about places ____ regularly goes to or has been. Note to staff: Questions are listed in the order that they were asked (numbers are not chronological). YES/NO indicate how the data are coded into LORIS (and are synonymous with plus (yes) and minus (no)).</i>");
+
         $this->form->addElement("static", null, "<br/>");
 
         $score_options = array(
@@ -381,7 +395,7 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
         // Q39, 40, 44, 43, 41, 45
         $page5_question_prompts = array(
                                    "q39" => "39. Does the family have a public library card? Do you ever take ___ to the public library? How often do you take ______ to a public library?",
-                                   "q40" => "40. How about a museum. Has a family member taken _____ to a museum within the past year? f parent were not the ones who took child, ask how they were involved with next question: Did you help arrange this trip for _______?",
+                                   "q40" => "40. How about a museum. Has a family member taken _____ to a museum within the past year? If parent were not the ones who took child, ask how they were involved with next question: Did you help arrange this trip for _______?",
                                    "q44" => "44. Has a family member ever taken ____ to a concert or play? If parent were not the ones who took child, ask how they were involved with next question: Did you help arrange this trip for _______?",
                                    "q43" => "43. Do you or the other parent take ________ with you when running errands like paying bills, repairing a car, getting dry cleaning? How often would you say this happens with ___?",
                                    "q41" => "41. Does your family do much traveling? When was the last time your family traveled? How did you get there? About how far was that?",
@@ -419,6 +433,8 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
             'lorisSubHeader',
             '<h3>FAMILY AND FRIENDS</h3>'
         );
+
+        $this->form->addElement("static", null, "<i>These next questions ask about time spent with friends and family members. Note to staff: Questions are listed in the order that they were asked (numbers are not chronological). YES/NO indicate how the data are coded into LORIS (and are synonymous with plus (yes) and minus (no)).</i>");
 
         $this->form->addElement("static", null, "<br/>");
 
@@ -470,6 +486,8 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
             'lorisSubHeader',
             '<h3>HOUSE</h3>'
         );
+
+        $this->form->addElement("static", null, "These next questions ask about the house. Note to staff: Questions are listed in the order that they were asked (numbers are not chronological). YES/NO indicate how the data are coded into LORIS (and are synonymous with plus (yes) and minus (no)).");
 
         $this->form->addElement("static", null, "<br/>");
 
@@ -532,6 +550,8 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
             '<h3>PARENT-CHILD INTERACTIONS</h3>'
         );
 
+        $this->form->addElement("static", null, "Note to staff: Questions are listed in the order that they were asked (numbers are not chronological). YES/NO indicate how the data are coded into LORIS (and are synonymous with plus (yes) and minus (no)).");
+
         $this->form->addElement("static", null, "<br/>");
 
         $score_options = array(
@@ -557,7 +577,7 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
         $page8_score_descriptions = array(
                                      "q5"  => "+ Parent urges/asks child to say something at least ONE time (YES)<br>- Parent provides NO opportunities for child to contribute to the interview (NO)",
                                      "q23" => "+ At least 1 back and forth conversation (YES)<br>- No conversation (NO)",
-                                     "q7"  => "+ Parent at least answers 1 child question or 5 instances of encouraging the child to participate in conversations (YES)<br>- Parent does not answer or brushes the child off (NO)",
+                                     "q7"  => "+ Parent answers at least 1 child question or 5 instances of encouraging the child to participate in conversations (YES)<br>- Parent does not answer or brushes the child off (NO)",
                                      "q8"  => "+ Parent uses full sentences and some 2 syllable words (YES)<br>- No instances of rich language (NO)",
                                      "q6"  => "+ Parent responds positively (e.g., smiles, beams, hugs to child) or elaborates on praise (YES)<br>- Parent says no more than “thank you” without positive nonverbal responses, parent is embarrassed, parent is unsure/hesitant about the praise, parent ignores praise (NO)",
                                      "q9"  => "+ Overall parent conveys positivity towards the child (YES)<br>- Parent displays an overall lack of positivity (no smiling, or laughing towards the child, flat tone) (NO)",
@@ -588,6 +608,8 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
             'lorisSubHeader',
             '<h3>PARENT-VISITOR INTERACTIONS</h3>'
         );
+
+        $this->form->addElement("static", null, "Note to staff: Questions are listed in the order that they were asked (numbers are not chronological). YES/NO indicate how the data are coded into LORIS (and are synonymous with plus (yes) and minus (no)).");
 
         $this->form->addElement("static", null, "<br/>");
 
