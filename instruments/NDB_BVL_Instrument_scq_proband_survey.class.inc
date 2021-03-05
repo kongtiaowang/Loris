@@ -145,6 +145,41 @@ class NDB_BVL_Instrument_scq_proband_survey extends NDB_BVL_Instrument
             "Required",
             "other_relationship_to_child"
         );
+//SCORE SUMMARY
+        $this->addHeader("<h3>Score Summary</h3>");
+
+        $group[] =& $this->form->createElement(
+            "static",
+            null,
+            null,
+            "Total Score"
+        );
+        $group[] =& $this->form->createElement(
+            "static",
+            null,
+            null,
+            "SCQ Diagnosis"
+        );
+
+        $this->form->addGroup(
+            $group,
+            "score_header_group",
+            null,
+            $this->_GUIDelimiter,
+            false
+        );
+
+        unset($group);
+        $group[] = $this->form->createElement('static', "score", null, null);
+        $group[] = $this->form->createElement('static', "scq_diagnosis", null, null);
+        $this->form->addGroup(
+            $group,
+            "score_header_group_1",
+            null,
+            $this->_GUIDelimiter,
+            false
+        );
+        unset($group);
     }
 
 
@@ -229,7 +264,65 @@ class NDB_BVL_Instrument_scq_proband_survey extends NDB_BVL_Instrument
 
         $this->form->addFormRule(array(&$this, 'validate_page1'));
     }
+    function score(): void
+    {
 
+        //skip scoring if all data has not yet been entered.
+        if ($this->_determineDataEntryCompletionStatus() == "Incomplete") {
+            return;
+        }
+
+        $db =& Database::singleton();
+        // null scores
+        $this->_nullScores($this->scoreCols);
+        // Get the item scores
+
+        $query = "SELECT * FROM $this->table WHERE CommentID=:commentID";
+        $params = array('commentID' => $this->getCommentID());
+        $record = $db->pselectRow($query, $params);
+
+        //take only question fields, not metadata
+        foreach ($record as $field => $value) {
+            // This was written this way before -- added substr to strip off the "q"
+            if (intval(substr($field, 1)) == 0) {
+                continue;  //not a question field
+            } else {
+                $scores[intval(substr($field, 1))] = $value;
+            }
+        }
+
+        //check if phrase speech questions (#2-#7) need to be scored
+        if ($scores[1] == "no") {
+            for ($i = 2; $i <= 7; $i++) {
+                unset($scores[$i]);
+            }
+        }
+
+        //remove question 1, which is never scored...
+        unset($scores[1]);
+
+        //Questions where `yes` scores 1, otherwise `no` scores 1
+
+        $yesIs1 = array_diff(range(2, 19), array(2, 9, 19));
+        $calculatedScores = array("score" => 0);
+        //Sum point value of all questions
+
+        foreach ($scores as $question => $answer) {
+            //Currently, "not_answered" questions count as 0 towards the score
+            if ((in_array($question, $yesIs1) && $answer == "yes")
+                || (!in_array($question, $yesIs1) && $answer == "no")
+            ) {
+                $calculatedScores["score"]++;
+            }
+        }
+
+        //enforce ASD diagnosis cutoff
+        $calculatedScores["scq_diagnosis"] = $calculatedScores["score"] >= 11 ? "ASD Positive" : "ASD Negative";
+        //save the resultant total
+        $result = $db->update($this->table, $calculatedScores, array('CommentID' => $this->getCommentID()));
+
+
+    }
 
 }
 
@@ -256,65 +349,7 @@ class NDB_BVL_Instrument_scq_proband_survey extends NDB_BVL_Instrument
         return $errors;
     }
 
-function score(): void
-{
 
-    //skip scoring if all data has not yet been entered.
-    if ($this->_determineDataEntryCompletionStatus() == "Incomplete") {
-        return;
-    }
-
-    $db =& Database::singleton();
-    // null scores
-    $this->_nullScores($this->scoreCols);
-    // Get the item scores
-
-    $query = "SELECT * FROM $this->table WHERE CommentID=:commentID";
-    $params = array('commentID' => $this->getCommentID());
-    $record = $db->pselectRow($query, $params);
-
-    //take only question fields, not metadata
-    foreach ($record as $field => $value) {
-        // This was written this way before -- added substr to strip off the "q"
-        if (intval(substr($field, 1)) == 0) {
-            continue;  //not a question field
-        } else {
-            $scores[intval(substr($field, 1))] = $value;
-        }
-    }
-
-    //check if phrase speech questions (#2-#7) need to be scored
-    if ($scores[1] == "no") {
-        for ($i = 2; $i <= 7; $i++) {
-            unset($scores[$i]);
-        }
-    }
-
-    //remove question 1, which is never scored...
-    unset($scores[1]);
-
-    //Questions where `yes` scores 1, otherwise `no` scores 1
-
-    $yesIs1 = array_diff(range(2, 19), array(2, 9, 19));
-    $calculatedScores = array("score" => 0);
-    //Sum point value of all questions
-
-    foreach ($scores as $question => $answer) {
-        //Currently, "not_answered" questions count as 0 towards the score
-        if ((in_array($question, $yesIs1) && $answer == "yes")
-            || (!in_array($question, $yesIs1) && $answer == "no")
-        ) {
-            $calculatedScores["score"]++;
-        }
-    }
-
-    //enforce ASD diagnosis cutoff
-    $calculatedScores["scq_diagnosis"] = $calculatedScores["score"] >= 11 ? "ASD Positive" : "ASD Negative";
-    //save the resultant total
-    $result = $db->update($this->table, $calculatedScores, array('CommentID' => $this->getCommentID()));
-
-
-}
 
 
     
