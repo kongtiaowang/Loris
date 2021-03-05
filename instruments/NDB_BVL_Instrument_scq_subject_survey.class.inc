@@ -148,6 +148,41 @@ class NDB_BVL_Instrument_scq_subject_survey extends NDB_BVL_Instrument
             "Required",
             "other_relationship_to_child"
         );
+        //SCORE SUMMARY
+        $this->addHeader("<h3>Score Summary</h3>");
+
+        $group[] =& $this->form->createElement(
+            "static",
+            null,
+            null,
+            "Total Score"
+        );
+        $group[] =& $this->form->createElement(
+            "static",
+            null,
+            null,
+            "SCQ Diagnosis"
+        );
+
+        $this->form->addGroup(
+            $group,
+            "score_header_group",
+            null,
+            $this->_GUIDelimiter,
+            false
+        );
+
+        unset($group);
+        $group[] = $this->form->createElement('static', "score", null, null);
+        $group[] = $this->form->createElement('static', "scq_diagnosis", null, null);
+        $this->form->addGroup(
+            $group,
+            "score_header_group_1",
+            null,
+            $this->_GUIDelimiter,
+            false
+        );
+        unset($group);
     }
 
     private const PG1_questionArray = array(
