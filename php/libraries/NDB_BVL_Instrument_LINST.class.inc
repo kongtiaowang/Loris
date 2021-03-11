@@ -462,8 +462,12 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     $firstFieldOfPage = true;
                     break;
                 case 'table':
-                    $this->testName = trim($pieces[1]);
-                    $this->table    = trim($pieces[1]);
+                    // The 'test' and 'table' variables of the .meta file
+                    // take precedence over this variable in the .linst file.
+                    // The lines below offer backwards compatibility until
+                    // the feature is completely deprecated.
+                    $this->testName = $this->testName ?? trim($pieces[1]);
+                    $this->table    = $this->table ?? trim($pieces[1]);
                     break;
                 case 'title':
                     if ($addElements) {
@@ -558,13 +562,6 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                     $this->LinstQuestions[$pieces[1]] = array('type' => 'textarea');
                     break;
                 case 'date':
-                    if (strpos($pieces[1], "_date") !== false) {
-                        $pieces[1] = substr(
-                            $pieces[1],
-                            0,
-                            strpos($pieces[1], "_date")
-                        );
-                    }
                     if ($addElements) {
                         if ($pieces[3] == 1900 && $pieces[4] == 2100) {
                             $dateOptions = null;
@@ -582,28 +579,52 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
                         // Set date format
                         $dateFormat = isset($pieces[5]) ? trim($pieces[5]) : "";
 
-                        if (isset($dateFormat) && $dateFormat != "") {
-                            if ($dateFormat === 'MonthYear') {
-                                // Shows date without day of month
-                                $this->addMonthYear(
+                        if ($dateFormat === 'MonthYear') {
+                            // Shows date without day of month
+                            $this->addMonthYear(
+                                $pieces[1],
+                                $pieces[2],
+                                $dateOptions
+                            );
+                        } elseif ($dateFormat === 'BasicDate') {
+                            // Shows date without not answered dropdown
+                            $this->addBasicDate(
+                                $pieces[1],
+                                $pieces[2],
+                                $dateOptions
+                            );
+                        } elseif ($dateFormat === 'Date' || $dateFormat === "") {
+                            // The dateformat for a standard date should be
+                            // explicitly set to `Date` but for backwards
+                            // compatibility we support a null/empty dateformat and
+                            // default to standard date
+
+                            // Check that the field name ENDS with `_date` as it
+                            // should for standard dates. Then strip the `_date` so
+                            // it is not duplicated by the addDateElement function
+                            if (substr($pieces[1], -5) === "_date") {
+                                $pieces[1] = substr(
                                     $pieces[1],
-                                    $pieces[2],
-                                    $dateOptions
+                                    0,
+                                    -5
                                 );
                             } else {
-                                // Shows date without not answered dropdown
-                                $this->addBasicDate(
-                                    $pieces[1],
-                                    $pieces[2],
-                                    $dateOptions
+                                throw new \LorisException(
+                                    "Standard Date format field `$pieces[1]` ".
+                                    "in LINST file `$filename` must end with ".
+                                    "'_date'."
                                 );
                             }
-                        } else {
                             // Shows standard date
                             $this->addDateElement(
                                 $pieces[1],
                                 $pieces[2],
                                 $dateOptions
+                            );
+                        } else {
+                            throw new \LorisException(
+                                "Unsupported dateformat `$dateFormat` in LINST ".
+                                "file `$filename` for date element `$pieces[1]`."
                             );
                         }
                     }
@@ -732,6 +753,44 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
             }
             fclose($fp);
         }
+    }
+
+    /**
+     * Parses the metadata of a LINST instrument and sets the proper variables
+     * in the instrument class accordingly
+     *
+     * This is intended to be overridden by a subclass of NDB_BVL_Instrument
+     * to add support for other file formats.
+     *
+     * @param string $filename The filename to be loaded, or a base64 encoded
+     *                         string.
+     *
+     * @return void
+     */
+    function loadInstrumentMetadata(string $filename): void
+    {
+        $fp = fopen($filename, "r");
+        while (($line = fgets($fp, 4096)) !== false) {
+            $pieces = preg_split("/{@}/", $line);
+            $this->LinstLines[] = $pieces;
+
+            $type = $pieces[0];
+
+            switch ($type) {
+            case 'testname':
+                $this->testName = trim($pieces[1]);
+                break;
+            case 'table':
+                $this->table = trim($pieces[1]);
+                break;
+            case 'jsondata':
+                $this->jsonData = trim($pieces[1]) === 'true';
+                break;
+            default:
+                break;
+            }
+        }
+        fclose($fp);
     }
 
     /**
@@ -943,5 +1002,3 @@ class NDB_BVL_Instrument_LINST extends \NDB_BVL_Instrument
 
 
 }
-
-
