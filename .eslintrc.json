@@ -69,7 +69,7 @@
         "modules/**"
       ],
       "rules": {
-	    "no-jquery/no-other-methods": "error",
+        "no-jquery/no-other-methods": "error",
         "no-jquery/no-other-utils": "error",
         "no-jquery/no-jquery-constructor": "error",
 
@@ -149,12 +149,10 @@
       "files": [
         "modules/media/**",
         "modules/candidate_parameters/**",
-        "modules/conflict_resolver/**",
         "modules/bvl_feedback/**",
         "modules/dataquery/**",
         "modules/dqt/**",
         "modules/imaging_browser/**",
-        "modules/instrument_builder/**",
         "modules/imaging_uploader/**"
       ],
       "rules": {
