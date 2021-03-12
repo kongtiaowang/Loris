@@ -25,7 +25,8 @@ jobs:
       with:
         php-version: ${{ matrix.php }}
         extensions: php-ast, zip
-        tools: phan
+      run: vendor/bin/phan
+
     - name: Validate composer.json and composer.lock
       run: composer validate
 
