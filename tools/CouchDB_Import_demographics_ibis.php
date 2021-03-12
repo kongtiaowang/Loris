@@ -37,7 +37,7 @@ class CouchDBDemographicsImporter {
         'Risk' => array(
             'Description' => 'Risk group of candidate',
             'Type' => 'varchar(255)'
-        ),        
+        ),
         'Sex' => array(
             'Description' => 'Candidate\'s sex',
             'Type' => "enum('Male', 'Female')"
@@ -113,15 +113,25 @@ class CouchDBDemographicsImporter {
         ),
         'vsa_priority_data_status' => array(
             'Description' => 'NOT IBIS 1 OR IBIS 2 ==> Not an IBIS 1 or an IBIS 2 candidate.
-                              NOT A PRIORITY TO BRING BACK AT VSA ==> If participant status is Excluded, Ineligible, Refused, Not enrolled or study consent is NO 
+                              NOT A PRIORITY TO BRING BACK AT VSA ==> If participant status is Excluded, Ineligible, Refused, Not enrolled or study consent is NO
                                           OR none of the other conditions (below) are met.
                               SCAN AND DSMV DONE AT VSA ==> If a scan was done at VSA and there is also DSMV data.
                               SCAN DONE AT VSA ==> If a scan was done at VSA but there is no DSMV data.
                               DSMV DONE AT VSA ==> If there is DSMV data at VSA but no scan.
-                              PRIORITY TO BRING BACK AT VSA ==> If candidate has an ASD+ diagnosis at V24 
+                              PRIORITY TO BRING BACK AT VSA ==> If candidate has an ASD+ diagnosis at V24
                                           OR 2 scans before VSA along with data for either the Mullen or DSMIV.',
             'Type' => 'varchar(255)',
+        ),
+        'gwas' => array(
+            'Description' => 'NOT IBIS 1 OR IBIS 2 ==> Not an IBIS 1 or an IBIS 2 candidate.
+                              NOT A PRIORITY TO BRING BACK AT VSA ==> If participant status is Excluded, Ineligible, Refused, Not enrolled or study consent is NO
+                              NOT A PRIORITY TO BRING BACK AT VSA => If no scan at VSA, no DSMV data, no ASD+ diagnosis at V24, less
+                              than 2 scans before VSA and no data for both the Mullen or DSMIV.
+                              Otherwise, the value will be a string telling who to collect saliva samples for at VSA
+                              (e.g. "COLLECT SALIVA SAMPLES FOR MOTHER AND FATHER")',
+            'Type' => 'varchar(255)',
         )
+
     );
 
     var $Config = array(
@@ -218,7 +228,35 @@ class CouchDBDemographicsImporter {
                                    WHEN (dsm24.q4_criteria_autistic_disorder = 'yes' || dsm24.q4_criteria_PDD ='yes') THEN 'PRIORITY TO BRING BACK AT VSA'
                                    WHEN nb_scans_before_vsa.count >= 2 AND (f24dsm.commentid IS NOT NULL OR f24mullen.commentid IS NOT NULL) THEN 'PRIORITY TO BRING BACK AT VSA'
                                    ELSE 'NOT A PRIORITY TO BRING BACK AT VSA'
-                                 END                                                         AS vsa_priority_data_status
+                                 END                                                         AS vsa_priority_data_status,
+                                 CASE
+                                   WHEN c.ProjectID NOT IN (1,2) THEN 'NOT IBIS 1 OR IBIS 2'
+                                   WHEN COALESCE(pso.description,'Active') NOT IN ('Active', 'Inactive', 'Active - Flagged', 'Complete') OR cc1.Status = 'no' THEN 'NOT A PRIORITY TO BRING BACK AT VSA'
+                                   WHEN COALESCE(scanned_at_vsa.count,0) < 1 AND fvsadsm.commentid IS NULL
+                                        AND NOT(dsm24.q4_criteria_autistic_disorder <=> 'yes') AND NOT(dsm24.q4_criteria_PDD <=> 'yes')
+                                        AND (COALESCE(nb_scans_before_vsa.count,0) < 2 OR (f24dsm.commentid IS NULL AND f24mullen.commentid IS NULL)) THEN 'NOT A PRIORITY TO BRING BACK AT VSA'
+                                   WHEN gwas24.candid IS NULL THEN 'NOT A PRIORITY TO BRING BACK AT VSA'
+                                   WHEN gwas24.subject_qc = 'yes' AND gwas24.proband_qc = 'yes' AND gwas24.mother_qc = 'yes' AND gwas24.father_qc = 'yes' THEN 'ALL SALIVA FROM THIS FAMILY PASSED QC'
+
+                                   WHEN gwas24.subject_qc = 'yes' AND gwas24.proband_qc = 'yes' AND gwas24.mother_qc = 'yes' THEN 'COLLECT SALIVA FROM FATHER'
+                                   WHEN gwas24.subject_qc = 'yes' AND gwas24.proband_qc = 'yes' AND gwas24.father_qc = 'yes' THEN 'COLLECT SALIVA FROM MOTHER'
+                                   WHEN gwas24.subject_qc = 'yes' AND gwas24.mother_qc  = 'yes' AND gwas24.father_qc = 'yes' THEN 'COLLECT SALIVA FROM PROBAND'
+                                   WHEN gwas24.proband_qc = 'yes' AND gwas24.mother_qc  = 'yes' AND gwas24.father_qc = 'yes' THEN 'COLLECT SALIVA FROM SUBJECT'
+
+                                   WHEN gwas24.subject_qc = 'yes' AND gwas24.proband_qc = 'yes' THEN 'COLLECT SALIVA FROM MOTHER AND FATHER'
+                                   WHEN gwas24.subject_qc = 'yes' AND gwas24.mother_qc  = 'yes' THEN 'COLLECT SALIVA FROM PROBAND AND FATHER'
+                                   WHEN gwas24.subject_qc = 'yes' AND gwas24.father_qc  = 'yes' THEN 'COLLECT SALIVA FROM PROBAND AND MOTHER'
+                                   WHEN gwas24.proband_qc = 'yes' AND gwas24.mother_qc  = 'yes' THEN 'COLLECT SALIVA FROM SUBJECT AND FATHER'
+                                   WHEN gwas24.proband_qc = 'yes' AND gwas24.father_qc  = 'yes' THEN 'COLLECT SALIVA FROM SUBJECT AND MOTHER'
+                                   WHEN gwas24.mother_qc  = 'yes' AND gwas24.father_qc  = 'yes' THEN 'COLLECT SALIVA FROM SUBJECT AND PROBAND'
+
+                                   WHEN gwas24.subject_qc = 'yes' THEN 'COLLECT SALIVA FROM PROBAND, MOTHER AND FATHER'
+                                   WHEN gwas24.proband_qc = 'yes' THEN 'COLLECT SALIVA FROM SUBJECT, MOTHER AND FATHER'
+                                   WHEN gwas24.mother_qc  = 'yes' THEN 'COLLECT SALIVA FROM SUBJECT, PROBAND AND FATHER'
+                                   WHEN gwas24.father_qc  = 'yes' THEN 'COLLECT SALIVA FROM SUBJECT, PROBAND AND MOTHER'
+
+                                   ELSE 'COLLECT SALIVA FROM SUBJECT, PROBAND, MOTHER AND FATHER'
+                                 END                                                         AS gwas
                           ";
         $tablesToJoin = " FROM   session s 
                                  JOIN candidate c using (candid) 
@@ -295,7 +333,13 @@ class CouchDBDemographicsImporter {
                                        AND session.visit_label IN ('VSA', 'VSA-CVD')
                                  ) fvsadsm ON (fvsadsm.candid=c.candid)
                                  LEFT JOIN participant_status_options pso 
-                                       ON ( pso.id = ps.participant_status )";
+                                       ON ( pso.id = ps.participant_status )
+                                 LEFT JOIN (
+                                      SELECT session.candid as candid, gwas.subject_qc, gwas.proband_qc, gwas.mother_qc, gwas.father_qc
+                                      FROM gwas
+                                      JOIN flag ON(flag.commentid=gwas.commentid AND flag.commentid NOT LIKE 'DDE%')
+                                      JOIN session ON(session.id=flag.sessionid AND session.visit_label='V24')
+                                 ) gwas24 ON(gwas24.candid=s.candid) ";
 
         // If proband fields are being used, add proband information into the query
         if ($config->getSetting("useProband") === "true") {
