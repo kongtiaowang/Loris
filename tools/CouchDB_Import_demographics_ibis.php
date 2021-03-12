@@ -122,7 +122,7 @@ class CouchDBDemographicsImporter {
                                           OR 2 scans before VSA along with data for either the Mullen or DSMIV.',
             'Type' => 'varchar(255)',
         ),
-        'gwas' => array(
+        'GWAS_saliva_samples_tracking' => array(
             'Description' => 'NOT IBIS 1 OR IBIS 2 ==> Not an IBIS 1 or an IBIS 2 candidate.
                               NOT A PRIORITY TO BRING BACK AT VSA ==> If participant status is Excluded, Ineligible, Refused, Not enrolled or study consent is NO
                               NOT A PRIORITY TO BRING BACK AT VSA => If no scan at VSA, no DSMV data, no ASD+ diagnosis at V24, less
