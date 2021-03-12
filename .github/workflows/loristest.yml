@@ -43,6 +43,8 @@ jobs:
 
     - name: Install OS package dependencies
       run: sudo apt-get install php-ast
+   
+    - name: Chefkljfldksfldkfjdlsfjaklfjlkdsjklafdlks
       run: php -m
 
     - name: Build LORIS
