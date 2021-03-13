@@ -256,7 +256,7 @@ class CouchDBDemographicsImporter {
                                    WHEN gwas24.father_qc  = 'yes' THEN 'COLLECT SALIVA FROM SUBJECT, PROBAND AND MOTHER'
 
                                    ELSE 'COLLECT SALIVA FROM SUBJECT, PROBAND, MOTHER AND FATHER'
-                                 END                                                         AS gwas
+                                 END                                                         AS GWAS_saliva_samples_tracking
                           ";
         $tablesToJoin = " FROM   session s 
                                  JOIN candidate c using (candid) 
