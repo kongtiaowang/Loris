@@ -101,7 +101,76 @@ class NDB_BVL_Instrument_CCC2 extends NDB_BVL_Instrument
         // display test name
         $this->addHeader("Children's Communication Checklist 2- Caregiver Response Form");
         $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
-        // Header
+        // SCORE SUMMARY START
+        $this->form->addElement('header', null, "<br><h4><i>Scoring will not be calculated if age is 
+greater than 17 years.
+<br>Scoring will not be calculated if Caregiver responses are missing for more than 3 items (Page 1-Page 4).</i></h4></br></h4>
+<h2>SCORE SUMMARY</h2> ");
+
+        for($i=1;$i<=3;$i++)
+        {
+            if($i==1) {
+                $columnHeaders = array("total_raw_score" => "Total Raw Score", "scaled_score" => "Scaled Score",
+                    "percentile" => "Percentile");
+                $this->form->addElement('header', null, "Scale Scores ");
+                $domains=array("A_speech" => "A. Speech","B_syntax" => "B. Syntax",
+                    "C_semantics" => "C. Semantics","D_coherence" => "D. Coherence",
+                    "E_initiation" => "E. Initiation","F_scripted_language" => "F. Scripted language",
+                    "G_context" => "G. Context","H_nonverbal_communication" => "H. Nonverbal communication",
+                    "I_social_relations" => "I. Social relations","J_interests" => "J. Interests",
+                );
+                $group[] = $this->form->createElement('static', "total_raw_score", null, null);
+                $group[] = $this->form->createElement('static', "scaled_score", null, null);
+                $group[] = $this->form->createElement('static', "percentile", null, null);
+                $this->form->addGroup($group, 'score_header_group_'.$i, "<strong>Scale</strong>", $this->_GUIDelimiter, FALSE);
+                unset($group);
+
+            }
+            if($i==2) {
+                $columnHeaders = array("scaled_score" => "Scaled Score","composite_score" => "Standard/Composite Score",
+                    "percentile" => "Percentile","90_percentage_CI" => "90% CI","95_percentage_CI" => "95% CI");
+                $this->form->addElement('header', null, "GCC - Scores ");
+                $domains=array("GCC" => "General Communication Composite — GCC",
+                );
+
+                $group[] = $this->form->createElement('static', "scaled_score", null, null);
+                $group[] = $this->form->createElement('static', "composite_score", null, null);
+                $group[] = $this->form->createElement('static', "percentile", null, null);
+                $group[] = $this->form->createElement('static', "90_percentage_CI", null, null);
+                $group[] = $this->form->createElement('static', "95_percentage_CI", null, null);
+                $this->form->addGroup($group, 'score_header_group_'.$i, "<strong>Scale</strong>", $this->_GUIDelimiter, FALSE);
+                unset($group);
+            }
+            if($i==3)
+            {
+                $columnHeaders = array("scaled_score" => "Scaled Score");
+                $this->form->addElement('header', null, "SIDI - Scores");
+                $domains = array("SIDI" => "Social Interaction Difference Index — SIDI"
+                );
+
+                $group[] = $this->form->createElement('static', "scaled_score", null, null);
+                $this->form->addGroup($group, 'score_header_group_'.$i, "<strong>Scale</strong>", $this->_GUIDelimiter, FALSE);
+                unset($group);
+            }
+            foreach ($columnHeaders as $field => $label) {
+                $columnHeaders[$field] .= "     ";
+            }
+            $this->localDefaults = array_merge($this->localDefaults, $columnHeaders);
+
+            foreach ($domains as $field => $label) {
+                foreach ($columnHeaders as $scoreField => $scoreLabel) {
+
+                    $group[] = $this->form->createElement('static', "{$field}_{$scoreField}", null, null);
+                }
+                $this->form->addGroup($group, "{$label}_score_group_{$i}", $label, $this->_GUIDelimiter, FALSE);
+                unset($group);
+
+
+            }
+
+        }
+        //SCORE SUMMARY END
+
         $this->addHeader("Information About The Person Completing The Caregiver Response Form");
         $opts2 = array(
             null => "",
@@ -371,4 +440,248 @@ as 'furniture' or to apples, bananas, and pears as 'fruit')",
         return $errors;
     }
 
+    function score(): void
+    {
+
+        if($this->score_check()==false)
+        {
+            return;
+        }
+
+        for ($i = 1; $i <=70; $i++) {
+            $n = $i;
+
+            if($n>=51 && $n<=70)
+            {
+                $score_grid_{$n}=array('0.less than once a week (or never)'=>3,
+                    '1.at least once a week, but not everyday (or occasionally)'=>2,
+                    '2.once or twice a day (or frequently)'=>1,
+                    '3.several times (more than twice) a day (or always)'=>0);
+            }
+            else
+            {
+                $score_grid_{$n}=array('0.less than once a week (or never)'=>0,
+                    '1.at least once a week, but not everyday (or occasionally)'=>1,
+                    '2.once or twice a day (or frequently)'=>2,
+                    '3.several times (more than twice) a day (or always)'=>3);
+            }
+        }
+
+
+        //get the saved scores
+        $db =& Database::singleton();
+        $query = "SELECT * FROM $this->table WHERE CommentID = '$this->commentID'";
+        $record = $db->pselectRow($query, array());
+        $timepoint =& TimePoint::singleton($this->getSessionID());
+        $dob = $timepoint->getEffectiveDateOfBirth();
+        $interval = date_diff(date_create($dob), date_create($record["Date_taken"]));
+        $age_months = $interval->format("%m");
+        if($age_months==10 or $age_months==11)
+        {
+            $age_months= 9;
+        }
+        //Hack to make a proper mathematical range to check the value
+        //Deciaml Range should be between .5-.9
+        //Age with months >9 will make an wrong mathematical value
+        //So Months >9 (10 & 11) are considered as 9 as all the lookup values in between 9 &11 monts have same
+        //value in lookup table. Look up table also adjusted in that way
+        $age_years = $interval->format("%y");
+        $age = $age_years.".".$age_months;
+        $CCC2_age_value=$this->CCC2_age_lookup_value($age);
+
+
+        $A_array = array('2','24','29','38','44','51','58');
+        $A_score_array=array();
+        foreach ($A_array as $value) {
+            array_push($A_score_array, $score_grid_{$value}[$record['CCC2_response_' . $value]]);
+        }
+        $B_array = array('1','17','27','36','43','55','69');
+        $B_score_array=array();
+        foreach ($B_array as $value) {
+            array_push($B_score_array, $score_grid_{$value}[$record['CCC2_response_' . $value]]);
+        }
+        $C_array = array('4','6','12','32','46','64','66');
+        $C_score_array=array();
+        foreach ($C_array as $value) {
+            array_push($C_score_array, $score_grid_{$value}[$record['CCC2_response_' . $value]]);
+        }
+        $D_array=array('10','25','40','48','50','53','68');
+        $D_score_array=array();
+        foreach ($D_array as $value) {
+            array_push($D_score_array, $score_grid_{$value}[$record['CCC2_response_' . $value]]);
+        }
+        $E_array=array('5','21','35','37','45','59','70');
+        $E_score_array=array();
+        foreach ($E_array as $value) {
+            array_push($E_score_array, $score_grid_{$value}[$record['CCC2_response_' . $value]]);
+        }
+        $F_array=array('11','18','23','30','42','61','62');
+        $F_score_array=array();
+        foreach ($F_array as $value) {
+            array_push($F_score_array, $score_grid_{$value}[$record['CCC2_response_' . $value]]);
+        }
+        $G_array=array('15','19','28','34','41','54','60');
+        $G_score_array=array();
+        foreach ($G_array as $value) {
+            array_push($G_score_array, $score_grid_{$value}[$record['CCC2_response_' . $value]]);
+        }
+        $H_array=array('8','14','20','31','39','56','65');
+        $H_score_array=array();
+        foreach ($H_array as $value) {
+            array_push($H_score_array, $score_grid_{$value}[$record['CCC2_response_' . $value]]);
+        }
+        $I_array=array('3','7','13','16','33','57','67');
+        $I_score_array=array();
+        foreach ($I_array as $value) {
+            array_push($I_score_array, $score_grid_{$value}[$record['CCC2_response_' . $value]]);
+        }
+        $J_array=array('9','22','26','47','49','52','63');
+        $J_score_array=array();
+        foreach ($J_array as $value) {
+            array_push($J_score_array, $score_grid_{$value}[$record['CCC2_response_' . $value]]);
+        }
+
+        $scores['A_speech_total_raw_score'] =$this->findRowScore($A_score_array);
+        $scores['B_syntax_total_raw_score'] =$this->findRowScore($B_score_array);
+        $scores['C_semantics_total_raw_score'] =$this->findRowScore($C_score_array);
+        $scores['D_coherence_total_raw_score'] =$this->findRowScore($D_score_array);
+        $scores['E_initiation_total_raw_score'] =$this->findRowScore($E_score_array);
+        $scores['F_scripted_language_total_raw_score'] =$this->findRowScore($F_score_array);
+        $scores['G_context_total_raw_score'] =$this->findRowScore($G_score_array);
+        $scores['H_nonverbal_communication_total_raw_score'] =$this->findRowScore($H_score_array);
+        $scores['I_social_relations_total_raw_score'] =$this->findRowScore($I_score_array);
+        $scores['J_interests_total_raw_score'] =$this->findRowScore($J_score_array);
+        $domains=array("A_speech" => "A. Speech","B_syntax" => "B. Syntax",
+            "C_semantics" => "C. Semantics","D_coherence" => "D. Coherence",
+            "E_initiation" => "E. Initiation","F_scripted_language" => "F. Scripted language",
+            "G_context" => "G. Context","H_nonverbal_communication" => "H. Nonverbal communication",
+            "I_social_relations" => "I. Social relations","J_interests" => "J. Interests",
+        );
+         $GCC_score=0;
+         $SIDI_score_part1=0;
+         $SIDI_score_part2=0;
+        foreach ($domains as $key => $value) {
+            $total_raw_score=$scores[$key.'_total_raw_score'];
+                $query_scores = "SELECT * FROM CCC2_score_lookup WHERE 
+                total_raw_score ='$total_raw_score' and age='$CCC2_age_value' and scale_type='$key'";
+                $record_1 = $db->pselectRow($query_scores, array());
+
+            if(empty($record_1)) {
+                $query_scores = "SELECT * FROM CCC2_score_lookup WHERE 
+                $total_raw_score BETWEEN SUBSTRING_INDEX 
+                (`total_raw_score`,'-', 1) AND SUBSTRING_INDEX(`total_raw_score`,'-', -1) 
+                 and age='$CCC2_age_value' and scale_type='$key'";
+                $record_1 = $db->pselectRow($query_scores, array());
+            }
+            $scores[$key.'_scaled_score']=$record_1['scaled_score'];
+            $scores[$key.'_percentile']=$record_1['percentile'];
+
+
+            $GCC_excluded = array("I_social_relations", "J_interests");
+            $SIDI_score_part1_included=array("E_initiation","H_nonverbal_communication",
+                "I_social_relations" ,"J_interests");
+            $SIDI_score_part2_included=array("A_speech","B_syntax","C_semantics","D. Coherence");
+            if (in_array($key, $SIDI_score_part1_included)) {
+                $SIDI_score_part1+= $scores[$key . '_scaled_score'];
+            }
+            if (!in_array($key, $SIDI_score_part2_included)) {
+
+                $SIDI_score_part2+= $scores[$key . '_scaled_score'];
+            }
+
+            if (!in_array($key, $GCC_excluded)) {
+                $GCC_score+= $scores[$key . '_scaled_score'];
+            }
+        }
+
+        $scores['GCC_scaled_score']=$GCC_score;
+        $scores['SIDI_scaled_score']=$SIDI_score_part1-$SIDI_score_part2;
+
+
+        $GCC_query_scores = "SELECT * FROM CCC2_composite_score_lookup WHERE 
+                GCC_total_score ='$GCC_score'";
+        $record_2 = $db->pselectRow($GCC_query_scores, array());
+        $scores['GCC_composite_score']=$record_2['GCC_composite_score'];
+        $scores['GCC_percentile']=$record_2['GCC_percentile'];
+        $scores['GCC_90_percentage_CI']=$record_2['GCC_90_percentage_CI'];
+        $scores['GCC_95_percentage_CI']=$record_2['GCC_95_percentage_CI'];
+
+        $result = $db->update($this->table, $scores, array('CommentID'=>$this->getCommentID()));
     }
+
+    function findRowScore($scale_array)
+    {
+        $raw_score=0;
+
+        foreach ($scale_array as $val)
+        {
+            if($val==1)
+            {
+                $raw_score=$raw_score+1;
+            }
+            if($val==2)
+            {
+                $raw_score=$raw_score+2;
+            }
+            if($val==3)
+            {
+                $raw_score=$raw_score+3;
+            }
+        }
+        return $raw_score;
+    }
+
+    function CCC2_age_lookup_value($age)
+    {
+        $db = Database::singleton();
+            $query_scores = "SELECT * FROM CCC2_age_conversion_lookup WHERE
+                age_year_months ='$age'";
+        $record_1 = $db->pselectRow($query_scores, array());
+
+        if(empty($record_1))
+        {
+            $query_scores = "SELECT * FROM CCC2_age_conversion_lookup WHERE
+                $age BETWEEN SUBSTRING_INDEX 
+                (`age_year_months`,'-', 1) AND SUBSTRING_INDEX(`age_year_months`,'-', -1)";
+            $record_1 = $db->pselectRow($query_scores, array());
+        }
+
+        return $record_1['age_conversion_value'];
+    }
+
+    function score_check()
+    {
+        $db =& Database::singleton();
+        $query = "SELECT * FROM $this->table WHERE CommentID = '$this->commentID'";
+        $record = $db->pselectRow($query, array());
+        $timepoint =& TimePoint::singleton($this->getSessionID());
+        $dob = $timepoint->getEffectiveDateOfBirth();
+        $interval = date_diff(date_create($dob), date_create($record["Date_taken"]));
+        $age_years = $interval->format("%y");
+
+       if($age_years>=17)
+       {
+          // echo "Age greater than or equals 17 years. Scoring will not be available";
+           return false;
+       }
+
+
+        else if($record['CCC2_response_1']==NULL || $record['CCC2_response_21']==NULL
+                || $record['CCC2_response_41'] ==NULL || $record['CCC2_response_61'] ==NULL)
+            {
+                //echo "Score Summary will be available/calculated on completing the Caregiver responses in Page 1 to Page 4.";
+                return false;
+            }
+
+            else{
+
+                return true;
+            }
+    }
+
+
+
+
+    }
+
+
