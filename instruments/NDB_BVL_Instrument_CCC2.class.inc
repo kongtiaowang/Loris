@@ -606,6 +606,10 @@ as 'furniture' or to apples, bananas, and pears as 'fruit')",
         $scores['GCC_90_percentage_CI']=$record_2['GCC_90_percentage_CI'];
         $scores['GCC_95_percentage_CI']=$record_2['GCC_95_percentage_CI'];
 
+        $scores= str_replace(">", "Greater than ", $scores);
+
+        $scores= str_replace("<", "Less than ", $scores);
+
         $result = $db->update($this->table, $scores, array('CommentID'=>$this->getCommentID()));
     }
 
