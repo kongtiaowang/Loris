@@ -148,7 +148,8 @@ SUMIF ( Q4=>0 and Q8=>0 and Q14=>0 and Q20=>0 and Q24=>0 and Q28=>0 and Q29=>0 a
     var $subscales = array(
         'awareness_score' => array(2, 7, 25, 32, 45, 52, 54, 56),
         'cognition_score' => array(5, 10, 15, 17, 30, 40, 42, 44, 48, 58, 59, 62),
-        'communication_score' => array(12, 13, 16, 18, 19, 21, 22, 26, 33, 37, 38, 41, 46, 47, 51, 53, 55, 57, 60, 61),
+        'communication_score' => array(12, 13, 16, 18, 19, 21, 22,
+            26, 33, 35, 36,37, 38, 41, 46, 47, 51, 53, 55, 57, 60, 61),
         'motivation_score' => array(1, 3, 6, 9, 11, 23, 27, 34, 43, 64, 65),
         'mannerisms_score' => array(4, 8, 14, 20, 24, 28, 29, 31, 39, 49, 50, 63)
     );
@@ -426,7 +427,10 @@ SUMIF ( Q4=>0 and Q8=>0 and Q14=>0 and Q20=>0 and Q24=>0 and Q28=>0 and Q29=>0 a
                 case 'not_answered':
                     $not_answered += 1;
                     if (!in_array($QuestionNumber, $ignored)) {
-                        $scores[$currentSubscale] = 0;
+                        $val=$this->getMisssingValueScore($QuestionNumber);
+                        $score += $val;
+                        $totals[$currentSubscale] += $val;
+                        //$scores[$currentSubscale] = 0;
                     }
                     break;
             }
@@ -463,8 +467,11 @@ SUMIF ( Q4=>0 and Q8=>0 and Q14=>0 and Q20=>0 and Q24=>0 and Q28=>0 and Q29=>0 a
                     $totals[$currentSubscale] += 0;
                     break;
                 case 'not_answered':
+                    $val=$this->getMisssingValueScore($QuestionNumber);
+                    $score += $val;
+                    $totals[$currentSubscale] += $val;
                     $not_answered += 1;
-                    $scores[$currentSubscale] = 0;
+                    //$scores[$currentSubscale] = 0;
                     break;
             }
             $currentSubscale = null;
@@ -476,9 +483,11 @@ SUMIF ( Q4=>0 and Q8=>0 and Q14=>0 and Q20=>0 and Q24=>0 and Q28=>0 and Q29=>0 a
                 unset($scores[$key]);
         }
         $scores['srs_score'] = $score;
-        if ($not_answered > 7) {
-            $scores['srs_score'] = "More than 7 questions not answered. Score is invalid.";
+        if ($not_answered > 6) {
+            $scores['srs_score'] = "Greater than 10% responses missing/Not Answered; So cannot score";
             $scores['srs_t_score']="Unable to score/Data Insufficient";
+            $db->update($this->table, $scores, array('CommentID' => $this->getCommentID()));
+            return;
         }
         else{
             $query = "
@@ -599,6 +608,26 @@ function getLookupScaleName($scale)
 
     return $scale_name;
 
+}
+
+function getMisssingValueScore($qno)
+{
+    $one_value_array=array(3,5,7,9,11,12,15,17,19,22,22,25,26,28,31,38,40,43,45,48,56);
+    $two_value_array=array(52,55);
+
+    if(in_array($qno,$one_value_array))
+    {
+        $value=1;
+    }
+    else if(in_array($qno,$two_value_array))
+    {
+        $value=1;
+    }
+    else{
+        $value=0;
+
+    }
+    return $value;
 }
 
 }
