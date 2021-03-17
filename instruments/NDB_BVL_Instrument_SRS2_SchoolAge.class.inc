@@ -734,7 +734,7 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
                 $raw_score=$raw_score+3;
             }
         }
-        
+
         return $raw_score;
     }
 
