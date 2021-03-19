@@ -25,13 +25,27 @@ class NDB_BVL_Instrument_IBIS extends NDB_BVL_Instrument
     function ADOS_SA_CSS($ADOS_Version, $ados_a1, $ADOS_social_affect_total, $age)
     {
         $ADOS_mod = '';
-        if ( $ADOS_Version == "ados_module1" or $ADOS_Version == "ados2_module1") {
-            if ( $ados_a1 == 0 ) { $ADOS_mod = "Module1somewords"; }
-            elseif ( $ados_a1 == 1 ) { $ADOS_mod = "Module1somewords"; }
-            elseif ( $ados_a1 == 2 ) { $ADOS_mod = "Module1somewords"; }
-            elseif ( $ados_a1 == 3 ) { $ADOS_mod = "Module1nowords"; }
-            elseif ( $ados_a1 == 8 and $ADOS_Version == "ados_module1" ) { $ADOS_mod = "Module1nowords"; }
-            elseif ( $ados_a1 == 4 and $ADOS_Version == "ados2_module1" ) { $ADOS_mod = "Module1nowords"; }
+        if ( $ADOS_Version == "ados_module1" or $ADOS_Version == "ados2_module1" or $ADOS_Version == "ADOS2_Toddler_Module") {
+            if($ADOS_Version == "ADOS2_Toddler_Module") {
+                if($ados_a1 == 3 or $ados_a1 == 4)
+                    $ADOS_mod = "fewNoWords";
+                elseif ($ados_a1 == 0 or $ados_a1 == 1 or $ados_a1 == 2)
+                    $ADOS_mod = "olderSomeWords";
+            } else {
+                if ($ados_a1 == 0) {
+                    $ADOS_mod = "Module1somewords";
+                } elseif ($ados_a1 == 1) {
+                    $ADOS_mod = "Module1somewords";
+                } elseif ($ados_a1 == 2) {
+                    $ADOS_mod = "Module1somewords";
+                } elseif ($ados_a1 == 3) {
+                    $ADOS_mod = "Module1nowords";
+                } elseif ($ados_a1 == 8 and $ADOS_Version == "ados_module1") {
+                    $ADOS_mod = "Module1nowords";
+                } elseif ($ados_a1 == 4 and $ADOS_Version == "ados2_module1") {
+                    $ADOS_mod = "Module1nowords";
+                }
+            }
         }
 
         if ( $ADOS_Version == "ados_module2" ) { $ADOS_mod = "Module2"; }
@@ -122,7 +136,7 @@ class NDB_BVL_Instrument_IBIS extends NDB_BVL_Instrument
                 } elseif (in_array($ADOS_social_affect_total, range(19, 20))) {
                     $ADOS_SA_CSS = 10;
                 }
-            }    
+            }
         } elseif ($ADOS_mod == "Module2") {
             if (in_array($age, range(2,3))) {
                 if (in_array($ADOS_social_affect_total, range(0,1))) {$ADOS_SA_CSS = 1;}
@@ -193,11 +207,15 @@ class NDB_BVL_Instrument_IBIS extends NDB_BVL_Instrument
                 elseif (in_array($ADOS_social_affect_total, range(12,14))) {$ADOS_SA_CSS = 9;}
                 elseif (in_array($ADOS_social_affect_total, range(15,20))) {$ADOS_SA_CSS = 10;}
             }
+        } elseif ($ADOS_mod == "fewNoWords") {
+
+        } elseif ($ADOS_mod == "olderSomeWords") {
+
         }
         return($ADOS_SA_CSS);
     }
-    
-    
+
+
     function ADOS_RRB_CSS($ADOS_Version, $ados_a1, $ADOS_RRB_total, $age)
     {
         $ADOS_mod = '';
@@ -246,7 +264,7 @@ class NDB_BVL_Instrument_IBIS extends NDB_BVL_Instrument
                 elseif ($ADOS_RRB_total == 8) {$ADOS_RRB_CSS = 10;}
             }
         } elseif ($ADOS_mod == "Module1somewords") {
-            if (in_array($age, range(2,3))) { 
+            if (in_array($age, range(2,3))) {
                 if ($ADOS_RRB_total == 0) {$ADOS_RRB_CSS = 1;}
                 elseif ($ADOS_RRB_total == 1) {$ADOS_RRB_CSS = 5;}
                 elseif ($ADOS_RRB_total == 2) {$ADOS_RRB_CSS = 6;}
@@ -261,15 +279,15 @@ class NDB_BVL_Instrument_IBIS extends NDB_BVL_Instrument
                 elseif (in_array($ADOS_RRB_total, range(3, 4))) {$ADOS_RRB_CSS = 7;}
                 elseif ($ADOS_RRB_total == 5) {$ADOS_RRB_CSS = 8;}
                 elseif ($ADOS_RRB_total == 6) {$ADOS_RRB_CSS = 9;}
-                elseif (in_array($ADOS_RRB_total, range(7, 8))) {$ADOS_RRB_CSS = 10;} 
-            } elseif (in_array($age, range(5,14))) { 
+                elseif (in_array($ADOS_RRB_total, range(7, 8))) {$ADOS_RRB_CSS = 10;}
+            } elseif (in_array($age, range(5,14))) {
                 if ($ADOS_RRB_total == 0) {$ADOS_RRB_CSS = 1;}
                 elseif ($ADOS_RRB_total == 1) {$ADOS_RRB_CSS = 5;}
                 elseif (in_array($ADOS_RRB_total, range(2,3))) {$ADOS_RRB_CSS = 6;}
                 elseif ($ADOS_RRB_total == 4) {$ADOS_RRB_CSS = 7;}
                 elseif ($ADOS_RRB_total == 5) {$ADOS_RRB_CSS = 8;}
                 elseif ($ADOS_RRB_total == 6) {$ADOS_RRB_CSS = 9;}
-                elseif (in_array($ADOS_RRB_total, range(7, 8))) {$ADOS_RRB_CSS = 10;} 
+                elseif (in_array($ADOS_RRB_total, range(7, 8))) {$ADOS_RRB_CSS = 10;}
             }
         } elseif ($ADOS_mod == "Module2") {
             if (in_array($age, range(2,3))) {
@@ -287,7 +305,7 @@ class NDB_BVL_Instrument_IBIS extends NDB_BVL_Instrument
                 elseif ($ADOS_RRB_total == 4) {$ADOS_RRB_CSS = 7;}
                 elseif ($ADOS_RRB_total == 5) {$ADOS_RRB_CSS = 8;}
                 elseif ($ADOS_RRB_total == 6) {$ADOS_RRB_CSS = 9;}
-                elseif (in_array($ADOS_RRB_total, range(7, 8))) {$ADOS_RRB_CSS = 10;} 
+                elseif (in_array($ADOS_RRB_total, range(7, 8))) {$ADOS_RRB_CSS = 10;}
             }
         } elseif ($ADOS_mod == "Module3") {
             if (in_array($age, range(3,5))) {
