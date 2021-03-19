@@ -46,6 +46,10 @@ class NDB_BVL_Instrument_SRS2_SelfReport_Mom extends NDB_BVL_Instrument
                    'female' => 'Female',
                    'other'  => 'Other',
                   );
+
+    var $scoreCols = array("total_score", "DSM5_SCI_score", "DSM5_RRB_score", "Awr_score",
+        "Cog_score", "Com_score","Mot_score","total_T_score", "DSM5_SCI_T_score", "DSM5_RRB_T_score", "Awr_T_score",
+        "Cog_T_score", "Com_T_score","Mot_T_score","score_range");
      /**
      * Abstract function setup(?string $commentID = NULL, ?string $page = NULL): void;
      * Sets up basic data, such as the LorisForm object, and so on.
@@ -431,6 +435,7 @@ class NDB_BVL_Instrument_SRS2_SelfReport_Mom extends NDB_BVL_Instrument
         if ($this->_determineDataEntryCompletionStatus() == "Incomplete") {
             return;
         }
+        $this->_nullScores($this->scoreCols);
 
         $score_grid_q1=array('1_not_true'=>0,'2_sometimes_true'=>1,'3_often_true'=>2,'4_almost_always_true'=>3);
         $score_grid_q2=array('1_not_true'=>0,'2_sometimes_true'=>1,'3_often_true'=>2,'4_almost_always_true'=>3);
@@ -588,32 +593,108 @@ class NDB_BVL_Instrument_SRS2_SelfReport_Mom extends NDB_BVL_Instrument
 
 
         );
+        $all_response_array=array_merge($Awr_array,$Cog_array,$Com_array,$Mot_array,$RRB_array);
+        $missing=0;
+        foreach ($all_response_array as $val)
+        {
+            if($val===NULL)
+            {
+                $missing++;
+            }
+        }
+
+        if($missing>6)
+        {
+            $scores['total_score']="Greater than 10% responses missing/Not Answered/Don't know; So cannot score";
+            $db->update($this->table, $scores, array('CommentID' => $this->getCommentID()));
+            return;
+        }
+
+        //Missing values for the below questions are considered with score 1
+        //1,3,6,7,11,12,15,19,21,25,26,31,38,40,43,45,52,55
+
+
+        if($Mot_array[0]===NULL)
+        {
+            $Mot_array[0]=1;
+        }
+        if($Mot_array[1]===NULL)
+        {
+            $Mot_array[1]=1;
+        }
+        if($Mot_array[2]===NULL)
+        {
+            $Mot_array[2]=1;
+        }
+        if($Awr_array[1]===NULL)
+        {
+            $Awr_array[1]=1;
+        }
+        if($Mot_array[4]===NULL)
+        {
+            $Mot_array[4]=1;
+        }
+        if($Com_array[0]===NULL)
+        {
+            $Com_array[0]=1;
+        }
+        if($Cog_array[2]===NULL)
+        {
+            $Cog_array[2]=1;
+        }
+        if($Com_array[4]===NULL)
+        {
+            $Com_array[4]=1;
+        }
+        if($Com_array[5]===NULL)
+        {
+            $Com_array[5]=1;
+        }
+        if($Awr_array[2]===NULL)
+        {
+            $Awr_array[2]=1;
+        }
+        if($RRB_array[7]===NULL)
+        {
+            $RRB_array[7]=1;
+        }
+        if($Com_array[12]===NULL)
+        {
+            $Com_array[12]=1;
+        }
+        if($Cog_array[5]===NULL)
+        {
+            $Cog_array[5]=1;
+        }
+        if($Mot_array[8]===NULL)
+        {
+            $Mot_array[8]=1;
+        }
+        if($Awr_array[4]===NULL)
+        {
+            $Awr_array[4]=1;
+        }
+        if($Awr_array[5]===NULL)
+        {
+            $Awr_array[5]=1;
+        }
+        if($Com_array[18]===NULL)
+        {
+            $Com_array[18]=1;
+        }
+
 
         $scores['Awr_score'] =$this->findRowScore($Awr_array);
         $scores['Cog_score'] =$this->findRowScore($Cog_array);
         $scores['Com_score'] =$this->findRowScore($Com_array);
         $scores['Mot_score'] =$this->findRowScore($Mot_array);
         $scores['DSM5_RRB_score'] =$this->findRowScore($RRB_array);
-        $if_empty_sci_array=array($scores['Awr_score'],$scores['Cog_score'],$scores['Com_score'],$scores['Mot_score']);
-        if (count(array_unique($if_empty_sci_array)) === 1 &&
-            end($if_empty_sci_array) === 'Unable to score/Data Insufficient')
-        {
-            $scores['DSM5_SCI_score']='Unable to score/Data Insufficient';
-        }
-        else {
-            $scores['DSM5_SCI_score'] = $this->findRowScore($Awr_array) +
+
+        $scores['DSM5_SCI_score'] = $this->findRowScore($Awr_array) +
                 $this->findRowScore($Cog_array) + $this->findRowScore($Com_array) + $this->findRowScore($Mot_array);
-        }
 
-        if ($scores['DSM5_SCI_score']==='Unable to score/Data Insufficient'
-            && $scores['DSM5_RRB_score']==='Unable to score/Data Insufficient')
-        {
-            $scores['total_score'] ='Unable to score/Data Insufficient';
-        }
-        else{
+        $scores['total_score'] = $this->findRowScore($RRB_array) + $scores['DSM5_SCI_score'];
 
-            $scores['total_score'] = $this->findRowScore($RRB_array) + $scores['DSM5_SCI_score'];
-        }
 
 
 
@@ -633,9 +714,6 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $scales = array("total", "DSM5_SCI", "DSM5_RRB", "Awr", "Cog", "Com","Mot");
         foreach ($scales as $field) {
             $field_raw_score = $scores[$field . '_score'];
-            if ($field_raw_score === 'Unable to score/Data Insufficient') {
-                $scores[$field . '_T_score'] = 'Unable to score/Data Insufficient';
-            } else {
                 if ($field_raw_score == 0) {
                     $query_scores1 = "SELECT * FROM SRS2_SchoolAge_lookup WHERE form_relation ='SRS2_Adult' and 
                 sex='M/F'  AND (scale_raw_score ='$field_raw_score'  OR  '$field_raw_score' BETWEEN SUBSTRING_INDEX 
@@ -675,14 +753,9 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
                 }
 
 
-            }
-        }
-        if($scores['total_T_score']=='Unable to score/Data Insufficient')
-        {
-            $scores['score_range'] = "Not Applicable";
+
         }
 
-        else {
 
             if ($scores['total_T_score'] >= 76) {
                 $scores['score_range'] = "Severe";
@@ -695,7 +768,6 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
             } else {
                 $scores['score_range'] = "NA";
 
-            }
         }
 
 
@@ -710,14 +782,9 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
     function findRowScore($scale_array)
     {
         $raw_score=0;
-        $empty=0;
-        $array_count=count($scale_array);
         foreach ($scale_array as $val)
         {
-            if($val==='' || $val===null)
-            {
-                $empty++;
-            }
+
             if($val=='1')
             {
                 $raw_score=$raw_score+1;
@@ -731,13 +798,6 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
                 $raw_score=$raw_score+3;
             }
         }
-        if($empty==$array_count)
-        {
-            $raw_score="Unable to score/Data Insufficient";
-        }
-
-
-
 
         return $raw_score;
     }
