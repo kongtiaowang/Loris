@@ -9,7 +9,7 @@ WHERE sessionid = (
 )
 AND test_name = 'pspq_InformantReport_mom_on_dad';
 
-
+-- Redmine 18952
 INSERT INTO survey_test_battery (Test_name, Visit_label) VALUES ('CBCL_6_To_18','VSA-Sleep');
 INSERT INTO survey_test_battery (Test_name, Visit_label) VALUES ('MASC2_Parent','VSA-Sleep');
 INSERT INTO survey_test_battery (Test_name, Visit_label) VALUES ('MASC2_Self_Report','VSA-Sleep');
