@@ -160,32 +160,54 @@ class NDB_BVL_Instrument_MEQC_survey extends NDB_BVL_Instrument
             Please have your child participating in the IBIS Sleep Study complete the following questions on their own to the best of their ability."
         );
 
-        $this->addSelect(
+        $group[] = $this->createLabel("<h3 style=\"text-align:left\">1. Is it easy for you to get up in the morning?</h3>");
+        $group[] = $this->createSelect(
             "q1_is_it_easy_to_get_up_in_the_morning",
-            "1. Is it easy for you to get up in the morning?",
+            "",
             array(
+             null          => "",
              "no_way"      => "No way!",
              "sort_of"     => "Sort of",
              "pretty_easy" => "Pretty easy",
              "cinch"       => "It's a cinch",
             )
         );
+        $this->form->addGroup(
+            $group,
+            "page1_q1",
+            null,
+            $this->_GUIDelimiter,
+            false
+        );
+        unset($group);
 
-        $this->addSelect(
+        $group[] = $this->createLabel("<h3 style=\"text-align:left\">2. How alert are you in the first half hour you're up?</h3>");
+        $group[] = $this->createSelect(
             "q2_how_alert_are_you_in_first_half_hour_youre_up",
-            "2. How alert are you in the first half hour you're up?",
+            "",
             array(
+             null                         => "",
              "out_of_it"                  => "Out of it",
              "a_little_dazed"             => "A little dazed",
              "okay"                       => "Okay",
              "ready_to_take_on_the_world" => "Ready to take on the world",
             )
         );
+        $this->form->addGroup(
+            $group,
+            "page1_q2",
+            null,
+            $this->_GUIDelimiter,
+            false
+        );
+        unset($group);
 
-        $this->addSelect(
+        $group[] = $this->createLabel("<h3 style=\"text-align:left\">3. Imagine: School is canceled! You can get up whenever you want to. When would you get out of bed? Between...</h3>");
+        $group[] = $this->createSelect(
             "q3_imagine_school_canceled_when_would_you_get_out_of_bed",
-            "3. Imagine: School is canceled! You can get up whenever you want to. When would you get out of bed? Between...",
+            "",
             array(
+             null                => "",
              "5_00_and_6_30_am"  => "5:00 and 6:30 am",
              "6_30_and_7_45_am"  => "6:30 and 7:45 am",
              "7_45_and_9_45_am"  => "7:45 and 9:45 am",
@@ -193,11 +215,21 @@ class NDB_BVL_Instrument_MEQC_survey extends NDB_BVL_Instrument
              "11_00_am_and_noon" => "11:00 am and noon",
             )
         );
+        $this->form->addGroup(
+            $group,
+            "page1_q3",
+            null,
+            $this->_GUIDelimiter,
+            false
+        );
+        unset($group);
 
-        $this->addSelect(
+        $group[] = $this->createLabel("<h3 style=\"text-align:left\">4. Guess what? Your parents have decided to let you set your own bedtime. What time would you pick? Between...</h3>");
+        $group[] = $this->createSelect(
             "q4_parents_decided_to_let_you_set_own_bedtime_what_time",
-            "4. Guess what? Your parents have decided to let you set your own bedtime. What time would you pick? Between...",
+            "",
             array(
+             null                    => "",
              "8_00_and_9_00_pm"      => "8:00 and 9:00 pm",
              "9_00_and_10_15_pm"     => "9:00 and 10:15 pm",
              "10_15_pm_and_12_30_am" => "10:15 pm and 12:30 am",
@@ -205,35 +237,63 @@ class NDB_BVL_Instrument_MEQC_survey extends NDB_BVL_Instrument
              "1_45_and_3_00_am"      => "1:45 and 3:00 am",
             )
         );
+        $this->form->addGroup(
+            $group,
+            "page1_q4",
+            null,
+            $this->_GUIDelimiter,
+            false
+        );
+        unset($group);
 
-        $this->addSelect(
+        $group[] = $this->createLabel("<h3 style=\"text-align:left\">5. The bad news: You have to take a two-hour test. The good news: You can take it when you think you'll do your best. What time is that?</h3>");
+        $group[] = $this->createSelect(
             "q5_have_to_take_two_hour_test_can_take_it_when_best_what_time",
-            "5. The bad news: You have to take a two-hour test. The good news: You can take it when you think you'll do your best. What time is that?",
+            "",
             array(
+             null                  => "",
              "8_00_to_10_00_am"    => "8:00 to 10:00 am",
              "11_00_am_to_1_00_pm" => "11:00 am to 1:00 pm",
              "3_00_to_5_00_pm"     => "3:00 to 5:00 pm",
              "7_00_to_9_00_pm"     => "7:00 to 9:00 pm",
             )
         );
+        $this->form->addGroup(
+            $group,
+            "page1_q5",
+            null,
+            $this->_GUIDelimiter,
+            false
+        );
+        unset($group);
 
-        $this->addSelect(
+        $group[] = $this->createLabel("<h3 style=\"text-align:left\">6. Gym class is set for 7:00 in the morning. How do you think you'll do?</h3>");
+        $group[] = $this->createSelect(
             "q6_gym_class_is_set_7_00_am_how_do_you_think_you_will_do",
-            "6. Gym class is set for 7:00 in the morning. How do you think you'll do?",
+            "",
             array(
+             null               => "",
              "my_best"          => "My best!",
              "okay"             => "Okay",
              "worse_than_usual" => "Worse than usual",
              "awful"            => "Awful",
             )
         );
+        $this->form->addGroup(
+            $group,
+            "page1_q6",
+            null,
+            $this->_GUIDelimiter,
+            false
+        );
+        unset($group);
     }
 
     function _page2()
     {
         $this->addHeader("MEQC (Morningness Eveningness Questionnaire for Children) - Survey");
 
-        $this->addSelect(
+        /*$this->addSelect(
             "q7_when_does_your_body_tell_you_its_time_for_bed",
             "7. When does your body start to tell you it's time for bed (even if you ignore it)? Between ...",
             array(
@@ -243,8 +303,31 @@ class NDB_BVL_Instrument_MEQC_survey extends NDB_BVL_Instrument
              "12_30_and_1_45_am"     => "12:30 and 1:45 am",
              "1_45_and_3_00_am"      => "1:45 and 3:00 am",
             )
-        );
+        );*/
 
+        $group[] = $this->createLabel("<h3 style=\"text-align:left\">7. When does your body start to tell you it's time for bed (even if you ignore it)? Between ...</h3>");
+        $group[] = $this->createSelect(
+            "q7_when_does_your_body_tell_you_its_time_for_bed",
+            "",
+            array(
+             null                    => "",
+             "8_00_and_9_00_pm"      => "8:00 and 9:00 pm",
+             "9_00_and_10_15_pm"     => "9:00 and 10:15 pm",
+             "10_15_pm_and_12_30_am" => "10:15 pm and 12:30 am",
+             "12_30_and_1_45_am"     => "12:30 and 1:45 am",
+             "1_45_and_3_00_am"      => "1:45 and 3:00 am",
+            )
+        );
+        $this->form->addGroup(
+            $group,
+            "page2_q7",
+            null,
+            $this->_GUIDelimiter,
+            false
+        );
+        unset($group);
+
+        /*
         $this->addSelect(
             "q8_had_to_get_up_at_6_00_am_what_would_it_be_like",
             "8. Say you had to get up at 6:00 am every morning. What would it be like?",
@@ -254,8 +337,30 @@ class NDB_BVL_Instrument_MEQC_survey extends NDB_BVL_Instrument
              "okay"         => "Okay (if I have to)",
              "fine"         => "Fine, no problem",
             )
-        );
+        );*/
 
+        $group[] = $this->createLabel("<h3 style=\"text-align:left\">8. Say you had to get up at 6:00 am every morning. What would it be like?</h3>");
+        $group[] = $this->createSelect(
+            "q8_had_to_get_up_at_6_00_am_what_would_it_be_like",
+            "",
+            array(
+             null           => "",
+             "awful"        => "Awful",
+             "not_so_great" => "Not so great",
+             "okay"         => "Okay (if I have to)",
+             "fine"         => "Fine, no problem",
+            )
+        );
+        $this->form->addGroup(
+            $group,
+            "page2_q8",
+            null,
+            $this->_GUIDelimiter,
+            false
+        );
+        unset($group);
+
+        /*
         $this->addSelect(
             "q9_when_you_wake_up_how_long_to_be_totally_with_it",
             "9. When you wake up in the morning how long does it take for you to be totally \"with it?\"",
@@ -265,8 +370,30 @@ class NDB_BVL_Instrument_MEQC_survey extends NDB_BVL_Instrument
              "21_to_40_minutes"     => "21 to 40 minutes",
              "more_than_40_minutes" => "More than 40 minutes",
             )
-        );
+        );*/
 
+        $group[] = $this->createLabel("<h3 style=\"text-align:left\">9. When you wake up in the morning how long does it take for you to be totally \"with it?\"</h3>");
+        $group[] = $this->createSelect(
+            "q9_when_you_wake_up_how_long_to_be_totally_with_it",
+            "",
+            array(
+             null                   => "",
+             "0_to_10_minutes"      => "0 to 10 minutes",
+             "11_to_20_minutes"     => "11 to 20 minutes",
+             "21_to_40_minutes"     => "21 to 40 minutes",
+             "more_than_40_minutes" => "More than 40 minutes",
+            )
+        );
+        $this->form->addGroup(
+            $group,
+            "page2_q9",
+            null,
+            $this->_GUIDelimiter,
+            false
+        );
+        unset($group);
+
+        /*
         $this->addSelect(
             "q10_when_do_you_have_most_energy_to_do_favorite_things",
             "10. When do you have the most energy to do your favorite things?",
@@ -276,7 +403,28 @@ class NDB_BVL_Instrument_MEQC_survey extends NDB_BVL_Instrument
              "evening_more_than_morning" => "Evening more than morning",
              "evening_tired_in_morning"  => "Evening! I'm tired in the morning",
             )
+        );*/
+
+        $group[] = $this->createLabel("<h3 style=\"text-align:left\">10. When do you have the most energy to do your favorite things?</h3>");
+        $group[] = $this->createSelect(
+            "q10_when_do_you_have_most_energy_to_do_favorite_things",
+            "",
+            array(
+             null                        => "",
+             "morning_tired_in_evening"  => "Morning! I'm tired in the evening",
+             "morning_more_than_evening" => "Morning more than evening",
+             "evening_more_than_morning" => "Evening more than morning",
+             "evening_tired_in_morning"  => "Evening! I'm tired in the morning",
+            )
         );
+        $this->form->addGroup(
+            $group,
+            "page2_q10",
+            null,
+            $this->_GUIDelimiter,
+            false
+        );
+        unset($group);
     }
 
     function validate_main_page($values)
