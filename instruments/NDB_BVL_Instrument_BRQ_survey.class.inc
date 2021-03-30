@@ -26,6 +26,7 @@ class NDB_BVL_Instrument_BRQ_survey extends NDB_BVL_Instrument
     use instrument_validator;
 
     const OPTIONS = array(
+                     null              => "",
                      "1_almost_never"  => "Almost never",
                      "2_occasionally"  => "Occasionally",
                      "3_half_the_time" => "Half the time",
@@ -52,7 +53,7 @@ class NDB_BVL_Instrument_BRQ_survey extends NDB_BVL_Instrument
      * @return void
      * @access public
      */
-    function setup(?string $commentID = NULL, ?string $page = NULL): void
+    function setup(?string $commentID = null, ?string $page = null): void
     {
         $this->formType = "XIN";
         $this->form     = new LorisForm('BRQ_survey_form');
@@ -171,8 +172,25 @@ class NDB_BVL_Instrument_BRQ_survey extends NDB_BVL_Instrument
             "During <b>weeknights</b> (Sunday through Thursday nights only) for the past <b>month</b>, how often did your child..."
         );
 
+        $i = 0;
+
         foreach ($page1_questions as $field => $label) {
-            $this->addSelect($field, $label, self::OPTIONS);
+            $i++;
+
+            $group[] = $this->createLabel("<h3 style=\"text-align:left\">" . $label . "</h3>");
+            $group[] = $this->createSelect(
+                $field,
+                "",
+                self::OPTIONS
+            );
+            $this->form->addGroup(
+                $group,
+                "page1_" . $i,
+                null,
+                $this->_GUIDelimiter,
+                false
+            );
+            unset($group);
         }
     }
 
@@ -199,8 +217,25 @@ class NDB_BVL_Instrument_BRQ_survey extends NDB_BVL_Instrument
             "During <b>weekends</b> (Friday and Saturday nights) for the past <b>month</b>, how often did your child..."
         );
 
+        $i = 0;
+
         foreach ($page2_questions as $field => $label) {
-            $this->addSelect($field, $label, self::OPTIONS);
+            $i++;
+
+            $group[] = $this->createLabel("<h3 style=\"text-align:left\">" . $label . "</h3>");
+            $group[] = $this->createSelect(
+                $field,
+                "",
+                self::OPTIONS
+            );
+            $this->form->addGroup(
+                $group,
+                "page2_" . $i,
+                null,
+                $this->_GUIDelimiter,
+                false
+            );
+            unset($group);
         }
     }
 
@@ -222,6 +257,7 @@ class NDB_BVL_Instrument_BRQ_survey extends NDB_BVL_Instrument
                            );
 
         $page3_options = array(
+                          null            => "",
                           "1_not_at_all"  => "Not at all",
                           "2_a_little"    => "A little",
                           "3_moderately"  => "Moderately",
@@ -235,8 +271,25 @@ class NDB_BVL_Instrument_BRQ_survey extends NDB_BVL_Instrument
             "How upset does your child get if he or she <b><u>does NOT</u></b>..."
         );
 
+        $i = 0;
+
         foreach ($page3_questions as $field => $label) {
-            $this->addSelect($field, $label, $page3_options);
+            $i++;
+
+            $group[] = $this->createLabel("<h3 style=\"text-align:left\">" . $label . "</h3>");
+            $group[] = $this->createSelect(
+                $field,
+                "",
+                $page3_options
+            );
+            $this->form->addGroup(
+                $group,
+                "page3_" . $i,
+                null,
+                $this->_GUIDelimiter,
+                false
+            );
+            unset($group);
         }
     }
 
@@ -274,8 +327,25 @@ class NDB_BVL_Instrument_BRQ_survey extends NDB_BVL_Instrument
             "In the past <b>month</b>, in the hour <b><i>before</i></b> going to bed, how often did your child..."
         );
 
+        $i = 0;
+
         foreach ($page4_questions as $field => $label) {
-            $this->addSelect($field, $label, self::OPTIONS);
+            $i++;
+
+            $group[] = $this->createLabel("<h3 style=\"text-align:left\">" . $label . "</h3>");
+            $group[] = $this->createSelect(
+                $field,
+                "",
+                self::OPTIONS
+            );
+            $this->form->addGroup(
+                $group,
+                "page4_" . $i,
+                null,
+                $this->_GUIDelimiter,
+                false
+            );
+            unset($group);
         }
     }
 
@@ -290,4 +360,4 @@ class NDB_BVL_Instrument_BRQ_survey extends NDB_BVL_Instrument
          return $errors;
     }
 }
-?>
+
