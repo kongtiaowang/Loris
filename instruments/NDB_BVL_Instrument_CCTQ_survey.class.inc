@@ -446,7 +446,7 @@ class NDB_BVL_Instrument_CCTQ_survey extends NDB_BVL_Instrument_survey
                         "more_than_21_minutes"  => "More than 21 minutes",
                        );
 
-        $group[] = $this->createLabel("17. If your child has to be awakened, how difficult do you find it to wake your child up in the morning?");
+        $group[] = $this->createLabel("<h3 style=\"text-align:left\">17. If your child has to be awakened, how difficult do you find it to wake your child up in the morning?</h3>");
         $group[] = $this->createSelect(
             "q17_if_child_has_to_be_awakened_how_difficult_do_you_find_it",
             "",
@@ -461,7 +461,7 @@ class NDB_BVL_Instrument_CCTQ_survey extends NDB_BVL_Instrument_survey
         );
         unset($group);
 
-        $group[] = $this->createLabel("18. How alert is your child during the first half hour after having awakened in the morning?");
+        $group[] = $this->createLabel("<h3 style=\"text-align:left\">18. How alert is your child during the first half hour after having awakened in the morning?</h3>");
         $group[] = $this->createSelect(
             "q18_how_alert_is_child_the_first_half_hour_after_having_awakened",
             "",
@@ -476,7 +476,7 @@ class NDB_BVL_Instrument_CCTQ_survey extends NDB_BVL_Instrument_survey
         );
         unset($group);
 
-        $group[] = $this->createLabel("19. Considering your child's own \"feeling best\" rhythm, what time would your child get up if they could decide by their self and if they were entirely free to plan their day (e.b., vacation)?");
+        $group[] = $this->createLabel("<h3 style=\"text-align:left\">19. Considering your child's own \"feeling best\" rhythm, what time would your child get up if they could decide by their self and if they were entirely free to plan their day (e.b., vacation)?</h3>");
         $group[] = $this->createSelect(
             "q19_what_time_would_your_child_get_up_if_they_could_decide",
             "",
@@ -491,7 +491,7 @@ class NDB_BVL_Instrument_CCTQ_survey extends NDB_BVL_Instrument_survey
         );
         unset($group);
 
-        $group[] = $this->createLabel("20. Considering your child's \"feeling best\" rhythm, at what time would your child go to bed if they could decide by their self and if they were entirely free to plan the next day (e.g., weekend)?");
+        $group[] = $this->createLabel("<h3 style=\"text-align:left\">20. Considering your child's \"feeling best\" rhythm, at what time would your child go to bed if they could decide by their self and if they were entirely free to plan the next day (e.g., weekend)?</h3>");
         $group[] = $this->createSelect(
             "q20_what_time_would_your_child_go_to_bed_if_they_could_decide",
             "",
@@ -507,9 +507,9 @@ class NDB_BVL_Instrument_CCTQ_survey extends NDB_BVL_Instrument_survey
         unset($group);
 
         $group[] = $this->createLabel(
-            "21. Let's assume your child has to be at peak performance for a test that will be mentally exhausting for 2 hours.
+            "<h3 style=\"text-align:left\">21. Let's assume your child has to be at peak performance for a test that will be mentally exhausting for 2 hours.
             Considering your child's \"feeling best\" rhythm and that you are entirely free to plan your child's day,
-            which ONE of the three time intervals would you choose for the test?"
+            which ONE of the three time intervals would you choose for the test?</h3>"
         );
         $group[] = $this->createSelect(
             "q21_which_time_intervals_would_you_choose_for_the_test",
@@ -526,8 +526,8 @@ class NDB_BVL_Instrument_CCTQ_survey extends NDB_BVL_Instrument_survey
         unset($group);
 
         $group[] = $this->createLabel(
-            "22. Let's assume that you have decided to enroll your child in an athletic activity (e.g., swimming).
-            The only class available meets twice a week at 7 am - 8 am. How do you think your child will perform?"
+            "<h3 style=\"text-align:left\">22. Let's assume that you have decided to enroll your child in an athletic activity (e.g., swimming).
+            The only class available meets twice a week at 7 am - 8 am. How do you think your child will perform?</h3>"
         );
         $group[] = $this->createSelect(
             "q22_class_at_7_am_to_8_am_how_do_you_think_child_will_perform",
@@ -544,7 +544,7 @@ class NDB_BVL_Instrument_CCTQ_survey extends NDB_BVL_Instrument_survey
         unset($group);
 
         $group[] = $this->createLabel(
-            "23. At what time in the evening does your child seem tired and in need of sleep?"
+            "<h3 style=\"text-align:left\">23. At what time in the evening does your child seem tired and in need of sleep?</h3>"
         );
         $group[] = $this->createSelect(
             "q23_what_time_in_evening_does_child_seem_tired_and_need_sleep",
@@ -561,7 +561,7 @@ class NDB_BVL_Instrument_CCTQ_survey extends NDB_BVL_Instrument_survey
         unset($group);
 
         $group[] = $this->createLabel(
-            "24. If your child had to get up every day at 6 am, what do you think it would be like for them?"
+            "<h3 style=\"text-align:left\">24. If your child had to get up every day at 6 am, what do you think it would be like for them?</h3>"
         );
         $group[] = $this->createSelect(
             "q24_if_child_has_to_get_up_at_6_am_what_would_it_be_like",
@@ -578,7 +578,7 @@ class NDB_BVL_Instrument_CCTQ_survey extends NDB_BVL_Instrument_survey
         unset($group);
 
         $group[] = $this->createLabel(
-            "25. If your child always had to go to bed at 7:30 pm, what do you think it would be like for them?"
+            "<h3 style=\"text-align:left\">25. If your child always had to go to bed at 7:30 pm, what do you think it would be like for them?</h3>"
         );
         $group[] = $this->createSelect(
             "q25_if_child_has_to_go_to_bed_at_7_30_pm_what_would_it_be_like",
@@ -595,7 +595,7 @@ class NDB_BVL_Instrument_CCTQ_survey extends NDB_BVL_Instrument_survey
         unset($group);
 
         $group[] = $this->createLabel(
-            "26. When your child wakes up in the morning, how long does it take to be fully awake?"
+            "<h3 style=\"text-align:left\">26. When your child wakes up in the morning, how long does it take to be fully awake?</h3>"
         );
         $group[] = $this->createSelect(
             "q26_when_child_wakes_in_the_morning_how_long_to_be_fully_awake",
