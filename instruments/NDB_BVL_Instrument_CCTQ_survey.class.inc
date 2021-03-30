@@ -51,7 +51,7 @@ class NDB_BVL_Instrument_CCTQ_survey extends NDB_BVL_Instrument_survey
      * @return void
      * @access public
      */
-    function setup(?string $commentID = NULL, ?string $page = NULL): void
+    function setup(?string $commentID = null, ?string $page = null): void
     {
         $this->formType = "XIN";
         $this->form     = new LorisForm('CCTQ_survey_form');
@@ -368,14 +368,16 @@ class NDB_BVL_Instrument_CCTQ_survey extends NDB_BVL_Instrument_survey
         );
 
         $q17_options = array(
+                        null                                                     => "",
                         "very_difficult"                                         => "Very difficult",
                         "fairly_difficult"                                       => "Fairly difficult",
-                        "moderate_difficult"                                     => "Moderate difficult",
+                        "moderate_difficult"                                     => "Moderately difficult",
                         "slightly_difficult"                                     => "Slightly difficult",
                         "not_at_all_difficult_my_child_never_has_to_be_awakened" => "Not at all difficult/my child never has to be awakened",
                        );
 
         $q18_options = array(
+                        null               => "",
                         "not_at_all_alert" => "Not at all alert",
                         "slightly_alert"   => "Slightly alert",
                         "moderately_alert" => "Moderately alert",
@@ -384,6 +386,7 @@ class NDB_BVL_Instrument_CCTQ_survey extends NDB_BVL_Instrument_survey
                        );
 
         $q19_options = array(
+                        null                => "",
                         "prior_to_6_30_am"  => "Prior to 6:30 am",
                         "6_30_to_7_14_am"   => "6:30 - 7:14 am",
                         "7_15am_to_9_29_am" => "7:15 - 9:29 am",
@@ -392,6 +395,7 @@ class NDB_BVL_Instrument_CCTQ_survey extends NDB_BVL_Instrument_survey
                        );
 
         $q20_options = array(
+                        null                => "",
                         "prior_to_6_59_pm"  => "Prior to 6:59 pm",
                         "7_00_to_7_39_pm"   => "7:00 - 7:39 pm",
                         "8_00_to_9_59_pm"   => "8:00 - 9:59 pm",
@@ -400,12 +404,14 @@ class NDB_BVL_Instrument_CCTQ_survey extends NDB_BVL_Instrument_survey
                        );
 
         $q21_options = array(
+                        null                  => "",
                         "7_00_to_11_00_am"    => "7:00 - 11:00 am",
                         "11_00_am_to_3_00_pm" => "11:00 am - 3:00 pm",
                         "3_00_to_8_00_pm"     => "3:00 - 8:00 pm",
                        );
 
         $q22_options = array(
+                        null                           => "",
                         "would_be_in_very_good_form"   => "Would be in very good form",
                         "would_be_in_good_form"        => "Would be in good form",
                         "would_be_in_reasonable_form"  => "Would be in reasonable form",
@@ -414,6 +420,7 @@ class NDB_BVL_Instrument_CCTQ_survey extends NDB_BVL_Instrument_survey
                        );
 
         $q23_options = array(
+                        null               => "",
                         "prior_to_6_29_pm" => "Prior to 6:29 pm",
                         "6_30_to_7_14_pm"  => "6:30 - 7:14 pm",
                         "7_15_to_9_29_pm"  => "7:15 - 9:29 pm",
@@ -422,14 +429,16 @@ class NDB_BVL_Instrument_CCTQ_survey extends NDB_BVL_Instrument_survey
                        );
 
         $q24_q25_options = array(
+                            null                                         => "",
                             "very_difficult"                             => "Very difficult",
                             "rather_difficult"                           => "Rather difficult",
-                            "moderate_difficult"                         => "Moderate difficult",
+                            "moderate_difficult"                         => "Moderately difficult",
                             "a_little_difficult_but_not_a_great_problem" => "A little difficult, but not a great problem",
                             "not_at_all_difficult"                       => "Not at all difficult",
                            );
 
         $q26_options = array(
+                        null                    => "",
                         "0_minutes_immediately" => "0 minutes (i.e., immediately)",
                         "1_to_4_minutes"        => "1 to 4 minutes",
                         "5_to_10_minutes"       => "5 to 10 minutes",
@@ -437,36 +446,170 @@ class NDB_BVL_Instrument_CCTQ_survey extends NDB_BVL_Instrument_survey
                         "more_than_21_minutes"  => "More than 21 minutes",
                        );
 
-        $this->addSelect("q17_if_child_has_to_be_awakened_how_difficult_do_you_find_it", "17. If your child has to be awakened, how difficult do you find it to wake your child up in the morning?", $q17_options);
+        $group[] = $this->createLabel("17. If your child has to be awakened, how difficult do you find it to wake your child up in the morning?");
+        $group[] = $this->createSelect(
+            "q17_if_child_has_to_be_awakened_how_difficult_do_you_find_it",
+            "",
+            $q17_options
+        );
+        $this->form->addGroup(
+            $group,
+            "page4_q17",
+            null,
+            $this->_GUIDelimiter,
+            false
+        );
+        unset($group);
 
-        $this->addSelect("q18_how_alert_is_child_the_first_half_hour_after_having_awakened", "18. How alert is your child during the first half hour after having awakened in the morning?", $q18_options);
+        $group[] = $this->createLabel("18. How alert is your child during the first half hour after having awakened in the morning?");
+        $group[] = $this->createSelect(
+            "q18_how_alert_is_child_the_first_half_hour_after_having_awakened",
+            "",
+            $q18_options
+        );
+        $this->form->addGroup(
+            $group,
+            "page4_q18",
+            null,
+            $this->_GUIDelimiter,
+            false
+        );
+        unset($group);
 
-        $this->addSelect("q19_what_time_would_your_child_get_up_if_they_could_decide", "19. Considering your child's own \"feeling best\" rhythm, what time would your child get up if they could decide by their self and if they were entirely free to plan their day (e.b., vacation)?", $q19_options);
+        $group[] = $this->createLabel("19. Considering your child's own \"feeling best\" rhythm, what time would your child get up if they could decide by their self and if they were entirely free to plan their day (e.b., vacation)?");
+        $group[] = $this->createSelect(
+            "q19_what_time_would_your_child_get_up_if_they_could_decide",
+            "",
+            $q19_options
+        );
+        $this->form->addGroup(
+            $group,
+            "page4_q19",
+            null,
+            $this->_GUIDelimiter,
+            false
+        );
+        unset($group);
 
-        $this->addSelect("q20_what_time_would_your_child_go_to_bed_if_they_could_decide", "20. Considering your child's \"feeling best\" rhythm, at what time would your child go to bed if they could decide by their self and if they were entirely free to plan the next day (e.g., weekend)?", $q20_options);
+        $group[] = $this->createLabel("20. Considering your child's \"feeling best\" rhythm, at what time would your child go to bed if they could decide by their self and if they were entirely free to plan the next day (e.g., weekend)?");
+        $group[] = $this->createSelect(
+            "q20_what_time_would_your_child_go_to_bed_if_they_could_decide",
+            "",
+            $q20_options
+        );
+        $this->form->addGroup(
+            $group,
+            "page4_q20",
+            null,
+            $this->_GUIDelimiter,
+            false
+        );
+        unset($group);
 
-        $this->addSelect(
-            "q21_which_time_intervals_would_you_choose_for_the_test",
+        $group[] = $this->createLabel(
             "21. Let's assume your child has to be at peak performance for a test that will be mentally exhausting for 2 hours.
             Considering your child's \"feeling best\" rhythm and that you are entirely free to plan your child's day,
-            which ONE of the three time intervals would you choose for the test?",
+            which ONE of the three time intervals would you choose for the test?"
+        );
+        $group[] = $this->createSelect(
+            "q21_which_time_intervals_would_you_choose_for_the_test",
+            "",
             $q21_options
         );
+        $this->form->addGroup(
+            $group,
+            "page4_q21",
+            null,
+            $this->_GUIDelimiter,
+            false
+        );
+        unset($group);
 
-        $this->addSelect(
-            "q22_class_at_7_am_to_8_am_how_do_you_think_child_will_perform",
+        $group[] = $this->createLabel(
             "22. Let's assume that you have decided to enroll your child in an athletic activity (e.g., swimming).
-            The only class available meets twice a week at 7 am - 8 am. How do you think your child will perform?",
+            The only class available meets twice a week at 7 am - 8 am. How do you think your child will perform?"
+        );
+        $group[] = $this->createSelect(
+            "q22_class_at_7_am_to_8_am_how_do_you_think_child_will_perform",
+            "",
             $q22_options
         );
+        $this->form->addGroup(
+            $group,
+            "page4_q22",
+            null,
+            $this->_GUIDelimiter,
+            false
+        );
+        unset($group);
 
-        $this->addSelect("q23_what_time_in_evening_does_child_seem_tired_and_need_sleep", "23. At what time in the evening does your child seem tired and in need of sleep?", $q23_options);
+        $group[] = $this->createLabel(
+            "23. At what time in the evening does your child seem tired and in need of sleep?"
+        );
+        $group[] = $this->createSelect(
+            "q23_what_time_in_evening_does_child_seem_tired_and_need_sleep",
+            "",
+            $q23_options
+        );
+        $this->form->addGroup(
+            $group,
+            "page4_q23",
+            null,
+            $this->_GUIDelimiter,
+            false
+        );
+        unset($group);
 
-        $this->addSelect("q24_if_child_has_to_get_up_at_6_am_what_would_it_be_like", "24. If your child had to get up every day at 6 am, what do you think it would be like for them?", $q24_q25_options);
+        $group[] = $this->createLabel(
+            "24. If your child had to get up every day at 6 am, what do you think it would be like for them?"
+        );
+        $group[] = $this->createSelect(
+            "q24_if_child_has_to_get_up_at_6_am_what_would_it_be_like",
+            "",
+            $q24_q25_options
+        );
+        $this->form->addGroup(
+            $group,
+            "page4_q24",
+            null,
+            $this->_GUIDelimiter,
+            false
+        );
+        unset($group);
 
-        $this->addSelect("q25_if_child_has_to_go_to_bed_at_7_30_pm_what_would_it_be_like", "25. If your child always had to go to bed at 7:30 pm, what do you think it would be like for them?", $q24_q25_options);
+        $group[] = $this->createLabel(
+            "25. If your child always had to go to bed at 7:30 pm, what do you think it would be like for them?"
+        );
+        $group[] = $this->createSelect(
+            "q25_if_child_has_to_go_to_bed_at_7_30_pm_what_would_it_be_like",
+            "",
+            $q24_q25_options
+        );
+        $this->form->addGroup(
+            $group,
+            "page4_q25",
+            null,
+            $this->_GUIDelimiter,
+            false
+        );
+        unset($group);
 
-        $this->addSelect("q26_when_child_wakes_in_the_morning_how_long_to_be_fully_awake", "26. When your child wakes up in the morning, how long does it take to be fully awake?", $q26_options);
+        $group[] = $this->createLabel(
+            "26. When your child wakes up in the morning, how long does it take to be fully awake?"
+        );
+        $group[] = $this->createSelect(
+            "q26_when_child_wakes_in_the_morning_how_long_to_be_fully_awake",
+            "",
+            $q26_options
+        );
+        $this->form->addGroup(
+            $group,
+            "page4_q26",
+            null,
+            $this->_GUIDelimiter,
+            false
+        );
+        unset($group);
     }
 
     /**
@@ -557,4 +700,4 @@ class NDB_BVL_Instrument_CCTQ_survey extends NDB_BVL_Instrument_survey
         return $errors;
     }
 }
-?>
+
