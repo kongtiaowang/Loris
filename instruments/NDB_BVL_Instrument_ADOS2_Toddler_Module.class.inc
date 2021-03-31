@@ -106,7 +106,7 @@ class NDB_BVL_Instrument_ADOS2_Toddler_Module extends NDB_BVL_Instrument_IBIS
             */
     }
 
-    function _page1()
+    function _page01()
     {
         $headings = array(
             "1." => "Free Play",
@@ -220,10 +220,10 @@ If the child makes an appropriate vocal response without orienting toward your f
             }
         }
 
-        $this->form->addFormRule(array(&$this, 'validate_page1'));
+        $this->form->addFormRule(array(&$this, 'validate_page01'));
     }
 
-    function validate_page1($values)
+    function validate_page01($values)
     {
         $errors = [];
         $trialFieldNames = array(
@@ -243,7 +243,7 @@ If the child makes an appropriate vocal response without orienting toward your f
         return $errors;
     }
 
-    function _page2()
+    function _page02()
     {
         $headings = array(
             "6." => "Anticipation of a Social Routine",
@@ -334,7 +334,7 @@ b. Once all of the objects have been used, the child is out of chances and the a
         $this->form->addFormRule(array(&$this, 'validate_page2'));
     }
 
-    function validate_page2($values)
+    function validate_page02($values)
     {
         $errors = [];
 
@@ -384,7 +384,7 @@ b. Once all of the objects have been used, the child is out of chances and the a
         $this->form->addText($name, $label);
     }
 
-    function _page3(){
+    function _page1(){
         //CODING
         //Section A: Language and Communication
         $this->form->addElement('header', null, "CODING:");
@@ -423,7 +423,7 @@ b. Once all of the objects have been used, the child is out of chances and the a
         $this->form->addElement('select','b18','18. Overall Quality of Rapport',$this->option0123);
     }
 
-    function _page4(){
+    function _page2(){
         //Section C: Play
         $this->form->addElement('header', null, "Section C: Play");
         $this->form->addElement('select', 'c1', '1. Functional Play with Objects', $this->option0123);
