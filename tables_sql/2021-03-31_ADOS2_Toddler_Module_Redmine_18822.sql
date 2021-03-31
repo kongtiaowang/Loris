@@ -1,0 +1,2 @@
+UPDATE `instrument_subtests` SET `Subtest_name` = 'ADOS2_Toddler_Module_page1', `Order_number` = '1' WHERE `Subtest_name` = 'ADOS2_Toddler_Module_page3';
+UPDATE `instrument_subtests` SET `Subtest_name` = 'ADOS2_Toddler_Module_page2', `Order_number` = '2' WHERE `Subtest_name` = 'ADOS2_Toddler_Module_page4';
