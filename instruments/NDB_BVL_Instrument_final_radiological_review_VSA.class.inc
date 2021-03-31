@@ -2,14 +2,14 @@
 
 require_once "AbstractNDB_BVL_Instrument_Radiology_Review_VSA.class.inc";
 
-class NDB_BVL_Instrument_Radiology_Review_VSA extends AbstractNDB_BVL_Instrument_Radiology_Review_VSA
+class NDB_BVL_Instrument_final_radiological_review_VSA extends AbstractNDB_BVL_Instrument_Radiology_Review_VSA
 {
     /**
      * {@inheritDoc}
      */
     function getTestName() : string
     {
-        return 'Radiology_Review_VSA';
+        return 'final_radiological_review_VSA';
     }
 
     /**
@@ -17,7 +17,7 @@ class NDB_BVL_Instrument_Radiology_Review_VSA extends AbstractNDB_BVL_Instrument
      */
     function getTableName() : string
     {
-        return 'Radiology_Review_VSA';
+        return 'final_radiological_review_VSA';
     }
 
     /**
@@ -25,6 +25,6 @@ class NDB_BVL_Instrument_Radiology_Review_VSA extends AbstractNDB_BVL_Instrument
      */
     function getInstrumentTitle() : string
     {
-        return 'Site Radiological Review Form';
+        return 'Final Study Radiological Review';
     }
 }
