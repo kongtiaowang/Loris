@@ -22,6 +22,13 @@ abstract class AbstractNDB_BVL_Instrument_Radiology_Review_VSA extends NDB_BVL_I
     abstract function getTableName() : string;
 
     /**
+     * Gets the instrument title.
+     *
+     * return string title.
+     */
+    abstract function getInstrumentTitle() : string;
+
+    /**
     * sets up basic data, such as the LorisForm object, and so on.
     *
     * @param string $commentID  the CommentID identifying the data to load
@@ -87,7 +94,7 @@ abstract class AbstractNDB_BVL_Instrument_Radiology_Review_VSA extends NDB_BVL_I
     */
     function _main(){
         // display test name
-        $this->form->addElement('header', 'instrument_title', "Site Radiological Review Form");
+        $this->form->addElement('header', 'instrument_title', $this->getInstrumentTitle());
         $config = \NDB_Config::singleton();
         $yes_no_option= array(NULL=>"", "no"=>"No", "yes"=>"Yes");
         $pscid = '';

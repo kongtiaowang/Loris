@@ -28,6 +28,14 @@ class NDB_BVL_Instrument_radiology_review_infant extends AbstractNDB_BVL_Instrum
     {
         return 'radiology_review_infant';
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    function getInstrumentTitle() : string
+    {
+        return 'Site Radiological Review Form';
+    }
 }
 
 ?>
