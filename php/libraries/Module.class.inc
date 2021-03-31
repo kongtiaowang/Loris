@@ -108,14 +108,13 @@ abstract class Module extends \LORIS\Router\PrefixRouter
         $config  = $factory->config();
         $base    = $config->getSetting("base");
 
-        $mpath = "";
         // TODO: Module search path should be a config option.
         if (is_dir($base . "project/modules/$name")) {
             $mpath = $base . "project/modules/$name";
         } else if (is_dir($base . "modules/$name")) {
             $mpath = $base . "modules/$name";
         } else {
-                throw new LorisNoSuchModuleException("No such module: $name");
+            throw new LorisNoSuchModuleException("No such module: $name");
         }
 
         if (!file_exists($mpath . "/php/module.class.inc")) {
@@ -526,5 +525,20 @@ abstract class Module extends \LORIS\Router\PrefixRouter
         $renderer = new \Smarty_NeuroDB($this->getName());
         $renderer->assign($tpl_data);
         return $renderer->fetch($template);
+    }
+
+    /**
+     * Return a data dictionary of data types managed by this module.
+     * DictionaryItems are grouped into categories and a module may
+     * provide 0 or more categories of dictionaryitems.
+     *
+     * @param \LORIS\LorisInstance $loris The LORIS instance whose data
+     *                                    dictionary should be retrieved.
+     *
+     * @return \LORIS\Data\Dictionary\Category[]
+     */
+    public function getDataDictionary(\LORIS\LorisInstance $loris) : iterable
+    {
+        return [];
     }
 }

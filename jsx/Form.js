@@ -879,6 +879,7 @@ class TagsElement extends Component {
             type="button"
             onClick={this.handleRemove}
             data-item={item}
+            key={item}
           >
             {itmTxt}
             &nbsp;
@@ -1552,7 +1553,23 @@ class FileElement extends Component {
    */
   render() {
     const required = this.props.required ? 'required' : null;
-    const fileName = this.props.value ? this.props.value.name : undefined;
+
+    let fileName = undefined;
+    if (this.props.value) {
+      switch (typeof this.props.value) {
+        case 'string':
+          fileName = this.props.value;
+          break;
+
+        case 'object':
+          fileName = this.props.value.name;
+          break;
+
+        default:
+          break;
+      }
+    }
+
     let requiredHTML = null;
     let errorMessage = '';
     let elementClass = 'row form-group';
@@ -2233,7 +2250,7 @@ class RadioElement extends React.Component {
 }
 RadioElement.propTypes = {
   name: PropTypes.string.isRequired,
-  label: PropTypes.string.isRequired,
+  label: PropTypes.string,
   options: PropTypes.object.isRequired,
   disabled: PropTypes.bool,
   required: PropTypes.bool,
