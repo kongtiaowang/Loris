@@ -1,14 +1,25 @@
 <?php
 
 
-
-
 class NDB_BVL_Instrument_Saliva_Collection_Tracking_Form extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
+    use instrument_validator;
 
     var $ValidityEnabled = false;
     var $ValidityRequired = false;
+    
+    const YES_NO_OPTIONS = array(
+                               ""           => "",
+                               "yes"          => "Yes",
+                               "no"           => "No",
+                              );
+
+    const VISIT_MAIL_OPTIONS = array(
+                                 ""           => "",
+                                'At_Visit'=>"At Visit",
+                                'Via_Mail' => "Via Mail"
+                           );
 
     /**
     * sets up basic data, such as the LorisForm object, and so on.
@@ -54,20 +65,11 @@ class NDB_BVL_Instrument_Saliva_Collection_Tracking_Form extends NDB_BVL_Instrum
         } else {
             $this->_main();
         }
+        $this->form->addFormRule(array(&$this, 'XINValidate'));
+
     }
 
     function _main(){
-               //Defines the call back function for HTML Quickform to use when validating the form.
-        $this->form->addFormRule(array(&$this,'XINValidate'));
-        $config =& NDB_Config::singleton();
-        $this->dateOptions = array(
-        'language' => 'en',
-        'format'   => 'YMd',
-        'minYear'  => $config->getSetting('startYear'),
-        'maxYear'  => $config->getSetting('endYear'),
-        'addEmptyOption' => true,
-        'emptyOptionValue' => null
-        );
 
         $examiners = $this->_getExaminerNames();
 
@@ -84,15 +86,8 @@ class NDB_BVL_Instrument_Saliva_Collection_Tracking_Form extends NDB_BVL_Instrum
         $this->form->addElement('header', null, 'Subject');
 
 
-        $options =
-            array(
-                ''      => '',
-                'yes'   => "Yes",
-                'no' => "No",
-            );
-
                $this->form->addElement('static','sq_1',"1. Does the subject need saliva collected?");
-               $this->form->addElement('select','sq1',$this->indent.'a:',$options);
+               $this->form->addElement('select','sq1',$this->indent.'a:',self::YES_NO_OPTIONS);
                 $this->form->addRule('sq1', 'This question is required', 'required');
 
                
@@ -101,7 +96,7 @@ class NDB_BVL_Instrument_Saliva_Collection_Tracking_Form extends NDB_BVL_Instrum
 
                $this->form->addElement('static','sq_3',"3. [If yes, question 1] Does the subject need to consent?");
 
-               $this->form->addElement('select','sq3',$this->indent.'a:',$options);
+               $this->form->addElement('select','sq3',$this->indent.'a:',self::YES_NO_OPTIONS);
 
                $this->XINRegisterRule('sq3', array("sq1{@}=={@}yes"), 'Required if yes, question 1');
 
@@ -125,7 +120,7 @@ class NDB_BVL_Instrument_Saliva_Collection_Tracking_Form extends NDB_BVL_Instrum
              $this->form->addElement('static','sq_6',"6. [If yes, question 3] How will saliva be collected?");
 
 
-               $this->form->addElement('select','sq6',$this->indent.'a:',  array('' => '','At_Visit'=>"At Visit",'Via_Mail' => "Via Mail"));
+               $this->form->addElement('select','sq6',$this->indent.'a:', self::VISIT_MAIL_OPTIONS);
                
                $this->XINRegisterRule('sq6', array("sq3{@}=={@}yes"), 'Required if no, question 3');
 
@@ -152,7 +147,7 @@ class NDB_BVL_Instrument_Saliva_Collection_Tracking_Form extends NDB_BVL_Instrum
 
                 $this->form->addElement('static','sq_9',"9. [If via mail, question 6] How will the family receive the kits?");
 
-               $this->form->addElement("select", "sq9_1", $this->indent."a:",  array('' => '','At_Visit'=>"At Visit",'Via_Mail' => "Via Mail"));
+               $this->form->addElement("select", "sq9_1", $this->indent."a:", self::VISIT_MAIL_OPTIONS);
 
                 $this->XINRegisterRule('sq9_1', array("sq6{@}=={@}Via_Mail"), 'Required if via mail, question 6');
 
@@ -166,7 +161,7 @@ class NDB_BVL_Instrument_Saliva_Collection_Tracking_Form extends NDB_BVL_Instrum
                 
                 $this->form->addElement('static','sq_11',"11. [If yes, question 1] Did UNC staff deliver saliva tube to processing lab at UNC?");
 
-               $this->form->addElement('select','sq11_1', $this->indent.'a:',$options);
+               $this->form->addElement('select','sq11_1', $this->indent.'a:',self::YES_NO_OPTIONS);
                 
                  $this->XINRegisterRule('sq11_1', array("sq1{@}=={@}yes"), 'Required if yes, question 1');
 
@@ -185,20 +180,10 @@ class NDB_BVL_Instrument_Saliva_Collection_Tracking_Form extends NDB_BVL_Instrum
                $this->form->addElement("textarea", "sq13", "13. Comments:", array('cols'=>25, 'rows'=>4));
                 $this->XINRegisterRule("sq13", array("sq13{@}=={@}NEVER_REQUIRED"));
 
+
     }
 
 function _page1(){
-        //Defines the call back function for HTML Quickform to use when validating the form.
-      //  $this->form->addFormRule(array(&$this,'XINValidate'));
-        $config =& NDB_Config::singleton();
-        $this->dateOptions = array(
-        'language' => 'en',
-        'format'   => 'YMd',
-        'minYear'  => $config->getSetting('startYear'),
-        'maxYear'  => $config->getSetting('endYear'),
-        'addEmptyOption' => true,
-        'emptyOptionValue' => null
-        );
 
         $examiners = $this->_getExaminerNames();
 
@@ -210,15 +195,9 @@ function _page1(){
             $this->form->addElement('header', null, 'Proband');
 
 
-        $options =
-            array(
-                ''      => '',
-                'yes'   => "Yes",
-                'no' => "No",
-            );
 
                $this->form->addElement('static','pq_1',"1. Does the proband need saliva collected?");
-               $this->form->addElement('select','pq1',$this->indent.'a:',$options);
+               $this->form->addElement('select','pq1',$this->indent.'a:',self::YES_NO_OPTIONS);
                 $this->form->addRule('pq1', 'This question is required', 'required');
 
                
@@ -227,7 +206,7 @@ function _page1(){
 
                $this->form->addElement('static','pq_3',"3. [If yes, question 1] Does the proband need to consent?");
 
-               $this->form->addElement('select','pq3',$this->indent.'a:',$options);
+               $this->form->addElement('select','pq3',$this->indent.'a:',self::YES_NO_OPTIONS);
 
                $this->XINRegisterRule('pq3', array("pq1{@}=={@}yes"), 'Required if yes, question 1');
 
@@ -253,14 +232,14 @@ function _page1(){
 
              $this->form->addElement('static','pq_6',"6. Will the proband complete an additional collection tube?");
 
-               $this->form->addElement('select','pq6',$this->indent.'a:', $options);
+               $this->form->addElement('select','pq6',$this->indent.'a:', self::YES_NO_OPTIONS);
 
 
 
                
               $this->form->addElement('static','pq_7',"7. [yes, question 3] How will saliva be collected?");
 
-               $this->form->addElement('select','pq7','a:', array('' => '','At_Visit'=>"At Visit",'Via_Mail' => "Via Mail"));
+               $this->form->addElement('select','pq7','a:', self::VISIT_MAIL_OPTIONS);
 
                 $this->XINRegisterRule('pq7', array("pq3{@}=={@}yes"), 'Required if yes, question 3');
 
@@ -290,7 +269,7 @@ function _page1(){
 
                 $this->form->addElement('static','pq_10',"10. [If via mail, question 7] How will the family receive the kits?");
 
-               $this->form->addElement("select", "pq10_1", $this->indent."a:",  array('' => '','At_Visit'=>"At Visit",'Via_Mail' => "Via Mail"));
+               $this->form->addElement("select", "pq10_1", $this->indent."a:",  self::VISIT_MAIL_OPTIONS);
 
                 $this->XINRegisterRule('pq10_1', array("pq7{@}=={@}Via_Mail"), 'Required if via mail, question 7');
 
@@ -308,7 +287,7 @@ function _page1(){
 
                 $this->form->addElement('static','pq_12',"12. [If yes, question 1] Did UNC staff deliver saliva tube to processing lab at UNC?");
 
-               $this->form->addElement('select','pq12_1', $this->indent.'a:',$options);
+               $this->form->addElement('select','pq12_1', $this->indent.'a:',self::YES_NO_OPTIONS);
                 
                  $this->XINRegisterRule('pq12_1', array("pq1{@}=={@}yes"), 'Required if yes, question 1');
 
@@ -328,20 +307,10 @@ function _page1(){
 
                $this->form->addElement("textarea", "pq14", "14. Comments:", array('cols'=>25, 'rows'=>4));
                 $this->XINRegisterRule("pq14", array("pq14{@}=={@}NEVER_REQUIRED"));
+
 }
 
 function _page2(){
-    //Defines the call back function for HTML Quickform to use when validating the form.
-    //    $this->form->addFormRule(array(&$this,'XINValidate'));
-        $config =& NDB_Config::singleton();
-        $this->dateOptions = array(
-        'language' => 'en',
-        'format'   => 'YMd',
-        'minYear'  => $config->getSetting('startYear'),
-        'maxYear'  => $config->getSetting('endYear'),
-        'addEmptyOption' => true,
-        'emptyOptionValue' => null
-        );
 
         $examiners = $this->_getExaminerNames();
 
@@ -353,15 +322,9 @@ function _page2(){
             $this->form->addElement('header', null, 'Mother');
 
 
-        $options =
-            array(
-                ''      => '',
-                'yes'   => "Yes",
-                'no' => "No",
-            );
 
                $this->form->addElement('static','mq_1',"1. Does the mother need saliva collected?");
-               $this->form->addElement('select','mq1',$this->indent.'a:',$options);
+               $this->form->addElement('select','mq1',$this->indent.'a:',self::YES_NO_OPTIONS);
                 $this->form->addRule('mq1', 'This question is required', 'required');
 
                
@@ -371,7 +334,7 @@ function _page2(){
 
                $this->form->addElement('static','mq_3',"3. [If yes, question 1] Does the mother need to consent?");
 
-               $this->form->addElement('select','mq3',$this->indent.'a:',$options);
+               $this->form->addElement('select','mq3',$this->indent.'a:',self::YES_NO_OPTIONS);
 
                $this->XINRegisterRule('mq3', array("mq1{@}=={@}yes"), 'Required if yes, question 1');
 
@@ -398,7 +361,7 @@ function _page2(){
                
               $this->form->addElement('static','mq_6',"6. [yes, question 3] How will saliva be collected?");
 
-               $this->form->addElement('select','mq6','a:', array('' => '','At_Visit'=>"At Visit",'Via_Mail' => "Via Mail"));
+               $this->form->addElement('select','mq6','a:', self::VISIT_MAIL_OPTIONS);
 
                $this->XINRegisterRule('mq6', array("mq3{@}=={@}yes"), 'Required if yes, question 3');
 
@@ -431,7 +394,7 @@ function _page2(){
 
                 $this->form->addElement('static','mq_9',"9. [If via mail, question 6] How will the family receive the kits?");
 
-               $this->form->addElement("select", "mq9_1", $this->indent."a:",  array('' => '','At_Visit'=>"At Visit",'Via_Mail' => "Via Mail"));
+               $this->form->addElement("select", "mq9_1", $this->indent."a:",  self::VISIT_MAIL_OPTIONS);
 
                 $this->XINRegisterRule('mq9_1', array("mq6{@}=={@}Via_Mail"), 'Required if via mail, question 6');
 
@@ -448,7 +411,7 @@ function _page2(){
                 
                 $this->form->addElement('static','mq_11',"11. [If yes, question 1] Did UNC staff deliver saliva tube to processing lab at UNC?");
 
-               $this->form->addElement('select','mq11_1', $this->indent.'a:',$options);
+               $this->form->addElement('select','mq11_1', $this->indent.'a:',self::YES_NO_OPTIONS);
                 
                  $this->XINRegisterRule('mq11_1', array("mq1{@}=={@}yes"), 'Required if yes, question 1');
 
@@ -469,20 +432,10 @@ function _page2(){
                $this->form->addElement("textarea", "mq13", "13. Comments:", array('cols'=>25, 'rows'=>4));
 
                 $this->XINRegisterRule("mq13", array("mq13{@}=={@}NEVER_REQUIRED"));
+
 }
 
 function _page3(){     
-     //Defines the call back function for HTML Quickform to use when validating the form.
-    //    $this->form->addFormRule(array(&$this,'XINValidate'));
-        $config =& NDB_Config::singleton();
-        $this->dateOptions = array(
-        'language' => 'en',
-        'format'   => 'YMd',
-        'minYear'  => $config->getSetting('startYear'),
-        'maxYear'  => $config->getSetting('endYear'),
-        'addEmptyOption' => true,
-        'emptyOptionValue' => null
-        );
 
         $examiners = $this->_getExaminerNames();
 
@@ -494,15 +447,8 @@ function _page3(){
             $this->form->addElement('header', null, 'Father');
 
 
-        $options =
-            array(
-                ''      => '',
-                'yes'   => "Yes",
-                'no' => "No",
-            );
-
                $this->form->addElement('static','fq_1',"1. Does the father need saliva collected?");
-               $this->form->addElement('select','fq1',$this->indent.'a:',$options);
+               $this->form->addElement('select','fq1',$this->indent.'a:',self::YES_NO_OPTIONS);
                 $this->form->addRule('fq1', 'This question is required', 'required');
 
                
@@ -512,7 +458,7 @@ function _page3(){
 
                $this->form->addElement('static','fq_3',"3. [If yes, question 1] Does the father need to consent?");
 
-               $this->form->addElement('select','fq3',$this->indent.'a:',$options);
+               $this->form->addElement('select','fq3',$this->indent.'a:',self::YES_NO_OPTIONS);
 
                $this->XINRegisterRule('fq3', array("fq1{@}=={@}yes"), 'Required if yes, question 1');
 
@@ -539,7 +485,7 @@ function _page3(){
                
               $this->form->addElement('static','fq_6',"6. [yes, question 3] How will saliva be collected?");
 
-               $this->form->addElement('select','fq6','a:', array('' => '','At_Visit'=>"At Visit",'Via_Mail' => "Via Mail"));
+               $this->form->addElement('select','fq6','a:', self::VISIT_MAIL_OPTIONS);
 
                $this->XINRegisterRule('fq6', array("fq3{@}=={@}yes"), 'Required if yes, question 3');
 
@@ -572,7 +518,7 @@ function _page3(){
 
                 $this->form->addElement('static','fq_9',"9. [If via mail, question 6] How will the family receive the kits?");
 
-               $this->form->addElement("select", "fq9_1", $this->indent."a:",  array('' => '','At_Visit'=>"At Visit",'Via_Mail' => "Via Mail"));
+               $this->form->addElement("select", "fq9_1", $this->indent."a:",  self::VISIT_MAIL_OPTIONS);
 
                 $this->XINRegisterRule('fq9_1', array("fq6{@}=={@}Via_Mail"), 'Required if via mail, question 6');
 
@@ -589,7 +535,7 @@ function _page3(){
                 
                 $this->form->addElement('static','fq_11',"11. [If yes, question 1] Did UNC staff deliver saliva tube to processing lab at UNC?");
 
-               $this->form->addElement('select','fq11_1', $this->indent.'a:',$options);
+               $this->form->addElement('select','fq11_1', $this->indent.'a:',self::YES_NO_OPTIONS);
                 
                  $this->XINRegisterRule('fq11_1', array("fq1{@}=={@}yes"), 'Required if yes, question 1');
 
@@ -620,13 +566,18 @@ function _page3(){
 
                $this->form->addRule('aq1', 'This question is required', 'required');
 
-               $this->form->addElement('text','aq2','Tracking number:');
+
+               $this->form->addElement('text','aq2','');
 
                $this->form->addRule('aq2', 'The tracking number is required', 'required');
+
+               $this->form->addFormRule(array(&$this, 'validate_tracking_number'));
+
+
 }
 
 
-/**
+  /**
     * adds metadata fields (such as Examiner and Date_taken) to the
     * current form
     *
@@ -659,11 +610,31 @@ function _page3(){
         $this->form->addElement('select', 'Examiner', 'Examiner', $examiners);
 
 
-        // deprecated // $this->form->registerRule('checkdate', 'callback', '_checkDate');
-        // not needed // $this->form->addRule('Date_taken', 'Date of Administration is invalid', 'checkdate');
-
         $this->form->addRule('Examiner', 'Examiner is required', 'required');
 
     }
+
+
+    function validate_tracking_number($values)
+    {
+        $errors = [];
+        $this->validate_positive_numeric($values, "aq2", $errors);
+        return $errors;
+
+    }
+
+
+    function validate_positive_numeric($values, $question, &$errors)
+    {
+        if (isset($values[$question])) {
+            $user_input = $values[$question];
+            if ((!is_numeric($user_input) || (is_numeric($user_input) && $user_input < 0)) && $user_input != "") {
+                $errors[$question] = "Specify a number as tracking number.";
+            }
+        }
+    }
+
+    
 }
 ?>
+
