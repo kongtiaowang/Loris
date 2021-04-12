@@ -955,9 +955,11 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
         $dob        = $timepoint->getEffectiveDateOfBirth();
         $interval   = date_diff(date_create($dob), date_create($record["Date_taken"]));
         $age_months = $interval->format("%m");
+
         if ($age_months==10 or $age_months==11) {
             $age_months = 9;
         }
+
         //Hack to make a proper mathematical range to check the value
         //Decimal Range should be between .5-.9
         //Age with months >9 will make an wrong mathematical value
@@ -966,6 +968,7 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
         $age_years = $interval->format("%y");
         $age       = $age_years.".".$age_months;
         //echo $age;
+
         $subtest_name = array(
                          "subtest_1_3",
                          "subtest_1_6",
@@ -982,6 +985,7 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
                          "subtest_8_2",
                          "subtest_8_3",
                         );
+
         foreach ($subtest_name as $value) {
             $scores["$value" . '_point_score'] = $this->getPointScore($value);
         }
@@ -1014,7 +1018,7 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
 
         if ($scores["total_point_score"] > 0 || $scores["total_point_score"] !=null) {
             $query_gender  = "SELECT Sex FROM candidate as c, session as s, flag as f, $this->table as t WHERE t.CommentID = '$this->commentID'
-AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
+            AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
             $record_gender = $db->pselectRow($query_gender, array());
             $sex           = $record_gender['Sex'];
             $query_scores  = "SELECT * FROM BOT2_Short_lookup WHERE
@@ -1246,7 +1250,6 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
 
     function getPointScore($subtest_name)
     {
-
         $two_trial_array = array(
                             'subtest_3_2',
                             'subtest_4_3',
@@ -1262,12 +1265,15 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
                             'subtest_2_2',
                             'subtest_2_7',
                            );
+
         $db    = Database::singleton();
         $query = "SELECT *
-FROM candidate as c, session as s, flag as f, $this->table as t WHERE t.CommentID = '$this->commentID'
-AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
+        FROM candidate as c, session as s, flag as f, $this->table as t WHERE t.CommentID = '$this->commentID'
+        AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
+
         $raw_score_find = $db->pselectRow($query, array());
         //print_r($raw_score_find);
+
         if (in_array($subtest_name, $two_trial_array)) {
             $raw_score = max(
                 $raw_score_find["{$subtest_name}_trial1"],
@@ -1286,8 +1292,8 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
             return $point_score;
         }
 
-        if ($subtest_name=='subtest_1_3') {
-            $check_array =array(
+        if ($subtest_name == 'subtest_1_3') {
+            $check_array = array(
                            '>=21'  => 0,
                            '15-20' => 1,
                            '10-14' => 2,
@@ -1299,9 +1305,9 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
                           );
         }
 
-        if ($subtest_name=='subtest_1_6') {
-            $check_array =array(
-                           '0'    => 6,
+        if ($subtest_name == 'subtest_1_6') {
+            $check_array = array(
+                           '0'    => 0,
                            '1-2'  => 1,
                            '3-4'  => 2,
                            '5-6'  => 3,
@@ -1312,8 +1318,8 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
                           );
         }
 
-        if ($subtest_name=='subtest_3_2') {
-            $check_array =array(
+        if ($subtest_name == 'subtest_3_2') {
+            $check_array = array(
                            '0-2'   => 0,
                            '3-4'   => 1,
                            '5-6'   => 2,
@@ -1327,8 +1333,8 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
                           );
         }
 
-        if ($subtest_name=='subtest_4_3') {
-            $check_array =array(
+        if ($subtest_name == 'subtest_4_3') {
+            $check_array = array(
                            '0'   => 0,
                            '1'   => 1,
                            '2-4' => 2,
@@ -1336,8 +1342,8 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
                           );
         }
 
-        if ($subtest_name=='subtest_4_6') {
-            $check_array =array(
+        if ($subtest_name == 'subtest_4_6') {
+            $check_array = array(
                            '0'   => 0,
                            '1'   => 1,
                            '2-4' => 2,
@@ -1346,8 +1352,8 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
                           );
         }
 
-        if ($subtest_name=='subtest_5_2') {
-            $check_array =array(
+        if ($subtest_name == 'subtest_5_2') {
+            $check_array = array(
                            '0'   => 0,
                            '1-2' => 1,
                            '3-4' => 2,
@@ -1356,8 +1362,8 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
                           );
         }
 
-        if ($subtest_name=='subtest_5_7') {
-            $check_array =array(
+        if ($subtest_name == 'subtest_5_7') {
+            $check_array = array(
                            '0.0-0.9' => 0,
                            '1.0-2.9' => 1,
                            '3.0-5.9' => 2,
@@ -1366,8 +1372,8 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
                           );
         }
 
-        if ($subtest_name=='subtest_6_3') {
-            $check_array =array(
+        if ($subtest_name == 'subtest_6_3') {
+            $check_array = array(
                            '0'     => 0,
                            '1-2'   => 1,
                            '3-5'   => 2,
@@ -1382,8 +1388,8 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
                           );
         }
 
-        if ($subtest_name=='subtest_7_1') {
-            $check_array =array(
+        if ($subtest_name == 'subtest_7_1') {
+            $check_array = array(
                            '0' => 0,
                            '1' => 1,
                            '2' => 2,
@@ -1393,8 +1399,8 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
                           );
         }
 
-        if ($subtest_name=='subtest_7_6') {
-            $check_array =array(
+        if ($subtest_name == 'subtest_7_6') {
+            $check_array = array(
                            '0'   => 0,
                            '1'   => 1,
                            '2'   => 2,
@@ -1406,7 +1412,7 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
                           );
         }
 
-        if ($subtest_name=='subtest_8_2') {
+        if ($subtest_name == 'subtest_8_2') {
             $check_array = array(
                             '0'     => 0,
                             '1-2'   => 1,
@@ -1421,8 +1427,8 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
                            );
         }
 
-        if ($subtest_name=='subtest_8_3') {
-            $check_array =array(
+        if ($subtest_name == 'subtest_8_3') {
+            $check_array = array(
                            '0'     => 0,
                            '1-2'   => 1,
                            '3-5'   => 2,
@@ -1436,8 +1442,8 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
                           );
         }
 
-        if ($subtest_name=='subtest_2_2' || $subtest_name=='subtest_2_7') {
-            $point_score =$raw_score;
+        if ($subtest_name == 'subtest_2_2' || $subtest_name == 'subtest_2_7') {
+            $point_score = $raw_score;
         } else {
             foreach ($check_array as $key => $value) {
                 if (stristr($key, '-') !== false) {
