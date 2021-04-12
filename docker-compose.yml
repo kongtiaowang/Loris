@@ -13,7 +13,6 @@ services:
       - "8081:80"
     volumes:
       - .:/var/www/html
-      - /data/ :/var/www/html/mount_data/
     working_dir: /var/www/html
     networks:
       - Loris
