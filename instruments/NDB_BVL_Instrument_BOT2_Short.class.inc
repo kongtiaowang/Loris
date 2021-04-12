@@ -38,22 +38,22 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
      * Sets up basic data, such as the HTML_Quickform object, and so on.
      *
      * @param string $commentID the CommentID identifying the data to load
-     * @param string $page if a multipage form, the page to show
+     * @param string $page      if a multipage form, the page to show
      *
      * @return void
      * @access public
      */
-    function setup(?string $commentID = NULL, ?string $page = NULL): void
+    function setup(?string $commentID = null, ?string $page = null): void
     {
         $this->formType = "XIN";
-        $this->form = new LorisForm('BOT2_Short_form');
-        $this->page = $page;            // page label (number or
+        $this->form     = new LorisForm('BOT2_Short_form');
+        $this->page     = $page;            // page label (number or
         // string - used by
         // user-defined child classes)
 
         // set the object properties
         $this->testName = "BOT2_Short";           // test_names.Test_name
-        $this->table = 'BOT2_Short';              // name of database table corresponding to instrument
+        $this->table    = 'BOT2_Short';           // name of database table corresponding to instrument
         // data keyed by commentID
         $this->commentID = $commentID;
 
@@ -67,7 +67,6 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
 
         // setup the form
         $this->_setupForm();
-
     }
 
     //If the instrument is not paged, remove the switch from the _setupForm method and add all the form Elements in this function.
@@ -113,9 +112,9 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
             "preferred_drawing_hand",
             "Preferred Drawing Hand:",
             array(
-                null => "",
-                "right" => "Right",
-                "left" => "Left",
+             null    => "",
+             "right" => "Right",
+             "left"  => "Left",
             )
         );
 
@@ -123,9 +122,9 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
             "preferred_throwing_hand_arm",
             "Preferred Throwing Hand/Arm:",
             array(
-                null => "",
-                "right" => "Right",
-                "left" => "Left",
+             null    => "",
+             "right" => "Right",
+             "left"  => "Left",
             )
         );
 
@@ -133,9 +132,9 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
             "preferred_foot_leg",
             "Preferred Foot/Leg:",
             array(
-                null => "",
-                "right" => "Right",
-                "left" => "Left",
+             null    => "",
+             "right" => "Right",
+             "left"  => "Left",
             )
         );
 
@@ -151,18 +150,20 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
         $group[] = $this->form->createElement('static', "CI_interval", null, null);
         $group[] = $this->form->createElement('static', "percentile_rank", null, null);
         $group[] = $this->form->createElement('static', "desc_category", null, null);
-        $this->form->addGroup($group, 'score_header_group', "<strong>Scale</strong>", $this->_GUIDelimiter, FALSE);
+        $this->form->addGroup($group, 'score_header_group', "<strong>Scale</strong>", $this->_GUIDelimiter, false);
         unset($group);
-
 
         //score fields
         $domains = array("bot2_short" => "Push-Up Knee Full");
 
-
-        $columnHeaders = array("total_point_score" => "Total Point Score", "std_score" => "Standard Score",
-            "CI_band" => "Band(CI:95%)", "CI_interval" => "Interval(CI:95%)", "percentile_rank" => "%ile Rank",
-            "desc_category" => "Descriptive Category"
-        );
+        $columnHeaders = array(
+                          "total_point_score" => "Total Point Score",
+                          "std_score"         => "Standard Score",
+                          "CI_band"           => "Band(CI:95%)",
+                          "CI_interval"       => "Interval(CI:95%)",
+                          "percentile_rank"   => "%ile Rank",
+                          "desc_category"     => "Descriptive Category",
+                         );
 
         foreach ($columnHeaders as $field => $label) {
             $columnHeaders[$field] .= "   ";
@@ -171,15 +172,11 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
 
         foreach ($domains as $field => $label) {
             foreach ($columnHeaders as $scoreField => $scoreLabel) {
-
                 $group[] = $this->form->createElement('static', "{$field}_{$scoreField}", null, null);
             }
-            $this->form->addGroup($group, "{$label}_score_group", $label, $this->_GUIDelimiter, FALSE);
+            $this->form->addGroup($group, "{$label}_score_group", $label, $this->_GUIDelimiter, false);
             unset($group);
-
-
         }
-
     }
 
     function displayHeaders($message, $subtest_number)
@@ -262,21 +259,21 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
         unset($group);
 
         $subtest_1_questions = array(
-            "subtest_1_3" => "3. Drawing Lines through Paths - Crooked",
-            "subtest_1_6" => "6. Folding Paper",
-        );
+                                "subtest_1_3" => "3. Drawing Lines through Paths - Crooked",
+                                "subtest_1_6" => "6. Folding Paper",
+                               );
 
         $subtest_1_options = array(
-            null => "",
-            0 => 0,
-            1 => 1,
-            2 => 2,
-            3 => 3,
-            4 => 4,
-            5 => 5,
-            6 => 6,
-            7 => 7,
-        );
+                              null => "",
+                              0    => 0,
+                              1    => 1,
+                              2    => 2,
+                              3    => 3,
+                              4    => 4,
+                              5    => 5,
+                              6    => 6,
+                              7    => 7,
+                             );
         // Section 1: Adding Group and group validations
         $e = 0;
         foreach ($subtest_1_questions as $key => $category) {
@@ -313,7 +310,7 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
             "static",
             null,
             null,
-            "<i>For each item, if the Basic Shape facet is scored 0, 
+            "<i>For each item, if the Basic Shape facet is scored 0,
              then all remaining facets and the total score for that item must
              also be scored 0."
         );
@@ -377,17 +374,19 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
         unset($group);
 
         $subtest_2_questions = array(
-            "subtest_2_2" => "2. Copying a Square",
-            "subtest_2_7" => "7. Copying a Star",
-        );
+                                "subtest_2_2" => "2. Copying a Square",
+                                "subtest_2_7" => "7. Copying a Star",
+                               );
 
         $subtest_2_options = array(
-            null => "",
-            0 => 0,
-            1 => 1,
-        );
+                              null => "",
+                              0    => 0,
+                              1    => 1,
+                             );
+
         // Section 2: Adding Group and group validations
         $f = 0;
+
         foreach ($subtest_2_questions as $key => $category) {
             $f++;
             $group[] =& $this->createLabel($category);
@@ -462,19 +461,21 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
         $subtest_3_questions = array("subtest_3_2" => "2. Transferring Pennies");
 
         $subtest_3_and_8_options = array(
-            null => "",
-            0 => 0,
-            1 => 1,
-            2 => 2,
-            3 => 3,
-            4 => 4,
-            5 => 5,
-            6 => 6,
-            7 => 7,
-            8 => 8,
-            9 => 9,
-        );
+                                    null => "",
+                                    0    => 0,
+                                    1    => 1,
+                                    2    => 2,
+                                    3    => 3,
+                                    4    => 4,
+                                    5    => 5,
+                                    6    => 6,
+                                    7    => 7,
+                                    8    => 8,
+                                    9    => 9,
+                                   );
+
         $g = 0;
+
         foreach ($subtest_3_questions as $key => $category) {
             $g++;
             $group[] =& $this->createLabel($category);
@@ -519,27 +520,29 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
         $this->displayHeaders("Conduct the second trial only if the examinee does not earn the maximum score on the first trial.", 4);
 
         $subtest_4_questions = array(
-            "subtest_4_3" => "3. Jumping in Place - Same Sides Synchronized",
-            "subtest_4_6" => "6. Tapping Feet and Fingers - Same Sides Synchronized",
-        );
+                                "subtest_4_3" => "3. Jumping in Place - Same Sides Synchronized",
+                                "subtest_4_6" => "6. Tapping Feet and Fingers - Same Sides Synchronized",
+                               );
 
         $subtest_4_3_options = array(
-            null => "",
-            0 => 0,
-            1 => 1,
-            2 => 2,
-            3 => 3,
-        );
+                                null => "",
+                                0    => 0,
+                                1    => 1,
+                                2    => 2,
+                                3    => 3,
+                               );
 
         $subtest_4_6_options = array(
-            null => "",
-            0 => 0,
-            1 => 1,
-            2 => 2,
-            3 => 3,
-            4 => 4,
-        );
+                                null => "",
+                                0    => 0,
+                                1    => 1,
+                                2    => 2,
+                                3    => 3,
+                                4    => 4,
+                               );
+
         $h = 0;
+
         foreach ($subtest_4_questions as $key => $category) {
             $h++;
             $group[] =& $this->createLabel($category);
@@ -604,19 +607,20 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
         $this->displayHeaders("Conduct the second trial only if the examinee does not earn the maximum score on the first trial.", 5);
 
         $subtest_5_questions = array(
-            "subtest_5_2" => "2. Walking Forward on a Line",
-            "subtest_5_7" => "7. Standing on One Leg on a Balance Beam - Eyes Open",
-        );
+                                "subtest_5_2" => "2. Walking Forward on a Line",
+                                "subtest_5_7" => "7. Standing on One Leg on a Balance Beam - Eyes Open",
+                               );
 
         $subtest_5_options = array(
-            null => "",
-            0 => 0,
-            1 => 1,
-            2 => 2,
-            3 => 3,
-            4 => 4,
-        );
+                              null => "",
+                              0    => 0,
+                              1    => 1,
+                              2    => 2,
+                              3    => 3,
+                              4    => 4,
+                             );
         $i = 0;
+
         foreach ($subtest_5_questions as $key => $category) {
             $i++;
             $group[] =& $this->createLabel($category);
@@ -689,20 +693,20 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
         $subtest_6_questions = array("subtest_6_3" => "3. One-Legged Stationary Hop");
 
         $subtest_6_options = array(
-            null => "",
-            0 => 0,
-            1 => 1,
-            2 => 2,
-            3 => 3,
-            4 => 4,
-            5 => 5,
-            6 => 6,
-            7 => 7,
-            8 => 8,
-            9 => 9,
-            10 => 10,
+                              null => "",
+                              0    => 0,
+                              1    => 1,
+                              2    => 2,
+                              3    => 3,
+                              4    => 4,
+                              5    => 5,
+                              6    => 6,
+                              7    => 7,
+                              8    => 8,
+                              9    => 9,
+                              10   => 10,
+                             );
 
-        );
         $j = 0;
 
         foreach ($subtest_6_questions as $key => $category) {
@@ -748,33 +752,33 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
         $this->addLabel("<h3>Subtest 7: Upper-Limb Coordination</h3>");
 
         $subtest_7_1_options = array(
-            null => "",
-            0 => 0,
-            1 => 1,
-            2 => 2,
-            3 => 3,
-            4 => 4,
-            5 => 5,
-        );
+                                null => "",
+                                0    => 0,
+                                1    => 1,
+                                2    => 2,
+                                3    => 3,
+                                4    => 4,
+                                5    => 5,
+                               );
 
         $subtest_7_6_options = array(
-            null => "",
-            0 => 0,
-            1 => 1,
-            2 => 2,
-            3 => 3,
-            4 => 4,
-            5 => 5,
-            6 => 6,
-            7 => 7,
-        );
+                                null => "",
+                                0    => 0,
+                                1    => 1,
+                                2    => 2,
+                                3    => 3,
+                                4    => 4,
+                                5    => 5,
+                                6    => 6,
+                                7    => 7,
+                               );
 
         $this->displayHeaders("For item 6, conduct the second trial only if the examinee does not earn the maximum score on the first trial.", 7);
 
         $subtest_7_questions = array(
-            "subtest_7_1" => "1. Dropping and Catching a Ball - Both Hands",
-            "subtest_7_6" => "6. Dribbling a Ball - Alternating Hands",
-        );
+                                "subtest_7_1" => "1. Dropping and Catching a Ball - Both Hands",
+                                "subtest_7_6" => "6. Dribbling a Ball - Alternating Hands",
+                               );
         $k = 0;
         foreach ($subtest_7_questions as $key => $category) {
             $k++;
@@ -883,9 +887,9 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
         unset($group);
 
         $subtest_8_questions = array(
-            "subtest_8_2" => "2. Select one",
-            "subtest_8_3" => "3. Sit-ups",
-        );
+                                "subtest_8_2" => "2. Select one",
+                                "subtest_8_3" => "3. Sit-ups",
+                               );
         $l = 0;
         foreach ($subtest_8_questions as $key => $category) {
             $l++;
@@ -944,85 +948,83 @@ class NDB_BVL_Instrument_BOT2_Short extends NDB_BVL_Instrument
             return;
         }
 
-
         $db = Database::singleton();
 
-        $record = $db->pselectRow("SELECT * FROM $this->table WHERE CommentID=:cid", array("cid" => $this->getCommentID()));
-        $timepoint =& TimePoint::singleton($this->getSessionID());
-        $dob = $timepoint->getEffectiveDateOfBirth();
-        $interval = date_diff(date_create($dob), date_create($record["Date_taken"]));
+        $record     = $db->pselectRow("SELECT * FROM $this->table WHERE CommentID=:cid", array("cid" => $this->getCommentID()));
+        $timepoint  =& TimePoint::singleton($this->getSessionID());
+        $dob        = $timepoint->getEffectiveDateOfBirth();
+        $interval   = date_diff(date_create($dob), date_create($record["Date_taken"]));
         $age_months = $interval->format("%m");
-        if($age_months==10 or $age_months==11)
-        {
-            $age_months= 9;
+        if ($age_months==10 or $age_months==11) {
+            $age_months = 9;
         }
         //Hack to make a proper mathematical range to check the value
-        //Deciaml Range should be between .5-.9
+        //Decimal Range should be between .5-.9
         //Age with months >9 will make an wrong mathematical value
         //So Months >9 (10 & 11) are considered as 9 as all the lookup values in between 9 &11 monts have same
         //value in lookup table. Look up table also adjusted in that way
         $age_years = $interval->format("%y");
-        $age = $age_years.".".$age_months;
+        $age       = $age_years.".".$age_months;
         //echo $age;
         $subtest_name = array(
-            "subtest_1_3",
-            "subtest_1_6",
-            "subtest_2_2",
-            "subtest_2_7",
-            "subtest_3_2",
-            "subtest_4_3",
-            "subtest_4_6",
-            "subtest_5_2",
-            "subtest_5_7",
-            "subtest_6_3",
-            "subtest_7_1",
-            "subtest_7_6",
-            "subtest_8_2",
-            "subtest_8_3",
-        );
+                         "subtest_1_3",
+                         "subtest_1_6",
+                         "subtest_2_2",
+                         "subtest_2_7",
+                         "subtest_3_2",
+                         "subtest_4_3",
+                         "subtest_4_6",
+                         "subtest_5_2",
+                         "subtest_5_7",
+                         "subtest_6_3",
+                         "subtest_7_1",
+                         "subtest_7_6",
+                         "subtest_8_2",
+                         "subtest_8_3",
+                        );
         foreach ($subtest_name as $value) {
             $scores["$value" . '_point_score'] = $this->getPointScore($value);
         }
 
-
-
         $subtest_point_score = array(
-            "subtest_1_3_point_score",
-            "subtest_1_6_point_score",
-            "subtest_2_2_point_score",
-            "subtest_2_7_point_score",
-            "subtest_3_2_point_score",
-            "subtest_4_3_point_score",
-            "subtest_4_6_point_score",
-            "subtest_5_2_point_score",
-            "subtest_5_7_point_score",
-            "subtest_6_3_point_score",
-            "subtest_7_1_point_score",
-            "subtest_7_6_point_score",
-            "subtest_8_2_point_score",
-            "subtest_8_3_point_score",
-        );
-
+                                "subtest_1_3_point_score",
+                                "subtest_1_6_point_score",
+                                "subtest_2_2_point_score",
+                                "subtest_2_7_point_score",
+                                "subtest_3_2_point_score",
+                                "subtest_4_3_point_score",
+                                "subtest_4_6_point_score",
+                                "subtest_5_2_point_score",
+                                "subtest_5_7_point_score",
+                                "subtest_6_3_point_score",
+                                "subtest_7_1_point_score",
+                                "subtest_7_6_point_score",
+                                "subtest_8_2_point_score",
+                                "subtest_8_3_point_score",
+                               );
 
         $db->update($this->table, $scores, array("CommentID" => $this->getCommentID()));
+
         foreach ($subtest_point_score as $value) {
-            $scores["total_point_score"] += $scores["{$value}"];
+            $scores["total_point_score"]            += $scores["{$value}"];
             $scores["bot2_short_total_point_score"] += $scores["{$value}"];
         }
+
         $total_point_score = $scores["bot2_short_total_point_score"];
-        if ($scores["total_point_score"] > 0 || $scores["total_point_score"] !=NULL) {
-            $query_gender = "SELECT Sex FROM candidate as c, session as s, flag as f, $this->table as t WHERE t.CommentID = '$this->commentID' 
+
+        if ($scores["total_point_score"] > 0 || $scores["total_point_score"] !=null) {
+            $query_gender  = "SELECT Sex FROM candidate as c, session as s, flag as f, $this->table as t WHERE t.CommentID = '$this->commentID'
 AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
             $record_gender = $db->pselectRow($query_gender, array());
-            $sex = $record_gender['Sex'];
-            $query_scores = "SELECT * FROM BOT2_Short_lookup WHERE
-                sex='$sex'  AND (age ='$age'  OR  '$age' BETWEEN SUBSTRING_INDEX 
+            $sex           = $record_gender['Sex'];
+            $query_scores  = "SELECT * FROM BOT2_Short_lookup WHERE
+                sex='$sex'  AND (age ='$age'  OR  '$age' BETWEEN SUBSTRING_INDEX
                 (`age`,'-', 1) AND SUBSTRING_INDEX(`age`,'-', -1) )AND
-                (total_point_score =$total_point_score  OR  $total_point_score BETWEEN SUBSTRING_INDEX 
+                (total_point_score =$total_point_score  OR  $total_point_score BETWEEN SUBSTRING_INDEX
                 (`total_point_score`,'-', 1) AND SUBSTRING_INDEX(`total_point_score`,'-', -1) )";
-            $record_1 = $db->pselectRow($query_scores, array());
+            $record_1      = $db->pselectRow($query_scores, array());
 
-            $scores['bot2_short_std_score'] = $record_1['std_score'];
+            $scores['bot2_short_std_score']       = $record_1['std_score'];
             $scores['bot2_short_percentile_rank'] = $record_1['percentile_rank'];
             $std_score = $scores['bot2_short_std_score'];
             if ($std_score >= 70) {
@@ -1040,14 +1042,12 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
             }
 
             $band_ci = $this->getBandCI($age_years);
-            $scores['bot2_short_CI_band'] = "+/- " . $band_ci;
+            $scores['bot2_short_CI_band']     = "+/- " . $band_ci;
             $scores['bot2_short_CI_interval'] = ($std_score - $band_ci) . "-" . ($std_score + $band_ci);
-            $scores= str_replace(">", "Greater than ", $scores);
-            $scores= str_replace("<", "Less than ", $scores);
+            $scores = str_replace(">", "Greater than ", $scores);
+            $scores = str_replace("<", "Less than ", $scores);
             $db->update($this->table, $scores, array("CommentID" => $this->getCommentID()));
         }
-
-
     }
 
     function bot2_short_special_rules($values)
@@ -1055,11 +1055,23 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $errors = [];
 
         $check_greater_than_0 = [
-            ["subtest_1_3_raw_score", "section1_row1"],
-            ["subtest_6_3_trial1", "section6_row1"],
-            ["subtest_8_2_trial1", "section8_row1"],
-            ["subtest_8_3_trial1", "section8_row2"],
-        ];
+                                 [
+                                  "subtest_1_3_raw_score",
+                                  "section1_row1",
+                                 ],
+                                 [
+                                  "subtest_6_3_trial1",
+                                  "section6_row1",
+                                 ],
+                                 [
+                                  "subtest_8_2_trial1",
+                                  "section8_row1",
+                                 ],
+                                 [
+                                  "subtest_8_3_trial1",
+                                  "section8_row2",
+                                 ],
+                                ];
 
         for ($i = 0; $i < count($check_greater_than_0); $i++) {
             $field = $check_greater_than_0[$i][0];
@@ -1068,21 +1080,56 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         }
 
         $check_between_0_and_number = [
-            ["subtest_1_6_raw_score", "section1_row2", 12],
-            ["subtest_3_2_trial1", "section3_row1", 20],
-            ["subtest_3_2_trial2", "section3_row1", 20],
-            ["subtest_4_3_trial1", "section4_row1", 5],
-            ["subtest_4_6_trial1", "section4_row2", 10],
-            ["subtest_5_2_trial1", "section5_row1", 6],
-            ["subtest_5_7_trial1", "section5_row2", 10],
-            ["subtest_7_1_trial1", "section7_row1", 5],
-            ["subtest_7_6_trial1", "section7_row2", 10],
-        ];
-
+                                       [
+                                        "subtest_1_6_raw_score",
+                                        "section1_row2",
+                                        12,
+                                       ],
+                                       [
+                                        "subtest_3_2_trial1",
+                                        "section3_row1",
+                                        20,
+                                       ],
+                                       [
+                                        "subtest_3_2_trial2",
+                                        "section3_row1",
+                                        20,
+                                       ],
+                                       [
+                                        "subtest_4_3_trial1",
+                                        "section4_row1",
+                                        5,
+                                       ],
+                                       [
+                                        "subtest_4_6_trial1",
+                                        "section4_row2",
+                                        10,
+                                       ],
+                                       [
+                                        "subtest_5_2_trial1",
+                                        "section5_row1",
+                                        6,
+                                       ],
+                                       [
+                                        "subtest_5_7_trial1",
+                                        "section5_row2",
+                                        10,
+                                       ],
+                                       [
+                                        "subtest_7_1_trial1",
+                                        "section7_row1",
+                                        5,
+                                       ],
+                                       [
+                                        "subtest_7_6_trial1",
+                                        "section7_row2",
+                                        10,
+                                       ],
+                                      ];
 
         for ($i = 0; $i < count($check_between_0_and_number); $i++) {
             $field = $check_between_0_and_number[$i][0];
-            $max = $check_between_0_and_number[$i][2];
+            $max   = $check_between_0_and_number[$i][2];
             $group = $check_between_0_and_number[$i][1];
             $this->validate_numeric_strict_group($values, $field, $errors, 0, $max, $group);
         }
@@ -1094,12 +1141,18 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
 
         // if subtest2 basic shape == 0, the subsequent must be 0
         $subtest_2_questions = [
-            ["subtest_2_2", "section2_row1"],
-            ["subtest_2_7", "section2_row2"],
-        ];
+                                [
+                                 "subtest_2_2",
+                                 "section2_row1",
+                                ],
+                                [
+                                 "subtest_2_7",
+                                 "section2_row2",
+                                ],
+                               ];
 
         for ($i = 0; $i < count($subtest_2_questions); $i++) {
-            $key = $subtest_2_questions[$i][0];
+            $key   = $subtest_2_questions[$i][0];
             $group = $subtest_2_questions[$i][1];
             if ($values[$key . "_basic_shape"] == 0) {
                 if ($values[$key . "_closure"] != 0
@@ -1115,17 +1168,37 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         }
 
         $between_0_and_number_optional = [
-            ["subtest_4_3", "section4_row1", "5"],
-            ["subtest_4_6", "section4_row2", "10"],
-            ["subtest_5_2", "section5_row1", "6"],
-            ["subtest_5_7", "section5_row2", "10"],
-            ["subtest_7_6", "section7_row2", "10"],
-        ];
+                                          [
+                                           "subtest_4_3",
+                                           "section4_row1",
+                                           "5",
+                                          ],
+                                          [
+                                           "subtest_4_6",
+                                           "section4_row2",
+                                           "10",
+                                          ],
+                                          [
+                                           "subtest_5_2",
+                                           "section5_row1",
+                                           "6",
+                                          ],
+                                          [
+                                           "subtest_5_7",
+                                           "section5_row2",
+                                           "10",
+                                          ],
+                                          [
+                                           "subtest_7_6",
+                                           "section7_row2",
+                                           "10",
+                                          ],
+                                         ];
 
         for ($i = 0; $i < count($between_0_and_number_optional); $i++) {
             $field = $between_0_and_number_optional[$i][0];
             $group = $between_0_and_number_optional[$i][1];
-            $max = $between_0_and_number_optional[$i][2];
+            $max   = $between_0_and_number_optional[$i][2];
             if ($values[$field . "_trial2"] != "") {
                 if ($values[$field . "_trial1"] == $max) {
                     $errors[$group] = "Trial 2 should be left empty as Trail1 has the maximum value.";
@@ -1140,7 +1213,20 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
 
     function getBandCI($age_years)
     {
-        $seven_band = array(5, 7, 9, 12, 15, 16, 17, 18, 19, 20, 21);
+        $seven_band = array(
+                       5,
+                       7,
+                       9,
+                       12,
+                       15,
+                       16,
+                       17,
+                       18,
+                       19,
+                       20,
+                       21,
+                      );
+
         if ($age_years == 4 || $age_years == 8) {
             $band_ci = 9;
         } else if (in_array($age_years, $seven_band)) {
@@ -1154,99 +1240,207 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         } else {
             $band_ci = "NA";
         }
-        return $band_ci;
 
+        return $band_ci;
     }
 
     function getPointScore($subtest_name)
     {
 
-        $two_trial_array = array('subtest_3_2', 'subtest_4_3',
-            'subtest_4_6', 'subtest_5_2', 'subtest_5_7', 'subtest_6_3',
-            'subtest_7_6',);
-        $no_trial_array = array('subtest_1_3', 'subtest_1_6','subtest_2_2','subtest_2_7');
-        $db = Database::singleton();
+        $two_trial_array = array(
+                            'subtest_3_2',
+                            'subtest_4_3',
+                            'subtest_4_6',
+                            'subtest_5_2',
+                            'subtest_5_7',
+                            'subtest_6_3',
+                            'subtest_7_6',
+                           );
+        $no_trial_array  = array(
+                            'subtest_1_3',
+                            'subtest_1_6',
+                            'subtest_2_2',
+                            'subtest_2_7',
+                           );
+        $db    = Database::singleton();
         $query = "SELECT *
-FROM candidate as c, session as s, flag as f, $this->table as t WHERE t.CommentID = '$this->commentID' 
+FROM candidate as c, session as s, flag as f, $this->table as t WHERE t.CommentID = '$this->commentID'
 AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $raw_score_find = $db->pselectRow($query, array());
         //print_r($raw_score_find);
         if (in_array($subtest_name, $two_trial_array)) {
-            $raw_score = max($raw_score_find["{$subtest_name}_trial1"],
-                $raw_score_find["{$subtest_name}_trial2"]);
-        }
-           else if (in_array($subtest_name, $no_trial_array)) {
-               $raw_score = $raw_score_find["{$subtest_name}_raw_score"];
+            $raw_score = max(
+                $raw_score_find["{$subtest_name}_trial1"],
+                $raw_score_find["{$subtest_name}_trial2"]
+            );
+        } else if (in_array($subtest_name, $no_trial_array)) {
+            $raw_score = $raw_score_find["{$subtest_name}_raw_score"];
         } else {
             $raw_score = $raw_score_find["{$subtest_name}_trial1"];
         }
-        if($raw_score!=NULL) {
+
+        if ($raw_score!=null) {
             $search_key = $raw_score;
-        }
-        else{
-            $point_score=NULL;
+        } else {
+            $point_score =null;
             return $point_score;
         }
-        if($subtest_name=='subtest_1_3')
-        {
-            $check_array=array('>=21' => 0, '15-20' => 1, '10-14' => 2, '6-9' => 3, '4-5' => 4, '2-3' => 5, '1' => 6, '0' => 7);
+
+        if ($subtest_name=='subtest_1_3') {
+            $check_array =array(
+                           '>=21'  => 0,
+                           '15-20' => 1,
+                           '10-14' => 2,
+                           '6-9'   => 3,
+                           '4-5'   => 4,
+                           '2-3'   => 5,
+                           '1'     => 6,
+                           '0'     => 7,
+                          );
         }
-        if($subtest_name=='subtest_1_6')
-        {
-            $check_array=array('0' => 6, '1-2' => 1, '3-4' => 2, '5-6' => 3, '7-8' => 4, '9-10' => 5, '11' => 6, '12' => 7);
+
+        if ($subtest_name=='subtest_1_6') {
+            $check_array =array(
+                           '0'    => 6,
+                           '1-2'  => 1,
+                           '3-4'  => 2,
+                           '5-6'  => 3,
+                           '7-8'  => 4,
+                           '9-10' => 5,
+                           '11'   => 6,
+                           '12'   => 7,
+                          );
         }
-        if($subtest_name=='subtest_3_2')
-        {
-           $check_array=array('0-2' => 0, '3-4' => 1, '5-6' => 2, '7-8' => 3, '9-10' => 4, '11-12' => 5, '13-14' => 6,
-               '15-16' => 7, '17-18' => 8, '19-20' => 9);
+
+        if ($subtest_name=='subtest_3_2') {
+            $check_array =array(
+                           '0-2'   => 0,
+                           '3-4'   => 1,
+                           '5-6'   => 2,
+                           '7-8'   => 3,
+                           '9-10'  => 4,
+                           '11-12' => 5,
+                           '13-14' => 6,
+                           '15-16' => 7,
+                           '17-18' => 8,
+                           '19-20' => 9,
+                          );
         }
-        if($subtest_name=='subtest_4_3')
-        {
-            $check_array=array('0' => 0, '1' => 1, '2-4' => 2, '5' => 3);
+
+        if ($subtest_name=='subtest_4_3') {
+            $check_array =array(
+                           '0'   => 0,
+                           '1'   => 1,
+                           '2-4' => 2,
+                           '5'   => 3,
+                          );
         }
-        if($subtest_name=='subtest_4_6')
-        {
-            $check_array=array('0' => 0, '1' => 1, '2-4' => 2, '5-9' => 3,'10'=>4);
+
+        if ($subtest_name=='subtest_4_6') {
+            $check_array =array(
+                           '0'   => 0,
+                           '1'   => 1,
+                           '2-4' => 2,
+                           '5-9' => 3,
+                           '10'  => 4,
+                          );
         }
-        if($subtest_name=='subtest_5_2')
-        {
-            $check_array=array('0' => 0, '1-2' => 1, '3-4' => 2, '5' => 3, '6' => 4);
+
+        if ($subtest_name=='subtest_5_2') {
+            $check_array =array(
+                           '0'   => 0,
+                           '1-2' => 1,
+                           '3-4' => 2,
+                           '5'   => 3,
+                           '6'   => 4,
+                          );
         }
-        if($subtest_name=='subtest_5_7')
-        {
-            $check_array=array('0.0-0.9' => 0, '1.0-2.9' => 1, '3.0-5.9' => 2, '6.0-9.9' => 3, '10' => 4);
+
+        if ($subtest_name=='subtest_5_7') {
+            $check_array =array(
+                           '0.0-0.9' => 0,
+                           '1.0-2.9' => 1,
+                           '3.0-5.9' => 2,
+                           '6.0-9.9' => 3,
+                           '10'      => 4,
+                          );
         }
-        if($subtest_name=='subtest_6_3')
-        {
-            $check_array=array('0' => 0, '1-2' => 1, '3-5' => 2, '6-9' => 3, '10-14' => 4, '15-19' => 5, '20-24' => 6, '25-29' => 7,
-                '30-39' => 8, '40-49' => 9, '>=50' => 10);
+
+        if ($subtest_name=='subtest_6_3') {
+            $check_array =array(
+                           '0'     => 0,
+                           '1-2'   => 1,
+                           '3-5'   => 2,
+                           '6-9'   => 3,
+                           '10-14' => 4,
+                           '15-19' => 5,
+                           '20-24' => 6,
+                           '25-29' => 7,
+                           '30-39' => 8,
+                           '40-49' => 9,
+                           '>=50'  => 10,
+                          );
         }
-        if($subtest_name=='subtest_7_1')
-        {
-            $check_array=array('0' => 0, '1' => 1, '2' => 2, '3' => 3, '4' => 4, '5' => 5);
+
+        if ($subtest_name=='subtest_7_1') {
+            $check_array =array(
+                           '0' => 0,
+                           '1' => 1,
+                           '2' => 2,
+                           '3' => 3,
+                           '4' => 4,
+                           '5' => 5,
+                          );
         }
-        if($subtest_name=='subtest_7_6')
-        {
-            $check_array=array('0' => 0, '1' => 1, '2' => 2, '3' => 3, '4-5' => 4, '6-7' => 5,
-                '8-9' => 6, '10' => 7);
+
+        if ($subtest_name=='subtest_7_6') {
+            $check_array =array(
+                           '0'   => 0,
+                           '1'   => 1,
+                           '2'   => 2,
+                           '3'   => 3,
+                           '4-5' => 4,
+                           '6-7' => 5,
+                           '8-9' => 6,
+                           '10'  => 7,
+                          );
         }
-        if($subtest_name=='subtest_8_2')
-        {
-           $check_array= array('0' => 0, '1-2' => 1, '3-5' => 2, '6-10' => 3, '11-15' => 4, '16-20' => 5, '21-25' => 6,
-                '26-30' => 7, '31-35' => 8, '>=36' => 9);
+
+        if ($subtest_name=='subtest_8_2') {
+            $check_array = array(
+                            '0'     => 0,
+                            '1-2'   => 1,
+                            '3-5'   => 2,
+                            '6-10'  => 3,
+                            '11-15' => 4,
+                            '16-20' => 5,
+                            '21-25' => 6,
+                            '26-30' => 7,
+                            '31-35' => 8,
+                            '>=36'  => 9,
+                           );
         }
-        if($subtest_name=='subtest_8_3')
-        {
-            $check_array=array('0' => 0, '1-2' => 1, '3-5' => 2, '6-10' => 3, '11-15' => 4, '16-20' => 5, '21-25' => 6,
-            '26-30' => 7, '31-35' => 8, '>=36' => 9);
+
+        if ($subtest_name=='subtest_8_3') {
+            $check_array =array(
+                           '0'     => 0,
+                           '1-2'   => 1,
+                           '3-5'   => 2,
+                           '6-10'  => 3,
+                           '11-15' => 4,
+                           '16-20' => 5,
+                           '21-25' => 6,
+                           '26-30' => 7,
+                           '31-35' => 8,
+                           '>=36'  => 9,
+                          );
         }
-        if($subtest_name=='subtest_2_2' || $subtest_name=='subtest_2_7')
-        {
-           $point_score=$raw_score;
-        }
-        else {
+
+        if ($subtest_name=='subtest_2_2' || $subtest_name=='subtest_2_7') {
+            $point_score =$raw_score;
+        } else {
             foreach ($check_array as $key => $value) {
-                if (stristr($key, '-') !== FALSE) {
+                if (stristr($key, '-') !== false) {
                     $range = explode('-', $key);
                     if ($search_key >= $range[0] && $search_key <= $range[1]) {
                         $point_score = $value;
@@ -1254,7 +1448,7 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
                     }
 
                 } elseif (strpos($key, '>=') !== false) {
-                    $f=explode('>=', $key);
+                    $f =explode('>=', $key);
                     if ($raw_score >= $f[1]) {
                         $point_score = $value;
                         break;
@@ -1263,7 +1457,7 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
                     $point_score = $value;
                     break;
                 } else {
-                    $point_score = NULL;
+                    $point_score = null;
                 }
 
             }
@@ -1271,4 +1465,3 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         return $point_score;
     }
 }
-?>
