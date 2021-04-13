@@ -69,7 +69,7 @@ CREATE TABLE `Visit_Level_Information_EP` (
     `escs_notes` text default NULL,
     `escs_notes_status` enum('not_answered') default NULL,
     `vineland_3_was_collected` enum('yes','no') default NULL,
-    `vineland_3_method_of_collection` enum('in_person') default NULL,
+    `vineland_3_method_of_collection` enum('phone','in_person','email') default NULL,
     `vineland_3_assessor_ppe` varchar(255) default NULL,
     `vineland_3_assessor_ppe_if_other` varchar(255) default NULL,
     `vineland_3_subject_ppe` varchar(255) default NULL,
@@ -98,5 +98,5 @@ CREATE TABLE `Visit_Level_Information_EP` (
     `mri_scan_2nd_attempt_parent_ppe` varchar(255) default NULL,
     `mri_scan_2nd_attempt_notes` text default NULL,
     `mri_scan_2nd_attempt_notes_status` enum('not_answered') default NULL,
-    PRIMARY KEY  (`CommentID`)
+    PRIMARY KEY (`CommentID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
