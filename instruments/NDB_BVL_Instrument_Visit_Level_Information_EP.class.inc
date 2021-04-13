@@ -323,10 +323,7 @@ class NDB_BVL_Instrument_Visit_Level_Information_EP extends NDB_BVL_Instrument
             $this->addSelect($key . "_was_collected", $this->indent . "Was this instrument collected", $yes_no_options);
             $this->XINRegisterRule($key . "_was_collected", array("q8_ppe_used{@}=={@}yes"), 'Required if Question 8 is answered yes');
 
-            if ($key == "vabs_3"
-                || $key == "intervention_hx_form"
-                || $key == "tanner"
-            ) {
+            if ($key == "vineland_3") {
                 $this->addSelect($key . "_method_of_collection", $this->indent . "Method of Collection", $method_of_collection_options);
                 $this->XINRegisterRule($key . "_method_of_collection", array("{$key}_was_collected{@}=={@}yes"), 'Required if yes');
             } else {
