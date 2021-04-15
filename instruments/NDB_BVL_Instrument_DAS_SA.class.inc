@@ -341,6 +341,8 @@ class NDB_BVL_Instrument_DAS_SA extends NDB_BVL_Instrument
 
         //Cycle through the lines and extract the data
         $lines =preg_split("/\\r\\n|\\r|\\n/", $contents);
+        $lines =  str_replace(">","greater than ",$lines);
+        $lines =  str_replace("<","less than ",$lines);
 
         $group[] = $this->form->createElement('static', "T_SCORE", null, null);
         $group[] = $this->form->createElement('static', "STD_SCORE", null, null);
