@@ -328,6 +328,7 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
                               3    => "Usually (5-7)",
                               2    => "Sometimes (2-4)",
                               1    => "Rarely (0-1)",
+                              'not_answered'=>"Not answered",
                              );
         $answer_choices_na = array(
                               null => "",
@@ -335,6 +336,7 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
                               2    => "Sometimes (2-4)",
                               1    => "Rarely (0-1)",
                               'na' => "Not Applicable",
+                              'not_answered'=>"Not answered",
                              );
         $problem_choices   = array(
                               null  => "",
@@ -551,6 +553,7 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
                             3    => "Usually (5-7)",
                             2    => "Sometimes (2-4)",
                             1    => "Rarely (0-1)",
+                            'not_answered'=>"Not answered",
                            );
         $problem_choices = array(
                             null  => "",
