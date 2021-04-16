@@ -1,4 +1,4 @@
-INSERT INTO test_names(Test_name, Full_name, Sub_Group, isDirectEntry) VALUES('Seizure_Questionnaire', "Seizure Questionnaire", 9, 1);
+INSERT INTO test_names(Test_name, Full_name, Sub_Group, isDirectEntry) VALUES('Seizure_Questionnaire', "Seizure Questionnaire - Survey", 9, 1);
 INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('Seizure_Questionnaire','Seizure_Questionnaire_page1', "Page 1", 1);
 INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('Seizure_Questionnaire','Seizure_Questionnaire_page2', "Page 2", 2);
 INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('Seizure_Questionnaire','Seizure_Questionnaire_page3', "Page 3", 3);
