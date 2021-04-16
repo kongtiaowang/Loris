@@ -354,7 +354,7 @@ class NDB_BVL_Instrument_QRS extends NDB_BVL_Instrument
                             "q59" => "59. It is easy to keep my child entertained.",
                             "q60" => "60. My child wants to do things for himself/herself.",
                             "q61" => "61. I feel sad when I think of my child.",
-                            "q62" => "62. The deamnds to care for my child limit my growth and development.",
+                            "q62" => "62. The demands to care for my child limit my growth and development.",
                             "q63" => "63. I have become more understanding in my relationships with people as a result of my child.",
                             "q64" => "64. Our family should do more together.",
                             "q65" => "65. Caring for my child puts a strain on me.",
