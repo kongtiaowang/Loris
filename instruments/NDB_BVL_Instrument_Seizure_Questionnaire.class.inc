@@ -3,7 +3,7 @@
  * This file contains the NDB_BVL_Instrument_Seizure_Questionnaire
  * class
  *
- * PHP Version 5
+ * PHP Version 7
  *
  * @category Instrument
  * @package  Neuropsych
@@ -25,29 +25,29 @@ class NDB_BVL_Instrument_Seizure_Questionnaire extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
 
-    var $ValidityEnabled = false;
+    var $ValidityEnabled  = false;
     var $ValidityRequired = false;
 
     /**
      * Sets up basic data, such as the LorisForm object, and so on.
      *
      * @param string $commentID the CommentID identifying the data to load
-     * @param string $page if a multipage form, the page to show
+     * @param string $page      if a multipage form, the page to show
      *
      * @return void
      * @access public
      */
-    function setup(?string $commentID = NULL, ?string $page = NULL): void
+    function setup(?string $commentID = null, ?string $page = null): void
     {
         $this->formType = "XIN";
-        $this->form = new LorisForm('Seizure_Questionnaire_form');
-        $this->page = $page;            // page label (number or
+        $this->form     = new LorisForm('Seizure_Questionnaire_form');
+        $this->page     = $page;            // page label (number or
         // string - used by
         // user-defined child classes)
 
         // set the object properties
         $this->testName = 'Seizure_Questionnaire';           // test_names.Test_name
-        $this->table = 'Seizure_Questionnaire';              // name of database table corresponding to instrument
+        $this->table    = 'Seizure_Questionnaire';           // name of database table corresponding to instrument
         // data keyed by commentID
         $this->commentID = $commentID;
 
@@ -60,23 +60,20 @@ class NDB_BVL_Instrument_Seizure_Questionnaire extends NDB_BVL_Instrument
         $this->_selectMultipleElements = array();
 
         // required fields for data entry completion status
-        $this->_requiredElements = array(
-            'CommentID',
-        );
+        $this->_requiredElements = array('CommentID');
 
-        $config = NDB_Config::singleton();
+        $config            = NDB_Config::singleton();
         $this->dateOptions = array(
-            'language' => 'en',
-            'format' => 'YMd',
-            'minYear' => $config->getSetting('startYear'),
-            'maxYear' => $config->getSetting('endYear'),
-            'addEmptyOption' => true,
-            'emptyOptionValue' => null,
-        );
+                              'language'         => 'en',
+                              'format'           => 'YMd',
+                              'minYear'          => $config->getSetting('startYear'),
+                              'maxYear'          => $config->getSetting('endYear'),
+                              'addEmptyOption'   => true,
+                              'emptyOptionValue' => null,
+                             );
 
         // setup the form
         $this->_setupForm();
-
     }
 
     /*
@@ -92,7 +89,8 @@ class NDB_BVL_Instrument_Seizure_Questionnaire extends NDB_BVL_Instrument
             "/Seizure_Questionnaire(_page[0-9]+)/",
             $this->page,
             $matches
-        )) {
+        )
+        ) {
             call_user_func(array($this, $matches[1]));
         } else {
             $this->_main();
@@ -108,13 +106,13 @@ class NDB_BVL_Instrument_Seizure_Questionnaire extends NDB_BVL_Instrument
         $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
 
         $opts = array(
-            null              => "",
-            "mother"             => "Mother",
-            "father"             => "Father",
-            "step_mother"        => "Step Mother",
-            "step_father"        => "Step Father",
-            "other"             => "Other",
-        );
+                 null          => "",
+                 "mother"      => "Mother",
+                 "father"      => "Father",
+                 "step_mother" => "Step Mother",
+                 "step_father" => "Step Father",
+                 "other"       => "Other",
+                );
         $this->addSelect("relationship_to_child", "What is your relationship to the child?", $opts);
         $this->addBasicText("relationship_to_child_other", $this->indent."If Other, please describe:");
         $this->XINRegisterRule(
@@ -125,41 +123,40 @@ class NDB_BVL_Instrument_Seizure_Questionnaire extends NDB_BVL_Instrument
         );
     }
 
-
     function _page1()
     {
         $page1options =
             array(
-                null => "",
-                "yes" => "Yes",
-                "no" => "No",
-                "possible" => "Possible",
-                "dont_know" => "Don't know"
+             null        => "",
+             "yes"       => "Yes",
+             "no"        => "No",
+             "possible"  => "Possible",
+             "dont_know" => "Don't know",
             );
 
         $q3labels =
             array(
-                "p1_3a" => "(a) A seizure, convulsion, fit or spell under any circumstances?",
-                "p1_3b" => "(b) Uncontrolled movements of part (or all) of their body such as: twiching, 
+             "p1_3a" => "(a) A seizure, convulsion, fit or spell under any circumstances?",
+             "p1_3b" => "(b) Uncontrolled movements of part (or all) of their body such as: twiching,
                 jerking, shaking, or going limp?",
-                "p1_3c" => "(c) An unexplained change in their mental state or level of awareness; 
+             "p1_3c" => "(c) An unexplained change in their mental state or level of awareness;
                 or an episode of \"spacing\" out that he/she could not control? (non-responsive)",
-                "p1_3d" => "(d) When he/she was a small child, would he/she daydream or stare into
+             "p1_3d" => "(d) When he/she was a small child, would he/she daydream or stare into
                  space more than other children?",
-                "p1_3e" => "(e) Has anyone ever noticed unusual body movements, or has your child
+             "p1_3e" => "(e) Has anyone ever noticed unusual body movements, or has your child
                  expressed unusual feelings when she/he was exposed to strobe lights, video games,
                  flickering lights, or sun glare?",
-                "p1_3f" => "(f) Shortly after waking up (either in the morning or after a nap) has anyone
+             "p1_3f" => "(f) Shortly after waking up (either in the morning or after a nap) has anyone
                 ever noticed uncontrollable jerking or clumsiness in your child, such as dropping things
                 or things suddenly \"flying\" from his/her hands",
-                "p1_3g" => "(g) Has he/she ever had any other type of repeated unusual spells? (Strange behaviors,
+             "p1_3g" => "(g) Has he/she ever had any other type of repeated unusual spells? (Strange behaviors,
                  anything out of the ordinary",
-                "p1_3h" => "(h) Has your child ever seen or been referred to a neurologist?"
+             "p1_3h" => "(h) Has your child ever seen or been referred to a neurologist?",
             );
 
         $this->addSelect(
             "p1_1",
-            "1. Has your child ever had a seizure or convulsion caused by a high fever? (uncontrollable 
+            "1. Has your child ever had a seizure or convulsion caused by a high fever? (uncontrollable
             shaking of limbs)",
             $page1options
         );
@@ -170,26 +167,33 @@ class NDB_BVL_Instrument_Seizure_Questionnaire extends NDB_BVL_Instrument
             $page1options
         );
 
-        $this->addHeader("<BR>If YES (selected for question 2), please skip ahead to the next page.
-                              <BR>If NO, POSSIBLE, or DON'T KNOW (selected for question 2), please complete the <u>rest of this page</u> AND the <u>next page</u></h4>");
-        $this->addHeader("<h4>3. Other than the seizure caused by a high fever, has your child ever had
-                        (or has a physician ever said your child had) any of the following...");
+        $this->addHeader(
+            "<BR>If YES (selected for question 2), please skip ahead to the next page.
+                              <BR>If NO, POSSIBLE, or DON'T KNOW (selected for question 2), please complete the <u>rest of this page</u> AND the <u>next page</u></h4>"
+        );
+        $this->addHeader(
+            "<h4>3. Other than the seizure caused by a high fever, has your child ever had
+                        (or has a physician ever said your child had) any of the following..."
+        );
 
         $group[] =& $this->form->createElement(
             "static",
             null,
             null,
-            "");
+            ""
+        );
         $group[] =& $this->form->createElement(
             "static",
             null,
             null,
-            "Options");
+            "Options"
+        );
         $group[] =& $this->form->createElement(
             "static",
             null,
             null,
-            "Notes:");
+            "Notes:"
+        );
         $this->addGroup(
             $group,
             "q3_headers",
@@ -201,7 +205,8 @@ class NDB_BVL_Instrument_Seizure_Questionnaire extends NDB_BVL_Instrument
 
         foreach ($q3labels as $name => $label) {
             $group[] =& $this->createLabel(
-                $label);
+                $label
+            );
             $group[] =& $this->createSelect(
                 $name,
                 "",
@@ -215,7 +220,8 @@ class NDB_BVL_Instrument_Seizure_Questionnaire extends NDB_BVL_Instrument
             );
             $group[] =& $this->createText(
                 $name . "_notes",
-                "Notes:");
+                "Notes:"
+            );
             $this->XINRegisterRule(
                 $name . "_notes",
                 array("{$name} . _notes{@}=={@}NEVER_REQUIRED"),
@@ -233,46 +239,54 @@ class NDB_BVL_Instrument_Seizure_Questionnaire extends NDB_BVL_Instrument
         }
     }
 
-    function _page2() {
-        $this->addHeader("<h4>Of the following types of seizures, please mark which types your
-        child has *<u>ever</u>* experienced (and how often & for how long)");
+    function _page2()
+    {
+        $this->addHeader(
+            "<h4>Of the following types of seizures, please mark which types your
+        child has *<u>ever</u>* experienced (and how often & for how long)"
+        );
 
         $page2Questions =
             array(
-                "p2_1" => "1. Stiffening of the whole body or part of the body (tonic seizure)",
-                "p2_2" => "2. Shaking of only part of the body (partial or focal motor seizure)",
-                "p3_3" => "3. Infantile spasm: seizure seen in infancy or early childhood.",
-                "p3_4" => "4. Whole body shaking (grand mal, generalized or secondary tonic-clonic seizure",
-                "p3_5" => "5. Drop spell: head or body goes limp while child is still conscious (atonic seizure)",
-                "p3_6" => "6. Staring spell: unresponsive, staring off with a vacant expression for brief periods of time (petit mal, absence or complex partial seizure)",
-                "p3_7" => "7. Very quick jerks or shaking (myoclonic seizure)"
+             "p2_1" => "1. Stiffening of the whole body or part of the body (tonic seizure)",
+             "p2_2" => "2. Shaking of only part of the body (partial or focal motor seizure)",
+             "p3_3" => "3. Infantile spasm: seizure seen in infancy or early childhood.",
+             "p3_4" => "4. Whole body shaking (grand mal, generalized or secondary tonic-clonic seizure",
+             "p3_5" => "5. Drop spell: head or body goes limp while child is still conscious (atonic seizure)",
+             "p3_6" => "6. Staring spell: unresponsive, staring off with a vacant expression for brief periods of time (petit mal, absence or complex partial seizure)",
+             "p3_7" => "7. Very quick jerks or shaking (myoclonic seizure)",
             );
 
         $group[] =& $this->form->createElement(
             "static",
             null,
             null,
-            "");
+            ""
+        );
         $group[] =& $this->form->createElement(
             "static",
             null,
             null,
-            "How often does/did this occur?");
+            "How often does/did this occur?"
+        );
         $group[] =& $this->form->createElement(
             "static",
             null,
             null,
-            "Over how long of a time period did these seizures occur?");
+            "Over how long of a time period did these seizures occur?"
+        );
         $group[] =& $this->form->createElement(
             "static",
             null,
             null,
-            "Did any episode last over 30 min?");
+            "Did any episode last over 30 min?"
+        );
         $group[] =& $this->form->createElement(
             "static",
             null,
             null,
-            "Number of minutes in duration");
+            "Number of minutes in duration"
+        );
         $this->addGroup(
             $group,
             "page2_headers",
@@ -283,52 +297,52 @@ class NDB_BVL_Instrument_Seizure_Questionnaire extends NDB_BVL_Instrument
         unset($group);
 
         foreach ($page2Questions as $name => $label) {
-            $group[] =& $this->createLabel($label);
-            $group[] =& $this->createSelect(
+            $group[]    =& $this->createLabel($label);
+            $group[]    =& $this->createSelect(
                 $name . "_frequency",
                 "",
                 array(
-                    null => "",
-                    "never_occurred" => "Never occurred",
-                    "less_than_once_per_year" => "Less than once a year",
-                    "more_than_once_a_year" => "More than once a year (but not monthly)",
-                    "1_or_more_each_month" => "1 or more each month (but not weekly)",
-                    "1_or_more_each_week" => "1 or more each week (but not daily)",
-                    "daily" => "Daily"
+                 null                      => "",
+                 "never_occurred"          => "Never occurred",
+                 "less_than_once_per_year" => "Less than once a year",
+                 "more_than_once_a_year"   => "More than once a year (but not monthly)",
+                 "1_or_more_each_month"    => "1 or more each month (but not weekly)",
+                 "1_or_more_each_week"     => "1 or more each week (but not daily)",
+                 "daily"                   => "Daily",
                 )
             );
-            $group[] =& $this->createSelect(
+            $group[]    =& $this->createSelect(
                 $name . "_period",
                 "",
                 array(
-                    null => "",
-                    "never_occurred" => "Never occurred",
-                    "less_than_a_month" => "These seizures occurred for less than a month",
-                    "one_to_six_months" => "These seizures occurred for 1-6 months",
-                    "more_than_six_months" => "These seizures occurred for more than 6 months"
+                 null                   => "",
+                 "never_occurred"       => "Never occurred",
+                 "less_than_a_month"    => "These seizures occurred for less than a month",
+                 "one_to_six_months"    => "These seizures occurred for 1-6 months",
+                 "more_than_six_months" => "These seizures occurred for more than 6 months",
                 )
             );
-            $group[] =& $this->createSelect(
+            $group[]    =& $this->createSelect(
                 $name . "_last_over_30min",
                 "",
                 array(
-                    null => "",
-                    "no" => "No",
-                    "yes" => "Yes"
+                 null  => "",
+                 "no"  => "No",
+                 "yes" => "Yes",
                 )
             );
-            $group[] =& $this->createTextArea(
+            $group[]    =& $this->createTextArea(
                 $name . "_duration",
                 ""
             );
-	    $ruleValues = array(
-    	        'less_than_once_per_year',
-    		'more_than_once_a_year',
-    		'1_or_more_each_month',
-    		'1_or_more_each_week',
-    		'daily'
-	    );
-	    $this->XINRegisterRule(
+            $ruleValues = array(
+                           'less_than_once_per_year',
+                           'more_than_once_a_year',
+                           '1_or_more_each_month',
+                           '1_or_more_each_week',
+                           'daily',
+                          );
+            $this->XINRegisterRule(
                 $name . "_period",
                 array("{$name}_frequency{@}=={@}".implode('|', $ruleValues)),
                 "Required, unless NEVER OCCURRED is selected.",
@@ -356,14 +370,17 @@ class NDB_BVL_Instrument_Seizure_Questionnaire extends NDB_BVL_Instrument
             unset($group);
         }
         $this->form->addFormRule(array(&$this, "validateNumerics"));
-
     }
 
-    function _page3() {
-        $this->addHeader("MEDICATIONS: Please list any related medications/anticonvulsants 
-        your child has *ever* been treated with: (examples are below)");
+    function _page3()
+    {
+        $this->addHeader(
+            "MEDICATIONS: Please list any related medications/anticonvulsants
+        your child has *ever* been treated with: (examples are below)"
+        );
 
-        $this->addHeader("<h5><BR><u><b>Some Examples of Medications Prescribed for Seizures</b></u><BR>(*Note: this list is not exhaustive.)<BR>$this->indent - Barbiturates: Phenoarb<BR>$this->indent - Benzodiazepines: Valium, Klonopin 
+        $this->addHeader(
+            "<h5><BR><u><b>Some Examples of Medications Prescribed for Seizures</b></u><BR>(*Note: this list is not exhaustive.)<BR>$this->indent - Barbiturates: Phenoarb<BR>$this->indent - Benzodiazepines: Valium, Klonopin
                               <BR>$this->indent - Carbamezine: Tegretol<BR>
                               $this->indent - Gabapentin: Neurontin<BR>
                               $this->indent - Lamotrigine: Lamictal<BR>
@@ -372,18 +389,21 @@ class NDB_BVL_Instrument_Seizure_Questionnaire extends NDB_BVL_Instrument
                               $this->indent - Tiagabine: Gabitril<BR>
                               $this->indent - Topiramate: Topamax<BR>
                               $this->indent - Valproic Acid: Depakote<BR>
-                              $this->indent - Zonisamide: Zonegran</h5>");
+                              $this->indent - Zonisamide: Zonegran</h5>"
+        );
 
         $group[] =& $this->form->createElement(
             "static",
             null,
             null,
-            "Medication");
+            "Medication"
+        );
         $group[] =& $this->form->createElement(
             "static",
             null,
             null,
-            "Efficacy");
+            "Efficacy"
+        );
         $this->addGroup(
             $group,
             "page3_headers",
@@ -392,7 +412,6 @@ class NDB_BVL_Instrument_Seizure_Questionnaire extends NDB_BVL_Instrument
             false
         );
         unset($group);
-
 
         for ($i=1; $i <= 4; $i++) {
             $group[] =& $this->createText(
@@ -403,18 +422,18 @@ class NDB_BVL_Instrument_Seizure_Questionnaire extends NDB_BVL_Instrument
                 "medication_" . $i . "_efficacy",
                 "How effective was this medication?",
                 array(
-                    null => "",
-                    "stopped_seizures_completely" => "Medication stopped seizures completely",
-                    "partial_reduction" => "Medication partially reduced frequency or length of seizures",
-                    "no_improvement" => "No improvement in seizures",
-                    "adverse_reaction" => "Medication was stopped due to adverse reaction"
+                 null                          => "",
+                 "stopped_seizures_completely" => "Medication stopped seizures completely",
+                 "partial_reduction"           => "Medication partially reduced frequency or length of seizures",
+                 "no_improvement"              => "No improvement in seizures",
+                 "adverse_reaction"            => "Medication was stopped due to adverse reaction",
                 )
             );
             $this->XINRegisterRule(
-            "medication_{$i}",
-            array("medication_{$i}{@}=={@}NEVER_REQUIRED"),
-            "Not required.",
-            "medication_" . $i . "_group"
+                "medication_{$i}",
+                array("medication_{$i}{@}=={@}NEVER_REQUIRED"),
+                "Not required.",
+                "medication_" . $i . "_group"
             );
             $this->XINRegisterRule(
                 "medication_" . $i . "_efficacy",
@@ -430,7 +449,7 @@ class NDB_BVL_Instrument_Seizure_Questionnaire extends NDB_BVL_Instrument
                 false
             );
             unset($group);
-          }
+        }
     }
 
     /**
@@ -440,10 +459,17 @@ class NDB_BVL_Instrument_Seizure_Questionnaire extends NDB_BVL_Instrument
      */
     function validateNumerics($values)
     {
-        $errors = array();
+        $errors    = array();
         $questions =
-            array("p2_1_duration", "p2_2_duration", "p2_3_duration", "p2_4_duration",
-                  "p2_5_duration", "p2_6_duration", "p2_7_duration");
+            array(
+             "p2_1_duration",
+             "p2_2_duration",
+             "p2_3_duration",
+             "p2_4_duration",
+             "p2_5_duration",
+             "p2_6_duration",
+             "p2_7_duration",
+            );
         foreach ($questions as $question) {
             if ((!is_numeric($values[$question])) && !empty($values[$question])) {
                 $errors[$question] = "Please enter a numeric value.";
