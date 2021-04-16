@@ -564,7 +564,7 @@ INSERT INTO instrument_subtests VALUES('', 'aosi', 'aosi_page2', 'General Observ
     * @return mixed
     * @throws PEAR::error
     */
-    function _nullScores(array $scoreCols): void
+    function _nullScores(array $scoreCols=null): void
     {
         $db=& Database::singleton();
         
