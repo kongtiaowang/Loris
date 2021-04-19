@@ -210,7 +210,7 @@ ALTER TABLE `mri_parameter_form_sa`
     ADD COLUMN `siemens2_dti1_shell_attempts_2`                          enum ('console_pass','console_fail')                DEFAULT NULL AFTER `siemens2_dti1_shell_2`,
     ADD COLUMN `siemens2_dti1_shell_num_attempts_2`                      enum ('0','1','2','3','4','5','6','7','8','9','10') DEFAULT NULL AFTER `siemens2_dti1_shell_attempts_2`,
     ADD COLUMN `siemens2_dti1_shell_2_facemask_2`                        enum ('yes', 'no')                                  DEFAULT NULL AFTER `siemens2_dti1_shell_num_attempts_2`,
-    ADD COLUMN `siemens2_dti_comments`                                   text AFTER `siemens2_dti1_shell_2_facemask_2`,
+    ADD COLUMN `siemens2_dti_comments_2`                                   text AFTER `siemens2_dti1_shell_2_facemask_2`,
 
     ADD COLUMN `siemens3_dti_sequences_acquired_3`                       enum ('complete','partial','none')                  DEFAULT NULL AFTER `if_none_partial_unusable_3`,
     ADD COLUMN `siemens3_dti3_shell_3`                                   enum ('complete','partial','none')                  DEFAULT NULL AFTER `siemens3_dti_sequences_acquired_3`,
@@ -233,7 +233,7 @@ ALTER TABLE `mri_parameter_form_sa`
     ADD COLUMN `siemens3_dti1_shell_attempts_3`                          enum ('console_pass','console_fail')                DEFAULT NULL AFTER `siemens3_dti1_shell_3`,
     ADD COLUMN `siemens3_dti1_shell_num_attempts_3`                      enum ('0','1','2','3','4','5','6','7','8','9','10') DEFAULT NULL AFTER `siemens3_dti1_shell_attempts_3`,
     ADD COLUMN `siemens3_dti1_shell_3_facemask_3`                        enum ('yes', 'no')                                  DEFAULT NULL AFTER `siemens3_dti1_shell_num_attempts_3`,
-    ADD COLUMN `siemens3_dti_comments`                                   text AFTER `siemens3_dti1_shell_3_facemask_3`,
+    ADD COLUMN `siemens3_dti_comments_3`                                   text AFTER `siemens3_dti1_shell_3_facemask_3`,
 
     ADD COLUMN `siemens4_dti_sequences_acquired_4`                       enum ('complete','partial','none')                  DEFAULT NULL AFTER `if_none_partial_unusable_4`,
     ADD COLUMN `siemens4_dti3_shell_4`                                   enum ('complete','partial','none')                  DEFAULT NULL AFTER `siemens4_dti_sequences_acquired_4`,
@@ -256,4 +256,4 @@ ALTER TABLE `mri_parameter_form_sa`
     ADD COLUMN `siemens4_dti1_shell_attempts_4`                          enum ('console_pass','console_fail')                DEFAULT NULL AFTER `siemens4_dti1_shell_4`,
     ADD COLUMN `siemens4_dti1_shell_num_attempts_4`                      enum ('0','1','2','3','4','5','6','7','8','9','10') DEFAULT NULL AFTER `siemens4_dti1_shell_attempts_4`,
     ADD COLUMN `siemens4_dti1_shell_4_facemask_4`                        enum ('yes', 'no')                                  DEFAULT NULL AFTER `siemens4_dti1_shell_num_attempts_4`,
-    ADD COLUMN `siemens4_dti_comments`                                   text AFTER `siemens4_dti1_shell_4_facemask_4`;
+    ADD COLUMN `siemens4_dti_comments_4`                                   text AFTER `siemens4_dti1_shell_4_facemask_4`;
