@@ -395,22 +395,40 @@ $count=0;
                 $question . "_anterior",
                 ""
             );
-            $this->XINRegisterRule(
-                $question . "_anterior",
-                array($question . "_check{@}=={@}Yes"),
-                "Required.",
-                $question . "_group"
-            );
+            if (strpos($question, 't1w') === 0) {
+                $this->XINRegisterRule(
+                    $question . "_anterior",
+                    array("t1w_acquired{@}=={@}Yes_1|Yes_2"),
+                    "Required.",
+                    $question . "_group"
+                );
+            } else {
+                $this->XINRegisterRule(
+                    $question . "_anterior",
+                    array("t2w_acquired{@}=={@}Yes"),
+                    "Required.",
+                    $question . "_group"
+                );
+            }
             $group[] = $this->createText(
                 $question . "_superior",
                 ""
             );
-            $this->XINRegisterRule(
-                $question . "_superior",
-                array($question . "_check{@}=={@}Yes"),
-                "Required.",
-                $question . "_group"
-            );
+            if (strpos($question, 't1w') === 0) {
+                $this->XINRegisterRule(
+                    $question . "_superior",
+                    array("t1w_acquired{@}=={@}Yes_1|Yes_2"),
+                    "Required.",
+                    $question . "_group"
+                );
+            } else {
+                $this->XINRegisterRule(
+                    $question . "_superior",
+                    array("t2w_acquired{@}=={@}Yes"),
+                    "Required.",
+                    $question . "_group"
+                );
+            }
             $group[] = $this->createSelect(
                 $question . "_passfail",
                 "",
@@ -423,6 +441,21 @@ $count=0;
             $this->XINRegisterRule(
                 $question . "_passfail",
                 array($question . "_passfail{@}=={@}NEVER_REQUIRED"),
+                $question . "_group",
+                $question . "_group"
+            );
+            $group[] = $this->createSelect(
+                $question . "_facemask",
+                "",
+                array(
+                    '' => null,
+                    'yes' => "Yes",
+                    'no' => "No",
+                )
+            );
+            $this->XINRegisterRule(
+                $question . "_facemask",
+                array($question . "_facemask{@}=={@}NEVER_REQUIRED"),
                 $question . "_group",
                 $question . "_group"
             );
@@ -450,53 +483,78 @@ $count=0;
         $this->form->addElement('static', null, '<i>(If failed, verify encoding direction for each run of DTI and BOLD)</i>');
         $this->form->addElement('static', null, '<BR>');
 
-        // DTI SECTION
-        $this->form->addElement('header', null, "<b>DTI</b><BR><BR>");
-        $this->form->addElement('select', 'dti_sequences_acquired', "<b>DTI Sequences Acquired?<b>", array(null => "", "complete" => "Complete", "partial" => "Partial", "none" => "None"));
+        // CMRR DTI SECTION
+        $this->form->addElement('header', null, "<b>CMRR DTI</b><BR><BR>");
+        $this->form->addElement('select', 'cmrr1_dti_sequences_acquired', "<b>DTI Sequences Acquired?<b>", array(null => "", "complete" => "Complete", "partial" => "Partial", "none" => "None"));
 
         $this->form->addElement('static', null, '*Repeat until pass QC; run DTI in order listed<BR><BR>');
         $this->form->addElement('static', null, '<BR>');
 
-        $this->form->addElement('select', 'dti3_shell', "DTI 3 Shell | <i>ep2d_diff_sms2_3shell_PA_1p7</i>", array(null => "", "complete" => "Complete", "partial" => "Partial", "none" => "None"));
-        $this->form->addElement('select', 'dti3_shell_attempts', "<b>Console Pass/Fail</b><BR><BR>", array(null => "", "console_pass" => "Console Pass", "console_fail" => "Console Fail"));
-        $this->XINRegisterRule("dti3_shell_attempts", array("dti3_shell{@}=={@}Yes"), "Required.");
-        $this->form->addElement('select', 'dti3_shell_num_attempts', "<b>Number of Attempts</b>", range(0, 10));
-        $this->XINRegisterRule("dti3_shell_num_attempts", array("dti3_shell{@}=={@}Yes"), "Required.");
+        $this->form->addElement('select', 'cmrr1_dti3_shell', "DWI 3 shell | <i>DWIcmrr_3shell_APinv</i>", array(null => "", "complete" => "Complete", "partial" => "Partial", "none" => "None"));
+        $this->form->addElement('select', 'cmrr1_dti3_shell_attempts', "<b>Console Pass/Fail</b><BR><BR>", array(null => "", "console_pass" => "Console Pass", "console_fail" => "Console Fail"));
+        $this->XINRegisterRule("cmrr1_dti3_shell_attempts", array("cmrr1_dti3_shell{@}=={@}complete"), "Required.");
+        $this->form->addElement('select', 'cmrr1_dti3_shell_num_attempts', "<b>Number of Attempts</b>", range(0, 10));
+        $this->XINRegisterRule("cmrr1_dti3_shell_num_attempts", array("cmrr1_dti3_shell{@}=={@}complete"), "Required.");
+        $this->form->addElement('select', "cmrr1_dti3_shell_facemask", "Subject Wearing Face Mask?", array('' => null, 'yes' => "Yes", 'no' => "No"));
+        $this->XINRegisterRule(
+            "cmrr1_dti3_shell_facemask",
+            array("cmrr1_dti3_shell_facemask{@}=={@}NEVER_REQUIRED")
+        );
         $this->form->addElement('static', null, '<BR><BR>');
 
-        $this->form->addElement('select', '6b0', "6B0 | <i>ep2d_diff_sms2_6B0_AP_1p7</i>", array(null => "", "complete" => "Complete", "partial" => "Partial", "none" => "None"));
-        $this->form->addElement('select', '6b0_attempts', "<b>Console Pass/Fail</b><BR><BR>", array(null => "", "console_pass" => "Console Pass", "console_fail" => "Console Fail"));
-        $this->XINRegisterRule("6b0_attempts", array("6b0{@}=={@}Yes"), "Required.");
-        $this->form->addElement('select', '6b0_num_attempts', "<b>Number of Attempts</b>", range(0, 10));
-        $this->XINRegisterRule("6b0_num_attempts", array("6b0{@}=={@}Yes"), "Required.");
+        $this->form->addElement('select', 'cmrr1_6b0', "6B0 | <i>DWIcmrr_B0_AP</i>", array(null => "", "complete" => "Complete", "partial" => "Partial", "none" => "None"));
+        $this->form->addElement('select', 'cmrr1_6b0_attempts', "<b>Console Pass/Fail</b><BR><BR>", array(null => "", "console_pass" => "Console Pass", "console_fail" => "Console Fail"));
+        $this->XINRegisterRule("cmrr1_6b0_attempts", array("cmrr1_6b0{@}=={@}complete"), "Required.");
+        $this->form->addElement('select', 'cmrr1_6b0_num_attempts', "<b>Number of Attempts</b>", range(0, 10));
+        $this->XINRegisterRule("cmrr1_6b0_num_attempts", array("cmrr1_6b0{@}=={@}complete"), "Required.");
+        $this->form->addElement('select', "cmrr1_6b0_facemask", "Subject Wearing Face Mask?", array('' => null, 'yes' => "Yes", 'no' => "No"));
+        $this->XINRegisterRule(
+            "cmrr1_6b0_facemask",
+            array("cmrr1_6b0_facemask{@}=={@}NEVER_REQUIRED")
+        );
         $this->form->addElement('static', null, '<BR><BR>');
 
-        $this->form->addElement('select', 'dti2_shell', "DTI 2 Shell | <i>ep2d_diff_sms2_2shell_PA_1p7</i>", array(null => "", "complete" => "Complete", "partial" => "Partial", "none" => "None"));
-        $this->form->addElement('select', 'dti2_shell_attempts', "<b>Console Pass/Fail</b><BR><BR>", array(null => "", "console_pass" => "Console Pass", "console_fail" => "Console Fail"));
-        $this->XINRegisterRule("dti2_shell_attempts", array("dti2_shell{@}=={@}Yes"), "Required.");
-        $this->form->addElement('select', 'dti2_shell_num_attempts', "<b>Number of Attempts</b>", range(0, 10));
-        $this->XINRegisterRule("dti2_shell_num_attempts", array("dti2_shell{@}=={@}Yes"), "Required.");
+        $this->form->addElement('select', 'cmrr1_dti2_shell', "DWI 2 shell | <i>DWIcmrr_2shell_APinv</i>", array(null => "", "complete" => "Complete", "partial" => "Partial", "none" => "None"));
+        $this->form->addElement('select', 'cmrr1_dti2_shell_attempts', "<b>Console Pass/Fail</b><BR><BR>", array(null => "", "console_pass" => "Console Pass", "console_fail" => "Console Fail"));
+        $this->XINRegisterRule("cmrr1_dti2_shell_attempts", array("cmrr1_dti2_shell{@}=={@}complete"), "Required.");
+        $this->form->addElement('select', 'cmrr1_dti2_shell_num_attempts', "<b>Number of Attempts</b>", range(0, 10));
+        $this->XINRegisterRule("cmrr1_dti2_shell_num_attempts", array("cmrr1_dti2_shell{@}=={@}complete"), "Required.");
+        $this->form->addElement('select', "cmrr1_dti2_shell_facemask", "Subject Wearing Face Mask?", array('' => null, 'yes' => "Yes", 'no' => "No"));
+        $this->XINRegisterRule(
+            "cmrr1_dti2_shell_facemask",
+            array("cmrr1_dti2_shell_facemask{@}=={@}NEVER_REQUIRED")
+        );
         $this->form->addElement('static', null, '<BR><BR>');
 
-        $this->form->addElement('select', '6b0_2', "6B0 | <i>ep2d_diff_sms2_6B0_AP_1p7</i>", array(null => "", "complete" => "Complete", "partial" => "Partial", "none" => "None"));
-        $this->form->addElement('select', '6b0_2_attempts', "<b>Console Pass/Fail</b><BR><BR>", array(null => "", "console_pass" => "Console Pass", "console_fail" => "Console Fail"));
-        $this->XINRegisterRule("6b0_2_attempts", array("6b0_2{@}=={@}Yes"), "Required.");
-        $this->form->addElement('select', '6b0_2_num_attempts', "<b>Number of Attempts</b>", range(0, 10));
-        $this->XINRegisterRule("6b0_2_num_attempts", array("6b0_2{@}=={@}Yes"), "Required.");
+        $this->form->addElement('select', 'cmrr1_6b02', "6 B0 | <i>DWIcmrr_B0_AP</i>", array(null => "", "complete" => "Complete", "partial" => "Partial", "none" => "None"));
+        $this->form->addElement('select', 'cmrr1_6b02_attempts', "<b>Console Pass/Fail</b><BR><BR>", array(null => "", "console_pass" => "Console Pass", "console_fail" => "Console Fail"));
+        $this->XINRegisterRule("cmrr1_6b02_attempts", array("cmrr1_6b02{@}=={@}complete"), "Required.");
+        $this->form->addElement('select', 'cmrr1_6b02_num_attempts', "<b>Number of Attempts</b>", range(0, 10));
+        $this->XINRegisterRule("cmrr1_6b02_num_attempts", array("cmrr1_6b02{@}=={@}complete"), "Required.");
+        $this->form->addElement('select', "cmrr1_6b02_facemask", "Subject Wearing Face Mask?", array('' => null, 'yes' => "Yes", 'no' => "No"));
+        $this->XINRegisterRule(
+            "cmrr1_6b02_facemask",
+            array("cmrr1_6b02_facemask{@}=={@}NEVER_REQUIRED")
+        );
         $this->form->addElement('static', null, '<BR><BR>');
 
-        $this->form->addElement('select', 'dti1_shell', "DTI 1 Shell | <i>ep2d_diff_sms2_1shell_PA_1p7</i>", array(null => "", "complete" => "Complete", "partial" => "Partial", "none" => "None"));
-        $this->form->addElement('select', 'dti1_shell_attempts', "<b>Console Pass/Fail</b><BR><BR>", array(null => "", "console_pass" => "Console Pass", "console_fail" => "Console Fail"));
-        $this->XINRegisterRule("dti1_shell_attempts", array("dti1_shell{@}=={@}Yes"), "Required.");
-        $this->form->addElement('select', 'dti1_shell_num_attempts', "<b>Number of Attempts</b>", range(0, 10));
-        $this->XINRegisterRule("dti1_shell_num_attempts", array("dti1_shell{@}=={@}Yes"), "Required.");
+        $this->form->addElement('select', 'cmrr1_dti1_shell', "DWI 1 shell | <i>DWIcmrr_1shell_APinv</i>", array(null => "", "complete" => "Complete", "partial" => "Partial", "none" => "None"));
+        $this->form->addElement('select', 'cmrr1_dti1_shell_attempts', "<b>Console Pass/Fail</b><BR><BR>", array(null => "", "console_pass" => "Console Pass", "console_fail" => "Console Fail"));
+        $this->XINRegisterRule("cmrr1_dti1_shell_attempts", array("cmrr1_dti1_shell{@}=={@}complete"), "Required.");
+        $this->form->addElement('select', 'cmrr1_dti1_shell_num_attempts', "<b>Number of Attempts</b>", range(0, 10));
+        $this->XINRegisterRule("cmrr1_dti1_shell_num_attempts", array("cmrr1_dti1_shell{@}=={@}complete"), "Required.");
+        $this->form->addElement('select', "cmrr1_dti1_shell_facemask", "Subject Wearing Face Mask?", array('' => null, 'yes' => "Yes", 'no' => "No"));
+        $this->XINRegisterRule(
+            "cmrr1_dti1_shell_facemask",
+            array("cmrr1_dti1_shell_facemask{@}=={@}NEVER_REQUIRED")
+        );
         $this->form->addElement('static', null, '<BR><BR>');
 
         // Add DTI comments text area
-        $this->form->addElement("textarea", "dti_comments", "<i>DTI Comments:</i>");
+        $this->form->addElement("textarea", "cmrr1_dti_comments", "<i>DTI Comments:</i>");
         $this->XINRegisterRule(
-            "dti_comments",
-            array("dti_comments{@}=={@}NEVER_REQUIRED")
+            "cmrr1_dti_comments",
+            array("cmrr1_dti_comments{@}=={@}NEVER_REQUIRED")
         );
         $this->form->addElement('static', null, '<BR>');
 
@@ -521,37 +579,57 @@ $count=0;
         $this->form->addElement('select', 'bold_run1', "BOLD run 1 | <i>ep2d_bold_sms6_PA</i>", array(null => "", 'complete' => "Complete", 'partial' => "Partial", 'none' => "None"));
         $this->form->addElement('select', 'bold_run1_attempts', "<b>Console Pass/Fail</b>", array(null => "", "console_pass" => "Console Pass", "console_fail" => "Console Fail"));
         $this->form->addElement('select', 'bold_run1_num_attempts', "<b>Number of Attempts</b>", range(0, 10));
-        $this->XINRegisterRule("bold_run1_num_attempts", array("bold_run1{@}=={@}Yes"), "Required.");
-        $this->XINRegisterRule("bold_run1_attempts", array("bold_run1{@}=={@}Yes"), "Required.");
+        $this->XINRegisterRule("bold_run1_num_attempts", array("bold_run1{@}=={@}complete"), "Required.");
+        $this->XINRegisterRule("bold_run1_attempts", array("bold_run1{@}=={@}complete"), "Required.");
         $this->form->addElement('select', 'bold_run1_firmm', "<b>FIRMM used?<b>", array('' => null, 'Yes' => "Yes", 'No' => "No"));
-        $this->XINRegisterRule("bold_run1_firmm", array("bold_run1{@}=={@}Yes"), "Required.");
+        $this->XINRegisterRule("bold_run1_firmm", array("bold_run1{@}=={@}complete"), "Required.");
+        $this->form->addElement('select', "bold_run1_facemask", "Subject Wearing Face Mask?", array('' => null, 'yes' => "Yes", 'no' => "No"));
+        $this->XINRegisterRule(
+            "bold_run1_facemask",
+            array("bold_run1_facemask{@}=={@}NEVER_REQUIRED")
+        );
         $this->form->addElement('static', null, '<BR><BR>');
 
         $this->form->addElement('select', 'bold_run2', "BOLD run 2 | <i>ep2d_bold_sms6_PA</i>", array(null => "", 'complete' => "Complete", 'partial' => "Partial", 'none' => "None"));
         $this->form->addElement('select', 'bold_run2_attempts', "<b>Console Pass/Fail</b>", array(null => "", "console_pass" => "Console Pass", "console_fail" => "Console Fail"));
         $this->form->addElement('select', 'bold_run2_num_attempts', "<b>Number of Attempts</b>", range(0, 10));
-        $this->XINRegisterRule("bold_run2_num_attempts", array("bold_run2{@}=={@}Yes"), "Required.");
-        $this->XINRegisterRule("bold_run2_attempts", array("bold_run2{@}=={@}Yes"), "Required.");
+        $this->XINRegisterRule("bold_run2_num_attempts", array("bold_run2{@}=={@}complete"), "Required.");
+        $this->XINRegisterRule("bold_run2_attempts", array("bold_run2{@}=={@}complete"), "Required.");
         $this->form->addElement('select', 'bold_run2_firmm', "<b>FIRMM used?<b>", array('' => null, 'Yes' => "Yes", 'No' => "No"));
-        $this->XINRegisterRule("bold_run2_firmm", array("bold_run2{@}=={@}Yes"), "Required.");
+        $this->XINRegisterRule("bold_run2_firmm", array("bold_run2{@}=={@}complete"), "Required.");
+        $this->form->addElement('select', "bold_run2_facemask", "Subject Wearing Face Mask?", array('' => null, 'yes' => "Yes", 'no' => "No"));
+        $this->XINRegisterRule(
+            "bold_run2_facemask",
+            array("bold_run2_facemask{@}=={@}NEVER_REQUIRED")
+        );
         $this->form->addElement('static', null, '<BR><BR>');
 
         $this->form->addElement('select', 'bold_run3', "BOLD run 3 | <i>ep2d_bold_sms6_PA</i>", array(null => "", 'complete' => "Complete", 'partial' => "Partial", 'none' => "None"));
         $this->form->addElement('select', 'bold_run3_attempts', "<b>Console Pass/Fail</b>", array(null => "", "console_pass" => "Console Pass", "console_fail" => "Console Fail"));
         $this->form->addElement('select', 'bold_run3_num_attempts', "<b>Number of Attempts</b>", range(0, 10));
-        $this->XINRegisterRule("bold_run3_num_attempts", array("bold_run3{@}=={@}Yes"), "Required.");
-        $this->XINRegisterRule("bold_run3_attempts", array("bold_run3{@}=={@}Yes"), "Required.");
+        $this->XINRegisterRule("bold_run3_num_attempts", array("bold_run3{@}=={@}complete"), "Required.");
+        $this->XINRegisterRule("bold_run3_attempts", array("bold_run3{@}=={@}complete"), "Required.");
         $this->form->addElement('select', 'bold_run3_firmm', "<b>FIRMM used?<b>", array('' => null, 'Yes' => "Yes", 'No' => "No"));
-        $this->XINRegisterRule("bold_run3_firmm", array("bold_run3{@}=={@}Yes"), "Required.");
+        $this->XINRegisterRule("bold_run3_firmm", array("bold_run3{@}=={@}complete"), "Required.");
+        $this->form->addElement('select', "bold_run3_facemask", "Subject Wearing Face Mask?", array('' => null, 'yes' => "Yes", 'no' => "No"));
+        $this->XINRegisterRule(
+            "bold_run3_facemask",
+            array("bold_run3_facemask{@}=={@}NEVER_REQUIRED")
+        );
         $this->form->addElement('static', null, '<BR><BR>');
 
         $this->form->addElement('select', 'bold_run4', "BOLD run 4 <i>(if needed/possible)</i>", array(null => "", 'complete' => "Complete", 'partial' => "Partial", 'none' => "None"));
         $this->form->addElement('select', 'bold_run4_attempts', "<b>Console Pass/Fail</b>", array(null => "", "console_pass" => "Console Pass", "console_fail" => "Console Fail"));
         $this->form->addElement('select', 'bold_run4_num_attempts', "<b>Number of Attempts</b>", range(0, 10));
-        $this->XINRegisterRule("bold_run4_num_attempts", array("bold_run4{@}=={@}Yes"), "Required.");
-        $this->XINRegisterRule("bold_run4_attempts", array("bold_run4{@}=={@}Yes"), "Required.");
+        $this->XINRegisterRule("bold_run4_num_attempts", array("bold_run4{@}=={@}complete"), "Required.");
+        $this->XINRegisterRule("bold_run4_attempts", array("bold_run4{@}=={@}complete"), "Required.");
         $this->form->addElement('select', 'bold_run4_firmm', "<b>FIRMM used?<b>", array('' => null, 'Yes' => "Yes", 'No' => "No"));
-        $this->XINRegisterRule("bold_run4_firmm", array("bold_run4{@}=={@}Yes"), "Required.");
+        $this->XINRegisterRule("bold_run4_firmm", array("bold_run4{@}=={@}complete"), "Required.");
+        $this->form->addElement('select', "bold_run4_facemask", "Subject Wearing Face Mask?", array('' => null, 'yes' => "Yes", 'no' => "No"));
+        $this->XINRegisterRule(
+            "bold_run4_facemask",
+            array("bold_run4_facemask{@}=={@}NEVER_REQUIRED")
+        );
         $this->form->addElement('static', null, '<BR><BR>');
 
         // Add BOLD comments text area
@@ -568,10 +646,84 @@ $count=0;
         $this->form->addElement('select', 'overall_success', "<b>Overall Scan Success</b> - to be completed following final scan session", array("" => null, 'complete_protocol_acquired' => "Complete protocol acquired", 'partial_protocol_acquired' => "Partial protocol acquired", 'acquired_but_possibly_not_usable' => "Complete/partial acquired but may not be usable", 'none_of_protocol_acquired' => "None of protocol acquired"));
         $this->form->addElement('select', 'if_none_partial_unusable', "<i>If none/partial/unusable:</i>", array("" => null, 'unable_to_stay_still' => "Subject unable to stay still", 'subject_refused' => "Subject refused", 'family_canceled' => "Family canceled", 'out_of_time' => "Ran out of time", 'scanner_issues' => "Scanner issues", 'family_declined' => "Family declined second attempt"));
         $this->XINRegisterRule("if_none_partial_unusable", array("overall_success{@}!={@}complete_protocol_acquired"), "Required if complete protocol was not acquired");
+        $this->form->addElement('static', null, '<BR>');
+
+        // DTI Siemens SECTION
+        $this->form->addElement('header', null, "<b>Siemens DTI</b><BR><BR>");
+        $this->form->addElement('select', 'siemens_dti_sequences_acquired', "<b>DTI Sequences Acquired?<b>", array(null => "", "complete" => "Complete", "partial" => "Partial", "none" => "None"));
+
+        $this->form->addElement('static', null, '*Repeat until pass QC; run DTI in order listed<BR><BR>');
+        $this->form->addElement('static', null, '<BR>');
+
+        $this->form->addElement('select', 'siemens_dti3_shell', "DTI 3 Shell | <i>ep2d_diff_sms2_3shell_PA_1p7</i>", array(null => "", "complete" => "Complete", "partial" => "Partial", "none" => "None"));
+        $this->form->addElement('select', 'siemens_dti3_shell_attempts', "<b>Console Pass/Fail</b><BR><BR>", array(null => "", "console_pass" => "Console Pass", "console_fail" => "Console Fail"));
+        $this->XINRegisterRule("siemens_dti3_shell_attempts", array("siemens_dti3_shell{@}=={@}complete"), "Required.");
+        $this->form->addElement('select', 'siemens_dti3_shell_num_attempts', "<b>Number of Attempts</b>", range(0, 10));
+        $this->XINRegisterRule("siemens_dti3_shell_num_attempts", array("siemens_dti3_shell{@}=={@}complete"), "Required.");
+        $this->form->addElement('select', "siemens_dti3_shell_facemask", "Subject Wearing Face Mask?", array('' => null, 'yes' => "Yes", 'no' => "No"));
+        $this->XINRegisterRule(
+            "siemens_dti3_shell_facemask",
+            array("siemens_dti3_shell_facemask{@}=={@}NEVER_REQUIRED")
+        );
+        $this->form->addElement('static', null, '<BR><BR>');
+
+        $this->form->addElement('select', 'siemens_6b0', "6B0 | <i>ep2d_diff_sms2_6B0_AP_1p7</i>", array(null => "", "complete" => "Complete", "partial" => "Partial", "none" => "None"));
+        $this->form->addElement('select', 'siemens_6b0_attempts', "<b>Console Pass/Fail</b><BR><BR>", array(null => "", "console_pass" => "Console Pass", "console_fail" => "Console Fail"));
+        $this->XINRegisterRule("siemens_6b0_attempts", array("siemens_6b0{@}=={@}complete"), "Required.");
+        $this->form->addElement('select', 'siemens_6b0_num_attempts', "<b>Number of Attempts</b>", range(0, 10));
+        $this->XINRegisterRule("siemens_6b0_num_attempts", array("siemens_6b0{@}=={@}complete"), "Required.");
+        $this->form->addElement('select', "siemens_6b0_facemask", "Subject Wearing Face Mask?", array('' => null, 'yes' => "Yes", 'no' => "No"));
+        $this->XINRegisterRule(
+            "siemens_6b0_facemask",
+            array("siemens_6b0_facemask{@}=={@}NEVER_REQUIRED")
+        );
+        $this->form->addElement('static', null, '<BR><BR>');
+
+        $this->form->addElement('select', 'siemens_dti2_shell', "DTI 2 Shell | <i>ep2d_diff_sms2_2shell_PA_1p7</i>", array(null => "", "complete" => "Complete", "partial" => "Partial", "none" => "None"));
+        $this->form->addElement('select', 'siemens_dti2_shell_attempts', "<b>Console Pass/Fail</b><BR><BR>", array(null => "", "console_pass" => "Console Pass", "console_fail" => "Console Fail"));
+        $this->XINRegisterRule("siemens_dti2_shell_attempts", array("siemens_dti2_shell{@}=={@}complete"), "Required.");
+        $this->form->addElement('select', 'siemens_dti2_shell_num_attempts', "<b>Number of Attempts</b>", range(0, 10));
+        $this->XINRegisterRule("siemens_dti2_shell_num_attempts", array("siemens_dti2_shell{@}=={@}complete"), "Required.");
+        $this->form->addElement('select', "siemens_dti2_shell_facemask", "Subject Wearing Face Mask?", array('' => null, 'yes' => "Yes", 'no' => "No"));
+        $this->XINRegisterRule(
+            "siemens_dti2_shell_facemask",
+            array("siemens_dti2_shell_facemask{@}=={@}NEVER_REQUIRED")
+        );
+        $this->form->addElement('static', null, '<BR><BR>');
+
+        $this->form->addElement('select', 'siemens_6b02', "6B0 | <i>ep2d_diff_sms2_6B0_AP_1p7</i>", array(null => "", "complete" => "Complete", "partial" => "Partial", "none" => "None"));
+        $this->form->addElement('select', 'siemens_6b02_attempts', "<b>Console Pass/Fail</b><BR><BR>", array(null => "", "console_pass" => "Console Pass", "console_fail" => "Console Fail"));
+        $this->XINRegisterRule("siemens_6b02_attempts", array("siemens_6b02{@}=={@}complete"), "Required.");
+        $this->form->addElement('select', 'siemens_6b02_num_attempts', "<b>Number of Attempts</b>", range(0, 10));
+        $this->XINRegisterRule("siemens_6b02_num_attempts", array("siemens_6b02{@}=={@}complete"), "Required.");
+        $this->form->addElement('select', "siemens_6b02_facemask", "Subject Wearing Face Mask?", array('' => null, 'yes' => "Yes", 'no' => "No"));
+        $this->XINRegisterRule(
+            "siemens_6b02_facemask",
+            array("siemens_6b02_facemask{@}=={@}NEVER_REQUIRED")
+        );
+        $this->form->addElement('static', null, '<BR><BR>');
+
+        $this->form->addElement('select', 'siemens_dti1_shell', "DTI 1 Shell | <i>ep2d_diff_sms2_1shell_PA_1p7</i>", array(null => "", "complete" => "Complete", "partial" => "Partial", "none" => "None"));
+        $this->form->addElement('select', 'siemens_dti1_shell_attempts', "<b>Console Pass/Fail</b><BR><BR>", array(null => "", "console_pass" => "Console Pass", "console_fail" => "Console Fail"));
+        $this->XINRegisterRule("siemens_dti1_shell_attempts", array("siemens_dti1_shell{@}=={@}complete"), "Required.");
+        $this->form->addElement('select', 'siemens_dti1_shell_num_attempts', "<b>Number of Attempts</b>", range(0, 10));
+        $this->XINRegisterRule("siemens_dti1_shell_num_attempts", array("siemens_dti1_shell{@}=={@}complete"), "Required.");
+        $this->form->addElement('select', "siemens_dti1_shell_facemask", "Subject Wearing Face Mask?", array('' => null, 'yes' => "Yes", 'no' => "No"));
+        $this->XINRegisterRule(
+            "siemens_dti1_shell_facemask",
+            array("siemens_dti1_shell_facemask{@}=={@}NEVER_REQUIRED")
+        );
+        $this->form->addElement('static', null, '<BR><BR>');
+
+        // Add DTI comments text area
+        $this->form->addElement("textarea", "siemens_dti_comments", "<i>DTI Comments:</i>");
+        $this->XINRegisterRule(
+            "siemens_dti_comments",
+            array("siemens_dti_comments{@}=={@}NEVER_REQUIRED")
+        );
+        $this->form->addElement('static', null, '<BR>');
 
         $this->form->addFormRule(array(&$this, 'validate_page2'));
-
-        $this->form->addElement('static', null, '<BR>');
     }
 
     function _page3()
@@ -715,13 +867,13 @@ $count=0;
             }
 
             // Validate consistency between t1w_acquired and t1w_num_attempts
-            if ($values["t1w_acquired_$num"] == 'Yes_2' && $values["t1w_num_attempts_$num"] < 2) {
-                $errors["t1w_num_attempts_$num"] =
+            if ($values["t1w_acquired_$snum"] == 'Yes_2' && $values["t1w_num_attempts_$snum"] < 2) {
+                $errors["t1w_num_attempts_$snum"] =
                     'Since 2 T1s were acquired, you must select a number of attempts greater or equal to 2';
             }
 
-            if ($values["t1w_acquired_$num"] == 'Yes_1' && $values["t1w_num_attempts_$num"] < 1) {
-                $errors["t1w_num_attempts_$num"] =
+            if ($values["t1w_acquired_$snum"] == 'Yes_1' && $values["t1w_num_attempts_$snum"] < 1) {
+                $errors["t1w_num_attempts_$snum"] =
                     'Since one T1 was acquired, you must select a number of attempts greater or equal to 1';
             }
 
@@ -820,8 +972,14 @@ $count=0;
                 "static",
                  null,
                  null,
-                 "<b>Console Pass/Fail"
+                 "<b>Console Pass/Fail</b>"
             );
+        $group[] = $this->form->createElement(
+            "static",
+            null,
+            null,
+            "<b>Subject Wearing Face Mask?</b>"
+        );
             $this->form->addGroup(
                 $group,
                 $category . "_group",
@@ -1008,6 +1166,21 @@ $count=0;
                 $question . "_group",
                 $question . "_group"
             );
+            $group[] = $this->createSelect(
+                $question . "_facemask",
+                "",
+                array(
+                    '' => null,
+                    'yes' => "Yes",
+                    'no' => "No",
+                )
+            );
+            $this->XINRegisterRule(
+                $question . "_facemask",
+                array($question . "_facemask{@}=={@}NEVER_REQUIRED"),
+                $question . "_group",
+                $question . "_group"
+            );
             $this->form->addGroup(
                 $group,
                 $question . "_group",
@@ -1031,34 +1204,78 @@ $count=0;
         $this->form->addElement('static', null, '<i>(If failed, verify encoding direction for each run of DTI and BOLD)</i>');
         $this->form->addElement('static', null, '<BR>');
 
-        // DTI SECTION
-        $this->form->addElement('header', null, "<b>DTI</b><BR><BR>");
-        $this->form->addElement('select', "dti_sequences_acquired_{$i}", "<b>DTI Sequences Acquired?<b>", array(null => "", "complete" => "Complete", "partial" => "Partial", "none" => "None"));
+        // CMRR DTI SECTION
+        $this->form->addElement('header', null, "<b>CMRR DTI</b><BR><BR>");
+        $this->form->addElement('select', "cmrr{$i}_dti_sequences_acquired_{$i}", "<b>DTI Sequences Acquired?<b>", array(null => "", "complete" => "Complete", "partial" => "Partial", "none" => "None"));
 
         $this->form->addElement('static', null, '*Repeat until pass QC; run DTI in order listed<BR><BR>');
         $this->form->addElement('static', null, '<BR>');
 
-        $this->form->addElement('select', "dti3_shell_{$i}", "DTI 3 Shell | <i>ep2d_diff_sms2_3shell_PA_1p7</i>", array(null => "", "complete" => "Complete", "partial" => "Partial", "none" => "None"));
-        $this->form->addElement('select', "dti3_shell_attempts_{$i}", "<b>Console Pass/Fail</b><BR><BR>", array(null => "", "console_pass" => "Console Pass", "console_fail" => "Console Fail"));
-        $this->XINRegisterRule("dti3_shell_attempts_{$i}", array("dti3_shell{@}=={@}Yes"), "Required.");
-        $this->form->addElement('select', "dti3_shell_num_attempts_{$i}", "<b>Number of Attempts</b>", range(0, 10));
-        $this->XINRegisterRule("dti3_shell_num_attempts{$i}", array("dti3_shell{$i}{@}=={@}Yes"), "Required.");
+        $this->form->addElement('select', "cmrr{$i}_dti3_shell_{$i}", "DTI 3 Shell | <i>ep2d_diff_sms2_3shell_PA_1p7</i>", array(null => "", "complete" => "Complete", "partial" => "Partial", "none" => "None"));
+        $this->form->addElement('select', "cmrr{$i}_dti3_shell_attempts_{$i}", "<b>Console Pass/Fail</b><BR><BR>", array(null => "", "console_pass" => "Console Pass", "console_fail" => "Console Fail"));
+        $this->XINRegisterRule("cmrr{$i}_dti3_shell_attempts_{$i}", array("cmrr{$i}_dti3_shell_{$i}{@}=={@}complete"), "Required.");
+        $this->form->addElement('select', "cmrr{$i}_dti3_shell_num_attempts_{$i}", "<b>Number of Attempts</b>", range(0, 10));
+        $this->XINRegisterRule("cmrr{$i}_dti3_shell_num_attempts{$i}", array("cmrr{$i}_dti3_shell_{$i}{@}=={@}complete"), "Required.");
+        $this->form->addElement('select', "cmrr{$i}_dti3_shell_{$i}_facemask_{$i}", "Subject Wearing Face Mask?", array('' => null, 'yes' => "Yes", 'no' => "No"));
+        $this->XINRegisterRule(
+            "cmrr{$i}_dti3_shell_{$i}_facemask_{$i}",
+            array("cmrr{$i}_dti3_shell_{$i}_facemask_{$i}{@}=={@}NEVER_REQUIRED")
+        );
         $this->form->addElement('static', null, '<BR><BR>');
 
-        $this->form->addElement('select', "6b0_{$i}", "6B0 | <i>ep2d_diff_sms2_6B0_AP_1p7</i>", array(null => "", "complete" => "Complete", "partial" => "Partial", "none" => "None"));
-        $this->form->addElement('select', "6b0_attempts_{$i}", "<b>Console Pass/Fail</b><BR><BR>", array(null => "", "console_pass" => "Console Pass", "console_fail" => "Console Fail"));
-        $this->XINRegisterRule("6b0_attempts_{$i}", array("6b0_{$i}{@}=={@}Yes"), "Required.");
-        $this->form->addElement('select', "6b0_num_attempts_{$i}", "<b>Number of Attempts</b>", range(0, 10));
-        $this->XINRegisterRule("6b0_num_attempts_{$i}", array("6b0_{$i}{@}=={@}Yes"), "Required.");
+        $this->form->addElement('select', "cmrr{$i}_6b0_{$i}", "6B0 | <i>ep2d_diff_sms2_6B0_AP_1p7</i>", array(null => "", "complete" => "Complete", "partial" => "Partial", "none" => "None"));
+        $this->form->addElement('select', "cmrr{$i}_6b0_attempts_{$i}", "<b>Console Pass/Fail</b><BR><BR>", array(null => "", "console_pass" => "Console Pass", "console_fail" => "Console Fail"));
+        $this->XINRegisterRule("cmrr{$i}_6b0_attempts_{$i}", array("cmrr{$i}_6b0_{$i}{@}=={@}complete"), "Required.");
+        $this->form->addElement('select', "cmrr{$i}_6b0_num_attempts_{$i}", "<b>Number of Attempts</b>", range(0, 10));
+        $this->XINRegisterRule("cmrr{$i}_6b0_num_attempts_{$i}", array("cmrr{$i}_6b0_{$i}{@}=={@}complete"), "Required.");
+        $this->form->addElement('select', "cmrr{$i}_6b0_{$i}_facemask_{$i}", "Subject Wearing Face Mask?", array('' => null, 'yes' => "Yes", 'no' => "No"));
+        $this->XINRegisterRule(
+            "cmrr{$i}_6b0_{$i}_facemask_{$i}",
+            array("cmrr{$i}_6b0_{$i}_facemask_{$i}{@}=={@}NEVER_REQUIRED")
+        );
         $this->form->addElement('static', null, '<BR><BR>');
 
-      
+        $this->form->addElement('select', "cmrr{$i}_dti2_shell_{$i}", "DWI 2 shell | <i>DWIcmrr_2shell_APinv</i>", array(null => "", "complete" => "Complete", "partial" => "Partial", "none" => "None"));
+        $this->form->addElement('select', "cmrr{$i}_dti2_shell_attempts_{$i}", "<b>Console Pass/Fail</b><BR><BR>", array(null => "", "console_pass" => "Console Pass", "console_fail" => "Console Fail"));
+        $this->XINRegisterRule("cmrr{$i}_dti2_shell_attempts_{$i}", array("cmrr{$i}_dti2_shell_{$i}{@}=={@}complete"), "Required.");
+        $this->form->addElement('select', "cmrr{$i}_dti2_shell_num_attempts_{$i}", "<b>Number of Attempts</b>", range(0, 10));
+        $this->XINRegisterRule("cmrr{$i}_dti2_shell_num_attempts_{$i}", array("cmrr{$i}_dti2_shell_{$i}{@}=={@}complete"), "Required.");
+        $this->form->addElement('select', "cmrr{$i}_dti2_shell_{$i}_facemask_{$i}", "Subject Wearing Face Mask?", array('' => null, 'yes' => "Yes", 'no' => "No"));
+        $this->XINRegisterRule(
+            "cmrr{$i}_dti2_shell_{$i}_facemask_{$i}",
+            array("cmrr{$i}_dti2_shell_{$i}_facemask_{$i}{@}=={@}NEVER_REQUIRED")
+        );
+        $this->form->addElement('static', null, '<BR><BR>');
+
+        $this->form->addElement('select', "cmrr{$i}_6b02_{$i}", "6 B0 | <i>DWIcmrr_B0_AP</i>", array(null => "", "complete" => "Complete", "partial" => "Partial", "none" => "None"));
+        $this->form->addElement('select', "cmrr{$i}_6b02_attempts_{$i}", "<b>Console Pass/Fail</b><BR><BR>", array(null => "", "console_pass" => "Console Pass", "console_fail" => "Console Fail"));
+        $this->XINRegisterRule("cmrr{$i}_6b02_attempts_{$i}", array("cmrr{$i}_6b02_{$i}{@}=={@}complete"), "Required.");
+        $this->form->addElement('select', "cmrr{$i}_6b02_num_attempts_{$i}", "<b>Number of Attempts</b>", range(0, 10));
+        $this->XINRegisterRule("cmrr{$i}_6b02_num_attempts_{$i}", array("cmrr{$i}_6b02_{$i}{@}=={@}complete"), "Required.");
+        $this->form->addElement('select', "cmrr{$i}_6b02_{$i}_facemask_{$i}", "Subject Wearing Face Mask?", array('' => null, 'yes' => "Yes", 'no' => "No"));
+        $this->XINRegisterRule(
+            "cmrr{$i}_6b02_{$i}_facemask_{$i}",
+            array("cmrr{$i}_6b02_{$i}_facemask_{$i}{@}=={@}NEVER_REQUIRED")
+        );
+        $this->form->addElement('static', null, '<BR><BR>');
+
+        $this->form->addElement('select', "cmrr{$i}_dti1_shell_{$i}", "DWI 1 shell | <i>DWIcmrr_1shell_APinv</i>", array(null => "", "complete" => "Complete", "partial" => "Partial", "none" => "None"));
+        $this->form->addElement('select', "cmrr{$i}_dti1_shell_attempts_{$i}", "<b>Console Pass/Fail</b><BR><BR>", array(null => "", "console_pass" => "Console Pass", "console_fail" => "Console Fail"));
+        $this->XINRegisterRule("cmrr{$i}_dti1_shell_attempts_{$i}", array("cmrr{$i}_dti1_shell_{$i}{@}=={@}complete"), "Required.");
+        $this->form->addElement('select', "cmrr{$i}_dti1_shell_num_attempts_{$i}", "<b>Number of Attempts</b>", range(0, 10));
+        $this->XINRegisterRule("cmrr{$i}_dti1_shell_num_attempts_{$i}", array("cmrr{$i}_dti1_shell_{$i}{@}=={@}complete"), "Required.");
+        $this->form->addElement('select', "cmrr{$i}_dti1_shell_{$i}_facemask_{$i}", "Subject Wearing Face Mask?", array('' => null, 'yes' => "Yes", 'no' => "No"));
+        $this->XINRegisterRule(
+            "cmrr{$i}_dti1_shell_{$i}_facemask_{$i}",
+            array("cmrr{$i}_dti1_shell_{$i}_facemask_{$i}{@}=={@}NEVER_REQUIRED")
+        );
+        $this->form->addElement('static', null, '<BR><BR>');
 
         // Add DTI comments text area
-        $this->form->addElement("textarea", "dti_comments_{$i}", "<i>DTI Comments:</i>");
+        $this->form->addElement("textarea", "cmrr{$i}_dti_comments_{$i}", "<i>DTI Comments:</i>");
         $this->XINRegisterRule(
-            "dti_comments_{$i}",
-            array("dti_comments_{$i}{@}=={@}NEVER_REQUIRED")
+            "cmrr{$i}_dti_comments_{$i}",
+            array("cmrr{$i}_dti_comments_{$i}{@}=={@}NEVER_REQUIRED")
         );
         $this->form->addElement("static", null, "<BR>");
 
@@ -1087,6 +1304,11 @@ $count=0;
         $this->XINRegisterRule("bold_run1_attempts_{$i}", array("bold_run1_{$i}{@}=={@}Yes"), "Required.");
         $this->form->addElement("select", "bold_run1_firmm_{$i}", "<b>FIRMM used?<b>", array("" => null, "Yes" => "Yes", "No" => "No"));
         $this->XINRegisterRule("bold_run1_firmm_{$i}", array("bold_run1_{$i}{@}=={@}Yes"), "Required.");
+        $this->form->addElement('select', "bold_run1_{$i}_facemask_{$i}", "Subject Wearing Face Mask?", array('' => null, 'yes' => "Yes", 'no' => "No"));
+        $this->XINRegisterRule(
+            "bold_run1_{$i}_facemask_{$i}",
+            array("bold_run1_{$i}_facemask_{$i}{@}=={@}NEVER_REQUIRED")
+        );
         $this->form->addElement("static", null, "<BR><BR>");
 
         $this->form->addElement("select", "bold_run2_{$i}", "BOLD run 2 | <i>ep2d_bold_sms6_PA</i>", array(null => "", "complete" => "Complete", "partial" => "Partial", "none" => "None"));
@@ -1096,6 +1318,11 @@ $count=0;
         $this->XINRegisterRule("bold_run2_attempts_{$i}", array("bold_run2_{$i}{@}=={@}Yes"), "Required.");
         $this->form->addElement("select", "bold_run2_firmm_{$i}", "<b>FIRMM used?<b>", array("" => null, "Yes" => "Yes", "No" => "No"));
         $this->XINRegisterRule("bold_run2_firmm_{$i}", array("bold_run2_{$i}{@}=={@}Yes"), "Required.");
+        $this->form->addElement('select', "bold_run2_{$i}_facemask_{$i}", "Subject Wearing Face Mask?", array('' => null, 'yes' => "Yes", 'no' => "No"));
+        $this->XINRegisterRule(
+            "bold_run2_{$i}_facemask_{$i}",
+            array("bold_run2_{$i}_facemask_{$i}{@}=={@}NEVER_REQUIRED")
+        );
         $this->form->addElement("static", null, "<BR><BR>");
 
         $this->form->addElement("select", "bold_run3_{$i}", "BOLD run 3 | <i>ep2d_bold_sms6_PA</i>", array(null => "", "complete" => "Complete", "partial" => "Partial", "none" => "None"));
@@ -1105,6 +1332,11 @@ $count=0;
         $this->XINRegisterRule("bold_run3_attempts_{$i}", array("bold_run3_{$i}{@}=={@}Yes"), "Required.");
         $this->form->addElement("select", "bold_run3_firmm_{$i}", "<b>FIRMM used?<b>", array("" => null, "Yes" => "Yes", "No" => "No"));
         $this->XINRegisterRule("bold_run3_firmm_{$i}", array("bold_run3_{$i}{@}=={@}Yes"), "Required.");
+        $this->form->addElement('select', "bold_run3_{$i}_facemask_{$i}", "Subject Wearing Face Mask?", array('' => null, 'yes' => "Yes", 'no' => "No"));
+        $this->XINRegisterRule(
+            "bold_run3_{$i}_facemask_{$i}",
+            array("bold_run3_{$i}_facemask_{$i}{@}=={@}NEVER_REQUIRED")
+        );
         $this->form->addElement("static", null, "<BR><BR>");
 
         $this->form->addElement("select", "bold_run4_{$i}", "BOLD run 4 <i>(if needed/possible)</i>", array(null => "", "complete" => "Complete", "partial" => "Partial", "none" => "None"));
@@ -1114,6 +1346,11 @@ $count=0;
         $this->XINRegisterRule("bold_run4_attempts_{$i}", array("bold_run4_{$i}{@}=={@}Yes"), "Required.");
         $this->form->addElement("select", "bold_run4_firmm_{$i}", "<b>FIRMM used?<b>", array("" => null, "Yes" => "Yes", "No" => "No"));
         $this->XINRegisterRule("bold_run4_firmm_{$i}", array("bold_run4_{$i}{@}=={@}Yes"), "Required.");
+        $this->form->addElement('select', "bold_run4_{$i}_facemask_{$i}", "Subject Wearing Face Mask?", array('' => null, 'yes' => "Yes", 'no' => "No"));
+        $this->XINRegisterRule(
+            "bold_run4_{$i}_facemask_{$i}",
+            array("bold_run4_{$i}_facemask_{$i}{@}=={@}NEVER_REQUIRED")
+        );
         $this->form->addElement("static", null, "<BR><BR>");
 
         // Add BOLD comments text area
@@ -1130,12 +1367,82 @@ $count=0;
         $this->form->addElement("select", "overall_success_{$i}", "<b>Overall Scan Success</b> - to be completed following final scan session", array("" => null, "complete_protocol_acquired" => "Complete protocol acquired", "partial_protocol_acquired" => "Partial protocol acquired", "acquired_but_possibly_not_usable" => "Complete/partial acquired but may not be usable", "none_of_protocol_acquired" => "None of protocol acquired"));
         $this->form->addElement("select", "if_none_partial_unusable_{$i}", "<i>If none/partial/unusable:</i>", array("" => null, "unable_to_stay_still" => "Subject unable to stay still", "subject_refused" => "Subject refused", "family_canceled" => "Family canceled", "out_of_time" => "Ran out of time", "scanner_issues" => "Scanner issues", "family_declined" => "Family declined second attempt"));
         $this->XINRegisterRule("if_none_partial_unusable_{$i}", array("overall_success_$i{@}!={@}complete_protocol_acquired"), "Required if complete protocol was not acquired");
-
-        $this->form->addFormRule(array(&$this, "validate_pages"));
-        //$this->form->addFormRule(array(&$this, 'XINValidate'));
-
-
         $this->form->addElement("static", null, "<BR>");
+
+        // DTI Siemens SECTION
+        $this->form->addElement('header', null, "<b>Siemens DTI</b><BR><BR>");
+        $this->form->addElement('select', "siemens{$i}_dti_sequences_acquired_{$i}", "<b>DTI Sequences Acquired?<b>", array(null => "", "complete" => "Complete", "partial" => "Partial", "none" => "None"));
+
+        $this->form->addElement('static', null, '*Repeat until pass QC; run DTI in order listed<BR><BR>');
+        $this->form->addElement('static', null, '<BR>');
+
+        $this->form->addElement('select', "siemens{$i}_dti3_shell_{$i}", "DTI 3 Shell | <i>ep2d_diff_sms2_3shell_PA_1p7</i>", array(null => "", "complete" => "Complete", "partial" => "Partial", "none" => "None"));
+        $this->form->addElement('select', "siemens{$i}_dti3_shell_attempts_{$i}", "<b>Console Pass/Fail</b><BR><BR>", array(null => "", "console_pass" => "Console Pass", "console_fail" => "Console Fail"));
+        $this->XINRegisterRule("siemens{$i}_dti3_shell_attempts_{$i}", array("siemens{$i}_dti3_shell_{$i}{@}=={@}complete"), "Required.");
+        $this->form->addElement('select', "siemens{$i}_dti3_shell_num_attempts_{$i}", "<b>Number of Attempts</b>", range(0, 10));
+        $this->XINRegisterRule("siemens{$i}_dti3_shell_num_attempts{$i}", array("siemens{$i}_dti3_shell_{$i}{@}=={@}complete"), "Required.");
+        $this->form->addElement('select', "siemens{$i}_dti3_shell_{$i}_facemask_{$i}", "Subject Wearing Face Mask?", array('' => null, 'yes' => "Yes", 'no' => "No"));
+        $this->XINRegisterRule(
+            "siemens{$i}_dti3_shell_{$i}_facemask_{$i}",
+            array("siemens{$i}_dti3_shell_{$i}_facemask_{$i}{@}=={@}NEVER_REQUIRED")
+        );
+        $this->form->addElement('static', null, '<BR><BR>');
+
+        $this->form->addElement('select', "siemens{$i}_6b0_{$i}", "6B0 | <i>ep2d_diff_sms2_6B0_AP_1p7</i>", array(null => "", "complete" => "Complete", "partial" => "Partial", "none" => "None"));
+        $this->form->addElement('select', "siemens{$i}_6b0_attempts_{$i}", "<b>Console Pass/Fail</b><BR><BR>", array(null => "", "console_pass" => "Console Pass", "console_fail" => "Console Fail"));
+        $this->XINRegisterRule("siemens{$i}_6b0_attempts_{$i}", array("siemens{$i}_6b0_{$i}{@}=={@}complete"), "Required.");
+        $this->form->addElement('select', "siemens{$i}_6b0_num_attempts_{$i}", "<b>Number of Attempts</b>", range(0, 10));
+        $this->XINRegisterRule("siemens{$i}_6b0_num_attempts_{$i}", array("siemens{$i}_6b0_{$i}{@}=={@}complete"), "Required.");
+        $this->form->addElement('select', "siemens{$i}_6b0_{$i}_facemask_{$i}", "Subject Wearing Face Mask?", array('' => null, 'yes' => "Yes", 'no' => "No"));
+        $this->XINRegisterRule(
+            "siemens{$i}_6b0_{$i}_facemask_{$i}",
+            array("siemens{$i}_6b0_{$i}_facemask_{$i}{@}=={@}NEVER_REQUIRED")
+        );
+        $this->form->addElement('static', null, '<BR><BR>');
+
+        $this->form->addElement('select', "siemens{$i}_dti2_shell_{$i}", "DTI 2 Shell | <i>ep2d_diff_sms2_2shell_PA_1p7</i>", array(null => "", "complete" => "Complete", "partial" => "Partial", "none" => "None"));
+        $this->form->addElement('select', "siemens{$i}_dti2_shell_attempts_{$i}", "<b>Console Pass/Fail</b><BR><BR>", array(null => "", "console_pass" => "Console Pass", "console_fail" => "Console Fail"));
+        $this->XINRegisterRule("siemens{$i}_dti2_shell_attempts_{$i}", array("siemens{$i}_dti2_shell_{$i}{@}=={@}complete"), "Required.");
+        $this->form->addElement('select', "siemens{$i}_dti2_shell_num_attempts_{$i}", "<b>Number of Attempts</b>", range(0, 10));
+        $this->XINRegisterRule("siemens{$i}_dti2_shell_num_attempts_{$i}", array("siemens{$i}_dti2_shell_{$i}{@}=={@}complete"), "Required.");
+        $this->form->addElement('select', "siemens{$i}_dti2_shell_{$i}_facemask_{$i}", "Subject Wearing Face Mask?", array('' => null, 'yes' => "Yes", 'no' => "No"));
+        $this->XINRegisterRule(
+            "siemens{$i}_dti2_shell_{$i}_facemask_{$i}",
+            array("siemens{$i}_dti2_shell_{$i}_facemask_{$i}{@}=={@}NEVER_REQUIRED")
+        );
+        $this->form->addElement('static', null, '<BR><BR>');
+
+        $this->form->addElement('select', "siemens{$i}_6b02_{$i}", "6B0 | <i>ep2d_diff_sms2_6B0_AP_1p7</i>", array(null => "", "complete" => "Complete", "partial" => "Partial", "none" => "None"));
+        $this->form->addElement('select', "siemens{$i}_6b02_attempts_{$i}", "<b>Console Pass/Fail</b><BR><BR>", array(null => "", "console_pass" => "Console Pass", "console_fail" => "Console Fail"));
+        $this->XINRegisterRule("siemens{$i}_6b02_attempts_{$i}", array("siemens{$i}_6b02_{$i}{@}=={@}complete"), "Required.");
+        $this->form->addElement('select', "siemens{$i}_6b02_num_attempts_{$i}", "<b>Number of Attempts</b>", range(0, 10));
+        $this->XINRegisterRule("siemens{$i}_6b02_num_attempts_{$i}", array("siemens{$i}_6b02_{$i}{@}=={@}complete"), "Required.");
+        $this->form->addElement('select', "siemens{$i}_6b02_{$i}_facemask_{$i}", "Subject Wearing Face Mask?", array('' => null, 'yes' => "Yes", 'no' => "No"));
+        $this->XINRegisterRule(
+            "siemens{$i}_6b02_{$i}_facemask_{$i}",
+            array("siemens{$i}_6b02_{$i}_facemask_{$i}{@}=={@}NEVER_REQUIRED")
+        );
+        $this->form->addElement('static', null, '<BR><BR>');
+
+        $this->form->addElement('select', "siemens{$i}_dti1_shell_{$i}", "DTI 1 Shell | <i>ep2d_diff_sms2_1shell_PA_1p7</i>", array(null => "", "complete" => "Complete", "partial" => "Partial", "none" => "None"));
+        $this->form->addElement('select', "siemens{$i}_dti1_shell_attempts_{$i}", "<b>Console Pass/Fail</b><BR><BR>", array(null => "", "console_pass" => "Console Pass", "console_fail" => "Console Fail"));
+        $this->XINRegisterRule("siemens{$i}_dti1_shell_attempts_{$i}", array("siemens{$i}_dti1_shell_{$i}{@}=={@}complete"), "Required.");
+        $this->form->addElement('select', "siemens{$i}_dti1_shell_num_attempts_{$i}", "<b>Number of Attempts</b>", range(0, 10));
+        $this->XINRegisterRule("siemens{$i}_dti1_shell_num_attempts_{$i}", array("siemens{$i}_dti1_shell_{$i}{@}=={@}complete"), "Required.");
+        $this->form->addElement('select', "siemens{$i}_dti1_shell_{$i}_facemask_{$i}", "Subject Wearing Face Mask?", array('' => null, 'yes' => "Yes", 'no' => "No"));
+        $this->XINRegisterRule(
+            "siemens{$i}_dti1_shell_{$i}_facemask_{$i}",
+            array("siemens{$i}_dti1_shell_{$i}_facemask_{$i}{@}=={@}NEVER_REQUIRED")
+        );
+        $this->form->addElement('static', null, '<BR><BR>');
+
+        $this->form->addElement("textarea", "siemens{$i}_dti_comments_{$i}", "<i>DTI Comments:</i>");
+        $this->XINRegisterRule(
+            "siemens{$i}_dti_comments_{$i}",
+            array("siemens{$i}_dti_comments_{$i}{@}=={@}NEVER_REQUIRED")
+        );
+        $this->form->addElement("static", null, "<BR>");
+        $this->form->addFormRule(array(&$this, "validate_pages"));
     }
 
     function scanDoneCount()
