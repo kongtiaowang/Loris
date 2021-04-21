@@ -4,8 +4,12 @@ INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_num
 -- IBIS EP High Risk, 18
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('Visit_Level_Information_EP', '0', '0', 'Y', 'Visit', 18, 'V06', NULL);
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('Visit_Level_Information_EP', '0', '0', 'Y', 'Visit', 18, 'V06-CVD', NULL);
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('Visit_Level_Information_EP', '0', '0', 'Y', 'Visit', 18, 'V09', NULL);
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('Visit_Level_Information_EP', '0', '0', 'Y', 'Visit', 18, 'V9-CVD', NULL);
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('Visit_Level_Information_EP', '0', '0', 'Y', 'Visit', 18, 'V12', NULL);
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('Visit_Level_Information_EP', '0', '0', 'Y', 'Visit', 18, 'V12-CVD', NULL);
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('Visit_Level_Information_EP', '0', '0', 'Y', 'Visit', 18, 'V18', NULL);
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('Visit_Level_Information_EP', '0', '0', 'Y', 'Visit', 18, 'V18-CVD', NULL);
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('Visit_Level_Information_EP', '0', '0', 'Y', 'Visit', 18, 'V24', NULL);
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('Visit_Level_Information_EP', '0', '0', 'Y', 'Visit', 18, 'V24-CVD', NULL);
 
@@ -14,6 +18,8 @@ INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, Subp
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('Visit_Level_Information_EP', '0', '0', 'Y', 'Visit', 3, 'V06-CVD', NULL);
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('Visit_Level_Information_EP', '0', '0', 'Y', 'Visit', 3, 'V12', NULL);
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('Visit_Level_Information_EP', '0', '0', 'Y', 'Visit', 3, 'V12-CVD', NULL);
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('Visit_Level_Information_EP', '0', '0', 'Y', 'Visit', 3, 'V18', NULL);
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('Visit_Level_Information_EP', '0', '0', 'Y', 'Visit', 3, 'V18-CVD', NULL);
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('Visit_Level_Information_EP', '0', '0', 'Y', 'Visit', 3, 'V24', NULL);
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('Visit_Level_Information_EP', '0', '0', 'Y', 'Visit', 3, 'V24-CVD', NULL);
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('Visit_Level_Information_EP', '0', '0', 'Y', 'Visit', 3, 'VSA', NULL);
