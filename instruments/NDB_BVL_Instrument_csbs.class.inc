@@ -775,12 +775,12 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
         $this->_printHeaderCols(
             "emotion_eye_glaze",
             [
-             "Wind-up toy" => 15,
-             "Balloon"     => 13,
-             "Bubbles"     => 10,
-             "Jar"         => 10,
-             "Books"       => 10,
-             "Play"        => 10,
+             "Wind-up toy" => 0,
+             "Balloon"     => 0,
+             "Bubbles"     => 0,
+             "Jar"         => 0,
+             "Books"       => 0,
+             "Play"        => 0,
              "Score"       => 0
             ]
         );
@@ -809,8 +809,8 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
         //--------------------------
         // 3. Gaze point/following
         //--------------------------
-        $group[] = $this->form->createElement("advcheckbox", "q_3_gaze_point_following_2", null, null, null, array("unchecked", "checked"));
         $group[] = $this->form->createElement("static", null, null,"");
+        $group[] = $this->form->createElement("advcheckbox", "q_3_gaze_point_following_2", null, null, null, array("unchecked", "checked"));
         $group[] = $this->form->createElement("static", null, null,"");
         $group[] = $this->form->createElement("advcheckbox", "q_3_gaze_point_following_5", null, null, null, array("unchecked", "checked"));
         $group[] = $this->form->createElement("static", null, null,"");
@@ -847,13 +847,13 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
         $this->_printHeaderCols(
             "communication",
             [
-             "Wind-up toy" => 16,
-             "Balloon"     => 16,
-             "Bubbles"     => 16,
-             "Jar"         => 10,
-             "Books"       => 10,
-             "Play"        => 10,
-             "Score"       => 10
+             "Wind-up toy" => 0,
+             "Balloon"     => 0,
+             "Bubbles"     => 0,
+             "Jar"         => 0,
+             "Books"       => 0,
+             "Play"        => 0,
+             "Score"       => 0
             ]
         );
 
@@ -907,10 +907,10 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
         $this->_printHeaderCols(
             "gestures",
             [
-             "Wind-up toy (gives)"          => 16,
-             "Balloon (shows)"              => 16,
-             "Bubbles & Jar (pushes/pulls)" => 16,
-             "Books & Play (reaches)"       => 10,
+             "Wind-up toy<br>(gives)"          => 0,
+             "Balloon<br>(shows)"              => 0,
+             "Bubbles/Jar<br>(pushes/pulls)"   => 0,
+             "Books/Play<br>(reaches)"         => 0,
             ]
         );
 
@@ -928,17 +928,17 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
         $this->_printHeaderCols(
             "gestures2",
             [
-             "Wind-up toy (points)"       => 20,
-             "Balloon (waves)"            => 15,
-             "Bubbles & Jar (nods head)"  => 18,
-             "Books & Play (shakes head)" => 13,
+             "Wind-up toy<br>(points)"       => 0,
+             "Balloon<br>(waves)"            => 0,
+             "Bubbles/Jar<br>(nods head)"    => 0,
+             "Books/Play<br>(shakes head)"   => 0,
             ]
         );
         $group[] = $this->form->createElement("advcheckbox", "q_8_conventional_gestures_points", null, null, null, array("unchecked", "checked"));
         $group[] = $this->form->createElement("advcheckbox", "q_8_conventional_gestures_waves", null, null, null, array("unchecked", "checked"));
         $group[] = $this->form->createElement("advcheckbox", "q_8_conventional_gestures_nods_head", null, null, null, array("unchecked", "checked"));
         $group[] = $this->form->createElement("advcheckbox", "q_8_conventional_gestures_shakes_head", null, null, null, array("unchecked", "checked"));
-        $this->form->addGroup($group, "q_8_conventional_gestures_group2", "&emsp;Check all that child uses&emsp;&emsp;&emsp;&emsp;&emsp;", null, false);
+        $this->form->addGroup($group, "q_8_conventional_gestures_group2", "&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;", null, false);
         unset($group);
 
         // This adition of an empty group adds a blank line
@@ -951,13 +951,13 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
         $this->_printHeaderCols(
             "distgest",
             [
-             "Wind-up toy" => 16,
-             "Balloon"     => 16,
-             "Bubbles"     => 16,
-             "Jar"         => 10,
-             "Books"       => 10,
-             "Play"        => 10,
-             "Score"       => 10
+             "Wind-up toy" => 0,
+             "Balloon"     => 0,
+             "Bubbles"     => 0,
+             "Jar"         => 0,
+             "Books"       => 0,
+             "Play"        => 0,
+             "Score"       => 0
             ]
         );
 
@@ -987,12 +987,12 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
         $this->_printHeaderCols(
             "sounds",
             [
-             "Wind-up toy" => 16,
-             "Balloon"     => 16,
-             "Bubbles"     => 15,
-             "Jar"         => 10,
-             "Books"       => 10,
-             "Play"        => 10,
+             "Wind-up toy" => 0,
+             "Balloon"     => 0,
+             "Bubbles"     => 0,
+             "Jar"         => 0,
+             "Books"       => 0,
+             "Play"        => 0,
              "Score"       => 0
             ]
         );
@@ -1011,11 +1011,11 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
         $this->_printHeaderCols(
             "sounds_1",
             [
-             "/m/"    => 15,
-             "/n/"    => 20,
-             "/b|p/"  => 23,
-             "/d|t/"  => 17,
-             "/g|k/"  => 12,
+             "/m/"    => 12,
+             "/n/"    => 5,
+             "/b|p/"  => 10,
+             "/d|t/"  => 5,
+             "/g|k/"  => 5,
              "Score"  => 0
             ]
         );
@@ -1036,12 +1036,12 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
         $this->_printHeaderCols(
             "sounds_2",
             [
-             "/w/"              => 14,
-             "/l/"              => 20,
-             "&nbsp;/y/&nbsp;"  => 23,
-             "&nbsp;/s/&nbsp;"  => 17,
-             "&nbsp;&nbsp;/sh/&nbsp;" => 12,
-             "&emsp;&emsp;&emsp;"            => 0,
+             "/w/"                => 15,
+             "/l/"                => 5,
+             "/y/"                => 5,
+             "/s/"                => 5,
+             "/sh/"               => 5,
+             "&emsp;&emsp;&emsp;" => 0,
             ]
         );
         $group[] = $this->form->createElement("advcheckbox", "q_11_inventory_of_consonants_w", null, null, null, array("unchecked", "checked"));
@@ -1049,7 +1049,7 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
         $group[] = $this->form->createElement("advcheckbox", "q_11_inventory_of_consonants_y", null, null, null, array("unchecked", "checked"));
         $group[] = $this->form->createElement("advcheckbox", "q_11_inventory_of_consonants_s", null, null, null, array("unchecked", "checked"));
         $group[] = $this->form->createElement("advcheckbox", "q_11_inventory_of_consonants_sh", null, null, null, array("unchecked", "checked"));
-        $this->form->addGroup($group, "q_11_inventory_of_consonants_group2", "&emsp;&emsp;Check all that child uses&emsp;", null, false);
+        $this->form->addGroup($group, "q_11_inventory_of_consonants_group2", "&emsp;", null, false);
         unset($group);
 
         //---------------------------------------//
@@ -1072,12 +1072,12 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
         $this->_printHeaderCols(
             "words",
             [
-             "Wind-up toy" => 16,
-             "Balloon"     => 16,
-             "Bubbles"     => 16,
-             "Jar"         => 18,
-             "Books"       => 7,
-             "Play"        => 8,
+             "Wind-up toy" => 0,
+             "Balloon"     => 5,
+             "Bubbles"     => 5,
+             "Jar"         => 10,
+             "Books"       => 3,
+             "Play"        => 5,
              "Raw Score"   => 0
             ]
         );
@@ -1151,7 +1151,7 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
         $group[] = $this->form->createElement("static", null, null, null);
         $group[] = $this->form->createElement("static", null, null, null);
         $group[] = $this->form->createElement("static", null, null, null);
-        $this->form->addGroup($group, "words_weighted_group", "&emsp;&emsp;<u>Words weighted score</u>:", null, false);
+        $this->form->addGroup($group, "words_weighted_group", "<u>Words weighted score</u>:", null, false);
         unset($group);
         $this->form->addFormRule(array($this,'validatePage1'));
     }
@@ -1322,12 +1322,12 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
         $this->_printHeaderCols(
             "object_use_1",
             [
-             "puts in"  => 10,
-             "puts on"  => 10,
-             "drinks with bottle"  => 10,
-             "drinks with cup"  => 10,
-             "hugs"  => 10,
-             "kisses" => 10
+             "puts in"             => 0,
+             "puts on"             => 0,
+             "drinks with bottle"  => 0,
+             "drinks with cup"     => 0,
+             "hugs"                => 0,
+             "kisses"              => 0
             ]
         );
 
@@ -1341,21 +1341,21 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
         $group[] = $this->form->createElement("advcheckbox", "q_17_action_schemes_hugs", null, null, null, array("unchecked", "checked"));
         $group[] = $this->form->createElement("advcheckbox", "q_17_action_schemes_kisses", null, null, null, array("unchecked", "checked"));
 
-        $this->form->addGroup($group, "q_17_action_schemes_group_1", "17. Inventory of action schemes", null, false);
+        $this->form->addGroup($group, "q_17_action_schemes_group_1", "17. Inventory of action<br>schemes", null, false);
         unset($group);
 
         $this->form->addElement("header", null, "");
         $this->_printHeaderCols(
             "object_use_2",
             [
-             "feeds with utensils"  => 5,
-             "feeds with bowl"  => 5,
-             "stirs"  => 5,
-             "scoops"  => 5,
-             "pours"  => 5,
-             "other" => 5,
-             "(if other, specify)" => 5,
-             "none" => 5
+             "feeds with utensils"  => 0,
+             "feeds with bowl"  => 0,
+             "stirs"  => 0,
+             "scoops"  => 0,
+             "pours"  => 0,
+             "other" => 0,
+             "(if other, specify)" => 0,
+             "none" => 0
             ]
         );
 
@@ -1371,7 +1371,7 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
         $group[] = $this->form->createElement("text", "q_17_action_schemes_other_specify");
         $group[] =& $this->form->createElement("advcheckbox", "q_17_action_schemes_none", null, null, null, array("unchecked", "checked"));
 
-        $this->form->addGroup($group, "q_17_action_schemes_group_2", "&emsp;check all that child uses", null, false);
+        $this->form->addGroup($group, "q_17_action_schemes_group_2", "&emsp;", null, false);
         unset($group);
 
         $this->XINRegisterRule("q_17_action_schemes_other_specify", array("q_17_action_schemes_other{@}=={@}checked"), "Must specify other", "q_17_action_schemes_group_2");
