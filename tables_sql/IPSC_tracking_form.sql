@@ -12,8 +12,10 @@ CREATE TABLE `IPSC_tracking_form` (
     `IPSC_consent_date` date default NULL,
     `blood_draw_location` enum('site','take_home_kit_sent') default NULL,
     `fedex_tracking_number` text default NULL,
-    `was_the_blood_draw_successful` enum('yes','no') default NULL,
+    `was_the_blood_draw_successful` enum('yes','no','no_blood_draw_scheduled','blood_draw_not_occurred') default NULL,
     `blood_draw_date` date default NULL,
+    `ask_about_interview` enum('not_yet','yes') default NULL,
+    `family_participate` enum('yes','no','na') default NULL,
     `ipsc_notes` text default NULL,
     PRIMARY KEY  (`CommentID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
