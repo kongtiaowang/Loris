@@ -84,6 +84,8 @@ CREATE TABLE `ADOS2_Toddler_Module`
     `d2_weighted`                                        varchar(255)          DEFAULT NULL,
     `d5_weighted`                                        varchar(255)          DEFAULT NULL,
     `severity_score_lookup`                              varchar(255)          DEFAULT NULL,
+    `ADOS_SA_CSS`                                        varchar(10)           DEFAULT NULL,
+    `ADOS_RRB_CSS`                                       varchar(10)           DEFAULT NULL,
     PRIMARY KEY (`CommentID`)
 ) ENGINE = MyISAM
   DEFAULT CHARSET = latin1;
