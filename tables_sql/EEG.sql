@@ -100,6 +100,8 @@ CREATE TABLE `EEG` (
 `standard_paradigm_order`              enum('y','n'),
 `note_6_2`                             text,
 `note_6_2_status`                      enum('not_answered'),
+`final_q_1`                            varchar(255),
+`final_q_2`                            date,
 
 PRIMARY KEY  (`CommentID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
