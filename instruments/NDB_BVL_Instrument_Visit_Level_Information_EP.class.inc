@@ -96,7 +96,7 @@ class NDB_BVL_Instrument_Visit_Level_Information_EP extends NDB_BVL_Instrument
                                          );
 
         // required fields for data entry completion status
-        $this->_requiredElements = array("q1");
+        $this->_requiredElements = array("q1_visit");
 
         // setup the form
         $this->_setupForm();
