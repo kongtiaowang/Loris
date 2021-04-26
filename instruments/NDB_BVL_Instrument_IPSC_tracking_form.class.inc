@@ -21,44 +21,43 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/IBIS/
  */
-
 class NDB_BVL_Instrument_IPSC_tracking_form extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
 
-    var $ValidityEnabled  = false;
+    var $ValidityEnabled = false;
     var $ValidityRequired = false;
 
     /**
      * sets up basic data, such as the LorisForm object, and so on.
      *
-     * @param  string $commentID the CommentID identifying the data to load
-     * @param  string $page      if a multipage form, the page to show
+     * @param string $commentID the CommentID identifying the data to load
+     * @param string $page if a multipage form, the page to show
      * @return void
      * @access public
      */
     function setup(?string $commentID = null, ?string $page = null): void
     {
         $this->formType = "XIN";
-        $this->form     = new LorisForm('test_form');
-        $this->page     = $page;
+        $this->form = new LorisForm('test_form');
+        $this->page = $page;
 
         // set the object properties
         $this->testName = "IPSC_tracking_form";           // test_names.Test_name
-        $this->table    = 'IPSC_tracking_form';             // name of table containing
+        $this->table = 'IPSC_tracking_form';             // name of table containing
 
         // data keyed by commentID
         $this->commentID = $commentID;
 
-        $config            = NDB_Config::singleton();
+        $config = NDB_Config::singleton();
         $this->dateOptions = array(
-                              'language'         => 'en',
-                              'format'           => 'YMd',
-                              'minYear'          => $config->getSetting('startYear'),
-                              'maxYear'          => $config->getSetting('endYear'),
-                              'addEmptyOption'   => true,
-                              'emptyOptionValue' => null,
-                             );
+            'language' => 'en',
+            'format' => 'YMd',
+            'minYear' => $config->getSetting('startYear'),
+            'maxYear' => $config->getSetting('endYear'),
+            'addEmptyOption' => true,
+            'emptyOptionValue' => null,
+        );
 
         // setup the form
         $this->_setupForm();
@@ -100,7 +99,7 @@ class NDB_BVL_Instrument_IPSC_tracking_form extends NDB_BVL_Instrument
 
         // If the form has not been filled out yet, default value for 'recruiter_asked_blood_draw'
         // will be null: set it to 'not_yet_asked' in this case
-        $modifiedDefaults['recruiter_asked_blood_draw'] 
+        $modifiedDefaults['recruiter_asked_blood_draw']
             = $modifiedDefaults['recruiter_asked_blood_draw'] ?? 'not_yet_asked';
 
         return $modifiedDefaults;
@@ -114,8 +113,8 @@ class NDB_BVL_Instrument_IPSC_tracking_form extends NDB_BVL_Instrument
             "recruiter_asked_blood_draw",
             '1. Did the recruiter ask about blood draw?',
             array(
-             'yes'           => 'Yes',
-             'not_yet_asked' => 'Not yet asked',
+                'yes' => 'Yes',
+                'not_yet_asked' => 'Not yet asked',
             )
         );
 
@@ -123,8 +122,8 @@ class NDB_BVL_Instrument_IPSC_tracking_form extends NDB_BVL_Instrument
             "did_family_agree_to_project",
             '2. Did family agree to the project?',
             array(
-             'yes' => 'Yes',
-             'no'  => 'No',
+                'yes' => 'Yes',
+                'no' => 'No',
             )
         );
 
@@ -134,9 +133,9 @@ class NDB_BVL_Instrument_IPSC_tracking_form extends NDB_BVL_Instrument
             "blood_draw_location",
             '4. Blood draw location',
             array(
-             null                 => '',
-             'site'               => 'SITE',
-             'take_home_kit_sent' => 'TAKE HOME KIT SENT ',
+                null => '',
+                'site' => 'SITE',
+                'take_home_kit_sent' => 'TAKE HOME KIT SENT ',
             )
         );
 
@@ -146,12 +145,29 @@ class NDB_BVL_Instrument_IPSC_tracking_form extends NDB_BVL_Instrument
             "was_the_blood_draw_successful",
             '6. Was the blood draw successful?',
             array(
-             'yes' => 'Yes',
-             'no'  => 'No',
+                'yes' => 'Yes',
+                'no' => 'No',
+                'no_blood_draw_scheduled' => 'No blood draw has been scheduled',
+                'blood_draw_not_occurred' => 'Blood draw scheduled but not yet occurred'
             )
         );
 
         $this->addBasicDate('blood_draw_date', '7. Blood draw date', $this->dateOptions);
+
+        $this->addSelect('ask_about_interview',
+            '8. Did the recruiter ask about the 1-hr phone interview? Note: can do interview even if refuse blood draw',
+            array(
+                'not_yet' => 'Not yet asked',
+                'yes' => 'Yes'
+            ));
+
+        $this->addSelect('family_participate',
+            '9. Did family agree to participate in the interview?',
+            array(
+                'yes' => 'Yes',
+                'no' => 'No',
+                'na' => 'N/A',
+            ));
 
         $this->addBasicTextArea("ipsc_notes", "Notes:");
 
@@ -177,35 +193,35 @@ class NDB_BVL_Instrument_IPSC_tracking_form extends NDB_BVL_Instrument
     function _save(array $values): void
     {
         // clear any fields starting with __
-        foreach (array_keys($values) AS $key) {
+        foreach (array_keys($values) as $key) {
             if (strpos($key, '__') === 0) {
                 unset($values[$key]);
             }
             $values = Utility::nullifyEmpty($values, $key);
         }
 
-        $db        =& Database::singleton();
-        $candidate = Candidate::singleton($this->commentID);
-        $PSCID     = $candidate-> getPSCID();
-        $centerID  = $candidate->getData('RegistrationCenterID');
+        $db =& Database::singleton();
+        $candidate = Candidate::singleton((int)$this->commentID);
+        $PSCID = $candidate->getPSCID();
+        $centerID = $candidate->getData('RegistrationCenterID');
 
         if ($values['blood_draw_date'] != null && $values['blood_draw_date'] != '') {
-            $blood_draw_date =date_create($values['blood_draw_date']);
+            $blood_draw_date = date_create($values['blood_draw_date']);
 
             if ($centerID == 1) {
-                $notification_reciever_email ='sruthy.mcin@gmail.com,sruthymathew369@gmail.com';
+                $notification_reciever_email = 'sruthy.mcin@gmail.com,sruthymathew369@gmail.com';
             } else {
-                $notification_reciever_email ='roseg@email.unc.edu,jason_stein@med.unc.edu,abeltran@email.unc.edu';
+                $notification_reciever_email = 'roseg@email.unc.edu,jason_stein@med.unc.edu,abeltran@email.unc.edu';
             }
 
-            $msg_data['PSCID']           = $PSCID;
+            $msg_data['PSCID'] = $PSCID;
             $msg_data['blood_draw_date'] = date_format($blood_draw_date, "F d, Y");
-            $old_blood_draw_date         = $db->pselectOne(
+            $old_blood_draw_date = $db->pselectOne(
                 "SELECT blood_draw_date FROM IPSC_tracking_form WHERE CommentID=:cid",
                 array('cid' => $this->getCommentID())
             );
 
-            if ($values['blood_draw_date']!=$old_blood_draw_date) {
+            if ($values['blood_draw_date'] != $old_blood_draw_date) {
                 Email::send($notification_reciever_email, 'IPSC_tracking_blood_draw_notification.tpl', $msg_data, "", "IBIS Team <noreply@ibis.loris.ca>");
             }
         }
