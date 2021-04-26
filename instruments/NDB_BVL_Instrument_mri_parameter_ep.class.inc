@@ -18,6 +18,54 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
     var $ValidityEnabled  = false;
     var $ValidityRequired = false;
 
+    const YES_NO_OPTIONS = array(
+                               ""           => "",
+                               "1"          => "Yes",
+                               "0"           => "No",
+                              );
+
+    const PASS_FAIL = array(
+                               ""           => "",
+                               "1"          => "Console Pass",
+                               "0"           => "Console Fail",
+                              );
+
+    const FINGER = array(
+                               ""                      => "",
+                               "right_finger"          => "Right Finger",
+                               "left_finger"           => "Left Finger",
+                               "right_toe"             => "Right Toe",
+                               "left_toe"              => "Left Toe",                               
+                              );                
+    
+
+    
+    const T1_T2    = array(
+                               ""           => "",
+                               "t1"         => "T1w",
+                               "t2"         => "T2w",
+                              );      
+
+    const R1_R9    = array(
+                               ""           => "",
+                               "1"         => "1",
+                               "2"         => "2",
+                               "3"         => "3",
+                               "4"         => "4",
+                               "5"         => "5",
+                               "6"         => "6",
+                               "7"         => "7",
+                               "8"         => "8",
+                               "9"         => "9",                                                                                                                                                                                                                        
+                              );                   
+
+    const complete_partial_none    = array(
+                               ""                => "",
+                               "1"        => "Complete",
+                               "0"         => "Partial",
+                               "none"      => "None",                                                                                                                                                                                                                     
+                              );  
+
     private $yes_no = array(
             null => '',
             '0'  => 'No',
@@ -77,7 +125,9 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
                 ['Name' => 'mri_parameter_ep_page2', 'Description' => 'Structural'],
                 ['Name' => 'mri_parameter_ep_page3', 'Description' => 'BOLD'],
                 ['Name' => 'mri_parameter_ep_page4', 'Description' => 'DTI'],
-                ['Name' => 'mri_parameter_ep_page5', 'Description' => 'BOLD+']];
+                ['Name' => 'mri_parameter_ep_page5', 'Description' => 'BOLD+'],
+                ['Name' => 'mri_parameter_ep_page6', 'Description' => 'CSF Flow']];
+
     }
 
 
@@ -257,6 +307,8 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
             unset($group);
             $i ++;
         }
+        $this->form->addElement("textarea", "page0_comment", "Comments:", array('cols'=>25, 'rows'=>4));
+        $this->XINRegisterRule("page0_comment", array("page0_comment{@}=={@}NEVER_REQUIRED"));
     }
 
 
@@ -267,7 +319,53 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
      */
     function _page1()
     {
-        $this->addLabel('Record');
+
+        $option1 = [null =>'','By_Specialist'=>'By Specialist','MR_Tech'=>'MR Tech','Parent_or_Guardian'=>'Parent or Guardian'];
+        $option2 = [null =>'','full_protocol_acquired'=>'Full Protocol Acquired',
+                              'only_core_acquired'=>'Only Core Acquired',
+                              'partial_core_acquired'=>'Partial Core Acquired',
+                              'none_core_acquired'=>'Only Core Acquired',
+                              ];
+        $option3 = [null =>'','subject_woke_up'=>'Subject woke up',
+                              'ran_out_of_time'=>'Ran out of time',
+                              'subject_did_not_sleep'=>'Subject did not sleep',
+                              'none_core_acquired'=>'Scanner issues',
+                              'family_canceled'=>'Family canceled',
+                              'family_declined_2nd_attempt'=>'Family declined 2nd attempt',
+                              ];        
+
+        $this->form->addElement('header', null, "Record");
+
+        $this->addLabel('PPE worn during the session?');
+
+
+        $this->form->addElement('select','face_mask','Face Mask:',$option1);
+                $this->XINRegisterRule("face_mask", array("face_mask{@}=={@}NEVER_REQUIRED"));
+
+        $this->form->addElement('select','face_shield','Face Shield:',$option1);
+                $this->XINRegisterRule("face_shield", array("face_shield{@}=={@}NEVER_REQUIRED"));
+
+        $this->form->addElement("textarea", "other_comment", "Comments:", array('cols'=>25, 'rows'=>4));
+        $this->XINRegisterRule("other_comment", array("other_comment{@}=={@}NEVER_REQUIRED"));
+
+        $this->addLabel('Post-Session');
+
+        $group = [];
+        $group[] = $this->form->createElement('static', null, null, 'Overall Success');
+        $group[] = $this->form->createElement('static', null, null, 'If partial/none');
+        $this->form->addGroup($group, 'sec1_header', '', $this->_GUIDelimiter, FALSE);
+        unset($group);
+
+                $group[] = $this->createSelect("overall_success", '', $option2);
+                $this->not_required_field("overall_success");
+                $group[] = $this->createSelect("if_partial_or_none", '', $option3);
+                $this->not_required_field("if_partial_or_none");
+
+
+            $this->form->addGroup($group, "page1_group", '', $this->_GUIDelimiter, FALSE);
+            unset($group);
+
+
 
         $grp = ["study" => 'Study:',
                 "orientation" => 'Orientation:',
@@ -279,26 +377,119 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
         }
 
         $this->addTextElement(
-            'time_enter',
-            'Time entered room:'
+            'height',
+            'Height:'
         );
 
-        $group = array();
-        $group[] = $this->form->createElement('static', null, null, 'Scan start:');
-        $group[] = $this->form->createElement('static', null, null, 'Scan end:');
-        $this->form->addGroup($group, 'sec1_header', '', $this->_GUIDelimiter, FALSE);
-        unset($group);
+                $this->XINRegisterRule("height", array("height{@}=={@}NEVER_REQUIRED"));
 
-        $grp = ['start', 'end'];
-        for ($i = 0; $i < 4; $i++) {
-            $group = array();
-            foreach ($grp as $key) {
-                $group[] = $this->createText("$key{$i}");
-                $this->not_required_field("$key{$i}");
-            }
-            $this->form->addGroup($group, "sec1_row{$i}", '', $this->_GUIDelimiter, FALSE);
+        $this->addTextElement(
+            'weight',
+            'Weight:'
+        );
+                $this->XINRegisterRule("weight", array("weight{@}=={@}NEVER_REQUIRED"));
+
+
+        $this->addTextElement(
+            'head_circumference',
+            'Head Circumference:'
+        );
+                $this->XINRegisterRule("head_circumference", array("head_circumference{@}=={@}NEVER_REQUIRED"));
+
+
+        $this->addTextElement(
+            'mr_tech',
+            'MR Tech:'
+        );
+
+                $this->XINRegisterRule("mr_tech", array("mr_tech{@}=={@}NEVER_REQUIRED"));
+
+
+        $this->addTextElement(
+            'behavioral_specialist',
+            'Behavioral specialist:'
+        );
+
+                $this->XINRegisterRule("behavioral_specialist", array("behavioral_specialist{@}=={@}NEVER_REQUIRED"));
+
+
+        $this->form->addElement('select','Medications','Medications:',self::YES_NO_OPTIONS);
+
+                $this->XINRegisterRule("Medications", array("Medications{@}=={@}NEVER_REQUIRED"));
+
+        $this->_displayHeadersScanSession();
+        for ($i = 1; $i < 5; $i++) {
+            $group[] = $this->createLabel($i . ".");
+            $group[] = $this->createSelect(
+                "record_scan_done_$i",
+                "",
+                array(
+                    null => "",
+                    "1" => "Yes",
+                    "0" => "No"
+                )
+            );
+            $group[] = $this->createDate(
+                "record_scan_date_$i",
+                ""
+            );
+            $group[] = $this->form->createElement(
+                "time",
+                "record_time_enter_mri_room_$i"
+            );
+            $group[] = $this->form->createElement(
+                "time",
+                "record_scan_start_time_$i"
+            );
+
+            $group[] = $this->form->createElement(
+                "time",
+                "record_scan_end_time_$i"
+            );
+
+            $this->form->addGroup(
+                $group,
+                "scan_group_table{$i}",
+                null,
+                $this->_GUIDelimiter,
+                false
+            );
             unset($group);
-        }
+                        $this->XINRegisterRule(
+                "record_scan_done_{$i}",
+                array("record_scan_done_{$i}{@}=={@}NEVER_REQUIRED"), // rule
+                "Not Required.", // message
+                "scan_group_table{$i}" // group [if field is a part of a group]
+            );
+            $this->XINRegisterRule(
+                "record_scan_date_$i",
+                array("record_scan_done_$i{@}=={@}1"),
+                "All fields are required if corresponding session is marked as done.",
+                "scan_group_table{$i}"
+            );
+            $this->XINRegisterRule(
+                "record_time_enter_mri_room_$i",
+                array("scan_done_$i{@}=={@}1"),
+                "All fields are required if corresponding session is marked as done.",
+                "scan_group_table{$i}"
+            );
+            $this->XINRegisterRule(
+                "record_scan_start_time_$i",
+                array("scan_done_$i{@}=={@}1"),
+                "All fields are required if corresponding session is marked as done.",
+                "scan_group_table{$i}"
+            );
+
+            $this->XINRegisterRule(
+                "record_scan_end_time_$i",
+                array("scan_done_$i{@}=={@}1"),
+                "All fields are required if corresponding session is marked as done.",
+                "scan_group_table{$i}"
+            );
+        }    
+    
+                $this->form->addElement("textarea", "page1_comment", "Comments:", array('cols'=>25, 'rows'=>4));
+                $this->XINRegisterRule("page1_comment", array("page1_comment{@}=={@}NEVER_REQUIRED"));
     }
 
 
@@ -312,8 +503,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
         $this->addLabel('Structural');
 
         $group = [];
-        $group[] = $this->form->createElement('static', null, null, 'T1');
-        $group[] = $this->form->createElement('static', null, null, 'T2');
+        $group[] = $this->form->createElement('static', null, null, 'Scan Type');
         $group[] = $this->form->createElement('static', null, null, 'Anterior');
         $group[] = $this->form->createElement('static', null, null, 'Superior');
         $group[] = $this->form->createElement('static', null, null, 'Anterior / Superior');
@@ -321,13 +511,13 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
         $this->form->addGroup($group, 'sec1_header', '', $this->_GUIDelimiter, FALSE);
         unset($group);
 
-        $grp1 = ['t1_', 't2_'];
+        $grp1 = ['s_'];
         $grp2 = ['anterior', 'superior', 'ant_d_sup'];
 
         for ($i = 0; $i < $this->pg2_number_of_lines; $i++) {
 
             foreach ($grp1 as $key) {
-                $group[] = $this->createSelect("$key{$i}", '', $this->yes_no);
+                $group[] = $this->createSelect("$key{$i}", '', self::T1_T2);
                 $this->not_required_field("$key{$i}");
             }
 
@@ -336,7 +526,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
                 $this->not_required_field("$key{$i}");
             }
 
-            $group[] = $this->createSelect("s_pass{$i}", '', $this->yes_no);
+            $group[] = $this->createSelect("s_pass{$i}", '', self::PASS_FAIL);
             $this->not_required_field("s_pass{$i}");
 
             $this->form->addGroup($group, "sec2_row{$i}", '', $this->_GUIDelimiter, FALSE);
@@ -345,11 +535,22 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
 
         for ($i = 1; $i < 3; $i ++) {
             $this->addSelect("t{$i}_pass", "T{$i} Passed", $this->yes_no);
-            $this->form->addRule("t{$i}_pass", "T{$i} Passed must be set", 'required');
+           // $this->form->addRule("t{$i}_pass", "T{$i} Passed must be set", 'required');
         }
+
+            $this->addSelect("t1w_pass", "T1w total attempts", self::R1_R9);
+            $this->XINRegisterRule("t1w_pass", array("t1w_pass{@}=={@}NEVER_REQUIRED"));
+
+            $this->addSelect("t2w_pass", "T2w total attempts", self::R1_R9);
+            $this->XINRegisterRule("t2w_pass", array("t2w_pass{@}=={@}NEVER_REQUIRED"));
+
+
 
         $this->addLabel('Fails if Ant/Sup > 2.5; needs one T1 and one T2 to pass.');
         $this->form->addFormRule(array(&$this, 'constraint_rules_pg2'));
+
+         $this->form->addElement("textarea", "page2_comment", "Comments:", array('cols'=>25, 'rows'=>4));
+         $this->XINRegisterRule("page2_comment", array("page2_comment{@}=={@}NEVER_REQUIRED"));
     }
 
 
@@ -391,7 +592,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
             }
         }
 
-        $grp = ['t1_', 't2_'];
+        $grp = ['s_'];
 
         $cnt = [];
         foreach ($grp as $key) {
@@ -400,18 +601,18 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
 
         for ($i = 0; $i < $this->pg2_number_of_lines; $i++) {
             foreach ($grp as $key) {
-                if ($values["$key{$i}"] == '1') {
+                if ($values["$key{$i}"] == 't1') {
                     $cnt[$key] ++;
                 }
             }
         }
         $already_failed = false;
-        if ($values["t1_pass"] == '1' && $cnt['t1_'] == 0) {
+        if ($values["t1_pass"] == '1' && $cnt['s_'] == 0) {
             $errors["t1_pass"] = 'Needs one T1 to pass.';
             $already_failed = true;
         }
 
-        if ($values["t2_pass"] == '1' && $cnt['t2_'] == 0) {
+        if ($values["t2_pass"] == '1' && $cnt['s_'] == 0) {
             if ($already_failed) {
                 foreach ($grp as $key) {
                     $errors["{$key}pass"] = 'Needs one T1 and one T2 to pass.';
@@ -467,7 +668,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
         $i = 0;
         foreach ($this->bold_firmm_grp as $key => $label) {
             $group = array();
-            $group[] = $this->createSelect("{$key}run{$i}", '', $this->yes_no);
+            $group[] = $this->createSelect("{$key}run{$i}", '', self::complete_partial_none);
             $this->not_required_field("{$key}run{$i}");
 
             $group[] = $this->form->createElement('static', null, null, $label);
@@ -489,9 +690,14 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
 
         $this->addSelect('bold_pass', 'BOLD Passed', $this->yes_no);
         //$this->form->addRule("bold_pass", "BOLD Passed must be set", 'required');
+        
+        $this->addSelect("bold_attempts", "Bold attempts", self::R1_R9);
 
         $this->addLabel('PE direction will default to L >> R. Please set to A >> P, then edit the angle to set P >> A');
         $this->form->addFormRule(array(&$this, 'constraint_rules2'));
+
+        $this->form->addElement("textarea", "page3_comment", "Comments:", array('cols'=>25, 'rows'=>4));
+        $this->XINRegisterRule("page3_comment", array("page3_comment{@}=={@}NEVER_REQUIRED"));
     }
 
 
@@ -544,6 +750,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
         $group[] = $this->form->createElement('static', null, null, '');
         $group[] = $this->form->createElement('static', null, null, 'Ran?');
         $group[] = $this->form->createElement('static', null, null, '');
+        $group[] = $this->form->createElement('static', null, null, 'Total number of attempts');
         $group[] = $this->form->createElement('static', null, null, 'slices that failed');
         $group[] = $this->form->createElement('static', null, null, 'Pass?');
         $this->form->addGroup($group, 'sec4_header', '', $this->_GUIDelimiter, FALSE);
@@ -553,14 +760,19 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
         foreach ($this->dti_grp as $key => $label) {
             $group = array();
             $group[] = $this->form->createElement('static', null, null, $label[0]);
-            $group[] = $this->createSelect("{$key}run{$i}", '', $this->yes_no);
+            $group[] = $this->createSelect("{$key}run{$i}", '', self::complete_partial_none);
             $this->not_required_field("{$key}run{$i}");
 
+
             $group[] = $this->form->createElement('static', null, null, $label[1]);
+            $group[] = $this->createText("{$key}try{$i}", '');
+            $this->not_required_field("{$key}try{$i}");
+
             $group[] = $this->createText("{$key}fail{$i}", '');
             $this->not_required_field("{$key}fail{$i}");
 
-            $group[] = $this->createSelect("{$key}pass{$i}", '', $this->yes_no);
+
+            $group[] = $this->createSelect("{$key}pass{$i}", '', self::PASS_FAIL);
             $this->not_required_field("{$key}pass{$i}");
 
             $this->form->addGroup($group, "sec4_row{$i}", "", $this->_GUIDelimiter, FALSE);
@@ -571,6 +783,9 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
         $this->addLabel('Verify phase encode direction : should be AP for both AP and APinv sequences');
         $this->addSelect('dti_pass', 'DTI Passed', $this->yes_no);
         $this->addLabel('PE direction will default to L >> R. Please set to A >> P, then edit the angle to set P >> A');
+
+        $this->form->addElement("textarea", "page4_comment", "Comments:", array('cols'=>25, 'rows'=>4));
+        $this->XINRegisterRule("page4_comment", array("page4_comment{@}=={@}NEVER_REQUIRED"));
     }
 
 
@@ -618,7 +833,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
         foreach ($this->bold_plus_firmm_grp as $key => $label) {
             $group = array();
 
-            $group[] = $this->createSelect("{$key}run{$i}", '', $this->yes_no);
+            $group[] = $this->createSelect("{$key}run{$i}", '', self::complete_partial_none);
             $this->not_required_field("{$key}run{$i}");
 
             $group[] = $this->form->createElement('static', null, null, $label);
@@ -628,7 +843,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
             $group[] = $this->createText("{$key}02_{$i}", '');
             $this->not_required_field("{$key}02_{$i}");
 
-            $group[] = $this->createSelect("{$key}pass_{$i}", '', $this->yes_no);
+            $group[] = $this->createSelect("{$key}pass_{$i}", '', self::PASS_FAIL);
             $this->not_required_field("{$key}pass_{$i}");
 
             $this->form->addGroup($group, "sec5_2_row{$i}", '', $this->_GUIDelimiter, FALSE);
@@ -636,7 +851,50 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
             $i++;
         }
         $this->addLabel('Please set to A >> P, then edit the angle to set P >> A');
+
+        $this->form->addElement("textarea", "page5_comment", "Comments:", array('cols'=>25, 'rows'=>4));
+        $this->XINRegisterRule("page5_comment", array("page5_comment{@}=={@}NEVER_REQUIRED"));
     }
+
+    /**
+     * Page 6
+     *
+     * @return void
+     */
+    function _page6()
+    {
+        $this->form->addElement('header', null, "CSF Flow");
+
+
+        $group = [];
+        $group[] = $this->form->createElement('static', null, null, 'Run?');
+        $group[] = $this->form->createElement('static', null, null, 'CSF flow total number of attempts');
+        $group[] = $this->form->createElement('static', null, null, 'Pass?');
+        $this->form->addGroup($group, 'sec1_header', '', $this->_GUIDelimiter, FALSE);
+        unset($group);
+
+                $group[] = $this->createSelect("csf_run", '', self::complete_partial_none);
+                $this->not_required_field("csf_scan_type");
+                $group[] = $this->createText("csf_attempts","");
+                $this->not_required_field("csf_attempts");
+                $group[] = $this->createSelect("csf_pass", '', self::PASS_FAIL);
+                $this->not_required_field("csf_pass");
+
+            $this->form->addGroup($group, "csf_flow", '', $this->_GUIDelimiter, FALSE);
+            unset($group);
+                    
+         $this->form->addElement("select", "pulse", "Pulse Ox replacement:", self::FINGER);
+
+         $this->form->addElement("text", "hr_range", "HR at start/end:");
+         
+        $this->not_required_field("hr_range");
+
+
+         $this->form->addElement("textarea", "page6_comment", "Comments:", array('cols'=>25, 'rows'=>4));
+         $this->XINRegisterRule("page6_comment", array("page6_comment{@}=={@}NEVER_REQUIRED"));
+    }
+
+
 
     private function not_required_field($key) {
         return $this->XINRegisterRule(
@@ -665,5 +923,52 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
 
         // save scores
         $db->update($this->table, $scores, array('CommentID'=>$this->getCommentID()));
+    }
+
+    function _displayHeadersScanSession() {
+        $group[] = $this->form->createElement(
+            "static",
+            null,
+            null,
+            ""
+        );
+        $group[] = $this->form->createElement(
+            "static",
+            null,
+            null,
+            "<b>Session Done<b>"
+        );
+        $group[] = $this->form->createElement(
+            "static",
+            null,
+            null,
+            "<b>Session Date<b>"
+        );
+        $group[] = $this->form->createElement(
+            "static",
+            null,
+            null,
+            "<b>Time Enter<br>MRI Room(HH:MM)<b>"
+        );
+        $group[] = $this->form->createElement(
+            "static",
+            null,
+            null,
+            "<b>Scan Start Time(HH:MM)</b>"
+        );
+        $group[] = $this->form->createElement(
+            "static",
+            null,
+            null,
+            "<b>Scan End Time(HH:MM)</b>"
+        );
+        $this->form->addGroup(
+            $group,
+            "scan_session_headers",
+            null,
+            $this->_GUIDelimiter,
+            false
+        );
+        unset($group);
     }
 }
