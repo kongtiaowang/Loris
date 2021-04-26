@@ -293,6 +293,18 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
         $this->addSelect('standard_paradigm_order', 'Standard Paradigm Order Used?', self::YES_NO);
 
         $this->addTextAreaElement("note_6_2", "Order Deviations Notes:");
+
+        $this->form->addElement('header', null, "<div ".self::$cssStyle2." >Final Questions</div>");
+
+        $this->form->addElement('text','final_q_1',"Who, from the subject's site, has read the EEG QC Form for this subject: ");
+
+        $this->XINRegisterRule("final_q_1", array("final_q_1{@}=={@}NEVER_REQUIRED"));
+        
+        $this->form->addElement("date", "final_q_2", 'What date was the EEG QC Form reviewed?', $this->dateOptions);
+        
+        $this->XINRegisterRule("final_q_2", array("final_q_2{@}=={@}NEVER_REQUIRED"));
+
+
     }
 
     /**
