@@ -1,0 +1,3 @@
+ALTER TABLE `ADOS2_Toddler_Module`
+    ADD COLUMN `ADOS_SA_CSS`  varchar(10) DEFAULT NULL AFTER `severity_score_lookup`,
+    ADD COLUMN `ADOS_RRB_CSS` varchar(10) DEFAULT NULL AFTER `ADOS_SA_CSS`;
