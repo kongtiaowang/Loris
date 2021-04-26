@@ -208,9 +208,75 @@ class NDB_BVL_Instrument_IBIS extends NDB_BVL_Instrument
                 elseif (in_array($ADOS_social_affect_total, range(15,20))) {$ADOS_SA_CSS = 10;}
             }
         } elseif ($ADOS_mod == "fewNoWords") {
-
+            if ($age == 2) {
+                if (in_array($ADOS_social_affect_total, range(0,3))) {$ADOS_SA_CSS = 1;}
+                elseif (in_array($ADOS_social_affect_total, range(4,5))) {$ADOS_SA_CSS = 2;}
+                elseif (in_array($ADOS_social_affect_total, range(6,8))) {$ADOS_SA_CSS = 3;}
+                elseif ($ADOS_social_affect_total == 9) {$ADOS_SA_CSS = 4;}
+                elseif (in_array($ADOS_social_affect_total, range(10,13))) {$ADOS_SA_CSS = 5;}
+                elseif (in_array($ADOS_social_affect_total, range(14,16))) {$ADOS_SA_CSS = 6;}
+                elseif ($ADOS_social_affect_total == 17) {$ADOS_SA_CSS = 7;}
+                elseif ($ADOS_social_affect_total == 18) {$ADOS_SA_CSS = 8;}
+                elseif ($ADOS_social_affect_total == 19) {$ADOS_SA_CSS = 9;}
+                elseif ($ADOS_social_affect_total == 20) {$ADOS_SA_CSS = 10;}
+            } elseif ($age == 3) {
+                if (in_array($ADOS_social_affect_total, range(0,3))) {$ADOS_SA_CSS = 1;}
+                elseif (in_array($ADOS_social_affect_total, range(4,5))) {$ADOS_SA_CSS = 2;}
+                elseif (in_array($ADOS_social_affect_total, range(6,9))) {$ADOS_SA_CSS = 3;}
+                elseif ($ADOS_social_affect_total == 10) {$ADOS_SA_CSS = 4;}
+                elseif (in_array($ADOS_social_affect_total, range(11,12))) {$ADOS_SA_CSS = 5;}
+                elseif (in_array($ADOS_social_affect_total, range(13,16))) {$ADOS_SA_CSS = 6;}
+                elseif ($ADOS_social_affect_total == 17) {$ADOS_SA_CSS = 7;}
+                elseif ($ADOS_social_affect_total == 18) {$ADOS_SA_CSS = 8;}
+                elseif ($ADOS_social_affect_total == 19) {$ADOS_SA_CSS = 9;}
+                elseif ($ADOS_social_affect_total == 20) {$ADOS_SA_CSS = 10;}
+            } elseif (in_array($age, range(4,14))) {
+                if (in_array($ADOS_social_affect_total, range(0,2))) {$ADOS_SA_CSS = 1;}
+                elseif (in_array($ADOS_social_affect_total, range(3,5))) {$ADOS_SA_CSS = 2;}
+                elseif (in_array($ADOS_social_affect_total, range(6,9))) {$ADOS_SA_CSS = 3;}
+                elseif ($ADOS_social_affect_total == 10) {$ADOS_SA_CSS = 4;}
+                elseif (in_array($ADOS_social_affect_total, range(11,12))) {$ADOS_SA_CSS = 5;}
+                elseif (in_array($ADOS_social_affect_total, range(13,14))) {$ADOS_SA_CSS = 6;}
+                elseif (in_array($ADOS_social_affect_total, range(15,16))) {$ADOS_SA_CSS = 7;}
+                elseif (in_array($ADOS_social_affect_total, range(17,18))) {$ADOS_SA_CSS = 8;}
+                elseif ($ADOS_social_affect_total == 19) {$ADOS_SA_CSS = 9;}
+                elseif ($ADOS_social_affect_total == 20) {$ADOS_SA_CSS = 10;}
+            }
         } elseif ($ADOS_mod == "olderSomeWords") {
-
+            if (in_array($age, range(2, 3))) {
+                if (in_array($ADOS_social_affect_total, range(0,1))) {$ADOS_SA_CSS = 1;}
+                elseif (in_array($ADOS_social_affect_total, range(2,4))) {$ADOS_SA_CSS = 2;}
+                elseif ($ADOS_social_affect_total == 5) {$ADOS_SA_CSS = 3;}
+                elseif (in_array($ADOS_social_affect_total, range(6, 7))) {$ADOS_SA_CSS = 4;}
+                elseif ($ADOS_social_affect_total == 8) {$ADOS_SA_CSS = 5;}
+                elseif (in_array($ADOS_social_affect_total, range(9,11))) {$ADOS_SA_CSS = 6;}
+                elseif (in_array($ADOS_social_affect_total, range(12,13))) {$ADOS_SA_CSS = 7;}
+                elseif (in_array($ADOS_social_affect_total, range(14,15))) {$ADOS_SA_CSS = 8;}
+                elseif (in_array($ADOS_social_affect_total, range(16,17))) {$ADOS_SA_CSS = 9;}
+                elseif (in_array($ADOS_social_affect_total, range(18,20))) {$ADOS_SA_CSS = 10;}
+            } elseif ($age == 4) {
+                if (in_array($ADOS_social_affect_total, range(0,1))) {$ADOS_SA_CSS = 1;}
+                elseif (in_array($ADOS_social_affect_total, range(2,3))) {$ADOS_SA_CSS = 2;}
+                elseif (in_array($ADOS_social_affect_total, range(4,5))) {$ADOS_SA_CSS = 3;}
+                elseif (in_array($ADOS_social_affect_total, range(6, 7))) {$ADOS_SA_CSS = 4;}
+                elseif (in_array($ADOS_social_affect_total, range(8, 9))) {$ADOS_SA_CSS = 5;}
+                elseif (in_array($ADOS_social_affect_total, range(10,12))) {$ADOS_SA_CSS = 6;}
+                elseif ($ADOS_social_affect_total == 13) {$ADOS_SA_CSS = 7;}
+                elseif (in_array($ADOS_social_affect_total, range(14,15))) {$ADOS_SA_CSS = 8;}
+                elseif (in_array($ADOS_social_affect_total, range(16,17))) {$ADOS_SA_CSS = 9;}
+                elseif (in_array($ADOS_social_affect_total, range(18,20))) {$ADOS_SA_CSS = 10;}
+            } elseif (in_array($age, range(5,14))) {
+                if (in_array($ADOS_social_affect_total, range(0,1))) {$ADOS_SA_CSS = 1;}
+                elseif (in_array($ADOS_social_affect_total, range(2,3))) {$ADOS_SA_CSS = 2;}
+                elseif (in_array($ADOS_social_affect_total, range(4,5))) {$ADOS_SA_CSS = 3;}
+                elseif (in_array($ADOS_social_affect_total, range(6, 7))) {$ADOS_SA_CSS = 4;}
+                elseif (in_array($ADOS_social_affect_total, range(8, 9))) {$ADOS_SA_CSS = 5;}
+                elseif (in_array($ADOS_social_affect_total, range(10,13))) {$ADOS_SA_CSS = 6;}
+                elseif (in_array($ADOS_social_affect_total, range(14,15))) {$ADOS_SA_CSS = 7;}
+                elseif ($ADOS_social_affect_total == 16) {$ADOS_SA_CSS = 8;}
+                elseif (in_array($ADOS_social_affect_total, range(17,18))) {$ADOS_SA_CSS = 9;}
+                elseif (in_array($ADOS_social_affect_total, range(19,20))) {$ADOS_SA_CSS = 10;}
+            }
         }
         return($ADOS_SA_CSS);
     }
@@ -220,7 +286,7 @@ class NDB_BVL_Instrument_IBIS extends NDB_BVL_Instrument
     {
         $ADOS_mod = '';
 
-        if ( $ADOS_Version == "ados_module1" or $ADOS_Version == "ados2_module1") {
+        if ( $ADOS_Version == "ados_module1" or $ADOS_Version == "ados2_module1" or $ADOS_Version == "ADOS2_Toddler_Module") {
             if ( $ados_a1 == 0 ) { $ADOS_mod = "Module1somewords"; }
             elseif ( $ados_a1 == 1 ) { $ADOS_mod = "Module1somewords"; }
             elseif ( $ados_a1 == 2 ) { $ADOS_mod = "Module1somewords"; }
