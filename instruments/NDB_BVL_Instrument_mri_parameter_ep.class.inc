@@ -29,17 +29,30 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
                                "1"          => "Console Pass",
                                "0"           => "Console Fail",
                               );
-
+// todo sql 
     const FINGER = array(
                                ""                      => "",
-                               "right_finger"          => "Right Finger",
-                               "left_finger"           => "Left Finger",
-                               "right_toe"             => "Right Toe",
-                               "left_toe"              => "Left Toe",                               
+                               "finger"          => "Finger",
+                               "toe"              => "Toe",                               
                               );                
-    
+// todo sql    
+    const OPTION1TO5 = array(
+                               ""           => "",
+                               "1"          => "1",
+                               "2"          => "2",
+                               "3"          => "3",
+                               "4"          => "4",
+                               "5"          => "5",                                                              
+                              );     
+// sql
+    const OPTION1TO4 = array(
+                               ""           => "",
+                               "1"          => "1",
+                               "2"          => "2",
+                               "3"          => "3",
+                               "4"          => "4",
+                              ); 
 
-    
     const T1_T2    = array(
                                ""           => "",
                                "t1"         => "T1w",
@@ -79,12 +92,14 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
     ];
 
     private $orientation_grp = [
+        '' => '',
         'supine' => 'Supine',
         'leftlat' => 'Left Lateral',
         'rightlat' => 'Right Lateral'
     ];
 
     private $vitamine_grp = [
+                '' => '',
         'left' => 'Left',
         'right' => 'Right'
     ];
@@ -168,8 +183,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
         //Any LorisForm multiple selects must be listed here
         $this->_selectMultipleElements = [
             'study',
-            'orientation',
-            'vitamine'];
+            ];
 
         // setup the form
         $this->_setupForm();
@@ -207,6 +221,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
 
         // automatically adds examiner & date of administration
         $this->_addMetadataFields();
+        $this->form->addElement('select','session_number','Number of sessions:',self::OPTION1TO4);
 
         $this->form->addElement('static', 't1_pass_msg', 'T1 Passed?');
         $this->form->addElement('static', 't2_pass_msg', 'T2 Passed?');
@@ -366,10 +381,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
             unset($group);
 
 
-
-        $grp = ["study" => 'Study:',
-                "orientation" => 'Orientation:',
-                "vitamine" => 'Vitamin E:'];
+        $grp = ["study" => 'Study:'];
 
         foreach ($grp as $key => $label) {
             $group_arr = "{$key}_grp";
@@ -433,10 +445,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
                 "record_scan_date_$i",
                 ""
             );
-            $group[] = $this->form->createElement(
-                "time",
-                "record_time_enter_mri_room_$i"
-            );
+
             $group[] = $this->form->createElement(
                 "time",
                 "record_scan_start_time_$i"
@@ -445,6 +454,16 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
             $group[] = $this->form->createElement(
                 "time",
                 "record_scan_end_time_$i"
+            );
+            $group[] = $this->createSelect(
+                "record_orientation_$i",
+                "",
+                $this->orientation_grp
+            );
+            $group[] = $this->createSelect(
+                "record_vitamine_$i",
+                "",
+                 $this->vitamine_grp
             );
 
             $this->form->addGroup(
@@ -468,12 +487,6 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
                 "scan_group_table{$i}"
             );
             $this->XINRegisterRule(
-                "record_time_enter_mri_room_$i",
-                array("scan_done_$i{@}=={@}1"),
-                "All fields are required if corresponding session is marked as done.",
-                "scan_group_table{$i}"
-            );
-            $this->XINRegisterRule(
                 "record_scan_start_time_$i",
                 array("scan_done_$i{@}=={@}1"),
                 "All fields are required if corresponding session is marked as done.",
@@ -482,6 +495,18 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
 
             $this->XINRegisterRule(
                 "record_scan_end_time_$i",
+                array("scan_done_$i{@}=={@}1"),
+                "All fields are required if corresponding session is marked as done.",
+                "scan_group_table{$i}"
+            );
+            $this->XINRegisterRule(
+                "record_orientation_$i",
+                array("scan_done_$i{@}=={@}1"),
+                "All fields are required if corresponding session is marked as done.",
+                "scan_group_table{$i}"
+            );
+            $this->XINRegisterRule(
+                "record_vitamine_$i",
                 array("scan_done_$i{@}=={@}1"),
                 "All fields are required if corresponding session is marked as done.",
                 "scan_group_table{$i}"
@@ -784,6 +809,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
         $this->addSelect('dti_pass', 'DTI Passed', $this->yes_no);
         $this->addLabel('PE direction will default to L >> R. Please set to A >> P, then edit the angle to set P >> A');
 
+
         $this->form->addElement("textarea", "page4_comment", "Comments:", array('cols'=>25, 'rows'=>4));
         $this->XINRegisterRule("page4_comment", array("page4_comment{@}=={@}NEVER_REQUIRED"));
     }
@@ -851,6 +877,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
             $i++;
         }
         $this->addLabel('Please set to A >> P, then edit the angle to set P >> A');
+        $this->addSelect("boldplus_attempts", "Bold attempts", self::R1_R9);
 
         $this->form->addElement("textarea", "page5_comment", "Comments:", array('cols'=>25, 'rows'=>4));
         $this->XINRegisterRule("page5_comment", array("page5_comment{@}=={@}NEVER_REQUIRED"));
@@ -874,8 +901,8 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
         unset($group);
 
                 $group[] = $this->createSelect("csf_run", '', self::complete_partial_none);
-                $this->not_required_field("csf_scan_type");
-                $group[] = $this->createText("csf_attempts","");
+                $this->not_required_field("csf_run");
+                $group[] = $this->createSelect("csf_attempts", '', self::OPTION1TO5);
                 $this->not_required_field("csf_attempts");
                 $group[] = $this->createSelect("csf_pass", '', self::PASS_FAIL);
                 $this->not_required_field("csf_pass");
@@ -885,9 +912,12 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
                     
          $this->form->addElement("select", "pulse", "Pulse Ox replacement:", self::FINGER);
 
-         $this->form->addElement("text", "hr_range", "HR at start/end:");
+         $this->form->addElement("text", "captured_cycle", "Captured cycle (ms):");
+         $this->form->addElement("text", "acquisition_window", "Acquisition window (ms):");
+
          
-        $this->not_required_field("hr_range");
+        $this->not_required_field("captured_cycle");
+        $this->not_required_field("acquisition_window");
 
 
          $this->form->addElement("textarea", "page6_comment", "Comments:", array('cols'=>25, 'rows'=>4));
@@ -948,12 +978,6 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
             "static",
             null,
             null,
-            "<b>Time Enter<br>MRI Room(HH:MM)<b>"
-        );
-        $group[] = $this->form->createElement(
-            "static",
-            null,
-            null,
             "<b>Scan Start Time(HH:MM)</b>"
         );
         $group[] = $this->form->createElement(
@@ -962,6 +986,18 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
             null,
             "<b>Scan End Time(HH:MM)</b>"
         );
+        $group[] = $this->form->createElement(
+            "static",
+            null,
+            null,
+            "<b>Orientation<b>"
+        );
+        $group[] = $this->form->createElement(
+            "static",
+            null,
+            null,
+            "<b>Vitamin E<b>"
+        );
         $this->form->addGroup(
             $group,
             "scan_session_headers",
@@ -969,6 +1005,9 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
             $this->_GUIDelimiter,
             false
         );
+
         unset($group);
     }
 }
+
+
