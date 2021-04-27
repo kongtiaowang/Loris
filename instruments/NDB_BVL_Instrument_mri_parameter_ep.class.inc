@@ -515,6 +515,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
     
                 $this->form->addElement("textarea", "page1_comment", "Comments:", array('cols'=>25, 'rows'=>4));
                 $this->XINRegisterRule("page1_comment", array("page1_comment{@}=={@}NEVER_REQUIRED"));
+
     }
 
 
@@ -922,8 +923,23 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
 
          $this->form->addElement("textarea", "page6_comment", "Comments:", array('cols'=>25, 'rows'=>4));
          $this->XINRegisterRule("page6_comment", array("page6_comment{@}=={@}NEVER_REQUIRED"));
-    }
+         $this->form->addFormRule(array(&$this, 'constraint_rules_pg6'));
 
+    }
+    /**
+     * constraint check for page 6
+     */
+    function constraint_rules_pg6($values) {
+        $errors = [];
+        if (!empty($values["captured_cycle"]) && !is_numeric($values["captured_cycle"])) {
+            $errors["captured_cycle"] = 'The value should be three digits.';
+        }
+        if (!empty($values["acquisition_window"]) && !is_numeric($values["acquisition_window"])) {
+            $errors["acquisition_window"] = 'The value should be three digits.';
+        }
+
+        return $errors;
+    }
 
 
     private function not_required_field($key) {
