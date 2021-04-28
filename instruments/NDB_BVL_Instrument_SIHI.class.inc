@@ -1,26 +1,26 @@
 <?php
 /**
- * This file contains the NDB_BVL_Instrument_SIHI_survey class
+ * This file contains the NDB_BVL_Instrument_SIHI class
  *
  * PHP Version 7
  *
  * @category Instrument
- * @package  SIHI_survey
+ * @package  SIHI
  * @author   Tanishq Bhatia <tanishq.bhatia@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/loris/
  */
 
 /**
- * Creates the form elements for the SIHI_survey instrument
+ * Creates the form elements for the SIHI instrument
  *
  * @category Instrument
- * @package  SIHI_survey
+ * @package  SIHI
  * @author   Tanishq Bhatia <tanishq.bhatia@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/loris/
  */
-class NDB_BVL_Instrument_SIHI_survey extends NDB_BVL_Instrument
+class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
     use instrument_validator;
@@ -28,12 +28,12 @@ class NDB_BVL_Instrument_SIHI_survey extends NDB_BVL_Instrument
     /**
      * Sample SQL statement for test_names table and instrument subtests table
      *
-     * INSERT INTO test_names (Test_name, Full_name, Sub_Group, isDirectEntry) VALUES ('SIHI_survey', "SIHI (Sleep Intervention History Interview) - Survey", 1, 1);
-     * INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('SIHI_survey','SIHI_survey_page1', "Page 1", 1);
-     * INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('SIHI_survey','SIHI_survey_page2', "Page 2", 2);
-     * INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('SIHI_survey','SIHI_survey_page3', "Page 3", 3);
-     * INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('SIHI_survey','SIHI_survey_page4', "Page 4", 4);
-     * INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('SIHI_survey','SIHI_survey_page5', "Page 5", 5);
+     * INSERT INTO test_names (Test_name, Full_name, Sub_Group, isDirectEntry) VALUES ('SIHI', "SIHI (Sleep Intervention History Interview)", 1, 1);
+     * INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('SIHI','SIHI_page1', "Page 1", 1);
+     * INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('SIHI','SIHI_page2', "Page 2", 2);
+     * INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('SIHI','SIHI_page3', "Page 3", 3);
+     * INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('SIHI','SIHI_page4', "Page 4", 4);
+     * INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('SIHI','SIHI_page5', "Page 5", 5);
      */
     /**
      * Sets up basic data such as the HTML_Quickform object, database references
@@ -47,15 +47,15 @@ class NDB_BVL_Instrument_SIHI_survey extends NDB_BVL_Instrument
     function setup(?string $commentID = NULL, ?string $page = NULL): void
     {
         $this->formType = "XIN";
-        $this->form     = new LorisForm('SIHI_survey');
+        $this->form     = new LorisForm('SIHI');
         $this->page     = $page;            // page label (number or
         // string - used by
         // user-defined child classes)
         // set the object properties
         // Corresponds to the Test_name column in test_names table
-        $this->testName = "SIHI_survey";
+        $this->testName = "SIHI";
         // name of database table corresponding to instrument
-        $this->table = 'SIHI_survey';
+        $this->table = 'SIHI';
         // data keyed by commentID
         $this->commentID = $commentID;
         //The array of dates/timestamps to convert to database dates/timestamps
@@ -83,7 +83,7 @@ class NDB_BVL_Instrument_SIHI_survey extends NDB_BVL_Instrument
      */
     function _setupForm()
     {
-        if (preg_match("/SIHI_survey(_page[0-9]+)/", $this->page, $matches)) {
+        if (preg_match("/SIHI(_page[0-9]+)/", $this->page, $matches)) {
             call_user_func(array($this, $matches[1]));
         } else {
             $this->_main();
@@ -101,7 +101,7 @@ class NDB_BVL_Instrument_SIHI_survey extends NDB_BVL_Instrument
     function _main()
     {
         // display test name
-        $this->addHeader("SIHI (Sleep Intervention History Interview) - Survey");
+        $this->addHeader("SIHI (Sleep Intervention History Interview)");
 
         $config      =& NDB_Config::singleton();
         $dateOptions = array(
@@ -140,7 +140,7 @@ class NDB_BVL_Instrument_SIHI_survey extends NDB_BVL_Instrument
      */
     function _page1()
     {
-        $this->addHeader("SIHI (Sleep Intervention History Interview) - Survey");
+        $this->addHeader("SIHI (Sleep Intervention History Interview)");
 
         $this->form->addElement(
             'static',
@@ -221,7 +221,7 @@ class NDB_BVL_Instrument_SIHI_survey extends NDB_BVL_Instrument
 
     function _page2()
     {
-        $this->addHeader("SIHI (Sleep Intervention History Interview) - Survey");
+        $this->addHeader("SIHI (Sleep Intervention History Interview)");
 
         $this->form->addElement(
             'static',
@@ -292,7 +292,7 @@ class NDB_BVL_Instrument_SIHI_survey extends NDB_BVL_Instrument
 
     function _page3()
     {
-        $this->addHeader("SIHI (Sleep Intervention History Interview) - Survey");
+        $this->addHeader("SIHI (Sleep Intervention History Interview)");
 
         $this->form->addElement(
             'static',
@@ -363,7 +363,7 @@ class NDB_BVL_Instrument_SIHI_survey extends NDB_BVL_Instrument
 
     function _page4()
     {
-        $this->addHeader("SIHI (Sleep Intervention History Interview) - Survey");
+        $this->addHeader("SIHI (Sleep Intervention History Interview)");
 
         $this->form->addElement(
             'static',
@@ -434,7 +434,7 @@ class NDB_BVL_Instrument_SIHI_survey extends NDB_BVL_Instrument
 
     function _page5()
     {
-        $this->addHeader("SIHI (Sleep Intervention History Interview) - Survey");
+        $this->addHeader("SIHI (Sleep Intervention History Interview)");
 
         $this->form->addElement(
             'static',
