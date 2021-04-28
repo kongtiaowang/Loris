@@ -24,7 +24,7 @@ alter table `mri_parameter_ep` ADD COLUMN `pulse` enum('right_finger','left_fing
 alter table `mri_parameter_ep` ADD COLUMN `hr_range` text  default NULL;
 
 
-alter table `mri_parameter_ep` ADD COLUMN `101b0run0` varchar(255)  default NULL;
+alter table `mri_parameter_ep` MODIFY COLUMN `101b0run0` varchar(255)  default NULL;
 
 alter table `mri_parameter_ep` ADD COLUMN `dti1try1` varchar(255)  default NULL;
 
