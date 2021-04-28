@@ -496,15 +496,18 @@ class NDB_BVL_Instrument_Seizure_Questionnaire extends NDB_BVL_Instrument
         $questions = array(
                       "p2_1_duration",
                       "p2_2_duration",
-                      "p2_3_duration",
-                      "p2_4_duration",
-                      "p2_5_duration",
-                      "p2_6_duration",
-                      "p2_7_duration",
+                      "p3_3_duration",
+                      "p3_4_duration",
+                      "p3_5_duration",
+                      "p3_6_duration",
+                      "p3_7_duration",
                      );
         foreach ($questions as $question) {
             if ((!is_numeric($values[$question])) && !empty($values[$question])) {
                 $errors[$question] = "Please enter a numeric value.";
+            }
+            if ($values[$question] < 0) {
+                $errors[$question] = "Please enter a positive numeric value.";
             }
         }
         return $errors;
