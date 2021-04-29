@@ -19,6 +19,9 @@ class NDB_BVL_Instrument_conners_teacher extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
 
+    var $ValidityEnabled  = true;
+    var $ValidityRequired = false;
+
     var $scoreLabels = array(
         'IN_raw_score',
         'HY_raw_score',
