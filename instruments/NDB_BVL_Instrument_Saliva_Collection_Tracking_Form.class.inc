@@ -455,13 +455,11 @@ function _page5(){
             $notification_reciever_email = 'Heidi.Bryant@cidd.unc.edu';
       if ($values['sq1'] == 'yes') {
           if ($values["sq2"] == "At_Visit"){
-                  $msg_data['delivery'] = "At Visit";
                   $msg_data['mail_date'] = $value['sq4'];
                   $msg_data['tracking_number'] = $value['sq5'];
                 Email::send($notification_reciever_email, 'Saliva_Collection_Tracking_Form_Email_Notifications.tpl', $msg_data, "", "IBIS Team <noreply@ibis.loris.ca>");
           } 
           if ($values["sq2"] == "Via_Mail"){
-                  $msg_data['delivery'] = "Via Mail";
                   $msg_data['tracking_number'] = $value['sq5'];
                 Email::send($notification_reciever_email, 'Saliva_Collection_Tracking_Form_Email_Notifications.tpl', $msg_data, "", "IBIS Team <noreply@ibis.loris.ca>");
             
@@ -470,14 +468,12 @@ function _page5(){
       //proband
       if ($values['pq1'] == 'yes') {
           if ($values["pq6"] == "At_Visit"){
-                  $msg_data['delivery'] = "At Visit";
                   $msg_data['mail_date'] = $value['pq4'];
                   $msg_data['tracking_number'] = $value['pq5'];
                 Email::send($notification_reciever_email, 'Saliva_Collection_Tracking_Form_Email_Notifications.tpl', $msg_data, "", "IBIS Team <noreply@ibis.loris.ca>");
           } 
           if ($values["pq6"] == "Via_Mail"){
-                  $msg_data['delivery'] = "Via Mail";
-                  $msg_data['tracking_number'] = $value['pq5'];
+                $msg_data['tracking_number'] = $value['pq5'];
                 Email::send($notification_reciever_email, 'Saliva_Collection_Tracking_Form_Email_Notifications.tpl', $msg_data, "", "IBIS Team <noreply@ibis.loris.ca>");
             
           } 
@@ -485,13 +481,10 @@ function _page5(){
       //mother
       if ($values['mq1'] == 'yes') {
           if ($values["mq2"] == "At_Visit"){
-                  $msg_data['mail_date'] = $value['mq4'];
                   $msg_data['tracking_number'] = $value['mq5'];
-                  $msg_data['delivery'] = "At Visit";
                 Email::send($notification_reciever_email, 'Saliva_Collection_Tracking_Form_Email_Notifications.tpl', $msg_data, "", "IBIS Team <noreply@ibis.loris.ca>");
           } 
           if ($values["mq2"] == "Via_Mail"){
-                  $msg_data['delivery'] = "Via Mail";
                   $msg_data['tracking_number'] = $value['mq5'];
                 Email::send($notification_reciever_email, 'Saliva_Collection_Tracking_Form_Email_Notifications.tpl', $msg_data, "", "IBIS Team <noreply@ibis.loris.ca>");
             
@@ -500,19 +493,16 @@ function _page5(){
       //father
       if ($values['fq1'] == 'yes') {
           if ($values["fq2"] == "At_Visit"){
-                  $msg_data['delivery'] = "At Visit";
                   $msg_data['mail_date'] = $value['fq4'];
                   $msg_data['tracking_number'] = $value['fq5'];
                 Email::send($notification_reciever_email, 'Saliva_Collection_Tracking_Form_Email_Notifications.tpl', $msg_data, "", "IBIS Team <noreply@ibis.loris.ca>");
           } 
           if ($values["fq2"] == "Via_Mail"){
-                  $msg_data['delivery'] = "Via Mail";
                   $msg_data['tracking_number'] = $value['fq5'];
                 Email::send($notification_reciever_email, 'Saliva_Collection_Tracking_Form_Email_Notifications.tpl', $msg_data, "", "IBIS Team <noreply@ibis.loris.ca>");
             
           } 
        }
-       print_r($msg_data);
     }
 
 
