@@ -25,6 +25,9 @@ class NDB_BVL_Instrument_Med_Psych_History_Abbreviated_survey extends NDB_BVL_In
     use LegacyInstrumentTrait;
     use instrument_validator;
 
+    var $ValidityEnabled   = true;
+    var $ValidityRequired  = false;
+
     /**
      * Sample SQL statement for test_names table and instrument subtests table
      *
@@ -79,7 +82,7 @@ class NDB_BVL_Instrument_Med_Psych_History_Abbreviated_survey extends NDB_BVL_In
         // required fields for data entry completion status
         $this->_requiredElements = array(
                                     "q1_a_what_was_the_outcome_of_pregnancy_1",
-                                    "q3_disorder_a",
+                                    "q3_disorder_a_presence",
                                    );
 
         // setup the form
@@ -432,6 +435,13 @@ class NDB_BVL_Instrument_Med_Psych_History_Abbreviated_survey extends NDB_BVL_In
             );
 
             $this->XINRegisterRule(
+                "q3_disorder_{$i}_presence",
+                array("q3_disorder_{$i}_presence{@}=={@}"),
+                "You must indicate whether the child/blood relative has the disorder or not",
+                "q3_disorder_{$i}_group"
+            );
+
+            $this->XINRegisterRule(
                 "q3_disorder_" . $i . "_relative",
                 array("q3_disorder_{$i}_presence{@}=={@}yes"),
                 "Required if yes.",
@@ -462,21 +472,49 @@ class NDB_BVL_Instrument_Med_Psych_History_Abbreviated_survey extends NDB_BVL_In
             unset($group);
 
             if ($key == "q3_i_other_chromosomal") {
-                $this->form->addElement('text', "q3_disorder_i_specify", $this->indent . "<h4>Please specify: </h4><h5><i>i. Other chromosomal abnormality, disorder or syndrome</i></h5>");
+                $group[] = $this->form->createElement('static', null, null, "&emsp;&rarr;&emsp;If 'Yes', specify:");
+                $group[] = $this->form->createElement('text', "q3_disorder_i_specify", "");
+                $group[] = $this->form->createElement('static', null, null, "");
+                $group[] = $this->form->createElement('static', null, null, "");
+                $group[] = $this->form->createElement('static', null, null, "");
+
+                $this->addGroup(
+                    $group,
+                    "q3_disorder_i_specify_group",
+                    "",
+                    $this->_GUIDelimiter,
+                    false
+                );
+                unset($group);
 
                 $this->XINRegisterRule(
                     "q3_disorder_i_specify",
                     array("q3_disorder_i_presence{@}=={@}yes"),
-                    "Required if yes."
-                );
+                    "Required if yes.",
+                    "q3_disorder_i_specify_group"
+                ); 
             }
             if ($key == "q3_x_cancer") {
-                $this->form->addElement('text', "q3_disorder_x_specify", $this->indent . "<h4>Please specify: </h4><h5><i>x. Cancer</i></h5>");
+                $group[] = $this->form->createElement('static', null, null, "&emsp;&rarr;&emsp;If 'Yes', please specify:");
+                $group[] = $this->form->createElement('text', "q3_disorder_x_specify", "");
+                $group[] = $this->form->createElement('static', null, null, "");
+                $group[] = $this->form->createElement('static', null, null, "");
+                $group[] = $this->form->createElement('static', null, null, "");
+
+                $this->addGroup(
+                    $group,
+                    "q3_disorder_x_specify_group",
+                    "",
+                    $this->_GUIDelimiter,
+                    false
+                );
+                unset($group);
 
                 $this->XINRegisterRule(
                     "q3_disorder_x_specify",
                     array("q3_disorder_x_presence{@}=={@}yes"),
-                    "Required if yes."
+                    "Required if yes.",
+                    "q3_disorder_x_specify_group"
                 );
             }
 
