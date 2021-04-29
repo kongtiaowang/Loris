@@ -1,0 +1,1 @@
+UPDATE `test_battery` SET `AgeMinDays` = "0", `AgeMaxDays` = "0" WHERE `Test_name` = "ADOS2_Toddler_Module";
