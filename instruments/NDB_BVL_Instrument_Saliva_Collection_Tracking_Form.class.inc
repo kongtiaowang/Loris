@@ -102,35 +102,29 @@ function _page1(){
 
                $this->addLabel("<i>If 'No' is selected for Question 1, please skip all other questions.</i>");
 
-               $this->form->addElement('static','sq_2',"2. How will saliva be collected?");
-               $this->form->addElement('select','sq2','',self::VISIT_MAIL_OPTIONS);
+               $this->form->addElement('select','sq2','2. How will saliva be collected?',self::VISIT_MAIL_OPTIONS);
 
                $this->XINRegisterRule('sq2', array("sq1{@}=={@}yes"), "Required if 'Yes' was selected for Question 1.");
-
 
                $this->form->addGroup($group, 'subject_header1', "At Visit", $this->_GUIDelimiter, FALSE);
                unset($group);
                $this->addLabel("<i>If Saliva collection is 'At Visit' the questions below are required</i>");
 
 
-               $this->form->addElement('static','sq_3',"3. Collection Date?");
-
-               $this->form->addElement('date','sq3','', $this->dateOptions);
+               $this->form->addElement('date','sq3','3. Collection Date?', $this->dateOptions);
  
-               $this->XINRegisterRule('sq3', array("sq2{@}=={@}At_Visit"), "Required if 'At Visit', for question 2");
+               $this->XINRegisterRule('sq3', array("sq2{@}=={@}At_Visit"), "Required if 'At Visit', for Question 2");
 
 
-                $this->form->addElement('static','sq_4',"4. Date mailed to UNC");
 
 
-               $this->form->addElement('date','sq4_1', $this->indent.'a:', $this->dateOptions);
+               $this->form->addElement('date','sq4', "4. Date mailed to UNC", $this->dateOptions);
                
-               $this->XINRegisterRule('sq4_1', array("sq2{@}=={@}At_Visit"), "Required if 'At Visit', for question 2");
+               $this->XINRegisterRule('sq4', array("sq2{@}=={@}At_Visit"), "Required if 'At Visit', for Question 2");
 
-               $this->form->addElement('text','sq4_2',$this->indent.'b: Tracking number');
+               $this->form->addElement('text','sq5','5. Tracking number:');
 
-               $this->XINRegisterRule('sq4_2', array("sq2{@}=={@}At_Visit"), "Required if 'At Visit', for question 2");
-
+               $this->XINRegisterRule('sq5', array("sq2{@}=={@}At_Visit"), "Required if 'At Visit', for Question 2");
 
  
 
@@ -141,50 +135,38 @@ function _page1(){
 
             
 
-
-
-              $this->form->addElement('static','sq_5',"5. How will the family receive the kits?");
-
-
-               $this->form->addElement('select','sq5_1','', self::VISIT_MAIL_OPTIONS);
+               $this->form->addElement('select','sq6','6. How will the family receive the kits?', self::VISIT_MAIL_OPTIONS);
                
-               $this->XINRegisterRule('sq5_1', array("sq2{@}=={@}Via_Mail"), "Required if 'Via Mail', for question 2");
+               $this->XINRegisterRule('sq6', array("sq2{@}=={@}Via_Mail"), "Required if 'Via Mail', for Question 2");
 
 
-
-               $this->form->addElement('static','sq_6',"6. Tracking number:");
-               $this->form->addElement('text','sq6','');
-
-               $this->XINRegisterRule('sq6', array("sq2{@}=={@}Via_Mail"), "Required if 'Via Mail', for question 2");
+               $this->XINRegisterRule('sq6', array("sq2{@}=={@}Via_Mail"), "Required if 'Via Mail', for Question 2");
 
 
                $group[] = $this->form->createElement('static', "subject_processing", null, null);
                $this->form->addGroup($group, 'subject_processing_header_group', "Processing", $this->_GUIDelimiter, FALSE);
                unset($group);
 
-               $this->form->addElement('static','sq_7','7. Did UNC staff deliver saliva tube to processing lab at UNC?');
 
-               $this->form->addElement('select','sq7_1',$this->indent.'a:', self::YES_NO_OPTIONS);
+               $this->form->addElement('select','sq7','7. Did UNC staff deliver saliva tube to processing lab at UNC?', self::YES_NO_OPTIONS);
 
-               $this->XINRegisterRule('sq7_1', array("sq1{@}=={@}yes"), "Required if 'Yes' was selected for Question 1.");
+               $this->XINRegisterRule('sq7', array("sq1{@}=={@}yes"), "Required if 'Yes' was selected for Question 1.");
 
-               $this->form->addElement('text','sq7_2',$this->indent.'b: Who delivered the tube? ');
+               $this->form->addElement('text','sq8','8. Who delivered the tube? ');
 
-               $this->XINRegisterRule('sq7_2', array("sq1{@}=={@}yes"), "Required if 'Yes' was selected for Question 1.");
-
+               $this->XINRegisterRule('sq8', array("sq7{@}=={@}yes"), "Required if 'Yes' was selected for Qestion 7.");
                 
                 
 
-               $this->form->addElement('static','sq_8',"8. What is the expiration date on the collection tube?");
 
-               $this->form->addElement("date", "sq8", "", $this->dateOptions);
+               $this->form->addElement("date", "sq9", "9. What is the expiration date on the collection tube?", $this->dateOptions);
 
-               $this->XINRegisterRule('sq8', array("sq1{@}=={@}yes"), "Required if 'Yes' was selected for Question 1.");
-
+               $this->XINRegisterRule('sq9', array("sq7{@}=={@}yes"), "Required if 'Yes' was selected for Qestion 7.");
 
 
-               $this->form->addElement("textarea", "sq9", "9. Comments:", array('cols'=>25, 'rows'=>4));
-               $this->XINRegisterRule("sq9", array("sq9{@}=={@}NEVER_REQUIRED"));
+
+               $this->form->addElement("textarea", "sq10", "10. Comments:", array('cols'=>25, 'rows'=>4));
+               $this->XINRegisterRule("sq10", array("sq10{@}=={@}NEVER_REQUIRED"));
 
 
                $this->form->addFormRule(array(&$this, 'validate_page1'));
@@ -208,44 +190,34 @@ function _page2(){
 
                $this->addLabel("<i>If 'No' is selected for Question 1, please skip all other questions.</i>");
 
-
               
-              $this->form->addElement('static','pq_2',"2.  Does the proband need to sign an assent or consent form?");
-
-              $this->form->addElement('select','pq2','',self::YES_NO_DONT_KNOW);
+              $this->form->addElement('select','pq2','2.  Does the proband need to sign an assent or consent form?',self::YES_NO_DONT_KNOW);
 
                $this->XINRegisterRule('pq2', array("pq1{@}=={@}yes"), "Required if 'Yes' was selected for Question 1.");
-
 
 
                 $this->form->addElement('static','pq_3',"3. Why does this proband not give consent?");
 
                $this->form->addElement('select','pq3',$this->indent.'a:', array('' => '','refused'=>"refused",'not_asked' => "not asked"));
 
-               $this->XINRegisterRule('pq3', array("pq2{@}=={@}no"), "Required if 'No' was selected for question 2.");
+               $this->XINRegisterRule('pq3', array("pq2{@}=={@}no"), "Required if 'No' was selected for Question 2.");
 
                 $this->form->addElement('static','pq_3b',$this->indent."b: Section ends after question 3");
             
 
-                $this->form->addElement('static','pq_4',"4. Date mailed to UNC");
-
-
-               $this->form->addElement('date','pq4', '', $this->dateOptions);
+               $this->form->addElement('date','pq4', '4. Date mailed to UNC', $this->dateOptions);
                
-               $this->XINRegisterRule('pq4', array("pq2{@}=={@}yes"), "Required if 'yes', question 2");
+               $this->XINRegisterRule('pq4', array("pq2{@}=={@}yes"), "Required if 'Yes' was selected for Question 2");
 
 
 
-             $this->form->addElement('static','pq_5',"5. Will the proband complete an additional collection tube?");
+               $this->form->addElement('select','pq5','5. Will the proband complete an additional collection tube?', self::YES_NO_OPTIONS);
 
-               $this->form->addElement('select','pq5','', self::YES_NO_OPTIONS);
 
                
-              $this->form->addElement('static','pq_6',"6. How will saliva be collected?");
+               $this->form->addElement('select','pq6','6. How will saliva be collected?', self::VISIT_MAIL_OPTIONS);
 
-               $this->form->addElement('select','pq6','', self::VISIT_MAIL_OPTIONS);
-
-                $this->XINRegisterRule('pq6', array("pq2{@}=={@}yes"), "Required if 'yes', for question 2");
+                $this->XINRegisterRule('pq6', array("pq2{@}=={@}yes"), "Required if 'yes' was selected for Question 2");
 
 
             $this->form->addGroup($group, 'proband_header1', "At Visit", $this->_GUIDelimiter, FALSE);
@@ -253,23 +225,18 @@ function _page2(){
             $this->addLabel("<i>If Saliva collection is 'At Visit' the questions below are required</i>");
 
 
-                $this->form->addElement('static','pq_7',"7.Collection Date?");
+               $this->form->addElement('date','pq7','7.Collection Date?', $this->dateOptions);
 
-               $this->form->addElement('date','pq7','', $this->dateOptions);
+               $this->XINRegisterRule('pq7', array("pq6{@}=={@}At_Visit"), "Required if 'At Visit' was selected for Question 6");
 
-               $this->XINRegisterRule('pq7', array("pq6{@}=={@}At_Visit"), "Required if 'At Visit', for question 6");
+               $this->form->addElement('text','pq8','8. Tracking number:');
+
+               $this->XINRegisterRule('pq8', array("pq6{@}=={@}At_Visit"), "Required if 'At Visit' was selected for Question 6");
 
 
+               $this->form->addElement('date','pq9','9. Date mailed to UNC?', $this->dateOptions);
 
-               $this->form->addElement('static','pq_8','8. Date mailed to UNC?');
-
-               $this->form->addElement('date','pq8_1',$this->indent.'a:', $this->dateOptions);
-
-               $this->XINRegisterRule('pq8_1', array("pq6{@}=={@}At_Visit"), "Required if 'At Visit', for question 6");
-
-               $this->form->addElement('text','pq8_2',$this->indent.'b: Tracking number');
-
-                $this->XINRegisterRule('pq8_2', array("pq6{@}=={@}At_Visit"), "Required if 'At Visit', for question 6");
+               $this->XINRegisterRule('pq9', array("pq6{@}=={@}At_Visit"), "Required if 'At Visit' was selected for Question 6");
 
 
 
@@ -277,46 +244,33 @@ function _page2(){
             unset($group);
             $this->addLabel("<i>If Saliva collection is 'Via Mail' the questions below are required</i>");
 
-                $this->form->addElement('static','pq_9',"9. How will the family receive the kits?");
 
-               $this->form->addElement("select", "pq9_1", "",  self::VISIT_MAIL_OPTIONS);
+               $this->form->addElement("select", "pq10", "10. How will the family receive the kits?",  self::VISIT_MAIL_OPTIONS);
 
-                $this->XINRegisterRule('pq9_1', array("pq6{@}=={@}Via_Mail"), "Required if 'Via Mail', for question 6");
+                $this->XINRegisterRule('pq10', array("pq6{@}=={@}Via_Mail"), "Required if 'Via Mail' was selected for Question 6");
 
-
-
-                $this->form->addElement('static','pq_10',"10. Tracking number:");
-                
-                 $this->form->addElement('text','pq10','');
-
-                $this->XINRegisterRule('pq10', array("pq9_1{@}=={@}Via_Mail"), "Required if 'Via Mail', for question 9");
                 
 
                $group[] = $this->form->createElement('static', "proband_processing", null, null);
                $this->form->addGroup($group, 'proband_processing_header_group', "Processing", $this->_GUIDelimiter, FALSE);
                unset($group);
 
-                $this->form->addElement('static','pq_11',"11. Did UNC staff deliver saliva tube to processing lab at UNC?");
 
-               $this->form->addElement('select','pq11_1', $this->indent.'a:',self::YES_NO_OPTIONS);
-                
-               $this->XINRegisterRule('pq11_1', array("pq1{@}=={@}yes"), "Required if 'Yes' was selected for Question 1.");
+               $this->form->addElement('select','pq11', "11. Did UNC staff deliver saliva tube to processing lab at UNC?",self::YES_NO_OPTIONS);
+              
+                $this->XINRegisterRule('pq11', array("pq1{@}=={@}yes"), "Required if 'Yes' was selected for Question 1.");
 
+               $this->form->addElement('text', 'pq12', '12. Who delivered the tube?');
 
-               $this->form->addElement('text', 'pq11_2', $this->indent.'b: Who delivered the tube?');
+                $this->XINRegisterRule('pq12', array("pq11{@}=={@}yes"), "Required if 'Yes' was selected for 11.");
 
-                $this->XINRegisterRule('pq11_2', array("pq1{@}=={@}yes"), "Required if 'Yes' was selected for Question 1.");
+               $this->form->addElement('date','pq13','13.  What is the expiration date on the collection tube?', $this->dateOptions);
 
-
-                $this->form->addElement('static','pq_12',"12.  What is the expiration date on the collection tube?");
-
-
-               $this->form->addElement('date','pq12','', $this->dateOptions);
-               $this->XINRegisterRule("pq12", array("pq12{@}=={@}NEVER_REQUIRED"));
+               $this->XINRegisterRule('pq13', array("pq11{@}=={@}yes"), "Required if 'Yes' was selected for Qestion 11.");
 
 
-               $this->form->addElement("textarea", "pq13", "13. Comments:", array('cols'=>25, 'rows'=>4));
-               $this->XINRegisterRule("pq13", array("pq13{@}=={@}NEVER_REQUIRED"));
+               $this->form->addElement("textarea", "pq14", "14. Comments:", array('cols'=>25, 'rows'=>4));
+               $this->XINRegisterRule("pq14", array("pq14{@}=={@}NEVER_REQUIRED"));
                $this->form->addFormRule(array(&$this, 'validate_page2'));
 
 
@@ -332,7 +286,6 @@ function _page3(){
             $this->form->addElement('header', null, 'Mother');
 
                $this->form->addElement('select','mq1','1. Does the subject need saliva collected?',self::YES_NO_DONT_KNOW);
-
                $this->form->addRule('mq1', 'This question is required', 'required');              
                
                $this->form->addElement('static','mq_2',"2. How will saliva be collected?");
@@ -341,27 +294,22 @@ function _page3(){
 
                $this->XINRegisterRule('mq2', array("mq1{@}=={@}yes"), "Required if 'Yes' was selected for Question 1.");
 
-
               $this->form->addGroup($group, 'mother_header1', "At Visit", $this->_GUIDelimiter, FALSE);
               unset($group);
               $this->addLabel("<i>If Saliva collection is 'At Visit' the questions below are required</i>");
 
-               $this->form->addElement('static','mq_3',"3. Collection Date?");
 
-               $this->form->addElement('date','mq3','', $this->dateOptions);
+               $this->form->addElement('date','mq3','3. Collection Date?', $this->dateOptions);
 
-              $this->XINRegisterRule('mq3', array("mq2{@}=={@}At_Visit"), "Required if 'At Visit', for question 2");
+              $this->XINRegisterRule('mq3', array("mq2{@}=={@}At_Visit"), "Required if 'At Visit' was selected for Question 2");
 
-               $this->form->addElement('static','mq_4','4. Date mailed to UNC?');
-
-               $this->form->addElement('date','mq4_1', $this->indent.'a:', $this->dateOptions);
+               $this->form->addElement('date','mq4', "4. Date mailed to UNC?", $this->dateOptions);
                
-               $this->XINRegisterRule('mq4_1', array("mq2{@}=={@}At_Visit"), "Required if 'At Visit', for question 2");
+               $this->XINRegisterRule('mq4', array("mq2{@}=={@}At_Visit"), "Required if 'At Visit' was selected for Question 2");
 
-               $this->form->addElement('text','mq4_2',$this->indent.'b: Tracking number');
+               $this->form->addElement('text','mq5','5. Tracking number');
 
-               $this->XINRegisterRule('mq4_2', array("mq2{@}=={@}At_Visit"), "Required if 'At Visit', for question 2");
-
+               $this->XINRegisterRule('mq5', array("mq2{@}=={@}At_Visit"), "Required if 'At Visit' was selected for Question 2");
 
 
 
@@ -369,46 +317,32 @@ function _page3(){
               unset($group);
               $this->addLabel("<i>If Saliva collection is 'Via Mail' the questions below are required</i>");
 
-             $this->form->addElement('static','mq_5',"5. How will the family receive the kits?");
 
-
-               $this->form->addElement('select','mq5_1','', self::VISIT_MAIL_OPTIONS);
+               $this->form->addElement('select','mq6','6. How will the family receive the kits?', self::VISIT_MAIL_OPTIONS);
                
-               $this->XINRegisterRule('mq5_1', array("mq2{@}=={@}Via_Mail"), "Required if 'Via Mail', question 3");
-
-             //  NOTIFICATION: Triggers email to UNC saying a kit should be expected
-
-
-
-               $this->form->addElement('static','mq_6',"6. Tracking number: ");
-               $this->form->addElement('text','mq6','');
-
-               $this->XINRegisterRule('mq6', array("mq2{@}=={@}Via_Mail"), "Required if 'Via Mail', for question 3");
+              $this->XINRegisterRule('mq6', array("mq2{@}=={@}Via_Mail"), "Required if 'Via Mail', Question 3");
 
               $group[] = $this->form->createElement('static', "mother_processing", null, null);
                $this->form->addGroup($group, 'mother_processing_header_group', "Processing", $this->_GUIDelimiter, FALSE);
                unset($group);
 
-               $this->form->addElement('static','mq_7','7. Did UNC staff deliver saliva tube to processing lab at UNC?');
 
-               $this->form->addElement('select','mq7_1',$this->indent.'a:', self::YES_NO_OPTIONS);
+               $this->form->addElement('select','mq7','7. Did UNC staff deliver saliva tube to processing lab at UNC?', self::YES_NO_OPTIONS);
 
-               $this->XINRegisterRule('mq7_1', array("mq1{@}=={@}yes"), "Required if 'Yes' was selected for question 1");
+               $this->XINRegisterRule('mq7', array("mq1{@}=={@}yes"), "Required if 'Yes' was selected for Question 1");
 
-               $this->form->addElement('text','mq7_2',$this->indent.'b: Who delivered the tube? ');
+               $this->form->addElement('text','mq8','8. Who delivered the tube? ');
 
-                $this->XINRegisterRule('mq7_2', array("mq1{@}=={@}yes"), "Required if 'Yes' was selected for question 1");
-
-
-                $this->form->addElement('static','mq_8',"8. What is the expiration date on the collection tube?");
-
-                $this->form->addElement("date", "mq8", '', $this->dateOptions);
-
-                $this->XINRegisterRule('mq8', array("mq1{@}=={@}yes"), "Required if 'Yes' was selected for question 1");
+                $this->XINRegisterRule('mq8', array("mq7{@}=={@}yes"), "Required if 'Yes' was selected for Qestion 7");
 
 
-                $this->form->addElement("textarea", "mq9", "9. Comments:", array('cols'=>25, 'rows'=>4));
-                $this->XINRegisterRule("mq9", array("mq9{@}=={@}NEVER_REQUIRED"));
+                $this->form->addElement("date", "mq9", '9. What is the expiration date on the collection tube?', $this->dateOptions);
+
+                $this->XINRegisterRule('mq9', array("mq7{@}=={@}yes"), "Required if 'Yes' was selected for Qestion 7");
+
+
+                $this->form->addElement("textarea", "mq10", "10. Comments:", array('cols'=>25, 'rows'=>4));
+                $this->XINRegisterRule("mq10", array("mq10{@}=={@}NEVER_REQUIRED"));
                 $this->form->addFormRule(array(&$this, 'validate_page3'));
 
 
@@ -416,7 +350,7 @@ function _page3(){
 
 function _page4(){     
 
-        $examiners = $this->_getExaminerNames();
+         $examiners = $this->_getExaminerNames();
 
         //Defines the call back function for HTML Quickform to use when validating the form.
         $this->form->addFormRule(array(&$this,'XINValidate'));
@@ -424,9 +358,7 @@ function _page4(){
             $this->form->addElement('header', null, 'Father');
 
                $this->form->addElement('select','fq1','1. Does the subject need saliva collected?',self::YES_NO_DONT_KNOW);
-
-               $this->form->addRule('fq1', 'This question is required', 'required');
-              
+               $this->form->addRule('fq1', 'This question is required', 'required');              
                
                $this->form->addElement('static','fq_2',"2. How will saliva be collected?");
 
@@ -434,28 +366,21 @@ function _page4(){
 
                $this->XINRegisterRule('fq2', array("fq1{@}=={@}yes"), "Required if 'Yes' was selected for Question 1.");
 
-
               $this->form->addGroup($group, 'mother_header1', "At Visit", $this->_GUIDelimiter, FALSE);
               unset($group);
               $this->addLabel("<i>If Saliva collection is 'At Visit' the questions below are required</i>");
 
+               $this->form->addElement('date','fq3','3. Collection Date?', $this->dateOptions);
 
-               $this->form->addElement('static','fq_3',"3. Collection Date?");
+              $this->XINRegisterRule('fq3', array("fq2{@}=={@}At_Visit"), "Required if 'At Visit' was selected for Question 2");
 
-               $this->form->addElement('date','fq3','', $this->dateOptions);
-
-              $this->XINRegisterRule('fq3', array("fq2{@}=={@}At_Visit"), "Required if 'At Visit', for question 2");
-
-
-               $this->form->addElement('static','fq_4','4. Date mailed to UNC?');
-
-               $this->form->addElement('date','fq4_1', $this->indent.'a:', $this->dateOptions);
+               $this->form->addElement('date','fq4', "4. Date mailed to UNC?", $this->dateOptions);
                
-               $this->XINRegisterRule('fq4_1', array("fq2{@}=={@}At_Visit"), "Required if 'At Visit', for question 2");
+               $this->XINRegisterRule('fq4', array("fq2{@}=={@}At_Visit"), "Required if 'At Visit' was selected for Question 2");
 
-               $this->form->addElement('text','fq4_2',$this->indent.'b: Tracking number');
+               $this->form->addElement('text','fq5','5. Tracking number');
 
-               $this->XINRegisterRule('fq4_2', array("fq2{@}=={@}At_Visit"), "Required if 'At Visit', for question 2");
+               $this->XINRegisterRule('fq5', array("fq2{@}=={@}At_Visit"), "Required if 'At Visit' was selected for Question 2");
 
 
 
@@ -464,63 +389,131 @@ function _page4(){
               $this->addLabel("<i>If Saliva collection is 'Via Mail' the questions below are required</i>");
 
 
-             $this->form->addElement('static','fq_5',"5. How will the family receive the kits?");
-
-
-               $this->form->addElement('select','fq5_1','', self::VISIT_MAIL_OPTIONS);
+               $this->form->addElement('select','fq6','6. How will the family receive the kits?', self::VISIT_MAIL_OPTIONS);
                
-               $this->XINRegisterRule('fq5_1', array("fq2{@}=={@}Via_Mail"), "Required if 'Via Mail', for question 3");
+               $this->XINRegisterRule('fq6', array("fq2{@}=={@}Via_Mail"), "Required if 'Via Mail' was selected for Question 3");
 
-               $this->form->addElement('static','fq_6',"6. Tracking number:");
-               $this->form->addElement('text','fq6','');
-
-               $this->XINRegisterRule('fq6', array("fq2{@}=={@}Via_Mail"), "Required if 'Via Mail', for question 3");
-
-
-
-              $group[] = $this->form->createElement('static', "father_processing", null, null);
-               $this->form->addGroup($group, 'father_processing_header_group', "Processing", $this->_GUIDelimiter, FALSE);
+              $group[] = $this->form->createElement('static', "mother_processing", null, null);
+               $this->form->addGroup($group, 'mother_processing_header_group', "Processing", $this->_GUIDelimiter, FALSE);
                unset($group);
 
-               $this->form->addElement('static','fq_7','7. Did UNC staff deliver saliva tube to processing lab at UNC?');
 
-               $this->form->addElement('select','fq7_1',$this->indent.'a:', self::YES_NO_OPTIONS);
+               $this->form->addElement('select','fq7','7. Did UNC staff deliver saliva tube to processing lab at UNC?', self::YES_NO_OPTIONS);
 
-               $this->XINRegisterRule('fq7_1', array("fq1{@}=={@}yes"), "Required if 'Yes' was selected for Question 1.");
+               $this->XINRegisterRule('fq7', array("fq1{@}=={@}yes"), "Required if 'Yes' was selected for Question 1");
 
-               $this->form->addElement('text','fq7_2',$this->indent.'b: Who delivered the tube? ');
+               $this->form->addElement('text','fq8','8. Who delivered the tube? ');
 
-                $this->XINRegisterRule('fq7_2', array("fq1{@}=={@}yes"), "Required if 'Yes' was selected for Question 1.");
-
+                $this->XINRegisterRule('fq8', array("fq7{@}=={@}yes"), "Required if 'Yes' was selected for Qestion 7");
 
 
-                $this->form->addElement('static','fq_8',"8. What is the expiration date on the collection tube?");
+                $this->form->addElement("date", "fq9", '9. What is the expiration date on the collection tube?', $this->dateOptions);
 
-                $this->form->addElement("date", "fq8", '', $this->dateOptions);
-                $this->XINRegisterRule('fq8', array("fq1{@}=={@}yes"), "Required if 'Yes' was selected for Question 1.");
-
-
-                $this->form->addElement("textarea", "fq9", "9. Comments:", array('cols'=>25, 'rows'=>4));
-                $this->XINRegisterRule("fq9", array("fq9{@}=={@}NEVER_REQUIRED"));
+                $this->XINRegisterRule('fq9', array("fq7{@}=={@}yes"), "Required if 'Yes' was selected for Qestion 7");
 
 
+                $this->form->addElement("textarea", "fq10", "10. Comments:", array('cols'=>25, 'rows'=>4));
+                $this->XINRegisterRule("fq10", array("fq10{@}=={@}NEVER_REQUIRED"));
+                $this->form->addFormRule(array(&$this, 'validate_page3'));
+
+
+}
+
+function _page5(){
                $this->form->addElement('header', null, 'Additional Siblings and Family ID');
 
-               $this->form->addElement('select','aq1','1. Does the subject need saliva collected?',array('' => '','yes'=>"Yes",'no' => "No","investigate"=>"Need to Investigate"));
+               $this->form->addElement('select','aq1','1. Aside from the proband and the subject, is there an additional sibling participating as a subject in the study?',array('' => '','yes'=>"Yes",'no' => "No","investigate"=>"Need to Investigate"));
 
                $this->form->addRule('aq1', 'This question is required', 'required');
+               $this->form->addElement('select','aq2',"2. Does this subject have a family ID? [Family ID can be found in the 'Family Information' tab of the 'Candidate Info' in the candidate's page.] ",self::YES_NO_DONT_KNOW);
 
+               $this->form->addRule('aq2', 'This question is required', 'required');
 
-               $this->form->addElement('text','aq2','2. Tracking number:');
+               $this->form->addElement('text','aq3','3.  What is Family ID?');
+                $this->XINRegisterRule('aq3', array("aq1{@}=={@}yes"), "Required if 'Yes' was selected for Question 1.");
 
-               $this->form->addRule('aq2', 'The tracking number is required', 'required');
 
                $this->form->addFormRule(array(&$this, 'validate_tracking_number'));
                $this->form->addFormRule(array(&$this, 'validate_page4'));
 
-
-
 }
+
+
+    // This function is overridden here to send the email notifications if blood draw date is set.
+    function _save(array $values): void
+    {
+
+      $db =& Database::singleton();
+      $candidate = Candidate::singleton((int)$this->commentID);
+      $PSCID = $candidate->getPSCID();
+      $msg_data['PSCID'] = $PSCID;
+
+      
+            //subject
+           // - If 'At visit' was selected for question 2, email should include 'Date mailed to UNC' and 'Tracking Number'.
+           // - If 'Via Mail' was selected for question 2, email should include a reminder to "Document 'Tracking number' internally.".
+            $notification_reciever_email = 'Heidi.Bryant@cidd.unc.edu';
+      if ($values['sq1'] == 'yes') {
+          if ($values["sq2"] == "At_Visit"){
+                  $msg_data['delivery'] = "At Visit";
+                  $msg_data['mail_date'] = $value['sq4'];
+                  $msg_data['tracking_number'] = $value['sq5'];
+                Email::send($notification_reciever_email, 'Saliva_Collection_Tracking_Form_Email_Notifications.tpl', $msg_data, "", "IBIS Team <noreply@ibis.loris.ca>");
+          } 
+          if ($values["sq2"] == "Via_Mail"){
+                  $msg_data['delivery'] = "Via Mail";
+                  $msg_data['tracking_number'] = $value['sq5'];
+                Email::send($notification_reciever_email, 'Saliva_Collection_Tracking_Form_Email_Notifications.tpl', $msg_data, "", "IBIS Team <noreply@ibis.loris.ca>");
+            
+          } 
+       }
+      //proband
+      if ($values['pq1'] == 'yes') {
+          if ($values["pq6"] == "At_Visit"){
+                  $msg_data['delivery'] = "At Visit";
+                  $msg_data['mail_date'] = $value['pq4'];
+                  $msg_data['tracking_number'] = $value['pq5'];
+                Email::send($notification_reciever_email, 'Saliva_Collection_Tracking_Form_Email_Notifications.tpl', $msg_data, "", "IBIS Team <noreply@ibis.loris.ca>");
+          } 
+          if ($values["pq6"] == "Via_Mail"){
+                  $msg_data['delivery'] = "Via Mail";
+                  $msg_data['tracking_number'] = $value['pq5'];
+                Email::send($notification_reciever_email, 'Saliva_Collection_Tracking_Form_Email_Notifications.tpl', $msg_data, "", "IBIS Team <noreply@ibis.loris.ca>");
+            
+          } 
+       }
+      //mother
+      if ($values['mq1'] == 'yes') {
+          if ($values["mq2"] == "At_Visit"){
+                  $msg_data['mail_date'] = $value['mq4'];
+                  $msg_data['tracking_number'] = $value['mq5'];
+                  $msg_data['delivery'] = "At Visit";
+                Email::send($notification_reciever_email, 'Saliva_Collection_Tracking_Form_Email_Notifications.tpl', $msg_data, "", "IBIS Team <noreply@ibis.loris.ca>");
+          } 
+          if ($values["mq2"] == "Via_Mail"){
+                  $msg_data['delivery'] = "Via Mail";
+                  $msg_data['tracking_number'] = $value['mq5'];
+                Email::send($notification_reciever_email, 'Saliva_Collection_Tracking_Form_Email_Notifications.tpl', $msg_data, "", "IBIS Team <noreply@ibis.loris.ca>");
+            
+          } 
+       }
+      //father
+      if ($values['fq1'] == 'yes') {
+          if ($values["fq2"] == "At_Visit"){
+                  $msg_data['delivery'] = "At Visit";
+                  $msg_data['mail_date'] = $value['fq4'];
+                  $msg_data['tracking_number'] = $value['fq5'];
+                Email::send($notification_reciever_email, 'Saliva_Collection_Tracking_Form_Email_Notifications.tpl', $msg_data, "", "IBIS Team <noreply@ibis.loris.ca>");
+          } 
+          if ($values["fq2"] == "Via_Mail"){
+                  $msg_data['delivery'] = "Via Mail";
+                  $msg_data['tracking_number'] = $value['fq5'];
+                Email::send($notification_reciever_email, 'Saliva_Collection_Tracking_Form_Email_Notifications.tpl', $msg_data, "", "IBIS Team <noreply@ibis.loris.ca>");
+            
+          } 
+       }
+       print_r($msg_data);
+    }
 
 
   /**
@@ -564,7 +557,7 @@ function _page4(){
     function validate_tracking_number($values)
     {
         $errors = [];
-        $this->validate_positive_numeric($values, "aq2", $errors);
+        $this->validate_positive_numeric($values, "aq3", $errors);
         return $errors;
 
     }
@@ -586,10 +579,6 @@ function _page4(){
              $errors = array();
           if ($values["sq2"] == "At_Visit") 
           {
-              if ($values["sq5_1"] != null)
-              {
-                $errors["sq5_1"] = $err_msg;
-              }
               if ($values["sq6"] != null)
               {
                 $errors["sq6"] = $err_msg;
@@ -603,13 +592,13 @@ function _page4(){
               {
                 $errors["sq3"] = $err_msg;
               }
-              if ($values["sq4_1"] != null)
+              if ($values["sq4"] != null)
               {
-                $errors["sq4_1"] = $err_msg;
+                $errors["sq4"] = $err_msg;
               }
-              if ($values["sq4_2"] != null)
+              if ($values["sq5"] != null)
               {
-                $errors["sq4_2"] = $err_msg;
+                $errors["sq5"] = $err_msg;
               }
 
           }
@@ -622,9 +611,9 @@ function _page4(){
           $errors = array();
           if ($values["pq6"] == "At_Visit") 
           {
-              if ($values["pq9_1"] != null)
+              if ($values["pq10"] != null)
               {
-                $errors["pq9_1"] = $err_msg;
+                $errors["pq10"] = $err_msg;
               }
 
           } 
@@ -634,14 +623,14 @@ function _page4(){
               if ($values["pq7"] != null)
               {
                 $errors["pq7"] = $err_msg;
-              }
-              if ($values["pq8_1"] != null)
+              }            
+              if ($values["pq8"] != null)
               {
-                $errors["pq8_1"] = $err_msg;
+                $errors["pq8"] = $err_msg;
               }
-              if ($values["pq8_2"] != null)
+              if ($values["pq9"] != null)
               {
-                $errors["pq8_2"] = $err_msg;
+                $errors["pq9"] = $err_msg;
               }
 
           }
@@ -655,9 +644,9 @@ function _page4(){
           $errors = array();
           if ($values["mq2"] == "At_Visit") 
           {
-              if ($values["mq5_1"] != null)
+              if ($values["mq6"] != null)
               {
-                $errors["mq5_1"] = $err_msg;
+                $errors["mq6"] = $err_msg;
               }
 
           } 
@@ -668,13 +657,13 @@ function _page4(){
               {
                 $errors["mq3"] = $err_msg;
               }
-              if ($values["mq4_1"] != null)
+              if ($values["mq5"] != null)
               {
-                $errors["mq4_1"] = $err_msg;
+                $errors["mq5"] = $err_msg;
               }
-              if ($values["mq4_2"] != null)
+              if ($values["mq4"] != null)
               {
-                $errors["mq4_2"] = $err_msg;
+                $errors["mq4"] = $err_msg;
               }
 
           }
@@ -687,9 +676,9 @@ function _page4(){
           $errors = array();
           if ($values["fq2"] == "At_Visit") 
           {
-              if ($values["fq5_1"] != null)
+              if ($values["fq6"] != null)
               {
-                $errors["fq5_1"] = $err_msg;
+                $errors["fq6"] = $err_msg;
               }
 
           } 
@@ -700,13 +689,13 @@ function _page4(){
               {
                 $errors["fq3"] = $err_msg;
               }
-              if ($values["fq4_1"] != null)
+              if ($values["fq5"] != null)
               {
-                $errors["fq4_1"] = $err_msg;
+                $errors["fq5"] = $err_msg;
               }
-              if ($values["fq4_2"] != null)
+              if ($values["fq4"] != null)
               {
-                $errors["fq4_2"] = $err_msg;
+                $errors["fq4"] = $err_msg;
               }
 
           }
