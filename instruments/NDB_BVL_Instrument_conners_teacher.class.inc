@@ -23,13 +23,13 @@ class NDB_BVL_Instrument_conners_teacher extends NDB_BVL_Instrument
     var $ValidityRequired = false;
 
     var $scoreLabels = array(
-        'IN_raw_score',
-        'HY_raw_score',
-        'LE_raw_score',
-        'AG_raw_score',
-        'PR_raw_score',
-        'PI_raw_score',
-        'NI_raw_score',
+        'IN_raw_score', 'IN_T_score', 'IN_validity',
+        'HY_raw_score', 'HY_T_score', 'HY_validity',
+        'LE_raw_score', 'LE_T_score', 'LE_validity',
+        'AG_raw_score', 'AG_T_score', 'AG_validity',
+        'PR_raw_score', 'PR_T_score', 'PR_validity',
+        'PI_raw_score', 'PI_T_score', 'PI_validity',
+        'NI_raw_score', 'NI_T_score', 'NI_validity'
     );
 
     /**
@@ -375,6 +375,18 @@ class NDB_BVL_Instrument_conners_teacher extends NDB_BVL_Instrument
         $scores['PI_raw_score'] =$this->findRowScore($PI_array);
         $scores['NI_raw_score']=$this->findRowScore($NI_array);
         $timepoint =& TimePoint::singleton($this->getSessionID());
+
+        // If the date taken field was not filled out, we won't be able to calculate
+        // the kid's age at the time the instrument was administered:
+        // all T-Scores and Validity will remain null
+        if (is_null($record["Date_taken"])) {
+            $scores= str_replace(">", "Greater than or equal to ", $scores);
+            $scores=str_replace("<", "Less than or equal to", $scores);
+            $result = $db->update($this->table, $scores, array('CommentID'=>$this->getCommentID()));
+
+            return;
+        }
+
         $dob = $timepoint->getEffectiveDateOfBirth();
         $age = Utility::calculateAge($dob, $record["Date_taken"]);
         $valid="YES";
