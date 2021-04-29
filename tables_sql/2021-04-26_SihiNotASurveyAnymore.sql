@@ -11,7 +11,13 @@ RENAME TABLE SIHI_survey TO SIHI;
 
 UPDATE instrument_subtests SET test_name = 'SIHI', subtest_name = REPLACE(subtest_name, '_survey', '') WHERE test_name = 'SIHI_survey';
 
-UPDATE test_names SET IsDirectEntry = 0, test_name = 'SIHI', full_name='SIHI (Sleep Intervention History Interview)' WHERE test_name = 'SIHI_survey';
+INSERT INTO test_names (Test_name, Full_name, Sub_group, IsDirectEntry) VALUES ('SIHI', 'SIHI (Sleep Intervention History Interview)', 1, 0);
+
+UPDATE media                      SET instrument = 'SIHI' WHERE instrument = 'SIHI_survey';
+UPDATE participant_emails         SET Test_name  = 'SIHI' WHERE Test_name  = 'SIHI_survey';
+UPDATE publication_test_names_rel SET TestNameID = 'SIHI' WHERE TestNameID = 'SIHI_survey';
+
+DELETE FROM test_names WHERE test_name = 'SIHI_survey';
 
 UPDATE flag SET test_name = 'SIHI' WHERE test_name = 'SIHI_survey';
 
