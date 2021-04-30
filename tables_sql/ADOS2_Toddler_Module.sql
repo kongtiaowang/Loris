@@ -100,18 +100,18 @@ VALUES ('ADOS2_Toddler_Module', 'ADOS2_Toddler_Module_page2', 'Sections C-E', 2)
 
 
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label)
-VALUES ("ADOS2_Toddler_Module", "660", "780", "Y", "Visit", 18, "V24");
+VALUES ("ADOS2_Toddler_Module", "0", "0", "Y", "Visit", 18, "V24");
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label)
-VALUES ("ADOS2_Toddler_Module", "660", "780", "Y", "Visit", 19, "V24");
+VALUES ("ADOS2_Toddler_Module", "0", "0", "Y", "Visit", 19, "V24");
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label)
-VALUES ("ADOS2_Toddler_Module", "660", "780", "Y", "Visit", 20, "V24");
+VALUES ("ADOS2_Toddler_Module", "0", "0", "Y", "Visit", 20, "V24");
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label)
-VALUES ("ADOS2_Toddler_Module", "660", "780", "Y", "Visit", 23, "V24");
+VALUES ("ADOS2_Toddler_Module", "0", "0", "Y", "Visit", 23, "V24");
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label)
-VALUES ("ADOS2_Toddler_Module", "660", "780", "Y", "Visit", 18, "V24-CVD");
+VALUES ("ADOS2_Toddler_Module", "0", "0", "Y", "Visit", 18, "V24-CVD");
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label)
-VALUES ("ADOS2_Toddler_Module", "660", "780", "Y", "Visit", 19, "V24-CVD");
+VALUES ("ADOS2_Toddler_Module", "0", "0", "Y", "Visit", 19, "V24-CVD");
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label)
-VALUES ("ADOS2_Toddler_Module", "660", "780", "Y", "Visit", 20, "V24-CVD");
+VALUES ("ADOS2_Toddler_Module", "0", "0", "Y", "Visit", 20, "V24-CVD");
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label)
-VALUES ("ADOS2_Toddler_Module", "660", "780", "Y", "Visit", 23, "V24-CVD");
+VALUES ("ADOS2_Toddler_Module", "0", "0", "Y", "Visit", 23, "V24-CVD");
