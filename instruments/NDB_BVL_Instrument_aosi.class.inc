@@ -11,6 +11,9 @@ class NDB_BVL_Instrument_aosi extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
 
+    var $ValidityEnabled  = true;
+    var $ValidityRequired = false;
+
 /**
 INSERT INTO test_names VALUES ('', 'aosi', 'AOSI', '0', '1');
 INSERT INTO instrument_subtests VALUES('', 'aosi', 'aosi_page1', 'Item Adminstration', 1);
