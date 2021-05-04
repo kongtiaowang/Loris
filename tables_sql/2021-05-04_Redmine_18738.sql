@@ -21,7 +21,6 @@ ALTER TABLE pspq_InformantReport_mom_on_dad ADD `prs_score` varchar(255) default
 ALTER TABLE pspq_InformantReport_mom_on_dad ADD `rigid_score` varchar(255) default NULL AFTER `prs_score`;
 ALTER TABLE pspq_InformantReport_mom_on_dad ADD `total_score` varchar(255) default NULL AFTER `rigid_score`;
 
-UPDATE test_names SET Full_name = "PSPQ Mom's Report on Dad (Send to Mom)" WHERE Test_name = 'pspq_InformantReport_mom_on_dad';
 UPDATE instrument_subtests SET Description = 'Page 1', Subtest_name = 'pspq_InformantReport_mom_on_dad_page1' WHERE Test_name = 'pspq_InformantReport_mom_on_dad' AND Order_number = 1;
 UPDATE instrument_subtests SET Description = 'Page 2', Subtest_name = 'pspq_InformantReport_mom_on_dad_page2' WHERE Test_name = 'pspq_InformantReport_mom_on_dad' AND Order_number = 2;
 UPDATE instrument_subtests SET Description = 'Page 3', Subtest_name = 'pspq_InformantReport_mom_on_dad_page3' WHERE Test_name = 'pspq_InformantReport_mom_on_dad' AND Order_number = 3;
