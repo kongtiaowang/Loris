@@ -7,6 +7,13 @@ class NDB_BVL_Instrument_pspq_InformantReport_dad_on_mom extends NDB_BVL_Instrum
     var $ValidityEnabled  = false;
     var $ValidityRequired = false;
 
+    var $scoreLabels = array(
+        "aloof_score",
+        "prs_score",
+        "rigid_score",
+        "total_score",
+       );
+
     //Commonly used level of indentation;
     var $indent = "&nbsp;&nbsp;&nbsp;&nbsp;";
 
@@ -114,10 +121,6 @@ class NDB_BVL_Instrument_pspq_InformantReport_dad_on_mom extends NDB_BVL_Instrum
 
         $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
 
-        $this->form->addElement('header', 'instrument_title_2', "Observer Rating");
-
-        $this->form->addElement('static', null, "<br /><br />");
-
         // $this->addNumericElement('respondent_age','Your Age <BR>(Please indicate your age in years)');
         $field = 'respondent_age';$label = 'Your Age <BR>(Please indicate your age in years)';
         $group[] = $this->createText($field, $label);
@@ -136,18 +139,76 @@ class NDB_BVL_Instrument_pspq_InformantReport_dad_on_mom extends NDB_BVL_Instrum
         $this->addSelect('respondent_gender', "Your gender", $this->gender);
         $this->XINRegisterRule('respondent_gender', array("respondent_gender{@}=={@}NEVER_REQUIRED"));
 
-        $this->form->addElement('static', null, "<br /><br />");
+        // SCORING TABLE
+
+        $this->form->addElement('header', 'score', "Score Summary");
+
+        $group[] = $this->form->createElement('static', "score", null, null);
+
+        $this->form->addGroup($group, 'score_header_group', "<strong>Scale</strong>", $this->_GUIDelimiter, false);
+        unset($group);
+
+        $scales = array(
+                   "aloof" => "Aloof",
+                   "prs"   => "Pragmatic Language (PRS)",
+                   "rigid" => "Rigid",
+                   "total" => "Total",
+                  );
+
+        $columnHeaders = array("score" => "Score");
+
+        foreach ($columnHeaders as $field => $label) {
+            $columnHeaders[$field] .= "   ";
+        }
+        $this->localDefaults = array_merge($this->localDefaults, $columnHeaders);
+
+        foreach ($scales as $field => $label) {
+            foreach ($columnHeaders as $scoreField => $scoreLabel) {
+                $group[] = $this->form->createElement('static', "{$field}_{$scoreField}", null, null);
+            }
+            $this->form->addGroup($group, "{$field}_score_group", $label, $this->_GUIDelimiter, false);
+            unset($group);
+        }
     }
 
-    function _page2()
+    /**
+     * Generates the first page of the form
+     *
+     * @return void
+     */
+    function _page1()
     {
         // display test name
-        $this->form->addElement('header', 'instrument_title_3', "Personality Styles and Preferences Questionnaire Page2 - Informant Report Dad on Mom (Send to Dad)");
-        $this->form->addElement('static', 'lorisSubHeader', "<strong>Instructions:</strong><BR>You are about to fill out a series of statements related to personality and lifestyle of the other biological parent <BR>of your child. For each question, you will be given a choice of 6 answers that describe how often the statement<BR> applies to the other biological parent:<BR> 1.Very Rarely<BR>2.Rarely<BR>3.Occasionally<BR>4.Somewhat Often<BR>5.Often<BR> 6.Very Often<BR><BR>Choose the number that matches the answer that comes closest to how you feel about each statement.<BR>So, if they watch the evening news once a week, you might circle #4: Somewhat often.<BR><BR><strong>3 IMPORTANT THINGS TO REMEMBER</strong><BR><BR>#1. Many of these questions ask about their interactions with other people. Please <strong>think about the <BR> way they are with <i>most</i> people rather than special relationships</strong> they may have with spouses or <BR> significant others, children, siblings, and parents.<BR> <BR>#2. Everyone changes over time, which can make it hard to fill out questions about personality. <BR><strong>Think about the way they have been the majority of their adult life</strong>, rather than the way they were <BR> as a teenager, or times they many have felt different than normal.<BR><BR>#3. <strong>You must answer each question,</strong> and give only one answer per question. If you are confused,<BR> please just give it a guess.<BR><BR>Observer ratings help us obtain a more well-rounded measure of personality and lifestyle, since <BR>some traits and behaviors are most easily observed by other people.");
+        $this->form->addElement('header', 'instrument_title_2', "PSPQ: Personality Styles and Preferences Questionnaire Page 1 - Informant Report Dad on Mom (Send to Dad)");
+
+        $this->form->addElement(
+            'static',
+            'lorisSubHeader',
+            "<strong>Instructions:</strong>
+            <BR><BR>
+            You are about to fill out a series of statements related to personality and lifestyle of the other biological parent of your child.
+            For each question, you will be given a choice of 6 answers that describe how often the statement applies to the other biological parent:
+            <BR><BR>
+            1. Very Rarely<BR>2. Rarely<BR>3. Occasionally<BR>4. Somewhat Often<BR>5. Often<BR> 6. Very Often
+            <BR><BR>
+            Choose the number that matches the answer that comes closest to how you feel about each statement.
+            <BR>
+            So, if they watch the evening news once a week, you might circle #4: Somewhat often.
+            <BR><BR>
+            <strong>3 IMPORTANT THINGS TO REMEMBER</strong>
+            <BR><BR>
+            #1. Many of these questions ask about their interactions with other people. Please <strong>think about the way they are with <i>most</i> people rather than special relationships</strong> they may have with spouses or significant others, children, siblings, and parents.
+            <BR><BR>
+            #2. Everyone changes over time, which can make it hard to fill out questions about personality. <strong>Think about the way they have been the majority of their adult life</strong>, rather than the way they were as a teenager, or times they many have felt different than normal.
+            <BR><BR>
+            #3. <strong>You must answer each question,</strong> and give only one answer per question. If you are confused, please just give it a guess.
+            <BR><BR>
+            Observer ratings help us obtain a more well-rounded measure of personality and lifestyle, since some traits and behaviors are most easily observed by other people."
+        );
 
         $this->addSelect('informant_confidence', "<BR>How confident do you feel about your ability to give an accurate report on the <BR>personality traits and behaviors of the other biological parent?", $this->informant_confidence);
 
-        $this->form->addElement('header', 'instrument_title_4', "Observer Rating");
+        $this->form->addElement('header', 'instrument_title_3', "Observer Rating");
         /*
         $field = 'informant_age';$label = 'Your Age <BR>(Please indicate your age in years)';
         $group [] = $this->createText($field, $label);
@@ -190,10 +251,15 @@ class NDB_BVL_Instrument_pspq_InformantReport_dad_on_mom extends NDB_BVL_Instrum
         // $this->form->addFormRule(array(&$this, 'PSPQ_Rules'));
     }
 
-    function _page3()
+    /**
+     * Generates the second page of the form
+     *
+     * @return void
+     */
+    function _page2()
     {
-        $this->form->addElement('header', 'instrument_title_5', "PSPQ : Personality Styles and Preferences Questionnaire Page3 - Informant Report Dad on Mom (Send to Dad) ");
-        $this->form->addElement('header', 'instrument_title_6', "Observer Rating");
+        $this->form->addElement('header', 'instrument_title_4', "PSPQ: Personality Styles and Preferences Questionnaire Page 2 - Informant Report Dad on Mom (Send to Dad)");
+        $this->form->addElement('header', 'instrument_title_5', "Observer Rating");
 
         $questions = array(
                       "qi13_strongneed_sameness"         => "13. He/She feels a strong need for sameness from day to day",
@@ -216,13 +282,17 @@ class NDB_BVL_Instrument_pspq_InformantReport_dad_on_mom extends NDB_BVL_Instrum
         }
 
         // $this->form->addFormRule(array(&$this, 'PSPQ_Rules'));
-
     }
 
-    function _page4()
+    /**
+     * Generates the third page of the form
+     *
+     * @return void
+     */
+    function _page3()
     {
-        $this->form->addElement('header', 'instrument_title_7', "PSPQ : Personality Styles and Preferences Questionnaire Page4 - Informant Report Dad on Mom (Send to Dad)");
-        $this->form->addElement('header', 'instrument_title_8', "Observer Rating");
+        $this->form->addElement('header', 'instrument_title_6', "PSPQ: Personality Styles and Preferences Questionnaire Page 3 - Informant Report Dad on Mom (Send to Dad)");
+        $this->form->addElement('header', 'instrument_title_7', "Observer Rating");
 
         $questions = array(
                       "qi25_connecting_people"           => "25. He/She feels like he/she is really connecting with other people",
@@ -316,4 +386,167 @@ class NDB_BVL_Instrument_pspq_InformantReport_dad_on_mom extends NDB_BVL_Instrum
 
         return $errors;
     }
+
+    function sumSubscaleScores($question_array, $record)
+    {
+        $sum = 0;
+
+        foreach ($question_array as $q) {
+            if ($record[$q] == "1_very_rarely") {
+                $sum++;
+            } elseif ($record[$q] == "2_rarely") {
+                $sum += 2;
+            } elseif ($record[$q] == "3_occasionally") {
+                $sum += 3;
+            } elseif ($record[$q] == "4_somewhat_often") {
+                $sum += 4;
+            } elseif ($record[$q] == "5_often") {
+                $sum += 5;
+            } elseif ($record[$q] == "6_very_often") {
+                $sum += 6;
+            }
+        }
+
+        return $sum;
+    }
+
+    function score(): void
+    {
+        if ($this->_determineDataEntryCompletionStatus() == "Incomplete") {
+            return;
+        }
+
+        // Null scores
+        $this->_nullScores($this->scoreLabels);
+
+        // Get the saved scores
+        $db     =& Database::singleton();
+        $query  = "SELECT * FROM $this->table WHERE CommentID = '$this->commentID'";
+        $record = $db->pselectRow($query, array());
+
+        $scores = array(
+                   "aloof_score" => 0,
+                   "prs_score"   => 0,
+                   "rigid_score" => 0,
+                   "total_score" => 0,
+                  );
+
+        // Reverse score items
+        foreach (self::REVERSE as $r) {
+            if ($record[$r] == "1_very_rarely") {
+                $record[$r] = "6_very_often";
+            } elseif ($record[$r] == "2_rarely") {
+                $record[$r] = "5_often";
+            } elseif ($record[$r] == "3_occasionally") {
+                $record[$r] = "4_somewhat_often";
+            } elseif ($record[$r] == "4_somewhat_often") {
+                $record[$r] = "3_occasionally";
+            } elseif ($record[$r] == "5_often") {
+                $record[$r] = "2_rarely";
+            } elseif ($record[$r] == "6_very_often") {
+                $record[$r] = "1_very_rarely";
+            }
+        }
+
+        $aloof_sum = $this->sumSubscaleScores(self::ALOOF, $record);
+        $prs_sum   = $this->sumSubscaleScores(self::PRS, $record);
+        $rigid_sum = $this->sumSubscaleScores(self::RIGID, $record);
+        $total_sum = $aloof_sum + $prs_sum + $rigid_sum;
+
+        $scores["aloof_score"] = round($aloof_sum/12, 12);
+        $scores["prs_score"]   = round($prs_sum/12, 12);
+        $scores["rigid_score"] = round($rigid_sum/12, 12);
+        $scores["total_score"] = round($total_sum/36, 12);
+
+        $db->update($this->table, $scores, array("CommentID" => $this->getCommentID()));
+    }
+
+    // (1, 5, 9, 12, 16, 18, 23, 25, 27, 28, 31, 36)
+    CONST ALOOF = [
+        "qi1_like_being_otherpeople",
+        "qi5_information_than_socialize",
+        "qi9_enjoy_socialsituations",
+        "qi12_easy_approach",
+        "qi16_situations_meetnew_people",
+        "qi18_conversation_tobe_polite",
+        "qi23_good_smalltalk",
+        "qi25_connecting_people",
+        "qi27_conversation_boresme",
+        "qi28_warmfriendly_others",
+        "qi31_alone_ratherthan_withothers",
+        "qi36_enjoy_chatting",
+        ];
+
+    // (2,4,7,10,11,14,17,20,21,29,32,34)
+    CONST PRS = [
+            "qi2_hard_wordsout_smoothly",
+            "qi4_hard_avoid_sidetrack",
+            "qi7_intune_conversation",
+            "qi10_voice_flat_monotone",
+            "qi11_disconnected_outofsync_convo",
+            "qi14_others_dont_understand",
+            "qi17_talktoomuch_certain_topics",
+            "qi20_speak_tooloud_softly",
+            "qi21_tell_someone_not_interested",
+            "qi29_longpauses_conversations",
+            "qi32_losetrack_talking",
+            "qi34_change_topic",
+            ];
+
+
+    // (3, 6, 8, 13, 15, 19, 22, 24, 26, 30, 33, 35)
+    CONST RIGID = [
+                "qi3_comfortable_unexpectedchanges",
+                "qi6_talkinto_tryingnew",
+                "qi8_warmup_unfamiliarplace",
+                "qi13_strongneed_sameness",
+                "qi15_flexible",
+                "qi19_lookforward_newthings",
+                "qi22_hardtime_change_routine",
+                "qi24_act_myways",
+                "qi26_peoplefrustrated",
+                "qi30_alter_dailyroutine",
+                "qi33_follow_routine",
+                "qi35_doingthings_knownway",
+            ];
+
+    // 1, 3, 7, 9, 12, 15, 16, 19, 21, 23, 25, 28, 30, 34, 36
+    CONST REVERSE = [
+                "qi1_like_being_otherpeople",
+                "qi3_comfortable_unexpectedchanges",
+                "qi7_intune_conversation",
+                "qi9_enjoy_socialsituations",
+                "qi12_easy_approach",
+                "qi15_flexible",
+                "qi16_situations_meetnew_people",
+                "qi19_lookforward_newthings",
+                "qi21_tell_someone_not_interested",
+                "qi23_good_smalltalk",
+                "qi25_connecting_people",
+                "qi28_warmfriendly_others",
+                "qi30_alter_dailyroutine",
+                "qi34_change_topic",
+                "qi36_enjoy_chatting",
+                ];
+
+    CONST CUTOFFS = [
+                     'f_s_aloof'  => 3.46,
+                     'f_s_prs'    => 2.93,
+                     'f_s_rigid'  => 3.73,
+                     'f_i_aloof'  => 3.65,
+                     'f_i_prs'    => 3.22,
+                     'f_i_rigid'  => 4.32,
+                     'f_be_aloof' => 3.39,
+                     'f_be_prs'   => 2.89,
+                     'f_be_rigid' => 3.89,
+                     'm_s_aloof'  => 4.13,
+                     'm_s_prs'    => 3.25,
+                     'm_s_rigid'  => 3.94,
+                     'm_i_aloof'  => 4.19,
+                     'm_i_prs'    => 3.3,
+                     'm_i_rigid'  => 4.20,
+                     'm_be_aloof' => 4.02,
+                     'm_be_prs'   => 3.10,
+                     'm_be_rigid' => 3.89,
+                    ];
 }
