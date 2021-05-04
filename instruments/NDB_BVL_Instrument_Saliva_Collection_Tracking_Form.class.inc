@@ -431,8 +431,8 @@ function _page5(){
                $this->form->addRule('aq2', 'This question is required', 'required');
 
                $this->form->addElement('text','aq3','3.  What is Family ID?');
-                $this->XINRegisterRule('aq3', array("aq2{@}=={@}yes"), "Required if 'Yes' was selected for Question 2.");
 
+               $this->XINRegisterRule('aq3', array("aq2{@}=={@}yes"), "Required if 'Yes' was selected for Question 2.");
 
                $this->form->addFormRule(array(&$this, 'validate_tracking_number'));
                $this->form->addFormRule(array(&$this, 'validate_page4'));
