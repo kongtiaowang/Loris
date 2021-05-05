@@ -133,10 +133,10 @@ class NDB_BVL_Instrument_Seizure_Questionnaire extends NDB_BVL_Instrument
 
         $scales = array(
                    "seizure_screening_total"        => "Seizure Screening Total",
-                   "subscale1_seizure_frequency"    => "Subscale1 Seizure Frequency",
-                   "subscale2_time_period"          => "Subscale2 Time Period",
-                   "subscale3_num_of_seizure_types" => "Subscale3 Number of Seizure Types",
-                   "subscale4_epilepticus"          => "Subscale4 Epilepticus",
+                   "subscale1_seizure_frequency"    => "Subscale 1 - Seizure Frequency",
+                   "subscale2_time_period"          => "Subscale 2 - Time Period",
+                   "subscale3_num_of_seizure_types" => "Subscale 3 - Number of Seizure Types",
+                   "subscale4_epilepticus"          => "Subscale 4 - Epilepticus",
                    "total_severity"                 => "Total Severity Score",
                   );
 
@@ -538,7 +538,7 @@ class NDB_BVL_Instrument_Seizure_Questionnaire extends NDB_BVL_Instrument
     }
 
     /**
-     * Used to get Subscale1: Frequency of Seizures Score
+     * Used to get Subscale 1: Frequency of Seizures Score
      *
      * Given the user's input for a _frequency question, returns the appropriate score
      *
@@ -570,7 +570,7 @@ class NDB_BVL_Instrument_Seizure_Questionnaire extends NDB_BVL_Instrument
     }
 
     /**
-     * Used to get Subscale2: Time Period Score
+     * Used to get Subscale 2: Time Period Score
      *
      * Given the user's input for a _period question, returns the appropriate score
      *
@@ -596,7 +596,7 @@ class NDB_BVL_Instrument_Seizure_Questionnaire extends NDB_BVL_Instrument
     }
 
     /**
-     * Used to get Subscale4: Epilepticus Score
+     * Used to get Subscale 4: Epilepticus Score
      *
      * Given the user's input for a _duration question, returns the appropriate score
      *
