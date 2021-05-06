@@ -1,4 +1,4 @@
-INSERT INTO test_names (Test_name, Full_name, Sub_group) VALUES ('EEG_QC', 'EEG_QC', '1');
+INSERT INTO test_names (Test_name, Full_name, Sub_group) VALUES ('EEG_QC', 'EEG QC FORM', '1');
 
 INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('EEG_QC','EEG_QC_page1', "SUBSECTION 1", 1);
 
