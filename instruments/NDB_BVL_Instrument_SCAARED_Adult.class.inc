@@ -184,11 +184,10 @@ class NDB_BVL_Instrument_SCAARED_Adult extends NDB_BVL_Instrument
         $this->form->addElement(
             'static',
             'lorisSubHeader',
-            "<strong>Instructions:</strong>
+            "<strong>Instructions:</strong><br><br>
             Below is a list of sentences that describe how people feel. Read each phrase and decide if it is
             \"Not True or Hardly Ever True\" or \"Somewhat True or Sometimes True\" or \"Very True or Often True\" for you.
-            Then, for each sentence, select the response that seems to describe you now or <b><i>within the past 3 months</i></b>.
-            "
+            Then, for each sentence, select the response that seems to describe you now or <b><i>within the past 3 months</i></b>."
         );
 
         $page1_questions = array(
@@ -231,38 +230,37 @@ class NDB_BVL_Instrument_SCAARED_Adult extends NDB_BVL_Instrument
         $this->form->addElement(
             'static',
             'lorisSubHeader',
-            "<strong>Instructions:</strong>
+            "<strong>Instructions:</strong><br><br>
             Below is a list of sentences that describe how people feel. Read each phrase and decide if it is
             \"Not True or Hardly Ever True\" or \"Somewhat True or Sometimes True\" or \"Very True or Often True\" for you.
-            Then, for each sentence, select the response that seems to describe you now or <b><i>within the past 3 months</i></b>.
-            "
+            Then, for each sentence, select the response that seems to describe you now or <b><i>within the past 3 months</i></b>."
         );
 
         $page2_questions = array(
-                            "q21_worry_about_things_working_out"                      => "21. I worry about things working out for me.",
-                            "q22_anxious_sweat_a_lot"                                 => "22. When I get anxious, I sweat a lot.",
-                            "q23_worrier"                                             => "23. I am a worrier.",
-                            "q24_worry_trouble_sleeping"                              => "24. When I worry a lot, I have trouble sleeping.",
-                            "q25_frightened_for_no_reason"                            => "25. I get really frightened for no reason at all.",
-                            "q26_afraid_to_be_alone_in_house"                         => "26. I am afraid to be alone in the house.",
-                            "q27_hard_to_talk_with_people_dont_know_well"             => "27. It is hard for me to talk with people I don't know well.",
-                            "q28_anxious_feel_like_choking"                           => "28. When I get anxious, I feel like I'm choking.",
-                            "q29_people_tell_worry_too_much"                          => "29. People tell me that I worry too much.",
-                            "q30_dont_like_to_be_away_from_family"                    => "30. I don't like to be away from my family.",
-                            "q31_worry_feel_restless"                                 => "31. When I worry a lot, I feel restless.",
-                            "q32_afraid_of_anxiety_or_panic_attacks"                  => "32. I am afraid of having anxiety (or panic) attacks.",
-                            "q33_worry_something_bad_might_happen_family"             => "33. I worry that something bad might happen to my family.",
-                            "q34_shy_with_people_dont_know_well"                      => "34. I feel shy with people I don't know well.",
-                            "q35_worry_about_the_future"                              => "35. I worry about what is going to happen in the future.",
-                            "q36_anxious_feel_like_throwing_up"                       => "36. When I get anxious, I feel like throwing up.",
-                            "q37_worry_about_how_well_do_things"                      => "37. I worry about how well I do things.",
-                            "q38_afraid_to_go_outside_crowded_places_myself"          => "38. I am afraid to go outside or to crowded places by myself.",
-                            "q39_worry_about_things_already_happened"                 => "39. I worry about things that have already happened.",
-                            "q40_anxious_feel_dizzy"                                  => "40. When I get anxious, I feel dizzy.",
-                            "q41_nervous_when_with_people_do_something_watch"         => "41. I feel nervous when I am with other people and I have to do something while they watch me (for example: speak, play a sport.)",
-                            "q42_nervous_when_go_to_place_with_people_dont_know_well" => "42. I feel nervous when I go to parties, dances, or any place where there will be people that I don't know well.",
-                            "q43_am_shy"                                              => "43. I am shy.",
-                            "q44_worry_feel_irritable"                                => "44. When I worry a lot, I feel irritable.",
+                            "q21_worry_about_things_working_out"                     => "21. I worry about things working out for me.",
+                            "q22_anxious_sweat_a_lot"                                => "22. When I get anxious, I sweat a lot.",
+                            "q23_worrier"                                            => "23. I am a worrier.",
+                            "q24_worry_trouble_sleeping"                             => "24. When I worry a lot, I have trouble sleeping.",
+                            "q25_frightened_for_no_reason"                           => "25. I get really frightened for no reason at all.",
+                            "q26_afraid_to_be_alone_in_house"                        => "26. I am afraid to be alone in the house.",
+                            "q27_hard_to_talk_with_people_dont_know_well"            => "27. It is hard for me to talk with people I don't know well.",
+                            "q28_anxious_feel_like_choking"                          => "28. When I get anxious, I feel like I'm choking.",
+                            "q29_people_tell_worry_too_much"                         => "29. People tell me that I worry too much.",
+                            "q30_dont_like_to_be_away_from_family"                   => "30. I don't like to be away from my family.",
+                            "q31_worry_feel_restless"                                => "31. When I worry a lot, I feel restless.",
+                            "q32_afraid_of_anxiety_or_panic_attacks"                 => "32. I am afraid of having anxiety (or panic) attacks.",
+                            "q33_worry_something_bad_might_happen_family"            => "33. I worry that something bad might happen to my family.",
+                            "q34_shy_with_people_dont_know_well"                     => "34. I feel shy with people I don't know well.",
+                            "q35_worry_about_the_future"                             => "35. I worry about what is going to happen in the future.",
+                            "q36_anxious_feel_like_throwing_up"                      => "36. When I get anxious, I feel like throwing up.",
+                            "q37_worry_about_how_well_do_things"                     => "37. I worry about how well I do things.",
+                            "q38_afraid_to_go_outside_crowded_places_myself"         => "38. I am afraid to go outside or to crowded places by myself.",
+                            "q39_worry_about_things_already_happened"                => "39. I worry about things that have already happened.",
+                            "q40_anxious_feel_dizzy"                                 => "40. When I get anxious, I feel dizzy.",
+                            "q41_nervous_with_people_do_something_watch_me"          => "41. I feel nervous when I am with other people and I have to do something while they watch me (for example: speak, play a sport.)",
+                            "q42_nervous_go_to_any_place_with_people_dont_know_well" => "42. I feel nervous when I go to parties, dances, or any place where there will be people that I don't know well.",
+                            "q43_am_shy"                                             => "43. I am shy.",
+                            "q44_worry_feel_irritable"                               => "44. When I worry a lot, I feel irritable.",
                            );
 
         foreach ($page2_questions as $field => $label) {
@@ -396,8 +394,8 @@ class NDB_BVL_Instrument_SCAARED_Adult extends NDB_BVL_Instrument
                  "q10_nervous_with_people_dont_know_well",
                  "q27_hard_to_talk_with_people_dont_know_well",
                  "q34_shy_with_people_dont_know_well",
-                 "q41_nervous_when_with_people_do_something_watch",
-                 "q42_nervous_when_go_to_place_with_people_dont_know_well",
+                 "q41_nervous_with_people_do_something_watch_me",
+                 "q42_nervous_go_to_any_place_with_people_dont_know_well",
                  "q43_am_shy",
                 ];
 }

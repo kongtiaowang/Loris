@@ -55,8 +55,8 @@ CREATE TABLE `SCAARED_Adult` (
     `q38_afraid_to_go_outside_crowded_places_myself` enum('0','1','2') default NULL,
     `q39_worry_about_things_already_happened` enum('0','1','2') default NULL,
     `q40_anxious_feel_dizzy` enum('0','1','2') default NULL,
-    `q41_nervous_when_with_people_do_something_watch` enum('0','1','2') default NULL,
-    `q42_nervous_when_go_to_place_with_people_dont_know_well` enum('0','1','2') default NULL,
+    `q41_nervous_with_people_do_something_watch_me` enum('0','1','2') default NULL,
+    `q42_nervous_go_to_any_place_with_people_dont_know_well` enum('0','1','2') default NULL,
     `q43_am_shy` enum('0','1','2') default NULL,
     `q44_worry_feel_irritable` enum('0','1','2') default NULL,
     PRIMARY KEY  (`CommentID`)
