@@ -12,7 +12,7 @@
  */
 
  /**
- * Creates the form elements for the SCAARED (Screen for Adult Anxiety Related Disorders) - Survey
+ * Creates the form elements for the SCAARED (Screen for Adult Anxiety Related Disorders) - Adult - Survey
  *
  * @category Instrument
  * @package  Neuropsych
@@ -39,7 +39,7 @@ class NDB_BVL_Instrument_SCAARED_Adult extends NDB_BVL_Instrument
     /**
      * Sample SQL statement for test_names table and instrument subtests table
      *
-     * INSERT INTO test_names (Test_name, Full_name, Sub_Group, isDirectEntry) VALUES ('SCAARED_Adult', "SCAARED (Screen for Adult Anxiety Related Disorders) - Survey", 1, 1);
+     * INSERT INTO test_names (Test_name, Full_name, Sub_Group, isDirectEntry) VALUES ('SCAARED_Adult', "SCAARED (Screen for Adult Anxiety Related Disorders) - Adult - Survey", 1, 1);
      * INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('SCAARED_Adult','SCAARED_Adult_page1', "Page 1", 1);
      * INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('SCAARED_Adult','SCAARED_Adult_page2', "Page 2", 2);
      */
@@ -110,7 +110,7 @@ class NDB_BVL_Instrument_SCAARED_Adult extends NDB_BVL_Instrument
     function _main()
     {
         // display test name
-        $this->addHeader("SCAARED (Screen for Adult Anxiety Related Disorders) - Survey");
+        $this->addHeader("SCAARED (Screen for Adult Anxiety Related Disorders) - Adult - Survey");
 
         $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
 
@@ -179,7 +179,7 @@ class NDB_BVL_Instrument_SCAARED_Adult extends NDB_BVL_Instrument
      */
     function _page1()
     {
-        $this->addHeader("SCAARED (Screen for Adult Anxiety Related Disorders) - Survey");
+        $this->addHeader("SCAARED (Screen for Adult Anxiety Related Disorders) - Adult - Survey");
 
         $this->form->addElement(
             'static',
@@ -201,7 +201,7 @@ class NDB_BVL_Instrument_SCAARED_Adult extends NDB_BVL_Instrument
                             "q8_hard_to_stop_worrying"                      => "8. It is hard for me to stop worrying.",
                             "q9_people_tell_look_nervous"                   => "9. People tell me that I look nervous.",
                             "q10_nervous_with_people_dont_know_well"        => "10. I feel nervous with people I don’t know well.",
-                            "q11_stomachaches_public_places"                => "11. I get stomach aches at school, at work, or in public places.",
+                            "q11_stomachaches_public_places"                => "11. I get stomachaches at school, at work, or in public places.",
                             "q12_anxious_feel_like_going_crazy"             => "12. When I get anxious, I feel like I'm going crazy.",
                             "q13_worry_about_sleeping_alone"                => "13. I worry about sleeping alone.",
                             "q14_worry_about_being_as_good_as_other_people" => "14. I worry about being as good as other people.",
@@ -225,7 +225,7 @@ class NDB_BVL_Instrument_SCAARED_Adult extends NDB_BVL_Instrument
      */
     function _page2()
     {
-        $this->addHeader("SCAARED (Screen for Adult Anxiety Related Disorders) - Survey");
+        $this->addHeader("SCAARED (Screen for Adult Anxiety Related Disorders) - Adult - Survey");
 
         $this->form->addElement(
             'static',
@@ -239,7 +239,7 @@ class NDB_BVL_Instrument_SCAARED_Adult extends NDB_BVL_Instrument
         $page2_questions = array(
                             "q21_worry_about_things_working_out"                     => "21. I worry about things working out for me.",
                             "q22_anxious_sweat_a_lot"                                => "22. When I get anxious, I sweat a lot.",
-                            "q23_worrier"                                            => "23. I am a worrier.",
+                            "q23_am_a_worrier"                                       => "23. I am a worrier.",
                             "q24_worry_trouble_sleeping"                             => "24. When I worry a lot, I have trouble sleeping.",
                             "q25_frightened_for_no_reason"                           => "25. I get really frightened for no reason at all.",
                             "q26_afraid_to_be_alone_in_house"                        => "26. I am afraid to be alone in the house.",

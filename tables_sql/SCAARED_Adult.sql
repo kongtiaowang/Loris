@@ -37,7 +37,7 @@ CREATE TABLE `SCAARED_Adult` (
     `q20_nightmares_something_bad_happening_me` enum('0','1','2') default NULL,
     `q21_worry_about_things_working_out` enum('0','1','2') default NULL,
     `q22_anxious_sweat_a_lot` enum('0','1','2') default NULL,
-    `q23_worrier` enum('0','1','2') default NULL,
+    `q23_am_a_worrier` enum('0','1','2') default NULL,
     `q24_worry_trouble_sleeping` enum('0','1','2') default NULL,
     `q25_frightened_for_no_reason` enum('0','1','2') default NULL,
     `q26_afraid_to_be_alone_in_house` enum('0','1','2') default NULL,
