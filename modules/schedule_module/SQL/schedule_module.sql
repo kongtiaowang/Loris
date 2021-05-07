@@ -30,6 +30,8 @@ CREATE TABLE `appointment_type` (
 --
 
 INSERT INTO `appointment_type` (`AppointmentTypeID`, `Name`) VALUES
+(5, 'MC-HOME'),
+(4, 'EEG'),
 (3, 'Behavioral'),
 (2, 'Blood Collection'),
 (1, 'MRI');
