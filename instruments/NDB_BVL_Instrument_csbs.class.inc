@@ -240,30 +240,6 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
         $this->addDateElement("date_coded", "Date of Coding:", $this->dateOptions);
         $this->addTextElement("coder", "Coder:");
 
-        $this->form->addElement("static", null, "<br/>");
-
-        $this->form->addElement("select", "relationship_to_child", "Relationship to child:", array(null=>"", "1_Mother"=>"1. Mother", "2_Father"=>"2. Father", "3_Other"=>"3. Other (Specify)", "not_answered"=>"Not Answered"));
-        $this->addTextElement("relationship_to_child_specify", $this->indent . "If other is selected, specify:", array("relationship_to_child{@}=={@}3_Other"), "Please specify.");
-
-        $this->form->addElement("static", null, "<br/>");
-
-        $this->form->addElement("static", null, "Circle the response that comes closest to your observations.");
-
-        $this->form->addElement("select", "q_1_alertness", "1. Alertness", array(null=>"", "1_less_than_usual"=>"1. less than usual/sleepy", "2_typical"=>"2. typical", "3_very_alert_greater"=>"3. very alert / greater than usual", "not_answered"=>"Not Answered"));
-        $this->XINRegisterRule("q_1_alertness", array("q_1_alertness{@}=={@}NEVER_REQUIRED"));
-        $this->form->addElement("select", "q_2_emotional_reaction", "2. Emotional reaction", array(null=>"", "1_more_negative"=>"1. more negative than usual", "2_typical"=>"2. typical", "3_more_positive"=>"3. more positive than usual", "not_answered"=>"Not Answered"));
-        $this->XINRegisterRule("q_2_emotional_reaction", array("q_2_emotional_reaction{@}=={@}NEVER_REQUIRED"));
-        $this->form->addElement("select", "q_3_level_of_interest", "3. Level of interest and attention", array(null=>"", "1_less_interest"=>"1. less interest than usual", "2_typical"=>"2. typical", "3_greater"=>"3. greater interest / greater attention", "not_answered"=>"Not Answered"));
-        $this->XINRegisterRule("q_3_level_of_interest", array("q_3_level_of_interest{@}=={@}NEVER_REQUIRED"));
-        $this->form->addElement("select", "q_4_comfort_level", "4. Comfort level", array(null=>"", "1_more_cautious"=>"1. more cautious", "2_typical"=>"2. typical", "3_more_comfortable"=>"3. more confortable", "not_answered"=>"Not Answered"));
-        $this->XINRegisterRule("q_4_comfort_level", array("q_4_comfort_level{@}=={@}NEVER_REQUIRED"));
-        $this->form->addElement("select", "q_5_level_of_activity", "5. Level of activity", array(null=>"", "1_less_active"=>"1. less active than usual", "2_typical"=>"2. typical", "3_more_active"=>"3. more active than usual", "not_answered"=>"Not Answered"));
-        $this->XINRegisterRule("q_5_level_of_activity", array("q_5_level_of_activity{@}=={@}NEVER_REQUIRED"));
-        $this->form->addElement("select", "q_6_level_of_communication", "6. Overall level of communication", array(null=>"", "1_less_than_usual"=>"1. less than usual", "2_typical"=>"2. typical", "3_greater_than_usual"=>"3. greater than usual", "not_answered"=>"Not Answered"));
-        $this->XINRegisterRule("q_6_level_of_communication", array("q_6_level_of_communication{@}=={@}NEVER_REQUIRED"));
-        $this->form->addElement("select", "q_7_play_behaviour", "7. Play behavior", array(null=>"", "1_less_organized"=>"1. less organized", "2_typical"=>"2. typical", "3_more_organized"=>"3. more organized", "not_answered"=>"Not Answered"));
-        $this->XINRegisterRule("q_7_play_behaviour", array("q_7_play_behaviour{@}=={@}NEVER_REQUIRED"));
-
         $this->addTextAreaElement("comments", "Comments:");
 
 	$this->form->addElement("header",null,"Summary Scores:");
@@ -468,50 +444,71 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
             $scores["q_20_stacks_tower_raw_score"] = intval(substr($record["q_20_stacks_tower"], 0, 1));
         }
 
-        // Do q16 specially
-        // If 2 scores in a category are 0, the rest should be 0 too.
-        // Minimum of 2 scores required. Otherwise, "Unable to score"
-        // Otherwise, score is: best 3 objects*3 + best 2 persons * 3 + best 3 body * 3
         $q_16_BestObject = null;
         $q_16_BestPerson = null;
-        $q_16_BestBody = null;
+        $q_16_BestBody   = null;
 
-        if( ($record["q_16_language_comp_objects_1"] === "0" || $record["q_16_language_comp_objects_1"] === 0) &&
-            ($record["q_16_language_comp_objects_2"] === "0" || $record["q_16_language_comp_objects_2"] === 0) ) {
-            $q_16_BestObject = 0;
-        } else {
-            $q_16_BestObject = $this->_sumBestRows($record, "objects", 3, 4);
+        // Q16: objects section
+        if (!$this->_hasEmptyAnswer($record, "objects", 4)) {
+            $nbNotAdministered = $this->_countUnanswered($record, "objects", 4);
+            $prefix = "q_16_language_comp_objects";
+            if ($nbNotAdministered == 1) {
+                $q_16_BestObject = $record["{$prefix}_1"] == 1 && $record["{$prefix}_2"] == 1 && $record["{$prefix}_3"] == 1
+                    ? $this->_sumBestRows($record, "objects", 3, 4)
+                    : "Unable to score";
+            } elseif ($nbNotAdministered == 2) {
+                $q_16_BestObject = $record["{$prefix}_1"] == 0 && $record["{$prefix}_2"] == 0
+                    ? $this->_sumBestRows($record, "objects", 3, 4)
+                    : "Unable to score";
+            } else {
+                $q_16_BestObject = $nbNotAdministered != 0
+                    ? "Unable to score"
+                    : $this->_sumBestRows($record, "objects", 3, 4);
+            }
         }
-        if( ($record["q_16_language_comp_person_1"] === "0" || $record["q_16_language_comp_person_1"] === 0) &&
-            ($record["q_16_language_comp_person_2"] === "0" || $record["q_16_language_comp_person_2"] === 0) ) {
-            $q_16_BestPerson = 0;
-        } else {
-            $q_16_BestPerson = $this->_sumBestRows($record, "person", 2, 3);
+
+        // Q16: person section
+        if (!$this->_hasEmptyAnswer($record, "person", 3)) {
+            $nbNotAdministered = $this->_countUnanswered($record, "person", 3);
+            $prefix = "q_16_language_comp_person";
+            if ($nbNotAdministered == 1) {
+                $q_16_BestPerson = ($record["{$prefix}_1"] == 0 && $record["{$prefix}_2"] == 0) || ($record["{$prefix}_1"] == 1 && $record["{$prefix}_2"] == 1)
+                    ? $this->_sumBestRows($record, "person", 2, 3)
+                    : "Unable to score";
+            } else {
+                $q_16_BestPerson = $nbNotAdministered != 0
+                    ? "Unable to score"
+                    : $this->_sumBestRows($record, "person", 2, 3);
+            }
         }
-        if( ($record["q_16_language_comp_body_parts_1"] === "0" || $record["q_16_language_comp_body_parts_1"] === 0) &&
-            ($record["q_16_language_comp_body_parts_2"] === "0" || $record["q_16_language_comp_body_parts_2"] === 0) ) {
-            $q_16_BestBody= 0;
-        } else {
-            $q_16_BestBody= $this->_sumBestRows($record, "body_parts", 3, 4);
+
+        // Q16: body parts section
+        if (!$this->_hasEmptyAnswer($record, "body_parts", 4)) {
+            $nbNotAdministered = $this->_countUnanswered($record, "body_parts", 4);
+            $prefix = "q_16_language_comp_body_parts";
+            if ($nbNotAdministered == 1) {
+                $q_16_BestBody = $record["{$prefix}_1"] == 1 && $record["{$prefix}_2"] == 1 && $record["{$prefix}_3"] == 1
+                    ? $this->_sumBestRows($record, "body_parts", 3, 4)
+                    : "Unable to score";
+            } elseif ($nbNotAdministered == 2) {
+                $q_16_BestBody = $record["{$prefix}_1"] == 0 && $record["{$prefix}_2"] == 0
+                    ? $this->_sumBestRows($record, "body_parts", 3, 4)
+                    : "Unable to score";
+            } else {
+                $q_16_BestBody = $nbNotAdministered != 0
+                    ? "Unable to score"
+                    : $this->_sumBestRows($record, "body_parts", 3, 4);
+            }
         }
 
         $scores["q_16a_language_comp_object_raw_score"]      = $q_16_BestObject;
         $scores["q_16b_language_comp_person_name_raw_score"] = $q_16_BestPerson;
         $scores["q_16c_language_comp_body_parts_raw_score"]  = $q_16_BestBody;
-	$scores["q_16_language_comp_body_parts_raw_score"]   = $q_16_BestObject + $q_16_BestPerson + $q_16_BestBody;
-
-        // At least two answers are required. The >= is different for person because there's
-        // only 3 opportunities for that table column
-        if($this->_countUnanswered($record, "objects", 4) >= 3 ||
-            $this->_countUnanswered($record, "person", 3) >= 2 ||
-            $this->_countUnanswered($record, "body_parts", 4) >= 3)
-        {
-            $scores["understanding_weighted"] = "Unable to score";
-        } elseif($this->_hasNotAdministeredAllComprehensionProbes($record)) {
-            $scores["understanding_weighted"] = "Unable to score";
-        } else {
-            $scores["understanding_weighted"] = ($q_16_BestObject + $q_16_BestPerson + $q_16_BestBody) * 3;
-        }
+	$scores["q_16_language_comp_body_parts_raw_score"]   = $this->_getWeightedSum($scores, [
+            "q_16a_language_comp_object_raw_score"      => 1,
+            "q_16b_language_comp_person_name_raw_score" => 1,
+            "q_16c_language_comp_body_parts_raw_score"  => 1,
+        ]);
 
 
         //======================================================================//
@@ -576,6 +573,19 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
               "q_15_word_combos_raw_score" => 1
             ]
         );
+
+        //-----------------------------------//
+        //          Understanding            //
+        //-----------------------------------//
+        $scores["understanding_weighted"] = $this->_getWeightedSum(
+            $scores,
+            [
+              "q_16a_language_comp_object_raw_score"      => 3,
+              "q_16b_language_comp_person_name_raw_score" => 3,
+              "q_16c_language_comp_body_parts_raw_score"  => 3,
+            ]
+        );
+
 
         //--------------------------------//
         //          Object Use            //
@@ -674,20 +684,36 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
 
     }    // end score function
 
-    function _hasNotAdministeredAllComprehensionProbes(array $record)
+    /**
+     * Determines if one of the understanding sexction has an empty answer or not.
+     *
+     * @param array  $record  form values.
+     * @param string $section section ID.
+     * @param int    $nbRows  number of rows in the section.
+     *
+     * @return bool true if the section has an empty answer, false otherwise.
+     */
+    function _hasEmptyAnswer(array $record, string $section, int $nbRows)
     {
-        foreach (["objects", "person", "body_parts"] as $item) {
-            $nbItems = $item == "persons" ? 3 : 4;
-            for ($i=1; $i<=$nbItems; $i++) {
-                if ($record["q_16_language_comp_{$item}_$i"] === 'NA') {
-                    return true;
-                }
+        for ($i=1; $i<=$nbRows; $i++) {
+            if ($record["q_16_language_comp_{$section}_$i"] == "") {
+                return true;
             }
         }
 
         return false;
     }
 
+    /**
+     * Sets the std score and percentile associated to a given subscale (raw score).
+     *
+     * @param        $db        database handle.
+     * @param array  $scores    array of score values.
+     * @param string $subScale  a subScale.
+     * @param string $ageMonths age of candidate in months.
+     *
+     * @return bool true if the section has an empty answer, false otherwise.
+     */
     function _getStdAndPercentile($db, array $scores, string $subScale, string $age_months) {
         if (is_null($scores[$subScale])) {
             return [null, null];
@@ -710,6 +736,13 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
         return [$std, $percentile];
     }
 
+    /**
+     * Determines if at least one of the activities was not administered.
+     * 
+     * @param array $record array of form values.
+     *
+     * @return bool true if there is at least an activity that was not administered, false otherwise.
+     */
     function _hasActivityNotAdministered(array $record)
     {
         foreach (self::ACTIVITIES as $activity) {
@@ -721,6 +754,14 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
         return false;
     }
 
+    /**
+     * Compute the weighted sum of a set of scores.
+     *
+     * @param array $scores      all the score values.
+     * @param array $weightedIDs set of IDs (with associated weigh) of the scores to sum.
+     *
+     * @return float weighted sum.
+     */
     function _getWeightedSum(array $scores, array $weightedIDs)
     {
         $totalScore = 0;
@@ -1524,6 +1565,8 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
         $group[] = $this->form->createElement("static", null, null,"");
         $this->form->addGroup($group, "q_20_stacks_tower_raw_score_group", "&emsp;&emsp;<u>Stacks tower raw score</u>:", null, false);
         unset($group);
+
+        $this->form->addFormRule(array($this,'validatePage2'));
     }
 
     function _countChecked($record, $genericLabel, array $suffixes, bool $checkActivityAdministration = true) {
@@ -1634,5 +1677,41 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
 
         return $errors;
     }
+
+   function validatePage2($values) {
+       // Check that all scores are non null (validated with XINValidate)
+       foreach (["objects", "person", "body_parts"] as $section) {
+           $nbRows = $section == "person" ? 3 : 4;
+           for ($r=1; $r<=$nbRows; $r++) {
+               if ($values["q_16_language_comp_{$section}_$r"] == "") {
+                   // If we found a null score, then XINVAlidate will have
+                   // issued an error. No need to perform any more validations.
+                   // We'll wait until the form is completely filled out.
+                   return [];
+               }
+           }
+       }
+
+       // Form is completely filled out: validation can take place.
+       $error = [];
+
+       foreach (["objects", "person", "body_parts"] as $section) {
+           $nbRows = $section == "person" ? 3 : 4;
+           $hasNA = false;
+           for ($r=1; $r<=$nbRows; $r++) {
+               $probe = $values["q_16_language_comp_{$section}_$r"];
+               if ($probe == "NA") {
+                   $hasNA = true;
+               } elseif ($hasNA) {
+                   if ($probe != "NA") {
+                       $errors["q_16_language_comp_{$section}_{$r}_group"]
+                           = "A scored probe cannot follow a probe that was not administered";
+                   }
+               }
+           }
+       }
+
+       return $errors;
+   }
 }
 ?>
