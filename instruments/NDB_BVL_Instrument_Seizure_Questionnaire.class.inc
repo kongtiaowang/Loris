@@ -169,32 +169,32 @@ class NDB_BVL_Instrument_Seizure_Questionnaire extends NDB_BVL_Instrument
             );
 
         $q3labels = array(
-                     "p1_3a" => "(a) A seizure, convulsion, fit or spell under any circumstances?",
-                     "p1_3b" => "(b) Uncontrolled movements of part (or all) of their body such as: twiching,
+                     "p1_q3a" => "(a) A seizure, convulsion, fit or spell under any circumstances?",
+                     "p1_q3b" => "(b) Uncontrolled movements of part (or all) of their body such as: twiching,
                 jerking, shaking, or going limp?",
-                     "p1_3c" => "(c) An unexplained change in their mental state or level of awareness;
+                     "p1_q3c" => "(c) An unexplained change in their mental state or level of awareness;
                 or an episode of \"spacing\" out that he/she could not control? (non-responsive)",
-                     "p1_3d" => "(d) When he/she was a small child, would he/she daydream or stare into
+                     "p1_q3d" => "(d) When he/she was a small child, would he/she daydream or stare into
                  space more than other children?",
-                     "p1_3e" => "(e) Has anyone ever noticed unusual body movements, or has your child
+                     "p1_q3e" => "(e) Has anyone ever noticed unusual body movements, or has your child
                  expressed unusual feelings when she/he was exposed to strobe lights, video games,
                  flickering lights, or sun glare?",
-                     "p1_3f" => "(f) Shortly after waking up (either in the morning or after a nap) has anyone
+                     "p1_q3f" => "(f) Shortly after waking up (either in the morning or after a nap) has anyone
                 ever noticed uncontrollable jerking or clumsiness in your child, such as dropping things
                 or things suddenly \"flying\" from his/her hands",
-                     "p1_3g" => "(g) Has he/she ever had any other type of repeated unusual spells? (Strange behaviors,
+                     "p1_q3g" => "(g) Has he/she ever had any other type of repeated unusual spells? (Strange behaviors,
                  anything out of the ordinary",
-                     "p1_3h" => "(h) Has your child ever seen or been referred to a neurologist?",
+                     "p1_q3h" => "(h) Has your child ever seen or been referred to a neurologist?",
                     );
 
         $this->addSelect(
-            "p1_1",
+            "p1_q1",
             "1. Has your child ever had a seizure or convulsion caused by a high fever? (uncontrollable
             shaking of limbs)",
             $page1options
         );
         $this->addSelect(
-            "p1_2",
+            "p1_q2",
             "2. Other than the seizure caused by a high fever, has your child ever had (or has a physician
             ever said your child had) a seizure disorder or epilepsy?",
             $page1options
@@ -247,7 +247,7 @@ class NDB_BVL_Instrument_Seizure_Questionnaire extends NDB_BVL_Instrument
             );
             $this->XINRegisterRule(
                 $name,
-                array("p1_2{@}=={@}no|possible|dont_know"),
+                array("p1_q2{@}=={@}no|possible|dont_know"),
                 "Q3 must be answered if NO, POSSIBLE, or DON'T KNOW is selected for Q2",
                 $name . "_group"
             );
@@ -279,16 +279,25 @@ class NDB_BVL_Instrument_Seizure_Questionnaire extends NDB_BVL_Instrument
         child has *<u>ever</u>* experienced (and how often & for how long)"
         );
 
-        $page2Questions =
-            array(
-             "p2_1" => "1. Stiffening of the whole body or part of the body (tonic seizure)",
-             "p2_2" => "2. Shaking of only part of the body (partial or focal motor seizure)",
-             "p3_3" => "3. Infantile spasm: seizure seen in infancy or early childhood.",
-             "p3_4" => "4. Whole body shaking (grand mal, generalized or secondary tonic-clonic seizure",
-             "p3_5" => "5. Drop spell: head or body goes limp while child is still conscious (atonic seizure)",
-             "p3_6" => "6. Staring spell: unresponsive, staring off with a vacant expression for brief periods of time (petit mal, absence or complex partial seizure)",
-             "p3_7" => "7. Very quick jerks or shaking (myoclonic seizure)",
-            );
+        $page2Questions = array(
+                           "p2_q1" => "1. Stiffening of the whole body or part of the body (tonic seizure)",
+                           "p2_q2" => "2. Shaking of only part of the body (partial or focal motor seizure)",
+                           "p2_q3" => "3. Infantile spasm: seizure seen in infancy or early childhood.",
+                           "p2_q4" => "4. Whole body shaking (grand mal, generalized or secondary tonic-clonic seizure",
+                           "p2_q5" => "5. Drop spell: head or body goes limp while child is still conscious (atonic seizure)",
+                           "p2_q6" => "6. Staring spell: unresponsive, staring off with a vacant expression for brief periods of time (petit mal, absence or complex partial seizure)",
+                           "p2_q7" => "7. Very quick jerks or shaking (myoclonic seizure)",
+                          );
+
+        $page2QuestionDescriptors = array(
+                                     "tonic",
+                                     "partial",
+                                     "infantile",
+                                     "generalized",
+                                     "atonic",
+                                     "absence",
+                                     "myoclonic",
+                                    );
 
         $group[] =& $this->form->createElement(
             "static",
@@ -329,10 +338,12 @@ class NDB_BVL_Instrument_Seizure_Questionnaire extends NDB_BVL_Instrument
         );
         unset($group);
 
+        $i = 0;
+
         foreach ($page2Questions as $name => $label) {
             $group[]    =& $this->createLabel($label);
             $group[]    =& $this->createSelect(
-                $name . "_frequency",
+                $name . "a_" . $page2QuestionDescriptors[$i] . "_frequency",
                 "",
                 array(
                  null                      => "",
@@ -345,7 +356,7 @@ class NDB_BVL_Instrument_Seizure_Questionnaire extends NDB_BVL_Instrument
                 )
             );
             $group[]    =& $this->createSelect(
-                $name . "_period",
+                $name . "b_" . $page2QuestionDescriptors[$i] . "_period",
                 "",
                 array(
                  null                   => "",
@@ -365,7 +376,7 @@ class NDB_BVL_Instrument_Seizure_Questionnaire extends NDB_BVL_Instrument
                 )
             );
             $group[]    =& $this->createTextArea(
-                $name . "_duration",
+                $name . "c_" . $page2QuestionDescriptors[$i] . "_duration",
                 ""
             );
             $ruleValues = array(
@@ -375,20 +386,21 @@ class NDB_BVL_Instrument_Seizure_Questionnaire extends NDB_BVL_Instrument
                            '1_or_more_each_week',
                            'daily',
                           );
+
             $this->XINRegisterRule(
-                $name . "_period",
-                array("{$name}_frequency{@}=={@}".implode('|', $ruleValues)),
+                $name . "b_" . $page2QuestionDescriptors[$i] . "_period",
+                array("{$name}_a_{$page2QuestionDescriptors[$i]}_frequency{@}=={@}".implode('|', $ruleValues)),
                 "Required, unless NEVER OCCURRED is selected.",
                 $name . "_group"
             );
             $this->XINRegisterRule(
                 $name . "_last_over_30min",
-                array("{$name}_frequency{@}=={@}".implode('|', $ruleValues)),
+                array("{$name}_a_{$page2QuestionDescriptors[$i]}_frequency{@}=={@}".implode('|', $ruleValues)),
                 "Required, unless NEVER OCCURRED is selected.",
                 $name . "_group"
             );
             $this->XINRegisterRule(
-                $name . "_duration",
+                $name . "c_" . $page2QuestionDescriptors[$i] . "_duration",
                 array("{$name}_last_over_30min{@}=={@}yes"),
                 "Required if YES selected for episode lasting over 30 min.",
                 $name . "_group"
@@ -400,6 +412,7 @@ class NDB_BVL_Instrument_Seizure_Questionnaire extends NDB_BVL_Instrument
                 $this->_GUIDelimiter,
                 false
             );
+            $i++;
             unset($group);
         }
         $this->form->addFormRule(array(&$this, "validateNumerics"));
@@ -494,13 +507,13 @@ class NDB_BVL_Instrument_Seizure_Questionnaire extends NDB_BVL_Instrument
     {
         $errors    = array();
         $questions = array(
-                      "p2_1_duration",
-                      "p2_2_duration",
-                      "p3_3_duration",
-                      "p3_4_duration",
-                      "p3_5_duration",
-                      "p3_6_duration",
-                      "p3_7_duration",
+                      "p2_q1c_tonic_duration",
+                      "p2_q2c_partial_duration",
+                      "p2_q3c_infantile_duration",
+                      "p2_q4c_generalized_duration",
+                      "p2_q5c_atonic_duration",
+                      "p2_q6c_absence_duration",
+                      "p2_q7c_myoclonic_duration",
                      );
         foreach ($questions as $question) {
             if ((!is_numeric($values[$question])) && !empty($values[$question])) {
@@ -642,14 +655,14 @@ class NDB_BVL_Instrument_Seizure_Questionnaire extends NDB_BVL_Instrument
         // Sum of all points for screening questions:
 
         $seizure_screening_total_questions = array(
-                                              "p1_3a",
-                                              "p1_3b",
-                                              "p1_3c",
-                                              "p1_3d",
-                                              "p1_3e",
-                                              "p1_3f",
-                                              "p1_3g",
-                                              "p1_3h",
+                                              "p1_q3a",
+                                              "p1_q3b",
+                                              "p1_q3c",
+                                              "p1_q3d",
+                                              "p1_q3e",
+                                              "p1_q3f",
+                                              "p1_q3g",
+                                              "p1_q3h",
                                              );
 
         $seizure_screening_total = 0;
@@ -667,13 +680,13 @@ class NDB_BVL_Instrument_Seizure_Questionnaire extends NDB_BVL_Instrument
         // (NOT SUM, just highest reported frequency for the 7 types)
 
         $seizure_frequency_questions = array(
-                                        "p2_1_frequency",
-                                        "p2_2_frequency",
-                                        "p3_3_frequency",
-                                        "p3_4_frequency",
-                                        "p3_5_frequency",
-                                        "p3_6_frequency",
-                                        "p3_7_frequency",
+                                        "p2_q1a_tonic_frequency",
+                                        "p2_q2a_partial_frequency",
+                                        "p2_q3a_infantile_frequency",
+                                        "p2_q4a_generalized_frequency",
+                                        "p2_q5a_atonic_frequency",
+                                        "p2_q6a_absence_frequency",
+                                        "p2_q7a_myoclonic_frequency",
                                        );
 
         $seizure_frequency_highest_score = 0;
@@ -692,20 +705,20 @@ class NDB_BVL_Instrument_Seizure_Questionnaire extends NDB_BVL_Instrument
         // Highest score out of these 7 variables (NOT SUM)
 
         $seizure_period_questions = array(
-                                     "p2_1_period",
-                                     "p2_2_period",
-                                     "p3_3_period",
-                                     "p3_4_period",
-                                     "p3_5_period",
-                                     "p3_6_period",
-                                     "p3_7_period",
+                                     "p2_q1b_tonic_period",
+                                     "p2_q2b_partial_period",
+                                     "p2_q3b_infantile_period",
+                                     "p2_q4b_generalized_period",
+                                     "p2_q5b_atonic_period",
+                                     "p2_q6b_absence_period",
+                                     "p2_q7b_myoclonic_period",
                                     );
 
         $seizure_period_highest_score = 0;
 
         foreach ($seizure_period_questions as $field) {
-            if ($seizure_period_highest_score < $this->getFrequencyScore($record[$field])) {
-                $seizure_period_highest_score = $this->getFrequencyScore($record[$field]);
+            if ($seizure_period_highest_score < $this->getPeriodScore($record[$field])) {
+                $seizure_period_highest_score = $this->getPeriodScore($record[$field]);
             }
         }
 
@@ -721,7 +734,7 @@ class NDB_BVL_Instrument_Seizure_Questionnaire extends NDB_BVL_Instrument
         $num_seizure_types = 0;
 
         foreach ($seizure_frequency_questions as $field) {
-            if ($record[$field] != "never_occurred") {
+            if ($record[$field] != "never_occurred" && !is_null($record[$field])) {
                 $num_seizure_types ++;
             }
         }
@@ -735,13 +748,13 @@ class NDB_BVL_Instrument_Seizure_Questionnaire extends NDB_BVL_Instrument
         // Caveat: Fields are varchars, therefore input is not guaranteed to be a number
 
         $seizure_duration_questions = array(
-                                       "p2_1_duration",
-                                       "p2_2_duration",
-                                       "p3_3_duration",
-                                       "p3_4_duration",
-                                       "p3_5_duration",
-                                       "p3_6_duration",
-                                       "p3_7_duration",
+                                       "p2_q1c_tonic_duration",
+                                       "p2_q2c_partial_duration",
+                                       "p2_q3c_infantile_duration",
+                                       "p2_q4c_generalized_duration",
+                                       "p2_q5c_atonic_duration",
+                                       "p2_q6c_absence_duration",
+                                       "p2_q7c_myoclonic_duration",
                                       );
 
         $duration_highest_score = 0;
