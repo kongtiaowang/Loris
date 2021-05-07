@@ -367,7 +367,7 @@ class NDB_BVL_Instrument_SCAARED_Adult extends NDB_BVL_Instrument
                 "q8_hard_to_stop_worrying",
                 "q14_worry_about_being_as_good_as_other_people",
                 "q21_worry_about_things_working_out",
-                "q23_worrier",
+                "q23_am_a_worrier",
                 "q24_worry_trouble_sleeping",
                 "q29_people_tell_worry_too_much",
                 "q31_worry_feel_restless",
