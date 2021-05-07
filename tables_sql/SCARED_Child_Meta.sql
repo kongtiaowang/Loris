@@ -1,4 +1,4 @@
-INSERT INTO test_names (Test_name, Full_name, Sub_Group, isDirectEntry) VALUES ('SCARED_Child', "SCARED (Screen for Child Anxiety Related Disorders) - Survey", 1, 1);
+INSERT INTO test_names (Test_name, Full_name, Sub_Group, isDirectEntry) VALUES ('SCARED_Child', "SCARED (Screen for Child Anxiety Related Disorders) - Child - Survey", 1, 1);
 INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('SCARED_Child','SCARED_Child_page1', "Page 1", 1);
 INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('SCARED_Child','SCARED_Child_page2', "Page 2", 2);
 

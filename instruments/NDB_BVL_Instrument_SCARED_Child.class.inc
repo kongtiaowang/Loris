@@ -12,7 +12,7 @@
  */
 
  /**
- * Creates the form elements for the SCARED (Screen for Child Anxiety Related Disorders) - Survey
+ * Creates the form elements for the SCARED (Screen for Child Anxiety Related Disorders) - Child - Survey
  *
  * @category Instrument
  * @package  Neuropsych
@@ -40,7 +40,7 @@ class NDB_BVL_Instrument_SCARED_Child extends NDB_BVL_Instrument
     /**
      * Sample SQL statement for test_names table and instrument subtests table
      *
-     * INSERT INTO test_names (Test_name, Full_name, Sub_Group, isDirectEntry) VALUES ('SCARED_Child', "SCARED (Screen for Child Anxiety Related Disorders) - Survey", 1, 1);
+     * INSERT INTO test_names (Test_name, Full_name, Sub_Group, isDirectEntry) VALUES ('SCARED_Child', "SCARED (Screen for Child Anxiety Related Disorders) - Child - Survey", 1, 1);
      * INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('SCARED_Child','SCARED_Child_page1', "Page 1", 1);
      * INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('SCARED_Child','SCARED_Child_page2', "Page 2", 2);
      */
@@ -111,7 +111,7 @@ class NDB_BVL_Instrument_SCARED_Child extends NDB_BVL_Instrument
     function _main()
     {
         // display test name
-        $this->addHeader("SCARED (Screen for Child Anxiety Related Disorders) - Survey");
+        $this->addHeader("SCARED (Screen for Child Anxiety Related Disorders) - Child - Survey");
 
         $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
 
@@ -181,7 +181,7 @@ class NDB_BVL_Instrument_SCARED_Child extends NDB_BVL_Instrument
      */
     function _page1()
     {
-        $this->addHeader("SCARED (Screen for Child Anxiety Related Disorders) - Survey");
+        $this->addHeader("SCARED (Screen for Child Anxiety Related Disorders) - Child - Survey");
 
         $this->form->addElement(
             'static',
@@ -203,7 +203,7 @@ class NDB_BVL_Instrument_SCARED_Child extends NDB_BVL_Instrument
                             "q8_follow_mother_or_father_wherever_they_go"    => "8. I follow my mother or father wherever they go.",
                             "q9_people_tell_look_nervous"                    => "9. People tell me that I look nervous.",
                             "q10_nervous_with_people_dont_know_well"         => "10. I feel nervous with people I don’t know well.",
-                            "q11_stomachaches_at_school"                     => "11. I get stomach aches at school.",
+                            "q11_stomachaches_at_school"                     => "11. I get stomachaches at school.",
                             "q12_frightened_feel_like_going_crazy"           => "12. When I get frightened, I feel like I am going crazy.",
                             "q13_worry_about_sleeping_alone"                 => "13. I worry about sleeping alone.",
                             "q14_worry_about_being_as_good_as_other_kids"    => "14. I worry about being as good as other kids.",
@@ -227,7 +227,7 @@ class NDB_BVL_Instrument_SCARED_Child extends NDB_BVL_Instrument
      */
     function _page2()
     {
-        $this->addHeader("SCARED (Screen for Child Anxiety Related Disorders) - Survey");
+        $this->addHeader("SCARED (Screen for Child Anxiety Related Disorders) - Child - Survey");
 
         $this->form->addElement(
             'static',
@@ -240,8 +240,8 @@ class NDB_BVL_Instrument_SCARED_Child extends NDB_BVL_Instrument
 
         $page2_questions = array(
                             "q21_worry_about_things_working_out"                        => "21. I worry about things working out for me.",
-                            "q22_anxious_sweat_a_lot"                                   => "22. When I get frightened, I sweat a lot.",
-                            "q23_worrier"                                               => "23. I am a worrier.",
+                            "q22_frightened_sweat_a_lot"                                => "22. When I get frightened, I sweat a lot.",
+                            "q23_am_a_worrier"                                          => "23. I am a worrier.",
                             "q24_frightened_for_no_reason"                              => "24. I get really frightened for no reason at all.",
                             "q25_afraid_to_be_alone_in_house"                           => "25. I am afraid to be alone in the house.",
                             "q26_hard_to_talk_with_people_dont_know_well"               => "26. It is hard for me to talk with people I don’t know well.",
@@ -349,7 +349,7 @@ class NDB_BVL_Instrument_SCARED_Child extends NDB_BVL_Instrument
                    "q15_frightened_feel_like_things_are_not_real",
                    "q18_frightened_heart_beats_fast",
                    "q19_get_shaky",
-                   "q22_anxious_sweat_a_lot",
+                   "q22_frightened_sweat_a_lot",
                    "q24_frightened_for_no_reason",
                    "q27_frightened_feel_like_choking",
                    "q30_afraid_of_anxiety_or_panic_attacks",
@@ -363,7 +363,7 @@ class NDB_BVL_Instrument_SCARED_Child extends NDB_BVL_Instrument
                 "q7_am_nervous",
                 "q14_worry_about_being_as_good_as_other_kids",
                 "q21_worry_about_things_working_out",
-                "q23_worrier",
+                "q23_am_a_worrier",
                 "q28_people_tell_worry_too_much",
                 "q33_worry_about_the_future",
                 "q35_worry_about_how_well_do_things",
