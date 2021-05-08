@@ -1,0 +1,27 @@
+INSERT INTO  `conners_teacher_lookup` values ('6','M','AG','0','>=40');
+INSERT INTO  `conners_teacher_lookup` values ('7','M','AG','0','>=40');
+INSERT INTO  `conners_teacher_lookup` values ('8','M','AG','0','>=40');
+INSERT INTO  `conners_teacher_lookup` values ('9','M','AG','0','>=40');
+INSERT INTO  `conners_teacher_lookup` values ('10','M','AG','0','>=40');
+INSERT INTO  `conners_teacher_lookup` values ('11','M','AG','0','>=40');
+INSERT INTO  `conners_teacher_lookup` values ('12','M','AG','0','>=40');
+INSERT INTO  `conners_teacher_lookup` values ('13','M','AG','0','>=40');
+INSERT INTO  `conners_teacher_lookup` values ('14','M','AG','0','>=40');
+INSERT INTO  `conners_teacher_lookup` values ('15','M','AG','0','>=40');
+INSERT INTO  `conners_teacher_lookup` values ('16','M','AG','0','>=40');
+INSERT INTO  `conners_teacher_lookup` values ('17','M','AG','0','>=40');
+INSERT INTO  `conners_teacher_lookup` values ('18','M','AG','0','>=40');
+
+INSERT INTO  `conners_teacher_lookup` values ('6','M','AG','1','>=40');
+INSERT INTO  `conners_teacher_lookup` values ('7','M','AG','1','>=40');
+INSERT INTO  `conners_teacher_lookup` values ('8','M','AG','1','>=40');
+INSERT INTO  `conners_teacher_lookup` values ('9','M','AG','1','>=40');
+INSERT INTO  `conners_teacher_lookup` values ('10','M','AG','1','>=40');
+INSERT INTO  `conners_teacher_lookup` values ('11','M','AG','1','>=40');
+INSERT INTO  `conners_teacher_lookup` values ('12','M','AG','1','>=40');
+INSERT INTO  `conners_teacher_lookup` values ('13','M','AG','1','>=40');
+INSERT INTO  `conners_teacher_lookup` values ('14','M','AG','1','>=40');
+INSERT INTO  `conners_teacher_lookup` values ('15','M','AG','1','>=40');
+INSERT INTO  `conners_teacher_lookup` values ('16','M','AG','1','>=40');
+INSERT INTO  `conners_teacher_lookup` values ('17','M','AG','1','>=40');
+INSERT INTO  `conners_teacher_lookup` values ('18','M','AG','1','>=40');
