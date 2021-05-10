@@ -420,21 +420,6 @@ function _page4(){
 
 function _page5(){
                $this->form->addElement('header', null, 'Additional Siblings and Family ID');
-        $option1 = [null =>'','By_Specialist'=>'By Specialist','MR_Tech'=>'MR Tech','Parent_or_Guardian'=>'Parent or Guardian'];
-
-
-        $this->addSelect("face_mask", 'Face Mask:', $option1, ['multiple' => true, 'required'=> false]);
-
-
-//        $this->form->addElement('select','face_mask','Face Mask:',$option1);
-//        $this->XINRegisterRule("face_mask", array("face_mask{@}=={@}NEVER_REQUIRED"));
-
-        $this->addSelect('face_shield','Face Shield:', $option1, ['multiple' => true, 'required'=> false]);
-
-
-
-
-
 
                $this->form->addElement('select','aq1','1.Did UNC staff deliver saliva tube to processing lab at UNC?',array('' => '','yes'=>"Yes",'no' => "No","investigate"=>"Need to Investigate","na"=>"NA - Shipped directly to lab at UNC"));
                 $this->XINRegisterRule("aq1", array("aq1{@}=={@}NEVER_REQUIRED"));
