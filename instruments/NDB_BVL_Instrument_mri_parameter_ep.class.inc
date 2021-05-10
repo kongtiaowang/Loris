@@ -104,12 +104,12 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
         'right' => 'Right'
     ];
 
-    private $bold_grp = ['b1_' => 'Bold 1',
-            'b2_' => 'Bold 2',
-            'b3_' => 'Bold 3',
-            'blast1_' => 'Last'];
+    private $bold_grp = ['b1_' => 'Fieldmap (BOLD-1)',
+            'b2_' => 'Fieldmap (BOLD-2)',
+            'b3_' => 'Fieldmap (BOLD-3)',
+            'blast1_' => 'Fieldmap (Last)'];
 
-    private $bold_plus_grp = ['b4_' => 'Bold 4',
+    private $bold_plus_grp = ['b4_' => 'Fieldmap (BOLD-4)',
             'blast2_' => 'Last'];
 
     private $bold_firmm_grp = ['bp1_' => 'BOLD_PA 1',
@@ -354,11 +354,15 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
         $this->addLabel('PPE worn during the session?');
 
 
-        $this->form->addElement('select','face_mask','Face Mask:',$option1);
-                $this->XINRegisterRule("face_mask", array("face_mask{@}=={@}NEVER_REQUIRED"));
 
-        $this->form->addElement('select','face_shield','Face Shield:',$option1);
-                $this->XINRegisterRule("face_shield", array("face_shield{@}=={@}NEVER_REQUIRED"));
+        $this->addSelect("face_mask", 'Face Mask:', $option1, ['multiple' => true]);
+        $this->XINRegisterRule("face_mask", array("face_mask{@}=={@}NEVER_REQUIRED"));
+
+
+
+        $this->addSelect('face_shield','Face Shield:', $option1, ['multiple' => true]);
+        $this->XINRegisterRule("face_shield", array("face_shield{@}=={@}NEVER_REQUIRED"));
+
 
         $this->form->addElement("textarea", "other_comment", "Comments:", array('cols'=>25, 'rows'=>4));
         $this->XINRegisterRule("other_comment", array("other_comment{@}=={@}NEVER_REQUIRED"));
@@ -390,21 +394,21 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
 
         $this->addTextElement(
             'height',
-            'Height:'
+            'Height (cms):'
         );
 
                 $this->XINRegisterRule("height", array("height{@}=={@}NEVER_REQUIRED"));
 
         $this->addTextElement(
             'weight',
-            'Weight:'
+            'Weight (kgs):'
         );
                 $this->XINRegisterRule("weight", array("weight{@}=={@}NEVER_REQUIRED"));
 
 
         $this->addTextElement(
             'head_circumference',
-            'Head Circumference:'
+            'Head Circumference (cms):'
         );
                 $this->XINRegisterRule("head_circumference", array("head_circumference{@}=={@}NEVER_REQUIRED"));
 
@@ -422,12 +426,15 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
             'Behavioral specialist:'
         );
 
-                $this->XINRegisterRule("behavioral_specialist", array("behavioral_specialist{@}=={@}NEVER_REQUIRED"));
+        $this->XINRegisterRule("behavioral_specialist", array("behavioral_specialist{@}=={@}NEVER_REQUIRED"));
 
 
         $this->form->addElement('select','Medications','Medications:',self::YES_NO_OPTIONS);
 
-                $this->XINRegisterRule("Medications", array("Medications{@}=={@}NEVER_REQUIRED"));
+        $this->XINRegisterRule("Medications", array("Medications{@}=={@}NEVER_REQUIRED"));
+        $this->form->addElement("text", "record_medications_other", "Other :");
+
+        $this->XINRegisterRule("record_medications_other", array("record_medications_other{@}=={@}NEVER_REQUIRED"));
 
         $this->_displayHeadersScanSession();
         for ($i = 1; $i < 5; $i++) {
@@ -717,7 +724,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
         $this->addSelect('bold_pass', 'BOLD Passed', $this->yes_no);
         //$this->form->addRule("bold_pass", "BOLD Passed must be set", 'required');
         
-        $this->addSelect("bold_attempts", "Bold attempts", self::R1_R9);
+        $this->addSelect("bold_attempts", "BOLD Attempts", self::R1_R9);
 
         $this->addLabel('PE direction will default to L >> R. Please set to A >> P, then edit the angle to set P >> A');
         $this->form->addFormRule(array(&$this, 'constraint_rules2'));
@@ -878,7 +885,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
             $i++;
         }
         $this->addLabel('Please set to A >> P, then edit the angle to set P >> A');
-        $this->addSelect("boldplus_attempts", "Bold attempts", self::R1_R9);
+        $this->addSelect("boldplus_attempts", "BOLD Attempts", self::R1_R9);
 
         $this->form->addElement("textarea", "page5_comment", "Comments:", array('cols'=>25, 'rows'=>4));
         $this->XINRegisterRule("page5_comment", array("page5_comment{@}=={@}NEVER_REQUIRED"));
@@ -1025,5 +1032,4 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
         unset($group);
     }
 }
-
 
