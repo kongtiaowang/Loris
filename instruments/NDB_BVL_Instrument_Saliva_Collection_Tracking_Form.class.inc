@@ -77,11 +77,7 @@ class NDB_BVL_Instrument_Saliva_Collection_Tracking_Form extends NDB_BVL_Instrum
 
     function _main(){
         $this->form->addElement('header', 'instrument_title', "Saliva Collection Tracking Form");
-<<<<<<< HEAD
         $this->addLabel('This form is to be completed when the saliva collection tubes are being prepared for a family. All tubes should be labeled using this structure: “PSCID_DCCID_CA_Timepoint” where CA is IN=subject, PR=proband, MO=mother, FA=father. ');
-=======
-        $this->addLabel('Form Directions: This form is to be completed when the saliva collection tubes are being prepared for a family. All tubes should be labeled using this structure: “PSCID_DCCID_CA_Timepoint” where CA is IN=subject, PR=proband, MO=mother, FA=father. ');
->>>>>>> 4d68168f9f40cbd020009c8a3b87788312622fa6
 
         // automatically adds examiner & date of administration
         $this->_addMetadataFields();
@@ -92,7 +88,6 @@ class NDB_BVL_Instrument_Saliva_Collection_Tracking_Form extends NDB_BVL_Instrum
         $this->form->addFormRule(array(&$this,'XINValidate'));
 
         // display test name
-        $this->form->addElement('date','top_use_date_visit','Date of Admin (Use Date of visit)', $this->dateOptions);
 
     }
 
@@ -427,7 +422,6 @@ function _page5(){
                $this->form->addElement('header', null, 'Additional Siblings and Family ID');
         $option1 = [null =>'','By_Specialist'=>'By Specialist','MR_Tech'=>'MR Tech','Parent_or_Guardian'=>'Parent or Guardian'];
 
-<<<<<<< HEAD
 
         $this->addSelect("face_mask", 'Face Mask:', $option1, ['multiple' => true, 'required'=> false]);
 
@@ -445,22 +439,13 @@ function _page5(){
                $this->form->addElement('select','aq1','1.Did UNC staff deliver saliva tube to processing lab at UNC?',array('' => '','yes'=>"Yes",'no' => "No","investigate"=>"Need to Investigate","na"=>"NA - Shipped directly to lab at UNC"));
                 $this->XINRegisterRule("aq1", array("aq1{@}=={@}NEVER_REQUIRED"));
 
-=======
-               $this->form->addElement('select','aq1','1.Did UNC staff deliver saliva tube to processing lab at UNC?',array('' => '','yes'=>"Yes",'no' => "No","investigate"=>"Need to Investigate","na"=>"NA - Shipped directly to lab at UNC"));
-                $this->XINRegisterRule("aq1", array("aq1{@}=={@}NEVER_REQUIRED"));
-
->>>>>>> 4d68168f9f40cbd020009c8a3b87788312622fa6
                $this->form->addElement('select','aq2',"2. Does this subject have a family ID? [Family ID can be found in the 'Family Information' tab of the 'Candidate Info' in the candidate's page.] ",self::YES_NO_DONT_KNOW);
 
                $this->form->addRule('aq2', 'This question is required', 'required');
 
                $this->form->addElement('text','aq3','3.  What is Family ID?');
-<<<<<<< HEAD
                 $this->XINRegisterRule('aq3', array("aq2{@}=={@}yes"), "Required if 'Yes' was selected for Question 2.");
-=======
->>>>>>> 4d68168f9f40cbd020009c8a3b87788312622fa6
 
-               $this->XINRegisterRule('aq3', array("aq2{@}=={@}yes"), "Required if 'Yes' was selected for Question 2.");
 
                $this->form->addFormRule(array(&$this, 'validate_tracking_number'));
                $this->form->addFormRule(array(&$this, 'validate_page4'));
@@ -470,7 +455,6 @@ function _page5(){
     // This function is overridden here to send the email notifications if blood draw date is set.
     function _save(array $values): void
     {
-print_r($values);
       $db =& Database::singleton();
       $candidate = Candidate::singleton((int)$this->commentID);
       $PSCID = $candidate->getPSCID();
