@@ -119,7 +119,11 @@ class CouchDBDemographicsImporter {
                               SCAN DONE AT VSA ==> If a scan was done at VSA but there is no DSMV data.
                               DSMV DONE AT VSA ==> If there is DSMV data at VSA but no scan.
                               PRIORITY TO BRING BACK AT VSA ==> If candidate has an ASD+ diagnosis at V24
-                                          OR 2 scans before VSA along with data for either the Mullen or DSMIV.',
+                                          OR 2 scans before VSA along with data for either the Mullen or DSMIV.
+                              1+ MULLEN IN V3..V12; NO T1 QC Pass IN V3..V12 ==> If there is at least one completed Mullen
+                                          instrument but no T1 that passed QC between visits V3 and V12.
+                              1+ MULLEN IN V3..V12; 1+ T1 QC Pass IN V3..V12 ==> If there is at least one completed Mullen
+                                          instrument AND at least a T1 that passed QC between visits V3 and V12.',
             'Type' => 'varchar(255)',
         ),
         'GWAS_saliva_samples_tracking' => array(
@@ -227,6 +231,8 @@ class CouchDBDemographicsImporter {
                                    WHEN fvsadsm.commentid IS NOT NULL THEN 'DSMV DONE AT VSA'
                                    WHEN (dsm24.q4_criteria_autistic_disorder = 'yes' || dsm24.q4_criteria_PDD ='yes') THEN 'PRIORITY TO BRING BACK AT VSA'
                                    WHEN nb_scans_before_vsa.count >= 2 AND (f24dsm.commentid IS NOT NULL OR f24mullen.commentid IS NOT NULL) THEN 'PRIORITY TO BRING BACK AT VSA'
+                                   WHEN nb_mullen_v3_v12.count >= 1 AND nb_t1_pass_v3_v12.count IS NULL THEN '1+ MULLEN IN V3..V12; NO T1 QC Pass IN V3..V12'
+                                   WHEN nb_mullen_v3_v12.count >= 1 AND nb_t1_pass_v3_v12.count >= 1 THEN '1+ MULLEN IN V3..V12; 1+ T1 QC Pass IN V3..V12'
                                    ELSE 'NOT A PRIORITY TO BRING BACK AT VSA'
                                  END                                                         AS vsa_priority_data_status,
                                  CASE
@@ -332,7 +338,32 @@ class CouchDBDemographicsImporter {
                                        AND flag.data_entry IS NOT NULL
                                        AND session.visit_label IN ('VSA', 'VSA-CVD')
                                  ) fvsadsm ON (fvsadsm.candid=c.candid)
-                                 LEFT JOIN participant_status_options pso 
+                                 LEFT JOIN (
+                                      SELECT candidate.candid, COUNT(*) AS count
+                                      FROM flag
+                                      JOIN session   ON session.ID        = flag.sessionID
+                                      JOIN candidate ON candidate.CandID = session.CandID
+                                      WHERE flag.test_name = 'mullen'
+                                      AND flag.Data_entry = 'Complete'
+                                      AND flag.Administration = 'All'
+                                      AND session.visit_label IN ('V3', 'V03', 'V06', 'V09', 'V09JA', 'V09LENA', 'V12')
+                                      AND session.active = 'Y'
+                                      GROUP BY candidate.candid
+                                 ) nb_mullen_v3_v12 ON (nb_mullen_v3_v12.candid=c.candid)
+                                 LEFT JOIN (
+                                      SELECT candidate.candid, COUNT(*) as count
+                                      FROM files
+                                      JOIN mri_scan_type  ON files.AcquisitionProtocolID = mri_scan_type.ID
+                                      JOIN files_qcstatus ON files_qcstatus.FileID       = files.FileID
+                                      JOIN session        ON files.sessionid             = session.id
+                                      JOIN candidate      ON candidate.CandID            = session.CandID
+                                      WHERE session.visit_label IN ('V3', 'V03', 'V06', 'V09', 'V09JA', 'V09LENA', 'V12')
+                                      AND session.active = 'Y'
+                                      AND mri_scan_type.Scan_type = 't1w'
+                                      AND files_qcstatus.QCStatus = 'Pass'
+                                      GROUP BY candidate.candid
+                                 ) nb_t1_pass_v3_v12 ON (nb_t1_pass_v3_v12.candid=c.candid)
+                                 LEFT JOIN participant_status_options pso
                                        ON ( pso.id = ps.participant_status )
                                  LEFT JOIN (
                                       SELECT session.candid as candid, gwas.subject_qc, gwas.proband_qc, gwas.mother_qc, gwas.father_qc
@@ -378,6 +409,7 @@ class CouchDBDemographicsImporter {
 
         $concatQuery = $fieldsInQuery . $tablesToJoin . " WHERE s.Active='Y' AND c.Active='Y' 
         AND c.Entity_type != 'Scanner'
+        AND s.Current_stage NOT IN ('Recycling Bin', 'Not Started')
         AND c.RegistrationCenterID NOT IN (1,8,9,10)
         AND (ps.participant_status NOT IN (2,3,4) OR ps.participant_status IS NULL)
         AND c.ProjectID NOT IN (5,6)";
