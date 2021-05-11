@@ -75,6 +75,7 @@ class CouchDBIntegrityChecker
             array("reduce" => "false")
         );
         print "Sessions:\n";
+        // This variable does not seem to be used anywhere...
         $activeExists = $this->SQLDB->prepare(
             "SELECT count(*) AS count FROM 
         candidate c LEFT JOIN session s USING (CandID) WHERE s.Active='Y' 
@@ -89,7 +90,12 @@ class CouchDBIntegrityChecker
                 "SELECT c.PSCID, c.Active as cActive, s.Visit_label
                  FROM candidate c
                  LEFT JOIN session s
-                 ON (c.CandID=s.CandID AND s.Visit_label=:VL AND s.Active='Y')
+                   ON (
+                         c.CandID=s.CandID
+                     AND s.Visit_label=:VL
+                     AND s.Active='Y'
+                     AND s.Current_stage NOT IN ('Recycling Bin', 'Not Started')
+                   )
                  LEFT JOIN participant_status ps ON ( ps.Candid = c.Candid )
                  WHERE c.PSCID=:PID
                  AND c.RegistrationCenterID NOT IN (1,8,9,10)
