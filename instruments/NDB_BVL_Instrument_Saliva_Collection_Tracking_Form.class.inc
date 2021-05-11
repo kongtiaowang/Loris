@@ -77,7 +77,7 @@ class NDB_BVL_Instrument_Saliva_Collection_Tracking_Form extends NDB_BVL_Instrum
 
     function _main(){
         $this->form->addElement('header', 'instrument_title', "Saliva Collection Tracking Form");
-        $this->addLabel('Form Directions: This form is to be completed when the saliva collection tubes are being prepared for a family. All tubes should be labeled using this structure: “PSCID_DCCID_CA_Timepoint” where CA is IN=subject, PR=proband, MO=mother, FA=father. ');
+        $this->addLabel('This form is to be completed when the saliva collection tubes are being prepared for a family. All tubes should be labeled using this structure: “PSCID_DCCID_CA_Timepoint” where CA is IN=subject, PR=proband, MO=mother, FA=father. ');
 
         // automatically adds examiner & date of administration
         $this->_addMetadataFields();
@@ -88,8 +88,6 @@ class NDB_BVL_Instrument_Saliva_Collection_Tracking_Form extends NDB_BVL_Instrum
         $this->form->addFormRule(array(&$this,'XINValidate'));
 
         // display test name
-        $this->form->addElement('date','top_use_date_visit','Date of Admin (Use Date of visit)', $this->dateOptions);
-
 
     }
 
@@ -431,19 +429,17 @@ function _page5(){
                $this->form->addRule('aq2', 'This question is required', 'required');
 
                $this->form->addElement('text','aq3','3.  What is Family ID?');
+                $this->XINRegisterRule('aq3', array("aq2{@}=={@}yes"), "Required if 'Yes' was selected for Question 2.");
 
-               $this->XINRegisterRule('aq3', array("aq2{@}=={@}yes"), "Required if 'Yes' was selected for Question 2.");
 
                $this->form->addFormRule(array(&$this, 'validate_tracking_number'));
                $this->form->addFormRule(array(&$this, 'validate_page4'));
 
 }
 
-
     // This function is overridden here to send the email notifications if blood draw date is set.
     function _save(array $values): void
     {
-
       $db =& Database::singleton();
       $candidate = Candidate::singleton((int)$this->commentID);
       $PSCID = $candidate->getPSCID();
@@ -528,7 +524,7 @@ function _page5(){
         'emptyOptionValue' => null
         );
 
-        $this->form->addElement('date', 'Date_taken', 'Date of Administration', $this->dateOptions);
+        $this->form->addElement('date', 'Date_taken', 'Date of Administration (Use Date of visit)', $this->dateOptions);
 
         $examiners = $this->_getExaminerNames();
 
