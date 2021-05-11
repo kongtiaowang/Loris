@@ -190,7 +190,7 @@ class NDB_BVL_Instrument_EEG_QC extends NDB_BVL_Instrument
     {
         if (isset($values[$question])) {
             $user_input = $values[$question];
-            if ( $user_input > 100 ) {
+            if ( $user_input >= 100 ) {
                 $errors[$question] = "Specify a number less 100.";
             }
         }

@@ -129,10 +129,6 @@ class NDB_BVL_Instrument_SCAARED_Adult extends NDB_BVL_Instrument
             )
         );
 
-        $this->form->addElement('text', 'respondent_explain', $this->indent . 'If not child, explain:');
-
-        $this->XINRegisterRule('respondent_explain', array('respondent{@}!={@}child'), 'Required if not child');
-
         $this->form->addElement('text', 'other_specify', $this->indent . 'If other, specify:');
 
         $this->XINRegisterRule('other_specify', array('respondent{@}=={@}other'), 'Required if other');
@@ -270,17 +266,13 @@ class NDB_BVL_Instrument_SCAARED_Adult extends NDB_BVL_Instrument
 
     function validate_main_page($values)
     {
-         $errors = [];
-
-        if ($values["respondent"] == "child") {
-            $this->validate_empty_subquestions($values, ["respondent_explain"], $errors);
-        }
+        $errors = [];
 
         if ($values["respondent"] != "other") {
             $this->validate_empty_subquestions($values, ["other_specify"], $errors);
         }
 
-         return $errors;
+        return $errors;
     }
 
     function sumScaleScores($question_array, $record)
