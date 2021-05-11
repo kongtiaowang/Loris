@@ -104,7 +104,7 @@ class NDB_BVL_Instrument_EEG_QC extends NDB_BVL_Instrument
     {
         $this->_addMetadataFields();
 
-        $this->form->addElement('header', 'instrument_title', "EEG QC FORM (FILLED OUT BY EEG CORE)");
+        $this->form->addElement('header', 'instrument_title', "EEG QC FORM");
 
 
         $this->form->addElement('text','name_did_qc','Name of Person who did the QC :');
@@ -154,13 +154,22 @@ class NDB_BVL_Instrument_EEG_QC extends NDB_BVL_Instrument
 
         $this->validate_positive_numeric($values, "r_3", $errors);
 
+        $this->validate_less_100($values, "r_3", $errors);
+
+
         $this->validate_positive_numeric($values, "v_2", $errors);
 
         $this->validate_positive_numeric($values, "v_3", $errors);
 
+        $this->validate_less_100($values, "v_3", $errors);
+
+
         $this->validate_positive_numeric($values, "a_2", $errors);
 
         $this->validate_positive_numeric($values, "a_3", $errors);
+
+        $this->validate_less_100($values, "a_3", $errors);
+
 
         return $errors;
 
@@ -173,6 +182,16 @@ class NDB_BVL_Instrument_EEG_QC extends NDB_BVL_Instrument
             $user_input = $values[$question];
             if ((!is_numeric($user_input) || (is_numeric($user_input) && $user_input < 0)) && $user_input != "") {
                 $errors[$question] = "Specify a number as positive number.";
+            }
+        }
+    }
+
+    function validate_less_100($values, $question, &$errors)
+    {
+        if (isset($values[$question])) {
+            $user_input = $values[$question];
+            if ( $user_input > 100 ) {
+                $errors[$question] = "Specify a number less 100.";
             }
         }
     }
