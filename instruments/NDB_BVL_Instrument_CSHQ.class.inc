@@ -179,9 +179,11 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
                 "b_long_form"   => "b) The long form 52 question version (this is the version that is recommended)",
             );
 
+//            $this->form->createElement('hidden', null, "<u>For Study Staff Only</u>");
+
             $this->addSelect(
                 "which_cshq_did_you_administer",
-                "<u>For Study Staff Only</u>: Which CSHQ did you administer?",
+                "Which CSHQ did you administer?",
                 $cshq_options
             );
         // Participants who fill the survey cannot answer the question: they can only
@@ -760,7 +762,10 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
             if (!$isLongQuestionnaire && $this->isQuestionForLongCshq($sq)) {
                 continue;
             }
-            $this->addSelect($sq, $label, $sleepy_choices);
+            $group[] = $this->createLabel($label);
+            $group[] = $this->createSelect($sq, null, $sleepy_choices);
+            $this->form->addGroup($group, "{$sq}_group", null, $this->_GUIDelimiter, false);
+            unset($group);
         }
 
         $this->form->addFormRule(array(&$this, 'XINValidate'));
@@ -908,20 +913,32 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
                             $score[$subscale] = 'Unknown (not enough data)'; 
                             break(2);
                         }
-                        $score[$subscale] += $record[$aq];
+                        error_log("Record of {$aq}: " . $record[$aq]);
+                        try {
+                            if (is_numeric($record[$aq]))
+                                $score[$subscale] += $record[$aq];
+                            else $score[$subscale] = $record[$aq];
+                        } catch (Exception $e) {
+                            $score[$subscale] = $record[$aq];
+                        }
                     }
                 }
             }
         }
 
         $score['score_total'] = 0;
+        $atleastOneScore = false;
         foreach ($abbreviated_questions as $aq) {
             if (!isset($record[$aq]) || is_null($record[$aq])) {
                 $score['score_total'] = 'Unknown (not enough data)';
                 break;
             }
-            $score['score_total'] += $record[$aq];
+            if (is_numeric($record[$aq])) {
+                $score['score_total'] += $record[$aq];
+                $atleastOneScore = true;
+            }
         }
+        if(!$atleastOneScore) $score['score_total'] = 'NA';
 
         $result = $db->update($this->table, $score, array("CommentID" => $this->getCommentID()));
     }
