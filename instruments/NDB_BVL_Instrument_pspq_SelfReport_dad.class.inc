@@ -434,7 +434,7 @@ class NDB_BVL_Instrument_pspq_SelfReport_dad extends NDB_BVL_Instrument
                 $record[$r] = "3_occasionally";
             } elseif ($record[$r] == "5_often") {
                 $record[$r] = "2_rarely";
-            } elseif ($record[$q] == "6_very_often") {
+            } elseif ($record[$r] == "6_very_often") {
                 $record[$r] = "1_very_rarely";
             }
         }
