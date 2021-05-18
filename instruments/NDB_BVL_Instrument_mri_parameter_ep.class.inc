@@ -29,13 +29,11 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
                                "1"          => "Console Pass",
                                "0"           => "Console Fail",
                               );
-// todo sql 
     const FINGER = array(
                                ""                      => "",
                                "finger"          => "Finger",
                                "toe"              => "Toe",                               
                               );                
-// todo sql    
     const OPTION1TO5 = array(
                                ""           => "",
                                "1"          => "1",
@@ -44,7 +42,6 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
                                "4"          => "4",
                                "5"          => "5",                                                              
                               );     
-// sql
     const OPTION1TO4 = array(
                                ""           => "",
                                "1"          => "1",
@@ -59,6 +56,13 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
                                "t2"         => "T2w",
                               );      
 
+    const S1_S4    = array(
+                               ""           => "",
+                               "1"         => "Session 1",
+                               "2"         => "Session 2",
+                               "3"         => "Session 3",
+                               "4"         => "Session 4",
+                              );      
     const R1_R9    = array(
                                ""           => "",
                                "1"         => "1",
@@ -339,7 +343,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
         $option2 = [null =>'','full_protocol_acquired'=>'Full Protocol Acquired',
                               'only_core_acquired'=>'Only Core Acquired',
                               'partial_core_acquired'=>'Partial Core Acquired',
-                              'none_core_acquired'=>'Only Core Acquired',
+                              'none_core_acquired'=>'None',
                               ];
         $option3 = [null =>'','subject_woke_up'=>'Subject woke up',
                               'ran_out_of_time'=>'Ran out of time',
@@ -533,21 +537,26 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
      */
     function _page2()
     {
-        $this->addLabel('Structural');
+        $this->form->addElement('header', null, "Structural");
 
         $group = [];
+        $group[] = $this->form->createElement('static', null, null, 'Session');
         $group[] = $this->form->createElement('static', null, null, 'Scan Type');
         $group[] = $this->form->createElement('static', null, null, 'Anterior');
         $group[] = $this->form->createElement('static', null, null, 'Superior');
         $group[] = $this->form->createElement('static', null, null, 'Anterior / Superior');
-        $group[] = $this->form->createElement('static', null, null, 'Pass?');
+        $group[] = $this->form->createElement('static', null, null, 'Console Pass?');
         $this->form->addGroup($group, 'sec1_header', '', $this->_GUIDelimiter, FALSE);
         unset($group);
-
+        $grp0 = ['structural_session_'];
         $grp1 = ['s_'];
         $grp2 = ['anterior', 'superior', 'ant_d_sup'];
 
         for ($i = 0; $i < $this->pg2_number_of_lines; $i++) {
+            foreach ($grp0 as $key) {
+                $group[] = $this->createSelect("$key{$i}", '', self::S1_S4);
+                $this->not_required_field("$key{$i}");
+            }
 
             foreach ($grp1 as $key) {
                 $group[] = $this->createSelect("$key{$i}", '', self::T1_T2);
@@ -667,7 +676,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
      */
     function _page3()
     {
-        $this->addLabel('BOLD');
+        $this->form->addElement('header', null, "BOLD");
 
         $group = array();
         $group[] = $this->form->createElement('static', null, null, '');
@@ -690,17 +699,24 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
         }
 
         $group = array();
+        $group[] = $this->form->createElement('static', null, null, 'Session');
         $group[] = $this->form->createElement('static', null, null, 'Ran?');
         $group[] = $this->form->createElement('static', null, null, '');
         $group[] = $this->form->createElement('static', null, null, 'FIRMM');
         $group[] = $this->form->createElement('static', null, null, '% 0.2mm');
-        $group[] = $this->form->createElement('static', null, null, 'Pass?');
+        $group[] = $this->form->createElement('static', null, null, 'Console Pass?');
         $this->form->addGroup($group, 'sec3_2_header', '', $this->_GUIDelimiter, FALSE);
         unset($group);
+
+        $grp0 = "bold_session_";
 
         $i = 0;
         foreach ($this->bold_firmm_grp as $key => $label) {
             $group = array();
+
+            $group[] = $this->createSelect("$grp0{$i}", '', self::S1_S4);
+            $this->not_required_field("$grp0{$i}");
+
             $group[] = $this->createSelect("{$key}run{$i}", '', self::complete_partial_none);
             $this->not_required_field("{$key}run{$i}");
 
@@ -711,8 +727,8 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
 
             $group[] = $this->createText("{$key}02_{$i}", '');
             $this->not_required_field("{$key}02_{$i}");
-
-            $group[] = $this->createSelect("{$key}pass_{$i}", '', $this->yes_no);
+//
+            $group[] = $this->createSelect("{$key}pass_{$i}", '', self::PASS_FAIL);
             $this->not_required_field("{$key}pass_{$i}");
 
             $this->form->addGroup($group, "sec3_2_row{$i}", '', $this->_GUIDelimiter, FALSE);
@@ -777,21 +793,26 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
     function _page4()
 
     {
-        $this->addLabel('DTI');
+        $this->form->addElement('header', null, "DTI");
 
         $group = array();
+        $group[] = $this->form->createElement('static', null, null, 'Session');
         $group[] = $this->form->createElement('static', null, null, '');
         $group[] = $this->form->createElement('static', null, null, 'Ran?');
         $group[] = $this->form->createElement('static', null, null, '');
         $group[] = $this->form->createElement('static', null, null, 'Total number of attempts');
-        $group[] = $this->form->createElement('static', null, null, 'slices that failed');
-        $group[] = $this->form->createElement('static', null, null, 'Pass?');
+        $group[] = $this->form->createElement('static', null, null, 'Volumes that failed');
+        $group[] = $this->form->createElement('static', null, null, 'Console Pass?');
         $this->form->addGroup($group, 'sec4_header', '', $this->_GUIDelimiter, FALSE);
         unset($group);
+        $grp0 = "dti_session_";
 
         $i = 0;
         foreach ($this->dti_grp as $key => $label) {
             $group = array();
+            $group[] = $this->createSelect("$grp0{$i}", '', self::S1_S4);
+            $this->not_required_field("$grp0{$i}");
+
             $group[] = $this->form->createElement('static', null, null, $label[0]);
             $group[] = $this->createSelect("{$key}run{$i}", '', self::complete_partial_none);
             $this->not_required_field("{$key}run{$i}");
@@ -814,7 +835,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
         }
 
         $this->addLabel('Verify phase encode direction : should be AP for both AP and APinv sequences');
-        $this->addSelect('dti_pass', 'DTI Passed', $this->yes_no);
+//        $this->addSelect('dti_pass', 'DTI Passed', $this->yes_no);
         $this->addLabel('PE direction will default to L >> R. Please set to A >> P, then edit the angle to set P >> A');
 
 
@@ -830,7 +851,8 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
      */
     function _page5()
     {
-        $this->addLabel('BOLD');
+
+        $this->form->addElement('header', null, "BOLD +");
 
         $group = array();
         $group[] = $this->form->createElement('static', null, null, '');
@@ -855,18 +877,21 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
         }
 
         $group = array();
+        $group[] = $this->form->createElement('static', null, null, 'Session');
         $group[] = $this->form->createElement('static', null, null, 'Ran?');
         $group[] = $this->form->createElement('static', null, null, '');
         $group[] = $this->form->createElement('static', null, null, 'FIRMM');
         $group[] = $this->form->createElement('static', null, null, '%0.2mm');
-        $group[] = $this->form->createElement('static', null, null, 'Pass?');
+        $group[] = $this->form->createElement('static', null, null, 'Console Pass?');
         $this->form->addGroup($group, 'sec5_2_header', '', $this->_GUIDelimiter, FALSE);
         unset($group);
-
+        $grp0 = "bold_plus_session_";
         $i = 0;
         foreach ($this->bold_plus_firmm_grp as $key => $label) {
             $group = array();
-
+            $group[] = $this->createSelect("$grp0{$i}", '', self::S1_S4);
+            $this->not_required_field("$grp0{$i}");
+            
             $group[] = $this->createSelect("{$key}run{$i}", '', self::complete_partial_none);
             $this->not_required_field("{$key}run{$i}");
 
@@ -904,7 +929,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
         $group = [];
         $group[] = $this->form->createElement('static', null, null, 'Run?');
         $group[] = $this->form->createElement('static', null, null, 'CSF flow total number of attempts');
-        $group[] = $this->form->createElement('static', null, null, 'Pass?');
+        $group[] = $this->form->createElement('static', null, null, 'Console Pass?');
         $this->form->addGroup($group, 'sec1_header', '', $this->_GUIDelimiter, FALSE);
         unset($group);
 
@@ -1032,4 +1057,3 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
         unset($group);
     }
 }
-
