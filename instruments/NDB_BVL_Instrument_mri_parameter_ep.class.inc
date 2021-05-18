@@ -608,7 +608,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
             foreach ($grp2 as $key) {
                 $val = $values["$key{$i}"];
                 if (!empty($val) && !is_numeric($val)) {
-                    $errors["sec2_row{$i}"] = 'The value should be numeric.';
+                    $errors["sec2_row{$i}"] = 'The value of Anterior and Superior should be numeric.';
                 }
             }
 
@@ -891,7 +891,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
             $group = array();
             $group[] = $this->createSelect("$grp0{$i}", '', self::S1_S4);
             $this->not_required_field("$grp0{$i}");
-            
+
             $group[] = $this->createSelect("{$key}run{$i}", '', self::complete_partial_none);
             $this->not_required_field("{$key}run{$i}");
 
