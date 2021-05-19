@@ -727,7 +727,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
 
             $group[] = $this->createText("{$key}02_{$i}", '');
             $this->not_required_field("{$key}02_{$i}");
-//
+
             $group[] = $this->createSelect("{$key}pass_{$i}", '', self::PASS_FAIL);
             $this->not_required_field("{$key}pass_{$i}");
 
@@ -835,7 +835,6 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
         }
 
         $this->addLabel('Verify phase encode direction : should be AP for both AP and APinv sequences');
-//        $this->addSelect('dti_pass', 'DTI Passed', $this->yes_no);
         $this->addLabel('PE direction will default to L >> R. Please set to A >> P, then edit the angle to set P >> A');
 
 
