@@ -100,6 +100,8 @@ class NDB_BVL_Instrument_TANNER_Girls extends NDB_BVL_Instrument
 
         // automatically adds examiner & date of administration
         $this->_addMetadataFields();
+
+        $this->form->addElement("static", "tanner_score_girls", "Tanner Stage of Physical Development (Girls)");
     }
     /**
     * Generates the first page of the form.
@@ -159,7 +161,7 @@ class NDB_BVL_Instrument_TANNER_Girls extends NDB_BVL_Instrument
         $this->addSelect("q1_height_growth", "1. Would you say that your growth in height has:", $options1);
 
         $this->addSelect("q2_body_hair_growth", "2. How about the growth of body hair, meaning underarm and pubic hair? Would you say that your body hair:", $options2);
- 
+
         $this->addSelect("q3_skin_changes", "3. Have you noticed any skin changes, especially pimples?", $options3);
 
         $this->addSelect("q4_breast_growth", "4. Have your breasts begun to grow?", $options4);
@@ -191,6 +193,36 @@ class NDB_BVL_Instrument_TANNER_Girls extends NDB_BVL_Instrument
             array("q5_begun_to_menstruate{@}=={@}b"),
             "Required."
         );
+    }
+
+    function getScoreValue($value): int {
+        switch ($value) {
+            case "a":
+                return 1;
+            case "b":
+                return 2;
+            case "c":
+                return 3;
+            case "d":
+                return 4;
+        }
+    }
+
+    function score(): void {
+        $db =& Database::singleton();
+
+        // Get the item scores
+        $record= $db->pselectRow("SELECT * FROM $this->table WHERE CommentID=:cid", array('cid'=>$this->getCommentID()));
+        $sum = 0;
+
+        $sum += $this->getScoreValue($record['q1_height_growth']);
+        $sum += $this->getScoreValue($record['q2_body_hair_growth']);
+        $sum += $this->getScoreValue($record['q3_skin_changes']);
+        $sum += $this->getScoreValue($record['q4_breast_growth']);
+
+        $score = array('tanner_score_girls'=>$sum/4);
+
+        $db->update($this->table, $score, array('CommentID'=>$this->getCommentID()));
     }
 }
 ?>
