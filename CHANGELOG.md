@@ -14,6 +14,7 @@ changes in the following format: PR #1234***
 #### Features
 - Data tables may now stream data as they're loading rather than waiting
   until all data has loaded. (PR #6853)
+- Login module adds toggle visibility for password field.
 
 #### Updates and Improvements
 - Module-specific permissions added for Survey Accounts, Imaging Behavioural
@@ -37,6 +38,8 @@ requesting a new account and will be displayed in the User Accounts module (PR #
 - Deletion of support for the oldest version of the API (v0.0.2) (PR #6944)
 #### Candidate Parameters
 - Consents may now be grouped in UI of consent tab (PR #6042, PR #6044)
+#### API Documentation (**New Module**)
+- New module mostly intended for developers, this module provides a user interface to inspect and try LORIS modules API.
 ### Clean Up
 - *Add item here*
 ### Notes For Existing Projects

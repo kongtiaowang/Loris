@@ -28,6 +28,7 @@ use \Psr\Http\Message\ResponseInterface;
  */
 class NDB_Page implements RequestHandlerInterface
 {
+    protected $lorisinstance;
     /**
      * The name of the test_name being accessed
      */
@@ -74,6 +75,13 @@ class NDB_Page implements RequestHandlerInterface
     public $template;
 
     /**
+     * The LorisInstance that this page was created to serve.
+     *
+     * @var \LORIS\LorisInstance
+     */
+    protected $loris;
+
+    /**
      * The format that the page content should be returned in. This is generally
      * the value of the `?format=` GET parameter from the request, and is usually
      * either 'json' or empty (for the default return value of HTML format).
@@ -106,17 +114,23 @@ class NDB_Page implements RequestHandlerInterface
      * that are common to every type of page. May be overridden by a specific
      * page or specific page type.
      *
-     * @param Module $module     The test name being accessed
-     * @param string $page       The subtest being accessed (may be an empty string)
-     * @param string $identifier The identifier for the data to load on this page
-     * @param string $commentID  The CommentID to load the data for
+     * @param \LORIS\LorisInstance $loris      The LORIS instance that the page is
+     *                                         serving
+     * @param Module               $module     The test name being accessed
+     * @param string               $page       The subtest being accessed (may be
+     *                                         an empty string)
+     * @param string               $identifier The identifier for the data to load
+     *                                         on this page
+     * @param string               $commentID  The CommentID to load the data for
      */
     function __construct(
+        \LORIS\LorisInstance $loris,
         \Module $module,
         string $page,
         string $identifier,
         string $commentID
     ) {
+        $this->loris  = $loris;
         $this->Module = $module;
         $this->name   = $module->getName(); // for legacy purposes.
 
@@ -683,6 +697,9 @@ class NDB_Page implements RequestHandlerInterface
                     new \LORIS\Http\StringStream("Permission Denied")
                 )->withStatus(403);
         }
+
+        $loris = $request->getAttribute("loris");
+        $this->lorisinstance = $loris;
 
         // The NDB_Page object itself is sometimes required by middleware,
         // but since the PSR15 Middleware interface is fixed, it needs to be
