@@ -22,3 +22,4 @@ alter table `Saliva_Collection_Tracking_Form` DROP COLUMN `fq7`;
 alter table `Saliva_Collection_Tracking_Form` DROP COLUMN `fq8`;
 alter table `Saliva_Collection_Tracking_Form` DROP COLUMN `fq9`;
 alter table `Saliva_Collection_Tracking_Form` DROP COLUMN `fq10`;
+

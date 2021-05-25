@@ -8,7 +8,6 @@ CREATE TABLE `SCAARED_Adult` (
     `Candidate_Age` varchar(255) default NULL,
     `Window_Difference` varchar(255) default NULL,
     `respondent` enum('child','mother','father','step_mother','step_father','other') default NULL,
-    `respondent_explain` varchar(255) default NULL,
     `other_specify` varchar(255) default NULL,
     `pa_so_score` varchar(255) default NULL,
     `ga_score` varchar(255) default NULL,
