@@ -6,7 +6,6 @@ INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, Subp
            ('EEG_QC', '0', '0', 'Y', 'Visit', 23, 'V06-CVD', NULL),
            ('EEG_QC', '0', '0', 'Y', 'Visit', 23, 'V12-CVD', NULL),
            ('EEG_QC', '0', '0', 'Y', 'Visit', 23, 'V24-CVD', NULL),
-           ('EEG_QC', '0', '0', 'Y', 'Visit', 23, 'VSA', NULL),
            ('EEG_QC', '0', '0', 'Y', 'Visit', 18, 'V06-CVD', NULL),
            ('EEG_QC', '0', '0', 'Y', 'Visit', 18, 'V12-CVD', NULL),
            ('EEG_QC', '0', '0', 'Y', 'Visit', 18, 'V24-CVD', NULL),
