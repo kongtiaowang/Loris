@@ -183,7 +183,7 @@ class NDB_BVL_Instrument_tanner_boys_survey extends NDB_BVL_Instrument
             case "d":
                 return 4;
             default:
-                throw new Exception('foo');
+                throw new Exception('Unknown Value');
         }
     }
 
