@@ -524,7 +524,7 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
         $this->form->addElement('static', null, '<BR><BR>');
 
         // Add DTI comments text area
-        $this->form->addElement("textarea", "cmrr1_dti_comments", "<i>DTI Comments:</i>");
+        $this->form->addElement("textarea", "cmrr1_dti_comments", "<i>CMRR DTI Comments:</i>");
         $this->XINRegisterRule(
             "cmrr1_dti_comments",
             array("cmrr1_dti_comments{@}=={@}NEVER_REQUIRED")
@@ -604,7 +604,9 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
             array("bold_run4_facemask{@}=={@}NEVER_REQUIRED")
         );
         $this->form->addElement('static', null, '<BR><BR>');
-
+        $this->form->addElement('select', 'bold_subject_wakefulness', "<b>Subject Wakefulness<b>", array(''=>null,'awake' => "Awake", 'sleepy' => "Sleepy", 'asleep' => "Asleep"));
+        $this->XINRegisterRule("bold_subject_wakefulness", array("bold_subject_wakefulness{@}=={@}NEVER_REQUIRED"));        
+        $this->form->addElement('static', null, '<BR><BR>');
         // Add BOLD comments text area
         $this->form->addElement("textarea", "bold_comments", "<i>BOLD Comments:</i>");
         $this->XINRegisterRule(
@@ -689,7 +691,7 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
         $this->form->addElement('static', null, '<BR><BR>');
 
         // Add DTI comments text area
-        $this->form->addElement("textarea", "siemens_dti_comments", "<i>DTI Comments:</i>");
+        $this->form->addElement("textarea", "siemens_dti_comments", "<i>Siemens DTI Comments:</i>");
         $this->XINRegisterRule(
             "siemens_dti_comments",
             array("siemens_dti_comments{@}=={@}NEVER_REQUIRED")
@@ -1432,7 +1434,7 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
         $this->form->addElement('static', null, '<BR><BR>');
 
         // Add DTI comments text area
-        $this->form->addElement("textarea", "cmrr{$i}_dti_comments_{$i}", "<i>DTI Comments:</i>");
+        $this->form->addElement("textarea", "cmrr{$i}_dti_comments_{$i}", "<i>CMRR DTI Comments:</i>");
         $this->XINRegisterRule(
             "cmrr{$i}_dti_comments_{$i}",
             array("cmrr{$i}_dti_comments_{$i}{@}=={@}NEVER_REQUIRED")
@@ -1511,6 +1513,9 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
             "bold_run4_{$i}_facemask_{$i}",
             array("bold_run4_{$i}_facemask_{$i}{@}=={@}NEVER_REQUIRED")
         );
+        $this->form->addElement("static", null, "<BR><BR>");
+        $this->form->addElement('select', "bold_subject_wakefulness_{$i}", "<b>Subject Wakefulness<b>", array(''=>null,'awake' => "Awake", 'sleepy' => "Sleepy", 'asleep' => "Asleep"));
+        $this->XINRegisterRule("bold_subject_wakefulness_{$i}", array("bold_subject_wakefulness_{$i}{@}=={@}NEVER_REQUIRED"));
         $this->form->addElement("static", null, "<BR><BR>");
 
         // Add BOLD comments text area
@@ -1596,7 +1601,7 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
         );
         $this->form->addElement('static', null, '<BR><BR>');
 
-        $this->form->addElement("textarea", "siemens{$i}_dti_comments_{$i}", "<i>DTI Comments:</i>");
+        $this->form->addElement("textarea", "siemens{$i}_dti_comments_{$i}", "<i>Siemens DTI Comments:</i>");
         $this->XINRegisterRule(
             "siemens{$i}_dti_comments_{$i}",
             array("siemens{$i}_dti_comments_{$i}{@}=={@}NEVER_REQUIRED")
@@ -1657,5 +1662,3 @@ class NDB_BVL_Instrument_mri_parameter_form_sa extends NDB_BVL_Instrument
 
 
 }
-
-?>
