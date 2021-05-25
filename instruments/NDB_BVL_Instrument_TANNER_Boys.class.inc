@@ -99,6 +99,8 @@ class NDB_BVL_Instrument_TANNER_Boys extends NDB_BVL_Instrument
 
         // automatically adds examiner & date of administration
         $this->_addMetadataFields();
+
+        $this->form->addElement("static", "tanner_score_boys", "Tanner Stage of Physical Development (Boys)");
     }
     /**
     * Generates the first page of the form.
@@ -172,6 +174,43 @@ class NDB_BVL_Instrument_TANNER_Boys extends NDB_BVL_Instrument
         $this->addSelect("q4_voice_deepening", "4. Have you noticed a deepening of your voice?", $options4);
 
         $this->addSelect("q5_grow_hair_on_face", "5. Have you begun to grow hair on your face?", $options5);
+    }
+
+    function getScoreValue($value): int {
+        switch ($value) {
+            case "a":
+                return 1;
+            case "b":
+                return 2;
+            case "c":
+                return 3;
+            case "d":
+                return 4;
+            default:
+                throw new Exception('Unknown Value');
+        }
+    }
+
+    function score(): void {
+        $db =& Database::singleton();
+
+        // Get the item scores
+        $record= $db->pselectRow("SELECT * FROM $this->table WHERE CommentID=:cid", array('cid'=>$this->getCommentID()));
+        $sum = 0;
+
+        try {
+            $sum += $this->getScoreValue($record['q1_height_growth']);
+            $sum += $this->getScoreValue($record['q2_body_hair_growth']);
+            $sum += $this->getScoreValue($record['q3_skin_changes']);
+            $sum += $this->getScoreValue($record['q4_voice_deepening']);
+            $sum += $this->getScoreValue($record['q5_grow_hair_on_face']);
+
+            $score = array('tanner_score_boys'=>$sum/5);
+
+            $db->update($this->table, $score, array('CommentID'=>$this->getCommentID()));
+        } catch (Exception $e) {
+            // Unknown value seen, silently fail.
+        }
     }
 }
 ?>

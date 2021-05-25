@@ -201,5 +201,42 @@ class NDB_BVL_Instrument_tanner_girls_survey extends NDB_BVL_Instrument
         }
         return $errors;
     }
+
+    function getScoreValue($value): int {
+        switch ($value) {
+            case "a":
+                return 1;
+            case "b":
+                return 2;
+            case "c":
+                return 3;
+            case "d":
+                return 4;
+            default:
+                throw new Exception('Unknown Value');
+        }
+    }
+
+    function score(): void {
+        $db =& Database::singleton();
+
+        // Get the item scores
+        $record= $db->pselectRow("SELECT * FROM $this->table WHERE CommentID=:cid", array('cid'=>$this->getCommentID()));
+        $sum = 0;
+
+        try {
+            $sum += $this->getScoreValue($record['q1_height_growth']);
+            $sum += $this->getScoreValue($record['q2_body_hair_growth']);
+            $sum += $this->getScoreValue($record['q3_skin_changes']);
+            $sum += $this->getScoreValue($record['q4_breast_growth']);
+
+            $score = array('tanner_score_girls'=>$sum/4);
+
+            $db->update($this->table, $score, array('CommentID'=>$this->getCommentID()));
+        } catch (Exception $e) {
+            // Unknown value seen, silently fail.
+        }
+
+    }
 }
 
