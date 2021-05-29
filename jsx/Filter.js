@@ -83,50 +83,19 @@ function Filter(props) {
           case 'numeric':
             element = <NumericElement
               options={filter.options}
-<<<<<<< HEAD
-              sortByValue={filter.sortByValue}
-              autoSelect={false}
-            />
-          );
-          break;
-        case 'multiselect':
-          element = <SelectElement
-            key={filter.name}
-            options={filter.options}
-            multiple={true}
-            emptyOption={false}
-            autoSelect={false}
-          />;
-          break;
-        case 'numeric':
-          element = <NumericElement
-            key={filter.name}
-            options={filter.options}
-          />;
-          break;
-        case 'date':
-          element = <DateElement key={filter.name}/>;
-          break;
-        case 'time':
-          element = <TimeElement key={filter.name}/>;
-          break;
-        case 'checkbox':
-          element = <CheckboxElement key={filter.name}/>;
-          break;
-        default:
-          element = <TextboxElement key={filter.name}/>;
-=======
             />;
             break;
           case 'date':
             element = <DateElement/>;
+            break;
+          case 'time':
+            element = <TimeElement/>;
             break;
           case 'checkbox':
             element = <CheckboxElement/>;
             break;
           default:
             element = <TextboxElement/>;
->>>>>>> a497aff909a39dee255feca38593873ed10e32c0
         }
 
         // The value prop has to default to false if the first two options
