@@ -31,3 +31,6 @@ INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, Subp
 ('IPSC_tracking_form_PD', '0', '0', 'Y', 'Visit', '9', 'VSA-PR-IPSC', NULL),
 ('IPSC_tracking_form_PD', '0', '0', 'Y', 'Visit', '10', 'VSA-PR-IPSC', NULL),
 ('IPSC_tracking_form_PD', '0', '0', 'Y', 'Visit', '11', 'VSA-PR-IPSC', NULL);
+
+INSERT INTO `Visit_Windows` (`Visit_label`, `WindowMinDays`, `WindowMaxDays`, `OptimumMinDays`, `OptimumMaxDays`, `WindowMidpointDays`, `ID`) VALUES
+('VSA-PR-IPSC', NULL, NULL, NULL, NULL, NULL, DEFAULT);
