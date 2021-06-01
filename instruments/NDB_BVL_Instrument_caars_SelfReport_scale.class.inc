@@ -13,6 +13,13 @@ class NDB_BVL_Instrument_caars_SelfReport_scale extends NDB_BVL_Instrument
                 "e_raw_score",
                 "index_total_score",
                 "index_guide_score",
+                "a_raw_percentile",
+                "b_raw_percentile",
+                "c_raw_percentile",
+                "d_raw_percentile",
+                "e_raw_percentile",
+                "index_total_percentile",
+                "index_guide_percentile",
             );
 
            var $gender = array(
@@ -136,16 +143,17 @@ class NDB_BVL_Instrument_caars_SelfReport_scale extends NDB_BVL_Instrument
         $this->form->addElement('header', null, "Score Summary");
 
         $group[] = $this->form->createElement('static', "score", null, null);
+        $group[] = $this->form->createElement('static', "percentile", null, null);
 
         $this->form->addGroup($group, 'score_header_group', "<strong>Scale</strong>", $this->_GUIDelimiter, false);
         unset($group);
 
         $scales = array(
-            "a_raw"            => "A. Inattention/Memory Problems (T score):",
-            "b_raw"            => "B. Hyperactivity/Restlessness (T score):",
-            "c_raw"            => "C. Impulsivity/Emotional Lability (T score):",
-            "d_raw"            => "D. Problems with Self-Concept (T score):",
-            "e_raw"            => "E. ADHD Index (T score):",
+            "a_raw"            => "A. Inattention/Memory Problems :",
+            "b_raw"            => "B. Hyperactivity/Restlessness :",
+            "c_raw"            => "C. Impulsivity/Emotional Lability :",
+            "d_raw"            => "D. Problems with Self-Concept :",
+            "e_raw"            => "E. ADHD Index :",
             "index_total"      => "Inconsistency Index TOTAL:",
             "index_guide"      => "Is the Inconsistency Index TOTAL 8 or greater?<br>
                                    If the answer is “yes,” there may be some inconsistency<br>
@@ -153,7 +161,10 @@ class NDB_BVL_Instrument_caars_SelfReport_scale extends NDB_BVL_Instrument
         );
 
         
-        $columnHeaders = array("score" => "Score");
+        $columnHeaders = array( 
+                                "score" => "Raw score",
+                                "percentile" => "T score",
+                                );
 
         foreach ($columnHeaders as $field => $label) {
             $columnHeaders[$field] .= "   ";
@@ -162,8 +173,13 @@ class NDB_BVL_Instrument_caars_SelfReport_scale extends NDB_BVL_Instrument
 
         foreach ($scales as $field => $label) {
             foreach ($columnHeaders as $scoreField => $scoreLabel) {
+                if ($scoreField == "score") {
                 $group[] = $this->form->createElement('static', "{$field}_{$scoreField}", null, null);
             }
+         elseif ($scoreField == "percentile") {
+            $group[] = $this->form->createElement('static', "{$field}_{$scoreField}", null, null);
+        }
+    }
             $this->form->addGroup($group, "{$field}_score_group", $label, $this->_GUIDelimiter, false);
             unset($group);
         }
@@ -270,19 +286,19 @@ class NDB_BVL_Instrument_caars_SelfReport_scale extends NDB_BVL_Instrument
                                 + $abs_difference_13_20 + $abs_difference_7_8 + $abs_difference_15_16 + $abs_difference_9_26;
                                 
         
-    $a_raw_score = $score_record["q3_am_disorganized"] + $score_record["q5_hard_for_me_to_keep_track"] + $score_record["q17_cant_get_things_done"]  
+    $scores['a_raw_score'] = $score_record["q3_am_disorganized"] + $score_record["q5_hard_for_me_to_keep_track"] + $score_record["q17_cant_get_things_done"]  
              + $score_record["q18_have_trouble_getting"] + $score_record["q21_absent_minded_in_daily"] ;
 
-    $b_raw_score =  $score_record["q4_hard_for_me_to_stay"] + $score_record["q6_am_bored_easily"] +  $score_record["q10_seek_out_fast_paced"] 
+    $scores['b_raw_score'] =  $score_record["q4_hard_for_me_to_stay"] + $score_record["q6_am_bored_easily"] +  $score_record["q10_seek_out_fast_paced"] 
               + $score_record["q11_feel_restless_inside"] + $score_record["q23_tend_to_squirm_or"];
         
-    $c_raw_score =  $score_record["q1_interrupt_others_when_talking"] +  $score_record["q7_have_a_short_fuse"] + $score_record["q8_still_throw_tantrums"]
+    $scores['c_raw_score'] =  $score_record["q1_interrupt_others_when_talking"] +  $score_record["q7_have_a_short_fuse"] + $score_record["q8_still_throw_tantrums"]
               + $score_record["q13_many_things_set_me"] + $score_record["q20_my_moods_are_unpredictable"];
         
-    $d_raw_score =  $score_record["q9_avoid_new_challenges"] + $score_record["q15_get_down_on_myself"] + $score_record["q16_act_okay_on_the_outside"]
+    $scores['d_raw_score'] =  $score_record["q9_avoid_new_challenges"] + $score_record["q15_get_down_on_myself"] + $score_record["q16_act_okay_on_the_outside"]
               + $score_record["q25_wish_I_had_greater"] +  $score_record["q26_my_past_failures_make"];
 
-    $e_raw_score =  $score_record["q2_am_always_on_the_go_as_if"] +  $score_record["q7_have_a_short_fuse"] + $score_record["q8_still_throw_tantrums"]
+    $scores['e_raw_score'] = $score_record["q2_am_always_on_the_go_as_if"] +  $score_record["q7_have_a_short_fuse"] + $score_record["q8_still_throw_tantrums"]
               + $score_record["q9_avoid_new_challenges"] + $score_record["q11_feel_restless_inside"] + $score_record["q12_things_I_hear_or_see"] 
               +  $score_record["q14_am_an_underachiever"] + $score_record["q17_cant_get_things_done"] + $score_record["q19_intrude_on_others"]
                + $score_record["q22_sometimes_my_attention"] + $score_record["q24_cant_keep_my_mind_on"] + $score_record["q26_my_past_failures_make"];
@@ -293,6 +309,12 @@ class NDB_BVL_Instrument_caars_SelfReport_scale extends NDB_BVL_Instrument
         }else{
             $scores["index_guide_score"] = "no";
         }
+
+	$a_raw_score = $scores['a_raw_score'];
+        $b_raw_score = $scores['b_raw_score'];
+        $c_raw_score = $scores['c_raw_score'];
+        $d_raw_score = $scores['d_raw_score'];
+        $e_raw_score = $scores['e_raw_score'];
 
         $timepoint =& TimePoint::singleton($this->getSessionID());
         $dob = $timepoint->getEffectiveDateOfBirth();
@@ -312,90 +334,90 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
             
             $query_score_a = "SELECT * FROM caars_selfreport_lookup WHERE a_m1='$a_raw_score'";
                 $score_a = $db->pselectRow($query_score_a, array());
-                $scores['a_raw_score'] = $score_a['t'];
+                $scores['a_raw_percentile'] = $score_a['t'];
                 
             $query_score_b = "SELECT * FROM caars_selfreport_lookup WHERE b_m1='$b_raw_score'";
                 $score_b = $db->pselectRow($query_score_b, array());
-                $scores['b_raw_score'] = $score_b['t'];
+                $scores['b_raw_percentile'] = $score_b['t'];
 
             $query_score_c = "SELECT * FROM caars_selfreport_lookup WHERE c_m1='$c_raw_score'";
                 $score_c = $db->pselectRow($query_score_c, array());
-                $scores['c_raw_score'] = $score_c['t'];
+                $scores['c_raw_percentile'] = $score_c['t'];
 
             $query_score_d = "SELECT * FROM caars_selfreport_lookup WHERE d_m1='$d_raw_score'";
                 $score_d = $db->pselectRow($query_score_d, array());
-                $scores['d_raw_score'] = $score_d['t'];
+                $scores['d_raw_percentile'] = $score_d['t'];
 
             $query_score_e = "SELECT * FROM caars_selfreport_lookup WHERE e_m1='$e_raw_score'";
                 $score_e = $db->pselectRow($query_score_e, array());
-                $scores['e_raw_score'] = $score_e['t'];
+                $scores['e_raw_percentile'] = $score_e['t'];
         }
        else if($age_years >= 30 && $age_years <= 39) {
             
             $query_score_a = "SELECT * FROM caars_selfreport_lookup WHERE a_m2='$a_raw_score'";
                 $score_a = $db->pselectRow($query_score_a, array());
-                $scores['a_raw_score'] = $score_a['t'];
+                $scores['a_raw_percentile'] = $score_a['t'];
                 
             $query_score_b = "SELECT * FROM caars_selfreport_lookup WHERE b_m2='$b_raw_score'";
                 $score_b = $db->pselectRow($query_score_b, array());
-                $scores['b_raw_score'] = $score_b['t'];
+                $scores['b_raw_percentile'] = $score_b['t'];
 
             $query_score_c = "SELECT * FROM caars_selfreport_lookup WHERE c_m2='$c_raw_score'";
                 $score_c = $db->pselectRow($query_score_c, array());
-                $scores['c_raw_score'] = $score_c['t'];
+                $scores['c_raw_percentile'] = $score_c['t'];
 
             $query_score_d = "SELECT * FROM caars_selfreport_lookup WHERE d_m2='$d_raw_score'";
                 $score_d = $db->pselectRow($query_score_d, array());
-                $scores['d_raw_score'] = $score_d['t'];
+                $scores['d_raw_percentile'] = $score_d['t'];
 
             $query_score_e = "SELECT * FROM caars_selfreport_lookup WHERE e_m2='$e_raw_score'";
                 $score_e = $db->pselectRow($query_score_e, array());
-                $scores['e_raw_score'] = $score_e['t'];
+                $scores['e_raw_percentile'] = $score_e['t'];
         }
 
         else if($age_years >= 40 && $age_years <= 49) {
             
             $query_score_a = "SELECT * FROM caars_selfreport_lookup WHERE a_m3='$a_raw_score'";
                 $score_a = $db->pselectRow($query_score_a, array());
-                $scores['a_raw_score'] = $score_a['t'];
+                $scores['a_raw_percentile'] = $score_a['t'];
                 
             $query_score_b = "SELECT * FROM caars_selfreport_lookup WHERE b_m3='$b_raw_score'";
                 $score_b = $db->pselectRow($query_score_b, array());
-                $scores['b_raw_score'] = $score_b['t'];
+                $scores['b_raw_percentile'] = $score_b['t'];
 
             $query_score_c = "SELECT * FROM caars_selfreport_lookup WHERE c_m3='$c_raw_score'";
                 $score_c = $db->pselectRow($query_score_c, array());
-                $scores['c_raw_score'] = $score_c['t'];
+                $scores['c_raw_percentile'] = $score_c['t'];
 
             $query_score_d = "SELECT * FROM caars_selfreport_lookup WHERE d_m3='$d_raw_score'";
                 $score_d = $db->pselectRow($query_score_d, array());
-                $scores['d_raw_score'] = $score_d['t'];
+                $scores['d_raw_percentile'] = $score_d['t'];
 
             $query_score_e = "SELECT * FROM caars_selfreport_lookup WHERE e_m3='$e_raw_score'";
                 $score_e = $db->pselectRow($query_score_e, array());
-                $scores['e_raw_score'] = $score_e['t'];
+                $scores['e_raw_percentile'] = $score_e['t'];
         }
         else {
 
             $query_score_a = "SELECT * FROM caars_selfreport_lookup WHERE a_m4='$a_raw_score'";
                 $score_a = $db->pselectRow($query_score_a, array());
-                $scores['a_raw_score'] = $score_a['t'];
+                $scores['a_raw_percentile'] = $score_a['t'];
                 
             $query_score_b = "SELECT * FROM caars_selfreport_lookup WHERE b_m4='$b_raw_score'";
                 $score_b = $db->pselectRow($query_score_b, array());
-                $scores['b_raw_score'] = $score_b['t'];
+                $scores['b_raw_percentile'] = $score_b['t'];
 
             $query_score_c = "SELECT * FROM caars_selfreport_lookup WHERE c_m4='$c_raw_score'";
                 $score_c = $db->pselectRow($query_score_c, array());
-                $scores['c_raw_score'] = $score_c['t'];
+                $scores['c_raw_percentile'] = $score_c['t'];
 
             $query_score_d = "SELECT * FROM caars_selfreport_lookup WHERE d_m4='$d_raw_score'";
                 $score_d = $db->pselectRow($query_score_d, array());
-                $scores['d_raw_score'] = $score_d['t'];
+                $scores['d_raw_percentile'] = $score_d['t'];
 
             $query_score_e = "SELECT * FROM caars_selfreport_lookup WHERE e_m4='$e_raw_score'";
                 $score_e = $db->pselectRow($query_score_e, array());
-                $scores['e_raw_score'] = $score_e['t'];
+                $scores['e_raw_percentile'] = $score_e['t'];
         }
 
     }
@@ -405,90 +427,90 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
             
             $query_score_a = "SELECT * FROM caars_selfreport_lookup WHERE a_f1='$a_raw_score'";
                 $score_a = $db->pselectRow($query_score_a, array());
-                $scores['a_raw_score'] = $score_a['t'];
+                $scores['a_raw_percentile'] = $score_a['t'];
                 
             $query_score_b = "SELECT * FROM caars_selfreport_lookup WHERE b_f1='$b_raw_score'";
                 $score_b = $db->pselectRow($query_score_b, array());
-                $scores['b_raw_score'] = $score_b['t'];
+                $scores['b_raw_percentile'] = $score_b['t'];
 
             $query_score_c = "SELECT * FROM caars_selfreport_lookup WHERE c_f1='$c_raw_score'";
                 $score_c = $db->pselectRow($query_score_c, array());
-                $scores['c_raw_score'] = $score_c['t'];
+                $scores['c_raw_percentile'] = $score_c['t'];
 
             $query_score_d = "SELECT * FROM caars_selfreport_lookup WHERE d_f1='$d_raw_score'";
                 $score_d = $db->pselectRow($query_score_d, array());
-                $scores['d_raw_score'] = $score_d['t'];
+                $scores['d_raw_percentile'] = $score_d['t'];
 
             $query_score_e = "SELECT * FROM caars_selfreport_lookup WHERE e_f1='$e_raw_score'";
                 $score_e = $db->pselectRow($query_score_e, array());
-                $scores['e_raw_score'] = $score_e['t'];
+                $scores['e_raw_percentile'] = $score_e['t'];
         }
        else if($age_years >= 30 && $age_years <= 39) {
             
             $query_score_a = "SELECT * FROM caars_selfreport_lookup WHERE a_f2='$a_raw_score'";
                 $score_a = $db->pselectRow($query_score_a, array());
-                $scores['a_raw_score'] = $score_a['t'];
+                $scores['a_raw_percentile'] = $score_a['t'];
                 
             $query_score_b = "SELECT * FROM caars_selfreport_lookup WHERE b_f2='$b_raw_score'";
                 $score_b = $db->pselectRow($query_score_b, array());
-                $scores['b_raw_score'] = $score_b['t'];
+                $scores['b_raw_percentile'] = $score_b['t'];
 
             $query_score_c = "SELECT * FROM caars_selfreport_lookup WHERE c_f2='$c_raw_score'";
                 $score_c = $db->pselectRow($query_score_c, array());
-                $scores['c_raw_score'] = $score_c['t'];
+                $scores['c_raw_percentile'] = $score_c['t'];
 
             $query_score_d = "SELECT * FROM caars_selfreport_lookup WHERE d_f2='$d_raw_score'";
                 $score_d = $db->pselectRow($query_score_d, array());
-                $scores['d_raw_score'] = $score_d['t'];
+                $scores['d_raw_percentile'] = $score_d['t'];
 
             $query_score_e = "SELECT * FROM caars_selfreport_lookup WHERE e_f2='$e_raw_score'";
                 $score_e = $db->pselectRow($query_score_e, array());
-                $scores['e_raw_score'] = $score_e['t'];
+                $scores['e_raw_percentile'] = $score_e['t'];
         }
 
         else if($age_years >= 40 && $age_years <= 49) {
             
             $query_score_a = "SELECT * FROM caars_selfreport_lookup WHERE a_f3='$a_raw_score'";
                 $score_a = $db->pselectRow($query_score_a, array());
-                $scores['a_raw_score'] = $score_a['t'];
+                $scores['a_raw_percentile'] = $score_a['t'];
                 
             $query_score_b = "SELECT * FROM caars_selfreport_lookup WHERE b_f3='$b_raw_score'";
                 $score_b = $db->pselectRow($query_score_b, array());
-                $scores['b_raw_score'] = $score_b['t'];
+                $scores['b_raw_percentile'] = $score_b['t'];
 
             $query_score_c = "SELECT * FROM caars_selfreport_lookup WHERE c_f3='$c_raw_score'";
                 $score_c = $db->pselectRow($query_score_c, array());
-                $scores['c_raw_score'] = $score_c['t'];
+                $scores['c_raw_percentile'] = $score_c['t'];
 
             $query_score_d = "SELECT * FROM caars_selfreport_lookup WHERE d_f3='$d_raw_score'";
                 $score_d = $db->pselectRow($query_score_d, array());
-                $scores['d_raw_score'] = $score_d['t'];
+                $scores['d_raw_percentile'] = $score_d['t'];
 
             $query_score_e = "SELECT * FROM caars_selfreport_lookup WHERE e_f3='$e_raw_score'";
                 $score_e = $db->pselectRow($query_score_e, array());
-                $scores['e_raw_score'] = $score_e['t'];
+                $scores['e_raw_percentile'] = $score_e['t'];
         }
         else {
 
             $query_score_a = "SELECT * FROM caars_selfreport_lookup WHERE a_f4='$a_raw_score'";
                 $score_a = $db->pselectRow($query_score_a, array());
-                $scores['a_raw_score'] = $score_a['t'];
+                $scores['a_raw_percentile'] = $score_a['t'];
                 
             $query_score_b = "SELECT * FROM caars_selfreport_lookup WHERE b_f4='$b_raw_score'";
                 $score_b = $db->pselectRow($query_score_b, array());
-                $scores['b_raw_score'] = $score_b['t'];
+                $scores['b_raw_percentile'] = $score_b['t'];
 
             $query_score_c = "SELECT * FROM caars_selfreport_lookup WHERE c_f4='$c_raw_score'";
                 $score_c = $db->pselectRow($query_score_c, array());
-                $scores['c_raw_score'] = $score_c['t'];
+                $scores['c_raw_percentile'] = $score_c['t'];
 
             $query_score_d = "SELECT * FROM caars_selfreport_lookup WHERE d_f4='$d_raw_score'";
                 $score_d = $db->pselectRow($query_score_d, array());
-                $scores['d_raw_score'] = $score_d['t'];
+                $scores['d_raw_percentile'] = $score_d['t'];
 
             $query_score_e = "SELECT * FROM caars_selfreport_lookup WHERE e_f4='$e_raw_score'";
                 $score_e = $db->pselectRow($query_score_e, array());
-                $scores['e_raw_score'] = $score_e['t'];
+                $scores['e_raw_percentile'] = $score_e['t'];
         }
 
     }
