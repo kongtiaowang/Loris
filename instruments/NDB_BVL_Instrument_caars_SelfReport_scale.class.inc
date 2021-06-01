@@ -104,7 +104,7 @@ class NDB_BVL_Instrument_caars_SelfReport_scale extends NDB_BVL_Instrument
         $this->addHeader("CAARS–Self-Report Scale: Short Version (CAARS–S:S)");
 
         // automatically adds examiner & date of administration
-        $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
+        $this->_addMetadaFields();
 
 
         $field   = 'respondent_age';
@@ -154,7 +154,7 @@ class NDB_BVL_Instrument_caars_SelfReport_scale extends NDB_BVL_Instrument
             "c_raw"            => "C. Impulsivity/Emotional Lability :",
             "d_raw"            => "D. Problems with Self-Concept :",
             "e_raw"            => "E. ADHD Index :",
-            "index_total"      => "Inconsistency Index TOTAL:",
+            "index_total"      => "InconsistencyIndex TOTAL:",
             "index_guide"      => "Is the Inconsistency Index TOTAL 8 or greater?<br>
                                    If the answer is “yes,” there may be some inconsistency<br>
                                    to the responses. The results should be interpreted with caution. :",
