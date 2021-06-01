@@ -114,8 +114,6 @@ class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument
 
         $this->_addMetadataFields();
 
-        $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
-
         $group[] =&$this->form->createElement("text", 'age', "", null);
         $this->XINRegisterRule("age", array("age{@}=={@}"), "Required.", "age_group");
         $this->form->addGroup($group, "age_group", 'Age', null, false);
