@@ -2,7 +2,7 @@
 --
 -- SQL for the Vineland_EP instrument.
 --                
--- This new instrument is to be administered for DS-Infant at visits V6 and V6-CVD
+-- This new instrument is to be administered for DS_Infant at visits V6 and V6-CVD
 --
 -- ------------------------------------------------------------------------------------
 
