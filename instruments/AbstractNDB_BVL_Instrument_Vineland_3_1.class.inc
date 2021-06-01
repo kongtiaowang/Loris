@@ -1,6 +1,6 @@
 <?php
 /*
- * This file contains the AbstractNDB_BVL_Instrument_Vineland_3
+ * This file contains the AbstractNDB_BVL_Instrument_Vineland_3 Replica
  * class
  *
  * PHP Version 7
