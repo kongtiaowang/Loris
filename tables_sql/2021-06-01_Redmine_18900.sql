@@ -1,4 +1,5 @@
 UPDATE test_names SET IsDirectEntry = 0 WHERE Test_name = 'm_chat_rf';
+UPDATE test_names SET Full_name = 'M-CHAT [Revised with Follow-up]' WHERE Test_name = 'm_chat_rf';
 
 INSERT INTO `instrument_subtests` (`ID`, `Test_name`, `Subtest_name`, `Description`, `Order_number`) VALUES (NULL, 'm_chat_rf', 'm_chat_rf_page1', 'Page 1', '1');
 INSERT INTO `instrument_subtests` (`ID`, `Test_name`, `Subtest_name`, `Description`, `Order_number`) VALUES (NULL, 'm_chat_rf', 'm_chat_rf_page2', 'Page 2', '2');

@@ -20,6 +20,29 @@ class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument
     use LegacyInstrumentTrait;
     use instrument_validator;
 
+    var $scoreLabels = array(
+        "q1_pass_or_fail",
+        "q2_pass_or_fail",
+        "q3_pass_or_fail",
+        "q4_pass_or_fail",
+        "q5_pass_or_fail",
+        "q6_pass_or_fail",
+        "q7_pass_or_fail",
+        "q8_pass_or_fail",
+        "q9_pass_or_fail",
+        "q10_pass_or_fail",
+        "q11_pass_or_fail",
+        "q12_pass_or_fail",
+        "q13_pass_or_fail",
+        "q14_pass_or_fail",
+        "q15_pass_or_fail",
+        "q16_pass_or_fail",
+        "q17_pass_or_fail",
+        "q18_pass_or_fail",
+        "q19_pass_or_fail",
+        "q20_pass_or_fail",
+    );
+
     var $yesNo = array(
                   null  => '',
                   'yes' => 'Yes',
