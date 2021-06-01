@@ -104,7 +104,7 @@ class NDB_BVL_Instrument_caars_SelfReport_scale extends NDB_BVL_Instrument
         $this->addHeader("CAARS–Self-Report Scale: Short Version (CAARS–S:S)");
 
         // automatically adds examiner & date of administration
-        $this->_addMetadaFields();
+        $this->_addMetadataFields();
 
 
         $field   = 'respondent_age';
