@@ -14,7 +14,7 @@
  */
 
 /**
- * Creates the form elements for the Vineland 3 Proband instrument
+ * Creates the form elements for the Vineland DS-Infant Proband instrument
  *
  * @category Instrument
  * @package  Neuropsych
