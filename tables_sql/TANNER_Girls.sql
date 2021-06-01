@@ -19,6 +19,8 @@ CREATE TABLE `TANNER_Girls` (
 `q5a_month` varchar(255) default NULL,
 `q5a_year` varchar(255) default NULL,
 `q5b_first_day_of_last_menstrual_period` date default NULL,
+`tanner_score_girls` decimal(3,2) default NULL,
+`tanner_pubertal_stage_girls` enum('pre_pubertal', 'early_pubertal', 'mid_pubertal', 'late_pubertal', 'post_pubertal') default NULL,
 PRIMARY KEY  (`CommentID`)
 
               ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

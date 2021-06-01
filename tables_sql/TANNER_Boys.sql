@@ -16,6 +16,8 @@ CREATE TABLE `TANNER_Boys` (
 `q3_skin_changes` enum('a','b','c','d') default NULL,
 `q4_voice_deepening` enum('a','b','c','d') default NULL,
 `q5_grow_hair_on_face` enum('a','b','c','d') default NULL,
+`tanner_score_boys` decimal(3,2) default NULL,
+`tanner_pubertal_stage_boys` enum('pre_pubertal', 'early_pubertal', 'mid_pubertal', 'late_pubertal', 'post_pubertal') default NULL
 PRIMARY KEY  (`CommentID`)
 
               ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
