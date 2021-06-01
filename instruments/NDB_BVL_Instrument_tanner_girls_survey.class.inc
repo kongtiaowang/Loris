@@ -217,6 +217,26 @@ class NDB_BVL_Instrument_tanner_girls_survey extends NDB_BVL_Instrument
         }
     }
 
+    function getDerivedValue($raw_score): string {
+        if ($raw_score <= 1.7) {
+            return "pre_pubertal";
+        }
+
+        if ($raw_score > 1.7 && $raw_score <= 2.4) {
+            return "early_pubertal";
+        }
+
+        if ($raw_score > 2.4 && $raw_score <= 3) {
+            return "mid_pubertal";
+        }
+
+        if ($raw_score > 3 && $raw_score <= 3.6) {
+            return "late_pubertal";
+        }
+
+        return "post_pubertal";
+    }
+
     function score(): void {
         $db =& Database::singleton();
 
@@ -230,7 +250,12 @@ class NDB_BVL_Instrument_tanner_girls_survey extends NDB_BVL_Instrument
             $sum += $this->getScoreValue($record['q3_skin_changes']);
             $sum += $this->getScoreValue($record['q4_breast_growth']);
 
-            $score = array('tanner_score_girls'=>$sum/4);
+            $raw_score = $sum/4;
+
+            $score = array(
+                'tanner_score_girls'=>$raw_score,
+                'tanner_pubertal_stage_girls'=>$this->getDerivedValue($raw_score)
+            );
 
             $db->update($this->table, $score, array('CommentID'=>$this->getCommentID()));
         } catch (Exception $e) {
