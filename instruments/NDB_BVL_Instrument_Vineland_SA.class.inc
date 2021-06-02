@@ -13,7 +13,7 @@
  */
 
 /**
- * Creates the form elements for the Vineland_SA instrument
+ * Creates the form elements for the Vineland_EP instrument
  *
  * @category Instrument
  * @package  Neuropsych
