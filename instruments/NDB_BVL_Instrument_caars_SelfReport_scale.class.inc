@@ -153,7 +153,7 @@ class NDB_BVL_Instrument_caars_SelfReport_scale extends NDB_BVL_Instrument
             "c_raw"            => "C. Impulsivity/Emotional Lability :",
             "d_raw"            => "D. Problems with Self-Concept :",
             "e_raw"            => "E. ADHD Index :",
-            "index_total"      => "InconsistencyIndex TOTAL:",
+            "index_total"      => "InconsistencyIndex TOTAL :",
             "index_guide"      => "Is the Inconsistency Index TOTAL 8 or greater?<br>
                                    If the answer is “yes,” there may be some inconsistency<br>
                                    to the responses. The results should be interpreted with caution. :",
@@ -233,11 +233,11 @@ class NDB_BVL_Instrument_caars_SelfReport_scale extends NDB_BVL_Instrument
             "q19_intrude_on_others"                             => "19. I intrude on others’ activities.",
             "q20_my_moods_are_unpredictable"                    => "20. My moods are unpredictable.",
             "q21_absent_minded_in_daily"                        => "21. I’m absent-minded in daily activities.",
-            "q22_sometimes_my_attention"                        => "22.Sometimes my attention narrows so much that I’m oblivious to everything else; other times it’s so broad that everything distracts me.",
+            "q22_sometimes_my_attention"                        => "22. Sometimes my attention narrows so much that I’m oblivious to everything else; other times it’s so broad that everything distracts me.",
             "q23_tend_to_squirm_or"                             => "23. I tend to squirm or fidget.",
-            "q24_cant_keep_my_mind_on"                          => "24.I can’t keep my mind on something unless it’s really interesting.",
+            "q24_cant_keep_my_mind_on"                          => "24. I can’t keep my mind on something unless it’s really interesting.",
             "q25_wish_I_had_greater"                            => "25. I wish I had greater confidence in my abilities.",
-            "q26_my_past_failures_make"                         => "26.My past failures make it hard for me to believe in myself.",  
+            "q26_my_past_failures_make"                         => "26. My past failures make it hard for me to believe in myself.",  
         );
 
         foreach ($questions as $field=>$label) {
