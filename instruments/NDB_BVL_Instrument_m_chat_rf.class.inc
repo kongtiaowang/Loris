@@ -687,7 +687,7 @@ class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument
 
         $this->form->addElement('select', "q11_smile_back", "11. When you smile at your child, does he or she smile back at you?", $this->yesNo);
 
-        $this->form->addElement('static', null, "If Yes: What makes your child smile? (<i>If parent does not give a PASS example below, ask each individually.</i>)");
+        $this->form->addElement('static', null, "If No: What makes your child smile? (<i>If parent does not give a PASS example below, ask each individually.</i>)");
 
         $this->form->addElement('static', null, "<b>11.1. Does your child... (Required if No to #11)</b><h6><i>(Below are <u>PASS</u> examples)</i></h6>");
 
