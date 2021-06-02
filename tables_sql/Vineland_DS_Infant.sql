@@ -19,27 +19,38 @@ INSERT INTO test_names (Test_name, Full_name, Sub_group, TestExpert, IsDirectEnt
 -- ---------------------------------------------------------
 -- No inserts in intrument_subtests, just like Vineland_SA
 -- ---------------------------------------------------------
+-- ------------------------------------------------------------------
+-- Add the Vineland_DS_Infant instrument to all the sub-projects and visits (except for V9 & V9-CVD)
+-- ------------------------------------------------------------------
 
--- ---------------------------------------------------------------
--- Add the Vineland_3_Proband instrument to the V6 visit for
--- subproject IDS 20 and 23
--- ---------------------------------------------------------------
 
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
-VALUES ('Vineland_DS_Infant', '0', '0', 'Y', 'Visit', 18, 'V06', NULL);
+--Add for sub-project 20
+
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
 VALUES ('Vineland_DS_Infant', '0', '0', 'Y', 'Visit', 20, 'V06', NULL);
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
+VALUES ('Vineland_DS_Infant', '0', '0', 'Y', 'Visit', 20, 'V06-CVD', NULL);
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
+VALUES ('Vineland_DS_Infant', '0', '0', 'Y', 'Visit', 20, 'V12', NULL);
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
+VALUES ('Vineland_DS_Infant', '0', '0', 'Y', 'Visit', 20, 'V12-CVD', NULL);
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
+VALUES ('Vineland_DS_Infant', '0', '0', 'Y', 'Visit', 20, 'V24', NULL);
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
+VALUES ('Vineland_DS_Infant', '0', '0', 'Y', 'Visit', 20, 'V24-CVD', NULL);
+
+
+--Add for sub-project 23
+
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
 VALUES ('Vineland_DS_Infant', '0', '0', 'Y', 'Visit', 23, 'V06', NULL);
-
--- ------------------------------------------------------------------
--- Add the Vineland_3_Proband instrument to the V6-CVD visit for
--- subproject IDS 20 and 23
--- ------------------------------------------------------------------
-
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
-VALUES ('Vineland_DS_Infant', '0', '0', 'Y', 'Visit', 18, 'V6-CVD', NULL);
+VALUES ('Vineland_DS_Infant', '0', '0', 'Y', 'Visit', 23, 'V06-CVD', NULL);
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
-VALUES ('Vineland_DS_Infant', '0', '0', 'Y', 'Visit', 20, 'V6-CVD', NULL);
+VALUES ('Vineland_DS_Infant', '0', '0', 'Y', 'Visit', 23, 'V12', NULL);
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
-VALUES ('Vineland_DS_Infant', '0', '0', 'Y', 'Visit', 23, 'V6-CVD', NULL);
+VALUES ('Vineland_DS_Infant', '0', '0', 'Y', 'Visit', 23, 'V12-CVD', NULL);
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
+VALUES ('Vineland_DS_Infant', '0', '0', 'Y', 'Visit', 23, 'V24', NULL);
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
+VALUES ('Vineland_DS_Infant', '0', '0', 'Y', 'Visit', 23, 'V24-CVD', NULL);
