@@ -24,7 +24,7 @@ INSERT INTO test_names (Test_name, Full_name, Sub_group, TestExpert, IsDirectEnt
 -- ------------------------------------------------------------------
 
 
---Add for sub-project 20
+-- Add for sub-project 20
 
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
 VALUES ('Vineland_DS_Infant', '0', '0', 'Y', 'Visit', 20, 'V06', NULL);
@@ -40,7 +40,7 @@ INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, Subp
 VALUES ('Vineland_DS_Infant', '0', '0', 'Y', 'Visit', 20, 'V24-CVD', NULL);
 
 
---Add for sub-project 23
+-- Add for sub-project 23
 
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
 VALUES ('Vineland_DS_Infant', '0', '0', 'Y', 'Visit', 23, 'V06', NULL);
