@@ -21,7 +21,7 @@
  */
 
 
-abstract class AbstractNDB_BVL_Instrument_Vineland_3 extends NDB_BVL_Instrument
+abstract class AbstractNDB_BVL_Instrument_Vineland_3_1 extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
 
@@ -98,7 +98,7 @@ abstract class AbstractNDB_BVL_Instrument_Vineland_3 extends NDB_BVL_Instrument
             'file',
             "{$this->testName}_file",
             sprintf(
-                "Upload the %s file<br><h6><i>(Ex: %s_PSCID_VSA.txt)</i></h6>",
+                "Upload the %s file<br><h6><i>(Ex: %s_PSCID_V12.txt)</i></h6>",
                 $this->getInstrumentShortName(),
                 $this->testName
             )
