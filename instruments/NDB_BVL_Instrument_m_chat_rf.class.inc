@@ -1027,7 +1027,17 @@ class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument
 
         $this->form->addElement('select', "q18_understand_tell_something", "18. Does your child understand when you tell him or her to do something? <h6>(FOR EXAMPLE, if you don’t point, can your child understand \"put the book on the chair\" or \"bring me the blanket\"?)</h6>", $this->yesNo);
 
-        $this->form->addElement('static', null, "If Yes to #18: Please give me an example of how you know he/she understands you.");
+        $this->addTextAreaElement("q18_example_how_you_know_child_understands_you", "If Yes to #18: Please give me an example of how you know he/she understands you.", array(), "Required if Yes to #18. If No, select 'Not Answered'.");
+
+        $this->form->addElement('select', "q18_does_example_indicate_understand_without_nonverbal_cues", $this->indent . "Does the example indicate that child can understand a simple command without nonverbal cues?", $this->yesNo);
+
+        $this->XINRegisterRule(
+            "q18_does_example_indicate_understand_without_nonverbal_cues",
+            array("q18_understand_tell_something{@}=={@}yes"),
+            "Required."
+        );
+
+        $this->form->addElement('static', null, $this->indent . $this->indent ."If Yes, please skip all other questions. If No, continue.");
 
         $this->form->addElement('select', "q18_follow_a_command", $this->indent . "18.1. If No to #18: When the situation gives him/her a clue, can he/she follow a command? For example when you are dressed to go out and you tell him/her to get his/her shoes, does he/she understand?", $this->yesNo);
 
@@ -1554,6 +1564,8 @@ class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument
         }
 
         if ($values["q18_understand_tell_something"] == "no") {
+            $this->validate_empty_subquestions($values, ["q18_does_example_indicate_understand_without_nonverbal_cues"], $errors);
+
             if ($values["q18_follow_a_command"] == "no" && $values["q18_dinnertime_food_sit_at_table"] == "no") {
                 $this->validate_empty_subquestions($values, self::PAGE18_QUESTIONS, $errors);
             }
