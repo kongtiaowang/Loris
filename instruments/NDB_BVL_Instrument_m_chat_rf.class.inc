@@ -114,14 +114,7 @@ class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument
 
         $this->_addMetadataFields();
 
-        $group[] =&$this->form->createElement("text", 'age', "", null);
-        $this->XINRegisterRule("age", array("age{@}=={@}"), "Required.", "age_group");
-        $this->form->addGroup($group, "age_group", 'Age', null, false);
-        unset($group);
-        $this->addGroupRule(
-            "age_group",
-            array(array(array("Value must be numeric.", 'numeric')))
-        );
+        $this->addBasicText("age", "Age <br><h6><i>(Please enter a numeric value between 0-100 or write NA.)</i></h6>");
 
         $informant = array(
                       ''            => null,
@@ -144,6 +137,7 @@ class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument
 
         $this->form->addElement('header', 'score', "Score Summary");
 
+        $group[] = $this->form->createElement('static', null, null, "Pass/Fail");
         $this->form->addGroup($group, 'score_header_group', "<strong>Question</strong>", $this->_GUIDelimiter, false);
         unset($group);
 
@@ -163,6 +157,8 @@ class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument
         }
 
         $this->addLabel('2009 Diana Robins, Deborah Fein, & Marianne Barton');
+
+        $this->form->addFormRule(array(&$this, 'validate_main_page'));
     }
 
     /**
@@ -1189,6 +1185,15 @@ class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument
         }
 
         return $count;
+    }
+
+    function validate_main_page($values)
+    {
+        $errors = [];
+
+        $this->validate_age($values, "age", $errors);
+
+        return $errors;
     }
 
     function validate_page1($values)
