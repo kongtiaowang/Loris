@@ -66,9 +66,18 @@ class Bobdule extends Component {
 
       // Map the remaining rows related to the scan rating, storing them as a single JSON string to use at render.
       const rating = {
-        'normal': row[0] ? row[0] : 'no',
-        'atypical': row[1] ? row[1] : 'no',
-        'abnormal': row[2] ? row[2] : 'no',
+        'normal': {
+          'value': row[0] ? row[0] : 'no',
+          'comment': '',
+        },
+        'atypical': {
+          'value': row[1] ? row[1] : 'no',
+          'comment': '',
+        },
+        'abnormal': {
+          'value': row[2] ? row[2] : 'no',
+          'comment': '',
+        },
       };
       formattedRow.push(JSON.stringify(rating));
       formattedRow.push(i);
@@ -83,18 +92,23 @@ class Bobdule extends Component {
   /**
    * Update the stored state for the modify rating.
    *
-   * @param {object} event the event triggered
-   * @param {int} index the row index in the table
+   * @param {object} event  the event triggered
+   * @param {int} index     the row index in the table
+   * @param {boolean} check whether or not the value is for the checkbox or comment
    */
-  updateRating(event, index) {
+  updateRating(event, index, check) {
     const target = event.target;
     const value = target.checked;
-    const name = target.name;
+    const name = check ? target.name : target.name.split('_')[0];
 
     this.setState((state) => {
       const data = state.data;
       const ratings = JSON.parse(data[index][7]);
-      ratings[name] = value ? 'yes' : 'no';
+      if (check) {
+        ratings[name].value = value ? 'yes' : 'no';
+      } else {
+        ratings[name].comment = target.value;
+      }
       data[index][7] = JSON.stringify(ratings);
       state.data = data;
       return state;
@@ -117,12 +131,12 @@ class Bobdule extends Component {
       formData.append('reviewed', 'Bob McKinstry ');
       formData.append('clinical_mri', row['Recommend Referral for Clinical MRI']);
       formData.append('clinical_follow', row['Recommend Clinical Follow up']);
-      formData.append('subtest_1_1_check', rating['normal']);
-      formData.append('subtest_1_1_comment', '');
-      formData.append('subtest_1_2_check', rating['atypical']);
-      formData.append('subtest_1_2_comment', '');
-      formData.append('subtest_1_3_check', rating['abnormal']);
-      formData.append('subtest_1_3_comment', '');
+      formData.append('subtest_1_1_check', rating['normal'].value);
+      formData.append('subtest_1_1_comment', rating['normal'].comment);
+      formData.append('subtest_1_2_check', rating['atypical'].value);
+      formData.append('subtest_1_2_comment', rating['atypical'].comment);
+      formData.append('subtest_1_3_check', rating['abnormal'].value);
+      formData.append('subtest_1_3_comment', rating['abnormal'].comment);
       formData.append('candID', row['Candidate ID']);
       formData.append('sessionID', row['SessionID']);
       formData.append('commentID', row['CommentID']);
@@ -136,8 +150,7 @@ class Bobdule extends Component {
         credentials: 'same-origin',
         method: 'post',
         body: formData,
-      }).then((resp) => console.log('HHHHH'))
-        .catch((error) => {
+      }).catch((error) => {
           this.setState({error: true});
           console.error(error);
         });
@@ -161,7 +174,7 @@ class Bobdule extends Component {
   /**
    * Call to mark the row data as complete.
    *
-   * @param row the row data.
+   * @param {object} row the row data.
    */
   markComplete(row) {
     const formData = new FormData();
@@ -232,13 +245,13 @@ class Bobdule extends Component {
         const ratings = JSON.parse(cell);
         if (row['date']) {
           const enabled = [];
-          if (ratings['normal'] === 'yes') {
+          if (ratings['normal'].value === 'yes') {
             enabled.push('Normal');
           }
-          if (ratings['atypical'] === 'yes') {
+          if (ratings['atypical'].value === 'yes') {
             enabled.push('Atypical');
           }
-          if (ratings['abnormal'] === 'yes') {
+          if (ratings['abnormal'].value === 'yes') {
             enabled.push('Abnormal');
           }
           return (
@@ -248,46 +261,60 @@ class Bobdule extends Component {
 
         return (
           <td>
-            <div className='form-check form-check-inline'>
-              <input
-                className='form-check-input'
-                name='normal'
-                type='checkbox'
-                checked={ratings['normal'] === 'yes'}
-                onChange={(event) => this.updateRating(event, row['Action'])}
-              />
-              <label className="form-check-label">Normal</label>
-              <textarea
-                className="form-control"
-                name='atypical_comment'
-              />
-            </div>
-            <div className="form-check form-check-inline">
-              <input
-                className='form-check-input'
-                name='atypical' type='checkbox'
-                checked={ratings['atypical'] === 'yes'}
-                onChange={(event) => this.updateRating(event, row['Action'])}
-              />
-              <label className='form-check-label'>Atypical</label>
-              <textarea
-                className="form-control"
-                name='atypical_comment'
-              />
-            </div>
-            <div className="form-check form-check-inline">
-              <input
-                className='form-check-input'
-                name='abnormal' type='checkbox'
-                checked={ratings['abnormal'] === 'yes'}
-                onChange={(event) => this.updateRating(event, row['Action'])}
-              />
-              <label className='form-check-label'>Abnormal</label>
-              <textarea
-                className="form-control"
-                name='atypical_comment'
-              />
-            </div>
+            <form>
+              <div className="form-row align-items-center" style={{'paddingBottom': '20px'}}>
+                <div className='form-check form-check-inline'>
+                  <input
+                    className='form-check-input'
+                    name='normal'
+                    type='checkbox'
+                    checked={ratings['normal'].value === 'yes'}
+                    onChange={(event) => this.updateRating(event, row['Action'], true)}
+                  />
+                  <label className="form-check-label" style={{'paddingLeft': '10px'}}>Normal</label>
+                </div>
+                <textarea
+                  className="form-control"
+                  name='normal_comment'
+                  value={ratings['normal'].comment}
+                  onChange={(event) => this.updateRating(event, row['Action'], false)}
+                />
+              </div>
+              <div className="form-row align-items-center" style={{'paddingBottom': '20px'}}>
+                <div className="form-check form-check-inline">
+                  <input
+                    className='form-check-input'
+                    name='atypical' type='checkbox'
+                    checked={ratings['atypical'].value === 'yes'}
+                    onChange={(event) => this.updateRating(event, row['Action'], true)}
+                  />
+                  <label className='form-check-label' style={{'paddingLeft': '10px'}}>Atypical</label>
+                </div>
+                <textarea
+                  className="form-control"
+                  name='atypical_comment'
+                  value={ratings['atypical'].comment}
+                  onChange={(event) => this.updateRating(event, row['Action'], false)}
+                />
+              </div>
+              <div className="form-row align-items-center">
+                <div className="form-check form-check-inline">
+                  <input
+                    className='form-check-input'
+                    name='abnormal' type='checkbox'
+                    checked={ratings['abnormal'].value === 'yes'}
+                    onChange={(event) => this.updateRating(event, row['Action'], true)}
+                  />
+                  <label className='form-check-label' style={{'paddingLeft': '10px'}}>Abnormal</label>
+                </div>
+                <textarea
+                  className="form-control"
+                  name='abnormal_comment'
+                  value={ratings['abnormal'].comment}
+                  onChange={(event) => this.updateRating(event, row['Action'], false)}
+                />
+              </div>
+            </form>
           </td>
         );
       case 'Action':
@@ -297,10 +324,10 @@ class Bobdule extends Component {
         if (row['date']) {
           // Data has been submitted, display action to mark form as complete.
           label = 'Mark Complete';
-        } else if (rating['atypical'] === 'yes' || rating['abnormal'] === 'yes') {
+        } else if (rating['atypical'].value === 'yes' || rating['abnormal'].value === 'yes') {
           // User has selected an none normal rating, display action to launch form for more data to be submitted.
           label = 'Launch Form';
-        } else if (rating['normal'] === 'yes') {
+        } else if (rating['normal'].value === 'yes') {
           // Normal rating selected, display action to save and complete the form.
           label = 'Save and Complete';
         }
