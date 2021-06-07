@@ -442,7 +442,7 @@ class NDB_BVL_Instrument_mcdi_words_gestures_sentences_survey extends NDB_BVL_In
 
         $scale_percentile = $scale . "_percentile";
 
-        $query_scores    = "SELECT * FROM macarthur_lookup WHERE age_months=" . $age_months . " AND sex='$gender' AND score_raw=".$scores[$scale_number]." AND subscale='$scale_number'";
+        $query_scores    = "SELECT * FROM macarthur_lookup WHERE age_months=" . $age_months . " AND (sex=". $gender. " OR sex='both_sexes')  AND score_raw=".$scores[$scale_number]." AND subscale='$scale_number'";
         $PercentileScore = $db->pselectRow($query_scores, array());
 
         $scores[$scale_percentile] = $PercentileScore['score_percentile'];
@@ -523,7 +523,7 @@ class NDB_BVL_Instrument_mcdi_words_gestures_sentences_survey extends NDB_BVL_In
 
         // word_forms scores are not affected by the Sex of the candidate
         if ($scale != "word_forms") {
-            $query_scores    = "SELECT * FROM CDI_WS_percentiles_lookup WHERE age_months=".$age_months. " AND score_raw=".$scores[$scale]." AND subscale='$scale'";
+            $query_scores    = "SELECT * FROM CDI_WS_percentiles_lookup WHERE age_months=".$age_months. " AND (sex=".$gender." OR sex='both_sexes' ) AND score_raw=".$scores[$scale]." AND subscale='$scale'";
             $PercentileScore = $db->pselectRow($query_scores, array());
 
             $scores[$scale_percentile] = $PercentileScore['score_percentile'];
@@ -588,7 +588,7 @@ class NDB_BVL_Instrument_mcdi_words_gestures_sentences_survey extends NDB_BVL_In
                 $scores[$scale_percentile] = abs(round($percentile_calculation1));
             }
         } else {
-            $query_scores    = "SELECT * FROM CDI_WS_percentiles_lookup WHERE age_months=".$age_months. " AND score_raw=".$scores[$scale]." AND subscale='$scale'";
+            $query_scores    = "SELECT * FROM CDI_WS_percentiles_lookup WHERE age_months=".$age_months. " AND (sex=". $gender . " OR sex='both_sexes') AND score_raw=".$scores[$scale]." AND subscale='$scale'";
             $PercentileScore = $db->pselectRow($query_scores, array());
 
             $scores[$scale_percentile] = $PercentileScore['score_percentile'];
@@ -777,6 +777,7 @@ class NDB_BVL_Instrument_mcdi_words_gestures_sentences_survey extends NDB_BVL_In
          * Part II: Action and Gestures *
          ********************************/
 
+	// p
         // Section A: First Communicative Gestures
 
         $II_A_question_count = count(self::Question_II_A); // == 13
@@ -890,7 +891,7 @@ class NDB_BVL_Instrument_mcdi_words_gestures_sentences_survey extends NDB_BVL_In
 
         // 16-30 months
         $CDI_WS_percentiles_lookup_scales = array(
-                                            // "words_produced_number",
+                                            "words_produced_number",
                                              "word_forms",
                                              "grammatical_complexity",
                                             );
