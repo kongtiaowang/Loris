@@ -61,12 +61,14 @@ class Bobdule extends Component {
 
       // First 8 row items are 1 to 1 mapping, store them in new array.
       const formattedRow = row.splice(0, 7);
+      formattedRow[5] = formattedRow[6] ? formattedRow[5] : 'no';
+      formattedRow[6] = formattedRow[6] ? formattedRow[6] : 'no';
 
       // Map the remaining rows related to the scan rating, storing them as a single JSON string to use at render.
       const rating = {
-        'normal': row[0],
-        'atypical': row[1],
-        'abnormal': row[2],
+        'normal': row[0] ? row[0] : 'no',
+        'atypical': row[1] ? row[1] : 'no',
+        'abnormal': row[2] ? row[2] : 'no',
       };
       formattedRow.push(JSON.stringify(rating));
       formattedRow.push(i);
@@ -106,11 +108,81 @@ class Bobdule extends Component {
    * @param {object} row  the row data
    */
   actionClick(type, row) {
-    if (type === 'Launch Form') {
-      this.setState({
-        formURL: `${loris.BaseURL}/instruments/final_radiological_review_VSA/?commentID=${row['CommentID']}&sessionID=${row['SessionID']}&candID=${row['Candidate ID']}`,
-      });
+    const url = `${loris.BaseURL}/instruments/final_radiological_review_VSA/?commentID=${row['CommentID']}&sessionID=${row['SessionID']}&candID=${row['Candidate ID']}`;
+    if (type === 'Launch Form' || type === 'Save and Complete') {
+      const rating = JSON.parse(row['Rating']);
+
+      const formData = new FormData();
+      formData.append('Date_taken', new Date().toLocaleDateString('en-CA'));
+      formData.append('reviewed', 'Bob McKinstry ');
+      formData.append('clinical_mri', row['Recommend Referral for Clinical MRI']);
+      formData.append('clinical_follow', row['Recommend Clinical Follow up']);
+      formData.append('subtest_1_1_check', rating['normal']);
+      formData.append('subtest_1_1_comment', '');
+      formData.append('subtest_1_2_check', rating['atypical']);
+      formData.append('subtest_1_2_comment', '');
+      formData.append('subtest_1_3_check', rating['abnormal']);
+      formData.append('subtest_1_3_comment', '');
+      formData.append('candID', row['Candidate ID']);
+      formData.append('sessionID', row['SessionID']);
+      formData.append('commentID', row['CommentID']);
+      formData.append('test_name', 'final_radiological_review_VSA');
+      formData.append('page', '');
+      formData.append('subtest', '');
+      formData.append('fire_away', 'Save Data');
+
+      // Save the current inputted data.
+      const post = fetch(url, {
+        credentials: 'same-origin',
+        method: 'post',
+        body: formData,
+      }).then((resp) => console.log('HHHHH'))
+        .catch((error) => {
+          this.setState({error: true});
+          console.error(error);
+        });
+
+      if (type === 'Launch Form') {
+        // If action is launch form, launch the form.
+        post.then(() => {
+          this.setState({
+            formURL: url,
+          });
+        });
+      } else {
+        // Else mark the data as complete.
+        post.then(() => this.markComplete(row));
+      }
+    } else if (type === 'Mark Complete') {
+      this.markComplete(row);
     }
+  }
+
+  /**
+   * Call to mark the row data as complete.
+   *
+   * @param row the row data.
+   */
+  markComplete(row) {
+    const formData = new FormData();
+    formData.append('candID', row['Candidate ID']);
+    formData.append('sessionID', row['SessionID']);
+    formData.append('commentID', row['CommentID']);
+    formData.append('test_name', 'final_radiological_review_VSA');
+    formData.append('setAdministration', 'All');
+    formData.append('setValidity', 'Valid');
+    formData.append('setDataEntry', 'Complete');
+
+    fetch(`${loris.BaseURL}/bobdule/?format=json`, {
+      credentials: 'same-origin',
+      method: 'post',
+      body: formData,
+    }).then((resp) => resp.json())
+      .then((data) => this.handleData(data.Data))
+      .catch((error) => {
+        this.setState({error: true});
+        console.error(error);
+      });
   }
 
   /**

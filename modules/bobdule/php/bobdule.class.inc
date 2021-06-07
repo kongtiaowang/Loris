@@ -22,6 +22,9 @@ class Bobdule extends \NDB_Menu_Filter_Form
         return $user->hasPermission('data_team_helper');
     }
 
+    /**
+     * Build query to select all candidates/visits where they have either a T1 or T2 scan for that visit.
+     */
     function _setupVariables()
     {
         $this->query = "
@@ -45,6 +48,31 @@ class Bobdule extends \NDB_Menu_Filter_Form
                             't.subtest_1_2_check',
                             't.subtest_1_3_check'
                          );
+    }
+
+    /**
+     * Save and complete the instrument.
+     *
+     * @return bool
+     * @throws \DatabaseException
+     */
+    function save()
+    {
+        $DB =& \Database::singleton();
+        $DB->update(
+            'flag',
+            array(
+                'Administration' => $_POST['setAdministration'],
+                'Validity'       => $_POST['setValidity'],
+                'Data_entry'     => $_POST['setDataEntry']
+            ),
+            array(
+                'CommentID' => $_POST['commentID'],
+                'Test_name' => $_POST['test_name'],
+                'SessionID' => $_POST['sessionID']
+            )
+        );
+        return true;
     }
 
     function getJSDependencies()
