@@ -1358,7 +1358,7 @@ INSERT INTO CDI_WS_percentiles_lookup VALUES
 ('30', 'both_sexes', 'words_produced_number', '363', '20'),
 ('30', 'both_sexes', 'words_produced_number', '321', '15'),
 ('30', 'both_sexes', 'words_produced_number', '263', '10'),
-('30', 'both_sexes', 'words_produced_number', '158', '5');
+('30', 'both_sexes', 'words_produced_number', '158', '5'),
 ('16', 'male', 'word_forms', '8', '99'),
 ('16', 'male', 'word_forms', '3', '95'),
 ('16', 'male', 'word_forms', '2', '90'),
