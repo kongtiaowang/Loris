@@ -14,6 +14,7 @@ INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_num
 
 
 -- Insert IBIS EP and DS-Infant for V12, V18, V24
+-- Only apply to non-CVD
 -- EP
 INSERT INTO survey_test_battery (Test_name, Active, SubprojectID, Visit_label) VALUES ('mcdi_words_gestures_sentences_survey', DEFAULT, 18, 'V12');
 INSERT INTO survey_test_battery (Test_name, Active, SubprojectID, Visit_label) VALUES ('mcdi_words_gestures_sentences_survey', DEFAULT, 18, 'V18');
