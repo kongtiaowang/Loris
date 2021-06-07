@@ -1,6 +1,6 @@
 <?php
 
-class NDB_BVL_Instrument_caars_SelfReport_scale extends NDB_BVL_Instrument
+class NDB_BVL_Instrument_caars_SelfReport_dad extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
     use instrument_validator;
@@ -40,14 +40,14 @@ class NDB_BVL_Instrument_caars_SelfReport_scale extends NDB_BVL_Instrument
     function setup(?string $commentID = null, ?string $page = null): void
     {
         $this->formType ="XIN";
-        $this->form     = new LorisForm('caars_SelfReport_scale');
+        $this->form     = new LorisForm('caars_SelfReport_dad');
         $this->page     = $page;            // page label (number or
         // string - used by
         // user-defined child classes)
 
         // set the object properties
-        $this->testName = "caars_SelfReport_scale";           // test_names.Test_name
-        $this->table    = 'caars_SelfReport_scale';              // name of database table corresponding to instrument
+        $this->testName = "caars_SelfReport_dad";           // test_names.Test_name
+        $this->table    = 'caars_SelfReport_dad';              // name of database table corresponding to instrument
         // data keyed by commentID
         $this->commentID = $commentID;
         $config            =& NDB_Config::singleton();
@@ -81,7 +81,7 @@ class NDB_BVL_Instrument_caars_SelfReport_scale extends NDB_BVL_Instrument
      */
     function _setupForm()
     {
-        if (preg_match("/caars_SelfReport_scale(_page[0-9]+)/", $this->page, $matches)) {
+        if (preg_match("/caars_SelfReport_dad(_page[0-9]+)/", $this->page, $matches)) {
             call_user_func(array($this, $matches[1]));
         } else {
             $this->_main();
@@ -100,7 +100,7 @@ class NDB_BVL_Instrument_caars_SelfReport_scale extends NDB_BVL_Instrument
     {
 
          // display test name
-        $this->addHeader("CAARS–Self-Report Scale: Short Version (CAARS–S:S)");
+        $this->addHeader("CAARS–Self-Report Scale: Self Report Dad (Send to Dad)");
 
         $date_label = "Today's Date"; 
         // automatically adds examiner & date of administration
@@ -304,9 +304,8 @@ class NDB_BVL_Instrument_caars_SelfReport_scale extends NDB_BVL_Instrument
         $c_raw_score = $scores['c_raw_score'];
         $d_raw_score = $scores['d_raw_score'];
         $e_raw_score = $scores['e_raw_score'];
-	$respondent_age = $score_record['respondent_age'];
-	$respondent_gender = $score_record['gender'];
-
+        $respondent_age = $score_record['respondent_age'];
+        $respondent_gender = $score_record['gender'];
 
 
         if($respondent_gender == 'male'){
