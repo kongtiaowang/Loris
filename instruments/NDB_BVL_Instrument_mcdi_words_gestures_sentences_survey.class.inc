@@ -446,7 +446,7 @@ class NDB_BVL_Instrument_mcdi_words_gestures_sentences_survey extends NDB_BVL_In
 		SELECT * 
 		FROM macarthur_lookup 
 		WHERE age_months=:ageMonths 
-		AND (sex=:gender OR sex='both_sexes')  
+		AND sex=:gender  
 		AND score_raw=:scoreRaw 
 		AND subscale=:subScale";
 	$PercentileScore = $db->pselectRow(
@@ -541,7 +541,7 @@ class NDB_BVL_Instrument_mcdi_words_gestures_sentences_survey extends NDB_BVL_In
 			SELECT * 
 			FROM CDI_WS_percentiles_lookup 
 			WHERE age_months=:ageMonths 
-			AND (sex=:gender OR sex='both_sexes' ) 
+			AND sex=:gender
 			AND score_raw=:scoreRaw 
 			AND subscale=:subScale";
 		$PercentileScore = $db->pselectRow(
@@ -620,7 +620,7 @@ class NDB_BVL_Instrument_mcdi_words_gestures_sentences_survey extends NDB_BVL_In
 			SELECT * 
 			FROM CDI_WS_percentiles_lookup 
 			WHERE age_months=:ageMonths 
-			AND (sex=:gender OR sex='both_sexes') 
+			AND sex=:gender 
 			AND score_raw=:scoreRaw 
 			AND subscale=:subScale";
 
@@ -934,7 +934,7 @@ class NDB_BVL_Instrument_mcdi_words_gestures_sentences_survey extends NDB_BVL_In
 
         // 16-30 months
         $CDI_WS_percentiles_lookup_scales = array(
-                                            "words_produced_number",
+                                          //  "words_produced_number",
                                              "word_forms",
                                              "grammatical_complexity",
                                             );
