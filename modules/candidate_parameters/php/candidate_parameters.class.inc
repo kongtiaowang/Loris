@@ -11,6 +11,8 @@
  * @link     https://www.github.com/aces/Loris/
  */
 namespace LORIS\candidate_parameters;
+use \LORIS\StudyEntities\Candidate\CandID;
+
 /**
  * Main class for candidate_parameters module
  * corresponding to /candidate_parameters/ URL
@@ -38,12 +40,19 @@ class Candidate_Parameters extends \NDB_Form
      */
     function _hasAccess(\User $user) : bool
     {
-        return $user->hasAnyPermission(
-            array(
-             'candidate_parameter_view',
-             'candidate_parameter_edit',
+        $candidate =& \Candidate::singleton(new CandID($this->identifier));
+
+        // User must either have 'access_all_profiles' permission, or
+        // one of the candidate_parameter permissions AND have the candidate's site.
+        return $user->hasPermission('access_all_profiles') ||
+            ($user->hasAnyPermission(
+                array(
+                    'candidate_parameter_view',
+                    'candidate_parameter_edit',
+                )
             )
-        );
+                && $user->hasCenter($candidate->getCenterID())
+            );
     }
 
     /**
@@ -69,7 +78,7 @@ class Candidate_Parameters extends \NDB_Form
         return array_merge(
             $deps,
             array(
-             $baseURL . "/candidate_parameters/js/CandidateParameters.js",
+                $baseURL . "/candidate_parameters/js/CandidateParameters.js",
             )
         );
     }
@@ -81,7 +90,7 @@ class Candidate_Parameters extends \NDB_Form
      */
     public function getBreadcrumbs(): \LORIS\BreadcrumbTrail
     {
-        $candidate =& \Candidate::singleton((int)$this->identifier);
+        $candidate =& \Candidate::singleton(new CandID($this->identifier));
         $candID    = $candidate->getCandID();
 
         return new \LORIS\BreadcrumbTrail(

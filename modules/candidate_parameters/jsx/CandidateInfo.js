@@ -56,6 +56,19 @@ class CandidateInfo extends Component {
   setFormData(formElement, value) {
     let formData = JSON.parse(JSON.stringify(this.state.formData));
     formData[formElement] = value;
+
+    // Reset 'reason' and 'other' fields
+    if (formElement === 'flaggedCaveatemptor' && value === 'false') {
+      formData.flaggedReason = '';
+      formData.flaggedOther = '';
+    }
+
+    // Reset 'other' field
+    if (formElement === 'flaggedReason' &&
+      this.state.Data.caveatReasonOptions[value] !== 'Other') {
+      formData.flaggedOther = '';
+    }
+
     this.setState({
       formData: formData,
     });
@@ -83,6 +96,49 @@ class CandidateInfo extends Component {
     if (loris.userHasPermission('candidate_parameter_edit')) {
       disabled = false;
       updateButton = <ButtonElement label="Update"/>;
+    }
+    let reasonDisabled = true;
+    let reasonRequired = false;
+    if (this.state.formData.flaggedCaveatemptor === 'true') {
+      reasonDisabled = false;
+      reasonRequired = true;
+    }
+
+    let reasonKey = null;
+    let specifyOther = null;
+    let otherDisabled = true;
+    let otherRequired = false;
+    for (let key in this.state.Data.caveatReasonOptions) {
+      if (this.state.Data.caveatReasonOptions.hasOwnProperty(key)) {
+        if (this.state.Data.caveatReasonOptions[key] === 'Other') {
+          reasonKey = key;
+          break;
+        }
+      }
+    }
+
+    if (this.state.formData.flaggedReason === reasonKey) {
+      otherRequired = true;
+      otherDisabled = false;
+    }
+
+    if (this.state.formData.flaggedCaveatemptor === 'false') {
+      reasonDisabled = true;
+      reasonRequired = false;
+      otherDisabled = true;
+      otherRequired = false;
+    }
+
+    if (reasonKey !== null) {
+      specifyOther = <TextareaElement
+        label="If Other, please specify"
+        name="flaggedOther"
+        value={this.state.formData.flaggedOther}
+        onUserInput={this.setFormData}
+        ref="flaggedOther"
+        disabled={otherDisabled}
+        required={otherRequired}
+      />;
     }
     let extraParameterFields = [];
     let extraParameters = this.state.Data.extra_parameters;
@@ -178,6 +234,27 @@ class CandidateInfo extends Component {
             label="DCCID"
             text={this.state.Data.candID}
           />
+          <SelectElement
+            label="Caveat Emptor Flag for Candidate"
+            name="flaggedCaveatemptor"
+            options={this.state.caveatOptions}
+            value={this.state.formData.flaggedCaveatemptor}
+            onUserInput={this.setFormData}
+            ref="flaggedCaveatemptor"
+            disabled={disabled}
+            required={true}
+          />
+          <SelectElement
+            label="Reason for Caveat Emptor Flag"
+            name="flaggedReason"
+            options={this.state.Data.caveatReasonOptions}
+            value={this.state.formData.flaggedReason}
+            onUserInput={this.setFormData}
+            ref="flaggedReason"
+            disabled={reasonDisabled}
+            required={reasonRequired}
+          />
+          {specifyOther}
           {extraParameterFields}
           {updateButton}
         </FormElement>
