@@ -311,7 +311,10 @@ class SinglePointLogin
         $oldhash = $row['Password_hash'] ?? '';
         if (password_verify($password, $oldhash)) {
             // Rehash according to latest standards if necessary.
-            if (password_needs_rehash($oldhash, PASSWORD_DEFAULT)) {
+            // IBIS SPECIFIC OVERRIDE CODE
+            // Overriding the hash algo from default to argon21.
+            if (password_needs_rehash($oldhash, PASSWORD_ARGON2I)) {
+                // IBIS SPECIFIC OVERRIDE CODE ENDS HERE
                 try {
                     $newHash = new \Password($password);
                     \User::factory($username)->updatePassword(
@@ -382,7 +385,7 @@ class SinglePointLogin
                 && ($currentDay < strtotime($row['active_from']))
             ) {
                 $this->_lastError = "Your account is not active yet."
-                    ." According to our records it will be active from 
+                    ." According to our records it will be active from
             {$row['active_from']}"
                 . " Please contact your project administrator";
                 return false;
@@ -579,7 +582,7 @@ class SinglePointLogin
 
         $DB    =& Database::singleton();
         $query = "SELECT MAX(Login_timestamp) as Login_timestamp
-                  FROM user_login_history 
+                  FROM user_login_history
                   WHERE UserID = :username";
 
         $row = $DB->pselectRow($query, array('username' => $username));
