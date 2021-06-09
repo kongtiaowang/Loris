@@ -10,21 +10,21 @@
  *
  * PHP Version 5
  *
- *  @category Main
- *  @package  Behavioural
- *  @author   Alex Zijdenbos <zijdenbos@example.com>
- *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- *  @link     https://www.github.com/aces/Loris-Trunk/
+ * @category Main
+ * @package  Behavioural
+ * @author   Alex Zijdenbos <zijdenbos@example.com>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris-Trunk/
  */
 
 /**
  * Class that implements a wrapper around a Loris battery.
  *
- *  @category Main
- *  @package  Behavioural
- *  @author   Alex Zijdenbos <zijdenbos@example.com>
- *  @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- *  @link     https://www.github.com/aces/Loris-Trunk/
+ * @category Main
+ * @package  Behavioural
+ * @author   Alex Zijdenbos <zijdenbos@example.com>
+ * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
+ * @link     https://www.github.com/aces/Loris-Trunk/
  */
 class NDB_BVL_Battery
 {
@@ -34,7 +34,9 @@ class NDB_BVL_Battery
      *
      * @access private
      */
-    var $sessionID = null;
+    public $sessionID = null;
+
+    public $age;
 
     /**
      * Constructor - merely asserts that the environment is suitable
@@ -132,6 +134,8 @@ class NDB_BVL_Battery
                 $e
             );
         }
+
+        // IBIS SPECIFIC OVERRIDE CODE
         // Commenting below lines of Code  as part of Override
         // assert that the current battery is empty
         /* if (count($currentTests) > 0) {
@@ -139,7 +143,7 @@ class NDB_BVL_Battery
                 "Battery is not empty - will not clobber an existing battery."
             );
         }*/
-        //Finishes Here
+        // IBIS SPECIFIC OVERRIDE CODE ENDS HERE
 
         // determine the list of instruments to register
         $neededTests = $this->lookupBattery(
@@ -151,12 +155,12 @@ class NDB_BVL_Battery
             $firstVisit
         );
 
-        //IBIS Override Code Starts Here
+        // IBIS SPECIFIC OVERRIDE CODE
         // assert that the current battery is empty
         if (count($currentTests) > 0) {
             $neededTests = $this->getBatteryDifference($currentTests, $neededTests);
         }
-        //IBIS Override Code Ends Here
+        // IBIS SPECIFIC OVERRIDE CODE ENDS HERE
 
         // loop over the list of instruments
         foreach ($neededTests AS $testName) {
@@ -165,7 +169,8 @@ class NDB_BVL_Battery
         } // end looping over the list of instruments
     } // end createBattery()
 
-    // IBIS Override Code Starts Here (Redmine 18615)
+    // IBIS SPECIFIC OVERRIDE CODE
+    // (Redmine 18615)
     /**
      * Computes the difference between the existing battery and the
      * theoretical battery and returns only the missing tests as an array
@@ -179,7 +184,8 @@ class NDB_BVL_Battery
     {
         return array_unique(array_diff($lookupBattery, $currentBattery));
     }
-    //IBIS Override Code Ends Here
+    // IBIS SPECIFIC OVERRIDE CODE ENDS HERE
+
     /**
      * Adds the specified instrument to the current battery, so long
      * as it is not already there (singleton model)
@@ -218,16 +224,16 @@ class NDB_BVL_Battery
         $obj = NDB_BVL_Instrument::factory($testName, '', '');
 
         // insert into the test table
-        $success = $DB->insert($obj->table, array('CommentID' => $commentID));
+        $DB->insert($obj->table, array('CommentID' => $commentID));
 
         // insert into the flag table
-        $success = $DB->insert(
+        $DB->insert(
             'flag',
             array(
-             'SessionID' => $sessionData['SessionID'],
-             'Test_name' => $testName,
-             'CommentID' => $commentID,
-             'UserID'    => $sessionData['UserID'],
+                'SessionID' => $sessionData['SessionID'],
+                'Test_name' => $testName,
+                'CommentID' => $commentID,
+                'UserID'    => $sessionData['UserID'],
             )
         );
 
@@ -235,21 +241,20 @@ class NDB_BVL_Battery
         $ddeCommentID = 'DDE_'.$commentID;
 
         // insert the dde into the test table
-        $success = $DB->insert($obj->table, array('CommentID' => $ddeCommentID));
+        $DB->insert($obj->table, array('CommentID' => $ddeCommentID));
 
         // insert the dde into the flag table
-        $success = $DB->insert(
+        $DB->insert(
             'flag',
             array(
-             'SessionID' => $sessionData['SessionID'],
-             'Test_name' => $testName,
-             'CommentID' => $ddeCommentID,
-             'UserID'    => $sessionData['UserID'],
+                'SessionID' => $sessionData['SessionID'],
+                'Test_name' => $testName,
+                'CommentID' => $ddeCommentID,
+                'UserID'    => $sessionData['UserID'],
             )
         );
 
-        return $commentID;
-
+        return $commentID ?? '';
     } // end addInstrument()
 
     /**
@@ -403,12 +408,13 @@ class NDB_BVL_Battery
      *
      * @return string A test name
      */
-    function getInstrumentNameForCommentId($commentId)
+    public static function getInstrumentNameForCommentId($commentId)
     {
-        $db    =& Database::singleton();
-        $query = "SELECT Test_name FROM flag WHERE CommentID=:CID";
-        $instrumentName = $db->pselectOne($query, array('CID' => $commentId));
-        return $instrumentName;
+        return \NDB_Factory::singleton()->database()
+            ->pselectOne(
+                "SELECT Test_name FROM flag WHERE CommentID=:CID",
+                array('CID' => $commentId)
+            );
     }
 
     /**
@@ -452,9 +458,9 @@ class NDB_BVL_Battery
             $this->age = $age;
         }
         $qparams = array(
-                    'vAge'      => $this->age,
-                    'SubprojID' => $SubprojectID,
-                   );
+            'vAge'      => $this->age,
+            'SubprojID' => $SubprojectID,
+        );
         // The query to lookup the battery uses the min/max age ranges
         // if they are not 0
         $query = "
@@ -476,8 +482,8 @@ class NDB_BVL_Battery
                     FROM test_battery
                     WHERE Visit_label =:VL AND SubprojectID=:SubID",
                 array(
-                 'VL'    => $visit_label,
-                 'SubID' => $SubprojectID,
+                    'VL'    => $visit_label,
+                    'SubID' => $SubprojectID,
                 )
             );
             if ($VisitBatteryExists > 0) {
@@ -521,9 +527,9 @@ class NDB_BVL_Battery
                 FROM test_battery
                 WHERE firstVisit=:FV AND SubprojectID=:subID";
             $where            = array(
-                                 'FV'    => 'Y',
-                                 'subID' => $SubprojectID,
-                                );
+                'FV'    => 'Y',
+                'subID' => $SubprojectID,
+            );
             $rows_firstVisit  = $DB->pselect($query_firstVisit, $where);
 
             foreach ($rows_firstVisit as $row) {
@@ -537,9 +543,9 @@ class NDB_BVL_Battery
                 FROM test_battery
                 WHERE firstVisit=:FV AND SubprojectID=:subID";
             $where = array(
-                      'FV'    => 'N',
-                      'subID' => $SubprojectID,
-                     );
+                'FV'    => 'N',
+                'subID' => $SubprojectID,
+            );
 
             $rows_notfirstVisit = $DB->pselect($query_notfirstVisit, $where);
             foreach ($rows_notfirstVisit as $row) {
@@ -560,7 +566,7 @@ class NDB_BVL_Battery
      *
      * @param string $testName The test name that we want a commentID for
      *
-     * @return string the commentID generated
+     * @return ?string the commentID generated
      */
     function _createCommentID($testName)
     {
@@ -580,7 +586,8 @@ class NDB_BVL_Battery
      * @param integer $SessionID The session ID to generate a CommentID for
      * @param string  $Test_name The test name which the CommentID will be for.
      *
-     * @return string A Validly formatted CommentID
+     * @return ?string A Validly formatted CommentID or null if information
+     *                  is missing in the database.
      */
     static function generateCommentID($SessionID, $Test_name)
     {
@@ -639,6 +646,6 @@ class NDB_BVL_Battery
         $query = "SELECT COUNT(*) AS counter FROM test_names WHERE Test_name=:TN";
         $row   = $DB->pselectRow($query, array('TN' => $testName));
 
-        return $row['counter'] >= 1;
+        return ($row['counter'] ?? 0) >= 1;
     } // end _assertValidInstrument()
 }
