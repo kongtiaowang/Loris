@@ -64,7 +64,7 @@ class NDB_BVL_Instrument_caars_SelfReport_scale extends NDB_BVL_Instrument
         // required fields for data entry completion status
         $this->_requiredElements = array(
                                     'q1_interrupt_others_when_talking',
-                                   );
+			    );
 
         // setup the form
         $this->_setupForm();
@@ -81,8 +81,9 @@ class NDB_BVL_Instrument_caars_SelfReport_scale extends NDB_BVL_Instrument
      */
     function _setupForm()
     {
-        if (preg_match("/caars_SelfReport_scale(_page[0-9]+)/", $this->page, $matches)) {
-            call_user_func(array($this, $matches[1]));
+	    if (preg_match("/caars_SelfReport_scale(_page[0-9]+)/", $this->page, $matches)) {		    
+	    call_user_func(array($this, $matches[1]));
+
         } else {
             $this->_main();
         }
@@ -97,15 +98,14 @@ class NDB_BVL_Instrument_caars_SelfReport_scale extends NDB_BVL_Instrument
      * @access private
      */
     function _main()
-    {
-
+    {	    
          // display test name
         $this->addHeader("CAARS–Self-Report Scale: Short Version (CAARS–S:S)");
 
-        $date_label = "Today's Date"; 
-        // automatically adds examiner & date of administration
-        $this->addBasicDate('Date_taken', $date_label , $this->dateOptions);
 
+        // automatically adds examiner & date of administration
+        $this->addBasicDate('Date_taken', 'Date of Administration' , $this->dateOptions, ['disabled' => 'disabled']);
+	
 
         $field   = 'respondent_age';
         $label   = 'Your Age <BR>(Please indicate your age in years)';
@@ -115,8 +115,8 @@ class NDB_BVL_Instrument_caars_SelfReport_scale extends NDB_BVL_Instrument
         unset($group);
         $this->addGroupRule($field . "_group", array(array(array("Value must be numeric.", 'numeric'))));
 
-        $this->addSelect('gender', "Your gender", $this->gender);
-        $this->XINRegisterRule('gender', array("gender{@}=={@}NEVER_REQUIRED"));
+        $this->addSelect('respondent_gender', "Your gender", $this->gender);
+        $this->XINRegisterRule('respondent_gender', array("respondent_gender{@}=={@}NEVER_REQUIRED"));
 
         $this->form->addElement(
             'select',
@@ -306,6 +306,7 @@ class NDB_BVL_Instrument_caars_SelfReport_scale extends NDB_BVL_Instrument
         $e_raw_score = $scores['e_raw_score'];
 	$respondent_age = $score_record['respondent_age'];
 	$respondent_gender = $score_record['gender'];
+	
 
 
 

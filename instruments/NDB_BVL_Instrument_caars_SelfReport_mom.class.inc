@@ -101,10 +101,9 @@ class NDB_BVL_Instrument_caars_SelfReport_mom extends NDB_BVL_Instrument
 
          // display test name
         $this->addHeader("CAARS–Self-Report Scale: Self Report Mom (Send to Mom)");
-
-        $date_label = "Today's Date"; 
+ 
         // automatically adds examiner & date of administration
-        $this->addBasicDate('Date_taken', $date_label , $this->dateOptions);
+        $this->addBasicDate('Date_taken', 'Date of Administration' , $this->dateOptions);
 
 
         $field   = 'respondent_age';
@@ -115,8 +114,8 @@ class NDB_BVL_Instrument_caars_SelfReport_mom extends NDB_BVL_Instrument
         unset($group);
         $this->addGroupRule($field . "_group", array(array(array("Value must be numeric.", 'numeric'))));
 
-        $this->addSelect('gender', "Your gender", $this->gender);
-        $this->XINRegisterRule('gender', array("gender{@}=={@}NEVER_REQUIRED"));
+        $this->addSelect('respondent_gender', "Your gender", $this->gender);
+        $this->XINRegisterRule('respondent_gender', array("respondent_gender{@}=={@}NEVER_REQUIRED"));
 
         $this->form->addElement(
             'select',
