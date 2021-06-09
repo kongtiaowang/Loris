@@ -1,28 +1,27 @@
 <!-- Main table -->
-{* Olga: show3DViewer not tested *}
 {if $show3DViewer}
 {*<td nowrap="nowrap">the first opening td already opened in main.tpl *}<input type="button" name="button" value="3D Viewer" class="button" id = "dccid" name = "dccid" style = "background-color: #816e91" onclick="window.open('BrainBrowser/display.html?sessionID={$subject.sessionID}')" /></td>
 
 </br>
 {/if}
-</tr>
 <div class="row">
 {$headerTable}
 </div>
 
 <div class="panel panel-default">
     <div class="panel-heading" id="panel-main-heading">
-        <h3 class="panel-title">{if $files|@count}{$files|@count} file(s) displayed.</h3>
+{if $files|@count}
+        <h3 class="panel-title">{$files|@count} file(s) displayed.</h3>
         <span class="pull-right clickable mri-arrow glyphicon glyphicon-chevron-up"></span>
     </div> <!-- closing panel-heading div-->
-   <div class="panel-body">
+    <div class="panel-body">
       {section name=file loop=$files}
           <div id="image-{$files[file].FileID}"></div>
           <script>
           ReactDOM.render(
                   RImagePanel({
-                      'BaseURL'  : "{$baseurl}",
-                      'SessionID': "{$SessionID}",
+                      'BaseURL' : "{$baseurl}",
+
                       'FileID'   : "{$files[file].FileID}",
                       'Filename' : "{$files[file].Filename}",
                       'QCStatus' : "{$files[file].QCStatus}",
@@ -33,6 +32,7 @@
                       "Selected" : "{if $files[file].Selected}{$files[file].Selected}{/if}",
 
                       "Caveat" : "{$files[file].Caveat}",
+                      "CaveatViolationsResolvedID" : "{$files[file].CaveatViolationsResolvedID}",
                       "SNR" : "{if $files[file].SNR}{$files[file].SNR}{/if}",
                       'HeaderInfo' : {
                           'XStep' : "{$files[file].Xstep}",
@@ -70,8 +70,8 @@
           </script>
        {/section}
    </div> <!-- closing panel-body div-->
-</div>
 {else}
-    <h3>No data available</h3>
-</div>
+    <h3 class="panel-title">No data available</h3>
+   </div> <!-- closing panel-heading div-->
 {/if}
+</div>
