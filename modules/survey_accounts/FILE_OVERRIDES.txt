@@ -1,0 +1,17 @@
+List of all files which contain overrides.
+
+- ajax
+    - GetAvailableSurveys.php (NEW FILE NOT ADDED)
+    - ValidateEmailSubmitInput.php (NOT UPDATED WITH IBIS CHANGES)
+- help
+    - survey_accounts.md (NOT UPDATED WITH IBIS CHANGES)
+- js
+    - survey_accounts_helper.js (NOT UPDATED WITH IBIS CHANGES)
+- jsx
+    - columnFormatter.js (NEW FILE NOT ADDED)
+- php
+    - addsurvey.class.inc (NOT UPDATED WITH IBIS CHANGES)
+    - survey_accounts.class.inc (NOT UPDATED WITH IBIS CHANGES)
+- templates
+    - menu_survey_accounts.tpl (CORE UPDATED TO USE REACT)
+- test (NOT UPDATED WITH IBIS CHANGES)

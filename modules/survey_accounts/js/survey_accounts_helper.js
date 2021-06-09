@@ -13,21 +13,6 @@ $(window).resize(function(){
 });
 
 $(document).ready(function () {
-    // Override update as per Redmine 17825
-    if($("select[name=VL]").val()!='')
-    {
-        var VL= $("select[name=VL]").val();
-        $.get(loris.BaseURL + "/survey_accounts/ajax/GetAvailableSurveys.php", {
-                VL: VL,
-                dccid: $("input[name=CandID]").val(),
-            },
-            function(result) {
-                result = JSON.parse(result);
-                $('[name="Test_name[]"]').html(result.option_string);
-            }
-
-        );
-    } //Override Code Finish Here
     // Handles cases where there was an error on the page and we're resubmitting
     var email2 = $("input[name=Email2]").val();
     var email  = $("input[name=Email]").val();
@@ -39,8 +24,6 @@ $(document).ready(function () {
     }
     // Reset Test_name so that the template can be loaded by ajax below
     $("select[name=Test_name]").val("");
-
-
 
     $('#Email2').change (function() {
             var email2 = $("input[name=Email2]").val();
@@ -73,15 +56,12 @@ $(document).ready(function () {
         $("#participant_accounts_form").submit();
     });
     $("input[type=submit]").click(function (e) {
-        //alert($('[name="Test_name[]"]').val());
-        var test_name_array=$('[name="Test_name[]"]').val();
-        var tn=test_name_array.toString();
         if(e.currentTarget.classList.contains('email')) {
             $.get(loris.BaseURL + "/survey_accounts/ajax/ValidateEmailSubmitInput.php", {
                 dccid: $("input[name=CandID]").val(),
                 pscid: $("input[name=PSCID]").val(),
                 VL: $("select[name=VL]").val(),
-                TN: tn,
+                TN: $("select[name=Test_name]").val(),
                 Email: $("input[name=Email").val(),
                 Email2: $("input[name=Email2]").val()
             },
@@ -116,19 +96,4 @@ $(document).ready(function () {
         
 
     });
-//Override update as per Redmine 17825
-    $("select[name=VL]").change(function() {
-        var VL= $(this).val();
-        $.get(loris.BaseURL + "/survey_accounts/ajax/GetAvailableSurveys.php", {
-                VL: VL,
-                dccid: $("input[name=CandID]").val(),
-            },
-            function(result) {
-                result = JSON.parse(result);
-                $('[name="Test_name[]"]').html(result.option_string);
-            }
-
-        );
-    });
-
 });

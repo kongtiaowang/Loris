@@ -22,7 +22,7 @@ namespace LORIS\survey_accounts;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class Survey_Accounts extends \NDB_Menu_Filter
+class Survey_Accounts extends \DataFrameworkMenu
 {
     /**
      * Determine if user has permission to access this page
@@ -33,111 +33,67 @@ class Survey_Accounts extends \NDB_Menu_Filter
      */
     function _hasAccess(\User $user) : bool
     {
-
         return $user->hasPermission('user_accounts');
     }
 
     /**
-     * Setup internal class variables which are required by NDB_Meny_Filter
-     * for generating the query which the table data is based on
+     * {@inheritDoc}
      *
-     * @return none
+     * @return bool
      */
-    function _setupVariables()
+    public function useSiteFilter() : bool
     {
-
-        // the base query
-        $query = " FROM participant_accounts p 
-            JOIN session s ON (p.SessionID=s.ID)
-            JOIN candidate c ON (c.CandID=s.CandID)
-            JOIN test_names tn ON(tn.Test_name=p.Test_name)
-            WHERE c.Active = 'Y'
-            AND   s.Active = 'Y'";
-        $parent_portal_query = "CASE 
-                        WHEN ((s.Visit_label='VSA' || s.Visit_label like '%CVD%') AND p.Email!='' )THEN c.ParentID  
-                        WHEN (s.Visit_label IN ('V06', 'V12','V24','V36') and c.ProjectID IN('5','8','10' )
-                        AND p.Email!='') THEN c.ParentID
-                        ELSE 'NA'
-                        END";
-
-        // set the class variables
-        $this->columns      = array(
-                               'c.PSCID AS PSCID',
-                               's.Visit_label AS Visit',
-                               'tn.Full_name as SurveyName',
-                               'p.OneTimePassword as URL',
-                               'p.Status',
-                               "$parent_portal_query AS Parent_Portal",
-                              );
-        $this->query        = $query;
-        $this->order_by     = 'PSCID';
-        $this->validFilters = array(
-                               'c.PSCID',
-                               's.Visit_label',
-                               'p.Test_name',
-                               'p.OneTimePassword',
-                               'p.Status',
-                               'p.Test_name',
-                              );
-        $this->formToFilter = array(
-                               'PSCID'      => 'c.PSCID',
-                               'VisitLabel' => 's.Visit_label',
-                               'key'        => 'p.OneTimePassword',
-                               'Instrument' => 'p.Test_name',
-                              );
-        return true;
-    }
-    function getOrderedDirectInstruments()
-    {
-        $DB            =& \Database::singleton();
-        $instruments   = array();
-        $instruments_q = $DB->pselect(
-            "SELECT Test_name,Full_name FROM test_names WHERE IsDirectEntry=true ORDER BY Full_name",
-            array()
-        );
-        foreach ($instruments_q as $key) {
-            $instruments[$key['Test_name']] =$key['Full_name'];
-        }
-        return $instruments;
-    }
-
-
-    /**
-     * Does the setup required for this page. By default, sets up elements
-     * that are common to every type of page. May be overridden by a specific
-     * page or specific page type.
-     *
-     * @return none
-     */
-    function setup()
-    {
-        parent::setup();
-
-        // create user object
-        $user =& \User::singleton();
-        $this->addBasicText('PSCID', 'PSCID');
-        // add form elements
-        $this->addSelect(
-            'VisitLabel',
-            'Visit:',
-            array_merge(array('' => 'All'), \Utility::getVisitList())
-        );
-        $this->addSelect(
-            'Instrument',
-            'Instrument:',
-            array_merge(array('' => 'All'), $this->getOrderedDirectInstruments())
-        );
-        $this->addBasicText('Email', 'Email:');
-        $this->addBasicText('key', 'Key:');
-
         return true;
     }
 
+    /**
+     * Tells the base class that this page's provisioner can support the
+     * HasAnyPermissionOrUserSiteMatch filter.
+     *
+     * @return ?array of site permissions or null
+     */
+    public function allSitePermissionNames() : ?array
+    {
+        return null;
+    }
 
     /**
-     * Gathers JS dependecies and merge them with the parent
+     * {@inheritDoc}
      *
-     * @return array of javascript to be inserted
+     * @return bool
+     */
+    public function useProjectFilter() : bool
+    {
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return array
+     */
+    public function getFieldOptions() : array
+    {
+        return [
+            'visits'      => \Utility::getVisitList(),
+            'instruments' => \Utility::getDirectInstruments(),
+        ];
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return \LORIS\Data\Provisioner
+     */
+    public function getBaseDataProvisioner() : \LORIS\Data\Provisioner
+    {
+        return new SurveyAccountsProvisioner();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return array
      */
     function getJSDependencies()
     {
@@ -147,10 +103,8 @@ class Survey_Accounts extends \NDB_Menu_Filter
         return array_merge(
             $deps,
             array(
-             $baseURL . "/survey_accounts/js/survey_accounts_helper.js",
-             $baseURL . "/survey_accounts/js/columnFormatter.js",
+                $baseURL . "/survey_accounts/js/surveyAccountsIndex.js",
             )
         );
     }
 }
-?>

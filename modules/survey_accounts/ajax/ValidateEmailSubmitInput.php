@@ -31,13 +31,14 @@ $client->initialize();
 
 $db = Database::singleton();
 
+
 $numCandidates = $db->pselectOne(
     "SELECT COUNT(*) FROM candidate 
             WHERE PSCID=:v_PSCID 
             AND CandID=:v_CandID AND Active='Y'",
     array(
-     'v_PSCID'  => $_REQUEST['pscid'],
-     'v_CandID' => $_REQUEST['dccid'],
+        'v_PSCID'  => $_REQUEST['pscid'],
+        'v_CandID' => $_REQUEST['dccid'],
     )
 );
 $error_msg     = "PSCID and DCC ID do not match or candidate does not exist.";
@@ -54,20 +55,21 @@ $numSessions = $db->pselectOne(
             AND UPPER(Visit_label)=UPPER(:v_VL) 
             AND Active='Y'",
     array(
-     'v_CandID' => $_REQUEST['dccid'],
-     'v_VL'     => $_REQUEST['VL'],
+        'v_CandID' => $_REQUEST['dccid'],
+        'v_VL'     => $_REQUEST['VL'],
     )
 );
 
 if ($numSessions != 1) {
     echo json_encode(
         array(
-         'error_msg' => "Visit ". $_REQUEST['VL'].
+            'error_msg' => "Visit ". $_REQUEST['VL'].
                              " does not exist for given candidate",
         )
     );
     exit;
 }
+
 if (empty($_REQUEST['TN'])) {
     echo json_encode(
         array('error_msg' => 'Please choose an instrument')
@@ -80,28 +82,22 @@ $instrument_list = $db->pselect(
              JOIN session s on s.ID = f.SessionID
              WHERE s.CandID=:v_CandID  
              AND UPPER(s.Visit_label)=UPPER(:v_VL) 
-             AND s.Active='Y'and f.CommentID not like '%DDE%'",
+             AND s.Active='Y'",
     array(
-     'v_CandID' => $_REQUEST['dccid'],
-     'v_VL'     => $_REQUEST['VL'],
+        'v_CandID' => $_REQUEST['dccid'],
+        'v_VL'     => $_REQUEST['VL'],
     )
 );
-$instr_string=$_REQUEST['TN'];
-$selected_instr=explode(",", $instr_string);
-$existing_instr='';
 foreach ($instrument_list as $instrument) {
-if(in_array($instrument['Test_name'], $selected_instr)){
-    $existing_instr.=$instrument['Test_name'].'<br>';
-
+    if ($_REQUEST['TN'] == $instrument['Test_name']) {
+        echo json_encode(
+            array(
+                'error_msg' => "Instrument ". $_REQUEST['TN'].
+                " already exists for given candidate for visit ". $_REQUEST['VL'],
+            )
+        );
+        exit;
     }
-}
-if($existing_instr!='') {
-    echo json_encode(
-        array(
-            'error_msg' => "These instrument(s) already exist for visit ". $values['VL'] .":<br>". $existing_instr
-        )
-    );
-    exit;
 }
 
 if (!empty($_REQUEST['Email']) ) {
@@ -115,4 +111,4 @@ if (!empty($_REQUEST['Email']) ) {
 
 print "";
 
-?>
+
