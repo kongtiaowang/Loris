@@ -33,83 +33,87 @@ class Module extends \Module
     public function getWidgets(string $type, \User $user, array $options) : array
     {
         switch($type) {
-        case 'candidate':
-            $factory = \NDB_Factory::singleton();
-            $baseurl = $factory->settings()->getBaseURL();
+            case 'candidate':
+                $factory = \NDB_Factory::singleton();
+                $baseurl = $factory->settings()->getBaseURL();
 
-            $candidate = $options['candidate'];
-            if ($candidate === null) {
-                return [];
-            }
+                $candidate = $options['candidate'];
+                if ($candidate === null) {
+                    return [];
+                }
 
-            // The candidate getConsents only returns the types of
-            // consents that the candidate has saved, we want to
-            // summarize all of the types configured in the database.
-            $consents = \Utility::getConsentList();
+                if (!\NDB_Factory::singleton()->settings()->consentEnabled()) {
+                    return [];
+                }
 
-            foreach ($candidate->getConsents() as $key => $value) {
-                $consents[$key] = $value;
-            }
+                // The candidate getConsents only returns the types of
+                // consents that the candidate has saved, we want to
+                // summarize all of the types configured in the database.
+                $consents = \Utility::getConsentList();
 
-            // The $consents array was indexed by the consentID (by
-            // both getConsentList and getConsents), which means it'll
-            // get serialized as an object. We need to convert it to
-            // a 0-indexed array so it gets json serialized as an array.
-            $consents = array_values($consents);
+                foreach ($candidate->getConsents() as $key => $value) {
+                    $consents[$key] = $value;
+                }
 
-            return [
-                new CandidateWidget(
-                    "Consent Summary",
-                    $baseurl . "/candidate_parameters/js/ConsentWidget.js",
-                    "lorisjs.candidate_parameters.ConsentWidget.default",
-                    [
-                        'Consents' => $consents,
-                    ],
-                    1,
-                    1,
+                // The $consents array was indexed by the consentID (by
+                // both getConsentList and getConsents), which means it'll
+                // get serialized as an object. We need to convert it to
+                // a 0-indexed array so it gets json serialized as an array.
+                $consents = array_values($consents);
+
+                return [
+                    new CandidateWidget(
+                        "Consent Summary",
+                        $baseurl . "/candidate_parameters/js/ConsentWidget.js",
+                        "lorisjs.candidate_parameters.ConsentWidget.default",
+                        [
+                            'Consents' => $consents,
+                        ],
+                        1,
+                        1,
                 )
-            ];
-        case 'candidateinfo':
-            // We add 3 extra types of cards to the candidate info card on
-            // the candidate dashboard based on the default LORIS candidate_parameter
-            // module:
-            //
-            // 1. The Participant Status.
-            // 2. The "Candidate Parameters" category variables which are displayed
-            //    in the Candidate Information tab of the Candidate Parameters page.
-            // 3. The Caveat flag description/reason for the candidate. (Only if
-            //    there is a caveat.)
-            //
-            // Most other tabs in the candidate_profile page are either duplicates
-            // of the information already present (ie. DoB) or complicated enough to
-            // merit their own card on the dashboard.
-            $factory = \NDB_Factory::singleton();
-            $db      = $factory->database();
+                ];
+            case 'candidateinfo':
+                // We add 3 extra types of cards to the candidate info card on
+                // the candidate dashboard based on the default LORIS candidate_parameter
+                // module:
+                //
+                // 1. The Participant Status.
+                // 2. The "Candidate Parameters" category variables which are displayed
+                //    in the Candidate Information tab of the Candidate Parameters page.
+                // 3. The Caveat flag description/reason for the candidate. (Only if
+                //    there is a caveat.)
+                //
+                // Most other tabs in the candidate_profile page are either duplicates
+                // of the information already present (ie. DoB) or complicated enough to
+                // merit their own card on the dashboard.
+                $factory = \NDB_Factory::singleton();
+                $db      = $factory->database();
 
-            $candidate = $options['candidate'];
-            if ($candidate === null) {
-                return [];
-            }
+                $candidate = $options['candidate'];
+                if ($candidate === null) {
+                    return [];
+                }
 
-            // Participant Status
-            $entries = [
-                new CandidateInfo(
-                    "Participant Status",
-                    $candidate->getParticipantStatusDescription($db) ?: 'N/A',
+                // Participant Status
+                $entries = [
+                    new CandidateInfo(
+                        "Participant Status",
+                        $candidate->getParticipantStatusDescription($db) ?: 'N/A',
                 ),
-            ];
+                ];
 
-            $caveat = $this->_getCaveatTerm($db, $candidate);
-            if ($caveat) {
-                $entries[] = $caveat;
-            }
+                $caveat = $this->_getCaveatTerm($db, $candidate);
+                if ($caveat) {
+                    $entries[] = $caveat;
+                }
 
-            $params = $this->_getCandidateParamTerms($db, $candidate);
-            foreach ($params as $term) {
-                $entries[] = $term;
-            }
+                $params = $this->_getCandidateParamTerms($db, $candidate);
+                foreach ($params as $term) {
+                    $entries[] = $term;
+                }
 
-            return $entries;
+                return $entries;
         }
         return [];
     }

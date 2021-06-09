@@ -52,13 +52,13 @@ class SurveyAccountsIndex extends Component {
   formatColumn(column, cell, row) {
     let result = <td>{cell}</td>;
     switch (column) {
-    case 'URL':
-      const url = loris.BaseURL + '/survey.php?key=' + row.URL;
-      result = <td><a href={url}>{cell}</a></td>;
-      break;
-    case 'Instrument':
-      result = <td>{this.state.data.fieldOptions.instruments[cell]}</td>;
-      break;
+      case 'URL':
+        const url = loris.BaseURL + '/survey.php?key=' + row.URL;
+        result = <td><a href={url}>{cell}</a></td>;
+        break;
+      case 'Instrument':
+        result = <td>{this.state.data.fieldOptions.instruments[cell]}</td>;
+        break;
     }
 
 
@@ -77,49 +77,45 @@ class SurveyAccountsIndex extends Component {
       return <Loader/>;
     }
 
-   /**
-    * XXX: Currently, the order of these fields MUST match the order of the
-    * queried columns in _setupVariables() in survey_accounts.class.inc
-    */
+    /**
+     * XXX: Currently, the order of these fields MUST match the order of the
+     * queried columns in _setupVariables() in survey_accounts.class.inc
+     */
     const options = this.state.data.fieldOptions;
     const fields = [
       {label: 'PSCID', show: true, filter: {
-        name: 'pscid',
-        type: 'text',
-      }},
+          name: 'pscid',
+          type: 'text',
+        }},
       {label: 'Visit', show: true, filter: {
-        name: 'visit',
-        type: 'select',
-        options: options.visits,
-      }},
-      {label: 'Email', show: true, filter: {
-        name: 'email',
-        type: 'text',
-      }},
+          name: 'visit',
+          type: 'select',
+          options: options.visits,
+        }},
       {label: 'Instrument', show: true, filter: {
-        name: 'instrument',
-        type: 'select',
-        options: options.instruments,
-      }},
+          name: 'instrument',
+          type: 'select',
+          options: options.instruments,
+        }},
       {label: 'URL', show: true},
       {label: 'Status', show: true},
     ];
-  const addSurvey = () => {
-    location.href='/survey_accounts/addSurvey/';
-  };
-  const actions = [
-    {label: 'Add Survey', action: addSurvey},
-  ];
+    const addSurvey = () => {
+      location.href='/survey_accounts/addSurvey/';
+    };
+    const actions = [
+      {label: 'Add Survey', action: addSurvey},
+    ];
 
     return (
-       <FilterableDataTable
-         name="surveyAccounts"
-         title="Survey Accounts"
-         data={this.state.data.Data}
-         fields={fields}
-         getFormattedCell={this.formatColumn}
-         actions={actions}
-       />
+      <FilterableDataTable
+        name="surveyAccounts"
+        title="Survey Accounts"
+        data={this.state.data.Data}
+        fields={fields}
+        getFormattedCell={this.formatColumn}
+        actions={actions}
+      />
     );
   }
 }
