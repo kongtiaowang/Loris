@@ -19,7 +19,7 @@ class Bobdule extends \NDB_Menu_Filter_Form
 
     function _hasAccess(\User $user): bool
     {
-        return $user->hasPermission('data_team_helper');
+        return $user->hasPermission('edit_final_radiological_review');
     }
 
     /**
