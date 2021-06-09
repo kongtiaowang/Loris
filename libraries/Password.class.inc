@@ -207,7 +207,7 @@ class Password
         // IBIS SPECIFIC OVERRIDE CODE
         // Overriding the hash algo from default to argon21.
         $this->_hash = password_hash($value, PASSWORD_ARGON2I);
-        //IBIS SPECIFIC OVERRIDE CODE ENDS HERE
+        // IBIS SPECIFIC OVERRIDE CODE ENDS HERE
     }
 
     /**
