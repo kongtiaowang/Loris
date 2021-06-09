@@ -11,7 +11,9 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 use \Psr\Http\Message\ServerRequestInterface;
+use \Psr\Http\Server\RequestHandlerInterface;
 use \Psr\Http\Message\ResponseInterface;
+
 use \Loris\StudyEntities\Candidate\CandID;
 
 /**
@@ -50,6 +52,12 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     public $DataEntryType;
     public $XINRules;
     public $XINDebug;
+
+    /**
+     * A flag determining whether the ControlPanel changed
+     * the Data_entry flag status on this page load.
+     */
+    private $_DataEntryChanged;
 
     /**
      * Test name (short name), equivalent to test_names.Test_name
@@ -233,9 +241,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         ) {
             include_once 'NDB_BVL_Instrument_LINST.class.inc';
             $obj = new \Loris\Behavioural\NDB_BVL_Instrument_LINST(
-                // The module directory we use for instruments is arbitrary,
-                // since it isn't a real module, but it's required for the page
-                // constructor.
+            // The module directory we use for instruments is arbitrary,
+            // since it isn't a real module, but it's required for the page
+            // constructor.
                 Module::factory("instruments"),
                 $page,
                 $commentID,
@@ -244,7 +252,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         } else {
             if (!class_exists($class)
                 && ($guarantee_exists === true
-                && !file_exists($base."project/instruments/$class.class.inc"))
+                    && !file_exists($base."project/instruments/$class.class.inc"))
             ) {
                 throw new NotFound("Instrument does not exist");
             }
@@ -272,6 +280,11 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         if (!empty($commentID)) {
             $obj->setupCandidateInfoTables();
+        }
+        if (file_exists($base."project/instruments/$instrument.meta")) {
+            $obj->loadInstrumentMetadata(
+                $base . "project/instruments/$instrument.meta"
+            );
         }
         // Adds all of the form element and form rules to the page after
         // having instantiated the form above
@@ -767,6 +780,14 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $this->_saveCandidateAge($values);
         }
 
+        // Save UserID, the data entry personnel, into flag Data and
+        // instrument table
+        $user = \NDB_Factory::singleton()->user();
+        if (! $user instanceof \LORIS\AnonymousUser) {
+            // Add UserID to $values
+            $values['UserID'] = $user->getUsername();
+        }
+
         //Convert select multiple elements into database storable values
         if (!empty($this->selectMultipleElements)) {
             foreach ($this->selectMultipleElements AS $elname) {
@@ -933,8 +954,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         if ($CertificationEnabled) {
             // Throw exception if config file is formatted incorrectly.
             if (!is_array(
-                $CertificationConfig['CertificationProjects']
-            )
+                    $CertificationConfig['CertificationProjects']
+                )
                 || !is_array(
                     $CertificationConfig['CertificationInstruments']
                 )
@@ -1426,21 +1447,21 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $valFlag = array();
         foreach ($values AS $value) {
             switch ($operator) {
-            case '==':
-                if ($controller != $value) {
-                    $valFlag[] = false;
-                }
-                break;
-            case '!=':
-                if ($controller == $value) {
-                    $valFlag[] = false;
-                }
-                break;
-            default:
-                throw new \LorisException(
-                    "Unsupported operator ($operator) for XIN Rule."
-                    . " If this used to work, please file a bug report."
-                );
+                case '==':
+                    if ($controller != $value) {
+                        $valFlag[] = false;
+                    }
+                    break;
+                case '!=':
+                    if ($controller == $value) {
+                        $valFlag[] = false;
+                    }
+                    break;
+                default:
+                    throw new \LorisException(
+                        "Unsupported operator ($operator) for XIN Rule."
+                        . " If this used to work, please file a bug report."
+                    );
             }
             if ($this->XINDebug) {
                 //debugging code
@@ -1549,7 +1570,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             // field shouldn't be just empty() b/c 0 is a valid
             // value for some required fields
             if (((($allData[$field] ?? null) === null)
-                || (($allData[$field] ?? "") === ""))
+                    || (($allData[$field] ?? "") === ""))
                 && empty($allData[$statusField])
             ) {
                 $unanswered++;
@@ -1718,9 +1739,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      *       out of the NDB_BVL_Instrument into an EARLI base class.
      */
     function addTextAreaElementRD(string $field,
-        string $label,
-        array $rules=array(),
-        string $rule_message='You must specify or select from the drop-down'
+                                  string $label,
+                                  array $rules=array(),
+                                  string $rule_message='You must specify or select from the drop-down'
     ): void {
         $group   = array();
         $group[] = $this->form->createElement(
@@ -2086,8 +2107,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function _nullScores(array $scoreCols): void
     {
-        $data = $this->loadInstanceData($this);
-
         // set the scoring cols to NULL
         foreach ($scoreCols as $key => $val) {
             // Some Instruments use an associative array for
@@ -2095,14 +2114,14 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             // use a non-associative array. So if the key is numeric,
             // and we need to make sure we use the column name
             if (is_numeric($key)) {
-                $data[$val] = null; //null array
+                $scores[$val] = null; //null array
             } else {
-                $data[$key] = null;
+                $scores[$key] = null;
             }
 
         }
 
-        $this->_save($data);
+        $this->_save($scores);
         return;
     }
 
@@ -2293,14 +2312,14 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $values = array();
         foreach ($columns as $row) {
             switch ($row['COLUMN_NAME']) {
-            case 'CommentID':
-            case 'UserID':
-                continue 2;
-            case 'Data_entry_completion_status':
-                $values[$row['COLUMN_NAME']] = 'Incomplete';
-                break;
-            default:
-                $values[$row['COLUMN_NAME']] = null;
+                case 'CommentID':
+                case 'UserID':
+                    continue 2;
+                case 'Data_entry_completion_status':
+                    $values[$row['COLUMN_NAME']] = 'Incomplete';
+                    break;
+                default:
+                    $values[$row['COLUMN_NAME']] = null;
             }
         }
         $db->update($this->table, $values, array('CommentID' => $this->commentID));
@@ -2313,6 +2332,21 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             array('CID' => $this->commentID),
             array('nofetch' => true)
         );
+    }
+
+    /**
+     * Loads the metadata of an instrument and sets the proper variables
+     * in the instrument class accordingly
+     *
+     * This is intended to be overridden by a subclass of NDB_BVL_Instrument
+     * to add support for other file formats.
+     *
+     * @param string $filename The filename to be loaded
+     *
+     * @return void
+     */
+    function loadInstrumentMetadata(string $filename): void
+    {
     }
 
     /**
@@ -2378,17 +2412,24 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $config = NDB_Config::singleton();
             $paths  = $config->getSetting('paths');
 
+            $this->_DataEntryChanged = false;
+
             // check if the file/class exists
             $BasePath = $paths['base'] . 'project/instruments/';
             $TestName = $this->testName;
             if (file_exists(
-                $BasePath
+                    $BasePath
                     . "NDB_BVL_Instrument_$TestName.class.inc"
-            )
+                )
                 || file_exists($BasePath . "$TestName.linst")
             ) {
                 // save possible changes from the control panel...
+                $originalstatus = $controlPanel->getDataEntryStatus();
                 $controlPanel->save();
+
+                if ($controlPanel->getDataEntryStatus() !== $originalstatus) {
+                    $this->_DataEntryChanged = true;
+                }
             }
 
             // display the control panel
@@ -2572,7 +2613,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                         $el['name'] = $elementName;
                         $elObj      = $this->WrapperTextElements[$elementName];
                         if ((is_array($elObj)
-                            && $elObj['type'] === 'textarea')
+                                && $elObj['type'] === 'textarea')
                             || (!is_array($elObj) && $elObj->_type == 'textarea')
                         ) {
                             $el['type'] = 'textarea';
@@ -2799,7 +2840,46 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     }
 
     /**
-     * A form extends the basic page handler to call save() on a POST request.
+     * Override of page process in order to refresh after control panel change
+     *
+     * @param ServerRequestInterface  $request The PSR7 request being processed.
+     * @param RequestHandlerInterface $handler The handler to handle the request
+     *                                         after processing the middleware.
+     *
+     * @return ResponseInterface the PSR15 response that was generated by the
+     * middleware*
+     */
+    public function process(
+        ServerRequestInterface $request,
+        RequestHandlerInterface $handler
+    ) : ResponseInterface {
+        // The parent middleware needs to be called in order for
+        // the instrument control panel to saved, which triggers
+        // $this->_DataEntryChanged being set appropriately.
+        $response = parent::process($request, $handler);
+
+        if ($this->_DataEntryChanged) {
+            $sessionID = $request->getQueryParams()["sessionID"];
+            $candID    = $request->getQueryParams()["candID"];
+
+            $baseURL = \NDB_Factory::singleton()->settings()->getBaseURL();
+
+            $url = $baseURL . "/instruments/" .
+                urlencode($this->testName) .
+                '?commentID=' . urlencode($this->getCommentID()) .
+                '&candID=' . urlencode($candID) .
+                '&sessionID=' . urlencode($sessionID);
+            return (new \LORIS\Http\Response())
+                ->withStatus(303)
+                ->withHeader("Location", $url);
+        }
+        return $response;
+    }
+
+    /**
+     * A form extends the basic page handler to
+     *  (1) call save() on a POST request
+     *  (2) disable form if data entry is complete
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
@@ -2811,7 +2891,33 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         if ($request->getMethod() === "POST" && !isset($req['ClearInstrument'])) {
             $this->save();
         }
-        return (new \Laminas\Diactoros\Response())
+
+        // Disable form if data entry is complete
+        $user      = $request->getAttribute("user");
+        $sessionID = $request->getQueryParams()["sessionID"];
+        $timepoint = \Timepoint::singleton($sessionID);
+
+        // create an instrument status object
+        $status = new \NDB_BVL_InstrumentStatus;
+        $status->select($this->commentID);
+
+        // freeze the form to prevent data entry
+        // IF (1) Instrument is set to complete
+        // OR (2) The user does NOT have `data_entry` permission
+        // OR (3) The user does NOT have access to the timepoint
+        //        at which the instrument is instantiated
+        // AND (4) The instrument is NOT in preview mode
+        // AND (5) the instrument is NOT a direct entry
+        if (($status->getDataEntryStatus() == 'Complete')
+            || !$user->hasPermission('data_entry')
+            || (isset($timepoint) && !$user->hasCenter($timepoint->getCenterID()))
+            && $this->preview !== true
+            && $this->DataEntryType !== 'DirectEntry'
+        ) {
+            $this->freeze();
+        }
+
+        return (new \LORIS\Http\Response())
             ->withBody(new \LORIS\Http\StringStream($this->display() ?? ""));
     }
 
@@ -2907,5 +3013,4 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         return $flatArray;
     }
     // IBIS SPECIFIC OVERRIDE CODE ENDS HERE
-
 }

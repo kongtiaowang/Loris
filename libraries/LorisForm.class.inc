@@ -417,66 +417,66 @@ class LorisForm
     ) {
         $el = null;
         switch($type)  {
-        case 'select':
-            $el = $this->addSelect($name, $label, $options, $attribs);
-            break;
-        case 'date':
-            $el = $this->addDate($name, $label, $options, $attribs);
-            break;
-        case 'file':
-            $el = $this->addFile($name, $label, $attribs);
-            break;
-        case 'static':
-            $el = $this->addStatic($name, $label);
-            break;
-        case 'textarea':
-            $el = $this->addTextArea($name, $label, $attribs);
-            break;
-        case 'password':
-            $el = $this->addPassword($name, $label, $attribs);
-            break;
-        case 'header':
-            $el = $this->addHeader($name, $label, $attribs);
-            break;
-        case 'advcheckbox':
-            $args = func_get_args();
-            if (count($args) === 6) {
-                /**
-                 * With quickform creating advcheckboxs too in 6 args
-                 * setting up a special case to handle this.
-                 * array (
-                 *     [0] => element type
-                 *     [1] => element name
-                 *     [2] => element label
-                 *     [3] => element text to append after checkbox
-                 *     [4] => attributes
-                 *     [5] => array (
-                 *                [0] => custom off option
-                 *                [1] => custom on option
-                 *            )
-                 * )
-                 */
-                $el =& $this->addCheckbox($args[1], $args[2], $args[4]);
+            case 'select':
+                $el = $this->addSelect($name, $label, $options, $attribs);
+                break;
+            case 'date':
+                $el = $this->addDate($name, $label, $options, $attribs);
+                break;
+            case 'file':
+                $el = $this->addFile($name, $label, $attribs);
+                break;
+            case 'static':
+                $el = $this->addStatic($name, $label);
+                break;
+            case 'textarea':
+                $el = $this->addTextArea($name, $label, $attribs);
+                break;
+            case 'password':
+                $el = $this->addPassword($name, $label, $attribs);
+                break;
+            case 'header':
+                $el = $this->addHeader($name, $label, $attribs);
+                break;
+            case 'advcheckbox':
+                $args = func_get_args();
+                if (count($args) === 6) {
+                    /**
+                     * With quickform creating advcheckboxs too in 6 args
+                     * setting up a special case to handle this.
+                     * array (
+                     *     [0] => element type
+                     *     [1] => element name
+                     *     [2] => element label
+                     *     [3] => element text to append after checkbox
+                     *     [4] => attributes
+                     *     [5] => array (
+                     *                [0] => custom off option
+                     *                [1] => custom on option
+                     *            )
+                     * )
+                     */
+                    $el =& $this->addCheckbox($args[1], $args[2], $args[4]);
 
-                $el['checkStates'] = $args[5];
-                $el['_text']       = $args[3];
-            } else {
-                $el = $this->addCheckbox($name, $label, $attribs);
-            }
-            break;
-        case 'radio':
-            $el = $this->addRadio($name, $label, $options, $attribs);
-            break;
-        case 'hidden':
-            $el = $this->addHidden($name, $label, $attribs);
-            break;
-        case 'link':
-            $el = $this->addLink($name, $label, $options, $attribs);
-            break;
-        case 'text':
-        default:
-            $el = $this->addText($name, $label, $attribs);
-            break;
+                    $el['checkStates'] = $args[5];
+                    $el['_text']       = $args[3];
+                } else {
+                    $el = $this->addCheckbox($name, $label, $attribs);
+                }
+                break;
+            case 'radio':
+                $el = $this->addRadio($name, $label, $options, $attribs);
+                break;
+            case 'hidden':
+                $el = $this->addHidden($name, $label, $attribs);
+                break;
+            case 'link':
+                $el = $this->addLink($name, $label, $options, $attribs);
+                break;
+            case 'text':
+            default:
+                $el = $this->addText($name, $label, $attribs);
+                break;
         }
     }
 
@@ -558,7 +558,6 @@ class LorisForm
      */
     function getValue($name)
     {
-
         // IBIS SPECIFIC OVERRIDE CODE
         // Overrides for survey module.
         if($this->directEntry) {
@@ -832,7 +831,7 @@ class LorisForm
     {
         if (array_key_exists('options', $el)
             && (isset($el['options']['format'])
-            && strtolower($el['options']['format']) == 'y')
+                && strtolower($el['options']['format']) == 'y')
         ) {
             return $this->yearHTML($el);
         }
@@ -946,31 +945,31 @@ class LorisForm
         $value = $this->getValue($el['name']);
         return "<input name=\"$el[name]\" type=\"$type\" $cls"
             . (
-                isset($el['onchange']) && $el['onchange']
+            isset($el['onchange']) && $el['onchange']
                 ? " onchange=\"{$el['onchange']}\"" : ''
-              )
+            )
             . (
-                isset($el['oninvalid']) && $el['oninvalid']
+            isset($el['oninvalid']) && $el['oninvalid']
                 ? " oninvalid=\"{$el['oninvalid']}\"" : ''
-              )
+            )
             . (
-                isset($el['pattern']) && $el['pattern']
+            isset($el['pattern']) && $el['pattern']
                 ? " pattern=\"{$el['pattern']}\"" : ''
-              )
+            )
             . (
-                isset($el['required']) && $el['required']
+            isset($el['required']) && $el['required']
                 ? ' required' : ''
-              )
+            )
             . (
-                isset($el['placeholder']) && $el['placeholder']
+            isset($el['placeholder']) && $el['placeholder']
                 ? " placeholder=\"{$el['placeholder']}\"" : ''
-              )
+            )
 
             . (
-                (!empty($value) || $value === '0')
+            (!empty($value) || $value === '0')
                 ? ' value="' . $this->getValue($el['name']) . '"'
                 : ''
-              )
+            )
             . $disabled
             . ' '
             . $readonly
@@ -1132,10 +1131,10 @@ class LorisForm
         }
         return "<input name=\"$el[name]\" type=\"file\" $cls"
             . (
-                !empty($val)
+            !empty($val)
                 ? ' value="' . $val . '"'
                 : ''
-              )
+            )
             . $disabled
             .">";
     }
@@ -1168,9 +1167,9 @@ class LorisForm
         $value = $this->getValue($el['name']);
         return "<textarea name=\"$el[name]\" $cls $dims $disabled>"
             . (
-                !empty($value)
+            !empty($value)
                 ? $this->getValue($el['name']) : ''
-              )
+            )
             ."</textarea>";
     }
 
@@ -1350,7 +1349,8 @@ class LorisForm
         foreach ($this->formRules as $rule) {
             if (is_callable($rule)) {
                 $violations = call_user_func($rule, $values);
-                if (!empty($violations)) {
+
+                if (is_array($violations) && !empty($violations)) {
                     foreach ($violations as $element => $msg) {
                         $this->setElementError($element, $msg);
                         $errors[$element] = "custom fail";
@@ -1406,52 +1406,52 @@ class LorisForm
         $ruleElement    = $elements[0];
 
         switch ($format['operator']) {
-        case '==':
-            if ($this->getValue($controlElement) == $format['value']) {
-                return $this->getValue($ruleElement) != '';
-            }
-            return true;
-        case '===':
-            if ($this->getValue($controlElement) === $format['value']) {
-                return $this->getValue($ruleElement) != '';
-            }
-            return true;
-        case '<>': // Fallthrough, it's the same operator..
-        case '!=':
-            if ($this->getValue($controlElement) != $format['value']) {
-                return $this->getValue($ruleElement) != '';
-            }
-            return true;
-        case '!==':
-            if ($this->getValue($controlElement) !== $format['value']) {
-                return $this->getValue($ruleElement) != '';
-            }
-            return true;
-        case '<':
-            if ($this->getValue($controlElement) < $format['value']) {
-                return $this->getValue($ruleElement) != '';
-            }
-            return true;
-        case '>':
-            if ($this->getValue($controlElement) > $format['value']) {
-                return $this->getValue($ruleElement) != '';
-            }
-            return true;
-        case '<=':
-            if ($this->getValue($controlElement) <= $format['value']) {
-                return $this->getValue($ruleElement) != '';
-            }
-            return true;
-        case '>=':
-            if ($this->getValue($controlElement) <= $format['value']) {
-                return $this->getValue($ruleElement) != '';
-            }
-            return true;
-        default:
-            throw new LorisException(
-                "operator is not a valid operator from the set "
-                . join(', ', $this->validOperators)
-            );
+            case '==':
+                if ($this->getValue($controlElement) == $format['value']) {
+                    return $this->getValue($ruleElement) != '';
+                }
+                return true;
+            case '===':
+                if ($this->getValue($controlElement) === $format['value']) {
+                    return $this->getValue($ruleElement) != '';
+                }
+                return true;
+            case '<>': // Fallthrough, it's the same operator..
+            case '!=':
+                if ($this->getValue($controlElement) != $format['value']) {
+                    return $this->getValue($ruleElement) != '';
+                }
+                return true;
+            case '!==':
+                if ($this->getValue($controlElement) !== $format['value']) {
+                    return $this->getValue($ruleElement) != '';
+                }
+                return true;
+            case '<':
+                if ($this->getValue($controlElement) < $format['value']) {
+                    return $this->getValue($ruleElement) != '';
+                }
+                return true;
+            case '>':
+                if ($this->getValue($controlElement) > $format['value']) {
+                    return $this->getValue($ruleElement) != '';
+                }
+                return true;
+            case '<=':
+                if ($this->getValue($controlElement) <= $format['value']) {
+                    return $this->getValue($ruleElement) != '';
+                }
+                return true;
+            case '>=':
+                if ($this->getValue($controlElement) <= $format['value']) {
+                    return $this->getValue($ruleElement) != '';
+                }
+                return true;
+            default:
+                throw new LorisException(
+                    "operator is not a valid operator from the set "
+                    . join(', ', $this->validOperators)
+                );
         }
     }
 
@@ -1527,38 +1527,38 @@ class LorisForm
     function renderElement(&$el)
     {
         switch($el['type']) {
-        case 'date':
-            return $this->dateHTML($el);
-        case 'select':
-            return $this->selectHTML($el);
-        case 'static':
-            return $this->staticHTML($el);
-        case 'textarea':
-            return $this->textareaHTML($el);
-        case 'file':
-            return $this->fileHTML($el);
-        case 'password':
-            return $this->textHTML($el, 'password');
-        case 'text':
-            return $this->textHTML($el);
-        case 'advcheckbox':
-            return $this->checkboxHTML($el);
-        case 'radio':
-            return $this->radioHTML($el);
-        case 'group':
-            return $this->groupHTML($el);
-        case 'header':
-            return $this->headerHTML($el);
-        case 'page':
-            return '';
-        case 'submit':
-            return $this->submitHTML($el);
-        case 'hidden':
-            return $this->hiddenHTML($el);
-        case 'time':
-            return $this->timeHTML($el);
-        case 'link':
-            return $this->linkHTML($el);
+            case 'date':
+                return $this->dateHTML($el);
+            case 'select':
+                return $this->selectHTML($el);
+            case 'static':
+                return $this->staticHTML($el);
+            case 'textarea':
+                return $this->textareaHTML($el);
+            case 'file':
+                return $this->fileHTML($el);
+            case 'password':
+                return $this->textHTML($el, 'password');
+            case 'text':
+                return $this->textHTML($el);
+            case 'advcheckbox':
+                return $this->checkboxHTML($el);
+            case 'radio':
+                return $this->radioHTML($el);
+            case 'group':
+                return $this->groupHTML($el);
+            case 'header':
+                return $this->headerHTML($el);
+            case 'page':
+                return '';
+            case 'submit':
+                return $this->submitHTML($el);
+            case 'hidden':
+                return $this->hiddenHTML($el);
+            case 'time':
+                return $this->timeHTML($el);
+            case 'link':
+                return $this->linkHTML($el);
         }
         throw new LorisException(
             "Unsupported element type $el[type] in renderElement"
@@ -1672,8 +1672,8 @@ class LorisForm
             $disabled = 'disabled';
         }
         return "<input name=\"$el[name]\" type=\"radio\" $checked $value "
-        . "$disabled/>"
-        . " $el[label]";
+            . "$disabled/>"
+            . " $el[label]";
     }
 
     /**
@@ -1931,11 +1931,11 @@ class LorisForm
     {
         $name = $this->_generateName($name);
         foreach ($array as $key => $value) {
-             $group_key = $value['name'] ?? $this->_generateName('');
-             $this->groupMapping[$group_key] = array(
-                 'groupName' => $name,
-                 'index'     => $key,
-             );
+            $group_key = $value['name'] ?? $this->_generateName('');
+            $this->groupMapping[$group_key] = array(
+                'groupName' => $name,
+                'index'     => $key,
+            );
         }
         $this->form[$name] = array(
             'type'      => 'group',
@@ -1988,68 +1988,68 @@ class LorisForm
         $customs=array()
     ) {
         switch($type) {
-        case 'text':
-            return $this->createText($elname, $label, $attribs);
-        case 'select':
-            return $this->createSelect($elname, $label, $options, $attribs);
-        case 'submit':
-            return $this->createSubmit($elname, $label, $attribs);
-        case 'static':
-            /* the $options was passed to the 2nd parameter pre-v23.0 for some
-             reason, it is important not to impact the existing instruments. */
-            $el         = $this->createBase(
-                $elname,
-                is_string($options) ? $options : $label,
-                $attribs
-            );
-            $el['type'] = 'static';
-            break;
-        case 'advcheckbox':
-            $args = func_get_args();
-            if (count($args) === 6) {
-                /**
-                 * With quickform creating advcheckboxs too in 6 args
-                 * setting up a special case to handle this.
-                 * array (
-                 *     [0] => element type
-                 *     [1] => element name
-                 *     [2] => element label
-                 *     [3] => element text to append after checkbox
-                 *     [4] => attributes
-                 *     [5] => array (
-                 *                [0] => custom off option
-                 *                [1] => custom on option
-                 *            )
-                 * )
-                 */
-                $el = $this->createBase($args[1], $args[2], $args[4]);
+            case 'text':
+                return $this->createText($elname, $label, $attribs);
+            case 'select':
+                return $this->createSelect($elname, $label, $options, $attribs);
+            case 'submit':
+                return $this->createSubmit($elname, $label, $attribs);
+            case 'static':
+                /* the $options was passed to the 2nd parameter pre-v23.0 for some
+                 reason, it is important not to impact the existing instruments. */
+                $el         = $this->createBase(
+                    $elname,
+                    is_string($options) ? $options : $label,
+                    $attribs
+                );
+                $el['type'] = 'static';
+                break;
+            case 'advcheckbox':
+                $args = func_get_args();
+                if (count($args) === 6) {
+                    /**
+                     * With quickform creating advcheckboxs too in 6 args
+                     * setting up a special case to handle this.
+                     * array (
+                     *     [0] => element type
+                     *     [1] => element name
+                     *     [2] => element label
+                     *     [3] => element text to append after checkbox
+                     *     [4] => attributes
+                     *     [5] => array (
+                     *                [0] => custom off option
+                     *                [1] => custom on option
+                     *            )
+                     * )
+                     */
+                    $el = $this->createBase($args[1], $args[2], $args[4]);
 
-                $el['type']        = 'advcheckbox';
-                $el['checkStates'] = $args[5];
-                $el['_text']       = $args[3];
-            } else {
+                    $el['type']        = 'advcheckbox';
+                    $el['checkStates'] = $args[5];
+                    $el['_text']       = $args[3];
+                } else {
+                    $el         = $this->createBase($elname, $label, $attribs);
+                    $el['type'] = 'advcheckbox';
+                }
+                break;
+
+            case 'date':
+                $el            = $this->createBase($elname, $label, $attribs);
+                $el['type']    = 'date';
+                $el['options'] = $options;
+                break;
+            case 'radio':
                 $el         = $this->createBase($elname, $label, $attribs);
-                $el['type'] = 'advcheckbox';
-            }
-            break;
-
-        case 'date':
-            $el            = $this->createBase($elname, $label, $attribs);
-            $el['type']    = 'date';
-            $el['options'] = $options;
-            break;
-        case 'radio':
-            $el         = $this->createBase($elname, $label, $attribs);
-            $el['type'] = 'radio';
-            break;
-        case 'time':
-        case 'textarea':
-        case 'password':
-            $el         = $this->createBase($elname, $label, $attribs);
-            $el['type'] = $type;
-            break;
-        default:
-            throw new LorisException("Unsupported QuickForm type $type");
+                $el['type'] = 'radio';
+                break;
+            case 'time':
+            case 'textarea':
+            case 'password':
+                $el         = $this->createBase($elname, $label, $attribs);
+                $el['type'] = $type;
+                break;
+            default:
+                throw new LorisException("Unsupported QuickForm type $type");
         }
         return $el;
     }
@@ -2071,7 +2071,7 @@ class LorisForm
         $el            =& $this->createBase($name, $label, $attribs);
         $el['type']    = 'select';
         $el['options'] = $options;
-        if (isset($attribs['multiple']) || in_array('multiple', $attribs)) {
+        if (isset($attribs['multiple']) || in_array('multiple', $attribs, true)) {
             $el['multiple'] = 'multiple';
         }
         return $el;
@@ -2190,7 +2190,7 @@ class LorisForm
             if (!($el['type'] === 'header'
                 || ($el['type'] === 'static' && empty($_REQUEST[$name])))
             ) {
-                  $arr[$name] = $this->getValue($name);
+                $arr[$name] = $this->getValue($name);
             }
         }
     }
