@@ -27,19 +27,18 @@ class UploadForm extends Component {
     };
 
     this.onFormChange = this.onFormChange.bind(this);
-    this.getDisabledStatus = this.getDisabledStatus.bind(this);
     this.submitForm = this.submitForm.bind(this);
     this.uploadFile = this.uploadFile.bind(this);
   }
 
   componentDidMount() {
     // Disable fields on initial load
-    this.onFormChange(this.state.form.imagingUploadType.name, null);
+    this.onFormChange(this.state.form.IsPhantom.name, null);
   }
 
   /*
    Updates values in formData
-   Deletes CandID, PSCID, and VisitLabel values if imagingUploadType is not set to 'Subject'
+   Deletes CandID, PSCID, and VisitLabel values if Phantom Scans is set to No
    */
   onFormChange(field, value) {
     if (!field) return;
@@ -47,129 +46,89 @@ class UploadForm extends Component {
     const form = JSON.parse(JSON.stringify(this.state.form));
     const formData = Object.assign({}, this.state.formData);
 
-    if (field === 'imagingUploadType') {
-      if (value !== 'Subject') {
+    if (field === 'IsPhantom') {
+      if (value !== 'N') {
         delete formData.candID;
         delete formData.pSCID;
         delete formData.visitLabel;
+      } else if (typeof formData.mriFile !== 'undefined') {
+        let patientName = formData.mriFile.name.replace(/\.[a-z]+\.?[a-z]+?$/i, '');
+        let ids = patientName.split('_');
+        formData.candID = ids[1];
+        formData.pSCID = ids[0];
+        // visitLabel can contain underscores
+        // join the remaining elements of patientName and use as visitLabel
+        ids.splice(0, 2);
+        formData.visitLabel = ids.join('_');
       }
     }
 
     formData[field] = value;
 
+    if (field === 'mriFile') {
+      if (value.name && formData.IsPhantom === 'N') {
+        let patientName = value.name.replace(/\.[a-z]+\.?[a-z]+?$/i, '');
+        let ids = patientName.split('_');
+        formData.candID = ids[1];
+        formData.pSCID = ids[0];
+        // visitLabel can contain underscores
+        // join the remaining elements of patientName and use as visitLabel
+        ids.splice(0, 2);
+        formData.visitLabel = ids.join('_');
+      }
+    }
+
     this.setState({
       form: form,
       formData: formData,
-      hasError: {},
-      errorMessage: {},
-      uploadProgress: -1,
     });
-  }
-
-  /*
-   Returns false if imagingUploadType is set to 'Subject', and true otherwise
-   Result disables the element that calls the function
-   */
-  getDisabledStatus(imagingUploadType) {
-    if (imagingUploadType === 'Subject') {
-      return false;
-    }
-    return true;
   }
 
   submitForm() {
     // Validate required fields
     const data = this.state.formData;
-    if (!data.mriFile || !data.imagingUploadType) {
+
+    if (!data.mriFile || !data.IsPhantom) {
       return;
     }
 
     const fileName = data.mriFile.name;
-    if (data.imagingUploadType === 'Subject') {
+    // Make sure file is of type .zip|.tgz|.tar.gz format
+    const properExt = new RegExp('\.(zip|tgz|tar\.gz)$');
+    if (!fileName.match(properExt)) {
+      swal({
+        title: 'Invalid extension for the uploaded file!',
+        text: 'Filename extension does not match .zip, .tgz or .tar.gz ',
+        type: 'error',
+        confirmButtonText: 'OK',
+      });
+
+      let errorMessage = {
+        mriFile: 'The file ' + fileName + ' must be of type .tgz, .tar.gz or .zip.',
+        candID: undefined,
+        pSCID: undefined,
+        visitLabel: undefined,
+      };
+
+      let hasError = {
+        mriFile: true,
+        candID: false,
+        pSCID: false,
+        visitLabel: false,
+      };
+
+      this.setState({errorMessage, hasError});
+      return;
+    }
+
+    if (data.IsPhantom === 'N') {
       if (!data.candID || !data.pSCID || !data.visitLabel) {
-        return;
-      }
-      // Make sure file follows PSCID_CandID_VL[_*].zip|.tgz|.tar.gz format
-      const pcv = data.pSCID + '_' + data.candID + '_' + data.visitLabel;
-      const properName = new RegExp('^' + pcv + '(_|.)');
-      const properExt = new RegExp('.(zip|tgz|tar.gz)$');
-      if (!fileName.match(properName)) {
         swal({
-          title: 'Filename does not match other fields!',
-          text: 'Filename and values in the PSCID, CandID ' +
-          'and Visit Label fields of the form do not match. Please ' +
-          'verify that the information entered in the ' +
-          'fields or the filename are correct.',
+          title: 'Incorrect file name!',
+          text: 'Could not determine PSCID, CandID and Visit Label based on the filename!\n',
           type: 'error',
           confirmButtonText: 'OK',
         });
-        let fieldMsg = 'Field does not match the filename!';
-
-        let errorMessage = {
-          mriFile: 'Filename does not match other fields!',
-          candID: undefined,
-          pSCID: undefined,
-          visitLabel: undefined,
-        };
-
-        let hasError = {
-          mriFile: true,
-          candID: false,
-          pSCID: false,
-          visitLabel: false,
-        };
-
-        // check filename fields individually to decide
-        // which fields to apply error message
-        // use limit of 2 to avoid splitting the visit label
-        let fileNameParts = fileName.split('_', 2);
-        if (data.pSCID !== fileNameParts[0]) {
-          errorMessage.pSCID = fieldMsg;
-          hasError.pSCID = true;
-        }
-
-        if (data.candID !== fileNameParts[1]) {
-          errorMessage.candID = fieldMsg;
-          hasError.candID = true;
-        }
-
-        // offset for visit label is size of the two parts plus 2 _'s
-        let visitLabelOffset = fileNameParts[0].length + fileNameParts[1].length + 2;
-        let fileNameRemains = fileName.substr(visitLabelOffset);
-        // only check that this part of the filename begins with
-        // the field, last part of file name includes optional
-        // specifiers + file extension
-        if (fileNameRemains.indexOf(data.visitLabel) !== 0) {
-          errorMessage.visitLabel = fieldMsg;
-          hasError.visitLabel = true;
-        }
-
-        this.setState({errorMessage, hasError});
-        return;
-      }
-      if (!fileName.match(properExt)) {
-        swal({
-          title: 'Invalid extension for the uploaded file!',
-          text: 'Filename extension does not match .zip, .tgz or .tar.gz ',
-          type: 'error',
-          confirmButtonText: 'OK',
-        });
-
-        let errorMessage = {
-          mriFile: 'The file ' + fileName + ' is not of type .tgz, .tar.gz or .zip.',
-          candID: undefined,
-          pSCID: undefined,
-          visitLabel: undefined,
-        };
-
-        let hasError = {
-          mriFile: true,
-          candID: false,
-          pSCID: false,
-          visitLabel: false,
-        };
-
-        this.setState({errorMessage, hasError});
         return;
       }
     }
@@ -211,7 +170,7 @@ class UploadForm extends Component {
     if (mriFile.status === 'Failure') {
       swal({
         title: 'Are you sure?',
-        text: 'A file with this name already exists!\n Would you like to override existing file?',
+        text: 'A file with this name already exists!\n Would you like to overwrite the existing file?',
         type: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Yes, I am sure!',
@@ -220,7 +179,7 @@ class UploadForm extends Component {
         if (isConfirm) {
           this.uploadFile(true);
         } else {
-          swal('Cancelled', 'Your imaginary file is safe :)', 'error');
+          swal('Cancelled', 'Your upload has been cancelled.', 'error');
         }
       }.bind(this));
     }
@@ -229,8 +188,8 @@ class UploadForm extends Component {
     if (mriFile.status === 'Not Started') {
       swal({
         title: 'Are you sure?',
-        text: 'A file with this name has been uploaded but has not yet started the MRI pipeline.' +
-          '\n Would you like to override the existing file?',
+        text: 'A file with this name has been uploaded but has not yet been processed by the MRI pipeline.' +
+          '\n Would you like to overwrite the existing file?',
         type: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Yes, I am sure!',
@@ -316,9 +275,23 @@ class UploadForm extends Component {
       // - Returns to Upload tab
       error: (error, textStatus, errorThrown) => {
         let errorMessage = Object.assign({}, this.state.errorMessage);
-        let hasError = this.state.hasError;
+        let hasError = Object.assign({}, this.state.hasError);
         let messageToPrint = '';
-        errorMessage = (error.responseJSON || {}).errors || 'Submission error!';
+        if (error.responseJSON && error.responseJSON.errors) {
+          errorMessage = error.responseJSON.errors;
+        } else if (error.status == 0) {
+          errorMessage = {
+            'mriFile': ['Upload failed: a network error occured'],
+          };
+        } else if (error.status == 413) {
+          errorMessage = {
+            'mriFile': ['Please make sure files are not larger than ' + this.props.maxUploadSize],
+          };
+        } else {
+          errorMessage = {
+            'mriFile': ['Upload failed: received HTTP response code ' + error.status],
+          };
+        }
         for (let i in errorMessage) {
           if (errorMessage.hasOwnProperty(i)) {
             errorMessage[i] = errorMessage[i].toString();
@@ -343,7 +316,7 @@ class UploadForm extends Component {
   render() {
     // Bind form elements to formData
     const form = this.state.form;
-    form.imagingUploadType.value = this.state.formData.imagingUploadType;
+    form.IsPhantom.value = this.state.formData.IsPhantom;
     form.candID.value = this.state.formData.candID;
     form.pSCID.value = this.state.formData.pSCID;
     form.visitLabel.value = this.state.formData.visitLabel;
@@ -358,32 +331,17 @@ class UploadForm extends Component {
         <span>
           File cannot exceed {this.props.maxUploadSize}<br/>
           File must be of type .tgz or tar.gz or .zip<br/>
-          <br/>
-          For files that are <u>Subject Scans</u>, file name must begin with
+          For files that are not Phantom Scans, file name must begin with
           <b> [PSCID]_[CandID]_[Visit Label]</b><br/>
           For example, for CandID <i>100000</i>, PSCID <i>ABC123</i>, and
           Visit Label <i>V1</i> the file name should be prefixed by:
           <b> ABC123_100000_V1</b><br/>
-          <br/>
-          For <u>inter-scanner reliability scans</u>, the file name (without extension) must be of the form:<br/>
-          <b> [site]_interscan_[subject initials]_[scanner name]_[scanner_location]_[date][scan number] </b><br/>
-          where<br/>
-          <ul>
-            <li>[site] is the three-letter site abbreviation</li>
-            <li>[subject initials] are the subject&rsquo;s initials (three letters)</li>
-            <li>[scanner name] is the name of the scanner</li>
-            <li>[scanner location] three-letter scanner location</li>
-            <li>[date] is the scan acquisition date in format YYYYMMDD</li>
-            <li>[scan number] is an optional string of the form &rsquo;_scan1&rsquo; for multi-part scans</li>
-          </ul>
-          All the file name parts are case-insensitive. Example of a valid file name:<br/>
-          UNC_interscan_BEA_trio_HOS_20190324_scan2.tar.gz
         </span>
     );
 
     // Returns individual form elements
     // For CandID, PSCID, and Visit Label, disabled and required
-    // are updated depending on imagingUploadType value
+    // are updated depending on Phantom Scan value
     // For all elements, hasError and errorMessage
     // are updated depending on what values are submitted
     return (
@@ -396,21 +354,20 @@ class UploadForm extends Component {
             fileUpload={true}
           >
             <SelectElement
-              name='imagingUploadType'
-              label='Imaging Upload Type'
-              options={this.props.form.imagingUploadType.options}
+              name='IsPhantom'
+              label='Phantom Scans'
+              options={this.props.form.IsPhantom.options}
               onUserInput={this.onFormChange}
               required={true}
-              hasError={this.state.hasError.imagingUploadType}
-              errorMessage={this.state.errorMessage.imagingUploadType}
-              value={this.state.formData.imagingUploadType}
+              hasError={this.state.hasError.IsPhantom}
+              errorMessage={this.state.errorMessage.IsPhantom}
+              value={this.state.formData.IsPhantom}
             />
             <TextboxElement
               name='candID'
               label='CandID'
-              onUserInput={this.onFormChange}
-              disabled={this.getDisabledStatus(this.state.formData.imagingUploadType)}
-              required={!this.getDisabledStatus(this.state.formData.imagingUploadType)}
+              disabled={true}
+              required={false}
               hasError={this.state.hasError.candID}
               errorMessage={this.state.errorMessage.candID}
               value={this.state.formData.candID}
@@ -418,20 +375,17 @@ class UploadForm extends Component {
             <TextboxElement
               name='pSCID'
               label='PSCID'
-              onUserInput={this.onFormChange}
-              disabled={this.getDisabledStatus(this.state.formData.imagingUploadType)}
-              required={!this.getDisabledStatus(this.state.formData.imagingUploadType)}
+              disabled={true}
+              required={false}
               hasError={this.state.hasError.pSCID}
               errorMessage={this.state.errorMessage.pSCID}
               value={this.state.formData.pSCID}
             />
-            <SelectElement
+            <TextboxElement
               name='visitLabel'
               label='Visit Label'
-              options={this.props.form.visitLabel.options}
-              onUserInput={this.onFormChange}
-              disabled={this.getDisabledStatus(this.state.formData.imagingUploadType)}
-              required={!this.getDisabledStatus(this.state.formData.imagingUploadType)}
+              disabled={true}
+              required={false}
               hasError={this.state.hasError.visitLabel}
               errorMessage={this.state.errorMessage.visitLabel}
               value={this.state.formData.visitLabel}

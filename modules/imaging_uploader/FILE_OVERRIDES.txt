@@ -1,0 +1,6 @@
+List of all files which contain overrides.
+
+- jsx
+    - UploadForm.js (NOT UPDATED WITH IBIS CHANGES)
+- php
+    - imaging_uploader.class.inc (NOT UPDATED WITH IBIS CHANGES)
