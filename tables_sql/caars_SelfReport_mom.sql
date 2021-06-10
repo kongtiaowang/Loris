@@ -1,4 +1,4 @@
-CREATE TABLE `caars_SelfReport_scale` (
+CREATE TABLE `caars_SelfReport_mom` (
 `CommentID` varchar(255) NOT NULL default '',
 
                             `UserID` varchar(255) default NULL,
@@ -58,3 +58,14 @@ CREATE TABLE `caars_SelfReport_scale` (
 PRIMARY KEY  (`CommentID`)
 
               ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO test_names (Test_name, Full_name, Sub_Group, isDirectEntry) VALUES ('caars_SelfReport_mom', "CAARS–Self-Report Scale: Self Report Mom (Send to Mom)", 1, 1);
+INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('caars_SelfReport_mom','caars_SelfReport_mom_page1', "Page 1", 1);
+
+-- Fragile X at VSA and VSA-CVD
+INSERT INTO survey_test_battery (Test_name, Active, SubprojectID, Visit_label) VALUES ('caars_SelfReport_mom', DEFAULT, 4, 'VSA');
+INSERT INTO survey_test_battery (Test_name, Active, SubprojectID, Visit_label) VALUES ('caars_SelfReport_mom', DEFAULT, 5, 'VSA');
+INSERT INTO survey_test_battery (Test_name, Active, SubprojectID, Visit_label) VALUES ('caars_SelfReport_mom', DEFAULT, 7, 'VSA');
+INSERT INTO survey_test_battery (Test_name, Active, SubprojectID, Visit_label) VALUES ('caars_SelfReport_mom', DEFAULT, 4, 'VSA-CVD');
+INSERT INTO survey_test_battery (Test_name, Active, SubprojectID, Visit_label) VALUES ('caars_SelfReport_mom', DEFAULT, 5, 'VSA-CVD');
+INSERT INTO survey_test_battery (Test_name, Active, SubprojectID, Visit_label) VALUES ('caars_SelfReport_mom', DEFAULT, 7, 'VSA-CVD');
