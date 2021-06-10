@@ -1,6 +1,6 @@
 <?php
 /**
- * This file contains the NDB_BVL_Instrument_SCARED_Subject class
+ * This file contains the NDB_BVL_Instrument_SCARED_Sibling class
  *
  * PHP Version 7
  *
