@@ -181,7 +181,7 @@ class NDB_BVL_Instrument_EEG_QC extends NDB_BVL_Instrument
         if (isset($values[$question])) {
             $user_input = $values[$question];
             if ((!is_numeric($user_input) || (is_numeric($user_input) && $user_input < 0)) && $user_input != "") {
-                $errors[$question] = "Specify a number as positive number.";
+                $errors[$question] = "You can only enter a positive number.";
             }
         }
     }
@@ -190,8 +190,8 @@ class NDB_BVL_Instrument_EEG_QC extends NDB_BVL_Instrument
     {
         if (isset($values[$question])) {
             $user_input = $values[$question];
-            if ( $user_input >= 100 ) {
-                $errors[$question] = "Specify a number less 100.";
+            if ( $user_input > 100 ) {
+                $errors[$question] = "Specify a number inferior or equal to 100.";
             }
         }
     }
