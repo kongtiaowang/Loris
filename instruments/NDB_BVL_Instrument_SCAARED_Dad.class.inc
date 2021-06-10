@@ -1,6 +1,6 @@
 <?php
 /**
- * This file contains the NDB_BVL_Instrument_SCAARED_Mom class
+ * This file contains the NDB_BVL_Instrument_SCAARED_Dad class
  *
  * PHP Version 7
  *
@@ -12,7 +12,7 @@
  */
 
  /**
- * Creates the form elements for the SCAARED (Screen for Adult Anxiety Related Disorders) - Adult - Survey
+ * Creates the form elements for the SCAARED (Screen for Dad Anxiety Related Disorders) - Adult - Dad - Survey
  *
  * @category Instrument
  * @package  Neuropsych
@@ -39,9 +39,9 @@ class NDB_BVL_Instrument_SCAARED_Dad extends NDB_BVL_Instrument
     /**
      * Sample SQL statement for test_names table and instrument subtests table
      *
-     * INSERT INTO test_names (Test_name, Full_name, Sub_Group, isDirectEntry) VALUES ('SCAARED_Mom', "SCAARED (Screen for Adult Anxiety Related Disorders) - Adult - Survey", 1, 1);
-     * INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('SCAARED_Mom','SCAARED_Mom_page1', "Page 1", 1);
-     * INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('SCAARED_Mom','SCAARED_Mom_page2', "Page 2", 2);
+     * INSERT INTO test_names (Test_name, Full_name, Sub_Group, isDirectEntry) VALUES ('SCAARED_Dad', "SCAARED (Screen for Dad Anxiety Related Disorders) - Adult - Dad - Survey", 1, 1);
+     * INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('SCAARED_Dad','SCAARED_Dad_page1', "Page 1", 1);
+     * INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('SCAARED_Dad','SCAARED_Dad_page2', "Page 2", 2);
      */
 
     /**
@@ -110,7 +110,7 @@ class NDB_BVL_Instrument_SCAARED_Dad extends NDB_BVL_Instrument
     function _main()
     {
         // display test name
-        $this->addHeader("SCAARED (Screen for Dad Anxiety Related Disorders) - Dad - Survey");
+        $this->addHeader("SCAARED (Screen for Dad Anxiety Related Disorders) - Adult - Dad - Survey");
 
         $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
 
@@ -171,7 +171,7 @@ class NDB_BVL_Instrument_SCAARED_Dad extends NDB_BVL_Instrument
      */
     function _page1()
     {
-        $this->addHeader("SCAARED (Screen for Dad Anxiety Related Disorders) - Dad - Survey");
+        $this->addHeader("SCAARED (Screen for Dad Anxiety Related Disorders) - Adult - Dad - Survey");
 
         $this->form->addElement(
             'static',
@@ -217,7 +217,7 @@ class NDB_BVL_Instrument_SCAARED_Dad extends NDB_BVL_Instrument
      */
     function _page2()
     {
-        $this->addHeader("SCAARED (Screen for Dad Anxiety Related Disorders) - Dad - Survey");
+        $this->addHeader("SCAARED (Screen for Dad Anxiety Related Disorders) - Adult - Dad - Survey");
 
         $this->form->addElement(
             'static',
