@@ -80,7 +80,8 @@ class NDB_BVL_Instrument_IPSC_tracking_form_PD extends NDB_BVL_Instrument
             call_user_func(array($this, $matches[1]));
         } else {
             $this->_main();
-        }
+	}
+	$this->form->addFormRule(array(&$this, 'XINValidate'));
     }
 
     /**
@@ -116,8 +117,9 @@ class NDB_BVL_Instrument_IPSC_tracking_form_PD extends NDB_BVL_Instrument
         $this->addSelect(
             "recruiter_asked_blood_draw",
             '1. Did the recruiter ask about blood draw?',
-            array(
-                'yes' => 'Yes',
+	    array(
+		null            => '',
+                'yes'           => 'Yes',
                 'not_yet_asked' => 'Not yet asked',
             )
         );
@@ -125,9 +127,10 @@ class NDB_BVL_Instrument_IPSC_tracking_form_PD extends NDB_BVL_Instrument
         $this->addSelect(
             "did_family_agree_to_project",
             '2. Did family agree to the project?',
-            array(
+	    array(
+		null  => '',
                 'yes' => 'Yes',
-                'no' => 'No',
+                'no'  => 'No',
             )
         );
 
@@ -137,8 +140,8 @@ class NDB_BVL_Instrument_IPSC_tracking_form_PD extends NDB_BVL_Instrument
             "blood_draw_location",
             '4. Blood draw location',
             array(
-                null => '',
-                'site' => 'SITE',
+                null                 => '',
+                'site'               => 'SITE',
                 'take_home_kit_sent' => 'TAKE HOME KIT SENT ',
             )
         );
@@ -148,9 +151,10 @@ class NDB_BVL_Instrument_IPSC_tracking_form_PD extends NDB_BVL_Instrument
         $this->addSelect(
             "was_the_blood_draw_successful",
             '6. Was the blood draw successful?',
-            array(
-                'yes' => 'Yes',
-                'no' => 'No',
+	    array(
+		null                      => '',
+                'yes'                     => 'Yes',
+                'no'                      => 'No',
                 'no_blood_draw_scheduled' => 'No blood draw has been scheduled',
                 'blood_draw_not_occurred' => 'Blood draw scheduled but not yet occurred'
             )
@@ -160,17 +164,19 @@ class NDB_BVL_Instrument_IPSC_tracking_form_PD extends NDB_BVL_Instrument
 
         $this->addSelect('ask_about_interview',
             '8. Did the recruiter ask about the 1-hr phone interview? Note: can do interview even if refuse blood draw',
-            array(
+	    array(
+		null      => '',
                 'not_yet' => 'Not yet asked',
-                'yes' => 'Yes'
+                'yes'     => 'Yes'
             ));
 
         $this->addSelect('family_participate',
             '9. Did family agree to participate in the interview?',
-            array(
+	    array(
+		null  => '', 
                 'yes' => 'Yes',
-                'no' => 'No',
-                'na' => 'N/A',
+                'no'  => 'No',
+                'na'  => 'N/A',
             ));
 
         $this->addBasicTextArea("ipsc_notes", "Notes:");
