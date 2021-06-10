@@ -101,7 +101,7 @@ class NDB_BVL_Instrument_IPSC_tracking_form_PD extends NDB_BVL_Instrument
         // If the form has not been filled out yet, default value for 'recruiter_asked_blood_draw'
         // will be null: set it to 'not_yet_asked' in this case
         $modifiedDefaults['recruiter_asked_blood_draw']
-            = $modifiedDefaults['recruiter_asked_blood_draw'] ?? 'not_yet_asked';
+            = $modifiedDefaults['recruiter_asked_blood_draw'] ?? '';
 
         return $modifiedDefaults;
     }
