@@ -80,7 +80,8 @@ class NDB_BVL_Instrument_IPSC_tracking_form_PD extends NDB_BVL_Instrument
             call_user_func(array($this, $matches[1]));
         } else {
             $this->_main();
-        }
+	}
+	$this->form->addFormRule(array(&$this, 'XINValidate'));
     }
 
     /**

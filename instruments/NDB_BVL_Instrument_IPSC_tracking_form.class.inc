@@ -80,7 +80,8 @@ class NDB_BVL_Instrument_IPSC_tracking_form extends NDB_BVL_Instrument
             call_user_func(array($this, $matches[1]));
         } else {
             $this->_main();
-        }
+	}
+	$this->form->addFormRule(array(&$this, 'XINValidate'));
     }
 
     /**
@@ -146,7 +147,8 @@ class NDB_BVL_Instrument_IPSC_tracking_form extends NDB_BVL_Instrument
         $this->addSelect(
             "was_the_blood_draw_successful",
             '6. Was the blood draw successful?',
-            array(
+	    array(
+		null                      => '',
                 'yes'                     => 'Yes',
                 'no'                      => 'No',
                 'no_blood_draw_scheduled' => 'No blood draw has been scheduled',
