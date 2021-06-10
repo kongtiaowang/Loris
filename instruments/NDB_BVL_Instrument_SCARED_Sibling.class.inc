@@ -12,7 +12,7 @@
  */
 
  /**
- * Creates the form elements for the SCARED (Screen for Subject Anxiety Related Disorders) - Subject - Survey
+ * Creates the form elements for the SCARED (Screen for Sibling Anxiety Related Disorders) - Sibling - Survey
  *
  * @category Instrument
  * @package  Neuropsych
@@ -40,9 +40,9 @@ class NDB_BVL_Instrument_SCARED_Sibling extends NDB_BVL_Instrument
     /**
      * Sample SQL statement for test_names table and instrument subtests table
      *
-     * INSERT INTO test_names (Test_name, Full_name, Sub_Group, isDirectEntry) VALUES ('SCARED_Subject', "SCARED (Screen for Subject Anxiety Related Disorders) - Subject - Survey", 1, 1);
-     * INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('SCARED_Subject','SCARED_Subject_page1', "Page 1", 1);
-     * INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('SCARED_Subject','SCARED_Subject_page2', "Page 2", 2);
+     * INSERT INTO test_names (Test_name, Full_name, Sub_Group, isDirectEntry) VALUES ('SCARED_Sibling', "SCARED (Screen for Sibling Anxiety Related Disorders) - Sibling - Survey", 1, 1);
+     * INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('SCARED_Sibling','SCARED_Sibling_page1', "Page 1", 1);
+     * INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('SCARED_Sibling','SCARED_Sibling_page2', "Page 2", 2);
      */
 
     /**
