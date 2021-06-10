@@ -1,6 +1,6 @@
 <?php
 /**
- * This file contains the NDB_BVL_Instrument_SCARED_Child class
+ * This file contains the NDB_BVL_Instrument_SCARED_Sibling class
  *
  * PHP Version 7
  *
@@ -12,7 +12,7 @@
  */
 
  /**
- * Creates the form elements for the SCARED (Screen for Child Anxiety Related Disorders) - Child - Survey
+ * Creates the form elements for the SCARED (Screen for Sibling Anxiety Related Disorders) - Sibling - Survey
  *
  * @category Instrument
  * @package  Neuropsych
@@ -20,7 +20,7 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/IBIS/
  */
-class NDB_BVL_Instrument_SCARED_Child extends NDB_BVL_Instrument
+class NDB_BVL_Instrument_SCARED_Sibling extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
     use instrument_validator;
@@ -40,9 +40,9 @@ class NDB_BVL_Instrument_SCARED_Child extends NDB_BVL_Instrument
     /**
      * Sample SQL statement for test_names table and instrument subtests table
      *
-     * INSERT INTO test_names (Test_name, Full_name, Sub_Group, isDirectEntry) VALUES ('SCARED_Child', "SCARED (Screen for Child Anxiety Related Disorders) - Child - Survey", 1, 1);
-     * INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('SCARED_Child','SCARED_Child_page1', "Page 1", 1);
-     * INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('SCARED_Child','SCARED_Child_page2', "Page 2", 2);
+     * INSERT INTO test_names (Test_name, Full_name, Sub_Group, isDirectEntry) VALUES ('SCARED_Sibling', "SCARED (Screen for Sibling Anxiety Related Disorders) - Sibling - Survey", 1, 1);
+     * INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('SCARED_Sibling','SCARED_Sibling_page1', "Page 1", 1);
+     * INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('SCARED_Sibling','SCARED_Sibling_page2', "Page 2", 2);
      */
 
     /**
@@ -57,14 +57,14 @@ class NDB_BVL_Instrument_SCARED_Child extends NDB_BVL_Instrument
     function setup(?string $commentID = null, ?string $page = null): void
     {
         $this->formType = "XIN";
-        $this->form     = new LorisForm('SCARED_Child_form');
+        $this->form     = new LorisForm('SCARED_Sibling_form');
         $this->page     = $page;            // page label (number or
         // string - used by
-        // user-defined child classes)
+        // user-defined Subject classes)
 
         // set the object properties
-        $this->testName = "SCARED_Child"; // test_names.Test_name
-        $this->table    = 'SCARED_Child'; // name of database table corresponding to instrument
+        $this->testName = "SCARED_Sibling"; // test_names.Test_name
+        $this->table    = 'SCARED_Sibling'; // name of database table corresponding to instrument
 
         // data keyed by commentID
         $this->commentID   = $commentID;
@@ -92,7 +92,7 @@ class NDB_BVL_Instrument_SCARED_Child extends NDB_BVL_Instrument
     */
     function _setupForm()
     {
-        if (preg_match("/SCARED_Child(_page[0-9]+)/", $this->page, $matches)) {
+        if (preg_match("/SCARED_Sibling(_page[0-9]+)/", $this->page, $matches)) {
             call_user_func(array($this, $matches[1]));
         } else {
             $this->_main();
@@ -111,34 +111,11 @@ class NDB_BVL_Instrument_SCARED_Child extends NDB_BVL_Instrument
     function _main()
     {
         // display test name
-        $this->addHeader("SCARED (Screen for Child Anxiety Related Disorders) - Child - Survey");
+        $this->addHeader("SCARED (Screen for Sibling Anxiety Related Disorders) - Sibling - Survey");
 
         $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
 
-        $this->form->addElement(
-            'select',
-            'respondent',
-            'Individual completing this Questionnaire:',
-            array(
-             ''            => '',
-             'child'       => 'Child',
-             'mother'      => 'Mother',
-             'father'      => 'Father',
-             'step_mother' => 'Step Mother',
-             'step_father' => 'Step Father',
-             'other'       => 'Other',
-            )
-        );
-
-        $this->form->addElement('text', 'respondent_explain', $this->indent . 'If not child, explain:');
-
-        $this->XINRegisterRule('respondent_explain', array('respondent{@}!={@}child'), 'Required if not child');
-
-        $this->form->addElement('text', 'other_specify', $this->indent . 'If other, specify:');
-
-        $this->XINRegisterRule('other_specify', array('respondent{@}=={@}other'), 'Required if other');
-
-        $this->form->addFormRule(array(&$this, 'validate_main_page'));
+        $this->addHeader("This survey is for the SIBLING of the primary subject in the research study.");
 
         // SCORING TABLE
 
@@ -181,12 +158,13 @@ class NDB_BVL_Instrument_SCARED_Child extends NDB_BVL_Instrument
      */
     function _page1()
     {
-        $this->addHeader("SCARED (Screen for Child Anxiety Related Disorders) - Child - Survey");
+        $this->addHeader("SCARED (Screen for Sibling Anxiety Related Disorders) - Sibling - Survey");
+        
 
         $this->form->addElement(
             'static',
             'lorisSubHeader',
-            "<strong>Instructions:</strong><br><br>
+            "<strong>Directions:</strong><br><br>
             Below is a list of sentences that describe how people feel. Read each phrase and decide if it is
             \"Not True or Hardly Ever True\" or \"Somewhat True or Sometimes True\" or \"Very True or Often True\" for you.
             Then, for each sentence, select the response that seems to describe you <b><i>for the last 3 months</i></b>."
@@ -227,12 +205,12 @@ class NDB_BVL_Instrument_SCARED_Child extends NDB_BVL_Instrument
      */
     function _page2()
     {
-        $this->addHeader("SCARED (Screen for Child Anxiety Related Disorders) - Child - Survey");
+        $this->addHeader("SCARED (Screen for Sibling Anxiety Related Disorders) - Sibling - Survey");
 
         $this->form->addElement(
             'static',
             'lorisSubHeader',
-            "<strong>Instructions:</strong><br><br>
+            "<strong>Directions:</strong><br><br>
             Below is a list of sentences that describe how people feel. Read each phrase and decide if it is
             \"Not True or Hardly Ever True\" or \"Somewhat True or Sometimes True\" or \"Very True or Often True\" for you.
             Then, for each sentence, select the response that seems to describe you <b><i>for the last 3 months</i></b>."
@@ -267,33 +245,13 @@ class NDB_BVL_Instrument_SCARED_Child extends NDB_BVL_Instrument
         }
     }
 
-    function validate_main_page($values)
-    {
-         $errors = [];
-
-        if ($values["respondent"] == "child") {
-            $this->validate_empty_subquestions($values, ["respondent_explain"], $errors);
-        }
-
-        if ($values["respondent"] != "other") {
-            $this->validate_empty_subquestions($values, ["other_specify"], $errors);
-        }
-
-         return $errors;
-    }
 
     function sumScaleScores($question_array, $record)
     {
         $sum = 0;
 
         foreach ($question_array as $q) {
-            if ($record[$q] == "2") {
-                $sum += 2;
-            } elseif ($record[$q] == "1") {
-                $sum += 1;
-            } else {
-                // do nothing
-            }
+            $sum += $record[$q];
         }
 
         return $sum;
