@@ -24,6 +24,7 @@ class Bobdule extends Component {
     this.fetchData = this.fetchData.bind(this);
     this.handleData = this.handleData.bind(this);
     this.formatColumn = this.formatColumn.bind(this);
+    this.updateRecommend = this.updateRecommend.bind(this);
     this.updateRating = this.updateRating.bind(this);
     this.actionClick = this.actionClick.bind(this);
     this.closeModal = this.closeModal.bind(this);
@@ -90,7 +91,27 @@ class Bobdule extends Component {
   }
 
   /**
-   * Update the stored state for the modify rating.
+   * Update the stored state for the modified recommendation.
+   *
+   * @param {object} event  the event triggered
+   * @param {int} index     the row index in the table
+   */
+  updateRecommend(event, index) {
+    const target = event.target;
+    const value = target.checked;
+    const name = target.name;
+
+    this.setState((state) => {
+      const data = state.data;
+      const column = name === 'Recommend Referral for Clinical MRI' ? 5 : 6;
+      data[index][column] = value ? 'yes' : 'no';
+      state.data = data;
+      return state;
+    });
+  }
+
+  /**
+   * Update the stored state for the modified rating.
    *
    * @param {object} event  the event triggered
    * @param {int} index     the row index in the table
@@ -235,7 +256,12 @@ class Bobdule extends Component {
         return row['date'] ? result : (
           <td>
             <div className='form-check'>
-              <input className='form-check-input position-static' type='checkbox' />
+              <input
+                className='form-check-input position-static'
+                type='checkbox'
+                name={column}
+                onChange={(event) => this.updateRecommend(event, row['Action'])}
+              />
             </div>
           </td>
         );
