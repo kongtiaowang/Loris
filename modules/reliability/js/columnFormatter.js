@@ -1,2 +1,186 @@
-!function(modules){function __webpack_require__(moduleId){if(installedModules[moduleId])return installedModules[moduleId].exports;var module=installedModules[moduleId]={exports:{},id:moduleId,loaded:!1};return modules[moduleId].call(module.exports,module,module.exports,__webpack_require__),module.loaded=!0,module.exports}var installedModules={};return __webpack_require__.m=modules,__webpack_require__.c=installedModules,__webpack_require__.p="",__webpack_require__(0)}([function(module,exports){"use strict";function formatColumn(column,cell,rowData,rowHeaders){if(void 0!==loris.hiddenHeaders&&loris.hiddenHeaders.indexOf(column)>-1)return null;var row={};if(rowHeaders.forEach(function(header,index){row[header]=rowData[index]},this),"PSCID"===column){if("Recycling Bin"===row["Current Stage"])return React.createElement("td",null,cell,React.createElement("span",{className:"text-danger"},"(Recycling Bin)"));if("yes"===row.Invalid)return React.createElement("td",null,cell," ",React.createElement("span",{className:"text-danger"},"(Invalid)"));if("yes"===row["Manual Swap"])return React.createElement("td",null,cell," ",React.createElement("span",{className:"text-danger"},"(Manual)"));var testName="/"+row.Instrument+"_reliability",commentID=row.CommentID,siteID=row.SiteID,url=loris.BaseURL+testName+"?identifier="+commentID+"&reliability_center_id="+siteID;return React.createElement("td",null,React.createElement("a",{href:url},cell))}if("Reliable"===column){var reliable=row.Reliable;if("Yes"===reliable)return React.createElement("td",{className:"bg-success"},"Yes");if("No"===reliable)return React.createElement("td",{className:"bg-danger"},"No")}if("File In DB"===column){var file_in_DB=row["File In DB"];if("No"===file_in_DB)return React.createElement("td",{className:"bg-danger"},"No");var file_details=file_in_DB.split(","),rest_path="/temp_videos/ajax/GetFile.php?File=/videos/"+file_details[1]+"/"+file_details[2],file_url=loris.BaseURL+rest_path;return React.createElement("td",{className:"bg-success"},React.createElement("a",{download:file_details[2],href:file_url},file_details[0]))}return React.createElement("td",null,cell)}Object.defineProperty(exports,"__esModule",{value:!0}),window.formatColumn=formatColumn,exports.default=formatColumn}]);
+window["lorisjs"] = window["lorisjs"] || {}; window["lorisjs"]["reliability"] = window["lorisjs"]["reliability"] || {}; window["lorisjs"]["reliability"]["columnFormatter"] =
+/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ })
+/************************************************************************/
+/******/ ([
+/* 0 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* exported formatColumn */
+
+/**
+ * Modify behaviour of specified column cells in the Data Table component
+ * @param {string} column - column name
+ * @param {string} cell - cell content
+ * @param {array} rowData - array of cell contents for a specific row
+ * @param {array} rowHeaders - array of table headers (column names)
+ * @return {*} a formated table cell for a given column
+ */
+function formatColumn(column, cell, rowData, rowHeaders) {
+  // If a column if set as hidden, don't display it
+  if (loris.hiddenHeaders !== undefined && loris.hiddenHeaders.indexOf(column) > -1) {
+    return null;
+  } // Create the mapping between rowHeaders and rowData in a row object.
+
+
+  var row = {};
+  rowHeaders.forEach(function (header, index) {
+    row[header] = rowData[index];
+  }, this);
+
+  if (column === 'PSCID') {
+    if (row['Current Stage'] === 'Recycling Bin') {
+      return /*#__PURE__*/React.createElement("td", null, cell, /*#__PURE__*/React.createElement("span", {
+        className: "text-danger"
+      }, "(Recycling Bin)"));
+    }
+
+    if (row.Invalid === 'yes') {
+      return /*#__PURE__*/React.createElement("td", null, cell, " ", /*#__PURE__*/React.createElement("span", {
+        className: "text-danger"
+      }, "(Invalid)"));
+    }
+
+    if (row['Manual Swap'] === 'yes') {
+      return /*#__PURE__*/React.createElement("td", null, cell, " ", /*#__PURE__*/React.createElement("span", {
+        className: "text-danger"
+      }, "(Manual)"));
+    }
+
+    var testName = '/reliability/' + row.Instrument + '_reliability';
+    var commentID = row.CommentID;
+    var siteID = row.SiteID;
+    var url = loris.BaseURL + testName + '?identifier=' + commentID + '&reliability_center_id=' + siteID;
+    return /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("a", {
+      href: url
+    }, cell));
+  }
+
+  if (column === 'Reliable') {
+    var reliable = row.Reliable;
+
+    if (reliable === 'Yes') {
+      return /*#__PURE__*/React.createElement("td", {
+        className: "bg-success"
+      }, "Yes");
+    } else if (reliable === 'No') {
+      return /*#__PURE__*/React.createElement("td", {
+        className: "bg-danger"
+      }, "No");
+    }
+  }
+
+  if (column === 'File In DB') {
+    var fileInDB = row['File In DB'];
+
+    if (fileInDB === 'No') {
+      return /*#__PURE__*/React.createElement("td", {
+        className: "bg-danger"
+      }, "No");
+    } else {
+      var fileDetails = fileInDB.split(',');
+      var restPath = '/temp_videos/ajax/GetFile.php?File=/videos/' + fileDetails[1] + '/' + fileDetails[2];
+      var fileUrl = loris.BaseURL + restPath;
+      return /*#__PURE__*/React.createElement("td", {
+        className: "bg-success"
+      }, /*#__PURE__*/React.createElement("a", {
+        download: fileDetails[2],
+        href: fileUrl
+      }, fileDetails[0]));
+    }
+  }
+
+  return /*#__PURE__*/React.createElement("td", null, cell);
+}
+
+window.formatColumn = formatColumn;
+/* harmony default export */ __webpack_exports__["default"] = (formatColumn);
+
+/***/ })
+/******/ ]);
 //# sourceMappingURL=columnFormatter.js.map

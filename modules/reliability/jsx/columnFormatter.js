@@ -16,32 +16,32 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   }
 
   // Create the mapping between rowHeaders and rowData in a row object.
-  var row = {};
+  const row = {};
   rowHeaders.forEach(function(header, index) {
     row[header] = rowData[index];
   }, this);
 
-  if (column === "PSCID") {
-    if (row["Current Stage"] === "Recycling Bin") {
+  if (column === 'PSCID') {
+    if (row['Current Stage'] === 'Recycling Bin') {
       return (
         <td>{cell}
-          <span className="text-danger">(Recycling Bin)</span>
+          <span className='text-danger'>(Recycling Bin)</span>
         </td>
       );
     }
 
-    if (row.Invalid === "yes") {
-      return (<td>{cell} <span className="text-danger">(Invalid)</span></td>);
+    if (row.Invalid === 'yes') {
+      return (<td>{cell} <span className='text-danger'>(Invalid)</span></td>);
     }
 
-    if (row["Manual Swap"] === "yes") {
-      return (<td>{cell} <span className="text-danger">(Manual)</span></td>);
+    if (row['Manual Swap'] === 'yes') {
+      return (<td>{cell} <span className='text-danger'>(Manual)</span></td>);
     }
 
-    var testName = '/' + row.Instrument + '_reliability';
-    var commentID = row.CommentID;
-    var siteID = row.SiteID;
-    var url = loris.BaseURL + testName +
+    const testName = '/reliability/' + row.Instrument + '_reliability';
+    const commentID = row.CommentID;
+    const siteID = row.SiteID;
+    const url = loris.BaseURL + testName +
       '?identifier=' + commentID + '&reliability_center_id=' + siteID;
 
     return (
@@ -52,24 +52,24 @@ function formatColumn(column, cell, rowData, rowHeaders) {
   }
 
   if (column === 'Reliable') {
-    var reliable = row.Reliable;
+    const reliable = row.Reliable;
 
-    if (reliable === "Yes") {
-      return <td className="bg-success">Yes</td>;
-    } else if (reliable === "No") {
-      return <td className="bg-danger">No</td>;
+    if (reliable === 'Yes') {
+      return <td className='bg-success'>Yes</td>;
+    } else if (reliable === 'No') {
+      return <td className='bg-danger'>No</td>;
     }
   }
-    if (column === "File In DB") {
-        var file_in_DB = row['File In DB'];
+    if (column === 'File In DB') {
+        const fileInDB = row['File In DB'];
 
-        if (file_in_DB === "No") {
-            return <td className="bg-danger">No</td>;
-        } else  {
-            var file_details=file_in_DB.split(",")
-            var rest_path    ="/temp_videos/ajax/GetFile.php?File=/videos/"+file_details[1]+'/'+file_details[2];
-            var file_url=loris.BaseURL +rest_path;
-            return <td className="bg-success"><a download ={file_details[2]} href={file_url}>{file_details[0]}</a></td>;
+        if (fileInDB === 'No') {
+            return <td className='bg-danger'>No</td>;
+        } else {
+            const fileDetails = fileInDB.split(',');
+            const restPath ='/temp_videos/ajax/GetFile.php?File=/videos/'+fileDetails[1]+'/'+fileDetails[2];
+            const fileUrl = loris.BaseURL +restPath;
+            return <td className='bg-success'><a download ={fileDetails[2]} href={fileUrl}>{fileDetails[0]}</a></td>;
         }
     }
 
