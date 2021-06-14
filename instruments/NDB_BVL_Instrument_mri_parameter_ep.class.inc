@@ -736,6 +736,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
             $i++;
         }
         $this->addLabel('run fails if % 0.2mm < 70%; needs 3 BOLD runs to pass');
+        $this->addCheckbox('firm_not_used', 'FIRMM NOT USED', array('value' => '1'));
 
         $this->addSelect('bold_pass', 'BOLD Passed', $this->yes_no);
         //$this->form->addRule("bold_pass", "BOLD Passed must be set", 'required');
@@ -765,7 +766,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
                 if (!($tmp_02val >= 0 && $tmp_02val <= 100)) {
                     $errors["sec3_2_row{$i}"] = '% 0.2mm value is not valid. It should be a value between 0 and 100.';
                 }
-                else if (intval($values["{$key}02_{$i}"]) < 70 && !empty($values["{$key}pass_{$i}"])) {
+                else if (intval($values["{$key}02_{$i}"]) < 70 && !empty($values["{$key}pass_{$i}"]) && !isset($values['firm_not_used'])) {
                     $errors["sec3_2_row{$i}"] = 'Because % 0.2mm < 70%, this line doesn\'t pass';
                 }
             }
