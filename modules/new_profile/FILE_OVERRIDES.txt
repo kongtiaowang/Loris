@@ -1,7 +1,7 @@
 List of all files which contain overrides.
 
+- jsx
+    - NewProfileIndex.js
 - php
-    - new_profile.class.inc (NOT UPDATED WITH IBIS CHANGES)
-- templates
-    - form_new_profile.tpl (CONVERTED TO JSX IN 23.0)
+    - new_profile.class.inc
 - test (NOT UPDATED WITH IBIS CHANGES)

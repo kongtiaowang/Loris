@@ -217,8 +217,10 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
 
         $user = \User::singleton($_SESSION['State']->getUsername());
 
+        // Generate a new CandID and insert it into the database.
+        $generator = new \CandIDGenerator();
         // generate candid
-        $candID = Candidate::_generateCandID();
+        $candID = $generator->generate();
 
         // figure out how to generate PSCID
         $config        = $factory->config();
@@ -269,7 +271,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
 
         // Insert the new candidate into the database if everything is fine.
         $setArray = array(
-            'CandID'                => $candID,
+            'CandID'                => (string) $candID,
             'RegistrationCenterID'  => $centerID,
             'PSCID'                 => $PSCID,
             'DoB'                   => $dateOfBirth,
@@ -812,28 +814,6 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
     }
 
     // IBIS SPECIFIC OVERRIDE CODE
-    /**
-     * generates a new random CandID
-     * @static
-     * @return int
-     * @throws PEAR::Error
-     */
-    function _generateCandID()
-    {
-        // get a database connection
-        $db =& Database::singleton();
-
-        // generate a candidate id
-        $candID = rand(CANDIDATE_MIN_CANDID, CANDIDATE_MAX_CANDID);
-
-        // make sure the cand id is not used
-        while($db->pselectOne("SELECT count(CandID) FROM candidate WHERE CandID=:candidateID", array('candidateID' => $candID)) > 0) {
-            // pick a new candidate id
-            $candID = rand(CANDIDATE_MIN_CANDID, CANDIDATE_MAX_CANDID);
-        }
-
-        return $candID;
-    }
     /**
      * generates a new random PSCID
      * @param string $prefix  the prefix to use for the PSCID

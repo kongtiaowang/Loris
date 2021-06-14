@@ -43,16 +43,28 @@ class New_Profile extends \NDB_Form
      *
      * @return bool true if they have access to this page
      */
+    // IBIS SPECIFIC OVERRIDE CODE
+    // Not quite sure the reason behind this override.
     function _hasAccess(\User $user) : bool
     {
-        $site_arr      = $user->getData('CenterIDs');
-        $userInDCCSite = in_array("1", $site_arr);
-        if ($user->hasStudySite() or $userInDCCSite) {
+        // create user object
+        $user =& \User::singleton();
+
+        $site_arr = $user->getData('CenterIDs');
+        foreach ($site_arr as $key=>$val) {
+            $site[$key]        = & \Site::singleton($val);
+            $isStudySite[$key] = $site[$key]->isStudySite();
+            $isDCCSite[$key]   = $site[$key]->getCenterName();
+        }
+        $oneIsStudySite = in_array("1", $isStudySite);
+        $oneIsDCCSite   = in_array("DCC", $isDCCSite);
+        if ($oneIsStudySite or $oneIsDCCSite) {
             return $user->hasPermission('data_entry');
         }
-
         return false;
     }
+    // IBIS SPECIFIC OVERRIDE CODE ENDS HERE
+
     /**
      * Processes the values and saves to database
      *
@@ -60,46 +72,95 @@ class New_Profile extends \NDB_Form
      *
      * @return void
      */
-    function _process($values): void
+    // IBIS SPECIFIC OVERRIDE CODE
+    // IBIS has a specific way of assigning candidate ids, overriding to
+    // introduce that logic on creating a new candidate.
+    function _process($values)
     {
-        // Change empty strings to null before passing as arguments.
-        foreach ($values as $key => $value) {
-            if (empty($value)) {
-                $values[$key] = null;
+        // print_r($values);
+        // set up the arguments to Candidate::createNew
+        $user   =& \User::singleton();
+        $config =& \NDB_Config::singleton();
+        $dob    = empty($values['dobDate']) ? null : $values['dobDate'];
+
+        $edc = null;
+        if ($config->getSetting('useEDC') == "true") {
+            $edc = empty($values['edcDate']) ? null : $values['edcDate'];
+        }
+
+        // create the candidate
+        $DB        = \Database::singleton();
+        $site_arr  = $user->getData('CenterIDs');
+        $num_sites = count($site_arr);
+
+        $startNum = 0;
+        if($values['project'] == 2) {
+            $startNum = 1000;
+        } elseif ($values['project'] == 5) {
+            $startNum = 2000;
+        } elseif ($values['project'] == 6) {
+            $startNum = 3000;
+        }elseif ($values['project'] == 9) {
+            $startNum = 4000;
+        }elseif ($values['project'] == 10) {
+            $startNum = 6000;
+        } elseif ($values['project'] == 8) {
+            $startNum = 7000;
+        }
+
+        if ($num_sites >1) {
+            $candID = \Candidate::createNew(
+                (int)$values['site'],
+                $dob,
+                $edc,
+                $values['sex'],
+                $values['pscid'] ?? null,
+                isset($values['project']) ? intval($values['project']) : null,
+                $startNum
+            );
+        } else {
+            $centerIDs = $user->getData('CenterIDs');
+            $centerID  = $centerIDs[0];
+            $candID    = \Candidate::createNew(
+                $centerID,
+                $dob,
+                $edc,
+                $values['sex'],
+                $values['pscid'] ?? null,
+                isset($values['project']) ? intval($values['project']) : null,
+                $startNum
+            );
+        }
+
+        // get the candidate
+        $candidate =& \Candidate::singleton($candID);
+
+
+        $db = \Database::singleton();
+        if( $values['project'] == '2'){
+            $PTID = $db->pselectOne("SELECT ParameterTypeID FROM parameter_type WHERE Name='candidate_plan'", array());
+            if(!is_numeric($PTID)) {
+                throw new LorisException("Missing ParameterTypeID for candidate_plan");
             }
+            $db->insert("parameter_candidate", array('ParameterTypeID' => $PTID,
+                'CandID' => $candID,
+                'Value' => $values['candidate_plan']
+            ));
         }
-        /* When a user has only one site and centerID has not been
-         * passed, choose the first one in the User's centerID list.
-         */
-        $centerIDs = \User::singleton()->getData('CenterIDs');
-        if (count($centerIDs) <= 1 && !isset($values['site'])) {
-            $values['site'] = $centerIDs[0];
-        }
-        //TODO: add similar logic to projects when user-projects association is
-        //incorporated.
 
-        /* Create the candidate and retrieve its ID.
-         * Use form values when present, otherwise default to null.
-         */
-        $candID = \Candidate::createNew(
-            (int)$values['site'],
-            $values['dobDate'],
-            $values['edcDate'] ?? null,
-            $values['sex'],
-            $values['pscid'] ?? null,
-            intval($values['project'])
-        );
+        //------------------------------------------------------------
 
-        /* Update front-end data. Use passed PSCID when present, otherwise
+        /**
+         * Update front-end data. Use passed PSCID when present, otherwise
          * retrieve it from the newly-created candidate.
          */
-        $this->_candID = (string)$candID;
-        $this->_pscid  = $values['pscid']
-            ?? \Candidate::singleton($candID)->getPSCID();
+        $this->_candID = (string) $candID;
+        $this->_pscid  = $candidate->getPSCID();
 
         // freeze it, just in case
         $this->form->freeze();
     }
+    // IBIS SPECIFIC OVERRIDE CODE ENDS HERE
 
     /**
      * This function will return a json file with DCCID and PSCID
@@ -195,6 +256,18 @@ class New_Profile extends \NDB_Form
             'pscidSet'  => $pscidSet,
             'site'      => $site,
             'project'   => $project,
+            // IBIS SPECIFIC OVERRIDE CODE
+            // Adding candidate plan options for IBIS2 project.
+            'candidate_plan' => array(
+                '3m_plan1' => '3m_plan1',
+                '3m_plan2' => '3m_plan2',
+                '3m_plan3' => '3m_plan3',
+                '3m_plan4' => '3m_plan4',
+                '6m_plan1' => '6m_plan1',
+                '6m_plan2' => '6m_plan2',
+                '6m_plan3' => '6m_plan3',
+            ),
+            // IBIS SPECIFIC OVERRIDE CODE ENDS HERE
         );
 
         $this->form->addFormRule(array(&$this, '_validateNewCandidate'));
@@ -308,6 +381,16 @@ class New_Profile extends \NDB_Form
         if (empty($values['project'])) {
             $errors['project'] = "Project is required";
         }
+
+        // IBIS SPECIFIC OVERRIDE CODE
+        // Validate candidate plan property.
+        if(empty($values['candidate_plan']) && $values['project'] == '2') {
+            $errors['candidate_plan'] = 'Plan is required for IBIS2';
+        }
+        elseif(!empty($values['candidate_plan']) && $values['project'] != '2') {
+            $errors['candidate_plan'] = 'Candidate Plan is not required for non-IBIS2 candidates';
+        }
+        // IBIS SPECIFIC OVERRIDE CODE ENDS HERE
 
         if (!empty($errors)) {
             $this->_error = reset($errors);

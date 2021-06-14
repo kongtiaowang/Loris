@@ -240,6 +240,19 @@ class NewProfileIndex extends React.Component {
             value = {this.state.formData.project}
             required = {true}
           />
+          {/** IBIS SPECIFIC OVERRIDE CODE */}
+          {/** IBIS 2 project requires the candidate plan to be selected. */}
+          {this.state.formData.project === '2' &&
+          <SelectElement
+            name = "candidate_plan"
+            label = "Candidate Plan (ONLY for IBIS2 candidates)"
+            options = {this.state.configData.candidate_plan}
+            onUserInput = {this.setFormData}
+            value = {this.state.formData.candidate_plan}
+            required = {true}
+          />
+          }
+          {/** IBIS SPECIFIC OVERRIDE CODE ENDS HERE */}
           <ButtonElement
             name = "fire_away"
             label = "Create"
