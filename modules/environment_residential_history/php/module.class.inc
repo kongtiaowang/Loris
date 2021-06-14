@@ -26,4 +26,24 @@ namespace LORIS\environment_residential_history;
  */
 class Module extends \Module
 {
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return string The menu category for this module
+     */
+    public function getMenuCategory() : string
+    {
+        return "Tools";
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return string The human readable name for this module
+     */
+    public function getLongName() : string
+    {
+        return "Environment Residential History";
+    }
 }
