@@ -55,13 +55,18 @@ $(document).ready(function () {
         }).appendTo("#participant_accounts_form");
         $("#participant_accounts_form").submit();
     });
+
+    // IBIS SPECIFIC OVERRIDE CODE
+    // IBIS adds ability to multiselect instruments, update validation check.
     $("input[type=submit]").click(function (e) {
+        const test_name_array = $('[name="Test_name[]"]').val();
+        const tn = test_name_array.toString();
         if(e.currentTarget.classList.contains('email')) {
             $.get(loris.BaseURL + "/survey_accounts/ajax/ValidateEmailSubmitInput.php", {
                 dccid: $("input[name=CandID]").val(),
                 pscid: $("input[name=PSCID]").val(),
                 VL: $("select[name=VL]").val(),
-                TN: $("select[name=Test_name]").val(),
+                TN: tn,
                 Email: $("input[name=Email").val(),
                 Email2: $("input[name=Email2]").val()
             },
@@ -84,6 +89,8 @@ $(document).ready(function () {
             return false;
         }
     });
+    // IBIS SPECIFIC OVERRIDE CODE ENDS HERE
+
     $("select[name=Test_name]").change(function (e) {
         var testname = $(this).val();
         $.get(loris.BaseURL + "/survey_accounts/ajax/GetEmailContent.php", {
@@ -93,7 +100,28 @@ $(document).ready(function () {
             $("#emailContent").val(content);
         }
         );
-        
+
 
     });
+
+  // IBIS SPECIFIC OVERRIDE CODE
+  // List only surveys available for a given timepoint.
+  const getSurveys = (visit) => {
+    $.get(loris.BaseURL + "/survey_accounts/ajax/GetAvailableSurveys.php", {
+          VL: visit,
+          dccid: $("input[name=CandID]").val(),
+      },
+      function(result) {
+          result = JSON.parse(result);
+          $('[name="Test_name[]"]').html(result.option_string);
+      }
+    );
+  }
+  if($("select[name=VL]").val()!='') {
+      getSurveys($("select[name=VL]").val());
+  }
+  $("select[name=VL]").change(function() {
+      getSurveys($(this).val())
+  });
+  // IBIS SPECIFIC OVERRIDE CODE ENDS HERE
 });

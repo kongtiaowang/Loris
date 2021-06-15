@@ -59,8 +59,13 @@ class SurveyAccountsIndex extends Component {
       case 'Instrument':
         result = <td>{this.state.data.fieldOptions.instruments[cell]}</td>;
         break;
+      case 'Parent Portal':
+        if (cell !== 'NA') {
+          const portalUrl = loris.BaseURL + '/parent_portal.php?id=' + row.URL;
+          result = <td><a href={portalUrl} target="_blank">Go To Parent Portal</a></td>;
+        }
+        break;
     }
-
 
     return result;
   }
@@ -99,6 +104,9 @@ class SurveyAccountsIndex extends Component {
         }},
       {label: 'URL', show: true},
       {label: 'Status', show: true},
+      {label: 'CenterID', show: false},
+      {label: 'ProjectID', show: false},
+      {label: 'Parent Portal', show: true},
     ];
     const addSurvey = () => {
       location.href='/survey_accounts/addSurvey/';

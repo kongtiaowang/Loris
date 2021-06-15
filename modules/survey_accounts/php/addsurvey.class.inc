@@ -111,30 +111,40 @@ class AddSurvey extends \NDB_Form
             );
         }
 
+        // IBIS SPECIFIC OVERRIDE CODE
+        // IBIS adds ability to multiselect instruments, adding validation.
         $instrument_list = $db->pselect(
             "SELECT f.Test_name FROM flag f
              JOIN session s on s.ID = f.SessionID
              WHERE s.CandID=:v_CandID
              AND UPPER(s.Visit_label)=UPPER(:v_VL)
-             AND s.Active='Y'",
+             AND s.Active='Y' AND f.CommentID not like '%DDE%'",
             array(
                 'v_CandID' => $values['CandID'],
                 'v_VL'     => $values['VL'],
             )
         );
-        $reminder        = " already exists for given candidate for visit ";
+
+        $existing_instr='';
         foreach ($instrument_list as $instrument) {
-            if ($values['Test_name'] == $instrument['Test_name']) {
-                $instrument_instance = \NDB_BVL_Instrument::factory(
-                    $instrument['Test_name']
-                );
-                return array(
-                    'Test_name' => "Instrument ".
-                        $instrument_instance->getFullName().
-                        $reminder. $values['VL'],
-                );
+            if (in_array($instrument['Test_name'], $values['Test_name'])) {
+                $existing_instr.=$instrument['Test_name'].'<br>';
             }
         }
+
+        if($existing_instr!='') {
+            return array(
+                'Test_name' => "These instrument(s) already exist for visit ". $values['VL'] .":<br>". $existing_instr
+            );
+        }
+
+        if (empty($values['Email']) ) {
+            return array('Email' => 'Email is required.');
+        }
+        if (in_array('', $values['Test_name'])) {
+            return array('Test_name' => 'Please unselect the blank option in the instrument list.');
+        }
+        // IBIS SPECIFIC OVERRIDE CODE ENDS HERE
 
         if (!empty($values['Email']) ) {
             if (!filter_var($values['Email'], FILTER_VALIDATE_EMAIL) ) {
@@ -191,63 +201,107 @@ class AddSurvey extends \NDB_Form
             )
         );
 
-        $InstrumentExists = $db->pselectOne(
-            "SELECT 'x' FROM participant_accounts
-            WHERE Test_name=:TN AND SessionID=:SID",
-            array(
-                'TN'  => $values['Test_name'],
-                'SID' => $SessionID,
-            )
-        );
-        if ($InstrumentExists == 'x') {
-            return;
-        }
-        $battery = new \NDB_BVL_Battery();
-        $battery->selectBattery($SessionID);
+        // IBIS SPECIFIC OVERRIDE CODE
+        // IBIS adds ability to multiselect instruments,
+        // adding support to handle multiple instruments.
+        $selected_instruments = $values['Test_name'];
+        $url                  = '';
+        $config               = \NDB_Config::singleton();
+        $baseURL              = \NDB_Factory::singleton()->settings()->getBaseURL();
+        $sendEmail            = false;
 
-        $commentID = $battery->addInstrument($values['Test_name']);
-
-        $key = $this->_generateSurveyKey();
-
-        $sendEmail = false;
         if (isset($_REQUEST['send_email'])) {
             $sendEmail = true;
         }
-        if ($sendEmail) {
-            $status = 'Sent';
-        } else {
-            $status = 'Created';
-        }
 
-        try {
-            $db->insert(
-                "participant_accounts",
+        foreach ($selected_instruments as $instrument) {
+            $InstrumentExists = $db->pselectOne(
+                "SELECT 'x' FROM participant_accounts
+            WHERE Test_name=:TN AND SessionID=:SID",
                 array(
-                    'SessionID'       => $SessionID,
-                    'Test_name'       => $values['Test_name'],
-                    'Status'          => $status,
-                    'OneTimePassword' => $key,
-                    'CommentID'       => $commentID,
+                    'TN'  => $instrument,
+                    'SID' => $SessionID,
                 )
             );
-        } catch(\DatabaseException $e) {
-            error_log($e->getMessage());
-            $this->tpl_data['success'] = false;
-        }
-        $this->tpl_data['success'] = true;
 
-        if ($email) {
-            $config   = \NDB_Config::singleton();
-            $baseURL  = \NDB_Factory::singleton()->settings()->getBaseURL();
+            if ($InstrumentExists == 'x') {
+                return;
+            }
+
+            $battery = new \NDB_BVL_Battery();
+            $battery->selectBattery($SessionID);
+
+            $commentID = $battery->addInstrument($instrument);
+            $key       = $this->_generateSurveyKey();
+            $status    = $sendEmail ? 'Sent' : 'Created';
+
+            try {
+                $db->insert(
+                    "participant_accounts",
+                    array(
+                        'SessionID'       => $SessionID,
+                        'Test_name'       => $instrument,
+                        'Email'           => $values['Email'],
+                        'Status'          => $status,
+                        'OneTimePassword' => $key,
+                        'CommentID'       => $commentID,
+                    )
+                );
+            } catch(\DatabaseException $e) {
+                error_log($e->getMessage());
+                $this->tpl_data['success'] = false;
+            }
+            $this->tpl_data['success'] = true;
+            if ($instrument == 'air_pollution' || $instrument == 'SA_Consent_Form' ||
+                $instrument == 'NDAR_Consent_SA_Form' || $instrument == 'IBIS_SA_SLEEP_Consent_Form') {
+                $url.= $baseURL . '/survey.php?key=' .
+                    urlencode($key) . "<\n>";
+            } else {
+                $url.= $baseURL . '/survey_module/?key=' .
+                    urlencode($key) . "\n";
+            }
+        }
+
+        $urls = '';
+        if ($email != '') {
+            $parentid = $this->getParentID($values['CandID']);
+            $parent_portal_note = "\nYou can access all of your surveys on our Parent Portal.
+                \nPlease note that to log into your Parent Portal, you will be asked for the Parent ID and Email, listed below.
+                \n$baseURL/parent_portal/
+                ParentID:  $parentid
+                Email: $email
+                \n\n You can also click the link below to access the survey(s) individually.\n";
+            $urls= $parent_portal_note . $url;
+        } else {
+            $urls=$url;
+        }
+
+        if ($sendEmail && $email != '') {
             $msg_data = array(
                 'study'     => $config->getSetting("title"),
-                'url'       => $baseURL . '/survey.php?key=' .
-                    urlencode($key),
+                'url'       => $urls,
                 'EmailForm' => $values['email_dialog'],
             );
-            \Email::send($email, 'new_survey.tpl', $msg_data);
+            \Email::send($email, 'new_survey.tpl', $msg_data, "", "IBIS Team <noreply@ibis.loris.ca>");
         }
+        // IBIS SPECIFIC OVERRIDE CODE ENDS HERE
     }
+
+    // IBIS SPECIFIC OVERRIDE CODE
+    // IBIS specific method.
+    function getParentID($cnid)
+    {
+        $db       = \Database::singleton();
+        $parentid = $db->pselectRow(
+            "SELECT ParentID FROM candidate
+            WHERE CandID=:cid",
+            array(
+                'cid'  => $cnid
+            )
+        );
+        return $parentid['ParentID'];
+    }
+    // IBIS SPECIFIC OVERRIDE CODE ENDS HERE
 
     /**
      * Generates a URL safe key
@@ -275,14 +329,18 @@ class AddSurvey extends \NDB_Form
         $this->addBasicText("CandID", "DCCID");
         $this->addBasicText("PSCID", "PSCID");
         $this->addSelect("VL", "Visit Label", \Utility::getVisitList());
+        // IBIS SPECIFIC OVERRIDE CODE
+        // IBIS adds ability to multiselect instruments, update form element.
         $this->addSelect(
             "Test_name",
-            "Instrument",
+            "Instrument<BR><h5><i>(Cmd+Click or Ctrl+Click to select multiple options)</i></h5>",
             array_merge(
                 array('' => ''),
                 \Utility::getDirectInstruments()
-            )
+            ),
+            array('multiple')
         );
+        // IBIS SPECIFIC OVERRIDE CODE ENDS HERE
         $this->addBasicText("Email", "Email address");
         $this->addBasicText("Email2", "Confirm Email address");
 

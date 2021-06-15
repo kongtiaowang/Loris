@@ -33,8 +33,8 @@ $db = Database::singleton();
 
 
 $numCandidates = $db->pselectOne(
-    "SELECT COUNT(*) FROM candidate 
-            WHERE PSCID=:v_PSCID 
+    "SELECT COUNT(*) FROM candidate
+            WHERE PSCID=:v_PSCID
             AND CandID=:v_CandID AND Active='Y'",
     array(
         'v_PSCID'  => $_REQUEST['pscid'],
@@ -50,9 +50,9 @@ if ($numCandidates != 1) {
 }
 
 $numSessions = $db->pselectOne(
-    "SELECT COUNT(*) FROM session 
-            WHERE CandID=:v_CandID 
-            AND UPPER(Visit_label)=UPPER(:v_VL) 
+    "SELECT COUNT(*) FROM session
+            WHERE CandID=:v_CandID
+            AND UPPER(Visit_label)=UPPER(:v_VL)
             AND Active='Y'",
     array(
         'v_CandID' => $_REQUEST['dccid'],
@@ -80,25 +80,35 @@ if (empty($_REQUEST['TN'])) {
 $instrument_list = $db->pselect(
     "SELECT f.Test_name FROM flag f
              JOIN session s on s.ID = f.SessionID
-             WHERE s.CandID=:v_CandID  
-             AND UPPER(s.Visit_label)=UPPER(:v_VL) 
+             WHERE s.CandID=:v_CandID
+             AND UPPER(s.Visit_label)=UPPER(:v_VL)
              AND s.Active='Y'",
     array(
         'v_CandID' => $_REQUEST['dccid'],
         'v_VL'     => $_REQUEST['VL'],
     )
 );
+
+// IBIS SPECIFIC OVERRIDE CODE
+// IBIS adds ability to multiselect instruments, update validation check.
+$instr_string   = $_REQUEST['TN'];
+$selected_instr = explode(",", $instr_string);
+$existing_instr = '';
 foreach ($instrument_list as $instrument) {
-    if ($_REQUEST['TN'] == $instrument['Test_name']) {
-        echo json_encode(
-            array(
-                'error_msg' => "Instrument ". $_REQUEST['TN'].
-                " already exists for given candidate for visit ". $_REQUEST['VL'],
-            )
-        );
-        exit;
+    if(in_array($instrument['Test_name'], $selected_instr)){
+        $existing_instr .= $instrument['Test_name'].'<br>';
+
     }
 }
+if($existing_instr!='') {
+    echo json_encode(
+        array(
+            'error_msg' => "These instrument(s) already exist for visit ". $_REQUEST['VL'] .":<br>". $existing_instr
+        )
+    );
+    exit;
+}
+// IBIS SPECIFIC OVERRIDE CODE ENDS HERE
 
 if (!empty($_REQUEST['Email']) ) {
     if (!filter_var($_REQUEST['Email'], FILTER_VALIDATE_EMAIL) ) {
