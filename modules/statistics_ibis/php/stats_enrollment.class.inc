@@ -31,9 +31,8 @@ class Stats_Enrollment extends \NDB_Form
      *
      * @return bool true if the user has access, false otherwise.
      */
-     function _hasAccess() {
-        $user =& \User::singleton();
-
+    function _hasAccess(\User $user) : bool
+    {
         return $user->hasPermission('data_entry');
     }
 
@@ -57,7 +56,7 @@ class Stats_Enrollment extends \NDB_Form
 
     /**
      * Sets up the module prior to displaying it.
-     * 
+     *
      * @return void.
      */
     function setup()
@@ -106,11 +105,11 @@ class Stats_Enrollment extends \NDB_Form
     /**
      * Determine the enrollment stats for a given site/project/subproject
      * trio.
-     * 
+     *
      * @param int site (center) ID.
      * @param int project ID.
      * @param int subproject ID.
-     * 
+     *
      * @return array the enrollment data.
      */
     function getEnrollmentData($siteID= null, $projID= null, $subpjID=null){
@@ -139,27 +138,27 @@ class Stats_Enrollment extends \NDB_Form
             $gender = array('Female' => 0, 'Male' => 0, 'Unknown' => 0);
             if($ethnic_cat === "not_answered") {
                 $results = $DB->pselect("SELECT ProjectID, COALESCE(Sex, 'Unknown') as Sex, COUNT( DISTINCT cad.CandID) as val
-                    FROM candidate cad 
-                    JOIN session sn on cad.CandID= sn.CandID 
+                    FROM candidate cad
+                    JOIN session sn on cad.CandID= sn.CandID
                     JOIN flag fg on sn.ID = fg.SessionID
-                    JOIN tsi ti on fg.CommentID = ti.CommentID 
+                    JOIN tsi ti on fg.CommentID = ti.CommentID
                     LEFT JOIN participant_status p ON cad.CandID = p.CandID
                     WHERE (ti.child_ethnicity = '$ethnic_cat' OR ti.child_ethnicity IS NULL)
-                    AND fg.CommentID NOT LIKE 'DDE%' AND sn.CenterID <> '1' AND sn.Active='Y' 
-                    AND cad.Active='Y' $Extra_Where AND fg.Administration <> 'None' 
+                    AND fg.CommentID NOT LIKE 'DDE%' AND sn.CenterID <> '1' AND sn.Active='Y'
+                    AND cad.Active='Y' $Extra_Where AND fg.Administration <> 'None'
                     GROUP BY Sex,ProjectID
                     ", $params);
             }
             else{
                 $results = $DB->pselect("SELECT ProjectID, COALESCE(Sex, 'Unknown') as Sex, COUNT( DISTINCT cad.CandID) as val
-                    FROM candidate cad 
-                    JOIN session sn on cad.CandID= sn.CandID 
+                    FROM candidate cad
+                    JOIN session sn on cad.CandID= sn.CandID
                     JOIN flag fg on sn.ID = fg.SessionID
-                    JOIN tsi ti on fg.CommentID = ti.CommentID 
+                    JOIN tsi ti on fg.CommentID = ti.CommentID
                     LEFT JOIN participant_status p ON cad.CandID = p.CandID
-                    WHERE ti.child_ethnicity = '$ethnic_cat' 
-                    AND fg.CommentID NOT LIKE 'DDE%' AND sn.CenterID <> '1' AND sn.Active='Y' 
-                    AND cad.Active='Y' $Extra_Where AND fg.Administration <> 'None' 
+                    WHERE ti.child_ethnicity = '$ethnic_cat'
+                    AND fg.CommentID NOT LIKE 'DDE%' AND sn.CenterID <> '1' AND sn.Active='Y'
+                    AND cad.Active='Y' $Extra_Where AND fg.Administration <> 'None'
                     GROUP BY Sex,ProjectID
                     ", $params);
             }
@@ -196,42 +195,42 @@ class Stats_Enrollment extends \NDB_Form
 
             if($race_cat === "more_than_one_race"){
                 $race_cat = '%'.$race_cat.'%';
-                $results = $DB->pselect("SELECT COALESCE(Sex, 'Unknown') as Sex, COUNT( DISTINCT cad.CandID) as val 
+                $results = $DB->pselect("SELECT COALESCE(Sex, 'Unknown') as Sex, COUNT( DISTINCT cad.CandID) as val
                         FROM candidate cad
                         JOIN session sn on cad.CandID= sn.CandID
                         LEFT JOIN flag fg on sn.ID = fg.SessionID
-                        LEFT JOIN tsi ti on fg.CommentID = ti.CommentID 
+                        LEFT JOIN tsi ti on fg.CommentID = ti.CommentID
                         LEFT JOIN participant_status p ON cad.CandID = p.CandID
-                        WHERE ( ti.candidate_race LIKE  '$race_cat' OR ti.candidate_race LIKE '%{@}%' ) 
-                        AND fg.CommentID NOT LIKE 'DDE%' AND sn.CenterID <> '1' AND sn.Active='Y' 
-                        AND cad.Active='Y' $Extra_Where 
-                        AND fg.Administration <> 'None' AND fg.Test_name='tsi' 
-                        GROUP BY Gender" , $params);
+                        WHERE ( ti.candidate_race LIKE  '$race_cat' OR ti.candidate_race LIKE '%{@}%' )
+                        AND fg.CommentID NOT LIKE 'DDE%' AND sn.CenterID <> '1' AND sn.Active='Y'
+                        AND cad.Active='Y' $Extra_Where
+                        AND fg.Administration <> 'None' AND fg.Test_name='tsi'
+                        GROUP BY Sex" , $params);
             }
             else if($race_cat === "unknown_not_reported"){
                 $results = $DB->pselect("SELECT COALESCE(Sex, 'Unknown') as Sex, COUNT( DISTINCT cad.CandID) as val FROM candidate cad
                         JOIN session sn on cad.CandID= sn.CandID
                         LEFT JOIN flag fg on sn.ID = fg.SessionID
-                        LEFT JOIN tsi ti on fg.CommentID = ti.CommentID 
+                        LEFT JOIN tsi ti on fg.CommentID = ti.CommentID
                         LEFT JOIN participant_status p ON cad.CandID = p.CandID
-                        WHERE (ti.candidate_race LIKE  '$race_cat'OR ti.candidate_race IS NULL) 
-                        AND fg.CommentID NOT LIKE 'DDE%' AND sn.CenterID <> '1' AND sn.Active='Y' 
-                        AND cad.Active='Y' $Extra_Where AND fg.Administration <> 'None' 
-                        AND fg.Test_name='tsi' 
-                        GROUP BY Gender" ,$params);
+                        WHERE (ti.candidate_race LIKE  '$race_cat'OR ti.candidate_race IS NULL)
+                        AND fg.CommentID NOT LIKE 'DDE%' AND sn.CenterID <> '1' AND sn.Active='Y'
+                        AND cad.Active='Y' $Extra_Where AND fg.Administration <> 'None'
+                        AND fg.Test_name='tsi'
+                        GROUP BY Sex" ,$params);
 
             }else{
 
-                $results = $DB->pselect("SELECT COALESCE(Sex, 'Unknown') as Sex, COUNT( DISTINCT cad.CandID) as val 
+                $results = $DB->pselect("SELECT COALESCE(Sex, 'Unknown') as Sex, COUNT( DISTINCT cad.CandID) as val
                         FROM candidate cad
                         JOIN session sn on cad.CandID= sn.CandID
                         LEFT JOIN flag fg on sn.ID = fg.SessionID
-                        LEFT JOIN tsi ti on fg.CommentID = ti.CommentID 
+                        LEFT JOIN tsi ti on fg.CommentID = ti.CommentID
                         LEFT JOIN participant_status p ON cad.CandID = p.CandID
-                        WHERE ti.candidate_race LIKE  '$race_cat' AND fg.CommentID NOT LIKE 'DDE%' 
-                        AND sn.CenterID <> '1' AND sn.Active='Y' AND cad.Active='Y' $Extra_Where 
-                        AND fg.Administration <> 'None' AND fg.Test_name='tsi' 
-                        GROUP BY Gender" , $params);
+                        WHERE ti.candidate_race LIKE  '$race_cat' AND fg.CommentID NOT LIKE 'DDE%'
+                        AND sn.CenterID <> '1' AND sn.Active='Y' AND cad.Active='Y' $Extra_Where
+                        AND fg.Administration <> 'None' AND fg.Test_name='tsi'
+                        GROUP BY Sex" , $params);
             }
 
             $Count = 0;
@@ -271,36 +270,36 @@ class Stats_Enrollment extends \NDB_Form
                 $results = $DB->pselect("SELECT COALESCE(Sex, 'Unknown') as Sex, COUNT( DISTINCT cad.CandID) as val FROM candidate cad
                         JOIN session sn on cad.CandID= sn.CandID
                         LEFT JOIN flag fg on sn.ID = fg.SessionID
-                        LEFT JOIN tsi ti on fg.CommentID = ti.CommentID 
+                        LEFT JOIN tsi ti on fg.CommentID = ti.CommentID
                         LEFT JOIN participant_status p ON cad.CandID = p.CandID
-                        WHERE ( ti.candidate_race LIKE  '$race_cat' OR ti.candidate_race LIKE '%{@}%' ) 
-                        AND ti.child_ethnicity='hispanic' AND fg.CommentID NOT LIKE 'DDE%' 
-                        AND sn.CenterID <> '1' AND sn.Active='Y' AND cad.Active='Y' $Extra_Where 
-                        AND fg.Administration <> 'None' AND fg.Test_name='tsi' 
-                        GROUP BY Gender" , $params);
+                        WHERE ( ti.candidate_race LIKE  '$race_cat' OR ti.candidate_race LIKE '%{@}%' )
+                        AND ti.child_ethnicity='hispanic' AND fg.CommentID NOT LIKE 'DDE%'
+                        AND sn.CenterID <> '1' AND sn.Active='Y' AND cad.Active='Y' $Extra_Where
+                        AND fg.Administration <> 'None' AND fg.Test_name='tsi'
+                        GROUP BY Sex" , $params);
             }
             else if($race_cat === "unknown_not_reported"){
                 $results = $DB->pselect("SELECT COALESCE(Sex,'Unknown') as Sex ,COUNT( DISTINCT cad.CandID) as val FROM candidate cad
                         JOIN session sn on cad.CandID= sn.CandID
                         LEFT JOIN flag fg on sn.ID = fg.SessionID
-                        LEFT JOIN tsi ti on fg.CommentID = ti.CommentID 
+                        LEFT JOIN tsi ti on fg.CommentID = ti.CommentID
                         LEFT JOIN participant_status p ON cad.CandID = p.CandID
-                        WHERE (ti.candidate_race LIKE '$race_cat' OR ti.candidate_race IS NULL) 
-                        AND ti.child_ethnicity='hispanic' AND fg.CommentID NOT LIKE 'DDE%' AND sn.CenterID <> '1' AND sn.Active='Y' 
-                        AND cad.Active='Y' $Extra_Where  AND fg.Administration <> 'None' 
-                        AND fg.Test_name='tsi' 
-                        GROUP BY Gender" , $params);
+                        WHERE (ti.candidate_race LIKE '$race_cat' OR ti.candidate_race IS NULL)
+                        AND ti.child_ethnicity='hispanic' AND fg.CommentID NOT LIKE 'DDE%' AND sn.CenterID <> '1' AND sn.Active='Y'
+                        AND cad.Active='Y' $Extra_Where  AND fg.Administration <> 'None'
+                        AND fg.Test_name='tsi'
+                        GROUP BY Sex" , $params);
             }else{
                 $results = $DB->pselect("SELECT COALESCE(Sex, 'Unknown') as Sex,COUNT( DISTINCT cad.CandID) as val FROM candidate cad
                         JOIN session sn on cad.CandID= sn.CandID
                         LEFT JOIN flag fg on sn.ID = fg.SessionID
-                        LEFT JOIN tsi ti on fg.CommentID = ti.CommentID 
+                        LEFT JOIN tsi ti on fg.CommentID = ti.CommentID
                         LEFT JOIN participant_status p ON cad.CandID = p.CandID
-                        WHERE ti.candidate_race LIKE '$race_cat' AND ti.child_ethnicity='hispanic' 
-                        AND fg.CommentID NOT LIKE 'DDE%' AND sn.CenterID <> '1' AND sn.Active='Y' 
-                        AND cad.Active='Y' $Extra_Where  AND fg.Administration <> 'None' 
-                        AND fg.Test_name='tsi' 
-                        GROUP BY Gender" , $params);
+                        WHERE ti.candidate_race LIKE '$race_cat' AND ti.child_ethnicity='hispanic'
+                        AND fg.CommentID NOT LIKE 'DDE%' AND sn.CenterID <> '1' AND sn.Active='Y'
+                        AND cad.Active='Y' $Extra_Where  AND fg.Administration <> 'None'
+                        AND fg.Test_name='tsi'
+                        GROUP BY Sex" , $params);
             }
 
             foreach($results as $row){
@@ -325,10 +324,10 @@ class Stats_Enrollment extends \NDB_Form
         $withdraw = $DB->pselectOne("SELECT COUNT( DISTINCT cad.CandID) as val FROM candidate cad
                 JOIN session sn on cad.CandID= sn.CandID
                 LEFT JOIN flag fg on sn.ID = fg.SessionID
-                LEFT JOIN tsi ti on fg.CommentID = ti.CommentID 
+                LEFT JOIN tsi ti on fg.CommentID = ti.CommentID
                 LEFT JOIN participant_status p ON cad.CandID = p.CandID
-                WHERE fg.CommentID NOT LIKE 'DDE%' AND sn.CenterID <> '1' 
-                AND sn.Active='Y' AND cad.Active='Y' $Extra_Where  
+                WHERE fg.CommentID NOT LIKE 'DDE%' AND sn.CenterID <> '1'
+                AND sn.Active='Y' AND cad.Active='Y' $Extra_Where
                 AND fg.Administration <> 'None' AND (sn.Screening IN ('Failure','Withdrawal') OR sn.Visit IN ('Withdrawal','Failure') ) " , $params);
 
 
