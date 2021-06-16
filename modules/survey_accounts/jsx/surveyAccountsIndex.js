@@ -61,7 +61,7 @@ class SurveyAccountsIndex extends Component {
         break;
       case 'Parent Portal':
         if (cell !== 'NA') {
-          const portalUrl = loris.BaseURL + '/parent_portal.php?id=' + row.URL;
+          const portalUrl = loris.BaseURL + '/parent_portal/?id=' + row.URL;
           result = <td><a href={portalUrl} target="_blank">Go To Parent Portal</a></td>;
         }
         break;
