@@ -26,6 +26,7 @@ class NDB_BVL_Instrument_pspq_SelfReport_dad extends NDB_BVL_Instrument
                        '5_often'          => '5. Often',
                        '6_very_often'     => '6. Very Often',
                       );
+
     var $rating_na  = array(
                        ''                 => null,
                        '1_very_rarely'    => "1. Very Rarely",
@@ -36,6 +37,7 @@ class NDB_BVL_Instrument_pspq_SelfReport_dad extends NDB_BVL_Instrument
                        '6_very_often'     => '6. Very Often',
                        'na'               => 'Not Applicable',
                       );
+
     var $respondent = array(
                        ''           => null,
                        'mother'     => 'Mother',
@@ -50,6 +52,7 @@ class NDB_BVL_Instrument_pspq_SelfReport_dad extends NDB_BVL_Instrument
                                  'spouse' => 'Spouse',
                                  'other'  => 'Other',
                                 );
+
     var $informant_confidence = array(
                                  ''                     => null,
                                  'extremely_confident'  => 'Extremely confident',
@@ -239,7 +242,6 @@ class NDB_BVL_Instrument_pspq_SelfReport_dad extends NDB_BVL_Instrument
             } else {
                 $this->addSelect($field, $label, $this->rating);
             }
-            //$this->XINRegisterRule($field,array("$field{@}=={@}NEVER_REQUIRED"));
         }
 
         //$this->form->addFormRule(array(&$this, 'PSPQ_Rules'));
@@ -272,7 +274,6 @@ class NDB_BVL_Instrument_pspq_SelfReport_dad extends NDB_BVL_Instrument
 
         foreach ($questions as $field=>$label) {
             $this->addSelect($field, $label, $this->rating);
-            // $this->XINRegisterRule($field,array("$field{@}=={@}NEVER_REQUIRED"));
         }
 
         //  $this->form->addFormRule(array(&$this, 'PSPQ_Rules'));
@@ -309,7 +310,6 @@ class NDB_BVL_Instrument_pspq_SelfReport_dad extends NDB_BVL_Instrument
             } else {
                 $this->addSelect($field, $label, $this->rating);
             }
-            //$this->XINRegisterRule($field,array("$field{@}=={@}NEVER_REQUIRED"));
         }
 
         // $this->form->addFormRule(array(&$this, 'PSPQ_Rules'));

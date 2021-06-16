@@ -17,15 +17,27 @@ class NDB_BVL_Instrument_pspq_SelfReport_mom extends NDB_BVL_Instrument
     //Commonly used level of indentation;
     var $indent = "&nbsp;&nbsp;&nbsp;&nbsp;";
 
-    var $rating     = array(
-                       ''                 => null,
-                       '1_very_rarely'    => "1. Very Rarely",
-                       '2_rarely'         => "2. Rarely",
-                       '3_occasionally'   => "3. Occasionally",
-                       '4_somewhat_often' => '4. Somewhat Often',
-                       '5_often'          => '5. Often',
-                       '6_very_often'     => '6. Very Often',
-                      );
+    var $rating = array(
+                   ''                 => null,
+                   '1_very_rarely'    => "1. Very Rarely",
+                   '2_rarely'         => "2. Rarely",
+                   '3_occasionally'   => "3. Occasionally",
+                   '4_somewhat_often' => '4. Somewhat Often',
+                   '5_often'          => '5. Often',
+                   '6_very_often'     => '6. Very Often',
+                  );
+
+    var $rating_na = array(
+                      ''                 => null,
+                      '1_very_rarely'    => "1. Very Rarely",
+                      '2_rarely'         => "2. Rarely",
+                      '3_occasionally'   => "3. Occasionally",
+                      '4_somewhat_often' => '4. Somewhat Often',
+                      '5_often'          => '5. Often',
+                      '6_very_often'     => '6. Very Often',
+                      'na'               => 'Not Applicable',
+                     );
+
     var $respondent = array(
                        ''           => null,
                        'mother'     => 'Mother',
@@ -35,11 +47,12 @@ class NDB_BVL_Instrument_pspq_SelfReport_mom extends NDB_BVL_Instrument
                        'other'      => 'Other',
                       );
 
-    var $informant            = array(
-                                 ''       => null,
-                                 'spouse' => 'Spouse',
-                                 'other'  => 'Other',
-                                );
+    var $informant = array(
+                      ''       => null,
+                      'spouse' => 'Spouse',
+                      'other'  => 'Other',
+                     );
+
     var $informant_confidence = array(
                                  ''                     => null,
                                  'extremely_confident'  => 'Extremely confident',
@@ -224,7 +237,11 @@ class NDB_BVL_Instrument_pspq_SelfReport_mom extends NDB_BVL_Instrument
                      );
 
         foreach ($questions as $field=>$label) {
-            $this->addSelect($field, $label, $this->rating);
+            if ($field=='q4_hard_avoid_sidetrack') {
+                $this->addSelect($field, $label, $this->rating_na);
+            } else {
+                $this->addSelect($field, $label, $this->rating);
+            }
         }
 
         // $this->form->addFormRule(array(&$this, 'PSPQ_Rules'));
@@ -288,7 +305,11 @@ class NDB_BVL_Instrument_pspq_SelfReport_mom extends NDB_BVL_Instrument
                       );
 
         foreach ($questions as $field=>$label) {
-            $this->addSelect($field, $label, $this->rating);
+            if ($field=='q25_connecting_people'|| $field=='q29_longpauses_conversations') {
+                $this->addSelect($field, $label, $this->rating_na);
+            } else {
+                $this->addSelect($field, $label, $this->rating);
+            }
         }
 
         // $this->form->addFormRule(array(&$this, 'PSPQ_Rules'));
