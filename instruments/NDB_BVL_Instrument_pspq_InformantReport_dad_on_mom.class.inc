@@ -245,7 +245,6 @@ class NDB_BVL_Instrument_pspq_InformantReport_dad_on_mom extends NDB_BVL_Instrum
 
         foreach ($questions as $field=>$label) {
             $this->addSelect($field, $label, $this->rating);
-            $this->XINRegisterRule($field, array("$field{@}=={@}NEVER_REQUIRED"));
         }
 
         // $this->form->addFormRule(array(&$this, 'PSPQ_Rules'));
@@ -278,7 +277,6 @@ class NDB_BVL_Instrument_pspq_InformantReport_dad_on_mom extends NDB_BVL_Instrum
 
         foreach ($questions as $field=>$label) {
             $this->addSelect($field, $label, $this->rating);
-            $this->XINRegisterRule($field, array("$field{@}=={@}NEVER_REQUIRED"));
         }
 
         // $this->form->addFormRule(array(&$this, 'PSPQ_Rules'));
@@ -311,8 +309,8 @@ class NDB_BVL_Instrument_pspq_InformantReport_dad_on_mom extends NDB_BVL_Instrum
 
         foreach ($questions as $field=>$label) {
             $this->addSelect($field, $label, $this->rating);
-            $this->XINRegisterRule($field, array("$field{@}=={@}NEVER_REQUIRED"));
         }
+
         $this->addBasicTextArea("comments", "Do you have any other comments?");
         $this->XINRegisterRule('comments', array('comments{@}=={@}NEVER_REQUIRED'));
 
