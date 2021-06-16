@@ -943,7 +943,11 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
             unset($group);
                     
          $this->form->addElement("select", "pulse", "Pulse Ox replacement:", self::FINGER);
-
+         $this->XINRegisterRule(
+            "pulse",
+            array("csf_pass{@}=={@}1"),
+            "Required."
+         );
          $this->form->addElement("text", "captured_cycle", "Captured cycle (ms):");
          $this->form->addElement("text", "acquisition_window", "Acquisition window (ms):");
 
