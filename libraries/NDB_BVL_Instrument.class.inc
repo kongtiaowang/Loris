@@ -3012,5 +3012,136 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         return $flatArray;
     }
+
+    /**
+     * Returns a JSON representation of the currently instantiated
+     * instrument capatible with the survey module
+     *
+     * @return string containing valid JSON
+     */
+    //Jordan's Survey Module Function:Reason for override
+    function toDirectJSON()
+    {
+        $instrumentJSON = array(
+            "form" => array(),
+            "testname" => $this->testName,
+            "fullname" => $this->getFullName()
+        );
+
+        $tempForm = array();
+        $tempPage = array(
+            "Description" => "Top Page",
+            "Elements" => array(),
+            "GroupType" => "Page",
+            "Type" => "ElementGroup",
+        );
+
+        // reset page to top page for loading JSON
+        $this->page = '';
+        $this->form->form = array();
+        $this->_setupForm();
+
+        foreach ($this->form->form as $key => $value) {
+            $tempForm[] = PageElementsFormatter::formatElement($value, $key);
+        }
+        $tempPage["Elements"] = $tempForm;
+
+        $this->form->form = array();
+        $tempForm = array();
+        $instrumentJSON['form'][] = $tempPage;
+
+        $subtests = $this->getSubtestList();
+        foreach ($subtests as $subtest) {
+            $this->page = $subtest['Name'];
+            $this->_setupForm();
+
+            $tempPage = array(
+                "Description" => $subtest['Description'],
+                "Elements" => array(),
+                "GroupType" => "Page",
+                "Type" => "ElementGroup",
+                "Subtest" => $this->page,
+            );
+            foreach ($this->form->form as $key => $value) {
+                $tempForm[] = PageElementsFormatter::formatElement($value, $key);
+            }
+            $tempPage["Elements"] = $tempForm;
+            $this->form->form = array();
+            $tempForm = array();
+            $instrumentJSON['form'][] = $tempPage;
+        }
+
+        $instrument = array(
+            "Meta" => array(),
+            "Elements" => $instrumentJSON["form"]
+        );
+        if ($this->scoreCols!= null) {
+            $instrument["ScoreLabels"] = array_values($this->scoreCols);
+        }
+        return json_encode($instrument);
+    }
+//Jordan's Survey Module Function: reason for Override
+    function directEntryValidation() {
+        $allErrors = array();
+        $this->form->directEntry = true;
+        $temp = json_decode($this->getReactReview());
+        $values = array();
+
+        foreach ($temp->questions as $key => $value) {
+            // $this->form->directValues[$value->SourceField] = $value->response;
+            $values[$value->SourceField] = $value->response;
+        }
+
+        // Reset page and form
+        $this->page = '';
+        $this->form->form = array();
+
+        $this->_setupForm();
+        $this->form->directValues = $this->getPageValues($this->form->form, $values);
+        if (!$this->form->validate()) {
+            $allErrors = array_merge($allErrors, $this->form->errors);
+        }
+
+        $this->form->form = array();
+        $this->form->errors = array();
+        $this->form->formRules = array();
+        $this->XINRules = array();
+
+        $subtests = $this->getSubtestList();
+        foreach ($subtests as $subtest) {
+            $this->page = $subtest['Name'];
+            $this->_setupForm();
+            $this->form->directValues = $this->getPageValues($this->form->form, $values);
+
+            if (!$this->form->validate()) {
+                $allErrors = array_merge($allErrors, $this->form->errors);
+            }
+
+            $this->form->form = array();
+            $this->form->errors = array();
+            $this->form->formRules = array();
+            $this->XINRules = array();
+        }
+
+        if(empty($allErrors)) {
+            return true;
+        }
+
+        return $allErrors;
+
+    }
+//Jordan's Survey Module Function: reason for Override
+    function getPageValues($form, $fullValues) {
+        $values = array();
+        foreach ($form as $key => $value) {
+            if ($value['type'] === 'group') {
+                $values = array_merge($values, $this->getPageValues($value['elements'], $fullValues));
+            } else if(!in_array($value['type'], array('header', 'static'))) {
+                $values[$value['name']] = $fullValues[$value['name']];
+            }
+        }
+        return $values;
+    }
+
     // IBIS SPECIFIC OVERRIDE CODE ENDS HERE
 }
