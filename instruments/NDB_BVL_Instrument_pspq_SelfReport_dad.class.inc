@@ -395,6 +395,8 @@ class NDB_BVL_Instrument_pspq_SelfReport_dad extends NDB_BVL_Instrument
                 $sum += 5;
             } elseif ($record[$q] == "6_very_often") {
                 $sum += 6;
+            } else {
+                return null;
             }
         }
 
@@ -416,10 +418,10 @@ class NDB_BVL_Instrument_pspq_SelfReport_dad extends NDB_BVL_Instrument
         $record = $db->pselectRow($query, array());
 
         $scores = array(
-                   "aloof_score" => 0,
-                   "prs_score"   => 0,
-                   "rigid_score" => 0,
-                   "total_score" => 0,
+                   "aloof_score" => null,
+                   "prs_score"   => null,
+                   "rigid_score" => null,
+                   "total_score" => null,
                   );
 
         // Reverse score items
@@ -442,12 +444,32 @@ class NDB_BVL_Instrument_pspq_SelfReport_dad extends NDB_BVL_Instrument
         $aloof_sum = $this->sumSubscaleScores(self::ALOOF, $record);
         $prs_sum   = $this->sumSubscaleScores(self::PRS, $record);
         $rigid_sum = $this->sumSubscaleScores(self::RIGID, $record);
-        $total_sum = $aloof_sum + $prs_sum + $rigid_sum;
+        $total_sum = 0;
 
-        $scores["aloof_score"] = round($aloof_sum/12, 12);
-        $scores["prs_score"]   = round($prs_sum/12, 12);
-        $scores["rigid_score"] = round($rigid_sum/12, 12);
-        $scores["total_score"] = round($total_sum/36, 12);
+        if (!is_null($aloof_sum)) {
+            $scores["aloof_score"] = round($aloof_sum/12, 12);
+        } else {
+            $scores["aloof_score"] = null;
+        }
+
+        if (!is_null($prs_sum)) {
+            $scores["prs_score"] = round($prs_sum/12, 12);
+        } else {
+            $scores["prs_score"] = null;
+        }
+
+        if (!is_null($rigid_sum)) {
+            $scores["rigid_score"] = round($rigid_sum/12, 12);
+        } else {
+            $scores["rigid_score"] = null;
+        }
+
+        if (!is_null($aloof_sum) && !is_null($prs_sum) && !is_null($rigid_sum)) {
+            $total_sum = $aloof_sum + $prs_sum + $rigid_sum;
+            $scores["total_score"] = round($total_sum/36, 12);
+        } else {
+            $scores["total_score"] = null;
+        }
 
         $db->update($this->table, $scores, array("CommentID" => $this->getCommentID()));
     }
@@ -483,7 +505,6 @@ class NDB_BVL_Instrument_pspq_SelfReport_dad extends NDB_BVL_Instrument
                  "q32_losetrack_talking",
                  "q34_change_topic",
                 ];
-
 
     // (3, 6, 8, 13, 15, 19, 22, 24, 26, 30, 33, 35)
     CONST RIGID = [
