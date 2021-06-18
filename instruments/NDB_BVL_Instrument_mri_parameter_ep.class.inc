@@ -767,7 +767,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
                 if (!($tmp_02val >= 0 && $tmp_02val <= 100)) {
                     $errors["sec3_2_row{$i}"] = '% 0.2mm value is not valid. It should be a value between 0 and 100.';
                 }
-                else if (intval($values["{$key}02_{$i}"]) < 70 && !empty($values["{$key}pass_{$i}"]) && !isset($values['firm_not_used'])) {
+                else if (intval($values["{$key}02_{$i}"]) < 70 && !empty($values["{$key}pass_{$i}"])) {
                     $errors["sec3_2_row{$i}"] = 'Because % 0.2mm < 70%, this line doesn\'t pass';
                 }
             }
