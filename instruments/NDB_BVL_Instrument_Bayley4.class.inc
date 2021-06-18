@@ -529,7 +529,7 @@ class NDB_BVL_Instrument_Bayley4 extends NDB_BVL_Instrument
             $values['RC_EC_Critical_value'] = $sdcArr[4]; 
             $values['RC_EC_Significant_difference'] = $sdcArr[5];
             $sdcArr[6] = str_replace(">", "greater than ", $sdcArr[6]);
-            $sdcArr[6] = str_replace("<", "smaller than ",  $sdcArr[6]); 
+            $sdcArr[6] = str_replace("<", "less than ",  $sdcArr[6]); 
             $values['RC_EC_Base_rate'] = $sdcArr[6]; 
 
              //table 3 sdc fm data
@@ -543,7 +543,7 @@ class NDB_BVL_Instrument_Bayley4 extends NDB_BVL_Instrument
             $values['FM_GM_Critical_value'] = $ssdcArr[4]; 
             $values['FM_GM_Significant_difference'] = $ssdcArr[5]; 
             $ssdcArr[6] = str_replace(">", "greater than ", $ssdcArr[6]);
-            $ssdcArr[6] = str_replace("<", "smaller than ",  $ssdcArr[6]);
+            $ssdcArr[6] = str_replace("<", "less than ",  $ssdcArr[6]);
             $values['FM_GM_Base_rate'] = $ssdcArr[6]; 
 
 
@@ -558,7 +558,7 @@ class NDB_BVL_Instrument_Bayley4 extends NDB_BVL_Instrument
             $values['CL_Score_Critical_value'] = $ssdcArr[4]; 
             $values['CL_Score_Significant_difference'] =    $ssdcArr[5];
             $ssdcArr[6] = str_replace(">", "greater than ", $ssdcArr[6]);
-            $ssdcArr[6] = str_replace("<", "smaller than ", $ssdcArr[6]); 
+            $ssdcArr[6] = str_replace("<", "less than ", $ssdcArr[6]); 
             $values['CL_Score_Base_rate'] = $ssdcArr[6]; 
 
              //table 4 ssdc data row 2
@@ -572,7 +572,7 @@ class NDB_BVL_Instrument_Bayley4 extends NDB_BVL_Instrument
             $values['CM_Score_Critical_value'] = $ssdcArr[4]; 
             $values['CM_Score_Significant_difference'] =    $ssdcArr[5];
             $ssdcArr[6] = str_replace(">", "greater than ", $ssdcArr[6]);
-            $ssdcArr[6] = str_replace("<", "smaller than ", $ssdcArr[6]); 
+            $ssdcArr[6] = str_replace("<", "less than ", $ssdcArr[6]); 
             $values['CM_Score_Base_rate'] = $ssdcArr[6]; 
 
              //table 4 ssdc data row 3
