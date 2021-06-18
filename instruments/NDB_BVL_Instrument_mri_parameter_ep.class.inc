@@ -911,13 +911,37 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
             unset($group);
             $i++;
         }
+        $this->addCheckbox('firm_not_used_plus', 'FIRMM NOT USED', array('value' => '1'));
         $this->addLabel('Please set to A >> P, then edit the angle to set P >> A');
         $this->addSelect("boldplus_attempts", "BOLD Attempts", self::R1_R9);
 
         $this->form->addElement("textarea", "page5_comment", "Comments:", array('cols'=>25, 'rows'=>4));
         $this->XINRegisterRule("page5_comment", array("page5_comment{@}=={@}NEVER_REQUIRED"));
-    }
+        $this->form->addFormRule(array(&$this, 'constraint_rules_pg5'));
 
+    }
+    /**
+     * constraint check for page 5
+     */
+    function constraint_rules_pg5($values) {
+        $errors = [];
+            if (!isset($values['firm_not_used_plus'])) {
+                if (!empty($values["bp4_02_0"]) && !is_numeric($values["bp4_02_0"])) {
+                    $errors["sec5_2_row0"] = '% 0.2mm should not have a non-numeric value.';
+                }
+                else {
+                    $tmp_02val = intval($values["bp4_02_0"]);
+                    if (!($tmp_02val >= 0 && $tmp_02val <= 100)) {
+                        $errors["sec5_2_row0"] = '% 0.2mm value is not valid. It should be a value between 0 and 100.';
+                    }
+                    else if (intval($values["bp4_02_0"]) < 70 && !empty($values["bp4_pass_0"])) {
+                        $errors["sec5_2_row0"] = 'Because % 0.2mm < 70%, this line doesn\'t pass';
+                    }
+                }
+            }
+
+        return $errors;
+    }
     /**
      * Page 6
      *
