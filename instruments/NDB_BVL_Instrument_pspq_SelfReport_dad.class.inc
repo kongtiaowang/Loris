@@ -448,27 +448,19 @@ class NDB_BVL_Instrument_pspq_SelfReport_dad extends NDB_BVL_Instrument
 
         if (!is_null($aloof_sum)) {
             $scores["aloof_score"] = round($aloof_sum/12, 12);
-        } else {
-            $scores["aloof_score"] = null;
         }
 
         if (!is_null($prs_sum)) {
             $scores["prs_score"] = round($prs_sum/12, 12);
-        } else {
-            $scores["prs_score"] = null;
         }
 
         if (!is_null($rigid_sum)) {
             $scores["rigid_score"] = round($rigid_sum/12, 12);
-        } else {
-            $scores["rigid_score"] = null;
         }
 
         if (!is_null($aloof_sum) && !is_null($prs_sum) && !is_null($rigid_sum)) {
             $total_sum = $aloof_sum + $prs_sum + $rigid_sum;
             $scores["total_score"] = round($total_sum/36, 12);
-        } else {
-            $scores["total_score"] = null;
         }
 
         $db->update($this->table, $scores, array("CommentID" => $this->getCommentID()));
