@@ -4,8 +4,8 @@ CREATE TABLE `SSIS_Behavior_lookup` (
     `sex` enum('female','male','combined'),
     `subscale` enum('Communication','Cooperation','Assertion','Responsibility','Empathy','Engagement','Self-Control','Externalizing','Bullying','Hyperactivity/Inattention','Internalizing','Autism Spectrum'),
     `behavior_level` enum('Below Average','Average','Above Average'),
-    `score_min` int(2) default NULL,
-    `score_max` int(2) default NULL,
+    `raw_score_min` int(2) default NULL,
+    `raw_score_max` int(2) default NULL,
      PRIMARY KEY  (`form`,`age_range`,`sex`,`subscale`,`behavior_level`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
