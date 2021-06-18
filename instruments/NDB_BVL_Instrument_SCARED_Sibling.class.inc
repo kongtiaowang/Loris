@@ -111,7 +111,7 @@ class NDB_BVL_Instrument_SCARED_Sibling extends NDB_BVL_Instrument
     function _main()
     {
         // display test name
-        $this->addHeader("SCARED (Screen for Anxiety Related Disorders) - Child - Sibling - Survey");
+        $this->addHeader("SCARED (Screen for Child Anxiety Related Disorders) - Child - Sibling - Survey");
 
         $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
 
@@ -158,7 +158,7 @@ class NDB_BVL_Instrument_SCARED_Sibling extends NDB_BVL_Instrument
      */
     function _page1()
     {
-        $this->addHeader("SCARED (Screen for Anxiety Related Disorders) - Child - Sibling - Survey");
+        $this->addHeader("SCARED (Screen for Child Anxiety Related Disorders) - Child - Sibling - Survey");
         
 
         $this->form->addElement(
@@ -205,7 +205,7 @@ class NDB_BVL_Instrument_SCARED_Sibling extends NDB_BVL_Instrument
      */
     function _page2()
     {
-        $this->addHeader("SCARED (Screen for Anxiety Related Disorders) - Child - Sibling - Survey");
+        $this->addHeader("SCARED (Screen for Child Anxiety Related Disorders) - Child - Sibling - Survey");
 
         $this->form->addElement(
             'static',
