@@ -216,7 +216,7 @@ print "ADOSModule: $ADOSModule\n";
             " AND c.Active='Y' AND f.CommentID NOT LIKE 'DDE%'" .
             " AND c.RegistrationCenterID NOT IN (1,8,9,10)" .
             " AND (ps.participant_status NOT IN (2,3,4) OR ps.participant_status IS NULL)".
-            " AND c.ProjectID NOT IN (5,6)";
+            " AND c.RegistrationProjectID NOT IN (5,6)";
 
 //        print "selectq: " . $selectq . "\n";
         $row = $this->SQLDB->pselectRow($selectq,

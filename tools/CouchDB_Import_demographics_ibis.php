@@ -144,7 +144,7 @@ class CouchDBDemographicsImporter {
         ),
         'Config' => array(
             'GroupString'  => 'How to arrange data: ',
-            'GroupOptions' => 
+            'GroupOptions' =>
                 array('Cross-sectional', 'Longitudinal')
         )
     );
@@ -181,50 +181,50 @@ class CouchDBDemographicsImporter {
 
     function _generateQuery() {
         $config = \NDB_Config::singleton();
-        $fieldsInQuery = "SELECT c.DoB, 
+        $fieldsInQuery = "SELECT c.DoB,
                                  c.ProbandDoB                                                AS Proband_DoB,
                                  c.candid                                                    AS CandID,
                                  c.pscid                                                     AS PSCID,
                                  s.visit_label                                               AS Visit_label,
                                  s.subprojectid                                              AS SubprojectID,
-                                 CASE 
-                                   WHEN s.subprojectid = 1 THEN 'HR' 
-                                   WHEN s.subprojectid = 2 THEN 'HR' 
-                                   WHEN s.subprojectid = 3 THEN 'LR' 
-                                   WHEN s.subprojectid = 9 THEN 'HR' 
-                                   WHEN s.subprojectid = 10 THEN 'LR' 
-                                 END                                                         AS Risk, 
-                                 CASE 
-                                   WHEN (dsm.q4_criteria_autistic_disorder = 'no' && dsm.q4_criteria_PDD ='no') THEN 'NO (DSM_IV questions 4a/4b is No at V24)' 
-                                   WHEN (dsm.q4_criteria_autistic_disorder = 'yes' || dsm.q4_criteria_PDD ='yes') THEN 'YES (DSM_IV questions 4a/4b is Yes)'  
-                                 END                                                         AS ASD_DX, 
-                                  CASE 
-                                   WHEN (dsm.q4_criteria_autistic_disorder = 'yes' || dsm.q4_criteria_PDD ='yes') THEN 'YES (DSM_IV questions 4a/4b is Yes)'  
-                                 END                                                         AS DX_Subgroups, 
-                                 p.alias                                                     AS Site, 
-                                 c.Sex, 
-                                 s.Current_stage, 
+                                 CASE
+                                   WHEN s.subprojectid = 1 THEN 'HR'
+                                   WHEN s.subprojectid = 2 THEN 'HR'
+                                   WHEN s.subprojectid = 3 THEN 'LR'
+                                   WHEN s.subprojectid = 9 THEN 'HR'
+                                   WHEN s.subprojectid = 10 THEN 'LR'
+                                 END                                                         AS Risk,
+                                 CASE
+                                   WHEN (dsm.q4_criteria_autistic_disorder = 'no' && dsm.q4_criteria_PDD ='no') THEN 'NO (DSM_IV questions 4a/4b is No at V24)'
+                                   WHEN (dsm.q4_criteria_autistic_disorder = 'yes' || dsm.q4_criteria_PDD ='yes') THEN 'YES (DSM_IV questions 4a/4b is Yes)'
+                                 END                                                         AS ASD_DX,
+                                  CASE
+                                   WHEN (dsm.q4_criteria_autistic_disorder = 'yes' || dsm.q4_criteria_PDD ='yes') THEN 'YES (DSM_IV questions 4a/4b is Yes)'
+                                 END                                                         AS DX_Subgroups,
+                                 p.alias                                                     AS Site,
+                                 c.Sex,
+                                 s.Current_stage,
                                  ROUND(DATEDIFF(s.Date_visit, c.DoB) / (365/12))             AS Age_at_visit_start,
-                                 s.Scan_done                                                 AS Scan_done,                                    
-                                 CASE 
-                                   WHEN s.visit = 'Failure' THEN 'Failure' 
-                                   WHEN s.screening = 'Failure' THEN 'Failure' 
-                                   WHEN s.visit = 'Withdrawal' THEN 'Withdrawal' 
-                                   WHEN s.screening = 'Withdrawal' THEN 'Withdrawal' 
-                                   ELSE 'Neither' 
-                                 END                                                         AS Failure, 
-                                 c.ProjectID, 
-                                 c.flagged_caveatemptor                                      AS CEF, 
-                                 c.flagged_caveatemptor                                      AS CEF, 
-                                 c_o.description                                             AS CEF_reason, 
-                                 c.flagged_other                                             AS CEF_comment, 
-                                 c.flagged_date                                              AS CEF_date, 
-                                 pc_comment.value                                            AS Comment, 
-                                 COALESCE(pso.description, 'Active')                         AS Status, 
-                                 ps.participant_suboptions                                   AS Status_reason, 
+                                 s.Scan_done                                                 AS Scan_done,
+                                 CASE
+                                   WHEN s.visit = 'Failure' THEN 'Failure'
+                                   WHEN s.screening = 'Failure' THEN 'Failure'
+                                   WHEN s.visit = 'Withdrawal' THEN 'Withdrawal'
+                                   WHEN s.screening = 'Withdrawal' THEN 'Withdrawal'
+                                   ELSE 'Neither'
+                                 END                                                         AS Failure,
+                                 c.RegistrationProjectID                                     AS ProjectID,
+                                 c.flagged_caveatemptor                                      AS CEF,
+                                 c.flagged_caveatemptor                                      AS CEF,
+                                 c_o.description                                             AS CEF_reason,
+                                 c.flagged_other                                             AS CEF_comment,
+                                 c.flagged_date                                              AS CEF_date,
+                                 pc_comment.value                                            AS Comment,
+                                 COALESCE(pso.description, 'Active')                         AS Status,
+                                 ps.participant_suboptions                                   AS Status_reason,
                                  ps.reason_specify                                           AS Status_comments,
                                  CASE
-                                   WHEN c.ProjectID NOT IN (1,2) THEN 'NOT IBIS 1 OR IBIS 2'
+                                   WHEN c.RegistrationProjectID NOT IN (1,2) THEN 'NOT IBIS 1 OR IBIS 2'
                                    WHEN COALESCE(pso.description,'Active') NOT IN ('Active', 'Inactive', 'Active - Flagged', 'Complete') OR cc1.Status = 'no' THEN 'NOT A PRIORITY TO BRING BACK AT VSA'
                                    WHEN scanned_at_vsa.count >= 1 AND fvsadsm.commentid IS NOT NULL THEN 'SCAN AND DSMV DONE AT VSA'
                                    WHEN scanned_at_vsa.count >= 1 THEN 'SCAN DONE AT VSA'
@@ -236,7 +236,7 @@ class CouchDBDemographicsImporter {
                                    ELSE 'NOT A PRIORITY TO BRING BACK AT VSA'
                                  END                                                         AS vsa_priority_data_status,
                                  CASE
-                                   WHEN c.ProjectID NOT IN (1,2) THEN 'NOT IBIS 1 OR IBIS 2'
+                                   WHEN c.RegistrationProjectID NOT IN (1,2) THEN 'NOT IBIS 1 OR IBIS 2'
                                    WHEN COALESCE(pso.description,'Active') NOT IN ('Active', 'Inactive', 'Active - Flagged', 'Complete') OR cc1.Status = 'no' THEN 'NOT A PRIORITY TO BRING BACK AT VSA'
                                    WHEN COALESCE(scanned_at_vsa.count,0) < 1 AND fvsadsm.commentid IS NULL
                                         AND NOT(dsm24.q4_criteria_autistic_disorder <=> 'yes') AND NOT(dsm24.q4_criteria_PDD <=> 'yes')
@@ -264,14 +264,14 @@ class CouchDBDemographicsImporter {
                                    ELSE 'COLLECT SALIVA FROM SUBJECT, PROBAND, MOTHER AND FATHER'
                                  END                                                         AS GWAS_saliva_samples_tracking
                           ";
-        $tablesToJoin = " FROM   session s 
-                                 JOIN candidate c using (candid) 
+        $tablesToJoin = " FROM   session s
+                                 JOIN candidate c using (candid)
                                  LEFT JOIN (
                                      SELECT candid, COUNT(*) as count FROM session
                                      WHERE session.visit_label IN ('V3', 'V03', 'V06', 'V09', 'V12', 'V15', 'V18', 'V24', 'V36')
                                      AND EXISTS(
                                        SELECT 1
-                                       FROM files 
+                                       FROM files
                                        WHERE files.filetype='mnc'
                                        AND files.sessionid=session.id
                                      )
@@ -281,25 +281,25 @@ class CouchDBDemographicsImporter {
                                      SELECT candid, COUNT(*) as count FROM session
                                      WHERE session.visit_label IN ('VSA','VSA-CVD')
                                      AND EXISTS(
-                                       SELECT 1 
-                                       FROM files 
+                                       SELECT 1
+                                       FROM files
                                        WHERE files.filetype='mnc'
-                                       AND files.sessionid=session.id 
+                                       AND files.sessionid=session.id
                                      )
                                      GROUP BY candid
                                  ) scanned_at_vsa ON (scanned_at_vsa.candid=c.candid)
-                                 LEFT JOIN psc p 
-                                        ON ( p.centerid = s.centerid ) 
-                                 LEFT JOIN caveat_options c_o 
-                                        ON ( c_o.id = c.flagged_reason ) 
-                                 LEFT JOIN parameter_candidate AS pc_comment 
-                                        ON ( pc_comment.candid = c.candid ) 
-                                           AND pc_comment.parametertypeid = (SELECT parametertypeid 
-                                                                             FROM   parameter_type 
-                                                                             WHERE  NAME = 'candidate_comment') 
-                                 LEFT JOIN participant_status ps 
+                                 LEFT JOIN psc p
+                                        ON ( p.centerid = s.centerid )
+                                 LEFT JOIN caveat_options c_o
+                                        ON ( c_o.id = c.flagged_reason )
+                                 LEFT JOIN parameter_candidate AS pc_comment
+                                        ON ( pc_comment.candid = c.candid )
+                                           AND pc_comment.parametertypeid = (SELECT parametertypeid
+                                                                             FROM   parameter_type
+                                                                             WHERE  NAME = 'candidate_comment')
+                                 LEFT JOIN participant_status ps
                                         ON ( ps.candid = c.candid )
-                                 LEFT JOIN flag f 
+                                 LEFT JOIN flag f
                                         ON ( f.SessionID = s.ID)
                                            AND f.Test_name ='DSMIV_checklist' AND f.CommentID  NOT LIKE 'DDE%'
                                  LEFT JOIN DSMIV_checklist dsm
@@ -402,17 +402,17 @@ class CouchDBDemographicsImporter {
                                $cField.DateWithdrawn AS " . $consentName . "_withdrawal";
                 $fieldsInQuery .= $consentFields;
                 $tablesToJoin  .= "
-                                LEFT JOIN candidate_consent_rel $cField ON ($cField.CandidateID=c.CandID) 
+                                LEFT JOIN candidate_consent_rel $cField ON ($cField.CandidateID=c.CandID)
                                 AND $cField.ConsentID=(SELECT ConsentID FROM consent WHERE Name='" . $consentName . "') ";
             }
         }
 
-        $concatQuery = $fieldsInQuery . $tablesToJoin . " WHERE s.Active='Y' AND c.Active='Y' 
+        $concatQuery = $fieldsInQuery . $tablesToJoin . " WHERE s.Active='Y' AND c.Active='Y'
         AND c.Entity_type != 'Scanner'
         AND s.Current_stage NOT IN ('Recycling Bin', 'Not Started')
         AND c.RegistrationCenterID NOT IN (1,8,9,10)
         AND (ps.participant_status NOT IN (2,3,4) OR ps.participant_status IS NULL)
-        AND c.ProjectID NOT IN (5,6)";
+        AND c.RegistrationProjectID NOT IN (5,6)";
 
         return $concatQuery;
     }
@@ -512,9 +512,9 @@ class CouchDBDemographicsImporter {
     function getSessionFeedback($SessionID)
     {
         $row = $this->SQLDB->pselectRow(
-            "select s.candID,s.Visit_label, GROUP_CONCAT(fbe.Comment SEPARATOR '---->') as session_feedback_comments 
+            "select s.candID,s.Visit_label, GROUP_CONCAT(fbe.Comment SEPARATOR '---->') as session_feedback_comments
 from session s
-LEFT JOIN feedback_bvl_thread fbt ON (fbt.SessionID=s.ID) 
+LEFT JOIN feedback_bvl_thread fbt ON (fbt.SessionID=s.ID)
 LEFT JOIN feedback_bvl_entry fbe ON (fbe.FeedbackID=fbt.FeedbackID)
 WHERE s.ID=:SID
 group by s.CandID,s.Visit_label",
@@ -590,27 +590,27 @@ group by s.CandID,s.Visit_label",
             $mullen_complex= "WHEN (mullen.visual_reception_t < 35 && (
             mullen.fine_motor_t < 35 || mullen.receptive_language_t <35 ||
             mullen.expressive_language_t <35)) THEN 'Yes_2'
-            
+
             WHEN (mullen.fine_motor_t < 35 && (mullen.visual_reception_t < 35 ||
             mullen.receptive_language_t <35 ||
             mullen.expressive_language_t <35)) THEN 'Yes_2'
-            
+
             WHEN (mullen.receptive_language_t < 35 && (mullen.visual_reception_t < 35 ||
             mullen.fine_motor_t <35 ||
             mullen.expressive_language_t <35)) THEN 'Yes_2'
-            
+
             WHEN (mullen.expressive_language_t< 35 && (mullen.visual_reception_t < 35 ||
             mullen.fine_motor_t <35 ||
             mullen.receptive_language_t <35)) THEN 'Yes_2'";
             if($demographics['Visit_label']=='V24' && $demographics['DX_Subgroups']!='YES (DSM_IV questions 4a/4b is Yes)')
             {
-            $find_atypical = $this->SQLDB->pselect("SELECT CASE  
+            $find_atypical = $this->SQLDB->pselect("SELECT CASE
                                                          WHEN (mullen.visual_reception_t < 30 ||
                                                          mullen.fine_motor_t < 30 || mullen.receptive_language_t <30 ||
                                                          mullen.expressive_language_t <30) THEN 'Yes'"
                                                          .$mullen_complex."
                                                          ELSE 'No' END AS mullen_criteria, s.ID,s.Visit_label FROM  session s
-                                                         JOIN candidate c using (candid) 
+                                                         JOIN candidate c using (candid)
                                                          LEFT JOIN flag f  ON ( f.SessionID = s.ID)
                                                          LEFT JOIN mullen mullen ON ( mullen.CommentID = f.CommentID )
                                                          where c.Candid=$candid and f.Test_name IN('mullen') and s.Visit_label IN('V24')

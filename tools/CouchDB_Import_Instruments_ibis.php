@@ -89,29 +89,29 @@ class CouchDBInstrumentImporter
     {
         //Script Overriden as per Redmine 18848
         // Query Adjusted to exclude some data from DQT
-        $select = "SELECT 
-                        c.PSCID, 
-                        s.Visit_label, 
-                        f.Administration, 
-                        f.Data_entry, 
+        $select = "SELECT
+                        c.PSCID,
+                        s.Visit_label,
+                        f.Administration,
+                        f.Data_entry,
                         f.Validity,
-                        f.CommentID, 
-                        CASE WHEN EXISTS (SELECT 'x' FROM conflicts_unresolved cu WHERE f.CommentID=cu.CommentId1 OR f.CommentID=cu.CommentId2) THEN 'Y' ELSE 'N' END AS Conflicts_Exist, 
+                        f.CommentID,
+                        CASE WHEN EXISTS (SELECT 'x' FROM conflicts_unresolved cu WHERE f.CommentID=cu.CommentId1 OR f.CommentID=cu.CommentId2) THEN 'Y' ELSE 'N' END AS Conflicts_Exist,
                         CASE ddef.Data_entry='Complete' WHEN 1 THEN 'Y' WHEN NULL THEN 'Y' ELSE 'N' END AS DDE_Complete ";
-        $from = "FROM 
-                        flag f 
-                        JOIN session s ON (s.ID=f.SessionID) 
-                        JOIN candidate c ON (c.CandID=s.CandID) 
+        $from = "FROM
+                        flag f
+                        JOIN session s ON (s.ID=f.SessionID)
+                        JOIN candidate c ON (c.CandID=s.CandID)
                         LEFT JOIN flag ddef ON (ddef.CommentID=CONCAT('DDE_', f.CommentID))
                         LEFT JOIN participant_status ps ON ( ps.Candid = c.Candid )";
 
-        $where = "WHERE 
-                        f.CommentID NOT LIKE 'DDE%' 
+        $where = "WHERE
+                        f.CommentID NOT LIKE 'DDE%'
                         AND f.Test_name=:inst
                         AND s.Active='Y' AND c.Active='Y'
                         AND c.RegistrationCenterID NOT IN (1,8,9,10)
                         AND (ps.participant_status NOT IN (2,3,4) OR ps.participant_status IS NULL)
-                        AND c.ProjectID NOT IN (5,6)";
+                        AND c.RegistrationProjectID NOT IN (5,6)";
 
         if ($tablename === "") {
             // the data is in the flag table, add the data column to the query and
