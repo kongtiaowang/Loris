@@ -1011,6 +1011,7 @@ class NDB_BVL_Instrument_Med_Psych_History_survey extends NDB_BVL_Instrument
         );
 
         $q15_a_options = array(
+                          null                     => "",
                           "0_first_month"          => "First month of life",
                           "1_1_to_12_months"       => "1-12 months (before 1st birthday)",
                           "2_12_to_24_months"      => "12-24 months (before 2nd birthday)",
