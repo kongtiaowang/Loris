@@ -89,7 +89,7 @@ class NDB_BVL_Instrument_Bayley4 extends NDB_BVL_Instrument
 
         // automatically adds examiner & date of administration
         $this->_addMetadataFields();
-        $this->form->addElement('file', 'bayley4_file', 'Upload the Bayley4 doc file');
+        $this->form->addElement('file', 'bayley4_file', 'Upload the Bayley4 doc file<br><h6><i>(Filename should be Bayley4_CandID_PSCID_VisitLabel.doc)</i></h6>');
 
         $this->form->addElement('static', "File_name", "Uploaded File");
         $this->form->addElement('header', null, "Examinee Information");
@@ -388,7 +388,11 @@ class NDB_BVL_Instrument_Bayley4 extends NDB_BVL_Instrument
      * @access    public
      */
     function isValid(&$file, $args){
-
+        $correct_filename = ($this->testName.'_'.$args['candID'].'_'. $args['PSCID'].'_'.$args['visitLabel']. ".doc");
+        if($file->fileInfo['name'] != $correct_filename){
+            $errors[]="Incorrect Filename: Filename should be: " . $correct_filename;
+            return $errors;
+        }
         return true;
     }
 
@@ -523,8 +527,9 @@ class NDB_BVL_Instrument_Bayley4 extends NDB_BVL_Instrument
             $values['RC_EC_Score_2'] = $sdcArr[2];
             $values['RC_EC_Difference'] = $sdcArr[3];
             $values['RC_EC_Critical_value'] = $sdcArr[4]; 
-            $values['RC_EC_Significant_difference'] = $sdcArr[5]; 
-            $sdcArr[6] = htmlspecialchars_decode($sdcArr[6]);
+            $values['RC_EC_Significant_difference'] = $sdcArr[5];
+            $sdcArr[6] = str_replace(">", "greater than ", $sdcArr[6]);
+            $sdcArr[6] = str_replace("<", "less than ",  $sdcArr[6]); 
             $values['RC_EC_Base_rate'] = $sdcArr[6]; 
 
              //table 3 sdc fm data
@@ -537,7 +542,8 @@ class NDB_BVL_Instrument_Bayley4 extends NDB_BVL_Instrument
             $values['FM_GM_Difference'] = $ssdcArr[3];
             $values['FM_GM_Critical_value'] = $ssdcArr[4]; 
             $values['FM_GM_Significant_difference'] = $ssdcArr[5]; 
-            echo $ssdcArr[6];
+            $ssdcArr[6] = str_replace(">", "greater than ", $ssdcArr[6]);
+            $ssdcArr[6] = str_replace("<", "less than ",  $ssdcArr[6]);
             $values['FM_GM_Base_rate'] = $ssdcArr[6]; 
 
 
@@ -550,7 +556,9 @@ class NDB_BVL_Instrument_Bayley4 extends NDB_BVL_Instrument
             $values['CL_Score_Score_2'] = $ssdcArr[2];
             $values['CL_Score_Difference'] = $ssdcArr[3];
             $values['CL_Score_Critical_value'] = $ssdcArr[4]; 
-            $values['CL_Score_Significant_difference'] = $ssdcArr[5]; 
+            $values['CL_Score_Significant_difference'] =    $ssdcArr[5];
+            $ssdcArr[6] = str_replace(">", "greater than ", $ssdcArr[6]);
+            $ssdcArr[6] = str_replace("<", "less than ", $ssdcArr[6]); 
             $values['CL_Score_Base_rate'] = $ssdcArr[6]; 
 
              //table 4 ssdc data row 2
@@ -562,7 +570,9 @@ class NDB_BVL_Instrument_Bayley4 extends NDB_BVL_Instrument
             $values['CM_Score_Score_2'] = $ssdcArr[2];
             $values['CM_Score_Difference'] = $ssdcArr[3];
             $values['CM_Score_Critical_value'] = $ssdcArr[4]; 
-            $values['CM_Score_Significant_difference'] = $ssdcArr[5]; 
+            $values['CM_Score_Significant_difference'] =    $ssdcArr[5];
+            $ssdcArr[6] = str_replace(">", "greater than ", $ssdcArr[6]);
+            $ssdcArr[6] = str_replace("<", "less than ", $ssdcArr[6]); 
             $values['CM_Score_Base_rate'] = $ssdcArr[6]; 
 
              //table 4 ssdc data row 3
