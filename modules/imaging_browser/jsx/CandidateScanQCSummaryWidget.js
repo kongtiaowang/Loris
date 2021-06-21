@@ -1,4 +1,4 @@
-import '../../../node_modules/c3/c3.css';
+import '../../../../node_modules/c3/c3.css';
 import c3 from 'c3';
 import React, {useEffect} from 'react';
 

@@ -139,6 +139,11 @@ class ViewSession extends \NDB_Form
                     $this->sessionID;
             }
 
+            // IBIS SPECIFIC OVERRIDE CODE
+            // Add session ID to tpl_data.
+            $this->tpl_data['SessionID'] = $this->sessionID;
+            // IBIS SPECIFIC OVERRIDE CODE ENDS HERE
+
         }
     }
 
@@ -362,7 +367,13 @@ class ViewSession extends \NDB_Form
             SELECT vr.ID
             FROM files f
             JOIN mri_violations_log mvl
-              ON (mvl.MincFile = f.File)
+              ON (    mvl.MincFile = f.File
+                  AND TimeRun      = (
+                      SELECT MAX(TimeRun)
+                      FROM mri_violations_log mvl2
+                      WHERE mvl2.MincFile=f.File
+                  )
+              )
             JOIN violations_resolved vr
               ON (    vr.ExtID     = mvl.LogID
                   AND vr.TypeTable = 'mri_violations_log'

@@ -22,6 +22,11 @@
                   RImagePanel({
                       'BaseURL' : "{$baseurl}",
 
+                      // IBIS SPECIFIC OVERRIDE CODE
+                      // Add session ID to React Props.
+                      'SessionID': "{$SessionID}",
+                      // IBIS SPECIFIC OVERRIDE CODE ENDS HERE
+
                       'FileID'   : "{$files[file].FileID}",
                       'Filename' : "{$files[file].Filename}",
                       'QCStatus' : "{$files[file].QCStatus}",

@@ -43,12 +43,12 @@ class Imaging_Browser extends \DataFrameworkMenu
         * part of a study site and are permitted to view their own site.
          */
         return $user->hasAnyPermission(
-            array(
-                'imaging_browser_view_allsites',
-                'imaging_browser_phantom_allsites',
-                'imaging_browser_phantom_ownsite',
+                array(
+                    'imaging_browser_view_allsites',
+                    'imaging_browser_phantom_allsites',
+                    'imaging_browser_phantom_ownsite',
+                )
             )
-        )
             || (
                 $user->hasStudySite()
                 && $user->hasPermission('imaging_browser_view_site')
@@ -84,6 +84,7 @@ class Imaging_Browser extends \DataFrameworkMenu
      *
      * @return array array with fieldOptions
      */
+    // IBIS SPECIFIC OVERRIDE CODE
     function getFieldOptions() : array
     {
         // create user object
@@ -131,34 +132,46 @@ class Imaging_Browser extends \DataFrameworkMenu
             'N' => 'New',
         );
 
-        // get list of scan types
-        $all_scan_types = \Utility::getScanTypeList();
-
-        // get list of scan types that should be present in the data table
-        // Get the intersection between all the scan types and those
-        // that are desired to go into imaging browser table, based on
-        // array values rather than keys (hence the array_flip), then flip
-        // the resulting array back to revert it to a key/value (i.e.
-        // acquisition protocol ID/scan type) combination.
+        //---------------------------------------------------------------------//
+        // Build array of all groups for which we want info                    //
+        //---------------------------------------------------------------------//
         $config = \NDB_Config::singleton();
-        $toTable_scan_types = $config->getSetting('tblScanTypes');
-        $scan_id_types      = array_flip(
-            array_intersect_key(
-                array_flip($all_scan_types),
-                array_flip($toTable_scan_types)
-            )
+        $DB     = \Database::singleton();
+
+        $toTable_scan_type_groups = $config->getSetting('tblScanTypeGroups');
+        $toTable_scan_type_groups = explode(',', $toTable_scan_type_groups);
+        $allGroupsQuery = sprintf(
+            "SELECT DISTINCT Name, Description
+             FROM mri_scan_type_groups
+             WHERE Name IN (%s)",
+            implode(",", array_fill(0, count($toTable_scan_type_groups), '?'))
         );
+        $toTable_scan_type_groups = $DB->pselect($allGroupsQuery, array_values($toTable_scan_type_groups));
+        foreach($toTable_scan_type_groups as $row) {
+            $scan_type_ids[$row['Name']] = $row['Description'];
+        }
+
+        $types_q    = $DB->pselect(
+            "SELECT ID, Scan_type FROM mri_scan_type mri
+                 JOIN files f ON (f.AcquisitionProtocolID=mri.ID)",
+            array()
+        );
+        $scan_types = array();
+        foreach ($types_q as $sequenceType) {
+            $scan_types[$sequenceType['Scan_type']] = $sequenceType['Scan_type'];
+        }
 
         return [
             'sites'         => $siteList,
             'projects'      => $list_of_projects,
             'visitQCStatus' => $visitQCStatus,
-            'sequenceTypes' => $all_scan_types,
+            'sequenceTypes' => $scan_types,
             'pendingNew'    => $pending,
-            'configLabels'  => $scan_id_types,
+            'configLabels'  => $scan_type_ids,
         ];
 
     }
+    // IBIS SPECIFIC OVERRIDE CODE ENDS HERE
 
     /**
      * Gets the data source for this menu filter.

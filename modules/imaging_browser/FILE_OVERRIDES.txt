@@ -3,9 +3,8 @@ List of all files which contain overrides.
 - jsx
     - ImagePanel.js
 - php
-    - imaging_browser.class.inc (NOT UPDATED WITH IBIS CHANGES)
-    - viewsession.class.inc (NOT UPDATED WITH IBIS CHANGES)
+    - imaging_browser.class.inc
+    - viewsession.class.inc
+    - imagingbrowserrowprovisioner.class.inc
 - templates
-    - form_viewSession.tpl (NOT UPDATED WITH IBIS CHANGES)
-- test (NOT UPDATED WITH IBIS CHANGES)
-- README.md (NOT UPDATED WITH IBIS CHANGES)
+    - form_viewSession.tpl

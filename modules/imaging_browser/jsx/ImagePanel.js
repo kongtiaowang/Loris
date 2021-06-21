@@ -80,7 +80,7 @@ class ImagePanelHeader extends Component {
         {headerButton}
       </div>
     );
-    //IBIS SPECIFIC OVERRIDE CODE ENDS HERE
+    // IBIS SPECIFIC OVERRIDE CODE ENDS HERE
   }
 }
 
@@ -94,7 +94,7 @@ ImagePanelHeader.propTypes = {
   FileID: PropTypes.string,
   HeaderInfo: PropTypes.object,
 };
-//IBIS SPECIFIC OVERRIDE CODE ENDS HERE
+// IBIS SPECIFIC OVERRIDE CODE ENDS HERE
 
 class ImagePanelHeadersTable extends Component {
   constructor(props) {
@@ -546,7 +546,7 @@ class ImageQCCommentsButton extends Component {
       'status=yes,scrollbars=yes,resizable=yes'
     );
   }
-  //IBIS SPECIFIC OVERRIDE CODE ENDS HERE
+  // IBIS SPECIFIC OVERRIDE CODE ENDS HERE
 
   render() {
     if (!this.props.FileID || this.props.FileID === '') {
@@ -568,12 +568,12 @@ class ImageQCCommentsButton extends Component {
 
 // IBIS SPECIFIC OVERRIDE CODE
 // OVERRIDE: add SessionID prop.
-DownloadButton.propTypes = {
+ImageQCCommentsButton.propTypes = {
   FileID: PropTypes.string,
   BaseURL: PropTypes.string,
   SessionID: PropTypes.string,
 };
-//IBIS SPECIFIC OVERRIDE CODE ENDS HERE
+// IBIS SPECIFIC OVERRIDE CODE ENDS HERE
 
 class LongitudinalViewButton extends Component {
   constructor(props) {
@@ -670,7 +670,7 @@ ImageDownloadButtons.propTypes = {
   OtherTimepoints: PropTypes.string,
   SessionID: PropTypes.string,
 };
-//IBIS SPECIFIC OVERRIDE CODE ENDS HERE
+// IBIS SPECIFIC OVERRIDE CODE ENDS HERE
 
 class ImagePanelBody extends Component {
   constructor(props) {
@@ -756,7 +756,7 @@ ImagePanelBody.propTypes = {
   CaveatViolationsResolvedID: PropTypes.string,
   SessionID: PropTypes.string,
 };
-//IBIS SPECIFIC OVERRIDE CODE ENDS HERE
+// IBIS SPECIFIC OVERRIDE CODE ENDS HERE
 
 class ImagePanel extends Component {
   constructor(props) {
@@ -784,7 +784,7 @@ class ImagePanel extends Component {
   render() {
     return (
       <div className="col-xs-12 col-md-6">
-        <div className="panel panel-default">\
+        <div className="panel panel-default">
           {
             /**
              * IBIS SPECIFIC OVERRIDE CODE
@@ -859,7 +859,7 @@ ImagePanel.propTypes = {
   Filename: PropTypes.string,
   HeaderInfo: PropTypes.object,
 };
-//IBIS SPECIFIC OVERRIDE CODE ENDS HERE
+// IBIS SPECIFIC OVERRIDE CODE ENDS HERE
 
 let RImagePanel = React.createFactory(ImagePanel);
 
