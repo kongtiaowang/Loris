@@ -834,11 +834,13 @@ class NDB_BVL_Instrument_SSIS_Teacher extends NDB_BVL_Instrument
             )
         );
 
-        if (array_key_exists('standard_score', $record)) {
-            $standard = $record['standard_score'];
-        }
-        if (array_key_exists('percentile', $record)) {
-            $percentile = $record['percentile'];
+        if (!is_null($record)) {
+            if (array_key_exists('standard_score', $record)) {
+                $standard = $record['standard_score'];
+            }
+            if (array_key_exists('percentile', $record)) {
+                $percentile = $record['percentile'];
+            }
         }
 
         return [
@@ -908,8 +910,10 @@ class NDB_BVL_Instrument_SSIS_Teacher extends NDB_BVL_Instrument
             )
         );
 
-        if (array_key_exists('confidence_interval_value', $record)) {
-            $ci_68 = $record['confidence_interval_value'];
+        if (!is_null($record)) {
+            if (array_key_exists('confidence_interval_value', $record)) {
+                $ci_68 = $record['confidence_interval_value'];
+            }
         }
 
         $query_95 = "SELECT
@@ -932,8 +936,10 @@ class NDB_BVL_Instrument_SSIS_Teacher extends NDB_BVL_Instrument
             )
         );
 
-        if (array_key_exists('confidence_interval_value', $record)) {
-            $ci_95 = $record['confidence_interval_value'];
+        if (!is_null($record)) {
+            if (array_key_exists('confidence_interval_value', $record)) {
+                $ci_95 = $record['confidence_interval_value'];
+            }
         }
 
         return [
