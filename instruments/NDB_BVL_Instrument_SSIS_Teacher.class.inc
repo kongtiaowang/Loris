@@ -1065,46 +1065,35 @@ class NDB_BVL_Instrument_SSIS_Teacher extends NDB_BVL_Instrument
         $scores["problem_behaviors_num_missing"]   = $this->step1_count_missing(self::PROBLEM_BEHAVIORS, $record);
         $scores["academic_competence_num_missing"] = $this->step1_count_missing(self::ACADEMIC_COMPETENCE, $record);
 
+        $scores["communication_num_missing"]  = $this->step1_count_missing(self::COMMUNICATION, $record);
+        $scores["cooperation_num_missing"]    = $this->step1_count_missing(self::COOPERATION, $record);
+        $scores["assertion_num_missing"]      = $this->step1_count_missing(self::ASSERTION, $record);
+        $scores["responsibility_num_missing"] = $this->step1_count_missing(self::RESPONSIBILITY, $record);
+        $scores["empathy_num_missing"]        = $this->step1_count_missing(self::EMPATHY, $record);
+        $scores["engagement_num_missing"]     = $this->step1_count_missing(self::ENGAGEMENT, $record);
+        $scores["self_control_num_missing"]   = $this->step1_count_missing(self::SELF_CONTROL, $record);
+
+        $scores["externalizing_num_missing"] = $this->step1_count_missing(self::EXTERNALIZING, $record);
+        $scores["bullying_num_missing"]      = $this->step1_count_missing(self::BULLYING, $record);
+        $scores["hyperactivity_inattention_num_missing"] = $this->step1_count_missing(self::HYPERACTIVITY_INATTENTION, $record);
+        $scores["internalizing_num_missing"]     = $this->step1_count_missing(self::INTERNALIZING, $record);
+        $scores["autism_spectrum_A_num_missing"] = $this->step1_count_missing(self::AUTISM_SPECTRUM_A, $record);
+        $scores["autism_spectrum_B_num_missing"] = $this->step1_count_missing(self::AUTISM_SPECTRUM_B, $record);
+
+        foreach (self::SUBSCALES as $key => $value) {
+            $scores[$key . "_adjustment_value"] = $this->step1_calculate_adjustment_value($adjustment_factors[$key], $scores[$key . "_num_missing"]);;
+        }
+
         // If the adjustment values for any of the scales exceeds the maximum,
         // do not continue to score that scale and its subscales
         if ($scores["social_skills_num_missing"] <= $max_missing["social_skills"]) {
             $scores["social_skills_adjustment_value"] = $this->step1_calculate_adjustment_value($adjustment_factors["social_skills"], $scores["social_skills_num_missing"]);
-
-            $scores["communication_num_missing"]  = $this->step1_count_missing(self::COMMUNICATION, $record);
-            $scores["cooperation_num_missing"]    = $this->step1_count_missing(self::COOPERATION, $record);
-            $scores["assertion_num_missing"]      = $this->step1_count_missing(self::ASSERTION, $record);
-            $scores["responsibility_num_missing"] = $this->step1_count_missing(self::RESPONSIBILITY, $record);
-            $scores["empathy_num_missing"]        = $this->step1_count_missing(self::EMPATHY, $record);
-            $scores["engagement_num_missing"]     = $this->step1_count_missing(self::ENGAGEMENT, $record);
-            $scores["self_control_num_missing"]   = $this->step1_count_missing(self::SELF_CONTROL, $record);
-
-            $scores["communication_adjustment_value"]  = $this->step1_calculate_adjustment_value($adjustment_factors["communication"], $scores["communication_num_missing"]);
-            $scores["cooperation_adjustment_value"]    = $this->step1_calculate_adjustment_value($adjustment_factors["cooperation"], $scores["cooperation_num_missing"]);
-            $scores["assertion_adjustment_value"]      = $this->step1_calculate_adjustment_value($adjustment_factors["assertion"], $scores["assertion_num_missing"]);
-            $scores["responsibility_adjustment_value"] = $this->step1_calculate_adjustment_value($adjustment_factors["responsibility"], $scores["responsibility_num_missing"]);
-            $scores["empathy_adjustment_value"]        = $this->step1_calculate_adjustment_value($adjustment_factors["empathy"], $scores["empathy_num_missing"]);
-            $scores["engagement_adjustment_value"]     = $this->step1_calculate_adjustment_value($adjustment_factors["engagement"], $scores["engagement_num_missing"]);
-            $scores["self_control_adjustment_value"]   = $this->step1_calculate_adjustment_value($adjustment_factors["self_control"], $scores["self_control_num_missing"]);
         } else {
             $scores["social_skills_adjustment_value"] = "Number of items missing exceeds maximum (" . $max_missing["social_skills"] . ")";
         }
 
         if ($scores["problem_behaviors_num_missing"] <= $max_missing["problem_behaviors"]) {
             $scores["problem_behaviors_adjustment_value"] = $this->step1_calculate_adjustment_value($adjustment_factors["problem_behaviors"], $scores["problem_behaviors_num_missing"]);
-
-            $scores["externalizing_num_missing"] = $this->step1_count_missing(self::EXTERNALIZING, $record);
-            $scores["bullying_num_missing"]      = $this->step1_count_missing(self::BULLYING, $record);
-            $scores["hyperactivity_inattention_num_missing"] = $this->step1_count_missing(self::HYPERACTIVITY_INATTENTION, $record);
-            $scores["internalizing_num_missing"]     = $this->step1_count_missing(self::INTERNALIZING, $record);
-            $scores["autism_spectrum_A_num_missing"] = $this->step1_count_missing(self::AUTISM_SPECTRUM_A, $record);
-            $scores["autism_spectrum_B_num_missing"] = $this->step1_count_missing(self::AUTISM_SPECTRUM_B, $record);
-
-            $scores["externalizing_adjustment_value"] = $this->step1_calculate_adjustment_value($adjustment_factors["externalizing"], $scores["externalizing_num_missing"]);
-            $scores["bullying_adjustment_value"]      = $this->step1_calculate_adjustment_value($adjustment_factors["bullying"], $scores["bullying_num_missing"]);
-            $scores["hyperactivity_inattention_adjustment_value"] = $this->step1_calculate_adjustment_value($adjustment_factors["hyperactivity_inattention"], $scores["hyperactivity_inattention_num_missing"]);
-            $scores["internalizing_adjustment_value"]     = $this->step1_calculate_adjustment_value($adjustment_factors["internalizing"], $scores["internalizing_num_missing"]);
-            $scores["autism_spectrum_A_adjustment_value"] = $this->step1_calculate_adjustment_value($adjustment_factors["autism_spectrum_A"], $scores["autism_spectrum_A_num_missing"]);
-            $scores["autism_spectrum_B_adjustment_value"] = $this->step1_calculate_adjustment_value($adjustment_factors["autism_spectrum_B"], $scores["autism_spectrum_B_num_missing"]);
         } else {
             $scores["problem_behaviors_adjustment_value"] = "Number of items missing exceeds maximum (" . $max_missing["problem_behaviors"] . ")";
         }
@@ -1210,18 +1199,30 @@ class NDB_BVL_Instrument_SSIS_Teacher extends NDB_BVL_Instrument
             $scores[$key . "_raw_score"] = $scores[$key . "_sum"] + $scores[$key . "_adjustment_value"];
         }
 
-        // Add Social Skills subscale raw scores to get Social Skills raw score
-        $scores["social_skills_raw_score"] = $scores["communication_raw_score"] +
+        if (strpos($scores["social_skills_adjustment_value"], "Number of items missing exceeds maximum") !== false) {
+            $scores["social_skills_raw_score"] = null;
+        } else {
+            // Add Social Skills subscale raw scores to get Social Skills raw score
+            $scores["social_skills_raw_score"] = $scores["communication_raw_score"] +
                                              $scores["cooperation_raw_score"] +
                                              $scores["assertion_raw_score"] +
                                              $scores["responsibility_raw_score"] +
                                              $scores["empathy_raw_score"] +
                                              $scores["engagement_raw_score"] +
                                              $scores["self_control_raw_score"];
+        }
 
-        $scores["problem_behaviors_raw_score"] = $scores["problem_behaviors_sum"] + $scores["problem_behaviors_adjustment_value"];
+        if (strpos($scores["problem_behaviors_adjustment_value"], "Number of items missing exceeds maximum") !== false) {
+            $scores["problem_behaviors_raw_score"] = null;
+        } else {
+            $scores["problem_behaviors_raw_score"] = $scores["problem_behaviors_sum"] + $scores["problem_behaviors_adjustment_value"];
+        }
 
-        $scores["academic_competence_raw_score"] = $scores["academic_competence_sum"] + $scores["academic_competence_adjustment_value"];
+        if (strpos($scores["academic_competence_adjustment_value"], "Number of items missing exceeds maximum") !== false) {
+            $scores["academic_competence_raw_score"] = null;
+        } else {
+            $scores["academic_competence_raw_score"] = $scores["academic_competence_sum"] + $scores["academic_competence_adjustment_value"];
+        }
 
         $scales = array(
                    "social_skills"       => "Social Skills",
@@ -1236,9 +1237,14 @@ class NDB_BVL_Instrument_SSIS_Teacher extends NDB_BVL_Instrument
         }
 
         foreach ($scales as $key => $value) {
-            $tmp = $this->getStandardAndPercentile($age_range, $sex, $value, $scores[$key . "_raw_score"], $db);
-            $scores[$key . "_standard_score"] = $tmp[0];
-            $scores[$key . "_percentile"]     = $tmp[1];
+            if (!is_null($scores[$key . "_raw_score"])) {
+                $tmp = $this->getStandardAndPercentile($age_range, $sex, $value, $scores[$key . "_raw_score"], $db);
+                $scores[$key . "_standard_score"] = $tmp[0];
+                $scores[$key . "_percentile"]     = $tmp[1];
+            } else {
+                $scores[$key . "_standard_score"] = null;
+                $scores[$key . "_percentile"]     = null;
+            }
         }
 
         foreach (self::SUBSCALES as $key => $value) {
