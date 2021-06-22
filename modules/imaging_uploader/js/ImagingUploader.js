@@ -1,4 +1,4 @@
-window["lorisjs"] = window["lorisjs"] || {}; window["lorisjs"]["imaging_uploader"] = window["lorisjs"]["imaging_uploader"] || {}; window["lorisjs"]["imaging_uploader"]["index"] =
+window["lorisjs"] = window["lorisjs"] || {}; window["lorisjs"]["imaging_uploader"] = window["lorisjs"]["imaging_uploader"] || {}; window["lorisjs"]["imaging_uploader"]["ImagingUploader"] =
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -82,7 +82,7 @@ window["lorisjs"] = window["lorisjs"] || {}; window["lorisjs"]["imaging_uploader
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 16);
+/******/ 	return __webpack_require__(__webpack_require__.s = 0);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -3167,29 +3167,6 @@ ProgressBar.defaultProps = {
 };
 /* harmony default export */ __webpack_exports__["default"] = (ProgressBar);
 
-/***/ }),
-/* 16 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _ImagingUploader__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(0);
-/* global ReactDOM */
-
-/**
- * Render imaging_uploader on page load
- */
-
-$(function () {
-  var imagingUploader = /*#__PURE__*/React.createElement("div", {
-    className: "page-imaging-uploader"
-  }, /*#__PURE__*/React.createElement(_ImagingUploader__WEBPACK_IMPORTED_MODULE_0__["default"], {
-    Module: "imaging_uploader",
-    DataURL: loris.BaseURL + '/imaging_uploader/?format=json'
-  }));
-  ReactDOM.render(imagingUploader, document.getElementById('lorisworkspace'));
-});
-
 /***/ })
 /******/ ]);
-//# sourceMappingURL=index.js.map
+//# sourceMappingURL=ImagingUploader.js.map

@@ -31,23 +31,28 @@ class UploadForm extends Component {
     this.uploadFile = this.uploadFile.bind(this);
   }
 
+  // IBIS SPECIFIC OVERRIDE CODE
+  // IBIS adds more options for imaging types.
   componentDidMount() {
     // Disable fields on initial load
-    this.onFormChange(this.state.form.IsPhantom.name, null);
+    this.onFormChange(this.state.form.imagingUploadType.name, null);
   }
+  // IBIS SPECIFIC OVERRIDE CODE ENDS HERE
 
   /*
    Updates values in formData
    Deletes CandID, PSCID, and VisitLabel values if Phantom Scans is set to No
    */
+  // IBIS SPECIFIC OVERRIDE CODE
+  // IBIS adds more options for imaging types.
   onFormChange(field, value) {
     if (!field) return;
 
     const form = JSON.parse(JSON.stringify(this.state.form));
     const formData = Object.assign({}, this.state.formData);
 
-    if (field === 'IsPhantom') {
-      if (value !== 'N') {
+    if (field === 'imagingUploadType') {
+      if (value !== 'Subject') {
         delete formData.candID;
         delete formData.pSCID;
         delete formData.visitLabel;
@@ -66,7 +71,7 @@ class UploadForm extends Component {
     formData[field] = value;
 
     if (field === 'mriFile') {
-      if (value.name && formData.IsPhantom === 'N') {
+      if (value.name && formData.imagingUploadType === 'Subject') {
         let patientName = value.name.replace(/\.[a-z]+\.?[a-z]+?$/i, '');
         let ids = patientName.split('_');
         formData.candID = ids[1];
@@ -81,16 +86,23 @@ class UploadForm extends Component {
     this.setState({
       form: form,
       formData: formData,
+      hasError: {},
+      errorMessage: {},
+      uploadProgress: -1,
     });
   }
+  // IBIS SPECIFIC OVERRIDE CODE ENDS HERE
 
   submitForm() {
     // Validate required fields
     const data = this.state.formData;
 
-    if (!data.mriFile || !data.IsPhantom) {
+    // IBIS SPECIFIC OVERRIDE CODE
+    // IBIS adds more options for imaging types.
+    if (!data.mriFile || !data.imagingUploadType) {
       return;
     }
+    // IBIS SPECIFIC OVERRIDE CODE ENDS HERE
 
     const fileName = data.mriFile.name;
     // Make sure file is of type .zip|.tgz|.tar.gz format
@@ -121,7 +133,10 @@ class UploadForm extends Component {
       return;
     }
 
-    if (data.IsPhantom === 'N') {
+    // IBIS SPECIFIC OVERRIDE CODE
+    // IBIS adds more options for imaging types.
+    if (data.imagingUploadType === 'Subject') {
+    // IBIS SPECIFIC OVERRIDE CODE ENDS HERE
       if (!data.candID || !data.pSCID || !data.visitLabel) {
         swal({
           title: 'Incorrect file name!',
@@ -313,10 +328,12 @@ class UploadForm extends Component {
     });
   }
 
+  // IBIS SPECIFIC OVERRIDE CODE
+  // IBIS adds more options for imaging types.
   render() {
     // Bind form elements to formData
     const form = this.state.form;
-    form.IsPhantom.value = this.state.formData.IsPhantom;
+    form.imagingUploadType.value = this.state.formData.imagingUploadType;
     form.candID.value = this.state.formData.candID;
     form.pSCID.value = this.state.formData.pSCID;
     form.visitLabel.value = this.state.formData.visitLabel;
@@ -331,17 +348,32 @@ class UploadForm extends Component {
         <span>
           File cannot exceed {this.props.maxUploadSize}<br/>
           File must be of type .tgz or tar.gz or .zip<br/>
-          For files that are not Phantom Scans, file name must begin with
+          <br/>
+          For files that are <u>Subject Scans</u>, file name must begin with
           <b> [PSCID]_[CandID]_[Visit Label]</b><br/>
           For example, for CandID <i>100000</i>, PSCID <i>ABC123</i>, and
           Visit Label <i>V1</i> the file name should be prefixed by:
           <b> ABC123_100000_V1</b><br/>
+          <br/>
+          For <u>inter-scanner reliability scans</u>, the file name (without extension) must be of the form:<br/>
+          <b> [site]_interscan_[subject initials]_[scanner name]_[scanner_location]_[date][scan number] </b><br/>
+          where<br/>
+          <ul>
+            <li>[site] is the three-letter site abbreviation</li>
+            <li>[subject initials] are the subject&rsquo;s initials (three letters)</li>
+            <li>[scanner name] is the name of the scanner</li>
+            <li>[scanner location] three-letter scanner location</li>
+            <li>[date] is the scan acquisition date in format YYYYMMDD</li>
+            <li>[scan number] is an optional string of the form &rsquo;_scan1&rsquo; for multi-part scans</li>
+          </ul>
+          All the file name parts are case-insensitive. Example of a valid file name:<br/>
+          UNC_interscan_BEA_trio_HOS_20190324_scan2.tar.gz
         </span>
     );
 
     // Returns individual form elements
     // For CandID, PSCID, and Visit Label, disabled and required
-    // are updated depending on Phantom Scan value
+    // are updated depending on imagingUploadType value
     // For all elements, hasError and errorMessage
     // are updated depending on what values are submitted
     return (
@@ -354,14 +386,14 @@ class UploadForm extends Component {
             fileUpload={true}
           >
             <SelectElement
-              name='IsPhantom'
-              label='Phantom Scans'
-              options={this.props.form.IsPhantom.options}
+              name='imagingUploadType'
+              label='Imaging Upload Type'
+              options={this.props.form.imagingUploadType.options}
               onUserInput={this.onFormChange}
               required={true}
-              hasError={this.state.hasError.IsPhantom}
-              errorMessage={this.state.errorMessage.IsPhantom}
-              value={this.state.formData.IsPhantom}
+              hasError={this.state.hasError.imagingUploadType}
+              errorMessage={this.state.errorMessage.imagingUploadType}
+              value={this.state.formData.imagingUploadType}
             />
             <TextboxElement
               name='candID'
@@ -417,6 +449,7 @@ class UploadForm extends Component {
       </div>
     );
   }
+  // IBIS SPECIFIC OVERRIDE CODE ENDS HERE
 }
 
 UploadForm.propTypes = {};
