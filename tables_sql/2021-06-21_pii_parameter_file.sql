@@ -98,3 +98,14 @@ WHERE ParameterTypeID IN (
         'dicom_0x0010:el_0x2154'
     )
 );
+
+-- ----------------------------------------------------------------
+--
+-- Delete all records associated to parameter with name 'header'
+-- 
+-- ----------------------------------------------------------------
+
+DELETE parameter_file
+FROM parameter_file
+JOIN parameter_type USING(ParameterTypeID)
+WHERE parameter_type.Name = 'header';
