@@ -83,7 +83,7 @@ class Stats_Enrollment extends \NDB_Form
             }
         }
         if(isset($_REQUEST['EnrollmentProject']) && $_REQUEST['EnrollmentProject'] != '') {
-            $ExtraProject_Criteria = ' AND (c.ProjectID IS NULL OR c.ProjectID=' . $_REQUEST['EnrollmentProject'] . ')';
+            $ExtraProject_Criteria = ' AND (c.RegistrationProjectID IS NULL OR c.RegistrationProjectID=' . $_REQUEST['EnrollmentProject'] . ')';
             $currentProject = $_REQUEST['EnrollmentProject'];
             $this->tpl_data['CurrentProject'] = array('ID' => $currentProject, 'Name' => $projects[$currentProject]);
             $SubProjects= \Utility::getSubprojectsForProject($_REQUEST['EnrollmentProject']);
@@ -122,7 +122,7 @@ class Stats_Enrollment extends \NDB_Form
             $params['site'] = $siteID;
         }
         if(!empty($projID)) {
-            $Extra_Where .= " AND  cad.ProjectID = :project"; //$_REQUEST['site'];
+            $Extra_Where .= " AND  cad.RegistrationProjectID = :project"; //$_REQUEST['site'];
             $params['project'] = $projID;
         }
         if(!empty($subpjID)) {
@@ -137,7 +137,7 @@ class Stats_Enrollment extends \NDB_Form
         foreach($ethnic_categories as $ethnic_cat){
             $gender = array('Female' => 0, 'Male' => 0, 'Unknown' => 0);
             if($ethnic_cat === "not_answered") {
-                $results = $DB->pselect("SELECT ProjectID, COALESCE(Sex, 'Unknown') as Sex, COUNT( DISTINCT cad.CandID) as val
+                $results = $DB->pselect("SELECT RegistrationProjectID, COALESCE(Sex, 'Unknown') as Sex, COUNT( DISTINCT cad.CandID) as val
                     FROM candidate cad
                     JOIN session sn on cad.CandID= sn.CandID
                     JOIN flag fg on sn.ID = fg.SessionID
@@ -146,11 +146,11 @@ class Stats_Enrollment extends \NDB_Form
                     WHERE (ti.child_ethnicity = '$ethnic_cat' OR ti.child_ethnicity IS NULL)
                     AND fg.CommentID NOT LIKE 'DDE%' AND sn.CenterID <> '1' AND sn.Active='Y'
                     AND cad.Active='Y' $Extra_Where AND fg.Administration <> 'None'
-                    GROUP BY Sex,ProjectID
+                    GROUP BY Sex,RegistrationProjectID
                     ", $params);
             }
             else{
-                $results = $DB->pselect("SELECT ProjectID, COALESCE(Sex, 'Unknown') as Sex, COUNT( DISTINCT cad.CandID) as val
+                $results = $DB->pselect("SELECT RegistrationProjectID, COALESCE(Sex, 'Unknown') as Sex, COUNT( DISTINCT cad.CandID) as val
                     FROM candidate cad
                     JOIN session sn on cad.CandID= sn.CandID
                     JOIN flag fg on sn.ID = fg.SessionID
@@ -159,13 +159,13 @@ class Stats_Enrollment extends \NDB_Form
                     WHERE ti.child_ethnicity = '$ethnic_cat'
                     AND fg.CommentID NOT LIKE 'DDE%' AND sn.CenterID <> '1' AND sn.Active='Y'
                     AND cad.Active='Y' $Extra_Where AND fg.Administration <> 'None'
-                    GROUP BY Sex,ProjectID
+                    GROUP BY Sex,RegistrationProjectID
                     ", $params);
             }
             if(is_null($results)){
             }else{
                 foreach($results as $row){
-                    $Gender = $row['Gender'];
+                    $Gender = $row['Sex'];
                     $Count = $row['val'];
                     //$total_count += $Count;
                     if(is_null($Gender)) {
@@ -235,7 +235,7 @@ class Stats_Enrollment extends \NDB_Form
 
             $Count = 0;
             foreach($results as $row){
-                $Gender = $row['Gender'];
+                $Gender = $row['Sex'];
                 $Count = $row['val'];
                 if(is_null($Count)){
                     $Count = 0;
@@ -303,7 +303,7 @@ class Stats_Enrollment extends \NDB_Form
             }
 
             foreach($results as $row){
-                $Gender = $row['Gender'];
+                $Gender = $row['Sex'];
                 $Count = $row['val'];
                 if(is_null($Count)){
                     $Count = 0;
