@@ -163,7 +163,7 @@ class NDB_BVL_Instrument_caars_SelfReport_scale extends NDB_BVL_Instrument
         
         $columnHeaders = array( 
                                 "score" => "Score",
-                                "percentile" => "Percentile",
+                                "percentile" => "T-score",
                                 );
 
         foreach ($columnHeaders as $field => $label) {

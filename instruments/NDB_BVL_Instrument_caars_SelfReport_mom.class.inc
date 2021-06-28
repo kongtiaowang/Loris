@@ -162,7 +162,7 @@ class NDB_BVL_Instrument_caars_SelfReport_mom extends NDB_BVL_Instrument
         
         $columnHeaders = array( 
                                 "score" => "Score",
-                                "percentile" => "Percentile",
+                                "percentile" => "T-score",
                                 );
 
         foreach ($columnHeaders as $field => $label) {
