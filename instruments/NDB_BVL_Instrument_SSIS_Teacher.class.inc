@@ -751,7 +751,7 @@ class NDB_BVL_Instrument_SSIS_Teacher extends NDB_BVL_Instrument
         return $errors;
     }
 
-    function step1_count_missing($question_array, $record)
+    function countNotAnswered($question_array, $record)
     {
         $count = 0;
 
@@ -764,12 +764,12 @@ class NDB_BVL_Instrument_SSIS_Teacher extends NDB_BVL_Instrument
         return $count;
     }
 
-    function step1_calculate_adjustment_value($adjustment_factor, $missing_count)
+    function calculateAdjustmentValue($adjustment_factor, $missing_count)
     {
         return $adjustment_factor * $missing_count;
     }
 
-    function step2_calculate_item_sum($question_array, $record)
+    function calculateItemSum($question_array, $record)
     {
         $count = 0;
 
@@ -788,7 +788,7 @@ class NDB_BVL_Instrument_SSIS_Teacher extends NDB_BVL_Instrument
         return $count;
     }
 
-    function step2_calculate_ac_sum($question_array, $record)
+    function calculateACSum($question_array, $record)
     {
         $count = 0;
 
@@ -982,31 +982,6 @@ class NDB_BVL_Instrument_SSIS_Teacher extends NDB_BVL_Instrument
         $record_sex = $db->pselectRow($query, array());
         $sex        = $record_sex['Sex'];
 
-        // initialize score array
-        $scores = array();
-
-        if ($age_years < 5 || $age_years > 18) {
-            $scores['score_validity'] = "Age not valid for scoring";
-            return;
-        }
-
-        // foreach scale/subscale there are 4 fields:
-        // _num_missing = # of questions answered with "Not Answered"
-        // _adjustment_value = # of questions answered with "Not Answered" * adjustment factor
-        // _sum = sum of item scores (N = 0, S = 1, O = 2, A = 3, etc.)
-        // _raw_score
-        // _behavior_level
-        foreach (self::SCALES_AND_SUBSCALES as $s) {
-            $scores[$s . "_num_missing"]      = -999;
-            $scores[$s . "_adjustment_value"] = -999;
-            $scores[$s . "_sum"]       = -999;
-            $scores[$s . "_raw_score"] = -999;
-            //$scores[$s . "_behavior_level"] = -999;
-        }
-
-        $scores["f_index"] = -999;
-        $scores["f_index_interpretation"] = -999;
-
         /*
          * Scales and subscales:
          *
@@ -1029,102 +1004,99 @@ class NDB_BVL_Instrument_SSIS_Teacher extends NDB_BVL_Instrument
          * - Academic Competence (Questions: 77-83)
          */
 
+        // Initialize score array
+        $scores = array();
+
+        /*
+         * The 3 Scales (Social Skills, Problem Behaviors, Academic Competence) have the following fields:
+         *
+         * _num_missing      = # of questions answered with "Not Answered"
+         * _adjustment_value = # of questions answered with "Not Answered" * adjustment factor
+         *  _sum             = sum of item scores (N = 0, S = 1, O = 2, A = 3, etc.)
+         * _raw_score        = sum + adjustment value
+         * _standard_score   = retrieved from SSIS_Teacher_lookup
+         * _percentile       = retrieved from SSIS_Teacher_lookup
+         * _ci_68            = retrieved from SSIS_CI_lookup
+         * _ci_95            = retrieved from SSIS_CI_lookup
+         */
+        foreach (self::SCALES as $key => $value) {
+            $scores[$key . "_num_missing"]      = -999;
+            $scores[$key . "_adjustment_value"] = -999;
+            $scores[$key . "_sum"]            = -999;
+            $scores[$key . "_raw_score"]      = -999;
+            $scores[$key . "_standard_score"] = -999;
+            $scores[$key . "_percentile"]     = -999;
+            $scores[$key . "_ci_68"]          = -999;
+            $scores[$key . "_ci_95"]          = -999;
+        }
+
+        /*
+         * The Subscales have the following fields:
+         *
+         * _num_missing      = # of questions answered with "Not Answered"
+         * _adjustment_value = # of questions answered with "Not Answered" * adjustment factor
+         *  _sum             = sum of item scores (N = 0, S = 1, O = 2, A = 3, etc.)
+         * _raw_score        = sum + adjustment value
+         * _behavior_level   = retrieved from SSIS_Behavior_lookup
+         */
+        foreach (self::SUBSCALES as $key => $value) {
+            $scores[$key . "_num_missing"]      = -999;
+            $scores[$key . "_adjustment_value"] = -999;
+            $scores[$key . "_sum"]            = -999;
+            $scores[$key . "_raw_score"]      = -999;
+            $scores[$key . "_behavior_level"] = -999;
+        }
+
+        $scores["f_index"] = -999;
+        $scores["f_index_interpretation"] = -999;
+
         /********************************************************************
          * STEP 1: Determining Adjustment Values for Missing Item Responses *
          ********************************************************************
          *
-         * Count # of _frequency questions answered with "Not Answered"
+         * Count # of questions answered with "Not Answered" for each scale & subscale
+         * Calculate the adjustment value for each scale & subscale
          */
 
-        $adjustment_factors = array(
-                               "social_skills"             => 2,
-                               "communication"             => 2,
-                               "cooperation"               => 2,
-                               "assertion"                 => 2,
-                               "responsibility"            => 2,
-                               "empathy"                   => 2,
-                               "engagement"                => 2,
-                               "self_control"              => 2,
-                               "problem_behaviors"         => 1,
-                               "externalizing"             => 1,
-                               "bullying"                  => 1,
-                               "hyperactivity_inattention" => 1,
-                               "internalizing"             => 1,
-                               "autism_spectrum_A"         => 2,
-                               "autism_spectrum_B"         => 1,
-                               "academic_competence"       => 2,
-                              );
-
-        $max_missing = array(
-                        "social_skills"       => 4,
-                        "problem_behaviors"   => 3,
-                        "academic_competence" => 1,
-                       );
-
-        $scores["social_skills_num_missing"]       = $this->step1_count_missing(self::SOCIAL_SKILLS, $record);
-        $scores["problem_behaviors_num_missing"]   = $this->step1_count_missing(self::PROBLEM_BEHAVIORS, $record);
-        $scores["academic_competence_num_missing"] = $this->step1_count_missing(self::ACADEMIC_COMPETENCE, $record);
-
-        $scores["communication_num_missing"]  = $this->step1_count_missing(self::COMMUNICATION, $record);
-        $scores["cooperation_num_missing"]    = $this->step1_count_missing(self::COOPERATION, $record);
-        $scores["assertion_num_missing"]      = $this->step1_count_missing(self::ASSERTION, $record);
-        $scores["responsibility_num_missing"] = $this->step1_count_missing(self::RESPONSIBILITY, $record);
-        $scores["empathy_num_missing"]        = $this->step1_count_missing(self::EMPATHY, $record);
-        $scores["engagement_num_missing"]     = $this->step1_count_missing(self::ENGAGEMENT, $record);
-        $scores["self_control_num_missing"]   = $this->step1_count_missing(self::SELF_CONTROL, $record);
-
-        $scores["externalizing_num_missing"] = $this->step1_count_missing(self::EXTERNALIZING, $record);
-        $scores["bullying_num_missing"]      = $this->step1_count_missing(self::BULLYING, $record);
-        $scores["hyperactivity_inattention_num_missing"] = $this->step1_count_missing(self::HYPERACTIVITY_INATTENTION, $record);
-        $scores["internalizing_num_missing"]     = $this->step1_count_missing(self::INTERNALIZING, $record);
-        $scores["autism_spectrum_A_num_missing"] = $this->step1_count_missing(self::AUTISM_SPECTRUM_A, $record);
-        $scores["autism_spectrum_B_num_missing"] = $this->step1_count_missing(self::AUTISM_SPECTRUM_B, $record);
-
-        foreach (self::SUBSCALES as $key => $value) {
-            $scores[$key . "_adjustment_value"] = $this->step1_calculate_adjustment_value($adjustment_factors[$key], $scores[$key . "_num_missing"]);;
+        foreach (self::SUBSCALE_ARRAYS as $key => $value) {
+             $scores[$key . "_num_missing"]      = $this->countNotAnswered($value, $record);
+             $scores[$key . "_adjustment_value"] = $this->calculateAdjustmentValue(self::ADJUSTMENT_FACTORS[$key], $scores[$key . "_num_missing"]);;
         }
 
         // If the adjustment values for any of the scales exceeds the maximum,
         // do not continue to score that scale and its subscales
-        if ($scores["social_skills_num_missing"] <= $max_missing["social_skills"]) {
-            $scores["social_skills_adjustment_value"] = $this->step1_calculate_adjustment_value($adjustment_factors["social_skills"], $scores["social_skills_num_missing"]);
-        } else {
-            $scores["social_skills_adjustment_value"] = "Number of items missing exceeds maximum (" . $max_missing["social_skills"] . ")";
+        foreach (self::SCALE_ARRAYS as $key => $value) {
+             $scores[$key . "_num_missing"] = $this->countNotAnswered($value, $record);
+
+            if ($scores[$key . "_num_missing"] <= self::MAX_MISSING[$key]) {
+                $scores[$key . "_adjustment_value"] = $this->calculateAdjustmentValue(self::ADJUSTMENT_FACTORS[$key], $scores[$key . "_num_missing"]);
+            } else {
+                $scores[$key . "_adjustment_value"] = "Number of items missing exceeds maximum (" . self::MAX_MISSING[$key] . ")";
+            }
         }
-
-        if ($scores["problem_behaviors_num_missing"] <= $max_missing["problem_behaviors"]) {
-            $scores["problem_behaviors_adjustment_value"] = $this->step1_calculate_adjustment_value($adjustment_factors["problem_behaviors"], $scores["problem_behaviors_num_missing"]);
-        } else {
-            $scores["problem_behaviors_adjustment_value"] = "Number of items missing exceeds maximum (" . $max_missing["problem_behaviors"] . ")";
-        }
-
-        if ($scores["academic_competence_num_missing"] <= $max_missing["academic_competence"]) {
-            $scores["academic_competence_adjustment_value"] = $this->step1_calculate_adjustment_value($adjustment_factors["academic_competence"], $scores["academic_competence_num_missing"]);
-        } else {
-            $scores["academic_competence_adjustment_value"] = "Number of items missing exceeds maximum (" . $max_missing["academic_competence"] . ")";
-        }
-
-        // No max for Autism A or B
-        $scores["autism_spectrum_A_num_missing"]      = $this->step1_count_missing(self::AUTISM_SPECTRUM_A, $record);
-        $scores["autism_spectrum_A_adjustment_value"] = $this->step1_calculate_adjustment_value($adjustment_factors["autism_spectrum_A"], $scores["autism_spectrum_A_num_missing"]);
-
-        $scores["autism_spectrum_B_num_missing"]      = $this->step1_count_missing(self::AUTISM_SPECTRUM_B, $record);
-        $scores["autism_spectrum_B_adjustment_value"] = $this->step1_calculate_adjustment_value($adjustment_factors["autism_spectrum_B"], $scores["autism_spectrum_B_num_missing"]);
 
         /***************************************************
          * STEP 2: Computing Scale and Subscale Raw Scores *
          ***************************************************
          *
-         * Sum ...
+         * Sum the responses for each scale and subscale
+         * For all questions non Academic Competence questions:
+         *   N = 0
+         *   S = 1
+         *   O = 2
+         *   A = 3
+         *
+         * For Academic Competence questions:
+         *   1_lowest_10       = 0
+         *   2_next_lowest_20  = 1
+         *   3_middle_40       = 2
+         *   4_next_highest_20 = 3
+         *   5_highest_10      = 4
          */
 
-        $scores["communication_sum"]  = $this->step2_calculate_item_sum(self::COMMUNICATION, $record);
-        $scores["cooperation_sum"]    = $this->step2_calculate_item_sum(self::COOPERATION, $record);
-        $scores["assertion_sum"]      = $this->step2_calculate_item_sum(self::ASSERTION, $record);
-        $scores["responsibility_sum"] = $this->step2_calculate_item_sum(self::RESPONSIBILITY, $record);
-        $scores["empathy_sum"]        = $this->step2_calculate_item_sum(self::EMPATHY, $record);
-        $scores["engagement_sum"]     = $this->step2_calculate_item_sum(self::ENGAGEMENT, $record);
-        $scores["self_control_sum"]   = $this->step2_calculate_item_sum(self::SELF_CONTROL, $record);
+        foreach (self::SUBSCALE_ARRAYS as $key => $value) {
+            $scores[$key . "_sum"] = $this->calculateItemSum($value, $record);
+        }
 
         $scores["social_skills_sum"] = $scores["communication_sum"] +
                                        $scores["cooperation_sum"] +
@@ -1134,26 +1106,18 @@ class NDB_BVL_Instrument_SSIS_Teacher extends NDB_BVL_Instrument
                                        $scores["engagement_sum"] +
                                        $scores["self_control_sum"];
 
-        $scores["externalizing_sum"] = $this->step2_calculate_item_sum(self::EXTERNALIZING, $record);
-        $scores["bullying_sum"]      = $this->step2_calculate_item_sum(self::BULLYING, $record);
-        $scores["hyperactivity_inattention_sum"] = $this->step2_calculate_item_sum(self::HYPERACTIVITY_INATTENTION, $record);
-        $scores["internalizing_sum"] = $this->step2_calculate_item_sum(self::INTERNALIZING, $record);
-
         $scores["problem_behaviors_sum"] = $scores["externalizing_sum"] +
                                            $scores["bullying_sum"] +
                                            $scores["hyperactivity_inattention_sum"] +
                                            $scores["internalizing_sum"];
 
-        $scores["autism_spectrum_A_sum"] = $this->step2_calculate_item_sum(self::AUTISM_SPECTRUM_A, $record);
-        $scores["autism_spectrum_B_sum"] = $this->step2_calculate_item_sum(self::AUTISM_SPECTRUM_B, $record);
-
-        $scores["academic_competence_sum"] = $this->step2_calculate_ac_sum(self::ACADEMIC_COMPETENCE, $record);
+        $scores["academic_competence_sum"] = $this->calculateACSum(self::ACADEMIC_COMPETENCE, $record);
 
         /***********************************
          * STEP 3: Calculating the F Index *
          ***********************************
          *
-         * Count the number of circled unshaded rating value(s)
+         * Count the number of circled unshaded rating value(s) to get the F-Index and its interpretation
          */
 
         $unshaded_ratings = array(
@@ -1191,7 +1155,8 @@ class NDB_BVL_Instrument_SSIS_Teacher extends NDB_BVL_Instrument
          * STEP 4: Completing the Summary Table *
          ****************************************
          *
-         * Add each subscale sum to its adjustment value => Raw Score
+         * Add each subscale sum to its adjustment value to get the Raw Score
+         * If the Candidate's age is valid, get the Standard and Percentile scores, Behavior levels, and Confidence Interval Value
          */
 
         // Add each subscale sum to its adjustment value
@@ -1224,79 +1189,73 @@ class NDB_BVL_Instrument_SSIS_Teacher extends NDB_BVL_Instrument
             $scores["academic_competence_raw_score"] = $scores["academic_competence_sum"] + $scores["academic_competence_adjustment_value"];
         }
 
-        $scales = array(
-                   "social_skills"       => "Social Skills",
-                   "problem_behaviors"   => "Problem Behaviors",
-                   "academic_competence" => "Academic Competence",
-                  );
-
         if ($age_years >= 5 && $age_years <= 12) {
             $age_range = "5-12";
         } elseif ($age_years >= 13 && $age_years <= 18) {
             $age_range = "13-18";
+        } else {
+            $age_range = "invalid";
         }
 
-        foreach ($scales as $key => $value) {
-            if (!is_null($scores[$key . "_raw_score"])) {
-                $tmp = $this->getStandardAndPercentile($age_range, $sex, $value, $scores[$key . "_raw_score"], $db);
-                $scores[$key . "_standard_score"] = $tmp[0];
-                $scores[$key . "_percentile"]     = $tmp[1];
-            } else {
-                $scores[$key . "_standard_score"] = null;
-                $scores[$key . "_percentile"]     = null;
+        if ($age_range != "invalid") {
+            foreach (self::SCALES as $key => $value) {
+                if (!is_null($scores[$key . "_raw_score"])) {
+                    $tmp = $this->getStandardAndPercentile($age_range, $sex, $value, $scores[$key . "_raw_score"], $db);
+                    $scores[$key . "_standard_score"] = $tmp[0];
+                    $scores[$key . "_percentile"]     = $tmp[1];
+                } else {
+                    $scores[$key . "_standard_score"] = null;
+                    $scores[$key . "_percentile"]     = null;
+                }
+
+                $tmp = $this->getCI($age_range, $sex, $value, $db);
+                $scores[$key . "_ci_68"] = $tmp[0];
+                $scores[$key . "_ci_95"] = $tmp[1];
             }
-        }
 
-        foreach (self::SUBSCALES as $key => $value) {
-            $scores[$key . "_behavior_level"] = $this->getBehaviorLevel($age_range, $sex, $value, $scores[$key . "_raw_score"], $db);
-        }
-
-        // CI
-        //  function getCI(string $age_range, string $sex, string $scale, $db)
-        foreach ($scales as $key => $value) {
-            $tmp = $this->getCI($age_range, $sex, $value, $db);
-            $scores[$key . "_ci_68"] = $tmp[0];
-            $scores[$key . "_ci_95"] = $tmp[1];
+            foreach (self::SUBSCALES as $key => $value) {
+                $scores[$key . "_behavior_level"] = $this->getBehaviorLevel($age_range, $sex, $value, $scores[$key . "_raw_score"], $db);
+            }
+        } else {
+            foreach (self::SCALES as $key => $value) {
+                $scores[$key . "_standard_score"] = "Age not valid for scoring (Candidate must be between 5-18 years old)";
+                $scores[$key . "_percentile"]     = "Age not valid for scoring (Candidate must be between 5-18 years old)";
+                $scores[$key . "_ci_68"]          = "Age not valid for scoring (Candidate must be between 5-18 years old)";
+                $scores[$key . "_ci_95"]          = "Age not valid for scoring (Candidate must be between 5-18 years old)";
+            }
+            foreach (self::SUBSCALES as $key => $value) {
+                $scores[$key . "_behavior_level"] = "Age not valid for scoring";
+            }
         }
 
         // Save scores
         $result = $db->update($this->table, $scores, array("CommentID" => $this->getCommentID()));
     }
 
-    private const SCALES_AND_SUBSCALES = [
-                                          "social_skills",
-                                          "communication",
-                                          "cooperation",
-                                          "assertion",
-                                          "responsibility",
-                                          "empathy",
-                                          "engagement",
-                                          "self_control",
-                                          "problem_behaviors",
-                                          "externalizing",
-                                          "bullying",
-                                          "hyperactivity_inattention",
-                                          "internalizing",
-                                          "autism_spectrum_A",
-                                          "autism_spectrum_B",
-                                          "academic_competence",
-                                         ];
+    private const ADJUSTMENT_FACTORS = [
+                                        "social_skills"             => 2,
+                                        "communication"             => 2,
+                                        "cooperation"               => 2,
+                                        "assertion"                 => 2,
+                                        "responsibility"            => 2,
+                                        "empathy"                   => 2,
+                                        "engagement"                => 2,
+                                        "self_control"              => 2,
+                                        "problem_behaviors"         => 1,
+                                        "externalizing"             => 1,
+                                        "bullying"                  => 1,
+                                        "hyperactivity_inattention" => 1,
+                                        "internalizing"             => 1,
+                                        "autism_spectrum_A"         => 2,
+                                        "autism_spectrum_B"         => 1,
+                                        "academic_competence"       => 2,
+                                       ];
 
-    private const SUBSCALES = [
-                               "communication"             => "Communication",
-                               "cooperation"               => "Cooperation",
-                               "assertion"                 => "Assertion",
-                               "responsibility"            => "Responsibility",
-                               "empathy"                   => "Empathy",
-                               "engagement"                => "Engagement",
-                               "self_control"              => "Self-Control",
-                               "externalizing"             => "Externalizing",
-                               "bullying"                  => "Bullying",
-                               "hyperactivity_inattention" => "Hyperactivity/Inattention",
-                               "internalizing"             => "Internalizing",
-                               "autism_spectrum_A"         => "Autism Spectrum",
-                               "autism_spectrum_B"         => "Autism Spectrum",
-                              ];
+    private const MAX_MISSING = [
+                                 "social_skills"       => 4,
+                                 "problem_behaviors"   => 3,
+                                 "academic_competence" => 1,
+                                ];
 
     // Scale: Social Skills
     // Questions: 1-46
@@ -1552,4 +1511,48 @@ class NDB_BVL_Instrument_SSIS_Teacher extends NDB_BVL_Instrument
                                          "q82_motivation",
                                          "q83_intellect",
                                         ];
+
+    private const SCALES = [
+                            "social_skills"       => "Social Skills",
+                            "problem_behaviors"   => "Problem Behaviors",
+                            "academic_competence" => "Academic Competence",
+                           ];
+
+    private const SCALE_ARRAYS = [
+                                  "social_skills"       => self::SOCIAL_SKILLS,
+                                  "problem_behaviors"   => self::PROBLEM_BEHAVIORS,
+                                  "academic_competence" => self::ACADEMIC_COMPETENCE,
+                                 ];
+
+    private const SUBSCALES = [
+                               "communication"             => "Communication",
+                               "cooperation"               => "Cooperation",
+                               "assertion"                 => "Assertion",
+                               "responsibility"            => "Responsibility",
+                               "empathy"                   => "Empathy",
+                               "engagement"                => "Engagement",
+                               "self_control"              => "Self-Control",
+                               "externalizing"             => "Externalizing",
+                               "bullying"                  => "Bullying",
+                               "hyperactivity_inattention" => "Hyperactivity/Inattention",
+                               "internalizing"             => "Internalizing",
+                               "autism_spectrum_A"         => "Autism Spectrum",
+                               "autism_spectrum_B"         => "Autism Spectrum",
+                              ];
+
+    private const SUBSCALE_ARRAYS = [
+                                     "communication"             => self::COMMUNICATION,
+                                     "cooperation"               => self::COOPERATION,
+                                     "assertion"                 => self::ASSERTION,
+                                     "responsibility"            => self::RESPONSIBILITY,
+                                     "empathy"                   => self::EMPATHY,
+                                     "engagement"                => self::ENGAGEMENT,
+                                     "self_control"              => self::SELF_CONTROL,
+                                     "externalizing"             => self::EXTERNALIZING,
+                                     "bullying"                  => self::BULLYING,
+                                     "hyperactivity_inattention" => self::HYPERACTIVITY_INATTENTION,
+                                     "internalizing"             => self::INTERNALIZING,
+                                     "autism_spectrum_A"         => self::AUTISM_SPECTRUM_A,
+                                     "autism_spectrum_B"         => self::AUTISM_SPECTRUM_B,
+                                    ];
 }
