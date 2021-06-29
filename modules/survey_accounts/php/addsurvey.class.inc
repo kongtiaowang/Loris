@@ -241,7 +241,7 @@ class AddSurvey extends \NDB_Form
                     array(
                         'SessionID'       => $SessionID,
                         'Test_name'       => $instrument,
-                        'Email'           => $values['Email'],
+                        'Email'           => $email,
                         'Status'          => $status,
                         'OneTimePassword' => $key,
                         'CommentID'       => $commentID,
