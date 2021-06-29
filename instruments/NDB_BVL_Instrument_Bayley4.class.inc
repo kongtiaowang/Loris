@@ -388,14 +388,27 @@ class NDB_BVL_Instrument_Bayley4 extends NDB_BVL_Instrument
      * @access    public
      */
     function isValid(&$file, $args){
+
+        $string = file_get_contents($file->fileInfo['tmp_name']);
+        $textArr =  $this->getStringBetween($string,'Examinee Information','End of Report');
+
+        $id = $this->getStringBetween($textArr,'ID:','Test');
+
+        $originID = $args['candID'].'_'. $args['PSCID'].'_'.$args['visitLabel'];
+
+        if($id != $originID){
+            $errors[]="Incorrect Filename with File ID";
+            return $errors;
+        }
+
         $correct_filename = ($this->testName.'_'.$args['candID'].'_'. $args['PSCID'].'_'.$args['visitLabel']. ".doc");
         if($file->fileInfo['name'] != $correct_filename){
             $errors[]="Incorrect Filename: Filename should be: " . $correct_filename;
             return $errors;
         }
+
         return true;
     }
-
     /**
      * importFile imports the das sa file into the database.
      *
