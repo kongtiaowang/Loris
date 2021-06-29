@@ -35,7 +35,8 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
                                "toe"              => "Toe",                               
                               );                
     const OPTION1TO5 = array(
-                               ""           => "",
+	   		       ""           => "",
+			       "0"          => "0",
                                "1"          => "1",
                                "2"          => "2",
                                "3"          => "3",
@@ -43,7 +44,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
                                "5"          => "5",                                                              
                               );     
     const OPTION1TO4 = array(
-                               ""           => "",
+	   		       ""           => "",
                                "1"          => "1",
                                "2"          => "2",
                                "3"          => "3",
@@ -64,7 +65,8 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
                                "4"         => "Session 4",
                               );      
     const R1_R9    = array(
-                               ""           => "",
+	   		       ""          => "",
+			       "0"         => "0",	
                                "1"         => "1",
                                "2"         => "2",
                                "3"         => "3",
