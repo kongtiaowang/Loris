@@ -21,18 +21,18 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
     const YES_NO_OPTIONS = array(
                                ""           => "",
                                "1"          => "Yes",
-                               "0"           => "No",
+                               "0"          => "No",
                               );
 
     const PASS_FAIL = array(
                                ""           => "",
                                "1"          => "Console Pass",
-                               "0"           => "Console Fail",
+                               "0"          => "Console Fail",
                               );
     const FINGER = array(
-                               ""                      => "",
-                               "finger"          => "Finger",
-                               "toe"              => "Toe",                               
+                               ""           => "",
+                               "finger"     => "Finger",
+                               "toe"        => "Toe",                               
                               );                
     const OPTION1TO5 = array(
 	   		       ""           => "",
@@ -58,7 +58,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
                               );      
 
     const S1_S4    = array(
-                               ""           => "",
+                               ""          => "",
                                "1"         => "Session 1",
                                "2"         => "Session 2",
                                "3"         => "Session 3",
@@ -79,8 +79,8 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
                               );                   
 
     const complete_partial_none    = array(
-                               ""                => "",
-                               "1"        => "Complete",
+                               ""          => "",
+                               "1"         => "Complete",
                                "0"         => "Partial",
                                "none"      => "None",                                                                                                                                                                                                                     
                               );  
@@ -98,39 +98,39 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
     ];
 
     private $orientation_grp = [
-        '' => '',
-        'supine' => 'Supine',
-        'leftlat' => 'Left Lateral',
-        'rightlat' => 'Right Lateral'
+        ''           => '',
+        'supine'     => 'Supine',
+        'leftlat'    => 'Left Lateral',
+        'rightlat'   => 'Right Lateral'
     ];
 
     private $vitamine_grp = [
-                '' => '',
-        'left' => 'Left',
+        ''      => '',
+        'left'  => 'Left',
         'right' => 'Right'
     ];
 
     private $bold_grp = ['b1_' => 'Fieldmap (BOLD-1)',
-            'b2_' => 'Fieldmap (BOLD-2)',
-            'b3_' => 'Fieldmap (BOLD-3)',
+            'b2_'     => 'Fieldmap (BOLD-2)',
+            'b3_'     => 'Fieldmap (BOLD-3)',
             'blast1_' => 'Fieldmap (Last)'];
 
-    private $bold_plus_grp = ['b4_' => 'Fieldmap (BOLD-4)',
-            'blast2_' => 'Last'];
+    private $bold_plus_grp = ['b4_'     => 'Fieldmap (BOLD-4)',
+                              'blast2_' => 'Last'];
 
     private $bold_firmm_grp = ['bp1_' => 'BOLD_PA 1',
-            'bp2_' => 'BOLD_PA 2',
-            'bp3_' => 'BOLD_PA 3'];
+                               'bp2_' => 'BOLD_PA 2',
+                               'bp3_' => 'BOLD_PA 3'];
 
     private $bold_plus_firmm_grp = ['bp4_' => 'BOLD_PA 4'];
 
     private $dti_grp = [
             '101b0' => [0 => '101 B0', 1 => 'DWI dir101 B0'],
-            'dti1' => [0 => 'DTI 1', 1 => 'DWI dir101 AP'],
-            'dti2' => [0 => 'DTI 2', 1 => 'DWI dir101 APinv'],
+            'dti1'  => [0 => 'DTI 1', 1  => 'DWI dir101 AP'],
+            'dti2'  => [0 => 'DTI 2', 1  => 'DWI dir101 APinv'],
             '105b0' => [0 => '105 B0', 1 => 'DWI dir105 B0'],
-            'dti3' => [0 => 'DTI 3', 1 => 'DWI dir105 AP'],
-            'dti4' => [0 => 'DTI 4', 1 => 'DWI dir105 APinv']
+            'dti3'  => [0 => 'DTI 3', 1  => 'DWI dir105 AP'],
+            'dti4'  => [0 => 'DTI 4', 1  => 'DWI dir105 APinv']
         ];
 
     private $pg2_number_of_lines = 6;
@@ -288,10 +288,10 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
         unset($group);
 
         $grp = ['-10' => '170',
-                '-5' => '175',
-                '0' => '180',
-                '5' => '-175',
-                '10' => '-170'];
+                '-5'  => '175',
+                '0'   => '180',
+                '5'   => '-175',
+                '10'  => '-170'];
 
         $i = 0;
         foreach ($grp as $key => $val) {
@@ -306,12 +306,12 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
         $this->addLabel('');
 
         $grp = ['Field Map APinv' => '_SpinEchoFieldMap_APinv3mm',
-                'Field Map AP' => '_SpinEchoFieldMap_AP3mm',
-                'BOLD_PA' => 'BOLD_PA_ep2d_3mm52sl475slMB4',
-                '101_AP' => 'DWIcmrr_AP_dir101_3shell',
-                '101_APinv' => 'DWIcmrr_APinv_dir101_3shell',
-                '105_AP' => 'DWIcmrr_AP_dir105_3shell',
-                '105_Apinv' => 'DWIcmrr_APinv_dir105_3shell'];
+                'Field Map AP'    => '_SpinEchoFieldMap_AP3mm',
+                'BOLD_PA'         => 'BOLD_PA_ep2d_3mm52sl475slMB4',
+                '101_AP'          => 'DWIcmrr_AP_dir101_3shell',
+                '101_APinv'       => 'DWIcmrr_APinv_dir101_3shell',
+                '105_AP'          => 'DWIcmrr_AP_dir105_3shell',
+                '105_Apinv'       => 'DWIcmrr_APinv_dir105_3shell'];
 
         $group = array();
         $group[] = $this->form->createElement('static', null, null, '');
@@ -450,8 +450,8 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
                 "",
                 array(
                     null => "",
-                    "1" => "Yes",
-                    "0" => "No"
+                    "1"  => "Yes",
+                    "0"  => "No"
                 )
             );
             $group[] = $this->createDate(
@@ -867,7 +867,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
 
         $i = 0;
         foreach ($this->bold_plus_grp as $key => $label) {
-            $group = array();
+            $group   = array();
             $group[] = $this->form->createElement('static', null, null, $label);
 
             $group[] = $this->createSelect("{$key}run{$i}", '', $this->yes_no);
@@ -892,7 +892,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
         $grp0 = "bold_plus_session_";
         $i = 0;
         foreach ($this->bold_plus_firmm_grp as $key => $label) {
-            $group = array();
+            $group   = array();
             $group[] = $this->createSelect("$grp0{$i}", '', self::S1_S4);
             $this->not_required_field("$grp0{$i}");
 
@@ -954,7 +954,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
         $this->form->addElement('header', null, "CSF Flow");
 
 
-        $group = [];
+        $group   = [];
         $group[] = $this->form->createElement('static', null, null, 'Run?');
         $group[] = $this->form->createElement('static', null, null, 'CSF flow total number of attempts');
         $group[] = $this->form->createElement('static', null, null, 'Console Pass?');
