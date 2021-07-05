@@ -27,15 +27,66 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT_DAD extends NDB_BVL_Instrument
     var $ValidityEnabled  = false;
     var $ValidityRequired = false;
 
+    var $scoreLabels = array(
+                        "i_friends_total_score",
+                        "i_friends_t_score",
+                        "ii_spouse_partner_total_score",
+                        "ii_spouse_partner_t_score",
+                        "iii_family_mean_score",
+                        "iii_family_t_score",
+                        "iv_job_total_score",
+                        "iv_job_t_score",
+                        "v_education_total_score",
+                        "v_education_t_score",
+                        "mean_adaptive_score",
+                        "mean_adaptive_t_score",
+                        "tobacco_t_score",
+                        "alcohol_t_score",
+                        "drugs_t_score",
+                        "mean_substance_use_score",
+                        "mean_substance_use_t_score",
+                        "critical_items_score",
+                        "critical_items_t_score",
+                        "i_anxious_depressed_score",
+                        "i_anxious_depressed_t_score",
+                        "ii_withdrawn_score",
+                        "ii_withdrawn_t_score",
+                        "iii_somatic_complaints_score",
+                        "iii_somatic_complaints_t_score",
+                        "iv_thought_problems_score",
+                        "iv_thought_problems_t_score",
+                        "v_attention_problems_score",
+                        "v_attention_problems_t_score",
+                        "vi_aggressive_behavior_score",
+                        "vi_aggressive_behavior_t_score",
+                        "vii_rule_breaking_behavior_score",
+                        "vii_rule_breaking_behavior_t_score",
+                        "viii_intrusive_score",
+                        "viii_intrusive_t_score",
+                        "other_problems_score",
+                        "1_depressive_problems_score",
+                        "1_depressive_problems_t_score",
+                        "2_anxiety_problems_score",
+                        "2_anxiety_problems_t_score",
+                        "3_somatic_problems_score",
+                        "3_somatic_problems_t_score",
+                        "4_avoidant_personality_problems_score",
+                        "4_avoidant_personality_problems_t_score",
+                        "5_adh_problems_score",
+                        "5_adh_problems_t_score",
+                        "6_antisocial_personality_problems_score",
+                        "6_antisocial_personality_problems_t_score",
+                       );
+
     /**
- * Sets up basic data, such as the LorisForm object, and so on.
- *
- * @param string $commentID the CommentID identifying the data to load
- * @param string $page      if a multipage form, the page to show
- *
- * @return void
- * @access public
- */
+     * Sets up basic data, such as the LorisForm object, and so on.
+     *
+     * @param string $commentID the CommentID identifying the data to load
+     * @param string $page      if a multipage form, the page to show
+     *
+     * @return void
+     * @access public
+     */
     function setup(?string $commentID = null, ?string $page = null): void
     {
         $this->formType = 'XIN';
@@ -74,11 +125,11 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT_DAD extends NDB_BVL_Instrument
     }
 
     /**
- * Method to build the LorisForm object into a paged form
- *
- * @return void
- * @access private
- */
+     * Method to build the LorisForm object into a paged form
+     *
+     * @return void
+     * @access private
+     */
     function _setupForm()
     {
         //determine page to display
@@ -98,15 +149,15 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT_DAD extends NDB_BVL_Instrument
     }
 
     /**
- * Generates the main page of the form.
- *
- * @return void
- * @access private
- */
+     * Generates the main page of the form.
+     *
+     * @return void
+     * @access private
+     */
     function _main()
     {
         // display test name
-        $this->addHeader("Adult Self Report Ages 18 -59 aka Adult Self CBCL (DAD)");
+        $this->addHeader("Adult Self Report Ages 18-59 aka Adult Self CBCL (DAD)");
 
         //survey instrument don't need this
         // $this->_addMetadataFields();
@@ -171,17 +222,105 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT_DAD extends NDB_BVL_Instrument
             "Required",
             "if_other_education"
         );
+
+        // SCORE TABLE
+        $this->form->addElement('header', 'score', "Score Summary<h4><i>(Calculated on Completing Next Page)</i></h4>");
+
+        // score column headers
+        $group[] = $this->form->createElement('static', "category", null, null);
+        $group[] = $this->form->createElement('static', "score", null, null);
+        $group[] = $this->form->createElement('static', "t_score", null, null);
+        $this->form->addGroup($group, 'score_header_group', "<strong>Scale</strong>", $this->_GUIDelimiter, false);
+        unset($group);
+
+        $domains = array(
+                    "i_friends"                         => "I. Friends",
+                    "ii_spouse_partner"                 => "II. Spouse/Partner",
+                    "iii_family"                        => "III. Family",
+                    "iv_job"                            => "IV. Job",
+                    "v_education"                       => "V. Education",
+                    "mean_adaptive"                     => "Mean Adaptive",
+                    "tobacco"                           => "Tobacco",
+                    "alcohol"                           => "Alcohol",
+                    "drugs"                             => "Drugs",
+                    "mean_substance_use"                => "Mean Substance Use",
+                    "critical_items"                    => "Critical Items",
+                    "i_anxious_depressed"               => "I. Anxious/Depressed",
+                    "ii_withdrawn"                      => "II. Withdrawn",
+                    "iii_somatic_complaints"            => "III. Somatic Complaints",
+                    "iv_thought_problems"               => "IV. Thought Problems",
+                    "v_attention_problems"              => "V. Attention Problems",
+                    "vi_aggressive_behavior"            => "VI. Aggressive Behavior",
+                    "vii_rule_breaking_behavior"        => "VII. Rule Breaking Behavior",
+                    "viii_intrusive"                    => "VIII. Intrusive",
+                    "other_problems"                    => "Other Problems",
+                    "1_depressive_problems"             => "1. Depressive Problems",
+                    "2_anxiety_problems"                => "2. Anxiety Problems",
+                    "3_somatic_problems"                => "3. Somatic Problems",
+                    "4_avoidant_personality_problems"   => "4. Avoidant Personality Problems",
+                    "5_adh_problems"                    => "5. AD-H Problems",
+                    "6_antisocial_personality_problems" => "6. Antisocial Personality Problems",
+
+                   );
+
+        $columnHeaders = array(
+                          "category" => "Category",
+                          "score"    => "Score",
+                          "t_score"  => "T-Score",
+                         );
+
+        foreach ($columnHeaders as $field => $label) {
+            $columnHeaders[$field] .= "   ";
+        }
+        $this->localDefaults = array_merge($this->localDefaults, $columnHeaders);
+
+        $category = "Adaptive Functioning";
+
+        foreach ($domains as $field => $label) {
+            foreach ($columnHeaders as $scoreField => $scoreLabel) {
+                if ($scoreField == "category") {
+                    if ($field == "tobacco") {
+                        $category = "Substance Use";
+                    }
+                    if ($field == "i_anxious_depressed") {
+                        $category = "Syndrome";
+                    }
+                    if ($field == "1_depressive_problems") {
+                        $category = "DSM Oriented";
+                    }
+                    $group[] = $this->form->createElement('static', null, null, $category);
+                }
+                if ($scoreField == "score") {
+                    if ($field == "i_friends" || $field == "ii_spouse_partner" || $field == "iv_job" || $field == "v_education") {
+                        $group[] = $this->form->createElement('static', "{$field}_total_score", null, null);
+                    } elseif ($field == "iii_family") {
+                        $group[] = $this->form->createElement('static', "{$field}_mean_score", null, null);
+                    } elseif ($field == "tobacco" || $field == "alcohol" || $field == "drugs") {
+                        $group[] = $this->form->createElement('static', null, null, null);
+                    } else {
+                        $group[] = $this->form->createElement('static', "{$field}_{$scoreField}", null, null);
+                    }
+                }
+                if ($scoreField == "t_score") {
+                    if ($field != "other_problems") {
+                        $group[] = $this->form->createElement('static', "{$field}_{$scoreField}", null, null);
+                    }
+                }
+            }
+            $this->form->addGroup($group, "{$label}_score_group", $label, $this->_GUIDelimiter, false);
+            unset($group);
+        }
     }
 
     /**
- * Page 1
- *
- * @return void
- */
+     * Page 1
+     *
+     * @return void
+     */
     function _page1()
     {
         // Header
-        $this->addHeader("Adult Self Report Ages 18 -59 aka Adult Self CBCL (DAD)");
+        $this->addHeader("Adult Self Report Ages 18-59 aka Adult Self CBCL (DAD)");
 
         $this->addLabel("<h1><b>I. FRIENDS </b></h1>");
         $opts = array(
@@ -327,6 +466,12 @@ such as where we live",
             array("II_comments{@}=={@}NEVER_REQUIRED")
         );
     }
+
+    /**
+     * Page 2
+     *
+     * @return void
+     */
     function _page2()
     {
 
@@ -572,9 +717,14 @@ such as where we live",
             array("V_comments{@}=={@}NEVER_REQUIRED")
         );
     }
+
+    /**
+     * Page 3
+     *
+     * @return void
+     */
     function _page3()
     {
-
         $this->addSelect("illness", "<b>VI. Do you have any illness, disability or handicap? </b>", array(null => "", "no" => "No", "yes" => "Yes"));
         $this->addBasicTextArea("illness_description", "If yes, please describe:<br><h5><i>(If you don't wish to answer enter NA)</i></h5>");
         $this->XINRegisterRule(
@@ -604,8 +754,13 @@ such as where we live",
             "VI_VIII_comments",
             array("VI_VIII_comments{@}=={@}NEVER_REQUIRED")
         );
-
     }
+
+    /**
+     * Page 4
+     *
+     * @return void
+     */
     function _page4()
     {
         $this-> addLabel("<h2>IX. Below is a list of items that describe people. For each item please select \"Not True\", \"Somewhat or Sometimes True\", or \"Very True or Often True\" to describe yourself <i>over the past 6 months.</i> Please answer all items as well as you can, even if some do not seem to apply to you. </h2>");
@@ -664,6 +819,12 @@ such as where we live",
             }
         }
     }
+
+    /**
+     * Page 5
+     *
+     * @return void
+     */
     function _page5()
     {
         $this->addLabel("<h2>IX. Below is a list of items that describe people. For each item please select \"Not True\", \"Somewhat or Sometimes True\", or \"Very True or Often True\" to describe yourself <i>over the past 6 months.</i> Please answer all items as well as you can, even if some do not seem to apply to you. </h2>");
@@ -724,6 +885,11 @@ such as where we live",
         }
     }
 
+    /**
+     * Page 6
+     *
+     * @return void
+     */
     function _page6()
     {
         $this-> addLabel("<h2>IX. Below is a list of items that describe people. For each item please select \"Not True\", \"Somewhat or Sometimes True\", or \"Very True or Often True\" to describe yourself <i>over the past 6 months.</i> Please answer all items as well as you can, even if some do not seem to apply to you. </h2>");
@@ -802,6 +968,11 @@ such as where we live",
         }
     }
 
+    /**
+     * Page 7
+     *
+     * @return void
+     */
     function _page7()
     {
         $this-> addLabel("<h2>IX. Below is a list of items that describe people. For each item please select \"Not True\", \"Somewhat or Sometimes True\", or \"Very True or Often True\" to describe yourself <i>over the past 6 months.</i> Please answer all items as well as you can, even if some do not seem to apply to you. </h2>");
@@ -857,6 +1028,11 @@ such as where we live",
 
     }
 
+    /**
+     * Page 8
+     *
+     * @return void
+     */
     function _page8()
     {
         $this-> addLabel("<h2>IX. Below is a list of items that describe people. For each item please select \"Not True\", \"Somewhat or Sometimes True\", or \"Very True or Often True\" to describe yourself <i>over the past 6 months.</i> Please answer all items as well as you can, even if some do not seem to apply to you. </h2>");
@@ -984,4 +1160,915 @@ such as where we live",
 
         return false;
     }
+
+    function getAdaptiveTScore(string $age_range, string $scale, $score, $db)
+    {
+        $sex     = "male";
+        $t_score = null;
+
+        if ($age_range != "18-35" && $age_range != "36-59" && $age_range != "18-29") {
+            return "Invalid Age Range";
+        }
+
+        $query = "SELECT
+                      *
+                  FROM
+                      ASR_Adaptive_Functioning_Scales_lookup
+                  WHERE
+                      age_range = :age_range AND
+                      sex = :sex AND
+                      scale = :scale";
+
+        $record = $db->pselect(
+            $query,
+            array(
+             "age_range" => $age_range,
+             "sex"       => $sex,
+             "scale"     => $scale,
+            )
+        );
+
+        if (empty($record)) {
+            return "No Record Found";
+        }
+
+        foreach ($record as $r) {
+            if (is_null($r["score_min"]) || is_null($r["score_max"])) {
+                continue;
+            } else {
+                if ($score >= $r["score_min"] && $score <= $r["score_max"]) {
+                    $t_score = $r["t_score"];
+                    return $t_score;
+                }
+            }
+        }
+
+        return "No Record Found";
+    }
+
+    function getSubstanceTScore(string $age_range, string $substance, $how_many, $db)
+    {
+        $sex     = "male";
+        $t_score = null;
+
+        $query = "SELECT
+                      *
+                  FROM
+                      ASR_Substance_Use_Scales_lookup
+                  WHERE
+                      age_range = :age_range AND
+                      sex = :sex AND
+                      substance = :substance";
+
+        $record = $db->pselect(
+            $query,
+            array(
+             "age_range" => $age_range,
+             "sex"       => $sex,
+             "substance" => $substance,
+            )
+        );
+
+        foreach ($record as $r) {
+            if (is_null($r["score_min"]) || is_null($r["score_max"])) {
+                continue;
+            } else {
+                if ($how_many >= $r["score_min"] && $how_many <= $r["score_max"]) {
+                    $t_score = $r["t_score"];
+                }
+            }
+        }
+
+        return $t_score;
+    }
+
+    function getSyndromeTScore(string $age_range, string $scale, $score, $db)
+    {
+        $sex     = "male";
+        $t_score = null;
+
+        if ($age_range != "18-35" && $age_range != "36-59") {
+            return "Invalid Age Range";
+        }
+
+        $query = "SELECT
+                      *
+                  FROM
+                      ASR_Syndrome_Scales_lookup
+                  WHERE
+                      age_range = :age_range AND
+                      sex = :sex AND
+                      scale = :scale";
+
+        $record = $db->pselect(
+            $query,
+            array(
+             "age_range" => $age_range,
+             "sex"       => $sex,
+             "scale"     => $scale,
+            )
+        );
+
+        if (empty($record)) {
+            return "No Record Found";
+        }
+
+        foreach ($record as $r) {
+            if (is_null($r["score_min"]) || is_null($r["score_max"])) {
+                continue;
+            } else {
+                if ($score >= $r["score_min"] && $score <= $r["score_max"]) {
+                    $t_score = $r["t_score"];
+                    return $t_score;
+                }
+            }
+        }
+
+        return "No Record Found";
+    }
+
+    function getOrientedTScore(string $age_range, string $scale, $score, $db)
+    {
+        $sex     = "male";
+        $t_score = null;
+
+        if ($age_range != "18-35" && $age_range != "36-59") {
+            return "Invalid Age Range";
+        }
+
+        $query = "SELECT
+                      *
+                  FROM
+                      ASR_DSM5_Oriented_Scales_lookup
+                  WHERE
+                      age_range = :age_range AND
+                      sex = :sex AND
+                      scale = :scale";
+
+        $record = $db->pselect(
+            $query,
+            array(
+             "age_range" => $age_range,
+             "sex"       => $sex,
+             "scale"     => $scale,
+            )
+        );
+
+        if (empty($record)) {
+            return "No Record Found";
+        }
+
+        foreach ($record as $r) {
+            if (is_null($r["score_min"]) || is_null($r["score_max"])) {
+                continue;
+            } else {
+                if ($score >= $r["score_min"] && $score <= $r["score_max"]) {
+                    $t_score = $r["t_score"];
+                    return $t_score;
+                }
+            }
+        }
+
+        return "No Record Found";
+    }
+
+    function sum012Responses($array, $record)
+    {
+        $sum = 0;
+
+        foreach ($array as $a) {
+            if ($record["question_" . $a] == "not_true") {
+                $sum += 0;
+            } elseif ($record["question_" . $a] == "sometimes") {
+                $sum += 1;
+            } elseif ($record["question_" . $a] == "very_true") {
+                $sum += 2;
+            }
+        }
+
+        return $sum;
+    }
+
+    function roundToNearestPoint2($num)
+    {
+        return round($num*5)/5;
+    }
+
+    function roundToNearestPoint5($num)
+    {
+        return round($num*2)/2;
+    }
+
+    function score(): void
+    {
+        if ($this->_determineDataEntryCompletionStatus() == "Incomplete") {
+            return;
+        }
+
+        $this->_nullScores($this->scoreLabels);
+
+        $db     = Database::singleton();
+        $record = $db->pselectRow("SELECT * FROM $this->table WHERE CommentID=:cid", array("cid" => $this->getCommentID()));
+
+        $age       = $record["user_age"];
+        $age_range = "";
+
+        if (!is_null($age) || $age != "NA") {
+            if ($age >= 18 && $age <= 35) {
+                $age_range = "18-35";
+            } elseif ($age >= 36 && $age <= 59) {
+                $age_range = "36-59";
+            } else {
+                $age_range = "Out of range";
+            }
+        }
+
+        $education_age_range = "";
+
+        if ($age_range == "18-35") {
+            if ($age >= 18 && $age <= 29) {
+                $education_age_range = "18-29";
+            }
+        }
+
+        error_log("AGE: " . $age);
+        error_log("AGE RANGE: " . $age_range);
+        error_log("EDUCATION AGE RANGE: " . $education_age_range);
+
+        $scores = array();
+
+        /***** ASR AND ABCL ADAPTIVE FUNCTIONING SCALES *****/
+
+        /********************
+         * I. FRIENDS SCALE *
+         ********************/
+
+        if ($record["1_A"] == "none") {
+            $I_A = 0;
+        } elseif ($record["1_A"] == "1") {
+            $I_A = 1;
+        } elseif ($record["1_A"] == "2") {
+            $I_A = 2;
+        } elseif ($record["1_A"] == "4") {
+            $I_A = 3;
+        }
+
+        if ($record["1_B"] == "less") {
+            $I_B = 0;
+        } elseif ($record["1_B"] == "1") {
+            $I_B = 1;
+        } elseif ($record["1_B"] == "3") {
+            $I_B = 2;
+        } elseif ($record["1_B"] == "more") {
+            $I_B = 3;
+        }
+
+        if ($record["1_C"] == "not") {
+            $I_C = 0;
+        } elseif ($record["1_C"] == "average") {
+            $I_C = 1;
+        } elseif ($record["1_C"] == "above") {
+            $I_C = 2;
+        } elseif ($record["1_C"] == "far") {
+            $I_C = 3;
+        }
+
+        if ($record["1_D"] == "less") {
+            $I_D = 0;
+        } elseif ($record["1_D"] == "1") {
+            $I_D = 1;
+        } elseif ($record["1_D"] == "3") {
+            $I_D = 2;
+        } elseif ($record["1_D"] == "more") {
+            $I_D = 3;
+        }
+
+        $scores["i_friends_total_score"] = $I_A + $I_B + $I_C + $I_D;
+
+        $scores["i_friends_t_score"] = $this->getAdaptiveTScore($age_range, "friends", $scores["i_friends_total_score"], $db);
+
+        /****************************
+         * II. SPOUSE/PARTNER SCALE *
+         ****************************/
+
+         // Do not score this scale unless the person being assessed lived
+         // with spouse or partner in the last 6 months
+         // and circled scores for each item II-A through II-H
+
+         // II - A, C, D, G: Enter the 0, 1, 2 scores circled by the respondent
+         // in the columns of spaces under the + (plus) heading for these items
+         // II - B, E, F, H: Enter the 0, 1, 2 scores circled by the respondent
+         // in the columns of spaces under the - (minus) heading for these items
+
+         // Total score for Spouse/Partner scale:
+         // 1. Sum the scores in the + (plus) column
+         // 2. Sum the scores in the - (minus) column
+         // 3. Subtract the sum of the - (minus) column from the sum of the + (plus)
+         // column to obtain the total scale score
+         // 4. Enter this total scale score in the box labeled Total
+         // 5. Circle the corresponding number in the age-specific column above
+
+        if ($record["live_with_spouse"] == "yes") {
+            $plus  = 0;
+            $minus = 0;
+
+            $plus_fields = array(
+                            "A",
+                            "C",
+                            "D",
+                            "G",
+                           );
+
+            $minus_fields = array(
+                             "B",
+                             "E",
+                             "F",
+                             "H",
+                            );
+
+            foreach ($plus_fields as $field) {
+                if ($record["spouse_" . $field] == "not_true") {
+                    $plus += 0;
+                } elseif ($record["spouse_" . $field] == "somewhat_true") {
+                    $plus += 1;
+                } elseif ($record["spouse_" . $field] == "very_true") {
+                    $plus += 2;
+                }
+            }
+
+            foreach ($minus_fields as $field) {
+                if ($record["spouse_" . $field] == "not_true") {
+                    $minus += 0;
+                } elseif ($record["spouse_" . $field] == "somewhat_true") {
+                    $minus += 1;
+                } elseif ($record["spouse_" . $field] == "very_true") {
+                    $minus += 2;
+                }
+            }
+
+            $scores["ii_spouse_partner_total_score"] = $plus - $minus;
+            $scores["ii_spouse_partner_t_score"]     = $this->getAdaptiveTScore($age_range, "spouse_partner", $scores["ii_spouse_partner_total_score"], $db);
+        }
+
+        if ($record["live_with_spouse"] == "no") {
+            $scores["ii_spouse_partner_total_score"] = "Not Scored";
+            $scores["ii_spouse_partner_t_score"]     = "N/A";
+        }
+
+        /****************************
+         * III. ASR FAMILY SCALE *
+         ****************************/
+
+        // Score only the items for which Worse, Average, or Better are checked
+
+        $ignore_count = 0;
+        $sum          = 0;
+
+        $family_questions = array(
+                             "family_A",
+                             "family_B",
+                             "family_C",
+                             "family_D",
+                             "Family_E_1",
+                             "Family_E_2",
+                             "Family_E_3",
+                             "Family_E_4",
+                             "Family_F",
+                            );
+
+        foreach ($family_questions as $q) {
+            if ($record[$q] == "worse") {
+                $sum += 0;
+            } elseif ($record[$q] == "variable") {
+                $sum += 1;
+            } elseif ($record[$q] == "better") {
+                $sum += 2;
+            } else {
+                $ignore_count++;
+            }
+        }
+
+        if ($ignore_count == 9) {
+             $scores["iii_family_mean_score"] = null;
+             $scores["iii_family_t_score"]    = "N/A";
+        } else {
+            $mean = $sum / (9 - $ignore_count);
+            $mean = $this->roundToNearestPoint2($mean);
+            $scores["iii_family_mean_score"] = $mean;
+            $scores["iii_family_t_score"]    = $this->getAdaptiveTScore($age_range, "family", $scores["iii_family_mean_score"], $db);
+        }
+
+        /*********************
+         * IV. ASR JOB SCALE *
+         *********************/
+
+        // Do not score this scale unless the respondent reported
+        // being in paid jobs or the military in the past 6 months
+        // and circled scores for each item IV-A through IV-I, except
+        // item IV-E, which is not counted in the scale score
+
+        // Items IV-A and C: Enter the 0,1,2 scores circled
+        // by the respondent in the column of spaces
+        // under the + (plus) heading for these items
+
+        // Items IV-B, D, F, G, H, I: Enter the 0,1,2, scores circled
+        // by the respondent in the column of spaces
+        // under the - (minus) heading beside these items
+        // Follow the procedure described for the Spouse/Partner scale
+        // to obtain the total scale score
+
+        $plus  = 0;
+        $minus = 0;
+
+        $plus_fields = array(
+                        "A",
+                        "C",
+                       );
+
+        $minus_fields = array(
+                         "B",
+                         "D",
+                         "F",
+                         "G",
+                         "H",
+                         "I",
+                        );
+
+        if ($record["jobs"] == "yes") {
+            foreach ($plus_fields as $field) {
+                if ($record["Job_" . $field] == "not_true") {
+                    $plus += 0;
+                } elseif ($record["Job_" . $field] == "sometimes") {
+                    $plus += 1;
+                } elseif ($record["Job_" . $field] == "very_true") {
+                    $plus += 2;
+                }
+            }
+
+            foreach ($minus_fields as $field) {
+                if ($record["Job_" . $field] == "not_true") {
+                    $minus += 0;
+                } elseif ($record["Job_" . $field] == "sometimes") {
+                    $minus += 1;
+                } elseif ($record["Job_" . $field] == "very_true") {
+                    $minus += 2;
+                }
+            }
+
+            $scores["iv_job_total_score"] = $plus - $minus;
+            $scores["iv_job_t_score"]     = $this->getAdaptiveTScore($age_range, "job", $scores["iv_job_total_score"], $db);
+        }
+
+        if ($record["jobs"] == "no") {
+            $scores["iv_job_total_score"] = "Not Scored";
+            $scores["iv_job_t_score"]     = "N/A";
+        }
+
+        /**************************
+         * V. ASR EDUCATION SCALE *
+         **************************/
+
+        // Do not score this scale unless respondent reported being in an
+        // educational or training program in the past 6 months and circled scores
+        // for each item V-A through V-E
+
+        // Items V-A, B, D: Enter the 0,1,2, scores circled
+        // by the respondent in the column of spaces
+        // UNDER THE + (plus) heading for these items
+
+        // Items V-C, E: Enter the 0,1,2, scores circled
+        // by the respondent in the column of spaces
+        // UNDER THE - (minus) heading for these items
+
+        $plus  = 0;
+        $minus = 0;
+
+        $plus_fields = array(
+                        "A",
+                        "B",
+                        "D",
+                       );
+
+        $minus_fields = array(
+                         "C",
+                         "E",
+                        );
+
+        if ($record["education"] == "yes") {
+            foreach ($plus_fields as $field) {
+                if ($record["education_" . $field] == "not_true") {
+                    $plus += 0;
+                } elseif ($record["education_" . $field] == "somewhat_true") {
+                    $plus += 1;
+                } elseif ($record["education_" . $field] == "very_true") {
+                    $plus += 2;
+                }
+            }
+
+            foreach ($minus_fields as $field) {
+                if ($record["education_" . $field] == "not_true") {
+                    $minus += 0;
+                } elseif ($record["education_" . $field] == "somewhat_true") {
+                    $minus += 1;
+                } elseif ($record["education_" . $field] == "very_true") {
+                    $minus += 2;
+                }
+            }
+
+            $scores["v_education_total_score"] = $plus - $minus;
+            $scores["v_education_t_score"]     = $this->getAdaptiveTScore($education_age_range, "education", $scores["v_education_total_score"], $db);
+        }
+
+        if ($record["education"] == "no") {
+            $scores["v_education_total_score"] = "Not Scored";
+            $scores["v_education_t_score"]     = "N/A";
+        }
+
+        /*****************************
+         * MEAN ADAPTIVE FUNCTIONING *
+         *****************************/
+
+        // Mean of the adaptive functioning scales:
+        // - Friends
+        // - Spouse/Partner (Can be not scored)
+        // - Family
+        // - Job (Can be not scored)
+        // - Education (Can be not scored)
+
+        // Only compute mean of all all adaptive functioning scales
+        // if each scale was scored
+
+        if (is_numeric($scores["i_friends_total_score"])
+            && is_numeric($scores["ii_spouse_partner_total_score"])
+            && is_numeric($scores["iii_family_mean_score"])
+            && is_numeric($scores["iv_job_total_score"])
+            && is_numeric($scores["v_education_total_score"])
+        ) {
+            $mean = 0;
+
+            $adaptive_functioning_sum =
+            $scores["i_friends_total_score"] +
+            $scores["ii_spouse_partner_total_score"] +
+            $scores["iii_family_mean_score"] +
+            $scores["iv_job_total_score"] +
+            $scores["v_education_total_score"];
+
+            $mean = $adaptive_functioning_sum / 5;
+            $mean = round($mean, 1);
+
+            $scores["mean_adaptive_score"]   = $mean;
+            $scores["mean_adaptive_t_score"] = $this->getAdaptiveTScore($age_range, "mean_adaptive", $scores["mean_adaptive_score"], $db);
+        } else {
+            $scores["mean_adaptive_score"]   = "Not Scored";
+            $scores["mean_adaptive_t_score"] = "N/A";
+        }
+
+        /***** SUBSTANCE USE SCALES *****/
+
+        $substances = array(
+                       "tobacco" => $record["tobacco_per_day"],
+                       "alcohol" => $record["days_drunk"],
+                       "drugs"   => $record["days_drugs"],
+                      );
+
+        $missing_substance_field        = false;
+        $can_compute_mean_substance_use = true;
+
+        foreach ($substances as $name => $response) {
+            if (is_null($response)) {
+                $missing_substance_field        = true;
+                $scores[$name . "_t_score"]     = "Missing field";
+                $can_compute_mean_substance_use = false;
+            } else {
+                if ($age_range == "18-35" || $age_range == "36-59") {
+                    $t_score = $this->getSubstanceTScore($age_range, $name, intval($response), $db);
+                    $scores[$name . "_t_score"] = $t_score;
+                } else {
+                    $scores[$name . "_t_score"] = "Age out of bounds";
+                }
+            }
+        }
+
+        if ($can_compute_mean_substance_use) {
+            $sum  = $scores["tobacco_t_score"] + $scores["alcohol_t_score"] + $scores["drugs_t_score"];
+            $mean = $this->roundToNearestPoint5($sum/3);
+            $scores["mean_substance_use_score"] = $mean;
+
+            $t_score = $this->getSubstanceTScore($age_range, "mean_substance_use", $mean, $db);
+            $scores["mean_substance_use_t_score"] = $t_score;
+        } else {
+            $scores["mean_substance_use_t_score"] = "Missing field(s)";
+        }
+
+        /***** CRITICAL ITEMS *****/
+
+        $sum = 0;
+
+        foreach (self::CRITICAL_ITEMS as $c_item) {
+            if ($record["question_" . $c_item] == "not_true") {
+                $sum += 0;
+            } elseif ($record["question_" . $c_item] == "sometimes") {
+                $sum += 1;
+            } elseif ($record["question_" . $c_item] == "very_true") {
+                $sum += 2;
+            }
+        }
+
+        $scores["critical_items_score"]   = $sum;
+        $scores["critical_items_t_score"] = $this->getSubstanceTScore($age_range, "critical_items", $scores["critical_items_score"], $db);;
+
+        /***** SYNDROME SCALE *****/
+
+        $syndrome_scales = array(
+                            "i_anxious_depressed"        => self::I_ANXIOUS_DEPRESSED,
+                            "ii_withdrawn"               => self::II_WITHDRAWN,
+                            "iii_somatic_complaints"     => self::III_SOMATIC_COMPLAINTS,
+                            "iv_thought_problems"        => self::IV_THOUGHT_PROBLEMS,
+                            "v_attention_problems"       => self::V_ATTENTION_PROBLEMS,
+                            "vi_aggressive_behavior"     => self::VI_AGGRESSIVE_BEHAVIOR,
+                            "vii_rule_breaking_behavior" => self::VII_RULE_BREAKING_BEHAVIOR,
+                            "viii_intrusive"             => self::VIII_INTRUSIVE,
+                           );
+
+        foreach ($syndrome_scales as $scale => $array) {
+            $scores[$scale . "_score"]   = $this->sum012Responses($array, $record);
+            $scores[$scale . "_t_score"] = $this->getSyndromeTScore($age_range, $scale, $scores[$scale . "_score"], $db);
+        }
+
+        $scores["other_problems_score"] = $this->sum012Responses(self::OTHER_PROBLEMS, $record);
+
+        /***** DSM-ORIENTED SCALE *****/
+
+         $oriented_scales = array(
+                             "1_depressive_problems"             => self::_1_DEPRESSIVE_PROBLEMS,
+                             "2_anxiety_problems"                => self::_2_ANXIETY_PROBLEMS,
+                             "3_somatic_problems"                => self::_3_SOMATIC_PROBLEMS,
+                             "4_avoidant_personality_problems"   => self::_4_AVOIDANT_PERSONALITY_PROBLEMS,
+                             "5_adh_problems"                    => self::_5_ADH_PROBLEMS,
+                             "6_antisocial_personality_problems" => self::_6_ANTISOCIAL_PERSONALITY_PROBLEMS,
+                            );
+
+        foreach ($oriented_scales as $scale => $array) {
+            $scores[$scale . "_score"]   = $this->sum012Responses($array, $record);
+            $scores[$scale . "_t_score"] = $this->getOrientedTScore($age_range, $scale, $scores[$scale . "_score"], $db);
+        }
+
+        $db->update($this->table, $scores, array("CommentID" => $this->getCommentID()));
+    }
+
+    CONST CRITICAL_ITEMS = [
+                            "14",
+                            "91",
+                            "103",
+                            "9",
+                            "18",
+                            "40",
+                            "66",
+                            "70",
+                            "84",
+                            "8",
+                            "16",
+                            "55",
+                            "57",
+                            "97",
+                            "6",
+                            "90",
+                            "92",
+                            "10",
+                            "21",
+                           ];
+
+    CONST I_ANXIOUS_DEPRESSED = [
+                                 "12",
+                                 "13",
+                                 "14",
+                                 "22",
+                                 "31",
+                                 "33",
+                                 "34",
+                                 "35",
+                                 "45",
+                                 "47",
+                                 "50",
+                                 "52",
+                                 "71",
+                                 "91",
+                                 "103",
+                                 "107",
+                                 "112",
+                                 "113",
+                                ];
+
+    CONST II_WITHDRAWN = [
+                          "25",
+                          "30",
+                          "42",
+                          "48",
+                          "60",
+                          "65",
+                          "67",
+                          "69",
+                          "111",
+                         ];
+
+    CONST III_SOMATIC_COMPLAINTS = [
+                                    "51",
+                                    "54",
+                                    "56_a",
+                                    "56_b",
+                                    "56_c",
+                                    "56_d",
+                                    "56_e",
+                                    "56_f",
+                                    "56_g",
+                                    "56_h",
+                                    "56_i",
+                                    "100",
+                                   ];
+
+    CONST IV_THOUGHT_PROBLEMS = [
+                                 "9",
+                                 "18",
+                                 "36",
+                                 "40",
+                                 "46",
+                                 "63",
+                                 "66",
+                                 "70",
+                                 "84",
+                                 "85",
+                                ];
+
+    CONST V_ATTENTION_PROBLEMS = [
+                                  "1",
+                                  "8",
+                                  "11",
+                                  "17",
+                                  "53",
+                                  "59",
+                                  "61",
+                                  "64",
+                                  "78",
+                                  "101",
+                                  "102",
+                                  "105",
+                                  "108",
+                                  "119",
+                                  "121",
+                                 ];
+
+    CONST VI_AGGRESSIVE_BEHAVIOR = [
+                                    "3",
+                                    "5",
+                                    "16",
+                                    "28",
+                                    "37",
+                                    "55",
+                                    "57",
+                                    "68",
+                                    "81",
+                                    "86",
+                                    "87",
+                                    "95",
+                                    "97",
+                                    "116",
+                                    "118",
+                                   ];
+
+    CONST VII_RULE_BREAKING_BEHAVIOR = [
+                                        "6",
+                                        "20",
+                                        "23",
+                                        "26",
+                                        "39",
+                                        "41",
+                                        "43",
+                                        "76",
+                                        "82",
+                                        "90",
+                                        "92",
+                                        "114",
+                                        "117",
+                                        "122",
+                                       ];
+
+    CONST VIII_INTRUSIVE = [
+                            "7",
+                            "19",
+                            "74",
+                            "93",
+                            "94",
+                            "104",
+                           ];
+
+    CONST OTHER_PROBLEMS = [
+                            "10",
+                            "21",
+                            "24",
+                            "27",
+                            "29",
+                            "32",
+                            "38",
+                            "44",
+                            "58",
+                            "62",
+                            "72",
+                            "75",
+                            "77",
+                            "79",
+                            "83",
+                            "89",
+                            "96",
+                            "99",
+                            "110",
+                            "115",
+                            "120",
+                           ];
+
+    CONST _1_DEPRESSIVE_PROBLEMS = [
+                                    "14",
+                                    "18",
+                                    "24",
+                                    "35",
+                                    "52",
+                                    "54",
+                                    "60",
+                                    "77",
+                                    "78",
+                                    "91",
+                                    "100",
+                                    "102",
+                                    "103",
+                                    "107",
+                                   ];
+
+    CONST _2_ANXIETY_PROBLEMS = [
+                                 "22",
+                                 "29",
+                                 "45",
+                                 "50",
+                                 "72",
+                                 "112",
+                                ];
+
+    CONST _3_SOMATIC_PROBLEMS = [
+                                 "56_a",
+                                 "56_b",
+                                 "56_c",
+                                 "56_d",
+                                 "56_e",
+                                 "56_f",
+                                 "56_g",
+                                 "56_h",
+                                 "56_i",
+                                ];
+
+    CONST _4_AVOIDANT_PERSONALITY_PROBLEMS = [
+                                              "25",
+                                              "42",
+                                              "47",
+                                              "67",
+                                              "71",
+                                              "75",
+                                              "111",
+                                             ];
+
+    CONST _5_ADH_PROBLEMS = [
+                             "1",
+                             "8",
+                             "10",
+                             "36",
+                             "41",
+                             "59",
+                             "61",
+                             "89",
+                             "105",
+                             "108",
+                             "115",
+                             "118",
+                             "119",
+                            ];
+
+    CONST _6_ANTISOCIAL_PERSONALITY_PROBLEMS = [
+                                                "3",
+                                                "5",
+                                                "16",
+                                                "21",
+                                                "23",
+                                                "26",
+                                                "28",
+                                                "37",
+                                                "39",
+                                                "43",
+                                                "57",
+                                                "76",
+                                                "82",
+                                                "92",
+                                                "95",
+                                                "97",
+                                                "101",
+                                                "114",
+                                                "120",
+                                                "122",
+                                               ];
 }
