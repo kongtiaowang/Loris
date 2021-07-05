@@ -26,12 +26,20 @@ class NDB_BVL_Instrument_BRQ_survey extends NDB_BVL_Instrument
     use instrument_validator;
 
     const OPTIONS = array(
-                     null              => "",
-                     "1_almost_never"  => "Almost never",
-                     "2_occasionally"  => "Occasionally",
-                     "3_half_the_time" => "Half the time",
-                     "4_often"         => "Often",
-                     "5_nearly_always" => "Nearly Always",
+                     null     => "",
+                     1        => "1 = Almost never",
+                     2        => "2 = Occasionally",
+                     3        => "3 = Half the time",
+                     4        => "4 = Often",
+                     5        => "5 = Nearly Always",
+                    );
+
+
+    var $scoreLabels = array(
+                        "consistency_total_derived_score",
+                        "reactivity_total_derived_score",
+                        "adaptive_activities_total_derived_score",
+                        "maladaptive_activities_total_derived_score",
                     );
 
     /**
@@ -65,7 +73,16 @@ class NDB_BVL_Instrument_BRQ_survey extends NDB_BVL_Instrument
         $this->testName = "BRQ_survey";           // test_names.Test_name
         $this->table    = 'BRQ_survey';           // name of database table corresponding to instrument
         // data keyed by commentID
-        $this->commentID = $commentID;
+	$this->commentID = $commentID;
+	$config            =& NDB_Config::singleton();
+	$this->dateOptions = array(
+                              'language'         => 'en',
+                              'format'           => 'YMd',
+                              'minYear'          => $config->getSetting('startYear'),
+                              'maxYear'          => $config->getSetting('endYear'),
+                              'addEmptyOption'   => true,
+                              'emptyOptionValue' => null,
+                             );
 
         //The array of dates/timestamps to convert to database dates/timestamps
         //Any LorisForm date elements must be listed here
@@ -78,7 +95,7 @@ class NDB_BVL_Instrument_BRQ_survey extends NDB_BVL_Instrument
         // required fields for data entry completion status
         $this->_requiredElements = array(
                                     "q1_perform_the_same_activities_in_the_hour_before_bed",
-                                    "q6_q11_perform_the_same_activities_in_the_hour_before_bed",
+                                    "q6_perform_the_same_activities_in_the_hour_before_bed",
                                     "q11_perform_the_same_activities_in_the_hour_before_bed",
                                     "q16_read_listen_to_a_story",
                                    );
@@ -139,6 +156,37 @@ class NDB_BVL_Instrument_BRQ_survey extends NDB_BVL_Instrument
         $this->XINRegisterRule('respondent_specify', array('respondent{@}=={@}other'), 'Required if other');
 
         $this->form->addFormRule(array(&$this, 'validate_main_page'));
+
+         // SCORING TABLE
+
+         $this->form->addElement('header', 'score', "Score Summary");
+
+         $group[] = $this->form->createElement('static', "score", null, null);
+ 
+         $this->form->addGroup($group, 'score_header_group', "<strong>Scale</strong>", $this->_GUIDelimiter, false);
+         unset($group);
+ 
+         $scales = array(
+                    "consistency_total_derived"              => "Consistency Total",
+                    "reactivity_total_derived"               => "Reactivity",
+                    "adaptive_activities_total_derived"      => "Adaptive Activities",
+                    "maladaptive_activities_total_derived"   => " Maladaptive Activities",
+                   );
+ 
+         $columnHeaders = array("score" => "Score");
+ 
+         foreach ($columnHeaders as $field => $label) {
+             $columnHeaders[$field] .= "   ";
+         }
+         $this->localDefaults = array_merge($this->localDefaults, $columnHeaders);
+ 
+         foreach ($scales as $field => $label) {
+             foreach ($columnHeaders as $scoreField => $scoreLabel) {
+                 $group[] = $this->form->createElement('static', "{$field}_{$scoreField}", null, null);
+             }
+             $this->form->addGroup($group, "{$field}_score_group", $label, $this->_GUIDelimiter, false);
+             unset($group);
+         }
     }
 
     /**
@@ -257,12 +305,12 @@ class NDB_BVL_Instrument_BRQ_survey extends NDB_BVL_Instrument
                            );
 
         $page3_options = array(
-                          null            => "",
-                          "1_not_at_all"  => "Not at all",
-                          "2_a_little"    => "A little",
-                          "3_moderately"  => "Moderately",
-                          "4_quite_a_bit" => "Quite a bit",
-                          "5_extremely"   => "Extremely",
+                          null        => "",
+                          1           => "1 = Not at all",
+                          2           => "2 = A little",
+                          3           => "3 = Moderately",
+                          4           => "4 = Quite a bit",
+                          5           => "5 = Extremely",
                          );
 
         $this->form->addElement(
@@ -359,5 +407,84 @@ class NDB_BVL_Instrument_BRQ_survey extends NDB_BVL_Instrument
 
          return $errors;
     }
-}
 
+    function sumScaleScores($question_array, $record)
+    {
+        $sum = 0;
+
+        foreach ($question_array as $q) {
+            $sum += $record[$q];
+        }
+        return $sum;
+    }
+
+    function score(): void
+    {
+        if ($this->_determineDataEntryCompletionStatus() == "Incomplete") {
+            return;
+        }
+
+        // Null scores
+        $this->_nullScores($this->scoreLabels);
+
+        // Get the saved scores
+        $db     =& Database::singleton();
+        $query  = "SELECT * FROM $this->table WHERE CommentID = '$this->commentID'";
+        $record = $db->pselectRow($query, array());
+
+        $scores["consistency_total_derived_score"]             = $this->sumScaleScores(self::CONSISTENCY, $record);
+        $scores["reactivity_total_derived_score"]              = $this->sumScaleScores(self::REACTIVITY, $record);
+        $scores["adaptive_activities_total_derived_score"]     = $this->sumScaleScores(self::ADAPTIVE, $record);
+        $scores["maladaptive_activities_total_derived_score"]  = $this->sumScaleScores(self::MALADAPTIVE, $record);
+
+        $result = $db->update($this->table, $scores, array("CommentID" => $this->getCommentID()));
+    }
+
+    // 1 - 10
+    const CONSISTENCY = [
+                          "q1_perform_the_same_activities_in_the_hour_before_bed",
+                          "q2_perform_activities_in_the_same_order_before_going_to_bed",
+                          "q3_sleep_in_the_same_place",
+                          "q4_go_to_bed_at_the_same_time",
+                          "q5_get_put_to_bed_by_the_same_person",
+                          "q6_perform_the_same_activities_in_the_hour_before_bed",
+                          "q7_perform_activities_in_the_same_order_before_going_to_bed",
+                          "q8_sleep_in_the_same_place",
+                          "q9_go_to_bed_at_the_same_time",
+                          "q10_get_put_to_bed_by_the_same_person",
+                        ];
+
+    // 11 - 15
+    const REACTIVITY = [
+                         "q11_perform_the_same_activities_in_the_hour_before_bed",
+                         "q12_perform_activities_in_the_same_order_before_going_to_bed",
+                         "q13_sleep_in_the_same_place",
+                         "q14_go_to_bed_at_the_same_time",
+                         "q15_get_put_to_bed_by_the_same_person",
+                       ];
+
+    // 16 and 23 - 31
+    const ADAPTIVE = [
+                       "q16_read_listen_to_a_story",
+                       "q23_take_a_shower_bath",
+                       "q24_brush_teeth",
+                       "q25_use_the_toilet",
+                       "q26_hug_kiss_caregiver",
+                       "q27_say_goodnight_to_family_member",
+                       "q28_get_tucked_in",
+                       "q29_put_on_pajamas",
+                       "q30_say_prayers",
+                       "q31_cuddle_with_caregiver",
+                     ];
+
+    // 17 - 22
+    const MALADAPTIVE = [
+                          "q17_play_with_games_or_toys",
+                          "q18_have_active_play",
+                          "q19_watch_tv",
+                          "q20_play_video_games",
+                          "q21_listen_to_music",
+                          "q22_have_a_snack_or_drink",
+                        ];
+
+}
