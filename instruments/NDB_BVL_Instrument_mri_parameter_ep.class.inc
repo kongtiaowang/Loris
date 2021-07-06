@@ -66,7 +66,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
                               );      
     const R1_R9    = array(
                                ""          => "",
-                               "0"         => "0"
+                               "0"         => "0",
                                "1"         => "1",
                                "2"         => "2",
                                "3"         => "3",
@@ -78,7 +78,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
                                "9"         => "9",                                                                                                                                                                                                                        
                               );                   
 
-    const complete_partial_none    = array(
+    const complete_partial_none = array(
                                ""          => "",
                                "1"         => "Complete",
                                "0"         => "Partial",
@@ -341,19 +341,32 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
     function _page1()
     {
 
-        $option1 = [null =>'','By_Specialist'=>'By Specialist','MR_Tech'=>'MR Tech','Parent_or_Guardian'=>'Parent or Guardian'];
-        $option2 = [null =>'','full_protocol_acquired'=>'Full Protocol Acquired',
-                              'only_core_acquired'=>'Only Core Acquired',
-                              'partial_core_acquired'=>'Partial Core Acquired',
-                              'none_core_acquired'=>'None',
-                              ];
-        $option3 = [null =>'','subject_woke_up'=>'Subject woke up',
-                              'ran_out_of_time'=>'Ran out of time',
-                              'subject_did_not_sleep'=>'Subject did not sleep',
-                              'none_core_acquired'=>'Scanner issues',
-                              'family_canceled'=>'Family canceled',
-                              'family_declined_2nd_attempt'=>'Family declined 2nd attempt',
-                              ];        
+	    $option1 = [
+		    null                 =>'',
+		    'By_Specialist'      =>'By Specialist',
+		    'MR_Tech'            =>'MR Tech',
+		    'Parent_or_Guardian' =>'Parent or Guardian',
+	               ];
+
+
+	    $option2 = [
+		    null =>'',
+		    'full_protocol_acquired'   =>'Full Protocol Acquired',
+                    'only_core_acquired'       =>'Only Core Acquired',
+                    'partial_core_acquired'    =>'Partial Core Acquired',
+                    'none_core_acquired'       =>'None',
+                       ];
+	    
+	    
+	    $option3 = [
+		    null                           =>'',
+		    'subject_woke_up'              =>'Subject woke up',
+                    'ran_out_of_time'              =>'Ran out of time',
+                    'subject_did_not_sleep'        =>'Subject did not sleep',
+                    'none_core_acquired'           =>'Scanner issues',
+                    'family_canceled'              =>'Family canceled',
+                    'family_declined_2nd_attempt'  =>'Family declined 2nd attempt',
+                       ];        
 
         $this->form->addElement('header', null, "Record");
 
