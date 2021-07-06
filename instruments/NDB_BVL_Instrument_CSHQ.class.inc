@@ -184,7 +184,8 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
             $this->addSelect(
                 "which_cshq_did_you_administer",
                 "Which CSHQ did you administer?",
-                $cshq_options
+                $cshq_options,
+                ['disabled' => 'disabled']
             );
         // Participants who fill the survey cannot answer the question: they can only
         // see what type of questionnaire they are filling

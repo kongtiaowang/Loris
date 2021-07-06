@@ -114,22 +114,18 @@ class NDB_BVL_Instrument_SCAARED_Dad extends NDB_BVL_Instrument
 
         $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
 
-        $label = 'Please select Yes to confirm that you are the enrolled childs biological father';
+        $label = "Please click this bubble 'Yes' to confirm that you are the enrolled childs biological father";
 
         $this->form->addElement(
             'select',
             'respondent',
             $label,
-            array(
-             ''         => '',
-             'No'       => 'No',
-             'Yes'      => 'Yes',
+	    array(
+             null       => '',
+             'Yes'      => 'Yes'
             )
         );
 
-        $this->XINRegisterRule('respondent', array('respondent{@}=={@}Yes'), 'Required');
-
-        $this->form->addFormRule(array(&$this, 'validate_main_page'));
 
         // SCORING TABLE
 
@@ -258,17 +254,6 @@ class NDB_BVL_Instrument_SCAARED_Dad extends NDB_BVL_Instrument
         foreach ($page2_questions as $field => $label) {
             $this->addSelect($field, $label, self::OPTIONS);
         }
-    }
-
-    function validate_main_page($values)
-    {
-        $errors = [];
-
-        if ($values["respondent"] != "Yes") {
-            $this->validate_empty_subquestions($values, ["respondent"], $errors);
-        }
-
-        return $errors;
     }
 
     function sumScaleScores($question_array, $record)
