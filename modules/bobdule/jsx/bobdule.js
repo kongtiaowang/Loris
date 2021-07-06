@@ -427,12 +427,6 @@ class Bobdule extends Component {
       },
     ];
 
-    // const style = {
-    //   overflow: 'hidden',
-    //   height: '100%',
-    //   width: '100%',
-    // };
-
     return (
       <div>
         <FilterableDataTable
@@ -442,7 +436,6 @@ class Bobdule extends Component {
           getFormattedCell={this.formatColumn}
         />
         <Modal show={this.state.commentID !== ''} onClose={this.closeModal}>
-          {/* <iframe src={this.state.formURL} style={style} height="100%" width="100%"/> */}
           <DirectEntry commentID={this.state.commentID} close={this.closeModal}/>
         </Modal>
       </div>
