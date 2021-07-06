@@ -153,12 +153,12 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
     function _hasFormTypeQuestion()
     {
         // If the comment ID is null (e.g. data dictionnary building process)
-        // then the for question is used
+        // then the form question is used
         if (is_null($this->getCommentID())) {
             return true;
         }
 
-        return !is_null(isset($_SESSION) && $_SESSION['State']->getUsername());
+        return isset($_SESSION) && !is_null($_SESSION['State']->getUsername());
     }
 
     /**
