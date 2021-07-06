@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import FilterableDataTable from 'FilterableDataTable';
 import Modal from './Modal';
+import DirectEntry from './DirectEntry';
 
 /**
  * Module designed for Bob McKinstry to simplify data entry for Final Radiological Form. The module lists all candidates
@@ -18,7 +19,7 @@ class Bobdule extends Component {
       visitOptions: {},
       error: false,
       isLoaded: false,
-      formURL: '',
+      commentID: '',
     };
 
     this.fetchData = this.fetchData.bind(this);
@@ -180,7 +181,7 @@ class Bobdule extends Component {
         // If action is launch form, launch the form.
         post.then(() => {
           this.setState({
-            formURL: url,
+            commentID: row['CommentID'],
           });
         });
       } else {
@@ -224,7 +225,7 @@ class Bobdule extends Component {
    */
   closeModal() {
     this.setState({
-      formURL: '',
+      commentID: '',
     });
     this.fetchData();
   }
@@ -426,11 +427,11 @@ class Bobdule extends Component {
       },
     ];
 
-    const style = {
-      overflow: 'hidden',
-      height: '100%',
-      width: '100%',
-    };
+    // const style = {
+    //   overflow: 'hidden',
+    //   height: '100%',
+    //   width: '100%',
+    // };
 
     return (
       <div>
@@ -440,8 +441,9 @@ class Bobdule extends Component {
           fields={fields}
           getFormattedCell={this.formatColumn}
         />
-        <Modal show={this.state.formURL !== ''} onClose={this.closeModal}>
-          <iframe src={this.state.formURL} style={style} height="100%" width="100%"/>
+        <Modal show={this.state.commentID !== ''} onClose={this.closeModal}>
+          {/* <iframe src={this.state.formURL} style={style} height="100%" width="100%"/> */}
+          <DirectEntry commentID={this.state.commentID} close={this.closeModal}/>
         </Modal>
       </div>
     );
