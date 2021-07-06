@@ -64,7 +64,8 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
                                "4"         => "Session 4",
                               );      
     const R1_R9    = array(
-                               ""           => "",
+                               ""          => "",
+                               "0"         => "0",
                                "1"         => "1",
                                "2"         => "2",
                                "3"         => "3",
@@ -398,21 +399,21 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
 
         $this->addTextElement(
             'height',
-            'Height (cms):'
+            'Height (Feet):'
         );
 
                 $this->XINRegisterRule("height", array("height{@}=={@}NEVER_REQUIRED"));
 
         $this->addTextElement(
             'weight',
-            'Weight (kgs):'
+            'Weight (Lbs):'
         );
                 $this->XINRegisterRule("weight", array("weight{@}=={@}NEVER_REQUIRED"));
 
 
         $this->addTextElement(
             'head_circumference',
-            'Head Circumference (cms):'
+            'Head Circumference (Inches):'
         );
                 $this->XINRegisterRule("head_circumference", array("head_circumference{@}=={@}NEVER_REQUIRED"));
 
