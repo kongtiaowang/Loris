@@ -1,0 +1,10 @@
+ALTER TABLE SIHI ADD COLUMN i_q4_if_sleep_specialist enum('0','1','2') default NULL;
+ALTER TABLE SIHI ADD COLUMN i_q5_if_medication_select_which_medicine_your_child_used enum('0','1','2','3','4','5','6','7','8','9','10','11') default NULL;
+ALTER TABLE SIHI ADD COLUMN ii_q4_if_sleep_specialist enum('0','1','2') default NULL;
+ALTER TABLE SIHI ADD COLUMN ii_q5_if_medication_select_which_medicine_your_child_used enum('0','1','2','3','4','5','6','7','8','9','10','11') default NULL;
+ALTER TABLE SIHI ADD COLUMN iii_q4_if_sleep_specialist enum('0','1','2') default NULL;
+ALTER TABLE SIHI ADD COLUMN iii_q5_if_medication_select_which_medicine_your_child_used enum('0','1','2','3','4','5','6','7','8','9','10','11') default NULL;
+ALTER TABLE SIHI ADD COLUMN iv_q4_if_sleep_specialist enum('0','1','2') default NULL;
+ALTER TABLE SIHI ADD COLUMN iv_q5_if_medication_select_which_medicine_your_child_used enum('0','1','2','3','4','5','6','7','8','9','10','11') default NULL;
+ALTER TABLE SIHI ADD COLUMN v_q4_if_sleep_specialist enum('0','1','2') default NULL;
+ALTER TABLE SIHI ADD COLUMN v_q5_if_medication_select_which_medicine_your_child_used enum('0','1','2','3','4','5','6','7','8','9','10','11') default NULL;

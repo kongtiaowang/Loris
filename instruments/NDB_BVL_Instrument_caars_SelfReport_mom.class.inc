@@ -162,7 +162,7 @@ class NDB_BVL_Instrument_caars_SelfReport_mom extends NDB_BVL_Instrument
         
         $columnHeaders = array( 
                                 "score" => "Score",
-                                "percentile" => "Percentile",
+                                "percentile" => "T-score",
                                 );
 
         foreach ($columnHeaders as $field => $label) {
@@ -304,7 +304,7 @@ class NDB_BVL_Instrument_caars_SelfReport_mom extends NDB_BVL_Instrument
         $d_raw_score = $scores['d_raw_score'];
         $e_raw_score = $scores['e_raw_score'];
         $respondent_age = $score_record['respondent_age'];
-        $respondent_gender = $score_record['gender'];
+        $respondent_gender = $score_record['respondent_gender'];
 
 
         if($respondent_gender == 'male'){
