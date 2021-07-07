@@ -286,57 +286,57 @@ SET Vineland_DS_Infant.motor_skills_base_rate = (
 ) WHERE Vineland_DS_Infant.File_name IS NULL;
 
 UPDATE Vineland_DS_Infant 
-SET Vineland_DS_Infant.recDS_Infanttive_RAW_SCORE = (
-    SELECT Vineland_SA.recDS_Infanttive_RAW_SCORE
+SET Vineland_DS_Infant.receptive_RAW_SCORE = (
+    SELECT Vineland_SA.receptive_RAW_SCORE
     FROM Vineland_SA
     WHERE Vineland_SA.CommentID = Vineland_DS_Infant.CommentID 
 ) WHERE Vineland_DS_Infant.File_name IS NULL;
 
 UPDATE Vineland_DS_Infant 
-SET Vineland_DS_Infant.recDS_Infanttive_v_Scale_Score = (
-    SELECT Vineland_SA.recDS_Infanttive_v_Scale_Score
+SET Vineland_DS_Infant.receptive_v_Scale_Score = (
+    SELECT Vineland_SA.receptive_v_Scale_Score
     FROM Vineland_SA
     WHERE Vineland_SA.CommentID = Vineland_DS_Infant.CommentID 
 ) WHERE Vineland_DS_Infant.File_name IS NULL;
 
 UPDATE Vineland_DS_Infant 
-SET Vineland_DS_Infant.recDS_Infanttive_age_equiv = (
-    SELECT Vineland_SA.recDS_Infanttive_age_equiv
+SET Vineland_DS_Infant.receptive_age_equiv = (
+    SELECT Vineland_SA.receptive_age_equiv
     FROM Vineland_SA
     WHERE Vineland_SA.CommentID = Vineland_DS_Infant.CommentID 
 ) WHERE Vineland_DS_Infant.File_name IS NULL;
 
 UPDATE Vineland_DS_Infant 
-SET Vineland_DS_Infant.recDS_Infanttive_growth_scale_value = (
-    SELECT Vineland_SA.recDS_Infanttive_growth_scale_value
+SET Vineland_DS_Infant.receptive_growth_scale_value = (
+    SELECT Vineland_SA.receptive_growth_scale_value
     FROM Vineland_SA
     WHERE Vineland_SA.CommentID = Vineland_DS_Infant.CommentID 
 ) WHERE Vineland_DS_Infant.File_name IS NULL;
 
 UPDATE Vineland_DS_Infant 
-SET Vineland_DS_Infant.recDS_Infanttive_percent_estimated = (
-    SELECT Vineland_SA.recDS_Infanttive_percent_estimated
+SET Vineland_DS_Infant.receptive_percent_estimated = (
+    SELECT Vineland_SA.receptive_percent_estimated
     FROM Vineland_SA
     WHERE Vineland_SA.CommentID = Vineland_DS_Infant.CommentID 
 ) WHERE Vineland_DS_Infant.File_name IS NULL;
 
 UPDATE Vineland_DS_Infant 
-SET Vineland_DS_Infant.recDS_Infanttive_vs_minus_mean_vs = (
-    SELECT Vineland_SA.recDS_Infanttive_vs_minus_mean_vs
+SET Vineland_DS_Infant.receptive_vs_minus_mean_vs = (
+    SELECT Vineland_SA.receptive_vs_minus_mean_vs
     FROM Vineland_SA
     WHERE Vineland_SA.CommentID = Vineland_DS_Infant.CommentID 
 ) WHERE Vineland_DS_Infant.File_name IS NULL;
 
 UPDATE Vineland_DS_Infant 
-SET Vineland_DS_Infant.recDS_Infanttive_strength_weakness = (
-    SELECT Vineland_SA.recDS_Infanttive_strength_weakness
+SET Vineland_DS_Infant.receptive_strength_weakness = (
+    SELECT Vineland_SA.receptive_strength_weakness
     FROM Vineland_SA
     WHERE Vineland_SA.CommentID = Vineland_DS_Infant.CommentID 
 ) WHERE Vineland_DS_Infant.File_name IS NULL;
 
 UPDATE Vineland_DS_Infant 
-SET Vineland_DS_Infant.recDS_Infanttive_base_rate = (
-    SELECT Vineland_SA.recDS_Infanttive_base_rate
+SET Vineland_DS_Infant.receptive_base_rate = (
+    SELECT Vineland_SA.receptive_base_rate
     FROM Vineland_SA
     WHERE Vineland_SA.CommentID = Vineland_DS_Infant.CommentID 
 ) WHERE Vineland_DS_Infant.File_name IS NULL;
