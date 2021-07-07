@@ -157,7 +157,7 @@ class NDB_BVL_Instrument_QRS_Proband extends NDB_BVL_Instrument
             $this->indent 3 = <b><u>Partial disagreement</u></b> with the statement.<br>
 
 	    $this->indent 4 = <b><u>Strong disagreement</u></b> with the statement.
-	    <br>
+	    <br><br>
 	    Example: The family eats dinner together. 1 2 3 4
             <br><br>
             If the family always or almost always eats dinner together, the
@@ -172,7 +172,7 @@ class NDB_BVL_Instrument_QRS_Proband extends NDB_BVL_Instrument
 	    <br><br>
 	    Please answer all questions, even if they do not seem to apply. The questions are general, 
             and sometimes refer to children who have characteristics that your child may not have. 
-            In such instances you can still answer by circling 4, that is, strong disagreement with the statement."
+            In such instances you can still answer by circling 4, that is, strong disagreement with the statement.<br><br>"
         );
 
         $options = array(
@@ -256,9 +256,9 @@ class NDB_BVL_Instrument_QRS_Proband extends NDB_BVL_Instrument
 
             $this->indent 2 = <b><u>Partial agreement</u></b> with the statement.<br>
 
-            $this->indent 3 = <b><u>Partial disagreement</u></b> with the statement.<br>
+	    $this->indent 3 = <b><u>Partial disagreement</u></b> with the statement.<br>
 
-            $this->indent 4 = <b><u>Strong disagreement</u></b> with the statement."
+            $this->indent 4 = <b><u>Strong disagreement</u></b> with the statement.<br><br>"
         );
 
         $options = array(
@@ -326,7 +326,7 @@ class NDB_BVL_Instrument_QRS_Proband extends NDB_BVL_Instrument
 
             $this->indent 3 = <b><u>Partial disagreement</u></b> with the statement.<br>
 
-            $this->indent 4 = <b><u>Strong disagreement</u></b> with the statement."
+            $this->indent 4 = <b><u>Strong disagreement</u></b> with the statement.<br><br>"
         );
 
         $options = array(

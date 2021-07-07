@@ -197,8 +197,9 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
         $this->addTextAreaElement('note_1_1', 'Artifact/Net Movement Notes:');
         $this->addTextAreaElement('note_1_2', 'General Notes (soothing devices used, child behavior, breaks taken, etc.):');
 	$this->addSelect('mood_1', 'Mood:', array(null => "", "1" => "1", "2" => "2", "3" => "3", "4" => "4", "5" => "5"));
-	$this->XINRegisterRule("mood_1", array("mood_1{@}=={@}NEVER_REQUIRED"));
-        $this->addSelect('paradigm_completed_1', 'Paradigm Completed?', self::PARADIGM_COMPLETENESS);
+	$this->addSelect('paradigm_completed_1', 'Paradigm Completed?', self::PARADIGM_COMPLETENESS);
+	$this->XINRegisterRule('mood_1', array('paradigm_completed_1{@}=={@}y|p'), 'Required if yes or partial');
+        $this->form->addFormRule(array(&$this, 'validate_pages'));
     }
 
     /**
@@ -212,8 +213,9 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
         $this->addTextAreaElement("note_2_1", "Artifact/Net Movement Notes:");
         $this->addTextAreaElement("note_2_2", "General Notes (soothing devices used, child behavior, breaks taken, etc.):");
 	$this->addSelect('mood_2', 'Mood:', array(null => "", "1" => "1", "2" => "2", "3" => "3", "4" => "4", "5" => "5"));
-	$this->XINRegisterRule("mood_2", array("mood_2{@}=={@}NEVER_REQUIRED"));
-        $this->addSelect('paradigm_completed_2', 'Paradigm Completed?', self::PARADIGM_COMPLETENESS);
+	$this->addSelect('paradigm_completed_2', 'Paradigm Completed?', self::PARADIGM_COMPLETENESS);
+	$this->XINRegisterRule('mood_2', array('paradigm_completed_2{@}=={@}y|p'), 'Required if yes or partial');
+        $this->form->addFormRule(array(&$this, 'validate_pages'));
     }
 
     /**
@@ -227,8 +229,9 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
         $this->addTextAreaElement("note_3_1", "Artifact/Net Movement Notes:");
         $this->addTextAreaElement("note_3_2", "General Notes (soothing devices used, child behavior, breaks taken, etc.):");
 	$this->addSelect('mood_3', 'Mood:', array(null => "", "1" => "1", "2" => "2", "3" => "3", "4" => "4", "5" => "5"));
-	$this->XINRegisterRule("mood_3", array("mood_3{@}=={@}NEVER_REQUIRED"));
-        $this->addSelect('paradigm_completed_3', 'Paradigm Completed?', self::PARADIGM_COMPLETENESS);
+	$this->addSelect('paradigm_completed_3', 'Paradigm Completed?', self::PARADIGM_COMPLETENESS);
+	$this->XINRegisterRule('mood_3', array('paradigm_completed_3{@}=={@}y|p'), 'Required if yes or partial');
+        $this->form->addFormRule(array(&$this, 'validate_pages'));
     }
 
     /**
@@ -242,8 +245,9 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
         $this->addTextAreaElement("note_4_1", "Artifact/Net Movement Notes:");
         $this->addTextAreaElement("note_4_2", "General Notes (soothing devices used, child behavior, breaks taken, etc.):");
 	$this->addSelect('mood_4', 'Mood:', array(null => "", "1" => "1", "2" => "2", "3" => "3", "4" => "4", "5" => "5"));
-	$this->XINRegisterRule("mood_4", array("mood_4{@}=={@}NEVER_REQUIRED"));
-        $this->addSelect('paradigm_completed_4', 'Paradigm Completed?', self::PARADIGM_COMPLETENESS);
+	$this->addSelect('paradigm_completed_4', 'Paradigm Completed?', self::PARADIGM_COMPLETENESS);
+	$this->XINRegisterRule('mood_4', array('paradigm_completed_4{@}=={@}y|p'), 'Required if yes or partial');
+        $this->form->addFormRule(array(&$this, 'validate_pages'));
     }
 
     /**
@@ -257,9 +261,10 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
         $this->addTextAreaElement("note_5_1", "Artifact/Net Movement Notes:");
         $this->addTextAreaElement("note_5_2", "General Notes (soothing devices used, child behavior, breaks taken, etc.):");
 	$this->addSelect('mood_5', 'Mood:', array(null => "", "1" => "1", "2" => "2", "3" => "3", "4" => "4", "5" => "5"));
-	$this->XINRegisterRule("mood_5", array("mood_5{@}=={@}NEVER_REQUIRED"));
         //$this->addTextElement("trials_completed_5", "Trials Completed:");
-        $this->addSelect('paradigm_completed_5', 'Paradigm Completed?', self::PARADIGM_COMPLETENESS);
+	$this->addSelect('paradigm_completed_5', 'Paradigm Completed?', self::PARADIGM_COMPLETENESS);
+	$this->XINRegisterRule('mood_5', array('paradigm_completed_5{@}=={@}y|p'), 'Required if yes or partial');
+        $this->form->addFormRule(array(&$this, 'validate_pages'));
     }
 
     /**
@@ -526,6 +531,33 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
                 }
             } // else
         } // foreach
+
+        return $errors;
+    }
+
+    function validate_pages($values)
+    {
+        $errors = [];
+
+        if ($values["paradigm_completed_1"] != "y" || $values["paradigm_completed_1"] != "p") {
+            $this->validate_empty_subquestions($values, ["mood_1"], $errors);
+        }
+
+        if ($values["paradigm_completed_2"] != "y" || $values["paradigm_completed_2"] != "p") {
+            $this->validate_empty_subquestions($values, ["mood_2"], $errors);
+        }
+
+        if ($values["paradigm_completed_3"] != "y" || $values["paradigm_completed_3"] != "p") {
+            $this->validate_empty_subquestions($values, ["mood_3"], $errors);
+        }
+
+        if ($values["paradigm_completed_4"] != "y" || $values["paradigm_completed_4"] != "p") {
+            $this->validate_empty_subquestions($values, ["mood_4"], $errors);
+        }
+
+        if ($values["paradigm_completed_5"] != "y" || $values["paradigm_completed_5"] != "p") {
+            $this->validate_empty_subquestions($values, ["mood_5"], $errors);
+        }
 
         return $errors;
     }
