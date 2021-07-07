@@ -110,7 +110,7 @@ class NDB_BVL_Instrument_SCAARED_Dad extends NDB_BVL_Instrument
     function _main()
     {
         // display test name
-        $this->addHeader("SCARED (Screen for Adult Anxiety Related Disorders) - Adult - Dad - Survey");
+        $this->addHeader("SCAARED (Screen for Adult Anxiety Related Disorders) - Adult - Dad - Survey");
 
         $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
 
@@ -167,7 +167,7 @@ class NDB_BVL_Instrument_SCAARED_Dad extends NDB_BVL_Instrument
      */
     function _page1()
     {
-        $this->addHeader("SCARED (Screen for Adult Anxiety Related Disorders) - Adult - Dad - Survey");
+        $this->addHeader("SCAARED (Screen for Adult Anxiety Related Disorders) - Adult - Dad - Survey");
 
         $this->form->addElement(
             'static',
@@ -213,7 +213,7 @@ class NDB_BVL_Instrument_SCAARED_Dad extends NDB_BVL_Instrument
      */
     function _page2()
     {
-        $this->addHeader("SCARED (Screen for Adult Anxiety Related Disorders) - Adult - Dad - Survey");
+        $this->addHeader("SCAARED (Screen for Adult Anxiety Related Disorders) - Adult - Dad - Survey");
 
         $this->form->addElement(
             'static',
