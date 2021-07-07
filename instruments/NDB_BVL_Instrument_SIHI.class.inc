@@ -202,6 +202,18 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
         );
         $this->XINRegisterRule('i_q4_if_yes_select_source', array('i_q4_seek_information_to_help_child_sleep_better{@}=={@}yes'), 'Required if yes');
 
+	$this->addSelect(
+            "i_q4_if_sleep_specialist",
+            $this->indent . "If sleep specialist, was it a short term or long-term consult?",
+	    array(
+	     "",
+             "Short Term (1 to 2 sessions)",
+             "Long Term (3 or more sessions)",
+            )
+        );
+        
+        $this->XINRegisterRule('i_q4_if_sleep_specialist', array('i_q4_if_yes_select_source{@}=={@}Sleep specialist'), 'Required if Sleep specialist');
+
         $this->addSelect("i_q5_did_child_receive_intervention", "5. Did your child receive any intervention or take medication or supplements for sleep?", $yes_no_options);
 
         $this->addSelect(
@@ -215,6 +227,27 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
             )
         );
         $this->XINRegisterRule('i_q5_if_yes_select', array('i_q5_did_child_receive_intervention{@}=={@}yes'), 'Required if yes');
+
+	$this->addSelect(
+            "i_q5_if_medication_select_which_medicine_your_child_used",
+            $this->indent . "If medication, select which medicine your child used:",
+	    array(
+	     "",
+             "Melatonin",
+             "Clonidine (Catapres, Kapvay, Nexiclon)",
+             "Trazodone (Desyrel, Desyrel Dividose, Oleptro,Trazodone D)",
+             "Mirtazapine (Remeron, Remeron SolTab)",
+             "Risperidone (Risperdal, Risperdal Consta, Risperdal M-Tab)",
+             "Quetiapine (Seroquel, Seroquel XR)",
+             "Zolpidem (Ambien, Ambien CR, Edluar, Zolpimist, Intermezzo)",
+             "Zaleplon (Sonata)",
+             "Temazepam (Restoril)",
+             "Eszopiclone (Lunesta)",
+             "Clonazepam (Klonopin)",
+            )
+        );
+
+        $this->XINRegisterRule('i_q5_if_medication_select_which_medicine_your_child_used', array('i_q5_if_yes_select{@}=={@}Medication (e.g., melatonin, clonidine, trazodone, remeron, risperdal, seroqual, ambien, benzodiazepines)'), 'Required if medication');
 
         $this->form->addFormRule(array(&$this, 'validate_page1'));
     }
@@ -273,6 +306,18 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
         );
         $this->XINRegisterRule('ii_q4_if_yes_select_source', array('q4_seek_information_to_help_child_sleep_better{@}=={@}yes'), 'Required if yes');
 
+	 $this->addSelect(
+            "ii_q4_if_sleep_specialist",
+            $this->indent . "If sleep specialist, was it a short term or long-term consult?",
+	    array(
+             "",
+             "Short Term (1 to 2 sessions)",
+             "Long Term (3 or more sessions)",
+            )
+        );
+        
+        $this->XINRegisterRule('ii_q4_if_sleep_specialist', array('ii_q4_if_yes_select_source{@}=={@}Sleep specialist'), 'Required if Sleep specialist');
+
         $this->addSelect("ii_q5_did_child_receive_intervention", "5. Did your child receive any intervention or take medication or supplements for sleep?", $yes_no_options);
 
         $this->addSelect(
@@ -286,6 +331,27 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
             )
         );
         $this->XINRegisterRule('ii_q5_if_yes_select', array('q5_did_child_receive_intervention{@}=={@}yes'), 'Required if yes');
+
+	$this->addSelect(
+            "ii_q5_if_medication_select_which_medicine_your_child_used",
+            $this->indent . "If medication, select which medicine your child used:",
+	    array(
+	     "",
+             "Melatonin",
+             "Clonidine (Catapres, Kapvay, Nexiclon)",
+             "Trazodone (Desyrel, Desyrel Dividose, Oleptro,Trazodone D)",
+             "Mirtazapine (Remeron, Remeron SolTab)",
+             "Risperidone (Risperdal, Risperdal Consta, Risperdal M-Tab)",
+             "Quetiapine (Seroquel, Seroquel XR)",
+             "Zolpidem (Ambien, Ambien CR, Edluar, Zolpimist, Intermezzo)",
+             "Zaleplon (Sonata)",
+             "Temazepam (Restoril)",
+             "Eszopiclone (Lunesta)",
+             "Clonazepam (Klonopin)",
+            )
+        );
+
+        $this->XINRegisterRule('ii_q5_if_medication_select_which_medicine_your_child_used', array('ii_q5_if_yes_select{@}=={@}Medication (e.g., melatonin, clonidine, trazodone, remeron, risperdal, seroqual, ambien, benzodiazepines)'), 'Required if medication');
 
         $this->form->addFormRule(array(&$this, 'validate_page2'));
     }
@@ -344,6 +410,18 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
         );
         $this->XINRegisterRule('iii_q4_if_yes_select_source', array('iii_q4_seek_information_to_help_child_sleep_better{@}=={@}yes'), 'Required if yes');
 
+	$this->addSelect(
+            "iii_q4_if_sleep_specialist",
+            $this->indent . "If sleep specialist, was it a short term or long-term consult?",
+	    array(
+	     "",
+             "Short Term (1 to 2 sessions)",
+             "Long Term (3 or more sessions)",
+            )
+        );
+        
+        $this->XINRegisterRule('iii_q4_if_sleep_specialist', array('iii_q4_if_yes_select_source{@}=={@}Sleep specialist'), 'Required if Sleep specialist');
+
         $this->addSelect("iii_q5_did_child_receive_intervention", "5. Did your child receive any intervention or take medication or supplements for sleep?", $yes_no_options);
 
         $this->addSelect(
@@ -357,6 +435,27 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
             )
         );
         $this->XINRegisterRule('iii_q5_if_yes_select', array('iii_q5_did_child_receive_intervention{@}=={@}yes'), 'Required if yes');
+
+	$this->addSelect(
+            "iii_q5_if_medication_select_which_medicine_your_child_used",
+            $this->indent . "If medication, select which medicine your child used:",
+	    array(
+	     "",
+             "Melatonin",
+             "Clonidine (Catapres, Kapvay, Nexiclon)",
+             "Trazodone (Desyrel, Desyrel Dividose, Oleptro,Trazodone D)",
+             "Mirtazapine (Remeron, Remeron SolTab)",
+             "Risperidone (Risperdal, Risperdal Consta, Risperdal M-Tab)",
+             "Quetiapine (Seroquel, Seroquel XR)",
+             "Zolpidem (Ambien, Ambien CR, Edluar, Zolpimist, Intermezzo)",
+             "Zaleplon (Sonata)",
+             "Temazepam (Restoril)",
+             "Eszopiclone (Lunesta)",
+             "Clonazepam (Klonopin)",
+            )
+        );
+
+        $this->XINRegisterRule('iii_q5_if_medication_select_which_medicine_your_child_used', array('iii_q5_if_yes_select{@}=={@}Medication (e.g., melatonin, clonidine, trazodone, remeron, risperdal, seroqual, ambien, benzodiazepines)'), 'Required if medication');
 
         $this->form->addFormRule(array(&$this, 'validate_page3'));
     }
@@ -415,6 +514,18 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
         );
         $this->XINRegisterRule('iv_q4_if_yes_select_source', array('iv_q4_seek_information_to_help_child_sleep_better{@}=={@}yes'), 'Required if yes');
 
+	$this->addSelect(
+            "iv_q4_if_sleep_specialist",
+            $this->indent . "If sleep specialist, was it a short term or long-term consult?",
+	    array(
+	     "",
+             "Short Term (1 to 2 sessions)",
+             "Long Term (3 or more sessions)",
+            )
+        );
+        
+        $this->XINRegisterRule('iv_q4_if_sleep_specialist', array('iv_q4_if_yes_select_source{@}=={@}Sleep specialist'), 'Required if Sleep specialist');
+
         $this->addSelect("iv_q5_did_child_receive_intervention", "5. Did your child receive any intervention or take medication or supplements for sleep?", $yes_no_options);
 
         $this->addSelect(
@@ -428,6 +539,27 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
             )
         );
         $this->XINRegisterRule('iv_q5_if_yes_select', array('iv_q5_did_child_receive_intervention{@}=={@}yes'), 'Required if yes');
+
+	$this->addSelect(
+            "iv_q5_if_medication_select_which_medicine_your_child_used",
+            $this->indent . "If medication, select which medicine your child used:",
+	    array(
+             "",
+             "Melatonin",
+             "Clonidine (Catapres, Kapvay, Nexiclon)",
+             "Trazodone (Desyrel, Desyrel Dividose, Oleptro,Trazodone D)",
+             "Mirtazapine (Remeron, Remeron SolTab)",
+             "Risperidone (Risperdal, Risperdal Consta, Risperdal M-Tab)",
+             "Quetiapine (Seroquel, Seroquel XR)",
+             "Zolpidem (Ambien, Ambien CR, Edluar, Zolpimist, Intermezzo)",
+             "Zaleplon (Sonata)",
+             "Temazepam (Restoril)",
+             "Eszopiclone (Lunesta)",
+             "Clonazepam (Klonopin)",
+            )
+        );
+
+        $this->XINRegisterRule('iv_q5_if_medication_select_which_medicine_your_child_used', array('iv_q5_if_yes_select{@}=={@}Medication (e.g., melatonin, clonidine, trazodone, remeron, risperdal, seroqual, ambien, benzodiazepines)'), 'Required if medication');
 
         $this->form->addFormRule(array(&$this, 'validate_page4'));
     }
@@ -486,6 +618,18 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
         );
         $this->XINRegisterRule('v_q4_if_yes_select_source', array('v_q4_seek_information_to_help_child_sleep_better{@}=={@}yes'), 'Required if yes');
 
+	 $this->addSelect(
+            "v_q4_if_sleep_specialist",
+            $this->indent . "If sleep specialist, was it a short term or long-term consult?",
+	    array(
+	     "",
+             "Short Term (1 to 2 sessions)",
+             "Long Term (3 or more sessions)",
+            )
+        );
+        
+        $this->XINRegisterRule('v_q4_if_sleep_specialist', array('v_q4_if_yes_select_source{@}=={@}Sleep specialist'), 'Required if Sleep specialist');
+
         $this->addSelect("v_q5_did_child_receive_intervention", "5. Did your child receive any intervention or take medication or supplements for sleep?", $yes_no_options);
 
         $this->addSelect(
@@ -499,6 +643,27 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
             )
         );
         $this->XINRegisterRule('v_q5_if_yes_select', array('v_q5_did_child_receive_intervention{@}=={@}yes'), 'Required if yes');
+
+	$this->addSelect(
+            "v_q5_if_medication_select_which_medicine_your_child_used",
+            $this->indent . "If medication, select which medicine your child used:",
+	    array(
+	     "",
+             "Melatonin",
+             "Clonidine (Catapres, Kapvay, Nexiclon)",
+             "Trazodone (Desyrel, Desyrel Dividose, Oleptro,Trazodone D)",
+             "Mirtazapine (Remeron, Remeron SolTab)",
+             "Risperidone (Risperdal, Risperdal Consta, Risperdal M-Tab)",
+             "Quetiapine (Seroquel, Seroquel XR)",
+             "Zolpidem (Ambien, Ambien CR, Edluar, Zolpimist, Intermezzo)",
+             "Zaleplon (Sonata)",
+             "Temazepam (Restoril)",
+             "Eszopiclone (Lunesta)",
+             "Clonazepam (Klonopin)",
+            )
+        );
+
+        $this->XINRegisterRule('v_q5_if_medication_select_which_medicine_your_child_used', array('v_q5_if_yes_select{@}=={@}Medication (e.g., melatonin, clonidine, trazodone, remeron, risperdal, seroqual, ambien, benzodiazepines)'), 'Required if medication');
 
         $this->form->addFormRule(array(&$this, 'validate_page5'));
     }
@@ -528,10 +693,18 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
 
         if ($values["i_q4_seek_information_to_help_child_sleep_better"] != "yes") {
             $this->validate_empty_subquestions($values, ["i_q4_if_yes_select_source"], $errors);
+	}
+
+	if ($values["i_q4_if_yes_select_source"] != "Sleep specialist") {
+            $this->validate_empty_subquestions($values, ["i_q4_if_sleep_specialist"], $errors);
         }
 
         if ($values["i_q5_did_child_receive_intervention"] != "yes") {
             $this->validate_empty_subquestions($values, ["i_q5_if_yes_select"], $errors);
+	}
+
+	if ($values["i_q5_if_yes_select"] != "Medication (e.g., melatonin, clonidine, trazodone, remeron, risperdal, seroqual, ambien, benzodiazepines)") {
+            $this->validate_empty_subquestions($values, ["i_q5_if_medication_select_which_medicine_your_child_used"], $errors);
         }
 
         return $errors;
@@ -551,10 +724,18 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
 
         if ($values["ii_q4_seek_information_to_help_child_sleep_better"] != "yes") {
             $this->validate_empty_subquestions($values, ["ii_q4_if_yes_select_source"], $errors);
+	}
+
+	if ($values["ii_q4_if_yes_select_source"] != "Sleep specialist") {
+            $this->validate_empty_subquestions($values, ["ii_q4_if_sleep_specialist"], $errors);
         }
 
         if ($values["ii_q5_did_child_receive_intervention"] != "yes") {
             $this->validate_empty_subquestions($values, ["ii_q5_if_yes_select"], $errors);
+	}
+
+	if ($values["ii_q5_if_yes_select"] != "Medication (e.g., melatonin, clonidine, trazodone, remeron, risperdal, seroqual, ambien, benzodiazepines)") {
+            $this->validate_empty_subquestions($values, ["ii_q5_if_medication_select_which_medicine_your_child_used"], $errors);
         }
 
         return $errors;
@@ -574,10 +755,18 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
 
         if ($values["iii_q4_seek_information_to_help_child_sleep_better"] != "yes") {
             $this->validate_empty_subquestions($values, ["iii_q4_if_yes_select_source"], $errors);
+	}
+
+	if ($values["iii_q4_if_yes_select_source"] != "Sleep specialist") {
+            $this->validate_empty_subquestions($values, ["iii_q4_if_sleep_specialist"], $errors);
         }
 
         if ($values["iii_q5_did_child_receive_intervention"] != "yes") {
             $this->validate_empty_subquestions($values, ["iii_q5_if_yes_select"], $errors);
+	}
+
+	if ($values["iii_q5_if_yes_select"] != "Medication (e.g., melatonin, clonidine, trazodone, remeron, risperdal, seroqual, ambien, benzodiazepines)") {
+            $this->validate_empty_subquestions($values, ["iii_q5_if_medication_select_which_medicine_your_child_used"], $errors);
         }
 
         return $errors;
@@ -597,10 +786,18 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
 
         if ($values["iv_q4_seek_information_to_help_child_sleep_better"] != "yes") {
             $this->validate_empty_subquestions($values, ["iv_q4_if_yes_select_source"], $errors);
+	}
+
+	if ($values["iv_q4_if_yes_select_source"] != "Sleep specialist") {
+            $this->validate_empty_subquestions($values, ["iv_q4_if_sleep_specialist"], $errors);
         }
 
         if ($values["iv_q5_did_child_receive_intervention"] != "yes") {
             $this->validate_empty_subquestions($values, ["iv_q5_if_yes_select"], $errors);
+	}
+
+	if ($values["iv_q5_if_yes_select"] != "Medication (e.g., melatonin, clonidine, trazodone, remeron, risperdal, seroqual, ambien, benzodiazepines)") {
+            $this->validate_empty_subquestions($values, ["iv_q5_if_medication_select_which_medicine_your_child_used"], $errors);
         }
 
         return $errors;
@@ -620,10 +817,18 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
 
         if ($values["v_q4_seek_information_to_help_child_sleep_better"] != "yes") {
             $this->validate_empty_subquestions($values, ["v_q4_if_yes_select_source"], $errors);
+	}
+
+	if ($values["v_q4_if_yes_select_source"] != "Sleep specialist") {
+            $this->validate_empty_subquestions($values, ["v_q4_if_sleep_specialist"], $errors);
         }
 
         if ($values["v_q5_did_child_receive_intervention"] != "yes") {
             $this->validate_empty_subquestions($values, ["v_q5_if_yes_select"], $errors);
+	}
+
+	if ($values["v_q5_if_yes_select"] != "Medication (e.g., melatonin, clonidine, trazodone, remeron, risperdal, seroqual, ambien, benzodiazepines)") {
+            $this->validate_empty_subquestions($values, ["v_q5_if_medication_select_which_medicine_your_child_used"], $errors);
         }
 
         return $errors;
