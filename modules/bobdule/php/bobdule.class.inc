@@ -84,6 +84,7 @@ class Bobdule extends \NDB_Menu_Filter_Form
             $deps,
             array(
                 $baseURL . "/bobdule/js/bobdule.js",
+                $baseURL . "/bobdule/js/CheckInput.js",
             )
         );
     }
