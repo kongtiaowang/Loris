@@ -30,6 +30,14 @@ class CouchDBDemographicsImporter {
             'Description' => 'NDAR Candidate Identifier',
             'Type' => 'varchar(255)'
         ),
+        'candidate_ethnicity' => array(
+            'Description' => 'Candidate Ethnicity',
+            'Type' => 'varchar(255)'
+        ),
+        'candidate_race' => array(
+            'Description' => 'Candidate Race',
+            'Type' => 'varchar(255)'
+        ),
         'Visit_label' => array(
             'Description' => 'Visit of Candidate',
             'Type' => 'varchar(255)'
@@ -529,8 +537,81 @@ group by s.CandID,s.Visit_label",
 
     }
 
+    /**
+     * Get the Candidate Race and Ethnicity from the Telephone Screening Interview administered at
+     * the first candidate visit.
+     *
+     * @param $candid
+     * @return array
+     */
+    function getTSIInfo($candid) {
 
+        // Get the TSI version administered at the first visit.
+        $first_visit = $this->SQLDB->pselect("
+                SELECT f.Test_name, f.CommentID
+                    FROM session s
+                    JOIN flag f on (s.ID=f.SessionID)
+                    WHERE s.VisitNo = 1
+		                AND f.Test_name IN ('tsi', 'tsi_ds', 'TSI_DS_Infant', 'TSI_EP')
+		                AND f.CommentID NOT LIKE 'DDE_%'
+                        AND s.CandID=:candID
+            ", array('candID' => $candid));
 
+        $candidate_ethnicity;
+        $candidate_race;
+
+        // Since there can be multiple versions of the TSI instrument at a visit, iterate through
+        // the ones present to determine which one was administered.
+        foreach ($first_visit as $tsi) {
+            $result = array();
+            switch ($tsi['Test_name']) {
+                case "tsi":
+                    $result = $this->SQLDB->pselectRow("
+                            SELECT child_ethnicity AS candidate_ethnicity,
+                                   candidate_race
+                                FROM tsi
+                                WHERE CommentID=:commentID
+                        ", array('commentID' => $tsi['CommentID']));
+                    break;
+                case "tsi_ds":
+                    $result = $this->SQLDB->pselectRow("
+                            SELECT child_ethnicity AS candidate_ethnicity,
+                                   candidate_race
+                                FROM tsi_ds
+                                WHERE CommentID=:commentID
+                        ", array('commentID' => $tsi['CommentID']));
+                    break;
+                case "TSI_DS_Infant":
+                    $result = $this->SQLDB->pselectRow("
+                            SELECT candidate_ethnicity,
+                                   candidate_race
+                                FROM TSI_DS_Infant
+                                WHERE CommentID=:commentID
+                        ", array('commentID' => $tsi['CommentID']));
+                    break;
+                case "TSI_EP":
+                    $result = $this->SQLDB->pselectRow("
+                            SELECT candidate_ethnicity,
+                                   candidate_race
+                                FROM TSI_EP
+                                WHERE CommentID=:commentID
+                        ", array('commentID' => $tsi['CommentID']));
+                    break;
+            }
+
+            // Check if some results were found, if so stop looping through versions.
+            if (!empty($result) && (!is_null($result['candidate_ethnicity']) || !is_null($result['candidate_race']))) {
+                $candidate_ethnicity = $result['candidate_ethnicity'];
+                $candidate_race = $result['candidate_race'];
+                break;
+            }
+        }
+
+        return array(
+            'candidate_ethnicity' => $candidate_ethnicity,
+            'candidate_race' => $candidate_race
+        );
+    }
 
     function run() {
         $config = $this->CouchDB->replaceDoc('Config:BaseConfig', $this->Config);
@@ -541,7 +622,7 @@ group by s.CandID,s.Visit_label",
         // Run query
         $demographics = $this->SQLDB->pselect($this->_generateQuery(), array());
 
-        $this->CouchDB->beginBulkTransaction();
+//        $this->CouchDB->beginBulkTransaction();
         $config_setting = \NDB_Config::singleton();
         foreach($demographics as $demographics) {
             $id = 'Demographics_Session_' . $demographics['PSCID'] . '_' . $demographics['Visit_label'];
@@ -689,6 +770,10 @@ group by s.CandID,s.Visit_label",
 
             //atypical code finished
 
+            // Get the candidate race and ethnicity from the tsi instrument.
+            $tsi_info = $this->getTSIInfo($candid);
+            $demographics['candidate_ethnicity'] = $tsi_info['candidate_ethnicity'];
+            $demographics['candidate_race'] = $tsi_info['candidate_race'];
 
             $success = $this->CouchDB->replaceDoc($id, array('Meta' => array(
                 'DocType' => 'demographics',
