@@ -347,7 +347,7 @@ class NDB_BVL_Instrument_SCARED_Parent_Sibling extends NDB_BVL_Instrument
                  "q10_nervous_with_people_doesnt_know_well",
                  "q26_hard_to_talk_with_people_doesnt_know_well",
                  "q32_shy_with_people_doesnt_know_well",
-                 "q39_nervous_with_children_or_adults_do_something_watch_him_or_her",
+                 "q39_nervous_with_children_or_adults_do_something_watch",
                  "q40_nervous_going_to_any_place_with_people_doesnt_know_well",
                  "q41_is_shy",
                 ];
