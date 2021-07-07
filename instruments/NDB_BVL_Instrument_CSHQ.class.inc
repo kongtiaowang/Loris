@@ -143,23 +143,6 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
         parent::_saveValues($values);
      }
 
-    /**
-     * Determines if the current instance of this instrument should contain a question
-     * asking which version of the CSHQ this is.
-     *
-     * @return bool true if the current instance should have the question, false
-     *              otherwise.
-     */
-    function _hasFormTypeQuestion()
-    {
-        // If the comment ID is null (e.g. data dictionnary building process)
-        // then the form question is used
-        if (is_null($this->getCommentID())) {
-            return true;
-        }
-
-        return isset($_SESSION) && !is_null($_SESSION['State']->getUsername());
-    }
 
     /**
      * Generates the main page of the form.
@@ -172,38 +155,18 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
         // display test name
         $this->addHeader("Child's Sleep Habit  (Preschool and School Aged)");
 
-        // Data entry staff get to answer this question
-        if ($this->_hasFormTypeQuestion()) {
-            $cshq_options = array(
-                "a_abbreviated" => "a) The abbreviated 33 question version (this is not the version recommended to administer)",
-                "b_long_form"   => "b) The long form 52 question version (this is the version that is recommended)",
-            );
-
-//            $this->form->createElement('hidden', null, "<u>For Study Staff Only</u>");
-
-            $this->addSelect(
-                "which_cshq_did_you_administer",
-                "Which CSHQ did you administer?",
-                $cshq_options,
-                ['disabled' => 'disabled']
-            );
-        // Participants who fill the survey cannot answer the question: they can only
-        // see what type of questionnaire they are filling
-        } else {
-            $formAdministered = $this->getFieldValue("which_cshq_did_you_administer") == "b_long_form"
-                ? "b) The long form 52 question version (this is the version that is recommended)"
-                : "a) The abbreviated 33 question version (this is not the version recommended to administer)";
-            $this->addLabel(
-                "<u>For Study Staff Only</u>: Which CSHQ did you administer? " . $formAdministered
-            );
-        }
+        // Note: field which_cshq_did_you_administer is now read-only
+        $formAdministered = $this->getFieldValue("which_cshq_did_you_administer") == "b_long_form"
+            ? " long version (52 questions)"
+            : " abbreviated version (33 questions)";
+        $this->addLabel(
+            "<u>Version of CSHQ administered</u>: " . $formAdministered
+        );
 
         // This is a survey: we do not want to force the entry staff to enter an
         // administration date
         $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
-        if ($this->_hasFormTypeQuestion()) {
-            $this->XINRegisterRule("Date_taken", array("Date_taken{@}=={@}NEVER_REQUIRED"), "Not required");
-        }
+
         $score_columns
             = array(
                'score_bedtime_resistance'         => 'Bedtime Resistance',
@@ -233,11 +196,6 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
                  "other"       => "Other",
                 );
         $this->addSelect("relationship_to_child", "What is your relationship to the child?", $opts);
-        // This is a survey: we do not want to force the data entry staff to enter
-        // the relationship to child
-        if ($this->_hasFormTypeQuestion()) {
-            $this->XINRegisterRule("relationship_to_child", array("relationship_to_child{@}=={@}NEVER_REQUIRED"), "Not required");
-        }
 
         $this->addBasicText("other_relationship_to_child", $this->indent."If Other, please describe:");
         $this->XINRegisterRule(
