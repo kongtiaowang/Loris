@@ -413,7 +413,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
 
         $this->addTextElement(
             'height',
-            'Height (Feet):'
+            'Height (Inches):'
         );
 
                 $this->XINRegisterRule("height", array("height{@}=={@}NEVER_REQUIRED"));
