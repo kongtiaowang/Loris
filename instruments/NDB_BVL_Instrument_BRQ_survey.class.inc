@@ -26,13 +26,13 @@ class NDB_BVL_Instrument_BRQ_survey extends NDB_BVL_Instrument
     use instrument_validator;
 
     const OPTIONS = array(
-                     null     => "",
-                     1        => "1 = Almost never",
-                     2        => "2 = Occasionally",
-                     3        => "3 = Half the time",
-                     4        => "4 = Often",
-                     5        => "5 = Nearly Always",
-                    );
+                          null              => "",
+                          "1_almost_never"  => "Almost never",
+                          "2_occasionally"  => "Occasionally",
+                          "3_half_the_time" => "Half the time",
+                          "4_often"         => "Often",
+                          "5_nearly_always" => "Nearly Always",
+                         );
 
 
     var $scoreLabels = array(
@@ -305,13 +305,13 @@ class NDB_BVL_Instrument_BRQ_survey extends NDB_BVL_Instrument
                            );
 
         $page3_options = array(
-                          null        => "",
-                          1           => "1 = Not at all",
-                          2           => "2 = A little",
-                          3           => "3 = Moderately",
-                          4           => "4 = Quite a bit",
-                          5           => "5 = Extremely",
-                         );
+                               null            => "",
+                               "1_not_at_all"  => "Not at all",
+                               "2_a_little"    => "A little",
+                               "3_moderately"  => "Moderately",
+                               "4_quite_a_bit" => "Quite a bit",
+                               "5_extremely"   => "Extremely",
+                              );
 
         $this->form->addElement(
             'static',
@@ -413,9 +413,15 @@ class NDB_BVL_Instrument_BRQ_survey extends NDB_BVL_Instrument
         $sum = 0;
 
         foreach ($question_array as $q) {
-            $sum += $record[$q];
+            $sum += $this->getNumericalValue($record[$q]);
         }
         return $sum;
+    }
+
+    function getNumericalValue($record){
+
+    return self::getResponseValue[$record];
+
     }
 
     function score(): void
@@ -485,6 +491,19 @@ class NDB_BVL_Instrument_BRQ_survey extends NDB_BVL_Instrument
                           "q20_play_video_games",
                           "q21_listen_to_music",
                           "q22_have_a_snack_or_drink",
-                        ];
+	 
+		  ];
 
+    const getResponseValue = [
+                        "1_almost_never"  => 1,
+                        "2_occasionally"  => 2,
+                        "3_half_the_time" => 3,
+                        "4_often"         => 4,
+                        "5_nearly_always" => 5,
+                        "1_not_at_all"    => 1,
+                        "2_a_little"      => 2,
+                        "3_moderately"    => 3,
+                        "4_quite_a_bit"   => 4,
+                        "5_extremely"     => 5,
+    ];
 }
