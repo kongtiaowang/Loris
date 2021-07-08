@@ -392,12 +392,18 @@ class NDB_BVL_Instrument_Bayley4 extends NDB_BVL_Instrument
         $string = file_get_contents($file->fileInfo['tmp_name']);
         $textArr =  $this->getStringBetween($string,'Examinee Information','End of Report');
 
-        $id = $this->getStringBetween($textArr,'ID:','Test');
+        $id = $this->getStringBetween($textArr,'ID:','Test Date:');
+
+        // Since we are parsing Word documents, there can be
+        // non-word characters before of after the patient ID: get rid
+        // of those
+        $id = preg_replace('/^\W+/', '', $id);
+        $id = preg_replace('/\W+$/', '', $id);
 
         $originID = $args['candID'].'_'. $args['PSCID'].'_'.$args['visitLabel'];
 
         if($id != $originID){
-            $errors[]="Incorrect Filename with File ID";
+            $errors[]="Incorrect patient ID found in file. Expected $originID but I got '$id'\n";
             return $errors;
         }
 
