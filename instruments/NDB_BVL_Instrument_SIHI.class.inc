@@ -163,7 +163,8 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
                            "no"  => "No",
                           );
 
-        $rate_concern_options = array(
+	$rate_concern_options = array(
+		                 null         => "",
                                  "1"          => "1 - Mild",
                                  "2"          => "2",
                                  "3"          => "3",
@@ -278,7 +279,8 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
                            "no"  => "No",
                           );
 
-        $rate_concern_options = array(
+	$rate_concern_options = array(
+		                 null         => "",
                                  "1"          => "1 - Mild",
                                  "2"          => "2",
                                  "3"          => "3",
@@ -393,7 +395,8 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
                            "no"  => "No",
                           );
 
-        $rate_concern_options = array(
+	$rate_concern_options = array(
+		                 null         => "",
                                  "1"          => "1 - Mild",
                                  "2"          => "2",
                                  "3"          => "3",
@@ -508,7 +511,8 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
                            "no"  => "No",
                           );
 
-        $rate_concern_options = array(
+	$rate_concern_options = array(
+		                 null         => "",
                                  "1"          => "1 - Mild",
                                  "2"          => "2",
                                  "3"          => "3",
@@ -624,7 +628,8 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
                            "no"  => "No",
                           );
 
-        $rate_concern_options = array(
+	$rate_concern_options = array(
+		                 null         => "",
                                  "1"          => "1 - Mild",
                                  "2"          => "2",
                                  "3"          => "3",
