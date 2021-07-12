@@ -36,6 +36,84 @@ class NDB_BVL_Instrument_CCTQ_survey extends NDB_BVL_Instrument_survey
                             "mornings_evenings_total_derived_score",
                             "chronotype_total_derived_score",
 		    );
+    
+    const SCHEDULEDDAYS = [
+                            "q7_child_is_ready_to_fall_asleep_lights_turned_out_at",
+                            "q1_child_wakes_up_at",
+                          ];
+
+    const FREEDAYS = [
+                        "q15_child_is_ready_to_fall_asleep_lights_turned_out_at",
+                        "q9_child_normally_wakes_up_at",
+                     ];
+
+    const MORNINGNESS_EVENINGNESS = [
+                     "q17_if_child_has_to_be_awakened_how_difficult_do_you_find_it",
+                     "q18_how_alert_is_child_the_first_half_hour_after_having_awakened",
+                     "q19_what_time_would_your_child_get_up_if_they_could_decide",
+                     "q20_what_time_would_your_child_go_to_bed_if_they_could_decide",
+                     "q21_which_time_intervals_would_you_choose_for_the_test",
+                     "q22_class_at_7_am_to_8_am_how_do_you_think_child_will_perform",
+                     "q23_what_time_in_evening_does_child_seem_tired_and_need_sleep",
+                     "q24_if_child_has_to_get_up_at_6_am_what_would_it_be_like",
+                     "q25_if_child_has_to_go_to_bed_at_7_30_pm_what_would_it_be_like",
+                     "q26_when_child_wakes_in_the_morning_how_long_to_be_fully_awake",
+    ];
+
+    const CHRONOTYPE = [
+        "q27_my_child_is",
+    ];
+
+    const getResponseValue = [
+        "very_difficult"                                         => 1,
+        "fairly_difficult"                                       => 2,
+        "moderate_difficult"                                     => 3,
+        "slightly_difficult"                                     => 4,
+        "not_at_all_difficult_my_child_never_has_to_be_awakened" => 5,
+        "not_at_all_alert"                                       => 1,
+        "slightly_alert"                                         => 2,
+        "moderately_alert"                                       => 3,
+        "fairly_alert"                                           => 4,
+        "very_alert"                                             => 5,
+        "prior_to_6_30_am"                                       => 1,
+        "6_30_to_7_14_am"                                        => 2,
+        "7_15am_to_9_29_am"                                      => 3,
+        "9_30_to_10_14_am"                                       => 4,
+        "after_10_15_am"                                         => 5,
+        "prior_to_6_59_pm"                                       => 1,
+        "7_00_to_7_39_pm"                                        => 2,
+        "8_00_to_9_59_pm"                                        => 3,
+        "10_00_to_10_59_pm"                                      => 4,
+        "after_11_00_pm"                                         => 5,
+        "7_00_to_11_00_am"                                       => 1,
+        "11_00_am_to_3_00_pm"                                    => 2,
+        "3_00_to_8_00_pm"                                        => 3,
+        "would_be_in_very_good_form"                             => 1,
+        "would_be_in_good_form"                                  => 2,
+        "would_be_in_reasonable_form"                            => 3,
+        "would_find_it_difficult"                                => 4,
+        "would_find_it_very_difficult"                           => 5,
+        "prior_to_6_29_pm"                                       => 1,
+        "6_30_to_7_14_pm"                                        => 2,
+        "7_15_to_9_29_pm"                                        => 3,
+        "9_30_to_10_14_pm"                                       => 4,
+        "after_10_15_pm"                                         => 5,
+        "very_difficult"                                         => 1,
+        "rather_difficult"                                       => 2,
+        "moderate_difficult"                                     => 3,
+        "a_little_difficult_but_not_a_great_problem"             => 4,
+        "not_at_all_difficult"                                   => 5,
+        "0_minutes_immediately"                                  => 1,
+        "1_to_4_minutes"                                         => 2,
+        "5_to_10_minutes"                                        => 3,
+        "11_to_20_minutes"                                       => 4,
+        "more_than_21_minutes"                                   => 5,
+        "definitely_a_morning_type"                              => 1,
+        "rather_more_a_morning_type_than_an_evening_type"        => 2,
+        "neither_a_morning_type_nor_an_evening_type"             => 3,
+        "rather_more_an_evening_type_than_a_morning_type"        => 4,
+        "definitely_an_evening_type"                             => 5,
+    ];
 
     /**
      * Sample SQL statement for test_names table and instrument subtests table
@@ -771,6 +849,7 @@ class NDB_BVL_Instrument_CCTQ_survey extends NDB_BVL_Instrument_survey
         return $hours;
     }
 
+    //to sum up values for the responses
     function sumScaleScores($question_array, $record)
     {
         $sum = 0;
@@ -781,6 +860,7 @@ class NDB_BVL_Instrument_CCTQ_survey extends NDB_BVL_Instrument_survey
         return $sum;
     }
 
+    //to assign values to responses
     function getNumericalValue($record){
 
         return self::getResponseValue[$record];
@@ -814,82 +894,5 @@ class NDB_BVL_Instrument_CCTQ_survey extends NDB_BVL_Instrument_survey
 	$db->update($this->table, $scores, array("CommentID" => $this->getCommentID()));
     }
 
-    const SCHEDULEDDAYS = [
-                            "q7_child_is_ready_to_fall_asleep_lights_turned_out_at",
-                            "q1_child_wakes_up_at",
-                          ];
-
-    const FREEDAYS = [
-                        "q15_child_is_ready_to_fall_asleep_lights_turned_out_at",
-                        "q9_child_normally_wakes_up_at",
-                     ];
-
-    const MORNINGNESS_EVENINGNESS = [
-                     "q17_if_child_has_to_be_awakened_how_difficult_do_you_find_it",
-                     "q18_how_alert_is_child_the_first_half_hour_after_having_awakened",
-                     "q19_what_time_would_your_child_get_up_if_they_could_decide",
-                     "q20_what_time_would_your_child_go_to_bed_if_they_could_decide",
-                     "q21_which_time_intervals_would_you_choose_for_the_test",
-                     "q22_class_at_7_am_to_8_am_how_do_you_think_child_will_perform",
-                     "q23_what_time_in_evening_does_child_seem_tired_and_need_sleep",
-                     "q24_if_child_has_to_get_up_at_6_am_what_would_it_be_like",
-                     "q25_if_child_has_to_go_to_bed_at_7_30_pm_what_would_it_be_like",
-                     "q26_when_child_wakes_in_the_morning_how_long_to_be_fully_awake",
-    ];
-
-    const CHRONOTYPE = [
-                    "q27_my_child_is",
-    ];
-
-    const getResponseValue = [
-        "very_difficult"                                         => 1,
-        "fairly_difficult"                                       => 2,
-        "moderate_difficult"                                     => 3,
-        "slightly_difficult"                                     => 4,
-        "not_at_all_difficult_my_child_never_has_to_be_awakened" => 5,
-        "not_at_all_alert"                                       => 1,
-        "slightly_alert"                                         => 2,
-        "moderately_alert"                                       => 3,
-        "fairly_alert"                                           => 4,
-        "very_alert"                                             => 5,
-        "prior_to_6_30_am"                                       => 1,
-        "6_30_to_7_14_am"                                        => 2,
-        "7_15am_to_9_29_am"                                      => 3,
-        "9_30_to_10_14_am"                                       => 4,
-        "after_10_15_am"                                         => 5,
-        "prior_to_6_59_pm"                                       => 1,
-        "7_00_to_7_39_pm"                                        => 2,
-        "8_00_to_9_59_pm"                                        => 3,
-        "10_00_to_10_59_pm"                                      => 4,
-        "after_11_00_pm"                                         => 5,
-        "7_00_to_11_00_am"                                       => 1,
-        "11_00_am_to_3_00_pm"                                    => 2,
-        "3_00_to_8_00_pm"                                        => 3,
-        "would_be_in_very_good_form"                             => 1,
-        "would_be_in_good_form"                                  => 2,
-        "would_be_in_reasonable_form"                            => 3,
-        "would_find_it_difficult"                                => 4,
-        "would_find_it_very_difficult"                           => 5,
-        "prior_to_6_29_pm"                                       => 1,
-        "6_30_to_7_14_pm"                                        => 2,
-        "7_15_to_9_29_pm"                                        => 3,
-        "9_30_to_10_14_pm"                                       => 4,
-        "after_10_15_pm"                                         => 5,
-        "very_difficult"                                         => 1,
-        "rather_difficult"                                       => 2,
-        "moderate_difficult"                                     => 3,
-        "a_little_difficult_but_not_a_great_problem"             => 4,
-        "not_at_all_difficult"                                   => 5,
-        "0_minutes_immediately"                                  => 1,
-        "1_to_4_minutes"                                         => 2,
-        "5_to_10_minutes"                                        => 3,
-        "11_to_20_minutes"                                       => 4,
-        "more_than_21_minutes"                                   => 5,
-        "definitely_a_morning_type"                              => 1,
-        "rather_more_a_morning_type_than_an_evening_type"        => 2,
-        "neither_a_morning_type_nor_an_evening_type"             => 3,
-        "rather_more_an_evening_type_than_a_morning_type"        => 4,
-        "definitely_an_evening_type"                             => 5,
-    ];
 }
 
