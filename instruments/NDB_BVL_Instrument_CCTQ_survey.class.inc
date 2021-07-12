@@ -64,7 +64,7 @@ class NDB_BVL_Instrument_CCTQ_survey extends NDB_BVL_Instrument_survey
         "q27_my_child_is",
     ];
 
-    const getResponseValue = [
+    const RESPONSE_VALUES = [
         "very_difficult"                                         => 1,
         "fairly_difficult"                                       => 2,
         "moderate_difficult"                                     => 3,
@@ -824,6 +824,12 @@ class NDB_BVL_Instrument_CCTQ_survey extends NDB_BVL_Instrument_survey
         return $errors;
     }
 
+    /**
+ * To get the time difference between bed time and wake up time.
+ *
+ * @param $times is an array containing both time responses, $record1 array contains db reponse, $record2 is a string for additional time to fall asleep,
+ * @return float value for the time difference
+ */
     function calculateTimeDiff($times,$record1, $record2){
 
         $lights_turned_out = $record1[$times[0]];
@@ -849,7 +855,12 @@ class NDB_BVL_Instrument_CCTQ_survey extends NDB_BVL_Instrument_survey
         return $hours;
     }
 
-    //to sum up values for the responses
+ /**
+ * To sum up values assigned to the responses.
+ *
+ * @param $question_array is an array containing responses with assigned values, $record array contains db reponse 
+ * @return integer value sum
+ */ 
     function sumScaleScores($question_array, $record)
     {
         $sum = 0;
@@ -860,10 +871,15 @@ class NDB_BVL_Instrument_CCTQ_survey extends NDB_BVL_Instrument_survey
         return $sum;
     }
 
-    //to assign values to responses
+ /**
+ * To assign values to the responses stored in the table.
+ *
+ * @param string $record is the response   
+ * @return value assigned to the response in the array declared as constant
+ */ 
     function getNumericalValue($record){
 
-        return self::getResponseValue[$record];
+        return self::RESPONSE_VALUES[$record];
 
         }
 
