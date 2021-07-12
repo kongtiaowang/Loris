@@ -89,7 +89,7 @@ class NDB_BVL_Instrument_BRQ_survey extends NDB_BVL_Instrument
                           "q22_have_a_snack_or_drink",
                         ];
 
-    const getResponseValue = [
+    const RESPONSE_VALUES = [
                         "1_almost_never"  => 1,
                         "2_occasionally"  => 2,
                         "3_half_the_time" => 3,
@@ -494,7 +494,7 @@ class NDB_BVL_Instrument_BRQ_survey extends NDB_BVL_Instrument
     
     function getNumericalValue($record){
 
-    return self::getResponseValue[$record];
+    return self::RESPONSE_VALUES[$record];
 
     }
 
