@@ -43,7 +43,7 @@ class NDB_BVL_Instrument_MEQC_survey extends NDB_BVL_Instrument
         "q10_when_do_you_have_most_energy_to_do_favorite_things",
     ];
 
-    const getResponseValue = [
+    const RESPONSE_VALUES = [
         "no_way"                     => 1,
         "sort_of"                    => 2,
         "pretty_easy"                => 3,
@@ -533,7 +533,12 @@ class NDB_BVL_Instrument_MEQC_survey extends NDB_BVL_Instrument
          return $errors;
     }
 
-    // to sum up values for the responses 
+ /**
+ * To sum up values assigned to the responses.
+ *
+ * @param $question_array is an array containing responses with assigned values, $record array contains db reponse 
+ * @return integer value sum
+ */ 
     function sumScaleScores($question_array, $record)
     {
         $sum = 0;
@@ -544,10 +549,15 @@ class NDB_BVL_Instrument_MEQC_survey extends NDB_BVL_Instrument
         return $sum;
     }
 
-    // to assign values to the responses 
+ /**
+ * To assign values to the responses stored in the table.
+ *
+ * @param string $record is the response   
+ * @return value assigned to the response in the array declared as constant
+ */ 
     function getNumericalValue($record){
 
-        return self::getResponseValue[$record];
+        return self::RESPONSE_VALUES[$record];
 
         }
 
