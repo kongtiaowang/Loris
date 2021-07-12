@@ -40,7 +40,67 @@ class NDB_BVL_Instrument_BRQ_survey extends NDB_BVL_Instrument
                         "reactivity_total_derived_score",
                         "adaptive_activities_total_derived_score",
                         "maladaptive_activities_total_derived_score",
-                    );
+		);
+
+    // 1 - 10
+    const CONSISTENCY = [
+                          "q1_perform_the_same_activities_in_the_hour_before_bed",
+                          "q2_perform_activities_in_the_same_order_before_going_to_bed",
+                          "q3_sleep_in_the_same_place",
+                          "q4_go_to_bed_at_the_same_time",
+                          "q5_get_put_to_bed_by_the_same_person",
+                          "q6_perform_the_same_activities_in_the_hour_before_bed",
+                          "q7_perform_activities_in_the_same_order_before_going_to_bed",
+                          "q8_sleep_in_the_same_place",
+                          "q9_go_to_bed_at_the_same_time",
+                          "q10_get_put_to_bed_by_the_same_person",
+                        ];
+
+    // 11 - 15
+    const REACTIVITY = [
+                         "q11_perform_the_same_activities_in_the_hour_before_bed",
+                         "q12_perform_activities_in_the_same_order_before_going_to_bed",
+                         "q13_sleep_in_the_same_place",
+                         "q14_go_to_bed_at_the_same_time",
+                         "q15_get_put_to_bed_by_the_same_person",
+                       ];
+
+    // 16 and 23 - 31
+    const ADAPTIVE = [
+                       "q16_read_listen_to_a_story",
+                       "q23_take_a_shower_bath",
+                       "q24_brush_teeth",
+                       "q25_use_the_toilet",
+                       "q26_hug_kiss_caregiver",
+                       "q27_say_goodnight_to_family_member",
+                       "q28_get_tucked_in",
+                       "q29_put_on_pajamas",
+                       "q30_say_prayers",
+                       "q31_cuddle_with_caregiver",
+                     ];
+
+    // 17 - 22
+    const MALADAPTIVE = [
+                          "q17_play_with_games_or_toys",
+                          "q18_have_active_play",
+                          "q19_watch_tv",
+                          "q20_play_video_games",
+                          "q21_listen_to_music",
+                          "q22_have_a_snack_or_drink",
+                        ];
+
+    const getResponseValue = [
+                        "1_almost_never"  => 1,
+                        "2_occasionally"  => 2,
+                        "3_half_the_time" => 3,
+                        "4_often"         => 4,
+                        "5_nearly_always" => 5,
+                        "1_not_at_all"    => 1,
+                        "2_a_little"      => 2,
+                        "3_moderately"    => 3,
+                        "4_quite_a_bit"   => 4,
+                        "5_extremely"     => 5,
+    ];
 
     /**
      * Sample SQL statement for test_names table and instrument subtests table
@@ -408,6 +468,13 @@ class NDB_BVL_Instrument_BRQ_survey extends NDB_BVL_Instrument
          return $errors;
     }
 
+ /**
+ * To sum up values assigned to the responses.
+ *
+ * @param $question_array is an array containing responses with assigned values, $record array contains db reponse 
+ * @return integer value sum
+ */
+
     function sumScaleScores($question_array, $record)
     {
         $sum = 0;
@@ -418,6 +485,13 @@ class NDB_BVL_Instrument_BRQ_survey extends NDB_BVL_Instrument
         return $sum;
     }
 
+ /**
+ * To assign values to the responses stored in the table.
+ *
+ * @param string $record is the response   
+ * @return value assigned to the response in the array declared as constant
+ */
+    
     function getNumericalValue($record){
 
     return self::getResponseValue[$record];
@@ -446,64 +520,4 @@ class NDB_BVL_Instrument_BRQ_survey extends NDB_BVL_Instrument
         $result = $db->update($this->table, $scores, array("CommentID" => $this->getCommentID()));
     }
 
-    // 1 - 10
-    const CONSISTENCY = [
-                          "q1_perform_the_same_activities_in_the_hour_before_bed",
-                          "q2_perform_activities_in_the_same_order_before_going_to_bed",
-                          "q3_sleep_in_the_same_place",
-                          "q4_go_to_bed_at_the_same_time",
-                          "q5_get_put_to_bed_by_the_same_person",
-                          "q6_perform_the_same_activities_in_the_hour_before_bed",
-                          "q7_perform_activities_in_the_same_order_before_going_to_bed",
-                          "q8_sleep_in_the_same_place",
-                          "q9_go_to_bed_at_the_same_time",
-                          "q10_get_put_to_bed_by_the_same_person",
-                        ];
-
-    // 11 - 15
-    const REACTIVITY = [
-                         "q11_perform_the_same_activities_in_the_hour_before_bed",
-                         "q12_perform_activities_in_the_same_order_before_going_to_bed",
-                         "q13_sleep_in_the_same_place",
-                         "q14_go_to_bed_at_the_same_time",
-                         "q15_get_put_to_bed_by_the_same_person",
-                       ];
-
-    // 16 and 23 - 31
-    const ADAPTIVE = [
-                       "q16_read_listen_to_a_story",
-                       "q23_take_a_shower_bath",
-                       "q24_brush_teeth",
-                       "q25_use_the_toilet",
-                       "q26_hug_kiss_caregiver",
-                       "q27_say_goodnight_to_family_member",
-                       "q28_get_tucked_in",
-                       "q29_put_on_pajamas",
-                       "q30_say_prayers",
-                       "q31_cuddle_with_caregiver",
-                     ];
-
-    // 17 - 22
-    const MALADAPTIVE = [
-                          "q17_play_with_games_or_toys",
-                          "q18_have_active_play",
-                          "q19_watch_tv",
-                          "q20_play_video_games",
-                          "q21_listen_to_music",
-                          "q22_have_a_snack_or_drink",
-	 
-		  ];
-
-    const getResponseValue = [
-                        "1_almost_never"  => 1,
-                        "2_occasionally"  => 2,
-                        "3_half_the_time" => 3,
-                        "4_often"         => 4,
-                        "5_nearly_always" => 5,
-                        "1_not_at_all"    => 1,
-                        "2_a_little"      => 2,
-                        "3_moderately"    => 3,
-                        "4_quite_a_bit"   => 4,
-                        "5_extremely"     => 5,
-    ];
 }
