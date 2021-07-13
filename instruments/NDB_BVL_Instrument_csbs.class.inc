@@ -453,7 +453,7 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
             $nbNotAdministered = $this->_countUnanswered($record, "objects", 4);
             $prefix = "q_16_language_comp_objects";
             if ($nbNotAdministered == 1) {
-                $q_16_BestObject = ($record["{$prefix}_1"] == 0 && $record["{$prefix}_2"] == 0) || ($record["{$prefix}_1"] == 1 && $record["{$prefix}_2"] == 1) && ($record["{$prefix}_3"] == 0 || $record["{$prefix}_3"] == 1)
+                $q_16_BestObject = ($record["{$prefix}_1"] == 0 && $record["{$prefix}_2"] == 0) || ($record["{$prefix}_1"] == 1 && $record["{$prefix}_2"] == 1) && ($record["{$prefix}_3"] == 1)
                     ? $this->_sumBestRows($record, "objects", 3, 4)
                     : "Unable to score";
             } elseif ($nbNotAdministered == 2) {
