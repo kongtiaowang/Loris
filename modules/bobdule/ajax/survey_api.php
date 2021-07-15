@@ -113,6 +113,8 @@ class DirectDataEntryMainPage
 
         // Unset score values
         $json_instrument = json_decode($this->tpl_data['InstrumentJSON']);
+        // Shouldn't see PSCID in form, scrubbing from json.
+        $json_instrument->ScoreLabels= array( 'pscid');
         $this->unsetScores($Values, $json_instrument->Elements, $json_instrument->ScoreLabels);
 
         $this->tpl_data['Values'] = json_encode($Values);
@@ -140,6 +142,12 @@ class DirectDataEntryMainPage
                 array_key_exists($element->Name, $values)
             ) {
                 unset($values[$element->Name]);
+            } else if (
+                $element->Type === 'label' &&
+                in_array($element->Name, $scoreLabels)
+            ) {
+                // Unset description of score field.
+                unset($element->Description);
             }
         }
     }
