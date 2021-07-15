@@ -324,7 +324,8 @@ class CouchDBDemographicsImporter {
                                        JOIN candidate ON candidate.candid = session.candid
                                        WHERE flag.test_name = 'DSMIV_checklist'
                                        AND flag.CommentID NOT LIKE 'DDE%'
-                                       AND flag.data_entry IS NOT NULL
+                                       AND flag.data_entry = 'Complete'
+                                       AND flag.administration = 'All'
                                        AND session.visit_label='V24'
                                  ) f24dsm ON (f24dsm.candid=c.candid)
                                  LEFT JOIN (
@@ -338,7 +339,8 @@ class CouchDBDemographicsImporter {
                                        JOIN candidate ON candidate.candid = session.candid
                                        WHERE flag.test_name = 'mullen'
                                        AND flag.CommentID NOT LIKE 'DDE%'
-                                       AND flag.data_entry IS NOT NULL
+                                       AND flag.data_entry = 'Complete'
+                                       AND flag.administration = 'All'
                                        AND session.visit_label='V24'
                                  ) f24mullen ON (f24mullen.candid = c.candid)
                                  LEFT JOIN (
@@ -348,7 +350,8 @@ class CouchDBDemographicsImporter {
                                        JOIN candidate ON candidate.candid = session.candid
                                        WHERE flag.test_name = 'DSMV_checklist'
                                        AND flag.CommentID NOT LIKE 'DDE%'
-                                       AND flag.data_entry IS NOT NULL
+                                       AND flag.data_entry = 'Complete'
+                                       AND flag.administration = 'All'
                                        AND session.visit_label IN ('VSA', 'VSA-CVD')
                                  ) fvsadsm ON (fvsadsm.candid=c.candid)
                                  LEFT JOIN (
