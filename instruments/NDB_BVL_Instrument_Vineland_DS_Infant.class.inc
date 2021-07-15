@@ -52,4 +52,3 @@ class NDB_BVL_Instrument_Vineland_DS_Infant extends AbstractNDB_BVL_Instrument_V
 }
 
 ?>
-
