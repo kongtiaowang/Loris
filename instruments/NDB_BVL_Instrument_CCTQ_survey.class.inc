@@ -31,6 +31,90 @@ class NDB_BVL_Instrument_CCTQ_survey extends NDB_BVL_Instrument_survey
                             "no"  => "No",
                            );
 
+    var $scoreLabels = array(
+                            "midsleep_point_total_derived_score",
+                            "mornings_evenings_total_derived_score",
+                            "chronotype_total_derived_score",
+		    );
+    
+    const SCHEDULEDDAYS = [
+                            "q7_child_is_ready_to_fall_asleep_lights_turned_out_at",
+                            "q1_child_wakes_up_at",
+                          ];
+
+    const FREEDAYS = [
+                        "q15_child_is_ready_to_fall_asleep_lights_turned_out_at",
+                        "q9_child_normally_wakes_up_at",
+                     ];
+
+    const MORNINGNESS_EVENINGNESS = [
+                     "q17_if_child_has_to_be_awakened_how_difficult_do_you_find_it",
+                     "q18_how_alert_is_child_the_first_half_hour_after_having_awakened",
+                     "q19_what_time_would_your_child_get_up_if_they_could_decide",
+                     "q20_what_time_would_your_child_go_to_bed_if_they_could_decide",
+                     "q21_which_time_intervals_would_you_choose_for_the_test",
+                     "q22_class_at_7_am_to_8_am_how_do_you_think_child_will_perform",
+                     "q23_what_time_in_evening_does_child_seem_tired_and_need_sleep",
+                     "q24_if_child_has_to_get_up_at_6_am_what_would_it_be_like",
+                     "q25_if_child_has_to_go_to_bed_at_7_30_pm_what_would_it_be_like",
+                     "q26_when_child_wakes_in_the_morning_how_long_to_be_fully_awake",
+    ];
+
+    const CHRONOTYPE = [
+        "q27_my_child_is",
+    ];
+
+    const RESPONSE_VALUES = [
+        "very_difficult"                                         => 1,
+        "fairly_difficult"                                       => 2,
+        "moderate_difficult"                                     => 3,
+        "slightly_difficult"                                     => 4,
+        "not_at_all_difficult_my_child_never_has_to_be_awakened" => 5,
+        "not_at_all_alert"                                       => 1,
+        "slightly_alert"                                         => 2,
+        "moderately_alert"                                       => 3,
+        "fairly_alert"                                           => 4,
+        "very_alert"                                             => 5,
+        "prior_to_6_30_am"                                       => 1,
+        "6_30_to_7_14_am"                                        => 2,
+        "7_15am_to_9_29_am"                                      => 3,
+        "9_30_to_10_14_am"                                       => 4,
+        "after_10_15_am"                                         => 5,
+        "prior_to_6_59_pm"                                       => 1,
+        "7_00_to_7_39_pm"                                        => 2,
+        "8_00_to_9_59_pm"                                        => 3,
+        "10_00_to_10_59_pm"                                      => 4,
+        "after_11_00_pm"                                         => 5,
+        "7_00_to_11_00_am"                                       => 1,
+        "11_00_am_to_3_00_pm"                                    => 2,
+        "3_00_to_8_00_pm"                                        => 3,
+        "would_be_in_very_good_form"                             => 1,
+        "would_be_in_good_form"                                  => 2,
+        "would_be_in_reasonable_form"                            => 3,
+        "would_find_it_difficult"                                => 4,
+        "would_find_it_very_difficult"                           => 5,
+        "prior_to_6_29_pm"                                       => 1,
+        "6_30_to_7_14_pm"                                        => 2,
+        "7_15_to_9_29_pm"                                        => 3,
+        "9_30_to_10_14_pm"                                       => 4,
+        "after_10_15_pm"                                         => 5,
+        "very_difficult"                                         => 1,
+        "rather_difficult"                                       => 2,
+        "moderate_difficult"                                     => 3,
+        "a_little_difficult_but_not_a_great_problem"             => 4,
+        "not_at_all_difficult"                                   => 5,
+        "0_minutes_immediately"                                  => 1,
+        "1_to_4_minutes"                                         => 2,
+        "5_to_10_minutes"                                        => 3,
+        "11_to_20_minutes"                                       => 4,
+        "more_than_21_minutes"                                   => 5,
+        "definitely_a_morning_type"                              => 1,
+        "rather_more_a_morning_type_than_an_evening_type"        => 2,
+        "neither_a_morning_type_nor_an_evening_type"             => 3,
+        "rather_more_an_evening_type_than_a_morning_type"        => 4,
+        "definitely_an_evening_type"                             => 5,
+    ];
+
     /**
      * Sample SQL statement for test_names table and instrument subtests table
      *
@@ -63,11 +147,20 @@ class NDB_BVL_Instrument_CCTQ_survey extends NDB_BVL_Instrument_survey
         $this->testName = "CCTQ_survey";           // test_names.Test_name
         $this->table    = 'CCTQ_survey';           // name of database table corresponding to instrument
         // data keyed by commentID
-        $this->commentID = $commentID;
+	$this->commentID = $commentID;
+	$config            = NDB_Config::singleton();
+        $this->dateOptions = array(
+                              'language'         => 'en',
+                              'format'           => 'YMd',
+                              'minYear'          => $config->getSetting('startYear'),
+                              'maxYear'          => $config->getSetting('endYear'),
+                              'addEmptyOption'   => true,
+                              'emptyOptionValue' => null,
+                             );
 
         //The array of dates/timestamps to convert to database dates/timestamps
         //Any LorisForm date elements must be listed here
-        $this->dateTimeFields = array("Date_taken");
+	$this->dateTimeFields = array("Date_taken");
 
         //The array of selects with multiple answers allowed
         //Any LorisForm multiple selects must be listed here
@@ -122,7 +215,7 @@ class NDB_BVL_Instrument_CCTQ_survey extends NDB_BVL_Instrument_survey
             null,
             "<h3>Instructions:</h3><br>
             Please answer the following questions regarding the child paricipating in the IBIS sleep study."
-        );
+	);
 
         $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
 
@@ -145,6 +238,37 @@ class NDB_BVL_Instrument_CCTQ_survey extends NDB_BVL_Instrument_survey
         $this->XINRegisterRule('respondent_specify', array('respondent{@}=={@}other'), 'Required if other');
 
         $this->form->addFormRule(array(&$this, 'validate_main_page'));
+   	
+        // SCORING TABLE
+
+         $this->form->addElement('header', 'score', "Score Summary");
+
+         $group[] = $this->form->createElement('static', "score", null, null);
+ 
+         $this->form->addGroup($group, 'score_header_group', "<strong>Scale</strong>", $this->_GUIDelimiter, false);
+         unset($group);
+ 
+         $scales = array(
+                    "midsleep_point_total_derived"        => "Midsleep Point on free days (MCF):",
+                    "mornings_evenings_total_derived"     => "The Morningness/Eveningness (M/E):",
+                    "chronotype_total_derived"            => "Chronotype (CT):",
+                   );
+ 
+         $columnHeaders = array("score" => "Score");
+ 
+         foreach ($columnHeaders as $field => $label) {
+             $columnHeaders[$field] .= "   ";
+         }
+         $this->localDefaults = array_merge($this->localDefaults, $columnHeaders);
+ 
+         foreach ($scales as $field => $label) {
+             foreach ($columnHeaders as $scoreField => $scoreLabel) {
+                 $group[] = $this->form->createElement('static', "{$field}_{$scoreField}", null, null);
+             }
+             $this->form->addGroup($group, "{$field}_score_group", $label, $this->_GUIDelimiter, false);
+             unset($group);
+         }
+   
     }
 
     /**
@@ -699,5 +823,92 @@ class NDB_BVL_Instrument_CCTQ_survey extends NDB_BVL_Instrument_survey
 
         return $errors;
     }
+
+    /**
+ * To get the time difference between bed time and wake up time.
+ *
+ * @param $times is an array containing both time responses, $record1 array contains db reponse, $record2 is a string for additional time to fall asleep,
+ * @return float value for the time difference
+ */
+    function calculateTimeDiff($times,$record1, $record2){
+
+        $lights_turned_out = $record1[$times[0]];
+        $child_wakes_up_at = $record1[$times[1]];
+        $lights_turned_out = explode(':',$lights_turned_out);
+        $child_wakes_up_at = explode(':',$child_wakes_up_at);
+        $hours_sleep = $lights_turned_out[0];
+        $hours_wake = $child_wakes_up_at[0];
+        $mins_sleep = $lights_turned_out[1] + $record2;
+        $mins_wake = $child_wakes_up_at[1];
+        $hours = $hours_wake - $hours_sleep;
+        $mins = 0;
+        if($hours <= 0 ){
+            $hours = 24 + $hours;
+        }
+        if($mins_wake >= $mins_sleep){
+            $mins = $mins_wake - $mins_sleep;
+        }else{
+            $mins = ($mins_wake + 60 ) - $mins_sleep;
+            $hours--;
+        }
+        $hours = $hours + ($mins/60);
+        return $hours;
+    }
+
+ /**
+ * To sum up values assigned to the responses.
+ *
+ * @param $question_array is an array containing responses with assigned values, $record array contains db reponse 
+ * @return integer value sum
+ */ 
+    function sumScaleScores($question_array, $record)
+    {
+        $sum = 0;
+
+        foreach ($question_array as $q) {
+            $sum += $this->getNumericalValue($record[$q]);
+        }
+        return $sum;
+    }
+
+ /**
+ * To assign values to the responses stored in the table.
+ *
+ * @param string $record is the response   
+ * @return value assigned to the response in the array declared as constant
+ */ 
+    function getNumericalValue($record){
+
+        return self::RESPONSE_VALUES[$record];
+
+        }
+
+    function score(): void
+    {
+        if ($this->_determineDataEntryCompletionStatus() == "Incomplete") {
+            return;
+        }
+
+        // Null scores
+        $this->_nullScores($this->scoreLabels);
+
+        // Get the saved scores
+        $db     =& Database::singleton();
+        $query  = "SELECT * FROM $this->table WHERE CommentID = '$this->commentID'";
+        $record = $db->pselectRow($query, array());
+
+        $sleep_period_on_scheduled_days = $this->calculateTimeDiff(self::SCHEDULEDDAYS,$record,$record["q8_how_many_minutes_does_it_take_child_to_fall_asleep_lights_out"]);
+        $sleep_period_on_free_days = $this->calculateTimeDiff(self::FREEDAYS,$record,$record["q16_how_many_minutes_does_it_take_child_fall_asleep_lights_out"]);
+
+        $scores["midsleep_point_total_derived_score"] = round((  (5 * $sleep_period_on_scheduled_days)
+                                                        + (2 * $sleep_period_on_free_days)
+                                                       )/7,2);
+
+        $scores["mornings_evenings_total_derived_score"] = $this->sumScaleScores(self::MORNINGNESS_EVENINGNESS, $record);
+        $scores["chronotype_total_derived_score"] = $this->sumScaleScores(self::CHRONOTYPE,$record);
+
+	$db->update($this->table, $scores, array("CommentID" => $this->getCommentID()));
+    }
+
 }
 
