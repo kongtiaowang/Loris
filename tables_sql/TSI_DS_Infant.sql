@@ -247,5 +247,11 @@ CREATE TABLE `TSI_DS_Infant` (
     `date_received_exclusion_review_decision` date default NULL,
     `comments` text default NULL,
     `comments_status` enum('not_answered') default NULL,
+    `not_finish0` varchar(10)  default NULL,
+    `not_finish1` varchar(10)  default NULL,
+    `not_finish2` varchar(10)  default NULL,
+    `not_finish3` varchar(10)  default NULL, 
+    `not_finish4` varchar(10)  default NULL,
+    `not_finish5` varchar(10)  default NULL,
     PRIMARY KEY  (`CommentID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
