@@ -22,6 +22,7 @@ class Bobdule extends Component {
       commentID: '',
       currentTable: 'incomplete',
       permission: 'view',
+      candID: '',
     };
 
     this.fetchData = this.fetchData.bind(this);
@@ -198,6 +199,7 @@ class Bobdule extends Component {
         post.then(() => {
           this.setState({
             commentID: row['CommentID'],
+            candID: row['Candidate ID'],
           });
         });
       } else {
@@ -242,6 +244,7 @@ class Bobdule extends Component {
   closeModal() {
     this.setState({
       commentID: '',
+      candID: '',
     });
     this.fetchData();
   }
@@ -387,6 +390,16 @@ class Bobdule extends Component {
               >
                 {label}
               </button>
+              {(label === 'Mark Complete' &&
+                (rating['atypical'].value === 'yes' || rating['abnormal'].value === 'yes')) &&
+              <button
+                type='button'
+                className='btn btn-primary'
+                onClick={() => this.actionClick('Launch Form', row)}
+              >
+                Launch Form
+              </button>
+              }
             </td>
           );
         }
@@ -464,7 +477,11 @@ class Bobdule extends Component {
           getFormattedCell={this.formatColumn}
           actions={actions}
         />
-        <Modal show={this.state.commentID !== ''} onClose={this.closeModal}>
+        <Modal
+          show={this.state.commentID !== ''}
+          onClose={this.closeModal}
+          title={`DCCID: ${this.state.candID}`}
+        >
           <DirectEntry commentID={this.state.commentID} close={this.closeModal}/>
         </Modal>
       </div>
