@@ -193,8 +193,7 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
      *
      * INSERT INTO test_names (Test_name, Full_name, Sub_Group, isDirectEntry) VALUES ('TSI_EP', "Telephone Screening Interview - EP", 1, 0);
      * INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('TSI_EP','TSI_EP_page1', "Page 1", 1);
-     * INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('TSI_EP','TSI_EP_
-     ', "Page 2", 2);
+     * INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('TSI_EP','TSI_EP_page2', "Page 2", 2);
      * INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('TSI_EP','TSI_EP_page3', "Page 3", 3);
      * INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('TSI_EP','TSI_EP_page4', "Page 4", 4);
      * INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('TSI_EP','TSI_EP_page5', "Page 5", 5);
