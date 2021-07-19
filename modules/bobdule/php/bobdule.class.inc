@@ -17,9 +17,30 @@ class Bobdule extends \NDB_Menu_Filter_Form
 {
     public $skipTemplate  = true;
 
+    private $permission;
+
     function _hasAccess(\User $user): bool
     {
-        return $user->hasPermission('edit_final_radiological_review');
+        return $user->hasAnyPermission(
+            array(
+                'edit_final_radiological_review',
+                'view_final_radiological_review',
+            )
+        );
+    }
+
+    /**
+     * Override to add permission to array.
+     *
+     * @return array
+     */
+    function toArray()
+    {
+        $json_array = parent::toArray();
+
+        $json_array['permission'] = $this->permission;
+
+        return $json_array;
     }
 
     /**
@@ -27,15 +48,33 @@ class Bobdule extends \NDB_Menu_Filter_Form
      */
     function _setupVariables()
     {
-        $this->query = "
-            FROM session s
-                JOIN flag ON (s.ID=flag.SessionID AND flag.Test_name='final_radiological_review_VSA' AND (flag.Data_entry='In Progress' OR flag.Data_entry IS NULL))
-                JOIN final_radiological_review_VSA t ON (t.CommentID=flag.CommentID)
-            WHERE EXISTS (
-                SELECT * FROM files f
-                    JOIN mri_scan_type m ON (f.AcquisitionProtocolID=m.ID)
-                WHERE f.SessionID=s.ID AND (m.scan_type like '%t1w%' or m.scan_type like '%t2w%')
-            ) AND flag.CommentID NOT LIKE 'DDE_%'";
+        // Setup users permission as either view or edit.
+        $user = \User::singleton();
+        $this->permission = $user->hasPermission('edit_final_radiological_review') ? "edit" : "view";
+
+        if ($_GET['status'] === "complete") {
+            // User requesting for completed reviews.
+            $this->query = "
+                FROM session s
+                    JOIN flag ON (s.ID=flag.SessionID AND flag.Test_name='final_radiological_review_VSA' AND flag.Data_entry='Complete')
+                    JOIN final_radiological_review_VSA t ON (t.CommentID=flag.CommentID)
+                WHERE EXISTS (
+                    SELECT * FROM files f
+                        JOIN mri_scan_type m ON (f.AcquisitionProtocolID=m.ID)
+                    WHERE f.SessionID=s.ID AND (m.scan_type like '%t1w%' or m.scan_type like '%t2w%')
+                ) AND flag.CommentID NOT LIKE 'DDE_%'";
+        } else {
+            // User requesting for incomplete reviews.
+            $this->query = "
+                FROM session s
+                    JOIN flag ON (s.ID=flag.SessionID AND flag.Test_name='final_radiological_review_VSA' AND (flag.Data_entry='In Progress' OR flag.Data_entry IS NULL))
+                    JOIN final_radiological_review_VSA t ON (t.CommentID=flag.CommentID)
+                WHERE EXISTS (
+                    SELECT * FROM files f
+                        JOIN mri_scan_type m ON (f.AcquisitionProtocolID=m.ID)
+                    WHERE f.SessionID=s.ID AND (m.scan_type like '%t1w%' or m.scan_type like '%t2w%')
+                ) AND flag.CommentID NOT LIKE 'DDE_%'";
+        }
         $this->columns = array(
                             'flag.CommentID',
                             's.ID',
@@ -58,6 +97,11 @@ class Bobdule extends \NDB_Menu_Filter_Form
      */
     function save()
     {
+        $user = \User::singleton();
+        if (!$user->hasPermission('edit_final_radiological_review')) {
+            return false;
+        }
+
         $DB =& \Database::singleton();
         $DB->update(
             'flag',

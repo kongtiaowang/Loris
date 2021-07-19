@@ -1167,7 +1167,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     function _getQuickformDate(string $databaseValue)
     {
         throw new Exception(
-            "The function _getQuickformDate has been deprecated. 
+            "The function _getQuickformDate has been deprecated.
             Please contact LORIS developer mail list for support."
         );
     }
@@ -1504,6 +1504,14 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         $allData = $this->loadInstanceData($this);
         foreach ($this->_requiredElements as $field) {
+            // Check if the the not answered field is present for the required element.
+            // If so check if the not_answered was selected. Continue loop if so.
+            $status_key = $field."_status";
+            if (array_key_exists($status_key, $allData)
+                && $allData[$status_key] === "not_answered") {
+                continue;
+            }
+
             // this shouldn't be just empty() b/c 0 is a valid
             // value for some required fields
             if (is_null($allData[$field]) || $allData[$field] === "") {
