@@ -364,5 +364,13 @@ CREATE TABLE `TSI_EP` (
     `if_reviewed_decision` text default NULL,
     `if_reviewed_decision_status` enum('not_answered') default NULL,
     `date_received_exclusion_review_decision` date default NULL,
+    `not_finish0` varchar(10)  default NULL,
+    `not_finish1` varchar(10)  default NULL,
+    `not_finish2` varchar(10)  default NULL,
+    `not_finish3` varchar(10)  default NULL,
+    `not_finish4` varchar(10)  default NULL,
+    `not_finish5` varchar(10)  default NULL,
+    `not_finish6` varchar(10)  default NULL,
+    `not_finish7` varchar(10)  default NULL,
     PRIMARY KEY  (`CommentID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
