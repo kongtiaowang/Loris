@@ -1,0 +1,15 @@
+ALTER TABLE TSI_DS_Infant ADD COLUMN sibling_6_dob date default NULL;
+ALTER TABLE TSI_DS_Infant ADD COLUMN sibling_6_gender enum('male','female') default NULL;
+ALTER TABLE TSI_DS_Infant ADD COLUMN sibling_6_diagnoses varchar(128) default NULL;
+ALTER TABLE TSI_DS_Infant ADD COLUMN sibling_6_type enum('half','full','step','adopted') default NULL;
+ALTER TABLE TSI_DS_Infant ADD COLUMN sibling_6_live_in_home enum('yes','no') default NULL;
+ALTER TABLE TSI_DS_Infant ADD COLUMN sibling_7_dob date default NULL;
+ALTER TABLE TSI_DS_Infant ADD COLUMN sibling_7_gender enum('male','female') default NULL;
+ALTER TABLE TSI_DS_Infant ADD COLUMN sibling_7_diagnoses varchar(128) default NULL;
+ALTER TABLE TSI_DS_Infant ADD COLUMN sibling_7_type enum('half','full','step','adopted') default NULL;
+ALTER TABLE TSI_DS_Infant ADD COLUMN sibling_7_live_in_home enum('yes','no') default NULL;
+ALTER TABLE TSI_DS_Infant ADD COLUMN sibling_8_dob date default NULL;
+ALTER TABLE TSI_DS_Infant ADD COLUMN sibling_8_gender enum('male','female') default NULL;
+ALTER TABLE TSI_DS_Infant ADD COLUMN sibling_8_diagnoses varchar(128) default NULL;
+ALTER TABLE TSI_DS_Infant ADD COLUMN sibling_8_type enum('half','full','step','adopted') default NULL;
+ALTER TABLE TSI_DS_Infant ADD COLUMN sibling_8_live_in_home enum('yes','no') default NULL;
