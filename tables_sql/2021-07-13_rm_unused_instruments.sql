@@ -6,6 +6,6 @@
 -- 
 -- --------------------------------------------------------------------------------
 
-DELETE FROM flag                WHERE test_name IN ('caars_SelfReport_scale', 'SCAARED_Adult', 'SCARED_Child');
-DELETE FROM participant_acounts WHERE test_name IN ('caars_SelfReport_scale', 'SCAARED_Adult', 'SCARED_Child');
-DELETE FROM survey_test_battery WHERE test_name IN ('caars_SelfReport_scale', 'SCAARED_Adult', 'SCARED_Child');
+DELETE FROM flag                 WHERE test_name IN ('caars_SelfReport_scale', 'SCAARED_Adult', 'SCARED_Child');
+DELETE FROM participant_accounts WHERE test_name IN ('caars_SelfReport_scale', 'SCAARED_Adult', 'SCARED_Child');
+DELETE FROM survey_test_battery  WHERE test_name IN ('caars_SelfReport_scale', 'SCAARED_Adult', 'SCARED_Child');
