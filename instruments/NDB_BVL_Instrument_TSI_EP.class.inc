@@ -1192,6 +1192,21 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
             "<h6><i>All above are exclusionary if any is present except intellectual disability in proband with autism.</i></h6>"
         );
         $this->XINRegisterRule("pro_devfactors_q5a_head_injury", array("not_finish3{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("pro_devfactors_q1_specific_neurological_problems", array("not_finish3{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("pro_devfactors_q2_diagnosed_suspected_genetic_conditions", array("not_finish3{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("pro_devfactors_q2a_family_history_of_genetic_disorders", array("not_finish3{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("pro_devfactors_q3_genetic_testing_completed", array("not_finish3{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("pro_devfactors_q4_history_of_seizures", array("not_finish3{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("pro_devfactors_q5_central_nervous_system_problems", array("not_finish3{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("pro_devfactors_q6_congenital_heart_problems_abnormalities", array("not_finish3{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("pro_devfactors_q7_significant_hearing_vision_problems", array("not_finish3{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("pro_devfactors_q8_mother_gestational_diabetes", array("not_finish3{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("pro_devfactors_q8b_have_diabetes", array("not_finish3{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("pro_devfactors_q11a_did_you_breastfeed", array("not_finish3{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("pro_devfactors_q12_exposure_to_medication_alcohol_drugs", array("not_finish3{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("pro_devfactors_q13_complications_during_pregnancy_delivery", array("not_finish3{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("pro_devfactors_q14_method_of_delivery", array("not_finish3{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("pro_devfactors_q15_first_degree_relative", array("not_finish3{@}!={@}1"), 'Required.');
 
         $this->form->addFormRule(array(&$this, 'validate_page3'));
     }
@@ -2007,19 +2022,24 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
     function validate_page2($values)
     {
         $errors = [];
-
         $proband_fields = array();
 
-        if ($values["proband_dob2"] == "") {
+        if ($values["proband_dob2"] == "" ) {
+            if ($values["not_finish2"] != "1") {
             array_push($proband_fields, "Proband Date of Birth");
+            }
         }
 
         if ($values["proband_gender2"] == "") {
+            if ($values["not_finish2"] != "1") {
             array_push($proband_fields, "Proband Gender");
+            }
         }
 
         if ($values["proband_live_in_home"] == "") {
+            if ($values["not_finish2"] != "1") {
             array_push($proband_fields, "Proband Live in Home");
+            }
         }
 
         $count = count($proband_fields);
