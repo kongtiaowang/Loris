@@ -589,7 +589,7 @@ class NDB_BVL_Instrument_TSI_DS_Infant extends NDB_BVL_Instrument
         );
         unset($group);
 
-        for ($i = 1; $i <= 5; $i++) {
+        for ($i = 1; $i <= 8; $i++) {
 
             $group[] =& $this->createText(
                 null,
