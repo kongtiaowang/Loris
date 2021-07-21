@@ -453,12 +453,12 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
             $nbNotAdministered = $this->_countUnanswered($record, "objects", 4);
             $prefix = "q_16_language_comp_objects";
             if ($nbNotAdministered == 1) {
-                $q_16_BestObject = ($record["{$prefix}_1"] == 0 && $record["{$prefix}_2"] == 0) || ($record["{$prefix}_1"] == 1 && $record["{$prefix}_2"] == 1) && $record["{$prefix}_3"] == 1
-                    ? $this->_sumBestRows($record, "objects", 3, 4)
-                    : "Unable to score";
+                $q_16_BestObject = $record["{$prefix}_1"] == 0 && $record["{$prefix}_2"] == 0 && $record["{$prefix}_3"] == 1
+                    ? 0
+                    : $this->_sumBestRows($record, "objects", 3, 4);
             } elseif ($nbNotAdministered == 2) {
                 $q_16_BestObject = $record["{$prefix}_1"] == 0 && $record["{$prefix}_2"] == 0
-                    ? $this->_sumBestRows($record, "objects", 3, 4)
+                    ? 0
                     : "Unable to score";
             } else {
                 $q_16_BestObject = $nbNotAdministered != 0
@@ -487,12 +487,12 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
             $nbNotAdministered = $this->_countUnanswered($record, "body_parts", 4);
             $prefix = "q_16_language_comp_body_parts";
             if ($nbNotAdministered == 1) {
-                $q_16_BestBody = $record["{$prefix}_1"] == 1 && $record["{$prefix}_2"] == 1 && $record["{$prefix}_3"] == 1
-                    ? $this->_sumBestRows($record, "body_parts", 3, 4)
-                    : "Unable to score";
+                $q_16_BestBody = $record["{$prefix}_1"] == 0 && $record["{$prefix}_2"] == 0 && $record["{$prefix}_3"] == 1
+                    ? 0
+                    : $this->_sumBestRows($record, "body_parts", 3, 4);
             } elseif ($nbNotAdministered == 2) {
                 $q_16_BestBody = $record["{$prefix}_1"] == 0 && $record["{$prefix}_2"] == 0
-                    ? $this->_sumBestRows($record, "body_parts", 3, 4)
+                    ? 0
                     : "Unable to score";
             } else {
                 $q_16_BestBody = $nbNotAdministered != 0
