@@ -511,7 +511,6 @@ class NDB_BVL_Instrument_TSI_DS_Infant extends NDB_BVL_Instrument
         $this->XINRegisterRule("subject_how_many_weeks_gestation", array("not_finish1{@}!={@}1"), 'Required.'); 
         $this->XINRegisterRule("relationship_to_family", array("not_finish1{@}!={@}1"), 'Required.');    
         $this->XINRegisterRule("additional_info_about_childs_home", array("not_finish1{@}!={@}1"), 'Required.');    
-        $this->XINRegisterRule("additional_info_about_childs_home_status", array("not_finish1{@}!={@}1"), 'Required.');   
 
         $this->form->addFormRule(array(&$this, 'validate_page1'));
     }
@@ -680,7 +679,6 @@ class NDB_BVL_Instrument_TSI_DS_Infant extends NDB_BVL_Instrument
         $this->addTextAreaElement("how_did_you_find_out_about_the_study", "How did you find out about the study?");
         $this->XINRegisterRule("enrolled_in_other_studies_or_registries", array("not_finish2{@}!={@}1"), 'Required.');
         $this->XINRegisterRule("how_did_you_find_out_about_the_study", array("not_finish2{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("how_did_you_find_out_about_the_study_status", array("not_finish2{@}!={@}1"), 'Required.');
         $this->form->addFormRule(array(&$this, 'validate_page2'));
     }
 
@@ -1304,9 +1302,7 @@ class NDB_BVL_Instrument_TSI_DS_Infant extends NDB_BVL_Instrument
         $this->XINRegisterRule("q4_additional_documentation_completed", array("not_finish5{@}!={@}1"), 'Required.');
         $this->XINRegisterRule("q5_proceed_to_next_level_beyond_screening", array("not_finish5{@}!={@}1"), 'Required.');
         $this->XINRegisterRule("if_reviewed_decision", array("not_finish5{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("if_reviewed_decision_status", array("not_finish5{@}!={@}1"), 'Required.');
         $this->XINRegisterRule("comments", array("not_finish5{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("comments_status", array("not_finish5{@}!={@}1"), 'Required.');
     }
 
     function q12_table($page_number, $section_name, $parent_question)
@@ -1698,5 +1694,17 @@ class NDB_BVL_Instrument_TSI_DS_Infant extends NDB_BVL_Instrument
             }
         }
     }
+    function _save(array $values): void
+    {  
+       for($i=0;$i<=5;$i++){
+            $checkbox= "not_finish".$i;
+            if (!isset($values["$checkbox"])) {
+                $values["$checkbox"] = '0';
+            }
+       } 
+        parent::_save($values);
+    }    
 }
-?>
+
+
+
