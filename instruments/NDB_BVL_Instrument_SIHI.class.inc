@@ -178,7 +178,6 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
 			 );
 
 	$option4_source = array(
-                            null                        => "",
                             "non_professional"          => "Non-professional (friends, books)",
                             "non_medical_proffesional"  => "Non-medical professional (e.g., acupuncture)",
                             "pediatrician"              => "Pediatrician",
@@ -191,7 +190,6 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
 		      );
 
 	 $option5_select =  array(
-            null                          => "",
             "behavioral_intervention"     => "Behavioral intervention (e.g., CBT-I)",
             "nonpharmacological_medical"  => "Nonpharmacological medical (e.g., CPAP)",
             "medication"                  => "Medication (e.g., melatonin, clonidine, trazodone, remeron, risperdal, seroqual, ambien, benzodiazepines)",
@@ -199,7 +197,6 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
         );
 
         $option5_medication = array(
-            null           => "",
             "melatonin"    => "Melatonin",
             "clonidine"    => "Clonidine (Catapres, Kapvay, Nexiclon)",
             "trazodone"    => "Trazodone (Desyrel, Desyrel Dividose, Oleptro,Trazodone D)",
@@ -230,7 +227,8 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
         $this->addSelect(
             "i_q4_if_yes_select_source",
             $this->indent . "If yes, select source:",
-            $option4_source
+	    $option4_source,
+            ["multiple"]
             );
 	
       	$this->XINRegisterRule('i_q4_if_yes_select_source', array('i_q4_seek_information_to_help_child_sleep_better{@}=={@}yes'), 'Required if yes');
@@ -248,7 +246,8 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
         $this->addSelect(
             "i_q5_if_yes_select",
             $this->indent . "If yes, select:",
-   	    $option5_select
+	    $option5_select,
+	    ["multiple"]
             );
 	
         $this->XINRegisterRule('i_q5_if_yes_select', array('i_q5_did_child_receive_intervention{@}=={@}yes'), 'Required if yes');
@@ -256,7 +255,8 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
 	$this->addSelect(
             "i_q5_if_medication_select_which_medicine_your_child_used",
             $this->indent . "If medication, select which medicine your child used:",
-	    $option5_medication
+	    $option5_medication,
+	    ["multiple"]
         );
 
         $this->XINRegisterRule('i_q5_if_medication_select_which_medicine_your_child_used', array('i_q5_if_yes_select{@}=={@}medication'), 'Required if medication');
@@ -294,7 +294,6 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
 			 );
 
 	$option4_source = array(
-                            null                        => "",
                             "non_professional"          => "Non-professional (friends, books)",
                             "non_medical_proffesional"  => "Non-medical professional (e.g., acupuncture)",
                             "pediatrician"              => "Pediatrician",
@@ -308,7 +307,6 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
         );
 
         $option5_select =  array(
-            null                          => "",
             "behavioral_intervention"     => "Behavioral intervention (e.g., CBT-I)",
             "nonpharmacological_medical"  => "Nonpharmacological medical (e.g., CPAP)",
             "medication"                  => "Medication (e.g., melatonin, clonidine, trazodone, remeron, risperdal, seroqual, ambien, benzodiazepines)",
@@ -316,7 +314,6 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
         );
 
         $option5_medication = array(
-            null           => "",
             "melatonin"    => "Melatonin",
             "clonidine"    => "Clonidine (Catapres, Kapvay, Nexiclon)",
             "trazodone"    => "Trazodone (Desyrel, Desyrel Dividose, Oleptro,Trazodone D)",
@@ -347,7 +344,8 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
         $this->addSelect(
             "ii_q4_if_yes_select_source",
             $this->indent . "If yes, select source:",
-            $option4_source
+	    $option4_source,
+	    ["multiple"]
     );
 
         $this->XINRegisterRule('ii_q4_if_yes_select_source', array('ii_q4_seek_information_to_help_child_sleep_better{@}=={@}yes'), 'Required if yes');
@@ -365,14 +363,16 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
         $this->addSelect(
             "ii_q5_if_yes_select",
             $this->indent . "If yes, select:",
-            $option5_select
+	    $option5_select,
+	    ["multiple"]
         );
         $this->XINRegisterRule('ii_q5_if_yes_select', array('ii_q5_did_child_receive_intervention{@}=={@}yes'), 'Required if yes');
 
 	$this->addSelect(
             "ii_q5_if_medication_select_which_medicine_your_child_used",
             $this->indent . "If medication, select which medicine your child used:",
-	    $option5_medication
+	    $option5_medication,
+	    ["multiple"]
         );
 
         $this->XINRegisterRule('ii_q5_if_medication_select_which_medicine_your_child_used', array('ii_q5_if_yes_select{@}=={@}medication'), 'Required if medication');
@@ -410,7 +410,6 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
                                 );
 
 	$option4_source = array(
-                                    null                        => "",
                                     "non_professional"          => "Non-professional (friends, books)",
                                     "non_medical_proffesional"  => "Non-medical professional (e.g., acupuncture)",
                                     "pediatrician"              => "Pediatrician",
@@ -424,7 +423,6 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
                 );
         
         $option5_select =  array(
-                    null                          => "",
                     "behavioral_intervention"     => "Behavioral intervention (e.g., CBT-I)",
                     "nonpharmacological_medical"  => "Nonpharmacological medical (e.g., CPAP)",
                     "medication"                  => "Medication (e.g., melatonin, clonidine, trazodone, remeron, risperdal, seroqual, ambien, benzodiazepines)",
@@ -432,7 +430,6 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
                 );
         
                 $option5_medication = array(
-                    null           => "",
                     "melatonin"    => "Melatonin",
                     "clonidine"    => "Clonidine (Catapres, Kapvay, Nexiclon)",
                     "trazodone"    => "Trazodone (Desyrel, Desyrel Dividose, Oleptro,Trazodone D)",
@@ -463,7 +460,8 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
         $this->addSelect(
             "iii_q4_if_yes_select_source",
             $this->indent . "If yes, select source:",
-            $option4_source
+	    $option4_source,
+	    ["multiple"]
         );
         $this->XINRegisterRule('iii_q4_if_yes_select_source', array('iii_q4_seek_information_to_help_child_sleep_better{@}=={@}yes'), 'Required if yes');
 
@@ -480,7 +478,8 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
         $this->addSelect(
             "iii_q5_if_yes_select",
             $this->indent . "If yes, select:",
-            $option5_select
+	    $option5_select,
+	    ["multiple"]
     );
 
         $this->XINRegisterRule('iii_q5_if_yes_select', array('iii_q5_did_child_receive_intervention{@}=={@}yes'), 'Required if yes');
@@ -488,7 +487,8 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
 	$this->addSelect(
             "iii_q5_if_medication_select_which_medicine_your_child_used",
             $this->indent . "If medication, select which medicine your child used:",
-	    $option5_medication
+	    $option5_medication,
+	    ["multiple"]
         );
 
         $this->XINRegisterRule('iii_q5_if_medication_select_which_medicine_your_child_used', array('iii_q5_if_yes_select{@}=={@}medication'), 'Required if medication');
@@ -526,7 +526,6 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
 			 );
 
 	$option4_source = array(
-                            null                        => "",
                             "non_professional"          => "Non-professional (friends, books)",
                             "non_medical_proffesional"  => "Non-medical professional (e.g., acupuncture)",
                             "pediatrician"              => "Pediatrician",
@@ -540,7 +539,6 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
         );
 
         $option5_select =  array(
-            null                          => "",
             "behavioral_intervention"     => "Behavioral intervention (e.g., CBT-I)",
             "nonpharmacological_medical"  => "Nonpharmacological medical (e.g., CPAP)",
             "medication"                  => "Medication (e.g., melatonin, clonidine, trazodone, remeron, risperdal, seroqual, ambien, benzodiazepines)",
@@ -548,7 +546,6 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
         );
 
         $option5_medication = array(
-            null           => "",
             "melatonin"    => "Melatonin",
             "clonidine"    => "Clonidine (Catapres, Kapvay, Nexiclon)",
             "trazodone"    => "Trazodone (Desyrel, Desyrel Dividose, Oleptro,Trazodone D)",
@@ -580,7 +577,8 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
         $this->addSelect(
             "iv_q4_if_yes_select_source",
             $this->indent . "If yes, select source:",
-            $option4_source
+	    $option4_source,
+	    ["multiple"]
         );
         $this->XINRegisterRule('iv_q4_if_yes_select_source', array('iv_q4_seek_information_to_help_child_sleep_better{@}=={@}yes'), 'Required if yes');
 
@@ -597,7 +595,8 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
         $this->addSelect(
             "iv_q5_if_yes_select",
             $this->indent . "If yes, select:",
-            $option5_select
+	    $option5_select,
+	    ["multiple"]
     );
 
         $this->XINRegisterRule('iv_q5_if_yes_select', array('iv_q5_did_child_receive_intervention{@}=={@}yes'), 'Required if yes');
@@ -605,7 +604,8 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
 	$this->addSelect(
             "iv_q5_if_medication_select_which_medicine_your_child_used",
             $this->indent . "If medication, select which medicine your child used:",
-	    $option5_medication
+	    $option5_medication,
+	    ["multiple"]
         );
 
         $this->XINRegisterRule('iv_q5_if_medication_select_which_medicine_your_child_used', array('iv_q5_if_yes_select{@}=={@}medication'), 'Required if medication');
@@ -643,7 +643,6 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
                                 );
 	
 	$option4_source = array(
-                            null                        => "",
                             "non_professional"          => "Non-professional (friends, books)",
                             "non_medical_proffesional"  => "Non-medical professional (e.g., acupuncture)",
                             "pediatrician"              => "Pediatrician",
@@ -657,7 +656,6 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
         );
 
         $option5_select =  array(
-                          null                          => "",
                           "behavioral_intervention"     => "Behavioral intervention (e.g., CBT-I)",
                           "nonpharmacological_medical"  => "Nonpharmacological medical (e.g., CPAP)",
                           "medication"                  => "Medication (e.g., melatonin, clonidine, trazodone, remeron, risperdal, seroqual, ambien, benzodiazepines)",
@@ -665,7 +663,6 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
         );
 
         $option5_medication = array(
-            null           => "",
             "melatonin"    => "Melatonin",
             "clonidine"    => "Clonidine (Catapres, Kapvay, Nexiclon)",
             "trazodone"    => "Trazodone (Desyrel, Desyrel Dividose, Oleptro,Trazodone D)",
@@ -696,7 +693,8 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
         $this->addSelect(
             "v_q4_if_yes_select_source",
             $this->indent . "If yes, select source:",
-            $option4_source
+	    $option4_source,
+	    ["multiple"]
         );
 	
 	$this->XINRegisterRule('v_q4_if_yes_select_source', array('v_q4_seek_information_to_help_child_sleep_better{@}=={@}yes'), 'Required if yes');
@@ -714,7 +712,8 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
         $this->addSelect(
             "v_q5_if_yes_select",
             $this->indent . "If yes, select:",
-            $option5_select
+	    $option5_select,
+	    ["multiple"]
         );
 	
 	$this->XINRegisterRule('v_q5_if_yes_select', array('v_q5_did_child_receive_intervention{@}=={@}yes'), 'Required if yes');
@@ -722,7 +721,8 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
 	$this->addSelect(
             "v_q5_if_medication_select_which_medicine_your_child_used",
             $this->indent . "If medication, select which medicine your child used:",
-	    $option5_medication
+	    $option5_medication,
+	    ["multiple"]
         );
 
         $this->XINRegisterRule('v_q5_if_medication_select_which_medicine_your_child_used', array('v_q5_if_yes_select{@}=={@}medication'), 'Required if medication');
