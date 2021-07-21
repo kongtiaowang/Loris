@@ -455,9 +455,11 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
                 $this->form->addElement('text', null, $this->indent . $field, ['disabled' => 'disabled']);
             }
         }
+        $this->XINRegisterRule("mother_dob_date", array("mother_dob_date{@}=={@}never_required"), 'Not Required.');
 
         $this->addTextElement("mother_occupation", $this->indent . "Occupation");
         $this->addSelect("mother_education", $this->indent . "Education", self::EDUCATION_OPTIONS);
+        $this->XINRegisterRule("mother_occupation", array("mother_occupation{@}=={@}never_required"), 'Not Required.');
 
         $this->form->addElement('static', null, null);
 
@@ -471,8 +473,11 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
                 $this->form->addElement('text', null, $this->indent . $field, ['disabled' => 'disabled']);
             }
         }
+        $this->XINRegisterRule("father_dob_date", array("father_dob_date{@}=={@}never_required"), 'Not Required.');
 
         $this->addTextElement("father_occupation", $this->indent . "Occupation");
+        $this->XINRegisterRule("father_occupation", array("father_occupation{@}=={@}never_required"), 'Not Required.');
+
         $this->addSelect("father_education", $this->indent . "Education", self::EDUCATION_OPTIONS);
 
         $this->form->addElement('static', null, null);
@@ -550,14 +555,10 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
         $this->XINRegisterRule("when_diagnosed_with_autism", array("not_finish1{@}!={@}1"), 'Required.');
         $this->XINRegisterRule("diagnosed_with_autism_by", array("not_finish1{@}!={@}1"), 'Required.');
         $this->XINRegisterRule("mother_dob_date", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("mother_dob_date_status", array("not_finish1{@}!={@}1"), 'Required.');
         $this->XINRegisterRule("mother_occupation", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("mother_occupation_status", array("not_finish1{@}!={@}1"), 'Required.');
         $this->XINRegisterRule("mother_education", array("not_finish1{@}!={@}1"), 'Required.');
         $this->XINRegisterRule("father_dob_date", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("father_dob_date_status", array("not_finish1{@}!={@}1"), 'Required.');
         $this->XINRegisterRule("father_occupation", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("father_occupation_status", array("not_finish1{@}!={@}1"), 'Required.');
         $this->XINRegisterRule("father_education", array("not_finish1{@}!={@}1"), 'Required.');
         $this->XINRegisterRule("is_english_primary_language_spoken_in_home", array("not_finish1{@}!={@}1"), 'Required.');
         $this->XINRegisterRule("are_infant_and_or_proband_adopted", array("not_finish1{@}!={@}1"), 'Required.');
@@ -567,7 +568,6 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
         $this->XINRegisterRule("are_parents_divorced_or_separated", array("not_finish1{@}!={@}1"), 'Required.');
         $this->XINRegisterRule("relationship_to_family", array("not_finish1{@}!={@}1"), 'Required.');
         $this->XINRegisterRule("additional_info_about_childs_home", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("additional_info_about_childs_home_status", array("not_finish1{@}!={@}1"), 'Required.');
         $this->form->addFormRule(array(&$this, 'validate_page1'));
     }
 
@@ -744,7 +744,7 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
         );
         unset($group);
 
-        for ($i = 1; $i <= 8; $i++) {
+        for ($i = 1; $i <= 5; $i++) {
 
             $group[] =& $this->createText(
                 null,
@@ -840,7 +840,6 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
         $this->XINRegisterRule("proband_live_in_home", array("not_finish2{@}!={@}1"), 'Required.');
         $this->XINRegisterRule("enrolled_in_other_studies_or_registries", array("not_finish2{@}!={@}1"), 'Required.');
         $this->XINRegisterRule("how_did_you_find_out_about_the_study", array("not_finish2{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("how_did_you_find_out_about_the_study_status", array("not_finish2{@}!={@}1"), 'Required.');
 
         $this->form->addFormRule(array(&$this, 'validate_page2'));
     }
@@ -1794,11 +1793,9 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
 
         $this->addBasicDate('date_received_exclusion_review_decision', "Date received exclusion review decision:");
 
-        $this->XINRegisterRule(
-            "date_received_exclusion_review_decision",
-            array("if_reviewed_decision{@}!={@}"),
-            'Required.'
-        );
+        $this->XINRegisterRule("date_received_exclusion_review_decision", array("not_finish7{@}!={@}1"), 'Required.');
+
+
         $this->XINRegisterRule("candidate_race", array("not_finish7{@}!={@}1"), 'Required.');
         $this->XINRegisterRule("bio_mother_race", array("not_finish7{@}!={@}1"), 'Required.');
         $this->XINRegisterRule("bio_father_race", array("not_finish7{@}!={@}1"), 'Required.');
@@ -1810,7 +1807,6 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
         $this->XINRegisterRule("q2_subject_has_evidence_for_contraindication_to_MRI", array("not_finish7{@}!={@}1"), 'Required.');
         $this->XINRegisterRule("q3_proceed_to_next_level_beyond_screening", array("not_finish7{@}!={@}1"), 'Required.');
         $this->XINRegisterRule("if_reviewed_decision", array("not_finish7{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("if_reviewed_decision_status", array("not_finish7{@}!={@}1"), 'Required.');
     }
 
     function q12_table($page_number, $section_name, $parent_question)
@@ -2003,7 +1999,7 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
     {
         $errors = [];
         
-
+    if ($values["not_finish0"]!="1"){
         $this->validate_positive_numeric($values, "subject_birth_weight_lbs", $errors);
         $this->validate_positive_numeric($values, "subject_birth_weight_oz", $errors);
         $this->validate_positive_numeric($values, "subject_how_many_weeks_gestation", $errors);
@@ -2015,7 +2011,7 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
         if ($values["are_bio_parents_living_in_same_home"] != "no") {
             $this->validate_empty_subquestions($values, ["if_not_in_same_home_childs_primary_address_with"], $errors);
         }
-
+     }    
         return $errors;
     }
 
@@ -2380,6 +2376,16 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
                 $errors[$question] = "Specify a positive number";
             }
         }
+    }
+    function _save(array $values): void
+    {  
+       for($i=0;$i<=7;$i++){
+            $checkbox= "not_finish".$i;
+            if (!isset($values["$checkbox"])) {
+                $values["$checkbox"] = '0';
+            }
+       } 
+        parent::_save($values);
     }
 }
 
