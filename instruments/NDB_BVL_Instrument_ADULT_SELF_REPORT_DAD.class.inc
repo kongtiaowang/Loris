@@ -1391,10 +1391,6 @@ such as where we live",
             }
         }
 
-        error_log("AGE: " . $age);
-        error_log("AGE RANGE: " . $age_range);
-        error_log("EDUCATION AGE RANGE: " . $education_age_range);
-
         $scores = array();
 
         /***** ASR AND ABCL ADAPTIVE FUNCTIONING SCALES *****/
