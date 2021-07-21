@@ -63,7 +63,22 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
         $this->dateTimeFields = array("Date_taken");
         //The array of selects with multiple answers allowed
         //Any HTML_Quickform multiple selects must be listed here
-        $this->selectMultipleElements = array();
+	$this->selectMultipleElements = array(
+		      'i_q4_if_yes_select_source',
+		      'i_q5_if_yes_select',
+		      'i_q5_if_medication_select_which_medicine_your_child_used',
+		      'ii_q4_if_yes_select_source',
+		      'ii_q5_if_yes_select',
+		      'ii_q5_if_medication_select_which_medicine_your_child_used',
+		      'iii_q4_if_yes_select_source',
+		      'iii_q5_if_yes_select',
+		      'iii_q5_if_medication_select_which_medicine_your_child_used',
+		      'iv_q4_if_yes_select_source',
+		      'iv_q5_if_yes_select',
+		      'iv_q5_if_medication_select_which_medicine_your_child_used',
+		      'v_q4_if_yes_select_source',
+		      'v_q5_if_yes_select',
+		      'v_q5_if_medication_select_which_medicine_your_child_used');
         // required fields for data entry completion status
         $this->_requiredElements = array(
             'i_q1_any_concerns_about_childs_nighttime_sleep',
