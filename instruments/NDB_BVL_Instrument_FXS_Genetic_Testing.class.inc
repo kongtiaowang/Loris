@@ -74,7 +74,7 @@ class NDB_BVL_Instrument_FXS_Genetic_Testing extends NDB_BVL_Instrument
             $this->_main();
         }
         // Defines the call back function for HTML Quickform to use in validation
-        $this->form->addFormRule(array(&$this, 'XINValidate'));
+      //  $this->form->addFormRule(array(&$this, 'XINValidate'));
     }
 
 /**
@@ -199,6 +199,15 @@ class NDB_BVL_Instrument_FXS_Genetic_Testing extends NDB_BVL_Instrument
         'aunt2' => 'Aunt (Mom’s Sister)', 'aunt3' => 'Aunt (Mom’s Sister)', 'uncle1' => 'Uncle (Mom’s Brother)', 'uncle1' => 'Uncle (Mom’s Brother)', 'uncle2' => 'Uncle (Mom’s Brother)',
         'uncle3' => 'Uncle (Mom’s Brother)');
 
+	$group[] =& $this->form->createElement("static",null,null, "Family Member");
+        $group[] =& $this->form->createElement("static",null,null,"Relationship to FXS child in study");
+        $group[] =& $this->form->createElement("static",null,null,"Sex");
+        $group[] =& $this->form->createElement("static",null,null,"Date of Birth");
+        $group[] =& $this->form->createElement("static",null,null,"FXS Genetic Testing Complete");
+        $group[] =& $this->form->createElement("static",null,null,"Result");
+        $this->form->addGroup($group,"extended_family",null,$this->_GUIDelimiter,false);
+	unset($group);
+
         foreach ($extended_questions as $key => $val) {
             $groupname = $key . "_group";
 
@@ -299,7 +308,7 @@ class NDB_BVL_Instrument_FXS_Genetic_Testing extends NDB_BVL_Instrument
             unset($group);
             }
 
-
+        $this->form->addFormRule(array(&$this, 'validate_page1'));
 
     }
 
@@ -320,17 +329,16 @@ class NDB_BVL_Instrument_FXS_Genetic_Testing extends NDB_BVL_Instrument
         $symptoms1 = array('irregular_menstrual_cycles' => 'Irregular menstrual cycles', 'infertility_having_children' => 'Infertility/difficulty having children', 'hot_flashes' => 'Hot flashes', 'premature_ovarian_failure' => 'Premature ovarian failure');
         $symptoms2 = array('intention_tremor' => 'Intention tremor', 'gait_ataxias' => 'Gait ataxias', 'parkinsonism' => 'Parkinsonism', 'short_term_memory' => 'Short-term memory problems', 'executive_function_problems' => 'Executive function problems');
         
+	$this->addHeader("<h3>MOTHER OF CHILD WITH FXS</h3>");
 
         $group[] = $this->form->createElement("static",null,null,"Family Member");
-        $group[] = $this->form->createElement("static",null,null,"Relationship to FXS <br> child in study");
+        $group[] = $this->form->createElement("static",null,null,"Relationship to FXS child in study");
         $group[] = $this->form->createElement("static",null,null,"Sex");
         $group[] = $this->form->createElement("static",null,null,"Date of Birth");
         $group[] = $this->form->createElement("static",null,null,"Diagnosed with <br> FXPOI/ FAXTAS");
         $group[] = $this->form->createElement("static",null,null,"Symptoms");
-        $this->form->addGroup($group,"page_2_header",null,$this->_GUIDelimiter,false);
+        $this->form->addGroup($group,"mother_section_group",null,$this->_GUIDelimiter,false);
         unset($group);
-
-        $this->addHeader("<h3>MOTHER OF CHILD WITH FXS</h3>");
 
 	$group[] = $this->form->createElement("static",null,null, "Mother".$this->indent.$this->indent.$this->indent.$this->indent);
         $group[] = $this->form->createElement("static",null, null, "Mother".$this->indent.$this->indent.$this->indent.$this->indent);
@@ -346,7 +354,16 @@ class NDB_BVL_Instrument_FXS_Genetic_Testing extends NDB_BVL_Instrument
 
         $this->addHeader("<h3>GRANDMOTHER, AUNT(S) OF CHILD WITH FXS</h3>");
 
-        $group[] = $this->form->createElement("static",null, null, "Grandmother (Mom’s Mother)");
+	$group[] =& $this->form->createElement("static",null,null, "Family Member");
+        $group[] =& $this->form->createElement("static",null,null,"Relationship to FXS child in study");
+        $group[] =& $this->form->createElement("static",null,null,"Sex");
+        $group[] =& $this->form->createElement("static",null,null,"Date of Birth");
+        $group[] =& $this->form->createElement("static",null,null,"Diagnosed with FXPOI/ FAXTAS");
+        $group[] =& $this->form->createElement("static",null,null,"Symptoms");
+        $this->form->addGroup($group,"grandmother_section_group",null,$this->_GUIDelimiter,false);
+	unset($group);
+
+	$group[] = $this->form->createElement("static",null, null, "Grandmother (Mom’s Mother)");
         $group[] = $this->form->createElement("static",null, null, "Maternal grandMother");
         $group[] = $this->form->createElement("static", null, null, "Female");
         $group[] = $this->form->createElement("date", "grandmother_section2_date_of_birth", null);
@@ -358,7 +375,7 @@ class NDB_BVL_Instrument_FXS_Genetic_Testing extends NDB_BVL_Instrument
         $this->form->addGroup($group, "grandmother_section2_group", null, $this->_GUIDelimiter, false);
         unset($group);
 
-        for($i=1; $i<=5;$i++){
+	for($i=1; $i<=5;$i++){
         $group[] = $this->form->createElement("static",null, null, "Aunt (Mom’s Sister)");
         $group[] = $this->form->createElement("static",null, null, "Maternal aunt");
         $group[] = $this->form->createElement("static", null, null, "Female");
@@ -374,7 +391,16 @@ class NDB_BVL_Instrument_FXS_Genetic_Testing extends NDB_BVL_Instrument
 
         $this->addHeader("<h3>GRANDFATHER, UNCLE(S) OF CHILD WITH FXS</h3>");
 
-        $group[] = $this->form->createElement("static",null, null, "Grandfather (Mom’s father)");
+	$group[] =& $this->form->createElement("static",null,null, "Family Member");
+        $group[] =& $this->form->createElement("static",null,null,"Relationship to FXS child in study");
+        $group[] =& $this->form->createElement("static",null,null,"Sex");
+        $group[] =& $this->form->createElement("static",null,null,"Date of Birth");
+        $group[] =& $this->form->createElement("static",null,null,"Diagnosed with FXPOI/ FAXTAS");
+        $group[] =& $this->form->createElement("static",null,null,"Symptoms");
+        $this->form->addGroup($group,"page_2_header",null,$this->_GUIDelimiter,false);
+	unset($group);
+
+	$group[] = $this->form->createElement("static",null, null, "Grandfather (Mom’s father)");
         $group[] = $this->form->createElement("static",null, null, "Maternal grandfather");
         $group[] = $this->form->createElement("static", null, null, "Male");
         $group[] = $this->form->createElement("date", "grandfather_section2_date_of_birth", null);
@@ -386,7 +412,7 @@ class NDB_BVL_Instrument_FXS_Genetic_Testing extends NDB_BVL_Instrument
         $this->form->addGroup($group, "grandfather_section2_group", null, $this->_GUIDelimiter, false);
         unset($group);
 
-        for($i=1; $i<=5;$i++){
+	for($i=1; $i<=5;$i++){
         $group[] = $this->form->createElement("static",null, null, "Uncle (Mom’s Brother)");
         $group[] = $this->form->createElement("static",null, null, "Maternal uncle");
         $group[] = $this->form->createElement("static", null, null, "Male");
@@ -403,6 +429,14 @@ class NDB_BVL_Instrument_FXS_Genetic_Testing extends NDB_BVL_Instrument
 
     }
 
+         function validate_page1($values)
+    {
+        $errors = [];
+
+        if (!is_numeric($values["no_of_siblings"])) {
+            echo  "The number of Siblings you entered must be numerics";
+        }
+    }
 
 }
 ?>
