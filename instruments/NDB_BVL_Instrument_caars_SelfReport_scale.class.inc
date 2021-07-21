@@ -1,6 +1,5 @@
 <?php
-
-class NDB_BVL_Instrument_caars_SelfReport_mom extends NDB_BVL_Instrument
+class NDB_BVL_Instrument_caars_SelfReport_scale extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
     use instrument_validator;
@@ -40,14 +39,14 @@ class NDB_BVL_Instrument_caars_SelfReport_mom extends NDB_BVL_Instrument
     function setup(?string $commentID = null, ?string $page = null): void
     {
         $this->formType ="XIN";
-        $this->form     = new LorisForm('caars_SelfReport_mom');
+        $this->form     = new LorisForm('caars_SelfReport_scale');
         $this->page     = $page;            // page label (number or
         // string - used by
         // user-defined child classes)
 
         // set the object properties
-        $this->testName = "caars_SelfReport_mom";           // test_names.Test_name
-        $this->table    = 'caars_SelfReport_mom';              // name of database table corresponding to instrument
+        $this->testName = "caars_SelfReport_scale";           // test_names.Test_name
+        $this->table    = 'caars_SelfReport_scale';              // name of database table corresponding to instrument
         // data keyed by commentID
         $this->commentID = $commentID;
         $config            =& NDB_Config::singleton();
@@ -64,7 +63,7 @@ class NDB_BVL_Instrument_caars_SelfReport_mom extends NDB_BVL_Instrument
         // required fields for data entry completion status
         $this->_requiredElements = array(
                                     'q1_interrupt_others_when_talking',
-                                   );
+			    );
 
         // setup the form
         $this->_setupForm();
@@ -81,8 +80,9 @@ class NDB_BVL_Instrument_caars_SelfReport_mom extends NDB_BVL_Instrument
      */
     function _setupForm()
     {
-        if (preg_match("/caars_SelfReport_mom(_page[0-9]+)/", $this->page, $matches)) {
-            call_user_func(array($this, $matches[1]));
+	    if (preg_match("/caars_SelfReport_scale(_page[0-9]+)/", $this->page, $matches)) {		    
+	    call_user_func(array($this, $matches[1]));
+
         } else {
             $this->_main();
         }
@@ -97,14 +97,14 @@ class NDB_BVL_Instrument_caars_SelfReport_mom extends NDB_BVL_Instrument
      * @access private
      */
     function _main()
-    {
-
+    {	    
          // display test name
-        $this->addHeader("CAARS–Self-Report Scale: Self Report Mom (Send to Mom)");
- 
-        // automatically adds examiner & date of administration
-        $this->addBasicDate('Date_taken', 'Date of Administration' , $this->dateOptions);
+        $this->addHeader("CAARS–Self-Report Scale: Short Version (CAARS–S:S)");
 
+
+        // automatically adds examiner & date of administration
+        $this->addBasicDate('Date_taken', 'Date of Administration' , $this->dateOptions, ['disabled' => 'disabled']);
+	
 
         $field   = 'respondent_age';
         $label   = 'Your Age <BR>(Please indicate your age in years)';
@@ -303,10 +303,9 @@ class NDB_BVL_Instrument_caars_SelfReport_mom extends NDB_BVL_Instrument
         $c_raw_score = $scores['c_raw_score'];
         $d_raw_score = $scores['d_raw_score'];
         $e_raw_score = $scores['e_raw_score'];
-        $respondent_age = $score_record['respondent_age'];
-        $respondent_gender = $score_record['respondent_gender'];
-
-
+	$respondent_age = $score_record['respondent_age'];
+	$respondent_gender = $score_record['respondent_gender'];
+	
         if($respondent_gender == 'male'){
 
         if($respondent_age >= 18 && $respondent_age <= 29 ) {
@@ -533,8 +532,4 @@ class NDB_BVL_Instrument_caars_SelfReport_mom extends NDB_BVL_Instrument
     
     
 }
-
-   
-
-
 ?>
