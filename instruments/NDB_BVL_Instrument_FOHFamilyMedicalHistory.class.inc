@@ -42,7 +42,6 @@ class NDB_BVL_Instrument_FOHFamilyMedicalHistory extends NDB_BVL_Instrument
             'emptyOptionValue' => null
         );
 
-        $db = Database::singleton();
         // setup the form
         $this->_setupForm();
 
