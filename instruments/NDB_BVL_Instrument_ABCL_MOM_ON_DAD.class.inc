@@ -32,12 +32,12 @@ class NDB_BVL_Instrument_ABCL_MOM_ON_DAD extends NDB_BVL_Instrument
      */
 
     private const Default_Options = array(
-        null => '',
-        '2'  => '2-Very True or Often True',
-        '1'  => '1-Somewhat or Sometimes True',
-        '0'  => '0-Not True (as far as you know)',
-        'nk'  => 'Prefer not to answer'
-    );
+                                     null => '',
+                                     '2'  => '2-Very True or Often True',
+                                     '1'  => '1-Somewhat or Sometimes True',
+                                     '0'  => '0-Not True (as far as you know)',
+                                     'nk' => 'Prefer not to answer',
+                                    );
 
     /**
     * Sets up basic data, such as the HTML_Quickform object, and so on.
@@ -48,7 +48,7 @@ class NDB_BVL_Instrument_ABCL_MOM_ON_DAD extends NDB_BVL_Instrument
     * @return void
     * @access public
     */
-    function setup(?string $commentID = NULL, ?string $page = NULL): void
+    function setup(?string $commentID = null, ?string $page = null): void
     {
         $this->formType = "XIN";
         $this->form     = new LorisForm('test_form');
@@ -109,26 +109,26 @@ class NDB_BVL_Instrument_ABCL_MOM_ON_DAD extends NDB_BVL_Instrument
         // display test name
         $this->addHeader("ABCL Informant (Adult Informant Behavior Checklist) Ages 18-59 - Mom on Dad");
 
-        $config      =& NDB_Config::singleton();
+        $config =& NDB_Config::singleton();
 
         $dateOptions = array(
-            'language'         => 'en',
-            'format'           => 'YMd',
-            'minYear'          => $config->getSetting('startYear'),
-            'maxYear'          => $config->getSetting('endYear'),
-            'addEmptyOption'   => true,
-            'emptyOptionValue' => null,
-        );
+                        'language'         => 'en',
+                        'format'           => 'YMd',
+                        'minYear'          => $config->getSetting('startYear'),
+                        'maxYear'          => $config->getSetting('endYear'),
+                        'addEmptyOption'   => true,
+                        'emptyOptionValue' => null,
+                       );
 
         $this->addBasicDate('Date_taken', 'Date of Administration', $dateOptions);
         $opts = array(
-            null          => "",
-            "mother"      => "Mother",
-            "father"      => "Father",
-            "step_mother" => "Step Mother",
-            "step_father" => "Step Father",
-            "other"       => "Other",
-        );
+                 null          => "",
+                 "mother"      => "Mother",
+                 "father"      => "Father",
+                 "step_mother" => "Step Mother",
+                 "step_father" => "Step Father",
+                 "other"       => "Other",
+                );
         $this->addSelect("relationship_to_child", "What is your relationship to the child?", $opts);
         $this->addBasicText("other_relationship_to_child", $this->indent."If Other, please describe:");
         $this->XINRegisterRule(
@@ -153,7 +153,7 @@ class NDB_BVL_Instrument_ABCL_MOM_ON_DAD extends NDB_BVL_Instrument
                            null     => "",
                            "male"   => "Male",
                            "female" => "Female",
-                           "other"  => "Other"
+                           "other"  => "Other",
                           );
 
         $this->addSelect("adults_gender", "Child's Biological Father's Sex", $gender_options);
@@ -179,7 +179,7 @@ class NDB_BVL_Instrument_ABCL_MOM_ON_DAD extends NDB_BVL_Instrument
                  "8"     => "8. Master’s Degree",
                  "9"     => "9. Doctoral or Law degree",
                  "other" => "Other education (specify)",
-                 'nk'    => 'Prefer not to answer'
+                 'nk'    => 'Prefer not to answer',
                 );
 
         $this->addSelect("user_education", "Please Check Child's Biological Father's HIGHEST EDUCATION", $opts);
@@ -203,7 +203,7 @@ class NDB_BVL_Instrument_ABCL_MOM_ON_DAD extends NDB_BVL_Instrument
                                  null      => "",
                                  "spouse"  => "Spouse",
                                  "partner" => "Partner",
-                                 "other"   => "Other (specify)"
+                                 "other"   => "Other (specify)",
                                 );
 
         $this->addSelect("relationship_to_adult", "Your relationship to Child's Biological Father:", $relationship_options);
@@ -229,7 +229,7 @@ class NDB_BVL_Instrument_ABCL_MOM_ON_DAD extends NDB_BVL_Instrument
                               "1"    => "1",
                               "2"    => "2 or 3",
                               "3"    => "4 or more",
-				              'nk'   => 'Prefer not to answer'
+                              'nk'   => 'Prefer not to answer',
                              );
 
         $friends_options_2 = array(
@@ -238,7 +238,7 @@ class NDB_BVL_Instrument_ABCL_MOM_ON_DAD extends NDB_BVL_Instrument
                               "1"  => "1 or 2",
                               "2"  => "3 or 4",
                               "3"  => "5 or more",
-					         'nk'  => 'Prefer not to answer'
+                              'nk' => 'Prefer not to answer',
                              );
 
         $friends_options_3 = array(
@@ -247,7 +247,7 @@ class NDB_BVL_Instrument_ABCL_MOM_ON_DAD extends NDB_BVL_Instrument
                               "average"       => "Average",
                               "above_average" => "Above average",
                               "far_above"     => "Far above average",
-                              'nk'            => 'Prefer not to answer'
+                              'nk'            => 'Prefer not to answer',
                              );
 
         $this->addSelect("a_how_many_close_friends", "A. About how many close friends does he have? (Do not include family members.)", $friends_options_1);
@@ -278,7 +278,7 @@ class NDB_BVL_Instrument_ABCL_MOM_ON_DAD extends NDB_BVL_Instrument
                                 "separated" => "Married but separated from spouse",
                                 "divorced"  => "Divorced",
                                 "other"     => "Other- please describe",
-                                'nk'        => 'Prefer not to answer'
+                                'nk'        => 'Prefer not to answer',
                                );
 
         $this->addSelect("marital_status_user", "What is his marital status?", $marital_status_opts);
@@ -296,7 +296,7 @@ class NDB_BVL_Instrument_ABCL_MOM_ON_DAD extends NDB_BVL_Instrument
                         null  => "",
                         "no"  => "No",
                         "yes" => "Yes",
-			            'nk'  => 'Prefer not to answer'
+                        'nk'  => 'Prefer not to answer',
                        );
 
         //if yes, answer following questions
@@ -394,10 +394,10 @@ class NDB_BVL_Instrument_ABCL_MOM_ON_DAD extends NDB_BVL_Instrument
 
         //III. Does he have any illness, disability, or handicap?
         $opts = array(
-                    null  => "",
-                    "no"  => "No",
-                    "yes" => "Yes-please describe",
-                    'nk'  => 'Prefer not to answer'
+                 null  => "",
+                 "no"  => "No",
+                 "yes" => "Yes-please describe",
+                 'nk'  => 'Prefer not to answer',
                 );
 
         $this->addSelect("user_handicap", "<h4>III. Does he have any illness, disability, or handicap?</h4>", $opts);
@@ -412,10 +412,10 @@ class NDB_BVL_Instrument_ABCL_MOM_ON_DAD extends NDB_BVL_Instrument
 
         //IV. Please describe any concerns you have about him:
         $concerns_options = array(
-                                null  => "",
-                                "no"  => "No concerns",
-                                "yes" => "Yes-please describe",
-                                'nk'  => 'Prefer not to answer'
+                             null  => "",
+                             "no"  => "No concerns",
+                             "yes" => "Yes-please describe",
+                             'nk'  => 'Prefer not to answer',
                             );
 
         $this->addSelect("user_concerns", "<h4>IV. Please describe any concerns you have about him:</h4>", $concerns_options);
