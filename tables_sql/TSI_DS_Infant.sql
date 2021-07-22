@@ -203,6 +203,7 @@ CREATE TABLE `TSI_DS_Infant` (
     `inf_devfactors_q13_other` varchar(128) default NULL,
     `inf_devfactors_q14_method_of_delivery` varchar(128) default NULL,
     `inf_devfactors_q14_other` varchar(128) default NULL,
+    `Infant_method_of_delivery_comment` text default NULL,
     `inf_devfactors_q15_first_degree_relative` enum('yes','no') default NULL,
     `inf_devfactors_q15_intellectual_disability_mother` enum('yes','no') default NULL,
     `inf_devfactors_q15_intellectual_disability_father` enum('yes','no') default NULL,
