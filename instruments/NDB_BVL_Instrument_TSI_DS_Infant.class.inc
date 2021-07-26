@@ -936,6 +936,9 @@ class NDB_BVL_Instrument_TSI_DS_Infant extends NDB_BVL_Instrument
         $this->form->addElement('text', "inf_devfactors_q14_other", $this->indent . 'Other:');
         $this->XINRegisterRule("inf_devfactors_q14_other", array("inf_devfactors_q14_method_of_delivery{@}=={@}yes"), 'Required if other');
 
+        // Q14-comment
+        $this->addTextAreaElement("Infant_method_of_delivery_comment", "Comment:");
+        $this->XINRegisterRule("Infant_method_of_delivery_comment", array("Infant_method_of_delivery_comment{@}=={@}never_required"), 'Not Required.');
         // Q15
         $q15_subquestions = array(
                              "intellectual_disability" => "Intellectual disability",
