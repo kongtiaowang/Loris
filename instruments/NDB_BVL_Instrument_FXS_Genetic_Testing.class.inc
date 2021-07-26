@@ -103,14 +103,14 @@ class NDB_BVL_Instrument_FXS_Genetic_Testing extends NDB_BVL_Instrument
         $this->addHeader("SECTION 1: GENETIC TESTING");
 
         $field   = 'no_of_siblings';
-        $label   = 'How many siblings does the subject have (including the enrolled sibling)?';
+        $label   = 'How many children, in total, are in this family (subject and all full and half siblings included)?';
         $group[] = $this->createText($field, $label);
         $this->addGroup($group, $field . "_group", $label, null, false);
         $this->XINRegisterRule($field, array("$field{@}=={@}"),"Required.", $field . "_group");
         unset($group);
         $this->addGroupRule($field . "_group", array(array(array("Value must be numeric.", 'numeric'))));
 
-        $this->addHeader("<h3>Immediate Family (i.e. parents and siblings on enrolled child with FXS)</h3>");
+        $this->addHeader("<h3>Immediate Family (i.e. parents and siblings of enrolled child with FXS).</h3>");
 
         $table_heading = array('family_member' => 'Family Member', 'relationship_to_fxs' => 'Relationship to FXS child in study',
                                 'sex' => 'Sex', 'date_of_birth' => 'Date of Birth', 'genetic_testing' => 'FXS Genetic Testing Complete?',

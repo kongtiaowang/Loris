@@ -184,17 +184,17 @@ class NDB_BVL_Instrument_conners_parent extends NDB_BVL_Instrument
                          in the <b><i>past month</i></b>. 
                          Read each item carefully, then mark how well
                          it describes your child or how frequently 
-                         it has happened in the <b><i>past month</i></b>.<br><br>
-                         $this->indent <b>0</b> = In the past month, 
+                         it has happened in the <b><i>past month</i></b></h4>.<br><br>
+                         <b>0</b> = In the past month, 
                          this was <b><i>not true at all</i></b> about my child. It never
-                         (or seldom) happened<br></h4><br>
-                         $this->indent <b>1</b> = In the past month, this was 
+                         (or seldom) happened<br>
+                         <b>1</b> = In the past month, this was 
                          <b><i>just a little true</i></b> about my child. 
                          It happened occasionally.<br>
-                         $this->indent <b>2</b> = In the past month, 
+                         <b>2</b> = In the past month, 
                          this was <b><i>pretty much true</i></b> about<
                          my child. It happened often (or quite a bit).<br>
-                         $this->indent <b>3</b> = In the past month, this 
+                         <b>3</b> = In the past month, this 
                          was <b><i>very much true</i></b> about my child. It
                          happened very often (very frequently).<br><br>
                          Please pick one answer for each item. It is important

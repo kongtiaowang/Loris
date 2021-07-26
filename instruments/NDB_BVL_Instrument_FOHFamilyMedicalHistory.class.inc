@@ -84,7 +84,7 @@ class NDB_BVL_Instrument_FOHFamilyMedicalHistory extends NDB_BVL_Instrument
 
         $table_heading = array('mother' => 'Biological Mother', 'father' => 'Biological Father', 'sibling1' => 'Subject', 'sibling2' => 'Sibling 1',
             'sibling3' => 'Sibling 2', 'sibling4' => 'Sibling 3', 'sibling5' => 'Sibling 4', 'sibling6' => 'Sibling 5');
-        $questions = array('header' => null, 'relation' => 'Specify Relation', 'sibling_subject' => "Subject's sibling?", 'dob' => 'Date of birth', 'currentage' => 'Current age(months)', 'gender' => 'Sex: Male(M) or Female(F)',
+        $questions = array('header' => null, 'relation' => 'Specify Relation', 'sibling_subject' => "Enrolled Sibling Subject?", 'dob' => 'Date of birth', 'currentage' => 'Current age', 'gender' => 'Sex: Male(M) or Female(F)',
              'asd' => '1. Autism Spectrum Disorder', 'autistic_disorder' => '2. Autistic Disorder',
             'asperger_syndrome' => '3. Asperger Syndrome', 'rett_syndrome' => '4. Rett Syndrome', 'pdd_nos' => '5. PDD-NOS', 'age_first_diagnosis' => 'If “Yes” to any of #1-5, age at first diagnosis (years)', 'history_speechdelay' => '6. History Speech Delay',
             'history_development_delay' => '7. History Development Delay', 'history_learndisability' => '8. History Learning Disability',
@@ -113,7 +113,7 @@ class NDB_BVL_Instrument_FOHFamilyMedicalHistory extends NDB_BVL_Instrument
                         $group[] = $this->form->createElement("date", $field, null);
                         $this->fieldNotRequired($field);
                     } else if ($key == 'relation') {
-                        if ($k == 'mother' || $k == 'father') {
+                        if ($k == 'mother' || $k == 'father' || $k == 'sibling1') {
                             $group[] = $this->form->createElement("static", null, null, null);
                         } else {
                             $group[] = $this->form->createElement("select", $field, null, $relation);
