@@ -179,7 +179,8 @@ class NDB_BVL_Instrument_TSI_IDDRC_FOH extends NDB_BVL_Instrument
                                           "subject_race",
                                           "sibling_race",
                                           "bio_mother_race",
-                                          "bio_father_race",
+					  "bio_father_race",
+					  "sub_medhist_q16_how_does_he_make_his_her_needs_known",
                                          );
 
         // required fields for data entry completion status
@@ -302,8 +303,6 @@ class NDB_BVL_Instrument_TSI_IDDRC_FOH extends NDB_BVL_Instrument
 
         $this->addSelect("subject_premature", $this->indent . "Was infant premature?", self::YES_NO_OPTIONS);
         $this->form->addElement('text', "subject_how_many_weeks_gestation", $this->indent . "Born at how many weeks of gestation?");
-
-        $this->form->addElement('text', "city_of_birth", $this->indent . "City, State of birth");
         
         $this->addSelect("subject_gender", $this->indent . "Gender", self::GENDER_OPTIONS);
 
@@ -368,15 +367,6 @@ class NDB_BVL_Instrument_TSI_IDDRC_FOH extends NDB_BVL_Instrument
         $this->addTextElement("mother_occupation", $this->indent . "Occupation");
         $this->addSelect("mother_education", $this->indent . "Education", self::EDUCATION_OPTIONS);
         $this->XINRegisterRule("mother_occupation", array("mother_occupation{@}=={@}never_required"), 'Not Required.');
-
-        $this->addSelect("preferred_method_contact_mother", $this->indent . "Preferred method of contact", array("Phone","Email"));
-        $this->XINRegisterRule("preferred_method_contact_mother", array("preferred_method_contact_mother{@}=={@}never_required"), 'Not Required.');
-        $this->addTextElement("best_call_number_mother", $this->indent . "Best number to call");
-        $this->XINRegisterRule("best_call_number_mother", array("best_call_number_mother{@}=={@}never_required"), 'Not Required.');
-        $this->addTextElement("best_time_call_mother", $this->indent . "Best time to call (AM/PM)");
-        $this->XINRegisterRule("best_time_call_mother", array("best_time_call_mother{@}=={@}never_required"), 'Not Required.');
-        $this->addSelect("okay_leave_message_mother", $this->indent . "Okay to leave message?", self::YES_NO_OPTIONS);
-        $this->XINRegisterRule("okay_leave_message_mother", array("okay_leave_message_mother{@}=={@}never_required"), 'Not Required.');
         
         $this->form->addElement('static', null, null);
 
@@ -397,15 +387,6 @@ class NDB_BVL_Instrument_TSI_IDDRC_FOH extends NDB_BVL_Instrument
 
         $this->addSelect("father_education", $this->indent . "Education", self::EDUCATION_OPTIONS);
 
-        $this->addSelect("preferred_method_contact_father", $this->indent . "Preferred method of contact", array("","Phone","Email"));
-        $this->XINRegisterRule("preferred_method_contact_father", array("preferred_method_contact_father{@}=={@}never_required"), 'Not Required.');
-        $this->addTextElement("best_call_number_father", $this->indent . "Best number to call");
-        $this->XINRegisterRule("best_call_number_father", array("best_call_number_father{@}=={@}never_required"), 'Not Required.');
-        $this->addTextElement("best_time_call_father", $this->indent . "Best time to call (AM/PM)");
-        $this->XINRegisterRule("best_time_call_father", array("best_time_call_father{@}=={@}never_required"), 'Not Required.');
-        $this->addSelect("okay_leave_message_father", $this->indent . "Okay to leave message?", self::YES_NO_OPTIONS);
-        $this->XINRegisterRule("okay_leave_message_father", array("okay_leave_message_father{@}=={@}never_required"), 'Not Required.');
-        
         $this->form->addElement('static', null, null);
 
         // HOUSEHOLD INFO
@@ -460,7 +441,7 @@ class NDB_BVL_Instrument_TSI_IDDRC_FOH extends NDB_BVL_Instrument
         $this->form->addElement('static', null, null);
 
         // ADDITIONAL INFORMATION
-        $this->addTextAreaElement("additional_info_about_childs_home", "Additional information about child’s home:");
+        $this->form->addElement("textarea","additional_info_about_childs_home", "Additional information about child’s home:", array('cols'=>25, 'rows'=>4));
         
         //HOUSEOLD SES
 
@@ -597,13 +578,7 @@ class NDB_BVL_Instrument_TSI_IDDRC_FOH extends NDB_BVL_Instrument
             "static",
 	    null,
 	    null,
-            "date"
-        );
-        $group[] =& $this->form->createElement(
-            "static",
-	    null,
-	    null,
-            "2019"
+            "Date"
         );
         $this->addGroup(
             $group,
@@ -650,12 +625,6 @@ class NDB_BVL_Instrument_TSI_IDDRC_FOH extends NDB_BVL_Instrument
                 array("who_{$i}{@}=={@}NEVER_REQUIRED"),
                 "Never required.",
                 "who_" . $i . "_group"
-            );
-            $group[] =& $this->form->createElement(
-                "static",
-                null,
-                null,
-                "date"
             );
             $group[] =& $this->form->createElement(
                 "date",
@@ -887,7 +856,7 @@ class NDB_BVL_Instrument_TSI_IDDRC_FOH extends NDB_BVL_Instrument
         $this->form->addElement('text', "enrolled_in_other_studies_or_registries_list", $this->indent . 'If yes, list:');
         $this->XINRegisterRule("enrolled_in_other_studies_or_registries_list", array("enrolled_in_other_studies_or_registries{@}=={@}yes"), 'Required if yes');
 
-        $this->addTextAreaElement("how_did_you_find_out_about_the_study", "How did you find out about the study?");
+        $this->form->addElement("textarea","how_did_you_find_out_about_the_study", "How did you find out about the study?", array('cols'=>25, 'rows'=>4));
 
         $this->XINRegisterRule("genetic_etiology_cause", array("not_finish2{@}!={@}1"), 'Required.');
         $this->XINRegisterRule("type_of_genetic_testing_done_chromosomal", array("not_finish2{@}!={@}1"), 'Required.');
@@ -1132,7 +1101,7 @@ class NDB_BVL_Instrument_TSI_IDDRC_FOH extends NDB_BVL_Instrument
 
         $this->form->addElement('static', null, "<h4><b>Developmental Factors in SIBLING</b></h4>");
 
-        $this->form->addElement('text', "re_confirm_sibling_subject_dob", "<h4>Re-confirm sibling subject DOB:</h4>");
+        $this->form->addElement('date', "re_confirm_sibling_subject_dob", "<h4>Re-confirm sibling subject DOB:</h4>");
 
         $this->form->addElement('static', null, null);
 
@@ -1319,27 +1288,27 @@ class NDB_BVL_Instrument_TSI_IDDRC_FOH extends NDB_BVL_Instrument
         $this->XINRegisterRule("sub_medhist_q10b_how_long", array("sub_medhist_q10_does_subject_nap_during_the_day{@}=={@}yes"), 'Required if yes');
 
         // Q11
-        $this->form->addElement('text', "sub_medhist_q11_what_time_does_subject_go_sleep", 'What time does SUBJECT go to sleep at night?');
+        $this->form->addElement('date', "sub_medhist_q11_what_time_does_subject_go_sleep", 'What time does SUBJECT go to sleep at night?');
 
         // Q12
         $this->form->addElement('text', "sub_medhist_q12_who_is_your_childs_primary_physician", "12. Who is your child's primary physician?");
         $this->form->addElement('text', "q12a_what_hospital_network_is_your_childs", "12a. What hospital network is your child's primary physician in?");
         $this->form->addElement('text', "q12b_what_city_is_your_childs", "12b. What city is your child's primary physician in?");
 
-        // Q13
-        $this->addTextAreaElement("sub_medhist_q13_how_does_your_child_usually_respond", "13. How does your child usually respond to new experiences and new people?");
+	// Q13
+	$this->form->addElement("textarea","sub_medhist_q13_how_does_your_child_usually_respond", "13. How does your child usually respond to new experiences and new people?", array('cols'=>25, 'rows'=>4));
 
         // Q14
-        $this->addTextAreaElement("sub_medhist_q14_when_is_your_child_most_calm", "14. When is your child most calm? (activity, time of day, etc.)?");
+	$this->form->addElement("textarea","sub_medhist_q14_when_is_your_child_most_calm", "14. When is your child most calm? (activity, time of day, etc.)?", array('cols'=>25, 'rows'=>4));
 
         // Q15
-        $this->addTextAreaElement("sub_medhist_q15_what_does_he_do_when_anxious", "15. What does (s)he do when anxious? (e.g., gets aggressive?)");
+	$this->form->addElement("textarea","sub_medhist_q15_what_does_he_do_when_anxious", "15. What does (s)he do when anxious? (e.g., gets aggressive?)", array('cols'=>25, 'rows'=>4));
 
         // Q16
-        $this->addSelect("sub_medhist_q16_how_does_he_make_his_her_needs_known", "16. How does (s)he make his/her needs known?", $q16_options);
+        $this->addSelect("sub_medhist_q16_how_does_he_make_his_her_needs_known", "16. How does (s)he make his/her needs known?", $q16_options,array("multiple"));
 
         // Q17
-        $this->addTextAreaElement("sub_medhist_q17_any_sensorimotor_mobility_challenges", "17. Any sensorimotor/mobility challenges (e.g. sensory sensitivities to light, wheelchair; walker; orthotic braces, e.g., AFO ankle foot orthosis)?");
+	$this->form->addElement("textarea","sub_medhist_q17_any_sensorimotor_mobility_challenges", "17. Any sensorimotor/mobility challenges (e.g. sensory sensitivities to light, wheelchair; walker; orthotic braces, e.g., AFO ankle foot orthosis)?", array('cols'=>25, 'rows'=>4));
 
         $this->form->addElement('static', null, null);
 
@@ -1410,7 +1379,7 @@ class NDB_BVL_Instrument_TSI_IDDRC_FOH extends NDB_BVL_Instrument
             $this->addSelect($key, $question, self::YES_NO_OPTIONS);
         }
 
-        $this->addTextAreaElement("if_reviewed_decision", "If reviewed, what was reviewed and what decision was made?");
+	$this->form->addElement("textarea","if_reviewed_decision", "If reviewed, what was reviewed and what decision was made?", array('cols'=>25, 'rows'=>4));
 
         $this->addBasicDate('date_received_exclusion_review_decision', "Date received exclusion review decision:");
 

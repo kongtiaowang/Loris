@@ -268,7 +268,7 @@ CREATE TABLE `TSI_IDDRC_FOH` (
 `sub_medhist_q14_when_is_your_child_most_calm_status` enum('not_answered') default NULL,
 `sub_medhist_q15_what_does_he_do_when_anxious` text default NULL,
 `sub_medhist_q15_what_does_he_do_when_anxious_status` enum('not_answered') default NULL,
-`sub_medhist_q16_how_does_he_make_his_her_needs_known` enum('caregiver_must_anticipate_needs_based_on','using_gestures_or_device_only','asks_using_spoken_works_understood_by_family','asks_using_spoken_works_understood_by_teacher','asks_using_spoken_works_understood_by_others') default NULL,
+`sub_medhist_q16_how_does_he_make_his_her_needs_known` varchar(150) default NULL,
 `sub_medhist_q17_any_sensorimotor_mobility_challenges` text default NULL,
 `sub_medhist_q17_any_sensorimotor_mobility_challenges_status` enum('not_answered') default NULL,
 `not_finish6` varchar(10) default NULL,
