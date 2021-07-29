@@ -204,14 +204,14 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
                               "long_term"  => "Long Term (3 or more sessions)",
 		      );
 
-	 $option5_select =  array(
+	$option5_select =  array(
             "behavioral_intervention"     => "Behavioral intervention (e.g., CBT-I)",
             "nonpharmacological_medical"  => "Nonpharmacological medical (e.g., CPAP)",
             "medication"                  => "Medication (e.g., melatonin, clonidine, trazodone, remeron, risperdal, seroqual, ambien, benzodiazepines)",
             "dietary_supplements"         => "Dietary supplements (e.g., magnesium, iron)",
         );
 
-        $option5_medication = array(
+	$option5_medication = array(
             "melatonin"    => "Melatonin",
             "clonidine"    => "Clonidine (Catapres, Kapvay, Nexiclon)",
             "trazodone"    => "Trazodone (Desyrel, Desyrel Dividose, Oleptro,Trazodone D)",
@@ -766,7 +766,10 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
 
         if ($values["i_q2_any_concerns_about_childs_daytime_sleep"] != "yes") {
             $this->validate_empty_subquestions($values, ["i_q2_if_yes_rate_concern"], $errors);
-       }
+	}
+	if (!str_contains(implode(",",$values["i_q4_if_yes_select_source"]), "sleep_specialist")) {
+            $this->validate_empty_subquestions($values, ["i_q4_if_sleep_specialist"], $errors);
+	}
 
         return $errors;
     }
@@ -781,6 +784,10 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
 
         if ($values["ii_q2_any_concerns_about_childs_daytime_sleep"] != "yes") {
             $this->validate_empty_subquestions($values, ["ii_q2_if_yes_rate_concern"], $errors);
+	}
+
+	if (!str_contains(implode(",",$values["ii_q4_if_yes_select_source"]), "sleep_specialist")) {
+            $this->validate_empty_subquestions($values, ["ii_q4_if_sleep_specialist"], $errors);
         }
 
         return $errors;
@@ -796,6 +803,9 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
 
         if ($values["iii_q2_any_concerns_about_childs_daytime_sleep"] != "yes") {
             $this->validate_empty_subquestions($values, ["iii_q2_if_yes_rate_concern"], $errors);
+	}
+	if (!str_contains(implode(",",$values["iii_q4_if_yes_select_source"]), "sleep_specialist")) {
+            $this->validate_empty_subquestions($values, ["iii_q4_if_sleep_specialist"], $errors);
         }
 
         return $errors;
@@ -811,6 +821,9 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
 
         if ($values["iv_q2_any_concerns_about_childs_daytime_sleep"] != "yes") {
             $this->validate_empty_subquestions($values, ["iv_q2_if_yes_rate_concern"], $errors);
+	}
+	if (!str_contains(implode(",",$values["iv_q4_if_yes_select_source"]), "sleep_specialist")) {
+            $this->validate_empty_subquestions($values, ["iv_q4_if_sleep_specialist"], $errors);
         }
 
         return $errors;
@@ -826,6 +839,9 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
 
         if ($values["v_q2_any_concerns_about_childs_daytime_sleep"] != "yes") {
             $this->validate_empty_subquestions($values, ["v_q2_if_yes_rate_concern"], $errors);
+	}
+	if (!str_contains(implode(",",$values["v_q4_if_yes_select_source"]), "sleep_specialist")) {
+            $this->validate_empty_subquestions($values, ["v_q4_if_sleep_specialist"], $errors);
         }
 
         return $errors;
