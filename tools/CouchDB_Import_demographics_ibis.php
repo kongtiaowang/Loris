@@ -42,6 +42,10 @@ class CouchDBDemographicsImporter {
             'Description' => 'Visit of Candidate',
             'Type' => 'varchar(255)'
         ),
+        'Visit_date' => array(
+            'Description' => 'Date of Stage',
+            'Type' => 'varchar(255)'
+        ),
         'Cohort' => array(
             'Description' => 'Cohort of this session',
             'Type' => 'varchar(255)'
@@ -199,6 +203,7 @@ class CouchDBDemographicsImporter {
                                  c.pscid                                                     AS PSCID,
                                  c.CandidateGUID                                             AS NDAR_ID,
                                  s.visit_label                                               AS Visit_label,
+                                 s.Date_visit                                                AS Visit_date,
                                  s.subprojectid                                              AS SubprojectID,
                                  CASE
                                    WHEN s.subprojectid = 1 THEN 'HR'
@@ -554,14 +559,20 @@ group by s.CandID,s.Visit_label",
                 SELECT f.Test_name, f.CommentID
                     FROM session s
                     JOIN flag f on (s.ID=f.SessionID)
-                    WHERE s.VisitNo = 1
+                    WHERE s.Visit_label = (
+                            SELECT s2.Visit_label
+                                FROM session s2
+                                WHERE s2.candID=:candID
+                                ORDER BY Date_visit ASC
+                                LIMIT 1
+                        )
 		                AND f.Test_name IN ('tsi', 'tsi_ds', 'TSI_DS_Infant', 'TSI_EP')
 		                AND f.CommentID NOT LIKE 'DDE_%'
                         AND s.CandID=:candID
             ", array('candID' => $candid));
 
-        $candidate_ethnicity;
-        $candidate_race;
+        $candidate_ethnicity = null;
+        $candidate_race = null;
 
         // Since there can be multiple versions of the TSI instrument at a visit, iterate through
         // the ones present to determine which one was administered.
