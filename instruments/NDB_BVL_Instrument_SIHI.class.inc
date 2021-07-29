@@ -127,7 +127,7 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
                         'addEmptyOption'   => true,
                         'emptyOptionValue' => null,
                        );
-        $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
+        $this->addBasicDate('Date_taken', 'Date of Administration', $dateOptions);
 
         $this->form->addElement(
             'select',
@@ -243,7 +243,7 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
             "i_q4_if_yes_select_source",
             $this->indent . "If yes, select source:",
 	    $option4_source,
-            ["multiple"]
+            array("multiple")
             );
 	
       	$this->XINRegisterRule('i_q4_if_yes_select_source', array('i_q4_seek_information_to_help_child_sleep_better{@}=={@}yes'), 'Required if yes');
@@ -262,7 +262,7 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
             "i_q5_if_yes_select",
             $this->indent . "If yes, select:",
 	    $option5_select,
-	    ["multiple"]
+	    array("multiple")
             );
 	
         $this->XINRegisterRule('i_q5_if_yes_select', array('i_q5_did_child_receive_intervention{@}=={@}yes'), 'Required if yes');
@@ -271,7 +271,7 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
             "i_q5_if_medication_select_which_medicine_your_child_used",
             $this->indent . "If medication, select which medicine your child used:",
 	    $option5_medication,
-	    ["multiple"]
+	    array("multiple")
         );
 
         $this->XINRegisterRule('i_q5_if_medication_select_which_medicine_your_child_used', array('i_q5_if_yes_select{@}=={@}medication'), 'Required if medication');
@@ -360,7 +360,7 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
             "ii_q4_if_yes_select_source",
             $this->indent . "If yes, select source:",
 	    $option4_source,
-	    ["multiple"]
+	    array("multiple")
     );
 
         $this->XINRegisterRule('ii_q4_if_yes_select_source', array('ii_q4_seek_information_to_help_child_sleep_better{@}=={@}yes'), 'Required if yes');
@@ -379,7 +379,7 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
             "ii_q5_if_yes_select",
             $this->indent . "If yes, select:",
 	    $option5_select,
-	    ["multiple"]
+	    array("multiple")
         );
         $this->XINRegisterRule('ii_q5_if_yes_select', array('ii_q5_did_child_receive_intervention{@}=={@}yes'), 'Required if yes');
 
@@ -387,7 +387,7 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
             "ii_q5_if_medication_select_which_medicine_your_child_used",
             $this->indent . "If medication, select which medicine your child used:",
 	    $option5_medication,
-	    ["multiple"]
+	    array("multiple")
         );
 
         $this->XINRegisterRule('ii_q5_if_medication_select_which_medicine_your_child_used', array('ii_q5_if_yes_select{@}=={@}medication'), 'Required if medication');
@@ -476,7 +476,7 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
             "iii_q4_if_yes_select_source",
             $this->indent . "If yes, select source:",
 	    $option4_source,
-	    ["multiple"]
+	    array("multiple")
         );
         $this->XINRegisterRule('iii_q4_if_yes_select_source', array('iii_q4_seek_information_to_help_child_sleep_better{@}=={@}yes'), 'Required if yes');
 
@@ -494,7 +494,7 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
             "iii_q5_if_yes_select",
             $this->indent . "If yes, select:",
 	    $option5_select,
-	    ["multiple"]
+	    array("multiple")
     );
 
         $this->XINRegisterRule('iii_q5_if_yes_select', array('iii_q5_did_child_receive_intervention{@}=={@}yes'), 'Required if yes');
@@ -503,7 +503,7 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
             "iii_q5_if_medication_select_which_medicine_your_child_used",
             $this->indent . "If medication, select which medicine your child used:",
 	    $option5_medication,
-	    ["multiple"]
+	    array("multiple")
         );
 
         $this->XINRegisterRule('iii_q5_if_medication_select_which_medicine_your_child_used', array('iii_q5_if_yes_select{@}=={@}medication'), 'Required if medication');
@@ -593,7 +593,7 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
             "iv_q4_if_yes_select_source",
             $this->indent . "If yes, select source:",
 	    $option4_source,
-	    ["multiple"]
+	    array("multiple")
         );
         $this->XINRegisterRule('iv_q4_if_yes_select_source', array('iv_q4_seek_information_to_help_child_sleep_better{@}=={@}yes'), 'Required if yes');
 
@@ -611,7 +611,7 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
             "iv_q5_if_yes_select",
             $this->indent . "If yes, select:",
 	    $option5_select,
-	    ["multiple"]
+	    array("multiple")
     );
 
         $this->XINRegisterRule('iv_q5_if_yes_select', array('iv_q5_did_child_receive_intervention{@}=={@}yes'), 'Required if yes');
@@ -620,7 +620,7 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
             "iv_q5_if_medication_select_which_medicine_your_child_used",
             $this->indent . "If medication, select which medicine your child used:",
 	    $option5_medication,
-	    ["multiple"]
+	    array("multiple")
         );
 
         $this->XINRegisterRule('iv_q5_if_medication_select_which_medicine_your_child_used', array('iv_q5_if_yes_select{@}=={@}medication'), 'Required if medication');
@@ -709,7 +709,7 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
             "v_q4_if_yes_select_source",
             $this->indent . "If yes, select source:",
 	    $option4_source,
-	    ["multiple"]
+	    array("multiple")
         );
 	
 	$this->XINRegisterRule('v_q4_if_yes_select_source', array('v_q4_seek_information_to_help_child_sleep_better{@}=={@}yes'), 'Required if yes');
@@ -728,7 +728,7 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
             "v_q5_if_yes_select",
             $this->indent . "If yes, select:",
 	    $option5_select,
-	    ["multiple"]
+	    array("multiple")
         );
 	
 	$this->XINRegisterRule('v_q5_if_yes_select', array('v_q5_did_child_receive_intervention{@}=={@}yes'), 'Required if yes');
@@ -737,7 +737,7 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
             "v_q5_if_medication_select_which_medicine_your_child_used",
             $this->indent . "If medication, select which medicine your child used:",
 	    $option5_medication,
-	    ["multiple"]
+	    array("multiple")
         );
 
         $this->XINRegisterRule('v_q5_if_medication_select_which_medicine_your_child_used', array('v_q5_if_yes_select{@}=={@}medication'), 'Required if medication');
@@ -766,23 +766,7 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
 
         if ($values["i_q2_any_concerns_about_childs_daytime_sleep"] != "yes") {
             $this->validate_empty_subquestions($values, ["i_q2_if_yes_rate_concern"], $errors);
-        }
-
-        if ($values["i_q4_seek_information_to_help_child_sleep_better"] != "yes") {
-		$this->validate_empty_subquestions($values, ["i_q4_if_yes_select_source"], $errors);
-	}
-
-	 if ($values["i_q4_if_yes_select_source"] != "sleep_specialist") {
-            $this->validate_empty_subquestions($values, ["i_q4_if_sleep_specialist"], $errors);
-        }
-
-        if ($values["i_q5_did_child_receive_intervention"] != "yes") {
-            $this->validate_empty_subquestions($values, ["i_q5_if_yes_select"], $errors);
-	}
-
-	if ($values["i_q5_if_yes_select"] != "medication") {
-            $this->validate_empty_subquestions($values, ["i_q5_if_medication_select_which_medicine_your_child_used"], $errors);
-        }
+       }
 
         return $errors;
     }
@@ -797,22 +781,6 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
 
         if ($values["ii_q2_any_concerns_about_childs_daytime_sleep"] != "yes") {
             $this->validate_empty_subquestions($values, ["ii_q2_if_yes_rate_concern"], $errors);
-        }
-
-        if ($values["ii_q4_seek_information_to_help_child_sleep_better"] != "yes") {
-            $this->validate_empty_subquestions($values, ["ii_q4_if_yes_select_source"], $errors);
-	}
-
-	if ($values["ii_q4_if_yes_select_source"] != "sleep_specialist") {
-            $this->validate_empty_subquestions($values, ["ii_q4_if_sleep_specialist"], $errors);
-        }
-
-        if ($values["ii_q5_did_child_receive_intervention"] != "yes") {
-            $this->validate_empty_subquestions($values, ["ii_q5_if_yes_select"], $errors);
-	}
-
-	if ($values["ii_q5_if_yes_select"] != "medication") {
-            $this->validate_empty_subquestions($values, ["ii_q5_if_medication_select_which_medicine_your_child_used"], $errors);
         }
 
         return $errors;
@@ -830,22 +798,6 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
             $this->validate_empty_subquestions($values, ["iii_q2_if_yes_rate_concern"], $errors);
         }
 
-        if ($values["iii_q4_seek_information_to_help_child_sleep_better"] != "yes") {
-            $this->validate_empty_subquestions($values, ["iii_q4_if_yes_select_source"], $errors);
-	}
-
-	if ($values["iii_q4_if_yes_select_source"] != "sleep_specialist") {
-            $this->validate_empty_subquestions($values, ["iii_q4_if_sleep_specialist"], $errors);
-        }
-
-        if ($values["iii_q5_did_child_receive_intervention"] != "yes") {
-            $this->validate_empty_subquestions($values, ["iii_q5_if_yes_select"], $errors);
-	}
-
-	if ($values["iii_q5_if_yes_select"] != "medication") {
-            $this->validate_empty_subquestions($values, ["iii_q5_if_medication_select_which_medicine_your_child_used"], $errors);
-        }
-
         return $errors;
     }
 
@@ -861,22 +813,6 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
             $this->validate_empty_subquestions($values, ["iv_q2_if_yes_rate_concern"], $errors);
         }
 
-        if ($values["iv_q4_seek_information_to_help_child_sleep_better"] != "yes") {
-            $this->validate_empty_subquestions($values, ["iv_q4_if_yes_select_source"], $errors);
-	}
-
-	if ($values["iv_q4_if_yes_select_source"] != "sleep_specialist") {
-            $this->validate_empty_subquestions($values, ["iv_q4_if_sleep_specialist"], $errors);
-        }
-
-        if ($values["iv_q5_did_child_receive_intervention"] != "yes") {
-            $this->validate_empty_subquestions($values, ["iv_q5_if_yes_select"], $errors);
-	}
-
-	if ($values["iv_q5_if_yes_select"] != "medication") {
-            $this->validate_empty_subquestions($values, ["iv_q5_if_medication_select_which_medicine_your_child_used"], $errors);
-        }
-
         return $errors;
     }
 
@@ -890,22 +826,6 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
 
         if ($values["v_q2_any_concerns_about_childs_daytime_sleep"] != "yes") {
             $this->validate_empty_subquestions($values, ["v_q2_if_yes_rate_concern"], $errors);
-        }
-
-        if ($values["v_q4_seek_information_to_help_child_sleep_better"] != "yes") {
-            $this->validate_empty_subquestions($values, ["v_q4_if_yes_select_source"], $errors);
-	}
-
-	if ($values["v_q4_if_yes_select_source"] != "sleep_specialist") {
-            $this->validate_empty_subquestions($values, ["v_q4_if_sleep_specialist"], $errors);
-        }
-
-        if ($values["v_q5_did_child_receive_intervention"] != "yes") {
-            $this->validate_empty_subquestions($values, ["v_q5_if_yes_select"], $errors);
-	}
-
-	if ($values["v_q5_if_yes_select"] != "medication") {
-            $this->validate_empty_subquestions($values, ["v_q5_if_medication_select_which_medicine_your_child_used"], $errors);
         }
 
         return $errors;
