@@ -15,10 +15,12 @@ if (!$user->hasPermission('dataquery_view')) {
     header("HTTP/1.1 403 Forbidden");
     exit;
 }
-require_once __DIR__ . '/../../../vendor/autoload.php';
+// ########################## IBIS OVERRIDE START #######################
+require_once __DIR__ . '/../../../../vendor/autoload.php';
 $client = new NDB_Client();
 $client->makeCommandLine();
-$client->initialize(__DIR__ . "/../../../project/config.xml");
+$client->initialize(__DIR__ . "/../../../../project/config.xml");
+// ########################## IBIS OVERRIDE END #######################
 header("Content-Type: application/json");
 
 $config      = \NDB_Config::singleton();
