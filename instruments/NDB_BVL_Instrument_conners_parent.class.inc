@@ -35,7 +35,6 @@ class NDB_BVL_Instrument_conners_parent extends NDB_BVL_Instrument
     );
 
 
-
     /**
      * Sets up basic data, such as the LorisForm object, and so on.
      *
@@ -184,7 +183,7 @@ class NDB_BVL_Instrument_conners_parent extends NDB_BVL_Instrument
                          in the <b><i>past month</i></b>. 
                          Read each item carefully, then mark how well
                          it describes your child or how frequently 
-                         it has happened in the <b><i>past month</i></b></h4>.<br><br>
+                         it has happened in the <b><i>past month</i></b>.</h4><br><br>
                          <b>0</b> = In the past month, 
                          this was <b><i>not true at all</i></b> about my child. It never
                          (or seldom) happened<br>
@@ -201,8 +200,7 @@ class NDB_BVL_Instrument_conners_parent extends NDB_BVL_Instrument
                          to respond to every item. For items that you find difficult
                          to answer, please give your best guess.");
 
-        $options =
-            array(
+        $options =array(
                 null => "",
                 0 => "0 - Not true at all",
                 1 => "1 - Just a little true",
@@ -210,8 +208,7 @@ class NDB_BVL_Instrument_conners_parent extends NDB_BVL_Instrument
                 3 => "3 - Very much true"
             );
 
-        $options_na =
-            array(
+        $options_na =array(
                 null => "",
                 0 => "0 - Not true at all",
                 1 => "1 - Just a little true",
@@ -219,8 +216,7 @@ class NDB_BVL_Instrument_conners_parent extends NDB_BVL_Instrument
                 3 => "3 - Very much true",
                 'not_applicable'=> "Not Applicable"
             );
-        $questions =
-            array(
+        $questions =array(
                 "q1" => "1. Forgets to turn in completed work",
                 "q2" => "2. Is perfect in every way.",
                 "q3" => "3. Fidgets or squirms in seat.",

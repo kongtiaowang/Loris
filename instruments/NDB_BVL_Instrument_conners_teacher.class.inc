@@ -152,22 +152,22 @@ class NDB_BVL_Instrument_conners_teacher extends NDB_BVL_Instrument
                          in the <b><i>past month</i></b>. 
                          Read each item carefully, then mark how well
                          it describes this student or how frequently 
-                         it has happened in the <b><i>past month</i></b>.<br><br>
-                         $this->indent <b>0</b> = In the past month, 
+                         it has happened in the <b><i>past month</i></b>.</h4><br><br>
+                         <b>0</b> = In the past month, 
                          this was <b><i>not true at all</i></b> about this student. It never
                          (or seldom) happened<br>
-                         $this->indent <b>1</b> = In the past month, this was 
+                         <b>1</b> = In the past month, this was 
                          <b><i>just a little true</i></b> about this student. 
                          It happened occasionally.<br>
-                         $this->indent <b>2</b> = In the past month, 
+                         <b>2</b> = In the past month, 
                          this was <b><i>pretty much true</i></b> about
                          this student. It happened often (or quite a bit).<br>
-                         $this->indent <b>3</b> = In the past month, this 
+                         <b>3</b> = In the past month, this 
                          was <b><i>very much true</i></b> about this student. It
                          happened very often (very frequently).<br><br>
                          Please pick one answer for each item. It is important
                          to respond to every item. For items that you find difficult
-                         to answer, please give your best guess.</h4>");
+                         to answer, please give your best guess.");
 
         $options =
             array(
