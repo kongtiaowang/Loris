@@ -59,6 +59,7 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
                               );
 
     const RACE_OPTIONS = array(
+                           null                              => "",
                           'white'                            => 'White',
                           'black_african_american'           => 'Black or African American',
                           'asian'                            => 'Asian',
@@ -232,10 +233,11 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
 
         $this->form->addElement('static', null, null);
 
-        $this->addBasicDate('date_of_most_recent_visit', 'Date of most recent IBIS visit: ', $dateOptions);
+	$this->addBasicDate('date_of_most_recent_visit', 'Date of most recent IBIS visit: ', $dateOptions);
+	
+	$this->form->addElement('text', null, "City/State of Birth", ['disabled' => 'disabled']);
+        $this->XINRegisterRule("date_of_most_recent_visit", array("not_finish0{@}!={@}1"), 'Required.');
 
-        $this->form->addElement('text', null, "City/State of Birth", ['disabled' => 'disabled']);
-        $this->XINRegisterRule("date_of_first_contact", array("not_finish0{@}!={@}1"), 'Required.');
 
     }
 
@@ -286,9 +288,7 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
 
         $this->addSelect("subject_premature", $this->indent . "Was infant premature?", self::YES_NO_OPTIONS);
         $this->form->addElement('text', "subject_how_many_weeks_gestation", $this->indent . "Born at how many weeks of gestation?");
-
-        $this->form->addElement('text', "city_of_birth", $this->indent . "City, State of birth");
-        
+             
         $this->addSelect("subject_gender", $this->indent . "Gender", self::GENDER_OPTIONS);
 
         $this->addSelect("subject_adopted", $this->indent . "Subject adopted?", self::YES_NO_OPTIONS);
@@ -352,15 +352,6 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
         $this->addTextElement("mother_occupation", $this->indent . "Occupation");
         $this->addSelect("mother_education", $this->indent . "Education", self::EDUCATION_OPTIONS);
         $this->XINRegisterRule("mother_occupation", array("mother_occupation{@}=={@}never_required"), 'Not Required.');
-
-        $this->addSelect("preferred_method_contact_mother", $this->indent . "Preferred method of contact", array("Phone","Email"));
-        $this->XINRegisterRule("preferred_method_contact_mother", array("preferred_method_contact_mother{@}=={@}never_required"), 'Not Required.');
-        $this->addTextElement("best_call_number_mother", $this->indent . "Best number to call");
-        $this->XINRegisterRule("best_call_number_mother", array("best_call_number_mother{@}=={@}never_required"), 'Not Required.');
-        $this->addTextElement("best_time_call_mother", $this->indent . "Best time to call (AM/PM)");
-        $this->XINRegisterRule("best_time_call_mother", array("best_time_call_mother{@}=={@}never_required"), 'Not Required.');
-        $this->addSelect("okay_leave_message_mother", $this->indent . "Okay to leave message?", self::YES_NO_OPTIONS);
-        $this->XINRegisterRule("okay_leave_message_mother", array("okay_leave_message_mother{@}=={@}never_required"), 'Not Required.');
         
         $this->form->addElement('static', null, null);
 
@@ -380,15 +371,6 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
         $this->XINRegisterRule("father_occupation", array("father_occupation{@}=={@}never_required"), 'Not Required.');
 
         $this->addSelect("father_education", $this->indent . "Education", self::EDUCATION_OPTIONS);
-
-        $this->addSelect("preferred_method_contact_father", $this->indent . "Preferred method of contact", array("","Phone","Email"));
-        $this->XINRegisterRule("preferred_method_contact_father", array("preferred_method_contact_father{@}=={@}never_required"), 'Not Required.');
-        $this->addTextElement("best_call_number_father", $this->indent . "Best number to call");
-        $this->XINRegisterRule("best_call_number_father", array("best_call_number_father{@}=={@}never_required"), 'Not Required.');
-        $this->addTextElement("best_time_call_father", $this->indent . "Best time to call (AM/PM)");
-        $this->XINRegisterRule("best_time_call_father", array("best_time_call_father{@}=={@}never_required"), 'Not Required.');
-        $this->addSelect("okay_leave_message_father", $this->indent . "Okay to leave message?", self::YES_NO_OPTIONS);
-        $this->XINRegisterRule("okay_leave_message_father", array("okay_leave_message_father{@}=={@}never_required"), 'Not Required.');
         
         $this->form->addElement('static', null, null);
 
@@ -443,8 +425,8 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
 
         $this->form->addElement('static', null, null);
 
-        // ADDITIONAL INFORMATION
-        $this->addTextAreaElement("additional_info_about_childs_home", "Additional information about child’s home:");
+	// ADDITIONAL INFORMATION
+	$this->form->addElement("textarea","additional_info_about_childs_home", "Additional information about child’s home:", array('cols'=>25, 'rows'=>4));
         
         //HOUSEOLD SES
 
@@ -490,7 +472,6 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
         $this->XINRegisterRule("subject_expected_due_date", array("not_finish1{@}!={@}1"), 'Required.');
         $this->XINRegisterRule("subject_birth_weight_lbs", array("not_finish1{@}!={@}1"), 'Required.');
         $this->XINRegisterRule("subject_birth_weight_oz", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("city_of_birth", array("not_finish1{@}!={@}1"), 'Required.');
         $this->XINRegisterRule("subject_adopted", array("not_finish1{@}!={@}1"), 'Required.');
         $this->XINRegisterRule("subject_multiple", array("not_finish1{@}!={@}1"), 'Required.');
         $this->XINRegisterRule("current_weight_lbs", array("not_finish1{@}!={@}1"), 'Required.');
@@ -581,13 +562,7 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
             "static",
             null,
             null,
-            "date"
-        );
-        $group[] =& $this->form->createElement(
-            "static",
-            null,
-            null,
-            "2019"
+            "Date"
         );
         $this->addGroup(
             $group,
@@ -633,12 +608,6 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
                 array("who_{$i}{@}=={@}NEVER_REQUIRED"),
                 "Never required.",
                 "who_" . $i . "_group"
-            );
-            $group[] =& $this->form->createElement(
-                "static",
-                null,
-                null,
-                "date"
             );
             $group[] =& $this->form->createElement(
                 "date",
@@ -1085,7 +1054,7 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
 
         $this->form->addElement('static', null, "<h4><b>Developmental Factors in SIBLING</b></h4>");
 
-        $this->form->addElement('text', "re_confirm_sibling_subject_dob", "<h4><b>Re-confirm sibling subject DOB:</b></h4>");
+        $this->form->addElement('date', "re_confirm_sibling_subject_dob", "<b>Re-confirm sibling subject DOB:</b>");
 
         $this->form->addElement('static', null, null);
 

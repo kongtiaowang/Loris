@@ -59,6 +59,7 @@ class NDB_BVL_Instrument_TSI_IDDRC_FOH extends NDB_BVL_Instrument
                               );
 
     const RACE_OPTIONS = array(
+	                   null                              => "",
                           'white'                            => 'White',
                           'black_african_american'           => 'Black or African American',
                           'asian'                            => 'Asian',
@@ -247,9 +248,10 @@ class NDB_BVL_Instrument_TSI_IDDRC_FOH extends NDB_BVL_Instrument
         $this->form->addElement('static', null, null);
 
         $this->addBasicDate('date_of_first_contact', 'Date of First Contact (1st time speak with the family)', $dateOptions);
-
-        $this->form->addElement('text', null, "City/State of Birth", ['disabled' => 'disabled']);
+        
+	$this->form->addElement('text', null, "City/State of Birth", ['disabled' => 'disabled']);
         $this->XINRegisterRule("date_of_first_contact", array("not_finish0{@}!={@}1"), 'Required.');
+    
 
     }
 
@@ -1288,7 +1290,7 @@ class NDB_BVL_Instrument_TSI_IDDRC_FOH extends NDB_BVL_Instrument
         $this->XINRegisterRule("sub_medhist_q10b_how_long", array("sub_medhist_q10_does_subject_nap_during_the_day{@}=={@}yes"), 'Required if yes');
 
         // Q11
-        $this->form->addElement('date', "sub_medhist_q11_what_time_does_subject_go_sleep", 'What time does SUBJECT go to sleep at night?');
+        $this->addHourMinElement("sub_medhist_q11_what_time_does_subject_go_sleep", '11. What time does SUBJECT go to sleep at night?',[],"No time entered. Fields may appear to be filled. Please clear and re-enter with the appropriate time.", false);
 
         // Q12
         $this->form->addElement('text', "sub_medhist_q12_who_is_your_childs_primary_physician", "12. Who is your child's primary physician?");

@@ -1,0 +1,1 @@
+ALTER TABLE TSI_IDDRC_FOH ADD COLUMN sub_medhist_q11_what_time_does_subject_go_sleep_status varchar(100) default NULL AFTER sub_medhist_q11_what_time_does_subject_go_sleep;

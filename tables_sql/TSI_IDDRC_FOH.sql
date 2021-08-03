@@ -259,6 +259,7 @@ CREATE TABLE `TSI_IDDRC_FOH` (
 `sub_medhist_q10a_if_yes_when` varchar(128) default NULL,
 `sub_medhist_q10b_how_long` varchar(128) default NULL,
 `sub_medhist_q11_what_time_does_subject_go_sleep` varchar(128) default NULL,
+`sub_medhist_q11_what_time_does_subject_go_sleep_status` varchar(128) default NULL,
 `sub_medhist_q12_who_is_your_childs_primary_physician` varchar(128) default NULL,
 `q12a_what_hospital_network_is_your_childs` varchar(128) default NULL,
 `q12b_what_city_is_your_childs` varchar(128) default NULL,
