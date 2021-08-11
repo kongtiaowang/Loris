@@ -111,8 +111,9 @@ class NDB_BVL_Instrument_IPSC_tracking_form_PD extends NDB_BVL_Instrument
         // automatically adds examiner & date of administration
         $this->_addMetadataFields();
 
-        $this->addBasicText("dccid", "Proband DCCID", array("required" => true));
-        $this->addBasicText("pscid", "Proband PSCID", array("required" => true));
+        $this->addBasicText("dccid", "VSA Sibling who completed blood draw- DCCID", array("required" => true));
+	$this->addBasicText("pscid", "VSA Sibling who completed blood draw- PSCID", array("required" => true));
+	$this->addBasicText("family_id", "Family ID (if applicable)", array("required" => false));
 
         $this->addSelect(
             "recruiter_asked_blood_draw",
