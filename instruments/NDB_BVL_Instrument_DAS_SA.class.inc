@@ -187,7 +187,7 @@ class NDB_BVL_Instrument_DAS_SA extends NDB_BVL_Instrument
        if($this->getFieldValue("File_name")===false){
             $this->form->addRule("das_sa_file", "DAS SA file is required.", 'required', null, 'server');
         } else {
-            $this->XINRegisterRule("das_sa_file", array("das_sa_file{@}==={@}NEVER_REQUIRED"));
+            $this->XINRegisterRule("das_sa_file", array("das_sa_file{@}=={@}NEVER_REQUIRED"));
         }
         // handedness questions
         $this->form->addElement('static', null, "<br /><br />");
