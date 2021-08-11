@@ -1,0 +1,10 @@
+ALTER TABLE TSI_IDS_FOH ADD COLUMN household_ses_mother enum("combined","mother") default NULL;
+ALTER TABLE TSI_IDS_FOH ADD COLUMN household_ses_father enum("na","father") default NULL;
+ALTER TABLE TSI_IDS_FOH ADD COLUMN sibling_1_foh_sibling_subject enum("yes","no") default NULL;
+ALTER TABLE TSI_IDS_FOH ADD COLUMN sibling_2_foh_sibling_subject enum("yes","no") default NULL;
+ALTER TABLE TSI_IDS_FOH ADD COLUMN sibling_3_foh_sibling_subject enum("yes","no") default NULL;
+ALTER TABLE TSI_IDS_FOH ADD COLUMN sibling_4_foh_sibling_subject enum("yes","no") default NULL;
+ALTER TABLE TSI_IDS_FOH ADD COLUMN sibling_5_foh_sibling_subject enum("yes","no") default NULL;
+ALTER TABLE TSI_IDS_FOH ADD COLUMN sibling_6_foh_sibling_subject enum("yes","no") default NULL;
+ALTER TABLE TSI_IDS_FOH ADD COLUMN sibling_7_foh_sibling_subject enum("yes","no") default NULL;
+ALTER TABLE TSI_IDS_FOH ADD COLUMN sibling_8_foh_sibling_subject enum("yes","no") default NULL;

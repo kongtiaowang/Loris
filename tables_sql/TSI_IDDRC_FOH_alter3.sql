@@ -1,0 +1,20 @@
+ALTER TABLE TSI_IDDRC_FOH ADD COLUMN household_ses_mother enum("combined","mother") default NULL;
+ALTER TABLE TSI_IDDRC_FOH ADD COLUMN household_ses_father enum("na","father") default NULL;
+ALTER TABLE TSI_IDDRC_FOH CHANGE genetic_etiology_cause genetic_etiology_cause enum("abnormal_methylation","other") default NULL;
+ALTER TABLE TSI_IDDRC_FOH ADD COLUMN abnormal_methylation enum("deletion","uniparental_disomy","imprinting_center_defect","ube3a_point_mutation") default NULL;
+ALTER TABLE TSI_IDDRC_FOH ADD COLUMN referral_appointment_date date default NULL;
+ALTER TABLE TSI_IDDRC_FOH ADD COLUMN sibling_1_foh_sibling_subject enum("yes","no") default NULL;
+ALTER TABLE TSI_IDDRC_FOH ADD COLUMN sibling_2_foh_sibling_subject enum("yes","no") default NULL;
+ALTER TABLE TSI_IDDRC_FOH ADD COLUMN sibling_3_foh_sibling_subject enum("yes","no") default NULL;
+ALTER TABLE TSI_IDDRC_FOH ADD COLUMN sibling_4_foh_sibling_subject enum("yes","no") default NULL;
+ALTER TABLE TSI_IDDRC_FOH ADD COLUMN sibling_5_foh_sibling_subject enum("yes","no") default NULL;
+ALTER TABLE TSI_IDDRC_FOH ADD COLUMN sibling_6_foh_sibling_subject enum("yes","no") default NULL;
+ALTER TABLE TSI_IDDRC_FOH ADD COLUMN sibling_7_foh_sibling_subject enum("yes","no") default NULL;
+ALTER TABLE TSI_IDDRC_FOH ADD COLUMN sibling_8_foh_sibling_subject enum("yes","no") default NULL;
+ALTER TABLE TSI_IDDRC_FOH CHANGE q4_history_of_head_injury_in_subject q4_history_of_head_injury_in_subject enum("yes","no") default NULL;
+ALTER TABLE TSI_IDDRC_FOH ADD COLUMN q4b_history_of_head_explain varchar(128) default NULL;
+ALTER TABLE TSI_IDDRC_FOH ADD COLUMN sub_medhist_q8_reason_for_mri varchar(128) default NULL;
+ALTER TABLE TSI_IDDRC_FOH ADD COLUMN research_staff_is_english_language_spoken enum("yes","no") default NULL;
+ALTER TABLE TSI_IDDRC_FOH ADD COLUMN research_is_the_subject_adopted enum("yes","no") default NULL;
+ALTER TABLE TSI_IDDRC_FOH ADD COLUMN research_staff_is_infant_a_multiple_twin enum("yes","no") default NULL;
+

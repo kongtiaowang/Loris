@@ -230,6 +230,16 @@ CREATE TABLE `TSI_IDS_FOH` (
 `q6a_has_siblin_ever_had_an_iq_test_when_where` varchar(128) default NULL,
 `q6b_results_and_test_if_known` varchar(128) default NULL,
 `q6c_test` varchar(128) default NULL,
+`household_ses_mother` enum("combined","mother") default NULL,
+`household_ses_father` enum("na","father") default NULL,
+`sibling_1_foh_sibling_subject` enum("yes","no") default NULL,
+`sibling_2_foh_sibling_subject` enum("yes","no") default NULL,
+`sibling_3_foh_sibling_subject` enum("yes","no") default NULL,
+`sibling_4_foh_sibling_subject` enum("yes","no") default NULL,
+`sibling_5_foh_sibling_subject` enum("yes","no") default NULL,
+`sibling_6_foh_sibling_subject` enum("yes","no") default NULL,
+`sibling_7_foh_sibling_subject` enum("yes","no") default NULL,
+`sibling_8_foh_sibling_subject` enum("yes","no") default NULL,
 PRIMARY KEY  (`CommentID`)
 
               ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

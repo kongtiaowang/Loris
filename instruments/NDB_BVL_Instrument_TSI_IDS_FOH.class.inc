@@ -74,9 +74,21 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
                                'hispanic'     => 'Hispanic',
                                'non_hispanic' => 'Non-Hispanic',
                                'not_answered' => 'Not Answered',
-                              );
+		       );
 
-    const HOUSEHOLD_SES_OPTIONS = array(
+    const HOUSEHOLD_SES_OPTIONS_MOTHER = array(
+	                                null        => "",
+                                        "combined"  => "Combined",
+					"mother"    => "Mother",
+				       );
+
+    const HOUSEHOLD_SES_OPTIONS_FATHER = array(
+	                                null      => "",
+                                        "na"      => "N/A",
+                                        "father"  =>"Father (if two households)",
+                                       );
+
+    const HOUSEHOLD_SES_OPTIONS_AMOUNT = array(
                                    null            => '',
                                    'less_than_25K' => 'less than $24,999',
                                    '25K-35K'       => '$25,000 - 34,999',
@@ -269,8 +281,7 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
 
         $page1_questions = array(
                             "are_parents_divorced_or_separated"          => "Are parents divorced or separated?",
-                            "are_bio_parents_living_in_same_home"        => "Are biological parents living in the same home?",
-                           );
+                             );
 
         $pii_address = array(
                         "Street Address",
@@ -301,44 +312,11 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
         $this->form->addElement('text', "current_height_ft", $this->indent . "Current height (ft.)");
         $this->form->addElement('text', "current_height_in", $this->indent . "Current height (in.)");
 
-        $this->form->addElement('text', "current_age_mon", $this->indent . "Current age (month(s))");
         $this->form->addElement('text', "current_age_year", $this->indent . "Current age (year(s))");
+        $this->form->addElement('text', "current_age_mon", $this->indent . "Current age (month(s))");
 
-
-        // V06 OPTIMAL WINDOW (-1 weeks/+3 weeks)
-        $this->form->addElement('static', null, $this->indent . "V06 OPTIMAL WINDOW (-1 weeks/+3 weeks)");
-        $this->addBasicDate("v06_optimal_window_lower", $this->indent . $this->indent . '-1 weeks', $this->dateOptions);
-        $this->addBasicDate("v06_optimal_window_upper", $this->indent . $this->indent . '+3 weeks', $this->dateOptions);
-
-        // V06 PERMITTED WINDOW (-2 weeks/+12 weeks)
-        $this->form->addElement('static', null, $this->indent . "V06 PERMITTED WINDOW (-2 weeks/+12 weeks)");
-        $this->addBasicDate("v06_permitted_window_lower", $this->indent . $this->indent . '-2 weeks', $this->dateOptions);
-        $this->addBasicDate("v06_permitted_window_upper", $this->indent . $this->indent . '+12 weeks', $this->dateOptions);
-
-        // V12 OPTIMAL WINDOW (-1 weeks/+3 weeks)
-        $this->form->addElement('static', null, $this->indent . "V12 OPTIMAL WINDOW (-1 weeks/+3 weeks)");
-        $this->addBasicDate("v12_optimal_window_lower", $this->indent . $this->indent . '-1 weeks', $this->dateOptions);
-        $this->addBasicDate("v12_optimal_window_upper", $this->indent . $this->indent . '+3 weeks', $this->dateOptions);
-
-        // V12 PERMITTED WINDOW (-4 weeks/+8 weeks)
-        $this->form->addElement('static', null, $this->indent . "V12 PERMITTED WINDOW (-4 weeks/+8 weeks)");
-        $this->addBasicDate("v12_permitted_window_lower", $this->indent . $this->indent . '-4 weeks', $this->dateOptions);
-        $this->addBasicDate("v12_permitted_window_upper", $this->indent . $this->indent . '+8 weeks', $this->dateOptions);
-
-        // V24 OPTIMAL WINDOW (-1 weeks/+3 weeks)
-        $this->form->addElement('static', null, $this->indent . "V24 OPTIMAL WINDOW (-1 weeks/+3 weeks)");
-        $this->addBasicDate("v24_optimal_window_lower", $this->indent . $this->indent . '-1 weeks', $this->dateOptions);
-        $this->addBasicDate("v24_optimal_window_upper", $this->indent . $this->indent . '+3 weeks', $this->dateOptions);
-
-        // V24 PERMITTED WINDOW (-4 weeks/+8 weeks)
-        $this->form->addElement('static', null, $this->indent . "V24 PERMITTED WINDOW (-4 weeks/+8 weeks)");
-        $this->addBasicDate("v24_permitted_window_lower", $this->indent . $this->indent . '-4 weeks', $this->dateOptions);
-        $this->addBasicDate("v24_permitted_window_upper", $this->indent . $this->indent . '+8 weeks', $this->dateOptions);
-
-        $this->form->addElement('static', null, null);
-
-        // BIOLOGICAL MOTHER INFORMATION
-        $this->form->addElement('static', null, "BIOLOGICAL MOTHER");
+       // BIOLOGICAL MOTHER INFORMATION
+       $this->form->addElement('static', null, "BIOLOGICAL MOTHER");
 
         foreach ($pii_contact as $field) {
             if ($field == "Date of Birth") {
@@ -348,10 +326,6 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
             }
         }
         $this->XINRegisterRule("mother_dob_date", array("mother_dob_date{@}=={@}never_required"), 'Not Required.');
-
-        $this->addTextElement("mother_occupation", $this->indent . "Occupation");
-        $this->addSelect("mother_education", $this->indent . "Education", self::EDUCATION_OPTIONS);
-        $this->XINRegisterRule("mother_occupation", array("mother_occupation{@}=={@}never_required"), 'Not Required.');
         
         $this->form->addElement('static', null, null);
 
@@ -366,11 +340,6 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
             }
         }
         $this->XINRegisterRule("father_dob_date", array("father_dob_date{@}=={@}never_required"), 'Not Required.');
-
-        $this->addTextElement("father_occupation", $this->indent . "Occupation");
-        $this->XINRegisterRule("father_occupation", array("father_occupation{@}=={@}never_required"), 'Not Required.');
-
-        $this->addSelect("father_education", $this->indent . "Education", self::EDUCATION_OPTIONS);
         
         $this->form->addElement('static', null, null);
 
@@ -378,11 +347,7 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
         foreach ($page1_questions as $field => $label) {
             $this->addSelect($field, $label, self::YES_NO_OPTIONS);
 
-            if ($field == "are_bio_parents_living_in_same_home") {
-                $this->addSelect("if_not_in_same_home_childs_primary_address_with", $this->indent . "If biological parents not in the same home, child’s primary address is with", array(null => "", "mother" => "Mother", "father" => "Father"));
-                $this->XINRegisterRule("if_not_in_same_home_childs_primary_address_with", array("are_bio_parents_living_in_same_home{@}=={@}no"), 'Required if no');
             }
-        }
 
         $this->form->addElement('static', null, null);
 
@@ -427,14 +392,31 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
 
 	// ADDITIONAL INFORMATION
 	$this->form->addElement("textarea","additional_info_about_childs_home", "Additional information about child’s home:", array('cols'=>25, 'rows'=>4));
-        
-        //HOUSEOLD SES
 
-        $this->addSelect("household_ses_mother_or_combined", "Household SES Mother or combined", self::HOUSEHOLD_SES_OPTIONS);
-        $this->addSelect("household_ses_father_if_2_households", "Household SES Father if 2 households", self::HOUSEHOLD_SES_OPTIONS);
+	//MOTHER & FATHER OCCUPATION/EDUCATION
+	$this->addTextElement("mother_occupation", "Occupation");
+	$this->addSelect("mother_education", "Education", self::EDUCATION_OPTIONS);
+	$this->XINRegisterRule("mother_occupation", array("mother_occupation{@}=={@}never_required"), 'Not Required.');
+
+	$this->addTextElement("father_occupation", "Occupation");
+        $this->XINRegisterRule("father_occupation", array("father_occupation{@}=={@}never_required"), 'Not Required.');
+
+        $this->addSelect("father_education", "Education", self::EDUCATION_OPTIONS);
+
+	//HOUSEOLD SES
+
+        //HOUSEOLD SES
+        $this->form->addElement('static', null, "HOUSEHOLD SES");
+
+	$this->addSelect("household_ses_mother", "Household SES Mother", self::HOUSEHOLD_SES_OPTIONS_MOTHER);
+	$this->addSelect("household_ses_mother_or_combined", $this->indent . "Amount", self::HOUSEHOLD_SES_OPTIONS_AMOUNT);
+	$this->addSelect("household_ses_father", "Household SES Father", self::HOUSEHOLD_SES_OPTIONS_FATHER);
+	$this->addSelect("household_ses_father_if_2_households", $this->indent .  "Amount", self::HOUSEHOLD_SES_OPTIONS_AMOUNT);
 
         $this->XINRegisterRule("household_ses_mother_or_combined", array("household_ses_mother_or_combined{@}=={@}NEVER_REQUIRED"));
-        $this->XINRegisterRule("household_ses_father_if_2_households", array("household_ses_father_if_2_households{@}=={@}NEVER_REQUIRED"));
+	$this->XINRegisterRule("household_ses_father_if_2_households", array("household_ses_father_if_2_households{@}=={@}NEVER_REQUIRED"));
+	$this->XINRegisterRule("household_ses_mother", array("household_ses_mother_or_combined_amount{@}=={@}NEVER_REQUIRED"));
+	$this->XINRegisterRule("household_ses_father", array("household_ses_father_if_2_households_amount{@}=={@}NEVER_REQUIRED"));
         
         $this->form->addElement('static', null, null);
 
@@ -482,18 +464,6 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
         $this->XINRegisterRule("subject_gender", array("not_finish1{@}!={@}1"), 'Required.');
         $this->XINRegisterRule("subject_premature", array("not_finish1{@}!={@}1"), 'Required.');
         $this->XINRegisterRule("subject_how_many_weeks_gestation", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("v06_optimal_window_lower", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("v06_optimal_window_upper", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("v06_permitted_window_lower", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("v06_permitted_window_upper", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("v12_optimal_window_lower", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("v12_optimal_window_upper", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("v12_permitted_window_lower", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("v12_permitted_window_upper", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("v24_optimal_window_lower", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("v24_optimal_window_upper", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("v24_permitted_window_lower", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("v24_permitted_window_upper", array("not_finish1{@}!={@}1"), 'Required.');
         $this->XINRegisterRule("mother_dob_date", array("not_finish1{@}!={@}1"), 'Required.');
         $this->XINRegisterRule("mother_occupation", array("not_finish1{@}!={@}1"), 'Required.');
         $this->XINRegisterRule("mother_education", array("not_finish1{@}!={@}1"), 'Required.');
@@ -502,7 +472,6 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
         $this->XINRegisterRule("father_education", array("not_finish1{@}!={@}1"), 'Required.');
         $this->XINRegisterRule("child_primary_address", array("not_finish1{@}!={@}1"), 'Required.');
         $this->XINRegisterRule("child_primary_address2", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("are_bio_parents_living_in_same_home", array("not_finish1{@}!={@}1"), 'Required.');
         $this->XINRegisterRule("are_parents_divorced_or_separated", array("not_finish1{@}!={@}1"), 'Required.');
         $this->XINRegisterRule("relationship_to_family", array("not_finish1{@}!={@}1"), 'Required.');
         $this->XINRegisterRule("additional_info_about_childs_home", array("not_finish1{@}!={@}1"), 'Required.');
@@ -685,6 +654,12 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
             null,
             "Live in home?"
         );
+	$group[] =& $this->form->createElement(
+            "static",
+            null,
+            null,
+            "FOH Sibling Subject?"
+        );
         $this->addGroup(
             $group,
             "page2_sibling_headers",
@@ -730,7 +705,11 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
                 "Live in home?",
                 self::YES_NO_OPTIONS
             );
-
+            $group[] =& $this->createSelect(
+                "sibling_{$i}_foh_sibling_subject",
+                "FOH Sibling Subject?",
+                self::YES_NO_OPTIONS
+            );
             $this->XINRegisterRule(
                 "sibling_" . $i . "_dob",
                 array("sibling_{$i}_dob{@}=={@}NEVER_REQUIRED"),
@@ -765,7 +744,12 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
                 "Never required.",
                 "sibling_" . $i . "_group"
             );
-
+            $this->XINRegisterRule(
+                "sibling_" . $i . "_foh_sibling_subject",
+                array("sibling_{$i}_live_in_home{@}=={@}NEVER_REQUIRED"),
+                "Never required.",
+                "sibling_" . $i . "_group"
+            );
             $this->addGroup(
                 $group,
                 "sibling_" . $i . "_group",
@@ -870,7 +854,7 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
         $this->form->addElement('static', null, null);
 
         // Q4
-        $this->form->addElement('text', "q4_history_of_head_injury_in_subject", '4. History of head injury in SUBJECT? (Loss of consciousness or reported findings on any scans exclusionary)');
+        $this->form->addElement('text', "q4_history_of_head_injury_in_subject", '4. History of head injury in SUBJECT?');
         $this->form->addElement('text', "q4a_if_yes_explain", $this->indent . 'If yes, explain:');
         $this->XINRegisterRule("q4a_if_yes_explain", array("q4_history_of_head_injury_in_subject{@}=={@}yes"), 'Required if yes');
 
@@ -916,7 +900,7 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
         $this->addSelect("q9_congenital_heart_problems_or_abnormalities_in_subject", "9. Congenital heart problems or abnormalities in SUBJECT?", self::YES_NO_OPTIONS);
         $this->addSelect(
             "q9a_exclusionary_conditions",
-            "<h6><i>Conditions below are exclusionary unless otherwise noted.</i></h6>",
+            "if yes select",
             self::Q9_DEV_FACTORS_OPTIONS,
             array("multiple")
         );
@@ -942,7 +926,7 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
         $this->form->addElement('static', null, null);
 
         // Q12
-        $this->addSelect("q12_did_mother_have_gestational_diabetes_while_pregnant", "12. Did mother have gestational diabetes while pregnant with SUBJECT?<h6><i>Gestational diabetes requiring insulin or medication is not exclusionary.</i></h6>", self::YES_NO_NA_OPTIONS);
+        $this->addSelect("q12_did_mother_have_gestational_diabetes_while_pregnant", "12. Did mother have gestational diabetes while pregnant with SUBJECT?", self::YES_NO_NA_OPTIONS);
         $this->form->addSelect("q12a_did_gestational_diabetes_require_insulin",'12a. If yes, did gestational diabetes require insulin or medication?',self::YES_NO_OPTIONS);
         $this->XINRegisterRule("q12a_did_gestational_diabetes_require_insulin", array("q12_did_mother_have_gestational_diabetes_while_pregnant{@}=={@}yes"), 'Required if yes');
         $this->addSelect("q12b_have_diabetes", "12b. Does SUBJECT have diabetes?<h6><i>Diabetes in subject is not exclusionary.</i></h6>", self::YES_NO_OPTIONS); 

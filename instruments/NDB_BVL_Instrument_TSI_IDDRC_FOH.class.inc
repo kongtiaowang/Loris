@@ -76,7 +76,7 @@ class NDB_BVL_Instrument_TSI_IDDRC_FOH extends NDB_BVL_Instrument
                                'not_answered' => 'Not Answered',
                               );
 
-    const HOUSEHOLD_SES_OPTIONS = array(
+    const HOUSEHOLD_SES_OPTIONS_AMOUNT = array(
                                    null            => '',
                                    'less_than_25K' => 'less than $24,999',
                                    '25K-35K'       => '$25,000 - 34,999',
@@ -87,14 +87,27 @@ class NDB_BVL_Instrument_TSI_IDDRC_FOH extends NDB_BVL_Instrument
                                    '150K-200K'     => '$150,000 - 199,000',
                                    'over_200K'     => 'over $200,000',
                                    'not_answered'  => 'Not Answered',
-                                  );
+			          );
+    
+    const HOUSEHOLD_SES_OPTIONS_MOTHER = array(
+	                                null        => "",
+                                        "combined"  => "Combined",
+					"mother"    => "Mother",
+				       );
+    
+    const HOUSEHOLD_SES_OPTIONS_FATHER = array(
+	                                null      => "",
+                                        "na"      => "N/A",
+                                        "father"  =>"Father (if two households)",
+                                       );
 
     const Q8_MED_HIST_OPTIONS = array(
                                          null                         => '',
                                          "arachnoid_cyst"             => "Arachnoid Cyst",
                                          "cat_i_chiari_malformation"  => "Cat I chiari malformation",
                                          "cat_ii_chiari_malformation" => "Cat II chiari malformation",
-                                         "nasal_dermoid_cyst"         => "Nasal Dermoid Cyst",
+					 "nasal_dermoid_cyst"         => "Nasal Dermoid Cyst",
+					 "no_clinical_findings"       => "No clinical findings",
                                          "other"                      => "Other",
                                         );
 
@@ -283,8 +296,7 @@ class NDB_BVL_Instrument_TSI_IDDRC_FOH extends NDB_BVL_Instrument
 
         $page1_questions = array(
                             "are_parents_divorced_or_separated"          => "Are parents divorced or separated?",
-                            "are_bio_parents_living_in_same_home"        => "Are biological parents living in the same home?",
-                           );
+                                );
 
         $pii_address = array(
                         "Street Address",
@@ -318,8 +330,8 @@ class NDB_BVL_Instrument_TSI_IDDRC_FOH extends NDB_BVL_Instrument
         $this->form->addElement('text', "current_height_ft", $this->indent . "Current height (ft.)");
         $this->form->addElement('text', "current_height_in", $this->indent . "Current height (in.)");
 
-        $this->form->addElement('text', "current_age_mon", $this->indent . "Current age (month(s))");
         $this->form->addElement('text', "current_age_year", $this->indent . "Current age (year(s))");
+        $this->form->addElement('text', "current_age_mon", $this->indent . "Current age (month(s))");
 
 
         // V06 OPTIMAL WINDOW (-1 weeks/+3 weeks)
@@ -365,11 +377,7 @@ class NDB_BVL_Instrument_TSI_IDDRC_FOH extends NDB_BVL_Instrument
             }
         }
         $this->XINRegisterRule("mother_dob_date", array("mother_dob_date{@}=={@}never_required"), 'Not Required.');
-
-        $this->addTextElement("mother_occupation", $this->indent . "Occupation");
-        $this->addSelect("mother_education", $this->indent . "Education", self::EDUCATION_OPTIONS);
-        $this->XINRegisterRule("mother_occupation", array("mother_occupation{@}=={@}never_required"), 'Not Required.');
-        
+      
         $this->form->addElement('static', null, null);
 
         // BIOLOGICAL FATHER INFORMATION
@@ -384,21 +392,11 @@ class NDB_BVL_Instrument_TSI_IDDRC_FOH extends NDB_BVL_Instrument
         }
         $this->XINRegisterRule("father_dob_date", array("father_dob_date{@}=={@}never_required"), 'Not Required.');
 
-        $this->addTextElement("father_occupation", $this->indent . "Occupation");
-        $this->XINRegisterRule("father_occupation", array("father_occupation{@}=={@}never_required"), 'Not Required.');
-
-        $this->addSelect("father_education", $this->indent . "Education", self::EDUCATION_OPTIONS);
-
         $this->form->addElement('static', null, null);
 
         // HOUSEHOLD INFO
         foreach ($page1_questions as $field => $label) {
             $this->addSelect($field, $label, self::YES_NO_OPTIONS);
-
-            if ($field == "are_bio_parents_living_in_same_home") {
-                $this->addSelect("if_not_in_same_home_childs_primary_address_with", $this->indent . "If biological parents not in the same home, child’s primary address is with", array(null => "", "mother" => "Mother", "father" => "Father"));
-                $this->XINRegisterRule("if_not_in_same_home_childs_primary_address_with", array("are_bio_parents_living_in_same_home{@}=={@}no"), 'Required if no');
-            }
         }
 
         $this->form->addElement('static', null, null);
@@ -445,15 +443,30 @@ class NDB_BVL_Instrument_TSI_IDDRC_FOH extends NDB_BVL_Instrument
         // ADDITIONAL INFORMATION
         $this->form->addElement("textarea","additional_info_about_childs_home", "Additional information about child’s home:", array('cols'=>25, 'rows'=>4));
         
-        //HOUSEOLD SES
+	//BIOLOGICAL MOTHER/FATHER OCCUPATION & EDUCATION
+	$this->addTextElement("mother_occupation", "Mother Occupation");
+        $this->addSelect("mother_education", "Mother Education", self::EDUCATION_OPTIONS);
+        $this->XINRegisterRule("mother_occupation", array("mother_occupation{@}=={@}never_required"), 'Not Required.');
 
-        $this->addSelect("household_ses_mother_or_combined", "Household SES Mother or combined", self::HOUSEHOLD_SES_OPTIONS);
-        $this->addSelect("household_ses_father_if_2_households", "Household SES Father if 2 households", self::HOUSEHOLD_SES_OPTIONS);
+        $this->addTextElement("father_occupation", "Father Occupation");
+        $this->XINRegisterRule("father_occupation", array("father_occupation{@}=={@}never_required"), 'Not Required.');
+        $this->addSelect("father_education", "Father Education", self::EDUCATION_OPTIONS);
+
+
+        //HOUSEOLD SES
+        $this->form->addElement('static', null, "HOUSEHOLD SES");
+        
+	$this->addSelect("household_ses_mother", "Household SES Mother", self::HOUSEHOLD_SES_OPTIONS_MOTHER);
+	$this->addSelect("household_ses_mother_or_combined", $this->indent . "Amount", self::HOUSEHOLD_SES_OPTIONS_AMOUNT);
+	$this->addSelect("household_ses_father", "Household SES Father", self::HOUSEHOLD_SES_OPTIONS_FATHER);
+	$this->addSelect("household_ses_father_if_2_households", $this->indent .  "Amount", self::HOUSEHOLD_SES_OPTIONS_AMOUNT);
 
         $this->XINRegisterRule("household_ses_mother_or_combined", array("household_ses_mother_or_combined{@}=={@}NEVER_REQUIRED"));
         $this->XINRegisterRule("household_ses_father_if_2_households", array("household_ses_father_if_2_households{@}=={@}NEVER_REQUIRED"));
-        
-        $this->form->addElement('static', null, null);
+	$this->XINRegisterRule("household_ses_mother", array("household_ses_mother_or_combined_amount{@}=={@}NEVER_REQUIRED"));
+	$this->XINRegisterRule("household_ses_father", array("household_ses_father_if_2_households_amount{@}=={@}NEVER_REQUIRED"));
+       
+	$this->form->addElement('static', null, null);
 
         //RACE
         $race_questions = array(
@@ -652,12 +665,16 @@ class NDB_BVL_Instrument_TSI_IDDRC_FOH extends NDB_BVL_Instrument
         $genetic_etiology = array(
                     null                       => "",
                     "abnormal_methylation"     => "Abnormal Methylation",
-                    "deletion"                 => "Deletion (indicate size of deletion)",
+                    "other"                    => "Other Etiology",
+	 );
+	
+	$abnormal_methylation = array(
+		    null                       => "",
+		    "deletion"                 => "Deletion (indicate size of deletion)",
                     "uniparental_disomy"       => "Uniparental Disomy (UPD)",
                     "imprinting_center_defect" => "Imprinting Center Defect (ICD)",
                     "ube3a_point_mutation"     => "UBE3A point mutation",
-                    "other"                    => "Other Etiology",
-        );
+	);
 
         $deletion_etiology = array(
                         null                       => "",
@@ -678,9 +695,11 @@ class NDB_BVL_Instrument_TSI_IDDRC_FOH extends NDB_BVL_Instrument
 
         $this->form->addElement('static', null, "<h4><i> ***Only for IDDRC Subjects with AS*** </i></h4>");
 
-        $this->addSelect("genetic_etiology_cause", "Genetic Etiology (cause):", $genetic_etiology);
+	$this->addSelect("genetic_etiology_cause", "Genetic Etiology (cause):", $genetic_etiology);
+	$this->addSelect("abnormal_methylation", $this->indent . "if <b>Abnormal Methylation</b> specify", $abnormal_methylation);
         $this->addSelect("deletion_etiology", $this->indent . "if <b>Deletion</b> specify size:", $deletion_etiology);
-        $this->XINRegisterRule("deletion_etiology", array('genetic_etiology_cause{@}=={@}deletion'), "Required");
+	$this->XINRegisterRule("abnormal_methylation", array('genetic_etiology_cause{@}=={@}abnormal_methylation'), "Required");
+	$this->XINRegisterRule("deletion_etiology", array('abnormal_methylation{@}=={@}deletion'), "Required");
         $this->form->addElement('text', 'genetic_etiology_specify', 'If other, specify:');
         $this->XINRegisterRule('genetic_etiology_specify', array('genetic_etiology_cause{@}=={@}other'), 'Required if other');
 
@@ -692,7 +711,9 @@ class NDB_BVL_Instrument_TSI_IDDRC_FOH extends NDB_BVL_Instrument
 
         $this->form->addElement('static', null, null);
 
-        $this->addSelect("nature_of_referral", "Nature of Referral:", $nature_of_referral);
+	$this->addSelect("nature_of_referral", "Nature of Referral:", $nature_of_referral);
+	$this->form->addElement('date', 'referral_appointment_date', 'if a or b select <b>Appointment Date</b>');
+	$this->XINRegisterRule('referral_appointment_date', array('nature_of_referral{@}=={@}cidd_past_patient|cidd_upcoming_patient'), 'Required if a or b selected');
         $this->form->addElement('text', 'nature_of_referral_specify', 'If other, specify:');
         $this->XINRegisterRule('nature_of_referral_specify', array('nature_of_referral{@}=={@}other'), 'Required if other');
 
@@ -760,6 +781,12 @@ class NDB_BVL_Instrument_TSI_IDDRC_FOH extends NDB_BVL_Instrument
             null,
             "Live in home?"
         );
+        $group[] =& $this->form->createElement(
+            "static",
+            null,
+            null,
+            "FOH Sibling Subject?"
+        );
         $this->addGroup(
             $group,
             "page2_sibling_headers",
@@ -805,8 +832,13 @@ class NDB_BVL_Instrument_TSI_IDDRC_FOH extends NDB_BVL_Instrument
                 "Live in home?",
                 self::YES_NO_OPTIONS
             );
+             $group[] =& $this->createSelect(
+                "sibling_{$i}_foh_sibling_subject",
+                "FOH Sibling Subject?",
+                self::YES_NO_OPTIONS
+            );
 
-            $this->XINRegisterRule(
+             $this->XINRegisterRule(
                 "sibling_" . $i . "_dob",
                 array("sibling_{$i}_dob{@}=={@}NEVER_REQUIRED"),
                 "Never required.",
@@ -836,6 +868,13 @@ class NDB_BVL_Instrument_TSI_IDDRC_FOH extends NDB_BVL_Instrument
 
             $this->XINRegisterRule(
                 "sibling_" . $i . "_live_in_home",
+                array("sibling_{$i}_live_in_home{@}=={@}NEVER_REQUIRED"),
+                "Never required.",
+                "sibling_" . $i . "_group"
+            );
+
+           $this->XINRegisterRule(
+                "sibling_" . $i . "_foh_sibling_subject",
                 array("sibling_{$i}_live_in_home{@}=={@}NEVER_REQUIRED"),
                 "Never required.",
                 "sibling_" . $i . "_group"
@@ -951,7 +990,9 @@ class NDB_BVL_Instrument_TSI_IDDRC_FOH extends NDB_BVL_Instrument
         $this->form->addElement('static', null, null);
 
         // Q4
-        $this->form->addElement('text', "q4_history_of_head_injury_in_subject", '4. History of head injury in SUBJECT? (Loss of consciousness or reported findings on any scans exclusionary)');
+        $this->addSelect("q4_history_of_head_injury_in_subject", '4. History of head injury in SUBJECT?',self::YES_NO_OPTIONS);
+	$this->form->addElement("textarea","q4b_history_of_head_explain", "<h6>(Loss of consciousness or reported findings on any scans exclusionary)</h6>", array('cols'=>25, 'rows'=>4));
+	$this->XINRegisterRule("q4b_history_of_head_explain", array("q4_history_of_head_injury_in_subject{@}=={@}yes"), 'Required if yes');
         
         $this->form->addElement('static', null, null);
 
@@ -1049,7 +1090,7 @@ class NDB_BVL_Instrument_TSI_IDDRC_FOH extends NDB_BVL_Instrument
         $this->addSelect("q15_complications_during_pregnancy_delivery", "15. Complications during pregnancy/delivery?", self::YES_NO_OPTIONS);
         $this->addSelect(
             "q15a_exclusionary_conditions",
-            "",
+            "<h6>Conditions below may be exclusionary and need to be reviewed by exclusionary committee</h6>",
             self::Q15_DEV_FACTORS_PROBAND_OPTIONS,
             array("multiple")
         );
@@ -1272,9 +1313,11 @@ class NDB_BVL_Instrument_TSI_IDDRC_FOH extends NDB_BVL_Instrument
 
 
         // Q8
-        $this->addSelect("sub_medhist_q8_had_an_mri_of_the_brain", "8. Has SUBJECT ever had an MRI of the brain?", self::YES_NO_OPTIONS);
+	$this->addSelect("sub_medhist_q8_had_an_mri_of_the_brain", "8. Has SUBJECT ever had an MRI of the brain?", self::YES_NO_OPTIONS);
+        $this->form->addElement("textarea","sub_medhist_q8_reason_for_mri", "if yes, reason for MRI", array('cols'=>25, 'rows'=>4));
         $this->addSelect("sub_medhist_q8a_results", $this->indent . "If yes, what were the results?", self::Q8_MED_HIST_OPTIONS, array("multiple"));
-        $this->XINRegisterRule("sub_medhist_q8a_results", array("sub_medhist_q8_had_an_MRI_of_the_brain{@}=={@}yes"), 'Required if yes');
+	$this->XINRegisterRule("sub_medhist_q8_reason_for_mri", array("sub_medhist_q8_had_an_mri_of_the_brain{@}=={@}yes"), 'Required if yes');
+	$this->XINRegisterRule("sub_medhist_q8a_results", array("sub_medhist_q8_had_an_MRI_of_the_brain{@}=={@}yes"), 'Required if yes');
 
         $this->form->addElement('text', "sub_medhist_q8a_other", $this->indent . 'Other:');
         $this->XINRegisterRule("sub_medhist_q8a_other", array("sub_medhist_q8a_results{@}=={@}other"), 'Required if other');
@@ -1367,7 +1410,16 @@ class NDB_BVL_Instrument_TSI_IDDRC_FOH extends NDB_BVL_Instrument
 
         $this->addSelect("likelihood_of_child_sleeping_through_a_scan_rating", "On a scale of 1 – 10, please rate the likelihood of your child sleeping through a scan.", $scale_of_1_to_10);
 
-        $this->form->addElement('static', null, null);
+	$this->form->addElement('static', null, null);
+
+	$this->form->addElement('static', null, "<h4><b>FOR RESEARCH STAFF TO COPY FROM ABOVE</b></h4>");
+
+        $this->addSelect("research_staff_is_english_language_spoken", "Is English the primary language spoken in the home?<br><h6>Exclusionary: English must be primary language spoken in the home</h6>", self::YES_NO_OPTIONS);
+
+	$this->addSelect("research_is_the_subject_adopted", "Is the subject adopted?<br><h6>Exclusionary: Adopted AND no family history of the subject.</h6>", self::YES_NO_OPTIONS);   
+	$this->addSelect("research_staff_is_infant_a_multiple_twin", "Is infant a multiple (i.e. twin or triplet)?<br><h6>Exclusionary: Multiple births (twin, triplet) are not necessarily excluded from the study.</h6>", self::YES_NO_OPTIONS);
+
+	$this->form->addElement('static', null, null);
 
         $research_staff_questions = array(
                                      "q1_infant_meets_any_medical_neurological_exclusion_criteria" => "1. This infant meets any of the medical or neurological exclusion criteria for this study.",
@@ -1390,7 +1442,10 @@ class NDB_BVL_Instrument_TSI_IDDRC_FOH extends NDB_BVL_Instrument
         $this->XINRegisterRule("q1_infant_meets_any_medical_neurological_exclusion_criteria", array("not_finish6{@}!={@}1"), 'Required.');
         $this->XINRegisterRule("q2_subject_has_evidence_for_contraindication_to_MRI", array("not_finish6{@}!={@}1"), 'Required.');
         $this->XINRegisterRule("q3_proceed_to_next_level_beyond_screening", array("not_finish6{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("if_reviewed_decision", array("not_finish6{@}!={@}1"), 'Required.');
+	$this->XINRegisterRule("if_reviewed_decision", array("not_finish6{@}!={@}1"), 'Required.');
+	$this->XINRegisterRule("research_staff_is_english_language_spoken", array("not_finish6{@}!={@}1"), 'Required.');
+	$this->XINRegisterRule("research_is_the_subject_adopted", array("not_finish6{@}!={@}1"), 'Required.');
+	$this->XINRegisterRule("research_staff_is_infant_a_multiple_twin", array("not_finish6{@}!={@}1"), 'Required.');
     }
 
     function q14_table($page_number, $section_name, $parent_question)
