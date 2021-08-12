@@ -124,7 +124,7 @@ class NDB_BVL_Instrument_caars_SelfReport_dad extends NDB_BVL_Instrument
             $label,
             array(
              null       => '',
-             'Yes'      => 'Yes'
+             'yes'      => 'Yes'
             )
         );
 

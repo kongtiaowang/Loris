@@ -257,7 +257,17 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
                                     "inf_devfactors_q1_specific_neurological_problems",
                                     "inf_medhist_q1_had_serious_medical_or_surgical_problems",
                                     "candidate_race",
-                                   );
+			    );
+
+	$config = NDB_Config::singleton();
+        $this->dateOptions = array(
+            'language' => 'en',
+            'format' => 'YMd',
+            'minYear' => $config->getSetting('startYear'),
+            'maxYear' => $config->getSetting('endYear'),
+            'addEmptyOption' => true,
+            'emptyOptionValue' => null,
+        );
 
         // setup the form
         $this->_setupForm();
@@ -300,19 +310,9 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
         // automatically adds examiner & date of administration
         $this->_addMetadataFields();
 
-        $config      =& NDB_Config::singleton();
-        $dateOptions = array(
-                        'language'         => 'en',
-                        'format'           => 'YMd',
-                        'minYear'          => $config->getSetting('startYear'),
-                        'maxYear'          => $config->getSetting('endYear'),
-                        'addEmptyOption'   => true,
-                        'emptyOptionValue' => null,
-                       );
-
         $this->form->addElement('static', null, null);
 
-        $this->addBasicDate('date_of_first_contact', 'Date of First Contact (1st time speak with the family)', $dateOptions);
+        $this->addBasicDate('date_of_first_contact', 'Date of First Contact (1st time speak with the family)', $this->dateOptions);
 
         $this->form->addElement('text', null, "City/State of Birth", ['disabled' => 'disabled']);
         $this->XINRegisterRule("date_of_first_contact", array("not_finish0{@}!={@}1"), 'Required.');
@@ -1789,11 +1789,55 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
             $this->addSelect($key, $question, self::YES_NO_OPTIONS);
         }
 
-        $this->addTextAreaElement("if_reviewed_decision", "If reviewed, what was reviewed and what decision was made?");
+	$group[] =& $this->form->createElement(
+            "textarea",
+            "if_reviewed_decision",
+            null,
+            array(
+             'cols' => 25,
+             'rows' => 4,
+            )
+        );
+        $group[] =& $this->createSelect(
+            "if_reviewed_decision_status",
+            "",
+            array(
+             null              => '',
+             'review_not_done' => 'Review Not Done',
+            )
+       );
+       $this->addGroup($group, 'if_reviewed_decision_group', "If reviewed, what was reviewed and what decision was made?", null, false);
+        unset($group);
+        $rules_array =array_merge(array('if_reviewed_decision_status{@}=={@}'), array());
+	$this->XINRegisterRule('if_reviewed_decision', $rules_array, 'Required','if_reviewed_decision_group');
 
-        $this->addDateElement("date_received_exclusion_review_decision", "Date received exclusion review decision:");
-        $this->XINRegisterRule("date_received_exclusion_review_decision", array("date_received_exclusion_review_decision{@}=={@}never_required"), 'Not Required.');
-
+        $group[] = $this->createDate(
+            "date_received_exclusion_review_decision",
+            null,
+            $this->dateOptions
+        );
+        $group[] = $this->createSelect(
+            "date_received_exclusion_review_decision_status",
+            null,
+            array(
+             null              => "",
+             'review_not_done' => "Review Not Done",
+            )
+        );       
+        $this->addGroup(
+            $group,
+            "date_received_date_group",
+            $label,
+            $this->_GUIDelimiter,
+            false
+        );
+        unset($group);
+        $this->XINRegisterRule(
+            "date_received_exclusion_review_decision",
+            array("date_received_exclusion_review_decision_status{@}=={@}"),
+            "Required.",
+            "date_received_date_group"
+        );
 
         $this->XINRegisterRule("candidate_race", array("not_finish7{@}!={@}1"), 'Required.');
         $this->XINRegisterRule("bio_mother_race", array("not_finish7{@}!={@}1"), 'Required.');
