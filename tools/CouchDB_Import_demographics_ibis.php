@@ -102,7 +102,14 @@ class CouchDBDemographicsImporter {
             'Description' => 'Participant status comments',
             'Type' => "text",
         ),
-
+        'ASD_Ever_DSMIV' => array(
+            'Description' => 'This variable shows whether a candidate was ASD+ at any timepoint based on the DSMIV (YES on Q4A or Q4B)',
+            'Type' => 'varchar(255)',
+        ),
+        'ASD_Latest_DSMIV' => array(
+            'Description' => 'This variable shows whether the candidate was ASD+ or ASD- at their last visit the DSMIV was administered',
+            'Type' => 'varchar(255)',
+        ),
         'ASD_DX' => array(
             'Description' => 'YES ==> If 4a/4b on DSMIV_checklist(V24) is yes at V24.
                               NO ==>  If 4a/4b on DSMIV_checklist(V24) is no at V24.',
@@ -627,6 +634,80 @@ group by s.CandID,s.Visit_label",
         );
     }
 
+    /**
+     * Get the all visits where the candidate was identified as ASD+ as well as what their latest
+     * visit's diagnosis was.
+     *
+     * @param $candid
+     * @return array
+     */
+    function getASDInfo($candID)
+    {
+        $dsmiv = $this->SQLDB->pselect("
+            SELECT
+                s.Visit_label,
+                f.Test_name,
+                dc.q4_criteria_autistic_disorder AS DSMIV_checklist_q4a,
+                dc.q4_criteria_PDD AS DSMIV_checklist_q4b,
+                dc.Date_taken AS DSMIV_checklist_Date_taken,
+                ds.meets_dsmiv_criteria_autistic_disorder AS DSMIV_SA_q4a,
+                ds.meets_dsmiv_criteria_pervasive_developmental_disorder AS DSMIV_SA_q4b,
+                ds.Date_taken AS DSMIV_SA_Date_taken
+            FROM session s
+                JOIN flag f ON (f.SessionID=s.ID)
+                LEFT JOIN DSMIV_checklist dc ON (f.CommentID=dc.CommentID)
+                LEFT JOIN DSMIV_SA ds ON (f.CommentID=ds.CommentID)
+            WHERE s.CandID=:candID
+                AND f.Test_name IN ('DSMIV_checklist', 'DSMIV_SA')
+                AND f.CommentID NOT LIKE 'DDE_%'
+                AND f.Administration = 'All'
+        ", array('candID' => $candID));
+
+        $asd_plus     = array();
+        $found_values = false;
+        $most_recent  = array(
+            'date'  => "1970-01-01",
+            'value' => "",
+        );
+        foreach ($dsmiv as $visit) {
+            $q4a  = $visit['Test_name'] . '_q4a';
+            $q4b  = $visit['Test_name'] . '_q4b';
+            $date = $visit['Test_name'] . '_Date_taken';
+            if ($visit[$q4a] === 'yes' || $visit[$q4b] === 'yes') {
+                array_push($asd_plus, $visit['Visit_label']);
+                if ($visit[$date] > $most_recent['date']) {
+                    $most_recent['date']  = $visit[$date];
+                    $most_recent['value'] = "ASD+ (" . $visit['Visit_label'] . ")";
+                }
+            } elseif ($visit[$q4a] === 'no' || $visit[$q4b] === 'no' || $visit[$q4b] === 'no_na') {
+                $found_values = true;
+                if ($visit[$date] > $most_recent['date']) {
+                    $most_recent['date']  = $visit[$date];
+                    $most_recent['value'] = "ASD- (" . $visit['Visit_label'] . ")";
+                }
+            }
+        }
+
+        if (count($asd_plus) > 0) {
+            return array(
+                'all'    => "ASD+ (" . implode(", ", $asd_plus) . ")",
+                'latest' => $most_recent['value']
+            );
+        }
+
+        if ($found_values) {
+            return array(
+                'all'    => "ASD-",
+                'latest' => $most_recent['value']
+            );
+        }
+
+        return array(
+            'all'    => "No DSMIV ever administered",
+            'latest' => "No DSMIV ever administered"
+        );
+    }
+
     function run() {
         $config = $this->CouchDB->replaceDoc('Config:BaseConfig', $this->Config);
         print "Updating Config:BaseConfig: $config";
@@ -788,6 +869,12 @@ group by s.CandID,s.Visit_label",
             $tsi_info = $this->getTSIInfo($candid);
             $demographics['candidate_ethnicity'] = $tsi_info['candidate_ethnicity'];
             $demographics['candidate_race'] = $tsi_info['candidate_race'];
+
+            // Get ASD info for all visit the candidate was administered a DSMIV,
+            // along with most recent visit's value.
+            $asd_info = $this->getASDInfo($candid);
+            $demographics['ASD_Ever_DSMIV']   = $asd_info['all'];
+            $demographics['ASD_Latest_DSMIV'] = $asd_info['latest'];
 
             $success = $this->CouchDB->replaceDoc($id, array('Meta' => array(
                 'DocType' => 'demographics',
