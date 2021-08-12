@@ -1685,6 +1685,7 @@ class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument
 
         if ($values["q8_respond_to_other_children"] != "yes") {
             $this->validate_empty_subquestions($values, self::PAGE8_QUESTIONS, $errors);
+            $this->validate_empty_subquestions($values, ["q8_respond_to_other_children_more_than_half_the_time"], $errors);
         } else {
             $q8_yes_count = $this->countResponse(self::PAGE8_QUESTIONS, "yes", $values);
 
