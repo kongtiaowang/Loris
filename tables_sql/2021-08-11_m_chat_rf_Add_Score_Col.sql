@@ -1,0 +1,1 @@
+ALTER TABLE m_chat_rf ADD `total_score` varchar(255) default NULL AFTER `q20_pass_or_fail`;

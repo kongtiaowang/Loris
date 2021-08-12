@@ -30,6 +30,7 @@ CREATE TABLE `m_chat_rf` (
     `q18_pass_or_fail` varchar(255) default NULL,
     `q19_pass_or_fail` varchar(255) default NULL,
     `q20_pass_or_fail` varchar(255) default NULL,
+    `total_score` varchar(255) default NULL,
     `q1_point_across_room` enum('yes','no') default NULL,
     `q1_look_at_object` enum('yes','no') default NULL,
     `q1_point_at_object` enum('yes','no') default NULL,

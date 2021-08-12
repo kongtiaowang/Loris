@@ -21,33 +21,57 @@ class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument
     use instrument_validator;
 
     var $scoreLabels = array(
-        "q1_pass_or_fail",
-        "q2_pass_or_fail",
-        "q3_pass_or_fail",
-        "q4_pass_or_fail",
-        "q5_pass_or_fail",
-        "q6_pass_or_fail",
-        "q7_pass_or_fail",
-        "q8_pass_or_fail",
-        "q9_pass_or_fail",
-        "q10_pass_or_fail",
-        "q11_pass_or_fail",
-        "q12_pass_or_fail",
-        "q13_pass_or_fail",
-        "q14_pass_or_fail",
-        "q15_pass_or_fail",
-        "q16_pass_or_fail",
-        "q17_pass_or_fail",
-        "q18_pass_or_fail",
-        "q19_pass_or_fail",
-        "q20_pass_or_fail",
-    );
+                        "q1_pass_or_fail",
+                        "q2_pass_or_fail",
+                        "q3_pass_or_fail",
+                        "q4_pass_or_fail",
+                        "q5_pass_or_fail",
+                        "q6_pass_or_fail",
+                        "q7_pass_or_fail",
+                        "q8_pass_or_fail",
+                        "q9_pass_or_fail",
+                        "q10_pass_or_fail",
+                        "q11_pass_or_fail",
+                        "q12_pass_or_fail",
+                        "q13_pass_or_fail",
+                        "q14_pass_or_fail",
+                        "q15_pass_or_fail",
+                        "q16_pass_or_fail",
+                        "q17_pass_or_fail",
+                        "q18_pass_or_fail",
+                        "q19_pass_or_fail",
+                        "q20_pass_or_fail",
+                        "total_score",
+                       );
 
     var $yesNo = array(
                   null  => '',
                   'yes' => 'Yes',
                   'no'  => 'No',
                  );
+
+    var $questions = array(
+                      'q1_point_across_room'                  => '1. If you point at something across the room, does your child look at it? (FOR EXAMPLE, if you point at a toy or an animal, does your child look at the toy or animal?)',
+                      'q2_deaf'                               => '2. Have you ever wondered if your child might be deaf?',
+                      'q3_play_pretend'                       => '3. Does your child play pretend or make-believe? (FOR EXAMPLE, pretend to drink from an empty cup, pretend to talk on a phone, or pretend to feed a doll or stuffed animal?)',
+                      'q4_like_climbing'                      => '4. Does your child like climbing on things? (FOR EXAMPLE, furniture, playground Yes No equipment, or stairs?)',
+                      'q5_unusual_finger_movements_near_eyes' => '5. Does your child make unusual finger movements near his or her eyes? (FOR EXAMPLE, does your child wiggle his or her fingers close to his or her eyes?)',
+                      'q6_point_one_finger_for_help'          => '6. Does your child point with one finger to ask for something or to get help? (FOR EXAMPLE, pointing to a snack or toy that is out of reach)',
+                      'q7_point_one_finger_show'              => '7. Does your child point with one finger to show you something interesting? (FOR EXAMPLE, pointing to an airplane in the sky or a big truck in the road)',
+                      'q8_interested_other_children'          => '8. Is your child interested in other children? (FOR EXAMPLE, does your child watch other children, smile at them, or go to them?)',
+                      'q9_show_things'                        => '9. Does your child show you things by bringing them to you or holding them up for you to see – not to get help, but just to share? (FOR EXAMPLE, showing you a flower, a stuffed animal, or a toy truck)',
+                      'q10_respond_by_name'                   => '10. Does your child respond when you call his or her name? (FOR EXAMPLE, does he or she look up, talk or babble, or stop what he or she is doing when you call his or her name?)',
+                      'q11_smile_back'                        => '11. When you smile at your child, does he or she smile back at you?',
+                      'q12_upset_by_everyday_noises'          => '12. Does your child get upset by everyday noises? (FOR EXAMPLE, does your child scream or cry to noise such as a vacuum cleaner or loud music?)',
+                      'q13_walk'                              => '13. Does your child walk?',
+                      'q14_look_in_eye'                       => '14. Does your child look you in the eye when you are talking to him or her, playing with him or her, or dressing him or her?',
+                      'q15_copy_you'                          => '15. Does your child try to copy what you do? (FOR EXAMPLE, wave bye-bye, clap, or make a funny noise when you do)',
+                      'q16_look_around'                       => '16. If you turn your head to look at something, does your child look around to see what you are looking at?',
+                      'q17_try_watch'                         => '17. Does your child try to get you to watch him or her? (FOR EXAMPLE, does your child look at you for praise, or say “look” or “watch me”?)',
+                      'q18_understand_tell_something'         => '18. Does your child understand when you tell him or her to do something? (FOR EXAMPLE, if you don’t point, can your child understand “put the book on the chair” or “bring me the blanket”?)',
+                      'q19_look_at_face'                      => '19. If something new happens, does your child look at your face to see how you feel about it? (FOR EXAMPLE, if he or she hears a strange or funny noise, or sees a new toy, will he or she look at your face?)',
+                      'q20_movement_activities'               => '20. Does your child like movement activities? (FOR EXAMPLE, being swung or bounced on your knee)',
+                     );
 
     /**
      * Sets up basic data, such as the LorisForm object, and so on.
@@ -112,6 +136,14 @@ class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument
         // Header
         $this->addHeader("Modified Checklist for Autism in Toddlers, Revised with Follow-Up");
 
+        $this->addLabel(
+            '<strong>Instructions:</strong><BR>
+            Answer the 20 questions found below. The Total Score can be found in the Score Summry. If the Total Score is between 3-7 (medium-risk),
+            administer the follow-up questions on the subsequent pages. If the Total Score is between 0-2 (low-risk) or 8-20 (high-risk),
+            the other pages will remain disabled and the instrument will not be scored.<BR><BR>
+            '
+        );
+
         $this->_addMetadataFields();
 
         $this->addBasicText("age", "Age <br><h6><i>(Please enter a numeric value between 0-100 or write NA.)</i></h6>");
@@ -133,9 +165,26 @@ class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument
         $rules_array = array("relationship_to_child{@}=={@}other");
         $this->XINRegisterRule('relationship_to_child_other', $rules_array, "Please specify relationship", 'relationship_to_child_other_group');
 
+        $this->addLabel(
+            '<strong>Instructions:</strong><BR>Please answer these questions about your child.
+            Keep in mind how your child <strong>usually</strong> behaves.
+            If you have seen your child do the behavior a few times, but he or she does not usually do it, then please answer <strong>no</strong>.
+            Please choose <strong>yes or no</strong> for every question. Thank you very much.'
+        );
+
+        foreach ($this->questions as $field => $label) {
+            $this->form->addElement('select', $field, $label, $this->yesNo);
+        }
+
         // SCORING TABLE
 
         $this->form->addElement('header', 'score', "Score Summary");
+
+        $this->addLabel(
+            'If Total Score is 3-7, answer all enabled subsequent pages.'
+        );
+
+        $this->form->addElement('static', "total_score", "Total Score: ", null);
 
         $group[] = $this->form->createElement('static', null, null, "Pass/Fail");
         $this->form->addGroup($group, 'score_header_group', "<strong>Question</strong>", $this->_GUIDelimiter, false);
@@ -183,14 +232,19 @@ class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument
                                 "look_at_your_finger"       => "Look at your finger?",
                                );
 
-        $this->addLabel(
-            '<strong>Instructions:</strong><BR>Please answer these questions about your child.
-            Keep in mind how your child <strong>usually</strong> behaves.
-            If you have seen your child do the behavior a few times, but he or she does not usually do it, then please answer <strong>no</strong>.
-            Please choose <strong>yes or no</strong> for every question. Thank you very much.'
-        );
+        $this->form->addElement('select', "q1_point_across_room", "1. If you point at something across the room, does your child look at it? (FROM TOP PAGE) <h6>(FOR EXAMPLE, if you point at a toy or an animal, does your child look at the toy or animal?)</h6>", $this->yesNo, ['disabled' => 'disabled']);
 
-        $this->form->addElement('select', "q1_point_across_room", "1. If you point at something across the room, does your child look at it? <h6>(FOR EXAMPLE, if you point at a toy or an animal, does your child look at the toy or animal?)</h6>", $this->yesNo);
+        $q1_response = $this->getResponse("q1_point_across_room");
+
+        if (is_null($q1_response)) {
+            $this->form->freeze();
+        }
+
+        $total_score = $this->getResponse("total_score");
+
+        if ($total_score < 3 || $total_score > 7) {
+            $this->form->freeze();
+        }
 
         $this->form->addElement('static', null, "If Yes: Please give an example of how he/she will respond if you point at something (If parent does not give a PASS example below, ask each individually.)");
 
@@ -235,7 +289,23 @@ class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument
                                       "inconclusive_or_not_definitive" => "Results inconclusive or not definitive",
                                      );
 
-        $this->form->addElement('select', "q2_deaf", "2. Have you ever wondered if your child might be deaf?", $this->yesNo);
+        $this->form->addElement('select', "q2_deaf", "2. Have you ever wondered if your child might be deaf?", $this->yesNo, ['disabled' => 'disabled']);
+
+        $q2_response = $this->getResponse("q2_deaf");
+
+        if ($q2_response == "no") {
+            $this->form->freeze();
+        }
+
+        if (is_null($q2_response)) {
+            $this->form->freeze();
+        }
+
+        $total_score = $this->getResponse("total_score");
+
+        if ($total_score < 3 || $total_score > 7) {
+            $this->form->freeze();
+        }
 
         $this->form->addElement('static', null, "If Yes: What led you to wonder that?");
 
@@ -295,7 +365,19 @@ class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument
                             "other"                                           => "Other (describe)",
                            );
 
-        $this->form->addElement('select', "q3_play_pretend", "3. Does your child play pretend or make-believe? <h6>(FOR EXAMPLE, pretend to drink from an empty cup, pretend to talk on a phone, or pretend to feed a doll or stuffed animal?)</h6>", $this->yesNo);
+        $this->form->addElement('select', "q3_play_pretend", "3. Does your child play pretend or make-believe? <h6>(FOR EXAMPLE, pretend to drink from an empty cup, pretend to talk on a phone, or pretend to feed a doll or stuffed animal?)</h6>", $this->yesNo, ['disabled' => 'disabled']);
+
+        $q3_response = $this->getResponse("q3_play_pretend");
+
+        if (is_null($q3_response)) {
+            $this->form->freeze();
+        }
+
+        $total_score = $this->getResponse("total_score");
+
+        if ($total_score < 3 || $total_score > 7) {
+            $this->form->freeze();
+        }
 
         $this->form->addElement('static', null, "If Yes: Please give me an example of his/her pretend play. (<i>If parent does not give a PASS example below, ask each individually.</i>)");
 
@@ -332,7 +414,19 @@ class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument
                             "playground_equipment" => "Playground equipment?",
                            );
 
-        $this->form->addElement('select', "q4_like_climbing", "4. Does your child like climbing on things? <h6>(FOR EXAMPLE, furniture, playground Yes No equipment, or stairs?)</h6>", $this->yesNo);
+        $this->form->addElement('select', "q4_like_climbing", "4. Does your child like climbing on things? <h6>(FOR EXAMPLE, furniture, playground Yes No equipment, or stairs?)</h6>", $this->yesNo, ['disabled' => 'disabled']);
+
+        $q4_response = $this->getResponse("q4_like_climbing");
+
+        if (is_null($q4_response)) {
+            $this->form->freeze();
+        }
+
+        $total_score = $this->getResponse("total_score");
+
+        if ($total_score < 3 || $total_score > 7) {
+            $this->form->freeze();
+        }
 
         $this->form->addElement('static', null, "If yes: Please give me an example of something he/she enjoys climbing on. (<i>If parent does not give a PASS example below, ask each individually.</i>)");
 
@@ -365,7 +459,23 @@ class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument
                                 "other"                     => "Other (describe)",
                                );
 
-        $this->form->addElement('select', "q5_unusual_finger_movements_near_eyes", "5. Does your child make unusual finger movements near his or her eyes? <h6>(FOR EXAMPLE, does your child wiggle his or her fingers close to his or her eyes?)</h6>", $this->yesNo);
+        $this->form->addElement('select', "q5_unusual_finger_movements_near_eyes", "5. Does your child make unusual finger movements near his or her eyes? <h6>(FOR EXAMPLE, does your child wiggle his or her fingers close to his or her eyes?)</h6>", $this->yesNo, ['disabled' => 'disabled']);
+
+        $q5_response = $this->getResponse("q5_unusual_finger_movements_near_eyes");
+
+        if ($q5_response == "no") {
+            $this->form->freeze();
+        }
+
+        if (is_null($q5_response)) {
+            $this->form->freeze();
+        }
+
+        $total_score = $this->getResponse("total_score");
+
+        if ($total_score < 3 || $total_score > 7) {
+            $this->form->freeze();
+        }
 
         $this->form->addElement('static', null, "If Yes: Please describe these movements (<i>If parent does not give a PASS example below, ask each individually.</i>)");
 
@@ -428,7 +538,23 @@ class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument
                             "ask_using_words_or_sounds"        => "Ask for it using words or sounds?",
                            );
 
-        $this->form->addElement('select', "q6_point_one_finger_for_help", "6. Does your child point with one finger to ask for something or to get help? <h6>(FOR EXAMPLE, pointing to a snack or toy that is out of reach)</h6>", $this->yesNo);
+        $this->form->addElement('select', "q6_point_one_finger_for_help", "6. Does your child point with one finger to ask for something or to get help? <h6>(FOR EXAMPLE, pointing to a snack or toy that is out of reach)</h6>", $this->yesNo, ['disabled' => 'disabled']);
+
+        $q6_response = $this->getResponse("q6_point_one_finger_for_help");
+
+        if ($q6_response == "yes") {
+            $this->form->freeze();
+        }
+
+        if (is_null($q6_response)) {
+            $this->form->freeze();
+        }
+
+        $total_score = $this->getResponse("total_score");
+
+        if ($total_score < 3 || $total_score > 7) {
+            $this->form->freeze();
+        }
 
         $this->form->addElement('static', null, "If No: If there is something your child wants that is out of reach, such as a snack or toy that is out of reach, how does he/she get it? (<i>If parent does not give a PASS example below, ask each individually.</i>)");
 
@@ -471,7 +597,19 @@ class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument
                             "animal_in_yard"  => "An animal in the yard?",
                            );
 
-        $this->form->addElement('select', "q7_point_one_finger_show", "7. Does your child point with one finger to show you something interesting? <h6>(FOR EXAMPLE, pointing to an airplane in the sky or a big truck in the road)</h6>", $this->yesNo);
+        $this->form->addElement('select', "q7_point_one_finger_show", "7. Does your child point with one finger to show you something interesting? <h6>(FOR EXAMPLE, pointing to an airplane in the sky or a big truck in the road)</h6>", $this->yesNo, ['disabled' => 'disabled']);
+
+        $q7_response = $this->getResponse("q7_point_one_finger_show");
+
+        if (is_null($q7_response)) {
+            $this->form->freeze();
+        }
+
+        $total_score = $this->getResponse("total_score");
+
+        if ($total_score < 3 || $total_score > 7) {
+            $this->form->freeze();
+        }
 
         $this->form->addElement('static', null, "If Yes: Please give me an example something he/she might point at to show you. (<i>If parent does not give a PASS example below, ask each individually.</i>)");
 
@@ -519,7 +657,19 @@ class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument
                             "get_excited_about_another_child" => "Get excited about another child?",
                            );
 
-        $this->form->addElement('select', "q8_interested_other_children", "8. Is your child interested in other children? <h6>(FOR EXAMPLE, does your child watch other children, smile at them, or go to them?)</h6>", $this->yesNo);
+        $this->form->addElement('select', "q8_interested_other_children", "8. Is your child interested in other children? <h6>(FOR EXAMPLE, does your child watch other children, smile at them, or go to them?)</h6>", $this->yesNo, ['disabled' => 'disabled']);
+
+        $q8_response = $this->getResponse("q8_interested_other_children");
+
+        if (is_null($q8_response)) {
+            $this->form->freeze();
+        }
+
+        $total_score = $this->getResponse("total_score");
+
+        if ($total_score < 3 || $total_score > 7) {
+            $this->form->freeze();
+        }
 
         $this->form->addElement('select', "q8_interested_in_children_not_brother_or_sister", $this->indent . "8.1. If Yes to #8: Is he/she interested in children who are not his/her brother or sister?", $this->yesNo);
 
@@ -580,7 +730,19 @@ class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument
                             "other"                      => "Other (describe):",
                            );
 
-        $this->form->addElement('select', "q9_show_things", "9. Does your child show you things by bringing them to you or holding them up for you to see – not to get help, but just to share? <h6>(FOR EXAMPLE, showing you a flower, a stuffed animal, or a toy truck)</h6>", $this->yesNo);
+        $this->form->addElement('select', "q9_show_things", "9. Does your child show you things by bringing them to you or holding them up for you to see – not to get help, but just to share? <h6>(FOR EXAMPLE, showing you a flower, a stuffed animal, or a toy truck)</h6>", $this->yesNo, ['disabled' => 'disabled']);
+
+        $q9_response = $this->getResponse("q9_show_things");
+
+        if (is_null($q9_response)) {
+            $this->form->freeze();
+        }
+
+        $total_score = $this->getResponse("total_score");
+
+        if ($total_score < 3 || $total_score > 7) {
+            $this->form->freeze();
+        }
 
         $this->form->addElement('static', null, "If Yes: Please give me an example of something he/she might bring to show you or hold up for you to see. (<i>If parent does not give one of the following PASS examples, ask each individually.</i>)");
 
@@ -631,7 +793,19 @@ class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument
                                  "respond_only_if_touched"                    => "Respond only if touched?",
                                 );
 
-        $this->form->addElement('select', "q10_respond_by_name", "10. Does your child respond when you call his or her name? <h6>(FOR EXAMPLE, does he or she look up, talk or babble, or stop what he or she is doing when you call his or her name?)</h6>", $this->yesNo);
+        $this->form->addElement('select', "q10_respond_by_name", "10. Does your child respond when you call his or her name? <h6>(FOR EXAMPLE, does he or she look up, talk or babble, or stop what he or she is doing when you call his or her name?)</h6>", $this->yesNo, ['disabled' => 'disabled']);
+
+        $q10_response = $this->getResponse("q10_respond_by_name");
+
+        if (is_null($q10_response)) {
+            $this->form->freeze();
+        }
+
+        $total_score = $this->getResponse("total_score");
+
+        if ($total_score < 3 || $total_score > 7) {
+            $this->form->freeze();
+        }
 
         $this->form->addElement('static', null, "If Yes: Please give me an example of how he/she responds when you call his/her name. (<i>If parent does not give a PASS example below, ask each individually.</i>)");
 
@@ -681,7 +855,23 @@ class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument
                                  "smile_randomly_or_nothing"         => "Smile randomly or at nothing in particular?",
                                 );
 
-        $this->form->addElement('select', "q11_smile_back", "11. When you smile at your child, does he or she smile back at you?", $this->yesNo);
+        $this->form->addElement('select', "q11_smile_back", "11. When you smile at your child, does he or she smile back at you?", $this->yesNo, ['disabled' => 'disabled']);
+
+        $q11_response = $this->getResponse("q11_smile_back");
+
+        if ($q11_response == "yes") {
+            $this->form->freeze();
+        }
+
+        if (is_null($q11_response)) {
+            $this->form->freeze();
+        }
+
+        $total_score = $this->getResponse("total_score");
+
+        if ($total_score < 3 || $total_score > 7) {
+            $this->form->freeze();
+        }
 
         $this->form->addElement('static', null, "If No: What makes your child smile? (<i>If parent does not give a PASS example below, ask each individually.</i>)");
 
@@ -753,7 +943,23 @@ class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument
                                  "cover_ears_while_upset" => "Cover his/her ears while upset?",
                                 );
 
-        $this->form->addElement('select', "q12_upset_by_everyday_noises", "12. Does your child get upset by everyday noises? <h6>(FOR EXAMPLE, does your child scream or cry to noise such as a vacuum cleaner or loud music?)</h6>", $this->yesNo);
+        $this->form->addElement('select', "q12_upset_by_everyday_noises", "12. Does your child get upset by everyday noises? <h6>(FOR EXAMPLE, does your child scream or cry to noise such as a vacuum cleaner or loud music?)</h6>", $this->yesNo, ['disabled' => 'disabled']);
+
+        $q12_response = $this->getResponse("q12_upset_by_everyday_noises");
+
+        if ($q12_response == "no") {
+            $this->form->freeze();
+        }
+
+        if (is_null($q12_response)) {
+            $this->form->freeze();
+        }
+
+        $total_score = $this->getResponse("total_score");
+
+        if ($total_score < 3 || $total_score > 7) {
+            $this->form->freeze();
+        }
 
         $this->form->addElement('static', null, "<b>12.1. Does your child have a negative reaction to the sound of... (Required if Yes to #12)</b>");
 
@@ -821,6 +1027,24 @@ class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument
 
         $this->form->addElement('select', "q13_walk", "13. Does your child walk?", $this->yesNo);
 
+        $this->form->addElement('select', "q13_walk", "13. Does your child walk?", $this->yesNo, ['disabled' => 'disabled']);
+
+        $q13_response = $this->getResponse("q13_walk");
+
+        if ($q13_response == "no") {
+            $this->form->freeze();
+        }
+
+        if (is_null($q13_response)) {
+            $this->form->freeze();
+        }
+
+        $total_score = $this->getResponse("total_score");
+
+        if ($total_score < 3 || $total_score > 7) {
+            $this->form->freeze();
+        }
+
         $this->form->addElement('select', "q13_walk_without_holding_anything", $this->indent . "13.1. If Yes to #13: Does he/she walk without holding on to anything?", $this->yesNo);
 
         $this->XINRegisterRule(
@@ -850,7 +1074,19 @@ class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument
                              "when_talking"          => "When you are talking to him/her?",
                             );
 
-        $this->form->addElement('select', "q14_look_in_eye", "14. Does your child look you in the eye when you are talking to him or her, playing with him or her, or dressing him or her?", $this->yesNo);
+        $this->form->addElement('select', "q14_look_in_eye", "14. Does your child look you in the eye when you are talking to him or her, playing with him or her, or dressing him or her?", $this->yesNo, ['disabled' => 'disabled']);
+
+        $q14_response = $this->getResponse("q14_look_in_eye");
+
+        if (is_null($q14_response)) {
+            $this->form->freeze();
+        }
+
+        $total_score = $this->getResponse("total_score");
+
+        if ($total_score < 3 || $total_score > 7) {
+            $this->form->freeze();
+        }
 
         $this->form->addElement('static', null, "If Yes: Please give me an example of when he/she looks you in the eye. (<i>If parent does not give one of the following PASS examples, ask each individually.</i>)");
 
@@ -898,7 +1134,19 @@ class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument
                              "other"                           => "Other (describe):",
                             );
 
-        $this->form->addElement('select', "q15_copy_you", "15. Does your child try to copy what you do? <h6>(FOR EXAMPLE, wave bye-bye, clap, or make a funny noise when you do)</h6>", $this->yesNo);
+        $this->form->addElement('select', "q15_copy_you", "15. Does your child try to copy what you do? <h6>(FOR EXAMPLE, wave bye-bye, clap, or make a funny noise when you do)</h6>", $this->yesNo, ['disabled' => 'disabled']);
+
+        $q15_response = $this->getResponse("q15_copy_you");
+
+        if (is_null($q15_response)) {
+            $this->form->freeze();
+        }
+
+        $total_score = $this->getResponse("total_score");
+
+        if ($total_score < 3 || $total_score > 7) {
+            $this->form->freeze();
+        }
 
         $this->form->addElement('static', null, "If Yes: Please give me an example of something he/she would try to copy. (<i>If parent does not give one of the following pass examples, ask each individually.</i>)");
 
@@ -939,7 +1187,23 @@ class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument
                                  "look_at_your_face" => "Look at your face?",
                                 );
 
-        $this->form->addElement('select', "q16_look_around", "16. If you turn your head to look at something, does your child look around to see what you are looking at?", $this->yesNo);
+        $this->form->addElement('select', "q16_look_around", "16. If you turn your head to look at something, does your child look around to see what you are looking at?", $this->yesNo, ['disabled' => 'disabled']);
+
+        $q16_response = $this->getResponse("q16_look_around");
+
+        if ($q16_response == "yes") {
+            $this->form->freeze();
+        }
+
+        if (is_null($q16_response)) {
+            $this->form->freeze();
+        }
+
+        $total_score = $this->getResponse("total_score");
+
+        if ($total_score < 3 || $total_score > 7) {
+            $this->form->freeze();
+        }
 
         $this->form->addElement('static', null, "If No: What does he/she do when you turn to look at something? (<i>If parent does not give a PASS example below, ask each individually.</i>)");
 
@@ -995,7 +1259,19 @@ class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument
                              "other"                          => "Other (describe):",
                             );
 
-        $this->form->addElement('select', "q17_try_watch", "17. Does your child try to get you to watch him or her? <h6>(FOR EXAMPLE, does your child look at you for praise, or say \"look\" or \"watch me\"?)</h6>", $this->yesNo);
+        $this->form->addElement('select', "q17_try_watch", "17. Does your child try to get you to watch him or her? <h6>(FOR EXAMPLE, does your child look at you for praise, or say \"look\" or \"watch me\"?)</h6>", $this->yesNo, ['disabled' => 'disabled']);
+
+        $q17_response = $this->getResponse("q17_try_watch");
+
+        if (is_null($q17_response)) {
+            $this->form->freeze();
+        }
+
+        $total_score = $this->getResponse("total_score");
+
+        if ($total_score < 3 || $total_score > 7) {
+            $this->form->freeze();
+        }
 
         $this->form->addElement('static', null, "If Yes: Please give me an example of how he/she would try to get you to watch him/her. (<i>If parent does not give a PASS example below, ask each individually.</i>)");
 
@@ -1025,7 +1301,19 @@ class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument
     {
         $this->addHeader("Modified Checklist for Autism in Toddlers, Revised with Follow-Up");
 
-        $this->form->addElement('select', "q18_understand_tell_something", "18. Does your child understand when you tell him or her to do something? <h6>(FOR EXAMPLE, if you don’t point, can your child understand \"put the book on the chair\" or \"bring me the blanket\"?)</h6>", $this->yesNo);
+        $this->form->addElement('select', "q18_understand_tell_something", "18. Does your child understand when you tell him or her to do something? <h6>(FOR EXAMPLE, if you don’t point, can your child understand \"put the book on the chair\" or \"bring me the blanket\"?)</h6>", $this->yesNo, ['disabled' => 'disabled']);
+
+        $q18_response = $this->getResponse("q18_understand_tell_something");
+
+        if (is_null($q18_response)) {
+            $this->form->freeze();
+        }
+
+        $total_score = $this->getResponse("total_score");
+
+        if ($total_score < 3 || $total_score > 7) {
+            $this->form->freeze();
+        }
 
         $this->addTextAreaElement("q18_example_how_you_know_child_understands_you", "If Yes to #18: Please give me an example of how you know he/she understands you.", array(), "Required if Yes to #18. If No, select 'Not Answered'.");
 
@@ -1085,7 +1373,23 @@ class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument
     {
         $this->addHeader("Modified Checklist for Autism in Toddlers, Revised with Follow-Up");
 
-        $this->form->addElement('select', "q19_look_at_face", "19. If something new happens, does your child look at your face to see how you feel about it? <h6>(FOR EXAMPLE, if he or she hears a strange or funny noise, or sees a new toy, will he or she look at your face?)</h6>", $this->yesNo);
+        $this->form->addElement('select', "q19_look_at_face", "19. If something new happens, does your child look at your face to see how you feel about it? <h6>(FOR EXAMPLE, if he or she hears a strange or funny noise, or sees a new toy, will he or she look at your face?)</h6>", $this->yesNo, ['disabled' => 'disabled']);
+
+        $q19_response = $this->getResponse("q19_look_at_face");
+
+        if ($q19_response == "yes") {
+            $this->form->freeze();
+        }
+
+        if (is_null($q19_response)) {
+            $this->form->freeze();
+        }
+
+        $total_score = $this->getResponse("total_score");
+
+        if ($total_score < 3 || $total_score > 7) {
+            $this->form->freeze();
+        }
 
         $this->form->addElement('select', "q19_hears_noise_look_before_responding", $this->indent . "19.1. If No to #19: If your child hears a strange or scary noise, will he/she look at you <u>before</u> responding?", $this->yesNo);
         $this->XINRegisterRule(
@@ -1127,7 +1431,19 @@ class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument
                              "other"                           => "Other (describe)",
                             );
 
-        $this->form->addElement('select', "q20_movement_activities", "20. Does your child like movement activities? <h6>(FOR EXAMPLE, being swung or bounced on your knee)</h6>", $this->yesNo);
+        $this->form->addElement('select', "q20_movement_activities", "20. Does your child like movement activities? <h6>(FOR EXAMPLE, being swung or bounced on your knee)</h6>", $this->yesNo, ['disabled' => 'disabled']);
+
+        $q20_response = $this->getResponse("q20_movement_activities");
+
+        if (is_null($q20_response)) {
+            $this->form->freeze();
+        }
+
+        $total_score = $this->getResponse("total_score");
+
+        if ($total_score < 3 || $total_score > 7) {
+            $this->form->freeze();
+        }
 
         $this->form->addElement('select', "q20_enjoy_being_bounced_or_swung", $this->indent . "20.1. If Yes to #20: Does he/she enjoy being bounced or swung?", $this->yesNo);
 
@@ -1195,6 +1511,23 @@ class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument
         }
 
         return $count;
+    }
+
+    /**
+     * Given a question/field, returns user response
+     * Use case: getting response from other pages
+     *
+     * @return integer
+     */
+    function getResponse($question)
+    {
+        $db     =& Database::singleton();
+        $query  = "SELECT * FROM $this->table WHERE CommentID = '$this->commentID'";
+        $record = $db->pselectRow($query, array());
+
+        if (array_key_exists($question, $record)) {
+            return $record[$question];
+        }
     }
 
     function validate_main_page($values)
@@ -1676,7 +2009,48 @@ class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument
                    "q18_pass_or_fail" => null,
                    "q19_pass_or_fail" => null,
                    "q20_pass_or_fail" => null,
+                   "total_score"      => null,
                   );
+
+        /**
+         * TOTAL SCORE
+         *
+         * For items 2, 5, 12, the response YES/PASS indicates ASD risk
+         * For all other items, the response NO/FAIL indicates ASD risk
+         *
+         * Total Score of 0-2 --> Low-Risk
+         * Total Score of 3-7 --> Medium-Risk
+         * Total Score of 8-20 --> High-Risk
+         *
+         * Follow up questions are only required when candidate is Medium-Risk
+         */
+
+        $exceptions = array(
+                       "q2_deaf",
+                       "q5_unusual_finger_movements_near_eyes",
+                       "q12_upset_by_everyday_noises",
+                      );
+
+        $total_score = 0;
+
+        foreach ($this->questions as $field => $label) {
+            if (in_array($field, $exceptions)) {
+                if ($record[$field] == "yes") {
+                    $total_score++;
+                }
+            } else {
+                if ($record[$field] == "no") {
+                    $total_score++;
+                }
+            }
+        }
+
+        $scores["total_score"] = $total_score;
+
+        if ($total_score < 3 || $total_score > 7) {
+            $result = $db->update($this->table, $scores, array('CommentID' => $this->getCommentID()));
+            return;
+        }
 
         /************************
          * Question 1           *
