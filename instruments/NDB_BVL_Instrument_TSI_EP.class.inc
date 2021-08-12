@@ -1791,9 +1791,8 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
 
         $this->addTextAreaElement("if_reviewed_decision", "If reviewed, what was reviewed and what decision was made?");
 
-        $this->addBasicDate('date_received_exclusion_review_decision', "Date received exclusion review decision:");
-
-        $this->XINRegisterRule("date_received_exclusion_review_decision", array("not_finish7{@}!={@}1"), 'Required.');
+        $this->addDateElement("date_received_exclusion_review_decision", "Date received exclusion review decision:");
+        $this->XINRegisterRule("date_received_exclusion_review_decision", array("date_received_exclusion_review_decision{@}=={@}never_required"), 'Not Required.');
 
 
         $this->XINRegisterRule("candidate_race", array("not_finish7{@}!={@}1"), 'Required.');

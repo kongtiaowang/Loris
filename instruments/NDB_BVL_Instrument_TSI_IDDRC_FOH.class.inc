@@ -295,7 +295,8 @@ class NDB_BVL_Instrument_TSI_IDDRC_FOH extends NDB_BVL_Instrument
                        );
 
         $page1_questions = array(
-                            "are_parents_divorced_or_separated"          => "Are parents divorced or separated?",
+		"are_parents_divorced_or_separated"          => "Are parents divorced or separated?",
+		"are_bio_parents_living_in_same_home"        => "Are biological parents living in the same home?",
                                 );
 
         $pii_address = array(
@@ -453,18 +454,15 @@ class NDB_BVL_Instrument_TSI_IDDRC_FOH extends NDB_BVL_Instrument
         $this->addSelect("father_education", "Father Education", self::EDUCATION_OPTIONS);
 
 
-        //HOUSEOLD SES
-        $this->form->addElement('static', null, "HOUSEHOLD SES");
-        
-	$this->addSelect("household_ses_mother", "Household SES Mother", self::HOUSEHOLD_SES_OPTIONS_MOTHER);
+        //HOUSEOLD SES        
+	$this->addSelect("household_ses_mother", "Household SES - Mother or Combined", self::HOUSEHOLD_SES_OPTIONS_MOTHER);
 	$this->addSelect("household_ses_mother_or_combined", $this->indent . "Amount", self::HOUSEHOLD_SES_OPTIONS_AMOUNT);
-	$this->addSelect("household_ses_father", "Household SES Father", self::HOUSEHOLD_SES_OPTIONS_FATHER);
+	$this->addSelect("household_ses_father", "Household SES (Father if 2 households)", self::HOUSEHOLD_SES_OPTIONS_FATHER);
 	$this->addSelect("household_ses_father_if_2_households", $this->indent .  "Amount", self::HOUSEHOLD_SES_OPTIONS_AMOUNT);
 
-        $this->XINRegisterRule("household_ses_mother_or_combined", array("household_ses_mother_or_combined{@}=={@}NEVER_REQUIRED"));
-        $this->XINRegisterRule("household_ses_father_if_2_households", array("household_ses_father_if_2_households{@}=={@}NEVER_REQUIRED"));
-	$this->XINRegisterRule("household_ses_mother", array("household_ses_mother_or_combined_amount{@}=={@}NEVER_REQUIRED"));
-	$this->XINRegisterRule("household_ses_father", array("household_ses_father_if_2_households_amount{@}=={@}NEVER_REQUIRED"));
+	$this->XINRegisterRule("household_ses_mother_or_combined", array("household_ses_mother{@}=={@}mother|combined"),"Required");
+	$this->XINRegisterRule("household_ses_father_if_2_households", array("household_ses_father{@}=={@}father"),"Required if father(if two households)");
+
        
 	$this->form->addElement('static', null, null);
 
@@ -498,6 +496,8 @@ class NDB_BVL_Instrument_TSI_IDDRC_FOH extends NDB_BVL_Instrument
         
         $this->form->addElement('static', null, null);
 
+	$this->XINRegisterRule("household_ses_father", array("not_finish1{@}!={@}1"), 'Required.');
+	$this->XINRegisterRule("household_ses_mother", array("not_finish1{@}!={@}1"), 'Required.');
         $this->XINRegisterRule("subject_dob", array("not_finish1{@}!={@}1"), 'Required.');
         $this->XINRegisterRule("subject_expected_due_date", array("not_finish1{@}!={@}1"), 'Required.');
         $this->XINRegisterRule("subject_birth_weight_lbs", array("not_finish1{@}!={@}1"), 'Required.');
@@ -1542,11 +1542,20 @@ class NDB_BVL_Instrument_TSI_IDDRC_FOH extends NDB_BVL_Instrument
         $this->validate_positive_numeric($values, "current_height_in", $errors);
         $this->validate_positive_numeric($values, "current_age_mon", $errors);
         $this->validate_positive_numeric($values, "current_age_year", $errors);
+    }    
 
-        if ($values["are_bio_parents_living_in_same_home"] != "no") {
-            $this->validate_empty_subquestions($values, ["if_not_in_same_home_childs_primary_address_with"], $errors);
-        }
-     }    
+    if ($values["household_ses_mother"] == "" || $values["household_ses_mother"] == null ) {
+            $this->validate_empty_subquestions($values, ["household_ses_mother_or_combined"], $errors);
+    }
+
+     if ($values["household_ses_mother"] == "combined" && $values["household_ses_father"] != "na"  ) {
+            $errors["household_ses_father"] = "This field must be N/A";
+    }
+    
+     if ($values["household_ses_father"] != "father"  ) {
+            $this->validate_empty_subquestions($values, ["household_ses_father_if_2_households"], $errors);
+    }
+
         return $errors;
     }
 
