@@ -180,7 +180,7 @@ class NDB_BVL_Instrument_ABCL_MOM_ON_DAD extends NDB_BVL_Instrument
                  "step_father" => "Step Father",
                  "other"       => "Other",
                 );
-        $this->addSelect("relationship_to_child", "What is your relationship to the child?", $opts);
+        $this->addSelect("relationship_to_child", "What is YOUR relationship to the child?", $opts);
         $this->addBasicText("other_relationship_to_child", $this->indent."If Other, please describe:");
         $this->XINRegisterRule(
             "other_relationship_to_child",
@@ -188,6 +188,7 @@ class NDB_BVL_Instrument_ABCL_MOM_ON_DAD extends NDB_BVL_Instrument
             "Required",
             "other_relationship_to_child"
         );
+
 
         // SCORE TABLE
         $this->form->addElement('header', 'score', "Score Summary<h4><i>(Calculated on Completing Next Page)</i></h4>");
@@ -275,7 +276,8 @@ class NDB_BVL_Instrument_ABCL_MOM_ON_DAD extends NDB_BVL_Instrument
             }
             $this->form->addGroup($group, "{$label}_score_group", $label, $this->_GUIDelimiter, false);
             unset($group);
-        }
+	}
+	$this->form->addFormRule(array(&$this, 'validate_main_page'));
     }
 
     /**
@@ -335,7 +337,7 @@ class NDB_BVL_Instrument_ABCL_MOM_ON_DAD extends NDB_BVL_Instrument
 
         $this->addBasicText("work_adult", "Child's Biological Father's work");
 
-        $this->addBasicText("work_spouse", "Your work");
+        $this->addBasicText("work_spouse", "YOUR work");
 
         //Your relationship to Child's Biological Father
         $relationship_options = array(
@@ -1827,5 +1829,16 @@ class NDB_BVL_Instrument_ABCL_MOM_ON_DAD extends NDB_BVL_Instrument
                                                 "114_fails_to_pay_debts_or_meet_financial_responsibilities",
                                                 "120_drives_too_fast",
                                                 "122_trouble_keeping_job",
-                                               ];
+					];
+
+  function validate_main_page($values)
+  {
+              $errors = [];
+                                           
+   if ($values["relationship_to_child"] == "father") {
+   $errors["relationship_to_child"] = "This survey should be filled out ABOUT the child’s biological father by someone else. If you are the child’s biological father, please do not fill out this survey.";
+   }
+                                           
+  return $errors;
+} 
 }

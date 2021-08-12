@@ -162,11 +162,22 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT_DAD extends NDB_BVL_Instrument
         //survey instrument don't need this
         // $this->_addMetadataFields();
         $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
+        
+	$label = "Please click this bubble 'Yes' to confirm that you are the enrolled child’s biological father, reporting on yourself.";
+
+        $this->form->addElement(
+            'select',
+            'respondent',
+            $label,
+            array(
+             null       => '',
+             'Yes'      => 'Yes'
+            )
+        );
 
         $opts = array(
                  null     => "",
                  "male"   => "Male",
-                 "female" => "Female",
                  "other"  => "Other",
                 );
         $this->addSelect("user_gender", "Your sex: ", $opts);

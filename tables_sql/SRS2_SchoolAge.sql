@@ -14,6 +14,7 @@ CREATE TABLE `SRS2_SchoolAge` (
 `child_gender` enum('male','female') default NULL,
 `informant` enum('mother','father','other_custodial_adult','teacher','other') default NULL,
 `informant_other` varchar(255) default NULL,
+`respondent` enum("yes","no") default NULL,
 `q1_uncomfortable_socialsituations` enum('1_not_true','2_sometimes_true','3_often_true','4_almost_always_true','refused_dontknow') default NULL,
 `q2_wrong_facialexpressions` enum('1_not_true','2_sometimes_true','3_often_true','4_almost_always_true','refused_dontknow') default NULL,
 `q3_self_confident` enum('1_not_true','2_sometimes_true','3_often_true','4_almost_always_true','refused_dontknow') default NULL,

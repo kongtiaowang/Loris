@@ -131,7 +131,7 @@ class NDB_BVL_Instrument_ABCL_DAD_ON_MOM extends NDB_BVL_Instrument
             "step_father" => "Step Father",
             "other"       => "Other",
         );
-        $this->addSelect("relationship_to_child", "What is your relationship to the child?", $opts);
+        $this->addSelect("relationship_to_child", "What is YOUR relationship to the child?", $opts);
         $this->addBasicText("other_relationship_to_child", $this->indent."If Other, please describe:");
         $this->XINRegisterRule(
             "other_relationship_to_child",
@@ -139,6 +139,8 @@ class NDB_BVL_Instrument_ABCL_DAD_ON_MOM extends NDB_BVL_Instrument
             "Required",
             "other_relationship_to_child"
         );
+
+	$this->form->addFormRule(array(&$this, 'validate_main_page'));
     }
 
     /**
@@ -198,7 +200,7 @@ class NDB_BVL_Instrument_ABCL_DAD_ON_MOM extends NDB_BVL_Instrument
 
         $this->addBasicText("work_adult", "Child's Biological Mother's work");
 
-        $this->addBasicText("work_spouse", "Your work");
+        $this->addBasicText("work_spouse", "YOUR work");
 
         //Your relationship to Child's Biological Mother
         $relationship_options = array(
@@ -994,4 +996,15 @@ class NDB_BVL_Instrument_ABCL_DAD_ON_MOM extends NDB_BVL_Instrument
 
         return $errors;
     }
+
+    function validate_main_page($values)
+    {
+       $errors = [];
+
+     if ($values["relationship_to_child"] == "mother") {
+     $errors["relationship_to_child"] = "This survey should be filled out ABOUT the child’s biological Mother by someone else. If you are the child’s biological Mother, please do not fill out this survey.";
+     }
+
+      return $errors;
+     }  
 }

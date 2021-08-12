@@ -25,7 +25,6 @@ class NDB_BVL_Instrument_caars_SelfReport_dad extends NDB_BVL_Instrument
            var $gender = array(
                 null                 => "",
                 "male"               => "Male",
-                "female"             => "Female",
                );
 
            var $q_opts = array(
@@ -117,26 +116,19 @@ class NDB_BVL_Instrument_caars_SelfReport_dad extends NDB_BVL_Instrument
         $this->addSelect('respondent_gender', "Your gender", $this->gender);
         $this->XINRegisterRule('respondent_gender', array("respondent_gender{@}=={@}NEVER_REQUIRED"));
 
+        $label = "Please click this bubble 'Yes' to confirm that you are the enrolled child’s biological father, reporting on yourself.";
+
         $this->form->addElement(
             'select',
             'respondent',
-            'What is your relationship to the child',
+            $label,
             array(
-             ''            => '',
-             'mother'      => 'Mother',
-             'father'      => 'Father',
-             'step_mother' => 'Step Mother',
-             'step_father' => 'Step Father',
-             'other'       => 'Other',
+             null       => '',
+             'Yes'      => 'Yes'
             )
         );
 
-        $this->form->addElement('text', 'respondent_specify', 'If other, specify:');
-
-        $this->XINRegisterRule('respondent_specify', array('respondent{@}=={@}other'), 'Required if other');
-
-        $this->form->addFormRule(array(&$this, 'validate_main_page'));
-
+ 
         //Scoring Table
 
         $this->form->addElement('header', null, "Score Summary");
@@ -517,18 +509,6 @@ class NDB_BVL_Instrument_caars_SelfReport_dad extends NDB_BVL_Instrument
 
         // update scores
         $result = $db->update($this->table, $scores, array("CommentID" => $this->getCommentID()));
-    }
-
-
-    function validate_main_page($values)
-    {
-         $errors = [];
-
-        if ($values["respondent"] != "other") {
-            $this->validate_empty_subquestions($values, ["respondent_specify"], $errors);
-        }
-
-         return $errors;
     }
     
     

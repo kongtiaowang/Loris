@@ -38,15 +38,6 @@ class NDB_BVL_Instrument_pspq_SelfReport_dad extends NDB_BVL_Instrument
                        'na'               => 'Not Applicable',
                       );
 
-    var $respondent = array(
-                       ''           => null,
-                       'mother'     => 'Mother',
-                       'father'     => 'Father',
-                       'stepmother' => 'Step-Mother',
-                       'stepfather' => 'Step-Father',
-                       'other'      => 'Other',
-                      );
-
     var $informant            = array(
                                  ''       => null,
                                  'spouse' => 'Spouse',
@@ -65,7 +56,6 @@ class NDB_BVL_Instrument_pspq_SelfReport_dad extends NDB_BVL_Instrument
     var $gender = array(
                    ''       => null,
                    'male'   => 'Male',
-                   'female' => 'Female',
                   );
 
     //abstract function setup($commentID, $page);
@@ -143,12 +133,17 @@ class NDB_BVL_Instrument_pspq_SelfReport_dad extends NDB_BVL_Instrument
         unset($group);
         $this->addGroupRule($field . "_group", array(array(array("Value must be numeric.", 'numeric'))));
 
-        $this->addSelect('respondent', "Your relationship to child", $this->respondent);
-        $group[] = $this->createText('respondent_other', $this->indent."If Other please specify");
-        $this->addGroup($group, "respondent_other_group", $this->indent."If Other please specify", null, false);
-        unset($group);
-        $rules_array = array("respondent{@}=={@}other");
-        $this->XINRegisterRule('respondent_other', $rules_array, "Please specify relationship", 'respondent_other_group');
+        $label = "Please click this bubble 'Yes' to confirm that you are the enrolled child’s biological father, reporting on yourself.";
+
+        $this->form->addElement(
+            'select',
+            'respondent',
+            $label,
+            array(
+             null       => '',
+             'Yes'      => 'Yes'
+            )
+        );
 
         $this->addSelect('respondent_gender', "Your gender", $this->gender);
         $this->XINRegisterRule('respondent_gender', array("respondent_gender{@}=={@}NEVER_REQUIRED"));

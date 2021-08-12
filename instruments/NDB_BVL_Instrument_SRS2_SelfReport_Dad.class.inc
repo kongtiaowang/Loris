@@ -43,7 +43,6 @@ class NDB_BVL_Instrument_SRS2_SelfReport_Dad extends NDB_BVL_Instrument
     var $gender = array(
                    ''       => null,
                    'male'   => 'Male',
-                   'female' => 'Female',
                    'other'  => 'Other',
                   );
     var $scoreCols = array("total_score", "DSM5_SCI_score", "DSM5_RRB_score", "Awr_score",
@@ -101,6 +100,7 @@ class NDB_BVL_Instrument_SRS2_SelfReport_Dad extends NDB_BVL_Instrument
             $this->_main();
         }
 
+	$this->form->addFormRule(array(&$this, 'XINValidate'));
         //Defines the call back function for HTML Quickform to use when validating the form.
        // $this->form->addFormRule(array(&$this, 'XINValidate'));
     }
@@ -119,7 +119,21 @@ class NDB_BVL_Instrument_SRS2_SelfReport_Dad extends NDB_BVL_Instrument
         $this->form->addElement('header', 'instrument_title', "SRS2 Dad Self Report");
 
         //Add date of administration field
-        $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
+	$this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
+
+	//Confirm respondant
+	
+        $label = "Please click this bubble 'Yes' to confirm that you are the enrolled child’s biological father, reporting on yourself.";
+
+        $this->form->addElement(
+            'select',
+            'respondent',
+            $label,
+            array(
+             null       => '',
+             'Yes'      => 'Yes'
+            )
+        );
 
         //Add field for Age
         $this->addBasicText('respondent_age', "Your age<BR><h5><i>(Please enter a numeric value between 0-100. If you don't wish to answer, enter NA)</i></h5>");

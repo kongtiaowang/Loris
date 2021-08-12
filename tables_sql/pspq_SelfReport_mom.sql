@@ -8,7 +8,7 @@ CREATE TABLE `pspq_SelfReport_mom` (
     `Candidate_Age` varchar(255) default NULL,
     `Window_Difference` varchar(255) default NULL,
     `respondent_age` varchar(255) default NULL,
-    `respondent` enum('mother','father','stepmother','stepfather','other') default NULL,
+    `respondent` enum("yes","no") default NULL,
     `respondent_other` varchar(255) default NULL,
     `respondent_gender` enum('male','female') default NULL,
     `aloof_score` varchar(255) default NULL,

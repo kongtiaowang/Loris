@@ -113,9 +113,20 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT_MOM extends NDB_BVL_Instrument
         // $this->_addMetadataFields();
         $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
 
+        $label = "Please click this bubble 'Yes' to confirm that you are the enrolled child’s biological mother, reporting on yourself.";
+
+        $this->form->addElement(
+            'select',
+            'respondent',
+            $label,
+            array(
+             null       => '',
+             'Yes'      => 'Yes'
+            )
+        );
+
         $opts = array(
             null   => "",
-            "male"   => "Male",
             "female" => "Female",
             "other"  => "Other"
         );

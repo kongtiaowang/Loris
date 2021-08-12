@@ -143,7 +143,7 @@ class NDB_BVL_Instrument_pspq_InformantReport_mom_on_dad extends NDB_BVL_Instrum
         unset($group);
         $this->addGroupRule($field . "_group", array(array(array("Value must be numeric.", 'numeric'))));
 
-        $this->addSelect('respondent', "Your relationship to child", $this->respondent);
+        $this->addSelect('respondent', "YOUR relationship to child", $this->respondent);
         $group[] = $this->createText('respondent_other', $this->indent."If Other please specify");
         $this->addGroup($group, "respondent_other_group", $this->indent."If Other please specify", null, false);
         unset($group);
@@ -182,7 +182,8 @@ class NDB_BVL_Instrument_pspq_InformantReport_mom_on_dad extends NDB_BVL_Instrum
             }
             $this->form->addGroup($group, "{$field}_score_group", $label, $this->_GUIDelimiter, false);
             unset($group);
-        }
+	}
+	 $this->form->addFormRule(array(&$this, 'validate_main_page'));
     }
 
     /**
@@ -582,4 +583,15 @@ class NDB_BVL_Instrument_pspq_InformantReport_mom_on_dad extends NDB_BVL_Instrum
                      'm_be_prs'   => 3.10,
                      'm_be_rigid' => 3.89,
                     ];
+     function validate_main_page($values)
+     {
+         $errors = [];
+                                           
+        if ($values["respondent"] == "father") {
+          $errors["respondent"] = "This survey should be filled out ABOUT the child’s biological father by someone else. If you are the child’s biological father, please do not fill out this survey.";
+         }
+                                           
+           return $errors;
+       }
+
 }
