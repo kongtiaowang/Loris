@@ -26,7 +26,8 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
     use instrument_validator;
     
 
-       var  $yes_no_options = array(
+    var  $yes_no_options = array(
+	                   null  => "",
                            "yes" => "Yes",
                            "no"  => "No",
                           );
@@ -135,14 +136,18 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
 		      'iv_q5_if_medication_select_which_medicine_your_child_used',
 		      'v_q4_if_yes_select_source',
 		      'v_q5_if_yes_select',
-		      'v_q5_if_medication_select_which_medicine_your_child_used');
+		      'v_q5_if_medication_select_which_medicine_your_child_used',
+	              'vi_q4_if_yes_select_source',
+                      'vi_q5_if_yes_select',
+                      'vi_q5_if_medication_select_which_medicine_your_child_used');
         // required fields for data entry completion status
         $this->_requiredElements = array(
             'i_q1_any_concerns_about_childs_nighttime_sleep',
             'ii_q1_any_concerns_about_childs_nighttime_sleep',
             'iii_q1_any_concerns_about_childs_nighttime_sleep',
             'iv_q1_any_concerns_about_childs_nighttime_sleep',
-            'v_q1_any_concerns_about_childs_nighttime_sleep');
+	    'v_q1_any_concerns_about_childs_nighttime_sleep',
+            'vi_q1_any_concerns_about_childs_nighttime_sleep');
         // setup the form
         $this->_setupForm();
     }
@@ -537,6 +542,71 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
         $this->form->addFormRule(array(&$this, 'validate_page5'));
     }
 
+    function _page6()
+    {
+        $this->addHeader("SIHI (Sleep Intervention History Interview)");
+
+        $this->form->addElement(
+            'static',
+            null,
+            "<h3><b>VI. Middle School </b></h3>"
+        );
+
+        $this->addSelect("vi_q1_any_concerns_about_childs_nighttime_sleep", "1. Any concerns about your child's nighttime sleep?", $this->yes_no_options);
+
+        $this->addSelect("vi_q1_if_yes_rate_concern", $this->indent . "If yes, rate concern:", $this->rate_concern_options);
+        $this->XINRegisterRule('vi_q1_if_yes_rate_concern', array('vi_q1_any_concerns_about_childs_nighttime_sleep{@}=={@}yes'), 'Required if yes');
+
+        $this->addSelect("vi_q2_any_concerns_about_childs_daytime_sleep", "2. Any concerns about your child's daytime sleep (i.e., naps)?", $this->yes_no_options);
+
+        $this->addSelect("vi_q2_if_yes_rate_concern", $this->indent . "If yes, rate concern:", $this->rate_concern_options);
+        $this->XINRegisterRule('vi_q2_if_yes_rate_concern', array('vi_q2_any_concerns_about_childs_daytime_sleep{@}=={@}yes'), 'Required if yes');
+
+        $this->addTextAreaElement("vi_q3_any_external_influences_affected_sleep", "3. Any external influences that might have affected sleep (e.g., schedule, siblings, etc.)?");
+
+        $this->addSelect("vi_q4_seek_information_to_help_child_sleep_better", "4. Seek out information to help your child sleep better (e.g., books, professional help)?", $this->yes_no_options);
+
+        $this->addSelect(
+            "vi_q4_if_yes_select_source",
+            $this->indent . "If yes, select source:",
+            $this->option4_source,
+            ["multiple"]
+        );
+
+        $this->XINRegisterRule('vi_q4_if_yes_select_source', array('vi_q4_seek_information_to_help_child_sleep_better{@}=={@}yes'), 'Required if yes');
+
+         $this->addSelect(
+            "vi_q4_if_sleep_specialist",
+            $this->indent . "If sleep specialist, was it a short term or long-term consult?",
+            $this->option4_specialist
+        );
+
+        $this->XINRegisterRule('vi_q4_if_sleep_specialist', array('vi_q4_if_yes_select_source{@}=={@}sleep_specialist'), 'Required if Sleep specialist');
+
+        $this->addSelect("vi_q5_did_child_receive_intervention", "5. Did your child receive any intervention or take medication or supplements for sleep?", $this->yes_no_options);
+
+        $this->addSelect(
+            "vi_q5_if_yes_select",
+            $this->indent . "If yes, select:",
+            $this->option5_select,
+            ["multiple"]
+        );
+
+        $this->XINRegisterRule('vi_q5_if_yes_select', array('vi_q5_did_child_receive_intervention{@}=={@}yes'), 'Required if yes');
+
+        $this->addSelect(
+            "vi_q5_if_medication_select_which_medicine_your_child_used",
+            $this->indent . "If medication, select which medicine your child used:",
+            $this->option5_medication,
+            ["multiple"]
+        );
+
+        $this->XINRegisterRule('vi_q5_if_medication_select_which_medicine_your_child_used', array('vi_q5_if_yes_select{@}=={@}medication'), 'Required if medication');
+
+        $this->form->addFormRule(array(&$this, 'validate_page6'));
+    }
+
+
     function validate_main_page($values)
     {
         $errors = [];
@@ -642,5 +712,25 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
 
         return $errors;
     }
+
+    function validate_page6($values)
+    {
+        $errors = [];
+
+        if ($values["vi_q1_any_concerns_about_childs_nighttime_sleep"] != "yes") {
+            $this->validate_empty_subquestions($values, ["vi_q1_if_yes_rate_concern"], $errors);
+        }
+
+        if ($values["vi_q2_any_concerns_about_childs_daytime_sleep"] != "yes") {
+            $this->validate_empty_subquestions($values, ["vi_q2_if_yes_rate_concern"], $errors);
+        }
+
+        if (strpos(implode(",",$values["vi_q4_if_yes_select_source"]), "sleep_specialist") === false ) {
+            $this->validate_empty_subquestions($values, ["vi_q4_if_sleep_specialist"], $errors);
+        }
+
+        return $errors;
+    }
+
 }
 ?>

@@ -368,7 +368,7 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
         $this->form->addElement('text', null, $this->indent . "Middle Name", ['disabled' => 'disabled']);
         $this->form->addElement('text', null, $this->indent . "Last Name", ['disabled' => 'disabled']);
 
-        $this->addBasicDate("subject_dob", $this->indent . 'Date of Birth', $this->dateOptions);
+        $this->form->addElement("date","subject_dob", $this->indent . 'Date of Birth');
         $this->addBasicDate("subject_expected_due_date", $this->indent . 'Expected Due Date', $this->dateOptions);
 
 
@@ -424,7 +424,7 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
         $this->form->addElement('text', null, $this->indent . "Middle Name", ['disabled' => 'disabled']);
         $this->form->addElement('text', null, $this->indent . "Last Name", ['disabled' => 'disabled']);
 
-        $this->addBasicDate("proband_dob", $this->indent . 'Date of Birth', $this->dateOptions);
+        $this->form->addElement("date","proband_dob", $this->indent . 'Date of Birth');
         $this->form->addElement('text', null, $this->indent . "City of Birth", ['disabled' => 'disabled']);
 
         $this->form->addElement('text', "proband_birth_weight_lbs", $this->indent . "Birth weight (lbs)");
@@ -450,12 +450,12 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
 
         foreach ($pii_contact as $field) {
             if ($field == "Date of Birth") {
-                $this->addDateElement("mother_dob", $this->indent . $field);
+                $this->form->addElement("date","mother_dob", $this->indent . $field);
             } else {
                 $this->form->addElement('text', null, $this->indent . $field, ['disabled' => 'disabled']);
             }
         }
-        $this->XINRegisterRule("mother_dob_date", array("mother_dob_date{@}=={@}never_required"), 'Not Required.');
+        $this->XINRegisterRule("mother_dob", array("mother_dob{@}=={@}never_required"), 'Not Required.');
 
         $this->addTextElement("mother_occupation", $this->indent . "Occupation");
         $this->addSelect("mother_education", $this->indent . "Education", self::EDUCATION_OPTIONS);
@@ -468,12 +468,12 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
 
         foreach ($pii_contact as $field) {
             if ($field == "Date of Birth") {
-                $this->addDateElement("father_dob", $this->indent . $field);
+                $this->form->addElement("date","father_dob", $this->indent . $field);
             } elseif ($field != "Maiden Name") {
                 $this->form->addElement('text', null, $this->indent . $field, ['disabled' => 'disabled']);
             }
         }
-        $this->XINRegisterRule("father_dob_date", array("father_dob_date{@}=={@}never_required"), 'Not Required.');
+        $this->XINRegisterRule("father_dob", array("father_dob{@}=={@}never_required"), 'Not Required.');
 
         $this->addTextElement("father_occupation", $this->indent . "Occupation");
         $this->XINRegisterRule("father_occupation", array("father_occupation{@}=={@}never_required"), 'Not Required.');

@@ -48,7 +48,7 @@ class NDB_BVL_Instrument_BISQ_survey extends NDB_BVL_Instrument
         $this->dateTimeFields = array("Date_taken");
         //The array of selects with multiple answers allowed
         //Any LorisForm multiple selects must be listed here
-        $this->_selectMultipleElements = array();
+        $this->_selectMultipleElements = array("sleep_opts");
         // required fields for data entry completion status
         $this->_requiredElements = array('CommentID');
         // setup the form
@@ -151,7 +151,7 @@ class NDB_BVL_Instrument_BISQ_survey extends NDB_BVL_Instrument
             "bed_near_parent" => "In bed near parent",
             "not_answered" => "Not Known",
         );
-        $this->addSelect("sleep_opts", " How does your baby fall asleep?", $sleep_opts);
+        $this->addSelect("sleep_opts", " How does your baby fall asleep?", $sleep_opts,["multiple"]);
         $this->displayHourMinElementCustom("when_fall_asleep", "When fall asleep", "When does your baby usually fall asleep for the night: ");
         $sleep_prob_opts = array(
          null => "",

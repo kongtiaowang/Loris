@@ -422,7 +422,7 @@ class NDB_BVL_Instrument_SA_Intervention_History extends NDB_BVL_Instrument
         $this->addSelect(
             "day_care_hours_per_week",
             "How many hours a week?",
-            range(0, 40)
+            range(0, 50)
         );
         // QUESTION #3 ########
         $this->addSelect(

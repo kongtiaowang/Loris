@@ -5,6 +5,8 @@ CREATE TABLE `DS_Infant_Intervention_History_Form_survey` (
     `Testdate` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `Data_entry_completion_status` enum('Incomplete','Complete') NOT NULL default 'Incomplete',
     `Date_taken` date default NULL,
+    `Candidate_Age` varchar(255) default NULL,
+    `Window_Difference` varchar(255) default NULL,
     `respondent` enum('mother','father','step_mother','step_father','other') default NULL,
     `respondent_specify` varchar(255) default NULL,
     `page1_occupational_therapy_yes_no` enum('yes','no') default NULL,

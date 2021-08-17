@@ -111,12 +111,12 @@ class NDB_BVL_Instrument_Infant_social_motivation extends NDB_BVL_Instrument
         $this->addHeader("<h3>For each question, please check the box that best describes your child's behavior <u>over the last month.</u></h3>");
         $options =
             array(
-                null => "",
-                'not_true' => "Not True",
-                'sometimes_true' => "Sometimes True",
-                'often_true' => "Often True",
+                null                 => "",
+                'not_true'           => "Almost Never True",
+                'sometimes_true'     => "Sometimes True",
+                'often_true'         => "Often True",
                 'almost_always_true' => "Almost Always True",
-                'not_answered'      => "Not Answered"
+                'not_answered'       => "Not Answered"
             );
 
         $page1_questions =
@@ -160,11 +160,11 @@ class NDB_BVL_Instrument_Infant_social_motivation extends NDB_BVL_Instrument
         $options =
             array(
                 null => "",
-                'not_true' => "Not True",
-                'sometimes_true' => "Sometimes True",
-                'often_true' => "Often True",
+                'not_true'           => "Almost Never True",
+                'sometimes_true'     => "Sometimes True",
+                'often_true'         => "Often True",
                 'almost_always_true' => "Almost Always True",
-                'not_answered'      => "Not Answered"
+                'not_answered'       => "Not Answered"
             );
         $page2_questions =
             array(
