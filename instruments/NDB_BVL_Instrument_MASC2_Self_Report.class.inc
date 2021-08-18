@@ -44,7 +44,6 @@ class NDB_BVL_Instrument_MASC2_Self_Report extends NDB_BVL_Instrument
         'HA_score'
     );
 
-
     /**
      * Sets up basic data, such as the LorisForm object, and so on.
      *
