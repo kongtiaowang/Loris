@@ -10,6 +10,9 @@
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
+use Facebook\WebDriver\WebDriverBy;
+use Facebook\WebDriver\WebDriverSelect;
+use Facebook\WebDriver\WebDriverKeys;
 require_once __DIR__
     . "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 /**
@@ -40,12 +43,11 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     private const ADMIN_EMAIL     = 'admin@example.com';
     private const ADMIN_EMAIL_NEW = 'tester@example.com';
 
-    private $_name        = '.col-xs-12:nth-child(4) .form-control';
-    private $_site        = '.col-xs-12:nth-child(2) >.row.form-control, select';
-    private $_clearFilter = 'button[type="reset"]';
-    private $_table       = '#dynamictable > tbody > tr:nth-child(1)';
-    private $_addUserBtn  = "#default-panel > div > div > div.table-header >".
-                            " div > div > div:nth-child(2) > button:nth-child(1)";
+    private $_name        = 'input[name="username"]';
+    private $_site        = 'select[name="site"]';
+    private $_clearFilter = ".nav-tabs a";
+    private $_table       = "#dynamictable > tbody > tr";
+    private $_addUserBtn  = "div:nth-child(2) > .btn:nth-child(1)";
 
     /**
      * Does basic setting up of Loris variables for this test, such as
@@ -54,42 +56,42 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $password = new \Password($this->validPassword);
         $this->DB->insert(
             "users",
-            array(
-                'ID'               => 999995,
-                'UserID'           => 'UnitTesterTwo',
-                'Real_name'        => 'Unit Tester 2',
-                'First_name'       => 'Unit 2',
-                'Last_name'        => 'Tester 2',
-                'Email'            => 'tester2@example.com',
-                'Privilege'        => 0,
-                'PSCPI'            => 'N',
-                'Active'           => 'Y',
-                'Password_hash'    => $password,
-                'Password_expiry'  => '2099-12-31',
-                'Pending_approval' => 'N',
-            )
+            [
+                'ID'                     => 999995,
+                'UserID'                 => 'UnitTesterTwo',
+                'Real_name'              => 'Unit Tester 2',
+                'First_name'             => 'Unit 2',
+                'Last_name'              => 'Tester 2',
+                'Email'                  => 'tester2@example.com',
+                'Privilege'              => 0,
+                'PSCPI'                  => 'N',
+                'Active'                 => 'Y',
+                'Password_hash'          => $password,
+                'PasswordChangeRequired' => false,
+                'Pending_approval'       => 'N'
+            ]
         );
 
         $this->DB->insert(
             "user_psc_rel",
-            array(
+            [
                 'UserID'   => 999995,
                 'CenterID' => 1,
-            )
+            ]
         );
 
         $this->DB->insert(
             "user_project_rel",
-            array(
+            [
                 'UserID'    => 999995,
                 'ProjectID' => 1,
-            )
+            ]
         );
     }
 
@@ -105,7 +107,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("Edit User", $bodyText);
+        $this->assertStringContainsString("Edit User", $bodyText);
         $this->assertEquals(
             "password",
             $this->safeFindElement(
@@ -139,17 +141,18 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
     /**
      * Testing filter funtion and clear button
      *
-     * @param string $element The input element location
-     * @param string $table   The first row location in the table
-     * @param string $records The records number in the table
-     * @param string $value   The test value
+     * @param string  $element The input element location
+     * @param string  $table   The first row location in the table
+     * @param ?string $records The records number in the table
+     * @param string  $value   The test value
      *
      * @return void
      */
     function _testFilter($element,$table,$records,$value)
     {
         // get element from the page
-        if (strpos($element, "select") == false) {
+        if (strpos($element, "select") === false) {
+            $this->safeFindElement(WebDriverBy::cssSelector($element));
             $this->webDriver->executescript(
                 "input = document.querySelector('$element');
                  lastValue = input.value;
@@ -162,8 +165,9 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
             $bodyText = $this->webDriver->executescript(
                 "return document.querySelector('$table').textContent"
             );
-            $this->assertContains($value, $bodyText);
+            $this->assertStringContainsString($value, $bodyText);
         } else {
+            $this->safeFindElement(WebDriverBy::cssSelector($element));
             $this->webDriver->executescript(
                 "input = document.querySelector('$element');
                  input.selectedIndex = '$value';
@@ -171,13 +175,14 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
                  input.dispatchEvent(event);
                 "
             );
-                    $bodyText = $this->webDriver->executescript(
-                        "return document.querySelector('#default-panel".
+            $row      = "#default-panel".
                         " > div > div > div.table-header > div > div >".
-                        " div:nth-child(1)').textContent"
-                    );
+                        " div:nth-child(1)";
+            $bodyText = $this->safeFindElement(
+                WebDriverBy::cssSelector($row)
+            )->getText();
                     // 4 means there are 4 records under this site.
-                    $this->assertContains($records, $bodyText);
+                    $this->assertStringContainsString($records, $bodyText);
         }
         //test clear filter
         $btn = $this->_clearFilter;
@@ -242,9 +247,8 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         // adding a new user for react test
         $this->safeGet($this->url . "/user_accounts/");
         $btn = $this->_addUserBtn;
-        $this->webDriver->executescript(
-            "document.querySelector('$btn').click();"
-        );
+        $this->safeClick(WebDriverBy::cssSelector($btn));
+
         $field = $this->safeFindElement(WebDriverBy::Name('UserID'));
         $field->clear();
         $field->sendKeys('userid');
@@ -266,7 +270,6 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
         $field = $this->safeFindElement(WebDriverBy::Name('__ConfirmEmail'));
         $field->clear();
         $field->sendKeys('email@example.com');
-        $this->safeClick(WebDriverBy::Name('SendEmail'));
         $sitesElement = $this->safeFindElement(WebDriverBy::Name('CenterIDs[]'));
         $sitesOption  = new WebDriverSelect($sitesElement);
         $sitesOption->selectByValue("1");
@@ -382,7 +385,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
             self::UNITTESTER_EMAIL_NEW
         );
         // This text comes from the class constants in Edit User
-        $this->assertContains('cannot be your email', $this->getBody());
+        $this->assertStringContainsString('cannot be your email', $this->getBody());
     }
 
     /**
@@ -401,7 +404,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
             \Utility::randomString()
         );
         // This text comes from the class constants in Edit User
-        $this->assertContains('do not match', $this->getBody());
+        $this->assertStringContainsString('do not match', $this->getBody());
     }
 
     /**
@@ -425,7 +428,7 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
             $newPassword
         );
         // This text comes from the class constants in Edit User
-        $this->assertContains(
+        $this->assertStringContainsString(
             'New and old passwords are identical',
             $this->getBody()
         );
@@ -490,12 +493,12 @@ class UserAccountsIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function tearDown()
+    function tearDown(): void
     {
-        $this->DB->delete("users", array("UserID" => 'userid'));
-        $this->DB->delete("user_psc_rel", array("UserID" => 999995));
-        $this->DB->delete("user_project_rel", array("UserID" => 999995));
-        $this->DB->delete("users", array("UserID" => 'UnitTesterTwo'));
+        $this->DB->delete("users", ["UserID" => 'userid']);
+        $this->DB->delete("user_psc_rel", ["UserID" => 999995]);
+        $this->DB->delete("user_project_rel", ["UserID" => 999995]);
+        $this->DB->delete("users", ["UserID" => 'UnitTesterTwo']);
         parent::tearDown();
     }
 }

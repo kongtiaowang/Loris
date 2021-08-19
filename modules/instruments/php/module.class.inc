@@ -29,6 +29,18 @@ use \Psr\Http\Message\ResponseInterface;
 class Module extends \Module
 {
     /**
+     * {@inheritDoc}
+     *
+     * @param \User $user The user whose access is being checked.
+     *
+     * @return bool whether access is granted
+     */
+    public function hasAccess(\User $user) : bool
+    {
+        return parent::hasAccess($user) && $user->hasPermission('data_entry');
+    }
+
+    /**
      * The instruments module loads instruments in LORIS.
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
@@ -43,7 +55,7 @@ class Module extends \Module
         }
 
         $path           = $request->getURI()->getPath();
-        $pathComponents = array();
+        $pathComponents = [];
 
         // Breakdown path information from the request.
         preg_match(
@@ -55,14 +67,18 @@ class Module extends \Module
         $instrumentName = $pathComponents[2];
         $page           = $pathComponents[4];
 
+        $this->logger->debug("Loading $instrumentName $page");
         $params    = $request->getQueryParams();
         $commentID = $params['commentID'] ?? null;
         if (empty($commentID)) {
             return (new \Laminas\Diactoros\Response())
-                ->withBody(new \LORIS\Http\StringStream("Missing CommentID"))
-                ->withStatus(400);
+                ->withStatus(400)
+                ->withBody(new \LORIS\Http\StringStream("Missing CommentID"));
         }
+
+        $loris      = $request->getAttribute("loris");
         $instrument = \NDB_BVL_Instrument::factory(
+            $loris,
             $instrumentName,
             $commentID,
             $page
@@ -133,6 +149,36 @@ class Module extends \Module
             ];
         }
         return [];
+    }
+
+    /**
+     * Return the data dictionary for all instruments installed on a LORIS
+     * instance.
+     *
+     * @param \LORIS\LorisInstance $loris The loris instance whose dictionary
+     *                                    should be retrieved
+     *
+     * @return \LORIS\Data\Dictionary\Category[]
+     */
+    public function getDataDictionary(\LORIS\LorisInstance $loris) : iterable
+    {
+        $tests = array_keys(\Utility::getAllInstruments());
+
+        $dict = [];
+        foreach ($tests as $testname) {
+            try {
+                $inst   = \NDB_BVL_Instrument::factory($loris, $testname, "", "");
+                $cat    = new \LORIS\Data\Dictionary\Category(
+                    $testname,
+                    $inst->getFullName()
+                );
+                $fields = $inst->getDataDictionary();
+                $dict[] = $cat->withItems($fields);
+            } catch (\LorisException $e) {
+                error_log($e);
+            }
+        }
+        return $dict;
     }
 }
 

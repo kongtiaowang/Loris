@@ -1,5 +1,5 @@
 <br />
-<form method="post" name="edit_user" id="edit_user">
+<form method="post" name="my_preferences" id="my_preferences" autocomplete="off">
     <h3>Password Rules</h3>
       <ul>
         <li>The password must be at least 8 characters long.</li>
@@ -51,16 +51,16 @@
         <label class="col-sm-2">
             {$form.Password_hash.label}
         </label>
-        <div class="col-sm-10">
-            {$form.Password_hash.html}
+        <div class="col-sm-4">
+            <input type="password" name="{$form.Password_hash.name}" />
         </div>
     </div>
     <div class="row form-group">
         <label class="col-sm-2">
             {$form.__Confirm.label}
         </label>
-        <div class="col-sm-10">
-            {$form.__Confirm.html}
+        <div class="col-sm-4">
+            <input type="password" name="{$form.__Confirm.name}" />
         </div>
     </div>
     <div class="row form-group">
@@ -99,5 +99,5 @@
     </div>
 
 
-{$form.hidden}
+{$form.hidden|default}
 </form>

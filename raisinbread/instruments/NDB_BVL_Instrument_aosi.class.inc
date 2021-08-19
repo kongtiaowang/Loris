@@ -2,6 +2,7 @@
 class NDB_BVL_Instrument_aosi extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
+    use \LorisFormDictionaryImpl;
 
     var $scores = array(
                    "total_score_1_18"                                 => "",
@@ -44,10 +45,6 @@ class NDB_BVL_Instrument_aosi extends NDB_BVL_Instrument
         $this->table    = 'aosi';              // name of database table corresponding to instrument
         // data keyed by commentID
         $this->commentID = $commentID;
-
-        //The array of dates/timestamps to convert to database dates/timestamps
-        //Any LorisForm date elements must be listed here
-        $this->dateTimeFields =array("Date_taken");
 
         //The array of selects with multiple answers allowed
         //Any LorisForm multiple selects must be listed here
@@ -124,7 +121,7 @@ class NDB_BVL_Instrument_aosi extends NDB_BVL_Instrument
 
         $this->addSelect(
             "examiner_location",
-            "(Circle One)",
+            "Examiner location",
             array(
              null               => '',
              "examiner"         => "Examiner",
@@ -546,7 +543,7 @@ class NDB_BVL_Instrument_aosi extends NDB_BVL_Instrument
         // null scores
         $this->_nullScores($this->scores);
 
-        $score_record = NDB_BVL_Instrument::loadInstanceData($this);
+        $score_record = $this->getInstanceData();
         //Calculate first 6 item scores from their input grids
 
         //Question 1

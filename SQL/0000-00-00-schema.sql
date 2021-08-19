@@ -94,12 +94,13 @@ CREATE TABLE `users` (
   `DBAccess` varchar(10) NOT NULL default '',
   `Active` enum('Y','N') NOT NULL default 'Y',
   `Password_hash` varchar(255) default NULL,
-  `Password_expiry` date NOT NULL default '1990-04-01',
+  `PasswordChangeRequired` tinyint(1) NOT NULL default 0,
   `Pending_approval` enum('Y','N') default 'Y',
   `Doc_Repo_Notifications` enum('Y','N') default 'N',
   `language_preference` integer unsigned default NULL,
   `active_from` date default NULL,
   `active_to` date default NULL,
+  `account_request_date` date default NULL,
   PRIMARY KEY  (`ID`),
   UNIQUE KEY `Email` (`Email`),
   UNIQUE KEY `UserID` (`UserID`),
@@ -108,8 +109,8 @@ CREATE TABLE `users` (
 
 
 
-INSERT INTO `users` (ID,UserID,Real_name,First_name,Last_name,Email,Privilege,PSCPI,DBAccess,Active,Pending_approval,Password_expiry)
-VALUES (1,'admin','Admin account','Admin','account','admin@example.com',0,'N','','Y','N','2016-03-30');
+INSERT INTO `users` (ID,UserID,Real_name,First_name,Last_name,Email,Privilege,PSCPI,DBAccess,Active,Pending_approval,PasswordChangeRequired)
+VALUES (1,'admin','Admin account','Admin','account','admin@example.com',0,'N','','Y','N',0);
 
 CREATE TABLE `user_psc_rel` (
   `UserID` int(10) unsigned NOT NULL,
@@ -186,7 +187,7 @@ CREATE TABLE `session` (
   `Visit_label` varchar(255) NOT NULL,
   `SubprojectID` int(10) unsigned DEFAULT NULL,
   `Submitted` enum('Y','N') NOT NULL DEFAULT 'N',
-  `Current_stage` enum('Not Started','Screening','Visit','Approval','Subject','Recycling Bin') DEFAULT NULL,
+  `Current_stage` enum('Not Started','Screening','Visit','Approval','Subject','Recycling Bin') NOT NULL DEFAULT 'Not Started',
   `Date_stage_change` date DEFAULT NULL,
   `Screening` enum('Pass','Failure','Withdrawal','In Progress') DEFAULT NULL,
   `Date_screening` date DEFAULT NULL,
@@ -419,6 +420,42 @@ CREATE TABLE `tarchive_files` (
   CONSTRAINT `tarchive_files_TarchiveSeriesID_fk` FOREIGN KEY (`TarchiveSeriesID`) REFERENCES `tarchive_series` (`TarchiveSeriesID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- ********************************
+-- HRRT PET archive tables
+-- ********************************
+CREATE TABLE `hrrt_archive` (
+  `HrrtArchiveID`     INT(11)          NOT NULL AUTO_INCREMENT,
+  `SessionID`         INT(10) unsigned          DEFAULT NULL,
+  `EcatFileCount`     INT(11)          NOT NULL DEFAULT '0',
+  `NonEcatFileCount`  INT(11)          NOT NULL DEFAULT '0',
+  `DateAcquired`      DATE                      DEFAULT NULL,
+  `DateArchived`      DATETIME                  DEFAULT NULL,
+  `PatientName`       VARCHAR(50)      NOT NULL DEFAULT '',
+  `CenterName`        VARCHAR(50)      NOT NULL DEFAULT '',
+  `CreatingUser`      VARCHAR(50)      NOT NULL DEFAULT '',
+  `Blake2bArchive`    VARCHAR(255)              DEFAULT NULL,
+  `ArchiveLocation`   VARCHAR(255)              DEFAULT NULL,
+  PRIMARY KEY (`HrrtArchiveID`),
+  KEY `patNam` (`CenterName`(10),`PatientName`(30)),
+  KEY `FK_hrrt_archive_sessionID` (`SessionID`),
+  CONSTRAINT `FK_hrrt_archive_sessionID`
+    FOREIGN KEY (`SessionID`)
+    REFERENCES `session` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `hrrt_archive_files` (
+  `HrrtArchiveFileID` INT(11)      NOT NULL AUTO_INCREMENT,
+  `HrrtArchiveID`     INT(11)      NOT NULL DEFAULT '0',
+  `Blake2bHash`       VARCHAR(255) NOT NULL,
+  `FileName`          VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`HrrtArchiveFileID`),
+  KEY `HrrtArchiveID` (`HrrtArchiveID`),
+  CONSTRAINT `hrrt_archive_files_ibfk_1`
+    FOREIGN KEY (`HrrtArchiveID`)
+    REFERENCES  `hrrt_archive` (`HrrtArchiveID`)
+    ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 -- ********************************
 -- Imaging tables
@@ -522,8 +559,10 @@ CREATE TABLE `files` (
   `ProcessProtocolID` int(11) unsigned,
   `Caveat` tinyint(1) default NULL,
   `TarchiveSource` int(11) default NULL,
+  `HrrtArchiveID` int(11) default NULL,
   `ScannerID` int(10) unsigned default NULL,
   `AcqOrderPerModality` int(11) default NULL,
+  `AcquisitionDate` date default NULL,
   PRIMARY KEY  (`FileID`),
   KEY `file` (`File`),
   KEY `sessionid` (`SessionID`),
@@ -532,13 +571,15 @@ CREATE TABLE `files` (
   KEY `AcquiIndex` (`AcquisitionProtocolID`,`SessionID`),
   KEY `scannerid` (`ScannerID`),
   KEY `tarchivesource` (`TarchiveSource`),
+  KEY `FK_files_HrrtArchiveID_1` (`HrrtArchiveID`),
   CONSTRAINT `FK_files_2` FOREIGN KEY (`AcquisitionProtocolID`) REFERENCES `mri_scan_type` (`ID`),
   CONSTRAINT `FK_files_1` FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`),
   CONSTRAINT `FK_files_3` FOREIGN KEY (`SourceFileID`) REFERENCES `files` (`FileID`),
   CONSTRAINT `FK_files_4` FOREIGN KEY (`ProcessProtocolID`) REFERENCES `mri_processing_protocol` (`ProcessProtocolID`),
   CONSTRAINT `FK_files_FileTypes` FOREIGN KEY (`FileType`) REFERENCES `ImagingFileTypes`(`type`),
   CONSTRAINT `FK_files_scannerID` FOREIGN KEY (`ScannerID`) REFERENCES `mri_scanner` (`ID`),
-  CONSTRAINT `FK_files_TarchiveID` FOREIGN KEY (`TarchiveSource`) REFERENCES `tarchive` (`TarchiveID`)
+  CONSTRAINT `FK_files_TarchiveID` FOREIGN KEY (`TarchiveSource`) REFERENCES `tarchive` (`TarchiveID`),
+  CONSTRAINT `FK_files_HrrtArchiveID` FOREIGN KEY (`HrrtArchiveID`) REFERENCES `hrrt_archive` (`HrrtArchiveID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `files_intermediary` (
@@ -579,7 +620,7 @@ INSERT INTO `mri_protocol_group` (`Name`) VALUES('Default MRI protocol group');
 CREATE TABLE `mri_protocol` (
   `ID` int(11) unsigned NOT NULL auto_increment,
   `Center_name` varchar(4) NOT NULL default '',
-  `ScannerID` int(10) unsigned NOT NULL default '0',
+  `ScannerID` int(10) unsigned default NULL,
   `Scan_type` int(10) unsigned NOT NULL default '0',
   `TR_min` DECIMAL(10,4) DEFAULT NULL,
   `TR_max` DECIMAL(10,4) DEFAULT NULL,
@@ -660,6 +701,21 @@ CREATE TABLE `mri_upload` (
     FOREIGN KEY (`SessionID`) REFERENCES `session` (`ID`),
   CONSTRAINT `FK_mriupload_TarchiveID`
     FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `mri_upload_rel` (
+  `UploadRelID`   INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `UploadID`      INT(10) UNSIGNED NOT NULL,
+  `HrrtArchiveID` INT(11) DEFAULT NULL,
+  PRIMARY KEY (`UploadRelID`),
+  KEY `FK_mriuploadrel_UploadID` (`UploadID`),
+  KEY `FK_mriuploadrel_HrrtArchiveID` (`HrrtArchiveID`),
+  CONSTRAINT `FK_mriuploadrel_UploadID`
+    FOREIGN KEY (`UploadID`)
+    REFERENCES `mri_upload` (`UploadID`),
+  CONSTRAINT `FK_mriuploadrel_HrrtArchiveID`
+    FOREIGN KEY (`HrrtArchiveID`)
+    REFERENCES `hrrt_archive` (`HrrtArchiveID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `mri_protocol_checks_group` (
@@ -830,7 +886,7 @@ CREATE TABLE `mri_violations_log` (
   `Value` varchar(255) DEFAULT NULL,
   `ValidRange` varchar(255) DEFAULT NULL,
   `ValidRegex` varchar(255) DEFAULT NULL,
-  `MriProtocolChecksGroupID` INT(4) UNSIGNED NOT NULL,
+  `MriProtocolChecksGroupID` INT(4) UNSIGNED DEFAULT NULL,
   PRIMARY KEY (`LogID`),
   CONSTRAINT `FK_tarchive_mriViolationsLog_1`
     FOREIGN KEY (`TarchiveID`) REFERENCES `tarchive` (`TarchiveID`),
@@ -944,7 +1000,8 @@ INSERT INTO `notification_types` (Type,private,Description) VALUES
     ('tarchive validation',1,'Validation of the dicoms After uploading'),
     ('mri upload runner',1,'Validation of DICOMS before uploading'),
     ('mri upload processing class',1,'Validation and execution of DicomTar.pl and TarchiveLoader'),
-    ('imaging non minc file insertion', 1, 'Insertion of a non-MINC file into the MRI tables (files/parameter_file)');
+    ('imaging non minc file insertion', 1, 'Insertion of a non-MINC file into the MRI tables (files/parameter_file)'),
+    ('hrrt pet new series', 0, 'New HRRT PET studies inserted into the database');
 
 CREATE TABLE `notification_spool` (
   `NotificationID` int(11) NOT NULL auto_increment,
@@ -2003,13 +2060,26 @@ CREATE TABLE `feedback_mri_comments` (
 -- Consent tables
 -- ********************************
 
+CREATE TABLE `consent_group` (
+  `ConsentGroupID` integer unsigned NOT NULL AUTO_INCREMENT,
+  `Name` varchar(255) NOT NULL,
+  `Label` varchar(255) NOT NULL,
+  CONSTRAINT `PK_consent_group` PRIMARY KEY (`ConsentGroupID`),
+  CONSTRAINT `UK_consent_group_Name` UNIQUE KEY `Name` (`Name`),
+  CONSTRAINT `UK_consent_group_Label` UNIQUE KEY `Label` (`Label`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `consent_group` (`ConsentGroupID`, `Name`, `Label`) VALUES ('1', 'main_consent', 'Main consent');
+
 CREATE TABLE `consent` (
   `ConsentID` integer unsigned NOT NULL AUTO_INCREMENT,
   `Name` varchar(255) NOT NULL,
   `Label` varchar(255) NOT NULL,
+  `ConsentGroupID` integer unsigned NOT NULL DEFAULT 1,
   CONSTRAINT `PK_consent` PRIMARY KEY (`ConsentID`),
   CONSTRAINT `UK_consent_Name` UNIQUE KEY `Name` (`Name`),
-  CONSTRAINT `UK_consent_Label` UNIQUE KEY `Label` (`Label`)
+  CONSTRAINT `UK_consent_Label` UNIQUE KEY `Label` (`Label`),
+  CONSTRAINT `FK_consent_ConsentGroupID` FOREIGN KEY (`ConsentGroupID`) REFERENCES `consent_group` (`ConsentGroupID`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `candidate_consent_rel` (
@@ -2168,4 +2238,3 @@ CREATE TABLE `publication_users_edit_perm_rel` (
   CONSTRAINT `FK_publication_users_edit_perm_rel_PublicationID` FOREIGN KEY (`PublicationID`) REFERENCES `publication` (`PublicationID`),
   CONSTRAINT `FK_publication_users_edit_perm_rel_UserID` FOREIGN KEY (`UserID`) REFERENCES `users` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET='utf8';
-

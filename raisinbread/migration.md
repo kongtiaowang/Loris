@@ -1,9 +1,27 @@
-***This file holds all SQL patches applied to the Raisinbread dataset***
+# NEW
+2019-09-18_DocRepoEdit.sql
+2019-12-17-RemovePasswordExpiry.sql
+2020-02-10-AddConsentGrouping.sql
+2020-02-10_NewModulePermissions.sql
+2020-02-25_Add-Admin-Contact-Email.sql
+2020-03-09-SQL_patch_for_HRRT_PET_images_insertion.sql
+2020-03-26_add_account_request_date_to_users_table.sql
+2020-06-16-Add_Date_Format_to_ConfigSettings_DataType.sql
+2020-07-14_NewModuleDQT.sql
+2020-07-22_RenameBatteryManagerPermissions.sql
+2020-08-10_add_AcquisitionDate_to_files.sql
+2020-10-29-session-current-stage-default.sql
+2021-01-31-renaming_permissions.sql
 
-# NEW Patches
+# CLEAN-UP
+2020-02-06-NoMultipleSitesConf.sql
+2020-06-18-remove_violated_scans_edit_permission.sql
+2020-08-11-RemoveReliabilityPermissions.sql
+2020-09-09-RemoveHelpParentID.sql
+2021-01-31-deleting_permissions.sql
 
-# CLEAN-UP Patches
 
+____________________________________________________________________________________________________________________
 # 23.0
 2018-05-18-adding_physiological_all_sites_permissions.sql
 2018-07-23-battery_manager_permissions.sql
@@ -20,9 +38,14 @@
 2020-01-16-ModuleManager.sql
 2020-01-20-adding_electrophysiology_browser_to_modules_table.sql
 2020-02-18-MyPrefModule.sql
+2020-02-24-CandidateProfileModule.sql
+2020-04-20-Rename_highlander_permission.sql
+2020-04-27-AddViolatedScansOwnSitePermission.sql
+
 ## 23.0 - cleanup
 2019-12-05-RemoveMenus.sql
 2019-12-06-Remove-DataIntegrityFlag.sql
+2020-02-05-NoHostConfig.sql
 2020-02-28-foreign_key_issues_modules.sql
 
 # 22.0
@@ -57,6 +80,7 @@
 2019-05-23-correct_type_ValidMin_ValidMax_of_mri_protocol_checks.sql
 2019-06-06-AddActiveToNotificationSpool.sql
 2019-06-13-LorisMenuPermissions_IssueTracker.sql
+
 ## 21.0 - cleanup
 2018-02-20_remove_duplicate_value_from_Config.sql
 2018-04-05_RemovePendingStagingFromFiles.sql
@@ -77,4 +101,3 @@
 2018-10-01-Add_data_release_permissions.sql
 2018-11-23_insert_imaging_non_minc_file_insertion_in_notification_types.sql
 2018-11-28_add_SNR_modalities_to_config_module.sql
-
