@@ -125,7 +125,6 @@ class NDB_BVL_Instrument_rbs_ecs extends NDB_BVL_Instrument
 
         // required fields for data entry completion status
         $this->_requiredElements = array(
-            'Examiner',
             'CommentID',
         );
 
