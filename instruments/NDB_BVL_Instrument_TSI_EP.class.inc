@@ -455,8 +455,7 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
                 $this->form->addElement('text', null, $this->indent . $field, ['disabled' => 'disabled']);
             }
         }
-        $this->XINRegisterRule("mother_dob", array("mother_dob{@}=={@}never_required"), 'Not Required.');
-
+        $this->XINRegisterRule("mother_dob", array("mother_dob{@}=={@}"), "Required. ");
         $this->addTextElement("mother_occupation", $this->indent . "Occupation");
         $this->addSelect("mother_education", $this->indent . "Education", self::EDUCATION_OPTIONS);
         $this->XINRegisterRule("mother_occupation", array("mother_occupation{@}=={@}never_required"), 'Not Required.');
@@ -473,8 +472,7 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
                 $this->form->addElement('text', null, $this->indent . $field, ['disabled' => 'disabled']);
             }
         }
-        $this->XINRegisterRule("father_dob", array("father_dob{@}=={@}never_required"), 'Not Required.');
-
+        $this->XINRegisterRule("father_dob", array("father_dob{@}=={@}"), "Required. ");
         $this->addTextElement("father_occupation", $this->indent . "Occupation");
         $this->XINRegisterRule("father_occupation", array("father_occupation{@}=={@}never_required"), 'Not Required.');
 

@@ -394,14 +394,14 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
 	$this->form->addElement("textarea","additional_info_about_childs_home", "Additional information about child’s home:", array('cols'=>25, 'rows'=>4));
 
 	//MOTHER & FATHER OCCUPATION/EDUCATION
-	$this->addTextElement("mother_occupation", "Occupation");
-	$this->addSelect("mother_education", "Education", self::EDUCATION_OPTIONS);
+	$this->addTextElement("mother_occupation", "Mother Occupation");
+	$this->addSelect("mother_education", "Mother Education", self::EDUCATION_OPTIONS);
 	$this->XINRegisterRule("mother_occupation", array("mother_occupation{@}=={@}never_required"), 'Not Required.');
 
-	$this->addTextElement("father_occupation", "Occupation");
+	$this->addTextElement("father_occupation", "Father Occupation");
         $this->XINRegisterRule("father_occupation", array("father_occupation{@}=={@}never_required"), 'Not Required.');
 
-        $this->addSelect("father_education", "Education", self::EDUCATION_OPTIONS);
+        $this->addSelect("father_education", "Father Education", self::EDUCATION_OPTIONS);
 
 	//HOUSEOLD SES
 
@@ -854,7 +854,7 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
         $this->form->addElement('static', null, null);
 
         // Q4
-        $this->form->addElement('text', "q4_history_of_head_injury_in_subject", '4. History of head injury in SUBJECT?');
+        $this->addSelect("q4_history_of_head_injury_in_subject", '4. History of head injury in SUBJECT?',self::YES_NO_OPTIONS);
         $this->form->addElement('text', "q4a_if_yes_explain", $this->indent . 'If yes, explain:');
         $this->XINRegisterRule("q4a_if_yes_explain", array("q4_history_of_head_injury_in_subject{@}=={@}yes"), 'Required if yes');
 

@@ -453,7 +453,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
     function _page2()
     {
         $this->form->addElement("header", null, "3. The items below ask about the medical history of the child and relatives");
-        $this->form->addElement("static", null, "***Hold the CTRL key while clicking to select multiple relatives.");
+        $this->form->addElement("static", null, "If 'Multiple Relatives' are indicated, please fill in the 'Other Relative' column.");
         $answerArray   = array(
                           null           => "",
                           '0_no'         => "0. No",
@@ -470,8 +470,9 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
                           "f_child_disint_disorder" => "f. Childhood Disintegration Disorder",
                           "g_prader_willi_syndrome" => "g. Prader Willi Syndrome",
                           "h_angelman_syndrome"     => "h. Angelman Syndrome",
-                          "i_other_chromosomal"     => "i. Other chromosomal abnormality, disorder or syndrome",
-        //"i_other_chromosomal"=>"i. Other chromosomal abnormality, disorder or syndrome",
+			  "i_other_chromosomal"     => "i. Other chromosomal abnormality, disorder or syndrome",
+		  );
+               $questionArray2 = array(
                           "j_congenital_rubella"    => "j. Congenital rubella",
                           "k_pku"                   => "k. PKU",
                           "l_hydrocephalus"         => "l. Hydrocephalus",
@@ -485,10 +486,9 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
                           "t_manic_depres_bi"       => "t. Manic depression/Bipolar",
                           "u_schizophrenia"         => "u. Schizophrenia",
                           "v_hospital_mental_ill"   => "v. Been admitted to a hospital for psychiatric illness",
-                          "w_birth_defects"         => "w. Birth defects (e.g., cleft lip or palate, open spine)",
-                          "x_cancer"                => "x. Cancer (please specify type)",
-        //"x_cancer"=>"x. Cancer (please specify type)",
-                          "y_norrie_syndrome"       => "y. Norrie Syndrome",
+			  "w_birth_defects"         => "w. Birth defects (e.g., cleft lip or palate, open spine)",
+			  "y_norrie_syndrome"       => "x. Norrie Syndrome",
+                          "x_cancer"                => "y. Cancer (please specify type)",
                          );
 
         $realtives = array(
@@ -505,7 +505,6 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
                       "aunts_uncles_pat"  => "Aunts & Uncles (Pat)",
                       "grandparents_mat"  => "Grandparents (Mat)",
                       "grandparents_pat"  => "Grandparents (Pat)",
-        //        "multiple_relatives"=>"Multiple Relatives (describe)",
                       "other"             => "Other (specify relationship)",
                       "not_answered"      => "Not Answered",
                      );
@@ -520,10 +519,8 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
         foreach ($questionArray as $field=>$label) {
             $group[] = $this->form->createElement("select", $field, $label, $answerArray);
             $group[] = $this->form->createElement("select", "{$field}_who", null, $realtives, "multiple");
-            //$group[] = $this->form->addSelect("{$field}_who", null, $realtives, array("multiple"));  // BREAKS FORMATING!
             $group[] = $this->form->createElement("text", "{$field}_who_other", null);
             $group[] = $this->form->createElement("select", "{$field}_who_other_status", null, array(null => "", "not_answered" => "Not Answered"));
-            $this->form->addGroup($group, "{$field}_group", $label, $this->_GUIDelimiter, false);
 
             //insert into the _selectMultiple array
             $this->_selectMultipleElements[] = "{$field}_who";
@@ -531,17 +528,42 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
             $this->XINRegisterRule("$field", array("$field{@}=={@}"), "Please indicate the presence of the disorder / problem.", "{$field}_group");
             $this->XINRegisterRule("{$field}_who", array("{$field}{@}=={@}1_yes|2_not_sure"), "Please indicate the effected realtive.", "{$field}_group");
             $this->XINRegisterRule("{$field}_who_other", array("{$field}_who{@}=={@}other", "{$field}_who_other_status{@}=={@}"), "Please specify the other relative(s).", "{$field}_group");
-            //			$this->XINRegisterRule("{$field}_who_other_status", array("{$field}_who_other{@}=={@}"), "Please specify the other relative, or select Not Answered", "{$field}_group");
-            $this->XINRegisterRule("{$field}_who_other_status", array("{$field}_who{@}=={@}other", "{$field}_who_other{@}=={@}"), "Please specify the relative, or select Not Answered", "{$field}_group");
+	    $this->XINRegisterRule("{$field}_who_other_status", array("{$field}_who{@}=={@}other", "{$field}_who_other{@}=={@}"), "Please specify the relative, or select Not Answered", "{$field}_group");
+           
+             $this->form->addGroup($group, "{$field}_group", $label, $this->_GUIDelimiter, false);
             unset($group);
 
             if ($field == "i_other_chromosomal") {
                 $this->addTextElement("i_other_chromosomal_other", $this->indent . "Please specify", array("i_other_chromosomal{@}=={@}1_yes|2_not_sure"), "Please specify the chromosomal abnormality");
-            } elseif ($field == "x_cancer") {
+            }
+	}
+
+        //Column headers
+        $group[] = $this->form->createElement("static", "presence_header");
+        $group[] = $this->form->createElement("static", "relative_header");
+        $group[] = $this->form->createElement("static", "other_relative_header");
+        $this->form->addGroup($group, null, "Disorder", $this->_GUIDelimiter, false);
+        unset($group);
+
+	foreach ($questionArray2 as $field=>$label) {
+            $group[] = $this->form->createElement("select", $field, $label, $answerArray);
+            $group[] = $this->form->createElement("select", "{$field}_who", null, $realtives, "multiple");
+            $group[] = $this->form->createElement("text", "{$field}_who_other", null);
+            $group[] = $this->form->createElement("select", "{$field}_who_other_status", null, array(null => "", "not_answered" => "Not Answered"));
+
+            //insert into the _selectMultiple array
+            $this->_selectMultipleElements[] = "{$field}_who";
+ $this->XINRegisterRule("$field", array("$field{@}=={@}"), "Please indicate the presence of the disorder / problem.", "{$field}_group");
+            $this->XINRegisterRule("{$field}_who", array("{$field}{@}=={@}1_yes|2_not_sure"), "Please indicate the effected realtive.", "{$field}_group");
+            $this->XINRegisterRule("{$field}_who_other", array("{$field}_who{@}=={@}other", "{$field}_who_other_status{@}=={@}"), "Please specify the other relative(s).", "{$field}_group");
+            $this->XINRegisterRule("{$field}_who_other_status", array("{$field}_who{@}=={@}other", "{$field}_who_other{@}=={@}"), "Please specify the relative, or select Not Answered", "{$field}_group");
+             $this->form->addGroup($group, "{$field}_group", $label, $this->_GUIDelimiter, false);
+	    unset($group);
+	    if ($field == "x_cancer") {
                 $this->addTextElement("x_cancer_other", $this->indent . "Please specify", array("x_cancer{@}=={@}1_yes|2_not_sure"), "Please specify the cancer type");
 
             }
-        }
+	}
     }
 
     function _page3()

@@ -22,7 +22,16 @@
  */
 class NDB_BVL_Instrument_BISQ_survey extends NDB_BVL_Instrument
 {
-    use LegacyInstrumentTrait;
+	use LegacyInstrumentTrait;
+
+       var $sleep_opts = array(
+            "while_feeding" => "While feeding ",
+            "being_rocked" => "Being rocked",
+            "bed_alone" => "In bed alone",
+            "bed_near_parent" => "In bed near parent",
+            "not_answered" => "Not Known",
+        );
+
     /**
      * sets up basic data, such as the LorisForm object, and so on.
      *
@@ -48,7 +57,7 @@ class NDB_BVL_Instrument_BISQ_survey extends NDB_BVL_Instrument
         $this->dateTimeFields = array("Date_taken");
         //The array of selects with multiple answers allowed
         //Any LorisForm multiple selects must be listed here
-        $this->_selectMultipleElements = array("sleep_opts");
+     // $this->_selectMultipleElements = array("sleep_opts");
         // required fields for data entry completion status
         $this->_requiredElements = array('CommentID');
         // setup the form
@@ -143,15 +152,18 @@ class NDB_BVL_Instrument_BISQ_survey extends NDB_BVL_Instrument
         $this->addTextElement("night_wakes_average_count","Average number of night wakings per night:");
         $this->displayHourMinElementCustom("night_wakefullness", 'Night wakefullness', "How much time during the night does your child spend in wakefulness (from 10 in the evening to 6 in the morning)? ");
         $this->displayHourMinElementCustom("time_to_put_to_sleep", "Time to put to sleep", "How long does it take to put your baby to sleep in the evening? ");
-        $sleep_opts = array(
-            null => "",
-            "while_feeding" => "While feeding ",
-            "being_rocked" => "Being rocked",
-            "bed_alone" => "In bed alone",
-            "bed_near_parent" => "In bed near parent",
-            "not_answered" => "Not Known",
-        );
-        $this->addSelect("sleep_opts", " How does your baby fall asleep?", $sleep_opts,["multiple"]);
+
+	$this->form->addElement("static", null, "How does your baby fall asleep?");
+        foreach($this->sleep_opts as $sleep_optsID => $sleep_optsDescription) {
+	      
+	$this->form->addElement("advcheckbox", "$sleep_optsID", null, $sleep_optsDescription, null, array("not_used", "used"));
+        $this->XINRegisterRule(
+                "$sleep_optsID",
+                array("$sleep_optsID{@}=={@}NEVER_REQUIRED"),
+                "Not required"
+            );
+        }
+
         $this->displayHourMinElementCustom("when_fall_asleep", "When fall asleep", "When does your baby usually fall asleep for the night: ");
         $sleep_prob_opts = array(
          null => "",
@@ -162,7 +174,8 @@ class NDB_BVL_Instrument_BISQ_survey extends NDB_BVL_Instrument
         );
         $this->addSelect("is_sleep_problem", " Do you consider your child’s sleep as a problem?", $sleep_prob_opts);
 
-        $this->form->addFormRule(array(&$this, 'customDateCheck'));
+	$this->form->addFormRule(array(&$this, 'customDateCheck'));
+	$this->form->addFormRule(array(&$this, 'validate_main_page'));
     }
 
     function displayHourMinElementCustom($field, $field_label, $label)
@@ -211,14 +224,34 @@ class NDB_BVL_Instrument_BISQ_survey extends NDB_BVL_Instrument
     }
 
     function customDateCheck($values) {
-        $errors = [];
+	    $errors = [];
         foreach (['night_sleep', 'day_sleep', 'night_wakefullness', 'time_to_put_to_sleep', 'when_fall_asleep'] as $key) {
             if (!empty($values[$key. '_status'])) {
                 if (!empty($values[$key. '_hours']) || !empty($values[$key. '_mins'])) {
                     $errors[$key. '_group'] = 'You have entered hours or minutes, you can not choose ' . ($values[$key. '_status'] == 'not_answered'? 'Prefer not to answer' : 'Unknown') . '.';
                 }
             }
-        }
+	}        
         return $errors;
+    }
+
+     function validate_main_page($values)
+    {
+	    $errors = [];
+	     $nbChecked = 0;
+      foreach ($this->sleep_opts as $sleep_optsID => $sleep_optsDescription) {
+                if ($values["$sleep_optsID"] == 'used') {
+                    $nbChecked++;
+                }
+            }
+
+            if ($nbChecked == 0) {
+                $errors["not_answered"] =
+                    "You must check 'Not answered' if none of the choices apply or if you do not want to answer this question";
+            } elseif ($nbChecked > 1 && $values["not_answered"] == 'used') {
+                $errors["not_answered"] = 'If you check this box, it has to be the only one checked';
+            }
+
+         return $errors;
     }
 }
