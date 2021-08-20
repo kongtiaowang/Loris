@@ -231,16 +231,29 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
         //The array of selects with multiple answers allowed
         //Any LorisForm multiple selects must be listed here
         $this->_selectMultipleElements = array(
-                                          "pro_devfactors_q1_exclusionary_conditions",
+	                                  "pro_devfactors_q1_exclusionary_conditions",
+					  "pro_medhist_q1_non_exclusionary_conditions",
+					  "pro_medhist_q1_exclusionary_conditions",
+					  "pro_devfactors_q2_exclusionary_conditions",
                                           "pro_devfactors_q5_exclusionary_conditions",
-                                          "pro_devfactors_q6_exclusionary_conditions",
-                                          "pro_devfactors_q14_method_of_delivery",
+					  "pro_medhist_q5_results",
+					  "inf_devfactors_q4_non_exclusionary_conditions",
+					  "pro_devfactors_q4_non_exclusionary_conditions",
+					  "pro_devfactors_q6_exclusionary_conditions",
+					  "pro_devfactors_q7_exclusionary_conditions",
+					  "pro_devfactors_q14_method_of_delivery",
                                           "pro_medhist_q5_results",
                                           "inf_devfactors_q1_exclusionary_conditions",
                                           "inf_devfactors_q5_exclusionary_conditions",
                                           "inf_devfactors_q6_exclusionary_conditions",
-                                          "inf_devfactors_q14_method_of_delivery",
-                                          "inf_medhist_q1_exclusionary_conditions",
+					  "inf_devfactors_q7_exclusionary_conditions",
+					  "inf_devfactors_q14_method_of_delivery",
+					  "pro_devfactors_q13_exclusionary_conditions",
+					  "inf_devfactors_q13_exclusionary_conditions",
+					  "inf_devfactors_q13_review_by_committee",
+					  "inf_medhist_q1_exclusionary_conditions",
+					  "inf_medhist_q6_metal_options`",
+					  "inf_medhist_q1_exclusionary_conditions",
                                           "inf_medhist_q6_metal_options",
                                           "inf_medhist_q9_results",
                                           "candidate_race",
@@ -552,10 +565,10 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
         $this->XINRegisterRule("proband_infant_full_siblings", array("not_finish1{@}!={@}1"), 'Required.');
         $this->XINRegisterRule("when_diagnosed_with_autism", array("not_finish1{@}!={@}1"), 'Required.');
         $this->XINRegisterRule("diagnosed_with_autism_by", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("mother_dob_date", array("not_finish1{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("mother_dob", array("not_finish1{@}!={@}1"), 'Required.');
         $this->XINRegisterRule("mother_occupation", array("not_finish1{@}!={@}1"), 'Required.');
         $this->XINRegisterRule("mother_education", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("father_dob_date", array("not_finish1{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("father_dob", array("not_finish1{@}!={@}1"), 'Required.');
         $this->XINRegisterRule("father_occupation", array("not_finish1{@}!={@}1"), 'Required.');
         $this->XINRegisterRule("father_education", array("not_finish1{@}!={@}1"), 'Required.');
         $this->XINRegisterRule("is_english_primary_language_spoken_in_home", array("not_finish1{@}!={@}1"), 'Required.');

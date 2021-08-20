@@ -325,7 +325,7 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
                 $this->form->addElement('text', null, $this->indent . $field, ['disabled' => 'disabled']);
             }
         }
-        $this->XINRegisterRule("mother_dob_date", array("mother_dob_date{@}=={@}never_required"), 'Not Required.');
+        $this->XINRegisterRule("mother_dob_date", array("mother_dob_date{@}=={@}"), 'Required.');
         
         $this->form->addElement('static', null, null);
 
@@ -339,7 +339,7 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
                 $this->form->addElement('text', null, $this->indent . $field, ['disabled' => 'disabled']);
             }
         }
-        $this->XINRegisterRule("father_dob_date", array("father_dob_date{@}=={@}never_required"), 'Not Required.');
+        $this->XINRegisterRule("father_dob_date", array("father_dob_date{@}=={@}"), 'Required');
         
         $this->form->addElement('static', null, null);
 
@@ -795,11 +795,7 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
 
         // Q1
         $this->addSelect("q1_has_subject_had_any_genetic_testing_done", "1. Has SUBJECT had any genetic testing done (other than for DS)?", self::YES_NO_OPTIONS);
-        $this->form->addElement(
-            "text",
-            "q1a_subject_had_testing_done_when_where",
-            $this->indent . "If yes, when and where?"
-        );
+        $this->form->addElement("textarea","q1a_subject_had_testing_done_when_where", $this->indent . "If yes, when and where?", array('cols'=>25, 'rows'=>4));
         $this->XINRegisterRule("q1a_subject_had_testing_done_when_where", array("q1_has_subject_had_any_genetic_testing_done{@}=={@}yes"), 'Required if yes');
 
         $this->form->addElement('static', null, null);
@@ -855,7 +851,7 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
 
         // Q4
         $this->addSelect("q4_history_of_head_injury_in_subject", '4. History of head injury in SUBJECT?',self::YES_NO_OPTIONS);
-        $this->form->addElement('text', "q4a_if_yes_explain", $this->indent . 'If yes, explain:');
+	$this->form->addElement("textarea","q4a_if_yes_explain",  $this->indent . "If yes, explain:", array('cols'=>25, 'rows'=>4));
         $this->XINRegisterRule("q4a_if_yes_explain", array("q4_history_of_head_injury_in_subject{@}=={@}yes"), 'Required if yes');
 
         $this->form->addElement('static', null, null);
@@ -880,9 +876,8 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
 
         // Q7
         $this->addSelect("q7_has_your_child_ever_had_an_iq_test", "7. Has your child ever had an IQ test (other than in IBIS)?", self::YES_NO_OPTIONS);
-        $this->form->addElement('text', "q7a_has_your_child_ever_had_an_iq_test_when_where", $this->indent . 'If yes, when and where?');
+	$this->form->addElement("textarea","q7a_has_your_child_ever_had_an_iq_test_when_where", $this->indent . "If yes, when and where?", array('cols'=>25, 'rows'=>4));
         $this->XINRegisterRule("q7a_has_your_child_ever_had_an_iq_test_when_where", array("q7_has_your_child_ever_had_an_iq_test{@}=={@}yes"), 'Required if yes');
-
         $this->form->addElement('text', "q7b_results_and_test_if_known", $this->indent . 'Results and test if known: IQ:');
         $this->XINRegisterRule("q7b_results_and_test_if_known", array("q7b_results_and_test_if_known{@}=={@}NEVER_REQUIRED"), 'Never Required');
 
@@ -964,8 +959,8 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
 
         // Q16
         $this->addSelect("q16_method_of_delivery", "16. SUBJECT method of delivery", self::Q16_DEV_FACTORS_OPTIONS, array("multiple"));
-        $this->form->addElement('text', "q16a_other", $this->indent . 'Other (explain):');
-        $this->XINRegisterRule("q16a_other", array("q16_method_of_delivery{@}=={@}other"), 'Required if other');
+	$this->form->addElement("textarea","q16a_other", $this->indent . "Other (explain):", array('cols'=>25, 'rows'=>4));
+	$this->XINRegisterRule("q16a_other", array("q16_method_of_delivery{@}=={@}other"), 'Required if other');
 
         // Q17
         $this->addSelect("q17_has_subject_taken_medications_since_birth", "17. Has SUBJECT taken medications since birth?", self::YES_NO_OPTIONS);
@@ -984,7 +979,7 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
 
         // Q20
         $this->addSelect("q20_has_subject_had_any_surgery", "20. Has SUBJECT had any surgery?", self::YES_NO_OPTIONS);
-        $this->form->addElement('text', "q20a_list", $this->indent . 'If yes, list with dates:');
+	$this->form->addElement("textarea","q20a_list", $this->indent . "If yes, list with dates:", array('cols'=>25, 'rows'=>4));
         $this->XINRegisterRule("q20a_list", array("q20_has_subject_had_any_surgery{@}=={@}yes"), 'Required if yes');
 
         // Q21
@@ -1038,13 +1033,14 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
 
         $this->form->addElement('static', null, "<h4><b>Developmental Factors in SIBLING</b></h4>");
 
-        $this->form->addElement('date', "re_confirm_sibling_subject_dob", "<b>Re-confirm sibling subject DOB:</b>");
+	$this->form->addElement('date', "re_confirm_sibling_subject_dob", "<b>Re-confirm sibling subject DOB:</b>");
+	$this->XINRegisterRule("re_confirm_sibling_subject_dob", array("re_confirm_sibling_subject_dob{@}=={@}"), 'Required.');
 
         $this->form->addElement('static', null, null);
 
         // Q1
         $this->addSelect("q1_has_sibling_had_any_genetic_testing_done", "1. Has SIBLING had any genetic testing done?", self::YES_NO_OPTIONS);
-        $this->form->addElement('text', "q1a_has_sibling_had_any_genetic_when_where", $this->indent . 'If yes, when and where?');
+	$this->form->addElement("textarea","q1a_has_sibling_had_any_genetic_when_where", $this->indent . "If yes, when and where?", array('cols'=>25, 'rows'=>4));
         $this->XINRegisterRule("q1a_has_sibling_had_any_genetic_when_where", array("q1_has_sibling_had_any_genetic_testing_done{@}=={@}yes"), 'Required if yes');
 
         // Q2
@@ -1075,7 +1071,7 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
 
         // Q6
         $this->addSelect("q6_has_siblin_ever_had_an_iq_test", "6. Has SIBLING ever had an IQ test (or developmental assessment)?", self::YES_NO_OPTIONS);
-        $this->form->addElement('text', "q6a_has_siblin_ever_had_an_iq_test_when_where", $this->indent . 'If yes, when and where?');
+	$this->form->addElement("textarea","q6a_has_siblin_ever_had_an_iq_test_when_where", $this->indent .  "If yes, when and where?", array('cols'=>25, 'rows'=>4));
         $this->XINRegisterRule("q6a_has_siblin_ever_had_an_iq_test_when_where", array("q6_has_siblin_ever_had_an_iq_test{@}=={@}yes"), 'Required if yes');
 
         $this->form->addElement('text', "q6b_results_and_test_if_known", $this->indent . 'Results and test if known: IQ:');
@@ -1308,7 +1304,7 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
     }
     function _save(array $values): void
     {  
-       for($i=0;$i<=6;$i++){
+       for($i=0;$i<=4;$i++){
             $checkbox= "not_finish".$i;
             if (!isset($values["$checkbox"])) {
                 $values["$checkbox"] = '0';
