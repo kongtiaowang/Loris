@@ -1161,77 +1161,65 @@ class NDB_BVL_Instrument_ABCL_MOM_ON_DAD extends NDB_BVL_Instrument
         }
 
         $query = "SELECT
-                      *
+                      t_score
                   FROM
                       ASR_Adaptive_Functioning_Scales_lookup
                   WHERE
                       age_range = :age_range AND
                       sex = :sex AND
-                      scale = :scale";
+                      scale = :scale AND
+                      score_min <= :score AND
+                      score_max >= :score";
 
-        $record = $db->pselect(
+        $record = $db->pselectOne(
             $query,
             array(
              "age_range" => $age_range,
              "sex"       => $sex,
              "scale"     => $scale,
+             "score"     => $score,
             )
         );
 
-        if (empty($record)) {
+        if (is_null($record)) {
             return "No Record Found";
         }
 
-        foreach ($record as $r) {
-            if (is_null($r["score_min"]) || is_null($r["score_max"])) {
-                continue;
-            } else {
-                if ($score >= $r["score_min"] && $score <= $r["score_max"]) {
-                    $t_score = $r["t_score"];
-                    return $t_score;
-                }
-            }
-        }
-
-        return "No Record Found";
+        return $record;
     }
 
-    function getSubstanceTScore(string $age_range, string $substance, $how_many, $db)
+    function getSubstanceTScore(string $age_range, string $substance, $score, $db)
     {
         $sex     = "male";
         $t_score = null;
 
         $query = "SELECT
-                      *
+                      t_score
                   FROM
                       ASR_Substance_Use_Scales_lookup
                   WHERE
                       age_range = :age_range AND
                       sex = :sex AND
-                      substance = :substance";
+                      substance = :substance AND
+                      score_min <= :score AND
+                      score_max >= :score";
 
-        $record = $db->pselect(
+        $record = $db->pselectOne(
             $query,
             array(
              "age_range" => $age_range,
              "sex"       => $sex,
              "substance" => $substance,
+             "score"     => $score,
             )
         );
 
-        foreach ($record as $r) {
-            if (is_null($r["score_min"]) || is_null($r["score_max"])) {
-                continue;
-            } else {
-                if ($how_many >= $r["score_min"] && $how_many <= $r["score_max"]) {
-                    $t_score = $r["t_score"];
-                }
-            }
+        if (is_null($record)) {
+            return "No Record Found";
         }
 
-        return $t_score;
+        return $record;
     }
-
 
     function getSyndromeTScore(string $age_range, string $scale, $score, $db)
     {
@@ -1243,39 +1231,31 @@ class NDB_BVL_Instrument_ABCL_MOM_ON_DAD extends NDB_BVL_Instrument
         }
 
         $query = "SELECT
-                      *
+                      t_score
                   FROM
                       ASR_Syndrome_Scales_lookup
                   WHERE
                       age_range = :age_range AND
                       sex = :sex AND
-                      scale = :scale";
+                      scale = :scale AND
+                      score_min <= :score AND
+                      score_max >= :score";
 
-        $record = $db->pselect(
+        $record = $db->pselectOne(
             $query,
             array(
              "age_range" => $age_range,
              "sex"       => $sex,
              "scale"     => $scale,
+             "score"     => $score,
             )
         );
 
-        if (empty($record)) {
+        if (is_null($record)) {
             return "No Record Found";
         }
 
-        foreach ($record as $r) {
-            if (is_null($r["score_min"]) || is_null($r["score_max"])) {
-                continue;
-            } else {
-                if ($score >= $r["score_min"] && $score <= $r["score_max"]) {
-                    $t_score = $r["t_score"];
-                    return $t_score;
-                }
-            }
-        }
-
-        return "No Record Found";
+        return $record;
     }
 
     function getOrientedTScore(string $age_range, string $scale, $score, $db)
@@ -1288,44 +1268,31 @@ class NDB_BVL_Instrument_ABCL_MOM_ON_DAD extends NDB_BVL_Instrument
         }
 
         $query = "SELECT
-                      *
+                      t_score
                   FROM
                       ASR_DSM5_Oriented_Scales_lookup
                   WHERE
                       age_range = :age_range AND
                       sex = :sex AND
-                      scale = :scale";
+                      scale = :scale AND
+                      score_min <= :score AND
+                      score_max >= :score";
 
-        $record = $db->pselect(
+        $record = $db->pselectOne(
             $query,
             array(
              "age_range" => $age_range,
              "sex"       => $sex,
              "scale"     => $scale,
+             "score"     => $score,
             )
         );
 
-        if (empty($record)) {
+        if (is_null($record)) {
             return "No Record Found";
         }
 
-        foreach ($record as $r) {
-            if (is_null($r["score_min"]) || is_null($r["score_max"])) {
-                continue;
-            } else {
-                if ($score >= $r["score_min"] && $score <= $r["score_max"]) {
-                    $t_score = $r["t_score"];
-                    return $t_score;
-                }
-            }
-        }
-
-        return "No Record Found";
-    }
-
-    function roundToNearestPoint2($num)
-    {
-        return round($num*5)/5;
+        return $record;
     }
 
     function roundToNearestPoint5($num)
@@ -1834,11 +1801,11 @@ class NDB_BVL_Instrument_ABCL_MOM_ON_DAD extends NDB_BVL_Instrument
   function validate_main_page($values)
   {
               $errors = [];
-                                           
+
    if ($values["relationship_to_child"] == "father") {
    $errors["relationship_to_child"] = "This survey should be filled out ABOUT the child’s biological father by someone else. If you are the child’s biological father, please do not fill out this survey.";
    }
-                                           
+
   return $errors;
-} 
+}
 }
