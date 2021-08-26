@@ -129,11 +129,11 @@ class NDB_BVL_Instrument_SRS2_InformantReport_Dad_On_Mom extends NDB_BVL_Instrum
 
         $this->form->addElement(
             'select',
-            'respondent',
+	    'respondent',
             $label,
             array(
              null       => '',
-             'Yes'      => 'Yes'
+	     'yes'      => 'Yes'
             )
         );
 

@@ -131,7 +131,7 @@ class NDB_BVL_Instrument_SRS2_SelfReport_Dad extends NDB_BVL_Instrument
             $label,
             array(
              null       => '',
-             'Yes'      => 'Yes'
+             'yes'      => 'Yes'
             )
         );
 

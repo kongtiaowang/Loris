@@ -136,7 +136,7 @@ class NDB_BVL_Instrument_SRS2_InformantReport_Mom_On_Dad extends NDB_BVL_Instrum
             $label,
             array(
              null       => '',
-             'Yes'      => 'Yes'
+             'yes'      => 'Yes'
             )
         );
 

@@ -218,7 +218,7 @@ class NDB_BVL_Instrument_SRS2_SchoolAge extends NDB_BVL_Instrument
             $label,
             array(
              null       => '',
-             'Yes'      => 'Yes'
+             'yes'      => 'Yes'
             )
         );
 

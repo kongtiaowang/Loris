@@ -170,8 +170,8 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT_MOM extends NDB_BVL_Instrument
             'respondent',
             $label,
             array(
-             null  => '',
-             'Yes' => 'Yes',
+             null       => '',
+	     'yes'      => 'Yes'
             )
         );
 

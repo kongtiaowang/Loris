@@ -171,7 +171,7 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT_DAD extends NDB_BVL_Instrument
             $label,
             array(
              null       => '',
-             'Yes'      => 'Yes'
+             'yes'      => 'Yes'
             )
         );
 
