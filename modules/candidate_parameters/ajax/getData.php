@@ -75,10 +75,10 @@ function getCandInfoFields()
     );
 
     $extra_parameters = $db->pselect(
-        "SELECT CONCAT('PTID', pt.ParameterTypeID) AS ParameterTypeID, pt.Name, 
-        pt.Type, pt.Description 
+        "SELECT CONCAT('PTID', pt.ParameterTypeID) AS ParameterTypeID, pt.Name,
+        pt.Type, pt.Description
         FROM parameter_type pt
-        JOIN parameter_type_category_rel ptcr USING (ParameterTypeID) 
+        JOIN parameter_type_category_rel ptcr USING (ParameterTypeID)
         JOIN parameter_type_category ptc USING (ParameterTypeCategoryID)
         WHERE ptc.Name='Candidate Parameters' and pt.ParameterTypeID NOT IN('7296')
         ORDER BY pt.ParameterTypeID, pt.name ASC",
@@ -86,7 +86,7 @@ function getCandInfoFields()
     );
 
     $fields = $db->pselect(
-        "SELECT CONCAT('PTID', ParameterTypeID) AS ParameterTypeID, Value 
+        "SELECT CONCAT('PTID', ParameterTypeID) AS ParameterTypeID, Value
         FROM parameter_candidate WHERE CandID=:cid and ParameterTypeID NOT IN('7296')",
         array('cid' => $candID)
     );
@@ -140,10 +140,10 @@ function getProbandInfoFields()
     );
 
     $extra_parameters = $db->pselect(
-        "SELECT CONCAT('PTID', pt.ParameterTypeID) AS ParameterTypeID, pt.Name, 
-        pt.Type, pt.Description 
+        "SELECT CONCAT('PTID', pt.ParameterTypeID) AS ParameterTypeID, pt.Name,
+        pt.Type, pt.Description
         FROM parameter_type pt
-        JOIN parameter_type_category_rel ptcr USING (ParameterTypeID) 
+        JOIN parameter_type_category_rel ptcr USING (ParameterTypeID)
         JOIN parameter_type_category ptc USING (ParameterTypeCategoryID)
         WHERE ptc.Name='Candidate Parameters Proband'
         ORDER BY pt.ParameterTypeID, pt.name ASC",
@@ -151,7 +151,7 @@ function getProbandInfoFields()
     );
 
     $fields = $db->pselect(
-        "SELECT CONCAT('PTID', ParameterTypeID) AS ParameterTypeID, Value 
+        "SELECT CONCAT('PTID', ParameterTypeID) AS ParameterTypeID, Value
          FROM parameter_candidate WHERE CandID=:cid",
         array('cid' => $candID)
     );
@@ -215,7 +215,7 @@ function getFamilyInfoFields()
     );
 
     $siblingsList = $db->pselect(
-        "SELECT f1.CandID 
+        "SELECT f1.CandID
         FROM family f1 JOIN family f2
         ON f1.FamilyID=f2.FamilyID WHERE f2.CandId=:candid GROUP BY f1.CandID",
         array('candid' => $candID)
@@ -241,9 +241,9 @@ function getFamilyInfoFields()
     }
 
     $familyMembers = $db->pselect(
-        "SELECT f1.CandID as FamilyCandID, f1.Relationship_type 
+        "SELECT f1.CandID as FamilyCandID, f1.Relationship_type
         FROM family f1 JOIN family f2 ON f1.FamilyID=f2.FamilyID
-        WHERE f2.CandID = :candid AND f1.CandID <> :candid2 
+        WHERE f2.CandID = :candid AND f1.CandID <> :candid2
           ORDER BY f1.CandID",
         array(
          'candid'  => $candID,
@@ -302,8 +302,8 @@ function getParticipantStatusFields()
         foreach ($ID as $parentID) {
             if ($parentID != null) {
                 $options = $db->pselect(
-                    "SELECT ID, Description 
-                    FROM participant_status_options 
+                    "SELECT ID, Description
+                    FROM participant_status_options
                     WHERE parentID=:pid",
                     array('pid' => $parentID)
                 );
@@ -315,7 +315,7 @@ function getParticipantStatusFields()
         }
     }
 
-    $query = "SELECT participant_status, participant_suboptions, 
+    $query = "SELECT participant_status, participant_suboptions,
     reason_specify FROM participant_status WHERE CandID=:candid";
     $row   = $db->pselectRow($query, ['candid' => $candID]);
 
@@ -356,12 +356,12 @@ function getParticipantStatusHistory($candID)
     $db =& \Database::singleton();
     $unformattedComments = $db->pselect(
         "SELECT entry_staff, data_entry_date,
-            (SELECT Description 
-              FROM participant_status_options pso 
-              WHERE ID=psh.participant_status) AS status, 
-            (SELECT Description from participant_status_options pso 
-              WHERE ID=psh.participant_subOptions) 
-              AS suboption,  reason_specify 
+            (SELECT Description
+              FROM participant_status_options pso
+              WHERE ID=psh.participant_status) AS status,
+            (SELECT Description from participant_status_options pso
+              WHERE ID=psh.participant_subOptions)
+              AS suboption,  reason_specify
             FROM participant_status_history psh WHERE CandID=:cid",
         array('cid' => $candID)
     );
@@ -399,6 +399,16 @@ function getConsentStatusFields()
 
     foreach ($consentDetails as $consentID=>$consent) {
         $consentName = $consent['Name'];
+
+        // Github Issue 1940:
+        //     DS Infant candidates only consent to study.
+        //     https://github.com/aces/IBIS/issues/1940
+        if ($candidate->getProjectTitle() === "Down Syndrome Infant"
+            && $consentName !== "study_consent"
+        ) {
+            continue;
+        }
+
         $consentList[$consentName] = $consent['Label'];
 
         if (isset($candidateConsent[$consentID])) {
@@ -441,10 +451,10 @@ function getConsentStatusHistory($pscid)
     $db = \Database::singleton();
 
     $historyData = $db->pselect(
-        "SELECT EntryDate, DateGiven, DateWithdrawn, PSCID, 
-         ConsentName, ConsentLabel, Status, EntryStaff 
-         FROM candidate_consent_history 
-         WHERE PSCID=:pscid 
+        "SELECT EntryDate, DateGiven, DateWithdrawn, PSCID,
+         ConsentName, ConsentLabel, Status, EntryStaff
+         FROM candidate_consent_history
+         WHERE PSCID=:pscid
          ORDER BY EntryDate ASC",
         array('pscid' => $pscid)
     );
