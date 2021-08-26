@@ -9,6 +9,8 @@ CREATE TABLE `QRS_Proband` (
 
                             `Data_entry_completion_status` enum('Incomplete','Complete') NOT NULL default 'Incomplete',
 `Date_taken` date default NULL,
+`Candidate_Age` varchar(255) default NULL,
+`Window_Difference` varchar(255) default NULL,
 `relationship_to_child` enum('mother','father','step_mother','step_father','other') default NULL,
 `other_relationship_to_child` varchar(255) default NULL,
 `q1` enum('1','2','3','4') default NULL,
