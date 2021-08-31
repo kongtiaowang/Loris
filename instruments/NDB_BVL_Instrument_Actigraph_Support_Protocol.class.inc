@@ -122,38 +122,38 @@ class NDB_BVL_Instrument_Actigraph_Support_Protocol extends NDB_BVL_Instrument
 
     $this->form->addElement('static', null, "<i><h3><b>Section 2:</b>Proceed if <b>Levels 2-4 are selected</b> to further assess the level of support and types of support that may be beneficial for the child participant to comply with wearing the actigraph for the duration of the study.</h3></i>");
 
-    $this->addSelect("my_child_tolerates_wearing_watches", "1. My child tolerates wearing watches, a fitbit, or other types of wristbands.", $this->rate_options);
-    $this->XINRegisterRule("my_child_tolerates_wearing_watches",array("level2{@}=={@}used", "level4{@}=={@}used"),"Required.");
+    $this->addSelect("q1_my_child_tolerates_wearing_watches", "1. My child tolerates wearing watches, a fitbit, or other types of wristbands.", $this->rate_options);
+    $this->XINRegisterRule("q1_my_child_tolerates_wearing_watches",array("level2{@}=={@}used", "level4{@}=={@}used"),"Required.");
     
-    $this->addSelect("my_child_has_difficulty_with_extra", "2. My child has difficulty with extra sensory stimuli.", $this->rate_options);
-    $this->XINRegisterRule("my_child_has_difficulty_with_extra",array("level2{@}=={@}used", "level4{@}=={@}used"),"Required.");
+    $this->addSelect("q2_my_child_has_difficulty_with_extra", "2. My child has difficulty with extra sensory stimuli.", $this->rate_options);
+    $this->XINRegisterRule("q2_my_child_has_difficulty_with_extra",array("level2{@}=={@}used", "level4{@}=={@}used"),"Required.");
 
-    $this->addSelect("my_child_has_difficulty_with_tags", "3. My child has difficulty with tags, tight things, or things that feel “too hot.” ", $this->rate_options);
-    $this->XINRegisterRule("my_child_has_difficulty_with_tags",array("level2{@}=={@}used", "level4{@}=={@}used"),"Required.");
+    $this->addSelect("q3_my_child_has_difficulty_with_tags", "3. My child has difficulty with tags, tight things, or things that feel “too hot.” ", $this->rate_options);
+    $this->XINRegisterRule("q3_my_child_has_difficulty_with_tags",array("level2{@}=={@}used", "level4{@}=={@}used"),"Required.");
 
-    $this->addSelect("my_child_struggles_with_change", "4. My child struggles with change. ", $this->rate_options);
-    $this->XINRegisterRule("my_child_struggles_with_change",array("level2{@}=={@}used", "level4{@}=={@}used"),"Required.");
+    $this->addSelect("q4_my_child_struggles_with_change", "4. My child struggles with change. ", $this->rate_options);
+    $this->XINRegisterRule("q4_my_child_struggles_with_change",array("level2{@}=={@}used", "level4{@}=={@}used"),"Required.");
 
-    $this->addSelect("my_child_tolerates_change_better", "5. My child tolerates change better when I can show a visual about the change.", $this->rate_options);
-    $this->XINRegisterRule("my_child_tolerates_change_better",array("level2{@}=={@}used", "level4{@}=={@}used"),"Required.");
+    $this->addSelect("q5_my_child_tolerates_change_better", "5. My child tolerates change better when I can show a visual about the change.", $this->rate_options);
+    $this->XINRegisterRule("q5_my_child_tolerates_change_better",array("level2{@}=={@}used", "level4{@}=={@}used"),"Required.");
 
-    $this->addSelect("my_child_tolerates_when_i_can_tell", "6. My child tolerates change better when I can tell him/her about what will happen.", $this->rate_options);
-    $this->XINRegisterRule("my_child_tolerates_when_i_can_tell",array("level2{@}=={@}used", "level4{@}=={@}used"),"Required.");
+    $this->addSelect("q6_my_child_tolerates_when_i_can_tell", "6. My child tolerates change better when I can tell him/her about what will happen.", $this->rate_options);
+    $this->XINRegisterRule("q6_my_child_tolerates_when_i_can_tell",array("level2{@}=={@}used", "level4{@}=={@}used"),"Required.");
 
-    $this->addSelect("my_child_tolerates_learns_new_skills", "7. My child tolerates change or learns new skills better when we can take our time and gradually increase the amount of change rather than all at once.", $this->rate_options);
-    $this->XINRegisterRule("my_child_tolerates_learns_new_skills",array("level2{@}=={@}used", "level4{@}=={@}used"),"Required.");
+    $this->addSelect("q7_my_child_tolerates_learns_new_skills", "7. My child tolerates change or learns new skills better when we can take our time and gradually increase the amount of change rather than all at once.", $this->rate_options);
+    $this->XINRegisterRule("q7_my_child_tolerates_learns_new_skills",array("level2{@}=={@}used", "level4{@}=={@}used"),"Required.");
 
-    $this->addSelect("my_child_responds_well_to_reinforcement", "8. My child responds well to reinforcement. If s/he wants something badly enough s/he is willing to work hard to set goals to earn it.", $this->rate_options);
-    $this->XINRegisterRule("my_child_responds_well_to_reinforcement",array("level2{@}=={@}used", "level4{@}=={@}used"),"Required.");
+    $this->addSelect("q8_my_child_responds_well_to_reinforcement", "8. My child responds well to reinforcement. If s/he wants something badly enough s/he is willing to work hard to set goals to earn it.", $this->rate_options);
+    $this->XINRegisterRule("q8_my_child_responds_well_to_reinforcement",array("level2{@}=={@}used", "level4{@}=={@}used"),"Required.");
 
-    $this->addSelect("my_child_needs_reminders_about_what", "9. My child needs reminders about what s/he is working for when we have set a goal to earn a reinforcer.", $this->rate_options);
-    $this->XINRegisterRule("my_child_needs_reminders_about_what",array("level2{@}=={@}used", "level4{@}=={@}used"),"Required.");
+    $this->addSelect("q9_my_child_needs_reminders_about_what", "9. My child needs reminders about what s/he is working for when we have set a goal to earn a reinforcer.", $this->rate_options);
+    $this->XINRegisterRule("q9_my_child_needs_reminders_about_what",array("level2{@}=={@}used", "level4{@}=={@}used"),"Required.");
 
-    $this->addSelect("my_child_responds_well_to_visual_reminders", "10. My child responds well to visual reminders and expectations.", $this->rate_options);
-    $this->XINRegisterRule("my_child_responds_well_to_visual_reminders",array("level2{@}=={@}used", "level4{@}=={@}used"),"Required.");
+    $this->addSelect("q10_my_child_responds_well_to_visual_reminders", "10. My child responds well to visual reminders and expectations.", $this->rate_options);
+    $this->XINRegisterRule("q10_my_child_responds_well_to_visual_reminders",array("level2{@}=={@}used", "level4{@}=={@}used"),"Required.");
 
-    $this->addSelect("my_child_responds_well_to_social_stories", "11. My child responds well to social stories when learning new skills.", $this->rate_options);
-    $this->XINRegisterRule("my_child_responds_well_to_social_stories",array("level2{@}=={@}used", "level4{@}=={@}used"),"Required.");
+    $this->addSelect("q11_my_child_responds_well_to_social_stories", "11. My child responds well to social stories when learning new skills.", $this->rate_options);
+    $this->XINRegisterRule("q11_my_child_responds_well_to_social_stories",array("level2{@}=={@}used", "level4{@}=={@}used"),"Required.");
 
     $this->form->addFormRule(array(&$this, 'validate_main_page'));
     }
@@ -176,17 +176,17 @@ class NDB_BVL_Instrument_Actigraph_Support_Protocol extends NDB_BVL_Instrument
             }
 
             if ($values["not_answered"] == 'used') {
-                $this->validate_empty_subquestions($values, ["my_child_tolerates_wearing_watches"], $errors);
-                $this->validate_empty_subquestions($values, ["my_child_has_difficulty_with_extra"], $errors);
-                $this->validate_empty_subquestions($values, ["my_child_has_difficulty_with_tags"], $errors);
-                $this->validate_empty_subquestions($values, ["my_child_struggles_with_change"], $errors);
-                $this->validate_empty_subquestions($values, ["my_child_tolerates_change_better"], $errors);
-                $this->validate_empty_subquestions($values, ["my_child_tolerates_when_i_can_tell"], $errors);
-                $this->validate_empty_subquestions($values, ["my_child_tolerates_learns_new_skills"], $errors);
-                $this->validate_empty_subquestions($values, ["my_child_responds_well_to_reinforcement"], $errors);
-                $this->validate_empty_subquestions($values, ["my_child_needs_reminders_about_what"], $errors);
-                $this->validate_empty_subquestions($values, ["my_child_responds_well_to_visual_reminders"], $errors);
-                $this->validate_empty_subquestions($values, ["my_child_responds_well_to_social_stories"], $errors);
+                $this->validate_empty_subquestions($values, ["q1_my_child_tolerates_wearing_watches"], $errors);
+                $this->validate_empty_subquestions($values, ["q2_my_child_has_difficulty_with_extra"], $errors);
+                $this->validate_empty_subquestions($values, ["q3_my_child_has_difficulty_with_tags"], $errors);
+                $this->validate_empty_subquestions($values, ["q4_my_child_struggles_with_change"], $errors);
+                $this->validate_empty_subquestions($values, ["q5_my_child_tolerates_change_better"], $errors);
+                $this->validate_empty_subquestions($values, ["q6_my_child_tolerates_when_i_can_tell"], $errors);
+                $this->validate_empty_subquestions($values, ["q7_my_child_tolerates_learns_new_skills"], $errors);
+                $this->validate_empty_subquestions($values, ["q8_my_child_responds_well_to_reinforcement"], $errors);
+                $this->validate_empty_subquestions($values, ["q9_my_child_needs_reminders_about_what"], $errors);
+                $this->validate_empty_subquestions($values, ["q10_my_child_responds_well_to_visual_reminders"], $errors);
+                $this->validate_empty_subquestions($values, ["q11_my_child_responds_well_to_social_stories"], $errors);
             }
 
          return $errors;
