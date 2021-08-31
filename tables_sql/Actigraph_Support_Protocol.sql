@@ -17,20 +17,21 @@ CREATE TABLE `Actigraph_Support_Protocol` (
 `level4` varchar(255) default NULL,
 `level5` varchar(255) default NULL,
 `not_answered` varchar(255) default NULL,
-`my_child_tolerates_wearing_watches` enum('1','2','3','4','5') default NULL,
-`my_child_has_difficulty_with_extra` enum('1','2','3','4','5') default NULL,
-`my_child_has_difficulty_with_tags` enum('1','2','3','4','5') default NULL,
-`my_child_struggles_with_change` enum('1','2','3','4','5') default NULL,
-`my_child_tolerates_change_better` enum('1','2','3','4','5') default NULL,
-`my_child_tolerates_when_i_can_tell` enum('1','2','3','4','5') default NULL,
-`my_child_tolerates_learns_new_skills` enum('1','2','3','4','5') default NULL,
-`my_child_responds_well_to_reinforcement` enum('1','2','3','4','5') default NULL,
-`my_child_needs_reminders_about_what` enum('1','2','3','4','5') default NULL,
-`my_child_responds_well_to_visual_reminders` enum('1','2','3','4','5') default NULL,
-`my_child_responds_well_to_social_stories` enum('1','2','3','4','5') default NULL,
+`q1_my_child_tolerates_wearing_watches` enum('1','2','3','4','5') default NULL,
+`q2_my_child_has_difficulty_with_extra` enum('1','2','3','4','5') default NULL,
+`q3_my_child_has_difficulty_with_tags` enum('1','2','3','4','5') default NULL,
+`q4_my_child_struggles_with_change` enum('1','2','3','4','5') default NULL,
+`q5_my_child_tolerates_change_better` enum('1','2','3','4','5') default NULL,
+`q6_my_child_tolerates_when_i_can_tell` enum('1','2','3','4','5') default NULL,
+`q7_my_child_tolerates_learns_new_skills` enum('1','2','3','4','5') default NULL,
+`q8_my_child_responds_well_to_reinforcement` enum('1','2','3','4','5') default NULL,
+`q9_my_child_needs_reminders_about_what` enum('1','2','3','4','5') default NULL,
+`q10_my_child_responds_well_to_visual_reminders` enum('1','2','3','4','5') default NULL,
+`q11_my_child_responds_well_to_social_stories` enum('1','2','3','4','5') default NULL,
 PRIMARY KEY  (`CommentID`)
 
               ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 INSERT INTO `test_names` (`Test_name`, `Full_name`, `Sub_group`) VALUES ('Actigraph_Support_Protocol', 'Actigraph Support Protocol', '1');
 
