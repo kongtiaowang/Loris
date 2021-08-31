@@ -146,8 +146,7 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
             'ii_q1_any_concerns_about_childs_nighttime_sleep',
             'iii_q1_any_concerns_about_childs_nighttime_sleep',
             'iv_q1_any_concerns_about_childs_nighttime_sleep',
-	    'v_q1_any_concerns_about_childs_nighttime_sleep',
-            'vi_q1_any_concerns_about_childs_nighttime_sleep');
+	    'v_q1_any_concerns_about_childs_nighttime_sleep');
         // setup the form
         $this->_setupForm();
     }
@@ -544,13 +543,16 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
 
     function _page6()
     {
-        $this->addHeader("SIHI (Sleep Intervention History Interview)");
+	$this->addHeader("SIHI (Sleep Intervention History Interview)");
 
-        $this->form->addElement(
+	$this->form->addElement(
             'static',
             null,
             "<h3><b>VI. Middle School </b></h3>"
-        );
+         );
+
+	//$this->addCheckbox('not_in_middle_school', 'Click If Not Yet in Middle School', array('value' => '1'));
+	$this->form->addElement("advcheckbox", 'not_in_middle_school', null, 'Click If Not Yet in Middle School', null,  array("not_used", "used"));
 
         $this->addSelect("vi_q1_any_concerns_about_childs_nighttime_sleep", "1. Any concerns about your child's nighttime sleep?", $this->yes_no_options);
 
@@ -602,6 +604,12 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
         );
 
         $this->XINRegisterRule('vi_q5_if_medication_select_which_medicine_your_child_used', array('vi_q5_if_yes_select{@}=={@}medication'), 'Required if medication');
+
+        $this->XINRegisterRule("vi_q1_any_concerns_about_childs_nighttime_sleep", array("not_in_middle_school{@}!={@}used"), 'Required.');
+        $this->XINRegisterRule("vi_q2_any_concerns_about_childs_daytime_sleep", array("not_in_middle_school{@}!={@}used"), 'Required.');
+	$this->XINRegisterRule("vi_q3_any_external_influences_affected_sleep", array("not_in_middle_school{@}!={@}used"), 'Required.');
+	$this->XINRegisterRule("vi_q4_seek_information_to_help_child_sleep_better", array("not_in_middle_school{@}!={@}used"), 'Required.');
+	$this->XINRegisterRule("vi_q5_did_child_receive_intervention", array("not_in_middle_school{@}!={@}used"), 'Required.');
 
         $this->form->addFormRule(array(&$this, 'validate_page6'));
     }
