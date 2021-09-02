@@ -86,13 +86,19 @@ class NDB_BVL_Instrument_CDI_Words_Sentences extends NDB_BVL_Instrument
         // data keyed by commentID
         $this->commentID = $commentID;
 
-        //The array of dates/timestamps to convert to database dates/timestamps
-        //Any HTML_Quickform date elements must be listed here
-        $this->dateTimeFields = array("Date_taken");
 
-        //The array of selects with multiple answers allowed
-        //Any HTML_Quickform multiple selects must be listed here
-        $this->_selectMultipleElements = array();
+
+        $config =& NDB_Config::singleton();
+        $this->dateOptions = array(
+        'language' => 'en',
+        'format'   => 'YMd',
+        'minYear'  => $config->getSetting('startYear'),
+        'maxYear'  => $config->getSetting('endYear'),
+        'addEmptyOption' => true,
+        'emptyOptionValue' => null
+        );
+
+        $this->form->addElement('date', 'Date_taken', 'Date of Administration (Use Date of visit)', $this->dateOptions);
 
         // required fields for data entry completion status
         $this->_requiredElements = array(
