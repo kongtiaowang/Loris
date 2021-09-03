@@ -30,7 +30,7 @@ class ModifySurveyStatus
     }
 
     /**
-     * Query the flag table to get the insturment status and commentID. Script will exit if insturment
+     * Query the flag table to get the instrument status and commentID. Script will exit if instrument
      * not found.
      *
      * @param string $test_name   the instrument name
@@ -120,7 +120,6 @@ class ModifySurveyStatus
         $instrumentStatus = $this->getInstrumentStatus($test_name, $pscid, $visit_label);
 
         $commentID  = $instrumentStatus['CommentID'];
-        $surveyInfo = $this->getSurveyInfo($commentID);
 
         print "Updating survey status.\n";
         $this->SQLDB->update(
