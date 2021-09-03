@@ -11,6 +11,7 @@ CREATE TABLE `Actigraph_Export` (
 `Date_taken` date default NULL,
 `Candidate_Age` varchar(255) default NULL,
 `Window_Difference` varchar(255) default NULL,
+`Status` varchar(255) default NULL,
 `File_name` varchar(255) default NULL,
 `initials` varchar(255) default NULL,
 `full_name` varchar(255) default NULL,
