@@ -1,4 +1,7 @@
-ALTER TABLE Actigraph_Export ADD COLUMN Status varchar(255) DEFAULT NULL AFTER Window_Difference;
+ALTER TABLE Actigraph_Export ADD COLUMN UserID    varchar(255) DEFAULT NULL AFTER Window_Difference;
+ALTER TABLE Actigraph_Export ADD COLUMN Status    varchar(255) DEFAULT NULL AFTER UserID;
+ALTER TABLE Actigraph_Export ADD COLUMN File_type varchar(255) DEFAULT NULL AFTER Status;
+ALTER TABLE Actigraph_Export ADD COLUMN Data_dir  varchar(255) DEFAULT NULL AFTER File_type;
 
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
 VALUES ('Actigraph_Export', '0', '0', 'Y', 'Visit', 1, 'VSA-Sleep', NULL);
