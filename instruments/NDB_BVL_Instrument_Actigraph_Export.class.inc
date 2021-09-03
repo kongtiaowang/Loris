@@ -188,7 +188,7 @@ class NDB_BVL_Instrument_Actigraph_Export extends NDB_BVL_Instrument
      * @access    public
      */
     function isValid(&$file, $args){
-        $correct_filename = ($args['PSCID'].'_'.['DCCID'].'_'.$args['visitLabel']."_Actigraph_Export.csv");
+        $correct_filename = ($args['PSCID'].'_'.$args['DCCID'].'_'.$args['visitLabel']."_Actigraph_Export.csv");
         if($file->fileInfo['name'] != $correct_filename){
             $errors[]="Incorrect Filename: Filename should be: " . $correct_filename;
             return $errors;
