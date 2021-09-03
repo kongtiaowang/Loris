@@ -87,7 +87,7 @@ class NDB_BVL_Instrument_Actigraph_Export extends NDB_BVL_Instrument
         // automatically adds examiner & date of administration
         $this->_addMetadataFields();
         $this->form->addElement('file', 'actigraph_export_file', 'Upload the Actigraph Export Summary Parser file 
-       <br><h6><i>(Ex: PSCID_visitlabel_Actigraph_Export.csv)</i></h6>');
+       <br><h6><i>(Ex: PSCID_DCCID_visitlabel_Actigraph_Export.csv)</i></h6>');
 
         $this->form->addElement('static', "File_name", "Uploaded File");
 
@@ -153,7 +153,7 @@ class NDB_BVL_Instrument_Actigraph_Export extends NDB_BVL_Instrument
         //set the the IDs to the handler functions.
         $user =& User::singleton();
         $file->setHandlerArgs(array("CommentID"=>$this->getCommentID(),
-                "candID"=>$candidate->getCandID(),
+                "DCCID"=>$candidate->getCandID(),
                 "PSCID"=>$candidate->getPSCID(),
                 "visitLabel"=>$timepoint->getVisitLabel(),
                 "username"=>$user->getUsername(),
@@ -188,7 +188,7 @@ class NDB_BVL_Instrument_Actigraph_Export extends NDB_BVL_Instrument
      * @access    public
      */
     function isValid(&$file, $args){
-        $correct_filename = ($args['PSCID'].'_'.$args['visitLabel']."_Actigraph_Export.csv");
+        $correct_filename = ($args['PSCID'].'_'.['DCCID'].'_'.$args['visitLabel']."_Actigraph_Export.csv");
         if($file->fileInfo['name'] != $correct_filename){
             $errors[]="Incorrect Filename: Filename should be: " . $correct_filename;
             return $errors;
