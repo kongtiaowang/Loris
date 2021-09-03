@@ -60,7 +60,7 @@ class CandidateInstrumentDeleter
     }
 
     /**
-     * Gets the commentID and whether or not data exists for the commentID in the insturment table.
+     * Gets the commentID and whether or not data exists for the commentID in the instrument table.
      *
      * @param string $test_name   the instrument name
      * @param string $pscid       the candidate pscid
@@ -142,6 +142,34 @@ class CandidateInstrumentDeleter
     }
 
     /**
+     * Check if a double data entry exists in the flag table.
+     *
+     * @param string $commentID the comment id of the instrument
+     * @return bool true if a double data entry exists, false otherwise
+     */
+    function CheckDDE($commentID) {
+        return !empty($this->SQLDB->pselect("
+            SELECT *
+                FROM flag
+                WHERE CommentID = :commentID
+        ", array("commentID" => "DDE_$commentID")));
+    }
+
+    /**
+     * Check if a survey exists in the instrument.
+     *
+     * @param string $commentID the comment id of the instrument
+     * @return bool true if a survey exists, false otherwise
+     */
+    function CheckSurvey($commentID) {
+        return !empty($this->SQLDB->pselect("
+            SELECT *
+                FROM participant_accounts
+                WHERE CommentID = :commentID
+        ", array("commentID" => $commentID)));
+    }
+
+    /**
      * Run the script, deleting data as its found.
      *
      * @param string $test_name   the instrument name
@@ -164,14 +192,28 @@ class CandidateInstrumentDeleter
             }
         } else {
             // Data exists in the DB, delete instrument for candidate's timepoint.
+            $commentID    = $sessionInfo['CommentID'];
+            $ddeExists    = $this->checkDDE($commentID);
+            $surveyExists = $this->checkSurvey($commentID);
             print "Deleting instrument from candidate visit.\n";
-            $this->SQLDB->delete("flag", array("CommentID" => $sessionInfo['CommentID']));
+            $this->SQLDB->delete("flag", array("CommentID" => $commentID));
+
+            if ($ddeExists) {
+                $this->SQLDB->delete("flag", array("CommentID" => "DDE_$commentID"));
+            }
+            if ($surveyExists) {
+                $this->SQLDB->delete("participant_accounts", array("CommentID" => $commentID));
+            }
 
             // Check if data exists in the instrument table.
             if ($sessionInfo['data_exists']) {
                 // Data exists, delete it.
                 print "Deleting instrument data for candidate.\n";
-                $this->SQLDB->delete($test_name, array("CommentID" => $sessionInfo['CommentID']));
+                $this->SQLDB->delete($test_name, array("CommentID" => $commentID));
+
+                if ($ddeExists) {
+                    $this->SQLDB->delete($test_name, array("CommentID" => "DDE_$commentID"));
+                }
             }
 
             // Check if data exists in the DQT.
@@ -211,8 +253,20 @@ class CandidateInstrumentDeleter
             print "Instument, $test_name, exists at $visit_label for candidate $pscid.\n";
             print "\tRun with confirm to delete instrument at timepoint.\n";
 
+            $commentID    = $sessionInfo['CommentID'];
+            $ddeExists    = $this->checkDDE($commentID);
+            $surveyExists = $this->checkSurvey($commentID);
+
+            if ($ddeExists) {
+                print "Double Data Entry exists, run with confirm to delete.\n";
+            }
+
+            if ($surveyExists) {
+                print "Survey exists, run with confirm to delete.\n";
+            }
+
             // Check if data exists in the DQT.
-            $dqtDataExists = $this->DQTDataExists($sessionInfo['CommentID']);
+            $dqtDataExists = $this->DQTDataExists($commentID);
             if ($dqtDataExists) {
                 // Data exists. Print message that data exists in DQT.
                 print "Candidate data exists in the DQT, run with confirm to delete\n";
