@@ -87,7 +87,7 @@ class NDB_BVL_Instrument_Actigraph_Export extends NDB_BVL_Instrument
         // automatically adds examiner & date of administration
         $this->_addMetadataFields();
         $this->form->addElement('file', 'actigraph_export_file', 'Upload the Actigraph Export Summary Parser file 
-       <br><h6><i>(Ex: PSCID_DCCID_visitlabel_ACTIGRAPH_EXPORT.csv)</i></h6>');
+       <br><h6><i>(Ex: PSCID_visitlabel_Actigraph_Export.csv)</i></h6>');
 
         $this->form->addElement('static', "File_name", "Uploaded File");
 
@@ -188,7 +188,7 @@ class NDB_BVL_Instrument_Actigraph_Export extends NDB_BVL_Instrument
      * @access    public
      */
     function isValid(&$file, $args){
-        $correct_filename = ($args['PSCID'].'_'.$args['DCCID'].'_'.$args['visitLabel']."_ACTIGRAPH_EXPORT.csv");
+        $correct_filename = ($args['PSCID'].'_'.$args['visitLabel']."_Actigraph_Export.csv");
         if($file->fileInfo['name'] != $correct_filename){
             $errors[]="Incorrect Filename: Filename should be: " . $correct_filename;
             return $errors;
@@ -232,12 +232,6 @@ class NDB_BVL_Instrument_Actigraph_Export extends NDB_BVL_Instrument
         $values['Date of Birth'] =$lines[$test_date_key+1];
 
         $values['Date of Birth'] = $this->formatDate($values['Date of Birth']);
-
-       //Implement if needed.
-       /* if(!empty($args['values']['Date_taken']) && !empty($values['Date of Report']) && ($args['values']['Date_taken'] != $values['Date of Report'])){
-            $errors['Date of Administration']="Date of administration in the file ({$values['Date of Report']}) does not match the date of administration entered ({$args['values']['Date_taken']})." ;
-            return $errors;
-        }*/
 
         return true;
     }
