@@ -1,3 +1,5 @@
+ALTER TABLE Actigraph_Export ADD COLUMN Status varchar(255) DEFAULT NULL AFTER Window_Difference;
+
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
 VALUES ('Actigraph_Export', '0', '0', 'Y', 'Visit', 1, 'VSA-Sleep', NULL);
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
