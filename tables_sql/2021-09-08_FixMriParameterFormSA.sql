@@ -14,7 +14,10 @@
 --
 -- ------------------------------------------------------------------------------------------------------
 
-
+-- ----------------------------------------------------------------
+-- This handles the case where the info was entered in the DWI
+-- section when it should have been entered in the DWICmrr section
+-- ----------------------------------------------------------------
 UPDATE mri_parameter_form_sa mpf
        JOIN flag f
          ON ( f.commentid = mpf.commentid )
@@ -140,7 +143,10 @@ WHERE  EXISTS(SELECT 1
        AND f.data_entry IS NOT NULL;
 
 
--- -----------------------------------------------------------------------------------------------
+-- -----------------------------------------------------------------------------------
+-- This makes sure that DWI scanning session with only DWICmrr scans have all the
+-- siemens* columns set to NULL (or 0 if it's the number of attempts)
+-- -----------------------------------------------------------------------------------
 
 UPDATE mri_parameter_form_sa mpf
        JOIN flag f
@@ -265,8 +271,10 @@ WHERE  EXISTS(SELECT 1
        AND s.visit_label IN ( 'VSA', 'VSA-CVD' )
        AND f.data_entry IS NOT NULL;
 
--- -----------------------------------------------------------------------------------------------
-
+-- ----------------------------------------------------------------
+-- This handles the case where the info was entered in the DWICmrr
+-- section when it should have been entered in the DWI section
+-- ----------------------------------------------------------------
 
 UPDATE mri_parameter_form_sa mpf
        JOIN flag f
@@ -393,7 +401,10 @@ WHERE  NOT EXISTS(SELECT 1
        AND f.data_entry IS NOT NULL;
 
 
--- -----------------------------------------------------------------------------------------
+-- -----------------------------------------------------------------------------------
+-- This makes sure that DWI scanning session with only DWI scans have all the
+-- cmrr* columns set to NULL (or 0 if it's the number of attempts)
+-- -----------------------------------------------------------------------------------
 
 UPDATE mri_parameter_form_sa mpf
        JOIN flag f
