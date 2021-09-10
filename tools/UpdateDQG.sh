@@ -9,6 +9,7 @@ php CouchDB_Import_demographics_ibis.php
 php CouchDB_Import_Instruments_ibis.php
 php CouchDB_Import_MRI_ibis.php
 php CouchDB_Import_Derived_ADOS.php
+php CouchDB_Import_Derived_Language.php
 # php CouchDB_Import_RadiologicalReview_Ibis.php
 php CouchDB_Confirm_Integrity_ibis.php
 
