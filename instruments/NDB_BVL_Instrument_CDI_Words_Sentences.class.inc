@@ -155,12 +155,16 @@ class NDB_BVL_Instrument_CDI_Words_Sentences extends NDB_BVL_Instrument
             $record_1b = $db->pselectRow($query_scores1b, array());
 
             //print "scale: $scale_number score: " . $scores[$scale_number] . " x< " . $record_1b['score_raw'] . " x> " . $record_1a['score_raw'] . " Y> " . $record_1b['score_percentile'] . " Y< " . $record_1b['score_percentile'] . '<br />';
-            $percentile_calculation1 = (
-                    ($scores[$scale_number] - $record_1b['score_raw']) /
+            if ($record_1a['score_raw'] != $record_1b['score_raw']){
+                 $percentile_calculation1 = (
+                    ($scores[$scale_number] - $record_1b['score_raw']) / 
                     ($record_1a['score_raw'] - $record_1b['score_raw'])
                 ) * ($record_1a['score_percentile'] - $record_1b['score_percentile']) + $record_1b['score_percentile'];
 
             $scores[$scale_percentile] = round($percentile_calculation1);
+            } else {
+                $scores[$scale_percentile] = 0;
+            }
 
         }
         if ($scores[$scale_percentile] > 99) {
