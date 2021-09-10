@@ -124,7 +124,7 @@ class NDB_BVL_Instrument_Actigraph_Support_Protocol extends NDB_BVL_Instrument
 
     $this->form->addElement('static', null, "<i><h3><b>Section 2: </b>Proceed if <b>Levels 2-4 are selected</b> to further assess the level of support and types of support that may be beneficial for the child participant to comply with wearing the actigraph for the duration of the study.</h3></i>");
 
-     $this->form->addElement('static', null, "<i>Scoring note: A higher score indicates that more support is indicated. Individual items identify the types of support that may be more beneficial. Questions 2, 10, 11 refer to visual supports that may be helpful. Question 6 refers to priming for the actigraph wearing. Question 7 refers to utilizing the shaping protocol. Questions 8 and 9 refer to the use of reinforcement. Boxes checked below (section 3) indicate supports that will be used for the participant.</i>");
+    $this->form->addElement('static', null, "<i>Scoring note: A higher score indicates that more support is indicated. Individual items identify the types of support that may be more beneficial. Questions 2, 10, 11 refer to visual supports that may be helpful. Question 6 refers to priming for the actigraph wearing. Question 7 refers to utilizing the shaping protocol. Questions 8 and 9 refer to the use of reinforcement.</i>");
 
     $this->form->addElement('static', null,null);
 
@@ -161,16 +161,20 @@ class NDB_BVL_Instrument_Actigraph_Support_Protocol extends NDB_BVL_Instrument
     $this->addSelect("q11_my_child_responds_well_to_social_stories", "11. My child responds well to social stories when learning new skills.", $this->rate_options);
     $this->XINRegisterRule("q11_my_child_responds_well_to_social_stories",array("section1_probe{@}=={@}level2|level3|level4"),"Required.");
 
+   $this->form->addElement('static', null,null);
+
+    $this->form->addElement('static', null, "<i><h4> Boxes checked below (section 3) indicate supports that will be used for the participant.</h4></i>");
+
    $this->form->addElement('static', null, "<i><h3><b>Section 3:</b> This section identifies a “tool kit” to be utilized on an individualized basis based on results of the probe and survey. Participants could end up needing all, some, or only one of the following tools to support the consistent wearing of the actigraph. Check all that apply.</h3></i>");
 
-    $this->form->addElement("advcheckbox", "visual_supports", "<U>Visual supports:</U> The following section should be completed collaboratively with parents to identify which visuals will be the most beneficial for their child, keeping in mind that visuals can be modified or individualized to further increase participation.", "Visual supports", null, array("not_checked", "checked"));
+    $this->form->addElement("advcheckbox", "visual_supports", "<h3><u>Visual supports:</u></h3> The following section should be completed collaboratively with parents to identify which visuals will be the most beneficial for their child, keeping in mind that visuals can be modified or individualized to further increase participation.", "Visual supports", null, array("not_checked", "checked"));
             $this->XINRegisterRule(
                 "visual_supports",
                 array("visual_supports{@}=={@}NEVER_REQUIRED"),
                 "Not required"
 	);
 
-    $this->form->addElement('static',null, "<h3>Examples of visual supports include:</h3>");
+    $this->form->addElement('static',null, "<h4>Examples of visual supports include:</h4>");
 
      $this->form->addElement("advcheckbox", "weekly_countdown_schedule_token_system", $this->indent . "<U>Weekly countdown schedule/Token System:</U> Each day of the week will either be marked off by a sticker, crossed off, or otherwise marked complete.", "Weekly countdown schedule/Token System", null, array("not_checked", "checked"));
             $this->XINRegisterRule(
@@ -191,15 +195,17 @@ class NDB_BVL_Instrument_Actigraph_Support_Protocol extends NDB_BVL_Instrument
                 array("visual_of_keeping_actigraph_on{@}=={@}NEVER_REQUIRED"),
                 "Not required"
 	);
+      
+    $this->form->addElement('static', null,null);
 
-     $this->form->addElement("advcheckbox", "verbal_prompts_priming", $this->indent . "<U>Verbal prompts/Priming:</U> Some participants will benefit from verbal prompting prior to and during the 7-day period of wearing the actigraph.", "Verbal prompts/Priming", null, array("not_checked", "checked"));
+     $this->form->addElement("advcheckbox", "verbal_prompts_priming","<h3><u>Verbal Prompts/Priming:</u></h3> Some participants will benefit from verbal prompting prior to and during the 7-day period of wearing the actigraph.", "Verbal prompts/Priming", null, array("not_checked", "checked"));
             $this->XINRegisterRule(
                 "verbal_prompts_priming",
                 array("verbal_prompts_priming{@}=={@}NEVER_REQUIRED"),
                 "Not required"
 	);
 
-     $this->form->addElement('static',null,"<h3>Examples of verbal prompts/priming include:</h3>");
+     $this->form->addElement('static',null,"<h4>Examples of verbal prompts/priming include:</h4>");
 
      $this->form->addElement("advcheckbox", "scripts_about_wearing_the_actigraph", $this->indent . "<U>Scripts about wearing the actigraph:</U> Scripts about wearing the actigraph will explain (a) what the actigraph is, (b) why the child is wearing the actigraph, (c) how long the child will have to wear the actigraph (including information about wearing it during the day, showers, and to sleep, (d) and what he/she can earn at the end of the wearing period. Parents should read the script in the days leading up to wearing the actigraph", "Scripts about wearing the actigraph", null, array("not_checked", "checked"));
             $this->XINRegisterRule(
@@ -215,28 +221,21 @@ class NDB_BVL_Instrument_Actigraph_Support_Protocol extends NDB_BVL_Instrument
                 "Not required"
         );
 
-     $this->form->addElement("advcheckbox", "reinforcement", "<U>Reinforcement:</U> It is recommended that all child participants receive some type of reinforcer for complying with wearing the actigraph for the duration of the study.","Reinforcement", null, array("not_checked", "checked"));
+     $this->form->addElement("advcheckbox", "reinforcement", "<h3><u>Reinforcement:</u></h3> It is recommended that all child participants receive some type of reinforcer for complying with wearing the actigraph for the duration of the study.","Reinforcement", null, array("not_checked", "checked"));
             $this->XINRegisterRule(
                 "reinforcement",
                 array("reinforcement{@}=={@}NEVER_REQUIRED"),
                 "Not required"
         );
 
-      $this->form->addElement("advcheckbox", "weekly_countdown_schedule_token_system", $this->indent . "<U>Weekly countdown schedule/Token System:</U> Each day of the week would either be marked off by a sticker, crossed off, or otherwise marked as complete.","Weekly countdown schedule/Token System", null, array("not_checked", "checked"));
-            $this->XINRegisterRule(
-                "weekly_countdown_schedule_token_system",
-                array("weekly_countdown_schedule_token_system{@}=={@}NEVER_REQUIRED"),
-                "Not required"
-	);
-
-      $this->form->addElement("advcheckbox", "sample_shaping_protocol", "<U>Sample Shaping Protocol:</U> An individualized shaping protocol will be developed and implemented for those individuals needing the highest level of support to wear the actigraph.","Sample Shaping Protocol", null, array("not_checked", "checked"));
+      $this->form->addElement("advcheckbox", "sample_shaping_protocol", "<h3><u>Sample Shaping Protocol:</u></h3> An individualized shaping protocol will be developed and implemented for those individuals needing the highest level of support to wear the actigraph.","Sample Shaping Protocol", null, array("not_checked", "checked"));
             $this->XINRegisterRule(
                 "sample_shaping_protocol",
                 array("sample_shaping_protocol{@}=={@}NEVER_REQUIRED"),
                 "Not required"
         );
 
-      $this->form->addElement('static',null, $this->indent . "<h3>Example shaping steps</h3>");
+      $this->form->addElement('static',null, "<h4>Example shaping steps</h4>");
 
      $this->form->addElement('static',null, $this->indent . "Each step will likely be supported by all of the above support strategies in addition to the shaping process.<br>  $this->indent  Step 1: Put a digitial watch (to simulate an actigraph) on and wear for 30 minutes – earn reinforcer<br>  $this->indent  Step 2: Wear watch for 1 hour – earn reinforcer <br>  $this->indent   Step 3: Wear watch for an activity lasting between 2 and 3 hours – earn reinforcer <br>  $this->indent  Step 4: Wear watch for full school day – earn reinforcer <br>  $this->indent  Step 5: Wear watch for 24 hour period – earn reinforcer <br>  $this->indent  Step 6: Wear REAL actigraph for full 10 day period (with intermittent rewards/reinforcers) – earn BIG reinforcer at the end of the week.");
 
