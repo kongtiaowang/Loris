@@ -199,7 +199,7 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
 	$this->addSelect('mood_1', 'Mood:', array(null => "", "1" => "1", "2" => "2", "3" => "3", "4" => "4", "5" => "5"));
 	$this->addSelect('paradigm_completed_1', 'Paradigm Completed?', self::PARADIGM_COMPLETENESS);
 	$this->XINRegisterRule('mood_1', array('paradigm_completed_1{@}=={@}y|p'), 'Required if yes or partial');
-       
+
     }
 
     /**
@@ -215,7 +215,7 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
 	$this->addSelect('mood_2', 'Mood:', array(null => "", "1" => "1", "2" => "2", "3" => "3", "4" => "4", "5" => "5"));
 	$this->addSelect('paradigm_completed_2', 'Paradigm Completed?', self::PARADIGM_COMPLETENESS);
 	$this->XINRegisterRule('mood_2', array('paradigm_completed_2{@}=={@}y|p'), 'Required if yes or partial');
-       
+
     }
 
     /**
@@ -231,7 +231,7 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
 	$this->addSelect('mood_3', 'Mood:', array(null => "", "1" => "1", "2" => "2", "3" => "3", "4" => "4", "5" => "5"));
 	$this->addSelect('paradigm_completed_3', 'Paradigm Completed?', self::PARADIGM_COMPLETENESS);
 	$this->XINRegisterRule('mood_3', array('paradigm_completed_3{@}=={@}y|p'), 'Required if yes or partial');
-       
+
     }
 
     /**
@@ -247,7 +247,7 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
 	$this->addSelect('mood_4', 'Mood:', array(null => "", "1" => "1", "2" => "2", "3" => "3", "4" => "4", "5" => "5"));
 	$this->addSelect('paradigm_completed_4', 'Paradigm Completed?', self::PARADIGM_COMPLETENESS);
 	$this->XINRegisterRule('mood_4', array('paradigm_completed_4{@}=={@}y|p'), 'Required if yes or partial');
-       
+
     }
 
     /**
@@ -308,9 +308,9 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
         $this->form->addElement('text','final_q_1',"Who, from the subject's site, has read the EEG QC Form for this subject: ");
 
         $this->XINRegisterRule("final_q_1", array("final_q_1{@}=={@}NEVER_REQUIRED"));
-        
+
         $this->form->addElement("date", "final_q_2", 'What date was the EEG QC Form reviewed?', $this->dateOptions);
-        
+
         $this->XINRegisterRule("final_q_2", array("final_q_2{@}=={@}NEVER_REQUIRED"));
 
 
@@ -335,6 +335,10 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
                 unset($values["${k}_chooser"]);
             }
         }
+
+        $session   = $this->getSessionID();
+        $timepoint = \TimePoint::singleton($session);
+        $candidate = \Candidate::singleton($timepoint->getCandID());
 
         parent::_saveValues($values);
 
@@ -396,6 +400,18 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
                     // Notifiy listeners that a file was added/edited in the media module
                     $uploadNotifier = new NDB_Notifier("media", "upload");
                     $uploadNotifier->notify(array("file" => $files["{$k}_chooser"]["name"]));
+
+                    // Email new file has been uploaded.
+                    $email = $candidate->getCandidateSite() === "DCC" ? "santiago.torres@mcin.ca" : "chloeschwartz@mednet.ucla.edu";
+                    $email_data = array(
+                        "candID"      => $candidate->getCandID(),
+                        "PSCID"       => $candidate->getPSCID(),
+                        "visit_label" => $timepoint->getVisitLabel(),
+                        "file_name"   => $files["{$k}_chooser"]["name"],
+                        "url"         => $config->getSetting("www")['url']
+                    );
+                    Email::send($email, "EEG_upload_notification.tpl", $email_data, "", "IBIS Team <noreply@ibis.loris.ca>", "", "", "text/html");
+
 
                     // Update field $k in the EEG table for the current record
                     // Note that this was not done by parent::_saveValues since $k
