@@ -87,19 +87,6 @@ class NDB_BVL_Instrument_CDI_Words_Sentences extends NDB_BVL_Instrument
         $this->commentID = $commentID;
 
 
-
-        $config =& NDB_Config::singleton();
-        $this->dateOptions = array(
-        'language' => 'en',
-        'format'   => 'YMd',
-        'minYear'  => $config->getSetting('startYear'),
-        'maxYear'  => $config->getSetting('endYear'),
-        'addEmptyOption' => true,
-        'emptyOptionValue' => null
-        );
-
-        $this->form->addElement('date', 'Date_taken', 'Date of Administration (Use Date of visit)', $this->dateOptions);
-
         // required fields for data entry completion status
         $this->_requiredElements = array(
             'Examiner',

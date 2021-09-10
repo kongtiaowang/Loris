@@ -87,31 +87,34 @@ class NDB_BVL_Instrument_Actigraph_Export extends NDB_BVL_Instrument
         // automatically adds examiner & date of administration
         $this->_addMetadataFields();
         $this->form->addElement('file', 'actigraph_export_file', 'Upload the Actigraph Export Summary Parser file 
-       <br><h6><i>(Ex: PSCID_DCCID_visitlabel_ACTIGRAPH_EXPORT.csv)</i></h6>');
+       <br><h6><i>(Ex: PSCID_DCCID_visitlabel_Actigraph_Export.csv)</i></h6>');
 
         $this->form->addElement('static', "File_name", "Uploaded File");
 
+
+        $this->form->addElement('header', null, "Actigraph Export Summary Parser");
+
         $this->form->addElement('static', null, null);
 
-        $this->form->addElement('header', null, "Subject Properties");
+	$this->form->addElement('header', null, "Subject Properties");
+        
+	 $fields = array(
+            "initials"               =>  "Initials:",
+            "full_name"              =>  "Full name:",
+            "street_address"         =>  "Street Address:",
+            "city_state_zip"         =>  "City State Zip Country:",
+            "phone"                  =>  "Phone:",
+            "gender"                 =>  "Gender:",
+            "date_of_birth"          => "Date of Birth:",
+            "age_at_file_creation"   => "Age(at time of export file creation):",
+            "age_at_data_collection" => "Age(at start of data collection):",
+        );
 
-        $this->form->addElement('static', "initials", "Initials:");
-
-        $this->form->addElement('static', "full_name", "Full name:");
-
-        $this->form->addElement('static', "street_address", "Street Address:");
-
-        $this->form->addElement('static', "city_state_zip", "City State Zip Country:");
-
-        $this->form->addElement('static', "phone", "Phone:");
-
-        $this->form->addElement('static', "gender", "Gender:");
-
-        $this->form->addElement('static', "date_of_birth", "Date of Birth:");
-
-        $this->form->addElement('static', "age_at_file_creation", "Age(at time of export file creation):");
-
-        $this->form->addElement('static', "age_at_data_collection", "Age(at start of data collection):");
+        foreach($fields as $field => $label){
+            $group[] = $this->form->createElement('static', "$field", null, null);
+            $this->form->addGroup($group, "{$field}_group", $label, $this->_GUIDelimiter, false);
+            unset($group);
+        }
 
        if($this->getFieldValue("File_name")!=false){
           $this->XINRegisterRule("actigraph_export_file", array("actigraph_export_file{@}==={@}NEVER_REQUIRED"));
@@ -153,7 +156,7 @@ class NDB_BVL_Instrument_Actigraph_Export extends NDB_BVL_Instrument
         //set the the IDs to the handler functions.
         $user =& User::singleton();
         $file->setHandlerArgs(array("CommentID"=>$this->getCommentID(),
-                "candID"=>$candidate->getCandID(),
+                "DCCID"=>$candidate->getCandID(),
                 "PSCID"=>$candidate->getPSCID(),
                 "visitLabel"=>$timepoint->getVisitLabel(),
                 "username"=>$user->getUsername(),
@@ -188,7 +191,7 @@ class NDB_BVL_Instrument_Actigraph_Export extends NDB_BVL_Instrument
      * @access    public
      */
     function isValid(&$file, $args){
-        $correct_filename = ($args['PSCID'].'_'.$args['DCCID'].'_'.$args['visitLabel']."_ACTIGRAPH_EXPORT.csv");
+        $correct_filename = ($args['PSCID'].'_'.$args['DCCID'].'_'.$args['visitLabel']."_Actigraph_Export.csv");
         if($file->fileInfo['name'] != $correct_filename){
             $errors[]="Incorrect Filename: Filename should be: " . $correct_filename;
             return $errors;
@@ -233,12 +236,6 @@ class NDB_BVL_Instrument_Actigraph_Export extends NDB_BVL_Instrument
 
         $values['Date of Birth'] = $this->formatDate($values['Date of Birth']);
 
-       //Implement if needed.
-       /* if(!empty($args['values']['Date_taken']) && !empty($values['Date of Report']) && ($args['values']['Date_taken'] != $values['Date of Report'])){
-            $errors['Date of Administration']="Date of administration in the file ({$values['Date of Report']}) does not match the date of administration entered ({$args['values']['Date_taken']})." ;
-            return $errors;
-        }*/
-
         return true;
     }
 
@@ -269,30 +266,27 @@ class NDB_BVL_Instrument_Actigraph_Export extends NDB_BVL_Instrument
         //Cycle through the lines and extract the data
         $lines =preg_split("/\\r\\n|\\r|\\n/", $contents);
         
-        $test_initials_key = array_search('Initials:', $lines);
-        $test_fullname_key = array_search('Full Name:', $lines);
-        $test_street_key = array_search('Street Address:', $lines);
-        $test_city_key = array_search('City State Zip Country:', $lines);
-        $test_phone_key = array_search('Phone:', $lines);
-        $test_gender_key = array_search('Gender:', $lines);
-        $test_dob_key = array_search('Date of Birth:', $lines);
-        $test_age_creation_key = array_search('Age (at time of export file creation):', $lines);
-        $test_age_collection_key = array_search('Age (at start of data collection):', $lines);
-        
+        $fields = array(
+            "initials"               =>  "Initials:",
+            "full_name"              =>  "Full name:",
+            "street_address"         =>  "Street Address:",
+            "city_state_zip"         =>  "City State Zip Country:",
+            "phone"                  =>  "Phone:",
+            "gender"                 =>  "Gender:",
+            "date_of_birth"          => "Date of Birth:",
+            "age_at_file_creation"   => "Age(at time of export file creation):",
+            "age_at_data_collection" => "Age(at start of data collection):",
+    );
 
-        $values['initials'] =$lines[$test_initials_key+1];
-        $values['full_name'] =$lines[$test_fullname_key+1];
-        $values['street_address'] =$lines[$test_street_key+1];
-        $values['city_state_zip'] =$lines[$test_city_key+1];
-        $values['phone'] =$lines[$test_phone_key+1];
-        $values['gender'] =$lines[$test_gender_key+1];
-        $values['date_of_birth'] =$lines[$test_dob_key+1];
-        $values['age_at_file_creation'] =$lines[$test_age_creation_key+1];
-        $values['age_at_data_collection'] =$lines[$test_age_collection_key+1];
-
-        $values['date_of_birth'] = $this->formatDate($values['date_of_birth']);
-
-        unset($values['date_of_birth']);
+	foreach ($fields as $key => $val) {
+            $array_key=array_search($val,$lines);
+            if($array_key!= null) {
+                    $values[$key] = $lines[$array_key+1];
+                }
+            else{
+                    $values[$key]='--';
+            }
+        }
 
         $db=& Database::singleton();
 

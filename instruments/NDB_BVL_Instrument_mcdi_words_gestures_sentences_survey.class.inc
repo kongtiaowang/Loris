@@ -446,7 +446,7 @@ class NDB_BVL_Instrument_mcdi_words_gestures_sentences_survey extends NDB_BVL_In
 		SELECT * 
 		FROM macarthur_lookup 
 		WHERE age_months=:ageMonths 
-		AND sex=:gender  
+		AND (sex=:gender OR sex='both_sexes')  
 		AND score_raw=:scoreRaw 
 		AND subscale=:subScale";
 	$PercentileScore = $db->pselectRow(
@@ -541,7 +541,7 @@ class NDB_BVL_Instrument_mcdi_words_gestures_sentences_survey extends NDB_BVL_In
 			SELECT * 
 			FROM CDI_WS_percentiles_lookup 
 			WHERE age_months=:ageMonths 
-			AND sex=:gender
+			AND (sex=:gender OR sex='both_sexes')
 			AND score_raw=:scoreRaw 
 			AND subscale=:subScale";
 		$PercentileScore = $db->pselectRow(
@@ -553,7 +553,7 @@ class NDB_BVL_Instrument_mcdi_words_gestures_sentences_survey extends NDB_BVL_In
        			  'subScale'     => $scale_number
     		       ]	
 		);
-
+         
             $scores[$scale_percentile] = $PercentileScore['score_percentile'];
 
             if ($PercentileScore == null) {
@@ -575,7 +575,7 @@ class NDB_BVL_Instrument_mcdi_words_gestures_sentences_survey extends NDB_BVL_In
 
                 $record_1a = $db->pselect($query_scores1a, array());
                 if (empty($record_1a)) {
-                    $db->pselect(
+                  $db->pselect(
                         "
                         SELECT
                             *
@@ -598,7 +598,7 @@ class NDB_BVL_Instrument_mcdi_words_gestures_sentences_survey extends NDB_BVL_In
                     FROM
                         macarthur_lookup
                     WHERE
-                        age_months = " . $age_months . " AND
+                        age_months = $age_months AND
                         subscale = '$scale' AND
                         score_raw < $score_holder
                     ORDER BY
@@ -613,14 +613,15 @@ class NDB_BVL_Instrument_mcdi_words_gestures_sentences_survey extends NDB_BVL_In
                         ($record_1a[0]['score_raw']-$record_1b[0]['score_raw'])
                         )*($record_1a[0]['score_percentile']-$record_1b[0]['score_percentile'])+$record_1b[0]['score_percentile'];
 
-                $scores[$scale_percentile] = abs(round($percentile_calculation1));
+
+		$scores[$scale_percentile] = abs(round($percentile_calculation1));
             }
         } else {
 		$query_scores    = "
 			SELECT * 
 			FROM CDI_WS_percentiles_lookup 
 			WHERE age_months=:ageMonths 
-			AND sex=:gender 
+			AND (sex=:gender  OR sex='both_sexes') 
 			AND score_raw=:scoreRaw 
 			AND subscale=:subScale";
 
@@ -633,7 +634,7 @@ class NDB_BVL_Instrument_mcdi_words_gestures_sentences_survey extends NDB_BVL_In
        			   'subScale'     => $scale_number
    			]	
 		);
-
+           
             $scores[$scale_percentile] = $PercentileScore['score_percentile'];
 
             if ($PercentileScore == null) {
@@ -655,7 +656,7 @@ class NDB_BVL_Instrument_mcdi_words_gestures_sentences_survey extends NDB_BVL_In
 
                 $record_1a = $db->pselect($query_scores1a, array());
                 if (empty($record_1a)) {
-                    $db->pselect(
+                   $db->pselect(
                         "
                         SELECT
                             *
@@ -678,7 +679,7 @@ class NDB_BVL_Instrument_mcdi_words_gestures_sentences_survey extends NDB_BVL_In
                     FROM
                         macarthur_lookup
                     WHERE
-                        age_months = " . $age_months . " AND
+                        age_months = $age_months  AND
                         subscale = '$scale' AND
                         score_raw < $score_holder
                     ORDER BY
@@ -934,7 +935,6 @@ class NDB_BVL_Instrument_mcdi_words_gestures_sentences_survey extends NDB_BVL_In
 
         // 16-30 months
         $CDI_WS_percentiles_lookup_scales = array(
-                                          //  "words_produced_number",
                                              "word_forms",
                                              "grammatical_complexity",
                                             );
@@ -944,35 +944,39 @@ class NDB_BVL_Instrument_mcdi_words_gestures_sentences_survey extends NDB_BVL_In
         foreach ($macarthur_lookup_scales as $scale) {
             $scale_percentile = $scale . "_percentile";
 
-            if ($age_months >= 8 && $age_months <= 24) {
-                // The macarthur_lookup table currently only has data for 8-18 months
-                if ($age_months <= 18) {
-                    $this->CalculateMacarthurPercentile($scale, $age_months, $gender, $scores);
-                } else {
-                    $scores[$scale_percentile] = "Data Not Found in macarthur_lookup Table";
-                }
-            } elseif ($age_months < 8) {
-                $scores[$scale_percentile] = "Candidate too young to score";
-            } elseif ($age_months > 24) {
-                $scores[$scale_percentile] = "Candidate too old to score";
-            }
+            if ($age_months >= 8 && $age_months <= 30) {
+       // The macarthur_lookup table currently only has data for 8-18 months
+         if ($age_months <= 18 && $scale != "words_produced_number") {
+        $this->CalculateMacarthurPercentile($scale, $age_months, $gender, $scores);
+         }
+         elseif ($age_months <= 30 && $scale == "words_produced_number") {
+        $this->CalculateMacarthurPercentile($scale, $age_months, $gender, $scores);
+             }   
+          else {
+         $scores[$scale_percentile] = "Data Not Found in macarthur_lookup Table";
+         }
+          } elseif ($age_months < 8) {
+           $scores[$scale_percentile] = "Candidate too young to score";
+           } elseif ($age_months > 30) {
+           $scores[$scale_percentile] = "Candidate too old to score";
+         }
         }
 
         foreach ($CDI_WS_percentiles_lookup_scales as $scale) {
             $scale_percentile = $scale . "_percentile";
 
-            if ($age_months >= 8 && $age_months <= 24) {
+            if ($age_months >= 8 && $age_months <= 30) {
                 // The CDI_WS_percentiles_lookup table currently only has data for 16-30 months
-                if ($age_months >= 16) {
+                if ($age_months >= 16 && $age_months <= 30) {
                     $this->CalculateCDIPercentile($scale, $age_months, $gender, $scores);
                 } else {
                     $scores[$scale_percentile] = "Data Not Found in CDI_WS_percentiles_lookup Table";
                 }
             } elseif ($age_months < 8) {
                 $scores[$scale_percentile] = "Candidate too young to score";
-            } elseif ($age_months > 24) {
+            } elseif ($age_months > 30) {
                 $scores[$scale_percentile] = "Candidate too old to score";
-            }
+           }
         }
 
         // End percentiles calculation

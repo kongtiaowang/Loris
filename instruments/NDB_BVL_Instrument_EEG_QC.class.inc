@@ -23,13 +23,13 @@ class NDB_BVL_Instrument_EEG_QC extends NDB_BVL_Instrument
                                ""            => "",
                                "1"           => "1 (Great Placement)",
                                "2"           => "2 (Acceptable Placement)",
-                               "3"           => "3 (Poor Placement)",                               
+                               "3"           => "3 (Poor Placement)",
                               );
     const R1_R3 = array(
                                ""            => "",
                                "1"           => "1 (Great Data there is minimal noise and minimal artifact present)",
                                "2"           => "2 (Sufficient Data, Some Noise or some artifact present)",
-                               "3"           => "3 (Poor Data, and Substantial Noise or substantial Artifact Present)",                               
+                               "3"           => "3 (Poor Data, and Substantial Noise or substantial Artifact Present)",
                               );
 
     /**
@@ -194,6 +194,72 @@ class NDB_BVL_Instrument_EEG_QC extends NDB_BVL_Instrument
                 $errors[$question] = "Specify a number inferior or equal to 100.";
             }
         }
+    }
+
+    /**
+     * Override to send email when new value for question 14 is answered.
+     *
+     * @param array $values the new values saved
+     * @throws DatabaseException
+     */
+    function _save(array $values): void
+    {
+        // Get the old value.
+        $db        =& Database::singleton();
+        $old_value = $db->pselectOne("
+            SELECT a_4
+            FROM EEG_QC
+            WHERE CommentID = :CommentID
+        ", array("CommentID" => $this->getCommentID()));
+
+        // Check if the new value has been set and if it differs from the old value.
+        if (isset($values['a_4']) && $old_value != $values['a_4']) {
+            $config    = NDB_Config::singleton();
+            $session   = $this->getSessionID();
+            $timepoint = \TimePoint::singleton($session);
+            $candidate = \Candidate::singleton($timepoint->getCandID());
+
+            $emails = "santiago.torres@mcin.ca";
+            switch ($candidate->getCandidateSite()) {
+                case "PHI":
+                    $emails = "bordaa@chop.edu,carneyh2@email.chop.edu";
+                    break;
+                case "STL":
+                    $emails = "babbc@wustl.edu,klohrc@wustl.edu,zempelj@wustl.edu";
+                    break;
+                case "SEA":
+                    $emails = "kemmons2@uw.edu,blau@uw.edu";
+                    break;
+                case "UMN":
+                    $emails = "mill1425@umn.edu";
+                    break;
+                case "UNC":
+                    $emails = "alana_campbell@med.unc.edu";
+                    break;
+            }
+
+            // Get the file name from the media module.
+            $file_name = $db->pselectOne("
+                SELECT file_name
+                FROM media
+                WHERE instrument = 'EEG'
+                    AND session_id = :session
+            ", array("session" =>$session));
+
+            $email_data = array(
+                "candID"      => $candidate->getCandID(),
+                "PSCID"       => $candidate->getPSCID(),
+                "visit_label" => $timepoint->getVisitLabel(),
+                "file_name"   => $file_name,
+                "url"         => $config->getSetting("www")['url'],
+                "commentID"   => $this->getCommentID()
+            );
+
+            Email::send($emails, "EEG_QC_notification.tpl", $email_data, "", "IBIS Team <noreply@ibis.loris.ca>", "", "", "text/html");
+
+        }
+
+        parent::_save($values);
     }
 
 }

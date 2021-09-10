@@ -11,12 +11,7 @@ CREATE TABLE `Actigraph_Support_Protocol` (
 `Date_taken` date default NULL,
 `Candidate_Age` varchar(255) default NULL,
 `Window_Difference` varchar(255) default NULL,
-`level1` varchar(255) default NULL,
-`level2` varchar(255) default NULL,
-`level3` varchar(255) default NULL,
-`level4` varchar(255) default NULL,
-`level5` varchar(255) default NULL,
-`not_answered` varchar(255) default NULL,
+`section1_probe` enum('level1','level2','level3','level4','level5','not_answered') default NULL,
 `q1_my_child_tolerates_wearing_watches` enum('1','2','3','4','5') default NULL,
 `q2_my_child_has_difficulty_with_extra` enum('1','2','3','4','5') default NULL,
 `q3_my_child_has_difficulty_with_tags` enum('1','2','3','4','5') default NULL,
@@ -28,22 +23,15 @@ CREATE TABLE `Actigraph_Support_Protocol` (
 `q9_my_child_needs_reminders_about_what` enum('1','2','3','4','5') default NULL,
 `q10_my_child_responds_well_to_visual_reminders` enum('1','2','3','4','5') default NULL,
 `q11_my_child_responds_well_to_social_stories` enum('1','2','3','4','5') default NULL,
+`visual_supports` varchar(255) default NULL,
+`weekly_countdown_schedule_token_system` varchar(255) default NULL,
+`social_story` varchar(255) default NULL,
+`visual_of_keeping_actigraph_on` varchar(255) default NULL,
+`verbal_prompts_priming` varchar(255) default NULL,
+`scripts_about_wearing_the_actigraph` varchar(255) default NULL,
+`verbal_reminders` varchar(255) default NULL,
+`reinforcement` varchar(255) default NULL,
+`sample_shaping_protocol` varchar(255) default NULL,
 PRIMARY KEY  (`CommentID`)
 
               ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-INSERT INTO `test_names` (`Test_name`, `Full_name`, `Sub_group`) VALUES ('Actigraph_Support_Protocol', 'Actigraph Support Protocol', '1');
-
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
-VALUES ('Actigraph_Support_Protocol', '0', '0', 'Y', 'Visit', 1, 'VSA-Sleep', NULL);
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
-VALUES ('Actigraph_Support_Protocol', '0', '0', 'Y', 'Visit', 2, 'VSA-Sleep', NULL);
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
-VALUES ('Actigraph_Support_Protocol', '0', '0', 'Y', 'Visit', 3, 'VSA-Sleep', NULL);
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
-VALUES ('Actigraph_Support_Protocol', '0', '0', 'Y', 'Visit', 9, 'VSA-Sleep', NULL);
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
-VALUES ('Actigraph_Support_Protocol', '0', '0', 'Y', 'Visit', 10, 'VSA-Sleep', NULL);
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID)
-VALUES ('Actigraph_Support_Protocol', '0', '0', 'Y', 'Visit', 21, 'VSA-Sleep', NULL);
