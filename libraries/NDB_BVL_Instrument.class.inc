@@ -1599,12 +1599,18 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         $allData = $this->loadInstanceData($this);
         foreach ($this->_requiredElements as $field) {
-            // consider status field if not_answered chosen as an answer
-            $statusField = $field . '_status';
-            // field shouldn't be just empty() b/c 0 is a valid
+            // Check if the the not answered field is present for the required element.
+            // If so check if the not_answered was selected. Continue loop if so.
+            $status_key = $field."_status";
+            if (array_key_exists($status_key, $allData)
+                && $allData[$status_key] === "not_answered") {
+                continue;
+            }
+
+            // this shouldn't be just empty() b/c 0 is a valid
             // value for some required fields
             if ((is_null($allData[$field]) || $allData[$field] === "")
-                && empty($allData[$statusField])
+                && empty($allData[$status_key])
             ) {
                 return 'Incomplete';
             }

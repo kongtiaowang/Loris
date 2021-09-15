@@ -368,7 +368,20 @@ class NDB_BVL_Instrument_Visit_Level_Information_EP extends NDB_BVL_Instrument
             $this->validate_empty_subquestions($values, ["q5_i_if_yes_who"], $errors);
             $this->validate_empty_subquestions($values, ["q5_ii_if_yes_when"], $errors);
         }
-
+        $err_msg = "Not required if instrument was not collected in person.";
+        if ($values['vineland_3_method_of_collection'] != "in_person" && 
+            $values['vineland_3_was_collected'] == 'yes'
+            ){
+            if ($values['vineland_3_assessor_ppe'][0] != null) {
+             $errors['vineland_3_assessor_ppe'] = $err_msg;
+            }
+            if ($values['vineland_3_subject_ppe'][0] != null) {
+             $errors['vineland_3_subject_ppe'] = $err_msg;
+            }
+            if ($values['vineland_3_parent_ppe'][0] != null) {
+             $errors['vineland_3_parent_ppe'] = $err_msg;
+            }
+        }
         return $errors;
     }
 }

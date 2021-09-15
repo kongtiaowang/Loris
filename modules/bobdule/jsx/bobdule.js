@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import FilterableDataTable from 'FilterableDataTable';
 import Modal from './Modal';
+import DirectEntry from './DirectEntry';
 
 /**
  * Module designed for Bob McKinstry to simplify data entry for Final Radiological Form. The module lists all candidates
@@ -18,11 +19,15 @@ class Bobdule extends Component {
       visitOptions: {},
       error: false,
       isLoaded: false,
-      formURL: '',
+      commentID: '',
+      currentTable: 'incomplete',
+      permission: 'view',
+      candID: '',
     };
 
     this.fetchData = this.fetchData.bind(this);
     this.handleData = this.handleData.bind(this);
+    this.toggleTable = this.toggleTable.bind(this);
     this.formatColumn = this.formatColumn.bind(this);
     this.updateRecommend = this.updateRecommend.bind(this);
     this.updateRating = this.updateRating.bind(this);
@@ -31,16 +36,18 @@ class Bobdule extends Component {
   }
 
   componentDidMount() {
-    this.fetchData();
+    this.fetchData('incomplete');
   }
 
   /**
    * Call to retrieve all none complete Final Radiological Forms where the candidate has either a T1 or T2 scan.
+   *
+   * @param {string} status whether view incomplete or complete reviews.
    */
-  fetchData() {
-    fetch(`${loris.BaseURL}/bobdule/?format=json`, {credentials: 'same-origin'})
+  fetchData(status) {
+    fetch(`${loris.BaseURL}/bobdule/?format=json&status=${status}`, {credentials: 'same-origin'})
       .then((resp) => resp.json())
-      .then((data) => this.handleData(data.Data))
+      .then((data) => this.handleData(data.Data, data.permission))
       .catch((error) => {
         this.setState({error: true});
         console.error(error);
@@ -50,9 +57,10 @@ class Bobdule extends Component {
   /**
    * Map the received data and store it in the state.
    *
-   * @param {object} data the data received from the api
+   * @param {object} data       the data received from the api
+   * @param {string} permission if the user can view or edit the module
    */
-  handleData(data) {
+  handleData(data, permission) {
     const visitOptions = {};
     const formatted = data.map((row, i) => {
       // Create a list of all possible visits to be used by visit filter dropdown.
@@ -87,6 +95,16 @@ class Bobdule extends Component {
     this.setState({
       data: formatted,
       visitOptions: visitOptions,
+      permission: permission,
+    });
+  }
+
+  toggleTable() {
+    this.fetchData(this.state.currentTable === 'incomplete' ? 'complete' : 'incomplete');
+    this.setState((state) => {
+      return {
+        currentTable: state.currentTable === 'incomplete' ? 'complete' : 'incomplete',
+      };
     });
   }
 
@@ -180,7 +198,8 @@ class Bobdule extends Component {
         // If action is launch form, launch the form.
         post.then(() => {
           this.setState({
-            formURL: url,
+            commentID: row['CommentID'],
+            candID: row['Candidate ID'],
           });
         });
       } else {
@@ -224,7 +243,8 @@ class Bobdule extends Component {
    */
   closeModal() {
     this.setState({
-      formURL: '',
+      commentID: '',
+      candID: '',
     });
     this.fetchData();
   }
@@ -239,6 +259,7 @@ class Bobdule extends Component {
    */
   formatColumn(column, cell, row) {
     const result = <td>{cell}</td>;
+    const canEdit = this.state.permission === 'edit' && this.state.currentTable === 'incomplete';
 
     switch (column) {
       case 'Candidate ID':
@@ -252,8 +273,9 @@ class Bobdule extends Component {
         );
       case 'Recommend Referral for Clinical MRI':
       case 'Recommend Clinical Follow up':
-        // Referral or Clinical column. If data not yet submitted return as checkbox else display submitted value.
-        return row['date'] ? result : (
+        // Referral or Clinical column. If data not yet submitted or the user can edit
+        // return as checkbox else display submitted value.
+        return row['date'] || !canEdit ? result : (
           <td>
             <div className='form-check'>
               <input
@@ -269,7 +291,7 @@ class Bobdule extends Component {
         // Rating column, parse JSON value rendering as a checkbox for each rating value if data not yet submitted, else
         // display submitted values and string.
         const ratings = JSON.parse(cell);
-        if (row['date']) {
+        if (row['date'] || !canEdit) {
           const enabled = [];
           if (ratings['normal'].value === 'yes') {
             enabled.push('Normal');
@@ -358,7 +380,7 @@ class Bobdule extends Component {
           label = 'Save and Complete';
         }
 
-        if (label) {
+        if (label && canEdit) {
           return (
             <td>
               <button
@@ -368,6 +390,16 @@ class Bobdule extends Component {
               >
                 {label}
               </button>
+              {(label === 'Mark Complete' &&
+                (rating['atypical'].value === 'yes' || rating['abnormal'].value === 'yes')) &&
+              <button
+                type='button'
+                className='btn btn-primary'
+                onClick={() => this.actionClick('Launch Form', row)}
+              >
+                Launch Form
+              </button>
+              }
             </td>
           );
         }
@@ -378,6 +410,10 @@ class Bobdule extends Component {
   }
 
   render() {
+    const {
+      currentTable,
+      permission,
+    } = this.state;
     const fields = [
       {
         label: 'CommentID',
@@ -410,27 +446,27 @@ class Bobdule extends Component {
       },
       {
         label: 'Recommend Referral for Clinical MRI',
-        show: true,
+        show: currentTable === 'complete' || permission === 'edit',
       },
       {
         label: 'Recommend Clinical Follow up',
-        show: true,
+        show: currentTable === 'complete' || permission === 'edit',
       },
       {
         label: 'Rating',
-        show: true,
+        show: currentTable === 'complete' || permission === 'edit',
       },
       {
         label: 'Action',
-        show: true,
+        show: currentTable === 'incomplete' && permission === 'edit',
       },
     ];
-
-    const style = {
-      overflow: 'hidden',
-      height: '100%',
-      width: '100%',
-    };
+    const actions = [
+      {
+        label: this.state.currentTable === 'incomplete' ? 'View Completed' : 'View Incomplete',
+        action: this.toggleTable,
+      },
+    ];
 
     return (
       <div>
@@ -439,9 +475,14 @@ class Bobdule extends Component {
           data={this.state.data}
           fields={fields}
           getFormattedCell={this.formatColumn}
+          actions={actions}
         />
-        <Modal show={this.state.formURL !== ''} onClose={this.closeModal}>
-          <iframe src={this.state.formURL} style={style} height="100%" width="100%"/>
+        <Modal
+          show={this.state.commentID !== ''}
+          onClose={this.closeModal}
+          title={`DCCID: ${this.state.candID}`}
+        >
+          <DirectEntry commentID={this.state.commentID} close={this.closeModal}/>
         </Modal>
       </div>
     );

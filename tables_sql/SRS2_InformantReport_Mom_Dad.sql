@@ -9,6 +9,7 @@ CREATE TABLE `SRS2_InformantReport_Mom_On_Dad` (
   `informant_gender` enum('male','female','other') DEFAULT NULL,
   `informant` enum('mother','father','step_mother','step_father','spouse','other') DEFAULT NULL,
   `informant_other` varchar(255) DEFAULT NULL,
+  `respondent` enum("yes","no") default NULL,
   `q1_uncomfortable_socialsituations` enum('1_not_true','2_sometimes_true','3_often_true','4_almost_always_true','refused_dontknow') DEFAULT NULL,
   `q2_wrong_facialexpressions` enum('1_not_true','2_sometimes_true','3_often_true','4_almost_always_true','refused_dontknow') DEFAULT NULL,
   `q3_self_confident` enum('1_not_true','2_sometimes_true','3_often_true','4_almost_always_true','refused_dontknow') DEFAULT NULL,

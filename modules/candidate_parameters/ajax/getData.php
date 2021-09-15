@@ -121,7 +121,11 @@ function getCandInfoFields()
 
     $fields = $db->pselect(
         "SELECT CONCAT('PTID', ParameterTypeID) AS ParameterTypeID, Value
+<<<<<<< HEAD
         FROM parameter_candidate WHERE CandID=:cid AND ParameterTypeID NOT IN('7296')",
+=======
+        FROM parameter_candidate WHERE CandID=:cid and ParameterTypeID NOT IN('7296')",
+>>>>>>> aces/21.0
         array('cid' => $candID)
     );
     //IBIS SPECIFIC OVERRIDE CODE ENDS HERE
@@ -433,6 +437,16 @@ function getConsentStatusFields()
 
     foreach ($consentDetails as $consentID=>$consent) {
         $consentName = $consent['Name'];
+
+        // Github Issue 1940:
+        //     DS Infant candidates only consent to study.
+        //     https://github.com/aces/IBIS/issues/1940
+        if ($candidate->getProjectTitle() === "Down Syndrome Infant"
+            && $consentName !== "study_consent"
+        ) {
+            continue;
+        }
+
         $consentList[$consentName] = $consent['Label'];
 
         if (isset($candidateConsent[$consentID])) {

@@ -23,6 +23,8 @@
 class NDB_BVL_Instrument_QRS_Proband extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
+    var $ValidityEnabled  = false;
+    var $ValidityRequired = false;
     /**
      * Sets up basic data, such as the LorisForm object, and so on.
      *
@@ -53,9 +55,6 @@ class NDB_BVL_Instrument_QRS_Proband extends NDB_BVL_Instrument
         //The array of selects with multiple answers allowed
         //Any LorisForm multiple selects must be listed here
         $this->_selectMultipleElements = array();
-
-        // required fields for data entry completion status
-        $this->_requiredElements = array('CommentID');
 
         // setup the form
         $this->_setupForm();
@@ -145,8 +144,7 @@ class NDB_BVL_Instrument_QRS_Proband extends NDB_BVL_Instrument
             <i>*Please fill this form out with regard to your older child who has autism.</i>
             <br><br>
             This questionnaire deals with your thoughts and opinions about
-            you and your family. There are many blanks on the questionnaire. We would like
-            you to imagine your child's name on them.
+            you and your family.
             <br>
             Please respond to each question by picking only one of the
             four ratings, using the following scheme.
@@ -157,7 +155,9 @@ class NDB_BVL_Instrument_QRS_Proband extends NDB_BVL_Instrument
 
             $this->indent 3 = <b><u>Partial disagreement</u></b> with the statement.<br>
 
-            $this->indent 4 = <b><u>Strong disagreement</u></b> with the statement.
+	    $this->indent 4 = <b><u>Strong disagreement</u></b> with the statement.
+	    <br><br>
+	    Example: The family eats dinner together. 1 2 3 4
             <br><br>
             If the family always or almost always eats dinner together, the
             statement made is accurate, therefore you would <b>pick 1</b> to show
@@ -167,7 +167,11 @@ class NDB_BVL_Instrument_QRS_Proband extends NDB_BVL_Instrument
             is inaccurate and you would <b>pick 4</b>, showing that you strongly
             disagree. If, on the other hand, the family has dinner together sometimes,
             but less than 50% of the time, you would <b>circle 3</b>, indicating
-            that you partly disagree."
+	    that you partly disagree.
+	    <br><br>
+	    Please answer all questions, even if they do not seem to apply. The questions are general, 
+            and sometimes refer to children who have characteristics that your child may not have. 
+            In such instances you can still answer by circling 4, that is, strong disagreement with the statement.<br><br>"
         );
 
         $options = array(
@@ -251,9 +255,9 @@ class NDB_BVL_Instrument_QRS_Proband extends NDB_BVL_Instrument
 
             $this->indent 2 = <b><u>Partial agreement</u></b> with the statement.<br>
 
-            $this->indent 3 = <b><u>Partial disagreement</u></b> with the statement.<br>
+	    $this->indent 3 = <b><u>Partial disagreement</u></b> with the statement.<br>
 
-            $this->indent 4 = <b><u>Strong disagreement</u></b> with the statement."
+            $this->indent 4 = <b><u>Strong disagreement</u></b> with the statement.<br><br>"
         );
 
         $options = array(
@@ -321,7 +325,7 @@ class NDB_BVL_Instrument_QRS_Proband extends NDB_BVL_Instrument
 
             $this->indent 3 = <b><u>Partial disagreement</u></b> with the statement.<br>
 
-            $this->indent 4 = <b><u>Strong disagreement</u></b> with the statement."
+            $this->indent 4 = <b><u>Strong disagreement</u></b> with the statement.<br><br>"
         );
 
         $options = array(

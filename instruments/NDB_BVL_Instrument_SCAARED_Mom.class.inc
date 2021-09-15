@@ -110,26 +110,22 @@ class NDB_BVL_Instrument_SCAARED_Mom extends NDB_BVL_Instrument
     function _main()
     {
         // display test name
-        $this->addHeader("SCAARED (Screen for Mom Anxiety Related Disorders) - Adult - Mom - Survey");
+        $this->addHeader("SCAARED (Screen for Adult Anxiety Related Disorders) - Adult - Mom - Survey");
 
         $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
 
-        $label = "Please select 'Yes' to confirm that you are the enrolled child's biological mother";
+        $label = "Please click this bubble 'Yes' to confirm that you are the enrolled child's biological mother";
 
         $this->form->addElement(
             'select',
             'respondent',
             $label,
-            array(
-             ''         => '',
-             'No'       => 'No',
-             'Yes'      => 'Yes',
+	    array(
+	      null      => '',
+             'Yes'      => 'Yes'
             )
         );
 
-        $this->XINRegisterRule('respondent', array('respondent{@}=={@}Yes'), 'Required');
-
-        $this->form->addFormRule(array(&$this, 'validate_main_page'));
 
         // SCORING TABLE
 
@@ -171,7 +167,7 @@ class NDB_BVL_Instrument_SCAARED_Mom extends NDB_BVL_Instrument
      */
     function _page1()
     {
-        $this->addHeader("SCAARED (Screen for Mom Anxiety Related Disorders) - Adult - Mom - Survey");
+        $this->addHeader("SCAARED (Screen for Adult Anxiety Related Disorders) - Adult - Mom - Survey");
 
         $this->form->addElement(
             'static',
@@ -217,7 +213,7 @@ class NDB_BVL_Instrument_SCAARED_Mom extends NDB_BVL_Instrument
      */
     function _page2()
     {
-        $this->addHeader("SCAARED (Screen for Mom Anxiety Related Disorders) - Adult - Mom - Survey");
+        $this->addHeader("SCAARED (Screen for Adult Anxiety Related Disorders) - Adult - Mom - Survey");
 
         $this->form->addElement(
             'static',
@@ -260,16 +256,6 @@ class NDB_BVL_Instrument_SCAARED_Mom extends NDB_BVL_Instrument
         }
     }
 
-    function validate_main_page($values)
-    {
-        $errors = [];
-
-        if ($values["respondent"] != "Yes") {
-            $this->validate_empty_subquestions($values, ["respondent"], $errors);
-        }
-
-        return $errors;
-    }
 
     function sumScaleScores($question_array, $record)
     {

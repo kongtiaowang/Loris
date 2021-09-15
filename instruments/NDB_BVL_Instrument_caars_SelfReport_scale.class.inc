@@ -1,5 +1,4 @@
 <?php
-
 class NDB_BVL_Instrument_caars_SelfReport_scale extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
@@ -163,7 +162,7 @@ class NDB_BVL_Instrument_caars_SelfReport_scale extends NDB_BVL_Instrument
         
         $columnHeaders = array( 
                                 "score" => "Score",
-                                "percentile" => "Percentile",
+                                "percentile" => "T-score",
                                 );
 
         foreach ($columnHeaders as $field => $label) {
@@ -305,11 +304,8 @@ class NDB_BVL_Instrument_caars_SelfReport_scale extends NDB_BVL_Instrument
         $d_raw_score = $scores['d_raw_score'];
         $e_raw_score = $scores['e_raw_score'];
 	$respondent_age = $score_record['respondent_age'];
-	$respondent_gender = $score_record['gender'];
+	$respondent_gender = $score_record['respondent_gender'];
 	
-
-
-
         if($respondent_gender == 'male'){
 
         if($respondent_age >= 18 && $respondent_age <= 29 ) {
@@ -483,23 +479,23 @@ class NDB_BVL_Instrument_caars_SelfReport_scale extends NDB_BVL_Instrument
         }
         else if($respondent_age >= 50 && $respondent_age <= 100) {
 
-            $query_score_a = "SELECT * FROM caars_selfreport_lookup WHERE a_m4='$a_raw_score'";
+            $query_score_a = "SELECT * FROM caars_selfreport_lookup WHERE a_f4='$a_raw_score'";
                 $score_a = $db->pselectRow($query_score_a, array());
                 $scores['a_raw_percentile'] = $score_a['t'];
                 
-            $query_score_b = "SELECT * FROM caars_selfreport_lookup WHERE b_m4='$b_raw_score'";
+            $query_score_b = "SELECT * FROM caars_selfreport_lookup WHERE b_f4='$b_raw_score'";
                 $score_b = $db->pselectRow($query_score_b, array());
                 $scores['b_raw_percentile'] = $score_b['t'];
 
-            $query_score_c = "SELECT * FROM caars_selfreport_lookup WHERE c_m4='$c_raw_score'";
+            $query_score_c = "SELECT * FROM caars_selfreport_lookup WHERE c_f4='$c_raw_score'";
                 $score_c = $db->pselectRow($query_score_c, array());
                 $scores['c_raw_percentile'] = $score_c['t'];
 
-            $query_score_d = "SELECT * FROM caars_selfreport_lookup WHERE d_m4='$d_raw_score'";
+            $query_score_d = "SELECT * FROM caars_selfreport_lookup WHERE d_f4='$d_raw_score'";
                 $score_d = $db->pselectRow($query_score_d, array());
                 $scores['d_raw_percentile'] = $score_d['t'];
 
-            $query_score_e = "SELECT * FROM caars_selfreport_lookup WHERE e_m4='$e_raw_score'";
+            $query_score_e = "SELECT * FROM caars_selfreport_lookup WHERE e_f4='$e_raw_score'";
                 $score_e = $db->pselectRow($query_score_e, array());
                 $scores['e_raw_percentile'] = $score_e['t'];
         } 
@@ -536,8 +532,4 @@ class NDB_BVL_Instrument_caars_SelfReport_scale extends NDB_BVL_Instrument
     
     
 }
-
-   
-
-
 ?>

@@ -1,0 +1,1 @@
+ALTER TABLE TSI_IDDRC_FOH CHANGE sub_medhist_q16_how_does_he_make_his_her_needs_known sub_medhist_q16_how_does_he_make_his_her_needs_known varchar(150) default NULL;

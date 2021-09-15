@@ -71,6 +71,7 @@ class Modal extends Component {
     const bodyStyle = {
       padding: 15,
       height: 'calc(100% - 70px)',
+      overflow: 'auto',
     };
 
     const modalContainer = {

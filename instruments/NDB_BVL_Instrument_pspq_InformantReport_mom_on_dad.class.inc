@@ -8,24 +8,36 @@ class NDB_BVL_Instrument_pspq_InformantReport_mom_on_dad extends NDB_BVL_Instrum
     var $ValidityRequired = false;
 
     var $scoreLabels = array(
-        "aloof_score",
-        "prs_score",
-        "rigid_score",
-        "total_score",
-       );
+                        "aloof_score",
+                        "prs_score",
+                        "rigid_score",
+                        "total_score",
+                       );
 
     //Commonly used level of indentation;
     var $indent = "&nbsp;&nbsp;&nbsp;&nbsp;";
 
-    var $rating     = array(
-                       ''                 => null,
-                       '1_very_rarely'    => "1. Very Rarely",
-                       '2_rarely'         => "2. Rarely",
-                       '3_occasionally'   => "3. Occasionally",
-                       '4_somewhat_often' => '4. Somewhat Often',
-                       '5_often'          => '5. Often',
-                       '6_very_often'     => '6. Very Often',
-                      );
+    var $rating = array(
+                   ''                 => null,
+                   '1_very_rarely'    => "1. Very Rarely",
+                   '2_rarely'         => "2. Rarely",
+                   '3_occasionally'   => "3. Occasionally",
+                   '4_somewhat_often' => '4. Somewhat Often',
+                   '5_often'          => '5. Often',
+                   '6_very_often'     => '6. Very Often',
+                  );
+
+    var $rating_na = array(
+                      ''                 => null,
+                      '1_very_rarely'    => "1. Very Rarely",
+                      '2_rarely'         => "2. Rarely",
+                      '3_occasionally'   => "3. Occasionally",
+                      '4_somewhat_often' => '4. Somewhat Often',
+                      '5_often'          => '5. Often',
+                      '6_very_often'     => '6. Very Often',
+                      'na'               => 'Not Applicable',
+                     );
+
     var $respondent = array(
                        ''           => null,
                        'mother'     => 'Mother',
@@ -35,11 +47,12 @@ class NDB_BVL_Instrument_pspq_InformantReport_mom_on_dad extends NDB_BVL_Instrum
                        'other'      => 'Other',
                       );
 
-    var $informant            = array(
-                                 ''       => null,
-                                 'spouse' => 'Spouse',
-                                 'other'  => 'Other',
-                                );
+    var $informant = array(
+                      ''       => null,
+                      'spouse' => 'Spouse',
+                      'other'  => 'Other',
+                     );
+
     var $informant_confidence = array(
                                  ''                     => null,
                                  'extremely_confident'  => 'Extremely confident',
@@ -130,7 +143,7 @@ class NDB_BVL_Instrument_pspq_InformantReport_mom_on_dad extends NDB_BVL_Instrum
         unset($group);
         $this->addGroupRule($field . "_group", array(array(array("Value must be numeric.", 'numeric'))));
 
-        $this->addSelect('respondent', "Your relationship to child", $this->respondent);
+        $this->addSelect('respondent', "YOUR relationship to child", $this->respondent);
         $group[] = $this->createText('respondent_other', $this->indent."If Other please specify");
         $this->addGroup($group, "respondent_other_group", $this->indent."If Other please specify", null, false);
         unset($group);
@@ -158,18 +171,19 @@ class NDB_BVL_Instrument_pspq_InformantReport_mom_on_dad extends NDB_BVL_Instrum
 
          $columnHeaders = array("score" => "Score");
 
-         foreach ($columnHeaders as $field => $label) {
-             $columnHeaders[$field] .= "   ";
-         }
+        foreach ($columnHeaders as $field => $label) {
+            $columnHeaders[$field] .= "   ";
+        }
          $this->localDefaults = array_merge($this->localDefaults, $columnHeaders);
 
-         foreach ($scales as $field => $label) {
-             foreach ($columnHeaders as $scoreField => $scoreLabel) {
-                 $group[] = $this->form->createElement('static', "{$field}_{$scoreField}", null, null);
-             }
-             $this->form->addGroup($group, "{$field}_score_group", $label, $this->_GUIDelimiter, false);
-             unset($group);
-         }
+        foreach ($scales as $field => $label) {
+            foreach ($columnHeaders as $scoreField => $scoreLabel) {
+                $group[] = $this->form->createElement('static', "{$field}_{$scoreField}", null, null);
+            }
+            $this->form->addGroup($group, "{$field}_score_group", $label, $this->_GUIDelimiter, false);
+            unset($group);
+	}
+	 $this->form->addFormRule(array(&$this, 'validate_main_page'));
     }
 
     /**
@@ -245,8 +259,11 @@ class NDB_BVL_Instrument_pspq_InformantReport_mom_on_dad extends NDB_BVL_Instrum
                      );
 
         foreach ($questions as $field=>$label) {
-            $this->addSelect($field, $label, $this->rating);
-            $this->XINRegisterRule($field, array("$field{@}=={@}NEVER_REQUIRED"));
+            if ($field=='qi4_hard_avoid_sidetrack') {
+                $this->addSelect($field, $label, $this->rating_na);
+            } else {
+                $this->addSelect($field, $label, $this->rating);
+            }
         }
 
         // $this->form->addFormRule(array(&$this, 'PSPQ_Rules'));
@@ -279,7 +296,6 @@ class NDB_BVL_Instrument_pspq_InformantReport_mom_on_dad extends NDB_BVL_Instrum
 
         foreach ($questions as $field=>$label) {
             $this->addSelect($field, $label, $this->rating);
-            $this->XINRegisterRule($field, array("$field{@}=={@}NEVER_REQUIRED"));
         }
 
         // $this->form->addFormRule(array(&$this, 'PSPQ_Rules'));
@@ -311,9 +327,13 @@ class NDB_BVL_Instrument_pspq_InformantReport_mom_on_dad extends NDB_BVL_Instrum
                      );
 
         foreach ($questions as $field=>$label) {
-            $this->addSelect($field, $label, $this->rating);
-            $this->XINRegisterRule($field, array("$field{@}=={@}NEVER_REQUIRED"));
+            if ($field=='qi25_connecting_people'|| $field=='qi29_longpauses_conversations') {
+                $this->addSelect($field, $label, $this->rating_na);
+            } else {
+                $this->addSelect($field, $label, $this->rating);
+            }
         }
+
         $this->addBasicTextArea("comments", "Do you have any other comments?");
         $this->XINRegisterRule('comments', array('comments{@}=={@}NEVER_REQUIRED'));
 
@@ -405,6 +425,8 @@ class NDB_BVL_Instrument_pspq_InformantReport_mom_on_dad extends NDB_BVL_Instrum
                 $sum += 5;
             } elseif ($record[$q] == "6_very_often") {
                 $sum += 6;
+            } else {
+                return null;
             }
         }
 
@@ -426,10 +448,10 @@ class NDB_BVL_Instrument_pspq_InformantReport_mom_on_dad extends NDB_BVL_Instrum
         $record = $db->pselectRow($query, array());
 
         $scores = array(
-                   "aloof_score" => 0,
-                   "prs_score"   => 0,
-                   "rigid_score" => 0,
-                   "total_score" => 0,
+                   "aloof_score" => null,
+                   "prs_score"   => null,
+                   "rigid_score" => null,
+                   "total_score" => null,
                   );
 
         // Reverse score items
@@ -452,83 +474,94 @@ class NDB_BVL_Instrument_pspq_InformantReport_mom_on_dad extends NDB_BVL_Instrum
         $aloof_sum = $this->sumSubscaleScores(self::ALOOF, $record);
         $prs_sum   = $this->sumSubscaleScores(self::PRS, $record);
         $rigid_sum = $this->sumSubscaleScores(self::RIGID, $record);
-        $total_sum = $aloof_sum + $prs_sum + $rigid_sum;
+        $total_sum = 0;
 
-        $scores["aloof_score"] = round($aloof_sum/12, 12);
-        $scores["prs_score"]   = round($prs_sum/12, 12);
-        $scores["rigid_score"] = round($rigid_sum/12, 12);
-        $scores["total_score"] = round($total_sum/36, 12);
+        if (!is_null($aloof_sum)) {
+            $scores["aloof_score"] = round($aloof_sum/12, 12);
+        }
+
+        if (!is_null($prs_sum)) {
+            $scores["prs_score"] = round($prs_sum/12, 12);
+        }
+
+        if (!is_null($rigid_sum)) {
+            $scores["rigid_score"] = round($rigid_sum/12, 12);
+        }
+
+        if (!is_null($aloof_sum) && !is_null($prs_sum) && !is_null($rigid_sum)) {
+            $total_sum = $aloof_sum + $prs_sum + $rigid_sum;
+            $scores["total_score"] = round($total_sum/36, 12);
+        }
 
         $db->update($this->table, $scores, array("CommentID" => $this->getCommentID()));
     }
 
     // (1, 5, 9, 12, 16, 18, 23, 25, 27, 28, 31, 36)
     CONST ALOOF = [
-        "qi1_like_being_otherpeople",
-        "qi5_information_than_socialize",
-        "qi9_enjoy_socialsituations",
-        "qi12_easy_approach",
-        "qi16_situations_meetnew_people",
-        "qi18_conversation_tobe_polite",
-        "qi23_good_smalltalk",
-        "qi25_connecting_people",
-        "qi27_conversation_boresme",
-        "qi28_warmfriendly_others",
-        "qi31_alone_ratherthan_withothers",
-        "qi36_enjoy_chatting",
-        ];
+                   "qi1_like_being_otherpeople",
+                   "qi5_information_than_socialize",
+                   "qi9_enjoy_socialsituations",
+                   "qi12_easy_approach",
+                   "qi16_situations_meetnew_people",
+                   "qi18_conversation_tobe_polite",
+                   "qi23_good_smalltalk",
+                   "qi25_connecting_people",
+                   "qi27_conversation_boresme",
+                   "qi28_warmfriendly_others",
+                   "qi31_alone_ratherthan_withothers",
+                   "qi36_enjoy_chatting",
+                  ];
 
     // (2,4,7,10,11,14,17,20,21,29,32,34)
     CONST PRS = [
-            "qi2_hard_wordsout_smoothly",
-            "qi4_hard_avoid_sidetrack",
-            "qi7_intune_conversation",
-            "qi10_voice_flat_monotone",
-            "qi11_disconnected_outofsync_convo",
-            "qi14_others_dont_understand",
-            "qi17_talktoomuch_certain_topics",
-            "qi20_speak_tooloud_softly",
-            "qi21_tell_someone_not_interested",
-            "qi29_longpauses_conversations",
-            "qi32_losetrack_talking",
-            "qi34_change_topic",
-            ];
-
+                 "qi2_hard_wordsout_smoothly",
+                 "qi4_hard_avoid_sidetrack",
+                 "qi7_intune_conversation",
+                 "qi10_voice_flat_monotone",
+                 "qi11_disconnected_outofsync_convo",
+                 "qi14_others_dont_understand",
+                 "qi17_talktoomuch_certain_topics",
+                 "qi20_speak_tooloud_softly",
+                 "qi21_tell_someone_not_interested",
+                 "qi29_longpauses_conversations",
+                 "qi32_losetrack_talking",
+                 "qi34_change_topic",
+                ];
 
     // (3, 6, 8, 13, 15, 19, 22, 24, 26, 30, 33, 35)
     CONST RIGID = [
-                "qi3_comfortable_unexpectedchanges",
-                "qi6_talkinto_tryingnew",
-                "qi8_warmup_unfamiliarplace",
-                "qi13_strongneed_sameness",
-                "qi15_flexible",
-                "qi19_lookforward_newthings",
-                "qi22_hardtime_change_routine",
-                "qi24_act_myways",
-                "qi26_peoplefrustrated",
-                "qi30_alter_dailyroutine",
-                "qi33_follow_routine",
-                "qi35_doingthings_knownway",
-            ];
+                   "qi3_comfortable_unexpectedchanges",
+                   "qi6_talkinto_tryingnew",
+                   "qi8_warmup_unfamiliarplace",
+                   "qi13_strongneed_sameness",
+                   "qi15_flexible",
+                   "qi19_lookforward_newthings",
+                   "qi22_hardtime_change_routine",
+                   "qi24_act_myways",
+                   "qi26_peoplefrustrated",
+                   "qi30_alter_dailyroutine",
+                   "qi33_follow_routine",
+                   "qi35_doingthings_knownway",
+                  ];
 
     // 1, 3, 7, 9, 12, 15, 16, 19, 21, 23, 25, 28, 30, 34, 36
     CONST REVERSE = [
-                "qi1_like_being_otherpeople",
-                "qi3_comfortable_unexpectedchanges",
-                "qi7_intune_conversation",
-                "qi9_enjoy_socialsituations",
-                "qi12_easy_approach",
-                "qi15_flexible",
-                "qi16_situations_meetnew_people",
-                "qi19_lookforward_newthings",
-                "qi21_tell_someone_not_interested",
-                "qi23_good_smalltalk",
-                "qi25_connecting_people",
-                "qi28_warmfriendly_others",
-                "qi30_alter_dailyroutine",
-                "qi34_change_topic",
-                "qi36_enjoy_chatting",
-                ];
+                     "qi1_like_being_otherpeople",
+                     "qi3_comfortable_unexpectedchanges",
+                     "qi7_intune_conversation",
+                     "qi9_enjoy_socialsituations",
+                     "qi12_easy_approach",
+                     "qi15_flexible",
+                     "qi16_situations_meetnew_people",
+                     "qi19_lookforward_newthings",
+                     "qi21_tell_someone_not_interested",
+                     "qi23_good_smalltalk",
+                     "qi25_connecting_people",
+                     "qi28_warmfriendly_others",
+                     "qi30_alter_dailyroutine",
+                     "qi34_change_topic",
+                     "qi36_enjoy_chatting",
+                    ];
 
     CONST CUTOFFS = [
                      'f_s_aloof'  => 3.46,
@@ -550,4 +583,15 @@ class NDB_BVL_Instrument_pspq_InformantReport_mom_on_dad extends NDB_BVL_Instrum
                      'm_be_prs'   => 3.10,
                      'm_be_rigid' => 3.89,
                     ];
+     function validate_main_page($values)
+     {
+         $errors = [];
+                                           
+        if ($values["respondent"] == "father") {
+          $errors["respondent"] = "This survey should be filled out ABOUT the child’s biological father by someone else. If you are the child’s biological father, please do not fill out this survey.";
+         }
+                                           
+           return $errors;
+       }
+
 }

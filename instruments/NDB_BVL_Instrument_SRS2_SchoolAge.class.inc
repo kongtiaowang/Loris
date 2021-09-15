@@ -40,14 +40,7 @@ class NDB_BVL_Instrument_SRS2_SchoolAge extends NDB_BVL_Instrument
                       '4_almost_always_true' => "4. Almost Always True",
                       'refused_dontknow'     => "Refused/I Don't Know",
                      );
-    var $informant = array(
-                      ''                      => null,
-                      'mother'                => "Mother",
-                      'father'                => "Father",
-                      'other_custodial_adult' => "Other Custodial Adult",
-                      'teacher'               => "Teacher",
-                      'other'                 => "Other",
-                     );
+
     var $gender    = array(
                       ''       => null,
                       'male'   => "Male",
@@ -110,7 +103,8 @@ class NDB_BVL_Instrument_SRS2_SchoolAge extends NDB_BVL_Instrument
         } else {
             $this->_main();
         }
-
+        
+	$this->form->addFormRule(array(&$this, 'XINValidate'));
         //Defines the call back function for HTML Quickform to use when validating the form.
         //$this->form->addFormRule(array(&$this, 'XINValidate'));
     }
@@ -216,12 +210,17 @@ class NDB_BVL_Instrument_SRS2_SchoolAge extends NDB_BVL_Instrument
         $this->addSelect('child_gender', "Child's sex", $this->gender);
 
         //Add select for Relationship to Child
-        $this->addSelect('informant', "Relationship to rated individual", $this->informant);
-        $group[] = $this->createText('informant_other', $this->indent."If Other please specify");
-        $this->addGroup($group, "informant_other_group", $this->indent."If Other please specify", null, false);
-        unset($group);
-        $rules_array = array("informant{@}=={@}other");
-        $this->XINRegisterRule('informant_other', $rules_array, "Please specify relationship", 'informant_other_group');
+        $label = "Please click this bubble 'Yes' to confirm that you are the child’s teacher filling out this survey about the child.";
+
+        $this->form->addElement(
+            'select',
+            'respondent',
+            $label,
+            array(
+             null       => '',
+             'yes'      => 'Yes'
+            )
+        );
 
         //Add instructions
         $this->form->addElement('static', 'lorisSubHeader', "<strong>Instructions:</strong><BR>For each question, please choose an option that best describes the child's behaviour <strong>over the past 6 months.</strong>");

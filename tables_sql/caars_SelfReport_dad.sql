@@ -13,7 +13,7 @@ CREATE TABLE `caars_SelfReport_dad` (
 `Window_Difference` varchar(255) default NULL,
 `respondent_age` varchar(255) default NULL,
 `respondent_gender` enum('male','female') default NULL,
-`respondent` enum('mother','father','step_mother','step_father','other') default NULL,
+`respondent` enum("yes","no") default NULL,
 `respondent_specify` varchar(255) default NULL,
 `a_raw_score` varchar(255) default NULL,
 `a_raw_percentile` varchar(255) default NULL,

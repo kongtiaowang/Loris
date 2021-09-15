@@ -24,7 +24,8 @@ class NDB_BVL_Instrument_Med_Psych_History_survey extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
     use instrument_validator;
-
+    var $ValidityEnabled  = false;
+    var $ValidityRequired = false;
     /**
      * Sample SQL statement for test_names table and instrument subtests table
      *
@@ -82,17 +83,6 @@ class NDB_BVL_Instrument_Med_Psych_History_survey extends NDB_BVL_Instrument
         //Any LorisForm multiple selects must be listed here
         $this->_selectMultipleElements = array();
 
-        // required fields for data entry completion status
-        $this->_requiredElements = array(
-                                    "q1_a_what_was_the_outcome_of_pregnancy_1",
-                                    "q3_disorder_a",
-                                    "q4_was_this_pregnancy_result_of_ART",
-                                    "q6_a_antibiotics_for_infections",
-                                    "q7_a_screen_positive_on_blood_test",
-                                    "q10_a_given_special_medications_to_induce_labor",
-                                    "q15_has_child_ever_had_seizures",
-                                    "q17_a_cleft_lip_or_palate",
-                                   );
 
         // setup the form
         $this->_setupForm();
@@ -1011,6 +1001,7 @@ class NDB_BVL_Instrument_Med_Psych_History_survey extends NDB_BVL_Instrument
         );
 
         $q15_a_options = array(
+                          null                     => "",
                           "0_first_month"          => "First month of life",
                           "1_1_to_12_months"       => "1-12 months (before 1st birthday)",
                           "2_12_to_24_months"      => "12-24 months (before 2nd birthday)",

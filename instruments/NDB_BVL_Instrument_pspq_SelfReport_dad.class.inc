@@ -26,6 +26,7 @@ class NDB_BVL_Instrument_pspq_SelfReport_dad extends NDB_BVL_Instrument
                        '5_often'          => '5. Often',
                        '6_very_often'     => '6. Very Often',
                       );
+
     var $rating_na  = array(
                        ''                 => null,
                        '1_very_rarely'    => "1. Very Rarely",
@@ -36,20 +37,13 @@ class NDB_BVL_Instrument_pspq_SelfReport_dad extends NDB_BVL_Instrument
                        '6_very_often'     => '6. Very Often',
                        'na'               => 'Not Applicable',
                       );
-    var $respondent = array(
-                       ''           => null,
-                       'mother'     => 'Mother',
-                       'father'     => 'Father',
-                       'stepmother' => 'Step-Mother',
-                       'stepfather' => 'Step-Father',
-                       'other'      => 'Other',
-                      );
 
     var $informant            = array(
                                  ''       => null,
                                  'spouse' => 'Spouse',
                                  'other'  => 'Other',
                                 );
+
     var $informant_confidence = array(
                                  ''                     => null,
                                  'extremely_confident'  => 'Extremely confident',
@@ -62,7 +56,6 @@ class NDB_BVL_Instrument_pspq_SelfReport_dad extends NDB_BVL_Instrument
     var $gender = array(
                    ''       => null,
                    'male'   => 'Male',
-                   'female' => 'Female',
                   );
 
     //abstract function setup($commentID, $page);
@@ -140,12 +133,17 @@ class NDB_BVL_Instrument_pspq_SelfReport_dad extends NDB_BVL_Instrument
         unset($group);
         $this->addGroupRule($field . "_group", array(array(array("Value must be numeric.", 'numeric'))));
 
-        $this->addSelect('respondent', "Your relationship to child", $this->respondent);
-        $group[] = $this->createText('respondent_other', $this->indent."If Other please specify");
-        $this->addGroup($group, "respondent_other_group", $this->indent."If Other please specify", null, false);
-        unset($group);
-        $rules_array = array("respondent{@}=={@}other");
-        $this->XINRegisterRule('respondent_other', $rules_array, "Please specify relationship", 'respondent_other_group');
+        $label = "Please click this bubble 'Yes' to confirm that you are the enrolled child’s biological father, reporting on yourself.";
+
+        $this->form->addElement(
+            'select',
+            'respondent',
+            $label,
+            array(
+             null       => '',
+             'yes'      => 'Yes'
+            )
+        );
 
         $this->addSelect('respondent_gender', "Your gender", $this->gender);
         $this->XINRegisterRule('respondent_gender', array("respondent_gender{@}=={@}NEVER_REQUIRED"));
@@ -239,7 +237,6 @@ class NDB_BVL_Instrument_pspq_SelfReport_dad extends NDB_BVL_Instrument
             } else {
                 $this->addSelect($field, $label, $this->rating);
             }
-            //$this->XINRegisterRule($field,array("$field{@}=={@}NEVER_REQUIRED"));
         }
 
         //$this->form->addFormRule(array(&$this, 'PSPQ_Rules'));
@@ -272,7 +269,6 @@ class NDB_BVL_Instrument_pspq_SelfReport_dad extends NDB_BVL_Instrument
 
         foreach ($questions as $field=>$label) {
             $this->addSelect($field, $label, $this->rating);
-            // $this->XINRegisterRule($field,array("$field{@}=={@}NEVER_REQUIRED"));
         }
 
         //  $this->form->addFormRule(array(&$this, 'PSPQ_Rules'));
@@ -309,7 +305,6 @@ class NDB_BVL_Instrument_pspq_SelfReport_dad extends NDB_BVL_Instrument
             } else {
                 $this->addSelect($field, $label, $this->rating);
             }
-            //$this->XINRegisterRule($field,array("$field{@}=={@}NEVER_REQUIRED"));
         }
 
         // $this->form->addFormRule(array(&$this, 'PSPQ_Rules'));
@@ -395,6 +390,8 @@ class NDB_BVL_Instrument_pspq_SelfReport_dad extends NDB_BVL_Instrument
                 $sum += 5;
             } elseif ($record[$q] == "6_very_often") {
                 $sum += 6;
+            } else {
+                return null;
             }
         }
 
@@ -416,10 +413,10 @@ class NDB_BVL_Instrument_pspq_SelfReport_dad extends NDB_BVL_Instrument
         $record = $db->pselectRow($query, array());
 
         $scores = array(
-                   "aloof_score" => 0,
-                   "prs_score"   => 0,
-                   "rigid_score" => 0,
-                   "total_score" => 0,
+                   "aloof_score" => null,
+                   "prs_score"   => null,
+                   "rigid_score" => null,
+                   "total_score" => null,
                   );
 
         // Reverse score items
@@ -442,12 +439,24 @@ class NDB_BVL_Instrument_pspq_SelfReport_dad extends NDB_BVL_Instrument
         $aloof_sum = $this->sumSubscaleScores(self::ALOOF, $record);
         $prs_sum   = $this->sumSubscaleScores(self::PRS, $record);
         $rigid_sum = $this->sumSubscaleScores(self::RIGID, $record);
-        $total_sum = $aloof_sum + $prs_sum + $rigid_sum;
+        $total_sum = 0;
 
-        $scores["aloof_score"] = round($aloof_sum/12, 12);
-        $scores["prs_score"]   = round($prs_sum/12, 12);
-        $scores["rigid_score"] = round($rigid_sum/12, 12);
-        $scores["total_score"] = round($total_sum/36, 12);
+        if (!is_null($aloof_sum)) {
+            $scores["aloof_score"] = round($aloof_sum/12, 12);
+        }
+
+        if (!is_null($prs_sum)) {
+            $scores["prs_score"] = round($prs_sum/12, 12);
+        }
+
+        if (!is_null($rigid_sum)) {
+            $scores["rigid_score"] = round($rigid_sum/12, 12);
+        }
+
+        if (!is_null($aloof_sum) && !is_null($prs_sum) && !is_null($rigid_sum)) {
+            $total_sum = $aloof_sum + $prs_sum + $rigid_sum;
+            $scores["total_score"] = round($total_sum/36, 12);
+        }
 
         $db->update($this->table, $scores, array("CommentID" => $this->getCommentID()));
     }
@@ -483,7 +492,6 @@ class NDB_BVL_Instrument_pspq_SelfReport_dad extends NDB_BVL_Instrument
                  "q32_losetrack_talking",
                  "q34_change_topic",
                 ];
-
 
     // (3, 6, 8, 13, 15, 19, 22, 24, 26, 30, 33, 35)
     CONST RIGID = [

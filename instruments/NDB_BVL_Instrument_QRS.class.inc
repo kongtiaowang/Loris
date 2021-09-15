@@ -147,8 +147,7 @@ class NDB_BVL_Instrument_QRS extends NDB_BVL_Instrument
             NOT their older sibling with autism</i>
             <br><br>
             This questionnaire deals with your thoughts and opinions about
-            you and your family. There are many blanks on the questionnaire. We would like
-            you to imagine your child's name on them.
+            you and your family.
             <br>
             Please respond to each question by picking only one of the
             four ratings, using the following scheme.
@@ -160,7 +159,9 @@ class NDB_BVL_Instrument_QRS extends NDB_BVL_Instrument
             $this->indent 3 = <b><u>Partial disagreement</u></b> with the statement.<br>
 
             $this->indent 4 = <b><u>Strong disagreement</u></b> with the statement.
-            <br><br>
+	    <br><br>
+	    Example: The family eats dinner together. 1 2 3 4
+	    <br><br>
             If the family always or almost always eats dinner together, the
             statement made is accurate, therefore you would <b>pick 1</b> to show
             that you strongly agree with it. If the family has dinner together
@@ -169,7 +170,11 @@ class NDB_BVL_Instrument_QRS extends NDB_BVL_Instrument
             is inaccurate and you would <b>pick 4</b>, showing that you strongly
             disagree. If, on the other hand, the family has dinner together sometimes,
             but less than 50% of the time, you would <b>circle 3</b>, indicating
-            that you partly disagree."
+	    that you partly disagree.
+	    <br><br>
+	    Please answer all questions, even if they do not seem to apply. The questions are general,
+	    and sometimes refer to children who have characteristics that your child may not have. 
+            In such instances you can still answer by circling 4, that is, strong disagreement with the statement.<br><br>"
         );
 
         $options = array(
@@ -255,7 +260,7 @@ class NDB_BVL_Instrument_QRS extends NDB_BVL_Instrument
 
             $this->indent 3 = <b><u>Partial disagreement</u></b> with the statement.<br>
 
-            $this->indent 4 = <b><u>Strong disagreement</u></b> with the statement."
+            $this->indent 4 = <b><u>Strong disagreement</u></b> with the statement.<br><br>"
         );
 
         $options = array(
@@ -323,7 +328,7 @@ class NDB_BVL_Instrument_QRS extends NDB_BVL_Instrument
 
             $this->indent 3 = <b><u>Partial disagreement</u></b> with the statement.<br>
 
-            $this->indent 4 = <b><u>Strong disagreement</u></b> with the statement."
+            $this->indent 4 = <b><u>Strong disagreement</u></b> with the statement.<br><br>"
         );
 
         $options = array(

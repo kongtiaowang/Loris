@@ -3,7 +3,7 @@ set_include_path(get_include_path().":../libraries:../../php/libraries:");
 require_once '../../vendor/autoload.php';
 require_once "Database.class.inc";
 require_once "Utility.class.inc";
-require_once "NDAR_Release_2019.class.inc";
+require_once "NDAR_Release_2019_Rerun.class.inc";
 
 $client = new NDB_Client();
 $client->makeCommandLine();
@@ -38,7 +38,7 @@ if ($argv[1]=="ibis1")
         'CCC2','ABC2','BOT2_Short','CSHQ','DAS_SA','MASC2_Parent','conners_parent','BRIEF2_Parent','WIAT_III_SA_1','WIAT_III_SA_2');
     // 'CCC2');
     foreach($IBIS as $instrument) {
-        $run = new NDAR_Release_2019 ($instrument, 1, $validating);
+        $run = new NDAR_Release_2019_Rerun ($instrument, 1, $validating);
         $run->run();
     }
 }
@@ -51,10 +51,9 @@ if ($argv[1]=="ibis2")
 
     //IBIS1 SA instrument array
 
-    $IBIS2= array('ados2_module1','ados2_module2','ados2_module3','scq_subject','scq_proband_survey','rbs_r',
-        'CCC2','ABC2','BOT2_Short','CSHQ','DAS_SA','MASC2_Parent','conners_parent','BRIEF2_Parent','WIAT_III_SA_1','WIAT_III_SA_2');
+    $IBIS2 = array('adi_r_proband','aosi','csbs','ibq_r','macarthur_words_gestures', 'm_chat_proband', 'scq_proband','mullen','rbs_r','vineland_proband','vineland_subject','edi2','height_weight','phys_neuro_exam', 'charge');
     foreach($IBIS2 as $instrument) {
-        $run = new NDAR_Release_2019 ($instrument, 2, $validating);
+        $run = new NDAR_Release_2019_Rerun ($instrument, 2, $validating);
         $run->run();
 
     }

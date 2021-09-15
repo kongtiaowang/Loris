@@ -21,21 +21,22 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
     const YES_NO_OPTIONS = array(
                                ""           => "",
                                "1"          => "Yes",
-                               "0"           => "No",
+                               "0"          => "No",
                               );
 
     const PASS_FAIL = array(
                                ""           => "",
                                "1"          => "Console Pass",
-                               "0"           => "Console Fail",
+                               "0"          => "Console Fail",
                               );
     const FINGER = array(
-                               ""                      => "",
-                               "finger"          => "Finger",
-                               "toe"              => "Toe",                               
+                               ""           => "",
+                               "finger"     => "Finger",
+                               "toe"        => "Toe",                               
                               );                
     const OPTION1TO5 = array(
-                               ""           => "",
+	   		       ""           => "",
+			       "0"          => "0",
                                "1"          => "1",
                                "2"          => "2",
                                "3"          => "3",
@@ -43,7 +44,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
                                "5"          => "5",                                                              
                               );     
     const OPTION1TO4 = array(
-                               ""           => "",
+	   		       ""           => "",
                                "1"          => "1",
                                "2"          => "2",
                                "3"          => "3",
@@ -57,14 +58,15 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
                               );      
 
     const S1_S4    = array(
-                               ""           => "",
+                               ""          => "",
                                "1"         => "Session 1",
                                "2"         => "Session 2",
                                "3"         => "Session 3",
                                "4"         => "Session 4",
                               );      
     const R1_R9    = array(
-                               ""           => "",
+                               ""          => "",
+                               "0"         => "0",
                                "1"         => "1",
                                "2"         => "2",
                                "3"         => "3",
@@ -76,9 +78,9 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
                                "9"         => "9",                                                                                                                                                                                                                        
                               );                   
 
-    const complete_partial_none    = array(
-                               ""                => "",
-                               "1"        => "Complete",
+    const complete_partial_none = array(
+                               ""          => "",
+                               "1"         => "Complete",
                                "0"         => "Partial",
                                "none"      => "None",                                                                                                                                                                                                                     
                               );  
@@ -96,39 +98,39 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
     ];
 
     private $orientation_grp = [
-        '' => '',
-        'supine' => 'Supine',
-        'leftlat' => 'Left Lateral',
-        'rightlat' => 'Right Lateral'
+        ''           => '',
+        'supine'     => 'Supine',
+        'leftlat'    => 'Left Lateral',
+        'rightlat'   => 'Right Lateral'
     ];
 
     private $vitamine_grp = [
-                '' => '',
-        'left' => 'Left',
+        ''      => '',
+        'left'  => 'Left',
         'right' => 'Right'
     ];
 
     private $bold_grp = ['b1_' => 'Fieldmap (BOLD-1)',
-            'b2_' => 'Fieldmap (BOLD-2)',
-            'b3_' => 'Fieldmap (BOLD-3)',
+            'b2_'     => 'Fieldmap (BOLD-2)',
+            'b3_'     => 'Fieldmap (BOLD-3)',
             'blast1_' => 'Fieldmap (Last)'];
 
-    private $bold_plus_grp = ['b4_' => 'Fieldmap (BOLD-4)',
-            'blast2_' => 'Last'];
+    private $bold_plus_grp = ['b4_'     => 'Fieldmap (BOLD-4)',
+                              'blast2_' => 'Last'];
 
     private $bold_firmm_grp = ['bp1_' => 'BOLD_PA 1',
-            'bp2_' => 'BOLD_PA 2',
-            'bp3_' => 'BOLD_PA 3'];
+                               'bp2_' => 'BOLD_PA 2',
+                               'bp3_' => 'BOLD_PA 3'];
 
     private $bold_plus_firmm_grp = ['bp4_' => 'BOLD_PA 4'];
 
     private $dti_grp = [
             '101b0' => [0 => '101 B0', 1 => 'DWI dir101 B0'],
-            'dti1' => [0 => 'DTI 1', 1 => 'DWI dir101 AP'],
-            'dti2' => [0 => 'DTI 2', 1 => 'DWI dir101 APinv'],
+            'dti1'  => [0 => 'DTI 1', 1  => 'DWI dir101 AP'],
+            'dti2'  => [0 => 'DTI 2', 1  => 'DWI dir101 APinv'],
             '105b0' => [0 => '105 B0', 1 => 'DWI dir105 B0'],
-            'dti3' => [0 => 'DTI 3', 1 => 'DWI dir105 AP'],
-            'dti4' => [0 => 'DTI 4', 1 => 'DWI dir105 APinv']
+            'dti3'  => [0 => 'DTI 3', 1  => 'DWI dir105 AP'],
+            'dti4'  => [0 => 'DTI 4', 1  => 'DWI dir105 APinv']
         ];
 
     private $pg2_number_of_lines = 6;
@@ -186,7 +188,9 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
         //The array of selects with multiple answers allowed
         //Any LorisForm multiple selects must be listed here
         $this->_selectMultipleElements = [
-            'study',
+		'study',
+		'face_mask',
+		'face_shield',
             ];
 
         // setup the form
@@ -286,10 +290,10 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
         unset($group);
 
         $grp = ['-10' => '170',
-                '-5' => '175',
-                '0' => '180',
-                '5' => '-175',
-                '10' => '-170'];
+                '-5'  => '175',
+                '0'   => '180',
+                '5'   => '-175',
+                '10'  => '-170'];
 
         $i = 0;
         foreach ($grp as $key => $val) {
@@ -304,12 +308,12 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
         $this->addLabel('');
 
         $grp = ['Field Map APinv' => '_SpinEchoFieldMap_APinv3mm',
-                'Field Map AP' => '_SpinEchoFieldMap_AP3mm',
-                'BOLD_PA' => 'BOLD_PA_ep2d_3mm52sl475slMB4',
-                '101_AP' => 'DWIcmrr_AP_dir101_3shell',
-                '101_APinv' => 'DWIcmrr_APinv_dir101_3shell',
-                '105_AP' => 'DWIcmrr_AP_dir105_3shell',
-                '105_Apinv' => 'DWIcmrr_APinv_dir105_3shell'];
+                'Field Map AP'    => '_SpinEchoFieldMap_AP3mm',
+                'BOLD_PA'         => 'BOLD_PA_ep2d_3mm52sl475slMB4',
+                '101_AP'          => 'DWIcmrr_AP_dir101_3shell',
+                '101_APinv'       => 'DWIcmrr_APinv_dir101_3shell',
+                '105_AP'          => 'DWIcmrr_AP_dir105_3shell',
+                '105_Apinv'       => 'DWIcmrr_APinv_dir105_3shell'];
 
         $group = array();
         $group[] = $this->form->createElement('static', null, null, '');
@@ -339,19 +343,32 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
     function _page1()
     {
 
-        $option1 = [null =>'','By_Specialist'=>'By Specialist','MR_Tech'=>'MR Tech','Parent_or_Guardian'=>'Parent or Guardian'];
-        $option2 = [null =>'','full_protocol_acquired'=>'Full Protocol Acquired',
-                              'only_core_acquired'=>'Only Core Acquired',
-                              'partial_core_acquired'=>'Partial Core Acquired',
-                              'none_core_acquired'=>'None',
-                              ];
-        $option3 = [null =>'','subject_woke_up'=>'Subject woke up',
-                              'ran_out_of_time'=>'Ran out of time',
-                              'subject_did_not_sleep'=>'Subject did not sleep',
-                              'none_core_acquired'=>'Scanner issues',
-                              'family_canceled'=>'Family canceled',
-                              'family_declined_2nd_attempt'=>'Family declined 2nd attempt',
-                              ];        
+	    $option1 = [
+		    null                 =>'',
+		    'By_Specialist'      =>'By Specialist',
+		    'MR_Tech'            =>'MR Tech',
+		    'Parent_or_Guardian' =>'Parent or Guardian',
+	               ];
+
+
+	    $option2 = [
+		    null =>'',
+		    'full_protocol_acquired'   =>'Full Protocol Acquired',
+                    'only_core_acquired'       =>'Only Core Acquired',
+                    'partial_core_acquired'    =>'Partial Core Acquired',
+                    'none_core_acquired'       =>'None',
+                       ];
+	    
+	    
+	    $option3 = [
+		    null                           =>'',
+		    'subject_woke_up'              =>'Subject woke up',
+                    'ran_out_of_time'              =>'Ran out of time',
+                    'subject_did_not_sleep'        =>'Subject did not sleep',
+                    'none_core_acquired'           =>'Scanner issues',
+                    'family_canceled'              =>'Family canceled',
+                    'family_declined_2nd_attempt'  =>'Family declined 2nd attempt',
+                       ];        
 
         $this->form->addElement('header', null, "Record");
 
@@ -398,21 +415,21 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
 
         $this->addTextElement(
             'height',
-            'Height (cms):'
+            'Height (Inches):'
         );
 
                 $this->XINRegisterRule("height", array("height{@}=={@}NEVER_REQUIRED"));
 
         $this->addTextElement(
             'weight',
-            'Weight (kgs):'
+            'Weight (lbs):'
         );
                 $this->XINRegisterRule("weight", array("weight{@}=={@}NEVER_REQUIRED"));
 
 
         $this->addTextElement(
             'head_circumference',
-            'Head Circumference (cms):'
+            'Head Circumference (Inches):'
         );
                 $this->XINRegisterRule("head_circumference", array("head_circumference{@}=={@}NEVER_REQUIRED"));
 
@@ -448,8 +465,8 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
                 "",
                 array(
                     null => "",
-                    "1" => "Yes",
-                    "0" => "No"
+                    "1"  => "Yes",
+                    "0"  => "No"
                 )
             );
             $group[] = $this->createDate(
@@ -736,6 +753,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
             $i++;
         }
         $this->addLabel('run fails if % 0.2mm < 70%; needs 3 BOLD runs to pass');
+        $this->addCheckbox('firm_not_used', 'FIRMM NOT USED', array('value' => '1'));
 
         $this->addSelect('bold_pass', 'BOLD Passed', $this->yes_no);
         //$this->form->addRule("bold_pass", "BOLD Passed must be set", 'required');
@@ -757,6 +775,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
         $errors = [];
         $i = 0;
         foreach ($this->bold_firmm_grp as $key => $label) {
+          if (!isset($values['firm_not_used'])) {  
             if (!empty($values["{$key}02_{$i}"]) && !is_numeric($values["{$key}02_{$i}"])) {
                 $errors["sec3_2_row{$i}"] = '% 0.2mm should not have a non-numeric value.';
             }
@@ -769,6 +788,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
                     $errors["sec3_2_row{$i}"] = 'Because % 0.2mm < 70%, this line doesn\'t pass';
                 }
             }
+          }    
             $i ++;
         }
 
@@ -862,7 +882,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
 
         $i = 0;
         foreach ($this->bold_plus_grp as $key => $label) {
-            $group = array();
+            $group   = array();
             $group[] = $this->form->createElement('static', null, null, $label);
 
             $group[] = $this->createSelect("{$key}run{$i}", '', $this->yes_no);
@@ -887,7 +907,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
         $grp0 = "bold_plus_session_";
         $i = 0;
         foreach ($this->bold_plus_firmm_grp as $key => $label) {
-            $group = array();
+            $group   = array();
             $group[] = $this->createSelect("$grp0{$i}", '', self::S1_S4);
             $this->not_required_field("$grp0{$i}");
 
@@ -908,13 +928,37 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
             unset($group);
             $i++;
         }
+        $this->addCheckbox('firm_not_used_plus', 'FIRMM NOT USED', array('value' => '1'));
         $this->addLabel('Please set to A >> P, then edit the angle to set P >> A');
         $this->addSelect("boldplus_attempts", "BOLD Attempts", self::R1_R9);
 
         $this->form->addElement("textarea", "page5_comment", "Comments:", array('cols'=>25, 'rows'=>4));
         $this->XINRegisterRule("page5_comment", array("page5_comment{@}=={@}NEVER_REQUIRED"));
-    }
+        $this->form->addFormRule(array(&$this, 'constraint_rules_pg5'));
 
+    }
+    /**
+     * constraint check for page 5
+     */
+    function constraint_rules_pg5($values) {
+        $errors = [];
+            if (!isset($values['firm_not_used_plus'])) {
+                if (!empty($values["bp4_02_0"]) && !is_numeric($values["bp4_02_0"])) {
+                    $errors["sec5_2_row0"] = '% 0.2mm should not have a non-numeric value.';
+                }
+                else {
+                    $tmp_02val = intval($values["bp4_02_0"]);
+                    if (!($tmp_02val >= 0 && $tmp_02val <= 100)) {
+                        $errors["sec5_2_row0"] = '% 0.2mm value is not valid. It should be a value between 0 and 100.';
+                    }
+                    else if (intval($values["bp4_02_0"]) < 70 && !empty($values["bp4_pass_0"])) {
+                        $errors["sec5_2_row0"] = 'Because % 0.2mm < 70%, this line doesn\'t pass';
+                    }
+                }
+            }
+
+        return $errors;
+    }
     /**
      * Page 6
      *
@@ -925,7 +969,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
         $this->form->addElement('header', null, "CSF Flow");
 
 
-        $group = [];
+        $group   = [];
         $group[] = $this->form->createElement('static', null, null, 'Run?');
         $group[] = $this->form->createElement('static', null, null, 'CSF flow total number of attempts');
         $group[] = $this->form->createElement('static', null, null, 'Console Pass?');
@@ -943,7 +987,11 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
             unset($group);
                     
          $this->form->addElement("select", "pulse", "Pulse Ox replacement:", self::FINGER);
-
+         $this->XINRegisterRule(
+            "pulse",
+            array("csf_pass{@}=={@}1"),
+            "Required."
+         );
          $this->form->addElement("text", "captured_cycle", "Captured cycle (ms):");
          $this->form->addElement("text", "acquisition_window", "Acquisition window (ms):");
 

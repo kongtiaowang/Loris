@@ -196,7 +196,9 @@ CREATE TABLE `mri_parameter_ep` (
   `dti_session_2` enum('1','2','3','4') default NULL,
   `dti_session_3` enum('1','2','3','4') default NULL,
   `dti_session_4` enum('1','2','3','4') default NULL,
-  `dti_session_5` enum('1','2','3','4') default NULL;
+  `dti_session_5` enum('1','2','3','4') default NULL,
   `bold_plus_session_0` enum('1','2','3','4') default NULL,
+  `firm_not_used` varchar(255) default NULL,
+  `firm_not_used_plus` varchar(255) default NULL,
   PRIMARY KEY (`CommentID`)
 ) ENGINE=InnoDB default CHARSET=utf8;

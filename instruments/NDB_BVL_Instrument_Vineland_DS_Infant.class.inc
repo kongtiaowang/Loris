@@ -1,4 +1,3 @@
-  
 <?php
 /*
  * This file contains the NDB_BVL_Instrument_Vineland_DS_Infant
@@ -52,4 +51,3 @@ class NDB_BVL_Instrument_Vineland_DS_Infant extends AbstractNDB_BVL_Instrument_V
 }
 
 ?>
-

@@ -153,16 +153,16 @@ class NDB_BVL_Instrument_conners_teacher extends NDB_BVL_Instrument
                          Read each item carefully, then mark how well
                          it describes this student or how frequently 
                          it has happened in the <b><i>past month</i></b>.<br><br>
-                         $this->indent <b>0</b> = In the past month, 
+                         <b>0</b> = In the past month, 
                          this was <b><i>not true at all</i></b> about this student. It never
                          (or seldom) happened<br>
-                         $this->indent <b>1</b> = In the past month, this was 
+                         <b>1</b> = In the past month, this was 
                          <b><i>just a little true</i></b> about this student. 
                          It happened occasionally.<br>
-                         $this->indent <b>2</b> = In the past month, 
+                         <b>2</b> = In the past month, 
                          this was <b><i>pretty much true</i></b> about
                          this student. It happened often (or quite a bit).<br>
-                         $this->indent <b>3</b> = In the past month, this 
+                         <b>3</b> = In the past month, this 
                          was <b><i>very much true</i></b> about this student. It
                          happened very often (very frequently).<br><br>
                          Please pick one answer for each item. It is important

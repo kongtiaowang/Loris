@@ -231,16 +231,29 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
         //The array of selects with multiple answers allowed
         //Any LorisForm multiple selects must be listed here
         $this->_selectMultipleElements = array(
-                                          "pro_devfactors_q1_exclusionary_conditions",
+	                                  "pro_devfactors_q1_exclusionary_conditions",
+					  "pro_medhist_q1_non_exclusionary_conditions",
+					  "pro_medhist_q1_exclusionary_conditions",
+					  "pro_devfactors_q2_exclusionary_conditions",
                                           "pro_devfactors_q5_exclusionary_conditions",
-                                          "pro_devfactors_q6_exclusionary_conditions",
-                                          "pro_devfactors_q14_method_of_delivery",
+					  "pro_medhist_q5_results",
+					  "inf_devfactors_q4_non_exclusionary_conditions",
+					  "pro_devfactors_q4_non_exclusionary_conditions",
+					  "pro_devfactors_q6_exclusionary_conditions",
+					  "pro_devfactors_q7_exclusionary_conditions",
+					  "pro_devfactors_q14_method_of_delivery",
                                           "pro_medhist_q5_results",
                                           "inf_devfactors_q1_exclusionary_conditions",
                                           "inf_devfactors_q5_exclusionary_conditions",
                                           "inf_devfactors_q6_exclusionary_conditions",
-                                          "inf_devfactors_q14_method_of_delivery",
-                                          "inf_medhist_q1_exclusionary_conditions",
+					  "inf_devfactors_q7_exclusionary_conditions",
+					  "inf_devfactors_q14_method_of_delivery",
+					  "pro_devfactors_q13_exclusionary_conditions",
+					  "inf_devfactors_q13_exclusionary_conditions",
+					  "inf_devfactors_q13_review_by_committee",
+					  "inf_medhist_q1_exclusionary_conditions",
+					  "inf_medhist_q6_metal_options`",
+					  "inf_medhist_q1_exclusionary_conditions",
                                           "inf_medhist_q6_metal_options",
                                           "inf_medhist_q9_results",
                                           "candidate_race",
@@ -257,7 +270,17 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
                                     "inf_devfactors_q1_specific_neurological_problems",
                                     "inf_medhist_q1_had_serious_medical_or_surgical_problems",
                                     "candidate_race",
-                                   );
+			    );
+
+	$config = NDB_Config::singleton();
+        $this->dateOptions = array(
+            'language' => 'en',
+            'format' => 'YMd',
+            'minYear' => $config->getSetting('startYear'),
+            'maxYear' => $config->getSetting('endYear'),
+            'addEmptyOption' => true,
+            'emptyOptionValue' => null,
+        );
 
         // setup the form
         $this->_setupForm();
@@ -293,27 +316,20 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
     {
         // display test name
         $this->addHeader("Telephone Screening Interview - EP");
+        $this->addCheckbox('not_finish0', 'Form not acquired to completion due to candidate determined as ineligible during screening interview.', array('value' => '1'));
 
         $this->form->addElement('static', null, '<h4><i>*Identifying information should not be entered in the database</i></h4>');
 
         // automatically adds examiner & date of administration
         $this->_addMetadataFields();
 
-        $config      =& NDB_Config::singleton();
-        $dateOptions = array(
-                        'language'         => 'en',
-                        'format'           => 'YMd',
-                        'minYear'          => $config->getSetting('startYear'),
-                        'maxYear'          => $config->getSetting('endYear'),
-                        'addEmptyOption'   => true,
-                        'emptyOptionValue' => null,
-                       );
-
         $this->form->addElement('static', null, null);
 
-        $this->addBasicDate('date_of_first_contact', 'Date of First Contact (1st time speak with the family)', $dateOptions);
+        $this->addBasicDate('date_of_first_contact', 'Date of First Contact (1st time speak with the family)', $this->dateOptions);
 
         $this->form->addElement('text', null, "City/State of Birth", ['disabled' => 'disabled']);
+        $this->XINRegisterRule("date_of_first_contact", array("not_finish0{@}!={@}1"), 'Required.');
+
     }
 
     /**
@@ -324,6 +340,7 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
     function _page1()
     {
         $this->addHeader("Telephone Screening Interview - EP");
+        $this->addCheckbox('not_finish1', 'Form not acquired to completion due to candidate determined as ineligible during screening interview.', array('value' => '1'));
 
         $this->form->addElement('static', null, '<h4><i>*Identifying information should not be entered in the database</i></h4>');
 
@@ -364,8 +381,9 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
         $this->form->addElement('text', null, $this->indent . "Middle Name", ['disabled' => 'disabled']);
         $this->form->addElement('text', null, $this->indent . "Last Name", ['disabled' => 'disabled']);
 
-        $this->addBasicDate("subject_dob", $this->indent . 'Date of Birth', $this->dateOptions);
+        $this->form->addElement("date","subject_dob", $this->indent . 'Date of Birth');
         $this->addBasicDate("subject_expected_due_date", $this->indent . 'Expected Due Date', $this->dateOptions);
+
 
         $this->form->addElement('text', "subject_birth_weight_lbs", $this->indent . "Birth weight (lbs)");
         $this->form->addElement('text', "subject_birth_weight_oz", $this->indent . "Birth weight (oz)");
@@ -419,7 +437,7 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
         $this->form->addElement('text', null, $this->indent . "Middle Name", ['disabled' => 'disabled']);
         $this->form->addElement('text', null, $this->indent . "Last Name", ['disabled' => 'disabled']);
 
-        $this->addBasicDate("proband_dob", $this->indent . 'Date of Birth', $this->dateOptions);
+        $this->form->addElement("date","proband_dob", $this->indent . 'Date of Birth');
         $this->form->addElement('text', null, $this->indent . "City of Birth", ['disabled' => 'disabled']);
 
         $this->form->addElement('text', "proband_birth_weight_lbs", $this->indent . "Birth weight (lbs)");
@@ -445,14 +463,15 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
 
         foreach ($pii_contact as $field) {
             if ($field == "Date of Birth") {
-                $this->addDateElement("mother_dob", $this->indent . $field);
+                $this->form->addElement("date","mother_dob", $this->indent . $field);
             } else {
                 $this->form->addElement('text', null, $this->indent . $field, ['disabled' => 'disabled']);
             }
         }
-
+        $this->XINRegisterRule("mother_dob", array("mother_dob{@}=={@}"), "Required. ");
         $this->addTextElement("mother_occupation", $this->indent . "Occupation");
         $this->addSelect("mother_education", $this->indent . "Education", self::EDUCATION_OPTIONS);
+        $this->XINRegisterRule("mother_occupation", array("mother_occupation{@}=={@}never_required"), 'Not Required.');
 
         $this->form->addElement('static', null, null);
 
@@ -461,13 +480,15 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
 
         foreach ($pii_contact as $field) {
             if ($field == "Date of Birth") {
-                $this->addDateElement("father_dob", $this->indent . $field);
+                $this->form->addElement("date","father_dob", $this->indent . $field);
             } elseif ($field != "Maiden Name") {
                 $this->form->addElement('text', null, $this->indent . $field, ['disabled' => 'disabled']);
             }
         }
-
+        $this->XINRegisterRule("father_dob", array("father_dob{@}=={@}"), "Required. ");
         $this->addTextElement("father_occupation", $this->indent . "Occupation");
+        $this->XINRegisterRule("father_occupation", array("father_occupation{@}=={@}never_required"), 'Not Required.');
+
         $this->addSelect("father_education", $this->indent . "Education", self::EDUCATION_OPTIONS);
 
         $this->form->addElement('static', null, null);
@@ -516,7 +537,48 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
 
         // ADDITIONAL INFORMATION
         $this->addTextAreaElement("additional_info_about_childs_home", "Additional information about child’s home:");
-
+        $this->XINRegisterRule("subject_dob", array("not_finish1{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("subject_expected_due_date", array("not_finish1{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("subject_birth_weight_lbs", array("not_finish1{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("subject_birth_weight_oz", array("not_finish1{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("subject_gender", array("not_finish1{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("subject_premature", array("not_finish1{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("subject_how_many_weeks_gestation", array("not_finish1{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("v06_optimal_window_lower", array("not_finish1{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("v06_optimal_window_upper", array("not_finish1{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("v06_permitted_window_lower", array("not_finish1{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("v06_permitted_window_upper", array("not_finish1{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("v12_optimal_window_lower", array("not_finish1{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("v12_optimal_window_upper", array("not_finish1{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("v12_permitted_window_lower", array("not_finish1{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("v12_permitted_window_upper", array("not_finish1{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("v24_optimal_window_lower", array("not_finish1{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("v24_optimal_window_upper", array("not_finish1{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("v24_permitted_window_lower", array("not_finish1{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("v24_permitted_window_upper", array("not_finish1{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("proband_dob", array("not_finish1{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("proband_birth_weight_lbs", array("not_finish1{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("proband_birth_weight_oz", array("not_finish1{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("proband_gender", array("not_finish1{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("proband_premature", array("not_finish1{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("proband_how_many_weeks_gestation", array("not_finish1{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("proband_infant_full_siblings", array("not_finish1{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("when_diagnosed_with_autism", array("not_finish1{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("diagnosed_with_autism_by", array("not_finish1{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("mother_dob", array("not_finish1{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("mother_occupation", array("not_finish1{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("mother_education", array("not_finish1{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("father_dob", array("not_finish1{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("father_occupation", array("not_finish1{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("father_education", array("not_finish1{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("is_english_primary_language_spoken_in_home", array("not_finish1{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("are_infant_and_or_proband_adopted", array("not_finish1{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("is_infant_a_multiple", array("not_finish1{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("is_proband_a_multiple", array("not_finish1{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("are_bio_parents_living_in_same_home", array("not_finish1{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("are_parents_divorced_or_separated", array("not_finish1{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("relationship_to_family", array("not_finish1{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("additional_info_about_childs_home", array("not_finish1{@}!={@}1"), 'Required.');
         $this->form->addFormRule(array(&$this, 'validate_page1'));
     }
 
@@ -528,6 +590,7 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
     function _page2()
     {
         $this->addHeader("Telephone Screening Interview - EP");
+        $this->addCheckbox('not_finish2', 'Form not acquired to completion due to candidate determined as ineligible during screening interview.', array('value' => '1'));
 
         $this->form->addElement('static', null, '<h4><i>*Identifying information should not be entered in the database</i></h4>');
 
@@ -692,7 +755,7 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
         );
         unset($group);
 
-        for ($i = 1; $i <= 5; $i++) {
+        for ($i = 1; $i <= 8; $i++) {
 
             $group[] =& $this->createText(
                 null,
@@ -783,6 +846,12 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
 
         $this->addTextAreaElement("how_did_you_find_out_about_the_study", "How did you find out about the study?");
 
+        $this->XINRegisterRule("proband_dob2", array("not_finish2{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("proband_gender2", array("not_finish2{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("proband_live_in_home", array("not_finish2{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("enrolled_in_other_studies_or_registries", array("not_finish2{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("how_did_you_find_out_about_the_study", array("not_finish2{@}!={@}1"), 'Required.');
+
         $this->form->addFormRule(array(&$this, 'validate_page2'));
     }
 
@@ -794,6 +863,7 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
     function _page3()
     {
         $this->addHeader("Telephone Screening Interview - EP");
+        $this->addCheckbox('not_finish3', 'Form not acquired to completion due to candidate determined as ineligible during screening interview.', array('value' => '1'));
 
         $this->form->addElement('static', null, "<h4><b>Development Factors in PROBAND</b></h4>");
 
@@ -1131,6 +1201,22 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
             null,
             "<h6><i>All above are exclusionary if any is present except intellectual disability in proband with autism.</i></h6>"
         );
+        $this->XINRegisterRule("pro_devfactors_q5a_head_injury", array("not_finish3{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("pro_devfactors_q1_specific_neurological_problems", array("not_finish3{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("pro_devfactors_q2_diagnosed_suspected_genetic_conditions", array("not_finish3{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("pro_devfactors_q2a_family_history_of_genetic_disorders", array("not_finish3{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("pro_devfactors_q3_genetic_testing_completed", array("not_finish3{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("pro_devfactors_q4_history_of_seizures", array("not_finish3{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("pro_devfactors_q5_central_nervous_system_problems", array("not_finish3{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("pro_devfactors_q6_congenital_heart_problems_abnormalities", array("not_finish3{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("pro_devfactors_q7_significant_hearing_vision_problems", array("not_finish3{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("pro_devfactors_q8_mother_gestational_diabetes", array("not_finish3{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("pro_devfactors_q8b_have_diabetes", array("not_finish3{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("pro_devfactors_q11a_did_you_breastfeed", array("not_finish3{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("pro_devfactors_q12_exposure_to_medication_alcohol_drugs", array("not_finish3{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("pro_devfactors_q13_complications_during_pregnancy_delivery", array("not_finish3{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("pro_devfactors_q14_method_of_delivery", array("not_finish3{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("pro_devfactors_q15_first_degree_relative", array("not_finish3{@}!={@}1"), 'Required.');
 
         $this->form->addFormRule(array(&$this, 'validate_page3'));
     }
@@ -1143,6 +1229,8 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
     function _page4()
     {
         $this->addHeader("Telephone Screening Interview - EP");
+        $this->addCheckbox('not_finish4', 'Form not acquired to completion due to candidate determined as ineligible during screening interview.', array('value' => '1'));
+
 
         $this->form->addElement('static', null, "<h4><b>PROBAND Medical History</b></h4>");
 
@@ -1233,7 +1321,11 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
 
         $this->form->addElement('text', "pro_medhist_q5_other", $this->indent . 'Other:');
         $this->XINRegisterRule("pro_medhist_q5_other", array("pro_medhist_q5_results{@}=={@}other"), 'Required if other');
-
+        $this->XINRegisterRule("pro_medhist_q1_had_serious_medical_or_surgical_problems", array("not_finish4{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("pro_medhist_q2_been_hospitalized", array("not_finish4{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("pro_medhist_q3_diagnosed_with_jaundice", array("not_finish4{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("pro_medhist_q4_had_surgery", array("not_finish4{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("pro_medhist_q5_had_an_MRI_of_the_brain", array("not_finish4{@}!={@}1"), 'Required.');
         $this->form->addFormRule(array(&$this, 'validate_page4'));
     }
 
@@ -1245,6 +1337,8 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
     function _page5()
     {
         $this->addHeader("Telephone Screening Interview - EP");
+        $this->addCheckbox('not_finish5', 'Form not acquired to completion due to candidate determined as ineligible during screening interview.', array('value' => '1'));
+
 
         $this->form->addElement('static', null, "<h4><b>Developmental Factors in INFANT</b></h4>");
 
@@ -1478,6 +1572,25 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
         $this->form->addElement('text', "inf_devfactors_q14_other", $this->indent . 'Other:');
         $this->XINRegisterRule("inf_devfactors_q14_other", array("inf_devfactors_q14_method_of_delivery{@}=={@}yes"), 'Required if other');
 
+
+        $this->XINRegisterRule("inf_devfactors_q1_specific_neurological_problems", array("not_finish5{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("inf_devfactors_q2_diagnosed_suspected_genetic_conditions", array("not_finish5{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("inf_devfactors_q3_genetic_testing_completed", array("not_finish5{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("inf_devfactors_q4_had_seizures", array("not_finish5{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("inf_devfactors_q5_central_nervous_system_problems", array("not_finish5{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("inf_devfactors_q5a_history_of_head_injury", array("not_finish5{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("inf_devfactors_q6_congenital_heart_problems_or_abnormalities", array("not_finish5{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("inf_devfactors_q7_significant_hearing_vision_problems", array("not_finish5{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("inf_devfactors_q8_mother_gestational_diabetes", array("not_finish5{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("inf_devfactors_q8b_have_diabetes", array("not_finish5{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("inf_devfactors_q9_problems_with_sleep_apnea_or_breathing", array("not_finish5{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("inf_devfactors_q10_gastrointestinal_condition", array("not_finish5{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("inf_devfactors_q11_breastfeeding", array("not_finish5{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("inf_devfactors_q11a_did_you_breastfeed", array("not_finish5{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("inf_devfactors_q11b_if_weaned_how_long_breastfeed", array("not_finish5{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("inf_devfactors_q12_exposure_to_medication_alcohol_drugs", array("not_finish5{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("inf_devfactors_q13_complications_during_pregnancy_delivery", array("not_finish5{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("inf_devfactors_q14_method_of_delivery", array("not_finish5{@}!={@}1"), 'Required.');
         $this->form->addFormRule(array(&$this, 'validate_page5'));
     }
 
@@ -1489,6 +1602,8 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
     function _page6()
     {
         $this->addHeader("Telephone Screening Interview - EP");
+        $this->addCheckbox('not_finish6', 'Form not acquired to completion due to candidate determined as ineligible during screening interview.', array('value' => '1'));
+
 
         $this->form->addElement('static', null, "<h4><b>Medical History in INFANT</b></h4>");
 
@@ -1594,7 +1709,18 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
         $this->XINRegisterRule("inf_medhist_q11_how_long", array("inf_medhist_q11_nap_during_the_day{@}=={@}yes"), 'Required if yes');
 
         $this->addBasicText("inf_medhist_q12_what_time_does_X_go_to_sleep_at_night", "12. What time does X go to sleep at night?");
-
+        $this->XINRegisterRule("inf_medhist_q1_had_serious_medical_or_surgical_problems", array("not_finish6{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("inf_medhist_q2_been_hospitalized", array("not_finish6{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("inf_medhist_q3_complications_with_birth", array("not_finish6{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("inf_medhist_q4_diagnosed_with_jaundice", array("not_finish6{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("inf_medhist_q5_had_surgery", array("not_finish6{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("inf_medhist_q6_have_metal_plates_clips_etc_from_surgery", array("not_finish6{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("inf_medhist_q7_taken_medications_since_birth", array("not_finish6{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("inf_medhist_q8_seen_doctor_for_more_than_well_baby_visit", array("not_finish6{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("inf_medhist_q9_had_an_MRI_of_the_brain", array("not_finish6{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("inf_medhist_q10_had_anesthesia_or_other_sedation", array("not_finish6{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("inf_medhist_q11_nap_during_the_day", array("not_finish6{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("inf_medhist_q12_what_time_does_X_go_to_sleep_at_night", array("not_finish6{@}!={@}1"), 'Required.');
         $this->form->addFormRule(array(&$this, 'validate_page6'));
     }
 
@@ -1606,6 +1732,8 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
     function _page7()
     {
         $this->addHeader("Telephone Screening Interview - EP");
+        $this->addCheckbox('not_finish7', 'Form not acquired to completion due to candidate determined as ineligible during screening interview.', array('value' => '1'));
+
 
         $this->form->addElement('static', null, null);
 
@@ -1672,15 +1800,67 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
             $this->addSelect($key, $question, self::YES_NO_OPTIONS);
         }
 
-        $this->addTextAreaElement("if_reviewed_decision", "If reviewed, what was reviewed and what decision was made?");
+	$group[] =& $this->form->createElement(
+            "textarea",
+            "if_reviewed_decision",
+            null,
+            array(
+             'cols' => 25,
+             'rows' => 4,
+            )
+        );
+        $group[] =& $this->createSelect(
+            "if_reviewed_decision_status",
+            "",
+            array(
+             null              => '',
+             'review_not_done' => 'Review Not Done',
+            )
+       );
+       $this->addGroup($group, 'if_reviewed_decision_group', "If reviewed, what was reviewed and what decision was made?", null, false);
+        unset($group);
+        $rules_array =array_merge(array('if_reviewed_decision_status{@}=={@}'), array());
+	$this->XINRegisterRule('if_reviewed_decision', $rules_array, 'Required','if_reviewed_decision_group');
 
-        $this->addBasicDate('date_received_exclusion_review_decision', "Date received exclusion review decision:");
-
+        $group[] = $this->createDate(
+            "date_received_exclusion_review_decision",
+            null,
+            $this->dateOptions
+        );
+        $group[] = $this->createSelect(
+            "date_received_exclusion_review_decision_status",
+            null,
+            array(
+             null              => "",
+             'review_not_done' => "Review Not Done",
+            )
+        );       
+        $this->addGroup(
+            $group,
+            "date_received_date_group",
+            $label,
+            $this->_GUIDelimiter,
+            false
+        );
+        unset($group);
         $this->XINRegisterRule(
             "date_received_exclusion_review_decision",
-            array("if_reviewed_decision{@}!={@}"),
-            'Required.'
+            array("date_received_exclusion_review_decision_status{@}=={@}"),
+            "Required.",
+            "date_received_date_group"
         );
+
+        $this->XINRegisterRule("candidate_race", array("not_finish7{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("bio_mother_race", array("not_finish7{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("bio_father_race", array("not_finish7{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("candidate_ethnicity", array("not_finish7{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("bio_mother_ethnicity", array("not_finish7{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("bio_father_ethnicity", array("not_finish7{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("likelihood_of_child_sleeping_through_a_scan_rating", array("not_finish7{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("q1_infant_meets_any_medical_neurological_exclusion_criteria", array("not_finish7{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("q2_subject_has_evidence_for_contraindication_to_MRI", array("not_finish7{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("q3_proceed_to_next_level_beyond_screening", array("not_finish7{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("if_reviewed_decision", array("not_finish7{@}!={@}1"), 'Required.');
     }
 
     function q12_table($page_number, $section_name, $parent_question)
@@ -1872,7 +2052,8 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
     function validate_page1($values)
     {
         $errors = [];
-
+        
+    if ($values["not_finish0"]!="1"){
         $this->validate_positive_numeric($values, "subject_birth_weight_lbs", $errors);
         $this->validate_positive_numeric($values, "subject_birth_weight_oz", $errors);
         $this->validate_positive_numeric($values, "subject_how_many_weeks_gestation", $errors);
@@ -1884,26 +2065,31 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
         if ($values["are_bio_parents_living_in_same_home"] != "no") {
             $this->validate_empty_subquestions($values, ["if_not_in_same_home_childs_primary_address_with"], $errors);
         }
-
+     }    
         return $errors;
     }
 
     function validate_page2($values)
     {
         $errors = [];
-
         $proband_fields = array();
 
-        if ($values["proband_dob2"] == "") {
+        if ($values["proband_dob2"] == "" ) {
+            if ($values["not_finish2"] != "1") {
             array_push($proband_fields, "Proband Date of Birth");
+            }
         }
 
         if ($values["proband_gender2"] == "") {
+            if ($values["not_finish2"] != "1") {
             array_push($proband_fields, "Proband Gender");
+            }
         }
 
         if ($values["proband_live_in_home"] == "") {
+            if ($values["not_finish2"] != "1") {
             array_push($proband_fields, "Proband Live in Home");
+            }
         }
 
         $count = count($proband_fields);
@@ -2245,5 +2431,15 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
             }
         }
     }
+    function _save(array $values): void
+    {  
+       for($i=0;$i<=7;$i++){
+            $checkbox= "not_finish".$i;
+            if (!isset($values["$checkbox"])) {
+                $values["$checkbox"] = '0';
+            }
+       } 
+        parent::_save($values);
+    }
 }
-?>
+

@@ -134,6 +134,9 @@ CREATE TABLE `tsi_ds` (
   `review_details_status`    enum('not_answered') DEFAULT NULL,
   `review_date`              date DEFAULT NULL,
   `review_date_status`       enum('not_answered') DEFAULT NULL,
-   
+  `not_finish0` varchar(10)  default NULL,
+  `not_finish1` varchar(10)  default NULL,
+  `not_finish2` varchar(10)  default NULL,
+  `not_finish3` varchar(10)  default NULL,   
   PRIMARY KEY (`CommentID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

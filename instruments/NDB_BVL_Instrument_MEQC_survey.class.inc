@@ -26,6 +26,69 @@ class NDB_BVL_Instrument_MEQC_survey extends NDB_BVL_Instrument
     use LegacyInstrumentTrait;
     use instrument_validator;
 
+    var $scoreLabels = array(
+        "mornings_evenings_total_derived_score",
+      );
+
+    const MORNINGNESS_EVENINGNESS = [
+        "q1_is_it_easy_to_get_up_in_the_morning",
+        "q2_how_alert_are_you_in_first_half_hour_youre_up",
+        "q3_imagine_school_canceled_when_would_you_get_out_of_bed",
+        "q4_parents_decided_to_let_you_set_own_bedtime_what_time",
+        "q5_have_to_take_two_hour_test_can_take_it_when_best_what_time",
+        "q6_gym_class_is_set_7_00_am_how_do_you_think_you_will_do",
+        "q7_when_does_your_body_tell_you_its_time_for_bed",
+        "q8_had_to_get_up_at_6_00_am_what_would_it_be_like",
+        "q9_when_you_wake_up_how_long_to_be_totally_with_it",
+        "q10_when_do_you_have_most_energy_to_do_favorite_things",
+    ];
+
+    const RESPONSE_VALUES = [
+        "no_way"                     => 1,
+        "sort_of"                    => 2,
+        "pretty_easy"                => 3,
+        "cinch"                      => 4,
+        "out_of_it"                  => 1,
+        "a_little_dazed"             => 2,
+        "okay"                       => 3,
+        "ready_to_take_on_the_world" => 4,
+        "5_00_and_6_30_am"           => 5,
+        "6_30_and_7_45_am"           => 4,
+        "7_45_and_9_45_am"           => 3,
+        "9_45_and_11_00_am"          => 2,
+        "11_00_am_and_noon"          => 1,
+        "8_00_and_9_00_pm"           => 5,
+        "9_00_and_10_15_pm"          => 4,
+        "10_15_pm_and_12_30_am"      => 3,
+        "12_30_and_1_45_am"          => 2,
+        "1_45_and_3_00_am"           => 1,
+        "8_00_to_10_00_am"           => 4,
+        "11_00_am_to_1_00_pm"        => 3,
+        "3_00_to_5_00_pm"            => 2,
+        "7_00_to_9_00_pm"            => 1,
+        "my_best"                    => 4,
+        "okay"                       => 3,
+        "worse_than_usual"           => 2,
+        "awful"                      => 1,
+        "8_00_and_9_00_pm"           => 5,
+        "9_00_and_10_15_pm"          => 4,
+        "10_15_pm_and_12_30_am"      => 3,
+        "12_30_and_1_45_am"          => 2,
+        "1_45_and_3_00_am"           => 1,
+        "awful"                      => 1,
+        "not_so_great"               => 2,
+        "okay"                       => 3,
+        "fine"                       => 4,
+        "0_to_10_minutes"            => 4,
+        "11_to_20_minutes"           => 3,
+        "21_to_40_minutes"           => 2,
+        "more_than_40_minutes"       => 1,
+        "morning_tired_in_evening"   => 4,
+        "morning_more_than_evening"  => 3,
+        "evening_more_than_morning"  => 2,
+        "evening_tired_in_morning"   => 1,
+    ];
+
     /**
      * Sample SQL statement for test_names table and instrument subtests table
      *
@@ -141,7 +204,35 @@ class NDB_BVL_Instrument_MEQC_survey extends NDB_BVL_Instrument
 
         $this->XINRegisterRule('other_specify', array('respondent{@}=={@}other'), 'Required if other');
 
-        $this->form->addFormRule(array(&$this, 'validate_main_page'));
+	$this->form->addFormRule(array(&$this, 'validate_main_page'));
+	
+	// SCORING TABLE
+
+        $this->form->addElement('header', 'score', "Score Summary");
+
+        $group[] = $this->form->createElement('static', "score", null, null);
+
+        $this->form->addGroup($group, 'score_header_group', "<strong>Scale</strong>", $this->_GUIDelimiter, false);
+        unset($group);
+
+        $scales = array(
+                   "mornings_evenings_total_derived"     => "The Morningness/Eveningness Points:",
+                  );
+
+        $columnHeaders = array("score" => "Score");
+
+        foreach ($columnHeaders as $field => $label) {
+            $columnHeaders[$field] .= "   ";
+        }
+        $this->localDefaults = array_merge($this->localDefaults, $columnHeaders);
+
+        foreach ($scales as $field => $label) {
+            foreach ($columnHeaders as $scoreField => $scoreLabel) {
+                $group[] = $this->form->createElement('static', "{$field}_{$scoreField}", null, null);
+            }
+            $this->form->addGroup($group, "{$field}_score_group", $label, $this->_GUIDelimiter, false);
+            unset($group);
+        }
     }
 
     /**
@@ -441,4 +532,53 @@ class NDB_BVL_Instrument_MEQC_survey extends NDB_BVL_Instrument
 
          return $errors;
     }
+
+ /**
+ * To sum up values assigned to the responses.
+ *
+ * @param $question_array is an array containing responses with assigned values, $record array contains db reponse 
+ * @return integer value sum
+ */ 
+    function sumScaleScores($question_array, $record)
+    {
+        $sum = 0;
+
+        foreach ($question_array as $q) {
+            $sum += $this->getNumericalValue($record[$q]);
+        }
+        return $sum;
+    }
+
+ /**
+ * To assign values to the responses stored in the table.
+ *
+ * @param string $record is the response   
+ * @return value assigned to the response in the array declared as constant
+ */ 
+    function getNumericalValue($record){
+
+        return self::RESPONSE_VALUES[$record];
+
+        }
+
+    function score(): void
+    {
+        if ($this->_determineDataEntryCompletionStatus() == "Incomplete") {
+            return;
+        }
+
+        // Null scores
+        $this->_nullScores($this->scoreLabels);
+
+        // Get the saved scores
+        $db     =& Database::singleton();
+        $query  = "SELECT * FROM $this->table WHERE CommentID = '$this->commentID'";
+        $record = $db->pselectRow($query, array());
+
+	$scores["mornings_evenings_total_derived_score"] = $this->sumScaleScores(self::MORNINGNESS_EVENINGNESS, $record);
+
+	$db->update($this->table, $scores, array("CommentID" => $this->getCommentID()));
+
+    }
+
 }

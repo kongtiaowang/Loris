@@ -42,18 +42,8 @@ class NDB_BVL_Instrument_SRS2_InformantReport_Mom_On_Dad extends NDB_BVL_Instrum
     var $informant = array(
                       ''               => null,
                       'spouse_partner' => 'Spouse/Partner',
-                      'mother'         => 'Mother',
-                      'father'         => 'Father',
-                      'step_mother'    => 'Step Mother',
-                      'step_father'    => 'Step Father',
                       'other'          => 'Other',
                      );
-    var $informant_rel_child = array(
-                    ''               => null,
-                    'biological_mother' => 'Biological Mother',
-                    'biological_father'  => 'Biological Father',
-                    'other'          => 'Other',
-    );
 
     var $gender = array(
                    ''       => null,
@@ -117,6 +107,7 @@ class NDB_BVL_Instrument_SRS2_InformantReport_Mom_On_Dad extends NDB_BVL_Instrum
             $this->_main();
         }
 
+	$this->form->addFormRule(array(&$this, 'XINValidate'));
         //Defines the call back function for HTML Quickform to use when validating the form.
         //$this->form->addFormRule(array(&$this, 'XINValidate'));
     }
@@ -136,12 +127,18 @@ class NDB_BVL_Instrument_SRS2_InformantReport_Mom_On_Dad extends NDB_BVL_Instrum
         //Add date of administration field
 
         $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
+        
+	$label = "Please click this bubble 'Yes' to confirm that you are filling out this survey about the child’s biological father.";
 
-
-
-        $this->addSelect('informant_rel_to_child', "The person I am filling this questionnaire out about has the following relationship to the child in the study:", $this->informant_rel_child);
-        $group1[] = $this->createText('informant_rel_to_child_other', $this->indent."If Other please specify");
-        $this->addGroup($group1, "informant_rel_to_child_other_group", $this->indent."If Other please specify", null, false);
+        $this->form->addElement(
+            'select',
+            'respondent',
+            $label,
+            array(
+             null       => '',
+             'yes'      => 'Yes'
+            )
+        );
 
         //Add field for Age
         $this->addBasicText('informant_age', "Your age<BR><h5><i>(Please enter a numeric value between 0-100. If you don't wish to answer, enter NA)</i></h5>");
@@ -150,7 +147,7 @@ class NDB_BVL_Instrument_SRS2_InformantReport_Mom_On_Dad extends NDB_BVL_Instrum
        // $this->form->addFormRule(array(&$this, 'srs2SpecialRules'));
 
         //Add select for Sex
-        $this->addSelect('informant_gender', "Sex", $this->gender);
+        $this->addSelect('informant_gender', "Your sex", $this->gender);
 
         //Add select for Relationship to rated individual
         $this->addSelect('informant', "Relationship to rated individual", $this->informant);

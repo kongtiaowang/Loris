@@ -383,7 +383,47 @@ class NDB_BVL_Instrument_Visit_Level_Information_SA extends NDB_BVL_Instrument
             $this->validate_empty_subquestions($values, ["q5_i_if_yes_who"], $errors);
             $this->validate_empty_subquestions($values, ["q5_ii_if_yes_when"], $errors);
         }
+        $err_msg = "Not required if instrument was not collected in person.";
 
+        if ($values['vabs_3_method_of_collection'] != "in_person" && 
+            $values['vabs_3_was_collected'] == 'yes'
+            ){
+            if ($values['vabs_3_assessor_ppe'][0] != null) {
+             $errors['vabs_3_assessor_ppe'] = $err_msg;
+            }
+            if ($values['vabs_3_subject_ppe'][0] != null) {
+             $errors['vabs_3_subject_ppe'] = $err_msg;
+            }
+            if ($values['vabs_3_parent_ppe'][0] != null) {
+             $errors['vabs_3_parent_ppe'] = $err_msg;
+            }
+        } 
+        if ($values['tanner_method_of_collection'] != "in_person" && 
+            $values['tanner_was_collected'] == 'yes'
+            ){
+            if ($values['tanner_assessor_ppe'][0] != null) {
+             $errors['tanner_assessor_ppe'] = $err_msg;
+            }
+            if ($values['tanner_subject_ppe'][0] != null) {
+             $errors['tanner_subject_ppe'] = $err_msg;
+            }
+            if ($values['tanner_parent_ppe'][0] != null) {
+             $errors['tanner_parent_ppe'] = $err_msg;
+            }
+        } 
+        if ($values['intervention_hx_form_method_of_collection'] != "in_person" && 
+            $values['intervention_hx_form_was_collected'] == 'yes'
+            ){
+            if ($values['intervention_hx_form_assessor_ppe'][0] != null) {
+             $errors['intervention_hx_form_assessor_ppe'] = $err_msg;
+            }
+            if ($values['intervention_hx_form_subject_ppe'][0] != null) {
+             $errors['intervention_hx_form_subject_ppe'] = $err_msg;
+            }
+            if ($values['intervention_hx_form_parent_ppe'][0] != null) {
+             $errors['intervention_hx_form_parent_ppe'] = $err_msg;
+            }
+        } 
         return $errors;
     }
 }

@@ -1,0 +1,15 @@
+ALTER TABLE SIHI CHANGE i_q4_if_yes_select_source i_q4_if_yes_select_source varchar(255) default NULL;
+ALTER TABLE SIHI CHANGE i_q5_if_yes_select i_q5_if_yes_select varchar(255) default NULL;
+ALTER TABLE SIHI CHANGE i_q5_if_medication_select_which_medicine_your_child_used i_q5_if_medication_select_which_medicine_your_child_used varchar(255) default NULL;
+ALTER TABLE SIHI CHANGE ii_q4_if_yes_select_source ii_q4_if_yes_select_source varchar(255) default NULL;
+ALTER TABLE SIHI CHANGE ii_q5_if_yes_select ii_q5_if_yes_select varchar(255) default NULL;
+ALTER TABLE SIHI CHANGE ii_q5_if_medication_select_which_medicine_your_child_used ii_q5_if_medication_select_which_medicine_your_child_used varchar(255) default NULL;
+ALTER TABLE SIHI CHANGE iii_q4_if_yes_select_source iii_q4_if_yes_select_source varchar(255) default NULL;
+ALTER TABLE SIHI CHANGE iii_q5_if_yes_select iii_q5_if_yes_select varchar(255) default NULL;
+ALTER TABLE SIHI CHANGE iii_q5_if_medication_select_which_medicine_your_child_used iii_q5_if_medication_select_which_medicine_your_child_used varchar(255) default NULL;
+ALTER TABLE SIHI CHANGE iv_q4_if_yes_select_source iv_q4_if_yes_select_source varchar(255) default NULL;
+ALTER TABLE SIHI CHANGE iv_q5_if_yes_select iv_q5_if_yes_select varchar(255) default NULL;
+ALTER TABLE SIHI CHANGE iv_q5_if_medication_select_which_medicine_your_child_used iv_q5_if_medication_select_which_medicine_your_child_used varchar(255) default NULL;
+ALTER TABLE SIHI CHANGE v_q4_if_yes_select_source v_q4_if_yes_select_source varchar(255) default NULL;
+ALTER TABLE SIHI CHANGE v_q5_if_yes_select v_q5_if_yes_select varchar(255) default NULL;
+ALTER TABLE SIHI CHANGE v_q5_if_medication_select_which_medicine_your_child_used v_q5_if_medication_select_which_medicine_your_child_used varchar(255) default NULL;

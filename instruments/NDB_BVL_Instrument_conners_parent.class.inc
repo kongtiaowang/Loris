@@ -35,7 +35,6 @@ class NDB_BVL_Instrument_conners_parent extends NDB_BVL_Instrument
     );
 
 
-
     /**
      * Sets up basic data, such as the LorisForm object, and so on.
      *
@@ -185,24 +184,23 @@ class NDB_BVL_Instrument_conners_parent extends NDB_BVL_Instrument
                          Read each item carefully, then mark how well
                          it describes your child or how frequently 
                          it has happened in the <b><i>past month</i></b>.<br><br>
-                         $this->indent <b>0</b> = In the past month, 
+                         <b>0</b> = In the past month, 
                          this was <b><i>not true at all</i></b> about my child. It never
-                         (or seldom) happened<br></h4><br>
-                         $this->indent <b>1</b> = In the past month, this was 
+                         (or seldom) happened<br>
+                         <b>1</b> = In the past month, this was 
                          <b><i>just a little true</i></b> about my child. 
                          It happened occasionally.<br>
-                         $this->indent <b>2</b> = In the past month, 
+                         <b>2</b> = In the past month, 
                          this was <b><i>pretty much true</i></b> about<
                          my child. It happened often (or quite a bit).<br>
-                         $this->indent <b>3</b> = In the past month, this 
+                         <b>3</b> = In the past month, this 
                          was <b><i>very much true</i></b> about my child. It
                          happened very often (very frequently).<br><br>
                          Please pick one answer for each item. It is important
                          to respond to every item. For items that you find difficult
-                         to answer, please give your best guess.");
+                         to answer, please give your best guess.</h4>");
 
-        $options =
-            array(
+        $options =array(
                 null => "",
                 0 => "0 - Not true at all",
                 1 => "1 - Just a little true",
@@ -210,8 +208,7 @@ class NDB_BVL_Instrument_conners_parent extends NDB_BVL_Instrument
                 3 => "3 - Very much true"
             );
 
-        $options_na =
-            array(
+        $options_na =array(
                 null => "",
                 0 => "0 - Not true at all",
                 1 => "1 - Just a little true",
@@ -219,8 +216,7 @@ class NDB_BVL_Instrument_conners_parent extends NDB_BVL_Instrument
                 3 => "3 - Very much true",
                 'not_applicable'=> "Not Applicable"
             );
-        $questions =
-            array(
+        $questions =array(
                 "q1" => "1. Forgets to turn in completed work",
                 "q2" => "2. Is perfect in every way.",
                 "q3" => "3. Fidgets or squirms in seat.",
