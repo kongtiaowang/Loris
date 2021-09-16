@@ -325,7 +325,16 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
                 $this->form->addElement('text', null, $this->indent . $field, ['disabled' => 'disabled']);
             }
         }
-        $this->XINRegisterRule("mother_dob_date", array("mother_dob_date{@}=={@}"), 'Required.');
+	$this->XINRegisterRule("mother_dob_date", array("mother_dob_date{@}=={@}"), 'Required.');
+
+	$this->addSelect("preferred_method_contact_mother", $this->indent . "Preferred method of contact", array(null,"Phone","Email"));
+        $this->XINRegisterRule("preferred_method_contact_mother", array("preferred_method_contact_mother{@}=={@}never_required"), 'Not Required.');
+        $this->addSelect("best_call_number_mother", $this->indent . "Best number to call",array(null,'Cell','Work','Home'));
+        $this->XINRegisterRule("best_call_number_mother", array("best_call_number_mother{@}=={@}never_required"), 'Not Required.');
+        $this->addSelect("best_time_call_mother", $this->indent . "Best time to call",array(null,'AM','PM'));
+        $this->XINRegisterRule("best_time_call_mother", array("best_time_call_mother{@}=={@}never_required"), 'Not Required.');
+        $this->addSelect("okay_leave_message_mother", $this->indent . "Okay to leave message?", self::YES_NO_OPTIONS);
+        $this->XINRegisterRule("okay_leave_message_mother", array("okay_leave_message_mother{@}=={@}never_required"), 'Not Required.');
         
         $this->form->addElement('static', null, null);
 
@@ -339,7 +348,16 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
                 $this->form->addElement('text', null, $this->indent . $field, ['disabled' => 'disabled']);
             }
         }
-        $this->XINRegisterRule("father_dob_date", array("father_dob_date{@}=={@}"), 'Required');
+	$this->XINRegisterRule("father_dob_date", array("father_dob_date{@}=={@}"), 'Required');
+
+	$this->addSelect("preferred_method_contact_father", $this->indent . "Preferred method of contact", array("","Phone","Email"));
+        $this->XINRegisterRule("preferred_method_contact_father", array("preferred_method_contact_father{@}=={@}never_required"), 'Not Required.');
+        $this->addTextElement("best_call_number_father", $this->indent . "Best number to call");
+        $this->XINRegisterRule("best_call_number_father", array("best_call_number_father{@}=={@}never_required"), 'Not Required.');
+        $this->addTextElement("best_time_call_father", $this->indent . "Best time to call (AM/PM)");
+        $this->XINRegisterRule("best_time_call_father", array("best_time_call_father{@}=={@}never_required"), 'Not Required.');
+        $this->addSelect("okay_leave_message_father", $this->indent . "Okay to leave message?", self::YES_NO_OPTIONS);
+        $this->XINRegisterRule("okay_leave_message_father", array("okay_leave_message_father{@}=={@}never_required"), 'Not Required.');
         
         $this->form->addElement('static', null, null);
 
@@ -417,17 +435,6 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
 	$this->XINRegisterRule("household_ses_father_if_2_households", array("household_ses_father_if_2_households{@}=={@}NEVER_REQUIRED"));
 	$this->XINRegisterRule("household_ses_mother", array("household_ses_mother_or_combined_amount{@}=={@}NEVER_REQUIRED"));
 	$this->XINRegisterRule("household_ses_father", array("household_ses_father_if_2_households_amount{@}=={@}NEVER_REQUIRED"));
-        
-	$this->form->addElement('static', null, null);
-
-	$this->addSelect("preferred_method_contact_mother", $this->indent . "Preferred method of contact", array(null,"Phone","Email"));
-        $this->XINRegisterRule("preferred_method_contact_mother", array("preferred_method_contact_mother{@}=={@}never_required"), 'Not Required.');
-        $this->addSelect("best_call_number_mother", $this->indent . "Best number to call",array(null,'Cell','Work','Home'));
-        $this->XINRegisterRule("best_call_number_mother", array("best_call_number_mother{@}=={@}never_required"), 'Not Required.');
-        $this->addSelect("best_time_call_mother", $this->indent . "Best time to call",array(null,'AM','PM'));
-        $this->XINRegisterRule("best_time_call_mother", array("best_time_call_mother{@}=={@}never_required"), 'Not Required.');
-        $this->addSelect("okay_leave_message_mother", $this->indent . "Okay to leave message?", self::YES_NO_OPTIONS);
-        $this->XINRegisterRule("okay_leave_message_mother", array("okay_leave_message_mother{@}=={@}never_required"), 'Not Required.');
 
         $this->form->addElement('static', null, null);
 
