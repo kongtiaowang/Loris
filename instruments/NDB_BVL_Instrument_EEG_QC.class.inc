@@ -240,10 +240,12 @@ class NDB_BVL_Instrument_EEG_QC extends NDB_BVL_Instrument
 
             // Get the file name from the media module.
             $file_name = $db->pselectOne("
-                SELECT file_name
-                FROM media
-                WHERE instrument = 'EEG'
-                    AND session_id = :session
+                SELECT file_top
+                FROM session s
+                    JOIN flag f ON (f.SessionID = s.ID)
+                    JOIN EEG e ON (e.CommentID = f.CommentID)
+                WHERE s.ID = :session
+                  AND f.CommentID NOT LIKE 'DDE_%'
             ", array("session" =>$session));
 
             $email_data = array(

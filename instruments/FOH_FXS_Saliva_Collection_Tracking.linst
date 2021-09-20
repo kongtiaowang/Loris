@@ -1,0 +1,47 @@
+table{@}FOH_FXS_Saliva_Collection_Tracking
+title{@}FOH FXS Saliva Collection Tracking
+date{@}Date_taken{@}Date of Administration{@}2006{@}2012
+static{@}Candidate_Age{@}Candidate Age (Months)
+static{@}Window_Difference{@}Window Difference (+/- Days)
+select{@}Examiner{@}Examiner{@}NULL=>''
+select{@}SubjectConsent{@}Has Primary Subject consented to saliva collection?{@}NULL=>''{-}'yes'=>'Yes'{-}'no'=>'No'{-}'unknown'=>'Unknown'{-}'not_answered'=>'Not Answered'
+select{@}SiblingConsent{@}Has Sibling Subject consented to saliva collection?{@}NULL=>''{-}'yes'=>'Yes'{-}'no'=>'No'{-}'unknown'=>'Unknown'{-}'not_answered'=>'Not Answered'
+select{@}MotherConsent{@}Has Mother consented to saliva collection?{@}NULL=>''{-}'yes'=>'Yes'{-}'no'=>'No'{-}'unknown'=>'Unknown'{-}'not_answered'=>'Not Answered'
+select{@}FatherConsent{@}Has Father consented to saliva collection?{@}NULL=>''{-}'yes'=>'Yes'{-}'no'=>'No'{-}'unknown'=>'Unknown'{-}'not_answered'=>'Not Answered'
+date{@}dateprepared_date{@}Date Kits Prepared{@}2021{@}2030{@}
+select{@}dateprepared_date_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+text{@}Preparer{@}Who Prepared the Kits?
+select{@}Preparer_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+select{@}SubjectKitType{@}Which type of kit will Primary Subject use?{@}NULL=>''{-}'drool'=>'Drool'{-}'swab'=>'Swab'{-}'unknown'=>'Unknown'{-}'not_answered'=>'Not Answered'
+select{@}SiblingKitType{@}Which type of kit will Sibling Subject use?{@}NULL=>''{-}'drool'=>'Drool'{-}'swab'=>'Swab'{-}'unknown'=>'Unknown'{-}'not_answered'=>'Not Answered'
+text{@}SubjectID{@}Please type the ID as written on the tube for Primary Subject
+select{@}SubjectID_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+text{@}SiblingID{@}Please type the ID as written on the tube for Sibling Subject
+select{@}SiblingID_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+text{@}MotherID{@}Please type the ID as written on the tube for Mother
+select{@}MotherID_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+text{@}FatherID{@}Please type the ID as written on the tube for Father
+select{@}FatherID_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+date{@}datesent_date{@}Date saliva kits were sent to family{@}2021{@}2030{@}
+select{@}datesent_date_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+text{@}Sender{@}Who sent the kits to the family?
+select{@}Sender_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+text{@}Tracking{@}Tracking number for outbound kits (to family)
+select{@}Tracking_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+text{@}Tracking2{@}Tracking number for outbound kits (to family) secondary number if needed
+select{@}Tracking2_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+text{@}TrackingtoUNC{@}Tracking number for inbound kits (back to UNC)
+select{@}TrackingtoUNC_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+text{@}TrackingtoUNC2{@}Tracking number for inbound kits (back to UNC) secondary number if needed
+select{@}TrackingtoUNC2_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+date{@}datesentback_date{@}Date family put completed kits in mail{@}2021{@}2030{@}
+select{@}datesentback_date_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+date{@}datesentback2_date{@}Date family put completed kits in mail (secondary date if needed){@}2021{@}2030{@}
+select{@}datesentback2_date_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+date{@}daterecieved_date{@}Date UNC received kits{@}2021{@}2030{@}
+select{@}daterecieved_date_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+date{@}daterecieved2_date{@}Date UNC received kits (secondary date if needed){@}2021{@}2030{@}
+select{@}daterecieved2_date_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+textarea{@}Notes{@}Notes on saliva collection (reasons for no consent, reason for different shipments, etc)
+select{@}Notes_status{@}{@}NULL=>''{-}'not_answered'=>'Not Answered'
+
