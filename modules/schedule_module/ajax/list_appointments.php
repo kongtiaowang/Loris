@@ -367,7 +367,7 @@ SELECT
     session.Visit_label,
     session.CenterID,
     session.SubprojectID,
-    candidate.ProjectID,
+    candidate.RegistrationProjectID,
     subproject.title,
     (NOW() > appointment.StartsAt) AS started,
     appointment_type.Name AS AppointmentTypeName,

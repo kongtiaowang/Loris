@@ -53,42 +53,48 @@ class ImagePanelHeader extends Component {
       </div>
     );
 
-    let acquiredOn = this.props.HeaderInfo.AcquisitionDate
-        ? ' acquired on ' + this.props.HeaderInfo.AcquisitionDate : ' (acq. date unknown) ';
-    let acquisitionDate = this.props.HeaderInfo.AcquisitionDate
-        ? this.props.HeaderInfo.AcquisitionDate : '(acq. date unknown)';
+    // IBIS SPECIFIC OVERRIDE CODE
+    // OVERRIDE: add acquisition date to header.
+    const acquiredOn = this.props.HeaderInfo.AcquisitionDate
+      ? ' acquired on ' + this.props.HeaderInfo.AcquisitionDate : ' (acq. date unknown) ';
+    const acquisitionDate = this.props.HeaderInfo.AcquisitionDate
+      ? this.props.HeaderInfo.AcquisitionDate : '(acq. date unknown)';
+
 
     return (
 
       <div className="panel-heading clearfix">
-        <input type="checkbox" data-file-id={this.props.FileID} className="mripanel user-success" />
-          <h3
-             className="panel-title"
-             data-toggle="tooltip"
-             title={this.props.Filename + acquiredOn}
-          >
-               {this.props.Filename}
-               &nbsp;&nbsp;&#8227;&#8227;&nbsp;&nbsp;
-               {acquisitionDate}&nbsp;
-          </h3>
-          {QCStatusLabel}
-          {arrow}
-          {headerButton}
+        <input type="checkbox" data-file-id={this.props.FileID}
+               className="mripanel user-success"/>
+        <h3
+          className="panel-title"
+          data-toggle="tooltip"
+          title={this.props.Filename + acquiredOn}
+        >
+          {this.props.Filename}
+          &nbsp;&nbsp;&#8227;&#8227;&nbsp;&nbsp;
+          {acquisitionDate}&nbsp;
+        </h3>
+        {QCStatusLabel}
+        {arrow}
+        {headerButton}
       </div>
-
     );
+    // IBIS SPECIFIC OVERRIDE CODE ENDS HERE
   }
 }
 
+// IBIS SPECIFIC OVERRIDE CODE
+// OVERRIDE: add HeaderInfo prop.
 ImagePanelHeader.propTypes = {
   QCStatus: PropTypes.string,
   onToggleBody: PropTypes.string,
   onToggleHeaders: PropTypes.string,
   HeadersExpanded: PropTypes.string,
   FileID: PropTypes.string,
-  Filename: PropTypes.string,
   HeaderInfo: PropTypes.object,
 };
+// IBIS SPECIFIC OVERRIDE CODE ENDS HERE
 
 class ImagePanelHeadersTable extends Component {
   constructor(props) {
@@ -389,9 +395,15 @@ class ImagePanelQCCaveatSelector extends Component {
     // Link caveat to MRI Violations if set true
     let mriViolationsLink = null;
     if (this.props.SeriesUID && this.props.Caveat === '1') {
-      mriViolationsLink = '/mri_violations/?' +
-        'submenu=mri_protocol_check_violations&SeriesUID=' +
-        this.props.SeriesUID + '&filter=true';
+        // If there is a manual caveat that was set, the link
+        // will take you to it, even though there might also
+        // be a caveat that was set by the MRI piepline (i.e
+        // not manual). Note that manual caveat are always
+        // resolved
+        if (this.props.CaveatViolationsResolvedID) {
+            mriViolationsLink = '/mri_violations/resolved_violations/?' +
+              'SeriesUID=' + this.props.SeriesUID + '&filter=true';
+        }
     }
 
     return (
@@ -418,6 +430,7 @@ ImagePanelQCCaveatSelector.propTypes = {
   HasQCPerm: PropTypes.string,
   SeriesUID: PropTypes.string,
   Caveat: PropTypes.string,
+  CaveatViolationsResolvedID: PropTypes.string,
 };
 
 class ImagePanelQCSNRValue extends Component {
@@ -465,6 +478,7 @@ class ImagePanelQCPanel extends Component {
           HasQCPerm={this.props.HasQCPerm}
           Caveat={this.props.Caveat}
           SeriesUID={this.props.SeriesUID}
+          CaveatViolationsResolvedID={this.props.CaveatViolationsResolvedID}
         />
         <ImagePanelQCSNRValue
           FileID={this.props.FileID}
@@ -483,6 +497,7 @@ ImagePanelQCPanel.propTypes = {
   Caveat: PropTypes.string,
   SeriesUID: PropTypes.string,
   SNR: PropTypes.string,
+  CaveatViolationsResolvedID: PropTypes.string,
 };
 
 class DownloadButton extends Component {
@@ -519,6 +534,8 @@ class ImageQCCommentsButton extends Component {
     this.openWindowHandler = this.openWindowHandler.bind(this);
   }
 
+  // IBIS SPECIFIC OVERRIDE CODE
+  // OVERRIDE: modify url link.
   openWindowHandler(e) {
     e.preventDefault();
     window.open(
@@ -529,6 +546,7 @@ class ImageQCCommentsButton extends Component {
       'status=yes,scrollbars=yes,resizable=yes'
     );
   }
+  // IBIS SPECIFIC OVERRIDE CODE ENDS HERE
 
   render() {
     if (!this.props.FileID || this.props.FileID === '') {
@@ -547,11 +565,15 @@ class ImageQCCommentsButton extends Component {
     );
   }
 }
+
+// IBIS SPECIFIC OVERRIDE CODE
+// OVERRIDE: add SessionID prop.
 ImageQCCommentsButton.propTypes = {
   FileID: PropTypes.string,
   BaseURL: PropTypes.string,
   SessionID: PropTypes.string,
 };
+// IBIS SPECIFIC OVERRIDE CODE ENDS HERE
 
 class LongitudinalViewButton extends Component {
   constructor(props) {
@@ -600,10 +622,17 @@ class ImageDownloadButtons extends Component {
   render() {
     return (
       <div className="row mri-second-row-panel col-xs-12">
+        {
+          /**
+           * IBIS SPECIFIC OVERRIDE CODE
+           * OVERRIDE: Pass new prop.
+           */
+        }
         <ImageQCCommentsButton FileID={this.props.FileID}
                                BaseURL={this.props.BaseURL}
                                SessionID={this.props.SessionID}
         />
+        {/** IBIS SPECIFIC OVERRIDE CODE ENDS HERE */}
         <DownloadButton FileName={this.props.Fullname}
                         Label="Download Minc"
                         BaseURL={this.props.BaseURL}
@@ -628,6 +657,9 @@ class ImageDownloadButtons extends Component {
     );
   }
 }
+
+// IBIS SPECIFIC OVERRIDE CODE
+// OVERRIDE: add SessionID prop.
 ImageDownloadButtons.propTypes = {
   FileID: PropTypes.string,
   BaseURL: PropTypes.string,
@@ -638,6 +670,7 @@ ImageDownloadButtons.propTypes = {
   OtherTimepoints: PropTypes.string,
   SessionID: PropTypes.string,
 };
+// IBIS SPECIFIC OVERRIDE CODE ENDS HERE
 
 class ImagePanelBody extends Component {
   constructor(props) {
@@ -670,12 +703,19 @@ class ImagePanelBody extends Component {
               HasQCPerm={this.props.HasQCPerm}
               QCStatus={this.props.QCStatus}
               Caveat={this.props.Caveat}
+              CaveatViolationsResolvedID={this.props.CaveatViolationsResolvedID}
               Selected={this.props.Selected}
               SNR={this.props.SNR}
               SeriesUID={this.props.SeriesUID}
             />
           </div>
         </div>
+        {
+          /**
+           * IBIS SPECIFIC OVERRIDE CODE
+           * OVERRIDE: Pass new prop.
+           */
+        }
         <ImageDownloadButtons
           BaseURL={this.props.BaseURL}
           FileID={this.props.FileID}
@@ -686,12 +726,16 @@ class ImagePanelBody extends Component {
           OtherTimepoints={this.props.OtherTimepoints}
           SessionID={this.props.SessionID}
         />
+        {/** IBIS SPECIFIC OVERRIDE CODE ENDS HERE */}
         {this.props.HeadersExpanded ? <ImagePanelHeadersTable
           HeaderInfo={this.props.HeaderInfo}/> : ''}
       </div>
     );
   }
 }
+
+// IBIS SPECIFIC OVERRIDE CODE
+// OVERRIDE: add SessionID prop.
 ImagePanelBody.propTypes = {
   FileID: PropTypes.string,
   FileNew: PropTypes.string,
@@ -709,8 +753,10 @@ ImagePanelBody.propTypes = {
   OtherTimepoints: PropTypes.string,
   HeadersExpanded: PropTypes.string,
   Checkpic: PropTypes.string,
+  CaveatViolationsResolvedID: PropTypes.string,
   SessionID: PropTypes.string,
 };
+// IBIS SPECIFIC OVERRIDE CODE ENDS HERE
 
 class ImagePanel extends Component {
   constructor(props) {
@@ -739,6 +785,12 @@ class ImagePanel extends Component {
     return (
       <div className="col-xs-12 col-md-6">
         <div className="panel panel-default">
+          {
+            /**
+             * IBIS SPECIFIC OVERRIDE CODE
+             * OVERRIDE: Pass new props.
+             */
+          }
           <ImagePanelHeader
             FileID={this.props.FileID}
             Filename={this.props.Filename}
@@ -764,6 +816,7 @@ class ImagePanel extends Component {
               HasQCPerm={this.props.HasQCPerm}
               QCStatus={this.props.QCStatus}
               Caveat={this.props.Caveat}
+              CaveatViolationsResolvedID={this.props.CaveatViolationsResolvedID}
               Selected={this.props.Selected}
               SNR={this.props.SNR}
 
@@ -774,12 +827,16 @@ class ImagePanel extends Component {
               OtherTimepoints={this.props.OtherTimepoints}
               SeriesUID={this.props.SeriesUID}
               SessionID={this.props.SessionID}
-            />}
+            />
+          }
+          {/** IBIS SPECIFIC OVERRIDE CODE ENDS HERE */}
         </div>
       </div>
     );
   }
 }
+// IBIS SPECIFIC OVERRIDE CODE
+// OVERRIDE: add SessionID, Filename, HeaderInfo props.
 ImagePanel.propTypes = {
   FileID: PropTypes.string,
   FileNew: PropTypes.string,
@@ -795,13 +852,14 @@ ImagePanel.propTypes = {
   XMLReport: PropTypes.string,
   NrrdFile: PropTypes.string,
   OtherTimepoints: PropTypes.string,
-  HeaderInfo: PropTypes.string,
   HeadersExpanded: PropTypes.string,
   Checkpic: PropTypes.string,
+  CaveatViolationsResolvedID: PropTypes.string,
   SessionID: PropTypes.string,
   Filename: PropTypes.string,
   HeaderInfo: PropTypes.object,
 };
+// IBIS SPECIFIC OVERRIDE CODE ENDS HERE
 
 let RImagePanel = React.createFactory(ImagePanel);
 

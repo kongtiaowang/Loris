@@ -1246,7 +1246,7 @@ e skills first apparent");               // $this->form->addElement('select', 'q
 
         //get examiner certifications for profiles part of IBIS2
         $candID = isset($_REQUEST['candID']) ? $_REQUEST['candID'] : '';
-        $project = $db->pselectOne("SELECT ProjectID from candidate where CandID =:cnd_id", array('cnd_id'=>$candID));
+        $project = $db->pselectOne("SELECT RegistrationProjectID from candidate where CandID =:cnd_id", array('cnd_id'=>$candID));
 
         list($CertificationEnabled, $CertificationProjects, $CertificationInstruments) = $this->_getCertificationConfig();
         if ($CertificationEnabled && in_array($project, $CertificationProjects)

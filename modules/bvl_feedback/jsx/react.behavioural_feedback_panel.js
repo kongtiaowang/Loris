@@ -22,7 +22,7 @@ class SliderPanel extends Component {
 }
 SliderPanel.propTypes = {
   pscid: PropTypes.string,
-  children: PropTypes.string,
+  children: PropTypes.array,
 };
 
 class FeedbackPanelContent extends Component {
@@ -112,7 +112,7 @@ class FeedbackPanelContent extends Component {
 
       return (
         <div className="panel-collapse collapse in">
-          <div className="panel-body" style={{overflowX: 'auto'}}>
+          <div className="panel-body">
             {table}
           </div>
         </div>
@@ -376,7 +376,7 @@ class AccordionPanel extends Component {
 }
 AccordionPanel.propTypes = {
   title: PropTypes.string,
-  children: PropTypes.string,
+  children: PropTypes.object,
 };
 
 class NewThreadPanel extends Component {
@@ -604,7 +604,7 @@ class FeedbackPanel extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      threads: '',
+      threads: [],
       summary: null,
     };
     this.loadSummaryServerData = this.loadSummaryServerData.bind(this);
@@ -754,7 +754,7 @@ class FeedbackPanel extends Component {
   }
 }
 FeedbackPanel.propTypes = {
-  selectOptions: PropTypes.array,
+  selectOptions: PropTypes.object,
   feedbackLevel: PropTypes.string,
   candID: PropTypes.string,
   sessionID: PropTypes.string,

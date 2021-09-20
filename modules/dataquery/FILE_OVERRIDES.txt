@@ -1,0 +1,13 @@
+List of all files which contain overrides.
+
+- ajax
+    - datadictionary.php
+- help
+    - dataquery.md
+- jsx
+    - react.app.js
+    - react.fieldselector.js
+    - react.tabs.js
+- test
+    - TestPlan.md
+- README.md

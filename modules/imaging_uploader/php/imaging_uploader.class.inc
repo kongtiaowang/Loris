@@ -9,7 +9,7 @@
  * @author   Zia Mohaddes  <zia.mohades@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/mohadesz/Loris-Trunk
-*/
+ */
 namespace LORIS\imaging_uploader;
 use LORIS\server_processes_manager as SP;
 /**
@@ -21,7 +21,7 @@ use LORIS\server_processes_manager as SP;
  * @author   Zia Mohaddes  <zia.mohades@gmail.com>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
-*/
+ */
 class Imaging_Uploader extends \NDB_Menu_Filter_Form
 {
     var $show_queries    = true;
@@ -55,6 +55,8 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
      *
      * @return void
      */
+    // IBIS SPECIFIC OVERRIDE CODE
+    // IBIS adds column for upload type.
     function _setupVariables()
     {
         $this->_resetFilters();
@@ -63,61 +65,64 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             . "IF(InsertionComplete=0, 'Failure', 'Success'))) as Progress";
         // set the class variables
         $this->columns      = array(
-                               'UploadID AS Upload_ID',
-                               'iut.Type AS imagingUploadType',
-                               $progressSelectPart,
-                               's.CandID',
-                               'c.PSCID',
-                               's.Visit_label',
-                               'UploadLocation AS Upload_Location',
-                               'UploadDate AS Upload_Date',
-                               'UploadedBy AS Uploaded_By',
-                               'mu.TarchiveID AS Tarchive_Info',
-                               'number_of_mincCreated AS Number_of_MINC_Created',
-                               'number_of_mincInserted AS Number_of_MINC_Inserted',
-                               'ta.PatientName',
-                               's.ID AS SessionID',
-                              );
+            'UploadID AS Upload_ID',
+            'iut.Type AS imagingUploadType',
+            $progressSelectPart,
+            's.CandID',
+            'c.PSCID',
+            's.Visit_label',
+            'UploadLocation AS Upload_Location',
+            'UploadDate AS Upload_Date',
+            'UploadedBy AS Uploaded_By',
+            'mu.TarchiveID AS Tarchive_Info',
+            'number_of_mincCreated AS Number_of_MINC_Created',
+            'number_of_mincInserted AS Number_of_MINC_Inserted',
+            'ta.PatientName',
+            's.ID AS SessionID',
+        );
         $this->validFilters = array(
-                               's.CandID',
-                               'c.PSCID',
-                               's.Visit_label',
-                               'mu.IsPhantom',
-                              );
+            's.CandID',
+            'c.PSCID',
+            's.Visit_label',
+            'mu.IsPhantom',
+        );
         $this->query        = " FROM mri_upload mu LEFT JOIN session".
                               " s ON (s.ID = mu.SessionID)".
                               " LEFT JOIN candidate c ON (c.CandID = s.CandID)".
                               " LEFT JOIN tarchive ta ON".
                               " (mu.TarchiveID = ta.TarchiveID)".
                               " LEFT JOIN imaging_upload_type iut" .
-                              " ON (mu.ImagingUploadTypeID = iut.ID)" .
+                              " ON (mu.ImagingUploadTypeID = iut.ID)".
                               " WHERE 1=1 ";
         $this->formToFilter = array(
-                               'CandID'      => 's.CandID',
-                               'PSCID'       => 'c.PSCID',
-                               'Visit_label' => 's.Visit_label',
-                               'IsPhantom'   => 'mu.IsPhantom',
-                              );
-        return true;
+            'CandID'      => 's.CandID',
+            'PSCID'       => 'c.PSCID',
+            'Visit_label' => 's.Visit_label',
+            'IsPhantom'   => 'mu.IsPhantom',
+        );
     }
+    // IBIS SPECIFIC OVERRIDE CODE ENDS HERE
+
      /**
-     * Sets up the menu filter items for the imaging uploader
-     *
-     * @return void
-     */
+      * Sets up the menu filter items for the imaging uploader
+      *
+      * @return void
+      */
+    // IBIS SPECIFIC OVERRIDE CODE
+    // IBIS adds column for upload type.
     function setup()
     {
         parent::setup();
-        
         //----------------------------------------------//
         // Build hash of all the imaging upload types    //
         //----------------------------------------------//
-        $db                       = \Database::singleton();
+        $db                 = \Database::singleton();
+        $imagingUploadTypes = array();
+
         $rows = $db->pselect(
             "SELECT ID, Type FROM imaging_upload_type ORDER BY Type DESC",
             array()
         );
-        $imagingUploadTypes      = array();
         for ($i = 0; $i < count($rows); $i++) {
             $imagingUploadTypes[$rows[$i]['Type']] = $rows[$i]['Type'];
         }
@@ -140,24 +145,25 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                                 $upload_max_size;
             http_response_code(400);
             $errors = array(
-                       'imagingUploadType'  => array(),
-                       'candID'             => array(),
-                       'pSCID'              => array(),
-                       'visitLabel'         => array(),
-                       'mriFile'            => array($error_message),
-                      );
+                'imagingUploadType'  => array(),
+                'candID'             => array(),
+                'pSCID'              => array(),
+                'visitLabel'         => array(),
+                'mriFile'            => array($error_message),
+            );
             header('Content-Type: application/json; charset=UTF-8');
             exit(json_encode(['errors' => $errors]));
         }
-        return true;
     }
+    // IBIS SPECIFIC OVERRIDE CODE ENDS HERE
+
     /**
      * Returns true if the _saveFile has successfully
      * completed
      *
      * @param array $values the array of values from the form
      *
-     * @return true on success, false othewise
+     * @return bool true on success, false othewise
      */
     function _process($values)
     {
@@ -182,9 +188,6 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                 || $ImagingUploaderAutoLaunch == 'true'
             ) {
                 try {
-                    // Instantiate the server process module to autoload
-                    // its namespace classes
-                    $spm_module = \Module::factory('server_processes_manager');
                     // Perform the real upload on the server
                     $serverProcessLauncher = new SP\ServerProcessLauncher();
                     $serverProcessLauncher->mriUpload(
@@ -204,16 +207,16 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                         array('type' => 'mri upload handler emergency')
                     );
                     $values = array(
-                               'NotificationTypeID' => $notificationTypeID,
-                               'Message'            => 'MRI pipeline could not be '
+                        'NotificationTypeID' => $notificationTypeID,
+                        'Message'            => 'MRI pipeline could not be '
                                               . 'started: ' . $e->getMessage() . "\n"
                                               . 'This indicates an incorrect or non-'
                                               . "existent MRI pipeline setup\n",
-                               'Origin'             => 'Launch of the MRI pipeline',
-                               'ProcessID'          => $this->mri_upload_id,
-                               'Error'              => 'Y',
-                               'Verbose'            => 'N',
-                              );
+                        'Origin'             => 'Launch of the MRI pipeline',
+                        'ProcessID'          => $this->mri_upload_id,
+                        'Error'              => 'Y',
+                        'Verbose'            => 'N',
+                    );
                     $db->insert('notification_spool', $values);
                     $db->update(
                         'mri_upload',
@@ -230,22 +233,21 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
 
     // methods available to all children
     /**
-       * Save the file to the DataBase by:
-       * 1) registering the file handlers
-       * 2) Calling the processFiles function which in return will call
-       *   - isValid function
-       *   - importFile Function
-       *
-       * @param array $values the array of values from the form
-       *
-       * @return true on success, false otherwise
-       */
+     * Save the file to the DataBase by:
+     * 1) registering the file handlers
+     * 2) Calling the processFiles function which in return will call
+     *   - isValid function
+     *   - importFile Function
+     *
+     * @param array $values the array of values from the form
+     *
+     * @return true
+     */
     function _saveFile($values)
     {
         //get the stored-file path
         $file   = new \File_Upload;
         $config = \NDB_Config::singleton();
-        $paths  = $config->getSetting('paths');
         $file->setOverwriteMode("overwrite");
         $file->fileMove = false;
         //pass the existing form ($form) by reference to File_Upload,
@@ -265,15 +267,17 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             "mriFile",
             $this
         );
-        $user = \User::singleton();
         //set the the IDs to the handler functions.
         $file->setHandlerArgs(array("values" => $values));
         //proccesses them (including verify, move, and import steps)
         $file->processFiles();
         return true;
     }
+
+    // IBIS SPECIFIC OVERRIDE CODE
+    // IBIS adds uses more options for scan types. Not just phantom.
     /**
-     * If the imaging upload type is 'Subject', validate advanced options by ensuring that:
+     * If imaging upload type is 'Subject', validate advanced options by ensuring that:
      *  - The CandID exists in the database
      *  - The PSCID is valid for the CandID
      *  - The Visit Label is valid for the CandID
@@ -295,30 +299,36 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
     {
         //make sure the file-name is  valid
         $temp_file = $file->fileInfo['tmp_name'];
-        $temp_dir  = $this->tempdir();
         $db        = \Database::singleton();
         // creates associative array to store error messages for each form element
         $errors = array(
-                   'imagingUploadType'  => array(),
-                   'candID'             => array(),
-                   'pSCID'              => array(),
-                   'visitLabel'         => array(),
-                   'mriFile'            => array(),
-                  );
+            'imagingUploadType' => array(),
+            'candID'            => array(),
+            'pSCID'             => array(),
+            'visitLabel'        => array(),
+            'mriFile'           => array(),
+        );
         // creates empty string variable to store error message for wrong file name
         $file_name_error = "";
         $config          = \NDB_Config::singleton();
-        $dicom_archive_settings = $config->getSetting(
-            'imaging_modules'
-        );
-        $corect_name            = $dicom_archive_settings['patientNameRegex'];
-        $header_patient_name    = array();
-        $file_name = $file->fileInfo['name'];
-        $file_path = $temp_dir. "/". $file_name;
+        $file_name       = $file->fileInfo['name'];
+
+        ///////////////////////////////////////////////////////////////////////
+        ////////////// Checks to see if the file is of type////////////////////
+        //////////////.gz, .zip or .tgz////////////////////////////////////////
+        ///////////////////////////////////////////////////////////////////////
+        if (!$this->isCompressed($temp_file)) {
+            array_push(
+                $errors["mriFile"],
+                "The file $file_name is not of type".
+                " .tgz, .tar.gz or .zip."
+            );
+        }
+
         ///////////////////////////////////////////////////////////////////////
         /////////Validate the advanced Options only if it's not a Phantom//////
         ///////////////////////////////////////////////////////////////////////
-        if ($args['values']['imagingUploadType']=='Subject') {
+        if ($args['values']['imagingUploadType']=='imagingUploadType') {
             $candid      = trim($args['values']['candID']);
             $pscid       = trim($args['values']['pSCID']);
             $visit_label = trim($args['values']['visitLabel']);
@@ -344,14 +354,12 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                      ON (s.candid=c.candid and s.visit_label = :vlabel)
                      WHERE c.candid = :cid",
                     [
-                     ':cid'    => $candid,
-                     ':pid'    => $pscid,
-                     ':vlabel' => $visit_label,
+                        ':cid'    => $candid,
+                        ':pid'    => $pscid,
+                        ':vlabel' => $visit_label,
                     ]
                 );
-                if (sizeOf($candidate) == 0 || (sizeOf($candidate) !== 0
-                    && $candidate["candid"] !== $candid)
-                ) {
+                if (is_null($candidate) || $candidate["candid"] !== $candid) {
                     array_push(
                         $errors["candID"],
                         "The CandID " . $candid .
@@ -359,13 +367,13 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                     );
                 } else {
                     if (!$candidate['candid_with_pscid']) {
-                         array_push(
-                             $errors["pSCID"],
-                             "Invalid PSCID " . $pscid .
+                        array_push(
+                            $errors["pSCID"],
+                            "Invalid PSCID " . $pscid .
                              " for CandID " . $candid .
                              ". Check that you entered the correct" .
                              " PSCID and CandID."
-                         );
+                        );
                     }
                     if (!$candidate['visit_label']) {
                             array_push(
@@ -431,22 +439,12 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                     = "The file name for an inter-scanner reliability upload is invalid. "
                     . "Refer to the Notes section at the bottom of the page for the expected file name nomenclature.";
             } else if (!checkdate($matches[6], $matches[7], $matches[5])) {
-                    $file_name_error
-                        = "The date within the supplied file name for an inter-scanner "
-                        . "reliability upload is invalid";
-            }     
+                $file_name_error
+                    = "The date within the supplied file name for an inter-scanner "
+                    . "reliability upload is invalid";
+            }
         }
-        ///////////////////////////////////////////////////////////////////////
-        ////////////// Checks to see if the file is of type////////////////////
-        //////////////.gz, .zip or .tgz////////////////////////////////////////
-        ///////////////////////////////////////////////////////////////////////
-        if (!$this->isCompressed($temp_file)) {
-            array_push(
-                $errors["mriFile"],
-                "The file $file_name is not of type".
-                " .tgz, .tar.gz or .zip."
-            );
-        }
+
         ///////////////////////////////////////////////////////////////////////
         //////// Make sure there's no existing identical entry ////////////////
         //////// for "new" scans //////////////////////////////////////////////
@@ -454,9 +452,9 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         $updateFile = isset($args['values']['overwrite'])
             ? (boolean) $args['values']['overwrite'] : false;
         $id         = $db->pselectOne(
-            "SELECT 
-                IF (InsertionComplete=0 AND 
-                (ISNULL(Inserting) OR Inserting=0), UploadID, NULL) as UploadID 
+            "SELECT
+                IF (InsertionComplete=0 AND
+                (ISNULL(Inserting) OR Inserting=0), UploadID, NULL) as UploadID
                 FROM mri_upload WHERE UploadLocation LIKE :ul",
             array('ul' => "%$file_name")
         );
@@ -469,7 +467,6 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                 "This file has already been uploaded."
             );
         }
-
         // Loops through associative array of error messages
         // If there are error messages, array is passed to front end
         // If there are no error messages but the file name is wrong,
@@ -506,6 +503,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
             header('Content-Type: application/json; charset=UTF-8');
             exit(json_encode(['errors' => $errors]));
         }
+
         $this->setTempPath($new_temp_file);
         return true;
     }
@@ -521,10 +519,9 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
      */
     function importFile($file, $args)
     {
-        $feedbacks         = array();
-        $db                = \Database::singleton();
-        $pname             = '';
-        $imagingUploadType = $args['values']['imagingUploadType'];
+        $db         = \Database::singleton();
+        $pname      = '';
+        $imagingUploadType  = $args['values']['imagingUploadType'];
         $updateFile = isset($args['values']['overwrite'])
             ? (boolean) $args['values']['overwrite'] : false;
         ///////////////////////////////////////////////////////////////////////
@@ -539,6 +536,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         ////////////////////Insert values into mri_upload//////////////////////
         ///////////////////////////////////////////////////////////////////////
         $date = date('Y-m-d H:i:s');
+
         ///////////////////////////////////////////////////////////////////////
         /////Get the pscid, candid and visit_label/////////////////////////////
         ///////////////////////////////////////////////////////////////////////
@@ -558,8 +556,8 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                     "SELECT ID FROM  session WHERE CandID = :cid
                      AND Visit_label =:vlabel",
                     array(
-                     'cid'    => $candid,
-                     'vlabel' => $visit_label,
+                        'cid'    => $candid,
+                        'vlabel' => $visit_label,
                     )
                 );
             }
@@ -581,38 +579,38 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         if ($this->uploaded_file_path) {
             $this->removeTempDir();
         } else {
-                $this->uploaded_file_path = $this->getTempPath();
+            $this->uploaded_file_path = $this->getTempPath();
         }
-        
+
         // Get the IDs of all the imaging upload types
         $imagingUploadTypeID = $db->pselectOne(
-                "SELECT ID FROM imaging_upload_type WHERE Type = :type",
-                array('type' => $imagingUploadType)
-            );
+            "SELECT ID FROM imaging_upload_type WHERE Type = :type",
+            array('type' => $imagingUploadType)
+        );
         $values = array(
-                   'UploadedBy'               => $user_name,
-                   'UploadDate'               => $date,
-                   'UploadLocation'           => $this->uploaded_file_path,
-                   'SessionID'                => $sessionid,
-                   'PatientName'              => $pname,
-                   'ImagingUploadTypeID'      => $imagingUploadTypeID,
-                   'IsPhantom'                => ($imagingUploadType != 'Subject' ? 'Y' : 'N'),
-                   'TarchiveID'               => null,
-                   'Inserting'                => null,
-                   'InsertionComplete'        => 0,
-                   'IsCandidateInfoValidated' => null,
-                   'IsTarchiveValidated'      => 0,
-                   'number_of_mincInserted'   => null,
-                   'number_of_mincCreated'    => null,
-                  );
+            'UploadedBy'               => $user_name,
+            'UploadDate'               => $date,
+            'UploadLocation'           => $this->uploaded_file_path,
+            'SessionID'                => $sessionid ?? null,
+            'PatientName'              => $pname,
+            'ImagingUploadTypeID'      => $imagingUploadTypeID,
+            'IsPhantom'                => ($imagingUploadType != 'Subject' ? 'Y' : 'N'),
+            'TarchiveID'               => null,
+            'Inserting'                => null,
+            'InsertionComplete'        => 0,
+            'IsCandidateInfoValidated' => null,
+            'IsTarchiveValidated'      => 0,
+            'number_of_mincInserted'   => null,
+            'number_of_mincCreated'    => null,
+        );
         if ($updateFile) {
             // Only overwrite file if it failed MRI pipeline. Need to use
             // wildcard for files that were uploaded to a random temp path.
             $fileName = $file->fileInfo['name'];
             $id       = $db->pselectOne(
-                "SELECT 
-                IF (InsertionComplete=0 AND 
-                (ISNULL(Inserting) OR Inserting=0), UploadID, NULL) as UploadID 
+                "SELECT
+                IF (InsertionComplete=0 AND
+                (ISNULL(Inserting) OR Inserting=0), UploadID, NULL) as UploadID
                 FROM mri_upload WHERE UploadLocation LIKE :ul",
                 array('ul' => "%$fileName")
             );
@@ -626,11 +624,12 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         $this->mri_upload_id = $db->getLastInsertId();
         return true;
     }
+    // IBIS SPECIFIC OVERRIDE CODE ENDS HERE
     /**
      * Creates a temporary directory
      *
      * @return String
-    */
+     */
     function tempdir()
     {
         $tempfile =tempnam(
@@ -646,71 +645,62 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         }
     }
     /**
-    * The SetTempDir sets the tempdir
-    *
-    * @param string $tempFilePath The path to the temp file
-    *
-    * @return NULL
-    */
+     * The SetTempDir sets the tempdir
+     *
+     * @param string $tempFilePath The path to the temp file
+     *
+     * @return NULL
+     */
     function setTempPath($tempFilePath)
     {
         $this->temp_path = $tempFilePath;
     }
     /**
-    * The getTempPath gets the temp_path
-    *
-    * @return String returns temp_path
-    */
+     * The getTempPath gets the temp_path
+     *
+     * @return String returns temp_path
+     */
     function getTempPath()
     {
         return $this->temp_path;
     }
     /**
-    * The getTargetDirectory retrieves info about where the file should be stored.
-    *
-    * The returned directory is added to the baseUploadDirectory property.
-    * It should have a trailing slash.
-    *
-    * @param string $file The full filename including directory.
-    * @param Array  $args The list of arguments
-    *
-    * @return bool  $success if operation succeeded
-    */
+     * The getTargetDirectory retrieves info about where the file should be stored.
+     *
+     * The returned directory is added to the baseUploadDirectory property.
+     * It should have a trailing slash.
+     *
+     * @param string $file The full filename including directory.
+     * @param Array  $args The list of arguments
+     *
+     * @return string  $success if operation succeeded
+     */
     function getTargetDirectory($file, $args)
     {
-        $user_name = $args['user_id'] ?? null;
-        if (($user_name==null) || (!(isset($user_name)))) {
-            $user      = \User::singleton();
-            $user_name = $user->getUsername();
-        }
-
-        $output ="$user_name/";
-
-        return $output;
+        return sprintf(
+            "%s/",
+            $args['user_id'] ?? \User::singleton()->getUsername()
+        );
     }
     /**
-    * The function isCompressed returns true if the file is
-    * compressed (gzip or zip) or false otherwise
-    *
-    * @param string $file The full filename including directory.
-    *
-    * @return bool  $success if operation succeeded
-    */
+     * The function isCompressed returns true if the file is
+     * compressed (gzip or zip) or false otherwise
+     *
+     * @param string $file The full filename including directory
+     *
+     * @return bool Whether the file is compressed
+     */
     function isCompressed($file)
     {
-        $file_info =  mime_content_type($file);
-        if (preg_match('/zip/', $file_info, $matches)) {
-            return true;
-        }
-        return false;
+        return strpos(mime_content_type($file), 'zip') !== false;
     }
     /**
-    * The function removes the uploaded file from the /tmp directory
-    * only if the file is moved from the /tmp directory to the
-    * MRI-Upload Directory
-    *
-    * @return bool  $success if operation succeeded
-    */
+     * The function removes the uploaded file from the /tmp directory
+     * only if the file is moved from the /tmp directory to the
+     * MRI-Upload Directory
+     *
+     * @return bool  $success if operation succeeded
+     */
     function removeTempDir()
     {
         $tempFolderPath = dirname($this->getTempPath());
@@ -721,12 +711,12 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         return $success;
     }
     /**
-    * The function removes the directory and all its contents
-    *
-    * @param string $folder The full folder path
-    *
-    * @return bool  $success if operation succeeded
-    */
+     * The function removes the directory and all its contents
+     *
+     * @param string $folder The full folder path
+     *
+     * @return bool  $success if operation succeeded
+     */
     function removeDir($folder)
     {
         $d = dir($folder);
@@ -749,9 +739,12 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
     {
         $files = array();
         foreach ($data as $row) {
+            // IBIS SPECIFIC OVERRIDE CODE
+            // Update indexes for new column added.
             $uploadStatus = $row[2];
             $filePath     = $row[6];
             $mincInserted = $row[11];
+            // IBIS SPECIFIC OVERRIDE CODE ENDS HERE
             $fileName     = basename($filePath);
             // Checks if a file is already in files array
             $isDuplicate = (
@@ -769,8 +762,8 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
                 array_push(
                     $files,
                     [
-                     "fileName" => $fileName,
-                     "status"   => $uploadStatus,
+                        "fileName" => $fileName,
+                        "status"   => $uploadStatus,
                     ]
                 );
             }
@@ -791,8 +784,8 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         return array_merge(
             $deps,
             array(
-             $baseURL . "/imaging_uploader/js/index.js",
-             $baseURL . "/imaging_uploader/js/imaging_uploader_helper.js",
+                $baseURL . "/imaging_uploader/js/index.js",
+                $baseURL . "/imaging_uploader/js/imaging_uploader_helper.js",
             )
         );
     }
@@ -818,7 +811,7 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
      *
      * @return string json encoded string of the headers and data from this table
      */
-    function toJSON()
+    function toJSON(): string
     {
         $result            = $this->toArray();
         $result['form']    = $this->form->form;
@@ -831,4 +824,4 @@ class Imaging_Uploader extends \NDB_Menu_Filter_Form
         return json_encode($result);
     }
 }
-?>
+

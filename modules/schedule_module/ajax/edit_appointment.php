@@ -40,10 +40,10 @@ if (empty($appointment)) {
     ]));
 }
 
-// If user wants to change value, set new value 
+// If user wants to change value, set new value
 // If user doesn't make a change to a column, don't change the value
 $appointment["StartsAt"]          = isset($_PUT["StartsAt"]) ?
-    $_PUT["StartsAt"] : 
+    $_PUT["StartsAt"] :
     $appointment["StartsAt"];
 
 $appointment["AppointmentTypeID"] = isset($_PUT["AppointmentTypeID"]) ?
@@ -60,7 +60,7 @@ if (!isDateValid($appointment["StartsAt"])) {
 
 // Check if Appointment Type is valid/exists
 $appointment_type = $DB->pselectRow(
-    "SELECT * FROM appointment_type 
+    "SELECT * FROM appointment_type
     WHERE AppointmentTypeID = :appointmentTypeId",
     array("appointmentTypeId" => $_PUT["AppointmentTypeID"])
 );
@@ -74,15 +74,15 @@ if (empty($appointment_type)) {
 
 $duplicate_check = $DB->pselectRow(
     "
-        SELECT 
-            * 
-        FROM 
-            appointment 
-        WHERE 
+        SELECT
+            *
+        FROM
+            appointment
+        WHERE
             SessionID = :sessionId
-        AND 
+        AND
             AppointmentTypeID = :appointmentTypeId
-        AND 
+        AND
             StartsAt = :startsAt
     ",
     array(
@@ -111,11 +111,6 @@ $DB->update(
     )
 );
 
-if ($DB->getAffected() != 1) {
-    http_response_code(304);
-    die();
-}
-
 $edit_appointment = $DB->pselectRow(
     "
         SELECT
@@ -133,13 +128,13 @@ $edit_appointment = $DB->pselectRow(
             appointment_type
         ON
             appointment_type.AppointmentTypeID = appointment.AppointmentTypeID
-        JOIN 
-            session 
-        ON 
+        JOIN
+            session
+        ON
             appointment.SessionID = session.ID
         JOIN
             candidate
-        ON 
+        ON
             session.CandID = candidate.CandID
         JOIN
             subproject

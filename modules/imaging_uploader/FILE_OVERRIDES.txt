@@ -1,0 +1,6 @@
+List of all files which contain overrides.
+
+- jsx
+    - UploadForm.js
+- php
+    - imaging_uploader.class.inc

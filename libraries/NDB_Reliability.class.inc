@@ -34,6 +34,13 @@ class NDB_Reliability extends NDB_Form
     var $reliability_center_id;
 
     /**
+     * Commonly used level of indentation
+     *
+     * @access private
+     */
+    var $indent = "&nbsp;&nbsp;&nbsp;&nbsp;";
+
+    /**
      * Generates a new form instance and runs the appropriate method
      *
      * @param string  $name                  Identifies the form
@@ -49,6 +56,17 @@ class NDB_Reliability extends NDB_Form
         $identifier,
         $reliability_center_id
     ) {
+
+        $factory = NDB_Factory::singleton();
+        $config  = $factory->config();
+        $base    = $config->getSetting('base');
+        $library = $base . "project/reliability/"
+            . "NDB_Reliability_$name.class.inc";
+
+        if (stream_resolve_include_path($library) !== false) {
+            include_once $library;
+        }
+
         // check that the form class exists
         if (class_exists("NDB_Reliability_$name")) {
             $class = "NDB_Reliability_$name";
@@ -60,11 +78,12 @@ class NDB_Reliability extends NDB_Form
         $base    = $config->getSetting("base");
         $mpath = $base . "project/libraries/NDB_Reliability.class.inc";
         // create a form instance
-        $obj = new $class(new Module($name, $mpath),$name, $page, $identifier,'test_form');
+        $obj = new $class(Module::factory("reliability"),$name, $page, $identifier);
 
         $obj->reliability_center_id = $reliability_center_id;
-        $obj->identifier = $identifier;
-
+        $obj->identifier            = $identifier;
+        $obj->name                  = $name;
+        $obj->page                  = $page;
 
         if (method_exists($obj, $page)) {
             $success       = $obj->$page();
@@ -154,6 +173,7 @@ class NDB_Reliability extends NDB_Form
             if (strpos($key, '__') === 0) {
                 unset($values[$key]);
             }
+            $values = Utility::nullifyEmpty($values, $key);
         }
 
         $this->_process($values);
