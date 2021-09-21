@@ -8,3 +8,10 @@ INSERT INTO modules (Name, Active) VALUES ('bobdule', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('quality_control', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('dqt', 'Y');
 UPDATE modules SET Active='N' WHERE Name='imaging_qc';
+
+-- Issue Tracker Path
+UPDATE Config
+    SET Value='/export-01/nihace/www/modules/issue_tracker'
+    WHERE ConfigID=(
+        SELECT ID FROM ConfigSettings WHERE Name='IssueTrackerDataPath'
+    );
