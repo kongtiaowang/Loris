@@ -15,3 +15,7 @@ UPDATE Config
     WHERE ConfigID=(
         SELECT ID FROM ConfigSettings WHERE Name='IssueTrackerDataPath'
     );
+
+-- Modify publication column name
+ALTER TABLE publication_upload
+    CHANGE COLUMN URL Filename VARCHAR(255);
