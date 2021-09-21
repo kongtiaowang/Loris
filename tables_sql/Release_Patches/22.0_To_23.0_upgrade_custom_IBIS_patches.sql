@@ -61,7 +61,7 @@ CREATE TABLE `mri_protocol_group` (
     `MriProtocolGroupID`   INT(4) UNSIGNED NOT NULL AUTO_INCREMENT,
     `Name`                 VARCHAR(255)    NOT NULL UNIQUE,
     PRIMARY KEY (`MriProtocolGroupID`)
-) ENGINE = InnoDB  DEFAULT CHARSET=utf8mb4;
+) ENGINE = InnoDB  DEFAULT CHARSET=utf8;
 INSERT INTO `mri_protocol_group` (`Name`) VALUES('Default MRI protocol group');
 
 
@@ -87,7 +87,7 @@ CREATE TABLE `mri_protocol_group_target` (
      CONSTRAINT `FK_mri_protocol_group_target_1` FOREIGN KEY (`MriProtocolGroupID`) REFERENCES `mri_protocol_group` (`MriProtocolGroupID`),
      CONSTRAINT `FK_mri_protocol_group_target_2` FOREIGN KEY (`ProjectID`)          REFERENCES `Project` (`ProjectID`),
      CONSTRAINT `FK_mri_protocol_group_target_3` FOREIGN KEY (`SubprojectID`)       REFERENCES `subproject` (`SubprojectID`)
-) ENGINE = InnoDB  DEFAULT CHARSET=utf8mb4;
+) ENGINE = InnoDB  DEFAULT CHARSET=utf8;
 INSERT INTO `mri_protocol_group_target` (`MriProtocolGroupID`, `ProjectID`, `SubprojectID`, `Visit_label`)
     VALUES((SELECT MriProtocolGroupID FROM mri_protocol_group WHERE Name='Default MRI protocol group'), NULL, NULL, NULL);
 
@@ -104,7 +104,7 @@ CREATE TABLE `mri_protocol_checks_group` (
     `MriProtocolChecksGroupID`   INT(4) UNSIGNED NOT NULL AUTO_INCREMENT,
     `Name`                       VARCHAR(255)    NOT NULL UNIQUE,
     PRIMARY KEY (`MriProtocolChecksGroupID`)
-) ENGINE = InnoDB  DEFAULT CHARSET=utf8mb4;
+) ENGINE = InnoDB  DEFAULT CHARSET=utf8;
 INSERT INTO `mri_protocol_checks_group` (`Name`) VALUES('Default MRI protocol checks group');
 
 
@@ -129,7 +129,7 @@ CREATE TABLE `mri_protocol_checks_group_target` (
      CONSTRAINT `FK_mri_protocol_checks_group_target_1` FOREIGN KEY (`MriProtocolChecksGroupID`) REFERENCES `mri_protocol_checks_group` (`MriProtocolChecksGroupID`),
      CONSTRAINT `FK_mri_protocol_checks_group_target_2` FOREIGN KEY (`ProjectID`)                REFERENCES `Project` (`ProjectID`),
      CONSTRAINT `FK_mri_protocol_checks_group_target_3` FOREIGN KEY (`SubprojectID`)             REFERENCES `subproject` (`SubprojectID`)
-) ENGINE = InnoDB  DEFAULT CHARSET=utf8mb4;
+) ENGINE = InnoDB  DEFAULT CHARSET=utf8;
 
 INSERT INTO `mri_protocol_checks_group_target` (`MriProtocolChecksGroupID`, `ProjectID`, `SubprojectID`, `Visit_label`)
     VALUES((SELECT MriProtocolChecksGroupID FROM mri_protocol_checks_group WHERE Name='Default MRI protocol checks group'), NULL, NULL, NULL);
@@ -225,7 +225,7 @@ CREATE TABLE `issues_attachments` (
     `mime_type` varchar(255) NOT NULL DEFAULT '',
     CONSTRAINT `fk_issues_attachments_issue` FOREIGN KEY (`issueID`) REFERENCES `issues` (`issueID`),
     PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO ConfigSettings (Name, Description, Visible, AllowMultiple, DataType, Parent, Label, OrderNumber)
 VALUES('IssueTrackerDataPath', 'Path to Issue Tracker data files', 1, 0, 'web_path', 26, 'Issue Tracker Data Path', 8);
@@ -281,7 +281,7 @@ CREATE TABLE `modules` (
   `Active` enum('Y','N') NOT NULL,
   PRIMARY KEY (`ID`),
   UNIQUE KEY `modules_id` (`Name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO modules (Name, Active) VALUES ('acknowledgements', 'Y');
 INSERT INTO modules (Name, Active) VALUES ('api', 'Y');
@@ -332,7 +332,7 @@ VALUES (
            (SELECT ID FROM permissions_category WHERE Description = 'Permission')
        );
 
-Add edit permission for battery manager
+-- Add edit permission for battery manager
 INSERT INTO permissions (code, description, categoryID)
 VALUES (
            'battery_manager_edit',
@@ -340,7 +340,7 @@ VALUES (
            (SELECT ID FROM permissions_category WHERE Description = 'Permission')
        );
 
-Give view permission to admin
+-- Give view permission to admin
 INSERT INTO user_perm_rel (userID, permID)
 SELECT ID, permID FROM users u JOIN permissions p
 WHERE UserID='leigh.ibis@gmail.com' AND code = 'battery_manager_view';
