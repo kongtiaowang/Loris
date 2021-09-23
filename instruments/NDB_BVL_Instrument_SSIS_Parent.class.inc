@@ -28,7 +28,6 @@ class NDB_BVL_Instrument_SSIS_Parent extends NDB_BVL_Instrument
     use LegacyInstrumentTrait;
     use instrument_validator;
 
-    var $ValidityEnabled  = true;
     var $ValidityRequired = false;
 
     var $scoreLabels = array(

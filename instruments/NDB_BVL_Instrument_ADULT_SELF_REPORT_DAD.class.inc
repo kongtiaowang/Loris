@@ -24,7 +24,6 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT_DAD extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
 
-    var $ValidityEnabled  = false;
     var $ValidityRequired = false;
 
     var $scoreLabels = array(

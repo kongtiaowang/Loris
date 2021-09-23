@@ -25,7 +25,6 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
 {
     use LegacyInstrumentTrait;
     use instrument_validator;
-    var $ValidityEnabled  = false;
     var $ValidityRequired = false;
 
     var $LONG_CSHQ_QUESTIONS = [

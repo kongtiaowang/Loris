@@ -28,6 +28,8 @@ class NDB_BVL_Instrument_UCD_Charge_GI_History extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
 
+    var $ValidityRequired = false;
+
     /**
      * sets up basic data, such as the LorisForm object, and so on.
      *

@@ -20,7 +20,6 @@ class NDB_BVL_Instrument_conners_parent extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
 
-    var $ValidityEnabled  = true;
     var $ValidityRequired = false;
     
     var $scoreLabels = array(

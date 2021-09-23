@@ -24,6 +24,8 @@ class NDB_BVL_Instrument_QRS_Fxs_Subject extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
 
+    var $ValidityRequired = false;
+
     /**
      * Sets up basic data, such as the LorisForm object, and so on.
      *

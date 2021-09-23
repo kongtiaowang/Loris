@@ -24,6 +24,8 @@ class NDB_BVL_Instrument_SEQ3 extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
 
+    var $ValidityRequired = false;
+
     /**
      * Sample SQL statement for test_names table and instrument subtests table
      *

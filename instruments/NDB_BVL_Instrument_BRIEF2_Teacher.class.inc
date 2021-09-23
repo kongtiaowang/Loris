@@ -26,6 +26,8 @@ class NDB_BVL_Instrument_BRIEF2_Teacher extends NDB_BVL_Instrument
 
     use instrument_validator;
 
+    var $ValidityRequired = false;
+
     var $scoreLabels = array(
         'inhibit_raw_score',
         'shift_raw_score',

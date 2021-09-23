@@ -25,6 +25,8 @@ class NDB_BVL_Instrument_BRQ_survey extends NDB_BVL_Instrument
     use LegacyInstrumentTrait;
     use instrument_validator;
 
+    var $ValidityRequired = false;
+
     const OPTIONS = array(
                           null              => "",
                           "1_almost_never"  => "Almost never",

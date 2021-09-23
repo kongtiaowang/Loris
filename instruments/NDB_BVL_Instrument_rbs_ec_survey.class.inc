@@ -17,7 +17,6 @@ class NDB_BVL_Instrument_rbs_ec_survey extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
     use instrument_validator;
-    var $ValidityEnabled  = false;
     var $ValidityRequired = false;
 
     private const Score_Options = [

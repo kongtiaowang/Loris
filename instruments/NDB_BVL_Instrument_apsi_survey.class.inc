@@ -1,4 +1,4 @@
-<?php
+nstruments/NDB_BVL_Instrument_tanner_girls_survey.cla<?php
 /*
  * This file contains the NDB_BVL_Instrument_apsi_survey
  * class
@@ -24,6 +24,8 @@
 
 class NDB_BVL_Instrument_apsi_survey extends NDB_BVL_Instrument
 {
+    var $ValidityRequired = false;
+
     private const questions_loss = ['speech_loss' => 'Did loss involve speech?',
         'eye_contact_social_emot_loss' => 'Did loss involve eye contact and social-emotional connectedness?'];
 

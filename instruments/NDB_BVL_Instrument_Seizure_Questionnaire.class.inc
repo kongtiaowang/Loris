@@ -25,7 +25,6 @@ class NDB_BVL_Instrument_Seizure_Questionnaire extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
 
-    var $ValidityEnabled  = false;
     var $ValidityRequired = false;
 
     /**

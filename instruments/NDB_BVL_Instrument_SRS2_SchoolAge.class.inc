@@ -29,6 +29,9 @@ class NDB_BVL_Instrument_SRS2_SchoolAge extends NDB_BVL_Instrument
     use LegacyInstrumentTrait;
 
     use instrument_validator;
+
+    var $ValidityRequired = false;
+
     //Commonly used level of indentation;
     var $indent = "&nbsp;&nbsp;&nbsp;&nbsp;";
 

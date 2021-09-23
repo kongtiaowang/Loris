@@ -25,8 +25,7 @@ class NDB_BVL_Instrument_Med_Psych_History_Abbreviated_survey extends NDB_BVL_In
     use LegacyInstrumentTrait;
     use instrument_validator;
 
-    var $ValidityEnabled   = true;
-    var $ValidityRequired  = false;
+    var $ValidityRequired = false;
 
     /**
      * Sample SQL statement for test_names table and instrument subtests table

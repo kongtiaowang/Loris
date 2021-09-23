@@ -26,7 +26,6 @@ class NDB_BVL_Instrument_MASC2_Parent extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
 
-    var $ValidityEnabled = false;
     var $ValidityRequired = false;
     var $scoreLabels = array(
         'masc2_total_score',

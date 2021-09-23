@@ -23,6 +23,9 @@
 class NDB_BVL_Instrument_tanner_boys_survey extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
+
+    var $ValidityRequired = false;
+
     public function getFullName(): string
     {
         return 'TANNER Staging Questionnaire (Boys) Survey';

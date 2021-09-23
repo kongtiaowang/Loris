@@ -6,7 +6,6 @@ class NDB_BVL_Instrument_rbs_r extends NDB_BVL_Instrument
 
     use instrument_validator;
 
-    var $ValidityEnabled  = false;
     var $ValidityRequired = false;
 
     /*

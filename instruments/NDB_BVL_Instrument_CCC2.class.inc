@@ -24,7 +24,6 @@ class NDB_BVL_Instrument_CCC2 extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
 
-    var $ValidityEnabled = false;
     var $ValidityRequired = false;
 
     /**

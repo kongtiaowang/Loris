@@ -25,7 +25,6 @@ class NDB_BVL_Instrument_SCARED_Parent_Subject extends NDB_BVL_Instrument
     use LegacyInstrumentTrait;
     use instrument_validator;
 
-    var $ValidityEnabled  = false;
     var $ValidityRequired = false;
 
     var $scoreLabels = array(

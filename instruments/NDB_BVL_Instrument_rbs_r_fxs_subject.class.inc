@@ -6,7 +6,6 @@ class NDB_BVL_Instrument_rbs_r_fxs_subject extends NDB_BVL_Instrument
 
     use instrument_validator;
 
-    var $ValidityEnabled  = false;
     var $ValidityRequired = false;
 
     /* These are used without the _score and _endorsed prefix by the instrument.

@@ -14,7 +14,6 @@ INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_num
 
    use instrument_validator;
 
-    var $ValidityEnabled = false;
     var $ValidityRequired = false;
 
    var $scoreCols = array('risk_score' => "Risk Score",

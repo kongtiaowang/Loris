@@ -18,6 +18,9 @@
 class NDB_BVL_Instrument_NDAR_Consent_SA_Form extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
+
+    var $ValidityRequired = false;
+
     /**
      * Sets up basic data, such as the LorisForm object, and so on.
      *

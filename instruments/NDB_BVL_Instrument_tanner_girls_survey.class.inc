@@ -22,6 +22,8 @@
  */
 class NDB_BVL_Instrument_tanner_girls_survey extends NDB_BVL_Instrument
 {
+    var $ValidityRequired = false;
+
     public function getFullName(): string
     {
         return 'TANNER Staging Questionnaire (Girls) Survey';

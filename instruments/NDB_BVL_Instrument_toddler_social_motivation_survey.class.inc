@@ -27,6 +27,9 @@
 class NDB_BVL_Instrument_toddler_social_motivation_survey extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
+
+    var $ValidityRequired = false;
+
     /**
      * sets up basic data, such as the LorisForm object, and so on.
      *

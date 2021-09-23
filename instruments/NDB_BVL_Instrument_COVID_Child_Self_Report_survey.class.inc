@@ -25,6 +25,8 @@ class NDB_BVL_Instrument_COVID_Child_Self_Report_survey extends NDB_BVL_Instrume
     use LegacyInstrumentTrait;
     use instrument_validator;
 
+    var $ValidityRequired = false;
+
     const YES_NO_OPTIONS = array(
                             null    => "",
                             "1_yes" => "Yes",

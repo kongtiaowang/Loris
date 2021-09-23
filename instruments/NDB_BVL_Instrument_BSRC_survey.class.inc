@@ -26,7 +26,6 @@ class NDB_BVL_Instrument_BSRC_survey extends NDB_BVL_Instrument
 
     use instrument_validator;
 
-    var $ValidityEnabled  = false;
     var $ValidityRequired = false;
 
     const YES_NO_OPTIONS = array(
