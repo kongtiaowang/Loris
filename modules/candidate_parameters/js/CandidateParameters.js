@@ -82,7 +82,7 @@ window["lorisjs"] = window["lorisjs"] || {}; window["lorisjs"]["candidate_parame
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 12);
+/******/ 	return __webpack_require__(__webpack_require__.s = 0);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -95,7 +95,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
 /* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var Loader__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(9);
+/* harmony import */ var _CandidateInfo__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(9);
+/* harmony import */ var _ProbandInfo__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(10);
+/* harmony import */ var _FamilyInfo__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(12);
+/* harmony import */ var _ParticipantStatus__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(13);
+/* harmony import */ var _ConsentStatus__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(14);
+/* harmony import */ var _CandidateDOB__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(15);
+/* harmony import */ var _CandidateDOD__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(16);
+/* harmony import */ var Tabs__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(17);
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -110,7 +117,7 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
 
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
 
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
@@ -122,203 +129,125 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 
 
 
-var CandidateDOB = /*#__PURE__*/function (_Component) {
-  _inherits(CandidateDOB, _Component);
 
-  var _super = _createSuper(CandidateDOB);
 
-  function CandidateDOB(props) {
+
+
+
+
+
+var CandidateParameters = /*#__PURE__*/function (_Component) {
+  _inherits(CandidateParameters, _Component);
+
+  var _super = _createSuper(CandidateParameters);
+
+  function CandidateParameters(props) {
     var _this;
 
-    _classCallCheck(this, CandidateDOB);
+    _classCallCheck(this, CandidateParameters);
 
     _this = _super.call(this, props);
-    _this.state = {
-      data: {},
-      formData: {
-        dob: null
-      },
-      error: false,
-      isLoaded: false
-    };
-    _this.fetchData = _this.fetchData.bind(_assertThisInitialized(_this));
-    _this.setFormData = _this.setFormData.bind(_assertThisInitialized(_this));
-    _this.handleSubmit = _this.handleSubmit.bind(_assertThisInitialized(_this));
+    _this.getTabPanes = _this.getTabPanes.bind(_assertThisInitialized(_this));
     return _this;
   }
 
-  _createClass(CandidateDOB, [{
-    key: "componentDidMount",
-    value: function componentDidMount() {
-      var _this2 = this;
-
-      this.fetchData().then(function () {
-        return _this2.setState({
-          isLoaded: true
-        });
+  _createClass(CandidateParameters, [{
+    key: "getTabPanes",
+    value: function getTabPanes(tabList) {
+      var actionURL = "".concat(loris.BaseURL, "/candidate_parameters/ajax/formHandler.php");
+      var dataURL = "".concat(loris.BaseURL, "/candidate_parameters/ajax/getData.php?candID=").concat(this.props.candID);
+      var tabPanes = Object.keys(tabList).map(function (key) {
+        var TabContent = tabList[key].component;
+        return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Tabs__WEBPACK_IMPORTED_MODULE_9__["TabPane"], {
+          TabId: tabList[key].id,
+          key: key
+        }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(TabContent, {
+          action: actionURL,
+          dataURL: "".concat(dataURL, "&data=").concat(tabList[key].id),
+          tabName: tabList[key].id
+        }));
       });
-    }
-  }, {
-    key: "fetchData",
-    value: function fetchData() {
-      var _this3 = this;
-
-      return fetch(this.props.dataURL, {
-        credentials: 'same-origin'
-      }).then(function (resp) {
-        return resp.json();
-      }).then(function (data) {
-        return _this3.setState({
-          data: data,
-          formData: data
-        });
-      })["catch"](function (error) {
-        _this3.setState({
-          error: true
-        });
-
-        console.error(error);
-      });
-    }
-  }, {
-    key: "setFormData",
-    value: function setFormData(formElement, value) {
-      var formData = this.state.formData;
-      formData[formElement] = value;
-      this.setState({
-        formData: formData
-      });
+      return tabPanes;
     }
   }, {
     key: "render",
     value: function render() {
-      if (this.state.error) {
-        return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h3", null, "An error occured while loading the page.");
-      }
+      var tabList = [{
+        id: 'candidateInfo',
+        label: 'Candidate Information',
+        component: _CandidateInfo__WEBPACK_IMPORTED_MODULE_2__["default"]
+      }, {
+        id: 'participantStatus',
+        label: 'Participant Status',
+        component: _ParticipantStatus__WEBPACK_IMPORTED_MODULE_5__["default"]
+      }, {
+        id: 'candidateDOB',
+        label: 'Date of Birth',
+        component: _CandidateDOB__WEBPACK_IMPORTED_MODULE_7__["default"]
+      }, {
+        id: 'candidateDOD',
+        label: 'Date of Death',
+        component: _CandidateDOD__WEBPACK_IMPORTED_MODULE_8__["default"]
+      }];
 
-      if (!this.state.isLoaded) {
-        return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Loader__WEBPACK_IMPORTED_MODULE_2__["default"], null);
-      }
-
-      var disabled = true;
-      var updateButton = null;
-
-      if (loris.userHasPermission('candidate_dob_edit')) {
-        disabled = false;
-        updateButton = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(ButtonElement, {
-          label: "Update"
+      if (loris.config('useProband') === 'true') {
+        tabList.push({
+          id: 'probandInfo',
+          label: 'Proband Information',
+          component: _ProbandInfo__WEBPACK_IMPORTED_MODULE_3__["default"]
         });
       }
 
-      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "row"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(FormElement, {
-        name: "candidateDOB",
-        onSubmit: this.handleSubmit,
-        ref: "form",
-        "class": "col-md-6"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(StaticElement, {
-        label: "PSCID",
-        text: this.state.data.pscid
-      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(StaticElement, {
-        label: "DCCID",
-        text: this.state.data.candID
-      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(StaticElement, {
-        label: "Disclaimer:",
-        text: "Any changes to the date of birth requires an administrator to run the fix_candidate_age script.",
-        "class": "form-control-static text-danger bg-danger col-sm-10"
-      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(DateElement, {
-        label: "Date Of Birth:",
-        name: "dob",
-        value: this.state.formData.dob,
-        onUserInput: this.setFormData,
-        disabled: disabled,
-        required: true
-      }), updateButton));
-    }
-    /**
-     * Handles form submission
-     *
-     * @param {event} e - Form submission event
-     */
-
-  }, {
-    key: "handleSubmit",
-    value: function handleSubmit(e) {
-      var _this4 = this;
-
-      e.preventDefault();
-      var today = new Date();
-      var dd = String(today.getDate()).padStart(2, '0');
-      var mm = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
-
-      var yyyy = today.getFullYear();
-      today = yyyy + '-' + mm + '-' + dd;
-      var dob = this.state.formData.dob ? this.state.formData.dob : null;
-
-      if (dob > today) {
-        swal({
-          title: 'Error!',
-          text: 'Date of birth cannot be later than today!',
-          type: 'error',
-          confrimButtonText: 'OK'
+      if (loris.config('useFamilyID') === 'true') {
+        tabList.push({
+          id: 'familyInfo',
+          label: 'Family Information',
+          component: _FamilyInfo__WEBPACK_IMPORTED_MODULE_4__["default"]
         });
-        return;
-      } // Set form data and upload the media file
-
-
-      var formData = this.state.formData;
-      var formObject = new FormData();
-
-      for (var key in formData) {
-        if (formData.hasOwnProperty(key)) {
-          if (formData[key] !== '') {
-            formObject.append(key, formData[key]);
-          }
-        }
       }
 
-      formObject.append('tab', this.props.tabName);
-      fetch(this.props.action, {
-        method: 'POST',
-        cache: 'no-cache',
-        credentials: 'same-origin',
-        body: formObject
-      }).then(function (resp) {
-        if (resp.ok && resp.status === 200) {
-          swal({
-            title: 'Success!',
-            text: 'Date of birth updated!',
-            type: 'success',
-            confrimButtonText: 'OK'
-          });
+      if (loris.config('useConsent') === 'true') {
+        tabList.push({
+          id: 'consentStatus',
+          label: 'Consent Status',
+          component: _ConsentStatus__WEBPACK_IMPORTED_MODULE_6__["default"]
+        });
+      }
 
-          if (result.value) {
-            _this4.fetchData();
-          }
-        } else {
-          swal({
-            title: 'Error!',
-            text: 'Something went wrong.',
-            type: 'error',
-            confrimButtonText: 'OK'
-          });
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+        className: "btn btn-sm btn-primary",
+        href: loris.BaseURL + '/' + this.props.candID,
+        style: {
+          marginBottom: '20px'
         }
-      })["catch"](function (error) {
-        console.error(error);
-      });
+      }, "Return to timepoint list"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Tabs__WEBPACK_IMPORTED_MODULE_9__["Tabs"], {
+        tabs: tabList,
+        defaultTab: "candidateInfo",
+        updateURL: true
+      }, this.getTabPanes(tabList)));
     }
   }]);
 
-  return CandidateDOB;
+  return CandidateParameters;
 }(react__WEBPACK_IMPORTED_MODULE_0__["Component"]);
 
-CandidateDOB.propTypes = {
-  dataURL: prop_types__WEBPACK_IMPORTED_MODULE_1___default.a.string,
-  tabName: prop_types__WEBPACK_IMPORTED_MODULE_1___default.a.string,
-  action: prop_types__WEBPACK_IMPORTED_MODULE_1___default.a.string
+CandidateParameters.propTypes = {
+  candID: prop_types__WEBPACK_IMPORTED_MODULE_1___default.a.string.isRequired
 };
-/* harmony default export */ __webpack_exports__["default"] = (CandidateDOB);
+/**
+ * Render Candidate Parameters component on page load
+ */
+
+var args = QueryString.get(document.currentScript.src);
+window.addEventListener('load', function () {
+  var candidateParameters = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "page-candidate-parameters"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(CandidateParameters, {
+    Module: "candidate_parameters",
+    candID: args.candID
+  }));
+  ReactDOM.render(candidateParameters, document.getElementById('lorisworkspace'));
+});
 
 /***/ }),
 /* 1 */
@@ -1376,292 +1305,6 @@ module.exports = checkPropTypes;
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_0__);
-/**
- * This file contains the React component for Loader
- *
- * @author Henri Rabalais
- * @version 1.0.0
- *
- */
-
-/**
- * Loader is a React component which shows a spinner wheel while
- * something is loading.
- *
- * @param {array} props - The React props
- *
- * @return {DOMObject} - Loader React component
- */
-
-function Loader(props) {
-  return /*#__PURE__*/React.createElement("div", {
-    className: "loader",
-    style: {
-      width: parseInt(props.size),
-      height: parseInt(props.size)
-    }
-  });
-}
-
-Loader.propTypes = {
-  size: prop_types__WEBPACK_IMPORTED_MODULE_0___default.a.string
-};
-Loader.defaultProps = {
-  size: '120'
-};
-/* harmony default export */ __webpack_exports__["default"] = (Loader);
-
-/***/ }),
-/* 10 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var Loader__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(9);
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-
-
-
-
-var CandidateDOD = /*#__PURE__*/function (_Component) {
-  _inherits(CandidateDOD, _Component);
-
-  var _super = _createSuper(CandidateDOD);
-
-  function CandidateDOD(props) {
-    var _this;
-
-    _classCallCheck(this, CandidateDOD);
-
-    _this = _super.call(this, props);
-    _this.state = {
-      data: [],
-      formData: {},
-      error: false,
-      isLoaded: false
-    };
-    _this.fetchData = _this.fetchData.bind(_assertThisInitialized(_this));
-    _this.setFormData = _this.setFormData.bind(_assertThisInitialized(_this));
-    _this.handleSubmit = _this.handleSubmit.bind(_assertThisInitialized(_this));
-    return _this;
-  }
-
-  _createClass(CandidateDOD, [{
-    key: "componentDidMount",
-    value: function componentDidMount() {
-      var _this2 = this;
-
-      this.fetchData().then(function () {
-        return _this2.setState({
-          isLoaded: true
-        });
-      });
-    }
-  }, {
-    key: "fetchData",
-    value: function fetchData() {
-      var _this3 = this;
-
-      return fetch(this.props.dataURL, {
-        credentials: 'same-origin'
-      }).then(function (resp) {
-        return resp.json();
-      }).then(function (data) {
-        return _this3.setState({
-          data: data,
-          formData: data
-        });
-      })["catch"](function (error) {
-        _this3.setState({
-          error: true
-        });
-
-        console.error(error);
-      });
-    }
-  }, {
-    key: "setFormData",
-    value: function setFormData(formElement, value) {
-      var formData = this.state.formData;
-      formData[formElement] = value;
-      this.setState({
-        formData: formData
-      });
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      if (this.state.error) {
-        return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h3", null, "An error occured while loading the page.");
-      }
-
-      if (!this.state.isLoaded) {
-        return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Loader__WEBPACK_IMPORTED_MODULE_2__["default"], null);
-      }
-
-      var disabled = true;
-      var updateButton = null;
-
-      if (loris.userHasPermission('candidate_dod_edit')) {
-        disabled = false;
-        updateButton = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(ButtonElement, {
-          label: "Update"
-        });
-      }
-
-      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "row"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(FormElement, {
-        name: "candidateDOD",
-        onSubmit: this.handleSubmit,
-        ref: "form",
-        "class": "col-md-6"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(StaticElement, {
-        label: "PSCID",
-        text: this.state.data.pscid
-      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(StaticElement, {
-        label: "DCCID",
-        text: this.state.data.candID
-      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(StaticElement, {
-        label: "Disclaimer:",
-        text: "Any changes to the date of death requires an administrator to run the fix_candidate_age script.",
-        "class": "form-control-static text-danger bg-danger col-sm-10"
-      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(DateElement, {
-        label: "Date Of Death:",
-        name: "dod",
-        value: this.state.formData.dod,
-        onUserInput: this.setFormData,
-        disabled: disabled,
-        required: true
-      }), updateButton));
-    }
-    /**
-     * Handles form submission
-     *
-     * @param {event} e - Form submission event
-     */
-
-  }, {
-    key: "handleSubmit",
-    value: function handleSubmit(e) {
-      var _this4 = this;
-
-      e.preventDefault();
-      var today = new Date();
-      var dd = String(today.getDate()).padStart(2, '0');
-      var mm = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
-
-      var yyyy = today.getFullYear();
-      today = yyyy + '-' + mm + '-' + dd;
-      var dod = this.state.formData.dod ? this.state.formData.dod : null;
-      var dob = this.state.data.dob ? this.state.data.dob : null;
-
-      if (dod > today) {
-        swal({
-          title: 'Invalid date',
-          text: 'Date of death cannot be later than today!',
-          type: 'error',
-          confirmButtonText: 'OK'
-        });
-        return;
-      }
-
-      if (dob > dod) {
-        swal({
-          title: 'Invalid date',
-          text: 'Date of death must be after date of birth!',
-          type: 'error',
-          confirmButtonText: 'OK'
-        });
-        return;
-      } // Set form data and upload the media file
-
-
-      var formData = this.state.formData;
-      var formObject = new FormData();
-
-      for (var key in formData) {
-        if (formData.hasOwnProperty(key)) {
-          if (formData[key] !== '') {
-            formObject.append(key, formData[key]);
-          }
-        }
-      }
-
-      formObject.append('tab', this.props.tabName);
-      fetch(this.props.action, {
-        method: 'POST',
-        cache: 'no-cache',
-        credentials: 'same-origin',
-        body: formObject
-      }).then(function (resp) {
-        return resp.text();
-      }).then(function (result) {
-        swal({
-          title: 'Success!',
-          text: 'Date of death updated!',
-          type: 'success',
-          confirmButtonText: 'OK'
-        });
-
-        if (result.value) {
-          _this4.fetchData();
-        }
-      })["catch"](function (error) {
-        console.error(error);
-        swal({
-          title: 'Error!',
-          text: 'Something went wrong.',
-          type: 'error',
-          confirmButtonText: 'OK'
-        });
-      });
-    }
-  }]);
-
-  return CandidateDOD;
-}(react__WEBPACK_IMPORTED_MODULE_0__["Component"]);
-
-CandidateDOD.propTypes = {
-  dataURL: prop_types__WEBPACK_IMPORTED_MODULE_1___default.a.string,
-  tabName: prop_types__WEBPACK_IMPORTED_MODULE_1___default.a.string,
-  action: prop_types__WEBPACK_IMPORTED_MODULE_1___default.a.string
-};
-/* harmony default export */ __webpack_exports__["default"] = (CandidateDOD);
-
-/***/ }),
-/* 11 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
@@ -1680,7 +1323,7 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
 
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
 
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
@@ -1975,7 +1618,7 @@ CandidateInfo.propTypes = {
 /* harmony default export */ __webpack_exports__["default"] = (CandidateInfo);
 
 /***/ }),
-/* 12 */
+/* 10 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1984,14 +1627,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
 /* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _CandidateInfo__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(11);
-/* harmony import */ var _ProbandInfo__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(13);
-/* harmony import */ var _FamilyInfo__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(14);
-/* harmony import */ var _ParticipantStatus__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(15);
-/* harmony import */ var _ConsentStatus__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(16);
-/* harmony import */ var _CandidateDOB__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(0);
-/* harmony import */ var _CandidateDOD__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(10);
-/* harmony import */ var Tabs__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(17);
+/* harmony import */ var Loader__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(11);
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -2006,164 +1642,7 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
 
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-
-
-
-
-
-
-
-
-
-
-
-var CandidateParameters = /*#__PURE__*/function (_Component) {
-  _inherits(CandidateParameters, _Component);
-
-  var _super = _createSuper(CandidateParameters);
-
-  function CandidateParameters(props) {
-    var _this;
-
-    _classCallCheck(this, CandidateParameters);
-
-    _this = _super.call(this, props);
-    _this.getTabPanes = _this.getTabPanes.bind(_assertThisInitialized(_this));
-    return _this;
-  }
-
-  _createClass(CandidateParameters, [{
-    key: "getTabPanes",
-    value: function getTabPanes(tabList) {
-      var actionURL = "".concat(loris.BaseURL, "/candidate_parameters/ajax/formHandler.php");
-      var dataURL = "".concat(loris.BaseURL, "/candidate_parameters/ajax/getData.php?candID=").concat(this.props.candID);
-      var tabPanes = Object.keys(tabList).map(function (key) {
-        var TabContent = tabList[key].component;
-        return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Tabs__WEBPACK_IMPORTED_MODULE_9__["TabPane"], {
-          TabId: tabList[key].id,
-          key: key
-        }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(TabContent, {
-          action: actionURL,
-          dataURL: "".concat(dataURL, "&data=").concat(tabList[key].id),
-          tabName: tabList[key].id
-        }));
-      });
-      return tabPanes;
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      var tabList = [{
-        id: 'candidateInfo',
-        label: 'Candidate Information',
-        component: _CandidateInfo__WEBPACK_IMPORTED_MODULE_2__["default"]
-      }, {
-        id: 'participantStatus',
-        label: 'Participant Status',
-        component: _ParticipantStatus__WEBPACK_IMPORTED_MODULE_5__["default"]
-      }, {
-        id: 'candidateDOB',
-        label: 'Date of Birth',
-        component: _CandidateDOB__WEBPACK_IMPORTED_MODULE_7__["default"]
-      }, {
-        id: 'candidateDOD',
-        label: 'Date of Death',
-        component: _CandidateDOD__WEBPACK_IMPORTED_MODULE_8__["default"]
-      }];
-
-      if (loris.config('useProband') === 'true') {
-        tabList.push({
-          id: 'probandInfo',
-          label: 'Proband Information',
-          component: _ProbandInfo__WEBPACK_IMPORTED_MODULE_3__["default"]
-        });
-      }
-
-      if (loris.config('useFamilyID') === 'true') {
-        tabList.push({
-          id: 'familyInfo',
-          label: 'Family Information',
-          component: _FamilyInfo__WEBPACK_IMPORTED_MODULE_4__["default"]
-        });
-      }
-
-      if (loris.config('useConsent') === 'true') {
-        tabList.push({
-          id: 'consentStatus',
-          label: 'Consent Status',
-          component: _ConsentStatus__WEBPACK_IMPORTED_MODULE_6__["default"]
-        });
-      }
-
-      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
-        className: "btn btn-sm btn-primary",
-        href: loris.BaseURL + '/' + this.props.candID,
-        style: {
-          marginBottom: '20px'
-        }
-      }, "Return to timepoint list"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Tabs__WEBPACK_IMPORTED_MODULE_9__["Tabs"], {
-        tabs: tabList,
-        defaultTab: "candidateInfo",
-        updateURL: true
-      }, this.getTabPanes(tabList)));
-    }
-  }]);
-
-  return CandidateParameters;
-}(react__WEBPACK_IMPORTED_MODULE_0__["Component"]);
-
-CandidateParameters.propTypes = {
-  candID: prop_types__WEBPACK_IMPORTED_MODULE_1___default.a.string.isRequired
-};
-/**
- * Render Candidate Parameters component on page load
- */
-
-var args = QueryString.get(document.currentScript.src);
-window.addEventListener('load', function () {
-  var candidateParameters = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "page-candidate-parameters"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(CandidateParameters, {
-    Module: "candidate_parameters",
-    candID: args.candID
-  }));
-  ReactDOM.render(candidateParameters, document.getElementById('lorisworkspace'));
-});
-
-/***/ }),
-/* 13 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var Loader__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(9);
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
 
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
@@ -2537,7 +2016,50 @@ ProbandInfo.propTypes = {
 /* harmony default export */ __webpack_exports__["default"] = (ProbandInfo);
 
 /***/ }),
-/* 14 */
+/* 11 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_0__);
+/**
+ * This file contains the React component for Loader
+ *
+ * @author Henri Rabalais
+ * @version 1.0.0
+ *
+ */
+
+/**
+ * Loader is a React component which shows a spinner wheel while
+ * something is loading.
+ *
+ * @param {array} props - The React props
+ *
+ * @return {DOMObject} - Loader React component
+ */
+
+function Loader(props) {
+  return /*#__PURE__*/React.createElement("div", {
+    className: "loader",
+    style: {
+      width: parseInt(props.size),
+      height: parseInt(props.size)
+    }
+  });
+}
+
+Loader.propTypes = {
+  size: prop_types__WEBPACK_IMPORTED_MODULE_0___default.a.string
+};
+Loader.defaultProps = {
+  size: '120'
+};
+/* harmony default export */ __webpack_exports__["default"] = (Loader);
+
+/***/ }),
+/* 12 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2560,7 +2082,7 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
 
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
 
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
@@ -2909,7 +2431,7 @@ FamilyInfo.propTypes = {
 /* harmony default export */ __webpack_exports__["default"] = (FamilyInfo);
 
 /***/ }),
-/* 15 */
+/* 13 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2932,7 +2454,7 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
 
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
 
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
@@ -3253,7 +2775,7 @@ ParticipantStatus.propTypes = {
 /* harmony default export */ __webpack_exports__["default"] = (ParticipantStatus);
 
 /***/ }),
-/* 16 */
+/* 14 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -3262,7 +2784,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
 /* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var Loader__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(9);
+/* harmony import */ var Loader__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(11);
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -3277,7 +2799,7 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
 
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
 
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
@@ -3726,6 +3248,484 @@ ConsentStatus.propTypes = {
 /* harmony default export */ __webpack_exports__["default"] = (ConsentStatus);
 
 /***/ }),
+/* 15 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var Loader__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(11);
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+
+
+
+
+var CandidateDOB = /*#__PURE__*/function (_Component) {
+  _inherits(CandidateDOB, _Component);
+
+  var _super = _createSuper(CandidateDOB);
+
+  function CandidateDOB(props) {
+    var _this;
+
+    _classCallCheck(this, CandidateDOB);
+
+    _this = _super.call(this, props);
+    _this.state = {
+      data: {},
+      formData: {
+        dob: null
+      },
+      error: false,
+      isLoaded: false
+    };
+    _this.fetchData = _this.fetchData.bind(_assertThisInitialized(_this));
+    _this.setFormData = _this.setFormData.bind(_assertThisInitialized(_this));
+    _this.handleSubmit = _this.handleSubmit.bind(_assertThisInitialized(_this));
+    return _this;
+  }
+
+  _createClass(CandidateDOB, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      var _this2 = this;
+
+      this.fetchData().then(function () {
+        return _this2.setState({
+          isLoaded: true
+        });
+      });
+    }
+  }, {
+    key: "fetchData",
+    value: function fetchData() {
+      var _this3 = this;
+
+      return fetch(this.props.dataURL, {
+        credentials: 'same-origin'
+      }).then(function (resp) {
+        return resp.json();
+      }).then(function (data) {
+        return _this3.setState({
+          data: data,
+          formData: data
+        });
+      })["catch"](function (error) {
+        _this3.setState({
+          error: true
+        });
+
+        console.error(error);
+      });
+    }
+  }, {
+    key: "setFormData",
+    value: function setFormData(formElement, value) {
+      var formData = this.state.formData;
+      formData[formElement] = value;
+      this.setState({
+        formData: formData
+      });
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      if (this.state.error) {
+        return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h3", null, "An error occured while loading the page.");
+      }
+
+      if (!this.state.isLoaded) {
+        return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Loader__WEBPACK_IMPORTED_MODULE_2__["default"], null);
+      }
+
+      var disabled = true;
+      var updateButton = null;
+
+      if (loris.userHasPermission('candidate_dob_edit')) {
+        disabled = false;
+        updateButton = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(ButtonElement, {
+          label: "Update"
+        });
+      }
+
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "row"
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(FormElement, {
+        name: "candidateDOB",
+        onSubmit: this.handleSubmit,
+        ref: "form",
+        "class": "col-md-6"
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(StaticElement, {
+        label: "PSCID",
+        text: this.state.data.pscid
+      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(StaticElement, {
+        label: "DCCID",
+        text: this.state.data.candID
+      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(StaticElement, {
+        label: "Disclaimer:",
+        text: "Any changes to the date of birth requires an administrator to run the fix_candidate_age script.",
+        "class": "form-control-static text-danger bg-danger col-sm-10"
+      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(DateElement, {
+        label: "Date Of Birth:",
+        name: "dob",
+        value: this.state.formData.dob,
+        onUserInput: this.setFormData,
+        disabled: disabled,
+        required: true
+      }), updateButton));
+    }
+    /**
+     * Handles form submission
+     *
+     * @param {event} e - Form submission event
+     */
+
+  }, {
+    key: "handleSubmit",
+    value: function handleSubmit(e) {
+      var _this4 = this;
+
+      e.preventDefault();
+      var today = new Date();
+      var dd = String(today.getDate()).padStart(2, '0');
+      var mm = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
+
+      var yyyy = today.getFullYear();
+      today = yyyy + '-' + mm + '-' + dd;
+      var dob = this.state.formData.dob ? this.state.formData.dob : null;
+
+      if (dob > today) {
+        swal({
+          title: 'Error!',
+          text: 'Date of birth cannot be later than today!',
+          type: 'error',
+          confrimButtonText: 'OK'
+        });
+        return;
+      } // Set form data and upload the media file
+
+
+      var formData = this.state.formData;
+      var formObject = new FormData();
+
+      for (var key in formData) {
+        if (formData.hasOwnProperty(key)) {
+          if (formData[key] !== '') {
+            formObject.append(key, formData[key]);
+          }
+        }
+      }
+
+      formObject.append('tab', this.props.tabName);
+      fetch(this.props.action, {
+        method: 'POST',
+        cache: 'no-cache',
+        credentials: 'same-origin',
+        body: formObject
+      }).then(function (resp) {
+        if (resp.ok && resp.status === 200) {
+          swal({
+            title: 'Success!',
+            text: 'Date of birth updated!',
+            type: 'success',
+            confrimButtonText: 'OK'
+          });
+
+          if (result.value) {
+            _this4.fetchData();
+          }
+        } else {
+          swal({
+            title: 'Error!',
+            text: 'Something went wrong.',
+            type: 'error',
+            confrimButtonText: 'OK'
+          });
+        }
+      })["catch"](function (error) {
+        console.error(error);
+      });
+    }
+  }]);
+
+  return CandidateDOB;
+}(react__WEBPACK_IMPORTED_MODULE_0__["Component"]);
+
+CandidateDOB.propTypes = {
+  dataURL: prop_types__WEBPACK_IMPORTED_MODULE_1___default.a.string,
+  tabName: prop_types__WEBPACK_IMPORTED_MODULE_1___default.a.string,
+  action: prop_types__WEBPACK_IMPORTED_MODULE_1___default.a.string
+};
+/* harmony default export */ __webpack_exports__["default"] = (CandidateDOB);
+
+/***/ }),
+/* 16 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var Loader__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(11);
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+
+
+
+
+var CandidateDOD = /*#__PURE__*/function (_Component) {
+  _inherits(CandidateDOD, _Component);
+
+  var _super = _createSuper(CandidateDOD);
+
+  function CandidateDOD(props) {
+    var _this;
+
+    _classCallCheck(this, CandidateDOD);
+
+    _this = _super.call(this, props);
+    _this.state = {
+      data: [],
+      formData: {},
+      error: false,
+      isLoaded: false
+    };
+    _this.fetchData = _this.fetchData.bind(_assertThisInitialized(_this));
+    _this.setFormData = _this.setFormData.bind(_assertThisInitialized(_this));
+    _this.handleSubmit = _this.handleSubmit.bind(_assertThisInitialized(_this));
+    return _this;
+  }
+
+  _createClass(CandidateDOD, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      var _this2 = this;
+
+      this.fetchData().then(function () {
+        return _this2.setState({
+          isLoaded: true
+        });
+      });
+    }
+  }, {
+    key: "fetchData",
+    value: function fetchData() {
+      var _this3 = this;
+
+      return fetch(this.props.dataURL, {
+        credentials: 'same-origin'
+      }).then(function (resp) {
+        return resp.json();
+      }).then(function (data) {
+        return _this3.setState({
+          data: data,
+          formData: data
+        });
+      })["catch"](function (error) {
+        _this3.setState({
+          error: true
+        });
+
+        console.error(error);
+      });
+    }
+  }, {
+    key: "setFormData",
+    value: function setFormData(formElement, value) {
+      var formData = this.state.formData;
+      formData[formElement] = value;
+      this.setState({
+        formData: formData
+      });
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      if (this.state.error) {
+        return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h3", null, "An error occured while loading the page.");
+      }
+
+      if (!this.state.isLoaded) {
+        return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Loader__WEBPACK_IMPORTED_MODULE_2__["default"], null);
+      }
+
+      var disabled = true;
+      var updateButton = null;
+
+      if (loris.userHasPermission('candidate_dod_edit')) {
+        disabled = false;
+        updateButton = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(ButtonElement, {
+          label: "Update"
+        });
+      }
+
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "row"
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(FormElement, {
+        name: "candidateDOD",
+        onSubmit: this.handleSubmit,
+        ref: "form",
+        "class": "col-md-6"
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(StaticElement, {
+        label: "PSCID",
+        text: this.state.data.pscid
+      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(StaticElement, {
+        label: "DCCID",
+        text: this.state.data.candID
+      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(StaticElement, {
+        label: "Disclaimer:",
+        text: "Any changes to the date of death requires an administrator to run the fix_candidate_age script.",
+        "class": "form-control-static text-danger bg-danger col-sm-10"
+      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(DateElement, {
+        label: "Date Of Death:",
+        name: "dod",
+        value: this.state.formData.dod,
+        onUserInput: this.setFormData,
+        disabled: disabled,
+        required: true
+      }), updateButton));
+    }
+    /**
+     * Handles form submission
+     *
+     * @param {event} e - Form submission event
+     */
+
+  }, {
+    key: "handleSubmit",
+    value: function handleSubmit(e) {
+      var _this4 = this;
+
+      e.preventDefault();
+      var today = new Date();
+      var dd = String(today.getDate()).padStart(2, '0');
+      var mm = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
+
+      var yyyy = today.getFullYear();
+      today = yyyy + '-' + mm + '-' + dd;
+      var dod = this.state.formData.dod ? this.state.formData.dod : null;
+      var dob = this.state.data.dob ? this.state.data.dob : null;
+
+      if (dod > today) {
+        swal({
+          title: 'Invalid date',
+          text: 'Date of death cannot be later than today!',
+          type: 'error',
+          confirmButtonText: 'OK'
+        });
+        return;
+      }
+
+      if (dob > dod) {
+        swal({
+          title: 'Invalid date',
+          text: 'Date of death must be after date of birth!',
+          type: 'error',
+          confirmButtonText: 'OK'
+        });
+        return;
+      } // Set form data and upload the media file
+
+
+      var formData = this.state.formData;
+      var formObject = new FormData();
+
+      for (var key in formData) {
+        if (formData.hasOwnProperty(key)) {
+          if (formData[key] !== '') {
+            formObject.append(key, formData[key]);
+          }
+        }
+      }
+
+      formObject.append('tab', this.props.tabName);
+      fetch(this.props.action, {
+        method: 'POST',
+        cache: 'no-cache',
+        credentials: 'same-origin',
+        body: formObject
+      }).then(function (resp) {
+        return resp.text();
+      }).then(function (result) {
+        swal({
+          title: 'Success!',
+          text: 'Date of death updated!',
+          type: 'success',
+          confirmButtonText: 'OK'
+        });
+
+        if (result.value) {
+          _this4.fetchData();
+        }
+      })["catch"](function (error) {
+        console.error(error);
+        swal({
+          title: 'Error!',
+          text: 'Something went wrong.',
+          type: 'error',
+          confirmButtonText: 'OK'
+        });
+      });
+    }
+  }]);
+
+  return CandidateDOD;
+}(react__WEBPACK_IMPORTED_MODULE_0__["Component"]);
+
+CandidateDOD.propTypes = {
+  dataURL: prop_types__WEBPACK_IMPORTED_MODULE_1___default.a.string,
+  tabName: prop_types__WEBPACK_IMPORTED_MODULE_1___default.a.string,
+  action: prop_types__WEBPACK_IMPORTED_MODULE_1___default.a.string
+};
+/* harmony default export */ __webpack_exports__["default"] = (CandidateDOD);
+
+/***/ }),
 /* 17 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -3752,7 +3752,7 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
 
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
 
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
