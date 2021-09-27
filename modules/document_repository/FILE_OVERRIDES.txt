@@ -1,0 +1,7 @@
+List of all files which contain overrides.
+
+- jsx
+    - docIndex.js
+    - editForm.js
+- php
+    - files.class.inc
