@@ -45,11 +45,11 @@ class NDB_BVL_Instrument_neuro_screen extends NDB_BVL_Instrument
         //The array of selects with multiple answers allowed
         //Any LorisForm multiple selects must be listed here
         $this->_selectMultipleElements = array();
-         
+
         $db = & Database::singleton();
-        $project = $db->pselectOne("SELECT c.ProjectID from neuro_screen n JOIN flag f 
-                                    ON (f.CommentID= n.CommentID) JOIN session s ON (s.ID = f.SessionID) 
-                                    JOIN candidate c ON (c.CandID=s.CandID) 
+        $project = $db->pselectOne("SELECT c.RegistrationProjectID AS ProjectID from neuro_screen n JOIN flag f
+                                    ON (f.CommentID= n.CommentID) JOIN session s ON (s.ID = f.SessionID)
+                                    JOIN candidate c ON (c.CandID=s.CandID)
                                     WHERE n.CommentID=:cid", array('cid'=>$this->getCommentID()));
         // required fields for data entry completion status
         if($project == 2) {
@@ -101,7 +101,7 @@ class NDB_BVL_Instrument_neuro_screen extends NDB_BVL_Instrument
             'q27_cafe_au_lait_spots_describe_status',
             'q28_cutaneous_nodules_describe',
             'q28_cutaneous_nodules_describe_status');
-                             
+
 
 
         // setup the form
@@ -109,7 +109,7 @@ class NDB_BVL_Instrument_neuro_screen extends NDB_BVL_Instrument
 
         //column headers
         $this->localDefaults = array_merge($this->localDefaults, array("left"=>"LEFT", "right"=>"RIGHT"));
-    
+
     }
 
     //If the instrument is not paged, remove the switch from the _setupForm method and add all the form Elements in this function.
@@ -145,20 +145,20 @@ class NDB_BVL_Instrument_neuro_screen extends NDB_BVL_Instrument
         // automatically adds examiner & date of administration
         $this->_addMetadataFields();
         $db = & Database::singleton();
-        $record = $db->pselectRow("SELECT n.visit,c.ProjectID from neuro_screen n JOIN flag f ON (f.CommentID= n.CommentID)
-                JOIN session s ON (s.ID = f.SessionID) join candidate c ON (c.CandID=s.CandID) 
+        $record = $db->pselectRow("SELECT n.visit,c.RegistrationProjectID AS ProjectID from neuro_screen n JOIN flag f ON (f.CommentID= n.CommentID)
+                JOIN session s ON (s.ID = f.SessionID) join candidate c ON (c.CandID=s.CandID)
                 WHERE n.CommentID=:cid", array('cid'=>$this->getCommentID()));
         if($record['ProjectID'] == 2 ) {
          //which time version is being filled out?
-        $this->form->addElement("select", "visit", "Visit", array(null=>"","3month"=>"3 month","6month"=>"6 month", 
-                                                                  "9month"=>"9 month","12month"=>"12 month",  
+        $this->form->addElement("select", "visit", "Visit", array(null=>"","3month"=>"3 month","6month"=>"6 month",
+                                                                  "9month"=>"9 month","12month"=>"12 month",
                                                                   "15month"=>"15 month","24month"=>"24 month"));
 
 
         } else {
             //which time version is being filled out?
-            $this->form->addElement("select", "visit", "Visit", array(null=>"","6month"=>"6 month", 
-                        "12month"=>"12 month", 
+            $this->form->addElement("select", "visit", "Visit", array(null=>"","6month"=>"6 month",
+                        "12month"=>"12 month",
                         "12month_nr"=>"12 month (new recruit)",
                         "18month"=>"18 month",
                         "24month"=>"24 month"));
@@ -171,13 +171,13 @@ class NDB_BVL_Instrument_neuro_screen extends NDB_BVL_Instrument
     }
 
     function _page1(){
-        
+
         $db = & Database::singleton();
-        $record = $db->pselectRow("SELECT n.visit,c.ProjectID from neuro_screen n JOIN flag f ON (f.CommentID= n.CommentID)
-                                   JOIN session s ON (s.ID = f.SessionID) join candidate c ON (c.CandID=s.CandID) 
+        $record = $db->pselectRow("SELECT n.visit,c.RegistrationProjectID AS ProjectID from neuro_screen n JOIN flag f ON (f.CommentID= n.CommentID)
+                                   JOIN session s ON (s.ID = f.SessionID) join candidate c ON (c.CandID=s.CandID)
                                    WHERE n.CommentID=:cid", array('cid'=>$this->getCommentID()));
         if($record['ProjectID'] == 2 ) {
-           $this->generateQuestionsIBIS2($record['visit']);    
+           $this->generateQuestionsIBIS2($record['visit']);
         } else {
             //header and some extra info
             $this->form->addElement("header", null, "IBIS Neuro Screener");
@@ -206,7 +206,7 @@ class NDB_BVL_Instrument_neuro_screen extends NDB_BVL_Instrument
                         "9_failure_to_test"=>"9 failure to test",
                         "not_answered"=>"Not Answered"));
 
-            $this->addSelect("q2_ptosis_dropdown",$this->indent . "Choose R or L or Bilat.", 
+            $this->addSelect("q2_ptosis_dropdown",$this->indent . "Choose R or L or Bilat.",
                              array(null=>"",'left'=>'L','right'=>'R','bilat'=>'Bilat','none'=>'None','not_answered'=>'Not answered'));
             $this->addTextElement("q2_specify", $this->indent . "Specify R or L or Bilat.", array("q2_specify{@}=={@}NEVER_REQUIRED"));
             $this->form->addElement("select", "q3_epicanthus", "3. Epicanthus: Where upper and lower lids join the nose, point of union is", array(null=>"",
@@ -563,7 +563,7 @@ class NDB_BVL_Instrument_neuro_screen extends NDB_BVL_Instrument
                     'q22_father_hc_cm',
                     //        '22_father_hc_cm_status',
                     "q22_mother_height_cm",
-                    "q22_father_height_cm",        
+                    "q22_father_height_cm",
                     "q22_mother_weight_kg",
                     "q22_father_weight_kg",
                     'q23_adenoma_sebaceum',
@@ -652,7 +652,7 @@ class NDB_BVL_Instrument_neuro_screen extends NDB_BVL_Instrument
                 $this->XINRegisterRule('q21_handedness_total_b_right', array('q1_strabismus{@}!={@}Never_happening'), "This question is required.", "q21_handedness_totals_group");
             }
         }
-    
+
     } //end _page1()
 
     function generateQuestionsIBIS2($visit) {
@@ -664,10 +664,10 @@ class NDB_BVL_Instrument_neuro_screen extends NDB_BVL_Instrument
             $this->form->addElement("static", null, "* If you experience problems with required question rules,");
             $this->form->addElement("static", null, "ensure that the visit is correctly filled in on the `Top` page.");
             $this->form->addElement("static", null, "<BR>");
-            
+
             if($visit == '6month' || $visit == '9month' || $visit == '12month' || $visit == '15month' || $visit == '24month') {
 
-                $this->form->addElement("select", "q1_strabismus", "1. Strabismus: Cover-uncover test", 
+                $this->form->addElement("select", "q1_strabismus", "1. Strabismus: Cover-uncover test",
                             array(null=>"", "0_absent"=>"0 absent",
                             "1_covert"=>"1 covert (shown by test)",
                             "2_overt"=>"2 overt (observed without test)",
@@ -706,7 +706,7 @@ class NDB_BVL_Instrument_neuro_screen extends NDB_BVL_Instrument
                         "8_subject_unable"=>"8 subject unable to carry out task",
                         "9_failure_to_test"=>"9 failure to test",
                         "not_answered"=>"Not Answered"));
-            
+
             if($visit == '3month' || $visit == '6month') {
 
                 $this->form->addElement("select", "q5_adherent", "5. Adherent Ear Lobes: Lower edge of ears extend", array(null=>"",
@@ -758,7 +758,7 @@ class NDB_BVL_Instrument_neuro_screen extends NDB_BVL_Instrument
                         "8_subject_unable to carry out task"=>"8 subject unable to carry out task",
                         "9_failure_to_test"=>"9 failure to test",
                         "not_answered"=>"Not Answered"));
-            
+
             if($visit == '24month') {
 
                 $this->form->addElement("select", "q11_symmetrical_gait_abnormality", "11. Symmetrical Gait Abnormality", array(null=>"",
@@ -814,7 +814,7 @@ class NDB_BVL_Instrument_neuro_screen extends NDB_BVL_Instrument
                         "not_answered"=>"Not Answered"));
 
             $this->addTextElement("q15_appearance_specify", $this->indent . "Specify:", array("q14_tone_asymmetrical_abnormality{@}=={@}1_uncertain_abnormality|2_definite_abnormality"));
-            
+
             if($visit != '3month') {
 
                 $this->form->addElement("select", "q16_power_upper_limb", "16. Power: Upper Limb: Get child to squeeze 2 fingers...", array(null=>"",
@@ -837,7 +837,7 @@ class NDB_BVL_Instrument_neuro_screen extends NDB_BVL_Instrument
 
                 $this->addTextElement("q17_power_lower_limb_specify", $this->indent . "Specify:", array("q17_power_lower_limb{@}=={@}1_uncertain_mild_weakness|2_unequivocal_weakness_or_asymmetry"));
             }
-            
+
             $this->form->addElement("select", "q18_other_limb_hand_dysmorphic", "18. Other Limb/Hand/Feet Dysmorphic Features", array(null=>"",
                         "0_absent"=>"0 absent",
                         "1_uncertain"=>"1 uncertain",
@@ -849,7 +849,7 @@ class NDB_BVL_Instrument_neuro_screen extends NDB_BVL_Instrument
             $this->addTextElement("q18_other_limb_hand_dysmorphic_describe", $this->indent . "Describe:", array("q18_other_limb_hand_dysmorphic{@}=={@}1_uncertain|2_present"));
 
             $this->addTextElement("q19_other_physical_abnormalities", "19. Other Physical Abnormalities Noted");
-            
+
             if($visit != '3month') {
 
                 $this->form->addElement("select", "q20_hyper_extensibility_of_joints", "20. Hyper extensibility of Joints: bend hand or fingers backward", array(null=>"",
@@ -1018,7 +1018,7 @@ class NDB_BVL_Instrument_neuro_screen extends NDB_BVL_Instrument
                     'q22_father_hc_cm',
                     //        '22_father_hc_cm_status',
                     "q22_mother_height_cm",
-                    "q22_father_height_cm",        
+                    "q22_father_height_cm",
                     "q22_mother_weight_kg",
                     "q22_father_weight_kg",
                     'q23_adenoma_sebaceum',
@@ -1053,7 +1053,7 @@ class NDB_BVL_Instrument_neuro_screen extends NDB_BVL_Instrument
 
             //12month question numbers
             $_12month = array_merge(array(1, 2), array(4), range(8, 10), range(13, 20) ,array(23,24,25,27,28,29,30) );
-            
+
             //12month question numbers
             $_15month = array_merge(array(1, 2), array(4), range(8, 10), range(13, 20) ,array(23,24,25,27,28,29,30) );
 
@@ -1105,8 +1105,8 @@ class NDB_BVL_Instrument_neuro_screen extends NDB_BVL_Instrument
                     $this->XINRegisterRule($field, array("q1_strabismus{@}=={@}Never_going_to_happen"));
                 }
             }
-               
-        
+
+
     }
 
 }
