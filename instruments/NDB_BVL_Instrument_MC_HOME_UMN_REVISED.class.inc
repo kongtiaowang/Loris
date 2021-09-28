@@ -100,12 +100,12 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
 	// setup the form 
 	
 	$this->_doubleDataEntryDiffIgnoreColumns = array(
-	                           CommentID,
-				   UserID,
-				   Examiner,
-				   Testdate,
-				   Date_taken,
-				   q1
+	                           "CommentID",
+				   "UserID",
+				   "Examiner",
+				   "Testdate",
+				   "Date_taken",
+				   "q1"
 	);
 
         $this->_setupForm();

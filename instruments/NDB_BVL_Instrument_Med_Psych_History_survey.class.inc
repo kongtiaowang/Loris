@@ -1535,4 +1535,5 @@ class NDB_BVL_Instrument_Med_Psych_History_survey extends NDB_BVL_Instrument
         return $errors;
     }
 }
+
 ?>
