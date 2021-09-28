@@ -97,7 +97,17 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
                                     "q10",
                                    );
 
-        // setup the form
+	// setup the form 
+	
+	$this->_doubleDataEntryDiffIgnoreColumns = array(
+	                           CommentID,
+				   UserID,
+				   Examiner,
+				   Testdate,
+				   Date_taken,
+				   q1
+	);
+
         $this->_setupForm();
     }
 
@@ -143,7 +153,11 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
         $this->addBasicDate('Date_taken', 'Date Taken', $dateOptions);
 
         // automatically adds examiner & date of administration
-        $this->_addMetadataFields();
+	$this->_addMetadataFields();
+
+	$this->addSelect("ira_completed_for_this_visit","IRA completed for this visit", array(null => "", "yes" => "Yes", "no" => "No"));
+
+	$this->form->addElement("text","ira_percentage","IRA (Fill in text-box for percentage)");
     }
 
     /**

@@ -4,7 +4,7 @@ class NDB_BVL_Instrument_DSMIV_SA extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
 
-    var $yesNo = array(null => "", 'yes' => "Yes", 'no' => "No");
+    var $yesNo = array(null => "", 'no' => "No", 'yes' => "Yes");
     var $confidence = array(null => "", 'very_confident' => "Very Confident", 'somewhat_confident' => "Somewhat Confident", 'not_confident' => "Not Confident");
 
     var $ValidityEnabled = false;
