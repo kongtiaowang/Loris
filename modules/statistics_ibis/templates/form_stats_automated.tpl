@@ -32,7 +32,32 @@
     </button>
   </div>
   <br /><br /><br />
+  <div class="col-sm-3 col-xs-12 form-group">
+    <button
+      onClick="getDirectDDE_EP()"
+      class="btn btn-primary btn-small col-xs-12"
+    >
+      Direct Assessments [DDE] - EP
+    </button>
+  </div>
+  <div class="col-sm-3 col-xs-12 form-group">
+    <button
+      onClick="getDirectDDE_SA()"
+      class="btn btn-primary btn-small col-xs-12"
+    >
+      Direct Assessments [DDE] - SA
+    </button>
+  </div>
+  <div class="col-sm-3 col-xs-12 form-group">
+    <button
+      onClick="getDirectDDE_DSInfant()"
+      class="btn btn-primary btn-small col-xs-12"
+    >
+      Direct Assessments [DDE] - DS-Infant
+    </button>
+  </div>
 </div>
+<br /><br /><br />
 <div class="alert alert-warning" role="alert" id="alert" style="display: none">
   Loading...
 </div>
