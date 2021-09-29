@@ -19,3 +19,9 @@ UPDATE Config
 -- Modify publication column name
 ALTER TABLE publication_upload
     CHANGE COLUMN URL Filename VARCHAR(255);
+
+-- Set Test_names sent as survey to direct entry
+UPDATE test_names t
+    SET IsDirectEntry = 1
+    WHERE t.IsDirectEntry=0
+        AND EXISTS (SELECT * FROM participant_accounts p WHERE t.Test_name = p.Test_name);
