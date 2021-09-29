@@ -7,7 +7,7 @@
  */
 
 import GroupElement from './GroupElement.js';
-import Markdown from 'Markdown';
+import Markdown from './Markdown';
 
 /**
  *     THIS ELEMENT IS FOR DEVELOPMENT PURPOSES ONLY
