@@ -1298,20 +1298,6 @@ class NDB_BVL_Instrument_Med_Psych_History_survey extends NDB_BVL_Instrument
     {
         $errors = [];
 
-        for ($i = "a"; $i <= "y"; $i++) {
-            if ($values["q3_disorder_" . $i . "_presence"] != "yes") {
-                $this->validate_empty_subquestions($values, ["q3_disorder_" . $i . "_relative"], $errors);
-            }
-
-            if ($values["q3_disorder_" . $i . "_relative"] != "other") {
-                $this->validate_empty_subquestions($values, ["q3_disorder_" . $i . "_relative_other"], $errors);
-            }
-
-            if ($values["q3_disorder_" . $i . "_relative"] != "multiple") {
-                $this->validate_empty_subquestions($values, ["q3_disorder_" . $i . "_relative_multiple"], $errors);
-            }
-        }
-
         if ($values["q3_disorder_i_presence"] != "yes") {
             $this->validate_empty_subquestions($values, ["q3_disorder_i_specify"], $errors);
         }
