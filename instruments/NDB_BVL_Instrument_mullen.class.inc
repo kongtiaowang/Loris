@@ -30,7 +30,7 @@ class NDB_BVL_Instrument_mullen extends NDB_BVL_Instrument
     // then fix the nullscores portion of the scoring function to use it.
     // See ticket #1260 on Redmine.
     // - Dave
-    var $scoreLabels = array("gross_motor_raw", "visual_reception_raw", "fine_motor_raw", "receptive_language_raw", "expressive_language_raw", "gross_motor_t", "visual_reception_t", "fine_motor_t", "receptive_language_t", "expressive_language_t", "gross_motor_percentile", "visual_reception_percentile", "fine_motor_percentile", "receptive_language_percentile", "expressive_language_percentile", "gross_motor_description", "visual_reception_description", "fine_motor_description", "receptive_language_description", "expressive_language_description", "gross_motor_age_equivalent", "visual_reception_age_equivalent", "fine_motor_age_equivalent", "receptive_language_age_equivalent", "expressive_language_age_equivalent", "cognitive_t_score_sum", "composite_standard_score", "composite_percentile", "composite_description", 
+    var $scoreLabels = array("gross_motor_raw", "visual_reception_raw", "fine_motor_raw", "receptive_language_raw", "expressive_language_raw", "gross_motor_t", "visual_reception_t", "fine_motor_t", "receptive_language_t", "expressive_language_t", "gross_motor_percentile", "visual_reception_percentile", "fine_motor_percentile", "receptive_language_percentile", "expressive_language_percentile", "gross_motor_description", "visual_reception_description", "fine_motor_description", "receptive_language_description", "expressive_language_description", "gross_motor_age_equivalent", "visual_reception_age_equivalent", "fine_motor_age_equivalent", "receptive_language_age_equivalent", "expressive_language_age_equivalent", "cognitive_t_score_sum", "composite_standard_score", "composite_percentile", "composite_description",
     "gross_motor_calc_basal", "gross_motor_calc_ceiling",
     "visual_recept_calc_basal", "visual_recept_calc_ceiling",
     "fine_motor_calc_basal", "fine_motor_calc_ceiling",
@@ -513,7 +513,7 @@ class NDB_BVL_Instrument_mullen extends NDB_BVL_Instrument
         }
         if(!empty($dob) && !empty($record['Date_taken'])) {
             $age = Utility::calculateAge($dob, $record["Date_taken"]);
-        } 
+        }
         if(isset($age)  && is_array($age)) {
           $age_months = $age['year'] * 12 + $age['mon'];
           $this->localDefaults = array_merge($this->localDefaults, array('age_months' => $age_months));
@@ -1192,7 +1192,7 @@ Anything above the ceiling level will be considered/scored as 0<br><br>
 
             // If the score is above or below the highest score in the table,
             // get the closest score
-            
+
             if (count($record) == 0) {
                 $maxmin = $db->pselectRow("SELECT MAX(raw_score) as max, MIN(raw_score) as min FROM mullen_lookup WHERE age_months=:CandAge", array('CandAge' => $age_months));
                 if($calculatedScores[$scale_name . '_raw'] < $maxmin['min']) {
@@ -1204,10 +1204,10 @@ Anything above the ceiling level will be considered/scored as 0<br><br>
                 }
                 $query = "SELECT * FROM mullen_lookup WHERE age_months=:CandAge AND raw_score=:MiniMax";
          	    $record = $db->pselectRow($query, array('CandAge' => $age_months, 'MiniMax' => $minimax));
-                
+
 
             }
-            
+
          	$calculatedScores[$scale_name . '_t'] = ($record[$scale_name . '_t']);
          	$percentile = $this->percentile($calculatedScores[$scale_name . '_t']);
          	$calculatedScores[$scale_name . '_percentile'] = $percentile['percentile'];
@@ -1673,13 +1673,13 @@ Anything above the ceiling level will be considered/scored as 0<br><br>
         }
         $candID = isset($_REQUEST['candID']) ? $_REQUEST['candID'] : '';
 
-         $project = $db->pselectOne("SELECT ProjectID from candidate where CandID =:cnd_id", array('cnd_id'=>$candID));
+         $project = $db->pselectOne("SELECT RegistrationProjectID AS ProjectID from candidate where CandID =:cnd_id", array('cnd_id'=>$candID));
          list($CertificationEnabled, $CertificationProjects, $CertificationInstruments) = $this->_getCertificationConfig();
 
          if($CertificationEnabled && in_array($project, $CertificationProjects)
          )
             // Don't need to check this because we know it's the mullen, and because the config contains mullen_xxxx instead of just "mullen" it won't work
-             // && in_array($this->testName, $CertificationInstruments)) 
+             // && in_array($this->testName, $CertificationInstruments))
          {
              $visit_label = $db->pselectOne("SELECT LOWER(Visit_label) FROM session WHERE ID=:ssn_id", array('ssn_id'=>$this->getSessionID()));
              $test_id = $db->pselectOne("SELECT ID FROM test_names WHERE Test_name=:tst_name", array('tst_name'=>$this->testName));
@@ -1703,7 +1703,7 @@ Anything above the ceiling level will be considered/scored as 0<br><br>
                  'cid' => $centerID,
                  'vl' => $visit_label
              ));
-             
+
          } else {
              $results = $db->pselect(
                  "SELECT e.examinerID, e.full_name
@@ -1714,7 +1714,7 @@ Anything above the ceiling level will be considered/scored as 0<br><br>
                      ORDER BY full_name",
                  array('centID' => $centerID)
              );
-             
+
          }
 
          $examiners = array('' => '');

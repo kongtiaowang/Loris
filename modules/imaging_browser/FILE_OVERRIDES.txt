@@ -1,0 +1,10 @@
+List of all files which contain overrides.
+
+- jsx
+    - ImagePanel.js
+- php
+    - imaging_browser.class.inc
+    - viewsession.class.inc
+    - imagingbrowserrowprovisioner.class.inc
+- templates
+    - form_viewSession.tpl

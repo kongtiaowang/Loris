@@ -238,7 +238,7 @@ class CouchDBDemographicsImporter {
                                    WHEN s.screening = 'Withdrawal' THEN 'Withdrawal'
                                    ELSE 'Neither'
                                  END                                                         AS Failure,
-                                 c.ProjectID,
+                                 c.RegistrationProjectID                                     AS ProjectID,
                                  c.flagged_caveatemptor                                      AS CEF,
                                  c.flagged_caveatemptor                                      AS CEF,
                                  c_o.description                                             AS CEF_reason,
@@ -249,7 +249,7 @@ class CouchDBDemographicsImporter {
                                  ps.participant_suboptions                                   AS Status_reason,
                                  ps.reason_specify                                           AS Status_comments,
                                  CASE
-                                   WHEN c.ProjectID NOT IN (1,2) THEN 'NOT IBIS 1 OR IBIS 2'
+                                   WHEN c.RegistrationProjectID NOT IN (1,2) THEN 'NOT IBIS 1 OR IBIS 2'
                                    WHEN COALESCE(pso.description,'Active') NOT IN ('Active', 'Inactive', 'Active - Flagged', 'Complete') OR cc1.Status = 'no' THEN 'NOT A PRIORITY TO BRING BACK AT VSA'
                                    WHEN scanned_at_vsa.count >= 1 AND fvsadsm.commentid IS NOT NULL THEN 'SCAN AND DSMV DONE AT VSA'
                                    WHEN scanned_at_vsa.count >= 1 THEN 'SCAN DONE AT VSA'
@@ -261,7 +261,7 @@ class CouchDBDemographicsImporter {
                                    ELSE 'NOT A PRIORITY TO BRING BACK AT VSA'
                                  END                                                         AS vsa_priority_data_status,
                                  CASE
-                                   WHEN c.ProjectID NOT IN (1,2) THEN 'NOT IBIS 1 OR IBIS 2'
+                                   WHEN c.RegistrationProjectID NOT IN (1,2) THEN 'NOT IBIS 1 OR IBIS 2'
                                    WHEN COALESCE(pso.description,'Active') NOT IN ('Active', 'Inactive', 'Active - Flagged', 'Complete') OR cc1.Status = 'no' THEN 'NOT A PRIORITY TO BRING BACK AT VSA'
                                    WHEN COALESCE(scanned_at_vsa.count,0) < 1 AND fvsadsm.commentid IS NULL
                                         AND NOT(dsm24.q4_criteria_autistic_disorder <=> 'yes') AND NOT(dsm24.q4_criteria_PDD <=> 'yes')
@@ -440,7 +440,7 @@ class CouchDBDemographicsImporter {
         AND s.Current_stage NOT IN ('Recycling Bin', 'Not Started')
         AND c.RegistrationCenterID NOT IN (1,8,9,10)
         AND (ps.participant_status NOT IN (2,3,4) OR ps.participant_status IS NULL)
-        AND c.ProjectID NOT IN (5,6)";
+        AND c.RegistrationProjectID NOT IN (5,6)";
 
         return $concatQuery;
     }

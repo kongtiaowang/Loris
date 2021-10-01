@@ -56,6 +56,19 @@ class CandidateInfo extends Component {
   setFormData(formElement, value) {
     let formData = JSON.parse(JSON.stringify(this.state.formData));
     formData[formElement] = value;
+
+    // Reset 'reason' and 'other' fields
+    if (formElement === 'flaggedCaveatemptor' && value === 'false') {
+      formData.flaggedReason = '';
+      formData.flaggedOther = '';
+    }
+
+    // Reset 'other' field
+    if (formElement === 'flaggedReason' &&
+      this.state.Data.caveatReasonOptions[value] !== 'Other') {
+      formData.flaggedOther = '';
+    }
+
     this.setState({
       formData: formData,
     });
@@ -65,6 +78,8 @@ class CandidateInfo extends Component {
     e.preventDefault();
   }
 
+  // IBIS SPECIFIC OVERRIDE CODE
+  // IBIS doesn't use Caveat Emptor Flag for Candidate* and Reason for Caveat Emptor Flag.
   render() {
     if (!this.state.isLoaded) {
       if (this.state.error !== undefined) {
@@ -84,6 +99,7 @@ class CandidateInfo extends Component {
       disabled = false;
       updateButton = <ButtonElement label="Update"/>;
     }
+
     let extraParameterFields = [];
     let extraParameters = this.state.Data.extra_parameters;
     for (let key2 in extraParameters) {
@@ -184,6 +200,7 @@ class CandidateInfo extends Component {
       </div>
     );
   }
+  // IBIS SPECIFIC OVERRIDE CODE ENDS HERE
 
   /**
    * Handles form submission

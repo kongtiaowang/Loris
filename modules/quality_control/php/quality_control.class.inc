@@ -45,7 +45,7 @@ class Quality_Control extends \NDB_Menu_Filter
 
     /**
      * BEGIN OVERRIDE
-     * 
+     *
      * Function _getScanTypes has been rewritten for IBIS. Refer to IBIS PR#1178
      * for details on how it differs from the LORIS 20.0 version.
      */
@@ -110,7 +110,7 @@ class Quality_Control extends \NDB_Menu_Filter
         foreach ($scan_id_types as $scan) {
             $scan_types[$scan] = $scan;
         }
-        
+
         return $scan_types;
     }
 
@@ -121,11 +121,11 @@ class Quality_Control extends \NDB_Menu_Filter
 
     /**
      * BEGIN OVERRIDE
-     * 
+     *
      * Function _buildQuery has been rewritten for IBIS. Refer to IBIS PR#1178
      * for details on how it differs from the LORIS 20.0 version.
      */
-     
+
     /**
      * Builds query for given modality. Works with t1w, t2w, dti.
      *
@@ -142,22 +142,22 @@ class Quality_Control extends \NDB_Menu_Filter
     {
         $mriPfTableAlias ='';
         $noMriPf = 0;
-        
-        // Set the value of $mriPfTable to be the table alias used in 
+
+        // Set the value of $mriPfTable to be the table alias used in
         // the SQL statement below
         switch ($mriPfTable) {
-            case null: 
+            case null:
                 $noMriPf = 1;
                 break;
             case 'mri_parameter_form_sa':
                 $mriPfTableAlias = 'm_sa';
                 break;
-            case 'mri_parameter_form': 
+            case 'mri_parameter_form':
                 $mriPfTableAlias = 'm';
                 break;
             default: throw new \InvalidArgumentException("Unsupported MRI parameter form table $mriPfTable");
         }
-        
+
         $scanDoneSQL = '';
         if($noMriPf || is_null($mriPfTable) || is_null($mriPfColumn)) {
             $scanDoneSQL = "''";
@@ -175,7 +175,7 @@ class Quality_Control extends \NDB_Menu_Filter
                 END
             ";
         }
-        
+
         $select =  " SELECT DISTINCT
            c.PSCID,
            s.ID as SessionID,
@@ -198,7 +198,7 @@ class Quality_Control extends \NDB_Menu_Filter
                " ) THEN 'In DICOM'".
               " ELSE 'Missing'
            END as tarchive_loc,
-           (SELECT Name FROM Project WHERE ProjectID=c.ProjectID) as project,".
+           (SELECT Name FROM Project WHERE ProjectID=c.RegistrationProjectID) as project,".
             " (SELECT title FROM subproject WHERE SubprojectID=s.SubprojectID)
            as subproject,".
             " CASE
@@ -225,7 +225,7 @@ class Quality_Control extends \NDB_Menu_Filter
            LEFT JOIN mri_parameter_form_sa m_sa ON (m_sa.CommentID=f.CommentID)
            LEFT JOIN tarchive t ON (t.SessionID=s.ID)
            LEFT JOIN files fi ON (fi.SessionID=s.ID AND fi.AcquisitionProtocolID=$acqID)
-           LEFT JOIN mri_violations_log mvl 
+           LEFT JOIN mri_violations_log mvl
               ON (
                       mvl.CandID = s.CandID
                   AND mvl.Scan_type=$acqID
@@ -414,19 +414,19 @@ class Quality_Control extends \NDB_Menu_Filter
 
     /**
      * BEGIN OVERRIDE
-     * 
+     *
      * New methods _getMriPfTableName, _getMriPfColumnName and _getMriPfDoneValues
      * for IBIS.
-     * 
+     *
      * See IBIS PR#1178.
      */
-     
+
     /**
      * Gets the name of the table where the MRI parameter form info is stored
      * for the given scan type.
-     * 
+     *
      * @param $scanType a scan type from table mri_scan_types.
-     * 
+     *
      * @return string the table name.
      */
     function _getMriPfTableName(string $scanType) : ?string
@@ -435,17 +435,17 @@ class Quality_Control extends \NDB_Menu_Filter
             return 'mri_parameter_form_sa';
         } elseif (preg_match('/EP$/', $scanType)) {
             return null;
-        } 
+        }
 
         return 'mri_parameter_form';
     }
-    
+
     /**
      * Gets the name of the column in the table returned by _getMriPfTableName
      * that tells whether the given scan type was acquired or not.
-     * 
+     *
      * @param string $scanType a scan type from table mri_scan_types.
-     * 
+     *
      * @return string the column name.
      */
     function _getMriPfColumnName(string $scanType) : ?string
@@ -455,7 +455,7 @@ class Quality_Control extends \NDB_Menu_Filter
             case 't1relx':      return 'T1_Scan_done';
             case 't2w':         return 'T2_Scan_done';
             case 'dti':         return 'DTI_Scan_done';
-            case 'DTI65':  
+            case 'DTI65':
             case 'DTI65_B1000': return 'DTI65_Scan_done';
             case 'fMRI':        return 'BOLD_Scan_done';
             case 'T1wNormSA':
@@ -463,7 +463,7 @@ class Quality_Control extends \NDB_Menu_Filter
             case 'T2wNormSA':
             case 'T2wRawSA':    return 't2w_acquired';
         }
-        
+
         return null;
     }
 
@@ -471,9 +471,9 @@ class Quality_Control extends \NDB_Menu_Filter
      * Gets the set of values in the column whose name is returned by
      * _getMriPfColumnName indicating the a partial or complete (including multiple)
      * scan of the given type was acquired.
-     * 
+     *
      * @param string $scanType a scan type from table mri_scan_types.
-     * 
+     *
      * @return array the set of values as an array of strings.
      */
     function _getMriPfDoneValues(string $scanType) : ?array
@@ -481,21 +481,21 @@ class Quality_Control extends \NDB_Menu_Filter
         if (preg_match('/EP$/', $scanType)) {
             return null;
         }
-        
+
         switch ($scanType) {
             case 'T1wRawSA':
             case 'T1wNormSA':
             case 'T2RawSA':
             case 'T2NormSA': return array('Yes_2', 'Yes_1');
         }
-        
+
         return array('Complete', 'Partial');
     }
-    
+
     /**
      * END OVERRIDE
      */
-    
+
     /**
      * Include additional JS files
      *

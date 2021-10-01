@@ -18,8 +18,8 @@
  *  @license  Loris license
  *  @link     https://www.github.com/aces/Loris-Trunk/
  */
- 
-namespace LORIS\final_radiological_review; 
+
+namespace LORIS\final_radiological_review;
 
 
 /**
@@ -54,15 +54,15 @@ class Final_Radiological_Review extends \NDB_Menu_Filter
             if ($val == 1 || $val === '1' || $val === 'true') {
                 return 'Yes';
 			}
-			
+
 			/* PHP turns the tinyint back into a string ....*/
             return ($val === "0" || $val === "false") ? 'No' : '';
         }
         if ($key == "Finalized" || $key =="Review_Done") {
             if ($val == "yes") {
                 return 'Yes';
-            } 
-            
+            }
+
             return $val == "no" ? 'No' : '';
         }
 
@@ -96,7 +96,7 @@ class Final_Radiological_Review extends \NDB_Menu_Filter
             return $val;
         }
     }
-    
+
     /**
      * Determine whether the user has permission to view this page
      *
@@ -139,7 +139,7 @@ class Final_Radiological_Review extends \NDB_Menu_Filter
             ELSE 'false' END)";
 
         $DB = \Database::singleton();
-        
+
         if ($DB->tableExists('mri_parameter_form') === false) {
             throw new \LorisException(
                 "Table 'mri_parameter_form' does not exist."
@@ -159,38 +159,38 @@ class Final_Radiological_Review extends \NDB_Menu_Filter
         # This fetches the commentID (if any) of the radiology review done at the
         # same visit at which the MRI parameter form with commentID orig.commentID
         # was done (see $query below)
-        $radiologyReviewSubquery= 
-            "SELECT rr2.commentid 
+        $radiologyReviewSubquery=
+            "SELECT rr2.commentid
              FROM radiology_review rr2
              JOIN flag f2 USING(CommentID)
              JOIN session s2 ON(f2.sessionID=s2.ID)
              WHERE s2.candid=c.candid
              AND s2.ID=s.ID
              AND rr2.commentid NOT LIKE 'DDE_%'";
-             
-        # This fetches the commentID (if any) of the final radiological review done 
+
+        # This fetches the commentID (if any) of the final radiological review done
         # at the same visit at which the radiology review found above was done.
-        $frrSubquery= 
-            "SELECT frr2.commentid 
+        $frrSubquery=
+            "SELECT frr2.commentid
              FROM final_radiological_review frr2
              JOIN flag f3 USING(CommentID)
              JOIN session s3 ON(f3.sessionID=s3.ID)
              WHERE s3.candid=c.candid
              AND s3.ID=s.ID
              AND frr2.commentid NOT LIKE 'DDE_%'";
-             
+
         $this->query = " FROM mri_parameter_form mpf
             JOIN flag f ON (f.CommentID=mpf.CommentID)
             JOIN session s ON (s.ID=f.SessionID)
             JOIN candidate c ON (c.CandID=s.CandID)
-            LEFT JOIN Project pjct ON (pjct.ProjectID=c.ProjectID)
+            LEFT JOIN Project pjct ON (pjct.ProjectID=c.RegistrationProjectID)
             LEFT JOIN psc ON (c.RegistrationCenterID=psc.CenterID)
             LEFT JOIN radiology_review orig ON (orig.CommentID=($radiologyReviewSubquery))
             LEFT JOIN final_radiological_review r ON (r.CommentID=($frrSubquery))
             WHERE mpf.commentid NOT LIKE 'DDE_%' AND mpf.commentid IS NOT NULL
             AND s.active='Y'
             AND mpf.T1_Scan_Done IN ('Complete', 'Partial')";
-            
+
         $isT1Acq = "CASE
            COALESCE((
                 SELECT fi.FileID
@@ -207,19 +207,19 @@ class Final_Radiological_Review extends \NDB_Menu_Filter
         $mullen_custom_query_count="(
                                      SELECT COUNT(*) from session
                                      JOIN flag ON(session.ID=flag.SessionID)
-                                     WHERE session.CandID=s.CandID and flag.Test_name='mullen' 
+                                     WHERE session.CandID=s.CandID and flag.Test_name='mullen'
                                      AND flag.Administration!='None' and session.Visit_label='V24'
                                     )";
 
         //mullen administration code incorporation
-        $mullen_query = "CASE   
+        $mullen_query = "CASE
               COALESCE((
               SELECT fg.CommentID
               FROM flag fg
-              WHERE fg.SessionID=s.ID AND fg.Test_name='mullen' AND fg.Administration!='None' 
-              GROUP BY fg.SessionID,fg.CommentID  LIMIT 1),'') 
-         WHEN  '' THEN   IF(s.Visit_label!='V24', 'NA', 'No') 
-         ELSE IF($mullen_custom_query_count>0, 'Yes', 'NA')    
+              WHERE fg.SessionID=s.ID AND fg.Test_name='mullen' AND fg.Administration!='None'
+              GROUP BY fg.SessionID,fg.CommentID  LIMIT 1),'')
+         WHEN  '' THEN   IF(s.Visit_label!='V24', 'NA', 'No')
+         ELSE IF($mullen_custom_query_count>0, 'Yes', 'NA')
          END
          ";
 
@@ -300,7 +300,7 @@ class Final_Radiological_Review extends \NDB_Menu_Filter
                                $conflict_condition2,
                                "COALESCE(r.Finalized, 'no')",
                                'c.CenterID',
-                               'c.ProjectID',
+                               'c.RegistrationProjectID',
                                'keyword',
                                $mullen_query
                               );
@@ -313,7 +313,7 @@ class Final_Radiological_Review extends \NDB_Menu_Filter
                                'dccid'                => 'c.CandID',
                                'site'                 => 'c.CenterID',
                                'Visit_label'          => 's.visit_label',
-                               'Project'              => 'c.ProjectID',
+                               'Project'              => 'c.RegistrationProjectID',
                                'pscid'                => 'c.PSCID',
                                'Review_Done'          => $Review_Done,
                                'Results'              => 'r.Final_Review_Results',
