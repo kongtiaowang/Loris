@@ -203,6 +203,11 @@ var SurveyAccountsIndex = /*#__PURE__*/function (_Component) {
       switch (column) {
         case 'URL':
           var url = loris.BaseURL + '/survey_module?key=' + row.URL;
+
+          if (['air_pollution', 'SA_Consent_Form', 'IBIS_SA_SLEEP_Consent_Form', 'NDAR_Consent_SA_Form'].includes(row.Instrument)) {
+            url = loris.BaseURL + '/survey.php?key=' + row.URL;
+          }
+
           result = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
             href: url
           }, cell));
