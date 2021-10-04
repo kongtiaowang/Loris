@@ -53,7 +53,10 @@ class SurveyAccountsIndex extends Component {
     let result = <td>{cell}</td>;
     switch (column) {
       case 'URL':
-        const url = loris.BaseURL + '/survey_module?key=' + row.URL;
+        let url = loris.BaseURL + '/survey_module?key=' + row.URL;
+        if (['air_pollution', 'SA_Consent_Form', 'IBIS_SA_SLEEP_Consent_Form', 'NDAR_Consent_SA_Form'].includes(row.Instrument)) {
+          url = loris.BaseURL + '/survey.php?key=' + row.URL;
+        }
         result = <td><a href={url}>{cell}</a></td>;
         break;
       case 'Instrument':
