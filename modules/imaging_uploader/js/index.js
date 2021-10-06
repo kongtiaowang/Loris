@@ -82,7 +82,7 @@ window["lorisjs"] = window["lorisjs"] || {}; window["lorisjs"]["imaging_uploader
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 16);
+/******/ 	return __webpack_require__(__webpack_require__.s = 0);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -91,16 +91,39 @@ window["lorisjs"] = window["lorisjs"] || {}; window["lorisjs"]["imaging_uploader
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
+/* harmony import */ var _ImagingUploader__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
+/* global ReactDOM */
+
+/**
+ * Render imaging_uploader on page load
+ */
+
+$(function () {
+  var imagingUploader = React.createElement("div", {
+    className: "page-imaging-uploader"
+  }, React.createElement(_ImagingUploader__WEBPACK_IMPORTED_MODULE_0__["default"], {
+    Module: "imaging_uploader",
+    DataURL: loris.BaseURL + '/imaging_uploader/?format=json'
+  }));
+  ReactDOM.render(imagingUploader, document.getElementById('lorisworkspace'));
+});
+
+/***/ }),
+/* 1 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
 /* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var FilterForm__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(9);
-/* harmony import */ var Tabs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(11);
-/* harmony import */ var Loader__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(12);
-/* harmony import */ var _LogPanel__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(13);
-/* harmony import */ var _UploadForm__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(14);
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+/* harmony import */ var FilterForm__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(10);
+/* harmony import */ var Tabs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(12);
+/* harmony import */ var Loader__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(13);
+/* harmony import */ var _LogPanel__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(14);
+/* harmony import */ var _UploadForm__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(15);
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -108,19 +131,16 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
-
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
-
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
 
 
@@ -129,18 +149,17 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 
 
 
-
-var ImagingUploader = /*#__PURE__*/function (_Component) {
+var ImagingUploader =
+/*#__PURE__*/
+function (_Component) {
   _inherits(ImagingUploader, _Component);
-
-  var _super = _createSuper(ImagingUploader);
 
   function ImagingUploader(props) {
     var _this;
 
     _classCallCheck(this, ImagingUploader);
 
-    _this = _super.call(this, props);
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(ImagingUploader).call(this, props));
     loris.hiddenHeaders = ['PatientName', 'SessionID'];
     _this.state = {
       isLoaded: false,
@@ -252,7 +271,7 @@ var ImagingUploader = /*#__PURE__*/function (_Component) {
       if (column === 'Progress') {
         if (cell === 'Failure') {
           cellStyle.color = '#fff';
-          return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
+          return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
             className: "label-danger",
             style: cellStyle
           }, cell);
@@ -260,7 +279,7 @@ var ImagingUploader = /*#__PURE__*/function (_Component) {
 
         if (cell === 'In Progress...') {
           cellStyle.color = '#fff';
-          return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
+          return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
             className: "label-warning",
             style: cellStyle
           }, cell);
@@ -269,26 +288,26 @@ var ImagingUploader = /*#__PURE__*/function (_Component) {
         if (cell === 'Success') {
           var created = row['Number Of MINC Created'];
           var inserted = row['Number Of MINC Inserted'];
-          return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
+          return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
             style: cellStyle
           }, cell, " (", inserted, " out of ", created, ")");
         } // cell == 'Not started'
 
 
-        return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
+        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
           style: cellStyle
         }, cell);
       }
 
       if (column === 'Tarchive Info') {
         if (!cell || cell === '0') {
-          return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null);
+          return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null);
         }
 
         var url = loris.BaseURL + '/dicom_archive/viewDetails/?tarchiveID=' + cell;
-        return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
+        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
           style: cellStyle
-        }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
           href: url
         }, "View details"));
       }
@@ -297,9 +316,9 @@ var ImagingUploader = /*#__PURE__*/function (_Component) {
         if (cell > 0) {
           var _url = loris.BaseURL + '/imaging_browser/viewSession/?sessionID=' + row.SessionID;
 
-          return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
+          return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
             style: cellStyle
-          }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+          }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
             href: _url
           }, cell));
         }
@@ -311,17 +330,17 @@ var ImagingUploader = /*#__PURE__*/function (_Component) {
         if (row['Number Of MINC Created'] - row['Number Of MINC Inserted'] > 0) {
           var numViolatedScans = row['Number Of MINC Created'] - row['Number Of MINC Inserted'];
           var patientName = row.PatientName;
-          violatedScans = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+          violatedScans = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
             onClick: this.openViolatedScans.bind(null, patientName)
           }, "(", numViolatedScans, " violated scans)");
         }
 
-        return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
+        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
           style: cellStyle
         }, cell, "\xA0", violatedScans);
       }
 
-      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
         style: cellStyle
       }, cell);
     }
@@ -343,7 +362,7 @@ var ImagingUploader = /*#__PURE__*/function (_Component) {
     key: "render",
     value: function render() {
       if (!this.state.isLoaded) {
-        return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Loader__WEBPACK_IMPORTED_MODULE_4__["default"], null);
+        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Loader__WEBPACK_IMPORTED_MODULE_4__["default"], null);
       }
 
       var tabList = [{
@@ -353,40 +372,40 @@ var ImagingUploader = /*#__PURE__*/function (_Component) {
         id: 'upload',
         label: 'Upload'
       }];
-      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Tabs__WEBPACK_IMPORTED_MODULE_3__["Tabs"], {
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Tabs__WEBPACK_IMPORTED_MODULE_3__["Tabs"], {
         tabs: tabList,
         defaultTab: "browse",
         updateURL: true
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Tabs__WEBPACK_IMPORTED_MODULE_3__["TabPane"], {
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Tabs__WEBPACK_IMPORTED_MODULE_3__["TabPane"], {
         TabId: tabList[0].id
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "row"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "col-md-5"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(FilterForm__WEBPACK_IMPORTED_MODULE_2__["default"], {
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(FilterForm__WEBPACK_IMPORTED_MODULE_2__["default"], {
         Module: "imaging_uploader",
         name: "imaging_filter",
         id: "imaging_filter",
         ref: this.setFilterRef,
         onUpdate: this.updateFilter,
         filter: this.state.filter
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(TextboxElement, this.state.data.form.candID), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(TextboxElement, this.state.data.form.pSCID), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(SelectElement, this.state.data.form.visitLabel), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(ButtonElement, {
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(TextboxElement, this.state.data.form.candID), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(TextboxElement, this.state.data.form.pSCID), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(SelectElement, this.state.data.form.visitLabel), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(ButtonElement, {
         type: "reset",
         label: "Clear Filters",
         onUserInput: this.resetFilters
-      }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      }))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "col-md-7"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_LogPanel__WEBPACK_IMPORTED_MODULE_5__["default"], null))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_LogPanel__WEBPACK_IMPORTED_MODULE_5__["default"], null))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         id: "mri_upload_table"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(StaticDataTable, {
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(StaticDataTable, {
         Data: this.state.data.Data,
         Headers: this.state.data.Headers,
         getFormattedCell: this.formatColumn,
         Filter: this.state.filter,
         hiddenHeaders: this.state.hiddenHeaders
-      }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Tabs__WEBPACK_IMPORTED_MODULE_3__["TabPane"], {
+      }))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Tabs__WEBPACK_IMPORTED_MODULE_3__["TabPane"], {
         TabId: tabList[1].id
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_UploadForm__WEBPACK_IMPORTED_MODULE_6__["default"], {
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_UploadForm__WEBPACK_IMPORTED_MODULE_6__["default"], {
         form: this.state.data.form,
         mriList: this.state.data.mriList,
         maxUploadSize: this.state.data.maxUploadSize,
@@ -404,13 +423,13 @@ ImagingUploader.propTypes = {
 /* harmony default export */ __webpack_exports__["default"] = (ImagingUploader);
 
 /***/ }),
-/* 1 */
+/* 2 */
 /***/ (function(module, exports) {
 
 (function() { module.exports = window["React"]; }());
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -421,25 +440,13 @@ ImagingUploader.propTypes = {
  */
 
 if (true) {
-  var ReactIs = __webpack_require__(3);
+  var ReactIs = __webpack_require__(4);
 
   // By explicitly using `prop-types` you are opting into new development behavior.
   // http://fb.me/prop-types-in-prod
   var throwOnDirectAccess = true;
-  module.exports = __webpack_require__(5)(ReactIs.isElement, throwOnDirectAccess);
+  module.exports = __webpack_require__(6)(ReactIs.isElement, throwOnDirectAccess);
 } else {}
-
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-if (false) {} else {
-  module.exports = __webpack_require__(4);
-}
 
 
 /***/ }),
@@ -447,7 +454,19 @@ if (false) {} else {
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/** @license React v16.13.1
+
+
+if (false) {} else {
+  module.exports = __webpack_require__(5);
+}
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/** @license React v16.9.0
  * react-is.development.js
  *
  * Copyright (c) Facebook, Inc. and its affiliates.
@@ -464,18 +483,21 @@ if (true) {
   (function() {
 'use strict';
 
+Object.defineProperty(exports, '__esModule', { value: true });
+
 // The Symbol used to tag the ReactElement-like types. If there is no native Symbol
 // nor polyfill, then a plain number is used for performance.
 var hasSymbol = typeof Symbol === 'function' && Symbol.for;
+
 var REACT_ELEMENT_TYPE = hasSymbol ? Symbol.for('react.element') : 0xeac7;
 var REACT_PORTAL_TYPE = hasSymbol ? Symbol.for('react.portal') : 0xeaca;
 var REACT_FRAGMENT_TYPE = hasSymbol ? Symbol.for('react.fragment') : 0xeacb;
 var REACT_STRICT_MODE_TYPE = hasSymbol ? Symbol.for('react.strict_mode') : 0xeacc;
 var REACT_PROFILER_TYPE = hasSymbol ? Symbol.for('react.profiler') : 0xead2;
 var REACT_PROVIDER_TYPE = hasSymbol ? Symbol.for('react.provider') : 0xeacd;
-var REACT_CONTEXT_TYPE = hasSymbol ? Symbol.for('react.context') : 0xeace; // TODO: We don't use AsyncMode or ConcurrentMode anymore. They were temporary
+var REACT_CONTEXT_TYPE = hasSymbol ? Symbol.for('react.context') : 0xeace;
+// TODO: We don't use AsyncMode or ConcurrentMode anymore. They were temporary
 // (unstable) APIs that have been removed. Can we remove the symbols?
-
 var REACT_ASYNC_MODE_TYPE = hasSymbol ? Symbol.for('react.async_mode') : 0xeacf;
 var REACT_CONCURRENT_MODE_TYPE = hasSymbol ? Symbol.for('react.concurrent_mode') : 0xeacf;
 var REACT_FORWARD_REF_TYPE = hasSymbol ? Symbol.for('react.forward_ref') : 0xead0;
@@ -483,20 +505,71 @@ var REACT_SUSPENSE_TYPE = hasSymbol ? Symbol.for('react.suspense') : 0xead1;
 var REACT_SUSPENSE_LIST_TYPE = hasSymbol ? Symbol.for('react.suspense_list') : 0xead8;
 var REACT_MEMO_TYPE = hasSymbol ? Symbol.for('react.memo') : 0xead3;
 var REACT_LAZY_TYPE = hasSymbol ? Symbol.for('react.lazy') : 0xead4;
-var REACT_BLOCK_TYPE = hasSymbol ? Symbol.for('react.block') : 0xead9;
 var REACT_FUNDAMENTAL_TYPE = hasSymbol ? Symbol.for('react.fundamental') : 0xead5;
 var REACT_RESPONDER_TYPE = hasSymbol ? Symbol.for('react.responder') : 0xead6;
-var REACT_SCOPE_TYPE = hasSymbol ? Symbol.for('react.scope') : 0xead7;
 
 function isValidElementType(type) {
-  return typeof type === 'string' || typeof type === 'function' || // Note: its typeof might be other than 'symbol' or 'number' if it's a polyfill.
-  type === REACT_FRAGMENT_TYPE || type === REACT_CONCURRENT_MODE_TYPE || type === REACT_PROFILER_TYPE || type === REACT_STRICT_MODE_TYPE || type === REACT_SUSPENSE_TYPE || type === REACT_SUSPENSE_LIST_TYPE || typeof type === 'object' && type !== null && (type.$$typeof === REACT_LAZY_TYPE || type.$$typeof === REACT_MEMO_TYPE || type.$$typeof === REACT_PROVIDER_TYPE || type.$$typeof === REACT_CONTEXT_TYPE || type.$$typeof === REACT_FORWARD_REF_TYPE || type.$$typeof === REACT_FUNDAMENTAL_TYPE || type.$$typeof === REACT_RESPONDER_TYPE || type.$$typeof === REACT_SCOPE_TYPE || type.$$typeof === REACT_BLOCK_TYPE);
+  return typeof type === 'string' || typeof type === 'function' ||
+  // Note: its typeof might be other than 'symbol' or 'number' if it's a polyfill.
+  type === REACT_FRAGMENT_TYPE || type === REACT_CONCURRENT_MODE_TYPE || type === REACT_PROFILER_TYPE || type === REACT_STRICT_MODE_TYPE || type === REACT_SUSPENSE_TYPE || type === REACT_SUSPENSE_LIST_TYPE || typeof type === 'object' && type !== null && (type.$$typeof === REACT_LAZY_TYPE || type.$$typeof === REACT_MEMO_TYPE || type.$$typeof === REACT_PROVIDER_TYPE || type.$$typeof === REACT_CONTEXT_TYPE || type.$$typeof === REACT_FORWARD_REF_TYPE || type.$$typeof === REACT_FUNDAMENTAL_TYPE || type.$$typeof === REACT_RESPONDER_TYPE);
 }
+
+/**
+ * Forked from fbjs/warning:
+ * https://github.com/facebook/fbjs/blob/e66ba20ad5be433eb54423f2b097d829324d9de6/packages/fbjs/src/__forks__/warning.js
+ *
+ * Only change is we use console.warn instead of console.error,
+ * and do nothing when 'console' is not supported.
+ * This really simplifies the code.
+ * ---
+ * Similar to invariant but only logs a warning if the condition is not met.
+ * This can be used to log issues in development environments in critical
+ * paths. Removing the logging code for production environments will keep the
+ * same logic and follow the same code paths.
+ */
+
+var lowPriorityWarning = function () {};
+
+{
+  var printWarning = function (format) {
+    for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+      args[_key - 1] = arguments[_key];
+    }
+
+    var argIndex = 0;
+    var message = 'Warning: ' + format.replace(/%s/g, function () {
+      return args[argIndex++];
+    });
+    if (typeof console !== 'undefined') {
+      console.warn(message);
+    }
+    try {
+      // --- Welcome to debugging React ---
+      // This error was thrown as a convenience so that you can use this stack
+      // to find the callsite that caused this warning to fire.
+      throw new Error(message);
+    } catch (x) {}
+  };
+
+  lowPriorityWarning = function (condition, format) {
+    if (format === undefined) {
+      throw new Error('`lowPriorityWarning(condition, format, ...args)` requires a warning ' + 'message argument');
+    }
+    if (!condition) {
+      for (var _len2 = arguments.length, args = Array(_len2 > 2 ? _len2 - 2 : 0), _key2 = 2; _key2 < _len2; _key2++) {
+        args[_key2 - 2] = arguments[_key2];
+      }
+
+      printWarning.apply(undefined, [format].concat(args));
+    }
+  };
+}
+
+var lowPriorityWarning$1 = lowPriorityWarning;
 
 function typeOf(object) {
   if (typeof object === 'object' && object !== null) {
     var $$typeof = object.$$typeof;
-
     switch ($$typeof) {
       case REACT_ELEMENT_TYPE:
         var type = object.type;
@@ -509,32 +582,29 @@ function typeOf(object) {
           case REACT_STRICT_MODE_TYPE:
           case REACT_SUSPENSE_TYPE:
             return type;
-
           default:
             var $$typeofType = type && type.$$typeof;
 
             switch ($$typeofType) {
               case REACT_CONTEXT_TYPE:
               case REACT_FORWARD_REF_TYPE:
-              case REACT_LAZY_TYPE:
-              case REACT_MEMO_TYPE:
               case REACT_PROVIDER_TYPE:
                 return $$typeofType;
-
               default:
                 return $$typeof;
             }
-
         }
-
+      case REACT_LAZY_TYPE:
+      case REACT_MEMO_TYPE:
       case REACT_PORTAL_TYPE:
         return $$typeof;
     }
   }
 
   return undefined;
-} // AsyncMode is deprecated along with isAsyncMode
+}
 
+// AsyncMode is deprecated along with isAsyncMode
 var AsyncMode = REACT_ASYNC_MODE_TYPE;
 var ConcurrentMode = REACT_CONCURRENT_MODE_TYPE;
 var ContextConsumer = REACT_CONTEXT_TYPE;
@@ -548,17 +618,17 @@ var Portal = REACT_PORTAL_TYPE;
 var Profiler = REACT_PROFILER_TYPE;
 var StrictMode = REACT_STRICT_MODE_TYPE;
 var Suspense = REACT_SUSPENSE_TYPE;
-var hasWarnedAboutDeprecatedIsAsyncMode = false; // AsyncMode should be deprecated
 
+var hasWarnedAboutDeprecatedIsAsyncMode = false;
+
+// AsyncMode should be deprecated
 function isAsyncMode(object) {
   {
     if (!hasWarnedAboutDeprecatedIsAsyncMode) {
-      hasWarnedAboutDeprecatedIsAsyncMode = true; // Using console['warn'] to evade Babel and ESLint
-
-      console['warn']('The ReactIs.isAsyncMode() alias has been deprecated, ' + 'and will be removed in React 17+. Update your code to use ' + 'ReactIs.isConcurrentMode() instead. It has the exact same API.');
+      hasWarnedAboutDeprecatedIsAsyncMode = true;
+      lowPriorityWarning$1(false, 'The ReactIs.isAsyncMode() alias has been deprecated, ' + 'and will be removed in React 17+. Update your code to use ' + 'ReactIs.isConcurrentMode() instead. It has the exact same API.');
     }
   }
-
   return isConcurrentMode(object) || typeOf(object) === REACT_ASYNC_MODE_TYPE;
 }
 function isConcurrentMode(object) {
@@ -598,6 +668,7 @@ function isSuspense(object) {
   return typeOf(object) === REACT_SUSPENSE_TYPE;
 }
 
+exports.typeOf = typeOf;
 exports.AsyncMode = AsyncMode;
 exports.ConcurrentMode = ConcurrentMode;
 exports.ContextConsumer = ContextConsumer;
@@ -611,6 +682,7 @@ exports.Portal = Portal;
 exports.Profiler = Profiler;
 exports.StrictMode = StrictMode;
 exports.Suspense = Suspense;
+exports.isValidElementType = isValidElementType;
 exports.isAsyncMode = isAsyncMode;
 exports.isConcurrentMode = isConcurrentMode;
 exports.isContextConsumer = isContextConsumer;
@@ -624,14 +696,12 @@ exports.isPortal = isPortal;
 exports.isProfiler = isProfiler;
 exports.isStrictMode = isStrictMode;
 exports.isSuspense = isSuspense;
-exports.isValidElementType = isValidElementType;
-exports.typeOf = typeOf;
   })();
 }
 
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -644,11 +714,11 @@ exports.typeOf = typeOf;
 
 
 
-var ReactIs = __webpack_require__(3);
-var assign = __webpack_require__(6);
+var ReactIs = __webpack_require__(4);
+var assign = __webpack_require__(7);
 
-var ReactPropTypesSecret = __webpack_require__(7);
-var checkPropTypes = __webpack_require__(8);
+var ReactPropTypesSecret = __webpack_require__(8);
+var checkPropTypes = __webpack_require__(9);
 
 var has = Function.call.bind(Object.prototype.hasOwnProperty);
 var printWarning = function() {};
@@ -1229,7 +1299,7 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
 
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1326,7 +1396,7 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1345,7 +1415,7 @@ module.exports = ReactPropTypesSecret;
 
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1361,7 +1431,7 @@ module.exports = ReactPropTypesSecret;
 var printWarning = function() {};
 
 if (true) {
-  var ReactPropTypesSecret = __webpack_require__(7);
+  var ReactPropTypesSecret = __webpack_require__(8);
   var loggedTypeFailures = {};
   var has = Function.call.bind(Object.prototype.hasOwnProperty);
 
@@ -1454,17 +1524,17 @@ module.exports = checkPropTypes;
 
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
 /* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var Panel__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(10);
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+/* harmony import */ var Panel__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(11);
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1472,19 +1542,15 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
-
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
 /**
  * This file contains React component for FilterForm
@@ -1511,17 +1577,17 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
  *
  */
 
-var FilterForm = /*#__PURE__*/function (_Component) {
+var FilterForm =
+/*#__PURE__*/
+function (_Component) {
   _inherits(FilterForm, _Component);
-
-  var _super = _createSuper(FilterForm);
 
   function FilterForm(props) {
     var _this;
 
     _classCallCheck(this, FilterForm);
 
-    _this = _super.call(this, props); // Bind component instance to custom methods
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(FilterForm).call(this, props)); // Bind component instance to custom methods
 
     _this.clearFilter = _this.clearFilter.bind(_assertThisInitialized(_this));
     _this.getFormChildren = _this.getFormChildren.bind(_assertThisInitialized(_this));
@@ -1572,7 +1638,7 @@ var FilterForm = /*#__PURE__*/function (_Component) {
       var formChildren = [];
       react__WEBPACK_IMPORTED_MODULE_0___default.a.Children.forEach(this.props.children, function (child, key) {
         // If child is a React component (i.e not a simple DOM element)
-        if ( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.isValidElement(child) && typeof child.type === 'function' && child.props.onUserInput) {
+        if (react__WEBPACK_IMPORTED_MODULE_0___default.a.isValidElement(child) && typeof child.type === 'function' && child.props.onUserInput) {
           var callbackFunc = child.props.onUserInput;
           var callbackName = callbackFunc.name;
           var elementName = child.type.displayName;
@@ -1589,7 +1655,7 @@ var FilterForm = /*#__PURE__*/function (_Component) {
           } // Pass onUserInput and value props to all children
 
 
-          formChildren.push( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.cloneElement(child, {
+          formChildren.push(react__WEBPACK_IMPORTED_MODULE_0___default.a.cloneElement(child, {
             onUserInput: callbackFunc,
             value: filterValue ? filterValue : '',
             key: key
@@ -1597,7 +1663,7 @@ var FilterForm = /*#__PURE__*/function (_Component) {
 
           this.setFilter(elementName, child.props.name, filterValue);
         } else {
-          formChildren.push( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.cloneElement(child, {
+          formChildren.push(react__WEBPACK_IMPORTED_MODULE_0___default.a.cloneElement(child, {
             key: key
           }));
         }
@@ -1686,11 +1752,11 @@ var FilterForm = /*#__PURE__*/function (_Component) {
         }.bind(this));
       }
 
-      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Panel__WEBPACK_IMPORTED_MODULE_2__["default"], {
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Panel__WEBPACK_IMPORTED_MODULE_2__["default"], {
         id: this.props.id,
         height: this.props.height,
         title: this.props.title
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(FormElement, this.props, formChildren));
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(FormElement, this.props, formChildren));
     }
   }]);
 
@@ -1716,20 +1782,20 @@ FilterForm.propTypes = {
 /* harmony default export */ __webpack_exports__["default"] = (FilterForm);
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
 /* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_1__);
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -1739,19 +1805,15 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
-
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
 /**
  * This file contains React component for Panel
@@ -1767,10 +1829,10 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
  * Wraps children in a collapsible bootstrap panel
  */
 
-var Panel = /*#__PURE__*/function (_Component) {
+var Panel =
+/*#__PURE__*/
+function (_Component) {
   _inherits(Panel, _Component);
-
-  var _super = _createSuper(Panel);
 
   /**
    * Construct the React component
@@ -1782,7 +1844,7 @@ var Panel = /*#__PURE__*/function (_Component) {
 
     _classCallCheck(this, Panel);
 
-    _this = _super.call(this, props);
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Panel).call(this, props));
     _this.state = {
       collapsed: _this.props.initCollapsed
     }; // Initialize panel class based on collapsed status
@@ -1815,7 +1877,7 @@ var Panel = /*#__PURE__*/function (_Component) {
       // Change arrow direction based on collapse status
       var glyphClass = this.state.collapsed ? 'glyphicon pull-right glyphicon-chevron-down' : 'glyphicon pull-right glyphicon-chevron-up'; // Add panel header, if title is set
 
-      var panelHeading = this.props.title ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      var panelHeading = this.props.title ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "panel-heading",
         onClick: this.toggleCollapsed,
         "data-toggle": "collapse",
@@ -1824,24 +1886,24 @@ var Panel = /*#__PURE__*/function (_Component) {
           cursor: 'pointer',
           height: '3em'
         }
-      }, this.props.title, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+      }, this.props.title, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
         className: glyphClass
       })) : '';
-      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "panel panel-primary",
         style: {
           height: this.props.panelSize
         }
-      }, panelHeading, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      }, panelHeading, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         id: this.props.id,
         className: this.panelClass,
         role: "tabpanel",
         style: {
           height: 'calc(100% - 3em)'
         }
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "panel-body",
-        style: _objectSpread(_objectSpread({}, this.props.style), {}, {
+        style: _objectSpread({}, this.props.style, {
           height: this.props.height
         })
       }, this.props.children)));
@@ -1864,7 +1926,7 @@ Panel.defaultProps = {
 /* harmony default export */ __webpack_exports__["default"] = (Panel);
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1872,11 +1934,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Tabs", function() { return Tabs; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "VerticalTabs", function() { return VerticalTabs; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TabPane", function() { return TabPane; });
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
 /* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_1__);
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1884,19 +1946,15 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
-
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
 /**
  * This file contains React components for Tabs component.
@@ -1931,10 +1989,10 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
  *
  */
 
-var Tabs = /*#__PURE__*/function (_Component) {
+var Tabs =
+/*#__PURE__*/
+function (_Component) {
   _inherits(Tabs, _Component);
-
-  var _super = _createSuper(Tabs);
 
   /**
    * Construct a Tabs react component
@@ -1946,7 +2004,7 @@ var Tabs = /*#__PURE__*/function (_Component) {
 
     _classCallCheck(this, Tabs);
 
-    _this = _super.call(this, props);
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Tabs).call(this, props));
     var hash = window.location.hash;
     var activeTab = '';
     /**
@@ -2010,11 +2068,11 @@ var Tabs = /*#__PURE__*/function (_Component) {
         var tabClass = this.state.activeTab === tab.id ? 'active' : null;
         var href = '#' + tab.id;
         var tabID = 'tab-' + tab.id;
-        return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
+        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
           role: "presentation",
           className: tabClass,
           key: tab.id
-        }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
           id: tabID,
           href: href,
           role: "tab",
@@ -2035,7 +2093,7 @@ var Tabs = /*#__PURE__*/function (_Component) {
     value: function getTabPanes() {
       var tabPanes = react__WEBPACK_IMPORTED_MODULE_0___default.a.Children.map(this.props.children, function (child, key) {
         if (child) {
-          return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.cloneElement(child, {
+          return react__WEBPACK_IMPORTED_MODULE_0___default.a.cloneElement(child, {
             activeTab: this.state.activeTab,
             key: key
           });
@@ -2058,11 +2116,11 @@ var Tabs = /*#__PURE__*/function (_Component) {
         marginLeft: 0,
         marginBottom: '5px'
       };
-      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("ul", {
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("ul", {
         className: "nav nav-tabs",
         role: "tablist",
         style: tabStyle
-      }, tabs), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      }, tabs), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "tab-content"
       }, tabPanes));
     }
@@ -2087,10 +2145,10 @@ Tabs.defaultProps = {
  * a set of vertical tabs corresponding to tab panes.
  */
 
-var VerticalTabs = /*#__PURE__*/function (_Component2) {
+var VerticalTabs =
+/*#__PURE__*/
+function (_Component2) {
   _inherits(VerticalTabs, _Component2);
-
-  var _super2 = _createSuper(VerticalTabs);
 
   /**
    * Construct the Component
@@ -2102,7 +2160,7 @@ var VerticalTabs = /*#__PURE__*/function (_Component2) {
 
     _classCallCheck(this, VerticalTabs);
 
-    _this2 = _super2.call(this, props);
+    _this2 = _possibleConstructorReturn(this, _getPrototypeOf(VerticalTabs).call(this, props));
     var hash = window.location.hash;
     var activeTab = '';
     /**
@@ -2166,11 +2224,11 @@ var VerticalTabs = /*#__PURE__*/function (_Component2) {
         var tabClass = this.state.activeTab === tab.id ? 'active' : null;
         var href = '#' + tab.id;
         var tabID = 'tab-' + tab.id;
-        return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
+        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
           role: "presentation",
           className: tabClass,
           key: tab.id
-        }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
           id: tabID,
           href: href,
           role: "tab",
@@ -2191,7 +2249,7 @@ var VerticalTabs = /*#__PURE__*/function (_Component2) {
     value: function getTabPanes() {
       var tabPanes = react__WEBPACK_IMPORTED_MODULE_0___default.a.Children.map(this.props.children, function (child, key) {
         if (child) {
-          return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.cloneElement(child, {
+          return react__WEBPACK_IMPORTED_MODULE_0___default.a.cloneElement(child, {
             activeTab: this.state.activeTab,
             key: key
           });
@@ -2214,13 +2272,13 @@ var VerticalTabs = /*#__PURE__*/function (_Component2) {
         marginLeft: 0,
         marginBottom: '5px'
       };
-      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "tabbable col-md-3 col-sm-3"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("ul", {
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("ul", {
         className: "nav nav-pills nav-stacked",
         role: "tablist",
         style: tabStyle
-      }, tabs)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      }, tabs)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "tab-content col-md-9 col-sm-9"
       }, tabPanes));
     }
@@ -2245,26 +2303,26 @@ VerticalTabs.defaultProps = {
  * Used to wrap content for every tab.
  */
 
-var TabPane = /*#__PURE__*/function (_Component3) {
+var TabPane =
+/*#__PURE__*/
+function (_Component3) {
   _inherits(TabPane, _Component3);
-
-  var _super3 = _createSuper(TabPane);
 
   function TabPane() {
     _classCallCheck(this, TabPane);
 
-    return _super3.apply(this, arguments);
+    return _possibleConstructorReturn(this, _getPrototypeOf(TabPane).apply(this, arguments));
   }
 
   _createClass(TabPane, [{
     key: "render",
-    value:
+
     /**
      * React lifecycle method
      *
      * @return {object}
      */
-    function render() {
+    value: function render() {
       var classList = 'tab-pane';
       var title;
 
@@ -2273,10 +2331,10 @@ var TabPane = /*#__PURE__*/function (_Component3) {
       }
 
       if (this.props.Title) {
-        title = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h1", null, this.props.Title);
+        title = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h1", null, this.props.Title);
       }
 
-      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         role: "tabpanel",
         className: classList,
         id: this.props.TabId
@@ -2295,12 +2353,12 @@ TabPane.propTypes = {
 
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(3);
 /* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_0__);
 /**
  * This file contains the React component for Loader
@@ -2320,7 +2378,7 @@ __webpack_require__.r(__webpack_exports__);
  */
 
 function Loader(props) {
-  return /*#__PURE__*/React.createElement("div", {
+  return React.createElement("div", {
     className: "loader",
     style: {
       width: parseInt(props.size),
@@ -2338,15 +2396,15 @@ Loader.defaultProps = {
 /* harmony default export */ __webpack_exports__["default"] = (Loader);
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var Panel__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(10);
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+/* harmony import */ var Panel__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(11);
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -2354,19 +2412,15 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
-
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
 /* global UploadProgress */
 
@@ -2383,17 +2437,17 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
  *
  */
 
-var LogPanel = /*#__PURE__*/function (_Component) {
+var LogPanel =
+/*#__PURE__*/
+function (_Component) {
   _inherits(LogPanel, _Component);
-
-  var _super = _createSuper(LogPanel);
 
   function LogPanel(props) {
     var _this;
 
     _classCallCheck(this, LogPanel);
 
-    _this = _super.call(this, props);
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(LogPanel).call(this, props));
     _this.state = {
       logText: '<select a row in the table below to view the upload logs>',
       logType: 'summary'
@@ -2548,19 +2602,19 @@ var LogPanel = /*#__PURE__*/function (_Component) {
         summary: 'Summary',
         detailed: 'Detailed'
       };
-      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Panel__WEBPACK_IMPORTED_MODULE_1__["default"], {
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Panel__WEBPACK_IMPORTED_MODULE_1__["default"], {
         id: "log_panel",
         title: "Log Viewer"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(FormElement, {
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(FormElement, {
         name: "log_form"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(SelectElement, {
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(SelectElement, {
         name: "LogType",
         label: "Logs to display",
         options: logTypes,
         onUserInput: this.onLogTypeChange,
         value: this.state.logType,
         emptyOption: false
-      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(TextareaElement, {
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(TextareaElement, {
         name: "UploadLogs",
         disabled: true,
         id: "mri_upload_logs",
@@ -2578,15 +2632,15 @@ LogPanel.defaultProps = {};
 /* harmony default export */ __webpack_exports__["default"] = (LogPanel);
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var ProgressBar__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(15);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1);
+/* harmony import */ var ProgressBar__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(16);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -2594,19 +2648,15 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
-
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
-function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
 
 
@@ -2622,17 +2672,17 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
  *
  */
 
-var UploadForm = /*#__PURE__*/function (_Component) {
+var UploadForm =
+/*#__PURE__*/
+function (_Component) {
   _inherits(UploadForm, _Component);
-
-  var _super = _createSuper(UploadForm);
 
   function UploadForm(props) {
     var _this;
 
     _classCallCheck(this, UploadForm);
 
-    _this = _super.call(this, props);
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(UploadForm).call(this, props));
     var form = JSON.parse(JSON.stringify(_this.props.form));
     _this.state = {
       formData: {},
@@ -2679,11 +2729,10 @@ var UploadForm = /*#__PURE__*/function (_Component) {
           var patientName = formData.mriFile.name.replace(/\.[a-z]+\.?[a-z]+?$/i, '');
           var ids = patientName.split('_');
           formData.candID = ids[1];
-          formData.pSCID = ids[0]; // visitLabel can contain underscores
-          // join the remaining elements of patientName and use as visitLabel
+          formData.pSCID = ids[0]; // Note that the vlabel can be followed by an optional "_whatever"
+          // which we have to ignore
 
-          ids.splice(0, 2);
-          formData.visitLabel = ids.join('_');
+          formData.visitLabel = ids[2];
         }
       }
 
@@ -2696,12 +2745,10 @@ var UploadForm = /*#__PURE__*/function (_Component) {
           var _ids = _patientName.split('_');
 
           formData.candID = _ids[1];
-          formData.pSCID = _ids[0]; // visitLabel can contain underscores
-          // join the remaining elements of patientName and use as visitLabel
+          formData.pSCID = _ids[0]; // Note that the vlabel can be followed by an optional "_whatever"
+          // which we have to ignore
 
-          _ids.splice(0, 2);
-
-          formData.visitLabel = _ids.join('_');
+          formData.visitLabel = _ids[2];
         }
       }
 
@@ -2985,20 +3032,20 @@ var UploadForm = /*#__PURE__*/function (_Component) {
       form.mriFile.value = this.state.formData.mriFile; // Hide button when progress bar is shown
 
       var btnClass = this.state.uploadProgress > -1 ? 'btn btn-primary hide' : undefined;
-      var notes = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("span", null, "File cannot exceed ", this.props.maxUploadSize, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("br", null), "File must be of type .tgz or tar.gz or .zip", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("br", null), "For files that are ", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("u", null, "Subject Scans"), ", file name must begin with", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("b", null, " [PSCID]_[CandID]_[Visit Label]"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("br", null), "For example, for CandID ", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("i", null, "100000"), ", PSCID ", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("i", null, "ABC123"), ", and Visit Label ", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("i", null, "V1"), " the file name should be prefixed by:", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("b", null, " ABC123_100000_V1"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("br", null), "For ", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("u", null, "inter-scanner reliability scans"), ", the file name (without extension) must be of the form:", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("b", null, " [site]_interscan_[subject initials]_[scanner name]_[scanner_location]_[date][scan number] "), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("br", null), "where", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("ul", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("li", null, "[site] is the three-letter site abbreviation"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("li", null, "[subject initials] are the subject\u2019s initials (three letters)"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("li", null, "[scanner name] is the name of the scanner"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("li", null, "[scanner location] three-letter scanner location"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("li", null, "[date] is the scan acquisition date in format YYYYMMDD"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("li", null, "[scan number] is an optional string of the form \u2019_scan1\u2019 for multi-part scans")), "All the file name parts are case-insensitive. Example of a valid file name:", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("br", null), "UNC_interscan_BEA_trio_HOS_20190324_scan2.tar.gz"); // Returns individual form elements
+      var notes = react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("span", null, "File cannot exceed ", this.props.maxUploadSize, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("br", null), "File must be of type .tgz or tar.gz or .zip", react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("br", null), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("br", null), "For files that are ", react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("u", null, "Subject Scans"), ", file name must begin with", react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("b", null, " [PSCID]_[CandID]_[Visit Label]"), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("br", null), "For example, for CandID ", react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("i", null, "100000"), ", PSCID ", react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("i", null, "ABC123"), ", and Visit Label ", react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("i", null, "V1"), " the file name should be prefixed by:", react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("b", null, " ABC123_100000_V1"), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("br", null), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("br", null), "For ", react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("u", null, "inter-scanner reliability scans"), ", the file name (without extension) must be of the form:", react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("br", null), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("b", null, " [site]_interscan_[subject initials]_[scanner name]_[scanner_location]_[date][scan number] "), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("br", null), "where", react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("br", null), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("ul", null, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("li", null, "[site] is the three-letter site abbreviation"), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("li", null, "[subject initials] are the subject\u2019s initials (three letters)"), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("li", null, "[scanner name] is the name of the scanner"), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("li", null, "[scanner location] three-letter scanner location"), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("li", null, "[date] is the scan acquisition date in format YYYYMMDD"), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("li", null, "[scan number] is an optional string of the form \u2019_scan1\u2019 for multi-part scans")), "All the file name parts are case-insensitive. Example of a valid file name:", react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("br", null), "UNC_interscan_BEA_trio_HOS_20190324_scan2.tar.gz"); // Returns individual form elements
       // For CandID, PSCID, and Visit Label, disabled and required
       // are updated depending on imagingUploadType value
       // For all elements, hasError and errorMessage
       // are updated depending on what values are submitted
 
-      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+      return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
         className: "row"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+      }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
         className: "col-md-7"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("h3", null, "Upload an imaging scan"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(FormElement, {
+      }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("h3", null, "Upload an imaging scan"), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("br", null), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(FormElement, {
         name: "upload_form",
         fileUpload: true
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(SelectElement, {
+      }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(SelectElement, {
         name: "imagingUploadType",
         label: "Imaging Upload Type",
         options: this.props.form.imagingUploadType.options,
@@ -3007,7 +3054,7 @@ var UploadForm = /*#__PURE__*/function (_Component) {
         hasError: this.state.hasError.imagingUploadType,
         errorMessage: this.state.errorMessage.imagingUploadType,
         value: this.state.formData.imagingUploadType
-      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(TextboxElement, {
+      }), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(TextboxElement, {
         name: "candID",
         label: "CandID",
         disabled: true,
@@ -3015,7 +3062,7 @@ var UploadForm = /*#__PURE__*/function (_Component) {
         hasError: this.state.hasError.candID,
         errorMessage: this.state.errorMessage.candID,
         value: this.state.formData.candID
-      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(TextboxElement, {
+      }), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(TextboxElement, {
         name: "pSCID",
         label: "PSCID",
         disabled: true,
@@ -3023,7 +3070,7 @@ var UploadForm = /*#__PURE__*/function (_Component) {
         hasError: this.state.hasError.pSCID,
         errorMessage: this.state.errorMessage.pSCID,
         value: this.state.formData.pSCID
-      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(TextboxElement, {
+      }), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(TextboxElement, {
         name: "visitLabel",
         label: "Visit Label",
         disabled: true,
@@ -3031,7 +3078,7 @@ var UploadForm = /*#__PURE__*/function (_Component) {
         hasError: this.state.hasError.visitLabel,
         errorMessage: this.state.errorMessage.visitLabel,
         value: this.state.formData.visitLabel
-      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(FileElement, {
+      }), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(FileElement, {
         name: "mriFile",
         label: "File to Upload",
         onUserInput: this.onFormChange,
@@ -3039,16 +3086,16 @@ var UploadForm = /*#__PURE__*/function (_Component) {
         hasError: this.state.hasError.mriFile,
         errorMessage: this.state.errorMessage.mriFile,
         value: this.state.formData.mriFile
-      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(StaticElement, {
+      }), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(StaticElement, {
         label: "Notes",
         text: notes
-      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+      }), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
         className: "row"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+      }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
         className: "col-sm-9 col-sm-offset-3"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(ProgressBar__WEBPACK_IMPORTED_MODULE_0__["default"], {
+      }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(ProgressBar__WEBPACK_IMPORTED_MODULE_0__["default"], {
         value: this.state.uploadProgress
-      }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(ButtonElement, {
+      }))), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(ButtonElement, {
         onUserInput: this.submitForm,
         buttonClass: btnClass
       }))));
@@ -3064,16 +3111,16 @@ UploadForm.defaultProps = {};
 /* harmony default export */ __webpack_exports__["default"] = (UploadForm);
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(2);
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
 /* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_1__);
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -3081,19 +3128,15 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
-
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
-
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
 
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
 /**
  * React ProgressBar.
@@ -3107,15 +3150,15 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 
 
 
-var ProgressBar = /*#__PURE__*/function (_Component) {
+var ProgressBar =
+/*#__PURE__*/
+function (_Component) {
   _inherits(ProgressBar, _Component);
-
-  var _super = _createSuper(ProgressBar);
 
   function ProgressBar() {
     _classCallCheck(this, ProgressBar);
 
-    return _super.apply(this, arguments);
+    return _possibleConstructorReturn(this, _getPrototypeOf(ProgressBar).apply(this, arguments));
   }
 
   _createClass(ProgressBar, [{
@@ -3138,10 +3181,10 @@ var ProgressBar = /*#__PURE__*/function (_Component) {
         lineHeight: '30px',
         fontWeight: '600'
       };
-      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "progress",
         style: progressStyle
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "progress-bar progress-bar-striped active",
         role: "progressbar",
         "aria-valuemin": "0",
@@ -3150,7 +3193,7 @@ var ProgressBar = /*#__PURE__*/function (_Component) {
         style: {
           width: this.props.value + '%'
         }
-      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
         style: labelStyle
       }, this.props.value, "%"));
     }
@@ -3166,29 +3209,6 @@ ProgressBar.defaultProps = {
   value: 0
 };
 /* harmony default export */ __webpack_exports__["default"] = (ProgressBar);
-
-/***/ }),
-/* 16 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _ImagingUploader__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(0);
-/* global ReactDOM */
-
-/**
- * Render imaging_uploader on page load
- */
-
-$(function () {
-  var imagingUploader = /*#__PURE__*/React.createElement("div", {
-    className: "page-imaging-uploader"
-  }, /*#__PURE__*/React.createElement(_ImagingUploader__WEBPACK_IMPORTED_MODULE_0__["default"], {
-    Module: "imaging_uploader",
-    DataURL: loris.BaseURL + '/imaging_uploader/?format=json'
-  }));
-  ReactDOM.render(imagingUploader, document.getElementById('lorisworkspace'));
-});
 
 /***/ })
 /******/ ]);
