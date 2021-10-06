@@ -26,6 +26,9 @@ UPDATE test_names t
     WHERE t.IsDirectEntry=0
         AND EXISTS (SELECT * FROM participant_accounts p WHERE t.Test_name = p.Test_name);
 
+-- Update Saliva Collection Tracking Form to be a none survey based instrument.
+UPDATE test_names SET IsDirectEntry = 0 WHERE Test_name = 'Saliva_Collection_Tracking_Form';
+
 
 -- -----------------------------------------------------------------------
 --
@@ -66,4 +69,3 @@ WHERE mst.Scan_type LIKE '%EP';
 -- Activate all lines of table mri_protocol
 -- ------------------------------------------
 UPDATE mri_protocol SET active='Y';
-
