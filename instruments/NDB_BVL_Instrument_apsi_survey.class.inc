@@ -1,4 +1,4 @@
-nstruments/NDB_BVL_Instrument_tanner_girls_survey.cla<?php
+<?php
 /*
  * This file contains the NDB_BVL_Instrument_apsi_survey
  * class
@@ -224,7 +224,7 @@ class NDB_BVL_Instrument_apsi_survey extends NDB_BVL_Instrument
 
 
 
-        $this->addSelect('speech_loss_happened_when', "If relevant, please indicate whether speech loss occurred BEFORE or AFTER 
+        $this->addSelect('speech_loss_happened_when', "If relevant, please indicate whether speech loss occurred BEFORE or AFTER
         loss of eye contact and social-emotional connectedness, or whether the two occurred closely together in time",
          $speechLossOptions);
         $this->XINRegisterRule('speech_loss_happened_when',array("speech_loss_happened_when{@}=={@}NEVER_REQUIRED"));
