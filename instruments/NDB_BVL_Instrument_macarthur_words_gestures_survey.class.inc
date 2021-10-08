@@ -8,7 +8,6 @@ class NDB_BVL_Instrument_macarthur_words_gestures_survey extends NDB_BVL_Instrum
     use LegacyInstrumentTrait;
 
 
-    var $ValidityEnabled = false;
     var $ValidityRequired = false;
 
     var $scoreLabels = array("phrases_understood_number",

@@ -24,6 +24,8 @@ class NDB_BVL_Instrument_ABCL_DAD_ON_MOM extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
 
+    var $ValidityRequired = false;
+
     var $scoreLabels = array(
                         "i_friends_total_score",
                         "i_friends_t_score",

@@ -24,6 +24,8 @@ class NDB_BVL_Instrument_BISQ_survey extends NDB_BVL_Instrument
 {
 	use LegacyInstrumentTrait;
 
+       var $ValidityRequired = false;
+
        var $sleep_opts = array(
             "while_feeding" => "While feeding ",
             "being_rocked" => "Being rocked",

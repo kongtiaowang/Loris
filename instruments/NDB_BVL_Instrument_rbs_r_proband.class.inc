@@ -5,7 +5,6 @@ class NDB_BVL_Instrument_rbs_r_proband extends NDB_BVL_Instrument
     use LegacyInstrumentTrait;
     use instrument_validator;
 
-    var $ValidityEnabled  = false;
     var $ValidityRequired = false;
 
     /*

@@ -23,7 +23,6 @@
 
 class NDB_BVL_Instrument_ibq_r_survey extends NDB_BVL_Instrument
 {
-    var $ValidityEnabled = false;
     var $ValidityRequired = false;
 
     public function getFullName(): string

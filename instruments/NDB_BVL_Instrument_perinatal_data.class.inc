@@ -15,7 +15,6 @@
 
 class NDB_BVL_Instrument_perinatal_data extends NDB_BVL_Instrument
 {
-    var $ValidityEnabled  = false;
     var $ValidityRequired = false;
 
     var $indent = "&nbsp;&nbsp;";

@@ -23,6 +23,8 @@
 class NDB_BVL_Instrument_scq_fxs_subject_survey extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
+
+    var $ValidityRequired = false;
     var $yesNo     = array(
                       null  => "",
                       "yes" => "Yes",

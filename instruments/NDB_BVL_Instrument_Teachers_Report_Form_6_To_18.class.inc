@@ -25,7 +25,6 @@ class NDB_BVL_Instrument_Teachers_Report_Form_6_To_18 extends NDB_BVL_Instrument
     use LegacyInstrumentTrait;
 
     use instrument_validator;
-    var $ValidityEnabled = false;
     var $ValidityRequired = false;
     var $scoreLabels = array('anxious_score',
         'anxious_T_score',

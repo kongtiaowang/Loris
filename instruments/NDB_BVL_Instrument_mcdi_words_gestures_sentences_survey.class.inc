@@ -17,7 +17,6 @@ class NDB_BVL_Instrument_mcdi_words_gestures_sentences_survey extends NDB_BVL_In
 {
     use LegacyInstrumentTrait;
 
-    var $ValidityEnabled  = false;
     var $ValidityRequired = false;
 
     var $scoreLabels = array(

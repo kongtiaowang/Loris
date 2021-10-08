@@ -12,6 +12,8 @@
  */
 class NDB_BVL_Instrument_acesubjectmedical_survey extends NDB_BVL_Instrument
 {
+    var $ValidityRequired = false;
+
     public function getFullName(): string
     {
         return 'ACE Subject Medical History Survey';

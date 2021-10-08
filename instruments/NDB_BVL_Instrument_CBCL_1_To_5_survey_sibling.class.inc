@@ -25,6 +25,8 @@ class NDB_BVL_Instrument_CBCL_1_To_5_survey_sibling extends NDB_BVL_Instrument
     use LegacyInstrumentTrait;
     use instrument_validator;
 
+    var $ValidityRequired = false;
+
     var $scoreLabels = array(
                         "internal_raw_score",
                         "internal_t_score",

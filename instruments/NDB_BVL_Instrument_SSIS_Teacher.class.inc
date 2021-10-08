@@ -27,6 +27,8 @@ class NDB_BVL_Instrument_SSIS_Teacher extends NDB_BVL_Instrument
     use LegacyInstrumentTrait;
     use instrument_validator;
 
+    var $ValidityRequired = false;
+
     var $scoreLabels = array(
                         "social_skills_num_missing",
                         "social_skills_adjustment_value",

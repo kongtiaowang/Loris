@@ -28,6 +28,8 @@ class NDB_BVL_Instrument_SRS2_InformantReport_Dad_On_Mom extends NDB_BVL_Instrum
 {
     use LegacyInstrumentTrait;
 
+    var $ValidityRequired = false;
+
     //Commonly used level of indentation;
     var $indent = "&nbsp;&nbsp;&nbsp;&nbsp;";
 

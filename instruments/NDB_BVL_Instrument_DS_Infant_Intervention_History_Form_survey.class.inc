@@ -25,6 +25,8 @@ class NDB_BVL_Instrument_DS_Infant_Intervention_History_Form_survey extends NDB_
     use LegacyInstrumentTrait;
     use instrument_validator;
 
+    var $ValidityRequired = false;
+
     const YES_NO_OPTIONS = array(
                             null  => "",
                             "yes" => "Yes",

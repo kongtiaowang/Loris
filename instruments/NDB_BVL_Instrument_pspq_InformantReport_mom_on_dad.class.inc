@@ -4,7 +4,6 @@ class NDB_BVL_Instrument_pspq_InformantReport_mom_on_dad extends NDB_BVL_Instrum
 {
     use LegacyInstrumentTrait;
 
-    var $ValidityEnabled  = false;
     var $ValidityRequired = false;
 
     var $scoreLabels = array(

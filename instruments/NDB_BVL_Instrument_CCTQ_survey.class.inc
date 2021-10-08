@@ -25,6 +25,8 @@ class NDB_BVL_Instrument_CCTQ_survey extends NDB_BVL_Instrument_survey
     use LegacyInstrumentTrait;
     use instrument_validator;
 
+    var $ValidityRequired = false;
+
     const YES_NO_OPTIONS = array(
                             null  => "",
                             "yes" => "Yes",

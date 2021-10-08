@@ -7,7 +7,6 @@ class NDB_BVL_Instrument_peer_socialcontact extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
 
-    var $ValidityEnabled = false;
     var $ValidityRequired = false;
 
     //Commonly used level of indentation;

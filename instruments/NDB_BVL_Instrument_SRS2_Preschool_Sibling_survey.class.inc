@@ -24,6 +24,8 @@ class NDB_BVL_Instrument_SRS2_Preschool_Sibling_survey extends NDB_BVL_Instrumen
     use LegacyInstrumentTrait;
     use instrument_validator;
 
+    var $ValidityRequired = false;
+
     var $scoreLabels = array(
                         "total_raw_score",
                         "total_t_score",

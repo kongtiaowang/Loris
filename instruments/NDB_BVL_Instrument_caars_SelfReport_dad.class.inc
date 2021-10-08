@@ -5,6 +5,8 @@ class NDB_BVL_Instrument_caars_SelfReport_dad extends NDB_BVL_Instrument
     use LegacyInstrumentTrait;
     use instrument_validator;
 
+    var $ValidityRequired = false;
+
             var $scoreLabels = array(
                 "a_raw_score",
                 "b_raw_score",

@@ -163,8 +163,6 @@ class DirectDataEntryMainPage
      * @return none
      */
     function handlePATCH() {
-
-
         $s=$this->SurveyInfo['Test_name'];
         try {
             $this->Instrument = \NDB_BVL_Instrument::factory(
@@ -301,6 +299,10 @@ class DirectDataEntryMainPage
 
         if($valid === true) {
             $this->Instrument->score();
+
+            $this->Instrument->_setDataEntryCompletionStatus(
+                $this->Instrument->_determineDataEntryCompletionStatus()
+            );
             header("HTTP/1.0 200 OK");
             $DB = Database::singleton();
             $DB->update(

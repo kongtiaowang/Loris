@@ -6,7 +6,6 @@ class NDB_BVL_Instrument_ACEFamilyMedicalHistorySurvey extends NDB_BVL_Instrumen
     use LegacyInstrumentTrait;
     use instrument_validator;
 
-    var $ValidityEnabled = false;
     var $ValidityRequired = false;
     var $indent = "&nbsp;&nbsp;&nbsp;&nbsp;";
 
