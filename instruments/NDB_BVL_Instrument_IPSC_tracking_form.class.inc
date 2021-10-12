@@ -132,6 +132,8 @@ class NDB_BVL_Instrument_IPSC_tracking_form extends NDB_BVL_Instrument
 
         $this->addBasicDate('IPSC_consent_date', '3. Consent date', $this->dateOptions);
 
+	$this->XINRegisterRule('IPSC_consent_date', array('did_family_agree_to_project{@}=={@}yes'), 'Required if family agreed to the project');
+
         $this->addSelect(
             "blood_draw_location",
             '4. Blood draw location',
@@ -142,7 +144,11 @@ class NDB_BVL_Instrument_IPSC_tracking_form extends NDB_BVL_Instrument
             )
         );
 
+	$this->XINRegisterRule('blood_draw_location', array('did_family_agree_to_project{@}=={@}yes'), 'Required if family agreed to the project');
+
         $this->addBasicTextArea("fedex_tracking_number", "5. Fedex tracking number of the return label");
+
+	$this->XINRegisterRule('fedex_tracking_number', array('did_family_agree_to_project{@}=={@}yes'), 'Required if family agreed to the project');
 
         $this->addSelect(
             "was_the_blood_draw_successful",
@@ -154,9 +160,13 @@ class NDB_BVL_Instrument_IPSC_tracking_form extends NDB_BVL_Instrument
                 'no_blood_draw_scheduled' => 'No blood draw has been scheduled',
                 'blood_draw_not_occurred' => 'Blood draw scheduled but not yet occurred'
             )
-        );
+         );
+  
+        $this->XINRegisterRule('was_the_blood_draw_successful', array('did_family_agree_to_project{@}=={@}yes'), 'Required if family agreed to the project');
 
         $this->addBasicDate('blood_draw_date', '7. Blood draw date', $this->dateOptions);
+
+	$this->XINRegisterRule('blood_draw_date', array('did_family_agree_to_project{@}=={@}yes'), 'Required if family agreed to the project');
 
         $this->addSelect('ask_about_interview',
             '8. Did the recruiter ask about the 1-hr phone interview? Note: can do interview even if refuse blood draw',
@@ -165,6 +175,8 @@ class NDB_BVL_Instrument_IPSC_tracking_form extends NDB_BVL_Instrument
                 'not_yet' => 'Not yet asked',
                 'yes'     => 'Yes'
             ));
+
+	$this->XINRegisterRule('ask_about_interview', array('did_family_agree_to_project{@}=={@}yes'), 'Required if family agreed to the project');
 
         $this->addSelect('family_participate',
             '9. Did family agree to participate in the interview?',
@@ -175,7 +187,11 @@ class NDB_BVL_Instrument_IPSC_tracking_form extends NDB_BVL_Instrument
                 'na'  => 'N/A',
             ));
 
+	$this->XINRegisterRule('family_participate', array('did_family_agree_to_project{@}=={@}yes'), 'Required if family agreed to the project');
+
         $this->addBasicTextArea("ipsc_notes", "Notes:");
+
+	$this->XINRegisterRule('ipsc_notes', array('did_family_agree_to_project{@}=={@}yes'), 'Required if family agreed to the project');
 
         $this->form->addFormRule(array(&$this, 'IPSC_Rules'));
     }
@@ -207,7 +223,9 @@ class NDB_BVL_Instrument_IPSC_tracking_form extends NDB_BVL_Instrument
         }
 
         $db =& Database::singleton();
-        $candidate = Candidate::singleton((int)$this->commentID);
+	//  $candidate = Candidate::singleton((int)$this->commentID);
+	$timepoint =& TimePoint::singleton($this->getSessionID());
+        $candidate =& Candidate::singleton($timepoint->getCandID());
         $PSCID = $candidate->getPSCID();
         $centerID = $candidate->getData('RegistrationCenterID');
 
