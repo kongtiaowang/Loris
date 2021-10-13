@@ -1,54 +1,40 @@
 <?php
-function getDirectDataEP()
+function getDirectDDE_SA()
 {
     $DB =& \Database::singleton();
 
     $visits = array(
-            // "Proband"         => "'Proband'",
-            "'V06'",
-            "'V06-CVD'",
-            "'V12'",
-            "'V12-CVD'",
-            "'V24'",
-            "'V06', 'V06-CVD'",
-            "'V12', 'V12-CVD'",
+               "'VSA'",
+               "'VSA-CVD'",
+               "'VSA', 'VSA-CVD'",
             );
 
     $test_names = array(
-                   //"elsi",
-                   //"lena",
-                   "aims",
-                   "aosi",
-                   "csbs",
-                   "JointAttentionAssessment",
-                   "DSMV_Checklist",
-                   "ESCS",
-                   "head_measurements",
-                   "head_measurements_proband",
-                   "neuro_screen",
                    "ados2_module1",
+                   "BOT2_Short",
+                   "DAS_SA",
+                   "DSMIV_SA",
+                   "DSMV_Checklist",
+                   "SA_Intervention_History",
+                   "MASC2_Self_Report",
+                   "mQST",
+                   "NIHToolBox_Assessment_Data",
+                   "WIAT_III_SA",
                   );
 
     $record1 = array();
 
     // Example:
-    // Counts the # of each Administration value (All, Partial, None, Null)
+    // Counts
+    // Admin = All
+    // DDE = Complete
+    // Validity = Valid
     // for a given instrument and timepoint for each site
     $query1 = "
         SELECT
-            psc.name as Site, administration.Administration, COUNT(flag.SessionID) AS n
+            psc.name as Site, COUNT(flag.SessionID) as n
         FROM
             psc
-        CROSS JOIN
-            (
-                SELECT 'None' AS Administration
-                UNION
-                SELECT 'Partial'
-                UNION
-                SELECT 'All'
-                UNION
-                SELECT NULL
-            ) AS administration
         LEFT JOIN
             session
         ON
@@ -56,29 +42,30 @@ function getDirectDataEP()
         LEFT JOIN
             flag
         ON
-            session.ID = flag.SessionID AND
-            administration.Administration <=> flag.Administration
+            session.ID = flag.SessionID
         WHERE
-            psc.CenterID IN (2, 3, 4, 5, 11) AND
+            psc.CenterID IN (2, 3, 4, 5) AND
+            (
             (flag.SessionID IS NULL) OR
             (
                 flag.Test_name = :test_name AND
-                flag.CommentID NOT LIKE 'DDE_%' AND
-                session.CenterID  IN (2, 3, 4, 5, 11) AND
+                flag.CommentID LIKE 'DDE_%' AND
+                session.CenterID  IN (2, 3, 4, 5) AND
                 session.Visit_label IN (:visit) AND
-                (flag.Administration IN ('All', 'Partial', 'None') OR flag.Administration IS NULL) AND
-                session.SubprojectID = 18
+                flag.Administration = 'All' AND
+                flag.Validity = 'Valid' AND
+                session.SubprojectID IN (1, 2, 3, 7, 9, 10, 12, 13) AND
+                flag.Data_entry = 'Complete'
+            )
             )
         GROUP BY
-            psc.CenterID,
-            administration.Administration
+            psc.CenterID
         ORDER BY
-            psc.name ASC,
-            administration.Administration ASC
+            psc.name ASC
         ";
 
-    // 7 timepoints * 10 instruments
-    // 70 rows
+    // 3 timepoints * 10 instruments
+    // 30 rows
     foreach ($visits as $visit) {
         foreach ($test_names as $test_name) {
             $tmp = $DB->pselect(
@@ -94,7 +81,6 @@ function getDirectDataEP()
               3, // PHI
               2, // SEA
               4, // STL
-              11, // UMN
               5, // UNC
              );
 
@@ -112,12 +98,12 @@ function getDirectDataEP()
         WHERE
             appointment.AppointmentTypeID = 3 AND
             session.Visit_label IN (:visit) AND
-            session.SubprojectID = 18 AND
+            session.SubprojectID IN (1, 2, 3, 7, 9, 10, 12, 13) AND
             session.CenterID = :site
         ";
 
-    // 7 timepoints * 5 sites
-    // 35 rows
+    // 3 timepoints * 4 sites
+    // 12 rows
     $record2 = array();
 
     foreach ($visits as $visit) {
@@ -134,5 +120,5 @@ function getDirectDataEP()
     return array("record1" => $record1, "record2" => $record2);
 }
 
-$x = getDirectDataEP();
+$x = getDirectDDE_SA();
 print json_encode($x);
