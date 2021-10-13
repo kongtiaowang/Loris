@@ -121,11 +121,7 @@ function getCandInfoFields()
 
     $fields = $db->pselect(
         "SELECT CONCAT('PTID', ParameterTypeID) AS ParameterTypeID, Value
-<<<<<<< HEAD
         FROM parameter_candidate WHERE CandID=:cid AND ParameterTypeID NOT IN('7296')",
-=======
-        FROM parameter_candidate WHERE CandID=:cid and ParameterTypeID NOT IN('7296')",
->>>>>>> aces/21.0
         array('cid' => $candID)
     );
     //IBIS SPECIFIC OVERRIDE CODE ENDS HERE
