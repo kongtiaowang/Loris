@@ -1231,15 +1231,11 @@ class NDB_BVL_Instrument_TSI_DS_Infant extends NDB_BVL_Instrument
 
         $this->form->addElement('static', null, null);
 
-        $race_questions = array(
-                           "candidate_race"  => "Candidate Race:",
-                           "bio_mother_race" => "Bio-Mother Race:",
-                           "bio_father_race" => "Bio-Father Race:",
-                          );
+        $this->addSelect("candidate_race","Candidate Race:",self::RACE_OPTIONS,["multiple"]);
 
-        foreach ($race_questions as $key => $question) {
-            $this->addSelect($key, $question, self::RACE_OPTIONS, array("multiple"));
-        }
+	$this->addSelect("bio_mother_race","Bio-Mother Race:",self::RACE_OPTIONS,["multiple"]);
+
+	$this->addSelect("bio_father_race","Bio-Father Race:",self::RACE_OPTIONS,["multiple"]);
 
         $this->form->addElement('static', null, null);
 
