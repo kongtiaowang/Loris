@@ -49,18 +49,7 @@ class SurveyAccountsProvisioner
                 p.Status,
                 s.CenterID,
                 s.ProjectID,
-                CASE
-                    WHEN (
-                        (s.Visit_label='VSA' || s.Visit_label like '%CVD%')
-                        AND p.Email!=''
-                    ) THEN c.ParentID
-                    WHEN (
-                        s.Visit_label IN ('V06', 'V12','V24','V36')
-                        AND c.RegistrationProjectID IN('5','8','10')
-                        AND p.Email != ''
-                    ) THEN c.ParentID
-                    ELSE 'NA'
-                END AS Parent_Portal
+                IF(p.Email!='', c.ParentID, 'NA') AS Parent_Portal
              FROM participant_accounts p
                 JOIN session s ON (p.SessionID=s.ID)
                 JOIN candidate c ON (c.CandID=s.CandID)
