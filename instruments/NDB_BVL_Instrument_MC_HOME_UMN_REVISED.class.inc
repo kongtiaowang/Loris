@@ -96,8 +96,6 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
                                     "q5",
                                     "q10",
                                    );
-
-	// setup the form 
 	
 	$this->_doubleDataEntryDiffIgnoreColumns = array(
 	                           "CommentID",
@@ -105,9 +103,10 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
 				   "Examiner",
 				   "Testdate",
 				   "Date_taken",
-				   "q1"
 	);
-
+	// setup the form 
+	
+	
         $this->_setupForm();
     }
 
@@ -157,7 +156,9 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
 
 	$this->addSelect("ira_completed_for_this_visit","IRA completed for this visit", array(null => "", "yes" => "Yes", "no" => "No"));
 
-	$this->form->addElement("text","ira_percentage","IRA (Fill in text-box for percentage)");
+	$this->form->addElement("text","ira_percentage","IRA (Percentage)");
+
+	$this->form->addFormRule(array(&$this, 'validate_main_page'));
     }
 
     /**
@@ -651,4 +652,16 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
             $this->form->addElement("static", null, "<br/>");
         }
     }
+
+    function validate_main_page($values)
+    {
+         $errors = [];
+       if(!is_numeric($values["ira_percentage"])){
+
+	       $errors["ira_percentage"] = "Please enter numeric value";
+       }
+
+	 return $errors;
+    }
+
 }
