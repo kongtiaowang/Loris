@@ -30,7 +30,7 @@ class NDB_BVL_Instrument_med_records_recruit extends NDB_BVL_Instrument_med_reco
 		// set the object properties
 		$this->testName = "med_records_recruit"; // test_names.Test_name
 		$this->table = 'med_records_recruit'; // name of database table corresponding to instrument
-                $this->_selectMultipleElements = array('developmental_concerns_specify');
+                $this->selectMultipleElements = array('developmental_concerns_specify');
 	
 		$this->_doubleDataEntryDiffIgnoreColumns = array('CommentID', 'UserID', 'Testdate',  'Window_Difference', 'Candidate_Age','Data_entry_completion_status',
 								 'sig_notes_during_pregnancy_or_delivery_specify',

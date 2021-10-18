@@ -32,7 +32,7 @@ class NDB_BVL_Instrument_med_records_24 extends NDB_BVL_Instrument {
 		$this->table = 'med_records_24'; // name of database table corresponding to instrument
 	 
 
-                $this->_selectMultipleElements = array('developmental_concerns_specify');
+                $this->selectMultipleElements = array('developmental_concerns_specify');
                 $config =& NDB_Config::singleton();
                 $dateOptions = array(
                                 'language' => 'en',

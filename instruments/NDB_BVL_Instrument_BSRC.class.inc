@@ -42,7 +42,7 @@ INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, Subp
 
        //The array of selects with multiple answers allowed
        //Any LorisForm multiple selects must be listed here
-       $this->_selectMultipleElements = array('q10_therapyoptions');
+       $this->selectMultipleElements = array('q10_therapyoptions');
        // required fields for data entry completion status
        $this->_requiredElements = array('Examiner', "Date_taken");
 

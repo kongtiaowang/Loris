@@ -108,7 +108,7 @@ class NDB_BVL_Instrument_SA_Intervention_History extends NDB_BVL_Instrument
                                 );
         //The array of selects with multiple answers allowed
         //Any HTML_Quickform multiple selects must be listed here
-        $this->_selectMultipleElements = array(
+        $this->selectMultipleElements = array(
                                           "occupational_therapy_individual_group",
                                           "physical_therapy_individual_group",
                                           "speech_language_therapy_individual_group",

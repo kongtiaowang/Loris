@@ -62,7 +62,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
 
         //The array of selects with multiple answers allowed
         //Any LorisForm multiple selects must be listed here
-        $this->_selectMultipleElements = array(
+        $this->selectMultipleElements = array(
                                           //        "a_aut_spect_disorder_who",
                                           //        "b_fragile_x_who",
                                           //        "c_tuberous_sclerosis_who",

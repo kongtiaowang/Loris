@@ -54,7 +54,7 @@ class NDB_BVL_Instrument_LENA_DataTrackingForm extends NDB_BVL_Instrument
         //Any LorisForm date elements must be listed here
         $this->dateTimeFields=array("datecompleted");
 
-        $this->_selectMultipleElements = array("reasonsdecline");
+        $this->selectMultipleElements = array("reasonsdecline");
 
         $config =& NDB_Config::singleton();
         $this->dateOptions = array(
