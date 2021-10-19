@@ -152,7 +152,7 @@ class NDB_BVL_Instrument_BRQ_survey extends NDB_BVL_Instrument
 
         //The array of selects with multiple answers allowed
         //Any LorisForm multiple selects must be listed here
-        $this->_selectMultipleElements = array();
+        $this->selectMultipleElements = array();
 
         // required fields for data entry completion status
         $this->_requiredElements = array(

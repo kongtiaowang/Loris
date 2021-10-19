@@ -2438,26 +2438,5 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
         parent::_save($values);
     }
 
-    function _saveValues(array $values): void
-          {
-              $timepoint = TimePoint::singleton($this->getSessionID());
-              $candidate = Candidate::singleton($timepoint->getCandID());
-              $this->_nullStatus($values);
-              //Convert select multiple elements into database storable values
-              if(!empty($this->_selectMultipleElements)){
-                  foreach($this->_selectMultipleElements AS $elname){
-                      if(isset($values[$elname]) && is_array($values[$elname])){
-                          $values[$elname]=implode("{@}",$values[$elname]);
-                      }
-                  }
-              }
-
-              if(isset($values['Date_taken'])) {
-                      $this->_saveCandidateAge($values);
-
-	      }
-    }
-
-
 }
 

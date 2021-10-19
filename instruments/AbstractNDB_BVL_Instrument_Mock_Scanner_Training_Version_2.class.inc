@@ -94,7 +94,7 @@ abstract class AbstractNDB_BVL_Instrument_Mock_Scanner_Training_Version_2 extend
             "break_duration_6"
         );
 
-        $this->_selectMultipleElements = array(
+        $this->selectMultipleElements = array(
             "bx_specialist_ppe_1",
             "bx_specialist_ppe_2",
             "bx_specialist_ppe_3",

@@ -523,7 +523,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
             $group[] = $this->form->createElement("select", "{$field}_who_other_status", null, array(null => "", "not_answered" => "Not Answered"));
 
             //insert into the _selectMultiple array
-            $this->_selectMultipleElements[] = "{$field}_who";
+            $this->selectMultipleElements[] = "{$field}_who";
 
             $this->XINRegisterRule("$field", array("$field{@}=={@}"), "Please indicate the presence of the disorder / problem.", "{$field}_group");
             $this->XINRegisterRule("{$field}_who", array("{$field}{@}=={@}1_yes|2_not_sure"), "Please indicate the effected realtive.", "{$field}_group");
@@ -552,7 +552,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
             $group[] = $this->form->createElement("select", "{$field}_who_other_status", null, array(null => "", "not_answered" => "Not Answered"));
 
             //insert into the _selectMultiple array
-            $this->_selectMultipleElements[] = "{$field}_who";
+            $this->selectMultipleElements[] = "{$field}_who";
  $this->XINRegisterRule("$field", array("$field{@}=={@}"), "Please indicate the presence of the disorder / problem.", "{$field}_group");
             $this->XINRegisterRule("{$field}_who", array("{$field}{@}=={@}1_yes|2_not_sure"), "Please indicate the effected realtive.", "{$field}_group");
             $this->XINRegisterRule("{$field}_who_other", array("{$field}_who{@}=={@}other", "{$field}_who_other_status{@}=={@}"), "Please specify the other relative(s).", "{$field}_group");
@@ -682,7 +682,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
                 array("multiple")
             );
             $this->XINRegisterRule("q6_{$field}_when_taken", array("q6_pregnancy_meds{@}=={@}{$field}"), "Please specify when $field was taken");
-            $this->_selectMultipleElements[] = "q6_{$field}_when_taken";
+            $this->selectMultipleElements[] = "q6_{$field}_when_taken";
         }
 
         $this->form->addElement("static", null, "Please specify what's and why's");
@@ -730,14 +730,14 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
                 array("multiple")
             );
             $this->addSelect("q8_a_drink_alcohol_when_taken", $this->indent . "If alcohol was taken, when?:", array(null => "", "0_before" => "0 Before", "1_after" => "1 After", "2_both" => "2 Both", "3_breastfeeding" => "3 Breastfeeding", "not_answered" => "Not Answered"), array("multiple"));
-            $this->_selectMultipleElements[] = "q8_a_drink_alcohol_when_taken";
+            $this->selectMultipleElements[] = "q8_a_drink_alcohol_when_taken";
             $this->XINRegisterRule("q8_a_drink_alcohol_when_taken", array("q8_pregnancy_alcohol_tobacco{@}=={@}a_drink_alcohol"), "Please specify when alcohol was taken");
             $this->form->addElement("select", "q8_a1_drink_quantity", $this->indent . "How many drinks did you usually have in one week?:", array("" => null, "0" => "0", "1_2" => "1-2", "3_more" => "3 or more", "not_answered" => "Not Answered"));
             $this->XINRegisterRule("q8_a1_drink_quantity", array("q8_pregnancy_alcohol_tobacco{@}=={@}a_drink_alcohol"), "Please specify when alcohol was taken");
             $this->addNumericElement("q8_a2_drink_max_week", $this->indent . "What is the maximum number of drinks you had in one week?");
             $this->XINRegisterRule("q8_a2_drink_max_week", array("q8_pregnancy_alcohol_tobacco{@}=={@}a_drink_alcohol"), "Please specify when alcohol was taken");
             $this->addSelect("q8_b_tobacco_when_taken", $this->indent . "If tobacco was taken, when?:", array(null => "", "0_before" => "0 Before", "1_after" => "1 After", "2_both" => "2 Both", "3_breastfeeding" => "3 Breastfeeding", "not_answered" => "Not Answered"), array("multiple"));
-            $this->_selectMultipleElements[] = "q8_b_tobacco_when_taken";
+            $this->selectMultipleElements[] = "q8_b_tobacco_when_taken";
             $this->XINRegisterRule("q8_b_tobacco_when_taken", array("q8_pregnancy_alcohol_tobacco{@}=={@}b_smoke_cigarettes_or_tobacco"), "Please specify when tobacco was taken");
             $this->form->addElement("select", "q8_b1_cigarette_perday", $this->indent . "How many cigarettes did you smoke per day?:", array("" => null, "0" => "0", "5_10" => "5-10", "10_more" => "10 or more", "not_answered" => "Not Answered"));
             $this->XINRegisterRule("q8_b1_cigarette_perday", array("q8_b1_cigarette_perday{@}=={@}NEVER_REQUIRED"));
@@ -801,7 +801,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
                 );
 
                 $this->XINRegisterRule("q9_{$field}_when_taken", array("q9_pregnancy_drugs{@}=={@}{$field}"), "Please specify when $field was/were taken");
-                $this->_selectMultipleElements[] = "q9_{$field}_when_taken";
+                $this->selectMultipleElements[] = "q9_{$field}_when_taken";
             }
 
             $this->addTextElement("q9_i_other_specify", $this->indent . $this->indent ."If other drugs, please specify", array("q9_pregnancy_drugs{@}=={@}i_other"), "If other drugs were taken, please specify");
