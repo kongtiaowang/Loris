@@ -40,7 +40,7 @@ class NDB_BVL_Instrument_mri_parameter_form extends NDB_BVL_Instrument
 
         $this->_requiredElements = array('Date_taken', 'Examiner'); //, 'CaregiverReport');
            
-        $this->_selectMultipleElements = array("gre_fieldmap");
+        $this->selectMultipleElements = array("gre_fieldmap");
         $config = NDB_Config::singleton();
         $this->dateOptions = array(
         'language' => 'en',
@@ -256,8 +256,8 @@ class NDB_BVL_Instrument_mri_parameter_form extends NDB_BVL_Instrument
               $candidate = Candidate::singleton($timepoint->getCandID());
               $this->_nullStatus($values);
               //Convert select multiple elements into database storable values
-              if(!empty($this->_selectMultipleElements)){
-                  foreach($this->_selectMultipleElements AS $elname){
+              if(!empty($this->selectMultipleElements)){
+                  foreach($this->selectMultipleElements AS $elname){
                       if(isset($values[$elname]) && is_array($values[$elname])){
                           $values[$elname]=implode("{@}",$values[$elname]);
                       }

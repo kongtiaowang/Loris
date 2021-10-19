@@ -221,7 +221,9 @@ class NDB_BVL_Instrument_IPSC_tracking_form_PD extends NDB_BVL_Instrument
         }
 
         $db =& Database::singleton();
-        $candidate = Candidate::singleton((int)$this->commentID);
+	//    $candidate = Candidate::singleton((int)$this->commentID);
+	$timepoint =& TimePoint::singleton($this->getSessionID());
+        $candidate =& Candidate::singleton($timepoint->getCandID());
         $PSCID = $candidate->getPSCID();
         $centerID = $candidate->getData('RegistrationCenterID');
 

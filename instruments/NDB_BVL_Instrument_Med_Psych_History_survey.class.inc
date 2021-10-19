@@ -80,7 +80,7 @@ class NDB_BVL_Instrument_Med_Psych_History_survey extends NDB_BVL_Instrument
 
         //The array of selects with multiple answers allowed
         //Any LorisForm multiple selects must be listed here
-        $this->_selectMultipleElements = array();
+        $this->selectMultipleElements = array();
 
 
         // setup the form
@@ -446,13 +446,15 @@ class NDB_BVL_Instrument_Med_Psych_History_survey extends NDB_BVL_Instrument
                 "q3_disorder_" . $i . "_group"
             );
 
-            $this->XINRegisterRule(
-                "q3_disorder_" . $i . "_relative_multiple",
+	 /**   
+           $this->XINRegisterRule(
+               "q3_disorder_" . $i . "_relative_multiple",
                 array("q3_disorder_{$i}_relative{@}=={@}multiple"),
                 "Required if multiple.",
                 "q3_disorder_" . $i . "_group"
             );
 
+	  */
             $this->addGroup(
                 $group,
                 "q3_disorder_" . $i . "_group",

@@ -120,7 +120,7 @@ class NDB_BVL_Instrument_rbs_ecs extends NDB_BVL_Instrument
 
         //The array of selects with multiple answers allowed
         //Any LorisForm multiple selects must be listed here
-        //$this->_selectMultipleElements = array();
+        //$this->selectMultipleElements = array();
 
         // setup the form
         $this->_setupForm();

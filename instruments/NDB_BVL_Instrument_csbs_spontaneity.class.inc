@@ -69,7 +69,7 @@ INSERT INTO instrument_subtests VALUES('', 'csbs_spontaneity', 'csbs_spontaneity
             
         //The array of selects with multiple answers allowed
         //Any LorisForm multiple selects must be listed here
-        $this->_selectMultipleElements = array();
+        $this->selectMultipleElements = array();
 
         // required fields for data entry completion status
         $this->_requiredElements = array('Examiner', "q_1_orientation", "prompt_1_a");

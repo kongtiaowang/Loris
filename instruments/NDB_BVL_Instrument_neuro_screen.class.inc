@@ -44,7 +44,7 @@ class NDB_BVL_Instrument_neuro_screen extends NDB_BVL_Instrument
 
         //The array of selects with multiple answers allowed
         //Any LorisForm multiple selects must be listed here
-        $this->_selectMultipleElements = array();
+        $this->selectMultipleElements = array();
 
         $db = & Database::singleton();
         $project = $db->pselectOne("SELECT c.RegistrationProjectID AS ProjectID from neuro_screen n JOIN flag f

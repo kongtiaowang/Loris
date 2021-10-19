@@ -187,7 +187,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
 
         //The array of selects with multiple answers allowed
         //Any LorisForm multiple selects must be listed here
-        $this->_selectMultipleElements = [
+        $this->selectMultipleElements = [
 		'study',
 		'face_mask',
 		'face_shield',

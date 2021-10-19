@@ -97,7 +97,7 @@ class NDB_BVL_Instrument_tsi_ds extends NDB_BVL_Instrument
 
         //The array of selects with multiple answers allowed
         //Any LorisForm multiple selects must be listed here
-        $this->_selectMultipleElements = array('candidate_race', 'mother_race', 'father_race');
+        $this->selectMultipleElements = array('candidate_race', 'mother_race', 'father_race');
 
         $this->_doubleDataEntryDiffIgnoreColumns = array(
             'CommentID',

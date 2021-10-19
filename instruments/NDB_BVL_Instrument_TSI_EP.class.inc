@@ -230,7 +230,7 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
 
         //The array of selects with multiple answers allowed
         //Any LorisForm multiple selects must be listed here
-        $this->_selectMultipleElements = array(
+        $this->selectMultipleElements = array(
 	                                  "pro_devfactors_q1_exclusionary_conditions",
 					  "pro_medhist_q1_non_exclusionary_conditions",
 					  "pro_medhist_q1_exclusionary_conditions",
@@ -2437,5 +2437,6 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
        } 
         parent::_save($values);
     }
+
 }
 

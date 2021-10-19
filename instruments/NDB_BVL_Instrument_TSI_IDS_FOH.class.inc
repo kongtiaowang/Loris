@@ -174,7 +174,7 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
 
         //The array of selects with multiple answers allowed
         //Any LorisForm multiple selects must be listed here
-        $this->_selectMultipleElements = array(
+        $this->selectMultipleElements = array(
                                           "q9a_exclusionary_conditions",
                                           "q15a_exclusionary_conditions",
                                           "q16_method_of_delivery",

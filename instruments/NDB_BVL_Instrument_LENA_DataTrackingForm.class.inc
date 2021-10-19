@@ -54,7 +54,7 @@ class NDB_BVL_Instrument_LENA_DataTrackingForm extends NDB_BVL_Instrument
         //Any LorisForm date elements must be listed here
         $this->dateTimeFields=array("datecompleted");
 
-        $this->_selectMultipleElements = array("reasonsdecline");
+        $this->selectMultipleElements = array("reasonsdecline");
 
         $config =& NDB_Config::singleton();
         $this->dateOptions = array(
@@ -277,8 +277,8 @@ class NDB_BVL_Instrument_LENA_DataTrackingForm extends NDB_BVL_Instrument
         $timepoint =& TimePoint::singleton($this->getSessionID());
         $candidate =& Candidate::singleton($timepoint->getCandID());
 
-        if(!empty($this->_selectMultipleElements)){
-            foreach($this->_selectMultipleElements AS $elname){
+        if(!empty($this->selectMultipleElements)){
+            foreach($this->selectMultipleElements AS $elname){
                 if(isset($values[$elname]) && is_array($values[$elname])){
                     $values[$elname]=implode("{@}",$values[$elname]);
                 }
