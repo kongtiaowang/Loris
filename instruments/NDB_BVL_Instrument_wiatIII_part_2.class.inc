@@ -62,7 +62,7 @@ class NDB_BVL_Instrument_wiatIII_part_2 extends NDB_BVL_Instrument_wiatIII
 
         //The array of selects with multiple answers allowed
         //Any LorisForm multiple selects must be listed here
-        $this->_selectMultipleElements = array();
+        $this->selectMultipleElements = array();
 
         // required fields for data entry completion status
         $this->_requiredElements = array(

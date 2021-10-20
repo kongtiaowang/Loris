@@ -115,7 +115,7 @@ class NDB_BVL_Instrument_tsi_followup extends NDB_BVL_Instrument
 
 		//The array of selects with multiple answers allowed
 		//Any LorisForm multiple selects must be listed here
-		$this->_selectMultipleElements = array('candidate_race', 'mother_race', 'father_race');
+		$this->selectMultipleElements = array('candidate_race', 'mother_race', 'father_race');
 
 		// required fields for data entry completion status
 		$this->_requiredElements = array("ses_income", "neurological_problems_subject", "med_his_q_1_med_surgical_problems", "exc_inc_meets_criteria" );

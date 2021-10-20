@@ -69,7 +69,7 @@ class NDB_BVL_Instrument_Actigraph_Support_Protocol extends NDB_BVL_Instrument
         $this->dateTimeFields = array("Date_taken");
         //The array of selects with multiple answers allowed
         //Any LorisForm multiple selects must be listed here
-        $this->_selectMultipleElements = array();
+        $this->selectMultipleElements = array();
         // required fields for data entry completion status
         $this->_requiredElements = array('CommentID');
         // setup the form

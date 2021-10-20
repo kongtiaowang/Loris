@@ -64,7 +64,7 @@ class NDB_BVL_Instrument_Visit_Level_Information_SA extends NDB_BVL_Instrument
 
         //The array of selects with multiple answers allowed
         //Any LorisForm multiple selects must be listed here
-        $this->_selectMultipleElements = array(
+        $this->selectMultipleElements = array(
                                           "q4_if_yes_when",
 
                                           "das_ii_assessor_ppe",

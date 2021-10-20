@@ -44,7 +44,7 @@ class NDB_BVL_Instrument_m_chat_subject extends NDB_BVL_Instrument_m_chat
 
 		//The array of selects with multiple answers allowed
 		//Any LorisForm multiple selects must be listed here
-		$this->_selectMultipleElements = array();
+		$this->selectMultipleElements = array();
 
 		// required fields for data entry completion status
 		$this->_requiredElements = array('Examiner', "q1_swung_on_knee");

@@ -187,7 +187,7 @@ class NDB_BVL_Instrument_perinatal_data extends NDB_BVL_Instrument
 
         //The array of selects with multiple answers allowed
         //Any LorisForm multiple selects must be listed here
-        $this->_selectMultipleElements = array();
+        $this->selectMultipleElements = array();
 
         // required fields for data entry completion status
         $this->_requiredElements = array(
@@ -198,7 +198,7 @@ class NDB_BVL_Instrument_perinatal_data extends NDB_BVL_Instrument
 
         //The array of selects with multiple answers allowed
         //Any LorisForm multiple selects must be listed here
-        $this->_selectMultipleElements = [];
+        $this->selectMultipleElements = [];
 
         // setup the form
         $this->_setupForm();

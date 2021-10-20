@@ -131,7 +131,7 @@ class NDB_BVL_Instrument_EARLI_interview_S3_inserts extends NDB_BVL_Instrument_E
 
                 $this->localDefaults = array();
 
-                $this->_selectMultipleElements = array();
+                $this->selectMultipleElements = array();
 
 
                 // From Mr. David Brownlee:
@@ -139,7 +139,7 @@ class NDB_BVL_Instrument_EARLI_interview_S3_inserts extends NDB_BVL_Instrument_E
                 //Any LorisForm multiple selects must be listed here
                 //Usually this appears at the beginning of the file in the setup() function
 
-                $this->_selectMultipleElements = array_merge($this->_selectMultipleElements, array("q3_32_1_1","q3_32_2_1","q3_32_3_1","q3_32_4_1", "q3_32_5_1", "q3_32_1_2","q3_32_2_2","q3_32_3_2","q3_32_4_2", "q3_32_5_2", "q3_32_1_3","q3_32_2_3","q3_32_3_3","q3_32_4_3", "q3_32_5_3","q3_32_1_4","q3_32_2_4","q3_32_3_4","q3_32_4_4", "q3_32_5_4", "q3_32_1_5","q3_32_2_5","q3_32_3_5","q3_32_4_5", "q3_32_5_5", "q3_32_1_6","q3_32_2_6","q3_32_3_6","q3_32_4_6", "q3_32_5_6", "q3_32_1_7","q3_32_2_7","q3_32_3_7","q3_32_4_7", "q3_32_5_7", "q3_32_1_8","q3_32_2_8","q3_32_3_8","q3_32_4_8", "q3_32_5_8", "q3_32_1_9","q3_32_2_9","q3_32_3_9","q3_32_4_9", "q3_32_5_9", "q3_32_1_10","q3_32_2_10","q3_32_3_10","q3_32_4_10", "q3_32_5_10")); 
+                $this->selectMultipleElements = array_merge($this->selectMultipleElements, array("q3_32_1_1","q3_32_2_1","q3_32_3_1","q3_32_4_1", "q3_32_5_1", "q3_32_1_2","q3_32_2_2","q3_32_3_2","q3_32_4_2", "q3_32_5_2", "q3_32_1_3","q3_32_2_3","q3_32_3_3","q3_32_4_3", "q3_32_5_3","q3_32_1_4","q3_32_2_4","q3_32_3_4","q3_32_4_4", "q3_32_5_4", "q3_32_1_5","q3_32_2_5","q3_32_3_5","q3_32_4_5", "q3_32_5_5", "q3_32_1_6","q3_32_2_6","q3_32_3_6","q3_32_4_6", "q3_32_5_6", "q3_32_1_7","q3_32_2_7","q3_32_3_7","q3_32_4_7", "q3_32_5_7", "q3_32_1_8","q3_32_2_8","q3_32_3_8","q3_32_4_8", "q3_32_5_8", "q3_32_1_9","q3_32_2_9","q3_32_3_9","q3_32_4_9", "q3_32_5_9", "q3_32_1_10","q3_32_2_10","q3_32_3_10","q3_32_4_10", "q3_32_5_10")); 
 
 
                 //column headers

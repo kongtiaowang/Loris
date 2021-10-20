@@ -493,7 +493,7 @@ class NDB_BVL_Instrument_mullen extends NDB_BVL_Instrument
 
         //The array of selects with multiple answers allowed
         //Any LorisForm multiple selects must be listed here
-        $this->_selectMultipleElements = array();
+        $this->selectMultipleElements = array();
 
         // Get the subject age in months for scoring
 

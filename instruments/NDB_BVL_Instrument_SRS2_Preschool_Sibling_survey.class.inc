@@ -74,7 +74,7 @@ class NDB_BVL_Instrument_SRS2_Preschool_Sibling_survey extends NDB_BVL_Instrumen
 
         //The array of selects with multiple answers allowed
         //Any LorisForm multiple selects must be listed here
-        $this->_selectMultipleElements = array();
+        $this->selectMultipleElements = array();
 
         $this->_requiredElements = array(
                                     'q1_more_fidgety_in_social_situations',

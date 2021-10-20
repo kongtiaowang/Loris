@@ -71,7 +71,7 @@ class NDB_BVL_Instrument_EARLI_interview_PART_4 extends NDB_BVL_Instrument_EARLI
 				        
 		$this->localDefaults = array();
 
-//		$this->_selectMultipleElements = array();
+//		$this->selectMultipleElements = array();
 
 
 		// From Mr. David Brownlee:

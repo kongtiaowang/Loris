@@ -77,7 +77,7 @@ INSERT INTO test_battery VALUES ('', 'intervention_history', '1053', '1179', 'Y'
             
         //The array of selects with multiple answers allowed
         //Any LorisForm multiple selects must be listed here
-        $this->_selectMultipleElements = array();
+        $this->selectMultipleElements = array();
 
         // required fields for data entry completion status
         $this->_requiredElements = array("Examiner", "q1_type_of_intervention_1");
