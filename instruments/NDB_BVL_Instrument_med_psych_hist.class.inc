@@ -89,7 +89,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
                                           //        "x_cancer_who",
                                           //        "y_norrie_syndrome_who",
                                           "q4_pregnancy_ART_type",
-                                          "q5_pregnancy_health_problems",
+                                          "q5_preg_health_probs",
                                           "q6_pregnancy_meds",
                                           "q7_baby_health_problems",
                                           "q8_pregnancy_alcohol_tobacco",
@@ -529,7 +529,7 @@ class NDB_BVL_Instrument_med_psych_hist extends NDB_BVL_Instrument
             $this->XINRegisterRule("{$field}_who", array("{$field}{@}=={@}1_yes|2_not_sure"), "Please indicate the effected realtive.", "{$field}_group");
             $this->XINRegisterRule("{$field}_who_other", array("{$field}_who{@}=={@}other", "{$field}_who_other_status{@}=={@}"), "Please specify the other relative(s).", "{$field}_group");
 	    $this->XINRegisterRule("{$field}_who_other_status", array("{$field}_who{@}=={@}other", "{$field}_who_other{@}=={@}"), "Please specify the relative, or select Not Answered", "{$field}_group");
-           
+
              $this->form->addGroup($group, "{$field}_group", $label, $this->_GUIDelimiter, false);
             unset($group);
 

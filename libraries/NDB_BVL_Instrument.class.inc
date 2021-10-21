@@ -3152,5 +3152,10 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         return $values;
     }
 
+    // For multiselect data fix script
+    function getSelectMultipleElements() {
+        return $this->selectMultipleElements;
+    }
+
     // IBIS SPECIFIC OVERRIDE CODE ENDS HERE
 }

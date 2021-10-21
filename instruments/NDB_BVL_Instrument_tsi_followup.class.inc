@@ -10,13 +10,13 @@ class NDB_BVL_Instrument_tsi_followup extends NDB_BVL_Instrument
 	var $yesNo = array(null=>"", "yes"=>"Yes", "no"=>"No", "not_answered"=>"Not Answered");
 
 	var $education_choices = array(null => "", "not_answered" => "Not Answered", "j_high" => "Junior High", "some_hs" => "Some Highschool", "some_college_12yr_degree" => "Some College 12yr Degree", "college_degree" => "College Degree", "some_grad_level" => "Some Graduate Level", "grad_degree" => "Graduate Degree");
- 	
+
 	function getSession()
 	{
 		$db =& Database::singleton();
         $sessionid = $this->getSessionID();
         if($sessionid === false){
-           return null;    
+           return null;
         }
         if($this->getSessionID()!=-1) {
             $timepoint =& TimePoint::singleton($sessionid);
@@ -27,10 +27,10 @@ class NDB_BVL_Instrument_tsi_followup extends NDB_BVL_Instrument
 
         if ($projID == 2) {
             //for IBIS2 tsi is part of Screening visit
-            $sessionid = $db->pselectOne("SELECT ID FROM session WHERE CandID=:cndID and Visit_label LIKE '%screening%'", 
+            $sessionid = $db->pselectOne("SELECT ID FROM session WHERE CandID=:cndID and Visit_label LIKE '%screening%'",
                                           array('cndID' => $candID));
-        } else { 
- 		    $sessionid = $db->pselectOne("SELECT ID FROM session WHERE CandID=:cndID and Visit_label LIKE '%06'", 
+        } else {
+ 		    $sessionid = $db->pselectOne("SELECT ID FROM session WHERE CandID=:cndID and Visit_label LIKE '%06'",
                                           array('cndID' => $candID));
         }
         if($sessionid == array()) {
@@ -42,12 +42,12 @@ class NDB_BVL_Instrument_tsi_followup extends NDB_BVL_Instrument
 	function getComment($sessionid)
 	{
 		$db =& Database::singleton();
-	
+
  		$commentid = $db->pselectOne("SELECT CommentID FROM flag WHERE SessionID=:SID and Test_name = 'tsi' and CommentID NOT LIKE 'DDE%'", array('SID' => $sessionid));
         if($commentid == array()) {
             return null;
         }
-		
+
 		return $commentid;
 	}
 
@@ -69,16 +69,16 @@ class NDB_BVL_Instrument_tsi_followup extends NDB_BVL_Instrument
 	INSERT INTO test_battery VALUES ('', 'tsi_followup', '1053', '1179', 'Y', 'Visit', '3', NULL);
 
 
-	
-	ALTER TABLE tsi ADD contact_date date;	
+
+	ALTER TABLE tsi ADD contact_date date;
 	ALTER TABLE tsi ADD contact_date_status enum('not_answered');
-	
+
 	ALTER TABLE tsi ADD contacted_by varchar(255);
-	
+
 	ALTER TABLE tsi ADD complications_birth enum('yes','no','not_answered');
-	
-	ALTER TABLE tsi ADD exc_inc_subject_meets_criteria enum('yes','no','not_answered');      
-	
+
+	ALTER TABLE tsi ADD exc_inc_subject_meets_criteria enum('yes','no','not_answered');
+
 	*/
 
 	/**
@@ -115,7 +115,7 @@ class NDB_BVL_Instrument_tsi_followup extends NDB_BVL_Instrument
 
 		//The array of selects with multiple answers allowed
 		//Any LorisForm multiple selects must be listed here
-		$this->selectMultipleElements = array('candidate_race', 'mother_race', 'father_race');
+		$this->selectMultipleElements = array();
 
 		// required fields for data entry completion status
 		$this->_requiredElements = array("ses_income", "neurological_problems_subject", "med_his_q_1_med_surgical_problems", "exc_inc_meets_criteria" );
@@ -134,7 +134,7 @@ class NDB_BVL_Instrument_tsi_followup extends NDB_BVL_Instrument
 								 'med_his_q_11_nap_how_long',
                                  'further_information',
                                  'Data_entry_completion_status');
-         
+
 		// setup the form
 
 		$this->_setupForm();
@@ -174,7 +174,7 @@ class NDB_BVL_Instrument_tsi_followup extends NDB_BVL_Instrument
 		$this->_addMetadataFields();
 
 		$this->form->addElement('header', null, "Identifying information");
-		
+
 		$config =& NDB_Config::singleton();
 
 	        $this->dateOptions = array(
@@ -185,7 +185,7 @@ class NDB_BVL_Instrument_tsi_followup extends NDB_BVL_Instrument
         	'addEmptyOption' => true,
         	'emptyOptionValue' => null
 	    	);
-        
+
 		$nonAskedQuestions = array("Subject's Name:",
 		"Subject ID:",
 		"Date of Birth:",
@@ -207,9 +207,9 @@ class NDB_BVL_Instrument_tsi_followup extends NDB_BVL_Instrument
         } else {
             $this->form->addElement("link", null, "City of Birth:", '', 'Error: No Candidate specified');
         }
-		$this->form->addElement("static", null, "Candidate Ethnicity:");		
+		$this->form->addElement("static", null, "Candidate Ethnicity:");
 
-//		$this->form->addElement("link", null, "Candidate Ethnicity:", $url, 'Click here to verify or enter this data in the TSI'); 
+//		$this->form->addElement("link", null, "Candidate Ethnicity:", $url, 'Click here to verify or enter this data in the TSI');
 
 //              $this->form->addElement('link', null, null, "$url", 'Enter this data in the TSI');
 
@@ -218,40 +218,40 @@ class NDB_BVL_Instrument_tsi_followup extends NDB_BVL_Instrument
 
 		$this->form->addElement("static", null, "Mother Ethnicity:");
 
-		$this->form->addElement("static", null, "Father Ethnicity:"); 
-		
+		$this->form->addElement("static", null, "Father Ethnicity:");
+
 
 		//RACES
 		$this->form->addElement("static", null, "Candidate Race:");
-		
+
 		$this->form->addElement("static", null, "Mother Race:");
 
         	$this->form->addElement("static", null, "Father Race:");
-		
+
 		$this->form->addElement("header", null, "<br/><b>Parents' Information</b><br>");
-		
+
 		//Mother's Information
     		$this->form->addElement("static", null, "<br/><b>Mother's Information</b><br>");
-		
+
 		/*
      		$this->addTextElement("mother_first_name", "First Name:");
      		$this->form->addElement("text", "mother_middle_name", "Middle Name:");
 	    	$this->addTextElement ("mother_last_name", "Last Name" );
         	*/
-        
+
         $this->form->addElement("static", null, "First Name:<br>");
     	$this->form->addElement("static", null, "Middle Name: <br>");
     	$this->form->addElement("static", null, "Last Name: <br>");
-    	
-        $this->addTextElement("mother_occupation", "Occupation:");        
-        
+
+        $this->addTextElement("mother_occupation", "Occupation:");
+
         $this->form->addElement("select", "mother_education", "Highest Level of Education", array(null => "", "not_answered" => "Not Answered", "j_high" => "Junior High", "some_hs" => "Some Highschool", "high_school"=> "High School", "some_college" => "Some College/2yr Degree", "college_degree" => "College Degree", "some_grad_level" => "Some Graduate Level", "grad_degree" => "Graduate Degree"));
-    	
+
     	$this->XINRegisterRule ( "mother_education_rule", array ("mother_education{@}!={@}"), "Please enter the mother's education" );
-        
-    
+
+
     	$config =& NDB_Config::singleton();
-        
+
         $this->dateOptions = array(
             'language' => 'en',
             'format'   => 'YMd',
@@ -260,15 +260,15 @@ class NDB_BVL_Instrument_tsi_followup extends NDB_BVL_Instrument
             'addEmptyOption' => true,
             'emptyOptionValue' => null
     	);
-		
+
         $this->form->addElement("link", null, "Date of birth:", $url, 'Click here to verify or enter this data in the TSI');
 //	$this->form->addElement("static", 'mother_dob', "Date of Birth:");
-       
+
 
 	//Father's Information
-	    
+
         $this->form->addElement("static", null, "<br><br><b>Father's Information</b><br>");
-        
+
         $this->form->addElement("static", null, "First Name:<br>");
         $this->form->addElement("static", null, "Middle Name: <br>");
         $this->form->addElement("static", null, "Last Name: <br>");
@@ -278,20 +278,20 @@ class NDB_BVL_Instrument_tsi_followup extends NDB_BVL_Instrument
         $this->form->addElement("text", "father_middle_name", "Middle Name:");
     	$this->addTextElement ("father_last_name", "Last Name" );
         */
-        
-        $this->addTextElement("father_occupation", "Occupation:");        
+
+        $this->addTextElement("father_occupation", "Occupation:");
 
         $this->form->addElement("select", "father_education", "Highest Level of Education", array(null => "", "not_answered" => "Not Answered", "j_high" => "Junior High", "some_hs" => "Some Highschool", "high_school"=> "High School", "some_college" => "Some College/2yr Degree", "college_degree" => "College Degree", "some_grad_level" => "Some Graduate Level", "grad_degree" => "Graduate Degree"));
-        
+
         $this->XINRegisterRule ( "father_education_rule", array ("father_education{@}!={@}"), "Please enter the father's education" );
 
     	$config =& NDB_Config::singleton();
 
         $this->form->addElement("link", null, "Date of Birth:", $url, 'Click here to verify or enter this data in the TSI');
 	//$this->form->addElement("static", 'father_dob', "Date of Birth:");
-      		
+
       	$this->form->addElement("static", null, "<br><br>");
-      	
+
 	$this->form->addElement("select", "ses_income", "SES:", array(null=>"", "less_than_25K"=>"less than $24,999", "25K-35K"=>"$25,000 - 34,999", "35K-50K"=>"$35,000 - 49,999", "50K-75K"=>"$50,000 - 74,999", "75K-100K"=>"$75,000 - 99,999", "100K-150K"=>"$100,000 - 149,999", "150K-200K"=>"$150,000 - 199,000", "over_200K"=>"over $200,000", "not_answered"=>"Not Answered"));
 
         $nonAskedQuestions = array("<br>Parent's Telephone:",
@@ -388,7 +388,7 @@ class NDB_BVL_Instrument_tsi_followup extends NDB_BVL_Instrument
         $this->addTextElement("med_his_q_10_nap", "10. Does X nap during the day?");
 		$this->addTextElement("med_his_q_11_nap_how_long", "11. When & how long?");
 		$this->form->addElement("select", "med_his_q_12_likelihood_sleep", "12. On a scale of 1-10, please rate the likelihood of your child sleeping through a scan.", array(null=>"", 1=>"1", 2=>"2",  3=>"3", 4=>"4", 5=>"5", 6=>"6", 7=>"7", 8=>"8", 9=>"9", 10=>"10", "not_answered"=>"Not Answered"));
-     
+
 
 	}
 
@@ -415,7 +415,7 @@ class NDB_BVL_Instrument_tsi_followup extends NDB_BVL_Instrument
 		$this->form->addElement("static", null, '<br />');
 		$this->form->addElement("select", "diagnoses", "Has X had any diagnoses?", array(NULL=>"", "yes"=>"Yes", "no"=>"No", "not_answered"=>"Not Answered"));
 		$this->form->addElement("static", null, "If you answered yes, please specify dates and locations:");
-		
+
 		for ($i = 1; $i<6; $i++)
 		{
 			$this->addDateElement("date_diagnosis$i", $this->indent . "Date of diagnosis $i:");
@@ -423,16 +423,16 @@ class NDB_BVL_Instrument_tsi_followup extends NDB_BVL_Instrument
 
 			if ($i == 1)
 			{
-				$this->XINRegisterRule("date_diagnosis{$i}_date", array("diagnoses{@}=={@}yes", "date_diagnosis{$i}_date_status{@}=={@}"), "If you answered yes, you must specify date", "date_diagnosis{$i}_date_group");	
-				$this->XINRegisterRule("date_diagnosis{$i}_status", array("diagnoses{@}=={@}yes", "date_diagnosis{$i}_date{@}=={@}"), "If you answered yes, you must specify date", "date_diagnosis{$i}_date_group");	
-				$this->XINRegisterRule("location_diagnosis$i", array("diagnoses{@}=={@}yes"), "If you answered yes, you must specify location", "location_diagnosis{$i}_group"); 
+				$this->XINRegisterRule("date_diagnosis{$i}_date", array("diagnoses{@}=={@}yes", "date_diagnosis{$i}_date_status{@}=={@}"), "If you answered yes, you must specify date", "date_diagnosis{$i}_date_group");
+				$this->XINRegisterRule("date_diagnosis{$i}_status", array("diagnoses{@}=={@}yes", "date_diagnosis{$i}_date{@}=={@}"), "If you answered yes, you must specify date", "date_diagnosis{$i}_date_group");
+				$this->XINRegisterRule("location_diagnosis$i", array("diagnoses{@}=={@}yes"), "If you answered yes, you must specify location", "location_diagnosis{$i}_group");
 			}
 
 			else
 			{
-				$this->XINRegisterRule("date_diagnosis{$i}_date", array("date_diagnosis{$i}_date{@}=={@}NEVER_REQUIRED"), "date_diagnosis$i"); 
-				$this->XINRegisterRule("date_diagnosis{$i}_status", array("date_diagnosis{$i}_status{@}=={@}NEVER_REQUIRED"), "date_diagnosis$i"); 
-				$this->XINRegisterRule("location_diagnosis$i", array("location_diagnosis{$i}{@}=={@}NEVER_REQUIRED")); 
+				$this->XINRegisterRule("date_diagnosis{$i}_date", array("date_diagnosis{$i}_date{@}=={@}NEVER_REQUIRED"), "date_diagnosis$i");
+				$this->XINRegisterRule("date_diagnosis{$i}_status", array("date_diagnosis{$i}_status{@}=={@}NEVER_REQUIRED"), "date_diagnosis$i");
+				$this->XINRegisterRule("location_diagnosis$i", array("location_diagnosis{$i}{@}=={@}NEVER_REQUIRED"));
 			}
 		}
 
@@ -463,11 +463,11 @@ class NDB_BVL_Instrument_tsi_followup extends NDB_BVL_Instrument
 */
       	$this->form->addElement("select","med_overall_concern","Do you have overall or specific concerns about your child's development at this time?", $this->yesNo);
         $this->addTextAreaElement("med_overall_concern_notes", $this->indent . "If yes, what are they?", array("med_overall_concern{@}=={@}yes"));
-  
+
 		$this->form->addElement("static", null, '<br />');
 
 		$this->form->addElement("static", null, "Has the Infant SIB received any therapies (e.g. behavioral, physical, speech, occupational)?");
-	
+
 		for ($i=1; $i<7; $i++)
 		{
 			$this->form->addElement("select", "therapy$i", $this->indent . "$i. Type of Tx", array("NULL"=>"", "1_intensive_early"=>"1. ABA/discrete trial/Lovaas intensive early intervention", "2_occ_therapy"=>"2. Occupational therapy", "3_physical_therapy"=>"3. Physical therapy", "4_speech_therapy"=>"4. Speech therapy", "5_counseling_child"=>"5. Counseling/psychological services for child", "6_play_therapy"=>"6. Play therapy", "7_music_therapy"=>"7. Music therapy", "8_auditory_training"=>"8. Auditory integration training", "9_teacch"=>"9. TEACCH", "10_developmental_play_therapy"=>"10. Developmental play therapy (Hanen, RDI)", "11_social_skills_training"=>"11. Social skills training", "12_special_ed"=>"12. Special education", "13_parent_child_socialization"=>"13. Parent-Child socialization/skill building support", "14_recreational_sports"=>"14. Recreational sports for child", "15_typical_class"=>"15. Typical class", "16_home_program"=>"16. Home program (not ABA)", "17_nutritional"=>"17. Nutritional", "18_parenting_class"=>"18. Parenting class/seminar", "19_counseling_parent"=>"19. Counseling/psychologial services for parent", "20_parent_child_recreation"=>"20. Parent-Child recreation", "21_other"=>"21. Other (e.g. biomedical)","none"=>"22. None", "not_answered"=>"Not Answered"));
@@ -500,7 +500,7 @@ class NDB_BVL_Instrument_tsi_followup extends NDB_BVL_Instrument
 		$this->form->addElement("select", "disposition", "Proceed to next level beyond screening?", $this->yesNo);
      */
         }
-     
+
      function score(): void {
             $db =& Database::singleton();
 

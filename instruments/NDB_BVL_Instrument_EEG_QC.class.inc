@@ -67,9 +67,7 @@ class NDB_BVL_Instrument_EEG_QC extends NDB_BVL_Instrument
 
         //The array of selects with multiple answers allowed
         //Any LorisForm multiple selects must be listed here
-        $this->selectMultipleElements = [
-            'study',
-            ];
+        $this->selectMultipleElements = array();
 
         // setup the form
         $this->_setupForm();
