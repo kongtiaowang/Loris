@@ -66,9 +66,24 @@ class InstrumentMultiselectFixer
         }
 
         $list  = "i.".implode(",i.", $multiSelects);
-        $query = "SELECT f.CommentID, f.Data, $list
+        $query = "SELECT f.CommentID,
+                f.Data,
+                s.Visit_label,
+                c.CandID,
+                c.PSCID,
+                f.Testdate,
+                f.UserID,
+                psc.Name,
+                pso.Description,
+                ps.reason_specify,
+                $list
             FROM $testName i
                 JOIN flag f ON (f.CommentID = i.CommentID)
+                JOIN session s ON (s.ID = f.SessionID)
+                JOIN candidate c ON (c.CandID = s.CandID)
+                JOIN psc ON (psc.CenterID = c.RegistrationCenterID)
+                LEFT JOIN participant_status ps ON (c.CandID = ps.CandID)
+                LEFT JOIN participant_status_options pso ON (ps.participant_status = pso.ID)
             WHERE 'Array' IN ($list)";
 
         return $this->SQLDB->pselect($query, array());
@@ -86,6 +101,18 @@ class InstrumentMultiselectFixer
     function fixMissingData($testName, $missingData, $confirm = false) {
         $diff = array();
         $fixable = 0;
+        $metaCols = array(
+            "CommentID",
+            "Data",
+            "Visit_label",
+            "CandID",
+            "PSCID",
+            "Testdate",
+            "UserID",
+            "Name",
+            "Description",
+            "reason_specify"
+        );
         foreach ($missingData as $row) {
             $jsonData = (array) json_decode($row['Data']);
             $values   = array();
@@ -93,7 +120,7 @@ class InstrumentMultiselectFixer
             $nullVal  = array();
             $knownVal = array();
             foreach ($row as $key => $value) {
-                if ($key === "CommentID" || $key === "Data") {
+                if (in_array($key, $metaCols)) {
                     continue;
                 }
 
@@ -116,10 +143,18 @@ class InstrumentMultiselectFixer
                 $this->SQLDB->update($testName, $values, array('CommentID'=>$row['CommentID']));
             }
             $diff[$row['CommentID']] = array(
-                "known"   => $values,
-                "nullVal" => $nullVal,
-                "unknown" => $unknown,
-                "setVal"  => $knownVal
+                "dccid"    => $row['CandID'],
+                "pscid"    => $row['PSCID'],
+                "visit"    => $row['Visit_label'],
+                "site"     => $row['Name'],
+                "status"   => $row['Description'],
+                "comments" => $row['reason_specify'],
+                "date"     => $row['Testdate'],
+                "user"     => $row['UserID'],
+                "known"    => $values,
+                "nullVal"  => $nullVal,
+                "unknown"  => $unknown,
+                "setVal"   => $knownVal
             );
         }
 
