@@ -1,0 +1,1 @@
+INSERT INTO `Visit_Windows` (`Visit_label`, `WindowMinDays`, `WindowMaxDays`, `OptimumMinDays`, `OptimumMaxDays`, `WindowMidpointDays`, `ID`) VALUES ('Screening-SA', NULL, NULL, NULL, NULL, NULL, NULL);
