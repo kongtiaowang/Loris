@@ -928,7 +928,7 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
 
         foreach($score_columns_avg as $key => $values){
             if(is_numeric($score[$key])){
-                $score[$key."_avg"] = round($score[$key]/$values, 2);
+                $score[$key."_avg"] = round($score[$key]/$values, 1);
             }
         }
 	
