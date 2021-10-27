@@ -190,7 +190,7 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
 	$group[] = $this->form->createElement('static', null, "Score");
         $group[] = $this->form->createElement('static', null, "Average");
 
-        $this->form->addGroup($group, 'score_header_group', "<strong>Subsccale Items</strong>", $this->_GUIDelimiter, false);
+        $this->form->addGroup($group, 'score_header_group', "<strong>Subscale Items</strong>", $this->_GUIDelimiter, false);
 	unset($group);
 
         while ($i = current($score_columns)) {
