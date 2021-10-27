@@ -176,12 +176,27 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
                'score_parasomnias'                => 'Parasomnias',
                'score_sleep_disordered_breathing' => 'Sleep Disordered Breathing',
                'score_daytime_sleepiness'         => 'Daytime Sleepiness',
-               'score_total'                      => 'Total Score',
+	       'score_total'                      => 'Total Score',
+	       'score_bedtime_resistance_avg'     => "",
+               'score_sleep_onset_delay_avg'      => "",
+               'score_sleep_duration_avg'         => "",
+               'score_sleep_anxiety_avg'          => "",
+               'score_night_wakings_avg'          => "",
+               'score_parasomnias_avg'            => "",
+               'score_sleep_disordered_breathing_avg' => "",
+               'score_daytime_sleepiness_avg'     => "",
               );
+
+	$group[] = $this->form->createElement('static', null, "Score");
+        $group[] = $this->form->createElement('static', null, "Average");
+
+        $this->form->addGroup($group, 'score_header_group', "<strong>Subsccale Items</strong>", $this->_GUIDelimiter, false);
+	unset($group);
 
         while ($i = current($score_columns)) {
             $f       = key($score_columns);
-            $group[] = $this->form->createElement('static', "$f", null, null);
+	    $group[] = $this->form->createElement('static', "$f", null, null);
+	    $group[] = $this->form->createElement('static', $f . "_avg", null, null);
             $this->form->addGroup($group, "{$f}_score_group", "$i:", $this->_GUIDelimiter, false);
             unset($group);
             next($score_columns);
@@ -898,7 +913,26 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
         }
         if(!$atleastOneScore) $score['score_total'] = 'NA';
 
-        $result = $db->update($this->table, $score, array("CommentID" => $this->getCommentID()));
+	//Calculate items average scores
+        $score_columns_avg
+            = array(
+               'score_bedtime_resistance'         => 6,
+               'score_sleep_onset_delay'          => 1,
+               'score_sleep_duration'             => 3,
+               'score_sleep_anxiety'              => 4,
+               'score_night_wakings'              => 3,
+               'score_parasomnias'                => 7,
+               'score_sleep_disordered_breathing' => 3,
+               'score_daytime_sleepiness'         => 8,
+              );
+
+        foreach($score_columns_avg as $key => $values){
+            if(is_numeric($score[$key])){
+                $score[$key."_avg"] = round($score[$key]/$values, 2);
+            }
+        }
+	
+	$result = $db->update($this->table, $score, array("CommentID" => $this->getCommentID()));
     }
 
     function validate_page1($values)
