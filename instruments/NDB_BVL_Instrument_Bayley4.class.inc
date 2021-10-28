@@ -401,7 +401,7 @@ class NDB_BVL_Instrument_Bayley4 extends NDB_BVL_Instrument
         $id = preg_replace('/\W+$/', '', $id);
 
         if (strpos($id, $args['candID']) !== false || strpos($id, $args['PSCID']) !== false ) {
-            $errors[]="Incorrect Filename with File ID";
+            $errors[]="Incorrect candidate ID or PSCID found in file.";
             return $errors;
         }
 
