@@ -48,5 +48,6 @@ CREATE TABLE `CCTQ_survey` (
     `q26_when_child_wakes_in_the_morning_how_long_to_be_fully_awake` enum('0_minutes_immediately','1_to_4_minutes','5_to_10_minutes','11_to_20_minutes','more_than_21_minutes') default NULL,
     `q27_my_child_is` enum('definitely_a_morning_type','rather_more_a_morning_type_than_an_evening_type','neither_a_morning_type_nor_an_evening_type','rather_more_an_evening_type_than_a_morning_type','definitely_an_evening_type') default NULL,
     `comments` varchar(255) default NULL,
+    `did_your_child_complete_the_meqc` varchar(255) default NULL,
     PRIMARY KEY  (`CommentID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
