@@ -23,7 +23,6 @@
 class NDB_BVL_Instrument_QRS_Proband extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
-    var $ValidityEnabled  = false;
     var $ValidityRequired = false;
     /**
      * Sets up basic data, such as the LorisForm object, and so on.
@@ -54,7 +53,7 @@ class NDB_BVL_Instrument_QRS_Proband extends NDB_BVL_Instrument
 
         //The array of selects with multiple answers allowed
         //Any LorisForm multiple selects must be listed here
-        $this->_selectMultipleElements = array();
+        $this->selectMultipleElements = array();
 
         // setup the form
         $this->_setupForm();

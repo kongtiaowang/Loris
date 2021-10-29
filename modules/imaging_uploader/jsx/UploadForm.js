@@ -61,10 +61,9 @@ class UploadForm extends Component {
         let ids = patientName.split('_');
         formData.candID = ids[1];
         formData.pSCID = ids[0];
-        // visitLabel can contain underscores
-        // join the remaining elements of patientName and use as visitLabel
-        ids.splice(0, 2);
-        formData.visitLabel = ids.join('_');
+        // Note that the vlabel can be followed by an optional "_whatever"
+        // which we have to ignore
+        formData.visitLabel = ids[2];
       }
     }
 
@@ -76,10 +75,9 @@ class UploadForm extends Component {
         let ids = patientName.split('_');
         formData.candID = ids[1];
         formData.pSCID = ids[0];
-        // visitLabel can contain underscores
-        // join the remaining elements of patientName and use as visitLabel
-        ids.splice(0, 2);
-        formData.visitLabel = ids.join('_');
+        // Note that the vlabel can be followed by an optional "_whatever"
+        // which we have to ignore
+        formData.visitLabel = ids[2];
       }
     }
 

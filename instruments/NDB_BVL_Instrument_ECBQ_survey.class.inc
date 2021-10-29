@@ -23,6 +23,9 @@
 class NDB_BVL_Instrument_ECBQ_survey extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
+
+    var $ValidityRequired = false;
+
     /**
      * Sample SQL statement for test_names table and instrument subtests table
      *
@@ -66,7 +69,7 @@ class NDB_BVL_Instrument_ECBQ_survey extends NDB_BVL_Instrument
 
         //The array of selects with multiple answers allowed
         //Any LorisForm multiple selects must be listed here
-        $this->_selectMultipleElements = array();
+        $this->selectMultipleElements = array();
 
         // required fields for data entry completion status
         $this->_requiredElements = array();

@@ -28,6 +28,8 @@ class NDB_BVL_Instrument_UCD_Charge_GI_History extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
 
+    var $ValidityRequired = false;
+
     /**
      * sets up basic data, such as the LorisForm object, and so on.
      *
@@ -56,7 +58,7 @@ class NDB_BVL_Instrument_UCD_Charge_GI_History extends NDB_BVL_Instrument
 
         //The array of selects with multiple answers allowed
         //Any LorisForm multiple selects must be listed here
-        $this->_selectMultipleElements = array();
+        $this->selectMultipleElements = array();
 
         // required fields for data entry completion status
         $this->_requiredElements = array('CommentID');

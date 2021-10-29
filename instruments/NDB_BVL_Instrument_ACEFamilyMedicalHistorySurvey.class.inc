@@ -6,7 +6,6 @@ class NDB_BVL_Instrument_ACEFamilyMedicalHistorySurvey extends NDB_BVL_Instrumen
     use LegacyInstrumentTrait;
     use instrument_validator;
 
-    var $ValidityEnabled = false;
     var $ValidityRequired = false;
     var $indent = "&nbsp;&nbsp;&nbsp;&nbsp;";
 
@@ -74,10 +73,32 @@ class NDB_BVL_Instrument_ACEFamilyMedicalHistorySurvey extends NDB_BVL_Instrumen
      *
      */
 
-
-    function displayHeaders($header_count)
+    function _main()
     {
-        $group[] =& $this->form->createElement(
+
+        $this->addHeader("ACE Family Medical History - Survey Version");
+        $this->form->addElement('static', 'lorisSubHeader', "<strong>Instructions:</strong><BR>1. To be completed by the study subject’s primary caregiver.
+<br>2. Do not include the study subject in responses about biological siblings");
+        $this->form->addElement('static', null, "<i><h3>*Please fill this form out with regard to your child who has enrolled in our study, NOT their older sibling with autism</i></h3>");
+        $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
+        $table_heading = array('mother' => 'Biological Mother', 'father' => 'Biological Father', 'sibling1' => 'Proband', 'sibling2' => 'Sibling 1',
+            'sibling3' => 'Sibling 2', 'sibling4' => 'Sibling 3', 'sibling5' => 'Sibling 4');
+        $questions = array('relation' => 'Specify Relation', 'dob' => 'Date of birth', 'currentage' => "Current age (Parent's age can be entered in years)", 'gender' => 'Sex: Male(M) or Female(F)',
+            'last_grade_completed' => 'Last Grade Completed', 'asd' => '1. Autism Spectrum Disorder', 'autistic_disorder' => '2. Autistic Disorder',
+            'asperger_syndrome' => '3. Asperger Syndrome', 'rett_syndrome' => '4. Rett Syndrome', 'pdd_nos' => '5. PDD-NOS', 'age_first_diagnosis' => 'If “Yes” to any of #1-5, age at first diagnosis (years)', 'history_speechdelay' => '6. History Speech Delay',
+            'history_development_delay' => '7. History Development Delay', 'history_learndisability' => '8. History Learning Disability',
+            'seizure_epilepsy' => '9. Seizure disorder/Epilepsy', 'cerebral_palsy' => '10. Cerebral Palsy', 'down_syndrome' => '11. Down Syndrome',
+            'mental_retardation' => '12. Intellectual Disability', 'tuberoussclerosis' => '13. Tuberous Sclerosis (Alt. Tuberosclerosis)', 'fragilex' => '14. FragileX',
+            'neurofibomarosis' => '15. Neurofibromatosis', 'congenitalblindness' => '16. Congenital blindness', 'deafness' => '17. Hearing Impairment',
+            'hearingcorrect_aid' => $this->indent . 'a. Hearing corrected', 'bipolar' => '18. Bipolar', 'depression' => '19. Depression',
+            'anxiety' => '20. Anxiety', 'ocd' => '21. Obsessive Compulsive', 'schizophernai' => '22. Schizophrenia', 'selfinjuring' => '23. Self injuring',
+            'adhd' => '24. ADHD', 'eating_disorder' => '25. Eating disorder', 'disrupted_sleeppatterns' => '26. Disrupted sleep patterns',
+            'tournette' => '27. Tourette Syndrome');
+        $options = array('' => '', 'yes' => 'Yes', 'no' => 'No');
+        $relation = array("" => null, 'full_sibling' => 'Full', 'maternal_half' => 'Maternal Half', 'paternal_half' => 'Paternal Half');
+        $gender = array('' => null, 'male' => 'Male', 'female' => 'Female');
+
+	$group[] =& $this->form->createElement(
             "static",
             null,
             null,
@@ -119,50 +140,20 @@ class NDB_BVL_Instrument_ACEFamilyMedicalHistorySurvey extends NDB_BVL_Instrumen
             "Sibling 4");
         $this->form->addGroup(
             $group,
-            "headers_$header_count",
+            "headers",
             null,
             $this->_GUIDelimiter,
             false
         );
         unset($group);
-    }
-
-    function _main()
-    {
-
-        $this->addHeader("ACE Family Medical History - Survey Version");
-        $this->form->addElement('static', 'lorisSubHeader', "<strong>Instructions:</strong><BR>1. To be completed by the study subject’s primary caregiver.
-<br>2. Do not include the study subject in responses about biological siblings");
-        $this->form->addElement('static', null, "<i><h3>*Please fill this form out with regard to your child who has enrolled in our study, NOT their older sibling with autism</i></h3>");
-        $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
-        $table_heading = array('mother' => 'Biological Mother', 'father' => 'Biological Father', 'sibling1' => 'Proband', 'sibling2' => 'Sibling 1',
-            'sibling3' => 'Sibling 2', 'sibling4' => 'Sibling 3', 'sibling5' => 'Sibling 4');
-        $questions = array('relation' => 'Specify Relation', 'dob' => 'Date of birth', 'currentage' => "Current age (Parent's age can be entered in years)", 'gender' => 'Sex: Male(M) or Female(F)',
-            'last_grade_completed' => 'Last Grade Completed', 'asd' => '1. Autism Spectrum Disorder', 'autistic_disorder' => '2. Autistic Disorder',
-            'asperger_syndrome' => '3. Asperger Syndrome', 'rett_syndrome' => '4. Rett Syndrome', 'pdd_nos' => '5. PDD-NOS', 'age_first_diagnosis' => 'If “Yes” to any of #1-5, age at first diagnosis (years)', 'history_speechdelay' => '6. History Speech Delay',
-            'history_development_delay' => '7. History Development Delay', 'history_learndisability' => '8. History Learning Disability',
-            'seizure_epilepsy' => '9. Seizure disorder/Epilepsy', 'cerebral_palsy' => '10. Cerebral Palsy', 'down_syndrome' => '11. Down Syndrome',
-            'mental_retardation' => '12. Intellectual Disability', 'tuberoussclerosis' => '13. Tuberous Sclerosis (Alt. Tuberosclerosis)', 'fragilex' => '14. FragileX',
-            'neurofibomarosis' => '15. Neurofibromatosis', 'congenitalblindness' => '16. Congenital blindness', 'deafness' => '17. Hearing Impairment',
-            'hearingcorrect_aid' => $this->indent . 'a. Hearing corrected', 'bipolar' => '18. Bipolar', 'depression' => '19. Depression',
-            'anxiety' => '20. Anxiety', 'ocd' => '21. Obsessive Compulsive', 'schizophernai' => '22. Schizophrenia', 'selfinjuring' => '23. Self injuring',
-            'adhd' => '24. ADHD', 'eating_disorder' => '25. Eating disorder', 'disrupted_sleeppatterns' => '26. Disrupted sleep patterns',
-            'tournette' => '27. Tourette Syndrome');
-        $options = array('' => '', 'yes' => 'Yes', 'no' => 'No');
-        $relation = array("" => null, 'full_sibling' => 'Full', 'maternal_half' => 'Maternal Half', 'paternal_half' => 'Paternal Half');
-        $gender = array('' => null, 'male' => 'Male', 'female' => 'Female');
-        // $this->displayHeaders(1);
-        $c = 0;
+        
         foreach ($questions as $key => $question) {
-            $c++;
-
-            $this->displayHeaders($c);
 
 
-            if ($key == "relation") {
+	    if ($key == "relation") {
 
 
-                $group[] =& $this->form->createElement("static", null, null, '<b>' . $question . '</b>');
+                $group[] =& $this->form->createElement("static", null, null,$question);
                 $group[] =& $this->form->createElement("static", null, null, null);
                 $group[] =& $this->form->createElement("static", null, null, null);
                 $group[] =& $this->createSelect($key . "_sibling1", $question . "_sibling1", $relation);
@@ -172,7 +163,7 @@ class NDB_BVL_Instrument_ACEFamilyMedicalHistorySurvey extends NDB_BVL_Instrumen
                 $group[] =& $this->createSelect($key . "_sibling5", $question . "_sibling5", $relation);
 
             } elseif ($key == 'gender') {
-                $group[] =& $this->form->createElement("static", null, null, '<b>' . $question . '</b>');
+                $group[] =& $this->form->createElement("static", null, null,  $question);
                 $group[] =& $this->createSelect($key . "_mother", $question . "_mother", $gender);
                 $group[] =& $this->createSelect($key . "_father", $question . "_father", $gender);
                 $group[] =& $this->createSelect($key . "_sibling1", $question . "_sibling1", $gender);
@@ -182,7 +173,7 @@ class NDB_BVL_Instrument_ACEFamilyMedicalHistorySurvey extends NDB_BVL_Instrumen
                 $group[] =& $this->createSelect($key . "_sibling5", $question . "_sibling5", $gender);
 
             } elseif ($key == 'currentage') {
-                $group[] =& $this->form->createElement("static", null, null, '<b>' . $question . '</b>');
+                $group[] =& $this->form->createElement("static", null, null, $question);
                 $group[] =& $this->form->createElement("text", $key . "_mother", null, null);
                 $group[] =& $this->form->createElement("text", $key . "_father", null, null);
                 $group[] =& $this->form->createElement("text", $key . "_sibling1", null, null);
@@ -191,7 +182,7 @@ class NDB_BVL_Instrument_ACEFamilyMedicalHistorySurvey extends NDB_BVL_Instrumen
                 $group[] =& $this->form->createElement("text", $key . "_sibling4", null, null);
                 $group[] =& $this->form->createElement("text", $key . "_sibling5", null, null);
             } elseif ($key == 'dob') {
-                $group[] =& $this->form->createElement("static", null, null, '<b>' . $question . '</b>');
+                $group[] =& $this->form->createElement("static", null, null, $question);
                 $group[] =& $this->form->createElement("date", $key . "_mother", null, null);
                 $group[] =& $this->form->createElement("date", $key . "_father", null, null);
                 $group[] =& $this->form->createElement("date", $key . "_sibling1", null, null);
@@ -200,7 +191,7 @@ class NDB_BVL_Instrument_ACEFamilyMedicalHistorySurvey extends NDB_BVL_Instrumen
                 $group[] =& $this->form->createElement("date", $key . "_sibling4", null, null);
                 $group[] =& $this->form->createElement("date", $key . "_sibling5", null, null);
             } else if ($key == 'last_grade_completed') {
-                $group[] =& $this->form->createElement("static", null, null, '<b>' . $question . '</b>');
+                $group[] =& $this->form->createElement("static", null, null, $question);
                 $group[] =& $this->form->createElement("text", $key . "_mother", null, null);
                 $group[] =& $this->form->createElement("text", $key . "_father", null, null);
                 $group[] =& $this->form->createElement("static", null, null, null);
@@ -209,7 +200,7 @@ class NDB_BVL_Instrument_ACEFamilyMedicalHistorySurvey extends NDB_BVL_Instrumen
                 $group[] =& $this->form->createElement("static", null, null, null);
                 $group[] =& $this->form->createElement("static", null, null, null);
             } else if ($key == 'age_first_diagnosis') {
-                $group[] =& $this->form->createElement("static", null, null, '<b>' . $question . '</b>');
+                $group[] =& $this->form->createElement("static", null, null, $question);
                 $group[] =& $this->form->createElement("text", $key . "_mother", null, null);
                 $group[] =& $this->form->createElement("text", $key . "_father", null, null);
                 $group[] =& $this->form->createElement("text", $key . "_sibling1", null, null);
@@ -218,7 +209,7 @@ class NDB_BVL_Instrument_ACEFamilyMedicalHistorySurvey extends NDB_BVL_Instrumen
                 $group[] =& $this->form->createElement("text", $key . "_sibling4", null, null);
                 $group[] =& $this->form->createElement("text", $key . "_sibling5", null, null);
             } else {
-                $group[] =& $this->form->createElement("static", null, null, '<b>' . $question . '</b>');
+                $group[] =& $this->form->createElement("static", null, null, $question);
                 $group[] =& $this->createSelect($key . "_mother", $question . "_mother", $options);
                 $group[] =& $this->createSelect($key . "_father", $question . "_father", $options);
                 $group[] =& $this->createSelect($key . "_sibling1", $question . "_sibling1", $options);
@@ -239,15 +230,15 @@ class NDB_BVL_Instrument_ACEFamilyMedicalHistorySurvey extends NDB_BVL_Instrumen
 
             unset($group);
 
-        }
-        $this->form->addFormRule(array(&$this, 'validate_main'));
+	}
+       $this->form->addFormRule(array(&$this, 'validate_main'));
 
     }
+
 
     function validate_main($values) {
         $errors = array();
 
-        $errors = array();
         if($values['Date_taken']=='')
         {
             $errors['Date_taken'] = "Required";
@@ -269,40 +260,16 @@ class NDB_BVL_Instrument_ACEFamilyMedicalHistorySurvey extends NDB_BVL_Instrumen
             'sibling3' => 'Sibling 2', 'sibling4' => 'Sibling 3', 'sibling5' => 'Sibling 4');
         $table_heading_main_4 = array('mother' => 'Biological Mother', 'father' => 'Biological Father');
 
-          foreach ($questions_main as $key => $question) {
-              if($key=='relation')
-              {
-                  foreach ($table_heading_main_1 as $h => $g)
-                  {
-                      if($values[$key."_".$h]=="")
-                      {
-                          $errors[$key."_".$h] = "Information up to Proband is Required";
-                      }
-                  }
-              }
-              else if($key=='last_grade_completed')
-              {
-                  foreach ($table_heading_main_4 as $h => $g)
-                  {
-                      if($values[$key."_".$h]=="")
-                      {
-                          $errors[$key."_".$h] = "Required";
-                      }
-                  }
-              }
-
-              else{
-                  foreach ($table_heading_main_2 as $h => $g)
-                  {
-                      if($values[$key."_".$h]=="")
-                      {
-                          $errors[$key."_".$h] = "Information up to Proband is Required";
-                      }
-                  }
-
-              }
-          }
-
+        foreach($questions_main as $q){
+                foreach($table_heading_main_3 as $t){
+                $name = $q + '_' + $t;
+                $this->XINRegisterRule(
+                $name,
+                array("$name{@}=={@}NEVER_REQUIRED"),
+                'Not required'
+                );
+        }
+        }
 
         $questions = array('asd', 'autistic_disorder', 'asperger_syndrome', 'rett_syndrome', 'pdd_nos');
           foreach ($table_heading_main_3 as $h =>$g) {

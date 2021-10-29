@@ -30,7 +30,7 @@ class NDB_BVL_Instrument_med_records_recruit extends NDB_BVL_Instrument_med_reco
 		// set the object properties
 		$this->testName = "med_records_recruit"; // test_names.Test_name
 		$this->table = 'med_records_recruit'; // name of database table corresponding to instrument
-                $this->_selectMultipleElements = array('developmental_concerns_specify');
+                $this->selectMultipleElements = array('developmental_concerns_specify');
 	
 		$this->_doubleDataEntryDiffIgnoreColumns = array('CommentID', 'UserID', 'Testdate',  'Window_Difference', 'Candidate_Age','Data_entry_completion_status',
 								 'sig_notes_during_pregnancy_or_delivery_specify',
@@ -122,14 +122,14 @@ class NDB_BVL_Instrument_med_records_recruit extends NDB_BVL_Instrument_med_reco
 		$this->_addMetadataFields ();
         $this->form->addElement('textarea', 'comments', 'General comments:');
         $this->XINRegisterRule('comments', array("comments{@}=={@}NEVER_REQUIRED"));
-        $this->addDateElement('Lastupdated', 'Date last updated:', $this->dateOptions);
+        $this->addDateElement('Lastupdated', 'Date last updated:');
         $this->form->addFormRule(array(&$this, 'Med_Rules'));
 
 
 	}
 	
 	function _page1() {
-                $this->addDateElement('Lastupdated_exclusionary', 'Date this form was last updated:', $this->dateOptions);
+                $this->addDateElement('Lastupdated_exclusionary', 'Date this form was last updated:');
                 $this->form->addElement ( "static", null, "<BR>" );
 
 		$this->form->addElement ( "select", "significant_notes_during_pregnancy_or_delivery", "Anything significant noted during pregnancy or delivery?", $this->yesNo );
@@ -218,7 +218,7 @@ class NDB_BVL_Instrument_med_records_recruit extends NDB_BVL_Instrument_med_reco
 
                  for ($i=2;$i <=5;$i++) {
                    $this->addSelect( "developmental_concerns_specify".$i, $this->indent . "$i. If there were developmental concerns please specify $mapping[$i] concern:", $this->developmental_concerns,"multiple size='5'" );
-                   $this->_selectMultipleElements[]= "developmental_concerns_specify".$i;
+                   $this->selectMultipleElements[]= "developmental_concerns_specify".$i;
                    $this->XINRegisterRule("developmental_concerns_specify$i", array("developmental_concerns_specify$i{@}=={@}NEVER_REQUIRED"));
                    $this->addTextElement ( "developmental_concerns_other_specify".$i, $this->indent .$this->indent. "If other is selected, specify:",array("developmental_concerns_specify$i{@}=={@}other"));
                    $this->addNumericElement ( "developmental_concerns_age_months".$i, $this->indent .$this->indent. "If there were developmental concerns, please specify the age <BR>".$this->indent. $this->indent."of the child in months when these were noted:");
@@ -240,8 +240,7 @@ class NDB_BVL_Instrument_med_records_recruit extends NDB_BVL_Instrument_med_reco
         $this->form->addElement('header', null, 'Audiology');
 
         $this->form->addElement('header', 'instrument_title', "Audiology Evaluation Results");
-        $this->addDateElement('Lastupdated_audiology', 'Date this form was last updated:', $this->dateOptions);
-
+        $this->addDateElement('Lastupdated_audiology', 'Date this form was last updated:');
         $this->form->addElement ( "static", null, "<BR>" );
         $this->form->addElement("select", "not_completed", "For this participant an audiology evaluation was", array(null=>"", "complete"=>"Completed","not_complete"=>"Not Completed", "other"=>"Not Answered"));
 

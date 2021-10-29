@@ -26,6 +26,8 @@ class NDB_BVL_Instrument_BRIEF2_Parent extends NDB_BVL_Instrument
 
     use instrument_validator;
 
+    var $ValidityRequired = false;
+
     var $scoreLabels = array(
         'inhibit_raw_score',
         'shift_raw_score',
@@ -73,7 +75,7 @@ class NDB_BVL_Instrument_BRIEF2_Parent extends NDB_BVL_Instrument
 
         //The array of selects with multiple answers allowed
         //Any HTML_Quickform multiple selects must be listed here
-        $this->_selectMultipleElements = array();
+        $this->selectMultipleElements = array();
 
         // required fields for data entry completion status
         $this->_requiredElements = array(

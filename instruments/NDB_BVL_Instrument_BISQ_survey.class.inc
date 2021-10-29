@@ -24,6 +24,8 @@ class NDB_BVL_Instrument_BISQ_survey extends NDB_BVL_Instrument
 {
 	use LegacyInstrumentTrait;
 
+       var $ValidityRequired = false;
+
        var $sleep_opts = array(
             "while_feeding" => "While feeding ",
             "being_rocked" => "Being rocked",
@@ -57,7 +59,7 @@ class NDB_BVL_Instrument_BISQ_survey extends NDB_BVL_Instrument
         $this->dateTimeFields = array("Date_taken");
         //The array of selects with multiple answers allowed
         //Any LorisForm multiple selects must be listed here
-     // $this->_selectMultipleElements = array("sleep_opts");
+        $this->selectMultipleElements = array("sleep_opts");
         // required fields for data entry completion status
         $this->_requiredElements = array('CommentID');
         // setup the form

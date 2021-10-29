@@ -61,7 +61,7 @@ class NDB_BVL_Instrument_EARLI_interview_revised extends NDB_BVL_Instrument_EARL
 				        
 		$this->localDefaults = array();
 
-//		$this->_selectMultipleElements = array();
+//		$this->selectMultipleElements = array();
 
 
 		//column headers

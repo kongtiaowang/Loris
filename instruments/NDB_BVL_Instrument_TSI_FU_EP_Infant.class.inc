@@ -98,7 +98,7 @@ class NDB_BVL_Instrument_TSI_FU_EP_Infant extends NDB_BVL_Instrument
 
         //The array of selects with multiple answers allowed
         //Any LorisForm multiple selects must be listed here
-        $this->_selectMultipleElements = array("inf_medhist_q6_metal_options");
+        $this->selectMultipleElements = array("inf_medhist_q6_metal_options");
 
         // required fields for data entry completion status
         $this->_requiredElements = array(

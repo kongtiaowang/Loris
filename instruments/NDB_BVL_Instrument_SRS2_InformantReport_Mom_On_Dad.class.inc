@@ -28,6 +28,8 @@ class NDB_BVL_Instrument_SRS2_InformantReport_Mom_On_Dad extends NDB_BVL_Instrum
 {
     use LegacyInstrumentTrait;
 
+    var $ValidityRequired = false;
+
     //Commonly used level of indentation;
     var $indent = "&nbsp;&nbsp;&nbsp;&nbsp;";
 
@@ -150,7 +152,7 @@ class NDB_BVL_Instrument_SRS2_InformantReport_Mom_On_Dad extends NDB_BVL_Instrum
         $this->addSelect('informant_gender', "Your sex", $this->gender);
 
         //Add select for Relationship to rated individual
-        $this->addSelect('informant', "Relationship to rated individual", $this->informant);
+        $this->addSelect('informant', "Your relationship to the child’s biological father", $this->informant);
         $group[] = $this->createText('informant_other', $this->indent."If Other please specify");
         $this->addGroup($group, "informant_other_group", $this->indent."If Other please specify", null, false);
 

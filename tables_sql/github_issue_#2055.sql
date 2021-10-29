@@ -1,0 +1,16 @@
+DELETE FROM survey_test_battery WHERE Test_name='caars_SelfReport_dad' AND SubprojectID=4;
+DELETE FROM survey_test_battery WHERE Test_name='caars_SelfReport_dad' AND SubprojectID=5;
+DELETE FROM survey_test_battery WHERE Test_name='SCARED_Sibling' AND SubprojectID=4;
+DELETE FROM survey_test_battery WHERE Test_name='SCARED_Sibling' AND SubprojectID=5;
+DELETE FROM survey_test_battery WHERE Test_name='SCARED_Subject' AND SubprojectID=4;
+DELETE FROM survey_test_battery WHERE Test_name='SCARED_Subject' AND SubprojectID=5;
+DELETE FROM survey_test_battery WHERE Test_name='SCARED_Parent_Subject' AND SubprojectID=4;
+DELETE FROM survey_test_battery WHERE Test_name='SCARED_Parent_Subject' AND SubprojectID=5;
+DELETE FROM survey_test_battery WHERE Test_name='SCAARED_Mom' AND SubprojectID=4;
+DELETE FROM survey_test_battery WHERE Test_name='SCAARED_Mom' AND SubprojectID=5;
+DELETE FROM survey_test_battery WHERE Test_name='CBCL_1_To_5_survey_sibling' AND SubprojectID=4;
+DELETE FROM survey_test_battery WHERE Test_name='CBCL_1_To_5_survey_sibling' AND SubprojectID=5;
+DELETE FROM survey_test_battery WHERE Test_name='SRS2_Preschool_Sibling_survey' AND SubprojectID=4;
+DELETE FROM survey_test_battery WHERE Test_name='SRS2_Preschool_Sibling_survey' AND SubprojectID=5;
+DELETE FROM survey_test_battery WHERE Test_name='SRS2_SchoolAge_Sibling' AND SubprojectID=4;
+DELETE FROM survey_test_battery WHERE Test_name='SRS2_SchoolAge_Sibling' AND SubprojectID=5;

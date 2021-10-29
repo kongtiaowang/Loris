@@ -8,7 +8,6 @@ class NDB_BVL_Instrument_macarthur_words_gestures_survey extends NDB_BVL_Instrum
     use LegacyInstrumentTrait;
 
 
-    var $ValidityEnabled = false;
     var $ValidityRequired = false;
 
     var $scoreLabels = array("phrases_understood_number",
@@ -75,7 +74,7 @@ class NDB_BVL_Instrument_macarthur_words_gestures_survey extends NDB_BVL_Instrum
 
         //The array of selects with multiple answers allowed
         //Any LorisForm multiple selects must be listed here
-        $this->_selectMultipleElements = array();
+        $this->selectMultipleElements = array();
 
         // setup the form
         $this->_setupForm();
@@ -426,6 +425,27 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         }
         // end percentiles calculation
 
+	//New rule : if a response is either 'not answered' or 'not known' nor 'empty' the score should not be displayed
+        //Total Gestures is 63 items in total
+        $questions_total = $scores["total_gestures_number"] + array_sum($NoActions);
+        if($questions_total < 63 ){
+            $scores["total_gestures_number"] = "Cannot be scored due to missing data";
+            $scores["total_gestures_percentile"] = "Cannot be scored due to missing data";
+        }
+
+        //Early Gestures is 18 items in total
+        $questions_early = $scores["early_gestures_number"] + $NoActions['B'];
+        if($questions_early < 18){
+            $scores["early_gestures_number"] = "Cannot be scored due to missing data";
+            $scores["early_gestures_percentile"] = "Cannot be scored due to missing data";
+        }
+
+        //Later Gestures is 45 in total
+        $questions_later = $scores["later_gestures_number"] + $NoActions['C'] + $NoActions['D'] + $NoActions['E'];
+        if($questions_later < 45 ){
+            $scores["later_gestures_number"] =  "Cannot be scored due to missing data";
+            $scores["later_gestures_percentile"] = "Cannot be scored due to missing data";
+        }
         // save scores
         $result = $db->update($this->table, $scores, array("CommentID"=>$this->getCommentID()));
 

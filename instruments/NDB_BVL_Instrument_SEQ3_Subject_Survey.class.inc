@@ -24,6 +24,8 @@ class NDB_BVL_Instrument_SEQ3_Subject_Survey extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
 
+    var $ValidityRequired = false;
+
     /**
      * Sample SQL statement for test_names table and instrument subtests table
      *
@@ -73,7 +75,7 @@ class NDB_BVL_Instrument_SEQ3_Subject_Survey extends NDB_BVL_Instrument
 
         //The array of selects with multiple answers allowed
         //Any HTML_Quickform multiple selects must be listed here
-        $this->_selectMultipleElements = array();
+        $this->selectMultipleElements = array();
 
         // setup the form
         $this->_setupForm();

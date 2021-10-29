@@ -184,7 +184,7 @@ class NDB_BVL_Instrument_TSI_IDDRC_FOH extends NDB_BVL_Instrument
 
         //The array of selects with multiple answers allowed
         //Any LorisForm multiple selects must be listed here
-        $this->_selectMultipleElements = array(
+        $this->selectMultipleElements = array(
                                           "q9a_exclusionary_conditions",
                                           "q15a_exclusionary_conditions",
                                           "q16_method_of_delivery",
@@ -241,8 +241,7 @@ class NDB_BVL_Instrument_TSI_IDDRC_FOH extends NDB_BVL_Instrument
     {
         // display test name
         $this->addHeader("TSI (Telephone Screening Interview ) - IDDRC + FOH (FXS + AS)");
-        $this->addCheckbox('not_finish0', 'Form not acquired to completion due to candidate determined as ineligible during screening interview.', array('value' => '1'));
-
+       
         $this->form->addElement('static', null, '<h4><i>*Identifying information should not be entered in the database</i></h4>');
 
         // automatically adds examiner & date of administration
@@ -263,8 +262,7 @@ class NDB_BVL_Instrument_TSI_IDDRC_FOH extends NDB_BVL_Instrument
         $this->addBasicDate('date_of_first_contact', 'Date of First Contact (1st time speak with the family)', $dateOptions);
         
 	$this->form->addElement('text', null, "City/State of Birth", ['disabled' => 'disabled']);
-        $this->XINRegisterRule("date_of_first_contact", array("not_finish0{@}!={@}1"), 'Required.');
-    
+	$this->XINRegisterRule("date_of_first_contact", array("date_of_first_contact{@}=={@}never_required"), 'Not Required.');   
 
     }
 
@@ -276,8 +274,7 @@ class NDB_BVL_Instrument_TSI_IDDRC_FOH extends NDB_BVL_Instrument
     function _page1()
     {
         $this->addHeader("TSI (Telephone Screening Interview ) - IDDRC + FOH (FXS + AS)");
-        $this->addCheckbox('not_finish1', 'Form not acquired to completion due to candidate determined as ineligible during screening interview.', array('value' => '1'));
-
+       
         $this->form->addElement('static', null, '<h4><i>*Identifying information should not be entered in the database</i></h4>');
 
         $this->form->addElement('static', null, '<h4><b>CONTACT INFORMATION</b></h4>');
@@ -379,11 +376,11 @@ class NDB_BVL_Instrument_TSI_IDDRC_FOH extends NDB_BVL_Instrument
         }
 	$this->XINRegisterRule("mother_dob_date", array("mother_dob_date{@}=={@}never_required"), 'Not Required.');
 
-	$this->addSelect("preferred_method_contact_mother", $this->indent . "Preferred method of contact", array("Phone","Email"));
+	$this->addSelect("preferred_method_contact_mother", $this->indent . "Preferred method of contact", array("","Phone","Email"));
         $this->XINRegisterRule("preferred_method_contact_mother", array("preferred_method_contact_mother{@}=={@}never_required"), 'Not Required.');
-        $this->addTextElement("best_call_number_mother", $this->indent . "Best number to call");
-        $this->XINRegisterRule("best_call_number_mother", array("best_call_number_mother{@}=={@}never_required"), 'Not Required.');
-        $this->addTextElement("best_time_call_mother", $this->indent . "Best time to call (AM/PM)");
+        $this->addSelect("best_call_number_mother", $this->indent . "Best number to call",array(null,'Cell','Work','Home'));
+	$this->XINRegisterRule("best_call_number_mother", array("best_call_number_mother{@}=={@}never_required"), 'Not Required.');
+	$this->addSelect("best_time_call_mother", $this->indent . "Best time to call", array(null,'AM','PM'));
         $this->XINRegisterRule("best_time_call_mother", array("best_time_call_mother{@}=={@}never_required"), 'Not Required.');
         $this->addSelect("okay_leave_message_mother", $this->indent . "Okay to leave message?", self::YES_NO_OPTIONS);
         $this->XINRegisterRule("okay_leave_message_mother", array("okay_leave_message_mother{@}=={@}never_required"), 'Not Required.');
@@ -513,57 +510,57 @@ class NDB_BVL_Instrument_TSI_IDDRC_FOH extends NDB_BVL_Instrument
         
         $this->form->addElement('static', null, null);
 
-	$this->XINRegisterRule("household_ses_father", array("not_finish1{@}!={@}1"), 'Required.');
-	$this->XINRegisterRule("household_ses_mother", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("subject_dob", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("subject_expected_due_date", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("subject_birth_weight_lbs", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("subject_birth_weight_oz", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("city_of_birth", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("subject_adopted", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("subject_multiple", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("current_weight_lbs", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("current_height_ft", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("current_height_in", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("current_age_mon", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("current_age_year", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("subject_gender", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("subject_premature", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("subject_how_many_weeks_gestation", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("v06_optimal_window_lower", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("v06_optimal_window_upper", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("v06_permitted_window_lower", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("v06_permitted_window_upper", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("v12_optimal_window_lower", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("v12_optimal_window_upper", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("v12_permitted_window_lower", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("v12_permitted_window_upper", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("v24_optimal_window_lower", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("v24_optimal_window_upper", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("v24_permitted_window_lower", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("v24_permitted_window_upper", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("mother_dob_date", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("mother_occupation", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("mother_education", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("father_dob_date", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("father_occupation", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("father_education", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("child_primary_address", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("child_primary_address2", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("are_bio_parents_living_in_same_home", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("are_parents_divorced_or_separated", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("relationship_to_family", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("additional_info_about_childs_home", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("subject_race", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("sibling_race", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("bio_mother_race", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("bio_father_race", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("subject_ethnicity", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("sibling_ethnicity", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("bio_mother_ethnicity", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("bio_father_ethnicity", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("is_english_primary_language_spoken_in_home", array("not_finish1{@}!={@}1"), 'Required.');
-        $this->form->addFormRule(array(&$this, 'validate_page1'));
+	$this->XINRegisterRule("household_ses_father", array("household_ses_father{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("household_ses_mother", array("household_ses_mother{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("subject_dob", array("subject_dob{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("subject_expected_due_date", array("subject_expected_due_date{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("subject_birth_weight_lbs", array("subject_birth_weight_lbs{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("subject_birth_weight_oz", array("subject_birth_weight_oz{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("city_of_birth", array("city_of_birth{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("subject_adopted", array("subject_adopted{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("subject_multiple", array("subject_multiple{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("current_weight_lbs", array("current_weight_lbs{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("current_height_ft", array("current_height_ft{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("current_height_in", array("current_height_in{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("current_age_mon", array("current_age_mon{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("current_age_year", array("current_age_year{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("subject_gender", array("subject_gender{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("subject_premature", array("subject_premature{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("subject_how_many_weeks_gestation", array("subject_how_many_weeks_gestation{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("v06_optimal_window_lower", array("v06_optimal_window_lower{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("v06_optimal_window_upper", array("v06_optimal_window_upper{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("v06_permitted_window_lower", array("v06_permitted_window_lower{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("v06_permitted_window_upper", array("v06_permitted_window_upper{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("v12_optimal_window_lower", array("v12_optimal_window_lower{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("v12_optimal_window_upper", array("v12_optimal_window_upper{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("v12_permitted_window_lower", array("v12_permitted_window_lower{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("v12_permitted_window_upper", array("v12_permitted_window_upper{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("v24_optimal_window_lower", array("v24_optimal_window_lower{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("v24_optimal_window_upper", array("v24_optimal_window_upper{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("v24_permitted_window_lower", array("v24_permitted_window_lower{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("v24_permitted_window_upper", array("v24_permitted_window_upper{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("mother_dob_date", array("mother_dob_date{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("mother_occupation", array("mother_occupation{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("mother_education", array("mother_education{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("father_dob_date", array("father_dob_date{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("father_occupation", array("father_occupation{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("father_education", array("father_education{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("child_primary_address", array("child_primary_address{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("child_primary_address2", array("child_primary_address2{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("are_bio_parents_living_in_same_home", array("are_bio_parents_living_in_same_home{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("are_parents_divorced_or_separated", array("are_parents_divorced_or_separated{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("relationship_to_family", array("relationship_to_family{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("additional_info_about_childs_home", array("additional_info_about_childs_home{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("subject_race", array("subject_race{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("sibling_race", array("sibling_race{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("bio_mother_race", array("bio_mother_race{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("bio_father_race", array("bio_father_race{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("subject_ethnicity", array("subject_ethnicity{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("sibling_ethnicity", array("sibling_ethnicity{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("bio_mother_ethnicity", array("bio_mother_ethnicity{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("bio_father_ethnicity", array("bio_father_ethnicity{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("is_english_primary_language_spoken_in_home", array("is_english_primary_language_spoken_in_home{@}=={@}never_required"), 'Not Required.');
+	$this->form->addFormRule(array(&$this, 'validate_page1'));
 
     }
 
@@ -575,8 +572,7 @@ class NDB_BVL_Instrument_TSI_IDDRC_FOH extends NDB_BVL_Instrument
     function _page2()
     {
         $this->addHeader("TSI (Telephone Screening Interview ) - IDDRC + FOH (FXS + AS)");
-        $this->addCheckbox('not_finish2', 'Form not acquired to completion due to candidate determined as ineligible during screening interview.', array('value' => '1'));
-
+        
         $this->form->addElement('static', null, '<h4><i>*Identifying information should not be entered in the database</i></h4>');
 
         $this->form->addElement('static', null, "<h4> ***For All Subjects*** </h4>");
@@ -916,20 +912,18 @@ class NDB_BVL_Instrument_TSI_IDDRC_FOH extends NDB_BVL_Instrument
 
         $this->form->addElement("textarea","how_did_you_find_out_about_the_study", "How did you find out about the study?", array('cols'=>25, 'rows'=>4));
 
-        $this->XINRegisterRule("genetic_etiology_cause", array("not_finish2{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("type_of_genetic_testing_done_chromosomal", array("not_finish2{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("when_testing_was_done_1", array("not_finish2{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("do_you_have_documentation_1", array("not_finish2{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("nature_of_referral", array("not_finish2{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("type_of_genetic_testing_done", array("not_finish2{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("number_of_cgg_repeats", array("not_finish2{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("when_testing_was_done_2", array("not_finish2{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("do_you_have_documentation_2", array("not_finish2{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("enrolled_in_other_studies_or_registries", array("not_finish2{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("how_did_you_find_out_about_the_study", array("not_finish2{@}!={@}1"), 'Required.');
-
-       // $this->form->addFormRule(array(&$this, 'validate_page2'));
-    }
+        $this->XINRegisterRule("genetic_etiology_cause", array("genetic_etiology_cause{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("type_of_genetic_testing_done_chromosomal", array("type_of_genetic_testing_done_chromosomal{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("when_testing_was_done_1", array("when_testing_was_done_1{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("do_you_have_documentation_1", array("do_you_have_documentation_1{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("nature_of_referral", array("nature_of_referral{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("type_of_genetic_testing_done", array("type_of_genetic_testing_done{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("number_of_cgg_repeats", array("number_of_cgg_repeats{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("when_testing_was_done_2", array("when_testing_was_done_2{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("do_you_have_documentation_2", array("do_you_have_documentation_2{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("enrolled_in_other_studies_or_registries", array("enrolled_in_other_studies_or_registries{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("how_did_you_find_out_about_the_study", array("how_did_you_find_out_about_the_study{@}=={@}never_required"), 'Not Required.');
+        }
 
     /**
      * Page 3
@@ -939,8 +933,7 @@ class NDB_BVL_Instrument_TSI_IDDRC_FOH extends NDB_BVL_Instrument
     function _page3()
     {
         $this->addHeader("TSI (Telephone Screening Interview ) - IDDRC + FOH (FXS + AS)");
-        $this->addCheckbox('not_finish3', 'Form not acquired to completion due to candidate determined as ineligible during screening interview.', array('value' => '1'));
-
+     
         $this->form->addElement('static', null, "<h4><b>Developmental Factors in SUBJECT </b>(i.e., possible exclusionary factors for IDDRC) (If yes to any, obtain further info)</h4>");
 
         $this->form->addElement('static', null, null);
@@ -1127,24 +1120,23 @@ class NDB_BVL_Instrument_TSI_IDDRC_FOH extends NDB_BVL_Instrument
         $this->form->addElement('static', null, null);
 
 
-        $this->XINRegisterRule("q1_has_subject_had_any_genetic_testing_done", array("not_finish3{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("q2_diagnosed_suspected_genetic_conditions", array("not_finish3{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("q3_seizures_or_other_neurological_disorder", array("not_finish3{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("q4_history_of_head_injury_in_subject", array("not_finish3{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("q5_significant_hearing_vision_problems_in_subject", array("not_finish3{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("q6_does_subject_currently_take_any_medications", array("not_finish3{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("q7_has_your_child_ever_had_an_iq_test", array("not_finish3{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("q8_any_specific_neurological_problems_in_subject", array("not_finish3{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("q9_congenital_heart_problems_or_abnormalities_in_subject", array("not_finish3{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("q10_any_problems_with_sleep_apnea_or_breathing", array("not_finish3{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("q11_any_gastrointestinal_condition_in_subject", array("not_finish3{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("q12_did_mother_have_gestational_diabetes_while_pregnant", array("not_finish3{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("q12b_have_diabetes", array("not_finish3{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("q13_are_you_breastfeeding_subject", array("not_finish3{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("q14_exposure_to_medication_alcohol_drugs", array("not_finish3{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("q15_complications_during_pregnancy_delivery", array("not_finish3{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("q16_method_of_delivery", array("not_finish3{@}!={@}1"), 'Required.');
-
+        $this->XINRegisterRule("q1_has_subject_had_any_genetic_testing_done", array("q1_has_subject_had_any_genetic_testing_done{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("q2_diagnosed_suspected_genetic_conditions", array("q2_diagnosed_suspected_genetic_conditions{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("q3_seizures_or_other_neurological_disorder", array("q3_seizures_or_other_neurological_disorder{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("q4_history_of_head_injury_in_subject", array("q4_history_of_head_injury_in_subject{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("q5_significant_hearing_vision_problems_in_subject", array("q5_significant_hearing_vision_problems_in_subject{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("q6_does_subject_currently_take_any_medications", array("q6_does_subject_currently_take_any_medications{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("q7_has_your_child_ever_had_an_iq_test", array("q7_has_your_child_ever_had_an_iq_test{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("q8_any_specific_neurological_problems_in_subject", array("q8_any_specific_neurological_problems_in_subject{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("q9_congenital_heart_problems_or_abnormalities_in_subject", array("q9_congenital_heart_problems_or_abnormalities_in_subject{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("q10_any_problems_with_sleep_apnea_or_breathing", array("q10_any_problems_with_sleep_apnea_or_breathing{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("q11_any_gastrointestinal_condition_in_subject", array("q11_any_gastrointestinal_condition_in_subject{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("q12_did_mother_have_gestational_diabetes_while_pregnant", array("q12_did_mother_have_gestational_diabetes_while_pregnant{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("q12b_have_diabetes", array("q12b_have_diabetes{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("q13_are_you_breastfeeding_subject", array("q13_are_you_breastfeeding_subject{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("q14_exposure_to_medication_alcohol_drugs", array("q14_exposure_to_medication_alcohol_drugs{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("q15_complications_during_pregnancy_delivery", array("q15_complications_during_pregnancy_delivery{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("q16_method_of_delivery", array("q16_method_of_delivery{@}=={@}never_required"), 'Not Required.');
         $this->form->addFormRule(array(&$this, 'validate_page3'));
     }
 
@@ -1156,9 +1148,7 @@ class NDB_BVL_Instrument_TSI_IDDRC_FOH extends NDB_BVL_Instrument
     function _page4()
     {
         $this->addHeader("TSI (Telephone Screening Interview ) - IDDRC + FOH (FXS + AS)");
-        $this->addCheckbox('not_finish4', 'Form not acquired to completion due to candidate determined as ineligible during screening interview.', array('value' => '1'));
-
-
+     
         $this->form->addElement('static', null, "<h4><b>Developmental Factors in SIBLING</b></h4>");
 
         $this->form->addElement('date', "re_confirm_sibling_subject_dob", "<h4>Re-confirm sibling subject DOB:</h4>");
@@ -1209,13 +1199,13 @@ class NDB_BVL_Instrument_TSI_IDDRC_FOH extends NDB_BVL_Instrument
 
         $this->form->addElement('static', null, null);
 
-        $this->XINRegisterRule("re_confirm_sibling_subject_dob", array("not_finish4{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("q1_has_sibling_had_any_genetic_testing_done", array("not_finish4{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("q2_diagnosed_suspected_genetic_conditions_syndromes", array("not_finish4{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("q4_significant_vision_problems_in_sibling", array("not_finish4{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("q5_does_sibling_currently_take_any_medications", array("not_finish4{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("q6_has_siblin_ever_had_an_iq_test", array("not_finish4{@}!={@}1"), 'Required.');
-        $this->form->addFormRule(array(&$this, 'validate_page4'));
+	$this->XINRegisterRule("re_confirm_sibling_subject_dob", array("re_confirm_sibling_subject_dob{@}=={@}never_required"), 'Not Required.');
+        $this->XINRegisterRule("q1_has_sibling_had_any_genetic_testing_done", array("q1_has_sibling_had_any_genetic_testing_done{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("q2_diagnosed_suspected_genetic_conditions_syndromes", array("q2_diagnosed_suspected_genetic_conditions_syndromes{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("q4_significant_vision_problems_in_sibling", array("q4_significant_vision_problems_in_sibling{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("q5_does_sibling_currently_take_any_medications", array("q5_does_sibling_currently_take_any_medications{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("q6_has_siblin_ever_had_an_iq_test", array("q6_has_siblin_ever_had_an_iq_test{@}=={@}never_required"), 'Not Required.');
+	$this->form->addFormRule(array(&$this, 'validate_page4'));
     }
 
 
@@ -1227,9 +1217,7 @@ class NDB_BVL_Instrument_TSI_IDDRC_FOH extends NDB_BVL_Instrument
     function _page5()
     {
         $this->addHeader("TSI (Telephone Screening Interview ) - IDDRC + FOH (FXS + AS)");
-        $this->addCheckbox('not_finish5', 'Form not acquired to completion due to candidate determined as ineligible during screening interview.', array('value' => '1'));
-
-
+     
         $this->form->addElement('static', null, "<h4><b>Medical History in SUBJECT</b></h4>");
 
         $this->form->addElement('static', null, null);
@@ -1375,26 +1363,26 @@ class NDB_BVL_Instrument_TSI_IDDRC_FOH extends NDB_BVL_Instrument
         $this->form->addElement('static', null, null);
 
 
-        $this->XINRegisterRule("sub_medhist_q1_had_serious_medical_or_surgical_problems", array("not_finish5{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("sub_medhist_q2_been_hospitalized", array("not_finish5{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("sub_medhist_q3_diagnosed_with_jaundice", array("not_finish5{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("sub_medhist_q4_had_surgery", array("not_finish5{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("sub_medhist_q5_does_subject_have_any_metal_plates", array("not_finish5{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("sub_medhist_q6_has_subject_taken_medications", array("not_finish5{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("sub_medhist_q7_has_subject_seen_doctor_for_something_other", array("not_finish5{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("sub_medhist_q8_had_an_mri_of_the_brain", array("not_finish5{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("sub_medhist_q9_had_anesthesia_or_other_forms_sedation", array("not_finish5{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("sub_medhist_q10_does_subject_nap_during_the_day", array("not_finish5{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("sub_medhist_q11_what_time_does_subject_go_sleep", array("not_finish5{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("sub_medhist_q12_who_is_your_childs_primary_physician", array("not_finish5{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("q12a_what_hospital_network_is_your_childs", array("not_finish5{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("q12b_what_city_is_your_childs", array("not_finish5{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("sub_medhist_q13_how_does_your_child_usually_respond", array("not_finish5{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("sub_medhist_q14_when_is_your_child_most_calm", array("not_finish5{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("sub_medhist_q15_what_does_he_do_when_anxious", array("not_finish5{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("sub_medhist_q16_how_does_he_make_his_her_needs_known", array("not_finish5{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("sub_medhist_q17_any_sensorimotor_mobility_challenges", array("not_finish5{@}!={@}1"), 'Required.');
-        $this->form->addFormRule(array(&$this, 'validate_page5'));
+        $this->XINRegisterRule("sub_medhist_q1_had_serious_medical_or_surgical_problems", array("sub_medhist_q1_had_serious_medical_or_surgical_problems{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("sub_medhist_q2_been_hospitalized", array("sub_medhist_q2_been_hospitalized{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("sub_medhist_q3_diagnosed_with_jaundice", array("sub_medhist_q3_diagnosed_with_jaundice{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("sub_medhist_q4_had_surgery", array("sub_medhist_q4_had_surgery{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("sub_medhist_q5_does_subject_have_any_metal_plates", array("sub_medhist_q5_does_subject_have_any_metal_plates{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("sub_medhist_q6_has_subject_taken_medications", array("sub_medhist_q6_has_subject_taken_medications{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("sub_medhist_q7_has_subject_seen_doctor_for_something_other", array("sub_medhist_q7_has_subject_seen_doctor_for_something_other{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("sub_medhist_q8_had_an_mri_of_the_brain", array("sub_medhist_q8_had_an_mri_of_the_brain{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("sub_medhist_q9_had_anesthesia_or_other_forms_sedation", array("sub_medhist_q9_had_anesthesia_or_other_forms_sedation{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("sub_medhist_q10_does_subject_nap_during_the_day", array("sub_medhist_q10_does_subject_nap_during_the_day{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("sub_medhist_q11_what_time_does_subject_go_sleep", array("sub_medhist_q11_what_time_does_subject_go_sleep{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("sub_medhist_q12_who_is_your_childs_primary_physician", array("sub_medhist_q12_who_is_your_childs_primary_physician{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("q12a_what_hospital_network_is_your_childs", array("q12a_what_hospital_network_is_your_childs{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("q12b_what_city_is_your_childs", array("q12b_what_city_is_your_childs{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("sub_medhist_q13_how_does_your_child_usually_respond", array("sub_medhist_q13_how_does_your_child_usually_respond{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("sub_medhist_q14_when_is_your_child_most_calm", array("sub_medhist_q14_when_is_your_child_most_calm{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("sub_medhist_q15_what_does_he_do_when_anxious", array("sub_medhist_q15_what_does_he_do_when_anxious{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("sub_medhist_q16_how_does_he_make_his_her_needs_known", array("sub_medhist_q16_how_does_he_make_his_her_needs_known{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("sub_medhist_q17_any_sensorimotor_mobility_challenges", array("sub_medhist_q17_any_sensorimotor_mobility_challenges{@}=={@}never_required"), 'Not Required.');
+	$this->form->addFormRule(array(&$this, 'validate_page5'));
     }
 
     /**
@@ -1405,9 +1393,7 @@ class NDB_BVL_Instrument_TSI_IDDRC_FOH extends NDB_BVL_Instrument
     function _page6()
     {
         $this->addHeader("TSI (Telephone Screening Interview ) - IDDRC + FOH (FXS + AS)");
-        $this->addCheckbox('not_finish6', 'Form not acquired to completion due to candidate determined as ineligible during screening interview.', array('value' => '1'));
-
-
+        
         $this->form->addElement('static', null, null);
 
         $scale_of_1_to_10 = array(
@@ -1454,15 +1440,15 @@ class NDB_BVL_Instrument_TSI_IDDRC_FOH extends NDB_BVL_Instrument
 
         $this->addBasicDate('date_received_exclusion_review_decision', "Date received exclusion review decision:");
 
-        $this->XINRegisterRule("date_received_exclusion_review_decision", array("not_finish6{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("likelihood_of_child_sleeping_through_a_scan_rating", array("not_finish6{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("q1_infant_meets_any_medical_neurological_exclusion_criteria", array("not_finish6{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("q2_subject_has_evidence_for_contraindication_to_MRI", array("not_finish6{@}!={@}1"), 'Required.');
-        $this->XINRegisterRule("q3_proceed_to_next_level_beyond_screening", array("not_finish6{@}!={@}1"), 'Required.');
-	$this->XINRegisterRule("if_reviewed_decision", array("not_finish6{@}!={@}1"), 'Required.');
-	$this->XINRegisterRule("research_staff_is_english_language_spoken", array("not_finish6{@}!={@}1"), 'Required.');
-	$this->XINRegisterRule("research_is_the_subject_adopted", array("not_finish6{@}!={@}1"), 'Required.');
-	$this->XINRegisterRule("research_staff_is_infant_a_multiple_twin", array("not_finish6{@}!={@}1"), 'Required.');
+        $this->XINRegisterRule("date_received_exclusion_review_decision", array("date_received_exclusion_review_decision{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("likelihood_of_child_sleeping_through_a_scan_rating", array("likelihood_of_child_sleeping_through_a_scan_rating{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("q1_infant_meets_any_medical_neurological_exclusion_criteria", array("q1_infant_meets_any_medical_neurological_exclusion_criteria{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("q2_subject_has_evidence_for_contraindication_to_MRI", array("q2_subject_has_evidence_for_contraindication_to_MRI{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("q3_proceed_to_next_level_beyond_screening", array("q3_proceed_to_next_level_beyond_screening{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("if_reviewed_decision", array("if_reviewed_decision{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("research_staff_is_english_language_spoken", array("research_staff_is_english_language_spoken{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("research_is_the_subject_adopted", array("research_is_the_subject_adopted{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("research_staff_is_infant_a_multiple_twin", array("research_staff_is_infant_a_multiple_twin{@}=={@}never_required"), 'Not Required.');
     }
 
     function q14_table($page_number, $section_name, $parent_question)
@@ -1548,18 +1534,7 @@ class NDB_BVL_Instrument_TSI_IDDRC_FOH extends NDB_BVL_Instrument
 
     function validate_page1($values)
     {
-        $errors = [];
-        
-    if ($values["not_finish0"]!="1"){
-        $this->validate_positive_numeric($values, "subject_birth_weight_lbs", $errors);
-        $this->validate_positive_numeric($values, "subject_birth_weight_oz", $errors);
-        $this->validate_positive_numeric($values, "subject_how_many_weeks_gestation", $errors);
-
-        $this->validate_positive_numeric($values, "current_weight_lbs", $errors);
-        $this->validate_positive_numeric($values, "current_height_in", $errors);
-        $this->validate_positive_numeric($values, "current_age_mon", $errors);
-        $this->validate_positive_numeric($values, "current_age_year", $errors);
-    }    
+        $errors = [];    
 
     if ($values["household_ses_mother"] == "" || $values["household_ses_mother"] == null ) {
             $this->validate_empty_subquestions($values, ["household_ses_mother_or_combined"], $errors);
@@ -1755,16 +1730,6 @@ class NDB_BVL_Instrument_TSI_IDDRC_FOH extends NDB_BVL_Instrument
                 $errors[$question] = "Specify a positive number";
             }
         }
-    }
-    function _save(array $values): void
-    {  
-       for($i=0;$i<=6;$i++){
-            $checkbox= "not_finish".$i;
-            if (!isset($values["$checkbox"])) {
-                $values["$checkbox"] = '0';
-            }
-       } 
-        parent::_save($values);
     }
 }
 ?>

@@ -19,6 +19,8 @@ class NDB_BVL_Instrument_IBIS_SA_SLEEP_Consent_Form extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
 
+    var $ValidityRequired = false;
+
     /**
      * Sets up basic data, such as the LorisForm object, and so on.
      *

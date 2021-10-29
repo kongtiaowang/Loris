@@ -6,7 +6,6 @@ class NDB_BVL_Instrument_Saliva_Collection_Tracking_Form extends NDB_BVL_Instrum
     use LegacyInstrumentTrait;
     use instrument_validator;
 
-    var $ValidityEnabled = false;
     var $ValidityRequired = false;
     
     const YES_NO_OPTIONS = array(

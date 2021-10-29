@@ -58,7 +58,7 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
 
         //The array of selects with multiple answers allowed
         //Any LorisForm multiple selects must be listed here
-        $this->_selectMultipleElements = array("mother_ethnicity", "father_ethnicity");
+        $this->selectMultipleElements = array("mother_ethnicity", "father_ethnicity");
 
         // required fields for data entry completion status
         $this->_requiredElements = array('Examiner', "q_1", "q_47");

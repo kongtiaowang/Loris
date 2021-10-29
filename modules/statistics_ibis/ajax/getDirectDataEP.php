@@ -67,7 +67,7 @@ function getDirectDataEP()
                 session.CenterID  IN (2, 3, 4, 5, 11) AND
                 session.Visit_label IN (:visit) AND
                 (flag.Administration IN ('All', 'Partial', 'None') OR flag.Administration IS NULL) AND
-                session.SubprojectID IN (18, 3)
+                session.SubprojectID = 18
             )
         GROUP BY
             psc.CenterID,
@@ -112,7 +112,7 @@ function getDirectDataEP()
         WHERE
             appointment.AppointmentTypeID = 3 AND
             session.Visit_label IN (:visit) AND
-            session.SubprojectID IN (18, 3) AND
+            session.SubprojectID = 18 AND
             session.CenterID = :site
         ";
 

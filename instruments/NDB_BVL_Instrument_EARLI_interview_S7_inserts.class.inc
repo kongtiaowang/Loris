@@ -88,7 +88,7 @@ class NDB_BVL_Instrument_EARLI_interview_S7_inserts extends NDB_BVL_Instrument_E
 				        
 		$this->localDefaults = array();
 
-		$this->_selectMultipleElements = array();
+		$this->selectMultipleElements = array();
 
 
 		// From Mr. David Brownlee:
@@ -96,7 +96,7 @@ class NDB_BVL_Instrument_EARLI_interview_S7_inserts extends NDB_BVL_Instrument_E
 		//Any LorisForm multiple selects must be listed here
 		//Usually this appears at the beginning of the file in the setup() function
 
-		$this->_selectMultipleElements = array_merge($this->_selectMultipleElements, array("q7_16_1", "q7_18_1", "q7_25_p1_1", "q7_25_p2_1", "q7_25_p3_1", "q7_29_p1_1", "q7_29_p2_1", "q7_29_p3_1", "q7_32_1", "q7_34_1", "q7_36_1", "q7_38_1_1", "q7_38_2_1", "q7_38_3_1","q7_38_4_1", "q7_38_5_1", "q7_40_1_1", "q7_40_2_1", "q7_40_3_1", "q7_40_4_1", "q7_40_5_1", "q7_40_6_1", "q7_16_2", "q7_18_2", "q7_25_p1_2", "q7_25_p2_2", "q7_25_p3_2", "q7_29_p1_2", "q7_29_p2_2", "q7_29_p3_2", "q7_32_2", "q7_34_2", "q7_36_2", "q7_38_1_2", "q7_38_2_2", "q7_38_3_2","q7_38_4_2", "q7_38_5_2", "q7_40_1_2", "q7_40_2_2", "q7_40_3_2", "q7_40_4_2", "q7_40_5_2", "q7_40_6_2", "q7_16_3", "q7_18_3", "q7_25_p1_3", "q7_25_p2_3", "q7_25_p3_3", "q7_29_p1_3", "q7_29_p2_3", "q7_29_p3_3", "q7_32_3", "q7_34_3", "q7_36_3", "q7_38_1_3", "q7_38_2_3", "q7_38_3_3","q7_38_4_3", "q7_38_5_3", "q7_40_1_3", "q7_40_2_3", "q7_40_3_3", "q7_40_4_3", "q7_40_5_3", "q7_40_6_3"));
+		$this->selectMultipleElements = array_merge($this->selectMultipleElements, array("q7_16_1", "q7_18_1", "q7_25_p1_1", "q7_25_p2_1", "q7_25_p3_1", "q7_29_p1_1", "q7_29_p2_1", "q7_29_p3_1", "q7_32_1", "q7_34_1", "q7_36_1", "q7_38_1_1", "q7_38_2_1", "q7_38_3_1","q7_38_4_1", "q7_38_5_1", "q7_40_1_1", "q7_40_2_1", "q7_40_3_1", "q7_40_4_1", "q7_40_5_1", "q7_40_6_1", "q7_16_2", "q7_18_2", "q7_25_p1_2", "q7_25_p2_2", "q7_25_p3_2", "q7_29_p1_2", "q7_29_p2_2", "q7_29_p3_2", "q7_32_2", "q7_34_2", "q7_36_2", "q7_38_1_2", "q7_38_2_2", "q7_38_3_2","q7_38_4_2", "q7_38_5_2", "q7_40_1_2", "q7_40_2_2", "q7_40_3_2", "q7_40_4_2", "q7_40_5_2", "q7_40_6_2", "q7_16_3", "q7_18_3", "q7_25_p1_3", "q7_25_p2_3", "q7_25_p3_3", "q7_29_p1_3", "q7_29_p2_3", "q7_29_p3_3", "q7_32_3", "q7_34_3", "q7_36_3", "q7_38_1_3", "q7_38_2_3", "q7_38_3_3","q7_38_4_3", "q7_38_5_3", "q7_40_1_3", "q7_40_2_3", "q7_40_3_3", "q7_40_4_3", "q7_40_5_3", "q7_40_6_3"));
 
 		//column headers
 		//Usually this appears at the beginning of the file in the setup() function

@@ -1,0 +1,1 @@
+ALTER TABLE `subproject` ENGINE = INNODB;

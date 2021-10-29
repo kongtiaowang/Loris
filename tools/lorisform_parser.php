@@ -1,14 +1,16 @@
 <?php
 /**
- * This parses all of the instruments and generates a staging file (ip_output.txt)
- * which can be used by data_dictionary_builder.php and generate_tables_sql.php
- * This script assumes that all the files passed as argument have a basename of the
- * form NDB_BVL_Instrument* and that the class defined inside the file inhertis from
- * class NDB_BVL_Instrument.
+ * This script takes a list of files on the command line, parses them and generates a
+ * staging file (ip_output.txt) which can be used by data_dictionary_builder.php and
+ * generate_tables_sql.php
  *
- * Ex. call: find ../instruments/*.inc | php lorisform_parser.php
+ * Ex. call: find ../project/instruments/*.inc | php lorisform_parser.php
  *
- * PHP version 5
+ * When parsing a file, the script will only generate information for classes defined
+ * inside that file that inherit from NDB_BVL_Instrument and that are not abstract. It will
+ * also ignore those instrument classes listed in config setting 'excluded_instruments'.
+ *
+ * PHP version 7
  *
  * @category Behavioural
  * @package  Loris_Script
@@ -39,60 +41,78 @@ while ($file=fgets(STDIN)) {
     echo $file;
 }
 
+// Get the array of classes currently loaded by the class loader
+$declaredClassNames = get_declared_classes();
+
 //Process the files
 foreach ($files AS $file) {
     echo "\n";
-    preg_match('/^(NDB_BVL_Instrument_.+).class.inc$/', basename($file), $matches);
-    if (empty($matches[1])) {
-        echo "Basename of $file invalid: it is not of the form NDB_BVL_Instrument_<instrument_name>. File skipped\n";
-        continue;
-    }
-    echo "Reading file $file\n";
-    require_once $file;
-    $className = $matches[1];
-    echo "Instantiating new object...\n";
-    $obj =new $className(new Module("", ""), "", "", "", "");
-    if (!($obj instanceof NDB_BVL_Instrument)) {
-        echo "File '$file' does not contain an instrument.\n";
-        continue;
-    }
-    echo "Initializing instrument object...\n";
-    $obj->setup(null, null);
+    echo "Requiring file $file...\n";
+    include_once $file;
 
-    //Some instruments ought not be parsed with the lorisform_parser
-    if ((in_array($obj->testName, $instrumentsToSkip))) {
-        echo "lorisform_parser will    skip file {$file}\n";
-        continue;
+    // Get the set of classes that had to be loaded following the inclusion
+    // of $file
+    $newDeclaredClassNames = get_declared_classes();
+    $newClassNames = array_diff($newDeclaredClassNames, $declaredClassNames);
+
+    if (empty($newClassNames)) {
+        echo "File $file does not contain any class declarations. Skipping.\n";
     }
 
-    $subtests =$obj->getSubtestList();
-    foreach ($subtests as $subtest) {
-        $obj->page =$subtest['Name'];
-        echo "Building instrument page '$subtest[Name]'...\n";
-        $obj->_setupForm();
+    foreach ($newClassNames as $newClassName) {
+        $newClass = new ReflectionClass($newClassName);
+        // When requiring $file, all included/required classes inside the class
+        // are also loaded. We only want to process the classes that are
+        // actually defined inside the current file, not the dependencies
+        if ($newClass->getFileName() !== realpath($file)) {
+            continue;
+        }
+
+        if ($newClass->isAbstract()) {
+            echo "Class $newClassName is an abstract class. Skipping.\n";
+            continue;
+        }
+
+        echo "Instantiating new instance of class $newClassName...\n";
+        $obj = new $newClassName(new Module("", ""), "", "", "", "");
+        if (!is_subclass_of($obj, 'NDB_BVL_Instrument')) {
+            echo "Class $newClassName is not a descendant of class NDB_BVL_Instrument...Skipping.\n";
+            continue;
+        }
+        echo "Initializing instrument object...\n";
+        $obj->setup(null, null);
+
+        // Some instruments ought not to be parsed with the lorisform_parser
+        if ((in_array($obj->testName, $instrumentsToSkip))) {
+            echo "lorisform_parser will skip file {$file}\n";
+            continue;
+        }
+
+        $subtests = $obj->getSubtestList();
+        foreach ($subtests as $subtest) {
+            $obj->page = $subtest['Name'];
+            echo "Building instrument page '$subtest[Name]'...\n";
+            $obj->_setupForm();
+        }
+
+        if (is_array($obj->getFullName())) {
+            echo "Could not find row for $matches[1] in table test_names,
+            please populate test_names, instrument_subtests\n";
+            continue;
+        }
+
+        $output .= !empty($output) ? "{-@-}" : '';
+
+        echo "Processing instrument $newClassName...\n";
+
+        $output .="table{@}".$obj->table."\n";
+
+        $output .="title{@}".$obj->getFullName()."\n";
+
+        $formElements = $obj->form->toElementArray();
+        $output      .=parseElements($formElements["elements"]);
+        echo "Finished processing instrument  $newClassName\n---------------------------------------------------\n\n";
     }
-
-    if (is_array($obj->getFullName())) {
-        echo "Could not find row for $matches[1] in table test_names, 
-        please populate test_names, instrument_subtests\n";
-        continue;
-    }
-
-    if (!empty($output)) {
-        $output .="{-@-}";
-    } else {
-        $output = '';
-    }
-
-    echo "Parsing instrument object...\n";
-
-    $output .="table{@}".$obj->table."\n";
-
-    $output .="title{@}".$obj->getFullName()."\n";
-
-    $formElements = $obj->form->toElementArray();
-    $output      .=parseElements($formElements["elements"]);
-    echo "Parsing complete\n---------------------------------------------------\n\n";
 }
 if (empty($output)) {
     echo "Nothing to output, 'ip_output.txt' not created\n";
@@ -255,3 +275,4 @@ function getExcludedInstruments()
 }
 
 ?>
+

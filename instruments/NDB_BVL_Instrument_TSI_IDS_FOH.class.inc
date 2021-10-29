@@ -174,7 +174,7 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
 
         //The array of selects with multiple answers allowed
         //Any LorisForm multiple selects must be listed here
-        $this->_selectMultipleElements = array(
+        $this->selectMultipleElements = array(
                                           "q9a_exclusionary_conditions",
                                           "q15a_exclusionary_conditions",
                                           "q16_method_of_delivery",
@@ -350,11 +350,11 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
         }
 	$this->XINRegisterRule("father_dob_date", array("father_dob_date{@}=={@}"), 'Required');
 
-	$this->addSelect("preferred_method_contact_father", $this->indent . "Preferred method of contact", array("","Phone","Email"));
+	$this->addSelect("preferred_method_contact_father", $this->indent . "Preferred method of contact", array(null,"Phone","Email"));
         $this->XINRegisterRule("preferred_method_contact_father", array("preferred_method_contact_father{@}=={@}never_required"), 'Not Required.');
-        $this->addTextElement("best_call_number_father", $this->indent . "Best number to call");
+        $this->addSelect("best_call_number_father", $this->indent . "Best number to call",array(null,'Cell','Work','Home'));
         $this->XINRegisterRule("best_call_number_father", array("best_call_number_father{@}=={@}never_required"), 'Not Required.');
-        $this->addTextElement("best_time_call_father", $this->indent . "Best time to call (AM/PM)");
+        $this->addSelect("best_time_call_father", $this->indent . "Best time to call", array(null,'AM','PM'));
         $this->XINRegisterRule("best_time_call_father", array("best_time_call_father{@}=={@}never_required"), 'Not Required.');
         $this->addSelect("okay_leave_message_father", $this->indent . "Okay to leave message?", self::YES_NO_OPTIONS);
         $this->XINRegisterRule("okay_leave_message_father", array("okay_leave_message_father{@}=={@}never_required"), 'Not Required.');

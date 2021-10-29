@@ -126,8 +126,17 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
                                     "q5",
                                     "q10",
                                    );
-
-        // setup the form
+	
+	$this->_doubleDataEntryDiffIgnoreColumns = array(
+	                           "CommentID",
+				   "UserID",
+				   "Examiner",
+				   "Testdate",
+				   "Date_taken",
+	);
+	// setup the form 
+	
+	
         $this->_setupForm();
     }
 
@@ -173,7 +182,6 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
         $this->addBasicDate('Date_taken', 'Date Taken', $dateOptions);
 
         // automatically adds examiner & date of administration
-	//
 	$this->_addMetadataFields();
 
 	$this->addSelect("ira_completed_for_this_visit","IRA completed for this visit", array(null => "", "yes" => "Yes", "no" => "No"));
@@ -192,7 +200,7 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
             $this->form->addGroup($group, "{$field}_score_group", "$label:", $this->_GUIDelimiter, false);
             unset($group);
 	}
-
+      
 	$this->form->addFormRule(array(&$this, 'validate_main_page'));
     }
 

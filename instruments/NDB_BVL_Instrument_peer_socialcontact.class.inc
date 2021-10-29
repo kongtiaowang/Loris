@@ -7,7 +7,6 @@ class NDB_BVL_Instrument_peer_socialcontact extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
 
-    var $ValidityEnabled = false;
     var $ValidityRequired = false;
 
     //Commonly used level of indentation;
@@ -625,7 +624,7 @@ class NDB_BVL_Instrument_peer_socialcontact extends NDB_BVL_Instrument
          $this->XINRegisterRule('q7_samechildcare_playmate'.$i, array("q7_samechildcare_playmate.$i{@}=={@}NEVER_REQUIRED"));
          $this->addSelect('q8_specialneeds_playmate'.$i,"8. What special needs does this playmate have?<BR>Press Ctrl+click or Cmd+click to select mutiple options",
                           $this->q8_options, "multiple size='8'");
-         $this->_selectMultipleElements[] = 'q8_specialneeds_playmate'.$i;
+         $this->selectMultipleElements[] = 'q8_specialneeds_playmate'.$i;
          $this->XINRegisterRule('q8_specialneeds_playmate'.$i, array("q8_specialneeds_playmate.$i{@}=={@}NEVER_REQUIRED"));
          $group [] = $this->createText('q8_specialneeds_other_playmate'.$i,$this->indent."If Other please specify");
          $this->addGroup($group,'q8_specialneeds_other_playmate'.$i."_group",$this->indent."If Other please specify",null,false);

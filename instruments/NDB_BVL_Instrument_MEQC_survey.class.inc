@@ -26,6 +26,8 @@ class NDB_BVL_Instrument_MEQC_survey extends NDB_BVL_Instrument
     use LegacyInstrumentTrait;
     use instrument_validator;
 
+    var $ValidityRequired = false;
+
     var $scoreLabels = array(
         "mornings_evenings_total_derived_score",
       );

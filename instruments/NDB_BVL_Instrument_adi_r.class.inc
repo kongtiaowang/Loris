@@ -57,7 +57,7 @@ class NDB_BVL_Instrument_adi_r extends NDB_BVL_Instrument
 
         //The array of selects with multiple answers allowed
         //Any LorisForm multiple selects must be listed here
-        $this->_selectMultipleElements = array();
+        $this->selectMultipleElements = array();
 
         // required fields for data entry completion status
         $this->_requiredElements = array('Examiner', "q_11_loss_of_language", "q_20_loss_of_skills_code", "q_30_overall_level_of_language",

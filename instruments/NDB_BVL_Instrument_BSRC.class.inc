@@ -42,7 +42,7 @@ INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, Subp
 
        //The array of selects with multiple answers allowed
        //Any LorisForm multiple selects must be listed here
-       $this->_selectMultipleElements = array('q10_therapyoptions');
+       $this->selectMultipleElements = array('q10_therapyoptions');
        // required fields for data entry completion status
        $this->_requiredElements = array('Examiner', "Date_taken");
 
@@ -142,7 +142,7 @@ INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, Subp
       //multiselect1
      $this->addSelect('indgrp_occupationaltherapy',"Individual or Group<BR><h5><i>(Cmd+Click or Ctrl+Click to select multiple options)</i></h5>", $this->indgrp, array("multiple"));
      $this->XINRegisterRule("indgrp_occupationaltherapy", array("servicetype_occupationaltherapy{@}=={@}yes"), "Required");
-     $this->_selectMultipleElements[] = "indgrp_occupationaltherapy";
+     $this->selectMultipleElements[] = "indgrp_occupationaltherapy";
 
      $this->addSelect("setting_occupationaltherapy","Setting",$this->setting);
      $this->XINRegisterRule("setting_occupationaltherapy", array("servicetype_occupationaltherapy{@}=={@}yes"), "Required");
@@ -169,7 +169,7 @@ INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, Subp
       //multiselect2
       $this->addSelect('indgrp_physicaltherapy',"Individual or Group<BR><h5><i>(Cmd+Click or Ctrl+Click to select multiple options)</i></h5>", $this->indgrp, array("multiple"));
       $this->XINRegisterRule("indgrp_physicaltherapy", array("servicetype_physicaltherapy{@}=={@}yes"), "Required");
-      $this->_selectMultipleElements[] = "indgrp_physicaltherapy";
+      $this->selectMultipleElements[] = "indgrp_physicaltherapy";
 
      $this->addSelect("setting_physicaltherapy","Setting",$this->setting);
      $this->XINRegisterRule("setting_physicaltherapy", array("servicetype_physicaltherapy{@}=={@}yes"), "Required");
@@ -196,7 +196,7 @@ INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, Subp
      //multiselect3
      $this->addSelect('indgrp_speechlangtherapy',"Individual or Group<BR><h5><i>(Cmd+Click or Ctrl+Click to select multiple options)</i></h5>", $this->indgrp, array("multiple"));
      $this->XINRegisterRule("indgrp_speechlangtherapy", array("servicetype_speechlangtherapy{@}=={@}yes"), "Required");
-     $this->_selectMultipleElements[] = "indgrp_speechlangtherapy";
+     $this->selectMultipleElements[] = "indgrp_speechlangtherapy";
 
      $this->addSelect("setting_speechlangtherapy","Setting",$this->setting);
      $this->XINRegisterRule("setting_speechlangtherapy", array("servicetype_speechlangtherapy{@}=={@}yes"), "Required");
@@ -223,7 +223,7 @@ INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, Subp
        //multiselect4
      $this->addSelect('indgrp_behaviorintervention',"Individual or Group<BR><h5><i>(Cmd+Click or Ctrl+Click to select multiple options)</i></h5>", $this->indgrp, array("multiple"));
      $this->XINRegisterRule("indgrp_behaviorintervention", array("servicetype_behaviorintervention{@}=={@}yes"), "Required");
-     $this->_selectMultipleElements[] = "indgrp_behaviorintervention";
+     $this->selectMultipleElements[] = "indgrp_behaviorintervention";
 
 
        $this->addSelect("setting_behaviorintervention","Setting",$this->setting);
@@ -252,7 +252,7 @@ INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, Subp
        //multiselect4
        $this->addSelect('indgrp_other',"Individual or Group<BR><h5><i>(Cmd+Click or Ctrl+Click to select multiple options)</i></h5>", $this->indgrp, array("multiple"));
        $this->XINRegisterRule("indgrp_other", array("servicetype_other{@}=={@}yes"), "Required");
-       $this->_selectMultipleElements[] = "indgrp_other";
+       $this->selectMultipleElements[] = "indgrp_other";
 
 
        $this->addSelect("setting_other","Setting",$this->setting);

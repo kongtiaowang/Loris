@@ -25,7 +25,6 @@ class NDB_BVL_Instrument_CBCL_6_To_18_survey_subject extends NDB_BVL_Instrument
     use LegacyInstrumentTrait;
 
     use instrument_validator;
-    var $ValidityEnabled = false;
     var $ValidityRequired = false;
     var $scoreLabels = array('anxious_score',
         'anxious_T_score',
@@ -126,7 +125,7 @@ class NDB_BVL_Instrument_CBCL_6_To_18_survey_subject extends NDB_BVL_Instrument
 
         //The array of selects with multiple answers allowed
         //Any HTML_Quickform multiple selects must be listed here
-        $this->_selectMultipleElements = array();
+        $this->selectMultipleElements = array();
 
 
 

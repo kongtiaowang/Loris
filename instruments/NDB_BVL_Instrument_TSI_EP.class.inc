@@ -230,7 +230,7 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
 
         //The array of selects with multiple answers allowed
         //Any LorisForm multiple selects must be listed here
-        $this->_selectMultipleElements = array(
+        $this->selectMultipleElements = array(
 	                                  "pro_devfactors_q1_exclusionary_conditions",
 					  "pro_medhist_q1_non_exclusionary_conditions",
 					  "pro_medhist_q1_exclusionary_conditions",
@@ -252,7 +252,6 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
 					  "inf_devfactors_q13_exclusionary_conditions",
 					  "inf_devfactors_q13_review_by_committee",
 					  "inf_medhist_q1_exclusionary_conditions",
-					  "inf_medhist_q6_metal_options`",
 					  "inf_medhist_q1_exclusionary_conditions",
                                           "inf_medhist_q6_metal_options",
                                           "inf_medhist_q9_results",
@@ -1737,15 +1736,11 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
 
         $this->form->addElement('static', null, null);
 
-        $race_questions = array(
-                           "candidate_race"  => "Candidate Race:",
-                           "bio_mother_race" => "Bio-Mother Race:",
-                           "bio_father_race" => "Bio-Father Race:",
-                          );
+        $this->addSelect("candidate_race","Candidate Race:",self::RACE_OPTIONS,array("multiple"));
 
-        foreach ($race_questions as $key => $question) {
-            $this->addSelect($key, $question, self::RACE_OPTIONS, array("multiple"));
-        }
+	$this->addSelect("bio_mother_race","Bio-Mother Race:",self::RACE_OPTIONS,array("multiple"));
+
+	$this->addSelect("bio_father_race","Bio-Father Race:",self::RACE_OPTIONS,array("multiple"));
 
         $this->form->addElement('static', null, null);
 
@@ -1834,7 +1829,7 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
              null              => "",
              'review_not_done' => "Review Not Done",
             )
-        );       
+        );
         $this->addGroup(
             $group,
             "date_received_date_group",
@@ -2052,7 +2047,7 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
     function validate_page1($values)
     {
         $errors = [];
-        
+
     if ($values["not_finish0"]!="1"){
         $this->validate_positive_numeric($values, "subject_birth_weight_lbs", $errors);
         $this->validate_positive_numeric($values, "subject_birth_weight_oz", $errors);
@@ -2065,7 +2060,7 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
         if ($values["are_bio_parents_living_in_same_home"] != "no") {
             $this->validate_empty_subquestions($values, ["if_not_in_same_home_childs_primary_address_with"], $errors);
         }
-     }    
+     }
         return $errors;
     }
 
@@ -2432,14 +2427,15 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
         }
     }
     function _save(array $values): void
-    {  
+    {
        for($i=0;$i<=7;$i++){
             $checkbox= "not_finish".$i;
             if (!isset($values["$checkbox"])) {
                 $values["$checkbox"] = '0';
             }
-       } 
+       }
         parent::_save($values);
     }
+
 }
 

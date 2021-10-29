@@ -1268,7 +1268,10 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
             //If the answer is empty (or its a group and one of answers in the
             //group is empty) then run the rules
-            if ($elvalue==="" || $flag==false) {
+            // IBIS SPECIFIC OVERRIDE CODE
+            // Overrides for survey module as it sends value as null no empty string.
+            if ($elvalue==="" || $flag==false || is_null($elvalue)) {
+            // IBIS SPECIFIC OVERRIDE CODE ENDS HERE
                 if ($this->XINDebug) {
                     //debugging code
                     echo "<p><b>$elname</b><br> ";
@@ -3147,6 +3150,11 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             }
         }
         return $values;
+    }
+
+    // For multiselect data fix script
+    function getSelectMultipleElements() {
+        return $this->selectMultipleElements;
     }
 
     // IBIS SPECIFIC OVERRIDE CODE ENDS HERE

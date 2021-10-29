@@ -24,7 +24,6 @@ class NDB_BVL_Instrument_Med_Psych_History_survey extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
     use instrument_validator;
-    var $ValidityEnabled  = false;
     var $ValidityRequired = false;
     /**
      * Sample SQL statement for test_names table and instrument subtests table
@@ -81,7 +80,7 @@ class NDB_BVL_Instrument_Med_Psych_History_survey extends NDB_BVL_Instrument
 
         //The array of selects with multiple answers allowed
         //Any LorisForm multiple selects must be listed here
-        $this->_selectMultipleElements = array();
+        $this->selectMultipleElements = array();
 
 
         // setup the form
@@ -442,8 +441,8 @@ class NDB_BVL_Instrument_Med_Psych_History_survey extends NDB_BVL_Instrument
 
             $this->XINRegisterRule(
                 "q3_disorder_" . $i . "_relative_other",
-                array("q3_disorder_{$i}_relative{@}=={@}other"),
-                "Required if other.",
+                array("q3_disorder_{$i}_relative_other{@}=={@}never_required"),
+                "Not required",
                 "q3_disorder_" . $i . "_group"
             );
 	    
@@ -451,6 +450,11 @@ class NDB_BVL_Instrument_Med_Psych_History_survey extends NDB_BVL_Instrument
                "q3_disorder_" . $i . "_relative_multiple",
                 array("q3_disorder_{$i}_relative{@}=={@}multiple"),
                 "Required if multiple.",
+   
+           $this->XINRegisterRule(
+               "q3_disorder_" . $i . "_relative_multiple",
+                array("q3_disorder_{$i}_relative_multiple{@}=={@}never_required"),
+                "Not required",
                 "q3_disorder_" . $i . "_group"
             );
 
@@ -1299,20 +1303,6 @@ class NDB_BVL_Instrument_Med_Psych_History_survey extends NDB_BVL_Instrument
     {
         $errors = [];
 
-        for ($i = "a"; $i <= "y"; $i++) {
-            if ($values["q3_disorder_" . $i . "_presence"] != "yes") {
-                $this->validate_empty_subquestions($values, ["q3_disorder_" . $i . "_relative"], $errors);
-            }
-
-            if ($values["q3_disorder_" . $i . "_relative"] != "other") {
-                $this->validate_empty_subquestions($values, ["q3_disorder_" . $i . "_relative_other"], $errors);
-            }
-
-            if ($values["q3_disorder_" . $i . "_relative"] != "multiple") {
-                $this->validate_empty_subquestions($values, ["q3_disorder_" . $i . "_relative_multiple"], $errors);
-            }
-        }
-
         if ($values["q3_disorder_i_presence"] != "yes") {
             $this->validate_empty_subquestions($values, ["q3_disorder_i_specify"], $errors);
         }
@@ -1536,4 +1526,5 @@ class NDB_BVL_Instrument_Med_Psych_History_survey extends NDB_BVL_Instrument
         return $errors;
     }
 }
+
 ?>
