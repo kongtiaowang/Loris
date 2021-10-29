@@ -295,7 +295,7 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
 	$this->XINRegisterRule("where_were_you_living_at_the_time", array("where_were_you_living_at_the_time{@}=={@}never_required"), 'Not Required.');
 	$this->XINRegisterRule("where_did_your_child_sleep", array("where_did_your_child_sleep{@}=={@}never_required"), 'Not Required.');
 	$this->XINRegisterRule("any_significant_family_events", array("any_significant_family_events{@}=={@}never_required"), 'Not Required.');
-
+        
         $this->form->addFormRule(array(&$this, 'validate_page1'));
     }
 
@@ -303,15 +303,10 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
     {
         $this->addHeader("SIHI (Sleep Intervention History Interview)");
 
-	$this->form->addElement(
-            'static',
-            lorisSubHeader,
-            "Use the following questions to anchor each time period:<br>" . $this->indent .
-            "What month/year was your child born? [first time period only]<br>" . $this->indent .
-            "Where were you living at the time?<br>" . $this->indent .
-            "Where did your child sleep (own/shared room)?<br>" . $this->indent .
-            "Any significant family events (change of job, birth of sibling, moved) during that time?"
-         );
+	 $this->form->addElement('static', null, $this->indent . "Use the following questions to anchor each time period:");
+            $this->form->addElement('text', "ii_where_were_you_living_at_the_time", $this->indent . "Where were you living at the time?");
+            $this->form->addElement('text', "ii_where_did_your_child_sleep", $this->indent . "Where did your child sleep (own/shared room)?");
+            $this->form->addElement('text', "ii_any_significant_family_events", $this->indent . "Any significant family events (change of job, birth of sibling, moved) during that time?");
 
         $this->form->addElement(
             'static',
@@ -378,6 +373,9 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
 
         $this->form->addElement("textarea","ii_q5_additional_comment", "Any additional comments about your child's sleep at this time?", array('cols'=>25, 'rows'=>4));
         $this->XINRegisterRule("ii_q5_additional_comment", array("ii_q5_additional_comment{@}=={@}never_required"), 'Not Required.');
+        $this->XINRegisterRule("ii_where_were_you_living_at_the_time", array("ii_where_were_you_living_at_the_time{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("ii_where_did_your_child_sleep", array("ii_where_did_your_child_sleep{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("ii_any_significant_family_events", array("ii_any_significant_family_events{@}=={@}never_required"), 'Not Required.');
 
         $this->form->addFormRule(array(&$this, 'validate_page2'));
     }
@@ -386,15 +384,10 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
     {
         $this->addHeader("SIHI (Sleep Intervention History Interview)");
 
-	$this->form->addElement(
-            'static',
-            lorisSubHeader,
-            "Use the following questions to anchor each time period:<br>" . $this->indent .
-            "What month/year was your child born? [first time period only]<br>" . $this->indent .
-            "Where were you living at the time?<br>" . $this->indent .
-            "Where did your child sleep (own/shared room)?<br>" . $this->indent .
-            "Any significant family events (change of job, birth of sibling, moved) during that time?"
-        );
+	 $this->form->addElement('static', null, $this->indent . "Use the following questions to anchor each time period:");
+            $this->form->addElement('text', "iii_where_were_you_living_at_the_time", $this->indent . "Where were you living at the time?");
+            $this->form->addElement('text', "iii_where_did_your_child_sleep", $this->indent . "Where did your child sleep (own/shared room)?");
+            $this->form->addElement('text', "iii_any_significant_family_events", $this->indent . "Any significant family events (change of job, birth of sibling, moved) during that time?");
        
 	$this->form->addElement(
             'static',
@@ -460,6 +453,9 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
 
 	$this->form->addElement("textarea","iii_q5_additional_comment", "Any additional comments about your child's sleep at this time?", array('cols'=>25, 'rows'=>4));
         $this->XINRegisterRule("iii_q5_additional_comment", array("iii_q5_additional_comment{@}=={@}never_required"), 'Not Required.');
+        $this->XINRegisterRule("iii_where_were_you_living_at_the_time", array("iii_where_were_you_living_at_the_time{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("iii_where_did_your_child_sleep", array("iii_where_did_your_child_sleep{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("iii_any_significant_family_events", array("iii_any_significant_family_events{@}=={@}never_required"), 'Not Required.');
 
         $this->form->addFormRule(array(&$this, 'validate_page3'));
     }
@@ -468,15 +464,10 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
     {
         $this->addHeader("SIHI (Sleep Intervention History Interview)");
 
-	$this->form->addElement(
-            'static',
-            lorisSubHeader,
-            "Use the following questions to anchor each time period:<br>" . $this->indent .
-            "What month/year was your child born? [first time period only]<br>" . $this->indent .
-            "Where were you living at the time?<br>" . $this->indent .
-            "Where did your child sleep (own/shared room)?<br>" . $this->indent .
-            "Any significant family events (change of job, birth of sibling, moved) during that time?"
-        );
+	 $this->form->addElement('static', null, $this->indent . "Use the following questions to anchor each time period:");
+            $this->form->addElement('text', "iv_where_were_you_living_at_the_time", $this->indent . "Where were you living at the time?");
+            $this->form->addElement('text', "iv_where_did_your_child_sleep", $this->indent . "Where did your child sleep (own/shared room)?");
+            $this->form->addElement('text', "iv_any_significant_family_events", $this->indent . "Any significant family events (change of job, birth of sibling, moved) during that time?");
        
 	$this->form->addElement(
             'static',
@@ -542,6 +533,9 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
 
 	$this->form->addElement("textarea","iv_q5_additional_comment", "Any additional comments about your child's sleep at this time?", array('cols'=>25, 'rows'=>4));
         $this->XINRegisterRule("iv_q5_additional_comment", array("iv_q5_additional_comment{@}=={@}never_required"), 'Not Required.');
+        $this->XINRegisterRule("iv_where_were_you_living_at_the_time", array("iv_where_were_you_living_at_the_time{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("iv_where_did_your_child_sleep", array("iv_where_did_your_child_sleep{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("iv_any_significant_family_events", array("iv_any_significant_family_events{@}=={@}never_required"), 'Not Required.');
 
         $this->form->addFormRule(array(&$this, 'validate_page4'));
     }
@@ -550,15 +544,10 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
     {
         $this->addHeader("SIHI (Sleep Intervention History Interview)");
 
-	$this->form->addElement(
-            'static',
-            lorisSubHeader,
-            "Use the following questions to anchor each time period:<br>" . $this->indent .
-            "What month/year was your child born? [first time period only]<br>" . $this->indent .
-            "Where were you living at the time?<br>" . $this->indent .
-            "Where did your child sleep (own/shared room)?<br>" . $this->indent .
-            "Any significant family events (change of job, birth of sibling, moved) during that time?"
-        );
+	 $this->form->addElement('static', null, $this->indent . "Use the following questions to anchor each time period:");
+            $this->form->addElement('text', "v_where_were_you_living_at_the_time", $this->indent . "Where were you living at the time?");
+            $this->form->addElement('text', "v_where_did_your_child_sleep", $this->indent . "Where did your child sleep (own/shared room)?");
+            $this->form->addElement('text', "v_any_significant_family_events", $this->indent . "Any significant family events (change of job, birth of sibling, moved) during that time?");
        
 	$this->form->addElement(
             'static',
@@ -625,6 +614,9 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
 
 	$this->form->addElement("textarea","v_q5_additional_comment", "Any additional comments about your child's sleep at this time?", array('cols'=>25, 'rows'=>4));
         $this->XINRegisterRule("v_q5_additional_comment", array("v_q5_additional_comment{@}=={@}never_required"), 'Not Required.');
+        $this->XINRegisterRule("v_where_were_you_living_at_the_time", array("v_where_were_you_living_at_the_time{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("v_where_did_your_child_sleep", array("v_where_did_your_child_sleep{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("v_any_significant_family_events", array("v_any_significant_family_events{@}=={@}never_required"), 'Not Required.');
 
         $this->form->addFormRule(array(&$this, 'validate_page5'));
     }
@@ -633,15 +625,10 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
     {
 	$this->addHeader("SIHI (Sleep Intervention History Interview)");
 
-	$this->form->addElement(
-            'static',
-            lorisSubHeader,
-            "Use the following questions to anchor each time period:<br>" . $this->indent .
-            "What month/year was your child born? [first time period only]<br>" . $this->indent .
-            "Where were you living at the time?<br>" . $this->indent .
-            "Where did your child sleep (own/shared room)?<br>" . $this->indent .
-            "Any significant family events (change of job, birth of sibling, moved) during that time?"
-        );
+	 $this->form->addElement('static', null, $this->indent . "Use the following questions to anchor each time period:");
+            $this->form->addElement('text', "vi_where_were_you_living_at_the_time", $this->indent . "Where were you living at the time?");
+            $this->form->addElement('text', "vi_where_did_your_child_sleep", $this->indent . "Where did your child sleep (own/shared room)?");
+            $this->form->addElement('text', "vi_any_significant_family_events", $this->indent . "Any significant family events (change of job, birth of sibling, moved) during that time?");
 	
 	$this->form->addElement(
             'static',
@@ -718,6 +705,9 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
 	$this->XINRegisterRule("vi_q4_seek_information_to_help_child_sleep_better", array("not_in_middle_school{@}!={@}used"), 'Required.');
 	$this->XINRegisterRule("vi_q5_did_child_receive_intervention", array("not_in_middle_school{@}!={@}used"), 'Required.');
         $this->XINRegisterRule("vi_q5_additional_comment", array("not_in_middle_school{@}!={@}used"), 'Required.');
+        $this->XINRegisterRule("vi_where_were_you_living_at_the_time", array("vi_where_were_you_living_at_the_time{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("vi_where_did_your_child_sleep", array("vi_where_did_your_child_sleep{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("vi_any_significant_family_events", array("vi_any_significant_family_events{@}=={@}never_required"), 'Not Required.');
 
         $this->form->addFormRule(array(&$this, 'validate_page6'));
     }
