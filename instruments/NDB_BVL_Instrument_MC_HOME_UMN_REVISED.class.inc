@@ -29,6 +29,36 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
     var $ValidityEnabled  = false;
     var $ValidityRequired = false;
 
+    var $scoreLabels = array(
+	    "routine_and_responsibility"        =>  "ROUTINES AND RESPONSIBILITY",
+	    "emotional_need"                    =>  "EMOTIONAL NEEDS",
+	    "learning_behavior"                 =>  "LEARNING BEHAVIOR",
+	    "recreational_activity"             =>  "RECREATIONAL ACTIVITIES",
+	    "place_or_travel"                   =>  "PLACES/TRAVEL",
+	    "family_friend"                     =>  "FAMILY AND FRIENDS",
+	    "house"                             =>  "HOUSE",
+	    "parent_child_interaction"          =>  "PARENT-CHILD INTERACTIONS",
+	    "parent_visitor_interaction"        =>  "PARENT-VISITOR INTERACTIONS",
+    			);
+
+    CONST ROUTINES_AND_RESPONSIBILITY = ["q1_score","q11_score","q12_score","q13_score","q14_score","q15_score","q19_score"];
+
+    CONST EMOTIONAL_NEEDS = ["q3_score","q20_score","q18_score","q21_score","q2_score"];
+
+    CONST LEARNING_BEHAVIOR = ["q26_score","q4_score","q31_score","q27_score","q29_score","q30_score","q32_score"];
+
+    CONST RECREATIONAL_ACTIVITIES = ["q34_score","q46_score","q35_score","q36_score","q37_score","q47_score"];
+
+    CONST PLACES_TRAVEL = ["q39_score","q40_score","q44_score","q43_score","q41_score","q45_score"];
+
+    CONST FAMILY_AND_FRIENDS = ["q48_score","q49_score","q50_score","q51_score","q42_score","q28_score"];
+
+    CONST HOUSE = ["q22_score","q38_score","q33_score","q52_score","q53_score","q54_score","q55_score","q56_score","q57_score","q58_score","q59_score"];
+
+    CONST PARENT_CHILD_INTERACTIONS = ["q5_score","q23_score","q7_score","q8_score","q6_score","q9_score","q24_score","q25_score","q16_score"];
+
+    CONST PARENT_VISITOR_INTERACTIONS = ["q10_score","q17_score"];
+
     /**
      * Sample SQL statement for test_names table and instrument subtests table
      *
@@ -158,6 +188,19 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
 
 	$this->form->addElement("text","ira_percentage","IRA (Percentage)");
 
+	$this->form->addElement("header",null, "Score Summary");
+
+        $group[] = $this->form->createElement('static',null, "Score", null);       
+	$this->form->addGroup($group, "subscale_score_group", "Subscale", $this->_GUIDelimiter, false);
+        unset($group);
+
+	foreach($this->scoreLabels as $field => $label){
+            
+            $group[] = $this->form->createElement('static', $field, null, null);
+            $this->form->addGroup($group, "{$field}_score_group", "$label:", $this->_GUIDelimiter, false);
+            unset($group);
+	}
+      
 	$this->form->addFormRule(array(&$this, 'validate_main_page'));
     }
 
@@ -214,9 +257,9 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
                                     );
 
         foreach ($page1_question_prompts as $q => $prompt) {
-            $this->addTextAreaElement($q, $prompt);
             $this->addSelect($q . "_score", $this->indent . "Score:<h6>" . $page1_score_descriptions[$q] . "<br>Missing data - describe reason in text box</h6>", $score_options);
-            $this->form->addElement("static", null, "<br/>");
+	    $this->addTextAreaElement($q, $prompt);
+	    $this->form->addElement("static", null, "<br/>");
         }
     }
 
@@ -266,9 +309,9 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
                                     );
 
         foreach ($page2_question_prompts as $q => $prompt) {
-            $this->addTextAreaElement($q, $prompt);
             $this->addSelect($q . "_score", $this->indent . "Score:<h6>" . $page2_score_descriptions[$q] . "<br>Missing data - describe reason in text box</h6>", $score_options);
-            $this->form->addElement("static", null, "<br/>");
+	    $this->addTextAreaElement($q, $prompt);
+	    $this->form->addElement("static", null, "<br/>");
         }
     }
 
@@ -321,9 +364,9 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
                                     );
 
         foreach ($page3_question_prompts as $q => $prompt) {
-            $this->addTextAreaElement($q, $prompt);
             $this->addSelect($q . "_score", $this->indent . "Score:<h6>" . $page3_score_descriptions[$q] . "<br>Missing data - describe reason in text box</h6>", $score_options);
-            $this->form->addElement("static", null, "<br/>");
+	    $this->addTextAreaElement($q, $prompt);
+	    $this->form->addElement("static", null, "<br/>");
         }
     }
 
@@ -374,9 +417,9 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
                                     );
 
         foreach ($page4_question_prompts as $q => $prompt) {
-            $this->addTextAreaElement($q, $prompt);
             $this->addSelect($q . "_score", $this->indent . "Score:<h6>" . $page4_score_descriptions[$q] . "<br>Missing data - describe reason in text box</h6>", $score_options);
-            $this->form->addElement("static", null, "<br/>");
+	    $this->addTextAreaElement($q, $prompt);
+	    $this->form->addElement("static", null, "<br/>");
         }
     }
 
@@ -427,9 +470,9 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
                                     );
 
         foreach ($page5_question_prompts as $q => $prompt) {
-            $this->addTextAreaElement($q, $prompt);
             $this->addSelect($q . "_score", $this->indent . "Score:<h6>" . $page5_score_descriptions[$q] . "<br>Missing data - describe reason in text box</h6>", $score_options);
-            $this->form->addElement("static", null, "<br/>");
+	    $this->addTextAreaElement($q, $prompt);
+	    $this->form->addElement("static", null, "<br/>");
         }
     }
 
@@ -480,9 +523,9 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
                                     );
 
         foreach ($page6_question_prompts as $q => $prompt) {
-            $this->addTextAreaElement($q, $prompt);
             $this->addSelect($q . "_score", $this->indent . "Score:<h6>" . $page6_score_descriptions[$q] . "<br>Missing data - describe reason in text box</h6>", $score_options);
-            $this->form->addElement("static", null, "<br/>");
+	    $this->addTextAreaElement($q, $prompt);
+	    $this->form->addElement("static", null, "<br/>");
         }
     }
 
@@ -543,9 +586,9 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
                                     );
 
         foreach ($page7_question_prompts as $q => $prompt) {
-            $this->addTextAreaElement($q, $prompt);
             $this->addSelect($q . "_score", $this->indent . "Score:<h6>" . $page7_score_descriptions[$q] . "<br>Missing data - describe reason in text box</h6>", $score_options);
-            $this->form->addElement("static", null, "<br/>");
+	    $this->addTextAreaElement($q, $prompt);
+	    $this->form->addElement("static", null, "<br/>");
         }
     }
 
@@ -602,9 +645,9 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
                                     );
 
         foreach ($page8_question_prompts as $q => $prompt) {
-            $this->addTextAreaElement($q, $prompt);
             $this->addSelect($q . "_score", $this->indent . "Score:<h6>" . $page8_score_descriptions[$q] . "<br>Missing data - describe reason in text box</h6>", $score_options);
-            $this->form->addElement("static", null, "<br/>");
+	    $this->addTextAreaElement($q, $prompt);
+	    $this->form->addElement("static", null, "<br/>");
         }
     }
 
@@ -647,10 +690,62 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
                                     );
 
         foreach ($page9_question_prompts as $q => $prompt) {
-            $this->addTextAreaElement($q, $prompt);
             $this->addSelect($q . "_score", $this->indent . "Score:<h6>" . $page9_score_descriptions[$q] . "<br>Missing data - describe reason in text box</h6>", $score_options);
-            $this->form->addElement("static", null, "<br/>");
+	   $this->addTextAreaElement($q, $prompt);
+	    $this->form->addElement("static", null, "<br/>");
         }
+    }
+    //sum response 
+
+    function sumScaleScores($question_array, $record)
+    {
+        $sum = 0;
+
+        foreach ($question_array as $q) {
+            if ($record[$q] == "yes") {
+                $sum += 1;
+            }
+        }
+
+        return $sum;
+    }
+
+    function score(): void
+    {
+        if ($this->_determineDataEntryCompletionStatus() == "Incomplete") {
+            return;
+        }
+        //null scores
+        //$this->_nullScores($this->scoreLabels);
+
+        //get the saved scores
+        $db     = Database::singleton();
+        $query  = "SELECT * FROM $this->table WHERE CommentID =:cid";
+        $record = $db->pselectRow($query, array('cid' => $this->commentID));
+	$scores  = array(
+	        "routine_and_responsibility"        =>  0,
+                "emotional_need"                    =>  0,
+                "learning_behavior"                 =>  0,
+                "recreational_activity"             =>  0,
+                "place_or_travel"                   =>  0,
+                "family_friend"                     =>  0,
+                "house"                             =>  0,
+                "parent_child_interaction"          =>  0,
+                "parent_visitor_interaction"        =>  0,
+	
+	);
+      
+	$scores["routine_and_responsibility"] = $this->sumScaleScores(self::ROUTINES_AND_RESPONSIBILITY, $record);
+	$scores["emotional_need"] = $this->sumScaleScores(self::EMOTIONAL_NEEDS, $record);
+	$scores["learning_behavior"] = $this->sumScaleScores(self::LEARNING_BEHAVIOR, $record);
+	$scores["recreational_activity"] = $this->sumScaleScores(self::RECREATIONAL_ACTIVITIES, $record);
+	$scores["place_or_travel"] = $this->sumScaleScores(self::PLACES_TRAVEL, $record);
+	$scores["family_friend"] = $this->sumScaleScores(self::FAMILY_AND_FRIENDS, $record);
+	$scores["house"] = $this->sumScaleScores(self::HOUSE, $record);
+	$scores["parent_child_interaction"] = $this->sumScaleScores(self::PARENT_CHILD_INTERACTIONS, $record);
+	$scores["parent_visitor_interaction"] = $this->sumScaleScores(self::PARENT_VISITOR_INTERACTIONS, $record);
+
+	$result = $db->update($this->table, $scores, array("CommentID" => $this->getCommentID()));
     }
 
     function validate_main_page($values)
