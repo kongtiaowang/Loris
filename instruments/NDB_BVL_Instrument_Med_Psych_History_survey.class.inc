@@ -447,8 +447,14 @@ class NDB_BVL_Instrument_Med_Psych_History_survey extends NDB_BVL_Instrument
                 "q3_disorder_" . $i . "_group"
             );
 
+<<<<<<< HEAD
             $this->XINRegisterRule(
                 "q3_disorder_" . $i . "_relative_multiple",
+=======
+	    
+           $this->XINRegisterRule(
+               "q3_disorder_" . $i . "_relative_multiple",
+>>>>>>> 3df773dd9... add scoring, fix error
                 array("q3_disorder_{$i}_relative{@}=={@}multiple"),
                 "Required if multiple.",
                 "q3_disorder_" . $i . "_group"
