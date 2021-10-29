@@ -122,14 +122,14 @@ class NDB_BVL_Instrument_med_records_recruit extends NDB_BVL_Instrument_med_reco
 		$this->_addMetadataFields ();
         $this->form->addElement('textarea', 'comments', 'General comments:');
         $this->XINRegisterRule('comments', array("comments{@}=={@}NEVER_REQUIRED"));
-        $this->addDateElement('Lastupdated', 'Date last updated:', $this->dateOptions);
+        $this->addDateElement('Lastupdated', 'Date last updated:');
         $this->form->addFormRule(array(&$this, 'Med_Rules'));
 
 
 	}
 	
 	function _page1() {
-                $this->addDateElement('Lastupdated_exclusionary', 'Date this form was last updated:', $this->dateOptions);
+                $this->addDateElement('Lastupdated_exclusionary', 'Date this form was last updated:');
                 $this->form->addElement ( "static", null, "<BR>" );
 
 		$this->form->addElement ( "select", "significant_notes_during_pregnancy_or_delivery", "Anything significant noted during pregnancy or delivery?", $this->yesNo );
@@ -240,8 +240,7 @@ class NDB_BVL_Instrument_med_records_recruit extends NDB_BVL_Instrument_med_reco
         $this->form->addElement('header', null, 'Audiology');
 
         $this->form->addElement('header', 'instrument_title', "Audiology Evaluation Results");
-        $this->addDateElement('Lastupdated_audiology', 'Date this form was last updated:', $this->dateOptions);
-
+        $this->addDateElement('Lastupdated_audiology', 'Date this form was last updated:');
         $this->form->addElement ( "static", null, "<BR>" );
         $this->form->addElement("select", "not_completed", "For this participant an audiology evaluation was", array(null=>"", "complete"=>"Completed","not_complete"=>"Not Completed", "other"=>"Not Answered"));
 
