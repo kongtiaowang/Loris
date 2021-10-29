@@ -257,8 +257,8 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
                                     );
 
         foreach ($page1_question_prompts as $q => $prompt) {
-            $this->addSelect($q . "_score", $this->indent . "Score:<h6>" . $page1_score_descriptions[$q] . "<br>Missing data - describe reason in text box</h6>", $score_options);
-	    $this->addTextAreaElement($q, $prompt);
+            $this->addSelect($q . "_score", $prompt , $score_options);
+	    $this->addTextAreaElement($q, $this->indent .  "Score:<h6>" .  $page1_score_descriptions[$q] . "<br>Missing data - describe reason in text box</h6>");
 	    $this->form->addElement("static", null, "<br/>");
         }
     }
@@ -309,8 +309,8 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
                                     );
 
         foreach ($page2_question_prompts as $q => $prompt) {
-            $this->addSelect($q . "_score", $this->indent . "Score:<h6>" . $page2_score_descriptions[$q] . "<br>Missing data - describe reason in text box</h6>", $score_options);
-	    $this->addTextAreaElement($q, $prompt);
+            $this->addSelect($q . "_score", $prompt , $score_options);
+	    $this->addTextAreaElement($q, $this->indent . "Score:<h6>" . $page2_score_descriptions[$q] . "<br>Missing data - describe reason in text box</h6>");
 	    $this->form->addElement("static", null, "<br/>");
         }
     }
@@ -364,8 +364,8 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
                                     );
 
         foreach ($page3_question_prompts as $q => $prompt) {
-            $this->addSelect($q . "_score", $this->indent . "Score:<h6>" . $page3_score_descriptions[$q] . "<br>Missing data - describe reason in text box</h6>", $score_options);
-	    $this->addTextAreaElement($q, $prompt);
+            $this->addSelect($q . "_score", $prompt , $score_options);
+	    $this->addTextAreaElement($q,  $this->indent . "Score:<h6>" . $page3_score_descriptions[$q] . "<br>Missing data - describe reason in text box</h6>");
 	    $this->form->addElement("static", null, "<br/>");
         }
     }
@@ -417,8 +417,8 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
                                     );
 
         foreach ($page4_question_prompts as $q => $prompt) {
-            $this->addSelect($q . "_score", $this->indent . "Score:<h6>" . $page4_score_descriptions[$q] . "<br>Missing data - describe reason in text box</h6>", $score_options);
-	    $this->addTextAreaElement($q, $prompt);
+            $this->addSelect($q . "_score", $prompt , $score_options);
+	    $this->addTextAreaElement($q, $this->indent . "Score:<h6>" . $page4_score_descriptions[$q] . "<br>Missing data - describe reason in text box</h6>");
 	    $this->form->addElement("static", null, "<br/>");
         }
     }
@@ -470,8 +470,8 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
                                     );
 
         foreach ($page5_question_prompts as $q => $prompt) {
-            $this->addSelect($q . "_score", $this->indent . "Score:<h6>" . $page5_score_descriptions[$q] . "<br>Missing data - describe reason in text box</h6>", $score_options);
-	    $this->addTextAreaElement($q, $prompt);
+            $this->addSelect($q . "_score", $prompt , $score_options);
+	    $this->addTextAreaElement($q, $this->indent . "Score:<h6>" . $page5_score_descriptions[$q] . "<br>Missing data - describe reason in text box</h6>");
 	    $this->form->addElement("static", null, "<br/>");
         }
     }
@@ -523,8 +523,8 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
                                     );
 
         foreach ($page6_question_prompts as $q => $prompt) {
-            $this->addSelect($q . "_score", $this->indent . "Score:<h6>" . $page6_score_descriptions[$q] . "<br>Missing data - describe reason in text box</h6>", $score_options);
-	    $this->addTextAreaElement($q, $prompt);
+            $this->addSelect($q . "_score", $prompt , $score_options);
+	    $this->addTextAreaElement($q, $this->indent . "Score:<h6>" . $page6_score_descriptions[$q] . "<br>Missing data - describe reason in text box</h6>");
 	    $this->form->addElement("static", null, "<br/>");
         }
     }
@@ -586,8 +586,8 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
                                     );
 
         foreach ($page7_question_prompts as $q => $prompt) {
-            $this->addSelect($q . "_score", $this->indent . "Score:<h6>" . $page7_score_descriptions[$q] . "<br>Missing data - describe reason in text box</h6>", $score_options);
-	    $this->addTextAreaElement($q, $prompt);
+            $this->addSelect($q . "_score", $prompt , $score_options);
+	    $this->addTextAreaElement($q, $this->indent . "Score:<h6>" . $page7_score_descriptions[$q] . "<br>Missing data - describe reason in text box</h6>");
 	    $this->form->addElement("static", null, "<br/>");
         }
     }
@@ -645,8 +645,8 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
                                     );
 
         foreach ($page8_question_prompts as $q => $prompt) {
-            $this->addSelect($q . "_score", $this->indent . "Score:<h6>" . $page8_score_descriptions[$q] . "<br>Missing data - describe reason in text box</h6>", $score_options);
-	    $this->addTextAreaElement($q, $prompt);
+            $this->addSelect($q . "_score", $prompt , $score_options);
+	    $this->addTextAreaElement($q, $this->indent . "Score:<h6>" . $page8_score_descriptions[$q] . "<br>Missing data - describe reason in text box</h6>");
 	    $this->form->addElement("static", null, "<br/>");
         }
     }
@@ -690,8 +690,8 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
                                     );
 
         foreach ($page9_question_prompts as $q => $prompt) {
-            $this->addSelect($q . "_score", $this->indent . "Score:<h6>" . $page9_score_descriptions[$q] . "<br>Missing data - describe reason in text box</h6>", $score_options);
-	   $this->addTextAreaElement($q, $prompt);
+            $this->addSelect($q . "_score", $prompt , $score_options);
+	   $this->addTextAreaElement($q, $this->indent . "Score:<h6>" . $page9_score_descriptions[$q] . "<br>Missing data - describe reason in text box</h6>");
 	    $this->form->addElement("static", null, "<br/>");
         }
     }
