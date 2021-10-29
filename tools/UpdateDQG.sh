@@ -26,8 +26,8 @@ curl -X GET http://ibis_admin:MxedMdia=40sheets@192.168.1.91:5984/ibisunfiltered
 printf "After Curl\n"
 
 printf "Starting Clean Imports\n"
-php CouchDB_Import_demographics_ibis_clean.php
-php CouchDB_Import_Instruments_ibis_clean.php
+php CouchDB_Import_demographics_clean.php
+php CouchDB_Import_Instruments_clean.php
 php CouchDB_Import_Derived_ADOS_clean.php
 php CouchDB_Import_Derived_Language_clean.php
 
