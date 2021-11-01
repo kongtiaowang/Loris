@@ -142,7 +142,7 @@ class CouchDBInstrumentImporter
                     )";
         } else {
             $where = $where . "
-                AND f.Validity <> 'Valid'";
+                AND f.Validity = 'Valid'";
         }
 
         if ($tablename === "") {
