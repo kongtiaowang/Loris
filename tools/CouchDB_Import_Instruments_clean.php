@@ -88,7 +88,7 @@ class CouchDBInstrumentImporter
         }
     }
 
-    function generateDocumentSQL(string $tablename, string $testName) : string
+    function generateDocumentSQL(string $tablename, string $testName, bool $validityEnabled) : string
     {
         $ddeEnabled = isset($this->ddeInstruments[$testName]);
         //Script Overriden as per Redmine 18848
@@ -134,13 +134,17 @@ class CouchDBInstrumentImporter
 
             $where = $where . "
                 AND ddef.Data_entry = 'Complete'
-                AND f.Validity <> 'Invalid'
                 AND NOT EXISTS (
                         SELECT 'x'
                         FROM conflicts_unresolved cu
                         WHERE f.CommentID=cu.CommentId1 OR f.CommentID=cu.CommentId2
                     )";
-        } else {
+
+            if ($validityEnabled) {
+                $where = $where . "
+                    AND f.Validity <> 'Invalid'";
+            }
+        } else if ($validityEnabled) {
             $where = $where . "
                 AND f.Validity = 'Valid'";
         }
@@ -181,7 +185,8 @@ class CouchDBInstrumentImporter
             }
 
             $this->CouchDB->beginBulkTransaction();
-            $preparedStatement = $this->SQLDB->prepare($this->generateDocumentSQL($tableName, $instrument));
+            $preparedStatement = $this->SQLDB->prepare(
+                $this->generateDocumentSQL($tableName, $instrument, $instrumentObj->ValidityEnabled));
             $preparedStatement->execute(array('inst' => $instrument));
             while ($row = $preparedStatement->fetch(PDO::FETCH_ASSOC)) {
                 $CommentID = $row['CommentID'];
