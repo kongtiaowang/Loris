@@ -56,6 +56,31 @@
       Direct Assessments [DDE] - DS-Infant
     </button>
   </div>
+  <br /><br /><br />
+  <div class="col-sm-3 col-xs-12 form-group">
+    <button
+      onClick="getDirectClean_EP()"
+      class="btn btn-primary btn-small col-xs-12"
+    >
+      Direct Assessments [Clean] - EP
+    </button>
+  </div>
+  <div class="col-sm-3 col-xs-12 form-group">
+    <button
+      onClick="getDirectClean_SA()"
+      class="btn btn-primary btn-small col-xs-12"
+    >
+      Direct Assessments [Clean] - SA
+    </button>
+  </div>
+  <div class="col-sm-3 col-xs-12 form-group">
+    <button
+      onClick="getDirectClean_DSInfant()"
+      class="btn btn-primary btn-small col-xs-12"
+    >
+      Direct Assessments [Clean] - DS-Infant
+    </button>
+  </div>
 </div>
 <br /><br /><br />
 <div class="alert alert-warning" role="alert" id="alert" style="display: none">
