@@ -342,8 +342,11 @@ class NDB_BVL_Instrument_Bayley4 extends NDB_BVL_Instrument
 
         //Set the target directory that you want files moved into once they are validated and processed.
         $config = NDB_Config::singleton();
-
-        $file->setBaseUploadDirectory("/var/www/html/Bayley4/");
+        $dir = $config->getSetting("UploadDir");
+        if(empty($dir)) {
+            $dir = ".";
+        };
+        $file->setBaseUploadDirectory($dir . "/Bayley4/");
         //Set the prefix to prepend to the filenames
         //$file->setFilenamePrefix($timepoint->getVisitLabel()."-".$this->testName."-");
 
@@ -396,7 +399,6 @@ class NDB_BVL_Instrument_Bayley4 extends NDB_BVL_Instrument
         // of those
         $id = preg_replace('/^\W+/', '', $id);
         $id = preg_replace('/\W+$/', '', $id);
-print_r($id);
         if (strpos($id, $args['candID']) === false || strpos($id, $args['PSCID']) === false ) {
             $errors[]="Incorrect candidate ID or PSCID found in file.";
             return $errors;
