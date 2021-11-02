@@ -342,11 +342,8 @@ class NDB_BVL_Instrument_Bayley4 extends NDB_BVL_Instrument
 
         //Set the target directory that you want files moved into once they are validated and processed.
         $config = NDB_Config::singleton();
-        $dir = $config->getSetting("UploadDir");
-        if(empty($dir)) {
-            $dir = ".";
-        };
-        $file->setBaseUploadDirectory($dir . "/Bayley4/");
+
+        $file->setBaseUploadDirectory("/var/www/html/Bayley4/");
         //Set the prefix to prepend to the filenames
         //$file->setFilenamePrefix($timepoint->getVisitLabel()."-".$this->testName."-");
 
@@ -399,13 +396,12 @@ class NDB_BVL_Instrument_Bayley4 extends NDB_BVL_Instrument
         // of those
         $id = preg_replace('/^\W+/', '', $id);
         $id = preg_replace('/\W+$/', '', $id);
-
-        $originID = $args['candID'].'_'. $args['PSCID'].'_'.$args['visitLabel'];
-
-        if($id != $originID){
-            $errors[]="Incorrect patient ID found in file. Expected $originID but I got '$id'\n";
+print_r($id);
+        if (strpos($id, $args['candID']) === false || strpos($id, $args['PSCID']) === false ) {
+            $errors[]="Incorrect candidate ID or PSCID found in file.";
             return $errors;
         }
+
 
         $correct_filename = ($this->testName.'_'.$args['candID'].'_'. $args['PSCID'].'_'.$args['visitLabel']. ".doc");
         if($file->fileInfo['name'] != $correct_filename){
@@ -640,4 +636,3 @@ class NDB_BVL_Instrument_Bayley4 extends NDB_BVL_Instrument
 
 
 }
-
