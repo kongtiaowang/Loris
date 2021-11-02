@@ -184,5 +184,14 @@ CREATE TABLE `MC_HOME_UMN_REVISED` (
     `q17` text default NULL,
     `q17_status` enum('not_answered') default NULL,
     `q17_score` enum('yes','no','missing_data') default NULL,
+    `routine_and_responsibility` varchar(10) default NULL,
+    `emotional_need` varchar(10) default NULL,
+    `learning_behavior` varchar(10) default NULL,
+    `recreational_activity` varchar(10) default NULL,
+    `place_or_travel` varchar(10) default NULL,
+    `family_friend` varchar(10) default NULL,
+    `house` varchar(10) default NULL,
+    `parent_child_interaction` varchar(10) default NULL,
+    `parent_visitor_interaction` varchar(10) default NULL,
     PRIMARY KEY  (`CommentID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
