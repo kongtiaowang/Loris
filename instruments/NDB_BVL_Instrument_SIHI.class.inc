@@ -555,6 +555,8 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
             "<h3><b>V. Late elementary school (grade 4-5)</b></h3>"
         );
 
+	$this->form->addElement("advcheckbox", 'not_in_elementary_school', null, 'Participant not yet in 4th grade', null,  array("not_used", "used"));
+
         $this->addSelect("v_q1_any_concerns_about_childs_nighttime_sleep", "1. Any concerns about your child's nighttime sleep?", $this->yes_no_options);
 
         $this->addSelect("v_q1_if_yes_rate_concern", $this->indent . "If yes, rate concern:", $this->rate_concern_options);
@@ -613,7 +615,13 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
         $this->XINRegisterRule('v_q5_if_medication_select_which_medicine_your_child_used', array('v_q5_if_yes_select{@}=={@}medication'), 'Required if medication');
 
 	$this->form->addElement("textarea","v_q5_additional_comment", "Any additional comments about your child's sleep at this time?", array('cols'=>25, 'rows'=>4));
-        $this->XINRegisterRule("v_q5_additional_comment", array("v_q5_additional_comment{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("v_q5_additional_comment", array("v_q5_additional_comment{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("v_q1_any_concerns_about_childs_nighttime_sleep", array("not_in_elementary_school{@}!={@}used"), 'Required.');
+        $this->XINRegisterRule("v_q2_any_concerns_about_childs_daytime_sleep", array("not_in_elementary_school{@}!={@}used"), 'Required.');
+	$this->XINRegisterRule("v_q3_any_external_influences_affected_sleep", array("not_in_elementary_school{@}!={@}used"), 'Required.');
+	$this->XINRegisterRule("v_q4_seek_information_to_help_child_sleep_better", array("not_in_elementary_school{@}!={@}used"), 'Required.');
+	$this->XINRegisterRule("v_q5_did_child_receive_intervention", array("not_in_elementary_school{@}!={@}used"), 'Required.');
+        $this->XINRegisterRule("v_q5_additional_comment", array("not_in_elementary_school{@}!={@}used"), 'Required.');
         $this->XINRegisterRule("v_where_were_you_living_at_the_time", array("v_where_were_you_living_at_the_time{@}=={@}never_required"), 'Not Required.');
 	$this->XINRegisterRule("v_where_did_your_child_sleep", array("v_where_did_your_child_sleep{@}=={@}never_required"), 'Not Required.');
 	$this->XINRegisterRule("v_any_significant_family_events", array("v_any_significant_family_events{@}=={@}never_required"), 'Not Required.');
