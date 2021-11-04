@@ -399,14 +399,13 @@ class NDB_BVL_Instrument_Bayley4 extends NDB_BVL_Instrument
         // of those
         $id = preg_replace('/^\W+/', '', $id);
         $id = preg_replace('/\W+$/', '', $id);
-
-        if (strpos($id, $args['candID']) !== false || strpos($id, $args['PSCID']) !== false ) {
+        if (strpos($id, $args['candID']) === false || strpos($id, $args['PSCID']) === false ) {
             $errors[]="Incorrect candidate ID or PSCID found in file.";
             return $errors;
         }
 
 
-        $correct_filename = ($this->testName.'_'.$args['candID'].'_'. $args['PSCID'].".doc");
+        $correct_filename = ($this->testName.'_'.$args['candID'].'_'. $args['PSCID'].'_'.$args['visitLabel']. ".doc");
         if($file->fileInfo['name'] != $correct_filename){
             $errors[]="Incorrect Filename: Filename should be: " . $correct_filename;
             return $errors;
@@ -639,4 +638,3 @@ class NDB_BVL_Instrument_Bayley4 extends NDB_BVL_Instrument
 
 
 }
-
