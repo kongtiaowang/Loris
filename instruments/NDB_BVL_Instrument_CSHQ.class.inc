@@ -886,7 +886,6 @@ class NDB_BVL_Instrument_CSHQ extends NDB_BVL_Instrument_survey
                             $score[$subscale] = 'Unknown (not enough data)'; 
                             break(2);
                         }
-                        error_log("Record of {$aq}: " . $record[$aq]);
                         try {
                             if (is_numeric($record[$aq]))
                                 $score[$subscale] += $record[$aq];
