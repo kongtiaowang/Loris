@@ -147,7 +147,7 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
             'ii_q1_any_concerns_about_childs_nighttime_sleep',
             'iii_q1_any_concerns_about_childs_nighttime_sleep',
             'iv_q1_any_concerns_about_childs_nighttime_sleep',
-	    'v_q1_any_concerns_about_childs_nighttime_sleep');
+	    );
         // setup the form
         $this->_setupForm();
     }

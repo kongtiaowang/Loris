@@ -116,15 +116,15 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
 
         // required fields for data entry completion status
         $this->_requiredElements = array(
-                                    "q1",
-                                    "q3",
-                                    "q26",
-                                    "q34",
-                                    "q39",
-                                    "q48",
-                                    "q22",
-                                    "q5",
-                                    "q10",
+                                    "q1_score",
+                                    "q3_score",
+                                    "q26_score",
+                                    "q34_score",
+                                    "q39_score",
+                                    "q48_score",
+                                    "q22_score",
+                                    "q5_score",
+                                    "q10_score",
                                    );
 	
 	$this->_doubleDataEntryDiffIgnoreColumns = array(
