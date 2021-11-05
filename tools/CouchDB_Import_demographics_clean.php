@@ -30,6 +30,10 @@ class CouchDBDemographicsImporter {
             'Description' => 'NDAR Candidate Identifier',
             'Type' => 'varchar(255)'
         ),
+        'age_today' => array(
+            'Description' => 'Candidate age today',
+            'Type' => 'varchar(255)'
+        ),
         'candidate_ethnicity' => array(
             'Description' => 'Candidate Ethnicity',
             'Type' => 'varchar(255)'
@@ -230,6 +234,7 @@ class CouchDBDemographicsImporter {
                                  c.Sex,
                                  s.Current_stage,
                                  ROUND(DATEDIFF(s.Date_visit, c.DoB) / (365/12))             AS Age_at_visit_start,
+                                 ROUND(DATEDIFF(NOW(), c.DoB) / (365/12))                    AS age_today,
                                  s.Scan_done                                                 AS Scan_done,
                                  CASE
                                    WHEN s.visit = 'Failure' THEN 'Failure'
