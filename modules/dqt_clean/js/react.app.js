@@ -2220,7 +2220,7 @@ var DataQueryApp = /*#__PURE__*/function (_Component) {
       // Used to save the current query
       var filter = this.saveFilterGroup(this.state.filter);
       $.post(loris.BaseURL + '/AjaxHelper.php?Module=dqt_clean&script=saveQuery.php', {
-        Fields: this.state.selectedFields,
+        Fields: JSON.stringify(this.state.selectedFields),
         Filters: filter,
         QueryName: name,
         SharedQuery: shared,
