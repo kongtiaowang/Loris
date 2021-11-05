@@ -570,7 +570,8 @@ group by s.CandID,s.Visit_label",
                             SELECT s2.Visit_label
                                 FROM session s2
                                 WHERE s2.candID=:candID
-                                ORDER BY Date_visit ASC
+                                    AND s2.Date_visit IS NOT NULL
+                                ORDER BY s2.Date_visit ASC
                                 LIMIT 1
                         )
 		                AND f.Test_name IN ('tsi', 'tsi_ds', 'TSI_DS_Infant', 'TSI_EP')
