@@ -187,7 +187,7 @@ class NDB_BVL_Instrument_TSI_FU_DS_Infant extends NDB_BVL_Instrument
         $this->form->addElement('static', null, "CHILD PRIMARY ADDRESS");
 
         foreach ($pii_address as $field) {
-            $this->form->addElement('text', null, $this->indent . $field, ['disabled' => 'disabled']);
+            $this->form->addElement('text', null, $this->indent . $field, [], ['disabled' => 'disabled']);
         }
 
         $this->form->addElement('text', 'when_did_you_move_primary', $this->indent . "When did you move?");
@@ -205,7 +205,7 @@ class NDB_BVL_Instrument_TSI_FU_DS_Infant extends NDB_BVL_Instrument
         $this->form->addElement('static', null, "SECONDARY ADDRESS<br>(if 2 households)");
 
         foreach ($pii_address as $field) {
-            $this->form->addElement('text', null, $this->indent . $field, ['disabled' => 'disabled']);
+            $this->form->addElement('text', null, $this->indent . $field, [], ['disabled' => 'disabled']);
         }
 
         $this->form->addElement('text', 'when_did_you_move_secondary', $this->indent . "When did you move?");

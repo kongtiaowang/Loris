@@ -311,7 +311,7 @@ class NDB_BVL_Instrument_TSI_DS_Infant extends NDB_BVL_Instrument
 
         $this->addBasicDate('date_of_first_contact', 'Date of First Contact (1st time speak with the family)', $dateOptions);
 
-        $this->form->addElement('text', null, "City/State of Birth", ['disabled' => 'disabled']);
+        $this->form->addElement('text', null, "City/State of Birth", [], ['disabled' => 'disabled']);
     }
 
     /**
@@ -356,9 +356,9 @@ class NDB_BVL_Instrument_TSI_DS_Infant extends NDB_BVL_Instrument
         // SUBJECT INFORMATION
         $this->form->addElement('static', null, "SUBJECT<h6><i>Exclude if born less < 36 or > 42.5 weeks gestation or birth weight < 2000g (4lbs 4oz).</i></h6>");
 
-        $this->form->addElement('text', null, $this->indent . "First Name", ['disabled' => 'disabled']);
-        $this->form->addElement('text', null, $this->indent . "Middle Name", ['disabled' => 'disabled']);
-        $this->form->addElement('text', null, $this->indent . "Last Name", ['disabled' => 'disabled']);
+        $this->form->addElement('text', null, $this->indent . "First Name", [], ['disabled' => 'disabled']);
+        $this->form->addElement('text', null, $this->indent . "Middle Name", [],  ['disabled' => 'disabled']);
+        $this->form->addElement('text', null, $this->indent . "Last Name", [], ['disabled' => 'disabled']);
 
         $this->addBasicDate("subject_dob", $this->indent . 'Date of Birth', $this->dateOptions);
         $this->addBasicDate("subject_expected_due_date", $this->indent . 'Expected Due Date', $this->dateOptions);
@@ -410,7 +410,7 @@ class NDB_BVL_Instrument_TSI_DS_Infant extends NDB_BVL_Instrument
             if ($field == "Date of Birth") {
                 $this->addBasicDate("mother_dob", $this->indent . $field, $this->dateOptions);
             } else {
-                $this->form->addElement('text', null, $this->indent . $field, ['disabled' => 'disabled']);
+                $this->form->addElement('text', null, $this->indent . $field, [], ['disabled' => 'disabled']);
             }
         }
 
@@ -426,7 +426,7 @@ class NDB_BVL_Instrument_TSI_DS_Infant extends NDB_BVL_Instrument
             if ($field == "Date of Birth") {
                 $this->addBasicDate("father_dob", $this->indent . $field, $this->dateOptions);
             } elseif ($field != "Maiden Name") {
-                $this->form->addElement('text', null, $this->indent . $field, ['disabled' => 'disabled']);
+                $this->form->addElement('text', null, $this->indent . $field, [], ['disabled' => 'disabled']);
             }
         }
 
@@ -450,7 +450,7 @@ class NDB_BVL_Instrument_TSI_DS_Infant extends NDB_BVL_Instrument
         $this->form->addElement('static', null, "CHILD PRIMARY ADDRESS");
 
         foreach ($pii_address as $field) {
-            $this->form->addElement('text', null, $this->indent . $field, ['disabled' => 'disabled']);
+            $this->form->addElement('text', null, $this->indent . $field, [], ['disabled' => 'disabled']);
         }
 
         $this->form->addElement('static', null, null);
@@ -459,7 +459,7 @@ class NDB_BVL_Instrument_TSI_DS_Infant extends NDB_BVL_Instrument
         $this->form->addElement('static', null, "SECONDARY ADDRESS<br>(if 2 households)");
 
         foreach ($pii_address as $field) {
-            $this->form->addElement('text', null, $this->indent . $field, ['disabled' => 'disabled']);
+            $this->form->addElement('text', null, $this->indent . $field, [], ['disabled' => 'disabled']);
         }
 
         $this->form->addElement('static', null, null);
@@ -469,7 +469,7 @@ class NDB_BVL_Instrument_TSI_DS_Infant extends NDB_BVL_Instrument
 
         foreach ($pii_contact as $field) {
             if ($field != "Maiden Name" && $field != "Date of Birth") {
-                $this->form->addElement('text', null, $this->indent . $field, ['disabled' => 'disabled']);
+                $this->form->addElement('text', null, $this->indent . $field, [], ['disabled' => 'disabled']);
             }
         }
 
