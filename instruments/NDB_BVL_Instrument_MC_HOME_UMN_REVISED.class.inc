@@ -259,7 +259,7 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
         foreach ($page1_question_prompts as $q => $prompt) {
             $this->addSelect("{$q}_score", $prompt , $score_options);
 	    $this->form->addElement("textarea",$q,$this->indent . "Score:<h6>" . $page1_score_descriptions[$q] . "<br>Missing data - describe reason in text box</h6>", array('cols'=>25, 'rows'=>4));
-	    $this->XINRegisterRule("{$q}_group", array("{$q}_score{@}=={@}missing_data"), 'Required.');
+	    $this->XINRegisterRule("{$q}", array("{$q}_score{@}=={@}missing_data"), 'Required.');
 	    $this->form->addElement("static", null, "<br/>");
 	}
     
