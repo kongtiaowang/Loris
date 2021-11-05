@@ -116,15 +116,15 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
 
         // required fields for data entry completion status
         $this->_requiredElements = array(
-                                    "q1",
-                                    "q3",
-                                    "q26",
-                                    "q34",
-                                    "q39",
-                                    "q48",
-                                    "q22",
-                                    "q5",
-                                    "q10",
+                                    "q1_score",
+                                    "q3_score",
+                                    "q26_score",
+                                    "q34_score",
+                                    "q39_score",
+                                    "q48_score",
+                                    "q22_score",
+                                    "q5_score",
+                                    "q10_score",
                                    );
 	
 	$this->_doubleDataEntryDiffIgnoreColumns = array(
@@ -259,7 +259,7 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
         foreach ($page1_question_prompts as $q => $prompt) {
             $this->addSelect("{$q}_score", $prompt , $score_options);
 	    $this->form->addElement("textarea",$q,$this->indent . "Score:<h6>" . $page1_score_descriptions[$q] . "<br>Missing data - describe reason in text box</h6>", array('cols'=>25, 'rows'=>4));
-	    $this->XINRegisterRule("{$q}", array("{$q}_score{@}=={@}missing_data"), 'Required.');
+	    $this->XINRegisterRule("{$q}_group", array("{$q}_score{@}=={@}missing_data"), 'Required.');
 	    $this->form->addElement("static", null, "<br/>");
 	}
     
