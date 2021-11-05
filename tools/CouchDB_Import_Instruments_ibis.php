@@ -75,6 +75,17 @@ class CouchDBInstrumentImporter
             unset($Dict['city_of_birth']);
             unset($Dict['city_of_birth_status']);
 
+            if (in_array($instrument, array("tsi", "TSI_DS_Infant", "tsi_ds", "TSI_EP"))) {
+                $Dict['mother_age_at_administration'] = array(
+                    'Type' => "varchar(255)",
+                    'Description' => "Mother's age at administration"
+                );
+                $Dict['father_age_at_administration'] = array(
+                    'Type' => "varchar(255)",
+                    'Description' => "Father's age at administration"
+                );
+            }
+
             $this->CouchDB->replaceDoc(
                 "DataDictionary:$instrument",
                 array(
@@ -173,6 +184,28 @@ class CouchDBInstrumentImporter
                 if (isset($docdata['Examiner']) && is_numeric($docdata['Examiner'])) {
                     $docdata['Examiner'] = $this->SQLDB->pselectOne("SELECT full_name FROM examiners WHERE examinerID=:eid", array("eid" => $docdata['Examiner']));
                 }
+
+                if (in_array($instrument, array("tsi", "TSI_DS_Infant", "tsi_ds", "TSI_EP"))) {
+                    $mother_dob = in_array($instrument, array("tsi", "tsi_ds")) ? "mother_dob_date" : "mother_dob";
+                    $father_dob = in_array($instrument, array("tsi", "tsi_ds")) ? "father_dob_date" : "father_dob";
+
+                    if (!is_null($row[$mother_dob])) {
+                        $age = Utility::calculateAge($row[$mother_dob], $row['Date_taken']);
+                        $docdata['mother_age_at_administration'] = round($age['year'] + round($age['mon']/12,2) +
+                            round($age['day']/365, 2), 2);
+                    } else {
+                        $docdata['mother_age_at_administration'] = "Unknown";
+                    }
+
+                    if (!is_null($row[$father_dob])) {
+                        $age = Utility::calculateAge($row[$father_dob], $row['Date_taken']);
+                        $docdata['father_age_at_administration'] = round($age['year'] + round($age['mon']/12,2) +
+                            round($age['day']/365, 2), 2);
+                    } else {
+                        $docdata['father_age_at_administration'] = "Unknown";
+                    }
+                }
+
                 $doc     = array(
                             'Meta' => array(
                                        'DocType'    => $instrument,
