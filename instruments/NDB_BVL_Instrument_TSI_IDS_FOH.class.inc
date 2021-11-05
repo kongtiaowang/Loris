@@ -247,7 +247,7 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
 
 	$this->addBasicDate('date_of_most_recent_visit', 'Date of most recent IBIS visit: ', $dateOptions);
 	
-	$this->form->addElement('text', null, "City/State of Birth", ['disabled' => 'disabled']);
+	$this->form->addElement('text', null, "City/State of Birth",[],['disabled' => 'disabled']);
         $this->XINRegisterRule("date_of_most_recent_visit", array("not_finish0{@}!={@}1"), 'Required.');
 
 
@@ -290,9 +290,9 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
                         "Zip Code",
                        );
         
-        $this->form->addElement('text', null, $this->indent . "First Name", ['disabled' => 'disabled']);
-        $this->form->addElement('text', null, $this->indent . "Middle Name", ['disabled' => 'disabled']);
-        $this->form->addElement('text', null, $this->indent . "Last Name", ['disabled' => 'disabled']);
+        $this->form->addElement('text', null, $this->indent . "First Name", [], ['disabled' => 'disabled']);
+        $this->form->addElement('text', null, $this->indent . "Middle Name", [], ['disabled' => 'disabled']);
+        $this->form->addElement('text', null, $this->indent . "Last Name", [], ['disabled' => 'disabled']);
 
         $this->addBasicDate("subject_dob", $this->indent . 'Date of Birth', $this->dateOptions);
         $this->addBasicDate("subject_expected_due_date", $this->indent . 'Expected Due Date', $this->dateOptions);
@@ -322,7 +322,7 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
             if ($field == "Date of Birth") {
                 $this->addDateElement("mother_dob", $this->indent . $field);
             } else {
-                $this->form->addElement('text', null, $this->indent . $field, ['disabled' => 'disabled']);
+                $this->form->addElement('text', null, $this->indent . $field, [], ['disabled' => 'disabled']);
             }
         }
 	$this->XINRegisterRule("mother_dob_date", array("mother_dob_date{@}=={@}"), 'Required.');
@@ -345,7 +345,7 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
             if ($field == "Date of Birth") {
                 $this->addDateElement("father_dob", $this->indent . $field);
             } elseif ($field != "Maiden Name") {
-                $this->form->addElement('text', null, $this->indent . $field, ['disabled' => 'disabled']);
+                $this->form->addElement('text', null, $this->indent . $field, [], ['disabled' => 'disabled']);
             }
         }
 	$this->XINRegisterRule("father_dob_date", array("father_dob_date{@}=={@}"), 'Required');
@@ -377,7 +377,7 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
         $this->XINRegisterRule('address_specify', array('child_primary_address{@}=={@}other'), 'Required if other');
 
         foreach ($pii_address as $field) {
-            $this->form->addElement('text', null, $this->indent . $field, ['disabled' => 'disabled']);
+            $this->form->addElement('text', null, $this->indent . $field, [], ['disabled' => 'disabled']);
         }
 
         $this->form->addElement('static', null, null);
@@ -390,7 +390,7 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
         $this->XINRegisterRule('address_specify2', array('child_primary_address2{@}=={@}other'), 'Required if other');
 
         foreach ($pii_address as $field) {
-            $this->form->addElement('text', null, $this->indent . $field, ['disabled' => 'disabled']);
+            $this->form->addElement('text', null, $this->indent . $field, [], ['disabled' => 'disabled']);
         }
 
         $this->form->addElement('static', null, null);
@@ -400,7 +400,7 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
 
         foreach ($pii_contact as $field) {
             if ($field != "Maiden Name" && $field != "Date of Birth") {
-                $this->form->addElement('text', null, $this->indent . $field, ['disabled' => 'disabled']);
+                $this->form->addElement('text', null, $this->indent . $field, [], ['disabled' => 'disabled']);
             }
         }
 
