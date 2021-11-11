@@ -571,14 +571,7 @@ group by s.CandID,s.Visit_label",
                 SELECT f.Test_name, f.CommentID
                     FROM session s
                     JOIN flag f on (s.ID=f.SessionID)
-                    WHERE s.Visit_label = (
-                            SELECT s2.Visit_label
-                                FROM session s2
-                                WHERE s2.candID=:candID
-                                    AND s2.Date_visit IS NOT NULL
-                                ORDER BY s2.Date_visit ASC
-                                LIMIT 1
-                        )
+                    WHERE f.Administration IN ('Partial','All')
 		                AND f.Test_name IN ('tsi', 'tsi_ds', 'TSI_DS_Infant', 'TSI_EP')
 		                AND f.CommentID NOT LIKE 'DDE_%'
                         AND s.CandID=:candID
