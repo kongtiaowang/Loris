@@ -76,7 +76,6 @@ class NDB_BVL_Instrument_Actigraph_Export extends NDB_BVL_Instrument
             $this->_main();
         }
         $this->form->addFormRule(array(&$this, 'XINValidate'));
-
     }
 
 
@@ -88,7 +87,7 @@ class NDB_BVL_Instrument_Actigraph_Export extends NDB_BVL_Instrument
         $this->_addMetadataFields();
         $this->form->addElement('file', 'actigraph_export_file', 'Upload the Actigraph Export Summary Parser file 
        <br><h6><i>(Ex: PSCID_DCCID_visitlabel_Actigraph_Export.csv)</i></h6>');
-
+       
         $this->form->addElement('static', "File_name", "Uploaded File");
 
 
@@ -97,7 +96,11 @@ class NDB_BVL_Instrument_Actigraph_Export extends NDB_BVL_Instrument
         $this->form->addElement('static', null, null);
 
 	$this->form->addElement('header', null, "Subject Properties");
-        
+
+	$group[] = $this->form->createElement('static',null, 'Value', null);
+	$this->form->addGroup($group, "items_group",'Items', $this->_GUIDelimiter, false);
+	unset($group);
+
 	 $fields = array(
             "initials"               =>  "Initials:",
             "full_name"              =>  "Full name:",
@@ -125,10 +128,10 @@ class NDB_BVL_Instrument_Actigraph_Export extends NDB_BVL_Instrument
         $this->XINRegisterRule("other_comments", array("{other_comments}{@}=={@}NEVER_REQUIRED"));
     }
     function _saveValues(array $values): void
-    {
-        $timepoint =& TimePoint::singleton($this->getSessionID());
+    {    
+	$timepoint =& TimePoint::singleton($this->getSessionID());
         $candidate =& Candidate::singleton($timepoint->getCandID());
-
+	
         if(isset($values['Date_taken'])) {
             $this->_saveCandidateAge($values);
         }
@@ -279,10 +282,13 @@ class NDB_BVL_Instrument_Actigraph_Export extends NDB_BVL_Instrument
     );
 
 	foreach ($fields as $key => $val) {
-            $array_key=array_search($val,$lines);
-            if($array_key!= null) {
-                    $values[$key] = $lines[$array_key+1];
-                }
+		$array_key=array_search($val,$lines);
+		$val_count = $array_key+9;
+		if($array_key!= NULL) {
+			for($i = $array_key + 1; $i <= $val_count; $i++ ){
+                            $values[$key] = $lines[$i];
+			}
+		}
             else{
                     $values[$key]='--';
             }
