@@ -23,11 +23,6 @@ $query         = "SELECT * from aims WHERE CommentID = :CommentID";
 $WhereCriteria = array('CommentID'=>$CommentID);
 $record        = array();
 $record        = $db->pselectRow($query, $WhereCriteria);
-$instrument = NDB_BVL_Instrument::factory('aims', $record['CommentID'], null, false);
-if($instrument->getSessionID() != NULL) { //quickform_parser doesn't use any specific session
-     $timepoint = TimePoint::singleton($instrument->getSessionID());
-     $dob = $timepoint->getEffectiveDateOfBirth();
-}
 
 $scores = array();
 if ($record['prone_first_item'] != null & $record['prone_last_item'] != null) {
