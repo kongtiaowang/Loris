@@ -283,11 +283,9 @@ class NDB_BVL_Instrument_Actigraph_Export extends NDB_BVL_Instrument
 
 	foreach ($fields as $key => $val) {
 		$array_key=array_search($val,$lines);
-		$val_count = $array_key+9;
-		if($array_key!= NULL) {
-			for($i = $array_key + 1; $i <= $val_count; $i++ ){
-                            $values[$key] = $lines[$i];
-			}
+		$val_count=$array_key+1;
+		if($array_key != null) {
+                            $values[$key] = $lines[$val_count];
 		}
             else{
                     $values[$key]='--';
