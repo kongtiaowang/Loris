@@ -102,7 +102,7 @@ class NDB_BVL_Instrument_FOH_Intervention_History extends NDB_BVL_Instrument
         } else {
             $this->_main();
         }
-        $this->form->addFormRule(array(&$this, 'XINValidate'));
+     //   $this->form->addFormRule(array(&$this, 'XINValidate'));
     }
     /**
      * generates the main page of the form.
@@ -226,24 +226,27 @@ class NDB_BVL_Instrument_FOH_Intervention_History extends NDB_BVL_Instrument
             "",
             $minutes_array
         );
-        $this->XINRegisterRule(
+    /*     $this->XINRegisterRule(
             "birth_to_three_services_minutes",
             array("birth_to_three_services{@}=={@}yes"),
             "Minutes per session required if answer to question is yes.",
             "q1_frequency"
-        );
+           );
+     */
         $group[] =& $this->createSelect(
             "birth_to_three_services_times_per_week",
             "",
             $num_times_array
         );
-        $this->XINRegisterRule(
+    /*        
+	$this->XINRegisterRule(
             "birth_to_three_services_times_per_week",
             array("birth_to_three_services{@}=={@}yes"),
             "Times per week required if answer to question is yes.",
             "q1_frequency"
         );
-        $this->addGroup(
+    */ 
+	$this->addGroup(
             $group,
             "q1_frequency",
             "If YES, please specify",
@@ -276,24 +279,28 @@ class NDB_BVL_Instrument_FOH_Intervention_History extends NDB_BVL_Instrument
             "",
             $years_array
         );
-        $this->XINRegisterRule(
+    /*    
+	$this->XINRegisterRule(
             "birth_to_three_services_years",
             array("birth_to_three_services{@}=={@}yes"),
             "Times per week required if answer to question is yes.",
             "q1_duration"
         );
-        $group[] =& $this->createSelect(
+    */
+	$group[] =& $this->createSelect(
             "birth_to_three_services_months",
             "",
             $months_array
         );
-        $this->XINRegisterRule(
+    /*
+	$this->XINRegisterRule(
             "birth_to_three_services_months",
             array("birth_to_three_services{@}=={@}yes"),
             "Times per week required if answer to question is yes.",
             "q1_duration"
         );
-        $this->addGroup(
+    */      
+	$this->addGroup(
             $group,
             "q1_duration",
             "For how long:",
@@ -312,12 +319,14 @@ class NDB_BVL_Instrument_FOH_Intervention_History extends NDB_BVL_Instrument
             "If YES, age started attending:",
             $years_array
         );
-        $this->XINRegisterRule(
+   /*    
+	$this->XINRegisterRule(
             "day_care_age",
             array("day_care{@}=={@}yes"),
             "Required if she/he ever attended a day care."
         );
-        $group[] =& $this->form->createElement(
+   */    
+	$group[] =& $this->form->createElement(
             "static",
             null,
             null,
@@ -342,24 +351,28 @@ class NDB_BVL_Instrument_FOH_Intervention_History extends NDB_BVL_Instrument
             "Years:",
             $years_array
         );
-        $this->XINRegisterRule(
+    /*     
+	$this->XINRegisterRule(
             "day_care_years",
             array("day_care{@}=={@}yes"),
             "Required if she/he ever attended a day care.",
             "q2_day_care_duration"
         );
-        $group[] =& $this->createSelect(
+    */  
+  	$group[] =& $this->createSelect(
             "day_care_months",
             "Months:",
             $months_array
         );
-        $this->XINRegisterRule(
+    /*      
+	$this->XINRegisterRule(
             "day_care_months",
             array("day_care{@}=={@}yes"),
             "Required if she/he ever attended a day care.",
             "q2_day_care_duration"
         );
-        $this->addGroup(
+    */     
+	$this->addGroup(
             $group,
             "q2_day_care_duration",
             "For how long:",
@@ -383,7 +396,7 @@ class NDB_BVL_Instrument_FOH_Intervention_History extends NDB_BVL_Instrument
             "If YES, age started attending:",
             range(0, 10)
         );
-	$this->XINRegisterRule('nursery_school_preschool_age', array('nursery_school_preschool{@}=={@}yes'), 'Required if yes');
+   //	$this->XINRegisterRule('nursery_school_preschool_age', array('nursery_school_preschool{@}=={@}yes'), 'Required if yes');
         $group[] =& $this->form->createElement(
             "static",
             null,
@@ -409,24 +422,29 @@ class NDB_BVL_Instrument_FOH_Intervention_History extends NDB_BVL_Instrument
             "years",
             $years_array
         );
-        $this->XINRegisterRule(
+  /*   
+	$this->XINRegisterRule(
             "nursery_school_preschool_years",
             array("nursery_school_preschool{@}=={@}yes"),
             "Required if nursery school/preschool was attended.",
             "q3_preschool_duration"
         );
-        $group[] =& $this->createSelect(
+   */ 
+	$group[] =& $this->createSelect(
             "nursery_school_preschool_months",
             "months",
             $months_array
         );
-        $this->XINRegisterRule(
+   /*     
+	$this->XINRegisterRule(
             "nursery_school_preschool_months",
             array("nursery_school_preschool{@}=={@}yes"),
             "Required if nursery school/preschool was attended.",
             "q3_preschool_duration"
         );
-        $this->addGroup(
+    */
+
+	$this->addGroup(
             $group,
             "q3_preschool_duration",
             "For how long:",
@@ -506,14 +524,16 @@ class NDB_BVL_Instrument_FOH_Intervention_History extends NDB_BVL_Instrument
             "{$age_range}_description_{$i}",
             ""
         );
-        if ($i == 1) {
-            $this->XINRegisterRule(
+  /*	
+	if ($i == 1) {
+     		$this->XINRegisterRule(
                 "{$age_range}_type_of_intervention_{$i}",
                 array("support_in_school{@}=={@}yes|support_outside_school{@}=={@}yes"),
                 "At least one intervention is required if the answer is yes to question 4 or 5.",
                 "{$age_range}_{$i}_headers"
             );
-            $this->XINRegisterRule(
+
+                $this->XINRegisterRule(
                 "{$age_range}_hours_{$i}",
                 array("{$age_range}_type_of_intervention_{$i}{@}!={@}13"),
                 "All the fields in the row are required if a type of intervention is specified.",
@@ -536,7 +556,7 @@ class NDB_BVL_Instrument_FOH_Intervention_History extends NDB_BVL_Instrument
                 array("{$age_range}_type_of_intervention_{$i}{@}!={@}13"),
                 "All the fields in the row are required if a type of intervention is specified.",
                 "{$age_range}_{$i}_headers"
-            );
+	);	    
         } else {
             $this->XINRegisterRule(
                 "{$age_range}_type_of_intervention_{$i}",
@@ -582,7 +602,8 @@ class NDB_BVL_Instrument_FOH_Intervention_History extends NDB_BVL_Instrument
                 "{$age_range}_{$i}_headers"
             );
         }
-        $this->addGroup(
+   */
+	$this->addGroup(
             $group,
             "{$age_range}_{$i}_headers",
             null,
@@ -610,10 +631,10 @@ class NDB_BVL_Instrument_FOH_Intervention_History extends NDB_BVL_Instrument
             $this->indent . "<b>If yes, does he/she currently have an IEP?</b>?",
             $yesNoOptions
         );
-        $this->XINRegisterRule('he_or_she_currently_have_iep', array('support_in_school{@}=={@}yes'), 'Required if yes');
+    //    $this->XINRegisterRule('he_or_she_currently_have_iep', array('support_in_school{@}=={@}yes'), 'Required if yes');
         // Question 4 ii
 	$this->form->addElement('text', 'what_percentage_school_day_spent', $this->indent . 'If yes, what % of their school day is spent in a general education classroom? (This current school year).');
-        $this->XINRegisterRule('what_percentage_school_day_spent', array('he_or_she_currently_have_iep{@}=={@}yes'), 'Required if he/she have an IEP');
+    //    $this->XINRegisterRule('what_percentage_school_day_spent', array('he_or_she_currently_have_iep{@}=={@}yes'), 'Required if he/she have an IEP');
 	// QUESTION 5 ########
         $this->addSelect(
             "support_outside_school",
