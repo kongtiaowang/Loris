@@ -39,6 +39,7 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
 	    "house"                             =>  "HOUSE",
 	    "parent_child_interaction"          =>  "PARENT-CHILD INTERACTIONS",
 	    "parent_visitor_interaction"        =>  "PARENT-VISITOR INTERACTIONS",
+	    "total_score"                       =>  "TOTAL SCORE",
     			);
 
     CONST ROUTINES_AND_RESPONSIBILITY = ["q1_score","q11_score","q12_score","q13_score","q14_score","q15_score","q19_score"];
@@ -124,7 +125,7 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
                                     "q48_score",
                                     "q22_score",
                                     "q5_score",
-                                    "q10_score",
+				    "q10_score",
                                    );
 	
 	$this->_doubleDataEntryDiffIgnoreColumns = array(
@@ -741,7 +742,8 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
                 "family_friend"                     =>  0,
                 "house"                             =>  0,
                 "parent_child_interaction"          =>  0,
-                "parent_visitor_interaction"        =>  0,
+		"parent_visitor_interaction"        =>  0,
+		"total_score"                       =>  0,
 	
 	);
       
@@ -754,6 +756,9 @@ class NDB_BVL_Instrument_MC_HOME_UMN_REVISED extends NDB_BVL_Instrument
 	$scores["house"] = $this->sumScaleScores(self::HOUSE, $record);
 	$scores["parent_child_interaction"] = $this->sumScaleScores(self::PARENT_CHILD_INTERACTIONS, $record);
 	$scores["parent_visitor_interaction"] = $this->sumScaleScores(self::PARENT_VISITOR_INTERACTIONS, $record);
+	$scores["total_score"] = $scores["routine_and_responsibility"] + $scores["emotional_need"] + $scores["learning_behavior"] + $scores["recreational_activity"] +
+		                 $scores["place_or_travel"] + $scores["family_friend"] + $scores["house"] + $scores["parent_child_interaction"] + $scores["parent_visitor_interaction"];
+
 
 	$result = $db->update($this->table, $scores, array("CommentID" => $this->getCommentID()));
     }
