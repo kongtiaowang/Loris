@@ -1,6 +1,6 @@
 <?php
 /*
- * This file contains the NDB_BVL_Instrument_Actigraph_Export
+ * This file contains the NDB_BVL_Instrument_PVT
  * class
  *
  * PHP Version 7
@@ -13,7 +13,7 @@
  */
 
 /**
- * Creates the form elements for the Actigraph_Export instrument
+ * Creates the form elements for the PVT instrument
  *
  * @category Instrument
  * @package  Neuropsych
@@ -64,17 +64,9 @@ class NDB_BVL_Instrument_PVT extends NDB_BVL_Instrument
      */
 
     function _setupForm()
-    {
-        //determine page to display
-        if (preg_match(
-            "/PVT(_page[0-9]+)/",
-            $this->page,
-            $matches
-        )) {
-            call_user_func(array($this, $matches[1]));
-        } else {
+    {   
             $this->_main();
-        }
+
         $this->form->addFormRule(array(&$this, 'XINValidate'));
 
     }
@@ -213,7 +205,6 @@ class NDB_BVL_Instrument_PVT extends NDB_BVL_Instrument
     }
 
     /**
-     * importFile imports the das sa file into the database.
      *
      * @param     object       $file    A reference to the file object (passed automatically by callFileHandler)
      * @param     assoc_array  $args    The arguments passed to the function they must be:
