@@ -214,10 +214,7 @@ class NDB_BVL_Instrument_DSMIV_SA extends NDB_BVL_Instrument
     }
     function _save(array $values): void
     {
-            $checkbox= "nonasd";
-            if (!isset($values["$checkbox"])) {
-                $values["$checkbox"] = '0';
-            }
+        $values["nonasd"] ??= '0';
         parent::_save($values);
     }
 
