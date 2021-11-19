@@ -125,7 +125,7 @@ class NDB_BVL_Instrument_PVT extends NDB_BVL_Instrument
         //set the the IDs to the handler functions.
         $user =& User::singleton();
         $file->setHandlerArgs(array("CommentID"=>$this->getCommentID(),
-                "candID"=>$candidate->getCandID(),
+                "DCCID"=>$candidate->getCandID(),
                 "PSCID"=>$candidate->getPSCID(),
                 "visitLabel"=>$timepoint->getVisitLabel(),
                 "username"=>$user->getUsername(),
