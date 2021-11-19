@@ -160,7 +160,7 @@ class NDB_BVL_Instrument_PVT extends NDB_BVL_Instrument
      * @access    public
      */
     function isValid(&$file, $args){
-        $correct_filename = ($args['PSCID'].'_'.$args['DCCID'].'_'.$args['visitLabel']."_PVT.csv");
+        $correct_filename = ($args['PSCID'].'_'.$args['candID'].'_'.$args['visitLabel']."_PVT.csv");
 
         if($file->fileInfo['name'] != $correct_filename ){
             $errors[]="Incorrect Filename: Filename should be: " . $correct_filename;
