@@ -122,7 +122,7 @@ class CouchDBInstrumentImporter
                         AND f.Test_name=:inst
                         AND s.Active='Y' AND c.Active='Y'
                         AND c.RegistrationCenterID NOT IN (1,8,9,10)
-                        AND (ps.participant_status NOT IN (2,3,4) OR ps.participant_status IS NULL)
+                        AND (ps.participant_status NOT IN (2,3,4,15) OR ps.participant_status IS NULL)
                         AND c.RegistrationProjectID NOT IN (5,6)
                         AND f.Administration = 'All'
                         AND f.Data_entry = 'Complete'";
