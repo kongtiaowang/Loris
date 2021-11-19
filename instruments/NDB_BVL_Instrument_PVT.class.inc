@@ -78,13 +78,16 @@ class NDB_BVL_Instrument_PVT extends NDB_BVL_Instrument
         // automatically adds examiner & date of administration
         $this->_addMetadataFields();
         $this->form->addElement('file', 'pvt_file', 'Upload the PVT Parser file 
-       <br><h6><i>(Ex: PSCID_DCCID_date_time.csv)</i></h6>');
+       <br><h6><i>(Ex: PSCID_DCCID_VisitLabel_PVT.csv)</i></h6>');
 
         $this->form->addElement('static', "File_name", "Uploaded File");
 
-       if($this->getFieldValue("File_name") != false){
-            $this->XINRegisterRule("pvt_file", array("pvt_file{@}==={@}NEVER_REQUIRED"));
-        }
+       if($this->getFieldValue("File_name")===false){
+            $this->form->addRule("pvt_file", "PVT file is required.", 'required', null, 'server');
+        } else {
+            $this->XINRegisterRule("pvt_file", array("pvt_file{@}=={@}NEVER_REQUIRED"));
+	}
+
         // handedness questions
         $this->form->addElement('static', null, "<br /><br />");
         $this->form->addElement("textarea", "other_comments", "Comments:", array('cols'=>25, 'rows'=>4));
@@ -157,11 +160,9 @@ class NDB_BVL_Instrument_PVT extends NDB_BVL_Instrument
      * @access    public
      */
     function isValid(&$file, $args){
-        $correct_filename = ($args['PSCID'].'_'.$args['DCCID']."_date_time.csv");
-        $original_filename = explode("_",$file->fileInfo['name']);
-        $ext = pathinfo($file->fileInfo['name'], PATHINFO_EXTENSION);
+        $correct_filename = ($args['PSCID'].'_'.$args['DCCID'].'_'.$args['visitLabel']."_PVT.csv");
 
-        if(!in_array($args['PSCID'], $original_filename) && !in_array($args['DCCID'], $original_filename) && $ext != "csv" ){
+        if($file->fileInfo['name'] != $correct_filename ){
             $errors[]="Incorrect Filename: Filename should be: " . $correct_filename;
             return $errors;
         }

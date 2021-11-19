@@ -119,9 +119,12 @@ class NDB_BVL_Instrument_Actigraph_Export extends NDB_BVL_Instrument
             unset($group);
         }
 
-       if($this->getFieldValue("File_name")!=false){
-          $this->XINRegisterRule("actigraph_export_file", array("actigraph_export_file{@}==={@}NEVER_REQUIRED"));
-       }
+       if($this->getFieldValue("File_name")===false){
+            $this->form->addRule("actigraph_export_file", "ACTIGRAPH EXPORT file is required.", 'required', null, 'server');
+        } else {
+            $this->XINRegisterRule("actigraph_export_file", array("actigraph_export_file{@}=={@}NEVER_REQUIRED"));
+	}
+
         // handedness questions
         $this->form->addElement('static', null, "<br /><br />");
         $this->form->addElement("textarea", "other_comments", "Comments:", array('cols'=>25, 'rows'=>4));
