@@ -1,28 +1,27 @@
-ALTER TABLE MC_HOME_UMN_REVISED ADD COLUMN `routine_and_responsibility` varchar(10) default NULL;
-ALTER TABLE MC_HOME_UMN_REVISED ADD COLUMN `emotional_need` varchar(10) default NULL;
-ALTER TABLE MC_HOME_UMN_REVISED ADD COLUMN `learning_behavior` varchar(10) default NULL;
-ALTER TABLE MC_HOME_UMN_REVISED ADD COLUMN `recreational_activity` varchar(10) default NULL;
-ALTER TABLE MC_HOME_UMN_REVISED ADD COLUMN `place_or_travel` varchar(10) default NULL;
-ALTER TABLE MC_HOME_UMN_REVISED ADD COLUMN `family_friend` varchar(10) default NULL;
-ALTER TABLE MC_HOME_UMN_REVISED ADD COLUMN `house` varchar(10) default NULL;
-ALTER TABLE MC_HOME_UMN_REVISED ADD COLUMN `parent_child_interaction` varchar(10) default NULL;
-ALTER TABLE MC_HOME_UMN_REVISED ADD COLUMN `parent_visitor_interaction` varchar(10) default NULL;
+ALTER TABLE MC_HOME_UMN_REVISED CHANGE `routine_and_responsibility` `responsivity` varchar(10) default NULL;
+ALTER TABLE MC_HOME_UMN_REVISED CHANGE `emotional_need` `encouragement_of_maturity` varchar(10) default NULL;
+ALTER TABLE MC_HOME_UMN_REVISED CHANGE `learning_behavior` `emotional_climate` varchar(10) default NULL;
+ALTER TABLE MC_HOME_UMN_REVISED CHANGE `recreational_activity` `learning_materials_and_opportunities` varchar(10) default NULL;
+ALTER TABLE MC_HOME_UMN_REVISED CHANGE `place_or_travel` `enrichment` varchar(10) default NULL;
+ALTER TABLE MC_HOME_UMN_REVISED CHANGE `family_friend` `family_companionship` varchar(10) default NULL;
+ALTER TABLE MC_HOME_UMN_REVISED CHANGE `house` `family_integration` varchar(10) default NULL;
+ALTER TABLE MC_HOME_UMN_REVISED CHANGE `parent_child_interaction` `physical_environment` varchar(10) default NULL;
+ALTER TABLE MC_HOME_UMN_REVISED DROP COLUMN `parent_visitor_interaction`;
 
-UPDATE instrument_subtests SET Description = "ROUTINES AND RESPONSIBILITY"
+UPDATE instrument_subtests SET Description = "RESPONSIVITY"
 WHERE Test_name = "MC_HOME_UMN_REVISED" AND Order_number = 1;
-UPDATE instrument_subtests SET Description = "EMOTIONAL NEEDS"
+UPDATE instrument_subtests SET Description = "ENCOURAGEMENT OF MATURITY"
 WHERE Test_name = "MC_HOME_UMN_REVISED" AND Order_number = 2;
-UPDATE instrument_subtests SET Description = "LEARNING BEHAVIOR"
+UPDATE instrument_subtests SET Description = "EMOTIONAL CLIMATE"
 WHERE Test_name = "MC_HOME_UMN_REVISED" AND Order_number = 3;
-UPDATE instrument_subtests SET Description = "RECREATIONAL ACTIVITIES"
+UPDATE instrument_subtests SET Description = "LEARNING MATERIALS AND OPPORTUNITIES"
 WHERE Test_name = "MC_HOME_UMN_REVISED" AND Order_number = 4;
-UPDATE instrument_subtests SET Description = "PLACES/TRAVEL"
+UPDATE instrument_subtests SET Description = "ENRICHMENT"
 WHERE Test_name = "MC_HOME_UMN_REVISED" AND Order_number = 5;
-UPDATE instrument_subtests SET Description = "FAMILY AND FRIENDS"
+UPDATE instrument_subtests SET Description = "FAMILY COMPANIONSHIP"
 WHERE Test_name = "MC_HOME_UMN_REVISED" AND Order_number = 6;
-UPDATE instrument_subtests SET Description = "HOUSE"
+UPDATE instrument_subtests SET Description = "FAMILY INTEGRATION"
 WHERE Test_name = "MC_HOME_UMN_REVISED" AND Order_number = 7;
-UPDATE instrument_subtests SET Description = "PARENT-CHILD INTERACTIONS"
+UPDATE instrument_subtests SET Description = "PYSICAL ENVIRONMENT"
 WHERE Test_name = "MC_HOME_UMN_REVISED" AND Order_number = 8;
-UPDATE instrument_subtests SET Description = "PARENT-VISITOR INTERACTIONS"
-WHERE Test_name = "MC_HOME_UMN_REVISED" AND Order_number = 9;
+DELETE FROM instrument_subtests WHERE Test_name = "MC_HOME_UMN_REVISED" AND Order_number = 9;
