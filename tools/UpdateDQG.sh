@@ -30,6 +30,7 @@ php CouchDB_Import_demographics_clean.php
 php CouchDB_Import_Instruments_clean.php
 php CouchDB_Import_Derived_ADOS_clean.php
 php CouchDB_Import_Derived_Language_clean.php
+php CouchDB_Confirm_Integrity_clean.php
 
 printf "Before Clean Curl\n"
 curl -X GET http://ibis_admin:MxedMdia=40sheets@192.168.1.91:5984/ibisunfiltered_clean/_design/DQG-2.0/_view/categories > /dev/null

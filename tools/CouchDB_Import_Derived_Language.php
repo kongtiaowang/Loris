@@ -105,6 +105,7 @@ class CouchDBDerivedLanguageImporter
             FROM candidate c
                 JOIN session s ON (c.CandID = s.CandID)
                 JOIN flag f ON (s.ID = f.SessionID)
+                LEFT JOIN participant_status ps ON ( ps.candid = c.candid )
             WHERE f.Test_name IN ('mullen', 'macarthur_words_gestures', 'vineland_subject')
                 AND f.Data_entry = 'Complete'
                 AND f.Administration = 'All'
@@ -112,6 +113,7 @@ class CouchDBDerivedLanguageImporter
                 AND s.Active='Y' AND c.Active='Y'
                 AND c.RegistrationCenterID NOT IN (1,8,9,10)
                 AND c.ProjectID NOT IN (5,6)
+                AND (ps.participant_status NOT IN (2,3,4,15) OR ps.participant_status IS NULL)
             GROUP BY s.ID
         ", array());
 
