@@ -75,6 +75,15 @@ class CouchDBInstrumentImporter
             unset($Dict['city_of_birth']);
             unset($Dict['city_of_birth_status']);
 
+            $Dict['mother_age_at_administration'] = array(
+                'Type' => "varchar(255)",
+                'Description' => "Mother's age at administration"
+            );
+            $Dict['father_age_at_administration'] = array(
+                'Type' => "varchar(255)",
+                'Description' => "Father's age at administration"
+            );
+
             $this->CouchDB->replaceDoc(
                 "DataDictionary:$instrument",
                 array(
@@ -91,6 +100,7 @@ class CouchDBInstrumentImporter
         // Query Adjusted to exclude some data from DQT
         $select = "SELECT
                         c.PSCID,
+                        c.CandID,
                         s.Visit_label,
                         f.Administration,
                         f.Data_entry,
@@ -110,7 +120,7 @@ class CouchDBInstrumentImporter
                         AND f.Test_name=:inst
                         AND s.Active='Y' AND c.Active='Y'
                         AND c.RegistrationCenterID NOT IN (1,8,9,10)
-                        AND (ps.participant_status NOT IN (2,3,4) OR ps.participant_status IS NULL)
+                        AND (ps.participant_status NOT IN (2,3,4,15) OR ps.participant_status IS NULL)
                         AND c.RegistrationProjectID NOT IN (5,6)";
 
         if ($tablename === "") {
@@ -126,6 +136,96 @@ class CouchDBInstrumentImporter
         $extraJoin = "JOIN " . $this->SQLDB->escape($tablename) . " i ON (i.CommentID=f.CommentID) ";
         return $select . $extraSelect . $from . $extraJoin . $where;
     }
+
+    /**
+     * Calculate the parents age at administration based on inputs at the
+     * Telephone Screening Interview administered for the candidate.
+     *
+     * @param string $candid     the candidate id
+     * @param string $date_taken the date the current instrument was administered
+     * @return string[] the mother and fathers age
+     * @throws LorisException
+     */
+    function getParentAgeAtAdministration($candid, $date_taken) {
+        $tsis = $this->SQLDB->pselect("
+                SELECT f.Test_name, f.CommentID
+                    FROM session s
+                    JOIN flag f on (s.ID=f.SessionID)
+                    WHERE s.Visit_label = (
+                            SELECT s2.Visit_label
+                                FROM session s2
+                                WHERE s2.candID=:candID
+                                    AND s2.Date_visit IS NOT NULL
+                                ORDER BY s2.Date_visit ASC
+                                LIMIT 1
+                        )
+		                AND f.Test_name IN ('tsi', 'tsi_ds', 'TSI_DS_Infant', 'TSI_EP')
+		                AND f.CommentID NOT LIKE 'DDE_%'
+                        AND s.CandID=:candID
+            ", array('candID' => $candid));
+        $ages = array(
+            'mother' => 'Unknown',
+            'father' => 'Unknown'
+        );
+
+        if (is_null($date_taken)) {
+            return $ages;
+        }
+
+        foreach ($tsis as $tsi) {
+            $result = array();
+            switch ($tsi['Test_name']) {
+                case "tsi":
+                    $result = $this->SQLDB->pselectRow("
+                            SELECT mother_dob_date AS mother_dob,
+                                   father_dob_date AS father_dob
+                                FROM tsi
+                                WHERE CommentID=:commentID
+                        ", array('commentID' => $tsi['CommentID']));
+                    break;
+                case "tsi_ds":
+                    $result = $this->SQLDB->pselectRow("
+                            SELECT mother_dob_date AS mother_dob,
+                                   father_dob_date AS father_dob
+                                FROM tsi_ds
+                                WHERE CommentID=:commentID
+                        ", array('commentID' => $tsi['CommentID']));
+                    break;
+                case "TSI_DS_Infant":
+                    $result = $this->SQLDB->pselectRow("
+                            SELECT mother_dob,
+                                   father_dob
+                                FROM TSI_DS_Infant
+                                WHERE CommentID=:commentID
+                        ", array('commentID' => $tsi['CommentID']));
+                    break;
+                case "TSI_EP":
+                    $result = $this->SQLDB->pselectRow("
+                            SELECT mother_dob,
+                                   father_dob
+                                FROM TSI_EP
+                                WHERE CommentID=:commentID
+                        ", array('commentID' => $tsi['CommentID']));
+                    break;
+            }
+
+            if (!empty($result)) {
+                if (!is_null($result['mother_dob'])) {
+                    $age = Utility::calculateAge($result['mother_dob'], $date_taken);
+                    $ages['mother'] = round($age['year'] + round($age['mon']/12,2) +
+                        round($age['day']/365, 2), 2);
+                }
+                if (!is_null($result['father_dob'])) {
+                    $age = Utility::calculateAge($result['father_dob'], $date_taken);
+                    $ages['father'] = round($age['year'] + round($age['mon']/12,2) +
+                        round($age['day']/365, 2), 2);
+                }
+            }
+        }
+
+        return $ages;
+    }
+
     function UpdateCandidateDocs($Instruments)
     {
         $results = array(
@@ -165,6 +265,7 @@ class CouchDBInstrumentImporter
 
                 unset($docdata['CommentID']);
                 unset($docdata['PSCID']);
+                unset($docdata['CandID']);
                 unset($docdata['Visit_label']);
                 unset($docdata['Testdate']);
                 unset($docdata['city_of_birth']);
@@ -173,6 +274,11 @@ class CouchDBInstrumentImporter
                 if (isset($docdata['Examiner']) && is_numeric($docdata['Examiner'])) {
                     $docdata['Examiner'] = $this->SQLDB->pselectOne("SELECT full_name FROM examiners WHERE examinerID=:eid", array("eid" => $docdata['Examiner']));
                 }
+
+                $ages = $this->getParentAgeAtAdministration($row['CandID'], $docdata['Date_taken']);
+                $docdata['mother_age_at_administration'] = $ages['mother'];
+                $docdata['father_age_at_administration'] = $ages['father'];
+
                 $doc     = array(
                             'Meta' => array(
                                        'DocType'    => $instrument,

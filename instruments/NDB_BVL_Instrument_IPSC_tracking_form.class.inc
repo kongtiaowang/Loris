@@ -161,7 +161,7 @@ class NDB_BVL_Instrument_IPSC_tracking_form extends NDB_BVL_Instrument
                 'blood_draw_not_occurred' => 'Blood draw scheduled but not yet occurred'
             )
          );
-  
+
         $this->XINRegisterRule('was_the_blood_draw_successful', array('did_family_agree_to_project{@}=={@}yes'), 'Required if family agreed to the project');
 
         $this->addBasicDate('blood_draw_date', '7. Blood draw date', $this->dateOptions);
@@ -229,17 +229,18 @@ class NDB_BVL_Instrument_IPSC_tracking_form extends NDB_BVL_Instrument
         $PSCID = $candidate->getPSCID();
         $centerID = $candidate->getData('RegistrationCenterID');
 
-        if ($values['blood_draw_date'] != null && $values['blood_draw_date'] != '') {
+        if ($values['was_the_blood_draw_successful'] === 'yes') {
             $blood_draw_date = date_create($values['blood_draw_date']);
 
             if ($centerID == 1) {
-                $notification_reciever_email = 'sruthy.mcin@gmail.com,sruthymathew369@gmail.com';
+                $notification_reciever_email = 'sruthy.mcin@gmail.com,santiago.torres@mcin.ca';
             } else {
                 $notification_reciever_email = 'roseg@email.unc.edu,jason_stein@med.unc.edu,abeltran@email.unc.edu';
             }
 
             $msg_data['PSCID'] = $PSCID;
             $msg_data['blood_draw_date'] = date_format($blood_draw_date, "F d, Y");
+            $msg_data['tracking_number'] = $values['fedex_tracking_number'];
             $old_blood_draw_date = $db->pselectOne(
                 "SELECT blood_draw_date FROM IPSC_tracking_form WHERE CommentID=:cid",
                 array('cid' => $this->getCommentID())

@@ -326,7 +326,7 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
 
         $this->addBasicDate('date_of_first_contact', 'Date of First Contact (1st time speak with the family)', $this->dateOptions);
 
-        $this->form->addElement('text', null, "City/State of Birth", ['disabled' => 'disabled']);
+        $this->form->addElement('text', null, "City/State of Birth", [], ['disabled' => 'disabled']);
         $this->XINRegisterRule("date_of_first_contact", array("not_finish0{@}!={@}1"), 'Required.');
 
     }
@@ -376,9 +376,9 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
         // SUBJECT INFORMATION
         $this->form->addElement('static', null, "SUBJECT<h6><i>Exclude if born less < 36 or > 42.5 weeks gestation or birth weight < 2000g (4lbs 4oz).</i></h6>");
 
-        $this->form->addElement('text', null, $this->indent . "First Name", ['disabled' => 'disabled']);
-        $this->form->addElement('text', null, $this->indent . "Middle Name", ['disabled' => 'disabled']);
-        $this->form->addElement('text', null, $this->indent . "Last Name", ['disabled' => 'disabled']);
+        $this->form->addElement('text', null, $this->indent . "First Name", [], ['disabled' => 'disabled']);
+        $this->form->addElement('text', null, $this->indent . "Middle Name", [], ['disabled' => 'disabled']);
+        $this->form->addElement('text', null, $this->indent . "Last Name", [], ['disabled' => 'disabled']);
 
         $this->form->addElement("date","subject_dob", $this->indent . 'Date of Birth');
         $this->addBasicDate("subject_expected_due_date", $this->indent . 'Expected Due Date', $this->dateOptions);
@@ -432,12 +432,12 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
         // PROBAND INFORMATION
         $this->form->addElement('static', null, "PROBAND<h6><i>Exclude if born less < 35 or > 42.5 weeks gestation or birth weight < 2000g (4lbs 4oz).</i></h6>");
 
-        $this->form->addElement('text', null, $this->indent . "First Name", ['disabled' => 'disabled']);
-        $this->form->addElement('text', null, $this->indent . "Middle Name", ['disabled' => 'disabled']);
-        $this->form->addElement('text', null, $this->indent . "Last Name", ['disabled' => 'disabled']);
+        $this->form->addElement('text', null, $this->indent . "First Name", [], ['disabled' => 'disabled']);
+        $this->form->addElement('text', null, $this->indent . "Middle Name", [], ['disabled' => 'disabled']);
+        $this->form->addElement('text', null, $this->indent . "Last Name", [], ['disabled' => 'disabled']);
 
         $this->form->addElement("date","proband_dob", $this->indent . 'Date of Birth');
-        $this->form->addElement('text', null, $this->indent . "City of Birth", ['disabled' => 'disabled']);
+        $this->form->addElement('text', null, $this->indent . "City of Birth", [], ['disabled' => 'disabled']);
 
         $this->form->addElement('text', "proband_birth_weight_lbs", $this->indent . "Birth weight (lbs)");
         $this->form->addElement('text', "proband_birth_weight_oz", $this->indent . "Birth weight (oz)");
@@ -464,7 +464,7 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
             if ($field == "Date of Birth") {
                 $this->form->addElement("date","mother_dob", $this->indent . $field);
             } else {
-                $this->form->addElement('text', null, $this->indent . $field, ['disabled' => 'disabled']);
+                $this->form->addElement('text', null, $this->indent . $field, [], ['disabled' => 'disabled']);
             }
         }
         $this->XINRegisterRule("mother_dob", array("mother_dob{@}=={@}"), "Required. ");
@@ -481,7 +481,7 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
             if ($field == "Date of Birth") {
                 $this->form->addElement("date","father_dob", $this->indent . $field);
             } elseif ($field != "Maiden Name") {
-                $this->form->addElement('text', null, $this->indent . $field, ['disabled' => 'disabled']);
+                $this->form->addElement('text', null, $this->indent . $field, [], ['disabled' => 'disabled']);
             }
         }
         $this->XINRegisterRule("father_dob", array("father_dob{@}=={@}"), "Required. ");
@@ -507,7 +507,7 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
         $this->form->addElement('static', null, "CHILD PRIMARY ADDRESS");
 
         foreach ($pii_address as $field) {
-            $this->form->addElement('text', null, $this->indent . $field, ['disabled' => 'disabled']);
+            $this->form->addElement('text', null, $this->indent . $field, [], ['disabled' => 'disabled']);
         }
 
         $this->form->addElement('static', null, null);
@@ -516,7 +516,7 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
         $this->form->addElement('static', null, "SECONDARY ADDRESS<br>(if 2 households)");
 
         foreach ($pii_address as $field) {
-            $this->form->addElement('text', null, $this->indent . $field, ['disabled' => 'disabled']);
+            $this->form->addElement('text', null, $this->indent . $field, [], ['disabled' => 'disabled']);
         }
 
         $this->form->addElement('static', null, null);
@@ -526,7 +526,7 @@ class NDB_BVL_Instrument_TSI_EP extends NDB_BVL_Instrument
 
         foreach ($pii_contact as $field) {
             if ($field != "Maiden Name" && $field != "Date of Birth") {
-                $this->form->addElement('text', null, $this->indent . $field, ['disabled' => 'disabled']);
+                $this->form->addElement('text', null, $this->indent . $field, [], ['disabled' => 'disabled']);
             }
         }
 

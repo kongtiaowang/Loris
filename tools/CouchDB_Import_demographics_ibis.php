@@ -30,6 +30,10 @@ class CouchDBDemographicsImporter {
             'Description' => 'NDAR Candidate Identifier',
             'Type' => 'varchar(255)'
         ),
+        'age_today' => array(
+            'Description' => 'Candidate age today',
+            'Type' => 'varchar(255)'
+        ),
         'candidate_ethnicity' => array(
             'Description' => 'Candidate Ethnicity',
             'Type' => 'varchar(255)'
@@ -230,6 +234,7 @@ class CouchDBDemographicsImporter {
                                  c.Sex,
                                  s.Current_stage,
                                  ROUND(DATEDIFF(s.Date_visit, c.DoB) / (365/12))             AS Age_at_visit_start,
+                                 ROUND(DATEDIFF(NOW(), c.DoB) / (365/12))                    AS age_today,
                                  s.Scan_done                                                 AS Scan_done,
                                  CASE
                                    WHEN s.visit = 'Failure' THEN 'Failure'
@@ -439,7 +444,7 @@ class CouchDBDemographicsImporter {
         AND c.Entity_type != 'Scanner'
         AND s.Current_stage NOT IN ('Recycling Bin', 'Not Started')
         AND c.RegistrationCenterID NOT IN (1,8,9,10)
-        AND (ps.participant_status NOT IN (2,3,4) OR ps.participant_status IS NULL)
+        AND (ps.participant_status NOT IN (2,3,4,15) OR ps.participant_status IS NULL)
         AND c.RegistrationProjectID NOT IN (5,6)";
 
         return $concatQuery;
@@ -566,13 +571,7 @@ group by s.CandID,s.Visit_label",
                 SELECT f.Test_name, f.CommentID
                     FROM session s
                     JOIN flag f on (s.ID=f.SessionID)
-                    WHERE s.Visit_label = (
-                            SELECT s2.Visit_label
-                                FROM session s2
-                                WHERE s2.candID=:candID
-                                ORDER BY Date_visit ASC
-                                LIMIT 1
-                        )
+                    WHERE f.Administration IN ('Partial','All')
 		                AND f.Test_name IN ('tsi', 'tsi_ds', 'TSI_DS_Infant', 'TSI_EP')
 		                AND f.CommentID NOT LIKE 'DDE_%'
                         AND s.CandID=:candID

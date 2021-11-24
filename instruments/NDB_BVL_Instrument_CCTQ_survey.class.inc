@@ -288,34 +288,46 @@ class NDB_BVL_Instrument_CCTQ_survey extends NDB_BVL_Instrument_survey
         );
 
         $how_much_support_options = array(
-                                     "none"        => "None",
+		                     null          => "",
+		                     "none"        => "None",
                                      "a_little"    => "A little",
                                      "quite_a_bit" => "Quite a bit",
                                      "completely"  => "Completely",
                                     );
 
         $how_well_understood_options = array(
-                                        "did_not_understand"   => "Did not understand",
+	                                null                   => "",
+	                        	"did_not_understand"   => "Did not understand",
                                         "somewhat_understood"  => "Somewhat understood",
                                         "understood"           => "Understood",
                                         "very_much_understood" => "Very much understood",
                                        );
 
         $how_accurate_options = array(
-                                 "not_at_all_accurate" => "Not at all accurate",
+	                         null                  => "",
+	                         "not_at_all_accurate" => "Not at all accurate",
                                  "somewhat_accurate"   => "Somewhat accurate",
                                  "usually_accurate"    => "Usually accurate",
                                  "very_much_accurate"  => "Very much accurate",
                                 );
 
+	$this->addSelect("did_your_child_complete_the_meqc", "Did your child complete the MEQC?", self::YES_NO_OPTIONS);
+
+	$this->form->addElement('static',null, "<h4>If 'No', the next four questions are not required and can be skipped. </h4>");
+
         $this->addSelect("did_you_have_to_read_the_survey_questions_to_your_child", "Did you have to read the survey questions to your child?", self::YES_NO_OPTIONS);
+        $this->XINRegisterRule("did_you_have_to_read_the_survey_questions_to_your_child", array("did_your_child_complete_the_meqc{@}=={@}yes"), 'Required if yes.');
 
         $this->addSelect("how_much_did_you_support_your_child_in_completing_the_survey", "How much did you support your child in completing the survey?", $how_much_support_options);
+        $this->XINRegisterRule("how_much_did_you_support_your_child_in_completing_the_survey", array("did_your_child_complete_the_meqc{@}=={@}yes"), 'Required if yes.');
 
         $this->addSelect("how_well_do_you_think_you_child_understood_the_survey_questions", "How well do you think your child understood the survey questions?", $how_well_understood_options);
+        $this->XINRegisterRule("how_well_do_you_think_you_child_understood_the_survey_questions", array("did_your_child_complete_the_meqc{@}=={@}yes"), 'Required if yes.');
 
-        $this->addSelect("how_accurate_were_your_childs_response_on_the_survey", "In your opinion, how accurate were your child's response on the survey?", $how_accurate_options);
-        $this->form->addFormRule(array(&$this, 'validate_page1'));
+
+	$this->addSelect("how_accurate_were_your_childs_response_on_the_survey", "In your opinion, how accurate were your child's response on the survey?", $how_accurate_options);
+	$this->XINRegisterRule("how_accurate_were_your_childs_response_on_the_survey", array("did_your_child_complete_the_meqc{@}=={@}yes"), 'Required if yes.');
+  $this->form->addFormRule(array(&$this, 'validate_page1'));
     }
 
     /**

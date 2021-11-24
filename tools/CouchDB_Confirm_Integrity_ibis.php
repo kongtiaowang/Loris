@@ -99,7 +99,7 @@ class CouchDBIntegrityChecker
                  LEFT JOIN participant_status ps ON ( ps.Candid = c.Candid )
                  WHERE c.PSCID=:PID
                  AND c.RegistrationCenterID NOT IN (1,8,9,10)
-                 AND (ps.participant_status NOT IN (2,3,4) OR ps.participant_status IS NULL)
+                 AND (ps.participant_status NOT IN (2,3,4,15) OR ps.participant_status IS NULL)
                  AND c.RegistrationProjectID NOT IN (5,6)",
                 array(
                     "PID" => $pscid,

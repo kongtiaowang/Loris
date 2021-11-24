@@ -247,7 +247,7 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
 
 	$this->addBasicDate('date_of_most_recent_visit', 'Date of most recent IBIS visit: ', $dateOptions);
 	
-	$this->form->addElement('text', null, "City/State of Birth", ['disabled' => 'disabled']);
+	$this->form->addElement('text', null, "City/State of Birth",[],['disabled' => 'disabled']);
         $this->XINRegisterRule("date_of_most_recent_visit", array("not_finish0{@}!={@}1"), 'Required.');
 
 
@@ -290,9 +290,9 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
                         "Zip Code",
                        );
         
-        $this->form->addElement('text', null, $this->indent . "First Name", ['disabled' => 'disabled']);
-        $this->form->addElement('text', null, $this->indent . "Middle Name", ['disabled' => 'disabled']);
-        $this->form->addElement('text', null, $this->indent . "Last Name", ['disabled' => 'disabled']);
+        $this->form->addElement('text', null, $this->indent . "First Name", [], ['disabled' => 'disabled']);
+        $this->form->addElement('text', null, $this->indent . "Middle Name", [], ['disabled' => 'disabled']);
+        $this->form->addElement('text', null, $this->indent . "Last Name", [], ['disabled' => 'disabled']);
 
         $this->addBasicDate("subject_dob", $this->indent . 'Date of Birth', $this->dateOptions);
         $this->addBasicDate("subject_expected_due_date", $this->indent . 'Expected Due Date', $this->dateOptions);
@@ -322,7 +322,7 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
             if ($field == "Date of Birth") {
                 $this->addDateElement("mother_dob", $this->indent . $field);
             } else {
-                $this->form->addElement('text', null, $this->indent . $field, ['disabled' => 'disabled']);
+                $this->form->addElement('text', null, $this->indent . $field, [], ['disabled' => 'disabled']);
             }
         }
 	$this->XINRegisterRule("mother_dob_date", array("mother_dob_date{@}=={@}"), 'Required.');
@@ -345,7 +345,7 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
             if ($field == "Date of Birth") {
                 $this->addDateElement("father_dob", $this->indent . $field);
             } elseif ($field != "Maiden Name") {
-                $this->form->addElement('text', null, $this->indent . $field, ['disabled' => 'disabled']);
+                $this->form->addElement('text', null, $this->indent . $field, [], ['disabled' => 'disabled']);
             }
         }
 	$this->XINRegisterRule("father_dob_date", array("father_dob_date{@}=={@}"), 'Required');
@@ -377,7 +377,7 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
         $this->XINRegisterRule('address_specify', array('child_primary_address{@}=={@}other'), 'Required if other');
 
         foreach ($pii_address as $field) {
-            $this->form->addElement('text', null, $this->indent . $field, ['disabled' => 'disabled']);
+            $this->form->addElement('text', null, $this->indent . $field, [], ['disabled' => 'disabled']);
         }
 
         $this->form->addElement('static', null, null);
@@ -390,7 +390,7 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
         $this->XINRegisterRule('address_specify2', array('child_primary_address2{@}=={@}other'), 'Required if other');
 
         foreach ($pii_address as $field) {
-            $this->form->addElement('text', null, $this->indent . $field, ['disabled' => 'disabled']);
+            $this->form->addElement('text', null, $this->indent . $field, [], ['disabled' => 'disabled']);
         }
 
         $this->form->addElement('static', null, null);
@@ -400,7 +400,7 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
 
         foreach ($pii_contact as $field) {
             if ($field != "Maiden Name" && $field != "Date of Birth") {
-                $this->form->addElement('text', null, $this->indent . $field, ['disabled' => 'disabled']);
+                $this->form->addElement('text', null, $this->indent . $field, [], ['disabled' => 'disabled']);
             }
         }
 
@@ -895,7 +895,7 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
         // Q7
         $this->addSelect("q7_has_your_child_ever_had_an_iq_test", "7. Has your child ever had an IQ test (other than in IBIS)?", self::YES_NO_OPTIONS);
 	$this->form->addElement("textarea","q7a_has_your_child_ever_had_an_iq_test_when_where", $this->indent . "If yes, when and where?", array('cols'=>25, 'rows'=>4));
-        $this->XINRegisterRule("q7a_has_your_child_ever_had_an_iq_test_when_where", array("q7_has_your_child_ever_had_an_iq_test{@}=={@}yes"), 'Required if yes');
+        $this->XINRegisterRule("q7a_has_your_child_ever_had_an_iq_test_when_where", array("q7a_has_your_child_ever_had_an_iq_test_when_where{@}=={@}NEVER_REQUIRED"), 'Never Required');
         $this->form->addElement('text', "q7b_results_and_test_if_known", $this->indent . 'Results and test if known: IQ:');
         $this->XINRegisterRule("q7b_results_and_test_if_known", array("q7b_results_and_test_if_known{@}=={@}NEVER_REQUIRED"), 'Never Required');
 
@@ -1236,12 +1236,12 @@ class NDB_BVL_Instrument_TSI_IDS_FOH extends NDB_BVL_Instrument
         if ($values["q6_does_subject_currently_take_any_medications"] != "yes") {
             $this->validate_empty_subquestions($values, ["q6a_does_subject_currently_take_any_medications_list"], $errors);
         }
-        if ($values["q7_has_your_child_ever_had_an_iq_test"] != "other") {
+        if ($values["q7_has_your_child_ever_had_an_iq_test"] != "yes") {
             $this->validate_empty_subquestions($values, ["q7a_has_your_child_ever_had_an_iq_test_when_where"], $errors);
             $this->validate_empty_subquestions($values, ["q7b_results_and_test_if_known"], $errors);
             $this->validate_empty_subquestions($values, ["q7c_test"], $errors);
         }
-        if ($values["q8_any_specific_neurological_problems_in_subject"] != "other") {
+        if ($values["q8_any_specific_neurological_problems_in_subject"] != "yes") {
             $this->validate_empty_subquestions($values, ["q8a_if_yes_list"], $errors);
         }
         if ($values["q10_any_problems_with_sleep_apnea_or_breathing"] != "yes") {

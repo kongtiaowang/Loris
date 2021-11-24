@@ -370,7 +370,7 @@ class DataQueryApp extends Component {
 
     $.post(loris.BaseURL
       + '/AjaxHelper.php?Module=dqt&script=saveQuery.php', {
-      Fields: this.state.selectedFields,
+      Fields: JSON.stringify(this.state.selectedFields),
       Filters: filter,
       QueryName: name,
       SharedQuery: shared,

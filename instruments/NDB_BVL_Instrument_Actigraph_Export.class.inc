@@ -76,7 +76,6 @@ class NDB_BVL_Instrument_Actigraph_Export extends NDB_BVL_Instrument
             $this->_main();
         }
         $this->form->addFormRule(array(&$this, 'XINValidate'));
-
     }
 
 
@@ -88,7 +87,7 @@ class NDB_BVL_Instrument_Actigraph_Export extends NDB_BVL_Instrument
         $this->_addMetadataFields();
         $this->form->addElement('file', 'actigraph_export_file', 'Upload the Actigraph Export Summary Parser file 
        <br><h6><i>(Ex: PSCID_DCCID_visitlabel_Actigraph_Export.csv)</i></h6>');
-
+       
         $this->form->addElement('static', "File_name", "Uploaded File");
 
 
@@ -97,7 +96,11 @@ class NDB_BVL_Instrument_Actigraph_Export extends NDB_BVL_Instrument
         $this->form->addElement('static', null, null);
 
 	$this->form->addElement('header', null, "Subject Properties");
-        
+
+	$group[] = $this->form->createElement('static',null, 'Value', null);
+	$this->form->addGroup($group, "items_group",'Items', $this->_GUIDelimiter, false);
+	unset($group);
+
 	 $fields = array(
             "initials"               =>  "Initials:",
             "full_name"              =>  "Full name:",
@@ -116,19 +119,22 @@ class NDB_BVL_Instrument_Actigraph_Export extends NDB_BVL_Instrument
             unset($group);
         }
 
-       if($this->getFieldValue("File_name")!=false){
-          $this->XINRegisterRule("actigraph_export_file", array("actigraph_export_file{@}==={@}NEVER_REQUIRED"));
-       }
+       if($this->getFieldValue("File_name")===false){
+            $this->form->addRule("actigraph_export_file", "ACTIGRAPH EXPORT file is required.", 'required', null, 'server');
+        } else {
+            $this->XINRegisterRule("actigraph_export_file", array("actigraph_export_file{@}=={@}NEVER_REQUIRED"));
+	}
+
         // handedness questions
         $this->form->addElement('static', null, "<br /><br />");
         $this->form->addElement("textarea", "other_comments", "Comments:", array('cols'=>25, 'rows'=>4));
         $this->XINRegisterRule("other_comments", array("{other_comments}{@}=={@}NEVER_REQUIRED"));
     }
     function _saveValues(array $values): void
-    {
-        $timepoint =& TimePoint::singleton($this->getSessionID());
+    {    
+	$timepoint =& TimePoint::singleton($this->getSessionID());
         $candidate =& Candidate::singleton($timepoint->getCandID());
-
+	
         if(isset($values['Date_taken'])) {
             $this->_saveCandidateAge($values);
         }
@@ -156,7 +162,7 @@ class NDB_BVL_Instrument_Actigraph_Export extends NDB_BVL_Instrument
         //set the the IDs to the handler functions.
         $user =& User::singleton();
         $file->setHandlerArgs(array("CommentID"=>$this->getCommentID(),
-                "DCCID"=>$candidate->getCandID(),
+                "candID"=>$candidate->getCandID(),
                 "PSCID"=>$candidate->getPSCID(),
                 "visitLabel"=>$timepoint->getVisitLabel(),
                 "username"=>$user->getUsername(),
@@ -191,7 +197,7 @@ class NDB_BVL_Instrument_Actigraph_Export extends NDB_BVL_Instrument
      * @access    public
      */
     function isValid(&$file, $args){
-        $correct_filename = ($args['PSCID'].'_'.$args['DCCID'].'_'.$args['visitLabel']."_Actigraph_Export.csv");
+        $correct_filename = ($args['PSCID'].'_'.$args['candID'].'_'.$args['visitLabel']."_Actigraph_Export.csv");
         if($file->fileInfo['name'] != $correct_filename){
             $errors[]="Incorrect Filename: Filename should be: " . $correct_filename;
             return $errors;
@@ -279,10 +285,11 @@ class NDB_BVL_Instrument_Actigraph_Export extends NDB_BVL_Instrument
     );
 
 	foreach ($fields as $key => $val) {
-            $array_key=array_search($val,$lines);
-            if($array_key!= null) {
-                    $values[$key] = $lines[$array_key+1];
-                }
+		$array_key=array_search($val,$lines);
+		$val_count=$array_key+1;
+		if($array_key != null) {
+                            $values[$key] = $lines[$val_count];
+		}
             else{
                     $values[$key]='--';
             }

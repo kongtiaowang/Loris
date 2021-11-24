@@ -1,0 +1,15 @@
+ALTER TABLE SIHI ADD COLUMN ii_where_were_you_living_at_the_time varchar(100) default NULL;
+ALTER TABLE SIHI ADD COLUMN ii_where_did_your_child_sleep varchar(100) default NULL;
+ALTER TABLE SIHI ADD COLUMN ii_any_significant_family_events varchar(100) default NULL;
+ALTER TABLE SIHI ADD COLUMN iii_where_were_you_living_at_the_time varchar(100) default NULL;
+ALTER TABLE SIHI ADD COLUMN iii_where_did_your_child_sleep varchar(100) default NULL;
+ALTER TABLE SIHI ADD COLUMN iii_any_significant_family_events varchar(100) default NULL;
+ALTER TABLE SIHI ADD COLUMN iv_where_were_you_living_at_the_time varchar(100) default NULL;
+ALTER TABLE SIHI ADD COLUMN iv_where_did_your_child_sleep varchar(100) default NULL;
+ALTER TABLE SIHI ADD COLUMN iv_any_significant_family_events varchar(100) default NULL;
+ALTER TABLE SIHI ADD COLUMN v_where_were_you_living_at_the_time varchar(100) default NULL;
+ALTER TABLE SIHI ADD COLUMN v_where_did_your_child_sleep varchar(100) default NULL;
+ALTER TABLE SIHI ADD COLUMN v_any_significant_family_events varchar(100) default NULL;
+ALTER TABLE SIHI ADD COLUMN vi_where_were_you_living_at_the_time varchar(100) default NULL;
+ALTER TABLE SIHI ADD COLUMN vi_where_did_your_child_sleep varchar(100) default NULL;
+ALTER TABLE SIHI ADD COLUMN vi_any_significant_family_events varchar(100) default NULL;

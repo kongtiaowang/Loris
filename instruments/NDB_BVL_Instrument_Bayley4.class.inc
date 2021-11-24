@@ -399,13 +399,11 @@ class NDB_BVL_Instrument_Bayley4 extends NDB_BVL_Instrument
         // of those
         $id = preg_replace('/^\W+/', '', $id);
         $id = preg_replace('/\W+$/', '', $id);
-
-        $originID = $args['candID'].'_'. $args['PSCID'].'_'.$args['visitLabel'];
-
-        if($id != $originID){
-            $errors[]="Incorrect patient ID found in file. Expected $originID but I got '$id'\n";
+        if (strpos($id, $args['candID']) === false || strpos($id, $args['PSCID']) === false ) {
+            $errors[]="Incorrect candidate ID or PSCID found in file.";
             return $errors;
         }
+
 
         $correct_filename = ($this->testName.'_'.$args['candID'].'_'. $args['PSCID'].'_'.$args['visitLabel']. ".doc");
         if($file->fileInfo['name'] != $correct_filename){
@@ -640,4 +638,3 @@ class NDB_BVL_Instrument_Bayley4 extends NDB_BVL_Instrument
 
 
 }
-

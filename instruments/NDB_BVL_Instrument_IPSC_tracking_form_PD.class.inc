@@ -137,6 +137,8 @@ class NDB_BVL_Instrument_IPSC_tracking_form_PD extends NDB_BVL_Instrument
 
         $this->addBasicDate('IPSC_consent_date', '3. Consent date', $this->dateOptions);
 
+	$this->XINRegisterRule('IPSC_consent_date', array('did_family_agree_to_project{@}=={@}yes'), 'Required if family agreed to the project');
+
         $this->addSelect(
             "blood_draw_location",
             '4. Blood draw location',
@@ -147,7 +149,11 @@ class NDB_BVL_Instrument_IPSC_tracking_form_PD extends NDB_BVL_Instrument
             )
         );
 
+	$this->XINRegisterRule('blood_draw_location', array('did_family_agree_to_project{@}=={@}yes'), 'Required if family agreed to the project');
+
         $this->addBasicTextArea("fedex_tracking_number", "5. Fedex tracking number of the return label");
+
+	$this->XINRegisterRule('fedex_tracking_number', array('did_family_agree_to_project{@}=={@}yes'), 'Required if family agreed to the project');
 
         $this->addSelect(
             "was_the_blood_draw_successful",
@@ -161,7 +167,11 @@ class NDB_BVL_Instrument_IPSC_tracking_form_PD extends NDB_BVL_Instrument
             )
         );
 
+	$this->XINRegisterRule('was_the_blood_draw_successful', array('did_family_agree_to_project{@}=={@}yes'), 'Required if family agreed to the project');
+
         $this->addBasicDate('blood_draw_date', '7. Blood draw date', $this->dateOptions);
+
+	$this->XINRegisterRule('blood_draw_date', array('did_family_agree_to_project{@}=={@}yes'), 'Required if family agreed to the project');
 
         $this->addSelect('ask_about_interview',
             '8. Did the recruiter ask about the 1-hr phone interview? Note: can do interview even if refuse blood draw',
@@ -171,29 +181,42 @@ class NDB_BVL_Instrument_IPSC_tracking_form_PD extends NDB_BVL_Instrument
                 'yes'     => 'Yes'
             ));
 
+	$this->XINRegisterRule('ask_about_interview', array('did_family_agree_to_project{@}=={@}yes'), 'Required if family agreed to the project');
+
         $this->addSelect('family_participate',
             '9. Did family agree to participate in the interview?',
 	    array(
-		null  => '', 
+		null  => '',
                 'yes' => 'Yes',
                 'no'  => 'No',
                 'na'  => 'N/A',
             ));
 
+	$this->XINRegisterRule('family_participate', array('did_family_agree_to_project{@}=={@}yes'), 'Required if family agreed to the project');
+
         $this->addBasicTextArea("ipsc_notes", "Notes:");
+
+	$this->XINRegisterRule('ipsc_notes', array('did_family_agree_to_project{@}=={@}yes'), 'Required if family agreed to the project');
 
         $this->form->addFormRule(array(&$this, 'IPSC_Rules'));
     }
 
     function IPSC_Rules($values)
     {
-        $errors = array();
+	    $errors = array();
+
+	  $db = Database::singleton();
+
+	  $sibling = $db->pselectRow(
+            "SELECT CandID, PSCID FROM candidate WHERE CandID=:cand AND PSCID=:pscid",
+            array('cand' => $values['dccid'], 'pscid' => $values['pscid'])
+        );
 
 //        $probandExists = Candidate::candidateExists($values['dccid'], $values['pscid']);
         $isNumeric = is_numeric($values['dccid']);
         if (!$isNumeric) {
             $errors['dccid'] = "dccid format wrong";
-        } elseif (!Candidate::candidateExists((int) $values['dccid'], $values['pscid'])) {
+        } elseif (empty($sibling) || $sibling == null ) {
             $errors['dccid'] = "Unknown candidate";
             $errors['pscid'] = "Unknown candidate";
         }
@@ -227,17 +250,18 @@ class NDB_BVL_Instrument_IPSC_tracking_form_PD extends NDB_BVL_Instrument
         $PSCID = $candidate->getPSCID();
         $centerID = $candidate->getData('RegistrationCenterID');
 
-        if ($values['blood_draw_date'] != null && $values['blood_draw_date'] != '') {
+        if ($values['was_the_blood_draw_successful'] === 'yes') {
             $blood_draw_date = date_create($values['blood_draw_date']);
 
             if ($centerID == 1) {
-                $notification_reciever_email = 'sruthy.mcin@gmail.com,sruthymathew369@gmail.com';
+                $notification_reciever_email = 'sruthy.mcin@gmail.com,santiago.torres@mcin.ca';
             } else {
                 $notification_reciever_email = 'roseg@email.unc.edu,jason_stein@med.unc.edu,abeltran@email.unc.edu';
             }
 
             $msg_data['PSCID'] = $PSCID;
             $msg_data['blood_draw_date'] = date_format($blood_draw_date, "F d, Y");
+            $msg_data['tracking_number'] = $values['fedex_tracking_number'];
             $old_blood_draw_date = $db->pselectOne(
                 "SELECT blood_draw_date FROM IPSC_tracking_form WHERE CommentID=:cid",
                 array('cid' => $this->getCommentID())

@@ -65,7 +65,8 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
             "nonpharmacological_medical"  => "Nonpharmacological medical (e.g., CPAP)",
             "medication"                  => "Medication (e.g., melatonin, clonidine, trazodone, remeron, risperdal, seroqual, ambien, benzodiazepines)",
             "dietary_supplements"         => "Dietary supplements (e.g., magnesium, iron)",
-        );
+            "other"                       => "Other",
+            );
 
        var  $option5_medication = array(
             null           => "",
@@ -146,7 +147,7 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
             'ii_q1_any_concerns_about_childs_nighttime_sleep',
             'iii_q1_any_concerns_about_childs_nighttime_sleep',
             'iv_q1_any_concerns_about_childs_nighttime_sleep',
-	    'v_q1_any_concerns_about_childs_nighttime_sleep');
+	    );
         // setup the form
         $this->_setupForm();
     }
@@ -218,15 +219,12 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
     {
         $this->addHeader("SIHI (Sleep Intervention History Interview)");
 
-        $this->form->addElement(
-            'static',
-            lorisSubHeader,
-            "Use the following questions to anchor each time period:<br>" . $this->indent .
-            "What month/year was your child born? [first time period only]<br>" . $this->indent .
-            "Where were you living at the time?<br>" . $this->indent .
-            "Where did your child sleep (own/shared room)?<br>" . $this->indent .
-            "Any significant family events (change of job, birth of sibling, moved) during that time?"
-        );
+	    $this->form->addElement('static', null, $this->indent . "Use the following questions to anchor each time period:");
+            $this->form->addElement('text', "what_year_was_your_child_born", $this->indent . "What month/year was your child born?");
+            $this->form->addElement('text', "where_were_you_living_at_the_time", $this->indent . "Where were you living at the time?"); 
+            $this->form->addElement('text', "where_did_your_child_sleep", $this->indent . "Where did your child sleep (own/shared room)?");
+            $this->form->addElement('text', "any_significant_family_events", $this->indent . "Any significant family events (change of job, birth of sibling, moved) during that time?");
+       
 
         $this->form->addElement(
             'static',
@@ -242,7 +240,10 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
         $this->addSelect("i_q2_any_concerns_about_childs_daytime_sleep", "2. Any concerns about your child's daytime sleep (i.e., naps)?", $this->yes_no_options);
 
         $this->addSelect("i_q2_if_yes_rate_concern", $this->indent . "If yes, rate concern:", $this->rate_concern_options);
-        $this->XINRegisterRule('i_q2_if_yes_rate_concern', array('i_q2_any_concerns_about_childs_daytime_sleep{@}=={@}yes'), 'Required if yes');
+	$this->XINRegisterRule('i_q2_if_yes_rate_concern', array('i_q2_any_concerns_about_childs_daytime_sleep{@}=={@}yes'), 'Required if yes');
+
+	$this->form->addElement('text', "i_q2_please_describe_concern", $this->indent . "Please describe concern");
+	$this->XINRegisterRule('i_q2_please_describe_concern', array('i_q2_if_yes_rate_concern{@}!={@}'), 'Required if rated concern');
 
         $this->addTextAreaElement("i_q3_any_external_influences_affected_sleep", "3. Any external influences that might have affected sleep (e.g., schedule, siblings, etc.)?");
 
@@ -276,6 +277,9 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
 	
         $this->XINRegisterRule('i_q5_if_yes_select', array('i_q5_did_child_receive_intervention{@}=={@}yes'), 'Required if yes');
 
+	$this->form->addElement('text', "i_q5_if_yes_select_other", $this->indent . "If other: ");
+	$this->XINRegisterRule('i_q5_if_yes_select_other', array('i_q5_if_yes_select{@}=={@}other'), 'Required if other');
+
 	$this->addSelect(
             "i_q5_if_medication_select_which_medicine_your_child_used",
             $this->indent . "If medication, select which medicine your child used:",
@@ -285,12 +289,24 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
 
         $this->XINRegisterRule('i_q5_if_medication_select_which_medicine_your_child_used', array('i_q5_if_yes_select{@}=={@}medication'), 'Required if medication');
 
+	$this->form->addElement("textarea","i_q5_additional_comment", "Any additional comments about your child's sleep at this time?", array('cols'=>25, 'rows'=>4));
+        $this->XINRegisterRule("i_q5_additional_comment", array("i_q5_additional_comment{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("what_year_was_your_child_born", array("what_year_was_your_child_born{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("where_were_you_living_at_the_time", array("where_were_you_living_at_the_time{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("where_did_your_child_sleep", array("where_did_your_child_sleep{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("any_significant_family_events", array("any_significant_family_events{@}=={@}never_required"), 'Not Required.');
+        
         $this->form->addFormRule(array(&$this, 'validate_page1'));
     }
 
     function _page2()
     {
         $this->addHeader("SIHI (Sleep Intervention History Interview)");
+
+	 $this->form->addElement('static', null, $this->indent . "Use the following questions to anchor each time period:");
+            $this->form->addElement('text', "ii_where_were_you_living_at_the_time", $this->indent . "Where were you living at the time?");
+            $this->form->addElement('text', "ii_where_did_your_child_sleep", $this->indent . "Where did your child sleep (own/shared room)?");
+            $this->form->addElement('text', "ii_any_significant_family_events", $this->indent . "Any significant family events (change of job, birth of sibling, moved) during that time?");
 
         $this->form->addElement(
             'static',
@@ -308,6 +324,9 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
         $this->addSelect("ii_q2_if_yes_rate_concern", $this->indent . "If yes, rate concern:", $this->rate_concern_options);
         $this->XINRegisterRule('ii_q2_if_yes_rate_concern', array('ii_q2_any_concerns_about_childs_daytime_sleep{@}=={@}yes'), 'Required if yes');
 
+	$this->form->addElement('text', "ii_q2_please_describe_concern", $this->indent . "Please describe concern");
+        $this->XINRegisterRule('ii_q2_please_describe_concern', array('ii_q2_if_yes_rate_concern{@}!={@}'), 'Required if rated concern');
+
         $this->addTextAreaElement("ii_q3_any_external_influences_affected_sleep", "3. Any external influences that might have affected sleep (e.g., schedule, siblings, etc.)?");
 
         $this->addSelect("ii_q4_seek_information_to_help_child_sleep_better", "4. Seek out information to help your child sleep better (e.g., books, professional help)?", $this->yes_no_options);
@@ -321,7 +340,7 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
 
         $this->XINRegisterRule('ii_q4_if_yes_select_source', array('ii_q4_seek_information_to_help_child_sleep_better{@}=={@}yes'), 'Required if yes');
 
-	 $this->addSelect(
+	$this->addSelect(
             "ii_q4_if_sleep_specialist",
             $this->indent . "If sleep specialist, was it a short term or long-term consult?",
 	    $this->option4_specialist
@@ -337,7 +356,11 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
 	    $this->option5_select,
 	    ["multiple"]
         );
-        $this->XINRegisterRule('ii_q5_if_yes_select', array('ii_q5_did_child_receive_intervention{@}=={@}yes'), 'Required if yes');
+       
+	$this->XINRegisterRule('ii_q5_if_yes_select', array('ii_q5_did_child_receive_intervention{@}=={@}yes'), 'Required if yes');
+
+	$this->form->addElement('text', "ii_q5_if_yes_select_other", $this->indent . "If other: ");
+	$this->XINRegisterRule('ii_q5_if_yes_select_other', array('ii_q5_if_yes_select{@}=={@}other'), 'Required if other');
 
 	$this->addSelect(
             "ii_q5_if_medication_select_which_medicine_your_child_used",
@@ -348,6 +371,12 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
 
         $this->XINRegisterRule('ii_q5_if_medication_select_which_medicine_your_child_used', array('ii_q5_if_yes_select{@}=={@}medication'), 'Required if medication');
 
+        $this->form->addElement("textarea","ii_q5_additional_comment", "Any additional comments about your child's sleep at this time?", array('cols'=>25, 'rows'=>4));
+        $this->XINRegisterRule("ii_q5_additional_comment", array("ii_q5_additional_comment{@}=={@}never_required"), 'Not Required.');
+        $this->XINRegisterRule("ii_where_were_you_living_at_the_time", array("ii_where_were_you_living_at_the_time{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("ii_where_did_your_child_sleep", array("ii_where_did_your_child_sleep{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("ii_any_significant_family_events", array("ii_any_significant_family_events{@}=={@}never_required"), 'Not Required.');
+
         $this->form->addFormRule(array(&$this, 'validate_page2'));
     }
 
@@ -355,7 +384,12 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
     {
         $this->addHeader("SIHI (Sleep Intervention History Interview)");
 
-        $this->form->addElement(
+	 $this->form->addElement('static', null, $this->indent . "Use the following questions to anchor each time period:");
+            $this->form->addElement('text', "iii_where_were_you_living_at_the_time", $this->indent . "Where were you living at the time?");
+            $this->form->addElement('text', "iii_where_did_your_child_sleep", $this->indent . "Where did your child sleep (own/shared room)?");
+            $this->form->addElement('text', "iii_any_significant_family_events", $this->indent . "Any significant family events (change of job, birth of sibling, moved) during that time?");
+       
+	$this->form->addElement(
             'static',
             null,
             "<h3><b>III. Preschool/kindergarten (age 4-6):</b></h3>"
@@ -370,6 +404,9 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
 
         $this->addSelect("iii_q2_if_yes_rate_concern", $this->indent . "If yes, rate concern:", $this->rate_concern_options);
         $this->XINRegisterRule('iii_q2_if_yes_rate_concern', array('iii_q2_any_concerns_about_childs_daytime_sleep{@}=={@}yes'), 'Required if yes');
+
+	$this->form->addElement('text', "iii_q2_please_describe_concern", $this->indent . "Please describe concern");
+        $this->XINRegisterRule('iii_q2_please_describe_concern', array('iii_q2_if_yes_rate_concern{@}!={@}'), 'Required if rated concern');
 
         $this->addTextAreaElement("iii_q3_any_external_influences_affected_sleep", "3. Any external influences that might have affected sleep (e.g., schedule, siblings, etc.)?");
 
@@ -402,6 +439,9 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
 
         $this->XINRegisterRule('iii_q5_if_yes_select', array('iii_q5_did_child_receive_intervention{@}=={@}yes'), 'Required if yes');
 
+	$this->form->addElement('text', "iii_q5_if_yes_select_other", $this->indent . "If other: ");
+	$this->XINRegisterRule('iii_q5_if_yes_select_other', array('iii_q5_if_yes_select{@}=={@}other'), 'Required if other');
+
 	$this->addSelect(
             "iii_q5_if_medication_select_which_medicine_your_child_used",
             $this->indent . "If medication, select which medicine your child used:",
@@ -411,6 +451,12 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
 
         $this->XINRegisterRule('iii_q5_if_medication_select_which_medicine_your_child_used', array('iii_q5_if_yes_select{@}=={@}medication'), 'Required if medication');
 
+	$this->form->addElement("textarea","iii_q5_additional_comment", "Any additional comments about your child's sleep at this time?", array('cols'=>25, 'rows'=>4));
+        $this->XINRegisterRule("iii_q5_additional_comment", array("iii_q5_additional_comment{@}=={@}never_required"), 'Not Required.');
+        $this->XINRegisterRule("iii_where_were_you_living_at_the_time", array("iii_where_were_you_living_at_the_time{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("iii_where_did_your_child_sleep", array("iii_where_did_your_child_sleep{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("iii_any_significant_family_events", array("iii_any_significant_family_events{@}=={@}never_required"), 'Not Required.');
+
         $this->form->addFormRule(array(&$this, 'validate_page3'));
     }
 
@@ -418,7 +464,12 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
     {
         $this->addHeader("SIHI (Sleep Intervention History Interview)");
 
-        $this->form->addElement(
+	 $this->form->addElement('static', null, $this->indent . "Use the following questions to anchor each time period:");
+            $this->form->addElement('text', "iv_where_were_you_living_at_the_time", $this->indent . "Where were you living at the time?");
+            $this->form->addElement('text', "iv_where_did_your_child_sleep", $this->indent . "Where did your child sleep (own/shared room)?");
+            $this->form->addElement('text', "iv_any_significant_family_events", $this->indent . "Any significant family events (change of job, birth of sibling, moved) during that time?");
+       
+	$this->form->addElement(
             'static',
             null,
             "<h3><b>IV. Early elementary school (grade 1-3)</b></h3>"
@@ -433,6 +484,9 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
 
         $this->addSelect("iv_q2_if_yes_rate_concern", $this->indent . "If yes, rate concern:", $this->rate_concern_options);
         $this->XINRegisterRule('iv_q2_if_yes_rate_concern', array('iv_q2_any_concerns_about_childs_daytime_sleep{@}=={@}yes'), 'Required if yes');
+
+	$this->form->addElement('text', "iv_q2_please_describe_concern", $this->indent . "Please describe concern");
+        $this->XINRegisterRule('iv_q2_please_describe_concern', array('iv_q2_if_yes_rate_concern{@}!={@}'), 'Required if rated concern');
 
         $this->addTextAreaElement("iv_q3_any_external_influences_affected_sleep", "3. Any external influences that might have affected sleep (e.g., schedule, siblings, etc.)?");
 
@@ -465,6 +519,9 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
 
         $this->XINRegisterRule('iv_q5_if_yes_select', array('iv_q5_did_child_receive_intervention{@}=={@}yes'), 'Required if yes');
 
+	$this->form->addElement('text', "iv_q5_if_yes_select_other", $this->indent . "If other: ");
+	$this->XINRegisterRule('iv_q5_if_yes_select_other', array('iv_q5_if_yes_select{@}=={@}other'), 'Required if other');
+
 	$this->addSelect(
             "iv_q5_if_medication_select_which_medicine_your_child_used",
             $this->indent . "If medication, select which medicine your child used:",
@@ -474,6 +531,12 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
 
         $this->XINRegisterRule('iv_q5_if_medication_select_which_medicine_your_child_used', array('iv_q5_if_yes_select{@}=={@}medication'), 'Required if medication');
 
+	$this->form->addElement("textarea","iv_q5_additional_comment", "Any additional comments about your child's sleep at this time?", array('cols'=>25, 'rows'=>4));
+        $this->XINRegisterRule("iv_q5_additional_comment", array("iv_q5_additional_comment{@}=={@}never_required"), 'Not Required.');
+        $this->XINRegisterRule("iv_where_were_you_living_at_the_time", array("iv_where_were_you_living_at_the_time{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("iv_where_did_your_child_sleep", array("iv_where_did_your_child_sleep{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("iv_any_significant_family_events", array("iv_any_significant_family_events{@}=={@}never_required"), 'Not Required.');
+
         $this->form->addFormRule(array(&$this, 'validate_page4'));
     }
 
@@ -481,11 +544,18 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
     {
         $this->addHeader("SIHI (Sleep Intervention History Interview)");
 
-        $this->form->addElement(
+	 $this->form->addElement('static', null, $this->indent . "Use the following questions to anchor each time period:");
+            $this->form->addElement('text', "v_where_were_you_living_at_the_time", $this->indent . "Where were you living at the time?");
+            $this->form->addElement('text', "v_where_did_your_child_sleep", $this->indent . "Where did your child sleep (own/shared room)?");
+            $this->form->addElement('text', "v_any_significant_family_events", $this->indent . "Any significant family events (change of job, birth of sibling, moved) during that time?");
+       
+	$this->form->addElement(
             'static',
             null,
             "<h3><b>V. Late elementary school (grade 4-5)</b></h3>"
         );
+
+	$this->form->addElement("advcheckbox", 'not_in_elementary_school', null, 'Participant not yet in 4th grade', null,  array("not_used", "used"));
 
         $this->addSelect("v_q1_any_concerns_about_childs_nighttime_sleep", "1. Any concerns about your child's nighttime sleep?", $this->yes_no_options);
 
@@ -496,6 +566,9 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
 
         $this->addSelect("v_q2_if_yes_rate_concern", $this->indent . "If yes, rate concern:", $this->rate_concern_options);
         $this->XINRegisterRule('v_q2_if_yes_rate_concern', array('v_q2_any_concerns_about_childs_daytime_sleep{@}=={@}yes'), 'Required if yes');
+
+	$this->form->addElement('text', "v_q2_please_describe_concern", $this->indent . "Please describe concern");
+        $this->XINRegisterRule('v_q2_please_describe_concern', array('v_q2_if_yes_rate_concern{@}!={@}'), 'Required if rated concern');
 
         $this->addTextAreaElement("v_q3_any_external_influences_affected_sleep", "3. Any external influences that might have affected sleep (e.g., schedule, siblings, etc.)?");
 
@@ -529,6 +602,9 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
 	
 	$this->XINRegisterRule('v_q5_if_yes_select', array('v_q5_did_child_receive_intervention{@}=={@}yes'), 'Required if yes');
 
+	$this->form->addElement('text', "v_q5_if_yes_select_other", $this->indent . "If other: ");
+	$this->XINRegisterRule('v_q5_if_yes_select_other', array('v_q5_if_yes_select{@}=={@}other'), 'Required if other');
+
 	$this->addSelect(
             "v_q5_if_medication_select_which_medicine_your_child_used",
             $this->indent . "If medication, select which medicine your child used:",
@@ -538,6 +614,18 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
 
         $this->XINRegisterRule('v_q5_if_medication_select_which_medicine_your_child_used', array('v_q5_if_yes_select{@}=={@}medication'), 'Required if medication');
 
+	$this->form->addElement("textarea","v_q5_additional_comment", "Any additional comments about your child's sleep at this time?", array('cols'=>25, 'rows'=>4));
+	$this->XINRegisterRule("v_q5_additional_comment", array("v_q5_additional_comment{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("v_q1_any_concerns_about_childs_nighttime_sleep", array("not_in_elementary_school{@}!={@}used"), 'Required.');
+        $this->XINRegisterRule("v_q2_any_concerns_about_childs_daytime_sleep", array("not_in_elementary_school{@}!={@}used"), 'Required.');
+	$this->XINRegisterRule("v_q3_any_external_influences_affected_sleep", array("not_in_elementary_school{@}!={@}used"), 'Required.');
+	$this->XINRegisterRule("v_q4_seek_information_to_help_child_sleep_better", array("not_in_elementary_school{@}!={@}used"), 'Required.');
+	$this->XINRegisterRule("v_q5_did_child_receive_intervention", array("not_in_elementary_school{@}!={@}used"), 'Required.');
+        $this->XINRegisterRule("v_q5_additional_comment", array("not_in_elementary_school{@}!={@}used"), 'Required.');
+        $this->XINRegisterRule("v_where_were_you_living_at_the_time", array("v_where_were_you_living_at_the_time{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("v_where_did_your_child_sleep", array("v_where_did_your_child_sleep{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("v_any_significant_family_events", array("v_any_significant_family_events{@}=={@}never_required"), 'Not Required.');
+
         $this->form->addFormRule(array(&$this, 'validate_page5'));
     }
 
@@ -545,6 +633,11 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
     {
 	$this->addHeader("SIHI (Sleep Intervention History Interview)");
 
+	 $this->form->addElement('static', null, $this->indent . "Use the following questions to anchor each time period:");
+            $this->form->addElement('text', "vi_where_were_you_living_at_the_time", $this->indent . "Where were you living at the time?");
+            $this->form->addElement('text', "vi_where_did_your_child_sleep", $this->indent . "Where did your child sleep (own/shared room)?");
+            $this->form->addElement('text', "vi_any_significant_family_events", $this->indent . "Any significant family events (change of job, birth of sibling, moved) during that time?");
+	
 	$this->form->addElement(
             'static',
             null,
@@ -563,6 +656,9 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
 
         $this->addSelect("vi_q2_if_yes_rate_concern", $this->indent . "If yes, rate concern:", $this->rate_concern_options);
         $this->XINRegisterRule('vi_q2_if_yes_rate_concern', array('vi_q2_any_concerns_about_childs_daytime_sleep{@}=={@}yes'), 'Required if yes');
+
+	$this->form->addElement('text', "vi_q2_please_describe_concern", $this->indent . "Please describe concern");
+        $this->XINRegisterRule('vi_q2_please_describe_concern', array('vi_q2_if_yes_rate_concern{@}!={@}'), 'Required if rated concern');
 
         $this->addTextAreaElement("vi_q3_any_external_influences_affected_sleep", "3. Any external influences that might have affected sleep (e.g., schedule, siblings, etc.)?");
 
@@ -596,6 +692,9 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
 
         $this->XINRegisterRule('vi_q5_if_yes_select', array('vi_q5_did_child_receive_intervention{@}=={@}yes'), 'Required if yes');
 
+	$this->form->addElement('text', "vi_q5_if_yes_select_other", $this->indent . "If other: ");
+	$this->XINRegisterRule('vi_q5_if_yes_select_other', array('vi_q5_if_yes_select{@}=={@}other'), 'Required if other');
+
         $this->addSelect(
             "vi_q5_if_medication_select_which_medicine_your_child_used",
             $this->indent . "If medication, select which medicine your child used:",
@@ -605,11 +704,18 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
 
         $this->XINRegisterRule('vi_q5_if_medication_select_which_medicine_your_child_used', array('vi_q5_if_yes_select{@}=={@}medication'), 'Required if medication');
 
+	$this->form->addElement("textarea","vi_q5_additional_comment", "Any additional comments about your child's sleep at this time?", array('cols'=>25, 'rows'=>4));
+        $this->XINRegisterRule("v_q5_additional_comment", array("v_q5_additional_comment{@}=={@}never_required"), 'Not Required.');
+
         $this->XINRegisterRule("vi_q1_any_concerns_about_childs_nighttime_sleep", array("not_in_middle_school{@}!={@}used"), 'Required.');
         $this->XINRegisterRule("vi_q2_any_concerns_about_childs_daytime_sleep", array("not_in_middle_school{@}!={@}used"), 'Required.');
 	$this->XINRegisterRule("vi_q3_any_external_influences_affected_sleep", array("not_in_middle_school{@}!={@}used"), 'Required.');
 	$this->XINRegisterRule("vi_q4_seek_information_to_help_child_sleep_better", array("not_in_middle_school{@}!={@}used"), 'Required.');
 	$this->XINRegisterRule("vi_q5_did_child_receive_intervention", array("not_in_middle_school{@}!={@}used"), 'Required.');
+        $this->XINRegisterRule("vi_q5_additional_comment", array("not_in_middle_school{@}!={@}used"), 'Required.');
+        $this->XINRegisterRule("vi_where_were_you_living_at_the_time", array("vi_where_were_you_living_at_the_time{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("vi_where_did_your_child_sleep", array("vi_where_did_your_child_sleep{@}=={@}never_required"), 'Not Required.');
+	$this->XINRegisterRule("vi_any_significant_family_events", array("vi_any_significant_family_events{@}=={@}never_required"), 'Not Required.');
 
         $this->form->addFormRule(array(&$this, 'validate_page6'));
     }
