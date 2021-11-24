@@ -315,6 +315,7 @@ class NDB_BVL_Instrument_CCTQ_survey extends NDB_BVL_Instrument_survey
         $this->addSelect("how_well_do_you_think_you_child_understood_the_survey_questions", "How well do you think your child understood the survey questions?", $how_well_understood_options);
 
         $this->addSelect("how_accurate_were_your_childs_response_on_the_survey", "In your opinion, how accurate were your child's response on the survey?", $how_accurate_options);
+        $this->form->addFormRule(array(&$this, 'validate_page1'));
     }
 
     /**
@@ -787,7 +788,17 @@ class NDB_BVL_Instrument_CCTQ_survey extends NDB_BVL_Instrument_survey
 
          return $errors;
     }
+    function validate_page1($values)
+    {
+        $errors = [];
+        if ($values["did_you_have_to_read_the_survey_questions_to_your_child"] == "no") {
+            $this->validate_empty_subquestions($values, ["how_much_did_you_support_your_child_in_completing_the_survey"], $errors);
+            $this->validate_empty_subquestions($values, ["how_well_do_you_think_you_child_understood_the_survey_questions"], $errors);
+            $this->validate_empty_subquestions($values, ["how_accurate_were_your_childs_response_on_the_survey"], $errors);
+        }
 
+        return $errors;
+    }
     function validate_page2($values)
     {
         $errors = [];
@@ -897,8 +908,8 @@ class NDB_BVL_Instrument_CCTQ_survey extends NDB_BVL_Instrument_survey
         $query  = "SELECT * FROM $this->table WHERE CommentID = '$this->commentID'";
         $record = $db->pselectRow($query, array());
 
-        $sleep_period_on_scheduled_days = $this->calculateTimeDiff(self::SCHEDULEDDAYS,$record,$record["q8_how_many_minutes_does_it_take_child_to_fall_asleep_lights_out"]);
-        $sleep_period_on_free_days = $this->calculateTimeDiff(self::FREEDAYS,$record,$record["q16_how_many_minutes_does_it_take_child_fall_asleep_lights_out"]);
+        $sleep_period_on_scheduled_days = $this->calculateTimeDiff(self::SCHEDULEDDAYS,$record,$record["q8_how_many_minutes_does_it_take_child_to_fall_asleep_lights_out"]) ?? 0;
+        $sleep_period_on_free_days = $this->calculateTimeDiff(self::FREEDAYS,$record,$record["q16_how_many_minutes_does_it_take_child_fall_asleep_lights_out"]) ?? 0;
 
         $scores["midsleep_point_total_derived_score"] = round((  (5 * $sleep_period_on_scheduled_days)
                                                         + (2 * $sleep_period_on_free_days)
