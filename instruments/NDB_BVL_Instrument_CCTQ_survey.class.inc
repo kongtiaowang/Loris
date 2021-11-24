@@ -348,6 +348,7 @@ class NDB_BVL_Instrument_CCTQ_survey extends NDB_BVL_Instrument_survey
                       );
 
         $q5_options = array(
+                       ""  => "",
                        "1" => "1 day/week",
                        "2" => "2 days/week",
                        "3" => "3 days/week",
