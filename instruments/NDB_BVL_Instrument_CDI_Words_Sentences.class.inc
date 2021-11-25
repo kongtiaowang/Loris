@@ -336,18 +336,7 @@ class NDB_BVL_Instrument_CDI_Words_Sentences extends NDB_BVL_Instrument
 	    $this->XINRegisterRule($section_names[$i], array("$section_names{[$i]}{@}=={@}NEVER_REQUIRED"));
 	    $qNum++;
         }
-    }
-
-    /**
-     * Function to save unchecked checkbox for all sections using checkbox
-     * @param section_names takes as input an array of words
-     * @return void
-     *
-     */
-
-  /*  
-
-   
+    }  
 
     /**
      * Page 1
