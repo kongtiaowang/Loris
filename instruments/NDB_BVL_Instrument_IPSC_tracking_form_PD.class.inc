@@ -248,7 +248,7 @@ class NDB_BVL_Instrument_IPSC_tracking_form_PD extends NDB_BVL_Instrument
 	$timepoint =& TimePoint::singleton($this->getSessionID());
         $candidate =& Candidate::singleton($timepoint->getCandID());
         $PSCID = $candidate->getPSCID();
-        $DCCID = $candidate->getCandidateID();
+        $DCCID = $candidate->getCandID();
         $centerID = $candidate->getData('RegistrationCenterID');
 
         if ($values['blood_draw_date'] != null && $values['blood_draw_date'] != '') {
