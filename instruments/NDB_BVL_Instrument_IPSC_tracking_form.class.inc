@@ -227,9 +227,10 @@ class NDB_BVL_Instrument_IPSC_tracking_form extends NDB_BVL_Instrument
 	$timepoint =& TimePoint::singleton($this->getSessionID());
         $candidate =& Candidate::singleton($timepoint->getCandID());
         $PSCID = $candidate->getPSCID();
+        $DCCID = $candidate->getCandID();
         $centerID = $candidate->getData('RegistrationCenterID');
 
-        if ($values['was_the_blood_draw_successful'] === 'yes') {
+        if ($values['blood_draw_date'] != null && $values['blood_draw_date'] != '') {
             $blood_draw_date = date_create($values['blood_draw_date']);
 
             if ($centerID == 1) {
@@ -239,6 +240,7 @@ class NDB_BVL_Instrument_IPSC_tracking_form extends NDB_BVL_Instrument
             }
 
             $msg_data['PSCID'] = $PSCID;
+            $msg_data['DCCID'] = $DCCID; 
             $msg_data['blood_draw_date'] = date_format($blood_draw_date, "F d, Y");
             $msg_data['tracking_number'] = $values['fedex_tracking_number'];
             $old_blood_draw_date = $db->pselectOne(
