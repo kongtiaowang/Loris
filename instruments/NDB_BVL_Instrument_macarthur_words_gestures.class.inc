@@ -140,21 +140,10 @@ class NDB_BVL_Instrument_macarthur_words_gestures extends NDB_BVL_Instrument
 
             $this->form->addElement("static",null,null);
             $this->form->addElement("static",null,null);
-            $this->form->addElement("static",null,null);
-            $this->form->addElement("static",null,null);
 
-            $this->form->addElement("static",null,"<b>FIRST SIGNS OF UNDERSTANDING:</b>");
-
-            $this->form->addElement("static",null,null);
-            $this->form->addElement("static",null,null);
-
-            $group[]= $this->form->createElement("static", "raw_response", null, null);
-            $group[]= $this->form->createElement("static", "percentile", null, null);
-            $this->form->addGroup($group, null, null, $this->_GUIDelimiter, false);
+            $group[]= $this->form->createElement("static", null, null, null);
+            $this->form->addGroup($group, null, '<b>FIRST SIGNS OF UNDERSTANDING</b>', $this->_GUIDelimiter, false);
             unset($group);
-
-            $this->form->addElement("static",null,null);
-            $this->form->addElement("static",null,null);
 
             $group[]= $this->form->createElement("static", 'I_A_1', null, null);
             $this->form->addGroup($group, null, "Responds when name is called:", $this->_GUIDelimiter, false);
@@ -169,32 +158,11 @@ class NDB_BVL_Instrument_macarthur_words_gestures extends NDB_BVL_Instrument
             unset($group);
 
             $this->form->addElement("static",null,null);
-            $this->form->addElement("static",null,null);
-            $this->form->addElement("static",null,null);
-            $this->form->addElement("static",null,null);
-            $this->form->addElement("static",null,null);
-            $this->form->addElement("static",null,null);
-            $this->form->addElement("static",null,null);
-            $this->form->addElement("static",null,null);
 
-            $group[]= $this->form->createElement("static", 'phrases_understood_number', null, null);
-            $group[]= $this->form->createElement("static", 'phrases_understood_percentile', null, null);
-            $this->form->addGroup($group, null, "<b>PHRASES UNDERSTOOD:</b>", $this->_GUIDelimiter, false);
+            $group[]= $this->form->createElement("static", null, null, null);
+            $twentyFiveSpaces = str_repeat("&nbsp;", 25);
+            $this->form->addGroup($group, null, "<b>STARTING TO TALK</b>$twentyFiveSpaces", $this->_GUIDelimiter, false);
             unset($group);
-
-            $this->form->addElement("static",null,null);
-            $this->form->addElement("static",null,null);
-            $this->form->addElement("static",null,null);
-            $this->form->addElement("static",null,null);
-            $this->form->addElement("static",null,null);
-            $this->form->addElement("static",null,null);
-            $this->form->addElement("static",null,null);
-            $this->form->addElement("static",null,null);
-
-            $this->form->addElement("static",null,"<b>STARTING TO TALK:</b>");
-
-            $this->form->addElement("static",null,null);
-            $this->form->addElement("static",null,null);
 
             $group[]= $this->form->createElement("static", 'I_C_1_score', null, null);
             $this->form->addGroup($group, null, "Imitation:", $this->_GUIDelimiter, false);
@@ -205,18 +173,18 @@ class NDB_BVL_Instrument_macarthur_words_gestures extends NDB_BVL_Instrument
             unset($group);
 
             $this->form->addElement("static",null,null);
-            $this->form->addElement("static",null,null);
-            $this->form->addElement("static",null,null);
-            $this->form->addElement("static",null,null);
-            $this->form->addElement("static",null,null);
-            $this->form->addElement("static",null,null);
-            $this->form->addElement("static",null,null);
-            $this->form->addElement("static",null,null);
 
-            $this->form->addElement("static",null,"<b>VOCABULARY CHECKLIST:</b>");
+            $group[]= $this->form->createElement("static", "raw_response", null, null);
+            $group[]= $this->form->createElement("static", "percentile", null, null);
+            $fifteenSpaces = str_repeat("&nbsp;", 49);
+            $this->form->addGroup($group, null, "Scale$fifteenSpaces", $this->_GUIDelimiter, false);
+            unset($group);
 
-            $this->form->addElement("static",null,null);
-            $this->form->addElement("static",null,null);
+
+            $group[]= $this->form->createElement("static", 'phrases_understood_number', null, null);
+            $group[]= $this->form->createElement("static", 'phrases_understood_percentile', null, null);
+            $this->form->addGroup($group, null, "Phrases understood:</b>", $this->_GUIDelimiter, false);
+            unset($group);
 
             $group[]= $this->form->createElement("static", 'words_understood_number', null, null);
             $group[]= $this->form->createElement("static", 'words_understood_percentile', null, null);
@@ -230,34 +198,40 @@ class NDB_BVL_Instrument_macarthur_words_gestures extends NDB_BVL_Instrument
 
             $this->form->addElement("static",null,null);
             $this->form->addElement("static",null,null);
-            $this->form->addElement("static",null,null);
-            $this->form->addElement("static",null,null);
-            $this->form->addElement("static",null,null);
-            $this->form->addElement("static",null,null);
-            $this->form->addElement("static",null,null);
-            $this->form->addElement("static",null,null);
 
             $this->form->addElement("header",null,"PART 2: ACTIONS AND GESTURES");
 
             $this->form->addElement("static",null,null);
             $this->form->addElement("static",null,null);
-            $this->form->addElement("static",null,null);
-            $this->form->addElement("static",null,null);
+
+            $group[]= $this->form->createElement("static", "raw_response", null, null);
+            $group[]= $this->form->createElement("static", "percentile", null, null);
+            $this->form->addGroup($group, null, "Scale", $this->_GUIDelimiter, false);
+            unset($group);
 
             $group[]= $this->form->createElement("static", 'early_gestures_number', null, null);
             $group[]= $this->form->createElement("static", 'early_gestures_percentile', null, null);
-            $this->form->addGroup($group, null, "<b>Early Gestures (Sections A & B):</b>", $this->_GUIDelimiter, false);
+            $this->form->addGroup($group, null, "Early Gestures (Sections A & B):", $this->_GUIDelimiter, false);
             unset($group);
 
             $group[]= $this->form->createElement("static", 'later_gestures_number', null, null);
             $group[]= $this->form->createElement("static", 'later_gestures_percentile', null, null);
-            $this->form->addGroup($group, null, "<b>Later Gestures (Sections C through E):</b>", $this->_GUIDelimiter, false);
+            $this->form->addGroup($group, null, "Later Gestures (Sections C through E):", $this->_GUIDelimiter, false);
             unset($group);
 
             $group[]= $this->form->createElement("static", 'total_gestures_number', null, null);
             $group[]= $this->form->createElement("static", 'total_gestures_percentile', null, null);
-            $this->form->addGroup($group, null, "<b>Total Gestures (Sections A through E):</b>", $this->_GUIDelimiter, false);
+            $this->form->addGroup($group, null, "Total Gestures (Sections A through E):", $this->_GUIDelimiter, false);
             unset($group);
+
+            $this->form->addElement("static",null,null);
+            $this->form->addElement("static",null,null);
+            $this->form->addElement("static",null,null);
+            $this->form->addElement("static",null,null);
+            $this->form->addElement("static",null,null);
+            $this->form->addElement("static",null,null);
+            $this->form->addElement("static",null,null);
+            $this->form->addElement("static",null,null);
     }
 
 
@@ -284,42 +258,64 @@ class NDB_BVL_Instrument_macarthur_words_gestures extends NDB_BVL_Instrument
         }
     }
 
-    function CalculatePercentile($scale, $age_months, $gender, &$scores) {
+    function getPercentile($scale, $age_months, $gender, &$scores) {
         $db = Database::singleton();
-        $scale_number = $scale . "_number";
-        $scale_percentile = $scale . "_percentile";
 
-        $query_scores = "SELECT * FROM macarthur_lookup WHERE age_months=".$age_months. " AND sex='$gender' AND score_raw=".$scores[$scale_number]." AND subscale='$scale_number'";
-        $PercentileScore  = $db->pselectRow($query_scores, array());
+        $scale_number     = "{$scale}_number";
+        $scale_percentile = "{$scale}_percentile";
 
-        $scores[$scale_percentile]= $PercentileScore['score_percentile'];
-
-        if ($PercentileScore == NULL) {
-            $score_holder = $scores[$scale_number];
-            $query_scores1a = "SELECT * FROM macarthur_lookup WHERE age_months=$age_months AND sex='$gender' 
-AND subscale='$scale_number' AND score_raw>$score_holder ORDER BY score_raw ASC limit 1";
-            $record_1a= $db->pselect($query_scores1a, array());
-            if(empty($record_1a)) {
-                $db->pselect("SELECT * from macarthur_lookup WHERE age_months=$age_months AND sex='$gender'     
-AND subscale='$scale_number' ORDER BY score_raw ASC limit 1", array());
-            }
-
-            $query_scores1b = "SELECT * FROM macarthur_lookup WHERE age_months=".$age_months. " AND sex='$gender' 
-            AND subscale='$scale_number' AND score_raw<$score_holder ORDER BY score_raw DESC limit 1";
-            $record_1b = $db->pselect($query_scores1b, array());
-
-            //print "scale: $scale_number score: " . $scores[$scale_number] . " x< " . $record_1b['score_raw'] . " x> " . $record_1a['score_raw'] . " Y> " . $record_1b['score_percentile'] . " Y< " . $record_1b['score_percentile'] . '<br />';
-            $percentile_calculation1 = (
-                    ($scores[$scale_number]-$record_1b[0]['score_raw'])/
-                    ($record_1a[0]['score_raw']-$record_1b[0]['score_raw'])
-                    )*($record_1a[0]['score_percentile']-$record_1b[0]['score_percentile'])+$record_1b[0]['score_percentile'];
-
-            $scores[$scale_percentile]=abs(round($percentile_calculation1));
-
+        $query_scores = "
+            SELECT *
+            FROM macarthur_lookup
+            WHERE age_months = '$age_months'
+            AND sex          = '$gender'
+            AND score_raw    = '{$scores[$scale_number]}'
+            AND subscale     = '$scale_number'
+        ";
+        $row = $db->pselectRow($query_scores, array());
+        if(!is_null($row)) {
+            return $row["score_percentile"] > 99 ? 99 :$row["score_percentile"];
         }
-        if($scores[$scale_percentile] > 99) {
-            $scores[$scale_percentile]=99;
+
+        $score_holder = $scores[$scale_number];
+        $query_scores1a = "
+            SELECT *
+            FROM macarthur_lookup
+            WHERE age_months = $age_months
+            AND sex          = '$gender'
+            AND subscale     = '$scale_number'
+            AND score_raw    > $score_holder
+            ORDER BY score_raw ASC
+            LIMIT 1
+        ";
+        $record_1a = $db->pselect($query_scores1a, []);
+        if(empty($record_1a)) {
+            return 99;
         }
+        $highScore = $record_1a[0]['score_raw'];
+        $highPerc  = $record_1a[0]['score_percentile'];
+
+        $query_scores1b = "
+            SELECT *
+            FROM macarthur_lookup
+            WHERE age_months = $age_months
+            AND sex          = '$gender'
+            AND subscale     = '$scale_number'
+            AND score_raw    < $score_holder
+            ORDER BY score_raw DESC
+            LIMIT 1
+        ";
+        $record_1b = $db->pselect($query_scores1b, []);
+        if( empty($record_1b)) {
+            return "<5";
+        }
+        $lowScore = $record_1b[0]['score_raw'];
+        $lowPerc  = $record_1b[0]['score_percentile'];
+
+        $averagePerc = (($score_holder - $lowScore) / ($highScore - $lowScore)) * ($highPerc - $lowPerc) + $lowPerc;
+        $averagePerc = abs(round($averagePerc));
+
+        return $averagePerc > 99 ? 99 : $averagePerc;
     }
 
     function score(): void {
@@ -463,12 +459,9 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         // to compare the subject against him/herself.
         $Scales = array("phrases_understood", "words_understood", "words_produced", "early_gestures", "later_gestures", "total_gestures");
         foreach($Scales as $scale) {
-            if($age_months >= 8 && $age_months <= 18) {
-                $this->CalculatePercentile($scale, $age_months, $gender, $scores);
-            } else {
-                $scale_percentile = $scale . "_percentile";
-                $scores[$scale_percentile] = "Candidate too old to score";
-            }
+            $scores["{$scale}_percentile"] = $age_months >= 8 && $age_months <= 18
+                ? $this->getPercentile($scale, $age_months, $gender, $scores)
+                :  "Candidate too old to score";
         }
         // end percentiles calculation
 
