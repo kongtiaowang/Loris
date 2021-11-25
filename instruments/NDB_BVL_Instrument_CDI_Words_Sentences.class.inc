@@ -60,6 +60,11 @@ class NDB_BVL_Instrument_CDI_Words_Sentences extends NDB_BVL_Instrument
         "part_2_b_verbs"
 
     );
+    
+    private const NoYesCheckbox   = [
+                                     '0',
+                                     '1',
+                                    ];
 
     /**
      * Sets up basic data, such as the LorisForm object, and so on.
@@ -319,19 +324,30 @@ class NDB_BVL_Instrument_CDI_Words_Sentences extends NDB_BVL_Instrument
         $qNum = 1;
         for ($i = 0; $i < sizeof($section_names); $i++) {
             $section_labels[$i] = str_replace('_', ' ', $section_names[$i]);
-            $this
+      /**      $this
                 ->addCheckbox(
                     $section_number . "_" . $qNum,
                     $section_labels[$i],
-                    array('value' => '1'));
-            // $this->form->addElement('advcheckbox', $section_names[$i], $section_labels[$i], null, null, array('', '1'));
-            $this->XINRegisterRule($section_names[$i], array("$section_names[$i]{@}=={@}NEVER_REQUIRED"));
-            $qNum++;
+                    array('value'=>'1'));
+	 
+       */   
+	    $column = $section_number . "_" . $qNum;
+	    $this->form->addElement('advcheckbox', $column , $section_labels[$i], $section_labels[$i], null, self::NoYesCheckbox);
+	    $this->XINRegisterRule($section_names[$i], array("$section_names{[$i]}{@}=={@}NEVER_REQUIRED"));
+	    $qNum++;
         }
     }
 
+    /**
+     * Function to save unchecked checkbox for all sections using checkbox
+     * @param section_names takes as input an array of words
+     * @return void
+     *
+     */
 
+  /*  
 
+   
 
     /**
      * Page 1
@@ -383,7 +399,7 @@ class NDB_BVL_Instrument_CDI_Words_Sentences extends NDB_BVL_Instrument
                 "turtle", "wolf", "zebra"
             );
 
-        $this->displayCheckbox($part_2_names, "part_2");
+	$this->displayCheckbox($part_2_names, "part_2");
 
         /* 3. Vehicles (Real or Toy) (14) */
 
@@ -396,7 +412,7 @@ class NDB_BVL_Instrument_CDI_Words_Sentences extends NDB_BVL_Instrument
                 "stroller", "tractor", "train", "tricycle", "truck"
             );
 
-        $this->displayCheckbox($part_3_names, "part_3");
+	$this->displayCheckbox($part_3_names, "part_3");
 
         /* 4. Toys (18) */
 
@@ -409,7 +425,7 @@ class NDB_BVL_Instrument_CDI_Words_Sentences extends NDB_BVL_Instrument
                 "play_dough", "present", "puzzle", "story", "toy"
             );
 
-        $this->displayCheckbox($part_4_names, "part_4");
+	$this->displayCheckbox($part_4_names, "part_4");
     }
 
     function _page2()
