@@ -230,10 +230,7 @@ class NDB_BVL_Instrument_PVT extends NDB_BVL_Instrument
 
 
         $db=& Database::singleton();
-
-        ///Setting trackchanges to false because getting error messages
-        $db->_trackChanges = false;
-        ////////////////////////////////////////////////////////////////
+       
 
         $result = $db->update($this->testName, $values, array('CommentID'=>$args['CommentID']));  
         return true;
