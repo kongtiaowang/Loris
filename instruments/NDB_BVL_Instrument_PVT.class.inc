@@ -175,7 +175,7 @@ class NDB_BVL_Instrument_PVT extends NDB_BVL_Instrument
         $visit = $args['visitLabel'];
         $actual_pscid=$args['PSCID'];
 
-
+    /*
         $input = $actual_pscid; //from the user
         $matches = array();
         foreach ($lines as $c){
@@ -195,12 +195,13 @@ class NDB_BVL_Instrument_PVT extends NDB_BVL_Instrument
                 break;
             }
         }
-        if($found==0){
+           
+	if($found==0){
             $errors[]="No matching PSCID found in the file. Please check and try again";
             return $errors;
 
         }
-
+    */
 
         return true;
     }
@@ -228,7 +229,10 @@ class NDB_BVL_Instrument_PVT extends NDB_BVL_Instrument
         );
 
 
-      
+        $db=& Database::singleton();
+       
+
+        $result = $db->update($this->testName, $values, array('CommentID'=>$args['CommentID']));  
         return true;
     }
 

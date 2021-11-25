@@ -563,7 +563,7 @@ class NDB_BVL_Instrument_TSI_SA extends NDB_BVL_Instrument
     function validate_page1($values)
     {
         $errors = [];
-        $this->validate_numeric($values, "weight_pounds", $errors, 0, 120);
+        $this->validate_numeric($values, "weight_pounds", $errors, 0, 220);
         $this->validate_numeric($values, "weight_ounces", $errors, 0, 15);
 
         // If the parents are not living together
