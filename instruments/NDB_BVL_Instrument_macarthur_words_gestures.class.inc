@@ -1,9 +1,8 @@
 <?php
 
+require_once "AbstractMacarthurWordsGestures.class.inc";
 
-
-
-class NDB_BVL_Instrument_macarthur_words_gestures extends NDB_BVL_Instrument
+class NDB_BVL_Instrument_macarthur_words_gestures extends AbstractMacarthurWordsGestures
 {
     use LegacyInstrumentTrait;
 
@@ -256,66 +255,6 @@ class NDB_BVL_Instrument_macarthur_words_gestures extends NDB_BVL_Instrument
                 $no++;
             }
         }
-    }
-
-    function getPercentile($scale, $age_months, $gender, &$scores) {
-        $db = Database::singleton();
-
-        $scale_number     = "{$scale}_number";
-        $scale_percentile = "{$scale}_percentile";
-
-        $query_scores = "
-            SELECT *
-            FROM macarthur_lookup
-            WHERE age_months = '$age_months'
-            AND sex          = '$gender'
-            AND score_raw    = '{$scores[$scale_number]}'
-            AND subscale     = '$scale_number'
-        ";
-        $row = $db->pselectRow($query_scores, array());
-        if(!is_null($row)) {
-            return $row["score_percentile"] > 99 ? 99 :$row["score_percentile"];
-        }
-
-        $score_holder = $scores[$scale_number];
-        $query_scores1a = "
-            SELECT *
-            FROM macarthur_lookup
-            WHERE age_months = $age_months
-            AND sex          = '$gender'
-            AND subscale     = '$scale_number'
-            AND score_raw    > $score_holder
-            ORDER BY score_raw ASC
-            LIMIT 1
-        ";
-        $record_1a = $db->pselect($query_scores1a, []);
-        if(empty($record_1a)) {
-            return 99;
-        }
-        $highScore = $record_1a[0]['score_raw'];
-        $highPerc  = $record_1a[0]['score_percentile'];
-
-        $query_scores1b = "
-            SELECT *
-            FROM macarthur_lookup
-            WHERE age_months = $age_months
-            AND sex          = '$gender'
-            AND subscale     = '$scale_number'
-            AND score_raw    < $score_holder
-            ORDER BY score_raw DESC
-            LIMIT 1
-        ";
-        $record_1b = $db->pselect($query_scores1b, []);
-        if( empty($record_1b)) {
-            return "<5";
-        }
-        $lowScore = $record_1b[0]['score_raw'];
-        $lowPerc  = $record_1b[0]['score_percentile'];
-
-        $averagePerc = (($score_holder - $lowScore) / ($highScore - $lowScore)) * ($highPerc - $lowPerc) + $lowPerc;
-        $averagePerc = abs(round($averagePerc));
-
-        return $averagePerc > 99 ? 99 : $averagePerc;
     }
 
     function score(): void {

@@ -1,9 +1,8 @@
 <?php
 
+require_once "AbstractMacarthurWordsGestures.class.inc";
 
-
-
-class NDB_BVL_Instrument_macarthur_words_gestures_survey extends NDB_BVL_Instrument
+class NDB_BVL_Instrument_macarthur_words_gestures_survey extends AbstractMacarthurWordsGestures
 {
     use LegacyInstrumentTrait;
 
@@ -225,55 +224,6 @@ class NDB_BVL_Instrument_macarthur_words_gestures_survey extends NDB_BVL_Instrum
             }
         }
     }
-//1b max score
-    function CalculatePercentile($scale, $age_months, $gender, &$scores) {
-        $db = Database::singleton();
-        $scale_number = $scale . "_number";
-        $scale_percentile = $scale . "_percentile";
-
-        $query_scores = "SELECT * FROM macarthur_lookup WHERE age_months=".$age_months. " AND sex='$gender' AND score_raw=".$scores[$scale_number]." AND subscale='$scale_number'";
-        $PercentileScore  = $db->pselectRow($query_scores, array());
-
-        $scores[$scale_percentile]= $PercentileScore['score_percentile'];
-
-        if ($PercentileScore == NULL) {
-            $score_holder = $scores[$scale_number];
-            //get min score
-            $query_scores1a = "SELECT * FROM macarthur_lookup WHERE age_months=$age_months AND sex='$gender' 
-AND subscale='$scale_number' AND score_raw>$score_holder ORDER BY score_raw ASC limit 1";
-            $record_1a= $db->pselect($query_scores1a, array());
-            if(empty($record_1a)) {
-                $db->pselectRow("SELECT * from macarthur_lookup WHERE age_months=$age_months AND sex='$gender' 
-    AND subscale='$scale_number' ORDER BY score_raw ASC limit 1", array());
-            }
-
-            $query_scores1b = "SELECT * FROM macarthur_lookup WHERE age_months=".$age_months. " AND sex='$gender'
-             AND subscale='$scale_number' AND score_raw<$score_holder ORDER BY score_raw DESC limit 1";
-
-            $record_1b = $db->pselect($query_scores1b, array());
-
-            //print "scale: $scale_number score: " . $scores[$scale_number] . " x< " . $record_1b['score_raw'] . " x> " . $record_1a['score_raw'] . " Y> " . $record_1b['score_percentile'] . " Y< " . $record_1b['score_percentile'] . '<br />';
- $max_score=$record_1b[0]['score_raw'];
-
-$max_percentile=$record_1b[0]['score_percentile'];
-
-$min_score=$record_1a[0]['score_raw'];
-
-$min_percetile=$record_1a[0]['score_percentile'];
-
-
-
-            $percentile_calculation1= ($scores[$scale_number] - $max_score)/($min_score - $max_score)
-                *($min_percetile - $max_percentile) + $max_percentile;
-
-
-            $scores[$scale_percentile]=abs(round($percentile_calculation1));
-
-        }
-        if($scores[$scale_percentile] > 99) {
-            $scores[$scale_percentile]=99;
-        }
-    }
 
     function score(): void {
         if($this->_determineDataEntryCompletionStatus() == "Incomplete") {
@@ -416,12 +366,9 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         // to compare the subject against him/herself.
         $Scales = array("phrases_understood", "words_understood", "words_produced", "early_gestures", "later_gestures", "total_gestures");
         foreach($Scales as $scale) {
-            if($age_months >= 8 && $age_months <= 18) {
-                $this->CalculatePercentile($scale, $age_months, $gender, $scores);
-            } else {
-                $scale_percentile = $scale . "_percentile";
-                $scores[$scale_percentile] = "Candidate too old to score";
-            }
+            $scores["{$scale}_percentile"] = $age_months >= 8 && $age_months <= 18
+                ? $this->getPercentile($scale, $age_months, $gender, $scores)
+                :  "Candidate too old to score";
         }
         // end percentiles calculation
 
