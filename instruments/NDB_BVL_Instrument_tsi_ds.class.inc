@@ -9,6 +9,10 @@ class NDB_BVL_Instrument_tsi_ds extends NDB_BVL_Instrument
     var $ValidityEnabled  = false;
     var $ValidityRequired = false;
 
+    private const NoYesCheckbox   = [
+                                     '0',
+                                     '1',
+                                    ];
     var $yesNo = array(
         null           => '',
         'yes'          => 'Yes',
@@ -208,8 +212,8 @@ class NDB_BVL_Instrument_tsi_ds extends NDB_BVL_Instrument
     function _main(){
         // display test name
         $this->form->addElement('header', 'instrument_title', 'Telephone Screening Interview - Down Syndrome Study');
-
-        $this->addCheckbox('not_finish0', 'Form not acquired to completion due to candidate determined as ineligible during screening interview.', array('value' => '1'));
+        $this->form->addElement('advcheckbox', 'not_finish0' , null, 'Form not acquired to completion due to candidate determined as ineligible during screening interview.', null, self::NoYesCheckbox);
+      //  $this->addCheckbox('not_finish0', 'Form not acquired to completion due to candidate determined as ineligible during screening interview.', array('value' => '1'));
 
         // automatically adds examiner & date of administration
         $this->_addMetadataFields();
@@ -292,7 +296,7 @@ class NDB_BVL_Instrument_tsi_ds extends NDB_BVL_Instrument
         $this->form->addElement('static', null, '<br>');
 
         //------------------------//
-        //  Mother information    //
+        //  Father information    //
         //------------------------//
         $this->form->addElement('static', null, '<u>Father\'s Information</u>');
 
@@ -301,8 +305,8 @@ class NDB_BVL_Instrument_tsi_ds extends NDB_BVL_Instrument
         $this->addScoreColumn('father_last_name'  , $this->indent . $this->notSavedInDbFields['father_last_name']);
 
         $this->addSelect('father_education', "{$this->indent}Highest Level of Education", $this->educationChoices);
-        $this->addDateElement('father_dob', "{$this->indent}Date of Birth:");
-        $this->addTextElement('father_occupation', "{$this->indent}Occupation:");
+        $this->addDateElement('father_dob', "{$this->indent}Date of Birth:");       
+	$this->addTextElement('father_occupation', "{$this->indent}Occupation:");
 
         $this->form->addElement('static', null, '<br>');
         $this->addSelect(
@@ -380,12 +384,12 @@ class NDB_BVL_Instrument_tsi_ds extends NDB_BVL_Instrument
 
             $this->addScoreColumn("name_sibling$i", $this->indent . $this->indent . $this->notSavedInDbFields["name_sibling$i"]);
 
-            $this->addDateElement("dob_sibling$i", "{$this->indent}{$this->indent}Date of birth:");
-            $this->XINRegisterRule("dob_sibling{$i}_date", array("dob_sibling{$i}_date{@}=={@}NEVER_REQUIRED"));
+            $this->addDateElement("dob_sibling{$i}", "{$this->indent}{$this->indent}Date of birth:");
+            $this->XINRegisterRule("dob_sibling{$i}date", array("dob_sibling{$i}_date{@}=={@}NEVER_REQUIRED"));
             $this->XINRegisterRule("dob_sibling{$i}_date_status", array("dob_sibling{$i}_date_status{@}=={@}NEVER_REQUIRED"));
 
-            $this->addTextElement("dx_sibling$i", "{$this->indent}{$this->indent}Dx:");
-            $this->XINRegisterRule("dx_sibling$i", array("dx_sibling$i{@}=={@}NEVER_REQUIRED"));
+            $this->addTextElement("dx_sibling{$i}", "{$this->indent}{$this->indent}Dx:");
+            $this->XINRegisterRule("dx_sibling{$i}", array("dx_sibling{$i}{@}=={@}NEVER_REQUIRED"));
             $this->XINRegisterRule("dx_sibling{$i}_status", array("dx_sibling{$i}_status{@}=={@}NEVER_REQUIRED"));
 
             $this->addSelect(
@@ -399,7 +403,7 @@ class NDB_BVL_Instrument_tsi_ds extends NDB_BVL_Instrument
                     'not_answered' => 'Not Answered'
                 )
             );
-            $this->XINRegisterRule("relation_sibling$i", array("relation_sibling$i{@}=={@}NEVER_REQUIRED"));
+            $this->XINRegisterRule("relation_sibling{$i}", array("relation_sibling{$i}{@}=={@}NEVER_REQUIRED"));
 
             $this->addSelect(
                 "live_at_home_sibling$i",
@@ -412,7 +416,7 @@ class NDB_BVL_Instrument_tsi_ds extends NDB_BVL_Instrument
                     'not_answered'=> 'Not Answered'
                 )
             );
-            $this->XINRegisterRule("live_at_home_sibling$i", array("live_at_home_sibling$i{@}=={@}NEVER_REQUIRED"));
+            $this->XINRegisterRule("live_at_home_sibling{$i}", array("live_at_home_sibling{$i}{@}=={@}NEVER_REQUIRED"));
          }
 
          //----------------------------------//
@@ -446,24 +450,24 @@ class NDB_BVL_Instrument_tsi_ds extends NDB_BVL_Instrument
          $this->XINRegisterRule('enrolled_research_study_list_status', array('enrolled_research_study_list_status{@}=={@}NEVER_REQUIRED'));
 
          $this->XINRegisterRule("primary_language", array("not_finish0{@}!={@}1"), 'Required.');
-         $this->XINRegisterRule("primary_language_status", array("not_finish0{@}!={@}1"), 'Required.');
+       //  $this->XINRegisterRule("primary_language_status", array("not_finish0{@}!={@}1"), 'Required.');
          $this->XINRegisterRule("mother_education", array("not_finish0{@}!={@}1"), 'Required.');
          $this->XINRegisterRule("mother_ethnicity", array("not_finish0{@}!={@}1"), 'Required.');
          $this->XINRegisterRule("father_ethnicity", array("not_finish0{@}!={@}1"), 'Required.');
          $this->XINRegisterRule("child_ethnicity", array("not_finish0{@}!={@}1"), 'Required.');
          $this->XINRegisterRule("contacted_by", array("not_finish0{@}!={@}1"), 'Required.');
-         $this->XINRegisterRule("contacted_by_status", array("not_finish0{@}!={@}1"), 'Required.');
+       //  $this->XINRegisterRule("contacted_by_status", array("not_finish0{@}!={@}1"), 'Required.');
          $this->XINRegisterRule("contact_date", array("not_finish0{@}!={@}1"), 'Required.');
-         $this->XINRegisterRule("contact_date_status", array("not_finish0{@}!={@}1"), 'Required.');
+       //  $this->XINRegisterRule("contact_date_status", array("not_finish0{@}!={@}1"), 'Required.');
          $this->XINRegisterRule("mother_dob_date", array("not_finish0{@}!={@}1"), 'Required.');
-         $this->XINRegisterRule("mother_dob_date_status", array("not_finish0{@}!={@}1"), 'Required.');
+       //  $this->XINRegisterRule("mother_dob_date_status", array("not_finish0{@}!={@}1"), 'Required.');
          $this->XINRegisterRule("mother_occupation", array("not_finish0{@}!={@}1"), 'Required.');
-         $this->XINRegisterRule("mother_occupation_status", array("not_finish0{@}!={@}1"), 'Required.');
+       //  $this->XINRegisterRule("mother_occupation_status", array("not_finish0{@}!={@}1"), 'Required.');
          $this->XINRegisterRule("father_education", array("not_finish0{@}!={@}1"), 'Required.');
          $this->XINRegisterRule("father_dob_date", array("not_finish0{@}!={@}1"), 'Required.');
-         $this->XINRegisterRule("father_dob_date_status", array("not_finish0{@}!={@}1"), 'Required.');
+       //  $this->XINRegisterRule("father_dob_date_status", array("not_finish0{@}!={@}1"), 'Required.');
          $this->XINRegisterRule("father_occupation", array("not_finish0{@}!={@}1"), 'Required.');
-         $this->XINRegisterRule("father_occupation_status", array("not_finish0{@}!={@}1"), 'Required.');
+       //  $this->XINRegisterRule("father_occupation_status", array("not_finish0{@}!={@}1"), 'Required.');
          $this->XINRegisterRule("ses_income", array("not_finish0{@}!={@}1"), 'Required.');
          $this->XINRegisterRule("nb_siblings", array("not_finish0{@}!={@}1"), 'Required.');
          $this->XINRegisterRule("nature_referral", array("not_finish0{@}!={@}1"), 'Required.');
@@ -492,7 +496,8 @@ class NDB_BVL_Instrument_tsi_ds extends NDB_BVL_Instrument
 
         $this->form->addElement('header', null, 'Section B: Exclusionary Factors INFANT SUBJECTS');
 
-        $this->addCheckbox('not_finish1', 'Form not acquired to completion due to candidate determined as ineligible during screening interview.', array('value' => '1'));
+	$this->form->addElement('advcheckbox', 'not_finish1' , null, 'Form not acquired to completion due to candidate determined as ineligible during screening interview.', null, self::NoYesCheckbox);
+       // $this->addCheckbox('not_finish1', 'Form not acquired to completion due to candidate determined as ineligible during screening interview.', array('value' => '1'));
 
         $questionArray = array(
             'neurological_problems'        => 'Any neurological problems such as cerebral palsy or tuberous sclerosis in SUBJECT?',
@@ -522,26 +527,22 @@ class NDB_BVL_Instrument_tsi_ds extends NDB_BVL_Instrument
                 );
             }
         }
-        $this->addYesNoSelect(
-            'in_utero_exposure',
-            'Exposure in-utero to meds,tobacco, alcohol, or drugs (Rx or non)'
-        );
+
+	$this->form->addElement("select","in_utero_exposure","Exposure in-utero to meds,tobacco, alcohol, or drugs (Rx or non)",$this->yesNo);
 
         $questionArray = array(
             'substance'        => 'Name of substance (get spelling):',
             'substance_amount' => 'Amount of substance at one time:',
             'time_exposure'    => 'Time period of exposure (weeks of pregnancy):'
-         );
-        foreach($questionArray as $field=>$label) {
-            $this->addTextElement(
-                "in_utero_$field",
-                $this->indent . $label,
-                array('in_utero_exposure{@}=={@}yes'),
-                'This field is required if there was exposure in-utero'
-            );
+    );
+
+        foreach($questionArray as $field => $label) {
+	$this->form->addElement("text","in_utero_{$field}", $this->indent . $label);
+	   $this->XINRegisterRule("in_utero_{$field}", array("in_utero_exposure{@}=={@}yes"),"This field is required if there was exposure in-utero");
         }
 
-        $this->addTextAreaElement('further_information', 'If yes to any of the above, obtain further information.');
+        $this->form->addElement("textarea","further_information", "If yes to any of the above, obtain further information.", array('cols'=>25, 'rows'=>4));
+        $this->XINRegisterRule("further_information", array("further_information{@}=={@}never_required"), 'Not Required.');
 
          $this->XINRegisterRule("neurological_problems", array("not_finish1{@}!={@}1"), 'Required.');
          $this->XINRegisterRule("genetic_conditions", array("not_finish1{@}!={@}1"), 'Required.');
@@ -558,8 +559,11 @@ class NDB_BVL_Instrument_tsi_ds extends NDB_BVL_Instrument
          $this->XINRegisterRule("tetralogy_fallot", array("not_finish1{@}!={@}1"), 'Required.');
          $this->XINRegisterRule("gastrointestinal_malformation", array("not_finish1{@}!={@}1"), 'Required.');
          $this->XINRegisterRule("further_information", array("not_finish1{@}!={@}1"), 'Required.');
-         $this->XINRegisterRule("further_information_status", array("not_finish1{@}!={@}1"), 'Required.');
-         $this->XINRegisterRule("in_utero_exposure", array("not_finish1{@}!={@}1"), 'Required.');
+        // $this->XINRegisterRule("further_information_status", array("not_finish1{@}!={@}1"), 'Required.');
+        // $this->XINRegisterRule("in_utero_substance", array("not_finish1{@}!={@}1"), 'Required.');
+        // $this->XINRegisterRule("in_utero_substance_amount", array("not_finish1{@}!={@}1"), 'Required.');
+       //  $this->XINRegisterRule("in_utero_time_exposure", array("not_finish1{@}!={@}1"), 'Required.');	 
+	 $this->XINRegisterRule("in_utero_exposure", array("not_finish1{@}!={@}1"), 'Required.');
 
         $this->form->addFormRule(array(&$this, 'validate_page1'));
     }
@@ -572,7 +576,8 @@ class NDB_BVL_Instrument_tsi_ds extends NDB_BVL_Instrument
     function _page2() {
         $this->form->addElement('header', null, 'Medical History Pertaining to MRI/Sedation');
 
-        $this->addCheckbox('not_finish2', 'Form not acquired to completion due to candidate determined as ineligible during screening interview.', array('value' => '1'));
+	$this->form->addElement('advcheckbox', 'not_finish2' , null, 'Form not acquired to completion due to candidate determined as ineligible during screening interview.', null, self::NoYesCheckbox);
+      //  $this->addCheckbox('not_finish2', 'Form not acquired to completion due to candidate determined as ineligible during screening interview.', array('value' => '1'));
 
         $this->addYesNoSelect(
             'med_his_q_1_med_surgical_problems',
@@ -704,9 +709,14 @@ class NDB_BVL_Instrument_tsi_ds extends NDB_BVL_Instrument
     function _page3() {
         $this->form->addElement('header', null, 'Medical Records');
 
-        $this->addCheckbox('not_finish3', 'Form not acquired to completion due to candidate determined as ineligible during screening interview.', array('value' => '1'));
+	$this->form->addElement('advcheckbox', 'not_finish3' , null, 'Form not acquired to completion due to candidate determined as ineligible during screening interview.', null, self::NoYesCheckbox);
+      //  $this->addCheckbox('not_finish3', 'Form not acquired to completion due to candidate determined as ineligible during screening interview.', array('value' => '1'));
 
-        $this->addTextElement('city_of_birth', 'City of Birth:');
+	$group[] =& $this->createText("city_of_birth");
+	$group[] =& $this->createSelect("city_of_birth_status", null, array(null =>'','not_answered'=>'Not Answered'));
+	$this->addGroup($group,"city_of_birth_group","City of Birth:",$this->_GUIDelimiter,false);
+	unset($group);
+	$this->XINRegisterRule("city_of_birth_status", array("city_of_birth{@}=={@}"), 'Required','city_of_birth_group');
 
         $this->addScoreColumn('diagnoses'            , $this->notSavedInDbFields['diagnoses']);
         $this->addScoreColumn('cognitive_dev_testing', $this->notSavedInDbFields['cognitive_dev_testing']);
@@ -748,7 +758,7 @@ class NDB_BVL_Instrument_tsi_ds extends NDB_BVL_Instrument
         $this->XINRegisterRule('review_date', array('possible_exclusion{@}=={@}yes'), 'Please specify the date of the review', 'review_date_group');
 
          $this->XINRegisterRule("city_of_birth", array("not_finish3{@}!={@}1"), 'Required.');
-         $this->XINRegisterRule("city_of_birth_status", array("not_finish3{@}!={@}1"), 'Required.');
+        // $this->XINRegisterRule("city_of_birth_status", array("not_finish3{@}!={@}1"), 'Required.');
          $this->XINRegisterRule("exc_inc_meets_criteria", array("not_finish3{@}!={@}1"), 'Required.');
          $this->XINRegisterRule("exc_inc_contraindication", array("not_finish3{@}!={@}1"), 'Required.');
          $this->XINRegisterRule("goto_next_level", array("not_finish3{@}!={@}1"), 'Required.');
