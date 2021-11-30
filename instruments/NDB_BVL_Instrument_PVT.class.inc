@@ -30,6 +30,9 @@ class NDB_BVL_Instrument_PVT extends NDB_BVL_Instrument
     var $ValidityEnabled = false;
     var $ValidityRequired = false;
 
+    var $scoreLabels = array(
+                       "participant","trial","isi","abstime","rt","type","valid_response","false_starts","timeouts","mean_rt","standard_deviation_rt","minimum_rt","maximum_rt"
+        );
     /**
      * sets up basic data, such as the LorisForm object, and so on.
      *
@@ -74,13 +77,43 @@ class NDB_BVL_Instrument_PVT extends NDB_BVL_Instrument
 
     function _main()
     {
-
+        $this->form->addElement('header', null, "PVT (Psychomotor Vigilance Task)");
         // automatically adds examiner & date of administration
         $this->_addMetadataFields();
         $this->form->addElement('file', 'pvt_file', 'Upload the PVT Parser file 
        <br><h6><i>(Ex: PSCID_DCCID_VisitLabel_PVT.csv)</i></h6>');
 
-        $this->form->addElement('static', "File_name", "Uploaded File");
+	$this->form->addElement('static', "File_name", "Uploaded File");
+
+	$this->form->addElement('header', null, "PVT (Psychomotor Vigilance Task)");
+
+	$this->form->addElement('static', null, null);
+
+	$this->form->addElement('header', null, "Subject Headers");
+
+	$group[] = $this->form->createElement('static',null, 'Participant ID', null);
+	$group[] = $this->form->createElement('static',null, 'Trial', null);
+	$group[] = $this->form->createElement('static',null, 'ISI', null);
+	$group[] = $this->form->createElement('static',null, 'Abstime', null);
+	$group[] = $this->form->createElement('static',null, 'RT', null);
+	$group[] = $this->form->createElement('static',null, 'Type', null);
+	$group[] = $this->form->createElement('static',null, 'Valid Responses', null);
+	$group[] = $this->form->createElement('static',null, 'False Starts', null);
+	$group[] = $this->form->createElement('static',null, 'Timeouts', null);
+	$group[] = $this->form->createElement('static',null, 'Mean RT', null);
+	$group[] = $this->form->createElement('static',null, 'Standard Deviation RT', null);
+	$group[] = $this->form->createElement('static',null, 'Minimum RT', null);
+	$group[] = $this->form->createElement('static',null, 'Maximum RT', null);
+	$this->form->addGroup($group, "items_group",null, $this->_GUIDelimiter, false);
+	unset($group); 
+
+	for($i=0; $i<37; $i++){
+	foreach($this->scoreLabels as $field){
+            $group[] = $this->form->createElement('static', "{$field}_{$i}", null, null);
+	}
+	$this->form->addGroup($group, "{$field}_{$i}_group", null, $this->_GUIDelimiter, false);
+            unset($group);
+	}
 
        if($this->getFieldValue("File_name")===false){
             $this->form->addRule("pvt_file", "PVT file is required.", 'required', null, 'server');
@@ -175,33 +208,6 @@ class NDB_BVL_Instrument_PVT extends NDB_BVL_Instrument
         $visit = $args['visitLabel'];
         $actual_pscid=$args['PSCID'];
 
-    /*
-        $input = $actual_pscid; //from the user
-        $matches = array();
-        foreach ($lines as $c){
-            if (strpos($c, $input) === 0){
-                //if $c starts with $input, add to matches list
-                $matches[] = $c;
-            } else if (strcmp($input, $c) < 0){
-                //$input comes after $c in alpha order
-                //since $colors is sorted, we know that we won't find any more matches
-                break;
-            }
-        }
-        $found =0;
-        foreach($lines as $key => $value) {
-            if (preg_match('/' . $actual_pscid . '/i', $value)) {
-                $found = 1;
-                break;
-            }
-        }
-           
-	if($found==0){
-            $errors[]="No matching PSCID found in the file. Please check and try again";
-            return $errors;
-
-        }
-    */
 
         return true;
     }
@@ -220,6 +226,10 @@ class NDB_BVL_Instrument_PVT extends NDB_BVL_Instrument
         $contents=fread($fp,filesize($file->fileInfo['tmp_name']));
         fclose($fp);
 
+	$timepoint =& TimePoint::singleton($this->getSessionID());
+        $candidate =& Candidate::singleton($timepoint->getCandID());
+        $user      =& User::singleton();
+
         $values=array(
             'UserID'    =>$args['username'],
             'Status'    =>'assembly',
@@ -228,9 +238,89 @@ class NDB_BVL_Instrument_PVT extends NDB_BVL_Instrument
             'Data_dir'  =>$file->getDestinationDirectory()
         );
 
+	//Cycle through the lines and extract the data
+	$lines =preg_split("/\\r\\n|\\r|\\n/", $contents);
 
+   // "participant","trial","isi","abstime","rt","type","valid_response","false_starts","timeouts","mean_rt","standard_deviation_rt","minimum_rt","maximum_rt"
+	$size = sizeof($lines);
+	$last_line = 0;
+	for($i=$size-1; $i>=0;$i--){
+        if($lines[$i] != NULL){
+		$tokens = explode(',',$lines[$i]);
+		$values["participant_0"] = "--"; 
+	        $values["trial_0"] = "--";
+		$values["isi_0"] = "--";
+		$values["abstime_0"] = "--";
+		$values["rt_0"] = "--";
+		$values["type_0"] = "--";
+		$values["valid_response_0"] =  $tokens[6];
+		$values["false_starts_0"] =  $tokens[7];
+		$values["timeouts_0"] = $tokens[8];
+		$values["mean_rt_0"] = $tokens[9];
+		$values["standard_deviation_rt_0"] = $tokens[10];
+		$values["minimum_rt_0"] = $tokens[11];
+		$values["maximum_rt_0"] = $tokens[12];
+		$last_line = $i;
+		break;
+	}
+	}
+
+	for($i=1;$i<$last_line;$i++){
+		$tokens = explode(',',$lines[$i]);
+                $values["participant_{$i}"] = $tokens[0];
+                $values["trial_{$i}"] = $tokens[1];
+                $values["isi_{$i}"] = $tokens[2];
+                $values["abstime_{$i}"] = $tokens[3];
+                $values["rt_{$i}"] = $tokens[4];
+                $values["type_{$i}"] = $tokens[5];
+                $values["valid_response_{$i}"] =  "--";
+                $values["false_starts_{$i}"] = "--";
+                $values["timeouts_{$i}"] = "--";
+                $values["mean_rt_{$i}"] = "--";
+                $values["standard_deviation_rt_{$i}"] = "--";
+                $values["minimum_rt_{$i}"] = "--";
+                $values["maximum_rt_{$i}"] = "--";
+	}
         $db=& Database::singleton();
-       
+
+       //-------------------------------------------------------------------//
+            // Check that there is no file in the media module with              //
+            // the same name as the file. If there is a file with the sam        //
+            // but the file was uploaded through the EEG form for field $k, then //
+            // that's OK (counts as an update)                                   //
+        //-------------------------------------------------------------------//
+
+        $row          = $db->pselectRow(
+                "SELECT e.Date_Taken, m.ID FROM {$this->table} e LEFT JOIN media m ON (e.File_name=m.file_name) WHERE e.CommentID=:CommentID",
+                array("CommentID" => $this->getCommentID())
+            );
+            $dateTaken = $row['Date_Taken'];
+            $mediaID      = $row['ID'];
+
+         $query = [
+                      'session_id'  => $timepoint->getSessionID(),
+                      'instrument'  => $this->table,
+                      'date_taken'  => $dateTaken,
+                      'comments'    => $comments,
+                      'file_name'   => $file->getDestinationFilename(),
+                      'file_type'   => 'PVT',
+                      'data_dir'    => $file->getDestinationDirectory(),
+                      'uploaded_by' => $user->getData('UserID'),
+                     ];
+
+                try {
+                    // File alread exists in media module: update
+                    if (!is_null($mediaID)) {
+                            $db->update('media', $query, array('ID' => $mediaID));
+                        // File does not exist in media module: insert new
+                    } else {
+                            $db->insert('media', $query);
+                    }
+               } catch (DatabaseException $e) {
+                    print_r($e);
+  
+               }
+	
 
         $result = $db->update($this->testName, $values, array('CommentID'=>$args['CommentID']));  
         return true;
