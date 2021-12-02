@@ -91,6 +91,7 @@ class ElementGroup extends React.Component {
                     updateAnswer={this.props.updateAnswer}
                     error={error}
                     errorMessage={errorMessage}
+                    key={`${element.Name}_${element.Description}`}
                 />
             );
         }.bind(this));
@@ -379,7 +380,7 @@ class BaseElement extends React.Component {
                 // eslint-disable-next-line guard-for-in
                 for (let key in this.props.element.Options.Values) {
                     options.push(
-                        <option value={key}>{this.props.element.Options.Values[key]}</option>
+                        <option value={key} key={key}>{this.props.element.Options.Values[key]}</option>
                     );
                 }
                 element = (

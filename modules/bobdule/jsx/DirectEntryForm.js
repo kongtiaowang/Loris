@@ -7,7 +7,7 @@
  */
 
 import GroupElement from './GroupElement.js';
-import Markdown from 'Markdown';
+import Markdown from './Markdown';
 
 
 /**
@@ -162,6 +162,7 @@ class Page extends React.Component {
                     values={this.props.values}
                     updateAnswer={this.props.updateAnswer}
                     errors={this.props.errors}
+                    key={element.Name}
                 />
             );
         });
@@ -208,10 +209,10 @@ class SelectElement extends React.Component {
                     <i className='glyphicon glyphicon-ok' ></i>
                 );
             }
-            console.log('IN HERE');
+
             optionLabel = String(this.props.element.Options.Values[key]);
             options.push(
-                <div className='col-xs-12 col-sm-6 select-option' onClick={this.onSelect.bind(this, key)}>
+                <div className='col-xs-12 col-sm-6 select-option' onClick={this.onSelect.bind(this, key)} key={key}>
                     <div className='selectBox'>
                         <label className='btn btn-default btn-circle'>
                             {checked}

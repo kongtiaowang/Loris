@@ -23,6 +23,9 @@ class Bobdule extends Component {
       currentTable: 'incomplete',
       permission: 'view',
       candID: '',
+      visit: '',
+      site: {},
+      previous: {},
     };
 
     this.fetchData = this.fetchData.bind(this);
@@ -197,10 +200,20 @@ class Bobdule extends Component {
       if (type === 'Launch Form') {
         // If action is launch form, launch the form.
         post.then(() => {
-          this.setState({
-            commentID: row['CommentID'],
-            candID: row['Candidate ID'],
-          });
+          fetch(`${loris.BaseURL}/bobdule/other_reviews/?format=json&candID=${row['Candidate ID']}&visit=${row['Visit']}`, {credentials: 'same-origin'})
+            .then((resp) => resp.json())
+            .then((data) => {
+              this.setState({
+                site: data.site,
+                previous: data.previous,
+                commentID: row['CommentID'],
+                candID: row['Candidate ID'],
+                visit: row['Visit'],
+              });
+            })
+            .catch((error) => {
+              console.error(error);
+            });
         });
       } else {
         // Else mark the data as complete.
@@ -480,7 +493,10 @@ class Bobdule extends Component {
         <Modal
           show={this.state.commentID !== ''}
           onClose={this.closeModal}
-          title={`DCCID: ${this.state.candID}`}
+          candID={this.state.candID}
+          visit={this.state.visit}
+          site={this.state.site}
+          previous={this.state.previous}
         >
           <DirectEntry commentID={this.state.commentID} close={this.closeModal}/>
         </Modal>
