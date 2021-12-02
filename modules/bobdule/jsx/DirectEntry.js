@@ -422,7 +422,7 @@ class ReviewPage extends React.Component {
     render() {
         let questions = this.props.reviewData.questions.map((element) => {
             return (
-                <tr className='reviewPage'>
+                <tr className='reviewPage' key={element.question}>
                     <td><Markdown content={element.question} /></td>
                     <td>{element.response}</td>
                 </tr>

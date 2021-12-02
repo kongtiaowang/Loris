@@ -30,6 +30,7 @@ import swal from 'sweetalert2';
 class Modal extends Component {
   constructor() {
     super();
+
     this.handleClose = this.handleClose.bind(this);
   }
 
@@ -50,7 +51,13 @@ class Modal extends Component {
   }
 
   render() {
-    const {show, children, onSubmit, title} = this.props;
+    const {
+      show,
+      children,
+      candID,
+      site,
+      previous,
+    } = this.props;
 
     const headerStyle = {
       display: 'flex',
@@ -70,7 +77,7 @@ class Modal extends Component {
 
     const bodyStyle = {
       padding: 15,
-      height: 'calc(100% - 70px)',
+      height: 'calc(100% - 130px)',
       overflow: 'auto',
     };
 
@@ -108,29 +115,19 @@ class Modal extends Component {
     const footerStyle = {
       borderTop: '1px solid #DDDDDD',
       display: 'flex',
-      flexDirection: 'row',
+      flexDirection: 'row-reverse',
       alignItems: 'center',
-      height: '40px',
-      padding: '35px 35px 20px 35px',
+      height: '60px',
+      padding: '10px 35px 10px 35px',
     };
 
-    const submitStyle = {
-      marginLeft: 'auto',
-      marginRight: '20px',
-    };
-
-    const submitButton = () => {
-      if (onSubmit) {
-        return (
-          <div style={submitStyle}>
-            <ButtonElement
-              label="Submit"
-              onUserInput={() => onSubmit().then(() => this.props.onClose())}
-            />
-          </div>
-        );
-      }
-    };
+    const previousList = Object.keys(previous).map((visit) => {
+      const url = `${loris.BaseURL}/final_radiological_review/compare_reviews/?identifier=${previous[visit]}`;
+      return (
+        <li key={visit}><a href={url} target="_blank">{visit}</a></li>
+      );
+    });
+    const siteURL = `${loris.BaseURL}/instruments/Radiology_Review_VSA/?commentID=${site.commentID}&sessionID=${site.sessionID}&candID=${candID}`;
 
     return (
       <div style={modalContainer} onClick={this.handleClose}>
@@ -139,7 +136,7 @@ class Modal extends Component {
           onClick={(e) => e.stopPropagation()}
         >
           <div style={headerStyle}>
-            {title}
+            {`DCCID: ${candID}`}
             <span style={glyphStyle} onClick={this.handleClose}>
               ×
             </span>
@@ -148,7 +145,18 @@ class Modal extends Component {
             {renderChildren()}
           </div>
           <div style={footerStyle}>
-            {submitButton()}
+            <div className="btn-group dropup">
+              <button type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                      aria-haspopup="true" aria-expanded="false">
+                View Other Reviews <span className="caret"></span>
+              </button>
+              <ul className="dropdown-menu">
+                <li>
+                  <a href={siteURL} target="_blank">Site</a>
+                </li>
+                {previousList}
+              </ul>
+            </div>
           </div>
         </div>
       </div>
