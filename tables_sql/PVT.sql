@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS `PVT`;
+
 CREATE TABLE `PVT` (
 `CommentID` varchar(255) NOT NULL default '',
 
