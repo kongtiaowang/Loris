@@ -442,14 +442,14 @@ class NDB_BVL_Instrument_Med_Psych_History_survey extends NDB_BVL_Instrument
             $this->XINRegisterRule(
                 "q3_disorder_" . $i . "_relative_other",
                 array("q3_disorder_{$i}_relative{@}=={@}other"),
-                "Required if other",
+                "* Required if <b>'Other'</b>. Please specify relationships in appropriate column. Separate multiple entries using a semicolon (;).",
                 "q3_disorder_" . $i . "_group"
             );
 	    
            $this->XINRegisterRule(
                "q3_disorder_" . $i . "_relative_multiple",
                 array("q3_disorder_{$i}_relative{@}=={@}multiple"),
-                "Required if multiple",
+                "* Required if <b>'Multiple Relatives'</b>. Please specify relationships in appropriate column. Separate multiple entries using a semicolon (;).",
                 "q3_disorder_" . $i . "_group"
             );
 

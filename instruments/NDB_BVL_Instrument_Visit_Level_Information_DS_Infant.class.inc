@@ -199,11 +199,12 @@ class NDB_BVL_Instrument_Visit_Level_Information_DS_Infant extends NDB_BVL_Instr
                       );
 
         $q6_options = array(
-                       null     => "",
-                       "yes"    => "Yes",
-                       "no"     => "No",
-                       "unsure" => "Unsure",
-                      );
+                       null      => "",
+                       "yes"     => "Yes",
+                       "no"      => "No",
+                       "unsure"  => "Unsure",
+	               "no_mask" => "Subject did not wear a mask",
+	               );
 
         $q8_options = array(
                        null  => "",
