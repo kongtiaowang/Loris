@@ -168,7 +168,7 @@ class NDB_BVL_Instrument_CCTQ_survey extends NDB_BVL_Instrument_survey
 
         // required fields for data entry completion status
         $this->_requiredElements = array(
-                                    "did_you_have_to_read_the_survey_questions_to_your_child",
+                                    "did_your_child_complete_the_meqc",
                                     "q1_child_wakes_up_at",
                                     "q9_child_normally_wakes_up_at",
                                     "q17_if_child_has_to_be_awakened_how_difficult_do_you_find_it",
