@@ -65,16 +65,9 @@ class NDB_BVL_Instrument_Actigraph_Export extends NDB_BVL_Instrument
 
     function _setupForm()
     {
-        //determine page to display
-        if (preg_match(
-            "/Actigraph_Export(_page[0-9]+)/",
-            $this->page,
-            $matches
-        )) {
-            call_user_func(array($this, $matches[1]));
-        } else {
-            $this->_main();
-        }
+	  
+	    $this->_main();
+
         $this->form->addFormRule(array(&$this, 'XINValidate'));
     }
 
@@ -184,10 +177,15 @@ class NDB_BVL_Instrument_Actigraph_Export extends NDB_BVL_Instrument
                     echo "UPLOAD ERROR ($fileType) : $error";
                 }
             }
-        }
+	}
+
         unset($values['candID'], $values['sessionID'], $values['commentID'], $values['test_name'], $values['page'], $values['fire_away'], $values['subtest'], $values['MAX_FILE_SIZE'], $values['actigraph_export_file']);
-        $this->_save($values);
+	$this->_save($values);
+ 
     }
+
+
+
     /**
      * isValid checks the validity of the file.
      *
@@ -210,32 +208,7 @@ class NDB_BVL_Instrument_Actigraph_Export extends NDB_BVL_Instrument
         $lines =preg_split("/\\r\\n|\\r|\\n/", $contents);
         $visit = $args['visitLabel'];
         $actual_pscid=$args['PSCID'];
-
-
-        $input = $actual_pscid; //from the user
-        $matches = array();
-        foreach ($lines as $c){
-            if (strpos($c, $input) === 0){
-                //if $c starts with $input, add to matches list
-                $matches[] = $c;
-            } else if (strcmp($input, $c) < 0){
-                //$input comes after $c in alpha order
-                //since $colors is sorted, we know that we won't find any more matches
-                break;
-            }
-        }
-        $found =0;
-        foreach($lines as $key => $value) {
-            if (preg_match('/' . $actual_pscid . '/i', $value)) {
-                $found = 1;
-                break;
-            }
-        }
-        if($found==0){
-            $errors[]="No matching PSCID found in the file. Please check and try again";
-            return $errors;
-
-        }
+    
 
         $test_date_key = array_search('Date of Birth:', $lines);
         $values['Date of Birth'] =$lines[$test_date_key+1];
@@ -259,6 +232,10 @@ class NDB_BVL_Instrument_Actigraph_Export extends NDB_BVL_Instrument
         $fp=fopen($file->fileInfo['tmp_name'], "r");
         $contents=fread($fp,filesize($file->fileInfo['tmp_name']));
         fclose($fp);
+
+        $timepoint =& TimePoint::singleton($this->getSessionID());
+	$candidate =& Candidate::singleton($timepoint->getCandID());
+        $user      =& User::singleton();
 
         $values=array(
             'UserID'    =>$args['username'],
@@ -285,21 +262,55 @@ class NDB_BVL_Instrument_Actigraph_Export extends NDB_BVL_Instrument
     );
 
 	foreach ($fields as $key => $val) {
-		$array_key=array_search($val,$lines);
-		$val_count=$array_key+1;
-		if($array_key != null) {
-                            $values[$key] = $lines[$val_count];
-		}
-            else{
-                    $values[$key]='--';
+           foreach($lines as $l){
+            $tokens = explode(',', $l);
+            if($tokens[0] == $val){
+                    $values[$key] = $tokens[1];
+                    break;
             }
+           }
+          $values[$key] = $values[$key] ?? '--';
         }
 
         $db=& Database::singleton();
 
-///Setting trackchanges to false because getting error messages
-        $db->_trackChanges = false;
-////////////////////////////////////////////////////////////////
+       //-------------------------------------------------------------------//
+            // Check that there is no file in the media module with              //
+            // the same name as the file. If there is a file with the sam        //
+            // but the file was uploaded through the EEG form for field $k, then //
+            // that's OK (counts as an update)                                   //
+	//-------------------------------------------------------------------//
+	
+        $row          = $db->pselectRow(
+                "SELECT e.Date_Taken, m.ID FROM {$this->table} e LEFT JOIN media m ON (e.File_name=m.file_name) WHERE e.CommentID=:CommentID",
+                array("CommentID" => $this->getCommentID())
+            );
+            $dateTaken = $row['Date_Taken'];
+	    $mediaID      = $row['ID'];
+
+	 $query = [
+                      'session_id'  => $timepoint->getSessionID(),
+                      'instrument'  => $this->table,
+		      'date_taken'  => $dateTaken,
+		      'comments'    => $comments,
+                      'file_name'   => $file->getDestinationFilename(),
+                      'file_type'   => 'Actigraph_Export',
+                      'data_dir'    => $file->getDestinationDirectory(),
+		      'uploaded_by' => $user->getData('UserID'),
+                     ];
+
+                try {
+                    // File alread exists in media module: update
+                    if (!is_null($mediaID)) {
+			    $db->update('media', $query, array('ID' => $mediaID));
+                        // File does not exist in media module: insert new
+                    } else {
+			    $db->insert('media', $query);
+		    }
+	       } catch (DatabaseException $e) {
+                    print_r($e);
+  
+	       }
 
         $result = $db->update($this->testName, $values, array('CommentID'=>$args['CommentID']));
         return true;
