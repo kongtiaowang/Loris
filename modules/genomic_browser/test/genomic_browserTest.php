@@ -75,7 +75,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
     {
          $this->setupPermissions([]);
          $this->safeGet($this->url . "/genomic_browser/");
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString(
@@ -100,7 +100,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
             ]
         );
          $this->safeGet($this->url . "/genomic_browser/");
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringNotContainsString(
@@ -154,7 +154,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
             self::$display,
             self::$clear,
             'Data Coordinating Center',
-            '7 rows'
+            '6 rows'
         );
 
         $this->_filterTest(
@@ -190,14 +190,6 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
         );
 
         $this->_filterTest(
-            self::$sex,
-            self::$display,
-            self::$clear,
-            'Female',
-            '334'
-        );
-
-        $this->_filterTest(
             self::$file,
             self::$display,
             self::$clear,
@@ -210,7 +202,7 @@ class GenomicBrowserTestIntegrationTest extends LorisIntegrationTest
             self::$display,
             self::$clear,
             'No',
-            '6 rows'
+            '5 rows'
         );
 
         $this->_filterTest(
