@@ -149,7 +149,6 @@
       "files": [
         "modules/candidate_parameters/**",
         "modules/bvl_feedback/**",
-        "modules/dataquery/**",
         "modules/dqt/**"
       ],
       "rules": {
