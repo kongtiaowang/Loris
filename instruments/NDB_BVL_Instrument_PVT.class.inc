@@ -297,6 +297,10 @@ class NDB_BVL_Instrument_PVT extends NDB_BVL_Instrument
             $dateTaken = $row['Date_Taken'];
             $mediaID      = $row['ID'];
 
+         // Compute the directory where all media files are stored
+         $config    = NDB_Config::singleton();
+         $mediaPath = $config->getSetting('mediaPath');
+
          $query = [
                       'session_id'  => $timepoint->getSessionID(),
                       'instrument'  => $this->table,
@@ -304,7 +308,7 @@ class NDB_BVL_Instrument_PVT extends NDB_BVL_Instrument
                       'comments'    => $comments,
                       'file_name'   => $file->getDestinationFilename(),
                       'file_type'   => 'PVT',
-                      'data_dir'    => $file->getDestinationDirectory(),
+                      'data_dir'    => $mediaPath,
                       'uploaded_by' => $user->getData('UserID'),
                      ];
 
