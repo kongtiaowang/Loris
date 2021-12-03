@@ -1,0 +1,58 @@
+ALTER TABLE LENA_LanguageSampleActivityLog ADD `pg2_todays_date` date default NULL;
+ALTER TABLE LENA_LanguageSampleActivityLog ADD `recorder_number` varchar(255) default NULL;
+ALTER TABLE LENA_LanguageSampleActivityLog ADD `hour_timestamp` enum('1','2','3','4','5','6','7','8','9','10','11','12') default NULL;
+ALTER TABLE LENA_LanguageSampleActivityLog ADD `minute_timestamp` enum('0','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31','32','33','34','35','36','37','38','39','40','41','42','43','44','45','46','47','48','49','50','51','52','53','54','55','56','57','58','59') default NULL;
+ALTER TABLE LENA_LanguageSampleActivityLog ADD `period_timestamp` enum('am','pm') default NULL;
+ALTER TABLE LENA_LanguageSampleActivityLog ADD `pg2_time_language_sample_started_hour` enum('1','2','3','4','5','6','7','8','9','10','11','12') default NULL;
+ALTER TABLE LENA_LanguageSampleActivityLog ADD `pg2_time_language_sample_started_minute` enum('0','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31','32','33','34','35','36','37','38','39','40','41','42','43','44','45','46','47','48','49','50','51','52','53','54','55','56','57','58','59') default NULL;
+ALTER TABLE LENA_LanguageSampleActivityLog ADD `pg2_time_language_sample_started_period` enum('am','pm') default NULL;
+ALTER TABLE LENA_LanguageSampleActivityLog ADD `pg2_did_you_do_free_play_session_today` enum('yes','no') default NULL;
+ALTER TABLE LENA_LanguageSampleActivityLog ADD `pg2_free_play_session_time_specify_hour` enum('1','2','3','4','5','6','7','8','9','10','11','12') default NULL;
+ALTER TABLE LENA_LanguageSampleActivityLog ADD `pg2_free_play_session_time_specify_minute` enum('0','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31','32','33','34','35','36','37','38','39','40','41','42','43','44','45','46','47','48','49','50','51','52','53','54','55','56','57','58','59') default NULL;
+ALTER TABLE LENA_LanguageSampleActivityLog ADD `pg2_free_play_session_time_specify_period` enum('am','pm') default NULL;
+ALTER TABLE LENA_LanguageSampleActivityLog ADD `pg2_how_is_child_feeling_today` enum('well','sick') default NULL;
+ALTER TABLE LENA_LanguageSampleActivityLog ADD `pg2_feeling_sick_specify` varchar(255) default NULL;
+ALTER TABLE LENA_LanguageSampleActivityLog ADD `pg2_how_would_you_rate_today_amount_of_parent_child_talk_time` enum('1_lot_less_talkative_than_usual','2_little_less_talkative_than_usual','3_typical_normal','4_little_more_talkative_than_usual','5_more_talkative_than_usual') default NULL;
+ALTER TABLE LENA_LanguageSampleActivityLog ADD `age1` varchar(255) default NULL;
+ALTER TABLE LENA_LanguageSampleActivityLog ADD `lives_home1` enum('full_time','part_time') default NULL;
+ALTER TABLE LENA_LanguageSampleActivityLog ADD `age2` varchar(255) default NULL;
+ALTER TABLE LENA_LanguageSampleActivityLog ADD `lives_home2` enum('full_time','part_time') default NULL;
+ALTER TABLE LENA_LanguageSampleActivityLog ADD `age3` varchar(255) default NULL;
+ALTER TABLE LENA_LanguageSampleActivityLog ADD `lives_home3` enum('full_time','part_time') default NULL;
+ALTER TABLE LENA_LanguageSampleActivityLog ADD `age4` varchar(255) default NULL;
+ALTER TABLE LENA_LanguageSampleActivityLog ADD `lives_home4` enum('full_time','part_time') default NULL;
+ALTER TABLE LENA_LanguageSampleActivityLog ADD `pg2_primary_language` enum('english','other') default NULL;
+ALTER TABLE LENA_LanguageSampleActivityLog ADD `pg2_primary_language_specify` varchar(255) default NULL;
+ALTER TABLE LENA_LanguageSampleActivityLog ADD `pg2_in_home_cared_days_per_week` enum('0','1','2','3','4','5','6','7') default NULL;
+ALTER TABLE LENA_LanguageSampleActivityLog ADD `pg2_in_home_cared_hours_per_week` enum('0','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24') default NULL;
+ALTER TABLE LENA_LanguageSampleActivityLog ADD `pg2_in_home_cared_size_of_peer_group` varchar(255) default NULL;
+ALTER TABLE LENA_LanguageSampleActivityLog ADD `pg2_in_home_cared_start_age` varchar(255) default NULL;
+ALTER TABLE LENA_LanguageSampleActivityLog ADD `pg2_in_home_cared_end_age` varchar(255) default NULL;
+ALTER TABLE LENA_LanguageSampleActivityLog ADD `pg2_in_home_family_member_days_per_week` enum('0','1','2','3','4','5','6','7') default NULL;
+ALTER TABLE LENA_LanguageSampleActivityLog ADD `pg2_in_home_family_member_hours_per_week` enum('0','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24') default NULL;
+ALTER TABLE LENA_LanguageSampleActivityLog ADD `pg2_in_home_family_member_size_of_peer_group` varchar(255) default NULL;
+ALTER TABLE LENA_LanguageSampleActivityLog ADD `pg2_in_home_family_member_start_age` varchar(255) default NULL;
+ALTER TABLE LENA_LanguageSampleActivityLog ADD `pg2_in_home_family_member_end_age` varchar(255) default NULL;
+ALTER TABLE LENA_LanguageSampleActivityLog ADD `pg2_in_home_nanny_days_per_week` enum('0','1','2','3','4','5','6','7') default NULL;
+ALTER TABLE LENA_LanguageSampleActivityLog ADD `pg2_in_home_nanny_hours_per_week` enum('0','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24') default NULL;
+ALTER TABLE LENA_LanguageSampleActivityLog ADD `pg2_in_home_nanny_size_of_peer_group` varchar(255) default NULL;
+ALTER TABLE LENA_LanguageSampleActivityLog ADD `pg2_in_home_nanny_start_age` varchar(255) default NULL;
+ALTER TABLE LENA_LanguageSampleActivityLog ADD `pg2_in_home_nanny_end_age` varchar(255) default NULL;
+ALTER TABLE LENA_LanguageSampleActivityLog ADD `pg2_in_home_non_family_days_per_week` enum('0','1','2','3','4','5','6','7') default NULL;
+ALTER TABLE LENA_LanguageSampleActivityLog ADD `pg2_in_home_non_family_hours_per_week` enum('0','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24') default NULL;
+ALTER TABLE LENA_LanguageSampleActivityLog ADD `pg2_in_home_non_family_size_of_peer_group` varchar(255) default NULL;
+ALTER TABLE LENA_LanguageSampleActivityLog ADD `pg2_in_home_non_family_start_age` varchar(255) default NULL;
+ALTER TABLE LENA_LanguageSampleActivityLog ADD `pg2_in_home_non_family_end_age` varchar(255) default NULL;
+ALTER TABLE LENA_LanguageSampleActivityLog ADD `pg2_center_based_days_per_week` enum('0','1','2','3','4','5','6','7') default NULL;
+ALTER TABLE LENA_LanguageSampleActivityLog ADD `pg2_center_based_hours_per_week` enum('0','1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24') default NULL;
+ALTER TABLE LENA_LanguageSampleActivityLog ADD `pg2_center_based_size_of_peer_group` varchar(255) default NULL;
+ALTER TABLE LENA_LanguageSampleActivityLog ADD `pg2_center_based_start_age` varchar(255) default NULL;
+ALTER TABLE LENA_LanguageSampleActivityLog ADD `pg2_center_based_end_age` varchar(255) default NULL;
+ALTER TABLE LENA_LanguageSampleActivityLog ADD `pg2_if_uncomfortable_with_todays_language_sample` varchar(255) default NULL;
+ALTER TABLE LENA_LanguageSampleActivityLog ADD `yes_parent_signed` varchar(255) default NULL;
+ALTER TABLE LENA_LanguageSampleActivityLog ADD `no_parent_signed` varchar(255) default NULL;
+
+
+
+-- Add page 2
+INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('LENA_LanguageSampleActivityLog','LENA_LanguageSampleActivityLog_page2', "Page 2", 2);
