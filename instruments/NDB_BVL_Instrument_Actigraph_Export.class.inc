@@ -141,27 +141,22 @@ class NDB_BVL_Instrument_Actigraph_Export extends NDB_BVL_Instrument
         //Tell File_Upload what file handlers to use.
         $file->setFileHandler("actigraph_export_file", $this);
 
-        //Set the target directory that you want files moved into once they are validated and processed.
+        // The uploaded file will go into the directory where all media files go
         $config = NDB_Config::singleton();
-        $dir = $config->getSetting("UploadDir");
-        if(empty($dir)) {
-            $dir = ".";
-        };
-        $file->setBaseUploadDirectory($dir . "/Actigraph_Export/");
-
-        //Set the prefix to prepend to the filenames
-        //$file->setFilenamePrefix($timepoint->getVisitLabel()."-".$this->testName."-");
+        $dir = $config->getSetting("mediaPath");
+        $file->setBaseUploadDirectory($dir);
 
         //set the the IDs to the handler functions.
         $user =& User::singleton();
-        $file->setHandlerArgs(array("CommentID"=>$this->getCommentID(),
-                "candID"=>$candidate->getCandID(),
-                "PSCID"=>$candidate->getPSCID(),
-                "visitLabel"=>$timepoint->getVisitLabel(),
-                "username"=>$user->getUsername(),
-                "values"=>$values)
-
-
+        $file->setHandlerArgs(
+            [
+              "CommentID"  => $this->getCommentID(),
+              "candID"     => $candidate->getCandID(),
+              "PSCID"      => $candidate->getPSCID(),
+              "visitLabel" => $timepoint->getVisitLabel(),
+              "username"   => $user->getUsername(),
+              "values"     => $values
+            ]
         );
 
         //If the form is validated, call File_Upload::processFiles() which loops through the files and
@@ -219,13 +214,14 @@ class NDB_BVL_Instrument_Actigraph_Export extends NDB_BVL_Instrument
     }
 
     /**
-     * importFile imports the das sa file into the database.
+     * importFile imports the Actigraph Export file into the database.
      *
      * @param     object       $file    A reference to the file object (passed automatically by callFileHandler)
      * @param     assoc_array  $args    The arguments passed to the function they must be:
      *   -
      *
-     * @return    bool    $success		if operation succeeded
+     * @return    bool $success if operation succeeded
+     *
      * @access    public
      */
     function importFile(&$file, $args){
@@ -237,18 +233,22 @@ class NDB_BVL_Instrument_Actigraph_Export extends NDB_BVL_Instrument
 	$candidate =& Candidate::singleton($timepoint->getCandID());
         $user      =& User::singleton();
 
+        // Compute the directory where all media files are stored
+        $config    = NDB_Config::singleton();
+        $mediaPath = $config->getSetting('mediaPath');
+
         $values=array(
-            'UserID'    =>$args['username'],
-            'Status'    =>'assembly',
-            'File_type' =>'Actigraph_Export',
-            'File_name' =>$file->getDestinationFilename(),
-            'Data_dir'  =>$file->getDestinationDirectory()
+            'UserID'    => $args['username'],
+            'Status'    => 'assembly',
+            'File_type' => 'Actigraph_Export',
+            'File_name' => $file->getDestinationFilename(),
+            'Data_dir'  => $mediaPath
         );
 
 
         //Cycle through the lines and extract the data
         $lines =preg_split("/\\r\\n|\\r|\\n/", $contents);
-        
+
         $fields = array(
             "initials"               =>  "Initials:",
             "full_name"              =>  "Full name:",
@@ -259,40 +259,34 @@ class NDB_BVL_Instrument_Actigraph_Export extends NDB_BVL_Instrument
             "date_of_birth"          => "Date of Birth:",
             "age_at_file_creation"   => "Age(at time of export file creation):",
             "age_at_data_collection" => "Age(at start of data collection):",
-    );
+        );
 
 	foreach ($fields as $key => $val) {
-           foreach($lines as $l){
-            $tokens = explode(',', $l);
-            if($tokens[0] == $val){
+            foreach($lines as $l){
+                $tokens = explode(',', $l);
+                if($tokens[0] == $val){
                     $values[$key] = $tokens[1];
                     break;
+                }
             }
-           }
-          $values[$key] = $values[$key] ?? '--';
+            $values[$key] = $values[$key] ?? '--';
         }
 
         $db=& Database::singleton();
 
-       //-------------------------------------------------------------------//
-            // Check that there is no file in the media module with              //
-            // the same name as the file. If there is a file with the sam        //
-            // but the file was uploaded through the EEG form for field $k, then //
-            // that's OK (counts as an update)                                   //
+        //-------------------------------------------------------------------//
+        // Check if there is a file in the media module with the same name   //
+        // as the uploaded file.                                             //
 	//-------------------------------------------------------------------//
-	
+
         $row          = $db->pselectRow(
                 "SELECT e.Date_Taken, m.ID FROM {$this->table} e LEFT JOIN media m ON (e.File_name=m.file_name) WHERE e.CommentID=:CommentID",
                 array("CommentID" => $this->getCommentID())
-            );
-            $dateTaken = $row['Date_Taken'];
-	    $mediaID      = $row['ID'];
+        );
+        $dateTaken = $row['Date_Taken'];
+	$mediaID   = $row['ID'];
 
-         // Compute the directory where all media files are stored
-         $config    = NDB_Config::singleton();
-         $mediaPath = $config->getSetting('mediaPath');
-
-	 $query = [
+        $query = [
                       'session_id'  => $timepoint->getSessionID(),
                       'instrument'  => $this->table,
 		      'date_taken'  => $dateTaken,
@@ -301,21 +295,21 @@ class NDB_BVL_Instrument_Actigraph_Export extends NDB_BVL_Instrument
                       'file_type'   => 'Actigraph_Export',
                       'data_dir'    => $mediaPath,
 		      'uploaded_by' => $user->getData('UserID'),
-                     ];
+        ];
 
-                try {
-                    // File alread exists in media module: update
-                    if (!is_null($mediaID)) {
-			    $db->update('media', $query, array('ID' => $mediaID));
-                        // File does not exist in media module: insert new
-                    } else {
-			    $db->insert('media', $query);
-		    }
-	       } catch (DatabaseException $e) {
-                    print_r($e);
-  
-	       }
+        try {
+            // File alread exists in media module: update
+            if (!is_null($mediaID)) {
+               $db->update('media', $query, array('ID' => $mediaID));
+            // File does not exist in media module: insert new
+            } else {
+                $db->insert('media', $query);
+            }
+        } catch (DatabaseException $e) {
+            print_r($e);
+        }
 
+        // Update the Actigraph_Export table
         $result = $db->update($this->testName, $values, array('CommentID'=>$args['CommentID']));
         return true;
     }
@@ -339,7 +333,7 @@ class NDB_BVL_Instrument_Actigraph_Export extends NDB_BVL_Instrument
      * @access    public
      */
     function getTargetDirectory(&$file, $args){
-        $output=$args['candID']."/";
-        return $output;
+        // Uploaded file goes directly in the media directory (no subdirectory needs to be created)
+        return "";
     }
 }
