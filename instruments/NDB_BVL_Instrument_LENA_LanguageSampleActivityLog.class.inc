@@ -210,13 +210,31 @@ class NDB_BVL_Instrument_LENA_LanguageSampleActivityLog extends NDB_BVL_Instrume
         $talk_time_rating = array(
                              null                          => "",
                              "1_less_talkative_than_usual" => "1 = Less talkative than usual",
-                             "2"                           => "2",
+                             "2"                           => "2 = A little less talkative than usual",
                              "3_typical_normal"            => "3 = Typical/Normal",
-                             "4"                           => "4",
+                             "4"                           => "4 = A little more talkative than usual",
                              "5_more_talkative_than_usual" => "5 = More talkative than usual",
                             );
 
         $this->addSelect("how_would_you_rate_today_amount_of_parent_child_talk_time", "How would you rate today in terms of amount of parent-child talk time?", $talk_time_rating);
+
+	$this->form->addElement("static", null, "<br><br>");
+
+        $this->form->addElement("static", null, "How many children under the age of 18 are living in the home right now and what are their ages?");
+
+        $group[] =& $this->form->createElement("static", null, null, "Age");
+        $group[] =& $this->form->createElement("static", null, null, "Lives in the Home");
+        $this->form->addGroup($group, "section_headers_group", "Child", $this->_GUIDelimiter, false);
+        unset($group);
+
+	for($i=1;$i<5;$i++){
+        $group[] =& $this->form->createElement("text", "age{$i}", null,null);
+	$group[] =& $this->form->createElement("select", "lives_home{$i}", null, array(null => '', "full_time" => "Full Time", "part_time" => "Part Time"));
+	$this->XINRegisterRule("age{$i}", array("age{$i}{@}=={@}never_required"), 'Not Required');
+	$this->XINRegisterRule("lives_home{$i}", array("lives_home{$i}{@}=={@}never_required"), 'Not Required');
+        $this->form->addGroup($group, "child{$i}", "Child{$i}", $this->_GUIDelimiter, false);
+        unset($group);
+	}
 
         $this->form->addElement("static", null, "<br><br>");
 
@@ -235,7 +253,8 @@ class NDB_BVL_Instrument_LENA_LanguageSampleActivityLog extends NDB_BVL_Instrume
         $this->form->addElement("static", null, "<br><br>");
         
 	$child_care_questionnaire_labels = array(
-      		                           "in_home_family_member" => "In home: Family member (e.g., grandparents)",
+                                           "pg2_in_home_cared"     => "In home: Cared for by Parents",
+                                           "in_home_family_member" => "In home: Family member other than parent  (e.g., grandparents, aunt)",
                                            "in_home_nanny"         => "In home: Nanny",
 					   "in_home_non_family"    => "In home: Non-family (e.g., private daycare run out of home)",
 					   "center_based"          => "Center-based",
@@ -452,7 +471,8 @@ class NDB_BVL_Instrument_LENA_LanguageSampleActivityLog extends NDB_BVL_Instrume
             $this->validate_empty_subquestions($values, ["primary_language_specify"], $errors);
         }
 
-       $child_care_questionnaire_labels = array(
+	$child_care_questionnaire_labels = array(
+		                           "pg2_in_home_cared"     => "In home: Cared for by Parents",
                                            "in_home_family_member" => "In home: Family member (e.g., grandparents)",
                                            "in_home_nanny"         => "In home: Nanny",
                                            "in_home_non_family"    => "In home: Non-family (e.g., private daycare run out of home)",
@@ -479,7 +499,7 @@ class NDB_BVL_Instrument_LENA_LanguageSampleActivityLog extends NDB_BVL_Instrume
                     array_push($tmp, "Days per Week");
                 }
                 if ($hours == "") {
-                    array_push($tmp, "Hours per Week");
+                    array_push($tmp, "Hours per Day");
                 }
                 if ($peer_group == "") {
                     array_push($tmp, "Size of Peer Group");
@@ -512,11 +532,11 @@ class NDB_BVL_Instrument_LENA_LanguageSampleActivityLog extends NDB_BVL_Instrume
                 $end_age_input   = $values[$key . "_end_age"];
 
                 if (!ctype_digit($start_age_input) && $start_age_input != "NA") {
-                    $errors["section_row" . $j] .= $this->indent . "Start age must be a number";
+                    $errors["section_row" . $j] .= $this->indent . "Start age must be a number or enter NA if 'Not applicable'";
                 }
 
                 if (!ctype_digit($end_age_input) && $end_age_input != "NA") {
-                    $errors["section_row" . $j] .= $this->indent . "End age must be a number";
+                    $errors["section_row" . $j] .= $this->indent . "End age must be a number or enter NA if 'Not applicable'";
                 }
             }
         }
