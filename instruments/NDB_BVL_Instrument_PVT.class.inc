@@ -144,13 +144,10 @@ class NDB_BVL_Instrument_PVT extends NDB_BVL_Instrument
         //Tell File_Upload what file handlers to use.
         $file->setFileHandler("pvt_file", $this);
 
-        //Set the target directory that you want files moved into once they are validated and processed.
+        // The uploaded file will go into the directory where all media files go
         $config = NDB_Config::singleton();
-        $dir = $config->getSetting("UploadDir");
-        if(empty($dir)) {
-            $dir = ".";
-        };
-        $file->setBaseUploadDirectory($dir . "/PVT/");
+        $dir = $config->getSetting("mediaPath");
+        $file->setBaseUploadDirectory($dir);
 
         //Set the prefix to prepend to the filenames
         //$file->setFilenamePrefix($timepoint->getVisitLabel()."-".$this->testName."-");
@@ -230,12 +227,16 @@ class NDB_BVL_Instrument_PVT extends NDB_BVL_Instrument
         $candidate =& Candidate::singleton($timepoint->getCandID());
         $user      =& User::singleton();
 
+        // Compute the directory where all media files are stored
+        $config    = NDB_Config::singleton();
+        $mediaPath = $config->getSetting('mediaPath');
+
         $values=array(
             'UserID'    =>$args['username'],
             'Status'    =>'assembly',
             'File_type' =>'PVT',
             'File_name' =>$file->getDestinationFilename(),
-            'Data_dir'  =>$file->getDestinationDirectory()
+            'Data_dir'  =>$mediaPath
         );
 
 	//Cycle through the lines and extract the data
@@ -245,7 +246,7 @@ class NDB_BVL_Instrument_PVT extends NDB_BVL_Instrument
 	$size = sizeof($lines);
 	$last_line = 0;
 	for($i=$size-1; $i>=0;$i--){
-        if($lines[$i] != NULL){
+            if($lines[$i] != NULL){
 		$tokens = explode(',',$lines[$i]);
 		$values["participant_0"] = "--"; 
 	        $values["trial_0"] = "--";
@@ -262,7 +263,7 @@ class NDB_BVL_Instrument_PVT extends NDB_BVL_Instrument
 		$values["maximum_rt_0"] = $tokens[12];
 		$last_line = $i;
 		break;
-	}
+	    }
 	}
 
 	for($i=1;$i<$last_line;$i++){
@@ -283,25 +284,25 @@ class NDB_BVL_Instrument_PVT extends NDB_BVL_Instrument
 	}
         $db=& Database::singleton();
 
-       //-------------------------------------------------------------------//
-            // Check that there is no file in the media module with              //
-            // the same name as the file. If there is a file with the sam        //
-            // but the file was uploaded through the EEG form for field $k, then //
-            // that's OK (counts as an update)                                   //
+        //-------------------------------------------------------------------//
+        // Check that there is no file in the media module with              //
+        // the same name as the file. If there is a file with the sam        //
+        // but the file was uploaded through the EEG form for field $k, then //
+        // that's OK (counts as an update)                                   //
         //-------------------------------------------------------------------//
 
         $row          = $db->pselectRow(
                 "SELECT e.Date_Taken, m.ID FROM {$this->table} e LEFT JOIN media m ON (e.File_name=m.file_name) WHERE e.CommentID=:CommentID",
                 array("CommentID" => $this->getCommentID())
             );
-            $dateTaken = $row['Date_Taken'];
-            $mediaID      = $row['ID'];
+        $dateTaken = $row['Date_Taken'];
+        $mediaID   = $row['ID'];
 
-         // Compute the directory where all media files are stored
-         $config    = NDB_Config::singleton();
-         $mediaPath = $config->getSetting('mediaPath');
+        // Compute the directory where all media files are stored
+        $config    = NDB_Config::singleton();
+        $mediaPath = $config->getSetting('mediaPath');
 
-         $query = [
+        $query = [
                       'session_id'  => $timepoint->getSessionID(),
                       'instrument'  => $this->table,
                       'date_taken'  => $dateTaken,
@@ -312,22 +313,20 @@ class NDB_BVL_Instrument_PVT extends NDB_BVL_Instrument
                       'uploaded_by' => $user->getData('UserID'),
                      ];
 
-                try {
-                    // File alread exists in media module: update
-                    if (!is_null($mediaID)) {
-                            $db->update('media', $query, array('ID' => $mediaID));
-                        // File does not exist in media module: insert new
-                    } else {
-                            $db->insert('media', $query);
-                    }
-               } catch (DatabaseException $e) {
-                    print_r($e);
-  
-               }
-	
+         try {
+             // File alread exists in media module: update
+             if (!is_null($mediaID)) {
+                 $db->update('media', $query, array('ID' => $mediaID));
+             // File does not exist in media module: insert new
+             } else {
+                 $db->insert('media', $query);
+             }
+         } catch (DatabaseException $e) {
+             print_r($e);
+         }
 
-        $result = $db->update($this->testName, $values, array('CommentID'=>$args['CommentID']));  
-        return true;
+         $result = $db->update($this->testName, $values, array('CommentID'=>$args['CommentID']));  
+         return true;
     }
 
 
@@ -342,7 +341,7 @@ class NDB_BVL_Instrument_PVT extends NDB_BVL_Instrument
      * @access    public
      */
     function getTargetDirectory(&$file, $args){
-        $output=$args['candID']."/";
-        return $output;
+        // Uploaded file goes directly in the media directory (no subdirectory needs to be created)
+        return "";
     }
 }
