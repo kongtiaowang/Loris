@@ -849,10 +849,10 @@ class NDB_BVL_Instrument_tsi_ds extends NDB_BVL_Instrument
             //--------------------------------------------------------------------------//
             } else {
                 $nbSiblings = $values['nb_siblings'] == 'not_answered' ? "'Not Answered'" : $values['nb_siblings'];
-                if($values["dob_sibling{$idx}_date"] != '' || $values["dob_sibling{$idx}_date_status"] != '') {
+                if($values["dob_sibling{$idx}_date"] != null || $values["dob_sibling{$idx}_date_status"] != 'not_answered') {
                     $errors["dob_sibling{$idx}_date_group"] = "You must leave this field blank as the number of siblings is $nbSiblings";
                 }
-                if($values["dx_sibling{$idx}"] != '' || $values["dx_sibling{$idx}_status"] != '') {
+                if($values["dx_sibling{$idx}"] != '' || $values["dx_sibling{$idx}_status"] != 'not_answered') {
                     $errors["dx_sibling{$idx}_group"] = "You must leave this field blank as the number of siblings is $nbSiblings";
                 }
                 if($values["relation_sibling{$idx}"] != '') {

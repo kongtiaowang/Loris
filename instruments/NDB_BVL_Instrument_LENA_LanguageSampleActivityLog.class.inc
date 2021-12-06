@@ -126,6 +126,9 @@ class NDB_BVL_Instrument_LENA_LanguageSampleActivityLog extends NDB_BVL_Instrume
 
         $this->addBasicDate('todays_date', 'Today’s Date:', $this->dateOptions);
 
+        $this->form->addElement('text', 'pg1_recorder_number','Recorder Number');
+	$this->XINRegisterRule('pg1_recorder_number', array("pg1_recorder_number{@}=={@}NEVER_REQUIRED"), 'Not Required');
+
         $hour_options = array(null => "");
 
         $minute_options = array(null => "");
@@ -149,6 +152,12 @@ class NDB_BVL_Instrument_LENA_LanguageSampleActivityLog extends NDB_BVL_Instrume
                 $minute_options[$i] = strval($i);
             }
         }
+
+	$group[] = $this->form->createElement('select',"pg1_hour_timestamp","Hour:", $hour_options);
+	$group[] = $this->form->createElement('select',"pg1_minute_timestamp","Minute:", $minute_options);
+        $group[] = $this->form->createElement('select',"pg1_period_timestamp","AM/PM:", $period_options);
+        $this->form->addGroup($group, "pg1_timestamp_group", "Timestamp:",null, false);
+	unset($group);
 
         $this->form->addElement(
             'static',
@@ -224,13 +233,14 @@ class NDB_BVL_Instrument_LENA_LanguageSampleActivityLog extends NDB_BVL_Instrume
         $this->XINRegisterRule('primary_language_specify', array('primary_language{@}=={@}other'), 'Required if other language.');
 
         $this->form->addElement("static", null, "<br><br>");
-
-        $child_care_questionnaire_labels = array(
-                                            "center_based"          => "Center-based",
-                                            "in_home_non_family"    => "In home: Non-family (e.g., private daycare run out of home)",
-                                            "in_home_family_member" => "In home: Family member (e.g., grandparents)",
-                                            "in_home_nanny"         => "In home: Nanny",
-                                           );
+        
+	$child_care_questionnaire_labels = array(
+      		                           "in_home_family_member" => "In home: Family member (e.g., grandparents)",
+                                           "in_home_nanny"         => "In home: Nanny",
+					   "in_home_non_family"    => "In home: Non-family (e.g., private daycare run out of home)",
+					   "center_based"          => "Center-based",
+				   );
+                                           					   
 
         $days_per_week_options = array(
                                   null => "",
@@ -304,17 +314,11 @@ class NDB_BVL_Instrument_LENA_LanguageSampleActivityLog extends NDB_BVL_Instrume
 
         $this->form->addElement("static", null, "<br><br>");
 
-        $this->form->addElement(
-            'text',
-            'if_uncomfortable_with_todays_language_sample',
-            '<b><i>If you feel uncomfortable with a portion of today’s language sample and would like for it not to be used, we will delete the entire language sample and send you another LENA DLP for a replacement recording day. If you would like us to delete this recording please initial here:</i></b>'
-        );
+        $this->form->addElement('advcheckbox', 'pg2_if_uncomfortable_with_todays_language_sample', 'If you feel uncomfortable with a portion of today’s language sample and would like for it not to be used, we will delete the entire language sample and send you another LENA DLP for a replacement recording day. Please mark checkbox accordingly.', null, null, array('0','1'));	
+      
+      $this->form->addElement('advcheckbox','yes_parent_signed','Yes: Parents signed this section and asked that the recording be deleted.',null,null,array('0','1'));
+      $this->form->addElement('advcheckbox','no_parent_signed','No: The parent did not sign this section and the recording can be used.',null,null,array('0','1'));
 
-        $this->XINRegisterRule(
-            "if_uncomfortable_with_todays_language_sample",
-            array("if_uncomfortable_with_todays_language_sample{@}=={@}NEVER_REQUIRED"),
-            "Never required."
-        );
 
         $this->form->addFormRule(array(&$this, 'validate_page1'));
     }
@@ -335,7 +339,7 @@ class NDB_BVL_Instrument_LENA_LanguageSampleActivityLog extends NDB_BVL_Instrume
         $this->addBasicDate('pg2_todays_date', 'Today’s Date:', $this->dateOptions);
 
 	$this->form->addElement('text', 'recorder_number','Recorder Number');
-	$this->XINRegisterRule('recorder_number', array("recorder_number{@}=={@}never_required"), 'Not Required');
+	$this->XINRegisterRule('recorder_number', array("recorder_number{@}=={@}NEVER_REQUIRED"), 'Not Required');
 
         $hour_options = array(null => "");
 
@@ -425,113 +429,7 @@ class NDB_BVL_Instrument_LENA_LanguageSampleActivityLog extends NDB_BVL_Instrume
                             );
 
         $this->addSelect("pg2_how_would_you_rate_today_amount_of_parent_child_talk_time", "How would you rate today in terms of amount of parent-child talk time?", $talk_time_rating);
-
-	$this->form->addElement("static", null, "How many children under the age of 18 are living in the home right now and what are their ages?");
-
-        $group[] =& $this->form->createElement("static", null, null, "Age");
-        $group[] =& $this->form->createElement("static", null, null, "Lives in the Home");
-        $this->form->addGroup($group, "section_headers_group", "Child", $this->_GUIDelimiter, false);
-        unset($group);
-
-	for($i=1;$i<5;$i++){
-        $group[] =& $this->form->createElement("text", "age{$i}", null,null);
-	$group[] =& $this->form->createElement("select", "lives_home{$i}", null, array(null => '', "full_time" => "Full Time", "part_time" => "Part Time"));
-	$this->XINRegisterRule("age{$i}", array("age{$i}{@}=={@}never_required"), 'Not Required');
-	$this->XINRegisterRule("lives_home{$i}", array("lives_home{$i}{@}=={@}never_required"), 'Not Required');
-        $this->form->addGroup($group, "child{$i}", "Child{$i}", $this->_GUIDelimiter, false);
-        unset($group);
-	}
-
-	$language_options = array(
-                             null      => "",
-                             "english" => "English",
-                             "other"   => "Other (Specify)",
-                            );
-
-	$this->addSelect("pg2_primary_language", "What is the primary language spoken in the home?", $language_options);
-
-	$this->form->addElement('text', 'pg2_primary_language_specify', $this->indent . 'If other, specify:');
-
-	$this->XINRegisterRule('pg2_primary_language_specify', array('pg2_primary_language{@}=={@}other'), 'Required if other language.');
-
-	$child_care_questionnaire_labels = array(
-		"pg2_in_home_cared"                  => "In home: Cared for by Parents",
-		"pg2_in_home_family_member"          => "In home: Family member other than parent  (e.g., grandparents, aunt)",
-		"pg2_in_home_nanny"                  => "In home: Nanny",
-                "pg2_in_home_non_family"             => "In home: Non-family  (e.g., private daycare run out of home)",
-	        "pg2_center_based"                   => "Center-based",
-	        );
-
-        $days_per_week_options = array(
-                                  null => "",
-                                  0    => "0",
-                                  1    => "1",
-                                  2    => "2",
-                                  3    => "3",
-                                  4    => "4",
-                                  5    => "5",
-                                  6    => "6",
-                                  7    => "7",
-                                 );
-
-        $hours_per_day_options = array(null => "");
-
-        for ($i = 0; $i <= 24; $i++) {
-            $hours_per_day_options[$i] = strval($i);
-        }
-
-        $group[] =& $this->form->createElement("static", null, null, "Days per Week");
-        $group[] =& $this->form->createElement("static", null, null, "Hours per Day");
-        $group[] =& $this->form->createElement("static", null, null, "Size of Peer Group");
-        $group[] =& $this->form->createElement("static", null, null, "Start Age");
-        $group[] =& $this->form->createElement("static", null, null, "End Age");
-
-        $this->form->addGroup($group, "section_headers", "CHILD CARE QUESTIONNAIRE", $this->_GUIDelimiter, false);
-	unset($group);
-
-	foreach ($child_care_questionnaire_labels as $key => $category) {
-
-	    $group[] =& $this->createSelect(
-                $key . "_days_per_week",
-                "",
-                $days_per_week_options
-            );
-
-            $group[] =& $this->createSelect(
-              $key . "_hours_per_week",
-                "",
-                $hours_per_day_options
-            );
-
-            $group[] =& $this->createText(
-              $key . "_size_of_peer_group",
-                "Size of Peer Group {$key}"
-            );
-
-            $group[] =& $this->createText(
-               $key . "_start_age",
-                "Start Age {$key}"
-            );
-
-            $group[] =& $this->createText(
-              $key . "_end_age",
-                "End Age {$key}"
-            );
-
-            $this->form->addGroup(
-                $group,
-                "{$key}_group",
-                $category,
-                $this->_GUIDelimiter,
-                false
-	   );
-	      unset($group);
-	}
-
-      $this->form->addElement('advcheckbox', 'pg2_if_uncomfortable_with_todays_language_sample', 'If you feel uncomfortable with a portion of today’s language sample and would like for it not to be used, we will delete the entire language sample and send you another LENA DLP for a replacement recording day. Please mark checkbox accordingly.', null, null, array('0','1'));	
-      
-      $this->form->addElement('advcheckbox','yes_parent_signed','Yes: Parents signed this section and asked that the recording be deleted.',null,null,array('0','1'));
-      $this->form->addElement('advcheckbox','no_parent_signed','No: The parent did not sign this section and the recording can be used.',null,null,array('0','1'));
+             
 
       $this->form->addFormRule(array(&$this, 'validate_page2'));
     }
@@ -554,12 +452,13 @@ class NDB_BVL_Instrument_LENA_LanguageSampleActivityLog extends NDB_BVL_Instrume
             $this->validate_empty_subquestions($values, ["primary_language_specify"], $errors);
         }
 
-        $child_care_questionnaire_labels = array(
-                                            "center_based"          => "Center-based",
-                                            "in_home_non_family"    => "In home: Non-family (e.g., private daycare run out of home)",
-                                            "in_home_family_member" => "In home: Family member (e.g., grandparents)",
-                                            "in_home_nanny"         => "In home: Nanny",
-                                           );
+       $child_care_questionnaire_labels = array(
+                                           "in_home_family_member" => "In home: Family member (e.g., grandparents)",
+                                           "in_home_nanny"         => "In home: Nanny",
+                                           "in_home_non_family"    => "In home: Non-family (e.g., private daycare run out of home)",
+                                           "center_based"          => "Center-based",
+                                   );
+
 
         $k = 0;
         foreach ($child_care_questionnaire_labels as $key => $category) {
@@ -622,6 +521,15 @@ class NDB_BVL_Instrument_LENA_LanguageSampleActivityLog extends NDB_BVL_Instrume
             }
         }
 
+	if($values["yes_parent_signed"] == 1 && $values["no_parent_signed"] == 1 ){
+           $errors["no_parent_signed"] = "Only one box can be checked at the same time";
+        }
+
+	if($values["yes_parent_signed"] == 0 && $values["no_parent_signed"] == 0 ){
+		$errors["yes_parent_signed"] = "One box must be checked";
+		$errors["no_parent_signed"] = "One box must be checked";
+	}
+
         return $errors;
 	}
 
@@ -642,81 +550,7 @@ class NDB_BVL_Instrument_LENA_LanguageSampleActivityLog extends NDB_BVL_Instrume
         if ($values["pg2_primary_language"] != "other") {
             $this->validate_empty_subquestions($values, ["pg2_primary_language_specify"], $errors);
         }
-
-        $child_care_questionnaire_labels = array(
-                "pg2_in_home_cared"   => "In home: Cared for by Parents",
-                "pg2_in_home_family_member"          => "In home: Family member other than parent  (e.g., grandparents, aunt)",
-                "pg2_in_home_nanny"                  => "In home: Nanny",
-                "pg2_in_home_non_family"             => "In home: Non-family  (e.g., private daycare run out of home)",
-                "pg2_center_based"                   => "Center-based",
-                );
-    
-        foreach ($child_care_questionnaire_labels as $key => $category) {
-
-            $days       = $values[$key . "_days_per_week"];
-            $hours      = $values[$key . "_hours_per_week"];
-            $peer_group = $values[$key . "_size_of_peer_group"];
-            $start_age  = $values[$key . "_start_age"];
-            $end_age    = $values[$key . "_end_age"];
-
-            $tmp = array();
-
-            if ($days == "" || $hours == "" || $peer_group == "" || $start_age == "" || $end_age == "") {
-                $errors[$key . "_group"] = $this->indent . "Required: ";
-
-                if ($days == "") {
-                    array_push($tmp, "Days per Week");
-                }
-                if ($hours == "") {
-                    array_push($tmp, "Hours per Week");
-                }
-                if ($peer_group == "") {
-                    array_push($tmp, "Size of Peer Group");
-                }
-                if ($start_age == "") {
-                    array_push($tmp, "Start Age");
-                }
-                if ($end_age == "") {
-                    array_push($tmp, "End Age");
-                }
-            }
-
-            $tmp_size = count($tmp);
-
-            for ($i = 0; $i < $tmp_size; $i++) {
-                $errors[$key . "_group"] .= $tmp[$i];
-
-                if ($i != ($tmp_size - 1)) {
-                    $errors[$key . "_group"] .= ", ";
-                }
-            }
-        }
-
-        foreach ($child_care_questionnaire_labels as $key => $category) {
-
-            if ($days != "" && $hours != "" && $peer_group != "" && $start_age != "" && $end_age != "") {
-                $start_age_input = $values[$key . "_start_age"];
-                $end_age_input   = $values[$key . "_end_age"];
-
-                if (!ctype_digit($start_age_input) && $start_age_input != "NA") {
-                    $errors[$key . "_group"] .= $this->indent . "Start age must be a number";
-                }
-
-                if (!ctype_digit($end_age_input) && $end_age_input != "NA") {
-                    $errors[$key . "_group"] .= $this->indent . "End age must be a number";
-                }
-            }
-        }
-
-	if($values["yes_parent_signed"] == 1 && $values["no_parent_signed"] == 1 ){
-           $errors["no_parent_signed"] = "Only one box can be checked at the same time";
-        }
-
-	if($values["yes_parent_signed"] == 0 && $values["no_parent_signed"] == 0 ){
-		$errors["yes_parent_signed"] = "One box must be checked";
-		$errors["no_parent_signed"] = "One box must be checked";
-	}
-
+                
         return $errors;
 	}
 
