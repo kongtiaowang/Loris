@@ -127,7 +127,7 @@ class NDB_BVL_Instrument_LENA_LanguageSampleActivityLog extends NDB_BVL_Instrume
         $this->addBasicDate('todays_date', 'Today’s Date:', $this->dateOptions);
 
         $this->form->addElement('text', 'pg1_recorder_number','Recorder Number');
-	$this->XINRegisterRule('pg1_recorder_number', array("pg1_recorder_number{@}=={@}never_required"), 'Not Required');
+	$this->XINRegisterRule('pg1_recorder_number', array("pg1_recorder_number{@}=={@}NEVER_REQUIRED"), 'Not Required');
 
         $hour_options = array(null => "");
 
@@ -339,7 +339,7 @@ class NDB_BVL_Instrument_LENA_LanguageSampleActivityLog extends NDB_BVL_Instrume
         $this->addBasicDate('pg2_todays_date', 'Today’s Date:', $this->dateOptions);
 
 	$this->form->addElement('text', 'recorder_number','Recorder Number');
-	$this->XINRegisterRule('recorder_number', array("recorder_number{@}=={@}never_required"), 'Not Required');
+	$this->XINRegisterRule('recorder_number', array("recorder_number{@}=={@}NEVER_REQUIRED"), 'Not Required');
 
         $hour_options = array(null => "");
 
