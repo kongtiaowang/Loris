@@ -171,7 +171,7 @@ var QualityControlIndex = /*#__PURE__*/function (_Component) {
           if (cell == 'Yes') {
             var instrumentName = '';
 
-            if (row['Project'] == 'IBIS EP') {
+            if (row['Project'] == 'IBIS EP' || row['Project'] == 'Down Syndrome Infant') {
               instrumentName = 'mri_parameter_ep';
             } else if (/\b(VSA|VSA-CVD|VSA-Sleep)\b/.test(row['Visit Label'])) {
               instrumentName = 'mri_parameter_form_sa';

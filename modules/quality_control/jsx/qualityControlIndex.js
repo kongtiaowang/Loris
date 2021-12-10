@@ -34,7 +34,7 @@ class QualityControlIndex extends Component {
       case 'Scan Done in MRI PF':
         if (cell == 'Yes') {
           let instrumentName = '';
-          if (row['Project'] == 'IBIS EP') {
+          if (row['Project'] == 'IBIS EP' || row['Project'] == 'Down Syndrome Infant') {
             instrumentName = 'mri_parameter_ep';
           } else if (/\b(VSA|VSA-CVD|VSA-Sleep)\b/.test(row['Visit Label'])) {
             instrumentName = 'mri_parameter_form_sa';
