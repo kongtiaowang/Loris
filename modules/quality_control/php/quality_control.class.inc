@@ -155,6 +155,9 @@ class Quality_Control extends \NDB_Menu_Filter
             case 'mri_parameter_form':
                 $mriPfTableAlias = 'm';
                 break;
+            case 'mri_parameter_ep':
+                $mriPfTableAlias = 'me';
+                break;
             default: throw new \InvalidArgumentException("Unsupported MRI parameter form table $mriPfTable");
         }
 
@@ -223,13 +226,14 @@ class Quality_Control extends \NDB_Menu_Filter
            LEFT JOIN session s ON (f.SessionID=s.ID)
            LEFT JOIN mri_parameter_form m ON (m.CommentID=f.CommentID)
            LEFT JOIN mri_parameter_form_sa m_sa ON (m_sa.CommentID=f.CommentID)
+           LEFT JOIN mri_parameter_ep me ON (me.CommentID=f.CommentID)
            LEFT JOIN tarchive t ON (t.SessionID=s.ID)
            LEFT JOIN files fi ON (fi.SessionID=s.ID AND fi.AcquisitionProtocolID=$acqID)
            LEFT JOIN mri_violations_log mvl
               ON (
                       mvl.CandID = s.CandID
                   AND mvl.Scan_type=$acqID
-                  AND mvl.PatientName LIKE CONCAT ('%', s.Visit_label,'%')
+                  AND mvl.PatientName LIKE CONCAT ('%\_', s.Visit_label)
               )
            LEFT JOIN candidate c ON (s.CandID=c.CandID)
            LEFT JOIN files_qcstatus qc ON (qc.FileID = fi.FileID)
@@ -434,7 +438,7 @@ class Quality_Control extends \NDB_Menu_Filter
         if (preg_match('/SA$/', $scanType)) {
             return 'mri_parameter_form_sa';
         } elseif (preg_match('/EP$/', $scanType)) {
-            return null;
+            return 'mri_parameter_ep';
         }
 
         return 'mri_parameter_form';
@@ -462,6 +466,10 @@ class Quality_Control extends \NDB_Menu_Filter
             case 'T1wRawSA':    return 't1w_acquired';
             case 'T2wNormSA':
             case 'T2wRawSA':    return 't2w_acquired';
+            case 'T1wNormEP':
+            case 'T1wRawEP':    return 't1_pass_msg';
+            case 'T2wNormEP':
+            case 'T2wRawEP':    return 't2_pass_msg';
         }
 
         return null;
@@ -478,15 +486,17 @@ class Quality_Control extends \NDB_Menu_Filter
      */
     function _getMriPfDoneValues(string $scanType) : ?array
     {
-        if (preg_match('/EP$/', $scanType)) {
-            return null;
-        }
-
         switch ($scanType) {
-            case 'T1wRawSA':
+            case 'T1wRawSA' :
             case 'T1wNormSA':
-            case 'T2RawSA':
-            case 'T2NormSA': return array('Yes_2', 'Yes_1');
+            case 'T2RawSA'  :
+            case 'T2NormSA' : return array('Yes_2', 'Yes_1');
+
+            case 'T1wRawEP' :
+            case 'T1wNormEP':
+            case 'T2wRawEP' :
+            case 'T2wNormEP': return array('Yes');
+
         }
 
         return array('Complete', 'Partial');
