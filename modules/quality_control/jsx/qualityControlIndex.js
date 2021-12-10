@@ -33,8 +33,14 @@ class QualityControlIndex extends Component {
       switch (column) {
       case 'Scan Done in MRI PF':
         if (cell == 'Yes') {
-          let instrumentName = row['Visit Label'] == 'VSA'
-              ? 'mri_parameter_form_sa' : 'mri_parameter_form';
+          let instrumentName = '';
+          if (row['Project'] == 'IBIS EP') {
+            instrumentName = 'mri_parameter_ep';
+          } else if (/\b(VSA|VSA-CVD|VSA-Sleep)\b/.test(row['Visit Label'])) {
+            instrumentName = 'mri_parameter_form_sa';
+          } else {
+            instrumentName = 'mri_parameter_form';
+          }
           let mpfURL = loris.BaseURL + '/instruments/' + instrumentName + '/?commentID=' +
               row.CommentID + '&sessionID=' + row['Session ID'] +
               '&candID=' + row.DCCID;
