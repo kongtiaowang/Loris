@@ -127,7 +127,9 @@ INSERT INTO instrument_subtests VALUES('', 'fyi', 'fyi_page2', '#47-#63', 2);
          'static',
          null,
          "<h4>
-            <b>Instructions:</b><br>
+	    <b>Instructions:</b><br>
+            <br>
+            <i>*Please fill this form out with regard to your child who has enrolled in our study.</i><br>
             <br>
             No two babies are alike. We are interested in some of the behaviors that make your baby unique. There are no right or wrong answers to these questions.
             They are just descriptions of the range of behaviors we find in one-year-olds. Please answer each question as it applies to your baby within the week before or after your baby's first birthday.
