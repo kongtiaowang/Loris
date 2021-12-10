@@ -102,10 +102,11 @@ PRIMARY KEY  (`CommentID`)
               ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 INSERT INTO test_names (Test_name, Full_name, Sub_Group, isDirectEntry) VALUES ('SRS2_Preschool_Sibling_survey', "SRS-2 Pre-School (Social Responsiveness Scale - Pre-School) - FOH Sibling - Survey", 1, 1);
-INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('SRS2_Preschool_Sibling_survey','SRS2_Preschool_survey_page1', "Page 1", 1);
-INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('SRS2_Preschool_Sibling__survey','SRS2_Preschool_survey_page2', "Page 2", 2);
-INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('SRS2_Preschool_Sibling_survey','SRS2_Preschool_survey_page3', "Page 3", 3);
-INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('SRS2_Preschool_Sibling_survey','SRS2_Preschool_survey_page4', "Page 4", 4);
+
+INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('SRS2_Preschool_Sibling_survey','SRS2_Preschool_Sibling_survey_page1', "Page 1", 1);
+INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('SRS2_Preschool_Sibling_survey','SRS2_Preschool_Sibling_survey_page2', "Page 2", 2);
+INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('SRS2_Preschool_Sibling_survey','SRS2_Preschool_Sibling_survey_page3', "Page 3", 3);
+INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('SRS2_Preschool_Sibling_survey','SRS2_Preschool_Sibling_survey_page4', "Page 4", 4);
 
 INSERT INTO survey_test_battery (Test_name, Active, SubprojectID, Visit_label) VALUES ('SRS2_Preschool_Sibling_survey', DEFAULT, 4, 'VSA');
 INSERT INTO survey_test_battery (Test_name, Active, SubprojectID, Visit_label) VALUES ('SRS2_Preschool_Sibling_survey', DEFAULT, 5, 'VSA');

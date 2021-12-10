@@ -79,10 +79,10 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
                               );                   
 
     const complete_partial_none = array(
-                               ""          => "",
-                               "1"         => "Complete",
-                               "0"         => "Partial",
-                               "none"      => "None",                                                                                                                                                                                                                     
+                               ""        => "",
+                               "1"       => "Complete",
+                               "0"       => "Partial",
+                               "none"    => "None",                                                                                                                                                                                                                     
                               );  
 
     private $yes_no = array(
@@ -414,6 +414,12 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
         }
 
         $this->addTextElement(
+            'head_circumference',
+            'Head Circumference (Inches):'
+        );
+                $this->XINRegisterRule("head_circumference", array("head_circumference{@}=={@}NEVER_REQUIRED"));
+
+        $this->addTextElement(
             'height',
             'Height (Inches):'
         );
@@ -425,13 +431,6 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
             'Weight (lbs):'
         );
                 $this->XINRegisterRule("weight", array("weight{@}=={@}NEVER_REQUIRED"));
-
-
-        $this->addTextElement(
-            'head_circumference',
-            'Head Circumference (Inches):'
-        );
-                $this->XINRegisterRule("head_circumference", array("head_circumference{@}=={@}NEVER_REQUIRED"));
 
 
         $this->addTextElement(
