@@ -137,7 +137,7 @@ INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_num
          "<h3>
              <b>Instructions:</b><br>
              <br>
-             <i>*Please fill this form out with regard to your child who has enrolled in our study, NOT their older sibling with autism</i><br>
+             <i>*Please fill this form out with regard to your child who has enrolled in our study.</i><br>
              <br>
              No two babies are alike. We are interested in some of the behaviors that make your baby unique. There are no right or wrong answers to these questions.
              They are just descriptions of the range of behaviors we find in one-year-olds. Please answer each question as it applies to your baby within the week before or after your baby's first birthday.
