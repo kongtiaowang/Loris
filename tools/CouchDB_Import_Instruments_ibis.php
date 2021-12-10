@@ -84,6 +84,24 @@ class CouchDBInstrumentImporter
                 'Description' => "Father's age at administration"
             );
 
+            // Determine if any survey's have been created for the instrument via the survey accounts module.
+            $survey_count = $this->SQLDB->pselectOne("
+                SELECT count(*) FROM participant_accounts WHERE Test_name=:test_name
+            ", array("test_name" => $instrument));
+
+            if ($survey_count > 0) {
+                // Surveys, exist add new variable to specify whether the instrument was submitted,
+                // via the survey module or direct entry.
+                $Dict['Data_Entry_Type'] = array(
+                    'Type' => "enum('Submitted', 'Direct Data Entered', 'In Progress')",
+                    'Description' => "whether the survey was submitted online (via the Parent Portal or using direct url) vs Direct Data Entered"
+                );
+                $Dict['emailed'] = array(
+                    'Type' => "enum('Created - Not emailed via LORIS', 'Sent - emailed via LORIS', 'Survey not Created')",
+                    'Description' => "whether the survey was emailed or not"
+                );
+            }
+
             $this->CouchDB->replaceDoc(
                 "DataDictionary:$instrument",
                 array(
@@ -278,6 +296,38 @@ class CouchDBInstrumentImporter
                 $ages = $this->getParentAgeAtAdministration($row['CandID'], $docdata['Date_taken']);
                 $docdata['mother_age_at_administration'] = $ages['mother'];
                 $docdata['father_age_at_administration'] = $ages['father'];
+
+                // Check if instrument has any surveys.
+                $survey_count = $this->SQLDB->pselectOne("
+                    SELECT count(*) FROM participant_accounts WHERE Test_name=:test_name
+                ", array("test_name" => $instrument));
+
+                if ($survey_count > 0) {
+                    // Instrument is survey based and complete. Fetch survey's status.
+                    $survey_completion = $this->SQLDB->pselectOne("
+                            SELECT Status FROM participant_accounts WHERE CommentID=:CommentID
+                        ", array("CommentID" => $CommentID));
+                    if ($docdata['Data_entry'] === "Complete") {
+                        // Survey status is complete then survey was submitted via the survey module,
+                        // else the survey was submitted via direct entry.
+                        $docdata['Data_Entry_Type']
+                            = $survey_completion === "Complete" ? "Submitted" : "Direct Data Entered";
+                    } else {
+                        // Instrument is still in progess.
+                        $docdata['Data_Entry_Type'] = "In Progress";
+                    }
+
+                    // Check if the survey was emailed or not.
+                    if (is_null($survey_completion)) {
+                        // Survey doesn't exists in survey table, mark as not created.
+                        $docdata['emailed'] = "Survey not Created";
+                    } else if ($survey_completion === "Created") {
+                        // Survey still in created state, never emailed.
+                        $docdata['emailed'] = "Created - Not emailed via LORIS";
+                    } else {
+                        $docdata['emailed'] = "Sent - emailed via LORIS";
+                    }
+                }
 
                 $doc     = array(
                             'Meta' => array(
