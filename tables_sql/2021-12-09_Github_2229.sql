@@ -1,6 +1,6 @@
 -- Github #2229
 
--- Update sessions where session.Project = IBISSA and candidate.RegistrationProjectID != IBISSA
+-- Update sessions where session.ProjectID == 6 (IBISSA) and candidate.RegistrationProjectID != 6 (IBISSA)
 UPDATE
     session
 SET
@@ -121,17 +121,7 @@ WHERE
     CandID='122785' AND
     ProjectID = 6;
 
--- Archive candidates the following candidates:
--- STL3000
--- UNC3000
--- UNC3001
--- UNC3002
-UPDATE candidate SET Active='N' WHERE PSCID='STL3000';
-UPDATE candidate SET Active='N' WHERE PSCID='UNC3000';
-UPDATE candidate SET Active='N' WHERE PSCID='UNC3001';
-UPDATE candidate SET Active='N' WHERE PSCID='UNC3002';
-
--- Delete DCC sessions with session.ProjectID = IBISSA and candidate.RegistrationProjectID = IBISSA
+-- Delete DCC sessions with session.ProjectID = 6 (IBISSA) AND candidate.RegistrationProjectID = 6 (IBISSA)
 DELETE FROM
 	session
 WHERE CandID in (
@@ -150,3 +140,27 @@ WHERE CandID in (
 
     ) AS c
 );
+
+-- Archive candidates the following candidates:
+-- STL3000
+-- UNC3000
+-- UNC3001
+-- UNC3002
+UPDATE candidate SET Active='N' WHERE PSCID='STL3000';
+UPDATE candidate SET Active='N' WHERE PSCID='UNC3000';
+UPDATE candidate SET Active='N' WHERE PSCID='UNC3001';
+UPDATE candidate SET Active='N' WHERE PSCID='UNC3002';
+
+-- Archive all DCC candidates where RegistrationProjectID = 6 (IBISSA)
+UPDATE candidate SET Active='N' WHERE PSCID LIKE 'dcc%' AND RegistrationProjectID = 6;
+
+-- Updates all candidates with RegistrationProjectID = 6 (IBISSA) to RegistrationProjectID = 1 (IBIS1)
+UPDATE
+    candidate
+SET
+    RegistrationProjectID = 1
+WHERE
+    RegistrationProjectID = 6;
+
+-- Update ProjectID for remaining sessions (these sessions belong to archived candidates)
+UPDATE session SET ProjectID = 1 WHERE ProjectID = 6;
