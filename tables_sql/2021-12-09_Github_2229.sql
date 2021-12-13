@@ -130,3 +130,23 @@ UPDATE candidate SET Active='N' WHERE PSCID='STL3000';
 UPDATE candidate SET Active='N' WHERE PSCID='UNC3000';
 UPDATE candidate SET Active='N' WHERE PSCID='UNC3001';
 UPDATE candidate SET Active='N' WHERE PSCID='UNC3002';
+
+-- Delete DCC sessions with session.ProjectID = IBISSA and candidate.RegistrationProjectID = IBISSA
+DELETE FROM
+	session
+WHERE CandID in (
+    SELECT cid FROM (
+        SELECT
+            session.CandID as cid
+        FROM
+            candidate
+        INNER JOIN
+            session
+        ON
+            candidate.CandID = session.CandID
+        WHERE
+            session.ProjectID = 6 AND
+            candidate.PSCID LIKE 'dcc%'
+
+    ) AS c
+);
