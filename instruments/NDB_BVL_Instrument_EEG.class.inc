@@ -72,6 +72,12 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
                               'emptyOptionValue' => null,
                              );
 
+        // To remove duplication of uploading the EEG file twice, removing the
+        // requirement of the file so that data entry can be set to complete.
+        if (strpos($commentID, 'DDE_') === 0) {
+            $this->_requiredElements = array();
+        }
+
          // setup the form
          $this->_setupForm();
     }
