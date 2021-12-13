@@ -447,12 +447,14 @@
 	</div>
 
     <div class="row form-group form-inline">
+            {if $form.account_request_date.label}
         <label class="col-sm-12 col-sm-2 form-label">
             {$form.account_request_date.label}
         </label>
         <div class="col-sm-10">
             {$form.account_request_date.html|default:'None'}
         </div>
+            {/if}
     </div>
 
       <div class="row form-group form-inline">
