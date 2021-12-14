@@ -478,15 +478,6 @@ class NDB_BVL_Instrument_tsi_ds extends NDB_BVL_Instrument
          $this->form->addFormRule(array(&$this, 'validate_main'));
     }
 
-
-
-
-
-
-
-
-
-
     /**
      * Displays page 1 of the form.
      *
@@ -497,7 +488,6 @@ class NDB_BVL_Instrument_tsi_ds extends NDB_BVL_Instrument
         $this->form->addElement('header', null, 'Section B: Exclusionary Factors INFANT SUBJECTS');
 
 	$this->form->addElement('advcheckbox', 'not_finish1' , null, 'Form not acquired to completion due to candidate determined as ineligible during screening interview.', null, self::NoYesCheckbox);
-       // $this->addCheckbox('not_finish1', 'Form not acquired to completion due to candidate determined as ineligible during screening interview.', array('value' => '1'));
 
         $questionArray = array(
             'neurological_problems'        => 'Any neurological problems such as cerebral palsy or tuberous sclerosis in SUBJECT?',
@@ -577,7 +567,6 @@ class NDB_BVL_Instrument_tsi_ds extends NDB_BVL_Instrument
         $this->form->addElement('header', null, 'Medical History Pertaining to MRI/Sedation');
 
 	$this->form->addElement('advcheckbox', 'not_finish2' , null, 'Form not acquired to completion due to candidate determined as ineligible during screening interview.', null, self::NoYesCheckbox);
-      //  $this->addCheckbox('not_finish2', 'Form not acquired to completion due to candidate determined as ineligible during screening interview.', array('value' => '1'));
 
         $this->addYesNoSelect(
             'med_his_q_1_med_surgical_problems',
@@ -665,9 +654,10 @@ class NDB_BVL_Instrument_tsi_ds extends NDB_BVL_Instrument
             'med_his_q_9_anethesia_notes_group'
         );
 
-        $this->addYesNoSelect('med_his_q_10_nap', '10. Does X nap during the day?');
-        $this->addTextElement('med_his_q_10_nap_how_long', "{$this->indent}If yes, when & how long?");
-        $this->XINRegisterRule ('med_his_q_10_nap_how_long', array('med_his_q_10_nap{@}=={@}yes'), 'Please specify a duration');
+	//$this->addYesNoSelect('med_his_q_10_nap', '10. Does X nap during the day?');
+	$this->form->addElement("select","med_his_q_10_nap","10. Does X nap during the day?",$this->yesNo);
+        $this->form->addElement('text','med_his_q_10_nap_how_long', "{$this->indent}If yes, when & how long?");
+	$this->XINRegisterRule ('med_his_q_10_nap_how_long', array('med_his_q_10_nap{@}=={@}yes'), 'Please specify a duration');
         $this->addSelect(
             'med_his_q_11_likelihood_sleep',
             '11. On a scale of 1-10, please rate the likelihood of your child sleeping through a scan.',
@@ -685,7 +675,9 @@ class NDB_BVL_Instrument_tsi_ds extends NDB_BVL_Instrument
          $this->XINRegisterRule("med_his_q_9_anethesia", array("not_finish2{@}!={@}1"), 'Required.');
          $this->XINRegisterRule("med_his_q_9_anethesia_problems", array("not_finish2{@}!={@}1"), 'Required.');
          $this->XINRegisterRule("med_his_q_10_nap", array("not_finish2{@}!={@}1"), 'Required.');
-         $this->XINRegisterRule("med_his_q_11_likelihood_sleep", array("not_finish2{@}!={@}1"), 'Required.');
+	 $this->XINRegisterRule("med_his_q_11_likelihood_sleep", array("not_finish2{@}!={@}1"), 'Required.');
+
+	 $this->form->addFormRule(array(&$this, 'validate_page2'));
     }
 
 
@@ -710,13 +702,8 @@ class NDB_BVL_Instrument_tsi_ds extends NDB_BVL_Instrument
         $this->form->addElement('header', null, 'Medical Records');
 
 	$this->form->addElement('advcheckbox', 'not_finish3' , null, 'Form not acquired to completion due to candidate determined as ineligible during screening interview.', null, self::NoYesCheckbox);
-      //  $this->addCheckbox('not_finish3', 'Form not acquired to completion due to candidate determined as ineligible during screening interview.', array('value' => '1'));
 
-	$group[] =& $this->createText("city_of_birth");
-	$group[] =& $this->createSelect("city_of_birth_status", null, array(null =>'','not_answered'=>'Not Answered'));
-	$this->addGroup($group,"city_of_birth_group","City of Birth:",$this->_GUIDelimiter,false);
-	unset($group);
-	$this->XINRegisterRule("city_of_birth_status", array("city_of_birth{@}=={@}"), 'Required','city_of_birth_group');
+	$this->form->addElement('text','city_of_birth', "City of Birth:");
 
         $this->addScoreColumn('diagnoses'            , $this->notSavedInDbFields['diagnoses']);
         $this->addScoreColumn('cognitive_dev_testing', $this->notSavedInDbFields['cognitive_dev_testing']);
@@ -758,7 +745,7 @@ class NDB_BVL_Instrument_tsi_ds extends NDB_BVL_Instrument
         $this->XINRegisterRule('review_date', array('possible_exclusion{@}=={@}yes'), 'Please specify the date of the review', 'review_date_group');
 
          $this->XINRegisterRule("city_of_birth", array("not_finish3{@}!={@}1"), 'Required.');
-        // $this->XINRegisterRule("city_of_birth_status", array("not_finish3{@}!={@}1"), 'Required.');
+         $this->XINRegisterRule("city_of_birth_status", array("not_finish3{@}!={@}1"), 'Required.');
          $this->XINRegisterRule("exc_inc_meets_criteria", array("not_finish3{@}!={@}1"), 'Required.');
          $this->XINRegisterRule("exc_inc_contraindication", array("not_finish3{@}!={@}1"), 'Required.');
          $this->XINRegisterRule("goto_next_level", array("not_finish3{@}!={@}1"), 'Required.');
@@ -878,6 +865,17 @@ class NDB_BVL_Instrument_tsi_ds extends NDB_BVL_Instrument
 
         if($values['premature_birth'] == 'yes' && $values['weeks_gestation_status'] != 'not_answered') {
             $this->validate_numeric_strict_group($values, 'weeks_gestation', $errors, 1, 37, 'weeks_gestation_group', 'weeks of gestation');
+        }
+
+        return $errors;
+    }
+
+    function validate_page2($values) {
+
+        $errors = array();
+
+        if($values['med_his_q_10_nap'] != 'yes'){
+          $this->validate_empty_subquestions($values, ["med_his_q_10_nap_how_long"], $errors);
         }
 
         return $errors;
