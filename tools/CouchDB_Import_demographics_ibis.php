@@ -212,7 +212,7 @@ class CouchDBDemographicsImporter {
                                  c.ProbandDoB                                                AS Proband_DoB,
                                  c.candid                                                    AS CandID,
                                  c.pscid                                                     AS PSCID,
-                                 c.CandidateGUID                                             AS NDAR_ID,
+                                 pc_ndarid.Value                                             AS NDAR_ID,
                                  s.visit_label                                               AS Visit_label,
                                  s.Date_visit                                                AS Visit_date,
                                  s.subprojectid                                              AS SubprojectID,
@@ -327,6 +327,11 @@ class CouchDBDemographicsImporter {
                                            AND pc_comment.parametertypeid = (SELECT parametertypeid
                                                                              FROM   parameter_type
                                                                              WHERE  NAME = 'candidate_comment')
+                                 LEFT JOIN parameter_candidate AS pc_ndarid
+                                        ON ( pc_comment.candid = c.candid )
+                                           AND pc_comment.parametertypeid = (SELECT parametertypeid
+                                                                             FROM   parameter_type
+                                                                             WHERE  NAME = 'CandidateGUID')
                                  LEFT JOIN participant_status ps
                                         ON ( ps.candid = c.candid )
                                  LEFT JOIN flag f
