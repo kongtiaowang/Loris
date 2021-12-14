@@ -328,8 +328,8 @@ class CouchDBDemographicsImporter {
                                                                              FROM   parameter_type
                                                                              WHERE  NAME = 'candidate_comment')
                                  LEFT JOIN parameter_candidate AS pc_ndarid
-                                        ON ( pc_comment.candid = c.candid )
-                                           AND pc_comment.parametertypeid = (SELECT parametertypeid
+                                        ON ( pc_ndarid.candid = c.candid )
+                                           AND pc_ndarid.parametertypeid = (SELECT parametertypeid
                                                                              FROM   parameter_type
                                                                              WHERE  NAME = 'CandidateGUID')
                                  LEFT JOIN participant_status ps
@@ -452,6 +452,8 @@ class CouchDBDemographicsImporter {
         AND (ps.participant_status NOT IN (2,3,4,15) OR ps.participant_status IS NULL)
         AND c.RegistrationProjectID NOT IN (5,6)";
 
+        print "$concatQuery\n";
+        exit(0);
         return $concatQuery;
     }
 
