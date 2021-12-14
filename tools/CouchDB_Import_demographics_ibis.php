@@ -452,8 +452,6 @@ class CouchDBDemographicsImporter {
         AND (ps.participant_status NOT IN (2,3,4,15) OR ps.participant_status IS NULL)
         AND c.RegistrationProjectID NOT IN (5,6)";
 
-        print "$concatQuery\n";
-        exit(0);
         return $concatQuery;
     }
 
