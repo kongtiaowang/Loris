@@ -402,7 +402,7 @@ class NDB_BVL_Instrument_EEG extends NDB_BVL_Instrument
                     $uploadNotifier->notify(array("file" => $files["{$k}_chooser"]["name"]));
 
                     // Email new file has been uploaded.
-                    $email = $candidate->getCandidateSite() === "DCC" ? "santiago.torres@mcin.ca" : "chloeschwartz@mednet.ucla.edu";
+                    $email = $candidate->getCandidateSite() === "DCC" ? "santiago.torres@mcin.ca" : "madisonhbooth@wustl.edu";
                     $email_data = array(
                         "candID"      => $candidate->getCandID(),
                         "PSCID"       => $candidate->getPSCID(),
