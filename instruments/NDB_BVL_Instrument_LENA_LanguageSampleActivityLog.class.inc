@@ -25,6 +25,23 @@ class NDB_BVL_Instrument_LENA_LanguageSampleActivityLog extends NDB_BVL_Instrume
     use LegacyInstrumentTrait;
     use instrument_validator;
 
+    static $FILE_FIELDS = array(
+        'its_file'        => [
+                              'required' => 0,
+                              'page'     => '',
+                              'name'     => 'LENA_CandID_PSCID_VisitLabel.its',
+                             ],
+        'upl_file' => [
+                              'required' => 0,
+                              'page'     => '',
+                              'name'     => 'LENA_CandID_PSCID_VisitLabel.upl',
+                             ],
+        'wav_file' => [
+                                'required' => 0,
+                                'page'     => '',
+                                'name'     => 'LENA_CandID_PSCID_VisitLabel.wav/.mp3',
+                               ],
+       );
     /**
      * Sample SQL statement for test_names table and instrument subtests table
      *
@@ -88,6 +105,7 @@ class NDB_BVL_Instrument_LENA_LanguageSampleActivityLog extends NDB_BVL_Instrume
 
         //Defines the call back function for HTML Quickform to use when validating the form.
         $this->form->addFormRule(array(&$this, 'XINValidate'));
+        $this->form->addFormRule(array(&$this, 'eeg_rules'));
     }
 
     /**
@@ -104,6 +122,23 @@ class NDB_BVL_Instrument_LENA_LanguageSampleActivityLog extends NDB_BVL_Instrume
         $this->_addMetadataFields();
 
         $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
+
+	$this->form->addElement("static", null, "<br><br>");
+
+	$this->form->addElement('file', 'its_file_lena', 'Upload the .its file
+        <br><h6><i>(Ex: Filename should be LENA_CandID_PSCID_VisitLabel.its)</i></h6>');
+        $this->XINRegisterRule("its_file_lena", array("its_file_lena{@}=={@}NEVER_REQUIRED"));
+        $this->form->addElement('static', "its_file", "Uploaded File");
+
+        $this->form->addElement('file', 'upl_file_lena', 'Upload the .upl file
+        <br><h6><i>(Ex: Filename should be LENA_CandID_PSCID_VisitLabel.upl)</i></h6>');
+        $this->XINRegisterRule("upl_file_lena", array("upl_file_lena{@}=={@}NEVER_REQUIRED"));
+        $this->form->addElement('static', "upl_file", "Uploaded File");
+
+        $this->form->addElement('file', 'wav_file_lena', 'Upload the .wav/.mp3 file
+        <br><h6><i>(Ex: Filename should be LENA_CandID_PSCID_VisitLabel.wav/.mp3)</i></h6>');
+        $this->XINRegisterRule("wav_file_lena", array("wav_file_lena{@}=={@}NEVER_REQUIRED"));
+        $this->form->addElement('static', "wav_file", "Uploaded File");
     }
 
     /**
@@ -453,6 +488,98 @@ class NDB_BVL_Instrument_LENA_LanguageSampleActivityLog extends NDB_BVL_Instrume
       $this->form->addFormRule(array(&$this, 'validate_page2'));
     }
 
+    function _saveValues(array $values): void
+    {
+
+               //----------------------------------------------------------//
+        // *_chooser fields are always posted but do not exist in   //
+        // the DB. Save their values in $files and unset these      //
+        // otherwise parent::_saveValues will crash                 //
+        //----------------------------------------------------------//
+        foreach (self::$FILE_FIELDS as $k => $v) {
+            if ($v['page'] == $this->page) {
+                $files["{$k}_lena"] = $values["{$k}_lena"];
+                unset($values["${k}_lena"]);
+            }
+        }
+
+        $session   = $this->getSessionID();
+        $timepoint = \TimePoint::singleton($session);
+        $candidate = \Candidate::singleton($timepoint->getCandID());
+
+        parent::_saveValues($values);
+
+        //--------------------------//
+        // Process all file fields  //
+        //--------------------------//
+        foreach (self::$FILE_FIELDS as $k => $v) {
+            //---------------------------------------------//
+            // If the associated file chooser was used and //
+            // the chooser is on the current page          //
+            //---------------------------------------------//
+            if ($v['page'] != $this->page || $files["{$k}_lena"]["name"] == '') {
+                continue;
+            }
+
+            //-------------------------------------------------------------------//
+            // Check that there is no file in the media module with              //
+            // the same name as the file. If there is a file with the sam        //
+            // but the file was uploaded through the EEG form for field $k, then //
+            // that's OK (counts as an update)                                   //
+            //-------------------------------------------------------------------//
+            $db           =& Database::singleton();
+            $row          = $db->pselectRow(
+                "SELECT e.Date_Taken, m.ID FROM {$this->table} e LEFT JOIN media m ON (e.{$k}=m.file_name) WHERE e.CommentID=:CommentID",
+                array("CommentID" => $this->getCommentID())
+            );
+            $eegDateTaken = $row['Date_Taken'];
+            $mediaID      = $row['ID'];
+
+            // Build insert query
+            $config    = NDB_Config::singleton();
+            $mediaPath = $config->getSetting('mediaPath');
+            $user      =& User::singleton();
+
+            $query = [
+                      'session_id'  => $values["sessionID"],
+                      'instrument'  => $values["test_name"],
+                      'date_taken'  => $eegDateTaken,
+                      'file_name'   => $files["{$k}_lena"]["name"],
+                      'file_type'   => $_FILES["{$k}_lena"]["type"],
+                      'data_dir'    => $mediaPath,
+                      'uploaded_by' => $user->getData('UserID'),
+                     ];
+
+            //-----------------------------------------------------------//
+            // Try to move the file from the tmp upload directory to the //
+            // media module upload directory                             //
+            //-----------------------------------------------------------//
+            if (move_uploaded_file($files["{$k}_lena"]["tmp_name"], $mediaPath . $files["{$k}_lena"]['name'])) {
+                try {
+                    // File alread exists in media module: update
+                    if (!is_null($mediaID)) {
+                        $db->update('media', $query, array('ID' => $mediaID));
+                        // File does not exist in media module: insert new
+                    } else {
+                        $db->insert('media', $query);
+                    }
+
+                    // Update field $k in the EEG table for the current record
+                    // Note that this was not done by parent::_saveValues since $k
+                    // was defined as a "score" (i.e not submitted by the POST)
+                    $db->update(
+                        $this->table,
+                        array($k => $files["{$k}_lena"]["name"]),
+                        array('CommentID' => $this->getCommentID())
+                    );
+                } catch (DatabaseException $e) {
+                    print_r($e);
+                }
+            } // if move_upload
+        } // foreach
+        
+    }
+
         function validate_page1($values)
     {
         $errors = [];
@@ -574,6 +701,93 @@ class NDB_BVL_Instrument_LENA_LanguageSampleActivityLog extends NDB_BVL_Instrume
         return $errors;
 	}
 
+	function eeg_rules($values)
+    {
+                //--------------------------------------------------------------------//
+        // Validate that there are no duplicates in the set of files chosen   //
+        // with the file choosers on the current page                        //
+        //--------------------------------------------------------------------//
+  
+      $chosen = array();
+        foreach (self::$FILE_FIELDS as $k => $v) {
+            //---------------------------------------------//
+            // If the associated file chooser was used and //
+            // the chooser is on the current page          //
+            //---------------------------------------------//
+            if ($v['page'] == $this->page) {
+                if ($values["{$k}_lena"]['name'] != '') {
+                    $fname = $values["{$k}_lena"]['name'];
+		    if (isset($chosen[$fname])) {
+                        $errors["{$k}_lena"] = "A file with name $fname is already selected in section '{$chosen[$fname]}'. Please choose another file";
+                    } else {
+                        $chosen[$fname] = $v['name'];
+                    }
+                }
+            }
+        }
+
+        //-----------------------------//
+        // Validate all required files //
+        //-----------------------------//
+        foreach (self::$FILE_FIELDS as $k => $v) {
+            if (isset($errors["{$k}_lena"])) {
+                continue;
+            }
+
+            //---------------------------------------------//
+            // If the associated file chooser was used and //
+            // the chooser is on the current page          //
+            //---------------------------------------------//
+            if ($v['page'] != $this->page) {
+                continue;
+            }
+
+            $db =& Database::singleton();
+            // Check that a file for $k already exists in the DB
+            $fileAlreadyUploaded = $db->pselectOne(
+                "SELECT $k FROM {$this->table} WHERE CommentID=:CommentID",
+                array('CommentID' => $this->getCommentID())
+            );
+
+            // File chooser for $k was not used but there's already a file in the DB
+            // for $k: all good
+            if ($fileAlreadyUploaded && $values["{$k}_lena"]['name'] == '') {
+                continue;
+            }
+
+            // File chooser was used to specify the same file as the one in the DB
+            // for $k: that's an update and that's OK
+            if (!is_null($fileAlreadyUploaded) && $values["{$k}_lena"]['name'] == $fileAlreadyUploaded) {
+                continue;
+            }
+
+            // File chooser for $k was not used and no file in the DB for $k: error
+            if ($values["{$k}_lena"]['name'] == '' && $v['required']) {
+                $errors["{$k}_lena"] = 'You must select a file to upload';
+                //----------------------------------------------//
+                // The file chooser associated to $k was used   //
+                // (i.e a file for $k is supplied)              //
+                //----------------------------------------------//
+            } else {
+                //-----------------------------------------------------------------//
+                // Check that there is not already a file with the same name       //
+                // in the media module.                                            //
+                //-----------------------------------------------------------------//
+                $query = "SELECT 1 FROM media WHERE file_name=:fileName";
+                $fileAlreadyExists = $db->pselectOne(
+                    $query,
+                    array('fileName' => $values["{$k}_lena"]['name'])
+                );
+
+                if ($fileAlreadyExists) {
+                    $errors["{$k}_chooser"] = "A file with name {$values["{$k}_lena"]['name']} "
+                                            . "has already been uploaded in the database. Please choose another one";
+                }
+            } // else
+        } // foreach
+
+        return $errors;
+    }
 	
 }
 ?>
