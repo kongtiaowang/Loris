@@ -524,7 +524,7 @@ class NDB_BVL_Instrument_LENA_LanguageSampleActivityLog extends NDB_BVL_Instrume
             //-------------------------------------------------------------------//
             // Check that there is no file in the media module with              //
             // the same name as the file. If there is a file with the sam        //
-            // but the file was uploaded through the EEG form for field $k, then //
+            // but the file was uploaded through the LENA form for field $k, then //
             // that's OK (counts as an update)                                   //
             //-------------------------------------------------------------------//
             $db           =& Database::singleton();
@@ -532,7 +532,7 @@ class NDB_BVL_Instrument_LENA_LanguageSampleActivityLog extends NDB_BVL_Instrume
                 "SELECT e.Date_Taken, m.ID FROM {$this->table} e LEFT JOIN media m ON (e.{$k}=m.file_name) WHERE e.CommentID=:CommentID",
                 array("CommentID" => $this->getCommentID())
             );
-            $eegDateTaken = $row['Date_Taken'];
+            $lenaDateTaken = $row['Date_Taken'];
             $mediaID      = $row['ID'];
 
             // Build insert query
@@ -543,7 +543,7 @@ class NDB_BVL_Instrument_LENA_LanguageSampleActivityLog extends NDB_BVL_Instrume
             $query = [
                       'session_id'  => $values["sessionID"],
                       'instrument'  => $values["test_name"],
-                      'date_taken'  => $eegDateTaken,
+                      'date_taken'  => $lenaDateTaken,
                       'file_name'   => $files["{$k}_lena"]["name"],
                       'file_type'   => $_FILES["{$k}_lena"]["type"],
                       'data_dir'    => $mediaPath,
@@ -564,7 +564,7 @@ class NDB_BVL_Instrument_LENA_LanguageSampleActivityLog extends NDB_BVL_Instrume
                         $db->insert('media', $query);
                     }
 
-                    // Update field $k in the EEG table for the current record
+                    // Update field $k in the LENA table for the current record
                     // Note that this was not done by parent::_saveValues since $k
                     // was defined as a "score" (i.e not submitted by the POST)
                     $db->update(
