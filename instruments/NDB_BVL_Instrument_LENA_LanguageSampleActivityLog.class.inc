@@ -105,7 +105,7 @@ class NDB_BVL_Instrument_LENA_LanguageSampleActivityLog extends NDB_BVL_Instrume
 
         //Defines the call back function for HTML Quickform to use when validating the form.
         $this->form->addFormRule(array(&$this, 'XINValidate'));
-        $this->form->addFormRule(array(&$this, 'eeg_rules'));
+        $this->form->addFormRule(array(&$this, 'lena_rules'));
     }
 
     /**
@@ -701,7 +701,7 @@ class NDB_BVL_Instrument_LENA_LanguageSampleActivityLog extends NDB_BVL_Instrume
         return $errors;
 	}
 
-	function eeg_rules($values)
+	function lena_rules($values)
     {
                 //--------------------------------------------------------------------//
         // Validate that there are no duplicates in the set of files chosen   //
