@@ -47,6 +47,19 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
                 'emptyOptionValue' => null);
 
 
+	var $fidelity = array(
+                    null                        => "",
+                    "not_administered"          => "Not administered",
+                    "one_communication_probe"   => "One Communication Probe",
+                    "two_communication_probes"  => "Two Communication Probes",
+                    "toys_in_a_bag"             => "Toys in a Bag",
+        );
+
+        var $yesOrNo = array(
+                null    =>"",
+                "yes"   =>"Yes",
+                "no"    =>"No",
+        );
     /**
     * sets up basic data, such as the LorisForm object, and so on.
     *
@@ -75,7 +88,12 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
 
         //The array of selects with multiple answers allowed
         //Any LorisForm multiple selects must be listed here
-        $this->selectMultipleElements = array();
+	$this->selectMultipleElements = array(
+				"pg3_fidelity_wind_up_toy",
+				"pg3_fidelity_balloon",
+				"pg3_fidelity_bubbles",
+				"pg3_fidelity_jar",
+			);
 
         // required fields for data entry completion status
         $this->_requiredElements = array('Examiner', "q_4_rate_of_communicating_1", "q_20_stacks_tower");
@@ -233,6 +251,13 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
 
         // automatically adds examiner & date of administration
         $this->_addMetadataFields();
+
+	$this->form->addElement("static", null, "<br/>");
+
+	$this->form->addElement('file', 'csbs_file', 'Upload the .csv file
+        <br><h6><i>(Ex: Filename should be PSCID_DCCID_visitlabel_CSBS.csv)</i></h6>');
+        $this->XINRegisterRule("csbs_file", array("csbs_file{@}=={@}NEVER_REQUIRED"));
+        $this->form->addElement('static', "File_name", "Uploaded File");
 
         $this->form->addElement("static", null, "<br/>");
 
@@ -1579,6 +1604,129 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
         unset($group);
 
         $this->form->addFormRule(array($this,'validatePage2'));
+    }
+
+    function _page3(){
+
+        $this->addHeader("ADMINISTRATION FIDELITY");
+        $this->form->addElement('static',null,"Were the following sampling opportunities completed?");
+        $this->form->addElement('select',"pg3_fidelity_wind_up_toy","Wind-up toy",$this->fidelity,["multiple"]);
+        $this->form->addElement('select',"pg3_fidelity_balloon","Balloon",$this->fidelity,["multiple"]);
+        $this->form->addElement('select',"pg3_fidelity_bubbles","Bubbles",$this->fidelity,["multiple"]);
+        $this->form->addElement('select',"pg3_fidelity_jar","Jar",$this->fidelity,["multiple"]);
+
+        $fidelity_sec2 = array(
+                    null                    => "",
+                    "not_administered"      => "Not Administered",
+                    "one_book"              => "One book",
+                    "two_books"             => "Two books",
+        );
+
+        $this->form->addElement('static',null,"Were the following sampling opportunities administered?");
+        $this->form->addElement('select',"pg3_fidelity_books","Books",$fidelity_sec2);
+        $this->form->addElement('select',"pg3_fidelity_play","Play",$fidelity_sec2);
+        $this->form->addElement('select',"pg3_fidelity_blocks","Blocks",$fidelity_sec2);
+
+        $this->form->addElement('select',"pg3_fidelity_if_blocks_was_administered","If blocks was administered, was the child given a constructive play probe?",$this->yesOrNo);
+        $this->form->addElement('select',"pg3_fidelity_how_many_gaze","How many gaze following prompts was the child provided?",array(null,"0","1","2"));
+        $this->form->addElement('select',"pg3_fidelity_child_given_for_object_names","How many comprehension probes was the child given for object names?",array(null,"0","1","2","3","4"));
+        $this->form->addElement('select',"pg3_fidelity_if_the_child_was_only_given","If the child was only given 2 comprehension probes for object names,did the child respond incorrectly to the first two probes?",$this->yesOrNo);
+        $this->form->addElement('select',"pg3_fidelity_child_was_given_3_comprehension","If the child was only given 3 comprehension probes for
+        object names, did the child respond correctly to all three probes?",$this->yesOrNo);
+        $this->form->addElement('select',"pg3_fidelity_how_many_comprehension_probes","How many comprehension probes was the child given for person names?",array(null,"0","1","2","3"));
+        $this->form->addElement('select',"pg3_fidelity_child_given_2_comprehension","If the child was only given 2 comprehension probes for
+        person names, did the child respond incorrectly to the first two probes?",$this->yesOrNo);
+        $this->form->addElement('select',"pg3_fidelity_child_respond_correctly","If the child was only given 2 comprehension probes for
+        person names, did the child respond correctly to the first two probes?",$this->yesOrNo);
+        $this->form->addElement('select',"pg3_fidelity_child_given_for_body_parts","How many comprehension probes was the child given for body parts?",array(null,"0","1","2","3","4"));
+        $this->form->addElement('select',"pg3_fidelity_child_respond_incorrectly","If the child was only given 2 comprehension probes for
+        body part names, did the child respond incorrectly to the first two probes",$this->yesOrNo);
+        $this->form->addElement('select',"pg3_child_respond_correctly_to_all_three_probes","If the child was only given 3 comprehension probes for
+        body part names, did the child respond correctly to all three probes?",$this->yesOrNo);
+        $this->form->addElement("textarea", "pg3_additional_notes_on_administration_fidelity", "Additional notes on administration fidelity", array('cols'=>25, 'rows'=>4));
+
+        $this->addHeader("VIDEO FIDELITY");
+        $this->form->addElement('select',"pg3_was_the_child_visible_throughout","Was the child visible throughout administration?",$this->yesOrNo);
+        $this->form->addElement('select',"pg3_was_the_parent_visible_throughout","Was the parent visible throughout administration?",$this->yesOrNo);
+        $this->form->addElement('select',"pg3_was_the_examiner_visible_throughout","Was the examiner visible throughout administration?",$this->yesOrNo);
+        $this->form->addElement('select',"pg3_were_the_audio_and_video_streams","Were the audio and video streams in sync?",$this->yesOrNo);
+        $this->form->addElement('select',"pg3_were_the_examiner_and_child_audible","Were the examiner and child audible throughout the video?",$this->yesOrNo);
+        $this->form->addElement("textarea", "pg3_if_no_for_any_of_the_above", "If 'No for any of the above please provide details on video quality here", array('cols'=>25, 'rows'=>4));
+
+    }
+
+    function _saveValues(array $values): void
+    {
+
+        //----------------------------------------------------------//
+        // *_chooser fields are always posted but do not exist in   //
+        // the DB. Save their values in $files and unset these      //
+        // otherwise parent::_saveValues will crash                 //
+        //----------------------------------------------------------//
+	      if ($this->page == '') {
+	    	$files["csbs_file"] = $values["csbs_file"];
+		unset($values["csbs_file"]);
+	//	$values["File_name"] = $values["csbs_file"];
+	      }
+
+        $session   = $this->getSessionID();
+        $timepoint = \TimePoint::singleton($session);
+        $candidate = \Candidate::singleton($timepoint->getCandID());
+
+        parent::_saveValues($values);
+             //-------------------------------------------------------------------//
+            // Check that there is no file in the media module with              //
+            // the same name as the file. If there is a file with the sam        //
+            // but the file was uploaded through the CSBS form for field $k, then //
+            // that's OK (counts as an update)                                   //
+            //-------------------------------------------------------------------//
+
+	    $db           =& Database::singleton();
+            $row          = $db->pselectRow(
+                "SELECT e.Date_Taken, m.ID FROM {$this->table} e LEFT JOIN media m ON (e.File_name=m.file_name) WHERE e.CommentID=:CommentID",
+                array("CommentID" => $this->getCommentID())
+            );
+
+            $csbsDateTaken = $row['Date_Taken'];
+            $mediaID      = $row['ID'];
+
+            // Build insert query
+            $config    = NDB_Config::singleton();
+            $mediaPath = $config->getSetting('mediaPath');
+            $user      =& User::singleton();
+
+            $query = [
+                      'session_id'  => $values["sessionID"],
+                      'instrument'  => $values["test_name"],
+                      'date_taken'  => $csbsDateTaken,
+                      'file_name'   => $files["csbs_file"]["name"],
+                      'file_type'   => $_FILES["csbs_file"]["type"],
+                      'data_dir'    => $mediaPath,
+                      'uploaded_by' => $user->getData('UserID'),
+                     ];
+
+            //-----------------------------------------------------------//
+            // Try to move the file from the tmp upload directory to the //
+            // media module upload directory                             //
+            //-----------------------------------------------------------//
+            if (move_uploaded_file($files["csbs_file"]["tmp_name"], $mediaPath . $files["csbs_file"]['name'])) {
+                try {
+                    // File alread exists in media module: update
+                    if (!is_null($mediaID)) {
+                        $db->update('media', $query, array('ID' => $mediaID));
+                        // File does not exist in media module: insert new
+                    } else {
+                        $db->insert('media', $query);
+		    }
+		    $db->update(
+                        $this->table,
+                        array("File_name" =>$files["csbs_file"]["name"]),
+                        array('CommentID' => $this->getCommentID())
+                	);
+                } catch (DatabaseException $e) {
+                    print_r($e);
+                }
+            } // if move_upload
     }
 
     function _countChecked($record, $genericLabel, array $suffixes, bool $checkActivityAdministration = true) {
