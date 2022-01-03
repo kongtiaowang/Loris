@@ -255,7 +255,7 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
 	$this->form->addElement("static", null, "<br/>");
 
 	$this->form->addElement('file', 'csbs_file', 'Upload the .csv file
-        <br><h6><i>(Ex: Filename should be PSCID_DCCID_visitlabel_CSBS.csv)</i></h6>');
+        <br><h6><i>(Ex: Filename should be PSCID_DCCID_visitlabel_CSBS)</i></h6>');
         $this->XINRegisterRule("csbs_file", array("csbs_file{@}=={@}NEVER_REQUIRED"));
         $this->form->addElement('static', "File_name", "Uploaded File");
 
