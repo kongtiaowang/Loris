@@ -995,17 +995,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
     );
 	$this->addNumericElement("start_hr","Start HR");
 	 $this->addNumericElement("end_hr", "End HR");
-	 $this->form->addElement("advcheckbox", 'did_not_collect_this_data', 'Did not collect this data.', null, null,array("0", "1"));
-	 $this->XINRegisterRule(
-            "start_hr",
-            array("did_not_collect_this_data{@}!={@}1"),
-            "Required. check this box if data are not collected"
-    );
-	    $this->XINRegisterRule(
-            "end_hr",
-            array("did_not_collect_this_data{@}!={@}1"),
-            "Required. check this box if data are not collected"
-    );
+	 
          $this->form->addElement("text", "captured_cycle", "Captured cycle (ms):");
          $this->form->addElement("text", "acquisition_window", "Acquisition window (ms):");
 
@@ -1021,7 +1011,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
 	$this->XINRegisterRule(
             "mri_parameter_file",
             array("cardiac_log_not_acquired{@}!={@}1"),
-            "Required. check this box if no file to upload"
+            "Required. check Cardiac log not acquired box"
     );
          $this->form->addElement("textarea", "page6_comment", "Comments:", array('cols'=>25, 'rows'=>4));
          $this->XINRegisterRule("page6_comment", array("page6_comment{@}=={@}NEVER_REQUIRED"));
