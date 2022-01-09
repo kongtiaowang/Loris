@@ -1,0 +1,15 @@
+ALTER TABLE mri_parameter_ep ADD  `time_entered_room_1` varchar(100) default NULL;
+ALTER TABLE mri_parameter_ep ADD  `time_entered_room_2` varchar(100) default NULL;
+ALTER TABLE mri_parameter_ep ADD  `time_entered_room_3` varchar(100) default NULL;
+ALTER TABLE mri_parameter_ep ADD  `time_entered_room_4` varchar(100) default NULL;
+ALTER TABLE mri_parameter_ep ADD `start_hr` varchar(100) default NULL;
+ALTER TABLE mri_parameter_ep ADD `end_hr` varchar(100) default NULL;
+ALTER TABLE mri_parameter_ep ADD `did_not_collect_this_data` varchar(100) default NULL;
+ALTER TABLE mri_parameter_ep ADD `mri_parameter_file` varchar(100) default NULL;
+ALTER TABLE mri_parameter_ep ADD `File_name` varchar(100) default NULL;
+ALTER TABLE mri_parameter_ep ADD `cardiac_log_not_acquired` varchar(100) default NULL;
+ALTER TABLE mri_parameter_ep ADD `start_hr_status` varchar(100) default NULL;
+ALTER TABLE mri_parameter_ep ADD `end_hr_status` varchar(100) default NULL;
+ALTER TABLE mri_parameter_ep ADD `Status` varchar(100) default NULL;
+ALTER TABLE mri_parameter_ep ADD `File_type` varchar(100) default NULL;
+ALTER TABLE mri_parameter_ep ADD `Data_dir` varchar(100) default NULL;
