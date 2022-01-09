@@ -32,15 +32,15 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
      */
 
     /**
-    * Sets up basic data, such as the HTML_Quickform object, and so on.
-    *
-    * @param string $commentID the CommentID identifying the data to load
-    * @param string $page      if a multipage form, the page to show
-    *
-    * @return void
-    * @access public
-    */
-    function setup(?string $commentID = NULL, ?string $page = NULL): void
+     * Sets up basic data, such as the HTML_Quickform object, and so on.
+     *
+     * @param string $commentID the CommentID identifying the data to load
+     * @param string $page      if a multipage form, the page to show
+     *
+     * @return void
+     * @access public
+     */
+    function setup(?string $commentID = null, ?string $page = null): void
     {
         $this->formType = "XIN";
         $this->form     = new LorisForm('test_form');
@@ -55,10 +55,10 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
         //The array of dates/timestamps to convert to database dates/timestamps
         //Any HTML_Quickform date elements must be listed here
         $this->dateTimeFields = array(
-                                 "Date_taken",
-                                 "date_today",
-                                 "adult_birthdate",
-                                );
+            "Date_taken",
+            "date_today",
+            "adult_birthdate",
+        );
 
         //The array of selects with multiple answers allowed
         //Any HTML_Quickform multiple selects must be listed here
@@ -66,13 +66,13 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
 
         // required fields for data entry completion status
         $this->_requiredElements = array(
-                                    'first_name',
-                                    'user_handicap',
-                                    '1_is_too_forgetful',
-                                    '37_gets_in_many_fights',
-                                    '63_would_rather_be_with_older_people',
-                                    '93_walks_too_much',
-                                   );
+            'first_name',
+            'user_handicap',
+            '1_is_too_forgetful',
+            '37_gets_in_many_fights',
+            '63_would_rather_be_with_older_people',
+            '93_walks_too_much',
+        );
 
         // setup the form
         $this->_setupForm();
@@ -82,11 +82,11 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
     //If the instrument is not paged, remove the switch from the _setupForm method and add all the form Elements in this function.
 
     /**
-    * Method to build the HTML_Quickform object into a paged form
-    *
-    * @return void
-    * @access private
-    */
+     * Method to build the HTML_Quickform object into a paged form
+     *
+     * @return void
+     * @access private
+     */
     function _setupForm()
     {
         if (preg_match("/ABCL(_page[0-9]+)/", $this->page, $matches)) {
@@ -99,11 +99,11 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
     }
 
     /**
-    * Generates the main page of the form.
-    *
-    * @return void
-    * @access private
-    */
+     * Generates the main page of the form.
+     *
+     * @return void
+     * @access private
+     */
     function _main()
     {
         // display test name
@@ -111,12 +111,12 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
 
         $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
         $opts = array(
-            null              => "",
-            "mother"             => "Mother",
-            "father"             => "Father",
-            "step_mother"        => "Step Mother",
-            "step_father"        => "Step Father",
-            "other"             => "Other",
+            null          => "",
+            "mother"      => "Mother",
+            "father"      => "Father",
+            "step_mother" => "Step Mother",
+            "step_father" => "Step Father",
+            "other"       => "Other",
         );
         $this->addSelect("relationship_to_child", "What is your relationship to the child?", $opts);
         $this->addBasicText("other_relationship_to_child", $this->indent."If Other, please describe:");
@@ -129,21 +129,21 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
     }
 
     /**
-    * Generates the first page of the form.
-    *
-    * @return void
-    */
+     * Generates the first page of the form.
+     *
+     * @return void
+     */
     function _page1()
     {
         $this->addHeader("ABCL (Adult Behavior Checklist For Ages 18-59)");
 
         //Adult's Gender
         $gender_options = array(
-                           null     => "",
-                           "male"   => "Male",
-                           "female" => "Female",
-                           "other"  => "Other"
-                          );
+            null     => "",
+            "male"   => "Male",
+            "female" => "Female",
+            "other"  => "Other"
+        );
 
         $this->addSelect("adults_gender", "ADULT'S SEX", $gender_options);
 
@@ -157,18 +157,18 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
 
         //Highest Education
         $opts = array(
-                 null    => "",
-                 "1"     => "1. No high school diploma and no GED",
-                 "2"     => "2. General Equivalency Diploma (GED)",
-                 "3"     => "3. High school graduate",
-                 "4"     => "4. Some college but no college degree",
-                 "5"     => "5. Associate’s Degree",
-                 "6"     => "6. Bachelor’s or RN Degree",
-                 "7"     => "7. Some graduate school but no graduate degree",
-                 "8"     => "8. Master’s Degree",
-                 "9"     => "9. Doctoral or Law degree",
-                 "other" => "Other education (specify)",
-                );
+            null    => "",
+            "1"     => "1. No high school diploma and no GED",
+            "2"     => "2. General Equivalency Diploma (GED)",
+            "3"     => "3. High school graduate",
+            "4"     => "4. Some college but no college degree",
+            "5"     => "5. Associate’s Degree",
+            "6"     => "6. Bachelor’s or RN Degree",
+            "7"     => "7. Some graduate school but no graduate degree",
+            "8"     => "8. Master’s Degree",
+            "9"     => "9. Doctoral or Law degree",
+            "other" => "Other education (specify)",
+        );
 
         $this->addSelect("user_education", "PLEASE CHECK ADULT'S HIGHEST EDUCATION", $opts);
 
@@ -188,11 +188,11 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
 
         //Your relationship to Adult
         $relationship_options = array(
-                                 null      => "",
-                                 "spouse"  => "Spouse",
-                                 "partner" => "Partner",
-                                 "other"   => "Other (specify)",
-                                );
+            null      => "",
+            "spouse"  => "Spouse",
+            "partner" => "Partner",
+            "other"   => "Other (specify)",
+        );
 
         $this->addSelect("relationship_to_adult", "Your relationship to adult:", $relationship_options);
 
@@ -212,28 +212,28 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
         $this->addHeader("I. FRIENDS");
 
         $friends_options_1 = array(
-                              null   => "",
-                              "none" => "None",
-                              "1"    => "1",
-                              "2"    => "2 or 3",
-                              "3"    => "4 or more",
-                             );
+            null   => "",
+            "none" => "None",
+            "1"    => "1",
+            "2"    => "2 or 3",
+            "3"    => "4 or more",
+        );
 
         $friends_options_2 = array(
-                              null => "",
-                              "0"  => "Less than 1",
-                              "1"  => "1 or 2",
-                              "2"  => "3 or 4",
-                              "3"  => "5 or more",
-                             );
+            null => "",
+            "0"  => "Less than 1",
+            "1"  => "1 or 2",
+            "2"  => "3 or 4",
+            "3"  => "5 or more",
+        );
 
         $friends_options_3 = array(
-                              null            => "",
-                              "not_well"      => "Not well",
-                              "average"       => "Average",
-                              "above_average" => "Above average",
-                              "far_above"     => "Far above average",
-                             );
+            null            => "",
+            "not_well"      => "Not well",
+            "average"       => "Average",
+            "above_average" => "Above average",
+            "far_above"     => "Far above average",
+        );
 
         $this->addSelect("a_how_many_close_friends", "A. About how many close friends does he/she have? (Do not include family members.)", $friends_options_1);
 
@@ -256,14 +256,14 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
 
         //marital status
         $marital_status_opts = array(
-                                null        => "",
-                                "never"     => "Never been married",
-                                "living"    => "Married, living with spouse",
-                                "widowed"   => "Widowed",
-                                "separated" => "Married but separated from spouse",
-                                "divorced"  => "Divorced",
-                                "other"     => "Other- please describe",
-                               );
+            null        => "",
+            "never"     => "Never been married",
+            "living"    => "Married, living with spouse",
+            "widowed"   => "Widowed",
+            "separated" => "Married but separated from spouse",
+            "divorced"  => "Divorced",
+            "other"     => "Other- please describe",
+        );
 
         $this->addSelect("marital_status_user", "What is his/her marital status?", $marital_status_opts);
 
@@ -277,10 +277,10 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
 
         //Did they live with partner?
         $yes_no_opts = array(
-                        null  => "",
-                        "no"  => "No",
-                        "yes" => "Yes",
-                       );
+            null  => "",
+            "no"  => "No",
+            "yes" => "Yes",
+        );
 
         //if yes, answer following questions
         //if no, skip following questions
@@ -292,11 +292,11 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
         );
 
         $options = array(
-                    null => "",
-                    "2"  => "2-Very True or Often True",
-                    "1"  => "1-Somewhat or Sometimes True",
-                    "0"  => "0-Not True (as far as you know)",
-                   );
+            null => "",
+            "2"  => "2-Very True or Often True",
+            "1"  => "1-Somewhat or Sometimes True",
+            "0"  => "0-Not True (as far as you know)",
+        );
 
         $this->addSelect("a_gets_along_well_with_partner", "A. Gets along well with spouse or partner", $options);
 
@@ -373,10 +373,10 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
     }
 
     /**
-    * Generates the second page of the form.
-    *
-    * @return void
-    */
+     * Generates the second page of the form.
+     *
+     * @return void
+     */
     function _page2()
     {
 
@@ -384,10 +384,10 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
 
         //III. Does he/she have any illness, disability, or handicap?
         $opts = array(
-                 null  => "",
-                 "no"  => "No",
-                 "yes" => "Yes-please describe",
-                );
+            null  => "",
+            "no"  => "No",
+            "yes" => "Yes-please describe",
+        );
 
         $this->addSelect("user_handicap", "<h4>III. Does he/she have any illness, disability, or handicap?</h4>", $opts);
 
@@ -401,10 +401,10 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
 
         //IV. Please describe any concerns you have about him/her:
         $concerns_options = array(
-                             null  => "",
-                             "no"  => "No concerns",
-                             "yes" => "Yes-please describe",
-                            );
+            null  => "",
+            "no"  => "No concerns",
+            "yes" => "Yes-please describe",
+        );
 
         $this->addSelect("user_concerns", "<h4>IV. Please describe any concerns you have about him/her:</h4>", $concerns_options);
 
@@ -429,10 +429,10 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
     }
 
     /**
-    * Generates the third page of the form.
-    *
-    * @return void
-    */
+     * Generates the third page of the form.
+     *
+     * @return void
+     */
     function _page3()
     {
         $this->addHeader("ABCL (Adult Behavior Checklist For Ages 18-59)");
@@ -440,11 +440,11 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
         $this->addLabel("<h3>VI. Below is a list of items that describe people. As you read each item, please decide whether it has been true of the adult <i>over the past 6 months</i>. Then choose <i>0, 1,</i> or <i>2</i> to describe the adult. Please answer all items as well as you can, even if some do not seem to apply to the adult.</h3>");
 
         $options = array(
-                    null => "",
-                    "2"  => "2-Very True or Often True",
-                    "1"  => "1-Somewhat or Sometimes True",
-                    "0"  => "0-Not True (as far as you know)",
-                   );
+            null => "",
+            "2"  => "2-Very True or Often True",
+            "1"  => "1-Somewhat or Sometimes True",
+            "0"  => "0-Not True (as far as you know)",
+        );
 
         $this->addSelect("1_is_too_forgetful", "1. Is too forgetful", $options);
 
@@ -547,20 +547,20 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
 
 
     /**
-    * Generates the fourth page of the form.
-    *
-    * @return void
-    */
+     * Generates the fourth page of the form.
+     *
+     * @return void
+     */
     function _page4()
     {
         $this->addHeader("ABCL (Adult Behavior Checklist For Ages 18-59)");
 
         $options = array(
-                    null => "",
-                    "2"  => "2-Very True or Often True",
-                    "1"  => "1-Somewhat or Sometimes True",
-                    "0"  => "0-Not True (as far as you know)",
-                   );
+            null => "",
+            "2"  => "2-Very True or Often True",
+            "1"  => "1-Somewhat or Sometimes True",
+            "0"  => "0-Not True (as far as you know)",
+        );
 
         $this->addSelect("37_gets_in_many_fights", "37. Gets in many fights", $options);
 
@@ -664,20 +664,20 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
     }
 
     /**
-    * Generates the fifth page of the form.
-    *
-    * @return void
-    */
+     * Generates the fifth page of the form.
+     *
+     * @return void
+     */
     function _page5()
     {
         $this->addHeader("ABCL (Adult Behavior Checklist For Ages 18-59)");
 
         $options = array(
-                    null => "",
-                    "2"  => "2-Very True or Often True",
-                    "1"  => "1-Somewhat or Sometimes True",
-                    "0"  => "0-Not True (as far as you know)",
-                   );
+            null => "",
+            "2"  => "2-Very True or Often True",
+            "1"  => "1-Somewhat or Sometimes True",
+            "0"  => "0-Not True (as far as you know)",
+        );
 
         $this->addSelect("63_would_rather_be_with_older_people", "63. Would rather be with older people than with people of own age", $options);
 
@@ -799,20 +799,20 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
     }
 
     /**
-    * Generates the sixth page of the form.
-    *
-    * @return void
-    */
+     * Generates the sixth page of the form.
+     *
+     * @return void
+     */
     function _page6()
     {
         $this->addHeader("ABCL (Adult Behavior Checklist For Ages 18-59)");
 
         $options = array(
-                    null => "",
-                    "2"  => "2-Very True or Often True",
-                    "1"  => "1-Somewhat or Sometimes True",
-                    "0"  => "0-Not True (as far as you know)",
-                   );
+            null => "",
+            "2"  => "2-Very True or Often True",
+            "1"  => "1-Somewhat or Sometimes True",
+            "0"  => "0-Not True (as far as you know)",
+        );
 
         $this->addSelect("93_walks_too_much", "93. Talks too much", $options);
 
@@ -908,15 +908,15 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
             }
 
             $blank_restricted_spouse_array = array(
-                                              'a_gets_along_well_with_partner',
-                                              'b_trouble_sharing_responsibilities',
-                                              'c_seems_satisfied_with_spouse_or_partner',
-                                              'd_enjoys_similar_activities_as_partner',
-                                              'e_disagrees_with_partner_about_living_arrangements',
-                                              'g_likes_friends_of_partner',
-                                              'f_has_trouble_with_family_of_partner',
-                                              'h_annoyed_by_behavior_of_spouse',
-                                             );
+                'a_gets_along_well_with_partner',
+                'b_trouble_sharing_responsibilities',
+                'c_seems_satisfied_with_spouse_or_partner',
+                'd_enjoys_similar_activities_as_partner',
+                'e_disagrees_with_partner_about_living_arrangements',
+                'g_likes_friends_of_partner',
+                'f_has_trouble_with_family_of_partner',
+                'h_annoyed_by_behavior_of_spouse',
+            );
 
             foreach ($blank_restricted_spouse_array as $value) {
                 if ($values['live_with_partner'] == 'no' && $values[$value] != "") {
@@ -940,9 +940,9 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
         //any page2 value is set
         if (isset($values['user_concerns'])) {
             $yes_restricted_array = array(
-                                     'user_concerns',
-                                     'user_handicap',
-                                    );
+                'user_concerns',
+                'user_handicap',
+            );
             foreach ($yes_restricted_array as $val) {
                 if ($values[$val] == 'no' && $values[$val . '_yes'] != "") {
                     $errors[$val . '_yes'] = "This field should be left blank OR change the response in the above question.";
@@ -953,11 +953,11 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
         //any page3 val is set
         if (isset($values['6_uses_drugs_for_nonmedical_purposes'])) {
             $blank_restricted_array_page3 = array(
-                                             '6_uses_drugs_for_nonmedical_purposes',
-                                             'user_handicap',
-                                             '9_cant_get_mind_off_certain_thoughts',
-                                             '29_fears_certain_animals_situations_places',
-                                            );
+                '6_uses_drugs_for_nonmedical_purposes',
+                'user_handicap',
+                '9_cant_get_mind_off_certain_thoughts',
+                '29_fears_certain_animals_situations_places',
+            );
             foreach ($blank_restricted_array_page3 as $val) {
                 $question_description_split = explode("_", $val);
                 $question_number            =$question_description_split[0];
@@ -970,11 +970,11 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
         //any page4 val is set
         if (isset($values['40_hears_sounds_or_voices'])) {
             $blank_restricted_array_page4 = array(
-                                             '40_hears_sounds_or_voices',
-                                             '46_nervous_movements',
-                                             'd_problems_witih_eyes',
-                                             '58_picks_skin_or_other_parts_of_body',
-                                            );
+                '40_hears_sounds_or_voices',
+                '46_nervous_movements',
+                'd_problems_witih_eyes',
+                '58_picks_skin_or_other_parts_of_body',
+            );
             foreach ($blank_restricted_array_page4 as $val) {
                 $question_description_split = explode("_", $val);
                 $question_number            =$question_description_split[0];
@@ -987,14 +987,14 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
         //any page5 val is set
         if (isset($values['66_repeats_certain_acts'])) {
             $blank_restricted_array_page5 = array(
-                                             '66_repeats_certain_acts',
-                                             '70_sees_things_that_are_not_there',
-                                             '77_sleeps_more_than_most_others',
-                                             '79_speech_problem',
-                                             '84_strange_behavior',
-                                             '85_strange_ideas',
-                                             '92_does_things_that_may_cause_trouble_with_law',
-                                            );
+                '66_repeats_certain_acts',
+                '70_sees_things_that_are_not_there',
+                '77_sleeps_more_than_most_others',
+                '79_speech_problem',
+                '84_strange_behavior',
+                '85_strange_ideas',
+                '92_does_things_that_may_cause_trouble_with_law',
+            );
 
             foreach ($blank_restricted_array_page5 as $val) {
                 $question_description_split = explode("_", $val);
@@ -1009,4 +1009,4 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
         return $errors;
     }
 }
-?>
+
