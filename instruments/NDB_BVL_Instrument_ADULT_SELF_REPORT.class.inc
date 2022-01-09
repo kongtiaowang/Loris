@@ -196,98 +196,99 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT extends NDB_BVL_Instrument
 
         $this->addSelect("1_A", "A. About how many close friends do you have? (Do not include family members)", $opts);
 
-          $opts2 = array(
-              null   => "",
-              "less" => "Less than 1",
-              "1"    => "1 or 2",
-              "3"    => "3 or 4",
-              "more" => "5 or more",
-          );
+        $opts2 = array(
+            null   => "",
+            "less" => "Less than 1",
+            "1"    => "1 or 2",
+            "3"    => "3 or 4",
+            "more" => "5 or more",
+        );
 
-          $this->addSelect("1_B", "B. About how many times a month do you have contact with any of your friends? (Include in-person contacts, phone, letters, e-mail.)", $opts2);
+        $this->addSelect("1_B", "B. About how many times a month do you have contact with any of your friends? (Include in-person contacts, phone, letters, e-mail.)", $opts2);
 
-          $opts = array(
-              null      => "",
-              "not"     => "Not as well as I'd like",
-              "average" => "Average",
-              "above"   => "Above average",
-              "far"     => "Far above average",
-          );
+        $opts = array(
+            null      => "",
+            "not"     => "Not as well as I'd like",
+            "average" => "Average",
+            "above"   => "Above average",
+            "far"     => "Far above average",
+        );
 
-          $this->addSelect("1_C", "C. How well do you get along with your close friends?", $opts);
+        $this->addSelect("1_C", "C. How well do you get along with your close friends?", $opts);
 
-          $this->addSelect("1_D", "D. About how many times a month do any friends or family visit you?", $opts2);
+        $this->addSelect("1_D", "D. About how many times a month do any friends or family visit you?", $opts2);
 
-          $this->addBasicTextArea("I_comments", "Additional comments (optional): ");
-          $this->XINRegisterRule(
+        $this->addBasicTextArea("I_comments", "Additional comments (optional): ");
+        $this->XINRegisterRule(
             "I_comments",
             array("I_comments{@}=={@}NEVER_REQUIRED")
         );
 
-          $this->addLabel("<h1><b>II. SPOUSE OR PARTNER </b></h1>");
+        $this->addLabel("<h1><b>II. SPOUSE OR PARTNER </b></h1>");
 
-          $opts = array(
-              null                => "",
-              "never"             => "Never been married",
-              "married_separated" => "Married but separated from spouse",
-              "married_together"  => "Married, living with spouse",
-              "divorced"          => "Divorced",
-              "widowed"           => "Widowed",
-              "other"             => "Other",
-          );
+        $opts = array(
+            null                => "",
+            "never"             => "Never been married",
+            "married_separated" => "Married but separated from spouse",
+            "married_together"  => "Married, living with spouse",
+            "divorced"          => "Divorced",
+            "widowed"           => "Widowed",
+            "other"             => "Other",
+        );
 
-          $this->addSelect("marital_state", "What is your marital status?", $opts);
-          $this->addBasicText("if_other_marital", "$this->indent If other -- please describe:<br><h5><i>$this->indent$this->indent(If you don't wish to answer enter NA)</i></h5>");
+        $this->addSelect("marital_state", "What is your marital status?", $opts);
+        $this->addBasicText("if_other_marital", "$this->indent If other -- please describe:<br><h5><i>$this->indent$this->indent(If you don't wish to answer enter NA)</i></h5>");
 
-          $this->XINRegisterRule(
+        $this->XINRegisterRule(
             "if_other_marital",
             array("marital_state{@}=={@}other"),
             "Required",
             "if_other_marital"
         );
-          $opts = array(
-              null  => "",
-              "no"  => "<b>No -- please skip to page 2 </b>",
-              "yes" => "<b>Yes </b> -- Answer items A-H to describe your relationship 
-                      <b><i>during the past 6 months </i><b>"
-          );
 
-          $this->addSelect(
+        $opts = array(
+            null  => "",
+            "no"  => "<b>No -- please skip to page 2 </b>",
+            "yes" => "<b>Yes </b> -- Answer items A-H to describe your relationship
+                      <b><i>during the past 6 months </i><b>"
+        );
+
+        $this->addSelect(
             "live_with_spouse",
-            "<b><i>At any time in the past 6 months,</i></b> did you live with your 
+            "<b><i>At any time in the past 6 months,</i></b> did you live with your
             spouse or with a partner? ",
             $opts
         );
 
-          $opts = array(
-              null            => "",
-              "not_true"      => "Not True",
-              "somewhat_true" => "Somewhat or Sometimes true",
-              "very_true"     => "Very True or Often True"
-          );
+        $opts = array(
+            null            => "",
+            "not_true"      => "Not True",
+            "somewhat_true" => "Somewhat or Sometimes true",
+            "very_true"     => "Very True or Often True"
+        );
 
-          $this->addSelect("spouse_A", "A. I get along well with my spouse or partner", $opts);
-          $this->XINRegisterRule(
+        $this->addSelect("spouse_A", "A. I get along well with my spouse or partner", $opts);
+        $this->XINRegisterRule(
             "spouse_A",
             array("live_with_spouse{@}=={@}yes"),
             "Required"
         );
 
-          $this->addSelect("spouse_B", "B. My spouse or partner and I have trouble sharing responsibilites", $opts);
+        $this->addSelect("spouse_B", "B. My spouse or partner and I have trouble sharing responsibilites", $opts);
         $this->XINRegisterRule(
             "spouse_B",
             array("live_with_spouse{@}=={@}yes"),
             "Required"
         );
 
-          $this->addSelect("spouse_C", "C. I feel satisfied with my spouse or partner", $opts);
+        $this->addSelect("spouse_C", "C. I feel satisfied with my spouse or partner", $opts);
         $this->XINRegisterRule(
             "spouse_C",
             array("live_with_spouse{@}=={@}yes"),
             "Required"
         );
 
-          $this->addSelect("spouse_D", "D. My spouse or partner and I enjoy similar activities", $opts);
+        $this->addSelect("spouse_D", "D. My spouse or partner and I enjoy similar activities", $opts);
         $this->XINRegisterRule(
             "spouse_D",
             array("live_with_spouse{@}=={@}yes"),
@@ -295,7 +296,7 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT extends NDB_BVL_Instrument
         );
         $this->addSelect(
             "spouse_E",
-            "E. My spouse or partner and I <i>disagree</i> about living arrangements, 
+            "E. My spouse or partner and I <i>disagree</i> about living arrangements,
             such as where we live",
             $opts
         );
@@ -304,34 +305,39 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT extends NDB_BVL_Instrument
             array("live_with_spouse{@}=={@}yes"),
             "Required"
         );
-          $this->addSelect("spouse_F", "F. I have trouble with my spouse or partner's family", $opts);
+        $this->addSelect("spouse_F", "F. I have trouble with my spouse or partner's family", $opts);
         $this->XINRegisterRule(
             "spouse_F",
             array("live_with_spouse{@}=={@}yes"),
             "Required"
         );
-          $this->addSelect("spouse_G", "G. I like my spouse or partner's friends", $opts);
+        $this->addSelect("spouse_G", "G. I like my spouse or partner's friends", $opts);
         $this->XINRegisterRule(
             "spouse_G",
             array("live_with_spouse{@}=={@}yes"),
             "Required"
         );
-          $this->addSelect("spouse_H", "H. My spouse or partner's behavior annoys me", $opts);
+        $this->addSelect("spouse_H", "H. My spouse or partner's behavior annoys me", $opts);
         $this->XINRegisterRule(
             "spouse_H",
             array("live_with_spouse{@}=={@}yes"),
             "Required"
         );
 
-          $this->addBasicTextArea("II_comments", "Additional Comments (optional): ");
+        $this->addBasicTextArea("II_comments", "Additional Comments (optional): ");
         $this->XINRegisterRule(
             "II_comments",
             array("II_comments{@}=={@}NEVER_REQUIRED")
         );
     }
+
+    /**
+     * Page 2
+     *
+     * @return void
+     */
     function _page2()
     {
-
         $this->addLabel("<h1>III. Family</h1>");
         $this->addLabel("<h3>Compared to others, how well do you: </h3>");
 
@@ -572,9 +578,14 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT extends NDB_BVL_Instrument
             array("V_comments{@}=={@}NEVER_REQUIRED")
         );
     }
+
+    /**
+     * Page 3
+     *
+     * @return void
+     */
     function _page3()
     {
-
         $this->addSelect("illness", "<b>VI. Do you have any illness, disability or handicap? </b>", array(null=> "", "no" => "No", "yes"=> "Yes"));
         $this->addBasicTextArea("illness_description", "If yes, please describe:<br><h5><i>(If you don't wish to answer enter NA)</i></h5>");
         $this->XINRegisterRule(
@@ -604,8 +615,13 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT extends NDB_BVL_Instrument
             "VI_VIII_comments",
             array("VI_VIII_comments{@}=={@}NEVER_REQUIRED")
         );
-
     }
+
+    /**
+     * Page 4
+     *
+     * @return void
+     */
     function _page4()
     {
         $this-> addLabel("<h2>IX. Below is a list of items that describe people. For each item please select \"Not True\", \"Somewhat or Sometimes True\", or \"Very True or Often True\" to describe yourself <i>over the past 6 months.</i> Please answer all items as well as you can, even if some do not seem to apply to you. </h2>");
@@ -645,7 +661,7 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT extends NDB_BVL_Instrument
             "very_true" => "Very True or Often True"
         );
 
-        for ($i = 0; $i<count($questions); $i++){
+        for ($i = 0; $i<count($questions); $i++) {
             //$this->addLabel("{$questions[$i]}");
             $n = $i +1;
             $this->addSelect("question_{$n}", "{$n}. {$questions[$i]}", $opts);
@@ -663,6 +679,12 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT extends NDB_BVL_Instrument
             }
         }
     }
+
+    /**
+     * Page 5
+     *
+     * @return void
+     */
     function _page5()
     {
         $this->addLabel("<h2>IX. Below is a list of items that describe people. For each item please select \"Not True\", \"Somewhat or Sometimes True\", or \"Very True or Often True\" to describe yourself <i>over the past 6 months.</i> Please answer all items as well as you can, even if some do not seem to apply to you. </h2>");
@@ -697,108 +719,118 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT extends NDB_BVL_Instrument
             "My mood swings between elation and depression",
         ];
 
-         $opts = array(null=> "",
-             "not_true"  => "Not True",
-             "sometimes" => "Somewhat or Sometimes True",
-             "very_true" => "Very True or Often True"
-         );
+        $opts = array(null=> "",
+            "not_true"  => "Not True",
+            "sometimes" => "Somewhat or Sometimes True",
+            "very_true" => "Very True or Often True"
+        );
 
-         for ($i = 0; $i<count($questions); $i++){
-             //$this->addLabel("{$questions[$i]}");
-             $n = $i +28;
-             $this->addSelect("question_{$n}", "{$n}. {$questions[$i]}", $opts);
+        for ($i = 0; $i<count($questions); $i++) {
+            //$this->addLabel("{$questions[$i]}");
+            $n = $i +28;
+            $this->addSelect("question_{$n}", "{$n}. {$questions[$i]}", $opts);
 
-             if (strpos($questions[$i], "(describe)") !== false) {
-                 //print_r("found it!");
-                 //die();
-                 $this->addBasicText("q_{$n}_description", "$this->indent Description:<br><h5><i>$this->indent$this->indent (Required if you answered true above. If you do not wish to answer enter NA)</i></h5>");
+            if (strpos($questions[$i], "(describe)") !== false) {
+                //print_r("found it!");
+                //die();
+                $this->addBasicText("q_{$n}_description", "$this->indent Description:<br><h5><i>$this->indent$this->indent (Required if you answered true above. If you do not wish to answer enter NA)</i></h5>");
                 $this->XINRegisterRule(
                     "q_{$n}_description",
                     array("question_{$n}{@}=={@}sometimes|very_true"),
                     "Required",
                     "q_{$n}_description"
                 );
-             }
-         }
+            }
+        }
     }
 
+    /**
+     * Page 6
+     *
+     * @return void
+     */
     function _page6()
     {
-              $this-> addLabel("<h2>IX. Below is a list of items that describe people. For each item please select \"Not True\", \"Somewhat or Sometimes True\", or \"Very True or Often True\" to describe yourself <i>over the past 6 months.</i> Please answer all items as well as you can, even if some do not seem to apply to you. </h2>");
-              $this-> addLabel("<h3>56. Physical problems <i><b>without known medical cause:</b></i></h3>");
-              $questions =[
-                  "a. Aches or pains (<i><b>not</b></i> stomach or headaches)",
-                  "b. Headaches",
-                  "c. Nausea, feel sick",
-                  "d. Problems with eyes (<i><b>not</b></i> if corrected by glasses) (describe)",
-                  "e. Rashes or other skin problems",
-                  "f. Stomachaches",
-                  "g. Vomiting, throwing up",
-                  "h. Heart pounding or racing",
-                  "i. Numbness or tingling in body parts"
-              ];
-               $opts     = array(null=> "",
-                   "not_true"  => "Not True",
-                   "sometimes" => "Somewhat or Sometimes True",
-                   "very_true" => "Very True or Often True"
-               );
-               for ($i = 0; $i<count($questions); $i++){
-                   //$this->addLabel("{$questions[$i]}");
-                   $n    = 56;
-                   $q_id = "{$n}_" . chr(ord('a')+$i);
-                   $this->addSelect("question_{$q_id}", "{$questions[$i]}", $opts);
+        $this-> addLabel("<h2>IX. Below is a list of items that describe people. For each item please select \"Not True\", \"Somewhat or Sometimes True\", or \"Very True or Often True\" to describe yourself <i>over the past 6 months.</i> Please answer all items as well as you can, even if some do not seem to apply to you. </h2>");
+        $this-> addLabel("<h3>56. Physical problems <i><b>without known medical cause:</b></i></h3>");
+        $questions =[
+            "a. Aches or pains (<i><b>not</b></i> stomach or headaches)",
+            "b. Headaches",
+            "c. Nausea, feel sick",
+            "d. Problems with eyes (<i><b>not</b></i> if corrected by glasses) (describe)",
+            "e. Rashes or other skin problems",
+            "f. Stomachaches",
+            "g. Vomiting, throwing up",
+            "h. Heart pounding or racing",
+            "i. Numbness or tingling in body parts"
+        ];
+        $opts      = array(null=> "",
+            "not_true"  => "Not True",
+            "sometimes" => "Somewhat or Sometimes True",
+            "very_true" => "Very True or Often True"
+        );
+        for ($i = 0; $i<count($questions); $i++) {
+            //$this->addLabel("{$questions[$i]}");
+            $n    = 56;
+            $q_id = "{$n}_" . chr(ord('a')+$i);
+            $this->addSelect("question_{$q_id}", "{$questions[$i]}", $opts);
 
-                   if (strpos($questions[$i], "(describe)") !== false) {
-                       //print_r("found it!");
-                       //die();
-                       $this->addBasicText("q_{$q_id}_description", "$this->indent Description:<br><h5><i>$this->indent$this->indent (Required if you answered true above. If you do not wish to answer enter NA)</i></h5> ");
-                    $this->XINRegisterRule(
-                        "q_{$q_id}_description",
-                        array("question_{$q_id}{@}=={@}sometimes|very_true"),
-                        "Required",
-                        "q_{$q_id}_description"
-                    );
-                   }
-               }
-               $questions =[
-                   "I physically attack people",
-                   "I pick my skin or other parts of my body (describe)",
-                   "I fail to finish the things I should do",
-                   "There is very little I enjoy",
-                   "My work performance is poor",
-                   "I am poorly coordinated or clumsy",
-                   "I would rather be with older people than with people of my own age",
-                   "I have trouble setting priorities",
-                   "I refuse to talk",
-                   "I repeat certain acts over and over (describe)",
-                   "I have trouble making or keeping friends",
-                   "I scream or yell a lot",
-                   "I am secretive or keep things to myself",
-                   "I see things that other people think aren't there (describe)",
-                   "I am self-conscious or easily embarrassed",
-                   "I worry about my family",
-                   "I meet my responsibilities to my family",
-                   "I show off or clown"
-               ];
-               for ($i = 0; $i<count($questions); $i++){
-                   //$this->addLabel("{$questions[$i]}");
-                   $n = $i+57;
-                   $this->addSelect("question_{$n}", "{$n}.  {$questions[$i]}", $opts);
+            if (strpos($questions[$i], "(describe)") !== false) {
+                //print_r("found it!");
+                //die();
+                $this->addBasicText("q_{$q_id}_description", "$this->indent Description:<br><h5><i>$this->indent$this->indent (Required if you answered true above. If you do not wish to answer enter NA)</i></h5> ");
+                $this->XINRegisterRule(
+                    "q_{$q_id}_description",
+                    array("question_{$q_id}{@}=={@}sometimes|very_true"),
+                    "Required",
+                    "q_{$q_id}_description"
+                );
+            }
+        }
+        $questions =[
+            "I physically attack people",
+            "I pick my skin or other parts of my body (describe)",
+            "I fail to finish the things I should do",
+            "There is very little I enjoy",
+            "My work performance is poor",
+            "I am poorly coordinated or clumsy",
+            "I would rather be with older people than with people of my own age",
+            "I have trouble setting priorities",
+            "I refuse to talk",
+            "I repeat certain acts over and over (describe)",
+            "I have trouble making or keeping friends",
+            "I scream or yell a lot",
+            "I am secretive or keep things to myself",
+            "I see things that other people think aren't there (describe)",
+            "I am self-conscious or easily embarrassed",
+            "I worry about my family",
+            "I meet my responsibilities to my family",
+            "I show off or clown"
+        ];
+        for ($i = 0; $i<count($questions); $i++) {
+            //$this->addLabel("{$questions[$i]}");
+            $n = $i+57;
+            $this->addSelect("question_{$n}", "{$n}.  {$questions[$i]}", $opts);
 
-                   if (strpos($questions[$i], "(describe)") !== false) {
-                       //print_r("found it!");
-                       //die();
-                       $this->addBasicText("q_{$n}_description", "$this->indent Description:<br><h5><i>$this->indent$this->indent (Required if you answered true above. If you do not wish to answer enter NA)</i></h5>");
-                    $this->XINRegisterRule(
-                        "q_{$n}_description",
-                        array("question_{$n}{@}=={@}sometimes|very_true"),
-                        "Required",
-                        "q_{$n}_description"
-                    );
-                   }
-               }
+            if (strpos($questions[$i], "(describe)") !== false) {
+                //print_r("found it!");
+                //die();
+                $this->addBasicText("q_{$n}_description", "$this->indent Description:<br><h5><i>$this->indent$this->indent (Required if you answered true above. If you do not wish to answer enter NA)</i></h5>");
+                $this->XINRegisterRule(
+                    "q_{$n}_description",
+                    array("question_{$n}{@}=={@}sometimes|very_true"),
+                    "Required",
+                    "q_{$n}_description"
+                );
+            }
+        }
     }
 
+    /**
+     * Page 7
+     *
+     * @return void
+     */
     function _page7()
     {
         $this-> addLabel("<h2>IX. Below is a list of items that describe people. For each item please select \"Not True\", \"Somewhat or Sometimes True\", or \"Very True or Often True\" to describe yourself <i>over the past 6 months.</i> Please answer all items as well as you can, even if some do not seem to apply to you. </h2>");
@@ -827,32 +859,36 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT extends NDB_BVL_Instrument
 
         ];
 
-               $opts = array(null=> "",
-                   "not_true"  => "Not True",
-                   "sometimes" => "Somewhat or Sometimes True",
-                   "very_true" => "Very True or Often True"
-               );
+        $opts = array(null=> "",
+            "not_true"  => "Not True",
+            "sometimes" => "Somewhat or Sometimes True",
+            "very_true" => "Very True or Often True"
+        );
 
-               for ($i = 0; $i<count($questions); $i++){
-                   //$this->addLabel("{$questions[$i]}");
-                   $n = 75 + $i;
-                   $this->addSelect("question_{$n}", "{$n}.  {$questions[$i]}", $opts);
+        for ($i = 0; $i<count($questions); $i++) {
+            //$this->addLabel("{$questions[$i]}");
+            $n = 75 + $i;
+            $this->addSelect("question_{$n}", "{$n}.  {$questions[$i]}", $opts);
 
-                   if (strpos($questions[$i], "(describe)") !== false) {
-                       //print_r("found it!");
-                       //die();
-                       $this->addBasicText("q_{$n}_description", "$this->indent Description:<br><h5><i>$this->indent$this->indent (Required if you answered true above. If you do not wish to answer enter NA)</i></h5>");
-                    $this->XINRegisterRule(
-                        "q_{$n}_description",
-                        array("question_{$n}{@}=={@}sometimes|very_true"),
-                        "Required",
-                        "q_{$n}_description"
-                    );
-                   }
-               }
-
+            if (strpos($questions[$i], "(describe)") !== false) {
+                //print_r("found it!");
+                //die();
+                $this->addBasicText("q_{$n}_description", "$this->indent Description:<br><h5><i>$this->indent$this->indent (Required if you answered true above. If you do not wish to answer enter NA)</i></h5>");
+                $this->XINRegisterRule(
+                    "q_{$n}_description",
+                    array("question_{$n}{@}=={@}sometimes|very_true"),
+                    "Required",
+                    "q_{$n}_description"
+                );
+            }
+        }
     }
 
+    /**
+     * Page 8
+     *
+     * @return void
+     */
     function _page8()
     {
         $this-> addLabel("<h2>IX. Below is a list of items that describe people. For each item please select \"Not True\", \"Somewhat or Sometimes True\", or \"Very True or Often True\" to describe yourself <i>over the past 6 months.</i> Please answer all items as well as you can, even if some do not seem to apply to you. </h2>");
@@ -886,12 +922,15 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT extends NDB_BVL_Instrument
             "I have trouble keeping a job",
             "I am a happy person"
         ];
-        $opts      = array(null=> "",
+
+        $opts = array(
+            null        => "",
             "not_true"  => "Not True",
             "sometimes" => "Somewhat or Sometimes True",
             "very_true" => "Very True or Often True"
         );
-        for ($i = 0; $i<count($questions); $i++){
+
+        for ($i = 0; $i<count($questions); $i++) {
             //$this->addLabel("{$questions[$i]}");
             $n = 96 + $i;
             $this->addSelect("question_{$n}", "{$n}.  {$questions[$i]}", $opts);
@@ -964,24 +1003,18 @@ class NDB_BVL_Instrument_ADULT_SELF_REPORT extends NDB_BVL_Instrument
      */
     function _isIntOrNa($values, $key, $min, $max)
     {
-        if(isset($values[$key])) {
+        if (isset($values[$key])) {
             $val = $values[$key];
-            if(preg_match('/\s*NA\s*$/', $val)) {
+            if (preg_match('/\s*NA\s*$/', $val)) {
                 return true;
             }
 
-            if(preg_match('/\s*\d+\s*$/', $val)) {
+            if (preg_match('/\s*\d+\s*$/', $val)) {
                 return $val >= $min && $val <= $max;
             }
 
             return false;
         }
-
         return false;
     }
-
 }
-
-
-
-
