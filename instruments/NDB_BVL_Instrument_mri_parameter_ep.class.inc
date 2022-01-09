@@ -1101,7 +1101,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
     }
 
     /**
-     * importFile imports the Actigraph Export file into the database.
+     * importFile imports the mri_parameter_ep file into the database.
      *
      * @param     object       $file    A reference to the file object (passed automatically by callFileHandler)
      * @param     assoc_array  $args    The arguments passed to the function they must be:
