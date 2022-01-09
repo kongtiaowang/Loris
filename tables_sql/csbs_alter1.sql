@@ -1,3 +1,4 @@
+INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('csbs','CSBS (Communication and Symbolic Behavior Scales)', "Fidelity", 3);
 ALTER TABLE csbs ADD pg3_fidelity_wind_up_toy varchar(100) default NULL;
 ALTER TABLE csbs ADD pg3_fidelity_balloon varchar(100) default NULL;
 ALTER TABLE csbs ADD pg3_fidelity_bubbles varchar(100) default NULL;
@@ -25,3 +26,6 @@ ALTER TABLE csbs ADD pg3_were_the_examiner_and_child_audible enum("yes","no") de
 ALTER TABLE csbs ADD pg3_if_no_for_any_of_the_above varchar(100) default NULL;
 ALTER TABLE csbs ADD csbs_file varchar(100) default NULL;
 ALTER TABLE csbs ADD `File_name` varchar(100) default NULL;
+ALTER TABLE csbs ADD `Status` varchar(100) default NULL;
+ALTER TABLE csbs ADD `File_type` varchar(100) default NULL;
+ALTER TABLE csbs ADD `Data_dir` varchar(100) default NULL;
