@@ -1020,7 +1020,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
 	$this->form->addElement("advcheckbox", 'cardiac_log_not_acquired', 'Cardiac log not acquired', null, null,array("0", "1"));
 	$this->XINRegisterRule(
             "mri_parameter_file",
-            array("cardiac_log_not_acquired{@}!={@}1),
+            array("cardiac_log_not_acquired{@}!={@}1"),
             "Required. check this box if no file to upload"
     );
          $this->form->addElement("textarea", "page6_comment", "Comments:", array('cols'=>25, 'rows'=>4));
