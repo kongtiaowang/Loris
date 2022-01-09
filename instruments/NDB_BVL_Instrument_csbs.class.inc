@@ -1655,79 +1655,179 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
 
     }
 
-    function _saveValues(array $values): void
+   function _saveValues(array $values): void
     {
+        $timepoint =& TimePoint::singleton($this->getSessionID());
+        $candidate =& Candidate::singleton($timepoint->getCandID());
 
-        //----------------------------------------------------------//
-        // *_chooser fields are always posted but do not exist in   //
-        // the DB. Save their values in $files and unset these      //
-        // otherwise parent::_saveValues will crash                 //
-        //----------------------------------------------------------//
-	      if ($this->page == '') {
-	    	$files["csbs_file"] = $values["csbs_file"];
-		unset($values["csbs_file"]);
-	//	$values["File_name"] = $values["csbs_file"];
-	      }
+        if(isset($values['Date_taken'])) {
+            $this->_saveCandidateAge($values);
+        }
 
-        $session   = $this->getSessionID();
-        $timepoint = \TimePoint::singleton($session);
-        $candidate = \Candidate::singleton($timepoint->getCandID());
+        require_once "File_Upload.class.inc";
+        $file=new File_Upload;
 
-        parent::_saveValues($values);
-             //-------------------------------------------------------------------//
-            // Check that there is no file in the media module with              //
-            // the same name as the file. If there is a file with the sam        //
-            // but the file was uploaded through the CSBS form for field $k, then //
-            // that's OK (counts as an update)                                   //
-            //-------------------------------------------------------------------//
+        //pass the existing form ($form) by reference to File_Upload, and register the file_upload field names being used.
+        $file->registerForm($this->form);
 
-	    $db           =& Database::singleton();
-            $row          = $db->pselectRow(
+        //Tell File_Upload what file handlers to use.
+        $file->setFileHandler("csbs_file", $this);
+
+        // The uploaded file will go into the directory where all media files go
+        $config = NDB_Config::singleton();
+        $dir = $config->getSetting("mediaPath");
+        $file->setBaseUploadDirectory($dir);
+
+        //set the the IDs to the handler functions.
+        $user =& User::singleton();
+        $file->setHandlerArgs(
+            [
+              "CommentID"  => $this->getCommentID(),
+              "candID"     => $candidate->getCandID(),
+              "PSCID"      => $candidate->getPSCID(),
+              "visitLabel" => $timepoint->getVisitLabel(),
+              "username"   => $user->getUsername(),
+              "values"     => $values
+            ]
+        );
+
+        //If the form is validated, call File_Upload::processFiles() which loops through the files and
+        //proccesses them (including verify, move, and import steps)
+        if ($values['csbs_file']['name'] != false) {
+            $file->processFiles();
+        }
+
+        //echo error messages
+        if(!empty($file->errorLog)){
+            while(list($fileType,$fileErrors)=each($file->errorLog)){
+                foreach($fileErrors AS $error){
+                    echo "UPLOAD ERROR ($fileType) : $error";
+                }
+            }
+        }
+
+        unset($values['candID'], $values['sessionID'], $values['commentID'], $values['test_name'], $values['page'], $values['fire_away'], $values['subtest'], $values['MAX_FILE_SIZE'], $values['csbs_file']);
+        $this->_save($values);
+
+    }
+ /**
+     * isValid checks the validity of the file.
+     *
+     * @param     string  $file    The full filename including directory.
+     *
+     * @return    bool    $success              if operation succeeded
+     * @access    public
+     */
+    function isValid(&$file, $args){
+        $correct_filename = ($args['PSCID'].'_'.$args['candID'].'_'.$args['visitLabel']."_CSBS");
+        if($file->fileInfo['name'] != $correct_filename){
+            $errors[]="Incorrect Filename: Filename should be: " . $correct_filename;
+            return $errors;
+        }
+
+        $fp=fopen($file->fileInfo['tmp_name'], "r");
+        $contents=fread($fp,filesize($file->fileInfo['tmp_name']));
+        fclose($fp);
+
+        return true;
+    }
+
+     /**
+     * importFile imports the CSBS file into the database.
+     *
+     * @param     object       $file    A reference to the file object (passed automatically by callFileHandler)
+     * @param     assoc_array  $args    The arguments passed to the function they must be:
+     *   -
+     *
+     * @return    bool $success if operation succeeded
+     *
+     * @access    public
+     */
+    function importFile(&$file, $args){
+        $fp=fopen($file->fileInfo['tmp_name'], "r");
+        $contents=fread($fp,filesize($file->fileInfo['tmp_name']));
+        fclose($fp);
+
+        $timepoint =& TimePoint::singleton($this->getSessionID());
+        $candidate =& Candidate::singleton($timepoint->getCandID());
+        $user      =& User::singleton();
+
+        // Compute the directory where all media files are stored
+        $config    = NDB_Config::singleton();
+        $mediaPath = $config->getSetting('mediaPath');
+
+        $values=array(
+            'UserID'    => $args['username'],
+            'Status'    => 'assembly',
+            'File_type' => 'CSBS',
+            'File_name' => $file->getDestinationFilename(),
+            'Data_dir'  => $mediaPath
+        );
+
+                $db=& Database::singleton();
+
+        //-------------------------------------------------------------------//
+        // Check if there is a file in the media module with the same name   //
+        // as the uploaded file.                                             //
+        //-------------------------------------------------------------------//
+
+        $row          = $db->pselectRow(
                 "SELECT e.Date_Taken, m.ID FROM {$this->table} e LEFT JOIN media m ON (e.File_name=m.file_name) WHERE e.CommentID=:CommentID",
                 array("CommentID" => $this->getCommentID())
-            );
-
-            $csbsDateTaken = $row['Date_Taken'];
-            $mediaID      = $row['ID'];
-
-            // Build insert query
-            $config    = NDB_Config::singleton();
-            $mediaPath = $config->getSetting('mediaPath');
-            $user      =& User::singleton();
-
-            $query = [
-                      'session_id'  => $values["sessionID"],
-                      'instrument'  => $values["test_name"],
-                      'date_taken'  => $csbsDateTaken,
-                      'file_name'   => $files["csbs_file"]["name"],
-                      'file_type'   => $_FILES["csbs_file"]["type"],
+        );
+        $dateTaken = $row['Date_Taken'];
+        $mediaID   = $row['ID'];
+ 	$query = [
+                      'session_id'  => $timepoint->getSessionID(),
+                      'instrument'  => $this->table,
+                      'date_taken'  => $dateTaken,
+                      'comments'    => $comments,
+                      'file_name'   => $file->getDestinationFilename(),
+                      'file_type'   => 'CSBS',
                       'data_dir'    => $mediaPath,
                       'uploaded_by' => $user->getData('UserID'),
-                     ];
+        ];
 
-            //-----------------------------------------------------------//
-            // Try to move the file from the tmp upload directory to the //
-            // media module upload directory                             //
-            //-----------------------------------------------------------//
-            if (move_uploaded_file($files["csbs_file"]["tmp_name"], $mediaPath . $files["csbs_file"]['name'])) {
-                try {
-                    // File alread exists in media module: update
-                    if (!is_null($mediaID)) {
-                        $db->update('media', $query, array('ID' => $mediaID));
-                        // File does not exist in media module: insert new
-                    } else {
-                        $db->insert('media', $query);
-		    }
-		    $db->update(
-                        $this->table,
-                        array("File_name" =>$files["csbs_file"]["name"]),
-                        array('CommentID' => $this->getCommentID())
-                	);
-                } catch (DatabaseException $e) {
-                    print_r($e);
-                }
-            } // if move_upload
+        try {
+            // File alread exists in media module: update
+            if (!is_null($mediaID)) {
+               $db->update('media', $query, array('ID' => $mediaID));
+            // File does not exist in media module: insert new
+            } else {
+                $db->insert('media', $query);
+            }
+        } catch (DatabaseException $e) {
+            print_r($e);
+        }
+
+        // Update the csbs table
+        $result = $db->update($this->testName, $values, array('CommentID'=>$args['CommentID']));
+        return true;
     }
+
+    function formatDate($date){
+        if(empty($date)){
+            return null;
+        }
+        $dateBits = explode('/', $date);
+        return sprintf("%04d-%02d-%02d", $dateBits[2], $dateBits[0], $dateBits[1]);
+    }
+
+    /**
+     * getTargetDirectory retrieves info about where the file should be stored.
+     *
+     * The returned directory is ADDED to the baseUploadDirectory proprety.  It should have a trailing slash.
+     *
+     * @param     string  $file    The full filename including directory.
+     *
+     * @return    bool    $success              if operation succeeded
+     * @access    public
+     */
+    function getTargetDirectory(&$file, $args){
+        // Uploaded file goes directly in the media directory (no subdirectory needs to be created)
+        return "";
+    }
+
 
     function _countChecked($record, $genericLabel, array $suffixes, bool $checkActivityAdministration = true) {
         $score = 0;
