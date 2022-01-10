@@ -24,6 +24,59 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
 
+    var $ValidityRequired = false;
+
+    var $scoreLabels = array(
+        "i_friends_total_score",
+        "i_friends_t_score",
+        "ii_spouse_partner_total_score",
+        "ii_spouse_partner_t_score",
+                        //"iii_family_mean_score",
+                        //"iii_family_t_score",
+                        //"iv_job_total_score",
+                        //"iv_job_t_score",
+                        //"v_education_total_score",
+                        //"v_education_t_score",
+        "mean_adaptive_score",
+        "mean_adaptive_t_score",
+        "tobacco_t_score",
+        "alcohol_t_score",
+        "drugs_t_score",
+        "mean_substance_use_score",
+        "mean_substance_use_t_score",
+        "critical_items_score",
+        "critical_items_t_score",
+        "i_anxious_depressed_score",
+        "i_anxious_depressed_t_score",
+        "ii_withdrawn_score",
+        "ii_withdrawn_t_score",
+        "iii_somatic_complaints_score",
+        "iii_somatic_complaints_t_score",
+        "iv_thought_problems_score",
+        "iv_thought_problems_t_score",
+        "v_attention_problems_score",
+        "v_attention_problems_t_score",
+        "vi_aggressive_behavior_score",
+        "vi_aggressive_behavior_t_score",
+        "vii_rule_breaking_behavior_score",
+        "vii_rule_breaking_behavior_t_score",
+        "viii_intrusive_score",
+        "viii_intrusive_t_score",
+        "other_problems_score",
+        "1_depressive_problems_score",
+        "1_depressive_problems_t_score",
+        "2_anxiety_problems_score",
+        "2_anxiety_problems_t_score",
+        "3_somatic_problems_score",
+        "3_somatic_problems_t_score",
+        "4_avoidant_personality_problems_score",
+        "4_avoidant_personality_problems_t_score",
+        "5_adh_problems_score",
+        "5_adh_problems_t_score",
+        "6_antisocial_personality_problems_score",
+        "6_antisocial_personality_problems_t_score",
+    );
+
     /**
      * Sample SQL statement for test_names table and instrument subtests table
      *
@@ -126,6 +179,93 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
             "Required",
             "other_relationship_to_child"
         );
+
+        // SCORE TABLE
+        $this->form->addElement('header', 'score', "Score Summary<h4><i>(Calculated on Completing Next Page)</i></h4>");
+
+        // score column headers
+        $group[] = $this->form->createElement('static', "category", null, null);
+        $group[] = $this->form->createElement('static', "score", null, null);
+        $group[] = $this->form->createElement('static', "t_score", null, null);
+        $this->form->addGroup($group, 'score_header_group', "<strong>Scale</strong>", $this->_GUIDelimiter, false);
+        unset($group);
+
+        $domains = array(
+            "i_friends"                         => "I. Friends",
+            "ii_spouse_partner"                 => "II. Spouse/Partner",
+            //"iii_family"                      => "III. Family",
+            //"iv_job"                          => "IV. Job",
+            //"v_education"                     => "V. Education",
+            "mean_adaptive"                     => "Mean Adaptive",
+            "tobacco"                           => "Tobacco",
+            "alcohol"                           => "Alcohol",
+            "drugs"                             => "Drugs",
+            "mean_substance_use"                => "Mean Substance Use",
+            "critical_items"                    => "Critical Items",
+            "i_anxious_depressed"               => "I. Anxious/Depressed",
+            "ii_withdrawn"                      => "II. Withdrawn",
+            "iii_somatic_complaints"            => "III. Somatic Complaints",
+            "iv_thought_problems"               => "IV. Thought Problems",
+            "v_attention_problems"              => "V. Attention Problems",
+            "vi_aggressive_behavior"            => "VI. Aggressive Behavior",
+            "vii_rule_breaking_behavior"        => "VII. Rule Breaking Behavior",
+            "viii_intrusive"                    => "VIII. Intrusive",
+            "other_problems"                    => "Other Problems",
+            "1_depressive_problems"             => "1. Depressive Problems",
+            "2_anxiety_problems"                => "2. Anxiety Problems",
+            "3_somatic_problems"                => "3. Somatic Problems",
+            "4_avoidant_personality_problems"   => "4. Avoidant Personality Problems",
+            "5_adh_problems"                    => "5. AD-H Problems",
+            "6_antisocial_personality_problems" => "6. Antisocial Personality Problems",
+        );
+
+        $columnHeaders = array(
+            "category" => "Category",
+            "score"    => "Score",
+            "t_score"  => "T-Score",
+        );
+
+        foreach ($columnHeaders as $field => $label) {
+            $columnHeaders[$field] .= "   ";
+        }
+        $this->localDefaults = array_merge($this->localDefaults, $columnHeaders);
+
+        $category = "Adaptive Functioning";
+
+        foreach ($domains as $field => $label) {
+            foreach ($columnHeaders as $scoreField => $scoreLabel) {
+                if ($scoreField == "category") {
+                    if ($field == "tobacco") {
+                        $category = "Substance Use";
+                    }
+                    if ($field == "i_anxious_depressed") {
+                        $category = "Syndrome";
+                    }
+                    if ($field == "1_depressive_problems") {
+                        $category = "DSM Oriented";
+                    }
+                    $group[] = $this->form->createElement('static', null, null, $category);
+                }
+                if ($scoreField == "score") {
+                    if ($field == "i_friends" || $field == "ii_spouse_partner" || $field == "iv_job" || $field == "v_education") {
+                        $group[] = $this->form->createElement('static', "{$field}_total_score", null, null);
+                    } elseif ($field == "iii_family") {
+                        $group[] = $this->form->createElement('static', "{$field}_mean_score", null, null);
+                    } elseif ($field == "tobacco" || $field == "alcohol" || $field == "drugs") {
+                        $group[] = $this->form->createElement('static', null, null, null);
+                    } else {
+                        $group[] = $this->form->createElement('static', "{$field}_{$scoreField}", null, null);
+                    }
+                }
+                if ($scoreField == "t_score") {
+                    if ($field != "other_problems") {
+                        $group[] = $this->form->createElement('static', "{$field}_{$scoreField}", null, null);
+                    }
+                }
+            }
+            $this->form->addGroup($group, "{$label}_score_group", $label, $this->_GUIDelimiter, false);
+            unset($group);
+        }
     }
 
     /**
@@ -286,7 +426,7 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
         //if no, skip following questions
         $this->addSelect(
             "live_with_partner",
-            "At any time in the past 6 months, did he/she live with a spouse or partner? 
+            "At any time in the past 6 months, did he/she live with a spouse or partner?
         <br><h4><i>*(If 'No' selected, then subset of questions below (A-H) should be left blank OR if 'Yes', choose options beside items A-H)</i></h4>",
             $yes_no_opts
         );
@@ -379,7 +519,6 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
      */
     function _page2()
     {
-
         $this->addHeader("ABCL (Adult Behavior Checklist For Ages 18-59)");
 
         //III. Does he/she have any illness, disability, or handicap?
@@ -1008,5 +1147,681 @@ class NDB_BVL_Instrument_ABCL extends NDB_BVL_Instrument
 
         return $errors;
     }
-}
 
+    function sum012Responses($array, $record)
+    {
+        $sum = 0;
+
+        foreach ($array as $a) {
+            if ($record[$a] == "2") {
+                $sum += 2;
+            } elseif ($record[$a] == "1") {
+                $sum += 1;
+            } else {
+                $sum += 0;
+            }
+        }
+
+        return $sum;
+    }
+
+    function getAdaptiveTScore(string $age_range, string $scale, $score, string $sex, $db)
+    {
+        $t_score = null;
+
+        if ($age_range != "18-35" && $age_range != "36-59" && $age_range != "18-29") {
+            return "Invalid Age Range";
+        }
+
+        $query = "SELECT
+                      t_score
+                  FROM
+                      ASR_Adaptive_Functioning_Scales_lookup
+                  WHERE
+                      age_range = :age_range AND
+                      sex = :sex AND
+                      scale = :scale AND
+                      score_min <= :score AND
+                      score_max >= :score";
+
+        $record = $db->pselectOne(
+            $query,
+            array(
+                "age_range" => $age_range,
+                "sex"       => $sex,
+                "scale"     => $scale,
+                "score"     => $score,
+            )
+        );
+
+        if (is_null($record)) {
+            return "No Record Found";
+        }
+
+        return $record;
+    }
+
+    function getSubstanceTScore(string $age_range, string $substance, $score, string $sex, $db)
+    {
+        $t_score = null;
+
+        $query = "SELECT
+                      t_score
+                  FROM
+                      ASR_Substance_Use_Scales_lookup
+                  WHERE
+                      age_range = :age_range AND
+                      sex = :sex AND
+                      substance = :substance AND
+                      score_min <= :score AND
+                      score_max >= :score";
+
+        $record = $db->pselectOne(
+            $query,
+            array(
+                "age_range" => $age_range,
+                "sex"       => $sex,
+                "substance" => $substance,
+                "score"     => $score,
+            )
+        );
+
+        if (is_null($record)) {
+            return "No Record Found";
+        }
+
+        return $record;
+    }
+
+    function getSyndromeTScore(string $age_range, string $scale, $score, string $sex, $db)
+    {
+        $t_score = null;
+
+        if ($age_range != "18-35" && $age_range != "36-59") {
+            return "Invalid Age Range";
+        }
+
+        $query = "SELECT
+                      t_score
+                  FROM
+                      ASR_Syndrome_Scales_lookup
+                  WHERE
+                      age_range = :age_range AND
+                      sex = :sex AND
+                      scale = :scale AND
+                      score_min <= :score AND
+                      score_max >= :score";
+
+        $record = $db->pselectOne(
+            $query,
+            array(
+                "age_range" => $age_range,
+                "sex"       => $sex,
+                "scale"     => $scale,
+                "score"     => $score,
+            )
+        );
+
+        if (is_null($record)) {
+            return "No Record Found";
+        }
+
+        return $record;
+    }
+
+    function getOrientedTScore(string $age_range, string $scale, $score, string $sex, $db)
+    {
+        $t_score = null;
+
+        if ($age_range != "18-35" && $age_range != "36-59") {
+            return "Invalid Age Range";
+        }
+
+        $query = "SELECT
+                      t_score
+                  FROM
+                      ASR_DSM5_Oriented_Scales_lookup
+                  WHERE
+                      age_range = :age_range AND
+                      sex = :sex AND
+                      scale = :scale AND
+                      score_min <= :score AND
+                      score_max >= :score";
+
+        $record = $db->pselectOne(
+            $query,
+            array(
+                "age_range" => $age_range,
+                "sex"       => $sex,
+                "scale"     => $scale,
+                "score"     => $score,
+            )
+        );
+
+        if (is_null($record)) {
+            return "No Record Found";
+        }
+
+        return $record;
+    }
+
+    function roundToNearestPoint5($num)
+    {
+        return round($num*2)/2;
+    }
+
+    function score(): void
+    {
+        /*
+        if ($this->_determineDataEntryCompletionStatus() == "Incomplete") {
+            return;
+        }*/
+
+        $this->_nullScores($this->scoreLabels);
+
+        $db     = Database::singleton();
+        $record = $db->pselectRow("SELECT * FROM $this->table WHERE CommentID=:cid", array("cid" => $this->getCommentID()));
+
+        $sex = $record["adults_gender"]; // null | male | female | other
+
+        if ($sex != "female" && $sex != "male") {
+            $sex = "male";
+        }
+
+        $age       = $record["adult_age"];
+        $age_range = "";
+
+        if (!is_null($age) || $age != "NA") {
+            if ($age >= 18 && $age <= 35) {
+                $age_range = "18-35";
+            } elseif ($age >= 36 && $age <= 59) {
+                $age_range = "36-59";
+            } else {
+                $age_range = "Out of range";
+            }
+        }
+
+        $scores = array();
+
+        /*****
+         * ASR AND ABCL ADAPTIVE FUNCTIONING SCALES
+        *****/
+
+        /********************
+         * I. FRIENDS SCALE *
+         ********************/
+
+        $I_A = 0;
+        $I_B = 0;
+        $I_C = 0;
+        $I_D = 0;
+
+        if ($record["a_how_many_close_friends"] == "none" || $record["a_how_many_close_friends"] == "nk") {
+            $I_A = 0;
+        } elseif ($record["a_how_many_close_friends"] == "1") {
+            $I_A = 1;
+        } elseif ($record["a_how_many_close_friends"] == "2") {
+            $I_A = 2;
+        } elseif ($record["a_how_many_close_friends"] == "3") {
+            $I_A = 3;
+        }
+
+        if ($record["b_contact_with_close_friends"] == "none" || $record["b_contact_with_close_friends"] == "nk") {
+            $I_B = 0;
+        } elseif ($record["b_contact_with_close_friends"] == "1") {
+            $I_B = 1;
+        } elseif ($record["b_contact_with_close_friends"] == "2") {
+            $I_B = 2;
+        } elseif ($record["b_contact_with_close_friends"] == "3") {
+            $I_B = 3;
+        }
+
+        if ($record["c_how_well_do_they_get_along_with_friends"] == "not_well" || $record["c_how_well_do_they_get_along_with_friends"] == "nk") {
+            $I_C = 0;
+        } elseif ($record["c_how_well_do_they_get_along_with_friends"] == "average") {
+            $I_C = 1;
+        } elseif ($record["c_how_well_do_they_get_along_with_friends"] == "above_average") {
+            $I_C = 2;
+        } elseif ($record["c_how_well_do_they_get_along_with_friends"] == "far_above") {
+            $I_C = 3;
+        }
+
+        if ($record["d_how_many_times_do_family_or_friends_visit"] == "0" || $record["d_how_many_times_do_family_or_friends_visit"] == "nk") {
+            $I_D = 0;
+        } elseif ($record["d_how_many_times_do_family_or_friends_visit"] == "1") {
+            $I_D = 1;
+        } elseif ($record["d_how_many_times_do_family_or_friends_visit"] == "2") {
+            $I_D = 2;
+        } elseif ($record["d_how_many_times_do_family_or_friends_visit"] == "3") {
+            $I_D = 3;
+        }
+
+        $scores["i_friends_total_score"] = $I_A + $I_B + $I_C + $I_D;
+
+        $scores["i_friends_t_score"] = $this->getAdaptiveTScore($age_range, "friends", $scores["i_friends_total_score"], $sex, $db);
+
+        /****************************
+         * II. SPOUSE/PARTNER SCALE *
+         ****************************/
+
+         // Do not score this scale unless the person being assessed lived
+         // with spouse or partner in the last 6 months
+         // and circled scores for each item II-A through II-H
+
+         // II - A, C, D, G: Enter the 0, 1, 2 scores circled by the respondent
+         // in the columns of spaces under the + (plus) heading for these items
+         // II - B, E, F, H: Enter the 0, 1, 2 scores circled by the respondent
+         // in the columns of spaces under the - (minus) heading for these items
+
+         // Total score for Spouse/Partner scale:
+         // 1. Sum the scores in the + (plus) column
+         // 2. Sum the scores in the - (minus) column
+         // 3. Subtract the sum of the - (minus) column from the sum of the + (plus)
+         // column to obtain the total scale score
+         // 4. Enter this total scale score in the box labeled Total
+         // 5. Circle the corresponding number in the age-specific column above
+
+        if ($record["live_with_partner"] == "yes") {
+            $plus  = 0;
+            $minus = 0;
+
+            $plus_fields = array(
+                "a_gets_along_well_with_partner",
+                "c_seems_satisfied_with_spouse_or_partner",
+                "d_enjoys_similar_activities_as_partner",
+                "g_likes_friends_of_partner",
+            );
+
+            $minus_fields = array(
+                "b_trouble_sharing_responsibilities",
+                "e_disagrees_with_partner_about_living_arrangements",
+                "f_has_trouble_with_family_of_partner",
+                "h_annoyed_by_behavior_of_spouse",
+            );
+
+            $plus  = $this->sum012Responses($plus_fields, $record);
+            $minus = $this->sum012Responses($minus_fields, $record);
+
+            $scores["ii_spouse_partner_total_score"] = $plus - $minus;
+            $scores["ii_spouse_partner_t_score"]     = $this->getAdaptiveTScore($age_range, "spouse_partner", $scores["ii_spouse_partner_total_score"], $sex, $db);
+        } else {
+            $scores["ii_spouse_partner_total_score"] = "Not Scored";
+            $scores["ii_spouse_partner_t_score"]     = "N/A";
+        }
+
+        /*****************************
+         * MEAN ADAPTIVE FUNCTIONING *
+         *****************************/
+
+        // Mean of the adaptive functioning scales:
+        // - Friends
+        // - Spouse/Partner (Can be not scored)
+        // - Family [MISSING]
+        // - Job [MISSING]
+        // - Education [MISSING]
+
+        // Only compute mean of all all adaptive functioning scales
+        // if each scale was scored
+
+        if (is_numeric($scores["i_friends_total_score"])
+            && is_numeric($scores["ii_spouse_partner_total_score"])
+        ) {
+            $mean = 0;
+
+            $adaptive_functioning_sum
+                = $scores["i_friends_total_score"] +
+                $scores["ii_spouse_partner_total_score"];
+
+            $mean = $adaptive_functioning_sum / 2;
+            $mean = round($mean, 1);
+
+            $scores["mean_adaptive_score"]   = $mean;
+            $scores["mean_adaptive_t_score"] = $this->getAdaptiveTScore($age_range, "mean_adaptive", $scores["mean_adaptive_score"], $sex, $db);
+        } else {
+            $scores["mean_adaptive_score"]   = "Not Scored";
+            $scores["mean_adaptive_t_score"] = "N/A";
+        }
+
+        /*****
+         * SUBSTANCE USE SCALES
+        *****/
+
+        $substances = array(
+            "tobacco" => $record["124_how_many_times_per_day_did_they_use_tobacco"],
+            "alcohol" => $record["125_how_many_days_were_they_drunk"],
+            "drugs"   => $record["126_how_many_days_use_drugs_for_nonmedical_purposes"],
+        );
+
+        $can_compute_mean_substance_use = true;
+
+        foreach ($substances as $name => $response) {
+            if (is_null($response)) {
+                $scores[$name . "_t_score"]     = "Missing field";
+                $can_compute_mean_substance_use = false;
+            }
+            if (ctype_digit($response)) {
+                if ($age_range == "18-35" || $age_range == "36-59") {
+                    $t_score = $this->getSubstanceTScore($age_range, $name, intval($response), $sex, $db);
+                    $scores[$name . "_t_score"] = $t_score;
+                } else {
+                    $scores[$name . "_t_score"] = "Age out of bounds";
+                }
+            } else {
+                $scores[$name . "_t_score"]     = "Invalid Input";
+                $can_compute_mean_substance_use = false;
+            }
+        }
+
+        if ($can_compute_mean_substance_use) {
+            $sum  = $scores["tobacco_t_score"] + $scores["alcohol_t_score"] + $scores["drugs_t_score"];
+            $mean = $this->roundToNearestPoint5($sum/3);
+            $scores["mean_substance_use_score"] = $mean;
+
+            $t_score = $this->getSubstanceTScore($age_range, "mean_substance_use", $mean, $sex, $db);
+            $scores["mean_substance_use_t_score"] = $t_score;
+        } else {
+            $scores["mean_substance_use_t_score"] = "Missing field(s)";
+        }
+
+        /*****
+         * CRITICAL ITEMS
+        *****/
+
+        $scores["critical_items_score"]   = $this->sum012Responses(self::CRITICAL_ITEMS, $record);
+        $scores["critical_items_t_score"] = $this->getSubstanceTScore($age_range, "critical_items", $scores["critical_items_score"], $sex, $db);;
+
+        /*****
+         * SYNDROME SCALE
+        *****/
+
+        $syndrome_scales = array(
+            "i_anxious_depressed"        => self::I_ANXIOUS_DEPRESSED,
+            "ii_withdrawn"               => self::II_WITHDRAWN,
+            "iii_somatic_complaints"     => self::III_SOMATIC_COMPLAINTS,
+            "iv_thought_problems"        => self::IV_THOUGHT_PROBLEMS,
+            "v_attention_problems"       => self::V_ATTENTION_PROBLEMS,
+            "vi_aggressive_behavior"     => self::VI_AGGRESSIVE_BEHAVIOR,
+            "vii_rule_breaking_behavior" => self::VII_RULE_BREAKING_BEHAVIOR,
+            "viii_intrusive"             => self::VIII_INTRUSIVE,
+        );
+
+        foreach ($syndrome_scales as $scale => $array) {
+            $scores[$scale . "_score"]   = $this->sum012Responses($array, $record);
+            $scores[$scale . "_t_score"] = $this->getSyndromeTScore($age_range, $scale, $scores[$scale . "_score"], $sex, $db);
+        }
+
+        $scores["other_problems_score"] = $this->sum012Responses(self::OTHER_PROBLEMS, $record);
+
+        /*****
+         * DSM-ORIENTED SCALE
+        *****/
+
+         $oriented_scales = array(
+             "1_depressive_problems"             => self::_1_DEPRESSIVE_PROBLEMS,
+             "2_anxiety_problems"                => self::_2_ANXIETY_PROBLEMS,
+             "3_somatic_problems"                => self::_3_SOMATIC_PROBLEMS,
+             "4_avoidant_personality_problems"   => self::_4_AVOIDANT_PERSONALITY_PROBLEMS,
+             "5_adh_problems"                    => self::_5_ADH_PROBLEMS,
+             "6_antisocial_personality_problems" => self::_6_ANTISOCIAL_PERSONALITY_PROBLEMS,
+         );
+
+         foreach ($oriented_scales as $scale => $array) {
+             $scores[$scale . "_score"]   = $this->sum012Responses($array, $record);
+             $scores[$scale . "_t_score"] = $this->getOrientedTScore($age_range, $scale, $scores[$scale . "_score"], $sex, $db);
+         }
+
+         $db->update($this->table, $scores, array("CommentID" => $this->getCommentID()));
+    }
+
+    CONST CRITICAL_ITEMS = [
+        "14_cries_a_lot",
+        "91_talks_about_killing_self",
+        "103_unhappy_sad_depressed",
+        "9_cant_get_mind_off_certain_thoughts",
+        "18_deliberately_harms_self",
+        "40_hears_sounds_or_voices",
+        "66_repeats_certain_acts",
+        "70_sees_things_that_are_not_there",
+        "84_strange_behavior",
+        "8_cant_concentrate_or_pay_attention",
+        "16_cruelty_bullying_meanness",
+        "55_moods_swing_between_elation_and_depression",
+        "57_physically_attacks_people",
+        "97_threatens_to_hurt_people",
+        "6_uses_drugs_for_nonmedical_purposes",
+        "90_drinks_too_much_alcohol",
+        "92_does_things_that_may_cause_trouble_with_law",
+        "10_cant_sit_still",
+        "21_damages_things_belonging_to_others",
+    ];
+
+    CONST I_ANXIOUS_DEPRESSED = [
+        "12_complains_of_loneliness",
+        "13_confused_or_in_a_fog",
+        "14_cries_a_lot",
+        "22_worries_about_their_future",
+        "31_fears_they_might_think_or_do_something_bad",
+        "33_feels_or_complains_that_no_one_loves_them",
+        "34_feels_others_are_out_to_get_them",
+        "35_feels_worthless_or_inferior",
+        "45_nervous_highstrung_tense",
+        "47_lacks_self_confidence",
+        "50_too_fearful_or_anxious",
+        "52_feels_too_guilty",
+        "71_self_conscious_or_easily_embarrassed",
+        "91_talks_about_killing_self",
+        "103_unhappy_sad_depressed",
+        "107_feels_they_cant_succeed",
+        "112_worries",
+        "113_sulks_a_lot",
+    ];
+
+    CONST II_WITHDRAWN = [
+        "25_does_not_get_along_with_others",
+        "30_poor_relations_with_opposite_sex",
+        "42_would_rather_be_alone",
+        "48_not_liked_by_others",
+        "60_enjoys_very_little",
+        "65_refuses_to_talk",
+        "67_has_trouble_making_or_keeping_friends",
+        "69_keeps_things_to_self",
+        "111_withdrawn_not_involved_with_others",
+    ];
+
+    CONST III_SOMATIC_COMPLAINTS = [
+        "51_feels_dizzy_or_lightheaded",
+        "54_trouble_planning_for_future",
+        "a_aches_or_pains",
+        "b_headaches",
+        "c_nausea",
+        "d_problems_witih_eyes",
+        "e_skin_problems",
+        "f_stomachaches",
+        "g_vomiting",
+        "100_trouble_sleeping",
+    ];
+
+    CONST IV_THOUGHT_PROBLEMS = [
+        "9_cant_get_mind_off_certain_thoughts",
+        "18_deliberately_harms_self",
+        "36_gets_hurt_a_lot",
+        "40_hears_sounds_or_voices",
+        "46_nervous_movements",
+        "63_would_rather_be_with_older_people",
+        "66_repeats_certain_acts",
+        "70_sees_things_that_are_not_there",
+        "84_strange_behavior",
+        "85_strange_ideas",
+    ];
+
+    CONST V_ATTENTION_PROBLEMS = [
+        "1_is_too_forgetful",
+        "8_cant_concentrate_or_pay_attention",
+        "11_too_dependent_on_others",
+        "17_daydreams_or_gets_lost_in_thoughts",
+        "53_trouble_planning_for_future",
+        "59_fails_to_finish_things_they_should_do",
+        "61_poor_work_performance",
+        "64_has_trouble_setting_priorities",
+        "78_has_trouble_making_decisions",
+        "101_stays_away_from_job_even_when_not_sick_or_on_vacation",
+        "102_underactive_slow_moving_lacks_energy",
+        "105_disorganized",
+        "108_tends_to_lose_things",
+        "119_not_good_at_details",
+        "121_tends_to_be_late_for_appointments",
+    ];
+
+    CONST VI_AGGRESSIVE_BEHAVIOR = [
+        "3_argues_a_lot",
+        "5_blames_others_for_own_problems",
+        "16_cruelty_bullying_meanness",
+        "28_gets_along_badly_with_family",
+        "37_gets_in_many_fights",
+        "55_moods_swing_between_elation_and_depression",
+        "57_physically_attacks_people",
+        "68_screams_or_yells_a_lot",
+        "81_very_changeable_behaavior",
+        "86_stubborn_sullen_irritable",
+        "87_sudden_changes_in_mood_or_feelings",
+        "95_temper_tantrums",
+        "97_threatens_to_hurt_people",
+        "116_gets_upset_too_easily",
+        "118_too_impatient",
+    ];
+
+    CONST VII_RULE_BREAKING_BEHAVIOR = [
+        "6_uses_drugs_for_nonmedical_purposes",
+        "20_damages_own_things",
+        "23_breaks_rules",
+        "26_does_not_feel_guilty_after_misbehaving",
+        "39_hangs_around_people_who_get_in_trouble",
+        "41_acts_without_thinking",
+        "43_lying_or_cheating",
+        "76_irresponsible_behavior",
+        "82_steals",
+        "90_drinks_too_much_alcohol",
+        "92_does_things_that_may_cause_trouble_with_law",
+        "114_fails_to_pay_debts_or_meet_financial_responsibilities",
+        "117_trouble_managing_money_or_credit_cards",
+        "122_trouble_keeping_job",
+    ];
+
+    CONST VIII_INTRUSIVE = [
+        "7_bragging_boasting",
+        "19_demands_attention",
+        "74_showing_off",
+        "93_walks_too_much",
+        "94_teases_a_lot",
+        "104_unusually_loud",
+    ];
+
+    CONST OTHER_PROBLEMS = [
+        "10_cant_sit_still",
+        "21_damages_things_belonging_to_others",
+        "24_does_not_eat_well",
+        "27_easily_jealous",
+        "29_fears_certain_animals_situations_places",
+        "32_feels_they_have_to_be_perfect",
+        "38_poor_relations_with_neighbors",
+        "44_feels_overwhelmed_by_responsibilities",
+        "58_picks_skin_or_other_parts_of_body",
+        "62_poorly_coordinated",
+        "72_worries_about_their_family",
+        "75_too_shy_or_timid",
+        "77_sleeps_more_than_most_others",
+        "79_speech_problem",
+        "83_easily_bored",
+        "89_rushes_into_things_without_considering_risks",
+        "96_passive_or_lacks_initiative",
+        "99_dislikes_staying_in_one_place_for_long",
+        "110_makes_good_decisions",
+        "115_restless_or_fidgety",
+        "120_drives_too_fast",
+    ];
+
+    CONST _1_DEPRESSIVE_PROBLEMS = [
+        "14_cries_a_lot",
+        "18_deliberately_harms_self",
+        "24_does_not_eat_well",
+        "35_feels_worthless_or_inferior",
+        "52_feels_too_guilty",
+        "54_trouble_planning_for_future",
+        "60_enjoys_very_little",
+        "77_sleeps_more_than_most_others",
+        "78_has_trouble_making_decisions",
+        "91_talks_about_killing_self",
+        "100_trouble_sleeping",
+        "102_underactive_slow_moving_lacks_energy",
+        "103_unhappy_sad_depressed",
+        "107_feels_they_cant_succeed",
+    ];
+
+    CONST _2_ANXIETY_PROBLEMS = [
+        "22_worries_about_their_future",
+        "29_fears_certain_animals_situations_places",
+        "45_nervous_highstrung_tense",
+        "50_too_fearful_or_anxious",
+        "72_worries_about_their_family",
+        "112_worries",
+    ];
+
+    CONST _3_SOMATIC_PROBLEMS = [
+        "a_aches_or_pains",
+        "b_headaches",
+        "c_nausea",
+        "d_problems_witih_eyes",
+        "e_skin_problems",
+        "f_stomachaches",
+        "g_vomiting",
+    ];
+
+    CONST _4_AVOIDANT_PERSONALITY_PROBLEMS = [
+        "25_does_not_get_along_with_others",
+        "42_would_rather_be_alone",
+        "47_lacks_self_confidence",
+        "67_has_trouble_making_or_keeping_friends",
+        "71_self_conscious_or_easily_embarrassed",
+        "75_too_shy_or_timid",
+        "111_withdrawn_not_involved_with_others",
+    ];
+
+    CONST _5_ADH_PROBLEMS = [
+        "1_is_too_forgetful",
+        "8_cant_concentrate_or_pay_attention",
+        "10_cant_sit_still",
+        "36_gets_hurt_a_lot",
+        "41_acts_without_thinking",
+        "59_fails_to_finish_things_they_should_do",
+        "61_poor_work_performance",
+        "89_rushes_into_things_without_considering_risks",
+        "105_disorganized",
+        "108_tends_to_lose_things",
+        "115_restless_or_fidgety",
+        "118_too_impatient",
+        "119_not_good_at_details",
+    ];
+
+    CONST _6_ANTISOCIAL_PERSONALITY_PROBLEMS = [
+        "3_argues_a_lot",
+        "5_blames_others_for_own_problems",
+        "16_cruelty_bullying_meanness",
+        "21_damages_things_belonging_to_others",
+        "23_breaks_rules",
+        "26_does_not_feel_guilty_after_misbehaving",
+        "28_gets_along_badly_with_family",
+        "37_gets_in_many_fights",
+        "39_hangs_around_people_who_get_in_trouble",
+        "43_lying_or_cheating",
+        "57_physically_attacks_people",
+        "76_irresponsible_behavior",
+        "82_steals",
+        "92_does_things_that_may_cause_trouble_with_law",
+        "95_temper_tantrums",
+        "97_threatens_to_hurt_people",
+        "101_stays_away_from_job_even_when_not_sick_or_on_vacation",
+        "114_fails_to_pay_debts_or_meet_financial_responsibilities",
+        "120_drives_too_fast",
+        "122_trouble_keeping_job",
+    ];
+}
