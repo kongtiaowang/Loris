@@ -2,10 +2,16 @@
 require_once 'generic_includes.php';
 require_once 'CouchDB.class.inc';
 require_once 'Database.class.inc';
+require_once __DIR__.'/../modules/schedule_module/ajax/data_entry.php';
+
 class CouchDBDemographicsImporter {
     var $SQLDB; // reference to the database handler, store here instead
                 // of using Database::singleton in case it's a mock.
     var $CouchDB; // reference to the CouchDB database handler
+
+    // Add to scope in query logic for obtaining appointment information.
+    var $dataEntryStatusExpression;
+    var $dataEntryColumns;
 
     // this is just in an instance variable to make
     // the code a little more readable.
@@ -161,8 +167,55 @@ class CouchDBDemographicsImporter {
                               Otherwise, the value will be a string telling who to collect saliva samples for at VSA
                               (e.g. "COLLECT SALIVA SAMPLES FOR MOTHER AND FATHER")',
             'Type' => 'varchar(255)',
+        ),
+        'Appointment_Behavioral_date' => array(
+            'Description' => 'Scheduled appointment date of behavioural visit',
+            'Type' => "varchar(255)"
+        ),
+        'Appointment_Behavioral_status' => array(
+            'Description' => 'Appointment status of behavioural visit',
+            'Type' => "enum('Upcoming', 'In Progress', 'Complete', 'Not Started', 'No Data Found', 'No Appointment Scheduled')"
+        ),
+        'Appointment_MRI_date' => array(
+            'Description' => 'Scheduled appointment date of MRI visit',
+            'Type' => "varchar(255)"
+        ),
+        'Appointment_MRI_status' => array(
+            'Description' => 'Appointment status of MRI visit',
+            'Type' => "enum('Upcoming', 'In Progress', 'Complete', 'Not Started', 'No Data Found', 'No Appointment Scheduled')"
+        ),
+        'Appointment_Blood_Collection_date' => array(
+            'Description' => 'Scheduled appointment date of blood collection visit',
+            'Type' => "varchar(255)"
+        ),
+        'Appointment_Blood_Collection_status' => array(
+            'Description' => 'Appointment status of blood collection visit',
+            'Type' => "enum('Upcoming', 'In Progress', 'Complete', 'Not Started', 'No Data Found', 'No Appointment Scheduled')"
+        ),
+        'Appointment_MC_Home_date' => array(
+            'Description' => 'Scheduled appointment date of virtual visit',
+            'Type' => "varchar(255)"
+        ),
+        'Appointment_MC_Home_status' => array(
+            'Description' => 'Appointment status of virtual visit',
+            'Type' => "enum('Upcoming', 'In Progress', 'Complete', 'Not Started', 'No Data Found', 'No Appointment Scheduled')"
+        ),
+        'Appointment_EEG_date' => array(
+            'Description' => 'Scheduled appointment date of EEG visit',
+            'Type' => "varchar(255)"
+        ),
+        'Appointment_EEG_status' => array(
+            'Description' => 'Appointment status of EEG visit',
+            'Type' => "enum('Upcoming', 'In Progress', 'Complete', 'Not Started', 'No Data Found', 'No Appointment Scheduled')"
+        ),
+        'Appointment_Remote_Assessment_date' => array(
+            'Description' => 'Scheduled appointment date of remote assessment',
+            'Type' => "varchar(255)"
+        ),
+        'Appointment_Remote_Assessment_status' => array(
+            'Description' => 'Appointment status of remote assessment',
+            'Type' => "enum('Upcoming', 'In Progress', 'Complete', 'Not Started', 'No Data Found', 'No Appointment Scheduled')"
         )
-
     );
 
     var $Config = array(
@@ -176,7 +229,7 @@ class CouchDBDemographicsImporter {
         )
     );
 
-    function __construct() {
+    function __construct($dataEntryStatusExpression, $dataEntryColumns) {
         $factory       = \NDB_Factory::singleton();
         $config        = \NDB_Config::singleton();
         $couchConfig   = $config->getSetting('CouchDB');
@@ -188,6 +241,8 @@ class CouchDBDemographicsImporter {
             $couchConfig['admin'],
             $couchConfig['adminpass']
         );
+        $this->dataEntryStatusExpression = $dataEntryStatusExpression;
+        $this->dataEntryColumns = $dataEntryColumns;
     }
 
     function _getSubproject($id) {
@@ -707,6 +762,78 @@ group by s.CandID,s.Visit_label",
         );
     }
 
+    /**
+     * Get the candidate appointment information for their given session.
+     *
+     * @param $sessionID
+     * @return string[]
+     */
+    function getAppointmentInfo($sessionID) {
+        $dataEntryStatusExpression = $this->dataEntryStatusExpression;
+        $dataEntryColumns = $this->dataEntryColumns;
+        $appointments = array(
+            'Appointment_Behavioral_date' => 'No Appointment Scheduled',
+            'Appointment_Behavioral_status' => 'No Appointment Scheduled',
+            'Appointment_MRI_date' => 'No Appointment Scheduled',
+            'Appointment_MRI_status' => 'No Appointment Scheduled',
+            'Appointment_Blood_Collection_date' => 'No Appointment Scheduled',
+            'Appointment_Blood_Collection_status' => 'No Appointment Scheduled',
+            'Appointment_MC_Home_date' => 'No Appointment Scheduled',
+            'Appointment_MC_Home_status' => 'No Appointment Scheduled',
+            'Appointment_EEG_date' => 'No Appointment Scheduled',
+            'Appointment_EEG_status' => 'No Appointment Scheduled',
+            'Appointment_Remote_Assessment_date' => 'No Appointment Scheduled',
+            'Appointment_Remote_Assessment_status' => 'No Appointment Scheduled'
+        );
+        $info = $this->SQLDB->pselect("
+            SELECT
+                *,
+                {$dataEntryStatusExpression} AS dataEntryStatus
+            FROM (
+                SELECT
+                    appointment_type.Name AS AppointmentTypeName,
+                    appointment.StartsAt,
+                    appointment.SessionID,
+                    {$dataEntryColumns}
+                FROM appointment
+                    JOIN appointment_type ON (appointment_type.AppointmentTypeID = appointment.AppointmentTypeID)
+                    JOIN session ON (appointment.SessionID = session.ID)
+            ) AS subQuery
+            WHERE SessionID=:sessionID
+        ", array("sessionID" => $sessionID));
+
+        foreach($info as $appt) {
+            switch ($appt['AppointmentTypeName']) {
+                case 'Behavioral':
+                    $appointments['Appointment_Behavioral_date'] = $appt['StartsAt'];
+                    $appointments['Appointment_Behavioral_status'] = $appt['dataEntryStatus'];
+                    break;
+                case 'MRI':
+                    $appointments['Appointment_MRI_date'] = $appt['StartsAt'];
+                    $appointments['Appointment_MRI_status'] = $appt['dataEntryStatus'];
+                    break;
+                case 'Blood Collection':
+                    $appointments['Appointment_Blood_Collection_date'] = $appt['StartsAt'];
+                    $appointments['Appointment_Blood_Collection_status'] = $appt['dataEntryStatus'];
+                    break;
+                case 'MC-HOME':
+                    $appointments['Appointment_MC_Home_date'] = $appt['StartsAt'];
+                    $appointments['Appointment_MC_Home_status'] = $appt['dataEntryStatus'];
+                    break;
+                case 'EEG':
+                    $appointments['Appointment_EEG_date'] = $appt['StartsAt'];
+                    $appointments['Appointment_EEG_status'] = $appt['dataEntryStatus'];
+                    break;
+                case 'Remote Assessments':
+                    $appointments['Appointment_Remote_Assessment_date'] = $appt['StartsAt'];
+                    $appointments['Appointment_Remote_Assessment_status'] = $appt['dataEntryStatus'];
+                    break;
+            }
+        }
+
+        return $appointments;
+    }
+
     function run() {
         $config = $this->CouchDB->replaceDoc('Config:BaseConfig', $this->Config);
         print "Updating Config:BaseConfig: $config";
@@ -875,6 +1002,9 @@ group by s.CandID,s.Visit_label",
             $demographics['ASD_Ever_DSMIV']   = $asd_info['all'];
             $demographics['ASD_Latest_DSMIV'] = $asd_info['latest'];
 
+            $appointment_info = $this->getAppointmentInfo($sid);
+            $demographics = array_merge($demographics, $appointment_info);
+
             $success = $this->CouchDB->replaceDoc($id, array('Meta' => array(
                 'DocType' => 'demographics',
                 'identifier' => array($demographics['PSCID'], $demographics['Visit_label'])
@@ -897,7 +1027,7 @@ group by s.CandID,s.Visit_label",
 
 // Don't run if we're doing the unit tests; the unit test will call run.
 if(!class_exists('UnitTestCase')) {
-    $Runner = new CouchDBDemographicsImporter();
+    $Runner = new CouchDBDemographicsImporter($dataEntryStatusExpression, $dataEntryColumns);
     $Runner->run();
 }
 ?>
