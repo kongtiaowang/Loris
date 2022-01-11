@@ -1706,7 +1706,15 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
             }
         }
 
-        unset($values['candID'], $values['sessionID'], $values['commentID'], $values['test_name'], $values['page'], $values['fire_away'], $values['subtest'], $values['MAX_FILE_SIZE'], $values['csbs_file']);
+        unset($values['candID'], 
+	      $values['sessionID'], 
+	      $values['commentID'], 
+	      $values['test_name'], 
+	      $values['page'], 
+	      $values['fire_away'], 
+	      $values['subtest'], 
+	      $values['MAX_FILE_SIZE'], 
+	      $values['csbs_file']);
         $this->_save($values);
 
     }
@@ -1803,14 +1811,6 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
         // Update the csbs table
         $result = $db->update($this->testName, $values, array('CommentID'=>$args['CommentID']));
         return true;
-    }
-
-    function formatDate($date){
-        if(empty($date)){
-            return null;
-        }
-        $dateBits = explode('/', $date);
-        return sprintf("%04d-%02d-%02d", $dateBits[2], $dateBits[0], $dateBits[1]);
     }
 
     /**
