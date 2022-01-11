@@ -208,8 +208,6 @@ function _page2(){
 
                $this->XINRegisterRule('pq8', array("pq6{@}=={@}At_Visit"), "Required if 'At Visit' was selected for Question 6");
 
-             //  $this->form->addElement('date','pq9','8. Date mailed to UNC?', $this->dateOptions);
-
 	       $group[] = $this->form->createElement("date","pq9",null,$this->dateOptions);
                $group[] = $this->form->createElement("select","pq9_status",null,
                array(
@@ -272,8 +270,6 @@ function _page3(){
                $this->form->addElement('date','mq3','3. Collection Date?', $this->dateOptions);
 
               $this->XINRegisterRule('mq3', array("mq2{@}=={@}At_Visit"), "Required if 'At Visit' was selected for Question 2");
-
-             //  $this->form->addElement('date','mq4', "4. Date mailed to UNC?", $this->dateOptions);
 
 	      $group[] = $this->form->createElement("date","mq4",null,$this->dateOptions);
                $group[] = $this->form->createElement("select","mq4_status",null,
@@ -339,8 +335,6 @@ function _page4(){
                $this->form->addElement('date','fq3','3. Collection Date?', $this->dateOptions);
 
               $this->XINRegisterRule('fq3', array("fq2{@}=={@}At_Visit"), "Required if 'At Visit' was selected for Question 2");
-
-            //   $this->form->addElement('date','fq4', "4. Date mailed to UNC?", $this->dateOptions);
 
 	      $group[] = $this->form->createElement("date","fq4",null,$this->dateOptions);
                $group[] = $this->form->createElement("select","fq4_status",null,
