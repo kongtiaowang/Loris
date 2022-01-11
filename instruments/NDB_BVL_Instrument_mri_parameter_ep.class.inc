@@ -1070,7 +1070,15 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
             }
 	}
 
-        unset($values['candID'], $values['sessionID'], $values['commentID'], $values['test_name'], $values['page'], $values['fire_away'], $values['subtest'], $values['MAX_FILE_SIZE'], $values['mri_parameter_file']);
+        unset($values['candID'], 
+	      $values['sessionID'], 
+	      $values['commentID'], 
+	      $values['test_name'], 
+	      $values['page'], 
+	      $values['fire_away'], 
+	      $values['subtest'], 
+	      $values['MAX_FILE_SIZE'], 
+	      $values['mri_parameter_file']);
 	$this->_save($values);
 
 	}
@@ -1162,14 +1170,6 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
         // Update the mri_parameter_ep table
         $result = $db->update($this->testName, $values, array('CommentID'=>$args['CommentID']));
         return true;
-    }
-
-    function formatDate($date){
-        if(empty($date)){
-            return null;
-        }
-        $dateBits = explode('/', $date);
-        return sprintf("%04d-%02d-%02d", $dateBits[2], $dateBits[0], $dateBits[1]);
     }
 
     /**
