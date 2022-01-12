@@ -135,7 +135,7 @@ class NDB_BVL_Instrument_LENA_LanguageSampleActivityLog extends NDB_BVL_Instrume
         $this->form->addElement('static', "upl_file", "Uploaded File");
 
         $this->form->addElement('file', 'wav_file_lena', 'Upload the .wav file
-        <br><h6><i>(Ex: Filename should be LENA_CandID_PSCID_VisitLabel.wav/.mp3)</i></h6>');
+        <br><h6><i>(Ex: Filename should be LENA_CandID_PSCID_VisitLabel.wav)</i></h6>');
         $this->XINRegisterRule("wav_file_lena", array("wav_file_lena{@}=={@}NEVER_REQUIRED"));
         $this->form->addElement('static', "wav_file", "Uploaded File");
     }
@@ -609,195 +609,109 @@ class NDB_BVL_Instrument_LENA_LanguageSampleActivityLog extends NDB_BVL_Instrume
 	}
 	
 	function _saveValues(array $values): void
-    {
-        $timepoint =& TimePoint::singleton($this->getSessionID());
-        $candidate =& Candidate::singleton($timepoint->getCandID());
+     {
 
-        if(isset($values['Date_taken'])) {
-            $this->_saveCandidateAge($values);
-        }
-
-        require_once "File_Upload.class.inc";
-        $file=new File_Upload;
-
-        //pass the existing form ($form) by reference to File_Upload, and register the file_upload field names being used.
-        $file->registerForm($this->form);
-
-         //--------------------------//
-        // Process all file fields  //
-        //--------------------------//
-        foreach (self::$FILE_FIELDS as $k => $v) {
-            //---------------------------------------------//
-            // If the associated file chooser was used and //
-            // the chooser is on the current page          //
-            //---------------------------------------------//
-            if ($this->page == '' || $_FILES["{$k}_lena"]["name"] == '') {
-                continue;
-            }
-
-        //Tell File_Upload what file handlers to use.
-        $file->setFileHandler("{$k}_lena", $this);
-
-        // The uploaded file will go into the directory where all media files go
-        $config = NDB_Config::singleton();
-        $dir = $config->getSetting("mediaPath");
-        $file->setBaseUploadDirectory($dir);
-
-        //set the the IDs to the handler functions.
-        $user =& User::singleton();
-        $file->setHandlerArgs(
-            [
-              "CommentID"  => $this->getCommentID(),
-              "candID"     => $candidate->getCandID(),
-              "PSCID"      => $candidate->getPSCID(),
-              "visitLabel" => $timepoint->getVisitLabel(),
-              "username"   => $user->getUsername(),
-              "values"     => $values
-            ]
-        );
-		
-        //If the form is validated, call File_Upload::processFiles() which loops through the files and
-        //proccesses them (including verify, move, and import steps)
-        if ($values["{$k}_lena"]['name'] != false) {
-            $file->processFiles();
-        }
-
-        //echo error messages
-        if(!empty($file->errorLog)){
-            while(list($fileType,$fileErrors)=each($file->errorLog)){
-                foreach($fileErrors AS $error){
-                    echo "UPLOAD ERROR ($fileType) : $error";
-                }
-            }
-        }
-
-        unset($values['candID'],
-        $values['sessionID'],
-        $values['commentID'],
-        $values['test_name'],
-        $values['page'],
-        $values['fire_away'],
-        $values['subtest'],
-        $values['MAX_FILE_SIZE'],
-        $values["{$k}_lena"]);
-        $this->_save($values);
-    }
-    }
-
-    /**
-     * isValid checks the validity of the file.
-     *
-     * @param     string  $file    The full filename including directory.
-     *
-     * @return    bool    $success              if operation succeeded
-     * @access    public
-     */
-        function isValid(&$file, $args){
-        $errors = [];
-        foreach (self::$FILE_FIELDS as $k => $v) {
-
-            if ($this->page == '' || $_FILES["{$k}_lena"]["name"] == '') {
-                continue;
-            }
-
-        $correct_filename = ($args['PSCID'].'_'.$args['candID'].'_'.$args['visitLabel'].$v['name']);
-        if($_FILES["{$k}_lena"]["name"] != $correct_filename){
-            $errors["{$k}_lena"] = "Incorrect Filename: Filename should be: " . $correct_filename;
+    //----------------------------------------------------------//
+    // *_lena fields are always posted but do not exist in   //
+    // the DB. Save their values in $files and unset these      //
+    // otherwise parent::_saveValues will crash                 //
+    //----------------------------------------------------------//
+    foreach (self::$FILE_FIELDS as $k => $v) {
+        if ($v['page'] == $this->page) {
+            $files["{$k}_lena"] = $values["{$k}_lena"];
+            unset($values["${k}_lena"]);
         }
     }
 
-        return $errors;
-}
+    $session   = $this->getSessionID();
+    $timepoint = \TimePoint::singleton($session);
+    $candidate = \Candidate::singleton($timepoint->getCandID());
 
-    /**
-     * importFile imports the LENA files into the database.
-     *
-     * @param     object       $file    A reference to the file object (passed automatically by callFileHandler)
-     * @param     assoc_array  $args    The arguments passed to the function they must be:
-     *   -
-     *
-     * @return    bool $success if operation succeeded
-     *
-     * @access    public
-     */
-    function importFile(&$file, $args){
-        $fp=fopen($file->fileInfo['tmp_name'], "r");
-        $contents=fread($fp,filesize($file->fileInfo['tmp_name']));
-        fclose($fp);
-	    
-        $timepoint =& TimePoint::singleton($this->getSessionID());
-            $candidate =& Candidate::singleton($timepoint->getCandID());
-        $user      =& User::singleton();
+    $candID = $candidate->getCandID();
+    $PSCID  = $candidate->getPSCID();
+    $visitLabel = $timepoint->getVisitLabel();
 
-        // Compute the directory where all media files are stored
-        $config    = NDB_Config::singleton();
-        $mediaPath = $config->getSetting('mediaPath');
+    parent::_saveValues($values);
 
-        foreach (self::$FILE_FIELDS as $k => $v) {
-        $values=array(
-            'UserID'    => $args['username'],
-            $k          => $_FILES["{$k}_lena"]["name"],
+    //--------------------------//
+    // Process all file fields  //
+    //--------------------------//
+    foreach (self::$FILE_FIELDS as $k => $v) {
+        //---------------------------------------------//
+        // If the associated file chooser was used and //
+        // the chooser is on the current page          //
+        //---------------------------------------------//
+        if ($v['page'] != $this->page || $files["{$k}_lena"]["name"] == '') {
+            continue;
+        }
 
-        );
+	//---------------------------------------------//
+        // File naming convention validation	       //
+        //---------------------------------------------//
+        $correct_filename = ($PSCID .'_'.$candID.'_'.$visitLabel.$v['name']);
 
-    $db=& Database::singleton();
+        if($files["{$k}_lena"]["name"] != $correct_filename){
+                print("Incorrect Filename: Filename should be: " . $correct_filename);
+                break;
+        }
 
-    //-------------------------------------------------------------------//
-    // Check if there is a file in the media module with the same name   //
-    // as the uploaded file.                                             //
-//-------------------------------------------------------------------//
-
-    $row          = $db->pselectRow(
+        //-------------------------------------------------------------------//
+        // Check that there is no file in the media module with              //
+        // the same name as the file. If there is a file with the sam        //
+        // but the file was uploaded through the LENA form for field $k, then //
+        // that's OK (counts as an update)                                   //
+        //-------------------------------------------------------------------//
+        $db           =& Database::singleton();
+        $row          = $db->pselectRow(
             "SELECT e.Date_Taken, m.ID FROM {$this->table} e LEFT JOIN media m ON (e.{$k}=m.file_name) WHERE e.CommentID=:CommentID",
             array("CommentID" => $this->getCommentID())
-    );
-    $dateTaken = $row['Date_Taken'];
-$mediaID   = $row['ID'];
+        );
+        $eegDateTaken = $row['Date_Taken'];
+        $mediaID      = $row['ID'];
 
-    $query = [
-                  'session_id'  => $timepoint->getSessionID(),
-                  'instrument'  => $this->table,
-                  'date_taken'  => $dateTaken,
-                  'comments'    => $comments,
-                  'file_name'   => $_FILES["{$k}_lena"]["name"],
+        // Build insert query
+        $config    = NDB_Config::singleton();
+        $mediaPath = $config->getSetting('mediaPath');
+        $user      =& User::singleton();
+	
+	 $query = [
+                  'session_id'  => $values["sessionID"],
+                  'instrument'  => $values["test_name"],
+                  'date_taken'  => $eegDateTaken,
+                  'file_name'   => $files["{$k}_lena"]["name"],
                   'file_type'   => $_FILES["{$k}_lena"]["type"],
                   'data_dir'    => $mediaPath,
                   'uploaded_by' => $user->getData('UserID'),
-    ];
+                 ];
 
-    try {
-        // File alread exists in media module: update
-        if (!is_null($mediaID)) {
-           $db->update('media', $query, array('ID' => $mediaID));
-        // File does not exist in media module: insert new
-        } else {
-            $db->insert('media', $query);
-        }
-    } catch (DatabaseException $e) {
-        print_r($e);
-    }
+        //-----------------------------------------------------------//
+        // Try to move the file from the tmp upload directory to the //
+        // media module upload directory                             //
+        //-----------------------------------------------------------//
+        if (move_uploaded_file($files["{$k}_lena"]["tmp_name"], $mediaPath . $files["{$k}_lena"]['name'])) {
+            try {
+                // File alread exists in media module: update
+                if (!is_null($mediaID)) {
+                    $db->update('media', $query, array('ID' => $mediaID));
+                    // File does not exist in media module: insert new
+                } else {
+                    $db->insert('media', $query);
+                }
 
-    // Update the LENA table
-    $result = $db->update($this->testName, $values, array('CommentID'=>$args['CommentID']));
-}
-    return true;
-}
+                // Update field $k in the LENA table for the current record
+                // Note that this was not done by parent::_saveValues since $k
+                // was defined as a "score" (i.e not submitted by the POST)
+                $db->update(
+                    $this->table,
+                    array($k => $files["{$k}_lena"]["name"]),
+                    array('CommentID' => $this->getCommentID())
+                );
+            } catch (DatabaseException $e) {
+                print_r($e);
+            }
+        } // if move_upload
+    } // foreach
+     }
 
-/**
-     * getTargetDirectory retrieves info about where the file should be stored.
-     *
-     * The returned directory is ADDED to the baseUploadDirectory proprety.  It should have a trailing slash.
-     *
-     * @param     string  $file    The full filename including directory.
-     *
-     * @return    bool    $success              if operation succeeded
-     * @access    public
-     */
-    function getTargetDirectory(&$file, $args){
-        // Uploaded file goes directly in the media directory (no subdirectory needs to be created)
-        return "";
-    }
-
-	
 }
 ?>
