@@ -338,6 +338,7 @@ class BatteryManagerIndex extends Component {
           type: 'select',
           options: options.active,
         }},
+      {label: 'Start Date of Administration', show: true},
       {label: 'Change Status', show: hasPermission('battery_manager_edit')},
       {label: 'Edit Metadata', show: hasPermission('battery_manager_edit')},
     ];
@@ -363,6 +364,7 @@ class BatteryManagerIndex extends Component {
         test.firstVisit,
         test.instrumentOrder,
         test.active,
+        test.start_date,
       ];
     });
 

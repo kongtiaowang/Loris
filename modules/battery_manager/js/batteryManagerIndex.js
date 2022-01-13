@@ -598,6 +598,9 @@ var BatteryManagerIndex = /*#__PURE__*/function (_Component) {
           options: options.active
         }
       }, {
+        label: 'Start Date of Administration',
+        show: true
+      }, {
         label: 'Change Status',
         show: hasPermission('battery_manager_edit')
       }, {
@@ -614,7 +617,7 @@ var BatteryManagerIndex = /*#__PURE__*/function (_Component) {
         show: hasPermission('battery_manager_edit')
       }];
       var testsArray = tests.map(function (test) {
-        return [test.id, test.testName, test.ageMinDays, test.ageMaxDays, test.stage, test.subproject, test.visitLabel, test.centerId, test.firstVisit, test.instrumentOrder, test.active];
+        return [test.id, test.testName, test.ageMinDays, test.ageMaxDays, test.stage, test.subproject, test.visitLabel, test.centerId, test.firstVisit, test.instrumentOrder, test.active, test.start_date];
       });
       var modalTitle = edit ? 'Edit Test' : 'Add New Test';
       var request = edit ? 'PUT' : 'POST';

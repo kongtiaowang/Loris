@@ -46,7 +46,8 @@ class TestProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
                p.CenterID as centerId,
                b.firstVisit,
                b.instr_order as instrumentOrder,
-               b.Active as active
+               b.Active as active,
+               b.start_date
         FROM test_battery b
           JOIN test_names t USING (Test_name)
           LEFT JOIN subproject s USING (SubprojectID)
