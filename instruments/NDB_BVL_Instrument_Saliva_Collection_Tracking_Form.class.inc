@@ -403,7 +403,7 @@ function _page5(){
       $db =& Database::singleton();
       $timepoint =& TimePoint::singleton($this->getSessionID());
       $candidate =& Candidate::singleton($timepoint->getCandID());
-      $PSCID = $candidate->getPSCID();
+      $PSCID = $this->getPSCID();
       $msg_data['PSCID'] = $PSCID;
 
       
