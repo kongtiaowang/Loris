@@ -191,9 +191,11 @@ class BatteryManagerIndex extends Component {
    * @param {string} value - selected value for corresponding form element
    */
   setTest(name, value) {
-    const test = this.state.test;
-    test[name] = value;
-    this.setState({test});
+    this.setState((state) => {
+      const test = state.test;
+      test[name] = value;
+      return {test};
+    });
   }
 
   /**

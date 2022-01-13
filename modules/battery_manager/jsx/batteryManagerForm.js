@@ -136,6 +136,13 @@ class BatteryManagerForm extends Component {
           max="127" // max value allowed by default column type of instr_order
           value={test.instrumentOrder}
         />
+        <DateElement
+          label="Start Date of Administration"
+          name="start_date"
+          value={test.start_date}
+          onUserInput={setTest}
+          required={false}
+        />
       </FormElement>
     );
   }

@@ -83,6 +83,7 @@ class Test implements \LORIS\Data\DataInstance
             'firstVisit'   => $this->row['firstVisit']      ?? null,
             'instr_order'  => $this->row['instrumentOrder'] ?? null,
             'Active'       => $this->row['active']          ?? null,
+            'start_date'   => $this->row['start_date']      ?? null,
         );
     }
 }
