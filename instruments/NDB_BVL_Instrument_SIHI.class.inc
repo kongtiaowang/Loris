@@ -237,6 +237,9 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
         $this->addSelect("i_q1_if_yes_rate_concern", $this->indent . "If yes, rate concern:", $this->rate_concern_options);
         $this->XINRegisterRule('i_q1_if_yes_rate_concern', array('i_q1_any_concerns_about_childs_nighttime_sleep{@}=={@}yes'), 'Required if yes');
 
+	$this->form->addElement('text', "i_q1_please_describe_concern", $this->indent . "Please describe concern");
+	$this->XINRegisterRule('i_q1_please_describe_concern', array('i_q1_if_yes_rate_concern{@}!={@}'), 'Required if rated concern');
+
         $this->addSelect("i_q2_any_concerns_about_childs_daytime_sleep", "2. Any concerns about your child's daytime sleep (i.e., naps)?", $this->yes_no_options);
 
         $this->addSelect("i_q2_if_yes_rate_concern", $this->indent . "If yes, rate concern:", $this->rate_concern_options);
@@ -319,6 +322,9 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
         $this->addSelect("ii_q1_if_yes_rate_concern", $this->indent . "If yes, rate concern:", $this->rate_concern_options);
         $this->XINRegisterRule('ii_q1_if_yes_rate_concern', array('ii_q1_any_concerns_about_childs_nighttime_sleep{@}=={@}yes'), 'Required if yes');
 
+	$this->form->addElement('text', "ii_q1_please_describe_concern", $this->indent . "Please describe concern");
+	$this->XINRegisterRule('ii_q1_please_describe_concern', array('ii_q1_if_yes_rate_concern{@}!={@}'), 'Required if rated concern');
+
         $this->addSelect("ii_q2_any_concerns_about_childs_daytime_sleep", "2. Any concerns about your child's daytime sleep (i.e., naps)?", $this->yes_no_options);
 
         $this->addSelect("ii_q2_if_yes_rate_concern", $this->indent . "If yes, rate concern:", $this->rate_concern_options);
@@ -400,6 +406,9 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
         $this->addSelect("iii_q1_if_yes_rate_concern", $this->indent . "If yes, rate concern:", $this->rate_concern_options);
         $this->XINRegisterRule('iii_q1_if_yes_rate_concern', array('iii_q1_any_concerns_about_childs_nighttime_sleep{@}=={@}yes'), 'Required if yes');
 
+	$this->form->addElement('text', "iii_q1_please_describe_concern", $this->indent . "Please describe concern");
+	$this->XINRegisterRule('iii_q1_please_describe_concern', array('iii_q1_if_yes_rate_concern{@}!={@}'), 'Required if rated concern');
+
         $this->addSelect("iii_q2_any_concerns_about_childs_daytime_sleep", "2. Any concerns about your child's daytime sleep (i.e., naps)?", $this->yes_no_options);
 
         $this->addSelect("iii_q2_if_yes_rate_concern", $this->indent . "If yes, rate concern:", $this->rate_concern_options);
@@ -479,6 +488,9 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
 
         $this->addSelect("iv_q1_if_yes_rate_concern", $this->indent . "If yes, rate concern:", $this->rate_concern_options);
         $this->XINRegisterRule('iv_q1_if_yes_rate_concern', array('iv_q1_any_concerns_about_childs_nighttime_sleep{@}=={@}yes'), 'Required if yes');
+
+	$this->form->addElement('text', "iv_q1_please_describe_concern", $this->indent . "Please describe concern");
+	$this->XINRegisterRule('iv_q1_please_describe_concern', array('iv_q1_if_yes_rate_concern{@}!={@}'), 'Required if rated concern');
 
         $this->addSelect("iv_q2_any_concerns_about_childs_daytime_sleep", "2. Any concerns about your child's daytime sleep (i.e., naps)?", $this->yes_no_options);
 
@@ -561,6 +573,9 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
 
         $this->addSelect("v_q1_if_yes_rate_concern", $this->indent . "If yes, rate concern:", $this->rate_concern_options);
         $this->XINRegisterRule('v_q1_if_yes_rate_concern', array('v_q1_any_concerns_about_childs_nighttime_sleep{@}=={@}yes'), 'Required if yes');
+
+	$this->form->addElement('text', "v_q1_please_describe_concern", $this->indent . "Please describe concern");
+	$this->XINRegisterRule('v_q1_please_describe_concern', array('v_q1_if_yes_rate_concern{@}!={@}'), 'Required if rated concern');
 
         $this->addSelect("v_q2_any_concerns_about_childs_daytime_sleep", "2. Any concerns about your child's daytime sleep (i.e., naps)?", $this->yes_no_options);
 
@@ -651,6 +666,9 @@ class NDB_BVL_Instrument_SIHI extends NDB_BVL_Instrument
 
         $this->addSelect("vi_q1_if_yes_rate_concern", $this->indent . "If yes, rate concern:", $this->rate_concern_options);
         $this->XINRegisterRule('vi_q1_if_yes_rate_concern', array('vi_q1_any_concerns_about_childs_nighttime_sleep{@}=={@}yes'), 'Required if yes');
+
+	$this->form->addElement('text', "vi_q1_please_describe_concern", $this->indent . "Please describe concern");
+        $this->XINRegisterRule('vi_q1_please_describe_concern', array('vi_q1_if_yes_rate_concern{@}!={@}'), 'Required if rated concern');
 
         $this->addSelect("vi_q2_any_concerns_about_childs_daytime_sleep", "2. Any concerns about your child's daytime sleep (i.e., naps)?", $this->yes_no_options);
 

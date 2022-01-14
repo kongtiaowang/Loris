@@ -146,6 +146,8 @@ class NDB_BVL_Instrument_m_chat_rf extends NDB_BVL_Instrument
 
         $this->_addMetadataFields();
 
+	$this->form->addElement('select','specify_recipient','Specify recipient',array(null => '','subject' => 'Subject','proband' => 'Proband'));
+
         $this->addBasicText("age", "Age <br><h6><i>(Please enter a numeric value between 0-100 or write NA.)</i></h6>");
 
         $informant = array(

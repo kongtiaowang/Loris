@@ -195,5 +195,6 @@ CREATE TABLE `m_chat_rf` (
     `q20_request_more_by_holding_out_arm` enum('yes','no') default NULL,
     `q20_other` enum('yes','no') default NULL,
     `q20_if_other_describe` varchar(255) default NULL,
+    `specify_recipient` enum('subject','proband') default NULL,
     PRIMARY KEY  (`CommentID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

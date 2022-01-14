@@ -104,6 +104,15 @@ CREATE TABLE `SIHI` (
 `iii_q5_additional_comment` varchar(250) default NULL,
 `iv_q5_additional_comment` varchar(250) default NULL,
 `iv_q5_additional_comment` varchar(250) default NULL,
+`i_q1_please_describe_concern` varchar(100) default NULL,
+`ii_q1_please_describe_concern` varchar(100) default NULL,
+`iii_q1_please_describe_concern` varchar(100) default NULL,
+`iv_q1_please_describe_concern` varchar(100) default NULL,
+`v_q1_please_describe_concern` varchar(100) default NULL,
+`vi_q1_please_describe_concern` varchar(100) default NULL,
+`vi_q2_please_describe_concern` varchar(100) default NULL,
+`vi_q5_if_yes_select_other` varchar(100) default NULL,
+`vi_q5_additional_comment` varchar(100) default NULL,
 PRIMARY KEY  (`CommentID`)
 
               ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
