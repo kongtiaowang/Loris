@@ -4,6 +4,3 @@ ALTER TABLE SIHI ADD `iii_q1_please_describe_concern` varchar(100) default NULL;
 ALTER TABLE SIHI ADD `iv_q1_please_describe_concern` varchar(100) default NULL;
 ALTER TABLE SIHI ADD `v_q1_please_describe_concern` varchar(100) default NULL;
 ALTER TABLE SIHI ADD `vi_q1_please_describe_concern` varchar(100) default NULL;
-ALTER TABLE SIHI ADD `vi_q2_please_describe_concern` varchar(100) default NULL;
-ALTER TABLE SIHI ADD `vi_q5_if_yes_select_other` varchar(100) default NULL;
-ALTER TABLE SIHI ADD `vi_q5_additional_comment` varchar(100) default NULL;
