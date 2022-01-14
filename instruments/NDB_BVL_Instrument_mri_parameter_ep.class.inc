@@ -187,11 +187,11 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
 
         //The array of selects with multiple answers allowed
         //Any LorisForm multiple selects must be listed here
-        $this->selectMultipleElements = [
+        $this->selectMultipleElements = array(
 		'study',
 		'face_mask',
 		'face_shield',
-            ];
+	);
 
         // setup the form
         $this->_setupForm();
@@ -374,12 +374,12 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
 
         $this->addLabel('PPE worn during the session?');
 
-        $this->addSelect("face_mask", 'Face Mask:', $option1, ['multiple' => true]);
+        $this->addSelect("face_mask", 'Face Mask:', $option1, ['multiple']);
         $this->XINRegisterRule("face_mask", array("face_mask{@}=={@}NEVER_REQUIRED"));
 
 
 
-        $this->addSelect('face_shield','Face Shield:', $option1, ['multiple' => true]);
+        $this->addSelect('face_shield','Face Shield:', $option1, ['multiple']);
         $this->XINRegisterRule("face_shield", array("face_shield{@}=={@}NEVER_REQUIRED"));
 
 
@@ -458,7 +458,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
         for ($i = 1; $i < 5; $i++) {
             $group[] = $this->createLabel($i . ".");
             $group[] = $this->createSelect(
-                "record_scan_done_$i",
+                "record_scan_done_{$i}",
                 "",
                 array(
                     null => "",
@@ -467,30 +467,30 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
                 )
 	);
             $group[] = $this->createDate(
-                "record_scan_date_$i",
+                "record_scan_date_{$i}",
                 ""
             );
            $group[] = $this->form->createElement(
                 "time",
-                "time_entered_room_$i"
+                "time_entered_room_{$i}"
             );
 
             $group[] = $this->form->createElement(
                 "time",
-                "record_scan_start_time_$i"
+                "record_scan_start_time_{$i}"
             );
 
             $group[] = $this->form->createElement(
                 "time",
-                "record_scan_end_time_$i"
+                "record_scan_end_time_{$i}"
             );
             $group[] = $this->createSelect(
-                "record_orientation_$i",
+                "record_orientation_{$i}",
                 "",
                 $this->orientation_grp
             );
             $group[] = $this->createSelect(
-                "record_vitamine_$i",
+                "record_vitamine_{$i}",
                 "",
                  $this->vitamine_grp
             );
@@ -510,33 +510,39 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
                 "scan_group_table{$i}" // group [if field is a part of a group]
             );
             $this->XINRegisterRule(
-                "record_scan_date_$i",
-                array("record_scan_done_$i{@}=={@}1"),
+                "record_scan_date_{$i}",
+                array("record_scan_done_{$i}{@}=={@}1"),
+                "All fields are required if corresponding session is marked as done.",
+                "scan_group_table{$i}"
+	    );
+	        $this->XINRegisterRule(
+                "time_entered_room_{$i}",
+                array("record_scan_done_{$i}{@}=={@}1"),
                 "All fields are required if corresponding session is marked as done.",
                 "scan_group_table{$i}"
             );
             $this->XINRegisterRule(
-                "record_scan_start_time_$i",
-                array("scan_done_$i{@}=={@}1"),
+                "record_scan_start_time_{$i}",
+                array("scan_done_{$i}{@}=={@}1"),
                 "All fields are required if corresponding session is marked as done.",
                 "scan_group_table{$i}"
             );
 
             $this->XINRegisterRule(
-                "record_scan_end_time_$i",
-                array("scan_done_$i{@}=={@}1"),
+                "record_scan_end_time_{$i}",
+                array("scan_done_{$i}{@}=={@}1"),
                 "All fields are required if corresponding session is marked as done.",
                 "scan_group_table{$i}"
             );
             $this->XINRegisterRule(
-                "record_orientation_$i",
-                array("scan_done_$i{@}=={@}1"),
+                "record_orientation_{$i}",
+                array("scan_done_{$i}{@}=={@}1"),
                 "All fields are required if corresponding session is marked as done.",
                 "scan_group_table{$i}"
             );
             $this->XINRegisterRule(
-                "record_vitamine_$i",
-                array("scan_done_$i{@}=={@}1"),
+                "record_vitamine_{$i}",
+                array("scan_done_{$i}{@}=={@}1"),
                 "All fields are required if corresponding session is marked as done.",
                 "scan_group_table{$i}"
             );
@@ -595,7 +601,6 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
 
         for ($i = 1; $i < 3; $i ++) {
             $this->addSelect("t{$i}_pass", "T{$i} Passed", $this->yes_no);
-           // $this->form->addRule("t{$i}_pass", "T{$i} Passed must be set", 'required');
         }
 
             $this->addSelect("t1w_pass", "T1w total attempts", self::R1_R9);
@@ -1004,7 +1009,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
         $this->not_required_field("acquisition_window");
 
 	$this->form->addElement('file', 'mri_parameter_file', 'Upload the MRI Parameter EP Parser file
-       <br><h6><i>(Ex: PSCID_DCCID_visitlabel_CL)</i></h6>');
+       <br><h6><i>(Ex: PSCID_DCCID_visitlabel_CL.txt)</i></h6>');
 
         $this->form->addElement('static', "File_name", "Uploaded File");
 	$this->form->addElement("advcheckbox", 'cardiac_log_not_acquired', 'Cardiac log not acquired', null, null,array("0", "1"));
@@ -1085,7 +1090,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
 
     function isValid(&$file, $args){
 	error_log("isValid func");	  
-    $correct_filename = ($args['PSCID'].'_'.$args['candID'].'_'.$args['visitLabel']."_CL");
+    $correct_filename = ($args['PSCID'].'_'.$args['candID'].'_'.$args['visitLabel']."_CL.txt");
     if($file->fileInfo['name'] != $correct_filename){
             $errors[]="Incorrect Filename: Filename should be: " . $correct_filename;
             return $errors;

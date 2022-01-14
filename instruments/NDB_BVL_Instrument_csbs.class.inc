@@ -255,7 +255,7 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
 	$this->form->addElement("static", null, "<br/>");
 
 	$this->form->addElement('file', 'csbs_file', 'Upload the .csv file
-        <br><h6><i>(Ex: Filename should be PSCID_DCCID_visitlabel_CSBS)</i></h6>');
+        <br><h6><i>(Ex: Filename should be PSCID_DCCID_visitlabel_CSBS.mp4/mov)</i></h6>');
         $this->XINRegisterRule("csbs_file", array("csbs_file{@}=={@}NEVER_REQUIRED"));
         $this->form->addElement('static', "File_name", "Uploaded File");
 
@@ -1727,8 +1727,9 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
      * @access    public
      */
     function isValid(&$file, $args){
-        $correct_filename = ($args['PSCID'].'_'.$args['candID'].'_'.$args['visitLabel']."_CSBS");
-        if($file->fileInfo['name'] != $correct_filename){
+	    $correct_filename = ($args['PSCID'].'_'.$args['candID'].'_'.$args['visitLabel']."_CSBS.mp4");
+	    $correct_filenames = ($args['PSCID'].'_'.$args['candID'].'_'.$args['visitLabel']."_CSBS.mov");
+        if($file->fileInfo['name'] != $correct_filename || $file->fileInfo['name'] != $correct_filenames){
             $errors[]="Incorrect Filename: Filename should be: " . $correct_filename;
             return $errors;
         }
