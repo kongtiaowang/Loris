@@ -198,9 +198,3 @@ CREATE TABLE `m_chat_rf` (
     `specify_recipient` enum('subject','proband') default NULL,
     PRIMARY KEY  (`CommentID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('m_chat_rf', '0', '0', 'Y', 'Visit', 18, 'V06', NULL);
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('m_chat_rf', '0', '0', 'Y', 'Visit', 23, 'V06', NULL);
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('m_chat_rf', '0', '0', 'Y', 'Visit', 18, 'V18', NULL);
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('m_chat_rf', '0', '0', 'Y', 'Visit', 20, 'V24', NULL);
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('m_chat_rf', '0', '0', 'Y', 'Visit', 23, 'V24', NULL);
