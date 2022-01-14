@@ -269,3 +269,12 @@ ALTER TABLE m_chat_rf ADD `q20_talk_or_babble` enum('yes','no') default NULL AFT
 ALTER TABLE m_chat_rf ADD `q20_request_more_by_holding_out_arm` enum('yes','no') default NULL AFTER `q20_talk_or_babble`;
 ALTER TABLE m_chat_rf ADD `q20_other` enum('yes','no') default NULL AFTER `q20_request_more_by_holding_out_arm`;
 ALTER TABLE m_chat_rf ADD `q20_if_other_describe` varchar(255) default NULL AFTER `q20_other`;
+
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('m_chat_rf', '0', '0', 'Y', 'Visit', 18, 'V06', NULL);
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('m_chat_rf', '0', '0', 'Y', 'Visit', 23, 'V06', NULL);
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('m_chat_rf', '0', '0', 'Y', 'Visit', 18, 'V18', NULL);
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('m_chat_rf', '0', '0', 'Y', 'Visit', 20, 'V24', NULL);
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('m_chat_rf', '0', '0', 'Y', 'Visit', 23, 'V24', NULL);
+
+DELETE FROM test_battery WHERE Test_name='m_chat_rf' AND Visit_label='V09';
+DELETE FROM test_battery WHERE Test_name='m_chat_rf' AND Visit_label='V12';
