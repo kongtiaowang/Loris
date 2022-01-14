@@ -374,8 +374,6 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
 
         $this->addLabel('PPE worn during the session?');
 
-
-
         $this->addSelect("face_mask", 'Face Mask:', $option1, ['multiple' => true]);
         $this->XINRegisterRule("face_mask", array("face_mask{@}=={@}NEVER_REQUIRED"));
 
@@ -467,10 +465,14 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
                     "1"  => "Yes",
                     "0"  => "No"
                 )
-            );
+	);
             $group[] = $this->createDate(
                 "record_scan_date_$i",
                 ""
+            );
+           $group[] = $this->form->createElement(
+                "time",
+                "time_entered_room_$i"
             );
 
             $group[] = $this->form->createElement(
@@ -985,12 +987,15 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
             $this->form->addGroup($group, "csf_flow", '', $this->_GUIDelimiter, FALSE);
             unset($group);
                     
-         $this->form->addElement("select", "pulse", "Pulse Ox replacement:", self::FINGER);
+         $this->form->addElement("select", "pulse", "Pulse Ox placement:", self::FINGER);
          $this->XINRegisterRule(
             "pulse",
             array("csf_pass{@}=={@}1"),
             "Required."
-         );
+    );
+	$this->addNumericElement("start_hr","Start HR");
+	 $this->addNumericElement("end_hr", "End HR");
+	 
          $this->form->addElement("text", "captured_cycle", "Captured cycle (ms):");
          $this->form->addElement("text", "acquisition_window", "Acquisition window (ms):");
 
@@ -998,12 +1003,190 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
         $this->not_required_field("captured_cycle");
         $this->not_required_field("acquisition_window");
 
+	$this->form->addElement('file', 'mri_parameter_file', 'Upload the MRI Parameter EP Parser file
+       <br><h6><i>(Ex: PSCID_DCCID_visitlabel_CL)</i></h6>');
 
+        $this->form->addElement('static', "File_name", "Uploaded File");
+	$this->form->addElement("advcheckbox", 'cardiac_log_not_acquired', 'Cardiac log not acquired', null, null,array("0", "1"));
+	$this->XINRegisterRule(
+            "mri_parameter_file",
+            array("cardiac_log_not_acquired{@}!={@}1"),
+            "Required. check Cardiac log not acquired box"
+    );
          $this->form->addElement("textarea", "page6_comment", "Comments:", array('cols'=>25, 'rows'=>4));
          $this->XINRegisterRule("page6_comment", array("page6_comment{@}=={@}NEVER_REQUIRED"));
          $this->form->addFormRule(array(&$this, 'constraint_rules_pg6'));
 
     }
+
+        function _saveValues(array $values): void
+    {
+	$timepoint =& TimePoint::singleton($this->getSessionID());
+        $candidate =& Candidate::singleton($timepoint->getCandID());
+
+        if(isset($values['Date_taken'])) {
+            $this->_saveCandidateAge($values);
+        }
+
+        require_once "File_Upload.class.inc";
+        $file=new File_Upload;
+
+        //pass the existing form ($form) by reference to File_Upload, and register the file_upload field names being used.
+        $file->registerForm($this->form);
+
+        //Tell File_Upload what file handlers to use.
+        $file->setFileHandler("mri_parameter_file", $this);
+
+        // The uploaded file will go into the directory where all media files go
+        $config = NDB_Config::singleton();
+        $dir = $config->getSetting("mediaPath");
+        $file->setBaseUploadDirectory($dir);
+
+        //set the the IDs to the handler functions.
+        $user =& User::singleton();
+        $file->setHandlerArgs(
+            [
+              "CommentID"  => $this->getCommentID(),
+              "candID"     => $candidate->getCandID(),
+              "PSCID"      => $candidate->getPSCID(),
+              "visitLabel" => $timepoint->getVisitLabel(),
+              "username"   => $user->getUsername(),
+              "values"     => $values
+            ]
+        );
+
+        //If the form is validated, call File_Upload::processFiles() which loops through the files and
+        //proccesses them (including verify, move, and import steps)
+        if ($values['mri_parameter_file']['name'] != false) {
+            $file->processFiles();
+        }
+
+        //echo error messages
+        if(!empty($file->errorLog)){
+            while(list($fileType,$fileErrors)=each($file->errorLog)){
+                foreach($fileErrors AS $error){
+                    echo "UPLOAD ERROR ($fileType) : $error";
+                }
+            }
+	}
+
+        unset($values['candID'], 
+	      $values['sessionID'], 
+	      $values['commentID'], 
+	      $values['test_name'], 
+	      $values['page'], 
+	      $values['fire_away'], 
+	      $values['subtest'], 
+	      $values['MAX_FILE_SIZE'], 
+	      $values['mri_parameter_file']);
+	$this->_save($values);
+
+	}
+
+    function isValid(&$file, $args){
+	error_log("isValid func");	  
+    $correct_filename = ($args['PSCID'].'_'.$args['candID'].'_'.$args['visitLabel']."_CL");
+    if($file->fileInfo['name'] != $correct_filename){
+            $errors[]="Incorrect Filename: Filename should be: " . $correct_filename;
+            return $errors;
+    }
+
+    $fp=fopen($file->fileInfo['tmp_name'], "r");
+        $contents=fread($fp,filesize($file->fileInfo['tmp_name']));
+    	fclose($fp);
+
+     return true;
+    }
+
+    /**
+     * importFile imports the mri_parameter_ep file into the database.
+     *
+     * @param     object       $file    A reference to the file object (passed automatically by callFileHandler)
+     * @param     assoc_array  $args    The arguments passed to the function they must be:
+     *   -
+     *
+     * @return    bool $success if operation succeeded
+     *
+     * @access    public
+     */
+    function importFile(&$file, $args){
+        $fp=fopen($file->fileInfo['tmp_name'], "r");
+        $contents=fread($fp,filesize($file->fileInfo['tmp_name']));
+        fclose($fp);
+
+        $timepoint =& TimePoint::singleton($this->getSessionID());
+	$candidate =& Candidate::singleton($timepoint->getCandID());
+        $user      =& User::singleton();
+
+        // Compute the directory where all media files are stored
+        $config    = NDB_Config::singleton();
+        $mediaPath = $config->getSetting('mediaPath');
+
+        $values=array(
+            'UserID'    => $args['username'],
+            'Status'    => 'assembly',
+            'File_type' => 'Cardiac Logs',
+            'File_name' => $file->getDestinationFilename(),
+            'Data_dir'  => $mediaPath
+    );
+
+	        $db=& Database::singleton();
+
+        //-------------------------------------------------------------------//
+        // Check if there is a file in the media module with the same name   //
+        // as the uploaded file.                                             //
+	//-------------------------------------------------------------------//
+
+        $row          = $db->pselectRow(
+                "SELECT e.Date_Taken, m.ID FROM {$this->table} e LEFT JOIN media m ON (e.File_name=m.file_name) WHERE e.CommentID=:CommentID",
+                array("CommentID" => $this->getCommentID())
+        );
+        $dateTaken = $row['Date_Taken'];
+	$mediaID   = $row['ID'];
+
+        $query = [
+                      'session_id'  => $timepoint->getSessionID(),
+                      'instrument'  => $this->table,
+		      'date_taken'  => $dateTaken,
+		      'comments'    => $comments,
+                      'file_name'   => $file->getDestinationFilename(),
+                      'file_type'   => 'Cardiac Logs',
+                      'data_dir'    => $mediaPath,
+		      'uploaded_by' => $user->getData('UserID'),
+        ];
+
+        try {
+            // File alread exists in media module: update
+            if (!is_null($mediaID)) {
+               $db->update('media', $query, array('ID' => $mediaID));
+            // File does not exist in media module: insert new
+            } else {
+                $db->insert('media', $query);
+            }
+        } catch (DatabaseException $e) {
+            print_r($e);
+        }
+
+        // Update the mri_parameter_ep table
+        $result = $db->update($this->testName, $values, array('CommentID'=>$args['CommentID']));
+        return true;
+    }
+
+    /**
+     * getTargetDirectory retrieves info about where the file should be stored.
+     *
+     * The returned directory is ADDED to the baseUploadDirectory proprety.  It should have a trailing slash.
+     *
+     * @param     string  $file    The full filename including directory.
+     *
+     * @return    bool    $success		if operation succeeded
+     * @access    public
+     */
+    function getTargetDirectory(&$file, $args){
+        // Uploaded file goes directly in the media directory (no subdirectory needs to be created)
+        return "";
+    }
+
     /**
      * constraint check for page 6
      */
@@ -1067,6 +1250,12 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
             null,
             null,
             "<b>Session Date<b>"
+         );
+	   $group[] = $this->form->createElement(
+            "static",
+            null,
+            null,
+            "<b>Time Entered Room(HH:MM)</b>"
         );
         $group[] = $this->form->createElement(
             "static",
