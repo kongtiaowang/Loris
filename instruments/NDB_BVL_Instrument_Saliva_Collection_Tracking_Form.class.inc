@@ -401,8 +401,6 @@ function _page5(){
     function _save(array $values): void
     {
       $db =& Database::singleton();
-      $timepoint =& TimePoint::singleton($this->getSessionID());
-      $candidate =& Candidate::singleton($timepoint->getCandID());
       $PSCID = $this->getPSCID();
       $msg_data['PSCID'] = $PSCID;
 
