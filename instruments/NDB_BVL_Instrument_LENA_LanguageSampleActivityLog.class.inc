@@ -105,6 +105,7 @@ class NDB_BVL_Instrument_LENA_LanguageSampleActivityLog extends NDB_BVL_Instrume
 
         //Defines the call back function for HTML Quickform to use when validating the form.
         $this->form->addFormRule(array(&$this, 'XINValidate'));
+	$this->form->addFormRule(array(&$this, 'validate_main_page'));
     }
 
     /**
@@ -486,6 +487,36 @@ class NDB_BVL_Instrument_LENA_LanguageSampleActivityLog extends NDB_BVL_Instrume
 
       $this->form->addFormRule(array(&$this, 'validate_page2'));
     }
+	function validate_main_page($values)
+    {
+            $errors = [];
+            $chosen = array();
+            $session   = $this->getSessionID();
+            $timepoint = \TimePoint::singleton($session);
+            $candidate = \Candidate::singleton($timepoint->getCandID());
+
+            $candID = $candidate->getCandID();
+            $PSCID  = $this->getPSCID();
+            $visitLabel = $this->getVisitLabel();
+
+            foreach (self::$FILE_FIELDS as $k => $v) {
+                    //---------------------------------------------//
+            // If the associated file chooser was used and //
+            // the chooser is on the current page          //
+            //---------------------------------------------//
+         if ($v['page'] != $this->page || $values["{$k}_lena"]["name"] == '') {
+            continue;
+         }
+         if ($v['page'] == $this->page &&  $values["{$k}_lena"]["name"] != '') {
+                         $fname = $values["{$k}_lena"]['name'];
+                                 $correct_filename = ($PSCID .'_'.$candID.'_'.$visitLabel.$v['name']);
+                                 if($fname != $correct_filename){
+                                         $errors["{$k}_lena"] = "Incorrect Filename: Filename should be: " . $correct_filename;
+                                 }
+                         }
+         }
+            return $errors;
+     }
 	
         function validate_page1($values)
     {
@@ -627,9 +658,6 @@ class NDB_BVL_Instrument_LENA_LanguageSampleActivityLog extends NDB_BVL_Instrume
     $timepoint = \TimePoint::singleton($session);
     $candidate = \Candidate::singleton($timepoint->getCandID());
 
-    $candID = $candidate->getCandID();
-    $PSCID  = $candidate->getPSCID();
-    $visitLabel = $timepoint->getVisitLabel();
 
     parent::_saveValues($values);
 
@@ -643,16 +671,6 @@ class NDB_BVL_Instrument_LENA_LanguageSampleActivityLog extends NDB_BVL_Instrume
         //---------------------------------------------//
         if ($v['page'] != $this->page || $files["{$k}_lena"]["name"] == '') {
             continue;
-        }
-
-	//---------------------------------------------//
-        // File naming convention validation	       //
-        //---------------------------------------------//
-        $correct_filename = ($PSCID .'_'.$candID.'_'.$visitLabel.$v['name']);
-
-        if($files["{$k}_lena"]["name"] != $correct_filename){
-                print("Incorrect Filename: Filename should be: " . $correct_filename);
-                break;
         }
 
         //-------------------------------------------------------------------//
