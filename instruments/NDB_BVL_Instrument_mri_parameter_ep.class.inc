@@ -998,8 +998,27 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
             array("csf_pass{@}=={@}1"),
             "Required."
     );
-	$this->addNumericElement("start_hr","Start HR");
-	 $this->addNumericElement("end_hr", "End HR");
+	$group[] = $this->form->createElement("text","start_hr");
+	$group[] = $this->form->createElement("select","start_hr_status",null,
+               array(
+                 null           => "",
+                 'not_answered' => "Did not collect this data",
+                )
+	);	 
+	$this->XINRegisterRule("start_hr",array("start_hr_status{@}=={@}")," Required.","start_hr_group");
+	$this->addGroup($group,"start_hr_group","Start HR",$this->_GUIDelimiter,false);
+	unset($group);
+
+	$group[] = $this->form->createElement("text","end_hr");
+        $group[] = $this->form->createElement("select","end_hr_status",null,
+               array(
+                 null           => "",
+                 'not_answered' => "Did not collect this data",
+                )
+        );
+        $this->XINRegisterRule("end_hr",array("end_hr_status{@}=={@}")," Required.","end_hr_group");
+        $this->addGroup($group,"end_hr_group","End HR",$this->_GUIDelimiter,false);
+	unset($group);
 	 
          $this->form->addElement("text", "captured_cycle", "Captured cycle (ms):");
          $this->form->addElement("text", "acquisition_window", "Acquisition window (ms):");
@@ -1203,7 +1222,12 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
         if (!empty($values["acquisition_window"]) && !is_numeric($values["acquisition_window"])) {
             $errors["acquisition_window"] = 'The value should be three digits.';
         }
-
+	if(!is_numeric($values["start_hr_group"])){
+		$errors["start_hr_group"] = "The value should be numeric";
+	}
+	if(!is_numeric($values["end_hr_group"])){
+                $errors["end_hr_group"] = "The value should be numeric";
+        }
         return $errors;
     }
 
