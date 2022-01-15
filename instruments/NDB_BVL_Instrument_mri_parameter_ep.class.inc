@@ -1028,7 +1028,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
         $this->not_required_field("acquisition_window");
 
 	$this->form->addElement('file', 'mri_parameter_file', 'Upload the MRI Parameter EP Parser file
-       <br><h6><i>(Ex: PSCID_DCCID_visitlabel_CL.txt)</i></h6>');
+       <br><h6><i>(Ex: PSCID_DCCID_visitlabel_CL.puls)</i></h6>');
 
         $this->form->addElement('static', "File_name", "Uploaded File");
 	$this->form->addElement("advcheckbox", 'cardiac_log_not_acquired', 'Cardiac log not acquired', null, null,array("0", "1"));
@@ -1109,7 +1109,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
 
     function isValid(&$file, $args){
 	error_log("isValid func");	  
-    $correct_filename = ($args['PSCID'].'_'.$args['candID'].'_'.$args['visitLabel']."_CL.txt");
+    $correct_filename = ($args['PSCID'].'_'.$args['candID'].'_'.$args['visitLabel']."_CL.puls");
     if($file->fileInfo['name'] != $correct_filename){
             $errors[]="Incorrect Filename: Filename should be: " . $correct_filename;
             return $errors;
