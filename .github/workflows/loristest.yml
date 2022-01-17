@@ -12,7 +12,7 @@ jobs:
             testsuite:
             - static
             - integration
-            php: ['8.1']
+            php: ['8.0']
 
 
     steps:
