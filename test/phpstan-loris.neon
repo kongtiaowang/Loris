@@ -11,7 +11,8 @@ parameters:
         - ../test/integrationtests/LorisIntegrationTest.class.inc
     ignoreErrors:
         - 
-          path: ../php/libraries/FilesDownloadHandler.php
-          path: ../php/libraries/IdentifierGenerator.php
-          path: ../php/libraries/SiteIDGenerator.php
+          paths: 
+              - ../php/libraries/FilesDownloadHandler.php
+              - ../php/libraries/IdentifierGenerator.php
+              - ../php/libraries/SiteIDGenerator.php
            
