@@ -9,3 +9,9 @@ parameters:
         - ../test/integrationtests/BatteryLookup_Test.php
         - ../test/integrationtests/LorisIntegrationTestWithCandidate.class.inc
         - ../test/integrationtests/LorisIntegrationTest.class.inc
+    ignoreErrors:
+        - 
+          path: ../php/libraries/FilesDownloadHandler.php
+          path: ../php/libraries/IdentifierGenerator.php
+          path: ../php/libraries/SiteIDGenerator.php
+           
