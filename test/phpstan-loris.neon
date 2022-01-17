@@ -5,14 +5,10 @@ parameters:
     excludePaths:
         - ../src/
         - ../modules/
+        - ../php/libraries/FilesDownloadHandler.php
+
     bootstrapFiles:
         - ../test/integrationtests/BatteryLookup_Test.php
         - ../test/integrationtests/LorisIntegrationTestWithCandidate.class.inc
         - ../test/integrationtests/LorisIntegrationTest.class.inc
-    ignoreErrors:
-        - 
-          paths: 
-              - ../php/libraries/FilesDownloadHandler.php
-              - ../php/libraries/IdentifierGenerator.php
-              - ../php/libraries/SiteIDGenerator.php
            
