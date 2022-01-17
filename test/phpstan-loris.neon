@@ -4,5 +4,6 @@ parameters:
         - ../php
     excludePaths:
         - ../src/
+        - ../modules/
     bootstrapFiles:
-        - ../test/integrationtests/LorisIntegrationTest.class.inc
+        - ../test/integrationtests/*
