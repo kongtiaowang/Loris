@@ -1,6 +1,5 @@
 parameters:
-    level: 6
     paths:
-        - ../modules/acknowledgements/test/
+        - ../modules/acknowledgements/
     bootstrapFiles:
         - ../test/integrationtests/LorisIntegrationTest.class.inc
