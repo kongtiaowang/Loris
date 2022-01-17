@@ -2,6 +2,7 @@ parameters:
     level: 6
     paths:
         - ../modules/acknowledgements/test/
+        - ../modules/media/test/
     excludePaths:
         - ../php/
     bootstrapFiles:
