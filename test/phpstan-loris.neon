@@ -2,10 +2,12 @@ parameters:
     level: 6
     paths:
         - ../php
-    excludePaths:
         - ../src/
+    excludePaths:
         - ../modules/
         - ../php/libraries/FilesDownloadHandler.php
+        - ../php/libraries/IdentifierGenerator.php
+        - ../php/libraries/SiteIDGenerator.php
 
     bootstrapFiles:
         - ../test/integrationtests/BatteryLookup_Test.php
