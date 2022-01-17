@@ -6,4 +6,6 @@ parameters:
         - ../src/
         - ../modules/
     bootstrapFiles:
-        - ../test/integrationtests/
+        - ../test/integrationtests/BatteryLookup_Test.php
+        - ../test/integrationtests/LorisIntegrationTestWithCandidate.class.inc
+        - ../test/integrationtests/LorisIntegrationTest.class.inc
