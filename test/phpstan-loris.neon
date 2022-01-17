@@ -1,5 +1,8 @@
 parameters:
+    level: 6
     paths:
-        - ../modules/*/test/
+        - ../modules/acknowledgements/test/
+    excludePaths:
+        - ../php/
     bootstrapFiles:
         - ../test/integrationtests/LorisIntegrationTest.class.inc
