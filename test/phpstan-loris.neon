@@ -6,4 +6,4 @@ parameters:
         - ../src/
         - ../modules/
     bootstrapFiles:
-        - ../test/integrationtests/*
+        - ../test/integrationtests/
