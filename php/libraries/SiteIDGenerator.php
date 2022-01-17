@@ -230,8 +230,9 @@ class SiteIDGenerator extends IdentifierGenerator
      * configured. Do error handling to make sure that there is exactly one
      * value corresponding to the requested setting.
      *
-     * @param array<mixed>  $idStructure Settings concerning ID structure
-     *                                  extracted from project/config.xml
+     * @param array<mixed> $idStructure Settings concerning ID structure
+     *                                  extracted from
+     *                                  project/config.xml
      * @param string       $setting     The name of the variable for which we
      *                                  want the value.
      *
@@ -294,7 +295,7 @@ class SiteIDGenerator extends IdentifierGenerator
      *
      * @param array<mixed> $idStructure Settings concerning ID structure
      *                                  extracted from project/config.xml
-     * @param string        $setting     The name of the variable for which
+     * @param string       $setting     The name of the variable for which
      *                                  we want the value.
      *
      * @return array<int,mixed> The value(s) corresponding to $setting.
