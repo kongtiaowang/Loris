@@ -1,5 +1,5 @@
 parameters:
     paths:
-        - ../modules/acknowledgements/
+        - ../modules/*/test/
     bootstrapFiles:
         - ../test/integrationtests/LorisIntegrationTest.class.inc
