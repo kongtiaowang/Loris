@@ -11,11 +11,9 @@ jobs:
         matrix:
             testsuite:
             - static
-            - unit
             - integration
-            php: 
-            -'7.4'
-            -'8.0'
+            php: ['8.0']
+
 
     steps:
     - uses: actions/checkout@v2

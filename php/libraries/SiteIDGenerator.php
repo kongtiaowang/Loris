@@ -150,7 +150,7 @@ class SiteIDGenerator extends IdentifierGenerator
      * @param string $setting One of: 'generation', 'length', 'alphabet',
      *                        'min', 'max'.
      *
-     * @return array<int,int|string>|string|null
+     * @return mixed
      */
     private function _getIDSetting(
         string $setting
@@ -230,8 +230,9 @@ class SiteIDGenerator extends IdentifierGenerator
      * configured. Do error handling to make sure that there is exactly one
      * value corresponding to the requested setting.
      *
-     * @param array<array> $idStructure Settings concerning ID structure
-     *                                  extracted from project/config.sml
+     * @param array<mixed> $idStructure Settings concerning ID structure
+     *                                  extracted from
+     *                                  project/config.xml
      * @param string       $setting     The name of the variable for which we
      *                                  want the value.
      *
@@ -240,7 +241,7 @@ class SiteIDGenerator extends IdentifierGenerator
      * @return ?string
      */
     static function getSeqAttribute(
-        array $idStructure,
+        array  $idStructure,
         string $setting
     ): ?string {
         /* Do validation on 'prefix' and 'alphabet' since they both are found in
@@ -250,7 +251,7 @@ class SiteIDGenerator extends IdentifierGenerator
         switch ($setting) {
         case 'alphabet':
             $seqAttributes = array_filter(
-                self::_getSeqAttribute($idStructure, 'type'),
+                self::_getSeqAttribute($idStructure, "type"),
                 function ($x) {
                     return $x === 'alpha'
                         || $x === 'alphanumeric'
@@ -260,7 +261,7 @@ class SiteIDGenerator extends IdentifierGenerator
             break;
         case 'prefix':
             $seqAttributes = array_filter(
-                self::_getSeqAttribute($idStructure, 'type'),
+                self::_getSeqAttribute($idStructure, "type"),
                 function ($x) {
                     return $x === 'static'
                         || $x === 'siteAbbrev'
@@ -292,7 +293,7 @@ class SiteIDGenerator extends IdentifierGenerator
      * Traverse the $idStructure array and collect all values that exist
      * for $setting.
      *
-     * @param array<array> $idStructure Settings concerning ID structure
+     * @param array<mixed> $idStructure Settings concerning ID structure
      *                                  extracted from project/config.xml
      * @param string       $setting     The name of the variable for which
      *                                  we want the value.
@@ -305,8 +306,8 @@ class SiteIDGenerator extends IdentifierGenerator
     ): array {
         $seqAttributes = [];
         foreach ($idStructure as $seq) {
-            if (isset($seq['@'][$setting])) {
-                $seqAttributes[] = $seq['@'][$setting];
+            if (isset($seq["@"][$setting])) {
+                $seqAttributes[] = $seq["@"][$setting];
             }
         }
         return $seqAttributes;

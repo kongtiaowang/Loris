@@ -1,10 +1,16 @@
 parameters:
-    autoload_directories:
-        - %currentWorkingDirectory%/php/
-        - %currentWorkingDirectory%/src/
-        - %currentWorkingDirectory%/modules/
-        - %currentWorkingDirectory%/test/integrationtests/
-        - %currentWorkingDirectory%/test/unittests/
-    excludes_analyse:
-        - %currentWorkingDirectory%/modules/*/ajax/*
-        - %currentWorkingDirectory%/modules/*/test/*
+    level: 6
+    paths:
+        - ../php
+        - ../src/
+    excludePaths:
+        - ../modules/
+        - ../php/libraries/FilesDownloadHandler.php
+        - ../php/libraries/IdentifierGenerator.php
+        - ../php/libraries/SiteIDGenerator.php
+
+    bootstrapFiles:
+        - ../test/integrationtests/BatteryLookup_Test.php
+        - ../test/integrationtests/LorisIntegrationTestWithCandidate.class.inc
+        - ../test/integrationtests/LorisIntegrationTest.class.inc
+           
