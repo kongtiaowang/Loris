@@ -150,7 +150,7 @@ class SiteIDGenerator extends IdentifierGenerator
      * @param string $setting One of: 'generation', 'length', 'alphabet',
      *                        'min', 'max'.
      *
-     * @return array<int,int|string>|string|null
+     * @return mixed
      */
     private function _getIDSetting(
         string $setting
@@ -251,7 +251,7 @@ class SiteIDGenerator extends IdentifierGenerator
         switch ($setting) {
         case 'alphabet':
             $seqAttributes = array_filter(
-                self::_getSeqAttribute($idStructure, 'type'),
+                self::_getSeqAttribute($idStructure, "type"),
                 function ($x) {
                     return $x === 'alpha'
                         || $x === 'alphanumeric'
@@ -261,7 +261,7 @@ class SiteIDGenerator extends IdentifierGenerator
             break;
         case 'prefix':
             $seqAttributes = array_filter(
-                self::_getSeqAttribute($idStructure, 'type'),
+                self::_getSeqAttribute($idStructure, "type"),
                 function ($x) {
                     return $x === 'static'
                         || $x === 'siteAbbrev'
