@@ -230,8 +230,8 @@ class SiteIDGenerator extends IdentifierGenerator
      * configured. Do error handling to make sure that there is exactly one
      * value corresponding to the requested setting.
      *
-     * @param array<array> $idStructure Settings concerning ID structure
-     *                                  extracted from project/config.sml
+     * @param array<mixed>  $idStructure Settings concerning ID structure
+     *                                  extracted from project/config.xml
      * @param string       $setting     The name of the variable for which we
      *                                  want the value.
      *
@@ -240,7 +240,7 @@ class SiteIDGenerator extends IdentifierGenerator
      * @return ?string
      */
     static function getSeqAttribute(
-        array $idStructure,
+        array  $idStructure,
         string $setting
     ): ?string {
         /* Do validation on 'prefix' and 'alphabet' since they both are found in
@@ -292,9 +292,9 @@ class SiteIDGenerator extends IdentifierGenerator
      * Traverse the $idStructure array and collect all values that exist
      * for $setting.
      *
-     * @param array<array> $idStructure Settings concerning ID structure
+     * @param array<mixed> $idStructure Settings concerning ID structure
      *                                  extracted from project/config.xml
-     * @param string       $setting     The name of the variable for which
+     * @param string        $setting     The name of the variable for which
      *                                  we want the value.
      *
      * @return array<int,mixed> The value(s) corresponding to $setting.
@@ -305,8 +305,8 @@ class SiteIDGenerator extends IdentifierGenerator
     ): array {
         $seqAttributes = [];
         foreach ($idStructure as $seq) {
-            if (isset($seq['@'][$setting])) {
-                $seqAttributes[] = $seq['@'][$setting];
+            if (isset($seq["@"][$setting])) {
+                $seqAttributes[] = $seq["@"][$setting];
             }
         }
         return $seqAttributes;
