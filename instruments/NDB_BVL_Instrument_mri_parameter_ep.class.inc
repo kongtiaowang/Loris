@@ -331,6 +331,25 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
             $i ++;
         }
         $this->form->addElement("textarea", "page0_comment", "Comments:", array('cols'=>25, 'rows'=>4));
+	   
+	$this->form->addElement('header', null, "PULS Summary");
+
+        $group[] = $this->form->createElement('static',null, 'Scores', null);
+        $this->form->addGroup($group, "items_group",'Items', $this->_GUIDelimiter, false);
+        unset($group);
+
+        $fields = array(
+        "puls_min"     => "PULS Min",
+        "puls_max"     => "PULS Max",
+        "puls_avg"     => "PULS Avg",
+        "puls_stddiff" => "PULS StdDiff",
+        );
+        foreach($fields as $field => $label){
+        $group[] = $this->form->createElement('static', "$field", null, null);
+        $this->form->addGroup($group, "{$field}_group", $label, $this->_GUIDelimiter, false);
+        unset($group);
+        }
+
         $this->XINRegisterRule("page0_comment", array("page0_comment{@}=={@}NEVER_REQUIRED"));
     }
 
@@ -1154,6 +1173,19 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
             'Data_dir'  => $mediaPath
     );
 
+	    //Cycle through the lines and extract the data
+        $lines =preg_split("/\\r\\n|\\r|\\n/", $contents);
+	    
+        foreach($lines as $l){
+        $tokens = explode(' ', $l);
+        if($tokens[0] == "PULS" && $tokens[1] == "Min"){
+        $values["puls_min"] = $tokens[5];
+        $values["puls_max"] = $tokens[6];
+        $values["puls_avg"] = $tokens[7];
+        $values["puls_stddiff"] = $tokens[8];
+        break;
+        }
+        }
 	        $db=& Database::singleton();
 
         //-------------------------------------------------------------------//
@@ -1222,10 +1254,10 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
         if (!empty($values["acquisition_window"]) && !is_numeric($values["acquisition_window"])) {
             $errors["acquisition_window"] = 'The value should be three digits.';
         }
-	if(!is_numeric($values["start_hr_group"])){
+	if(!is_numeric($values["start_hr_group"]) && !empty($values["start_hr_group"])){
 		$errors["start_hr_group"] = "The value should be numeric";
 	}
-	if(!is_numeric($values["end_hr_group"])){
+	if(!is_numeric($values["end_hr_group"]) && !empty($values["end_hr_group"])){
                 $errors["end_hr_group"] = "The value should be numeric";
         }
         return $errors;
