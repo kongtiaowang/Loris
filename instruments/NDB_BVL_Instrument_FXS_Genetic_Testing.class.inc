@@ -326,7 +326,8 @@ class NDB_BVL_Instrument_FXS_Genetic_Testing extends NDB_BVL_Instrument
                                     'uncle4' => 'Uncle (Mom’s Brother)','uncle5' => 'Uncle (Mom’s Brother)' );
 
         $yes_no_option = array(null => '', 'yes' => 'Yes', 'no' => 'No', 'unknown' => 'Unknown');
-        $symptoms1 = array('irregular_menstrual_cycles' => 'Irregular menstrual cycles', 'infertility_having_children' => 'Infertility/difficulty having children', 'hot_flashes' => 'Hot flashes', 'premature_ovarian_failure' => 'Premature ovarian failure');
+	$symptoms1 = array('irregular_menstrual_cycles' => 'Irregular menstrual cycles', 'infertility_having_children' => 'Infertility/difficulty having children', 'hot_flashes' => 'Hot flashes', 'premature_ovarian_failure' => 'Premature ovarian failure',
+			'intention_tremor' => 'Intention tremor', 'gait_ataxias' => 'Gait ataxias', 'parkinsonism' => 'Parkinsonism', 'short_term_memory' => 'Short-term memory problems', 'executive_function_problems' => 'Executive function problems');
         $symptoms2 = array('intention_tremor' => 'Intention tremor', 'gait_ataxias' => 'Gait ataxias', 'parkinsonism' => 'Parkinsonism', 'short_term_memory' => 'Short-term memory problems', 'executive_function_problems' => 'Executive function problems');
         
 	$this->addHeader("<h3>MOTHER OF CHILD WITH FXS</h3>");
