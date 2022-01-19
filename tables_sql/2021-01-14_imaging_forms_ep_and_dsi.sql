@@ -197,10 +197,10 @@ INSERT INTO test_battery (Test_name                    , AgeMinDays, AgeMaxDays,
 INSERT INTO test_battery (Test_name                    , AgeMinDays, AgeMaxDays, Active, Stage  , SubprojectID, Visit_label, CenterID)
                   VALUES ('mri_screening_questionnaire', '0'       , '0'       , 'Y'   , 'Visit', 23          , 'V24-CVD'  , NULL);
 
--- Update mock_scanner_training_form_infant in instrument_subtests
-UPDATE instrument_subtests SET Subtest_name='mock_scanner_training_form_infant_page1' WHERE Test_name='mock_scanner_training_form_infant' AND Order_number=1;
-UPDATE instrument_subtests SET Subtest_name='mock_scanner_training_form_infant_page2' WHERE Test_name='mock_scanner_training_form_infant' AND Order_number=2;
-UPDATE instrument_subtests SET Subtest_name='mock_scanner_training_form_infant_page3' WHERE Test_name='mock_scanner_training_form_infant' AND Order_number=3;
-UPDATE instrument_subtests SET Subtest_name='mock_scanner_training_form_infant_page4' WHERE Test_name='mock_scanner_training_form_infant' AND Order_number=4;
-UPDATE instrument_subtests SET Subtest_name='mock_scanner_training_form_infant_page5' WHERE Test_name='mock_scanner_training_form_infant' AND Order_number=5;
-UPDATE instrument_subtests SET Subtest_name='mock_scanner_training_form_infant_page6' WHERE Test_name='mock_scanner_training_form_infant' AND Order_number=6;
+-- Insert mock_scanner_training_form_infant in instrument_subtests
+INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('mock_scanner_training_form_infant','mock_scanner_training_form_infant_page1', "Page 1", 1);
+INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('mock_scanner_training_form_infant','mock_scanner_training_form_infant_page2', "Page 2", 2);
+INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('mock_scanner_training_form_infant','mock_scanner_training_form_infant_page3', "Page 3", 3);
+INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('mock_scanner_training_form_infant','mock_scanner_training_form_infant_page4', "Page 4", 4);
+INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('mock_scanner_training_form_infant','mock_scanner_training_form_infant_page5', "Page 5", 5);
+INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('mock_scanner_training_form_infant','mock_scanner_training_form_infant_page6', "Page 6", 6);
