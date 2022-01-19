@@ -96,12 +96,6 @@ INSERT INTO test_names(Test_name, Full_name, Sub_Group, isDirectEntry)
 --
 -- Instrument mock_scanner_training_form_infant has the same instrument subtests
 -- Mock_Scanner_Training_Version_2
---
--- ------------------------------------------------------------------------------------
-INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number)
-    SELECT 'mock_scanner_training_form_infant', Subtest_name, Description, Order_number
-    FROM instrument_subtests
-    WHERE Test_name = 'Mock_Scanner_Training_Version_2';
 
 -- ---------------------------------------------------------------
 --
