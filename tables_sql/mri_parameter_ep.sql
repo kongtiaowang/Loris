@@ -215,5 +215,9 @@ CREATE TABLE `mri_parameter_ep` (
   `Status` varchar(100) default NULL,
   `File_type` varchar(100) default NULL,
   `Data_dir` varchar(100) default NULL,
+  `puls_min` varchar(10) default NULL,
+  `puls_max` varchar(10) default NULL,
+  `puls_avg` varchar(10) default NULL,
+  `puls_stddiff` varchar(10) default NULL,
   PRIMARY KEY (`CommentID`)
 ) ENGINE=InnoDB default CHARSET=utf8;

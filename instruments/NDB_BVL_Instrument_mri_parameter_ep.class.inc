@@ -331,6 +331,25 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
             $i ++;
         }
         $this->form->addElement("textarea", "page0_comment", "Comments:", array('cols'=>25, 'rows'=>4));
+	   
+	$this->form->addElement('header', null, "PULS Summary");
+
+        $group[] = $this->form->createElement('static',null, 'Scores', null);
+        $this->form->addGroup($group, "items_group",'Items', $this->_GUIDelimiter, false);
+        unset($group);
+
+        $fields = array(
+        "puls_min"     => "PULS Min",
+        "puls_max"     => "PULS Max",
+        "puls_avg"     => "PULS Avg",
+        "puls_stddiff" => "PULS StdDiff",
+        );
+        foreach($fields as $field => $label){
+        $group[] = $this->form->createElement('static', "$field", null, null);
+        $this->form->addGroup($group, "{$field}_group", $label, $this->_GUIDelimiter, false);
+        unset($group);
+        }
+
         $this->XINRegisterRule("page0_comment", array("page0_comment{@}=={@}NEVER_REQUIRED"));
     }
 
@@ -998,8 +1017,27 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
             array("csf_pass{@}=={@}1"),
             "Required."
     );
-	$this->addNumericElement("start_hr","Start HR");
-	 $this->addNumericElement("end_hr", "End HR");
+	$group[] = $this->form->createElement("text","start_hr");
+	$group[] = $this->form->createElement("select","start_hr_status",null,
+               array(
+                 null           => "",
+                 'not_answered' => "Did not collect this data",
+                )
+	);	 
+	$this->XINRegisterRule("start_hr",array("start_hr_status{@}=={@}")," Required.","start_hr_group");
+	$this->addGroup($group,"start_hr_group","Start HR",$this->_GUIDelimiter,false);
+	unset($group);
+
+	$group[] = $this->form->createElement("text","end_hr");
+        $group[] = $this->form->createElement("select","end_hr_status",null,
+               array(
+                 null           => "",
+                 'not_answered' => "Did not collect this data",
+                )
+        );
+        $this->XINRegisterRule("end_hr",array("end_hr_status{@}=={@}")," Required.","end_hr_group");
+        $this->addGroup($group,"end_hr_group","End HR",$this->_GUIDelimiter,false);
+	unset($group);
 	 
          $this->form->addElement("text", "captured_cycle", "Captured cycle (ms):");
          $this->form->addElement("text", "acquisition_window", "Acquisition window (ms):");
@@ -1009,7 +1047,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
         $this->not_required_field("acquisition_window");
 
 	$this->form->addElement('file', 'mri_parameter_file', 'Upload the MRI Parameter EP Parser file
-       <br><h6><i>(Ex: PSCID_DCCID_visitlabel_CL.txt)</i></h6>');
+       <br><h6><i>(Ex: PSCID_DCCID_visitlabel_CL.puls)</i></h6>');
 
         $this->form->addElement('static', "File_name", "Uploaded File");
 	$this->form->addElement("advcheckbox", 'cardiac_log_not_acquired', 'Cardiac log not acquired', null, null,array("0", "1"));
@@ -1090,7 +1128,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
 
     function isValid(&$file, $args){
 	error_log("isValid func");	  
-    $correct_filename = ($args['PSCID'].'_'.$args['candID'].'_'.$args['visitLabel']."_CL.txt");
+    $correct_filename = ($args['PSCID'].'_'.$args['candID'].'_'.$args['visitLabel']."_CL.puls");
     if($file->fileInfo['name'] != $correct_filename){
             $errors[]="Incorrect Filename: Filename should be: " . $correct_filename;
             return $errors;
@@ -1135,6 +1173,19 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
             'Data_dir'  => $mediaPath
     );
 
+	    //Cycle through the lines and extract the data
+        $lines =preg_split("/\\r\\n|\\r|\\n/", $contents);
+	    
+        foreach($lines as $l){
+        $tokens = explode(' ', $l);
+        if($tokens[0] == "PULS" && $tokens[1] == "Min"){
+        $values["puls_min"] = $tokens[5];
+        $values["puls_max"] = $tokens[6];
+        $values["puls_avg"] = $tokens[7];
+        $values["puls_stddiff"] = $tokens[8];
+        break;
+        }
+        }
 	        $db=& Database::singleton();
 
         //-------------------------------------------------------------------//
@@ -1203,7 +1254,12 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
         if (!empty($values["acquisition_window"]) && !is_numeric($values["acquisition_window"])) {
             $errors["acquisition_window"] = 'The value should be three digits.';
         }
-
+	if(!is_numeric($values["start_hr_group"]) && !empty($values["start_hr_group"])){
+		$errors["start_hr_group"] = "The value should be numeric";
+	}
+	if(!is_numeric($values["end_hr_group"]) && !empty($values["end_hr_group"])){
+                $errors["end_hr_group"] = "The value should be numeric";
+        }
         return $errors;
     }
 
