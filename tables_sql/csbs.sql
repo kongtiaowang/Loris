@@ -297,4 +297,6 @@ CREATE TABLE `csbs` (
   PRIMARY KEY (`CommentID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
+INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('csbs','csbs_page1', "Scoring Worksheet", 1);
+INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('csbs','csbs_page2', "Symbolic Behaviour Scales", 2);
 INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('csbs','csbs_page3', "Fidelity", 3);
