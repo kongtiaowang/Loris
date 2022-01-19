@@ -1,4 +1,4 @@
-INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('csbs','CSBS (Communication and Symbolic Behavior Scales)', "Fidelity", 3);
+INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('csbs','csbs_page3', "Fidelity", 3);
 ALTER TABLE csbs ADD pg3_fidelity_wind_up_toy varchar(100) default NULL;
 ALTER TABLE csbs ADD pg3_fidelity_balloon varchar(100) default NULL;
 ALTER TABLE csbs ADD pg3_fidelity_bubbles varchar(100) default NULL;

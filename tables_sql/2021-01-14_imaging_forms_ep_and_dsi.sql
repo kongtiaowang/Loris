@@ -96,12 +96,6 @@ INSERT INTO test_names(Test_name, Full_name, Sub_Group, isDirectEntry)
 --
 -- Instrument mock_scanner_training_form_infant has the same instrument subtests
 -- Mock_Scanner_Training_Version_2
---
--- ------------------------------------------------------------------------------------
-INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number)
-    SELECT 'mock_scanner_training_form_infant', Subtest_name, Description, Order_number
-    FROM instrument_subtests
-    WHERE Test_name = 'Mock_Scanner_Training_Version_2';
 
 -- ---------------------------------------------------------------
 --
@@ -197,3 +191,10 @@ INSERT INTO test_battery (Test_name                    , AgeMinDays, AgeMaxDays,
 INSERT INTO test_battery (Test_name                    , AgeMinDays, AgeMaxDays, Active, Stage  , SubprojectID, Visit_label, CenterID)
                   VALUES ('mri_screening_questionnaire', '0'       , '0'       , 'Y'   , 'Visit', 23          , 'V24-CVD'  , NULL);
 
+-- Insert mock_scanner_training_form_infant in instrument_subtests
+INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('mock_scanner_training_form_infant','mock_scanner_training_form_infant_page1', "Page 1", 1);
+INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('mock_scanner_training_form_infant','mock_scanner_training_form_infant_page2', "Page 2", 2);
+INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('mock_scanner_training_form_infant','mock_scanner_training_form_infant_page3', "Page 3", 3);
+INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('mock_scanner_training_form_infant','mock_scanner_training_form_infant_page4', "Page 4", 4);
+INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('mock_scanner_training_form_infant','mock_scanner_training_form_infant_page5', "Page 5", 5);
+INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_number) VALUES ('mock_scanner_training_form_infant','mock_scanner_training_form_infant_page6', "Page 6", 6);
