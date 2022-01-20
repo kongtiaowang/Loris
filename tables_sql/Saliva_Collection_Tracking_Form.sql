@@ -65,5 +65,6 @@ CREATE TABLE `Saliva_Collection_Tracking_Form` (
   `fq4_status` varchar(100) default NULL,
   `other_date_delivered` varchar(100) default NULL,
   `other_staff_delivered` varchar(100) default NULL,
+  `sq4_status` varchar(100) default NULL,
   `fq9` text
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

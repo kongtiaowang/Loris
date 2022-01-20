@@ -132,13 +132,20 @@ function _page1(){
                $this->XINRegisterRule('sq3', array("sq2{@}=={@}At_Visit"), "Required if 'At Visit', for Question 2");
 
 
-
-
-               $this->form->addElement('date','sq4', "5. Date mailed to UNC", $this->dateOptions);
+	       $group[] = $this->form->createElement("date","sq4",null,$this->dateOptions);
+               $group[] = $this->form->createElement("select","sq4_status",null,
+               array(
+                 null           => "",
+                 'not_answered' => "Not yet planned, storing at site",
+                )
+              );
+              $this->XINRegisterRule("sq4",array("sq4_status{@}=={@}"),"A Date, Not yet planned, storing at site is required.","sq4_group");
+              $this->addGroup($group,"sq4_group","5. Date mailed to UNC?",$this->_GUIDelimiter,false);
+	      unset($group);
                
-               $this->XINRegisterRule('sq4', array("sq2{@}=={@}At_Visit"), "Required if 'At Visit', for Question 2");
+               $this->XINRegisterRule('sq4_group', array("sq2{@}=={@}At_Visit"), "Required if 'At Visit', for Question 2");
 
-               $this->form->addElement('text','sq5','6. Tracking number:');
+               $this->form->addElement('text','sq5','6. Tracking number for shipment to UNC:');
 
                $this->XINRegisterRule('sq5', array("sq2{@}=={@}At_Visit"), "Required if 'At Visit', for Question 2");
 
@@ -186,13 +193,13 @@ function _page2(){
 
                $this->XINRegisterRule('pq2', array("pq1{@}=={@}yes"), "Required if 'Yes' was selected for Question 1.");
 
-	       $this->form->addElement('select','pq3a','3. Which type of kit will the Subject use?', self::KIT_TYPE);
+	       $this->form->addElement('select','pq3a','3. Which type of kit will the Proband use?', self::KIT_TYPE);
 
                $this->form->addElement('select','pq3',"4. Does this proband give consent?", array(''=>'','yes'=>'Yes','refused'=>'Refused','not_asked'=>'Not Asked'));
     
                $this->form->addElement('select','pq6','5. How will saliva be collected?', self::VISIT_MAIL_OPTIONS);
 
-                $this->XINRegisterRule('pq6', array("pq2{@}=={@}yes"), "Required if 'yes' was selected for Question 2");
+              $this->XINRegisterRule('pq6', array("pq2{@}=={@}yes"), "Required if 'yes' was selected for Question 2");
 
 
             $this->form->addGroup($group, 'proband_header1', "At Visit", $this->_GUIDelimiter, FALSE);
@@ -204,7 +211,7 @@ function _page2(){
 
                $this->XINRegisterRule('pq7', array("pq6{@}=={@}At_Visit"), "Required if 'At Visit' was selected for Question 6");
 
-             $this->form->addElement('text','pq8','7. Tracking number:');
+             $this->form->addElement('text','pq8','7. Tracking number for shipment to UNC:');
 
                $this->XINRegisterRule('pq8', array("pq6{@}=={@}At_Visit"), "Required if 'At Visit' was selected for Question 6");
 
@@ -249,9 +256,9 @@ function _page3(){
         $examiners = $this->_getExaminerNames();
 
         //Defines the call back function for HTML Quickform to use when validating the form.
-        $this->form->addFormRule(array(&$this,'XINValidate'));
+               $this->form->addFormRule(array(&$this,'XINValidate'));
 
-            $this->form->addElement('header', null, 'Mother');
+               $this->form->addElement('header', null, 'Mother');
 
                $this->form->addElement('select','mq1','1. Does the mother need saliva collected?',self::YES_NO_DONT_KNOW);
                $this->form->addRule('mq1', 'This question is required', 'required');              
@@ -284,7 +291,7 @@ function _page3(){
 
                $this->XINRegisterRule('mq4_group', array("mq2{@}=={@}At_Visit"), "Required if 'At Visit' was selected for Question 2");
 
-               $this->form->addElement('text','mq5','5. Tracking number');
+               $this->form->addElement('text','mq5','5. Tracking number for shipment to UNC');
 
                $this->XINRegisterRule('mq5', array("mq2{@}=={@}At_Visit"), "Required if 'At Visit' was selected for Question 2");
 
@@ -349,7 +356,7 @@ function _page4(){
 
                $this->XINRegisterRule('fq4_group', array("fq2{@}=={@}At_Visit"), "Required if 'At Visit' was selected for Question 2");
 
-               $this->form->addElement('text','fq5','5. Tracking number');
+               $this->form->addElement('text','fq5','5. Tracking number for shipment to UNC');
 
                $this->XINRegisterRule('fq5', array("fq2{@}=={@}At_Visit"), "Required if 'At Visit' was selected for Question 2");
 
