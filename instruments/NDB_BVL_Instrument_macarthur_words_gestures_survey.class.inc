@@ -325,15 +325,19 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
                 "11. Smacks lips in a `yum yum` gesture to indicate that something tastes good.", "12. Shrugs to indicate `all gone` or `where'd it go`.");
 
         $first_communicative_gestures_sometimes = 0;
-        $first_communicative_gestures_often = 0;
+	$first_communicative_gestures_often = 0;
+	$first_communicative_gestures_not_answered = 0;
         $qNum = 1;
 
         foreach($questionArray as $label) {
             if($record["II_A_" . $qNum] == "sometimes"){
                 $first_communicative_gestures_sometimes++;
             }
-            else if($record["II_A_" . $qNum] == "often"){
+	    else if($record["II_A_" . $qNum] == "often"){
                 $first_communicative_gestures_often++;
+	    }
+	    else if($record["II_A_" . $qNum] == "not_answered"){
+                $first_communicative_gestures_not_answered++;
             }
             $qNum++;
         }
@@ -356,8 +360,8 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         }
 
 
-        $scores["total_gestures_number"] = $first_communicative_gestures_sometimes + $first_communicative_gestures_often + array_sum($YesActions);
-        $scores["early_gestures_number"] = $first_communicative_gestures_sometimes + $first_communicative_gestures_often + $YesActions['B'];
+        $scores["total_gestures_number"] = $first_communicative_gestures_sometimes + $first_communicative_gestures_often + $first_communicative_gestures_not_answered + array_sum($YesActions);
+        $scores["early_gestures_number"] = $first_communicative_gestures_sometimes + $first_communicative_gestures_often + $first_communicative_gestures_not_answered + $YesActions['B'];
         $scores["later_gestures_number"] = $YesActions['C'] + $YesActions['D'] + $YesActions['E'];
 
 
