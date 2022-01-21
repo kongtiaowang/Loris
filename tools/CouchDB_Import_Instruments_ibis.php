@@ -27,6 +27,7 @@ class CouchDBInstrumentImporter
 
     function UpdateDataDicts($Instruments)
     {
+        $missing_instruments = array();
         foreach ($Instruments as $instrument => $name) {
             $Dict   = array(
                        'Administration'  => array(
@@ -72,6 +73,10 @@ class CouchDBInstrumentImporter
                 }
             }
 
+            if (empty($Fields)) {
+                array_push($missing_instruments, $instrument);
+            }
+
             unset($Dict['city_of_birth']);
             unset($Dict['city_of_birth_status']);
 
@@ -109,6 +114,17 @@ class CouchDBInstrumentImporter
                  'DataDictionary' => array($instrument => $Dict),
                 )
             );
+        }
+
+        if (!empty($missing_instruments)) {
+            $today_date=date("Y-m-d");
+            $msq_data = array(
+                'today_date'  => $today_date,
+                'instruments' => $missing_instruments
+            );
+            $emails = "jordan.stirling@mcin.ca,sruthy.mcin@gmail.com,santiago.torres@mcin.ca,nicolasbrossard.mni@gmail.com,leigh.ibis@gmail.com";
+
+            Email::send($emails, "missing_dictionary.tpl", $msq_data, "", "IBIS Team <noreply@ibis.loris.ca>", "", "", "text/html");
         }
     }
 
@@ -382,8 +398,8 @@ class CouchDBInstrumentImporter
     {
         $tests = $this->GetInstruments();
         $this->UpdateDataDicts($tests);
-        $results = $this->UpdateCandidateDocs($tests);
-        $this->CreateRunLog($results);
+//        $results = $this->UpdateCandidateDocs($tests);
+//        $this->CreateRunLog($results);
     }
 }
 // Don't run if we're doing the unit tests, the unit test will call run..
