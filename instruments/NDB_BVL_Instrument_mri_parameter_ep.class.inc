@@ -1062,7 +1062,7 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
 
     }
 
-        function _saveValues(array $values): void
+    function _saveValues(array $values): void
     {
 	$timepoint =& TimePoint::singleton($this->getSessionID());
         $candidate =& Candidate::singleton($timepoint->getCandID());
@@ -1113,18 +1113,10 @@ class NDB_BVL_Instrument_mri_parameter_ep extends NDB_BVL_Instrument
             }
 	}
 
-        unset($values['candID'], 
-	      $values['sessionID'], 
-	      $values['commentID'], 
-	      $values['test_name'], 
-	      $values['page'], 
-	      $values['fire_away'], 
-	      $values['subtest'], 
-	      $values['MAX_FILE_SIZE'], 
-	      $values['mri_parameter_file']);
-	$this->_save($values);
+        unset($values['MAX_FILE_SIZE'], $values['mri_parameter_file']);
 
-	}
+	parent::_saveValues($values);
+    }
 
     function isValid(&$file, $args){
 	error_log("isValid func");	  
