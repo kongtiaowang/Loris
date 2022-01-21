@@ -108,8 +108,6 @@ class NDB_BVL_Instrument_Saliva_Collection_Tracking_Form extends NDB_BVL_Instrum
 function _page1(){
 
         $this->form->addElement('header', null, 'Subject');
-
-           //    $this->form->addElement('static','sq_1',"1. Does the subject need saliva collected?");
                
                $this->form->addElement('select','sq1','1. Does the subject need saliva collected?',self::YES_NO_DONT_KNOW);
                $this->form->addRule('sq1', 'This question is required', 'required');
@@ -139,7 +137,7 @@ function _page1(){
                  'not_answered' => "Not yet planned, storing at site",
                 )
               );
-              $this->XINRegisterRule("sq4",array("sq4_status{@}=={@}"),"A Date, Not yet planned, storing at site is required.","sq4_group");
+              $this->XINRegisterRule("sq4",array("sq4_status{@}=={@}"),"You must either enter a date or specify that the sample is stored at the site","sq4_group");
               $this->addGroup($group,"sq4_group","5. Date mailed to UNC?",$this->_GUIDelimiter,false);
 	      unset($group);
                
@@ -222,7 +220,7 @@ function _page2(){
                  'not_answered' => "Not yet planned, storing at site",
                 )
             );
-            $this->XINRegisterRule("pq9",array("pq9_status{@}=={@}"),"A Date, Not yet planned, storing at site is required.","pq9_group");
+            $this->XINRegisterRule("pq9",array("pq9_status{@}=={@}"),"You must either enter a date or specify that the sample is stored at the site","pq9_group");
 	    $this->addGroup($group,"pq9_group","8. Date mailed to UNC?",$this->_GUIDelimiter,false);
 	    unset($group);
 
@@ -285,7 +283,7 @@ function _page3(){
                  'not_answered' => "Not yet planned, storing at site",
                 )
             );
-            $this->XINRegisterRule("mq4",array("mq4_status{@}=={@}"),"A Date, Not yet planned, storing at site is required.","mq4_group");
+            $this->XINRegisterRule("mq4",array("mq4_status{@}=={@}"),"You must either enter a date or specify that the sample is stored at the site","mq4_group");
             $this->addGroup($group,"mq4_group","4. Date mailed to UNC?",$this->_GUIDelimiter,false);
 	    unset($group);
 
@@ -350,7 +348,7 @@ function _page4(){
                  'not_answered' => "Not yet planned, storing at site",
                 )
             );
-            $this->XINRegisterRule("fq4",array("fq4_status{@}=={@}"),"A Date, Not yet planned, storing at site is required.","fq4_group");
+            $this->XINRegisterRule("fq4",array("fq4_status{@}=={@}"),"You must either enter a date or specify that the sample is stored at the site","fq4_group");
             $this->addGroup($group,"fq4_group","4. Date mailed to UNC?",$this->_GUIDelimiter,false);
 	    unset($group);
 

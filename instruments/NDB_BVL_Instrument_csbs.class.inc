@@ -3,6 +3,7 @@
 class NDB_BVL_Instrument_csbs extends NDB_BVL_Instrument
 {
     use LegacyInstrumentTrait;
+    use instrument_validator;
 
     const ACTIVITIES = array('wind_up', 'balloon', 'bubbles', 'jar', 'books', 'play');
 
@@ -88,12 +89,7 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
 
         //The array of selects with multiple answers allowed
         //Any LorisForm multiple selects must be listed here
-	$this->selectMultipleElements = array(
-				"pg3_fidelity_wind_up_toy",
-				"pg3_fidelity_balloon",
-				"pg3_fidelity_bubbles",
-				"pg3_fidelity_jar",
-			);
+	$this->selectMultipleElements = array();
 
         // required fields for data entry completion status
         $this->_requiredElements = array('Examiner', "q_4_rate_of_communicating_1", "q_20_stacks_tower");
@@ -1610,40 +1606,53 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
 
         $this->addHeader("ADMINISTRATION FIDELITY");
         $this->form->addElement('static',null,"Were the following sampling opportunities completed?");
-        $this->form->addElement('select',"pg3_fidelity_wind_up_toy","Wind-up toy",$this->fidelity,["multiple"]);
-        $this->form->addElement('select',"pg3_fidelity_balloon","Balloon",$this->fidelity,["multiple"]);
-        $this->form->addElement('select',"pg3_fidelity_bubbles","Bubbles",$this->fidelity,["multiple"]);
-        $this->form->addElement('select',"pg3_fidelity_jar","Jar",$this->fidelity,["multiple"]);
+        $this->form->addElement('select',"pg3_fidelity_wind_up_toy","Wind-up toy",$this->fidelity);
+        $this->form->addElement('select',"pg3_fidelity_balloon","Balloon",$this->fidelity);
+        $this->form->addElement('select',"pg3_fidelity_bubbles","Bubbles",$this->fidelity);
+        $this->form->addElement('select',"pg3_fidelity_jar","Jar",$this->fidelity);
 
         $fidelity_sec2 = array(
                     null                    => "",
                     "not_administered"      => "Not Administered",
                     "one_book"              => "One book",
                     "two_books"             => "Two books",
+	 );
+
+	$fidelity_sec1 = array(
+                    null                    => "",
+                    "not_administered"      => "Not Administered",
+                    "administered"          => "Administered",
         );
 
         $this->form->addElement('static',null,"Were the following sampling opportunities administered?");
         $this->form->addElement('select',"pg3_fidelity_books","Books",$fidelity_sec2);
-        $this->form->addElement('select',"pg3_fidelity_play","Play",$fidelity_sec2);
-        $this->form->addElement('select',"pg3_fidelity_blocks","Blocks",$fidelity_sec2);
+        $this->form->addElement('select',"pg3_fidelity_play","Play",$fidelity_sec1);
+        $this->form->addElement('select',"pg3_fidelity_blocks","Blocks",$fidelity_sec1);
 
-        $this->form->addElement('select',"pg3_fidelity_if_blocks_was_administered","If blocks was administered, was the child given a constructive play probe?",$this->yesOrNo);
-        $this->form->addElement('select',"pg3_fidelity_how_many_gaze","How many gaze following prompts was the child provided?",array(null,"0","1","2"));
-        $this->form->addElement('select',"pg3_fidelity_child_given_for_object_names","How many comprehension probes was the child given for object names?",array(null,"0","1","2","3","4"));
+	$this->form->addElement('select',"pg3_fidelity_if_blocks_was_administered","If blocks was administered, was the child given a constructive play probe?",$this->yesOrNo);
+	$this->XINRegisterRule("pg3_fidelity_if_blocks_was_administered", array("pg3_fidelity_blocks{@}=={@}administered"), "Required if Blocks Administered");
+        $this->form->addElement('select',"pg3_fidelity_how_many_gaze","How many gaze following prompts was the child provided?",array(null => "","0" => "0","1" => "1","2" => "2"));
+        $this->form->addElement('select',"pg3_fidelity_child_given_for_object_names","How many comprehension probes was the child given for object names?",array(null => "","0" => "0","1" => "1","2" => "2","3" => "3","4" => "4"));
         $this->form->addElement('select',"pg3_fidelity_if_the_child_was_only_given","If the child was only given 2 comprehension probes for object names,did the child respond incorrectly to the first two probes?",$this->yesOrNo);
-        $this->form->addElement('select',"pg3_fidelity_child_was_given_3_comprehension","If the child was only given 3 comprehension probes for
+	$this->XINRegisterRule("pg3_fidelity_if_the_child_was_only_given", array("pg3_fidelity_child_given_for_object_names{@}=={@}2"), "Required");
+	$this->form->addElement('select',"pg3_fidelity_child_was_given_3_comprehension","If the child was only given 3 comprehension probes for
         object names, did the child respond correctly to all three probes?",$this->yesOrNo);
-        $this->form->addElement('select',"pg3_fidelity_how_many_comprehension_probes","How many comprehension probes was the child given for person names?",array(null,"0","1","2","3"));
+	$this->XINRegisterRule("pg3_fidelity_child_was_given_3_comprehension", array("pg3_fidelity_child_given_for_object_names{@}=={@}3"), "Required");
+	$this->form->addElement('select',"pg3_fidelity_how_many_comprehension_probes","How many comprehension probes was the child given for person names?",array(null => "","0" => "0","1" => "1","2" => "2","3" => "3"));
         $this->form->addElement('select',"pg3_fidelity_child_given_2_comprehension","If the child was only given 2 comprehension probes for
         person names, did the child respond incorrectly to the first two probes?",$this->yesOrNo);
-        $this->form->addElement('select',"pg3_fidelity_child_respond_correctly","If the child was only given 2 comprehension probes for
-        person names, did the child respond correctly to the first two probes?",$this->yesOrNo);
-        $this->form->addElement('select',"pg3_fidelity_child_given_for_body_parts","How many comprehension probes was the child given for body parts?",array(null,"0","1","2","3","4"));
+	$this->XINRegisterRule("pg3_fidelity_child_given_2_comprehension", array("pg3_fidelity_how_many_comprehension_probes{@}=={@}2"), "Required");
+	$this->form->addElement('select',"pg3_fidelity_child_respond_correctly","If the child was only given 3 comprehension probes for
+	person names, did the child respond correctly to the first two probes?",$this->yesOrNo);
+        $this->XINRegisterRule("pg3_fidelity_child_respond_correctly", array("pg3_fidelity_how_many_comprehension_probes{@}=={@}3"), "Required");
+        $this->form->addElement('select',"pg3_fidelity_child_given_for_body_parts","How many comprehension probes was the child given for body parts?",array(null => "","0" => "0","1" => "1","2" => "2","3" => "3","4" => "4"));
         $this->form->addElement('select',"pg3_fidelity_child_respond_incorrectly","If the child was only given 2 comprehension probes for
         body part names, did the child respond incorrectly to the first two probes",$this->yesOrNo);
-        $this->form->addElement('select',"pg3_child_respond_correctly_to_all_three_probes","If the child was only given 3 comprehension probes for
+	$this->XINRegisterRule("pg3_fidelity_child_respond_incorrectly", array("pg3_fidelity_child_given_for_body_parts{@}=={@}2"), "Required");
+	$this->form->addElement('select',"pg3_child_respond_correctly_to_all_three_probes","If the child was only given 3 comprehension probes for
         body part names, did the child respond correctly to all three probes?",$this->yesOrNo);
-        $this->form->addElement("textarea", "pg3_additional_notes_on_administration_fidelity", "Additional notes on administration fidelity", array('cols'=>25, 'rows'=>4));
+	$this->XINRegisterRule("pg3_child_respond_correctly_to_all_three_probes", array("pg3_fidelity_child_given_for_body_parts{@}=={@}3"), "Required");
+	$this->form->addElement("textarea", "pg3_additional_notes_on_administration_fidelity", "Additional notes on administration fidelity", array('cols'=>25, 'rows'=>4));
 
         $this->addHeader("VIDEO FIDELITY");
         $this->form->addElement('select',"pg3_was_the_child_visible_throughout","Was the child visible throughout administration?",$this->yesOrNo);
@@ -1651,8 +1660,9 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
         $this->form->addElement('select',"pg3_was_the_examiner_visible_throughout","Was the examiner visible throughout administration?",$this->yesOrNo);
         $this->form->addElement('select',"pg3_were_the_audio_and_video_streams","Were the audio and video streams in sync?",$this->yesOrNo);
         $this->form->addElement('select',"pg3_were_the_examiner_and_child_audible","Were the examiner and child audible throughout the video?",$this->yesOrNo);
-        $this->form->addElement("textarea", "pg3_if_no_for_any_of_the_above", "If 'No for any of the above please provide details on video quality here", array('cols'=>25, 'rows'=>4));
-
+	$this->form->addElement("textarea", "pg3_if_no_for_any_of_the_above", "If 'No' for any of the above please provide details on video quality here", array('cols'=>25, 'rows'=>4));
+	$this->XINRegisterRule("pg3_if_no_for_any_of_the_above",array("pg3_was_the_child_visible_throughout{@}=={@}no|pg3_was_the_parent_visible_throughout{@}=={@}no|pg3_was_the_examiner_visible_throughout{@}=={@}no|pg3_were_the_audio_and_video_streams{@}=={@}no|pg3_were_the_examiner_and_child_audible{@}=={@}no"),"Required.");
+        $this->form->addFormRule(array(&$this, 'validatePage3'));
     }
 
    function _saveValues(array $values): void
@@ -1729,8 +1739,8 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
     function isValid(&$file, $args){
 	    $correct_filename = ($args['PSCID'].'_'.$args['candID'].'_'.$args['visitLabel']."_CSBS.mp4");
 	    $correct_filenames = ($args['PSCID'].'_'.$args['candID'].'_'.$args['visitLabel']."_CSBS.mov");
-        if($file->fileInfo['name'] != $correct_filename || $file->fileInfo['name'] != $correct_filenames){
-            $errors[]="Incorrect Filename: Filename should be: " . $correct_filename;
+        if($file->fileInfo['name'] != $correct_filename && $file->fileInfo['name'] != $correct_filenames){
+            $errors[]="Incorrect Filename: Filename should be: " . ($args['PSCID'].'_'.$args['candID'].'_'.$args['visitLabel']."_CSBS.mov/mp4");
             return $errors;
         }
 
@@ -1974,5 +1984,31 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
 
        return $errors;
    }
+  function validatePage3($values) {
+	  $errors = [];
+	  if($values["pg3_fidelity_blocks"] != "administered"){
+	  $this->validate_empty_subquestions($values, ["pg3_fidelity_if_blocks_was_administered"], $errors);
+	  }
+	  if($values["pg3_fidelity_child_given_for_object_names"] != 2){
+          $this->validate_empty_subquestions($values, ["pg3_fidelity_if_the_child_was_only_given"], $errors);
+	  }
+	  if($values["pg3_fidelity_child_given_for_object_names"] != 3){
+          $this->validate_empty_subquestions($values, ["pg3_fidelity_child_was_given_3_comprehension"], $errors);
+          }
+	 if($values["pg3_fidelity_how_many_comprehension_probes"] != 2){
+          $this->validate_empty_subquestions($values, ["pg3_fidelity_child_given_2_comprehension"], $errors);
+          }
+	if($values["pg3_fidelity_how_many_comprehension_probes"] != 3){
+          $this->validate_empty_subquestions($values, ["pg3_fidelity_child_respond_correctly"], $errors);
+	}
+	  if($values["pg3_fidelity_child_given_for_body_parts"] != 2){
+          $this->validate_empty_subquestions($values, ["pg3_fidelity_child_respond_incorrectly"], $errors);
+        }
+	if($values["pg3_fidelity_child_given_for_body_parts"] != 3){
+          $this->validate_empty_subquestions($values, ["pg3_child_respond_correctly_to_all_three_probes"], $errors);
+        }
+
+	return $errors;
+  }
 }
 ?>
