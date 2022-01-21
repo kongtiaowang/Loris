@@ -53,7 +53,6 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
                     "not_administered"          => "Not administered",
                     "one_communication_probe"   => "One Communication Probe",
                     "two_communication_probes"  => "Two Communication Probes",
-                    "toys_in_a_bag"             => "Toys in a Bag",
         );
 
         var $yesOrNo = array(
@@ -250,7 +249,7 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
 
 	$this->form->addElement("static", null, "<br/>");
 
-	$this->form->addElement('file', 'csbs_file', 'Upload the .csv file
+	$this->form->addElement('file', 'csbs_file', 'Upload the .mov/.mp4 file
         <br><h6><i>(Ex: Filename should be PSCID_DCCID_visitlabel_CSBS.mp4/mov)</i></h6>');
         $this->XINRegisterRule("csbs_file", array("csbs_file{@}=={@}NEVER_REQUIRED"));
         $this->form->addElement('static', "File_name", "Uploaded File");
@@ -1605,11 +1604,31 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
     function _page3(){
 
         $this->addHeader("ADMINISTRATION FIDELITY");
-        $this->form->addElement('static',null,"Were the following sampling opportunities completed?");
-        $this->form->addElement('select',"pg3_fidelity_wind_up_toy","Wind-up toy",$this->fidelity);
-        $this->form->addElement('select',"pg3_fidelity_balloon","Balloon",$this->fidelity);
-        $this->form->addElement('select',"pg3_fidelity_bubbles","Bubbles",$this->fidelity);
-        $this->form->addElement('select',"pg3_fidelity_jar","Jar",$this->fidelity);
+	//$this->form->addElement('static',null,"Were the following sampling opportunities completed?");
+	$group[] = $this->form->createElement('static',null,"Were the following sampling opportunities completed?");
+	$group[] = $this->form->createElement('static',null,"Toys in a Bag");
+	$this->form->addGroup($group, "header",null, $this->_GUIDelimiter, false);
+        unset($group);
+	$group[] = $this->form->createElement('select',"pg3_fidelity_wind_up_toy",null,$this->fidelity);
+	$group[] = $this->form->createElement("advcheckbox", "pg3_fidelity_wind_up_toy_bag", null, null, null, array("unchecked", "checked"));
+	$this->XINRegisterRule("pg3_fidelity_wind_up_toy", array("pg3_fidelity_wind_up_toy{@}=={@}"), "Required","wind_up_toy_group");
+	$this->form->addGroup($group, "wind_up_toy_group","Wind-up toy", $this->_GUIDelimiter, false);
+	unset($group);
+        $group[] = $this->form->createElement('select',"pg3_fidelity_balloon",null,$this->fidelity);
+	$group[] = $this->form->createElement("advcheckbox", "pg3_fidelity_balloon_bag", null, null, null, array("unchecked", "checked"));
+	$this->XINRegisterRule("pg3_fidelity_balloon", array("pg3_fidelity_balloon{@}=={@}"), "Required","balloon_group");
+	$this->form->addGroup($group, "balloon_group","Balloon", $this->_GUIDelimiter, false);
+        unset($group);
+	$group[] = $this->form->createElement('select',"pg3_fidelity_bubbles",null,$this->fidelity);
+	$group[] = $this->form->createElement("advcheckbox", "pg3_fidelity_bubbles_bag", null, null, null, array("unchecked", "checked"));
+	$this->XINRegisterRule("pg3_fidelity_bubbles", array("pg3_fidelity_bubbles{@}=={@}"), "Required","bubbles_group");
+	$this->form->addGroup($group, "bubbles_group","Bubbles", $this->_GUIDelimiter, false);
+        unset($group);
+	$group[] = $this->form->createElement('select',"pg3_fidelity_jar",null,$this->fidelity);
+	$group[] = $this->form->createElement("advcheckbox", "pg3_fidelity_jar_bag", null, null, null, array("unchecked", "checked"));
+	$this->XINRegisterRule("pg3_fidelity_jar", array("pg3_fidelity_jar{@}=={@}"), "Required","jar_group");
+	$this->form->addGroup($group, "jar_group","Jar", $this->_GUIDelimiter, false);
+        unset($group);
 
         $fidelity_sec2 = array(
                     null                    => "",
@@ -1644,7 +1663,7 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
 	$this->XINRegisterRule("pg3_fidelity_child_given_2_comprehension", array("pg3_fidelity_how_many_comprehension_probes{@}=={@}2"), "Required");
 	$this->form->addElement('select',"pg3_fidelity_child_respond_correctly","If the child was only given 3 comprehension probes for
 	person names, did the child respond correctly to the first two probes?",$this->yesOrNo);
-        $this->XINRegisterRule("pg3_fidelity_child_respond_correctly", array("pg3_fidelity_how_many_comprehension_probes{@}=={@}3"), "Required");
+        $this->XINRegisterRule("pg3_fidelity_child_respond_correctly", array("pg3_fidelity_how_many_comprehension_probes{@}=={@}2"), "Required");
         $this->form->addElement('select',"pg3_fidelity_child_given_for_body_parts","How many comprehension probes was the child given for body parts?",array(null => "","0" => "0","1" => "1","2" => "2","3" => "3","4" => "4"));
         $this->form->addElement('select',"pg3_fidelity_child_respond_incorrectly","If the child was only given 2 comprehension probes for
         body part names, did the child respond incorrectly to the first two probes",$this->yesOrNo);
@@ -1998,7 +2017,7 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
 	 if($values["pg3_fidelity_how_many_comprehension_probes"] != 2){
           $this->validate_empty_subquestions($values, ["pg3_fidelity_child_given_2_comprehension"], $errors);
           }
-	if($values["pg3_fidelity_how_many_comprehension_probes"] != 3){
+	if($values["pg3_fidelity_how_many_comprehension_probes"] != 2){
           $this->validate_empty_subquestions($values, ["pg3_fidelity_child_respond_correctly"], $errors);
 	}
 	  if($values["pg3_fidelity_child_given_for_body_parts"] != 2){
