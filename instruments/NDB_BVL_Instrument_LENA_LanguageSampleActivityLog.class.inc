@@ -126,17 +126,17 @@ class NDB_BVL_Instrument_LENA_LanguageSampleActivityLog extends NDB_BVL_Instrume
 	$this->form->addElement("static", null, "<br><br>");
 
 	$this->form->addElement('file', 'its_file_lena', 'Upload the .its file
-        <br><h6><i>(Ex: Filename should be LENA_PSCID_CandID_VisitLabel.its)</i></h6>');
+        <br><h6><i>(Ex: Filename should be PSCID_CandID_VisitLabel_LENA.its)</i></h6>');
         $this->XINRegisterRule("its_file_lena", array("its_file_lena{@}=={@}NEVER_REQUIRED"));
         $this->form->addElement('static', "its_file", "Uploaded File");
 
         $this->form->addElement('file', 'upl_file_lena', 'Upload the .upl file
-        <br><h6><i>(Ex: Filename should be LENA_PSCID_CandID_VisitLabel.upl)</i></h6>');
+        <br><h6><i>(Ex: Filename should be PSCID_CandID_VisitLabel_LENA.upl)</i></h6>');
         $this->XINRegisterRule("upl_file_lena", array("upl_file_lena{@}=={@}NEVER_REQUIRED"));
         $this->form->addElement('static', "upl_file", "Uploaded File");
 
         $this->form->addElement('file', 'wav_file_lena', 'Upload the .wav file
-        <br><h6><i>(Ex: Filename should be LENA_PSCID_CandID_VisitLabel.wav)</i></h6>');
+        <br><h6><i>(Ex: Filename should be PSCID_CandID_VisitLabel_LENA.wav)</i></h6>');
         $this->XINRegisterRule("wav_file_lena", array("wav_file_lena{@}=={@}NEVER_REQUIRED"));
         $this->form->addElement('static', "wav_file", "Uploaded File");
     }
@@ -509,7 +509,7 @@ class NDB_BVL_Instrument_LENA_LanguageSampleActivityLog extends NDB_BVL_Instrume
          }
          if ($v['page'] == $this->page &&  $values["{$k}_lena"]["name"] != '') {
                          $fname = $values["{$k}_lena"]['name'];
-                                 $correct_filename = ($PSCID .'_'.$candID.'_'.$visitLabel.$v['name']);
+                                 $correct_filename = ($PSCID .'_'.$candID.'_'.$visitLabel."_LENA".$v['name']);
                                  if($fname != $correct_filename){
                                          $errors["{$k}_lena"] = "Incorrect Filename: Filename should be: " . $correct_filename;
                                  }
