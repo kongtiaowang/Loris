@@ -1661,7 +1661,7 @@ INSERT INTO instrument_subtests VALUES('', 'csbs', 'csbs_page2', 'Symbolic Behav
         $this->form->addElement('select',"pg3_fidelity_child_given_2_comprehension","If the child was only given 2 comprehension probes for
         person names, did the child respond incorrectly to the first two probes?",$this->yesOrNo);
 	$this->XINRegisterRule("pg3_fidelity_child_given_2_comprehension", array("pg3_fidelity_how_many_comprehension_probes{@}=={@}2"), "Required");
-	$this->form->addElement('select',"pg3_fidelity_child_respond_correctly","If the child was only given 3 comprehension probes for
+	$this->form->addElement('select',"pg3_fidelity_child_respond_correctly","If the child was only given 2 comprehension probes for
 	person names, did the child respond correctly to the first two probes?",$this->yesOrNo);
         $this->XINRegisterRule("pg3_fidelity_child_respond_correctly", array("pg3_fidelity_how_many_comprehension_probes{@}=={@}2"), "Required");
         $this->form->addElement('select',"pg3_fidelity_child_given_for_body_parts","How many comprehension probes was the child given for body parts?",array(null => "","0" => "0","1" => "1","2" => "2","3" => "3","4" => "4"));
