@@ -163,7 +163,7 @@ function _page1(){
 
                $this->XINRegisterRule('sq6', array("sq2{@}=={@}Via_Mail"), "Required if 'Via Mail', for Question 2");
 
-	       $this->form->addElement('text','sq8','8. Tracking number for return label to UNC');
+	       $this->form->addElement('text','sq8','8. Tracking number for shipment to UNC:');
 
                $this->form->addFormRule(array(&$this, 'validate_page1'));
 
@@ -238,7 +238,7 @@ function _page2(){
                 $this->XINRegisterRule('pq10', array("pq6{@}=={@}Via_Mail"), "Required if 'Via Mail' was selected for Question 6");
 
 
-                $this->form->addElement('text', 'pq_tracking_no', '9. Tracking number for return label to UNC');
+                $this->form->addElement('text', 'pq_tracking_no', '9. Tracking number for shipment to UNC:');
 
 
                 $this->XINRegisterRule('pq_tracking_no', array("pq6{@}=={@}Via_Mail"), "Required if 'Via Mail' was selected for Question 6");
@@ -304,7 +304,7 @@ function _page3(){
                
               $this->XINRegisterRule('mq6', array("mq2{@}=={@}Via_Mail"), "Required if 'Via Mail', Question 2");
 
-              $this->form->addElement('text', 'mq_tracking_no', '7. Tracking number for return label to UNC');
+              $this->form->addElement('text', 'mq_tracking_no', '7. Tracking number for shipment to UNC:');
 
 
               $this->XINRegisterRule('mq_tracking_no', array("mq2{@}=={@}Via_Mail"), "Required if 'Via Mail' was selected for Question 2");
@@ -369,7 +369,7 @@ function _page4(){
                
               $this->XINRegisterRule('fq6', array("fq2{@}=={@}Via_Mail"), "Required if 'Via Mail' was selected for Question 2");
 
-              $this->form->addElement('text', 'fq_tracking_no', '7. Tracking number for return label to UNC');
+              $this->form->addElement('text', 'fq_tracking_no', '7. Tracking number for shipment to UNC:');
 
 
               $this->XINRegisterRule('fq_tracking_no', array("fq2{@}=={@}Via_Mail"), "Required if 'Via Mail' was selected for Question 2");
