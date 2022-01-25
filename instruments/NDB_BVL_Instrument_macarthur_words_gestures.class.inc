@@ -358,7 +358,8 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
 
         $first_communicative_gestures_sometimes = 0;
         $first_communicative_gestures_often = 0;
-        $qNum = 1;
+	$first_communicative_gestures_not_yet = 0;
+	$qNum = 1;
 
         foreach($questionArray as $label) {
             if($record["II_A_" . $qNum] == "sometimes"){
@@ -366,6 +367,9 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
             }
             else if($record["II_A_" . $qNum] == "often"){
                 $first_communicative_gestures_often++;
+	    }
+	    else if($record["II_A_" . $qNum] == "not_yet"){
+                $first_communicative_gestures_not_yet++;
             }
             $qNum++;
         }
@@ -388,8 +392,8 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         }
 
 
-        $scores["total_gestures_number"] = $first_communicative_gestures_sometimes + $first_communicative_gestures_often + array_sum($YesActions);
-        $scores["early_gestures_number"] = $first_communicative_gestures_sometimes + $first_communicative_gestures_often + $YesActions['B'];
+        $scores["total_gestures_number"] = $first_communicative_gestures_sometimes + $first_communicative_gestures_often + $first_communicative_gestures_not_yet + array_sum($YesActions);
+        $scores["early_gestures_number"] = $first_communicative_gestures_sometimes + $first_communicative_gestures_often + $first_communicative_gestures_not_yet + $YesActions['B'];
         $scores["later_gestures_number"] = $YesActions['C'] + $YesActions['D'] + $YesActions['E'];
 
 
