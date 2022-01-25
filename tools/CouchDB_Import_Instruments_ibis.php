@@ -27,7 +27,10 @@ class CouchDBInstrumentImporter
 
     function UpdateDataDicts($Instruments)
     {
-        $missing_instruments = array();
+        $config               = \NDB_Config::singleton();
+        $missing_instruments  = array();
+        $excluded_instruments = $config->getSetting('excluded_instruments');
+
         foreach ($Instruments as $instrument => $name) {
             $Dict   = array(
                        'Administration'  => array(
@@ -73,7 +76,7 @@ class CouchDBInstrumentImporter
                 }
             }
 
-            if (empty($Fields)) {
+            if (empty($Fields) && !in_array($instrument, $excluded_instruments)) {
                 array_push($missing_instruments, $instrument);
             }
 
@@ -398,8 +401,8 @@ class CouchDBInstrumentImporter
     {
         $tests = $this->GetInstruments();
         $this->UpdateDataDicts($tests);
-//        $results = $this->UpdateCandidateDocs($tests);
-//        $this->CreateRunLog($results);
+        $results = $this->UpdateCandidateDocs($tests);
+        $this->CreateRunLog($results);
     }
 }
 // Don't run if we're doing the unit tests, the unit test will call run..
