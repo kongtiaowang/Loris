@@ -13,6 +13,8 @@ CREATE TABLE `CBCL_6_To_18_survey_subject` (
 `Window_Difference` varchar(255) default NULL,
 `relationship_to_child` enum('mother','father','step_mother','step_father','other') default NULL,
 `other_relationship_to_child` varchar(255) default NULL,
+`score_validity` varchar(100) default NULL,
+`other_prob_score` varchar(100) default NULL,
 `anxious_score` varchar(100) default NULL,
 `anxious_T_score` varchar(100) default NULL,
 `anxious_percentile` varchar(100) default NULL,
