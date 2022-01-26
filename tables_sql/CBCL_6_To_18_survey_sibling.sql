@@ -16,6 +16,8 @@ CREATE TABLE `CBCL_6_To_18_survey_sibling` (
 `anxious_score` varchar(100) default NULL,
 `anxious_T_score` varchar(100) default NULL,
 `anxious_percentile` varchar(100) default NULL,
+`score_validity` varchar(100) default NULL,
+`other_prob_score` varchar(100) default NULL,
 `depressed_score` varchar(100) default NULL,
 `depressed_T_score` varchar(100) default NULL,
 `depressed_percentile` varchar(100) default NULL,
