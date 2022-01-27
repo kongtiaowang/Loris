@@ -1727,7 +1727,10 @@ such as where we live",
         }
 
         if ($can_compute_mean_substance_use) {
-            $sum  = $scores["tobacco_t_score"] + $scores["alcohol_t_score"] + $scores["drugs_t_score"];
+            $sum  = is_numeric($scores["tobacco_t_score"]) ? $scores["tobacco_t_score"] : 0;
+            $sum += is_numeric($scores["alcohol_t_score"]) ? $scores["alcohol_t_score"] : 0;
+            $sum += is_numeric($scores["drugs_t_score"])   ? $scores["drugs_t_score"]   : 0;
+
             $mean = $this->roundToNearestPoint5($sum/3);
             $scores["mean_substance_use_score"] = $mean;
 
