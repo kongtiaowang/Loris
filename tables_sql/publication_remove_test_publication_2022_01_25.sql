@@ -1,6 +1,4 @@
 
-SET FOREIGN_KEY_CHECKS = 0;
-
 Delete from publication_collaborator_rel where PublicationCollaboratorID IN (select LeadInvestigatorID from publication WHERE Title='Paper_Test_Test') and PublicationID IN (select PublicationID from publication WHERE Title='Paper_Test_Test') ;
 
 DELETE FROM publication WHERE Title='Paper_Test_Test';
@@ -39,5 +37,3 @@ Delete from publication_collaborator_rel where PublicationCollaboratorID IN (sel
 
 DELETE FROM publication WHERE Title='Appreciating Temporal Heterogeneity in Autism.';
 
-
-SET FOREIGN_KEY_CHECKS = 1;
