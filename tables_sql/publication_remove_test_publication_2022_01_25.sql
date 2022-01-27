@@ -12,7 +12,7 @@ Delete from publication_collaborator_rel where PublicationID IN (select Publicat
 
 DELETE FROM publication_parameter_type_rel WHERE PublicationID IN (select PublicationID from publication WHERE Title='Paper_Test_Test');
 
-DELETE FROM publication_test_names_rel WHERE PublicationID IN (select PublicationID from publication WHERE Title='Test_Test');
+DELETE FROM publication_test_names_rel WHERE PublicationID IN (select PublicationID from publication WHERE Title='Paper_Test_Test');
 
 DELETE FROM publication WHERE Title='Paper_Test_Test';
 
