@@ -25,6 +25,7 @@ CREATE TABLE `med_records_SA` (
 `apgar_1_minute_status` enum('not_answered') default NULL,
 `apgar_5_minute` varchar(255) default NULL,
 `apgar_5_minute_status` enum('not_answered') default NULL,
+`mode_of_delivery` enum("vaginal","vaginal_with_forceps","vaginal_with_vacuum","c_section","nr") default NULL,
 PRIMARY KEY  (`CommentID`)
 
               ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
