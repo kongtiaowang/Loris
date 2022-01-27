@@ -74,7 +74,15 @@ class NDB_BVL_Instrument_med_records_SA extends NDB_BVL_Instrument
         $this->form->addElement("static", null, "APGAR SCORES");
         $this->addNumericElement("apgar_1_minute", $this->indent . "at 1 minute:");
         $this->addNumericElement("apgar_5_minute", $this->indent . "at 5 minutes:");
-
+	$this->form->addElement('select', "mode_of_delivery", "Mode of Delivery",
+        array(
+           null                   => "", 
+           "vaginal"              => "Vaginal", 
+           "vaginal_with_forceps" => "Vaginal with forceps",
+	   "vaginal_with_vacuum"  => "Vaginal with vacuum",
+           "c_section"            => "C-section",
+           "nr"                   => "NR")
+       );
 
     }
 }
