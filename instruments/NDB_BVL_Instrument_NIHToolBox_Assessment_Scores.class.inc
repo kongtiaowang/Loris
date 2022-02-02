@@ -305,7 +305,7 @@ class NDB_BVL_Instrument_NIHToolBox_Assessment_Scores extends NDB_BVL_Instrument
                     "select f.CommentID from flag as f
                   join `session` as s on f.SessionID=s.ID
                   join `candidate` as c on s.CandID=c.CandID
-                  WHERE s.Visit_label='VSA' and c.PSCID=:pscid
+                  WHERE s.Visit_label='VSA' or s.Visit_label='VSA-CVD'  and c.PSCID=:pscid
                   and f.Test_name=:tesna and f.CommentID not like 'DDE_%'",
                     array(
                         'pscid' => $pscid,
@@ -316,7 +316,7 @@ class NDB_BVL_Instrument_NIHToolBox_Assessment_Scores extends NDB_BVL_Instrument
                     "select f.CommentID from flag as f
                   join `session` as s on f.SessionID=s.ID
                   join `candidate` as c on s.CandID=c.CandID
-                  WHERE s.Visit_label='VSA' and c.PSCID=:pscid
+                  WHERE s.Visit_label='VSA' or s.Visit_label='VSA-CVD' and c.PSCID=:pscid
                   and f.Test_name=:tesna and f.CommentID not like 'DDE_%'",
                     array(
                         'pscid' => $pscid,
@@ -327,7 +327,7 @@ class NDB_BVL_Instrument_NIHToolBox_Assessment_Scores extends NDB_BVL_Instrument
                     "select f.CommentID from flag as f
                   join `session` as s on f.SessionID=s.ID
                   join `candidate` as c on s.CandID=c.CandID
-                  WHERE s.Visit_label='VSA' and c.PSCID=:pscid
+                  WHERE s.Visit_label='VSA' or s.Visit_label='VSA-CVD' and c.PSCID=:pscid
                   and f.Test_name=:tesna and f.CommentID not like 'DDE_%'",
                     array(
                         'pscid' => $pscid,
