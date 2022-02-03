@@ -196,7 +196,9 @@ class NDB_BVL_Instrument_PVT extends NDB_BVL_Instrument
             $errors[]="Incorrect Filename: Filename should be: " . $correct_filename;
             return $errors;
         }
-    
+        
+	$dateFileUploaded = date("Y-m-d-h-i-s-5");
+	$file->fileInfo['name'] = $args['PSCID'].'_'.$args['candID'].'_'.$args['visitLabel']."_PVT-".$dateFileUploaded."-Data.csv";
         $fp=fopen($file->fileInfo['tmp_name'], "r");
         $contents=fread($fp,filesize($file->fileInfo['tmp_name']));
         fclose($fp);
@@ -230,7 +232,6 @@ class NDB_BVL_Instrument_PVT extends NDB_BVL_Instrument
         // Compute the directory where all media files are stored
         $config    = NDB_Config::singleton();
         $mediaPath = $config->getSetting('mediaPath');
-
         $values=array(
             'UserID'    =>$args['username'],
             'Status'    =>'assembly',
