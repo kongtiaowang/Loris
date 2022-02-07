@@ -79,11 +79,21 @@ class NDB_BVL_Instrument_PVT extends NDB_BVL_Instrument
     {
         $this->form->addElement('header', null, "PVT (Psychomotor Vigilance Task)");
         // automatically adds examiner & date of administration
-        $this->_addMetadataFields();
+	$this->_addMetadataFields();
+	$this->form->addElement("static",null,"<h3>Instruction</h3><br>
+	The 'PVT' instrument will parse the values in the file and fill out the corresponding fields in the section below.<br>
+	The uploaded file has to be in CSV format.<br>
+	Filename should be: PSCID_DCCID_VisitLabel_PVT-Date-Time-TestType-Data.csv");
         $this->form->addElement('file', 'pvt_file', 'Upload the PVT Parser file 
-       <br><h6><i>(Ex: PSCID_DCCID_VisitLabel_PVT.csv)</i></h6>');
+       <br><h6><i>(Ex: PSCID_DCCID_VisitLabel_PVT-12-05-2021-17-7-32-5-Data.csv)</i></h6>');
 
 	$this->form->addElement('static', "File_name", "Uploaded File");
+	
+	$this->form->addElement('static', "test_date", "Date");
+
+	$this->form->addElement('static', "test_time", "Time");
+
+	$this->form->addElement('static', "test_type", "TestType");
 
 	$this->form->addElement('header', null, "PVT (Psychomotor Vigilance Task)");
 
@@ -190,15 +200,16 @@ class NDB_BVL_Instrument_PVT extends NDB_BVL_Instrument
      * @access    public
      */
     function isValid(&$file, $args){
-        $correct_filename = ($args['PSCID'].'_'.$args['candID'].'_'.$args['visitLabel']."_PVT.csv");
+        $correct_filename = ($args['PSCID'].'_'.$args['candID'].'_'.$args['visitLabel']."_PVT");
 
-        if($file->fileInfo['name'] != $correct_filename ){
-            $errors[]="Incorrect Filename: Filename should be: " . $correct_filename;
+	if($file->fileInfo['type'] != 'csv'){
+	 $errors[]= "File must be CSV format\n";
+	}
+        if(strpos($file->fileInfo['name'], $correct_filename) === false ){
+            $errors[]="Incorrect Filename: Filename should be: " . $correct_filename . "-Date-Time-TestType-Data.csv";
             return $errors;
         }
         
-	$dateFileUploaded = date("Y-m-d-h-i-s-5");
-	$file->fileInfo['name'] = $args['PSCID'].'_'.$args['candID'].'_'.$args['visitLabel']."_PVT-".$dateFileUploaded."-Data.csv";
         $fp=fopen($file->fileInfo['tmp_name'], "r");
         $contents=fread($fp,filesize($file->fileInfo['tmp_name']));
         fclose($fp);
@@ -239,6 +250,14 @@ class NDB_BVL_Instrument_PVT extends NDB_BVL_Instrument
             'File_name' =>$file->getDestinationFilename(),
             'Data_dir'  =>$mediaPath
         );
+
+	// Extract and store in the table, test date, test time, and test type from file name
+	if(!empty($file->fileInfo['name'])){
+		$info = explode("-",$file->fileInfo['name']);
+		$values["test_date"] = $info[2] . "-" . $info[3] . "-" . $info[4];
+		$values["test_time"] = $info[5] . "-" . $info[6] . "-" . $info[7];
+		$values["test_type"] = $info[8];
+	}
 
 	//Cycle through the lines and extract the data
 	$lines =preg_split("/\\r\\n|\\r|\\n/", $contents);
