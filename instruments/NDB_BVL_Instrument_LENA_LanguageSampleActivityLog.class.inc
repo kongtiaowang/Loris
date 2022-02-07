@@ -483,7 +483,9 @@ class NDB_BVL_Instrument_LENA_LanguageSampleActivityLog extends NDB_BVL_Instrume
                             );
 
         $this->addSelect("pg2_how_would_you_rate_today_amount_of_parent_child_talk_time", "How would you rate today in terms of amount of parent-child talk time?", $talk_time_rating);
-             
+ 	
+	$this->form->addElement("select","if_you_feel_uncomfortable_with_a_portion_of_today","If you feel uncomfortable with a portion of today’s language sample and would like for it not to be used, we will delete the entire language sample and send you another LENA DLP for a replacement recording day. Please mark checkbox accordingly.",array(null => "",
+	"yes" => "Yes: Parents signed this section and asked that the recording be deleted.","no" => "No: The parent did not sign this section and the recording can be used."));	
 
       $this->form->addFormRule(array(&$this, 'validate_page2'));
     }

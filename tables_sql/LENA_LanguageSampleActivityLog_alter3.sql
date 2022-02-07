@@ -1,0 +1,1 @@
+ALTER TABLE LENA_LanguageSampleActivityLog ADD if_you_feel_uncomfortable_with_a_portion_of_today varchar(100) default NULL;
