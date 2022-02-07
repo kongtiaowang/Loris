@@ -202,10 +202,12 @@ class NDB_BVL_Instrument_PVT extends NDB_BVL_Instrument
     function isValid(&$file, $args){
         $correct_filename = ($args['PSCID'].'_'.$args['candID'].'_'.$args['visitLabel']."_PVT");
 
+	$split_file_name = explode("-",$file->fileInfo['name']);
+
 	if($file->fileInfo['type'] != 'csv'){
 	 $errors[]= "File must be CSV format\n";
 	}
-        if(strpos($file->fileInfo['name'], $correct_filename) === false ){
+        if(strpos($file->fileInfo['name'], $correct_filename) === false || sizeof($split_file_name) < 9){
             $errors[]="Incorrect Filename: Filename should be: " . $correct_filename . "-Date-Time-TestType-Data.csv";
             return $errors;
         }
