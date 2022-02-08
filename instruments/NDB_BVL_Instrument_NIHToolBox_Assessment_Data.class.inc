@@ -12,7 +12,7 @@
  * @link     https://www.github.com/aces/IBIS/
  */
 
-/**
+/*i*
  * Creates the form elements for the NIHToolBox_Assessment_Data instrument
  *
  * @category Instrument
@@ -130,8 +130,8 @@ class NDB_BVL_Instrument_NIHToolBox_Assessment_Data extends NDB_BVL_Instrument
   <br>This will save your time of going to each candidate and uploading the file.</i><br>
 ");
         $this->form->addElement('static', null, '<br>');
-        $this->form->addFile('NIHToolBox_Assessment_Data', 'Upload the Assessment Data File
-<br><h6><i>(Filename should be NIHToolBox_Assessment_Data.csv)</i></h6>', array());
+        $this->form->addElement('file','NIHToolBox_Assessment_Data', 'Upload the Assessment Data File
+<br><h6><i>(Filename should be PSCID_DCCID_VisitLabel_NIHToolBox_Assessment_Data.csv)</i></h6>');
         $this->form->addElement('static', 'Uploaded_assessment_data', "Uploaded Assessment Data File");
         $this->form->addElement('hidden', 'hidden_val', "Hidden Val");
         $this->XINRegisterRule("hidden_val", array("{hidden_val}{@}=={@}NEVER_REQUIRED"));
@@ -181,11 +181,7 @@ class NDB_BVL_Instrument_NIHToolBox_Assessment_Data extends NDB_BVL_Instrument
             $this->_saveCandidateAge($values);
         }
 
-        //Set the prefix to prepend to the filenames
-        //$file->setFilenamePrefix($timepoint->getVisitLabel()."-".$this->testName."-");
-
         //set the the IDs to the handler functions.
-            if(isset($values['NIHToolBox_Assessment_Data']) && !empty($values['NIHToolBox_Assessment_Data']['name'])) {
                 require_once "File_Upload.class.inc";
                 $file=new File_Upload;
 
@@ -198,11 +194,8 @@ class NDB_BVL_Instrument_NIHToolBox_Assessment_Data extends NDB_BVL_Instrument
 
                 //Set the target directory that you want files moved into once they are validated and processed.
                 $config = NDB_Config::singleton();
-                $dir = $config->getSetting("UploadDir");
-                if(empty($dir)) {
-                    $dir = ".";
-                };
-                $file->setBaseUploadDirectory($dir . "/NIHToolBox_Assessment_Data/");
+                $dir = $config->getSetting("mediaPath");
+		$file->setBaseUploadDirectory($dir);
 
                 //Set the prefix to prepend to the filenames
                 //$file->setFilenamePrefix($timepoint->getVisitLabel()."-".$this->testName."-");
@@ -220,9 +213,11 @@ class NDB_BVL_Instrument_NIHToolBox_Assessment_Data extends NDB_BVL_Instrument
 
 
                 //If the form is validated, call File_Upload::processFiles() which loops through the files and
-                //proccesses them (including verify, move, and import steps)
+		//proccesses them (including verify, move, and import steps)
+		if ($values['NIHToolBox_Assessment_Data']['name'] != false) {
                 $file->processFiles();
-            }
+		}
+
         //echo error messages
         if(!empty($file->errorLog)){
             while(list($fileType,$fileErrors)=each($file->errorLog)){
@@ -247,7 +242,7 @@ class NDB_BVL_Instrument_NIHToolBox_Assessment_Data extends NDB_BVL_Instrument
     function isValid(&$file, $args){
 
 
-        $correct_filename = $this->testName.".csv";
+        $correct_filename = ($args['PSCID'].'_'.$args['candID'].'_'.$args['visitLabel'].'_'.$this->testName.".csv");
         if($file->fileInfo['name'] != $correct_filename){
             $errors[]="Incorrect Filename: Filename should be: " . $correct_filename;
             return $errors;
@@ -267,7 +262,14 @@ class NDB_BVL_Instrument_NIHToolBox_Assessment_Data extends NDB_BVL_Instrument
      */
     function importFile(&$file, $args)
     {
+        $timepoint =& TimePoint::singleton($this->getSessionID());
+	$candidate =& Candidate::singleton($timepoint->getCandID());
+        $user      =& User::singleton();
 
+        // Compute the directory where all media files are stored
+        $config    = NDB_Config::singleton();
+	$mediaPath = $config->getSetting('mediaPath');
+        
         $sesionID=$this->getSessionID();
         $main_values = array(
              'Data_dir_assessment' => $file->getDestinationDirectory(),
@@ -275,10 +277,13 @@ class NDB_BVL_Instrument_NIHToolBox_Assessment_Data extends NDB_BVL_Instrument
              'File_type' => 'NIHToolBox',
              'Examiner'  =>$this->getExaminerID('NIH ToolBox Not Applicable'),
              'Date_taken'=>$this->getDateAdmin($sesionID),
-             'Data_entry_completion_status' =>'Complete'
-        );
-
-        if(strpos($file->fileInfo['name'], 'Data') !== false) {
+	     'Data_entry_completion_status' =>'Complete',
+     );
+	// save file name in the test name
+	$values = array();
+	$values["Uploaded_assessment_data"] = $file->fileInfo['name'];
+	parent::_saveValues($values);
+   
             $upload_values2=array();
 
             /** @var Database $db */
@@ -287,8 +292,6 @@ class NDB_BVL_Instrument_NIHToolBox_Assessment_Data extends NDB_BVL_Instrument
             $db->_trackChanges = false;
             ////////////////////////////////////////////////////////////////
            //uploading values to NIHToolBox_Assessment_Data
-
-            $main_values['Uploaded_assessment_data'] = $file->getDestinationFilename();
 
             $result = array();
             $file = fopen($file->fileInfo['tmp_name'], "r");
@@ -366,14 +369,51 @@ class NDB_BVL_Instrument_NIHToolBox_Assessment_Data extends NDB_BVL_Instrument
                 echo "No matching PSCID found in the csv file to update the data under VSA visit label. \n
                 Please check your file and try again.";
                 return false;
+	    }
+	    
+
+                //-------------------------------------------------------------------//
+        // Check if there is a file in the media module with the same name   //
+        // as the uploaded file.                                             //
+	//-------------------------------------------------------------------//
+
+        $row          = $db->pselectRow(
+                "SELECT e.Date_Taken, m.ID FROM {$this->table} e LEFT JOIN media m ON (e.Uploaded_assessment_data=m.file_name) WHERE e.CommentID=:CommentID",
+                array("CommentID" => $this->getCommentID())
+        );
+        $dateTaken = $row['Date_Taken'];
+	$mediaID   = $row['ID'];
+
+        $query = [
+                      'session_id'  => $timepoint->getSessionID(),
+                      'instrument'  => $this->table,
+		      'date_taken'  => $dateTaken,
+		      'comments'    => $comments,
+                      'file_name'   => $values["Uploaded_assessment_data"],
+                      'file_type'   => 'NIHToolBox_Assessment_Data',
+                      'data_dir'    => $mediaPath,
+		      'uploaded_by' => $user->getData('UserID'),
+        ];
+
+        try {
+            // File alread exists in media module: update
+            if (!is_null($mediaID)) {
+               $db->update('media', $query, array('ID' => $mediaID));
+            // File does not exist in media module: insert new
+            } else {
+                $db->insert('media', $query);
             }
-            else {
-                echo "UPLOAD SUCCESSFUL!!!! \n";
-                echo $valid . " Entries Updated.\n";
-                echo $ids_updated . "got updated";
-                return true;
-            }
+        } catch (DatabaseException $e) {
+            print_r($e);
         }
+
+        // Update the  table
+    $result = $db->update($this->testName, $values, array('CommentID'=>$args['CommentID']));
+	echo "UPLOAD SUCCESSFUL!!!! \n";
+        echo $valid . " Entries Updated.\n";
+        echo $ids_updated . "got updated";
+	return true;
+	     
         }
 
 
@@ -388,8 +428,8 @@ class NDB_BVL_Instrument_NIHToolBox_Assessment_Data extends NDB_BVL_Instrument
      * @access    public
      */
     function getTargetDirectory(&$file, $args){
-        $output=$args['candID']."/";
-        return $output;
+	 // Uploaded file goes directly in the media directory (no subdirectory needs to be created)
+        return "";
     }
 
     function getExaminerID($fullName)
