@@ -93,7 +93,7 @@ class NDB_BVL_Instrument_NIHToolBox_Assessment_Scores extends NDB_BVL_Instrument
 ");
         $this->form->addElement('static', null, '<br>');
         $this->form->addElement('file','NIHToolBox_Assessment_Scores', 'Upload the NIH ToolBox Assessment Scores File
-<br><h6><i>(Filename should be PSCID_DCCID_VisitLabel_NIHToolBox_Assessment_Scores.csv)</i></h6>', array());
+<br><h6><i>(Filename should be PSCID_DCCID_VisitLabel_NIHToolBox_Assessment_Scores.csv)</i></h6>');
         $this->form->addElement('static', 'Uploaded_Assessment_Scores', "Uploaded  NIH ToolBox Assessment Scores File");
         $this->form->addElement('hidden', 'hidden_val', "Hidden Val");
         $this->XINRegisterRule("hidden_val", array("{hidden_val}{@}=={@}NEVER_REQUIRED"));
