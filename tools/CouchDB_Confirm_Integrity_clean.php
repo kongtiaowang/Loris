@@ -89,7 +89,7 @@ class CouchDBIntegrityChecker
                          c.CandID=s.CandID
                      AND s.Visit_label=:VL
                      AND s.Active='Y'
-                     AND s.Current_stage NOT IN ('Recycling Bin', 'Not Started')
+                     AND s.Current_stage NOT IN ('Recycling Bin')
                    )
                  LEFT JOIN participant_status ps ON ( ps.Candid = c.Candid )
                  WHERE c.PSCID=:PID
