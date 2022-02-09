@@ -143,6 +143,18 @@ class NDB_BVL_Instrument_NIHToolBox_Registration_Data extends NDB_BVL_Instrument
                 $dir = $config->getSetting("mediaPath");
                 $file->setBaseUploadDirectory($dir);
 
+		// move previously uploaded file not in media module
+                $prev_dir = $config->getSetting("UploadDir");
+                if(empty($prev_dir)) {
+                    $prev_dir = ".";
+                };
+                //previously file directory and naming convention
+                $prev_filename = $prev_dir . "/NIHToolBox_Registration_Data/NIHToolBox_Registration_Data.csv";
+                if (file_exists($prev_filename)) {
+                        move_uploaded_file($prev_filename, $dir);
+                        echo "move previously uploaded file " . $prev_filename . " to media";
+		}
+
                 //Set the prefix to prepend to the filenames
                 //$file->setFilenamePrefix($timepoint->getVisitLabel()."-".$this->testName."-");
 
