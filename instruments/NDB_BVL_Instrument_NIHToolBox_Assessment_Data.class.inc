@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * This file contains the NDB_BVL_Instrument NIHToolBox_Assessment_Data
  * class
  *
@@ -12,7 +12,7 @@
  * @link     https://www.github.com/aces/IBIS/
  */
 
-/*i*
+/**
  * Creates the form elements for the NIHToolBox_Assessment_Data instrument
  *
  * @category Instrument
