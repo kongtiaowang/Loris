@@ -36,10 +36,10 @@ class NDB_BVL_Instrument_Eye_Tracking_Heart_Rate extends NDB_BVL_Instrument
 
     var $child_with = array(
                 null                  =>  "",
-                "mother"              =>  "Mother",
-                "father"              =>  "Father",
-                "ra"                  =>  "RA",
-                "bca"                 =>  "BCA",
+                "mother"              =>  "With mom",
+                "father"              =>  "With dad",
+                "ra"                  =>  "With RA",
+                "bca"                 =>  "With BCA",
                 "other"               =>  "Other",
                 "data_not_recorded"   => "Data Not Recorded"
     );
@@ -133,7 +133,7 @@ class NDB_BVL_Instrument_Eye_Tracking_Heart_Rate extends NDB_BVL_Instrument
 
     $this->addSelect("q2_lights", "2. Lights: ", $this->lights);
 
-    $this->addSelect("q3_who_is_child_with", "3. Who is the Child Sitting With? ", $this->child_with);
+    $this->addSelect("q3_who_is_child_with", "3. Where is the child sitting? ", $this->child_with);
 
     $this->addTextElement("q4_task_version","4. Task Version:");
 

@@ -85,7 +85,7 @@ class NDB_BVL_Instrument_PVT extends NDB_BVL_Instrument
 	The uploaded file has to be in CSV format.<br>
 	Filename should be: PSCID_DCCID_VisitLabel_PVT-Date-Time-TestType-Data.csv");
         $this->form->addElement('file', 'pvt_file', 'Upload the PVT Parser file 
-       <br><h6><i>(Ex: PSCID_DCCID_VisitLabel_PVT-12-05-2021-17-7-32-5-Data.csv)</i></h6>');
+       <br><h6><i>(Ex: PSCID_DCCID_VisitLabel_PVT-31-05-2021-17-7-32-5-Data.csv)</i></h6>');
 
 	$this->form->addElement('static', "File_name", "Uploaded File");
 	

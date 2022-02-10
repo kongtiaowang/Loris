@@ -113,5 +113,11 @@ CREATE TABLE `TSI_SA` (
     `seen_doctor` enum('yes','no','not_answered') default NULL,
     `seen_doctor_desc` varchar(255) default NULL,
     `new_diagnoses` varchar(255) default NULL,
+    `candidate_race` varchar(128) default NULL,
+    `bio_mother_race` varchar(128) default NULL,
+    `bio_father_race` varchar(128) default NULL,
+    `candidate_ethnicity` enum('hispanic','non_hispanic','not_answered') default NULL,
+    `bio_mother_ethnicity` enum('hispanic','non_hispanic','not_answered') default NULL,
+    `bio_father_ethnicity` enum('hispanic','non_hispanic','not_answered') default NULL,
     PRIMARY KEY  (`CommentID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
