@@ -125,12 +125,12 @@ class NDB_BVL_Instrument_SRS2_InformantReport_Dad_On_Mom extends NDB_BVL_Instrum
     function _main()
     {
         //Display test name
-        $this->form->addElement('header', 'instrument_title', "SRS-2 - Informant Report About Child's Biological Mother");
+        $this->form->addElement('header', 'instrument_title', "SRS-2 - Informant Report About Child's Biological Mother (Dad on Mom)");
 
 	//Add date of administration field
 	$this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
 
-        $label = "Please click 'Yes' to confirm that you are filling out this survey about the child’s biological father and that you are not the biological mother.";
+        $label = "Please click 'Yes' to confirm that you are filling out this survey about the child’s biological mother and that you are not the biological mother.";
 
         $this->form->addElement(
             'select',

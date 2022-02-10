@@ -125,7 +125,7 @@ class NDB_BVL_Instrument_SRS2_InformantReport_Mom_On_Dad extends NDB_BVL_Instrum
     {
         //Display test name
 
-        $this->form->addElement('header', 'instrument_title', "SRS-2 - Informant Report About Child's Biological Father");
+        $this->form->addElement('header', 'instrument_title', "SRS-2 - Informant Report About Child's Biological Father (Mom on Dad)");
         //Add date of administration field
 
         $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);

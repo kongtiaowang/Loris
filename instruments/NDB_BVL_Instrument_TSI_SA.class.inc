@@ -32,6 +32,22 @@ class NDB_BVL_Instrument_TSI_SA extends NDB_BVL_Instrument
 
     var $scoreLabels = array('adjusted_income');
 
+    const RACE_OPTIONS = array(
+                          'white'                            => 'White',
+                          'black_african_american'           => 'Black or African American',
+                          'asian'                            => 'Asian',
+                          'unknown_not_reported'             => 'Unknown or not Reported',
+                          'american_indian_alaska_native'    => 'American Indian / Alaska Native',
+                          'native_hawaiian_pacific_islander' => 'Native Hawaiian / Other Pacific Islander',
+                          'more_than_one_race'               => 'More than one race (circle all that apply)',
+                         );
+
+    const ETHNICITY_OPTIONS = array(
+                               null           => '',
+                               'hispanic'     => 'Hispanic',
+                               'non_hispanic' => 'Non-Hispanic',
+                              );
+
     /**
      * Sets up basic data, such as the LorisForm object, and so on.
      *
@@ -70,7 +86,12 @@ class NDB_BVL_Instrument_TSI_SA extends NDB_BVL_Instrument
                                     'CommentID',
                                     'Date_taken',
                                     'Examiner',
-                                   );
+			    );
+	$this->selectMultipleElements = array(
+					  "candidate_race",
+                                          "bio_mother_race",
+					  "bio_father_race",
+					  );
         $config            = NDB_Config::singleton();
         $this->dateOptions = array(
                               'language'         => 'en',
@@ -372,7 +393,26 @@ class NDB_BVL_Instrument_TSI_SA extends NDB_BVL_Instrument
             } else {
                 $this->form->addElement('static', null, $field);
             }
+	}
+
+	$this->addSelect("candidate_race","Candidate Race:",self::RACE_OPTIONS,["multiple"]);
+
+	$this->addSelect("bio_mother_race","Bio-Mother Race:",self::RACE_OPTIONS,["multiple"]);
+
+	$this->addSelect("bio_father_race","Bio-Father Race:",self::RACE_OPTIONS,["multiple"]);
+
+        $this->form->addElement('static', null, null);
+
+        $ethnicity_questions = array(
+                                "candidate_ethnicity"  => "Candidate Ethnicity:",
+                                "bio_mother_ethnicity" => "Bio-Mother Ethnicity:",
+                                "bio_father_ethnicity" => "Bio-Father Ethnicity:",
+                               );
+
+        foreach ($ethnicity_questions as $key => $question) {
+            $this->addSelect($key, $question, self::ETHNICITY_OPTIONS);
         }
+
         $yes_no            = array(
                               null           => "",
                               "yes"          => "Yes",

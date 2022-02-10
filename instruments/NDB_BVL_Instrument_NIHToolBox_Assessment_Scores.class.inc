@@ -167,7 +167,8 @@ class NDB_BVL_Instrument_NIHToolBox_Assessment_Scores extends NDB_BVL_Instrument
             $file->setBaseUploadDirectory($dir);
 
 	    // move previously uploaded file not in media module
-                $prev_dir = $config->getSetting("UploadDir");
+	    /**
+	    $prev_dir = $config->getSetting("UploadDir");
                 if(empty($prev_dir)) {
                     $prev_dir = ".";
                 };
@@ -177,9 +178,7 @@ class NDB_BVL_Instrument_NIHToolBox_Assessment_Scores extends NDB_BVL_Instrument
                         move_uploaded_file($prev_filename, $dir);
                         echo "move previously uploaded file " . $prev_filename . " to media";
 		}
-
-            //Set the prefix to prepend to the filenames
-            //$file->setFilenamePrefix($timepoint->getVisitLabel()."-".$this->testName."-");
+	    */
 
             //set the the IDs to the handler functions.
             $user =& User::singleton();
