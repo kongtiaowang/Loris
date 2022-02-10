@@ -499,6 +499,9 @@ CREATE TABLE `PVT` (
 `minimum_rt_36` varchar(20) default NULL,
 `maximum_rt_36` varchar(20) default NULL,
 `other_comments` text default NULL,
+`test_date` varchar(50) default NULL,
+`test_time` varchar(50) default NULL,
+`test_type` varchar(50) default NULL,
 PRIMARY KEY  (`CommentID`)
 
               ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
