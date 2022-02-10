@@ -132,6 +132,9 @@ class NDB_BVL_Instrument_ADOS2_Toddler_Module extends NDB_BVL_Instrument_IBIS
             */
     }
 
+    /**
+     * Page 1
+     */
     function _page1()
     {
         //CODING
@@ -173,6 +176,9 @@ class NDB_BVL_Instrument_ADOS2_Toddler_Module extends NDB_BVL_Instrument_IBIS
         $this->form->addElement('select', 'b18', '18. Overall Quality of Rapport', $this->option0123);
     }
 
+    /**
+     * Page 2
+     */
     function _page2()
     {
         //Section C: Play
@@ -202,6 +208,9 @@ class NDB_BVL_Instrument_ADOS2_Toddler_Module extends NDB_BVL_Instrument_IBIS
         $this->form->addElement('select', 'e4', '4. Anxiety', $this->option0123);
     } // End Form
 
+    /**
+     * Scoring
+     */
     function score(): void
     {
         if ($this->_determineDataEntryCompletionStatus() == "Incomplete") {
@@ -219,8 +228,8 @@ class NDB_BVL_Instrument_ADOS2_Toddler_Module extends NDB_BVL_Instrument_IBIS
         //Convert the entered scores to countable scores:
         //"Convert scores of 3 on the protocol to 2, and treat all other scores other than 0-3 as 0."
         $scores = array(); //holds converted scores
-        foreach($record as $field=>$value) {
-            if($value == 0) {
+        foreach ($record as $field=>$value) {
+            if ($value == 0) {
                 $scores[$field] = 0;
             } elseif ($value == 1 && $field != 'b1') {
                 $scores[$field] = 1;
@@ -240,7 +249,7 @@ class NDB_BVL_Instrument_ADOS2_Toddler_Module extends NDB_BVL_Instrument_IBIS
         $module = '';
 
         // NO WORDS scoring
-        if($record["a1"] == 3 || $record["a1"] == 4) {
+        if ($record["a1"] == 3 || $record["a1"] == 4) {
             $module = '1-NoWords';
 
             $scoreCols["social_affect_total"] = $scores["a2"] + $scores["a8"] + $scores["b1"] + $scores["b4"] +
@@ -248,7 +257,7 @@ class NDB_BVL_Instrument_ADOS2_Toddler_Module extends NDB_BVL_Instrument_IBIS
             $scoreCols["restricted_repetitive_behavior_total"] = $scores["a3"] + $scores["d1"] + $scores["d2"] + $scores["d5"];
             $scoreCols["social_affect_restricted_repetitive_behavior_total"] = $scoreCols["social_affect_total"] + $scoreCols["restricted_repetitive_behavior_total"];
 
-            if($scoreCols["social_affect_restricted_repetitive_behavior_total"] >= 10 && $scoreCols["social_affect_restricted_repetitive_behavior_total"] <= 13) {
+            if ($scoreCols["social_affect_restricted_repetitive_behavior_total"] >= 10 && $scoreCols["social_affect_restricted_repetitive_behavior_total"] <= 13) {
                 $scoreCols["ADOS_classification"] = "Mild-to-Moderate Concern";
             } elseif ($scoreCols["social_affect_restricted_repetitive_behavior_total"] >= 14) {
                 $scoreCols["ADOS_classification"] = "Moderate-to-Severe Concern";
@@ -278,7 +287,7 @@ class NDB_BVL_Instrument_ADOS2_Toddler_Module extends NDB_BVL_Instrument_IBIS
         }
 
         //SOME WORDS Scoring
-        if($record["a1"] == 0 || $record["a1"] == 1 || $record["a1"] == 2) {
+        if ($record["a1"] == 0 || $record["a1"] == 1 || $record["a1"] == 2) {
             $module = '1-Words';
 
             $scoreCols["social_affect_total"] = $scores["a2"] + $scores["a7"] + $scores["a8"] + $scores["b1"] +
@@ -286,7 +295,7 @@ class NDB_BVL_Instrument_ADOS2_Toddler_Module extends NDB_BVL_Instrument_IBIS
                 $scores["b12"] + $scores["b13"] + $scores["b14"] + $scores["b15"] + $scores["b16b"] + $scores["b18"];
             $scoreCols["restricted_repetitive_behavior_total"] = $scores["a3"] + $scores["d1"] + $scores["d2"] + $scores["d5"];
             $scoreCols["social_affect_restricted_repetitive_behavior_total"] = $scoreCols["social_affect_total"] + $scoreCols["restricted_repetitive_behavior_total"];
-            if($scoreCols["social_affect_restricted_repetitive_behavior_total"] >= 8 && $scoreCols["social_affect_restricted_repetitive_behavior_total"] <= 11) {
+            if ($scoreCols["social_affect_restricted_repetitive_behavior_total"] >= 8 && $scoreCols["social_affect_restricted_repetitive_behavior_total"] <= 11) {
                 $scoreCols["ADOS_classification"] = "Mild-to-Moderate Concern";
             } elseif ($scoreCols["social_affect_restricted_repetitive_behavior_total"] >= 12) {
                 $scoreCols["ADOS_classification"] = "Moderate-to-Severe Concern";
@@ -299,14 +308,14 @@ class NDB_BVL_Instrument_ADOS2_Toddler_Module extends NDB_BVL_Instrument_IBIS
         //Requires age in months:
         $Answers    = $db->pselectRow("SELECT * FROM $this->table WHERE CommentID=:cid", array("cid" =>$this->getCommentID() ));
         $age_months = 0;
-        if($this->getSessionID() != null) { //quickform_parser doesn't use any specific session
+        if ($this->getSessionID() != null) { //quickform_parser doesn't use any specific session
             $timepoint =& TimePoint::singleton($this->getSessionID());
             $dob       = $timepoint->getEffectiveDateOfBirth();
         }
 
-        if(!empty($dob) && !empty($Answers['Date_taken'])) {
+        if (!empty($dob) && !empty($Answers['Date_taken'])) {
             $age = Utility::calculateAge($dob, $Answers["Date_taken"]);
-            if(is_array($age)) {
+            if (is_array($age)) {
                 $age_months = $age['year'] * 12 + $age['mon'];
             }
         }
@@ -323,7 +332,7 @@ class NDB_BVL_Instrument_ADOS2_Toddler_Module extends NDB_BVL_Instrument_IBIS
                     'rawscore'  => $scoreCols['social_affect_restricted_repetitive_behavior_total']
                 )
             );
-            if(empty($sevscore)) {
+            if (empty($sevscore)) {
                 $scoreCols['severity_score_lookup'] = "N/A";
             } else {
                 $scoreCols['severity_score_lookup'] =$sevscore;
