@@ -525,7 +525,7 @@ class CouchDBDemographicsImporter {
 
         $concatQuery = $fieldsInQuery . $tablesToJoin . " WHERE s.Active='Y' AND c.Active='Y'
         AND c.Entity_type != 'Scanner'
-        AND s.Current_stage NOT IN ('Recycling Bin', 'Not Started')
+        AND s.Current_stage NOT IN ('Recycling Bin')
         AND c.RegistrationCenterID NOT IN (1,8,9,10)
         AND (ps.participant_status NOT IN (2,3,4,15) OR ps.participant_status IS NULL)
         AND c.RegistrationProjectID NOT IN (5,6)";
