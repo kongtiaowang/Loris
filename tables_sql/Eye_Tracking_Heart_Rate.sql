@@ -45,7 +45,7 @@ INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, Subp
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('Eye_Tracking_Heart_Rate', '0', '0', 'Y', 'Visit', 18, 'V06', NULL);
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('Eye_Tracking_Heart_Rate', '0', '0', 'Y', 'Visit', 18, 'V06-CVD', NULL);
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('Eye_Tracking_Heart_Rate', '0', '0', 'Y', 'Visit', 18, 'V09', NULL);
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('Eye_Tracking_Heart_Rate', '0', '0', 'Y', 'Visit', 18, 'V09-CVD', NULL);
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('Eye_Tracking_Heart_Rate', '0', '0', 'Y', 'Visit', 18, 'V9-CVD', NULL);
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('Eye_Tracking_Heart_Rate', '0', '0', 'Y', 'Visit', 18, 'V12', NULL);
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('Eye_Tracking_Heart_Rate', '0', '0', 'Y', 'Visit', 18, 'V12-CVD', NULL);
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('Eye_Tracking_Heart_Rate', '0', '0', 'Y', 'Visit', 18, 'V18', NULL);
@@ -56,7 +56,7 @@ INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, Subp
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('Eye_Tracking_Heart_Rate', '0', '0', 'Y', 'Visit', 20, 'V06', NULL);
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('Eye_Tracking_Heart_Rate', '0', '0', 'Y', 'Visit', 20, 'V06-CVD', NULL);
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('Eye_Tracking_Heart_Rate', '0', '0', 'Y', 'Visit', 20, 'V09', NULL);
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('Eye_Tracking_Heart_Rate', '0', '0', 'Y', 'Visit', 20, 'V09-CVD', NULL);
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('Eye_Tracking_Heart_Rate', '0', '0', 'Y', 'Visit', 20, 'V9-CVD', NULL);
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('Eye_Tracking_Heart_Rate', '0', '0', 'Y', 'Visit', 20, 'V12', NULL);
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('Eye_Tracking_Heart_Rate', '0', '0', 'Y', 'Visit', 20, 'V12-CVD', NULL);
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('Eye_Tracking_Heart_Rate', '0', '0', 'Y', 'Visit', 20, 'V18', NULL);
@@ -67,7 +67,7 @@ INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, Subp
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('Eye_Tracking_Heart_Rate', '0', '0', 'Y', 'Visit', 23, 'V06', NULL);
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('Eye_Tracking_Heart_Rate', '0', '0', 'Y', 'Visit', 23, 'V06-CVD', NULL);
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('Eye_Tracking_Heart_Rate', '0', '0', 'Y', 'Visit', 23, 'V09', NULL);
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('Eye_Tracking_Heart_Rate', '0', '0', 'Y', 'Visit', 23, 'V09-CVD', NULL);
+INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('Eye_Tracking_Heart_Rate', '0', '0', 'Y', 'Visit', 23, 'V9-CVD', NULL);
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('Eye_Tracking_Heart_Rate', '0', '0', 'Y', 'Visit', 23, 'V12', NULL);
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('Eye_Tracking_Heart_Rate', '0', '0', 'Y', 'Visit', 23, 'V12-CVD', NULL);
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, SubprojectID, Visit_label, CenterID) VALUES ('Eye_Tracking_Heart_Rate', '0', '0', 'Y', 'Visit', 23, 'V18', NULL);
