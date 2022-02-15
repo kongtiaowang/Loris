@@ -52,14 +52,17 @@ if ($survey_test_battery_count != 0) {
             stb.Test_name = tn.Test_name
         WHERE
             stb.Visit_label IN ('{$visit_label}', 'All') AND
-            stb.SubprojectID IN (
-                SELECT
-                    SubprojectID
-                FROM
-                    session
-                WHERE
-                    CandID=:v_CandID AND
-                    Visit_label=:v_VL
+            (
+                stb.SubprojectID IN (
+                    SELECT
+                        SubprojectID
+                    FROM
+                        session
+                    WHERE
+                        CandID=:v_CandID AND
+                        Visit_label=:v_VL
+                ) OR
+                stb.SubprojectID IS NULL
             ) AND
             tn.Test_name NOT IN (
                 SELECT
