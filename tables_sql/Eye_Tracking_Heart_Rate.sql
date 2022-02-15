@@ -18,7 +18,7 @@ CREATE TABLE `Eye_Tracking_Heart_Rate` (
 `q1_room_temperature` varchar(255) default NULL,
 `q1_room_temperature_status` enum('data_not_recorded') default NULL,
 `q2_lights` enum('on','off','dim','mix_of_off_and_on','data_not_recorded') default NULL,
-`q3_who_is_child_with` enum('mother','father','ra','bca','other','data_not_recorded') default NULL,
+`q3_who_is_the_child_sitting_with` varchar(255) default NULL,
 `q4_task_version` varchar(255) default NULL,
 `q4_task_version_status` enum('not_answered') default NULL,
 `q5_issues_with_child_comfort` enum('yes','no','data_not_recorded') default NULL,

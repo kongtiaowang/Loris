@@ -35,13 +35,14 @@ class NDB_BVL_Instrument_Eye_Tracking_Heart_Rate extends NDB_BVL_Instrument
     );
 
     var $child_with = array(
-                null                  =>  "",
+	    	null                  =>  "",
+		"in_high_chair"       =>  "In high chair",
                 "mother"              =>  "With mom",
                 "father"              =>  "With dad",
                 "ra"                  =>  "With RA",
                 "bca"                 =>  "With BCA",
                 "other"               =>  "Other",
-                "data_not_recorded"   => "Data Not Recorded"
+		"data_not_recorded"   => "Data Not Recorded"
     );
 
     var  $options = array(
