@@ -117,13 +117,11 @@ class NDB_BVL_Instrument_PVT extends NDB_BVL_Instrument
 	$this->form->addGroup($group, "items_group",null, $this->_GUIDelimiter, false);
 	unset($group); 
 
-	for($i=0; $i<1; $i++){
 	foreach($this->scoreLabels as $field){
-            $group[] = $this->form->createElement('static', "{$field}_{$i}", null, null);
+		$group[] = $this->form->createElement('static', "{$field}_0", null, null);
 	}
-	$this->form->addGroup($group, "{$field}_{$i}_group", null, $this->_GUIDelimiter, false);
-            unset($group);
-	}
+	$this->form->addGroup($group, "summary_group", null, $this->_GUIDelimiter, false);
+        unset($group);
 
        if($this->getFieldValue("File_name")===false){
             $this->form->addRule("pvt_file", "PVT file is required.", 'required', null, 'server');
