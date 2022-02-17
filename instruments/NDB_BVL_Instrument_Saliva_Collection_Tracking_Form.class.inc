@@ -385,9 +385,9 @@ function _page5(){
                $this->form->addElement('select','delivered_to_lab','1.Did UNC staff deliver saliva tube to processing lab at UNC?',array('' => '','yes'=>"Yes",'no' => "No","investigate"=>"Need to Investigate","na"=>"NA - Shipped directly to lab at UNC"));
                 $this->XINRegisterRule("delivered_to_lab", array("aq1{@}=={@}NEVER_REQUIRED"));
 
-	       $this->form->addElement('date','other_date_delivered', $this->indent . "Date delivered", $this->dateOptions);
+	       $this->form->addElement('date','delivered_to_lab_date', $this->indent . "Date delivered", $this->dateOptions);
 
-	       $this->form->addElement('text','other_staff_delivered', $this->indent . 'UNC staff member that delivered tubes.');
+	       $this->form->addElement('text','delivered_to_lab_by', $this->indent . 'UNC staff member that delivered tubes.');
 
                $this->form->addElement('select','have_family_id',"2. Does this subject have a family ID? [Family ID can be found in the 'Family Information' tab of the 'Candidate Info' in the candidate's page.] ",self::YES_NO_DONT_KNOW);
 
