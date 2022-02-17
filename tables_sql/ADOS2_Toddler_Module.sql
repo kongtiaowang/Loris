@@ -8,6 +8,7 @@ CREATE TABLE `ADOS2_Toddler_Module`
     `Date_taken`                                         date                  DEFAULT NULL,
     `Candidate_Age`                                      varchar(255)          DEFAULT NULL,
     `Window_Difference`                                  int(11) DEFAULT NULL,
+    `toddler_module`                                     varchar(50)           DEFAULT NULL,
     `social_affect_total`                                varchar(255)          DEFAULT NULL,
     `restricted_repetitive_behavior_total`               varchar(255)          DEFAULT NULL,
     `social_affect_restricted_repetitive_behavior_total` varchar(255)          DEFAULT NULL,
