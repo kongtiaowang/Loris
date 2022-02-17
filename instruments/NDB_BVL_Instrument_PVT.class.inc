@@ -117,7 +117,7 @@ class NDB_BVL_Instrument_PVT extends NDB_BVL_Instrument
 	$this->form->addGroup($group, "items_group",null, $this->_GUIDelimiter, false);
 	unset($group); 
 
-	for($i=0; $i<37; $i++){
+	for($i=0; $i<1; $i++){
 	foreach($this->scoreLabels as $field){
             $group[] = $this->form->createElement('static', "{$field}_{$i}", null, null);
 	}
@@ -249,7 +249,7 @@ class NDB_BVL_Instrument_PVT extends NDB_BVL_Instrument
             'UserID'    =>$args['username'],
             'Status'    =>'assembly',
             'File_type' =>'PVT',
-            'File_name' =>$file->getDestinationFilename(),
+            'File_name' =>$file->fileInfo['name'],
             'Data_dir'  =>$mediaPath
         );
 
@@ -264,12 +264,10 @@ class NDB_BVL_Instrument_PVT extends NDB_BVL_Instrument
 	//Cycle through the lines and extract the data
 	$lines =preg_split("/\\r\\n|\\r|\\n/", $contents);
 
-   // "participant","trial","isi","abstime","rt","type","valid_response","false_starts","timeouts","mean_rt","standard_deviation_rt","minimum_rt","maximum_rt"
 	$size = sizeof($lines);
-	$last_line = 0;
-	for($i=$size-1; $i>=0;$i--){
-            if($lines[$i] != NULL){
-		$tokens = explode(',',$lines[$i]);
+     	$last_line = $size - 1;
+            if($lines[$last_line] != NULL){
+		$tokens = explode(',',$lines[$last_line]);
 		$values["participant_0"] = "--"; 
 	        $values["trial_0"] = "--";
 		$values["isi_0"] = "--";
@@ -283,27 +281,8 @@ class NDB_BVL_Instrument_PVT extends NDB_BVL_Instrument
 		$values["standard_deviation_rt_0"] = $tokens[10];
 		$values["minimum_rt_0"] = $tokens[11];
 		$values["maximum_rt_0"] = $tokens[12];
-		$last_line = $i;
-		break;
 	    }
-	}
-
-	for($i=1;$i<$last_line;$i++){
-		$tokens = explode(',',$lines[$i]);
-                $values["participant_{$i}"] = $tokens[0];
-                $values["trial_{$i}"] = $tokens[1];
-                $values["isi_{$i}"] = $tokens[2];
-                $values["abstime_{$i}"] = $tokens[3];
-                $values["rt_{$i}"] = $tokens[4];
-                $values["type_{$i}"] = $tokens[5];
-                $values["valid_response_{$i}"] =  "--";
-                $values["false_starts_{$i}"] = "--";
-                $values["timeouts_{$i}"] = "--";
-                $values["mean_rt_{$i}"] = "--";
-                $values["standard_deviation_rt_{$i}"] = "--";
-                $values["minimum_rt_{$i}"] = "--";
-                $values["maximum_rt_{$i}"] = "--";
-	}
+   
         $db=& Database::singleton();
 
         //-------------------------------------------------------------------//
@@ -325,16 +304,15 @@ class NDB_BVL_Instrument_PVT extends NDB_BVL_Instrument
         $mediaPath = $config->getSetting('mediaPath');
 
         $query = [
-                      'session_id'  => $timepoint->getSessionID(),
+                      'session_id'  => $this->getSessionID(),
                       'instrument'  => $this->table,
                       'date_taken'  => $dateTaken,
                       'comments'    => $comments,
-                      'file_name'   => $file->getDestinationFilename(),
+                      'file_name'   => $file->fileInfo['name'],
                       'file_type'   => 'PVT',
                       'data_dir'    => $mediaPath,
                       'uploaded_by' => $user->getData('UserID'),
                      ];
-
          try {
              // File alread exists in media module: update
              if (!is_null($mediaID)) {
@@ -344,8 +322,8 @@ class NDB_BVL_Instrument_PVT extends NDB_BVL_Instrument
                  $db->insert('media', $query);
              }
          } catch (DatabaseException $e) {
-             print_r($e);
-         }
+             // print_r($e);
+	 }
 
          $result = $db->update($this->testName, $values, array('CommentID'=>$args['CommentID']));  
          return true;
