@@ -131,27 +131,39 @@ class CandidateDOB extends Component {
 
     formObject.append('tab', this.props.tabName);
 
+    // IBIS SPECIFIC OVERRIDE CODE
+    // Add proper error handling to handle error when study consent = no
     fetch(this.props.action, {
         method: 'POST',
         cache: 'no-cache',
         credentials: 'same-origin',
         body: formObject,
+    }).then((response) => {
+      return new Promise((resolve) => response.json()
+        .then((json) => resolve({
+          status: response.status,
+          ok: response.ok,
+          json,
+        })));
     })
-    .then((resp) => {
-        if (resp.ok && resp.status === 200) {
+    .then(({status, json, ok}) => {
+        if (ok && status === 200) {
           swal({
             title: 'Success!',
             text: 'Date of birth updated!',
             type: 'success',
             confrimButtonText: 'OK',
-          });
-          if (result.value) {
-              this.fetchData();
-          }
+          }, (result) => {
+              if (result) {
+                this.fetchData();
+              }
+            }
+          );
         } else {
+          const error = json.error ? json.error : 'Something went wrong.';
           swal({
             title: 'Error!',
-            text: 'Something went wrong.',
+            text: error,
             type: 'error',
             confrimButtonText: 'OK',
           });
@@ -160,6 +172,7 @@ class CandidateDOB extends Component {
     .catch((error) => {
         console.error(error);
     });
+    // IBIS SPECIFIC OVERRIDE CODE ENDS HERE
   }
 }
 CandidateDOB.propTypes = {
