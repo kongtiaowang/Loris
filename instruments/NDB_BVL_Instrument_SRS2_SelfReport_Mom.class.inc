@@ -125,7 +125,7 @@ class NDB_BVL_Instrument_SRS2_SelfReport_Mom extends NDB_BVL_Instrument
         $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
 
 	//Confirm respondent
-	$label = "Please click this bubble 'Yes' to confirm that you are the enrolled child’s biological mother, reporting on yourself.";
+	$label = "Please click 'Yes' to confirm that you are the enrolled child’s biological mother, reporting on yourself.";
 
         $this->form->addElement(
             'select',
@@ -144,7 +144,11 @@ class NDB_BVL_Instrument_SRS2_SelfReport_Mom extends NDB_BVL_Instrument
         //$this->form->addFormRule(array(&$this, 'srs2SpecialRules'));
 
         //Add select for Sex
-        $this->addSelect('respondent_gender', "Sex", $this->gender);
+	$this->addSelect('respondent_gender', "Your sex", $this->gender);
+
+	$this->form->addElement('text', 'respondent_specify', 'If other, specify:');
+	$this->XINRegisterRule('respondent_specify', array('respondent_gender{@}=={@}other'), 'Required if other');
+
         for($i=1;$i<=3;$i++)
         {
             if($i==1) {

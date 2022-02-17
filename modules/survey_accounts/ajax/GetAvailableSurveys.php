@@ -25,73 +25,107 @@ ini_set('default_charset', 'utf-8');
 require_once "Database.class.inc";
 require_once 'NDB_Config.class.inc';
 require_once 'NDB_Client.class.inc';
+
 $config =& NDB_Config::singleton();
 $client = new NDB_Client();
 $client->makeCommandLine();
 $client->initialize();
 
-$DB = Database::singleton();
-$visit_label=$_REQUEST['VL'];
-$candid=$_REQUEST['dccid'];
-$survey_test_battery_count = $DB->pselectOne("select count(*) from survey_test_battery where Visit_label=:vl",
-    array('vl'     => $_REQUEST['VL']));
-if($survey_test_battery_count!=0)
-{
-    $result = $DB->pselect(
-        "SELECT distinct tn.Test_name, tn.Full_name from test_names tn
-          join survey_test_battery stb ON (stb.Test_name=tn.test_name)
- where stb.Visit_label IN('{$visit_label}', 'All')
-and tn.Test_name not in (SELECT f.Test_name FROM flag f
-             JOIN session s on s.ID = f.SessionID
-             WHERE s.CandID=:v_CandID  
-             AND UPPER(s.Visit_label)=UPPER(:v_VL) 
-             AND s.Active='Y'and f.CommentID not like '%DDE%') ORDER BY tn.Full_name",
-        array(
-            'v_CandID' => $_REQUEST['dccid'],
-            'v_VL' => $_REQUEST['VL'],
-        )
-    );
-    if(empty($result))
-    {
-        $result = $DB->pselect(
-                "SELECT distinct tn.Test_name, tn.Full_name from test_names tn
-          join survey_test_battery stb ON (stb.Test_name=tn.test_name)
- where stb.Visit_label IN ('{$visit_label}','All') ORDER BY tn.Full_name",array());
+$DB          = Database::singleton();
+$visit_label =$_REQUEST['VL'];
+$candid      =$_REQUEST['dccid'];
+$survey_test_battery_count = $DB->pselectOne(
+    "select count(*) from survey_test_battery where Visit_label=:vl",
+    array('vl'     => $_REQUEST['VL'])
+);
 
-    }
-}
-else {
+if ($survey_test_battery_count != 0) {
 
     $result = $DB->pselect(
-        "SELECT Test_name, Full_name from test_names where IsDirectEntry=1 
-and Test_name not in (SELECT f.Test_name FROM flag f
-             JOIN session s on s.ID = f.SessionID
-             WHERE s.CandID=:v_CandID  
-             AND UPPER(s.Visit_label)=UPPER(:v_VL) 
-             AND s.Active='Y'and f.CommentID not like '%DDE%') ORDER BY Full_name",
+        "SELECT
+            DISTINCT tn.Test_name, tn.Full_name
+        FROM
+            test_names AS tn
+        INNER JOIN
+            survey_test_battery AS stb
+        ON
+            stb.Test_name = tn.Test_name
+        WHERE
+            stb.Visit_label IN ('{$visit_label}', 'All') AND
+            (
+                stb.SubprojectID IN (
+                    SELECT
+                        SubprojectID
+                    FROM
+                        session
+                    WHERE
+                        CandID=:v_CandID AND
+                        Visit_label=:v_VL
+                ) OR
+                stb.SubprojectID IS NULL
+            ) AND
+            tn.Test_name NOT IN (
+                SELECT
+                    f.Test_name
+                FROM
+                    flag AS f
+                JOIN
+                    session AS s
+                ON
+                    s.ID = f.SessionID
+                WHERE
+                    s.CandID=:v_CandID AND
+                    UPPER(s.Visit_label)=UPPER(:v_VL) AND
+                    s.Active='Y' AND
+                    f.CommentID NOT LIKE '%DDE%'
+            )
+        ORDER BY
+            tn.Full_name",
         array(
             'v_CandID' => $_REQUEST['dccid'],
-            'v_VL' => $_REQUEST['VL'],
+            'v_VL'     => $_REQUEST['VL'],
         )
     );
     if (empty($result)) {
         $result = $DB->pselect(
-            "SELECT Test_name, Full_name from test_names where IsDirectEntry=1 ORDER BY Full_name", array());
-
+            "SELECT distinct tn.Test_name, tn.Full_name from test_names tn
+          join survey_test_battery stb ON (stb.Test_name=tn.test_name)
+ where stb.Visit_label IN ('{$visit_label}','All') ORDER BY tn.Full_name",
+            array()
+        );
+    }
+} else {
+    $result = $DB->pselect(
+        "SELECT Test_name, Full_name from test_names where IsDirectEntry=1
+and Test_name not in (SELECT f.Test_name FROM flag f
+             JOIN session s on s.ID = f.SessionID
+             WHERE s.CandID=:v_CandID
+             AND UPPER(s.Visit_label)=UPPER(:v_VL)
+             AND s.Active='Y'and f.CommentID not like '%DDE%') ORDER BY Full_name",
+        array(
+            'v_CandID' => $_REQUEST['dccid'],
+            'v_VL'     => $_REQUEST['VL'],
+        )
+    );
+    if (empty($result)) {
+        $result = $DB->pselect(
+            "SELECT Test_name, Full_name from test_names where IsDirectEntry=1 ORDER BY Full_name",
+            array()
+        );
     }
 }
-$visit=$_REQUEST['VL'];
-$count=0;
-foreach($result as $data)
-{
-    $count++;
 
-    $option_string.="<option value=".$data['Test_name'].">".$data['Full_name']."</option>";
+$visit =$_REQUEST['VL'];
+$count =0;
+foreach ($result as $data) {
+    $count++;
+    $option_string .="<option value=".$data['Test_name'].">".$data['Full_name']."</option>";
 }
-   echo  json_encode(
+
+echo  json_encode(
     array(
-    'option_string'=> $option_string)
+        'option_string' => $option_string
+    )
 );
 
     exit;
-?>

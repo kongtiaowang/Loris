@@ -85,7 +85,7 @@ class NDB_BVL_Instrument_DAS_SA extends NDB_BVL_Instrument
         // automatically adds examiner & date of administration
         $this->_addMetadataFields();
         $this->form->addElement('file', 'das_sa_file', 'Upload the DAS SA file 
-       <br><h6><i>(Ex: DAS_SA_PSCID_VSA.txt)</i></h6>');
+       <br><h6><i>(Ex: PSCID_DCCID_VisitLabel_DAS_SA.txt)</i></h6>');
 
         $this->form->addElement('static', "File_name", "Uploaded File");
 
@@ -214,14 +214,21 @@ class NDB_BVL_Instrument_DAS_SA extends NDB_BVL_Instrument
 
         //Set the target directory that you want files moved into once they are validated and processed.
         $config = NDB_Config::singleton();
-        $dir = $config->getSetting("UploadDir");
-        if(empty($dir)) {
-            $dir = ".";
-        };
-        $file->setBaseUploadDirectory($dir . "/DAS_SA/");
+        $dir = $config->getSetting("mediaPath");
+        $file->setBaseUploadDirectory($dir);
 
-        //Set the prefix to prepend to the filenames
-        //$file->setFilenamePrefix($timepoint->getVisitLabel()."-".$this->testName."-");
+	// move previously uploaded file not in media module
+                $prev_dir = $config->getSetting("UploadDir");
+                if(empty($prev_dir)) {
+                    $prev_dir = ".";
+                };
+		//previously file directory and naming convention
+		$PSCID = $this->getPSCID();
+                $prev_filename = $prev_dir . "/DAS_SA/DAS_SA_{$PSCID}_VSA.txt";
+                if (file_exists($prev_filename)) {
+                        move_uploaded_file($prev_filename, $dir);
+                        echo "move previously uploaded file " . $prev_filename . " to media";
+                }
 
         //set the the IDs to the handler functions.
         $user =& User::singleton();
@@ -261,7 +268,7 @@ class NDB_BVL_Instrument_DAS_SA extends NDB_BVL_Instrument
      * @access    public
      */
     function isValid(&$file, $args){
-        $correct_filename = ($this->testName.'_'. $args['PSCID'].'_'.$args['visitLabel']. ".txt");
+        $correct_filename = ($args['PSCID'].'_'.$args['candID'].'_'.$args['visitLabel'].'_'.$this->testName.".txt");
         if($file->fileInfo['name'] != $correct_filename){
             $errors[]="Incorrect Filename: Filename should be: " . $correct_filename;
             return $errors;
@@ -329,6 +336,14 @@ class NDB_BVL_Instrument_DAS_SA extends NDB_BVL_Instrument
         $fp=fopen($file->fileInfo['tmp_name'], "r");
         $contents=fread($fp,filesize($file->fileInfo['tmp_name']));
         fclose($fp);
+
+	$timepoint =& TimePoint::singleton($this->getSessionID());
+	$candidate =& Candidate::singleton($timepoint->getCandID());
+        $user      =& User::singleton();
+
+        // Compute the directory where all media files are stored
+        $config    = NDB_Config::singleton();
+	$mediaPath = $config->getSetting('mediaPath');
 
         $values=array(
             'UserID'    =>$args['username'],
@@ -411,9 +426,40 @@ class NDB_BVL_Instrument_DAS_SA extends NDB_BVL_Instrument
 
         $db=& Database::singleton();
 
-///Setting trackchanges to false because getting error messages
-        $db->_trackChanges = false;
-////////////////////////////////////////////////////////////////
+	//-------------------------------------------------------------------//
+        // Check if there is a file in the media module with the same name   //
+        // as the uploaded file.                                             //
+	//-------------------------------------------------------------------//
+
+        $row          = $db->pselectRow(
+                "SELECT e.Date_Taken, m.ID FROM {$this->table} e LEFT JOIN media m ON (e.File_name=m.file_name) WHERE e.CommentID=:CommentID",
+                array("CommentID" => $this->getCommentID())
+        );
+        $dateTaken = $row['Date_Taken'];
+	$mediaID   = $row['ID'];
+
+        $query = [
+                      'session_id'  => $this->getSessionID(),
+                      'instrument'  => $this->table,
+		      'date_taken'  => $dateTaken,
+		      'comments'    => $comments,
+                      'file_name'   => $file->getDestinationFilename(),
+                      'file_type'   => 'DAS_SA',
+                      'data_dir'    => $mediaPath,
+		      'uploaded_by' => $user->getData('UserID'),
+        ];
+
+        try {
+            // File alread exists in media module: update
+            if (!is_null($mediaID)) {
+               $db->update('media', $query, array('ID' => $mediaID));
+            // File does not exist in media module: insert new
+            } else {
+                $db->insert('media', $query);
+            }
+        } catch (DatabaseException $e) {
+            print_r($e);
+        }
 
         $result = $db->update($this->testName, $values, array('CommentID'=>$args['CommentID']));
         return true;
@@ -438,7 +484,6 @@ class NDB_BVL_Instrument_DAS_SA extends NDB_BVL_Instrument
      * @access    public
      */
     function getTargetDirectory(&$file, $args){
-        $output=$args['candID']."/";
-        return $output;
+        return "";
     }
 }

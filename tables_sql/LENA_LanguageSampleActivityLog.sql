@@ -101,6 +101,7 @@ CREATE TABLE `LENA_LanguageSampleActivityLog` (
 `its_file` varchar(250) default NULL,
 `upl_file` varchar(250) default NULL,
 `wav_file` varchar(250) default NULL,
+`if_you_feel_uncomfortable_with_a_portion_of_today` varchar(100) default NULL,
 PRIMARY KEY  (`CommentID`)
 
               ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

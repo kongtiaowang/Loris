@@ -290,7 +290,10 @@ class CouchDBDemographicsImporter {
                                  s.Current_stage,
                                  ROUND(DATEDIFF(s.Date_visit, c.DoB) / (365/12))             AS Age_at_visit_start,
                                  ROUND(DATEDIFF(NOW(), c.DoB) / (365/12))                    AS age_today,
-                                 s.Scan_done                                                 AS Scan_done,
+                                 CASE
+                                    WHEN sc.count > 0 THEN 'Y'
+                                    ELSE 'N'
+                                 END                                                         AS Scan_done,
                                  CASE
                                    WHEN s.visit = 'Failure' THEN 'Failure'
                                    WHEN s.screening = 'Failure' THEN 'Failure'
@@ -463,7 +466,12 @@ class CouchDBDemographicsImporter {
                                       FROM gwas
                                       JOIN flag ON(flag.commentid=gwas.commentid AND flag.commentid NOT LIKE 'DDE%')
                                       JOIN session ON(session.id=flag.sessionid AND session.visit_label='V24')
-                                 ) gwas24 ON(gwas24.candid=s.candid) ";
+                                 ) gwas24 ON(gwas24.candid=s.candid)
+                                 LEFT JOIN (
+                                    SELECT files.SessionID, COUNT(*) as count
+                                    FROM files
+                                    GROUP BY files.SessionID
+                                 ) as sc ON (sc.SessionID = s.ID)";
 
         // If proband fields are being used, add proband information into the query
         if ($config->getSetting("useProband") === "true") {
@@ -502,7 +510,7 @@ class CouchDBDemographicsImporter {
 
         $concatQuery = $fieldsInQuery . $tablesToJoin . " WHERE s.Active='Y' AND c.Active='Y'
         AND c.Entity_type != 'Scanner'
-        AND s.Current_stage NOT IN ('Recycling Bin', 'Not Started')
+        AND s.Current_stage NOT IN ('Recycling Bin')
         AND c.RegistrationCenterID NOT IN (1,8,9,10)
         AND (ps.participant_status NOT IN (2,3,4,15) OR ps.participant_status IS NULL)
         AND c.RegistrationProjectID NOT IN (5,6)";

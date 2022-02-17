@@ -112,6 +112,7 @@ class CouchDBDerivedLanguageImporter
                 AND f.Validity <> 'Invalid'
                 AND f.CommentID NOT LIKE 'DDE_%'
                 AND s.Active='Y' AND c.Active='Y'
+                AND s.Current_stage NOT IN ('Recycling Bin')
                 AND c.RegistrationCenterID NOT IN (1,8,9,10)
                 AND c.RegistrationProjectID NOT IN (5,6)
                 AND (ps.participant_status NOT IN (2,3,4,15) OR ps.participant_status IS NULL)

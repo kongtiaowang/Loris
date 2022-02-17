@@ -1,4 +1,4 @@
-<?php
+?php
 
 
 class NDB_BVL_Instrument_Saliva_Collection_Tracking_Form extends NDB_BVL_Instrument
@@ -413,13 +413,16 @@ function _page5(){
             //subject
            // - If 'At visit' was selected for question 2, email should include 'Date mailed to UNC' and 'Tracking Number'.
            // - If 'Via Mail' was selected for question 2, email should include a reminder to "Document 'Tracking number' internally.".
+            $notification_reciever_email = 'Heidi.Bryant@cidd.unc.edu';
       if ($values['subject_need_collection'] == 'yes') {
           if ($values["subject_how_collected"] == "At_Visit"){
                   $msg_data['mail_date'] = $value['subject_visit_mailed_to_UNC'];
                   $msg_data['tracking_number'] = $value['subject_visit_tracking_number'];
+                Email::send($notification_reciever_email, 'Saliva_Collection_Tracking_Form_Email_Notifications.tpl', $msg_data, "", "IBIS Team <noreply@ibis.loris.ca>");
           }
           if ($values["subject_how_collected"] == "Via_Mail"){
                   $msg_data['tracking_number'] = $value['subject_visit_tracking_number'];
+                Email::send($notification_reciever_email, 'Saliva_Collection_Tracking_Form_Email_Notifications.tpl', $msg_data, "", "IBIS Team <noreply@ibis.loris.ca>");
 
           }
        }
@@ -428,9 +431,11 @@ function _page5(){
           if ($values["proband_how_collected"] == "At_Visit"){
                   $msg_data['mail_date'] = $value['proband_visit_mailed_to_UNC'];
                   $msg_data['tracking_number'] = $value['proband_visit_tracking_number'];
+                // Email::send($notification_reciever_email, 'Saliva_Collection_Tracking_Form_Email_Notifications.tpl', $msg_data, "", "IBIS Team <noreply@ibis.loris.ca>");
           }
           if ($values["proband_how_collected"] == "Via_Mail"){
                 $msg_data['tracking_number'] = $value['proband_mail_tracking_number'];
+                // Email::send($notification_reciever_email, 'Saliva_Collection_Tracking_Form_Email_Notifications.tpl', $msg_data, "", "IBIS Team <noreply@ibis.loris.ca>");
 
           }
        }
@@ -439,9 +444,11 @@ function _page5(){
           if ($values["mother_how_collected"] == "At_Visit"){
                   $msg_data['mail_date'] = $value['mother_visit_mailed_to_UNC'];
                   $msg_data['tracking_number'] = $value['mother_visit_tracking_number'];
+                  Email::send($notification_reciever_email, 'Saliva_Collection_Tracking_Form_Email_Notifications.tpl', $msg_data, "", "IBIS Team <noreply@ibis.loris.ca>");
           }
           if ($values["mother_how_collected"] == "Via_Mail"){
                   $msg_data['tracking_number'] = $value['mother_mail_tracking_number'];
+                  Email::send($notification_reciever_email, 'Saliva_Collection_Tracking_Form_Email_Notifications.tpl', $msg_data, "", "IBIS Team <noreply@ibis.loris.ca>");
 
           }
        }
@@ -450,9 +457,11 @@ function _page5(){
           if ($values["father_how_collected"] == "At_Visit"){
                   $msg_data['mail_date'] = $value['father_visit_mailed_to_UNC'];
                   $msg_data['tracking_number'] = $value['father_visit_tracking_number'];
+                  Email::send($notification_reciever_email, 'Saliva_Collection_Tracking_Form_Email_Notifications.tpl', $msg_data, "", "IBIS Team <noreply@ibis.loris.ca>");
           }
           if ($values["father_how_collected"] == "Via_Mail"){
                   $msg_data['tracking_number'] = $value['father_mail_tracking_number'];
+                  Email::send($notification_reciever_email, 'Saliva_Collection_Tracking_Form_Email_Notifications.tpl', $msg_data, "", "IBIS Team <noreply@ibis.loris.ca>");
 
           }
        }

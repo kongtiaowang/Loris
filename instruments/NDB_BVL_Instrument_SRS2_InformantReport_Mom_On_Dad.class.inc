@@ -125,12 +125,12 @@ class NDB_BVL_Instrument_SRS2_InformantReport_Mom_On_Dad extends NDB_BVL_Instrum
     {
         //Display test name
 
-        $this->form->addElement('header', 'instrument_title', "SRS-2 - Informant Report (Mom's Report on Dad)");
+        $this->form->addElement('header', 'instrument_title', "SRS-2 - Informant Report About Child's Biological Father (Mom on Dad)");
         //Add date of administration field
 
         $this->addBasicDate('Date_taken', 'Date of Administration', $this->dateOptions);
         
-	$label = "Please click this bubble 'Yes' to confirm that you are filling out this survey about the child’s biological father.";
+	$label = "Please click 'Yes' to confirm that you are filling out this survey about the child’s biological father and that you are not the biological father";
 
         $this->form->addElement(
             'select',
@@ -142,15 +142,6 @@ class NDB_BVL_Instrument_SRS2_InformantReport_Mom_On_Dad extends NDB_BVL_Instrum
             )
         );
 
-        //Add field for Age
-        $this->addBasicText('informant_age', "Your age<BR><h5><i>(Please enter a numeric value between 0-100. If you don't wish to answer, enter NA)</i></h5>");
-
-        //Add Special Rules
-       // $this->form->addFormRule(array(&$this, 'srs2SpecialRules'));
-
-        //Add select for Sex
-        $this->addSelect('informant_gender', "Your sex", $this->gender);
-
         //Add select for Relationship to rated individual
         $this->addSelect('informant', "Your relationship to the child’s biological father", $this->informant);
         $group[] = $this->createText('informant_other', $this->indent."If Other please specify");
@@ -159,7 +150,14 @@ class NDB_BVL_Instrument_SRS2_InformantReport_Mom_On_Dad extends NDB_BVL_Instrum
         unset($group);
         $rules_array = array("informant{@}=={@}other");
         $this->XINRegisterRule('informant_other', $rules_array, "Please specify relationship", 'informant_other_group');
-        for($i=1;$i<=3;$i++)
+
+	 //Add field for Age
+        $this->addBasicText('informant_age', "Your age<BR><h5><i>(Please enter a numeric value between 0-100. If you don't wish to answer, enter NA)</i></h5>");
+
+        //Add select for Sex
+        $this->addSelect('informant_gender', "Your sex", $this->gender);
+
+	for($i=1;$i<=3;$i++)
         {
             if($i==1) {
                 $this->form->addElement('header', null, "SRS2 Total Score Results ");
@@ -178,7 +176,8 @@ class NDB_BVL_Instrument_SRS2_InformantReport_Mom_On_Dad extends NDB_BVL_Instrum
                 $domains = array("Awr" => " Social Awareness (Awr)","Cog" => "Social Cognition (Cog)","Com" => "Social Communication (Com)",
                     "Mot" => "Social Motivaton (Mot)"
                 );
-            }
+	    }
+	  
             //scoring column headers
             $group[] = $this->form->createElement('static', "score", null, null);
             $group[] = $this->form->createElement('static', "T_score", null, null);
@@ -220,7 +219,7 @@ class NDB_BVL_Instrument_SRS2_InformantReport_Mom_On_Dad extends NDB_BVL_Instrum
         //Display informant rating section
         $this->form->addElement('header', 'instrument_title1', "Informant Section");       
         //Add instructions
-        $this->form->addElement('static', 'lorisSubHeader', "<strong>Instructions:</strong><BR>For each question, please choose an option that best describes the rated individual's behaviour <strong>over the past 6 months </strong>");
+        $this->form->addElement('static', 'lorisSubHeader', "<strong>Instructions:</strong><BR>For each question, please choose an option that best describes the rated individual's behavior <strong>over the past 6 months </strong>");
 
         //First block of questions
         $questions = array(
