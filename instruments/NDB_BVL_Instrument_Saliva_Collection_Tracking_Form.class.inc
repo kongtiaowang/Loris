@@ -536,7 +536,10 @@ function _page5(){
               {
                 $errors["subject_mail_receive"] = $err_msg;
               }
-
+              if ($values["subject_visit_mailed_to_UNC"] != null)
+              { 
+                $errors["subject_visit_mailed_to_UNC"] = $err_msg;
+              }
           }
 
           if ($values["subject_how_collected"] == "Via_Mail")
@@ -544,10 +547,6 @@ function _page5(){
               if ($values["subject_visit_collection_date"] != null)
               {
                 $errors["subject_visit_collection_date"] = $err_msg;
-              }
-              if ($values["subject_visit_mailed_to_UNC"] != null)
-              {
-                $errors["subject_visit_mailed_to_UNC"] = $err_msg;
               }
               if ($values["subject_visit_tracking_number"] != null)
               {
@@ -572,6 +571,10 @@ function _page5(){
               {
                 $errors["proband_mail_tracking_number"] = $err_msg;
               }
+              if ($values["proband_visit_mailed_to_UNC"] != null)
+              {
+                $errors["proband_visit_mailed_to_UNC"] = $err_msg;
+              }
           }
 
           if ($values["proband_how_collected"] == "Via_Mail")
@@ -584,11 +587,6 @@ function _page5(){
               {
                 $errors["proband_visit_tracking_number"] = $err_msg;
               }
-              if ($values["proband_visit_mailed_to_UNC"] != null)
-              {
-                $errors["proband_visit_mailed_to_UNC"] = $err_msg;
-              }
-
           }
         return $errors;
     }
@@ -608,7 +606,10 @@ function _page5(){
               {
                 $errors["mother_mail_tracking_number"] = $err_msg;
               }
-
+              if ($values["mother_visit_mailed_to_UNC"] != null)
+              {
+                $errors["mother_visit_mailed_to_UNC"] = $err_msg;
+              }
           }
 
           if ($values["mother_how_collected"] == "Via_Mail")
@@ -620,10 +621,6 @@ function _page5(){
               if ($values["mother_visit_tracking_number"] != null)
               {
                 $errors["mother_visit_tracking_number"] = $err_msg;
-              }
-              if ($values["mother_visit_mailed_to_UNC"] != null)
-              {
-                $errors["mother_visit_mailed_to_UNC"] = $err_msg;
               }
 
           }
@@ -644,6 +641,10 @@ function _page5(){
               {
                 $errors["father_mail_tracking_number"] = $err_msg;
               }
+              if ($values["father_visit_mailed_to_UNC"] != null)
+              {
+                $errors["father_visit_mailed_to_UNC"] = $err_msg;
+              }
 
           }
 
@@ -657,11 +658,6 @@ function _page5(){
               {
                 $errors["father_visit_tracking_number"] = $err_msg;
               }
-              if ($values["father_visit_mailed_to_UNC"] != null)
-              {
-                $errors["father_visit_mailed_to_UNC"] = $err_msg;
-              }
-
           }
         return $errors;
     }
