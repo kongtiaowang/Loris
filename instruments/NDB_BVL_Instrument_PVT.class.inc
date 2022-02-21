@@ -132,7 +132,7 @@ class NDB_BVL_Instrument_PVT extends NDB_BVL_Instrument
         // handedness questions
         $this->form->addElement('static', null, "<br /><br />");
         $this->form->addElement("textarea", "other_comments", "Comments:", array('cols'=>25, 'rows'=>4));
-        $this->XINRegisterRule("other_comments", array("{other_comments}{@}=={@}NEVER_REQUIRED"));
+        $this->XINRegisterRule("other_comments", array("other_comments{@}=={@}NEVER_REQUIRED"));
     }
     function _saveValues(array $values): void
     {
@@ -194,7 +194,7 @@ class NDB_BVL_Instrument_PVT extends NDB_BVL_Instrument
      *
      * @param     string  $file    The full filename including directory.
      *
-     * @return    bool    $success		if operation succeeded
+     * @return    array    the set of error message associated with file validation (null if file is valid)
      * @access    public
      */
     function isValid(&$file, $args){
@@ -202,24 +202,33 @@ class NDB_BVL_Instrument_PVT extends NDB_BVL_Instrument
 
 	$split_file_name = explode("-",$file->fileInfo['name']);
 
-	if($file->fileInfo['type'] != 'csv'){
-	 $errors[]= "File must be CSV format\n";
+	if($file->fileInfo['type'] != 'text/csv'){
+	    $errors[]= "File must be CSV format\n";
+            return $errors;
 	}
         if(strpos($file->fileInfo['name'], $correct_filename) === false || sizeof($split_file_name) < 9){
             $errors[]="Incorrect Filename: Filename should be: " . $correct_filename . "-Date-Time-TestType-Data.csv";
             return $errors;
         }
-        
+
         $fp=fopen($file->fileInfo['tmp_name'], "r");
         $contents=fread($fp,filesize($file->fileInfo['tmp_name']));
         fclose($fp);
 
+        // Make sure the file contains at least one non-blank line
         $lines =preg_split("/\\r\\n|\\r|\\n/", $contents);
-        $visit = $args['visitLabel'];
-        $actual_pscid=$args['PSCID'];
+	$nbLines = sizeof($lines);
+        $lastNonBlankLineIdx = $nbLines-1;
+        while($lastNonBlankLineIdx >= 0 && $lines[$lastNonBlankLineIdx] == NULL){
+            $lastNonBlankLineIdx--;
+        }
 
+        if($lastNonBlankLineIdx < 0) {
+            $errors[] = "File is empty";
+            return $errors;
+        }
 
-        return true;
+        return null;
     }
 
     /**
@@ -262,24 +271,27 @@ class NDB_BVL_Instrument_PVT extends NDB_BVL_Instrument
 	//Cycle through the lines and extract the data
 	$lines =preg_split("/\\r\\n|\\r|\\n/", $contents);
 
-	$size = sizeof($lines);
-     	$last_line = $size - 1;
-            if($lines[$last_line] != NULL){
-		$tokens = explode(',',$lines[$last_line]);
-		$values["participant_0"] = "--"; 
-	        $values["trial_0"] = "--";
-		$values["isi_0"] = "--";
-		$values["abstime_0"] = "--";
-		$values["rt_0"] = "--";
-		$values["type_0"] = "--";
-		$values["valid_response_0"] =  $tokens[6];
-		$values["false_starts_0"] =  $tokens[7];
-		$values["timeouts_0"] = $tokens[8];
-		$values["mean_rt_0"] = $tokens[9];
-		$values["standard_deviation_rt_0"] = $tokens[10];
-		$values["minimum_rt_0"] = $tokens[11];
-		$values["maximum_rt_0"] = $tokens[12];
-	    }
+	$nbLines = sizeof($lines);
+        $lastNonBlankLineIdx = $nbLines-1;
+        while($lastNonBlankLineIdx >= 0 && $lines[$lastNonBlankLineIdx] == NULL){
+            $lastNonBlankLineIdx--;
+        }
+
+        // File has been validated so $lastNonBlankLineIdx should be >= 0
+        $tokens = explode(',',$lines[$lastNonBlankLineIdx]);
+	$values["participant_0"]           = "--";
+	$values["trial_0"]                 = "--";
+        $values["isi_0"]                   = "--";
+	$values["abstime_0"]               = "--";
+	$values["rt_0"]                    = "--";
+	$values["type_0"]                  = "--";
+	$values["valid_response_0"]        = $tokens[6];
+	$values["false_starts_0"]          = $tokens[7];
+	$values["timeouts_0"]              = $tokens[8];
+	$values["mean_rt_0"]               = $tokens[9];
+	$values["standard_deviation_rt_0"] = $tokens[10];
+	$values["minimum_rt_0"]            = $tokens[11];
+	$values["maximum_rt_0"]            = $tokens[12];
    
         $db=& Database::singleton();
 
@@ -305,7 +317,6 @@ class NDB_BVL_Instrument_PVT extends NDB_BVL_Instrument
                       'session_id'  => $this->getSessionID(),
                       'instrument'  => $this->table,
                       'date_taken'  => $dateTaken,
-                      'comments'    => $comments,
                       'file_name'   => $file->fileInfo['name'],
                       'file_type'   => 'PVT',
                       'data_dir'    => $mediaPath,
