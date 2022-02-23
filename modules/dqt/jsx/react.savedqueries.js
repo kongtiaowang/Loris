@@ -4,6 +4,7 @@
  */
 import React, {useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
+import swal from 'sweetalert2';
 
 const ManageSavedQueryFilters = (props) => {
   const [content, setContent] = useState(null);
@@ -71,6 +72,35 @@ const ManageSavedQueryRow = (props) => {
   const [fieldsVisible, setFields] = useState(null);
   const [filtersVisible, setFilters] = useState(null);
 
+  /**
+   * @deleteclick
+   */
+function publicquerydelete() {
+           let id = props.Query['_id'];
+          swal.fire({
+            title: 'Are you sure?',
+            text: 'You won\'t be able to revert this!',
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!',
+           }).then((result) => {
+           if (result.value) {
+            let deleteurl = loris.BaseURL +
+              '/AjaxHelper.php?Module=dqt&script=DeleteDoc.php&DocID='
+              + encodeURIComponent(id);
+              fetch(deleteurl, {
+              cache: 'no-cache',
+              credentials: 'same-origin',
+              }).then((resp) => resp.json())
+                .then(()=>{
+                  location.reload();
+                  swal.fire('delete Successful!', '', 'success');
+                });
+           }
+          });
+        };
   useEffect(() => {
     let fields = [];
     let filters = [];
@@ -157,6 +187,21 @@ const ManageSavedQueryRow = (props) => {
     setFilters(filters);
     setFields(fields);
   }, []);
+     let docName = props.Query.Meta['name'];
+     let docAuthor = docName.substring(0, docName.lastIndexOf(':'));
+     let btn = '';
+    if (props.author == docAuthor) {
+      btn = (
+             <button className='btn btn-danger'
+             onClick={()=> { // eslint-disable-line
+                      publicquerydelete(); // eslint-disable-line
+                           } // eslint-disable-line
+             } // eslint-disable-line
+           >
+            delete
+          </button>
+      );
+    }
 
   return (
     <tr>
@@ -173,6 +218,11 @@ const ManageSavedQueryRow = (props) => {
       <td>
         <div className={'tableFiltersCell'}>
           {filtersVisible}
+        </div>
+      </td>
+      <td>
+        <div className={'tableNameCell'}>
+          {btn}
         </div>
       </td>
     </tr>
@@ -222,6 +272,7 @@ const SavedQueriesList = (props) => {
         <ManageSavedQueryRow key={name}
                              Name={queryName}
                              Query={query}
+                             author={props.author}
         />
       );
     }
@@ -247,6 +298,7 @@ const SavedQueriesList = (props) => {
           <th>Query Name</th>
           <th>Fields</th>
           <th>Filters</th>
+          <th>Delete</th>
         </tr>
         </thead>
         <tbody>

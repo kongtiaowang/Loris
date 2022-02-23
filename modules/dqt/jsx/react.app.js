@@ -41,6 +41,7 @@ class DataQueryApp extends Component {
       queryIDs: {
         user: [],
         shared: [],
+        author: [],
       },
       savedQueries: {},
       queriesLoaded: false,
@@ -1316,6 +1317,7 @@ class DataQueryApp extends Component {
                         queriesLoaded={this.state.queriesLoaded}
                         onSelectQuery={this.loadSavedQuery}
                         loadedQuery={this.state.loadedQuery}
+                        author={this.state.queryIDs.author}
                       />
                     </>
                   ),

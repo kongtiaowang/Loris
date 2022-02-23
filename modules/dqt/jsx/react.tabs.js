@@ -10,9 +10,10 @@
 
 import React, {Component, useState} from 'react';
 import PropTypes from 'prop-types';
-import DataRequest from './components/datarequest';
-import DataTable from './components/table';
+import StaticDataTable from '../../../jsx/StaticDataTable';
 import swal from 'sweetalert2';
+
+const {jStat} = require('jstat');
 
 /**
  * Loading Component
@@ -147,6 +148,8 @@ let FilterSelectTabPane = (props) => {
                      filter={props.filter}
                      Visits={props.Visits}
                      Active={props.Active}
+                     loadImportedCSV={props.loadImportedCSV}
+                     getAllSessions={props.getAllSessions}
       />
     </TabPane>
   );
@@ -181,7 +184,6 @@ class ViewDataTabPane extends Component {
     this.getOrCreateDownloadLink = this.getOrCreateDownloadLink.bind(this);
     this.downloadData = this.downloadData.bind(this);
     this.downloadDataCSV = this.downloadDataCSV.bind(this);
-    this.exportToNeuroHub = this.exportToNeuroHub.bind(this);
   }
 
   /**
@@ -404,113 +406,6 @@ class ViewDataTabPane extends Component {
   }
 
   /**
-   * exportToNeuroHub
-   */
-  exportToNeuroHub() {
-    // mimick downloadCSV but send csv file to /data/genetics/NeuroHub instead of browser
-    let csvworker = new Worker(loris.BaseURL + '/js/workers/savecsv.js');
-    const tableData = this.props.Data;
-    csvworker.addEventListener('message', function(e) {
-      if (e.data.cmd === 'SaveCSV' && tableData != undefined) {
-        const postObject = new FormData();
-        const dataDate = new Date().toISOString();
-        const filename = 'data-' + dataDate + '.csv';
-        postObject.append('file', e.data.message, filename);
-        swal.fire({
-          title: 'Proceed with export?',
-          html: 'Please provide your NeuroHub API token.<br><br>' +
-            'You can generate a new token in the `My account` page of NeuroHub'
-            +
-            ' using the `Generate new API token` button in the ' +
-            '<a target="_blank" href="https://portal.cbrain.mcgill.ca/">' +
-            'CBRAIN`s user interface</a>.<br>' +
-            'A CBRAIN file list will be created in your default dataprovider.',
-          width: '60%',
-          input: 'text',
-          inputValidator: (value) => {
-            if (!value) {
-              return 'NeuroHub token is required.';
-            }
-          },
-          inputPlaceholder: 'NeuroHub API token',
-          showCancelButton: true,
-          confirmButtonText: 'Yes, export',
-          showLoaderOnConfirm: true,
-          preConfirm: (token) => {
-            postObject.append('token', token);
-            return fetch(`${loris.BaseURL}/dqt/Export`, {
-              method: 'POST',
-              cache: 'no-cache',
-              credentials: 'same-origin',
-              body: postObject,
-            })
-            .then((resp) => {
-              if (!resp.ok) {
-                throw new Error(resp.statusText);
-              }
-              return resp.json();
-            })
-            .catch((error) => {
-              swal.showValidationMessage(
-                `Request failed: ${error}`
-              );
-            });
-          },
-          allowOutsideClick: false,
-        }).then((result) => {
-          swal.fire({
-            title: 'Export Successful!',
-            html: '<a href="' + result.value.images_location +
-              '" target="_blank">Images</a><br>' +
-              '<a href="' + result.value.data_location +
-              '" target="_blank">Data</a>',
-          });
-        });
-      }
-    });
-    // Modify table data for readable csv
-    const correctReactLinks = (csvData) => {
-      const newCsvData = csvData.map((data, dataIndex) => {
-        const newData = data.map((value, valueIndex) => {
-          let result = [value];
-          if (value == null) {
-            result = [''];
-          } else {
-            if (value.type === 'a') {
-              result = [value.props.href];
-            } else if (value.type === 'span') {
-              if (Array.isArray(value.props.children)) {
-                const children = value.props.children.map(
-                  (child, childIndex) => {
-                  let childresult = child;
-                  if (child.props && child.props.href) {
-                    childresult = child.props.href;
-                  }
-                  return childresult;
-                });
-                result = [children.join('')];
-              } else {
-                result = [value.props.children.props.href];
-              }
-            }
-          }
-          return result;
-        });
-        return newData;
-      });
-      return newCsvData;
-    };
-    const csvExport = correctReactLinks([...tableData]);
-    // create CSV from data
-    csvworker.postMessage({
-      cmd: 'SaveFile',
-      data: csvExport,
-      headers: this.props.RowHeaders,
-      identifiers: this.props.RowInfo,
-    });
-  }
-
-  /**
    * Renders the React component.
    *
    * @return {JSX} - React markup for the component
@@ -525,24 +420,6 @@ class ViewDataTabPane extends Component {
             &nbsp;Visualized Data
           </button>
         </div>
-
-        <div className='flex-row-item'>
-          <button
-            onClick={() => {
-              this.setState({dataRequestPrompt: true});
-            }}
-            className='action-btn request-data'
-          >
-            <span className='glyphicon glyphicon-list-alt'/>
-            &nbsp;Controlled Data Request
-          </button>
-        </div>
-        <DataRequest
-          show={this.state.dataRequestPrompt}
-          onClose={() => {
-            this.setState({dataRequestPrompt: false});
-          }}
-        />
 
         <div className='flex-row-item'>
           <div style={{
@@ -572,16 +449,6 @@ class ViewDataTabPane extends Component {
                     onClick={this.downloadData}>
               Download Files
               &nbsp;<span className='glyphicon glyphicon-download-alt'/>
-            </button>
-            <button className='btn btn-primary'
-                    style={{
-                      minWidth: '200px',
-                      minHeight: '30px',
-                      alignSelf: 'center',
-                      margin: '5px 0 5px 0',
-                    }}
-                    onClick={this.exportToNeuroHub}>
-              Export Results To NeuroHub
             </button>
           </div>
         </div>
@@ -667,11 +534,12 @@ class ViewDataTabPane extends Component {
       }
     }
     const queryTable = this.state.runQueryClicked ? (
-      <DataTable
+      <StaticDataTable
         Headers={this.props.RowHeaders}
         RowNumLabel='Identifiers'
         Data={this.props.Data}
         RowNameMap={this.props.RowInfo}
+        DisableFilter={true}
       />
     ) : (
       <>
@@ -973,21 +841,6 @@ class StatsVisualizationTabPane extends Component {
   }
 
   /**
-   * shouldComponentUpdate
-   * @param {object} nextProps - next props
-   * @param {object} nextState - next state
-   * @return {boolean} update component if true.
-   */
-  shouldComponentUpdate(nextProps, nextState) {
-    if (nextProps.Active && !this.props.Active) {
-      return true;
-    } else if (!nextProps.Active && this.props.Active) {
-      return true;
-    }
-    return false;
-  }
-
-  /**
    * Renders the React component.
    *
    * @return {JSX} - React markup for the component
@@ -1265,6 +1118,35 @@ class ManageSavedQueryRow extends Component {
     super(props);
     this.state = {};
   }
+  /**
+   * @deleteclick
+   */
+         deleteclick() {
+          let id = this.props.Query['_id'];
+          swal.fire({
+            title: 'Are you sure?',
+            text: 'You won\'t be able to revert this!',
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!',
+           }).then((result) => {
+           if (result.value) {
+            let deleteurl = loris.BaseURL +
+              '/AjaxHelper.php?Module=dqt&script=DeleteDoc.php&DocID='
+              + encodeURIComponent(id);
+              fetch(deleteurl, {
+              cache: 'no-cache',
+              credentials: 'same-origin',
+              }).then((resp) => resp.json())
+                .then(()=>{
+                  location.reload();
+                  swal.fire('delete Successful!', '', 'success');
+                });
+           }
+          });
+        }
 
   /**
    * Renders the React component.
@@ -1373,6 +1255,18 @@ class ManageSavedQueryRow extends Component {
             {filters}
           </div>
         </td>
+        <td>
+          <div className={'tableNamesCell'}>
+           <button className='btn btn-danger'
+             onClick={()=> { // eslint-disable-line
+                      this.deleteclick(); // eslint-disable-line
+                           } // eslint-disable-line
+	     } // eslint-disable-line
+           >
+            delete
+          </button>
+          </div>
+        </td>
       </tr>
     );
   }
@@ -1445,6 +1339,7 @@ let ManageSavedQueriesTabPane = (props) => {
           <th>Query Name</th>
           <th>Fields</th>
           <th>Filters</th>
+          <th>Delete</th>
         </tr>
         </thead>
         <tbody>
