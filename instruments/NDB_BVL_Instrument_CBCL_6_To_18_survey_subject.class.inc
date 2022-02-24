@@ -1777,22 +1777,22 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
         $record_1 = $db->pselectRow($query_scores1, array());
         if (array_key_exists('scale_T_score', $record_1)) {
             if ($record_1['scale_T_score'] == "" || ($record_1['scale_T_score'] == NULL)) {
-                $scores[$field . '_T_score'] = "NA";
+                $scores[$field . '_T_score'] = "Cannot be scored: Candidate out of age range.";
             } else {
                 $scores[$field . '_T_score'] = ($record_1['scale_T_score']);
             }
         } else {
-            $scores[$field . '_T_score'] = "NA";
+            $scores[$field . '_T_score'] = "Cannot be scored: Candidate out of age range.";
         }
 
         if (array_key_exists('scale_percentile', $record_1)) {
             if ($record_1['scale_percentile'] == "" || ($record_1['scale_percentile'] == NULL)) {
-                $scores[$field . '_percentile'] = "NA";
+                $scores[$field . '_percentile'] = "Cannot be scored: Candidate out of age range.";
             } else {
                 $scores[$field . '_percentile'] = ($record_1['scale_percentile']);
             }
         } else {
-            $scores[$field . '_percentile'] = "NA";
+            $scores[$field . '_percentile'] = "Cannot be scored: Candidate out of age range.";
         }
 
 

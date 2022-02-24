@@ -1,0 +1,43 @@
+-- CBCL_6_To_18_T_score 
+ALTER TABLE CBCL_6_To_18 CHANGE anxious_T_score anxious_T_score varchar(100) default NULL;
+ALTER TABLE CBCL_6_To_18 CHANGE depressed_T_score depressed_T_score varchar(100) default NULL;
+ALTER TABLE CBCL_6_To_18 CHANGE  som_comp_T_score som_comp_T_score varchar(100) default NULL;
+ALTER TABLE CBCL_6_To_18 CHANGE social_prob_T_score social_prob_T_score varchar(100) default NULL;
+ALTER TABLE CBCL_6_To_18 CHANGE  thought_prob_T_score thought_prob_T_score varchar(100) default NULL;
+ALTER TABLE CBCL_6_To_18 CHANGE  rule_break_behav_T_score rule_break_behav_T_score varchar(100) default NULL;
+ALTER TABLE CBCL_6_To_18 CHANGE aggr_behav_T_score aggr_behav_T_score varchar(100) default NULL;
+ALTER TABLE CBCL_6_To_18 CHANGE  attention_prob_T_score attention_prob_T_score varchar(100) default NULL;
+ALTER TABLE CBCL_6_To_18 CHANGE  internalizing_T_score internalizing_T_score varchar(100) default NULL;
+ALTER TABLE CBCL_6_To_18 CHANGE  externalizing_T_score externalizing_T_score varchar(100) default NULL;
+ALTER TABLE CBCL_6_To_18 CHANGE  total_problems_T_score total_problems_T_score varchar(100) default NULL;
+ALTER TABLE CBCL_6_To_18 CHANGE depressive_prob_T_score depressive_prob_T_score varchar(100) default NULL;
+ALTER TABLE CBCL_6_To_18 CHANGE anx_prob_T_score anx_prob_T_score varchar(100) default NULL;
+ALTER TABLE CBCL_6_To_18 CHANGE som_prob_T_score som_prob_T_score varchar(100) default NULL;
+ALTER TABLE CBCL_6_To_18 CHANGE attention_hyper_prob_T_score attention_hyper_prob_T_score varchar(100) default NULL;
+ALTER TABLE CBCL_6_To_18 CHANGE oppo_def_prob_T_score oppo_def_prob_T_score varchar(100) default NULL;
+ALTER TABLE CBCL_6_To_18 CHANGE conduct_prob_T_score conduct_prob_T_score varchar(100) default NULL;
+ALTER TABLE CBCL_6_To_18 CHANGE sluggish_cogn_tempo_T_score sluggish_cogn_tempo_T_score varchar(100) default NULL;
+ALTER TABLE CBCL_6_To_18 CHANGE obsessive_comp_prob_T_score obsessive_comp_prob_T_score varchar(100) default NULL;
+ALTER TABLE CBCL_6_To_18 CHANGE  stress_prob_T_score stress_prob_T_score varchar(100) default NULL;
+
+-- CBCL_6_To_18_percentile
+ALTER TABLE CBCL_6_To_18 CHANGE anxious_percentile anxious_percentile varchar(100) default NULL;
+ALTER TABLE CBCL_6_To_18 CHANGE depressed_percentile depressed_percentile varchar(100) default NULL;
+ALTER TABLE CBCL_6_To_18 CHANGE  som_comp_percentile som_comp_percentile varchar(100) default NULL;
+ALTER TABLE CBCL_6_To_18 CHANGE social_prob_percentile social_prob_percentile varchar(100) default NULL;
+ALTER TABLE CBCL_6_To_18 CHANGE  thought_prob_percentile thought_prob_percentile varchar(100) default NULL;
+ALTER TABLE CBCL_6_To_18 CHANGE  rule_break_behav_percentile rule_break_behav_percentile varchar(100) default NULL;
+ALTER TABLE CBCL_6_To_18 CHANGE aggr_behav_percentile aggr_behav_percentile varchar(100) default NULL;
+ALTER TABLE CBCL_6_To_18 CHANGE  attention_prob_percentile attention_prob_percentile varchar(100) default NULL;
+ALTER TABLE CBCL_6_To_18 CHANGE  internalizing_percentile internalizing_percentile varchar(100) default NULL;
+ALTER TABLE CBCL_6_To_18 CHANGE  externalizing_percentile externalizing_percentile varchar(100) default NULL;
+ALTER TABLE CBCL_6_To_18 CHANGE  total_problems_percentile total_problems_percentile varchar(100) default NULL;
+ALTER TABLE CBCL_6_To_18 CHANGE depressive_prob_percentile depressive_prob_percentile varchar(100) default NULL;
+ALTER TABLE CBCL_6_To_18 CHANGE anx_prob_percentile anx_prob_percentile varchar(100) default NULL;
+ALTER TABLE CBCL_6_To_18 CHANGE som_prob_percentile som_prob_percentile varchar(100) default NULL;
+ALTER TABLE CBCL_6_To_18 CHANGE attention_hyper_prob_percentile attention_hyper_prob_percentile varchar(100) default NULL;
+ALTER TABLE CBCL_6_To_18 CHANGE oppo_def_prob_percentile oppo_def_prob_percentile varchar(100) default NULL;
+ALTER TABLE CBCL_6_To_18 CHANGE conduct_prob_percentile conduct_prob_percentile varchar(100) default NULL;
+ALTER TABLE CBCL_6_To_18 CHANGE sluggish_cogn_tempo_percentile sluggish_cogn_tempo_percentile varchar(100) default NULL;
+ALTER TABLE CBCL_6_To_18 CHANGE obsessive_comp_prob_percentile obsessive_comp_prob_percentile varchar(100) default NULL;
+ALTER TABLE CBCL_6_To_18 CHANGE  stress_prob_percentile stress_prob_percentile varchar(100) default NULL;

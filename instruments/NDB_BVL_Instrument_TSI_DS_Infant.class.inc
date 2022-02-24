@@ -68,9 +68,10 @@ class NDB_BVL_Instrument_TSI_DS_Infant extends NDB_BVL_Instrument
                          );
 
     const ETHNICITY_OPTIONS = array(
-                               null           => '',
-                               'hispanic'     => 'Hispanic',
-                               'non_hispanic' => 'Non-Hispanic',
+                               null           		 => '',
+                               'hispanic'     		 => 'Hispanic',
+			       'non_hispanic' 		 => 'Non-Hispanic',
+			       'unknown_or_not_reported' => 'Unknown or not reported',
                               );
 
     const HOUSEHOLD_SES_OPTIONS = array(
