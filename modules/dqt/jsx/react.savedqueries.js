@@ -71,7 +71,6 @@ const ManageSavedQueryFilters = (props) => {
 const ManageSavedQueryRow = (props) => {
   const [fieldsVisible, setFields] = useState(null);
   const [filtersVisible, setFilters] = useState(null);
-
   /**
    * @deleteclick
    */
@@ -202,7 +201,6 @@ function publicquerydelete() {
           </button>
       );
     }
-
   return (
     <tr>
       <td>

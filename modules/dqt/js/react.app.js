@@ -3251,8 +3251,8 @@ var DataQueryApp = /*#__PURE__*/function (_Component) {
             }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_10___default.a.createElement(_react_savedqueries__WEBPACK_IMPORTED_MODULE_14__["default"], {
               userQueries: this.state.queryIDs.user,
               globalQueries: this.state.queryIDs.shared,
-              author: this.state.queryIDs.author,
               queryDetails: this.state.savedQueries,
+              author: this.state.queryIDs.author,
               queriesLoaded: this.state.queriesLoaded,
               onSelectQuery: this.loadSavedQuery,
               loadedQuery: this.state.loadedQuery

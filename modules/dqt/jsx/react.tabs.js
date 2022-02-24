@@ -1147,7 +1147,6 @@ class ManageSavedQueryRow extends Component {
            }
           });
         }
-
   /**
    * Renders the React component.
    *
