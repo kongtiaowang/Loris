@@ -1,8 +1,6 @@
 -- Github 2055
 -- Remove all entries in the survey_test_battery and re-populate with new rows
 
-START TRANSACTION;
-
 truncate survey_test_battery;
 
 INSERT INTO survey_test_battery (Test_name, SubprojectID, Visit_label) VALUES ("ABC2", 1, "VSA");
@@ -2024,6 +2022,3 @@ INSERT INTO survey_test_battery (Test_name, SubprojectID, Visit_label) VALUES ("
 INSERT INTO survey_test_battery (Test_name, SubprojectID, Visit_label) VALUES ("SRS2_SchoolAge_Parent", 24, "VSA-Sleep");
 INSERT INTO survey_test_battery (Test_name, SubprojectID, Visit_label) VALUES ("tanner_boys_survey", 24, "VSA-Sleep");
 INSERT INTO survey_test_battery (Test_name, SubprojectID, Visit_label) VALUES ("tanner_girls_survey", 24, "VSA-Sleep");
-
-
-COMMIT;
