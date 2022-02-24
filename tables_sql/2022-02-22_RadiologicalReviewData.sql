@@ -281,7 +281,7 @@ JOIN candidate c ON (c.CandID=s.CandID)
 SET subtest_1_2_check='yes',
     subtest_4_5_check='yes'
 WHERE c.PSCID='sea0238'
-AND s.visit_label = 'VSA';
+AND s.visit_label = 'VSA-CVD';
 
 -- -------------------------------------------------------------------------------------------------
 
@@ -316,7 +316,7 @@ JOIN candidate c ON (c.CandID=s.CandID)
 SET subtest_1_1_comment='BG PVS',
     subtest_1_2_check='yes',
     subtest_4_5_check='yes'
-WHERE c.PSCID='sea102'
+WHERE c.PSCID='sea0102'
 AND s.visit_label = 'VSA';
 
 -- -------------------------------------------------------------------------------------------------
