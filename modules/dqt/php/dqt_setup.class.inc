@@ -175,11 +175,10 @@ class Dqt_Setup extends \NDB_Form implements RequestHandlerInterface
 
         $usersavedNames   = array_map($IDMapCallback, $usersaved);
         $globalsavedNames = array_map($IDMapCallback, $globalsaved);
-        $user        = \User::singleton();
+
         $data['savedqueries'] = [
             'user'   => $usersavedNames,
             'shared' => $globalsavedNames,
-            'author' => $user->getUsername(),
         ];
         $data['visits']       = \Utility::getVisitList();
         // Note: StringStream since BinaryStream isn't in 23.0-release.

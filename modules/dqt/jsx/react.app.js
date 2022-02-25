@@ -16,7 +16,7 @@ import {StepperPanel, ProgressBar} from './components/stepper';
 import SavedQueriesList from './react.savedqueries';
 import ExpansionPanels from './components/expansionpanels';
 import NoticeMessage from './react.notice';
-import {getSessions} from '../js/arrayintersect';
+import DataRequest from './components/datarequest';
 
 /**
  * DataQueryApp component
@@ -41,7 +41,6 @@ class DataQueryApp extends Component {
       queryIDs: {
         user: [],
         shared: [],
-        author: [],
       },
       savedQueries: {},
       queriesLoaded: false,
@@ -62,7 +61,6 @@ class DataQueryApp extends Component {
         ],
         session: [],
       },
-      allSessions: [], // persistent "all sessions" after initial load.
       selectedFields: {},
       downloadableFields: {},
       loading: false,
@@ -88,6 +86,7 @@ class DataQueryApp extends Component {
         User: [],
         Shared: [],
       },
+      AllSessions: [],
       Visits: [],
     };
     this.saveFilterRule = this.saveFilterRule.bind(this);
@@ -110,8 +109,6 @@ class DataQueryApp extends Component {
     this.navigationClicked = this.navigationClicked.bind(this);
     this.getSideBarVisibleStatus = this.getSideBarVisibleStatus.bind(this);
     this.displayVisualizedData = this.displayVisualizedData.bind(this);
-    this.loadImportedCSV = this.loadImportedCSV.bind(this);
-    this.getAllSessions = this.getAllSessions.bind(this);
     this.loadSavedQueries = this.loadSavedQueries.bind(this);
     this.handleProgressBarSetup = this.handleProgressBarSetup.bind(this);
     this.requestSessions = this.requestSessions.bind(this);
@@ -274,7 +271,7 @@ class DataQueryApp extends Component {
                 ...prevState.filter,
                 session: data.sessions,
               },
-              allSessions: data.sessions,
+              AllSessions: data.sessions,
             };
           }, () => {
             return callback(true);
@@ -370,11 +367,10 @@ class DataQueryApp extends Component {
     // Used to save the current query
 
     let filter = this.saveFilterGroup(this.state.filter);
-    const fields = JSON.stringify(this.state.selectedFields);
 
     $.post(loris.BaseURL
       + '/AjaxHelper.php?Module=dqt&script=saveQuery.php', {
-      Fields: fields,
+      Fields: JSON.stringify(this.state.selectedFields),
       Filters: filter,
       QueryName: name,
       SharedQuery: shared,
@@ -559,23 +555,6 @@ class DataQueryApp extends Component {
   }
 
   /**
-   * Load the imported CSV from the user.
-   *
-   * @param {array} filter
-   */
-  loadImportedCSV(filter) {
-    filter.importCSV = true;
-    this.setState({
-      fields: this.state.fields ?? [],
-      selectedFields: this.state.selectedFields ?? {},
-      filter: filter,
-      alertLoaded: false,
-      alertSaved: false,
-      loading: false,
-    });
-  }
-
-  /**
    * Used to load a saved query
    * Query can be saved in 2 formats:
    * params can be arrays or objects
@@ -673,7 +652,7 @@ class DataQueryApp extends Component {
           type: 'rule',
         },
       ];
-      filterState.session = this.state.filter.session;
+      filterState.session = this.state.AllSessions;
     }
     this.setState({
       fields: fieldsList,
@@ -687,7 +666,7 @@ class DataQueryApp extends Component {
       $.ajax({
         url: loris.BaseURL + '/dqt/ajax/datadictionary.php',
         success: (data) => {
-          if (data[0] && data[0].value.IsFile) {
+          if (data[0].value.IsFile) {
             let key = data[0].key[0] + ',' + data[0].key[1];
             let downloadable = this.state.downloadableFields;
             downloadable[key] = true;
@@ -740,6 +719,7 @@ class DataQueryApp extends Component {
    */
   fieldChange(fieldName, category, downloadable) {
     // Used to add and remove fields from the current query being built
+
     this.setState((state) => {
       let selectedFields = state.selectedFields;
       let fields = state.fields.slice(0);
@@ -747,16 +727,14 @@ class DataQueryApp extends Component {
         // The given category has no selected fields, add the category to the selectedFields
         selectedFields[category] = {};
         // Add all visits to the given field for the given category
-        let first = Object.keys(this.state.Visits)[0];
-        selectedFields[category][fieldName] = JSON.parse(JSON.stringify({
-          [first]: first,
-        }));
+        selectedFields[category][fieldName] = JSON.parse(
+          JSON.stringify(this.state.Visits)
+        );
         // Add all visits to the given category, initializing their counts to 1
         selectedFields[category].allVisits = {};
         for (let key in this.state.Visits) {
           if (this.state.Visits.hasOwnProperty(key)) {
             selectedFields[category].allVisits[key] = 1;
-            break;
           }
         }
 
@@ -832,6 +810,9 @@ class DataQueryApp extends Component {
     if (this.state.filter.children.length > 0) {
       // If filter exists return filter sessions
       return this.state.filter.session;
+    } else {
+      // Else return all sessions
+      return this.state.AllSessions;
     }
   }
 
@@ -1156,7 +1137,7 @@ class DataQueryApp extends Component {
    */
   updateFilter(filter) {
     if (filter.children.length === 0) {
-      filter.session = this.state.allSessions;
+      filter.session = this.state.AllSessions;
     }
     this.setState({filter});
   }
@@ -1254,14 +1235,6 @@ class DataQueryApp extends Component {
   }
 
   /**
-   * get AllSessions when needed.
-   * @return {array}
-   */
-  getAllSessions() {
-    return this.props.AllSessions;
-  }
-
-  /**
    * Renders the React component.
    *
    * @return {JSX} - React markup for the component
@@ -1307,9 +1280,18 @@ class DataQueryApp extends Component {
                       </p>
                       <p>Lastly, navigate to the <i style={{color: '#596978'}}>
                         "Run Query"</i> and run the query you built. 🙂</p><br/>
+                      <p style={{textAlign: 'center'}}>
+                        Please read the&nbsp;
+                        <a style={{textDecoration: 'underline'}}
+                           href={'https://docs.google.com/document/d/' +
+                        '1E8BC9guVrXUd2KDKlX9pu0xch5Ex56lgKw34cEchaek'}
+                        target='_blank'>
+                          "Manual Of Operations"
+                        </a>
+                        &nbsp;document for additional information.</p>
                     </>
                   ),
-                  alwaysOpen: true,
+                  alwaysOpen: false,
                 },
                 {
                   title: 'Load Existing Query',
@@ -1328,7 +1310,6 @@ class DataQueryApp extends Component {
                         savePrompt={this.state.savePrompt}
                       />
                       <SavedQueriesList
-                        author={this.state.queryIDs.author}
                         userQueries={this.state.queryIDs.user}
                         globalQueries={this.state.queryIDs.shared}
                         queryDetails={this.state.savedQueries}
@@ -1341,6 +1322,33 @@ class DataQueryApp extends Component {
                 },
               ]}
             />
+            <div className='container-fluid'
+                 style={{margin: '0px auto', maxWidth: '900px'}}>
+              <button
+                onClick={() => {
+                  this.setState({dataRequestPrompt: true});
+                }}
+                style={{width: '100%',
+                    padding: '18px',
+                    outline: 'none',
+                    color: '#fff',
+                    fontSize: '15px',
+                    cursor: 'pointer',
+                    textAlign: 'center',
+                    backgroundColor: '#246EB6',
+                    border: '1px solid #246EB6',
+                    transition: '0.4s',
+                }}
+              >
+                Controlled Data Request
+              </button>
+              <DataRequest
+                show={this.state.dataRequestPrompt}
+                onClose={() => {
+                  this.setState({dataRequestPrompt: false});
+                }}
+              />
+            </div>
           </>
         )}
       />
@@ -1382,8 +1390,6 @@ class DataQueryApp extends Component {
             Visits={this.state.Visits}
             Loading={this.state.loading}
             Active={this.state.ActiveTab === 'DefineFilters'}
-            loadImportedCSV={this.loadImportedCSV}
-            getAllSessions={this.getAllSessions}
           />
         )}
       />
@@ -1407,7 +1413,7 @@ class DataQueryApp extends Component {
             Active={this.state.ActiveTab === 'ViewData'}
             Fields={this.state.fields}
             Criteria={this.state.criteria}
-            AllSessions={this.state.filter.session}
+            AllSessions={this.state.AllSessions}
             filter={this.state.filter}
             Sessions={this.getSessions()}
             Data={this.state.rowData.rowdata}
@@ -1504,6 +1510,7 @@ DataQueryApp.propTypes = {
   baseURL: PropTypes.string,
   title: PropTypes.string,
   SavedQueries: PropTypes.object,
+  AllSessions: PropTypes.array,
   categories: PropTypes.array,
   Visits: PropTypes.array,
   UpdatedTime: PropTypes.string,
@@ -1514,6 +1521,7 @@ DataQueryApp.defaultProps = {
     User: [],
     Shared: [],
   },
+  AllSessions: [],
   categories: [],
   Visits: [],
   UpdatedTime: 'Fetching when data was last updated information...',
