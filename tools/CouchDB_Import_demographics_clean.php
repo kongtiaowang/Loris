@@ -665,7 +665,7 @@ group by s.CandID,s.Visit_label",
                     FROM session s
                     JOIN flag f on (s.ID=f.SessionID)
                     WHERE f.Administration IN ('Partial','All')
-		                AND f.Test_name IN ('tsi', 'tsi_ds', 'TSI_DS_Infant', 'TSI_EP')
+		                AND f.Test_name IN ('tsi', 'tsi_ds', 'TSI_DS_Infant', 'TSI_EP', 'TSI_SA')
 		                AND f.CommentID NOT LIKE 'DDE_%'
                         AND s.CandID=:candID
             ", array('candID' => $candid));
@@ -709,6 +709,14 @@ group by s.CandID,s.Visit_label",
                                 FROM TSI_EP
                                 WHERE CommentID=:commentID
                         ", array('commentID' => $tsi['CommentID']));
+                    break;
+                case "TSI_SA":
+                    $result = $this->SQLDB->pselectRow("
+                        SELECT candidate_ethnicity,
+                               candidate_race
+                            FROM TSI_SA
+                            WHERE CommentID=:commentID
+                    ", array('commentID' => $tsi['CommentID']));
                     break;
             }
 

@@ -534,6 +534,19 @@ function editConsentStatusFields($db, $user)
                 $db->insert('candidate_consent_rel', $updateStatus);
             }
             $db->insert('candidate_consent_history', $updateHistory);
+
+            // IBIS SPECIFIC OVERRIDE CODE
+            // Set DoB and EDC is study consent = no
+            if ($consentName === 'study_consent'
+                && $updateStatus['Status'] === 'no') {
+                error_log("IN HERE");
+                $db->update(
+                    'candidate',
+                    array('DoB' => NULL, 'EDC' => NULL),
+                    array('CandID' => $candID)
+                );
+            }
+            // IBIS SPECIFIC OVERRIDE CODE ENDS HERE
         }
     }
 }
@@ -551,9 +564,25 @@ function editConsentStatusFields($db, $user)
 function editCandidateDOB(\Database $db, \User $user): void
 {
     $candID       = new CandID($_POST['candID']);
+    $candidate    = \Candidate::singleton($candID);
     $dob          = $_POST['dob'];
     $strippedDate = null;
     if (!empty($dob)) {
+        $candidate        = \Candidate::singleton($candID);
+        $candidateConsent = $candidate->getConsents();
+        $studyConsent     = '';
+
+        foreach ($candidateConsent as $consent) {
+            if ($consent['Name'] === 'study_consent') {
+                $studyConsent = $consent['Status'];
+                break;
+            }
+        }
+        if ($studyConsent === 'no') {
+            http_response_code(400);
+            die(json_encode(["error" => "Can't set date of birth of a candidate with study consent no."]));
+        }
+
         $config    = \NDB_Config::singleton();
         $dobFormat = $config->getSetting('dobFormat');
         if ($dobFormat === 'YM') {
@@ -565,6 +594,7 @@ function editCandidateDOB(\Database $db, \User $user): void
             array('CandID' => $candID->__toString())
         );
     }
+    die(json_encode([]));
 }
 
 /**
