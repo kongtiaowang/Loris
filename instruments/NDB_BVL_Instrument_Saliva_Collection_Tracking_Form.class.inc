@@ -116,8 +116,6 @@ function _page1(){
 
                $this->form->addElement('select','subject_how_collected','2. How will saliva be collected?',self::VISIT_MAIL_OPTIONS);
 
-               $this->XINRegisterRule('subject_how_collected', array("subject_need_collection{@}=={@}yes"), "Required if 'Yes' was selected for Question 1.");
-
 	       $this->form->addElement('select','subject_kit_used','3. Which type of kit will the Subject use?', self::KIT_TYPE);
 
                $this->form->addGroup($group, 'subject_header1', "At Visit", $this->_GUIDelimiter, FALSE);
@@ -127,8 +125,6 @@ function _page1(){
 
                $this->form->addElement('date','subject_visit_collection_date','4. Collection Date?', $this->dateOptions);
 
-               $this->XINRegisterRule('subject_visit_collection_date', array("subject_how_collected{@}=={@}At_Visit"), "Required if 'At Visit', for Question 2");
-
 
 	       $group[] = $this->form->createElement("date","subject_visit_mailed_to_UNC",null,$this->dateOptions);
                $group[] = $this->form->createElement("select","subject_visit_mailed_to_UNC_status",null,
@@ -137,16 +133,12 @@ function _page1(){
                  'not_answered' => "Not yet planned, storing at site",
                 )
               );
-              $this->XINRegisterRule("subject_visit_mailed_to_UNC",array("subject_visit_mailed_to_UNC_status{@}=={@}"),"You must either enter a date or specify that the sample is stored at the site","sq4_group");
-              $this->addGroup($group,"sq4_group","5. Date mailed to UNC?",$this->_GUIDelimiter,false);
+	      $this->addGroup($group,"subject_visit_mailed_to_UNC_group","5. Date mailed to UNC?",$this->_GUIDelimiter,false);
 	      unset($group);
-
-               $this->XINRegisterRule('sq4_group', array("subject_how_collected{@}=={@}At_Visit"), "Required if 'At Visit', for Question 2");
+	    $this->XINRegisterRule("subject_visit_mailed_to_UNC",array("subject_visit_mailed_to_UNC_status{@}=={@}"),"You must either enter a date or specify that the sample is stored at the site","subject_visit_mailed_to_UNC_group");
+	      
 
                $this->form->addElement('text','subject_visit_tracking_number','6. Tracking number for shipment to UNC:');
-
-               $this->XINRegisterRule('subject_visit_tracking_number', array("subject_how_collected{@}=={@}At_Visit"), "Required if 'At Visit', for Question 2");
-
 
 
               $group[] = $this->form->createElement('static', "", null, null);
@@ -158,11 +150,6 @@ function _page1(){
 
                $this->form->addElement('select','subject_mail_receive','7. How will the family receive the kits?', self::VISIT_MAIL);
 
-               $this->XINRegisterRule('subject_mail_receive', array("subject_how_collected{@}=={@}Via_Mail"), "Required if 'Via Mail', for Question 2");
-
-
-               $this->XINRegisterRule('subject_mail_receive', array("subject_how_collected{@}=={@}Via_Mail"), "Required if 'Via Mail', for Question 2");
-
 	       $this->form->addElement('text','subject_mail_tracking_number','8. Tracking number for shipment to UNC:');
 
                $this->form->addFormRule(array(&$this, 'validate_page1'));
@@ -172,10 +159,10 @@ function _page1(){
 
 function _page2(){
 
-        $examiners = $this->_getExaminerNames();
+         $examiners = $this->_getExaminerNames();
 
         //Defines the call back function for HTML Quickform to use when validating the form.
-        $this->form->addFormRule(array(&$this,'XINValidate'));
+        // $this->form->addFormRule(array(&$this,'XINValidate'));
 
 
 
@@ -189,15 +176,13 @@ function _page2(){
 
               $this->form->addElement('select','proband_need_signed_consent','2.  Does the proband need to sign an assent or consent form?',self::YES_NO_DONT_KNOW);
 
-               $this->XINRegisterRule('proband_need_signed_consent', array("proband_need_collection{@}=={@}yes"), "Required if 'Yes' was selected for Question 1.");
-
-	       $this->form->addElement('select','proband_kit_used','3. Which type of kit will the Proband use?', self::KIT_TYPE);
+             $this->form->addElement('select','proband_kit_used','3. Which type of kit will the Proband use?', self::KIT_TYPE);
+	   
 
                $this->form->addElement('select','proband_consent',"4. Does this proband give consent?", array(''=>'','yes'=>'Yes','refused'=>'Refused','not_asked'=>'Not Asked'));
+	   
 
                $this->form->addElement('select','proband_how_collected','5. How will saliva be collected?', self::VISIT_MAIL_OPTIONS);
-
-              $this->XINRegisterRule('proband_how_collected', array("proband_need_signed_consent{@}=={@}yes"), "Required if 'yes' was selected for Question 2");
 
 
             $this->form->addGroup($group, 'proband_header1', "At Visit", $this->_GUIDelimiter, FALSE);
@@ -207,11 +192,7 @@ function _page2(){
 
                $this->form->addElement('date','proband_visit_collection_date','6. Collection Date?', $this->dateOptions);
 
-               $this->XINRegisterRule('proband_visit_collection_date', array("proband_how_collected{@}=={@}At_Visit"), "Required if 'At Visit' was selected for Question 6");
-
              $this->form->addElement('text','proband_visit_tracking_number','7. Tracking number for shipment to UNC:');
-
-               $this->XINRegisterRule('proband_visit_tracking_number', array("proband_how_collected{@}=={@}At_Visit"), "Required if 'At Visit' was selected for Question 6");
 
 	       $group[] = $this->form->createElement("date","proband_visit_mailed_to_UNC",null,$this->dateOptions);
                $group[] = $this->form->createElement("select","proband_visit_mailed_to_UNC_status",null,
@@ -220,28 +201,21 @@ function _page2(){
                  'not_answered' => "Not yet planned, storing at site",
                 )
             );
-            $this->XINRegisterRule("proband_visit_mailed_to_UNC",array("proband_visit_mailed_to_UNC_status{@}=={@}"),"You must either enter a date or specify that the sample is stored at the site","pq9_group");
-	    $this->addGroup($group,"pq9_group","8. Date mailed to UNC?",$this->_GUIDelimiter,false);
+	    $this->addGroup($group,"proband_visit_mailed_to_UNC_group","8. Date mailed to UNC?",$this->_GUIDelimiter,false);
 	    unset($group);
 
-               $this->XINRegisterRule('pq9_group', array("proband_how_collected{@}=={@}At_Visit"), "Required if 'At Visit' was selected for Question 6");
+            $this->XINRegisterRule("proband_visit_mailed_to_UNC",array("proband_visit_mailed_to_UNC_status{@}=={@}"),"You must either enter a date or specify that the sample is stored at the site","proband_visit_mailed_to_UNC_group");
 
-
-
-            $this->form->addGroup($group, 'proband_header2', "Via Mail", $this->_GUIDelimiter, FALSE);
+	    $group[] = $this->form->createElement('static', null, null, null);
+            $this->form->addGroup($group, 'proband_header_group_', "Via Mail", $this->_GUIDelimiter, FALSE);
             unset($group);
             $this->addLabel("<i>If Saliva collection is 'Via Mail' the questions below are required</i>");
 
 
-                $this->form->addElement("select", "proband_mail_receive", "8. How will the family receive the kits?",  self::VISIT_MAIL);
-
-                $this->XINRegisterRule('proband_mail_receive', array("proband_how_collected{@}=={@}Via_Mail"), "Required if 'Via Mail' was selected for Question 6");
+                $this->form->addElement("select", "proband_mail_receive", "8. How will the family receive the kits?",  self::VISIT_MAIL);;
 
 
                 $this->form->addElement('text', 'proband_mail_tracking_number', '9. Tracking number for shipment to UNC:');
-
-
-                $this->XINRegisterRule('proband_mail_tracking_number', array("proband_how_collected{@}=={@}Via_Mail"), "Required if 'Via Mail' was selected for Question 6");
 
 
                $this->form->addFormRule(array(&$this, 'validate_page2'));
@@ -254,7 +228,7 @@ function _page3(){
         $examiners = $this->_getExaminerNames();
 
         //Defines the call back function for HTML Quickform to use when validating the form.
-               $this->form->addFormRule(array(&$this,'XINValidate'));
+       //        $this->form->addFormRule(array(&$this,'XINValidate'));
 
                $this->form->addElement('header', null, 'Mother');
 
@@ -265,16 +239,12 @@ function _page3(){
 
                $this->form->addElement('select','mother_how_collected','', self::VISIT_MAIL_OPTIONS);
 
-               $this->XINRegisterRule('mother_how_collected', array("mother_need_collection{@}=={@}yes"), "Required if 'Yes' was selected for Question 1.");
-
               $this->form->addGroup($group, 'mother_header1', "At Visit", $this->_GUIDelimiter, FALSE);
               unset($group);
               $this->addLabel("<i>If Saliva collection is 'At Visit' the questions below are required</i>");
 
 
                $this->form->addElement('date','mother_visit_collection_date','3. Collection Date?', $this->dateOptions);
-
-              $this->XINRegisterRule('mother_visit_collection_date', array("mother_how_collected{@}=={@}At_Visit"), "Required if 'At Visit' was selected for Question 2");
 
 	      $group[] = $this->form->createElement("date","mother_visit_mailed_to_UNC",null,$this->dateOptions);
                $group[] = $this->form->createElement("select","mother_visit_mailed_to_UNC_status",null,
@@ -283,17 +253,13 @@ function _page3(){
                  'not_answered' => "Not yet planned, storing at site",
                 )
             );
-            $this->XINRegisterRule("mother_visit_mailed_to_UNC",array("mother_visit_mailed_to_UNC_status{@}=={@}"),"You must either enter a date or specify that the sample is stored at the site","mq4_group");
-            $this->addGroup($group,"mq4_group","4. Date mailed to UNC?",$this->_GUIDelimiter,false);
+            $this->addGroup($group,"mother_visit_mailed_to_UNC_group","4. Date mailed to UNC?",$this->_GUIDelimiter,false);
 	    unset($group);
 
-               $this->XINRegisterRule('mq4_group', array("mother_how_collected{@}=={@}At_Visit"), "Required if 'At Visit' was selected for Question 2");
+               $this->XINRegisterRule("mother_visit_mailed_to_UNC",array("mother_visit_mailed_to_UNC_status{@}=={@}"),"You must either enter a date or specify that the sample is stored at the site","mother_visit_mailed_to_UNC_group");
+
 
                $this->form->addElement('text','mother_visit_tracking_number','5. Tracking number for shipment to UNC');
-
-               $this->XINRegisterRule('mother_visit_tracking_number', array("mother_how_collected{@}=={@}At_Visit"), "Required if 'At Visit' was selected for Question 2");
-
-
 
               $this->form->addGroup($group, 'mother_header2', "Via Mail", $this->_GUIDelimiter, FALSE);
               unset($group);
@@ -302,12 +268,7 @@ function _page3(){
 
                $this->form->addElement('select','mother_mail_receive','6. How will the family receive the kits?', self::VISIT_MAIL);
 
-              $this->XINRegisterRule('mother_mail_receive', array("mother_how_collected{@}=={@}Via_Mail"), "Required if 'Via Mail', Question 2");
-
               $this->form->addElement('text', 'mother_mail_tracking_number', '7. Tracking number for shipment to UNC:');
-
-
-              $this->XINRegisterRule('mother_mail_tracking_number', array("mother_how_collected{@}=={@}Via_Mail"), "Required if 'Via Mail' was selected for Question 2");
 
 
                 $this->form->addFormRule(array(&$this, 'validate_page3'));
@@ -320,7 +281,7 @@ function _page4(){
          $examiners = $this->_getExaminerNames();
 
         //Defines the call back function for HTML Quickform to use when validating the form.
-        $this->form->addFormRule(array(&$this,'XINValidate'));
+      //  $this->form->addFormRule(array(&$this,'XINValidate'));
 
             $this->form->addElement('header', null, 'Father');
 
@@ -331,15 +292,11 @@ function _page4(){
 
                $this->form->addElement('select','father_how_collected','', self::VISIT_MAIL_OPTIONS);
 
-               $this->XINRegisterRule('father_how_collected', array("father_need_collection{@}=={@}yes"), "Required if 'Yes' was selected for Question 1.");
-
-              $this->form->addGroup($group, 'mother_header1', "At Visit", $this->_GUIDelimiter, FALSE);
+              $this->form->addGroup($group, 'father_header1', "At Visit", $this->_GUIDelimiter, FALSE);
               unset($group);
               $this->addLabel("<i>If Saliva collection is 'At Visit' the questions below are required</i>");
 
                $this->form->addElement('date','father_visit_collection_date','3. Collection Date?', $this->dateOptions);
-
-              $this->XINRegisterRule('father_visit_collection_date', array("father_how_collected{@}=={@}At_Visit"), "Required if 'At Visit' was selected for Question 2");
 
 	      $group[] = $this->form->createElement("date","father_visit_mailed_to_UNC",null,$this->dateOptions);
                $group[] = $this->form->createElement("select","father_visit_mailed_to_UNC_status",null,
@@ -348,17 +305,13 @@ function _page4(){
                  'not_answered' => "Not yet planned, storing at site",
                 )
             );
-            $this->XINRegisterRule("father_visit_mailed_to_UNC",array("father_visit_mailed_to_UNC_status{@}=={@}"),"You must either enter a date or specify that the sample is stored at the site","fq4_group");
-            $this->addGroup($group,"fq4_group","4. Date mailed to UNC?",$this->_GUIDelimiter,false);
+            $this->addGroup($group,"father_visit_mailed_to_UNC_group","4. Date mailed to UNC?",$this->_GUIDelimiter,false);
 	    unset($group);
 
-               $this->XINRegisterRule('fq4_group', array("father_how_collected{@}=={@}At_Visit"), "Required if 'At Visit' was selected for Question 2");
+               $this->XINRegisterRule("father_visit_mailed_to_UNC",array("father_visit_mailed_to_UNC_status{@}=={@}"),"You must either enter a date or specify that the sample is stored at the site","father_visit_mailed_to_UNC_group");
+
 
                $this->form->addElement('text','father_visit_tracking_number','5. Tracking number for shipment to UNC');
-
-               $this->XINRegisterRule('father_visit_tracking_number', array("father_how_collected{@}=={@}At_Visit"), "Required if 'At Visit' was selected for Question 2");
-
-
 
               $this->form->addGroup($group, 'mother_header2', "Via Mail", $this->_GUIDelimiter, FALSE);
               unset($group);
@@ -367,15 +320,10 @@ function _page4(){
 
               $this->form->addElement('select','father_mail_receive','6. How will the family receive the kits?', self::VISIT_MAIL);
 
-              $this->XINRegisterRule('father_mail_receive', array("father_how_collected{@}=={@}Via_Mail"), "Required if 'Via Mail' was selected for Question 2");
-
               $this->form->addElement('text', 'father_mail_tracking_number', '7. Tracking number for shipment to UNC:');
 
 
-              $this->XINRegisterRule('father_mail_tracking_number', array("father_how_collected{@}=={@}Via_Mail"), "Required if 'Via Mail' was selected for Question 2");
-
-
-              $this->form->addFormRule(array(&$this, 'validate_page4'));
+           $this->form->addFormRule(array(&$this, 'validate_page4'));
 
 }
 
@@ -529,137 +477,387 @@ function _page5(){
     function validate_page1($values)
     {
       $err_msg = "Not required, please leave the field blank";
-             $errors = array();
-          if ($values["subject_how_collected"] == "At_Visit")
-          {
-              if ($values["subject_mail_receive"] != null)
+      $err_req = "Required if 'Yes' was selected for Question 1.";
+      $errors = array();
+
+      if($values["subject_need_collection"] != "yes"){
+            $this->XINRegisterRule('subject_how_collected', array("subject_how_collected{@}=={@}NEVER_REQUIRED"), "Not Required");
+            $this->XINRegisterRule('subject_kit_used', array("subject_kit_used{@}=={@}NEVER_REQUIRED"), "Not Required");
+            $this->XINRegisterRule('subject_visit_collection_date', array("subject_visit_collection_date{@}=={@}NEVER_REQUIRED"), "Not Required");
+            $this->XINRegisterRule('subject_visit_mailed_to_UNC', array("subject_visit_mailed_to_UNC_status{@}=={@}NEVER_REQUIRED"), "Not Required");
+            $this->XINRegisterRule('subject_visit_tracking_number', array("subject_visit_tracking_number{@}=={@}NEVER_REQUIRED"), "Not Required");
+            $this->XINRegisterRule('subject_mail_receive', array("subject_mail_receive{@}=={@}NEVER_REQUIRED"), "Not Required");
+            $this->XINRegisterRule('subject_mail_tracking_number', array("subject_mail_tracking_number{@}=={@}NEVER_REQUIRED"), "Not Required");
+	     if ($values["subject_mail_receive"] != null)
               {
                 $errors["subject_mail_receive"] = $err_msg;
-              }
-              if ($values["subject_visit_mailed_to_UNC"] != null)
-              { 
-                $errors["subject_visit_mailed_to_UNC"] = $err_msg;
-              }
-          }
-
-          if ($values["subject_how_collected"] == "Via_Mail")
-          {
-              if ($values["subject_visit_collection_date"] != null)
+            }
+            if ($values["subject_mail_tracking_number"] != null)
+              {
+                $errors["subject_mail_tracking_number"] = $err_msg;
+	    }
+	    if ($values["subject_visit_collection_date"] != null)
               {
                 $errors["subject_visit_collection_date"] = $err_msg;
+              }
+              if ($values["subject_visit_mailed_to_UNC"] != null || $values["subject_visit_mailed_to_UNC_status"] != null)
+              {
+                $errors["subject_visit_mailed_to_UNC_group"] = $err_msg;
+              }
+              if ($values["subject_visit_tracking_number"] != null)
+              {
+                $errors["subject_visit_tracking_number"] = $err_msg;
+	      }
+	      if ($values["subject_how_collected"] != null)
+              {
+                $errors["subject_how_collected"] = $err_msg;
+	      }
+	      if ($values["subject_kit_used"] != null)
+              {
+                $errors["subject_kit_used"] = $err_msg;
+              }
+		
+      }
+      else if($values["subject_need_collection"] == "yes" && $values["subject_how_collected"] == "At_Visit")
+          {
+            if($values["subject_visit_collection_date"] == null){
+                $errors["subject_visit_collection_date"] = $err_req;
+            }
+           if($values["subject_visit_mailed_to_UNC"] == null && $values["subject_visit_mailed_to_UNC_status"] == null){
+                $errors["subject_visit_mailed_to_UNC_group"] = $err_req; 
+            }
+	    if ($values["subject_mail_receive"] != null)
+              {
+                $errors["subject_mail_receive"] = $err_msg;
+	    }
+	    if ($values["subject_mail_tracking_number"] != null)
+              {
+                $errors["subject_mail_tracking_number"] = $err_msg;
+              }
+        
+            $this->XINRegisterRule('subject_mail_receive', array("subject_mail_receive{@}=={@}NEVER_REQUIRED"), "Not Required");
+            $this->XINRegisterRule('subject_mail_tracking_number', array("subject_mail_tracking_number{@}=={@}NEVER_REQUIRED"), "Not Required");
+      }
+       else if($values["subject_need_collection"] == "yes" && $values["subject_how_collected"] == "Via_Mail")
+          {
+              if($values["subject_mail_receive"] == null){
+                $errors["subject_mail_receive"] = $err_req;
+            }
+            if($values["subject_mail_tracking_number"] == null){
+                $errors["subject_mail_tracking_number"] = $err_req;
+	    }
+	    if ($values["subject_visit_collection_date"] != null)
+              {
+                $errors["subject_visit_collection_date"] = $err_msg;
+              }
+              if ($values["subject_visit_mailed_to_UNC"] != null || $values["subject_visit_mailed_to_UNC_status"] != null)
+              {
+                $errors["subject_visit_mailed_to_UNC_group"] = $err_msg;
               }
               if ($values["subject_visit_tracking_number"] != null)
               {
                 $errors["subject_visit_tracking_number"] = $err_msg;
               }
-
-          }
+            $this->XINRegisterRule('subject_visit_collection_date', array("subject_visit_collection_date{@}=={@}NEVER_REQUIRED"), "Not Required");
+            $this->XINRegisterRule('subject_visit_mailed_to_UNC', array("subject_visit_mailed_to_UNC_status{@}=={@}NEVER_REQUIRED"), "Not Required");
+            $this->XINRegisterRule('subject_visit_tracking_number', array("subject_visit_tracking_number{@}=={@}NEVER_REQUIRED"), "Not Required");
+        }
 
         return $errors;
-    }
+    } 
     function validate_page2($values)
     {
       $err_msg = "Not required, please leave the field blank";
-          $errors = array();
-          if ($values["proband_how_collected"] == "At_Visit")
-          {
-              if ($values["proband_mail_receive"] != null)
-              {
-                $errors["proband_mail_receive"] = $err_msg;
-              }
-              if ($values["proband_mail_tracking_number"] != null)
-              {
-                $errors["proband_mail_tracking_number"] = $err_msg;
-              }
-              if ($values["proband_visit_mailed_to_UNC"] != null)
-              {
-                $errors["proband_visit_mailed_to_UNC"] = $err_msg;
-              }
-          }
+      $err_req = "Required if 'Yes' was selected for Question 1.";
+      $errors = array();
 
-          if ($values["proband_how_collected"] == "Via_Mail")
-          {
-              if ($values["proband_visit_collection_date"] != null)
+      if($values["proband_need_collection"] != "yes"){
+        $this->XINRegisterRule('proband_need_signed_consent', array("proband_need_signed_consent{@}=={@}NEVER_REQUIRED"), "Not Required");
+        $this->XINRegisterRule('proband_kit_used', array("proband_kit_used{@}=={@}NEVER_REQUIRED"), "Not Required");
+        $this->XINRegisterRule('proband_consent', array("proband_consent{@}=={@}NEVER_REQUIRED"), "Not Required");
+        $this->XINRegisterRule('proband_how_collected', array("proband_how_collected{@}=={@}NEVER_REQUIRED"), "Not Required");
+        $this->XINRegisterRule('proband_visit_collection_date', array("proband_visit_collection_date{@}=={@}NEVER_REQUIRED"), "Not Required");
+        $this->XINRegisterRule('proband_visit_tracking_number', array("proband_visit_tracking_number{@}=={@}NEVER_REQUIRED"), "Not Required");
+        $this->XINRegisterRule('proband_visit_mailed_to_UNC', array("proband_visit_mailed_to_UNC_status{@}=={@}NEVER_REQUIRED"), "Not Required");
+        $this->XINRegisterRule('proband_mail_receive', array("proband_mail_receive{@}=={@}NEVER_REQUIRED"), "Not Required");
+        $this->XINRegisterRule('proband_mail_tracking_number', array("proband_mail_tracking_number{@}=={@}NEVER_REQUIRED"), "Not Required");
+	if ($values["proband_mail_receive"] != null)
+        {
+          $errors["proband_mail_receive"] = $err_msg;
+        }
+        if ($values["proband_mail_tracking_number"] != null)
+        {
+          $errors["proband_mail_tracking_number"] = $err_msg;
+	}
+	 if ($values["proband_visit_collection_date"] != null)
+                {
+                  $errors["proband_visit_collection_date"] = $err_msg;
+                }
+                if ($values["proband_visit_tracking_number"] != null)
+                {
+                  $errors["proband_visit_tracking_number"] = $err_msg;
+                }
+                if ($values["proband_visit_mailed_to_UNC"] != null || $values["proband_visit_mailed_to_UNC_status"] != null)
+                {
+                  $errors["proband_visit_mailed_to_UNC_group"] = $err_msg;
+		}
+		if ($values["proband_need_signed_consent"] != null)
+                {
+                  $errors["proband_need_signed_consent"] = $err_msg;
+                }
+		if ($values["proband_kit_used"] != null)
+                {
+                  $errors["proband_kit_used"] = $err_msg;
+		}
+		if ($values["proband_consent"] != null)
+                {
+                  $errors["proband_consent"] = $err_msg;
+		}
+		if ($values["proband_how_collected"] != null)
+                {
+                  $errors["proband_how_collected"] = $err_msg;
+                }
+
+      }
+       else if($values["proband_need_collection"] == "yes" && $values["proband_how_collected"] == "At_Visit")
+      {
+        if($values["proband_visit_collection_date"] == null){
+            $errors["proband_visit_collection_date"] = $err_req;
+        }
+        if($values["proband_visit_tracking_number"] == null){
+            $errors["proband_visit_tracking_number"] = $err_req;
+        }
+        if($values["proband_visit_mailed_to_UNC"] == null && $values["proband_visit_mailed_to_UNC_status"] == null){
+            $errors["proband_visit_mailed_to_UNC_group"] = $err_req;
+        }
+	if ($values["proband_mail_receive"] != null)
+        {
+          $errors["proband_mail_receive"] = $err_msg;
+        }
+        if ($values["proband_mail_tracking_number"] != null)
+        {
+          $errors["proband_mail_tracking_number"] = $err_msg;
+	}
+			
+        $this->XINRegisterRule('proband_mail_receive', array("proband_mail_receive{@}=={@}NEVER_REQUIRED"), "Not Required");
+        $this->XINRegisterRule('proband_mail_tracking_number', array("proband_mail_tracking_number{@}=={@}NEVER_REQUIRED"), "Not Required");
+
+       }
+       else if($values["proband_need_collection"] == "yes" && $values["proband_how_collected"] == "Via_Mail")
               {
-                $errors["proband_visit_collection_date"] = $err_msg;
-              }
-              if ($values["proband_visit_tracking_number"] != null)
-              {
-                $errors["proband_visit_tracking_number"] = $err_msg;
-              }
-          }
+                if($values["proband_mail_receive"] == null){
+                    $errors["proband_mail_receive"] = $err_req;
+                }
+                if($values["proband_mail_tracking_number"] == null){
+                    $errors["proband_mail_tracking_number"] = $err_req;
+                }
+
+                if ($values["proband_visit_collection_date"] != null)
+                {
+                  $errors["proband_visit_collection_date"] = $err_msg;
+                }
+                if ($values["proband_visit_tracking_number"] != null)
+                {
+                  $errors["proband_visit_tracking_number"] = $err_msg;
+                }
+                if ($values["proband_visit_mailed_to_UNC"] != null || $values["proband_visit_mailed_to_UNC_status"] != null)
+                {
+                  $errors["proband_visit_mailed_to_UNC_group"] = $err_msg;
+                }
+
+                $this->XINRegisterRule('proband_visit_collection_date', array("proband_visit_collection_date{@}=={@}NEVER_REQUIRED"), "Not Required");
+                $this->XINRegisterRule('proband_visit_tracking_number', array("proband_visit_tracking_number{@}=={@}NEVER_REQUIRED"), "Not Required");
+                $this->XINRegisterRule('proband_visit_mailed_to_UNC', array("proband_visit_mailed_to_UNC_status{@}=={@}NEVER_REQUIRED"), "Not Required");
+        
+       }
         return $errors;
     }
 
+      function validate_page3($values)
+{
+  $err_msg = "Not required, please leave the field blank";
+  $err_req = "Required if 'Yes' was selected for Question 1.";
+  $errors = array();
 
-    function validate_page3($values)
+  if($values["mother_need_collection"] != "yes"){
+    $this->XINRegisterRule('mother_how_collected', array("mother_how_collected{@}=={@}NEVER_REQUIRED"), "Not Required");
+    $this->XINRegisterRule('mother_visit_collection_date', array("mother_visit_collection_date{@}=={@}NEVER_REQUIRED"), "Not Required");
+    $this->XINRegisterRule('mother_visit_tracking_number', array("mother_visit_tracking_number{@}=={@}NEVER_REQUIRED"), "Not Required");
+    $this->XINRegisterRule('mother_visit_mailed_to_UNC', array("mother_visit_mailed_to_UNC_status{@}=={@}NEVER_REQUIRED"), "Not Required");
+    $this->XINRegisterRule('mother_mail_receive', array("mother_mail_receive{@}=={@}NEVER_REQUIRED"), "Not Required");
+    $this->XINRegisterRule('mother_mail_tracking_number', array("mother_mail_tracking_number{@}=={@}NEVER_REQUIRED"), "Not Required"); 
+    if ($values["mother_mail_receive"] != null)
     {
-      $err_msg = "Not required, please leave the field blank";
-          $errors = array();
-          if ($values["mother_how_collected"] == "At_Visit")
-          {
-              if ($values["mother_mail_receive"] != null)
-              {
-                $errors["mother_mail_receive"] = $err_msg;
-              }
-              if ($values["mother_mail_tracking_number"] != null)
-              {
-                $errors["mother_mail_tracking_number"] = $err_msg;
-              }
-              if ($values["mother_visit_mailed_to_UNC"] != null)
-              {
-                $errors["mother_visit_mailed_to_UNC"] = $err_msg;
-              }
-          }
+      $errors["mother_mail_receive"] = $err_msg;
+    }
+    if ($values["mother_mail_tracking_number"] != null)
+    {
+      $errors["mother_mail_tracking_number"] = $err_msg;
+    } 
+    if ($values["mother_visit_collection_date"] != null)
+            {
+              $errors["mother_visit_collection_date"] = $err_msg;
+            }
+            if ($values["mother_visit_tracking_number"] != null)
+            {
+              $errors["mother_visit_tracking_number"] = $err_msg;
+            }
+            if ($values["mother_visit_mailed_to_UNC"] != null || $values["mother_visit_mailed_to_UNC_status"] != null)
+            {
+              $errors["mother_visit_mailed_to_UNC_group"] = $err_msg;
+	    }
+	     if ($values["mother_how_collected"] != null)
+            {
+              $errors["mother_how_collected"] = $err_msg;
+            }
+  }
+   else if($values["mother_need_collection"] == "yes" && $values["mother_how_collected"] == "At_Visit")
+  {
+    if($values["mother_visit_collection_date"] == null){
+        $errors["mother_visit_collection_date"] = $err_req;
+    }
+    if($values["mother_visit_tracking_number"] == null){
+        $errors["mother_visit_tracking_number"] = $err_req;
+    }
+    if($values["mother_visit_mailed_to_UNC"] == null && $values["mother_visit_mailed_to_UNC_status"] == null){
+        $errors["mother_visit_mailed_to_UNC_group"] = $err_req;
+     }
 
-          if ($values["mother_how_collected"] == "Via_Mail")
+    if ($values["mother_mail_receive"] != null)
+    {
+      $errors["mother_mail_receive"] = $err_msg;
+    }
+    if ($values["mother_mail_tracking_number"] != null)
+    {
+      $errors["mother_mail_tracking_number"] = $err_msg;
+    }
+
+    $this->XINRegisterRule('mother_mail_receive', array("mother_mail_receive{@}=={@}NEVER_REQUIRED"), "Not Required");
+    $this->XINRegisterRule('mother_mail_tracking_number', array("mother_mail_tracking_number{@}=={@}NEVER_REQUIRED"), "Not Required");
+
+   }
+   else if($values["mother_need_collection"] == "yes" && $values["mother_how_collected"] == "Via_Mail")
           {
-              if ($values["mother_visit_collection_date"] != null)
-              {
-                $errors["mother_visit_collection_date"] = $err_msg;
-              }
-              if ($values["mother_visit_tracking_number"] != null)
-              {
+            if($values["mother_mail_receive"] == null){
+                $errors["mother_mail_receive"] = $err_req;
+            }
+            if($values["mother_mail_tracking_number"] == null){
+                $errors["mother_mail_tracking_number"] = $err_req;
+            }
+
+            if ($values["mother_visit_collection_date"] != null)
+            {
+              $errors["mother_visit_collection_date"] = $err_msg;
+            }
+            if ($values["mother_visit_tracking_number"] != null)
+            {
                 $errors["mother_visit_tracking_number"] = $err_msg;
-              }
+            }
+            if ($values["mother_visit_mailed_to_UNC"] != null || $values["mother_visit_mailed_to_UNC_status"] != null)
+            {
+              $errors["mother_visit_mailed_to_UNC_group"] = $err_msg;
+            }
 
-          }
-        return $errors;
+            $this->XINRegisterRule('mother_visit_collection_date', array("mother_visit_collection_date{@}=={@}NEVER_REQUIRED"), "Not Required");
+            $this->XINRegisterRule('mother_visit_tracking_number', array("mother_visit_tracking_number{@}=={@}NEVER_REQUIRED"), "Not Required");
+            $this->XINRegisterRule('mother_visit_mailed_to_UNC', array("mother_visit_mailed_to_UNC_status{@}=={@}NEVER_REQUIRED"), "Not Required");
+
+   }
+    return $errors;
     }
 
     function validate_page4($values)
     {
       $err_msg = "Not required, please leave the field blank";
-          $errors = array();
-          if ($values["father_how_collected"] == "At_Visit")
-          {
-              if ($values["father_mail_receive"] != null)
-              {
-                $errors["father_mail_receive"] = $err_msg;
-              }
-              if ($values["father_mail_tracking_number"] != null)
-              {
-                $errors["father_mail_tracking_number"] = $err_msg;
-              }
-              if ($values["father_visit_mailed_to_UNC"] != null)
-              {
-                $errors["father_visit_mailed_to_UNC"] = $err_msg;
-              }
+  $err_req = "Required if 'Yes' was selected for Question 1.";
+  $errors = array();
 
-          }
-
-          if ($values["father_how_collected"] == "Via_Mail")
-          {
-              if ($values["father_visit_collection_date"] != null)
-              {
-                $errors["father_visit_collection_date"] = $err_msg;
-              }
-              if ($values["father_visit_tracking_number"] != null)
-              {
+  if($values["father_need_collection"] != "yes"){
+    $this->XINRegisterRule('father_need_signed_consent', array("father_need_signed_consent{@}=={@}NEVER_REQUIRED"), "Not Required");
+    $this->XINRegisterRule('father_how_collected', array("father_how_collected{@}=={@}NEVER_REQUIRED"), "Not Required");
+    $this->XINRegisterRule('father_visit_collection_date', array("father_visit_collection_date{@}=={@}NEVER_REQUIRED"), "Not Required");
+    $this->XINRegisterRule('father_visit_tracking_number', array("father_visit_tracking_number{@}=={@}NEVER_REQUIRED"), "Not Required");
+    $this->XINRegisterRule('father_visit_mailed_to_UNC', array("father_visit_mailed_to_UNC_status{@}=={@}NEVER_REQUIRED"), "Not Required");
+    $this->XINRegisterRule('father_mail_receive', array("father_mail_receive{@}=={@}NEVER_REQUIRED"), "Not Required");
+    $this->XINRegisterRule('father_mail_tracking_number', array("father_mail_tracking_number{@}=={@}NEVER_REQUIRED"), "Not Required");
+     if ($values["father_mail_receive"] != null)
+    {
+      $errors["father_mail_receive"] = $err_msg;
+    }
+    if ($values["father_mail_tracking_number"] != null)
+    {
+      $errors["father_mail_tracking_number"] = $err_msg;
+    }
+   if ($values["father_visit_collection_date"] != null)
+            {
+              $errors["father_visit_collection_date"] = $err_msg;
+            }
+            if ($values["father_visit_tracking_number"] != null)
+            {
                 $errors["father_visit_tracking_number"] = $err_msg;
-              }
-          }
-        return $errors;
+            }
+            if ($values["father_visit_mailed_to_UNC"] != null || $values["father_visit_mailed_to_UNC_status"] != null)
+            {
+              $errors["father_visit_mailed_to_UNC_group"] = $err_msg;
+	    }
+	    if ($values["father_how_collected"] != null)
+            {
+                $errors["father_how_collected"] = $err_msg;
+            }
+  }
+   else if($values["father_need_collection"] == "yes" && $values["father_how_collected"] == "At_Visit")
+  {
+    if($values["father_visit_collection_date"] == null){
+        $errors["father_visit_collection_date"] = $err_req;
+    }
+    if($values["father_visit_tracking_number"] == null){
+        $errors["father_visit_tracking_number"] = $err_req;
+    }
+    if($values["father_visit_mailed_to_UNC"] == null && $values["father_visit_mailed_to_UNC_status"] == null){
+        $errors["father_visit_mailed_to_UNC_group"] = $err_req;
     }
 
-}
+    if ($values["father_mail_receive"] != null)
+    {
+      $errors["father_mail_receive"] = $err_msg;
+    }
+    if ($values["father_mail_tracking_number"] != null)
+    {
+      $errors["father_mail_tracking_number"] = $err_msg;
+    }
+
+    $this->XINRegisterRule('father_mail_receive', array("father_mail_receive{@}=={@}NEVER_REQUIRED"), "Not Required");
+    $this->XINRegisterRule('father_mail_tracking_number', array("father_mail_tracking_number{@}=={@}NEVER_REQUIRED"), "Not Required");
+
+   }
+   else if($values["father_need_collection"] == "yes" && $values["father_how_collected"] == "Via_Mail")
+          {
+            if($values["father_mail_receive"] == null){
+                $errors["father_mail_receive"] = $err_req;
+            }
+            if($values["father_mail_tracking_number"] == null){
+                $errors["father_mail_tracking_number"] = $err_req;
+            }
+
+            if ($values["father_visit_collection_date"] != null)
+            {
+              $errors["father_visit_collection_date"] = $err_msg;
+            }
+            if ($values["father_visit_tracking_number"] != null)
+            {
+                $errors["father_visit_tracking_number"] = $err_msg;
+            }
+            if ($values["father_visit_mailed_to_UNC"] != null || $values["father_visit_mailed_to_UNC_status"] != null)
+            {
+              $errors["father_visit_mailed_to_UNC_group"] = $err_msg;
+            }
+
+            $this->XINRegisterRule('father_visit_collection_date', array("father_visit_collection_date{@}=={@}NEVER_REQUIRED"), "Not Required");
+            $this->XINRegisterRule('father_visit_tracking_number', array("father_visit_tracking_number{@}=={@}NEVER_REQUIRED"), "Not Required");
+            $this->XINRegisterRule('father_visit_mailed_to_UNC', array("father_visit_mailed_to_UNC_status{@}=={@}NEVER_REQUIRED"), "Not Required");
+
+   }
+    return $errors;
+
+    }
+    }
