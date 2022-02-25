@@ -82,33 +82,12 @@ window["lorisjs"] = window["lorisjs"] || {}; window["lorisjs"]["dqt"] = window["
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 44);
+/******/ 	return __webpack_require__(__webpack_require__.s = 46);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */,
-/* 1 */
-/***/ (function(module, exports) {
-
-function _defineProperty(obj, key, value) {
-  if (key in obj) {
-    Object.defineProperty(obj, key, {
-      value: value,
-      enumerable: true,
-      configurable: true,
-      writable: true
-    });
-  } else {
-    obj[key] = value;
-  }
-
-  return obj;
-}
-
-module.exports = _defineProperty;
-module.exports["default"] = module.exports, module.exports.__esModule = true;
-
-/***/ }),
+/* 1 */,
 /* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -124,8 +103,7 @@ function _slicedToArray(arr, i) {
   return arrayWithHoles(arr) || iterableToArrayLimit(arr, i) || unsupportedIterableToArray(arr, i) || nonIterableRest();
 }
 
-module.exports = _slicedToArray;
-module.exports["default"] = module.exports, module.exports.__esModule = true;
+module.exports = _slicedToArray, module.exports.__esModule = true, module.exports["default"] = module.exports;
 
 /***/ }),
 /* 3 */
@@ -135,8 +113,7 @@ function _arrayWithHoles(arr) {
   if (Array.isArray(arr)) return arr;
 }
 
-module.exports = _arrayWithHoles;
-module.exports["default"] = module.exports, module.exports.__esModule = true;
+module.exports = _arrayWithHoles, module.exports.__esModule = true, module.exports["default"] = module.exports;
 
 /***/ }),
 /* 4 */
@@ -172,8 +149,7 @@ function _iterableToArrayLimit(arr, i) {
   return _arr;
 }
 
-module.exports = _iterableToArrayLimit;
-module.exports["default"] = module.exports, module.exports.__esModule = true;
+module.exports = _iterableToArrayLimit, module.exports.__esModule = true, module.exports["default"] = module.exports;
 
 /***/ }),
 /* 5 */
@@ -190,8 +166,7 @@ function _unsupportedIterableToArray(o, minLen) {
   if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return arrayLikeToArray(o, minLen);
 }
 
-module.exports = _unsupportedIterableToArray;
-module.exports["default"] = module.exports, module.exports.__esModule = true;
+module.exports = _unsupportedIterableToArray, module.exports.__esModule = true, module.exports["default"] = module.exports;
 
 /***/ }),
 /* 6 */
@@ -207,8 +182,7 @@ function _arrayLikeToArray(arr, len) {
   return arr2;
 }
 
-module.exports = _arrayLikeToArray;
-module.exports["default"] = module.exports, module.exports.__esModule = true;
+module.exports = _arrayLikeToArray, module.exports.__esModule = true, module.exports["default"] = module.exports;
 
 /***/ }),
 /* 7 */
@@ -218,8 +192,7 @@ function _nonIterableRest() {
   throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
 }
 
-module.exports = _nonIterableRest;
-module.exports["default"] = module.exports, module.exports.__esModule = true;
+module.exports = _nonIterableRest, module.exports.__esModule = true, module.exports["default"] = module.exports;
 
 /***/ }),
 /* 8 */
@@ -466,9 +439,9 @@ var ReactIs = __webpack_require__(10);
 var assign = __webpack_require__(13);
 
 var ReactPropTypesSecret = __webpack_require__(14);
-var checkPropTypes = __webpack_require__(15);
+var has = __webpack_require__(15);
+var checkPropTypes = __webpack_require__(16);
 
-var has = Function.call.bind(Object.prototype.hasOwnProperty);
 var printWarning = function() {};
 
 if (true) {
@@ -569,6 +542,7 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
   // Keep this list in sync with production version in `./factoryWithThrowingShims.js`.
   var ReactPropTypes = {
     array: createPrimitiveTypeChecker('array'),
+    bigint: createPrimitiveTypeChecker('bigint'),
     bool: createPrimitiveTypeChecker('boolean'),
     func: createPrimitiveTypeChecker('function'),
     number: createPrimitiveTypeChecker('number'),
@@ -614,8 +588,9 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
    * is prohibitively expensive if they are created too often, such as what
    * happens in oneOfType() for any type before the one that matched.
    */
-  function PropTypeError(message) {
+  function PropTypeError(message, data) {
     this.message = message;
+    this.data = data && typeof data === 'object' ? data: {};
     this.stack = '';
   }
   // Make `instanceof Error` still work for returned errors.
@@ -650,7 +625,7 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
           ) {
             printWarning(
               'You are manually calling a React.PropTypes validation ' +
-              'function for the `' + propFullName + '` prop on `' + componentName  + '`. This is deprecated ' +
+              'function for the `' + propFullName + '` prop on `' + componentName + '`. This is deprecated ' +
               'and will throw in the standalone `prop-types` package. ' +
               'You may be seeing this warning due to a third-party PropTypes ' +
               'library. See https://fb.me/react-warning-dont-call-proptypes ' + 'for details.'
@@ -689,7 +664,10 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
         // 'of type `object`'.
         var preciseType = getPreciseType(propValue);
 
-        return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + preciseType + '` supplied to `' + componentName + '`, expected ') + ('`' + expectedType + '`.'));
+        return new PropTypeError(
+          'Invalid ' + location + ' `' + propFullName + '` of type ' + ('`' + preciseType + '` supplied to `' + componentName + '`, expected ') + ('`' + expectedType + '`.'),
+          {expectedType: expectedType}
+        );
       }
       return null;
     }
@@ -833,14 +811,19 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
     }
 
     function validate(props, propName, componentName, location, propFullName) {
+      var expectedTypes = [];
       for (var i = 0; i < arrayOfTypeCheckers.length; i++) {
         var checker = arrayOfTypeCheckers[i];
-        if (checker(props, propName, componentName, location, propFullName, ReactPropTypesSecret) == null) {
+        var checkerResult = checker(props, propName, componentName, location, propFullName, ReactPropTypesSecret);
+        if (checkerResult == null) {
           return null;
         }
+        if (checkerResult.data && has(checkerResult.data, 'expectedType')) {
+          expectedTypes.push(checkerResult.data.expectedType);
+        }
       }
-
-      return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` supplied to ' + ('`' + componentName + '`.'));
+      var expectedTypesMessage = (expectedTypes.length > 0) ? ', expected one of type [' + expectedTypes.join(', ') + ']': '';
+      return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` supplied to ' + ('`' + componentName + '`' + expectedTypesMessage + '.'));
     }
     return createChainableTypeChecker(validate);
   }
@@ -855,6 +838,13 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
     return createChainableTypeChecker(validate);
   }
 
+  function invalidValidatorError(componentName, location, propFullName, key, type) {
+    return new PropTypeError(
+      (componentName || 'React class') + ': ' + location + ' type `' + propFullName + '.' + key + '` is invalid; ' +
+      'it must be a function, usually from the `prop-types` package, but received `' + type + '`.'
+    );
+  }
+
   function createShapeTypeChecker(shapeTypes) {
     function validate(props, propName, componentName, location, propFullName) {
       var propValue = props[propName];
@@ -864,8 +854,8 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
       }
       for (var key in shapeTypes) {
         var checker = shapeTypes[key];
-        if (!checker) {
-          continue;
+        if (typeof checker !== 'function') {
+          return invalidValidatorError(componentName, location, propFullName, key, getPreciseType(checker));
         }
         var error = checker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret);
         if (error) {
@@ -884,16 +874,18 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
       if (propType !== 'object') {
         return new PropTypeError('Invalid ' + location + ' `' + propFullName + '` of type `' + propType + '` ' + ('supplied to `' + componentName + '`, expected `object`.'));
       }
-      // We need to check all keys in case some are required but missing from
-      // props.
+      // We need to check all keys in case some are required but missing from props.
       var allKeys = assign({}, props[propName], shapeTypes);
       for (var key in allKeys) {
         var checker = shapeTypes[key];
+        if (has(shapeTypes, key) && typeof checker !== 'function') {
+          return invalidValidatorError(componentName, location, propFullName, key, getPreciseType(checker));
+        }
         if (!checker) {
           return new PropTypeError(
             'Invalid ' + location + ' `' + propFullName + '` key `' + key + '` supplied to `' + componentName + '`.' +
             '\nBad object: ' + JSON.stringify(props[propName], null, '  ') +
-            '\nValid keys: ' +  JSON.stringify(Object.keys(shapeTypes), null, '  ')
+            '\nValid keys: ' + JSON.stringify(Object.keys(shapeTypes), null, '  ')
           );
         }
         var error = checker(propValue, key, componentName, location, propFullName + '.' + key, ReactPropTypesSecret);
@@ -1164,6 +1156,13 @@ module.exports = ReactPropTypesSecret;
 
 /***/ }),
 /* 15 */
+/***/ (function(module, exports) {
+
+module.exports = Function.call.bind(Object.prototype.hasOwnProperty);
+
+
+/***/ }),
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1181,7 +1180,7 @@ var printWarning = function() {};
 if (true) {
   var ReactPropTypesSecret = __webpack_require__(14);
   var loggedTypeFailures = {};
-  var has = Function.call.bind(Object.prototype.hasOwnProperty);
+  var has = __webpack_require__(15);
 
   printWarning = function(text) {
     var message = 'Warning: ' + text;
@@ -1193,7 +1192,7 @@ if (true) {
       // This error was thrown as a convenience so that you can use this stack
       // to find the callsite that caused this warning to fire.
       throw new Error(message);
-    } catch (x) {}
+    } catch (x) { /**/ }
   };
 }
 
@@ -1222,7 +1221,8 @@ function checkPropTypes(typeSpecs, values, location, componentName, getStack) {
           if (typeof typeSpecs[typeSpecName] !== 'function') {
             var err = Error(
               (componentName || 'React class') + ': ' + location + ' type `' + typeSpecName + '` is invalid; ' +
-              'it must be a function, usually from the `prop-types` package, but received `' + typeof typeSpecs[typeSpecName] + '`.'
+              'it must be a function, usually from the `prop-types` package, but received `' + typeof typeSpecs[typeSpecName] + '`.' +
+              'This often happens because of typos such as `PropTypes.function` instead of `PropTypes.func`.'
             );
             err.name = 'Invariant Violation';
             throw err;
@@ -1272,11 +1272,11 @@ module.exports = checkPropTypes;
 
 
 /***/ }),
-/* 16 */,
 /* 17 */,
 /* 18 */,
 /* 19 */,
-/* 20 */
+/* 20 */,
+/* 21 */
 /***/ (function(module, exports) {
 
 function _classCallCheck(instance, Constructor) {
@@ -1285,11 +1285,10 @@ function _classCallCheck(instance, Constructor) {
   }
 }
 
-module.exports = _classCallCheck;
-module.exports["default"] = module.exports, module.exports.__esModule = true;
+module.exports = _classCallCheck, module.exports.__esModule = true, module.exports["default"] = module.exports;
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports) {
 
 function _defineProperties(target, props) {
@@ -1305,14 +1304,16 @@ function _defineProperties(target, props) {
 function _createClass(Constructor, protoProps, staticProps) {
   if (protoProps) _defineProperties(Constructor.prototype, protoProps);
   if (staticProps) _defineProperties(Constructor, staticProps);
+  Object.defineProperty(Constructor, "prototype", {
+    writable: false
+  });
   return Constructor;
 }
 
-module.exports = _createClass;
-module.exports["default"] = module.exports, module.exports.__esModule = true;
+module.exports = _createClass, module.exports.__esModule = true, module.exports["default"] = module.exports;
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports) {
 
 function _assertThisInitialized(self) {
@@ -1323,14 +1324,13 @@ function _assertThisInitialized(self) {
   return self;
 }
 
-module.exports = _assertThisInitialized;
-module.exports["default"] = module.exports, module.exports.__esModule = true;
+module.exports = _assertThisInitialized, module.exports.__esModule = true, module.exports["default"] = module.exports;
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var setPrototypeOf = __webpack_require__(24);
+var setPrototypeOf = __webpack_require__(25);
 
 function _inherits(subClass, superClass) {
   if (typeof superClass !== "function" && superClass !== null) {
@@ -1344,646 +1344,83 @@ function _inherits(subClass, superClass) {
       configurable: true
     }
   });
+  Object.defineProperty(subClass, "prototype", {
+    writable: false
+  });
   if (superClass) setPrototypeOf(subClass, superClass);
 }
 
-module.exports = _inherits;
-module.exports["default"] = module.exports, module.exports.__esModule = true;
+module.exports = _inherits, module.exports.__esModule = true, module.exports["default"] = module.exports;
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports) {
 
 function _setPrototypeOf(o, p) {
   module.exports = _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) {
     o.__proto__ = p;
     return o;
-  };
-
-  module.exports["default"] = module.exports, module.exports.__esModule = true;
+  }, module.exports.__esModule = true, module.exports["default"] = module.exports;
   return _setPrototypeOf(o, p);
 }
 
-module.exports = _setPrototypeOf;
-module.exports["default"] = module.exports, module.exports.__esModule = true;
+module.exports = _setPrototypeOf, module.exports.__esModule = true, module.exports["default"] = module.exports;
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var _typeof = __webpack_require__(26)["default"];
+var _typeof = __webpack_require__(27)["default"];
 
-var assertThisInitialized = __webpack_require__(22);
+var assertThisInitialized = __webpack_require__(23);
 
 function _possibleConstructorReturn(self, call) {
   if (call && (_typeof(call) === "object" || typeof call === "function")) {
     return call;
+  } else if (call !== void 0) {
+    throw new TypeError("Derived constructors may only return object or undefined");
   }
 
   return assertThisInitialized(self);
 }
 
-module.exports = _possibleConstructorReturn;
-module.exports["default"] = module.exports, module.exports.__esModule = true;
-
-/***/ }),
-/* 26 */
-/***/ (function(module, exports) {
-
-function _typeof(obj) {
-  "@babel/helpers - typeof";
-
-  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-    module.exports = _typeof = function _typeof(obj) {
-      return typeof obj;
-    };
-
-    module.exports["default"] = module.exports, module.exports.__esModule = true;
-  } else {
-    module.exports = _typeof = function _typeof(obj) {
-      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-    };
-
-    module.exports["default"] = module.exports, module.exports.__esModule = true;
-  }
-
-  return _typeof(obj);
-}
-
-module.exports = _typeof;
-module.exports["default"] = module.exports, module.exports.__esModule = true;
+module.exports = _possibleConstructorReturn, module.exports.__esModule = true, module.exports["default"] = module.exports;
 
 /***/ }),
 /* 27 */
 /***/ (function(module, exports) {
 
+function _typeof(obj) {
+  "@babel/helpers - typeof";
+
+  return (module.exports = _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) {
+    return typeof obj;
+  } : function (obj) {
+    return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+  }, module.exports.__esModule = true, module.exports["default"] = module.exports), _typeof(obj);
+}
+
+module.exports = _typeof, module.exports.__esModule = true, module.exports["default"] = module.exports;
+
+/***/ }),
+/* 28 */
+/***/ (function(module, exports) {
+
 function _getPrototypeOf(o) {
   module.exports = _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) {
     return o.__proto__ || Object.getPrototypeOf(o);
-  };
-  module.exports["default"] = module.exports, module.exports.__esModule = true;
+  }, module.exports.__esModule = true, module.exports["default"] = module.exports;
   return _getPrototypeOf(o);
 }
 
-module.exports = _getPrototypeOf;
-module.exports["default"] = module.exports, module.exports.__esModule = true;
+module.exports = _getPrototypeOf, module.exports.__esModule = true, module.exports["default"] = module.exports;
 
 /***/ }),
-/* 28 */,
 /* 29 */,
 /* 30 */,
 /* 31 */,
 /* 32 */,
 /* 33 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
-/* harmony import */ var _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(34);
-/* harmony import */ var _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(20);
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(21);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(22);
-/* harmony import */ var _babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(23);
-/* harmony import */ var _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(25);
-/* harmony import */ var _babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(27);
-/* harmony import */ var _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(8);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_8__);
-/* harmony import */ var sweetalert2__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(38);
-/* harmony import */ var sweetalert2__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(sweetalert2__WEBPACK_IMPORTED_MODULE_9__);
-/* harmony import */ var jsx_Loader__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(39);
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(9);
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_11___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_11__);
-/* harmony import */ var jsx_Modal__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(40);
-
-
-
-
-
-
-
-
-
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0___default()(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_7___default()(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_7___default()(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_6___default()(this, result); }; }
-
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
-
-
-
-
-
-/**
- * Data Request Form
- *
- * Create a data request form
- *
- * @author  Laetitia Fesselier
- * @version 1.0.0
- * */
-
-var DataRequest = /*#__PURE__*/function (_Component) {
-  _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_5___default()(DataRequest, _Component);
-
-  var _super = _createSuper(DataRequest);
-
-  /**
-   * @constructor
-   * @param {object} props - React Component properties
-   */
-  function DataRequest(props) {
-    var _this;
-
-    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_2___default()(this, DataRequest);
-
-    _this = _super.call(this, props);
-    _this.state = {
-      configData: {},
-      formData: {
-        coinvestigators: []
-      },
-      isLoaded: false,
-      isCreated: false,
-      error: false
-    };
-    _this.handleSubmit = _this.handleSubmit.bind(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_4___default()(_this));
-    _this.setFormData = _this.setFormData.bind(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_4___default()(_this));
-    _this.fetchData = _this.fetchData.bind(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_4___default()(_this));
-    _this.addInvestigator = _this.addInvestigator.bind(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_4___default()(_this));
-    _this.removeInvestigator = _this.removeInvestigator.bind(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_4___default()(_this));
-    _this.updateInvestigator = _this.updateInvestigator.bind(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_4___default()(_this));
-    return _this;
-  }
-  /**
-   * ComponentDidMount
-   */
-
-
-  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_3___default()(DataRequest, [{
-    key: "componentDidMount",
-    value: function componentDidMount() {
-      var _this2 = this;
-
-      this.addInvestigator();
-      this.fetchData().then(function () {
-        return _this2.setState({
-          isLoaded: true
-        });
-      });
-    }
-    /**
-     * Remove an investigator entry to the form
-     *
-     * @param {Number} idx - index of the investigator to delete
-     *
-     * @return {function}
-     */
-
-  }, {
-    key: "removeInvestigator",
-    value: function removeInvestigator(idx) {
-      var _this3 = this;
-
-      return function () {
-        _this3.setFormData('coinvestigators', _this3.state.formData.coinvestigators.filter(function (s, _idx) {
-          return _idx !== idx;
-        }));
-      };
-    }
-    /**
-     * Add an investigator entry to the form
-     */
-
-  }, {
-    key: "addInvestigator",
-    value: function addInvestigator() {
-      this.setFormData('coinvestigators', [].concat(_babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_1___default()(this.state.formData.coinvestigators), [{
-        name: '',
-        email: '',
-        institution: ''
-      }]));
-    }
-    /**
-     * Update an investigator entry
-     *
-     * @param {Number} index - index of the investigator to update
-     * @param {string} key - the investigator key to update
-     *
-     * @return {function}
-     */
-
-  }, {
-    key: "updateInvestigator",
-    value: function updateInvestigator(index, key) {
-      var _this4 = this;
-
-      return function (evt) {
-        _this4.setFormData('coinvestigators', _this4.state.formData.coinvestigators.map(function (investigator, _idx) {
-          if (_idx !== index) return investigator; // this is gonna create a new object, that has the fields from
-          // `s`, and `name` set to `newName`
-
-          return _objectSpread(_objectSpread({}, investigator), {}, _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0___default()({}, key, evt.target.value));
-        }));
-      };
-    }
-    /**
-     * Retrieve data from the provided URL and save it in state
-     *
-     * @return {object}
-     */
-
-  }, {
-    key: "fetchData",
-    value: function fetchData() {
-      var _this5 = this;
-
-      return fetch(this.props.dataURL, {
-        credentials: 'same-origin'
-      }).then(function (resp) {
-        return resp.json();
-      }).then(function (data) {
-        return _this5.setState({
-          configData: data.fieldOptions
-        });
-      })["catch"](function (error) {
-        _this5.setState({
-          error: true
-        });
-      });
-    }
-    /**
-     * Set the form data based on state values of child elements/components
-     *
-     * @param {string} formElement - name of the selected element
-     * @param {*} value - selected value for corresponding form element
-     */
-
-  }, {
-    key: "setFormData",
-    value: function setFormData(formElement, value) {
-      var formData = Object.assign({}, this.state.formData);
-      formData[formElement] = value;
-      this.setState({
-        formData: formData
-      });
-    }
-    /**
-     * Handles form submission
-     *
-     * @param {event} e - Form submission event
-     */
-
-  }, {
-    key: "handleSubmit",
-    value: function handleSubmit(e) {
-      var _this6 = this;
-
-      e.preventDefault();
-
-      var formData = _objectSpread(_objectSpread({}, this.state.configData), this.state.formData);
-
-      var formObject = new FormData();
-
-      for (var key in formData) {
-        if (formData.hasOwnProperty(key) && formData[key] !== '') {
-          var value = formData[key];
-
-          if (key === 'coinvestigators') {
-            value = value.filter(function (s, _idx) {
-              return s.name !== '' || s.email !== '' || s.institution !== '';
-            });
-            if (value.length == 0) continue;
-            value = JSON.stringify(value);
-          }
-
-          formObject.append(key, value);
-        }
-      }
-
-      formObject.set('fire_away', 'New Data Request');
-      fetch(this.props.submitURL, {
-        method: 'POST',
-        cache: 'no-cache',
-        credentials: 'same-origin',
-        body: formObject
-      }).then(function (resp) {
-        if (resp.ok && resp.status === 201) {
-          _this6.setState({
-            isCreated: true
-          });
-        } else {
-          resp.json().then(function (message) {
-            sweetalert2__WEBPACK_IMPORTED_MODULE_9___default()('Error!', message, 'error');
-          });
-        }
-      })["catch"](function (error) {
-        console.error(error);
-      });
-    }
-    /**
-     * Renders the React component.
-     *
-     * @return {JSX} - React markup for the component
-     */
-
-  }, {
-    key: "render",
-    value: function render() {
-      var _this7 = this;
-
-      if (!this.props.show) return null; // Waiting for async data to load
-
-      if (!this.state.isLoaded) {
-        return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement(jsx_Loader__WEBPACK_IMPORTED_MODULE_10__["default"], null);
-      }
-
-      var msg = null; // If error occurs, return a message.
-
-      if (this.state.error) {
-        msg = 'An error occured while loading the form.';
-      }
-
-      if (this.state.isCreated) {
-        msg = 'Your request is created, we will contact you shortly.';
-      }
-
-      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement(jsx_Modal__WEBPACK_IMPORTED_MODULE_12__["default"], {
-        title: "Controlled Data / Bio-specimen Request",
-        onClose: this.props.onClose,
-        show: this.props.show
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
-        className: "data-request"
-      }, msg && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
-        className: "alert alert-warning"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("button", {
-        type: "button",
-        className: "close",
-        "data-dismiss": "alert",
-        "aria-hidden": "true"
-      }, "\xD7"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("span", {
-        className: "glyphicon glyphicon-ok"
-      }), msg), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement(FormElement, {
-        name: "dataRequestForm",
-        onSubmit: this.handleSubmit,
-        fileUpload: "true"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement(TextboxElement, {
-        name: "email",
-        label: "Email:",
-        disabled: "true",
-        required: "true",
-        value: this.state.configData.email
-      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
-        className: "form-group"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
-        className: "col-sm-offset-3"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("p", {
-        className: "col-sm-12"
-      }, "To update your email, you can edit", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("a", {
-        href: "/user_accounts/my_preferences/"
-      }, "your account"), "."))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("input", {
-        name: "userID",
-        type: "hidden",
-        value: this.state.configData.userID
-      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement(TextboxElement, {
-        name: "institution",
-        label: "Institution:",
-        required: "true",
-        onUserInput: this.setFormData,
-        value: this.state.formData.institution
-      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
-        className: "row"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("label", {
-        className: "col-sm-3 control-label"
-      }, "Co-investigator(s):"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
-        className: "col-sm-9 investigators"
-      }, this.state.formData.coinvestigators.map(function (investigator, idx) {
-        return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
-          className: "form-group investigator",
-          key: 'investigator-' + idx
-        }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
-          className: "col-sm-3"
-        }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("small", {
-          className: "label"
-        }, "Name"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("input", {
-          type: "text",
-          value: investigator.name,
-          className: "form-control",
-          onChange: _this7.updateInvestigator(idx, 'name')
-        })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
-          className: "col-sm-3"
-        }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("small", {
-          className: "label"
-        }, "Institution"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("input", {
-          type: "text",
-          value: investigator.institution,
-          className: "form-control",
-          onChange: _this7.updateInvestigator(idx, 'institution')
-        })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
-          className: "col-sm-3"
-        }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("small", {
-          className: "label"
-        }, "Email"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("input", {
-          type: "text",
-          value: investigator.email,
-          className: "form-control",
-          onChange: _this7.updateInvestigator(idx, 'email')
-        })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
-          className: "col-sm-3"
-        }, _this7.state.formData.coinvestigators.length > 1 && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("button", {
-          className: "btn btn-danger",
-          type: "button",
-          onClick: _this7.removeInvestigator(idx)
-        }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("span", {
-          className: "glyphicon glyphicon-minus"
-        })), idx == _this7.state.formData.coinvestigators.length - 1 && /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("button", {
-          className: "btn btn-success",
-          type: "button",
-          onClick: _this7.addInvestigator
-        }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("span", {
-          className: "glyphicon glyphicon-plus"
-        }))));
-      }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
-        className: "form-group"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
-        className: "col-sm-offset-3"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("p", {
-        className: "col-sm-12"
-      }, "Please list all co-investigators\xA0 who will be using the requested materials and/or data."))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement(TextboxElement, {
-        name: "researchTitle",
-        required: "true",
-        label: "Title of research:",
-        onUserInput: this.setFormData,
-        value: this.state.formData.researchTitle
-      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement(TextareaElement, {
-        label: "Summary of proposed research:",
-        name: "researchSummary",
-        onUserInput: this.setFormData,
-        value: this.state.formData.researchSummary
-      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
-        className: "form-group checkboxes"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement(CheckboxElement, {
-        value: this.state.formData.requiresEthicsApproval,
-        name: "requiresEthicsApproval",
-        onUserInput: this.setFormData,
-        label: 'Does your work require ' + 'Research Ethics Board (REB/IRB) Approval?'
-      })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
-        className: "form-group",
-        style: {
-          display: this.state.formData.requiresEthicsApproval ? 'block' : 'none',
-          marginBottom: 0
-        }
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
-        className: "form-group-inline"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("label", {
-        className: "col-sm-3 control-label"
-      }, "Research Ethics Board:")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
-        className: "form-group-inline top-label"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
-        className: "col-sm-4"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement(TextboxElement, {
-        name: "rebName",
-        label: "Name",
-        required: this.state.formData.requiresEthicsApproval,
-        onUserInput: this.setFormData,
-        value: this.state.formData.rebName
-      }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
-        className: "form-group-inline top-label"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
-        className: "col-sm-4"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement(TextboxElement, {
-        name: "rebLocation",
-        label: "Location",
-        required: this.state.formData.requiresEthicsApproval,
-        onUserInput: this.setFormData,
-        value: this.state.formData.rebLocation
-      })))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
-        className: "form-group checkboxes",
-        style: {
-          display: this.state.formData.requiresEthicsApproval ? 'block' : 'none'
-        }
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement(CheckboxElement, {
-        value: this.state.formData.ethicsApprovalReceived,
-        name: "ethicsApprovalReceived",
-        onUserInput: this.setFormData,
-        label: "Have you already obtained approval?"
-      })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
-        style: {
-          display: this.state.formData.ethicsApprovalReceived ? 'block' : 'none'
-        }
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement(FileElement, {
-        label: "Approval letter (.pdf)",
-        name: "approvalLetter",
-        required: this.state.formData.ethicsApprovalReceived,
-        onUserInput: this.setFormData,
-        value: this.state.formData.approvalLetter
-      })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement(TextareaElement, {
-        label: "Materials requested:",
-        name: "materialsRequested",
-        required: "true",
-        onUserInput: this.setFormData,
-        value: this.state.formData.materialsRequested
-      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
-        className: "form-group checkboxes"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement(CheckboxElement, {
-        value: this.state.formData.consent,
-        name: "consent",
-        onUserInput: this.setFormData,
-        label: ['I consent to the ', /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("a", {
-          key: "btnShowTerms",
-          href: "#",
-          className: "btnShowTerms"
-        }, "Terms of use")]
-      })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement(ButtonElement, {
-        name: "fire_away",
-        label: "Submit",
-        id: "button",
-        type: "submit",
-        disabled: !this.state.formData.consent || this.state.isCreated
-      }))));
-    }
-  }]);
-
-  return DataRequest;
-}(react__WEBPACK_IMPORTED_MODULE_8__["Component"]);
-
-DataRequest.propTypes = {
-  show: prop_types__WEBPACK_IMPORTED_MODULE_11___default.a.bool.isRequired,
-  onClose: prop_types__WEBPACK_IMPORTED_MODULE_11___default.a.func.isRequired
-};
-DataRequest.defaultProps = {
-  dataURL: loris.BaseURL + '/dqt/data_request/?format=json',
-  submitURL: loris.BaseURL + '/dqt/data_request/'
-};
-/* harmony default export */ __webpack_exports__["default"] = (DataRequest);
-
-/***/ }),
-/* 34 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var arrayWithoutHoles = __webpack_require__(35);
-
-var iterableToArray = __webpack_require__(36);
-
-var unsupportedIterableToArray = __webpack_require__(5);
-
-var nonIterableSpread = __webpack_require__(37);
-
-function _toConsumableArray(arr) {
-  return arrayWithoutHoles(arr) || iterableToArray(arr) || unsupportedIterableToArray(arr) || nonIterableSpread();
-}
-
-module.exports = _toConsumableArray;
-module.exports["default"] = module.exports, module.exports.__esModule = true;
-
-/***/ }),
-/* 35 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var arrayLikeToArray = __webpack_require__(6);
-
-function _arrayWithoutHoles(arr) {
-  if (Array.isArray(arr)) return arrayLikeToArray(arr);
-}
-
-module.exports = _arrayWithoutHoles;
-module.exports["default"] = module.exports, module.exports.__esModule = true;
-
-/***/ }),
-/* 36 */
-/***/ (function(module, exports) {
-
-function _iterableToArray(iter) {
-  if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter);
-}
-
-module.exports = _iterableToArray;
-module.exports["default"] = module.exports, module.exports.__esModule = true;
-
-/***/ }),
-/* 37 */
-/***/ (function(module, exports) {
-
-function _nonIterableSpread() {
-  throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
-}
-
-module.exports = _nonIterableSpread;
-module.exports["default"] = module.exports, module.exports.__esModule = true;
-
-/***/ }),
-/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*!
@@ -4903,320 +4340,90 @@ if (typeof this !== 'undefined' && this.Sweetalert2){  this.swal = this.sweetAle
 "undefined"!=typeof document&&function(e,t){var n=e.createElement("style");if(e.getElementsByTagName("head")[0].appendChild(n),n.styleSheet)n.styleSheet.disabled||(n.styleSheet.cssText=t);else try{n.innerHTML=t}catch(e){n.innerText=t}}(document,"@charset \"UTF-8\";.swal2-popup.swal2-toast{flex-direction:row;align-items:center;width:auto;padding:.625em;overflow-y:hidden;box-shadow:0 0 .625em #d9d9d9}.swal2-popup.swal2-toast .swal2-header{flex-direction:row}.swal2-popup.swal2-toast .swal2-title{flex-grow:1;justify-content:flex-start;margin:0 .6em;font-size:1em}.swal2-popup.swal2-toast .swal2-footer{margin:.5em 0 0;padding:.5em 0 0;font-size:.8em}.swal2-popup.swal2-toast .swal2-close{position:static;width:.8em;height:.8em;line-height:.8}.swal2-popup.swal2-toast .swal2-content{justify-content:flex-start;font-size:1em}.swal2-popup.swal2-toast .swal2-icon{width:2em;min-width:2em;height:2em;margin:0}.swal2-popup.swal2-toast .swal2-icon::before{display:flex;align-items:center;font-size:2em;font-weight:700}@media all and (-ms-high-contrast:none),(-ms-high-contrast:active){.swal2-popup.swal2-toast .swal2-icon::before{font-size:.25em}}.swal2-popup.swal2-toast .swal2-icon.swal2-success .swal2-success-ring{width:2em;height:2em}.swal2-popup.swal2-toast .swal2-icon.swal2-error [class^=swal2-x-mark-line]{top:.875em;width:1.375em}.swal2-popup.swal2-toast .swal2-icon.swal2-error [class^=swal2-x-mark-line][class$=left]{left:.3125em}.swal2-popup.swal2-toast .swal2-icon.swal2-error [class^=swal2-x-mark-line][class$=right]{right:.3125em}.swal2-popup.swal2-toast .swal2-actions{flex-basis:auto!important;width:auto;height:auto;margin:0 .3125em}.swal2-popup.swal2-toast .swal2-styled{margin:0 .3125em;padding:.3125em .625em;font-size:1em}.swal2-popup.swal2-toast .swal2-styled:focus{box-shadow:0 0 0 .0625em #fff,0 0 0 .125em rgba(50,100,150,.4)}.swal2-popup.swal2-toast .swal2-success{border-color:#a5dc86}.swal2-popup.swal2-toast .swal2-success [class^=swal2-success-circular-line]{position:absolute;width:1.6em;height:3em;transform:rotate(45deg);border-radius:50%}.swal2-popup.swal2-toast .swal2-success [class^=swal2-success-circular-line][class$=left]{top:-.8em;left:-.5em;transform:rotate(-45deg);transform-origin:2em 2em;border-radius:4em 0 0 4em}.swal2-popup.swal2-toast .swal2-success [class^=swal2-success-circular-line][class$=right]{top:-.25em;left:.9375em;transform-origin:0 1.5em;border-radius:0 4em 4em 0}.swal2-popup.swal2-toast .swal2-success .swal2-success-ring{width:2em;height:2em}.swal2-popup.swal2-toast .swal2-success .swal2-success-fix{top:0;left:.4375em;width:.4375em;height:2.6875em}.swal2-popup.swal2-toast .swal2-success [class^=swal2-success-line]{height:.3125em}.swal2-popup.swal2-toast .swal2-success [class^=swal2-success-line][class$=tip]{top:1.125em;left:.1875em;width:.75em}.swal2-popup.swal2-toast .swal2-success [class^=swal2-success-line][class$=long]{top:.9375em;right:.1875em;width:1.375em}.swal2-popup.swal2-toast.swal2-show{-webkit-animation:swal2-toast-show .5s;animation:swal2-toast-show .5s}.swal2-popup.swal2-toast.swal2-hide{-webkit-animation:swal2-toast-hide .1s forwards;animation:swal2-toast-hide .1s forwards}.swal2-popup.swal2-toast .swal2-animate-success-icon .swal2-success-line-tip{-webkit-animation:swal2-toast-animate-success-line-tip .75s;animation:swal2-toast-animate-success-line-tip .75s}.swal2-popup.swal2-toast .swal2-animate-success-icon .swal2-success-line-long{-webkit-animation:swal2-toast-animate-success-line-long .75s;animation:swal2-toast-animate-success-line-long .75s}.swal2-container{display:flex;position:fixed;z-index:1060;top:0;right:0;bottom:0;left:0;flex-direction:row;align-items:center;justify-content:center;padding:.625em;overflow-x:hidden;transition:background-color .1s;background-color:transparent;-webkit-overflow-scrolling:touch}.swal2-container.swal2-top{align-items:flex-start}.swal2-container.swal2-top-left,.swal2-container.swal2-top-start{align-items:flex-start;justify-content:flex-start}.swal2-container.swal2-top-end,.swal2-container.swal2-top-right{align-items:flex-start;justify-content:flex-end}.swal2-container.swal2-center{align-items:center}.swal2-container.swal2-center-left,.swal2-container.swal2-center-start{align-items:center;justify-content:flex-start}.swal2-container.swal2-center-end,.swal2-container.swal2-center-right{align-items:center;justify-content:flex-end}.swal2-container.swal2-bottom{align-items:flex-end}.swal2-container.swal2-bottom-left,.swal2-container.swal2-bottom-start{align-items:flex-end;justify-content:flex-start}.swal2-container.swal2-bottom-end,.swal2-container.swal2-bottom-right{align-items:flex-end;justify-content:flex-end}.swal2-container.swal2-bottom-end>:first-child,.swal2-container.swal2-bottom-left>:first-child,.swal2-container.swal2-bottom-right>:first-child,.swal2-container.swal2-bottom-start>:first-child,.swal2-container.swal2-bottom>:first-child{margin-top:auto}.swal2-container.swal2-grow-fullscreen>.swal2-modal{display:flex!important;flex:1;align-self:stretch;justify-content:center}.swal2-container.swal2-grow-row>.swal2-modal{display:flex!important;flex:1;align-content:center;justify-content:center}.swal2-container.swal2-grow-column{flex:1;flex-direction:column}.swal2-container.swal2-grow-column.swal2-bottom,.swal2-container.swal2-grow-column.swal2-center,.swal2-container.swal2-grow-column.swal2-top{align-items:center}.swal2-container.swal2-grow-column.swal2-bottom-left,.swal2-container.swal2-grow-column.swal2-bottom-start,.swal2-container.swal2-grow-column.swal2-center-left,.swal2-container.swal2-grow-column.swal2-center-start,.swal2-container.swal2-grow-column.swal2-top-left,.swal2-container.swal2-grow-column.swal2-top-start{align-items:flex-start}.swal2-container.swal2-grow-column.swal2-bottom-end,.swal2-container.swal2-grow-column.swal2-bottom-right,.swal2-container.swal2-grow-column.swal2-center-end,.swal2-container.swal2-grow-column.swal2-center-right,.swal2-container.swal2-grow-column.swal2-top-end,.swal2-container.swal2-grow-column.swal2-top-right{align-items:flex-end}.swal2-container.swal2-grow-column>.swal2-modal{display:flex!important;flex:1;align-content:center;justify-content:center}.swal2-container:not(.swal2-top):not(.swal2-top-start):not(.swal2-top-end):not(.swal2-top-left):not(.swal2-top-right):not(.swal2-center-start):not(.swal2-center-end):not(.swal2-center-left):not(.swal2-center-right):not(.swal2-bottom):not(.swal2-bottom-start):not(.swal2-bottom-end):not(.swal2-bottom-left):not(.swal2-bottom-right):not(.swal2-grow-fullscreen)>.swal2-modal{margin:auto}@media all and (-ms-high-contrast:none),(-ms-high-contrast:active){.swal2-container .swal2-modal{margin:0!important}}.swal2-container.swal2-shown{background-color:rgba(0,0,0,.4)}.swal2-popup{display:none;position:relative;box-sizing:border-box;flex-direction:column;justify-content:center;width:32em;max-width:100%;padding:1.25em;border:none;border-radius:.3125em;background:#fff;font-family:inherit;font-size:1rem}.swal2-popup:focus{outline:0}.swal2-popup.swal2-loading{overflow-y:hidden}.swal2-header{display:flex;flex-direction:column;align-items:center}.swal2-title{position:relative;max-width:100%;margin:0 0 .4em;padding:0;color:#595959;font-size:1.875em;font-weight:600;text-align:center;text-transform:none;word-wrap:break-word}.swal2-actions{display:flex;z-index:1;flex-wrap:wrap;align-items:center;justify-content:center;width:100%;margin:1.25em auto 0}.swal2-actions:not(.swal2-loading) .swal2-styled[disabled]{opacity:.4}.swal2-actions:not(.swal2-loading) .swal2-styled:hover{background-image:linear-gradient(rgba(0,0,0,.1),rgba(0,0,0,.1))}.swal2-actions:not(.swal2-loading) .swal2-styled:active{background-image:linear-gradient(rgba(0,0,0,.2),rgba(0,0,0,.2))}.swal2-actions.swal2-loading .swal2-styled.swal2-confirm{box-sizing:border-box;width:2.5em;height:2.5em;margin:.46875em;padding:0;-webkit-animation:swal2-rotate-loading 1.5s linear 0s infinite normal;animation:swal2-rotate-loading 1.5s linear 0s infinite normal;border:.25em solid transparent;border-radius:100%;border-color:transparent;background-color:transparent!important;color:transparent;cursor:default;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.swal2-actions.swal2-loading .swal2-styled.swal2-cancel{margin-right:30px;margin-left:30px}.swal2-actions.swal2-loading :not(.swal2-styled).swal2-confirm::after{content:\"\";display:inline-block;width:15px;height:15px;margin-left:5px;-webkit-animation:swal2-rotate-loading 1.5s linear 0s infinite normal;animation:swal2-rotate-loading 1.5s linear 0s infinite normal;border:3px solid #999;border-radius:50%;border-right-color:transparent;box-shadow:1px 1px 1px #fff}.swal2-styled{margin:.3125em;padding:.625em 2em;box-shadow:none;font-weight:500}.swal2-styled:not([disabled]){cursor:pointer}.swal2-styled.swal2-confirm{border:0;border-radius:.25em;background:initial;background-color:#3085d6;color:#fff;font-size:1.0625em}.swal2-styled.swal2-cancel{border:0;border-radius:.25em;background:initial;background-color:#aaa;color:#fff;font-size:1.0625em}.swal2-styled:focus{outline:0;box-shadow:0 0 0 2px #fff,0 0 0 4px rgba(50,100,150,.4)}.swal2-styled::-moz-focus-inner{border:0}.swal2-footer{justify-content:center;margin:1.25em 0 0;padding:1em 0 0;border-top:1px solid #eee;color:#545454;font-size:1em}.swal2-image{max-width:100%;margin:1.25em auto}.swal2-close{position:absolute;z-index:2;top:0;right:0;justify-content:center;width:1.2em;height:1.2em;padding:0;overflow:hidden;transition:color .1s ease-out;border:none;border-radius:0;outline:initial;background:0 0;color:#ccc;font-family:serif;font-size:2.5em;line-height:1.2;cursor:pointer}.swal2-close:hover{transform:none;background:0 0;color:#f27474}.swal2-content{z-index:1;justify-content:center;margin:0;padding:0;color:#545454;font-size:1.125em;font-weight:400;line-height:normal;text-align:center;word-wrap:break-word}.swal2-checkbox,.swal2-file,.swal2-input,.swal2-radio,.swal2-select,.swal2-textarea{margin:1em auto}.swal2-file,.swal2-input,.swal2-textarea{box-sizing:border-box;width:100%;transition:border-color .3s,box-shadow .3s;border:1px solid #d9d9d9;border-radius:.1875em;background:inherit;box-shadow:inset 0 1px 1px rgba(0,0,0,.06);color:inherit;font-size:1.125em}.swal2-file.swal2-inputerror,.swal2-input.swal2-inputerror,.swal2-textarea.swal2-inputerror{border-color:#f27474!important;box-shadow:0 0 2px #f27474!important}.swal2-file:focus,.swal2-input:focus,.swal2-textarea:focus{border:1px solid #b4dbed;outline:0;box-shadow:0 0 3px #c4e6f5}.swal2-file::-webkit-input-placeholder,.swal2-input::-webkit-input-placeholder,.swal2-textarea::-webkit-input-placeholder{color:#ccc}.swal2-file::-moz-placeholder,.swal2-input::-moz-placeholder,.swal2-textarea::-moz-placeholder{color:#ccc}.swal2-file:-ms-input-placeholder,.swal2-input:-ms-input-placeholder,.swal2-textarea:-ms-input-placeholder{color:#ccc}.swal2-file::-ms-input-placeholder,.swal2-input::-ms-input-placeholder,.swal2-textarea::-ms-input-placeholder{color:#ccc}.swal2-file::placeholder,.swal2-input::placeholder,.swal2-textarea::placeholder{color:#ccc}.swal2-range{margin:1em auto;background:inherit}.swal2-range input{width:80%}.swal2-range output{width:20%;color:inherit;font-weight:600;text-align:center}.swal2-range input,.swal2-range output{height:2.625em;padding:0;font-size:1.125em;line-height:2.625em}.swal2-input{height:2.625em;padding:0 .75em}.swal2-input[type=number]{max-width:10em}.swal2-file{background:inherit;font-size:1.125em}.swal2-textarea{height:6.75em;padding:.75em}.swal2-select{min-width:50%;max-width:100%;padding:.375em .625em;background:inherit;color:inherit;font-size:1.125em}.swal2-checkbox,.swal2-radio{align-items:center;justify-content:center;background:inherit;color:inherit}.swal2-checkbox label,.swal2-radio label{margin:0 .6em;font-size:1.125em}.swal2-checkbox input,.swal2-radio input{margin:0 .4em}.swal2-validation-message{display:none;align-items:center;justify-content:center;padding:.625em;overflow:hidden;background:#f0f0f0;color:#666;font-size:1em;font-weight:300}.swal2-validation-message::before{content:\"!\";display:inline-block;width:1.5em;min-width:1.5em;height:1.5em;margin:0 .625em;border-radius:50%;background-color:#f27474;color:#fff;font-weight:600;line-height:1.5em;text-align:center}.swal2-icon{position:relative;box-sizing:content-box;justify-content:center;width:5em;height:5em;margin:1.25em auto 1.875em;border:.25em solid transparent;border-radius:50%;font-family:inherit;line-height:5em;cursor:default;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.swal2-icon::before{display:flex;align-items:center;height:92%;font-size:3.75em}.swal2-icon.swal2-error{border-color:#f27474}.swal2-icon.swal2-error .swal2-x-mark{position:relative;flex-grow:1}.swal2-icon.swal2-error [class^=swal2-x-mark-line]{display:block;position:absolute;top:2.3125em;width:2.9375em;height:.3125em;border-radius:.125em;background-color:#f27474}.swal2-icon.swal2-error [class^=swal2-x-mark-line][class$=left]{left:1.0625em;transform:rotate(45deg)}.swal2-icon.swal2-error [class^=swal2-x-mark-line][class$=right]{right:1em;transform:rotate(-45deg)}.swal2-icon.swal2-warning{border-color:#facea8;color:#f8bb86}.swal2-icon.swal2-warning::before{content:\"!\"}.swal2-icon.swal2-info{border-color:#9de0f6;color:#3fc3ee}.swal2-icon.swal2-info::before{content:\"i\"}.swal2-icon.swal2-question{border-color:#c9dae1;color:#87adbd}.swal2-icon.swal2-question::before{content:\"?\"}.swal2-icon.swal2-question.swal2-arabic-question-mark::before{content:\"؟\"}.swal2-icon.swal2-success{border-color:#a5dc86}.swal2-icon.swal2-success [class^=swal2-success-circular-line]{position:absolute;width:3.75em;height:7.5em;transform:rotate(45deg);border-radius:50%}.swal2-icon.swal2-success [class^=swal2-success-circular-line][class$=left]{top:-.4375em;left:-2.0635em;transform:rotate(-45deg);transform-origin:3.75em 3.75em;border-radius:7.5em 0 0 7.5em}.swal2-icon.swal2-success [class^=swal2-success-circular-line][class$=right]{top:-.6875em;left:1.875em;transform:rotate(-45deg);transform-origin:0 3.75em;border-radius:0 7.5em 7.5em 0}.swal2-icon.swal2-success .swal2-success-ring{position:absolute;z-index:2;top:-.25em;left:-.25em;box-sizing:content-box;width:100%;height:100%;border:.25em solid rgba(165,220,134,.3);border-radius:50%}.swal2-icon.swal2-success .swal2-success-fix{position:absolute;z-index:1;top:.5em;left:1.625em;width:.4375em;height:5.625em;transform:rotate(-45deg)}.swal2-icon.swal2-success [class^=swal2-success-line]{display:block;position:absolute;z-index:2;height:.3125em;border-radius:.125em;background-color:#a5dc86}.swal2-icon.swal2-success [class^=swal2-success-line][class$=tip]{top:2.875em;left:.875em;width:1.5625em;transform:rotate(45deg)}.swal2-icon.swal2-success [class^=swal2-success-line][class$=long]{top:2.375em;right:.5em;width:2.9375em;transform:rotate(-45deg)}.swal2-progress-steps{align-items:center;margin:0 0 1.25em;padding:0;background:inherit;font-weight:600}.swal2-progress-steps li{display:inline-block;position:relative}.swal2-progress-steps .swal2-progress-step{z-index:20;width:2em;height:2em;border-radius:2em;background:#3085d6;color:#fff;line-height:2em;text-align:center}.swal2-progress-steps .swal2-progress-step.swal2-active-progress-step{background:#3085d6}.swal2-progress-steps .swal2-progress-step.swal2-active-progress-step~.swal2-progress-step{background:#add8e6;color:#fff}.swal2-progress-steps .swal2-progress-step.swal2-active-progress-step~.swal2-progress-step-line{background:#add8e6}.swal2-progress-steps .swal2-progress-step-line{z-index:10;width:2.5em;height:.4em;margin:0 -1px;background:#3085d6}[class^=swal2]{-webkit-tap-highlight-color:transparent}.swal2-show{-webkit-animation:swal2-show .3s;animation:swal2-show .3s}.swal2-show.swal2-noanimation{-webkit-animation:none;animation:none}.swal2-hide{-webkit-animation:swal2-hide .15s forwards;animation:swal2-hide .15s forwards}.swal2-hide.swal2-noanimation{-webkit-animation:none;animation:none}.swal2-rtl .swal2-close{right:auto;left:0}.swal2-animate-success-icon .swal2-success-line-tip{-webkit-animation:swal2-animate-success-line-tip .75s;animation:swal2-animate-success-line-tip .75s}.swal2-animate-success-icon .swal2-success-line-long{-webkit-animation:swal2-animate-success-line-long .75s;animation:swal2-animate-success-line-long .75s}.swal2-animate-success-icon .swal2-success-circular-line-right{-webkit-animation:swal2-rotate-success-circular-line 4.25s ease-in;animation:swal2-rotate-success-circular-line 4.25s ease-in}.swal2-animate-error-icon{-webkit-animation:swal2-animate-error-icon .5s;animation:swal2-animate-error-icon .5s}.swal2-animate-error-icon .swal2-x-mark{-webkit-animation:swal2-animate-error-x-mark .5s;animation:swal2-animate-error-x-mark .5s}@supports (-ms-accelerator:true){.swal2-range input{width:100%!important}.swal2-range output{display:none}}@media all and (-ms-high-contrast:none),(-ms-high-contrast:active){.swal2-range input{width:100%!important}.swal2-range output{display:none}}@-moz-document url-prefix(){.swal2-close:focus{outline:2px solid rgba(50,100,150,.4)}}@-webkit-keyframes swal2-toast-show{0%{transform:translateY(-.625em) rotateZ(2deg)}33%{transform:translateY(0) rotateZ(-2deg)}66%{transform:translateY(.3125em) rotateZ(2deg)}100%{transform:translateY(0) rotateZ(0)}}@keyframes swal2-toast-show{0%{transform:translateY(-.625em) rotateZ(2deg)}33%{transform:translateY(0) rotateZ(-2deg)}66%{transform:translateY(.3125em) rotateZ(2deg)}100%{transform:translateY(0) rotateZ(0)}}@-webkit-keyframes swal2-toast-hide{100%{transform:rotateZ(1deg);opacity:0}}@keyframes swal2-toast-hide{100%{transform:rotateZ(1deg);opacity:0}}@-webkit-keyframes swal2-toast-animate-success-line-tip{0%{top:.5625em;left:.0625em;width:0}54%{top:.125em;left:.125em;width:0}70%{top:.625em;left:-.25em;width:1.625em}84%{top:1.0625em;left:.75em;width:.5em}100%{top:1.125em;left:.1875em;width:.75em}}@keyframes swal2-toast-animate-success-line-tip{0%{top:.5625em;left:.0625em;width:0}54%{top:.125em;left:.125em;width:0}70%{top:.625em;left:-.25em;width:1.625em}84%{top:1.0625em;left:.75em;width:.5em}100%{top:1.125em;left:.1875em;width:.75em}}@-webkit-keyframes swal2-toast-animate-success-line-long{0%{top:1.625em;right:1.375em;width:0}65%{top:1.25em;right:.9375em;width:0}84%{top:.9375em;right:0;width:1.125em}100%{top:.9375em;right:.1875em;width:1.375em}}@keyframes swal2-toast-animate-success-line-long{0%{top:1.625em;right:1.375em;width:0}65%{top:1.25em;right:.9375em;width:0}84%{top:.9375em;right:0;width:1.125em}100%{top:.9375em;right:.1875em;width:1.375em}}@-webkit-keyframes swal2-show{0%{transform:scale(.7)}45%{transform:scale(1.05)}80%{transform:scale(.95)}100%{transform:scale(1)}}@keyframes swal2-show{0%{transform:scale(.7)}45%{transform:scale(1.05)}80%{transform:scale(.95)}100%{transform:scale(1)}}@-webkit-keyframes swal2-hide{0%{transform:scale(1);opacity:1}100%{transform:scale(.5);opacity:0}}@keyframes swal2-hide{0%{transform:scale(1);opacity:1}100%{transform:scale(.5);opacity:0}}@-webkit-keyframes swal2-animate-success-line-tip{0%{top:1.1875em;left:.0625em;width:0}54%{top:1.0625em;left:.125em;width:0}70%{top:2.1875em;left:-.375em;width:3.125em}84%{top:3em;left:1.3125em;width:1.0625em}100%{top:2.8125em;left:.875em;width:1.5625em}}@keyframes swal2-animate-success-line-tip{0%{top:1.1875em;left:.0625em;width:0}54%{top:1.0625em;left:.125em;width:0}70%{top:2.1875em;left:-.375em;width:3.125em}84%{top:3em;left:1.3125em;width:1.0625em}100%{top:2.8125em;left:.875em;width:1.5625em}}@-webkit-keyframes swal2-animate-success-line-long{0%{top:3.375em;right:2.875em;width:0}65%{top:3.375em;right:2.875em;width:0}84%{top:2.1875em;right:0;width:3.4375em}100%{top:2.375em;right:.5em;width:2.9375em}}@keyframes swal2-animate-success-line-long{0%{top:3.375em;right:2.875em;width:0}65%{top:3.375em;right:2.875em;width:0}84%{top:2.1875em;right:0;width:3.4375em}100%{top:2.375em;right:.5em;width:2.9375em}}@-webkit-keyframes swal2-rotate-success-circular-line{0%{transform:rotate(-45deg)}5%{transform:rotate(-45deg)}12%{transform:rotate(-405deg)}100%{transform:rotate(-405deg)}}@keyframes swal2-rotate-success-circular-line{0%{transform:rotate(-45deg)}5%{transform:rotate(-45deg)}12%{transform:rotate(-405deg)}100%{transform:rotate(-405deg)}}@-webkit-keyframes swal2-animate-error-x-mark{0%{margin-top:1.625em;transform:scale(.4);opacity:0}50%{margin-top:1.625em;transform:scale(.4);opacity:0}80%{margin-top:-.375em;transform:scale(1.15)}100%{margin-top:0;transform:scale(1);opacity:1}}@keyframes swal2-animate-error-x-mark{0%{margin-top:1.625em;transform:scale(.4);opacity:0}50%{margin-top:1.625em;transform:scale(.4);opacity:0}80%{margin-top:-.375em;transform:scale(1.15)}100%{margin-top:0;transform:scale(1);opacity:1}}@-webkit-keyframes swal2-animate-error-icon{0%{transform:rotateX(100deg);opacity:0}100%{transform:rotateX(0);opacity:1}}@keyframes swal2-animate-error-icon{0%{transform:rotateX(100deg);opacity:0}100%{transform:rotateX(0);opacity:1}}@-webkit-keyframes swal2-rotate-loading{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}@keyframes swal2-rotate-loading{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}body.swal2-shown:not(.swal2-no-backdrop):not(.swal2-toast-shown){overflow:hidden}body.swal2-height-auto{height:auto!important}body.swal2-no-backdrop .swal2-shown{top:auto;right:auto;bottom:auto;left:auto;max-width:calc(100% - .625em * 2);background-color:transparent}body.swal2-no-backdrop .swal2-shown>.swal2-modal{box-shadow:0 0 10px rgba(0,0,0,.4)}body.swal2-no-backdrop .swal2-shown.swal2-top{top:0;left:50%;transform:translateX(-50%)}body.swal2-no-backdrop .swal2-shown.swal2-top-left,body.swal2-no-backdrop .swal2-shown.swal2-top-start{top:0;left:0}body.swal2-no-backdrop .swal2-shown.swal2-top-end,body.swal2-no-backdrop .swal2-shown.swal2-top-right{top:0;right:0}body.swal2-no-backdrop .swal2-shown.swal2-center{top:50%;left:50%;transform:translate(-50%,-50%)}body.swal2-no-backdrop .swal2-shown.swal2-center-left,body.swal2-no-backdrop .swal2-shown.swal2-center-start{top:50%;left:0;transform:translateY(-50%)}body.swal2-no-backdrop .swal2-shown.swal2-center-end,body.swal2-no-backdrop .swal2-shown.swal2-center-right{top:50%;right:0;transform:translateY(-50%)}body.swal2-no-backdrop .swal2-shown.swal2-bottom{bottom:0;left:50%;transform:translateX(-50%)}body.swal2-no-backdrop .swal2-shown.swal2-bottom-left,body.swal2-no-backdrop .swal2-shown.swal2-bottom-start{bottom:0;left:0}body.swal2-no-backdrop .swal2-shown.swal2-bottom-end,body.swal2-no-backdrop .swal2-shown.swal2-bottom-right{right:0;bottom:0}@media print{body.swal2-shown:not(.swal2-no-backdrop):not(.swal2-toast-shown){overflow-y:scroll!important}body.swal2-shown:not(.swal2-no-backdrop):not(.swal2-toast-shown)>[aria-hidden=true]{display:none}body.swal2-shown:not(.swal2-no-backdrop):not(.swal2-toast-shown) .swal2-container{position:static!important}}body.swal2-toast-shown .swal2-container{background-color:transparent}body.swal2-toast-shown .swal2-container.swal2-shown{background-color:transparent}body.swal2-toast-shown .swal2-container.swal2-top{top:0;right:auto;bottom:auto;left:50%;transform:translateX(-50%)}body.swal2-toast-shown .swal2-container.swal2-top-end,body.swal2-toast-shown .swal2-container.swal2-top-right{top:0;right:0;bottom:auto;left:auto}body.swal2-toast-shown .swal2-container.swal2-top-left,body.swal2-toast-shown .swal2-container.swal2-top-start{top:0;right:auto;bottom:auto;left:0}body.swal2-toast-shown .swal2-container.swal2-center-left,body.swal2-toast-shown .swal2-container.swal2-center-start{top:50%;right:auto;bottom:auto;left:0;transform:translateY(-50%)}body.swal2-toast-shown .swal2-container.swal2-center{top:50%;right:auto;bottom:auto;left:50%;transform:translate(-50%,-50%)}body.swal2-toast-shown .swal2-container.swal2-center-end,body.swal2-toast-shown .swal2-container.swal2-center-right{top:50%;right:0;bottom:auto;left:auto;transform:translateY(-50%)}body.swal2-toast-shown .swal2-container.swal2-bottom-left,body.swal2-toast-shown .swal2-container.swal2-bottom-start{top:auto;right:auto;bottom:0;left:0}body.swal2-toast-shown .swal2-container.swal2-bottom{top:auto;right:auto;bottom:0;left:50%;transform:translateX(-50%)}body.swal2-toast-shown .swal2-container.swal2-bottom-end,body.swal2-toast-shown .swal2-container.swal2-bottom-right{top:auto;right:0;bottom:0;left:auto}body.swal2-toast-column .swal2-toast{flex-direction:column;align-items:stretch}body.swal2-toast-column .swal2-toast .swal2-actions{flex:1;align-self:stretch;height:2.2em;margin-top:.3125em}body.swal2-toast-column .swal2-toast .swal2-loading{justify-content:center}body.swal2-toast-column .swal2-toast .swal2-input{height:2em;margin:.3125em auto;font-size:1em}body.swal2-toast-column .swal2-toast .swal2-validation-message{font-size:1em}");
 
 /***/ }),
-/* 39 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 34 */,
+/* 35 */,
+/* 36 */,
+/* 37 */,
+/* 38 */
+/***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(9);
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_0__);
-/**
- * This file contains the React component for Loader
- *
- * @author Henri Rabalais
- * @version 1.0.0
- *
- */
+var arrayWithoutHoles = __webpack_require__(39);
 
-/**
- * Loader is a React component which shows a spinner wheel while
- * something is loading.
- *
- * @param {array} props - The React props
- *
- * @return {DOMObject} - Loader React component
- */
+var iterableToArray = __webpack_require__(40);
 
-function Loader(props) {
-  return /*#__PURE__*/React.createElement("div", {
-    className: "loader",
-    style: {
-      width: parseInt(props.size),
-      height: parseInt(props.size)
-    }
-  });
+var unsupportedIterableToArray = __webpack_require__(5);
+
+var nonIterableSpread = __webpack_require__(41);
+
+function _toConsumableArray(arr) {
+  return arrayWithoutHoles(arr) || iterableToArray(arr) || unsupportedIterableToArray(arr) || nonIterableSpread();
 }
 
-Loader.propTypes = {
-  size: prop_types__WEBPACK_IMPORTED_MODULE_0___default.a.string
-};
-Loader.defaultProps = {
-  size: '120'
-};
-/* harmony default export */ __webpack_exports__["default"] = (Loader);
+module.exports = _toConsumableArray, module.exports.__esModule = true, module.exports["default"] = module.exports;
+
+/***/ }),
+/* 39 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var arrayLikeToArray = __webpack_require__(6);
+
+function _arrayWithoutHoles(arr) {
+  if (Array.isArray(arr)) return arrayLikeToArray(arr);
+}
+
+module.exports = _arrayWithoutHoles, module.exports.__esModule = true, module.exports["default"] = module.exports;
 
 /***/ }),
 /* 40 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports) {
 
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(20);
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(21);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(22);
-/* harmony import */ var _babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(23);
-/* harmony import */ var _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(25);
-/* harmony import */ var _babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(27);
-/* harmony import */ var _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(8);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(9);
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var sweetalert2__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(38);
-/* harmony import */ var sweetalert2__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(sweetalert2__WEBPACK_IMPORTED_MODULE_8__);
+function _iterableToArray(iter) {
+  if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter);
+}
 
-
-
-
-
-
-
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_5___default()(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_5___default()(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_4___default()(this, result); }; }
-
-function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
-
-/**
- * This file contains the React Component for a Modal Window.
- *
- * @author Henri Rabalais
- * @version 1.1.0
- *
- */
-
-
-
-/**
- * Modal Component.
- * React wrapper for a Modal Window. Allows to dynamically toggle a Modal
- * window.
- *
- * ================================================
- * Usage:
- * - Wrap the contents to be displayed by the Modal Window by the
- *   Modal Component.
- * - Use the 'title' prop to set a title for the Modal Component.
- * - Use the 'onSubmit' prop to set a submission *promise* object for the
- *   Modal's contents.
- * - Use the 'onClose' prop to set a function that triggers upon Modal closure.
- * - Use the 'throwWarning' prop to throw a warning upon closure of the
- *   Modal Window.
- * =================================================
- *
- */
-
-var Modal = /*#__PURE__*/function (_Component) {
-  _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_3___default()(Modal, _Component);
-
-  var _super = _createSuper(Modal);
-
-  /**
-   * @constructor
-   * @param {object} props - React Component properties
-   */
-  function Modal() {
-    var _this;
-
-    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0___default()(this, Modal);
-
-    _this = _super.call(this);
-    _this.handleClose = _this.handleClose.bind(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_2___default()(_this));
-    return _this;
-  }
-  /**
-   * Display a warning message on close
-   */
-
-
-  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1___default()(Modal, [{
-    key: "handleClose",
-    value: function handleClose() {
-      var _this2 = this;
-
-      if (this.props.throwWarning) {
-        sweetalert2__WEBPACK_IMPORTED_MODULE_8___default.a.fire({
-          title: 'Are You Sure?',
-          text: 'Leaving the form will result in the loss of any information ' + 'entered.',
-          type: 'warning',
-          showCancelButton: true,
-          confirmButtonText: 'Proceed',
-          cancelButtonText: 'Cancel'
-        }).then(function (result) {
-          return result.value && _this2.props.onClose();
-        });
-      } else {
-        this.props.onClose();
-      }
-    }
-    /**
-     * Renders the React component.
-     *
-     * @return {JSX} - React markup for the component
-     */
-
-  }, {
-    key: "render",
-    value: function render() {
-      var _this3 = this;
-
-      var _this$props = this.props,
-          show = _this$props.show,
-          children = _this$props.children,
-          onSubmit = _this$props.onSubmit,
-          title = _this$props.title;
-      var headerStyle = {
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        height: '40px',
-        borderTopRightRadius: '10',
-        fontSize: 24,
-        padding: 35,
-        borderBottom: '1px solid #DDDDDD'
-      };
-      var glyphStyle = {
-        marginLeft: 'auto',
-        cursor: 'pointer'
-      };
-      var bodyStyle = {
-        padding: 15,
-        maxHeight: '75vh',
-        overflowY: 'scroll'
-      };
-      var modalContainer = {
-        display: 'block',
-        position: 'fixed',
-        zIndex: 9999,
-        paddingTop: '65px',
-        left: 0,
-        top: 0,
-        width: '100%',
-        height: '100%',
-        overflow: 'auto',
-        backgroundColor: 'rgba(0,0,0,0.7)',
-        visibility: show ? 'visible' : 'hidden'
-      };
-      var modalContent = {
-        opacity: show ? 1 : 0,
-        top: show ? 0 : '-300px',
-        position: 'relative',
-        backgroundColor: '#fefefe',
-        borderRadius: '7px',
-        margin: 'auto',
-        padding: 0,
-        border: '1px solid #888',
-        width: '700px',
-        boxShadow: '0 4px 8px 0 rbga(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19)',
-        transition: 'top 0.4s, opacity 0.4s'
-      };
-
-      var renderChildren = function renderChildren() {
-        return show && children;
-      };
-
-      var footerStyle = {
-        borderTop: '1px solid #DDDDDD',
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        height: '40px',
-        padding: '35px 35px 20px 35px'
-      };
-      var submitStyle = {
-        marginLeft: 'auto',
-        marginRight: '20px'
-      };
-
-      var submitButton = function submitButton() {
-        if (onSubmit) {
-          var submit = function submit() {
-            return onSubmit().then(function () {
-              return _this3.props.onClose();
-            })["catch"](function () {});
-          };
-
-          return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_6___default.a.createElement("div", {
-            style: submitStyle
-          }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_6___default.a.createElement(ButtonElement, {
-            label: "Submit",
-            onUserInput: submit
-          }));
-        }
-      };
-
-      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_6___default.a.createElement("div", {
-        style: modalContainer,
-        onClick: this.handleClose
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_6___default.a.createElement("div", {
-        style: modalContent,
-        onClick: function onClick(e) {
-          return e.stopPropagation();
-        }
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_6___default.a.createElement("div", {
-        style: headerStyle
-      }, title, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_6___default.a.createElement("span", {
-        style: glyphStyle,
-        onClick: this.handleClose
-      }, "\xD7")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_6___default.a.createElement("div", {
-        style: bodyStyle
-      }, renderChildren()), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_6___default.a.createElement("div", {
-        style: footerStyle
-      }, submitButton())));
-    }
-  }]);
-
-  return Modal;
-}(react__WEBPACK_IMPORTED_MODULE_6__["Component"]);
-
-Modal.propTypes = {
-  title: prop_types__WEBPACK_IMPORTED_MODULE_7___default.a.string,
-  onSubmit: prop_types__WEBPACK_IMPORTED_MODULE_7___default.a.func,
-  onClose: prop_types__WEBPACK_IMPORTED_MODULE_7___default.a.func.isRequired,
-  show: prop_types__WEBPACK_IMPORTED_MODULE_7___default.a.bool.isRequired,
-  throwWarning: prop_types__WEBPACK_IMPORTED_MODULE_7___default.a.bool
-};
-Modal.defaultProps = {
-  throwWarning: false
-};
-/* harmony default export */ __webpack_exports__["default"] = (Modal);
+module.exports = _iterableToArray, module.exports.__esModule = true, module.exports["default"] = module.exports;
 
 /***/ }),
-/* 41 */,
+/* 41 */
+/***/ (function(module, exports) {
+
+function _nonIterableSpread() {
+  throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+}
+
+module.exports = _nonIterableSpread, module.exports.__esModule = true, module.exports["default"] = module.exports;
+
+/***/ }),
 /* 42 */,
 /* 43 */,
-/* 44 */
+/* 44 */,
+/* 45 */,
+/* 46 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
 /* harmony import */ var _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(34);
-/* harmony import */ var _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(20);
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(21);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(22);
-/* harmony import */ var _babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(23);
-/* harmony import */ var _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(25);
-/* harmony import */ var _babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(27);
-/* harmony import */ var _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(8);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_8__);
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(9);
-/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_9__);
-/* harmony import */ var _components_datarequest__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(33);
-/* harmony import */ var _components_table__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(45);
-/* harmony import */ var sweetalert2__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(38);
-/* harmony import */ var sweetalert2__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(sweetalert2__WEBPACK_IMPORTED_MODULE_12__);
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(21);
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(22);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(23);
+/* harmony import */ var _babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(24);
+/* harmony import */ var _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(26);
+/* harmony import */ var _babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(28);
+/* harmony import */ var _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(8);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(9);
+/* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_8__);
+/* harmony import */ var _jsx_StaticDataTable__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(47);
+/* harmony import */ var sweetalert2__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(33);
+/* harmony import */ var sweetalert2__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(sweetalert2__WEBPACK_IMPORTED_MODULE_10__);
 
 
 
@@ -5225,8 +4432,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
-function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_7___default()(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_7___default()(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_6___default()(this, result); }; }
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_6___default()(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_6___default()(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_5___default()(this, result); }; }
 
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
 
@@ -5244,6 +4450,8 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Re
 
 
 
+var _require = __webpack_require__(53),
+    jStat = _require.jStat;
 /**
  * Loading Component
  *
@@ -5254,23 +4462,24 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Re
  * @return {JSX} - React markup for the component
  */
 
+
 var Loading = function Loading(props) {
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
     className: "row",
     style: {
       padding: '60px 0 0 0'
     }
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("h2", {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("h2", {
     className: "text-center loading-header"
-  }, "We are currently working hard to load your data."), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("h3", {
+  }, "We are currently working hard to load your data."), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("h3", {
     className: "text-center loading-header"
-  }, "Please be patient \uD83D\uDE34"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
+  }, "Please be patient \uD83D\uDE34"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
     className: "spinner"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
     className: "bounce1"
-  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
     className: "bounce2"
-  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
     className: "bounce3"
   })));
 };
@@ -5291,17 +4500,17 @@ var TabPane = function TabPane(props) {
   }
 
   if (props.Loading) {
-    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
+    return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
       className: classList,
       id: props.TabId
-    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement(Loading, null));
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement(Loading, null));
   }
 
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
     key: props.TabId,
     className: classList,
     id: props.TabId
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("h1", null, props.Title), props.children);
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("h1", null, props.Title), props.children);
 };
 /**
  * InfoTabPane Component
@@ -5313,12 +4522,12 @@ var TabPane = function TabPane(props) {
 
 
 var InfoTabPane = function InfoTabPane(props) {
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement(TabPane, {
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement(TabPane, {
     Title: "Welcome to the Data Query Tool",
     TabId: props.TabId,
     Active: props.Active,
     Loading: props.Loading
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("p", null, "Data was last updated on ", props.UpdatedTime, "."), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("p", null, "Please define or use your query by using the following tabs."), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("dl", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("dt", null, "Define Fields"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("dd", null, "Define the fields to be added to your query here."), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("dt", null, "Define Filters"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("dd", null, "Define the criteria to filter the data for your query here."), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("dt", null, "View Data"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("dd", null, "See the results of your query."), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("dt", null, "Statistical Analysis"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("dd", null, "Visualize or see basic statistical \xA0measures from your query here."), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("dt", null, "Load Saved Query"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("dd", null, "Load a previously saved query (by name) \xA0by selecting from this menu."), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("dt", null, "Manage Saved Queries"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("dd", null, "Either save your current query or see the \xA0criteria of previously saved quer ies here.")));
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("p", null, "Data was last updated on ", props.UpdatedTime, "."), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("p", null, "Please define or use your query by using the following tabs."), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("dl", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("dt", null, "Define Fields"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("dd", null, "Define the fields to be added to your query here."), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("dt", null, "Define Filters"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("dd", null, "Define the criteria to filter the data for your query here."), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("dt", null, "View Data"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("dd", null, "See the results of your query."), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("dt", null, "Statistical Analysis"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("dd", null, "Visualize or see basic statistical \xA0measures from your query here."), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("dt", null, "Load Saved Query"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("dd", null, "Load a previously saved query (by name) \xA0by selecting from this menu."), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("dt", null, "Manage Saved Queries"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("dd", null, "Either save your current query or see the \xA0criteria of previously saved quer ies here.")));
 };
 /**
  * FieldSelectTabPane Component
@@ -5330,11 +4539,11 @@ var InfoTabPane = function InfoTabPane(props) {
 
 
 var FieldSelectTabPane = function FieldSelectTabPane(props) {
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement(TabPane, {
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement(TabPane, {
     TabId: props.TabId,
     Loading: props.Loading,
     Active: props.Active
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement(FieldSelector, {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement(FieldSelector, {
     title: "Fields",
     items: props.categories,
     onFieldChange: props.onFieldChange,
@@ -5353,15 +4562,17 @@ var FieldSelectTabPane = function FieldSelectTabPane(props) {
 
 
 var FilterSelectTabPane = function FilterSelectTabPane(props) {
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement(TabPane, {
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement(TabPane, {
     TabId: props.TabId,
     Loading: props.Loading
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement(FilterBuilder, {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement(FilterBuilder, {
     items: props.categories,
     updateFilter: props.updateFilter,
     filter: props.filter,
     Visits: props.Visits,
-    Active: props.Active
+    Active: props.Active,
+    loadImportedCSV: props.loadImportedCSV,
+    getAllSessions: props.getAllSessions
   }));
 };
 /**
@@ -5374,7 +4585,7 @@ var FilterSelectTabPane = function FilterSelectTabPane(props) {
 
 
 var ViewDataTabPane = /*#__PURE__*/function (_Component) {
-  _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_5___default()(ViewDataTabPane, _Component);
+  _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_4___default()(ViewDataTabPane, _Component);
 
   var _super = _createSuper(ViewDataTabPane);
 
@@ -5385,34 +4596,49 @@ var ViewDataTabPane = /*#__PURE__*/function (_Component) {
   function ViewDataTabPane(props) {
     var _this;
 
-    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_2___default()(this, ViewDataTabPane);
+    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1___default()(this, ViewDataTabPane);
 
     _this = _super.call(this, props);
     _this.state = {
       sessions: [],
       dataDisplay: 'Longitudinal',
       runQueryClicked: false,
-      dataRequestPrompt: false
+      dataRequestPrompt: false,
+      sessionsLoaded: _this.props.AllSessions.length > 0
     };
-    _this.handleDataDisplay = _this.handleDataDisplay.bind(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_4___default()(_this));
-    _this.runQuery = _this.runQuery.bind(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_4___default()(_this));
-    _this.changeDataDisplay = _this.changeDataDisplay.bind(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_4___default()(_this));
-    _this.getOrCreateProgressElement = _this.getOrCreateProgressElement.bind(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_4___default()(_this));
-    _this.getOrCreateDownloadLink = _this.getOrCreateDownloadLink.bind(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_4___default()(_this));
-    _this.downloadData = _this.downloadData.bind(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_4___default()(_this));
-    _this.downloadDataCSV = _this.downloadDataCSV.bind(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_4___default()(_this));
-    _this.exportToNeuroHub = _this.exportToNeuroHub.bind(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_4___default()(_this));
+    _this.handleDataDisplay = _this.handleDataDisplay.bind(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_3___default()(_this));
+    _this.runQuery = _this.runQuery.bind(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_3___default()(_this));
+    _this.changeDataDisplay = _this.changeDataDisplay.bind(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_3___default()(_this));
+    _this.getOrCreateProgressElement = _this.getOrCreateProgressElement.bind(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_3___default()(_this));
+    _this.getOrCreateDownloadLink = _this.getOrCreateDownloadLink.bind(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_3___default()(_this));
+    _this.downloadData = _this.downloadData.bind(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_3___default()(_this));
+    _this.downloadDataCSV = _this.downloadDataCSV.bind(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_3___default()(_this));
     return _this;
   }
   /**
-   * Handle data display
-   *
-   * @param {object} formElement
-   * @param {string} value
+   * Called by React when the component has updated.
+   * @param {object} prevProps - Previous component properties
+   * @param {object} prevState - Previous component state
    */
 
 
-  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_3___default()(ViewDataTabPane, [{
+  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2___default()(ViewDataTabPane, [{
+    key: "componentDidUpdate",
+    value: function componentDidUpdate(prevProps, prevState) {
+      if (this.props.AllSessions.length > 0 && this.state.sessionsLoaded === false) {
+        this.setState({
+          sessionsLoaded: true
+        });
+      }
+    }
+    /**
+     * Handle data display
+     *
+     * @param {object} formElement
+     * @param {string} value
+     */
+
+  }, {
     key: "handleDataDisplay",
     value: function handleDataDisplay(formElement, value) {
       var state = Object.assign({}, this.state);
@@ -5627,107 +4853,6 @@ var ViewDataTabPane = /*#__PURE__*/function (_Component) {
       document.querySelector('.downloadCSV').click();
     }
     /**
-     * exportToNeuroHub
-     */
-
-  }, {
-    key: "exportToNeuroHub",
-    value: function exportToNeuroHub() {
-      // mimick downloadCSV but send csv file to /data/genetics/NeuroHub instead of browser
-      var csvworker = new Worker(loris.BaseURL + '/js/workers/savecsv.js');
-      var tableData = this.props.Data;
-      csvworker.addEventListener('message', function (e) {
-        if (e.data.cmd === 'SaveCSV' && tableData != undefined) {
-          var postObject = new FormData();
-          var dataDate = new Date().toISOString();
-          var filename = 'data-' + dataDate + '.csv';
-          postObject.append('file', e.data.message, filename);
-          sweetalert2__WEBPACK_IMPORTED_MODULE_12___default.a.fire({
-            title: 'Proceed with export?',
-            html: 'Please provide your NeuroHub API token.<br><br>' + 'You can generate a new token in the `My account` page of NeuroHub' + ' using the `Generate new API token` button in the ' + '<a target="_blank" href="https://portal.cbrain.mcgill.ca/">' + 'CBRAIN`s user interface</a>.<br>' + 'A CBRAIN file list will be created in your default dataprovider.',
-            width: '60%',
-            input: 'text',
-            inputValidator: function inputValidator(value) {
-              if (!value) {
-                return 'NeuroHub token is required.';
-              }
-            },
-            inputPlaceholder: 'NeuroHub API token',
-            showCancelButton: true,
-            confirmButtonText: 'Yes, export',
-            showLoaderOnConfirm: true,
-            preConfirm: function preConfirm(token) {
-              postObject.append('token', token);
-              return fetch("".concat(loris.BaseURL, "/dqt/Export"), {
-                method: 'POST',
-                cache: 'no-cache',
-                credentials: 'same-origin',
-                body: postObject
-              }).then(function (resp) {
-                if (!resp.ok) {
-                  throw new Error(resp.statusText);
-                }
-
-                return resp.json();
-              })["catch"](function (error) {
-                sweetalert2__WEBPACK_IMPORTED_MODULE_12___default.a.showValidationMessage("Request failed: ".concat(error));
-              });
-            },
-            allowOutsideClick: false
-          }).then(function (result) {
-            sweetalert2__WEBPACK_IMPORTED_MODULE_12___default.a.fire({
-              title: 'Export Successful!',
-              html: '<a href="' + result.value.images_location + '" target="_blank">Images</a><br>' + '<a href="' + result.value.data_location + '" target="_blank">Data</a>'
-            });
-          });
-        }
-      }); // Modify table data for readable csv
-
-      var correctReactLinks = function correctReactLinks(csvData) {
-        var newCsvData = csvData.map(function (data, dataIndex) {
-          var newData = data.map(function (value, valueIndex) {
-            var result = [value];
-
-            if (value == null) {
-              result = [''];
-            } else {
-              if (value.type === 'a') {
-                result = [value.props.href];
-              } else if (value.type === 'span') {
-                if (Array.isArray(value.props.children)) {
-                  var children = value.props.children.map(function (child, childIndex) {
-                    var childresult = child;
-
-                    if (child.props && child.props.href) {
-                      childresult = child.props.href;
-                    }
-
-                    return childresult;
-                  });
-                  result = [children.join('')];
-                } else {
-                  result = [value.props.children.props.href];
-                }
-              }
-            }
-
-            return result;
-          });
-          return newData;
-        });
-        return newCsvData;
-      };
-
-      var csvExport = correctReactLinks(_babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_1___default()(tableData)); // create CSV from data
-
-      csvworker.postMessage({
-        cmd: 'SaveFile',
-        data: csvExport,
-        headers: this.props.RowHeaders,
-        identifiers: this.props.RowInfo
-      });
-    }
-    /**
      * Renders the React component.
      *
      * @return {JSX} - React markup for the component
@@ -5736,36 +4861,16 @@ var ViewDataTabPane = /*#__PURE__*/function (_Component) {
   }, {
     key: "render",
     value: function render() {
-      var _this3 = this;
-
-      var otherButtons = this.state.runQueryClicked ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_8___default.a.Fragment, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
+      var otherButtons = this.state.runQueryClicked ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_7___default.a.Fragment, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
         className: "flex-row-item"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("button", {
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("button", {
         className: "action-btn visualized-data",
         onClick: this.props.displayVisualizedData
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("span", {
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("span", {
         className: "glyphicon glyphicon-picture"
-      }), "\xA0Visualized Data")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
+      }), "\xA0Visualized Data")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
         className: "flex-row-item"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("button", {
-        onClick: function onClick() {
-          _this3.setState({
-            dataRequestPrompt: true
-          });
-        },
-        className: "action-btn request-data"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("span", {
-        className: "glyphicon glyphicon-list-alt"
-      }), "\xA0Controlled Data Request")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement(_components_datarequest__WEBPACK_IMPORTED_MODULE_10__["default"], {
-        show: this.state.dataRequestPrompt,
-        onClose: function onClose() {
-          _this3.setState({
-            dataRequestPrompt: false
-          });
-        }
-      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
-        className: "flex-row-item"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
         style: {
           width: 'auto',
           height: '100%',
@@ -5773,7 +4878,7 @@ var ViewDataTabPane = /*#__PURE__*/function (_Component) {
           flexDirection: 'column',
           alignItems: 'flex-start'
         }
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("button", {
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("button", {
         className: "btn btn-primary",
         onClick: this.downloadDataCSV,
         style: {
@@ -5782,9 +4887,9 @@ var ViewDataTabPane = /*#__PURE__*/function (_Component) {
           alignSelf: 'center',
           margin: '5px 0 5px 0'
         }
-      }, "Download Table as CSV \xA0", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("span", {
+      }, "Download Table as CSV \xA0", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("span", {
         className: "glyphicon glyphicon-download-alt"
-      })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("button", {
+      })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("button", {
         className: "btn btn-primary",
         style: {
           minWidth: '200px',
@@ -5793,21 +4898,12 @@ var ViewDataTabPane = /*#__PURE__*/function (_Component) {
           margin: '5px 0 5px 0'
         },
         onClick: this.downloadData
-      }, "Download Files \xA0", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("span", {
+      }, "Download Files \xA0", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("span", {
         className: "glyphicon glyphicon-download-alt"
-      })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("button", {
-        className: "btn btn-primary",
-        style: {
-          minWidth: '200px',
-          minHeight: '30px',
-          alignSelf: 'center',
-          margin: '5px 0 5px 0'
-        },
-        onClick: this.exportToNeuroHub
-      }, "Export Results To NeuroHub")))) : null;
+      }))))) : null;
       var sessionsEmpty = this.props.filter.session.length === 0;
 
-      if (this.props.AllSessions.length > 0) {
+      if (this.state.sessionsLoaded) {
         sessionsEmpty = false;
       }
 
@@ -5817,43 +4913,43 @@ var ViewDataTabPane = /*#__PURE__*/function (_Component) {
         disabledMessage = 'Data Query Tool is retrieving sessions before query can run';
       }
 
-      var animationloading = disabledMessage === 'Data Query Tool is retrieving sessions before query can run' ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
+      var animationloading = disabledMessage === 'Data Query Tool is retrieving sessions before query can run' ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
         className: "spinner",
         style: {
           margin: '10px auto 0'
         }
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
         className: "bounce1"
-      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
+      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
         className: "bounce2"
-      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
+      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
         className: "bounce3"
       })) : null;
-      var buttons = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_8___default.a.Fragment, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
+      var buttons = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_7___default.a.Fragment, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
         className: "flex-row-container"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
         className: "flex-row-item"
-      }, sessionsEmpty || this.props.Fields === undefined || this.props.Fields.length === 0 ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
+      }, sessionsEmpty || this.props.Fields === undefined || this.props.Fields.length === 0 ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
         style: {
           color: '#0b4681',
           textAlign: 'center',
           fontWeight: 'bolder'
         }
-      }, animationloading, disabledMessage) : null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("button", {
+      }, animationloading, disabledMessage) : null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("button", {
         className: "action-btn run-query",
         onClick: this.runQuery,
         disabled: sessionsEmpty || this.props.Fields === undefined || this.props.Fields.length === 0
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("span", {
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("span", {
         className: "glyphicon glyphicon-play"
-      }), "\xA0Run Query")), otherButtons), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
+      }), "\xA0Run Query")), otherButtons), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
         className: "row"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
         id: "progress",
         className: "col-xs-12"
-      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
+      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
         id: "downloadlinks",
         className: "col-xs-12"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("ul", {
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("ul", {
         id: "downloadlinksUL"
       }))));
       var criteria = [];
@@ -5866,47 +4962,48 @@ var ViewDataTabPane = /*#__PURE__*/function (_Component) {
         var item = this.props.Criteria[el];
 
         if (item === undefined) {
-          criteria.push( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
+          criteria.push( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
             className: "alert alert-warning",
             role: "alert"
           }, el, " has been added as a filter but not had criteria defined."));
         } else {
-          criteria.push( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
+          criteria.push( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
             className: "row"
-          }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("span", {
+          }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("span", {
             className: "col-sm-3"
-          }, el), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("span", {
+          }, el), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("span", {
             className: "col-sm-3"
-          }, item.operator), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("span", {
+          }, item.operator), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("span", {
             className: "col-sm-3"
           }, item.value)));
         }
       }
 
-      var queryTable = this.state.runQueryClicked ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement(_components_table__WEBPACK_IMPORTED_MODULE_11__["default"], {
+      var queryTable = this.state.runQueryClicked ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement(_jsx_StaticDataTable__WEBPACK_IMPORTED_MODULE_9__["default"], {
         Headers: this.props.RowHeaders,
         RowNumLabel: "Identifiers",
         Data: this.props.Data,
-        RowNameMap: this.props.RowInfo
-      }) : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_8___default.a.Fragment, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("h2", {
+        RowNameMap: this.props.RowInfo,
+        DisableFilter: true
+      }) : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_7___default.a.Fragment, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("h2", {
         className: "col-xs-12",
         style: {
           color: '#0A3572'
         }
       }, "The Query still needs to be run."));
-      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement(TabPane, {
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement(TabPane, {
         TabId: this.props.TabId,
         Loading: this.props.Loading,
         Active: this.props.Active
-      }, criteria, buttons, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
+      }, criteria, buttons, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
         className: "flex-row-container-second"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
         style: {
           maxWidth: '500px',
           border: '1px solid #b7ccd2',
           boxShadow: 'inset 0 1px 1px rgba(0,0,0,0.05)'
         }
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement(RadioElement, {
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement(RadioElement, {
         name: "dataDisplayRadioElement",
         options: {
           'Cross-sectional': 'Cross-sectional',
@@ -5919,10 +5016,10 @@ var ViewDataTabPane = /*#__PURE__*/function (_Component) {
   }]);
 
   return ViewDataTabPane;
-}(react__WEBPACK_IMPORTED_MODULE_8__["Component"]);
+}(react__WEBPACK_IMPORTED_MODULE_7__["Component"]);
 
 ViewDataTabPane.propTypes = {
-  runQuery: prop_types__WEBPACK_IMPORTED_MODULE_9___default.a.func.isRequired
+  runQuery: prop_types__WEBPACK_IMPORTED_MODULE_8___default.a.func.isRequired
 };
 /**
  * ScatterplotGraph Component
@@ -5933,7 +5030,7 @@ ViewDataTabPane.propTypes = {
  */
 
 var ScatterplotGraph = /*#__PURE__*/function (_Component2) {
-  _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_5___default()(ScatterplotGraph, _Component2);
+  _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_4___default()(ScatterplotGraph, _Component2);
 
   var _super2 = _createSuper(ScatterplotGraph);
 
@@ -5942,16 +5039,16 @@ var ScatterplotGraph = /*#__PURE__*/function (_Component2) {
    * @param {object} props - React Component properties
    */
   function ScatterplotGraph(props) {
-    var _this4;
+    var _this3;
 
-    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_2___default()(this, ScatterplotGraph);
+    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1___default()(this, ScatterplotGraph);
 
-    _this4 = _super2.call(this, props);
-    _this4.state = {};
-    _this4.lsFit = _this4.lsFit.bind(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_4___default()(_this4));
-    _this4.minmaxx = _this4.minmaxx.bind(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_4___default()(_this4));
-    _this4.updateScatterplot = _this4.updateScatterplot.bind(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_4___default()(_this4));
-    return _this4;
+    _this3 = _super2.call(this, props);
+    _this3.state = {};
+    _this3.lsFit = _this3.lsFit.bind(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_3___default()(_this3));
+    _this3.minmaxx = _this3.minmaxx.bind(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_3___default()(_this3));
+    _this3.updateScatterplot = _this3.updateScatterplot.bind(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_3___default()(_this3));
+    return _this3;
   }
   /**
    * lsFit statistics
@@ -5960,7 +5057,7 @@ var ScatterplotGraph = /*#__PURE__*/function (_Component2) {
    */
 
 
-  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_3___default()(ScatterplotGraph, [{
+  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2___default()(ScatterplotGraph, [{
     key: "lsFit",
     value: function lsFit(data) {
       var i = 0;
@@ -6132,7 +5229,7 @@ var ScatterplotGraph = /*#__PURE__*/function (_Component2) {
     key: "render",
     value: function render() {
       var options = this.props.Fields.map(function (element, key) {
-        return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("option", {
+        return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("option", {
           key: key,
           value: key
         }, element);
@@ -6141,38 +5238,38 @@ var ScatterplotGraph = /*#__PURE__*/function (_Component2) {
         width: '500px',
         height: '500px'
       };
-      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("h2", null, "Scatterplot"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("h2", null, "Scatterplot"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
         className: "col-xs-4 col-md-3"
-      }, "Column for X Axis"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
+      }, "Column for X Axis"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
         className: "col-xs-8 col-md-3"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("select", {
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("select", {
         id: "scatter-xaxis",
         onChange: this.updateScatterplot
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("option", null, "None"), options)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("option", null, "None"), options)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
         className: "col-xs-4 col-md-3"
-      }, "Column for Y Axis"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
+      }, "Column for Y Axis"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
         className: "col-xs-8 col-md-3"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("select", {
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("select", {
         id: "scatter-yaxis",
         onChange: this.updateScatterplot
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("option", null, "None"), options)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("option", null, "None"), options)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
         className: "col-xs-4 col-md-3"
-      }, "Group by column"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
+      }, "Group by column"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
         className: "col-xs-8 col-md-3"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("select", {
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("select", {
         id: "scatter-group",
         onChange: this.updateScatterplot
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("option", null, "None"), options)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("h3", null, "Scatterplot"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("option", null, "None"), options)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("h3", null, "Scatterplot"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
         id: "scatterplotdiv",
         style: scatterStyle
-      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("h3", null, "Statistics"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("table", {
+      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("h3", null, "Statistics"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("table", {
         id: "correlationtbl"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("thead", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("tr", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("th", null, "Covariance"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("th", null, "Correlation Coefficient"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("tbody", null)));
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("thead", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("tr", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("th", null, "Covariance"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("th", null, "Correlation Coefficient"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("tbody", null)));
     }
   }]);
 
   return ScatterplotGraph;
-}(react__WEBPACK_IMPORTED_MODULE_8__["Component"]);
+}(react__WEBPACK_IMPORTED_MODULE_7__["Component"]);
 /**
  * StatsVisualizationTabPane Component
  *
@@ -6181,7 +5278,7 @@ var ScatterplotGraph = /*#__PURE__*/function (_Component2) {
 
 
 var StatsVisualizationTabPane = /*#__PURE__*/function (_Component3) {
-  _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_5___default()(StatsVisualizationTabPane, _Component3);
+  _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_4___default()(StatsVisualizationTabPane, _Component3);
 
   var _super3 = _createSuper(StatsVisualizationTabPane);
 
@@ -6190,48 +5287,30 @@ var StatsVisualizationTabPane = /*#__PURE__*/function (_Component3) {
    * @param {object} props - React Component properties
    */
   function StatsVisualizationTabPane(props) {
-    var _this5;
+    var _this4;
 
-    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_2___default()(this, StatsVisualizationTabPane);
+    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1___default()(this, StatsVisualizationTabPane);
 
-    _this5 = _super3.call(this, props);
-    _this5.state = {
+    _this4 = _super3.call(this, props);
+    _this4.state = {
       displayed: false
     };
-    return _this5;
+    return _this4;
   }
   /**
-   * shouldComponentUpdate
-   * @param {object} nextProps - next props
-   * @param {object} nextState - next state
-   * @return {boolean} update component if true.
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
    */
 
 
-  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_3___default()(StatsVisualizationTabPane, [{
-    key: "shouldComponentUpdate",
-    value: function shouldComponentUpdate(nextProps, nextState) {
-      if (nextProps.Active && !this.props.Active) {
-        return true;
-      } else if (!nextProps.Active && this.props.Active) {
-        return true;
-      }
-
-      return false;
-    }
-    /**
-     * Renders the React component.
-     *
-     * @return {JSX} - React markup for the component
-     */
-
-  }, {
+  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2___default()(StatsVisualizationTabPane, [{
     key: "render",
     value: function render() {
       var content;
 
       if (this.props.Data.length === 0) {
-        content = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("h1", {
+        content = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("h1", {
           className: "col-xs-12",
           style: {
             color: '#0A3572'
@@ -6249,23 +5328,23 @@ var StatsVisualizationTabPane = /*#__PURE__*/function (_Component3) {
         var rows = [];
 
         for (var i = 0; i < this.props.Fields.length; i += 1) {
-          rows.push( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("tr", {
+          rows.push( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("tr", {
             key: 'fields_' + i
-          }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("td", null, this.props.Fields[i]), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("td", null, min && min[i] ? min[i].toString() : ''), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("td", null, max && max[i] ? max[i].toString() : ''), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("td", null, stddev && stddev[i] ? stddev[i].toString() : ''), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("td", null, mean && mean[i] ? mean[i].toString() : ''), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("td", null, meandev && meandev[i] ? meandev[i].toString() : ''), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("td", null, meansqerr && meansqerr[i] ? meansqerr[i].toString() : ''), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("td", null, quartiles && quartiles[i] && quartiles[i][0] ? quartiles[i][0].toString() : ''), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("td", null, quartiles && quartiles[i] && quartiles[i][1] ? quartiles[i][1].toString() : ''), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("td", null, quartiles && quartiles[i] && quartiles[i][2] ? quartiles[i][2].toString() : '')));
+          }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("td", null, this.props.Fields[i]), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("td", null, min && min[i] ? min[i].toString() : ''), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("td", null, max && max[i] ? max[i].toString() : ''), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("td", null, stddev && stddev[i] ? stddev[i].toString() : ''), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("td", null, mean && mean[i] ? mean[i].toString() : ''), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("td", null, meandev && meandev[i] ? meandev[i].toString() : ''), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("td", null, meansqerr && meansqerr[i] ? meansqerr[i].toString() : ''), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("td", null, quartiles && quartiles[i] && quartiles[i][0] ? quartiles[i][0].toString() : ''), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("td", null, quartiles && quartiles[i] && quartiles[i][1] ? quartiles[i][1].toString() : ''), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("td", null, quartiles && quartiles[i] && quartiles[i][2] ? quartiles[i][2].toString() : '')));
         }
 
-        var statsTable = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("table", {
+        var statsTable = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("table", {
           className: "table table-hover table-primary table-bordered colm-freeze"
-        }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("thead", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("tr", {
+        }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("thead", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("tr", {
           className: "info"
-        }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("th", null, "Measure"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("th", null, "Min"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("th", null, "Max"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("th", null, "Standard Deviation"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("th", null, "Mean"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("th", null, "Mean Deviation"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("th", null, "Mean Squared Error"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("th", null, "First Quartile"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("th", null, "Second Quartile"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("th", null, "Third Quartile"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("tbody", null, rows));
-        content = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("h2", null, "Basic Statistics"), statsTable, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement(ScatterplotGraph, {
+        }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("th", null, "Measure"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("th", null, "Min"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("th", null, "Max"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("th", null, "Standard Deviation"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("th", null, "Mean"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("th", null, "Mean Deviation"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("th", null, "Mean Squared Error"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("th", null, "First Quartile"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("th", null, "Second Quartile"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("th", null, "Third Quartile"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("tbody", null, rows));
+        content = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("h2", null, "Basic Statistics"), statsTable, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement(ScatterplotGraph, {
           Fields: this.props.Fields,
           Data: this.props.Data
         }));
       }
 
-      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement(TabPane, {
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement(TabPane, {
         TabId: this.props.TabId,
         Loading: this.props.Loading,
         Active: this.props.Active
@@ -6274,13 +5353,13 @@ var StatsVisualizationTabPane = /*#__PURE__*/function (_Component3) {
   }]);
 
   return StatsVisualizationTabPane;
-}(react__WEBPACK_IMPORTED_MODULE_8__["Component"]);
+}(react__WEBPACK_IMPORTED_MODULE_7__["Component"]);
 
 StatsVisualizationTabPane.defaultProps = {
   Data: []
 };
 StatsVisualizationTabPane.propTypes = {
-  Data: prop_types__WEBPACK_IMPORTED_MODULE_9___default.a.array
+  Data: prop_types__WEBPACK_IMPORTED_MODULE_8___default.a.array
 };
 /**
  * SaveQueryDialog Component
@@ -6292,12 +5371,12 @@ StatsVisualizationTabPane.propTypes = {
  */
 
 var SaveQueryDialog = function SaveQueryDialog(props) {
-  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_8__["useState"])(''),
+  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_7__["useState"])(''),
       _useState2 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0___default()(_useState, 2),
       queryName = _useState2[0],
       setQueryName = _useState2[1];
 
-  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_8__["useState"])(false),
+  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_7__["useState"])(false),
       _useState4 = _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_0___default()(_useState3, 2),
       shared = _useState4[0],
       setShared = _useState4[1];
@@ -6324,49 +5403,49 @@ var SaveQueryDialog = function SaveQueryDialog(props) {
     }
   };
 
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
     className: "modal show"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
     className: "modal-dialog-save-query"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
     className: "modal-content"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
     className: "modal-header"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("button", {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("button", {
     type: "button",
     className: "close",
     "aria-label": "Close",
     onClick: onDismissClicked
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("span", {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("span", {
     "aria-hidden": "true"
-  }, "\xD7")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("h4", {
+  }, "\xD7")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("h4", {
     className: "modal-title",
     id: "myModalLabel",
     style: {
       color: '#fff'
     }
-  }, "Save Current Query")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
+  }, "Save Current Query")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
     className: "modal-body"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("p", null, "Enter the name you would like to save your query under here:"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("p", null, "Enter the name you would like to save your query under here:"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
     className: "input-group"
-  }, "Query Name:\xA0", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("input", {
+  }, "Query Name:\xA0", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("input", {
     type: "text",
     className: "form-control",
     placeholder: "My Query",
     value: queryName,
     onChange: editName
-  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("p", null, "Make query a publicly shared query?\xA0", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("input", {
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("p", null, "Make query a publicly shared query?\xA0", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("input", {
     type: "checkbox",
     checked: shared ? 'checked' : '',
     onChange: editPublic,
     "aria-label": "Shared Query"
-  }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
+  }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
     className: "modal-footer"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("button", {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("button", {
     type: "button",
     className: "btn btn-default",
     onClick: onDismissClicked
-  }, "Close"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("button", {
+  }, "Close"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("button", {
     type: "button",
     className: "btn btn-primary",
     onClick: onSaveClicked
@@ -6381,7 +5460,7 @@ var SaveQueryDialog = function SaveQueryDialog(props) {
 
 
 var ManageSavedQueryFilter = /*#__PURE__*/function (_Component4) {
-  _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_5___default()(ManageSavedQueryFilter, _Component4);
+  _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_4___default()(ManageSavedQueryFilter, _Component4);
 
   var _super4 = _createSuper(ManageSavedQueryFilter);
 
@@ -6390,13 +5469,13 @@ var ManageSavedQueryFilter = /*#__PURE__*/function (_Component4) {
    * @param {object} props - React Component properties
    */
   function ManageSavedQueryFilter(props) {
-    var _this6;
+    var _this5;
 
-    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_2___default()(this, ManageSavedQueryFilter);
+    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1___default()(this, ManageSavedQueryFilter);
 
-    _this6 = _super4.call(this, props);
-    _this6.state = {};
-    return _this6;
+    _this5 = _super4.call(this, props);
+    _this5.state = {};
+    return _this5;
   }
   /**
    * Renders the React component.
@@ -6405,7 +5484,7 @@ var ManageSavedQueryFilter = /*#__PURE__*/function (_Component4) {
    */
 
 
-  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_3___default()(ManageSavedQueryFilter, [{
+  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2___default()(ManageSavedQueryFilter, [{
     key: "render",
     value: function render() {
       var filterItem;
@@ -6413,12 +5492,12 @@ var ManageSavedQueryFilter = /*#__PURE__*/function (_Component4) {
 
       if (filter.activeOperator) {
         var children = filter.children.map(function (element, key) {
-          return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement(ManageSavedQueryFilter, {
+          return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement(ManageSavedQueryFilter, {
             filterItem: element
           });
         });
         var logicOp = filter.activeOperator === 1 ? 'OR' : 'AND';
-        return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("li", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("span", null, logicOp), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("ul", {
+        return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("li", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("span", null, logicOp), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("ul", {
           className: "savedQueryTree"
         }, children));
       } else {
@@ -6449,18 +5528,18 @@ var ManageSavedQueryFilter = /*#__PURE__*/function (_Component4) {
               break;
           }
 
-          filterItem = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("span", null, filter.instrument, ",", filter.field, " ", operator, " ", filter.value);
+          filterItem = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("span", null, filter.instrument, ",", filter.field, " ", operator, " ", filter.value);
         } else {
-          filterItem = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("span", null, filter.Field, " ", filter.Operator, " ", filter.Value);
+          filterItem = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("span", null, filter.Field, " ", filter.Operator, " ", filter.Value);
         }
       }
 
-      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("li", null, filterItem);
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("li", null, filterItem);
     }
   }]);
 
   return ManageSavedQueryFilter;
-}(react__WEBPACK_IMPORTED_MODULE_8__["Component"]);
+}(react__WEBPACK_IMPORTED_MODULE_7__["Component"]);
 /**
  * ManageSavedQueryRow Component
  *
@@ -6470,7 +5549,7 @@ var ManageSavedQueryFilter = /*#__PURE__*/function (_Component4) {
 
 
 var ManageSavedQueryRow = /*#__PURE__*/function (_Component5) {
-  _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_5___default()(ManageSavedQueryRow, _Component5);
+  _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_4___default()(ManageSavedQueryRow, _Component5);
 
   var _super5 = _createSuper(ManageSavedQueryRow);
 
@@ -6479,30 +5558,63 @@ var ManageSavedQueryRow = /*#__PURE__*/function (_Component5) {
    * @param {object} props - React Component properties
    */
   function ManageSavedQueryRow(props) {
-    var _this7;
+    var _this6;
 
-    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_2___default()(this, ManageSavedQueryRow);
+    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1___default()(this, ManageSavedQueryRow);
 
-    _this7 = _super5.call(this, props);
-    _this7.state = {};
-    return _this7;
+    _this6 = _super5.call(this, props);
+    _this6.state = {};
+    return _this6;
   }
   /**
-   * Renders the React component.
-   *
-   * @return {JSX} - React markup for the component
+   * @deleteclick
    */
 
 
-  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_3___default()(ManageSavedQueryRow, [{
+  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2___default()(ManageSavedQueryRow, [{
+    key: "deleteclick",
+    value: function deleteclick() {
+      var id = this.props.Query['_id'];
+      sweetalert2__WEBPACK_IMPORTED_MODULE_10___default.a.fire({
+        title: 'Are you sure?',
+        text: 'You won\'t be able to revert this!',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then(function (result) {
+        if (result.value) {
+          var deleteurl = loris.BaseURL + '/AjaxHelper.php?Module=dqt&script=DeleteDoc.php&DocID=' + encodeURIComponent(id);
+          fetch(deleteurl, {
+            cache: 'no-cache',
+            credentials: 'same-origin'
+          }).then(function (resp) {
+            return resp.json();
+          }).then(function () {
+            location.reload();
+            sweetalert2__WEBPACK_IMPORTED_MODULE_10___default.a.fire('delete Successful!', '', 'success');
+          });
+        }
+      });
+    }
+    /**
+     * Renders the React component.
+     *
+     * @return {JSX} - React markup for the component
+     */
+
+  }, {
     key: "render",
     value: function render() {
+      var _this7 = this;
+
       var fields = [];
       var filters;
 
       if (this.props.Query.Fields && Array.isArray(this.props.Query.Fields)) {
         for (var i = 0; i < this.props.Query.Fields.length; i += 1) {
-          fields.push( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("li", {
+          fields.push( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("li", {
             key: i
           }, this.props.Query.Fields[i]));
         }
@@ -6511,7 +5623,7 @@ var ManageSavedQueryRow = /*#__PURE__*/function (_Component5) {
           if (this.props.Query.Fields.hasOwnProperty(instrument)) {
             for (var field in this.props.Query.Fields[instrument]) {
               if (this.props.Query.Fields[instrument].hasOwnProperty(field) && field !== 'allVisits') {
-                fields.push( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("li", {
+                fields.push( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("li", {
                   key: instrument + field
                 }, instrument, ",", field));
               }
@@ -6521,7 +5633,7 @@ var ManageSavedQueryRow = /*#__PURE__*/function (_Component5) {
       }
 
       if (fields.length === 0) {
-        fields.push( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("li", {
+        fields.push( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("li", {
           key: 'no_fields_defined'
         }, "No fields defined"));
       }
@@ -6533,27 +5645,27 @@ var ManageSavedQueryRow = /*#__PURE__*/function (_Component5) {
         if (this.props.Query.Conditions.activeOperator) {
           if (this.props.Query.Conditions.children) {
             if (this.props.Query.Conditions.activeOperator === '0') {
-              operator = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("span", null, "AND");
+              operator = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("span", null, "AND");
             } else {
-              operator = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("span", null, "OR");
+              operator = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("span", null, "OR");
             }
 
             filter = this.props.Query.Conditions.children.map(function (element, key) {
-              return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement(ManageSavedQueryFilter, {
+              return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement(ManageSavedQueryFilter, {
                 key: key,
                 filterItem: element
               });
             });
           } else {
-            operator = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("span", null, "No filters defined");
+            operator = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("span", null, "No filters defined");
           }
         } else {
           if (this.props.Query.Conditions.length === 0) {
-            operator = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("span", null, "No filters defined");
+            operator = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("span", null, "No filters defined");
           } else {
-            operator = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("span", null, "AND");
+            operator = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("span", null, "AND");
             filter = this.props.Query.Conditions.map(function (element, key) {
-              return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement(ManageSavedQueryFilter, {
+              return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement(ManageSavedQueryFilter, {
                 key: key,
                 filterItem: element
               });
@@ -6561,35 +5673,46 @@ var ManageSavedQueryRow = /*#__PURE__*/function (_Component5) {
           }
         }
 
-        filters = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
+        filters = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
           className: "tree"
-        }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("ul", {
+        }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("ul", {
           className: "firstUL savedQueryTree"
-        }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("li", null, operator, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("ul", {
+        }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("li", null, operator, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("ul", {
           className: "savedQueryTree"
         }, filter))));
       }
 
       if (!filters) {
-        filters = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("strong", null, "No filters defined");
+        filters = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("strong", null, "No filters defined");
       }
 
-      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("tr", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("td", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("tr", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("td", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
         className: 'tableNamesCell'
-      }, this.props.Name)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("td", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
+      }, this.props.Name)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("td", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
         className: 'tableFieldsCell'
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("ul", null, fields))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("td", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("div", {
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("ul", null, fields))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("td", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
         className: 'tableFiltersCell'
-      }, filters)));
+      }, filters)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("td", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("div", {
+        className: 'tableNamesCell'
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("button", {
+        className: "btn btn-danger",
+        onClick: function onClick() {
+          // eslint-disable-line
+          _this7.deleteclick(); // eslint-disable-line
+
+        } // eslint-disable-line
+        // eslint-disable-line
+
+      }, "delete"))));
     }
   }]);
 
   return ManageSavedQueryRow;
-}(react__WEBPACK_IMPORTED_MODULE_8__["Component"]);
+}(react__WEBPACK_IMPORTED_MODULE_7__["Component"]);
 
 ManageSavedQueryRow.propTypes = {
-  Name: prop_types__WEBPACK_IMPORTED_MODULE_9___default.a.object,
-  Query: prop_types__WEBPACK_IMPORTED_MODULE_9___default.a.object
+  Name: prop_types__WEBPACK_IMPORTED_MODULE_8___default.a.object,
+  Query: prop_types__WEBPACK_IMPORTED_MODULE_8___default.a.object
 };
 ManageSavedQueryRow.defaultProps = {
   Name: null,
@@ -6622,13 +5745,13 @@ var ManageSavedQueriesTabPane = function ManageSavedQueriesTabPane(props) {
         name = query.Meta.name;
       }
 
-      var queryName = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("a", {
+      var queryName = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("a", {
         href: "#",
         onClick: function onClick() {
           return loadQuery(props.userQueries[i]);
         }
       }, name);
-      queryRows.push( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement(ManageSavedQueryRow, {
+      queryRows.push( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement(ManageSavedQueryRow, {
         key: name,
         Name: queryName,
         Query: query
@@ -6639,26 +5762,26 @@ var ManageSavedQueriesTabPane = function ManageSavedQueriesTabPane(props) {
       _loop(i);
     }
   } else {
-    queryRows.push( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("tr", {
+    queryRows.push( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("tr", {
       key: "loading"
-    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("td", {
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("td", {
       colSpan: "3"
     }, "Loading saved query details")));
   }
 
-  var content = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_8___default.a.Fragment, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("h2", {
+  var content = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_7___default.a.Fragment, null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("h2", {
     style: {
       color: 'rgb(10, 53, 114)',
       textAlign: 'center',
       paddingTop: '0'
     }
-  }, "User Saved Queries"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("table", {
+  }, "User Saved Queries"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("table", {
     className: "table table-hover table-primary table-bordered colm-freeze"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("thead", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("tr", {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("thead", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("tr", {
     key: "info",
     className: "info"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("th", null, "Query Name"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("th", null, "Fields"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("th", null, "Filters"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement("tbody", null, queryRows)));
-  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_8___default.a.createElement(TabPane, {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("th", null, "Query Name"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("th", null, "Fields"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("th", null, "Filters"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("th", null, "Delete"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement("tbody", null, queryRows)));
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_7___default.a.createElement(TabPane, {
     TabId: props.TabId,
     Loading: props.Loading
   }, content);
@@ -6671,10 +5794,10 @@ ManageSavedQueriesTabPane.defaultProps = {
   queryDetails: {}
 };
 ManageSavedQueriesTabPane.propTypes = {
-  userQueries: prop_types__WEBPACK_IMPORTED_MODULE_9___default.a.array,
-  globalQueries: prop_types__WEBPACK_IMPORTED_MODULE_9___default.a.array,
-  queriesLoaded: prop_types__WEBPACK_IMPORTED_MODULE_9___default.a.bool,
-  queryDetails: prop_types__WEBPACK_IMPORTED_MODULE_9___default.a.object
+  userQueries: prop_types__WEBPACK_IMPORTED_MODULE_8___default.a.array,
+  globalQueries: prop_types__WEBPACK_IMPORTED_MODULE_8___default.a.array,
+  queriesLoaded: prop_types__WEBPACK_IMPORTED_MODULE_8___default.a.bool,
+  queryDetails: prop_types__WEBPACK_IMPORTED_MODULE_8___default.a.object
 };
 window.Loading = Loading;
 window.TabPane = TabPane;
@@ -6704,35 +5827,35 @@ window.ManageSavedQueriesTabPane = ManageSavedQueriesTabPane;
 });
 
 /***/ }),
-/* 45 */
+/* 47 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(26);
+/* harmony import */ var _babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(27);
 /* harmony import */ var _babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_typeof__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(34);
+/* harmony import */ var _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(38);
 /* harmony import */ var _babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_toConsumableArray__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(2);
 /* harmony import */ var _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(20);
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(21);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(21);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(22);
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(22);
+/* harmony import */ var _babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(23);
 /* harmony import */ var _babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(23);
+/* harmony import */ var _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(24);
 /* harmony import */ var _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var _babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(25);
+/* harmony import */ var _babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(26);
 /* harmony import */ var _babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_7__);
-/* harmony import */ var _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(27);
+/* harmony import */ var _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(28);
 /* harmony import */ var _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_8__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(8);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_9__);
 /* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(9);
 /* harmony import */ var prop_types__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(prop_types__WEBPACK_IMPORTED_MODULE_10__);
-/* harmony import */ var jsx_PaginationLinks__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(46);
-/* harmony import */ var react_addons_create_fragment__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(47);
+/* harmony import */ var jsx_PaginationLinks__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(48);
+/* harmony import */ var react_addons_create_fragment__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(49);
 /* harmony import */ var react_addons_create_fragment__WEBPACK_IMPORTED_MODULE_12___default = /*#__PURE__*/__webpack_require__.n(react_addons_create_fragment__WEBPACK_IMPORTED_MODULE_12__);
 
 
@@ -6748,8 +5871,10 @@ function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflec
 
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
 
+/* exported RStaticDataTable */
+
 /**
- * This file contains React component for DQT's Data Table
+ * This file contains React component for Static Data Table
  *
  * @author Loris Team
  * @version 1.0.0
@@ -6760,26 +5885,25 @@ function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Re
 
 
 /**
- * DQT's Data Table component
+ * Static Data Table component
  * Displays a set of data that is receives via props.
  */
 
-var DataTable = /*#__PURE__*/function (_Component) {
-  _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_6___default()(DataTable, _Component);
+var StaticDataTable = /*#__PURE__*/function (_Component) {
+  _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_6___default()(StaticDataTable, _Component);
 
-  var _super = _createSuper(DataTable);
+  var _super = _createSuper(StaticDataTable);
 
   /**
    * @constructor
    * @param {object} props - React Component properties
    */
-  function DataTable(props) {
+  function StaticDataTable(props) {
     var _this;
 
-    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_3___default()(this, DataTable);
+    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_3___default()(this, StaticDataTable);
 
-    _this = _super.call(this, props); // console.log('[DataTable] constructor');
-
+    _this = _super.call(this, props);
     _this.state = {
       PageNumber: 1,
       SortColumn: -1,
@@ -6791,6 +5915,8 @@ var DataTable = /*#__PURE__*/function (_Component) {
     _this.setSortColumn = _this.setSortColumn.bind(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_5___default()(_this));
     _this.changeRowsPerPage = _this.changeRowsPerPage.bind(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_5___default()(_this));
     _this.downloadCSV = _this.downloadCSV.bind(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_5___default()(_this));
+    _this.countFilteredRows = _this.countFilteredRows.bind(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_5___default()(_this));
+    _this.toCamelCase = _this.toCamelCase.bind(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_5___default()(_this));
     _this.getSortedRows = _this.getSortedRows.bind(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_5___default()(_this));
     _this.hasFilterKeyword = _this.hasFilterKeyword.bind(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_5___default()(_this));
     return _this;
@@ -6799,18 +5925,16 @@ var DataTable = /*#__PURE__*/function (_Component) {
    * shouldComponentUpdate
    * @param {object} nextProps - next props
    * @param {object} nextState - next state
+   * @param {object} nextContext - next context
    * @return {boolean} update component if true.
    */
 
 
-  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_4___default()(DataTable, [{
+  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_4___default()(StaticDataTable, [{
     key: "shouldComponentUpdate",
-    value: function shouldComponentUpdate(nextProps, nextState) {
-      if (nextProps.Data === this.props.Data && nextState === this.state) {
-        return false;
-      }
-
-      return true;
+    value: function shouldComponentUpdate(nextProps, nextState, nextContext) {
+      // prevents multiple reloads of the table in the DQT module.
+      return !(this.props.DisableFilter && nextProps.Data === this.props.Data && nextState === this.state);
     }
     /**
      * Called by React when the component has been rendered on the page.
@@ -6819,7 +5943,6 @@ var DataTable = /*#__PURE__*/function (_Component) {
   }, {
     key: "componentDidMount",
     value: function componentDidMount() {
-      // console.log('[DataTable] componentDidMount');
       if (jQuery.fn.DynamicTable) {
         if (this.props.freezeColumn) {
           $('#dynamictable').DynamicTable({
@@ -6832,29 +5955,30 @@ var DataTable = /*#__PURE__*/function (_Component) {
         if (this.state.Hide.defaultColumn) {
           $('#dynamictable').find('tbody td:eq(0)').hide();
         }
-      } // // Retrieve module preferences
-      // let modulePrefs = JSON.parse(localStorage.getItem('modulePrefs'));
-      //
-      // // Init modulePrefs object
-      // if (modulePrefs === null) {
-      //   modulePrefs = {};
-      // }
-      //
-      // // Init modulePrefs for current module
-      // if (modulePrefs[loris.TestName] === undefined) {
-      //   modulePrefs[loris.TestName] = {};
-      //   modulePrefs[loris.TestName].rowsPerPage = this.state.RowsPerPage;
-      // }
-      //
-      // // Set rows per page
-      // let rowsPerPage = modulePrefs[loris.TestName].rowsPerPage;
-      // this.setState({
-      //   RowsPerPage: rowsPerPage,
-      // });
-      //
-      // // Make prefs accessible within component
-      // this.modulePrefs = modulePrefs;
+      }
 
+      if (!this.props.DisableFilter) {
+        // Retrieve module preferences
+        var modulePrefs = JSON.parse(localStorage.getItem('modulePrefs')); // Init modulePrefs object
+
+        if (modulePrefs === null) {
+          modulePrefs = {};
+        } // Init modulePrefs for current module
+
+
+        if (modulePrefs[loris.TestName] === undefined) {
+          modulePrefs[loris.TestName] = {};
+          modulePrefs[loris.TestName].rowsPerPage = this.state.RowsPerPage;
+        } // Set rows per page
+
+
+        var rowsPerPage = modulePrefs[loris.TestName].rowsPerPage;
+        this.setState({
+          RowsPerPage: rowsPerPage
+        }); // Make prefs accesible within component
+
+        this.modulePrefs = modulePrefs;
+      }
     }
     /**
      * Called by React when the component is updated.
@@ -6865,7 +5989,23 @@ var DataTable = /*#__PURE__*/function (_Component) {
 
   }, {
     key: "componentDidUpdate",
-    value: function componentDidUpdate(prevProps, prevState) {// console.log('[DataTable] componentDidUpdate');
+    value: function componentDidUpdate(prevProps, prevState) {
+      if (jQuery.fn.DynamicTable) {
+        if (this.props.freezeColumn) {
+          $('#dynamictable').DynamicTable({
+            freezeColumn: this.props.freezeColumn
+          });
+        } else {
+          $('#dynamictable').DynamicTable();
+        }
+      }
+
+      if (!this.props.DisableFilter) {
+        if (this.props.onSort && (this.state.SortColumn !== prevState.SortColumn || this.state.SortOrder !== prevState.SortOrder)) {
+          var index = this.getSortedRows();
+          this.props.onSort(index, this.props.Data, this.props.Headers);
+        }
+      }
     }
     /**
      * Set the component page variable
@@ -6877,7 +6017,6 @@ var DataTable = /*#__PURE__*/function (_Component) {
   }, {
     key: "changePage",
     value: function changePage(pageNo) {
-      // console.log('[DataTable] changePage');
       this.setState({
         PageNumber: pageNo
       });
@@ -6888,21 +6027,23 @@ var DataTable = /*#__PURE__*/function (_Component) {
      * Toggle SortOrder ASC/DESC
      *
      * @param {int} colNumber - The column index
+     * @return {function(e)} - onClick Event Handler
      */
 
   }, {
     key: "setSortColumn",
     value: function setSortColumn(colNumber) {
-      // console.log('[DataTable] setSortColumn');
-      if (this.state.SortColumn === colNumber) {
-        this.setState({
-          SortOrder: this.state.SortOrder === 'ASC' ? 'DESC' : 'ASC'
-        });
-      } else {
-        this.setState({
-          SortColumn: colNumber
-        });
-      }
+      return function (e) {
+        if (this.state.SortColumn === colNumber) {
+          this.setState({
+            SortOrder: this.state.SortOrder === 'ASC' ? 'DESC' : 'ASC'
+          });
+        } else {
+          this.setState({
+            SortColumn: colNumber
+          });
+        }
+      }.bind(this);
     }
     /**
      * Update the number of rows per page
@@ -6913,7 +6054,14 @@ var DataTable = /*#__PURE__*/function (_Component) {
   }, {
     key: "changeRowsPerPage",
     value: function changeRowsPerPage(val) {
-      // console.log('[DataTable] changeRowsPerPage');
+      if (!this.props.DisableFilter) {
+        var modulePrefs = this.modulePrefs; // Save current selection
+
+        modulePrefs[loris.TestName].rowsPerPage = val.target.value; // Update localstorage
+
+        localStorage.setItem('modulePrefs', JSON.stringify(modulePrefs));
+      }
+
       this.setState({
         RowsPerPage: val.target.value,
         PageNumber: 1
@@ -6928,7 +6076,6 @@ var DataTable = /*#__PURE__*/function (_Component) {
   }, {
     key: "downloadCSV",
     value: function downloadCSV(csvData) {
-      // console.log('[DataTable] downloadCSV');
       var csvworker = new Worker(loris.BaseURL + '/js/workers/savecsv.js');
       csvworker.addEventListener('message', function (e) {
         var dataURL;
@@ -6977,6 +6124,75 @@ var DataTable = /*#__PURE__*/function (_Component) {
       });
     }
     /**
+     * Get the number of filtered rows
+     *
+     * @return {int}
+     */
+
+  }, {
+    key: "countFilteredRows",
+    value: function countFilteredRows() {
+      var useKeyword = false;
+      var filterMatchCount = 0;
+      var filterValuesCount = this.props.Filter ? Object.keys(this.props.Filter).length : 0;
+      var tableData = this.props.Data;
+      var headersData = this.props.Headers;
+
+      if (this.props.Filter.keyword) {
+        useKeyword = true;
+      }
+
+      if (useKeyword) {
+        filterValuesCount -= 1;
+      }
+
+      for (var i = 0; i < tableData.length; i++) {
+        var headerCount = 0;
+        var keywordMatch = 0;
+
+        for (var j = 0; j < headersData.length; j++) {
+          var data = tableData[i] ? tableData[i][j] : null;
+
+          if (this.hasFilterKeyword(headersData[j], data)) {
+            headerCount++;
+          }
+
+          if (useKeyword) {
+            if (this.hasFilterKeyword('keyword', data)) {
+              keywordMatch++;
+            }
+          }
+        }
+
+        if (headerCount === filterValuesCount && (useKeyword === true && keywordMatch > 0 || useKeyword === false && keywordMatch === 0)) {
+          filterMatchCount++;
+        }
+      }
+
+      var hasFilters = filterValuesCount !== 0;
+
+      if (filterMatchCount === 0 && hasFilters) {
+        return 0;
+      }
+
+      return filterMatchCount === 0 ? tableData.length : filterMatchCount;
+    }
+    /**
+     * Convert a string to CamelCase
+     *
+     * @param {string} str
+     * @return {string}
+     */
+
+  }, {
+    key: "toCamelCase",
+    value: function toCamelCase(str) {
+      return str.replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, function (match, index) {
+        if (Number(match) === 0) return '';
+        return index === 0 ? match.toLowerCase() : match.toUpperCase();
+      });
+    }
+    /**
      * Sort the rows according to the sort configuration
      *
      * @return {Object[]}
@@ -6985,8 +6201,7 @@ var DataTable = /*#__PURE__*/function (_Component) {
   }, {
     key: "getSortedRows",
     value: function getSortedRows() {
-      // console.log('[DataTable] getSortedRows');
-      var index = []; // Every row is called. Ex. All Demographics would be 1644 times.
+      var index = [];
 
       for (var i = 0; i < this.props.Data.length; i += 1) {
         var val = this.props.Data[i][this.state.SortColumn] || undefined; // If SortColumn is equal to default No. column, set value to be
@@ -7025,11 +6240,9 @@ var DataTable = /*#__PURE__*/function (_Component) {
             Content: i + 1
           });
         }
-      } // Every row is called. Ex. All Demographics would be 1644 times.
-
+      }
 
       index.sort(function (a, b) {
-        // console.log('index.sort has ran!');
         if (this.state.SortOrder === 'ASC') {
           if (a.Value === b.Value) {
             // If all values are equal, sort by rownum
@@ -7077,8 +6290,7 @@ var DataTable = /*#__PURE__*/function (_Component) {
   }, {
     key: "hasFilterKeyword",
     value: function hasFilterKeyword(headerData, data) {
-      // console.log('[DataTable] hasFilterKeyword');
-      var header = headerData;
+      var header = this.toCamelCase(headerData);
       var filterData = null;
       var exactMatch = false;
       var result = false;
@@ -7139,9 +6351,6 @@ var DataTable = /*#__PURE__*/function (_Component) {
   }, {
     key: "render",
     value: function render() {
-      var _this2 = this;
-
-      // console.log('[DataTable] render');
       if (this.props.Data === null || this.props.Data.length === 0) {
         return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_9___default.a.createElement("div", {
           className: "alert alert-info no-result-found-panel"
@@ -7151,46 +6360,34 @@ var DataTable = /*#__PURE__*/function (_Component) {
       var rowsPerPage = this.state.RowsPerPage;
       var headers = this.state.Hide.defaultColumn === true ? [] : [/*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_9___default.a.createElement("th", {
         key: "th_col_0",
-        onClick: function onClick() {
-          return _this2.setSortColumn(-1);
-        }
+        onClick: this.setSortColumn(-1).bind(this)
       }, this.props.RowNumLabel)];
 
-      var _loop = function _loop(i) {
-        if (typeof loris.hiddenHeaders === 'undefined' || loris.hiddenHeaders.indexOf(_this2.props.Headers[i]) === -1) {
+      for (var i = 0; i < this.props.Headers.length; i += 1) {
+        if (typeof loris.hiddenHeaders === 'undefined' || loris.hiddenHeaders.indexOf(this.props.Headers[i]) === -1) {
           var colIndex = i + 1;
 
-          if (_this2.props.Headers[i] === _this2.props.freezeColumn) {
+          if (this.props.Headers[i] === this.props.freezeColumn) {
             headers.push( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_9___default.a.createElement("th", {
               key: 'th_col_' + colIndex,
-              id: _this2.props.freezeColumn,
-              onClick: function onClick() {
-                return _this2.setSortColumn(i);
-              }
-            }, _this2.props.Headers[i]));
+              id: this.props.freezeColumn,
+              onClick: this.setSortColumn(i).bind(this)
+            }, this.props.Headers[i]));
           } else {
             headers.push( /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_9___default.a.createElement("th", {
               key: 'th_col_' + colIndex,
-              onClick: function onClick() {
-                return _this2.setSortColumn(i);
-              }
-            }, _this2.props.Headers[i]));
+              onClick: this.setSortColumn(i).bind(this)
+            }, this.props.Headers[i]));
           }
         }
-      };
-
-      for (var i = 0; i < this.props.Headers.length; i += 1) {
-        _loop(i);
       }
 
       var rows = [];
       var curRow = [];
-      var index = this.getSortedRows(); // console.log('index is ');
-      // console.log(index);
-
+      var index = this.getSortedRows();
       var matchesFound = 0; // Keeps track of how many rows where displayed so far across all pages
 
-      var filteredRows = this.props.Data.length;
+      var filteredRows = this.props.DisableFilter ? this.props.Data.length : this.countFilteredRows();
       var currentPageRow = rowsPerPage * (this.state.PageNumber - 1);
       var filteredData = [];
       var useKeyword = false;
@@ -7213,21 +6410,26 @@ var DataTable = /*#__PURE__*/function (_Component) {
 
           if (this.props.Data[index[_i3].RowIdx]) {
             data = this.props.Data[index[_i3].RowIdx][j];
-          } // if (this.hasFilterKeyword(this.props.Headers[j], data)) {
-          //   filterMatchCount++;
-          //   filteredData.push(this.props.Data[index[i].RowIdx]);
-          // }
-          // if (useKeyword === true) {
-          //   filterLength = Object.keys(this.props.Filter).length - 1;
-          //   // if (this.hasFilterKeyword('keyword', data)) {
-          //   //   keywordMatch++;
-          //   // }
-          // } else {
-          //   filterLength = Object.keys(this.props.Filter).length;
-          // }
+          }
 
+          if (this.props.DisableFilter) {
+            filterLength = Object.keys(this.props.Filter).length;
+          } else {
+            if (this.hasFilterKeyword(this.props.Headers[j], data)) {
+              filterMatchCount++;
+            }
 
-          filterLength = Object.keys(this.props.Filter).length;
+            if (useKeyword === true) {
+              filterLength = Object.keys(this.props.Filter).length - 1;
+
+              if (this.hasFilterKeyword('keyword', data)) {
+                keywordMatch++;
+              }
+            } else {
+              filterLength = Object.keys(this.props.Filter).length;
+            }
+          }
+
           var key = 'td_col_' + j; // Get custom cell formatting if available
 
           if (this.props.getFormattedCell) {
@@ -7245,7 +6447,8 @@ var DataTable = /*#__PURE__*/function (_Component) {
               key: key
             }, data));
           }
-        } // Only display a row if all filter values have been matched
+        } // Only display a row in the table or csv
+        // if all filter values have been matched
 
 
         if (filterLength === filterMatchCount && (useKeyword === true && keywordMatch > 0 || useKeyword === false && keywordMatch === 0)) {
@@ -7257,6 +6460,10 @@ var DataTable = /*#__PURE__*/function (_Component) {
               key: 'tr_' + rowIndex,
               colSpan: headers.length
             }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_9___default.a.createElement("td", null, rowIndex), curRow));
+          }
+
+          if (!this.props.DisableFilter) {
+            filteredData.push(this.props.Data[index[_i3].RowIdx]);
           }
         }
       }
@@ -7319,10 +6526,10 @@ var DataTable = /*#__PURE__*/function (_Component) {
     }
   }]);
 
-  return DataTable;
+  return StaticDataTable;
 }(react__WEBPACK_IMPORTED_MODULE_9__["Component"]);
 
-DataTable.propTypes = {
+StaticDataTable.propTypes = {
   Headers: prop_types__WEBPACK_IMPORTED_MODULE_10___default.a.array.isRequired,
   Data: prop_types__WEBPACK_IMPORTED_MODULE_10___default.a.array.isRequired,
   RowNumLabel: prop_types__WEBPACK_IMPORTED_MODULE_10___default.a.string,
@@ -7331,9 +6538,10 @@ DataTable.propTypes = {
   getFormattedCell: prop_types__WEBPACK_IMPORTED_MODULE_10___default.a.func,
   onSort: prop_types__WEBPACK_IMPORTED_MODULE_10___default.a.func,
   Hide: prop_types__WEBPACK_IMPORTED_MODULE_10___default.a.object,
-  hiddenHeaders: prop_types__WEBPACK_IMPORTED_MODULE_10___default.a.array
+  hiddenHeaders: prop_types__WEBPACK_IMPORTED_MODULE_10___default.a.array,
+  DisableFilter: prop_types__WEBPACK_IMPORTED_MODULE_10___default.a.bool
 };
-DataTable.defaultProps = {
+StaticDataTable.defaultProps = {
   Headers: [],
   Data: {},
   RowNumLabel: 'No.',
@@ -7342,27 +6550,31 @@ DataTable.defaultProps = {
     rowsPerPage: false,
     downloadCSV: false,
     defaultColumn: false
-  }
+  },
+  DisableFilter: false
 };
-/* harmony default export */ __webpack_exports__["default"] = (DataTable);
+var RStaticDataTable = /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_9___default.a.createFactory(StaticDataTable);
+window.StaticDataTable = StaticDataTable;
+window.RStaticDataTable = RStaticDataTable;
+/* harmony default export */ __webpack_exports__["default"] = (StaticDataTable);
 
 /***/ }),
-/* 46 */
+/* 48 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(20);
+/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(21);
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(21);
+/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(22);
 /* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(22);
+/* harmony import */ var _babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(23);
 /* harmony import */ var _babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_assertThisInitialized__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(23);
+/* harmony import */ var _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(24);
 /* harmony import */ var _babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_inherits__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(25);
+/* harmony import */ var _babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(26);
 /* harmony import */ var _babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_possibleConstructorReturn__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(27);
+/* harmony import */ var _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(28);
 /* harmony import */ var _babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_getPrototypeOf__WEBPACK_IMPORTED_MODULE_5__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(8);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_6__);
@@ -7542,7 +6754,7 @@ window.RPaginationLinks = RPaginationLinks;
 /* harmony default export */ __webpack_exports__["default"] = (PaginationLinks);
 
 /***/ }),
-/* 47 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7561,9 +6773,9 @@ var REACT_ELEMENT_TYPE =
   (typeof Symbol === 'function' && Symbol.for && Symbol.for('react.element')) ||
   0xeac7;
 
-var emptyFunction = __webpack_require__(48);
-var invariant = __webpack_require__(49);
-var warning = __webpack_require__(50);
+var emptyFunction = __webpack_require__(50);
+var invariant = __webpack_require__(51);
+var warning = __webpack_require__(52);
 
 var SEPARATOR = '.';
 var SUBSEPARATOR = ':';
@@ -7895,7 +7107,7 @@ module.exports = createReactFragment;
 
 
 /***/ }),
-/* 48 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7937,7 +7149,7 @@ emptyFunction.thatReturnsArgument = function (arg) {
 module.exports = emptyFunction;
 
 /***/ }),
-/* 49 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7996,7 +7208,7 @@ function invariant(condition, format, a, b, c, d, e, f) {
 module.exports = invariant;
 
 /***/ }),
-/* 50 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8010,7 +7222,7 @@ module.exports = invariant;
 
 
 
-var emptyFunction = __webpack_require__(48);
+var emptyFunction = __webpack_require__(50);
 
 /**
  * Similar to invariant but only logs a warning if the condition is not met.
@@ -8062,6 +7274,5014 @@ if (true) {
 }
 
 module.exports = warning;
+
+/***/ }),
+/* 53 */
+/***/ (function(module, exports, __webpack_require__) {
+
+(function (window, factory) {
+    if (true) {
+        module.exports = factory();
+    } else {}
+})(this, function () {
+var jStat = (function(Math, undefined) {
+
+// For quick reference.
+var concat = Array.prototype.concat;
+var slice = Array.prototype.slice;
+var toString = Object.prototype.toString;
+
+// Calculate correction for IEEE error
+// TODO: This calculation can be improved.
+function calcRdx(n, m) {
+  var val = n > m ? n : m;
+  return Math.pow(10,
+                  17 - ~~(Math.log(((val > 0) ? val : -val)) * Math.LOG10E));
+}
+
+
+var isArray = Array.isArray || function isArray(arg) {
+  return toString.call(arg) === '[object Array]';
+};
+
+
+function isFunction(arg) {
+  return toString.call(arg) === '[object Function]';
+}
+
+
+function isNumber(num) {
+  return (typeof num === 'number') ? num - num === 0 : false;
+}
+
+
+// Converts the jStat matrix to vector.
+function toVector(arr) {
+  return concat.apply([], arr);
+}
+
+
+// The one and only jStat constructor.
+function jStat() {
+  return new jStat._init(arguments);
+}
+
+
+// TODO: Remove after all references in src files have been removed.
+jStat.fn = jStat.prototype;
+
+
+// By separating the initializer from the constructor it's easier to handle
+// always returning a new instance whether "new" was used or not.
+jStat._init = function _init(args) {
+  // If first argument is an array, must be vector or matrix.
+  if (isArray(args[0])) {
+    // Check if matrix.
+    if (isArray(args[0][0])) {
+      // See if a mapping function was also passed.
+      if (isFunction(args[1]))
+        args[0] = jStat.map(args[0], args[1]);
+      // Iterate over each is faster than this.push.apply(this, args[0].
+      for (var i = 0; i < args[0].length; i++)
+        this[i] = args[0][i];
+      this.length = args[0].length;
+
+    // Otherwise must be a vector.
+    } else {
+      this[0] = isFunction(args[1]) ? jStat.map(args[0], args[1]) : args[0];
+      this.length = 1;
+    }
+
+  // If first argument is number, assume creation of sequence.
+  } else if (isNumber(args[0])) {
+    this[0] = jStat.seq.apply(null, args);
+    this.length = 1;
+
+  // Handle case when jStat object is passed to jStat.
+  } else if (args[0] instanceof jStat) {
+    // Duplicate the object and pass it back.
+    return jStat(args[0].toArray());
+
+  // Unexpected argument value, return empty jStat object.
+  // TODO: This is strange behavior. Shouldn't this throw or some such to let
+  // the user know they had bad arguments?
+  } else {
+    this[0] = [];
+    this.length = 1;
+  }
+
+  return this;
+};
+jStat._init.prototype = jStat.prototype;
+jStat._init.constructor = jStat;
+
+
+// Utility functions.
+// TODO: for internal use only?
+jStat.utils = {
+  calcRdx: calcRdx,
+  isArray: isArray,
+  isFunction: isFunction,
+  isNumber: isNumber,
+  toVector: toVector
+};
+
+
+jStat._random_fn = Math.random;
+jStat.setRandom = function setRandom(fn) {
+  if (typeof fn !== 'function')
+    throw new TypeError('fn is not a function');
+  jStat._random_fn = fn;
+};
+
+
+// Easily extend the jStat object.
+// TODO: is this seriously necessary?
+jStat.extend = function extend(obj) {
+  var i, j;
+
+  if (arguments.length === 1) {
+    for (j in obj)
+      jStat[j] = obj[j];
+    return this;
+  }
+
+  for (i = 1; i < arguments.length; i++) {
+    for (j in arguments[i])
+      obj[j] = arguments[i][j];
+  }
+
+  return obj;
+};
+
+
+// Returns the number of rows in the matrix.
+jStat.rows = function rows(arr) {
+  return arr.length || 1;
+};
+
+
+// Returns the number of columns in the matrix.
+jStat.cols = function cols(arr) {
+  return arr[0].length || 1;
+};
+
+
+// Returns the dimensions of the object { rows: i, cols: j }
+jStat.dimensions = function dimensions(arr) {
+  return {
+    rows: jStat.rows(arr),
+    cols: jStat.cols(arr)
+  };
+};
+
+
+// Returns a specified row as a vector or return a sub matrix by pick some rows
+jStat.row = function row(arr, index) {
+  if (isArray(index)) {
+    return index.map(function(i) {
+      return jStat.row(arr, i);
+    })
+  }
+  return arr[index];
+};
+
+
+// return row as array
+// rowa([[1,2],[3,4]],0) -> [1,2]
+jStat.rowa = function rowa(arr, i) {
+  return jStat.row(arr, i);
+};
+
+
+// Returns the specified column as a vector or return a sub matrix by pick some
+// columns
+jStat.col = function col(arr, index) {
+  if (isArray(index)) {
+    var submat = jStat.arange(arr.length).map(function() {
+      return new Array(index.length);
+    });
+    index.forEach(function(ind, i){
+      jStat.arange(arr.length).forEach(function(j) {
+        submat[j][i] = arr[j][ind];
+      });
+    });
+    return submat;
+  }
+  var column = new Array(arr.length);
+  for (var i = 0; i < arr.length; i++)
+    column[i] = [arr[i][index]];
+  return column;
+};
+
+
+// return column as array
+// cola([[1,2],[3,4]],0) -> [1,3]
+jStat.cola = function cola(arr, i) {
+  return jStat.col(arr, i).map(function(a){ return a[0] });
+};
+
+
+// Returns the diagonal of the matrix
+jStat.diag = function diag(arr) {
+  var nrow = jStat.rows(arr);
+  var res = new Array(nrow);
+  for (var row = 0; row < nrow; row++)
+    res[row] = [arr[row][row]];
+  return res;
+};
+
+
+// Returns the anti-diagonal of the matrix
+jStat.antidiag = function antidiag(arr) {
+  var nrow = jStat.rows(arr) - 1;
+  var res = new Array(nrow);
+  for (var i = 0; nrow >= 0; nrow--, i++)
+    res[i] = [arr[i][nrow]];
+  return res;
+};
+
+// Transpose a matrix or array.
+jStat.transpose = function transpose(arr) {
+  var obj = [];
+  var objArr, rows, cols, j, i;
+
+  // Make sure arr is in matrix format.
+  if (!isArray(arr[0]))
+    arr = [arr];
+
+  rows = arr.length;
+  cols = arr[0].length;
+
+  for (i = 0; i < cols; i++) {
+    objArr = new Array(rows);
+    for (j = 0; j < rows; j++)
+      objArr[j] = arr[j][i];
+    obj.push(objArr);
+  }
+
+  // If obj is vector, return only single array.
+  return obj.length === 1 ? obj[0] : obj;
+};
+
+
+// Map a function to an array or array of arrays.
+// "toAlter" is an internal variable.
+jStat.map = function map(arr, func, toAlter) {
+  var row, nrow, ncol, res, col;
+
+  if (!isArray(arr[0]))
+    arr = [arr];
+
+  nrow = arr.length;
+  ncol = arr[0].length;
+  res = toAlter ? arr : new Array(nrow);
+
+  for (row = 0; row < nrow; row++) {
+    // if the row doesn't exist, create it
+    if (!res[row])
+      res[row] = new Array(ncol);
+    for (col = 0; col < ncol; col++)
+      res[row][col] = func(arr[row][col], row, col);
+  }
+
+  return res.length === 1 ? res[0] : res;
+};
+
+
+// Cumulatively combine the elements of an array or array of arrays using a function.
+jStat.cumreduce = function cumreduce(arr, func, toAlter) {
+  var row, nrow, ncol, res, col;
+
+  if (!isArray(arr[0]))
+    arr = [arr];
+
+  nrow = arr.length;
+  ncol = arr[0].length;
+  res = toAlter ? arr : new Array(nrow);
+
+  for (row = 0; row < nrow; row++) {
+    // if the row doesn't exist, create it
+    if (!res[row])
+      res[row] = new Array(ncol);
+    if (ncol > 0)
+      res[row][0] = arr[row][0];
+    for (col = 1; col < ncol; col++)
+      res[row][col] = func(res[row][col-1], arr[row][col]);
+  }
+  return res.length === 1 ? res[0] : res;
+};
+
+
+// Destructively alter an array.
+jStat.alter = function alter(arr, func) {
+  return jStat.map(arr, func, true);
+};
+
+
+// Generate a rows x cols matrix according to the supplied function.
+jStat.create = function  create(rows, cols, func) {
+  var res = new Array(rows);
+  var i, j;
+
+  if (isFunction(cols)) {
+    func = cols;
+    cols = rows;
+  }
+
+  for (i = 0; i < rows; i++) {
+    res[i] = new Array(cols);
+    for (j = 0; j < cols; j++)
+      res[i][j] = func(i, j);
+  }
+
+  return res;
+};
+
+
+function retZero() { return 0; }
+
+
+// Generate a rows x cols matrix of zeros.
+jStat.zeros = function zeros(rows, cols) {
+  if (!isNumber(cols))
+    cols = rows;
+  return jStat.create(rows, cols, retZero);
+};
+
+
+function retOne() { return 1; }
+
+
+// Generate a rows x cols matrix of ones.
+jStat.ones = function ones(rows, cols) {
+  if (!isNumber(cols))
+    cols = rows;
+  return jStat.create(rows, cols, retOne);
+};
+
+
+// Generate a rows x cols matrix of uniformly random numbers.
+jStat.rand = function rand(rows, cols) {
+  if (!isNumber(cols))
+    cols = rows;
+  return jStat.create(rows, cols, jStat._random_fn);
+};
+
+
+function retIdent(i, j) { return i === j ? 1 : 0; }
+
+
+// Generate an identity matrix of size row x cols.
+jStat.identity = function identity(rows, cols) {
+  if (!isNumber(cols))
+    cols = rows;
+  return jStat.create(rows, cols, retIdent);
+};
+
+
+// Tests whether a matrix is symmetric
+jStat.symmetric = function symmetric(arr) {
+  var size = arr.length;
+  var row, col;
+
+  if (arr.length !== arr[0].length)
+    return false;
+
+  for (row = 0; row < size; row++) {
+    for (col = 0; col < size; col++)
+      if (arr[col][row] !== arr[row][col])
+        return false;
+  }
+
+  return true;
+};
+
+
+// Set all values to zero.
+jStat.clear = function clear(arr) {
+  return jStat.alter(arr, retZero);
+};
+
+
+// Generate sequence.
+jStat.seq = function seq(min, max, length, func) {
+  if (!isFunction(func))
+    func = false;
+
+  var arr = [];
+  var hival = calcRdx(min, max);
+  var step = (max * hival - min * hival) / ((length - 1) * hival);
+  var current = min;
+  var cnt;
+
+  // Current is assigned using a technique to compensate for IEEE error.
+  // TODO: Needs better implementation.
+  for (cnt = 0;
+       current <= max && cnt < length;
+       cnt++, current = (min * hival + step * hival * cnt) / hival) {
+    arr.push((func ? func(current, cnt) : current));
+  }
+
+  return arr;
+};
+
+
+// arange(5) -> [0,1,2,3,4]
+// arange(1,5) -> [1,2,3,4]
+// arange(5,1,-1) -> [5,4,3,2]
+jStat.arange = function arange(start, end, step) {
+  var rl = [];
+  var i;
+  step = step || 1;
+  if (end === undefined) {
+    end = start;
+    start = 0;
+  }
+  if (start === end || step === 0) {
+    return [];
+  }
+  if (start < end && step < 0) {
+    return [];
+  }
+  if (start > end && step > 0) {
+    return [];
+  }
+  if (step > 0) {
+    for (i = start; i < end; i += step) {
+      rl.push(i);
+    }
+  } else {
+    for (i = start; i > end; i += step) {
+      rl.push(i);
+    }
+  }
+  return rl;
+};
+
+
+// A=[[1,2,3],[4,5,6],[7,8,9]]
+// slice(A,{row:{end:2},col:{start:1}}) -> [[2,3],[5,6]]
+// slice(A,1,{start:1}) -> [5,6]
+// as numpy code A[:2,1:]
+jStat.slice = (function(){
+  function _slice(list, start, end, step) {
+    // note it's not equal to range.map mode it's a bug
+    var i;
+    var rl = [];
+    var length = list.length;
+    if (start === undefined && end === undefined && step === undefined) {
+      return jStat.copy(list);
+    }
+
+    start = start || 0;
+    end = end || list.length;
+    start = start >= 0 ? start : length + start;
+    end = end >= 0 ? end : length + end;
+    step = step || 1;
+    if (start === end || step === 0) {
+      return [];
+    }
+    if (start < end && step < 0) {
+      return [];
+    }
+    if (start > end && step > 0) {
+      return [];
+    }
+    if (step > 0) {
+      for (i = start; i < end; i += step) {
+        rl.push(list[i]);
+      }
+    } else {
+      for (i = start; i > end;i += step) {
+        rl.push(list[i]);
+      }
+    }
+    return rl;
+  }
+
+  function slice(list, rcSlice) {
+    var colSlice, rowSlice;
+    rcSlice = rcSlice || {};
+    if (isNumber(rcSlice.row)) {
+      if (isNumber(rcSlice.col))
+        return list[rcSlice.row][rcSlice.col];
+      var row = jStat.rowa(list, rcSlice.row);
+      colSlice = rcSlice.col || {};
+      return _slice(row, colSlice.start, colSlice.end, colSlice.step);
+    }
+
+    if (isNumber(rcSlice.col)) {
+      var col = jStat.cola(list, rcSlice.col);
+      rowSlice = rcSlice.row || {};
+      return _slice(col, rowSlice.start, rowSlice.end, rowSlice.step);
+    }
+
+    rowSlice = rcSlice.row || {};
+    colSlice = rcSlice.col || {};
+    var rows = _slice(list, rowSlice.start, rowSlice.end, rowSlice.step);
+    return rows.map(function(row) {
+      return _slice(row, colSlice.start, colSlice.end, colSlice.step);
+    });
+  }
+
+  return slice;
+}());
+
+
+// A=[[1,2,3],[4,5,6],[7,8,9]]
+// sliceAssign(A,{row:{start:1},col:{start:1}},[[0,0],[0,0]])
+// A=[[1,2,3],[4,0,0],[7,0,0]]
+jStat.sliceAssign = function sliceAssign(A, rcSlice, B) {
+  var nl, ml;
+  if (isNumber(rcSlice.row)) {
+    if (isNumber(rcSlice.col))
+      return A[rcSlice.row][rcSlice.col] = B;
+    rcSlice.col = rcSlice.col || {};
+    rcSlice.col.start = rcSlice.col.start || 0;
+    rcSlice.col.end = rcSlice.col.end || A[0].length;
+    rcSlice.col.step = rcSlice.col.step || 1;
+    nl = jStat.arange(rcSlice.col.start,
+                          Math.min(A.length, rcSlice.col.end),
+                          rcSlice.col.step);
+    var m = rcSlice.row;
+    nl.forEach(function(n, i) {
+      A[m][n] = B[i];
+    });
+    return A;
+  }
+
+  if (isNumber(rcSlice.col)) {
+    rcSlice.row = rcSlice.row || {};
+    rcSlice.row.start = rcSlice.row.start || 0;
+    rcSlice.row.end = rcSlice.row.end || A.length;
+    rcSlice.row.step = rcSlice.row.step || 1;
+    ml = jStat.arange(rcSlice.row.start,
+                          Math.min(A[0].length, rcSlice.row.end),
+                          rcSlice.row.step);
+    var n = rcSlice.col;
+    ml.forEach(function(m, j) {
+      A[m][n] = B[j];
+    });
+    return A;
+  }
+
+  if (B[0].length === undefined) {
+    B = [B];
+  }
+  rcSlice.row.start = rcSlice.row.start || 0;
+  rcSlice.row.end = rcSlice.row.end || A.length;
+  rcSlice.row.step = rcSlice.row.step || 1;
+  rcSlice.col.start = rcSlice.col.start || 0;
+  rcSlice.col.end = rcSlice.col.end || A[0].length;
+  rcSlice.col.step = rcSlice.col.step || 1;
+  ml = jStat.arange(rcSlice.row.start,
+                        Math.min(A.length, rcSlice.row.end),
+                        rcSlice.row.step);
+  nl = jStat.arange(rcSlice.col.start,
+                        Math.min(A[0].length, rcSlice.col.end),
+                        rcSlice.col.step);
+  ml.forEach(function(m, i) {
+    nl.forEach(function(n, j) {
+      A[m][n] = B[i][j];
+    });
+  });
+  return A;
+};
+
+
+// [1,2,3] ->
+// [[1,0,0],[0,2,0],[0,0,3]]
+jStat.diagonal = function diagonal(diagArray) {
+  var mat = jStat.zeros(diagArray.length, diagArray.length);
+  diagArray.forEach(function(t, i) {
+    mat[i][i] = t;
+  });
+  return mat;
+};
+
+
+// return copy of A
+jStat.copy = function copy(A) {
+  return A.map(function(row) {
+    if (isNumber(row))
+      return row;
+    return row.map(function(t) {
+      return t;
+    });
+  });
+};
+
+
+// TODO: Go over this entire implementation. Seems a tragic waste of resources
+// doing all this work. Instead, and while ugly, use new Function() to generate
+// a custom function for each static method.
+
+// Quick reference.
+var jProto = jStat.prototype;
+
+// Default length.
+jProto.length = 0;
+
+// For internal use only.
+// TODO: Check if they're actually used, and if they are then rename them
+// to _*
+jProto.push = Array.prototype.push;
+jProto.sort = Array.prototype.sort;
+jProto.splice = Array.prototype.splice;
+jProto.slice = Array.prototype.slice;
+
+
+// Return a clean array.
+jProto.toArray = function toArray() {
+  return this.length > 1 ? slice.call(this) : slice.call(this)[0];
+};
+
+
+// Map a function to a matrix or vector.
+jProto.map = function map(func, toAlter) {
+  return jStat(jStat.map(this, func, toAlter));
+};
+
+
+// Cumulatively combine the elements of a matrix or vector using a function.
+jProto.cumreduce = function cumreduce(func, toAlter) {
+  return jStat(jStat.cumreduce(this, func, toAlter));
+};
+
+
+// Destructively alter an array.
+jProto.alter = function alter(func) {
+  jStat.alter(this, func);
+  return this;
+};
+
+
+// Extend prototype with methods that have no argument.
+(function(funcs) {
+  for (var i = 0; i < funcs.length; i++) (function(passfunc) {
+    jProto[passfunc] = function(func) {
+      var self = this,
+      results;
+      // Check for callback.
+      if (func) {
+        setTimeout(function() {
+          func.call(self, jProto[passfunc].call(self));
+        });
+        return this;
+      }
+      results = jStat[passfunc](this);
+      return isArray(results) ? jStat(results) : results;
+    };
+  })(funcs[i]);
+})('transpose clear symmetric rows cols dimensions diag antidiag'.split(' '));
+
+
+// Extend prototype with methods that have one argument.
+(function(funcs) {
+  for (var i = 0; i < funcs.length; i++) (function(passfunc) {
+    jProto[passfunc] = function(index, func) {
+      var self = this;
+      // check for callback
+      if (func) {
+        setTimeout(function() {
+          func.call(self, jProto[passfunc].call(self, index));
+        });
+        return this;
+      }
+      return jStat(jStat[passfunc](this, index));
+    };
+  })(funcs[i]);
+})('row col'.split(' '));
+
+
+// Extend prototype with simple shortcut methods.
+(function(funcs) {
+  for (var i = 0; i < funcs.length; i++) (function(passfunc) {
+    jProto[passfunc] = function() {
+      return jStat(jStat[passfunc].apply(null, arguments));
+    };
+  })(funcs[i]);
+})('create zeros ones rand identity'.split(' '));
+
+
+// Exposing jStat.
+return jStat;
+
+}(Math));
+(function(jStat, Math) {
+
+var isFunction = jStat.utils.isFunction;
+
+// Ascending functions for sort
+function ascNum(a, b) { return a - b; }
+
+function clip(arg, min, max) {
+  return Math.max(min, Math.min(arg, max));
+}
+
+
+// sum of an array
+jStat.sum = function sum(arr) {
+  var sum = 0;
+  var i = arr.length;
+  while (--i >= 0)
+    sum += arr[i];
+  return sum;
+};
+
+
+// sum squared
+jStat.sumsqrd = function sumsqrd(arr) {
+  var sum = 0;
+  var i = arr.length;
+  while (--i >= 0)
+    sum += arr[i] * arr[i];
+  return sum;
+};
+
+
+// sum of squared errors of prediction (SSE)
+jStat.sumsqerr = function sumsqerr(arr) {
+  var mean = jStat.mean(arr);
+  var sum = 0;
+  var i = arr.length;
+  var tmp;
+  while (--i >= 0) {
+    tmp = arr[i] - mean;
+    sum += tmp * tmp;
+  }
+  return sum;
+};
+
+// sum of an array in each row
+jStat.sumrow = function sumrow(arr) {
+  var sum = 0;
+  var i = arr.length;
+  while (--i >= 0)
+    sum += arr[i];
+  return sum;
+};
+
+// product of an array
+jStat.product = function product(arr) {
+  var prod = 1;
+  var i = arr.length;
+  while (--i >= 0)
+    prod *= arr[i];
+  return prod;
+};
+
+
+// minimum value of an array
+jStat.min = function min(arr) {
+  var low = arr[0];
+  var i = 0;
+  while (++i < arr.length)
+    if (arr[i] < low)
+      low = arr[i];
+  return low;
+};
+
+
+// maximum value of an array
+jStat.max = function max(arr) {
+  var high = arr[0];
+  var i = 0;
+  while (++i < arr.length)
+    if (arr[i] > high)
+      high = arr[i];
+  return high;
+};
+
+
+// unique values of an array
+jStat.unique = function unique(arr) {
+  var hash = {}, _arr = [];
+  for(var i = 0; i < arr.length; i++) {
+    if (!hash[arr[i]]) {
+      hash[arr[i]] = true;
+      _arr.push(arr[i]);
+    }
+  }
+  return _arr;
+};
+
+
+// mean value of an array
+jStat.mean = function mean(arr) {
+  return jStat.sum(arr) / arr.length;
+};
+
+
+// mean squared error (MSE)
+jStat.meansqerr = function meansqerr(arr) {
+  return jStat.sumsqerr(arr) / arr.length;
+};
+
+
+// geometric mean of an array
+jStat.geomean = function geomean(arr) {
+  return Math.pow(jStat.product(arr), 1 / arr.length);
+};
+
+
+// median of an array
+jStat.median = function median(arr) {
+  var arrlen = arr.length;
+  var _arr = arr.slice().sort(ascNum);
+  // check if array is even or odd, then return the appropriate
+  return !(arrlen & 1)
+    ? (_arr[(arrlen / 2) - 1 ] + _arr[(arrlen / 2)]) / 2
+    : _arr[(arrlen / 2) | 0 ];
+};
+
+
+// cumulative sum of an array
+jStat.cumsum = function cumsum(arr) {
+  return jStat.cumreduce(arr, function (a, b) { return a + b; });
+};
+
+
+// cumulative product of an array
+jStat.cumprod = function cumprod(arr) {
+  return jStat.cumreduce(arr, function (a, b) { return a * b; });
+};
+
+
+// successive differences of a sequence
+jStat.diff = function diff(arr) {
+  var diffs = [];
+  var arrLen = arr.length;
+  var i;
+  for (i = 1; i < arrLen; i++)
+    diffs.push(arr[i] - arr[i - 1]);
+  return diffs;
+};
+
+
+// ranks of an array
+jStat.rank = function (arr) {
+  var i;
+  var distinctNumbers = [];
+  var numberCounts = {};
+  for (i = 0; i < arr.length; i++) {
+    var number = arr[i];
+    if (numberCounts[number]) {
+      numberCounts[number]++;
+    } else {
+      numberCounts[number] = 1;
+      distinctNumbers.push(number);
+    }
+  }
+
+  var sortedDistinctNumbers = distinctNumbers.sort(ascNum);
+  var numberRanks = {};
+  var currentRank = 1;
+  for (i = 0; i < sortedDistinctNumbers.length; i++) {
+    var number = sortedDistinctNumbers[i];
+    var count = numberCounts[number];
+    var first = currentRank;
+    var last = currentRank + count - 1;
+    var rank = (first + last) / 2;
+    numberRanks[number] = rank;
+    currentRank += count;
+  }
+
+  return arr.map(function (number) {
+    return numberRanks[number];
+  });
+};
+
+
+// mode of an array
+// if there are multiple modes of an array, return all of them
+// is this the appropriate way of handling it?
+jStat.mode = function mode(arr) {
+  var arrLen = arr.length;
+  var _arr = arr.slice().sort(ascNum);
+  var count = 1;
+  var maxCount = 0;
+  var numMaxCount = 0;
+  var mode_arr = [];
+  var i;
+
+  for (i = 0; i < arrLen; i++) {
+    if (_arr[i] === _arr[i + 1]) {
+      count++;
+    } else {
+      if (count > maxCount) {
+        mode_arr = [_arr[i]];
+        maxCount = count;
+        numMaxCount = 0;
+      }
+      // are there multiple max counts
+      else if (count === maxCount) {
+        mode_arr.push(_arr[i]);
+        numMaxCount++;
+      }
+      // resetting count for new value in array
+      count = 1;
+    }
+  }
+
+  return numMaxCount === 0 ? mode_arr[0] : mode_arr;
+};
+
+
+// range of an array
+jStat.range = function range(arr) {
+  return jStat.max(arr) - jStat.min(arr);
+};
+
+// variance of an array
+// flag = true indicates sample instead of population
+jStat.variance = function variance(arr, flag) {
+  return jStat.sumsqerr(arr) / (arr.length - (flag ? 1 : 0));
+};
+
+// pooled variance of an array of arrays
+jStat.pooledvariance = function pooledvariance(arr) {
+  var sumsqerr = arr.reduce(function (a, samples) {return a + jStat.sumsqerr(samples);}, 0);
+  var count = arr.reduce(function (a, samples) {return a + samples.length;}, 0);
+  return sumsqerr / (count - arr.length);
+};
+
+// deviation of an array
+jStat.deviation = function (arr) {
+  var mean = jStat.mean(arr);
+  var arrlen = arr.length;
+  var dev = new Array(arrlen);
+  for (var i = 0; i < arrlen; i++) {
+    dev[i] = arr[i] - mean;
+  }
+  return dev;
+};
+
+// standard deviation of an array
+// flag = true indicates sample instead of population
+jStat.stdev = function stdev(arr, flag) {
+  return Math.sqrt(jStat.variance(arr, flag));
+};
+
+// pooled standard deviation of an array of arrays
+jStat.pooledstdev = function pooledstdev(arr) {
+  return Math.sqrt(jStat.pooledvariance(arr));
+};
+
+// mean deviation (mean absolute deviation) of an array
+jStat.meandev = function meandev(arr) {
+  var mean = jStat.mean(arr);
+  var a = [];
+  for (var i = arr.length - 1; i >= 0; i--) {
+    a.push(Math.abs(arr[i] - mean));
+  }
+  return jStat.mean(a);
+};
+
+
+// median deviation (median absolute deviation) of an array
+jStat.meddev = function meddev(arr) {
+  var median = jStat.median(arr);
+  var a = [];
+  for (var i = arr.length - 1; i >= 0; i--) {
+    a.push(Math.abs(arr[i] - median));
+  }
+  return jStat.median(a);
+};
+
+
+// coefficient of variation
+jStat.coeffvar = function coeffvar(arr) {
+  return jStat.stdev(arr) / jStat.mean(arr);
+};
+
+
+// quartiles of an array
+jStat.quartiles = function quartiles(arr) {
+  var arrlen = arr.length;
+  var _arr = arr.slice().sort(ascNum);
+  return [
+    _arr[ Math.round((arrlen) / 4) - 1 ],
+    _arr[ Math.round((arrlen) / 2) - 1 ],
+    _arr[ Math.round((arrlen) * 3 / 4) - 1 ]
+  ];
+};
+
+
+// Arbitary quantiles of an array. Direct port of the scipy.stats
+// implementation by Pierre GF Gerard-Marchant.
+jStat.quantiles = function quantiles(arr, quantilesArray, alphap, betap) {
+  var sortedArray = arr.slice().sort(ascNum);
+  var quantileVals = [quantilesArray.length];
+  var n = arr.length;
+  var i, p, m, aleph, k, gamma;
+
+  if (typeof alphap === 'undefined')
+    alphap = 3 / 8;
+  if (typeof betap === 'undefined')
+    betap = 3 / 8;
+
+  for (i = 0; i < quantilesArray.length; i++) {
+    p = quantilesArray[i];
+    m = alphap + p * (1 - alphap - betap);
+    aleph = n * p + m;
+    k = Math.floor(clip(aleph, 1, n - 1));
+    gamma = clip(aleph - k, 0, 1);
+    quantileVals[i] = (1 - gamma) * sortedArray[k - 1] + gamma * sortedArray[k];
+  }
+
+  return quantileVals;
+};
+
+// Return the k-th percentile of values in a range, where k is in the range 0..1, inclusive.
+// Passing true for the exclusive parameter excludes both endpoints of the range.
+jStat.percentile = function percentile(arr, k, exclusive) {
+  var _arr = arr.slice().sort(ascNum);
+  var realIndex = k * (_arr.length + (exclusive ? 1 : -1)) + (exclusive ? 0 : 1);
+  var index = parseInt(realIndex);
+  var frac = realIndex - index;
+  if (index + 1 < _arr.length) {
+    return _arr[index - 1] + frac * (_arr[index] - _arr[index - 1]);
+  } else {
+    return _arr[index - 1];
+  }
+}
+
+// The percentile rank of score in a given array. Returns the percentage
+// of all values in the input array that are less than (kind='strict') or
+// less or equal than (kind='weak') score. Default is weak.
+jStat.percentileOfScore = function percentileOfScore(arr, score, kind) {
+  var counter = 0;
+  var len = arr.length;
+  var strict = false;
+  var value, i;
+
+  if (kind === 'strict')
+    strict = true;
+
+  for (i = 0; i < len; i++) {
+    value = arr[i];
+    if ((strict && value < score) ||
+        (!strict && value <= score)) {
+      counter++;
+    }
+  }
+
+  return counter / len;
+};
+
+
+// Histogram (bin count) data
+jStat.histogram = function histogram(arr, binCnt) {
+  binCnt = binCnt || 4;
+  var first = jStat.min(arr);
+  var binWidth = (jStat.max(arr) - first) / binCnt;
+  var len = arr.length;
+  var bins = [];
+  var i;
+
+  for (i = 0; i < binCnt; i++)
+    bins[i] = 0;
+  for (i = 0; i < len; i++)
+    bins[Math.min(Math.floor(((arr[i] - first) / binWidth)), binCnt - 1)] += 1;
+
+  return bins;
+};
+
+
+// covariance of two arrays
+jStat.covariance = function covariance(arr1, arr2) {
+  var u = jStat.mean(arr1);
+  var v = jStat.mean(arr2);
+  var arr1Len = arr1.length;
+  var sq_dev = new Array(arr1Len);
+  var i;
+
+  for (i = 0; i < arr1Len; i++)
+    sq_dev[i] = (arr1[i] - u) * (arr2[i] - v);
+
+  return jStat.sum(sq_dev) / (arr1Len - 1);
+};
+
+
+// (pearson's) population correlation coefficient, rho
+jStat.corrcoeff = function corrcoeff(arr1, arr2) {
+  return jStat.covariance(arr1, arr2) /
+      jStat.stdev(arr1, 1) /
+      jStat.stdev(arr2, 1);
+};
+
+  // (spearman's) rank correlation coefficient, sp
+jStat.spearmancoeff =  function (arr1, arr2) {
+  arr1 = jStat.rank(arr1);
+  arr2 = jStat.rank(arr2);
+  //return pearson's correlation of the ranks:
+  return jStat.corrcoeff(arr1, arr2);
+}
+
+
+// statistical standardized moments (general form of skew/kurt)
+jStat.stanMoment = function stanMoment(arr, n) {
+  var mu = jStat.mean(arr);
+  var sigma = jStat.stdev(arr);
+  var len = arr.length;
+  var skewSum = 0;
+
+  for (var i = 0; i < len; i++)
+    skewSum += Math.pow((arr[i] - mu) / sigma, n);
+
+  return skewSum / arr.length;
+};
+
+// (pearson's) moment coefficient of skewness
+jStat.skewness = function skewness(arr) {
+  return jStat.stanMoment(arr, 3);
+};
+
+// (pearson's) (excess) kurtosis
+jStat.kurtosis = function kurtosis(arr) {
+  return jStat.stanMoment(arr, 4) - 3;
+};
+
+
+var jProto = jStat.prototype;
+
+
+// Extend jProto with method for calculating cumulative sums and products.
+// This differs from the similar extension below as cumsum and cumprod should
+// not be run again in the case fullbool === true.
+// If a matrix is passed, automatically assume operation should be done on the
+// columns.
+(function(funcs) {
+  for (var i = 0; i < funcs.length; i++) (function(passfunc) {
+    // If a matrix is passed, automatically assume operation should be done on
+    // the columns.
+    jProto[passfunc] = function(fullbool, func) {
+      var arr = [];
+      var i = 0;
+      var tmpthis = this;
+      // Assignment reassignation depending on how parameters were passed in.
+      if (isFunction(fullbool)) {
+        func = fullbool;
+        fullbool = false;
+      }
+      // Check if a callback was passed with the function.
+      if (func) {
+        setTimeout(function() {
+          func.call(tmpthis, jProto[passfunc].call(tmpthis, fullbool));
+        });
+        return this;
+      }
+      // Check if matrix and run calculations.
+      if (this.length > 1) {
+        tmpthis = fullbool === true ? this : this.transpose();
+        for (; i < tmpthis.length; i++)
+          arr[i] = jStat[passfunc](tmpthis[i]);
+        return arr;
+      }
+      // Pass fullbool if only vector, not a matrix. for variance and stdev.
+      return jStat[passfunc](this[0], fullbool);
+    };
+  })(funcs[i]);
+})(('cumsum cumprod').split(' '));
+
+
+// Extend jProto with methods which don't require arguments and work on columns.
+(function(funcs) {
+  for (var i = 0; i < funcs.length; i++) (function(passfunc) {
+    // If a matrix is passed, automatically assume operation should be done on
+    // the columns.
+    jProto[passfunc] = function(fullbool, func) {
+      var arr = [];
+      var i = 0;
+      var tmpthis = this;
+      // Assignment reassignation depending on how parameters were passed in.
+      if (isFunction(fullbool)) {
+        func = fullbool;
+        fullbool = false;
+      }
+      // Check if a callback was passed with the function.
+      if (func) {
+        setTimeout(function() {
+          func.call(tmpthis, jProto[passfunc].call(tmpthis, fullbool));
+        });
+        return this;
+      }
+      // Check if matrix and run calculations.
+      if (this.length > 1) {
+        if (passfunc !== 'sumrow')
+          tmpthis = fullbool === true ? this : this.transpose();
+        for (; i < tmpthis.length; i++)
+          arr[i] = jStat[passfunc](tmpthis[i]);
+        return fullbool === true
+            ? jStat[passfunc](jStat.utils.toVector(arr))
+            : arr;
+      }
+      // Pass fullbool if only vector, not a matrix. for variance and stdev.
+      return jStat[passfunc](this[0], fullbool);
+    };
+  })(funcs[i]);
+})(('sum sumsqrd sumsqerr sumrow product min max unique mean meansqerr ' +
+    'geomean median diff rank mode range variance deviation stdev meandev ' +
+    'meddev coeffvar quartiles histogram skewness kurtosis').split(' '));
+
+
+// Extend jProto with functions that take arguments. Operations on matrices are
+// done on columns.
+(function(funcs) {
+  for (var i = 0; i < funcs.length; i++) (function(passfunc) {
+    jProto[passfunc] = function() {
+      var arr = [];
+      var i = 0;
+      var tmpthis = this;
+      var args = Array.prototype.slice.call(arguments);
+      var callbackFunction;
+
+      // If the last argument is a function, we assume it's a callback; we
+      // strip the callback out and call the function again.
+      if (isFunction(args[args.length - 1])) {
+        callbackFunction = args[args.length - 1];
+        var argsToPass = args.slice(0, args.length - 1);
+
+        setTimeout(function() {
+          callbackFunction.call(tmpthis,
+                                jProto[passfunc].apply(tmpthis, argsToPass));
+        });
+        return this;
+
+      // Otherwise we curry the function args and call normally.
+      } else {
+        callbackFunction = undefined;
+        var curriedFunction = function curriedFunction(vector) {
+          return jStat[passfunc].apply(tmpthis, [vector].concat(args));
+        }
+      }
+
+      // If this is a matrix, run column-by-column.
+      if (this.length > 1) {
+        tmpthis = tmpthis.transpose();
+        for (; i < tmpthis.length; i++)
+          arr[i] = curriedFunction(tmpthis[i]);
+        return arr;
+      }
+
+      // Otherwise run on the vector.
+      return curriedFunction(this[0]);
+    };
+  })(funcs[i]);
+})('quantiles percentileOfScore'.split(' '));
+
+}(jStat, Math));
+// Special functions //
+(function(jStat, Math) {
+
+// Log-gamma function
+jStat.gammaln = function gammaln(x) {
+  var j = 0;
+  var cof = [
+    76.18009172947146, -86.50532032941677, 24.01409824083091,
+    -1.231739572450155, 0.1208650973866179e-2, -0.5395239384953e-5
+  ];
+  var ser = 1.000000000190015;
+  var xx, y, tmp;
+  tmp = (y = xx = x) + 5.5;
+  tmp -= (xx + 0.5) * Math.log(tmp);
+  for (; j < 6; j++)
+    ser += cof[j] / ++y;
+  return Math.log(2.5066282746310005 * ser / xx) - tmp;
+};
+
+/*
+ * log-gamma function to support poisson distribution sampling. The
+ * algorithm comes from SPECFUN by Shanjie Zhang and Jianming Jin and their
+ * book "Computation of Special Functions", 1996, John Wiley & Sons, Inc.
+ */
+jStat.loggam = function loggam(x) {
+  var x0, x2, xp, gl, gl0;
+  var k, n;
+
+  var a = [8.333333333333333e-02, -2.777777777777778e-03,
+          7.936507936507937e-04, -5.952380952380952e-04,
+          8.417508417508418e-04, -1.917526917526918e-03,
+          6.410256410256410e-03, -2.955065359477124e-02,
+          1.796443723688307e-01, -1.39243221690590e+00];
+  x0 = x;
+  n = 0;
+  if ((x == 1.0) || (x == 2.0)) {
+      return 0.0;
+  }
+  if (x <= 7.0) {
+      n = Math.floor(7 - x);
+      x0 = x + n;
+  }
+  x2 = 1.0 / (x0 * x0);
+  xp = 2 * Math.PI;
+  gl0 = a[9];
+  for (k = 8; k >= 0; k--) {
+      gl0 *= x2;
+      gl0 += a[k];
+  }
+  gl = gl0 / x0 + 0.5 * Math.log(xp) + (x0 - 0.5) * Math.log(x0) - x0;
+  if (x <= 7.0) {
+      for (k = 1; k <= n; k++) {
+          gl -= Math.log(x0 - 1.0);
+          x0 -= 1.0;
+      }
+  }
+  return gl;
+}
+
+// gamma of x
+jStat.gammafn = function gammafn(x) {
+  var p = [-1.716185138865495, 24.76565080557592, -379.80425647094563,
+           629.3311553128184, 866.9662027904133, -31451.272968848367,
+           -36144.413418691176, 66456.14382024054
+  ];
+  var q = [-30.8402300119739, 315.35062697960416, -1015.1563674902192,
+           -3107.771671572311, 22538.118420980151, 4755.8462775278811,
+           -134659.9598649693, -115132.2596755535];
+  var fact = false;
+  var n = 0;
+  var xden = 0;
+  var xnum = 0;
+  var y = x;
+  var i, z, yi, res;
+  if (x > 171.6243769536076) {
+    return Infinity;
+  }
+  if (y <= 0) {
+    res = y % 1 + 3.6e-16;
+    if (res) {
+      fact = (!(y & 1) ? 1 : -1) * Math.PI / Math.sin(Math.PI * res);
+      y = 1 - y;
+    } else {
+      return Infinity;
+    }
+  }
+  yi = y;
+  if (y < 1) {
+    z = y++;
+  } else {
+    z = (y -= n = (y | 0) - 1) - 1;
+  }
+  for (i = 0; i < 8; ++i) {
+    xnum = (xnum + p[i]) * z;
+    xden = xden * z + q[i];
+  }
+  res = xnum / xden + 1;
+  if (yi < y) {
+    res /= yi;
+  } else if (yi > y) {
+    for (i = 0; i < n; ++i) {
+      res *= y;
+      y++;
+    }
+  }
+  if (fact) {
+    res = fact / res;
+  }
+  return res;
+};
+
+
+// lower incomplete gamma function, which is usually typeset with a
+// lower-case greek gamma as the function symbol
+jStat.gammap = function gammap(a, x) {
+  return jStat.lowRegGamma(a, x) * jStat.gammafn(a);
+};
+
+
+// The lower regularized incomplete gamma function, usually written P(a,x)
+jStat.lowRegGamma = function lowRegGamma(a, x) {
+  var aln = jStat.gammaln(a);
+  var ap = a;
+  var sum = 1 / a;
+  var del = sum;
+  var b = x + 1 - a;
+  var c = 1 / 1.0e-30;
+  var d = 1 / b;
+  var h = d;
+  var i = 1;
+  // calculate maximum number of itterations required for a
+  var ITMAX = -~(Math.log((a >= 1) ? a : 1 / a) * 8.5 + a * 0.4 + 17);
+  var an;
+
+  if (x < 0 || a <= 0) {
+    return NaN;
+  } else if (x < a + 1) {
+    for (; i <= ITMAX; i++) {
+      sum += del *= x / ++ap;
+    }
+    return (sum * Math.exp(-x + a * Math.log(x) - (aln)));
+  }
+
+  for (; i <= ITMAX; i++) {
+    an = -i * (i - a);
+    b += 2;
+    d = an * d + b;
+    c = b + an / c;
+    d = 1 / d;
+    h *= d * c;
+  }
+
+  return (1 - h * Math.exp(-x + a * Math.log(x) - (aln)));
+};
+
+// natural log factorial of n
+jStat.factorialln = function factorialln(n) {
+  return n < 0 ? NaN : jStat.gammaln(n + 1);
+};
+
+// factorial of n
+jStat.factorial = function factorial(n) {
+  return n < 0 ? NaN : jStat.gammafn(n + 1);
+};
+
+// combinations of n, m
+jStat.combination = function combination(n, m) {
+  // make sure n or m don't exceed the upper limit of usable values
+  return (n > 170 || m > 170)
+      ? Math.exp(jStat.combinationln(n, m))
+      : (jStat.factorial(n) / jStat.factorial(m)) / jStat.factorial(n - m);
+};
+
+
+jStat.combinationln = function combinationln(n, m){
+  return jStat.factorialln(n) - jStat.factorialln(m) - jStat.factorialln(n - m);
+};
+
+
+// permutations of n, m
+jStat.permutation = function permutation(n, m) {
+  return jStat.factorial(n) / jStat.factorial(n - m);
+};
+
+
+// beta function
+jStat.betafn = function betafn(x, y) {
+  // ensure arguments are positive
+  if (x <= 0 || y <= 0)
+    return undefined;
+  // make sure x + y doesn't exceed the upper limit of usable values
+  return (x + y > 170)
+      ? Math.exp(jStat.betaln(x, y))
+      : jStat.gammafn(x) * jStat.gammafn(y) / jStat.gammafn(x + y);
+};
+
+
+// natural logarithm of beta function
+jStat.betaln = function betaln(x, y) {
+  return jStat.gammaln(x) + jStat.gammaln(y) - jStat.gammaln(x + y);
+};
+
+
+// Evaluates the continued fraction for incomplete beta function by modified
+// Lentz's method.
+jStat.betacf = function betacf(x, a, b) {
+  var fpmin = 1e-30;
+  var m = 1;
+  var qab = a + b;
+  var qap = a + 1;
+  var qam = a - 1;
+  var c = 1;
+  var d = 1 - qab * x / qap;
+  var m2, aa, del, h;
+
+  // These q's will be used in factors that occur in the coefficients
+  if (Math.abs(d) < fpmin)
+    d = fpmin;
+  d = 1 / d;
+  h = d;
+
+  for (; m <= 100; m++) {
+    m2 = 2 * m;
+    aa = m * (b - m) * x / ((qam + m2) * (a + m2));
+    // One step (the even one) of the recurrence
+    d = 1 + aa * d;
+    if (Math.abs(d) < fpmin)
+      d = fpmin;
+    c = 1 + aa / c;
+    if (Math.abs(c) < fpmin)
+      c = fpmin;
+    d = 1 / d;
+    h *= d * c;
+    aa = -(a + m) * (qab + m) * x / ((a + m2) * (qap + m2));
+    // Next step of the recurrence (the odd one)
+    d = 1 + aa * d;
+    if (Math.abs(d) < fpmin)
+      d = fpmin;
+    c = 1 + aa / c;
+    if (Math.abs(c) < fpmin)
+      c = fpmin;
+    d = 1 / d;
+    del = d * c;
+    h *= del;
+    if (Math.abs(del - 1.0) < 3e-7)
+      break;
+  }
+
+  return h;
+};
+
+
+// Returns the inverse of the lower regularized inomplete gamma function
+jStat.gammapinv = function gammapinv(p, a) {
+  var j = 0;
+  var a1 = a - 1;
+  var EPS = 1e-8;
+  var gln = jStat.gammaln(a);
+  var x, err, t, u, pp, lna1, afac;
+
+  if (p >= 1)
+    return Math.max(100, a + 100 * Math.sqrt(a));
+  if (p <= 0)
+    return 0;
+  if (a > 1) {
+    lna1 = Math.log(a1);
+    afac = Math.exp(a1 * (lna1 - 1) - gln);
+    pp = (p < 0.5) ? p : 1 - p;
+    t = Math.sqrt(-2 * Math.log(pp));
+    x = (2.30753 + t * 0.27061) / (1 + t * (0.99229 + t * 0.04481)) - t;
+    if (p < 0.5)
+      x = -x;
+    x = Math.max(1e-3,
+                 a * Math.pow(1 - 1 / (9 * a) - x / (3 * Math.sqrt(a)), 3));
+  } else {
+    t = 1 - a * (0.253 + a * 0.12);
+    if (p < t)
+      x = Math.pow(p / t, 1 / a);
+    else
+      x = 1 - Math.log(1 - (p - t) / (1 - t));
+  }
+
+  for(; j < 12; j++) {
+    if (x <= 0)
+      return 0;
+    err = jStat.lowRegGamma(a, x) - p;
+    if (a > 1)
+      t = afac * Math.exp(-(x - a1) + a1 * (Math.log(x) - lna1));
+    else
+      t = Math.exp(-x + a1 * Math.log(x) - gln);
+    u = err / t;
+    x -= (t = u / (1 - 0.5 * Math.min(1, u * ((a - 1) / x - 1))));
+    if (x <= 0)
+      x = 0.5 * (x + t);
+    if (Math.abs(t) < EPS * x)
+      break;
+  }
+
+  return x;
+};
+
+
+// Returns the error function erf(x)
+jStat.erf = function erf(x) {
+  var cof = [-1.3026537197817094, 6.4196979235649026e-1, 1.9476473204185836e-2,
+             -9.561514786808631e-3, -9.46595344482036e-4, 3.66839497852761e-4,
+             4.2523324806907e-5, -2.0278578112534e-5, -1.624290004647e-6,
+             1.303655835580e-6, 1.5626441722e-8, -8.5238095915e-8,
+             6.529054439e-9, 5.059343495e-9, -9.91364156e-10,
+             -2.27365122e-10, 9.6467911e-11, 2.394038e-12,
+             -6.886027e-12, 8.94487e-13, 3.13092e-13,
+             -1.12708e-13, 3.81e-16, 7.106e-15,
+             -1.523e-15, -9.4e-17, 1.21e-16,
+             -2.8e-17];
+  var j = cof.length - 1;
+  var isneg = false;
+  var d = 0;
+  var dd = 0;
+  var t, ty, tmp, res;
+
+  if (x < 0) {
+    x = -x;
+    isneg = true;
+  }
+
+  t = 2 / (2 + x);
+  ty = 4 * t - 2;
+
+  for(; j > 0; j--) {
+    tmp = d;
+    d = ty * d - dd + cof[j];
+    dd = tmp;
+  }
+
+  res = t * Math.exp(-x * x + 0.5 * (cof[0] + ty * d) - dd);
+  return isneg ? res - 1 : 1 - res;
+};
+
+
+// Returns the complmentary error function erfc(x)
+jStat.erfc = function erfc(x) {
+  return 1 - jStat.erf(x);
+};
+
+
+// Returns the inverse of the complementary error function
+jStat.erfcinv = function erfcinv(p) {
+  var j = 0;
+  var x, err, t, pp;
+  if (p >= 2)
+    return -100;
+  if (p <= 0)
+    return 100;
+  pp = (p < 1) ? p : 2 - p;
+  t = Math.sqrt(-2 * Math.log(pp / 2));
+  x = -0.70711 * ((2.30753 + t * 0.27061) /
+                  (1 + t * (0.99229 + t * 0.04481)) - t);
+  for (; j < 2; j++) {
+    err = jStat.erfc(x) - pp;
+    x += err / (1.12837916709551257 * Math.exp(-x * x) - x * err);
+  }
+  return (p < 1) ? x : -x;
+};
+
+
+// Returns the inverse of the incomplete beta function
+jStat.ibetainv = function ibetainv(p, a, b) {
+  var EPS = 1e-8;
+  var a1 = a - 1;
+  var b1 = b - 1;
+  var j = 0;
+  var lna, lnb, pp, t, u, err, x, al, h, w, afac;
+  if (p <= 0)
+    return 0;
+  if (p >= 1)
+    return 1;
+  if (a >= 1 && b >= 1) {
+    pp = (p < 0.5) ? p : 1 - p;
+    t = Math.sqrt(-2 * Math.log(pp));
+    x = (2.30753 + t * 0.27061) / (1 + t* (0.99229 + t * 0.04481)) - t;
+    if (p < 0.5)
+      x = -x;
+    al = (x * x - 3) / 6;
+    h = 2 / (1 / (2 * a - 1)  + 1 / (2 * b - 1));
+    w = (x * Math.sqrt(al + h) / h) - (1 / (2 * b - 1) - 1 / (2 * a - 1)) *
+        (al + 5 / 6 - 2 / (3 * h));
+    x = a / (a + b * Math.exp(2 * w));
+  } else {
+    lna = Math.log(a / (a + b));
+    lnb = Math.log(b / (a + b));
+    t = Math.exp(a * lna) / a;
+    u = Math.exp(b * lnb) / b;
+    w = t + u;
+    if (p < t / w)
+      x = Math.pow(a * w * p, 1 / a);
+    else
+      x = 1 - Math.pow(b * w * (1 - p), 1 / b);
+  }
+  afac = -jStat.gammaln(a) - jStat.gammaln(b) + jStat.gammaln(a + b);
+  for(; j < 10; j++) {
+    if (x === 0 || x === 1)
+      return x;
+    err = jStat.ibeta(x, a, b) - p;
+    t = Math.exp(a1 * Math.log(x) + b1 * Math.log(1 - x) + afac);
+    u = err / t;
+    x -= (t = u / (1 - 0.5 * Math.min(1, u * (a1 / x - b1 / (1 - x)))));
+    if (x <= 0)
+      x = 0.5 * (x + t);
+    if (x >= 1)
+      x = 0.5 * (x + t + 1);
+    if (Math.abs(t) < EPS * x && j > 0)
+      break;
+  }
+  return x;
+};
+
+
+// Returns the incomplete beta function I_x(a,b)
+jStat.ibeta = function ibeta(x, a, b) {
+  // Factors in front of the continued fraction.
+  var bt = (x === 0 || x === 1) ?  0 :
+    Math.exp(jStat.gammaln(a + b) - jStat.gammaln(a) -
+             jStat.gammaln(b) + a * Math.log(x) + b *
+             Math.log(1 - x));
+  if (x < 0 || x > 1)
+    return false;
+  if (x < (a + 1) / (a + b + 2))
+    // Use continued fraction directly.
+    return bt * jStat.betacf(x, a, b) / a;
+  // else use continued fraction after making the symmetry transformation.
+  return 1 - bt * jStat.betacf(1 - x, b, a) / b;
+};
+
+
+// Returns a normal deviate (mu=0, sigma=1).
+// If n and m are specified it returns a object of normal deviates.
+jStat.randn = function randn(n, m) {
+  var u, v, x, y, q;
+  if (!m)
+    m = n;
+  if (n)
+    return jStat.create(n, m, function() { return jStat.randn(); });
+  do {
+    u = jStat._random_fn();
+    v = 1.7156 * (jStat._random_fn() - 0.5);
+    x = u - 0.449871;
+    y = Math.abs(v) + 0.386595;
+    q = x * x + y * (0.19600 * y - 0.25472 * x);
+  } while (q > 0.27597 && (q > 0.27846 || v * v > -4 * Math.log(u) * u * u));
+  return v / u;
+};
+
+
+// Returns a gamma deviate by the method of Marsaglia and Tsang.
+jStat.randg = function randg(shape, n, m) {
+  var oalph = shape;
+  var a1, a2, u, v, x, mat;
+  if (!m)
+    m = n;
+  if (!shape)
+    shape = 1;
+  if (n) {
+    mat = jStat.zeros(n,m);
+    mat.alter(function() { return jStat.randg(shape); });
+    return mat;
+  }
+  if (shape < 1)
+    shape += 1;
+  a1 = shape - 1 / 3;
+  a2 = 1 / Math.sqrt(9 * a1);
+  do {
+    do {
+      x = jStat.randn();
+      v = 1 + a2 * x;
+    } while(v <= 0);
+    v = v * v * v;
+    u = jStat._random_fn();
+  } while(u > 1 - 0.331 * Math.pow(x, 4) &&
+          Math.log(u) > 0.5 * x*x + a1 * (1 - v + Math.log(v)));
+  // alpha > 1
+  if (shape == oalph)
+    return a1 * v;
+  // alpha < 1
+  do {
+    u = jStat._random_fn();
+  } while(u === 0);
+  return Math.pow(u, 1 / oalph) * a1 * v;
+};
+
+
+// making use of static methods on the instance
+(function(funcs) {
+  for (var i = 0; i < funcs.length; i++) (function(passfunc) {
+    jStat.fn[passfunc] = function() {
+      return jStat(
+          jStat.map(this, function(value) { return jStat[passfunc](value); }));
+    }
+  })(funcs[i]);
+})('gammaln gammafn factorial factorialln'.split(' '));
+
+
+(function(funcs) {
+  for (var i = 0; i < funcs.length; i++) (function(passfunc) {
+    jStat.fn[passfunc] = function() {
+      return jStat(jStat[passfunc].apply(null, arguments));
+    };
+  })(funcs[i]);
+})('randn'.split(' '));
+
+}(jStat, Math));
+(function(jStat, Math) {
+
+// generate all distribution instance methods
+(function(list) {
+  for (var i = 0; i < list.length; i++) (function(func) {
+    // distribution instance method
+    jStat[func] = function f(a, b, c) {
+      if (!(this instanceof f))
+        return new f(a, b, c);
+      this._a = a;
+      this._b = b;
+      this._c = c;
+      return this;
+    };
+    // distribution method to be used on a jStat instance
+    jStat.fn[func] = function(a, b, c) {
+      var newthis = jStat[func](a, b, c);
+      newthis.data = this;
+      return newthis;
+    };
+    // sample instance method
+    jStat[func].prototype.sample = function(arr) {
+      var a = this._a;
+      var b = this._b;
+      var c = this._c;
+      if (arr)
+        return jStat.alter(arr, function() {
+          return jStat[func].sample(a, b, c);
+        });
+      else
+        return jStat[func].sample(a, b, c);
+    };
+    // generate the pdf, cdf and inv instance methods
+    (function(vals) {
+      for (var i = 0; i < vals.length; i++) (function(fnfunc) {
+        jStat[func].prototype[fnfunc] = function(x) {
+          var a = this._a;
+          var b = this._b;
+          var c = this._c;
+          if (!x && x !== 0)
+            x = this.data;
+          if (typeof x !== 'number') {
+            return jStat.fn.map.call(x, function(x) {
+              return jStat[func][fnfunc](x, a, b, c);
+            });
+          }
+          return jStat[func][fnfunc](x, a, b, c);
+        };
+      })(vals[i]);
+    })('pdf cdf inv'.split(' '));
+    // generate the mean, median, mode and variance instance methods
+    (function(vals) {
+      for (var i = 0; i < vals.length; i++) (function(fnfunc) {
+        jStat[func].prototype[fnfunc] = function() {
+          return jStat[func][fnfunc](this._a, this._b, this._c);
+        };
+      })(vals[i]);
+    })('mean median mode variance'.split(' '));
+  })(list[i]);
+})((
+  'beta centralF cauchy chisquare exponential gamma invgamma kumaraswamy ' +
+  'laplace lognormal noncentralt normal pareto studentt weibull uniform ' +
+  'binomial negbin hypgeom poisson triangular tukey arcsine'
+).split(' '));
+
+
+
+// extend beta function with static methods
+jStat.extend(jStat.beta, {
+  pdf: function pdf(x, alpha, beta) {
+    // PDF is zero outside the support
+    if (x > 1 || x < 0)
+      return 0;
+    // PDF is one for the uniform case
+    if (alpha == 1 && beta == 1)
+      return 1;
+
+    if (alpha < 512 && beta < 512) {
+      return (Math.pow(x, alpha - 1) * Math.pow(1 - x, beta - 1)) /
+          jStat.betafn(alpha, beta);
+    } else {
+      return Math.exp((alpha - 1) * Math.log(x) +
+                      (beta - 1) * Math.log(1 - x) -
+                      jStat.betaln(alpha, beta));
+    }
+  },
+
+  cdf: function cdf(x, alpha, beta) {
+    return (x > 1 || x < 0) ? (x > 1) * 1 : jStat.ibeta(x, alpha, beta);
+  },
+
+  inv: function inv(x, alpha, beta) {
+    return jStat.ibetainv(x, alpha, beta);
+  },
+
+  mean: function mean(alpha, beta) {
+    return alpha / (alpha + beta);
+  },
+
+  median: function median(alpha, beta) {
+    return jStat.ibetainv(0.5, alpha, beta);
+  },
+
+  mode: function mode(alpha, beta) {
+    return (alpha - 1 ) / ( alpha + beta - 2);
+  },
+
+  // return a random sample
+  sample: function sample(alpha, beta) {
+    var u = jStat.randg(alpha);
+    return u / (u + jStat.randg(beta));
+  },
+
+  variance: function variance(alpha, beta) {
+    return (alpha * beta) / (Math.pow(alpha + beta, 2) * (alpha + beta + 1));
+  }
+});
+
+// extend F function with static methods
+jStat.extend(jStat.centralF, {
+  // This implementation of the pdf function avoids float overflow
+  // See the way that R calculates this value:
+  // https://svn.r-project.org/R/trunk/src/nmath/df.c
+  pdf: function pdf(x, df1, df2) {
+    var p, q, f;
+
+    if (x < 0)
+      return 0;
+
+    if (df1 <= 2) {
+      if (x === 0 && df1 < 2) {
+        return Infinity;
+      }
+      if (x === 0 && df1 === 2) {
+        return 1;
+      }
+      return (1 / jStat.betafn(df1 / 2, df2 / 2)) *
+              Math.pow(df1 / df2, df1 / 2) *
+              Math.pow(x, (df1/2) - 1) *
+              Math.pow((1 + (df1 / df2) * x), -(df1 + df2) / 2);
+    }
+
+    p = (df1 * x) / (df2 + x * df1);
+    q = df2 / (df2 + x * df1);
+    f = df1 * q / 2.0;
+    return f * jStat.binomial.pdf((df1 - 2) / 2, (df1 + df2 - 2) / 2, p);
+  },
+
+  cdf: function cdf(x, df1, df2) {
+    if (x < 0)
+      return 0;
+    return jStat.ibeta((df1 * x) / (df1 * x + df2), df1 / 2, df2 / 2);
+  },
+
+  inv: function inv(x, df1, df2) {
+    return df2 / (df1 * (1 / jStat.ibetainv(x, df1 / 2, df2 / 2) - 1));
+  },
+
+  mean: function mean(df1, df2) {
+    return (df2 > 2) ? df2 / (df2 - 2) : undefined;
+  },
+
+  mode: function mode(df1, df2) {
+    return (df1 > 2) ? (df2 * (df1 - 2)) / (df1 * (df2 + 2)) : undefined;
+  },
+
+  // return a random sample
+  sample: function sample(df1, df2) {
+    var x1 = jStat.randg(df1 / 2) * 2;
+    var x2 = jStat.randg(df2 / 2) * 2;
+    return (x1 / df1) / (x2 / df2);
+  },
+
+  variance: function variance(df1, df2) {
+    if (df2 <= 4)
+      return undefined;
+    return 2 * df2 * df2 * (df1 + df2 - 2) /
+        (df1 * (df2 - 2) * (df2 - 2) * (df2 - 4));
+  }
+});
+
+
+// extend cauchy function with static methods
+jStat.extend(jStat.cauchy, {
+  pdf: function pdf(x, local, scale) {
+    if (scale < 0) { return 0; }
+
+    return (scale / (Math.pow(x - local, 2) + Math.pow(scale, 2))) / Math.PI;
+  },
+
+  cdf: function cdf(x, local, scale) {
+    return Math.atan((x - local) / scale) / Math.PI + 0.5;
+  },
+
+  inv: function(p, local, scale) {
+    return local + scale * Math.tan(Math.PI * (p - 0.5));
+  },
+
+  median: function median(local/*, scale*/) {
+    return local;
+  },
+
+  mode: function mode(local/*, scale*/) {
+    return local;
+  },
+
+  sample: function sample(local, scale) {
+    return jStat.randn() *
+        Math.sqrt(1 / (2 * jStat.randg(0.5))) * scale + local;
+  }
+});
+
+
+
+// extend chisquare function with static methods
+jStat.extend(jStat.chisquare, {
+  pdf: function pdf(x, dof) {
+    if (x < 0)
+      return 0;
+    return (x === 0 && dof === 2) ? 0.5 :
+        Math.exp((dof / 2 - 1) * Math.log(x) - x / 2 - (dof / 2) *
+                 Math.log(2) - jStat.gammaln(dof / 2));
+  },
+
+  cdf: function cdf(x, dof) {
+    if (x < 0)
+      return 0;
+    return jStat.lowRegGamma(dof / 2, x / 2);
+  },
+
+  inv: function(p, dof) {
+    return 2 * jStat.gammapinv(p, 0.5 * dof);
+  },
+
+  mean : function(dof) {
+    return dof;
+  },
+
+  // TODO: this is an approximation (is there a better way?)
+  median: function median(dof) {
+    return dof * Math.pow(1 - (2 / (9 * dof)), 3);
+  },
+
+  mode: function mode(dof) {
+    return (dof - 2 > 0) ? dof - 2 : 0;
+  },
+
+  sample: function sample(dof) {
+    return jStat.randg(dof / 2) * 2;
+  },
+
+  variance: function variance(dof) {
+    return 2 * dof;
+  }
+});
+
+
+
+// extend exponential function with static methods
+jStat.extend(jStat.exponential, {
+  pdf: function pdf(x, rate) {
+    return x < 0 ? 0 : rate * Math.exp(-rate * x);
+  },
+
+  cdf: function cdf(x, rate) {
+    return x < 0 ? 0 : 1 - Math.exp(-rate * x);
+  },
+
+  inv: function(p, rate) {
+    return -Math.log(1 - p) / rate;
+  },
+
+  mean : function(rate) {
+    return 1 / rate;
+  },
+
+  median: function (rate) {
+    return (1 / rate) * Math.log(2);
+  },
+
+  mode: function mode(/*rate*/) {
+    return 0;
+  },
+
+  sample: function sample(rate) {
+    return -1 / rate * Math.log(jStat._random_fn());
+  },
+
+  variance : function(rate) {
+    return Math.pow(rate, -2);
+  }
+});
+
+
+
+// extend gamma function with static methods
+jStat.extend(jStat.gamma, {
+  pdf: function pdf(x, shape, scale) {
+    if (x < 0)
+      return 0;
+    return (x === 0 && shape === 1) ? 1 / scale :
+            Math.exp((shape - 1) * Math.log(x) - x / scale -
+                    jStat.gammaln(shape) - shape * Math.log(scale));
+  },
+
+  cdf: function cdf(x, shape, scale) {
+    if (x < 0)
+      return 0;
+    return jStat.lowRegGamma(shape, x / scale);
+  },
+
+  inv: function(p, shape, scale) {
+    return jStat.gammapinv(p, shape) * scale;
+  },
+
+  mean : function(shape, scale) {
+    return shape * scale;
+  },
+
+  mode: function mode(shape, scale) {
+    if(shape > 1) return (shape - 1) * scale;
+    return undefined;
+  },
+
+  sample: function sample(shape, scale) {
+    return jStat.randg(shape) * scale;
+  },
+
+  variance: function variance(shape, scale) {
+    return shape * scale * scale;
+  }
+});
+
+// extend inverse gamma function with static methods
+jStat.extend(jStat.invgamma, {
+  pdf: function pdf(x, shape, scale) {
+    if (x <= 0)
+      return 0;
+    return Math.exp(-(shape + 1) * Math.log(x) - scale / x -
+                    jStat.gammaln(shape) + shape * Math.log(scale));
+  },
+
+  cdf: function cdf(x, shape, scale) {
+    if (x <= 0)
+      return 0;
+    return 1 - jStat.lowRegGamma(shape, scale / x);
+  },
+
+  inv: function(p, shape, scale) {
+    return scale / jStat.gammapinv(1 - p, shape);
+  },
+
+  mean : function(shape, scale) {
+    return (shape > 1) ? scale / (shape - 1) : undefined;
+  },
+
+  mode: function mode(shape, scale) {
+    return scale / (shape + 1);
+  },
+
+  sample: function sample(shape, scale) {
+    return scale / jStat.randg(shape);
+  },
+
+  variance: function variance(shape, scale) {
+    if (shape <= 2)
+      return undefined;
+    return scale * scale / ((shape - 1) * (shape - 1) * (shape - 2));
+  }
+});
+
+
+// extend kumaraswamy function with static methods
+jStat.extend(jStat.kumaraswamy, {
+  pdf: function pdf(x, alpha, beta) {
+    if (x === 0 && alpha === 1)
+      return beta;
+    else if (x === 1 && beta === 1)
+      return alpha;
+    return Math.exp(Math.log(alpha) + Math.log(beta) + (alpha - 1) *
+                    Math.log(x) + (beta - 1) *
+                    Math.log(1 - Math.pow(x, alpha)));
+  },
+
+  cdf: function cdf(x, alpha, beta) {
+    if (x < 0)
+      return 0;
+    else if (x > 1)
+      return 1;
+    return (1 - Math.pow(1 - Math.pow(x, alpha), beta));
+  },
+
+  inv: function inv(p, alpha, beta) {
+    return Math.pow(1 - Math.pow(1 - p, 1 / beta), 1 / alpha);
+  },
+
+  mean : function(alpha, beta) {
+    return (beta * jStat.gammafn(1 + 1 / alpha) *
+            jStat.gammafn(beta)) / (jStat.gammafn(1 + 1 / alpha + beta));
+  },
+
+  median: function median(alpha, beta) {
+    return Math.pow(1 - Math.pow(2, -1 / beta), 1 / alpha);
+  },
+
+  mode: function mode(alpha, beta) {
+    if (!(alpha >= 1 && beta >= 1 && (alpha !== 1 && beta !== 1)))
+      return undefined;
+    return Math.pow((alpha - 1) / (alpha * beta - 1), 1 / alpha);
+  },
+
+  variance: function variance(/*alpha, beta*/) {
+    throw new Error('variance not yet implemented');
+    // TODO: complete this
+  }
+});
+
+
+
+// extend lognormal function with static methods
+jStat.extend(jStat.lognormal, {
+  pdf: function pdf(x, mu, sigma) {
+    if (x <= 0)
+      return 0;
+    return Math.exp(-Math.log(x) - 0.5 * Math.log(2 * Math.PI) -
+                    Math.log(sigma) - Math.pow(Math.log(x) - mu, 2) /
+                    (2 * sigma * sigma));
+  },
+
+  cdf: function cdf(x, mu, sigma) {
+    if (x < 0)
+      return 0;
+    return 0.5 +
+        (0.5 * jStat.erf((Math.log(x) - mu) / Math.sqrt(2 * sigma * sigma)));
+  },
+
+  inv: function(p, mu, sigma) {
+    return Math.exp(-1.41421356237309505 * sigma * jStat.erfcinv(2 * p) + mu);
+  },
+
+  mean: function mean(mu, sigma) {
+    return Math.exp(mu + sigma * sigma / 2);
+  },
+
+  median: function median(mu/*, sigma*/) {
+    return Math.exp(mu);
+  },
+
+  mode: function mode(mu, sigma) {
+    return Math.exp(mu - sigma * sigma);
+  },
+
+  sample: function sample(mu, sigma) {
+    return Math.exp(jStat.randn() * sigma + mu);
+  },
+
+  variance: function variance(mu, sigma) {
+    return (Math.exp(sigma * sigma) - 1) * Math.exp(2 * mu + sigma * sigma);
+  }
+});
+
+
+
+// extend noncentralt function with static methods
+jStat.extend(jStat.noncentralt, {
+  pdf: function pdf(x, dof, ncp) {
+    var tol = 1e-14;
+    if (Math.abs(ncp) < tol)  // ncp approx 0; use student-t
+      return jStat.studentt.pdf(x, dof)
+
+    if (Math.abs(x) < tol) {  // different formula for x == 0
+      return Math.exp(jStat.gammaln((dof + 1) / 2) - ncp * ncp / 2 -
+                      0.5 * Math.log(Math.PI * dof) - jStat.gammaln(dof / 2));
+    }
+
+    // formula for x != 0
+    return dof / x *
+        (jStat.noncentralt.cdf(x * Math.sqrt(1 + 2 / dof), dof+2, ncp) -
+         jStat.noncentralt.cdf(x, dof, ncp));
+  },
+
+  cdf: function cdf(x, dof, ncp) {
+    var tol = 1e-14;
+    var min_iterations = 200;
+
+    if (Math.abs(ncp) < tol)  // ncp approx 0; use student-t
+      return jStat.studentt.cdf(x, dof);
+
+    // turn negative x into positive and flip result afterwards
+    var flip = false;
+    if (x < 0) {
+      flip = true;
+      ncp = -ncp;
+    }
+
+    var prob = jStat.normal.cdf(-ncp, 0, 1);
+    var value = tol + 1;
+    // use value at last two steps to determine convergence
+    var lastvalue = value;
+    var y = x * x / (x * x + dof);
+    var j = 0;
+    var p = Math.exp(-ncp * ncp / 2);
+    var q = Math.exp(-ncp * ncp / 2 - 0.5 * Math.log(2) -
+                     jStat.gammaln(3 / 2)) * ncp;
+    while (j < min_iterations || lastvalue > tol || value > tol) {
+      lastvalue = value;
+      if (j > 0) {
+        p *= (ncp * ncp) / (2 * j);
+        q *= (ncp * ncp) / (2 * (j + 1 / 2));
+      }
+      value = p * jStat.beta.cdf(y, j + 0.5, dof / 2) +
+          q * jStat.beta.cdf(y, j+1, dof/2);
+      prob += 0.5 * value;
+      j++;
+    }
+
+    return flip ? (1 - prob) : prob;
+  }
+});
+
+
+// extend normal function with static methods
+jStat.extend(jStat.normal, {
+  pdf: function pdf(x, mean, std) {
+    return Math.exp(-0.5 * Math.log(2 * Math.PI) -
+                    Math.log(std) - Math.pow(x - mean, 2) / (2 * std * std));
+  },
+
+  cdf: function cdf(x, mean, std) {
+    return 0.5 * (1 + jStat.erf((x - mean) / Math.sqrt(2 * std * std)));
+  },
+
+  inv: function(p, mean, std) {
+    return -1.41421356237309505 * std * jStat.erfcinv(2 * p) + mean;
+  },
+
+  mean : function(mean/*, std*/) {
+    return mean;
+  },
+
+  median: function median(mean/*, std*/) {
+    return mean;
+  },
+
+  mode: function (mean/*, std*/) {
+    return mean;
+  },
+
+  sample: function sample(mean, std) {
+    return jStat.randn() * std + mean;
+  },
+
+  variance : function(mean, std) {
+    return std * std;
+  }
+});
+
+
+
+// extend pareto function with static methods
+jStat.extend(jStat.pareto, {
+  pdf: function pdf(x, scale, shape) {
+    if (x < scale)
+      return 0;
+    return (shape * Math.pow(scale, shape)) / Math.pow(x, shape + 1);
+  },
+
+  cdf: function cdf(x, scale, shape) {
+    if (x < scale)
+      return 0;
+    return 1 - Math.pow(scale / x, shape);
+  },
+
+  inv: function inv(p, scale, shape) {
+    return scale / Math.pow(1 - p, 1 / shape);
+  },
+
+  mean: function mean(scale, shape) {
+    if (shape <= 1)
+      return undefined;
+    return (shape * Math.pow(scale, shape)) / (shape - 1);
+  },
+
+  median: function median(scale, shape) {
+    return scale * (shape * Math.SQRT2);
+  },
+
+  mode: function mode(scale/*, shape*/) {
+    return scale;
+  },
+
+  variance : function(scale, shape) {
+    if (shape <= 2)
+      return undefined;
+    return (scale*scale * shape) / (Math.pow(shape - 1, 2) * (shape - 2));
+  }
+});
+
+
+
+// extend studentt function with static methods
+jStat.extend(jStat.studentt, {
+  pdf: function pdf(x, dof) {
+    dof = dof > 1e100 ? 1e100 : dof;
+    return (1/(Math.sqrt(dof) * jStat.betafn(0.5, dof/2))) *
+        Math.pow(1 + ((x * x) / dof), -((dof + 1) / 2));
+  },
+
+  cdf: function cdf(x, dof) {
+    var dof2 = dof / 2;
+    return jStat.ibeta((x + Math.sqrt(x * x + dof)) /
+                       (2 * Math.sqrt(x * x + dof)), dof2, dof2);
+  },
+
+  inv: function(p, dof) {
+    var x = jStat.ibetainv(2 * Math.min(p, 1 - p), 0.5 * dof, 0.5);
+    x = Math.sqrt(dof * (1 - x) / x);
+    return (p > 0.5) ? x : -x;
+  },
+
+  mean: function mean(dof) {
+    return (dof > 1) ? 0 : undefined;
+  },
+
+  median: function median(/*dof*/) {
+    return 0;
+  },
+
+  mode: function mode(/*dof*/) {
+    return 0;
+  },
+
+  sample: function sample(dof) {
+    return jStat.randn() * Math.sqrt(dof / (2 * jStat.randg(dof / 2)));
+  },
+
+  variance: function variance(dof) {
+    return (dof  > 2) ? dof / (dof - 2) : (dof > 1) ? Infinity : undefined;
+  }
+});
+
+
+
+// extend weibull function with static methods
+jStat.extend(jStat.weibull, {
+  pdf: function pdf(x, scale, shape) {
+    if (x < 0 || scale < 0 || shape < 0)
+      return 0;
+    return (shape / scale) * Math.pow((x / scale), (shape - 1)) *
+        Math.exp(-(Math.pow((x / scale), shape)));
+  },
+
+  cdf: function cdf(x, scale, shape) {
+    return x < 0 ? 0 : 1 - Math.exp(-Math.pow((x / scale), shape));
+  },
+
+  inv: function(p, scale, shape) {
+    return scale * Math.pow(-Math.log(1 - p), 1 / shape);
+  },
+
+  mean : function(scale, shape) {
+    return scale * jStat.gammafn(1 + 1 / shape);
+  },
+
+  median: function median(scale, shape) {
+    return scale * Math.pow(Math.log(2), 1 / shape);
+  },
+
+  mode: function mode(scale, shape) {
+    if (shape <= 1)
+      return 0;
+    return scale * Math.pow((shape - 1) / shape, 1 / shape);
+  },
+
+  sample: function sample(scale, shape) {
+    return scale * Math.pow(-Math.log(jStat._random_fn()), 1 / shape);
+  },
+
+  variance: function variance(scale, shape) {
+    return scale * scale * jStat.gammafn(1 + 2 / shape) -
+        Math.pow(jStat.weibull.mean(scale, shape), 2);
+  }
+});
+
+
+
+// extend uniform function with static methods
+jStat.extend(jStat.uniform, {
+  pdf: function pdf(x, a, b) {
+    return (x < a || x > b) ? 0 : 1 / (b - a);
+  },
+
+  cdf: function cdf(x, a, b) {
+    if (x < a)
+      return 0;
+    else if (x < b)
+      return (x - a) / (b - a);
+    return 1;
+  },
+
+  inv: function(p, a, b) {
+    return a + (p * (b - a));
+  },
+
+  mean: function mean(a, b) {
+    return 0.5 * (a + b);
+  },
+
+  median: function median(a, b) {
+    return jStat.mean(a, b);
+  },
+
+  mode: function mode(/*a, b*/) {
+    throw new Error('mode is not yet implemented');
+  },
+
+  sample: function sample(a, b) {
+    return (a / 2 + b / 2) + (b / 2 - a / 2) * (2 * jStat._random_fn() - 1);
+  },
+
+  variance: function variance(a, b) {
+    return Math.pow(b - a, 2) / 12;
+  }
+});
+
+
+// Got this from http://www.math.ucla.edu/~tom/distributions/binomial.html
+function betinc(x, a, b, eps) {
+  var a0 = 0;
+  var b0 = 1;
+  var a1 = 1;
+  var b1 = 1;
+  var m9 = 0;
+  var a2 = 0;
+  var c9;
+
+  while (Math.abs((a1 - a2) / a1) > eps) {
+    a2 = a1;
+    c9 = -(a + m9) * (a + b + m9) * x / (a + 2 * m9) / (a + 2 * m9 + 1);
+    a0 = a1 + c9 * a0;
+    b0 = b1 + c9 * b0;
+    m9 = m9 + 1;
+    c9 = m9 * (b - m9) * x / (a + 2 * m9 - 1) / (a + 2 * m9);
+    a1 = a0 + c9 * a1;
+    b1 = b0 + c9 * b1;
+    a0 = a0 / b1;
+    b0 = b0 / b1;
+    a1 = a1 / b1;
+    b1 = 1;
+  }
+
+  return a1 / a;
+}
+
+
+// extend uniform function with static methods
+jStat.extend(jStat.binomial, {
+  pdf: function pdf(k, n, p) {
+    return (p === 0 || p === 1) ?
+      ((n * p) === k ? 1 : 0) :
+      jStat.combination(n, k) * Math.pow(p, k) * Math.pow(1 - p, n - k);
+  },
+
+  cdf: function cdf(x, n, p) {
+    var betacdf;
+    var eps = 1e-10;
+
+    if (x < 0)
+      return 0;
+    if (x >= n)
+      return 1;
+    if (p < 0 || p > 1 || n <= 0)
+      return NaN;
+
+    x = Math.floor(x);
+    var z = p;
+    var a = x + 1;
+    var b = n - x;
+    var s = a + b;
+    var bt = Math.exp(jStat.gammaln(s) - jStat.gammaln(b) -
+                      jStat.gammaln(a) + a * Math.log(z) + b * Math.log(1 - z));
+
+    if (z < (a + 1) / (s + 2))
+      betacdf = bt * betinc(z, a, b, eps);
+    else
+      betacdf = 1 - bt * betinc(1 - z, b, a, eps);
+
+    return Math.round((1 - betacdf) * (1 / eps)) / (1 / eps);
+  }
+});
+
+
+
+// extend uniform function with static methods
+jStat.extend(jStat.negbin, {
+  pdf: function pdf(k, r, p) {
+    if (k !== k >>> 0)
+      return false;
+    if (k < 0)
+      return 0;
+    return jStat.combination(k + r - 1, r - 1) *
+        Math.pow(1 - p, k) * Math.pow(p, r);
+  },
+
+  cdf: function cdf(x, r, p) {
+    var sum = 0,
+    k = 0;
+    if (x < 0) return 0;
+    for (; k <= x; k++) {
+      sum += jStat.negbin.pdf(k, r, p);
+    }
+    return sum;
+  }
+});
+
+
+
+// extend uniform function with static methods
+jStat.extend(jStat.hypgeom, {
+  pdf: function pdf(k, N, m, n) {
+    // Hypergeometric PDF.
+
+    // A simplification of the CDF algorithm below.
+
+    // k = number of successes drawn
+    // N = population size
+    // m = number of successes in population
+    // n = number of items drawn from population
+
+    if(k !== k | 0) {
+      return false;
+    } else if(k < 0 || k < m - (N - n)) {
+      // It's impossible to have this few successes drawn.
+      return 0;
+    } else if(k > n || k > m) {
+      // It's impossible to have this many successes drawn.
+      return 0;
+    } else if (m * 2 > N) {
+      // More than half the population is successes.
+
+      if(n * 2 > N) {
+        // More than half the population is sampled.
+
+        return jStat.hypgeom.pdf(N - m - n + k, N, N - m, N - n)
+      } else {
+        // Half or less of the population is sampled.
+
+        return jStat.hypgeom.pdf(n - k, N, N - m, n);
+      }
+
+    } else if(n * 2 > N) {
+      // Half or less is successes.
+
+      return jStat.hypgeom.pdf(m - k, N, m, N - n);
+
+    } else if(m < n) {
+      // We want to have the number of things sampled to be less than the
+      // successes available. So swap the definitions of successful and sampled.
+      return jStat.hypgeom.pdf(k, N, n, m);
+    } else {
+      // If we get here, half or less of the population was sampled, half or
+      // less of it was successes, and we had fewer sampled things than
+      // successes. Now we can do this complicated iterative algorithm in an
+      // efficient way.
+
+      // The basic premise of the algorithm is that we partially normalize our
+      // intermediate product to keep it in a numerically good region, and then
+      // finish the normalization at the end.
+
+      // This variable holds the scaled probability of the current number of
+      // successes.
+      var scaledPDF = 1;
+
+      // This keeps track of how much we have normalized.
+      var samplesDone = 0;
+
+      for(var i = 0; i < k; i++) {
+        // For every possible number of successes up to that observed...
+
+        while(scaledPDF > 1 && samplesDone < n) {
+          // Intermediate result is growing too big. Apply some of the
+          // normalization to shrink everything.
+
+          scaledPDF *= 1 - (m / (N - samplesDone));
+
+          // Say we've normalized by this sample already.
+          samplesDone++;
+        }
+
+        // Work out the partially-normalized hypergeometric PDF for the next
+        // number of successes
+        scaledPDF *= (n - i) * (m - i) / ((i + 1) * (N - m - n + i + 1));
+      }
+
+      for(; samplesDone < n; samplesDone++) {
+        // Apply all the rest of the normalization
+        scaledPDF *= 1 - (m / (N - samplesDone));
+      }
+
+      // Bound answer sanely before returning.
+      return Math.min(1, Math.max(0, scaledPDF));
+    }
+  },
+
+  cdf: function cdf(x, N, m, n) {
+    // Hypergeometric CDF.
+
+    // This algorithm is due to Prof. Thomas S. Ferguson, <tom@math.ucla.edu>,
+    // and comes from his hypergeometric test calculator at
+    // <http://www.math.ucla.edu/~tom/distributions/Hypergeometric.html>.
+
+    // x = number of successes drawn
+    // N = population size
+    // m = number of successes in population
+    // n = number of items drawn from population
+
+    if(x < 0 || x < m - (N - n)) {
+      // It's impossible to have this few successes drawn or fewer.
+      return 0;
+    } else if(x >= n || x >= m) {
+      // We will always have this many successes or fewer.
+      return 1;
+    } else if (m * 2 > N) {
+      // More than half the population is successes.
+
+      if(n * 2 > N) {
+        // More than half the population is sampled.
+
+        return jStat.hypgeom.cdf(N - m - n + x, N, N - m, N - n)
+      } else {
+        // Half or less of the population is sampled.
+
+        return 1 - jStat.hypgeom.cdf(n - x - 1, N, N - m, n);
+      }
+
+    } else if(n * 2 > N) {
+      // Half or less is successes.
+
+      return 1 - jStat.hypgeom.cdf(m - x - 1, N, m, N - n);
+
+    } else if(m < n) {
+      // We want to have the number of things sampled to be less than the
+      // successes available. So swap the definitions of successful and sampled.
+      return jStat.hypgeom.cdf(x, N, n, m);
+    } else {
+      // If we get here, half or less of the population was sampled, half or
+      // less of it was successes, and we had fewer sampled things than
+      // successes. Now we can do this complicated iterative algorithm in an
+      // efficient way.
+
+      // The basic premise of the algorithm is that we partially normalize our
+      // intermediate sum to keep it in a numerically good region, and then
+      // finish the normalization at the end.
+
+      // Holds the intermediate, scaled total CDF.
+      var scaledCDF = 1;
+
+      // This variable holds the scaled probability of the current number of
+      // successes.
+      var scaledPDF = 1;
+
+      // This keeps track of how much we have normalized.
+      var samplesDone = 0;
+
+      for(var i = 0; i < x; i++) {
+        // For every possible number of successes up to that observed...
+
+        while(scaledCDF > 1 && samplesDone < n) {
+          // Intermediate result is growing too big. Apply some of the
+          // normalization to shrink everything.
+
+          var factor = 1 - (m / (N - samplesDone));
+
+          scaledPDF *= factor;
+          scaledCDF *= factor;
+
+          // Say we've normalized by this sample already.
+          samplesDone++;
+        }
+
+        // Work out the partially-normalized hypergeometric PDF for the next
+        // number of successes
+        scaledPDF *= (n - i) * (m - i) / ((i + 1) * (N - m - n + i + 1));
+
+        // Add to the CDF answer.
+        scaledCDF += scaledPDF;
+      }
+
+      for(; samplesDone < n; samplesDone++) {
+        // Apply all the rest of the normalization
+        scaledCDF *= 1 - (m / (N - samplesDone));
+      }
+
+      // Bound answer sanely before returning.
+      return Math.min(1, Math.max(0, scaledCDF));
+    }
+  }
+});
+
+
+
+// extend uniform function with static methods
+jStat.extend(jStat.poisson, {
+  pdf: function pdf(k, l) {
+    if (l < 0 || (k % 1) !== 0 || k < 0) {
+      return 0;
+    }
+
+    return Math.pow(l, k) * Math.exp(-l) / jStat.factorial(k);
+  },
+
+  cdf: function cdf(x, l) {
+    var sumarr = [],
+    k = 0;
+    if (x < 0) return 0;
+    for (; k <= x; k++) {
+      sumarr.push(jStat.poisson.pdf(k, l));
+    }
+    return jStat.sum(sumarr);
+  },
+
+  mean : function(l) {
+    return l;
+  },
+
+  variance : function(l) {
+    return l;
+  },
+
+  sampleSmall: function sampleSmall(l) {
+    var p = 1, k = 0, L = Math.exp(-l);
+    do {
+      k++;
+      p *= jStat._random_fn();
+    } while (p > L);
+    return k - 1;
+  },
+
+  sampleLarge: function sampleLarge(l) {
+    var lam = l;
+    var k;
+    var U, V, slam, loglam, a, b, invalpha, vr, us;
+
+    slam = Math.sqrt(lam);
+    loglam = Math.log(lam);
+    b = 0.931 + 2.53 * slam;
+    a = -0.059 + 0.02483 * b;
+    invalpha = 1.1239 + 1.1328 / (b - 3.4);
+    vr = 0.9277 - 3.6224 / (b - 2);
+
+    while (1) {
+      U = Math.random() - 0.5;
+      V = Math.random();
+      us = 0.5 - Math.abs(U);
+      k = Math.floor((2 * a / us + b) * U + lam + 0.43);
+      if ((us >= 0.07) && (V <= vr)) {
+          return k;
+      }
+      if ((k < 0) || ((us < 0.013) && (V > us))) {
+          continue;
+      }
+      /* log(V) == log(0.0) ok here */
+      /* if U==0.0 so that us==0.0, log is ok since always returns */
+      if ((Math.log(V) + Math.log(invalpha) - Math.log(a / (us * us) + b)) <= (-lam + k * loglam - jStat.loggam(k + 1))) {
+          return k;
+      }
+    }
+  },
+
+  sample: function sample(l) {
+    if (l < 10)
+      return this.sampleSmall(l);
+    else
+      return this.sampleLarge(l);
+  }
+});
+
+// extend triangular function with static methods
+jStat.extend(jStat.triangular, {
+  pdf: function pdf(x, a, b, c) {
+    if (b <= a || c < a || c > b) {
+      return NaN;
+    } else {
+      if (x < a || x > b) {
+        return 0;
+      } else if (x < c) {
+          return (2 * (x - a)) / ((b - a) * (c - a));
+      } else if (x === c) {
+          return (2 / (b - a));
+      } else { // x > c
+          return (2 * (b - x)) / ((b - a) * (b - c));
+      }
+    }
+  },
+
+  cdf: function cdf(x, a, b, c) {
+    if (b <= a || c < a || c > b)
+      return NaN;
+    if (x <= a)
+      return 0;
+    else if (x >= b)
+      return 1;
+    if (x <= c)
+      return Math.pow(x - a, 2) / ((b - a) * (c - a));
+    else // x > c
+      return 1 - Math.pow(b - x, 2) / ((b - a) * (b - c));
+  },
+
+  inv: function inv(p, a, b, c) {
+    if (b <= a || c < a || c > b) {
+      return NaN;
+    } else {
+      if (p <= ((c - a) / (b - a))) {
+        return a + (b - a) * Math.sqrt(p * ((c - a) / (b - a)));
+      } else { // p > ((c - a) / (b - a))
+        return a + (b - a) * (1 - Math.sqrt((1 - p) * (1 - ((c - a) / (b - a)))));
+      }
+    }
+  },
+
+  mean: function mean(a, b, c) {
+    return (a + b + c) / 3;
+  },
+
+  median: function median(a, b, c) {
+    if (c <= (a + b) / 2) {
+      return b - Math.sqrt((b - a) * (b - c)) / Math.sqrt(2);
+    } else if (c > (a + b) / 2) {
+      return a + Math.sqrt((b - a) * (c - a)) / Math.sqrt(2);
+    }
+  },
+
+  mode: function mode(a, b, c) {
+    return c;
+  },
+
+  sample: function sample(a, b, c) {
+    var u = jStat._random_fn();
+    if (u < ((c - a) / (b - a)))
+      return a + Math.sqrt(u * (b - a) * (c - a))
+    return b - Math.sqrt((1 - u) * (b - a) * (b - c));
+  },
+
+  variance: function variance(a, b, c) {
+    return (a * a + b * b + c * c - a * b - a * c - b * c) / 18;
+  }
+});
+
+
+// extend arcsine function with static methods
+jStat.extend(jStat.arcsine, {
+  pdf: function pdf(x, a, b) {
+    if (b <= a) return NaN;
+
+    return (x <= a || x >= b) ? 0 :
+      (2 / Math.PI) *
+        Math.pow(Math.pow(b - a, 2) -
+                  Math.pow(2 * x - a - b, 2), -0.5);
+  },
+
+  cdf: function cdf(x, a, b) {
+    if (x < a)
+      return 0;
+    else if (x < b)
+      return (2 / Math.PI) * Math.asin(Math.sqrt((x - a)/(b - a)));
+    return 1;
+  },
+
+  inv: function(p, a, b) {
+    return a + (0.5 - 0.5 * Math.cos(Math.PI * p)) * (b - a);
+  },
+
+  mean: function mean(a, b) {
+    if (b <= a) return NaN;
+    return (a + b) / 2;
+  },
+
+  median: function median(a, b) {
+    if (b <= a) return NaN;
+    return (a + b) / 2;
+  },
+
+  mode: function mode(/*a, b*/) {
+    throw new Error('mode is not yet implemented');
+  },
+
+  sample: function sample(a, b) {
+    return ((a + b) / 2) + ((b - a) / 2) *
+      Math.sin(2 * Math.PI * jStat.uniform.sample(0, 1));
+  },
+
+  variance: function variance(a, b) {
+    if (b <= a) return NaN;
+    return Math.pow(b - a, 2) / 8;
+  }
+});
+
+
+function laplaceSign(x) { return x / Math.abs(x); }
+
+jStat.extend(jStat.laplace, {
+  pdf: function pdf(x, mu, b) {
+    return (b <= 0) ? 0 : (Math.exp(-Math.abs(x - mu) / b)) / (2 * b);
+  },
+
+  cdf: function cdf(x, mu, b) {
+    if (b <= 0) { return 0; }
+
+    if(x < mu) {
+      return 0.5 * Math.exp((x - mu) / b);
+    } else {
+      return 1 - 0.5 * Math.exp(- (x - mu) / b);
+    }
+  },
+
+  mean: function(mu/*, b*/) {
+    return mu;
+  },
+
+  median: function(mu/*, b*/) {
+    return mu;
+  },
+
+  mode: function(mu/*, b*/) {
+    return mu;
+  },
+
+  variance: function(mu, b) {
+    return 2 * b * b;
+  },
+
+  sample: function sample(mu, b) {
+    var u = jStat._random_fn() - 0.5;
+
+    return mu - (b * laplaceSign(u) * Math.log(1 - (2 * Math.abs(u))));
+  }
+});
+
+function tukeyWprob(w, rr, cc) {
+  var nleg = 12;
+  var ihalf = 6;
+
+  var C1 = -30;
+  var C2 = -50;
+  var C3 = 60;
+  var bb   = 8;
+  var wlar = 3;
+  var wincr1 = 2;
+  var wincr2 = 3;
+  var xleg = [
+    0.981560634246719250690549090149,
+    0.904117256370474856678465866119,
+    0.769902674194304687036893833213,
+    0.587317954286617447296702418941,
+    0.367831498998180193752691536644,
+    0.125233408511468915472441369464
+  ];
+  var aleg = [
+    0.047175336386511827194615961485,
+    0.106939325995318430960254718194,
+    0.160078328543346226334652529543,
+    0.203167426723065921749064455810,
+    0.233492536538354808760849898925,
+    0.249147045813402785000562436043
+  ];
+
+  var qsqz = w * 0.5;
+
+  // if w >= 16 then the integral lower bound (occurs for c=20)
+  // is 0.99999999999995 so return a value of 1.
+
+  if (qsqz >= bb)
+    return 1.0;
+
+  // find (f(w/2) - 1) ^ cc
+  // (first term in integral of hartley's form).
+
+  var pr_w = 2 * jStat.normal.cdf(qsqz, 0, 1, 1, 0) - 1; // erf(qsqz / M_SQRT2)
+  // if pr_w ^ cc < 2e-22 then set pr_w = 0
+  if (pr_w >= Math.exp(C2 / cc))
+    pr_w = Math.pow(pr_w, cc);
+  else
+    pr_w = 0.0;
+
+  // if w is large then the second component of the
+  // integral is small, so fewer intervals are needed.
+
+  var wincr;
+  if (w > wlar)
+    wincr = wincr1;
+  else
+    wincr = wincr2;
+
+  // find the integral of second term of hartley's form
+  // for the integral of the range for equal-length
+  // intervals using legendre quadrature.  limits of
+  // integration are from (w/2, 8).  two or three
+  // equal-length intervals are used.
+
+  // blb and bub are lower and upper limits of integration.
+
+  var blb = qsqz;
+  var binc = (bb - qsqz) / wincr;
+  var bub = blb + binc;
+  var einsum = 0.0;
+
+  // integrate over each interval
+
+  var cc1 = cc - 1.0;
+  for (var wi = 1; wi <= wincr; wi++) {
+    var elsum = 0.0;
+    var a = 0.5 * (bub + blb);
+
+    // legendre quadrature with order = nleg
+
+    var b = 0.5 * (bub - blb);
+
+    for (var jj = 1; jj <= nleg; jj++) {
+      var j, xx;
+      if (ihalf < jj) {
+        j = (nleg - jj) + 1;
+        xx = xleg[j-1];
+      } else {
+        j = jj;
+        xx = -xleg[j-1];
+      }
+      var c = b * xx;
+      var ac = a + c;
+
+      // if exp(-qexpo/2) < 9e-14,
+      // then doesn't contribute to integral
+
+      var qexpo = ac * ac;
+      if (qexpo > C3)
+        break;
+
+      var pplus = 2 * jStat.normal.cdf(ac, 0, 1, 1, 0);
+      var pminus= 2 * jStat.normal.cdf(ac, w, 1, 1, 0);
+
+      // if rinsum ^ (cc-1) < 9e-14,
+      // then doesn't contribute to integral
+
+      var rinsum = (pplus * 0.5) - (pminus * 0.5);
+      if (rinsum >= Math.exp(C1 / cc1)) {
+        rinsum = (aleg[j-1] * Math.exp(-(0.5 * qexpo))) * Math.pow(rinsum, cc1);
+        elsum += rinsum;
+      }
+    }
+    elsum *= (((2.0 * b) * cc) / Math.sqrt(2 * Math.PI));
+    einsum += elsum;
+    blb = bub;
+    bub += binc;
+  }
+
+  // if pr_w ^ rr < 9e-14, then return 0
+  pr_w += einsum;
+  if (pr_w <= Math.exp(C1 / rr))
+    return 0;
+
+  pr_w = Math.pow(pr_w, rr);
+  if (pr_w >= 1) // 1 was iMax was eps
+    return 1;
+  return pr_w;
+}
+
+function tukeyQinv(p, c, v) {
+  var p0 = 0.322232421088;
+  var q0 = 0.993484626060e-01;
+  var p1 = -1.0;
+  var q1 = 0.588581570495;
+  var p2 = -0.342242088547;
+  var q2 = 0.531103462366;
+  var p3 = -0.204231210125;
+  var q3 = 0.103537752850;
+  var p4 = -0.453642210148e-04;
+  var q4 = 0.38560700634e-02;
+  var c1 = 0.8832;
+  var c2 = 0.2368;
+  var c3 = 1.214;
+  var c4 = 1.208;
+  var c5 = 1.4142;
+  var vmax = 120.0;
+
+  var ps = 0.5 - 0.5 * p;
+  var yi = Math.sqrt(Math.log(1.0 / (ps * ps)));
+  var t = yi + (((( yi * p4 + p3) * yi + p2) * yi + p1) * yi + p0)
+     / (((( yi * q4 + q3) * yi + q2) * yi + q1) * yi + q0);
+  if (v < vmax) t += (t * t * t + t) / v / 4.0;
+  var q = c1 - c2 * t;
+  if (v < vmax) q += -c3 / v + c4 * t / v;
+  return t * (q * Math.log(c - 1.0) + c5);
+}
+
+jStat.extend(jStat.tukey, {
+  cdf: function cdf(q, nmeans, df) {
+    // Identical implementation as the R ptukey() function as of commit 68947
+    var rr = 1;
+    var cc = nmeans;
+
+    var nlegq = 16;
+    var ihalfq = 8;
+
+    var eps1 = -30.0;
+    var eps2 = 1.0e-14;
+    var dhaf  = 100.0;
+    var dquar = 800.0;
+    var deigh = 5000.0;
+    var dlarg = 25000.0;
+    var ulen1 = 1.0;
+    var ulen2 = 0.5;
+    var ulen3 = 0.25;
+    var ulen4 = 0.125;
+    var xlegq = [
+      0.989400934991649932596154173450,
+      0.944575023073232576077988415535,
+      0.865631202387831743880467897712,
+      0.755404408355003033895101194847,
+      0.617876244402643748446671764049,
+      0.458016777657227386342419442984,
+      0.281603550779258913230460501460,
+      0.950125098376374401853193354250e-1
+    ];
+    var alegq = [
+      0.271524594117540948517805724560e-1,
+      0.622535239386478928628438369944e-1,
+      0.951585116824927848099251076022e-1,
+      0.124628971255533872052476282192,
+      0.149595988816576732081501730547,
+      0.169156519395002538189312079030,
+      0.182603415044923588866763667969,
+      0.189450610455068496285396723208
+    ];
+
+    if (q <= 0)
+      return 0;
+
+    // df must be > 1
+    // there must be at least two values
+
+    if (df < 2 || rr < 1 || cc < 2) return NaN;
+
+    if (!Number.isFinite(q))
+      return 1;
+
+    if (df > dlarg)
+      return tukeyWprob(q, rr, cc);
+
+    // calculate leading constant
+
+    var f2 = df * 0.5;
+    var f2lf = ((f2 * Math.log(df)) - (df * Math.log(2))) - jStat.gammaln(f2);
+    var f21 = f2 - 1.0;
+
+    // integral is divided into unit, half-unit, quarter-unit, or
+    // eighth-unit length intervals depending on the value of the
+    // degrees of freedom.
+
+    var ff4 = df * 0.25;
+    var ulen;
+    if      (df <= dhaf)  ulen = ulen1;
+    else if (df <= dquar) ulen = ulen2;
+    else if (df <= deigh) ulen = ulen3;
+    else                  ulen = ulen4;
+
+    f2lf += Math.log(ulen);
+
+    // integrate over each subinterval
+
+    var ans = 0.0;
+
+    for (var i = 1; i <= 50; i++) {
+      var otsum = 0.0;
+
+      // legendre quadrature with order = nlegq
+      // nodes (stored in xlegq) are symmetric around zero.
+
+      var twa1 = (2 * i - 1) * ulen;
+
+      for (var jj = 1; jj <= nlegq; jj++) {
+        var j, t1;
+        if (ihalfq < jj) {
+          j = jj - ihalfq - 1;
+          t1 = (f2lf + (f21 * Math.log(twa1 + (xlegq[j] * ulen))))
+              - (((xlegq[j] * ulen) + twa1) * ff4);
+        } else {
+          j = jj - 1;
+          t1 = (f2lf + (f21 * Math.log(twa1 - (xlegq[j] * ulen))))
+              + (((xlegq[j] * ulen) - twa1) * ff4);
+        }
+
+        // if exp(t1) < 9e-14, then doesn't contribute to integral
+        var qsqz;
+        if (t1 >= eps1) {
+          if (ihalfq < jj) {
+            qsqz = q * Math.sqrt(((xlegq[j] * ulen) + twa1) * 0.5);
+          } else {
+            qsqz = q * Math.sqrt(((-(xlegq[j] * ulen)) + twa1) * 0.5);
+          }
+
+          // call wprob to find integral of range portion
+
+          var wprb = tukeyWprob(qsqz, rr, cc);
+          var rotsum = (wprb * alegq[j]) * Math.exp(t1);
+          otsum += rotsum;
+        }
+        // end legendre integral for interval i
+        // L200:
+      }
+
+      // if integral for interval i < 1e-14, then stop.
+      // However, in order to avoid small area under left tail,
+      // at least  1 / ulen  intervals are calculated.
+      if (i * ulen >= 1.0 && otsum <= eps2)
+        break;
+
+      // end of interval i
+      // L330:
+
+      ans += otsum;
+    }
+
+    if (otsum > eps2) { // not converged
+      throw new Error('tukey.cdf failed to converge');
+    }
+    if (ans > 1)
+      ans = 1;
+    return ans;
+  },
+
+  inv: function(p, nmeans, df) {
+    // Identical implementation as the R qtukey() function as of commit 68947
+    var rr = 1;
+    var cc = nmeans;
+
+    var eps = 0.0001;
+    var maxiter = 50;
+
+    // df must be > 1 ; there must be at least two values
+    if (df < 2 || rr < 1 || cc < 2) return NaN;
+
+    if (p < 0 || p > 1) return NaN;
+    if (p === 0) return 0;
+    if (p === 1) return Infinity;
+
+    // Initial value
+
+    var x0 = tukeyQinv(p, cc, df);
+
+    // Find prob(value < x0)
+
+    var valx0 = jStat.tukey.cdf(x0, nmeans, df) - p;
+
+    // Find the second iterate and prob(value < x1).
+    // If the first iterate has probability value
+    // exceeding p then second iterate is 1 less than
+    // first iterate; otherwise it is 1 greater.
+
+    var x1;
+    if (valx0 > 0.0)
+      x1 = Math.max(0.0, x0 - 1.0);
+    else
+      x1 = x0 + 1.0;
+    var valx1 = jStat.tukey.cdf(x1, nmeans, df) - p;
+
+    // Find new iterate
+
+    var ans;
+    for(var iter = 1; iter < maxiter; iter++) {
+      ans = x1 - ((valx1 * (x1 - x0)) / (valx1 - valx0));
+      valx0 = valx1;
+
+      // New iterate must be >= 0
+
+      x0 = x1;
+      if (ans < 0.0) {
+        ans = 0.0;
+        valx1 = -p;
+      }
+      // Find prob(value < new iterate)
+
+      valx1 = jStat.tukey.cdf(ans, nmeans, df) - p;
+      x1 = ans;
+
+      // If the difference between two successive
+      // iterates is less than eps, stop
+
+      var xabs = Math.abs(x1 - x0);
+      if (xabs < eps)
+        return ans;
+    }
+
+    throw new Error('tukey.inv failed to converge');
+  }
+});
+
+}(jStat, Math));
+/* Provides functions for the solution of linear system of equations, integration, extrapolation,
+ * interpolation, eigenvalue problems, differential equations and PCA analysis. */
+
+(function(jStat, Math) {
+
+var push = Array.prototype.push;
+var isArray = jStat.utils.isArray;
+
+function isUsable(arg) {
+  return isArray(arg) || arg instanceof jStat;
+}
+
+jStat.extend({
+
+  // add a vector/matrix to a vector/matrix or scalar
+  add: function add(arr, arg) {
+    // check if arg is a vector or scalar
+    if (isUsable(arg)) {
+      if (!isUsable(arg[0])) arg = [ arg ];
+      return jStat.map(arr, function(value, row, col) {
+        return value + arg[row][col];
+      });
+    }
+    return jStat.map(arr, function(value) { return value + arg; });
+  },
+
+  // subtract a vector or scalar from the vector
+  subtract: function subtract(arr, arg) {
+    // check if arg is a vector or scalar
+    if (isUsable(arg)) {
+      if (!isUsable(arg[0])) arg = [ arg ];
+      return jStat.map(arr, function(value, row, col) {
+        return value - arg[row][col] || 0;
+      });
+    }
+    return jStat.map(arr, function(value) { return value - arg; });
+  },
+
+  // matrix division
+  divide: function divide(arr, arg) {
+    if (isUsable(arg)) {
+      if (!isUsable(arg[0])) arg = [ arg ];
+      return jStat.multiply(arr, jStat.inv(arg));
+    }
+    return jStat.map(arr, function(value) { return value / arg; });
+  },
+
+  // matrix multiplication
+  multiply: function multiply(arr, arg) {
+    var row, col, nrescols, sum, nrow, ncol, res, rescols;
+    // eg: arr = 2 arg = 3 -> 6 for res[0][0] statement closure
+    if (arr.length === undefined && arg.length === undefined) {
+      return arr * arg;
+    }
+    nrow = arr.length,
+    ncol = arr[0].length,
+    res = jStat.zeros(nrow, nrescols = (isUsable(arg)) ? arg[0].length : ncol),
+    rescols = 0;
+    if (isUsable(arg)) {
+      for (; rescols < nrescols; rescols++) {
+        for (row = 0; row < nrow; row++) {
+          sum = 0;
+          for (col = 0; col < ncol; col++)
+          sum += arr[row][col] * arg[col][rescols];
+          res[row][rescols] = sum;
+        }
+      }
+      return (nrow === 1 && rescols === 1) ? res[0][0] : res;
+    }
+    return jStat.map(arr, function(value) { return value * arg; });
+  },
+
+  // outer([1,2,3],[4,5,6])
+  // ===
+  // [[1],[2],[3]] times [[4,5,6]]
+  // ->
+  // [[4,5,6],[8,10,12],[12,15,18]]
+  outer:function outer(A, B) {
+    return jStat.multiply(A.map(function(t){ return [t] }), [B]);
+  },
+
+
+  // Returns the dot product of two matricies
+  dot: function dot(arr, arg) {
+    if (!isUsable(arr[0])) arr = [ arr ];
+    if (!isUsable(arg[0])) arg = [ arg ];
+    // convert column to row vector
+    var left = (arr[0].length === 1 && arr.length !== 1) ? jStat.transpose(arr) : arr,
+    right = (arg[0].length === 1 && arg.length !== 1) ? jStat.transpose(arg) : arg,
+    res = [],
+    row = 0,
+    nrow = left.length,
+    ncol = left[0].length,
+    sum, col;
+    for (; row < nrow; row++) {
+      res[row] = [];
+      sum = 0;
+      for (col = 0; col < ncol; col++)
+      sum += left[row][col] * right[row][col];
+      res[row] = sum;
+    }
+    return (res.length === 1) ? res[0] : res;
+  },
+
+  // raise every element by a scalar
+  pow: function pow(arr, arg) {
+    return jStat.map(arr, function(value) { return Math.pow(value, arg); });
+  },
+
+  // exponentiate every element
+  exp: function exp(arr) {
+    return jStat.map(arr, function(value) { return Math.exp(value); });
+  },
+
+  // generate the natural log of every element
+  log: function exp(arr) {
+    return jStat.map(arr, function(value) { return Math.log(value); });
+  },
+
+  // generate the absolute values of the vector
+  abs: function abs(arr) {
+    return jStat.map(arr, function(value) { return Math.abs(value); });
+  },
+
+  // computes the p-norm of the vector
+  // In the case that a matrix is passed, uses the first row as the vector
+  norm: function norm(arr, p) {
+    var nnorm = 0,
+    i = 0;
+    // check the p-value of the norm, and set for most common case
+    if (isNaN(p)) p = 2;
+    // check if multi-dimensional array, and make vector correction
+    if (isUsable(arr[0])) arr = arr[0];
+    // vector norm
+    for (; i < arr.length; i++) {
+      nnorm += Math.pow(Math.abs(arr[i]), p);
+    }
+    return Math.pow(nnorm, 1 / p);
+  },
+
+  // computes the angle between two vectors in rads
+  // In case a matrix is passed, this uses the first row as the vector
+  angle: function angle(arr, arg) {
+    return Math.acos(jStat.dot(arr, arg) / (jStat.norm(arr) * jStat.norm(arg)));
+  },
+
+  // augment one matrix by another
+  // Note: this function returns a matrix, not a jStat object
+  aug: function aug(a, b) {
+    var newarr = [];
+    var i;
+    for (i = 0; i < a.length; i++) {
+      newarr.push(a[i].slice());
+    }
+    for (i = 0; i < newarr.length; i++) {
+      push.apply(newarr[i], b[i]);
+    }
+    return newarr;
+  },
+
+  // The inv() function calculates the inverse of a matrix
+  // Create the inverse by augmenting the matrix by the identity matrix of the
+  // appropriate size, and then use G-J elimination on the augmented matrix.
+  inv: function inv(a) {
+    var rows = a.length;
+    var cols = a[0].length;
+    var b = jStat.identity(rows, cols);
+    var c = jStat.gauss_jordan(a, b);
+    var result = [];
+    var i = 0;
+    var j;
+
+    //We need to copy the inverse portion to a new matrix to rid G-J artifacts
+    for (; i < rows; i++) {
+      result[i] = [];
+      for (j = cols; j < c[0].length; j++)
+        result[i][j - cols] = c[i][j];
+    }
+    return result;
+  },
+
+  // calculate the determinant of a matrix
+  det: function det(a) {
+    var alen = a.length,
+    alend = alen * 2,
+    vals = new Array(alend),
+    rowshift = alen - 1,
+    colshift = alend - 1,
+    mrow = rowshift - alen + 1,
+    mcol = colshift,
+    i = 0,
+    result = 0,
+    j;
+    // check for special 2x2 case
+    if (alen === 2) {
+      return a[0][0] * a[1][1] - a[0][1] * a[1][0];
+    }
+    for (; i < alend; i++) {
+      vals[i] = 1;
+    }
+    for (i = 0; i < alen; i++) {
+      for (j = 0; j < alen; j++) {
+        vals[(mrow < 0) ? mrow + alen : mrow ] *= a[i][j];
+        vals[(mcol < alen) ? mcol + alen : mcol ] *= a[i][j];
+        mrow++;
+        mcol--;
+      }
+      mrow = --rowshift - alen + 1;
+      mcol = --colshift;
+    }
+    for (i = 0; i < alen; i++) {
+      result += vals[i];
+    }
+    for (; i < alend; i++) {
+      result -= vals[i];
+    }
+    return result;
+  },
+
+  gauss_elimination: function gauss_elimination(a, b) {
+    var i = 0,
+    j = 0,
+    n = a.length,
+    m = a[0].length,
+    factor = 1,
+    sum = 0,
+    x = [],
+    maug, pivot, temp, k;
+    a = jStat.aug(a, b);
+    maug = a[0].length;
+    for(i = 0; i < n; i++) {
+      pivot = a[i][i];
+      j = i;
+      for (k = i + 1; k < m; k++) {
+        if (pivot < Math.abs(a[k][i])) {
+          pivot = a[k][i];
+          j = k;
+        }
+      }
+      if (j != i) {
+        for(k = 0; k < maug; k++) {
+          temp = a[i][k];
+          a[i][k] = a[j][k];
+          a[j][k] = temp;
+        }
+      }
+      for (j = i + 1; j < n; j++) {
+        factor = a[j][i] / a[i][i];
+        for(k = i; k < maug; k++) {
+          a[j][k] = a[j][k] - factor * a[i][k];
+        }
+      }
+    }
+    for (i = n - 1; i >= 0; i--) {
+      sum = 0;
+      for (j = i + 1; j<= n - 1; j++) {
+        sum = sum + x[j] * a[i][j];
+      }
+      x[i] =(a[i][maug - 1] - sum) / a[i][i];
+    }
+    return x;
+  },
+
+  gauss_jordan: function gauss_jordan(a, b) {
+    var m = jStat.aug(a, b);
+    var h = m.length;
+    var w = m[0].length;
+    var c = 0;
+    var x, y, y2;
+    // find max pivot
+    for (y = 0; y < h; y++) {
+      var maxrow = y;
+      for (y2 = y+1; y2 < h; y2++) {
+        if (Math.abs(m[y2][y]) > Math.abs(m[maxrow][y]))
+          maxrow = y2;
+      }
+      var tmp = m[y];
+      m[y] = m[maxrow];
+      m[maxrow] = tmp
+      for (y2 = y+1; y2 < h; y2++) {
+        c = m[y2][y] / m[y][y];
+        for (x = y; x < w; x++) {
+          m[y2][x] -= m[y][x] * c;
+        }
+      }
+    }
+    // backsubstitute
+    for (y = h-1; y >= 0; y--) {
+      c = m[y][y];
+      for (y2 = 0; y2 < y; y2++) {
+        for (x = w-1; x > y-1; x--) {
+          m[y2][x] -= m[y][x] * m[y2][y] / c;
+        }
+      }
+      m[y][y] /= c;
+      for (x = h; x < w; x++) {
+        m[y][x] /= c;
+      }
+    }
+    return m;
+  },
+
+  // solve equation
+  // Ax=b
+  // A is upper triangular matrix
+  // A=[[1,2,3],[0,4,5],[0,6,7]]
+  // b=[1,2,3]
+  // triaUpSolve(A,b) // -> [2.666,0.1666,1.666]
+  // if you use matrix style
+  // A=[[1,2,3],[0,4,5],[0,6,7]]
+  // b=[[1],[2],[3]]
+  // will return [[2.666],[0.1666],[1.666]]
+  triaUpSolve: function triaUpSolve(A, b) {
+    var size = A[0].length;
+    var x = jStat.zeros(1, size)[0];
+    var parts;
+    var matrix_mode = false;
+
+    if (b[0].length != undefined) {
+      b = b.map(function(i){ return i[0] });
+      matrix_mode = true;
+    }
+
+    jStat.arange(size - 1, -1, -1).forEach(function(i) {
+      parts = jStat.arange(i + 1, size).map(function(j) {
+        return x[j] * A[i][j];
+      });
+      x[i] = (b[i] - jStat.sum(parts)) / A[i][i];
+    });
+
+    if (matrix_mode)
+      return x.map(function(i){ return [i] });
+    return x;
+  },
+
+  triaLowSolve: function triaLowSolve(A, b) {
+    // like to triaUpSolve but A is lower triangular matrix
+    var size = A[0].length;
+    var x = jStat.zeros(1, size)[0];
+    var parts;
+
+    var matrix_mode=false;
+    if (b[0].length != undefined) {
+      b = b.map(function(i){ return i[0] });
+      matrix_mode = true;
+    }
+
+    jStat.arange(size).forEach(function(i) {
+      parts = jStat.arange(i).map(function(j) {
+        return A[i][j] * x[j];
+      });
+      x[i] = (b[i] - jStat.sum(parts)) / A[i][i];
+    })
+
+    if (matrix_mode)
+      return x.map(function(i){ return [i] });
+    return x;
+  },
+
+
+  // A -> [L,U]
+  // A=LU
+  // L is lower triangular matrix
+  // U is upper triangular matrix
+  lu: function lu(A) {
+    var size = A.length;
+    //var L=jStat.diagonal(jStat.ones(1,size)[0]);
+    var L = jStat.identity(size);
+    var R = jStat.zeros(A.length, A[0].length);
+    var parts;
+    jStat.arange(size).forEach(function(t) {
+      R[0][t] = A[0][t];
+    });
+    jStat.arange(1, size).forEach(function(l) {
+      jStat.arange(l).forEach(function(i) {
+        parts = jStat.arange(i).map(function(jj) {
+          return L[l][jj] * R[jj][i];
+        });
+        L[l][i] = (A[l][i] - jStat.sum(parts)) / R[i][i];
+      });
+      jStat.arange(l, size).forEach(function(j) {
+        parts = jStat.arange(l).map(function(jj) {
+          return L[l][jj] * R[jj][j];
+        });
+        R[l][j] = A[parts.length][j] - jStat.sum(parts);
+      });
+    });
+    return [L, R];
+  },
+
+  // A -> T
+  // A=TT'
+  // T is lower triangular matrix
+  cholesky: function cholesky(A) {
+    var size = A.length;
+    var T = jStat.zeros(A.length, A[0].length);
+    var parts;
+    jStat.arange(size).forEach(function(i) {
+      parts = jStat.arange(i).map(function(t) {
+        return Math.pow(T[i][t],2);
+      });
+      T[i][i] = Math.sqrt(A[i][i] - jStat.sum(parts));
+      jStat.arange(i + 1, size).forEach(function(j) {
+        parts = jStat.arange(i).map(function(t) {
+          return T[i][t] * T[j][t];
+        });
+        T[j][i] = (A[i][j] - jStat.sum(parts)) / T[i][i];
+      });
+    });
+    return T;
+  },
+
+
+  gauss_jacobi: function gauss_jacobi(a, b, x, r) {
+    var i = 0;
+    var j = 0;
+    var n = a.length;
+    var l = [];
+    var u = [];
+    var d = [];
+    var xv, c, h, xk;
+    for (; i < n; i++) {
+      l[i] = [];
+      u[i] = [];
+      d[i] = [];
+      for (j = 0; j < n; j++) {
+        if (i > j) {
+          l[i][j] = a[i][j];
+          u[i][j] = d[i][j] = 0;
+        } else if (i < j) {
+          u[i][j] = a[i][j];
+          l[i][j] = d[i][j] = 0;
+        } else {
+          d[i][j] = a[i][j];
+          l[i][j] = u[i][j] = 0;
+        }
+      }
+    }
+    h = jStat.multiply(jStat.multiply(jStat.inv(d), jStat.add(l, u)), -1);
+    c = jStat.multiply(jStat.inv(d), b);
+    xv = x;
+    xk = jStat.add(jStat.multiply(h, x), c);
+    i = 2;
+    while (Math.abs(jStat.norm(jStat.subtract(xk,xv))) > r) {
+      xv = xk;
+      xk = jStat.add(jStat.multiply(h, xv), c);
+      i++;
+    }
+    return xk;
+  },
+
+  gauss_seidel: function gauss_seidel(a, b, x, r) {
+    var i = 0;
+    var n = a.length;
+    var l = [];
+    var u = [];
+    var d = [];
+    var j, xv, c, h, xk;
+    for (; i < n; i++) {
+      l[i] = [];
+      u[i] = [];
+      d[i] = [];
+      for (j = 0; j < n; j++) {
+        if (i > j) {
+          l[i][j] = a[i][j];
+          u[i][j] = d[i][j] = 0;
+        } else if (i < j) {
+          u[i][j] = a[i][j];
+          l[i][j] = d[i][j] = 0;
+        } else {
+          d[i][j] = a[i][j];
+          l[i][j] = u[i][j] = 0;
+        }
+      }
+    }
+    h = jStat.multiply(jStat.multiply(jStat.inv(jStat.add(d, l)), u), -1);
+    c = jStat.multiply(jStat.inv(jStat.add(d, l)), b);
+    xv = x;
+    xk = jStat.add(jStat.multiply(h, x), c);
+    i = 2;
+    while (Math.abs(jStat.norm(jStat.subtract(xk, xv))) > r) {
+      xv = xk;
+      xk = jStat.add(jStat.multiply(h, xv), c);
+      i = i + 1;
+    }
+    return xk;
+  },
+
+  SOR: function SOR(a, b, x, r, w) {
+    var i = 0;
+    var n = a.length;
+    var l = [];
+    var u = [];
+    var d = [];
+    var j, xv, c, h, xk;
+    for (; i < n; i++) {
+      l[i] = [];
+      u[i] = [];
+      d[i] = [];
+      for (j = 0; j < n; j++) {
+        if (i > j) {
+          l[i][j] = a[i][j];
+          u[i][j] = d[i][j] = 0;
+        } else if (i < j) {
+          u[i][j] = a[i][j];
+          l[i][j] = d[i][j] = 0;
+        } else {
+          d[i][j] = a[i][j];
+          l[i][j] = u[i][j] = 0;
+        }
+      }
+    }
+    h = jStat.multiply(jStat.inv(jStat.add(d, jStat.multiply(l, w))),
+                       jStat.subtract(jStat.multiply(d, 1 - w),
+                                      jStat.multiply(u, w)));
+    c = jStat.multiply(jStat.multiply(jStat.inv(jStat.add(d,
+        jStat.multiply(l, w))), b), w);
+    xv = x;
+    xk = jStat.add(jStat.multiply(h, x), c);
+    i = 2;
+    while (Math.abs(jStat.norm(jStat.subtract(xk, xv))) > r) {
+      xv = xk;
+      xk = jStat.add(jStat.multiply(h, xv), c);
+      i++;
+    }
+    return xk;
+  },
+
+  householder: function householder(a) {
+    var m = a.length;
+    var n = a[0].length;
+    var i = 0;
+    var w = [];
+    var p = [];
+    var alpha, r, k, j, factor;
+    for (; i < m - 1; i++) {
+      alpha = 0;
+      for (j = i + 1; j < n; j++)
+      alpha += (a[j][i] * a[j][i]);
+      factor = (a[i + 1][i] > 0) ? -1 : 1;
+      alpha = factor * Math.sqrt(alpha);
+      r = Math.sqrt((((alpha * alpha) - a[i + 1][i] * alpha) / 2));
+      w = jStat.zeros(m, 1);
+      w[i + 1][0] = (a[i + 1][i] - alpha) / (2 * r);
+      for (k = i + 2; k < m; k++) w[k][0] = a[k][i] / (2 * r);
+      p = jStat.subtract(jStat.identity(m, n),
+          jStat.multiply(jStat.multiply(w, jStat.transpose(w)), 2));
+      a = jStat.multiply(p, jStat.multiply(a, p));
+    }
+    return a;
+  },
+
+  // A -> [Q,R]
+  // Q is orthogonal matrix
+  // R is upper triangular
+  QR: (function() {
+    // x -> Q
+    // find a orthogonal matrix Q st.
+    // Qx=y
+    // y is [||x||,0,0,...]
+
+    // quick ref
+    var sum   = jStat.sum;
+    var range = jStat.arange;
+
+    function qr2(x) {
+      // quick impletation
+      // https://www.stat.wisc.edu/~larget/math496/qr.html
+
+      var n = x.length;
+      var p = x[0].length;
+
+      var r = jStat.zeros(p, p);
+      x = jStat.copy(x);
+
+      var i,j,k;
+      for(j = 0; j < p; j++){
+        r[j][j] = Math.sqrt(sum(range(n).map(function(i){
+          return x[i][j] * x[i][j];
+        })));
+        for(i = 0; i < n; i++){
+          x[i][j] = x[i][j] / r[j][j];
+        }
+        for(k = j+1; k < p; k++){
+          r[j][k] = sum(range(n).map(function(i){
+            return x[i][j] * x[i][k];
+          }));
+          for(i = 0; i < n; i++){
+            x[i][k] = x[i][k] - x[i][j]*r[j][k];
+          }
+        }
+      }
+      return [x, r];
+    }
+
+    return qr2;
+  }()),
+
+  lstsq: (function() {
+    // solve least squard problem for Ax=b as QR decomposition way if b is
+    // [[b1],[b2],[b3]] form will return [[x1],[x2],[x3]] array form solution
+    // else b is [b1,b2,b3] form will return [x1,x2,x3] array form solution
+    function R_I(A) {
+      A = jStat.copy(A);
+      var size = A.length;
+      var I = jStat.identity(size);
+      jStat.arange(size - 1, -1, -1).forEach(function(i) {
+        jStat.sliceAssign(
+            I, { row: i }, jStat.divide(jStat.slice(I, { row: i }), A[i][i]));
+        jStat.sliceAssign(
+            A, { row: i }, jStat.divide(jStat.slice(A, { row: i }), A[i][i]));
+        jStat.arange(i).forEach(function(j) {
+          var c = jStat.multiply(A[j][i], -1);
+          var Aj = jStat.slice(A, { row: j });
+          var cAi = jStat.multiply(jStat.slice(A, { row: i }), c);
+          jStat.sliceAssign(A, { row: j }, jStat.add(Aj, cAi));
+          var Ij = jStat.slice(I, { row: j });
+          var cIi = jStat.multiply(jStat.slice(I, { row: i }), c);
+          jStat.sliceAssign(I, { row: j }, jStat.add(Ij, cIi));
+        })
+      });
+      return I;
+    }
+
+    function qr_solve(A, b){
+      var array_mode = false;
+      if (b[0].length === undefined) {
+        // [c1,c2,c3] mode
+        b = b.map(function(x){ return [x] });
+        array_mode = true;
+      }
+      var QR = jStat.QR(A);
+      var Q = QR[0];
+      var R = QR[1];
+      var attrs = A[0].length;
+      var Q1 = jStat.slice(Q,{col:{end:attrs}});
+      var R1 = jStat.slice(R,{row:{end:attrs}});
+      var RI = R_I(R1);
+      var Q2 = jStat.transpose(Q1);
+
+      if(Q2[0].length === undefined){
+        Q2 = [Q2]; // The confusing jStat.multifly implementation threat nature process again.
+      }
+
+      var x = jStat.multiply(jStat.multiply(RI, Q2), b);
+
+      if(x.length === undefined){
+        x = [[x]]; // The confusing jStat.multifly implementation threat nature process again.
+      }
+
+
+      if (array_mode)
+        return x.map(function(i){ return i[0] });
+      return x;
+    }
+
+    return qr_solve;
+  }()),
+
+  jacobi: function jacobi(a) {
+    var condition = 1;
+    var n = a.length;
+    var e = jStat.identity(n, n);
+    var ev = [];
+    var b, i, j, p, q, maxim, theta, s;
+    // condition === 1 only if tolerance is not reached
+    while (condition === 1) {
+      maxim = a[0][1];
+      p = 0;
+      q = 1;
+      for (i = 0; i < n; i++) {
+        for (j = 0; j < n; j++) {
+          if (i != j) {
+            if (maxim < Math.abs(a[i][j])) {
+              maxim = Math.abs(a[i][j]);
+              p = i;
+              q = j;
+            }
+          }
+        }
+      }
+      if (a[p][p] === a[q][q])
+        theta = (a[p][q] > 0) ? Math.PI / 4 : -Math.PI / 4;
+      else
+        theta = Math.atan(2 * a[p][q] / (a[p][p] - a[q][q])) / 2;
+      s = jStat.identity(n, n);
+      s[p][p] = Math.cos(theta);
+      s[p][q] = -Math.sin(theta);
+      s[q][p] = Math.sin(theta);
+      s[q][q] = Math.cos(theta);
+      // eigen vector matrix
+      e = jStat.multiply(e, s);
+      b = jStat.multiply(jStat.multiply(jStat.inv(s), a), s);
+      a = b;
+      condition = 0;
+      for (i = 1; i < n; i++) {
+        for (j = 1; j < n; j++) {
+          if (i != j && Math.abs(a[i][j]) > 0.001) {
+            condition = 1;
+          }
+        }
+      }
+    }
+    for (i = 0; i < n; i++) ev.push(a[i][i]);
+    //returns both the eigenvalue and eigenmatrix
+    return [e, ev];
+  },
+
+  rungekutta: function rungekutta(f, h, p, t_j, u_j, order) {
+    var k1, k2, u_j1, k3, k4;
+    if (order === 2) {
+      while (t_j <= p) {
+        k1 = h * f(t_j, u_j);
+        k2 = h * f(t_j + h, u_j + k1);
+        u_j1 = u_j + (k1 + k2) / 2;
+        u_j = u_j1;
+        t_j = t_j + h;
+      }
+    }
+    if (order === 4) {
+      while (t_j <= p) {
+        k1 = h * f(t_j, u_j);
+        k2 = h * f(t_j + h / 2, u_j + k1 / 2);
+        k3 = h * f(t_j + h / 2, u_j + k2 / 2);
+        k4 = h * f(t_j +h, u_j + k3);
+        u_j1 = u_j + (k1 + 2 * k2 + 2 * k3 + k4) / 6;
+        u_j = u_j1;
+        t_j = t_j + h;
+      }
+    }
+    return u_j;
+  },
+
+  romberg: function romberg(f, a, b, order) {
+    var i = 0;
+    var h = (b - a) / 2;
+    var x = [];
+    var h1 = [];
+    var g = [];
+    var m, a1, j, k, I;
+    while (i < order / 2) {
+      I = f(a);
+      for (j = a, k = 0; j <= b; j = j + h, k++) x[k] = j;
+      m = x.length;
+      for (j = 1; j < m - 1; j++) {
+        I += (((j % 2) !== 0) ? 4 : 2) * f(x[j]);
+      }
+      I = (h / 3) * (I + f(b));
+      g[i] = I;
+      h /= 2;
+      i++;
+    }
+    a1 = g.length;
+    m = 1;
+    while (a1 !== 1) {
+      for (j = 0; j < a1 - 1; j++)
+      h1[j] = ((Math.pow(4, m)) * g[j + 1] - g[j]) / (Math.pow(4, m) - 1);
+      a1 = h1.length;
+      g = h1;
+      h1 = [];
+      m++;
+    }
+    return g;
+  },
+
+  richardson: function richardson(X, f, x, h) {
+    function pos(X, x) {
+      var i = 0;
+      var n = X.length;
+      var p;
+      for (; i < n; i++)
+        if (X[i] === x) p = i;
+      return p;
+    }
+    var h_min = Math.abs(x - X[pos(X, x) + 1]);
+    var i = 0;
+    var g = [];
+    var h1 = [];
+    var y1, y2, m, a, j;
+    while (h >= h_min) {
+      y1 = pos(X, x + h);
+      y2 = pos(X, x);
+      g[i] = (f[y1] - 2 * f[y2] + f[2 * y2 - y1]) / (h * h);
+      h /= 2;
+      i++;
+    }
+    a = g.length;
+    m = 1;
+    while (a != 1) {
+      for (j = 0; j < a - 1; j++)
+        h1[j] = ((Math.pow(4, m)) * g[j + 1] - g[j]) / (Math.pow(4, m) - 1);
+      a = h1.length;
+      g = h1;
+      h1 = [];
+      m++;
+    }
+    return g;
+  },
+
+  simpson: function simpson(f, a, b, n) {
+    var h = (b - a) / n;
+    var I = f(a);
+    var x = [];
+    var j = a;
+    var k = 0;
+    var i = 1;
+    var m;
+    for (; j <= b; j = j + h, k++)
+      x[k] = j;
+    m = x.length;
+    for (; i < m - 1; i++) {
+      I += ((i % 2 !== 0) ? 4 : 2) * f(x[i]);
+    }
+    return (h / 3) * (I + f(b));
+  },
+
+  hermite: function hermite(X, F, dF, value) {
+    var n = X.length;
+    var p = 0;
+    var i = 0;
+    var l = [];
+    var dl = [];
+    var A = [];
+    var B = [];
+    var j;
+    for (; i < n; i++) {
+      l[i] = 1;
+      for (j = 0; j < n; j++) {
+        if (i != j) l[i] *= (value - X[j]) / (X[i] - X[j]);
+      }
+      dl[i] = 0;
+      for (j = 0; j < n; j++) {
+        if (i != j) dl[i] += 1 / (X [i] - X[j]);
+      }
+      A[i] = (1 - 2 * (value - X[i]) * dl[i]) * (l[i] * l[i]);
+      B[i] = (value - X[i]) * (l[i] * l[i]);
+      p += (A[i] * F[i] + B[i] * dF[i]);
+    }
+    return p;
+  },
+
+  lagrange: function lagrange(X, F, value) {
+    var p = 0;
+    var i = 0;
+    var j, l;
+    var n = X.length;
+    for (; i < n; i++) {
+      l = F[i];
+      for (j = 0; j < n; j++) {
+        // calculating the lagrange polynomial L_i
+        if (i != j) l *= (value - X[j]) / (X[i] - X[j]);
+      }
+      // adding the lagrange polynomials found above
+      p += l;
+    }
+    return p;
+  },
+
+  cubic_spline: function cubic_spline(X, F, value) {
+    var n = X.length;
+    var i = 0, j;
+    var A = [];
+    var B = [];
+    var alpha = [];
+    var c = [];
+    var h = [];
+    var b = [];
+    var d = [];
+    for (; i < n - 1; i++)
+      h[i] = X[i + 1] - X[i];
+    alpha[0] = 0;
+    for (i = 1; i < n - 1; i++) {
+      alpha[i] = (3 / h[i]) * (F[i + 1] - F[i]) -
+          (3 / h[i-1]) * (F[i] - F[i-1]);
+    }
+    for (i = 1; i < n - 1; i++) {
+      A[i] = [];
+      B[i] = [];
+      A[i][i-1] = h[i-1];
+      A[i][i] = 2 * (h[i - 1] + h[i]);
+      A[i][i+1] = h[i];
+      B[i][0] = alpha[i];
+    }
+    c = jStat.multiply(jStat.inv(A), B);
+    for (j = 0; j < n - 1; j++) {
+      b[j] = (F[j + 1] - F[j]) / h[j] - h[j] * (c[j + 1][0] + 2 * c[j][0]) / 3;
+      d[j] = (c[j + 1][0] - c[j][0]) / (3 * h[j]);
+    }
+    for (j = 0; j < n; j++) {
+      if (X[j] > value) break;
+    }
+    j -= 1;
+    return F[j] + (value - X[j]) * b[j] + jStat.sq(value-X[j]) *
+        c[j] + (value - X[j]) * jStat.sq(value - X[j]) * d[j];
+  },
+
+  gauss_quadrature: function gauss_quadrature() {
+    throw new Error('gauss_quadrature not yet implemented');
+  },
+
+  PCA: function PCA(X) {
+    var m = X.length;
+    var n = X[0].length;
+    var i = 0;
+    var j, temp1;
+    var u = [];
+    var D = [];
+    var result = [];
+    var temp2 = [];
+    var Y = [];
+    var Bt = [];
+    var B = [];
+    var C = [];
+    var V = [];
+    var Vt = [];
+    for (i = 0; i < m; i++) {
+      u[i] = jStat.sum(X[i]) / n;
+    }
+    for (i = 0; i < n; i++) {
+      B[i] = [];
+      for(j = 0; j < m; j++) {
+        B[i][j] = X[j][i] - u[j];
+      }
+    }
+    B = jStat.transpose(B);
+    for (i = 0; i < m; i++) {
+      C[i] = [];
+      for (j = 0; j < m; j++) {
+        C[i][j] = (jStat.dot([B[i]], [B[j]])) / (n - 1);
+      }
+    }
+    result = jStat.jacobi(C);
+    V = result[0];
+    D = result[1];
+    Vt = jStat.transpose(V);
+    for (i = 0; i < D.length; i++) {
+      for (j = i; j < D.length; j++) {
+        if(D[i] < D[j])  {
+          temp1 = D[i];
+          D[i] = D[j];
+          D[j] = temp1;
+          temp2 = Vt[i];
+          Vt[i] = Vt[j];
+          Vt[j] = temp2;
+        }
+      }
+    }
+    Bt = jStat.transpose(B);
+    for (i = 0; i < m; i++) {
+      Y[i] = [];
+      for (j = 0; j < Bt.length; j++) {
+        Y[i][j] = jStat.dot([Vt[i]], [Bt[j]]);
+      }
+    }
+    return [X, D, Vt, Y];
+  }
+});
+
+// extend jStat.fn with methods that require one argument
+(function(funcs) {
+  for (var i = 0; i < funcs.length; i++) (function(passfunc) {
+    jStat.fn[passfunc] = function(arg, func) {
+      var tmpthis = this;
+      // check for callback
+      if (func) {
+        setTimeout(function() {
+          func.call(tmpthis, jStat.fn[passfunc].call(tmpthis, arg));
+        }, 15);
+        return this;
+      }
+      if (typeof jStat[passfunc](this, arg) === 'number')
+        return jStat[passfunc](this, arg);
+      else
+        return jStat(jStat[passfunc](this, arg));
+    };
+  }(funcs[i]));
+}('add divide multiply subtract dot pow exp log abs norm angle'.split(' ')));
+
+}(jStat, Math));
+(function(jStat, Math) {
+
+var slice = [].slice;
+var isNumber = jStat.utils.isNumber;
+var isArray = jStat.utils.isArray;
+
+// flag==true denotes use of sample standard deviation
+// Z Statistics
+jStat.extend({
+  // 2 different parameter lists:
+  // (value, mean, sd)
+  // (value, array, flag)
+  zscore: function zscore() {
+    var args = slice.call(arguments);
+    if (isNumber(args[1])) {
+      return (args[0] - args[1]) / args[2];
+    }
+    return (args[0] - jStat.mean(args[1])) / jStat.stdev(args[1], args[2]);
+  },
+
+  // 3 different paramter lists:
+  // (value, mean, sd, sides)
+  // (zscore, sides)
+  // (value, array, sides, flag)
+  ztest: function ztest() {
+    var args = slice.call(arguments);
+    var z;
+    if (isArray(args[1])) {
+      // (value, array, sides, flag)
+      z = jStat.zscore(args[0],args[1],args[3]);
+      return (args[2] === 1) ?
+        (jStat.normal.cdf(-Math.abs(z), 0, 1)) :
+        (jStat.normal.cdf(-Math.abs(z), 0, 1)*2);
+    } else {
+      if (args.length > 2) {
+        // (value, mean, sd, sides)
+        z = jStat.zscore(args[0],args[1],args[2]);
+        return (args[3] === 1) ?
+          (jStat.normal.cdf(-Math.abs(z),0,1)) :
+          (jStat.normal.cdf(-Math.abs(z),0,1)* 2);
+      } else {
+        // (zscore, sides)
+        z = args[0];
+        return (args[1] === 1) ?
+          (jStat.normal.cdf(-Math.abs(z),0,1)) :
+          (jStat.normal.cdf(-Math.abs(z),0,1)*2);
+      }
+    }
+  }
+});
+
+jStat.extend(jStat.fn, {
+  zscore: function zscore(value, flag) {
+    return (value - this.mean()) / this.stdev(flag);
+  },
+
+  ztest: function ztest(value, sides, flag) {
+    var zscore = Math.abs(this.zscore(value, flag));
+    return (sides === 1) ?
+      (jStat.normal.cdf(-zscore, 0, 1)) :
+      (jStat.normal.cdf(-zscore, 0, 1) * 2);
+  }
+});
+
+// T Statistics
+jStat.extend({
+  // 2 parameter lists
+  // (value, mean, sd, n)
+  // (value, array)
+  tscore: function tscore() {
+    var args = slice.call(arguments);
+    return (args.length === 4) ?
+      ((args[0] - args[1]) / (args[2] / Math.sqrt(args[3]))) :
+      ((args[0] - jStat.mean(args[1])) /
+       (jStat.stdev(args[1], true) / Math.sqrt(args[1].length)));
+  },
+
+  // 3 different paramter lists:
+  // (value, mean, sd, n, sides)
+  // (tscore, n, sides)
+  // (value, array, sides)
+  ttest: function ttest() {
+    var args = slice.call(arguments);
+    var tscore;
+    if (args.length === 5) {
+      tscore = Math.abs(jStat.tscore(args[0], args[1], args[2], args[3]));
+      return (args[4] === 1) ?
+        (jStat.studentt.cdf(-tscore, args[3]-1)) :
+        (jStat.studentt.cdf(-tscore, args[3]-1)*2);
+    }
+    if (isNumber(args[1])) {
+      tscore = Math.abs(args[0])
+      return (args[2] == 1) ?
+        (jStat.studentt.cdf(-tscore, args[1]-1)) :
+        (jStat.studentt.cdf(-tscore, args[1]-1) * 2);
+    }
+    tscore = Math.abs(jStat.tscore(args[0], args[1]))
+    return (args[2] == 1) ?
+      (jStat.studentt.cdf(-tscore, args[1].length-1)) :
+      (jStat.studentt.cdf(-tscore, args[1].length-1) * 2);
+  }
+});
+
+jStat.extend(jStat.fn, {
+  tscore: function tscore(value) {
+    return (value - this.mean()) / (this.stdev(true) / Math.sqrt(this.cols()));
+  },
+
+  ttest: function ttest(value, sides) {
+    return (sides === 1) ?
+      (1 - jStat.studentt.cdf(Math.abs(this.tscore(value)), this.cols()-1)) :
+      (jStat.studentt.cdf(-Math.abs(this.tscore(value)), this.cols()-1)*2);
+  }
+});
+
+// F Statistics
+jStat.extend({
+  // Paramter list is as follows:
+  // (array1, array2, array3, ...)
+  // or it is an array of arrays
+  // array of arrays conversion
+  anovafscore: function anovafscore() {
+    var args = slice.call(arguments),
+    expVar, sample, sampMean, sampSampMean, tmpargs, unexpVar, i, j;
+    if (args.length === 1) {
+      tmpargs = new Array(args[0].length);
+      for (i = 0; i < args[0].length; i++) {
+        tmpargs[i] = args[0][i];
+      }
+      args = tmpargs;
+    }
+    // Builds sample array
+    sample = new Array();
+    for (i = 0; i < args.length; i++) {
+      sample = sample.concat(args[i]);
+    }
+    sampMean = jStat.mean(sample);
+    // Computes the explained variance
+    expVar = 0;
+    for (i = 0; i < args.length; i++) {
+      expVar = expVar + args[i].length * Math.pow(jStat.mean(args[i]) - sampMean, 2);
+    }
+    expVar /= (args.length - 1);
+    // Computes unexplained variance
+    unexpVar = 0;
+    for (i = 0; i < args.length; i++) {
+      sampSampMean = jStat.mean(args[i]);
+      for (j = 0; j < args[i].length; j++) {
+        unexpVar += Math.pow(args[i][j] - sampSampMean, 2);
+      }
+    }
+    unexpVar /= (sample.length - args.length);
+    return expVar / unexpVar;
+  },
+
+  // 2 different paramter setups
+  // (array1, array2, array3, ...)
+  // (anovafscore, df1, df2)
+  anovaftest: function anovaftest() {
+    var args = slice.call(arguments),
+    df1, df2, n, i;
+    if (isNumber(args[0])) {
+      return 1 - jStat.centralF.cdf(args[0], args[1], args[2]);
+    }
+    var anovafscore = jStat.anovafscore(args);
+    df1 = args.length - 1;
+    n = 0;
+    for (i = 0; i < args.length; i++) {
+      n = n + args[i].length;
+    }
+    df2 = n - df1 - 1;
+    return 1 - jStat.centralF.cdf(anovafscore, df1, df2);
+  },
+
+  ftest: function ftest(fscore, df1, df2) {
+    return 1 - jStat.centralF.cdf(fscore, df1, df2);
+  }
+});
+
+jStat.extend(jStat.fn, {
+  anovafscore: function anovafscore() {
+    return jStat.anovafscore(this.toArray());
+  },
+
+  anovaftes: function anovaftes() {
+    var n = 0;
+    var i;
+    for (i = 0; i < this.length; i++) {
+      n = n + this[i].length;
+    }
+    return jStat.ftest(this.anovafscore(), this.length - 1, n - this.length);
+  }
+});
+
+// Tukey's range test
+jStat.extend({
+  // 2 parameter lists
+  // (mean1, mean2, n1, n2, sd)
+  // (array1, array2, sd)
+  qscore: function qscore() {
+    var args = slice.call(arguments);
+    var mean1, mean2, n1, n2, sd;
+    if (isNumber(args[0])) {
+        mean1 = args[0];
+        mean2 = args[1];
+        n1 = args[2];
+        n2 = args[3];
+        sd = args[4];
+    } else {
+        mean1 = jStat.mean(args[0]);
+        mean2 = jStat.mean(args[1]);
+        n1 = args[0].length;
+        n2 = args[1].length;
+        sd = args[2];
+    }
+    return Math.abs(mean1 - mean2) / (sd * Math.sqrt((1 / n1 + 1 / n2) / 2));
+  },
+
+  // 3 different parameter lists:
+  // (qscore, n, k)
+  // (mean1, mean2, n1, n2, sd, n, k)
+  // (array1, array2, sd, n, k)
+  qtest: function qtest() {
+    var args = slice.call(arguments);
+
+    var qscore;
+    if (args.length === 3) {
+      qscore = args[0];
+      args = args.slice(1);
+    } else if (args.length === 7) {
+      qscore = jStat.qscore(args[0], args[1], args[2], args[3], args[4]);
+      args = args.slice(5);
+    } else {
+      qscore = jStat.qscore(args[0], args[1], args[2]);
+      args = args.slice(3);
+    }
+
+    var n = args[0];
+    var k = args[1];
+
+    return 1 - jStat.tukey.cdf(qscore, k, n - k);
+  },
+
+  tukeyhsd: function tukeyhsd(arrays) {
+    var sd = jStat.pooledstdev(arrays);
+    var means = arrays.map(function (arr) {return jStat.mean(arr);});
+    var n = arrays.reduce(function (n, arr) {return n + arr.length;}, 0);
+
+    var results = [];
+    for (var i = 0; i < arrays.length; ++i) {
+        for (var j = i + 1; j < arrays.length; ++j) {
+            var p = jStat.qtest(means[i], means[j], arrays[i].length, arrays[j].length, sd, n, arrays.length);
+            results.push([[i, j], p]);
+        }
+    }
+
+    return results;
+  }
+});
+
+// Error Bounds
+jStat.extend({
+  // 2 different parameter setups
+  // (value, alpha, sd, n)
+  // (value, alpha, array)
+  normalci: function normalci() {
+    var args = slice.call(arguments),
+    ans = new Array(2),
+    change;
+    if (args.length === 4) {
+      change = Math.abs(jStat.normal.inv(args[1] / 2, 0, 1) *
+                        args[2] / Math.sqrt(args[3]));
+    } else {
+      change = Math.abs(jStat.normal.inv(args[1] / 2, 0, 1) *
+                        jStat.stdev(args[2]) / Math.sqrt(args[2].length));
+    }
+    ans[0] = args[0] - change;
+    ans[1] = args[0] + change;
+    return ans;
+  },
+
+  // 2 different parameter setups
+  // (value, alpha, sd, n)
+  // (value, alpha, array)
+  tci: function tci() {
+    var args = slice.call(arguments),
+    ans = new Array(2),
+    change;
+    if (args.length === 4) {
+      change = Math.abs(jStat.studentt.inv(args[1] / 2, args[3] - 1) *
+                        args[2] / Math.sqrt(args[3]));
+    } else {
+      change = Math.abs(jStat.studentt.inv(args[1] / 2, args[2].length - 1) *
+                        jStat.stdev(args[2], true) / Math.sqrt(args[2].length));
+    }
+    ans[0] = args[0] - change;
+    ans[1] = args[0] + change;
+    return ans;
+  },
+
+  significant: function significant(pvalue, alpha) {
+    return pvalue < alpha;
+  }
+});
+
+jStat.extend(jStat.fn, {
+  normalci: function normalci(value, alpha) {
+    return jStat.normalci(value, alpha, this.toArray());
+  },
+
+  tci: function tci(value, alpha) {
+    return jStat.tci(value, alpha, this.toArray());
+  }
+});
+
+// internal method for calculating the z-score for a difference of proportions test
+function differenceOfProportions(p1, n1, p2, n2) {
+  if (p1 > 1 || p2 > 1 || p1 <= 0 || p2 <= 0) {
+    throw new Error("Proportions should be greater than 0 and less than 1")
+  }
+  var pooled = (p1 * n1 + p2 * n2) / (n1 + n2);
+  var se = Math.sqrt(pooled * (1 - pooled) * ((1/n1) + (1/n2)));
+  return (p1 - p2) / se;
+}
+
+// Difference of Proportions
+jStat.extend(jStat.fn, {
+  oneSidedDifferenceOfProportions: function oneSidedDifferenceOfProportions(p1, n1, p2, n2) {
+    var z = differenceOfProportions(p1, n1, p2, n2);
+    return jStat.ztest(z, 1);
+  },
+
+  twoSidedDifferenceOfProportions: function twoSidedDifferenceOfProportions(p1, n1, p2, n2) {
+    var z = differenceOfProportions(p1, n1, p2, n2);
+    return jStat.ztest(z, 2);
+  }
+});
+
+}(jStat, Math));
+jStat.models = (function(){
+  function sub_regress(exog) {
+    var var_count = exog[0].length;
+    var modelList = jStat.arange(var_count).map(function(endog_index) {
+      var exog_index =
+          jStat.arange(var_count).filter(function(i){return i!==endog_index});
+      return ols(jStat.col(exog, endog_index).map(function(x){ return x[0] }),
+                 jStat.col(exog, exog_index))
+    });
+    return modelList;
+  }
+
+  // do OLS model regress
+  // exog have include const columns ,it will not generate it .In fact, exog is
+  // "design matrix" look at
+  //https://en.wikipedia.org/wiki/Design_matrix
+  function ols(endog, exog) {
+    var nobs = endog.length;
+    var df_model = exog[0].length - 1;
+    var df_resid = nobs-df_model - 1;
+    var coef = jStat.lstsq(exog, endog);
+    var predict =
+        jStat.multiply(exog, coef.map(function(x) { return [x] }))
+            .map(function(p) { return p[0] });
+    var resid = jStat.subtract(endog, predict);
+    var ybar = jStat.mean(endog);
+    // constant cause problem
+    // var SST = jStat.sum(endog.map(function(y) {
+    //   return Math.pow(y-ybar,2);
+    // }));
+    var SSE = jStat.sum(predict.map(function(f) {
+      return Math.pow(f - ybar, 2);
+    }));
+    var SSR = jStat.sum(endog.map(function(y, i) {
+      return Math.pow(y - predict[i], 2);
+    }));
+    var SST = SSE + SSR;
+    var R2 = (SSE / SST);
+    return {
+        exog:exog,
+        endog:endog,
+        nobs:nobs,
+        df_model:df_model,
+        df_resid:df_resid,
+        coef:coef,
+        predict:predict,
+        resid:resid,
+        ybar:ybar,
+        SST:SST,
+        SSE:SSE,
+        SSR:SSR,
+        R2:R2
+    };
+  }
+
+  // H0: b_I=0
+  // H1: b_I!=0
+  function t_test(model) {
+    var subModelList = sub_regress(model.exog);
+    //var sigmaHat=jStat.stdev(model.resid);
+    var sigmaHat = Math.sqrt(model.SSR / (model.df_resid));
+    var seBetaHat = subModelList.map(function(mod) {
+      var SST = mod.SST;
+      var R2 = mod.R2;
+      return sigmaHat / Math.sqrt(SST * (1 - R2));
+    });
+    var tStatistic = model.coef.map(function(coef, i) {
+      return (coef - 0) / seBetaHat[i];
+    });
+    var pValue = tStatistic.map(function(t) {
+      var leftppf = jStat.studentt.cdf(t, model.df_resid);
+      return (leftppf > 0.5 ? 1 - leftppf : leftppf) * 2;
+    });
+    var c = jStat.studentt.inv(0.975, model.df_resid);
+    var interval95 = model.coef.map(function(coef, i) {
+      var d = c * seBetaHat[i];
+      return [coef - d, coef + d];
+    })
+    return {
+        se: seBetaHat,
+        t: tStatistic,
+        p: pValue,
+        sigmaHat: sigmaHat,
+        interval95: interval95
+    };
+  }
+
+  function F_test(model) {
+    var F_statistic =
+        (model.R2 / model.df_model) / ((1 - model.R2) / model.df_resid);
+    var fcdf = function(x, n1, n2) {
+      return jStat.beta.cdf(x / (n2 / n1 + x), n1 / 2, n2 / 2)
+    }
+    var pvalue = 1 - fcdf(F_statistic, model.df_model, model.df_resid);
+    return { F_statistic: F_statistic, pvalue: pvalue };
+  }
+
+  function ols_wrap(endog, exog) {
+    var model = ols(endog,exog);
+    var ttest = t_test(model);
+    var ftest = F_test(model);
+    // Provide the Wherry / Ezekiel / McNemar / Cohen Adjusted R^2
+    // Which matches the 'adjusted R^2' provided by R's lm package
+    var adjust_R2 =
+        1 - (1 - model.R2) * ((model.nobs - 1) / (model.df_resid));
+    model.t = ttest;
+    model.f = ftest;
+    model.adjust_R2 = adjust_R2;
+    return model;
+  }
+
+  return { ols: ols_wrap };
+})();
+//To regress, simply build X matrix
+//(append column of 1's) using
+//buildxmatrix and build the Y
+//matrix using buildymatrix
+//(simply the transpose)
+//and run regress.
+
+
+
+//Regressions
+
+jStat.extend({
+  buildxmatrix: function buildxmatrix(){
+    //Parameters will be passed in as such
+    //(array1,array2,array3,...)
+    //as (x1,x2,x3,...)
+    //needs to be (1,x1,x2,x3,...)
+    var matrixRows = new Array(arguments.length);
+    for(var i=0;i<arguments.length;i++){
+      var array = [1];
+      matrixRows[i]= array.concat(arguments[i]);
+    }
+    return jStat(matrixRows);
+
+  },
+
+  builddxmatrix: function builddxmatrix() {
+    //Paramters will be passed in as such
+    //([array1,array2,...]
+    var matrixRows = new Array(arguments[0].length);
+    for(var i=0;i<arguments[0].length;i++){
+      var array = [1]
+      matrixRows[i]= array.concat(arguments[0][i]);
+    }
+    return jStat(matrixRows);
+
+  },
+
+  buildjxmatrix: function buildjxmatrix(jMat) {
+    //Builds from jStat Matrix
+    var pass = new Array(jMat.length)
+    for(var i=0;i<jMat.length;i++){
+      pass[i] = jMat[i];
+    }
+    return jStat.builddxmatrix(pass);
+
+  },
+
+  buildymatrix: function buildymatrix(array){
+    return jStat(array).transpose();
+  },
+
+  buildjymatrix: function buildjymatrix(jMat){
+    return jMat.transpose();
+  },
+
+  matrixmult: function matrixmult(A,B){
+    var i, j, k, result, sum;
+    if (A.cols() == B.rows()) {
+      if(B.rows()>1){
+        result = [];
+        for (i = 0; i < A.rows(); i++) {
+          result[i] = [];
+          for (j = 0; j < B.cols(); j++) {
+            sum = 0;
+            for (k = 0; k < A.cols(); k++) {
+              sum += A.toArray()[i][k] * B.toArray()[k][j];
+            }
+            result[i][j] = sum;
+          }
+        }
+        return jStat(result);
+      }
+      result = [];
+      for (i = 0; i < A.rows(); i++) {
+        result[i] = [];
+        for (j = 0; j < B.cols(); j++) {
+          sum = 0;
+          for (k = 0; k < A.cols(); k++) {
+            sum += A.toArray()[i][k] * B.toArray()[j];
+          }
+          result[i][j] = sum;
+        }
+      }
+      return jStat(result);
+    }
+  },
+
+  //regress and regresst to be fixed
+
+  regress: function regress(jMatX,jMatY){
+    //print("regressin!");
+    //print(jMatX.toArray());
+    var innerinv = jStat.xtranspxinv(jMatX);
+    //print(innerinv);
+    var xtransp = jMatX.transpose();
+    var next = jStat.matrixmult(jStat(innerinv),xtransp);
+    return jStat.matrixmult(next,jMatY);
+
+  },
+
+  regresst: function regresst(jMatX,jMatY,sides){
+    var beta = jStat.regress(jMatX,jMatY);
+
+    var compile = {};
+    compile.anova = {};
+    var jMatYBar = jStat.jMatYBar(jMatX, beta);
+    compile.yBar = jMatYBar;
+    var yAverage = jMatY.mean();
+    compile.anova.residuals = jStat.residuals(jMatY, jMatYBar);
+
+    compile.anova.ssr = jStat.ssr(jMatYBar, yAverage);
+    compile.anova.msr = compile.anova.ssr / (jMatX[0].length - 1);
+
+    compile.anova.sse = jStat.sse(jMatY, jMatYBar);
+    compile.anova.mse =
+        compile.anova.sse / (jMatY.length - (jMatX[0].length - 1) - 1);
+
+    compile.anova.sst = jStat.sst(jMatY, yAverage);
+    compile.anova.mst = compile.anova.sst / (jMatY.length - 1);
+
+    compile.anova.r2 = 1 - (compile.anova.sse / compile.anova.sst);
+    if (compile.anova.r2 < 0) compile.anova.r2 = 0;
+
+    compile.anova.fratio = compile.anova.msr / compile.anova.mse;
+    compile.anova.pvalue =
+        jStat.anovaftest(compile.anova.fratio,
+                         jMatX[0].length - 1,
+                         jMatY.length - (jMatX[0].length - 1) - 1);
+
+    compile.anova.rmse = Math.sqrt(compile.anova.mse);
+
+    compile.anova.r2adj = 1 - (compile.anova.mse / compile.anova.mst);
+    if (compile.anova.r2adj < 0) compile.anova.r2adj = 0;
+
+    compile.stats = new Array(jMatX[0].length);
+    var covar = jStat.xtranspxinv(jMatX);
+    var sds, ts, ps;
+
+    for(var i=0; i<beta.length;i++){
+      sds=Math.sqrt(compile.anova.mse * Math.abs(covar[i][i]));
+      ts= Math.abs(beta[i] / sds);
+      ps= jStat.ttest(ts, jMatY.length - jMatX[0].length - 1, sides);
+
+      compile.stats[i]=[beta[i], sds, ts, ps];
+    }
+
+    compile.regress = beta;
+    return compile;
+  },
+
+  xtranspx: function xtranspx(jMatX){
+    return jStat.matrixmult(jMatX.transpose(),jMatX);
+  },
+
+
+  xtranspxinv: function xtranspxinv(jMatX){
+    var inner = jStat.matrixmult(jMatX.transpose(),jMatX);
+    var innerinv = jStat.inv(inner);
+    return innerinv;
+  },
+
+  jMatYBar: function jMatYBar(jMatX, beta) {
+    var yBar = jStat.matrixmult(jMatX, beta);
+    return new jStat(yBar);
+  },
+
+  residuals: function residuals(jMatY, jMatYBar) {
+    return jStat.matrixsubtract(jMatY, jMatYBar);
+  },
+
+  ssr: function ssr(jMatYBar, yAverage) {
+    var ssr = 0;
+    for(var i = 0; i < jMatYBar.length; i++) {
+      ssr += Math.pow(jMatYBar[i] - yAverage, 2);
+    }
+    return ssr;
+  },
+
+  sse: function sse(jMatY, jMatYBar) {
+    var sse = 0;
+    for(var i = 0; i < jMatY.length; i++) {
+      sse += Math.pow(jMatY[i] - jMatYBar[i], 2);
+    }
+    return sse;
+  },
+
+  sst: function sst(jMatY, yAverage) {
+    var sst = 0;
+    for(var i = 0; i < jMatY.length; i++) {
+      sst += Math.pow(jMatY[i] - yAverage, 2);
+    }
+    return sst;
+  },
+
+  matrixsubtract: function matrixsubtract(A,B){
+    var ans = new Array(A.length);
+    for(var i=0;i<A.length;i++){
+      ans[i] = new Array(A[i].length);
+      for(var j=0;j<A[i].length;j++){
+        ans[i][j]=A[i][j]-B[i][j];
+      }
+    }
+    return jStat(ans);
+  }
+});
+  // Make it compatible with previous version.
+  jStat.jStat = jStat;
+
+  return jStat;
+});
+
 
 /***/ })
 /******/ ]);
