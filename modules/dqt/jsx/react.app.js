@@ -41,6 +41,7 @@ class DataQueryApp extends Component {
       queryIDs: {
         user: [],
         shared: [],
+        author: [],
       },
       savedQueries: {},
       queriesLoaded: false,
@@ -1310,6 +1311,7 @@ class DataQueryApp extends Component {
                         savePrompt={this.state.savePrompt}
                       />
                       <SavedQueriesList
+                        author={this.state.queryIDs.author}
                         userQueries={this.state.queryIDs.user}
                         globalQueries={this.state.queryIDs.shared}
                         queryDetails={this.state.savedQueries}
