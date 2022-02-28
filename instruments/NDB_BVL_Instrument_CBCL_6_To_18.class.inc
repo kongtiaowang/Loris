@@ -1698,12 +1698,12 @@ $record['additional_problem_3'],
     $age_months = $age['year'] * 12 + $age['mon'] + ($age['day'] / 30);
     $age_years = $age_months / 12;
     $age_years = floor($age_years);
+    $age_range = null;
     if (in_array($age_years, range(6, 11))) {
         $age_range = "6 to 11";
     } else if (in_array($age_years, range(12, 18))) {
         $age_range = "12 to 18";
     } else if ($age_years < 6 && $age_years >18) {
-        $age_range = null;
         $scores['score_validity'] = "Age not valid for scoring";
     }
 
