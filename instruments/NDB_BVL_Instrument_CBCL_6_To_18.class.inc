@@ -1698,6 +1698,7 @@ $record['additional_problem_3'],
     $age_months = $age['year'] * 12 + $age['mon'] + ($age['day'] / 30);
     $age_years = $age_months / 12;
     $age_years = floor($age_years);
+    $age_range = null;
     if (in_array($age_years, range(6, 11))) {
         $age_range = "6 to 11";
     } else if (in_array($age_years, range(12, 18))) {
@@ -1746,6 +1747,12 @@ AND f.CommentID=t.CommentID AND s.ID=f.SessionID AND s.CandID=c.CandID";
 
 
     foreach ($scales as $field) {
+        if (is_null($age_range)) {
+            $scores[$field . '_T_score']    = "Cannot be scored: Candidate out of age range.";
+            $scores[$field . '_percentile'] = "Cannot be scored: Candidate out of age range.";
+            continue;
+        }
+
         $fied_raw_score=$scores[$field.'_score'];
 
         $query_scores1 = "SELECT * FROM CBCL_6_To_18_lookup WHERE
