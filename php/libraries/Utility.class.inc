@@ -352,7 +352,7 @@ class Utility
 
     /**
      * Returns a list of visits associated with the supplied Project AND subproject.
-     * The visits are in an associative array format [VisitName=>VisitLabel]
+     * The visits are in an associative array format [VisitID=>VisitLabel]
      *
      * @param \ProjectID $projectID    ID of the project
      * @param int        $subprojectID ID of the subproject
@@ -627,7 +627,7 @@ class Utility
         $query    = "SELECT count(*)
             FROM {$table_name}
             WHERE {$column} is NULL";
-        $DB       =& \Database::singleton();
+        $DB       = \NDB_Factory::singleton()->database();
         $num_null = $DB->pselectOne(
             $query,
             []
