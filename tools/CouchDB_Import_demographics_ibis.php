@@ -215,6 +215,10 @@ class CouchDBDemographicsImporter {
         'Appointment_Remote_Assessment_status' => array(
             'Description' => 'Appointment status of remote assessment',
             'Type' => "enum('Upcoming', 'In Progress', 'Complete', 'Not Started', 'No Data Found', 'No Appointment Scheduled')"
+        ),
+        'Visit_Window_Remote_to_In_Person_Behavioral' => array(
+            'Description' => "Timespan between scheduled 'Remote Assessment' appointment and scheduled 'In Person Behavioral' appointment (Appointment dates based on Schedule Module entries).",
+            'Type' => "varchar(255)"
         )
     );
 
@@ -804,7 +808,8 @@ group by s.CandID,s.Visit_label",
             'Appointment_EEG_date' => 'No Appointment Scheduled',
             'Appointment_EEG_status' => 'No Appointment Scheduled',
             'Appointment_Remote_Assessment_date' => 'No Appointment Scheduled',
-            'Appointment_Remote_Assessment_status' => 'No Appointment Scheduled'
+            'Appointment_Remote_Assessment_status' => 'No Appointment Scheduled',
+            'Visit_Window_Remote_to_In_Person_Behavioral' => "'No Behavioral Appointment' if no date/entry available for 'Behavioral Appointment'",
         );
         $info = $this->SQLDB->pselect("
             SELECT
@@ -851,10 +856,36 @@ group by s.CandID,s.Visit_label",
                     break;
             }
         }
-
+        // timespan between Appointment_Behavioral_date and Appointment_Remote_Assessment_date
+                
+                   $appointments['Visit_Window_Remote_to_In_Person_Behavioral'] = 
         return $appointments;
     }
+    /**
+     * Get the candidate appointment timespan for their given session.
+     *
+     * @param $sessionID
+     * @return string[]
+     */
+    function getAppointmentTimespan($sessionID) {
+        $info = $this->SQLDB->pselect("
+            SELECT
+                *,
+            FROM (
+                SELECT
+                    appointment_type.Name AS AppointmentTypeName,
+                    appointment.StartsAt,
+                    appointment.SessionID,
+                    {$dataEntryColumns}
+                FROM appointment
+                    JOIN appointment_type ON (appointment_type.AppointmentTypeID = appointment.AppointmentTypeID)
+                    JOIN session ON (appointment.SessionID = session.ID)
+            ) AS subQuery
+            WHERE SessionID=:sessionID
+        ", array("sessionID" => $sessionID));
 
+    }
+    
     function run() {
         $config = $this->CouchDB->replaceDoc('Config:BaseConfig', $this->Config);
         print "Updating Config:BaseConfig: $config";
@@ -1025,6 +1056,7 @@ group by s.CandID,s.Visit_label",
 
             $appointment_info = $this->getAppointmentInfo($sid);
             $demographics = array_merge($demographics, $appointment_info);
+            
 
             $success = $this->CouchDB->replaceDoc($id, array('Meta' => array(
                 'DocType' => 'demographics',
