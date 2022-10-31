@@ -312,7 +312,7 @@ const lorisModules = {
   server_processes_manager: ['server_processes_managerIndex'],
   instruments: ['CandidateInstrumentList'],
   candidate_profile: ['CandidateInfo'],
-  schedule_module': ['scheduleIndex'],
+  schedule_module: ['scheduleIndex'],
   api_docs: ['swagger-ui_custom'],
 };
 for (const [key] of Object.entries(lorisModules)) {
