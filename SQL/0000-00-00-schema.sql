@@ -151,7 +151,7 @@ CREATE TABLE `candidate` (
   `EDC` date DEFAULT NULL,
   `Sex` enum('Male','Female','Other') DEFAULT NULL,
   `RegistrationCenterID` integer unsigned NOT NULL DEFAULT '0',
-  `RegistrationProjectID` int(10) unsigned DEFAULT NULL,
+  `RegistrationProjectID` int(10) unsigned NOT NULL,
   `Ethnicity` varchar(255) DEFAULT NULL,
   `Active` enum('Y','N') NOT NULL DEFAULT 'Y',
   `Date_active` date DEFAULT NULL,
@@ -182,7 +182,7 @@ CREATE TABLE `session` (
   `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `CandID` int(6) NOT NULL DEFAULT '0',
   `CenterID` integer unsigned NOT NULL,
-  `ProjectID` int(10) unsigned DEFAULT NULL,
+  `ProjectID` int(10) unsigned NOT NULL,
   `VisitNo` smallint(5) unsigned DEFAULT NULL,
   `Visit_label` varchar(255) NOT NULL,
   `SubprojectID` int(10) unsigned DEFAULT NULL,
@@ -1715,7 +1715,8 @@ INSERT INTO `parameter_type` (Name, Alias, Type, Description, SourceFrom) VALUES
   ('fov_dimensions','FieldOfViewDimensions','text','Dimensions of the field of view, in mm. If Field of View Shape (0018,1147) is: RECTANGLE: row dimension followed by column. ROUND: diameter. HEXAGONAL: diameter of a circumscribed circle. DICOM:0018_1149','parameter_file'),
   ('laterality','Laterality','text','Laterality of (paired) body part examined. Required if the body part examined is a paired structure and Image Laterality (0020,0062) or Frame Laterality (0020,9072) are not sent. DICOM:0020_0060','parameter_file'),
   ('position_reference_indicator','PositionReferenceIndicator','text','Part of the imaging target used as a reference. DICOM:0020_1040','parameter_file'),
-  ('pixel_padding_value','PixelPaddingValue','text','Value of pixels added to non-rectangular image to pad to rectangular format. DICOM:0028_0120','parameter_file');
+  ('pixel_padding_value','PixelPaddingValue','text','Value of pixels added to non-rectangular image to pad to rectangular format. DICOM:0028_0120','parameter_file'),
+  ('HEDVersion', 'HEDVersion', 'text', 'HED Schema Version','physiological_parameter_file');
 
 CREATE TABLE `parameter_type_category` (
   `ParameterTypeCategoryID` int(11) unsigned NOT NULL auto_increment,
@@ -2334,6 +2335,13 @@ CREATE TABLE `publication` (
     `Title` varchar(255) NOT NULL,
     `RejectedReason` varchar(255) default NULL,
     `Description` text NOT NULL,
+    `journal` varchar(255) DEFAULT NULL,
+    `doi` text DEFAULT NULL,
+    `datePublication` date DEFAULT NULL,
+    `link` varchar(255) DEFAULT NULL,
+    `publishingStatus` enum('In Progress','Published') DEFAULT NULL,
+    `project` int(10) unsigned DEFAULT NULL,
+    CONSTRAINT `FK_publication_project` FOREIGN KEY (project) REFERENCES Project(ProjectID),
     CONSTRAINT `PK_publication` PRIMARY KEY(`PublicationID`),
     CONSTRAINT `FK_publication_UserID` FOREIGN KEY(`UserID`) REFERENCES `users` (`ID`),
     CONSTRAINT `FK_publication_RatedBy` FOREIGN KEY(`RatedBy`) REFERENCES `users` (`ID`),

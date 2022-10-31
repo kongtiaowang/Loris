@@ -62,7 +62,8 @@ INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (68,'imaging_quality_control_view','Flagged Imaging Entries',21,'View',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (69,'behavioural_quality_control_view','Flagged Behavioural Entries',3,'View',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (70,'api_docs','API Documentation: View LORIS API Manual',NULL,NULL,2);
-INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (71,'schedule_module','Schedule Module: edit and delete appointment',47,'View/Create/Edit',2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (71,'electrophysiology_browser_edit_annotations','Annotations',41,'Create/Edit',2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (72,'schedule_module','Schedule Module: edit and delete appointment',47,'View/Create/Edit',2);
 
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;
