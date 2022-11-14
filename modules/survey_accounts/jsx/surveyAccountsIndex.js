@@ -69,11 +69,24 @@ class SurveyAccountsIndex extends Component {
     case 'Instrument':
       result = <td>{this.state.data.fieldOptions.instruments[cell]}</td>;
       break;
+    case 'Delete':
+      result = <td>
+      <button onClick={() => this.deleteclick({row})}
+        class="btn btn-danger" >delete</button>
+      </td>;
+      break;
     }
 
     return result;
   }
-
+  /**
+   * @deleteclick
+   * @param {string} value - value content
+   *
+   */
+         deleteclick(value) {
+           console.log(value);
+         }
   /**
    * Renders the React component.
    *
@@ -113,6 +126,9 @@ class SurveyAccountsIndex extends Component {
       }},
       {label: 'URL', show: true},
       {label: 'Status', show: true},
+      {label: 'centerID', show: false},
+      {label: 'projectID', show: false},
+      {label: 'Delete', show: true},
     ];
   const addSurvey = () => {
     location.href='/survey_accounts/addSurvey/';
