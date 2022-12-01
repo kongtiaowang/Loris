@@ -46,7 +46,8 @@ class SurveyAccountsProvisioner
                 p.OneTimePassword as URL,
                 p.Status,
                 s.CenterID,
-                s.ProjectID
+                s.ProjectID,
+                p.CommentID
              FROM participant_accounts p
                 JOIN session s ON (p.SessionID=s.ID)
                 JOIN candidate c ON (c.CandID=s.CandID)
