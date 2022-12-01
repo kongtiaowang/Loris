@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-
+import swal from 'sweetalert2';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 
@@ -59,12 +59,47 @@ class SurveyAccountsIndex extends Component {
     case 'Instrument':
       result = <td>{this.state.data.fieldOptions.instruments[cell]}</td>;
       break;
+    case 'Delete':
+      result = <td>
+      <button onClick={() => this.deleteclick(row.Instrument,row.Delete)}
+        class="btn btn-danger" >delete</button>
+      </td>;
+      break;
     }
-
-
     return result;
   }
-
+  /**
+   * @deleteclick
+   */
+         deleteclick(Instrument,commentid) {
+          swal.fire({
+            title: 'Are you sure?',
+            text: 'You won\'t be able to revert this!',
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!',
+           }).then((result) => {
+           if (result.value) {
+            let deleteurl = loris.BaseURL +
+              '/survey_accounts/DeleteSurvey/'+Instrument+'/'+commentid;
+              fetch(deleteurl, {
+              method: 'DELETE',
+              cache: 'no-cache',
+              credentials: 'same-origin',
+              }).then((resp) => {
+                  if (resp.status == 200) {
+                   swal.fire('delete Successful!', '', 'success');
+                  } else {
+                   swal.fire('delete Not Successful!', '', 'error');
+                  }
+              }).then(()=>{
+                  location.reload();
+              });
+           }
+          });
+         }
   render() {
     // If error occurs, return a message.
     // XXX: Replace this with a UI component for 500 errors.
@@ -99,6 +134,9 @@ class SurveyAccountsIndex extends Component {
       }},
       {label: 'URL', show: true},
       {label: 'Status', show: true},
+      {label: 'centerID', show: false},
+      {label: 'projectID', show: false},
+      {label: 'Delete', show: true},
     ];
   const addSurvey = () => {
     location.href='/survey_accounts/addSurvey/';

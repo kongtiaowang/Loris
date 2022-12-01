@@ -42,12 +42,12 @@ class SurveyAccountsProvisioner
             "SELECT
                 c.PSCID AS PSCID,
                 s.Visit_label AS Visit,
-                p.Email as Email,
                 p.Test_name as SurveyName,
                 p.OneTimePassword as URL,
                 p.Status,
                 s.CenterID,
-                s.ProjectID
+                s.ProjectID,
+                p.CommentID
              FROM participant_accounts p
                 JOIN session s ON (p.SessionID=s.ID)
                 JOIN candidate c ON (c.CandID=s.CandID)

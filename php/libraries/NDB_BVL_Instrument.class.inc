@@ -11,7 +11,9 @@
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
 use \Psr\Http\Message\ServerRequestInterface;
+use \Psr\Http\Server\RequestHandlerInterface;
 use \Psr\Http\Message\ResponseInterface;
+
 use \Loris\StudyEntities\Candidate\CandID;
 
 /**
@@ -50,6 +52,12 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     public $DataEntryType;
     public $XINRules;
     public $XINDebug;
+
+    /**
+     * A flag determining whether the ControlPanel changed
+     * the Data_entry flag status on this page load.
+     */
+    private $_DataEntryChanged;
 
     /**
      * Test name (short name), equivalent to test_names.Test_name
@@ -267,6 +275,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $obj->displayAllFields = true;
         }
 
+        // Set page name to testName
+        $obj->name = $instrument;
         // Sets up page variables such as $this->commentID and $this->form
         $obj->setup($commentID, $page);
 
@@ -577,14 +587,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         if ($this->form->validate()) {
             $this->form->process(array(&$this, '_saveValues'), true);
             $this->score();
-
-            // determine the data entry completion status, and store that in
-            // the database
-            $dataEntryCompletionStatus
-                = $this->_determineDataEntryCompletionStatus();
-            $this->_setDataEntryCompletionStatus(
-                $dataEntryCompletionStatus
-            );
+            $this->updateDataEntryCompletionStatus();
         } else {
             $submittedData = $this->form->getSubmitValues();
 
@@ -621,6 +624,23 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         }
 
         return true;
+    }
+
+    /**
+     * This checks the current status of and instrument's data entry and updates
+     * it accordingly in the database
+     *
+     * @return void
+     */
+    public function updateDataEntryCompletionStatus(): void
+    {
+        // determine the data entry completion status, and store that in
+        // the database
+        $dataEntryCompletionStatus
+            = $this->_determineDataEntryCompletionStatus();
+        $this->_setDataEntryCompletionStatus(
+            $dataEntryCompletionStatus
+        );
     }
 
     /**
@@ -770,6 +790,14 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         if (strrpos($this->testName, "_proband") === false) {
             $this->_saveCandidateAge($values);
+        }
+
+        // Save UserID, the data entry personnel, into flag Data and
+        // instrument table
+        $user = \NDB_Factory::singleton()->user();
+        if (! $user instanceof \LORIS\AnonymousUser) {
+            // Add UserID to $values
+            $values['UserID'] = $user->getUsername();
         }
 
         //Convert select multiple elements into database storable values
@@ -1025,13 +1053,14 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 "SELECT ID FROM test_names WHERE Test_name=:tst_name",
                 array('tst_name' => $this->testName)
             );
-            $results = $db->pselect(
-                "SELECT c.examinerID, e.full_name
+            $results = $db->pselectWithIndexKey(
+                "SELECT c.examinerID, e.full_name, u.Email
                  FROM certification c
                      JOIN examiners e
                          ON (c.examinerID = e.examinerID)
                      JOIN examiners_psc_rel epr
                          ON (epr.examinerID=e.examinerID)
+                     LEFT JOIN users u ON u.ID=e.userID
                  WHERE c.testID =:tid
                     AND c.pass =:cert_id
                     AND epr.centerID =:cid
@@ -1040,24 +1069,43 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                     'tid'     => $test_id,
                     'cert_id' => 'certified',
                     'cid'     => $centerID,
-                )
+                ),
+                'examinerID'
             );
         } else {
-            $results = $db->pselect(
-                "SELECT e.examinerID, e.full_name
+            $results = $db->pselectWithIndexKey(
+                "SELECT e.examinerID, e.full_name, u.Email
                      FROM examiners e
                          JOIN examiners_psc_rel epr
                              ON (epr.examinerID=e.examinerID)
+                     LEFT JOIN users u ON u.ID=e.userID
                  WHERE epr.centerID=:centID
                      ORDER BY full_name",
-                array('centID' => $centerID)
+                array('centID' => $centerID),
+                'examinerID'
             );
         }
-
-        $examiners = array('' => '');
+        $examiners = [
+            null => ''
+        ];
         if (is_array($results) && !empty($results)) {
-            foreach ($results AS $row) {
-                $examiners[$row['examinerID']] = $row['full_name'];
+            foreach ($results AS $eid => $row) {
+                $name = $row['full_name'];
+                if (in_array($name, $examiners)) {
+                    // If name already in examiners, set first case of name
+                    // with email (if exists)
+                    $duplicateID    = array_search($name, $examiners);
+                    $duplicateEmail = $results[$duplicateID]['Email'];
+                    $emailString    = empty($duplicateEmail) ? "" :
+                        " ({$duplicateEmail})";
+                    $examiners[$duplicateID] = $name . $emailString;
+                    // Set new case of name with email as well
+                    $emailString     = empty($row['Email']) ? "" :
+                        " ({$row['Email']})";
+                    $examiners[$eid] = $name . $emailString;
+                } else {
+                    $examiners[$eid] = $name;
+                }
             }
         }
         return $examiners;
@@ -1606,7 +1654,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     function getDataEntryCompletionStatus(): string
     {
         $data = NDB_BVL_Instrument::loadInstanceData($this);
-        return $data["Data_entry_completion_status"];
+        return $data["Data_entry_completion_status"] ?? '';
     }
 
 
@@ -2091,12 +2139,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function _nullScores(array $scoreCols): void
     {
-        $record    = $this->loadInstanceData($this);
-        $scoreCols = array_combine($scoreCols, $scoreCols);
-        // order is important here because it keeps values of first array
-        // unsetting all columns which are not scores
-        $data = array_intersect_key($record, $scoreCols);
-
         // set the scoring cols to NULL
         foreach ($scoreCols as $key => $val) {
             // Some Instruments use an associative array for
@@ -2104,14 +2146,14 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             // use a non-associative array. So if the key is numeric,
             // and we need to make sure we use the column name
             if (is_numeric($key)) {
-                $data[$val] = null; //null array
+                $scores[$val] = null; //null array
             } else {
-                $data[$key] = null;
+                $scores[$key] = null;
             }
 
         }
 
-        $this->_save($data);
+        $this->_save($scores);
         return;
     }
 
@@ -2290,29 +2332,35 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $config   = NDB_Config::singleton();
         $db       = Database::singleton();
         $dbconfig = $config->getSetting('database');
-        $columns  = $db->pselect(
-            "SELECT COLUMN_NAME FROM information_schema.columns
-            WHERE TABLE_NAME=:table AND TABLE_SCHEMA=:db",
-            array(
-                'table' => $this->table,
-                'db'    => $dbconfig['database'],
-            )
-        );
 
-        $values = array();
-        foreach ($columns as $row) {
-            switch ($row['COLUMN_NAME']) {
-            case 'CommentID':
-            case 'UserID':
-                continue 2;
-            case 'Data_entry_completion_status':
-                $values[$row['COLUMN_NAME']] = 'Incomplete';
-                break;
-            default:
-                $values[$row['COLUMN_NAME']] = null;
+        if (!$this->jsonData) {
+            $columns = $db->pselect(
+                "SELECT COLUMN_NAME FROM information_schema.columns
+            WHERE TABLE_NAME=:table AND TABLE_SCHEMA=:db",
+                array(
+                    'table' => $this->table,
+                    'db'    => $dbconfig['database'],
+                )
+            );
+
+            $values = array();
+            foreach ($columns as $row) {
+                switch ($row['COLUMN_NAME']) {
+                case 'CommentID':
+                case 'UserID':
+                    continue 2;
+                case 'Data_entry_completion_status':
+                    $values[$row['COLUMN_NAME']] = 'Incomplete';
+                    break;
+                default:
+                    $values[$row['COLUMN_NAME']] = null;
+                }
             }
+            $db->update($this->table, $values, ['CommentID' => $this->commentID]);
         }
-        $db->update($this->table, $values, array('CommentID' => $this->commentID));
+
+        // Clear data out of the flag table's Data column
+        $db->update('flag', ['Data'=>null], ['CommentID' => $this->commentID]);
         $prepQ = $db->prepare(
             "DELETE FROM conflicts_unresolved
              WHERE (CommentId1=:CID OR CommentId2=:CID)"
@@ -2402,6 +2450,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $config = NDB_Config::singleton();
             $paths  = $config->getSetting('paths');
 
+            $this->_DataEntryChanged = false;
+
             // check if the file/class exists
             $BasePath = $paths['base'] . 'project/instruments/';
             $TestName = $this->testName;
@@ -2412,7 +2462,12 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 || file_exists($BasePath . "$TestName.linst")
             ) {
                 // save possible changes from the control panel...
+                $originalstatus = $controlPanel->getDataEntryStatus();
                 $controlPanel->save();
+
+                if ($controlPanel->getDataEntryStatus() !== $originalstatus) {
+                    $this->_DataEntryChanged = true;
+                }
             }
 
             // display the control panel
@@ -2823,7 +2878,46 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     }
 
     /**
-     * A form extends the basic page handler to call save() on a POST request.
+     * Override of page process in order to refresh after control panel change
+     *
+     * @param ServerRequestInterface  $request The PSR7 request being processed.
+     * @param RequestHandlerInterface $handler The handler to handle the request
+     *                                         after processing the middleware.
+     *
+     * @return ResponseInterface the PSR15 response that was generated by the
+     * middleware*
+     */
+    public function process(
+        ServerRequestInterface $request,
+        RequestHandlerInterface $handler
+    ) : ResponseInterface {
+        // The parent middleware needs to be called in order for
+        // the instrument control panel to saved, which triggers
+        // $this->_DataEntryChanged being set appropriately.
+        $response = parent::process($request, $handler);
+
+        if ($this->_DataEntryChanged) {
+            $sessionID = $request->getQueryParams()["sessionID"];
+            $candID    = $request->getQueryParams()["candID"];
+
+            $baseURL = \NDB_Factory::singleton()->settings()->getBaseURL();
+
+            $url = $baseURL . "/instruments/" .
+                urlencode($this->testName) .
+                '?commentID=' . urlencode($this->getCommentID()) .
+                '&candID=' . urlencode($candID) .
+                '&sessionID=' . urlencode($sessionID);
+            return (new \LORIS\Http\Response())
+                ->withStatus(303)
+                ->withHeader("Location", $url);
+        }
+        return $response;
+    }
+
+    /**
+     * A form extends the basic page handler to
+     *  (1) call save() on a POST request
+     *  (2) disable form if data entry is complete
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
@@ -2835,8 +2929,33 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         if ($request->getMethod() === "POST" && !isset($req['ClearInstrument'])) {
             $this->save();
         }
-        return (new \Laminas\Diactoros\Response())
+
+        // Disable form if data entry is complete
+        $user      = $request->getAttribute("user");
+        $sessionID = $request->getQueryParams()["sessionID"];
+        $timepoint = \Timepoint::singleton($sessionID);
+
+        // create an instrument status object
+        $status = new \NDB_BVL_InstrumentStatus;
+        $status->select($this->commentID);
+
+        // freeze the form to prevent data entry
+        // IF (1) Instrument is set to complete
+        // OR (2) The user does NOT have `data_entry` permission
+        // OR (3) The user does NOT have access to the timepoint
+        //        at which the instrument is instantiated
+        // AND (4) The instrument is NOT in preview mode
+        // AND (5) the instrument is NOT a direct entry
+        if (($status->getDataEntryStatus() == 'Complete')
+            || !$user->hasPermission('data_entry')
+            || (isset($timepoint) && !$user->hasCenter($timepoint->getCenterID()))
+            && $this->preview !== true
+            && $this->DataEntryType !== 'DirectEntry'
+        ) {
+            $this->freeze();
+        }
+
+        return (new \LORIS\Http\Response())
             ->withBody(new \LORIS\Http\StringStream($this->display() ?? ""));
     }
-
 }
