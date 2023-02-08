@@ -228,14 +228,11 @@ class ViewSession extends \NDB_Form
 
             $New        = ($FileObj->getParameter('QCFirstChangeTime') == '') ?
                                          1 : 0;
-            $Pipeline   = $FileObj->getParameter('Pipeline');
             $OutputType = $FileObj->getParameter('OutputType');
             $AcquisitionProtocol = $FileObj->getAcquisitionProtocol();
             $CoordinateSpace     = $FileObj->getParameter('CoordinateSpace');
-            $Algorithm           = $FileObj->getParameter('Algorithm');
             $AcquisitionDate     = $FileObj->getParameter('AcquisitionDate');
-            $ProcDate            = $this->_getDate(
-                $FileObj,
+            $ProcDate            = $FileObj->getParameter(
                 'processing:processing_date'
             );
             $FileInsertDate      = $FileObj->getParameter('InsertTime');
@@ -243,6 +240,10 @@ class ViewSession extends \NDB_Form
             $SeriesNumber        = $FileObj->getParameter('series_number');
             $EchoTime            = number_format(
                 (float)$FileObj->getParameter('echo_time') * 1000,
+                2
+            );
+            $InversionTime       = number_format(
+                (float)$FileObj->getParameter('inversion_time') * 1000,
                 2
             );
             $RepetitionTime      = number_format(
@@ -253,11 +254,18 @@ class ViewSession extends \NDB_Form
                 intval($FileObj->getParameter('slice_thickness')),
                 2
             );
-            $Time    = number_format(
+            $Time      = number_format(
                 intval($FileObj->getParameter('time')),
                 2
             );
-            $Comment = $FileObj->getParameter('Comment');
+            $ImageType = $FileObj->getParameter(
+                'dicominfo:image_type'
+            );
+            $PhaseEncodingDirection = $FileObj->getParameter(
+                'PhaseEncodingDirection'
+            );
+            $EchoNumber         = $FileObj->getParameter('echo_numbers');
+            $Comment            = $FileObj->getParameter('Comment');
             $ProcessingPipeline = $FileObj->getParameter('processing:pipeline');
             $TotalRejected      = $FileObj->getParameter(
                 'processing:total_rejected'
@@ -300,6 +308,10 @@ class ViewSession extends \NDB_Form
             $XMLreport   = $FileObj->getParameter('processing:DTIPrepXmlReport');
             $XMLprotocol = $FileObj->getParameter('ProtocolFile');
             $NrrdFile    = $FileObj->getParameter('processing:nrrd_file');
+            $NiiFile     = $FileObj->getParameter('check_nii_filename');
+            $BvalFile    = $FileObj->getParameter('check_bval_filename');
+            $BvecFile    = $FileObj->getParameter('check_bvec_filename');
+            $JsonFile    = $FileObj->getParameter('bids_json_file');
             $OtherTimepoints = $this->_getFilesAcrossTimepoints(
                 (int)$FileObj->getParameter('SessionID'),
                 (int)$FileObj->getParameter('AcquisitionProtocolID')
@@ -314,11 +326,9 @@ class ViewSession extends \NDB_Form
                 'APIFile'                    => $APIFile,
                 'FullFilename'               => $FullFilename,
                 'New'                        => $New,
-                'Pipeline'                   => $Pipeline,
                 'OutputType'                 => $OutputType,
                 'AcquisitionProtocol'        => $AcquisitionProtocol,
                 'CoordinateSpace'            => $CoordinateSpace,
-                'Algorithm'                  => $Algorithm,
                 'AcquisitionDate'            => $AcquisitionDate,
                 'ProcDate'                   => $ProcDate,
                 'FileInsertDate'             => $FileInsertDate,
@@ -326,9 +336,13 @@ class ViewSession extends \NDB_Form
                 'SeriesNumber'               => $SeriesNumber,
                 'SeriesUID'                  => $SeriesUID,
                 'EchoTime'                   => $EchoTime,
+                'InversionTime'              => $InversionTime,
                 'RepetitionTime'             => $RepetitionTime,
                 'SliceThickness'             => $SliceThickness,
                 'Time'                       => $Time,
+                'ImageType'                  => $ImageType,
+                'PhaseEncodingDirection'     => $PhaseEncodingDirection,
+                'EchoNumber'                 => $EchoNumber,
                 'Comment'                    => $Comment,
                 'ProcessingPipeline'         => $ProcessingPipeline,
                 'TotalRejected'              => $TotalRejected,
@@ -348,6 +362,10 @@ class ViewSession extends \NDB_Form
                 'XMLreport'                  => $XMLreport,
                 'XMLprotocol'                => $XMLprotocol,
                 'NrrdFile'                   => $NrrdFile,
+                'NiiFile'                    => $NiiFile,
+                'BvalFile'                   => $BvalFile,
+                'BvecFile'                   => $BvecFile,
+                'JsonFile'                   => $JsonFile,
                 'OtherTimepoints'            => $OtherTimepoints,
                 'CaveatViolationsResolvedID' => $caveatViolationsResolvedID,
             ];
@@ -863,7 +881,7 @@ class ViewSession extends \NDB_Form
             $tpl_data['useEDC'] = true;
         }
 
-        $smarty = new \Smarty_neurodb('imaging_browser');
+        $smarty = new \Smarty_NeuroDB('imaging_browser');
 
         $smarty->assign($tpl_data);
         $html = $smarty->fetch("table_session_header.tpl");

@@ -1,14 +1,18 @@
-# Acknowledgements Module Test Plan
+# Module Manager Test Plan
 
-1. Verify that either the permission acknowledgements_view or acknowledgements_edit 
-   is required to access the acknowledgements module page. [Automation Testing]
-2. Access the acknowledgements module page, ensure that it renders.[Automation Testing]
-3. Verify that a new record can not be added Without acknowledgements_edit permission [Manual Testing]
-4. Check that each dropdown has the correct options.[Manual Testing]
-5. Click "Clear Form" and ensure filters are reset to same state.[Automation Testing]
-6. Verify that the "Save" button on the modal window form inserts a new record in the 
-   data table and that the data table is refreshed automatically.[Automation Testing]
-7. Start entering information in the modal window form and close the modal window 
-   without saving. A message asking 'Are You Sure?' should appear to confirm that the
-   form should indeed be closed without saving the information previously entered [Manual Testing]
+1. Verify that the module loads with either `module_manager_view` or `module_manager_edit`
+   permissions [automated]
+2. Verify that the module has a permission denied error with neither of the above permissions
+   [automated]
+3. Verify that the "Active" column is a dropdown with the edit permission, but plain text without
+4. Verify that the "Active" filter works in either of the above cases
+5. With the edit permission, change the active status of a module. There should be a success
+   message.
+6. Reload the page and verify that the status was, in fact, successfully modified and saved to
+   the database.
+7. Verify that deactivating a module removes it from the LORIS menu (you will need to
+   reload after modifying for the menu to be updated) and that activating it re-adds it.
+8. With the edit permission, access the page. From the backend or another tab, remove the edit
+   permission and modify the "Active" status of a module. Verify that instead of a success message 
+   you received an error message and the module status was not modified.
 

@@ -1,51 +1,41 @@
-# Acknowledgements
+# Module Manager
 
 ## Purpose
 
-The purpose of the Acknowledgements Generator is to aid in dynamically generating
-an appropriate list of people to acknowledge for any given publication.
+The Module Manager is intended to be a place for administrators
+to view and configured modules which are installed on the LORIS
+instance.
 
 ## Intended Users
 
-- Researchers who publish
-- Data coordinator who has knowledge of who collaborates on the project
+The module is used by administrators to configure modules in
+LORIS.
 
 ## Scope
 
-Example public facing link:
+The module only displays and configures modules that are already
+installed (populated in the module table).
 
-`https://<YOUR-BASE-STUDY-URL>/acknowledgements/acknowledgements.php?date=2017-11-17`
+NOT in scope:
 
-Given the publication date of `2017-11-17`, this will limit the list to people
-who started on or before `2017-11-17`.
-This list is intended to be used in any publication(s), so keep in mind it will
-be shared in the wild without authentication.
+The module manager does not install new modules.
 
 ## Permissions
 
-There are two permissions associated to the module:
-`acknowledgements_view` and `acknowledgements_edit`
-
-`acknowledgements_view` allows regular LORIS users to view the module within LORIS.
-
-`acknowledgements_edit` allows someone like the study coordinator to add members
-related to their project to the list.
+The `module_manager_view` permission allows a user to
+view the list of modules, and the `module_manager_edit`
+allows the user to modify the state of installed modules.
 
 ## Configurations
 
-Use the `citation_policy` config setting to specify any additional details which
-will be shown within the module.
-
-Things like affiliations, degrees, and roles can be customized in the template
-by a developer.
-
-The code for the public side of things can be found within:
-`htdocs/acknowledgements/acknowledgements.php`
-
-The code can easily be customized to add more complex filtering as needed.
+The module manager gets a list of modules from the `modules`
+database table. This table must first be populated (usually by
+using the `tools/manage_modules.php` script).
 
 ## Interactions with LORIS
 
-Could be linked to the Data Release as a future feature.
-
-Another future implementation: DOIs
+Deactivating a module may have effects throughout LORIS
+such as being removed from the LORIS menu, or removing
+widgets from other modules. The exact interactions between
+modules caused by activating/deactivating a module are
+module specific.
