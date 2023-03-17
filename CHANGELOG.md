@@ -236,12 +236,15 @@ issues. (PR #7306)
 #### Publication
 - Display all filterable columns in datatable (#7277)
 - Fix for file deletion (PR #7284)
+
 #### User Accounts
 - Fix a false positive validation error when a new LORIS user is added with "Make 
 user name match email address" and "Generate new password". (PR #6803)
 - Fix to allow a superuser to create new users with customizable permissions. (#6770)
 - Indicate required fields (#6617)
 - Fix to show superuser the labels of each permission when editing a user (PR #7451)
+#### Schedule Module
+- New module created to schedule appointment within LORIS. (PR #6150)
 
 ### Tools
 - Fix fatal errors in `delete_candidate.php` tool. (PR #6805, #7275)
