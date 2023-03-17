@@ -166,6 +166,9 @@ DROP TABLE IF EXISTS `tarchive_files`;
 DROP TABLE IF EXISTS `tarchive_series`;
 DROP TABLE IF EXISTS `tarchive`;
 
+DROP TABLE IF EXISTS `appointment`;
+DROP TABLE IF EXISTS `appointment_type`;
+
 DROP TABLE IF EXISTS `hrrt_archive_files`;
 DROP TABLE IF EXISTS `hrrt_archive`;
 
