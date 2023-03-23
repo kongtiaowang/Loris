@@ -1,16 +1,8 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Loader from 'Loader';
-import swal from 'sweetalert2';
 
-/**
- * Candidate date of birth component
- */
 class CandidateDOB extends Component {
-  /**
-   * @constructor
-   * @param {object} props - React Component properties
-   */
   constructor(props) {
     super(props);
 
@@ -28,19 +20,11 @@ class CandidateDOB extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  /**
-   * Called by React when the component has been rendered on the page.
-   */
   componentDidMount() {
     this.fetchData()
     .then(() => this.setState({isLoaded: true}));
   }
 
-  /**
-   * Fetch data
-   *
-   * @return {Promise}
-   */
   fetchData() {
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
       .then((resp) => resp.json())
@@ -51,12 +35,6 @@ class CandidateDOB extends Component {
       });
   }
 
-  /**
-   * Set form data
-   *
-   * @param {string} formElement
-   * @param {*} value
-   */
   setFormData(formElement, value) {
     let formData = this.state.formData;
     formData[formElement] = value;
@@ -65,11 +43,6 @@ class CandidateDOB extends Component {
     });
   }
 
-  /**
-   * Renders the React component.
-   *
-   * @return {JSX} - React markup for the component
-   */
   render() {
     if (this.state.error) {
         return <h3>An error occured while loading the page.</h3>;
@@ -103,8 +76,7 @@ class CandidateDOB extends Component {
           />
           <StaticElement
             label='Disclaimer:'
-            text={'Any changes to the date of birth requires an administrator '
-                 + 'to run the fix_candidate_age script.'}
+            text='Any changes to the date of birth requires an administrator to run the fix_candidate_age script.'
             class='form-control-static text-danger bg-danger col-sm-10'
           />
           <DateElement
@@ -138,7 +110,7 @@ class CandidateDOB extends Component {
     let dob = this.state.formData.dob ?
       this.state.formData.dob : null;
     if (dob > today) {
-      swal.fire({
+      swal({
         title: 'Error!',
         text: 'Date of birth cannot be later than today!',
         type: 'error',
@@ -159,27 +131,39 @@ class CandidateDOB extends Component {
 
     formObject.append('tab', this.props.tabName);
 
+    // IBIS SPECIFIC OVERRIDE CODE
+    // Add proper error handling to handle error when study consent = no
     fetch(this.props.action, {
         method: 'POST',
         cache: 'no-cache',
         credentials: 'same-origin',
         body: formObject,
+    }).then((response) => {
+      return new Promise((resolve) => response.json()
+        .then((json) => resolve({
+          status: response.status,
+          ok: response.ok,
+          json,
+        })));
     })
-    .then((resp) => {
-        if (resp.ok && resp.status === 200) {
-          swal.fire({
+    .then(({status, json, ok}) => {
+        if (ok && status === 200) {
+          swal({
             title: 'Success!',
             text: 'Date of birth updated!',
             type: 'success',
             confrimButtonText: 'OK',
-          });
-          if (resp.value) {
-              this.fetchData();
-          }
+          }, (result) => {
+              if (result) {
+                this.fetchData();
+              }
+            }
+          );
         } else {
-          swal.fire({
+          const error = json.error ? json.error : 'Something went wrong.';
+          swal({
             title: 'Error!',
-            text: 'Something went wrong.',
+            text: error,
             type: 'error',
             confrimButtonText: 'OK',
           });
@@ -188,6 +172,7 @@ class CandidateDOB extends Component {
     .catch((error) => {
         console.error(error);
     });
+    // IBIS SPECIFIC OVERRIDE CODE ENDS HERE
   }
 }
 CandidateDOB.propTypes = {
