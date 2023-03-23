@@ -1,14 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
-/**
- * Candiate info component
- */
 class CandidateInfo extends Component {
-  /**
-   * @constructor
-   * @param {object} props - React Component properties
-   */
   constructor(props) {
     super(props);
     this.state = {
@@ -29,9 +22,6 @@ class CandidateInfo extends Component {
     this.showAlertMessage = this.showAlertMessage.bind(this);
   }
 
-  /**
-   * Called by React when the component has been rendered on the page.
-   */
   componentDidMount() {
     let that = this;
     $.ajax(
@@ -63,12 +53,6 @@ class CandidateInfo extends Component {
     );
   }
 
-  /**
-   * Set form data
-   *
-   * @param {string} formElement
-   * @param {*} value
-   */
   setFormData(formElement, value) {
     let formData = JSON.parse(JSON.stringify(this.state.formData));
     formData[formElement] = value;
@@ -90,20 +74,12 @@ class CandidateInfo extends Component {
     });
   }
 
-  /**
-   * On Submit
-   *
-   * @param {object} e - event object
-   */
   onSubmit(e) {
     e.preventDefault();
   }
 
-  /**
-   * Renders the React component.
-   *
-   * @return {JSX} - React markup for the component
-   */
+  // IBIS SPECIFIC OVERRIDE CODE
+  // IBIS doesn't use Caveat Emptor Flag for Candidate* and Reason for Caveat Emptor Flag.
   render() {
     if (!this.state.isLoaded) {
       if (this.state.error !== undefined) {
@@ -123,53 +99,7 @@ class CandidateInfo extends Component {
       disabled = false;
       updateButton = <ButtonElement label="Update"/>;
     }
-    let reasonDisabled = true;
-    let reasonRequired = false;
-    if (this.state.formData.flaggedCaveatemptor === 'true'
-      && loris.userHasPermission('candidate_parameter_edit')
-    ) {
-      reasonDisabled = false;
-      reasonRequired = true;
-    }
 
-    let reasonKey = null;
-    let specifyOther = null;
-    let otherDisabled = true;
-    let otherRequired = false;
-    for (let key in this.state.Data.caveatReasonOptions) {
-      if (this.state.Data.caveatReasonOptions.hasOwnProperty(key)) {
-        if (this.state.Data.caveatReasonOptions[key] === 'Other') {
-          reasonKey = key;
-          break;
-        }
-      }
-    }
-
-    if (this.state.formData.flaggedReason === reasonKey
-      && loris.userHasPermission('candidate_parameter_edit')
-    ) {
-      otherRequired = true;
-      otherDisabled = false;
-    }
-
-    if (this.state.formData.flaggedCaveatemptor === 'false') {
-      reasonDisabled = true;
-      reasonRequired = false;
-      otherDisabled = true;
-      otherRequired = false;
-    }
-
-    if (reasonKey !== null) {
-      specifyOther = <TextareaElement
-        label="If Other, please specify"
-        name="flaggedOther"
-        value={this.state.formData.flaggedOther}
-        onUserInput={this.setFormData}
-        ref="flaggedOther"
-        disabled={otherDisabled}
-        required={otherRequired}
-      />;
-    }
     let extraParameterFields = [];
     let extraParameters = this.state.Data.extra_parameters;
     for (let key2 in extraParameters) {
@@ -264,33 +194,13 @@ class CandidateInfo extends Component {
             label="DCCID"
             text={this.state.Data.candID}
           />
-          <SelectElement
-            label="Caveat Emptor Flag for Candidate"
-            name="flaggedCaveatemptor"
-            options={this.state.caveatOptions}
-            value={this.state.formData.flaggedCaveatemptor}
-            onUserInput={this.setFormData}
-            ref="flaggedCaveatemptor"
-            disabled={disabled}
-            required={true}
-          />
-          <SelectElement
-            label="Reason for Caveat Emptor Flag"
-            name="flaggedReason"
-            options={this.state.Data.caveatReasonOptions}
-            value={this.state.formData.flaggedReason}
-            onUserInput={this.setFormData}
-            ref="flaggedReason"
-            disabled={reasonDisabled}
-            required={reasonRequired}
-          />
-          {specifyOther}
           {extraParameterFields}
           {updateButton}
         </FormElement>
       </div>
     );
   }
+  // IBIS SPECIFIC OVERRIDE CODE ENDS HERE
 
   /**
    * Handles form submission

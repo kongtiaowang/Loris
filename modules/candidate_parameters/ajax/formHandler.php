@@ -28,38 +28,38 @@ if ($tab === '') {
 
 $db = \NDB_Factory::singleton()->database();
 
-switch ($tab) {
+switch($tab) {
 case 'candidateInfo':
-    editCandInfoFields($db);
+    editCandInfoFields($db, $user);
     break;
 
 case 'probandInfo':
-    editProbandInfoFields($db);
+    editProbandInfoFields($db, $user);
     break;
 
 case 'familyInfo':
-    editFamilyInfoFields($db);
+    editFamilyInfoFields($db, $user);
     break;
 
 case 'deleteFamilyMember':
-    deleteFamilyMember($db);
+    deleteFamilyMember($db, $user);
     break;
 
 case 'participantStatus':
-    editParticipantStatusFields($db);
+    editParticipantStatusFields($db, $user);
     break;
 
 case 'consentStatus':
-    editConsentStatusFields($db);
+    editConsentStatusFields($db, $user);
     break;
 
 
 case 'candidateDOB':
-    editCandidateDOB($db);
+    editCandidateDOB($db, $user);
     break;
 
 case 'candidateDOD':
-    editCandidateDOD($db);
+    editCandidateDOD($db, $user);
     break;
 
 default:
@@ -70,18 +70,22 @@ default:
 /**
  * Handles the updating of Candidate Info
  *
- * @param Database $db database object
+ * @param Database $db   database object
+ * @param User     $user user object
  *
  * @throws DatabaseException
  *
  * @return void
  */
-function editCandInfoFields(\Database $db)
+function editCandInfoFields($db, $user)
 {
 
     $candID = $_POST['candID'];
 
     // Process posted data
+    // IBIS SPECIFIC OVERRIDE CODE
+    // IBIS no more using
+    /*
     $caveatEmptor = isset($_POST['flaggedCaveatemptor']) ?
         $_POST['flaggedCaveatemptor'] : null;
     $reason       = isset($_POST['flaggedReason']) ?
@@ -104,8 +108,11 @@ function editCandInfoFields(\Database $db)
     ];
 
     $db->update('candidate', $updateValues, ['CandID' => $candID]);
+    */
+    //IBIS SPECIFIC OVERRIDE CODE ENDS HERE
+$db = \NDB_Factory::singleton()->database();
 
-    foreach (array_keys($_POST ?? []) as $field) {
+    foreach (array_keys($_POST ?? array()) as $field) {
         if (!empty($_POST[$field])) {
             if (substr($field, 0, 4) === 'PTID') {
                 $ptid = substr($field, 4);
@@ -113,13 +120,13 @@ function editCandInfoFields(\Database $db)
                 $updateValues = [
                     'ParameterTypeID' => $ptid,
                     'CandID'          => $candID,
-                    'Value'           => $_POST[$field],
+                    'Value'           => trim($_POST[$field]),
                     'InsertTime'      => time(),
                 ];
 
                 $result = $db->pselectOne(
-                    'SELECT * from parameter_candidate 
-                    WHERE CandID=:cid 
+                    'SELECT * from parameter_candidate
+                    WHERE CandID=:cid
                     AND ParameterTypeID=:ptid',
                     [
                         'cid'  => $candID,
@@ -147,13 +154,14 @@ function editCandInfoFields(\Database $db)
 /**
  * Handles the updating of Proband Info
  *
- * @param Database $db database object
+ * @param Database $db   database object
+ * @param User     $user user object
  *
  * @throws DatabaseException
  *
  * @return void
  */
-function editProbandInfoFields(\Database $db)
+function editProbandInfoFields($db, $user)
 {
     //Sanitizing the post data
     $sanitize = array_map('htmlentities', $_POST);
@@ -182,8 +190,8 @@ function editProbandInfoFields(\Database $db)
                 ];
 
                 $result = $db->pselectOne(
-                    'SELECT CandID from parameter_candidate 
-                    WHERE CandID=:cid 
+                    'SELECT CandID from parameter_candidate
+                    WHERE CandID=:cid
                     AND ParameterTypeID=:ptid',
                     [
                         'cid'  => $candID,
@@ -212,13 +220,14 @@ function editProbandInfoFields(\Database $db)
 /**
  * Handles the updating of Family Info
  *
- * @param Database $db database object
+ * @param Database $db   database object
+ * @param User     $user user object
  *
  * @throws DatabaseException
  *
  * @return void
  */
-function editFamilyInfoFields(\Database $db)
+function editFamilyInfoFields($db, $user)
 {
     $candID = $_POST['candID'];
 
@@ -258,7 +267,7 @@ function editFamilyInfoFields(\Database $db)
                 $db->update('family', $updateValues, ['ID' => $siblingID]);
             }
         } else {
-            $familyID    = $db->pselectOneInt(
+            $familyID    = $db->pselectOne(
                 "SELECT max(FamilyID) from family",
                 []
             );
@@ -281,7 +290,7 @@ function editFamilyInfoFields(\Database $db)
     $relationship     = isset($_POST[$relationshipType]) ?
         $_POST[$relationshipType] : null;
 
-    if ($siblingCandID != null ) {
+    while ($siblingCandID != null ) {
 
         $siblingID = $db->pselectOne(
             "SELECT ID from family WHERE CandID=:candid and FamilyID=:familyid",
@@ -298,26 +307,29 @@ function editFamilyInfoFields(\Database $db)
         ];
 
         $db->update('family', $updateValues, ['ID' => $siblingID]);
+
+        $i++;
     }
 }
 
 /**
  * Handles the deletion of a family member
  *
- * @param Database $db database object
+ * @param Database $db   database object
+ * @param User     $user user object
  *
  * @throws DatabaseException
  *
  * @return void
  */
-function deleteFamilyMember(\Database $db)
+function deleteFamilyMember($db, $user)
 {
     $candID         = $_POST['candID'];
     $familyMemberID = $_POST['familyDCCID'];
 
     $familyID = $db->pselectOne(
-        'SELECT FamilyID 
-        FROM family 
+        'SELECT FamilyID
+        FROM family
         WHERE CandID=:cid',
         ['cid' => $candID]
     );
@@ -334,13 +346,14 @@ function deleteFamilyMember(\Database $db)
 /**
  * Handles the updating of Participant Status
  *
- * @param Database $db database object
+ * @param Database $db   database object
+ * @param User     $user user object
  *
  * @throws DatabaseException
  *
  * @return void
  */
-function editParticipantStatusFields(\Database $db)
+function editParticipantStatusFields($db, $user)
 {
     $candID = $_POST['candID'];
 
@@ -355,7 +368,7 @@ function editParticipantStatusFields(\Database $db)
     $id = null;
     if (!(is_null($_SESSION['State']))) {
         $currentUser =& User::singleton($_SESSION['State']->getUsername());
-        $id          = $currentUser->getUsername();
+        $id          = $currentUser->getData("UserID");
     }
 
     $updateValues = [
@@ -387,13 +400,14 @@ function editParticipantStatusFields(\Database $db)
 /**
  * Handles the updating of Consent Status
  *
- * @param Database $db database object
+ * @param Database $db   database object
+ * @param User     $user user object
  *
  * @throws DatabaseException
  *
  * @return void
  */
-function editConsentStatusFields(\Database $db)
+function editConsentStatusFields($db, $user)
 {
     // Get CandID
     $candIDParam = $_POST['candID'];
@@ -413,29 +427,28 @@ function editConsentStatusFields(\Database $db)
     $consentDetails = \Utility::getConsentList();
     // Get list of consents for candidate
     $candidateConsent = $candidate->getConsents();
-
     foreach ($consentDetails as $consentID=>$consent) {
         $consentName  = $consent['Name'];
         $consentLabel = $consent['Label'];
 
         // Process posted data
         // Empty strings and type null are not passed (null is passed as a string)
-        $status     = (isset($_POST[$consentName]) &&
-                          $_POST[$consentName] !== 'null') ?
-                          $_POST[$consentName] : null;
-        $date       = (isset($_POST[$consentName . '_date']) &&
-                          $_POST[$consentName . '_date'] !== 'null') ?
-                          $_POST[$consentName . '_date'] : null;
-        $withdrawal = (isset($_POST[$consentName . '_withdrawal']) &&
-                          $_POST[$consentName . '_withdrawal'] !== 'null') ?
-                          $_POST[$consentName . '_withdrawal'] : null;
+        $status     = ($_POST[$consentName] !== 'null') ?
+                        $_POST[$consentName] : null;
+        $date       = ($_POST[$consentName . '_date'] !== 'null') ?
+                        $_POST[$consentName . '_date'] : null;
+        $withdrawal = ($_POST[$consentName . '_withdrawal'] !== 'null') ?
+		$_POST[$consentName . '_withdrawal'] : null;
 
+        $t1     = ($_POST[$consentName.'_t1'] !== 'null') ?
+                        $_POST[$consentName.'_t1'] : null;	
         $updateStatus  = [
             'CandidateID'   => $candID,
             'ConsentID'     => $consentID,
             'Status'        => $status,
             'DateGiven'     => $date,
-            'DateWithdrawn' => $withdrawal,
+	    'DateWithdrawn' => $withdrawal,
+	    't1'            => $t1,
         ];
         $updateHistory = [
             'PSCID'         => $pscid,
@@ -444,20 +457,23 @@ function editConsentStatusFields(\Database $db)
             'Status'        => $status,
             'DateGiven'     => $date,
             'DateWithdrawn' => $withdrawal,
-            'EntryStaff'    => $uid,
-        ];
+	    'EntryStaff'    => $uid,
+	];
+
+
+
 
         // Validate data
         $recordExists  = array_key_exists($consentID, $candidateConsent);
         $oldStatus     = $candidateConsent[$consentID]['Status'] ?? null;
-        $oldDate       = $candidateConsent[$consentID]['DateGiven'] ?? null;
         $oldWithdrawal = $candidateConsent[$consentID]['DateWithdrawn'] ?? null;
         $validated     = false;
+        // IBIS SPECIFIC OVERRIDE CODE
 
         switch ($status) {
         case 'yes':
             // Giving "yes" status requires consent date and empty withdrawal date
-            if (!empty($date) && empty($withdrawal)) {
+            if ((!empty($date) && empty($withdrawal)) || $consentName == 'spark_participation' || $consentName == 'echo_participation') {
                 $validated = true;
             } else {
                 http_response_code(400);
@@ -469,7 +485,7 @@ function editConsentStatusFields(\Database $db)
             // Giving 'no' status requires consent date and empty withdrawal date if
             // record does not already exist
             if (!$recordExists) {
-                if (!empty($date) && empty($withdrawal)) {
+                if ((!empty($date) && empty($withdrawal)) || $consentName == 'spark_participation' || $consentName == 'echo_participation') {
                     $validated = true;
                 } else {
                     http_response_code(400);
@@ -479,9 +495,9 @@ function editConsentStatusFields(\Database $db)
                 }
             } else { // If no status stays no or record existed as NULL
                     // consent date required and withdrawal date unchanged
-                if (($oldStatus === null || $oldStatus === 'no') && !empty($date)
+                if ((($oldStatus === null || $oldStatus === 'no') && !empty($date)
                     && ((empty($oldWithdrawal) && empty($withdrawal))
-                    || (!empty($oldWithdrawal) && !empty($withdrawal)))
+                    || (!empty($oldWithdrawal) && !empty($withdrawal)))) || $consentName == 'spark_participation' || $consentName == 'echo_participation'
                 ) {
                     $validated = true;
                 } else if ($oldStatus === 'yes' && !empty($date)
@@ -501,21 +517,19 @@ function editConsentStatusFields(\Database $db)
             // validated is still false
             // If status is empty but at least one of the date fields
             // are filled, throw an error
-            if (!empty($date) || !empty($withdrawal)) {
+            if($consentName == 'spark_participation' || $consentName == 'echo_participation'){
+                  $validated = true;
+                 // $updateStatus['Status'] = null;
+                }
+            else if (!empty($date) || !empty($withdrawal)) {
                 http_response_code(400);
                 echo('A status is missing for at least one consent type.
                       Please select a valid status for all consent types.');
                 return;
-            } elseif (!empty($oldStatus)
-                || !empty($oldDate)
-                || !empty($oldWithdrawal)
-            ) {
-                // Only update empty fields if they were not already empty
-                $validated = true;
             }
-
             break;
         }
+        // IBIS SPECIFIC OVERRIDE CODE ENDS HERE
 
         // Submit data
         if ($validated) {
@@ -523,15 +537,30 @@ function editConsentStatusFields(\Database $db)
                 $db->update(
                     'candidate_consent_rel',
                     $updateStatus,
-                    [
+                    array(
                         'CandidateID' => $candID,
                         'ConsentID'   => $consentID,
-                    ]
+                    )
                 );
             } else {
                 $db->insert('candidate_consent_rel', $updateStatus);
-            }
+	    }
+
+	    error_log(print_r($updateHistory));
             $db->insert('candidate_consent_history', $updateHistory);
+
+            // IBIS SPECIFIC OVERRIDE CODE
+            // Set DoB and EDC is study consent = no
+            if ($consentName === 'study_consent'
+                && $updateStatus['Status'] === 'no') {
+                error_log("IN HERE");
+                $db->update(
+                    'candidate',
+                    array('DoB' => NULL, 'EDC' => NULL),
+                    array('CandID' => $candID)
+                );
+            }
+            // IBIS SPECIFIC OVERRIDE CODE ENDS HERE
         }
     }
 }
@@ -539,41 +568,60 @@ function editConsentStatusFields(\Database $db)
 /**
  * Handles the updating of candidate's date of birth.
  *
- * @param Database $db database object
+ * @param Database $db   database object
+ * @param User     $user user object
  *
  * @throws DatabaseException
  *
  * @return void
  */
-function editCandidateDOB(\Database $db): void
+function editCandidateDOB(\Database $db, \User $user): void
 {
     $candID       = new CandID($_POST['candID']);
+    $candidate    = \Candidate::singleton($candID);
     $dob          = $_POST['dob'];
     $strippedDate = null;
     if (!empty($dob)) {
+        $candidate        = \Candidate::singleton($candID);
+        $candidateConsent = $candidate->getConsents();
+        $studyConsent     = '';
+
+        foreach ($candidateConsent as $consent) {
+            if ($consent['Name'] === 'study_consent') {
+                $studyConsent = $consent['Status'];
+                break;
+            }
+        }
+        if ($studyConsent === 'no') {
+            http_response_code(400);
+            die(json_encode(["error" => "Can't set date of birth of a candidate with study consent no."]));
+        }
+
         $config    = \NDB_Config::singleton();
         $dobFormat = $config->getSetting('dobFormat');
-        if ($dobFormat === 'Ym') {
+        if ($dobFormat === 'YM') {
             $strippedDate = date("Y-m", strtotime($dob))."-01";
         }
         $db->update(
             'candidate',
-            ['DoB' => $strippedDate ?? $dob],
-            ['CandID' => $candID->__toString()]
+            array('DoB' => $strippedDate ?? $dob),
+            array('CandID' => $candID->__toString())
         );
     }
+    die(json_encode([]));
 }
 
 /**
  * Handles the updating of candidate's date of death.
  *
- * @param Database $db database object
+ * @param Database $db   database object
+ * @param User     $user user object
  *
  * @throws DatabaseException
  *
  * @return void
  */
-function editCandidateDOD(\Database $db): void
+function editCandidateDOD(\Database $db, \User $user): void
 {
     $candID       = new CandID($_POST['candID']);
     $dod          = new DateTime($_POST['dod']);
@@ -587,15 +635,15 @@ function editCandidateDOD(\Database $db): void
     if (!empty($dod)) {
         $config    = \NDB_Config::singleton();
         $dodFormat = $config->getSetting('dodFormat');
-        if ($dodFormat === 'Ym') {
+        if ($dodFormat === 'YM') {
             $strippedDate = $dod->format('Y-m-01');
         } else {
             $dodString = $dod->format('Y-m-d');
         }
         $db->update(
             'candidate',
-            ['DoD' => $strippedDate ?? $dodString],
-            ['CandID' => $candID->__toString()]
+            array('DoD' => $strippedDate ?? $dodString),
+            array('CandID' => $candID->__toString())
         );
     }
 }

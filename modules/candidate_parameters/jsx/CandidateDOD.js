@@ -1,16 +1,8 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Loader from 'Loader';
-import swal from 'sweetalert2';
 
-/**
- * Candidate date of death component
- */
 class CandidateDOD extends Component {
-  /**
-   * @constructor
-   * @param {object} props - React Component properties
-   */
   constructor(props) {
     super(props);
 
@@ -26,19 +18,11 @@ class CandidateDOD extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  /**
-   * Called by React when the component has been rendered on the page.
-   */
   componentDidMount() {
     this.fetchData()
       .then(() => this.setState({isLoaded: true}));
   }
 
-  /**
-   * Fetch data
-   *
-   * @return {Promise}
-   */
   fetchData() {
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
       .then((resp) => resp.json())
@@ -49,12 +33,6 @@ class CandidateDOD extends Component {
       });
   }
 
-  /**
-   * Set form data
-   *
-   * @param {string} formElement
-   * @param {*} value
-   */
   setFormData(formElement, value) {
     let formData = this.state.formData;
     formData[formElement] = value;
@@ -63,11 +41,6 @@ class CandidateDOD extends Component {
     });
   }
 
-  /**
-   * Renders the React component.
-   *
-   * @return {JSX} - React markup for the component
-   */
   render() {
     if (this.state.error) {
       return <h3>An error occured while loading the page.</h3>;
@@ -139,7 +112,7 @@ class CandidateDOD extends Component {
       this.state.data.dob : null;
 
     if (dod > today) {
-      swal.fire({
+      swal({
         title: 'Invalid date',
         text: 'Date of death cannot be later than today!',
         type: 'error',
@@ -149,7 +122,7 @@ class CandidateDOD extends Component {
     }
 
     if (dob > dod) {
-      swal.fire({
+      swal({
         title: 'Invalid date',
         text: 'Date of death must be after date of birth!',
         type: 'error',
@@ -179,7 +152,7 @@ class CandidateDOD extends Component {
     }
     ).then((resp) => resp.text()
     ).then((result) => {
-      swal.fire({
+      swal({
             title: 'Success!',
             text: 'Date of death updated!',
             type: 'success',
@@ -190,7 +163,7 @@ class CandidateDOD extends Component {
       }
     }).catch((error) => {
         console.error(error);
-        swal.fire({
+        swal({
           title: 'Error!',
           text: 'Something went wrong.',
           type: 'error',

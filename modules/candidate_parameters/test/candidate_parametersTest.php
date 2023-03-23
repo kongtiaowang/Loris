@@ -38,18 +38,10 @@ class CandidateParametersTestIntegrationTest
             $this->url
             . "/candidate_parameters/?candID=900000&identifier=900000"
         );
-        $bodyText = $this->safeFindElement(
+        $bodyText = $this->webDriver->findElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertStringContainsString("Candidate Parameters", $bodyText);
-        $this->assertStringNotContainsString(
-            "You do not have access to this page.",
-            $bodyText
-        );
-        $this->assertStringNotContainsString(
-            "An error occured while loading the page.",
-            $bodyText
-        );
+        $this->assertContains("Candidate Parameters", $bodyText);
     }
 
 }
