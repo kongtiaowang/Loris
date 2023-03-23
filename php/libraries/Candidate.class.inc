@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+        // have access to any timepoints.
 /**
  * This file contains a class which is a wrapper around the concept
  * of a candidate in Loris.
@@ -708,7 +709,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
         $factory = NDB_Factory::singleton();
         $db      = $factory->database();
 
-        $candID = $this->getCandID();
+        $ssscandID = $this->getCandID();
         $query  = "SELECT CohortID, title FROM session
           LEFT JOIN cohort USING (CohortID)
           WHERE CandID=:cid AND Date_visit IS NOT NULL
@@ -836,7 +837,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
 
         $candID = $this->getCandID();
 
-        $query = "SELECT ConsentID, Name, Status, DateGiven, DateWithdrawn, Label
+        $query = "SELECT ConsentID, Name, Status,t1,DateGiven, DateWithdrawn, Label
             FROM candidate_consent_rel cc JOIN consent c USING (ConsentID)
             WHERE CandidateID=:cid";
         $where = ['cid' => $candID];
