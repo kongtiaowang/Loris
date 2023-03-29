@@ -100,14 +100,8 @@ class ImagingUploader extends Component {
    * @param {array} rowHeaders - array of table headers (column names)
    * @return {*} a formatted table cell for a given column
    */
-  formatColumn(column, cell, rowData) {
-    // If a column if set as hidden, don't display it
-    if (loris.hiddenHeaders.indexOf(column) > -1) {
-      return null;
-    }
+  formatColumn(column, cell, row) {
 
-    // Create the mapping between rowHeaders and rowData in a row object.
-    let row = {};
     // Default cell style
     const cellStyle = {whiteSpace: 'nowrap'};
 
@@ -181,10 +175,11 @@ class ImagingUploader extends Component {
         let numViolatedScans =
              row['Number Of Files Created'] - row['Number Of Files Inserted'];
 
-        let patientName = row.PatientName;
+        const violatedurl = loris.BaseURL
+                    + '/mri_violations/?patientName='
+                    + row.PatientName;	      
         violatedScans = <a
-          onClick={this.openViolatedScans.bind(null, patientName)}
-        >
+            href={violatedurl}>
            ({numViolatedScans} violated scans)
         </a>;
       }
@@ -276,11 +271,11 @@ class ImagingUploader extends Component {
       },
       {
         label: 'PatientName',
-        show: true,
+        show: false,
       },
       {
         label: 'SessionID',
-        show: true,
+        show: false,
       },	    
     ];
 
