@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import FilterForm from 'FilterForm';
 import {Tabs, TabPane} from 'Tabs';
 import Loader from 'Loader';
+import FilterableDataTable from 'FilterableDataTable';
 
 import LogPanel from './LogPanel';
 import UploadForm from './UploadForm';
@@ -99,7 +100,7 @@ class ImagingUploader extends Component {
    * @param {array} rowHeaders - array of table headers (column names)
    * @return {*} a formatted table cell for a given column
    */
-  formatColumn(column, cell, rowData, rowHeaders) {
+  formatColumn(column, cell, rowData) {
     // If a column if set as hidden, don't display it
     if (loris.hiddenHeaders.indexOf(column) > -1) {
       return null;
@@ -107,10 +108,6 @@ class ImagingUploader extends Component {
 
     // Create the mapping between rowHeaders and rowData in a row object.
     let row = {};
-    rowHeaders.forEach((header, index) => {
-      row[header] = rowData[index];
-    }, this);
-
     // Default cell style
     const cellStyle = {whiteSpace: 'nowrap'};
 
@@ -225,10 +222,66 @@ class ImagingUploader extends Component {
     if (!this.state.isLoaded) {
       return <Loader/>;
     }
+    const options = this.state.data.fieldOptions;
 
     const tabList = [
       {id: 'browse', label: 'Browse'},
       {id: 'upload', label: 'Upload'},
+    ];
+    const fields = [
+      {
+        label: 'Upload ID',
+        show: true,
+      },
+      {
+        label: 'Progress',
+        show: true,
+      },	    
+      {label: 'CandID', show: true, filter: {
+        name: 'candID',
+        type: 'text',
+      }},
+      {label: 'PSCID', show: true, filter: {
+        name: 'pscid',
+        type: 'text',
+      }},
+      {label: 'Visit Label', show: true, filter: {
+        name: 'Visit',
+        type: 'select',
+        options: options.visits,
+      }},
+      {
+        label: 'Upload Location',
+        show: true,
+      },
+      {
+        label: 'Upload Date',
+        show: true,
+      },
+      {
+        label: 'Uploaded By',
+        show: true,
+      },
+      {
+        label: 'Tarchive Info',
+        show: true,
+      },
+      {
+        label: 'Number Of Files Created',
+        show: true,
+      },
+      {
+        label: 'Number Of Files Inserted',
+        show: true,
+      },
+      {
+        label: 'PatientName',
+        show: true,
+      },
+      {
+        label: 'SessionID',
+        show: true,
+      },	    
     ];
 
     return (
@@ -236,47 +289,19 @@ class ImagingUploader extends Component {
         <TabPane TabId={tabList[0].id}>
           <div className='row'>
             <div className='col-md-5'>
-              <FilterForm
-                Module='imaging_uploader'
-                name='imaging_filter'
-                id='imaging_filter'
-                ref={this.setFilterRef}
-                onUpdate={this.updateFilter}
-                filter={this.state.filter}
-              >
-                <TextboxElement {... this.state.data.form.candID} />
-                <TextboxElement {... this.state.data.form.pSCID} />
-                <SelectElement {... this.state.data.form.visitLabel} />
-                <ButtonElement
-                  type='reset'
-                  label='Clear Filters'
-                  onUserInput={this.resetFilters}
-                />
-              </FilterForm>
             </div>
             <div className='col-md-7'>
               <LogPanel />
             </div>
           </div>
           <div id='mri_upload_table'>
-            <StaticDataTable
-              Data={this.state.data.Data}
-              Headers={this.state.data.Headers}
+            <FilterableDataTable
+	      name="surveyAccounts"
+              data={this.state.data.Data}
+	      fields={fields}
               getFormattedCell={this.formatColumn}
-              Filter={this.state.filter}
-              hiddenHeaders={this.state.hiddenHeaders}
             />
           </div>
-        </TabPane>
-        <TabPane TabId={tabList[1].id}>
-          <UploadForm
-            form={this.state.data.form}
-            mriList={this.state.data.mriList}
-            maxUploadSize={this.state.data.maxUploadSize}
-            imagingUploaderAutoLaunch={
-              this.state.data.imagingUploaderAutoLaunch
-            }
-          />
         </TabPane>
       </Tabs>
     );

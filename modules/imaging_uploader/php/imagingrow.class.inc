@@ -48,19 +48,6 @@ class ImagingRow implements \LORIS\Data\DataInstance
      */
     public function __construct(array $row)
     {
-        $this->_factory = \NDB_Factory::singleton();
-        $this->_path    = $this->_factory->config()->getSetting("base");
-        $instrument     = $row['Instrument'];
-        $row['Instrument_Type'] = $this->checkInstrumentType($instrument);
-        $row['Table_Installed'] = $this->checkTableInstalled($instrument);
-        $row['Table_Valid']     = $this->checkTableValid($instrument);
-        $row['Pages_Valid']     = $this->checkPagesValid($instrument);
-        if ($row['Permissions_Required'] !== null) {
-            $row['Permissions_Required'] = explode(
-                ',',
-                $row['Permissions_Required'],
-            );
-        }
 
         $this->DBRow = $row;
     }

@@ -127,8 +127,36 @@ class Imaging_Uploader extends \DataFrameworkMenu
     public function getFieldOptions() : array
     {
 	    return [
-            'sites'            => \Utility::getSiteList(false),		    
+            'visits'      => \Utility::getVisitList(),
             ];
+    } 
+    /**
+     * Converts the results of this menu filter to a JSON format to be retrieved
+     * with ?format=json
+     *
+     * @return string a json encoded string of the headers and data from this table
+     */
+    public function toJSON(): string
+    {
+        $table = (new \LORIS\Data\Table())
+            ->withDataFrom($this->getDataProvisionerWithFilters());
+        $arr   = array_map(
+            function ($row) {
+                return array_values($row);
+            },
+            json_decode($table->toJSON(\NDB_Factory::singleton()->user()), true)
+        );
+
+        return json_encode(
+            [
+                'Data'         => $arr,
+		'fieldOptions' => $this->getFieldOptions(),
+		'form'         => 'form',
+	        'imagingUploaderAutoLaunch' => "imagingUploaderAutoLaunch",
+	        'maxUploadSize' => '2048M',
+	        'mriList'  => [],	
+            ]
+        );
     }    
 }
 

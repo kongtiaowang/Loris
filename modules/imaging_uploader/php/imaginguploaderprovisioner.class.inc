@@ -36,18 +36,31 @@ class ImagingUploaderProvisioner extends \LORIS\Data\Provisioners\DBRowProvision
       */
     function __construct()
     {
+        $progressSelectPart = "IF(ISNULL(Inserting), 'Not Started',"
+            . "IF(Inserting=1, 'In Progress...', "
+	    . "IF(InsertionComplete=0, 'Failure', 'Success'))) as Progress";
+	
         parent::__construct(
-            "SELECT
-	    tn.test_name as Instrument,
-            'type' as Instrument_Type,
-            'table' as Table_Installed,
-            'tablevalid' as Table_Valid,
-            'pagevalid' as Pages_Valid,
-            GROUP_CONCAT(p.code) as Permissions_Required
-            FROM test_names tn
-            LEFT JOIN testnames_permissions_rel rel ON (rel.TestID=tn.ID)
-	    LEFT JOIN permissions p ON (rel.permID=p.permID)
-            group by Instrument
+		"SELECT
+            UploadID AS Upload_ID,
+	    {$progressSelectPart},
+            s.CandID,
+            c.PSCID,
+            s.Visit_label AS Visit,
+            UploadLocation AS Upload_Location,
+            UploadDate AS Upload_Date,
+            UploadedBy AS Uploaded_By,
+            mu.TarchiveID AS Tarchive_Info,
+            number_of_mincCreated AS Number_of_MINC_Created,
+            number_of_mincInserted AS Number_of_MINC_Inserted,
+            ta.PatientName,
+	    s.ID AS SessionID
+            FROM mri_upload mu LEFT JOIN session 
+                               s ON (s.ID = mu.SessionID) 
+                               LEFT JOIN candidate c ON (c.CandID = s.CandID) 
+                               LEFT JOIN tarchive ta ON 
+			       (mu.TarchiveID = ta.TarchiveID)
+where 1=1
             ",
             [],
         );
