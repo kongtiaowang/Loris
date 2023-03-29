@@ -286,7 +286,6 @@ class ImagingUploader extends Component {
             <div className='col-md-5'>
             </div>
             <div className='col-md-7'>
-              <LogPanel />
             </div>
           </div>
           <div id='mri_upload_table'>
@@ -295,7 +294,9 @@ class ImagingUploader extends Component {
               data={this.state.data.Data}
 	      fields={fields}
               getFormattedCell={this.formatColumn}
-            />
+            >
+	                  <LogPanel />
+	    </FilterableDataTable>
           </div>
         </TabPane>
       </Tabs>

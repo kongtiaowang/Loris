@@ -152,9 +152,8 @@ class Imaging_Uploader extends \DataFrameworkMenu
                 'Data'         => $arr,
 		'fieldOptions' => $this->getFieldOptions(),
 		'form'         => 'form',
-	        'imagingUploaderAutoLaunch' => "imagingUploaderAutoLaunch",
-	        'maxUploadSize' => '2048M',
-	        'mriList'  => [],	
+		'maxUploadSize' => '2048M',
+		'imagingUploaderAutoLaunch' => "imagingUploaderAutoLaunch",
             ]
         );
     }    
