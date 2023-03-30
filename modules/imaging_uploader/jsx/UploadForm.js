@@ -39,7 +39,7 @@ class UploadForm extends Component {
    */
   componentDidMount() {
     // Disable fields on initial load
-    this.onFormChange(this.state.form.IsPhantom.name, null);
+     this.onFormChange(this.state.form.IsPhantom.name, null);
   }
 
   /**
@@ -369,7 +369,6 @@ class UploadForm extends Component {
     form.pSCID.value = this.state.formData.pSCID;
     form.visitLabel.value = this.state.formData.visitLabel;
     form.mriFile.value = this.state.formData.mriFile;
-
     // Hide button when progress bar is shown
     const btnClass = (
       (this.state.uploadProgress > -1) ? 'btn btn-primary hide' : undefined

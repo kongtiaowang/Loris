@@ -129,7 +129,47 @@ class Imaging_Uploader extends \DataFrameworkMenu
 	    return [
             'visits'      => \Utility::getVisitList(),
             ];
-    } 
+    }
+     /**
+     * The function returns an array of filenames that exist in the mri
+     * upload directory.
+     *
+     * @param array $data data retrieved from mri_upload table
+     *
+     * @return array list of filenames
+     */
+    function _getFileList($data)
+    {
+        $files = [];
+        foreach ($data as $row) {
+            $uploadStatus = $row[1];
+            $filePath     = $row[5];
+            $mincInserted = $row[10];
+            $fileName     = basename($filePath);
+            // Checks if a file is already in files array
+            $isDuplicate = (
+                array_search(
+                    $fileName,
+                    array_column($files, 'fileName')
+                ) > -1
+            );
+            // If file successfully completed pipeline, then filePath is no longer
+            // valid as the file would have been deleted.
+            // Check that mincInserted > 0 in mri_upload to handle Successful uploads
+            if ((file_exists($filePath) || $mincInserted)
+                && !$isDuplicate
+            ) {
+                array_push(
+                    $files,
+                    [
+                        "fileName" => $fileName,
+                        "status"   => $uploadStatus,
+                    ]
+                );
+            }
+        }
+        return $files;
+    }   
     /**
      * Converts the results of this menu filter to a JSON format to be retrieved
      * with ?format=json
@@ -151,9 +191,22 @@ class Imaging_Uploader extends \DataFrameworkMenu
             [
                 'Data'         => $arr,
 		'fieldOptions' => $this->getFieldOptions(),
-		'form'         => 'form',
-		'maxUploadSize' => '2048M',
-		'imagingUploaderAutoLaunch' => "imagingUploaderAutoLaunch",
+		'form'         => [
+			'IsPhantom' => [
+				'options'=>[            'N' => 'No',
+		                                        'Y' => 'Yes',],
+			        'name' => 'IsPhantom'],
+				'visitLabel'=>['options'=>\Utility::getVisitList(),
+		                               'name' => 'visitLabel'],
+		'candID' =>['name' => 'candID'],
+		'pSCID' => ['name' => 'pSCIID'],
+		],
+		'maxUploadSize' => \Utility::getMaxUploadSize(),
+//		'imagingUploaderAutoLaunch' => \NDB_Config::singleton()->getSetting(
+//            'ImagingUploaderAutoLaunch'
+		//        ),
+		'maxUploadSize' =>'1',
+		'mriList'           =>     $this->_getFileList($arr),
             ]
         );
     }    

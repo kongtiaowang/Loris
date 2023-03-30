@@ -196,17 +196,6 @@ class ImagingUploader extends Component {
     return (<td style={cellStyle}>{cell}</td>);
   }
 
-  /**
-   * Opens MRI Violations for when there are violated scans
-   *
-   * @param {string} patientName - Patient name of the form PSCID_DCCID_VisitLabel
-   * @param {object} e - event info
-   */
-  openViolatedScans(patientName, e) {
-    loris.loadFilteredMenuClickHandler('mri_violations/', {
-      PatientName: patientName,
-    })(e);
-  }
 
   /**
    * Renders the React component.
@@ -290,7 +279,7 @@ class ImagingUploader extends Component {
           </div>
           <div id='mri_upload_table'>
             <FilterableDataTable
-	      name="surveyAccounts"
+	      name="mri_upload_table"
               data={this.state.data.Data}
 	      fields={fields}
               getFormattedCell={this.formatColumn}
@@ -299,6 +288,16 @@ class ImagingUploader extends Component {
 	    </FilterableDataTable>
           </div>
         </TabPane>
+        <TabPane TabId={tabList[1].id}>
+          <UploadForm
+            form={this.state.data.form}
+            mriList={this.state.data.mriList}
+            maxUploadSize={this.state.data.maxUploadSize}
+            imagingUploaderAutoLaunch={
+              this.state.data.imagingUploaderAutoLaunch
+            }
+          />
+        </TabPane>	    
       </Tabs>
     );
   }
