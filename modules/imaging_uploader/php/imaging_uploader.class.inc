@@ -200,6 +200,7 @@ class Imaging_Uploader extends \DataFrameworkMenu
 		                               'name' => 'visitLabel'],
 		'candID' =>['name' => 'candID'],
 		'pSCID' => ['name' => 'pSCIID'],
+                'mriFile' => ['name' => 'mriFile'],		
 		],
 		'maxUploadSize' => \Utility::getMaxUploadSize(),
 //		'imagingUploaderAutoLaunch' => \NDB_Config::singleton()->getSetting(
