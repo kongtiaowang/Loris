@@ -206,7 +206,8 @@ class Imaging_Uploader extends \DataFrameworkMenu
 //		'imagingUploaderAutoLaunch' => \NDB_Config::singleton()->getSetting(
 //            'ImagingUploaderAutoLaunch'
 		//        ),
-		'maxUploadSize' =>'1',
+		'imagingUploaderAutoLaunch' => '1',
+		'maxUploadSize' =>'1024M',
 		'mriList'           =>     $this->_getFileList($arr),
             ]
         );
