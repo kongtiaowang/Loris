@@ -42,41 +42,55 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
         if ($config->getSetting("useEDC") === "true") {
             $maybeEDC = ", DATE_FORMAT((c.EDC),'%Y-%m-%d') AS EDC";
         }
+        // IBIS SPECIFIC OVERRIDE CODE
+        // Obtain scan done by looking at the candidate's file count.
         parent::__construct(
             "SELECT
-                c.PSCID,
-                c.CandID AS DCCID,
-                GROUP_CONCAT(DISTINCT s.Visit_label) AS VisitLabel,
-                psc.Name AS RegistrationSite,
-                GROUP_CONCAT(DISTINCT sp.title) AS Subproject,
-                c.Entity_type AS EntityType,
-                MAX(s.Scan_done) AS scanDone,
-                COALESCE(pso.Description,'Active') AS ParticipantStatus,
-                DATE_FORMAT(c.DoB,'%Y-%m-%d') AS DoB,
-                c.Sex,
-                COUNT(DISTINCT s.Visit_label) AS VisitCount,
-                IFNULL(MIN(feedback_bvl_thread.Status+0),0) AS Feedback,
-                max(s.Current_stage) AS LatestVisitStatus,
-                p.Name AS RegistrationProject,
-                c.RegistrationCenterID,
-                c.RegistrationProjectID
-                $maybeEDC
-                FROM candidate c
-                    LEFT JOIN psc ON (c.RegistrationCenterID=psc.CenterID)
-                    LEFT JOIN session s ON (c.CandID = s.CandID AND s.Active = 'Y')
-                    LEFT JOIN feedback_bvl_thread
-                        ON (c.CandID=feedback_bvl_thread.CandID)
-                    LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
-                    LEFT JOIN participant_status_options pso
-                        ON (ps.participant_status=pso.ID)
-                    LEFT JOIN Project p ON (c.RegistrationProjectID=p.ProjectID)
-                    LEFT JOIN subproject sp ON (s.SubprojectID=sp.SubprojectID)
-                WHERE c.Active = 'Y'
-                GROUP BY c.CandID, psc.Name, c.PSCID, c.Sex
-                ORDER BY c.PSCID ASC
-            ",
-            array()
+              c.PSCID,
+              c.CandID AS DCCID,
+              GROUP_CONCAT(DISTINCT s.Visit_label) AS VisitLabel,
+              psc.Name AS RegistrationSite,
+              GROUP_CONCAT(DISTINCT sp.title) AS Subproject,
+              c.Entity_type AS EntityType,
+              CASE
+                ISNULL((
+                  SELECT
+                    f1.FileID
+                  FROM files f1
+                  LEFT JOIN session s2
+                    ON (s2.ID = f1.SessionID)
+                  WHERE s2.CandID = c.CandID
+                  LIMIT 1
+                ))
+                WHEN 0 THEN 'Y'
+                ELSE 'N'
+              END AS scanDone,
+              COALESCE(pso.Description,'Active') AS ParticipantStatus,
+              DATE_FORMAT(c.DoB,'%Y-%m-%d') AS DoB,
+              c.Sex,
+              COUNT(DISTINCT s.Visit_label) AS VisitCount,
+              IFNULL(MIN(feedback_bvl_thread.Status+0),0) AS Feedback,
+              MAX(s.Current_stage) AS LatestVisitStatus,
+              p.Name AS RegistrationProject,
+              c.RegistrationCenterID,
+              c.RegistrationProjectID
+              $maybeEDC
+            FROM candidate c
+            LEFT JOIN psc ON (c.RegistrationCenterID=psc.CenterID)
+            LEFT JOIN session s ON (c.CandID = s.CandID AND s.Active = 'Y')
+            LEFT JOIN feedback_bvl_thread
+              ON (c.CandID=feedback_bvl_thread.CandID)
+            LEFT JOIN participant_status ps ON (ps.CandID=c.CandID)
+            LEFT JOIN participant_status_options pso
+              ON (ps.participant_status=pso.ID)
+            LEFT JOIN Project p ON (c.RegistrationProjectID=p.ProjectID)
+            LEFT JOIN subproject sp ON (s.SubprojectID=sp.SubprojectID)
+            WHERE c.Active = 'Y'
+            GROUP BY c.CandID, psc.Name, c.PSCID, c.Sex
+            ORDER BY c.PSCID ASC",
+            []
         );
+        // IBIS SPECIFIC OVERRIDE CODE ENDS HERE
     }
 
     /**
