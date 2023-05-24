@@ -1,0 +1,219 @@
+h1 {
+  color: #064785;
+  text-align: center;
+}
+
+.instructions {
+  color: #064785;
+  text-align: center;
+  padding: 25px;
+}
+
+.formContainer {
+  width: 80%;
+  display: block;
+  margin: auto;
+  padding-top: 2em;
+  padding-bottom: 1em;
+  padding-left: 2em;
+  padding-right: 2em;
+  border: 1px solid #c3d5db;
+  border-radius: 6px;
+}
+
+.FormElement {
+  display: block;
+  margin: auto;
+  width: 60%;
+}
+.checkbox-with-text {
+  display: flex;
+  align-items: center;
+}
+
+.checkbox-with-text input[type="checkbox"] {
+  margin-right: 10px;
+}
+
+.checkbox-with-text span {
+  margin-left: auto;
+}
+
+.Panel {
+  font-weight: 400 !important;
+  width: 49%;
+  /*width: 550px;*/
+}
+
+.Status {
+  border: 1px solid #c3d5db;
+  margin-bottom: 0.5em;
+  padding: 1em;
+  border-left: 0.5em solid #c3d5db;
+}
+
+.FormTable {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border: 1px solid #c3d5db;
+  border-radius: 6px;
+  overflow-x: auto;
+  margin-top: 1em;
+}
+
+.FormTable th {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 8px;
+  padding-right: 8px;
+  vertical-align: bottom;
+}
+
+.FormTable td {
+  padding-left: 8px;
+  padding-right: 8px;
+  min-width: 175px;
+}
+
+.FormTable .xs-col {
+  min-width: 50px;
+}
+
+.FormTable .sm-col {
+  min-width: 125px;
+}
+
+.FormTable .lrg-col {
+  min-width: 225px;
+}
+
+.FormTable table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 8px;
+}
+
+.linkKitButton {
+  display: block;
+  margin: auto;
+}
+
+.panel-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+#candidate-info-panel {
+  order: 1;
+}
+
+#completion-status-panel {
+  order: 2;
+}
+
+
+
+span #completion-category {
+  order: 1;
+}
+
+span #completion-status {
+  order: 2;
+}
+
+dl {
+  margin-bottom: 0px;
+}
+
+#candidateInfo .panel-body {
+  padding: 5px;
+}
+
+.LinkKitForm .formContainer {
+  width: 80%;
+}
+
+.LinkKitContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 90%;
+  margin: 0 auto;
+  padding-bottom: 15px;
+}
+
+.LinkKitContainer .item1 {
+  order: 1;
+  flex: 1;
+  text-align: center;
+}
+
+.LinkKitContainer .item2 {
+  order: 2;
+  padding-left: 25px;
+  padding-right: 25px;
+}
+
+.LinkKitContainer .item2 .vertical-line {
+  border-left: 1px solid #c3d5db;
+  margin: 0;
+  height: 150px;
+}
+
+.LinkKitContainer .item3 {
+  order: 3;
+  flex: 1;
+}
+
+.FormTable label {
+  display: none;
+}
+
+.VisitCompleteForm button {
+  float: right;
+}
+
+
+
+.TimeElementWithButton {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+}
+
+.TimeElementWithButton .item1 {
+  order: 1;
+  flex: 2;
+}
+
+.TimeElementWithButton .item2 {
+  order: 2;
+  flex: 1;
+  height: 34px;
+}
+
+.VisitCompleteForm .DateElement {
+  width: 100%;
+}
+
+.VisitCompleteForm .col-sm-9 {
+  width: 100%;
+}
+.my-title-class {
+  font-size: 1rem;
+}
+
+.my-content-class {
+  font-size: 0.8rem;
+}
+
