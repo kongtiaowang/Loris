@@ -49,11 +49,14 @@ class CandidateUtil extends \NDB_Page
                     new \LORIS\Http\StringStream(
                         json_encode($res)
                     )
-                );
+		);
+        case "POST":
+            return $this->handleNextStageAutomatic();	    
         default:
             return (new \LORIS\Http\Response())
                 ->withHeader("Content-Type", "text/plain")
-                ->withHeader("Allow", "GET");
+		->withAddedHeader("Allow", "GET")
+	        ->withAddedHeader("Allow", "POST");
         }
     }
     
@@ -109,7 +112,8 @@ class CandidateUtil extends \NDB_Page
             "
         SELECT
             ID,
-            Visit_label
+	    Visit_label,
+            Current_stage
         FROM
             session
         WHERE 
@@ -119,13 +123,62 @@ class CandidateUtil extends \NDB_Page
                 'Id' => $candidate['CandID'] ?? ''
             ]
         );
-        $sessions    = [];
+	$sessions    = [];
+        $sessionIDs  = [];	
         foreach ($sessionlist as $session) {
            // $k            = $session['ID'];
             $v            = $session['Visit_label'];
-            $sessions[$v] = $v;
+	    $sessions[$v] = $session['Current_stage'];
+	    $sessionIDs[$v] = $session['ID'];
+
         }
-        $res['visit_label'] = $sessions;
+	$res['visit_label'] = $sessions;
+	$res['session'] = $sessionIDs;
+
         return $res;
+    }
+    public function handleNextStageAutomatic() {
+$requestPayload = file_get_contents('php://input');
+// Decode the JSON payload into an associative array
+$data = json_decode($requestPayload, true);
+
+
+$DCCID = $data['DCCID'];
+$PSCID = $data['PSCID'];
+$Visit = $data['Visit'];
+$sessionID = $data['sessionID'];
+
+try {
+$timePoint = \TimePoint::singleton(intval($sessionID));
+        $battery   = new \NDB_BVL_Battery;
+        $timePoint->startStage('Visit');
+        $timePoint->setData(['Date_visit' =>  date('Y-m-d')]);
+        $battery->selectBattery($timePoint->getSessionID());
+    $battery->createBattery(
+        $timePoint->getSubprojectID(),
+        'Visit',
+        $timePoint->getVisitLabel(),
+        $timePoint->getCenterID(),
+        true
+    );
+
+        return new \LORIS\Http\Response\JSON\OK();
+
+} catch (Exception $e) {
+	    return new \LORIS\Http\Response\JSON\BadRequest(
+                "Can not insert Cannot insert automatically!!"
+            );
+}
+
+
+
+        /*    return (new \LORIS\Http\Response())
+                ->withHeader("Content-Type", "text/plain")
+                ->withBody(
+                    new \LORIS\Http\StringStream(
+                        json_encode($data)
+                    )
+                );
+	 */       
     }
 }

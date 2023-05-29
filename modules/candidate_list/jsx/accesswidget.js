@@ -1,31 +1,6 @@
 /* eslint-disable */
-/*
-import React, {Component} from 'react';
-
- * Open Profile Form
- *
- * Module component rendering the Open Profile Form
- *
- 
-class AccessWidget extends Component {
-    this.state = {
-      data: {},
-      error: false,
-      isLoaded: false,
-      formData: {
-        DCCID: null,
-        PSCID: null,
-        Session: null,
-        SessionFieldOptions: {},
-      }
-    }
-  render() {
-    return <h1>Hello, {this.props.name}</h1>;
-  }
-}	
-export default AccessWidget;
-*/
 import React, { useState } from 'react';
+import Swal from 'sweetalert2';
 
 function AccessWidget() {
   const [PSCID, setPSCID] = useState('');
@@ -36,19 +11,28 @@ function AccessWidget() {
   const [responseData, setResponseData] = useState(null);
   const [error, setError] = useState('');
   const [form, setForm] = useState('');
+  const [stage, setStage] = useState('');
+  const [sessionIDS, setSessionIDS] = useState([]);
+  const [sessionID, setSessionID] = useState('');
+	
 
   function handleDccidInputChange(event) {
     setDCCID(event.target.value);
+    setVisit('');
+    setSessionID('');	  
     fetchDataForm('DCCID',event.target.value);	  
   }
   function handlePscidInputChange(event) {
     setPSCID(event.target.value);
+	      setVisit('');
+	  setSessionID('');
     fetchDataForm('PSCID',event.target.value);
- 
   }
 
   function handleDropdownChange(event) {
     setVisit(event.target.value);
+    setStage(dropdownValue[event.target.value]);
+    setSessionID(sessionIDS[event.target.value]);
   }
   function fetchDataForm(type, value) {
     return fetch(loris.BaseURL+'/candidate_list/CandidateUtil/'+type+'/'+value, {
@@ -59,38 +43,92 @@ function AccessWidget() {
       .then((resp) => resp.json())
       .then((data) => {
        if (type === 'DCCID' ) {
-	  setPSCID(data['PSCID']);     
-         //this.setState({formData: {...this.state.formData, PSCID: data['PSCID']}});
+      //	  setPSCID(data['PSCID']);
       } 
        if (type === 'PSCID' ) {
-	  setDCCID(data['DCCID']);
-     
-        // this.setState({formData: {...this.state.formData, DCCID: data['DCCID']}});
+      //	  setDCCID(data['DCCID']);
       }
 	      console.log(data['visit_label']);
 	  setDropdownValue(data['visit_label']);
+	  setSessionIDS(data['session']);    
         // this.setState({formData: {...this.state.formData, SessionFieldOptions: data['Session']}});
       })
       .catch((error) => {
-        this.setState({error: true});
+   //     this.setState({error: true});
         console.error(error);
       });
   }
-  async function handleGoButtonClick() {
-    const response = await fetch('path/to/php/backend', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        inputValue: textInputValue,
-        dropdownValue: dropdownValue
-      })
-    });
 
-    const data = await response.json();
-    setResponseData(data);
-  }
+const sleep = (milliseconds) => {
+  return new Promise((resolve) => setTimeout(resolve, milliseconds));
+};
+	
+  const handleSubmit = (event) => {
+    event.preventDefault();
+	//  console.log("fjdslkfjdlsajldfjlkfjlkafjlkjflds");
+	  if (typeof Visit !== 'undefined' && Visit === '') {
+		  console.log(dropdownValue);
+               if (Array.isArray(dropdownValue) && dropdownValue.length === 0) {	 
+		       setError("Invalidate CanID/PSCID");
+	       } else {setError("Missing Visit Lable!"); }
+          } else {
+                setError("");
+		  if (stage === "Not Started") {
+////////////// handle swal
+		  //
+		           console.log(stage);
+console.log(sessionID);
+  Swal.fire({
+    title: 'Confirmation',
+    text: 'This candidate has not started the visit yet! Please choose a method to insert the instrument battery!',
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonText: 'Automatic',
+    cancelButtonText: 'Manual'
+  }).then((result) => {
+	  console.log(result);
+    if (result.value === true) {
+      // User clicked "Yes"
+	    // todo insert instrument battery!!!!!
+fetch(loris.BaseURL+'/candidate_list/CandidateUtil/', {
+      method: 'POST',
+      cache: 'no-cache',
+      credentials: 'same-origin',
+      body: JSON.stringify({
+        DCCID,
+        PSCID,
+        Visit,
+	sessionID
+      }),
+      }).then((response) =>response.text())
+      .then((data) => {
+      console.log(data);
+ window.location.href =  loris.BaseURL+"/portal?CandID="+DCCID+"&VisitLabel="+Visit;	      
+      })
+      .catch((error) => {
+   //     this.setState({error: true});
+        console.error(error);
+      });	    
+	    
+    
+	    
+	    
+	    // todo end
+    } else {
+      // User clicked "No"	    
+	    window.location.href =  loris.BaseURL+"/next_stage/?CandID="+DCCID+"&sessionID="+sessionID+"&identifier="+sessionID;
+    }
+  });
+           } else {
+////////////// swal end
+                window.location.href =  loris.BaseURL+"/portal?CandID="+DCCID+"&VisitLabel="+Visit;
+		  }
+	  }
+
+
+          console.log(error);
+   // window.location.href =  loris.BaseURL+"/portal?CandID="+DCCID+"&VisitLabel="+Visit;
+  };
   const errorDiv = error == '' ? null : <div className="error">{error}</div>;
 
   return (
@@ -98,7 +136,8 @@ function AccessWidget() {
       <h4 style={{ color: '#064785', marginTop: '5px', marginBottom: '15px' }}>
 	  Linking to REDCap
       </h4>
-      <form onSubmit={handleGoButtonClick}>
+      <form onSubmit={handleSubmit}>
+	  {errorDiv}
         <div className="form-group">
           <label htmlFor="candidinput">CandID</label>
           <input
@@ -106,8 +145,9 @@ function AccessWidget() {
             className="form-control"
             id="candidinput"
             placeholder="Enter CandID"
-	    value={DCCID} 
+	    value={DCCID}
 	    onChange={handleDccidInputChange}
+	    required
           />
         </div>
         <div className="form-group">
@@ -117,8 +157,9 @@ function AccessWidget() {
             className="form-control"
             id="pscidinput"
             placeholder="Enter PSCID"
-           value={PSCID}
-            onChange={handlePscidInputChange}	  
+            value={PSCID}
+            onChange={handlePscidInputChange}
+	    required
           />
         </div>
         <div className="form-group">
@@ -127,21 +168,21 @@ function AccessWidget() {
 	         className="form-control"  
 	         value={Visit}
 	         onChange={handleDropdownChange}>
-            <option value="">--Please choose an item--</option>
+            <option value="">--Please choose a Visit Label--</option>
             {Object.keys(dropdownValue).map((key) => (
           <option key={key} value={key}>
-            {dropdownValue[key]}
+		    {key}
           </option>
             ))}
          </select>
         </div>	  
         {errorDiv}
         <button
-          type="submit"
           className="btn btn-primary"
           style={{ marginBottom: '5px' }}
-        >
-	Launch Visit 
+	  type="submit"
+	  >
+   	Launch Visit 
         </button>
       </form>
     </div>	  
