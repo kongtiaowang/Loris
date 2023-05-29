@@ -24,25 +24,26 @@ jobs:
       uses: shivammathur/setup-php@v2
       with:
         php-version: ${{ matrix.php }}
-        extensions: zip, php-ast
+        extensions: zip, php${{ matrix.php }}-ast
 
     - name: Validate composer.json and composer.lock
       run: composer validate
 
     - name: Cache Composer packages
       id: composer-cache
+      run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+    - name: Composer cache
       uses: actions/cache@v2
       with:
-        path: vendor
-        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-php-
+        path: ${{ steps.composer-cache.outputs.dir }}
+        key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
+        restore-keys: ${{ runner.os }}-composer-
 
     - name: Change PHP Version in Dockerfile
       run: sed -i "s/7.3/${{ matrix.php }}/g" Dockerfile.test.php7
 
     - name: Install OS package dependencies
-      run: sudo apt-get install php-ast
+      run: sudo apt-get install php${{ matrix.php }}-ast
 
     - name: Install composer dependencies
       if: steps.composer-cache.outputs.cache-hit != 'true'
