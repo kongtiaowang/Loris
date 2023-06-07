@@ -203,14 +203,13 @@ class Imaging_Uploader extends \DataFrameworkMenu
                 'mriFile' => ['name' => 'mriFile'],		
 		],
 		'maxUploadSize' => \Utility::getMaxUploadSize(),
-//		'imagingUploaderAutoLaunch' => \NDB_Config::singleton()->getSetting(
-//            'ImagingUploaderAutoLaunch'
-		//        ),
+		'imagingUploaderAutoLaunch' => \NDB_Config::singleton()->getSetting(
+            'ImagingUploaderAutoLaunch'
+		        ),
 		'imagingUploaderAutoLaunch' => '1',
 		'maxUploadSize' =>'1024M',
 		'mriList'           =>     $this->_getFileList($arr),
             ]
         );
-    }    
-}
-
+    }
+}    
