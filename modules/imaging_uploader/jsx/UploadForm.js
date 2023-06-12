@@ -291,7 +291,7 @@ class UploadForm extends Component {
       this.processError(xhr);
     }, false);
 
-    xhr.open('POST', loris.BaseURL + '/imaging_uploader/');
+    xhr.open('POST', loris.BaseURL + '/imaging_uploader/Upload_Process');
     xhr.send(formObj);
   }
 
