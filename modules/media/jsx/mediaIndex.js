@@ -1,3 +1,4 @@
+import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
@@ -64,6 +65,7 @@ class MediaIndex extends Component {
   /**
    * Insert row of data into table after successful
    * file upload and display recent data.
+   *
    * @param {object} data - row to add to table
    */
   insertRow(data) {
@@ -79,7 +81,6 @@ class MediaIndex extends Component {
    *
    * @param {string} column - column name
    * @param {string} value - cell value
-   *
    * @return {string} a mapped value for the table cell at a given column
    */
   mapColumn(column, value) {
@@ -97,8 +98,7 @@ class MediaIndex extends Component {
    * @param {string} column - column name
    * @param {string} cell - cell content
    * @param {object} row - row content indexed by column
-   *
-   * @return {*} a formated table cell for a given column
+   * @return {React.ReactElement|void} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
     cell = this.mapColumn(column, cell);
@@ -283,11 +283,11 @@ MediaIndex.propTypes = {
 };
 
 window.addEventListener('load', () => {
-  ReactDOM.render(
+  const root = createRoot(document.getElementById('lorisworkspace'));
+  root.render(
     <MediaIndex
       dataURL={`${loris.BaseURL}/media/?format=json`}
       hasPermission={loris.userHasPermission}
-    />,
-    document.getElementById('lorisworkspace')
+    />
   );
 });
