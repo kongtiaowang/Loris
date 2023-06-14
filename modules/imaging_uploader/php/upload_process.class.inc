@@ -63,7 +63,7 @@ class Upload_Process extends \NDB_Page
 		    $postData = $request->getParsedBody();
 		    $file  = $_FILES['mriFile'];
 		    $postData['mriFile']=$file;
-		return $this->uploadFile($postData);
+		return $this->uploadFile($request,$postData);
         default:
             return (new \LORIS\Http\Response\JSON\MethodNotAllowed(
                 ["POST"]
@@ -77,14 +77,128 @@ class Upload_Process extends \NDB_Page
      *
      * @return ResponseInterface
      */
-    function uploadFile($values)
+    function uploadFile($request,$values)
     {
-	    error_log("---------");
-      if ($this->_saveFile($values)) {
-            // MRI archive is now in the mri_upload table. If there are existing
-            // records in table notification_spool for that upload (i.e a re-upload
-            // of a scan that the MRI pipeline failed to process), inactivate them
-            $db = $this->loris->getDatabaseConnection();
+	$this->valid($values);
+        $instance = $request->getAttribute('loris');
+        $db       = $instance->getDatabaseConnection();
+        $config   = $instance->getConfiguration();
+        $user     = $request->getAttribute('user');
+        $name     = $user->getUsername();
+        $overwrite = $values['overwrite'] ?? false;
+        error_log("999999999999999999999");
+        // Initialize FilesUploadHandler
+        $path = \Utility::pathJoin(
+            $config->getSetting("MRIUploadIncomingPath"),
+            $name
+        );
+        if (!is_dir($path)) {
+            mkdir($path, 0770);
+        }
+	error_log($path);
+	$targetdir = new \SplFileInfo($path);
+	        error_log($targetdir);
+
+        try {
+            $uploader = (new \LORIS\FilesUploadHandler($targetdir))
+                ->withPermittedMIMETypes(
+			'application/zip',
+			'application/tar+gzip',
+			'application/x-gzip',
+                );
+        } catch (\ConfigurationException $e) {
+            return new \LORIS\Http\Response\JSON\InternalServerError(
+                $e->getMessage()
+            );
+	}
+  error_log("88888");
+
+$uploader=$uploader->withOverwrite($overwrite);
+        $response = $uploader->handle($request);
+        if (!in_array($response->getStatusCode(), [200, 201], true)) {
+            // Something went wrong. Return early to skip further processing.
+            return $response;
+	}
+        $user_name = $values['user_id'] ?? null;
+        if (($user_name==null) || (!(isset($user_name)))) {
+            $user      = \User::singleton();
+            $user_name = $user->getUsername();
+	}
+	        error_log("77777");
+
+        ///////////////////////////////////////////////////////////////////////
+        ////////////////////Insert values into mri_upload//////////////////////
+        ///////////////////////////////////////////////////////////////////////
+        $date = date('Y-m-d H:i:s');
+
+        ///////////////////////////////////////////////////////////////////////
+        /////Get the pscid, candid and visit_label/////////////////////////////
+        ///////////////////////////////////////////////////////////////////////
+        if ($values['IsPhantom']=='N') {
+            if ((!empty($values['candID']))
+                && (!empty($values['pSCID']))
+                &&(!empty($values['visitLabel']))
+            ) {
+                ///////////////////////////////////////////////////////////////////
+                ////////////////////Use the arguments//////////////////////////////
+                ///////////////////////////////////////////////////////////////////
+                $visit_label = $values['visitLabel'];
+                $candid      = $values['candID'];
+                $pscid       = $values['pSCID'];
+                $pname       = $pscid. "_" . $candid . "_" . $visit_label;
+                $sessionid   = $db->pselectOne(
+                    "SELECT ID FROM  session WHERE CandID = :cid
+                     AND Visit_label =:vlabel",
+                    [
+                        'cid'    => $candid,
+                        'vlabel' => $visit_label,
+                    ]
+                );
+            }
+	}
+	   error_log("66666666");
+        ///////////////////////////////////////////////////////////////
+        ///if the DestinationDirectory/getDestinationFilename//////////
+        //is not empty, then remove the uploaded directory in the /tmp/
+        ////Otherwise keep uploaded directory in the /tmp and insert///
+        ////into the mri_upload table//////////////////////////////////
+        ///////////////////////////////////////////////////////////////
+        $values = [
+            'UploadedBy'               => $user_name,
+            'UploadDate'               => $date,
+            'UploadLocation'           => $targetdir."/".$values['mriFile']['name'],
+            'SessionID'                => $sessionid ?? null,
+            'PatientName'              => $pname ?? '',
+            'IsPhantom'                => $values['IsPhantom'],
+            'TarchiveID'               => null,
+            'Inserting'                => null,
+            'InsertionComplete'        => 0,
+            'IsCandidateInfoValidated' => null,
+            'IsTarchiveValidated'      => 0,
+            'number_of_mincInserted'   => null,
+            'number_of_mincCreated'    => null,
+	];
+	   error_log("555555555");
+        if ($updateFile) {
+            // Only overwrite file if it failed MRI pipeline. Need to use
+            // wildcard for files that were uploaded to a random temp path.
+            $fileName = $values['mriFile']['name'];
+            $id       = $db->pselectOne(
+                "SELECT
+                IF (InsertionComplete=0 AND
+                (ISNULL(Inserting) OR Inserting=0), UploadID, NULL) as UploadID
+                FROM mri_upload WHERE UploadLocation LIKE :ul",
+                ['ul' => "%$fileName"]
+            );
+            if (!empty($id)) {
+                $db->update('mri_upload', $values, ['UploadID' => $id]);
+                $this->mri_upload_id = $id;
+                return true;
+            }
+	}
+	error_log("4444444444");
+        $db->insert('mri_upload', $values);
+	$this->mri_upload_id = $db->getLastInsertId();
             $db->update(
                 'notification_spool',
                 ['Active' => 'N'],
@@ -135,127 +249,46 @@ class Upload_Process extends \NDB_Page
                         'mri_upload',
                         ['Inserting' => 0],
                         ['UploadID' => $this->mri_upload_id]
-                    );
-                            return (new \LORIS\Http\Response())
-            ->withStatus(400)
-            ->withHeader("Content-Type", "text/plain")
-            ->withBody(
-                new \LORIS\Http\StringStream(
-                    json_encode("failed!")
-                )
-            );
-                }
-            }
-            return (new \LORIS\Http\Response())
+		    );
+		            error_log("333333");
+
+	 return (new \LORIS\Http\Response())
             ->withStatus(200)
             ->withHeader("Content-Type", "text/plain")
             ->withBody(
                 new \LORIS\Http\StringStream(
-                    json_encode("Added!")
-                )
+                    "Error")
             );
-        }
-                return (new \LORIS\Http\Response())
-            ->withStatus(400)
+                }
+            }
+         return (new \LORIS\Http\Response())
+            ->withStatus(200)
             ->withHeader("Content-Type", "text/plain")
             ->withBody(
                 new \LORIS\Http\StringStream(
-                    json_encode("failed!")
-                )
+                    "Done")
             );
-
-
-    }
-    /**
-     * The function isCompressed returns true if the file is
-     * compressed (gzip or zip) or false otherwise
-     *
-     * @param string $file The full filename including directory
-     *
-     * @return bool Whether the file is compressed
-     */
-    // methods available to all children
-    /**
-     * Save the file to the DataBase by:
-     * 1) registering the file handlers
-     * 2) Calling the processFiles function which in return will call
-     *   - isValid function
-     *   - importFile Function
-     *
-     * @param array $values the array of values from the form
-     *
-     * @return true
-     */
-    function _saveFile($values)
-    {
-        //get the stored-file path
-        $file   = new \File_Upload;
-        $config = \NDB_Config::singleton();
-        $file->setOverwriteMode("overwrite");
-        $file->fileMove = false;
-        //pass the existing form ($form) by reference to File_Upload,
-        // and register the file_upload field names being used.
-        $file->registerForm($this->form);
-        //Set the target directory that you want files moved
-        //into once they are validated and processed.
-        $MRIUploadIncomingPath = $config->getSetting('MRIUploadIncomingPath');
-        if (($MRIUploadIncomingPath) && (is_dir($MRIUploadIncomingPath))
-            && (is_writable($MRIUploadIncomingPath))
-	) {
-		error_log("+++++++");
-             $file->fileMove = true;
-             $file->setBaseUploadDirectory($MRIUploadIncomingPath);
         }
-        //Tell File_Upload what file handlers to use.
-        $file->setFileHandler(
-            "mriFile",
-            $this
-        );
-        //set the the IDs to the handler functions.
-        $file->setHandlerArgs(["values" => $values]);
-        //proccesses them (including verify, move, and import steps)
-        $file->processFiles();
-        return true;
-    }
-    /**
-     * If file is not Phantom, validates advanced options by ensuring that:
-     *  - The CandID exists in the database
-     *  - The PSCID is valid for the CandID
-     *  - The Visit Label is valid for the CandID
-     *  - The candidate that was input is active in the database
-     *  - The session that was input is active in the database
-     *  - Once CandID, PSCID, and Visit Label are validated, checks if file has
-     *       proper naming convention: PSCID_CandID_VisitLabel
-     * In all cases, validates the file to be uploaded by ensuring that:
-     *  - The uploaded file is compressed and is of type:
-     *       .gz, .zip or .tgz
-     *  - The uploaded file is copied to a newly created temporary folder
-     *
-     * @param Object $file The uploaded file
-     * @param Array  $args The list of arguments
-     *
-     * @return true on success, throws error otherwise
-     */
-    function isValid($file, $args)
+
+
+    function valid($values)
     {
-	    error_log("//////////////");
-	    error_log(json_encode($file));
-	    return true;
-        //make sure the file-name is  valid
-        $temp_file = $file->fileInfo['tmp_name'];
-        $db        = $this->loris->getDatabaseConnection();
-        // creates associative array to store error messages for each form element
-        $errors = [
+	           $errors = [
             'IsPhantom'  => [],
             'candID'     => [],
             'pSCID'      => [],
             'visitLabel' => [],
             'mriFile'    => [],
         ];
+	                error_log("valid");
+        //make sure the file-name is  valid
+        $temp_file = $values['mriFile']['tmp_name'];
+        $db        = $this->loris->getDatabaseConnection();
+        // creates associative array to store error messages for each form element
         // creates empty string variable to store error message for wrong file name
         $file_name_error = "";
         $config          = \NDB_Config::singleton();
-        $file_name       = $file->fileInfo['name'];
+        $file_name       = $values['mriFile']['name'];
 
         ///////////////////////////////////////////////////////////////////////
         ////////////// Checks to see if the file is of type////////////////////
@@ -272,10 +305,10 @@ class Upload_Process extends \NDB_Page
         ///////////////////////////////////////////////////////////////////////
         /////////Validate the advanced Options only if it's not a Phantom//////
         ///////////////////////////////////////////////////////////////////////
-        if ($args['values']['IsPhantom']=='N') {
-            $candid      = trim($args['values']['candID']);
-            $pscid       = trim($args['values']['pSCID']);
-            $visit_label = trim($args['values']['visitLabel']);
+        if ($values['IsPhantom']=='N') {
+            $candid      = trim($values['candID']);
+            $pscid       = trim($values['pSCID']);
+            $visit_label = trim($values['visitLabel']);
             ////////////////////////////////////////////////////////////////
             //////     checks if candid exists                        //////
             //////     checks if pscid is valid for candid            //////
@@ -373,8 +406,8 @@ class Upload_Process extends \NDB_Page
         //////// Make sure there's no existing identical entry ////////////////
         //////// for "new" scans //////////////////////////////////////////////
         ///////////////////////////////////////////////////////////////////////
-        $updateFile = isset($args['values']['overwrite'])
-            ? (boolean) $args['values']['overwrite'] : false;
+        $updateFile = isset($values['overwrite'])
+            ? (boolean) $values['overwrite'] : false;
         $id         = $db->pselectOne(
             "SELECT
                 IF (InsertionComplete=0 AND
@@ -403,159 +436,36 @@ class Upload_Process extends \NDB_Page
             }
         }
         if ($associative_array_errors) {
-            return (new \LORIS\Http\Response())
-            ->withStatus(400)
-            ->withHeader("Content-Type", "text/plain")
-            ->withBody(
-                new \LORIS\Http\StringStream(
-                    json_encode(['errors' => $errors])
-                )
-	    );       
+	
+	            http_response_code(400);
+            header('Content-Type: application/json; charset=UTF-8');
+		    exit(json_encode(['errors' => $errors]));
 	} else if (strlen($file_name_error) != 0) {
             array_push($errors["mriFile"], $file_name_error);
-            return (new \LORIS\Http\Response())
-            ->withStatus(400)
-            ->withHeader("Content-Type", "text/plain")
-            ->withBody(
-                new \LORIS\Http\StringStream(
-                    json_encode(['errors' => $errors])
-                )
-	    ); 
+            http_response_code(400);
+            header('Content-Type: application/json; charset=UTF-8');
+            exit(json_encode(['errors' => $errors]));       
 	}
         ///////////////////////////////////////////////////////////////////////
         /////////copy the temporary file to a temporary directory//////////////
         //////////with a correct extension/////////////////////////////////////
         ///////////////////////////////////////////////////////////////////////
         $temp_dir      = $this->tempdir();
-        $new_temp_file = $temp_dir. "/". $file->fileInfo['name'];
+        $new_temp_file = $temp_dir. "/". $values['mriFile']['name'];
         if (!copy($temp_file, $new_temp_file)) {
             $msg = "An internal server error prevented this file from being "
                  . "uploaded. Please contact the system administrator: "
                  . "failed to copy $temp_file to $new_temp_file";
-            array_push($errors["mriFile"], $msg);
-            return (new \LORIS\Http\Response())
-            ->withStatus(400)
-            ->withHeader("Content-Type", "text/plain")
-            ->withBody(
-                new \LORIS\Http\StringStream(
-                    json_encode(['errors' => $errors])
-                )
-	    );
-	}
+	    array_push($errors["mriFile"], $msg);
+	                http_response_code(400);
+            header('Content-Type: application/json; charset=UTF-8');
+            exit(json_encode(['errors' => $errors]));
+        }
+            error_log("------");
 
-        $this->setTempPath($new_temp_file);
-        return true;
-    }
-    /**
-     * Inserts into the mri_upload table the following information:
-     *   - UploadedBy, UploadDate, UploadLocation, SessionID and
-     *     PatientName
-     *
-     * @param Object $file The uploaded file
-     * @param Array  $args The list of arguments
-     *
-     * @return boolean
-     */
-    function importFile($file, $args)
-    {
-        $db         = $this->loris->getDatabaseConnection();
-        $pname      = '';
-        $IsPhantom  = $args['values']['IsPhantom'];
-        $updateFile = isset($args['values']['overwrite'])
-            ? (boolean) $args['values']['overwrite'] : false;
-        ///////////////////////////////////////////////////////////////////////
-        ///////////////If empty get it using User class////////////////////////
-        ///////////////////////////////////////////////////////////////////////
-        $user_name = $args['user_id'] ?? null;
-        if (($user_name==null) || (!(isset($user_name)))) {
-            $user      = \User::singleton();
-            $user_name = $user->getUsername();
-        }
-        ///////////////////////////////////////////////////////////////////////
-        ////////////////////Insert values into mri_upload//////////////////////
-        ///////////////////////////////////////////////////////////////////////
-        $date = date('Y-m-d H:i:s');
-
-        ///////////////////////////////////////////////////////////////////////
-        /////Get the pscid, candid and visit_label/////////////////////////////
-        ///////////////////////////////////////////////////////////////////////
-        if ($args['values']['IsPhantom']=='N') {
-            if ((!empty($args['values']['candID']))
-                && (!empty($args['values']['pSCID']))
-                &&(!empty($args['values']['visitLabel']))
-            ) {
-                ///////////////////////////////////////////////////////////////////
-                ////////////////////Use the arguments//////////////////////////////
-                ///////////////////////////////////////////////////////////////////
-                $visit_label = $args['values']['visitLabel'];
-                $candid      = $args['values']['candID'];
-                $pscid       = $args['values']['pSCID'];
-                $pname       = $pscid. "_" . $candid . "_" . $visit_label;
-                $sessionid   = $db->pselectOne(
-                    "SELECT ID FROM  session WHERE CandID = :cid
-                     AND Visit_label =:vlabel",
-                    [
-                        'cid'    => $candid,
-                        'vlabel' => $visit_label,
-                    ]
-                );
-            }
-        }
-        //////////////////////////////////////////////////////////////////
-        ///Get the directory to which the temp file has been moved to/////
-        /// MRI_upload Incoming directory/////////////////////////////////
-        //////////////////////////////////////////////////////////////////
-        $this->uploaded_file_path = trim(
-            $file->getDestinationDirectory() .
-            $file->getDestinationFilename()
-        );
-        ///////////////////////////////////////////////////////////////
-        ///if the DestinationDirectory/getDestinationFilename//////////
-        //is not empty, then remove the uploaded directory in the /tmp/
-        ////Otherwise keep uploaded directory in the /tmp and insert///
-        ////into the mri_upload table//////////////////////////////////
-        ///////////////////////////////////////////////////////////////
-        if ($this->uploaded_file_path) {
-            $this->removeTempDir();
-        } else {
-            $this->uploaded_file_path = $this->getTempPath();
-        }
-        $values = [
-            'UploadedBy'               => $user_name,
-            'UploadDate'               => $date,
-            'UploadLocation'           => $this->uploaded_file_path,
-            'SessionID'                => $sessionid ?? null,
-            'PatientName'              => $pname,
-            'IsPhantom'                => $IsPhantom,
-            'TarchiveID'               => null,
-            'Inserting'                => null,
-            'InsertionComplete'        => 0,
-            'IsCandidateInfoValidated' => null,
-            'IsTarchiveValidated'      => 0,
-            'number_of_mincInserted'   => null,
-            'number_of_mincCreated'    => null,
-        ];
-        if ($updateFile) {
-            // Only overwrite file if it failed MRI pipeline. Need to use
-            // wildcard for files that were uploaded to a random temp path.
-            $fileName = $file->fileInfo['name'];
-            $id       = $db->pselectOne(
-                "SELECT
-                IF (InsertionComplete=0 AND
-                (ISNULL(Inserting) OR Inserting=0), UploadID, NULL) as UploadID
-                FROM mri_upload WHERE UploadLocation LIKE :ul",
-                ['ul' => "%$fileName"]
-            );
-            if (!empty($id)) {
-                $db->update('mri_upload', $values, ['UploadID' => $id]);
-                $this->mri_upload_id = $id;
-                return true;
-            }
-        }
-        $db->insert('mri_upload', $values);
-        $this->mri_upload_id = $db->getLastInsertId();
-        return true;
-    }
+	$this->setTempPath($new_temp_file);
+	return true;
+    }    
     /**
      * Creates a temporary directory
      *
@@ -657,5 +567,5 @@ class Upload_Process extends \NDB_Page
             }
         }
         return rmdir($folder);
-    }
-}    
+    }    
+}
