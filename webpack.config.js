@@ -288,10 +288,6 @@ const lorisModules = {
   ],
   dicom_archive: ['dicom_archive'],
   genomic_browser: ['genomicBrowserIndex'],
-  electrophysiology_browser: [
-    'electrophysiologyBrowserIndex',
-    'electrophysiologySessionView',
-  ],
   imaging_browser: [
     'ImagePanel',
     'imagingBrowserIndex',

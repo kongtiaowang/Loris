@@ -79,8 +79,41 @@ class Upload_Process extends \NDB_Page
      */
     function uploadFile($request,$values)
     {
+//save	    
+        $file   = new \File_Upload;
+        $config = \NDB_Config::singleton();
+        $file->setOverwriteMode("overwrite");
+	$file->fileMove = false;
+	$file->isCLImport = true;
+        //pass the existing form ($form) by reference to File_Upload,
+	// and register the file_upload field names being used.
+	error_log("form");
+	 error_log(print_r($this->form));
+        $file->addCLFile($values['mriFile']['name'],$values['mriFile']['type']);
+        //Set the target directory that you want files moved
+        //into once they are validated and processed.
+	$MRIUploadIncomingPath = $config->getSetting('MRIUploadIncomingPath');
+
+        if (($MRIUploadIncomingPath) && (is_dir($MRIUploadIncomingPath))
+            && (is_writable($MRIUploadIncomingPath))
+	) {
+		error_log("file uploader file move");
+             $file->fileMove = true;
+             $file->setBaseUploadDirectory($MRIUploadIncomingPath);
+        }
+        //Tell File_Upload what file handlers to use.
+        $file->setFileHandler(
+            "mriFile",
+            $this
+        );
+        //set the the IDs to the handler functions.
+        $file->setHandlerArgs(["values" => $values]);
+        //proccesses them (including verify, move, and import steps)
+	$file->processFiles();
+//vaild
 	$this->valid($values);
-        $instance = $request->getAttribute('loris');
+//import
+	$instance = $request->getAttribute('loris');
         $db       = $instance->getDatabaseConnection();
         $config   = $instance->getConfiguration();
         $user     = $request->getAttribute('user');
@@ -106,14 +139,14 @@ class Upload_Process extends \NDB_Page
 			'application/zip',
 			'application/tar+gzip',
 			'application/x-gzip',
-                );
+		);
+	      error_log("88888");
+
         } catch (\ConfigurationException $e) {
             return new \LORIS\Http\Response\JSON\InternalServerError(
                 $e->getMessage()
             );
 	}
-  error_log("88888");
-
 $uploader=$uploader->withOverwrite($overwrite);
         $response = $uploader->handle($request);
         if (!in_array($response->getStatusCode(), [200, 201], true)) {
@@ -158,13 +191,26 @@ $uploader=$uploader->withOverwrite($overwrite);
             }
 	}
 	   error_log("66666666");
+        //////////////////////////////////////////////////////////////////
+        ///Get the directory to which the temp file has been moved to/////
+        /// MRI_upload Incoming directory/////////////////////////////////
+	//////////////////////////////////////////////////////////////////
+	$this->uploaded_file_path = trim(
+            $file->getDestinationDirectory() .
+            $file->getDestinationFilename()
+        );
         ///////////////////////////////////////////////////////////////
         ///if the DestinationDirectory/getDestinationFilename//////////
         //is not empty, then remove the uploaded directory in the /tmp/
         ////Otherwise keep uploaded directory in the /tmp and insert///
         ////into the mri_upload table//////////////////////////////////
         ///////////////////////////////////////////////////////////////
-        $values = [
+        if ($this->uploaded_file_path) {
+            $this->removeTempDir();
+        } else {
+            $this->uploaded_file_path = $this->getTempPath();
+        }
+	$values = [
             'UploadedBy'               => $user_name,
             'UploadDate'               => $date,
             'UploadLocation'           => $targetdir."/".$values['mriFile']['name'],
@@ -210,7 +256,8 @@ $uploader=$uploader->withOverwrite($overwrite);
             $config = \NDB_Config::singleton();
             $ImagingUploaderAutoLaunch = $config->getSetting(
                 'ImagingUploaderAutoLaunch'
-            );
+	    );
+	     $ImagingUploaderAutoLaunch = '1';
             if ($ImagingUploaderAutoLaunch == '1'
                 || $ImagingUploaderAutoLaunch == 'true'
             ) {
@@ -220,7 +267,9 @@ $uploader=$uploader->withOverwrite($overwrite);
                     $serverProcessLauncher->mriUpload(
                         $this->mri_upload_id,
                         $this->uploaded_file_path
-                    );
+		    );
+		    error_log("===============");
+		    error_log($this->uploaded_file_path);
                     $db->update(
                         'mri_upload',
                         ['Inserting' => 1],
