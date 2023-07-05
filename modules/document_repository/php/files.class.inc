@@ -60,7 +60,7 @@ class Files extends \NDB_Page
             $config->getSetting("documentRepositoryPath")
         );
         switch ($request->getMethod()) {
-        case "POST":
+	case "POST":
             return $this->uploadDocFile($request);
         case "PUT":
             return $this->editDocFile($request);
@@ -305,12 +305,10 @@ class Files extends \NDB_Page
         $config   = $instance->getConfiguration();
         $user     = $request->getAttribute('user');
         $name     = $user->getUsername();
-
         if (! $user->hasPermission('document_repository_edit')) {
-            return new \LORIS\Http\Response\JSON\Forbidden(
-                self::FORBIDDEN
-            );
-        }
+	    header("HTTP/1.1 403 Forbidden");
+            exit;
+	}
 
         // Do some validation and fail early on bad inputs.
         $body = $request->getParsedBody();
@@ -320,10 +318,9 @@ class Files extends \NDB_Page
 
         $uploadedFile = $request->getUploadedFiles()['file'] ?? null;
         if (is_null($uploadedFile)) {
-            return new \LORIS\Http\Response\JSON\BadRequest(
-                'No file uploaded'
-            );
-        }
+	    header("HTTP/1.1 413 Forbidden");
+            exit;
+	}
         $filename = urldecode($uploadedFile->getClientFilename());
 
         $category = $body['category']; // required
@@ -369,7 +366,7 @@ class Files extends \NDB_Page
         }
 
         $response = $uploader->handle($request);
-        if (!in_array($response->getStatusCode(), [200, 201], true)) {
+        if (!in_array($response->getStatusCode(), [200, 201,403,413], true)) {
             // Something went wrong. Return early to skip further processing.
             return $response;
         }

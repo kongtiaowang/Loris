@@ -194,9 +194,14 @@ class DocUploadForm extends Component {
           }
         });
       } else {
-        resp.json().then((data) => {
-          swal.fire('Could not upload file', data.error, 'error');
-        }).catch((error) => {
+             if (resp.status == 413) {
+                swal.fire('File too large', 'Could not upload', 'error');
+              }
+              if (resp.status == 403) {
+                swal.fire('Permission denied', 'Could not upload', 'error');
+              }	      
+        }
+     }).catch((error) => {
           console.error(error);
           swal.fire(
             'Unknown Error',
@@ -204,8 +209,6 @@ class DocUploadForm extends Component {
             'error'
           );
         });
-      }
-    });
   }
 
   /**
