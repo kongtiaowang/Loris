@@ -279,20 +279,6 @@ CREATE TABLE `flag` (
   CONSTRAINT `FK_flag_2` FOREIGN KEY (`Test_name`) REFERENCES `test_names` (`Test_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `history` (
-  `id` int(11) NOT NULL auto_increment,
-  `tbl` varchar(255) NOT NULL default '',
-  `col` varchar(255) NOT NULL default '',
-  `old` text,
-  `new` text,
-  `primaryCols` text,
-  `primaryVals` text,
-  `changeDate` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
-  `userID` varchar(255) NOT NULL default '',
-  `type` char(1),
-  PRIMARY KEY  (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='This table keeps track of ongoing changes in the database. ';
-
 CREATE TABLE `test_battery` (
   `ID` int(10) unsigned NOT NULL auto_increment,
   `Test_name` varchar(255) NOT NULL default '',
