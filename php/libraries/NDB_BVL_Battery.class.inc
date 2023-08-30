@@ -8,7 +8,7 @@
  * identifier.  Thus, we use the session table's ID column to identify
  * any battery.
  *
- * PHP Version 7
+ * PHP Version 5
  *
  * @category Main
  * @package  Behavioural
@@ -33,7 +33,6 @@ class NDB_BVL_Battery
      * same as identifying a battery
      *
      * @access private
-     * @var    SessionID
      */
     public $sessionID = null;
 
@@ -49,11 +48,11 @@ class NDB_BVL_Battery
     /**
      * Selects a specific visit/battery
      *
-     * @param SessionID $sessionID the ID of the session/visit (session.ID)
+     * @param integer $sessionID the ID of the session/visit (session.ID)
      *
      * @return void
      */
-    function selectBattery(SessionID $sessionID)
+    function selectBattery($sessionID)
     {
         $timepoint =TimePoint::singleton($sessionID);
 
@@ -81,8 +80,8 @@ class NDB_BVL_Battery
         if ((!is_null($testDate)) && (!is_null($dob))) {
             $ageArray = Utility::calculateAge($dob, $testDate);
             $age      = ($ageArray['year'] * 12 + $ageArray['mon'])
-                    * 30
-                    + $ageArray['day'];
+                * 30
+                + $ageArray['day'];
             //echo "age is:".$age."<BR>\n";
             /*
             if ($age < 0) {
@@ -97,29 +96,24 @@ class NDB_BVL_Battery
 
     /**
      * Asserts that no instruments are in the current battery and then, based
-     * on age AND CohortID, adds all appropriate instruments to the
+     * on age AND SubprojectID, adds all appropriate instruments to the
      * battery
      *
-     * @param \LORIS\LorisInstance $loris       The LORIS instance to add
-     *                                          instruments to
-     * @param integer              $CohortID    The CohortID that we want
-     *                                          the battery for
-     * @param string               $stage       Either 'visit' or 'screening'
-     * @param string               $visit_label The visit label to create a
-     *                                          battery for.
-     * @param \CenterID            $center_ID   The center of the candidate
-     *                                          having a battery created
-     * @param boolean              $firstVisit  Whether this is a first visit
-     *                                          battery.  true means ONLY
-     *                                          first visit, false means NOT
-     *                                          first visit, null can be any
-     *                                          visit.
+     * @param integer $SubprojectID The SubprojectID that we want the battery
+     *                              for
+     * @param string  $stage        Either 'visit' or 'screening'
+     * @param string  $visit_label  The visit label to create a battery for.
+     * @param integer $center_ID    The center of the candidate having a battery
+     *                              created
+     * @param boolean $firstVisit   Whether this is a first visit battery.
+     *                              true means ONLY first visit
+     *                              false means NOT first visit
+     *                              null can be any visit.
      *
      * @return void
      */
     function createBattery(
-        \LORIS\LorisInstance $loris,
-        $CohortID,
+        $SubprojectID,
         $stage=null,
         $visit_label=null,
         $center_ID=null,
@@ -131,7 +125,7 @@ class NDB_BVL_Battery
         // get the current battery (center id is irrelevant here,
         // as is stage probably)
         try {
-            $currentTests = $this->getBattery($stage, $CohortID, $visit_label);
+            $currentTests = $this->getBattery($stage, $SubprojectID, $visit_label);
         } catch (Exception $e) {
             throw new Exception(
                 "Could not get the current list of instruments, "
@@ -144,7 +138,7 @@ class NDB_BVL_Battery
         // determine the list of instruments to register
         $neededTests = $this->lookupBattery(
             $this->age,
-            $CohortID,
+            $SubprojectID,
             $stage,
             $visit_label,
             $center_ID,
@@ -159,7 +153,7 @@ class NDB_BVL_Battery
         // loop over the list of instruments
         foreach ($neededTests AS $testName) {
             // add the instrument
-            $this->addInstrument($loris, $testName);
+            $this->addInstrument($testName);
         } // end looping over the list of instruments
     } // end createBattery()
 
@@ -183,14 +177,12 @@ class NDB_BVL_Battery
      * Adds the specified instrument to the current battery, so long
      * as it is not already there (singleton model)
      *
-     * @param \LORIS\LorisInstance $loris    The LORIS instance to add the
-     *                                       instrument to
-     * @param string               $testName The test to be added to the
-     *                                       currently selected battery.
+     * @param string $testName The test to be added to the currently
+     *                         selected battery.
      *
      * @return string The generated CommentID
      */
-    function addInstrument($loris, $testName)
+    function addInstrument($testName)
     {
         $DB = \NDB_Factory::singleton()->database();
         // assert that a battery has already been selected
@@ -204,7 +196,7 @@ class NDB_BVL_Battery
 
         // get SessionID, UserID
         $query = "SELECT ID as SessionID, UserID FROM session WHERE ID=:SID";
-        $rows  = $DB->pselect($query, ['SID' => $this->sessionID]);
+        $rows  = $DB->pselect($query, array('SID' => $this->sessionID));
         if (count($rows)==0) {
             throw new Exception(
                 "Failed to get SessionID, and UserID when trying to add $testName"
@@ -219,36 +211,36 @@ class NDB_BVL_Battery
         $ddeCommentID = 'DDE_'.$commentID;
 
         // instantiate instrument object to get table name attribute
-        $obj = NDB_BVL_Instrument::factory($loris, $testName, '', '');
+        $obj = NDB_BVL_Instrument::factory($testName, '', '');
 
         if ($obj->usesJSONdata() !== true) {
             // insert into the test table
-            $DB->insert($obj->table, ['CommentID' => $commentID]);
+            $DB->insert($obj->table, array('CommentID' => $commentID));
 
             // insert the dde into the test table
-            $DB->insert($obj->table, ['CommentID' => $ddeCommentID]);
+            $DB->insert($obj->table, array('CommentID' => $ddeCommentID));
         }
 
         // insert into the flag table
         $DB->insert(
             'flag',
-            [
+            array(
                 'SessionID' => $sessionData['SessionID'],
                 'Test_name' => $testName,
                 'CommentID' => $commentID,
                 'UserID'    => $sessionData['UserID'],
-            ]
+            )
         );
 
         // insert the dde into the flag table
         $DB->insert(
             'flag',
-            [
+            array(
                 'SessionID' => $sessionData['SessionID'],
                 'Test_name' => $testName,
                 'CommentID' => $ddeCommentID,
                 'UserID'    => $sessionData['UserID'],
-            ]
+            )
         );
 
         return $commentID ?? '';
@@ -277,9 +269,16 @@ class NDB_BVL_Battery
      * Gets an array of instruments which are members of the currently
      * selected session's battery
      *
+     * @param string  $stage        Either 'visit' or 'screening' - determines
+     *                              whether to register only screening instruments
+     *                              or visit instruments
+     * @param integer $SubprojectID The SubprojectID of that we want the battery for.
+     * @param string  $visit_label  The visit label of the battery that we want to
+     *                              retrieve
+     *
      * @return array    an array of instrument names
      */
-    function getBattery()
+    function getBattery($stage=null, $SubprojectID=null, $visit_label=null)
     {
         $DB = \NDB_Factory::singleton()->database();
         // assert that a battery has already been selected
@@ -291,27 +290,32 @@ class NDB_BVL_Battery
             JOIN candidate c ON (c.CandID=s.CandID)
             WHERE f.SessionID=:SID AND s.Active='Y' AND c.Active='Y'
                AND f.CommentID NOT LIKE 'DDE%'";
-        $qparams = ['SID' => $this->sessionID];
+        $qparams = array('SID' => $this->sessionID);
         $rows    = $DB->pselect($query, $qparams);
 
         // repackage the array
-        $tests = [];
+        $tests = array();
         foreach ($rows AS $row) {
             $tests[] = $row['Test_name'];
         }
 
         // return an array of test names
         return $tests;
-    }
+    } // end getBattery()
 
     /**
      * Gets an associative array of instruments which are members of the current
      * battery
      *
+     * @param string  $stage        Either 'visit' or 'screening' - determines
+     *                              whether to register only screening instruments
+     *                              or visit instruments
+     * @param integer $SubprojectID The SubprojectID of that we want the battery for.
+     *
      * @return array an associative array containing Test_name,
      *         Full_name, Sub_group, CommentID
      */
-    function getBatteryVerbose()
+    function getBatteryVerbose($stage=null, $SubprojectID=null)
     {
         $DB = \NDB_Factory::singleton()->database();
         // assert that a battery has already been selected
@@ -319,46 +323,193 @@ class NDB_BVL_Battery
 
         // craft the select query
         $query = "SELECT f.Test_name,
-                      t.Full_name,
-                      f.CommentID,
-                      CONCAT('DDE_', f.CommentID) AS DDECommentID,
-                      ts.Subgroup_name as Sub_group,
-                      ts.group_order as Subgroup_order,
-                      t.isDirectEntry,
-                      MAX(b.instr_order) as instrument_order
-                  FROM flag f
-            	      JOIN test_names t ON (f.Test_name=t.Test_name)
-            	      JOIN test_subgroups ts ON (ts.ID = t.Sub_group)
-            	      LEFT JOIN session s ON (s.ID=f.SessionID)
-            	      LEFT JOIN test_battery b
-       	                ON ((t.Test_name=b.Test_name OR b.Test_name IS NULL)
-      	                AND (s.CohortID=b.CohortID OR b.CohortID IS NULL)
-       	                AND (s.Visit_label=b.Visit_label OR b.Visit_label IS NULL)
-       	                AND (s.CenterID=b.CenterID OR b.CenterID IS NULL))
-       	          WHERE f.SessionID=:SID
-                      AND LEFT(f.CommentID, 4) != 'DDE_'
-                  GROUP BY f.Test_name,
-                           t.Full_name,
-                           f.CommentID,
-                           DDECommentID,
-                           Sub_group,
-                           Subgroup_order,
-                           isDirectEntry";
-        if (\Utility::columnsHasNull('test_subgroups', 'group_order')) {
+                    t.Full_name,
+                    f.CommentID,
+                    CONCAT('DDE_', f.CommentID) AS DDECommentID,
+                    ts.Subgroup_name as Sub_group,
+                    ts.group_order as Subgroup_order,
+                    t.isDirectEntry";
+        if (!is_null($stage)) {
+            $query .= ", b.instr_order as instrument_order";
+        }
+        $query  .= " FROM flag f
+            	JOIN test_names t ON (f.Test_name=t.Test_name)
+            	JOIN test_subgroups ts ON (ts.ID = t.Sub_group) ";
+        $qparams = array('SID' => $this->sessionID);
+
+        if (!is_null($stage)) {
+            $query .= "
+            	LEFT JOIN test_battery b ON (t.Test_name=b.Test_name) ";
+        }
+        $query .= " WHERE f.SessionID=:SID
+            AND f.CommentID NOT LIKE 'DDE%'";
+        if (!is_null($stage) && !is_null($SubprojectID)) {
+            $query .= " AND (
+                    b.SubprojectID IS NULL
+                    OR b.SubprojectID=:SubprojID
+                )";
+            $qparams['SubprojID'] = $SubprojectID;
+        }
+
+        if (Utility::columnsHasNull('test_subgroups', 'group_order')) {
             $query .= " ORDER BY Subgroup_name";
         } else {
             $query .= " ORDER BY Subgroup_order";
         }
-        $query  .= ", instrument_order, Full_name";
-        $qparams = ['SID' => $this->sessionID];
-
+        if (!is_null($stage)) {
+            $query .= ", instrument_order";
+        } else {
+            $query .= ", Full_name";
+        }
+        //print_r($query);
         // get the list of instruments
         $rows = $DB->pselect($query, $qparams);
 
         // return all the data selected
         return $rows;
+    } // end getBatteryVerbose()
+
+    /**
+     * Gets the list of survey that can be administered at the visit to which the current
+     * battery is associated.
+     *
+     * @return array list of adminmistrable surveys.
+     * @throws DatabaseException if any of the database transactions required to perform
+     *                           this operation fails.
+     * @throws Exception if the operation fails for any other reason than the one mentioned above.
+     */
+    function getAdministrableSurveys() : array
+    {
+        $this->_assertBatterySelected();
+
+        $timepoint  = Timepoint::singleton($this->sessionID);
+        $visitLabel = $timepoint->getVisitLabel();
+        $candid     = $timepoint->getCandID();
+
+        $db = \NDB_Factory::singleton()->database();
+
+        //--------------------------------------------------//
+        // Compute nb. of surveys survey with the specified //
+        // visit label in table survey_test_battery         //
+        //--------------------------------------------------//
+        $surveyTestBatteryCount = $db->pselectOne(
+            "SELECT count(*)
+            FROM survey_test_battery
+            WHERE Visit_label = :vl",
+            ['vl' => $visitLabel]
+        );
+
+        //-------------------------------------------------------------------//
+        // If there's at least one survey with the specified visit label in  //
+        // table survey_test_battery                                         //
+        //-------------------------------------------------------------------//
+        if ($surveyTestBatteryCount != 0) {
+            $surveys = $db->pselectColWithIndexKey(
+                "SELECT DISTINCT tn.Test_name, tn.Full_name
+                FROM test_names AS tn
+                INNER JOIN survey_test_battery AS stb USING (Test_name)
+                WHERE stb.Visit_label = :vl
+                AND (
+                    stb.SubprojectID IN (
+                        SELECT SubprojectID
+                        FROM session
+                        WHERE CandID = :candid
+                        AND Visit_label = :vl
+                    )
+                    OR stb.SubprojectID IS NULL
+                )
+                AND tn.Test_name NOT IN (
+                    SELECT f.Test_name
+                    FROM flag AS f
+                    JOIN session AS s ON s.ID = f.SessionID
+                    WHERE s.CandID = :candid
+                    AND UPPER(s.Visit_label) = UPPER(:vl)
+                    AND s.Active = 'Y'
+                    AND f.CommentID NOT LIKE '%DDE%'
+                )
+                ORDER BY tn.Full_name",
+                [
+                    'candid' => $candid,
+                    'vl'     => $visitLabel,
+                ],
+                'Test_name'
+            );
+
+            if (empty($result)) {
+                $surveys = $db->pselectColWithIndexKey(
+                    "SELECT DISTINCT tn.Test_name, tn.Full_name
+                    FROM test_names tn
+                    JOIN survey_test_battery stb ON (stb.Test_name = tn.test_name)
+                    WHERE stb.Visit_label = :vl
+                    AND tn.Test_name NOT IN (
+                        SELECT f.Test_name
+                        FROM flag AS f
+                        JOIN session AS s ON s.ID = f.SessionID
+                        WHERE s.CandID = :candid
+                        AND UPPER(s.Visit_label) = UPPER(:vl)
+                        AND s.Active='Y'
+                        AND f.CommentID NOT LIKE '%DDE%'
+                    )
+                    ORDER BY tn.Full_name",
+                    [
+                        'candid' => $candid,
+                        'vl'     => $visitLabel
+                    ],
+                    'Test_name'
+                );
+            }
+        } else {
+            $surveys = $db->pselectColWithIndexKey(
+                "SELECT Test_name, Full_name
+                FROM test_names
+                WHERE IsDirectEntry=1
+                AND Test_name NOT IN (
+                    SELECT f.Test_name
+                    FROM flag f
+                    JOIN    session s ON s.ID = f.SessionID
+                    WHERE s.CandID = :candid
+                    AND UPPER(s.Visit_label) = UPPER(:vl)
+                    AND s.Active = 'Y'
+                    AND f.CommentID NOT LIKE '%DDE%'
+                )
+                ORDER BY Full_name",
+                [
+                    'candid' => $candid,
+                    'vl'     => $visitLabel
+                ],
+                'Test_name'
+            );
+
+            if (empty($surveys)) {
+                $surveys = $db->pselectColWithIndexKey(
+                    "SELECT Test_name, Full_name
+                    FROM test_names
+                    WHERE IsDirectEntry = 1
+                    ORDER BY Full_name",
+                    [],
+                    'Test_name'
+                );
+            }
+        }
+
+        return $surveys;
     }
 
+    /**
+     * Determines whether a survey can be administered at the visit to which this
+     * battery is associated.
+     *
+     * @param string $testName name of the instrument.
+     *
+     * @return bool true if the survey can be administered, false otherwise.
+     *
+     * @throws DatabaseException if any of the database transactions needed to execute this
+     *                           function fails.
+     */
+    function isAdministrableSurvey(string $testName): bool
+    {
+        return in_array($testName, $this->getAdministrableSurveys());
+    }
 
     /**
      * Checks if a test_name has double data entry enabled in the config
@@ -385,49 +536,78 @@ class NDB_BVL_Battery
      * @param string $commentId The CommentID for which we'd like to know
      *                          the test name
      *
-     * @return ?string A test name
+     * @return string A test name
      */
-    public static function getInstrumentNameForCommentId($commentId): ?string
+    public static function getInstrumentNameForCommentId($commentId)
     {
         return \NDB_Factory::singleton()->database()
             ->pselectOne(
                 "SELECT Test_name FROM flag WHERE CommentID=:CID",
-                ['CID' => $commentId]
+                array('CID' => $commentId)
+            );
+    }
+
+    /**
+     * Examines the visit associated to this battery and retrieves the comment ID (non-DDE)
+     * of the instrument whose name is passed as parameter.
+     *
+     * @param string $testName
+     * @return string|null the comment ID of the instrument or null if none could be
+     *                     found with name set to $testName.
+     *
+     * @throws ConfigurationException if the database connection parameters could not be found.
+     *
+     * @throws Exception if a call to selectBattery was not done before this function is called.
+     */
+    public function getCommentIdForInstrument(string $testName): ?string
+    {
+        $this->_assertBatterySelected();
+
+        return \NDB_Factory::singleton()->database()
+            ->pselectOne(
+                "SELECT CommentID
+                FROM flag
+                WHERE CommentID NOT LIKE 'DDE_%'
+                AND sessionid=:sessionid
+                AND test_name=:testName",
+                [
+                    'sessionid' => $this->sessionID,
+                    'testName'  => $testName
+                ]
             );
     }
 
     /**
      * Looks up what the appropriate battery for the current visit should
-     * be, based on age AND cohort
+     * be, based on age AND subproject
      *
-     * @param integer   $age         the age of the subject, in months
-     * @param integer   $CohortID    The ID of the cohort that we want
-     *                               to look up the battery for.
-     * @param string    $stage       either 'visit' or 'screening' - determines
-     *                               whether to register only screening
-     *                               instruments or visit instruments
-     * @param string    $visit_label (optional) The visit label to look up the
-     *                               battery for. If this is specified the
-     *                               battery will use this INSTEAD OF the age
-     *                               of candidate.
-     * @param ?CenterID $center_ID   (optional) The center ID to look up the visit
-     *                               battery for. If this is specified the lookup
-     *                               will use it as an ADDITIONAL condition to
-     *                               $age/$visit_label.
-     * @param ?boolean  $firstVisit  (optional) Whether or not we want the battery
-     *                               for the first visit of the candidate. If this
-     *                               is true, it will get instruments for the
-     *                               first visit. If false, it will only get
-     *                               instruments where it is NOT the first visit.
-     *                               If null, it will get all instruments matching
-     *                               criteria regardless of if it's the first
-     *                               visit or not.
+     * @param integer $age          the age of the subject, in months
+     * @param integer $SubprojectID The ID of the subproject that we want
+     *                              to look up the battery for.
+     * @param string  $stage        either 'visit' or 'screening' - determines
+     *                              whether to register only screening
+     *                              instruments or visit instruments
+     * @param string  $visit_label  (optional) The visit label to look up the
+     *                              battery for. If this is specified the battery
+     *                              will use this INSTEAD OF the age of candidate.
+     * @param integer $center_ID    (optional) The center ID to look up the visit
+     *                              battery for. If this is specified the lookup
+     *                              will use it as an ADDITIONAL condition to
+     *                              $age/$visit_label.
+     * @param boolean $firstVisit   (optional) Whether or not we want the battery
+     *                              for the first visit of the candidate. If this
+     *                              is true, it will get instruments for the first
+     *                              visit. If false, it will only get instruments
+     *                              where it is NOT the first visit.
+     *                              If null, it will get all instruments matching
+     *                              criteria regardless of if it's the first visit
+     *                              or not.
      *
      * @return array  an array of instrument names
      */
     function lookupBattery(
         $age,
-        $CohortID,
+        $SubprojectID,
         $stage=null,
         $visit_label=null,
         $center_ID=null,
@@ -437,14 +617,14 @@ class NDB_BVL_Battery
         if (empty($this->age)) {
             $this->age = $age;
         }
-        $qparams = [
-            'vAge'      => $age,
-            'SubprojID' => $CohortID,
-        ];
+        $qparams = array(
+            'vAge'      => $this->age,
+            'SubprojID' => $SubprojectID,
+        );
         // The query to lookup the battery uses the min/max age ranges
         // if they are not 0
         $query = "
-            SELECT DISTINCT t.Test_name
+            SELECT t.Test_name
                 FROM test_battery AS b, test_names AS t
                 WHERE
                     t.Test_name=b.Test_name
@@ -454,17 +634,17 @@ class NDB_BVL_Battery
                         (b.AgeMinDays<= :vAge AND b.AgeMaxDays >= :vAge)
                     )
                     AND b.Active='Y'
-                    AND (CohortID=:SubprojID OR CohortID IS NULL)";
+                    AND (SubprojectID=:SubprojID OR SubprojectID IS NULL)";
 
         if (!is_null($visit_label)) {
             $VisitBatteryExists = $DB->pselectOne(
                 "SELECT COUNT(*)
                     FROM test_battery
-                    WHERE Visit_label =:VL AND CohortID=:SubID",
-                [
+                    WHERE Visit_label =:VL AND SubprojectID=:SubID",
+                array(
                     'VL'    => $visit_label,
-                    'SubID' => $CohortID,
-                ]
+                    'SubID' => $SubprojectID,
+                )
             );
             if ($VisitBatteryExists > 0) {
                 $query        .= " AND b.Visit_label=:VL";
@@ -493,7 +673,7 @@ class NDB_BVL_Battery
         }
 
         // get the list of instruments
-        $tests = [];
+        $tests = array();
         $rows  = $DB->pselect($query, $qparams);
 
         // repackage the array
@@ -505,11 +685,11 @@ class NDB_BVL_Battery
             $query_firstVisit = "
                 SELECT DISTINCT Test_name
                 FROM test_battery
-                WHERE firstVisit=:FV AND CohortID=:subID";
-            $where            = [
+                WHERE firstVisit=:FV AND SubprojectID=:subID";
+            $where            = array(
                 'FV'    => 'Y',
-                'subID' => $CohortID,
-            ];
+                'subID' => $SubprojectID,
+            );
             $rows_firstVisit  = $DB->pselect($query_firstVisit, $where);
 
             foreach ($rows_firstVisit as $row) {
@@ -521,11 +701,11 @@ class NDB_BVL_Battery
             $query_notfirstVisit = "
                 SELECT DISTINCT Test_name
                 FROM test_battery
-                WHERE firstVisit=:FV AND CohortID=:subID";
-            $where = [
+                WHERE firstVisit=:FV AND SubprojectID=:subID";
+            $where = array(
                 'FV'    => 'N',
-                'subID' => $CohortID,
-            ];
+                'subID' => $SubprojectID,
+            );
 
             $rows_notfirstVisit = $DB->pselect($query_notfirstVisit, $where);
             foreach ($rows_notfirstVisit as $row) {
@@ -563,8 +743,8 @@ class NDB_BVL_Battery
      * a Test name. This differs from createCommentID in that a battery does
      * not have to already be selected.
      *
-     * @param \SessionID $SessionID The session ID to generate a CommentID for
-     * @param string     $Test_name The test name which the CommentID will be for.
+     * @param integer $SessionID The session ID to generate a CommentID for
+     * @param string  $Test_name The test name which the CommentID will be for.
      *
      * @return ?string A Validly formatted CommentID or null if information
      *                  is missing in the database.
@@ -573,18 +753,16 @@ class NDB_BVL_Battery
     {
         $DB = \NDB_Factory::singleton()->database();
 
-        $SessionID = $SessionID->__toString();
-
         $TestID = $DB->pselectOne(
             "SELECT ID FROM test_names WHERE Test_name=:TN",
-            ['TN' => $Test_name]
+            array('TN' => $Test_name)
         );
 
         $OtherInfo = $DB->pselectRow(
-            "SELECT CandID, c.PSCID, s.CohortID FROM session s
+            "SELECT CandID, c.PSCID, s.SubprojectID FROM session s
                     JOIN candidate c USING (CandID)
                 WHERE c.Active='Y' AND s.Active='Y' AND s.ID=:SID",
-            ['SID' => $SessionID]
+            array('SID' => $SessionID)
         );
 
         if (empty($TestID) || empty($OtherInfo)) {
@@ -593,7 +771,7 @@ class NDB_BVL_Battery
         return $OtherInfo['CandID']
             . $OtherInfo['PSCID']
             . $SessionID
-            . $OtherInfo['CohortID']
+            . $OtherInfo['SubprojectID']
             . $TestID
             . time();
     }
@@ -626,7 +804,7 @@ class NDB_BVL_Battery
     {
         $DB    = \NDB_Factory::singleton()->database();
         $query = "SELECT COUNT(*) AS counter FROM test_names WHERE Test_name=:TN";
-        $row   = $DB->pselectRow($query, ['TN' => $testName]);
+        $row   = $DB->pselectRow($query, array('TN' => $testName));
 
         return ($row['counter'] ?? 0) >= 1;
     } // end _assertValidInstrument()

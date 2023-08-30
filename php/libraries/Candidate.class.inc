@@ -248,16 +248,18 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
      * @throws Exception
      * @static
      */
+    // IBIS SPECIFIC OVERRIDE CODE
     static public function createNew(
-        CenterID $centerID,
-        ?string $dateOfBirth,
+        \CenterID $centerID,
+        string $dateOfBirth,
         ?string $edc,
-        Sex $sex,
+        string $sex,
         ?string $PSCID = null,
-        ProjectID $registrationProjectID = null
+        \ProjectID $registrationProjectID = null,
+        ?int $startNumber=0
     ): CandID {
+        $db =\NDB_Factory::singleton()->database();
         $factory = NDB_Factory::singleton();
-        $db      = $factory->database();
 
         $site = \Site::singleton($centerID);
 
@@ -265,63 +267,21 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
 
         $user = \User::singleton($_SESSION['State']->getUsername());
 
+        // Generate a new CandID and insert it into the database.
+        $generator = new \CandIDGenerator();
+        // generate candid
+        $candID = $generator->generate();
+
         // figure out how to generate PSCID
         $config        = $factory->config();
         $PSCIDSettings = $config->getSetting('PSCID');
         $useEDC        = $config->getSetting('useEDC');
 
-        // Get expected format from config
-        $dobFormat = $config->getSetting('dobFormat');
-        $dobFormat = '!' . implode("-", str_split($dobFormat, 1));
-
-        if (($useEDC === '1' || $useEDC === 'true')) {
-            if (empty($edc)) {
-                throw new \LorisException(
-                    "EDC must be specified",
-                    EDC_NOT_SPECIFIED
-                );
-            } else {
-                // Check valid format
-                $edcDate = DateTime::createFromFormat($dobFormat, $edc);
-                if ($edcDate === false) {
-                    throw new InvalidArgumentException(
-                        "EDC is invalid (expected format: YYYY-MM-DD)",
-                        EDC_INVALID
-                    );
-                }
-
-                // Add day as mid of the month if Y-m dob format
-                // This allows insert into sql candidate table
-                if ($dobFormat === '!Y-m') {
-                    $edc .= '-15';
-                }
-            }
-        }
-
-        if (empty($dateOfBirth)) {
-            // DoB not required if useEDC is on
-            if (!($useEDC === '1' || $useEDC === 'true')) {
-                throw new InvalidArgumentException(
-                    "Date of Birth must be specified",
-                    DOB_NOT_SPECIFIED
-                );
-            } else {
-                $dateOfBirth = null;
-            }
-        } else {
-            $dob = DateTime::createFromFormat($dobFormat, $dateOfBirth);
-            if ($dob === false) {
-                throw new InvalidArgumentException(
-                    "Date of Birth is invalid (expected format: YYYY-MM-DD)",
-                    DOB_INVALID
-                );
-            }
-
-            // Add day as mid of the month if Y-m dob format
-            // This allows insert into sql candidate table
-            if ($dobFormat === '!Y-m') {
-                $dateOfBirth .= '-15';
-            }
+        if (($useEDC === '1' || $useEDC === 'true') && empty($edc)) {
+            throw new \LorisException(
+                "EDC must be specified",
+                EDC_NOT_SPECIFIED
+            );
         }
 
         if ($PSCIDSettings['generation'] == 'user') {
@@ -330,25 +290,6 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
                 throw new Exception(
                     "PSCID must be specified",
                     PSCID_NOT_SPECIFIED
-                );
-            }
-
-            // check pscid uniqueness
-            $existing = $db->pselectOne(
-                'SELECT
-                  COUNT(*)
-                 FROM candidate
-                 WHERE PSCID = :v_pscid
-                 GROUP BY
-                   PSCID
-                ',
-                ['v_pscid' => $PSCID]
-            );
-
-            if ($existing > 0) {
-                throw new \ConflictException(
-                    "PSCID must be unique",
-                    PSCID_NOT_UNIQUE
                 );
             }
 
@@ -366,65 +307,41 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
             }
 
         } else {
-            $PSCID = (new \PSCIDGenerator(
+            $PSCID = Candidate::_generatePSCID(
                 $site->getSiteAlias(),
-                $project->getAlias()
-            )
-            )->generate();
+                $startNumber
+            );
         }
+        $ibisid = Candidate::_generateID("IBIS");
+        $kingid = Candidate::_generateID("KING");
+        $oriid  = Candidate::_generateID("ORI");
+        $parentid = Candidate::_generateID("PARENT");
 
         // Insert the new candidate into the database if everything is fine.
-        $setArray = [
-            'RegistrationCenterID'  => $centerID,
+        $setArray = array(
+            'CandID'                => (string) $candID,
+            'RegistrationCenterID'  => strval($centerID),
             'PSCID'                 => $PSCID,
             'DoB'                   => $dateOfBirth,
             'EDC'                   => $edc,
             'Sex'                   => $sex,
-            'RegistrationProjectID' => $registrationProjectID,
+            'RegistrationProjectID' => strval($registrationProjectID),
             'Date_active'           => date('Y-m-d'),
             'Date_registered'       => date('Y-m-d'),
             'Entity_type'           => 'Human',
             'RegisteredBy'          => $user->getUsername(),
             'UserID'                => $user->getUsername(),
-        ];
-
-        if ($config->getSetting('useExternalID') === 'true') {
-            $externalID = (new \ExternalIDGenerator(
-                $site->getSiteAlias(),
-                $project->getAlias()
-            ))->generate();
-            $setArray['ExternalID'] = $externalID;
-        }
-
-        // Generate a new CandID and insert it into the database.
-        $generator = new \CandIDGenerator();
-        // declare the variable to avoid static analysis warnings
-        $attemptcount = 0;
-
-        $db = \NDB_Factory::singleton()->database();
-        do {
-            // Reset on each iteration
-            $invalidID = false;
-            // Generate candid and insert into setArray
-            $candID = $generator->generate();
-            $setArray['CandID'] = (string) $candID;
-            try {
-                $db->insert('candidate', $setArray);
-            } catch (\DatabaseException | \DomainException $e) {
-                // Occurs in the case of a race condition where another CandID
-                // with the same value has been inserted into the DB before this
-                // one.
-                $invalidID = true;
-                $attemptcount++;
-                if ($attemptcount > 2) {
-                    throw $e;
-                }
-            }
-        } while ($invalidID);
+            'IBISID'                => $ibisid,
+            'KINGID'                => $kingid,
+            'ORIID'                 => $oriid,
+            'PARENTID'              => $parentid
+        );
+        $db->insert('candidate', $setArray);
 
         // Return the new CandID
         return $candID;
     }
+    // IBIS SPECIFIC OVERRIDE CODE ENDS HERE
 
     /**
      * Checks if candidate exist given a candidate ID and PSCID
@@ -1128,4 +1045,126 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource,
 
         return '/^'.$regex.'$/i';
     }
+    // IBIS SPECIFIC OVERRIDE CODE
+    /**
+     * generates a new random PSCID
+     * @param string $prefix  the prefix to use for the PSCID
+     * @static
+     * @return string
+     * @throws PEAR::Error
+     */
+    static function _generatePSCID($prefix, $startNumber)
+    {
+        // The generatePSCID() function is confusing and I don't fully understand it, but
+        // from what I understand it generates an array with a list of possible values for
+        // each digit/section of the PSCID based on the config.xml.
+        // generateFirst/RandomStringFromArrays then concatenates the first option (or a random one)
+        // from each together to get a valid PSCID, and then checks if it already exists in the database
+        // If it does, it increments the number until it gets a unique PSCID.
+        // - Dave
+        $db = \NDB_Factory::singleton()->database();
+
+        $config =& NDB_Config::singleton();
+        $PSCIDSettings = $config->getSetting('PSCID');
+        $pscidArrays = Candidate::generateArrays($PSCIDSettings, $prefix);
+        // If IBIS2, take "0" out of the possibilities for the first digit of the numbers.
+        if($startNumber == 1000) {
+            $pscidArrays[1] = array(1, 2, 3, 4, 5, 6, 7, 8, 9);
+        } elseif($startNumber == 2000) {
+            $pscidArrays[1] = array(2, 3, 4, 5, 6, 7, 8, 9);
+        } elseif($startNumber == 3000) {
+            $pscidArrays[1] = array(3, 4, 5, 6, 7, 8, 9);
+        } elseif($startNumber == 4000) {
+            $pscidArrays[1] = array(4, 5, 6, 7, 8, 9);
+        } elseif($startNumber == 6000) {
+            $pscidArrays[1] = array(6, 7, 8, 9);
+        } elseif($startNumber == 7000) {
+            $pscidArrays[1] = array(7, 8, 9);
+        }
+        // run one first time, then loop until the pscid is not used
+        do {
+            // pick a new pscid
+            if($PSCIDSettings['generation'] == 'sequential') {
+                if(!empty($pscid)) {
+                    $pscid++;
+                } else {
+                    $pscid = Candidate::generateFirstStringFromArrays($pscidArrays);
+                }
+            } else {
+                $pscid = Candidate::generateRandomStringFromArrays($pscidArrays);
+            }
+
+            // check if the pscid is used
+        } while($db->pselectOne("SELECT count(PSCID) FROM candidate WHERE PSCID=:pID", array('pID' => $pscid)) > 0);
+
+        return $pscid;
+    }
+    static function generateArrays($idStructure, $siteAbbrev=null)
+    {
+        $idStructure = $idStructure['structure']['seq'];
+        $arrays = array();
+        foreach($idStructure AS $seq) {
+            if(isset($seq['@']['length'])) {
+                $length = $seq['@']['length'];
+            } elseif(isset($seq['@']['minLength'])) {
+                $length = $seq['@']['minLength'];
+            } else {
+                $length = 1;
+            }
+            for($i=0; $i<$length; $i++) {
+                switch($seq['@']['type']) {
+                    case 'alpha':
+                        $arrays[] = range('a','z');
+                        break;
+
+                    case 'alphanumeric':
+                        $arrays[] = array_merge(range(0, 9), range('a', 'z'));
+                        break;
+
+                    case 'numeric':
+                        $arrays[] = range(0, 9);
+                        break;
+
+                    case 'static':
+                        $arrays[] = array($seq['#']);
+                        break;
+                    case 'set':
+                        if(strpos($seq['#'], '|') !== false) {
+                            $arrays[] = explode('|', $seq['#']);
+                        } else {
+                            $arrays[] = str_split($seq['#']);
+                        }
+                        break;
+                    case 'siteAbbrev':
+                        $arrays[] = array($siteAbbrev);
+                        break;
+                }
+            }
+        }
+        return $arrays;
+    }
+    static function generateFirstStringFromArrays($arrays)
+    {
+        $string = "";
+        foreach($arrays AS $array) {
+            $string .= array_shift($array);
+        }
+        return $string;
+    }
+    static function _generateID($ID) {
+        $db = \NDB_Factory::singleton()->database();
+        do {
+            //Currently 6 digit rand is used to generate more secure ParentIDs as suggested by Pierre'.
+            // 4 digit rand generation for other external ids
+            if($ID=="PARENT") {
+                $randid = $ID . rand(100000, 999999);
+            }
+            else{
+                $randid = $ID . rand(1000, 9999);
+            }
+            $nid = $ID . "ID";
+        } while($db->pselectOne("SELECT count($nid) FROM candidate WHERE `$nid`=:randomIDQ", array('randomIDQ' => $randid)) > 0);
+        return $randid;
+    }
+    // IBIS SPECIFIC OVERRIDE CODE ENDS HERE    
 }

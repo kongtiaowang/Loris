@@ -3116,14 +3116,343 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         return $instrumentNames;
     }
 
+    // IBIS SPECIFIC OVERRIDE CODE
+    // Overrides for survey module.
     /**
-     * Gets the current instrument instance selectMultipleElements
+     * Return the HTML for the review section of the survey module
+     * By default, this will show every question from the parameter_type
+     * table for this instrument, but it can be overridden/customized by
+     * a instrument if that isn't the desired behaviour.
      *
-     * @return array the select multiple elements of this instrument.
-     * @access public
+     * @return string The HTML to be inserted into the review section of
+     *                the final page of the survey module for this instrument.
      */
-    public function getSelectMultipleElements(): array
+    //Jordan's Survey Module Function :Reason for Override
+    function getReactReview()
     {
+        $DB = Database::singleton();
+
+        $inst = json_decode($this->toDirectJSON());
+
+        $tpl_data = array();
+        $tpl_data['questions'] = $this->getFlatInstrumentJSON($inst);
+
+        $Responses = $DB->pselectRow(
+            "SELECT * FROM " . $this->testName . " WHERE CommentID=:CID",
+            array('CID' => $this->getCommentID())
+        );
+
+        foreach ($tpl_data['questions'] as &$row) {
+            if (isset($Responses[$row['SourceField']])) {
+                $row['response'] = $Responses[$row['SourceField']];
+            }
+        }
+
+        return json_encode($tpl_data);
+    }
+
+    /**
+     * Function that takes a API formatted instrument and flattens
+     * the object to a non nested element array
+     *
+     * @param array $json the array to be flatten
+     *
+     * @return array
+     */
+    function getFlatInstrumentJSON($json) {
+
+        $flatArray = array();
+
+        foreach ($json->Elements as $element) {
+            if ($element->Type === "ElementGroup") {
+                $flatArray = array_merge(
+                    $flatArray,
+                    $this->getFlatInstrumentJSON($element)
+                );
+            } else {
+                switch ($element->Type) {
+                    case "select":
+                    case "text":
+                    case "date":
+                    case "time":
+                    case 'advcheckbox':
+                        $Description = $element->Description;
+                        if (!$Description) {
+                            // for elements nested in groups need to get description
+                            // from parameter type override table, setting to just
+                            // name if not set
+                            $db =& Database::singleton();
+
+                            $name = $this->testName . '_' . $element->Name;
+
+                            $description = $db->pselectOne(
+                                "SELECT Description
+                                    FROM parameter_type_override
+                                    WHERE Name = :name",
+                                array("name" => $name)
+                            );
+
+                            $Description = $description ? $description : $element->Name;
+                        }
+                        $flatArray[] = array(
+                            "question" => $Description,
+                            "SourceField" => $element->Name,
+                        );
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        return $flatArray;
+    }
+
+    /**
+     * Returns a JSON representation of the currently instantiated
+     * instrument capatible with the survey module
+     *
+     * @return string containing valid JSON
+     */
+    //Jordan's Survey Module Function:Reason for override
+    function toDirectJSON()
+    {
+        $instrumentJSON = array(
+            "form" => array(),
+            "testname" => $this->testName,
+            "fullname" => $this->getFullName()
+        );
+
+        $tempForm = array();
+        $tempPage = array(
+            "Description" => "Top Page",
+            "Elements" => array(),
+            "GroupType" => "Page",
+            "Type" => "ElementGroup",
+        );
+
+        // reset page to top page for loading JSON
+        $this->page = '';
+        $this->form->form = array();
+        $this->_setupForm();
+
+        foreach ($this->form->form as $key => $value) {
+            $tempForm[] = PageElementsFormatter::formatElement($value, $key);
+        }
+        $tempPage["Elements"] = $tempForm;
+
+        $this->form->form = array();
+        $tempForm = array();
+        $instrumentJSON['form'][] = $tempPage;
+
+        $subtests = $this->getSubtestList();
+        foreach ($subtests as $subtest) {
+            $this->page = $subtest['Name'];
+            $this->_setupForm();
+
+            $tempPage = array(
+                "Description" => $subtest['Description'],
+                "Elements" => array(),
+                "GroupType" => "Page",
+                "Type" => "ElementGroup",
+                "Subtest" => $this->page,
+            );
+            foreach ($this->form->form as $key => $value) {
+                $tempForm[] = PageElementsFormatter::formatElement($value, $key);
+            }
+            $tempPage["Elements"] = $tempForm;
+            $this->form->form = array();
+            $tempForm = array();
+            $instrumentJSON['form'][] = $tempPage;
+        }
+
+        $instrument = array(
+            "Meta" => array(),
+            "Elements" => $instrumentJSON["form"]
+        );
+        if ($this->scoreCols!= null) {
+            $instrument["ScoreLabels"] = array_values($this->scoreCols);
+        }
+        return json_encode($instrument);
+    }
+//Jordan's Survey Module Function: reason for Override
+    function directEntryValidation() {
+        $allErrors = array();
+        $this->form->directEntry = true;
+        $temp = json_decode($this->getReactReview());
+        $values = array();
+
+        foreach ($temp->questions as $key => $value) {
+            // $this->form->directValues[$value->SourceField] = $value->response;
+            $values[$value->SourceField] = $value->response;
+        }
+
+        // Reset page and form
+        $this->page = '';
+        $this->form->form = array();
+        $this->form->formRules = array();
+        $this->XINRules = array();
+
+        $this->_setupForm();
+        $this->form->directValues = $this->getPageValues($this->form->form, $values);
+        if (!$this->form->validate()) {
+            $allErrors = array_merge($allErrors, $this->form->errors);
+        }
+
+        $this->form->form = array();
+        $this->form->errors = array();
+        $this->form->formRules = array();
+        $this->XINRules = array();
+
+        $subtests = $this->getSubtestList();
+        foreach ($subtests as $subtest) {
+            $this->page = $subtest['Name'];
+            $this->_setupForm();
+            $this->form->directValues = $this->getPageValues($this->form->form, $values);
+
+            if (!$this->form->validate()) {
+                $allErrors = array_merge($allErrors, $this->form->errors);
+            }
+
+            $this->form->form = array();
+            $this->form->errors = array();
+            $this->form->formRules = array();
+            $this->XINRules = array();
+        }
+
+        if(empty($allErrors)) {
+            return true;
+        }
+
+        return $allErrors;
+
+    }
+//Jordan's Survey Module Function: reason for Override
+    function getPageValues($form, $fullValues) {
+        $values = array();
+        foreach ($form as $key => $value) {
+            if ($value['type'] === 'group') {
+                $values = array_merge($values, $this->getPageValues($value['elements'], $fullValues));
+            } else if(!in_array($value['type'], array('header', 'static'))) {
+                $values[$value['name']] = $fullValues[$value['name']];
+            }
+        }
+        return $values;
+    }
+
+    // For multiselect data fix script
+    function getSelectMultipleElements() {
         return $this->selectMultipleElements;
     }
+
+    /**
+     * Moves all the data contained in the current instrument to the instrument
+     * whose comment ID is passed as argument.
+     *
+     * @param string $toCommentID comment ID of the instrument to move to.
+     *
+     * @throws Exception if $toCommentID is equal to the comment id of $this.
+     * @throws Exception if $toCommentID does not exist
+     * @throws Exception if $toCommentID refers to an instrument with a name that is
+     *                   not $this->testName.
+     */
+    function copyTo(string $toCommentID) : void {
+        // Instrument cannot be copied unto itself
+        if($toCommentID == $this->getCommentID()) {
+            throw new Exception("Instrument $toCommentID cannot be copied unto itself");
+        }
+
+        // Make sure comment ID is valid (i.e referes to an existing instrument)
+        $toInstrumentName = NDB_BVL_Battery::getInstrumentNameForCommentId($toCommentID);
+        if (is_null($toInstrumentName)) {
+            throw new Exception("CommentID $toCommentID does not exists");
+        }
+
+        // Instrument data cannot be transferred to an instrument with a name other
+        // than $this->testName
+        if ($toInstrumentName != $this->testName) {
+            throw new Exception(
+                sprintf(
+                    "Instrument %s with name %s cannot be copied to instrument %s with name %s",
+                    $this->getCommentID(), $this->testName, $toCommentID, $toInstrumentName
+                )
+            );
+        }
+        $toInstrument = \NDB_BVL_Instrument::factory($this->testName, $toCommentID);
+
+        $instanceData = self::loadInstanceData($this);
+
+        unset($instanceData['CommentID']);
+        unset($instanceData['Testdate']);
+        $instanceData['UserID'] = User::singleton()->getUsername();
+
+        $toInstrument = self::factory($this->testName, $toCommentID);
+        $toInstrument->_save($instanceData);
+    }
+
+    /**
+     * Determines whether an instrument has been edited or not.
+     *
+     * @return bool true if the instrument has been edited, false otherwise.
+     *
+     * @throws ConfigurationException
+     * @throws DatabaseException
+     */
+    function isEdited() : bool
+    {
+        $data = self::loadInstanceData($this);
+
+        // No data: instrument was not edited
+        if (empty($data)) {
+            return false;
+        }
+
+        // There is data and the instrument uses JSON data: instrument was edited
+        if ($this->usesJSONData()) {
+            return true;
+        }
+
+        // If the instrument does not use JSON data, retrieve all field values. If there is at least one
+        // field whose value is not the default value for that field, then the instrument was edited.
+        $query = "SELECT COUNT(*) FROM $this->table WHERE CommentID=:commentid AND (1=0 ";
+        foreach (array_keys($data) as $columnName) {
+            if (!in_array(strtoupper($columnName), ['COMMENTID', 'TESTDATE', 'USERID'])) {
+                $query .= sprintf(
+                    " OR NOT(%s <=> DEFAULT(%s))",
+                    Database::singleton()->escape($columnName),
+                    Database::singleton()->escape($columnName)
+                );
+            }
+        }
+        $query .= ")";
+        $count = \NDB_Factory::singleton()->database()->pselectOne(
+            $query, [ 'commentid' => $this->getCommentID() ]
+        );
+
+        return $count > 0;
+    }
+
+    /**
+     * Tells if this is a parser instrument or not. Parser instruments should
+     * override this method.
+     *
+     * @return bool true if this is a parser instrument, false otherwise.
+     */
+    function isParser() : bool
+    {
+        return false;
+    }
+
+    /**
+     * Tells if this is a survey instrument or not. Survey instruments should
+     * override this method.
+     *
+     * @return bool true if this is a survey instrument, false otherwise.
+     */
+    function isSurvey() : bool
+    {
+        return false;
+    }
+
+    // IBIS SPECIFIC OVERRIDE CODE ENDS HERE    
 }

@@ -204,7 +204,10 @@ class Password
         $this->_validate($value);
         // Don't store the value in the object; instead use the hashed version
         // This mitigates the risk of accidentally revealing the plaintext.
-        $this->_hash = password_hash($value, PASSWORD_DEFAULT);
+        // IBIS SPECIFIC OVERRIDE CODE
+        // Overriding the hash algo from default to argon21.
+        $this->_hash = password_hash($value, PASSWORD_ARGON2I);
+        // IBIS SPECIFIC OVERRIDE CODE ENDS HERE
     }
 
     /**

@@ -38,60 +38,41 @@ class NDB_BVL_InstrumentStatus
     /**
      * The set of valid options for the data entry flag
      */
-    var $_dataEntryOptions = [
+    var $_dataEntryOptions = array(
         null,
         'In Progress',
         'Complete',
-    ];
+    );
 
     /**
      * The set of valid options for the administration flag
      */
-    var $_administrationOptions = [
+    var $_administrationOptions = array(
         null,
         'None',
         'Partial',
         'All',
-    ];
+    );
 
     /**
      * The set of valid options for the validity flag
      */
-    var $_validityOptions = [
+    var $_validityOptions = array(
         null,
         'Valid',
         'Questionable',
         'Invalid',
-    ];
+    );
 
     /**
      * The set of valid options for the exclusion flag
      */
-    var $_exclusionOptions = [
+    var $_exclusionOptions = array(
         null,
         'Fail',
         'Pass',
-    ];
+    );
 
-
-    /**
-     * The LORIS instance that the status comes from
-     *
-     * @var \LORIS\LorisInstance
-     */
-    protected $loris;
-
-    /**
-     * Construct an NDB_BVL_InstrumentStatus object to manage
-     * instrument status flags.
-     *
-     * @param \LORIS\LorisInstance $loris The LORIS instance hosting
-     *                                    the instrument
-     */
-    public function __construct(\LORIS\LorisInstance $loris)
-    {
-        $this->loris = $loris;
-    }
     /**
      * Loads the object with the current status of the instrument
      *
@@ -110,13 +91,18 @@ class NDB_BVL_InstrumentStatus
         $query = "SELECT SessionID, Data_entry, Administration, Validity, Exclusion
             FROM flag
             WHERE CommentID=:CID";
-        $row   = $db->pselectRow($query, ['CID' => $this->_commentID]);
+        $row = $db->pselectRow($query, array('CID' => $this->_commentID));
+        // IBIS SPECIFIC OVERRIDE CODE
+        // Remove this due to issue with not all flag rows having DDE row
+        /*
         if (is_null($row)) {
             throw new \LorisException(
                 'No information exists in the database for the specified '
                 . 'CommentID. Cannot build InstrumentStatus object'
             );
         }
+        */
+        // IBIS SPECIFIC OVERRIDE CODE ENDS HERE
 
         // store the statuses into the _status property
         $this->_status = $row;
@@ -136,7 +122,7 @@ class NDB_BVL_InstrumentStatus
     /**
      * Gets the current data entry status of the instrument
      *
-     * @return string|null
+     * @return string|null the current data entry status.
      */
     function getDataEntryStatus(): ?string
     {
@@ -149,7 +135,7 @@ class NDB_BVL_InstrumentStatus
     /**
      * Gets the current administration status of the instrument
      *
-     * @return string|null
+     * @return string|null the current administration status.
      */
     function getAdministrationStatus(): ?string
     {
@@ -159,7 +145,7 @@ class NDB_BVL_InstrumentStatus
     /**
      * Gets the current validity status of the instrument
      *
-     * @return string|null
+     * @return string|null the current validity status.
      */
     function getValidityStatus(): ?string
     {
@@ -169,9 +155,10 @@ class NDB_BVL_InstrumentStatus
     /**
      * Gets the current exclusion status of the instrument
      *
-     * @return string
+     * @return string|null the current exclusion status.
+     *
      */
-    function getExclusionStatus(): string
+    function getExclusionStatus(): ?string
     {
         return $this->_status['Exclusion'];
     }
@@ -179,12 +166,16 @@ class NDB_BVL_InstrumentStatus
     /**
      * Sets the current data entry status of the instrument
      *
-     * @param string $status the new status from the set ('In Progress',
-     *                       'Not Complete','Complete')
+     * @param string|null $status the new status from the set (NULL,
+     *                    'In Progress','Not Complete','Complete')
      *
      * @return void
+     *
+     * @throws LorisException if the database update fails.
+     * @throws Exception if $this->_commentID is not set.
+     * @throws Exception if the status passed as aregument is invalid.
      */
-    function setDataEntryStatus(string $status): void
+    function setDataEntryStatus(?string $status): void
     {
         if (!isset($this->_commentID)) {
             throw new Exception("No instrument instance selected");
@@ -196,8 +187,8 @@ class NDB_BVL_InstrumentStatus
 
         $GLOBALS['DB']->update(
             'flag',
-            ['Data_entry' => $status],
-            ['CommentID' => $this->_commentID]
+            array('Data_entry' => $status),
+            array('CommentID' => $this->_commentID)
         );
 
         $this->select($this->_commentID);
@@ -208,15 +199,15 @@ class NDB_BVL_InstrumentStatus
                 ? $this->_commentID
                 : substr($this->_commentID, 4)
             );
-            $DDECommentId       = 'DDE_' . $principalCommentId;
+            $DDECommentId = 'DDE_' . $principalCommentId;
 
             $query = $GLOBALS['DB']->pselect(
                 "SELECT Data_entry FROM flag
                 WHERE CommentID=:PCID OR CommentID=:DDECID",
-                [
+                array(
                     'PCID'   => $principalCommentId,
                     'DDECID' => $DDECommentId,
-                ]
+                )
             );
 
             // Run ConflictDetector if Data_entry of SDE and DDE are both Complete
@@ -232,7 +223,6 @@ class NDB_BVL_InstrumentStatus
 
                     ConflictDetector::clearConflictsForInstance($principalCommentId);
                     $diff = ConflictDetector::detectConflictsForCommentIds(
-                        $this->loris,
                         $instrumentName,
                         $principalCommentId,
                         $DDECommentId
@@ -244,9 +234,12 @@ class NDB_BVL_InstrumentStatus
 
         // Remove conflicts for SDE & DDE form from the
         // Conflict Resolver if new status is 'In Progress'
-        if ($this->getDataEntryStatus() != null && $status == 'In Progress') {
-            $deleteWhere1 = ['CommentId1' => $this->_commentID];
-            $deleteWhere2 = ['CommentId2' => $this->_commentID];
+        // IBIS Override (or maybe bug fix?): setting the data entry to null should
+        // delete the unresolved conflicts, if any (this is used by the move instrument
+        // button)
+        if (is_null($this->getDataEntryStatus()) || $status == 'In Progress') {
+            $deleteWhere1 = array('CommentId1' => $this->_commentID);
+            $deleteWhere2 = array('CommentId2' => $this->_commentID);
             $GLOBALS['DB']->delete('conflicts_unresolved', $deleteWhere1);
             $GLOBALS['DB']->delete('conflicts_unresolved', $deleteWhere2);
         }
@@ -256,12 +249,16 @@ class NDB_BVL_InstrumentStatus
     /**
      * Sets the current administration status of the instrument
      *
-     * @param string $status the new status from the set
-     *                       ('None','Partial','All')
+     * @param string|null $status the new status from the set
+     *                    (NULL, 'None','Partial','All')
      *
      * @return void
+     *
+     * @throws LorisException if the database update fails.
+     * @throws Exception if $this->_commentID is not set.
+     * @throws Exception if the status oassed as argument is invalid.
      */
-    function setAdministrationStatus(string $status): void
+    function setAdministrationStatus(?string $status): void
     {
         if (!isset($this->_commentID)) {
             throw new Exception("No instrument instance selected");
@@ -273,8 +270,8 @@ class NDB_BVL_InstrumentStatus
 
         $GLOBALS['DB']->update(
             'flag',
-            ['Administration' => $status],
-            ['CommentID' => $this->_commentID]
+            array('Administration' => $status),
+            array('CommentID' => $this->_commentID)
         );
         $this->select($this->_commentID);
     }
@@ -282,12 +279,16 @@ class NDB_BVL_InstrumentStatus
     /**
      * Sets the current validity status of the instrument
      *
-     * @param string $status the new status from the set
-     *                       ('Questionable', 'Invalid', 'Valid')
+     * @param string|null $status the new status from the set
+     *                    (NULL, 'Questionable', 'Invalid', 'Valid')
      *
      * @return void
+     *
+     * @throws LorisException if the database update fails.
+     * @throws Exception if $this->_commentID is not set.
+     * @throws Exception if the status oassed as argument is invalid.
      */
-    function setValidityStatus(string $status): void
+    function setValidityStatus(?string $status): void
     {
         if (!isset($this->_commentID)) {
             throw new Exception("No instrument instance selected");
@@ -299,8 +300,8 @@ class NDB_BVL_InstrumentStatus
 
         $GLOBALS['DB']->update(
             'flag',
-            ['Validity' => $status],
-            ['CommentID' => $this->_commentID]
+            array('Validity' => $status),
+            array('CommentID' => $this->_commentID)
         );
         $this->select($this->_commentID);
     }
@@ -308,11 +309,15 @@ class NDB_BVL_InstrumentStatus
     /**
      * Sets the current exclusion status of the instrument
      *
-     * @param string $status the new status from the set ('Fail', 'Pass')
+     * @param string|null $status the new status from the set (NULL, 'Fail', 'Pass')
      *
      * @return void
+     *
+     * @throws LorisException if the database update fails.
+     * @throws Exception if $this->_commentID is not set.
+     * @throws Exception if the status oassed as argument is invalid.
      */
-    function setExclusionStatus(string $status): void
+    function setExclusionStatus(?string $status): void
     {
         if (!isset($this->_commentID)) {
             throw new Exception("No instrument instance selected");
@@ -324,10 +329,52 @@ class NDB_BVL_InstrumentStatus
 
         $GLOBALS['DB']->update(
             'flag',
-            ['Exclusion' => $status],
-            ['CommentID' => $this->_commentID]
+            array('Exclusion' => $status),
+            array('CommentID' => $this->_commentID)
         );
         $this->select($this->_commentID);
     }
 
-} // end of class
+    /**
+     * Copies the values of all statuses (administration, validity, exclusion and data entry)
+     * to another NDB_BVL_InstrumentStatus instance, overwriting the current values they have.
+     *
+     * @throws Exception if the comment ID of the status passed as argument is NULL.
+     * @throws Exception if the status instance passed as argument is $this.
+     * @throws Exception if the select function was not invoked on $this before invoking this function.
+     */
+    function copyTo(NDB_BVL_InstrumentStatus $statusTo) : void
+    {
+        // Validate argument and current object state
+        if ($statusTo === $this) {
+            throw new Exception("Status values cannot be copied onto themselves");
+        }
+
+        if (is_null($statusTo->_commentID)) {
+            throw new Exception("Invalid statusTo argument to copyStatusesTo: _commentID field is null");
+        }
+
+        if (is_null($this->_commentID)) {
+            throw new Exception("Cannot invoke copyStatusesTo before a select is done");
+        }
+
+        // Copy all the statuses from $this to $statusTo
+        $statusTo->setAdministrationStatus($this->getAdministrationStatus());
+        $statusTo->setDataEntryStatus($this->getDataEntryStatus());
+        $statusTo->setExclusionStatus($this->getExclusionStatus());
+        $statusTo->setValidityStatus($this->getValidityStatus());
+    }
+
+    /**
+     * Sets the administration, exclusion, validity and data entry statuses to null.
+     *
+     * @throws Exception if the operation could not be executed successfully.
+     */
+    function resetStatuses() : void
+    {
+        $this->setAdministrationStatus(null);
+        $this->setExclusionStatus(null);
+        $this->setValidityStatus(null);
+        $this->setDataEntryStatus(null);
+    }
+}
