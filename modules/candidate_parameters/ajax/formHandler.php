@@ -501,9 +501,11 @@ function editConsentStatusFields(\Database $db)
                 ) { // Withdrawing from 'yes' status required consent date
                     // and withdrawal date
                     $validated = true;
+                } else if ($consentName == 'spark_participation'){
+                    $validated = true;
                 } else {
                     http_response_code(400);
-                    echo('Data failed validation. Resolve errors and try again.');
+                    echo($consentName.'Data failed validation. Resolve errors and try again.');
                     return;
                 }
             }
