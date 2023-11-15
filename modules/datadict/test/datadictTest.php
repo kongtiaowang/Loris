@@ -41,7 +41,12 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
             'Description'        => '.col-xs-12:nth-child(6) .col-sm-3',
             'Description Status' => '.col-xs-12:nth-child(7) .col-sm-3',
         ];
-
+    //$location: css selector for react items
+    //Filter locations
+    static $pname       = 'input[name="Name"]';
+    //General locations
+    static $display     = '.table-header > div > div > div:nth-child(1)';
+    static $clearFilter = '.nav-tabs a';
     /**
      * Inserting testing data
      *
@@ -121,4 +126,22 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
             $this->assertStringContainsString($key, $text);
         }
     }
+    /**
+     * Tests clear button in the form
+     * The form should refreash and the data should be gone.
+     *
+     * @return void
+     */
+    function testFilterClearBtn()
+    {
+        $this->safeGet($this->url . "/datadict/");
+        //testing data from RBdata.sql
+        $this->_filterTest(
+            self::$pname,
+            self::$display,
+            self::$clearFilter,
+            'candidate',
+            '2 row'
+        );
+    }    
 }
