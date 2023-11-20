@@ -6,7 +6,7 @@
  *
  * @category Test
  * @package  Loris
- * @author   Ted Strauss <ted.strauss@mcgill.ca>
+ * @author   Shen Wang  <shen.wang2@mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
@@ -21,7 +21,7 @@ require_once __DIR__ .
  *
  * @category Test
  * @package  Loris
- * @author   Ted Strauss <ted.strauss@mcgill.ca>
+ * @author   Shen Wang  <shen.wang2@mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
@@ -44,6 +44,7 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
     //$location: css selector for react items
     //Filter locations
     static $pname       = 'input[name="Name"]';
+    static $Description = 'input[name="Description"]';
     //General locations
     static $display     = '.table-header > div > div > div:nth-child(1)';
     static $clearFilter = '.nav-tabs a';
@@ -127,12 +128,12 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
         }
     }
     /**
-     * Tests clear button in the form
+     * Tests filter in the form
      * The form should refreash and the data should be gone.
      *
      * @return void
      */
-    function testFilterClearBtn()
+    function testFilter()
     {
         $this->safeGet($this->url . "/datadict/");
         //testing data from RBdata.sql
@@ -141,7 +142,14 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
             self::$display,
             self::$clearFilter,
             'candidate',
+            '7 row'
+	);
+        $this->_filterTest(
+            self::$Description,
+            self::$display,
+            self::$clearFilter,
+            'candidate',
             '2 row'
-        );
+        );	
     }    
 }
