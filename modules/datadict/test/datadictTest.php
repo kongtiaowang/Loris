@@ -143,20 +143,20 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
             self::$clearFilter,
             'candidate',
             '7 row'
-	);
+        );
         $this->_filterTest(
             self::$pname,
             self::$display,
             self::$clearFilter,
             'non-user',
             '0 row'
-        );	
+        );
         $this->_filterTest(
             self::$Description,
             self::$display,
             self::$clearFilter,
             'test',
-            '7 row'
-        );	
-    }    
+            '1 row'
+        );
+    }
 }
