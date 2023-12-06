@@ -109,6 +109,13 @@ class CandidateProfileIntegrationTest extends LorisIntegrationTestWithCandidate
 		    $this->assertEqualsCanonicalizing(
             $a,
             $b
+		    );
+		            $bodyText
+            = $this->safeFindElement(WebDriverBy::cssSelector("body"))
+            ->getText();
+        $this->assertStringContainsString(
+            "Behavioural Battery of Instruments",
+            $bodyText
         );
     }
     /**
