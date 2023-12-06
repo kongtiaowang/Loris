@@ -99,13 +99,12 @@ class CandidateProfileIntegrationTest extends LorisIntegrationTestWithCandidate
     {
 	            $this->setupPermissions(['superuser']);
 
-        $this->safeGet($this->url . "/candidate_profile/900000/");
-        $bodyText
-            = $this->safeFindElement(WebDriverBy::cssSelector("body"))
-            ->getText();
-        $this->assertStringContainsString(
-            "Behavioural Battery of Instruments",
-            $bodyText
+		    $this->safeGet($this->url . "/candidate_profile/900000/");
+		    $c = \Candidate::singleton(new CandID('900000'));
+		    $a = $c->getData();
+        $this->assertEqualsCanonicalizing(
+            $a,
+            [1=>'b']
         );
     }
     /**
