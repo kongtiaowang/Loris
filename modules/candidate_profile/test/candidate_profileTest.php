@@ -104,7 +104,7 @@ class CandidateProfileIntegrationTest extends LorisIntegrationTestWithCandidate
 
 		    $this->safeGet($this->url . "/candidate_profile/300001/");
 		    $c = \Candidate::singleton(new CandID('300001'));
-		    $b = $c->getData()['DOB'];
+		    $b = $c->getCandidateDoB();
 		    $a = $c->getData();
 		    $this->assertEqualsCanonicalizing(
             $a,
