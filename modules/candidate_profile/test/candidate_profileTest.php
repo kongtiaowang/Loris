@@ -100,14 +100,15 @@ class CandidateProfileIntegrationTest extends LorisIntegrationTestWithCandidate
      */
     function testCandidateProfileInstrumentLink1()
     {
-	            $this->setupPermissions(['superuser']);
+	            $this->setupPermissions(['superuser','data_entry','user_accounts_multisite']);
 
-		    $this->safeGet($this->url . "/candidate_profile/900000/");
-		    $c = \Candidate::singleton(new CandID('900000'));
+		    $this->safeGet($this->url . "/candidate_profile/300001/");
+		    $c = \Candidate::singleton(new CandID('300001'));
+		    $b = $c->getData()['DOB'];
 		    $a = $c->getData();
-        $this->assertEqualsCanonicalizing(
+		    $this->assertEqualsCanonicalizing(
             $a,
-            [1=>'b']
+            $b
         );
     }
     /**
@@ -117,8 +118,8 @@ class CandidateProfileIntegrationTest extends LorisIntegrationTestWithCandidate
      */
     function testCandidateProfileInstrumentLink2()
     {
-	            $this->setupPermissions(['superuser']);
-        $this->safeGet($this->url . "/candidate_profile/900000/");
+	            $this->setupPermissions(['superuser','data_entry','user_accounts_multisite']);
+        $this->safeGet($this->url . "/candidate_profile/300001/");
 	 $this->safeClick( WebDriverBy::cssSelector( '#card0 > div > div > div > dl > div:nth-child(9) > dd > div > a:nth-child(1)' ) ); 
         $bodyText
             = $this->safeFindElement(WebDriverBy::cssSelector("body"))
