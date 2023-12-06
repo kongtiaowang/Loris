@@ -33,7 +33,8 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
                 'RegistrationProjectID' => 1,
                 'Active'                => 'Y',
                 'UserID'                => 1,
-                'Entity_type'           => 'Human',
+		'Entity_type'           => 'Human',
+		'DoB'                   => '2004-02-02',
                 'Sex'                   => 'Female'
             ]
         );
