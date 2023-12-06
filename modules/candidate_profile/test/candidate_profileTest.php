@@ -11,6 +11,9 @@
  * @link     https://github.com/aces/Loris
  */
 use Facebook\WebDriver\WebDriverBy;
+use \LORIS\StudyEntities\Candidate\CandID;
+use \LORIS\StudyEntities\Candidate;
+
 require_once __DIR__
     . "/../../../test/integrationtests/LorisIntegrationTestWithCandidate.class.inc";
 /**
