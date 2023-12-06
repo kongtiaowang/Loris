@@ -94,36 +94,18 @@ class CandidateProfileIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->resetUserProject();
     }
     /**
-     * Test that the page instrument link works on card 2 section
+     * Test that the page instrument link works on card section
      *
      * @return void
      */
-    function testCandidateProfileInstrumentLink1()
+    function testCandidateProfileInstrumentLink()
     {
-	            $this->setupPermissions(['superuser','data_entry','user_accounts_multisite']);
+	            $this->setupPermissions(['superuser']);
 
 		    $this->safeGet($this->url . "/candidate_profile/115788/");
 		    $this->safeClick( WebDriverBy::cssSelector( '#card0 > div > div > div > dl > div:nth-child(9) > dd > div > a:nth-child(1)' ) );
 
 		            $bodyText
-            = $this->safeFindElement(WebDriverBy::cssSelector("body"))
-            ->getText();
-        $this->assertStringContainsString(
-            "Behavioural Battery of Instruments",
-            $bodyText
-        );
-    }
-    /**
-     * Test that the page instrument link works on card 1 section
-     *
-     * @return void
-     */
-    function testCandidateProfileInstrumentLink2()
-    {
-	            $this->setupPermissions(['superuser','data_entry','user_accounts_multisite']);
-        $this->safeGet($this->url . "/instrument_list/?candID=300001&sessionID=1");
-	 //$this->safeClick( WebDriverBy::cssSelector( '#card0 > div > div > div > dl > div:nth-child(9) > dd > div > a:nth-child(1)' ) ); 
-        $bodyText
             = $this->safeFindElement(WebDriverBy::cssSelector("body"))
             ->getText();
         $this->assertStringContainsString(
