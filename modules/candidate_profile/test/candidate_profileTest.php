@@ -121,7 +121,7 @@ class CandidateProfileIntegrationTest extends LorisIntegrationTestWithCandidate
     function testCandidateProfileInstrumentLink2()
     {
 	            $this->setupPermissions(['superuser','data_entry','user_accounts_multisite']);
-        $this->safeGet($this->url . "/candidate_profile/115788/");
+        $this->safeGet($this->url . "/instrument_list/?candID=300001&sessionID=1");
 	 //$this->safeClick( WebDriverBy::cssSelector( '#card0 > div > div > div > dl > div:nth-child(9) > dd > div > a:nth-child(1)' ) ); 
         $bodyText
             = $this->safeFindElement(WebDriverBy::cssSelector("body"))
