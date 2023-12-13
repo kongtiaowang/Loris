@@ -611,7 +611,14 @@ class DashboardTest extends LorisIntegrationTest
 	    $this->safeGet($this->url . '/configuration/');
 	    $this->safeClick(
             WebDriverBy::cssSelector("#lorisworkspace > div > div:nth-child(2) > div:nth-child(1) > ul > li:nth-child(5) > a")
-		    );
+	    );
+	            $testText = $this->safeFindElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        $this->assertStringContainsString(
+            "888",
+            $testText
+        );
 	$this->safeFindElement(
             WebDriverBy::cssSelector('input[name="recruitmentTarget"]')).sendKeys("888");
 	$this->safeGet($this->url . '/dashboard/');
