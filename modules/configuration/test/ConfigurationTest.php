@@ -183,7 +183,7 @@ class ConfigurationTest extends LorisIntegrationTest
     {
         $this->safeClick(WebDriverBy::linkText($text));
 	$webActives =  $this->safeFindElement(WebDriverBy::cssSelector(".active"));
-        $bodyText   = $webActives[1]->getText();
+        $bodyText   = $webActives->getText();
         $this->assertStringContainsString($text, $bodyText);
     }
 
