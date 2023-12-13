@@ -608,29 +608,16 @@ class DashboardTest extends LorisIntegrationTest
      */
     private function _testPlan3()
     {
-        $this->safeGet($this->url . '/configuration/');
-        $this->safeFindElement(
-            WebDriverBy::Xpath(
-                "//*[@id='lorisworkspace']/div[1]/ul/li[5]/a"
-            )
-        )->click();
+        $this->safeGet($this->url . '/configuration/#dashboard');
+	WebElement element = $this->safeFindElement(
+            WebDriverBy::cssSelector("input.form-control[name='recruitmentTarget']"));
 
-        $this->safeFindElement(
-            WebDriverBy::Xpath(
-                "//*[@id='49']/input"
-            )
-        )->clear();
-        $this->safeFindElement(
-            WebDriverBy::Xpath(
-                "//*[@id='49']/input"
-            )
-        )->sendKeys('888');
-        $this->safeFindElement(
-            WebDriverBy::Xpath(
-                "//*[@id='dashboard']/div/form/div[3]/div/button[1]"
-            )
-        )->click();
-        $this->safeGet($this->url . '/dashboard/');
+// Clear the existing text in the input field
+element.clear();
+
+// Input new text into the input field
+element.sendKeys("888");
+	$this->safeGet($this->url . '/dashboard/');
         $testText = $this->safeFindElement(
             WebDriverBy::Id("overall-recruitment")
         )->getText();
