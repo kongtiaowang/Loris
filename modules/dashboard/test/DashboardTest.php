@@ -609,7 +609,7 @@ class DashboardTest extends LorisIntegrationTest
     private function _testPlan3()
     {
 	    $this->safeGet($this->url . '/configuration/');
-	    $this->safeClick(WebDriverBy::linkText("Dashborad"));
+	    $this->safeClick(WebDriverBy::linkText("Dashboard"));
 	$this->safeFindElement(
             WebDriverBy::cssSelector("input.form-control[name='recruitmentTarget']")).sendKeys("888");
 	$this->safeGet($this->url . '/dashboard/');
