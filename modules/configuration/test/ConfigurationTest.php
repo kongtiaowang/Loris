@@ -61,6 +61,8 @@ class ConfigurationTest extends LorisIntegrationTest
     public function testConfigurationPageLoads()
     {
         $this->safeGet($this->url . "/configuration/");
+        // wait for the React to render
+        $this->safeFindElement(WebDriverBy::cssSelector("#lorisworkspace div"));
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
@@ -155,6 +157,8 @@ class ConfigurationTest extends LorisIntegrationTest
     {
 
         $this->safeGet($this->url . "/configuration/");
+        // wait for the React to render
+        $this->safeFindElement(WebDriverBy::cssSelector("#lorisworkspace div"));
         $this->_linkTest("Study");
         $this->_linkTest("Paths");
         $this->_linkTest("GUI");
@@ -178,10 +182,8 @@ class ConfigurationTest extends LorisIntegrationTest
     private function _linkTest($text)
     {
         $this->safeClick(WebDriverBy::linkText($text));
-        $webActives = $this->webDriver->findElements(
-            WebDriverBy::cssSelector(".active")
-        );
-        $bodyText   = $webActives[1]->getText();
+	$webActives =  $this->safeFindElement(WebDriverBy::cssSelector(".active"));
+        $bodyText   = $webActives->getText();
         $this->assertStringContainsString($text, $bodyText);
     }
 

@@ -11,6 +11,8 @@
  * @link     https://github.com/aces/Loris
  */
 use Facebook\WebDriver\WebDriverBy;
+use Facebook\WebDriver\WebDriverKeys;
+
 require_once __DIR__ .
     "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
 
@@ -608,34 +610,18 @@ class DashboardTest extends LorisIntegrationTest
      */
     private function _testPlan3()
     {
-        $this->safeGet($this->url . '/configuration/');
+    $this->safeGet($this->url . '/configuration/');
+        $this->safeClick(WebDriverBy::linkText("Dashboard"));
         $this->safeFindElement(
-            WebDriverBy::Xpath(
-                "//*[@id='lorisworkspace']/div[1]/ul/li[5]/a"
-            )
-        )->click();
-
-        $this->safeFindElement(
-            WebDriverBy::Xpath(
-                "//*[@id='49']/input"
-            )
-        )->clear();
-        $this->safeFindElement(
-            WebDriverBy::Xpath(
-                "//*[@id='49']/input"
-            )
-        )->sendKeys('888');
-        $this->safeFindElement(
-            WebDriverBy::Xpath(
-                "//*[@id='dashboard']/div/form/div[3]/div/button[1]"
-            )
-        )->click();
+            WebDriverBy::Name("recruitmentTarget")
+        )->clear()->sendKeys("19999")->sendKeys(WebDriverKeys::RETURN_KEY);
+        sleep(2);
         $this->safeGet($this->url . '/dashboard/');
         $testText = $this->safeFindElement(
             WebDriverBy::Id("overall-recruitment")
         )->getText();
         $this->assertStringContainsString(
-            "888",
+            "19999",
             $testText
         );
     }
