@@ -61,14 +61,10 @@ INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (67,'survey_accounts_view','Candidate Surveys',36,'View',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (68,'imaging_quality_control_view','Flagged Imaging Entries',21,'View',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (69,'behavioural_quality_control_view','Flagged Behavioural Entries',3,'View',2);
-<<<<<<< HEAD
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (70,'api_docs','API Documentation: View LORIS API Manual',NULL,NULL,2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (71,'electrophysiology_browser_edit_annotations','Annotations',41,'Create/Edit',2);
 INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (72,'monitor_eeg_uploads','Monitor EEG uploads',47,'Create/Edit',2);
-
-=======
-INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (70,'consent_view','View consent module',NULL,NULL,2);
-INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (71,'consent_edit','Edit consent module',NULL,NULL,2);
->>>>>>> 0022bd4e2... Add raisinbread changes + phpcs
+INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (73,'consent_view','Consent module',48,'View',2);
+INSERT INTO `permissions` (`permID`, `code`, `description`, `moduleID`, `action`, `categoryID`) VALUES (74,'consent_edit','Consent module',48,'Edit',2);
 UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;
