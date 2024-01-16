@@ -1055,8 +1055,8 @@ class CandidateTest extends TestCase
                 'Status'        => 'done',
                 'DateGiven'     => 'today',
                 'DateWithdrawn' => 'tomorrow',
-                'Comment'       => 'test comment',
-                'Label'         => 'Name 1',
+                'Label'         => 'label',
+                'Comment'       => 'comment',
             ]
         ];
 
@@ -1065,7 +1065,7 @@ class CandidateTest extends TestCase
             ->with(
                 $this->stringContains(
                     "SELECT ConsentID, Name, Status, DateGiven, " .
-                    "DateWithdrawn, Comment, Label"
+                    "DateWithdrawn, Label, Comment"
                 )
             )
             ->willReturn($result);
