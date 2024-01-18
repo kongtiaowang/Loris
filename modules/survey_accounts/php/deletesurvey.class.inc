@@ -50,10 +50,8 @@ class DeleteSurvey extends \NDB_Page
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-	                        error_log("===========");
 
 	    if ($request->getMethod() == "DELETE") {
-		    error_log("===========");
             $id = basename($request->getUri()->getPath());
             $route= explode('/', $request->getUri()->getPath()); 
             if ($this->dodeleteSurvey($route[2],$id)) {

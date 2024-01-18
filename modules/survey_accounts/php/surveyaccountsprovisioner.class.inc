@@ -44,11 +44,11 @@ class SurveyAccountsProvisioner
                 s.Visit_label AS Visit,
                 p.Test_name as SurveyName,
                 p.OneTimePassword as URL,
-                p.Status,
+		p.Status,
+                p.CommentID,
                 s.CenterID,
-		s.ProjectID,
-                p.CommentID
-             FROM participant_accounts p
+		s.ProjectID
+ 	     FROM participant_accounts p
                 JOIN session s ON (p.SessionID=s.ID)
                 JOIN candidate c ON (c.CandID=s.CandID)
              WHERE c.Active = 'Y'

@@ -60,6 +60,7 @@ class SurveyAccountsIndex extends Component {
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
+	  console.log(row);
     let result = <td>{cell}</td>;
     switch (column) {
     case 'URL':
@@ -69,10 +70,12 @@ class SurveyAccountsIndex extends Component {
     case 'Instrument':
       result = <td>{this.state.data.fieldOptions.instruments[cell]}</td>;
       break;
-    case 'Delete':
+    case 'Edit':
       result = <td>
-      <button onClick={() => this.deleteclick(row.Instrument,row.Delete)}
-        class="btn btn-danger" >delete</button>
+      <button onClick={() => this.deleteclick(row.Instrument,row.Edit)}
+        class="btn btn-warning" >Delete</button>
+			          <button
+        class="btn btn-danger" >Archive</button>
       </td>;
       break;		    
     }
@@ -154,9 +157,9 @@ class SurveyAccountsIndex extends Component {
         type: 'select',
         options: options.statusOptions,
       }},
+      {label: 'Edit', show: true},
       {label: 'centerID', show: false},
       {label: 'projectID', show: false},
-      {label: 'Delete', show: true},	    
     ];
   const addSurvey = () => {
     location.href='/survey_accounts/addSurvey/';
