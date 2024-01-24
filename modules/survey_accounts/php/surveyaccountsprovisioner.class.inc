@@ -52,7 +52,8 @@ class SurveyAccountsProvisioner
                 JOIN session s ON (p.SessionID=s.ID)
                 JOIN candidate c ON (c.CandID=s.CandID)
              WHERE c.Active = 'Y'
-                AND s.Active = 'Y'
+		AND s.Active = 'Y'
+                AND p.survey_archived='0'
              ORDER BY PSCID",
             []
         );

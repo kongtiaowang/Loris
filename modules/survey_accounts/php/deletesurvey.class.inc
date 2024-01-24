@@ -69,7 +69,26 @@ class DeleteSurvey extends \NDB_Page
                 ->withHeader("Content-Type", "text/plain")
                 ->withHeader("Allow", "can't delete");
 
-        } else {
+	    } elseif ($request->getMethod() == "POST") 
+	    {
+            $id = basename($request->getUri()->getPath());
+            $route= explode('/', $request->getUri()->getPath());
+            if ($this->doarchiveSurvey($route[2],$id)) {
+                return (new \LORIS\Http\Response())
+                    ->withStatus(200)
+                    ->withHeader("Content-Type", "text/plain")
+                    ->withBody(
+                        new \LORIS\Http\StringStream(
+                            json_encode("archive successfully")
+                        )
+                    );
+            }
+            return (new \LORIS\Http\Response())
+                ->withStatus(403)
+                ->withHeader("Content-Type", "text/plain")
+                ->withHeader("Allow", "can't archive");
+	    } 
+	    else {
             return (new \LORIS\Http\Response())
                 ->withStatus(405)
                 ->withHeader("Content-Type", "text/plain")
@@ -110,4 +129,29 @@ class DeleteSurvey extends \NDB_Page
         } catch (Exception $e) {
         return false;}
     }
+    /**
+     * Handles the upload category process
+     *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
+     * @return bool
+     */
+    function doarchiveSurvey($instrument,$id): bool
+    {
+        $DB            = \NDB_Factory::singleton()->database();
+        //check duplicate name category
+        try{
+        $DB->update(
+		"participant_accounts",
+	    [
+	        "survey_archived" => "1", 
+	    ],	
+            [
+                "CommentID"      => $id,
+            ]
+        );
+        return true;
+        } catch (Exception $e) {
+        return false;}
+    }    
 }

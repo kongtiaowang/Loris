@@ -73,9 +73,10 @@ class SurveyAccountsIndex extends Component {
     case 'Edit':
       result = <td>
       <button onClick={() => this.deleteclick(row.Instrument,row.Edit)}
-        class="btn btn-warning" >Delete</button>
-			          <button
-        class="btn btn-danger" >Archive</button>
+        class="btn btn-danger" >Delete</button>
+      <button
+        class="btn btn-warning" onClick={() => this.archiveclick(row.Instrument,row.Edit)}
+	>Archive</button>
       </td>;
       break;		    
     }
@@ -114,6 +115,35 @@ class SurveyAccountsIndex extends Component {
            }
           });
          }
+         archiveclick(Instrument,commentid) {
+          swal.fire({
+            title: 'Are you sure?',
+            text: 'You won\'t see this survey in the table!',
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, archive it!',
+           }).then((result) => {
+           if (result.value) {
+            let deleteurl = loris.BaseURL +
+              '/survey_accounts/deleteSurvey/'+Instrument+'/'+commentid;
+              fetch(deleteurl, {
+              method: 'POST',
+              cache: 'no-cache',
+              credentials: 'same-origin',
+              }).then((resp) => {
+                  if (resp.status == 200) {
+                   swal.fire('archive Successful!', '', 'success');
+                  } else {
+                   swal.fire('archive Not Successful!', '', 'error');
+                  }
+              }).then(()=>{
+                  location.reload();
+              });
+           }
+          });
+         }	
   /**
    * Renders the React component.
    *
