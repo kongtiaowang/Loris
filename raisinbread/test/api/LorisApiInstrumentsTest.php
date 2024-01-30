@@ -91,7 +91,7 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
                 'CandID' => $this->candidTest,
                 'Visit' => $this->visitTest,
             ],
-            "Instruments" => [ 'bmi' ],
+            "Instruments" => [ 'aosi' ],
         ];
         $response = $this->client->request(
             'POST',
