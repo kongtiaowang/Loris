@@ -43,7 +43,7 @@ class Sex implements \JsonSerializable
 var_dump($this->validValues);
         if (!self::validate($value, $this->validValues)) {
             throw new \DomainException(
-                $this->validValue. 'The value is not valid. Must be one of: '
+               "ssss". $this->validValues. 'The value is not valid. Must be one of: '
                 . implode(', ', $this->validValues)
             );
         }
