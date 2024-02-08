@@ -1,3 +1,6 @@
 SET FOREIGN_KEY_CHECKS=0;
-INSERT INTO sex (Name) VALUES ('Male'), ('Female'), ('Other');
+TRUNCATE TABLE `visit`;
+LOCK TABLES `visit` WRITE;
+INSERT INTO `sex` (`Name`) VALUES ('Male'), ('Female'), ('Other');
+UNLOCK TABLES;
 SET FOREIGN_KEY_CHECKS=1;
