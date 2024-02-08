@@ -40,10 +40,10 @@ class Sex implements \JsonSerializable
     public function __construct(string $value)
     {
         $this->validValues = array_values(\Utility::getSexList());
-
+var_dump($this->validValues);
         if (!self::validate($value, $this->validValues)) {
             throw new \DomainException(
-                'The value is not valid. Must be one of: '
+                $this->validValue. 'The value is not valid. Must be one of: '
                 . implode(', ', $this->validValues)
             );
         }
