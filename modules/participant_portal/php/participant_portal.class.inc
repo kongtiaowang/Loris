@@ -30,105 +30,22 @@ class Participant_Portal extends \NDB_Form
      *
      * @return bool whether the user has access
      */
-
+    public $skipTemplate = true;
 
     /**
-     * CommonPageSetup sets up the common form elements which
-     * are on the page, regardless of HTTP request method.
+     * Include additional JS files
      *
-     * @return void
+     * @return array of javascript to be inserted
      */
-    function setup(): void
+    function getJSDependencies(): array
     {
-        $this->tpl_data['page_title'] = 'Participant Portal';
-        $this->addBasicText(
-            "ParticipantID",
-            "ParticipantID",
-            ["placeholder" => ""]
+        $factory = \NDB_Factory::singleton();
+        $baseURL = $factory->settings()->getBaseURL();
+        $deps    = parent::getJSDependencies();
+        return array_merge(
+            $deps,
+            [$baseURL . '/participant_portal/js/Participant_Portal_Index.js']
         );
-
-        $this->addBasicText(
-            "email",
-            "Email",
-            ["placeholder" => ""]
-        );
-        $this->form->addFormRule([&$this, '_validate']);
-        $localDefaults = $this->_getDefaults();
-        if (!is_array($localDefaults)) {
-            $localDefaults = [];
-        }
-        $this->form->setDefaults(array_merge($this->defaults, $localDefaults));
-
-    }
-    /**
-     * Validate the value
-     *
-     * @param array $values the values array
-     *
-     * @return array (possibly empty) of errors
-     */
-    function _validate($values)
-    {
-        $errors = [];
-
-        if (empty($values['ParticipantID'])) {
-            $errors['ParticipantID'] = " ParticipantID is required!";
-        } else if (empty($values['email'])  ) {
-            $errors['email'] = " Email is required!";
-        } else {
-            $db = \Database::singleton();
-
-            $numSurveys = $db->pselectOne(
-                "SELECT COUNT(*) FROM participant_accounts p
-                 JOIN session s ON (p.SessionID=s.ID)
-                 JOIN candidate c ON (c.CandID=s.CandID)
-                 WHERE p.Email=:surv_email AND c.ParticipantID=:pid",
-                [
-                    'surv_email' => $values['email'],
-                    'pid'        => $values['ParticipantID'],
-                ]
-            );
-            if ($numSurveys == 0) {
-                // As suggested by Pierre to deter malicious automated attempts
-                // to hack the portal.
-                sleep(3);
-                $errors['email'] = "Sorry, No Surveys Found With".
-                                  " The Above Information.";
-            }
-        }
-
-            return $errors;
-
-    }
-    /**
-     * GetDefaults function
-     *
-     * @return array
-     */
-    function _getDefaults(): array
-    {
-
-        $sanitize = array_map('htmlentities', $_GET);
-        $id       = $sanitize['id'] ?? null;
-
-        $defaults['ParticipantID'] =$id;
-        return $defaults;
-    }
-    /**
-     * Process function
-     *
-     * @param array $values the values array
-     *
-     * @return void
-     */
-    function _process($values): void
-    {
-        $factory           = \NDB_Factory::singleton();
-        $baseURL           = $factory->settings()->getBaseURL();
-        $_SESSION['pid']   = $_REQUEST['ParticipantID'];
-        $_SESSION['email'] = $_REQUEST['email'];
-        header("Location: $baseURL/Participant_portal/View_Surveys");
-        exit;
     }
 }
 

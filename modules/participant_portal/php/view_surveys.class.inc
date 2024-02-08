@@ -74,16 +74,6 @@ class View_Surveys extends \NDB_Form
      *
      * @return array
      */
-    function getCSSDependencies(): array
-    {
-        $factory = \NDB_Factory::singleton();
-        $baseURL = $factory->settings()->getBaseURL();
-        $deps    = parent::getCSSDependencies();
-        return array_merge(
-            $deps,
-            [$baseURL . "/participant_portal/css/participant_portal.css"]
-        );
-    }
 
 
 }
