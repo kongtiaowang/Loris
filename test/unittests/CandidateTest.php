@@ -156,9 +156,25 @@ class CandidateTest extends TestCase
             'UserID'                => 'admin',
             'RegistrationProjectID' => '1',
             'ProjectTitle'          => '',
-        ];
+	];
+$this->_utilityMock = $this->getMockBuilder(\Utility::class)
+    ->disableOriginalConstructor()
+    ->getMock();
 
-        $this->_candidate = new Candidate();
+// Set the expected behavior for the getSexList method
+$this->_utilityMock->expects($this->any())
+    ->method('getSexList')
+    ->willReturn([
+        'Male'   => 'Male',
+        'Female' => 'Female',
+        'Others' => 'Others',
+    ]);
+        $this->_dbMock->expects($this->any())
+            ->method('pselectCol')
+            ->willReturn(['Male','Female','Other']);
+
+
+        $this->_candidate = new Candidate(null, $this->_utilityMock);
     }
 
     /**
@@ -203,7 +219,10 @@ class CandidateTest extends TestCase
         $this->_dbMock->expects($this->once())
             ->method('pselectRow')
             ->willReturn($this->_candidateInfo);
-
+/*        $this->_dbMock->expects($this->any())
+            ->method('pselectCol')
+	    ->willReturn(['Male','Female','Other']);
+ */
         $this->_candidate->select($this->_candidateInfo['CandID']);
 
         //validate _candidate Info
@@ -1361,7 +1380,6 @@ class CandidateTest extends TestCase
                     $this->_listOfTimePoints
                 )
             );
-
         $this->_dbMock->expects($this->once())
             ->method('pselectRow')
             ->willReturn($this->_candidateInfo);
