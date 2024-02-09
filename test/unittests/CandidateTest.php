@@ -156,23 +156,19 @@ class CandidateTest extends TestCase
             'UserID'                => 'admin',
             'RegistrationProjectID' => '1',
             'ProjectTitle'          => '',
-        ];
-       // Create a mock for the Utility class
-	$this->_utilityMock = $this->getMockBuilder(\Utility::class)
-		                           ->disableOriginalConstructor()  // Disable the original constructor
-                                   ->hasMethods(['getSexList']) // Specify the methods to mock
-                                   ->getMock();
+	];
+$this->_utilityMock = $this->getMockBuilder(\Utility::class)
+    ->disableOriginalConstructor()
+    ->getMock();
 
-        // Set the expected behavior for the getSexList method
-        $this->_utilityMock->expects($this->any())
-                           ->method('getSexList')
-                           ->willReturn([
-                               'Male'   => 'Male',
-                               'Female' => 'Female',
-                               'Others' => 'Others',
-                           ]);
-
-        // Create an instance of the _candidate class with the mocked Utility instance
+// Set the expected behavior for the getSexList method
+$this->_utilityMock->expects($this->any())
+    ->method('getSexList')
+    ->willReturn([
+        'Male'   => 'Male',
+        'Female' => 'Female',
+        'Others' => 'Others',
+    ]);	
         $this->_candidate = new Candidate(null, $this->_utilityMock);
     }
 
