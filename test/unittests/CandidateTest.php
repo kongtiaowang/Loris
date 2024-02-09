@@ -219,10 +219,10 @@ $this->_utilityMock->expects($this->any())
         $this->_dbMock->expects($this->once())
             ->method('pselectRow')
             ->willReturn($this->_candidateInfo);
-        $this->_dbMock->expects($this->any())
+/*        $this->_dbMock->expects($this->any())
             ->method('pselectCol')
 	    ->willReturn(['Male','Female','Other']);
-
+ */
         $this->_candidate->select($this->_candidateInfo['CandID']);
 
         //validate _candidate Info
