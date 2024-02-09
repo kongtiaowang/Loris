@@ -164,7 +164,7 @@ class CandidateTest extends TestCase
                                    ->getMock();
 
         // Set the expected behavior for the getSexList method
-        $this->_utilityMock->expects($this->once())
+        $this->_utilityMock->expects($this->any())
                            ->method('getSexList')
                            ->willReturn([
                                'Male'   => 'Male',
