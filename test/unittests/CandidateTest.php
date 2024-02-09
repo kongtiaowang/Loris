@@ -173,7 +173,7 @@ class CandidateTest extends TestCase
                            ]);
 
         // Create an instance of the _candidate class with the mocked Utility instance
-        $this->_candidate = new Candidate($this->_utilityMock);
+        $this->_candidate = new Candidate(null, $this->_utilityMock);
     }
 
     /**
