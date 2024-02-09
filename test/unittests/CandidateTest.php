@@ -158,7 +158,8 @@ class CandidateTest extends TestCase
             'ProjectTitle'          => '',
         ];
        // Create a mock for the Utility class
-        $this->_utilityMock = $this->getMockBuilder(\Utility::class)
+	$this->_utilityMock = $this->getMockBuilder(\Utility::class)
+		                           ->disableOriginalConstructor()  // Disable the original constructor
                                    ->onlyMethods(['getSexList']) // Specify the methods to mock
                                    ->getMock();
 
