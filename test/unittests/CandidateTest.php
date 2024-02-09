@@ -1368,7 +1368,7 @@ class CandidateTest extends TestCase
             'Male'   => 'Male',
             'Female' => 'Female',
             'Others' => 'Others',
-        ];
+        ]
             );
         $this->_dbMock->expects($this->once())
             ->method('pselectRow')
