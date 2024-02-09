@@ -168,7 +168,12 @@ $this->_utilityMock->expects($this->any())
         'Male'   => 'Male',
         'Female' => 'Female',
         'Others' => 'Others',
-    ]);	
+    ]);
+        $this->_dbMock->expects($this->any())
+            ->method('pselectCol')
+            ->willReturn(['Male','Female','Other']);
+
+
         $this->_candidate = new Candidate(null, $this->_utilityMock);
     }
 
