@@ -1361,15 +1361,6 @@ class CandidateTest extends TestCase
                     $this->_listOfTimePoints
                 )
             );
-        $this->_dbMock
-            ->method('pselectCol')
-	    ->willReturn(
-		    [
-            'Male'   => 'Male',
-            'Female' => 'Female',
-            'Others' => 'Others',
-        ]
-            );
         $this->_dbMock->expects($this->once())
             ->method('pselectRow')
             ->willReturn($this->_candidateInfo);
