@@ -15,6 +15,7 @@ require_once __DIR__ . "/LorisApiAuthenticatedTest.php";
  * @author     Simon Pelletier <simon.pelletier@mcin.ca>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
+ * @group      api-v0.0.4-dev
  */
 class LorisApiCandidatesTest extends LorisApiAuthenticatedTest
 {
@@ -232,6 +233,12 @@ class LorisApiCandidatesTest extends LorisApiAuthenticatedTest
         // Verify the endpoint has a body
         $body = $response_new->getBody();
         $this->assertNotEmpty($body);
+
+        // Erase sites that were setup in LorisApiAuthenticatedTest
+        // setup for data access in other tests.
+        $this->DB->run(
+            'DELETE FROM user_psc_rel WHERE UserID=999990 AND CenterID <> 1'
+        );
 
         // Second, try to create a valid new candidate in a site that the
         // user is not affiliated with. The test user is only afficilated to

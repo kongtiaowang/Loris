@@ -13,12 +13,16 @@
 {/function}
 
 {function name=createInstrument}
+<div>
     <select class="form-control" name="{$k}" {if $d eq "Yes"}disabled{/if}>
         {foreach from=$instruments key=name item=label}
             <option {if $v eq $name}selected{/if} value="{$name}">{$label}</option>
         {/foreach}
     </select>
+    </div>
 {/function}
+
+
 
 {function name=createScanType}
     <select class="form-control" name="{$k}" {if $d eq "Yes"}disabled{/if}>
@@ -49,12 +53,21 @@
 {/function}
 
 {function name=createTextArea}
-    <textarea class="form-control" rows="4" name="{$k}" {if $d eq "Yes"}disabled{/if}>{$v}</textarea>
+    <textarea class="form-control" rows="4" name="{$k}" {if $d eq "Yes"}disabled{/if}>{$v|escape:html}</textarea>
 {/function}
 
 {function name=createText}
-    <input type="text" class="form-control" name="{$k}" value="{$v}" {if $d eq "Yes"}disabled{/if}>
+     <input type="text" class="form-control" name="{$k}" value="{$v|escape:html}" {if $d eq "Yes"}disabled{/if}>
 {/function}
+
+{function name=createLogDropdown}
+    <select class="form-control" name="{$k}" {if $d eq "Yes"}disabled{/if}>
+        {foreach from=$log_levels key=name item=label}
+            <option {if $v eq $name}selected{/if} value="{$name}">{$label}</option>
+        {/foreach}
+    </select>
+{/function}
+
 
 {function name=printConfigItem}
 <div class="form-group">
@@ -80,24 +93,33 @@
 
 {function name=printForm}
     <div class="config-form-group" id="{$node['ID']}">
-    {foreach from=$node['Value'] key=k item=v}
+    {foreach from=$node['Value']|default key=k item=v}
         {if $node['AllowMultiple'] == 1}<div class="input-group entry">{/if}
-        {if $node['DataType'] eq 'boolean'}
-            {call createRadio k=$k v=$v d=$node['Disabled']}
-        {elseif $node['DataType'] eq 'instrument'}
-            {call createInstrument k=$k v=$v d=$node['Disabled']}
-        {elseif $node['DataType'] eq 'scan_type'}
-            {call createScanType k=$k v=$v d=$node['Disabled']}
-        {elseif $node['DataType'] eq 'date_format'}
-            {call createDateFormat k=$k v=$v d=$node['Disabled']}
-        {elseif $node['DataType'] eq 'email'}
-            {call createEmail k=$k v=$v d=$node['Disabled']}
-        {elseif $node['DataType'] eq 'textarea'}
-            {call createTextArea k=$k v=$v d=$node['Disabled']}
-        {elseif $node['DataType'] eq 'lookup_center'}
-            {call createLookUpCenterNameUsing k=$k v=$v d=$node['Disabled']}
+
+        {if $k == 0}
+            {assign var=id value={"add-"|cat:$node['ID']} }
         {else}
-            {call createText k=$k v=$v d=$node['Disabled']}
+            {assign var=id value=$k}
+        {/if}
+
+        {if $node['DataType'] eq 'boolean'}
+            {call createRadio k=$id v=$v d=$node['Disabled']}
+        {elseif $node['DataType'] eq 'instrument'}
+            {call createInstrument k=$id v=$v d=$node['Disabled']}
+        {elseif $node['DataType'] eq 'scan_type'}
+            {call createScanType k=$id v=$v d=$node['Disabled']}
+        {elseif $node['DataType'] eq 'date_format'}
+            {call createDateFormat k=$id v=$v d=$node['Disabled']}
+        {elseif $node['DataType'] eq 'email'}
+            {call createEmail k=$id v=$v d=$node['Disabled']}
+        {elseif $node['DataType'] eq 'textarea'}
+            {call createTextArea k=$id v=$v d=$node['Disabled']}
+        {elseif $node['DataType'] eq 'lookup_center'}
+            {call createLookUpCenterNameUsing k=$id v=$v d=$node['Disabled']}
+        {elseif $node['DataType'] eq 'log_level'}
+            {call createLogDropdown k=$id v=$v d=$node['Disabled']}
+        {else}
+            {call createText k=$id v=$v d=$node['Disabled']}
         {/if}
         {if $node['AllowMultiple'] == 1}
             <div class="input-group-btn">
@@ -140,9 +162,10 @@
 {/function}
 
 <p>Please enter the various configuration variables into the fields below. For information on how to configure LORIS, please refer to the Help section and/or the Developer's guide.</p>
-<p>To configure study subprojects <a href="{$baseurl}/configuration/subproject/">click here</a>.
-    To configure study projects <a href="{$baseurl}/configuration/project/">click here</a>.
+<p>To configure study cohorts <a href="{$baseurl|default}/configuration/cohort/">click here</a>.
+    To configure study projects <a href="{$baseurl|default}/configuration/project/">click here</a>.
 </p>
+<p>To configure the diagnosis trajectory of the study <a href="{$baseurl}/configuration/diagnosis_evolution/">click here</a>.
 <br>
 
 <div class="col-md-3">

@@ -40,10 +40,18 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
             $this->url .
             "/next_stage/?candID=900000&sessionID=999999&identifier=999999"
         );
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("Next Stage", $bodyText);
+        $this->assertStringContainsString("Next Stage", $bodyText);
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
+            $bodyText
+        );
     }
     /**
      * Tests that, page loads with data_entry permission
@@ -57,10 +65,10 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
             $this->url .
             "/next_stage/?candID=900000&sessionID=999999&identifier=999999"
         );
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("Next Stage", $bodyText);
+        $this->assertStringContainsString("Next Stage", $bodyText);
         $this->resetPermissions();
     }
 
@@ -72,14 +80,14 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
     function testNextStageDoesNotPageLoadWithoutPermission()
     {
         $this->setupPermissions([]);
-        $this->webDriver->get(
+        $this->safeGet(
             $this->url .
             "/next_stage/?candID=900000&sessionID=999999&identifier=999999"
         );
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains(
+        $this->assertStringContainsString(
             "You do not have access to this page.",
             $bodyText
         );
@@ -100,14 +108,14 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
 
         // Check to make sure page doesn't load without permission
         $this->setupPermissions([]);
-        $this->webDriver->get(
+        $this->safeGet(
             $this->url .
             "/next_stage/?candID=900000&sessionID=999999&identifier=999999"
         );
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains(
+        $this->assertStringContainsString(
             "You do not have access to this page.",
             $bodyText
         );
@@ -115,14 +123,14 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
 
         // Check to make sure page doesn't load with permission
         $this->setupPermissions(["data_entry"]);
-        $this->webDriver->get(
+        $this->safeGet(
             $this->url .
             "/next_stage/?candID=900000&sessionID=999999&identifier=999999"
         );
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains(
+        $this->assertStringContainsString(
             "You do not have access to this page.",
             $bodyText
         );
@@ -139,7 +147,7 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
      */
     function testNextStageDateError()
     {
-        $this->webDriver->get(
+        $this->safeGet(
             $this->url .
             "/next_stage/?candID=900000&sessionID=999999&identifier=999999"
         );
@@ -150,25 +158,21 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->webDriver->executescript(
             "document.getElementsByClassName('input-date')[1].value='2015-01-02'"
         );
-        $scanDone = $this->webDriver->findElement(
-            WebDriverBy::Name("scan_done")
-        );
-        $scanDone->sendKeys("No");
 
-        $Subproject = $this->webDriver->findElement(
-            WebDriverBy::Name("SubprojectID")
+        $Cohort = $this->safeFindElement(
+            WebDriverBy::Name("CohortID")
         );
-        $Subproject->sendKeys("Control");
+        $Cohort->sendKeys("Control");
 
-        $startVisit = $this->webDriver->findElement(
+        $startVisit = $this->safeFindElement(
             WebDriverBy::Name("fire_away")
         );
         $startVisit->submit();
         sleep(1);
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("Both Date fields must match.", $bodyText);
+        $this->assertStringContainsString("Both Date fields must match.", $bodyText);
     }
 
     /**
@@ -178,7 +182,7 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
      */
     function testNextStageSuccess()
     {
-        $this->webDriver->get(
+        $this->safeGet(
             $this->url .
             "/next_stage/?candID=900000&sessionID=999999&identifier=999999"
         );
@@ -188,25 +192,21 @@ class NextStageTestIntegrationTest extends LorisIntegrationTestWithCandidate
         $this->webDriver->executescript(
             "document.getElementsByClassName('input-date')[1].value='2015-01-01'"
         );
-        $scanDone = $this->webDriver->findElement(
-            WebDriverBy::Name("scan_done")
-        );
-        $scanDone->sendKeys("No");
 
-        $Subproject = $this->webDriver->findElement(
-            WebDriverBy::Name("SubprojectID")
+        $Cohort = $this->safeFindElement(
+            WebDriverBy::Name("CohortID")
         );
-        $Subproject->sendKeys("Fresh");
+        $Cohort->sendKeys("Fresh");
 
-        $startVisit = $this->webDriver->findElement(
+        $startVisit = $this->safeFindElement(
             WebDriverBy::Name("fire_away")
         );
         $startVisit->submit();
         sleep(2);
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("Next stage started.", $bodyText);
+        $this->assertStringContainsString("Next stage started.", $bodyText);
     }
 }
 

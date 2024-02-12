@@ -134,12 +134,13 @@ class Dicoms extends Endpoint implements \LORIS\Middleware\ETagCalculator
         );
 
         $version = $request->getAttribute('LORIS-API-Version');
-        switch($version) {
+        switch ($version) {
         case "v0.0.3":
             $view = (new \LORIS\api\Views\Visit\Dicoms(
                 $this->_visit,
                 ...$dicomtars
             ))->toArray();
+            break;
         default:
             $view = (new \LORIS\api\Views\Visit\Dicoms_0_0_4_Dev(
                 $this->_visit,

@@ -2,7 +2,6 @@
 
 namespace LORIS\genomic_browser;
 
-use LORIS\Data\Filters\HasAnyPermissionOrUserSiteMatch;
 use LORIS\genomic_browser\Provisioners\FilesProvisioner;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
@@ -55,10 +54,34 @@ class FileManager extends \NDB_Page implements ETagCalculator
      */
     private function _handleGET(ServerRequestInterface $request) : ResponseInterface
     {
-        $filter      = new HasAnyPermissionOrUserSiteMatch(
-            ['genomic_browser_view_allsites']
-        );
-        $provisioner = (new FilesProvisioner())->filter($filter);
+        // Parse GET query params.
+        $values = $request->getQueryParams();
+        // GET request for downloading file by ID.
+        if ($values['filename']) {
+            $factory  = \NDB_Factory::singleton();
+            $config   = $factory->config();
+            $filesDir = \Utility::appendForwardSlash(
+                $config->getSetting('GenomicDataPath')
+            );
+            try {
+                $downloadhandler = new \LORIS\FilesDownloadHandler(
+                    new \SplFileInfo($filesDir)
+                );
+                $request         = $request->withAttribute(
+                    'filename',
+                    $values['filename']
+                );
+                return $downloadhandler->handle($request);
+            } catch (\LorisException $e) {
+                // FilesUploadHandler throws an exception if there's a problem with
+                // the downloaddir.
+                return new \LORIS\Http\Response\JSON\InternalServerError(
+                    $e->getMessage()
+                );
+            }
+        }
+
+        $provisioner = new FilesProvisioner();
         $user        = $request->getAttribute('user');
 
         $data = (new \LORIS\Data\Table())
@@ -67,7 +90,7 @@ class FileManager extends \NDB_Page implements ETagCalculator
         $body = [
             'data'         => $data,
             'fieldOptions' => $this->_getFieldOptions(),
-            'subprojects'  => \Utility::getSubprojectList(),
+            'cohorts'      => \Utility::getCohortList(),
             'permissions'  => [
                 'user'           => $user->getUsername(),
                 'upload_allowed' => $user->hasPermission(

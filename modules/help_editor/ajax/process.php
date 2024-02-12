@@ -23,13 +23,18 @@ if (!$user->hasPermission('context_help')) {
     );
 }
 
+if (empty($_POST)) {
+    header("HTTP/1.1 400 Bad Request");
+    exit;
+}
+
 $DB = (\NDB_Factory::singleton())->database();
 
 if (!empty($_POST['helpID'])
     && !empty($_POST['title'])
     && !empty($_POST['content'])
 ) {
-    $helpID    = $_POST['helpID'];
+    $helpID    = intval($_POST['helpID']);
     $help_file = HelpFile::factory($helpID);
     // update the help file
     $help_file->update(

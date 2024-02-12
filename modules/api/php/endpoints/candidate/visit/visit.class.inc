@@ -38,7 +38,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
     /**
      * The requested Visit
      *
-     * @var \Timepoint
+     * @var ?\Timepoint
      */
     private $_visit;
 
@@ -77,7 +77,6 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
     {
          return [
              'v0.0.3',
-             'v0.0.4-dev',
          ];
     }
 
@@ -90,6 +89,14 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
+        if ($this->_visit !== null) {
+            $user = $request->getAttribute('user');
+            if (!$this->_visit->isAccessibleBy($user)) {
+                return new \LORIS\Http\Response\JSON\Forbidden('Permission denied');
+            }
+
+        }
+
         $pathparts = $request->getAttribute('pathparts');
         if (count($pathparts) === 0) {
             switch ($request->getMethod()) {
@@ -117,7 +124,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         // Delegate to sub-endpoints
         $subendpoint = array_shift($pathparts);
-        switch($subendpoint) {
+        switch ($subendpoint) {
         case 'instruments':
             $handler = new Instruments($this->_visit);
             break;
@@ -190,6 +197,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
             'Project',
         ];
         $diff           = array_diff($requiredfields, array_keys($visitinfo));
+
         if (!empty($diff)) {
             return new \LORIS\Http\Response\JSON\BadRequest(
                 'Field(s) missing: ' . implode(', ', $diff)
@@ -206,14 +214,9 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         if ($visitinfo['CandID'] !== $this->_candidate->getCandID()) {
             return new \LORIS\Http\Response\JSON\BadRequest(
-                'CandID do not match this candidate'
+                'CandID does not match this candidate'
             );
         }
-
-        $sessionid = array_search(
-            $visitinfo['Visit'],
-            $this->_candidate->getListOfVisitLabels()
-        );
 
         if (!$this->_candidate->isAccessibleBy($user)) {
             return new \LORIS\Http\Response\JSON\Forbidden(
@@ -223,16 +226,27 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         $centerid = array_search($visitinfo['Site'], \Utility::getSiteList());
 
-        if (!in_array($centerid, $user->getCenterIDs())) {
+        if ($centerid === false
+            || !in_array(new \CenterID("$centerid"), $user->getCenterIDs())
+        ) {
             return new \LORIS\Http\Response\JSON\Forbidden(
-                "You can't create  or modify candidates visit for the site " .
+                "You can't create or modify candidates visit for the site " .
                 $centerid
             );
         }
 
-        $subprojectid = array_search(
+        // \Utility::getSiteList key was a string. Now that the
+        // validation is done, convert to an object.
+        $centerid = new \CenterID("$centerid");
+
+        $cohortid = array_search(
             $visitinfo['Battery'],
-            \Utility::getSubprojectList()
+            \Utility::getCohortList()
+        );
+
+        $sessionid = array_search(
+            $visitinfo['Visit'],
+            $this->_candidate->getListOfVisitLabels()
         );
 
         if ($sessionid !== false) {
@@ -253,7 +267,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
                 [
                     'CenterID'        => $centerid,
                     'Visit_label'     => $visitinfo['Visit'],
-                    'SubprojectID'    => $subprojectid,
+                    'CohortID'        => $cohortid,
                     'Active'          => 'Y',
                     'Date_active'     => $today,
                     'RegisteredBy'    => $username,
@@ -273,7 +287,8 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
         try {
             \TimePoint::isValidVisitLabel(
                 new CandID($visitinfo['CandID']),
-                $subprojectid,
+                $project->getId(),
+                $cohortid,
                 $visitinfo['Visit']
             );
         } catch (\LorisException $e) {
@@ -284,7 +299,7 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         \TimePoint::createNew(
             $this->_candidate,
-            $subprojectid,
+            $cohortid,
             $visitinfo['Visit'],
             \Site::singleton($centerid),
             $project

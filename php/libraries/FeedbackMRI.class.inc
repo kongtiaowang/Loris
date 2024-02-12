@@ -24,11 +24,15 @@ class FeedbackMRI
 {
     /**
      * FileID from files table
+     *
+     * @var ?int
      */
     var $fileID;
 
     /**
      * ID from session table
+     *
+     * @var ?\SessionID
      */
     var $sessionID;
 
@@ -40,10 +44,10 @@ class FeedbackMRI
     /**
      * Constructor sets object parameters
      *
-     * @param string $fileID    The fileID that this feedback is for
-     * @param string $sessionID The SessionID that this feedback is for
+     * @param ?int        $fileID    The fileID that this feedback is for
+     * @param ?\SessionID $sessionID The SessionID that this feedback is for
      */
-    function __construct(string $fileID='', string $sessionID='')
+    function __construct(?int $fileID=null, ?\SessionID $sessionID=null)
     {
         // set object properties
         $this->fileID    = $fileID;
@@ -66,7 +70,7 @@ class FeedbackMRI
     function clearAllComments(): bool
     {
         // create DB object
-        $DB =& Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
 
         $DB->delete('feedback_mri_comments', $this->_buildWhereAssoc());
         return true;
@@ -91,7 +95,7 @@ class FeedbackMRI
 
         // add a new db entry for each comment
         foreach ($predefinedCommentIDs AS $predefinedCommentID) {
-            $success = $this->_addComment('', '', $predefinedCommentID);
+            $success = $this->_addComment('', null, $predefinedCommentID);
 
             // choke if it failed
             if ($success != 'true') {
@@ -137,7 +141,7 @@ class FeedbackMRI
     function getComments(): ?array
     {
         // create DB object
-        $DB =& Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
 
         // start building the query
         $query = "SELECT CommentTypeID, PredefinedCommentID, Comment
@@ -177,7 +181,7 @@ class FeedbackMRI
     function getAllPredefinedComments(int $commentTypeID): array
     {
         // create DB object
-        $DB =& Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
 
         // build the query
         $query = "SELECT PredefinedCommentID, Comment
@@ -217,7 +221,8 @@ class FeedbackMRI
         }
 
         // create DB object
-        $DB =& Database::singleton();
+        $database = \NDB_Factory::singleton()->database();
+        $DB       =& $database;
 
         // get the parameter type id
         $query = "SELECT ParameterTypeID FROM parameter_type WHERE Name=:FName";
@@ -263,7 +268,7 @@ class FeedbackMRI
         }
 
         // create DB object
-        $DB =& Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
 
         // get the parameter type id
         $query = "SELECT ParameterTypeID FROM parameter_type WHERE Name=:FName";
@@ -322,7 +327,7 @@ class FeedbackMRI
     function getAllCommentTypes(): array
     {
         // create DB object
-        $DB =& Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
 
         // build the array
         $query = "SELECT CommentTypeID, CommentName, CommentStatusField
@@ -379,12 +384,12 @@ class FeedbackMRI
      * Adds a db entry for a comment to an object
      *
      * @param string $comment             the body of the message to store
-     * @param string $commentTypeID       CommentTypeID from
+     * @param ?int   $commentTypeID       CommentTypeID from
      *                                    feedback_mri_comment_types
      *                                    table (optional if
      *                                    using
      *                                    predefinedCommentID)
-     * @param string $predefinedCommentID PredefinedCommentID
+     * @param ?int   $predefinedCommentID PredefinedCommentID
      *                                    from
      *                                    feedback_mri_predefined_comments
      *                                    table
@@ -393,8 +398,8 @@ class FeedbackMRI
      */
     function _addComment(
         string $comment='',
-        string $commentTypeID='',
-        string $predefinedCommentID=''
+        ?int    $commentTypeID=null,
+        ?int $predefinedCommentID=null
     ): bool {
         // choke if we have no data (or too much)
         if (empty($comment) && empty($predefinedCommentID)
@@ -405,7 +410,7 @@ class FeedbackMRI
         }
 
         // create DB object
-        $DB = \Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
 
         // object identifier
         $set = [];
@@ -415,6 +420,10 @@ class FeedbackMRI
             $file          = new MRIFile($this->fileID);
             $set['SeriesUID'] = $file->getParameter('series_instance_uid');
             $set['EchoTime']  = $file->getParameter('echo_time');
+            $set['PhaseEncodingDirection'] = $file->getParameter(
+                'PhaseEncodingDirection'
+            );
+            $set['EchoNumber'] = $file->getParameter('echo_numbers');
         } else {
             // per-visit
             $set['SessionID'] = $this->sessionID;

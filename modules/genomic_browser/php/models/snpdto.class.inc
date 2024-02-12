@@ -7,10 +7,13 @@
  * @author   Xavier Lecours <xavier.lecours@mcin.ca>
  *           Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://github.com/aces/Loris-Trunk
+ * @link     https://github.com/aces/Loris
  */
 
 namespace LORIS\genomic_browser\Models;
+
+use \LORIS\Data\DataInstance;
+use \LORIS\StudyEntities\SiteHaver;
 
 /**
  * A SnpDTO represents an SNP in the genomic browser module.
@@ -27,8 +30,22 @@ namespace LORIS\genomic_browser\Models;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris-Trunk
  */
-class SnpDTO implements \LORIS\Data\DataInstance
+class SnpDTO implements DataInstance, SiteHaver
 {
+    /**
+     * The centerID
+     *
+     * @var string
+     */
+    private $_centerID = "";
+
+    /**
+     * The projectID
+     *
+     * @var string
+     */
+    private $_projectID = "";
+
     /**
      * The PSC
      *
@@ -58,11 +75,11 @@ class SnpDTO implements \LORIS\Data\DataInstance
     private $_Sex = "";
 
     /**
-     * The Subproject
+     * The Cohort
      *
      * @var string
      */
-    private $_Subproject = "";
+    private $_Cohort = "";
 
     /**
      * The DoB
@@ -251,7 +268,7 @@ class SnpDTO implements \LORIS\Data\DataInstance
             'DCCID'               => $this->_DCCID,
             'PSCID'               => $this->_PSCID,
             'Sex'                 => $this->_Sex,
-            'Subproject'          => $this->_Subproject,
+            'Cohort'              => $this->_Cohort,
             'DoB'                 => $this->_DoB,
             'externalID'          => $this->_externalID,
             'Chromosome'          => $this->_Chromosome,
@@ -278,5 +295,25 @@ class SnpDTO implements \LORIS\Data\DataInstance
             'Genotype_Quality'    => $this->_Genotype_Quality,
             'Exonic_Function'     => $this->_Exonic_Function,
         ];
+    }
+
+    /**
+     * Returns the CenterID for this row
+     *
+     * @return \CenterID The CenterID
+     */
+    public function getCenterID(): \CenterID
+    {
+        return new \CenterID(strval($this->_centerID));
+    }
+
+    /**
+     * Returns the ProjectID for this row
+     *
+     * @return \ProjectID The ProjectID
+     */
+    public function getProjectID(): \ProjectID
+    {
+        return new \ProjectID(strval($this->_projectID));
     }
 }

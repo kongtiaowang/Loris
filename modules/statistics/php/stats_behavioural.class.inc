@@ -99,11 +99,11 @@ class Stats_Behavioural extends \NDB_Form
         $allProjectList = \Utility::getProjectList();
         $projects       = [];
         $projects['']   = 'All Projects';
-        $Param_Project  = '';
 
-        $userProjectsIDs = $user->getData('ProjectIDs');
+        $userProjectsIDs = $user->getProjectIDs();
         foreach ($userProjectsIDs as $ProjectID) {
-            $projects[$ProjectID] = $allProjectList[$ProjectID];
+            $projects[$ProjectID->__toString()]
+                = $allProjectList[$ProjectID->__toString()];
         }
 
         $this->tpl_data['Projects'] = $projects;
@@ -120,45 +120,41 @@ class Stats_Behavioural extends \NDB_Form
 
         }
 
-        if ($_REQUEST['BehaviouralProject'] ?? ''
-        ) {
-
-            $currentProject = htmlspecialchars($_REQUEST['BehaviouralProject']);
+        if ($_REQUEST['BehaviouralProject'] ?? '') {
+            $currentProject = new \ProjectID($_REQUEST['BehaviouralProject']);
             $this->tpl_data['CurrentProject']
                 = [
                     'ID'   => $currentProject,
-                    'Name' => $projects[$currentProject],
+                    'Name' => $projects["$currentProject"],
                 ];
             $Param_Project ='AND (s.ProjectID IS NULL
                                OR c.RegistrationProjectID=:pid)';
             $this->projectParams['pid']
                 = htmlspecialchars($_REQUEST['BehaviouralProject']);
         } elseif (!empty($userProjectsIDs)) {
-
-            $currentProject = '';
+            $currentProject = null;
             $paramProjects  = [];
             foreach ($userProjectsIDs as $key => $projectID) {
                 $paramProjects[] = ":paramProjectID$key";
                 $this->projectParams["paramProjectID$key"] = $projectID;
             }
-            $Param_Project ="AND (s.ProjectID IS NULL 
+            $Param_Project ="AND (s.ProjectID IS NULL
                                    OR s.ProjectID IN
                                        (" . implode(',', $paramProjects) . ")
                                  )";
         } else {
-            $currentProject = '';
+            $currentProject = null;
             $Param_Project  ="AND (s.ProjectID IS NULL)";
         }
 
         //
-        //SUBPROJECTS
+        //COHORTS
         $suproject_query = '';
-        // Only search for subprojects if $currentProject is a positive int.
-        if (is_numeric($currentProject) && intval($currentProject) >= 0) {
-            $subprojects = \Utility::getSubprojectsForProject($currentProject);
-            $subprojList = implode(',', array_keys($subprojects));
+        if ($currentProject !== null) {
+            $cohorts     = \Utility::getCohortsForProject($currentProject);
+            $subprojList = implode(',', array_keys($cohorts));
             if (!empty($subprojList)) {
-                $suproject_query ="AND s.SubprojectID IN ($subprojList)";
+                $suproject_query ="AND s.CohortID IN ($subprojList)";
             }
             $Visits = \Utility::getVisitList($currentProject);
         } else {
@@ -169,7 +165,6 @@ class Stats_Behavioural extends \NDB_Form
 
         //SITES
 
-        $Param_Centers = '';
         if ($user->hasPermission('access_all_profiles')) {
             $list_of_sites = \Utility::getSiteList();
         } else {
@@ -183,7 +178,7 @@ class Stats_Behavioural extends \NDB_Form
                 $paramCenters[] = ":paramSiteID$key";
                 $this->siteParams["paramSiteID$key"] = $siteID;
             }
-            $Param_Centers = "AND (s.CenterID IS NULL 
+            $Param_Centers = "AND (s.CenterID IS NULL
                               OR s.CenterID IN
                                   (" . implode(',', $paramCenters) . ")
                             )";
@@ -226,7 +221,7 @@ class Stats_Behavioural extends \NDB_Form
                     COUNT(s.CandID) as val
                 FROM session s JOIN candidate c ON (s.CandID=c.CandID)
                     JOIN flag f ON (f.SessionID=s.ID)
-                WHERE 
+                WHERE
                     s.Active='Y' AND c.Active='Y'
                     AND s.Current_stage <> 'Recycling Bin'
                     AND f.CommentID NOT LIKE 'DDE%'
@@ -245,18 +240,23 @@ class Stats_Behavioural extends \NDB_Form
             $center = $row['CenterID'];
             $vl     = $row['VLabel'];
             $value  = intval($row['val']);
-            $c      =& $this->tpl_data['behaviour']['C' . $center];
+
+            $this->tpl_data['behaviour']['C' . $center][$vl]
+                = $this->tpl_data['behaviour']['C' . $center][$vl] ?? [];
+            $c =& $this->tpl_data['behaviour']['C' . $center];
 
             if (array_key_exists('total', $c[$vl])) {
                 $c[$vl]['total'] += $value;
             } else {
                 $c[$vl]['total'] = $value;
             }
+
             if (isset($c['all']['total'])) {
                 $c['all']['total'] += $value;
             } else {
                 $c['all']['total'] = $value;
             }
+
             if ($row['Data_Entry'] == 'Complete') {
                 if (isset($c[$vl]['complete'])) {
                     $c[$vl]['complete'] += $value;
@@ -270,6 +270,7 @@ class Stats_Behavioural extends \NDB_Form
                 }
             }
             if (!empty($c) && is_array($c)) {
+
                 if ($c[$vl]['total'] != 0) {
                     if (isset($c[$vl]['complete'])) {
                         $c[$vl]['percent']
@@ -278,11 +279,14 @@ class Stats_Behavioural extends \NDB_Form
                         $c[$vl]['percent'] = 0;
                     }
                 }
-                if ($c['all']['total'] != 0) {
+
+                if (array_key_exists('total', $c['all'])
+                    && $c['all']['total'] != 0
+                ) {
                     if (isset($c['all']['complete'])) {
                         $c['all']['percent']
                             = floor(
-                                intval($c['all']['complete'])
+                                intval($c['all']['complete'] ?? 0)
                                 / $c['all']['total']*100
                             );
                     } else {
@@ -291,6 +295,7 @@ class Stats_Behavioural extends \NDB_Form
                 }
             }
         }
+
         // DDE STATS
         $result = $DB->pselect(
             "SELECT s.CenterID,
@@ -316,18 +321,23 @@ class Stats_Behavioural extends \NDB_Form
             $center = $row['CenterID'];
             $vl     = $row['VLabel'];
             $value  = intval($row['val']);
-            $c      =& $this->tpl_data['dde']['C' . $center];
+
+            $this->tpl_data['dde']['C' . $center][$vl]
+                = $this->tpl_data['dde']['C' . $center][$vl] ?? [];
+            $c =& $this->tpl_data['dde']['C' . $center];
 
             if (array_key_exists('total', $c[$vl])) {
                 $c[$vl]['total'] += $value;
             } else {
                 $c[$vl]['total'] = $value;
             }
+
             if (isset($c['all']['total'])) {
                 $c['all']['total'] += $value;
             } else {
                 $c['all']['total'] = $value;
             }
+
             if ($row['Data_Entry'] == 'Complete') {
                 if (isset($c[$vl]['complete'])) {
                     $c[$vl]['complete'] += $value;
@@ -349,11 +359,13 @@ class Stats_Behavioural extends \NDB_Form
                         $c[$vl]['percent'] = 0;
                     }
                 }
-                if ($c['all']['total'] != 0) {
+                if (array_key_exists('total', $c['all'])
+                    && $c['all']['total'] != 0
+                ) {
                     if (isset($c['all']['complete'])) {
                         $c['all']['percent']
                             = floor(
-                                intval($c['all']['complete'])
+                                intval($c['all']['complete'] ?? 0)
                                 / $c['all']['total'] * 100
                             );
                     } else {

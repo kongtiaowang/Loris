@@ -1,4 +1,6 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+import {TextboxElement, ButtonElement, FormElement} from 'jsx/Form';
 
 /**
  * Open Profile Form
@@ -70,12 +72,22 @@ class OpenProfileForm extends Component {
     };
     this.setState(state);
 
-    $.get(loris.BaseURL + '/candidate_list/validateIDs',
-      {
-        CandID: state.CandID,
-        PSCID: state.PSCID,
-      },
-        function(data) {
+    let url = new URL(loris.BaseURL + '/candidate_list/validateIDs');
+    const params = {CandID: state.CandID, PSCID: state.PSCID};
+    Object.keys(params).forEach(
+      (key) => url.searchParams.append(key, params[key])
+    );
+
+    fetch(url, {
+      method: 'GET',
+    }).then((response) => {
+      if (!response.ok) {
+        console.error(response.status);
+        return;
+      }
+
+      response.text().then(
+        (data) => {
           // ids are valid, submit accessProfileForm form
           if (data === '1') {
             state.error = {
@@ -83,11 +95,11 @@ class OpenProfileForm extends Component {
               className: 'alert alert-info text-center',
             };
             if (this.props.betaProfileLink) {
-                window.location.href = loris.BaseURL
-                                       + '/candidate_profile/'
-                                       + state.CandID;
+              window.location.href = loris.BaseURL
+                + '/candidate_profile/'
+                + state.CandID;
             } else {
-                window.location.href = loris.BaseURL + '/' + state.CandID;
+              window.location.href = loris.BaseURL + '/' + state.CandID;
             }
           } else {
             // display error message
@@ -97,7 +109,11 @@ class OpenProfileForm extends Component {
             };
           }
           this.setState(state);
-        }.bind(this));
+        }
+      );
+    }).catch((error) => {
+      console.error(error);
+    });
   }
 
   /**
@@ -135,11 +151,13 @@ class OpenProfileForm extends Component {
         <ButtonElement
           name='Open Profile'
           label='Open Profile'
-          onUserInput={this.validateAndSubmit}
         />
         </FormElement>
     );
   }
 }
+OpenProfileForm.propTypes = {
+  betaProfileLink: PropTypes.string,
+};
 
 export default OpenProfileForm;

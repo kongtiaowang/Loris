@@ -105,6 +105,7 @@ class UserTest extends TestCase
      * @var array
      */
     private $_examinerInfo = [0 => ['full_name' => 'John Doe',
+        'userID'      => '1',
         'examinerID'  => 1,
         'radiologist' => 1
     ]
@@ -151,27 +152,51 @@ class UserTest extends TestCase
         ]
     ];
 
-    private $_permInfo     = [0 => ['permID' => 1,
-        'code'        => "superuser",
-        'description' => "superuser description",
-        'categoryID'  => 1
-    ],
+    private $_permInfo = [
+        0 => ['permID' => 1,
+            'code'        => "superuser",
+            'description' => "superuser description",
+            'categoryID'  => 1,
+            'action'      => null,
+            'moduleID'    => null
+        ],
         1 => ['permID' => 2,
             'code'        => "test_permission",
             'description' => "description 1",
-            'categoryID'  => 2
+            'categoryID'  => 2,
+            'action'      => 'View',
+            'moduleID'    => 2
         ],
         2 => ['permID' => 3,
             'code'        => "test_permission2",
             'description' => "description 2",
-            'categoryID'  => 3
+            'categoryID'  => 3,
+            'action'      => 'Edit',
+            'moduleID'    => 5
         ],
         3 => ['permID' => 4,
             'code'        => "test_permission3",
             'description' => "description 3",
-            'categoryID'  => 4
+            'categoryID'  => 4,
+            'action'      => 'View/Create',
+            'moduleID'    => 5
         ]
     ];
+
+    private $_moduleInfo = [
+        0 => [
+            'ID'     => 2,
+            'Name'   => 'candidate_list',
+            'Active' => 'Y',
+        ],
+        1 => [
+            'ID'     => 5,
+            'Name'   => 'timepoint_list',
+            'Active' => 'Y',
+        ],
+
+    ];
+
     private $_userPermInfo = [0 => ['permID' => 1,
         'userID' => 1
     ],
@@ -204,6 +229,7 @@ class UserTest extends TestCase
      * @var User object
      */
     private $_otherUser;
+
     /**
      * NDB_Factory used in tests.
      * Test doubles are injected to the factory object.
@@ -214,13 +240,14 @@ class UserTest extends TestCase
     /**
      * Test double for NDB_Config object
      *
-     * @var \NDB_Config | PHPUnit_Framework_MockObject_MockObject
+     * @var \NDB_Config&PHPUnit\Framework\MockObject\MockObject
      */
     private $_configMock;
+    private $_mockConfig;
     /**
      * Test double for Database object
      *
-     * @var \Database | PHPUnit_Framework_MockObject_MockObject
+     * @var \Database&PHPUnit\Framework\MockObject\MockObject
      */
     private $_dbMock;
     /**
@@ -231,20 +258,10 @@ class UserTest extends TestCase
      *       This can be changed when the rest of the User class updates how it
      *       declares its database. - Alexandra Livadas
      *
-     * @var \Database | PHPUnit_Framework_MockObject_MockObject
+     * @var \Database | PHPUnit\Framework\MockObject\MockObject
      */
     private $_mockDB;
-    /**
-     * Test double for Database object for hasLoggedIn method
-     *
-     * @note This is needed for User::hasLoggedIn because it declares and uses
-     *       the database differently than other methods in the User class.
-     *       This can be changed when the rest of the User class updates how it
-     *       declares its database. - Alexandra Livadas
-     *
-     * @var NDB_Factory
-     */
-    private $_mockFactory;
+
     /**
      * Maps config names to values
      * Used to set behaviour of NDB_Config test double
@@ -262,22 +279,17 @@ class UserTest extends TestCase
         parent::setUp();
         $this->_factory = \NDB_Factory::singleton();
         $this->_factory->reset();
-        $this->_factory->setTesting(false);
         $this->_configMock = $this->_factory->Config(CONFIG_XML);
-        $database          = $this->_configMock->getSetting('database');
-        $this->_dbMock     = \Database::singleton(
-            $database['database'],
-            $database['username'],
-            $database['password'],
-            $database['host'],
-            true
-        );
+        $this->_dbMock     = $this->_factory->database();
 
-        $this->_mockConfig  = $this->getMockBuilder('NDB_Config')->getMock();
-        $this->_mockDB      = $this->getMockBuilder('Database')->getMock();
-        $this->_mockFactory = \NDB_Factory::singleton();
-        $this->_mockFactory->setDatabase($this->_mockDB);
-        $this->_factory->setConfig($this->_mockConfig);
+        $mockconfig = $this->getMockBuilder('NDB_Config')->getMock();
+        $mockdb     = $this->getMockBuilder('Database')->getMock();
+
+        '@phan-var \Database $mockdb';
+        '@phan-var \NDB_Config $mockconfig';
+
+        $this->_mockDB     = $mockdb;
+        $this->_mockConfig = $mockconfig;
 
         $this->_userInfoComplete       = $this->_userInfo;
         $this->_userInfoComplete['ID'] = '1';
@@ -300,6 +312,7 @@ class UserTest extends TestCase
         $this->_userInfo['Password_hash']         = $passwordHash;
         $this->_userInfoComplete['Password_hash'] = $passwordHash;
 
+        $this->_setUpTestDoublesForFactoryUser();
         $this->_user = \User::factory(self::USERNAME);
     }
 
@@ -309,9 +322,10 @@ class UserTest extends TestCase
      *
      * @return void
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
+        $this->_factory->database()->closeConnection();
         $this->_factory->reset();
     }
 
@@ -327,7 +341,6 @@ class UserTest extends TestCase
      */
     public function testFactoryRetrievesUserInfo()
     {
-        $this->_setUpTestDoublesForFactoryUser();
         $this->_user = \User::factory(self::USERNAME);
         //validate _user Info
         $this->assertEquals($this->_userInfoComplete, $this->_user->getData());
@@ -545,7 +558,7 @@ class UserTest extends TestCase
     public function testHasCenterWhenTrue()
     {
         $this->_user = \User::factory(self::USERNAME);
-        $this->assertTrue($this->_user->hasCenter(4));
+        $this->assertTrue($this->_user->hasCenter(new CenterID("4")));
     }
 
     /**
@@ -557,7 +570,7 @@ class UserTest extends TestCase
     public function testHasCenterWhenFalse()
     {
         $this->_user = \User::factory(self::USERNAME);
-        $this->assertFalse($this->_user->hasCenter(5));
+        $this->assertFalse($this->_user->hasCenter(new CenterID("5")));
     }
 
     /**
@@ -569,7 +582,7 @@ class UserTest extends TestCase
     public function testHasProjectWhenTrue()
     {
         $this->_user = \User::factory(self::USERNAME);
-        $this->assertTrue($this->_user->hasProject(3));
+        $this->assertTrue($this->_user->hasProject(new \ProjectID("3")));
     }
 
     /**
@@ -581,7 +594,7 @@ class UserTest extends TestCase
     public function testHasProjectWhenFalse()
     {
         $this->_user = \User::factory(self::USERNAME);
-        $this->assertFalse($this->_user->hasProject(5));
+        $this->assertFalse($this->_user->hasProject(new \ProjectID("5")));
     }
 
     /**
@@ -610,6 +623,7 @@ class UserTest extends TestCase
         $newUserInfo           = $this->_userInfo;
         $newUserInfo['ID']     = 2;
         $newUserInfo['UserID'] = '968776';
+        $newUserInfo['Email']  = 'notjohn.doe@mcgill.ca';
         \User::insert($newUserInfo);
         $this->_otherUser = \User::factory('968776');
         $this->assertEquals('968776', $this->_otherUser->getUsername());
@@ -623,6 +637,14 @@ class UserTest extends TestCase
      */
     public function testUpdate()
     {
+        // Insert the user so that it can be updated.
+        $newUserInfo           = $this->_userInfo;
+        $newUserInfo['ID']     = 2;
+        $newUserInfo['UserID'] = '968776';
+        $newUserInfo['Email']  = 'notjohn.doe@mcgill.ca';
+        \User::insert($newUserInfo);
+
+        // Test the update.
         $this->_otherUser = \User::factory('968776');
         $newInfo          = ['ID' => '3'];
         $this->_otherUser->update($newInfo);
@@ -645,7 +667,12 @@ class UserTest extends TestCase
         $passwordExpired = true;
 
         // Cause usePwnedPasswordsAPI config option to return false.
-        $this->_mockConfig->expects($this->any())
+        $mockConfig = &$this->_mockConfig;
+
+        $this->_factory->setConfig($mockConfig);
+
+        '@phan-var \PHPUnit\Framework\MockObject\MockObject $mockConfig';
+        $mockConfig->expects($this->any())
             ->method('settingEnabled')
             ->willReturn(false);
 
@@ -680,9 +707,13 @@ class UserTest extends TestCase
             ->method('settingEnabled')
             ->willReturn(false);
 
+        $mockConfig = &$this->_mockConfig;
+        $this->_factory->setConfig($mockConfig);
+
         $this->_user->updatePassword(
             new \Password(\Utility::randomString(16))
         );
+
         //Re-populate the user object now that the password has been changed
         $this->_user = \User::factory(self::USERNAME);
 
@@ -702,11 +733,12 @@ class UserTest extends TestCase
         $this->_user = \User::factory(self::USERNAME);
         $count       = 1;
         $this->_mockDB->expects($this->any())
-            ->method('pselectOne')
+            ->method('pselectOneInt')
             ->with(
                 $this->stringContains("FROM user_login_history")
             )
             ->willReturn($count);
+        $this->_factory->setDatabase($this->_mockDB);
 
         $this->assertTrue($this->_user->hasLoggedIn());
     }
@@ -723,7 +755,7 @@ class UserTest extends TestCase
         $this->_user = \User::factory(self::USERNAME);
         $count       = 0;
         $this->_mockDB->expects($this->any())
-            ->method('pselectOne')
+            ->method('pselectOneInt')
             ->with(
                 $this->stringContains("FROM user_login_history")
             )
@@ -835,6 +867,7 @@ class UserTest extends TestCase
             ->willReturn([1, 2]);
         $mockUser->expects($this->once())->method("getProjectIDs")
             ->willReturn([1, 3]);
+        '@phan-var \User $mockUser';
         $this->assertTrue($this->_user->isAccessibleBy($mockUser));
     }
 
@@ -853,6 +886,8 @@ class UserTest extends TestCase
             ->willReturn([2, 2]);
         $mockUser->expects($this->once())->method("getProjectIDs")
             ->willReturn([4, 4]);
+        '@phan-var \User $mockUser';
+
         $this->assertFalse($this->_user->isAccessibleBy($mockUser));
     }
 
@@ -1085,22 +1120,42 @@ class UserTest extends TestCase
             "permissions_category",
             $this->_categoryInfo
         );
+        $this->_dbMock->setFakeTableData(
+            "modules",
+            $this->_moduleInfo
+        );
+
+        $loris = new \LORIS\LorisInstance(
+            $this->_dbMock,
+            new \NDB_Config(),
+            [__DIR__ . "/../../modules"],
+        );
         $this->assertEquals(
-            $this->_user->getPermissionsVerbose(),
-            [0 => ['permID' => '1',
-                'code'        => "superuser",
-                'description' => "superuser description",
-                'type'        => "superuser category"
-            ],
-                1 => ['permID' => '2',
+            $this->_user->getPermissionsVerbose($loris),
+            [
+                0 => ['permID' => '2',
                     'code'        => "test_permission",
                     'description' => "description 1",
-                    'type'        => "category 1"
+                    'type'        => "category 1",
+                    'action'      => "View",
+                    'moduleID'    => '2',
+                    'label'       => "Access Profile: View description 1"
                 ],
-                2 => ['permID' => '3',
+                1 => ['permID' => '3',
                     'code'        => "test_permission2",
                     'description' => "description 2",
-                    'type'        => "category 2"
+                    'type'        => "category 2",
+                    'action'      => "Edit",
+                    'moduleID'    => '5',
+                    'label'       => "Timepoint List: Edit description 2"
+                ],
+                2 => ['permID' => '4',
+                    'code'        => 'test_permission3',
+                    'description' => 'description 3',
+                    'type'        => null,
+                    'action'      => 'View/Create',
+                    'moduleID'    => '5',
+                    'label'       => 'Timepoint List: View/Create description 3'
                 ]
             ]
         );
@@ -1117,7 +1172,12 @@ class UserTest extends TestCase
     {
         $this->_user = \User::factory(self::USERNAME);
         $this->_setPermissions();
-        $this->assertTrue($this->_user->hasCenterPermission("test", 1));
+        $this->assertTrue(
+            $this->_user->hasCenterPermission(
+                "test_permission",
+                new CenterID("1"),
+            )
+        );
     }
 
     /**
@@ -1133,7 +1193,12 @@ class UserTest extends TestCase
         $this->_user = \User::factory(self::USERNAME);
         $this->_setPermissions();
         $this->_user->removePermissions([1]);
-        $this->assertTrue($this->_user->hasCenterPermission("test_permission", 1));
+        $this->assertTrue(
+            $this->_user->hasCenterPermission(
+                "test_permission",
+                new \CenterID("1"),
+            )
+        );
     }
 
     /**
@@ -1149,7 +1214,12 @@ class UserTest extends TestCase
         $this->_user = \User::factory(self::USERNAME);
         $this->_setPermissions();
         $this->_user->removePermissions([1, 3]);
-        $this->assertFalse($this->_user->hasCenterPermission("test_permission2", 1));
+        $this->assertFalse(
+            $this->_user->hasCenterPermission(
+                "test_permission2",
+                new \CenterID("1"),
+            )
+        );
     }
 
     /**
@@ -1165,7 +1235,12 @@ class UserTest extends TestCase
         $this->_user = \User::factory(self::USERNAME);
         $this->_setPermissions();
         $this->_user->removePermissions([1]);
-        $this->assertFalse($this->_user->hasCenterPermission("test_permission", 2));
+        $this->assertFalse(
+            $this->_user->hasCenterPermission(
+                "test_permission",
+                new \CenterID("2"),
+            )
+        );
     }
 
     /**

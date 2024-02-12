@@ -1,6 +1,7 @@
 <?php declare(strict_types=1);
 
 define("DEBUG", false);
+use \Psr\Log\LoggerAwareInterface;
 
 /**
  * Database abstraction layer presents a unified interface to database
@@ -12,12 +13,17 @@ define("DEBUG", false);
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
-class Database
+class Database implements LoggerAwareInterface
 {
+    use \Psr\Log\LoggerAwareTrait;
+
     /**
-     * The database handle, created by the connect() method
+     * The database handle, created by the connect() method.
+     * This *MUST* be private to ensure close deletes the
+     * last (only) reference to it, which is how connections
+     * are closed in PDO
      *
-     * @var    PDO
+     * @var    ?PDO
      * @access private
      */
     var $_PDO = null;
@@ -38,8 +44,6 @@ class Database
      */
     var $lastInsertID;
 
-    var $_showQueries = false;
-
     var $_trackChanges = true;
 
     var $_preparedStoreHistory;
@@ -52,69 +56,51 @@ class Database
     private $_databaseName = '';
 
     /**
+     * Constructor must be public for unit tests to pass, but this should not
+     * be used directly. References should only be retrieved via the LorisInstance
+     * object.
+     */
+    public function __construct()
+    {
+        // Begins with a PSR NullLogger because we don't know the appropriate
+        // level until after the database connection is established for NDB_Config,
+        // NDB_Factory will set an appropriate ApacheLogger after the fact.
+        $this->setLogger(new \Psr\Log\NullLogger);
+    }
+
+    /**
      * Singleton design pattern implementation - creates the object
      * and also connects to the database if necessary.
-     * NOTE There is no return type declaration for this function as it returns
-     * the type `Database` which is not supported by PHPs built in return types.
+     *
+     * To avoid credentials being displayed in stack traces,
+     * credentials must be passed in environment variables.
+     *
+     * The caller must ensure there are variables named
+     * LORIS_$dbname_USERNAME, LORIS_$dbname_PASSWORD, and
+     * LORIS_$dbname_HOST with their respective values. This
+     * is usually done by NDB_Factory.
      *
      * @param string $database     the database to select
-     * @param string $username     the username with which to log into
-     *                             the database server
-     * @param string $password     the password that matches the username
-     * @param string $host         the name of the database server
      * @param bool   $trackChanges boolean determining if changes should be
      *                             logged to the history table
      *
-     * @return \Database
-     * @throws \DatabaseException
-     * @access public
+     * @return     \Database
+     * @throws     \DatabaseException
+     * @access     public
+     * @deprecated
      */
-    static function &singleton(
-        string $database     = '',
-        string $username     = '',
-        string $password     = '',
-        string $host         = '',
+    static function singleton(
+        string $database,
         bool $trackChanges = true
     ): \Database {
-
-        static $connections = [];
-
-        // if no arguments, try to get the first connection or choke
-        if (empty($database)
-            && empty($username)
-            && empty($password)
-            && empty($host)
-        ) {
-            if (!empty($connections)) {
-                reset($connections);
-                $connection = current($connections);
-                return $connection;
-            } else {
-                throw new DatabaseException("No database connection exists");
-            }
-        } else {
-            // name the connection.
-            if ($trackChanges) {
-                $connection = md5($database.$host.$username.$password.'yep');
-            } else {
-                $connection = md5($database.$host.$username.$password.'nope');
-            }
-
-            // create the connection if none exists
-            if (empty($connections[$connection])) {
-                $connections[$connection] = new Database;
-                $connections[$connection]->connect(
-                    $database,
-                    $username,
-                    $password,
-                    $host,
-                    $trackChanges
-                );
-            }
-
-            // return the connection
-            return $connections[$connection];
-        }
+        // We don't have access to $this->logger since it's a static function,
+        // so we need to use error_log() instead of $this->logger->warning().
+        error_log(
+            "Database::singleton is deprecated. "
+            . "Use the getDatabaseConnection method from your LorisInstance"
+            . " object instead."
+        );
+        return \NDB_Factory::singleton()->database();
     }
 
     /**
@@ -122,24 +108,20 @@ class Database
      * desired database.  the connection is stored in the Database
      * object, and should never be accessed directly by the user.
      *
-     * @param string      $database     the database to select
-     * @param string|null $username     the username with which to log into
-     *                                  the database server
-     * @param string|null $password     the password that matches the username
-     * @param string|null $host         the name of the database server
-     * @param bool        $trackChanges whether to use the trackChanges
-     *                                  mechanism on this connection
+     * @param string $database     the database to select
+     * @param bool   $trackChanges whether to use the trackChanges
+     *                             mechanism on this connection
      *
      * @return bool True if DB connection established. False otherwise.
      * @access public
      */
     function connect(
         string $database,
-        ?string $username,
-        ?string $password,
-        ?string $host,
         bool $trackChanges = true
     ): bool {
+        $username = getenv("LORIS_{$database}_USERNAME");
+        $password = getenv("LORIS_{$database}_PASSWORD");
+        $host     = getenv("LORIS_{$database}_HOST");
 
         $this->_trackChanges = $trackChanges;
         $this->_databaseName = $database;
@@ -149,7 +131,6 @@ class Database
 
         if (class_exists('NDB_Config')) {
             $config =& NDB_Config::singleton();
-            $this->_showQueries = $config->getSetting('showDatabaseQueries');
 
             // get history database from config
             $dbsettings = $config->getSetting("database");
@@ -177,7 +158,7 @@ class Database
                 . "and the supplied password."
             );
         }
-        $this->_PDO->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
+        $this->_PDO->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $this->_PDO->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 
         $this->_preparedStoreHistory = $this->_PDO->prepare(
@@ -221,9 +202,8 @@ class Database
      * Determines whether the database connection is alive
      *
      * @return bool
-     * @access public
      */
-    function isConnected(): bool
+    public function isConnected(): bool
     {
         try {
             if (!$this->_PDO) {
@@ -231,7 +211,7 @@ class Database
             }
             $this->_PDO->query("SELECT 'x'");
             return true;
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             return false;
         }
     }
@@ -242,8 +222,8 @@ class Database
      * This will insert a row. HTML from any field in the row will be automatically
      * escaped to avoid injection.
      *
-     * @param string               $table the table into which to insert the row
-     * @param array<string,string> $set   the values with which to fill the new row
+     * @param string              $table the table into which to insert the row
+     * @param array<string,mixed> $set   the values with which to fill the new row
      *
      * @return void
      */
@@ -259,8 +239,8 @@ class Database
      * automatically escaped. This should only be called when we know the source of
      * the input is trustworthy and must contain HTML.
      *
-     * @param string               $table the table into which to insert the row
-     * @param array<string,string> $set   the values with which to fill the new row
+     * @param string              $table the table into which to insert the row
+     * @param array<string,mixed> $set   the values with which to fill the new row
      *
      * @return void
      */
@@ -275,8 +255,8 @@ class Database
      * This will insert a row. HTML from any field in the row will be automatically
      * escaped to avoid injection.
      *
-     * @param string               $table the table into which to insert the row
-     * @param array<string,string> $set   the values with which to fill the new row
+     * @param string              $table the table into which to insert the row
+     * @param array<string,mixed> $set   the values with which to fill the new row
      *
      * @return void
      */
@@ -293,8 +273,8 @@ class Database
      * value for any unique key, the row where the duplicate is present will be
      * updated.
      *
-     * @param string               $table the table into which to insert the row
-     * @param array<string,string> $set   the values with which to fill the row
+     * @param string              $table the table into which to insert the row
+     * @param array<string,mixed> $set   the values with which to fill the row
      *
      * @return bool
      */
@@ -311,8 +291,8 @@ class Database
      * value for any unique key, the row where the duplicate is present will be
      * updated. HTML from any field in the row will *not* be automatically escaped.
      *
-     * @param string               $table the table into which to insert the row
-     * @param array<string,string> $set   the values with which to fill the row
+     * @param string              $table the table into which to insert the row
+     * @param array<string,mixed> $set   the values with which to fill the row
      *
      * @return bool
      */
@@ -333,9 +313,9 @@ class Database
      *
      * This function alone does not guarantee safety.
      *
-     * @param array<string,string> $set The array to be inserted as a new row
+     * @param array<string,mixed> $set The array to be inserted as a new row
      *
-     * @return array<string,string> A copy of $set with the HTML characters escaped
+     * @return array<string,mixed> A copy of $set with the HTML characters escaped
      */
     private function _HTMLEscapeArray(array $set): array
     {
@@ -349,8 +329,13 @@ class Database
                 $retVal[$key] = '';
                 continue;
             }
+
             // Only call htmlspecialchars on strings, or else an error occurs.
-            $retVal[$key] = is_string($val) ? htmlspecialchars($val) : $val;
+            //
+            // Use ENT_COMPAT, to ensure the same behaviour between PHP 8.1 and
+            // earlier versions, since the default flags changed in PHP 8.1.
+            $retVal[$key] = is_string($val)
+                ? htmlspecialchars($val, ENT_COMPAT) : $val;
         }
         return $retVal;
     }
@@ -360,21 +345,21 @@ class Database
      *
      * Inserts a single row into the specified table, containing the values specified
      *
-     * @param string               $table             the table into which to
-     *                                                insert the row
-     * @param array<string,string> $set               the values with which to
-     *                                                fill the new row
-     * @param bool                 $autoescape        determines whether the
-     *                                                values to be set
-     *                                                should automatically
-     *                                                have the html escaped
-     * @param bool                 $ignore            determines whether the insert
-     *                                                throws an
-     *                                                error or is discarded
-     *                                                when value exists in DB
-     * @param bool                 $onDuplicateUpdate determines whether the row
-     *                                                should be updated
-     *                                                upon unique key duplication
+     * @param string              $table             the table into which to
+     *                                               insert the row
+     * @param array<string,mixed> $set               the values with which to
+     *                                               fill the new row
+     * @param bool                $autoescape        determines whether the
+     *                                               values to be set
+     *                                               should automatically
+     *                                               have the html escaped
+     * @param bool                $ignore            determines whether the insert
+     *                                               throws an error or is
+     *                                               discarded when value exists
+     *                                               in DB
+     * @param bool                $onDuplicateUpdate determines whether the row
+     *                                               should be updated upon
+     *                                               unique key duplication
      *
      * @return bool
      */
@@ -455,8 +440,8 @@ class Database
      * Replaces into the table such if there already exists a row with
      * the same primary key it will be replaced by the new row
      *
-     * @param string               $table the table into which to insert the row
-     * @param array<string,string> $set   the values with which to fill the new row
+     * @param string              $table the table into which to insert the row
+     * @param array<string,mixed> $set   the values with which to fill the new row
      *
      * @return void
      * @access public
@@ -487,10 +472,10 @@ class Database
      * Updates a single row in the specified table. This will automatically escape
      * any HTML in the data being inserted for security.
      *
-     * @param string               $table   the table into which to insert the row
-     * @param array<string,string> $set     the values with which to fill the new row
-     * @param array<string,string> $i_where the selection filter, joined as a
-     *                                      boolean and
+     * @param string              $table   the table into which to insert the row
+     * @param array<string,mixed> $set     the values with which to fill the new row
+     * @param array<string,mixed> $i_where the selection filter, joined as a
+     *                                     boolean and
      *
      * @return void
      */
@@ -506,11 +491,11 @@ class Database
      * escape and should be used with caution, only when you know you need to
      * insert HTML and know that you can trust it.
      *
-     * @param string               $table   the table into which to insert the row
-     * @param array<string,string> $set     the values with which to fill the
-     *                                      new row
-     * @param array<string,string> $i_where the selection filter, joined as
-     *                                      a boolean and
+     * @param string              $table   the table into which to insert the row
+     * @param array<string,mixed> $set     the values with which to fill the
+     *                                     new row
+     * @param array<string,mixed> $i_where the selection filter, joined as
+     *                                     a boolean and
      *
      * @return void
      */
@@ -528,15 +513,15 @@ class Database
      *
      * Updates a single row in the specified table
      *
-     * @param string               $table      the table into which to insert
-     *                                         the row
-     * @param array<string,string> $set        the values with which to fill
-     *                                         the new row
-     * @param array<string,string> $i_where    the selection filter, joined as
-     *                                         a boolean and
-     * @param bool                 $autoescape determines whether the values to
-     *                                         be set should
-     *                                         automatically have the html escaped
+     * @param string              $table      the table into which to insert
+     *                                        the row
+     * @param array<string,mixed> $set        the values with which to fill
+     *                                        the new row
+     * @param array<string,mixed> $i_where    the selection filter, joined as
+     *                                        a boolean and
+     * @param bool                $autoescape determines whether the values to
+     *                                        be set should
+     *                                        automatically have the html escaped
      *
      * @return bool Always true. An exception should be thrown if something goes
      *              wrong. FIXME This should probably be void.
@@ -553,7 +538,7 @@ class Database
             $set = $this->_HTMLEscapeArray($set);
         }
         /* This is still here to print the easily readable version on
-         * the top of the page when showDatabaseQueries is on. It isn't
+         * the top of the page when debug log level is on. It isn't
          * actually executed. */
         $query  = "UPDATE $table SET ";
         $query .= $this->_implodeWithKeys(', ', $set, 'set_');
@@ -605,24 +590,25 @@ class Database
      *
      * Deletes a single row in the specified table
      *
-     * @param string               $table the table into which to insert the row
-     * @param array<string,string> $where the selection filter, joined as
-     *                                    a boolean and
+     * @param string              $table the table into which to insert the row
+     * @param array<string,mixed> $where the selection filter, joined as
+     *                                   a boolean and
      *
      * @return void
      * @access public
      */
     function delete(string $table, array $where): void
     {
-        $query  = "DELETE FROM $table WHERE ";
-        $where  = $this->_implodeWithKeys(' AND ', $where, 'where_');
-        $query .= $where;
+        $query    = "DELETE FROM $table WHERE ";
+        $wherestr = $this->_implodeWithKeys(' AND ', $where, 'where_');
+        $query   .= $wherestr;
 
         if (DEBUG) {
             fwrite(STDERR, $query."\n");
             return;
         }
 
+        $this->logger->info("Deleted from database with query $query");
         if (preg_match("/=NULL/", $query)) {
             throw new DatabaseException(
                 "NULL values not allowed in a WHERE structure.",
@@ -632,7 +618,7 @@ class Database
 
         // There is no set clause for a delete, so add a fake
         // one.
-        $this->trackChanges($table, [], $where, 'D');
+        $this->trackChanges($table, [], $wherestr, 'D');
 
         $this->_printQuery($query);
         $result = $this->_PDO->exec($query);
@@ -641,7 +627,7 @@ class Database
                 "Database DELETE did not execute successfully."
                 . $this->_createPDOErrorString(),
                 $query,
-                $where
+                $where,
             );
         }
     }
@@ -688,16 +674,15 @@ class Database
      * bindings given.
      *
      * @param PDOStatement         $prepared The prepared statement
-     * @param array<string,string> $params   The values to bind to the statement
+     * @param array<string,mixed>  $params   The values to bind to the statement
      *                                       while executing it
      * @param array<string,string> $options  A list of key=>value pairs.
      *                                       - nofetch : to prevent the
      *                                       fetchAll function to be
-     *                                       excuted. Useful for insert
-     *                                       or update prepared
-     *                                       statements.
+     *                                       executed. Useful for insert
+     *                                       or update prepared statements.
      *
-     * @return array<int,array<string,string>> An array of rows in the format
+     * @return array<int,array<string,mixed>> An array of rows in the format
      *                                  ColName => Value after
      *                                      executing the statement.
      */
@@ -713,11 +698,24 @@ class Database
             throw new DatabaseException($err[2], $prepared->queryString, $params);
         }
 
-        if (!empty($options['nofetch']) && $options['nofetch'] == true) {
+        if (!empty($options['nofetch'])) {
             return [];
         }
 
-        $rows = $prepared->fetchAll(PDO::FETCH_ASSOC);
+        $rows = array_map(
+            function ($row) {
+                $strrow = [];
+                foreach ($row as $key => $val) {
+                    if ($val === null) {
+                        $strrow[$key] = null;
+                    } else {
+                        $strrow[$key] = strval($val);
+                    }
+                }
+                return $strrow;
+            },
+            $prepared->fetchAll(PDO::FETCH_ASSOC)
+        );
         // The fetchAll function will return an empty set if no results are
         // found and FALSE on "failure". We don't expect this case so an
         // exception is thrown.
@@ -730,9 +728,9 @@ class Database
     /**
      * Runs an SQL select statement as a prepared query
      *
-     * @param string               $query  The SQL SELECT query to be run
-     * @param array<string,string> $params Values to use for binding to the
-     *                                     prepared statement
+     * @param string              $query  The SQL SELECT query to be run
+     * @param array<string,mixed> $params Values to use for binding to the
+     *                                    prepared statement
      *
      * @return array<int,array<string,string>> An array of arrays containing
      *                                          the data.
@@ -751,12 +749,12 @@ class Database
      * Runs an SQL select statement as a prepared query and re-indexes
      * the results using the given unique non-nullable key.
      *
-     * @param string               $query     The SQL SELECT query to be run
-     * @param array<string,string> $params    Values to use for binding to the
-     *                                        prepared statement
-     * @param string               $uniqueKey Key to use when re-indexing, this
-     *                                        key must be a single column and
-     *                                        must be unique
+     * @param string              $query     The SQL SELECT query to be run
+     * @param array<string,mixed> $params    Values to use for binding to the
+     *                                       prepared statement
+     * @param string              $uniqueKey Key to use when re-indexing, this
+     *                                       key must be a single column and
+     *                                       must be unique
      *
      * @throws LorisException     If the supplied key is empty or null
      * @throws DatabaseException  If the key is not part of the query itself
@@ -828,11 +826,11 @@ class Database
      * associative array. Automatically adds a limit clause to the query being
      * run for efficiency.
      *
-     * @param string               $query  The SQL SELECT query to be run
-     * @param array<string,string> $params Values to use for binding to prepared
-     *                                     statement
+     * @param string              $query  The SQL SELECT query to be run
+     * @param array<string,mixed> $params Values to use for binding to prepared
+     *                                    statement
      *
-     * @return array<string,string>|null Associative array of form
+     * @return ?array<string,mixed> Associative array of form
      *                              ColumnName => Value for each column in the
      *                              first row of the query, or null.
      *
@@ -854,9 +852,9 @@ class Database
      * column given in the select statement. If multiple columns are given,
      * an error is thrown.
      *
-     * @param string               $query  The SQL SELECT query to be run
-     * @param array<string,string> $params Values to use for binding to prepared
-     *                                     statement
+     * @param string              $query  The SQL SELECT query to be run
+     * @param array<string,mixed> $params Values to use for binding to prepared
+     *                                    statement
      *
      * @throws DatabaseException if the query selected more than one column
      *
@@ -889,12 +887,12 @@ class Database
      * the results using the given unique non-nullable key in the same
      * format as the pselectCol() function.
      *
-     * @param string               $query     The SQL SELECT query to be run
-     * @param array<string,string> $params    Values to use for binding to the
-     *                                        prepared statement
-     * @param string               $uniqueKey Key to use when re-indexing, this
-     *                                        key must be a single column and
-     *                                        must be unique
+     * @param string              $query     The SQL SELECT query to be run
+     * @param array<string,mixed> $params    Values to use for binding to the
+     *                                       prepared statement
+     * @param string              $uniqueKey Key to use when re-indexing, this
+     *                                       key must be a single column and
+     *                                       must be unique
      *
      * @throws LorisException     If the supplied key is empty or null
      * @throws DatabaseException  If the key is not part of the query itself or
@@ -972,9 +970,9 @@ class Database
      * value as a string. The calling code is responsible for doing the relevant
      * validation with respect to the type of the data returned.
      *
-     * @param string               $query  The SQL statement to run
-     * @param array<string,string> $params Values to use for binding in the
-     *                                     prepared statement
+     * @param string              $query  The SQL statement to run
+     * @param array<string,mixed> $params Values to use for binding in the
+     *                                    prepared statement
      *
      * @return ?string A single cell from the database.
      */
@@ -984,15 +982,19 @@ class Database
         if (is_array($result) && count($result)) {
             $result = array_values($result)[0];
         }
-        return $result;
+        if ($result === null) {
+            return null;
+        }
+        return strval($result);
     }
 
     /**
      * Helper function used to select a single cell from the database and convert
      * it to an integer.
      *
-     * @param string   $query  The SQL statement to run
-     * @param string[] $params Values to use for binding in the prepared statement
+     * @param string              $query  The SQL statement to run
+     * @param array<string,mixed> $params Values to use for binding in the
+     *                                    prepared statement
      *
      * @return ?int A cell from the database converted to an integer value. If
      * the query returns a value that cannot be validated as an integer, the
@@ -1012,7 +1014,7 @@ class Database
             return null;
         }
 
-        return $result;
+        return intval($result);
     }
 
     /**
@@ -1129,7 +1131,6 @@ class Database
         string $where,
         string $type = 'U'
     ): void {
-
         // Tracking changes on the history table would result in an
         // infinite loop
         if (!$this->_trackChanges || $table == 'history') {
@@ -1240,7 +1241,7 @@ class Database
     }
 
     /**
-     * Print a query if showDatabaseQueries defined in config file
+     * Logs a query if debug log level is on.
      *
      * @param string                $query  The query to replace
      * @param array<string, string> $params The prepared statement parameters
@@ -1255,15 +1256,10 @@ class Database
      */
     function _printQuery(string $query, array $params = []): void
     {
-        if (!$this->_showQueries) {
-            return;
-        }
         if ($params) {
             $query = str_replace(array_keys($params), array_values($params), $query);
         }
-        print "$this->_databaseName:"
-            . date("j-M-Y G:i:s", time())
-            .": $query<br>\n";
+        $this->logger->debug($query, []);
     }
 
     /**
@@ -1276,8 +1272,8 @@ class Database
      * that test.
      *
      * @param string                $tableName The table name to fake
-     * @param array<string, string> $rowData   An array of data to be inserted into
-     *                                         the fake table.
+     * @param array<string,mixed>[] $rowData   An array of data to be inserted
+     *                                         into the fake table.
      *
      * @return void
      */
@@ -1507,11 +1503,13 @@ class Database
      */
     private function _createPDOErrorString(): string
     {
+        $error = $this->_PDO->errorInfo();
+
         return sprintf(
             "SQLSTATE: %s. ERROR CODE: %s. ERROR MESSAGE: %s",
-            $this->_PDO->errorInfo[0],
-            $this->_PDO->errorInfo[1],
-            $this->_PDO->errorInfo[2]
+            $error[0] ?? '',
+            $error[1] ?? '',
+            $error[2] ?? '',
         );
     }
 
@@ -1583,5 +1581,19 @@ class Database
     public function getArchitecture(): string
     {
         return $this->_getServerVariable('version_comment');
+    }
+
+    /**
+     * Close the database connection.
+     *
+     * @return void
+     */
+    public function closeConnection(): void
+    {
+        $this->_preparedStoreHistory = null;
+
+        $this->_PDO        = null;
+        $this->_HistoryPDO = null;
+
     }
 }

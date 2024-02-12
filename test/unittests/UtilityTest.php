@@ -12,6 +12,8 @@
  */
 require_once __DIR__ . '/../../php/libraries/Utility.class.inc';
 use PHPUnit\Framework\TestCase;
+use \Loris\StudyEntities\Candidate\CandID;
+
 /**
  * Unit tests for Utility class.
  *
@@ -92,12 +94,12 @@ class UtilityTest extends TestCase
      *      by getStageUsingCandID method
      */
     private $_sessionInfo = [
-        ['CandID' => '1',
-            'SubprojectID'  => '2',
+        ['CandID' => '100001',
+            'CohortID'      => '2',
             'Current_stage' => 'Not Started'
         ],
-        ['CandID' => '3',
-            'SubprojectID'  => '4',
+        ['CandID' => '100003',
+            'CohortID'      => '4',
             'Current_stage' => 'Approval'
         ]
     ];
@@ -124,13 +126,13 @@ class UtilityTest extends TestCase
     /**
      * Test double for NDB_Config object
      *
-     * @var \NDB_Config | PHPUnit_Framework_MockObject_MockObject
+     * @var \NDB_Config&PHPUnit\Framework\MockObject\MockObject
      */
     private $_configMock;
     /**
      * Test double for Database object
      *
-     * @var \Database | PHPUnit_Framework_MockObject_MockObject
+     * @var \Database&PHPUnit\Framework\MockObject\MockObject
      */
     private $_dbMock;
 
@@ -139,7 +141,7 @@ class UtilityTest extends TestCase
      *
      * @note Used in the _setMockDB function
      *
-     * @var \NDB_Config | PHPUnit_Framework_MockObject_MockObject
+     * @var \NDB_Config | PHPUnit\Framework\MockObject\MockObject
      */
     private $_mockConfig;
     /**
@@ -147,7 +149,7 @@ class UtilityTest extends TestCase
      *
      * @note Used in the _setMockDB function
      *
-     * @var \Database | PHPUnit_Framework_MockObject_MockObject
+     * @var \Database | PHPUnit\Framework\MockObject\MockObject
      */
     private $_mockDB;
     /**
@@ -168,12 +170,17 @@ class UtilityTest extends TestCase
     {
         parent::setUp();
 
-        $this->_configMock = $this->getMockBuilder('NDB_Config')->getMock();
+        $configMock = $this->getMockBuilder('NDB_Config')->getMock();
+        '@phan-var \NDB_Config $configMock';
+        $this->_configMock = $configMock;
         $this->_dbMock     = $this->getMockBuilder('Database')->getMock();
+
+        $mock = $this->_dbMock;
+        '@phan-var \Database $mock';
 
         $this->_factory = NDB_Factory::singleton();
         $this->_factory->setConfig($this->_configMock);
-        $this->_factory->setDatabase($this->_dbMock);
+        $this->_factory->setDatabase($mock);
     }
 
     /**
@@ -182,7 +189,7 @@ class UtilityTest extends TestCase
      *
      * @return void
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         $this->_factory->reset();
@@ -217,7 +224,7 @@ class UtilityTest extends TestCase
     public function testCalculateAgeFormat($first, $second)
     {
         $this->expectException('\LorisException');
-        $array = Utility::calculateAge($first, $second);
+        Utility::calculateAge($first, $second);
     }
 
     /**
@@ -243,7 +250,7 @@ class UtilityTest extends TestCase
      */
     public function testGetConsentList()
     {
-        $this->_dbMock->expects($this->at(0))
+        $this->_dbMock->expects($this->any())
             ->method('pselectWithIndexKey')
             ->willReturn($this->_consentInfo);
         $this->assertEquals($this->_consentInfo, Utility::getConsentList());
@@ -257,7 +264,7 @@ class UtilityTest extends TestCase
      */
     public function testGetProjectList()
     {
-        $this->_dbMock->expects($this->at(0))
+        $this->_dbMock->expects($this->any())
             ->method('pselectColWithIndexKey')
             ->willReturn($this->_projectInfo);
         $this->assertEquals(
@@ -270,42 +277,42 @@ class UtilityTest extends TestCase
     }
 
     /**
-     * Test that getSubprojectList() returns a list of subprojects from the database
+     * Test that getCohortList() returns a list of cohorts from the database
      *
-     * @covers Utility::getSubprojectList
+     * @covers Utility::getCohortList
      * @return void
      */
-    public function testGetSubprojectList()
+    public function testGetCohortList()
     {
         $this->_dbMock->expects($this->any())
             ->method('pselect')
             ->willReturn(
                 [
-                    ['SubprojectID' => '1',
-                        'title'        => 'subproject1'
+                    ['CohortID' => '1',
+                        'title'    => 'cohort1'
                     ],
-                    ['SubprojectID' => '2',
-                        'title'        => 'subproject2'
+                    ['CohortID' => '2',
+                        'title'    => 'cohort2'
                     ]
                 ]
             );
 
         $this->assertEquals(
-            ['1' => 'subproject1',
-                '2' => 'subproject2'
+            ['1' => 'cohort1',
+                '2' => 'cohort2'
             ],
-            Utility::getSubprojectList()
+            Utility::getCohortList()
         );
     }
 
     /**
-     * Test that getSubprojectList() returns the correct subproject
+     * Test that getCohortList() returns the correct cohort
      * when a ProjectID is specified
      *
-     * @covers Utility::getSubprojectList
+     * @covers Utility::getCohortList
      * @return void
      */
-    public function testGetSubprojectListWithProjectID()
+    public function testGetCohortListWithProjectID()
     {
         /**
          * The 'with' assertion is included to check that the mySQL query changes
@@ -315,65 +322,65 @@ class UtilityTest extends TestCase
             ->method('pselect')
             ->with(
                 $this->stringContains(
-                    "JOIN project_subproject_rel USING (SubprojectID)"
+                    "JOIN project_cohort_rel USING (CohortID)"
                 )
             )
             ->willReturn(
                 [
-                    ['SubprojectID' => '123',
-                        'title'        => 'DemoProject'
+                    ['CohortID' => '123',
+                        'title'    => 'DemoProject'
                     ]
                 ]
             );
 
         $this->assertEquals(
             ['123' => 'DemoProject'],
-            Utility::getSubprojectList(123)
+            Utility::getCohortList(new ProjectID("123"))
         );
     }
 
     /**
-     * Test that getSubprojectsForProject calls getSubprojectList and
+     * Test that getCohortsForProject calls getCohortList and
      * returns the same information as the test above
      *
      * @return void
-     * @covers Utility::getSubprojectsForProject
+     * @covers Utility::getCohortsForProject
      */
-    public function testGetSubprojectsForProject()
+    public function testGetCohortsForProject()
     {
         $this->_dbMock->expects($this->any())
             ->method('pselect')
             ->with(
                 $this->stringContains(
-                    "JOIN project_subproject_rel USING (SubprojectID)"
+                    "JOIN project_cohort_rel USING (CohortID)"
                 )
             )
             ->willReturn(
                 [
-                    ['SubprojectID' => '123',
-                        'title'        => 'DemoProject'
+                    ['CohortID' => '123',
+                        'title'    => 'DemoProject'
                     ]
                 ]
             );
 
         $this->assertEquals(
             ['123' => 'DemoProject'],
-            Utility::getSubprojectsForProject(123)
+            Utility::getCohortsForProject(new \ProjectID("123"))
         );
     }
 
     /**
-     * Test that getSubprojectsForProject returns an empty array
+     * Test that getCohortsForProject returns an empty array
      * if no project ID is given
      *
      * @return void
-     * @covers Utility::getSubprojectsForProject
+     * @covers Utility::getCohortsForProject
      */
-    public function testGetSubprojectsForProjectWithoutID()
+    public function testGetCohortsForProjectWithoutID()
     {
         $this->assertEquals(
             [],
-            Utility::getSubprojectsForProject()
+            Utility::getCohortsForProject()
         );
     }
 
@@ -495,26 +502,7 @@ class UtilityTest extends TestCase
 
         $this->assertEquals(
             'Not Started',
-            Utility::getStageUsingCandID('1')
-        );
-    }
-
-    /**
-     * Test that getSubprojectIDUsingCandID() returns
-     * the correct SubprojectID given the CandID
-     *
-     * @covers Utility::getSubprojectIDUsingCandID
-     * @return void
-     */
-    public function testGetSubprojectIDUsingCandID()
-    {
-        $this->_dbMock->expects($this->any())
-            ->method('pselect')
-            ->willReturn($this->_sessionInfo);
-
-        $this->assertEquals(
-            '2',
-            Utility::getSubprojectIDUsingCandID('1')
+            Utility::getStageUsingCandID(new CandID('100001'))
         );
     }
 
@@ -533,12 +521,12 @@ class UtilityTest extends TestCase
             ->willReturn(
                 [
                     ['Visit_label' => 'VL1',
-                        'CandID'      => '1',
+                        'CandID'      => '100001',
                         'CenterID'    => '2',
                         'Active'      => 'Y'
                     ],
                     ['Visit_label' => 'VL2',
-                        'CandID'      => '3',
+                        'CandID'      => '100003',
                         'CenterID'    => '4',
                         'Active'      => 'Y'
                     ]
@@ -585,7 +573,7 @@ class UtilityTest extends TestCase
 
         $this->assertEquals(
             ['VL1' => 'VL1'],
-            Utility::getVisitList(1)
+            Utility::getVisitList(new \ProjectID("1"))
         );
     }
 
@@ -621,52 +609,15 @@ class UtilityTest extends TestCase
     {
 
         $this->_dbMock->expects($this->any())
-            ->method('pselect')
+            ->method('pselectColWithIndexKey')
             ->willReturn(
                 [
-                    ['Test_name_display' => 'display1',
-                        'TestName'          => 'name1',
-                        'Visit_label'       => 'V1'
-                    ]
+                    'name1' => 'display1'
                 ]
             );
 
         $this->assertEquals(
-            [0 => ['Test_name_display' => 'display1',
-                'TestName'          => 'name1',
-                'Visit_label'       => 'V1'
-            ]
-            ],
-            Utility::getVisitInstruments('V1')
-        );
-    }
-
-    /**
-     * Test an edge case of getVisitInstruments() where there is no
-     * 'Test_name_display' column in the given table
-     *
-     * @covers Utility::getVisitInstruments
-     * @return void
-     */
-    public function testGetVisitInstrumentsWithoutTestNameDisplay()
-    {
-
-        $this->_dbMock->expects($this->any())
-            ->method('pselect')
-            ->willReturn(
-                [
-                    ['Full_name' => 'display1',
-                        'TestName'    => 'name1',
-                        'Visit_label' => 'V1'
-                    ]
-                ]
-            );
-
-        $this->assertEquals(
-            [0 => ['Full_name' => 'display1',
-                'TestName'    => 'name1',
-                'Visit_label' => 'V1'
-            ]
+            ['name1' => 'display1'
             ],
             Utility::getVisitInstruments('V1')
         );
@@ -825,7 +776,7 @@ class UtilityTest extends TestCase
      */
     public function testGetSourcefieldsWithInstrumentSpecified()
     {
-        $this->_dbMock->expects($this->at(0))
+        $this->_dbMock->expects($this->any())
             ->method('pselect')
             ->with($this->stringContains("AND sourcefrom = :sf"))
             ->willReturn(
@@ -882,7 +833,7 @@ class UtilityTest extends TestCase
      */
     public function testGetSourcefieldsWithNameSpecified()
     {
-        $this->_dbMock->expects($this->at(0))
+        $this->_dbMock->expects($this->any())
             ->method('pselectRow')
             ->willReturn(
                 [
@@ -910,7 +861,7 @@ class UtilityTest extends TestCase
      */
     public function testGetSourcefieldsWithAllThreeParameters()
     {
-        $this->_dbMock->expects($this->at(0))
+        $this->_dbMock->expects($this->any())
             ->method('pselect')
             ->with($this->stringContains("AND sourcefrom = :sf"))
             ->willReturn(
@@ -1155,6 +1106,15 @@ class UtilityTest extends TestCase
     public function testToDateDisplayFormat()
     {
         $this->_setMockDB();
+
+        $config = $this->getMockBuilder("\NDB_Config")->getMock();
+        $config->expects($this->any())
+            ->method('getSetting')
+            ->willReturn('Y-m-d H:i:s');
+        '@phan-var \NDB_Config $config';
+
+        $this->_mockFactory->setConfig($config);
+
         $date = "2000-01-01";
         $this->assertEquals(
             "2000-01-01 00:00:00",
@@ -1235,15 +1195,17 @@ class UtilityTest extends TestCase
     {
         $this->_mockFactory = \NDB_Factory::singleton();
         $this->_mockFactory->reset();
-        $this->_mockFactory->setTesting(false);
         $this->_mockConfig = $this->_mockFactory->Config(CONFIG_XML);
         $database          = $this->_mockConfig->getSetting('database');
-        $this->_mockDB     = \Database::singleton(
+        $this->_mockDB     = $this->_mockFactory->database(
             $database['database'],
             $database['username'],
             $database['password'],
             $database['host'],
             true
         );
+
+        $this->_mockFactory->setDatabase($this->_mockDB);
+        $this->_mockFactory->setConfig($this->_mockConfig);
     }
 }

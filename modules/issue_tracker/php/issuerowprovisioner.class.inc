@@ -30,25 +30,33 @@ namespace LORIS\issue_tracker;
  */
 class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
 {
-    private $_siteList;
+    private array $allCenterIDs;
 
     /**
      * Create a IssueRowProvisioner, which gets rows for the issues menu table.
+     *
+     * @param \LORIS\LorisInstance $loris the LORIS instance with the issues
      */
-    function __construct()
+    function __construct(protected \LORIS\LorisInstance $loris)
     {
-        $factory         = \NDB_Factory::singleton();
-        $user            = $factory->user();
-        $this->_siteList = array_keys(\Utility::getSiteList(false));
-        $userID          = $user->getUsername();
+        $factory = \NDB_Factory::singleton();
+        $user    = $factory->user();
+        $this->allCenterIDs = array_map(
+            function ($center) {
+                return $center->getCenterID();
+            },
+            $loris->getAllSites()
+        );
+        $userID = $user->getUsername();
+
         //note that this needs to be in the same order as the headers array
         parent::__construct(
             "SELECT i.issueID,
                     i.title,
                     m.name as module,
                     i.category,
-                    i.reporter,
-                    i.assignee,
+                    CONCAT(uReporter.First_name, ' ', uReporter.Last_name),
+                    CONCAT(uAssignee.First_name, ' ', uAssignee.Last_name),
                     i.status,
                     i.priority,
                     i.centerID as centerId,
@@ -70,6 +78,10 @@ class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
               ON (i.issueID = w.issueID AND w.userID=:username)
             LEFT JOIN issues_comments ic
               ON (i.issueID = ic.issueID)
+            JOIN users uReporter
+              ON (i.reporter = uReporter.UserID)
+            LEFT JOIN users uAssignee
+              ON (i.assignee = uAssignee.UserID)
             GROUP BY i.issueID, w.userID
             ORDER BY i.issueID DESC",
             ['username' => $userID]
@@ -92,32 +104,23 @@ class IssueRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisioner
         static $modules = [];
 
         $mname  = $row['module'];
-        $module = new \NullModule();
+        $module = new \NullModule($this->loris);
         if (!empty($mname)) {
             if (!isset($modules[$mname])) {
-                $modules[$mname] = \Module::factory($mname);
+                $modules[$mname] = $this->loris->getModule($mname);
             }
             $module = &$modules[$mname];
         }
 
         if (isset($row['centerId'])) {
             // convert the value from string to int array
-            $cids = [intval($row['centerId'])];
+            $cids = [new \CenterID($row['centerId'])];
 
-            // convert the value from string to string array
-            $row['centerId'] = [$row['centerId']];
         } else {
-            // set $cids to all centersID (int array)
-            $cids = $this->_siteList;
-
-            // set $row['centerId'] to all centersID
-            // Use getCenterIDs and convert values to string (string array)
-            $row['centerId'] = array_map(
-                "strval",
-                $this->_siteList
-            );
+            $cids = $this->allCenterIDs;
         }
 
+        $row['centerId']   = $cids;
         $row['lastUpdate'] = \Utility::toDateDisplayFormat($row['lastUpdate']);
         return new IssueRow($row, $cids, $module);
     }

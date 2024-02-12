@@ -4,9 +4,17 @@ import CommentList from './CommentList';
 import IssueUploadAttachmentForm from './attachments/uploadForm';
 import AttachmentsList from './attachments/attachmentsList';
 import swal from 'sweetalert2';
-
+import Markdown from 'jsx/Markdown';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import {
+  SelectElement,
+  StaticElement,
+  FormElement,
+  TextboxElement,
+  ButtonElement,
+  TextareaElement,
+} from 'jsx/Form';
 
 /**
  * Issue add/edit form
@@ -26,7 +34,7 @@ class IssueForm extends Component {
     super(props);
 
     this.state = {
-      Data: [],
+      Data: {},
       formData: {},
       submissionResult: null,
       errorMessage: null,
@@ -153,6 +161,7 @@ class IssueForm extends Component {
                        baseURL={this.props.baseURL}
                        attachments={this.state.issueData['attachments']}
                        userHasPermission={this.props.userHasPermission}
+                       whoami={this.state.issueData.whoami}
       />
     );
 
@@ -200,12 +209,13 @@ class IssueForm extends Component {
         </div>
       );
 
+      const descr = <Markdown content={this.state.issueData.desc} />;
       description = (
         <StaticElement
           name='description'
           label='Description'
           ref='description'
-          text={this.state.issueData.desc}
+          text={descr}
         />
       );
     }
@@ -242,10 +252,11 @@ class IssueForm extends Component {
             label='Assignee'
             emptyOption={true}
             options={this.state.Data.assignees}
+            disabledOptions={this.state.Data.inactiveUsers}
             onUserInput={this.setFormData}
             disabled={!hasEditPermission}
             value={this.state.formData.assignee}
-            required={true}
+            required={false}
           />
           <SelectElement
             name='centerID'
@@ -323,6 +334,7 @@ class IssueForm extends Component {
             name='othersWatching'
             label='Add others to watching?'
             emptyOption={true}
+            autoSelect={false}
             options={this.state.Data.otherWatchers}
             onUserInput={this.setFormData}
             multiple={true}
@@ -348,55 +360,72 @@ class IssueForm extends Component {
    * Creates an ajax request and sets the state with the result
    */
   getFormData() {
-    $.ajax(this.props.DataURL, {
-      dataType: 'json',
-      success: function(data) {
-        let newIssue = !data.issueData.issueID;
-        let formData = data.issueData;
-        // ensure that if the user is at multiple sites and
-        // its a new issue, the centerID (which is a dropdown)
-        // is set to the empty option instead of an array of
-        // the user's sites.
-        if (newIssue) {
-          formData.centerID = null;
-        } else {
-          // if we edit an issue
-          // a NULL centerID (= All Sites) is converted to the ALL Sites option
-          if (formData.centerID == null) {
-            formData.centerID = 'all';
-          }
-        }
-
-        this.setState({
-          Data: data,
-          isLoaded: true,
-          issueData: data.issueData,
-          formData: formData,
-          isNewIssue: !data.issueData.issueID,
-        });
-      }.bind(this),
-      error: function(err) {
+    fetch(this.props.DataURL, {
+      method: 'GET',
+    }).then((response) => {
+      if (!response.ok) {
+        console.error(response.status);
         this.setState({
           error: 'An error occurred when loading the form!\n Error: ' +
-          err.status + ' (' + err.statusText + ')',
+          response.status + ' (' + response.statusText + ')',
         });
-      }.bind(this),
+        return;
+      }
+
+      response.json().then(
+        (data) => {
+          let newIssue = !data.issueData.issueID;
+          let formData = data.issueData;
+          // ensure that if the user is at multiple sites and
+          // its a new issue, the centerID (which is a dropdown)
+          // is set to the empty option instead of an array of
+          // the user's sites.
+          if (newIssue) {
+            formData.centerID = null;
+            Object.keys(data.inactiveUsers).map((user) => {
+              delete data.assignees[user];
+            });
+            data.inactiveUsers = {};
+          } else {
+            // if we edit an issue
+            // a NULL centerID (= All Sites) is converted to the ALL Sites option
+            if (formData.centerID == null) {
+              formData.centerID = 'all';
+            }
+          }
+
+          this.setState({
+            Data: data,
+            isLoaded: true,
+            issueData: data.issueData,
+            formData: formData,
+            isNewIssue: !data.issueData.issueID,
+          });
+        }
+      );
+    }).catch((error) => {
+      // Network error
+      console.error(error);
+      this.setState({
+        loadError: 'An error occurred when loading the form!',
+      });
     });
   }
 
   /**
-   * Handles form submission
+   * Handles form submission for new issue being created
    *
    * @param {event} e form submit event
    */
   handleSubmit(e) {
     e.preventDefault();
 
-    // Prevent new issue submissions while one is already in progress
-    if (this.state.submissionResult && this.state.isNewIssue) return;
-    this.setState({submissionResult: 'pending'});
-
-    const myFormData = this.state.formData;
+    const state = Object.assign({}, this.state);
+    // issue submissions already in progress
+    if (state.submissionResult && state.isNewIssue) {
+      return;
+    }
+    const myFormData = state.formData;
     const formRefs = this.refs;
     const formData = new FormData();
 
@@ -404,6 +433,9 @@ class IssueForm extends Component {
     if (!this.isValidForm(formRefs, myFormData)) {
       return;
     }
+
+    // Prevent multiple submissions
+    this.setState({submissionResult: 'pending'});
 
     for (let key in myFormData) {
       if (myFormData[key] !== '') {
@@ -415,15 +447,22 @@ class IssueForm extends Component {
       }
     }
 
-    $.ajax({
-      type: 'POST',
-      url: this.props.action,
-      data: formData,
-      cache: false,
-      dataType: 'json',
-      contentType: false,
-      processData: false,
-      success: function(data) {
+    fetch(this.props.action, {
+      method: 'POST',
+      body: formData,
+    }).then((response) => {
+      if (!response.ok) {
+        console.error(response.status);
+        response.json().then((data) => {
+          this.setState({submissionResult: 'error'});
+          let msgType = 'error';
+          const message = data.error ?? data.message;
+          this.showAlertMessage(msgType, message);
+        });
+        return;
+      }
+
+      response.json().then((data) => {
         let msgType = 'success';
         let message = this.state.isNewIssue ?
           'You will be redirected to main page in 2 seconds!' :
@@ -433,15 +472,14 @@ class IssueForm extends Component {
           submissionResult: 'success',
           issueID: data.issueID,
         });
-      }.bind(this),
-      error: function(err) {
-        console.error(err);
-        this.setState({submissionResult: 'error'});
-        let msgType = 'error';
-        let message = err.responseJSON.message || 'Failed to submit issue :(';
-
-        this.showAlertMessage(msgType, message);
-      }.bind(this),
+      });
+    }).catch((error) => {
+      // Network error
+      console.error(error);
+      this.setState({submissionResult: 'error'});
+      let msgType = 'error';
+      let message = 'Failed to submit issue :(';
+      this.showAlertMessage(msgType, message);
     });
   }
 
@@ -491,6 +529,7 @@ class IssueForm extends Component {
 
   /**
    * Display a success/error alert message after form submission
+   *
    * @param {string} msgType - error/success message
    * @param {string} message - message content
    */
@@ -533,7 +572,7 @@ class IssueForm extends Component {
       allowOutsideClick: false,
       allowEscapeKey: false,
       showConfirmButton: confirmation,
-    }, callback.bind(this));
+    }).then(callback.bind(this));
   }
 }
 
@@ -542,7 +581,7 @@ IssueForm.propTypes = {
   baseURL: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
   issue: PropTypes.string.isRequired,
-  whoami: PropTypes.string.isRequired,
+  userHasPermission: PropTypes.bool,
 };
 
 export default IssueForm;

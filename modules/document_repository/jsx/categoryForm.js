@@ -1,6 +1,13 @@
 import PropTypes from 'prop-types';
 import Loader from 'Loader';
 import swal from 'sweetalert2';
+import {
+    FormElement,
+    TextboxElement,
+    TextareaElement,
+    SelectElement,
+    ButtonElement,
+} from 'jsx/Form';
 
 /**
  * Document Upload Form
@@ -10,8 +17,7 @@ import swal from 'sweetalert2';
  *
  * @author Shen Wang
  * @version 1.0.0
- *
- * */
+ */
 class DocCategoryForm extends React.Component {
   /**
    * @constructor
@@ -43,7 +49,8 @@ class DocCategoryForm extends React.Component {
 
   /**
    * Fetch data
-   * @return {Promise<void>}
+   *
+   * @return {Promise}
    */
   fetchData() {
     return fetch(this.props.dataURL, {credentials: 'same-origin'})
@@ -107,12 +114,15 @@ class DocCategoryForm extends React.Component {
     );
   }
 
-  /** *******************************************************************************
+  /**
+   * *******************************************************************************
    *                      ******     Helper methods     *******
-   *********************************************************************************/
+   ********************************************************************************
+   */
 
   /**
    * Handle form submission
+   *
    * @param {object} e - Form submission event
    */
   handleSubmit(e) {
@@ -139,8 +149,8 @@ class DocCategoryForm extends React.Component {
       credentials: 'same-origin',
       body: formObj,
     })
-    .then((resp) => resp.json())
-    .then(()=>{
+    .then((resp) => {
+      if (resp.ok) {
         this.props.refreshPage();
         this.fetchData();
         // refresh the upload page
@@ -148,7 +158,19 @@ class DocCategoryForm extends React.Component {
         this.setState({
           formData: {}, // reset form data after successful file upload
         });
-        swal.fire('Add Successful!', '', 'success');
+        swal.fire('Category Successfully Added!', '', 'success');
+      } else {
+        resp.json().then((data) => {
+          swal.fire('Could not add category!', data.error, 'error');
+        }).catch((error) => {
+          console.error(error);
+          swal.fire(
+            'Unknown Error!',
+            'Please report the issue or contact your administrator.',
+            'error'
+          );
+        });
+      }
     });
   }
 
@@ -169,6 +191,8 @@ class DocCategoryForm extends React.Component {
 DocCategoryForm.propTypes = {
   dataURL: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
+  refreshPage: PropTypes.func,
+  newCategoryState: PropTypes.func,
 };
 
 export default DocCategoryForm;

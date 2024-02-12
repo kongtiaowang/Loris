@@ -45,6 +45,13 @@ abstract class LorisIntegrationTest extends TestCase
     protected $DB;
     protected $url;
     protected $factory;
+
+    /**
+     * Allows subclasses that don't depend on Selenium to skip the Selenium
+     * WebDriver creation and login. (ie. API tests that use curl instead
+     * of selenium.)
+     */
+    protected $skipSelenium = false;
     /**
      * A valid password to use for login tests.
      */
@@ -59,24 +66,28 @@ abstract class LorisIntegrationTest extends TestCase
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
+        // test
         // Set up database wrapper and config
         $this->factory = NDB_Factory::singleton();
         $this->factory->reset();
-        $this->factory->setTesting(false);
 
         $this->config = $this->factory->Config(CONFIG_XML);
 
         $database = $this->config->getSetting('database');
 
-        $this->DB  = Database::singleton(
+        $this->DB = $this->factory->database(
             $database['database'],
             $database['username'],
             $database['password'],
             $database['host'],
-            1
+            true,
         );
+
+        $this->factory->setDatabase($this->DB);
+        $this->factory->setConfig($this->config);
+
         $this->url = getenv('DOCKER_WEB_SERVER');
         $password  = new \Password($this->validPassword);
 
@@ -130,13 +141,14 @@ abstract class LorisIntegrationTest extends TestCase
                 ['args' => ['-headless']]
             );
         }
+        if ($this->skipSelenium == false) {
+            $this->webDriver = RemoteWebDriver::create(
+                $selenium_url,
+                $desired_capabilities
+            );
 
-        $this->webDriver = RemoteWebDriver::create(
-            $selenium_url,
-            $desired_capabilities
-        );
-
-        $this->login("UnitTester", $this->validPassword);
+            $this->login("UnitTester", $this->validPassword);
+        }
 
         if (extension_loaded('xdebug')
             && function_exists("xdebug_start_code_coverage")
@@ -176,17 +188,7 @@ abstract class LorisIntegrationTest extends TestCase
         $passwordEl->sendKeys($password);
 
         $login = $this->safeFindElement(WebDriverBy::Name("login"));
-        $login->click();
-
-        // Explicitly wait until the page is loaded.
-        // Wait up to a minute, because sometimes when multiple tests
-        // are run one will fail due to the login taking too long?
-        $this->webDriver->wait(120, 1000)->until(
-            WebDriverExpectedCondition::visibilityOfElementLocated(
-                WebDriverBy::xpath("//div[@id='page'] | //input[@name='username']")
-            )
-        );
-
+        $this->clickToLoadNewPage($login);
     }
 
     /**
@@ -196,10 +198,10 @@ abstract class LorisIntegrationTest extends TestCase
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         if (extension_loaded('xdebug')) {
-            $data = xdebug_get_code_coverage();
+            xdebug_get_code_coverage();
             xdebug_stop_code_coverage(false);
         }
 
@@ -298,7 +300,7 @@ abstract class LorisIntegrationTest extends TestCase
             $this->DB->execute(
                 $prepare,
                 ["perm" => $value],
-                ['nofetch' => true]
+                ['nofetch' => "true"]
             );
         }
     }
@@ -381,19 +383,19 @@ abstract class LorisIntegrationTest extends TestCase
     }
 
     /**
-     * Helper function to create a subproject
+     * Helper function to create a cohort
      *
-     * @param string $SubprojectID Name of the subproject
-     * @param string $title        Name of the subproject
+     * @param string $CohortID Name of the cohort
+     * @param string $title    Name of the cohort
      *
      * @return void
      */
-    function createSubproject($SubprojectID, $title)
+    function createCohort($CohortID, $title)
     {
         $this->DB->insert(
-            "subproject",
+            "cohort",
             [
-                "SubprojectID"      => $SubprojectID,
+                "CohortID"          => $CohortID,
                 "title"             => $title,
                 "WindowDifference"  => "optimal",
                 "RecruitmentTarget" => "100",
@@ -402,16 +404,16 @@ abstract class LorisIntegrationTest extends TestCase
     }
 
     /**
-     * Helper function to delete a subproject
+     * Helper function to delete a cohort
      *
-     * @param string $title Name of the subproject
+     * @param string $title Name of the cohort
      *
      * @return void
      */
-    function deleteSubproject($title)
+    function deleteCohort($title)
     {
         $this->DB->delete(
-            "subproject",
+            "cohort",
             [
                 "title"             => $title,
                 "WindowDifference"  => "optimal",
@@ -502,7 +504,6 @@ abstract class LorisIntegrationTest extends TestCase
      */
     function safeGet($url,$waitPeriod=15)
     {
-        $newWebDriver = null;
         // keep a reference from the actual page
         $oldBody = $this->safeFindElement(
             WebDriverBy::xPath(
@@ -579,15 +580,15 @@ abstract class LorisIntegrationTest extends TestCase
         try {
             $webElement->click();
             $clickException = null;
-        } catch(ElementNotVisibleException $e) {
+        } catch (ElementNotVisibleException $e) {
             $clickException = $e;
-        } catch(StaleElementReferenceException $e) {
+        } catch (StaleElementReferenceException $e) {
             $clickException = $e;
         }
 
         if (!is_null($clickException)) {
             if (!$allowJavascriptClick) {
-                throw $e;
+                throw $clickException;
             }
 
             $this->webDriver->executeScript(
@@ -660,8 +661,8 @@ abstract class LorisIntegrationTest extends TestCase
         string $haystack,
         string $jsError= "An error occured while loading the page."
     ): void {
-        $this->assertContains($needle, $haystack);
-        $this->assertNotContains($jsError, $haystack);
+        $this->assertStringContainsString($needle, $haystack);
+        $this->assertStringNotContainsString($jsError, $haystack);
         $this->resetPermissions();
     }
 
@@ -685,10 +686,11 @@ abstract class LorisIntegrationTest extends TestCase
             WebDriverBy::cssSelector("body")
         )->getText();
     }
+
     /**
-     * Testing filter funtion and clear button
+     * Testing filter function and clear button
      *
-     * @param string $element        The input element loaction (css selector)
+     * @param string $element        The input element location (css selector)
      * @param string $row            React Table row number
      * @param string $btn            clear filter button
      * @param string $test_value     The test value
@@ -699,7 +701,6 @@ abstract class LorisIntegrationTest extends TestCase
     function _filterTest($element,$row,$btn,$test_value, $expect_records): void
     {
         // get element from the page
-
         if (strpos($element, "select") === false) {
             $el = $this->safeFindElement(WebDriverBy::cssSelector("$element"));
             $el->sendKeys($test_value);
@@ -709,13 +710,39 @@ abstract class LorisIntegrationTest extends TestCase
             );
             $el_dropdown->selectByVisibleText($test_value);
         }
-            $bodyText = $this->safeFindElement(
-                WebDriverBy::cssSelector("$row")
-            )->getText();
-            // 4 means there are 4 records under this site.
-            $this->assertContains($expect_records, $bodyText);
-            //test clear filter
-            $this->safeFindElement(WebDriverBy::cssSelector("$btn"))->click();
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("$row")
+        )->getText();
+        // 4 means there are 4 records under this site.
+        $this->assertStringContainsString($expect_records, $bodyText);
+        //test clear filter
+        $this->safeClick(WebDriverBy::cssSelector("$btn"));
+    }
+
+    /**
+     * Testing filter function and clear button
+     *
+     * @param string  $element    The input element location (css selector)
+     * @param string  $test_value The test value
+     * @param boolean $contains   Test for presence/absence
+     *
+     * @return void
+     */
+    function _filterOptionsTest($element,$test_value,$contains=true): void
+    {
+        // get element from the page
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("$element")
+        )->getText();
+
+        if (!$contains) {
+            $this->assertThat(
+                $bodyText,
+                $this->logicalNot($this->stringContains($test_value))
+            );
+        } else {
+            $this->assertStringContainsString($test_value, $bodyText);
+        }
     }
 
     /**
@@ -733,7 +760,7 @@ abstract class LorisIntegrationTest extends TestCase
         $this->safeGet($this->url . '/dashboard/');
         $link     =$this->safeFindElement(WebDriverBy::cssSelector($className));
         $bodyText = $link->findElement(WebDriverBy::cssSelector(".huge"))->getText();
-        $this->assertContains($value, $bodyText);
+        $this->assertStringContainsString($value, $bodyText);
         $this->safeClick(WebDriverBy::cssSelector($className));
         $this->webDriver->wait(3, 500)->until(
             WebDriverExpectedCondition::presenceOfElementLocated(
@@ -741,6 +768,6 @@ abstract class LorisIntegrationTest extends TestCase
             )
         );
         $pageSource = $this->webDriver->getPageSource();
-        $this->assertContains($label, $pageSource);
+        $this->assertStringContainsString($label, $pageSource);
     }
 }

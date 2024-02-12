@@ -7,14 +7,13 @@ import FilterableDataTable from 'jsx/FilterableDataTable';
  * Behavioural Feedback Component.
  *
  * @description Behavioural Quality Control 'Behavioural Feedback' tab.
- *
  * @author Alizée Wickenheiser
  * @version 1.0.0
- *
  */
 class BehaviouralFeedback extends Component {
   /**
    * Constructor of component
+   *
    * @param {object} props - the component properties.
    */
   constructor(props) {
@@ -54,7 +53,7 @@ class BehaviouralFeedback extends Component {
           const data = {
             fieldOptions: json.fieldOptions,
             Data: json.data.map((e) => Object.values(e)),
-            subprojects: json.subprojects,
+            cohorts: json.cohorts,
           };
           this.setState({
             data,
@@ -78,7 +77,6 @@ class BehaviouralFeedback extends Component {
    * @param {string} cell - cell content
    * @param {array} rowData - array of cell contents for a specific row
    * @param {array} rowHeaders - array of table headers (column names)
-   *
    * @return {*} a formatted table cell for a given column
    */
   formatColumn(column, cell, rowData, rowHeaders) {
@@ -109,23 +107,32 @@ class BehaviouralFeedback extends Component {
         );
         break;
       case 'Feedback Level':
-        rowData['Instrument'] ? reactElement = (
+        let bvlLink = '';
+        let bvlLevel = '';
+        if (rowData['Instrument']) {
+          bvlLink = this.props.baseURL +
+                     '/instruments/' +
+                     rowData['Test Name'] +
+                     '/?candID=' +
+                     rowData['DCCID'] +
+                     '&sessionID=' +
+                     rowData['sessionID'] +
+                     '&commentID=' +
+                     rowData['commentID'];
+          bvlLevel ='Instrument : ' + rowData['Instrument'];
+        } else if (rowData['Visit']) {
+          bvlLink = this.props.baseURL +
+                     '/instrument_list/' +
+                     '?candID=' +
+                     rowData['DCCID'] +
+                     '&sessionID=' +
+                     rowData['sessionID'];
+          bvlLevel ='Visit : ' + rowData['Visit'];
+        }
+        reactElement = (
           <td>
-            <a href={this.props.baseURL +
-              '/instruments/' +
-              rowData['Test Name'] +
-              '/?candID=' +
-              rowData['DCCID'] +
-              '&sessionID=' +
-              rowData['sessionID'] +
-              '&commentID=' +
-              rowData['commentID']
-              }>
-                {'Instrument : ' + rowData['Instrument']}
-            </a>
+            <a href={bvlLink}>{bvlLevel}</a>
           </td>
-        ) : reactElement = (
-          <td>{''}</td>
         );
         break;
       default:
@@ -137,7 +144,7 @@ class BehaviouralFeedback extends Component {
   }
 
   /**
-   * @return {React} the feedback form to render.
+   * @return {JSX} the feedback form to render.
    */
   render() {
     // Waiting for async data to load.
@@ -193,6 +200,15 @@ class BehaviouralFeedback extends Component {
           name: 'Project',
           type: 'select',
           options: options.projects,
+        },
+      },
+      {
+        label: 'Cohort',
+        show: false,
+        filter: {
+          name: 'Cohort',
+          type: 'select',
+          options: options.cohorts,
         },
       },
       {

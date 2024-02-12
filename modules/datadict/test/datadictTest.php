@@ -2,11 +2,11 @@
 /**
  * Datadict automated integration tests
  *
- * PHP Version 5
+ * PHP Version 8
  *
  * @category Test
  * @package  Loris
- * @author   Ted Strauss <ted.strauss@mcgill.ca>
+ * @author   Shen Wang  <shen.wang2@mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
@@ -21,7 +21,7 @@ require_once __DIR__ .
  *
  * @category Test
  * @package  Loris
- * @author   Ted Strauss <ted.strauss@mcgill.ca>
+ * @author   Shen Wang  <shen.wang2@mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
@@ -41,13 +41,19 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
             'Description'        => '.col-xs-12:nth-child(6) .col-sm-3',
             'Description Status' => '.col-xs-12:nth-child(7) .col-sm-3',
         ];
-
+    //$location: css selector for react items
+    //Filter locations
+    static $pname       = 'input[name="Name"]';
+    static $Description = 'input[name="Description"]';
+    //General locations
+    static $display     = '.table-header > div > div > div:nth-child(1)';
+    static $clearFilter = '.nav-tabs a';
     /**
      * Inserting testing data
      *
      * @return void
      */
-    function setUp()
+    function setUp(): void
     {
         parent::setUp();
         $this->DB->insert(
@@ -69,7 +75,7 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function tearDown()
+    function tearDown(): void
     {
         parent::tearDown();
         $this->DB->delete(
@@ -85,7 +91,7 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
      */
     function testDatadictDoespageLoad()
     {
-        $this->webDriver->get($this->url . "/datadict/");
+        $this->safeGet($this->url . "/datadict/");
 
                 $this->webDriver->wait(120, 1000)->until(
                     WebDriverExpectedCondition::presenceOfElementLocated(
@@ -93,10 +99,18 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
                     )
                 );
 
-                $bodyText = $this->webDriver->findElement(
+                $bodyText = $this->safeFindElement(
                     WebDriverBy::cssSelector("body")
                 )->getText();
-                $this->assertContains("Data Dictionary", $bodyText);
+                $this->assertStringContainsString("Data Dictionary", $bodyText);
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
+            $bodyText
+        );
     }
     /**
      * Testing UI elements when page loads
@@ -110,7 +124,39 @@ class DatadictTestIntegrationTest extends LorisIntegrationTest
             $text = $this->safeFindElement(
                 WebDriverBy::cssSelector($value)
             )->getText();
-            $this->assertContains($key, $text);
+            $this->assertStringContainsString($key, $text);
         }
+    }
+    /**
+     * Tests filter in the form
+     * The form should refreash and the data should be gone.
+     *
+     * @return void
+     */
+    function testFilter()
+    {
+        $this->safeGet($this->url . "/datadict/");
+        //testing data from RBdata.sql
+        $this->_filterTest(
+            self::$pname,
+            self::$display,
+            self::$clearFilter,
+            'candidate',
+            '7 row'
+        );
+        $this->_filterTest(
+            self::$pname,
+            self::$display,
+            self::$clearFilter,
+            'non-user',
+            '0 row'
+        );
+        $this->_filterTest(
+            self::$Description,
+            self::$display,
+            self::$clearFilter,
+            'test',
+            '1 row'
+        );
     }
 }

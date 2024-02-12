@@ -52,10 +52,21 @@ class InstrumentListTestIntegrationTest extends LorisIntegrationTest
             $this->url .
             "/instrument_list/?candID=300001&sessionID=1"
         );
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("Behavioural Battery of Instruments", $bodyText);
+        $this->assertStringContainsString(
+            "Behavioural Battery of Instruments",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
+            $bodyText
+        );
     }
 
     /**
@@ -70,10 +81,13 @@ class InstrumentListTestIntegrationTest extends LorisIntegrationTest
             $this->url .
             "/instrument_list/?candID=300001&sessionID=1"
         );
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("Behavioural Battery of Instruments", $bodyText);
+        $this->assertStringContainsString(
+            "Behavioural Battery of Instruments",
+            $bodyText
+        );
         $this->resetPermissions();
     }
     /**
@@ -88,10 +102,13 @@ class InstrumentListTestIntegrationTest extends LorisIntegrationTest
             $this->url .
             "/instrument_list/?candID=300001&sessionID=1"
         );
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertNotContains("Behavioural Battery of Instruments", $bodyText);
+        $this->assertStringNotContainsString(
+            "Behavioural Battery of Instruments",
+            $bodyText
+        );
         $this->resetPermissions();
     }
     /**
@@ -111,7 +128,7 @@ class InstrumentListTestIntegrationTest extends LorisIntegrationTest
             $text = $this->webDriver->executescript(
                 "return document.querySelector('$value').textContent"
             );
-            $this->assertContains($key, $text);
+            $this->assertStringContainsString($key, $text);
         }
     }
 }

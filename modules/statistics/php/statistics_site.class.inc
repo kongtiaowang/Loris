@@ -64,10 +64,9 @@ class Statistics_Site extends \NDB_Menu
         if (!empty($_REQUEST['CenterID'])) {
             $hasCenterPermission = $user->hasCenterPermission(
                 'data_entry',
-                intval($_REQUEST['CenterID'])
+                new \CenterID($_REQUEST['CenterID'])
             );
         } else {
-
             // For the short term the user we'll be granted access
             // if at least have permission AND one of the centers
             // The filter _checkCriteria() (please see bellow)
@@ -76,9 +75,8 @@ class Statistics_Site extends \NDB_Menu
             // _checkCriteria() will take care of retriving information
             // only for those centers the user has the specific permission.
             // (please see notes about hasCenterPermission() above)
-
             foreach ($user->getCenterIDs() as $centerID) {
-                if ($user->hasCenterPermission('data_entry', intval($centerID))) {
+                if ($user->hasCenterPermission('data_entry', $centerID)) {
                     $hasCenterPermission = true;
                     break;
                 }
@@ -91,8 +89,8 @@ class Statistics_Site extends \NDB_Menu
     /**
      * CheckCriteria function
      *
-     * @param string $centerID  the value of centerID
-     * @param string $projectID the value of projectID
+     * @param \CenterID  $centerID  the value of centerID
+     * @param \ProjectID $projectID the value of projectID
      *
      * @return void
      */
@@ -108,8 +106,6 @@ class Statistics_Site extends \NDB_Menu
             $this->query_criteria   .= " AND s.CenterID =:cid ";
             $this->query_vars['cid'] = $centerID;
         } else {
-            $list_of_permitted_sites = [];
-
             if ($user->hasPermission('access_all_profiles')) {
                 $list_of_permitted_sites = array_keys(\Utility::getSiteList());
             } else {
@@ -139,7 +135,7 @@ class Statistics_Site extends \NDB_Menu
             $this->query_criteria   .= " AND s.ProjectID =:pid ";
             $this->query_vars['pid'] = $projectID;
         } else {
-            $userProjectsIDs = $user->getData('ProjectIDs');
+            $userProjectsIDs = $user->getProjectIDs();
             if (!empty($userProjectsIDs)) {
                 $paramProjects = [];
                 $projectsIDs   = [];
@@ -173,7 +169,7 @@ class Statistics_Site extends \NDB_Menu
      *
      * @param string $instrument the value of instrument
      *
-     * @return void
+     * @return string
      */
     function _getInstrumentName($instrument)
     {
@@ -182,9 +178,9 @@ class Statistics_Site extends \NDB_Menu
     /**
      * CompleteCount function
      *
-     * @param string $centerID   the value of centerID
-     * @param string $projectID  the value of projectID
-     * @param string $instrument the value of instrument
+     * @param \CenterID  $centerID   the value of centerID
+     * @param \ProjectID $projectID  the value of projectID
+     * @param string     $instrument the value of instrument
      *
      * @return ?string
      */
@@ -192,18 +188,18 @@ class Statistics_Site extends \NDB_Menu
     {
 
         $this->_checkCriteria($centerID, $projectID);
-        $DB    =& \Database::singleton();
+        $DB    = $this->loris->getDatabaseConnection();
         $count = $DB->pselectOne(
-            "SELECT count(s.CandID)  FROM session s, 
-                candidate c, flag f, {$instrument} i 
-                WHERE s.ID=f.SessionID AND f.CommentID=i.CommentID 
-                AND s.CandID=c.CandID  
-                AND s.Active='Y' 
-                AND s.CenterID <> '1' 
-                $this->query_criteria 
-                AND f.Data_entry='Complete' 
+            "SELECT count(s.CandID)  FROM session s,
+                candidate c, flag f, {$instrument} i
+                WHERE s.ID=f.SessionID AND f.CommentID=i.CommentID
+                AND s.CandID=c.CandID
+                AND s.Active='Y'
+                AND s.CenterID <> '1'
+                $this->query_criteria
+                AND f.Data_entry='Complete'
                 AND s.Current_stage <> 'Recycling Bin'
-                AND f.Administration='All' 
+                AND f.Administration='All'
                 AND i.CommentID NOT LIKE 'DDE%'",
             $this->query_vars
         );
@@ -213,16 +209,16 @@ class Statistics_Site extends \NDB_Menu
     /**
      * GetResults function
      *
-     * @param string $centerID   the value of centerID
-     * @param string $projectID  the value of projectID
-     * @param string $instrument the value of instrument
+     * @param \CenterID  $centerID   the value of centerID
+     * @param \ProjectID $projectID  the value of projectID
+     * @param string     $instrument the value of instrument
      *
      * @return array
      */
     function _getResults($centerID, $projectID, $instrument)
     {
         $this->_checkCriteria($centerID, $projectID);
-        $DB     =& \Database::singleton();
+        $DB     = $this->loris->getDatabaseConnection();
         $result = $DB->pselect(
             "SELECT s.CandID, f.SessionID, i.CommentID, c.PSCID,
                 s.Visit_label
@@ -247,15 +243,16 @@ class Statistics_Site extends \NDB_Menu
      */
     function setup()
     {
-        $DB     =& \Database::singleton();
+        $DB     = $this->loris->getDatabaseConnection();
         $sqlRow = "SELECT CenterID as ID, PSCArea as Name".
                   " FROM psc WHERE CenterID =:cid";
         if (!empty($_REQUEST['CenterID'])) {
-            $center   = $DB->pselectRow(
+            $center = $DB->pselectRow(
                 $sqlRow,
                 ['cid' => $_REQUEST['CenterID']]
             );
-            $centerID = $center['ID'] ?? '';
+
+            $centerID = new \CenterID($center['ID'] ?? '');
             $name     = $center['Name'] ?? '';
         } else {
             $name     = 'All';
@@ -292,7 +289,7 @@ class Statistics_Site extends \NDB_Menu
                 $test_url = $instrument;
 
                 foreach ($results as $row) {
-                    if (!in_array($row['Visit_label'], $visits)) {
+                    if (!in_array($row['Visit_label'] ?? [], $visits)) {
                         $visits[] = $row['Visit_label'];
                     }
                     $arrayVar = [

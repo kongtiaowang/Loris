@@ -3,6 +3,16 @@ import PropTypes from 'prop-types';
 import ProgressBar from 'ProgressBar';
 import Loader from 'jsx/Loader';
 import swal from 'sweetalert2';
+import {
+    FormElement,
+    HeaderElement,
+    StaticElement,
+    SelectElement,
+    DateElement,
+    TextareaElement,
+    FileElement,
+    ButtonElement,
+} from 'jsx/Form';
 
 /**
  * Media Upload Form
@@ -12,8 +22,7 @@ import swal from 'sweetalert2';
  *
  * @author Alex Ilea
  * @version 1.0.0
- *
- * */
+ */
 class MediaUploadForm extends Component {
   /**
    * @constructor
@@ -44,21 +53,28 @@ class MediaUploadForm extends Component {
    * Called by React when the component has been rendered on the page.
    */
   componentDidMount() {
-    let self = this;
-    $.ajax(this.props.DataURL, {
-      dataType: 'json',
-      success: function(data) {
-        self.setState({
+    fetch(this.props.DataURL, {
+      method: 'GET',
+    }).then((response) => {
+      if (!response.ok) {
+        console.error(response.status + ': ' + response.statusText);
+        this.setState({
+          error: 'An error occurred when loading the form!',
+        });
+        return;
+      }
+
+      response.json().then((data) => {
+        this.setState({
           Data: data,
           isLoaded: true,
         });
-      },
-      error: function(data, errorCode, errorMsg) {
-        console.error(data, errorCode, errorMsg);
-        self.setState({
-          error: 'An error occurred when loading the form!',
-        });
-      },
+      });
+    }).catch((error) => {
+      console.error(error);
+      this.setState({
+        error: 'An error occurred when loading the form!',
+      });
     });
   }
 
@@ -103,8 +119,14 @@ class MediaUploadForm extends Component {
                         && this.state.formData.visitLabel ?
       this.state.Data.sessionData[this.state.formData.pscid]
         .instruments[this.state.formData.visitLabel] :
-      {};
-    return (
+          {};
+          const visitErrMsg = visits && visits.length === 0 ?
+            'No visits available for this candidate' :
+            '';
+          const instErrMsg = instruments && instruments.length === 0 ?
+            'No instruments available for this visit' :
+            '';
+          return (
       <div className='row'>
         <div className='col-md-8 col-lg-7'>
           <FormElement
@@ -134,6 +156,7 @@ class MediaUploadForm extends Component {
               name='visitLabel'
               label='Visit Label'
               options={visits}
+              placeholder={visitErrMsg}
               onUserInput={this.setFormData}
               ref='visitLabel'
               required={true}
@@ -144,6 +167,7 @@ class MediaUploadForm extends Component {
               name='instrument'
               label='Instrument'
               options={instruments}
+              placeholder={instErrMsg}
               onUserInput={this.setFormData}
               ref='instrument'
               required={false}
@@ -196,9 +220,11 @@ class MediaUploadForm extends Component {
     );
   }
 
-/** *******************************************************************************
+/**
+ * *******************************************************************************
  *                      ******     Helper methods     *******
- *********************************************************************************/
+ ********************************************************************************
+ */
 
   /**
    * Returns a valid name for the file to be uploaded
@@ -217,6 +243,7 @@ class MediaUploadForm extends Component {
 
   /**
    * Handle form submission
+   *
    * @param {object} e - Form submission event
    */
   handleSubmit(e) {
@@ -261,7 +288,7 @@ class MediaUploadForm extends Component {
         showCancelButton: true,
         confirmButtonText: 'Yes, I am sure!',
         cancelButtonText: 'No, cancel it!',
-      }, function(isConfirm) {
+      }).then(function(isConfirm) {
         if (isConfirm) {
           this.uploadFile();
         } else {
@@ -279,34 +306,25 @@ class MediaUploadForm extends Component {
   uploadFile() {
     // Set form data and upload the media file
     let formData = this.state.formData;
-    let formObj = new FormData();
-    for (let key in formData) {
-      if (formData.hasOwnProperty(key)) {
-        if (formData[key] !== '') {
-          formObj.append(key, formData[key]);
-        }
+    let formObject = new FormData();
+    for (const [key, value] of Object.entries(formData)) {
+      if (formData[key] !== '') {
+        formObject.append(key, value);
       }
     }
-    $.ajax({
-      type: 'POST',
-      url: this.props.action,
-      data: formObj,
-      cache: false,
-      contentType: false,
-      processData: false,
-      xhr: function() {
-        let xhr = new window.XMLHttpRequest();
-        xhr.upload.addEventListener('progress', function(evt) {
-          if (evt.lengthComputable) {
-            let percentage = Math.round((evt.loaded / evt.total) * 100);
-            this.setState({uploadProgress: percentage});
-          }
-        }.bind(this), false);
-        return xhr;
-      }.bind(this),
-      success: function(data) {
+
+    let xhr = new XMLHttpRequest();
+    xhr.upload.addEventListener('progress', (evt) => {
+      if (evt.lengthComputable) {
+        let percent = Math.round((evt.loaded / evt.total) * 100);
+        this.setState({uploadProgress: percent});
+      }
+    }, false);
+
+    xhr.addEventListener('load', () => {
+      if (xhr.status < 400) {
         // Update data "row" into table
-        this.props.insertRow(JSON.parse(data));
+        this.props.insertRow(JSON.parse(xhr.response));
         // Add git pfile to the list of exiting files
         let mediaFiles = JSON.parse(JSON.stringify(this.state.Data.mediaFiles));
         mediaFiles.push(formData.file.name);
@@ -320,18 +338,46 @@ class MediaUploadForm extends Component {
           formData: {}, // reset form data after successful file upload
           uploadProgress: -1,
         });
-        swal.fire('Upload Successful!', '', 'success');
-      }.bind(this),
-      error: function(err) {
-        console.error(err);
-        let msg = err.responseJSON ? err.responseJSON.message : 'Upload error!';
+        swal.fire(
+          'Success!',
+          'Upload of media file completed.',
+          'success'
+        ).then((result) => {
+          if (result.value) {
+            window.location.href = loris.BaseURL + '/media/';
+          }
+        });
+      } else {
+        console.error(xhr.status + ': ' + xhr.statusText);
+        let msg = 'Upload error!';
+        if (xhr.response) {
+          const resp = JSON.parse(xhr.response);
+          if (resp.message) {
+            msg = resp.message;
+          }
+        }
+
         this.setState({
           errorMessage: msg,
           uploadProgress: -1,
         });
         swal.fire(msg, '', 'error');
-      }.bind(this),
-    });
+      }
+    }, false);
+
+    xhr.addEventListener('error', () => {
+      console.error(xhr.status + ': ' + xhr.statusText);
+      let msg = xhr.response && xhr.response.message
+        ? xhr.response.message
+        : 'Upload error!';
+      this.setState({
+        errorMessage: msg,
+        uploadProgress: -1,
+      });
+      swal.fire(msg, '', 'error');
+    }, false);
+    xhr.open('POST', this.props.action);
+    xhr.send(formObject);
   }
 
   /**
@@ -399,6 +445,7 @@ MediaUploadForm.propTypes = {
   DataURL: PropTypes.string.isRequired,
   action: PropTypes.string.isRequired,
   insertRow: PropTypes.func.isRequired,
+  maxUploadSize: PropTypes.string,
 };
 
 export default MediaUploadForm;

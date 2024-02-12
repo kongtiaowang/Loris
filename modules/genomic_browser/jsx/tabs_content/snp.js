@@ -7,14 +7,13 @@ import Loader from 'jsx/Loader';
  * SNP Component.
  *
  * @description Genomic Browser SNP tab.
- *
  * @author Alizée Wickenheiser
  * @version 1.0.0
- *
  */
 class SNP extends Component {
   /**
    * Constructor of component
+   *
    * @param {object} props - the component properties.
    */
   constructor(props) {
@@ -55,7 +54,6 @@ class SNP extends Component {
           const data = {
             fieldOptions: json.fieldOptions,
             Data: json.data.map((e) => Object.values(e)),
-            subprojects: json.subprojects,
           };
           this.setState({
             data,
@@ -79,7 +77,6 @@ class SNP extends Component {
    * @param {string} cell - cell content
    * @param {array} rowData - array of cell contents for a specific row
    * @param {array} rowHeaders - array of table headers (column names)
-   *
    * @return {*} a formatted table cell for a given column
    */
   formatColumn(column, cell, rowData, rowHeaders) {
@@ -88,9 +85,6 @@ class SNP extends Component {
       case 'PSCID':
         const url = `${this.props.baseURL}/${rowData.DCCID}/`;
         reactElement = <td><a href={url}>{rowData.PSCID}</a></td>;
-        break;
-      case 'Subproject':
-        reactElement = <td>{this.state.data.subprojects[parseInt(cell)]}</td>;
         break;
       default:
         reactElement = <td>{cell}</td>;
@@ -151,12 +145,12 @@ class SNP extends Component {
         },
       },
       {
-        label: 'Subproject',
+        label: 'Cohort',
         show: true,
         filter: {
-          name: 'Subproject',
+          name: 'Cohort',
           type: 'select',
-          options: options.Subproject,
+          options: options.Cohorts,
         },
       },
       {

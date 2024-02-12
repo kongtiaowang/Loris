@@ -34,7 +34,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
     static $instrument = 'select[name="instrument"]';
     // clear filter button
     static $clearFilter = ".nav-tabs a";
-    static $add         = "div:nth-child(2) > .btn:nth-child(1)";
+    static $add         = ".panel-body .btn-primary:nth-child(1)";
     // header of the table
     static $table = ".table-header > .row > div > div:nth-child(1)";
     /**
@@ -42,7 +42,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->DB->insert(
@@ -62,10 +62,10 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
             ]
         );
         $this->DB->insert(
-            "subproject",
+            "cohort",
             [
-                'SubprojectID' => '55',
-                'title'        => 'TESTinSubproject',
+                'CohortID' => '55',
+                'title'    => 'TESTinCohort',
             ]
         );
         $this->DB->insert(
@@ -81,14 +81,14 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             "session",
             [
-                'ID'           => '111111',
-                'CandID'       => '999888',
-                'CenterID'     => '1',
-                'ProjectID'    => '1',
-                'UserID'       => '1',
-                'MRIQCStatus'  => 'Pass',
-                'SubprojectID' => '55',
-                'Visit'        => 'In Progress',
+                'ID'          => '111111',
+                'CandID'      => '999888',
+                'CenterID'    => '1',
+                'ProjectID'   => '1',
+                'UserID'      => '1',
+                'MRIQCStatus' => 'Pass',
+                'CohortID'    => '55',
+                'Visit'       => 'In Progress',
             ]
         );
         $this->DB->insert(
@@ -104,21 +104,20 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             "session",
             [
-                'ID'           => '111112',
-                'CandID'       => '999999',
-                'CenterID'     => '1',
-                'ProjectID'    => '1',
-                'UserID'       => '1',
-                'MRIQCStatus'  => 'Pass',
-                'SubprojectID' => '55',
-                'Visit'        => 'In Progress',
+                'ID'          => '111112',
+                'CandID'      => '999999',
+                'CenterID'    => '1',
+                'ProjectID'   => '1',
+                'UserID'      => '1',
+                'MRIQCStatus' => 'Pass',
+                'CohortID'    => '55',
+                'Visit'       => 'In Progress',
             ]
         );
         $this->DB->insert(
             "participant_accounts",
             [
                 'SessionID'       => '111111',
-                'Email'           => 'TestTestTest@example.com',
                 'Test_name'       => 'Test',
                 'Status'          => 'In Progress',
                 'OneTimePassword' => 'Test',
@@ -131,7 +130,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->DB->delete(
             "participant_accounts",
@@ -154,8 +153,8 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
             ['CandID' => '999999']
         );
         $this->DB->delete(
-            "subproject",
-            ['SubprojectID' => '55']
+            "cohort",
+            ['CohortID' => '55']
         );
         $this->DB->delete(
             "psc",
@@ -181,9 +180,17 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
         $this->setupPermissions(["survey_accounts_view"]);
         $this->safeGet($this->url . "/survey_accounts/");
         $bodyText
-            = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))
+            = $this->safeFindElement(WebDriverBy::cssSelector("body"))
             ->getText();
-        $this->assertContains("Survey Accounts", $bodyText);
+        $this->assertStringContainsString("Survey Accounts", $bodyText);
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
+            $bodyText
+        );
         $this->resetPermissions();
     }
     /**
@@ -199,7 +206,10 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("You do not have access to this page.", $bodyText);
+        $this->assertStringContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
         $this->resetPermissions();
     }
     /**
@@ -218,9 +228,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
         // Ensure that an instrument must be supplied.
         $this->safeGet($this->url . "/survey_accounts/");
         $btn = self::$add;
-        $this->webDriver->executescript(
-            "document.querySelector('$btn').click()"
-        );
+        $this->safeFindElement(WebDriverBy::cssSelector($btn))->click();
         $this->safeFindElement(
             WebDriverBy::Name("CandID")
         )->sendKeys("999999");
@@ -236,7 +244,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
         $bodyText =  $this->safeFindElement(
             WebDriverBy::cssSelector(".error")
         )->getText();
-        $this->assertContains(
+        $this->assertStringContainsString(
             "Please choose an instrument.",
             $bodyText
         );
@@ -244,9 +252,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
         // Ensure visit label exists for a candidate.
         $this->safeGet($this->url . "/survey_accounts/");
         $btn = self::$add;
-        $this->webDriver->executescript(
-            "document.querySelector('$btn').click()"
-        );
+        $this->safeFindElement(WebDriverBy::cssSelector($btn))->click();
         $this->safeFindElement(
             WebDriverBy::Name("CandID")
         )->sendKeys("999999");
@@ -267,7 +273,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
         $bodyText =  $this->safeFindElement(
             WebDriverBy::cssSelector(".error")
         )->getText();
-        $this->assertContains(
+        $this->assertStringContainsString(
             "Visit $visitLabel does not exist for given candidate",
             $bodyText
         );
@@ -288,7 +294,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
         $bodyText =  $this->safeFindElement(
             WebDriverBy::cssSelector(".error")
         )->getText();
-        $this->assertContains(
+        $this->assertStringContainsString(
             "PSCID and CandID do not match or candidate does not exist",
             $bodyText
         );
@@ -304,12 +310,6 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
         //testing search by PSCID
         $this->safeGet($this->url . "/survey_accounts/");
         //testing data from RBdata.sql
-        $this-> _testFilter(
-            self::$email,
-            self::$table,
-            "1 rows",
-            "TestTestTest@example.com"
-        );
         $this-> _testFilter(self::$pscid, self::$table, "1 rows", "8888");
         $this-> _testFilter(self::$pscid, self::$table, "0 rows", "test");
     }
@@ -340,7 +340,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
             $bodyText = $this->webDriver->executescript(
                 "return document.querySelector('$table').textContent"
             );
-            $this->assertContains($records, $bodyText);
+            $this->assertStringContainsString($records, $bodyText);
         } else {
             $this->safeFindElement(WebDriverBy::cssSelector($element));
             $this->webDriver->executescript(
@@ -353,7 +353,7 @@ class Survey_AccountsTestIntegrationTest extends LorisIntegrationTest
             $bodyText = $this->webDriver->executescript(
                 "return document.querySelector('$table').textContent"
             );
-            $this->assertContains($records, $bodyText);
+            $this->assertStringContainsString($records, $bodyText);
         }
         //test clear filter
         $btn = self::$clearFilter;

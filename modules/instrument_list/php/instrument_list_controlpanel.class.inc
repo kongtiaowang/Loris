@@ -31,15 +31,29 @@ namespace LORIS\instrument_list;
  */
 class Instrument_List_ControlPanel extends \TimePoint
 {
+    protected array $tpl_data;
+
+    /**
+     * The LORIS Instance that this timepoint exists on
+     *
+     * @var \LORIS\LorisInstance $loris
+     */
+    protected $loris;
+
     /**
      * Construct function
      *
-     * @param \SessionID $sessionID the value of sessionID
+     * @param \LORIS\LorisInstance $loris     The LORIS Instance.
+     * @param \SessionID           $sessionID SessionID that this control
+     *                                        panel is controlling.
      *
      * @return void
      */
-    function __construct($sessionID)
+    function __construct(\LORIS\LorisInstance $loris, $sessionID)
     {
+        $this->tpl_data = [];
+        $this->loris    = $loris;
+
         $this->select($sessionID);
     }
 
@@ -80,7 +94,7 @@ class Instrument_List_ControlPanel extends \TimePoint
         // BVLQCStatus
         $this->_displayBVLQCStatus();
 
-        $smarty = new \Smarty_neurodb("instrument_list");
+        $smarty = new \Smarty_NeuroDB("instrument_list");
         $smarty->assign($this->tpl_data);
         $html = $smarty->fetch("instrument_list_controlpanel.tpl");
         return $html;
@@ -105,7 +119,8 @@ class Instrument_List_ControlPanel extends \TimePoint
         ) {
             $this->setData(
                 [
-                    $currentStage => $_REQUEST['setStageUpdate'],
+                    $currentStage        => $_REQUEST['setStageUpdate'],
+                    'Date_status_change' => date('Y-m-d'),
                 ]
             );
             return;
@@ -128,12 +143,19 @@ class Instrument_List_ControlPanel extends \TimePoint
             // move to next stage (approval or the bin)
             if ($currentStatus == 'Pass') {
                 $nextStage = 'Approval';
+                $isPassed  = true;
             } else {
                 $nextStage = 'Recycling Bin';
+                $isPassed  = false;
             }
             $this->startStage($nextStage);
+            // update candidate_diagnosis_evolution_rel
+            \Utility::updateDiagnosisConfirmationStatus(
+                $this->getSessionID(),
+                $isPassed
+            );
 
-            if ($nextStage = 'Recycling Bin') {
+            if ($nextStage == 'Recycling Bin') {
 
                 $battery = new \NDB_BVL_Battery();
 
@@ -186,13 +208,19 @@ class Instrument_List_ControlPanel extends \TimePoint
                 ['Submitted' => $submitted]
             );
 
-                // revert from approval (or the bin)
+            // revert from approval (or the bin)
             if ($currentStage == 'Approval') {
                 $this->setData(
                     [
                         'Approval'      => null,
                         'Date_approval' => null,
                     ]
+                );
+
+                // update candidate_diagnosis_evolution_rel
+                \Utility::updateDiagnosisConfirmationStatus(
+                    $this->getSessionID(),
+                    false
                 );
             }
                 $previousStage = $this->_determinePreviousStage();
@@ -223,6 +251,7 @@ class Instrument_List_ControlPanel extends \TimePoint
                         $instrument['CommentID']
                     );
                     $diff =\ConflictDetector::detectConflictsForCommentIds(
+                        $this->loris,
                         $instrument['Test_name'],
                         $instrument['CommentID'],
                         $instrument['DDECommentID']
@@ -348,7 +377,7 @@ class Instrument_List_ControlPanel extends \TimePoint
         $ddeConflictDetected = false;
         $dataEntry           = '';
         foreach ($batteryList as $instrument) {
-            $status = new \NDB_BVL_InstrumentStatus();
+            $status = new \NDB_BVL_InstrumentStatus($this->loris);
             $status->select($instrument['CommentID']);
             $dataEntry = $status->getDataEntryStatus();
             if ($dataEntry != 'Complete') {
@@ -358,7 +387,7 @@ class Instrument_List_ControlPanel extends \TimePoint
             // If the instrument requires double data entry,
             //check that DDE is also done
             if (in_array($instrument['Test_name'], $ddeInstruments)) {
-                $status = new \NDB_BVL_InstrumentStatus();
+                $status = new \NDB_BVL_InstrumentStatus($this->loris);
                 $status->select($instrument['DDECommentID']);
                 $dataEntry = $status->getDataEntryStatus();
                 if ($dataEntry != 'Complete') {
@@ -455,15 +484,18 @@ class Instrument_List_ControlPanel extends \TimePoint
         $qcStatus = $this->getBVLQCStatus();
 
         foreach ($this->bvlQcTypes as $type) {
-            $isSelected =$type == $this->getBVLQCType();
-            $type       =strtolower($type);
-            if ($type==null) {
-                $type ="none";
-            }
+            $isSelected = $type == $this->getBVLQCType();
+            $type       = strtolower($type ?? 'none');
             if ($isSelected) {
                 $this->tpl_data['bvl_qc_type_'.$type]['icon']
                     = 'far fa-check-square';
             }
+
+            // ensure the variable checked is set the same way as in display()
+            $user =& \User::singleton();
+            $this->tpl_data['access']['bvl_qc']
+                = $user->hasPermission('bvl_feedback');
+
             //If a BVLQC status is not selected,
             // and this type is not already chosen, show the link.
             if (!$isSelected
@@ -488,17 +520,17 @@ class Instrument_List_ControlPanel extends \TimePoint
         $qcType = $this->getBVLQCType();
 
         foreach ($this->bvlQcStatuses as $status) {
-            $isSelected =$status == $this->getBVLQCStatus();
-            $status     =strtolower($status);
-            if ($status==null) {
-                $status ="none";
-            }
+            $isSelected = $status == $this->getBVLQCStatus();
+            $status     = strtolower($status ?? 'none');
             if ($isSelected) {
                 $this->tpl_data['bvl_qc_status_'.$status]['icon']
                     = 'far fa-check-square';
             }
             //If a BVLQC type is selected,
             // and this status is not already chosen, show the link.
+            $user =& \User::singleton();
+            $this->tpl_data['access']['bvl_qc']
+                = $user->hasPermission('bvl_feedback');
             if (!empty($qcType)
                 && !$isSelected
                 && $this->tpl_data['access']['bvl_qc']
@@ -555,7 +587,7 @@ class Instrument_List_ControlPanel extends \TimePoint
         $allDataEntryComplete =true;
         foreach ($batteryList as $instrument) {
 
-            $status = new \NDB_BVL_InstrumentStatus();
+            $status = new \NDB_BVL_InstrumentStatus($this->loris);
             $status->select($instrument['CommentID']);
             $dataEntry = $status->getDataEntryStatus();
             if ($dataEntry != 'Complete') {
@@ -566,7 +598,7 @@ class Instrument_List_ControlPanel extends \TimePoint
             // If the instrument requires double data entry,
             // check that DDE is also done
             if (in_array($instrument['Test_name'], $ddeInstruments)) {
-                $status = new \NDB_BVL_InstrumentStatus();
+                $status = new \NDB_BVL_InstrumentStatus($this->loris);
                 $status->select($instrument['DDECommentID']);
                 $dataEntry = $status->getDataEntryStatus();
                 if ($dataEntry != 'Complete') {
@@ -651,7 +683,7 @@ class Instrument_List_ControlPanel extends \TimePoint
         $allDataEntryComplete =true;
         foreach ($batteryList as $instrument) {
 
-            $status = new \NDB_BVL_InstrumentStatus();
+            $status = new \NDB_BVL_InstrumentStatus($this->loris);
             $status->select($instrument['CommentID']);
             $dataEntry = $status->getDataEntryStatus();
             if ($dataEntry != 'Complete') {
@@ -662,7 +694,7 @@ class Instrument_List_ControlPanel extends \TimePoint
             // If the instrument requires double data entry,
             // check that DDE is also done
             if (in_array($instrument['Test_name'], $ddeInstruments)) {
-                $status = new \NDB_BVL_InstrumentStatus();
+                $status = new \NDB_BVL_InstrumentStatus($this->loris);
                 $status->select($instrument['DDECommentID']);
                 $dataEntry = $status->getDataEntryStatus();
                 if ($dataEntry != 'Complete') {
@@ -697,7 +729,7 @@ class Instrument_List_ControlPanel extends \TimePoint
         ) {
             return true;
         } elseif ($user->hasPermission('send_to_dcc')
-            && $user->hasCenter($this->getData('CenterID'))
+            && $user->hasCenter($this->getCenterID())
             && $this->getData('Submitted')=='N'
             && in_array(
                 $this->getData('Current_stage'),
@@ -713,9 +745,9 @@ class Instrument_List_ControlPanel extends \TimePoint
                     'In Progress',
                 ]
             )
-            && ! $config->settingEnabled("useScanDone")
+            && (!$config->settingEnabled("useScanDone")
             || $this->getData('Current_stage') == 'Screening'
-            || !empty($scanDone)
+            || !empty($scanDone))
         ) {
             return true;
         }

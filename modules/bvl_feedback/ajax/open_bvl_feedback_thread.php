@@ -13,7 +13,7 @@
 ini_set('default_charset', 'utf-8');
 require_once "bvl_panel_ajax.php";
 
-$feedbackid = $_POST['feedbackID'] ?? '';
+$feedbackID = $_POST['feedbackID'] ?? '';
 
 if (! \Utility::valueIsPositiveInteger($feedbackID)) {
     header("HTTP/1.1 400 Bad Request");
@@ -38,6 +38,11 @@ if ($openedthreadcount === 0) {
     exit;
 }
 
-header("HTTP/1.1 204 No Content");
+
+header("Content-Type: application/json");
+print json_encode(
+    ['status' => 'success']
+);
+
 exit;
 

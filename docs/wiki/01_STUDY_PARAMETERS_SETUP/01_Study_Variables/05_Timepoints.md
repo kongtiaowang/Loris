@@ -25,7 +25,7 @@ If age is not a critical factor in study timepoint scheduling, define `Min` and 
 The `visit` table lists all the timepoints. This table must be populated with visit labels for the proper functioning of LORIS. To populate with timepoints insert information as follows:
 
 ```sql
-INSERT INTO visit (VisitName) VALUES ('V1');
+INSERT INTO visit (VisitName,VisitLabel) VALUES ('V1','V1');
 ```
 
 ### API
@@ -33,20 +33,5 @@ _not yet available. See [API documentation](../../99_Developers/LORIS-REST-API-0
  
 ## Interaction With LORIS
 
-### Subprojects
- **Timepoints** should be assigned to subprojects in order to be able to create timepoints for candidates. This association should be defined in the `config.xml` file of the `%LORIS_ROOT%/project/` directory as follows:
- 
- ```xml
- <visitLabel subprojectID="1">
-   <labelSet>
-     <item value="V1">V1 label description</item>   
-     <item value="V2">V2 label description</item>   
-   </labelSet>
- </visitLabel>
- <visitLabel subprojectID="2">
-   <labelSet>
-     <item value="V1">V1 label description</item>   
-     <item value="V3">V3 label description</item>   
-   </labelSet>
- </visitLabel>
- ```
+### Cohorts
+ **Timepoints** should be assigned to cohorts in order to be able to create timepoints for candidates. This association should be defined in the `visit_project_cohort_rel` table of the database.

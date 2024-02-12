@@ -25,19 +25,16 @@ class UserPermissions
     /**
      * User's ID
      *
-     * @var    int
-     * @access private
+     * @var ?string
      */
     var $userID;
 
     /**
      * Stores the permissions
      *
-     * @var    array<string,bool>
-     * @access private
+     * @var array<string,bool>
      */
-    var $permissions = [];
-
+    private $permissions = [];
 
     /**
      * Constructor
@@ -54,10 +51,11 @@ class UserPermissions
         $query  = "SELECT ID FROM users WHERE UserID =:UName";
         $params = ['UName' => $username];
 
-        $this->userID = \Database::singleton()->pselectOne($query, $params);
-        if (empty($this->userID)) {
+        $userID = \NDB_Factory::singleton()->database()->pselectOne($query, $params);
+        if ($userID === null) {
             return false;
         }
+        $this->userID = $userID;
 
         // load the user's permissions
         $this->setPermissions();
@@ -75,7 +73,7 @@ class UserPermissions
     function setPermissions(): void
     {
         // create DB object
-        $DB = \Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
 
         // get all the permissions for this user
         $query = "SELECT p.code, pr.userID FROM permissions p
@@ -196,7 +194,7 @@ class UserPermissions
     function addPermissions(array $set): void
     {
         // create DB object
-        $DB = \Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
 
         // add the permissions
         foreach ($set as $value) {
@@ -225,7 +223,7 @@ class UserPermissions
     function removePermissions(?array $set = null): void
     {
         // create DB object
-        $DB =& Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
         if (is_null($set)) {
             // remove all permissions
             $DB->delete(
@@ -259,7 +257,7 @@ class UserPermissions
     function getPermissionIDs(): array
     {
         // create DB object
-        $DB =& Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
 
         // get all the permissions for this user
         $query = "SELECT permissions.permID
@@ -282,22 +280,52 @@ class UserPermissions
     /**
      * Returns an array with all permissions information for the user
      *
+     * @param \LORIS\LorisInstance $loris The LORIS instance to get
+     *                                    permissions from.
+     *
      * @return array
-     * @access public
      */
-    function getPermissionsVerbose(): array
+    function getPermissionsVerbose(\LORIS\LorisInstance $loris): array
     {
         // create DB object
-        $DB =& Database::singleton();
+        $DB = $loris->getDatabaseConnection();
 
-        $query   = "SELECT p.permID, p.code, p.description, pc.Description as type
-            FROM permissions p
-                JOIN user_perm_rel up ON (p.permID=up.PermID)
+        $query = "SELECT
+                p.permID,
+                p.code,
+                p.description,
+                pc.Description as type,
+                p.action,
+                p.moduleID
+            FROM permissions p ";
+
+        //If not superuser, get the permissions that the user has
+        if (!$this->hasPermission('superuser')) {
+            $query  .= "JOIN user_perm_rel up ON (p.permID=up.PermID)
                 LEFT JOIN permissions_category pc ON (pc.ID=p.categoryID)
-            WHERE up.userID = :UID
-                ORDER BY p.categoryID, p.description";
-        $results = $DB->pselect($query, ['UID' => $this->userID]);
+                LEFT JOIN modules m ON p.moduleID=m.ID
+            WHERE up.userID = :UID and m.Active='Y'
+                ORDER BY p.categoryID, m.Name, p.description";
+            $results = $DB->pselect($query, ['UID' => $this->userID]);
+        } else {
+            $query  .= "LEFT JOIN permissions_category pc ON (pc.ID=p.categoryID)
+                LEFT JOIN modules m ON p.moduleID=m.ID WHERE m.Active='Y'
+                ORDER BY p.categoryID, m.Name, p.description";
+            $results = $DB->pselect($query, []);
+        }
+        $modules = \Module::getActiveModulesIndexed($loris);
+        // Build new meaningful description from combination of columns
+        // Module Long Name: action description
+        foreach ($results as $key=>$perm) {
+            $newDesc = '';
+            if (!empty($perm['moduleID'])) {
+                $newDesc = $modules[$perm['moduleID']]->getLongName() . ": ";
+            }
+            $newDesc .= empty($perm['action']) ? "" : $perm['action'] . " ";
+            $newDesc .= $perm['description'];
 
+            $results[$key]['label'] = $newDesc;
+        }
         return $results;
     }
 
@@ -314,8 +342,7 @@ class UserPermissions
         ?string $permAction = null
     ): void {
 
-        // create DB object
-        $DB =& Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
 
         //insert into the login_history
         $DB->insert(

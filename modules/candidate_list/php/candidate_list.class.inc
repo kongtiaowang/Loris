@@ -69,9 +69,7 @@ class Candidate_List extends \DataFrameworkMenu
      */
     function getFieldOptions() : array
     {
-        // Relying on a side-effect of the the server process module to autoload
-        // its namespace.
-        \Module::factory('candidate_parameters');
+        $this->loris->getModule('candidate_parameters')->registerAutoloader();
 
         // create user object
         $factory = \NDB_Factory::singleton();
@@ -88,29 +86,29 @@ class Candidate_List extends \DataFrameworkMenu
             $list_of_sites = $user->getStudySites();
         }
         $site_options = [];
-        foreach ($list_of_sites as $id => $name) {
+        foreach (array_values($list_of_sites) as $name) {
             $site_options[$name] = $name;
         }
 
         // get the list of projects
         $list_of_projects = \Utility::getProjectList();
         $project_options  = [];
-        foreach ($list_of_projects as $id => $name) {
+        foreach (array_values($list_of_projects) as $name) {
             $project_options[$name] = $name;
         }
 
-        // get the list of subprojects
-        $list_of_subprojects = \Utility::getSubprojectList();
-        $subproject_options  = [];
-        foreach ($list_of_subprojects as $id => $name) {
-            $subproject_options[$name] = $name;
+        // get the list of cohorts
+        $list_of_cohorts = \Utility::getCohortList();
+        $cohort_options  = [];
+        foreach (array_values($list_of_cohorts) as $name) {
+            $cohort_options[$name] = $name;
         }
 
         // get the list participant status options
         $list_of_participant_status
             = \Candidate::getParticipantStatusOptions();
         $participant_status_options = [];
-        foreach ($list_of_participant_status as $id => $name) {
+        foreach (array_values($list_of_participant_status) as $name) {
             $participant_status_options[$name] = $name;
         }
 
@@ -118,7 +116,7 @@ class Candidate_List extends \DataFrameworkMenu
             'visitlabel'        => $visit_label_options,
             'site'              => $site_options,
             'project'           => $project_options,
-            'subproject'        => $subproject_options,
+            'cohort'            => $cohort_options,
             'participantstatus' => $participant_status_options,
             'useedc'            => $config->getSetting("useEDC"),
         ];

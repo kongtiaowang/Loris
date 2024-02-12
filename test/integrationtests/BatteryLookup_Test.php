@@ -25,6 +25,8 @@ use PHPUnit\Framework\TestCase;
  */
 class NDB_BVL_Battery_Test extends TestCase
 {
+    protected $DB;
+
     /**
      * Set up the data needed for the integration tests.
      *
@@ -36,7 +38,7 @@ class NDB_BVL_Battery_Test extends TestCase
         $client->makeCommandLine();
         $client->initialize();
 
-        $this->DB = Database::singleton();
+        $this->DB = \NDB_Factory::singleton()->database();
 
         $this->DB->setFakeTableData(
             "test_names",
@@ -96,88 +98,88 @@ class NDB_BVL_Battery_Test extends TestCase
             "test_battery",
             [
                 [
-                    'ID'           => 1,
-                    'Test_name'    => 'ActiveTestByAge',
-                    'AgeMinDays'   => 0,
-                    'AgeMaxDays'   => 100,
-                    'Active'       => 'Y',
-                    'Stage'        => 'Visit',
-                    'SubprojectID' => 1,
-                    'Visit_label'  => null,
-                    'CenterID'     => null,
-                    'firstVisit'   => null,
+                    'ID'          => 1,
+                    'Test_name'   => 'ActiveTestByAge',
+                    'AgeMinDays'  => 0,
+                    'AgeMaxDays'  => 100,
+                    'Active'      => 'Y',
+                    'Stage'       => 'Visit',
+                    'CohortID'    => 1,
+                    'Visit_label' => null,
+                    'CenterID'    => null,
+                    'firstVisit'  => null,
                 ],
                 [
-                    'ID'           => 2,
-                    'Test_name'    => 'ActiveTestByAge2',
-                    'AgeMinDays'   => 0,
-                    'AgeMaxDays'   => 100,
-                    'Active'       => 'Y',
-                    'Stage'        => 'Visit',
-                    'SubprojectID' => 1,
-                    'Visit_label'  => null,
-                    'CenterID'     => '1',
-                    'firstVisit'   => null,
+                    'ID'          => 2,
+                    'Test_name'   => 'ActiveTestByAge2',
+                    'AgeMinDays'  => 0,
+                    'AgeMaxDays'  => 100,
+                    'Active'      => 'Y',
+                    'Stage'       => 'Visit',
+                    'CohortID'    => 1,
+                    'Visit_label' => null,
+                    'CenterID'    => '1',
+                    'firstVisit'  => null,
                 ],
                 [
-                    'ID'           => 3,
-                    'Test_name'    => 'InactiveTest',
-                    'AgeMinDays'   => 0,
-                    'AgeMaxDays'   => 0,
-                    'Active'       => 'N',
-                    'Stage'        => 'Visit',
-                    'SubprojectID' => 2,
-                    'Visit_label'  => 'V01',
-                    'CenterID'     => '1',
-                    'firstVisit'   => null,
+                    'ID'          => 3,
+                    'Test_name'   => 'InactiveTest',
+                    'AgeMinDays'  => 0,
+                    'AgeMaxDays'  => 0,
+                    'Active'      => 'N',
+                    'Stage'       => 'Visit',
+                    'CohortID'    => 2,
+                    'Visit_label' => 'V01',
+                    'CenterID'    => '1',
+                    'firstVisit'  => null,
                 ],
                 [
-                    'ID'           => 4,
-                    'Test_name'    => 'ActiveTestByVisit',
-                    'AgeMinDays'   => 0,
-                    'AgeMaxDays'   => 0,
-                    'Active'       => 'Y',
-                    'Stage'        => 'Visit',
-                    'SubprojectID' => 2,
-                    'Visit_label'  => 'V01',
-                    'CenterID'     => null,
-                    'firstVisit'   => null,
+                    'ID'          => 4,
+                    'Test_name'   => 'ActiveTestByVisit',
+                    'AgeMinDays'  => 0,
+                    'AgeMaxDays'  => 0,
+                    'Active'      => 'Y',
+                    'Stage'       => 'Visit',
+                    'CohortID'    => 2,
+                    'Visit_label' => 'V01',
+                    'CenterID'    => null,
+                    'firstVisit'  => null,
                 ],
                 [
-                    'ID'           => 5,
-                    'Test_name'    => 'ActiveTestByVisit2',
-                    'AgeMinDays'   => 0,
-                    'AgeMaxDays'   => 0,
-                    'Active'       => 'Y',
-                    'Stage'        => 'Visit',
-                    'SubprojectID' => 2,
-                    'Visit_label'  => 'V01',
-                    'CenterID'     => '1',
-                    'firstVisit'   => null,
+                    'ID'          => 5,
+                    'Test_name'   => 'ActiveTestByVisit2',
+                    'AgeMinDays'  => 0,
+                    'AgeMaxDays'  => 0,
+                    'Active'      => 'Y',
+                    'Stage'       => 'Visit',
+                    'CohortID'    => 2,
+                    'Visit_label' => 'V01',
+                    'CenterID'    => '1',
+                    'firstVisit'  => null,
                 ],
                 [
-                    'ID'           => 6,
-                    'Test_name'    => 'ActiveTestByFirstVisit',
-                    'AgeMinDays'   => 0,
-                    'AgeMaxDays'   => 100,
-                    'Active'       => 'Y',
-                    'Stage'        => 'Visit',
-                    'SubprojectID' => 1,
-                    'Visit_label'  => null,
-                    'CenterID'     => '1',
-                    'firstVisit'   => 'Y',
+                    'ID'          => 6,
+                    'Test_name'   => 'ActiveTestByFirstVisit',
+                    'AgeMinDays'  => 0,
+                    'AgeMaxDays'  => 100,
+                    'Active'      => 'Y',
+                    'Stage'       => 'Visit',
+                    'CohortID'    => 1,
+                    'Visit_label' => null,
+                    'CenterID'    => '1',
+                    'firstVisit'  => 'Y',
                 ],
                 [
-                    'ID'           => 7,
-                    'Test_name'    => 'ActiveTestByNotFirstVisit',
-                    'AgeMinDays'   => 0,
-                    'AgeMaxDays'   => 100,
-                    'Active'       => 'Y',
-                    'Stage'        => 'Visit',
-                    'SubprojectID' => 1,
-                    'Visit_label'  => null,
-                    'CenterID'     => '1',
-                    'firstVisit'   => 'N',
+                    'ID'          => 7,
+                    'Test_name'   => 'ActiveTestByNotFirstVisit',
+                    'AgeMinDays'  => 0,
+                    'AgeMaxDays'  => 100,
+                    'Active'      => 'Y',
+                    'Stage'       => 'Visit',
+                    'CohortID'    => 1,
+                    'Visit_label' => null,
+                    'CenterID'    => '1',
+                    'firstVisit'  => 'N',
                 ],
             ]
         );
@@ -210,7 +212,7 @@ class NDB_BVL_Battery_Test extends TestCase
             1,
             'Visit',
             'V01',
-            '1',
+            new \CenterID("1"),
             null
         );
 
@@ -234,7 +236,14 @@ class NDB_BVL_Battery_Test extends TestCase
     {
         $battery = new NDB_BVL_Battery();
 
-        $instruments = $battery->lookupBattery(50, 2, 'Visit', 'V01', '1', true);
+        $instruments = $battery->lookupBattery(
+            50,
+            2,
+            'Visit',
+            'V01',
+            new \CenterID("1"),
+            true
+        );
 
         $this->assertEquals(
             $instruments,
@@ -260,7 +269,7 @@ class NDB_BVL_Battery_Test extends TestCase
             1,
             'Visit',
             'V01',
-            '2',
+            new \CenterID("2"),
             true
         );
         $instrumentsByVisit = $battery->lookupBattery(
@@ -268,7 +277,7 @@ class NDB_BVL_Battery_Test extends TestCase
             2,
             'Visit',
             'V01',
-            '2',
+            new \CenterID("2"),
             true
         );
 
@@ -303,7 +312,7 @@ class NDB_BVL_Battery_Test extends TestCase
             1,
             'Visit',
             'V01',
-            '1',
+            new \CenterID("1"),
             true
         );
 
@@ -321,7 +330,7 @@ class NDB_BVL_Battery_Test extends TestCase
             1,
             'Visit',
             'V01',
-            '1',
+            new \CenterID("1"),
             false
         );
 

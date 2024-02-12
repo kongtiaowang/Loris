@@ -1,6 +1,11 @@
 /* global UploadProgress */
 import React, {Component} from 'react';
 import Panel from 'Panel';
+import {
+    FormElement,
+    SelectElement,
+    TextareaElement,
+} from 'jsx/Form';
 
 /**
  * Log Panel Component
@@ -10,8 +15,6 @@ import Panel from 'Panel';
  *
  * @author Alex Ilea
  * @version 1.0.0
- * @since 2017/04/01
- *
  */
 class LogPanel extends Component {
   /**
@@ -46,28 +49,35 @@ class LogPanel extends Component {
     const uploadProgress = new UploadProgress();
     this.uploadProgress = uploadProgress;
 
-    $('#mri_upload_table').on('click', 'tbody tr', function(event) {
-      // Stop server polling if any was taking place
-      if (uploadProgress.getUploadRow() !== null) {
-        $(uploadProgress.getUploadRow()).css('background-color', 'white');
-        this.setServerPolling(false);
-      }
+    const table = document.getElementById('mri_upload_table');
+    if (table) {
+      table.addEventListener('click', (event) => {
+        const tr = event.target.closest('tr');
+        if (tr && tr.parentElement.tagName == 'TBODY') {
+          // Stop server polling if any was taking place
+          if (uploadProgress.getUploadRow() !== null) {
+            uploadProgress.getUploadRow().style.backgroundColor = 'white';
+            this.setServerPolling(false);
+          }
 
-      // If user clicked on the same row, it is interpreted as a de-selection:
-      // deselect row and set log text to 'nothing selected'
-      if (event.currentTarget === uploadProgress.getUploadRow()) {
-        uploadProgress.setUploadRow(null);
-        uploadProgress.setProgressFromServer(null);
-        this.setState({
-          logText: '<select a row in the table below to view the upload logs>',
-        });
-        return;
-      }
+          // If user clicked on the same row, it is interpreted as a de-selection:
+          // deselect row and set log text to 'nothing selected'
+          if (tr === uploadProgress.getUploadRow()) {
+            uploadProgress.setUploadRow(null);
+            uploadProgress.setProgressFromServer(null);
+            this.setState({
+              logText: '<select a row in the table below '
+                       + 'to view the upload logs>',
+            });
+            return;
+          }
 
-      uploadProgress.setUploadRow(event.currentTarget);
-      $(event.currentTarget).css('background-color', '#EFEFFB');
-      this.monitorProgress(this.state.logType);
-    }.bind(this));
+          uploadProgress.setUploadRow(tr);
+          tr.style.backgroundColor = '#EFEFFB';
+          this.monitorProgress(this.state.logType);
+        }
+      });
+    }
   }
 
   /**
@@ -88,23 +98,38 @@ class LogPanel extends Component {
       return;
     }
 
-    $.post(loris.BaseURL + '/imaging_uploader/ajax/getUploadSummary.php', {
-      uploadId: uploadId,
-      summary: summary,
-    }, function(data) {
-      uploadProgress.setProgressFromServer(data);
-      this.setState({logText: uploadProgress.getProgressText()});
-      // If the pipeline is still running, start polling
-      // If the pipeline is not running, end the polling (if any was started)
-      const pipelineStatus = uploadProgress.getPipelineStatus();
-      const pipelineStatusRunning = UploadProgress.PIPELINE_STATUS_RUNNING;
-      this.setServerPolling(pipelineStatus === pipelineStatusRunning);
-    }.bind(this)); // post call
+    const formData = new FormData();
+    formData.append('uploadId', uploadId);
+    formData.append('summary', summary);
+
+    fetch(loris.BaseURL + '/imaging_uploader/ajax/getUploadSummary.php', {
+      method: 'POST',
+      body: formData,
+    }).then((response) => {
+      if (!response.ok) {
+        console.error(response.status);
+        return;
+      }
+
+      response.json().then((data) => {
+        uploadProgress.setProgressFromServer(data);
+        this.setState({logText: uploadProgress.getProgressText()});
+        // If the pipeline is still running, start polling
+        // If the pipeline is not running, end the polling (if any was started)
+        const pipelineStatus = uploadProgress.getPipelineStatus();
+        const pipelineStatusRunning = UploadProgress.PIPELINE_STATUS_RUNNING;
+        this.setServerPolling(pipelineStatus === pipelineStatusRunning);
+      });
+    }).catch((error) => {
+      // Network error
+      console.error(error);
+    });
   }
 
   /**
    * Starts/stops polling on the server.
-   * @param {bool} poll - pool boolean
+   *
+   * @param {boolean} poll - pool boolean
    */
   setServerPolling(poll) {
     const uploadProgress = this.uploadProgress;
@@ -157,6 +182,7 @@ class LogPanel extends Component {
 
   /**
    * On log type change
+   *
    * @param {string} name
    * @param {*} value
    */

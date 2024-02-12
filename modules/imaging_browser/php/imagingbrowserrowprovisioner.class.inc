@@ -107,10 +107,19 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
         $pass          = [];
         $coalesce_desc = [];
 
-        foreach ($scan_id_types as $id => $type) {
-            $pass[$id]          = $DB->escape($type);
-            $qc[$id]            = $DB->quote($type);
-            $coalesce_desc[$id] = $DB->quote($pass[$id] . '.' . $qc[$id]);
+        // in order to keep the same order as the order of modalities
+        // specified in the config module, loop through the
+        // $toTable_scan_types array that conserved the order with
+        // which modalities will be displayed (which is what the React
+        // side expects)
+        foreach ($toTable_scan_types as $type) {
+            if (!in_array($type, $scan_id_types)) {
+                continue;
+            }
+            $id        = array_search($type, $scan_id_types);
+            $pass[$id] = $DB->escape($type);
+            $qc[$id]   = $DB->quote($type);
+            $coalesce_desc[$id] = $DB->escape($type);
             $case_desc[$id]     = "
                 CASE
                     COALESCE($coalesce_desc[$id], '')
@@ -172,7 +181,6 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
         // =================================================
         // Final query
         // =================================================
-
         parent::__construct(
             "SELECT
               p.Name as Site,
@@ -189,9 +197,9 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
               s.ID as sessionID,
               GROUP_CONCAT(DISTINCT modality.Scan_type) as sequenceType,
               $PendingNewquery as pending,
-              $modalities_subquery
               s.CenterID as CenterID,
               c.Entity_type as entityType,
+              $modalities_subquery
               s.ProjectID
             FROM psc AS p
               JOIN session s ON (s.CenterID=p.CenterID)
@@ -227,7 +235,7 @@ class ImagingBrowserRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisi
         // user's sites, but for now this maintains the previous
         // behaviour of requiring the registration site to match
         // one of the user's sites.
-        $cid = (int )$row['CenterID'];
+        $cid = new \CenterID($row['CenterID']);
         $pid = (int )$row['ProjectID'];
         unset($row['CenterID']);
         unset($row['ProjectID']);

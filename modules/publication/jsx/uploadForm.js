@@ -1,6 +1,11 @@
 import React from 'react';
 import ProjectFormFields from './projectFields';
 import swal from 'sweetalert2';
+import PropTypes from 'prop-types';
+import {
+  FormElement,
+  TextboxElement,
+} from 'jsx/Form';
 
 /**
  * Publication upload form component
@@ -37,21 +42,29 @@ class PublicationUploadForm extends React.Component {
    * Fetch data
    */
   fetchData() {
-    let self = this;
-    $.ajax(this.props.DataURL, {
-      dataType: 'json',
-      success: function(data) {
-        self.setState({
-          Data: data,
-          isLoaded: true,
-        });
-      },
-      error: function(data, errorCode, errorMsg) {
-        console.error(data, errorCode, errorMsg);
-        self.setState({
+    fetch(this.props.DataURL, {
+      method: 'GET',
+    }).then((response) => {
+      if (!response.ok) {
+        console.error(response.status);
+        this.setState({
           loadError: 'An error occurred when loading the form!',
         });
-      },
+        return;
+      }
+
+      response.json().then(
+        (data) => this.setState({
+          Data: data,
+          isLoaded: true,
+        })
+      );
+    }).catch((error) => {
+      // Network error
+      console.error(error);
+      this.setState({
+        loadError: 'An error occurred when loading the form!',
+      });
     });
   }
 
@@ -64,6 +77,7 @@ class PublicationUploadForm extends React.Component {
 
   /**
    * Set file data
+   *
    * @param {string} formElement
    * @param {*} value
    */
@@ -78,6 +92,7 @@ class PublicationUploadForm extends React.Component {
 
   /**
    * Set form data
+   *
    * @param {string} formElement
    * @param {*} value
    */
@@ -91,6 +106,7 @@ class PublicationUploadForm extends React.Component {
 
   /**
    * Add list item
+   *
    * @param {string} formElement
    * @param {*} value
    * @param {string} pendingValKey
@@ -108,6 +124,7 @@ class PublicationUploadForm extends React.Component {
 
   /**
    * Remove list item
+   *
    * @param {string} formElement
    * @param {*} value
    */
@@ -127,6 +144,7 @@ class PublicationUploadForm extends React.Component {
 
   /**
    * Handle submit
+   *
    * @param {object} e - Event object
    */
   handleSubmit(e) {
@@ -155,41 +173,38 @@ class PublicationUploadForm extends React.Component {
       }
     }
 
-    $.ajax({
-      type: 'POST',
-      url: this.props.action,
-      data: formObj,
-      cache: false,
-      contentType: false,
-      processData: false,
-      success: function() {
-        // reset form data
-        this.setState({
-          formData: {},
-          numFiles: 0,
+    fetch(this.props.action, {
+      method: 'POST',
+      body: formObj,
+    }).then((response) => {
+      if (!response.ok) {
+        console.error(response.status);
+        response.json().then((data) => {
+          let message = (data && data.message) || '';
+          swal.fire('Something went wrong!', message, 'error');
         });
-        swal.fire(
-          {
-            title: 'Submission Successful!',
-            type: 'success',
-          },
-          function() {
-            window.location.replace(loris.BaseURL + '/publication/');
-          }
-        );
-      }.bind(this),
-      error: function(jqXHR) {
-        console.error(jqXHR);
-        let resp = '';
-        try {
-          resp = JSON.parse(jqXHR.responseText).message;
-        } catch (e) {
-          console.error(e);
-        }
-        swal.fire('Something went wrong!', resp, 'error');
-      },
+        return;
+      }
+
+      // reset form data
+      this.setState({
+        formData: {},
+        numFiles: 0,
+      });
+
+      swal.fire(
+        {
+          title: 'Submission Successful!',
+          type: 'success',
+        }).then(function() {
+          window.location.replace(loris.BaseURL + '/publication/');
+        });
+    }).catch((error) => {
+      // Network error
+      console.error(error);
+      swal.fire('Something went wrong!', '', 'error');
     });
-  }
+   }
 
   /**
    * Renders the React component.
@@ -261,6 +276,7 @@ class PublicationUploadForm extends React.Component {
               removeListItem={this.removeListItem}
               toggleEmailNotify={this.toggleEmailNotify}
               uploadTypes={this.state.Data.uploadTypes}
+              projectOptions={this.state.Data.projectOptions}
               users={this.state.Data.users}
               allVOIs={this.state.Data.allVOIs}
               allKWs={this.state.Data.allKWs}
@@ -273,5 +289,10 @@ class PublicationUploadForm extends React.Component {
     );
   }
 }
+PublicationUploadForm.propTypes = {
+  DataURL: PropTypes.string,
+  action: PropTypes.string,
+  editMode: PropTypes.bool,
+};
 
 export default PublicationUploadForm;

@@ -295,7 +295,7 @@ of this reference a CandidateObject. A CandidateObject is a JSON object of the f
         "Site"    : Site,
         "EDC"     : "YYYY-MM-DD",
         "DoB"     : "YYYY-MM-DD",
-        "Sex"     : "Male|Female"
+        "Sex"     : "Male|Female|Other"
 }
 ```
 
@@ -326,7 +326,7 @@ The body of the POST request should be a candidate key with a JSON object of the
         "PSCID"   : PSCID,
         "EDC"     : "YYYY-MM-DD",
         "DoB"     : "YYYY-MM-DD",
-        "Sex"     : "Male|Female",
+        "Sex"     : "Male|Female|Other",
         "Site"    : SiteName,
     }
 }
@@ -342,7 +342,7 @@ A response code of 201 Created will be returned on success, 409 Conflict if
 the PSCID already exists, 403 Forbidden when the user is creating a candidate at 
 a site other than the list of sitenames the user is affiliated with, and a 400 
 Bad Request if any data provided is invalid (PSCID format, date format, sex
-something other than Male|Female, invalid project name, invalid sitename, etc). 
+something other than Male|Female|Other, invalid project name, invalid sitename, etc). 
 A successful POST request will return a CandidateObject for the newly created 
 candidate.
 
@@ -355,6 +355,12 @@ If a GET request for a candidate is issued such as
 
 ```
 GET /candidates/$CandID
+```
+
+or
+
+```
+GET /candidates/$PSCID
 ```
 
 A JSON object representing that candidate will be returned.
@@ -375,8 +381,16 @@ PUT / PATCH are not supported for candidates in this version of the
 API.
 
 It will return a 200 OK on success, a 404 if the candidate does not exist, and
-a 400 Bad Request if the CandID is invalid (not a 6 digit integer). The same is
-true of all of the API hierarchy under /candidates/$CandID.
+a 400 Bad Request if the CandID or PSCID is invalid or there are multiple
+entries in the database with the same PSCID. The same is
+true of all of the API hierarchy under /candidates/$CandID (which
+may all use PSCID in place of CandID, as long as there is a single
+unique PSCID with that identifier in the database.)
+
+Note that it's theoretically possible that a study may have a PSCID that
+is the same value as a different CandID (ie. PSCID=123456 for one candidate, but
+CandID=123456 for a different candidate.) The caller should verify the candidate
+object in the Meta key to ensure the correct candidate was retrieved.
 
 ### 3.2 Getting Candidate visit data
 
@@ -396,7 +410,7 @@ The JSON object is of the form:
         "CandID" : CandID,
         "Visit"  : VisitLabel,
         "Site"   : SiteName,
-        "Battery": "NameOfSubproject",
+        "Cohort": "NameOfCohort",
         "Project" : ProjectName
     },
     "Stages" : {
@@ -416,10 +430,27 @@ The JSON object is of the form:
 }
 ```
 
-A PUT of the same format but with only the Meta fields will create the VisitLabel
+A PUT request with only the Meta fields will create the VisitLabel
 for this candidate, in an unstarted stage if the Visit label provided is valid.
 
-PATCH is not supported for Visit Labels.
+A PATCH request of the form:
+```js
+{
+    "CandID"  : 317604,
+    "Visit"   : 'Visit 01',
+    "Site"    : 'DCC',
+    "Battery" : 'Stale',
+    "Project" : 'Pumpernickel',
+    "Stages" : {
+        "Visit" : {
+            "Date" : "YYYY-MM-DD",
+            "Status" : "In Progress"
+        }
+    }
+}
+```
+will update the Visit stage date and status and start the next stage if the Visit stage
+is 'Not Started' and the CandID and Visit label provided are valid.
 
 It will return a 404 Not Found if the visit label does not exist for this candidate
 (as well as anything under the /candidates/$CandID/$VisitLabel hierarchy)
@@ -431,9 +462,10 @@ Loris, or Approval has not occurred)
 ### 3.3 Candidate Instruments
 ```
 GET /candidates/$CandID/$VisitLabel/instruments
+POST /candidates/$CandID/$VisitLabel/instruments
 ```
 
-Will return a JSON object of the form:
+GET will return a JSON object of the form:
 
 ```js
 {
@@ -449,7 +481,10 @@ Where the instruments array represents the instruments that were administered fo
 candidate at that visit. InstrumentNames are the short names and the forms for them
 SHOULD all be retrievable through the `project` portion of the API.
 
-PUT / PATCH / POST are not currently supported for candidate instruments.
+POST accepts data of the same format. Any instruments in the Instrument key not currently in the visit test battery will be added to
+the battery.
+
+PUT / PATCH are not currently supported for candidate instruments.
 
 #### 3.3.1 The Candidate Instrument Data
 
@@ -473,7 +508,7 @@ The format returned by a GET request is a JSON document of the form:
         "Candidate" : $CandID,
         "DDE" : boolean
     },
-    "$InstrumentName" : {
+    "Data" : {
         "FieldName1" : "Value1",
         "FieldName2" : "Value2",
         ...
@@ -1105,3 +1140,33 @@ Returns raw file with the appropriate MimeType headers for the archival file
 with all BIDS files retrieved from `/candidates/$CandID/$Visit/recordings/$Filename`.
 
 Only `GET` is currently supported.
+
+
+## 7.0 Sites API
+
+The Sites API list available sites for the requesting user.
+
+```
+GET /sites
+```
+
+Will return a list of sites in this Loris instance. There is no corresponding PUT or PATCH
+request. The JSON returned is of the form:
+
+```js
+{
+  "Sites" : [
+    {
+      "Name": "string",
+      "Alias": "string",
+      "MRI alias": "string"
+    },
+    ...
+  ]
+}
+```
+
+`Alias` and `MRI alias` are short strings that are used as "tags" to identify a site or a group of sites. Those aliases are often used for display or file naming purposes. (e.g: PSCID generation `MTL00001`). The `MRI alias` field is typically populated only for sites which collect imaging data. 
+
+* Note that only the `Name` property is unique across all sites.
+

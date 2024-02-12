@@ -21,7 +21,7 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->DB->insert(
@@ -60,10 +60,11 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
         $this->DB->insert(
             'flag',
             [
-                'ID'        => '999999',
-                'SessionID' => '999999',
-                'Test_name' => 'testtest',
-                'CommentID' => '11111111111111111',
+                'ID'         => '999999',
+                'SessionID'  => '999999',
+                'Data_entry' => 'In Progress',
+                'Test_name'  => 'testtest',
+                'CommentID'  => '11111111111111111',
             ]
         );
         // Set up database wrapper and config
@@ -74,7 +75,7 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->DB->delete("session", ['CandID' => '900000']);
         $this->DB->delete("candidate", ['CandID' => '900000']);
@@ -93,9 +94,9 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
     private function _testContent($content)
     {
         $this->_landing();
-        $bodyText = $this->webDriver->findElement(WebDriverBy::cssSelector("body"))
+        $bodyText = $this->safeFindElement(WebDriverBy::cssSelector("#page"))
             ->getText();
-        $this->assertContains($content, $bodyText);
+        $this->assertStringContainsString($content, $bodyText);
     }
     /**
      * Testing instrument element appears in the body.
@@ -143,17 +144,17 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
     function testTextElement()
     {
         $this->_landing();
-        $textElement = $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Name("testText")
         )->sendKeys("Test Text successful");
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Name("fire_away")
         )->click();
         $data =  $this->DB->pselectOne(
             'SELECT Data FROM flag where SessionID = 999999',
             []
         );
-        $this->assertContains('Test Text successful', $data);
+        $this->assertStringContainsString('Test Text successful', $data);
     }
 
     /**
@@ -164,17 +165,17 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
     function testCheckBoxElement()
     {
         $this->_landing();
-        $textElement = $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Name("testCheckbox")
         )->click();
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Name("fire_away")
         )->click();
         $data =  $this->DB->pselectOne(
             'SELECT Data FROM flag where SessionID = 999999',
             []
         );
-        $this->assertContains('"testCheckbox":"1"', $data);
+        $this->assertStringContainsString('"testCheckbox":"1"', $data);
     }
 
     /**
@@ -186,11 +187,14 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
     {
         // select 'Yes' option and check it.
         $this->_landing();
-        $select  = $this->safeFindElement(WebDriverBy::Name("consent"));
+        $select  = $this->safeFindElement(
+            WebDriverBy::cssSelector("select[name='consent']")
+        );
         $element = new WebDriverSelect($select);
+        sleep(1);
         $element->selectByVisibleText("Yes");
 
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Name("fire_away")
         )->click();
 
@@ -198,15 +202,18 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
             'SELECT Data FROM flag where SessionID = 999999',
             []
         );
-        $this->assertContains('"consent":"yes"', $data);
+        $this->assertStringContainsString('"consent":"yes"', $data);
 
         // select 'No' option and check it.
         $this->_landing();
-        $select  = $this->safeFindElement(WebDriverBy::Name("consent"));
+        sleep(1);
+        $select  = $this->safeFindElement(
+            WebDriverBy::cssSelector("select[name='consent']")
+        );
         $element = new WebDriverSelect($select);
         $element->selectByVisibleText("No");
 
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Name("fire_away")
         )->click();
 
@@ -214,7 +221,7 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
             'SELECT Data FROM flag where SessionID = 999999',
             []
         );
-        $this->assertContains('"consent":"no"', $data);
+        $this->assertStringContainsString('"consent":"no"', $data);
 
     }
 

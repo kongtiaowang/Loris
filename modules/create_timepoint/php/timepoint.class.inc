@@ -3,6 +3,7 @@
 namespace LORIS\create_timepoint;
 
 use LORIS\StudyEntities\Candidate\CandID;
+use LORIS\VisitController;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 use \LORIS\Middleware\ETagCalculator;
@@ -64,79 +65,46 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         }
 
         // Setup variables
-        $conflict       = []; // conflict messages.
-        $config         = \NDB_Config::singleton();
-        $candidate      = \Candidate::singleton(new CandID($values['candID']));
-        $allSubprojects = \Utility::getSubprojectList();
+        $conflict = []; // conflict messages.
 
-        // All subprojects from config file (error).
-        if (empty($allSubprojects)) {
-            $conflict['subprojectID'] = 'No subprojects have been defined
-            for this study. If you are an administrator, please use the
-            Configuration module to add new subprojects.';
-        }
-
-        // List of valid subprojects for a given project
-        $subprojList = $candidate->getValidSubprojects();
-        if (empty($subprojList)) {
-            $conflict['subprojectID'] = 'No subprojects have been
-            defined for the project this candidate is affiliated with.
-            If you are an administrator, please use the Configuration module to
-            add new subprojects and associate them with projects.';
-        }
-        $values['subproject'] = array_intersect_key(
-            \Utility::getSubprojectList(),
-            $candidate->getValidSubprojects()
-        );
-
-        // Retrieve visit labels.
-        $visit_options      = [];
-        $visitLabelSettings = $config->getSetting('visitLabel');
-        foreach (
-            \Utility::associativeToNumericArray($visitLabelSettings) as $visitLabel
-        ) {
-            if (!empty($values['subproject'])) {
-                $visitLabel   = \Utility::associativeToNumericArray($visitLabel)[0];
-                $labelOptions = [];
-                $items        = \Utility::associativeToNumericArray(
-                    $visitLabel['labelSet']['item']
-                );
-                foreach ($items as $item) {
-                    $item = \Utility::associativeToNumericArray($item)[0];
-                    $labelOptions[$item['@']['value']] = $item['#'];
-                }
-                $visit_options[$visitLabel['@']['subprojectID']]
-                    = array_filter($labelOptions);
-            }
-        }
-        $values['visit'] = $visit_options;
-
-        // List sites
-        $values['psc'] = array_intersect(
-            \Utility::getSiteList(),
-            \User::singleton()->getSiteNames()
-        );
-
-        // List languages
-        $languages = \Utility::getLanguageList();
-        if (count($languages) > 1) {
-            array_unshift($languages, null);
-        }
-        $values['languages'] = $languages;
-
-        // List projects
-        $user = \User::singleton();
-        $user_list_of_projects = $user->getProjectIDs();
-        $projectOptions        = [];
-        foreach ($user_list_of_projects as $projectID) {
-            $project = \Project::getProjectFromID($projectID);
-            $projectOptions[$projectID] = $project->getName();
+        //Projects and sites should be limited to the logged in user's affiliations
+        $user           = $request->getAttribute("user");
+        $userProjects   = $user->getProjects();
+        $projectOptions = [];
+        foreach ($userProjects as $project) {
+            $projectOptions[$project->getId()->__toString()] = $project->getName();
         }
         $values['project'] = $projectOptions;
+        $values['psc']     = \Utility::getSiteNameListByIDs($user->getCenterIDs());
+
+        //Cohorts should be determined by project options
+        //Nested array of valid suprojects grouped by projects
+        $cohortGroups = [];
+        foreach ($projectOptions as $pid=>$pname) {
+            $cohortGroups[$pid] = \Utility::getCohortList(
+                new \ProjectID(strval($pid))
+            );
+        }
+        $values['cohortGroups'] = $cohortGroups;
+
+        //Visits are determined by cohort-project associations.
+        $visitGroups = [];
+        foreach ($cohortGroups as $pid=>$cohortList) {
+            foreach ($cohortList as $sid=>$title) {
+                $visitGroups[$pid][$sid] = \Utility::getVisitsForProjectCohort(
+                    new \ProjectID(strval($pid)),
+                    $sid
+                );
+            }
+        }
+        $values['visitGroups'] = $visitGroups;
+
+        // List languages
+        $values['languages'] = \Utility::getLanguageList();
 
         if (!empty($conflict)) {
             return new \LORIS\Http\Response\JSON\Conflict(
-                $conflict['subprojectID']
+                $conflict['cohortID']
             );
         }
         if (empty($values['psc'])) {
@@ -159,6 +127,11 @@ class Timepoint extends \NDB_Page implements ETagCalculator
     {
         // Parse POST request body.
         $values = json_decode((string) $request->getBody(), true);
+        if (!is_array($values)) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                'Invalid request'
+            );
+        }
 
         if (!$this->_verifyCreatePermissions($request, $values['identifier'])) {
             return new \LORIS\Http\Response\JSON\Forbidden(
@@ -178,7 +151,7 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         if ($num_sites == 1) {
             $site = \Site::singleton($user_list_of_sites[0]);
         } else if ($num_sites > 1) {
-            $site = \Site::singleton(intval($values['psc']));
+            $site = \Site::singleton(new \CenterID(($values['psc'])));
         }
 
         // Project
@@ -188,7 +161,7 @@ class Timepoint extends \NDB_Page implements ETagCalculator
             // if there is only one project, autoselect first project from array of 1
             $project = \Project::getProjectFromID(array_pop($user_list_of_projects));
         } else if (count($user_list_of_projects) > 1) {
-            $project_id = intval($values['psc']);
+            $project_id = new \ProjectID($values['project']);
             $project    = \Project::getProjectFromID($project_id);
         }
 
@@ -197,10 +170,21 @@ class Timepoint extends \NDB_Page implements ETagCalculator
                 json_encode($values['conflict'])
             );
         }
+
+        //Visit - Get all visits to map ID back to label for session table
+        $visits     = \Utility::getVisitsForProjectCohort(
+            $project->getId(),
+            intval($values['cohort'])
+        );
+        $visitLabel = $visits[$values['visit']];
+        $visitName  = (new VisitController(
+            $this->loris->getDatabaseConnection()
+        ))->getVisitFromVisitLabel($visitLabel)->getName();
+
         \TimePoint::createNew(
             \Candidate::singleton(new CandID($values['candID'])),
-            intval($values['subproject']),
-            $values['visit'] ?? null,
+            intval($values['cohort']),
+            $visitName,
             $site,
             $project,
             intval($values['languages']) ?? null
@@ -224,11 +208,7 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         $candidate = \Candidate::singleton(new CandID($identifier));
         return (
             $user->hasPermission('data_entry') &&
-            (in_array(
-                $candidate->getData('RegistrationCenterID'),
-                $user->getData('CenterIDs')
-            )
-            )
+            $user->hasCenter($candidate->getCenterID())
         );
     }
 
@@ -254,8 +234,9 @@ class Timepoint extends \NDB_Page implements ETagCalculator
             null : $values['psc'];
 
         // validate site entered
-        $site = (int) $values['psc'];
-        $user_list_of_sites = $user->getData('CenterIDs');
+        $site = !empty($values['psc']) ? new \CenterID($values['psc']) : null;
+
+        $user_list_of_sites = $user->getCenterIDs();
         $num_sites          = count($user_list_of_sites);
         $conflict           = [];
         if ($num_sites == 0) {
@@ -278,15 +259,26 @@ class Timepoint extends \NDB_Page implements ETagCalculator
                 = "A project must be selected from the available dropdown.";
         }
 
-        $candid       = $values['candID'];
-        $subprojectID = intval($values['subproject']);
-        $visitLabel   = $values['visit'] ?? '';
+        $candid    = $values['candID'];
+        $cohortID  = intval($values['cohort']);
+        $projectID = new \ProjectID($values['project']);
+
+        //Visit - Get all visits to map ID back to label for session table
+        $visits     = \Utility::getVisitsForProjectCohort(
+            $projectID,
+            intval($values['cohort'])
+        );
+        $visitLabel = $visits[$values['visit']];
+        $visitName  = (new VisitController(
+            $this->loris->getDatabaseConnection()
+        ))->getVisitFromVisitLabel($visitLabel)->getName();
 
         try {
             \TimePoint::isValidVisitLabel(
                 new CandID($candid),
-                $subprojectID,
-                $visitLabel
+                $projectID,
+                $cohortID,
+                $visitName,
             );
         } catch (\LorisException $exception) {
             $conflict['visitLabel'] = $exception->getMessage();

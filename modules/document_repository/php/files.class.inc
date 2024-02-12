@@ -37,6 +37,7 @@ class Files extends \NDB_Page
             [
                 'document_repository_view',
                 'document_repository_delete',
+                'document_repository_edit'
             ]
         );
     }
@@ -62,9 +63,7 @@ class Files extends \NDB_Page
         case "POST":
             return $this->uploadDocFile($request);
         case "PUT":
-            $tmp = $request->getBody();
-            $arr = (array)json_decode($tmp);
-            return $this->editDocFile($arr);
+            return $this->editDocFile($request);
         case "DELETE":
             $id = basename($request->getUri()->getPath());
             $this->deleteFile($id);
@@ -72,10 +71,26 @@ class Files extends \NDB_Page
                 ['message' => 'File deleted.']
             ));
         case "GET":
-            $filename   = urldecode(basename($request->getUri()->getPath()));
+            $route = explode('/', $request->getUri()->getPath());
+            if ($route[2] == 'meta') {
+                $id = urldecode(basename($request->getUri()->getPath()));
+                return (new \LORIS\Http\Response())
+                    ->withHeader("Content-Type", "text/plain")
+                    ->withBody(
+                        new \LORIS\Http\StringStream(
+                            json_encode($this->getUploadDocFields($id))
+                        )
+                    );
+            }
+
+            $filename = explode(
+                'Files',
+                urldecode($request->getUri()->getPath())
+            )[1];
+
             $downloader = new \LORIS\FilesDownloadHandler(
                 new \SPLFileInfo(
-                    $downloadpath . $request->getAttribute('user')->getUsername()
+                    $downloadpath
                 )
             );
             return $downloader->handle(
@@ -90,11 +105,11 @@ class Files extends \NDB_Page
     /**
      * Handles the document editing process
      *
-     * @param array $req the request
+     * @param ServerRequestInterface $req The incoming PSR7 request
      *
      * @return ResponseInterface
      */
-    function editDocFile(array $req): ResponseInterface
+    function editDocFile(ServerRequestInterface $req): ResponseInterface
     {
         $factory = \NDB_Factory::singleton();
         $user    = $factory->user();
@@ -104,6 +119,7 @@ class Files extends \NDB_Page
                 self::FORBIDDEN
             );
         }
+        $req          = json_decode((string)$req->getBody(), true);
         $updateValues = [
             'instrument' => $req['instrument'] ?? null,
             'comments'   => $req['comments'] ?? null,
@@ -111,7 +127,7 @@ class Files extends \NDB_Page
             'visitLabel' => $req['visitLabel'] ?? null,
             'pscid'      => $req['pscid'] ?? null,
         ];
-        $fileName     = $req['fileName'];
+        $fileName     = $req['fileName'] ?? null;
         $Notifier     = new \NDB_Notifier(
             "document_repository",
             "edit"
@@ -120,7 +136,7 @@ class Files extends \NDB_Page
             $db->update(
                 'document_repository',
                 $updateValues,
-                ['record_id' => $req['id']]
+                ['record_id' => $req['id'] ?? null]
             );
             $factory  = \NDB_Factory::singleton();
             $baseURL  = $factory->settings()->getBaseURL();
@@ -196,7 +212,7 @@ class Files extends \NDB_Page
      */
     function getUploadDocFields(string $id): array
     {
-        $db    = \Database::singleton();
+        $db    = $this->loris->getDatabaseConnection();
         $query = $db->pselect(
             "SELECT * FROM document_repository_categories",
             []
@@ -251,7 +267,7 @@ class Files extends \NDB_Page
     function parseCategory(array $value): array
     {
         $id           = $value['id'];
-        $DB           = \Database::singleton();
+        $DB           = $this->loris->getDatabaseConnection();
         $categoryName = $value['category_name'];
         do {
             if ($value['parent_id'] != 0) {
@@ -291,20 +307,15 @@ class Files extends \NDB_Page
         $name     = $user->getUsername();
 
         if (! $user->hasPermission('document_repository_edit')) {
-            return new \LORIS\Http\Response\JSON\Forbidden(
-                self::FORBIDDEN
-            );
+            header("HTTP/1.1 403 Forbidden");
+            exit;
         }
 
         // Do some validation and fail early on bad inputs.
-        $body         = $request->getParsedBody();
-        $uploadedFile = $request->getUploadedFiles()['file'] ?? null;
-        if (is_null($uploadedFile)) {
-            return new \LORIS\Http\Response\JSON\BadRequest(
-                'No file uploaded'
-            );
+        $body = $request->getParsedBody();
+        if (!is_array($body)) {
+            throw new \LorisException("Expected parsed body to be an array");
         }
-        $filename = $uploadedFile->getClientFilename();
 
         $category = $body['category']; // required
         if (!\Utility::valueIsPositiveInteger($category)) {
@@ -313,95 +324,133 @@ class Files extends \NDB_Page
             return new \LORIS\Http\Response\JSON\BadRequest(self::BAD_CATEGORY);
         }
 
-        if ($this->existFilename($filename)) {
-            // If a record of this a file with the same name already exists
-            // in the database, don't proceed with upload.
-            return new \LORIS\Http\Response\JSON\Conflict(
-                self::FILE_EXISTS_IN_DB
-            );
+        $uploadedFiles = $request->getUploadedFiles()['files'] ?? null;
+
+        if (is_null($uploadedFiles)) {
+            header("HTTP/1.1 413 Too_large");
+            exit;
         }
 
-        // Initialize FilesUploadHandler
-        $path = \Utility::pathJoin(
-            $config->getSetting("documentRepositoryPath"),
-            $name
-        );
-        mkdir($path, 0600);
+        $uploadedFiles = is_array($uploadedFiles)
+            ? $uploadedFiles : [$uploadedFiles];
 
-        $targetdir = new \SplFileInfo($path);
+        $responseMessages = [];
+        $errorCounter     = 0;
+        $addedFiles       = [];
 
-        $fileSize = $uploadedFile->getSize();
-        $fileName = $uploadedFile->getClientFileName();
-        $fileType = pathinfo($fileName, PATHINFO_EXTENSION);
-        try{
-            $uploader = (new \LORIS\FilesUploadHandler($targetdir))
-                ->withPermittedMIMETypes(
-                    'application/pdf',
-                    'image/jpeg',
-                    'image/png',
-                    'image/gif',
-                    'image/svg+xml',
-                    'text/plain'
+        foreach ($uploadedFiles as $uploadedFile) {
+            $filename = urldecode($uploadedFile->getClientFilename());
+
+            if ($this->existFilename($filename)) {
+                // If a record of this a file with the same name already exists
+                // in the database, don't proceed with upload.
+                $responseMessages[] = "$filename: " . self::FILE_EXISTS_IN_DB;
+                $errorCounter      += 1;
+                continue;
+            }
+
+            // Initialize FilesUploadHandler
+            $path = \Utility::pathJoin(
+                $config->getSetting("documentRepositoryPath"),
+                $name
+            );
+            if (!is_dir($path)) {
+                mkdir($path, 0770);
+            }
+
+            $targetdir = new \SplFileInfo($path);
+
+            try {
+                $uploader = (new \LORIS\FilesUploadHandler($targetdir))
+                    ->withPermittedMIMETypes(
+                        'application/pdf',
+                        'image/jpeg',
+                        'image/png',
+                        'image/gif',
+                        'image/svg+xml',
+                        'text/plain'
+                    );
+            } catch (\ConfigurationException $e) {
+                $responseMessages[] = "$filename: {$e->getMessage()}";
+                $errorCounter      += 1;
+                continue;
+            }
+
+            $response = $uploader->handle(
+                $request->withUploadedFiles([$uploadedFile])
+            );
+
+            if (!in_array($response->getStatusCode(), [200, 201], true)) {
+                $errorResponse      = json_decode(
+                    $response->getBody()->getContents()
                 );
-        } catch (\ConfigurationException $e) {
-            return new \LORIS\Http\Response\JSON\InternalServerError(
-                $e->getMessage()
+                $responseMessages[] = "$filename: $errorResponse->error";
+                $errorCounter      += 1;
+                continue;
+            }
+
+            // Prepare fields for database entry once upload has completed.
+            $site = $body['forSite']       !== '' ? $body['forSite'] : null;
+            $site = $DB->pselectOne(
+                "SELECT CenterID FROM psc WHERE Name=:name",
+                ['name' => $site]
             );
+
+            // Set empty values equal to NULL for insertion into the database.
+            $instrument = !empty($body['instrument']) ? $body['instrument'] : null;
+            $pscid      = !empty($body['pscid'])      ? $body['pscid']      : null;
+            $visit      = !empty($body['visitLabel']) ? $body['visitLabel'] : null;
+            $comments   = !empty($body['comments'])   ? $body['comments']   : null;
+            $version    = !empty($body['version'])    ? $body['version']    : null;
+
+            $fileSize = $uploadedFile->getSize();
+            $fileType = pathinfo($filename, PATHINFO_EXTENSION);
+
+            // Insert record of this file into the `document_repository` table.
+            $DB->unsafeInsertOnDuplicateUpdate(
+                'document_repository',
+                [
+                    'File_category' => $category,
+                    'For_site'      => $site,
+                    'comments'      => $comments,
+                    'version'       => $version,
+                    'File_name'     => $filename,
+                    'File_size'     => $fileSize,
+                    'Data_dir'      => "$name/$filename",
+                    'uploaded_by'   => $name,
+                    'Instrument'    => $instrument,
+                    'PSCID'         => $pscid,
+                    'visitLabel'    => $visit,
+                    'File_type'     => $fileType,
+                ]
+            );
+
+            $addedFiles[]       = $filename;
+            $responseMessages[] = "$filename: Success";
         }
 
-        $response = $uploader->handle($request);
-        if (!in_array($response->getStatusCode(), [200, 201], true)) {
-            // Something went wrong. Return early to skip further processing.
-            return $response;
+        if (count($addedFiles) > 0) {
+            $uploadNotifier = new \NDB_Notifier(
+                "document_repository",
+                "upload"
+            );
+            $msg_data       = [
+                'newDocument' => 'Document Repository',
+                'documents'   => $addedFiles,
+            ];
+            $uploadNotifier->notify($msg_data);
         }
 
-        // Prepare fields for database entry once upload has completed.
-        $site = $body['forSite']       !== '' ? $body['forSite'] : null;
-        $site = $DB->pselectOne(
-            "SELECT CenterID FROM psc WHERE Name=:name",
-            ['name' => $site]
-        );
+        $uploadResponse  = '<div class="upload-response">';
+        $uploadResponse .= join("<br/><br/>", $responseMessages);
+        $uploadResponse .= '</div>';
 
-        // Set empty values equal to NULL for insertion into the database.
-        $instrument = !empty($body['instrument']) ? $body['instrument'] : null;
-        $pscid      = !empty($body['pscid'])      ? $body['pscid']      : null;
-        $visit      = !empty($body['visitLabel']) ? $body['visitLabel'] : null;
-        $comments   = !empty($body['comments'])   ? $body['comments']   : null;
-        $version    = !empty($body['version'])    ? $body['version']    : null;
-
-        $fileSize = $uploadedFile->getSize();
-        $fileType = pathinfo($filename, PATHINFO_EXTENSION);
-
-        // Insert record of this file into the `document_repository` table.
-        $DB->insert(
-            'document_repository',
+        return (new \LORIS\Http\Response\JSON\OK(
             [
-                'File_category' => $category,
-                'For_site'      => $site,
-                'comments'      => $comments,
-                'version'       => $version,
-                'File_name'     => $filename,
-                'File_size'     => $fileSize,
-                'Data_dir'      => "$name/$filename",
-                'uploaded_by'   => $name,
-                'Instrument'    => $instrument,
-                'PSCID'         => $pscid,
-                'visitLabel'    => $visit,
-                'File_type'     => $fileType,
+                'message'     => $uploadResponse,
+                'error_count' => $errorCounter
             ]
-        );
-
-        $uploadNotifier = new \NDB_Notifier(
-            "document_repository",
-            "upload"
-        );
-        $msg_data       = [
-            'newDocument' => 'Document Repository',
-            'document'    => $filename,
-        ];
-        $uploadNotifier->notify($msg_data);
-
-        return $response;
+        ));
     }
     /**
      * Check the find name in the database, if exists return false
@@ -412,7 +461,7 @@ class Files extends \NDB_Page
      */
     function existFilename(string $filename): bool
     {
-        $DB        = \Database::singleton();
+        $DB        = $this->loris->getDatabaseConnection();
         $fileCount =  $DB->pselectOne(
             "SELECT COUNT(*) FROM document_repository
              WHERE File_Name=:name",

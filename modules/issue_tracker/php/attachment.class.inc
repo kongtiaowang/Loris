@@ -66,6 +66,13 @@ class Attachment extends \NDB_Page implements ETagCalculator
                     WHERE
                         ID = :ID';
         $result  = $DB->pselectRow($query, ['ID' => $ID]);
+        if ($result === null) {
+            return (new \LORIS\Http\Response())
+                ->withStatus(404)
+                ->withHeader('Content-Type', 'text/plain')
+                ->withBody(new \LORIS\Http\StringStream("Not found"));
+
+        }
 
         $factory = \NDB_Factory::singleton();
         $config  = $factory->config();
@@ -85,12 +92,12 @@ class Attachment extends \NDB_Page implements ETagCalculator
         $name = rawurldecode($result['file_name']);
 
         return (new \LORIS\Http\Response())
+            ->withStatus(200)
             ->withHeader('Content-Type', $result['mime_type'])
             ->withHeader(
                 'Content-Disposition',
                 'attachment; filename=' . basename($name)
             )
-            ->withStatus(200)
             ->withBody(new \LORIS\Http\FileStream($fileToDownload));
     }
 
@@ -105,16 +112,19 @@ class Attachment extends \NDB_Page implements ETagCalculator
     private function _handlePOST(ServerRequestInterface $request) : ResponseInterface
     {
         // Parse POST request body.
-        $values     = $request->getQueryParams();
-        $user       = \NDB_Factory::singleton()->user();
-        $attachment = new \LORIS\issue_tracker\UploadHelper();
-        $response   = $attachment->setupUploading(
+        $values        = $request->getQueryParams();
+        $user          = \NDB_Factory::singleton()->user();
+        $attachment    = new \LORIS\issue_tracker\UploadHelper();
+        $uploadedFiles = $request->getUploadedFiles();
+        $response      = $attachment->setupUploading(
             $user,
-            $_FILES,
+            $uploadedFiles,
             $values
         );
         return new \LORIS\Http\Response\JsonResponse(
             $response
+                ? ['success' => 'upload succeeded']
+                : ['error' => $attachment->errorMessage]
         );
     }
 

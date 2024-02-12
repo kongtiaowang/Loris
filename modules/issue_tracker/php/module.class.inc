@@ -82,9 +82,9 @@ class Module extends \Module
         $DB      = $factory->database();
         $baseURL = $factory->settings()->getBaseURL();
 
-        switch($type) {
+        switch ($type) {
         case 'usertasks':
-            $url = 'assignee=' . $user->getUsername() . '&status=acknowledged&'.
+            $url = 'assignee=' . $user->getFullname() . '&status=acknowledged&'.
                    'status=assigned&status=feedback&status=new&status=resolved';
             return [
                 new \LORIS\dashboard\TaskQueryWidget(
@@ -93,7 +93,7 @@ class Module extends \Module
                     $DB,
                     "SELECT COUNT(*) FROM issues
                      WHERE status != 'closed' AND assignee="
-                     . $DB->quote($user->getData('UserID')),
+                     . $DB->quote($user->getUsername()),
                     '',
                     '',
                     $baseURL . "/issue_tracker/?$url",

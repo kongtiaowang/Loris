@@ -30,7 +30,7 @@ class HelpFile
     /**
      * Identifies the help file
      *
-     * @var    array
+     * @var    ?int
      * @access private
      */
     var $helpID;
@@ -55,7 +55,7 @@ class HelpFile
     static function &factory($helpID)
     {
         // create DB object
-        $DB =& \Database::singleton();
+        $DB = \NDB_Factory::singleton()->database();
 
         $obj = new HelpFile;
 
@@ -67,7 +67,7 @@ class HelpFile
             ['HID' => $helpID]
         );
         // set the help file
-        $obj->data = $result;
+        $obj->data = $result ?? [];
 
         return $obj;
     }

@@ -1,6 +1,10 @@
 import FilterForm from 'FilterForm';
 import {Tabs, TabPane} from 'Tabs';
 import PublicationUploadForm from './uploadForm.js';
+import {createRoot} from 'react-dom/client';
+import React from 'react';
+import PropTypes from 'prop-types';
+import {ButtonElement} from 'jsx/Form';
 
 /**
  * Publication index component
@@ -8,16 +12,12 @@ import PublicationUploadForm from './uploadForm.js';
 class PublicationIndex extends React.Component {
   /**
    * @constructor
-   * @param {object} props - React Component properties
    */
   constructor() {
     super();
     loris.hiddenHeaders = [
       'Description',
-      'Keywords',
-      'Variables Of Interest',
       'Publication ID',
-      'Collaborators',
     ];
     this.state = {
       isLoaded: false,
@@ -41,23 +41,27 @@ class PublicationIndex extends React.Component {
    * Fetch data
    */
   fetchData() {
-    $.ajax(this.props.DataURL, {
+    fetch(this.props.DataURL, {
       method: 'GET',
-      dataType: 'json',
-      success: function(data) {
-        this.setState({
-          Data: data,
-          isLoaded: true,
-        });
-      }.bind(this),
-      error: function(error) {
-        console.error(error);
-      },
-    });
+    }).then(
+      (response) => {
+        if (!response.ok) {
+          console.error(response.status);
+          return;
+        }
+
+        response.json().then(
+          (data) => this.setState({
+            Data: data,
+            isLoaded: true,
+          })
+        );
+    }).catch((error) => console.error(error));
   }
 
   /**
    * Update filter
+   *
    * @param {*} filter
    */
   updateFilter(filter) {
@@ -156,7 +160,6 @@ class PublicationIndex extends React.Component {
    * @param {*} cell
    * @param {object} rowData
    * @param {string[]} rowHeaders
-   *
    * @return {JSX} - React markup for the component
    */
   formatColumn(column, cell, rowData, rowHeaders) {
@@ -185,13 +188,16 @@ class PublicationIndex extends React.Component {
     return <td className={classes}>{cell}</td>;
   }
 }
+PublicationIndex.propTypes = {
+  DataURL: PropTypes.string,
+};
 
-$(function() {
-  const publicationIndex = (
+document.addEventListener('DOMContentLoaded', () => {
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <div className="page-publications">
       <PublicationIndex DataURL={`${loris.BaseURL}/publication/?format=json`}/>
     </div>
   );
-
-  ReactDOM.render(publicationIndex, document.getElementById('lorisworkspace'));
 });

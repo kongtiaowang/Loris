@@ -1,6 +1,7 @@
 /* exported SelectField, SearchField, SelectDropdown */
 
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 
 /**
  * MultiSelect Dropdown component
@@ -53,6 +54,12 @@ class SelectField extends Component {
     );
   }
 }
+SelectField.propTypes = {
+  toggleCheckbox: PropTypes.func,
+  label: PropTypes.string,
+  checked: PropTypes.bool,
+  multi: PropTypes.bool,
+};
 
 /**
  * Search Field React component
@@ -112,6 +119,10 @@ class SearchField extends Component {
     );
   }
 }
+SearchField.propTypes = {
+  updateFilter: PropTypes.func,
+  filter: PropTypes.string,
+};
 
 /**
  * Select Dropdown React component
@@ -137,6 +148,16 @@ class SelectDropdown extends Component {
     this.selectAll = this.selectAll.bind(this);
     this.deselectAll = this.deselectAll.bind(this);
     this.updateFilter = this.updateFilter.bind(this);
+    this.overlayClickHandler = this.overlayClickHandler.bind(this);
+  }
+
+  /**
+   * Close Dropdown if overlay clicked.
+   */
+  overlayClickHandler() {
+    if (this.state.open) {
+      this.toggleDropdown();
+    }
   }
 
   /**
@@ -149,6 +170,7 @@ class SelectDropdown extends Component {
 
   /**
    * Toggle the checkbox
+   *
    * @param {string} key
    */
   toggleCheckbox(key) {
@@ -287,27 +309,47 @@ class SelectDropdown extends Component {
         selectLabel = this.props.selectedCategory;
       }
     }
+    const overlay = this.state.open ? (
+       <div style={{
+         top: 0,
+         left: 0,
+         zIndex: 100,
+         position: 'fixed',
+         width: 'calc(100vw)',
+         height: 'calc(100vh)',
+        }} onClick={this.overlayClickHandler}
+       />
+     ) : null;
     return (
-      <div className={parentDivClass}>
-        <button type="button"
-                className="btn btn-default dropdown-toggle col-xs-12"
-                onClick={this.toggleDropdown}>
-          <div className="col-xs-10">
-              <span className="pull-left">
-                {selectLabel}
-              </span>
-          </div>
-          <div className="pull-right">
-            <span className="glyphicon glyphicon-menu-down"></span>
-          </div>
-        </button>
-        <ul className="dropdown-menu">
-          {options}
-        </ul>
-      </div>
+      <>
+        <div className={parentDivClass}>
+          <button type="button"
+                  className="btn btn-default dropdown-toggle col-xs-12"
+                  onClick={this.toggleDropdown}>
+            <div className="col-xs-10">
+                <span className="pull-left">
+                  {selectLabel}
+                </span>
+            </div>
+            <div className="pull-right">
+              <span className="glyphicon glyphicon-menu-down"></span>
+            </div>
+          </button>
+          <ul className="dropdown-menu">
+            {options}
+          </ul>
+        </div>
+        {overlay}
+      </>
     );
   }
 }
+SelectDropdown.propTypes = {
+  multi: PropTypes.bool,
+  options: PropTypes.array,
+  onFieldClick: PropTypes.func,
+  selectedCategory: PropTypes.string,
+};
 
 window.SelectField = SelectField;
 window.SearchField = SearchField;

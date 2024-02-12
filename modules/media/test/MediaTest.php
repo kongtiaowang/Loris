@@ -49,10 +49,17 @@ class MediaTest extends LorisIntegrationTest
     {
         $this->setupPermissions(["media_read"]);
         $this->safeGet($this->url . "/media/");
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertNotContains("You do not have access to this page.", $bodyText);
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
+            $bodyText
+        );
         $this->resetPermissions();
     }
     /**
@@ -65,10 +72,13 @@ class MediaTest extends LorisIntegrationTest
     {
         $this->setupPermissions([]);
         $this->safeGet($this->url . "/media/");
-        $bodyText = $this->webDriver->findElement(
+        $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
-        $this->assertContains("You do not have access to this page.", $bodyText);
+        $this->assertStringContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
         $this->resetPermissions();
     }
     /**
@@ -94,39 +104,40 @@ class MediaTest extends LorisIntegrationTest
      */
     function testVisitAndEditLink()
     {
-        $this->markTestSkipped(
-            'Skipping tests until Travis and Router get along better'
-        );
         $this->safeGet($this->url . "/media/");
+
         // click the Visit Label link
-        $this->webDriver->executescript(
-            "document.querySelector('#dynamictable > tbody > tr:nth-child(1)".
-            " > td:nth-child(4) > a').click()"
+        $this->safeClick(
+            WebDriverBy::cssSelector(
+                '#dynamictable > tbody > tr:nth-child(1) > td:nth-child(4) > a'
+            )
         );
         $text = $this->webDriver->executescript(
             "return document.querySelector('body').textContent"
         );
-        $this->assertContains("TimePoint", $text);
+        $this->assertStringContainsString("TimePoint", $text);
 
         $this->safeGet($this->url . "/media/");
+
         // click the Edit link
-        $this->webDriver->executescript(
-            "document.querySelector('#dynamictable > tbody > tr:nth-child(1)".
-            " > td:nth-child(12) > a').click()"
+        $this->safeClick(
+            WebDriverBy::cssSelector(
+                '#dynamictable > tbody > tr:nth-child(1) > td:nth-child(13) button'
+            )
         );
         $text = $this->webDriver->executescript(
             "return document.querySelector('body').textContent"
         );
-        $this->assertContains("Edit Media File", $text);
+        $this->assertStringContainsString("Edit Media File", $text);
 
     }
     /**
-     * Testing filter funtion and clear button
+     * Testing filter function and clear button
      *
-     * @param string $element The input element loaction
-     * @param string $table   The first row location in the table
-     * @param string $records The records number in the table
-     * @param string $value   The test value
+     * @param string  $element The input element loaction
+     * @param string  $table   The first row location in the table
+     * @param ?string $records The records number in the table
+     * @param string  $value   The test value
      *
      * @return void
      */
@@ -147,7 +158,7 @@ class MediaTest extends LorisIntegrationTest
             $bodyText = $this->webDriver->executescript(
                 "return document.querySelector('$table').textContent"
             );
-            $this->assertContains($value, $bodyText);
+            $this->assertStringContainsString($value, $bodyText);
         } else {
             $this->safeFindElement(WebDriverBy::cssSelector($element));
             $this->webDriver->executescript(
@@ -162,7 +173,7 @@ class MediaTest extends LorisIntegrationTest
                 WebDriverBy::cssSelector($row)
             )->getText();
             // 4 means there are 4 records under this site.
-            $this->assertContains($records, $bodyText);
+            $this->assertStringContainsString($records, $bodyText);
         }
         //test clear filter
             $btn = self::$clearFilter;

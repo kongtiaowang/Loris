@@ -34,8 +34,9 @@ class LorisApiAuthenticatedTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function setUp()
+    public function setUp(): void
     {
+        $this->skipSelenium = true;
         parent::setUp();
 
         $this->_version = 'v0.0.4-dev';
@@ -75,7 +76,6 @@ class LorisApiAuthenticatedTest extends LorisIntegrationTest
         $this->DB->update('Config', $set, $where);
 
         $this->apiLogin('UnitTester', $this->validPassword);
-
 
         $this->DB->insert(
             "candidate",
@@ -128,6 +128,39 @@ class LorisApiAuthenticatedTest extends LorisIntegrationTest
                 'CommentID' => 'DDE_11111111111111111',
             ]
         );
+
+        // 1 is inserted by LorisIntegrationTest
+        $this->DB->insert(
+            'user_project_rel',
+            [
+                'ProjectID' => '2',
+                'UserID' => '999990',
+            ],
+        );
+
+        // 1 is inserted by LorisIntegrationTest
+        $this->DB->insert(
+            'user_psc_rel',
+            [
+                'CenterID' => '2',
+                'UserID' => '999990',
+            ],
+        );
+        $this->DB->insert(
+            'user_psc_rel',
+            [
+                'CenterID' => '3',
+                'UserID' => '999990',
+            ],
+        );
+        $this->DB->insert(
+            'user_psc_rel',
+            [
+                'CenterID' => 4,
+                'UserID' => 999990,
+            ],
+        );
+
     }
 
     /**
@@ -167,23 +200,42 @@ class LorisApiAuthenticatedTest extends LorisIntegrationTest
     }
 
     /**
-     * Used to test login
-     *
-     * @return void
-     */
-    function testLoginSuccess()
-    {
-        $this->assertArrayHasKey('Authorization', $this->headers);
-        $this->assertArrayHasKey('Accept', $this->headers);
-    }
-
-    /**
      * Overrides LorisIntegrationTest::tearDown() to set the original key back.
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
+        // Only delete the ones we setup in setUp.
+        $this->DB->delete(
+            "user_project_rel",
+            [
+                "UserID" => '999990',
+                "ProjectID" => '2',
+            ],
+        );
+        $this->DB->delete(
+            "user_psc_rel",
+            [
+                "UserID" => '999990',
+                "CenterID" => '2',
+            ],
+        );
+        $this->DB->delete(
+            "user_psc_rel",
+            [
+                "UserID" => '999990',
+                "CenterID" => '3',
+            ],
+        );
+        $this->DB->delete(
+            "user_psc_rel",
+            [
+                "UserID" => '999990',
+                "CenterID" => '4',
+            ],
+        );
+
         $this->DB->delete("session", ['CandID' => '900000']);
         $this->DB->delete("candidate", ['CandID' => '900000']);
         $this->DB->delete("flag", ['ID' => '999999']);

@@ -1,9 +1,8 @@
-/* global ReactDOM */
-
+import {createRoot} from 'react-dom/client';
 import MediaEditForm from './editForm';
 const args = QueryString.get(document.currentScript.src);
 
-$(function() {
+document.addEventListener('DOMContentLoaded', () => {
   const mediaEditForm = (
     <div className="page-edit-form">
       <div className="row">
@@ -20,5 +19,7 @@ $(function() {
     </div>
   );
 
-  ReactDOM.render(mediaEditForm, document.getElementById('lorisworkspace'));
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(mediaEditForm);
 });

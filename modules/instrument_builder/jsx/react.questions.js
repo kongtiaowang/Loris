@@ -63,18 +63,20 @@ class LorisElement extends Component {
           elementHtml = <SelectElement label={element.Description}
                                        options={element.Options.Values}
                                        emptyOption={false}
+                                       sortByValue={false}
                                        multiple={true}/>;
         } else {
           elementHtml = <SelectElement label={element.Description}
                                        emptyOption={false}
+                                       sortByValue={false}
                                        options={element.Options.Values}/>;
         }
         break;
       case 'date':
         elementHtml = <DateElement
           label={element.Description}
-          minYear={element.Options.MinDate}
-          maxYear={element.Options.MaxDate}
+          minYear={element.Options.MinYear}
+          maxYear={element.Options.MaxYear}
         />;
         break;
       case 'numeric':
@@ -92,6 +94,9 @@ class LorisElement extends Component {
     );
   }
 }
+LorisElement.propTypes = {
+  element: PropTypes.object,
+};
 
 /**
  * This is the React class for the question text input
@@ -112,6 +117,7 @@ class QuestionText extends Component {
   /**
    * On change
    * Keep track of the current input
+   *
    * @param {object} e - Event object
    */
   onChange(e) {
@@ -155,6 +161,8 @@ class QuestionText extends Component {
 }
 QuestionText.propTypes = {
   inputLabel: PropTypes.string,
+  updateState: PropTypes.func,
+  element: PropTypes.object,
 };
 QuestionText.defaultProps = {
   inputLabel: 'Question Text',
@@ -179,6 +187,7 @@ class BasicOptions extends Component {
   /**
    * On change
    * Keep track of the current input
+   *
    * @param {object} e - Event object
    */
   onChange(e) {
@@ -225,6 +234,10 @@ class BasicOptions extends Component {
     );
   }
 }
+BasicOptions.propTypes = {
+  updateState: PropTypes.func,
+  element: PropTypes.object,
+};
 
 /**
  * This is the React class for the Dropdown options
@@ -247,6 +260,7 @@ class DropdownOptions extends Component {
   /**
    * On change
    * Keep track of the current input
+   *
    * @param {object} e - Event object
    */
   onChange(e) {
@@ -373,6 +387,10 @@ class DropdownOptions extends Component {
     );
   }
 }
+DropdownOptions.propTypes = {
+  updateState: PropTypes.func,
+  element: PropTypes.object,
+};
 
 /**
  * This is the React class for the date options
@@ -398,20 +416,25 @@ class DateOptions extends Component {
    * Called by React when the component has been rendered on the page.
    */
   componentDidMount() {
-    this.props.element.Options.dateFormat = '';
+    // Check if the date format is already set (editing elements)
+    // if not, set it to default value (new elements)
+    if (!this.props.element.Options.dateFormat) {
+      this.props.element.Options.dateFormat = 'Date';
+    }
   }
 
   /**
    * On change
    * Keep track of the inputed years
+   *
    * @param {object} e - Event object
    */
   onChange(e) {
     let options = Instrument.clone(this.props.element.Options);
-    if (e.target.id === 'datemin') {
-      options.MinDate = e.target.value;
-    } else if (e.target.id === 'datemax') {
-      options.MaxDate = e.target.value;
+    if (e.target.id === 'yearmin') {
+      options.MinYear = e.target.value;
+    } else if (e.target.id === 'yearmax') {
+      options.MaxYear = e.target.value;
     } else if (e.target.id === 'dateFormat') {
       options.dateFormat = e.target.value;
     }
@@ -424,8 +447,9 @@ class DateOptions extends Component {
    * @return {JSX} - React markup for the component
    */
   render() {
-    let minYear = this.props.element.Options.MinDate;
-    let maxYear = this.props.element.Options.MaxDate;
+    let minYear = this.props.element.Options.MinYear;
+    let maxYear = this.props.element.Options.MaxYear;
+    let dateFormat = this.props.element.Options.dateFormat;
 
     let dateOptionsClass = 'options form-group';
     let errorMessage = '';
@@ -454,7 +478,7 @@ class DateOptions extends Component {
             <input
               className="form-control"
               type="number"
-              id="datemin"
+              id="yearmin"
               min="1900"
               max="2100"
               value={minYear}
@@ -467,7 +491,7 @@ class DateOptions extends Component {
             <input
               className="form-control"
               type="number"
-              id="datemax"
+              id="yearmax"
               min="1900"
               max="2100"
               onChange={this.onChange}
@@ -481,7 +505,8 @@ class DateOptions extends Component {
             <select
               id="dateFormat"
               className="form-control"
-              onChange={this.onChange}>
+              onChange={this.onChange}
+              defaultValue={dateFormat}>
               {Object.keys(dateFormatOptions).map(function(option, key) {
                 return (
                   <option key={key} value={option}>
@@ -496,6 +521,10 @@ class DateOptions extends Component {
     );
   }
 }
+DateOptions.propTypes = {
+  element: PropTypes.object,
+  updateState: PropTypes.func,
+};
 
 /**
  * This is the React class for the numeric options
@@ -517,6 +546,7 @@ class NumericOptions extends Component {
    * On change
    * Keep track of the inputed numbers, casting them to
    * integer values.
+   *
    * @param {object} e - Event object
    */
   onChange(e) {
@@ -584,6 +614,10 @@ class NumericOptions extends Component {
     );
   }
 }
+NumericOptions.propTypes = {
+  updateState: PropTypes.func,
+  element: PropTypes.object,
+};
 
 /**
  * This is the React class for the dropdown for the
@@ -604,6 +638,7 @@ class ListElements extends Component {
 
   /**
    * Set the desired question type
+   *
    * @param {*} newId
    * @param {*} newValue
    */
@@ -642,8 +677,8 @@ class ListElements extends Component {
         break;
       case 'date':
         newState.Options = {
-          MinDate: '',
-          MaxDate: '',
+          MinYear: '',
+          MaxYear: '',
         };
         break;
       case 'numeric':
@@ -812,6 +847,10 @@ class ListElements extends Component {
     );
   }
 }
+ListElements.propTypes = {
+  value: PropTypes.string,
+  updateState: PropTypes.func,
+};
 
 /**
  * This is the React class for adding a new element or
@@ -864,6 +903,7 @@ class AddElement extends Component {
 
   /**
    * Update element state
+   *
    * @param {object} newState
    */
   updateState(newState) {
@@ -891,8 +931,8 @@ class AddElement extends Component {
     }
 
     if (selected === 'date') {
-      let min = this.state.Options.MinDate;
-      let max = this.state.Options.MaxDate;
+      let min = this.state.Options.MinYear;
+      let max = this.state.Options.MaxYear;
       let minYear = parseInt(min, 10);
       let maxYear = parseInt(max, 10);
       let minDate = Date.parse(min);
@@ -910,7 +950,7 @@ class AddElement extends Component {
       if (minDate > maxDate && min !== '' && max !== '') {
         let temp = (this.state.error) ? this.state.error : {};
 
-        temp.dateOption = 'End year append before start year';
+        temp.dateOption = 'End year happened before start year';
         this.setState({
           error: temp,
         });
@@ -990,12 +1030,60 @@ class AddElement extends Component {
       });
     }
 
+    if (questionName.length > 64 && selected !== 'textbox'
+        && selected !== 'textarea' && selected !== 'date'
+        && selected !== 'numeric') {
+      // Error, question name is needed for the desired type. Set the element
+      // error flag for the questionName with message. Set the hasError flag
+      let temp = (this.state.error) ? this.state.error : {};
+      temp.questionName = 'Please shorten to 64 characters maximum';
+      this.setState({
+        error: temp,
+      });
+      hasError = true;
+    } else if (this.state.error) {
+      // No error, remove the element's questionName error flag if set
+      let temp = this.state.error;
+      delete temp.questionName;
+      this.setState({
+        error: temp,
+      });
+    }
+    if (hasError) {
+      // An error is present, return
+      return;
+    }
+
+    if (questionName.length > 57 && (selected === 'textbox'
+      || selected === 'textarea' || selected === 'date'
+      || selected === 'numeric')) {
+      // Error, question name is needed for the desired type. Set the element
+      // error flag for the questionName with message. Set the hasError flag
+      let temp = (this.state.error) ? this.state.error : {};
+      temp.questionName = 'Please shorten to 57 characters maximum';
+      this.setState({
+        error: temp,
+      });
+      hasError = true;
+    } else if (this.state.error) {
+      // No error, remove the elememt's questionName error flag if set
+      let temp = this.state.error;
+      delete temp.questionName;
+      this.setState({
+        error: temp,
+      });
+    }
+    if (hasError) {
+      // An error is present, return
+      return;
+    }
+
     if (questionName === '' && selected !== 'header' && selected !== 'label' &&
       selected !== 'line' && selected !== 'page-break') {
       // Error, question name is needed for the desired type. Set the element
       // error flag for the questionName with message. Set the hasError flag
       let temp = (this.state.error) ? this.state.error : {};
-      temp.questionName = 'Must specifiy name for database to save value into';
+      temp.questionName = 'Must specify name for database to save value into';
       this.setState({
         error: temp,
       });
@@ -1073,6 +1161,7 @@ class AddElement extends Component {
 
   /**
    * Add an option to the options array
+   *
    * @param {boolean} multi
    */
   addOption(multi) {
@@ -1081,10 +1170,19 @@ class AddElement extends Component {
     // setting any values
     this.setState(function(state) {
       let temp = state.options;
-      let option = multi ?
-        $('#newmultiSelectOption').val() :
-        $('#newSelectOption').val();
-      temp.push(option);
+      const newmultiSelectOption = document.getElementById(
+        'newmultiSelectOption'
+      );
+      const newSelectOption = document.getElementById(
+        'newSelectOption'
+      );
+
+      if (multi && newmultiSelectOption) {
+        temp.push(newmultiSelectOption.value);
+      } else if (newSelectOption) {
+        temp.push(newSelectOption.value);
+      }
+
       return {
         options: temp,
       };
@@ -1198,6 +1296,12 @@ class AddElement extends Component {
     );
   }
 }
+AddElement.propTypes = {
+  element: PropTypes.object,
+  updateQuestions: PropTypes.func,
+  addPage: PropTypes.func,
+  index: PropTypes.number,
+};
 
 window.LorisElement = LorisElement;
 window.QuestionText = QuestionText;

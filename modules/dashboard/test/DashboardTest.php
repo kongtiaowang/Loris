@@ -34,7 +34,7 @@ class DashboardTest extends LorisIntegrationTest
      *
      * @return void
      */
-    function setUp()
+    function setUp(): void
     {
         parent::setUp();
         //Insert a pending user
@@ -69,10 +69,10 @@ class DashboardTest extends LorisIntegrationTest
             ]
         );
         $this->DB->insert(
-            "subproject",
+            "cohort",
             [
-                'SubprojectID' => '55',
-                'title'        => 'TESTinSubproject',
+                'CohortID' => '55',
+                'title'    => 'TESTinCohort',
             ]
         );
         $this->DB->insert(
@@ -97,14 +97,14 @@ class DashboardTest extends LorisIntegrationTest
         $this->DB->insert(
             "session",
             [
-                'ID'           => '222222',
-                'CandID'       => '999888',
-                'CenterID'     => '55',
-                'ProjectID'    => '7777',
-                'UserID'       => '1',
-                'MRIQCStatus'  => '',
-                'SubprojectID' => '55',
-                'Active'       => 'Y',
+                'ID'          => '222222',
+                'CandID'      => '999888',
+                'CenterID'    => '55',
+                'ProjectID'   => '7777',
+                'UserID'      => '1',
+                'MRIQCStatus' => '',
+                'CohortID'    => '55',
+                'Active'      => 'Y',
             ]
         );
         $this->DB->insert(
@@ -121,6 +121,7 @@ class DashboardTest extends LorisIntegrationTest
             [
                 'ID'        => '111',
                 'Test_name' => 'TestName11111111111',
+                'Sub_group' => 1,
             ]
         );
         $this->DB->insert(
@@ -229,7 +230,7 @@ class DashboardTest extends LorisIntegrationTest
      *
      * @return void
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->DB->run('SET foreign_key_checks =0');
         $this->DB->delete(
@@ -288,8 +289,8 @@ class DashboardTest extends LorisIntegrationTest
             ]
         );
         $this->DB->delete(
-            "subproject",
-            ['SubprojectID' => '55']
+            "cohort",
+            ['CohortID' => '55']
         );
         $this->DB->delete(
             "Project",
@@ -330,9 +331,18 @@ class DashboardTest extends LorisIntegrationTest
     public function testDashboardPageLoads()
     {
         $this->safeGet($this->url . '/dashboard/');
-        $welcomeText = $this->webDriver
-            ->findElement(WebDriverBy::cssSelector(".welcome"))->getText();
-        $this->assertContains("Welcome", $welcomeText);
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector(".welcome")
+        )->getText();
+        $this->assertStringContainsString("Welcome", $bodyText);
+        $this->assertStringNotContainsString(
+            "You do not have access to this page.",
+            $bodyText
+        );
+        $this->assertStringNotContainsString(
+            "An error occured while loading the page.",
+            $bodyText
+        );
     }
 
     /**
@@ -346,31 +356,32 @@ class DashboardTest extends LorisIntegrationTest
     public function testDashboardRecruitmentView()
     {
         $this->safeGet($this->url . '/dashboard/');
-        $views = $this->webDriver
-            ->findElement(
-                WebDriverBy::Xpath(
-                    "//*[@id='lorisworkspace']/div[1]".
-                    "/div[2]/div[1]/div/div/button"
-                )
-            );
+        $views = $this->safeFindElement(
+            WebDriverBy::cssSelector(
+                "#statistics_widgets .panel:nth-child(1) .views button"
+            )
+        );
         $views->click();
 
-        $assertText1 = $this->webDriver
-            ->findElement(
-                WebDriverBy::XPath(
-                    "//*[@id='lorisworkspace']/div[1]".
-                    "/div[2]/div[1]/div/div/ul/li[1]/a"
-                )
-            )->getText();
-        $assertText2 = $this->webDriver
-            ->findElement(
-                WebDriverBy::XPath(
-                    "//*[@id='lorisworkspace']/div[1]".
-                    "/div[2]/div[1]/div/div/ul/li[2]/a"
-                )
-            )->getText();
-        $this->assertContains("View overall recruitment", $assertText1);
-        $this->assertContains("View site breakdown", $assertText2);
+        $assertText1 = $this->safeFindElement(
+            WebDriverBy::cssSelector(
+                "#statistics_widgets .panel:nth-child(1)".
+                " .dropdown-menu li:nth-child(1)"
+            )
+        )->getText();
+
+        $assertText2 = $this->safeFindElement(
+            WebDriverBy::cssSelector(
+                "#statistics_widgets .panel:nth-child(1)".
+                " .dropdown-menu li:nth-child(2)"
+            )
+        )->getText();
+
+        $this->assertStringContainsString("Recruitment - overall", $assertText1);
+        $this->assertStringContainsString(
+            "Recruitment - site breakdown",
+            $assertText2
+        );
     }
 
     /**
@@ -473,7 +484,7 @@ class DashboardTest extends LorisIntegrationTest
         );
         $this->safeGet($this->url . '/dashboard/');
         $bodyText = $this->webDriver->getPageSource();
-        $this->assertContains("Incomplete forms", $bodyText);
+        $this->assertStringContainsString("Incomplete forms", $bodyText);
         $this->resetPermissions();
     }
     /**
@@ -527,7 +538,7 @@ class DashboardTest extends LorisIntegrationTest
         );
         $this->safeGet($this->url . '/dashboard/');
         $bodyText = $this->webDriver->getPageSource();
-        $this->assertContains("test.jpg", $bodyText);
+        $this->assertStringContainsString("test.jpg", $bodyText);
         $this->resetPermissions();
     }
 
@@ -564,9 +575,10 @@ class DashboardTest extends LorisIntegrationTest
     {
         $this->safeGet($this->url . '/main.php?logout=true');
         $this->login("UnitTester", $this->validPassword);
-        $welcomeText = $this->webDriver
-            ->findElement(WebDriverBy::cssSelector(".welcome"))->getText();
-        $this->assertContains("Unit Tester", $welcomeText);
+        $welcomeText = $this->safeFindElement(
+            WebDriverBy::cssSelector(".welcome")
+        )->getText();
+        $this->assertStringContainsString("Unit Tester", $welcomeText);
     }
     /**
      * Make sure there is no recruitment target set in the configuration
@@ -577,13 +589,16 @@ class DashboardTest extends LorisIntegrationTest
      */
     private function _testPlan2()
     {
+        $this->setupConfigSetting('recruitmentTarget', '');
         $this->safeGet($this->url . '/dashboard/');
-        $testText = $this->webDriver
-            ->findElement(WebDriverBy::Id("overall-recruitment"))->getText();
-        $this->assertContains(
+        $testText = $this->safeFindElement(
+            WebDriverBy::Id("overall-recruitment")
+        )->getText();
+        $this->assertStringContainsString(
             "Please add a recruitment target for Overall Recruitment.",
             $testText
         );
+        $this->restoreConfigSetting("recruitmentTarget");
     }
     /**
      * Put a recruitment target in the configuration module and check that
@@ -594,31 +609,32 @@ class DashboardTest extends LorisIntegrationTest
     private function _testPlan3()
     {
         $this->safeGet($this->url . '/configuration/');
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Xpath(
                 "//*[@id='lorisworkspace']/div[1]/ul/li[5]/a"
             )
         )->click();
 
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Xpath(
-                "//*[@id='48']/input"
+                "//*[@id='49']/input"
             )
         )->clear();
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Xpath(
-                "//*[@id='48']/input"
+                "//*[@id='49']/input"
             )
         )->sendKeys('888');
-        $this->webDriver->findElement(
+        $this->safeFindElement(
             WebDriverBy::Xpath(
                 "//*[@id='dashboard']/div/form/div[3]/div/button[1]"
             )
         )->click();
         $this->safeGet($this->url . '/dashboard/');
-        $testText = $this->webDriver
-            ->findElement(WebDriverBy::Id("overall-recruitment"))->getText();
-        $this->assertContains(
+        $testText = $this->safeFindElement(
+            WebDriverBy::Id("overall-recruitment")
+        )->getText();
+        $this->assertStringContainsString(
             "888",
             $testText
         );
@@ -634,13 +650,12 @@ class DashboardTest extends LorisIntegrationTest
     private function _testPlan5And6()
     {
         $this->safeGet($this->url . '/dashboard/');
-        $testText = $this->webDriver
-            ->findElement(
-                WebDriverBy::Xpath(
-                    "//*[@id='lorisworkspace']/div/div[1]/div[2]"
-                )
-            )->getText();
-        $this->assertNotContains(
+        $testText = $this->safeFindElement(
+            WebDriverBy::Xpath(
+                "//*[@id='lorisworkspace']/div/div[1]/div[2]"
+            )
+        )->getText();
+        $this->assertStringNotContainsString(
             "There have been no candidates registered yet.",
             $testText
         );
@@ -656,18 +671,18 @@ class DashboardTest extends LorisIntegrationTest
     private function _testPlan7And8()
     {
         $this->safeGet($this->url . '/dashboard/');
-        $testText = $this->webDriver
-            ->findElement(
-                WebDriverBy::Xpath(
-                    "//*[@id='lorisworkspace']/div/div[1]/div[3]"
-                )
-            )->getText();
-        $this->assertContains(
+        $testText = $this->safeFindElement(
+            WebDriverBy::cssSelector(
+                "#statistics_studyprogression .panel-body div:nth-child(1)"
+            )
+        )->getText();
+
+        $this->assertStringContainsString(
             "Scan sessions per site",
             $testText
         );
 
-        $this->assertNotContains(
+        $this->assertStringNotContainsString(
             "There have been no candidates registered yet.",
             $testText
         );

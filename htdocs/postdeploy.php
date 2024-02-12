@@ -16,21 +16,21 @@ if (file_exists('../project/config.xml')) {
 }
 
 $url      = parse_url(getenv("CLEARDB_DATABASE_URL"));
-$server   = $url["host"];
-$username = $url["user"];
-$password = $url["pass"];
-$db       = substr($url["path"], 1);
+$server   = $url["host"] ?? '';
+$username = $url["user"] ?? 'loris';
+$password = $url["pass"] ?? '';
+$db       = substr($url["path"] ?? '', 1);
 $conn     = new PDO("mysql:host=".$server."; dbname=".$db, $username, $password);
 
 $path_to_file = '../SQL/0000-00-00-schema.sql';
 $sqls         = file_get_contents($path_to_file);
 $conn->exec($sqls);
 
-$path_to_file = '../SQL/0000-00-01-Permission.sql';
+$path_to_file = '../SQL/0000-00-01-Menus.sql';
 $sqls         = file_get_contents($path_to_file);
 $conn->exec($sqls);
 
-$path_to_file = '../SQL/0000-00-02-Menus.sql';
+$path_to_file = '../SQL/0000-00-02-Permission.sql';
 $sqls         = file_get_contents($path_to_file);
 $conn->exec($sqls);
 

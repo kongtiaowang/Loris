@@ -1,5 +1,13 @@
 import ProjectFormFields from './projectFields';
 import swal from 'sweetalert2';
+import PropTypes from 'prop-types';
+import {
+  FormElement,
+  SelectElement,
+  StaticElement,
+  TextboxElement,
+  ButtonElement,
+} from 'jsx/Form';
 
 /**
  * View project component
@@ -32,6 +40,7 @@ class ViewProject extends React.Component {
 
   /**
    * Handle submit
+   *
    * @param {object} e - Event object
    */
   handleSubmit(e) {
@@ -59,26 +68,24 @@ class ViewProject extends React.Component {
       }
     }
 
-    $.ajax({
-      type: 'POST',
-      url: this.props.action,
-      data: formObj,
-      cache: false,
-      contentType: false,
-      processData: false,
-      success: function() {
-        swal.fire('Edit Successful!', '', 'success');
-      },
-      error: function(jqXHR) {
-        console.error(jqXHR);
-        let resp = 'Something went wrong!';
-        try {
-          resp = JSON.parse(jqXHR.responseText).message;
-        } catch (e) {
-          console.error(e);
-        }
-        swal.fire('Edit failed!', resp, 'error');
-      },
+    fetch(this.props.action, {
+      method: 'POST',
+      body: formObj,
+    }).then((response) => {
+      if (!response.ok) {
+        console.error(response.status);
+        response.json().then((data) => {
+          let message = (data && data.message) || 'Something went wrong!';
+          swal.fire('Edit failed!', message, 'error');
+        });
+        return;
+      }
+
+      swal.fire('Edit Successful!', '', 'success');
+    }).catch((error) => {
+      // Network error
+      console.error(error);
+      swal.fire('Edit failed!', 'Something went wrong!', 'error');
     });
   }
 
@@ -86,61 +93,76 @@ class ViewProject extends React.Component {
    * Fetch data
    */
   fetchData() {
-    let self = this;
-    $.ajax(this.props.DataURL, {
-      dataType: 'json',
-      success: function(data) {
-        let formData = {
-          title: data.title,
-          description: data.description,
-          leadInvestigator: data.leadInvestigator,
-          leadInvestigatorEmail: data.leadInvestigatorEmail,
-          notifyLead: false,
-          status: data.status,
-          voiFields: data.voi,
-          keywords: data.keywords,
-          collaborators: data.collaborators,
-          usersWithEditPerm: data.usersWithEditPerm,
-          rejectedReason: data.rejectedReason,
-        };
-        // set formdata for file meta data
-        if (data.files) {
-          data.files.forEach(function(f) {
-            let existFileFlag = 'existingUpload_';
-            let pubType = existFileFlag
-                          + 'publicationType_'
-                          + f.PublicationUploadID;
-            let pubCit = existFileFlag
-                         + 'publicationCitation_'
-                         + f.PublicationUploadID;
-            let pubVer = existFileFlag
-                         + 'publicationVersion_'
-                         + f.PublicationUploadID;
-            formData[pubType] = f.PublicationUploadTypeID;
-            formData[pubCit] = f.Citation;
-            formData[pubVer] = f.Version;
-          });
-        }
-
-        self.setState({
-          formData: formData,
-          users: data.users,
-          statusOpts: data.statusOpts,
-          userCanEdit: data.userCanEdit,
-          allVOIs: data.allVOIs,
-          allKWs: data.allKWs,
-          allCollabs: data.allCollabs,
-          uploadTypes: data.uploadTypes,
-          files: data.files,
-          isLoaded: true,
-        });
-      },
-      error: function(error, errorCode, errorMsg) {
-        console.error(error, errorCode, errorMsg);
-        self.setState({
+    fetch(this.props.DataURL, {
+      method: 'GET',
+    }).then((response) => {
+      if (!response.ok) {
+        console.error(response.status);
+        this.setState({
           error: 'An error occurred when loading the form!',
         });
-      },
+        return;
+      }
+
+      response.json().then(
+        (data) => {
+          let formData = {
+            title: data.title,
+            description: data.description,
+            project: data.project,
+            publishingStatus: data.publishingStatus,
+            datePublication: data.datePublication,
+            journal: data.journal,
+            link: data.link,
+            leadInvestigator: data.leadInvestigator,
+            leadInvestigatorEmail: data.leadInvestigatorEmail,
+            notifyLead: false,
+            status: data.status,
+            voiFields: data.voi,
+            keywords: data.keywords,
+            collaborators: data.collaborators,
+            usersWithEditPerm: data.usersWithEditPerm,
+            rejectedReason: data.rejectedReason,
+          };
+          // set formdata for file meta data
+          if (data.files) {
+            data.files.forEach(function(f) {
+              let existFileFlag = 'existingUpload_';
+              let pubType = existFileFlag
+                + 'publicationType_'
+                + f.PublicationUploadID;
+              let pubCit = existFileFlag
+                + 'publicationCitation_'
+                + f.PublicationUploadID;
+              let pubVer = existFileFlag
+                + 'publicationVersion_'
+                + f.PublicationUploadID;
+              formData[pubType] = f.PublicationUploadTypeID;
+              formData[pubCit] = f.Citation;
+              formData[pubVer] = f.Version;
+            });
+          }
+
+          this.setState({
+            formData: formData,
+            projectOptions: data.projectOptions,
+            users: data.users,
+            statusOpts: data.statusOpts,
+            userCanEdit: data.userCanEdit,
+            allVOIs: data.allVOIs,
+            allKWs: data.allKWs,
+            allCollabs: data.allCollabs,
+            uploadTypes: data.uploadTypes,
+            files: data.files,
+            isLoaded: true,
+          });
+        });
+    }).catch((error) => {
+      // Network error
+      console.error(error);
+      this.setState({
+        error: 'An error occurred when loading the form!',
+      });
     });
   }
 
@@ -153,6 +175,7 @@ class ViewProject extends React.Component {
 
   /**
    * Create file download links
+   *
    * @return {JSX} - React markup for the component
    */
   createFileDownloadLinks() {
@@ -193,6 +216,7 @@ class ViewProject extends React.Component {
 
   /**
    * Create menu filter links
+   *
    * @param {string[]} stringArr
    * @param {string} filterVar
    * @return {JSX} - React markup for the component
@@ -219,6 +243,7 @@ class ViewProject extends React.Component {
 
   /**
    * Create static components
+   *
    * @return {JSX} - React markup for the component
    */
   createStaticComponents() {
@@ -277,6 +302,31 @@ class ViewProject extends React.Component {
           text={this.state.formData.description}
         />
         <StaticElement
+          name="project"
+          label="Project"
+          text={this.state.formData.project}
+        />
+        <StaticElement
+          name="publishingStatus"
+          label="Publishing status"
+          text={this.state.formData.publishingStatus}
+        />
+        <StaticElement
+          name="datePublication"
+          label="Date published"
+          text={this.state.formData.datePublication}
+        />
+        <StaticElement
+          name="journal"
+          label="Journal"
+          text={this.state.formData.journal}
+        />
+        <StaticElement
+          name="link"
+          label="Link"
+          text={this.state.formData.link}
+        />
+        <StaticElement
           name="leadInvestigator"
           label="Lead Investigator"
           text={this.state.formData.leadInvestigator}
@@ -296,6 +346,7 @@ class ViewProject extends React.Component {
 
   /**
    * Create editable components
+   *
    * @return {JSX} - React markup for the component
    */
   createEditableComponents() {
@@ -312,6 +363,7 @@ class ViewProject extends React.Component {
           removeListItem={this.removeListItem}
           toggleEmailNotify={this.toggleEmailNotify}
           uploadTypes={this.state.uploadTypes}
+          projectOptions={this.state.projectOptions}
           users={this.state.users}
           allVOIs={this.state.allVOIs}
           allKWs={this.state.allKWs}
@@ -325,6 +377,7 @@ class ViewProject extends React.Component {
 
   /**
    * Add list item
+   *
    * @param {string} formElement
    * @param {*} value
    * @param {string} pendingValKey
@@ -342,6 +395,7 @@ class ViewProject extends React.Component {
 
   /**
    * Remove list item
+   *
    * @param {string} formElement
    * @param {*} value
    */
@@ -362,6 +416,7 @@ class ViewProject extends React.Component {
 
   /**
    * Set form data
+   *
    * @param {*} formElement
    * @param {*} value
    */
@@ -375,6 +430,7 @@ class ViewProject extends React.Component {
 
   /**
    * Set file data
+   *
    * @param {string} formElement
    * @param {*} value
    */
@@ -509,5 +565,9 @@ class ViewProject extends React.Component {
     );
   }
 }
+ViewProject.propTypes = {
+  action: PropTypes.string,
+  DataURL: PropTypes.string,
+};
 
 export default ViewProject;

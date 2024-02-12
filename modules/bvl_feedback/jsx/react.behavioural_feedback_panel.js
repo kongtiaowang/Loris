@@ -3,6 +3,8 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
+import '../css/bvl_feedback_panel.css';
+
 /**
  * Slider panel component
  */
@@ -35,7 +37,7 @@ class SliderPanel extends Component {
 }
 SliderPanel.propTypes = {
   pscid: PropTypes.string,
-  children: PropTypes.array,
+  children: PropTypes.node,
 };
 
 
@@ -59,7 +61,8 @@ class FeedbackPanelContent extends Component {
 
   /**
    * Mark comment toggle
-   * @param {Number} index
+   *
+   * @param {number} index
    */
   markCommentToggle(index) {
     if (index === this.state.currentEntryToggled) {
@@ -75,7 +78,8 @@ class FeedbackPanelContent extends Component {
 
   /**
    * Open thread
-   * @param {Number} index
+   *
+   * @param {number} index
    */
   openThread(index) {
     this.props.open_thread(index);
@@ -83,7 +87,8 @@ class FeedbackPanelContent extends Component {
 
   /**
    * Close thread
-   * @param {Number} index
+   *
+   * @param {number} index
    */
   closeThread(index) {
     this.props.close_thread(index);
@@ -170,6 +175,7 @@ FeedbackPanelContent.propTypes = {
   candID: PropTypes.string,
   commentID: PropTypes.string,
   sessionID: PropTypes.string,
+  commentToggled: PropTypes.bool,
 };
 
 
@@ -184,12 +190,13 @@ class FeedbackPanelRow extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      threadEntriesToggled: false,
+      threadEntriesToggled: this.props.status === 'opened' ? true : false,
       threadEntriesLoaded: [],
     };
     this.loadServerState = this.loadServerState.bind(this);
     this.toggleEntries = this.toggleEntries.bind(this);
     this.newThreadEntry = this.newThreadEntry.bind(this);
+    this.updateThreadEntry = this.updateThreadEntry.bind(this);
   }
 
   /**
@@ -203,29 +210,39 @@ class FeedbackPanelRow extends Component {
    * Load server state
    */
   loadServerState() {
-    let that = this;
-    $.ajax({
-      type: 'GET',
-      url: loris.BaseURL + '/bvl_feedback/ajax/get_thread_entry_data.php',
-      dataType: 'json',
-      data: {feedbackID: this.props.feedbackID},
-      success: function(data) {
-        that.setState({threadEntriesLoaded: data});
-      },
-      error: function(xhr, desc, err) {
-        console.error(xhr);
-        console.error('Details: ' + desc + '\nError:' + err);
-      },
+    let url = new URL(
+      loris.BaseURL
+      + '/bvl_feedback/ajax/get_thread_entry_data.php'
+    );
+    const params = {feedbackID: this.props.feedbackID};
+    Object.keys(params).forEach(
+      (key) => url.searchParams.append(key, params[key])
+    );
+
+    fetch(url, {
+      method: 'GET',
+    }).then((response) => {
+      if (!response.ok) {
+        console.error(response.status + ': ' + response.statusText);
+        return;
+      }
+
+      response.json().then((data) =>
+        this.setState({threadEntriesLoaded: data})
+      );
+    }).catch((error) => {
+      console.error(error);
     });
   }
 
   /**
    * Toggle entries
-   * @param {boolean} newComment
+   *
+   * @param {boolean} result
    */
-  toggleEntries(newComment) {
+  toggleEntries(result) {
     let toggle = false;
-    if (newComment) {
+    if (result) {
       toggle = true;
     } else {
       toggle = !this.state.threadEntriesToggled;
@@ -235,28 +252,69 @@ class FeedbackPanelRow extends Component {
 
   /**
    * New thread entry
+   *
    * @param {string} comment
    */
   newThreadEntry(comment) {
-    let feedbackID = this.props.feedbackID;
-    let candID = this.props.candID;
-    $.ajax({
-      type: 'POST',
-      url: loris.BaseURL + '/bvl_feedback/ajax/thread_comment_bvl_feedback.php',
-      dataType: 'json',
-      data: {
-        comment: comment,
-        feedbackID: feedbackID,
-        candID: candID,
-      },
-      success: function(response) {
-        this.loadServerState();
-        // end of success function
-      }.bind(this),
-      error: function(xhr, desc, err) {
-        console.error(xhr);
-        console.error('Details: ' + desc + '\nError:' + err);
-      },
+    const formData = new FormData();
+    formData.append('candID', this.props.candID);
+    formData.append('feedbackID', this.props.feedbackID);
+    formData.append('comment', comment);
+
+    fetch(
+      loris.BaseURL
+      + '/bvl_feedback/ajax/thread_comment_bvl_feedback.php',
+      {
+        method: 'POST',
+        body: formData,
+      }
+    ).then((response) => {
+      if (!response.ok) {
+        console.error(response.status + ': ' + response.statusText);
+        return;
+      }
+
+      response.json().then(() =>
+        this.loadServerState()
+      );
+    }).catch((error) => {
+      console.error(error);
+    });
+  }
+
+  updateThreadEntry(entryID, newComment, date) {
+    const formData = new FormData();
+    formData.append('entryID', entryID);
+    formData.append('newComment', newComment);
+    formData.append('date', date);
+    fetch(
+      loris.BaseURL +
+      '/bvl_feedback/ajax/update_thread_comment_bvl_feedback.php',
+      {
+        method: 'POST',
+        body: formData,
+      }
+    ).then(() => {
+      this.loadServerState();
+    }).catch((error) => {
+      console.error(error);
+    });
+  }
+
+  deleteThreadEntry(entryID) {
+    const formData = new FormData();
+    formData.append('entryID', entryID);
+    fetch(
+      loris.BaseURL +
+      '/bvl_feedback/ajax/delete_thread_comment_bvl_feedback.php',
+      {
+        method: 'POST',
+        body: formData,
+      }
+    ).then(() => {
+      this.loadServerState();
+    }).catch((error) => {
+      console.error(error);
     });
   }
 
@@ -276,14 +334,54 @@ class FeedbackPanelRow extends Component {
 
     if (this.state.threadEntriesToggled) {
       arrow = 'glyphicon glyphicon-chevron-down glyphs';
-      threadEntries = this.state.threadEntriesLoaded.map(function(entry, key) {
+      threadEntries = this.state.threadEntriesLoaded.map((entry, key) => {
+        let toggleEditComment = () => {
+          let tempThreadEntriesLoaded = [...this.state.threadEntriesLoaded];
+          tempThreadEntriesLoaded.forEach((threadEntry, index) => {
+            if (index == key) {
+              threadEntry.editComment = !threadEntry.editComment;
+            } else {
+              threadEntry.editComment = false;
+            }
+          });
+          this.setState({threadEntriesLoaded: tempThreadEntriesLoaded});
+        };
         return (
-          <tr key={key} className='thread_entry'>
-            <td colSpan='100%'>
-              {entry.UserID} on {entry.TestDate} commented:<br/>
-              {entry.Comment}
-            </td>
-          </tr>
+          <React.Fragment key={key}>
+            <tr className='thread_entry'>
+              <td colSpan='70%'>
+                <span id='comment_author'>
+                  {entry.Date} {entry.UserID}:{' '}
+                </span>
+                {entry.Comment}
+                <span>
+                  {entry.UserID === entry.current_user && <>
+                    {' '}<a
+                      onClick={() => {
+                        toggleEditComment();
+                      }}
+                    >
+                      <span className='glyphicon glyphicon-pencil' />
+                    </a>{' '}
+                    <a onClick={() => {
+                      this.deleteThreadEntry(entry.EntryID);
+                    }}>
+                      <span className='glyphicon glyphicon-trash' />
+                    </a>
+                  </>}
+                </span>
+              </td>
+            </tr>
+            {entry.editComment ?
+              <CommentEntryForm
+                entryID={entry.EntryID}
+                onCommentSend={this.updateThreadEntry}
+                toggleThisThread={toggleEditComment}
+                value={entry.Comment}
+                date={entry.Date}
+              />
+            : null}
+          </React.Fragment>
         );
       });
     }
@@ -293,44 +391,47 @@ class FeedbackPanelRow extends Component {
       buttonClass = 'btn btn-danger dropdown-toggle btn-sm';
       dropdown = (<li><a onClick={this.props.onClickClose}>Close</a></li>);
       commentButton = (
-        <span className='glyphicon glyphicon-pencil'
-              onClick={this.props.commentToggle}/>
+        <span
+        className='glyphicon glyphicon-comment'
+        onClick={this.props.commentToggle}
+      />
       );
     }
 
     return (
       <tbody>
-      <tr>
-        {this.props.fieldname ?
-          <td>{this.props.fieldname}<br/>{this.props.type}</td> :
-          <td>{this.props.type}</td>}
-        <td>{this.props.author} on:<br/>{this.props.date}</td>
-        <td>
-          <div className='btn-group'>
-            <button name='thread_button' type='button' className={buttonClass}
-                    data-toggle='dropdown' aria-haspopup='true'
-                    aria-expanded='false'>
-              {buttonText}
-              <span className='caret'></span>
-            </button>
-            <ul className='dropdown-menu'>
-              {dropdown}
-            </ul>
-          </div>
-          <span className={arrow}
-                onClick={this.toggleEntries.bind(this, false)}></span>
-          {commentButton}
-        </td>
-      </tr>
-      {this.props.commentToggled ?
-        (<CommentEntryForm
-          user={this.props.user}
-          onCommentSend={this.newThreadEntry}
-          toggleThisThread={this.toggleEntries.bind(this, true)}
-        />) :
-        null
-      }
-      {threadEntries}
+        <tr>
+          {this.props.fieldname ?
+            <td>{this.props.fieldname}<br/>{this.props.type}</td> :
+            <td>{this.props.type}</td>}
+          <td>{this.props.author} on:<br/>{this.props.date}</td>
+          <td>
+            <div className='btn-group'>
+              <button name='thread_button' type='button' className={buttonClass}
+                data-toggle='dropdown' aria-haspopup='true'
+                aria-expanded='false'>
+                {buttonText}
+                <span className='caret'></span>
+              </button>
+              <ul className='dropdown-menu'>
+                {dropdown}
+              </ul>
+            </div>
+            <span className={arrow}
+              onClick={this.toggleEntries.bind(this, false)}></span>
+            {commentButton}
+          </td>
+        </tr>
+
+        {threadEntries}
+        {this.props.commentToggled ?
+          (<CommentEntryForm
+            user={this.props.user}
+            onCommentSend={this.newThreadEntry}
+            toggleThisThread={this.toggleEntries.bind(this, true)}
+          />) :
+          null
+        }
       </tbody>
     );
   }
@@ -344,8 +445,12 @@ FeedbackPanelRow.propTypes = {
   feedbackID: PropTypes.string,
   candID: PropTypes.string,
   onClickOpen: PropTypes.func,
+  status: PropTypes.string,
+  onClickClose: PropTypes.func,
+  commentToggle: PropTypes.func,
+  user: PropTypes.string,
+  commentToggled: PropTypes.bool,
 };
-
 
 /**
  * Comment entry form component
@@ -358,25 +463,41 @@ class CommentEntryForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      value: '',
+      value: props.value ? props.value : '',
+      entryID: -1,
+      date: '',
     };
     this.sendComment = this.sendComment.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    if (props.entryID) {
+      this.state.entryID = props.entryID;
+      this.state.date = props.date;
+    }
   }
 
   /**
    * Send comment
    */
   sendComment() {
-    this.props.onCommentSend(this.state.value);
+    if (this.state.entryID < 0) {
+      this.props.onCommentSend(this.state.value);
+    } else {
+      this.props.onCommentSend(
+        this.state.entryID,
+        this.state.value,
+        this.state.date
+      );
+    }
     this.setState({
-      value: 'Comment added!',
+      value: '',
+      message: 'Comment added!',
     });
     this.props.toggleThisThread();
   }
 
   /**
    * Handle change
+   *
    * @param {object} event
    */
   handleChange(event) {
@@ -391,7 +512,12 @@ class CommentEntryForm extends Component {
   render() {
     return (
       <tr>
-        <td colSpan='100%'>Add a thread entry:
+        <td colSpan='100%'>
+          {
+            this.state.entryID < 0 ?
+            <span> Add a comment: </span> :
+            <span> Update comment: </span>
+          }
           <div className='input-group' style={{width: '100%'}}>
             <textarea
               className='form-control'
@@ -405,9 +531,10 @@ class CommentEntryForm extends Component {
               className='input-group-addon btn btn-primary'
               onClick={this.sendComment}
             >
-              Send
+              Submit
             </span>
           </div>
+          {this.state.message}
         </td>
       </tr>
     );
@@ -416,8 +543,11 @@ class CommentEntryForm extends Component {
 CommentEntryForm.propTypes = {
   onCommentSend: PropTypes.func,
   toggleThisThread: PropTypes.func,
+  updateThreadEntry: PropTypes.func,
+  value: PropTypes.string,
+  entryID: PropTypes.int,
+  date: PropTypes.string,
 };
-
 
 /**
  * Accordion panel component
@@ -478,7 +608,7 @@ class AccordionPanel extends Component {
 }
 AccordionPanel.propTypes = {
   title: PropTypes.string,
-  children: PropTypes.object,
+  children: PropTypes.node,
 };
 
 
@@ -494,6 +624,7 @@ class NewThreadPanel extends Component {
     super(props);
     this.state = {
       textValue: '',
+      message: '',
       selectValue: 'Across All Fields',
       inputValue: Object.keys(this.props.feedbackTypes)[0],
     };
@@ -505,6 +636,7 @@ class NewThreadPanel extends Component {
 
   /**
    * Handle select change
+   *
    * @param {object} event
    */
   handleSelectChange(event) {
@@ -513,6 +645,7 @@ class NewThreadPanel extends Component {
 
   /**
    * Handle text change
+   *
    * @param {object} event
    */
   handleTextChange(event) {
@@ -521,6 +654,7 @@ class NewThreadPanel extends Component {
 
   /**
    * Handle input change
+   *
    * @param {object} event
    */
   handleInputChange(event) {
@@ -532,28 +666,33 @@ class NewThreadPanel extends Component {
    */
   createNewThread() {
     if (this.state.textValue.length) {
-      $.ajax({
-        type: 'POST',
-        url: loris.BaseURL + '/bvl_feedback/ajax/new_bvl_feedback.php',
-        dataType: 'json',
-        data: {
-          inputType: this.state.inputValue,
-          fieldName: this.state.selectValue,
-          comment: this.state.textValue,
-          candID: this.props.candID,
-          sessionID: this.props.sessionID,
-          commentID: this.props.commentID,
-          user: this.props.commentID,
-        },
-        success: function(data) {
-          this.setState({textValue: 'The new thread has been submitted!'});
+      const formData = new FormData();
+      formData.append('candID', this.props.candID);
+      formData.append('inputType', this.state.inputValue);
+      formData.append('fieldName', this.state.selectValue);
+      formData.append('comment', this.state.textValue);
+      formData.append('sessionID', this.props.sessionID);
+      formData.append('commentID', this.props.commentID);
+
+      fetch(loris.BaseURL + '/bvl_feedback/ajax/new_bvl_feedback.php', {
+        method: 'POST',
+        body: formData,
+      }).then((response) => {
+        if (!response.ok) {
+          console.error(response.status + ': ' + response.statusText);
+          return;
+        }
+
+        response.json().then((data) => {
+          this.setState({
+            message: 'The new thread has been submitted!',
+            textValue: '',
+          });
           this.props.addThread(data);
           this.props.updateSummaryThread();
-        }.bind(this),
-        error: function(xhr, desc, err) {
-          console.error(xhr);
-          console.error('Details: ' + desc + '\nError:' + err);
-        },
+        });
+      }).catch((error) => {
+        console.error(error);
       });
     }
   }
@@ -634,12 +773,13 @@ class NewThreadPanel extends Component {
           </div>
         </div>
         <div className='form-group'>
+          {this.state.message}
           <button
             id='save_data'
             onClick={this.createNewThread}
             className='btn btn-default pull-right btn-sm'
           >
-            Save data
+            Create thread
           </button>
         </div>
       </div>
@@ -726,7 +866,7 @@ class FeedbackSummaryPanel extends Component {
         <table
           className='table table-hover table-bordered dynamictable'>
           <thead>
-            <tr className='info'>
+            <tr className='info' key='info'>
               <th>QC Class</th>
               <th>Instrument</th>
               <th>Visit</th>
@@ -778,22 +918,25 @@ class FeedbackPanel extends Component {
    * Load summary server data
    */
   loadSummaryServerData() {
-    $.ajax({
-      type: 'POST',
-      url: loris.BaseURL + '/bvl_feedback/ajax/get_bvl_feedback_summary.php',
-      dataType: 'json',
-      data: {
-        candID: this.props.candID,
-        sessionID: this.props.sessionID,
-        commentID: this.props.commentID,
-      },
-      success: function(data) {
-        this.setState({summary: data});
-      }.bind(this),
-      error: function(xhr, desc, err) {
-        console.error(xhr);
-        console.error('Details: ' + desc + '\nError:' + err);
-      },
+    const formData = new FormData();
+    formData.append('candID', this.props.candID);
+    formData.append('sessionID', this.props.sessionID);
+    formData.append('commentID', this.props.commentID);
+
+    fetch(loris.BaseURL + '/bvl_feedback/ajax/get_bvl_feedback_summary.php', {
+      method: 'POST',
+      body: formData,
+    }).then((response) => {
+      if (!response.ok) {
+        console.error(response.status + ': ' + response.statusText);
+        return;
+      }
+
+      response.json().then((data) =>
+        this.setState({summary: data})
+      );
+    }).catch((error) => {
+      console.error(error);
     });
   }
 
@@ -801,29 +944,32 @@ class FeedbackPanel extends Component {
    * Load thread server state
    */
   loadThreadServerState() {
-    $.ajax({
-      type: 'POST',
-      url: loris.BaseURL + '/bvl_feedback/ajax/react_get_bvl_threads.php',
-      dataType: 'json',
-      data: {
-        candID: this.props.candID,
-        sessionID: this.props.sessionID,
-        commentID: this.props.commentID,
-        user: this.props.commentID,
-      },
-      success: function(data) {
+    const formData = new FormData();
+    formData.append('candID', this.props.candID);
+    formData.append('sessionID', this.props.sessionID);
+    formData.append('commentID', this.props.commentID);
+
+    fetch(loris.BaseURL + '/bvl_feedback/ajax/react_get_bvl_threads.php', {
+      method: 'POST',
+      body: formData,
+    }).then((response) => {
+      if (!response.ok) {
+        console.error(response.status + ': ' + response.statusText);
+        return;
+      }
+
+      response.json().then((data) => {
         this.setState({threads: data});
         this.loadSummaryServerData();
-      }.bind(this),
-      error: function(xhr, desc, err) {
-        console.error(xhr);
-        console.error('Details: ' + desc + '\nError:' + err);
-      },
+      });
+    }).catch((error) => {
+      console.error(error);
     });
   }
 
   /**
    * Add thread
+   *
    * @param {*} data - Unused
    */
   addThread(data) {
@@ -832,7 +978,8 @@ class FeedbackPanel extends Component {
 
   /**
    * Mark thread closed
-   * @param {Number} index
+   *
+   * @param {number} index
    */
   markThreadClosed(index) {
     let threads = this.state.threads;
@@ -843,28 +990,30 @@ class FeedbackPanel extends Component {
 
     threads.push(entry);
 
-    $.ajax({
-      type: 'POST',
-      url: loris.BaseURL + '/bvl_feedback/ajax/close_bvl_feedback_thread.php',
-      dataType: 'json',
-      data: {
-        candID: this.props.candID,
-        feedbackID: feedbackID,
-      },
-      success: function(data) {
-        this.setState({threads: threads});
-        this.loadSummaryServerData();
-      }.bind(this),
-      error: function(xhr, desc, err) {
-        console.error(xhr);
-        console.error('Details: ' + desc + '\nError:' + err);
-      },
+    const formData = new FormData();
+    formData.append('candID', this.props.candID);
+    formData.append('feedbackID', feedbackID);
+
+    fetch(loris.BaseURL + '/bvl_feedback/ajax/close_bvl_feedback_thread.php', {
+      method: 'POST',
+      body: formData,
+    }).then((response) => {
+      if (!response.ok) {
+        console.error(response.status + ': ' + response.statusText);
+        return;
+      }
+      this.setState({threads: threads});
+      this.loadSummaryServerData();
+      this.loadThreadServerState();
+    }).catch((error) => {
+      console.error(error);
     });
   }
 
   /**
    * Mark thread opened
-   * @param {Number} index
+   *
+   * @param {number} index
    */
   markThreadOpened(index) {
     let threads = this.state.threads;
@@ -875,22 +1024,23 @@ class FeedbackPanel extends Component {
     threads.splice(index, 1);
     threads.unshift(entry);
 
-    $.ajax({
-      type: 'POST',
-      url: loris.BaseURL + '/bvl_feedback/ajax/open_bvl_feedback_thread.php',
-      dataType: 'json',
-      data: {
-        candID: this.props.candID,
-        feedbackID: feedbackID,
-      },
-      success: function(data) {
-        this.setState({threads: threads});
-        this.loadSummaryServerData();
-      }.bind(this),
-      error: function(xhr, desc, err) {
-        console.error(xhr);
-        console.error('Details: ' + desc + '\nError:' + err);
-      },
+    const formData = new FormData();
+    formData.append('candID', this.props.candID);
+    formData.append('feedbackID', feedbackID);
+
+    fetch(loris.BaseURL + '/bvl_feedback/ajax/open_bvl_feedback_thread.php', {
+      method: 'POST',
+      body: formData,
+    }).then((response) => {
+      if (!response.ok) {
+        console.error(response.status + ': ' + response.statusText);
+        return;
+      }
+      this.setState({threads: threads});
+      this.loadSummaryServerData();
+      this.loadThreadServerState();
+    }).catch((error) => {
+      console.error(error);
     });
   }
 
@@ -938,6 +1088,8 @@ FeedbackPanel.propTypes = {
   candID: PropTypes.string,
   sessionID: PropTypes.string,
   commentID: PropTypes.string,
+  pscid: PropTypes.string,
+  feedbackTypes: PropTypes.object,
 };
 
 let RBehaviouralFeedbackPanel = React.createFactory(FeedbackPanel);

@@ -42,12 +42,20 @@ class NDB_PageTest extends TestCase
      *
      * @return void
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
-        $this->_module = new NullModule("test_module");
+        $mockconfig = $this->getMockBuilder('NDB_Config')->getMock();
+        $mockdb     = $this->getMockBuilder('Database')->getMock();
+
+        '@phan-var \Database $mockdb';
+        '@phan-var \NDB_Config $mockconfig';
+
+        $loris         = new \LORIS\LorisInstance($mockdb, $mockconfig, []);
+        $this->_module = new NullModule($loris, "test_module");
         $this->_page   = new NDB_Page(
+            $loris,
             $this->_module,
             "test_page",
             "515",
@@ -60,7 +68,7 @@ class NDB_PageTest extends TestCase
      *
      * @return void
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
     }
@@ -678,7 +686,8 @@ class NDB_PageTest extends TestCase
     {
         $this->markTestIncomplete("This test is incomplete!");
         $configMock = $this->getMockBuilder('NDB_Config')->getMock();
-        $factory    = NDB_Factory::singleton();
+        '@phan-var \NDB_Config $configMock';
+        $factory = NDB_Factory::singleton();
         $factory->setConfig($configMock);
         $smarty = $this->getMockBuilder(Smarty_NeuroDB::class)
             ->disableOriginalConstructor()
@@ -724,6 +733,7 @@ class NDB_PageTest extends TestCase
     public function testHasAccess()
     {
         $user = $this->getMockBuilder('\User')->getMock();
+        '@phan-var \User $user';
         $this->assertTrue($this->_page->_hasAccess($user));
     }
 
@@ -761,7 +771,6 @@ class NDB_PageTest extends TestCase
         $this->_page->name = "page_name";
         $this->_page->page = "page_name";
         $name = $this->_page->name;
-        $page = $this->_page->page;
         $this->assertEquals(
             new \LORIS\BreadcrumbTrail(
                 new \LORIS\Breadcrumb($this->_page->Module->getLongName(), "/$name")
@@ -779,12 +788,14 @@ class NDB_PageTest extends TestCase
     public function testGetJSDependencies()
     {
         $configMock = $this->getMockBuilder('NDB_Config')->getMock();
-        $factory    = NDB_Factory::singleton();
+        '@phan-var \NDB_Config $configMock';
+
+        $factory = NDB_Factory::singleton();
         $factory->setConfig($configMock);
         $this->assertEquals(
             [
                 '/js/jquery/jquery-1.11.0.min.js',
-                '/js/helpHandler.js',
+                '/js/loris-scripts.js',
                 '/js/modernizr/modernizr.min.js',
                 '/js/polyfills.js',
                 '/vendor/js/react/react.production.min.js',
@@ -794,10 +805,8 @@ class NDB_PageTest extends TestCase
                 '/js/jquery.fileupload.js',
                 '/bootstrap/js/bootstrap.min.js',
                 '/js/components/Breadcrumbs.js',
-                '/vendor/sweetalert/sweetalert.min.js',
                 '/js/util/queryString.js',
-                '/js/components/Form.js',
-                '/js/components/Markdown.js'
+                '/js/components/Help.js',
             ],
             $this->_page->getJSDependencies()
         );
@@ -812,14 +821,15 @@ class NDB_PageTest extends TestCase
     public function testGetCSSDependencies()
     {
         $configMock = $this->getMockBuilder('NDB_Config')->getMock();
-        $factory    = NDB_Factory::singleton();
+        '@phan-var \NDB_Config $configMock';
+
+        $factory = NDB_Factory::singleton();
         $factory->setConfig($configMock);
         $this->assertEquals(
             [
                 '/bootstrap/css/bootstrap.min.css',
                 '/bootstrap/css/custom-css.css',
-                '/js/jquery/datepicker/datepicker.css',
-                '/vendor/sweetalert/sweetalert.css'
+                '/js/jquery/datepicker/datepicker.css'
             ],
             $this->_page->getCSSDependencies()
         );

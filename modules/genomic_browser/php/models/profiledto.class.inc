@@ -7,10 +7,13 @@
  * @author   Xavier Lecours <xavier.lecours@mcin.ca>
  *           Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://github.com/aces/Loris-Trunk
+ * @link     https://github.com/aces/Loris
  */
 
 namespace LORIS\genomic_browser\Models;
+
+use \LORIS\Data\DataInstance;
+use \LORIS\StudyEntities\SiteHaver;
 
 /**
  * A ProfileDTO represents an profile in the genomic browser module.
@@ -25,16 +28,31 @@ namespace LORIS\genomic_browser\Models;
  * @author   Xavier Lecours <xavier.lecours@mcin.ca>
  *           Alizée Wickenheiser <alizee.wickenheiser@mcin.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://github.com/aces/Loris-Trunk
+ * @link     https://github.com/aces/Loris
  */
-class ProfileDTO implements \LORIS\Data\DataInstance
+class ProfileDTO implements DataInstance, SiteHaver
 {
+
     /**
      * The centerID
      *
      * @var string
      */
     private $_centerID = "";
+
+    /**
+     * The projectID
+     *
+     * @var string
+     */
+    private $_projectID = "";
+
+    /**
+     * The PSC name
+     *
+     * @var string
+     */
+    private $_PSC = "";
 
     /**
      * The DCCID
@@ -58,11 +76,11 @@ class ProfileDTO implements \LORIS\Data\DataInstance
     private $_Sex = "";
 
     /**
-     * The Subproject
+     * The Cohort
      *
      * @var string
      */
-    private $_Subproject = "";
+    private $_Cohort = "";
 
     /**
      * The DoB
@@ -114,11 +132,11 @@ class ProfileDTO implements \LORIS\Data\DataInstance
     public function jsonSerialize(): array
     {
         return [
-            'centerID'   => $this->_centerID,
+            'centerID'   => $this->_PSC,
             'DCCID'      => $this->_DCCID,
             'PSCID'      => $this->_PSCID,
             'Sex'        => $this->_Sex,
-            'Subproject' => $this->_Subproject,
+            'Cohort'     => $this->_Cohort,
             'DoB'        => $this->_DoB,
             'externalID' => $this->_externalID,
             'File'       => $this->_File,
@@ -127,14 +145,24 @@ class ProfileDTO implements \LORIS\Data\DataInstance
             'CPG'        => $this->_CPG,
         ];
     }
+
     /**
-     * Returns the CenterID for this row, for filters such as
-     * \LORIS\Data\Filters\UserSiteMatch to match again.
+     * Returns the CenterID for this row
      *
-     * @return string
+     * @return \CenterID The CenterID
      */
-    public function getPSC(): string
+    public function getCenterID(): \CenterID
     {
-        return (string) $this->psc;
+        return new \CenterID(strval($this->_centerID));
+    }
+
+    /**
+     * Returns the ProjectID for this row
+     *
+     * @return \ProjectID The ProjectID
+     */
+    public function getProjectID(): \ProjectID
+    {
+        return new \ProjectID(strval($this->_projectID));
     }
 }

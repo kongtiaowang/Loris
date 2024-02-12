@@ -15,6 +15,7 @@ require_once __DIR__ . "/LorisApiAuthenticatedTest.php";
  * @author     Simon Pelletier <simon.pelletier@mcin.ca>
  * @license    http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link       https://www.github.com/aces/Loris/
+ * @group      api-v0.0.4-dev
  */
 class LorisApiVisitsTest extends LorisApiAuthenticatedTest
 {
@@ -65,7 +66,7 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
             'string'
         );
         $this->assertSame(
-            gettype($candidatesVisitArray['Meta']['Battery']),
+            gettype($candidatesVisitArray['Meta']['Cohort']),
             'string'
         );
         $this->assertSame(
@@ -89,7 +90,7 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
         $this->assertArrayHasKey('CandID', $candidatesVisitArray['Meta']);
         $this->assertArrayHasKey('Project', $candidatesVisitArray['Meta']);
         $this->assertArrayHasKey('Site', $candidatesVisitArray['Meta']);
-        $this->assertArrayHasKey('Battery', $candidatesVisitArray['Meta']);
+        $this->assertArrayHasKey('Cohort', $candidatesVisitArray['Meta']);
         $this->assertArrayHasKey('Project', $candidatesVisitArray['Meta']);
         $this->assertArrayHasKey('Stages', $candidatesVisitArray);
         $this->assertArrayHasKey(
@@ -118,7 +119,7 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
         $json     = ['CandID'  => '900000',
             'Visit'   => "V1",
             'Site'    => "Data Coordinating Center",
-            'Battery' => "High Yeast",
+            'Cohort' => "High Yeast",
             'Project' => "Rye",
         ];
         $response = $this->client->request(
@@ -135,6 +136,11 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
         $body = $response->getBody();
         $this->assertNotEmpty($body);
 
+        // Erase sites that were setup in LorisApiAuthenticatedTest
+        // setup for data access in other tests.
+        $this->DB->run(
+            'DELETE FROM user_psc_rel WHERE UserID=999990 AND CenterID <> 1'
+        );
         /**
         * Test changing from a site with no affiliation to a site with affiliation
         * Candidate 400266 is from site Rome. The test user only has access to
@@ -166,7 +172,7 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
         $json     = ['CandID'  => "115788",
             'Visit'   => "V3",
             'Site'    => "Data Coordinating Center",
-            'Battery' => "Stale",
+            'Cohort' => "Stale",
             'Project' => "Pumpernickel",
         ];
         $response = $this->client->request(
@@ -190,7 +196,7 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
         $json     = ['CandID'  => '900000',
             'Visit'   => "V1",
             'Site'    => "Montreal",
-            'Battery' => "Stale",
+            'Cohort' => "Stale",
             'Project' => "Pumpernickel",
         ];
         $response = $this->client->request(
@@ -208,6 +214,16 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
         $body = $response->getBody();
         $this->assertNotEmpty($body);
 
+        // The visit has CenterID 2, we need to ensure that
+        // the user has access to visitTest (which we deleted
+        // above to test the permission denied.) or this
+        // test will return a 403 instead of a 400.
+        $this->DB->insert("user_psc_rel",
+            [
+                'UserID' => '999990',
+                'CenterID' => '2'
+            ]
+        );
         // Test what happen when a field is missing (here, Battery)
         $json     = ['CandID'  => $this->candidTest,
             'Visit'   => $this->visitTest,

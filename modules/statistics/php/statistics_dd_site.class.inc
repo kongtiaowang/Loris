@@ -68,16 +68,16 @@ class Statistics_DD_Site extends statistics_site
     /**
      * CompleteCount function
      *
-     * @param string $centerID   the value of centerID
-     * @param string $projectID  the value of projectID
-     * @param string $instrument the value of instrument
+     * @param \CenterID  $centerID   the value of centerID
+     * @param \ProjectID $projectID  the value of projectID
+     * @param string     $instrument the value of instrument
      *
      * @return ?string
      */
     function _completeCount($centerID, $projectID, $instrument): ?string
     {
         $this->_checkCriteria($centerID, $projectID);
-        $DB =& \Database::singleton();
+        $DB = $this->loris->getDatabaseConnection();
 
         $safe_instrument = $DB->escape($instrument);
 
@@ -99,16 +99,16 @@ class Statistics_DD_Site extends statistics_site
     /**
      * GetResults function
      *
-     * @param string $centerID   the value of centerID
-     * @param string $projectID  the value of projectID
-     * @param string $instrument the value of instrument
+     * @param \CenterID  $centerID   the value of centerID
+     * @param \ProjectID $projectID  the value of projectID
+     * @param string     $instrument the value of instrument
      *
      * @return array
      */
     function _getResults($centerID, $projectID, $instrument)
     {
         $this->_checkCriteria($centerID, $projectID);
-        $DB =& \Database::singleton();
+        $DB = $this->loris->getDatabaseConnection();
         $safe_instrument = $DB->escape($instrument);
         $result          = $DB->pselect(
             "SELECT s.CandID, f.SessionID, i.CommentID, c.PSCID,

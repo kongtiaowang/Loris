@@ -85,7 +85,9 @@ class BVL_Feedback_Panel
         $candidateObject         = Candidate::singleton($candidateID);
         $this->tpl_data['pscid'] = $candidateObject->getPSCID();
 
-        $this->tpl_data['sessionID'] = $feedbackProfile["SessionID"] ?? null;
+        $this->tpl_data['sessionID'] = isset($feedbackProfile["SessionID"]) ?
+            strval($feedbackProfile["SessionID"]) :
+            null;
 
         $feedbackObject = $this->feedbackThread->_feedbackObjectInfo;
         $this->tpl_data['commentID'] = $feedbackObject["CommentID"] ?? null;
@@ -99,7 +101,15 @@ class BVL_Feedback_Panel
         $summary = $this->feedbackThread->getSummaryOfThreads();
         $this->tpl_data['thread_summary_headers'] = json_encode($summary);
 
-        $field_names = Utility::getSourcefields($_REQUEST['test_name'] ?? '');
+        $test_name = '';
+        if (array_key_exists('test_name', $_REQUEST)) {
+            $test_name = $_REQUEST['test_name'];
+        } else if (array_key_exists('lorispath', $_REQUEST)) {
+            $test_name = preg_split("#/#", $_REQUEST['lorispath'])[1] ?? '';
+        }
+
+        // Get field names
+        $field_names = Utility::getSourcefields($test_name);
         $fields      = [];
         $fields['Across All Fields'] = 'Across All Fields';
         foreach ($field_names as $field_name) {

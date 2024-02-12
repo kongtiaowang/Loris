@@ -1,8 +1,10 @@
+import {createRoot} from 'react-dom/client';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 import swal from 'sweetalert2';
+import {SelectElement} from 'jsx/Form';
 
 /**
  * Module Manager React Component
@@ -58,7 +60,6 @@ class ModuleManagerIndex extends Component {
    *
    * @param {string} column - column name
    * @param {string} cell - cell value
-   *
    * @return {string} a mapped value for the table cell at a given column
    */
   mapColumn(column, cell) {
@@ -81,12 +82,11 @@ class ModuleManagerIndex extends Component {
    *
    * @param {string} name
    * @param {boolean} value
-   * @param {int} id - module id
-   *
+   * @param {number} id
    */
   toggleActive(name, value, id) {
     fetch(
-      this.props.BaseURL + '/module_manager/modules/' + id,
+      this.props.BaseURL + '/module_manager/modules/' + name,
       {
         method: 'PATCH',
         body: JSON.stringify({
@@ -98,13 +98,13 @@ class ModuleManagerIndex extends Component {
       }
     ).then((response) => {
       if (response.status != 205) {
-        swal.fire('Error!', 'Could not update ' + id + '.', 'error');
+        swal.fire('Error!', 'Could not update ' + name + '.', 'error');
       } else {
-        const success = this.setModuleDisplayStatus(id, value);
+        const success = this.setModuleDisplayStatus(name, value);
         if (success === true) {
           swal.fire({
             title: 'Success!',
-            text: 'Updated ' + id + ' status! ' +
+            text: 'Updated ' + name + ' status! ' +
                   'To apply changes the interface must be reloaded. Proceed?',
             type: 'success',
             showCancelButton: true,
@@ -134,9 +134,7 @@ class ModuleManagerIndex extends Component {
    *
    * @param {string} modulename
    * @param {boolean} value
-   *
    * @return {boolean}
-   *
    */
   setModuleDisplayStatus(modulename, value) {
     let data = this.state.data;
@@ -159,13 +157,12 @@ class ModuleManagerIndex extends Component {
    * @param {string} column - column name
    * @param {string} cell - cell content
    * @param {object} row - row content indexed by column
-   *
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
     if (column == 'Active' && this.props.hasEditPermission) {
         return <td><SelectElement
-              name='active'
+              name={row.Name}
               id={row.Name}
               label=''
               emptyOption={false}
@@ -227,15 +224,18 @@ class ModuleManagerIndex extends Component {
 
 ModuleManagerIndex.propTypes = {
   dataURL: PropTypes.string.isRequired,
+  BaseURL: PropTypes.string,
+  hasEditPermission: PropTypes.bool,
 };
 
 window.addEventListener('load', () => {
-  ReactDOM.render(
+  createRoot(
+    document.getElementById('lorisworkspace')
+  ).render(
     <ModuleManagerIndex
       dataURL={`${loris.BaseURL}/module_manager/?format=json`}
       BaseURL={loris.BaseURL}
       hasEditPermission={loris.userHasPermission('module_manager_edit')}
-    />,
-    document.getElementById('lorisworkspace')
+    />
   );
 });
