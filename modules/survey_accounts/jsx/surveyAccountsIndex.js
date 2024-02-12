@@ -69,7 +69,13 @@ class SurveyAccountsIndex extends Component {
     case 'Instrument':
       result = <td>{this.state.data.fieldOptions.instruments[cell]}</td>;
       break;
+    case 'Participant Portal':
+      const pUrl = loris.BaseURL + '/participant_portal?id=' + row['Participant Portal'];
+      const content = <td><a href={pUrl}>Go To Participant Portal</a></td>;
+      result = row['Participant Portal'] !== null ? content : <td>NA</td>;
+      break;
     }
+
 
     return result;
   }
@@ -106,6 +112,10 @@ class SurveyAccountsIndex extends Component {
         type: 'select',
         options: options.visits,
       }},
+      {label: 'Email', show: false, filter: {
+          name: 'email',
+          type: 'text',
+       }},
       {label: 'Instrument', show: true, filter: {
         name: 'instrument',
         type: 'select',
@@ -117,6 +127,7 @@ class SurveyAccountsIndex extends Component {
         type: 'select',
         options: options.statusOptions,
       }},
+      {label: 'Participant Portal', show: true},
     ];
   const addSurvey = () => {
     location.href='/survey_accounts/addSurvey/';
