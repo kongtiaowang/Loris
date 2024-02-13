@@ -111,28 +111,18 @@ class SurveyAccountsIndex extends Component {
         type: 'select',
         options: options.visits,
       }},
-<<<<<<< HEAD
-      {label: 'Email', show: false, filter: {
-        name: 'email',
-        type: 'text',
-      }},
-=======
->>>>>>> origin
       {label: 'Instrument', show: true, filter: {
         name: 'instrument',
         type: 'select',
         options: options.instruments,
       }},
       {label: 'URL', show: true},
-<<<<<<< HEAD
-      {label: 'Parent Portal', show: true},
-=======
->>>>>>> origin
       {label: 'Status', show: true, filter: {
         name: 'Status',
         type: 'select',
         options: options.statusOptions,
       }},
+      {label: 'Parent Portal', show: true},
     ];
   const addSurvey = () => {
     location.href='/survey_accounts/addSurvey/';
