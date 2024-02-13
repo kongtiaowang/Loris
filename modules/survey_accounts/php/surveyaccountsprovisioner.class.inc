@@ -44,7 +44,8 @@ class SurveyAccountsProvisioner
                 s.Visit_label AS Visit,
                 p.Test_name as SurveyName,
                 p.OneTimePassword as URL,
-                p.Status,
+		p.Status,
+                c.ParticipantID as ParticipantID,
                 s.CenterID,
                 s.ProjectID
              FROM participant_accounts p
