@@ -57,9 +57,10 @@ class CandidateListRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvisio
                 c.Sex,
                 COUNT(DISTINCT s.Visit_label) AS VisitCount,
                 IFNULL(MIN(feedback_bvl_thread.Status+0),0) AS Feedback,
-                p.Name AS RegistrationProject,
+		p.Name AS RegistrationProject,
+                c.CandID AS EDIT,
                 c.RegistrationCenterID,
-                c.RegistrationProjectID
+		c.RegistrationProjectID
                 $maybeEDC
                 FROM candidate c
                     LEFT JOIN psc ON (c.RegistrationCenterID=psc.CenterID)
