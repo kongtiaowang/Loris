@@ -158,7 +158,7 @@ class CandidateListIndex extends Component {
         return(    
          <td>
          <button onClick={() => this.deleteclick(row.EDIT)}
-           class="btn btn-danger" >Delete</button>
+           class="btn btn-danger" >Archive</button>
          </td>
         );
      }
