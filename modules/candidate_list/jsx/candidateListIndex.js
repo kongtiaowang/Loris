@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import Loader from 'Loader';
 import FilterableDataTable from 'FilterableDataTable';
 import Modal from 'Modal';
-
+import swal from 'sweetalert2';
 import OpenProfileForm from './openProfileForm';
 
 /**
@@ -121,6 +121,7 @@ class CandidateListIndex extends Component {
    * @return {*} a formated table cell for a given column
    */
   formatColumn(column, cell, row) {
+	  console.log(column);
     if (column === 'PSCID') {
       let url;
       if (this.props.betaProfileLink) {
@@ -153,10 +154,77 @@ class CandidateListIndex extends Component {
       let result = (cell) ? <td>{cell.join(', ')}</td> : <td></td>;
       return result;
     }
-
+     if (column === 'EDIT') {   
+        return(    
+         <td>
+         <button onClick={() => this.deleteclick(row.EDIT)}
+           class="btn btn-danger" >Archive</button>
+         </td>
+        );
+     }
     return <td>{cell}</td>;
   }
-
+   /**
+    * @deleteclick
+    */
+          deleteclick(candid) {
+           swal.fire({
+             title: 'Are you sure?',
+             text: 'You won\'t be able to revert this!',
+             type: 'warning',
+             showCancelButton: true,
+             confirmButtonColor: '#3085d6',
+             cancelButtonColor: '#d33',
+             confirmButtonText: 'Yes, delete it!',
+            }).then((result) => {
+            if (result.value) {
+             let deleteurl = loris.BaseURL+ 
+               '/candidate_list/deleteCandidate/'+candid;
+               fetch(deleteurl, {
+               method: 'DELETE',
+               cache: 'no-cache',
+               credentials: 'same-origin',
+               }).then((resp) => {
+                   if (resp.status == 200) {
+                    swal.fire('delete Successful!', '', 'success');
+                   } else {
+                    swal.fire('delete Not Successful!', '', 'error');
+                   }
+               }).then(()=>{
+                   location.reload();
+               });
+            }
+           });
+          }
+          archiveclick(candid) {
+           swal.fire({
+             title: 'Are you sure?',
+             text: 'You won\'t see this Candidate in the table!',
+             type: 'warning',
+             showCancelButton: true,
+             confirmButtonColor: '#3085d6',
+             cancelButtonColor: '#d33',
+             confirmButtonText: 'Yes, archive it!',
+            }).then((result) => {
+            if (result.value) {
+             let deleteurl = loris.BaseURL+  
+               '/candidate_list/deleteCandidate/' + candid;
+               fetch(deleteurl, {
+               method: 'POST',
+               cache: 'no-cache',
+               credentials: 'same-origin',
+               }).then((resp) => {
+                   if (resp.status == 200) {
+                    swal.fire('archive Successful!', '', 'success');
+                   } else {
+                    swal.fire('archive Not Successful!', '', 'error');
+                   }
+               }).then(()=>{
+                   location.reload();
+               });
+            }
+           });
+          }
   /**
    * Renders the React component.
    *
@@ -315,6 +383,9 @@ class CandidateListIndex extends Component {
           options: options.project,
         },
       },
+      {
+        label: 'EDIT', show: true,
+      },    
     ];
 
     if (options.useedc === 'true') {
