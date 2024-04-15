@@ -1,4 +1,34 @@
 <!-- table with candidate profile info -->
+  <!-- Popup form -->
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">Edit</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="subProjectName">Sub-project Name:</label>
+                            <input type="text" class="form-control" id="subProjectName" name="subProjectName">
+                        </div>
+                        <div class="form-group">
+                            <label for="startDate">Start Date:</label>
+                            <input type="date" class="form-control" id="startDate" name="startDate">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="saveChanges()">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <table cellpadding="2" class="table table-info table-bordered dynamictable" style="max-width:auto">
   <!-- column headings -->
   <thead>
@@ -81,6 +111,7 @@
             <th>BVL QC</th>
             <th>BVL Exclusion</th>
             <th>Registered By</th>
+            <th>Edit/Archive</th>
         </tr>
     </thead>
     <tbody>
@@ -154,9 +185,21 @@
             <td>
                 {$timePoints[timepoint].Real_name}
             </td>
+             <td>
+   <!-- Edit button -->
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editModal">
+        Edit
+    </button>
+             </td>
         </tr>
     {sectionelse}
         <tr><td colspan="10">You do not have access to any timepoints registered for this candidate.</td></tr>
     {/section}
     </tbody>
 </table>
+<script>
+    function saveChanges() {
+
+        $('#editModal').modal('hide');
+}    
+</script>
