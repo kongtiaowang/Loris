@@ -1,4 +1,3 @@
-<br />
 <form method="post" name="my_preferences" id="my_preferences" autocomplete="off">
     <h3>Password Rules</h3>
       <ul>
@@ -51,16 +50,16 @@
         <label class="col-sm-2">
             {$form.Password_hash.label}
         </label>
-        <div class="col-sm-10">
-            {$form.Password_hash.html}
+        <div class="col-sm-4">
+            <input type="password" name="{$form.Password_hash.name}" />
         </div>
     </div>
     <div class="row form-group">
         <label class="col-sm-2">
             {$form.__Confirm.label}
         </label>
-        <div class="col-sm-10">
-            {$form.__Confirm.html}
+        <div class="col-sm-4">
+            <input type="password" name="{$form.__Confirm.name}" />
         </div>
     </div>
     <div class="row form-group">
@@ -89,6 +88,26 @@
             {/foreach}
         </tbody>
     </table>
+    {* Add any preferences registered from other modules *}
+    <div id="module_preferences" style="display: flex">
+    {section name=widget loop=$module_userpreference_widgets}
+        {assign var="widget" value=$module_userpreference_widgets[widget]}
+        <div id="widget_{$widget->componentname}">
+            <h3>{$widget->title}</h3>
+            {* Include the widget's javascript before trying to invoke it *}
+            <script src="{$widget->jsurl}" type="text/javascript"></script>
+
+            {* Create a react root to render it into *}
+            <script>
+                const el = document.createElement("div");
+                ReactDOM.createRoot(el).render(
+                    {$widget->componentname}({})
+                );
+                document.getElementById("widget_{$widget->componentname}").appendChild(el);
+            </script>
+        </div>
+    {/section}
+    </div>
     <div class="row form-group">
         <div class="col-sm-2">
             <input class="btn btn-sm btn-primary col-xs-12" name="fire_away" value="Save" type="submit" />
@@ -99,5 +118,5 @@
     </div>
 
 
-{$form.hidden}
+{$form.hidden|default}
 </form>

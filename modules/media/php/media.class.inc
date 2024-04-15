@@ -1,15 +1,4 @@
 <?php declare(strict_types=1);
-/**
- * This file contains the NDB_Menu_Filter_media class
- *
- * PHP Version 7
- *
- * @category Module
- * @package  Media
- * @author   Alex Ilea <ailea.mcin@gmail.com>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/CCNA/
- */
 namespace LORIS\media;
 
 /**
@@ -76,7 +65,7 @@ class Media extends \DataFrameworkMenu
     protected function getFieldOptions() : array
     {
         $user = \User::singleton();
-        $db   = \Database::singleton();
+        $db   = $this->loris->getDatabaseConnection();
 
         $siteList  = [];
         $visitList = \Utility::getVisitList();
@@ -86,11 +75,11 @@ class Media extends \DataFrameworkMenu
             $siteList = \Utility::getSiteList(false);
         } else {
             // allow only to view own site data
-            $siteIDs = $user->getData('CenterIDs');
+            $siteIDs = $user->getCenterIDs();
             foreach ($siteIDs as $val) {
                 $site = \Site::singleton($val);
                 if ($site->isStudySite()) {
-                    $siteList[$val] = $site->getCenterName();
+                    $siteList["$val"] = $site->getCenterName();
                 }
             }
         }
@@ -101,7 +90,16 @@ class Media extends \DataFrameworkMenu
             []
         );
         foreach ($instrumentsQuery as $instrument) {
-            $instrumentList[$instrument['Full_name']] = $instrument['Full_name'];
+            try {
+                $instrumentName = \NDB_BVL_Instrument::factory(
+                    $this->loris,
+                    $instrument["Test_name"],
+                )->getFullname();
+            } catch (\Exception $e) {
+                $instrumentName = $instrument['Full_name'];
+            }
+
+            $instrumentList[$instrumentName] = $instrumentName;
         }
 
         $fileTypeList  = [];
@@ -120,8 +118,8 @@ class Media extends \DataFrameworkMenu
         $hiddenOptions = [];
         if (\User::singleton()->hasPermission('superuser')) {
             $hiddenOptions = [
-                0 => 'Visible only',
-                1 => 'Hidden only',
+                'visible' => 'Visible only',
+                'hidden'  => 'Hidden only',
             ];
         }
 
@@ -144,7 +142,7 @@ class Media extends \DataFrameworkMenu
      */
     public function getBaseDataProvisioner(): \LORIS\Data\Provisioner
     {
-        return new MediaFileProvisioner();
+        return new MediaFileProvisioner($this->loris);
     }
 
     /**
@@ -155,7 +153,11 @@ class Media extends \DataFrameworkMenu
     public function getDataProvisionerWithFilters() : \LORIS\Data\Provisioner
     {
         $provisioner = parent::getDataProvisionerWithFilters();
-
+        $user        = \NDB_Factory::singleton()->user();
+        if ($user->hasPermission('superuser')) {
+            // We don't filter out hidden files.
+            return $provisioner;
+        }
         return $provisioner->filter(new HideFileFilter());
     }
 

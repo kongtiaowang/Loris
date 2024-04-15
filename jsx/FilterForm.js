@@ -3,11 +3,11 @@
  *
  * @author Loris Team
  * @version 1.1.0
- *
  */
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Panel from 'Panel';
+import {FormElement} from 'jsx/Form';
 
 /**
  * FilterForm component.
@@ -24,6 +24,10 @@ import Panel from 'Panel';
  *
  */
 class FilterForm extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -38,6 +42,9 @@ class FilterForm extends Component {
     this.queryString = QueryString.get();
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     let filter = {};
     let queryString = this.queryString;
@@ -119,7 +126,6 @@ class FilterForm extends Component {
    * @param {string} type - form element type (i.e component name)
    * @param {string} key - the name of the form element
    * @param {string} value - the value of the form element
-   *
    * @return {{}} filter - filterData
    */
   setFilter(type, key, value) {
@@ -170,6 +176,11 @@ class FilterForm extends Component {
     this.props.onUpdate(filter);
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     // Get formatted children
     let formChildren = this.getFormChildren();
@@ -217,6 +228,8 @@ FilterForm.propTypes = {
   height: PropTypes.string,
   title: PropTypes.string,
   onUpdate: PropTypes.func,
+  children: PropTypes.node,
+  formElements: PropTypes.object,
 };
 
 export default FilterForm;

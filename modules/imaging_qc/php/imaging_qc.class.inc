@@ -12,6 +12,9 @@
  */
 namespace LORIS\imaging_qc;
 
+use \Psr\Http\Message\ServerRequestInterface;
+use \Psr\Http\Message\ResponseInterface;
+
 /**
  * Main class for imaging quality control module corresponding to /imaging_qc/
  * endpoint.
@@ -39,8 +42,7 @@ class Imaging_QC extends \NDB_Menu_Filter
      */
     function _hasAccess(\User $user) : bool
     {
-        // FIXME This module should have its own permission.
-        return $user->hasPermission('quality_control');
+        return $user->hasPermission('imaging_quality_control_view');
     }
 
     /**
@@ -52,7 +54,7 @@ class Imaging_QC extends \NDB_Menu_Filter
     function _getScanTypes(): array
     {
         $config = \NDB_Config::singleton();
-        $db     = \Database::singleton();
+        $db     = $this->loris->getDatabaseConnection();
 
         $toTable_scan_types = $config->getSetting('tblScanTypes');
 
@@ -123,16 +125,16 @@ class Imaging_QC extends \NDB_Menu_Filter
               " ELSE 'Missing'
            END as tarchive_loc,
            (SELECT Name FROM Project WHERE ProjectID=s.ProjectID) as project,".
-            " (SELECT title FROM subproject WHERE SubprojectID=s.SubprojectID)
-           as subproject,".
+            " (SELECT title FROM cohort WHERE CohortID=s.CohortID)
+           as cohort,".
             " CASE
-              WHEN m.Data_entry_completion_status='Incomplete' THEN 'Incomplete'
+              WHEN f.Required_elements_completed='N' THEN 'Incomplete'
               ELSE 'Complete'
            END AS mri_parameter_form,
            CASE
-              WHEN m.".$scan_done." IS NULL THEN ''
-              WHEN (m.".$scan_done." = 'Complete'
-              OR m.".$scan_done." = 'Partial') THEN 'Yes'
+              WHEN m.`".$scan_done."` IS NULL THEN ''
+              WHEN (m.`".$scan_done."` = 'Complete'
+              OR m.`".$scan_done."` = 'Partial') THEN 'Yes'
               ELSE 'No'
            END as scan_done,
            CASE
@@ -183,7 +185,7 @@ class Imaging_QC extends \NDB_Menu_Filter
 
         $this->skipTemplate = true;
         $user      = \User::singleton();
-        $db        = \Database::singleton();
+        $db        = $this->loris->getDatabaseConnection();
         $siteList  = [];
         $visitList = \Utility::getVisitList();
         // allow to view all sites data through filter
@@ -196,7 +198,7 @@ class Imaging_QC extends \NDB_Menu_Filter
             }
         } else {
             // allow only to view own site data
-            $siteIDs = $user->getData('CenterIDs');
+            $siteIDs = $user->getCenterIDs();
             foreach ($siteIDs as $val) {
                 $site = \Site::singleton($val);
                 if ($site->isStudySite()) {
@@ -209,15 +211,15 @@ class Imaging_QC extends \NDB_Menu_Filter
 
         $projectList  = \Utility::getProjectList();
         $projectList2 = [];
-        foreach ($projectList as $key => $value) {
+        foreach (array_values($projectList) as $value) {
             $projectList2[$value] = $value;
         }
-        $subprojectList  = \Utility::getSubprojectList();
-        $subprojectList2 = [];
-        foreach ($subprojectList as $key => $value) {
-            $subprojectList2[$value] = $value;
+        $cohortList  = \Utility::getCohortList();
+        $cohortList2 = [];
+        foreach (array_values($cohortList) as $value) {
+            $cohortList2[$value] = $value;
         }
-        //print_r($subprojectList2);
+        //print_r($cohortList2);
         $uploaderList = [];
         $uploaders    = $db -> pselect(
             "SELECT UploadedBy FROM mri_upload GROUP BY UploadedBy",
@@ -237,7 +239,7 @@ class Imaging_QC extends \NDB_Menu_Filter
             = [
                 'site'             => $siteList,
                 'project'          => $projectList2,
-                'subproject'       => $subprojectList2,
+                'cohort'           => $cohortList2,
                 'scanType'         => $scan_types,
                 'mRIParameterForm' => [
                     "Incomplete" => "Incomplete",
@@ -268,6 +270,18 @@ class Imaging_QC extends \NDB_Menu_Filter
         $scans_done = [];
         $acq_IDs    = [];
         foreach ($scan_types as $scan_type) {
+            // Only include scan types that appear in the MRI Parameter Form
+            $scanTypeInMRIPF = $db->columnExists(
+                'mri_parameter_form',
+                $scan_type .
+                "_Scan_done"
+            );
+
+            if (!$scanTypeInMRIPF) {
+                unset($scan_types[$scan_type]);
+                continue;
+            }
+
             $query_params        = ['scan_type' => $scan_type];
             $acq_IDs[$scan_type] = $db->pselectOne(
                 "SELECT ID FROM mri_scan_type WHERE Scan_type=:scan_type",
@@ -308,7 +322,7 @@ class Imaging_QC extends \NDB_Menu_Filter
             'cand_id',
             'site',
             'project',
-            'subproject',
+            'cohort',
             'visit_label',
             'scan_type',
             'mri_parameter_form',
@@ -327,7 +341,7 @@ class Imaging_QC extends \NDB_Menu_Filter
             cand_id,
             site,
             project,
-            subproject,
+            cohort,
             visit_label,
             scan_type,
             mri_parameter_form,
@@ -375,5 +389,29 @@ class Imaging_QC extends \NDB_Menu_Filter
             )
         );
     }
-}
 
+    /**
+     * This method overrides the NBD_Page handle function.
+     * It checks if the MRI Parameter Form table exists
+     * before calling the parent handle function.
+     *
+     * @param ServerRequestInterface $request The PSR15 Request being handled
+     *
+     * @return ResponseInterface The PSR15 response for the page.
+     */
+    public function handle(ServerRequestInterface $request) : ResponseInterface
+    {
+        $db = $this->loris->getDatabaseConnection();
+        if ($db->tableExists('mri_parameter_form')) {
+            return parent::handle($request);
+        } else {
+            return (new \LORIS\Http\Response())
+                ->withStatus(500)
+                ->withBody(
+                    new \LORIS\Http\StringStream(
+                        "MRI Parameter Form table does not exist"
+                    )
+                );
+        }
+    }
+}

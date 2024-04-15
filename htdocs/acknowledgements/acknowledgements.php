@@ -6,7 +6,7 @@
  * PHP Version 5
  *
  * @category Loris
- * @package  Behavioral
+ * @package  Behavioural
  * @author   Justin Kat <justin.kat@mail.mcgill.ca>
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
@@ -19,7 +19,7 @@ $client->makeCommandLine();
 $client->initialize();
 
 $config = NDB_Config::singleton();
-$db     = Database::singleton();
+$db     = \NDB_Factory::singleton()->database();
 
 $publication_date = $_GET["date"];
 

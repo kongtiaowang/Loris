@@ -53,30 +53,28 @@ class NDB_Client
 
         $config = $factory->config($configFile);
 
-        // Load the database object with settings from config
-        // so that after this we can just call Database::singleton()
-        // with no parameters
-        $DBSettings = $config->getSetting("database");
-        if (!defined("UNIT_TESTING")) {
-            $DB = Database::singleton(
-                $DBSettings['database'],
-                $DBSettings['username'],
-                $DBSettings['password'],
-                $DBSettings['host'],
-                true
-            );
-        }
-
-        // Now make sure the factory reference is the same as the
-        // singleton reference
         $DB = $factory->database();
 
-        // add extra include paths. This must be done
-        // after the database is connected, since the setting
-        // can come from the database.
-        $extLibs = $config->getSetting('extLibs');
-        if (!empty($extLibs)) {
-            set_include_path($extLibs.":".get_include_path());
+        // Register S3 stream wrapper if configured
+        if (getenv('AWS_ACCESS_KEY_ID') !== false) {
+            // AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY
+            // should both be set as environment variables
+            $s3config = [
+                'version' => '2006-03-01',
+            ];
+            $endpoint = $config->getSetting('AWS_S3_Endpoint');
+            if (!empty($endpoint)) {
+                $s3config['region']   = '';
+                $s3config['endpoint'] = $endpoint;
+            } else {
+                $s3config['region'] = $config->getSetting('AWS_S3_Region');
+            }
+
+            $s3client = new Aws\S3\S3Client($s3config);
+
+            // Register the stream wrapper so that s3:// urls can be
+            // treated as regular files.
+            $s3client->registerStreamWrapper();
         }
 
         // This must be done after the extra includes, as those may
@@ -128,12 +126,17 @@ class NDB_Client
             . "default-src 'self' 'unsafe-inline'; "
             . "script-src 'self' 'unsafe-inline' 'unsafe-eval' $CaptchaDomains; "
             . "font-src 'self' data:; "
-            . "img-src 'self' data:; "
+            . "img-src 'self' https://images.loris.ca data:; "
+            . "frame-ancestors 'none'; "
+            . "form-action 'self'; "
             . $config_additions
         );
         // start php session
         $sessionOptions = ['cookie_httponly' => true];
-        $sessionOptions['cookie_samesite'] = true;
+
+        // Lax is required for third party login to maintain the State, otherwise
+        // it gets lost after the redirect.
+        $sessionOptions['cookie_samesite'] = "Lax";
 
         // API Detect
         if (strpos(
@@ -194,6 +197,7 @@ class NDB_Client
 
         User::singleton($_SESSION['State']->getUsername());
 
+        session_write_close();
         // finished initializing
         return true;
     }

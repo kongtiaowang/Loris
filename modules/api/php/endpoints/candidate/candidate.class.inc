@@ -63,8 +63,8 @@ class Candidate extends Endpoint implements \LORIS\Middleware\ETagCalculator
     protected function supportedVersions() : array
     {
         return [
-            'v0.0.2',
             'v0.0.3',
+            'v0.0.4-dev',
         ];
     }
 
@@ -95,7 +95,7 @@ class Candidate extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         // Delegate to sub-endpoints
-        $visit_label = array_shift($pathparts);
+        $visit_label = urldecode(array_shift($pathparts));
         $newrequest  = $request
             ->withAttribute('pathparts', $pathparts);
 
@@ -105,12 +105,21 @@ class Candidate extends Endpoint implements \LORIS\Middleware\ETagCalculator
         );
 
         try {
-            $visit = \NDB_Factory::singleton()->timepoint((int) $sessionid);
-        } catch (\LorisException | \TypeError $e) {
+            $visit = \NDB_Factory::singleton()->timepoint(
+                new \SessionID(strval($sessionid))
+            );
+        } catch (\LorisException | \TypeError | \DomainException $e) {
             $visit = null;
         }
 
-        $handler = new Visit\Visit(
+        $version     = $request->getAttribute("LORIS-API-Version");
+        $subendpoint = __NAMESPACE__ . '\\' . 'Visit\Visit';
+
+        if ($version == 'v0.0.4-dev') {
+            $subendpoint = __NAMESPACE__ . '\\' .'Visit\Visit_0_0_4_Dev';
+        }
+
+        $handler = new $subendpoint(
             $this->_candidate,
             $visit
         );

@@ -26,8 +26,10 @@ use \Psr\Http\Message\ResponseInterface;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class NDB_Page implements RequestHandlerInterface
+class NDB_Page extends \LORIS\Http\Endpoint implements RequestHandlerInterface
 {
+    use Psr\Log\LoggerAwareTrait;
+
     /**
      * The name of the test_name being accessed
      */
@@ -36,14 +38,14 @@ class NDB_Page implements RequestHandlerInterface
     /**
      * The name of the page (subtest) being accessed
      */
-    var $page;
+    public $page;
 
     /**
      * Reference to the HTML QuickForm
      *
      * @var \LorisForm
      */
-    var $form;
+    public $form;
 
     /**
      * The identifier for the item to edit
@@ -92,21 +94,38 @@ class NDB_Page implements RequestHandlerInterface
     protected $tpl_data = [];
 
     /**
+     * The default dateOptions to send to LorisForm to render elements
+     * on this page. This is usually set by subclasses of NDB_Page which
+     * need to modify the options to show on a date (ie. min year, max year,
+     * etc.)
+     *
+     * @var array
+     */
+    public $dateOptions;
+
+    /**
      * Does the setup required for this page. By default, sets up elements
      * that are common to every type of page. May be overridden by a specific
      * page or specific page type.
      *
-     * @param Module $module     The test name being accessed
-     * @param string $page       The subtest being accessed (may be an empty string)
-     * @param string $identifier The identifier for the data to load on this page
-     * @param string $commentID  The CommentID to load the data for
+     * @param \LORIS\LorisInstance $loris      The LORIS instance that the page is
+     *                                         serving
+     * @param Module               $module     The test name being accessed
+     * @param string               $page       The subtest being accessed (may be
+     *                                         an empty string)
+     * @param string               $identifier The identifier for the data to load
+     *                                         on this page
+     * @param string               $commentID  The CommentID to load the data for
      */
     function __construct(
+        protected \LORIS\LorisInstance $loris,
         \Module $module,
         string $page,
         string $identifier,
         string $commentID
     ) {
+        parent::__construct($loris);
+
         $this->Module = $module;
         $this->name   = $module->getName(); // for legacy purposes.
 
@@ -117,6 +136,13 @@ class NDB_Page implements RequestHandlerInterface
         $this->defaults   = [];
 
         $this->template = $page;
+
+        $loglevel = $loris->getConfiguration()
+            ->getLogSettings()
+            ->getRequestLogLevel();
+
+        $this->logger = new \LORIS\Log\ErrorLogLogger($loglevel);
+
     }
     /**
      * Safely sets a smarty template variable.
@@ -172,7 +198,7 @@ class NDB_Page implements RequestHandlerInterface
      */
     function addHeader($header)
     {
-        $this->form->addElement('header', null, $header);
+        $this->form->addElement('header', '', $header);
     }
 
     /**
@@ -209,7 +235,7 @@ class NDB_Page implements RequestHandlerInterface
      */
     function addLabel($label)
     {
-        $this->form->addElement('static', null, $label);
+        $this->form->addElement('static', '', $label);
     }
 
     /**
@@ -343,16 +369,16 @@ class NDB_Page implements RequestHandlerInterface
                 ]
             );
         }
-        $this->addGroup($radGroup, $name . '_group', $groupLabel, null, false);
+        $this->addGroup($radGroup, $name . '_group', $groupLabel, '');
     }
 
     /**
      * Adds a hidden element to the current page. Note if the hidden element
      * needs a value it should be added to the defaults.
      *
-     * @param string $name    The name of the hidden element to add
-     * @param array  $value   The value of the hidden element to add
-     * @param array  $attribs Additional html attributes for element
+     * @param string  $name    The name of the hidden element to add
+     * @param ?string $value   The value of the hidden element to add
+     * @param array   $attribs Additional html attributes for element
      *
      * @return void
      */
@@ -389,7 +415,7 @@ class NDB_Page implements RequestHandlerInterface
             ['class' => 'form-control input-sm not-answered']
         );
 
-        $this->addGroup($group, $field . '_group', $label, null, false);
+        $this->addGroup($group, $field . '_group', $label, '');
 
     }
 
@@ -405,18 +431,19 @@ class NDB_Page implements RequestHandlerInterface
     function addPassword(
         $field,
         $label=null,
-        $attribs=['class' => 'form-control input-sm']
+        $attribs=[]
     ) {
+        $attribs = array_merge(['class' => 'form-control input-sm'], $attribs);
         $this->form->addElement('password', $field, $label, [], $attribs);
     }
 
     /**
      * Adds a QuickForm rule to an element on the page.
      *
-     * @param string $element The name of the element to have the rule
-     * @param string $message The message to show on failure
-     * @param string $type    The type of rule to add
-     * @param string $format  See QuickForm documentation.
+     * @param string|array $element The name of the element to have the rule
+     * @param string       $message The message to show on failure
+     * @param string       $type    The type of rule to add
+     * @param string       $format  See QuickForm documentation.
      *
      * @return void
      *
@@ -455,7 +482,7 @@ class NDB_Page implements RequestHandlerInterface
      * @param string $name      The name to give this group
      * @param string $label     A label to attach to the group
      * @param string $delimiter The separator to use between group elements
-     * @param string $options   An optional array to include prefix_wrapper and
+     * @param ?array $options   An optional array to include prefix_wrapper and
      *                          postfix_wrapper strings - html that will be
      *                          placed before and after the group html
      *
@@ -506,7 +533,7 @@ class NDB_Page implements RequestHandlerInterface
     {
         return $this->form->createElement(
             "static",
-            null,
+            '',
             $labelString
         );
     }
@@ -584,7 +611,7 @@ class NDB_Page implements RequestHandlerInterface
      *
      * @param string $field   The fieldname for this checkbox
      * @param string $label   The label to attach to this checkbox
-     * @param string $attribs Attributes to pass to HTML_QuickForm
+     * @param array  $attribs Attributes to pass to HTML_QuickForm
      *
      * @return array representing checkbox
      */
@@ -604,7 +631,7 @@ class NDB_Page implements RequestHandlerInterface
      *
      * @param string $field   The fieldname for this radio button
      * @param string $label   The label to attach to this radio button
-     * @param string $options Options to pass to LorisForm
+     * @param array  $options Options to pass to LorisForm
      * @param array  $attribs An array of extra HTML attributes to
      *                        add to the element.
      *
@@ -664,6 +691,7 @@ class NDB_Page implements RequestHandlerInterface
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
     ) : ResponseInterface {
+        $this->logger->debug("NDB_Page middleware called");
         $user = $request->getAttribute("user");
         if ($this->_hasAccess($user ?? new \LORIS\AnonymousUser()) !== true) {
             return (new \LORIS\Middleware\PageDecorationMiddleware($user))
@@ -687,14 +715,14 @@ class NDB_Page implements RequestHandlerInterface
         // Format should be deprecated and getting the page in different formats
         // should be a different endpoint or use HTTP content negotiation headers.
         $get = $request->getQueryParams();
-        if (isset($get['format'])) {
+        if (isset($get['format']) && $get['format'] === 'json') {
             $this->format = $get['format'];
             return $handler->handle($request)
                 ->withHeader("Content-Type", "application/json");
         }
+
         return (new \LORIS\Middleware\PageDecorationMiddleware($user))
-            ->process($request, $handler)
-            ->withHeader("Content-Type", "text/html");
+            ->process($request, $handler);
     }
 
     /**
@@ -708,6 +736,8 @@ class NDB_Page implements RequestHandlerInterface
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
+        $this->logger->debug("NDB_Page handle called");
+
         $this->setup();
         return (new \LORIS\Http\Response())
             ->withBody(new \LORIS\Http\StringStream($this->display() ?? ""));
@@ -720,7 +750,8 @@ class NDB_Page implements RequestHandlerInterface
      */
     function display()
     {
-        switch($this->format) {
+        $this->logger->debug("Rendering page via display function");
+        switch ($this->format) {
         case 'json':
             return $this->toJSON();
         }
@@ -806,7 +837,7 @@ class NDB_Page implements RequestHandlerInterface
 
         $files = [
             $baseurl . '/js/jquery/jquery-1.11.0.min.js',
-            $baseurl . '/js/helpHandler.js',
+            $baseurl . '/js/loris-scripts.js',
             $baseurl . '/js/modernizr/modernizr.min.js',
                   // Only load minified file on production, not sandboxes
             $baseurl . '/js/polyfills.js',
@@ -824,10 +855,8 @@ class NDB_Page implements RequestHandlerInterface
             $baseurl . '/js/jquery.fileupload.js',
             $baseurl . '/bootstrap/js/bootstrap.min.js',
             $baseurl . '/js/components/Breadcrumbs.js',
-            $baseurl . '/vendor/sweetalert/sweetalert' . $min . '.js',
             $baseurl . "/js/util/queryString.js",
-            $baseurl . '/js/components/Form.js',
-            $baseurl . '/js/components/Markdown.js',
+            $baseurl . '/js/components/Help.js',
         ];
         return $files;
     }
@@ -848,8 +877,7 @@ class NDB_Page implements RequestHandlerInterface
         $files = [
             $baseurl . "/bootstrap/css/bootstrap.min.css",
             $baseurl . "/bootstrap/css/custom-css.css",
-            $baseurl . "/js/jquery/datepicker/datepicker.css",
-            $baseurl . '/vendor/sweetalert/sweetalert.css',
+            $baseurl . "/js/jquery/datepicker/datepicker.css"
         ];
         return $files;
     }

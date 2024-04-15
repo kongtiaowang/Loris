@@ -1,21 +1,30 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Loader from 'Loader';
+import {
+  FormElement,
+  StaticElement,
+  SelectElement,
+  ButtonElement,
+  DateElement,
+  TextareaElement,
+} from 'jsx/Form';
+
 /**
  * Proband Info Component.
  *
  * Renders the contents of the ProbandInfo tab, consisting of the FormElement component
  */
 class ProbandInfo extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
     this.state = {
-      sexOptions: {
-        Male: 'Male',
-        Female: 'Female',
-        Other: 'Other',
-      },
+      sexOptions: {},
       Data: [],
       formData: {},
       updateResult: null,
@@ -33,6 +42,9 @@ class ProbandInfo extends Component {
     this.showAlertMessage = this.showAlertMessage.bind(this);
   }
 
+  /**
+   * Called by React when the component has been rendered on the page.
+   */
   componentDidMount() {
     this.fetchData();
   }
@@ -58,6 +70,7 @@ class ProbandInfo extends Component {
           formData: formData,
           Data: data,
           isLoaded: true,
+          sexOptions: data.sexOptions,
         });
       },
       error: (error) => {
@@ -171,6 +184,11 @@ class ProbandInfo extends Component {
     );
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     if (!this.state.isLoaded) {
       return <Loader />;

@@ -70,6 +70,7 @@ class Recording extends Endpoint implements \LORIS\Middleware\ETagCalculator
     {
         return [
             'v0.0.3',
+            'v0.0.4-dev',
         ];
     }
 
@@ -112,7 +113,7 @@ class Recording extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         $subendpoint = array_shift($pathparts);
-        switch($subendpoint) {
+        switch ($subendpoint) {
         case 'metadata':
             $handler = new Metadata($this->_visit, $recording);
             break;

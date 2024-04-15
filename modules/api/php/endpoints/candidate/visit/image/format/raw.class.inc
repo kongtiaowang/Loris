@@ -62,8 +62,8 @@ class Raw extends Endpoint implements \LORIS\Middleware\ETagCalculator
     protected function supportedVersions() : array
     {
         return [
-            'v0.0.2',
             'v0.0.3',
+            'v0.0.4-dev',
         ];
     }
 
@@ -115,6 +115,13 @@ class Raw extends Endpoint implements \LORIS\Middleware\ETagCalculator
         $mincpath = \NDB_Factory::singleton()->config()
             ->getSetting('MINCToolsPath');
 
+        if ($mincpath === null) {
+            return new \LORIS\Http\Response\JSON\InternalServerError(
+                'Invalid MINCToolsPath configuration setting: ' .
+                'MINCToolsPath is null'
+            );
+        }
+
         $minctooldir = new \SPLFileInfo($mincpath);
         if (!$minctooldir->isDir() || !$minctooldir->isReadable()) {
             return new \LORIS\Http\Response\JSON\InternalServerError(
@@ -133,13 +140,13 @@ class Raw extends Endpoint implements \LORIS\Middleware\ETagCalculator
 
         $callback = function () use ($mincpath, $fullpath) {
             return shell_exec(
-                "${mincpath}/bin/minctoraw -byte -unsigned -normalize $fullpath"
+                "{$mincpath}/bin/minctoraw -byte -unsigned -normalize $fullpath"
             );
         };
 
         return (new \LORIS\Http\Response())
             ->withHeader('Content-Type', 'application/x.raw')
-            ->withHeader('Content-Disposition', "attachment; filename=${filename}")
+            ->withHeader('Content-Disposition', "attachment; filename={$filename}")
             ->withBody(new \Laminas\Diactoros\CallbackStream($callback));
     }
 

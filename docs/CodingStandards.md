@@ -5,7 +5,7 @@
 ### Style and Formatting
 We use a variety of static analysis tools to create a consistent style across
 the codebase. For more details about the tools used and what they do,
-please review the [Automated Testing Guide](./wiki/99%20-%20Developers/Automated%20Testing.md)
+please review the [Automated Testing Guide](./wiki/99_Developers/Automated_Testing.md)
 
 ### Separation of languages
 HTML, PHP, CSS, SQL, and JavaScript code should not be mixed. Instead, they
@@ -32,16 +32,16 @@ Prepared statements MUST be used for any database interactions that use user inp
 
 LORIS has many classes that use a Singleton design pattern. To facilitate with
 unit testing, it is best to use these singletons via the NDB_Factory class.
-For example, you should use the Database class like this:
+For example, you should use the Project class like this:
 
 ```php
-$database = \NDB_Factory::singleton()->database();
+$project = \NDB_Factory::singleton()->project("controlproject");
 ```
 
 instead of 
 
 ```php
-$database = \Database::singleton();
+$project = \Project::singleton("controlproject");
 ```
 
 # HTML

@@ -25,6 +25,8 @@ namespace LORIS\statistics;
  */
 class Stats_MRI extends \NDB_Form
 {
+    protected array $params;
+
     /**
      * Checking user's permission
      *
@@ -58,20 +60,20 @@ class Stats_MRI extends \NDB_Form
     /**
      * RenderStatsTable function
      *
-     * @param string  $sectionHeader     the value of sectionHeader
-     * @param string  $tableHeader       the value of tableHeader
-     * @param array   $subcats           the value of subcats
-     * @param array   $visits            the value of visits
-     * @param string  $dropdown_name     the value of dropdown_name
-     * @param string  $dropdown_opt      the value of dropdown_opt
-     * @param string  $dropdown_selected the value of dropdown_selected
-     * @param array   $centers           the value of centers
-     * @param array   $data              the value of data
-     * @param string  $Subsection        the value of Subsection=''
-     * @param string  $disclamer         the value of disclamer=''
-     * @param ?string $projectID         the value of projectID is null
-     * @param bool    $renderTable       whether to render the table or display a
-     *                                   default error message
+     * @param string      $sectionHeader     the value of sectionHeader
+     * @param string      $tableHeader       the value of tableHeader
+     * @param array       $subcats           the value of subcats
+     * @param array       $visits            the value of visits
+     * @param string      $dropdown_name     the value of dropdown_name
+     * @param array       $dropdown_opt      the value of dropdown_opt
+     * @param string      $dropdown_selected the value of dropdown_selected
+     * @param array       $centers           the value of centers
+     * @param array       $data              the value of data
+     * @param string      $Subsection        the value of Subsection=''
+     * @param string      $disclamer         the value of disclamer=''
+     * @param ?\ProjectID $projectID         the value of projectID is null
+     * @param bool        $renderTable       whether to render the table or display a
+     *                                       default error message
      *
      * @return string
      */
@@ -97,19 +99,19 @@ class Stats_MRI extends \NDB_Form
             : '';
         $tpl_data['Subsection'] = $Subsection;
         $tpl_data['Visits']     = $visits;
-        $smarty = new \Smarty_neurodb("statistics");
+        $smarty = new \Smarty_NeuroDB("statistics");
         $tpl_data['SectionHeader'] = $sectionHeader;
         $tpl_data['TableHeader']   = $tableHeader;
         $tpl_data['Disclamer']     = $disclamer;
         $tpl_data['Subcategories'] = $subcats;
-        $tpl_var = \Utility::getSubprojectsForProject($projectID);
-        $tpl_data['Subprojects']      = $tpl_var;
+        $tpl_var = \Utility::getCohortsForProject($projectID);
+        $tpl_data['Cohorts']          = $tpl_var;
         $tpl_data['DropdownName']     = $dropdown_name;
         $tpl_data['DropdownOptions']  = $dropdown_opt;
         $tpl_data['DropdownSelected'] = $dropdown_selected;
         $tpl_data['Centers']          = $centers;
         foreach ($data as $row) {
-            $subproj = $row['SubprojectID'];
+            $subproj = $row['CohortID'];
             $vl      = $row['VLabel'];
             $subcat  = $row['Subcat'];
             $center  = $row['CenterID'];
@@ -148,19 +150,19 @@ class Stats_MRI extends \NDB_Form
                 if (!isset($tpl_data['data'][$vl])) {
                     $tpl_data['data'][$vl] = $blankStatsArray;
                 }
-                // Data => Subproject
+                // Data => Cohort
                 if (!isset($tpl_data['data'][$subproj])) {
                     $tpl_data['data'][$subproj] = $blankStatsArray;
                 }
-                // Data => Subproject => Visit_label
+                // Data => Cohort => Visit_label
                 if (!isset($tpl_data['data'][$subproj][$vl])) {
                     $tpl_data['data'][$subproj][$vl] = $blankStatsArray;
                 }
-                // Data => Subproject => Center
+                // Data => Cohort => Center
                 if (!isset($tpl_data['data'][$subproj][$C])) {
                     $tpl_data['data'][$subproj][$C] = $blankStatsArray;
                 }
-                // Data => Subproject => Center => Visit_Label
+                // Data => Cohort => Center => Visit_Label
                 if (!isset($tpl_data['data'][$subproj][$C][$vl])) {
                     $tpl_data['data'][$subproj][$C][$vl] = $blankStatsArray;
                 }
@@ -175,21 +177,22 @@ class Stats_MRI extends \NDB_Form
 
                 // Update the $subcat and total values for each element.
                 // Data
+                assert(is_array($tpl_data['data']));
                 $tpl_data['data'][$subcat] += $row['val'];
                 $tpl_data['data']['total'] += $row['val'];
                 // Data => Visit_Label
                 $tpl_data['data'][$vl][$subcat] += $row['val'];
                 $tpl_data['data'][$vl]['total'] += $row['val'];
-                // Data => Subproject
+                // Data => Cohort
                 $tpl_data['data'][$subproj][$subcat] += $row['val'];
                 $tpl_data['data'][$subproj]['total'] += $row['val'];
-                // Data => Subproject => Visit_Label
+                // Data => Cohort => Visit_Label
                 $tpl_data['data'][$subproj][$vl][$subcat] += $row['val'];
                 $tpl_data['data'][$subproj][$vl]['total'] += $row['val'];
-                // Data => Subproject => Center
+                // Data => Cohort => Center
                 $tpl_data['data'][$subproj][$C][$subcat] += $row['val'];
                 $tpl_data['data'][$subproj][$C]['total'] += $row['val'];
-                // Data => Subproject => Center => Visit_Label
+                // Data => Cohort => Center => Visit_Label
                 $tpl_data['data'][$subproj][$C][$vl][$subcat]  = $row['val'];
                 $tpl_data['data'][$subproj][$C][$vl]['total'] += $row['val'];
                 // Data => Center
@@ -231,18 +234,18 @@ class Stats_MRI extends \NDB_Form
         $projects     = [];
         $projects[''] = 'All Projects';
 
-        $userProjectsIDs = $user->getData('ProjectIDs');
+        $userProjectsIDs = $user->getProjectIDs();
         foreach ($userProjectsIDs as $ProjectID) {
-            $projects[$ProjectID] = $allProjectList[$ProjectID];
+            $projects["$ProjectID"] = $allProjectList["$ProjectID"];
         }
 
         $currentProject = null;
         if ($_REQUEST['MRIProject'] ?? '') {
-            $currentProject = htmlspecialchars($_REQUEST['MRIProject']);
+            $currentProject = new \ProjectID($_REQUEST['MRIProject']);
             $this->tpl_data['CurrentProject']
                 = [
                     'ID'   => $currentProject,
-                    'Name' => $projects[$currentProject],
+                    'Name' => $projects[$currentProject->__toString()],
                 ];
             $sqlVar        = 'AND (s.ProjectID IS NULL OR s.ProjectID=:pid) ';
             $Param_Project =$sqlVar;
@@ -252,11 +255,11 @@ class Stats_MRI extends \NDB_Form
             $Param_Project = '';
         }
 
-        //SUBPROJECTS
-        $subprojects = \Utility::getSubprojectsForProject($currentProject);
-        $subprojList = implode(',', array_keys($subprojects));
+        //COHORTS
+        $cohorts     = \Utility::getCohortsForProject($currentProject);
+        $subprojList = implode(',', array_keys($cohorts));
         if (!empty($subprojList)) {
-            $suproject_query ="AND s.SubprojectID IN ($subprojList)";
+            $suproject_query ="AND s.CohortID IN ($subprojList)";
         } else {
             $suproject_query ='';
         }
@@ -321,7 +324,7 @@ class Stats_MRI extends \NDB_Form
         if (empty($scans_selected_input)) {
             $scans_selected = $scan_types ?? [];
         } else {
-            foreach ($scans_selected_input as $key => $scid) {
+            foreach ($scans_selected_input as $scid) {
                 $scans_selected[$scid] =$scan_types[$scid];
             }
         }
@@ -332,7 +335,7 @@ class Stats_MRI extends \NDB_Form
         $this->tpl_data['Scans_selected'] = $scans_selected;
         $this->tpl_data['Sites']          = $sites;
         $this->tpl_data['Projects']       = $projects;
-        $this->tpl_data['Subprojects']    = $subprojects;
+        $this->tpl_data['Cohorts']        = $cohorts;
         $this->tpl_data['Visits']         = $Visits;
 
         //START BIG TABLE
@@ -372,7 +375,7 @@ class Stats_MRI extends \NDB_Form
         if ($DB->columnExists('mri_parameter_form', $MRI_Type . "_Scan_Done")) {
             $scanDoneExists = true;
             $result         = $DB->pselect(
-                "SELECT s.SubprojectID,
+                "SELECT s.CohortID,
                     s.CenterID,
                     s.Visit_label as VLabel,
                     $CaseStatement as Subcat,
@@ -391,7 +394,7 @@ class Stats_MRI extends \NDB_Form
                     $suproject_query
                     $Param_Project
                 GROUP BY Subcat,
-                    s.SubprojectID,
+                    s.CohortID,
                     s.CenterID,
                     s.Visit_label",
                 $bigTable_params
@@ -423,7 +426,7 @@ class Stats_MRI extends \NDB_Form
             $scan_params = array_merge(['scan' => $scan], $this->params);
 
             //INSERT COUNT TOTAL
-            $Scan_data_results[$key]['insert_count']['total'] = $DB->pselectOne(
+            $Scan_data_results[$key]['insert_count']['total'] = $DB->pselectOneInt(
                 "SELECT COUNT(*)
                 FROM files fi
                     JOIN session s ON (fi.SessionID=s.ID)
@@ -443,7 +446,7 @@ class Stats_MRI extends \NDB_Form
             );
             //INSERT COUNT Values
             $count_data = $DB->pselect(
-                "SELECT s.SubprojectID as subID, COUNT(*) as cnt
+                "SELECT s.CohortID as subID, COUNT(*) as cnt
                 FROM files fi
                     JOIN session s ON (fi.SessionID=s.ID)
                     JOIN candidate c ON (c.CandID=s.CandID)
@@ -457,7 +460,7 @@ class Stats_MRI extends \NDB_Form
                     $suproject_query
                     $Param_Project
                     $Param_Site
-                GROUP BY s.SubprojectID",
+                GROUP BY s.CohortID",
                 $scan_params
             );
             foreach ($count_data as $row) {
@@ -470,7 +473,7 @@ class Stats_MRI extends \NDB_Form
             }
 
             //QC STATUS: PASSED TOTAL
-            $Scan_data_results[$key]['qc_pass_count']['total'] = $DB->pselectOne(
+            $Scan_data_results[$key]['qc_pass_count']['total'] = $DB->pselectOneInt(
                 "SELECT COUNT(*)
                 FROM files_qcstatus fqc
                 	JOIN files fi on (fi.FileID=fqc.FileID)
@@ -492,7 +495,7 @@ class Stats_MRI extends \NDB_Form
             );
             //QC STATUS: PASSED values
             $count_data = $DB->pselect(
-                "SELECT s.SubprojectID as subID, COUNT(*) as cnt
+                "SELECT s.CohortID as subID, COUNT(*) as cnt
                 FROM files_qcstatus fqc
                 	JOIN files fi on (fi.FileID=fqc.FileID)
                     JOIN session s ON (fi.SessionID=s.ID)
@@ -508,7 +511,7 @@ class Stats_MRI extends \NDB_Form
                     $suproject_query
                     $Param_Project
                     $Param_Site
-                GROUP BY s.SubprojectID",
+                GROUP BY s.CohortID",
                 $scan_params
             );
             foreach ($count_data as $row) {
@@ -522,7 +525,7 @@ class Stats_MRI extends \NDB_Form
             }
 
             //QC STATUS: FAILED TOTAL
-            $Scan_data_results[$key]['qc_fail_count']['total'] = $DB->pselectOne(
+            $Scan_data_results[$key]['qc_fail_count']['total'] = $DB->pselectOneInt(
                 "SELECT COUNT(*)
                 FROM files_qcstatus fqc
                 	JOIN files fi on (fi.FileID=fqc.FileID)
@@ -544,7 +547,7 @@ class Stats_MRI extends \NDB_Form
             );
             //QC STATUS: FAILED values
             $count_data = $DB->pselect(
-                "SELECT s.SubprojectID as subID, COUNT(*) as cnt
+                "SELECT s.CohortID as subID, COUNT(*) as cnt
                 FROM files_qcstatus fqc
                 	JOIN files fi on (fi.FileID=fqc.FileID)
                     JOIN session s ON (fi.SessionID=s.ID)
@@ -560,7 +563,7 @@ class Stats_MRI extends \NDB_Form
                     $suproject_query
                     $Param_Project
                     $Param_Site
-                GROUP BY s.SubprojectID",
+                GROUP BY s.CohortID",
                 $scan_params
             );
             foreach ($count_data as $row) {

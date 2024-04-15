@@ -1,7 +1,7 @@
 # Projects
 
 ## Overview
-The **Project** represents a study in LORIS and can have different subprojects (see [Subproject setup](04_Subprojects.md) page) which, in turn, can be affiliated with different visits (see [Timepoints setup](05_Timepoints.md) page).
+The **Project** represents a study in LORIS and can have different cohorts (see [Cohort setup](04_Cohorts.md) page) which, in turn, can be affiliated with different visits (see [Timepoints setup](05_Timepoints.md) page).
 
 **Projects** are defined in the `Project` table of the database.
          
@@ -23,9 +23,8 @@ Projects can be added directly in SQL using the following command. The `recruitm
 INSERT INTO Project (Name, recruitmentTarget) VALUES('%PROJECT_NAME%', NULL);
 ```
 
-
 ### API
- _not yet available. See [API documentation](../../../API/) for latest additions_
+_not yet available. See [API documentation](../../99_Developers/LORIS-REST-API-0.0.3-dev.md) for latest additions_
  
 ## Interaction With LORIS
 **Projects** can have a direct effect on some LORIS modules where users will only be able to access data affiliated with their own projects.

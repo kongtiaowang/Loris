@@ -7,12 +7,19 @@
  */
 
 use LORIS\StudyEntities\Candidate\CandID;
+use LORIS\StudyEntities\Candidate\EntityType;
+use LORIS\StudyEntities\Candidate\Sex;
+
+/* Define constants used by the file */
 // error codes
 define('CANDIDATE_INVALID', 1);
 define('PSCID_NOT_SPECIFIED', 2);
 define('PSCID_NOT_UNIQUE', 3);
 define('PSCID_INVALID_STRUCTURE', 4);
 define('EDC_NOT_SPECIFIED', 5);
+define('DOB_NOT_SPECIFIED', 6);
+define('DOB_INVALID', 7);
+define('EDC_INVALID', 8);
 
 /**
  * Wrapper around a candidate in Loris. Mostly, it gets information
@@ -26,11 +33,24 @@ define('EDC_NOT_SPECIFIED', 5);
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris-Trunk/
  */
-class Candidate implements \LORIS\StudyEntities\AccessibleResource
+class Candidate implements \LORIS\StudyEntities\AccessibleResource,
+    \LORIS\StudyEntities\SiteHaver
 {
     var $candidateInfo;
-    var $listOfTimePoints;
 
+    protected $data;
+
+    /**
+     * Construct a new Candidate object optionally populated by
+     * the given DTO.
+     *
+     * @param ?CandidateData $data a Candidate DTO object to bypass
+     *                             the singleton constructor.
+     */
+    public function __construct(?CandidateData $data=null)
+    {
+        $this->data = $data;
+    }
     /**
      * This returns a single Candidate object for the given
      * candID, and will only ever instantiate one object in
@@ -75,10 +95,11 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
         $db = $factory->database();
 
         // get candidate data from database
-        $query = "SELECT c.RegistrationCenterID, c.CandID, c.PSCID, c.DoB, 
+        $query = "SELECT c.RegistrationCenterID, c.CandID, c.PSCID, c.DoB,
             c.EDC, c.Sex, c.Entity_type,
             p.Name AS PSC, c.Ethnicity,
-            c.Active, u1.Real_name as RegisteredBy, c.UserID, c.RegistrationProjectID
+            c.Active, u1.Real_name as RegisteredBy, 
+            c.UserID, c.RegistrationProjectID
             FROM candidate as c
             LEFT JOIN psc as p ON (p.CenterID=c.RegistrationCenterID)
             LEFT JOIN users as u1 ON (u1.UserID = c.RegisteredBy)
@@ -93,12 +114,34 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
             );
         }
 
-        // store user data in object property
-        foreach ($row AS $key=>$value) {
-            $this->candidateInfo[$key] = $value;
-        }
+        // We need to refer to these when instantiating the CandidateData
+        // object after Timepoints have been selected, but by then $row
+        // will have been overwritten, so put them in other variables.
+        // Initialize them to null, they should get set in the foreach loop.
+        $registrationProjectID = null;
+        $registrationCenterID  = null;
 
-        $this->candidateInfo['ProjectTitle'] = $this->getProjectTitle();
+        // store user data in object property
+        foreach ($row as $key=>$value) {
+            switch ($key) {
+            case 'Sex':
+                $this->candidateInfo[$key] = empty($value) ? null : new Sex($value);
+                break;
+            case 'Entity_type':
+                $this->candidateInfo[$key] = new EntityType($value);
+                break;
+            case 'RegistrationProjectID':
+                $registrationProjectID     = new \ProjectID($value);
+                $this->candidateInfo[$key] = $registrationProjectID;
+                break;
+            case 'RegistrationCenterID':
+                $registrationCenterID      = new \CenterID($value);
+                $this->candidateInfo[$key] = $registrationCenterID;
+                break;
+            default:
+                $this->candidateInfo[$key] = $value;
+            }
+        }
 
         $headerSetting = $config->getSetting('HeaderTable');
         if (!empty($headerSetting)) {
@@ -155,16 +198,30 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
         }
 
         // get Time Point SessionIDs for the $candID
-        // select ALL of them - later you can filter out cancelled and inactive ones
-        $query = "SELECT s.ID FROM session as s
+        $query = "SELECT s.ID, s.ProjectID, s.CenterID FROM session as s
             WHERE s.CandID=:Candidate AND s.Active='Y'
             ORDER BY ID";
         $row   = $db->pselect($query, $CandArray);
 
         // store user data in object property
+        $timepoints = [];
         foreach ($row as $value) {
-            $this->listOfTimePoints[] = intval($value["ID"]);
+            $timepoints[] = new TimePoint(
+                new TimePointData(
+                    new SessionID(strval($value["ID"])),
+                    new ProjectID(strval($value["ProjectID"])),
+                    new CenterID(strval($value["CenterID"])),
+                )
+            );
         }
+
+        $this->data = new CandidateData(
+            $candID,
+            $registrationProjectID,
+            $registrationCenterID,
+            $timepoints,
+        );
+        $this->candidateInfo['ProjectTitle'] = $this->getProjectTitle();
     }
 
     /**
@@ -175,31 +232,33 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
      * it is an optional parameter based on configuration
      * settings. However, this will not be backward compatiable.
      *
-     * @param int         $centerID              centerID of the site to which the
+     * @param CenterID    $centerID              centerID of the site to which the
      *                                           candidate will belong
-     * @param string      $dateOfBirth           date of birth written as YYYY-MM-DD
+     * @param string|null $dateOfBirth           date of birth written as YYYY-MM-DD
      * @param string|null $edc                   estimated date of confinement
-     *                                           written as YYYY-MM-DD. Value should
-     *                                           be null unless the useEDC setting
-     *                                           is configured to be true.
-     * @param string      $sex                   sex, 'Male', 'Female', or 'Other'
+     *                                           written as YYYY-MM-DD. Value
+     *                                           should be null unless the
+     *                                           useEDC setting is configured
+     *                                           to be true.
+     * @param Sex         $sex                   An instance of the Sex class.
      * @param string|null $PSCID                 PSCID specified by the user,
      *                                           if available
-     * @param int|null    $registrationProjectID The project ID, if available
+     * @param ?ProjectID  $registrationProjectID The project ID, if available
      *
      * @return CandID   $candID      candidate id of the new candidate
      * @throws Exception
      * @static
      */
     static public function createNew(
-        int $centerID,
-        string $dateOfBirth,
+        CenterID $centerID,
+        ?string $dateOfBirth,
         ?string $edc,
-        string $sex,
+        Sex $sex,
         ?string $PSCID = null,
-        int $registrationProjectID = null
+        ProjectID $registrationProjectID = null
     ): CandID {
         $factory = NDB_Factory::singleton();
+        $db      = $factory->database();
 
         $site = \Site::singleton($centerID);
 
@@ -212,11 +271,58 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
         $PSCIDSettings = $config->getSetting('PSCID');
         $useEDC        = $config->getSetting('useEDC');
 
-        if (($useEDC === '1' || $useEDC === 'true') && empty($edc)) {
-            throw new \LorisException(
-                "EDC must be specified",
-                EDC_NOT_SPECIFIED
-            );
+        // Get expected format from config
+        $dobFormat = $config->getSetting('dobFormat');
+        $dobFormat = '!' . implode("-", str_split($dobFormat, 1));
+
+        if (($useEDC === '1' || $useEDC === 'true')) {
+            if (empty($edc)) {
+                throw new \LorisException(
+                    "EDC must be specified",
+                    EDC_NOT_SPECIFIED
+                );
+            } else {
+                // Check valid format
+                $edcDate = DateTime::createFromFormat($dobFormat, $edc);
+                if ($edcDate === false) {
+                    throw new InvalidArgumentException(
+                        "EDC is invalid (expected format: YYYY-MM-DD)",
+                        EDC_INVALID
+                    );
+                }
+
+                // Add day as mid of the month if Y-m dob format
+                // This allows insert into sql candidate table
+                if ($dobFormat === '!Y-m') {
+                    $edc .= '-15';
+                }
+            }
+        }
+
+        if (empty($dateOfBirth)) {
+            // DoB not required if useEDC is on
+            if (!($useEDC === '1' || $useEDC === 'true')) {
+                throw new InvalidArgumentException(
+                    "Date of Birth must be specified",
+                    DOB_NOT_SPECIFIED
+                );
+            } else {
+                $dateOfBirth = null;
+            }
+        } else {
+            $dob = DateTime::createFromFormat($dobFormat, $dateOfBirth);
+            if ($dob === false) {
+                throw new InvalidArgumentException(
+                    "Date of Birth is invalid (expected format: YYYY-MM-DD)",
+                    DOB_INVALID
+                );
+            }
+
+            // Add day as mid of the month if Y-m dob format
+            // This allows insert into sql candidate table
+            if ($dobFormat === '!Y-m') {
+                $dateOfBirth .= '-15';
+            }
         }
 
         if ($PSCIDSettings['generation'] == 'user') {
@@ -225,6 +331,25 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
                 throw new Exception(
                     "PSCID must be specified",
                     PSCID_NOT_SPECIFIED
+                );
+            }
+
+            // check pscid uniqueness
+            $existing = $db->pselectOne(
+                'SELECT
+                  COUNT(*)
+                 FROM candidate
+                 WHERE PSCID = :v_pscid
+                 GROUP BY
+                   PSCID
+                ',
+                ['v_pscid' => $PSCID]
+            );
+
+            if ($existing > 0) {
+                throw new \ConflictException(
+                    "PSCID must be unique",
+                    PSCID_NOT_UNIQUE
                 );
             }
 
@@ -275,7 +400,9 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
         // Generate a new CandID and insert it into the database.
         $generator = new \CandIDGenerator();
         // declare the variable to avoid static analysis warnings
-        $invalidID = false;
+        $attemptcount = 0;
+
+        $db = \NDB_Factory::singleton()->database();
         do {
             // Reset on each iteration
             $invalidID = false;
@@ -283,12 +410,16 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
             $candID = $generator->generate();
             $setArray['CandID'] = (string) $candID;
             try {
-                \Database::singleton()->insert('candidate', $setArray);
+                $db->insert('candidate', $setArray);
             } catch (\DatabaseException | \DomainException $e) {
                 // Occurs in the case of a race condition where another CandID
                 // with the same value has been inserted into the DB before this
                 // one.
                 $invalidID = true;
+                $attemptcount++;
+                if ($attemptcount > 2) {
+                    throw $e;
+                }
             }
         } while ($invalidID);
 
@@ -332,12 +463,19 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
     /**
      * Get a list of timepoints that this Candidate has registered
      *
-     * @return array|null Non-associative array of SessionIDs 1st Time Point
+     * @return array Non-associative array of SessionIDs 1st Time Point
      *               indexed to 0
      */
-    function getListOfTimePoints(): ?array
+    function getListOfTimePoints(): array
     {
-        return $this->listOfTimePoints;
+        return array_map(
+            function ($timepoint) {
+                return intval(
+                    strval($timepoint->getSessionID())
+                );
+            },
+            $this->data->timepoints,
+        );
     }
 
     /**
@@ -350,8 +488,11 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
      */
     function getSessionID(int $visitNo): ?int
     {
-        if (isset($this->listOfTimePoints[$visitNo-1]) ) {
-            return intval($this->listOfTimePoints[$visitNo-1]);
+        $timepoints = $this->data->timepoints;
+        if (isset($timepoints[$visitNo-1]) ) {
+            return intval(
+                strval($timepoints[$visitNo-1]->getSessionID())
+            );
         }
 
         return null;
@@ -402,7 +543,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
             'candidate',
             $newData,
             [
-                'CandID' => $this->getData('CandID'),
+                'CandID' => $this->getCandID(),
             ]
         );
         return true;
@@ -412,11 +553,11 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
     /**
      * Returns the ProjectID for the current candidate
      *
-     * @return integer CandID of candidate
+     * @return \ProjectID RegistrationProjectID of candidate
      */
-    function getProjectID(): int
+    function getProjectID(): \ProjectID
     {
-        return intval($this->candidateInfo["RegistrationProjectID"]);
+        return $this->data->registrationProjectID;
     }
 
     /**
@@ -428,7 +569,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
     function getProjectTitle(): string
     {
         $ProjectList = Utility::getProjectList();
-        return $ProjectList[$this->getProjectID()] ?? '';
+        return $ProjectList[$this->getProjectID()->__toString()] ?? '';
     }
 
     /**
@@ -466,11 +607,11 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
     /**
      * Returns the ID of this candidate's site
      *
-     * @return integer The numeric ID of the candidate's site
+     * @return CenterID The numeric ID of the candidate's site
      */
-    function getCenterID(): int
+    function getCenterID(): CenterID
     {
-        return intval($this->candidateInfo["RegistrationCenterID"]);
+        return $this->data->registrationCenterID;
     }
 
     /**
@@ -481,6 +622,40 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
     function getCandidateDoB(): ?string
     {
         return $this->candidateInfo["DoB"];
+    }
+
+    /**
+     * Returns the way that the DoB should be displayed for this
+     * candidate to a user on the frontend.
+     *
+     * @return ?array{label:string,value:string}
+     */
+    function getDisplayDoB(): ?array
+    {
+        if ($this->getCandidateDob() === null) {
+            return null;
+        }
+
+        $factory = NDB_Factory::singleton();
+        $config  = $factory->config();
+
+        $dobFormat = $config->getSetting('dobFormat');
+
+        $dobDate = new DateTimeImmutable($this->getCandidateDoB());
+        switch ($dobFormat) {
+        case 'Ym':
+            return [
+                'label' => 'Date of Birth',
+                'value' => $dobDate->format('Y-m'),
+            ];
+        case 'Ymd':
+            return [
+                'label' => 'Date of Birth',
+                'value' => $dobDate->format('Y-m-d'),
+            ];
+        default:
+            throw new Exception("Unhandled DoB format: $dobFormat");
+        }
     }
 
     /**
@@ -497,12 +672,21 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
     /**
      * Return the candidate's sex
      *
-     * @return string|null Male|Female|Other String describing the sex
-     *                     and null if scanner
+     * @return ?Sex
      */
-    function getCandidateSex(): ?string
+    function getCandidateSex(): ?Sex
     {
         return $this->candidateInfo["Sex"];
+    }
+
+    /**
+     * Return the candidate's entity type.
+     *
+     * @return ?EntityType
+     */
+    function getEntityType(): ?EntityType
+    {
+        return $this->candidateInfo["Entity_type"];
     }
 
     /**
@@ -576,20 +760,20 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
     }
 
     /**
-     * Generates list of valid subprojects for a the selected Candidate's
+     * Generates list of valid cohorts for a the selected Candidate's
      * project
      *
-     * @return array Array of the form SubprojectID => SubprojectID
+     * @return array Array of the form CohortID => CohortID
      *               or NULL if none exist
      * @throws DatabaseException
      */
-    public function getValidSubprojects(): array
+    public function getValidCohorts(): array
     {
         $subprojList = [];
 
         $projID  = $this->getProjectID();
-        $query   = "SELECT SubprojectID 
-                    FROM project_subproject_rel 
+        $query   = "SELECT CohortID
+                    FROM project_cohort_rel
                     WHERE ProjectID = :prj";
         $params  = ['prj' => $projID];
         $subproj = \NDB_Factory::singleton()
@@ -598,7 +782,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
 
         foreach ($subproj as $row) {
             foreach ($row as $key =>$val) {
-                if ($key == 'SubprojectID') {
+                if ($key == 'CohortID') {
                     $subprojList[$val] = $val;
                 }
             }
@@ -606,8 +790,35 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
 
         return $subprojList;
     }
+
     /**
-     * Returns first visit for a candidate based on Date_visit
+     * Returns the CohortID and cohort title of the candidate's last visit
+     * based on Date_visit
+     *
+     * @return array|null Array with values CohortID and title
+     *                    for the candidate's last visit or NULL if none exist
+     */
+    public function getCohortForMostRecentVisit(): ?array
+    {
+        $factory = NDB_Factory::singleton();
+        $db      = $factory->database();
+
+        $candID = $this->getCandID();
+        $query  = "SELECT CohortID, title FROM session
+          LEFT JOIN cohort USING (CohortID)
+          WHERE CandID=:cid AND Date_visit IS NOT NULL
+          ORDER BY Date_visit DESC LIMIT 1";
+        $where  = ['cid' => $candID];
+        $result = $db->pselect($query, $where);
+
+        if (empty($result)) {
+            return null;
+        }
+        return $result[0];
+    }
+
+    /**
+     * Returns first visit for a candidate based on VisitNo
      *
      * @return string The visit label for the candidate's first visit
      */
@@ -617,7 +828,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
         $db      = $factory->database();
 
         $candID = $this->getCandID();
-        $query  = "SELECT Visit_label FROM session 
+        $query  = "SELECT Visit_label FROM session
           LEFT JOIN candidate USING (CandID)
           WHERE CandID = :cid AND VisitNo = 1
           AND Entity_type <> 'Scanner'";
@@ -654,6 +865,57 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
             return 1;
         }
         return intval($result);
+    }
+
+    /**
+     * Returns DateInterval between candidate's date of birth and a given date,
+     * or today if no date given.
+     *
+     * @param ?DateTime $refDate The reference date from which to calculate the age,
+     *                           or null if not provided
+     *
+     * @return DateInterval Between DoB and $refDate
+     */
+    public function getAge(?DateTime $refDate = null): DateInterval
+    {
+        if (!$refDate) {
+            $refDate = new DateTime();
+        }
+
+        $dob = new DateTime($this->candidateInfo["DoB"]);
+
+        return $dob->diff($refDate);
+    }
+
+    /**
+     * Returns the candidate's calculated age today in int years
+     *
+     * @return int The candidate's age today as years
+     */
+    public function getAgeInYears(): int
+    {
+        return (int)$this->getAge()->format('%y');
+    }
+
+    /**
+     * Returns the candidate's calculated age today in total number of months
+     *
+     * @return int The candidate's age today in months
+     */
+    public function getAgeInMonths(): int
+    {
+        return (int)$this->getAge()->format('%m') +
+            12 * $this->getAgeInYears();
+    }
+
+    /**
+     * Returns the candidate's calculated age today in total number of days
+     *
+     * @return int The candidate's age today in days
+     */
+    public function getAgeInDays(): int
+    {
+        return (int)$this->getAge()->days;
     }
 
     /**
@@ -705,7 +967,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
         $config  = $factory->config();
 
         $PSCIDSettings = $config->getSetting('PSCID');
-        $regex         = Utility::structureToPCRE(
+        $regex         = self::structureToPCRE(
             $PSCIDSettings['structure'],
             $siteAbbrev,
             $projectAbbrev
@@ -722,7 +984,7 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
      */
     static function getParticipantStatusOptions(): array
     {
-        $DB           =& Database::singleton();
+        $DB           = \NDB_Factory::singleton()->database();
         $options      = $DB->pselect(
             "SELECT ID,Description
             FROM participant_status_options
@@ -746,10 +1008,10 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
      */
     static function getParticipantStatusSubOptions(int $parentID): array
     {
-        $DB           =& Database::singleton();
+        $DB           = \NDB_Factory::singleton()->database();
         $options      = $DB->pselect(
-            "SELECT ID,Description 
-            FROM participant_status_options 
+            "SELECT ID,Description
+            FROM participant_status_options
             WHERE parentID=:pid",
             ['pid' => $parentID]
         );
@@ -762,7 +1024,8 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
 
     /**
      * Implements the AccessibleResource interface. A candidate can
-     * be accessed by a user if it has a project and a site in common.
+     * be accessed by a user if it shares the same registration project
+     * and site or it has access to any of the timepoints.
      *
      * @param \User $user The user whose access should be validated.
      *
@@ -770,25 +1033,26 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
      */
     public function isAccessibleBy(\User $user): bool
     {
-        $centers = $user->getCenterIDs();
+        $projMatch   = in_array($this->getProjectID(), $user->getProjectIDs());
+        $centerMatch = $user->hasCenter($this->getCenterID());
 
-        $projMatch   = in_array($this->getProjectID(), $user->getProjectIDs(), true);
-        $centerMatch = in_array($this->getCenterID(), $centers, true);
+        // The candidate is accessible based on its registration
+        // project/center
+        if ($projMatch && $centerMatch) {
+            return true;
+        }
 
-        if ($centerMatch === false) {
-            // getCenterID is just the RegistrationCenterID, if a visit
-            // has a center in common, we should still allow access to
-            // the candidate.
-            $timepoints = $this->getListOfTimePoints();
-            foreach ($timepoints as $sessionID) {
-                $timepoint = \TimePoint::singleton($sessionID);
-                if (in_array($timepoint->getCenterID(), $centers, true)) {
-                    $centerMatch = true;
-                    break;
-                }
+        // If we can't access due the registration, check if we
+        // have access to any timepoints.
+        foreach ($this->data->timepoints as $timepoint) {
+            if ($timepoint->isAccessibleBy($user)) {
+                return true;
             }
         }
-        return $projMatch && $centerMatch;
+
+        // No Registration Project/Center match and no accessible
+        // timepoints, so no access.
+        return false;
     }
 
     /**
@@ -811,5 +1075,165 @@ class Candidate implements \LORIS\StudyEntities\AccessibleResource
         return $res['Description'] ?? '';
     }
 
-}
+    /**
+     * Returns the candidate's latest diagnosis defined by
+     * the configured diagnosis trajectory. Based on input, can return
+     * the confirmed or unconfirmed latest diagnosis. A confirmed
+     * diagnosis is one that has been pulled from a session that has
+     * Approval = 'Pass'
+     *
+     * @param ProjectID $projectID   ProjectID
+     * @param bool      $isConfirmed Specifies whether to select latest
+     *
+     * @return array|null JSON of the candidate's latest diagnosis
+     *                    as depicted by the configured diagnosis
+     *                    evolution ordering.
+     */
+    function getLatestDiagnosis(
+        ProjectID $projectID,
+        bool $isConfirmed = false
+    ) : ?array {
+        $DB = \NDB_Factory::singleton()->database();
 
+        // Define where clauses
+        $whereConfirmed = $isConfirmed ?
+            " AND Confirmed='Y'" : "";
+
+        $latestDx = $DB->pselectRow(
+            "SELECT DxEvolutionID,
+                ProjectID,
+                CandID,
+                Name,
+                Diagnosis,
+                Confirmed,
+                LastUpdate,
+                OrderNumber
+            FROM diagnosis_evolution 
+            JOIN candidate_diagnosis_evolution_rel USING (DxEvolutionID)
+            WHERE OrderNumber IN (
+                SELECT MAX(orderNumber) AS OrderNumber 
+                FROM diagnosis_evolution de2
+                JOIN candidate_diagnosis_evolution_rel cde USING (DxEvolutionID)
+                WHERE CandID=:candID
+                AND ProjectID=:projID"
+                . $whereConfirmed .
+            " )
+            AND CandID=:candID
+            AND ProjectID=:projID"
+            . $whereConfirmed,
+            [
+                'candID' => $this->getCandID(),
+                'projID' => $projectID
+            ]
+        );
+
+        return $latestDx ?? null;
+    }
+
+    /**
+     * Returns the DxEvolutionID for which the latest diagnosis
+     * of the specified project is based on.
+     *
+     * @param ProjectID $projectID   ProjectID
+     * @param bool      $isConfirmed Specifies whether to select latest
+     *
+     * @return string|null the DxEvolutionID that LatestDiagnosis is based on
+     */
+    function getLatestDiagnosisSource(
+        ProjectID $projectID,
+        bool $isConfirmed = false
+    ) {
+        $latestDx = $this->getLatestDiagnosis($projectID, $isConfirmed);
+        return $latestDx['DxEvolutionID'] ?? null;
+    }
+
+    /**
+     * Transforms a config structure (such as in PSCID) into a
+     * Perl-compatible regex expression for validation
+     *
+     * @param array       $structure     the structure root
+     * @param string|null $siteAbbrev    the site abbreviation, sometimes used as
+     *                                   part of the PSCID
+     * @param string|null $projectAbbrev the project abbreviation
+     *
+     * @return string the regex pattern
+     *
+     * @note    This should probably be moved to the Candidate class, since it's
+     *       only used there to validate the PSCID
+     * @cleanup
+     */
+    static function structureToPCRE(
+        array $structure,
+        ?string $siteAbbrev = null,
+        ?string $projectAbbrev = null
+    ): string {
+        $seqs = $structure['seq'];
+        // handle the situation where there exists only one seq
+        if (isset($seqs['#'])) {
+            $seqs = [$seqs];
+        }
+        $regex = "";
+        foreach ($seqs AS $seq) {
+            $unit = "";
+
+            switch ($seq['@']['type']) {
+            case 'alpha':
+                $unit .= '[a-z]';
+                break;
+
+            case 'alphanumeric':
+                $unit .= '[0-9a-z]';
+                break;
+
+            case 'numeric':
+                $unit .= '[0-9]';
+                break;
+
+            case 'static':
+                $unit .= '('.$seq['#'].')';
+                break;
+
+            case 'set':
+                if (strpos($seq['#'], '|') !== false) {
+                    $unit .= '('.$seq['#'].')';
+                } else {
+                    $unit .= '['.$seq['#'].']';
+                }
+                break;
+
+            case 'siteAbbrev':
+                $unit .= $siteAbbrev;
+                break;
+            case 'projectAbbrev':
+                $unit .= $projectAbbrev;
+                break;
+            } // end switch
+
+            $length = "";
+            if (isset($seq['@']['length'])) {
+                $length .= $seq['@']['length'];
+            } elseif (isset($seq['@']['minLength'])) {
+                $length .= $seq['@']['minLength'];
+            } else {
+                $length .= '1';
+            }
+
+            $length .= ',';
+
+            if (isset($seq['@']['length'])) {
+                $length .= $seq['@']['length'];
+            } elseif (isset($seq['@']['maxLength'])) {
+                $length .= $seq['@']['maxLength'];
+            } elseif (!isset($seq['@']['length'])
+                && !isset($seq['@']['minLength'])
+            ) {
+                $length .= '1';
+            }
+
+            $regex .= $unit.'{'.$length.'}';
+
+        } // end foreach seq
+
+        return '/^'.$regex.'$/i';
+    }
+}

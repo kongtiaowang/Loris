@@ -54,7 +54,7 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
      */
     function getDataProvisioner() : \LORIS\Data\Provisioner
     {
-        $provisioner = new IssueRowProvisioner();
+        $provisioner = new IssueRowProvisioner($this->loris);
 
         $factory = \NDB_Factory::singleton();
         $user    = $factory->user();
@@ -66,6 +66,30 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
         }
         $provisioner = $provisioner->map(new IssueWatcherMapper());
         return $provisioner;
+    }
+
+    /**
+     * Returns a list of sites in the database with an additional All Sites option
+     *
+     * @param boolean $study_site if true only return study sites from psc
+     *                            table
+     * @param boolean $DCC        Whether the DCC should be included or not
+     *
+     * @return array an associative array("center ID" => "site name")
+     */
+    static function getSites(
+        bool $study_site = true,
+        bool $DCC = true
+    ): array {
+        $user = \User::singleton();
+        if ($user->hasPermission('access_all_profiles')) {
+            // get the list of study sites - to be replaced by the Site object
+            $sites = \Utility::getSiteList($study_site, $DCC);
+        } else {
+            // allow only to view own site data
+            $sites = $user->getStudySites();
+        }
+        return $sites;
     }
 
     /**
@@ -81,7 +105,6 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
         $db      = $factory->database();
 
         //sites
-        $sites = [];
         if ($user->hasPermission('access_all_profiles')) {
             $sites = \Utility::getSiteList();
         } else {
@@ -92,21 +115,21 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
         //reporters
         $reporters         = [];
         $reporter_expanded = $db->pselect(
-            "SELECT u.UserID,
+            "SELECT DISTINCT u.UserID,
                     u.Real_name
              FROM issues i
              INNER JOIN users u
-               ON(i.assignee=u.UserID)",
+               ON(i.reporter=u.UserID)",
             []
         );
         foreach ($reporter_expanded as $r_row) {
-            $reporters[$r_row['UserID']] = $r_row['Real_name'];
+            $reporters[$r_row['Real_name']] = $r_row['Real_name'];
         }
 
         //assignees
         $assignees         = [];
         $assignee_expanded = $db->pselect(
-            "SELECT u.UserID,
+            "SELECT DISTINCT u.UserID,
                     u.Real_name
              FROM issues i
              INNER JOIN users u
@@ -114,11 +137,11 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
             []
         );
         foreach ($assignee_expanded as $a_row) {
-            $assignees[$a_row['UserID']] = $a_row['Real_name'];
+            $assignees[$a_row['Real_name']] = $a_row['Real_name'];
         }
 
         $modules = array_reduce(
-            \Module::getActiveModules($db),
+            $this->loris->getActiveModules(),
             function (
                 $result,
                 $module
@@ -183,6 +206,7 @@ class Issue_Tracker extends \NDB_Menu_Filter_Form
             [
                 'data'         => $arr,
                 'fieldOptions' => $fieldOptions,
+                'centerIDs'    => \Utility::getSiteList()
             ]
         );
     }

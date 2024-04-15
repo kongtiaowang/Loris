@@ -1,9 +1,14 @@
-/* exported RPaginationLinks */
-
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
+/**
+ * Pagination component
+ */
 class PaginationLinks extends Component {
+  /**
+   * @constructor
+   * @param {object} props - React Component properties
+   */
   constructor(props) {
     super(props);
 
@@ -13,12 +18,24 @@ class PaginationLinks extends Component {
     this.changePage = this.changePage.bind(this);
   }
 
+  /**
+   * Called by React when the component is updated.
+   *
+   * @param {object} prevProps - Previous React Component properties
+   */
   componentDidUpdate(prevProps) {
     if (this.props.Total < prevProps.Total) {
       this.props.onChangePage(1);
     }
   }
 
+  /**
+   * Creates an onClick Event Handler
+   * execyting this.props.onChangePage(i)
+   *
+   * @param {number} i - Page index
+   * @return {function(event)} - onClick Event Handler
+   */
   changePage(i) {
     return function(evt) {
       // Don't jump to the top of the page
@@ -30,6 +47,11 @@ class PaginationLinks extends Component {
     }.bind(this);
   }
 
+  /**
+   * Renders the React component.
+   *
+   * @return {JSX} - React markup for the component
+   */
   render() {
     let rowsPerPage = this.props.RowsPerPage;
     let pageLinks = [];
@@ -110,15 +132,14 @@ class PaginationLinks extends Component {
 PaginationLinks.propTypes = {
   onChangePage: PropTypes.func,
   Total: PropTypes.number.isRequired,
+  RowsPerPage: PropTypes.number,
+  Active: PropTypes.number,
 };
 PaginationLinks.defaultProps = {
   RowsPerPage: 10,
   Active: 1,
 };
 
-let RPaginationLinks = React.createFactory(PaginationLinks);
-
 window.PaginationLinks = PaginationLinks;
-window.RPaginationLinks = RPaginationLinks;
 
 export default PaginationLinks;

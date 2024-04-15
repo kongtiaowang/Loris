@@ -48,7 +48,7 @@ class Configuration extends \NDB_Form
     {
         parent::setup();
         $config = \NDB_Config::singleton();
-        $DB     = \Database::singleton();
+        $DB     = $this->loris->getDatabaseConnection();
 
         $scans      = $DB->pselect(
             "SELECT Scan_type
@@ -61,7 +61,13 @@ class Configuration extends \NDB_Form
             $scan_types[$val] = $val;
         }
 
-        $instruments     = \Utility::getAllInstruments();
+        $date_format = [
+            ''    => '',
+            'Ymd' => 'Ymd (EX: 2015-12-28)',
+            'Ym'  => 'Ym (EX: 2015-12)'
+        ];
+
+        $instruments     = \NDB_BVL_Instrument::getInstrumentNamesList($this->loris);
         $instruments[''] = '';
 
         $this->tpl_data['parentMenuItems'] = $this->_getParentConfigLabels();
@@ -69,7 +75,20 @@ class Configuration extends \NDB_Form
         $this->tpl_data['instruments']     = $instruments;
         $this->tpl_data['sandbox']         = $config->getSetting("sandbox");
         $this->tpl_data['scan_types']      = $scan_types;
-        $this->tpl_data['lookup_center']   = [
+        $this->tpl_data['log_levels']      = [
+            'none'      => 'None',
+            'debug'     => 'Debug',
+            'info'      => 'Info',
+            'notice'    => 'Notice',
+            'warning'   => 'Warning',
+            'error'     => 'Error',
+            'critical'  => 'Critical',
+            'alert'     => 'Alert',
+            'emergency' => 'Emergency',
+        ];
+
+        $this->tpl_data['date_format']   = $date_format;
+        $this->tpl_data['lookup_center'] = [
             ''            => '',
             'PatientID'   => 'PatientID',
             'PatientName' => 'PatientName',
@@ -84,9 +103,9 @@ class Configuration extends \NDB_Form
      */
     function _getParentConfigLabels()
     {
-        $this->DB = \Database::singleton();
+        $DB = $this->loris->getDatabaseConnection();
 
-        $parentConfigItems = $this->DB->pselect(
+        $parentConfigItems = $DB->pselect(
             "SELECT Label, Name 
              FROM ConfigSettings 
              WHERE Parent IS NULL AND Visible=1 ORDER BY OrderNumber",
@@ -106,10 +125,11 @@ class Configuration extends \NDB_Form
      */
     function _getConfigSettingTree()
     {
-        $config =& \NDB_Config::singleton();
+        $config = \NDB_Config::singleton();
+        $DB     = $this->loris->getDatabaseConnection();
 
         // Get the names and meta-information for the config settings in the database
-        $configs = $this->DB->pselect(
+        $configs = $DB->pselect(
             "SELECT * FROM ConfigSettings WHERE Visible=1 ORDER BY OrderNumber",
             []
         );
@@ -137,7 +157,7 @@ class Configuration extends \NDB_Form
         // overridden in the config.xml
         foreach ($configs as &$setting) {
             if ($setting['Disabled'] == 'No') {
-                $value = $this->DB->pselect(
+                $value = $DB->pselect(
                     "SELECT ID, Value FROM Config WHERE ConfigID=:ID",
                     ['ID' => $setting['ID']]
                 );

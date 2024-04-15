@@ -50,12 +50,10 @@ class Instrument
     public function toArray(): array
     {
         $instrumentname = $this->_instrument->testName;
+        $instrumentdata = $this->_instrument->getInstanceData();
+        $commentid      = $this->_instrument->getCommentID() ?? '';
 
-        $instrumentdata = \NDB_BVL_Instrument::loadInstanceData(
-            $this->_instrument
-        );
-
-        $isDDE = strpos($instrumentdata['CommentID'], 'DDE_') === 0;
+        $isDDE = strpos($commentid, 'DDE_') === 0;
 
         $meta = [
             'Candidate'  => $this->_timepoint->getCandID(),

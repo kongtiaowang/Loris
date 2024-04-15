@@ -16,31 +16,26 @@
  * @package  Loris
  * @author   Loris Team <loris-dev@bic.mni.mcgill.ca>
  * @license  Loris license
- * @link     https://www.github.com/aces/Loris-Trunk/
+ * @link     https://www.github.com/aces/Loris/
  */
 
- set_include_path(get_include_path().":../project/libraries:../php/libraries:");
-
-// require all relevant OO class libraries
-require_once __DIR__ . "/../vendor/autoload.php";
-require_once "../php/libraries/Database.class.inc";
-require_once "../php/libraries/NDB_Config.class.inc";
-require_once "../php/libraries/NDB_BVL_Instrument.class.inc";
+require_once __DIR__ . "/generic_includes.php";
 
 // Get command line options
 $opts = getopt("D");
 
-$fp   =fopen("ip_output.txt", "r");
-$data =fread($fp, filesize("ip_output.txt"));
+$fp   = fopen(__DIR__ . "/ip_output.txt", "r");
+$data = fread($fp, filesize(__DIR__ . "/ip_output.txt"));
 fclose($fp);
 
-$instruments =explode("{-@-}", trim($data));
+$instruments = explode("{-@-}", trim($data));
 
 $tblCount       = 0;
 $parameterCount = 0;
 foreach ($instruments as $instrument) {
-    $catId = "";
-    $items = explode("\n", trim($instrument));
+    $catId  = "";
+    $output = "";
+    $items  = explode("\n", trim($instrument));
     foreach ($items as $item) {
         $paramId = "";
         $bits    = explode("{@}", trim($item));
@@ -52,74 +47,71 @@ foreach ($instruments as $instrument) {
             continue;
         }
         switch ($bits[0]) {
-            //generate the CREATE TABLE syntax
+        // generate the CREATE TABLE syntax
         case "table":
-            $filename = "../project/tables_sql/".$bits[1].".sql";
-            $output   = "";
+            $tablename = $bits[1];
+            $filename  = __DIR__ . "/../project/tables_sql/".$tablename.".sql";
             if (isset($opts["D"])) {
-                $output = "DROP TABLE IF EXISTS `$bits[1]`;\n";
+                $output = "DROP TABLE IF EXISTS `$tablename`;\n";
             }
-            // There's no good way to display this SQL command without exceeding
-            // out line length requirements, so disable phpcs for this chunk.
-            // phpcs:disable
-            $output .= <<<OUTPUT
-CREATE TABLE `$bits[1]` (
-    `CommentID` varchar(255) NOT NULL default '',
-    `UserID` varchar(255) default NULL,
-    `Examiner` varchar(255) default NULL,
-    `Testdate` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    `Data_entry_completion_status` enum('Incomplete','Complete') NOT NULL default 'Incomplete',
-OUTPUT;
-            break;
-            // phpcs:enable
 
-            //no SQL need be generated.
+            $output .= "CREATE TABLE `$tablename` (
+                `CommentID` varchar(255) NOT NULL default '',
+                `UserID` varchar(255) default NULL,
+                `Examiner` varchar(255) default NULL,
+                `Testdate` timestamp "
+                . "DEFAULT CURRENT_TIMESTAMP "
+                . "ON UPDATE CURRENT_TIMESTAMP,\n";
+
+            break;
+
+        // no SQL need be generated.
         case "title":
         case "header":
             continue 2;
 
-            //generate specific column definitions for specific types of HTML
-            //elements
+        // generate specific column definitions for specific types of HTML elements
         default:
             if (isset($bits[1]) && $bits[1] === '') {
                 continue 2;
             }
             switch ($bits[0] ?? null) {
             case "selectmultiple":
-                $bits[0] ="varchar(255)";
+                $bits[0] = "varchar(255)";
                 break;
             case "textarea":
-                $bits[0] ="text";
+                $bits[0] = "text";
                 break;
             case "text":
-                $bits[0] ="varchar(255)";
+                $bits[0] = "varchar(255)";
                 break;
             case "checkbox":
-                $bits[0] ="varchar(255)";
+                $bits[0] = "varchar(255)";
                 break;
             case "static":
                 $bits[0] = "varchar(255)";
                 break;
             case "radio":
-                $bits[0] =enumizeOptions($bits[3], $table = [], $bits[1]);
+                $bits[0] = enumizeOptions($bits[3], $table = [], $bits[1]);
                 break;
             case "select":
-                $bits[0]   =enumizeOptions(
+                $bits[0]   = enumizeOptions(
                     $bits[3] ?? null,
                     $table = [],
                     $bits[1]
                 );
                 break;
             }
-            if (array_key_exists(2, $bits)) {
-                $bits[2] =htmlspecialchars($bits[2]);
-            }
-            $output .="`$bits[1]` $bits[0] default NULL,\n";
+            $output .= "`$bits[1]` $bits[0] default NULL,\n";
         }
-        $output .="PRIMARY KEY  (`CommentID`)\n
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;\n";
     }
-    $fp =fopen($filename, "w");
+    $output .= "PRIMARY KEY  (`CommentID`)\n"
+            . ") ENGINE=InnoDB DEFAULT CHARSET=utf8;\n";
+    $dirname = dirname($filename);
+    if (!is_dir($dirname)) {
+        mkdir($dirname, 0755, true);
+    }
+    $fp = fopen($filename, "w");
     fwrite($fp, $output);
     fclose($fp);
 }
@@ -130,24 +122,24 @@ echo "\n\Table SQL Generation complete\n";
  * Generate options to use for MySQL enums.
  *
  * @param string $options The available enum values separated by '{-}'
- * @param string $table   The name of the table.
+ * @param array  $table   The name of the table.
  * @param string $name    The name of the instrument (?)
  *
  * @return $string The options formatted for MySQL enum structure.
  */
-function enumizeOptions(string $options, string $table, string $name): string
+function enumizeOptions(string $options, array $table, string $name): string
 {
-    $options =explode("{-}", $options);
+    $options = explode("{-}", $options);
     foreach ($options as $option) {
-        $option =explode("=>", $option);
-        if ($option[0]!='NULL') {
-            $enum[] =$option[0];
+        $option =  explode("=>", $option);
+        if ($option[0] != 'NULL') {
+            $enum[] = $option[0];
         }
     }
     if (!is_array($enum)) {
         echo "$table $name $options\n";
     }
-    $enum =implode(",", $enum);
+    $enum = implode(",", $enum);
     return "enum($enum)";
 }
 ?>

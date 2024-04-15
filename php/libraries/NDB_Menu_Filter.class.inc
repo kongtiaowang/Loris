@@ -94,6 +94,15 @@ class NDB_Menu_Filter extends NDB_Menu
     var $formToFilter = [];
 
     /**
+     * A list of filters which should be tested for strict
+     * equality instead of substring equality. Set by subclasses
+     * of NDB_Menu_Filter in their constructor or setup functions.
+     *
+     * @var string[]
+     */
+    protected iterable $EqualityFilters;
+
+    /**
      * An array of all the table headers (optional)
      *
      * The array will automatically be built based on the column array
@@ -164,7 +173,7 @@ class NDB_Menu_Filter extends NDB_Menu
 
     /**
      * By default, trim all fields on the form before any processing/validation
-     * is done. Derived classes can override this behavior if needed.
+     * is done. Derived classes can override this behaviour if needed.
      *
      * @return void
      * @access public
@@ -223,8 +232,6 @@ class NDB_Menu_Filter extends NDB_Menu
      */
     function _setFilters($values)
     {
-        $newFormFilters = [];
-
         // Go through the form's fields and set the valid ones.
         foreach ($this->formToFilter as $formKey => $dbField) {
             if (isset($values[$formKey])) {
@@ -233,8 +240,6 @@ class NDB_Menu_Filter extends NDB_Menu
                 $filteredValue = $values[$formKey];
                 if ($filteredValue !== '') {
                     if (in_array($dbField, $this->validFilters)) {
-                        $newFormFilters[$dbField] = $filteredValue;
-
                         if (in_array($dbField, $this->validHavingFilters)) {
                             $this->having[$dbField] = $filteredValue;
                         } else {
@@ -246,35 +251,6 @@ class NDB_Menu_Filter extends NDB_Menu
         }
 
         return $values;
-    }
-
-    /**
-     * Set the sort column for the current query page and saves
-     * it into the current filter.
-     *
-     * @param array $order An array of the form
-     *                     [
-     *                     'field' => Form Field Name
-     *                     'fieldOrder' => "ASC|DESC"
-     *                     ]
-     *
-     * @return void (modifies both $_SESSION and $this->filter as
-     *         a side-effect.)
-     */
-    function _setFilterSortOrder($order)
-    {
-        // Get the existing filter. It's already been saved into
-        // the session previously in $this->_setupFilters.
-        $savedFilters = $_SESSION['State']->getProperty('filter');
-        if (!is_array($savedFilters)) {
-            $savedFilters = [];
-        }
-        if (is_array($order) && in_array($order['field'], $this->headers)) {
-            $savedFilters['order'] = $order;
-            $this->filter['order'] = $order;
-        }
-
-        $_SESSION['State']->setProperty('filter', $savedFilters);
     }
 
     /**
@@ -350,7 +326,6 @@ class NDB_Menu_Filter extends NDB_Menu
         }
 
         // 3. Set the search keyword (if applicable)
-        $key = null;
         if (isset($_REQUEST['keyword'])) {
             // It was included in the request, so save it.
             $key = $_REQUEST['keyword'];
@@ -364,13 +339,6 @@ class NDB_Menu_Filter extends NDB_Menu
         if (!empty($key)) {
             $this->_setSearchKeyword($key);
 
-        }
-
-        // 4. If the user clicked on a sort column, set the order.
-        //    It's likely a GET request even though it modifies the data,
-        //    so just use $_REQUEST.
-        if (isset($_REQUEST['filter']['order'])) {
-            $this->_setFilterSortOrder($_REQUEST['filter']['order']);
         }
     }
 
@@ -441,7 +409,7 @@ class NDB_Menu_Filter extends NDB_Menu
                 $query .= " AND $field";
             } elseif (strtolower(substr($field, -8)) == 'centerid'
                 || strtolower(substr($field, -10)) == 'categoryid'
-                || strtolower(substr($field, -6)) == 'sex'
+                || strtolower(substr($field, -3)) == 'sex'
                 || (isset($this->EqualityFilters)
                 && in_array($field, $this->EqualityFilters))
             ) {
@@ -465,16 +433,15 @@ class NDB_Menu_Filter extends NDB_Menu
     function _getList()
     {
         // create DB object
-        $DB =& Database::singleton();
+        $DB = $this->loris->getDatabaseConnection();
 
-        $qparams = [];
         // add the base query
         $query  = '';
         $query .= $this->_getBaseQuery();
 
         $filterdetails = $this->_getBaseFilter();
         $query        .= $filterdetails['clause'];
-        $qparams       = $filterdetails['params'];
+        $qparams       = $filterdetails['params'] ?? [];
         // apply ORDER BY filters
         $query .= " ORDER BY ";
         if (!empty($this->filter['order'])) {
@@ -489,8 +456,7 @@ class NDB_Menu_Filter extends NDB_Menu
             $pageNum = $_REQUEST['pageID'];
         }
 
-        $config         =& NDB_Config::singleton();
-        $resultsPerPage = $config->getSetting('rowsPerPage');
+        $resultsPerPage = 25;
         $limit          = " LIMIT $resultsPerPage"
                           ." OFFSET " . (($pageNum-1)*$resultsPerPage);
         $result         = $DB->pselect($query . $limit, $qparams);
@@ -544,23 +510,6 @@ class NDB_Menu_Filter extends NDB_Menu
             }
         }
 
-        if (isset($this->searchKeyword)
-            && is_array($this->searchKeyword)
-            && count($this->searchKeyword) > 0
-            && !empty($this->searchKey['keyword'])
-        ) {
-            $WhereClause .= " AND (";
-            $fields       = [];
-            foreach ($this->searchKeyword as $field) {
-                $fields[] = " $field LIKE CONCAT('%', :v_searchkey, '%')";
-            }
-            $WhereClause .= join(" OR ", $fields);
-
-            $qparams['v_searchkey'] = $this->searchKey['keyword'];
-            $WhereClause           .= ")";
-
-        }
-
         // add GROUP BY if applicable
         if (!empty($this->group_by)) {
             $WhereClause .= " GROUP BY $this->group_by ";
@@ -601,14 +550,11 @@ class NDB_Menu_Filter extends NDB_Menu
      */
     function _setDataTable()
     {
-        // create instance of config object
-        $config =& NDB_Config::singleton();
-        // configure the page pagination
-        $rowsPerPage = $config->getSetting('rowsPerPage');
+        $rowsPerPage = 25;
 
         $pageID = isset($_GET['pageID']) ? $_GET['pageID'] : 1;
 
-        $this->setTemplateVar('rowsPerPage', $rowsPerPage);
+        $this->setTemplateVar('rowsPerPage', strval($rowsPerPage));
         $this->setTemplateVar('pageID', $pageID);
 
         if (isset($_GET['filter'])
@@ -693,7 +639,7 @@ class NDB_Menu_Filter extends NDB_Menu
      */
     function display()
     {
-        switch($this->format) {
+        switch ($this->format) {
         case 'json':
             return $this->toJSON();
         }
@@ -839,14 +785,13 @@ class NDB_Menu_Filter extends NDB_Menu
         $factory = NDB_Factory::singleton();
         $DB      = $factory->database();
 
-        $qparams = [];
         // add the base query
         $query  = '';
         $query .= $this->_getBaseQuery();
 
         $filterdetails = $this->_getBaseFilter();
         $query        .= $filterdetails['clause'];
-        $qparams       = $filterdetails['params'];
+        $qparams       = $filterdetails['params'] ?? [];
         // apply ORDER BY filters
         $query .= " ORDER BY ";
         if (!empty($this->filter['order'])) {
@@ -854,10 +799,6 @@ class NDB_Menu_Filter extends NDB_Menu
                 ." ".$this->filter['order']['fieldOrder'].", ";
         }
         $query .= $this->order_by;
-
-        if (!empty($this->limit)) {
-            $query .= " LIMIT $this->limit";
-        }
 
         // get the list
         $result = $DB->pselect($query, $qparams);
@@ -900,7 +841,6 @@ class NDB_Menu_Filter extends NDB_Menu
             [
                 $baseURL . '/js/components/PaginationLinks.js',
                 $baseURL . '/js/components/StaticDataTable.js',
-                $baseURL . '/js/components/DynamicDataTable.js',
             ]
         );
     }

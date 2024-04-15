@@ -11,6 +11,7 @@
  * @link     https://www.github.com/aces/Loris/
  */
 namespace LORIS\battery_manager;
+use LORIS\VisitController;
 use \Psr\Http\Message\ServerRequestInterface;
 use \Psr\Http\Message\ResponseInterface;
 
@@ -43,7 +44,7 @@ class TestOptionsEndpoint extends \NDB_Page
     {
         $method = $request->getMethod();
 
-        switch($method) {
+        switch ($method) {
         case 'GET':
             return new \LORIS\Http\Response\JSON\OK($this->_getOptions());
         }
@@ -58,11 +59,16 @@ class TestOptionsEndpoint extends \NDB_Page
      */
     private function _getOptions() : array
     {
+        $visitController = new VisitController(
+            $this->loris->getDatabaseConnection()
+        );
         return [
-            'instruments' => \Utility::getAllInstruments(),
+            'instruments' => \NDB_BVL_Instrument::getInstrumentNamesList(
+                $this->loris
+            ),
             'stages'      => $this->_getStageList(),
-            'subprojects' => \Utility::getSubprojectList(null),
-            'visits'      => \Utility::getVisitList(),
+            'cohorts'     => \Utility::getCohortList(null),
+            'visits'      => $visitController->getVisitlabels(),
             'sites'       => \Utility::getSiteList(false),
             'firstVisit'  => $this->_getYesNoList(),
             'active'      => $this->_getYesNoList(),

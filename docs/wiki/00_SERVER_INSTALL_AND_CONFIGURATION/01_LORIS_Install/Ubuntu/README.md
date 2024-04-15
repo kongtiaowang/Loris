@@ -14,15 +14,17 @@ When you've completed this guide, you should be able to load and log into LORIS 
 
 LORIS requires a LAMP stack in order to run, specifically:
 
-* Apache 2.4  
+* Apache 2.4
 
-* MySQL 5.7 (or MariaDB 10.3) (or higher)  
+* MySQL 5.7 (or MariaDB 10.3) (or higher)
 
-* PHP 7.3 (or higher) - PHP 7.4 recommended
+* PHP 8.1 (or higher)
 
 Additionally, the following package manager are required to build LORIS:  
 
-* NodeJS 8.0 (or higher)  
+* NodeJS 16.10.0 (or higher)
+
+* NPM 8.19.2 (or higher)
 
 * composer
 
@@ -34,30 +36,53 @@ The following Ubuntu packages are required and should be installed using
 
 * curl  
 
-* zip  
+* zip
 
-* unzip  
+* unzip
 
-* php-json  
+* php-json
 
-* make  
+* make
 
-* software-properties-common  
+* software-properties-common
 
-* php7.4-mysql  
+* php8.2-mysql
 
-* php7.4-xml  
+* php8.2-xml
 
-* php7.4-mbstring  
+* php8.2-mbstring
 
-* php7.4-gd  
+* php8.2-gd
 
-* php7.4-zip  
+* php8.2-zip
 
-* php7.4-curl (for development instances only)  
+* php8.2-curl (for development instances only)
 
-* libapache2-mod-php7.4  
+* libapache2-mod-php8.2
 
+## Creating the lorisadmin user
+Create the _lorisadmin_ user and group and give _lorisadmin_ `sudo` permission. 
+This is required for the install process in order to automatically generate
+Apache configuration files. Sudo priviledges can be revoked once the install
+is completed. 
+
+## Creating the lorisadmin user
+
+```bash
+# Create lorisadmin user and group
+# Give lorisadmin `sudo` permission. This is required for the install process
+# in order to automatically generate Apache configuration files.
+# 
+# Sudo privileges should be revoked once the install is completed.
+sudo useradd -U -m -G sudo -s /bin/bash lorisadmin
+# Add apache to the lorisadmin group
+sudo usermod -a -G lorisadmin www-data
+# Set the password for the lorisadmin account
+sudo passwd lorisadmin
+sudo mkdir -m 755 -p /var/www/loris
+sudo chown lorisadmin:lorisadmin /var/www/loris
+su - lorisadmin
+```
 
 ## Getting the source code
 
@@ -105,38 +130,6 @@ make      # For production environments
 make dev  # For development environments
 ```
 
-## Creating the lorisadmin user
-Create the _lorisadmin_ user and group and give _lorisadmin_ `sudo` permission. 
-This is required for the install process in order to automatically generate
-Apache configuration files. Sudo priviledges can be revoked once the install
-is completed. 
-
-```bash
-sudo useradd -U -m -G sudo -s /bin/bash lorisadmin
-```
-
-Next, add Apache to the _lorisadmin_ group
-
-```bash
-sudo usermod -a -G lorisadmin www-data
-```
-Then, set the password for the _lorisadmin_ account
-
-```bash
-sudo passwd lorisadmin
-su - lorisadmin
-```
-If the _loris root_ directory has not already been created, create it here
-
-```bash
-sudo mkdir -m 755 -p /var/www/loris
-```
-
-Finally, change the _loris root_ directory owner to the _lorisadmin_ account
-
-```bash
-sudo chown lorisadmin.lorisadmin /var/www/loris
-```
 
 ## Running the install script
 

@@ -29,8 +29,8 @@ class Installer
     private $_lastErr;
 
     private const SCHEMA_FILES = ['00-schema.sql',
-        '01-Permission.sql',
-        '02-Modules.sql',
+        '01-Modules.sql',
+        '02-Permission.sql',
         '03-ConfigTables.sql',
         '04-Help.sql',
         '05-ElectrophysiologyTables.sql'
@@ -424,22 +424,22 @@ class Installer
         // new user, since the new user is also going to be used from
         // the same web server so should have the same address.
         $connectHost = $DB->PDO->query(
-            "SELECT host FROM `mysql`.`user`
-		WHERE CONCAT(user, '@', host)=CURRENT_USER"
+            "SELECT Host FROM mysql.user
+		WHERE CONCAT(User, '@', Host)=CURRENT_USER"
         )->fetch(\PDO::FETCH_ASSOC);
 
-        if (!is_array($connectHost) || empty($connectHost['host'])) {
+        if (!is_array($connectHost) || empty($connectHost['Host'])) {
             // This should never happen. It would mean that the user
             // that we ran the query from isn't connected..
             $this->_lastErr = "Could not retrieve hostname for MySQL user";
             return false;
         }
 
-        $connectHost = $connectHost['host'];
+        $connectHost = $connectHost['Host'];
 
         $userExistsQ = $DB->prepare(
             "SELECT 'x' FROM mysql.user
-			WHERE user=:q_user AND host=:q_host"
+			WHERE User=:q_user AND Host=:q_host"
         );
         $userExistsQ->execute(
             [
@@ -539,8 +539,7 @@ class Installer
              SET
                UserID=:q_userID,
                Password_hash=:q_password,
-               Active='Y',
-               Password_expiry=DATE_ADD(NOW(),INTERVAL 30 DAY)
+               Active='Y'
              WHERE ID=1"
         );
         return $stmt->execute(

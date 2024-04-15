@@ -5,12 +5,13 @@
     - For a candidate of a different site than your user, ensure that either 
         - `access_all_profiles` permission is required 
         - or that the candidate's registration site is the same as the user's site
+    - Ensure that you can always only see visits from projects that you are affiliated with.
 2. **Action buttons** 
     - For a candidate of a different site than your user, attempt to access the timepoint list via the url. The page should load with a message of 'Permission Denied'.
     - For a candidate of the same site as your user, there should be up to 3 additional buttons:
         1. "Create time point" (links to create_timepoint module for that candidate) if your user has permission `data_entry`
         2. "Candidate Info" (links to candidate_parameters module for that candidate) if your user has permission `data_entry`
-        3. "View Imaging Datasets" (links to the imaging_browser module menu page filtered for that candidate)
+        3. "View Imaging Datasets" (links to the imaging_browser module menu page filtered for that candidate) if your user has permission `imaging_browser_view_site`, `imaging_browser_view_allsites`, `imaging_browser_phantom_allsites`, or `imaging_browser_phantom_ownsite`
 3.  **Button links**
     - Ensure the "View Imaging datasets" button points to correct place. (imaging_browser module for that candidate)
     - Ensure the "Create time point" button points to correct place. (create_timepoint module for that candidate)

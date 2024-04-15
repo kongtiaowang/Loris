@@ -36,7 +36,7 @@ if ($data == '') {
     exit;
 }
 
-switch($data) {
+switch ($data) {
 case 'candidateInfo':
     echo json_encode(getCandInfoFields());
     exit;
@@ -58,6 +58,9 @@ case 'candidateDOB':
 case 'candidateDOD':
     echo json_encode(getDODFields());
     exit;
+case 'diagnosisEvolution':
+    echo json_encode(getDiagnosisEvolutionFields());
+    exit;
 default:
     header("HTTP/1.1 404 Not Found");
     exit;
@@ -73,7 +76,7 @@ function getCandInfoFields()
 {
     $candID = new CandID($_GET['candID']);
 
-    $db = \Database::singleton();
+    $db = \NDB_Factory::singleton()->database();
 
     // get caveat options
     $caveat_options = [];
@@ -153,7 +156,7 @@ function getProbandInfoFields()
 {
     $candID = new CandID($_GET['candID']);
 
-    $db = \Database::singleton();
+    $db = \NDB_Factory::singleton()->database();
 
     // get pscid
     $pscid = $db->pselectOne(
@@ -217,6 +220,7 @@ function getProbandInfoFields()
         'ageDifference'    => $ageDifference,
         'extra_parameters' => $extra_parameters,
         'parameter_values' => $parameter_values,
+        'sexOptions'       => \Utility::getSexList(),
     ];
 
     return $result;
@@ -233,7 +237,7 @@ function getFamilyInfoFields()
 {
     $candID = new CandID($_GET['candID']);
 
-    $db = \Database::singleton();
+    $db = \NDB_Factory::singleton()->database();
 
     // get pscid
     $pscid = $db->pselectOne(
@@ -254,7 +258,7 @@ function getFamilyInfoFields()
     );
 
     $siblings = [];
-    foreach ($siblingsList as $key => $siblingArray) {
+    foreach (array_values($siblingsList) as $siblingArray) {
         foreach ($siblingArray as $ID) {
             array_push($siblings, $ID);
         }
@@ -302,10 +306,12 @@ function getFamilyInfoFields()
  */
 function getParticipantStatusFields()
 {
-    \Module::factory('candidate_parameters');
+    global $loris;
+
+    $loris->getModule('candidate_parameters')->registerAutoloader();
     $candID = new CandID($_GET['candID']);
 
-    $db = \Database::singleton();
+    $db = \NDB_Factory::singleton()->database();
 
     // get pscid
     $pscid = $db->pselectOne(
@@ -385,7 +391,7 @@ function getParticipantStatusFields()
  */
 function getParticipantStatusHistory(CandID $candID)
 {
-    $db = \Database::singleton();
+    $db = \NDB_Factory::singleton()->database();
     $unformattedComments = $db->pselect(
         "SELECT entry_staff, data_entry_date,
             (SELECT Description 
@@ -423,6 +429,9 @@ function getConsentStatusFields()
     $date           = [];
     $withdrawalDate = [];
 
+    // Get consent groups
+    $consentGroups = \Utility::getConsentGroups();
+
     // Get list of all consent types
     $consentDetails = \Utility::getConsentList();
     // Get list of consents for candidate
@@ -431,6 +440,10 @@ function getConsentStatusFields()
     foreach ($consentDetails as $consentID=>$consent) {
         $consentName = $consent['Name'];
         $consentList[$consentName] = $consent['Label'];
+        $groupID = $consent['ConsentGroupID'];
+
+        // Append consent as a child to its group
+        $consentGroups[$groupID]['Children'][] = $consentName;
 
         if (isset($candidateConsent[$consentID])) {
             $candidateConsentID           = $candidateConsent[$consentID];
@@ -453,6 +466,7 @@ function getConsentStatusFields()
         'withdrawals'     => $withdrawalDate,
         'consents'        => $consentList,
         'history'         => $history,
+        'consentGroups'   => $consentGroups,
     ];
 
     return $result;
@@ -461,7 +475,7 @@ function getConsentStatusFields()
 /**
  * Handles the fetching of Consent Status history
  *
- * @param int $pscid current candidate's PSCID
+ * @param string $pscid current candidate's PSCID
  *
  * @throws DatabaseException
  *
@@ -469,7 +483,7 @@ function getConsentStatusFields()
  */
 function getConsentStatusHistory($pscid)
 {
-    $db = \Database::singleton();
+    $db = (\NDB_Factory::singleton())->database();
 
     $historyData = $db->pselect(
         "SELECT EntryDate, DateGiven, DateWithdrawn, PSCID, 
@@ -481,23 +495,16 @@ function getConsentStatusHistory($pscid)
     );
 
     $formattedHistory = [];
-    foreach ($historyData as $key => $entry) {
-          $consentName  = $entry['ConsentName'];
-          $consentLabel = $entry['ConsentLabel'];
-
-          $history        = [
-              'data_entry_date'            => $entry['EntryDate'],
-              'entry_staff'                => $entry['EntryStaff'],
-              $consentName                 => $entry['Status'],
-              $consentName . '_date'       => $entry['DateGiven'],
-              $consentName . '_withdrawal' => $entry['DateWithdrawn'],
+    foreach ($historyData as $entry) {
+          $formattedHistory[] = [
+              'data_entry_date' => $entry['EntryDate'],
+              'entry_staff'     => $entry['EntryStaff'],
+              'consentStatus'   => $entry['Status'],
+              'date'            => $entry['DateGiven'],
+              'withdrawal'      => $entry['DateWithdrawn'],
+              'label'           => $entry['ConsentLabel'],
+              'consentType'     => $entry['ConsentName'],
           ];
-          $consentHistory = [
-              $key          => $history,
-              'label'       => $consentLabel,
-              'consentType' => $consentName,
-          ];
-          $formattedHistory[$key] = $consentHistory;
     }
     return $formattedHistory;
 }
@@ -510,7 +517,7 @@ function getConsentStatusHistory($pscid)
 function getDOBFields(): array
 {
     $candID = new CandID($_GET['candID']);
-    $db     = \Database::singleton();
+    $db     = \NDB_Factory::singleton()->database();
     // Get PSCID
     $candidateData = $db->pselectRow(
         'SELECT PSCID,DoB FROM candidate where CandID =:candid',
@@ -518,10 +525,22 @@ function getDOBFields(): array
     );
     $pscid         = $candidateData['PSCID'] ?? null;
     $dob           = $candidateData['DoB'] ?? null;
-    $result        = [
-        'pscid'  => $pscid,
-        'candID' => $candID->__toString(),
-        'dob'    => $dob,
+
+    // Get DoB format
+    $factory = \NDB_Factory::singleton();
+    $config  = $factory->config();
+
+    $dobFormat = $config->getSetting('dobFormat');
+
+    $dobProcessedFormat = implode("-", str_split($dobFormat, 1));
+    $dobDate            = DateTime::createFromFormat('Y-m-d', $dob);
+    $formattedDate      = $dobDate ? $dobDate->format($dobProcessedFormat) : null;
+
+    $result = [
+        'pscid'     => $pscid,
+        'candID'    => $candID->__toString(),
+        'dob'       => $formattedDate,
+        'dobFormat' => $dobFormat,
     ];
     return $result;
 }
@@ -534,17 +553,116 @@ function getDOBFields(): array
 function getDODFields(): array
 {
     $candID = new CandID($_GET['candID']);
-    $db     = \Database::singleton();
+    $db     = \NDB_Factory::singleton()->database();
 
     $candidateData = $db->pselectRow(
         'SELECT PSCID,DoD, DoB FROM candidate where CandID =:candid',
         ['candid' => $candID]
     );
-    $result        = [
-        'pscid'  => $candidateData['PSCID'],
-        'candID' => $candID->__toString(),
-        'dod'    => $candidateData['DoD'],
-        'dob'    => $candidateData['DoB'],
+    if ($candidateData === null) {
+        throw new \LorisException("Invalid candidate");
+    }
+
+    $factory = \NDB_Factory::singleton();
+    $config  = $factory->config();
+
+    // Get formatted dod
+    $dodFormat = $config->getSetting('dodFormat');
+
+    $dodProcessedFormat = implode("-", str_split($dodFormat, 1));
+    $dodDate            = DateTime::createFromFormat('Y-m-d', $candidateData['DoD']);
+    $dod = $dodDate ? $dodDate->format($dodProcessedFormat) : null;
+
+    // Get formatted dob
+    $dobFormat = $config->getSetting('dobFormat');
+
+    $dobProcessedFormat = implode("-", str_split($dobFormat, 1));
+    $dobDate            = DateTime::createFromFormat('Y-m-d', $candidateData['DoB']);
+    $dob = $dobDate ? $dobDate->format($dobProcessedFormat) : null;
+
+    $result = [
+        'pscid'     => $candidateData['PSCID'],
+        'candID'    => $candID->__toString(),
+        'dod'       => $dod,
+        'dob'       => $dob,
+        'dodFormat' => $config->getSetting('dodFormat'),
+    ];
+    return $result;
+}
+
+/**
+ * Handles the fetching of candidate's diagnosis evolution.
+ *
+ * @return array
+ */
+function getDiagnosisEvolutionFields(): array
+{
+    $candID = new CandID($_GET['candID']);
+    $db     = \NDB_Factory::singleton()->database();
+
+    $pscid = $db->pselectOne(
+        "SELECT PSCID FROM candidate
+        WHERE CandID=:candID",
+        ['candID' => $candID]
+    );
+
+    $candidateDiagnosisEvolution = $db->pselect(
+        "SELECT 
+            de.Name AS TrajectoryName,
+            p.Name AS Project,
+            visitLabel, 
+            instrumentName,
+            sourceField,
+            Diagnosis,
+            Confirmed,
+            LastUpdate,
+            OrderNumber
+        FROM candidate_diagnosis_evolution_rel
+        JOIN diagnosis_evolution de USING (DxEvolutionID)
+        JOIN Project p USING (ProjectID)
+        WHERE CandID=:candID",
+        ['candID' => $candID]
+    );
+
+    $projectList = \Utility::getProjectList();
+
+    // Get all candidate's project affiliations
+    $candProjIDs = $db->pselectCol(
+        "SELECT DISTINCT ProjectID 
+        FROM session
+        WHERE CandID=:candID",
+        ['candID' => $candID]
+    );
+
+    $candProjects    = [];
+    $candidate       = \Candidate::singleton($candID);
+    $latestDiagnosis = [];
+    $latestConfirmedDiagnosis = [];
+    foreach ($candProjIDs as $projectID) {
+        $candProjects[$projectID]   = $projectList[$projectID];
+        $latestDiagnosis[]          = $candidate->getLatestDiagnosis(
+            new \ProjectID($projectID),
+            false
+        );
+        $latestConfirmedDiagnosis[] = $candidate->getLatestDiagnosis(
+            new \ProjectID($projectID),
+            true
+        );
+    }
+
+    // remove null results and re-index
+    $latestDiagnosis          = array_values(array_filter($latestDiagnosis));
+    $latestConfirmedDiagnosis = array_values(
+        array_filter($latestConfirmedDiagnosis)
+    );
+
+    $result = [
+        'pscid'                           => $pscid,
+        'candID'                          => $candID,
+        'diagnosisEvolution'              => $candidateDiagnosisEvolution,
+        'latestProjectDiagnosis'          => $latestDiagnosis,
+        'latestConfirmedProjectDiagnosis' => $latestConfirmedDiagnosis,
+        'projects'                        => $candProjects
     ];
     return $result;
 }

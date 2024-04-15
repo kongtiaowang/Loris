@@ -1,29 +1,15 @@
 <?php
-/**
- * This file contains the base class for instruments in Loris
- *
- * PHP Version 7
- *
- * @category Main
- * @package  Behavioural
- * @author   Loris team <info-loris.mni@mcgill.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris-Trunk/
- */
 use \Psr\Http\Message\ServerRequestInterface;
+use \Psr\Http\Server\RequestHandlerInterface;
 use \Psr\Http\Message\ResponseInterface;
+
 use \Loris\StudyEntities\Candidate\CandID;
+use \LORIS\Data\Dictionary\DictionaryItem;
 
 /**
- * Base class for all NeuroDB behavioural instruments
+ * Base class for all LORIS behavioural instruments.
  *
- * Throws PEAR errors. Also requires PEAR HTML_Quickform.
- *
- * @category Main
- * @package  Behavioural
- * @author   Loris team <info-loris.mni@mcgill.ca>
- * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
- * @link     https://www.github.com/aces/Loris-Trunk/
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  */
 abstract class NDB_BVL_Instrument extends NDB_Page
 {
@@ -38,94 +24,120 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     protected $jsonData = false;
 
     /**
-     * HTML_Quickform object
+     * The form object for this instrument.
      *
-     * @access private
+     * @var LorisForm
      */
     public $form;
 
+    /**
+     * Variable defining the type of form in use
+     *
+     * Note: this seems to always be defined as 'XIN'
+     *
+     * @var string
+     */
     public $formType;
 
+    /**
+     * Array holding the date format
+     *
+     * @var array
+     */
     public $dateOptions;
+
+    /**
+     * Type of instrument. Can be 'normal' or 'DirectEntry'
+     *
+     * @var string
+     */
     public $DataEntryType;
+
+    /**
+     * Array holding XIN rules
+     *
+     * @var array
+     */
     public $XINRules;
+
+    /**
+     * Boolean enabling/disabling debugging statements for XIN rules
+     *
+     * @var boolean
+     */
     public $XINDebug;
 
     /**
-     * Test name (short name), equivalent to test_names.Test_name
-     *
-     * @access private
+     * A flag determining whether the ControlPanel changed
+     * the Data_entry flag status on this page load.
      */
-    var $testName;
+    private $_DataEntryChanged;
+
+    /**
+     * Test name (short name), equivalent to test_names.Test_name
+     */
+    public $testName;
 
     /**
      * Instrument instance CommentID
      *
-     * @access private
+     * @access public
      */
-    var $commentID;
+    public $commentID;
+
+    /**
+     * The data associated with the commentID for this instrument
+     *
+     * @var ?array
+     */
+    protected $instanceData = null;
 
     /**
      * Database table containing data referenced by $this->commentID
      *
-     * @access private
+     * @access public
      */
-    var $table;
+    public $table;
 
     /**
      * Cache location for the date of administration
      *
-     * @access private
+     * @access public
      */
-    var $dateOfAdministration;
+    public $dateOfAdministration;
 
     /**
      * Additional form defaults - should only be used for lorisform
      * static elements!
      *
-     * @access private
+     * @access public
      */
-    var $localDefaults = ['emptyCell' => '&nbsp;'];
+    public $localDefaults = ['emptyCell' => '&nbsp;'];
 
     /**
      * String to separate the group elements
-     *
-     * @access private
      */
     var $_GUIDelimiter = "</td>\n<td>";
 
     /**
      * Commonly used level of indentation
      *
-     * @access private
+     * @access public
      */
-    var $indent = "&nbsp;&nbsp;&nbsp;&nbsp;";
+    public $indent = "&nbsp;&nbsp;&nbsp;&nbsp;";
 
     /**
      * Array of required fields to check
      *
-     * @access private
+     * @access public
      */
     var $_requiredElements = [];
 
     /**
-     * Array of date fields to be processed into QuickForm dates
-     * NOTE: When abstracting the _saveValues() method in the child <instrument>
-     * class, add only the dates from the current page to the array using the
-     * instruments switch($page) otherwise you'll end up overwriting (NULLing)
-     * all other dates in the table that appear on other pages (if they are
-     * listed in the array of date fields) - note by @dariovins
-     */
-    var $dateTimeFields = [];
-
-    /**
-     * Array of date fields that contain only month year fields in frontend with
-     * a static value for the date
-     */
-    var $monthYearFields = [];
-    /**
      * Array of column names to be ignored by the double data entry conflict
      * detector.
+     *
+     * @access public
      */
     var $_doubleDataEntryDiffIgnoreColumns
         = [
@@ -134,24 +146,23 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             'Testdate',
             'Window_Difference',
             'Candidate_Age',
-            'Data_entry_completion_status',
         ];
 
     /**
      * Whether the "Validity" field is shown as a flag for an instrument
      * or not.
      *
-     * @access private
+     * @access public
      */
-    var $ValidityEnabled = true;
+    public $ValidityEnabled = true;
 
     /**
      * Whether the "Validity" field is required before flagging an instrument
      * as complete or not.
      *
-     * @access private
+     * @access public
      */
-    var $ValidityRequired = true;
+    public $ValidityRequired = true;
 
     /**
      * True if the instrument page is being loaded by a script
@@ -159,11 +170,11 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * ignoring age-dependent or other conditional display logic in the form.
      * To be called from within individual instrument forms.
      */
-    var $displayAllFields = false;
+    public $displayAllFields = false;
 
-    var $WrapperTextElements           = [];
-    var $WrapperNumericElements        = [];
-    var $WrapperDateWithStatusElements = [];
+    public $WrapperTextElements           = [];
+    public $WrapperNumericElements        = [];
+    public $WrapperDateWithStatusElements = [];
 
     /**
      * True if the instrument is administered after the candidate's death.
@@ -172,7 +183,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * To be called from within individual instrument forms.
      *
      * @var    bool
-     * @access private
+     * @access protected
      */
     protected $postMortem = false;
 
@@ -185,28 +196,34 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     /**
      * Array containing all multiselect elements in an instrument.
      */
-    protected $selectMultipleElements;
+    protected $selectMultipleElements = [];
 
     /**
      * Factory generates a new instrument instance of type
      * $instrument, and runs the setup() method on that new
      * instrument.
      *
-     * @param string  $instrument       The name of the instrument to use
-     * @param string  $commentID        The CommentID identifying the data to load
-     *                                  load
-     * @param string  $page             If a multipage form, the page to show
-     * @param boolean $guarantee_exists If true the factory will throw an
-     *                                  error if the file does not exist, otherwise
-     *                                  will silently return if the instrument is
-     *                                  missing.
+     * @param \LORIS\LorisInstance $loris            The LORIS instance with the
+     *                                               instrument
+     * @param string               $instrument       The name of the instrument to
+     *                                               use
+     * @param string               $commentID        The CommentID identifying the
+     *                                               data to load
+     * @param string               $page             If a multipage form, the page to
+     *                                               show
+     * @param boolean              $guarantee_exists If true the factory will throw
+     *                                               an error if the file does not
+     *                                               exist, otherwise will silently
+     *                                               return if the instrument is
+     *                                               missing.
      *
      * @return object|null the new object of $instrument type
      * @access public
      * @throws NotFound
      * @throws Exception
      */
-    static function factory(
+    public static function factory(
+        \LORIS\LORISInstance $loris,
         string $instrument,
         string $commentID = '',
         string $page = '',
@@ -236,10 +253,11 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 // The module directory we use for instruments is arbitrary,
                 // since it isn't a real module, but it's required for the page
                 // constructor.
-                Module::factory("instruments"),
+                $loris,
+                $loris->getModule("instruments"),
                 $page,
                 $commentID,
-                $commentID
+                $commentID,
             );
         } else {
             if (!class_exists($class)
@@ -254,7 +272,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
             // Now go ahead and instantiate it
             $obj = new $class(
-                Module::factory("instruments"),
+                $loris,
+                $loris->getModule("instruments"),
                 $page,
                 $commentID,
                 $commentID,
@@ -267,11 +286,24 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $obj->displayAllFields = true;
         }
 
+        // Set page name to testName
+        $obj->name = $instrument;
         // Sets up page variables such as $this->commentID and $this->form
         $obj->setup($commentID, $page);
 
         if (!empty($commentID)) {
             $obj->setupCandidateInfoTables();
+        }
+        if (file_exists($base."project/instruments/$instrument.meta")) {
+            $obj->loadInstrumentMetadata(
+                $base . "project/instruments/$instrument.meta"
+            );
+        }
+        // Set DataEntryType to normal or DirectEntry
+        if (isset($_REQUEST['key'])) {
+            $obj->DataEntryType = 'DirectEntry';
+        } else {
+            $obj->DataEntryType = 'normal';
         }
         // Adds all of the form element and form rules to the page after
         // having instantiated the form above
@@ -279,22 +311,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $base . "project/instruments/$instrument.linst"
         );
         // Add rules only if they exist.
-        if (file_exists($base."project/instruments/$instrument.rules")) {
-            $obj->loadInstrumentRules(
-                $base . "project/instruments/$instrument.rules"
-            );
-        }
-
-        $user   = \User::singleton();
-        $access = $obj->_hasAccess($user);
-
-        // check that user has access
-        if ($access == false) {
-            throw new Exception(
-                "You do not have access to this page.",
-                403
-            );
-        }
+        $obj->loadInstrumentRules(
+            $base . "project/instruments/$instrument.rules"
+        );
 
         return $obj;
     }
@@ -317,54 +336,24 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function _hasAccess(\User $user) : bool
     {
-        //get config
-        $config = \NDB_Config::singleton();
-        $instrumentPermissions = $config->getSetting("instrumentPermissions");
-        $instrumentPerms       = [];
+        $DB = $this->loris->getDatabaseConnection();
 
-        //check if instrumentPermissions are being used.
-        if (!is_array($instrumentPermissions)) {
-            //instrument permissions not used...
-            return true; //default
-        } else if (!array_key_exists(
-            'useInstrumentPermissions',
-            $instrumentPermissions
-        )
-        ) {
-            //instrument permissions not used...
-            return true; //default
-        } else if ($instrumentPermissions['useInstrumentPermissions'] == 'false') {
-            //instrument permissions not used...
-            return true; //default
-        } else { //check if user has instrument's permissions
-            //is the instrument listed at all in instrumentPermissions?
-            $instrumentListed = false;
-            foreach ($instrumentPermissions["instrument"] as $instrument) {
-                if ($instrument["Test_name"] == $this->testName) {
-                    $instrumentListed = true;
-                    $instrumentPerms  = Utility::asArray($instrument["permission"]);
-                }
-            }
-
-            //no permissions defined
-            if (!$instrumentListed) {
-                return true;
-            }
-
-            //check if user possesses ANY of the required permissions
-            foreach ($instrumentPerms as $instrumentPerm) {
-                if ($user->hasPermission($instrumentPerm)) {
-                    return true;
-                }
-            }
-
-            //no user permissions match required instrument permissions
-            throw new Exception("You do not have access to this page.", 403);
+        $instrumentPermissions = $DB->pselectCol(
+            "SELECT code FROM testnames_permissions_rel rel
+                LEFT JOIN test_names ON (test_names.ID=rel.TestID)
+                LEFT JOIN permissions ON (permissions.permID=rel.PermID)
+              WHERE test_names.Test_name=:tn",
+            ['tn' => $this->testName]
+        );
+        if (empty($instrumentPermissions)) {
+            // no permissions configured for this instrument
+            return true;
         }
+        return $user->hasAnyPermission($instrumentPermissions);
     }
 
     /**
-     * Sets up basic data, such as the HTML_Quickform object, and so on.
+     * Sets up basic data.
      *
      * @param string|null $commentID The CommentID identifying the data to load
      * @param string|null $page      If a multipage form, the page to show
@@ -395,7 +384,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         try {
             $candidate = \Candidate::singleton($timePoint->getCandID());
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             throw new LorisException($e->getMessage());
         }
 
@@ -417,8 +406,16 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $config = NDB_Config::singleton();
         $base   = $config->getSetting('base');
         $scorer = $base . "project/instruments/" . $this->testName . ".score";
-
+        $this->logger->debug("Running scoring script $scorer");
         if (file_exists($scorer)) {
+            if (is_executable($scorer) === false) {
+                $this->logger->critical(
+                    "Scoring script $scorer exists but is not executable"
+                );
+                throw new \ConfigurationException(
+                    "Scoring script not executable"
+                );
+            }
             $output = [];
             exec(
                 escapeshellarg($scorer) . " " . escapeshellarg(
@@ -428,7 +425,10 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 $retVal
             );
             if ($retVal != 0) {
-                print "Error running scoring algorithm";
+                $this->logger->warning(
+                    "An error occurred while running the scoring
+                    algorithm of instrument ".$this->testName."."
+                );
             }
         }
     }
@@ -445,10 +445,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     {
         // ALWAYS INCLUDE THESE!
 
-        if (isset($_REQUEST['key'])) {
-            $this->DataEntryType = 'DirectEntry';
-        } else {
-            $this->DataEntryType = 'normal';
+        if ($this->DataEntryType === 'normal') {
             // These are required for Save Data to work properly, but not when it's
             // a direct data entry page
             $this->addHidden(
@@ -477,10 +474,10 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 ['class' => 'button']
             );
             //$buttons[] = $this->form->createElement('reset', null, 'Reset');
-            $this->addGroup($buttons, null, null, "&nbsp;");
+            $this->addGroup($buttons, '', '', "&nbsp;");
         }
 
-        $defaults = $this->loadInstanceData($this);
+        $defaults = $this->getInstanceData();
 
         // set the defaults (call private method _setDefaultsArray
         // which could be overridden if necessary)
@@ -523,22 +520,16 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     }
 
     /**
-     * Accepts an array usable as input to HTML_Quickform::setDefaults()
-     * and does any necessary preprocessing on that array.
+     * Accepts an array of existing values and sets them as defaults on the
+     * instrument
      *
-     * @param array $defaults the array to be passed on to
-     *                        HTML_Quickform::setDefaults()
+     * @param array $defaults the array of default values
      *
      * @return array the processed array ready for setDefaults()
      * @access private
      */
     function _setDefaultsArray(array $defaults): array
     {
-        //Convert date/time fields into lorisform date/timestamps
-        if (empty($this->dateTimeFields)) {
-            $this->dateTimeFields = ["Date_taken"];
-        }
-
         if (isset($defaults['Window_Difference'])
             && $defaults['Window_Difference'] != 0
         ) {
@@ -548,9 +539,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         //Convert select multiple elements into a lorisform array
         if (!empty($this->selectMultipleElements)) {
             foreach ($this->selectMultipleElements AS $elname) {
-                if (isset($defaults[$elname])
-                    && stristr($defaults[$elname], "{@}")
-                ) {
+                if (isset($defaults[$elname])) {
                     $defaults[$elname] = explode("{@}", $defaults[$elname]);
                 }
             }
@@ -572,14 +561,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         if ($this->form->validate()) {
             $this->form->process([&$this, '_saveValues'], true);
             $this->score();
-
-            // determine the data entry completion status, and store that in
-            // the database
-            $dataEntryCompletionStatus
-                = $this->_determineDataEntryCompletionStatus();
-            $this->_setDataEntryCompletionStatus(
-                $dataEntryCompletionStatus
-            );
+            $this->updateRequiredElementsCompletedFlag();
+            $this->propagateData();
         } else {
             $submittedData = $this->form->getSubmitValues();
 
@@ -606,10 +589,27 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     }
 
     /**
+     * This checks the current status of and instrument's data entry and updates
+     * it accordingly in the database
+     *
+     * @return void
+     */
+    public function updateRequiredElementsCompletedFlag(): void
+    {
+        // determine the required elements completed flag, and store that in
+        // the database
+        $requiredElementsCompletedFlag
+            = $this->_determineRequiredElementsCompletedFlag();
+        $this->_setRequiredElementsCompletedFlag(
+            $requiredElementsCompletedFlag
+        );
+    }
+
+    /**
      * This handles the saving of the Candidate_Age and Window_Difference columns
      * to the database when the save function is called with a Date_taken.
      *
-     * @param array $values A reference to the values saved from QuickForm that
+     * @param array $values A reference to the values saved from the form that
      *                      will be passed to update. This will be modified to
      *                      have Candidate_Age and Window_Difference if the
      *                      Date_taken field is included.
@@ -619,7 +619,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     function _saveCandidateAge(array &$values): void
     {
         if (!empty($values['Date_taken'])) {
-            $DB  = Database::singleton();
+            $DB  = $this->loris->getDatabaseConnection();
             $age = $this->getCandidateAge($values['Date_taken']);
             if (empty($age)) {
                 throw new LorisException("Candidate age could not be found.");
@@ -641,7 +641,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                             JOIN session s ON (s.ID=f.SessionID)
                         WHERE tb.Active='Y'
                             AND tb.Test_name=:TN
-                            AND tb.SubprojectID=s.SubprojectID
+                            AND tb.CohortID=s.CohortID
                             AND f.CommentID=:CID",
                     $query_params
                 );
@@ -657,7 +657,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                             JOIN flag f USING(Test_name)
                             JOIN session s ON (s.ID=f.SessionID)
                         WHERE tb.Active='Y' AND tb.Test_name=:TN
-                            AND tb.SubprojectID=s.SubprojectID
+                            AND tb.CohortID=s.CohortID
                             AND f.CommentID=:CID",
                         $query_params
                     );
@@ -745,13 +745,16 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function _saveValues(array $values): void
     {
-        //Convet date/timestamps into database format
-        if (empty($this->dateTimeFields)) {
-            $this->dateTimeFields = ["Date_taken"];
-        }
-
         if (strrpos($this->testName, "_proband") === false) {
             $this->_saveCandidateAge($values);
+        }
+
+        // Save UserID, the data entry personnel, into flag Data and
+        // instrument table
+        $user = \NDB_Factory::singleton()->user();
+        if (! $user instanceof \LORIS\AnonymousUser) {
+            // Add UserID to $values
+            $values['UserID'] = $user->getUsername();
         }
 
         //Convert select multiple elements into database storable values
@@ -794,7 +797,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function _save(array $values): void
     {
-        $db = Database::singleton();
+        $db = $this->loris->getDatabaseConnection();
 
         // clear any fields starting with __
         foreach (array_keys($values) AS $key) {
@@ -804,7 +807,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $values = Utility::nullifyEmpty($values, $key);
         }
 
-        if ($this->jsonData !== true) {
+        if ($this->jsonData !== true && !empty($values)) {
             // If the instrument is saving as JSON into the Data column, the
             // table may not exist, so don't try and update it.
             $db->update(
@@ -838,9 +841,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             ["Data" => json_encode($newData)],
             ['CommentID' => $this->getCommentID()]
         );
-
+        $this->instanceData = $newData;
     }
-
 
     /**
      * Adds metadata fields (such as Examiner and Date_taken) to the
@@ -851,7 +853,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function _addMetadataFields(): void
     {
-        $config      = \NDB_Config::singleton();
+        $factory = \NDB_Factory::singleton();
+        $config  = $factory->config();
+
         $dateOptions = [
             'language'         => 'en',
             'format'           => 'YMd',
@@ -865,7 +869,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         $this->addBasicDate('Date_taken', 'Date of Administration', $dateOptions);
 
-        if (strrpos($this->testName, '_proband') === false) {
+        if (strrpos($this->testName ?? '', '_proband') === false) {
             if (!$this->postMortem) {
                 $this->addScoreColumn(
                     'Candidate_Age',
@@ -972,7 +976,11 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function _getExaminerNames(): array
     {
-        $db = \Database::singleton();
+        if (empty($this->getCommentID())) {
+            return [];
+        }
+
+        $db = $this->loris->getDatabaseConnection();
 
         $centerID = $db->pselectOne(
             "SELECT session.CenterID FROM session, flag
@@ -983,8 +991,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $centerID = null;
         }
 
-        //get examiner certifications for profiles part of IBIS2
-        $candID    = isset($_REQUEST['candID']) ? $_REQUEST['candID'] : '';
+        $candID    = $_REQUEST['candID'] ?? '';
         $sessionID = $this->getSessionID();
 
         $project = $db->pselectOne(
@@ -1007,13 +1014,14 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 "SELECT ID FROM test_names WHERE Test_name=:tst_name",
                 ['tst_name' => $this->testName]
             );
-            $results = $db->pselect(
-                "SELECT c.examinerID, e.full_name
+            $results = $db->pselectWithIndexKey(
+                "SELECT c.examinerID, e.full_name, u.Email
                  FROM certification c
                      JOIN examiners e
                          ON (c.examinerID = e.examinerID)
                      JOIN examiners_psc_rel epr
                          ON (epr.examinerID=e.examinerID)
+                     LEFT JOIN users u ON u.ID=e.userID
                  WHERE c.testID =:tid
                     AND c.pass =:cert_id
                     AND epr.centerID =:cid
@@ -1022,24 +1030,43 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                     'tid'     => $test_id,
                     'cert_id' => 'certified',
                     'cid'     => $centerID,
-                ]
+                ],
+                'examinerID'
             );
         } else {
-            $results = $db->pselect(
-                "SELECT e.examinerID, e.full_name
+            $results = $db->pselectWithIndexKey(
+                "SELECT e.examinerID, e.full_name, u.Email
                      FROM examiners e
                          JOIN examiners_psc_rel epr
                              ON (epr.examinerID=e.examinerID)
+                     LEFT JOIN users u ON u.ID=e.userID
                  WHERE epr.centerID=:centID
                      ORDER BY full_name",
-                ['centID' => $centerID]
+                ['centID' => $centerID],
+                'examinerID'
             );
         }
-
-        $examiners = ['' => ''];
+        $examiners = [
+            '' => ''
+        ];
         if (is_array($results) && !empty($results)) {
-            foreach ($results AS $row) {
-                $examiners[$row['examinerID']] = $row['full_name'];
+            foreach ($results AS $eid => $row) {
+                $name = $row['full_name'];
+                if (in_array($name, $examiners)) {
+                    // If name already in examiners, set first case of name
+                    // with email (if exists)
+                    $duplicateID    = array_search($name, $examiners);
+                    $duplicateEmail = $results[$duplicateID]['Email'];
+                    $emailString    = empty($duplicateEmail) ? "" :
+                        " ({$duplicateEmail})";
+                    $examiners[$duplicateID] = $name . $emailString;
+                    // Set new case of name with email as well
+                    $emailString     = empty($row['Email']) ? "" :
+                        " ({$row['Email']})";
+                    $examiners[$eid] = $name . $emailString;
+                } else {
+                    $examiners[$eid] = $name;
+                }
             }
         }
         return $examiners;
@@ -1050,9 +1077,9 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * Return the full, human readable name for the
      * current instrument.
      *
-     * @return string the full name of the instrument
+     * @return ?string the full name of the instrument
      */
-    abstract public function getFullName(): string;
+    abstract public function getFullName(): ?string;
 
     /**
      * Gets the current object instance CommentID
@@ -1090,12 +1117,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function getDateOfAdministration()
     {
-        $db  = \Database::singleton();
-        $doa = $db->pselectOne(
-            "SELECT Date_taken FROM $this->table WHERE CommentID=:CID",
-            ['CID' => $this->getCommentID()]
-        );
-        $this->dateOfAdministration = $doa;
+        $this->dateOfAdministration = $this->getFieldValue('Date_taken');
 
         return $this->dateOfAdministration;
     }
@@ -1110,98 +1132,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * @return array
      */
     abstract function getSubtestList(): array;
-
-    /**
-     * Marks an element in the lorisform object as being required (for
-     * use with the requiredIf rule)
-     *
-     * @param string $elementName the element to add to the required list
-     *
-     * @return void
-     */
-    function setRequired(string $elementName): void
-    {
-        if (!in_array($elementName, $this->form->_required)) {
-            $this->form->_required[] = $elementName;
-        }
-    }
-
-
-    /**
-     * Convert a lorisform date or timestamp into a database acceptable
-     * (and storable) date or time
-     *
-     * @param array $formDateValue the lorisform date/timestamp array
-     *
-     * @return string the date or timestamp from the database
-     * @access private
-     */
-    function _getDatabaseDate(array $formDateValue): string
-    {
-        $databaseValue = "";
-        if (!empty($formDateValue)) {
-            if (array_key_exists("Y", $formDateValue)
-                || array_key_exists("M", $formDateValue)
-                || array_key_exists("d", $formDateValue)
-            ) {
-
-                if (array_key_exists("Y", $formDateValue)) {
-                    $yearString = $formDateValue['Y'];
-                } else {
-                    $yearString = "0001";
-                }
-
-                if (array_key_exists("M", $formDateValue)) {
-                    $monthString = $formDateValue['M'];
-                } else {
-                    $monthString = "01";
-                }
-
-                if (array_key_exists("d", $formDateValue)) {
-                    $dayString = $formDateValue['d'];
-                } else {
-                    $dayString = "01";
-                }
-
-                $databaseValue = $yearString . "-" . $monthString . "-" . $dayString;
-
-            } elseif (array_key_exists("H", $formDateValue)
-                || array_key_exists("i", $formDateValue)
-            ) {
-                if (array_key_exists("H", $formDateValue)) {
-                    $hourString = $formDateValue['H'];
-                } else {
-                    $hourString = "01";
-                }
-                if (array_key_exists("i", $formDateValue)) {
-                    $minuteString = $formDateValue['i'];
-                } else {
-                    $minuteString = "01";
-                }
-
-                $databaseValue = $hourString . ":" . $minuteString;
-
-            }
-        }
-        return $databaseValue;
-    }
-
-
-    /**
-     * Convert a database date or timestamp into a QuickForm acceptable date or time
-     *
-     * @param string $databaseValue the date or timestamp from the database
-     *
-     * @return array the lorisform date/timestamp array
-     */
-    function _getQuickformDate(string $databaseValue)
-    {
-        throw new Exception(
-            "The function _getQuickformDate has been deprecated.
-            Please contact LORIS developer mail list for support."
-        );
-    }
-
 
     /**
      * This runs the XIN rules on all the elements on the current page to ensure
@@ -1354,7 +1284,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                     echo "$rule[0] ";
                 }
 
-                //Handle select multiples who's controllre values are arrays.
+                //Handle select multiples who's controller values are arrays.
 
                 //explicitly cast the controller value as an array
                 if (!is_array($elements[$rule[0]])) {
@@ -1443,74 +1373,99 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
     /**
      * Get a the value of $field from the instrument table.
-     * Used specifically by electronic instruments to check if file
-     * is already uploaded.
      *
      * @param string $field The field to get from this instrument
      *
-     * @return string|false The value of the field, or false if it's empty.
+     * @return string The value of the field, or false if it's empty.
      */
     function getFieldValue(string $field)
     {
-        $allValues = self::loadInstanceData($this);
+        $allValues  = $this->getInstanceData();
+        $dictionary = $this->getDataDictionary();
 
-        if (!empty($allValues[$field])) {
-            return $allValues[$field];
+        foreach ($dictionary as $item) {
+            if ($field === $item->fieldname) {
+                return $allValues[$field];
+            }
         }
-        return false;
+        throw new \OutOfBoundsException(
+            "Invalid field $field for instrument $this->testName"
+        );
     }
 
+    /**
+     * Gets the value of a field $field for this instrument for a
+     * DictionaryItem that was retrieved from getDataDictionary.
+     *
+     * This differs from getFieldValue in that getFieldValue takes
+     * a string and validates that it is in the dictionary in O(n)
+     * time while getDictionaryValue assumes the DictionaryItem
+     * exists and returns the value in O(1) time.
+     *
+     * @param DictionaryItem $field The field to get from this instrument
 
+     * @return mixed
+     */
+    function getDictionaryValue(DictionaryItem $field)
+    {
+        $allValues = $this->getInstanceData();
+        $fieldName = substr($field->getName(), strlen($this->testName)+1);
+
+        return $allValues[$fieldName] ?? '';
+    }
+
+    private ?SessionID $sessionID;
     /**
      * Gets the sessionID for the timepoint to which this instrument pertains
      *
-     * @return int The sessionID if found, or -1 if not found
+     * @return ?SessionID The sessionID
      */
-    function getSessionID(): int
+    function getSessionID(): ?SessionID
     {
-        $query      = "SELECT SessionID FROM flag WHERE CommentID = :CID";
-        $fieldValue = \Database::singleton()->pselectOne(
-            $query,
-            [
-                'CID' => $this->getCommentID(),
-            ]
-        );
-
-        if (!empty($fieldValue)) {
-            return $fieldValue;
+        if (empty($this->sessionID)) {
+            $query  = "SELECT SessionID FROM flag WHERE CommentID = :CID";
+            $result = \NDB_Factory::singleton()->database()->pselectOne(
+                $query,
+                [
+                    'CID' => $this->getCommentID(),
+                ]
+            );
+            if (empty($result)) {
+                return null;
+            }
+            $this->sessionID = new SessionID($result);
         }
-        return -1;
+        return $this->sessionID;
     }
 
+    private ?string $visitLabel = null;
     /**
-     * Gets the VisitLabel for the timepoint to which this instrument pertains
+     * Gets the VisitLabel for the timepoint for this instrument.
      *
-     * @return String for the VisitLabel
+     * @return string The visit label
      */
     function getVisitLabel(): string
     {
-        $sessionID = $this->getSessionID();
-
-        if ($sessionID !== -1) {
-            $timepoint  = \TimePoint::singleton($sessionID);
-            $visitLabel = $timepoint->getVisitLabel();
-            return $visitLabel;
+        if ($this->visitLabel === null) {
+            $this->visitLabel = \TimePoint::singleton(
+                $this->getSessionID()
+            )->getVisitLabel();
         }
-        return '';
+        return $this->visitLabel;
     }
 
     /**
-     * Gets the subprojectID for the timepoint to which this instrument pertains
+     * Gets the cohortID for the timepoint for this instrument.
      *
-     * @return int|null The subprojectID
+     * @return int|null The cohortID
      */
-    function getSubprojectID(): ?int
+    function getCohortID(): ?int
     {
         $sessionID = $this->getSessionID();
-        if ($sessionID !== -1) {
-            $timepoint    = \TimePoint::singleton($sessionID);
-            $subprojectID = $timepoint->getSubprojectID();
-            return $subprojectID;
+        if (!is_null($sessionID)) {
+            $timepoint = \TimePoint::singleton($sessionID);
+            $cohortID  = $timepoint->getCohortID();
+            return $cohortID;
         }
         return null;
     }
@@ -1527,7 +1482,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         if (empty($this->_requiredElements)) {
             return 100;
         }
-        $allData       = $this->loadInstanceData($this);
+        $allData       = $this->getInstanceData();
         $unanswered    = 0;
         $totalElements = count($this->_requiredElements);
         foreach ($this->_requiredElements as $field) {
@@ -1552,65 +1507,78 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     }
 
     /**
-     * Determines what the data entry status flag should be set to
+     * Determines what the required elements completed flag should be set to
      *
-     * @return string  Either 'Complete' or 'Incomplete'
+     * @return string  Either 'Y' or 'N'
      */
-    function _determineDataEntryCompletionStatus(): string
+    function _determineRequiredElementsCompletedFlag(): string
     {
         // don't bother checking anything if the required elements array is empty
         if (empty($this->_requiredElements)) {
-            return 'Complete';
+            return 'Y';
         }
 
-        $allData = $this->loadInstanceData($this);
+        $allData = $this->getInstanceData();
         foreach ($this->_requiredElements as $field) {
             // consider status field if not_answered chosen as an answer
             $statusField = $field . '_status';
             // field shouldn't be just empty() b/c 0 is a valid
             // value for some required fields
-            if ((is_null($allData[$field]) || $allData[$field] === "")
+            if ((is_null($allData[$field] ?? null) || $allData[$field] === "")
                 && empty($allData[$statusField])
             ) {
-                return 'Incomplete';
+                return 'N';
             }
         }
 
-        return 'Complete';
+        return 'Y';
     }
 
 
     /**
      * Gets the data entry completion status for this instrument
      *
-     * @return string Either 'Complete' or 'Incomplete'
+     * @return string Either 'Y' or 'N'
      */
-    function getDataEntryCompletionStatus(): string
+    function getRequiredElementsCompletedFlag(): string
     {
-        $data = NDB_BVL_Instrument::loadInstanceData($this);
-        return $data["Data_entry_completion_status"];
+        $db     = $this->loris->getDatabaseConnection();
+        $status = $db->pselectOne(
+            "SELECT Required_elements_completed FROM flag WHERE CommentID=:CID",
+            ['CID' => $this->getCommentID()]
+        );
+        if ($status !== 'Y' && $status !== 'N') {
+            throw new LorisException(
+                "Invalid Data entry completion status encountered"
+            );
+        }
+        return $status;
     }
 
 
     /**
      * Sets the data entry completion status
      *
-     * @param string $status The status - either 'Complete'
-     *                       or 'Incomplete'
+     * @param string $status The status - either 'Y'
+     *                       or 'N'
      *
      * @return void
      */
-    function _setDataEntryCompletionStatus(string $status): void
+    function _setRequiredElementsCompletedFlag(string $status): void
     {
-        if (!in_array($status, ['Complete', 'Incomplete'])) {
-            throw new Exception(
-                "Invalid status passed to _setDataEntryCompletionStatus - "
+        if (!in_array($status, ['Y', 'N'], true)) {
+            throw new InvalidArgumentException(
+                "Invalid status passed to _setRequiredElementsCompleted - "
                 . "'$status' should have been either "
-                . "'Complete' or 'Incomplete'<br>\n"
+                . "'Y' or 'N'<br>\n"
             );
         }
-
-        $this->_save(["Data_entry_completion_status" => $status]);
+        $DB = $this->loris->getDatabaseConnection();
+        $DB->update(
+            "flag",
+            ["Required_elements_completed" => $status],
+            ['CommentID' => $this->getCommentID()]
+        );
     }
 
     /**
@@ -1635,7 +1603,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $field,
             $label,
             [
-                null           => '',
+                ''             => '',
                 'yes'          => 'Yes',
                 'no'           => 'No',
                 'not_answered' => 'Not Answered',
@@ -1685,7 +1653,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             ['class' => 'form-control input-sm not-answered']
         );
 
-        $this->addGroup($group, $field.'_group', $label, null, false);
+        $this->addGroup($group, $field.'_group', $label, '');
         unset($group);
         $rules_array = array_merge([$field.'_status{@}=={@}'], $rules);
         $this->XINRegisterRule($field, $rules_array, $rule_message, $field.'_group');
@@ -1713,7 +1681,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $group[] = $this->form->createElement(
             "textarea",
             $field,
-            null,
+            '',
             [],
             [
                 'cols' => 25,
@@ -1724,14 +1692,14 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $field."_status",
             "",
             [
-                null             => '',
+                ''               => '',
                 "88_refused"     => "88 Refused",
                 "99_do_not_know" => "99 Do not know",
                 'not_answered'   => 'Not Answered',
             ]
         );
 
-        $this->addGroup($group, $field.'_group', $label, null, false);
+        $this->addGroup($group, $field.'_group', $label, '');
         unset($group);
         $rules_array = array_merge([$field.'_status{@}=={@}'], $rules);
         $this->XINRegisterRule($field, $rules_array, $rule_message, $field.'_group');
@@ -1771,12 +1739,12 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $field."_status",
             "",
             [
-                null           => '',
+                ''             => '',
                 'not_answered' => 'Not Answered',
             ],
             ['class' => 'form-control input-sm not-answered']
         );
-        $this->addGroup($group, $field.'_group', $label, null, false);
+        $this->addGroup($group, $field.'_group', $label, '');
         unset($group);
         $rules_array = array_merge([$field.'_status{@}=={@}'], $rules);
         $this->XINRegisterRule(
@@ -1790,7 +1758,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     /**
      * Wrapper to create an Hour/Minute field, with an accompanying status field.
      *
-     * @param string      $field        Name given to the HTML QuickForm Element
+     * @param string      $field        Name given to the HTML form Element
      *                                  being created
      * @param string      $label        The question text to display
      * @param array       $rules        Additional rules to apply to the element
@@ -1815,22 +1783,20 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $group[] = $this->form->createElement(
             "time",
             $field,
-            null,
-            null,
-            null
+            '',
         );
 
         $group[] = $this->createSelect(
             $field . "_status",
             "",
             [
-                null           => '',
+                ''             => null,
                 "dnk"          => "DNK",
                 "refusal"      => "Refusal",
                 'not_answered' => 'Not Answered',
             ]
         );
-        $this->addGroup($group, $field . "_group", $label, null, false);
+        $this->addGroup($group, $field . "_group", $label, '');
         $this->XINRegisterRule(
             $field,
             array_merge($rules, [$field . '_status{@}=={@}']),
@@ -1845,7 +1811,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * Note: $this->dateOptions must be defined by the subclass calling this
      * wrapper function
      *
-     * @param string $name    Name prepended to the HTMLQuickform element
+     * @param string $name    Name prepended to the form element
      * @param string $label   Element label
      * @param array  $options optional override of class's dateOptions
      *
@@ -1872,15 +1838,12 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             ]
         );
         $this->WrapperDateWithStatusElements[$name . "_date"] = $group[0];
-        if (!in_array($name . "_date", $this->dateTimeFields)) {
-            $this->dateTimeFields[] = $name . "_date";
-        }
 
         $group[] = $this->createSelect(
             $name . "_date_status",
-            null,
+            '',
             [
-                null           => "",
+                ''             => '',
                 'not_answered' => "Not Answered",
             ],
             ['class' => 'form-control input-sm not-answered']
@@ -1891,7 +1854,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $name . "_date_group",
             $label,
             $this->_GUIDelimiter,
-            false
         );
 
         unset($group);
@@ -1922,7 +1884,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $options['format'] = 'YM';
         }
         $this->form->addElement('date', $field, $label, $options);
-        $this->monthYearFields[] = $field;
     }
 
 
@@ -1931,7 +1892,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      *
      * @param string $name      The database name to add to the form
      * @param string $label     The question text
-     * @param array  $dateArray QuickForm date options to use
+     * @param array  $dateArray Date options to use
      *
      * @return void
      * @note   This was only ever used by the EARLI instrument and should be
@@ -1943,14 +1904,13 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         array $dateArray
     ): void {
         $group   = [];
-        $group[] = $this->createDate($name . "_date", null, $dateArray);
+        $group[] = $this->createDate($name . "_date", '', $dateArray);
         //add to array of dates and times.
-        $this->dateTimeFields[] = $name . "_date";
         $group[] = $this->createSelect(
             $name . "_date_status",
-            null,
+            '',
             [
-                null             => "",
+                ''               => '',
                 '88_refused'     => "88 Refused",
                 '99_do_not_know' => "99 Do not know",
                 'not_answered'   => "Not Answered",
@@ -1961,7 +1921,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $name . "_date_group",
             $label,
             $this->_GUIDelimiter,
-            false
         );
         unset($group);
         $this->XINRegisterRule(
@@ -2000,14 +1959,14 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $this->WrapperNumericElements[$field] = $group[0];
         $group[] = $this->createSelect(
             $field . "_status",
-            null,
+            '',
             [
-                null           => "",
+                ''             => '',
                 'not_answered' => "Not Answered",
             ],
             ['class' => 'form-control input-sm not-answered']
         );
-        $this->addGroup($group, $field . "_group", $label, null, false);
+        $this->addGroup($group, $field . "_group", $label, '');
         unset($group);
         $this->addGroupRule(
             $field . "_group",
@@ -2036,16 +1995,16 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $group[] = $this->createText($field, $label);
         $group[] = $this->createSelect(
             $field . "_status",
-            null,
+            '',
             [
-                null             => "",
+                ''               => '',
                 "88_refused"     => "88 Refused",
                 "99_do_not_know" => "99 Do not know",
                 'not_answered'   => "Not Answered",
             ],
             ['class' => 'form-control input-sm not-answered']
         );
-        $this->addGroup($group, $field . "_group", $label, null, false);
+        $this->addGroup($group, $field . "_group", $label, '');
         unset($group);
         $this->addGroupRule(
             $field . "_group",
@@ -2073,23 +2032,22 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function _nullScores(array $scoreCols): void
     {
-        $data = $this->loadInstanceData($this);
-
         // set the scoring cols to NULL
+        $scores = [];
         foreach ($scoreCols as $key => $val) {
             // Some Instruments use an associative array for
             // $scoreCols of the form column => description, others
             // use a non-associative array. So if the key is numeric,
             // and we need to make sure we use the column name
             if (is_numeric($key)) {
-                $data[$val] = null; //null array
+                $scores[$val] = null; //null array
             } else {
-                $data[$key] = null;
+                $scores[$key] = null;
             }
 
         }
 
-        $this->_save($data);
+        $this->_save($scores);
         return;
     }
 
@@ -2106,10 +2064,10 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     function diff(NDB_BVL_Instrument $otherInstrument): array
     {
         // Load this instance data
-        $thisData = NDB_BVL_Instrument::loadInstanceData($this);
+        $thisData = $this->getInstanceData();
 
         // Load other instance data
-        $otherData = NDB_BVL_Instrument::loadInstanceData($otherInstrument);
+        $otherData = $otherInstrument->getInstanceData();
 
         // Create the return object data structure
         $diff = [];
@@ -2137,6 +2095,64 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         return $diff;
     }
 
+
+    /**
+     * Get the default instance data which consists of all field names
+     * in the dictionary and a null value.
+     *
+     * @return array
+     */
+    protected function defaultInstanceData()
+    {
+        $val        = [];
+        $dictionary = $this->getDataDictionary();
+
+        foreach ($dictionary as $item) {
+            $val[$item->fieldname] = null;
+        }
+        return $val;
+    }
+
+    /**
+     * Gets the data from an instrument out of the database and returns it
+     * as an array.
+     *
+     * @return array containing the data for each field in this instrument
+     */
+    public function getInstanceData(): array
+    {
+        if ($this->instanceData !== null) {
+            return $this->instanceData;
+        }
+
+        $db = $this->loris->getDatabaseConnection();
+
+        if ($this->jsonData) {
+            $jsondata = $db->pselectOne(
+                "SELECT Data FROM flag WHERE CommentID=:CID",
+                ['CID' => $this->getCommentID()]
+            );
+
+            $this->instanceData = json_decode(
+                $jsondata ?? '',
+                true
+            ) ?? $this->defaultInstanceData();
+        } else {
+            $defaults = $db->pselectRow(
+                "SELECT * FROM $this->table WHERE CommentID=:CID",
+                ['CID' => $this->getCommentID()]
+            );
+            // This is only included because it's the primary key. JSON
+            // data does not include it. Unset so that the two types are
+            // consistent. Places that need the commentID should be using
+            // NDB_BVL_Instrument->getCommentID()
+            unset($defaults['CommentID']);
+
+            $this->instanceData = $defaults ?? $this->defaultInstanceData();
+        }
+        return $this->instanceData;
+    }
+
     /**
      * Gets the data from an instrument out of the database and returns it
      * as an array.
@@ -2145,10 +2161,16 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      *                                               to be retrieved.
      *
      * @return array containing the data for each field in this instrument
+     *
+     * @deprecated use $instrumentInstance->getInstanceData() instead
      */
     static function loadInstanceData(NDB_BVL_Instrument $instrumentInstance): array
     {
-        $db = \Database::singleton();
+        error_log(
+            'Warning: loadInstanceData($inst) is deprecated and will be removed'
+            . ' in a future version of LORIS. Use $inst->getInstanceData() instead.'
+        );
+        $db = \NDB_Factory::singleton()->database();
 
         if ($instrumentInstance->jsonData) {
             $jsondata = $db->pselectOne(
@@ -2162,6 +2184,215 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 ['CID' => $instrumentInstance->getCommentID()]
             );
             return $defaults ?? [];
+        }
+    }
+
+    /**
+     * Loads multiple instruments representing multiple commentIDs from the
+     * database in bulk. This function must be called on an instrument instantiated
+     * as \NDB_BVL_Instrument::factory('instrumentname') without a comment ID, and
+     * will return an array of copies of the instrument type with the data for
+     * the given commentIDs loaded.
+     *
+     * @param $commentIDs string[] A list of commentIDs to load in bulk.
+     *
+     * @return \NDB_BVL_Instrument[]
+     */
+    function bulkLoadInstanceData(iterable $commentIDs): array
+    {
+        if ($this->commentID !== null && $this->commentID !== '') {
+            throw new \LogicException(
+                "Must bulk load from instrument loaded without commentID"
+            );
+        }
+        $db = $this->loris->getDatabaseConnection();
+
+        $prepBindings = [];
+        $prepValues   = [];
+
+        $i = 0;
+        foreach ($commentIDs as $commentID) {
+            $i++;
+
+            $prepBindings[]      = ":cid$i";
+            $prepValues["cid$i"] = $commentID;
+        }
+        if ($i === 0) {
+            return [];
+        }
+
+        if ($this->jsonData) {
+            $jsondata = $db->pselect(
+                "SELECT SessionID,
+                        CommentID,
+                        session.Visit_Label as VisitLabel,
+                        Data
+                    FROM flag
+                        JOIN session ON (session.ID=flag.SessionID)
+                    WHERE CommentID IN ("
+                . join(',', $prepBindings) . ')',
+                $prepValues,
+            );
+            return array_map(
+                function ($row) {
+                    $newinst = clone $this;
+
+                    $newinst->commentID    = $row['CommentID'];
+                    $newinst->visitLabel   = $row['VisitLabel'];
+                    $newinst->sessionID    = new SessionID($row['SessionID']);
+                    $newinst->instanceData = json_decode(
+                        $row['Data'] ?? '{}',
+                        true,
+                    ) ?? $this->defaultInstanceData();
+
+                    return $newinst;
+                },
+                $jsondata
+            );
+        } else {
+            $defaults = $db->pselect(
+                "SELECT flag.CommentID as CommentID,
+                        session.Visit_Label as VisitLabel,
+                        session.ID as SessionID, t.*
+                 FROM $this->table t
+                    JOIN flag ON (t.CommentID=flag.CommentID)
+                    JOIN session ON (flag.SessionID=session.ID)
+                 WHERE t.CommentID IN ("
+                . join(',', $prepBindings) . ')',
+                $prepValues,
+            );
+            return array_map(
+                function ($row) {
+                    $newinst = clone $this;
+
+                    $newinst->commentID  = $row['CommentID'];
+                    $newinst->visitLabel = $row['VisitLabel'];
+                    $newinst->sessionID  = new SessionID($row['SessionID']);
+                    unset($row['CommentID'], $row['VisitLabel'], $row['SessionID']);
+
+                    $newinst->instanceData = $row;
+
+                    return $newinst;
+                },
+                $defaults
+            );
+        }
+    }
+
+    /**
+     * Calls all functions which propagate data to other sources.
+     *
+     * @return void
+     */
+    function propagateData()
+    {
+        if (strpos($this->getCommentID(), "DDE") === false) {
+            $this->propagateLatestDiagnosisData();
+        }
+    }
+
+    /**
+     * Checks if current instrument contains a diagnosis track
+     * and determines whether it is the latest diagnosis. If so,
+     * it propagates the data to the LatestDiagnosis field in the
+     * candidate table.
+     *
+     * @return void
+     */
+    function propagateLatestDiagnosisData()
+    {
+        // if the instrument is not part of a configured Dx Tracjectory; return
+        $dxEvolutionID = $this->getConfiguredDiagnosisTrajectory();
+        if (is_null($dxEvolutionID)) {
+            return;
+        }
+
+        // Update candidate's diagnosis evolution
+        $this->updateCandidateDiagnosisEvolution($dxEvolutionID);
+    }
+
+    /**
+     * Determines whether this instrument is part of a configured
+     * diagnosis trajectory.
+     *
+     * @return string|null The DxEvolutionID of this instrument's configured
+     *                      diagnosis trajectory.
+     */
+    function getConfiguredDiagnosisTrajectory()
+    {
+        $DB        = $this->loris->getDatabaseConnection();
+        $timepoint = \TimePoint::singleton($this->getSessionID());
+
+        // Check if there is a diagnosis trajectory defined
+        // for this instrument with current session's visit & project
+        $dxEvolutionID = $DB->pselectOne(
+            "SELECT DxEvolutionID FROM diagnosis_evolution
+            WHERE instrumentName=:tn 
+            AND ProjectID=:pid 
+            AND visitLabel=:vl",
+            [
+                'tn'  => $this->testName,
+                'pid' => $timepoint->getProjectID(),
+                'vl'  => $this->getVisitLabel()
+            ]
+        );
+
+        return $dxEvolutionID ?? null;
+    }
+
+    /**
+     * Determines whether the candidate's latest diagnosis should be updated.
+     * If so, it returns an array containing the source and new diagnosis.
+     *
+     * @param string $dxEvolutionID The ID of configured Diagnsosis Trajectory
+     *                              for this instrument & session.
+     *
+     * @return void
+     */
+    function updateCandidateDiagnosisEvolution(string $dxEvolutionID) : void
+    {
+        $DB        = $this->loris->getDatabaseConnection();
+        $timepoint = \TimePoint::singleton($this->getSessionID());
+
+        // Get the fields that correspond to a configured diagnosis
+        $sourceFields = $DB->pselectOne(
+            "SELECT sourceField 
+            FROM diagnosis_evolution
+            WHERE DxEvolutionID=:dxEvID",
+            ['dxEvID' => $dxEvolutionID]
+        );
+
+        $this->instanceData = null;
+        $instrumentData     = $this->getInstanceData();
+        $sourceFields       = explode(",", $sourceFields);
+
+        $diagnosis = [];
+        foreach ($sourceFields as $fieldName) {
+            // None of the diagnosis components should be empty
+            // If so, the latest diagnosis should not be updated.
+            if (!isset($instrumentData[$fieldName])) {
+                continue;
+            }
+            $diagnosis[$fieldName] = $instrumentData[$fieldName];
+        }
+
+        if (!empty($diagnosis)) {
+            $confirmed = $timepoint->getVisitStatus() === 'Pass' ? 'Y' : 'N';
+
+            $set = [
+                'CandID'        => $this->getCandID(),
+                'DxEvolutionID' => $dxEvolutionID,
+                'Diagnosis'     => json_encode($diagnosis),
+                'Confirmed'     => $confirmed
+            ];
+
+            // Diagnosis is formatted as JSON and ensures that this is safe.
+            // If we use the safe wrapper, HTML encoding the quotation marks
+            // will make it invalid JSON.
+            $DB->unsafeInsertOnDuplicateUpdate(
+                'candidate_diagnosis_evolution_rel',
+                $set
+            );
         }
     }
 
@@ -2189,7 +2420,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         ];
         $dateTaken = empty($date) ? $dates['Date_taken'] : $date;
 
-        $age = [];
         if (empty($dates['DoD']) || $dates['DoD'] > $dateTaken) {
             $age = Utility::calculateAge($dates['DoB'], $dateTaken);
         } else {
@@ -2202,11 +2432,11 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     /**
      * Get the candidates DOB.
      *
-     * @return string The candidate's DOB.
+     * @return ?string The candidate's DOB.
      */
-    function getDoB()
+    function getDoB(): ?string
     {
-        $db        = \Database::singleton();
+        $db        = $this->loris->getDatabaseConnection();
         $CommentID = $this->getCommentID();
 
         $dob = $db->pselectOne(
@@ -2226,7 +2456,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function getDoD(): ?string
     {
-        $db        = \Database::singleton();
+        $db        = $this->loris->getDatabaseConnection();
         $CommentID = $this->getCommentID();
         $dod       = $db->pselectOne(
             "SELECT c.DoD FROM flag f
@@ -2245,7 +2475,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function getPSCID(): ?string
     {
-        $db        = \Database::singleton();
+        $db        = $this->loris->getDatabaseConnection();
         $CommentID = $this->getCommentID();
 
         $pscid = $db->pselectOne(
@@ -2259,6 +2489,27 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     }
 
     /**
+     * Get the candidate's CandID
+     *
+     * @return string|null The candidate's CandID
+     */
+    function getCandID() : ?string
+    {
+        $db        = $this->loris->getDatabaseConnection();
+        $CommentID = $this->getCommentID();
+
+        $candID = $db->pselectOne(
+            "SELECT c.CandID FROM flag f
+            JOIN session s ON (f.SessionID=s.ID)
+            JOIN candidate c USING (CandID)
+            WHERE f.CommentID=:CID",
+            ['CID' => $CommentID]
+        );
+        return $candID;
+
+    }
+
+    /**
      * Clears all the data saved into this instrument instance
      *
      * @return void
@@ -2266,31 +2517,39 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     function clearInstrument(): void
     {
         $config   = NDB_Config::singleton();
-        $db       = Database::singleton();
+        $db       = $this->loris->getDatabaseConnection();
         $dbconfig = $config->getSetting('database');
-        $columns  = $db->pselect(
-            "SELECT COLUMN_NAME FROM information_schema.columns
-            WHERE TABLE_NAME=:table AND TABLE_SCHEMA=:db",
-            [
-                'table' => $this->table,
-                'db'    => $dbconfig['database'],
-            ]
-        );
 
-        $values = [];
-        foreach ($columns as $row) {
-            switch ($row['COLUMN_NAME']) {
-            case 'CommentID':
-            case 'UserID':
-                continue 2;
-            case 'Data_entry_completion_status':
-                $values[$row['COLUMN_NAME']] = 'Incomplete';
-                break;
-            default:
-                $values[$row['COLUMN_NAME']] = null;
+        if (!$this->jsonData) {
+            $columns = $db->pselect(
+                "SELECT COLUMN_NAME FROM information_schema.columns
+            WHERE TABLE_NAME=:table AND TABLE_SCHEMA=:db",
+                [
+                    'table' => $this->table,
+                    'db'    => $dbconfig['database'],
+                ]
+            );
+
+            $values = [];
+            foreach ($columns as $row) {
+                switch ($row['COLUMN_NAME']) {
+                case 'CommentID':
+                case 'ID':
+                case 'SessionID':
+                case 'UserID':
+                case 'Test_name':
+                    continue 2;
+                default:
+                    $values[$row['COLUMN_NAME']] = null;
+                }
             }
+            $db->update($this->table, $values, ['CommentID' => $this->commentID]);
         }
-        $db->update($this->table, $values, ['CommentID' => $this->commentID]);
+
+        // Clear data out of the flag table's Data column
+        $db->update('flag', ['Data'=>null], ['CommentID' => $this->commentID]);
+        $this->_setRequiredElementsCompletedFlag('N');
+
         $prepQ = $db->prepare(
             "DELETE FROM conflicts_unresolved
              WHERE (CommentId1=:CID OR CommentId2=:CID)"
@@ -2298,8 +2557,23 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         $db->execute(
             $prepQ,
             ['CID' => $this->commentID],
-            ['nofetch' => true]
+            ['nofetch' => "true"]
         );
+    }
+
+    /**
+     * Loads the metadata of an instrument and sets the proper variables
+     * in the instrument class accordingly
+     *
+     * This is intended to be overridden by a subclass of NDB_BVL_Instrument
+     * to add support for other file formats.
+     *
+     * @param string $filename The filename to be loaded
+     *
+     * @return void
+     */
+    function loadInstrumentMetadata(string $filename): void
+    {
     }
 
     /**
@@ -2352,6 +2626,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         if (!empty($_REQUEST['commentID'])) {
             // make the control panel object for the current instrument
             $controlPanel = new NDB_BVL_InstrumentStatus_ControlPanel(
+                $this->loris,
                 $this->testName,
                 $this->getCommentID() ?? '',
                 $candID,
@@ -2365,6 +2640,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             $config = NDB_Config::singleton();
             $paths  = $config->getSetting('paths');
 
+            $this->_DataEntryChanged = false;
+
             // check if the file/class exists
             $BasePath = $paths['base'] . 'project/instruments/';
             $TestName = $this->testName;
@@ -2375,7 +2652,12 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 || file_exists($BasePath . "$TestName.linst")
             ) {
                 // save possible changes from the control panel...
+                $originalstatus = $controlPanel->getDataEntryStatus();
                 $controlPanel->save();
+
+                if ($controlPanel->getDataEntryStatus() !== $originalstatus) {
+                    $this->_DataEntryChanged = true;
+                }
             }
 
             // display the control panel
@@ -2387,12 +2669,12 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     /**
      * Function that displays the html the fetch feedback panel.
      *
-     * @param CandID $candID    The candidate ID for the panel.
-     * @param int    $sessionID The session ID for the panel.
+     * @param CandID    $candID    The candidate ID for the panel.
+     * @param SessionID $sessionID The session ID for the panel.
      *
      * @return string
      */
-    function getFeedbackPanel(CandID $candID, int $sessionID): string
+    function getFeedbackPanel(CandID $candID, SessionID $sessionID): string
     {
 
         $commentID = $this->getCommentID();
@@ -2419,7 +2701,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function getReview(): string
     {
-        $DB = Database::singleton();
+        $DB = NDB_Factory::singleton()->database();
 
         $smarty   = new Smarty_NeuroDB();
         $tpl_data = [];
@@ -2432,20 +2714,30 @@ abstract class NDB_BVL_Instrument extends NDB_Page
             ['TN' => $this->testName]
         );
 
-        $Responses = $DB->pselectRow(
-            "SELECT * FROM " . $this->table . " WHERE CommentID=:CID",
-            ['CID' => $this->getCommentID()]
-        );
+        $Responses = $this->getInstanceData();
 
-        foreach ($tpl_data['questions'] as &$row) {
+        foreach ($tpl_data['questions'] as $key => &$row) {
+            $isStatusField = $row['SourceField']
+                === $tpl_data['questions'][$key-1]['SourceField']."_status";
             if (isset($Responses[$row['SourceField']])) {
+                // Consider status fields
+                if ($isStatusField) {
+                    // The current row is the status field of the previous one
+                    // remove row and set the answer to whichever is answered
+                    $tpl_data['questions'][$key-1]['response']
+                        = $Responses[$row['SourceField']];
+                    unset($tpl_data['questions'][$key]);
+                    continue;
+                }
                 $row['response'] = $Responses[$row['SourceField']];
+            } elseif ($isStatusField) {
+                // incase it's a status field AND its empty, unset it
+                unset($tpl_data['questions'][$key]);
             }
         }
 
         $smarty->assign($tpl_data);
-        $html = $smarty->fetch("directentry_review.tpl");
-        return $html;
+        return $smarty->fetch("directentry_review.tpl");
     }
 
 
@@ -2462,7 +2754,10 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     function _toJSONParseSmarty(array &$element): array
     {
         /* Hacks to get data that QuickForm_Renderer_Array doesn't provide
-         * an easy way to get */
+         * an easy way to get
+         *
+         * TODO: are these hacks still valid ?
+         * */
         if ($element['type'] === 'select') {
             // Parse the HTML to get the options from the select
             $html = new DOMDocument();
@@ -2472,7 +2767,12 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
             $selectEl = $html->getElementsByTagName("select")->item(0);
 
-            if ($selectEl->getAttribute("multiple") == 'multiple') {
+            // getElementsByTagName returns DOMNodeList, but
+            // getAttribute only exists on the DOMElement type
+            // (which extends DOMNode)
+            if ($selectEl instanceof \DOMElement
+                && $selectEl->getAttribute("multiple") == 'multiple'
+            ) {
                 $element['Multiselect'] = true;
             }
 
@@ -2485,53 +2785,19 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 }
             }
         } else if ($element['type'] === "date") {
-            if (get_class($this->form) === 'LorisForm') {
-                $element['options'] = [
-                    'mindate'         => "1990-01-01",
-                    'maxdate'         => "2000-12-31",
-                    'RequireResponse' => false,
-                ];
-                //$element['RequireResponse'] = false;
-            } else {
-                $html = new DOMDocument();
-                $html->loadHTML($element['html']);
-                // Parse the HTML to get the min and max date
-                $selects = $html->getElementsByTagName("select");
-                if ($selects->length > 0) {
-                    // Old school QuickForm style. This should be removed
-                    // after QuickForm is retired.
-                    $year = $selects->item(0);
+            $element['options'] = [
+                'mindate'         => "1990-01-01",
+                'maxdate'         => "2000-12-31",
+                'RequireResponse' => false,
+            ];
 
-                    // If Item 0 is blank, item 1 is the minimum,
-                    $minYear = $year->childNodes->item(0)->textContent;
-
-                    // PHP's trim function doesn't support UTF-8's 0xC2A0 (&nbsp;),
-                    // which seems to be how loadHTML parses spaces. Trim whitespace
-                    // and then specifically trim that character before checking if
-                    // the year is empty, and if it's empty use the next option in
-                    // the dropdown (which should be non-empty)
-                    $minYear = trim($minYear);
-                    $minYear = trim($minYear, chr(0xC2).chr(0xA0));
-                    if (empty($minYear)) {
-                        $minYear = $year->childNodes->item(1)->textContent;
-                    }
-                    // the last item is the maximum year
-                    $maxYear = $year->lastChild->textContent;
-
-                    $element['options'] = [
-                        'mindate' => $minYear . "-01-01",
-                        'maxdate' => $maxYear . "-12-31",
-                    ];
-
-                }
-            }
             if (isset($this->WrapperDateWithStatusElements[$element['name']])) {
                 $element['NoResponse'] = false;
             } else {
                 $element['NoResponse'] = true;
             }
-
         }
+
         return $element;
     }
 
@@ -2546,7 +2812,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      * @return void (but side-effect modified $formArray to populate the element
      *         with the appropriate format needed for JSON serialization.)
      */
-    function _toJSONParsePageElement(array &$element, array &$formArray): void
+    function _toJSONParsePageElement(array $element, array &$formArray): void
     {
         $name = isset($element['name']) ? $element['name'] : '';
         if ($element['type'] === 'group') {
@@ -2594,12 +2860,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                         if (isset($el['elements'][0]['label'])) {
                             $el['label'] = $el['elements'][0]['label'];
                         }
-                        //unset($el['elements']);
-                        //unset($el['delimiter']);
-                        //$label = $el['label'];
-                        //$el = $this->_toJSONParseSmarty($el['elements'][0]);
-                        //$el['label'] = $label;
-                        //$el = $this->_toJSONParseSmarty($el);
                     }
                 };
                 array_map($mapFunc, $formArray['elements']);
@@ -2636,8 +2896,6 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                     foreach ($section['elements'] as &$element) {
                         $this->_toJSONParsePageElement($element, $section);
                     }
-                } else {
-                    $this->_toJSONParsePageElement($element, $section);
                 }
             }
         }
@@ -2656,17 +2914,14 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     function toJSON(): string
     {
         $smarty = new Smarty_NeuroDB;
-        //$renderer = new HTML_QuickForm_Renderer_Array($smarty);
 
         $subtests = $this->getSubtestList();
         foreach ($subtests as $subtest) {
-            if (get_class($this->form) === 'LorisForm') {
-                $this->form->addPageBreak(
-                    $subtest['Name'],
-                    $subtest['Description'],
-                    []
-                );
-            }
+            $this->form->addPageBreak(
+                $subtest['Name'],
+                $subtest['Description'],
+                []
+            );
             $this->page = $subtest['Name'];
         }
         $formArray = $this->_toJSONParsePage();
@@ -2687,7 +2942,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     function determineDataEntryAllowed(): bool
     {
-        $DB    = Database::singleton();
+        $DB    = $this->loris->getDatabaseConnection();
         $entry = $DB->pselectOne(
             "SELECT Data_entry FROM flag WHERE CommentID=:CID",
             ['CID' => $this->getCommentId()]
@@ -2786,7 +3041,46 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     }
 
     /**
-     * A form extends the basic page handler to call save() on a POST request.
+     * Override of page process in order to refresh after control panel change
+     *
+     * @param ServerRequestInterface  $request The PSR7 request being processed.
+     * @param RequestHandlerInterface $handler The handler to handle the request
+     *                                         after processing the middleware.
+     *
+     * @return ResponseInterface the PSR15 response that was generated by the
+     * middleware*
+     */
+    public function process(
+        ServerRequestInterface $request,
+        RequestHandlerInterface $handler
+    ) : ResponseInterface {
+        // The parent middleware needs to be called in order for
+        // the instrument control panel to saved, which triggers
+        // $this->_DataEntryChanged being set appropriately.
+        $response = parent::process($request, $handler);
+
+        if ($this->_DataEntryChanged) {
+            $sessionID = $request->getQueryParams()["sessionID"];
+            $candID    = $request->getQueryParams()["candID"];
+
+            $baseURL = \NDB_Factory::singleton()->settings()->getBaseURL();
+
+            $url = $baseURL . "/instruments/" .
+                urlencode($this->testName) .
+                '?commentID=' . urlencode($this->getCommentID()) .
+                '&candID=' . urlencode($candID) .
+                '&sessionID=' . urlencode($sessionID);
+            return (new \LORIS\Http\Response())
+                ->withStatus(303)
+                ->withHeader("Location", $url);
+        }
+        return $response;
+    }
+
+    /**
+     * A form extends the basic page handler to
+     *  (1) call save() on a POST request
+     *  (2) disable form if data entry is complete
      *
      * @param ServerRequestInterface $request The incoming PSR7 request
      *
@@ -2794,12 +3088,213 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
-        $req = $request->getParsedBody();
-        if ($request->getMethod() === "POST" && !isset($req['ClearInstrument'])) {
-            $this->save();
+        $req     = $request->getParsedBody();
+        $success = false;
+        if (isset($req['ClearInstrument'])) {
+            $success = true;
         }
-        return (new \Laminas\Diactoros\Response())
+        if ($request->getMethod() === "POST" && !isset($req['ClearInstrument'])) {
+            $success = $this->save();
+        }
+
+        // Disable form if data entry is complete
+        $user      = $request->getAttribute("user");
+        $sessionID = $this->getSessionID();
+        if ($sessionID !== null) {
+            $timepoint = \Timepoint::singleton($sessionID);
+        }
+
+        // create an instrument status object
+        $status = new \NDB_BVL_InstrumentStatus($this->loris);
+        $status->select($this->commentID);
+
+        // freeze the form to prevent data entry
+        // IF (1) Instrument is set to complete
+        // OR (2) The user does NOT have `data_entry` permission
+        // OR (3) The user does NOT have access to the timepoint
+        //        at which the instrument is instantiated
+        // AND (4) The instrument is NOT in preview mode
+        // AND (5) the instrument is NOT a direct entry
+        if (($status->getDataEntryStatus() == 'Complete')
+            || !$user->hasPermission('data_entry')
+            || (isset($timepoint) && !$user->hasCenter($timepoint->getCenterID()))
+            && $this->preview !== true
+            && $this->DataEntryType !== 'DirectEntry'
+        ) {
+            $this->freeze();
+        }
+
+        if ($success) {
+            $sessionID = $request->getQueryParams()["sessionID"];
+            $candID    = $request->getQueryParams()["candID"];
+            $baseURL   = \NDB_Factory::singleton()->settings()->getBaseURL();
+            $pageURL   = !empty($this->page) ? urlencode($this->page) ."/" : "";
+            $url       = $baseURL . "/instruments/" .
+                urlencode($this->testName) . "/" .
+                $pageURL .
+                '?commentID=' . urlencode($this->getCommentID()) .
+                '&candID=' . urlencode($candID) .
+                '&sessionID=' . urlencode($sessionID);
+            return (new \LORIS\Http\Response())
+                ->withStatus(303)
+                ->withHeader("Location", $url);
+        }
+
+        return (new \LORIS\Http\Response())
             ->withBody(new \LORIS\Http\StringStream($this->display() ?? ""));
     }
 
+    /**
+     * Return the data dictionary for this instrument.
+     * LorisForm based instruments can use the trait `\LorisFormDictionaryImpl`
+     * in order to implement this function.
+     *
+     * @return iterable
+     */
+    abstract public function getDataDictionary() : iterable;
+
+    /**
+     * Static function returning a full list of instruments defined in the database.
+     * Only instantiable instruments are returned in the format
+     * test_name => Instrument object.
+     *
+     * Note: An error_log entry is logged if an instrument is in the database but
+     * can not be instantiated. this check should eventually be replaced with an
+     * exception.
+     *
+     * @param \LORIS\LorisInstance $loris The LORIS instance to get the DDE from
+     *
+     * @return array
+     * @throws DatabaseException
+     */
+    static function getInstrumentsList(\LORIS\LorisInstance $loris) : array
+    {
+        $DB          = $loris->getDatabaseConnection();
+        $instruments = $DB->pselectCol("SELECT Test_name FROM test_names", []);
+
+        $instrumentList = [];
+        foreach ($instruments as $inst) {
+            try {
+                $instrumentList[$inst] = NDB_BVL_Instrument::factory(
+                    $loris,
+                    $inst,
+                    "",
+                    ""
+                );
+            } catch (Exception $e) {
+                error_log(
+                    "Instrument $inst does not seem to be a valid instrument."
+                );
+            }
+        }
+        return $instrumentList;
+    }
+
+    /**
+     * Static function returning list of all test_names available in the database as
+     * an associative array with format $testName => $fullName. Only Names of
+     * instruments which are instantiable are returned, invalid instruments will not
+     * appear in this list.
+     *
+     * @param \LORIS\LorisInstance $loris The LORIS instance to get the DDE from
+     *
+     * @return array
+     * @throws DatabaseException
+     */
+    static function getInstrumentNamesList(\LORIS\LorisInstance $loris) : array
+    {
+        $instrumentsList = self::getInstrumentsList($loris);
+
+        $instrumentNames = [];
+        foreach ($instrumentsList as $testName => $instrument) {
+            $fullName = $instrument->getFullName();
+            $instrumentNames[$testName] =$fullName;
+        }
+
+        // sort array by instrument name for modules that rely on ordering
+        asort($instrumentNames, SORT_STRING | SORT_FLAG_CASE | SORT_NATURAL);
+
+        return $instrumentNames;
+    }
+
+    /**
+     * Static function returning list of all test_names with Double Data Entry
+     * configuration enabled in the database. The list is returned as an associative
+     * array with format $testName => $fullName. Only Names of instruments which are
+     * instantiable are returned, invalid instruments will not appear in this list.
+     *
+     * @param \LORIS\LorisInstance $loris The LORIS instance to get the DDE from
+     *
+     * @return array
+     * @throws DatabaseException
+     */
+    static function getDDEInstrumentNamesList(\LORIS\LorisInstance $loris) : array
+    {
+        $config = $loris->getConfiguration();
+
+        $instrumentNamesList = self::getInstrumentNamesList($loris);
+
+        $doubleDataEntryInstruments = $config->getSetting(
+            'DoubleDataEntryInstruments'
+        );
+
+        $instrumentNames = [];
+        foreach ($instrumentNamesList as $testName => $fullName) {
+            if (in_array($testName, $doubleDataEntryInstruments, true)) {
+                $instrumentNames[$testName] = $fullName;
+            }
+        }
+
+        // sort array by instrument name for modules that rely on ordering
+        asort($instrumentNames, SORT_STRING | SORT_FLAG_CASE | SORT_NATURAL);
+
+        return $instrumentNames;
+    }
+
+    /**
+     * Static function returning list of all test_names with Direct Data Entry
+     * configuration enabled in the database. The list is returned as an associative
+     * array with format $testName => $fullName. Only Names of instruments which are
+     * instantiable are returned, invalid instruments will not appear in this list.
+     *
+     * @param \LORIS\LorisInstance $loris The LORIS instance to get the DDE from
+     *
+     * @return array
+     * @throws DatabaseException
+     */
+    static function getDirectEntryInstrumentNamesList(
+        \LORIS\LorisInstance $loris
+    ) : array {
+        $DB = $loris->getDatabaseConnection();
+
+        $instrumentNamesList = self::getInstrumentNamesList($loris);
+
+        $directEntryInstruments = $DB->pselectCol(
+            "SELECT Test_name FROM test_names WHERE IsDirectEntry=true",
+            []
+        );
+
+        $instrumentNames = [];
+        foreach ($instrumentNamesList as $testName => $fullName) {
+            if (in_array($testName, $directEntryInstruments, true)) {
+                $instrumentNames[$testName] = $fullName;
+            }
+        }
+
+        // sort array by instrument name for modules that rely on ordering
+        asort($instrumentNames, SORT_STRING | SORT_FLAG_CASE | SORT_NATURAL);
+
+        return $instrumentNames;
+    }
+
+    /**
+     * Gets the current instrument instance selectMultipleElements
+     *
+     * @return array the select multiple elements of this instrument.
+     * @access public
+     */
+    public function getSelectMultipleElements(): array
+    {
+        return $this->selectMultipleElements;
+    }
 }

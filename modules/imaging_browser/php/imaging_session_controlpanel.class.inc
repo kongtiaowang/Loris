@@ -27,6 +27,8 @@ namespace LORIS\imaging_browser;
 
 class Imaging_Session_ControlPanel
 {
+    protected array $tpl_data;
+
     /**
      * Var to store the sessionID.
      */
@@ -35,7 +37,7 @@ class Imaging_Session_ControlPanel
     /**
      * Sets up the sessionID
      *
-     * @param int $sessionID current sessionID
+     * @param \SessionID $sessionID current sessionID
      *
      * @return NULL
      */
@@ -62,9 +64,11 @@ class Imaging_Session_ControlPanel
      */
     function getData()
     {
-        $DB        = \Database::singleton();
+        $DB        = \NDB_Factory::singleton()->database();
         $config    = \NDB_Config::singleton();
-        $timePoint = \TimePoint::singleton($_REQUEST['sessionID']);
+        $timePoint = \TimePoint::singleton(
+            new \SessionID(strval($_REQUEST['sessionID']))
+        );
 
         $subjectData = [
             'sessionID' => $_REQUEST['sessionID'],
@@ -108,8 +112,7 @@ class Imaging_Session_ControlPanel
         * any way by any user.
          */
         $params     = [];
-        $ID         = 'NULL';
-        $EntityType = $candidate->getData('Entity_type');
+        $EntityType = $candidate->getEntityType();
         if ($EntityType == 'Scanner') {
             $ID            = ":PVL";
             $params['PVL'] = $timePoint->getVisitLabel();
@@ -192,7 +195,7 @@ class Imaging_Session_ControlPanel
     {
         $this->tpl_data['subject'] = $this->getData();
 
-        $smarty = new \Smarty_neurodb("imaging_browser");
+        $smarty = new \Smarty_NeuroDB("imaging_browser");
 
         $smarty->assign($this->tpl_data);
         $html = $smarty->fetch("imaging_session_controlpanel.tpl");

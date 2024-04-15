@@ -24,8 +24,13 @@ namespace LORIS\document_repository;
  */
 class Document_Repository extends \NDB_Menu_Filter_Form
 {
-    public $AjaxModule   = true;
-    public $skipTemplate = true;
+    private const PERMISSIONS = [
+        'document_repository_view',
+        'document_repository_edit',
+        'document_repository_delete',
+    ];
+    public $AjaxModule        = true;
+    public $skipTemplate      = true;
 
     /**
      * Checking user permissions
@@ -36,12 +41,7 @@ class Document_Repository extends \NDB_Menu_Filter_Form
      */
     function _hasAccess(\User $user) : bool
     {
-        return $user->hasAnyPermission(
-            [
-                'document_repository_view',
-                'document_repository_delete',
-            ]
-        );
+        return $user->hasAnyPermission(self::PERMISSIONS);
     }
     /**
      * Function _setupVariables
@@ -52,7 +52,7 @@ class Document_Repository extends \NDB_Menu_Filter_Form
     {
         parent::setup();
         $user  = \User::singleton();
-        $db    = \Database::singleton();
+        $db    = $this->loris->getDatabaseConnection();
         $query = $db->pselect(
             "SELECT * FROM document_repository_categories",
             []
@@ -76,7 +76,7 @@ class Document_Repository extends \NDB_Menu_Filter_Form
             }
         } else {
             // allow only to view own site data
-            $siteIDs = $user->getData('CenterIDs');
+            $siteIDs = $user->getCenterIDs();
             foreach ($siteIDs as $val) {
                 $site =& \Site::singleton($val);
                 if ($site->isStudySite()) {
@@ -117,13 +117,11 @@ class Document_Repository extends \NDB_Menu_Filter_Form
      */
     function parseCategory($value): array
     {
-        $id    = $value['id'];
-        $depth = 0;
-        $DB    = \Database::singleton();
+        $id = $value['id'];
+        $DB = $this->loris->getDatabaseConnection();
             $categoryName = $value['category_name'];
         do {
             if ($value['parent_id'] != 0) {
-                $depth    += 1;
                 $parent_id = $value['parent_id'];
                 $query     = "SELECT * FROM document_repository_categories".
                             " where id=$parent_id";

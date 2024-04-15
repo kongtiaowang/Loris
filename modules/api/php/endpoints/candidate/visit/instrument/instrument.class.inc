@@ -76,8 +76,8 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
     protected function supportedVersions() : array
     {
         return [
-            'v0.0.2',
             'v0.0.3',
+            'v0.0.4-dev',
         ];
     }
 
@@ -92,6 +92,13 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
     {
         $pathparts = $request->getAttribute('pathparts');
         $flags     = array_search('flags', $pathparts) !== false;
+        $user      = $request->getAttribute('user');
+
+        if (!$this->_instrument->_hasAccess($user)) {
+            return new \LORIS\Http\Response\JSON\Forbidden(
+                'This user can not update this instrument'
+            );
+        }
 
         if ($flags) {
             // Delegate to sub-endpoints
@@ -127,14 +134,27 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
     /**
      * Handles a GET request
      *
+     * @param ServerRequestInterface $request The incoming PSR7 request
+     *
      * @return ResponseInterface The outgoing PSR7 response
      */
-    private function _handleGET() : ResponseInterface
+    private function _handleGET(ServerRequestInterface $request) : ResponseInterface
     {
-        $body = (new \LORIS\api\Views\Visit\Instrument(
-            $this->_visit,
-            $this->_instrument
-        ))->toArray();
+
+        $version = $request->getAttribute('LORIS-API-Version');
+        switch ($version) {
+        case 'v0.0.3':
+            $body = (new \LORIS\api\Views\Visit\Instrument(
+                $this->_visit,
+                $this->_instrument
+            ))->toArray();
+            break;
+        default:
+            $body = (new \LORIS\api\Views\Visit\Instrument_0_0_4_Dev(
+                $this->_visit,
+                $this->_instrument
+            ))->toArray();
+        }
 
         return new \LORIS\Http\Response\JsonResponse(
             $body
@@ -150,8 +170,6 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private function _handlePUT(ServerRequestInterface $request) : ResponseInterface
     {
-        // TODO :: Check permissions. How??
-
         if (!$this->_instrument->determineDataEntryAllowed()) {
             return new \LORIS\Http\Response\JSON\Forbidden(
                 'Can not update instruments that are flagged as complete.'
@@ -159,6 +177,11 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         $data = json_decode((string) $request->getBody(), true);
+        if (!is_array($data)) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                'Invalid request'
+            );
+        }
 
         if (!$this->_instrument->validate($data)) {
             return new \LORIS\Http\Response\JSON\Forbidden(
@@ -167,15 +190,21 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         try {
-            $instrumentname = $this->_instrument->testName;
             $this->_instrument->clearInstrument();
-            $this->_instrument->_save($data[$instrumentname]);
+            $version = $request->getAttribute('LORIS-API-Version');
+            if ($version == 'v0.0.3') {
+                $instrumentname = $this->_instrument->testName;
+                $this->_instrument->_saveValues($data[$instrumentname]);
+            } else {
+                $this->_instrument->_saveValues($data['Data']);
+            }
+            $this->_instrument->score();
+            $this->_instrument->updateRequiredElementsCompletedFlag();
         } catch (\Throwable $e) {
             error_log($e->getMessage());
             return new \LORIS\Http\Response\JSON\InternalServerError();
         }
-        return (new \LORIS\Http\Response())
-            ->withStatus(204);
+        return (new \LORIS\Http\Response\JSON\NoContent());
     }
 
     /**
@@ -188,8 +217,6 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
      */
     private function _handlePATCH(ServerRequestInterface $request): ResponseInterface
     {
-        // TODO :: Check permissions. How??
-
         if (!$this->_instrument->determineDataEntryAllowed()) {
             return new \LORIS\Http\Response\JSON\Forbidden(
                 'Can not update instruments that are flagged as complete.'
@@ -197,6 +224,11 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         $data = json_decode((string) $request->getBody(), true);
+        if (!is_array($data)) {
+            return new \LORIS\Http\Response\JSON\BadRequest(
+                'Invalid request'
+            );
+        }
 
         if (!$this->_instrument->validate($data)) {
             return new \LORIS\Http\Response\JSON\Forbidden(
@@ -205,14 +237,20 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         try {
-            $instrumentname = $this->_instrument->testName;
-            $this->_instrument->_save($data[$instrumentname]);
+            $version = $request->getAttribute('LORIS-API-Version');
+            if ($version == 'v0.0.3') {
+                $instrumentname = $this->_instrument->testName;
+                $this->_instrument->_saveValues($data[$instrumentname]);
+            } else {
+                $this->_instrument->_saveValues($data['Data']);
+            }
+            $this->_instrument->score();
+            $this->_instrument->updateRequiredElementsCompletedFlag();
         } catch (\Throwable $e) {
             error_log($e->getMessage());
             return new \LORIS\Http\Response\JSON\InternalServerError();
         }
-        return (new \LORIS\Http\Response())
-            ->withStatus(204);
+        return (new \LORIS\Http\Response\JSON\NoContent());
     }
 
     /**

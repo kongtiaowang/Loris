@@ -20,14 +20,15 @@ namespace LORIS\api\Models;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://www.github.com/aces/Loris/
  */
-class ProjectImagesRow implements \LORIS\Data\DataInstance
+class ProjectImagesRow implements \LORIS\Data\DataInstance,
+    \LORIS\StudyEntities\SiteHaver
 {
     private $_candid;
     private $_pscid;
     private $_entitytype;
     private $_visitlabel;
     private $_visitdate;
-    private $_centerid;
+    private \CenterID $_centerid;
     private $_centername;
     private $_filename;
     private $_inserttime;
@@ -47,7 +48,7 @@ class ProjectImagesRow implements \LORIS\Data\DataInstance
         $this->_entitytype = $row['Entity_type'] ?? null;
         $this->_visitlabel = $row['Visit'] ?? null;
         $this->_visitdate  = $row['Visit_date'] ?? null;
-        $this->_centerid   = $row['CenterID'] ?? null;
+        $this->_centerid   = new \CenterID($row['CenterID']);
         $this->_centername = $row['Site'] ?? null;
         $this->_filename   = $row['File'] ?? null;
         $this->_inserttime = $row['InsertTime'] ?? null;
@@ -59,9 +60,9 @@ class ProjectImagesRow implements \LORIS\Data\DataInstance
     /**
      * Implements \LORIS\Data\DataInstance interface for this row.
      *
-     * @return string the row data.
+     * @return array which can be serialized by json_encode()
      */
-    public function toJSON() : string
+    public function jsonSerialize() : array
     {
         $obj      = [
             'Candidate'  => $this->_candid,
@@ -81,18 +82,18 @@ class ProjectImagesRow implements \LORIS\Data\DataInstance
         $obj['Link']       = "/candidates/$candid/$visit/images/$filename";
         $obj['InsertTime'] = date('c', (int) $obj['InsertTime']);
 
-        return json_encode($obj);
+        return $obj;
     }
 
     /**
      * Returns the CenterID for this row, for filters such as
      * \LORIS\Data\Filters\UserSiteMatch to match again.
      *
-     * @return integer The CenterID
+     * @return \CenterID
      */
-    public function getCenterID(): int
+    public function getCenterID(): \CenterID
     {
-        return intval($this->_centerid);
+        return $this->_centerid;
     }
 
     /**
