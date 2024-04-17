@@ -42,7 +42,6 @@ class Timepoint_List extends \NDB_Menu
     function _hasAccess(\User $user) : bool
     {
         $candidate = \Candidate::singleton($this->candID);
-
         // check user permissions
         return $user->hasPermission('access_all_profiles')
             || $candidate->isAccessibleBy($user);
@@ -61,8 +60,14 @@ class Timepoint_List extends \NDB_Menu
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
     ) : ResponseInterface {
+
         // FIXME: At some point this class and related classes should use a
         // Candidate object rather than passing a CandID around.
+                $method = $request->getMethod();
+        if ($method == 'DELETE') {
+            return $this->handleDelete($request);
+        }
+
         $this->candID = new CandID($request->getAttribute('CandID'));
         return parent::process($request, $handler);
     }
@@ -74,6 +79,8 @@ class Timepoint_List extends \NDB_Menu
      */
     function setup(): void
     {
+	                error_log("3");
+
         // create candidate object
         $candidate = \Candidate::singleton($this->candID);
 
@@ -276,5 +283,22 @@ class Timepoint_List extends \NDB_Menu
             )
         );
     }
+// handle archive a visitlabel 
+    protected function handleDelete(ServerRequestInterface $request): ResponseInterface{
+$body = $request->getBody();
+$jsonBody = json_decode($body, true);
+$id = $jsonBody['sessionID'];
+
+            $set       = ['Active' => 'N'];
+$where_sessionID = ['ID' => $id];
+        $DB = \NDB_Factory::singleton()->database();
+
+                $DB->update('session', $set, $where_sessionID);
+
+	    return new \LORIS\Http\Response\JSON\OK(
+                ['success' =>'successfully archived']
+            );
+    }
+
 }
 

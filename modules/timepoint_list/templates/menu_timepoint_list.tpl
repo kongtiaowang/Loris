@@ -185,10 +185,13 @@
             <td>
                 {$timePoints[timepoint].Real_name}
             </td>
-             <td>
+             <td style="white-space: nowrap;">
    <!-- Edit button -->
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editModal">
         Edit
+    </button>
+        <button type="button" class="btn btn-danger" onclick="deleteItem({$timePoints[timepoint].SessionID})">
+        Archive
     </button>
              </td>
         </tr>
@@ -202,4 +205,36 @@
 
         $('#editModal').modal('hide');
 }    
+
+
+    function deleteItem($sessionID) {
+        if (confirm('Are you sure you want to delete this time point?')) {
+            fetch(window.location.href, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                    // Add any other headers as needed
+                },
+                // You can include a request body if required
+                 body: JSON.stringify({ sessionID: $sessionID})
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Handle the response data as needed
+                console.log(data);
+window.location.reload();
+                // Optionally, you can redirect or update the UI after successful deletion
+            })
+            .catch(error => {
+                console.error('There was a problem with your fetch operation:', error);
+                // Handle errors or show a message to the user
+            });
+        }
+    }
+
 </script>
