@@ -67,6 +67,10 @@ class Timepoint_List extends \NDB_Menu
         if ($method == 'DELETE') {
             return $this->handleDelete($request);
         }
+        if ($method == 'POST') {
+            return $this->handlePost($request);
+        }
+
 
         $this->candID = new CandID($request->getAttribute('CandID'));
         return parent::process($request, $handler);
@@ -79,8 +83,6 @@ class Timepoint_List extends \NDB_Menu
      */
     function setup(): void
     {
-	                error_log("3");
-
         // create candidate object
         $candidate = \Candidate::singleton($this->candID);
 
@@ -141,6 +143,10 @@ class Timepoint_List extends \NDB_Menu
             $this->tpl_data['timePoints'][$x]['currentDate']
                 =   $timePoint->getCurrentDate();
 
+	    // get meta cohort info
+	   $this->tpl_data['timePoints'][$x]['metaCohorts']  = json_encode(["1"=>"Fresh","2"=>"Ettt"]);
+
+
             // create feedback object for the time point
             $feedback = \NDB_BVL_Feedback::singleton(
                 $username,
@@ -198,7 +204,8 @@ class Timepoint_List extends \NDB_Menu
                     $this->tpl_data['timePoints'][$x]['outcomeDate']
                         = $timePoint->$getDateMethod();
                 }
-            }
+	    }
+              $this->tpl_data['timePoints'][$x]['test']= "Fresh@Ra";
             $x++;
         } // end list
 
@@ -299,6 +306,21 @@ $where_sessionID = ['ID' => $id];
                 ['success' =>'successfully archived']
             );
     }
+// handle archive a visitlabel 
+    protected function handlePost(ServerRequestInterface $request): ResponseInterface{
+   /*   $body = $request->getBody();
+      $jsonBody = json_decode($body, true);
+      $id = $jsonBody['sessionID'];
 
+      $set       = ['Active' => 'N'];
+      $where_sessionID = ['ID' => $id];
+        $DB = \NDB_Factory::singleton()->database();
+
+     //           $DB->update('session', $set, $where_sessionID);
+    */
+            return new \LORIS\Http\Response\JSON\OK(
+                ['success' =>'successfully updated']
+            );
+    }
 }
 

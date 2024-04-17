@@ -13,12 +13,16 @@
                     <form>
                         <div class="form-group">
                             <label for="subProjectName">Sub-project Name:</label>
-                            <input type="text" class="form-control" id="subProjectName" name="subProjectName">
+                              <select class="form-control" id="subProjectName" name="subProjectName">
+
+                              </select>
                         </div>
                         <div class="form-group">
                             <label for="startDate">Start Date:</label>
                             <input type="date" class="form-control" id="startDate" name="startDate">
                         </div>
+                        <input type="hidden" id="sessionID" name="sessionID" value="">
+
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -187,7 +191,7 @@
             </td>
              <td style="white-space: nowrap;">
    <!-- Edit button -->
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editModal">
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editModal" onclick="openEditModal('{$timePoints[timepoint].SessionID}', '{$timePoints[timepoint].currentDate}', '{$timePoints[timepoint].test}','{$timePoints[timepoint].CohortTitle}')">
         Edit
     </button>
         <button type="button" class="btn btn-danger" onclick="deleteItem({$timePoints[timepoint].SessionID})">
@@ -203,8 +207,46 @@
 <script>
     function saveChanges() {
 
+        var sessionID = document.getElementById('sessionID');
+        console.log(sessionID.value);
+        var modalDate = document.getElementById('startDate');
+        var newdate = modalDate.value;
+        console.log(newdate);
+
+
+
+        if (confirm('Are you sure you want to edit this profile?')) {
+            fetch(window.location.href, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                    // Add any other headers as needed
+                },
+                // You can include a request body if required
+                 body: JSON.stringify({ sessionID: sessionID.value,date: newdate})
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Handle the response data as needed
+                console.log(data);
+                window.location.reload();
+                // Optionally, you can redirect or update the UI after successful deletion
+            })
+            .catch(error => {
+                console.error('There was a problem with your fetch operation:', error);
+                // Handle errors or show a message to the user
+            });
+        }
+
+
+
         $('#editModal').modal('hide');
-}    
+    }    
 
 
     function deleteItem($sessionID) {
@@ -227,7 +269,7 @@
             .then(data => {
                 // Handle the response data as needed
                 console.log(data);
-window.location.reload();
+                window.location.reload();
                 // Optionally, you can redirect or update the UI after successful deletion
             })
             .catch(error => {
@@ -235,6 +277,43 @@ window.location.reload();
                 // Handle errors or show a message to the user
             });
         }
+    }
+
+    function openEditModal(param1, param2,param3,param4) {
+
+        // Display the passed parameters in the modal
+        var modalDate = document.getElementById('startDate');
+        console.log(param2);
+        modalDate.value = param2;
+        var sessionID = document.getElementById('sessionID');
+        console.log(param1);
+        sessionID.value = param1;
+        console.log(param3);
+
+var str = "Fresdfjkdh@Fresh@s-c";
+
+// Split the string by "@" delimiter
+var parts = str.split('@');
+
+// Get the select element
+var select = document.getElementById('subProjectName');
+
+// Loop through the parts array and create an option for each part
+parts.forEach(function(part) {
+    var option = document.createElement('option');
+    option.value = part; // Set the value of the option
+    option.text = part;  // Set the text displayed in the option
+    select.appendChild(option); // Append the option to the select element
+        // Set the default value based on param4
+        if (part === param4) {
+            option.selected = true;
+        }
+});
+
+
+
+
+
     }
 
 </script>
