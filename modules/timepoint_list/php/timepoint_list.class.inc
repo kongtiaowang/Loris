@@ -69,9 +69,12 @@ class Timepoint_List extends \NDB_Menu
         }
         if ($method == 'POST') {
             return $this->handlePost($request);
+	}
+	$queryparams = $request->getQueryParams();
+	error_log(print_r( $queryparams,true ));
+	if ($method == 'GET' && isset($_GET['projectID'])) {
+            return $this->handleGET($_GET['projectID']);
         }
-
-
         $this->candID = new CandID($request->getAttribute('CandID'));
         return parent::process($request, $handler);
     }
@@ -144,7 +147,7 @@ class Timepoint_List extends \NDB_Menu
                 =   $timePoint->getCurrentDate();
 
 	    // get meta cohort info
-	   $this->tpl_data['timePoints'][$x]['metaCohorts']  = json_encode(["1"=>"Fresh","2"=>"Ettt"]);
+	   $this->tpl_data['timePoints'][$x]['metaCohorts']  =json_encode(['Fresh','Ettt']);
 
 
             // create feedback object for the time point
@@ -205,7 +208,8 @@ class Timepoint_List extends \NDB_Menu
                         = $timePoint->$getDateMethod();
                 }
 	    }
-              $this->tpl_data['timePoints'][$x]['test']= "Fresh@Ra";
+
+              $this->tpl_data['timePoints'][$x]['projectID']=$timePoint->getProjectID() ;
             $x++;
         } // end list
 
@@ -306,21 +310,34 @@ $where_sessionID = ['ID' => $id];
                 ['success' =>'successfully archived']
             );
     }
-// handle archive a visitlabel 
+// handle edit profile 
     protected function handlePost(ServerRequestInterface $request): ResponseInterface{
-   /*   $body = $request->getBody();
+      $body = $request->getBody();
       $jsonBody = json_decode($body, true);
       $id = $jsonBody['sessionID'];
-
-      $set       = ['Active' => 'N'];
+      $date = $jsonBody['date']; 
+      $subproject = $jsonBody['subProjectID'];
+      $set       = ['Date_visit' => $date,
+                    'CohortID' =>$subproject
+                   ];
       $where_sessionID = ['ID' => $id];
         $DB = \NDB_Factory::singleton()->database();
 
-     //           $DB->update('session', $set, $where_sessionID);
-    */
+        $DB->update('session', $set, $where_sessionID);
+    
             return new \LORIS\Http\Response\JSON\OK(
                 ['success' =>'successfully updated']
             );
     }
+// handle get getCohortsForProject json to js 
+    protected function handleGet($projectID): ResponseInterface{
+
+	    $cohortlist = \Utility::getCohortsForProject(
+                    new \ProjectID(strval($projectID))
+                );
+	    return new \LORIS\Http\Response\JSON\OK(
+		    $cohortlist
+            );
+    }    
 }
 

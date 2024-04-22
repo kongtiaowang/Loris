@@ -191,7 +191,7 @@
             </td>
              <td style="white-space: nowrap;">
    <!-- Edit button -->
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editModal" onclick="openEditModal('{$timePoints[timepoint].SessionID}', '{$timePoints[timepoint].currentDate}', '{$timePoints[timepoint].test}','{$timePoints[timepoint].CohortTitle}')">
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editModal" onclick="openEditModal('{$timePoints[timepoint].SessionID}', '{$timePoints[timepoint].currentDate}','{$timePoints[timepoint].CohortTitle}','{$timePoints[timepoint].projectID}')">
         Edit
     </button>
         <button type="button" class="btn btn-danger" onclick="deleteItem({$timePoints[timepoint].SessionID})">
@@ -223,7 +223,7 @@
                     // Add any other headers as needed
                 },
                 // You can include a request body if required
-                 body: JSON.stringify({ sessionID: sessionID.value,date: newdate})
+                 body: JSON.stringify({ sessionID: sessionID.value,date: newdate,subProjectID: subProjectName.value})
             })
             .then(response => {
                 if (!response.ok) {
@@ -280,40 +280,59 @@
     }
 
     function openEditModal(param1, param2,param3,param4) {
-
+        //$timePoints[timepoint].SessionID - param1
+        //$timePoints[timepoint].currentDate - param2
+        //$timePoints[timepoint].CohortTitle - param3
+        //$timePoints[timepoint].projectID - param4 
+              console.log(loris.userHasPermission('candidate_edit'));
         // Display the passed parameters in the modal
         var modalDate = document.getElementById('startDate');
-        console.log(param2);
         modalDate.value = param2;
         var sessionID = document.getElementById('sessionID');
-        console.log(param1);
         sessionID.value = param1;
-        console.log(param3);
+        console.log(param3.length);
 
-var str = "Fresdfjkdh@Fresh@s-c";
 
-// Split the string by "@" delimiter
-var parts = str.split('@');
-
-// Get the select element
-var select = document.getElementById('subProjectName');
-
-// Loop through the parts array and create an option for each part
-parts.forEach(function(part) {
-    var option = document.createElement('option');
-    option.value = part; // Set the value of the option
-    option.text = part;  // Set the text displayed in the option
-    select.appendChild(option); // Append the option to the select element
-        // Set the default value based on param4
-        if (part === param4) {
-            option.selected = true;
-        }
+fetch(window.location.href + '?projectID=' + param4, {
+    method: 'GET',
+    headers: {
+        'Content-Type': 'application/json'
+        // Add any other headers as needed
+    },
+})
+.then(response => {
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+    return response.json();
+})
+.then(data => {
+    // Handle the response data by populating the dropdown
+    populateDropdown(data,param3);
+})
+.catch(error => {
+    console.error('There was a problem with your fetch operation:', error);
+    // Handle errors or show a message to the user
 });
 
-
-
-
-
     }
+
+
+// Function to populate the dropdown with data
+function populateDropdown(data,cohortname) {
+    const dropdown = document.getElementById('subProjectName');
+    for (const key in data) {
+        if (data.hasOwnProperty(key)) {
+            const option = document.createElement('option');
+            option.value = key;
+            option.text = data[key];
+            // Check if the current option's text matches the cohortname
+            if (data[key] === cohortname) {
+                option.selected = true; // Set selected attribute
+            }
+            dropdown.appendChild(option);
+        }
+    }
+}
 
 </script>
