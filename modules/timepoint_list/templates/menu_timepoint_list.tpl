@@ -213,10 +213,8 @@
     function saveChanges() {
 
         var sessionID = document.getElementById('sessionID');
-        console.log(sessionID.value);
         var modalDate = document.getElementById('startDate');
         var newdate = modalDate.value;
-        console.log(newdate);
 
 
 
@@ -238,7 +236,6 @@
             })
             .then(data => {
                 // Handle the response data as needed
-                console.log(data);
                 window.location.reload();
                 // Optionally, you can redirect or update the UI after successful deletion
             })
@@ -273,7 +270,6 @@
             })
             .then(data => {
                 // Handle the response data as needed
-                console.log(data);
                 window.location.reload();
                 // Optionally, you can redirect or update the UI after successful deletion
             })
@@ -289,13 +285,11 @@
         //$timePoints[timepoint].currentDate - param2
         //$timePoints[timepoint].CohortTitle - param3
         //$timePoints[timepoint].projectID - param4 
-              console.log(loris.userHasPermission('candidate_edit'));
         // Display the passed parameters in the modal
         var modalDate = document.getElementById('startDate');
         modalDate.value = param2;
         var sessionID = document.getElementById('sessionID');
         sessionID.value = param1;
-        console.log(param3.length);
 
 
 fetch(window.location.href + '?projectID=' + param4, {
