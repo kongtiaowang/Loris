@@ -74,7 +74,6 @@ class Timepoint_List extends \NDB_Menu
             return $this->handlePost($request);
 	}
 	$queryparams = $request->getQueryParams();
-	error_log(print_r( $queryparams,true ));
 	if ($method == 'GET' && isset($_GET['projectID'])) {
             return $this->handleGET($_GET['projectID']);
         }
