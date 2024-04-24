@@ -115,7 +115,9 @@
             <th>BVL QC</th>
             <th>BVL Exclusion</th>
             <th>Registered By</th>
-            <th>Edit/Archive</th>
+           {if $edit==1}
+            <th>{$edit}Edit/Archive</th>
+           {/if}
         </tr>
     </thead>
     <tbody>
@@ -189,6 +191,8 @@
             <td>
                 {$timePoints[timepoint].Real_name}
             </td>
+           {if $edit==1}
+
              <td style="white-space: nowrap;">
    <!-- Edit button -->
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editModal" onclick="openEditModal('{$timePoints[timepoint].SessionID}', '{$timePoints[timepoint].currentDate}','{$timePoints[timepoint].CohortTitle}','{$timePoints[timepoint].projectID}')">
@@ -198,6 +202,7 @@
         Archive
     </button>
              </td>
+           {/if}
         </tr>
     {sectionelse}
         <tr><td colspan="10">You do not have access to any timepoints registered for this candidate.</td></tr>

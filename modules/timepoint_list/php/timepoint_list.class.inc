@@ -31,7 +31,7 @@ use \LORIS\StudyEntities\Candidate\CandID;
 class Timepoint_List extends \NDB_Menu
 {
     protected $candID;
-
+    protected $EditBTN = 0;
     /**
      * Overloading this method to allow access to timepoint list
      *
@@ -42,8 +42,11 @@ class Timepoint_List extends \NDB_Menu
     function _hasAccess(\User $user) : bool
     {
         $candidate = \Candidate::singleton($this->candID);
-        // check user permissions
-        return $user->hasPermission('access_all_profiles')
+	// check user permissions
+	if ($user->hasPermission('candidate_edit') || $user->hasPermission('superuser')) {
+          $this->EditBTN = 1;
+	}		
+	return $user->hasPermission('access_all_profiles')
             || $candidate->isAccessibleBy($user);
     }
 
@@ -225,7 +228,8 @@ class Timepoint_List extends \NDB_Menu
 
         } // end list
 
-        $this->tpl_data['actions'] = $this->getActionButtons();
+	$this->tpl_data['actions'] = $this->getActionButtons();
+	$this->tpl_data['edit'] = $this->EditBTN;
     }
     /**
      * Determining Previous Stage
