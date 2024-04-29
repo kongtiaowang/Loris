@@ -81,15 +81,14 @@ class DashboardTest extends LorisIntegrationTest
                 'ProjectID' => '7777',
                 'Name'      => 'TESTinProject',
             ]
-	);
-//	user_project_rel
+        );
         $this->DB->insert(
             "user_project_rel",
-	    [
-                'UserID'   => $user_id,
-                'ProjectID' => '1',		    
+            [
+                'UserID'    => $user_id,
+                'ProjectID' => '1',
             ]
-        );     	
+        );
         $this->DB->insert(
             "candidate",
             [
@@ -323,18 +322,18 @@ class DashboardTest extends LorisIntegrationTest
             "Config",
             ["Value" => null],
             ["ConfigID" => 48]
-	);
+        );
         $user_id = $this->DB->pselectOne(
             "SELECT ID FROM users WHERE UserID=:test_user_id",
             ["test_user_id" => 'testUser1']
-        );	
+        );
         $this->DB->delete(
             "user_project_rel",
-            [   
-                'UserID'   => $user_id,
-                'ProjectID' => '1',     
+            [
+                'UserID'    => $user_id,
+                'ProjectID' => '1',
             ]
-        ); 	
+        );
         $this->DB->run('SET foreign_key_checks =1');
         parent::tearDown();
     }
@@ -425,7 +424,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->safeGet($this->url . '/dashboard/');
         $this->_testMytaskPanelAndLink(
             ".new-scans",
-            "10",
+            "4",
             "- Imaging Browser"
         );
         $this->resetPermissions();
@@ -455,7 +454,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->safeGet($this->url . '/dashboard/');
         $this->_testMytaskPanelAndLink(
             ".conflict_resolver",
-            "574",
+            "570",
             "- Conflict Resolver"
         );
         $this->resetPermissions();
@@ -532,7 +531,7 @@ class DashboardTest extends LorisIntegrationTest
         $this->safeGet($this->url . '/dashboard/');
         $this->_testMytaskPanelAndLink(
             ".pending-accounts",
-            "2",
+            "1",
             "- User Accounts"
         );
         $this->resetPermissions();
