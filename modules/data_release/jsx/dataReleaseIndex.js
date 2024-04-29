@@ -35,7 +35,7 @@ class DataReleaseIndex extends Component {
         managePermissionsForm: false,
       },
     };
-
+this.checkDownload = this.checkDownload.bind(this);
     this.fetchData = this.fetchData.bind(this);
     this.formatColumn = this.formatColumn.bind(this);
   }
@@ -86,7 +86,27 @@ class DataReleaseIndex extends Component {
         console.error(error);
       });
   }
+       checkDownload(downloadURL,event) {
+            event.preventDefault(); // Prevent default link behavior
 
+            fetch(downloadURL, {
+                method: 'GET'
+            })
+            .then(response => {
+                if (response.ok) {
+                    // If the response is 200 OK, continue with the download
+                    console.log('File exists. Proceeding with download.');
+                } else {
+                    // If the response is not OK, show a warning message
+                    console.error('File does not exist or cannot be accessed.');
+                    alert('File does not exist or cannot be accessed.');
+                }
+            })
+            .catch(error => {
+                console.error('Error checking file:', error);
+                alert('Error checking file. Please try again later.');
+            });
+        }
   /**
    * Modify behaviour of specified column cells in the Data Table component
    *
@@ -112,7 +132,8 @@ class DataReleaseIndex extends Component {
               <a
                 href = {downloadURL}
                 target = "_blank"
-                download = {row['File Name']} >
+                download = {row['File Name']} 
+	        onClick={(event) => this.checkDownload(downloadURL, event)}>
                 {cell}
               </a>
             </td>
@@ -122,7 +143,6 @@ class DataReleaseIndex extends Component {
     }
     return result;
   }
-
   /**
    * Renders the React component.
    *

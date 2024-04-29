@@ -81,7 +81,15 @@ class DashboardTest extends LorisIntegrationTest
                 'ProjectID' => '7777',
                 'Name'      => 'TESTinProject',
             ]
-        );
+	);
+//	user_project_rel
+        $this->DB->insert(
+            "user_project_rel",
+	    [
+                'UserID'   => $user_id,
+                'ProjectID' => '1',		    
+            ]
+        );     	
         $this->DB->insert(
             "candidate",
             [
@@ -315,7 +323,14 @@ class DashboardTest extends LorisIntegrationTest
             "Config",
             ["Value" => null],
             ["ConfigID" => 48]
-        );
+	);
+        $this->DB->delete(
+            "user_project_rel",
+            [   
+                'UserID'   => $user_id,
+                'ProjectID' => '1',     
+            ]
+        ); 	
         $this->DB->run('SET foreign_key_checks =1');
         parent::tearDown();
     }
