@@ -324,6 +324,10 @@ class DashboardTest extends LorisIntegrationTest
             ["Value" => null],
             ["ConfigID" => 48]
 	);
+        $user_id = $this->DB->pselectOne(
+            "SELECT ID FROM users WHERE UserID=:test_user_id",
+            ["test_user_id" => 'testUser1']
+        );	
         $this->DB->delete(
             "user_project_rel",
             [   
