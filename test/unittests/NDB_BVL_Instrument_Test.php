@@ -1594,7 +1594,8 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_setUpMockDB();
         $this->_setTableData();
         $this->_instrument->commentID = 'commentID1';
-        $this->_instrument->table  = 'medical_history';
+	$this->_instrument->table  = 'medical_history';
+
         $otherInstrument = $this
             ->getMockBuilder(\NDB_BVL_Instrument::class)
             ->disableOriginalConstructor()
@@ -1619,12 +1620,12 @@ class NDB_BVL_Instrument_Test extends TestCase
 
         '@phan-var \NDB_BVL_Instrument $otherInstrument';
         $otherInstrument->commentID = 'commentID2';
-        $otherInstrument->table  = 'medical_history';
+	$otherInstrument->table  = 'medical_history';
         $this->assertEquals(
             $this->_instrument->diff($otherInstrument),
             [
                 [
-                    'TestName'       => 'medical_history',
+                    'TestName'       => 'Test',
                     'ExtraKeyColumn' => null,
                     'ExtraKey1'      => ' ',
                     'ExtraKey2'      => ' ',
