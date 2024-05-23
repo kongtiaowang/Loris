@@ -695,7 +695,9 @@ error_log(print_r($params,true));
 
         $execRun = $prepared->execute($params);
         if ($execRun === false) {
-            $err = $prepared->errorInfo();
+		$err = $prepared->errorInfo();
+		error_log(print_r($prepared->queryString,true));
+
             throw new DatabaseException($err[2], $prepared->queryString, $params);
         }
 
