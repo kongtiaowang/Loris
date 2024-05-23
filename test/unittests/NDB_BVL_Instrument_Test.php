@@ -1619,7 +1619,7 @@ class NDB_BVL_Instrument_Test extends TestCase
 
         '@phan-var \NDB_BVL_Instrument $otherInstrument';
         $otherInstrument->commentID = 'commentID2';
-        $otherInstrument->testName  = 'medical_history';
+        $otherInstrument->table  = 'medical_history';
         $this->assertEquals(
             $this->_instrument->diff($otherInstrument),
             [
