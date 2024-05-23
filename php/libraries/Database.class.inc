@@ -743,6 +743,7 @@ error_log(print_r($params,true));
      */
     function pselect(string $query, array $params): array
     {
+	    error_log(print_r($query,true));
         $this->_printQuery($query, $params);
         $stmt = $this->prepare($query);
         return $this->execute($stmt, $params);
