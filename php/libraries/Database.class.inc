@@ -691,10 +691,13 @@ class Database implements LoggerAwareInterface
         array $params,
         array $options = []
     ): array {
+error_log(print_r($params,true));
 
         $execRun = $prepared->execute($params);
         if ($execRun === false) {
-            $err = $prepared->errorInfo();
+		$err = $prepared->errorInfo();
+		error_log(print_r($prepared->queryString,true));
+
             throw new DatabaseException($err[2], $prepared->queryString, $params);
         }
 
@@ -740,6 +743,7 @@ class Database implements LoggerAwareInterface
      */
     function pselect(string $query, array $params): array
     {
+	    error_log(print_r($query,true));
         $this->_printQuery($query, $params);
         $stmt = $this->prepare($query);
         return $this->execute($stmt, $params);
