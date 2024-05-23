@@ -1594,7 +1594,7 @@ class NDB_BVL_Instrument_Test extends TestCase
         $this->_setUpMockDB();
         $this->_setTableData();
         $this->_instrument->commentID = 'commentID1';
-        $this->_instrument->testName  = 'test';
+        $this->_instrument->table  = 'test';
         $otherInstrument = $this
             ->getMockBuilder(\NDB_BVL_Instrument::class)
             ->disableOriginalConstructor()
