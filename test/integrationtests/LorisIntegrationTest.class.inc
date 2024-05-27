@@ -147,7 +147,7 @@ abstract class LorisIntegrationTest extends TestCase
                 $desired_capabilities
             );
 
-            $this->login("UnitTester", $this->validPassword);
+            $this->login("admin", "demo20!7");
         }
 
         if (extension_loaded('xdebug')
