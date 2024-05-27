@@ -55,7 +55,7 @@ abstract class LorisIntegrationTest extends TestCase
     /**
      * Running test using admin user from Raisinbread, password demo20!7
      */    
-    protected $adminFormRB = false;
+    protected $adminFromRB = false;
     /**
      * A valid password to use for login tests.
      */
