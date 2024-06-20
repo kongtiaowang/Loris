@@ -114,6 +114,10 @@ class ConsentStatus extends Component {
     setFormData(formElement, value) {
         let formData = this.state.formData;
         formData[formElement] = value;
+            if (formElement === 'study_consent' && value ==='no') {
+                swal.fire('Warning!', 'Update warning.', 'warning')
+
+            }	    
         for (let consent in this.state.Data.consents) {
             if (this.state.Data.consents.hasOwnProperty(consent)) {
                 const oldConsent = this.state.Data.consentStatuses[consent];
