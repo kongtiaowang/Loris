@@ -1,8 +1,8 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import swal from 'sweetalert2';
 
-import {VerticalTabs, TabPane} from 'Tabs';
+import { VerticalTabs, TabPane } from 'Tabs';
 import Loader from 'Loader';
 
 /**
@@ -179,15 +179,15 @@ class ConsentStatus extends Component {
                 }
                 if (withdrawDate1 > today) {
                     alert(
-                      label
-                      + ' withdrawal date cannot be later than today!'
+                        label
+                        + ' withdrawal date cannot be later than today!'
                     );
                     return;
                 }
                 if (withdrawDate1 < date1) {
                     alert(
-                      label
-                      + ' withdrawal date cannot be earlier than response date!'
+                        label
+                        + ' withdrawal date cannot be earlier than response date!'
                     );
                     return;
                 }
@@ -205,7 +205,7 @@ class ConsentStatus extends Component {
         formData.append('candID', this.state.Data.candID);
 
         // Disable submit button to prevent form resubmission
-        this.setState({submitDisabled: true});
+        this.setState({ submitDisabled: true });
 
         $.ajax({
             type: 'POST',
@@ -216,19 +216,19 @@ class ConsentStatus extends Component {
             processData: false,
             success: (data) => {
                 swal.fire('Success!', 'Update successful.', 'success')
-                  .then((result) => {
-                    if (result.value) {
-                        this.setState({submitDisabled: false});
-                        this.fetchData();
+                    .then((result) => {
+                        if (result.value) {
+                            this.setState({ submitDisabled: false });
+                            this.fetchData();
+                        }
                     }
-                  }
-                );
+                    );
                 this.fetchData();
             },
             error: (error) => {
                 console.error(error);
                 // Enable submit button for form resubmission
-                this.setState({submitDisabled: false});
+                this.setState({ submitDisabled: false });
                 let errorMessage = error.responseText || 'Update failed.';
                 swal.fire('Error!', errorMessage, 'error');
             },
@@ -239,7 +239,7 @@ class ConsentStatus extends Component {
      * Show history
      */
     showHistory() {
-        this.setState({showHistory: !this.state.showHistory});
+        this.setState({ showHistory: !this.state.showHistory });
     }
 
     /**
@@ -260,7 +260,7 @@ class ConsentStatus extends Component {
             const withdrawal = info.withdrawal;
             const dateHistory = consentDate ? (
                 <span>
-                   , <b>Date of Consent</b> to {consentDate}
+                    , <b>Date of Consent</b> to {consentDate}
                 </span>
             ) : null;
             const withdrawalHistory = withdrawal ? (
@@ -271,28 +271,28 @@ class ConsentStatus extends Component {
 
             return (
                 <div key={key}>
-                    <hr/>
+                    <hr />
                     <p>
-                      <b>
-                        {dataEntry} - {user}
-                      </b> updated for <i>{label}</i>:
+                        <b>
+                            {dataEntry} - {user}
+                        </b> updated for <i>{label}</i>:
                       <b> Status</b> to {' '}
-                      {this.state.consentOptions[consentStatus]}
-                      {dateHistory}
-                      {withdrawalHistory}
+                        {this.state.consentOptions[consentStatus]}
+                        {dateHistory}
+                        {withdrawalHistory}
                     </p>
                 </div>
             );
         });
 
         return (
-            <div style={{margin: '20px'}}>
+            <div style={{ margin: '20px' }}>
                 <button
                     className='btn btn-primary'
                     onClick={this.showHistory}
                     data-toggle='collapse'
                     data-target='#consent-history'
-                    style={{margin: '10px 0'}}
+                    style={{ margin: '10px 0' }}
                 >
                     {historyBtnLabel}
                 </button>
@@ -312,7 +312,7 @@ class ConsentStatus extends Component {
     renderConsent(consentName) {
         // Allow editing if user has permission
         let disabled = loris.userHasPermission('candidate_parameter_edit')
-          ? false : true;
+            ? false : true;
 
         // Set up props for front-end validation
         const oldConsent = this.state.Data.consentStatuses[consentName];
@@ -387,23 +387,29 @@ class ConsentStatus extends Component {
                     disabled={disabled || responseDateDisabled}
                     required={dateRequired}
                 />
-                <DateElement
-                    label={consentWithdrawalLabel}
-                    name={consentWithdrawal}
-                    value={this.state.formData[consentWithdrawal]}
-                    onUserInput={this.setFormData}
-                    disabled={disabled || withdrawalDisabled}
-                    required={withdrawalRequired}
-                />
-                <DateElement
-                    label={consentWithdrawalConfirmationLabel}
-                    name={consentWithdrawal2}
-                    value={this.state.formData[consentWithdrawal2]}
-                    onUserInput={this.setFormData}
-                    disabled={disabled || withdrawalDisabled}
-                    required={withdrawalRequired}
-                />
-                <hr/>
+                {consentName !== "spark_participation" ? (
+                    <DateElement
+                        label={consentWithdrawalLabel}
+                        name={consentWithdrawal}
+                        value={this.state.formData[consentWithdrawal]}
+                        onUserInput={this.setFormData}
+                        disabled={disabled || withdrawalDisabled}
+                        required={withdrawalRequired}
+                    />
+                ) : null}
+
+                {consentName !== "spark_participation" ? (
+                    <DateElement
+                        label={consentWithdrawalConfirmationLabel}
+                        name={consentWithdrawal2}
+                        value={this.state.formData[consentWithdrawal2]}
+                        onUserInput={this.setFormData}
+                        disabled={disabled || withdrawalDisabled}
+                        required={withdrawalRequired}
+                    />
+                ) : null}
+
+                <hr />
             </div>
         );
     }
@@ -427,45 +433,45 @@ class ConsentStatus extends Component {
         // Allow editing if user has permission
         let updateButton = loris.userHasPermission('candidate_parameter_edit') ?
             (<ButtonElement
-              label='Update'
-              disabled={this.state.submitDisabled}
+                label='Update'
+                disabled={this.state.submitDisabled}
             />) : null;
 
         // Set up vertical tabs to group consent by consent groups
         const tabList = [];
         const tabPanes = Object.keys(this.state.Data.consentGroups).map(
-          (consentID) => {
-            if (this.state.Data.consentGroups[consentID].Children) {
-              tabList.push({
-                  id: consentID,
-                  label: this.state.Data.consentGroups[consentID].Label,
-              });
-              return (
-                  <TabPane key={consentID} TabId={consentID}>
-                      <FormElement
-                          name="consentStatus"
-                          onSubmit={this.handleSubmit}
-                          class="col-md-9"
-                      >
-                          <StaticElement
-                            label="PSCID"
-                            text={this.state.Data.pscid}
-                          />
-                          <StaticElement
-                            label="DCCID"
-                            text={this.state.Data.candID}
-                          />
-                          {this.state.Data.consentGroups[consentID].Children
-                            .map((consentName) => {
-                              return this.renderConsent(consentName);
-                            }
-                          )}
-                          {updateButton}
-                      </FormElement>
-                  </TabPane>
-              );
+            (consentID) => {
+                if (this.state.Data.consentGroups[consentID].Children) {
+                    tabList.push({
+                        id: consentID,
+                        label: this.state.Data.consentGroups[consentID].Label,
+                    });
+                    return (
+                        <TabPane key={consentID} TabId={consentID}>
+                            <FormElement
+                                name="consentStatus"
+                                onSubmit={this.handleSubmit}
+                                class="col-md-9"
+                            >
+                                <StaticElement
+                                    label="PSCID"
+                                    text={this.state.Data.pscid}
+                                />
+                                <StaticElement
+                                    label="DCCID"
+                                    text={this.state.Data.candID}
+                                />
+                                {this.state.Data.consentGroups[consentID].Children
+                                    .map((consentName) => {
+                                        return this.renderConsent(consentName);
+                                    }
+                                    )}
+                                {updateButton}
+                            </FormElement>
+                        </TabPane>
+                    );
+                }
             }
-          }
         );
         return (
             <div className="row">
