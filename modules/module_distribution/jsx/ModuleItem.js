@@ -1,0 +1,35 @@
+class ModuleItem extends React.Component {
+
+  constructor(props) {
+    super(props);
+  }
+  handleClick(){
+   alert("Install Button is clicked");
+  }
+  handleClickRM(){
+   alert("Remove Button is clicked");
+  }
+  render() {
+      const module = this.props.ModuleItem;    
+      return (<div className="col-lg-12">
+              <h3>{module.ModuleName}</h3>
+             {
+               module.InstallState == '1'?
+                 <div className="checkbox pull-right"> 
+                    <label><input type="checkbox" value="" />enable</label>
+                 </div>
+                  : null
+             }
+              <h5>--{module.Author}</h5> 
+              <p>{module.Description}</p>
+             {
+                module.InstallState == '0' ? 
+                <p><a className="btn btn-success" href="#" type="button" onClick={this.handleClick.bind(this)}>Install</a></p>
+                :
+                <p><a className="btn btn-danger" href="#" type="button" onClick={this.handleClickRM.bind(this)}>Remove</a></p>
+              }
+            </div>);
+    }
+
+}
+export default ModuleItem 
