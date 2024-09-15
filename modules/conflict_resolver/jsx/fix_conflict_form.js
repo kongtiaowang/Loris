@@ -4,6 +4,7 @@
  */
 import {Component} from 'react';
 import PropTypes from 'prop-types';
+import swal from 'sweetalert2';
 
 /**
  * The fix FixConflictForm renders a <form> within a <td>. The form as a select
@@ -52,6 +53,23 @@ class FixConflictForm extends Component {
    * @param {string} value
    */
   resolveConflict(name, value) {
+swal.fire({
+  title: 'Are you sure?',
+  text: "It is not possible to reset it to empty! If you paginate or refresh the page, the changed items will be moved to the resolved table.",
+  showCancelButton: true,
+  confirmButtonColor: '#3085d6',
+  cancelButtonColor: '#d33',
+  confirmButtonText: 'Yes, I am sure!'
+}).then((result) => {
+	console.log(result);
+  if (result && result.dismiss !== 'cancel') {
+
+	  swal.fire(
+      'Done!',
+      'The Correct Answer has been changed.',
+      'success'
+    );  
+
     fetch(loris.BaseURL.concat('/conflict_resolver/unresolved'), {
       method: 'POST',
       credentials: 'same-origin',
@@ -73,6 +91,8 @@ class FixConflictForm extends Component {
       swal('Error!', error, 'error');
       this.setState({error: true, success: false, emptyOption: true});
     });
+    }
+  });
   }
 
   /**
