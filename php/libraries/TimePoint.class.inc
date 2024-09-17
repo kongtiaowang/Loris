@@ -86,6 +86,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
      */
     public function __construct(?TimePointData $data=null)
     {
+	    error_log(print_r($data,true));
         $this->data = $data;
     }
 
@@ -139,24 +140,34 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
         }
 
         // get user data from database
+        // IBIS SPECIFIC OVERRIDE CODE
+        // Overrides query to derive the scans done field based on if a scan exists in the
+        // files table instead of using the column in the sessions table
         $query = "SELECT s.ID AS SessionID, s.CandID, p.Name AS PSC, s.CenterID,
                          s.VisitNo, s.Visit_label, s.CohortID, s.Submitted,
                          s.Current_stage, s.Screening, s.Date_screening, s.Visit,
                          s.Date_visit, s.Approval, s.Date_approval, s.Active,
                          s.registeredBy, s.UserID, u.Real_name, s.Hardcopy_request,
-                         s.BVLQCStatus, s.BVLQCType, s.BVLQCExclusion, s.Scan_done,
-                         pr.Name as ProjectName, p.Alias as SiteAlias,
-                         s.ProjectID as ProjectID
+                         s.BVLQCStatus, s.BVLQCType, s.BVLQCExclusion,
+			 pr.Name as ProjectName, p.Alias as SiteAlias,
+                         pr.ProjectID,
+                         CASE
+                            WHEN sc.count > 0 THEN 'Y'
+                            ELSE 'N'
+                         END AS Scan_done
                     FROM session AS s
                         LEFT JOIN psc AS p USING (CenterID)
                         LEFT JOIN users AS u on (s.registeredBy=u.UserID)
                         LEFT JOIN Project AS pr USING(ProjectID)
+                        LEFT JOIN (
+                            SELECT files.SessionID, COUNT(*) as count
+                            FROM files
+                            GROUP BY files.SessionID
+                        ) as sc ON (sc.SessionID = s.ID)
                     WHERE s.ID = :SID AND s.Active = 'Y'";
-        $row   = $db->pselectRow(
-            $query,
-            ['SID' => $sessionID]
-        );
-
+        $row   = $db->pselectRow($query, array('SID' => $sessionID));
+	// IBIS SPECIFIC OVERRIDE CODE ENDS HERE
+	
         $this->data = new TimePointData(
             $sessionID,
             isset($row['ProjectID'])
@@ -1213,6 +1224,7 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
      */
     public function getProjectID() : \ProjectID
     {
+	    error_log(print_r($this->data,true));
         return $this->data->getProjectID();
     }
 
@@ -1226,7 +1238,9 @@ class TimePoint implements \LORIS\StudyEntities\AccessibleResource,
      */
     public function isAccessibleBy(\User $user) : bool
     {
-        $centers = $user->getCenterIDs();
+	    $centers = $user->getCenterIDs();
+	     error_log("------");
+            error_log(print_r($this->getProjectID(),true));
 
         $projMatch   = in_array($this->getProjectID(), $user->getProjectIDs());
         $centerMatch = in_array($this->getCenterID(), $centers);

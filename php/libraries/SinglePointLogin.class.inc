@@ -48,11 +48,6 @@ class SinglePointLogin
     var $_passwordExpired = false;
 
     /**
-     * Defines whether a user's password needs to be changed
-     */
-    var $_passwordChangeRequired = false;
-
-    /**
      * Dumps the password expiry form
      *
      * @return void
@@ -76,17 +71,6 @@ class SinglePointLogin
         header("HTTP/1.1 303 See Other");
         header("Location: /login/password-expiry/");
         exit(0);
-    }
-
-    /**
-     * Checks whether password change is required
-     *
-     * @return bool
-     * @access public
-     */
-    function passwordChangeRequired(): bool
-    {
-        return $this->_passwordChangeRequired;
     }
 
 
@@ -178,9 +162,8 @@ class SinglePointLogin
         // First try JWT authentication, which is cheaper and
         // doesn't involve database calls
         $headers    = getallheaders();
-        $headers    = array_change_key_case($headers, CASE_LOWER);
-        $authHeader = isset($headers['authorization'])
-                         ? $headers['authorization']
+        $authHeader = isset($headers['Authorization'])
+                         ? $headers['Authorization']
                          : '';
         if (!empty($authHeader)) {
             $token = explode(" ", $authHeader);
@@ -217,10 +200,7 @@ class SinglePointLogin
 
         //$jwt = \Firebase\JWT\JWT::encode($token, $sharedKey);
         try {
-            $decoded = \Firebase\JWT\JWT::decode(
-                $token,
-                new \Firebase\JWT\Key($sharedKey, "HS256")
-            );
+            $decoded = \Firebase\JWT\JWT::decode($token, $sharedKey, array("HS256"));
         } catch (Exception $e) {
             return false;
         }
@@ -254,22 +234,12 @@ class SinglePointLogin
 
         $this->_lastError = '';
 
-        $factory = NDB_Factory::singleton();
-        $config  = $factory->config();
-
-        $maxDaysInactive = $config->getSetting("UserMaximumDaysInactive");
-        if (!empty($maxDaysInactive) && is_numeric($maxDaysInactive)) {
-            $maxDaysInactive = intval($maxDaysInactive);
-        } else {
-            $maxDaysInactive = null;
-        }
-
          ///////////////////////////
          ///initialization/////
          //////////////////////////
         $this->_username = isset($username) ? $username : 'Unknown';
 
-        $setArray = [
+        $setArray = array(
             'userID'          => $this->_username,
             'Success'         => 'Y',
             'Failcode'        => null,
@@ -280,7 +250,7 @@ class SinglePointLogin
             'Page_requested'  => isset($_SERVER['REQUEST_URI'])
                                               ? $_SERVER['REQUEST_URI']
                                               : 'Unknown',
-        ];
+        );
         // don't waste execution time if no form was submitted
 
         if (empty($username)) {
@@ -308,7 +278,7 @@ class SinglePointLogin
         // check users table to see if we have a valid user
         $query = "SELECT COUNT(*) AS User_count,
                         UserID,
-                        PasswordChangeRequired as Expired,
+                        Password_expiry < NOW() as Expired,
                         Active,
                         Pending_approval,
                         Password_hash,
@@ -318,7 +288,7 @@ class SinglePointLogin
                     FROM users
                   WHERE UserID = :username
                   GROUP BY UserID";
-        $row   = $DB->pselectRow($query, ['username' => $username]);
+        $row   = $DB->pselectRow($query, array('username' => $username));
 
         if (is_null($row) || intval($row['User_count'] ?? 0) !== 1) {
             /* Display generic failure message to front-end so that an
@@ -341,7 +311,10 @@ class SinglePointLogin
         $oldhash = $row['Password_hash'] ?? '';
         if (password_verify($password, $oldhash)) {
             // Rehash according to latest standards if necessary.
-            if (password_needs_rehash($oldhash, PASSWORD_DEFAULT)) {
+            // IBIS SPECIFIC OVERRIDE CODE
+            // Overriding the hash algo from default to argon21.
+            if (password_needs_rehash($oldhash, PASSWORD_ARGON2I)) {
+                // IBIS SPECIFIC OVERRIDE CODE ENDS HERE
                 try {
                     $newHash = new \Password($password);
                     \User::factory($username)->updatePassword(
@@ -359,16 +332,15 @@ class SinglePointLogin
                     );
                     \NDB_Factory::singleton()->database()->update(
                         'users',
-                        ['Password_hash' => $newHash],
-                        ['UserID' => $username]
+                        array('Password_hash' => $newHash),
+                        array('UserID' => $username)
                     );
                 }
 
             }
 
             if ($row['Active'] == 'N'
-                || (!empty($maxDaysInactive)
-                && $this->disabledDueToInactivity($username, $maxDaysInactive))
+                || $this->disabledDueToInactivity($username, 365)
             ) {
                 $this->_lastError = "Your account has been deactivated."
                     . " Please contact your project administrator to"
@@ -428,8 +400,7 @@ class SinglePointLogin
                 return false;
             }
             if ($row['Active'] == 'N'
-                || (!empty($maxDaysInactive)
-                && $this->disabledDueToInactivity($username, $maxDaysInactive))
+                || $this->disabledDueToInactivity($username, 365)
             ) {
                 $this->_lastError = "Your account has been deactivated."
                     . " Please contact your project administrator to"
@@ -444,8 +415,6 @@ class SinglePointLogin
 
             // Save the new password if the last password expired
             if ($row['Expired']) {
-                $this->_passwordChangeRequired      = true;
-                $_SESSION['PasswordExpiredForUser'] = $username;
                 if ($redirect) {
                     $this->showPasswordExpiryScreen();
                 }
@@ -514,11 +483,11 @@ class SinglePointLogin
             "WHERE userID = :username " .
             "AND Success = 'Y'" .
         ");";
-        $params = [
+        $params = array(
             'username'            => $username,
             'timeWindowInMinutes' => $shortWindowInMinutes,
             'ip'                  => $_SERVER['REMOTE_ADDR'],
-        ];
+        );
 
         // Query DB for login attempts.
         $database  = \NDB_Factory::singleton()->database();
@@ -587,7 +556,7 @@ class SinglePointLogin
     function insertFailedDetail(string $description, array $setArray): void
     {
         // create DB object
-        $DB = \NDB_Factory::singleton()->database();
+        $DB =& \NDB_Factory::singleton()->database();
 
         $setArray['Success']     = 'N';
         $setArray['Fail_detail'] = $description;
@@ -611,12 +580,12 @@ class SinglePointLogin
         int $maximumDaysInactive
     ): bool {
 
-        $DB    = \NDB_Factory::singleton()->database();
+        $DB    =& \NDB_Factory::singleton()->database();
         $query = "SELECT MAX(Login_timestamp) as Login_timestamp
                   FROM user_login_history
                   WHERE UserID = :username";
 
-        $row = $DB->pselectRow($query, ['username' => $username]);
+        $row = $DB->pselectRow($query, array('username' => $username));
 
         /* If the login timestamp is null then this is the user's first time
          * logging in. This will always be the case in our CI environment.
@@ -632,8 +601,8 @@ class SinglePointLogin
         if ($interval->days > $maximumDaysInactive) {
             $DB->update(
                 'users',
-                ['Active' => 'N'],
-                ['UserID' => $username]
+                array('Active' => 'N'),
+                array('UserID' => $username)
             );
             return true;
         }
