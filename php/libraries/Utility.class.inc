@@ -164,7 +164,7 @@ class Utility
         $DB =& Database::singleton();
 
         // get the list of ethnicities
-        $query = "SELECT DISTINCT Ethnicity 
+        $query = "SELECT DISTINCT Ethnicity
             FROM candidate
             WHERE Ethnicity NOT IN (NULL, '')
             ORDER BY Ethnicity";
@@ -507,9 +507,9 @@ class Utility
         $DB =& Database::singleton();
 
         // craft the select query
-        $query  = "SELECT t.Test_name FROM test_battery AS b, test_names AS t 
-            WHERE t.Test_name=b.Test_name 
-            AND b.AgeMinDays<=:CandAge AND b.AgeMaxDays>=:CandAge 
+        $query  = "SELECT t.Test_name FROM test_battery AS b, test_names AS t
+            WHERE t.Test_name=b.Test_name
+            AND b.AgeMinDays<=:CandAge AND b.AgeMaxDays>=:CandAge
             AND b.Active='Y'";
         $params = array('CandAge' => $age);
 
@@ -916,7 +916,7 @@ class Utility
             JOIN flag f ON (s.ID = f.SessionID)
             JOIN candidate c ON (c.Candid = s.Candid)
             JOIN psc ON (s.CenterID = psc.CenterID)
-            WHERE s.Active = 'Y' AND c.Active= 'Y' 
+            WHERE s.Active = 'Y' AND c.Active= 'Y'
             AND f.Test_name = :tn AND psc.Centerid!= '1'";
 
         $visitlabels = $db->pselect($query, array('tn' => $test_name));
@@ -1053,7 +1053,7 @@ class Utility
                 array('cid' => $commentID)
             );
             $sourcefields = $DB->pselect(
-                "SELECT SourceField, Name FROM parameter_type 
+                "SELECT SourceField, Name FROM parameter_type
                 WHERE queryable = '1' AND sourcefrom = :instrument
                 ORDER BY Name",
                 array('instrument' => $instrument)
@@ -1087,10 +1087,12 @@ class Utility
     {
         $factory = NDB_Factory::singleton();
         $db      = $factory->database();
+        $qparams = array();
 
         if ($projectID != null) {
             $ExtraProject_Criteria
-                = ' AND (c.ProjectID IS NULL OR c.ProjectID=' . $projectID . ')';
+                = ' AND (c.ProjectID IS NULL OR c.ProjectID=:ProjectID)';
+            $qparams["ProjectID"]  = $projectID;
         } else {
             $ExtraProject_Criteria ='';
         }
@@ -1102,7 +1104,7 @@ class Utility
             AND c.Entity_type != 'Scanner'
             AND psc.CenterID!= '1'
             $ExtraProject_Criteria ORDER BY Visit_label";
-        $visitlabels = $db->pselect($query, array());
+        $visitlabels = $db->pselect($query, $qparams);
         $visits      = array();
         for ($i = 0; $i < count($visitlabels); $i++) {
             $visits[$visitlabels[$i]['Visit_label']]
@@ -1132,7 +1134,7 @@ class Utility
 
         if ($DB->ColumnExists('test_battery', 'Test_name_display')) {
             $test_names = $DB->pselect(
-                "SELECT DISTINCT Test_name_display FROM test_battery 
+                "SELECT DISTINCT Test_name_display FROM test_battery
                 WHERE Visit_label=:vl",
                 array('vl' => $visit_label)
             );
@@ -1143,7 +1145,7 @@ class Utility
                 JOIN psc ON (s.CenterID = psc.CenterID)
                 JOIN flag f ON (f.sessionid=s.id)
                 JOIN test_names t ON (f.test_name=t.Test_name)
-                WHERE c.Active='Y' AND s.Active='Y' AND s.Visit_label =:vl 
+                WHERE c.Active='Y' AND s.Active='Y' AND s.Visit_label =:vl
                 AND psc.CenterID != '1' AND c.Entity_type != 'Scanner'
                 ORDER BY t.Full_name",
                 array('vl' => $visit_label)
@@ -1274,6 +1276,37 @@ class Utility
             return false;
         }
         return checkdate($dateElement['M'], $dateElement['d'], $dateElement['Y']);
+    }
+
+    /**
+     * Effectively resolve '..' characters in a file path
+     *
+     * @param string $path A potentially-relative filepath to be resolved
+     *
+     * @return string $resolvedPath a path containing no .. sequences
+     */
+    static function resolvePath($path)
+    {
+        $resolvedPath = array();
+        // do some normalization
+        $path        = str_replace('//', '/', $path);
+        $path_pieces = explode('/', $path);
+        foreach ($path_pieces as $piece) {
+            if ($piece == '.') {
+                continue;
+            }
+            if ($piece == '..') {
+                if (!is_array($resolvedPath)) {
+                    error_log("ERROR: Resolved path not an array");
+                    return "";
+                }
+                array_pop($resolvedPath);
+                continue;
+            }
+            array_push($resolvedPath, $piece);
+        }
+        $resolvedPath = implode('/', $resolvedPath);
+        return $resolvedPath;
     }
 }
 ?>
