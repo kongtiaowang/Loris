@@ -267,6 +267,7 @@ jobs:
 
     - name: Run Test Suite
       run: |
+          docker compose up --build
           # set sandbox to 1 before running the tests
           # since some tests only run in sandbox environments
           sed -i 's/<sandbox>0<\/sandbox>/<sandbox>1<\/sandbox>/g' test/config.xml
