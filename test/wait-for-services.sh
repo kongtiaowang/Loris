@@ -6,6 +6,12 @@ set -euo pipefail
 
 cmd="$@"
 
+echo "Waiting for mysqld..."
+while ! mysqladmin ping -h db -u SQLTestUser --password="TestPassword" --silent ; do
+  sleep 1
+done
+
+
 if [ -v SELENIUM_REQUIRED ]; 
 then
   echo "Waiting for Selenium..."
