@@ -6,7 +6,7 @@ set -euo pipefail
 
 cmd="$@"
 
-max_attempts=100
+max_attempts=10
 attempt=0
 
 echo "Waiting for mysqld..."
