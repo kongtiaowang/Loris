@@ -10,7 +10,6 @@ max_attempts=10
 attempt=0
 
 echo "Waiting for mysqld..."
-    //docker compose up -d db
 
 # Loop to check MySQL connection
 while ! mysqladmin ping -h db -u SQLTestUser --password="TestPassword" --silent; do
