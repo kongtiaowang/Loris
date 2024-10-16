@@ -6,26 +6,6 @@ set -euo pipefail
 
 cmd="$@"
 
-max_attempts=2
-attempt=0
-
-echo "Waiting for mysqld..."
-
-# Loop to check MySQL connection
-while ! mysqladmin ping -h db -u SQLTestUser --password="TestPassword" --silent; do
-  sleep 1
-  attempt=$((attempt + 1))
-  echo "$max_attempts attempts" 
-  # Check if maximum attempts reached
-  if [ "$attempt" -ge "$max_attempts" ]; then
-    echo "MySQL did not respond after $max_attempts attempts. Creating a flag for GitHub Actions..."
-    
-    # Create a flag file to signal GitHub Actions
-    echo "MySQL not started" > /tmp/mysql_error_flag
-    break
-  fi
-done
-
 if [ -v SELENIUM_REQUIRED ]; 
 then
   echo "Waiting for Selenium..."
