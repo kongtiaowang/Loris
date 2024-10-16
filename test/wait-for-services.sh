@@ -9,11 +9,13 @@ cmd="$@"
 timeout=300  # Timeout in 300 seconds
 elapsed=0
 
-echo "Waiting for mysqld..."
+echo "Waiting for MySQL..."
 
 while ! mysqladmin ping -h db -u SQLTestUser --password="TestPassword" --silent ; do
   sleep 1
   elapsed=$((elapsed + 1))
+  echo "Elapsed time: $elapsed seconds"
+
   if [ $elapsed -ge $timeout ]; then
     echo "MySQL did not respond within $timeout seconds. Exiting..."
     docker compose logs db  # Output logs from the db container automatically
@@ -21,7 +23,7 @@ while ! mysqladmin ping -h db -u SQLTestUser --password="TestPassword" --silent 
   fi
 done
 
-echo "MySQL is up!"
+echo "MySQL is alive"
 
 
 if [ -v SELENIUM_REQUIRED ]; 
