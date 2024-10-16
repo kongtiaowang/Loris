@@ -181,6 +181,15 @@ jobs:
         echo UPDATE Config SET VALUE=\'`pwd`/\' WHERE ConfigID IN \(SELECT ID FROM ConfigSettings WHERE Name=\'base\'\)
         echo UPDATE Config SET VALUE=\'`pwd`/\' WHERE ConfigID IN \(SELECT ID FROM ConfigSettings WHERE Name=\'base\'\) | mysql ${{env.DB_DATABASE}} -uroot -proot
 
+    - name: Check MySQL error
+      run: |
+        if [ -f /tmp/mysql_error_flag ]; then
+          echo "MySQL is not responding. Starting MySQL container..."
+          docker compose up -d db
+        else
+          echo "MySQL is up and running."
+        fi
+        
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
