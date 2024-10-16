@@ -154,7 +154,7 @@ jobs:
         cat project/config.xml
     - name: Run Docker container
       run: |
-        docker run --rm your-docker-image:latest > output.log 2>&1
+        docker run --rm db:latest > output.log 2>&1
         cat output.log  # Display output log for debugging
     - name: Set up MySQL
       run: |
