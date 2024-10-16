@@ -6,9 +6,22 @@ set -euo pipefail
 
 cmd="$@"
 
+max_attempts=100
+attempt=0
+
 echo "Waiting for mysqld..."
-while ! mysqladmin ping -h db -u SQLTestUser --password="TestPassword" --silent ; do
+
+# Loop to check MySQL connection
+while ! mysqladmin ping -h db -u SQLTestUser --password="TestPassword" --silent; do
   sleep 1
+  attempt=$((attempt + 1))
+  
+  # Check if maximum attempts reached
+  if [ "$attempt" -ge "$max_attempts" ]; then
+    echo "MySQL did not respond after $max_attempts attempts. Starting MySQL container..."
+    docker-compose up -d db
+    break
+  fi
 done
 
 if [ -v SELENIUM_REQUIRED ]; 
