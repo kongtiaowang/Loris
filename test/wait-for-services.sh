@@ -15,12 +15,6 @@ while ! mysqladmin ping -h db -u SQLTestUser --password="TestPassword" --silent 
   sleep 1
   elapsed=$((elapsed + 1))
   echo "Elapsed time: $elapsed seconds"
-
-  if [ $elapsed -ge $timeout ]; then
-    echo "MySQL did not respond within $timeout seconds. Exiting..."
-    docker compose logs db  # Output logs from the db container automatically
-    exit 1
-  fi
 done
 
 echo "MySQL is alive"

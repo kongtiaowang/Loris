@@ -152,6 +152,25 @@ jobs:
         sed -i 's/<adminPassword>TestPassword<\/adminPassword>/<adminPassword>root<\/adminPassword>/g' project/config.xml
         sed -i 's/<host>db<\/host>/<host>localhost<\/host>/g' project/config.xml
         cat project/config.xml
+    - name: Wait for MySQL to be ready
+      run: |
+        timeout=300  # Timeout in 300 seconds
+        elapsed=0
+        echo "Waiting for MySQL..."
+
+        while ! mysqladmin ping -h 127.0.0.1 -u SQLTestUser --password="TestPassword" --silent; do
+          sleep 1
+          elapsed=$((elapsed + 1))
+          echo "Elapsed time: $elapsed seconds"
+
+          if [ $elapsed -ge $timeout ]; then
+            echo "MySQL did not respond within $timeout seconds. Exiting..."
+            docker compose logs db  # Output logs from the db container automatically
+            exit 1
+          fi
+        done
+
+        echo "MySQL is alive"
 
     - name: Set up MySQL
       run: |
@@ -194,6 +213,7 @@ jobs:
       run: |
            sleep 1
            curl -v http://localhost:8000
+
 
 
     - name: Run Test Suite
