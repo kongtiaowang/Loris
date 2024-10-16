@@ -152,19 +152,10 @@ jobs:
         sed -i 's/<adminPassword>TestPassword<\/adminPassword>/<adminPassword>root<\/adminPassword>/g' project/config.xml
         sed -i 's/<host>db<\/host>/<host>localhost<\/host>/g' project/config.xml
         cat project/config.xml
-    - name: Wait for MySQL to be ready
+    - name: Run Docker container
       run: |
-        timeout=300  # Timeout in 300 seconds
-        elapsed=0
-        echo "Waiting for MySQL..."
-
-          echo "Elapsed time: $elapsed seconds"
-
-            echo "MySQL did not respond within $timeout seconds. Exiting..."
-            docker compose logs db  # Output logs from the db container automatically
-
-        echo "MySQL is alive"
-
+        docker run --rm your-docker-image:latest > output.log 2>&1
+        cat output.log  # Display output log for debugging
     - name: Set up MySQL
       run: |
         sudo /etc/init.d/mysql start
