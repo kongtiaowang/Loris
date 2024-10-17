@@ -11,7 +11,7 @@
 <config>
     <!-- set to 1 if development environment -->
     <dev>
-        <sandbox>0</sandbox>
+        <sandbox>1</sandbox>
     </dev>
 
     <!-- database settings -->
