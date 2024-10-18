@@ -47,5 +47,19 @@ class BrainBrowserTestIntegrationTest extends LorisIntegrationTest
             $bodyText
         );
     }
+    /**
+     * Tests that, when loading the Brainbrowser module, some
+     * text appears in the body.
+     *
+     * @return void
+     */
+    function testBrainbrowserDoespageLoadwithData()
+    {
+        $this->safeGet($this->url . "/brainbrowser/?minc_id=[238]");
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        $this->assertStringContainsString("Sync Volumes", $bodyText);
+    }
 }
 
