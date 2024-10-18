@@ -60,6 +60,13 @@ class BrainBrowserTestIntegrationTest extends LorisIntegrationTest
             WebDriverBy::cssSelector("body")
         )->getText();
         $this->assertStringContainsString("Sync Volumes", $bodyText);
+        $link = "#mri-panel-filename-0 > span";
+        $this->safeClick(WebDriverBy::cssSelector($link));
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("body")
+        )->getText();
+        $this->assertStringContainsString("Intensity Value", $bodyText);     
+
     }
 }
 
