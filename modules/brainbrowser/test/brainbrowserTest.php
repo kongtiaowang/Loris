@@ -65,6 +65,7 @@ class BrainBrowserTestIntegrationTest extends LorisIntegrationTest
         $bodyText = $this->safeFindElement(
             WebDriverBy::cssSelector("body")
         )->getText();
+print_r($bodyText);
         $this->assertStringContainsString("Intensity Value", $bodyText);     
 
     }
