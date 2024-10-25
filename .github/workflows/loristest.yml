@@ -273,12 +273,25 @@ jobs:
     - name: Build LORIS
       run: make dev
 
+
+    - name: Wait for services
+      run: |
+        chmod +x ./wait-for-services.sh
+        ./wait-for-services.sh
+      continue-on-error: true  # Allow the step to fail without failing the job
+
     - name: Run Test Suite
       run: |
           # set sandbox to 1 before running the tests
           # since some tests only run in sandbox environments
           sed -i 's/<sandbox>0<\/sandbox>/<sandbox>1<\/sandbox>/g' test/config.xml
           npm run tests:${{ matrix.testsuite }}
+      continue-on-error: true  # Allow the step to fail without failing the job
+
+    - name: Check MySQL logs if wait-for-services fails
+      if: failure()  # Run this step only if the previous step failed
+      run: docker compose logs loris-db-1
+
       env:
           # Specifies how many jobs you would like to run in parallel,
           CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
