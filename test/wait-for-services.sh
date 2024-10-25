@@ -18,7 +18,7 @@ while ! mysqladmin ping -h db -u SQLTestUser --password="TestPassword" --silent;
   if [ "$elapsed" -ge "$timeout" ]; then
     echo "MySQL did not respond within $timeout seconds. Outputting container logs..."
     # Adjust 'container_name' to your actual container name
-    docker logs db
+    docker compose logs loris-db-1
     exit 1
   fi
 done
