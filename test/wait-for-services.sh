@@ -17,7 +17,7 @@ while ! mysqladmin ping -h db -u SQLTestUser --password="TestPassword" --silent;
   
   if [ "$elapsed" -ge "$timeout" ]; then
     echo "MySQL did not respond within $timeout seconds."
-    return 1  # Return a specific exit code on timeout
+    exit 1
   fi
 done
 
