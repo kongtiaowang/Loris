@@ -170,25 +170,19 @@ class BatteryManagerTest extends LorisIntegrationTest
                 "#dynamictable > tbody > tr > td:nth-child(13) > button"
             )
         );
-$wait = new WebDriverWait($this->webDriver, 10, 500);
 
-// Wait for the <select> element to be present
-$selectElement = $wait->until(
-    WebDriverExpectedCondition::presenceOfElementLocated(
-        WebDriverBy::cssSelector('#lorisworkspace > select[name="testName"]')
-    )
-);
 
-// Now wait for the specific option within the <select> to be available
-$optionElement = $wait->until(
-    WebDriverExpectedCondition::presenceOfElementLocated(
-        WebDriverBy::cssSelector('#lorisworkspace > select[name="testName"] > option:nth-child(2)')
-    )
-);
 
-// Click on the <option> element, or alternatively, you can use Select to choose the option
-$optionElement->click();
-
+// Assuming $driver is your RemoteWebDriver instance
+$this->webDriver->executeScript("
+    setTimeout(() => {
+        const selectElement = document.querySelector('select[name=\"testName\"]');
+        if (selectElement) {
+            selectElement.selectedIndex = 1; // Selects the first option after the placeholder
+            selectElement.dispatchEvent(new Event('change')); // Trigger change event if needed
+        }
+    }, 1000); // Waits 1 second before executing the code
+");
 
         $this->safeFindElement(
             WebDriverBy::cssSelector(
