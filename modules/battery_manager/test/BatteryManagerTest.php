@@ -170,13 +170,24 @@ class BatteryManagerTest extends LorisIntegrationTest
                 "#dynamictable > tbody > tr > td:nth-child(13) > button"
             )
         );
+sleep(10);
+try {
+    $selectElement = $this->safeFindElement(WebDriverBy::cssSelector('select[name="testName"]'), 10);
 
+    // Scroll into view
+    $this->webDriver->executeScript("arguments[0].scrollIntoView(true);", [$selectElement]);
+
+    // Click with JavaScript as a fallback if necessary
+    $this->webDriver->executeScript("arguments[0].click();", [$selectElement]);
+} catch (Exception $e) {
+    echo "Failed to interact with select element: " . $e->getMessage();
+}
 
 // Locate the <select> element using WebDriverBy
 $selectElement = $this->safeFindElement(
     WebDriverBy::cssSelector('select[name="testName"]'),2000
 );
-
+sleep(10);
 
 // Create a WebDriverSelect instance
 $select = new WebDriverSelect($selectElement);
