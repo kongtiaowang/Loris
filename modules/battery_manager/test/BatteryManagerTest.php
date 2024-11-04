@@ -172,8 +172,9 @@ class BatteryManagerTest extends LorisIntegrationTest
         );
 // Locate the <select> element using WebDriverBy
 $selectElement = $this->safeFindElement(
-    WebDriverBy::cssSelector("#lorisworkspace > " . self::$instrument)
+    WebDriverBy::cssSelector('select[name="testName"]')
 );
+
 
 // Create a WebDriverSelect instance
 $select = new WebDriverSelect($selectElement);
@@ -243,7 +244,7 @@ $select->selectByValue("bmi");
             )
         );
 $selectElement = $this->safeFindElement(
-    WebDriverBy::cssSelector("#lorisworkspace > " . self::$instrument)
+    WebDriverBy::cssSelector('select[name="testName"]')
 );
 
 // Create a WebDriverSelect instance
