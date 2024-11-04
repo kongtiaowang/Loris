@@ -12,6 +12,8 @@
  * @link     https://github.com/aces/Loris
  */
 use Facebook\WebDriver\WebDriverBy;
+use Facebook\WebDriver\WebDriverSelect;
+
 
 require_once __DIR__ .
     "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
@@ -168,12 +170,16 @@ class BatteryManagerTest extends LorisIntegrationTest
                 "#dynamictable > tbody > tr > td:nth-child(13) > button"
             )
         );
-        $this->safeClick(
-            WebDriverBy::cssSelector(
-                "#lorisworkspace > div>div:nth-child(2)>div>div:nth-child(2)>form>".
-                " div > div:nth-child(2) > div > div > select > option:nth-child(2)"
-            )
-        );
+// Locate the <select> element using WebDriverBy
+$selectElement = $this->driver->findElement(
+    WebDriverBy::cssSelector("#lorisworkspace > " . self::$instrument)
+);
+
+// Create a WebDriverSelect instance
+$select = new WebDriverSelect($selectElement);
+
+// Select the desired option (e.g., by visible text or value)
+$select->selectByValue("bmi");
 
         $this->safeFindElement(
             WebDriverBy::cssSelector(
