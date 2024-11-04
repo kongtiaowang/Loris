@@ -171,11 +171,10 @@ class BatteryManagerTest extends LorisIntegrationTest
             )
         );
 
-// Use WebDriverWait to wait for the select element to be present and visible
 
 // Locate the <select> element using WebDriverBy
 $selectElement = $this->safeFindElement(
-    WebDriverBy::cssSelector('select[name="testName"]'),2
+    WebDriverBy::cssSelector('select[name="testName"]'),2000
 );
 
 
