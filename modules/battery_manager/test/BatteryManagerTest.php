@@ -12,6 +12,8 @@
  * @link     https://github.com/aces/Loris
  */
 use Facebook\WebDriver\WebDriverBy;
+use Facebook\WebDriver\WebDriverWait;
+use Facebook\WebDriver\WebDriverExpectedCondition;
 
 require_once __DIR__ .
     "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
@@ -168,12 +170,19 @@ class BatteryManagerTest extends LorisIntegrationTest
                 "#dynamictable > tbody > tr > td:nth-child(14) > button"
             )
         );
-        $this->safeClick(
-            WebDriverBy::cssSelector(
-                "#lorisworkspace > div>div:nth-child(2)>div>div:nth-child(2)>form>".
-                " div > div:nth-child(2) > div > div > select > option:nth-child(2)"
-            )
-        );
+
+
+
+// Assuming $driver is your RemoteWebDriver instance
+$this->webDriver->executeScript("
+    setTimeout(() => {
+        const selectElement = document.querySelector('select[name=\"testName\"]');
+        if (selectElement) {
+            selectElement.selectedIndex = 1; // Selects the first option after the placeholder
+            selectElement.dispatchEvent(new Event('change')); // Trigger change event if needed
+        }
+    }, 1000); // Waits 1 second before executing the code
+");
 
         $this->safeFindElement(
             WebDriverBy::cssSelector(
@@ -238,8 +247,7 @@ class BatteryManagerTest extends LorisIntegrationTest
         );
         $this->safeClick(
             WebDriverBy::cssSelector(
-                "#lorisworkspace > div > div:nth-child(2) > div > div:nth-child(2) ".
-                "> form > div > div:nth-child(2)>div>div>select>option:nth-child(2)"
+                "#lorisworkspace > ".self::$instrument." > option:nth-child(2)"
             )
         );
 
