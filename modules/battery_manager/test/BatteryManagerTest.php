@@ -12,6 +12,8 @@
  * @link     https://github.com/aces/Loris
  */
 use Facebook\WebDriver\WebDriverBy;
+use Facebook\WebDriver\WebDriverWait;
+use Facebook\WebDriver\WebDriverExpectedCondition;
 
 require_once __DIR__ .
     "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
@@ -168,11 +170,25 @@ class BatteryManagerTest extends LorisIntegrationTest
                 "#dynamictable > tbody > tr > td:nth-child(13) > button"
             )
         );
-        $this->safeClick(
-            WebDriverBy::cssSelector(
-                "#lorisworkspace > ".self::$instrument." > option:nth-child(2)",10
-            )
-        );
+$wait = new WebDriverWait($this->webDriver, 10, 500);
+
+// Wait for the <select> element to be present
+$selectElement = $wait->until(
+    WebDriverExpectedCondition::presenceOfElementLocated(
+        WebDriverBy::cssSelector('#lorisworkspace > select[name="testName"]')
+    )
+);
+
+// Now wait for the specific option within the <select> to be available
+$optionElement = $wait->until(
+    WebDriverExpectedCondition::presenceOfElementLocated(
+        WebDriverBy::cssSelector('#lorisworkspace > select[name="testName"] > option:nth-child(2)')
+    )
+);
+
+// Click on the <option> element, or alternatively, you can use Select to choose the option
+$optionElement->click();
+
 
         $this->safeFindElement(
             WebDriverBy::cssSelector(
