@@ -91,7 +91,6 @@ class TestInstrumentTestIntegrationTest extends LorisIntegrationTest
                 'ID'        => '999999',
                 'Test_name' => 'testtest',
                 'SessionID'  => '999999',
-                'Full_name' => 'Test Test',
                 'Status' => 'Created',
             ]
         );
