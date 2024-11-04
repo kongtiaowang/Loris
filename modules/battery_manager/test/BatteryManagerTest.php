@@ -170,10 +170,12 @@ class BatteryManagerTest extends LorisIntegrationTest
                 "#dynamictable > tbody > tr > td:nth-child(13) > button"
             )
         );
+
+// Use WebDriverWait to wait for the select element to be present and visible
+
 // Locate the <select> element using WebDriverBy
-sleep(2);
 $selectElement = $this->safeFindElement(
-    WebDriverBy::cssSelector('select[name="testName"]')
+    WebDriverBy::cssSelector('select[name="testName"]'),2
 );
 
 
