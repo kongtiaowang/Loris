@@ -12,6 +12,8 @@
  * @link     https://github.com/aces/Loris
  */
 use Facebook\WebDriver\WebDriverBy;
+use Facebook\WebDriver\WebDriverSelect;
+
 
 require_once __DIR__ .
     "/../../../test/integrationtests/LorisIntegrationTest.class.inc";
@@ -168,12 +170,30 @@ class BatteryManagerTest extends LorisIntegrationTest
                 "#dynamictable > tbody > tr > td:nth-child(14) > button"
             )
         );
-        $this->safeClick(
-            WebDriverBy::cssSelector(
-                "#lorisworkspace > div>div:nth-child(2)>div>div:nth-child(2)>form>".
-                " div > div:nth-child(2) > div > div > select > option:nth-child(2)"
-            )
-        );
+sleep(10);
+try {
+    $selectElement = $this->safeFindElement(WebDriverBy::cssSelector('select[name="testName"]'), 10);
+
+    // Scroll into view
+    $this->webDriver->executeScript("arguments[0].scrollIntoView(true);", [$selectElement]);
+
+    // Click with JavaScript as a fallback if necessary
+    $this->webDriver->executeScript("arguments[0].click();", [$selectElement]);
+} catch (Exception $e) {
+    echo "Failed to interact with select element: " . $e->getMessage();
+}
+
+// Locate the <select> element using WebDriverBy
+$selectElement = $this->safeFindElement(
+    WebDriverBy::cssSelector('select[name="testName"]'),2000
+);
+sleep(10);
+
+// Create a WebDriverSelect instance
+$select = new WebDriverSelect($selectElement);
+
+// Select the desired option (e.g., by visible text or value)
+$select->selectByValue("bmi");
 
         $this->safeFindElement(
             WebDriverBy::cssSelector(
@@ -236,12 +256,15 @@ class BatteryManagerTest extends LorisIntegrationTest
                 " div > div > div:nth-child(2) > button:nth-child(1)"
             )
         );
-        $this->safeClick(
-            WebDriverBy::cssSelector(
-                "#lorisworkspace > div > div:nth-child(2) > div > div:nth-child(2) ".
-                "> form > div > div:nth-child(2)>div>div>select>option:nth-child(2)"
-            )
-        );
+$selectElement = $this->safeFindElement(
+    WebDriverBy::cssSelector('select[name="testName"]')
+);
+
+// Create a WebDriverSelect instance
+$select = new WebDriverSelect($selectElement);
+
+// Select the desired option (e.g., by visible text or value)
+$select->selectByValue("bmi");
 
         $this->safeFindElement(
             WebDriverBy::cssSelector(
