@@ -223,11 +223,11 @@ $this->executeWithDelay(
 
 $bodyText = $this->webDriver->executeScript("
         setTimeout(() => {
-            const element = document.querySelector('#swal2-title');
+            const element = document.querySelector('#swal2-title').textContent;
             if (element) {
                 return element;
             }
-        },1000);
+        },2000);
 ");
 
 
