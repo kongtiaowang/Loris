@@ -345,7 +345,7 @@ public function executeWithDelay($selector, $script, $delay = 1000) {
     ");
 }
 public function getTextWithDelay($selector, $delay = 1000) {
-    return $this->driver->executeScript("
+    return $this->webDriver->executeScript("
         return new Promise((resolve) => {
             setTimeout(() => {
                 const element = document.querySelector('$selector');
