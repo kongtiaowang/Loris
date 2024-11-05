@@ -222,19 +222,12 @@ $this->executeWithDelay(
 
 
 $bodyText = $this->webDriver->executeScript("
-    const waitForElement = (selector, delay) => {
-        return new Promise((resolve) => {
-            const checkExist = setInterval(() => {
-                const element = document.querySelector(selector);
-                if (element) {
-                    clearInterval(checkExist);
-                    resolve(element.textContent); // Return the element's text content
-                }
-            }, delay);
-        });
-    };
-
-    return waitForElement('#swal2-title', 100).then(text => text);
+        setTimeout(() => {
+            const element = document.querySelector('$selector');
+            if (element) {
+                return element;
+            }
+        },1000);
 ");
 
 
