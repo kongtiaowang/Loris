@@ -220,7 +220,11 @@ $this->executeWithDelay(
     'element.click();'
 );
 
-$this->assertElementTextContains("#swal2-title", "Submission successful!");
+
+$bodyText = $this->getTextWithDelay("#swal2-title", 1000);
+
+$this->assertStringContainsString("Submission successful!", $bodyText);
+
 }
 
     /**
@@ -338,6 +342,20 @@ public function executeWithDelay($selector, $script, $delay = 1000) {
                 $script
             }
         }, $delay);
+    ");
+}
+public function getTextWithDelay($selector, $delay = 1000) {
+    return $this->driver->executeScript("
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                const element = document.querySelector('$selector');
+                if (element) {
+                    resolve(element.textContent);
+                } else {
+                    resolve(null);
+                }
+            }, $delay);
+        });
     ");
 }
 }
