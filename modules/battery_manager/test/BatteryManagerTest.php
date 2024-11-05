@@ -221,7 +221,23 @@ $this->executeWithDelay(
 );
 
 
-$bodyText = $this->getTextWithDelay("#swal2-title", 1000);
+$bodyText = $this->webDriver->executeScript("
+    const waitForElement = (selector, delay) => {
+        return new Promise((resolve) => {
+            const checkExist = setInterval(() => {
+                const element = document.querySelector(selector);
+                if (element) {
+                    clearInterval(checkExist);
+                    resolve(element.textContent); // Return the element's text content
+                }
+            }, delay);
+        });
+    };
+
+    return waitForElement('#swal2-title', 100).then(text => text);
+");
+
+
 
 $this->assertStringContainsString("Submission successful!", $bodyText);
 
@@ -342,20 +358,6 @@ public function executeWithDelay($selector, $script, $delay = 1000) {
                 $script
             }
         }, $delay);
-    ");
-}
-public function getTextWithDelay($selector, $delay = 1000) {
-    return $this->webDriver->executeScript("
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                const element = document.querySelector('$selector');
-                if (element) {
-                    resolve(element.textContent);
-                } else {
-                    resolve(null);
-                }
-            }, $delay);
-        });
     ");
 }
 }
