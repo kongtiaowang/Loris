@@ -184,51 +184,44 @@ $this->webDriver->executeScript("
     }, 1000); // Waits 1 second before executing the code
 ");
 
-        $this->safeFindElement(
-            WebDriverBy::cssSelector(
-                "#lorisworkspace > div> div:nth-child(2) > div > div:nth-child(2)".
-                " > form > div > div:nth-child(3) > div > div > input"
-            )
-        )->clear()->sendKeys('0');
-        $this->safeFindElement(
-            WebDriverBy::cssSelector(
-                "#lorisworkspace>div> div:nth-child(2) > div > div:nth-child(2) ".
-                "> form > div > div:nth-child(4) > div > div > input"
-            )
-        )->clear()->sendKeys('1');
-        $this->safeClick(
-            WebDriverBy::cssSelector(
-                "#lorisworkspace>div>div:nth-child(2)>div>div:nth-child(2)>form>".
-                "div>div:nth-child(5) > div > div > select > option:nth-child(7)"
-            )
-        );
-        $this->safeClick(
-            WebDriverBy::cssSelector(
-                "#lorisworkspace > div > div:nth-child(2) > div > div:nth-child(2)>".
-                "form>div>div:nth-child(6) > div > div >select> option:nth-child(2)"
-            )
-        );
-        $this->safeClick(
-            WebDriverBy::cssSelector(
-                "#lorisworkspace > div >div:nth-child(2) > div > div:nth-child(2) >".
-                "form>div>div:nth-child(7) >div > div > select > option:nth-child(5)"
-            )
-        );
+// Set the first input field to '0'
+$this->executeWithDelay(
+    '#lorisworkspace > div > div:nth-child(2) > div > div:nth-child(2) > form > div > div:nth-child(3) > div > div > input',
+    'element.value = "0";'
+);
 
-        $this->safeClick(
-            WebDriverBy::cssSelector(
-                "#lorisworkspace>div>div:nth-child(2)>div>div:nth-child(2)>form>".
-                " div > div:nth-child(11) > div > div > button"
-            )
-        );
-        $bodyText = $this->safeFindElement(
-            WebDriverBy::cssSelector("#swal2-title")
-        )->getText();
-        $this->assertStringContainsString(
-            "Submission successful!",
-            $bodyText
-        );
-    }
+// Set the second input field to '1'
+$this->executeWithDelay(
+    '#lorisworkspace > div > div:nth-child(2) > div > div:nth-child(2) > form > div > div:nth-child(4) > div > div > input',
+    'element.value = "1";'
+);
+
+// Select the 7th option in the 5th select dropdown
+$this->executeWithDelay(
+    '#lorisworkspace > div > div:nth-child(2) > div > div:nth-child(2) > form > div > div:nth-child(5) > div > div > select',
+    'element.selectedIndex = 6; element.dispatchEvent(new Event("change"));'
+);
+
+// Select the 2nd option in the 6th select dropdown
+$this->executeWithDelay(
+    '#lorisworkspace > div > div:nth-child(2) > div > div:nth-child(2) > form > div > div:nth-child(6) > div > div > select',
+    'element.selectedIndex = 1; element.dispatchEvent(new Event("change"));'
+);
+
+// Select the 5th option in the 7th select dropdown
+$this->executeWithDelay(
+    '#lorisworkspace > div > div:nth-child(2) > div > div:nth-child(2) > form > div > div:nth-child(7) > div > div > select',
+    'element.selectedIndex = 4; element.dispatchEvent(new Event("change"));'
+);
+
+// Click the submit button
+$this->executeWithDelay(
+    '#lorisworkspace > div > div:nth-child(2) > div > div:nth-child(2) > form > div > div:nth-child(11) > div > div > button',
+    'element.click();'
+);
+
+$this->assertElementTextContains("#swal2-title", "Submission successful!");
+}
 
     /**
      * Tests that the page does not load if the user does not have correct
@@ -337,4 +330,14 @@ $this->webDriver->executeScript("
             '0 row'
         );
     }
+public function executeWithDelay($selector, $script, $delay = 1000) {
+    $this->driver->executeScript("
+        setTimeout(() => {
+            const element = document.querySelector('$selector');
+            if (element) {
+                $script
+            }
+        }, $delay);
+    ");
+}
 }
