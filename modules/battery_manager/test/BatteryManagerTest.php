@@ -331,7 +331,7 @@ $this->assertElementTextContains("#swal2-title", "Submission successful!");
         );
     }
 public function executeWithDelay($selector, $script, $delay = 1000) {
-    $this->driver->executeScript("
+    $this->webDriver->executeScript("
         setTimeout(() => {
             const element = document.querySelector('$selector');
             if (element) {
