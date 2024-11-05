@@ -221,15 +221,9 @@ $this->executeWithDelay(
 );
 
 
-$bodyText = $this->webDriver->executeScript("
-        setTimeout(() => {
-            const element = document.querySelector('#swal2-title').textContent;
-            if (element) {
-                return element;
-            }
-        },2000);
-");
-
+        $bodyText = $this->safeFindElement(
+            WebDriverBy::cssSelector("#swal2-title")
+        )->getText();
 
 
 $this->assertStringContainsString("Submission successful!", $bodyText);
