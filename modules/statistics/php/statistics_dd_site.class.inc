@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * The module to display study statistics
  *
@@ -129,7 +130,7 @@ class Statistics_DD_Site extends statistics_site
                 AND i.CommentID LIKE 'DDE%' ORDER BY c.PSCID",
             $this->query_vars
         );
-        return $result;
+        return iterator_to_array($result);
     }
 }
 

@@ -1,4 +1,5 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * The module to display study statistics
  *
@@ -100,7 +101,9 @@ class Statistics_Mri_Site extends Statistics_Site
         $this->_checkCriteria($centerID, $projectID);
         $DB = $this->loris->getDatabaseConnection();
 
-        $scan_types = $DB->pselect("SELECT Scan_type from mri_scan_type", []);
+        $scan_types = iterator_to_array(
+            $DB->pselect("SELECT Scan_type from mri_scan_type", [])
+        );
         $where      = "WHERE (";
         $counter    = 1;
         foreach (array_values($scan_types) as $scan) {
@@ -120,13 +123,14 @@ class Statistics_Mri_Site extends Statistics_Site
                             c.PSCID, s.ID as SessionID, s.CandID as CandID,
                             s.Visit_label
                     FROM flag f JOIN session s ON (f.SessionID=s.ID)
+                        JOIN test_names tn ON tn.ID = f.TestID
                         LEFT JOIN mri_parameter_form m ON (m.CommentID=f.CommentID)
                         LEFT JOIN tarchive t ON (s.CandID=MID(t.PatientName, 9, 6)
                         AND MID(t.PatientName, 16, 7)=s.Visit_label)
                         LEFT JOIN candidate c ON (s.CandID=c.CandID)
                         $where
                             AND f.CommentID NOT LIKE 'DDE%'
-                            AND f.Test_name='mri_parameter_form'
+                            AND tn.Test_name='mri_parameter_form'
                             AND f.Administration <> 'None'
                             AND t.TarchiveID IS NULL
                             AND s.Active='Y'
@@ -168,8 +172,8 @@ class Statistics_Mri_Site extends Statistics_Site
                         s.Visit_label
                     FROM files LEFT JOIN session s ON (files.SessionID=s.ID)
                         LEFT JOIN flag f on
-                       (f.SessionID=s.ID AND f.Test_name='mri_parameter_form'
-                         AND f.CommentID NOT LIKE 'DDE%')
+                       (f.SessionID=s.ID AND f.CommentID NOT LIKE 'DDE%')
+                        LEFT JOIN test_names tn ON (tn.ID = f.TestID)
                         LEFT JOIN mri_parameter_form mpf
                        ON (mpf.CommentID=f.CommentID)
                         LEFT JOIN candidate c ON (c.CandID=s.CandID)
@@ -179,6 +183,7 @@ class Statistics_Mri_Site extends Statistics_Site
                            f.Data_entry <> 'Complete' OR
                            f.Data_entry IS NULL)
                            AND s.CenterID <> '1'
+                           AND tn.Test_name = 'mri_parameter_form'
                            $this->query_criteria
                            ORDER BY c.PSCID";
             break;
@@ -218,7 +223,7 @@ class Statistics_Mri_Site extends Statistics_Site
         // template
         $visits    = [];
         $projectID = isset($_REQUEST['ProjectID'])
-            ? new \ProjectID($_REQUEST['ProjectID'])
+            ? \ProjectID::singleton(intval($_REQUEST['ProjectID']))
             : null;
 
         $data = [];
