@@ -329,7 +329,7 @@ class InstrumentQueryEngine implements \LORIS\Data\Query\QueryEngine
                         $candData[$dict->getName()] = [];
                     }
                     $sid = $loadedInstrument->getSessionID();
-$candData[$dict->getName()][$sid->__toString()] = [
+                    $candData[$dict->getName()][$sid->__toString()] = [
                         'VisitLabel' => $loadedInstrument->getVisitLabel(),
                         'SessionID'  => $sid->__toString(),
                         'value'      => $loadedInstrument->getDictionaryValue($dict),
