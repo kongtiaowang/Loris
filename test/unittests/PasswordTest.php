@@ -155,7 +155,7 @@ class PasswordTest extends TestCase
         // Test instantiation with the valid password and config
         $password = new \Password(self::VALID_PASSWORD, $configMock);
 
-        $this->assertInstanceOf(\Password::class, $password, "Password object should be successfully instantiated.");
+        $this->assertInstanceOf(\Password::class, $password);
     }
     /**
      * Ensures the toString function of Password returns a password hash
