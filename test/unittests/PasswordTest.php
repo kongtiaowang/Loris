@@ -142,45 +142,45 @@ class PasswordTest extends TestCase
      *
      * @return void
      */
-public function testWellFormedPassword(): void
-{
-    // Create a mock NDB_Config object
-    $configMock = $this->createMock(NDB_Config::class);
+    public function testWellFormedPassword(): void
+    {
+        // Create a mock NDB_Config object
+        $configMock = $this->createMock(NDB_Config::class);
 
-    // Configure the mock to return a valid password algorithm
-    $configMock->method('getSetting')
-               ->with('passwordAlgorithm')
-               ->willReturn(PASSWORD_BCRYPT);
+        // Configure the mock to return a valid password algorithm
+        $configMock->method('getSetting')
+            ->with('passwordAlgorithm')
+            ->willReturn(PASSWORD_BCRYPT);
 
-    // Test instantiation with the valid password and config
-    $password = new \Password(self::VALID_PASSWORD, $configMock);
+        // Test instantiation with the valid password and config
+        $password = new \Password(self::VALID_PASSWORD, $configMock);
 
-    $this->assertInstanceOf(\Password::class, $password, "Password object should be successfully instantiated.");
-}
+        $this->assertInstanceOf(\Password::class, $password, "Password object should be successfully instantiated.");
+    }
     /**
      * Ensures the toString function of Password returns a password hash
      * that can be verified.
      *
      * @return void
      */
-public function testToString(): void
-{
-    // Create a mock NDB_Config object
-    $configMock = $this->createMock(NDB_Config::class);
+    public function testToString(): void
+    {
+        // Create a mock NDB_Config object
+        $configMock = $this->createMock(NDB_Config::class);
 
-    // Configure the mock to return a valid password algorithm
-    $configMock->method('getSetting')
-               ->with('passwordAlgorithm')
-               ->willReturn(PASSWORD_BCRYPT);
+        // Configure the mock to return a valid password algorithm
+        $configMock->method('getSetting')
+            ->with('passwordAlgorithm')
+            ->willReturn(PASSWORD_BCRYPT);
 
-    // Instantiate the Password object with the valid password and config
-    $password = new \Password(self::VALID_PASSWORD, $configMock);
+        // Instantiate the Password object with the valid password and config
+        $password = new \Password(self::VALID_PASSWORD, $configMock);
 
-    // Assert that the password can be verified with the hashed value
-    $this->assertTrue(
-        password_verify(self::VALID_PASSWORD, (string) $password),
-        "Password string should correctly verify against the original value."
-    );
-}
+        // Assert that the password can be verified with the hashed value
+        $this->assertTrue(
+            password_verify(self::VALID_PASSWORD, (string) $password),
+            "Password string should correctly verify against the original value."
+        );
+    }
 
 }
