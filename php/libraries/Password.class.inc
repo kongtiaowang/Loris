@@ -199,16 +199,24 @@ class Password
      *
      * @throws InvalidArgumentException When passsword is too short or too simple.
      */
-    public final function __construct(string $value)
-    {
-        // Ensure proposed value is well-formed.
-        $this->_validate($value);
-        // Don't store the value in the object; instead use the hashed version
-        // This mitigates the risk of accidentally revealing the plaintext.
-        $config        =& \NDB_Config::singleton();
-        $password_algo = $config->getSetting("passwordAlgorithm");
-        $this->_hash   = password_hash($value, $password_algo);
+public final function __construct(string $value, ?NDB_Config $config = null)
+{
+    // Validate the proposed value
+    $this->_validate($value);
+
+    // Use the provided config or fallback to the singleton (for backward compatibility)
+    $config = $config ?? \NDB_Config::singleton();
+
+    // Fetch password algorithm from the config
+    $password_algo = $config->getSetting("passwordAlgorithm");
+
+    if (empty($password_algo)) {
+        throw new ConfigurationException("Password algorithm is not configured in the settings.");
     }
+
+    // Hash the password using the configured algorithm
+    $this->_hash = password_hash($value, $password_algo);
+}
 
     /**
      * The hashed value of the original input.
