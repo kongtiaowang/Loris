@@ -182,54 +182,48 @@ class CandidateTest extends TestCase
      * @covers Candidate::getData
      * @covers Candidate::getListOfTimePoints
      */
-    public function testSelectRetrievesCandidateInfo()
-    {
-        $this->_setUpTestDoublesForSelectCandidate();
+public function testSelectRetrievesCandidateInfo()
+{
+    $this->_setUpTestDoublesForSelectCandidate();
 
-        $resultMock = $this->getMockBuilder('\LORIS\Database\Query')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $resultMock->method("getIterator")
-            ->willReturn(
-                new ArrayIterator(
-                    [
-                        [
-                            "ID"        => 97,
-                            "ProjectID" => 1,
-                            "CenterID"  => 2,
-                        ],
-                        [
-                            "ID"        => 98,
-                            "ProjectID" => 1,
-                            "CenterID"  => 2,
-                        ]
-                    ]
-                )
-            );
-        $this->_dbMock
-            ->method('pselect')
-            ->willReturn($resultMock);
-        $this->_dbMock->expects($this->once())
-            ->method('pselectRow')
-            ->willReturn($this->_candidateInfo);
-
-        $this->_candidate->select($this->_candidateInfo['CandID']);
-
-        //validate _candidate Info
-        // candidateInfo is the value returned from the database, ->getData() has
-        // typing
-        //$this->assertEquals($this->_candidateInfo, $this->_candidate->getData());
-
-        //validate list of time points
-        $expectedTimepoints = [];
-        foreach ($this->_listOfTimePoints as $oneRow) {
-            $expectedTimepoints[] = $oneRow['ID'];
-        }
-        $this->assertEquals(
-            $expectedTimepoints,
-            $this->_candidate->getListOfTimePoints()
+    // Mock the database call directly to return the array of results
+    $this->_dbMock
+        ->method('pselect')
+        ->willReturn(
+            [
+                [
+                    "ID"        => 97,
+                    "ProjectID" => 1,
+                    "CenterID"  => 2,
+                ],
+                [
+                    "ID"        => 98,
+                    "ProjectID" => 1,
+                    "CenterID"  => 2,
+                ]
+            ]
         );
+
+    $this->_dbMock->expects($this->once())
+        ->method('pselectRow')
+        ->willReturn($this->_candidateInfo);
+
+    $this->_candidate->select($this->_candidateInfo['CandID']);
+
+    // Validate candidate info
+    // candidateInfo is the value returned from the database, ->getData() has typing
+    //$this->assertEquals($this->_candidateInfo, $this->_candidate->getData());
+
+    // Validate list of time points
+    $expectedTimepoints = [];
+    foreach ($this->_listOfTimePoints as $oneRow) {
+        $expectedTimepoints[] = $oneRow['ID'];
     }
+    $this->assertEquals(
+        $expectedTimepoints,
+        $this->_candidate->getListOfTimePoints()
+    );
+}
 
     /**
      * Test select() method fails when invalid _candidate ID is passed
@@ -467,18 +461,6 @@ class CandidateTest extends TestCase
             )
         );
     }
-
-    /**
-     * Test getCandidateEthnicity returns the correct ethnicity of the candidate
-     *
-     * @covers Candidate::getCandidateEthnicity
-     * @return void
-     */
-    public function testGetCandidateEthnicity()
-    {
-        $this->markTestSkipped("getCandidateEthnicity is a deprecated function");
-    }
-
     /**
      * Test isActive returns the correct string for the candidate
      *
