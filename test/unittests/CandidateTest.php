@@ -573,10 +573,18 @@ class CandidateTest extends TestCase
     {
         $this->_dbMock->method('pselectCol')
             ->willReturn(['Male','Female','Other']);
-        $cohorts = [
-            ['CohortID' => 1],
-            ['CohortID' => 2]
-        ];
+        $cohorts = $this->getMockBuilder('\LORIS\Database\Query')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $cohorts->method("getIterator")
+            ->willReturn(
+                new ArrayIterator(
+                    [
+                                ['CohortID' => 1],
+            ['CohortID' => 2]]
+                )
+            );
+
         $this->_dbMock->expects($this->once())
             ->method('pselectRow')
             ->willReturn($this->_candidateInfo);
@@ -585,6 +593,18 @@ class CandidateTest extends TestCase
             1 => 1,
             2 => 2
         ];
+        $expectedCohorts = $this->getMockBuilder('\LORIS\Database\Query')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $expectedCohorts->method("getIterator")
+            ->willReturn(
+                new ArrayIterator(
+			[  
+			                   1 => 1,
+					   2 => 2
+			]	   
+                )
+	    );
 
         $this->_setUpTestDoublesForSelectCandidate();
         $this->_candidate->select($this->_candidateInfo['CandID']);
