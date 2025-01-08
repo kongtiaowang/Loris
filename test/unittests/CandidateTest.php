@@ -13,6 +13,7 @@
  */
 use PHPUnit\Framework\TestCase;
 use LORIS\StudyEntities\Candidate\CandID;
+use LORIS\Database\Query;
 /**
  * Unit test for Candidate class
  *
