@@ -229,25 +229,40 @@ class Database_Test extends TestCase
      */
     function testInsertEscapesHTML()
     {
-        $stub = $this->getMockBuilder('FakeDatabase')
-            ->onlyMethods($this->_getAllMethodsExcept(['insert']))->getMock();
+    // Mocking the FakeDatabase class excluding the 'insert' method
+    $stub = $this->getMockBuilder('FakeDatabase')
+        ->onlyMethods($this->_getAllMethodsExcept(['insert'])) // Mocking all methods except 'insert'
+        ->getMock();
 
-        $PDO  = $this->getMockBuilder('FakePDO')
-            ->onlyMethods(['lastInsertId'])->getMock();
-        $stmt = $this->getMockBuilder('PDOStatement')->getMock();
+    // Mocking the PDO class to override specific methods
+    $PDO  = $this->getMockBuilder('PDO')
+        ->onlyMethods(['prepare'])  // Mocking only the 'prepare' method
+        ->getMock();
 
-        $stmt->expects($this->once())->method("execute")->with(
+    // Mocking the PDOStatement class
+    $stmt = $this->getMockBuilder('PDOStatement')
+        ->getMock();
+
+    // Expecting the 'execute' method of the PDOStatement to be called once
+    $stmt->expects($this->once())
+        ->method("execute")
+        ->with(
             $this->equalTo(['field' => '&lt;b&gt;Hello&lt;/b&gt;'])
-        )->will($this->returnValue(true));
+        )
+        ->will($this->returnValue(true)); // Return true when execute is called
 
-        $PDO->expects($this->once())
-            ->method("prepare")->will($this->returnValue($stmt));
+    // Mocking the 'prepare' method of PDO to return the mocked statement
+    $PDO->expects($this->once())
+        ->method("prepare")
+        ->will($this->returnValue($stmt)); // Return the mocked PDOStatement
 
-        '@phan-var \Database $stub';
-        '@phan-var \PDO $PDO';
-        $stub->_PDO = $PDO;
-        $stub->insert("test", ['field' => '<b>Hello</b>'], []);
+    // Assign the mock PDO to the FakeDatabase object
+    '@phan-var \Database $stub';
+    '@phan-var \PDO $PDO';
+    $stub->_PDO = $PDO;
 
+    // Calling the insert method with the provided data
+    $stub->insert("test", ['field' => '<b>Hello</b>'], []);
     }
 
     /**
