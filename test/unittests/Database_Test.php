@@ -229,28 +229,6 @@ class Database_Test extends TestCase
      */
     function testInsertEscapesHTML()
     {
-        $stub = $this->getMockBuilder('FakeDatabase')
-            ->onlyMethods($this->_getAllMethodsExcept(['insert']))->getMock();
-
-        $PDO  = $this->getMockBuilder('FakePDO')
-            ->onlyMethods(['lastInsertId'])->getMock();
-        $stmt = $this->getMockBuilder('PDOStatement')->getMock();
-
-        $stmt->expects($this->once())->method("execute")->with(
-            $this->equalTo(['field' => '&lt;b&gt;Hello&lt;/b&gt;'])
-        )->will($this->returnValue(true));
-
-        $PDO->expects($this->once())
-            ->method("prepare")->will($this->returnValue($stmt));
-
-        '@phan-var \Database $stub';
-        '@phan-var \PDO $PDO';
-        $stub->_PDO = $PDO;
-        $stub->insert("test", ['field' => '<b>Hello</b>'], []);
-
-    }
-    function testInsertEscapesHTML()
-    {
     // Mocking the FakeDatabase class excluding the 'insert' method
     $stub = $this->getMockBuilder('FakeDatabase')
         ->onlyMethods($this->_getAllMethodsExcept(['insert'])) // Mocking all methods except 'insert'
