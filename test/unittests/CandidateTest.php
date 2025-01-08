@@ -599,7 +599,7 @@ class CandidateTest extends TestCase
                 )
             )
             ->willReturn(
-                $cohorts
+                new LORIS\Database\Query($cohorts)
             );
         $this->assertEquals(
             $expectedCohorts,
