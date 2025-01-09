@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+set -x  # Print each command before execution
+set -e  # Exit on any error
 set -euo pipefail
 
 if [ -v DEBUG ];
