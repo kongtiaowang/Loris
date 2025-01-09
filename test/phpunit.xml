@@ -11,9 +11,6 @@
             <directory>../raisinbread/test/api/</directory>
         </testsuite>
 
-        <testsuite name='LorisCoreIntegrationTests'>
-            <directory>./integrationtests/</directory>
-        </testsuite>
 
 	<testsuite name='LorisModuleIntegrationTests'>
             <directory>../modules/acknowledgements/test/</directory>
