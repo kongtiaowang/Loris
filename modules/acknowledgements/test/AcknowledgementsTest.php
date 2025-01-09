@@ -1,6 +1,4 @@
-<?php declare(strict_types=1);
-namespace AcknowledgementsTests;
-
+<?php
 /**
  * AcknowledgementsIntegrationTest automated integration tests
  *
