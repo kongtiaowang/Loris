@@ -23,7 +23,7 @@ use Facebook\WebDriver\WebDriverBy;
  * @license  http://www.gnu.org/licenses/gpl-3.0.txt GPLv3
  * @link     https://github.com/aces/Loris
  */
-class AcknowledgementsIntegrationTest extends LorisIntegrationTest
+class AcknowledgementsTest extends LorisIntegrationTest
 {
     //filter location
     static $fullname     = 'input[name="fullName"]';

@@ -862,7 +862,7 @@ class CandidateTest extends TestCase
             ->willReturn($this->_candidateInfo);
         $this->_dbMock
             ->method('pselect')
-            ->will(
+            ->willReturnOnConsecutiveCalls(
                 $this->onConsecutiveCalls(
                     [
                         [
@@ -999,7 +999,7 @@ class CandidateTest extends TestCase
         ];
 
         $this->_configMock->method('getSetting')
-            ->will($this->returnValueMap($this->_configMap));
+            ->willReturnValueMap($this->returnValueMap($this->_configMap));
         $this->assertEquals(
             1,
             Candidate::validatePSCID('AAA0012', 'AAA', 'BBB'),
@@ -1047,7 +1047,7 @@ class CandidateTest extends TestCase
         ];
 
         $this->_configMock->method('getSetting')
-            ->will($this->returnValueMap($this->_configMap));
+            ->willReturnMap($this->returnValueMap($this->_configMap));
         $this->assertEquals(
             1,
             Candidate::validatePSCID('BBB0012', 'AAA', 'BBB'),
@@ -1416,7 +1416,7 @@ class CandidateTest extends TestCase
             ->willReturn(['Male','Female','Other']);
 
         $this->_configMock->method('getSetting')
-            ->will($this->returnValueMap($this->_configMap));
+            ->willReturnMap($this->returnValueMap($this->_configMap));
     }
 
     /**
