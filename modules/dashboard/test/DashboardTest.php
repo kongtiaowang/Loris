@@ -673,6 +673,13 @@ class DashboardTest extends LorisIntegrationTest
                 "//*[@id='dashboard']/div/form/div[3]/div/button[1]"
             )
         )->click();
+
+        $testText = $this->safeFindElement(
+            WebDriverBy::Id("page")
+        )->getText();
+
+var_dump($testText);
+
         $this->safeGet($this->url . '/dashboard/');
         $testText = $this->safeFindElement(
             WebDriverBy::Id("overall-recruitment")
