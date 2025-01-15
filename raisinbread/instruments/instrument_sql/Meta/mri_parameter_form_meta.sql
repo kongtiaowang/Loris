@@ -5,12 +5,6 @@ INSERT INTO instrument_subtests (Test_name, Subtest_name, Description, Order_num
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, CohortID, Visit_label, DoubleDataEntryEnabled)
   SELECT 'mri_parameter_form', 1, 2147483647, 'Y', 'Visit', CohortID, 'V1', 'Y' FROM cohort WHERE title = 'Stale';
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, CohortID, Visit_label, DoubleDataEntryEnabled)
-  SELECT 'mri_parameter_form', 1, 2147483647, 'Y', 'Visit', CohortID, 'V1', 'Y' FROM cohort WHERE title = 'Fresh';
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, CohortID, Visit_label, DoubleDataEntryEnabled)
   SELECT 'mri_parameter_form', 1, 2147483647, 'Y', 'Visit', CohortID, 'V2', 'Y' FROM cohort WHERE title = 'Stale';
 INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, CohortID, Visit_label, DoubleDataEntryEnabled)
-  SELECT 'mri_parameter_form', 1, 2147483647, 'Y', 'Visit', CohortID, 'V2', 'Y' FROM cohort WHERE title = 'Fresh';
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, CohortID, Visit_label, DoubleDataEntryEnabled)
   SELECT 'mri_parameter_form', 1, 2147483647, 'Y', 'Visit', CohortID, 'V3', 'Y' FROM cohort WHERE title = 'Stale';
-INSERT INTO test_battery (Test_name, AgeMinDays, AgeMaxDays, Active, Stage, CohortID, Visit_label, DoubleDataEntryEnabled)
-  SELECT 'mri_parameter_form', 1, 2147483647, 'Y', 'Visit', CohortID, 'V3', 'Y' FROM cohort WHERE title = 'Fresh';
