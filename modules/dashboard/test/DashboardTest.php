@@ -592,6 +592,9 @@ class DashboardTest extends LorisIntegrationTest
      */
     public function testLocal()
     {
+        $this->setupPermissions(
+            ["superuser"]
+        ); 
         $config  =& NDB_Config::singleton();
         $dev     = $config->getSetting("dev");
         $sandbox = $dev['sandbox'];
@@ -651,6 +654,7 @@ class DashboardTest extends LorisIntegrationTest
      */
     private function _testPlan3()
     {
+
         $this->safeGet($this->url . '/configuration/');
         $this->safeFindElement(
             WebDriverBy::Xpath(
@@ -673,12 +677,6 @@ class DashboardTest extends LorisIntegrationTest
                 "//*[@id='dashboard']/div/form/div[3]/div/button[1]"
             )
         )->click();
-
-        $testText = $this->safeFindElement(
-            WebDriverBy::Id("page")
-        )->getText();
-
-var_dump($testText);
 
         $this->safeGet($this->url . '/dashboard/');
         $testText = $this->safeFindElement(
