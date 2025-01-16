@@ -592,9 +592,6 @@ class DashboardTest extends LorisIntegrationTest
      */
     public function testLocal()
     {
-        $this->setupPermissions(
-            ["superuser"]
-        ); 
         $config  =& NDB_Config::singleton();
         $dev     = $config->getSetting("dev");
         $sandbox = $dev['sandbox'];
@@ -654,7 +651,8 @@ class DashboardTest extends LorisIntegrationTest
      */
     private function _testPlan3()
     {
-
+        $this->resetPermissions();
+        $this->setupPermissions(["config","superuser"]);
         $this->safeGet($this->url . '/configuration/');
         $this->safeFindElement(
             WebDriverBy::Xpath(
