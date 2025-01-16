@@ -79,7 +79,7 @@ class SettingsTest extends TestCase
      *
      * @return array list of values equivalent to true
      */
-    public function getTrueValue()
+    public static function getTrueValue()
     {
         return [
             [true],
@@ -118,7 +118,7 @@ class SettingsTest extends TestCase
      *
      * @return array list of values equivalent to false
      */
-    public function getFalseValue()
+    public static function getFalseValue()
     {
         return [
             [false],

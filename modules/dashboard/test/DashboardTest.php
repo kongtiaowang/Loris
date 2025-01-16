@@ -651,6 +651,8 @@ class DashboardTest extends LorisIntegrationTest
      */
     private function _testPlan3()
     {
+        $this->resetPermissions();
+        $this->setupPermissions(["config","superuser"]);
         $this->safeGet($this->url . '/configuration/');
         $this->safeFindElement(
             WebDriverBy::Xpath(
@@ -673,6 +675,7 @@ class DashboardTest extends LorisIntegrationTest
                 "//*[@id='dashboard']/div/form/div[3]/div/button[1]"
             )
         )->click();
+
         $this->safeGet($this->url . '/dashboard/');
         $testText = $this->safeFindElement(
             WebDriverBy::Id("overall-recruitment")

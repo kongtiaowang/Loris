@@ -90,7 +90,7 @@ class PasswordTest extends TestCase
      *
      * @return []
      */
-    public function invalidValues(): array
+    public static function invalidValues(): array
     {
         return [
             // Should fail for not meeting length requirements

@@ -171,6 +171,7 @@ abstract class LorisIntegrationTest extends TestCase
     protected function login($username, $password)
     {
         $this->safeGet($this->url);
+
         /*
         $this->webDriver->wait(120, 1000)->until(
             WebDriverExpectedCondition::presenceOfElementLocated(
