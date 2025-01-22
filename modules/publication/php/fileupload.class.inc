@@ -641,8 +641,7 @@ function editProject()
         "WHERE Title=:t",
         ['t' => $title]
     );
-
-    if ($exists) {
+    if (intval($exists) !== intval($id)) {    
         $this->showPublicationError("Title Exists", 500);
         exit;
     }
