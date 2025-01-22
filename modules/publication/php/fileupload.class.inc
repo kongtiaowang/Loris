@@ -31,7 +31,7 @@ class FileUpload extends \NDB_Page
                 'publication_propose',
                 'publication_approve',
             ]
-        );	    
+        );      
     }
     /**
      * Handle a post form
@@ -48,7 +48,7 @@ $action = $queryParams['action'] ?? null;
 
 switch ($action) {
      case 'upload':
-	$this->uploadPublication();
+    $this->uploadPublication();
 
         return (new \LORIS\Http\Response())
             ->withStatus(200)
@@ -62,8 +62,8 @@ switch ($action) {
 
     // Add other cases here if necessary, for example:
     case 'editProject':
-	    $this->editProject();
-	            return (new \LORIS\Http\Response())
+        $this->editProject();
+                return (new \LORIS\Http\Response())
             ->withStatus(200)
             ->withHeader("Content-Type", "application/json")
             ->withBody(
@@ -80,7 +80,7 @@ switch ($action) {
             ->withStatus(400)
             ->withHeader('Content-Type', 'application/json')
             ->withBody(new \LORIS\Http\StringStream(json_encode($message)));
-}}	
+}}  
 /**
  * Function for new publications
  *
@@ -88,7 +88,6 @@ switch ($action) {
 function uploadPublication()
 
 {
-    error_log("=====");
     $factory = \NDB_Factory::singleton();
     $db      = $factory->database();
     $user    = $factory->user();
@@ -104,7 +103,7 @@ function uploadPublication()
     );
 
     if ($exists) {
-	$this->showPublicationError("Title Exists", 500);
+    $this->showPublicationError("Title Exists", 500);
         exit;
     }
     $desc    = $_POST['description'] ?? null;
@@ -116,7 +115,6 @@ function uploadPublication()
     $link       = $_POST['link'] ?? null;
     $leadInvest = $_POST['leadInvestigator'] ?? null;
     $leadInvestEmail = $_POST['leadInvestigatorEmail'] ?? null;
-    error_log(print_r($_POST,true));
     // check if lead investigator already exists in collaborator table
     // use ID if exists, else insert
     $leadInvID = $db->pselectOne(
@@ -129,7 +127,7 @@ function uploadPublication()
         ]
     );
     if (empty($leadInvID)) {
-	try {
+    try {
         $db->insert(
         'publication_collaborator',
         [
@@ -205,14 +203,12 @@ function uploadPublication()
  */
 function processFiles($pubID) : void
 {
-error_log("processFiles_FILES");	
     if (empty($_FILES)) {
         return;
     }
     $factory = \NDB_Factory::singleton();
     $db      = $factory->database();
     $config  = \NDB_Config::singleton();
-error_log("processFiles_FILESjfdklsa");  
 
     $publicationPath = $config->getSetting('publication_uploads');
 
@@ -270,7 +266,6 @@ error_log("processFiles_FILESjfdklsa");
  */
 function insertCollaborators(int $pubID) : void
 {
-	error_log("insertCollaborators");
     if (!isset($_POST['collaborators'])) {
         return;
     }
@@ -322,8 +317,7 @@ function insertCollaborators(int $pubID) : void
  */
 function insertEditors(int $pubID) : void
 {
-        error_log("insertEditors");
-	
+    
     if (empty($_POST['usersWithEditPerm'])) {
         return;
     }
@@ -352,7 +346,6 @@ function insertEditors(int $pubID) : void
  */
 function insertKeywords(int $pubID) : void
 {
-      error_log("insertKeywords");	
     if (empty($_POST['keywords'])) {
         return;
     }
@@ -399,7 +392,6 @@ function insertKeywords(int $pubID) : void
  */
 function insertVOIs(int $pubID) : void
 {
-error_log("insertVOIs");
     if (empty($_POST['voiFields'])) {
         return;
     }
@@ -495,7 +487,6 @@ function cleanup(int $pubID) : void
  */
 function notify($pubID, $type, $baseURL) : void
 {
-	error_log("notify");
     $acceptedTypes = [
         'submission',
         'edit',
@@ -505,7 +496,6 @@ function notify($pubID, $type, $baseURL) : void
     if (!in_array($type, $acceptedTypes)) {
         $this->showPublicationError("Unexpected notification type: $type", 400);
     }
-        error_log("notify22222");
     $factory   = \NDB_Factory::singleton();
     $db        = $factory->database();
     $config    = \NDB_Config::singleton();
@@ -677,14 +667,14 @@ function editProject()
         );
     }
     try {    
-	    if (!empty($leadInvToUpdate)) {
-	        $db->update(
-	            'publication_collaborator',
-	            $leadInvToUpdate,
-	            ['PublicationCollaboratorID' => $pubData['LeadInvestigatorID']]
-	        );
-	    }
-	} catch (\Exception $e) {
+        if (!empty($leadInvToUpdate)) {
+            $db->update(
+                'publication_collaborator',
+                $leadInvToUpdate,
+                ['PublicationCollaboratorID' => $pubData['LeadInvestigatorID']]
+            );
+        }
+    } catch (\Exception $e) {
           return $this->showPublicationError('Lead Investigator Email address already exists.', 400);
     }
 }
