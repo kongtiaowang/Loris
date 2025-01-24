@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace LORIS;
 
@@ -68,6 +70,7 @@ class FilesDownloadHandler implements RequestHandlerInterface
         }
         //Use basename to remove path traversal characters.
         $filename = $request->getAttribute('filename');
+
         if (empty($filename)) {
             return new \LORIS\Http\Response\JSON\BadRequest(
                 self::ERROR_EMPTY_FILENAME
@@ -75,7 +78,7 @@ class FilesDownloadHandler implements RequestHandlerInterface
         }
 
         assert(is_string($filename) || $filename instanceof \Stringable);
-        $filename = \Utility::resolvePath(strval($filename));
+        $filename = urldecode(\Utility::resolvePath(strval($filename)));
 
         $targetPath = \Utility::appendForwardSlash(
             $this->downloadDirectory->getPathname()
