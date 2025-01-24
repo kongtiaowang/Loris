@@ -224,7 +224,7 @@ jobs:
               php: '8.3'
             - testsuite: 'unit'
               php: '8.3'
-           - testsuite: 'static'
+            - testsuite: 'static'
               php: '8.4'
             - testsuite: 'unit'
               php: '8.4'
