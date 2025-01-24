@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace LORIS\create_timepoint;
 
@@ -109,6 +111,20 @@ class Timepoint extends \NDB_Page implements ETagCalculator
         }
         if (empty($values['psc'])) {
             unset($values['psc']);
+        } else {
+            // Suggested site is the site of the last registered visit
+            $DB = $this->loris->getDatabaseConnection();
+
+            $query  = "
+                SELECT CenterID 
+                FROM session 
+                WHERE CandID=:cid AND Date_visit IS NOT NULL 
+                ORDER BY Date_visit DESC LIMIT 1
+            ";
+            $where  = ['cid' => $values['candID']];
+            $result = iterator_to_array($DB->pselect($query, $where));
+
+            $values['defaultpsc'] = $result[0]['CenterID'];
         }
 
         return new \LORIS\Http\Response\JsonResponse(
