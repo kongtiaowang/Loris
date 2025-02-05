@@ -29,7 +29,7 @@ services:
       - LORIS_DB_CONFIG=/app/test/config.xml
     depends_on:
       - db
-    command: php -S 0.0.0.0:8000 -t /app/htdocs /app/htdocs/router.php 2>error_log &
+    command: php -S 0.0.0.0:8000 -t /app/htdocs /app/htdocs/router.php 2>/app/logs/error_log &
 
   unit-tests:
     build:
