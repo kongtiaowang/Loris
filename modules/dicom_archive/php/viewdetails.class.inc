@@ -55,7 +55,7 @@ class ViewDetails extends \NDB_Form
         // Permission of access to this page needs to match the module's filters
         $config           = \NDB_Factory::singleton()->config();
         $siteprojectperms = $config->getSetting(
-            'useSiteProjectPermissions'
+            'useImagingSiteProjectPermissions'
         );
         $DB  = $this->loris->getDatabaseConnection();
         $row = $DB->pselectRow(

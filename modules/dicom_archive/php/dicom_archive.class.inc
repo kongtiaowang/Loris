@@ -78,7 +78,7 @@ class Dicom_Archive extends \DataFrameworkMenu
         // to be compatible with projects not requiring a session ID for all DICOMS
         $config           = \NDB_Factory::singleton()->config();
         $siteprojectperms = $config->getSetting(
-            'useSiteProjectPermissions'
+            'useImagingSiteProjectPermissions'
         );
         return $siteprojectperms === 'true';
     }
