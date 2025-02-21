@@ -56,10 +56,12 @@ class DicomArchiveRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvision
             t.TarchiveID AS TarchiveID,
             s.ID AS SessionID,
             s.CenterID AS CenterID,
-            m.IsPhantom AS IsPhantom
+            s.ProjectID AS ProjectID,
+            m.IsPhantom AS IsPhantom,
+            t.CreatingUser
             FROM tarchive t
                   LEFT JOIN session s ON (s.ID=t.SessionID)
-                  LEFT JOIN candidate c ON (c.CandID=s.CandID)
+                  LEFT JOIN candidate c ON (c.ID=s.CandidateID)
                   LEFT JOIN psc ON (psc.CenterID=s.CenterID)
                   LEFT JOIN mri_upload m ON (m.TarchiveID=t.TarchiveID)
             WHERE COALESCE(c.Active, 'Y')='Y' AND COALESCE(s.Active, 'Y')='Y'",
@@ -77,12 +79,23 @@ class DicomArchiveRowProvisioner extends \LORIS\Data\Provisioners\DBRowProvision
      */
     public function getInstance($row) : \LORIS\Data\DataInstance
     {
-        if ($row['CenterID'] !== null) {
+        $creator = \User::factory($row['CreatingUser']);
+
+        if ($row['CenterID'] !== null
+            && $row['ProjectID'] !== null
+            && $row['SessionID'] !== null
+        ) {
             $cid = \CenterID::singleton(intval($row['CenterID']));
+            $pid = \ProjectID::singleton(intval($row['ProjectID']));
+            $sid = new \SessionID(strval($row['SessionID']));
             unset($row['CenterID']);
-            return new DICOMArchiveRowWithSession($row, $cid);
+            unset($row['ProjectID']);
+            unset($row['CreatingUser']);
+            return new DICOMArchiveRowWithSession($row, $cid, $pid, $sid, $creator);
         }
         unset($row['CenterID']);
-        return new DICOMArchiveRowWithoutSession($row);
+        unset($row['ProjectID']);
+        unset($row['CreatingUser']);
+        return new DICOMArchiveRowWithoutSession($row, $creator);
     }
 }
