@@ -259,14 +259,11 @@ class My_Preferences extends \NDB_Form
         );
 
         // email address
-        $this->addBasicText(
+        $this->addBasicEmail(
             'Email',
             'Email address',
             [],
-            [
-                'oninvalid' => "this.setCustomValidity('Email address is required')",
-                'onchange'  => "this.setCustomValidity('')",
-            ]
+            []
         );
 
         // email address rules
