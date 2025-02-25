@@ -156,6 +156,11 @@ jobs:
         sed -i 's/<host>db<\/host>/<host>localhost<\/host>/g' project/config.xml
         cat project/config.xml
 
+        
+    - name: Run Docker container
+      run: |
+        docker-compose up -d db
+
     - name: Set up MySQL
       run: |
         sudo /etc/init.d/mysql start
@@ -197,6 +202,7 @@ jobs:
       run: |
            sleep 1
            curl -v http://localhost:8000
+
 
 
     - name: Run Test Suite

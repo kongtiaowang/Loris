@@ -6,10 +6,19 @@ set -euo pipefail
 
 cmd="$@"
 
-echo "Waiting for mysqld..."
+timeout=300  # Timeout in 300 seconds
+elapsed=0
+
+echo "Waiting for MySQL..."
+
 while ! mysqladmin ping -h db -u SQLTestUser --password="TestPassword" --silent ; do
   sleep 1
+  elapsed=$((elapsed + 1))
+  echo "Elapsed time: $elapsed seconds"
 done
+
+echo "MySQL is alive"
+
 
 if [ -v SELENIUM_REQUIRED ]; 
 then
