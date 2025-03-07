@@ -115,6 +115,8 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
      */
     public function testPutCandidatesCandidVisit(): void
     {
+         $this->setupPermissions(["superuser"]);
+
         // Test changing the Project & Battery
         $json     = ['CandID'  => '900000',
             'Visit'   => "V1",
@@ -139,7 +141,7 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
         // Erase sites that were setup in LorisApiAuthenticatedTest
         // setup for data access in other tests.
         $this->DB->run(
-            'DELETE FROM user_psc_rel WHERE UserID=999990 AND CenterID <> 1'
+            'DELETE FROM user_psc_rel WHERE UserID=999990 AND ProjectID <> 1'
         );
         /**
         * Test changing from a site with no affiliation to a site with affiliation
