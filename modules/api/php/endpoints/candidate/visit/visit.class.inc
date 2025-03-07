@@ -97,7 +97,8 @@ class Visit extends Endpoint implements \LORIS\Middleware\ETagCalculator
     public function handle(ServerRequestInterface $request) : ResponseInterface
     {
         if ($this->_visit !== null) {
-            $user = $request->getAttribute('user');
+            $user = $request->getAttribute('user');                return new \LORIS\Http\Response\JSON\Forbidden('Permission denied');
+
             if (!$this->_visit->isAccessibleBy($user)) {
                 return new \LORIS\Http\Response\JSON\Forbidden('Permission denied');
             }
