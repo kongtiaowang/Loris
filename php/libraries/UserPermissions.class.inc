@@ -105,7 +105,7 @@ class UserPermissions
      * @return bool If the user has a permission.
      */
     public function hasPermission(string $code): bool
-    {return true;
+    {
         return $this->_permissionTrueAndValid('superuser')
             || $this->_permissionTrueAndValid($code);
     }
