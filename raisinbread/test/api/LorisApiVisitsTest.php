@@ -115,8 +115,12 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
      */
     public function testPutCandidatesCandidVisit(): void
     {
-         $this->setupPermissions(["superuser"]);
-
+        $this->DB->insert("user_perm_rel",
+            [
+                'UserID' => '999990',
+                'permID' => '10'
+            ]
+        );
         // Test changing the Project & Battery
         $json     = ['CandID'  => '900000',
             'Visit'   => "V1",
