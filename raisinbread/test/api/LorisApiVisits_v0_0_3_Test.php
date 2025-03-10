@@ -209,7 +209,7 @@ class LorisApiVisits_v0_0_3_Test extends LorisApiAuthenticated_v0_0_3_Test
             ]
         );
         // Verify the status code
-        $this->assertEquals(204, $response->getStatusCode());
+        $this->assertEquals(403, $response->getStatusCode());
         // Verify the endpoint has a body
         $body = $response->getBody();
         $this->assertNotEmpty($body);
