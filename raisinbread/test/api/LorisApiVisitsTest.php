@@ -139,10 +139,7 @@ class LorisApiVisitsTest extends LorisApiAuthenticatedTest
         // Erase sites that were setup in LorisApiAuthenticatedTest
         // setup for data access in other tests.
         $this->DB->run(
-            'DELETE FROM user_psc_rel WHERE UserID=999990 AND CenterID <> 1'
-        );
-        $this->DB->run(
-            'DELETE FROM user_perm_rel WHERE UserID=999990'
+            'DELETE FROM user_psc_rel WHERE UserID=999990'
         );
 
         /**
