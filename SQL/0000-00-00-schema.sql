@@ -1,7 +1,7 @@
 -- ********************************
 -- Core tables
 -- ********************************
-
+fjkdlsa
 CREATE TABLE `Project` (
     `ProjectID` INT(10) unsigned NOT NULL AUTO_INCREMENT,
     `Name` VARCHAR(255) NOT NULL,
