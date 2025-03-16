@@ -271,6 +271,8 @@ class LorisApiAuthenticated_v0_0_3_Test extends LorisIntegrationTest
         $this->DB->update('Config', $set, $where);
         parent::tearDown();
     }
-
+    public function testExample() {
+        $this->assertTrue(true);
+    }
 }
 
