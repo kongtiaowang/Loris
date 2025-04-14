@@ -12,9 +12,9 @@ const optimization = {
         compress: false,
         ecma: 6,
         mangle: false,
-        sourceMap: true, // Correct placement of sourceMap inside terserOptions
+        sourceMap: true,
       },
-      extractComments: false, // Optional: you can set this based on your needs
+      extractComments: false,
     }),
   ],
 };
@@ -44,15 +44,15 @@ const resolve = {
     Card: path.resolve(__dirname, './jsx/Card'),
   },
   extensions: ['*', '.js', '.jsx', '.json', '.ts', '.tsx'],
+  fallback: {
+    fs: false,
+  },
 };
 
 const mod = {
   rules: [],
 };
 
-// If no compiled chunk.proto found, deactivate compilation
-// on the file importing it to avoid import errors
-// chunk.proto is only required for EEG visualization and requires protoc
 if (!fs.existsSync(
   './modules/electrophysiology_browser/jsx/react-series-data-viewer/src/'
   + 'protocol-buffers/chunk_pb.js')
@@ -85,23 +85,13 @@ mod.rules.push(
     use: [
       {
         loader: 'ts-loader',
-        options: {onlyCompileBundledFiles: true},
+        options: { onlyCompileBundledFiles: true },
       },
     ],
   },
 );
 
-/**
- * Creates a webpack config entry for a LORIS module named
- * mname.
- *
- * @param {string} mname - The LORIS module name
- * @param {array} entries - The webpack entry points for the module
- * @param {boolean} override - Is the module an override or a native LORIS module.
- *
- * @return {object} - The webpack configuration
- */
-function lorisModule(mname, entries, override=false) {
+function lorisModule(mname, entries, override = false) {
   let entObj = {};
   let base = './modules';
 
@@ -125,9 +115,6 @@ function lorisModule(mname, entries, override=false) {
       'react': 'React',
       'react-dom': 'ReactDOM',
     },
-    node: {
-      fs: 'empty',
-    },
     devtool: 'source-map',
     plugins: [],
     optimization: optimization,
@@ -142,7 +129,7 @@ let mode = 'production';
 try {
   const configFile = fs.readFileSync('project/config.xml', 'latin1');
   const res = /<[\s]*?sandbox[\s]*?>(.*)<\/[\s]*?sandbox[\s]*?>/
-              .exec(configFile);
+    .exec(configFile);
   if (res && parseInt(res[1]) == 1) mode = 'development';
 } catch (error) {
   console.error(
@@ -152,7 +139,6 @@ try {
 }
 
 const config = [
-  // Core components
   {
     mode: mode,
     entry: {
@@ -174,9 +160,6 @@ const config = [
     externals: {
       'react': 'React',
       'react-dom': 'ReactDOM',
-    },
-    node: {
-      fs: 'empty',
     },
     devtool: 'source-map',
     plugins: [
@@ -231,7 +214,7 @@ const config = [
     module: mod,
     stats: 'errors-warnings',
   },
-  // Modules
+
   lorisModule('media', ['CandidateMediaWidget', 'mediaIndex']),
   lorisModule('issue_tracker', [
     'issueTrackerIndex',
@@ -257,9 +240,7 @@ const config = [
     'candidateListIndex',
   ]),
   lorisModule('datadict', ['dataDictIndex']),
-  lorisModule('data_release', [
-    'dataReleaseIndex',
-  ]),
+  lorisModule('data_release', ['dataReleaseIndex']),
   lorisModule('dictionary', ['dataDictIndex']),
   lorisModule('dqt', [
     'components/expansionpanels',
