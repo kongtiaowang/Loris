@@ -151,6 +151,7 @@ const resolve: webpack.ResolveOptions = {
     Card: path.resolve(__dirname, './jsx/Card'),
     Help: path.resolve(__dirname, './jsx/Help'),
   },
+  preferRelative: true,
   extensions: ['*', '.js', '.jsx', '.json', '.ts', '.tsx'],
   fallback: {
     fs: false,
