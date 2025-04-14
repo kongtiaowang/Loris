@@ -13,8 +13,9 @@ const optimization = {
         compress: false,
         ecma: 6,
         mangle: false,
+        sourceMap: true, // Correct placement of sourceMap inside terserOptions
       },
-      sourceMap: true,
+      extractComments: false, // Optional: you can set this based on your needs
     }),
   ],
 };
@@ -50,7 +51,7 @@ const mod = {
   rules: [],
 };
 
-// If no compiled chunk.proto found, desactivate compilation
+// If no compiled chunk.proto found, deactivate compilation
 // on the file importing it to avoid import errors
 // chunk.proto is only required for EEG visualization and requires protoc
 if (!fs.existsSync(
@@ -297,28 +298,13 @@ const config = [
     'columnFormatterUnresolved',
     'mri_protocol_violations_columnFormatter',
   ]),
-  lorisModule('user_accounts', ['userAccountsIndex']),
-  lorisModule('examiner', ['examinerIndex']),
-  lorisModule('help_editor', ['help_editor']),
-  lorisModule('brainbrowser', ['Brainbrowser']),
-  lorisModule('imaging_uploader', ['index']),
-  lorisModule('acknowledgements', ['acknowledgementsIndex']),
-  lorisModule('new_profile', ['NewProfileIndex']),
-  lorisModule('module_manager', ['modulemanager']),
-  lorisModule('imaging_qc', ['imagingQCIndex']),
-  lorisModule('server_processes_manager', ['server_processes_managerIndex']),
-  lorisModule('instruments', ['CandidateInstrumentList']),
-  lorisModule('candidate_profile', ['CandidateInfo']),
-  lorisModule('api_docs', ['swagger-ui_custom']),
+  lorisModule('global_configuration', [
+    'configuration_index',
+    'global_configuration_helper',
+  ]),
+  lorisModule('eeg_browser', ['react.eeg_browser', 'index']),
+  lorisModule('nmi', ['nmiIndex']),
 ];
 
-// Support project overrides
-if (fs.existsSync('./project/webpack-project.config.js')) {
-  const projConfig = require('./project/webpack-project.config.js');
-
-  for (const [module, files] of Object.entries(projConfig)) {
-    config.push(lorisModule(module, files, true));
-  }
-}
-
 module.exports = config;
+
