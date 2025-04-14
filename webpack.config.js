@@ -53,10 +53,12 @@ const mod = {
   rules: [],
 };
 
-if (!fs.existsSync(
-  './modules/electrophysiology_browser/jsx/react-series-data-viewer/src/'
-  + 'protocol-buffers/chunk_pb.js')
-) {
+const chunkPbPath = path.join(
+  __dirname,
+  'modules/electrophysiology_browser/jsx/react-series-data-viewer/src/protocol-buffers/chunk_pb.js'
+);
+
+if (!fs.existsSync(chunkPbPath)) {
   mod.rules.push({
     test: /react-series-data-viewer\/src\/chunks/,
     use: 'null-loader',
@@ -75,10 +77,7 @@ mod.rules.push(
   },
   {
     test: /\.css$/,
-    use: [
-      'style-loader',
-      'css-loader',
-    ],
+    use: ['style-loader', 'css-loader'],
   },
   {
     test: /\.tsx?$/,
@@ -88,37 +87,33 @@ mod.rules.push(
         options: { onlyCompileBundledFiles: true },
       },
     ],
-  },
+  }
 );
 
 function lorisModule(mname, entries, override = false) {
-  let entObj = {};
-  let base = './modules';
+  const entry = {};
+  const base = override ? './project/modules' : './modules';
 
-  if (override) {
-    base = './project/modules';
-  }
+  entries.forEach((e) => {
+    entry[e] = path.join(base, mname, 'jsx', `${e}.js`);
+  });
 
-  for (let i = 0; i < entries.length; i++) {
-    entObj[entries[i]] =
-      base + '/' + mname + '/jsx/' + entries[i] + '.js';
-  }
   return {
-    entry: entObj,
+    entry,
     output: {
-      path: path.resolve(__dirname, base) + '/' + mname + '/js/',
+      path: path.resolve(__dirname, base, mname, 'js'),
       filename: '[name].js',
       library: ['lorisjs', mname, '[name]'],
       libraryTarget: 'window',
     },
     externals: {
-      'react': 'React',
+      react: 'React',
       'react-dom': 'ReactDOM',
     },
     devtool: 'source-map',
     plugins: [],
-    optimization: optimization,
-    resolve: resolve,
+    optimization,
+    resolve,
     module: mod,
     mode: 'none',
     stats: 'errors-warnings',
@@ -128,37 +123,35 @@ function lorisModule(mname, entries, override = false) {
 let mode = 'production';
 try {
   const configFile = fs.readFileSync('project/config.xml', 'latin1');
-  const res = /<[\s]*?sandbox[\s]*?>(.*)<\/[\s]*?sandbox[\s]*?>/
-    .exec(configFile);
-  if (res && parseInt(res[1]) == 1) mode = 'development';
-} catch (error) {
-  console.error(
-    'Error - Can\'t read config.xml file. '
-    + 'Webpack mode set to production.'
-  );
+  const match = configFile.match(/<\s*sandbox\s*>(.*?)<\/\s*sandbox\s*>/);
+  if (match && parseInt(match[1]) === 1) {
+    mode = 'development';
+  }
+} catch {
+  console.error("Error - Can't read config.xml file. Webpack mode set to production.");
 }
 
 const config = [
   {
-    mode: mode,
+    mode,
     entry: {
-      DynamicDataTable: './jsx/DynamicDataTable.js',
-      PaginationLinks: './jsx/PaginationLinks.js',
-      StaticDataTable: './jsx/StaticDataTable.js',
-      MultiSelectDropdown: './jsx/MultiSelectDropdown.js',
-      Breadcrumbs: './jsx/Breadcrumbs.js',
-      Form: './jsx/Form.js',
-      Markdown: './jsx/Markdown.js',
-      CSSGrid: './jsx/CSSGrid.js',
+      DynamicDataTable: './jsx/DynamicDataTable.jsx',
+      PaginationLinks: './jsx/PaginationLinks.jsx',
+      StaticDataTable: './jsx/StaticDataTable.jsx',
+      MultiSelectDropdown: './jsx/MultiSelectDropdown.jsx',
+      Breadcrumbs: './jsx/Breadcrumbs.jsx',
+      Form: './jsx/Form.jsx',
+      Markdown: './jsx/Markdown.jsx',
+      CSSGrid: './jsx/CSSGrid.jsx',
     },
     output: {
-      path: __dirname + '/htdocs/js/components/',
+      path: path.resolve(__dirname, 'htdocs/js/components'),
       filename: '[name].js',
       library: ['lorisjs', '[name]'],
       libraryTarget: 'window',
     },
     externals: {
-      'react': 'React',
+      react: 'React',
       'react-dom': 'ReactDOM',
     },
     devtool: 'source-map',
@@ -183,13 +176,9 @@ const config = [
             globOptions: {
               ignore: ['react.profiling.min.js'],
             },
-            filter: async (path) => {
-              const file = path.split('\\').pop().split('/').pop();
-              const keep = [
-                'react.development.js',
-                'react.production.min.js',
-              ];
-              return keep.includes(file);
+            filter: async (filePath) => {
+              const file = path.basename(filePath);
+              return ['react.development.js', 'react.production.min.js'].includes(file);
             },
           },
           {
@@ -197,20 +186,16 @@ const config = [
             to: path.resolve(__dirname, 'htdocs/vendor/js/react'),
             flatten: true,
             force: true,
-            filter: async (path) => {
-              const file = path.split('\\').pop().split('/').pop();
-              const keep = [
-                'react-dom.development.js',
-                'react-dom.production.min.js',
-              ];
-              return keep.includes(file);
+            filter: async (filePath) => {
+              const file = path.basename(filePath);
+              return ['react-dom.development.js', 'react-dom.production.min.js'].includes(file);
             },
           },
         ],
       }),
     ],
-    optimization: optimization,
-    resolve: resolve,
+    optimization,
+    resolve,
     module: mod,
     stats: 'errors-warnings',
   },
