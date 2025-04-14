@@ -1,233 +1,40 @@
-const ESLintPlugin = require('eslint-webpack-plugin');
-const TerserPlugin = require('terser-webpack-plugin');
-const CopyPlugin = require('copy-webpack-plugin');
-const path = require('path');
-const fs = require('fs');
+import cp from 'child_process';
+import fs from 'fs';
+import path from 'path';
+import webpack, {DefinePlugin, IgnorePlugin} from 'webpack';
+import CopyPlugin from 'copy-webpack-plugin';
+import TerserPlugin from 'terser-webpack-plugin';
 
-const optimization = {
-  minimizer: [
-    new TerserPlugin({
-      parallel: true,
-      terserOptions: {
-        compress: false,
-        ecma: 6,
-        mangle: false,
-        sourceMap: true,
-      },
-      extractComments: false,
-    }),
+// Build mode (development or production)
+const isDev = process.env.NODE_ENV === 'development';
+
+// Target module to build (if there is one)
+const target = process.env.target;
+
+// A record mapping each LORIS module to its entry points
+const lorisModules: Record<string, string[]> = {
+  media: ['CandidateMediaWidget', 'mediaIndex'],
+  issue_tracker: ['issueTrackerIndex', 'index', 'CandidateIssuesWidget'],
+  login: ['loginIndex'],
+  publication: ['publicationIndex', 'viewProjectIndex'],
+  document_repository: ['docIndex', 'editFormIndex'],
+  candidate_parameters: ['CandidateParameters', 'ConsentWidget', 'DiagnosisEvolution'],
+  configuration: [
+    'CohortRelations',
+    'configuration_helper',
+    'DiagnosisEvolution',
   ],
-};
-
-const resolve = {
-  alias: {
-    util: path.resolve(__dirname, './htdocs/js/util'),
-    jsx: path.resolve(__dirname, './jsx'),
-    jslib: path.resolve(__dirname, './jslib'),
-    Breadcrumbs: path.resolve(__dirname, './jsx/Breadcrumbs'),
-    DataTable: path.resolve(__dirname, './jsx/DataTable'),
-    DynamicDataTable: path.resolve(__dirname, './jsx/DynamicDataTable'),
-    Filter: path.resolve(__dirname, './jsx/Filter'),
-    FilterableDataTable: path.resolve(__dirname, './jsx/FilterableDataTable'),
-    FilterForm: path.resolve(__dirname, './jsx/FilterForm'),
-    Form: path.resolve(__dirname, './jsx/Form'),
-    Loader: path.resolve(__dirname, './jsx/Loader'),
-    Markdown: path.resolve(__dirname, './jsx/Markdown'),
-    Modal: path.resolve(__dirname, './jsx/Modal'),
-    MultiSelectDropdown: path.resolve(__dirname, './jsx/MultiSelectDropdown'),
-    PaginationLinks: path.resolve(__dirname, './jsx/PaginationLinks'),
-    Panel: path.resolve(__dirname, './jsx/Panel'),
-    ProgressBar: path.resolve(__dirname, './jsx/ProgressBar'),
-    StaticDataTable: path.resolve(__dirname, './jsx/StaticDataTable'),
-    Tabs: path.resolve(__dirname, './jsx/Tabs'),
-    TriggerableModal: path.resolve(__dirname, './jsx/TriggerableModal'),
-    Card: path.resolve(__dirname, './jsx/Card'),
-  },
-  extensions: ['.js', '.jsx', '.json', '.ts', '.tsx'],
-  fallback: {
-    fs: false,
-  },
-};
-
-const mod = {
-  rules: [],
-};
-
-const chunkPbPath = path.join(
-  __dirname,
-  'modules/electrophysiology_browser/jsx/react-series-data-viewer/src/protocol-buffers/chunk_pb.js'
-);
-
-if (!fs.existsSync(chunkPbPath)) {
-  mod.rules.push({
-    test: /react-series-data-viewer\/src\/chunks/,
-    use: 'null-loader',
-  });
-}
-
-mod.rules.push(
-  {
-    test: /\.(jsx?|tsx?)$/,
-    exclude: /node_modules/,
-    use: [
-      {
-        loader: 'babel-loader?cacheDirectory',
-      },
-    ],
-  },
-  {
-    test: /\.css$/,
-    use: ['style-loader', 'css-loader'],
-  },
-  {
-    test: /\.tsx?$/,
-    use: [
-      {
-        loader: 'ts-loader',
-        options: { onlyCompileBundledFiles: true },
-      },
-    ],
-  }
-);
-
-function lorisModule(mname, entries, override = false) {
-  const entry = {};
-  const base = override ? './project/modules' : './modules';
-
-  entries.forEach((e) => {
-    entry[e] = path.join(base, mname, 'jsx', `${e}.js`);
-  });
-
-  return {
-    entry,
-    output: {
-      path: path.resolve(__dirname, base, mname, 'js'),
-      filename: '[name].js',
-      library: ['lorisjs', mname, '[name]'],
-      libraryTarget: 'window',
-    },
-    externals: {
-      react: 'React',
-      'react-dom': 'ReactDOM',
-    },
-    devtool: 'source-map',
-    plugins: [],
-    optimization,
-    resolve,
-    module: mod,
-    mode: 'none',
-    stats: 'errors-warnings',
-  };
-}
-
-let mode = 'production';
-try {
-  const configFile = fs.readFileSync('project/config.xml', 'latin1');
-  const match = configFile.match(/<\s*sandbox\s*>(.*?)<\/\s*sandbox\s*>/);
-  if (match && parseInt(match[1]) === 1) {
-    mode = 'development';
-  }
-} catch {
-  console.error("Error - Can't read config.xml file. Webpack mode set to production.");
-}
-
-const config = [
-  {
-    mode,
-    entry: {
-      DynamicDataTable: './jsx/DynamicDataTable.jsx',
-      PaginationLinks: './jsx/PaginationLinks.jsx',
-      StaticDataTable: './jsx/StaticDataTable.jsx',
-      MultiSelectDropdown: './jsx/MultiSelectDropdown.jsx',
-      Breadcrumbs: './jsx/Breadcrumbs.jsx',
-      Form: './jsx/Form.jsx',
-      Markdown: './jsx/Markdown.jsx',
-      CSSGrid: './jsx/CSSGrid.jsx',
-    },
-    output: {
-      path: path.resolve(__dirname, 'htdocs/js/components'),
-      filename: '[name].js',
-      library: ['lorisjs', '[name]'],
-      libraryTarget: 'window',
-    },
-    externals: {
-      react: 'React',
-      'react-dom': 'ReactDOM',
-    },
-    devtool: 'source-map',
-    plugins: [
-      new ESLintPlugin({
-        files: [
-          'modules/',
-          'jsx/',
-          'jslib/',
-          'htdocs/js/',
-          'webpack.config.js',
-        ],
-        cache: true,
-      }),
-      new CopyPlugin({
-        patterns: [
-          {
-            from: path.resolve(__dirname, 'node_modules/react/umd'),
-            to: path.resolve(__dirname, 'htdocs/vendor/js/react'),
-            flatten: true,
-            force: true,
-            globOptions: {
-              ignore: ['react.profiling.min.js'],
-            },
-            filter: async (filePath) => {
-              const file = path.basename(filePath);
-              return ['react.development.js', 'react.production.min.js'].includes(file);
-            },
-          },
-          {
-            from: path.resolve(__dirname, 'node_modules/react-dom/umd'),
-            to: path.resolve(__dirname, 'htdocs/vendor/js/react'),
-            flatten: true,
-            force: true,
-            filter: async (filePath) => {
-              const file = path.basename(filePath);
-              return ['react-dom.development.js', 'react-dom.production.min.js'].includes(file);
-            },
-          },
-        ],
-      }),
-    ],
-    optimization,
-    resolve,
-    module: mod,
-    stats: 'errors-warnings',
-  },
-
-  lorisModule('media', ['CandidateMediaWidget', 'mediaIndex']),
-  lorisModule('issue_tracker', [
-    'issueTrackerIndex',
-    'index',
-    'CandidateIssuesWidget',
-  ]),
-  lorisModule('login', ['loginIndex']),
-  lorisModule('publication', ['publicationIndex', 'viewProjectIndex']),
-  lorisModule('document_repository', ['docIndex', 'editFormIndex']),
-  lorisModule('candidate_parameters', [
-    'CandidateParameters',
-    'ConsentWidget',
-  ]),
-  lorisModule('configuration', ['SubprojectRelations', 'configuration_helper']),
-  lorisModule('conflict_resolver', ['conflict_resolver']),
-  lorisModule('battery_manager', ['batteryManagerIndex']),
-  lorisModule('bvl_feedback', ['react.behavioural_feedback_panel']),
-  lorisModule('behavioural_qc', ['behaviouralQCIndex']),
-  lorisModule('create_timepoint', ['createTimepointIndex']),
-  lorisModule('candidate_list', [
-    'openProfileForm',
-    'onLoad',
-    'candidateListIndex',
-  ]),
-  lorisModule('datadict', ['dataDictIndex']),
-  lorisModule('data_release', ['dataReleaseIndex']),
-  lorisModule('dictionary', ['dataDictIndex']),
-  lorisModule('dqt', [
+  conflict_resolver: ['conflict_resolver', 'CandidateConflictsWidget'],
+  battery_manager: ['batteryManagerIndex'],
+  bvl_feedback: ['react.behavioural_feedback_panel'],
+  behavioural_qc: ['behaviouralQCIndex'],
+  create_timepoint: ['createTimepointIndex'],
+  candidate_list: ['openProfileForm', 'candidateListIndex'],
+  datadict: ['dataDictIndex'],
+  dataquery: ['index'],
+  data_release: ['dataReleaseIndex'],
+  dictionary: ['dataDictIndex'],
+  dqt: [
     'components/expansionpanels',
     'components/searchabledropdown',
     'components/stepper',
@@ -239,37 +46,324 @@ const config = [
     'react.savedqueries',
     'react.sidebar',
     'react.tabs',
-  ]),
-  lorisModule('dicom_archive', ['dicom_archive']),
-  lorisModule('genomic_browser', ['genomicBrowserIndex']),
-  lorisModule('electrophysiology_browser', [
+  ],
+  dicom_archive: ['dicom_archive'],
+  genomic_browser: ['genomicBrowserIndex'],
+  electrophysiology_browser: [
     'electrophysiologyBrowserIndex',
     'electrophysiologySessionView',
-  ]),
-  lorisModule('imaging_browser', [
+  ],
+  electrophysiology_uploader: [
+    'ElectrophysiologyUploader',
+    'UploadForm',
+    'UploadViewer',
+  ],
+  imaging_browser: [
     'ImagePanel',
     'imagingBrowserIndex',
     'CandidateScanQCSummaryWidget',
-  ]),
-  lorisModule('instrument_builder', [
-    'react.instrument_builder',
-    'react.questions',
-  ]),
-  lorisModule('instrument_manager', ['instrumentManagerIndex']),
-  lorisModule('survey_accounts', ['surveyAccountsIndex']),
-  lorisModule('mri_violations', [
-    'mri_protocol_check_violations_columnFormatter',
-    'columnFormatter',
-    'columnFormatterUnresolved',
-    'mri_protocol_violations_columnFormatter',
-  ]),
-  lorisModule('global_configuration', [
-    'configuration_index',
-    'global_configuration_helper',
-  ]),
-  lorisModule('eeg_browser', ['react.eeg_browser', 'index']),
-  lorisModule('nmi', ['nmiIndex']),
-];
+  ],
+  instrument_builder: ['react.instrument_builder', 'react.questions'],
+  instrument_manager: ['instrumentManagerIndex'],
+  survey_accounts: ['surveyAccountsIndex'],
+  mri_violations: ['mriViolationsIndex'],
+  user_accounts: ['userAccountsIndex'],
+  examiner: ['examinerIndex'],
+  help_editor: ['help_editor', 'helpEditorForm'],
+  brainbrowser: ['Brainbrowser'],
+  imaging_uploader: ['index'],
+  acknowledgements: ['acknowledgementsIndex'],
+  new_profile: ['NewProfileIndex'],
+  module_manager: ['modulemanager'],
+  imaging_qc: ['imagingQCIndex'],
+  server_processes_manager: ['server_processes_managerIndex'],
+  statistics: ['WidgetIndex'],
+  instruments: ['CandidateInstrumentList', 'ControlpanelDeleteInstrumentData'],
+  candidate_profile: ['CandidateInfo'],
+  schedule_module: ['scheduleIndex'],
+  api_docs: ['swagger-ui_custom'],
+  dashboard: ['welcome'],
+};
 
-module.exports = config;
+/*
+ * ------------------------------------------------------------
+ * Check if useEEGBrowserVisualizationComponents is set to TRUE
+ * If not, protoc compiled file chunk.proto may not exist.
+ * Deactivate compilation of the EEGBrowserVisualization files
+ * to avoid import errors and optimize performance
+ */
 
+let EEGVisEnabled: boolean | string = false;
+if ('EEG_VIS_ENABLED' in process.env) {
+  EEGVisEnabled = process.env.EEG_VIS_ENABLED ?? false;
+} else {
+  const getConfig = cp.spawnSync('php', [
+    'tools/get_config.php',
+    'useEEGBrowserVisualizationComponents',
+  ], {});
+
+  try {
+    EEGVisEnabled = JSON.parse(getConfig.stdout.toString());
+  } catch (e) {
+    console.warn(
+      '\x1b[33m',
+      'WARNING: Unable to fetch DB config',
+      'useEEGBrowserVisualizationComponents',
+      '\x1b[0m',
+    );
+  }
+}
+
+const optimization = {
+  minimizer: [
+    (compiler: webpack.Compiler) => {
+      new TerserPlugin({
+        parallel: true,
+        terserOptions: {
+          compress: false,
+          ecma: 2015,
+          mangle: false,
+        },
+        extractComments: false,
+      }).apply(compiler);
+    },
+  ],
+};
+
+const resolve: webpack.ResolveOptions = {
+  alias: {
+    jsx: path.resolve(__dirname, './jsx'),
+    jslib: path.resolve(__dirname, './jslib'),
+    Breadcrumbs: path.resolve(__dirname, './jsx/Breadcrumbs'),
+    DataTable: path.resolve(__dirname, './jsx/DataTable'),
+    Filter: path.resolve(__dirname, './jsx/Filter'),
+    FilterableDataTable: path.resolve(__dirname, './jsx/FilterableDataTable'),
+    FilterForm: path.resolve(__dirname, './jsx/FilterForm'),
+    Loader: path.resolve(__dirname, './jsx/Loader'),
+    Modal: path.resolve(__dirname, './jsx/Modal'),
+    MultiSelectDropdown: path.resolve(__dirname, './jsx/MultiSelectDropdown'),
+    PaginationLinks: path.resolve(__dirname, './jsx/PaginationLinks'),
+    Panel: path.resolve(__dirname, './jsx/Panel'),
+    ProgressBar: path.resolve(__dirname, './jsx/ProgressBar'),
+    StaticDataTable: path.resolve(__dirname, './jsx/StaticDataTable'),
+    Tabs: path.resolve(__dirname, './jsx/Tabs'),
+    TriggerableModal: path.resolve(__dirname, './jsx/TriggerableModal'),
+    Card: path.resolve(__dirname, './jsx/Card'),
+    Help: path.resolve(__dirname, './jsx/Help'),
+  },
+  extensions: ['*', '.js', '.jsx', '.json', '.ts', '.tsx'],
+  fallback: {
+    fs: false,
+    path: false,
+  },
+};
+
+const module: webpack.ModuleOptions = {
+  rules: [
+    {
+      test: /\.(jsx?|tsx?)$/,
+      exclude: /node_modules/,
+      use: [
+        {
+          loader: 'babel-loader?cacheDirectory',
+        },
+      ],
+    },
+    {
+      test: /\.css$/,
+      use: [
+        'style-loader',
+        'css-loader',
+      ],
+    },
+    {
+      test: /\.tsx?$/,
+      exclude: [/react-series-data-viewer/],
+      use: [
+        {
+          loader: 'ts-loader',
+          options: {
+            onlyCompileBundledFiles: true,
+          },
+        },
+      ],
+    },
+    {
+      test: /.*\/react-series-data-viewer\/.*\.tsx?$/,
+      use: [
+        {
+          loader: 'ts-loader',
+          options: {
+            onlyCompileBundledFiles: true,
+            compilerOptions: {
+              strict: false,
+          },
+        },
+      },
+    ],
+  },
+  ],
+};
+
+const plugins: webpack.WebpackPluginInstance[] = [];
+
+plugins.push(new CopyPlugin({
+  patterns: [
+    {
+      from: `node_modules/react/umd/${
+        isDev ? 'react.development.js' : 'react.production.min.js'
+      }`,
+      to: 'htdocs/vendor/js/react',
+      force: true,
+    },
+    {
+      from: `node_modules/react-dom/umd/${
+        isDev ? 'react-dom.development.js' : 'react-dom.production.min.js'
+      }`,
+      to: 'htdocs/vendor/js/react',
+      force: true,
+    },
+  ],
+}));
+
+plugins.push(new DefinePlugin({
+  EEG_VIS_ENABLED: EEGVisEnabled,
+}));
+
+if (EEGVisEnabled !== 'true' && EEGVisEnabled !== '1' ) {
+  plugins.push(
+    new IgnorePlugin({
+      resourceRegExp: /react-series-data-viewer/,
+    })
+  );
+}
+
+/**
+ * Add the project-specific modules and entry points to the record of main
+ * LORIS modules.
+ */
+function addProjectModules(
+  modules: Record<string, string[]>,
+): Record<string, string[]> {
+  if (!fs.existsSync('./project/webpack-project.config.js')) {
+    return modules;
+  }
+
+  const projectModules: Record<string, string[]>
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    = require('./project/webpack-project.config.js');
+
+  // Copy the record of LORIS modules
+  const allModules: Record<string, string[]> = modules;
+  
+  // Add project-specific modules and overrides to the record of modules
+  for (const [moduleName, moduleEntryPoints] of
+    Object.entries(projectModules)
+  ) {
+    if (moduleName in allModules) {
+      allModules[moduleName].push(...moduleEntryPoints);
+    } else {
+      allModules[moduleName] = moduleEntryPoints;
+    }
+  }
+
+  return allModules;
+}
+
+/**
+ * Filter the record of LORIS modules to contain only the target module if a
+ * target is defined, or return the record unchanged if no target is defined.
+ */
+function filterTargetModules(
+  modules: Record<string, string[]>,
+): Record<string, string[]> {
+  // If there is no target module, do not filter the modules
+  if (!target) {
+    // eslint-disable-next-line no-console
+    console.log('Building all modules');
+    return modules;
+  }
+
+  // Exit if the target module is not found in the list of modules
+  if (!(target in modules)) {
+    console.error(`Target module \''${target}'\' not found`);
+    process.exit(1);
+  }
+
+  // Return a record containing only the target module files
+  // eslint-disable-next-line no-console
+  console.log(`Building module \'${target}\'`);
+  return {
+    [target]: modules[target],
+  };
+}
+
+/**
+ * Get the Webpack entries of a given module, with each entry being mapped to
+ * its name.
+ */
+function getModuleEntries(
+  moduleName: string,
+  moduleEntryPoints: string[],
+): Record<string, webpack.EntryOptions>[] {
+  // Check if a project override exists for the module.
+  const basePath = fs.existsSync(`./project/modules/${moduleName}`)
+    ? `./project/modules/${moduleName}/`
+    : `./modules/${moduleName}/`;
+
+  return moduleEntryPoints.map((moduleEntryPoint) => ({
+    [moduleName + '/' + moduleEntryPoint]: {
+      import: basePath + 'jsx/' + moduleEntryPoint,
+      filename: basePath + 'js/' + moduleEntryPoint + '.js',
+      library: {
+        name: ['lorisjs', moduleName, moduleEntryPoint],
+        type: 'window',
+      },
+    },
+  }));
+}
+
+/**
+ * Get the Webpack entries of the LORIS modules to build, with each entry being
+ * mapped to its name.
+ */
+function getModulesEntries(): Record<string, webpack.EntryOptions> {
+  const allModules = addProjectModules(lorisModules);
+  const targetModules = filterTargetModules(allModules);
+  const moduleEntries = Object.entries(targetModules)
+    .map(([moduleName, moduleEntryPoints]) =>
+      getModuleEntries(moduleName, moduleEntryPoints)
+    )
+    .flat();
+
+  return Object.assign({}, ...moduleEntries);
+}
+
+const configs: webpack.Configuration[] = [];
+
+configs.push({
+  entry: {
+    PaginationLinks: './jsx/PaginationLinks.js',
+    StaticDataTable: './jsx/StaticDataTable.js',
+    MultiSelectDropdown: './jsx/MultiSelectDropdown.js',
+    Breadcrumbs: './jsx/Breadcrumbs.js',
+    CSSGrid: './jsx/CSSGrid.js',
+    Help: './jsx/Help.js',
+    ...getModulesEntries(),
+  },
+  output: {
+    path: __dirname,
+    filename: './htdocs/js/components/[name].js',
+    library: ['lorisjs', '[name]'],
+    libraryTarget: 'window',
+  },
+  externals: {'react': 'React', 'react-dom': 'ReactDOM'},
+  devtool: 'source-map',
+  plugins,
+  optimization,
+  resolve,
+  module,
+  stats: 'errors-warnings',
+});
+
+export default configs;
