@@ -43,7 +43,7 @@ const resolve = {
     TriggerableModal: path.resolve(__dirname, './jsx/TriggerableModal'),
     Card: path.resolve(__dirname, './jsx/Card'),
   },
-  extensions: ['*', '.js', '.jsx', '.json', '.ts', '.tsx'],
+  extensions: ['.js', '.jsx', '.json', '.ts', '.tsx'],
   fallback: {
     fs: false,
   },
