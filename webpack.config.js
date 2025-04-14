@@ -7,7 +7,6 @@ const fs = require('fs');
 const optimization = {
   minimizer: [
     new TerserPlugin({
-      cache: true,
       parallel: true,
       terserOptions: {
         compress: false,
