@@ -195,7 +195,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     /**
      * Array containing all multiselect elements in an instrument.
      */
-    protected $selectMultipleElements;
+    protected $selectMultipleElements = [];
 
     /**
      * Factory generates a new instrument instance of type
@@ -298,6 +298,12 @@ abstract class NDB_BVL_Instrument extends NDB_Page
                 $base . "project/instruments/$instrument.meta"
             );
         }
+        // Set DataEntryType to normal or DirectEntry
+        if (isset($_REQUEST['key'])) {
+            $obj->DataEntryType = 'DirectEntry';
+        } else {
+            $obj->DataEntryType = 'normal';
+        }
         // Adds all of the form element and form rules to the page after
         // having instantiated the form above
         $obj->loadInstrumentFile(
@@ -362,10 +368,18 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         } else { //check if user has instrument's permissions
             //is the instrument listed at all in instrumentPermissions?
             $instrumentListed = false;
-            foreach ($instrumentPermissions["instrument"] as $instrument) {
+            // get an array of instruments
+            // if one instrument, get it into an array
+            $instrumentList = Utility::asArray(
+                $instrumentPermissions["instrument"]
+            );
+            // iterate through instruments
+            foreach ($instrumentList as $instrument) {
                 if ($instrument["Test_name"] == $this->testName) {
                     $instrumentListed = true;
-                    $instrumentPerms  = Utility::asArray($instrument["permission"]);
+                    $instrumentPerms  = Utility::asArray(
+                        $instrument["permission"]
+                    );
                 }
             }
 
@@ -469,10 +483,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
     {
         // ALWAYS INCLUDE THESE!
 
-        if (isset($_REQUEST['key'])) {
-            $this->DataEntryType = 'DirectEntry';
-        } else {
-            $this->DataEntryType = 'normal';
+        if ($this->DataEntryType === 'normal') {
             // These are required for Save Data to work properly, but not when it's
             // a direct data entry page
             $this->addHidden(
@@ -2529,9 +2540,23 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         $Responses = $this->getInstanceData();
 
-        foreach ($tpl_data['questions'] as &$row) {
+        foreach ($tpl_data['questions'] as $key => &$row) {
+            $isStatusField = $row['SourceField']
+                === $tpl_data['questions'][$key-1]['SourceField']."_status";
             if (isset($Responses[$row['SourceField']])) {
+                // Consider status fields
+                if ($isStatusField) {
+                    // The current row is the status field of the previous one
+                    // remove row and set the answer to whichever is answered
+                    $tpl_data['questions'][$key-1]['response']
+                        = $Responses[$row['SourceField']];
+                    unset($tpl_data['questions'][$key]);
+                    continue;
+                }
                 $row['response'] = $Responses[$row['SourceField']];
+            } elseif ($isStatusField) {
+                // incase it's a status field AND its empty, unset it
+                unset($tpl_data['questions'][$key]);
             }
         }
 
@@ -3071,8 +3096,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         );
 
         $instrumentNames = [];
-        foreach ($instrumentNamesList as $testName => $instrument) {
-            $fullName = $instrument->getFullName();
+        foreach ($instrumentNamesList as $testName => $fullName) {
             if (in_array($testName, $directEntryInstruments, true)) {
                 $instrumentNames[$testName] = $fullName;
             }
@@ -3082,5 +3106,16 @@ abstract class NDB_BVL_Instrument extends NDB_Page
         asort($instrumentNames, SORT_STRING | SORT_FLAG_CASE | SORT_NATURAL);
 
         return $instrumentNames;
+    }
+
+    /**
+     * Gets the current instrument instance selectMultipleElements
+     *
+     * @return array the select multiple elements of this instrument.
+     * @access public
+     */
+    public function getSelectMultipleElements(): array
+    {
+        return $this->selectMultipleElements;
     }
 }
