@@ -85,11 +85,29 @@ class Edit_Help_Content extends \NDB_Form
             'title'      => null,
             'content'    => 'Under Construction',
             'section'    => isset($gets['section']) ?
-                htmlspecialchars($gets['section']) : null,
+                htmlspecialchars(
+                    $gets['section'],
+                    ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+                    'UTF-8',
+                    false
+                )
+                    : null,
             'subsection' => isset($gets['subsection']) ?
-                htmlspecialchars($gets['subsection']) : null,
+                htmlspecialchars(
+                    $gets['subsection'],
+                    ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+                    'UTF-8',
+                    false
+                )
+                    : null,
             'helpid'     => isset($gets['helpID']) ?
-                htmlspecialchars($gets['helpID']) : null,
+                htmlspecialchars(
+                    $gets['helpID'],
+                    ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+                    'UTF-8',
+                    false
+                )
+        : null,
         ];
 
         if (!empty($data['section'])) {
@@ -107,9 +125,23 @@ class Edit_Help_Content extends \NDB_Form
         }
 
         if ($data['helpid']) {
-            $help_data       = HelpFile::factory($data['helpid'])->toArray();
-            $data['title']   = $help_data['topic'];
-            $data['content'] = htmlspecialchars_decode(trim($help_data['content']));
+            $help_data          = HelpFile::factory($data['helpid'])->toArray();
+            $data['title']      = $help_data['topic'];
+            $data['content']    = htmlspecialchars_decode(
+                trim(
+                    $help_data['content']
+                )
+            );
+            $data['instrument'] = $help_data['instrument'];
+            $data['instrumentslist'] = ['a'=>'a'];
+            $instrumentList          = \NDB_BVL_Instrument::getInstrumentNamesList(
+                $request->getAttribute("loris")
+            );
+                   $data['instrumentslist'] =  $instrumentList;
+
+            if ($data['helpid'] =='null') {
+                $data['instrumentslist'] =  $instrumentList;
+            }
         }
 
         // case where no help content exists
