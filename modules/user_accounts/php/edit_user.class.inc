@@ -383,6 +383,7 @@ class Edit_User extends \NDB_Form
         }
         // update the user
         if ($this->isCreatingNewUser()) {
+            $set['account_request_date'] = date('Y-m-d');
             // insert a new user
             \User::insert($set);
             $user = \User::factory($set['UserID']);
@@ -772,7 +773,6 @@ class Edit_User extends \NDB_Form
             $this->addBasicText('Country', 'Country');
             $this->addBasicText('Fax', 'FAX');
         }
-
         // email address
         $this->addBasicText('Email', 'Email address', ['required' => true]);
         $this->addCheckbox('SendEmail', 'Send email to user', []);
