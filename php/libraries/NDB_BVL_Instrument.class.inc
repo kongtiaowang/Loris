@@ -3031,6 +3031,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 error_log(print_r("11111111111111",true));
 error_log(print_r($dataKeys,true));
 error_log(print_r($defaultDataKeys,true));
+error_log(print_r($additionalKeys,true));
 
         if (!empty($additionalKeys)) {
             $i = implode(",", $additionalKeys);
