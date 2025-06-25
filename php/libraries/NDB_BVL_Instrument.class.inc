@@ -3171,6 +3171,8 @@ abstract class NDB_BVL_Instrument extends NDB_Page
      */
     public function validate(array $dataToCheck): void
     {
+error_log("========");
+error_log(print_r($dataToCheck,true));
         // data to check even exist
         if (empty($dataToCheck)) {
             throw new \LorisException("No data provided.");

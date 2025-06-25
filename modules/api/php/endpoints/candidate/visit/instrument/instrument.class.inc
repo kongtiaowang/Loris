@@ -257,6 +257,9 @@ error_log(print_r($data,true));
                 : ($data['Data'] ?? []);
 
             // validate
+
+error_log(print_r($instrumentData,true));
+
             $this->_instrument->validate($instrumentData);
         } catch (\LorisException $th) {
             return new \LORIS\Http\Response\JSON\BadRequest(

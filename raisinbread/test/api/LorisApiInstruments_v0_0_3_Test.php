@@ -387,7 +387,7 @@ class LorisApiInstruments_v0_0_3_Test extends LorisApiAuthenticated_v0_0_3_Test
                 'Instrument' => $this->instrumentTest
             ],
             $this->instrumentTest => [
-                'UserID' => "2"
+                'UserID' => "11111"
             ]
         ];
         $response   = $this->client->request(
