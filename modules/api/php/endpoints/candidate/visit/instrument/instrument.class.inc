@@ -234,6 +234,12 @@ class Instrument extends Endpoint implements \LORIS\Middleware\ETagCalculator
         }
 
         $data = json_decode((string) $request->getBody(), true);
+
+
+echo $data;
+var_dump($data);
+error_log(print_r($data,true));
+
         if (!is_array($data)) {
             return new \LORIS\Http\Response\JSON\BadRequest(
                 'Invalid request'
