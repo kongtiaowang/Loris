@@ -126,6 +126,7 @@ class LorisApiAuthenticatedTest extends LorisIntegrationTest
                 'SessionID' => '999999',
                 'Test_name' => 'testtest',
                 'CommentID' => 'DDE_11111111111111111',
+                'Data'      => json_encode(['UserID' => 'admin']),
             ]
         );
 
