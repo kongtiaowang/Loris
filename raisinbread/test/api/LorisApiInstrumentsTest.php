@@ -224,7 +224,7 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
         ];
         $response = $this->client->request(
             'PATCH',
-            "candidates/$this->candidTest/$this->visitTest/instruments/$this->instrumentTest",
+            "candidates/587630/$this->visitTest/instruments/bmi",
             [
                 'headers' => $this->headers,
                 'json'    => $json
