@@ -3019,7 +3019,7 @@ abstract class NDB_BVL_Instrument extends NDB_Page
 
         // missing required fields
         $missingKeys = array_diff($defaultRequiredElements, $dataKeys);
-        if (!empty($missingKeys)) {
+        if (!empty($missingKeys) && $_SERVER['REQUEST_METHOD'] !== 'PATCH') {
             $i = implode(",", $missingKeys);
             throw new \LorisException("Missing required field(s): {$i}.");
         }
