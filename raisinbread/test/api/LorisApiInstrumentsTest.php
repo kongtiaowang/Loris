@@ -442,12 +442,12 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
                 'Instrument' => $this->instrumentTest
             ],
             'Data' => [
-                'UserID' => "2"
+                'height_cms' => "2"
             ]
         ];
         $response   = $this->client->request(
             'PATCH',
-            "candidates/$this->candidTest/$this->visitTest/instruments/$this->instrumentTest/dde",
+            "candidates/587630/$this->visitTest/instruments/bmi/dde",
             [
                 'headers' => $this->headers,
                 'json'    => $json
