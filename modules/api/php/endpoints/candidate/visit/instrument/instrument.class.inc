@@ -257,8 +257,9 @@ error_log(print_r($data,true));
                 : ($data['Data'] ?? []);
 
             // validate
-
+error_log("99999999999");
 error_log(print_r($instrumentData,true));
+error_log("99999999999");
 
             $this->_instrument->validate($instrumentData);
         } catch (\LorisException $th) {
