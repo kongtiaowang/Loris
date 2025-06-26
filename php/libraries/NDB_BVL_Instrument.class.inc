@@ -3110,24 +3110,26 @@ error_log("optionKeys");
 
             // run the validation method depending on the field type
 
-$isValid = match ($dictionaryItem->getDataType()) {
-    "string", "URI" => $isString($fieldToCheck),
-    "boolean"       => $isBoolean($fieldToCheck),
-    "integer"       => $isInteger($fieldToCheck),
-    "decimal"       => $isFloat($fieldToCheck),
-    "date"          => $isDate($fieldToCheck, $dateFormat),
-    "time"          => $isTime($fieldToCheck, $dateFormat),
-    "duration"      => $isDuration($fieldToCheck),
-    "enumeration"   => $isString($fieldToCheck) && (
+$typeClass = get_class($expectedType);
+
+$isValid = match ($typeClass) {
+    \LORIS\Data\Types\StringType::class, \LORIS\Data\Types\URI::class => $isString($fieldToCheck),
+    \LORIS\Data\Types\Boolean::class   => $isBoolean($fieldToCheck),
+    \LORIS\Data\Types\Integer::class   => $isInteger($fieldToCheck),
+    \LORIS\Data\Types\Decimal::class   => $isFloat($fieldToCheck),
+    \LORIS\Data\Types\Date::class      => $isDate($fieldToCheck, $dateFormat),
+    \LORIS\Data\Types\Time::class      => $isTime($fieldToCheck, $dateFormat),
+    \LORIS\Data\Types\Duration::class  => $isDuration($fieldToCheck),
+    \LORIS\Data\Types\Enumeration::class => $isString($fieldToCheck) && (
         $isMultiEnum
-            ? in_array($fieldToCheck, $optionKeys, true)
-            : array_all(
+            ? array_all(
                 explode("{@}", $fieldToCheck),
-                fn($v) => in_array($v, $optionKeys, true)
-            )
+                fn($v) => in_array($v, $expectedType->getOptions(), true)
+              )
+            : in_array($fieldToCheck, $expectedType->getOptions(), true)
     ),
     default => throw new \LorisException(
-        "Unknown data type '{$expectedType}' for field '{$fieldName}' with value: {$fieldToCheck}"
+        "Unknown type '".get_class($expectedType)."' for field '{$fieldName}' with value: {$fieldToCheck}"
     )
 };
             // if not valid, format exception message
