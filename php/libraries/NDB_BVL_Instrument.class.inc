@@ -3097,7 +3097,7 @@ error_log(print_r("22222222222222",true));
 error_log("optionKeys");
 
 error_log(print_r($optionKeys,true));
-
+var_dump($expectedType);
 error_log("optionKeys");
 
             // is it a single/multi-enumeration
@@ -3109,7 +3109,7 @@ error_log("optionKeys");
 
             // run the validation method depending on the field type
 
-$isValid = match ($expectedType) {
+$isValid = match ($dictionaryItem->getDataType()) {
     "string", "URI" => $isString($fieldToCheck),
     "boolean"       => $isBoolean($fieldToCheck),
     "integer"       => $isInteger($fieldToCheck),
