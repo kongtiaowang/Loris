@@ -3091,7 +3091,7 @@ error_log(print_r("22222222222222",true));
 
             // if an enumeration, get the possible option keys
             $optionKeys = match ("{$expectedType}") {
-                "enumeration" => $expectedType->getOptions(),
+                "enumeration" => $dictionaryItem->getOptions(),
                 default       => null
             };
 
