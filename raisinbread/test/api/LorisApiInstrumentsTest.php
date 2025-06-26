@@ -252,7 +252,7 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
         ];
         $response   = $this->client->request(
             'PUT',
-            "candidates/$this->candidTest/$this->visitTest/instruments/$this->instrumentTest",
+            "candidates/$this->candidTest/$this->visitTest/instruments/bmi",
             [
                 'headers' => $this->headers,
                 'json'    => $json
@@ -508,7 +508,7 @@ class LorisApiInstrumentsTest extends LorisApiAuthenticatedTest
         ];
         $response   = $this->client->request(
             'PUT',
-            "candidates/$this->candidTest/$this->visitTest/instruments/$this->instrumentTest/dde",
+            "candidates/$this->candidTest/$this->visitTest/instruments/bmi/dde",
             [
                 'headers' => $this->headers,
                 'json'    => $json
