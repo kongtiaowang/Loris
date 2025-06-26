@@ -3050,116 +3050,114 @@ error_log(print_r("22222222222222",true));
      *
      * @return void
      */
-    private function _validateValues(
-        array $instrumentData
-    ): void {
-        // get datetime fn, and format from db
-        $getDateTime = fn($s, $f) => DateTime::createFromFormat($f, $s);
-        $config      = $this->loris->getConfiguration();
-        $dateFormat  = $config->getSetting('dateDisplayFormat');
+private function _validateValues(array $instrumentData): void
+{
+    // Get date format from system configuration
+    $config = $this->loris->getConfiguration();
+    $dateFormat = $config->getSetting('dateDisplayFormat');
 
-        // define all check fn - primitive
-        $isString  = fn($f) => is_string($f) && "{$f}" === $f;
-        $isBoolean = fn($f) => is_bool($f) && (bool)$f === $f;
-        $isInteger = fn($f) => is_integer($f) && (int)$f === $f;
-        $isFloat   = fn($f) => is_float($f) && (float)$f === $f;
+    // Date parser function
+    $getDateTime = fn($s, $f) => DateTime::createFromFormat($f, $s);
 
-        // define all check fn - duration fn
-        $isDuration = fn($f) => $isInteger($f) && $f >= 0;
+    // Type check functions with string compatibility
+    $isString = fn($f) => is_scalar($f) && is_string("{$f}");
+    $isBoolean = fn($f) =>
+        is_bool($f)
+        || (is_string($f) && in_array(strtolower($f), ['true', 'false', '0', '1'], true))
+        || (is_numeric($f) && ($f == 0 || $f == 1));
+    $isInteger = fn($f) =>
+        is_int($f)
+        || (is_string($f) && preg_match('/^\d+$/', $f))
+        || (is_float($f) && floor($f) == $f);
+    $isFloat = fn($f) => is_numeric($f) && is_float((float)$f + 0);
+    $isDuration = fn($f) => $isInteger($f) && (int)$f >= 0;
+    $isDate = fn($f, $fmt) =>
+        ($dt = $getDateTime($f, $fmt)) !== false && $dt->format($fmt) === $f;
+    $isTime = fn($f, $fmt) =>
+        ($dt = DateTime::createFromFormat("Y-m-d {$fmt}", "2000-01-01 {$f}")) !== false &&
+        $dt->format($fmt) === $f;
 
-        // define all check fn - date/time fn
-        $isDate = fn($f, $fmt) => ($getDateTime($f, $fmt) !== false)
-            && ($getDateTime($f, $fmt)->format($fmt) === $f);
-        $isTime = fn($f, $fmt) => ($getDateTime("2025-10-10 {$f}", $fmt) !== false)
-            && ($getDateTime("2025-10-10 {$f}", $fmt)->format("H:i:s") === $f);
+    // Validate each field in the data dictionary
+    foreach ($this->getDataDictionary() as $dictionaryItem) {
+        $fieldName = $dictionaryItem->fieldname;
 
-        // check types
-        foreach ($this->getDataDictionary() as $dictionaryItem) {
-            // current fieldname
-            $fieldName = $dictionaryItem->fieldname;
-error_log("patch instrumentData");
-error_log(print_r($instrumentData,true));
-    if (!array_key_exists($fieldName, $instrumentData)) {
-        continue;
-    }
-            // skip filtered out fields
-            if (in_array($fieldName, $this->metadataElements, true)) {
-                continue;
-            }
+        // Skip fields that are not present in PATCH input
+        if (!array_key_exists($fieldName, $instrumentData)) {
+            continue;
+        }
 
-            // get the expected type for that field
-            $expectedType = $dictionaryItem->getDataType();
+        // Skip metadata/system fields
+        if (in_array($fieldName, $this->metadataElements, true)) {
+            continue;
+        }
 
-            // get the field data value
-            $fieldToCheck = $instrumentData[$fieldName];
+        // Get expected type object and field value
+        $expectedType = $dictionaryItem->getDataType();
+        $fieldToCheck = $instrumentData[$fieldName];
 
-            // if an enumeration, get the possible option keys
-            $optionKeys = match ("{$expectedType}") {
-                "enumeration" => $expectedType->getOptions(),
-                default       => null
+        // Normalize string values (e.g., trim spaces)
+        if (is_string($fieldToCheck)) {
+            $fieldToCheck = trim($fieldToCheck);
+        }
+
+        // Get enumeration options if applicable
+        $optionKeys = $expectedType instanceof \LORIS\Data\Types\Enumeration
+            ? $expectedType->getOptions()
+            : null;
+
+        // Check if this field supports multiple selection
+        $isMultiEnum = in_array($fieldName, $this->selectMultipleElements, true);
+
+        // Validate the value based on its expected type
+        $isValid = match (true) {
+            $expectedType instanceof \LORIS\Data\Types\StringType   => $isString($fieldToCheck),
+            $expectedType instanceof \LORIS\Data\Types\URI          => $isString($fieldToCheck),
+            $expectedType instanceof \LORIS\Data\Types\BooleanType  => $isBoolean($fieldToCheck),
+            $expectedType instanceof \LORIS\Data\Types\IntegerType  => $isInteger($fieldToCheck),
+            $expectedType instanceof \LORIS\Data\Types\DecimalType  => $isFloat($fieldToCheck),
+            $expectedType instanceof \LORIS\Data\Types\DateType     => $isDate($fieldToCheck, $dateFormat),
+            $expectedType instanceof \LORIS\Data\Types\TimeType     => $isTime($fieldToCheck, $dateFormat),
+            $expectedType instanceof \LORIS\Data\Types\Duration     => $isDuration($fieldToCheck),
+            $expectedType instanceof \LORIS\Data\Types\Enumeration  => $isString($fieldToCheck) && (
+                !$isMultiEnum
+                    ? in_array($fieldToCheck, $optionKeys, true)
+                    : array_all(
+                        explode("{@}", $fieldToCheck),
+                        fn($v) => in_array(trim($v), $optionKeys, true)
+                    )
+            ),
+            default => throw new \LorisException(
+                "Unknown type '" . get_class($expectedType) . "' for field: {$fieldToCheck}"
+            )
+        };
+
+        // If validation failed, prepare an error message
+        if (!$isValid) {
+            $expectedFormat = match (true) {
+                $expectedType instanceof \LORIS\Data\Types\DateType =>
+                    " (format: '{$dateFormat}')",
+                $expectedType instanceof \LORIS\Data\Types\TimeType =>
+                    " (format: 'HH:mm:ss')",
+                $expectedType instanceof \LORIS\Data\Types\Enumeration =>
+                    ", possible answers: '" . implode("','", $optionKeys ?? []) . "'",
+                default => ""
             };
-error_log("optionKeys");
 
-error_log(print_r($optionKeys,true));
-error_log(print_r($expectedType,true));
-
-error_log("optionKeys");
-
-            // is it a single/multi-enumeration
-            $isMultiEnum = in_array(
-                $fieldName,
-                $this->selectMultipleElements,
-                true
-            );
-
-            // run the validation method depending on the field type
-
-$typeClass = get_class($expectedType);
-
-$isValid = match (true) {
-    $expectedType instanceof \LORIS\Data\Types\StringType => $isString($fieldToCheck),
-    $expectedType instanceof \LORIS\Data\Types\URI        => $isString($fieldToCheck), // assume URI is just a string
-    $expectedType instanceof \LORIS\Data\Types\BooleanType => $isBoolean($fieldToCheck),
-    $expectedType instanceof \LORIS\Data\Types\IntegerType => $isInteger($fieldToCheck),
-    $expectedType instanceof \LORIS\Data\Types\DecimalType => $isFloat($fieldToCheck),
-    $expectedType instanceof \LORIS\Data\Types\DateType    => $isDate($fieldToCheck, $dateFormat),
-    $expectedType instanceof \LORIS\Data\Types\TimeType    => $isTime($fieldToCheck, $dateFormat),
-    $expectedType instanceof \LORIS\Data\Types\Duration    => $isDuration($fieldToCheck),
-    $expectedType instanceof \LORIS\Data\Types\Enumeration => true, // or skip validation
-    default => throw new \LorisException(
-        "Unknown type '" . get_class($expectedType) . "' for field: {$fieldToCheck}"
-    )
-};
-            // if not valid, format exception message
-            if (!$isValid) {
-                // expected format
-                $expectedFormat = match ("{$expectedType}") {
-                    "date"  => " (format: 'YYYY-MM-DD')",
-                    "time"  => " (format: 'HH:mm:ss')",
-                    "enumeration" => ", possible answers: '"
-                        . implode("','", $optionKeys ?? [])
-                        . "'",
-                    default => "",
-                };
-
-                // multi-enumeration?
-                $multi = "";
-                if ($isMultiEnum) {
-                    $multi = "multi-";
-                    // add delimiter info
-                    $expectedFormat .= " with delimiter '{@}'";
-                }
-
-                // message
-                $msg  = "Field not valid: {$fieldName}. ";
-                $msg .= "Expected: {$multi}{$expectedType}";
-                $msg .= "{$expectedFormat}";
-
-                //
-                throw new \LorisException($msg);
+            // Add multiselect info if applicable
+            if ($isMultiEnum && $expectedType instanceof \LORIS\Data\Types\Enumeration) {
+                $expectedFormat .= " with delimiter '{@}'";
             }
+
+            // Compose the full validation error message
+            $multi = $isMultiEnum ? "multi-" : "";
+            $msg  = "Field not valid: {$fieldName}. ";
+            $msg .= "Expected: {$multi}" . basename(str_replace('\\', '/', get_class($expectedType)));
+            $msg .= "{$expectedFormat}";
+
+            throw new \LorisException($msg);
         }
     }
+}
 
     /**
      * Validate whether the data submitted are valid against this instrument.
