@@ -3120,14 +3120,7 @@ $isValid = match ($typeClass) {
     \LORIS\Data\Types\Date::class      => $isDate($fieldToCheck, $dateFormat),
     \LORIS\Data\Types\Time::class      => $isTime($fieldToCheck, $dateFormat),
     \LORIS\Data\Types\Duration::class  => $isDuration($fieldToCheck),
-    \LORIS\Data\Types\Enumeration::class => $isString($fieldToCheck) && (
-        $isMultiEnum
-            ? array_all(
-                explode("{@}", $fieldToCheck),
-                fn($v) => in_array($v, $expectedType->getOptions(), true)
-              )
-            : in_array($fieldToCheck, $expectedType->getOptions(), true)
-    ),
+    \LORIS\Data\Types\Enumeration::class => true,
     default => throw new \LorisException(
         "Unknown type '".get_class($expectedType)."' for field '{$fieldName}' with value: {$fieldToCheck}"
     )
