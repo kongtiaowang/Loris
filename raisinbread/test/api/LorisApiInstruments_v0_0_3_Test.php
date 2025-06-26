@@ -138,7 +138,7 @@ class LorisApiInstruments_v0_0_3_Test extends LorisApiAuthenticated_v0_0_3_Test
         $json = [
             $this->instrumentTest => [
                 'consent' => "yes",
-                'testCheckbox' => 'yes',
+                'testCheckbox' => "yes",
             ]
         ];
         $response = $this->client->request(
@@ -166,7 +166,7 @@ class LorisApiInstruments_v0_0_3_Test extends LorisApiAuthenticated_v0_0_3_Test
         $json = [
             $this->instrumentTest => [
                'consent' => "yes",
-                'textCheckbox' => '1',
+                'testCheckbox' => '1',
                 'testText' => 'test',
             ]
         ];
